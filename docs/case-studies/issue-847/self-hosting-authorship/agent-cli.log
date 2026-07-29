@@ -1,0 +1,1971 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.451Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.453Z",
+  "service": "default",
+  "version": "0.25.3",
+  "command": "/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Deepen Formal AI issue #847 by making issue-sized tasks descend through general reviewed strategies, reusing the exact inspected tree for recursive execution, and learning only through green regression evidence plus human review. As one smallest leaf of that same task, create file task-decomposition-invariant.lino containing\ntask_decomposition_contract\n  record_type meta_invariant\n  atomic \"require an observable completion contract and no pending children\"\n  execution \"run the exact inspected content-addressed tree\"\n  learning \"activate a strategy only after green regression evidence and human review\" --disable-stdin --no-summarize-session --compaction-model same --model formal-ai/formal-ai",
+  "workingDirectory": "/tmp/tmp.mBJnHRLuyH",
+  "scriptPath": "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.454Z",
+  "service": "default",
+  "directory": "/tmp/tmp.mBJnHRLuyH",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.454Z",
+  "service": "project",
+  "directory": "/tmp/tmp.mBJnHRLuyH",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.462Z",
+  "service": "storage",
+  "index": 0,
+  "message": "running migration"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.465Z",
+  "service": "storage",
+  "index": 1,
+  "message": "running migration"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.470Z",
+  "service": "default",
+  "processArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Deepen Formal AI issue #847 by making issue-sized tasks descend through general reviewed strategies, reusing the exact inspected tree for recursive execution, and learning only through green regression evidence plus human review. As one smallest leaf of that same task, create file task-decomposition-invariant.lino containing\ntask_decomposition_contract\n  record_type meta_invariant\n  atomic \"require an observable completion contract and no pending children\"\n  execution \"run the exact inspected content-addressed tree\"\n  learning \"activate a strategy only after green regression evidence and human review\"",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-model",
+    "same",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Deepen Formal AI issue #847 by making issue-sized tasks descend through general reviewed strategies, reusing the exact inspected tree for recursive execution, and learning only through green regression evidence plus human review. As one smallest leaf of that same task, create file task-decomposition-invariant.lino containing\ntask_decomposition_contract\n  record_type meta_invariant\n  atomic \"require an observable completion contract and no pending children\"\n  execution \"run the exact inspected content-addressed tree\"\n  learning \"activate a strategy only after green regression evidence and human review\"",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-model",
+    "same",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.471Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.475Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.481Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.482Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.482Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.486Z",
+  "service": "config",
+  "path": "/tmp/tmp.mBJnHRLuyH/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.524Z",
+  "service": "models.dev",
+  "path": "/home/box/.cache/link-assistant-agent/models.json",
+  "message": "no cache found, awaiting refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.524Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.690Z",
+  "service": "models.dev",
+  "path": "/home/box/.cache/link-assistant-agent/models.json",
+  "message": "cache unavailable, using bundled data"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.817Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.842Z",
+  "service": "claude-oauth",
+  "path": "/home/box/.claude/.credentials.json",
+  "message": "credentials file not found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.844Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.844Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.844Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.844Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.845Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.848Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 372,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.850Z",
+  "service": "provider",
+  "modelID": "big-pickle",
+  "providerID": "opencode",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.851Z",
+  "service": "provider",
+  "modelID": "minimax-m2.5-free",
+  "providerID": "kilo",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.851Z",
+  "service": "default",
+  "models": [
+    "opencode/big-pickle",
+    "kilo/minimax-m2.5-free",
+    "same"
+  ],
+  "source": "default",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.953Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.953Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.958Z",
+  "service": "session",
+  "id": "ses_05171239affeLG6WcrsR27Rb8U",
+  "version": "agent-cli-1.0.0",
+  "projectID": "global",
+  "directory": "/tmp/tmp.mBJnHRLuyH",
+  "title": "New session - 2026-07-29T15:47:05.957Z",
+  "time": {
+    "created": 1785340025957,
+    "updated": 1785340025957
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.959Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.959Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.960Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 7,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.961Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.962Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_05171239affeLG6WcrsR27Rb8U/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.962Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_05171239affeLG6WcrsR27Rb8U/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.978Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 16,
+  "method": "POST",
+  "path": "/session/ses_05171239affeLG6WcrsR27Rb8U/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:05.990Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:06.007Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:06.015Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:06.021Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:06.032Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:06.032Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:06.033Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:06.034Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:06.035Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:06.035Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:06.035Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 1,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:06.036Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:06.036Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:06.036Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:06.036Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:06.036Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:06.036Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:06.036Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:06.036Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.031Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.055Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.113Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.131Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.170Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.170Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.175Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.179Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.309Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1785340027309,
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "part": {
+    "id": "prt_fae8ee192001jjCOUxvFbp0XZ9",
+    "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+    "messageID": "msg_fae8ee0ab001WUcTTFridPcMYd",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.314Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.319Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785340027320,
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "part": {
+    "id": "prt_fae8ee1b2001HUt7ykWMg51tso",
+    "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+    "messageID": "msg_fae8ee0ab001WUcTTFridPcMYd",
+    "type": "tool",
+    "callID": "call_a97a616dbd2a17f1",
+    "tool": "write",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.322Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1785340027323,
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "part": {
+    "id": "prt_fae8ee1ae001oHS5sim7SX9dNe",
+    "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+    "messageID": "msg_fae8ee0ab001WUcTTFridPcMYd",
+    "type": "text",
+    "text": "Let me update .formal-ai/general-change-plan.lino for you.",
+    "time": {
+      "start": 1785340027320,
+      "end": 1785340027320
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.326Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785340027326,
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "part": {
+    "id": "prt_fae8ee1b2001HUt7ykWMg51tso",
+    "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+    "messageID": "msg_fae8ee0ab001WUcTTFridPcMYd",
+    "type": "tool",
+    "callID": "call_a97a616dbd2a17f1",
+    "tool": "write",
+    "state": {
+      "status": "running",
+      "input": {
+        "content": "general_change_plan\n  id \"general_change_plan_1d6dc22a69aa8b50\"\n  execution_mode \"literal_file\"\n  goal \"Deepen Formal AI issue #847 by making issue-sized tasks descend through general reviewed strategies, reusing the exact inspected tree for recursive execution, and learning only through green regression evidence plus human review. As one smallest leaf of that same task, create file task-decomposition-invariant.lino containing\\ntask_decomposition_contract\\n  record_type meta_invariant\\n  atomic \\\"require an observable completion contract and no pending children\\\"\\n  execution \\\"run the exact inspected content-addressed tree\\\"\\n  learning \\\"activate a strategy only after green regression evidence and human review\\\"\"\n  target \"task-decomposition-invariant.lino\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_01f3bc8f70189f4f\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to task-decomposition-invariant.lino\"\n    expected_evidence \"workspace file task-decomposition-invariant.lino\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"task_decomposition_contract\\n  record_type meta_invariant\\n  atomic \\\"require an observable completion contract and no pending children\\\"\\n  execution \\\"run the exact inspected content-addressed tree\\\"\\n  learning \\\"activate a strategy only after green regression evidence and human review\\\"\"\n    command \"cat task-decomposition-invariant.lino\"\n  verification_command \"cat task-decomposition-invariant.lino\"\n",
+        "filePath": "/tmp/tmp.mBJnHRLuyH/.formal-ai/general-change-plan.lino"
+      },
+      "time": {
+        "start": 1785340027323
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.352Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785340027352,
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "part": {
+    "id": "prt_fae8ee1b2001HUt7ykWMg51tso",
+    "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+    "messageID": "msg_fae8ee0ab001WUcTTFridPcMYd",
+    "type": "tool",
+    "callID": "call_a97a616dbd2a17f1",
+    "tool": "write",
+    "state": {
+      "status": "completed",
+      "input": {
+        "content": "general_change_plan\n  id \"general_change_plan_1d6dc22a69aa8b50\"\n  execution_mode \"literal_file\"\n  goal \"Deepen Formal AI issue #847 by making issue-sized tasks descend through general reviewed strategies, reusing the exact inspected tree for recursive execution, and learning only through green regression evidence plus human review. As one smallest leaf of that same task, create file task-decomposition-invariant.lino containing\\ntask_decomposition_contract\\n  record_type meta_invariant\\n  atomic \\\"require an observable completion contract and no pending children\\\"\\n  execution \\\"run the exact inspected content-addressed tree\\\"\\n  learning \\\"activate a strategy only after green regression evidence and human review\\\"\"\n  target \"task-decomposition-invariant.lino\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_01f3bc8f70189f4f\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to task-decomposition-invariant.lino\"\n    expected_evidence \"workspace file task-decomposition-invariant.lino\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"task_decomposition_contract\\n  record_type meta_invariant\\n  atomic \\\"require an observable completion contract and no pending children\\\"\\n  execution \\\"run the exact inspected content-addressed tree\\\"\\n  learning \\\"activate a strategy only after green regression evidence and human review\\\"\"\n    command \"cat task-decomposition-invariant.lino\"\n  verification_command \"cat task-decomposition-invariant.lino\"\n",
+        "filePath": "/tmp/tmp.mBJnHRLuyH/.formal-ai/general-change-plan.lino"
+      },
+      "output": "",
+      "title": "tmp/tmp.mBJnHRLuyH/.formal-ai/general-change-plan.lino",
+      "metadata": {
+        "diagnostics": {},
+        "filepath": "/tmp/tmp.mBJnHRLuyH/.formal-ai/general-change-plan.lino",
+        "exists": false
+      },
+      "time": {
+        "start": 1785340027323,
+        "end": 1785340027350
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.369Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1785340027369,
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "part": {
+    "id": "prt_fae8ee1e1001ai40itilde5J2W",
+    "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+    "messageID": "msg_fae8ee0ab001WUcTTFridPcMYd",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 10529,
+      "output": 1877,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 12406,
+      "headroom": 26450,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.370Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.374Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.392Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.392Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.404Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.405Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.405Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.405Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.407Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.407Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.409Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.409Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 12406,
+  "providerTokens": 12406,
+  "estimatedInputTokens": 125,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 10529,
+    "cacheRead": 0,
+    "output": 1877
+  },
+  "overflow": false,
+  "headroom": 39402,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.410Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.431Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.439Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.527Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1785340027528,
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "part": {
+    "id": "prt_fae8ee27f001P4YkpWhafH4TQ6",
+    "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+    "messageID": "msg_fae8ee211001iwvwpiIEuU3WcB",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.529Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.532Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785340027532,
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "part": {
+    "id": "prt_fae8ee28a001efhwEKZsRshrGn",
+    "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+    "messageID": "msg_fae8ee211001iwvwpiIEuU3WcB",
+    "type": "tool",
+    "callID": "call_c6f60c0f8c60b94f",
+    "tool": "write",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.534Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1785340027534,
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "part": {
+    "id": "prt_fae8ee288001SXLMCW4eeZ2mzs",
+    "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+    "messageID": "msg_fae8ee211001iwvwpiIEuU3WcB",
+    "type": "text",
+    "text": "Let me update task-decomposition-invariant.lino for you.",
+    "time": {
+      "start": 1785340027533,
+      "end": 1785340027533
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.535Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785340027536,
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "part": {
+    "id": "prt_fae8ee28a001efhwEKZsRshrGn",
+    "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+    "messageID": "msg_fae8ee211001iwvwpiIEuU3WcB",
+    "type": "tool",
+    "callID": "call_c6f60c0f8c60b94f",
+    "tool": "write",
+    "state": {
+      "status": "running",
+      "input": {
+        "content": "task_decomposition_contract\n  record_type meta_invariant\n  atomic \"require an observable completion contract and no pending children\"\n  execution \"run the exact inspected content-addressed tree\"\n  learning \"activate a strategy only after green regression evidence and human review\"",
+        "filePath": "/tmp/tmp.mBJnHRLuyH/task-decomposition-invariant.lino"
+      },
+      "time": {
+        "start": 1785340027534
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.540Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785340027541,
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "part": {
+    "id": "prt_fae8ee28a001efhwEKZsRshrGn",
+    "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+    "messageID": "msg_fae8ee211001iwvwpiIEuU3WcB",
+    "type": "tool",
+    "callID": "call_c6f60c0f8c60b94f",
+    "tool": "write",
+    "state": {
+      "status": "completed",
+      "input": {
+        "content": "task_decomposition_contract\n  record_type meta_invariant\n  atomic \"require an observable completion contract and no pending children\"\n  execution \"run the exact inspected content-addressed tree\"\n  learning \"activate a strategy only after green regression evidence and human review\"",
+        "filePath": "/tmp/tmp.mBJnHRLuyH/task-decomposition-invariant.lino"
+      },
+      "output": "",
+      "title": "tmp/tmp.mBJnHRLuyH/task-decomposition-invariant.lino",
+      "metadata": {
+        "diagnostics": {},
+        "filepath": "/tmp/tmp.mBJnHRLuyH/task-decomposition-invariant.lino",
+        "exists": false
+      },
+      "time": {
+        "start": 1785340027534,
+        "end": 1785340027539
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.543Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1785340027544,
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "part": {
+    "id": "prt_fae8ee296001NvGbek31khZxi2",
+    "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+    "messageID": "msg_fae8ee211001iwvwpiIEuU3WcB",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 10587,
+      "output": 433,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 11020,
+      "headroom": 27836,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.545Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.547Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.555Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.555Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.590Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.590Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.591Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.591Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.606Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.606Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.607Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.608Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 11020,
+  "providerTokens": 11020,
+  "estimatedInputTokens": 138,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 10587,
+    "cacheRead": 0,
+    "output": 433
+  },
+  "overflow": false,
+  "headroom": 40788,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.609Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.623Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.629Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.719Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1785340027719,
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "part": {
+    "id": "prt_fae8ee33b001l1i7Y4n3bJpswH",
+    "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+    "messageID": "msg_fae8ee2d8001Ot5HVaSLLgcL40",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.720Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.721Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785340027721,
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "part": {
+    "id": "prt_fae8ee349001mHIU0yACh2t00T",
+    "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+    "messageID": "msg_fae8ee2d8001Ot5HVaSLLgcL40",
+    "type": "tool",
+    "callID": "call_08c8b2b21941e2bb",
+    "tool": "bash",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.722Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1785340027722,
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "part": {
+    "id": "prt_fae8ee3470014bc9TaLH2eiR86",
+    "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+    "messageID": "msg_fae8ee2d8001Ot5HVaSLLgcL40",
+    "type": "text",
+    "text": "Let me run a quick command to get that for you.",
+    "time": {
+      "start": 1785340027721,
+      "end": 1785340027721
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.722Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785340027722,
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "part": {
+    "id": "prt_fae8ee349001mHIU0yACh2t00T",
+    "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+    "messageID": "msg_fae8ee2d8001Ot5HVaSLLgcL40",
+    "type": "tool",
+    "callID": "call_08c8b2b21941e2bb",
+    "tool": "bash",
+    "state": {
+      "status": "running",
+      "input": {
+        "command": "cat task-decomposition-invariant.lino"
+      },
+      "time": {
+        "start": 1785340027722
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.724Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785340027724,
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "part": {
+    "id": "prt_fae8ee349001mHIU0yACh2t00T",
+    "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+    "messageID": "msg_fae8ee2d8001Ot5HVaSLLgcL40",
+    "type": "tool",
+    "callID": "call_08c8b2b21941e2bb",
+    "tool": "bash",
+    "state": {
+      "status": "running",
+      "input": {
+        "command": "cat task-decomposition-invariant.lino"
+      },
+      "metadata": {
+        "output": "task_decomposition_contract\n  record_type meta_invariant\n  atomic \"require an observable completion contract and no pending children\"\n  execution \"run the exact inspected content-addressed tree\"\n  learning \"activate a strategy only after green regression evidence and human review\""
+      },
+      "time": {
+        "start": 1785340027724
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.730Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785340027730,
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "part": {
+    "id": "prt_fae8ee349001mHIU0yACh2t00T",
+    "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+    "messageID": "msg_fae8ee2d8001Ot5HVaSLLgcL40",
+    "type": "tool",
+    "callID": "call_08c8b2b21941e2bb",
+    "tool": "bash",
+    "state": {
+      "status": "completed",
+      "input": {
+        "command": "cat task-decomposition-invariant.lino"
+      },
+      "output": "task_decomposition_contract\n  record_type meta_invariant\n  atomic \"require an observable completion contract and no pending children\"\n  execution \"run the exact inspected content-addressed tree\"\n  learning \"activate a strategy only after green regression evidence and human review\"",
+      "title": "cat task-decomposition-invariant.lino",
+      "metadata": {
+        "output": "task_decomposition_contract\n  record_type meta_invariant\n  atomic \"require an observable completion contract and no pending children\"\n  execution \"run the exact inspected content-addressed tree\"\n  learning \"activate a strategy only after green regression evidence and human review\"",
+        "exit": 0
+      },
+      "time": {
+        "start": 1785340027722,
+        "end": 1785340027730
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.731Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1785340027732,
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "part": {
+    "id": "prt_fae8ee353001PDbckCGSWK6ZOF",
+    "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+    "messageID": "msg_fae8ee2d8001Ot5HVaSLLgcL40",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 10643,
+      "output": 102,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 10745,
+      "headroom": 28111,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.732Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.732Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.734Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.734Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.754Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.755Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.755Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.755Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.764Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.764Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.766Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.766Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 10745,
+  "providerTokens": 10745,
+  "estimatedInputTokens": 201,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 10643,
+    "cacheRead": 0,
+    "output": 102
+  },
+  "overflow": false,
+  "headroom": 41063,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.767Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.776Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.784Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.856Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1785340027856,
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "part": {
+    "id": "prt_fae8ee3ce001aakVGnGdaKmANR",
+    "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+    "messageID": "msg_fae8ee376001lj0NSUqzmNpoPc",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.857Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.858Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1785340027858,
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "part": {
+    "id": "prt_fae8ee3d0001NsQXP8iA1c0pDW",
+    "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+    "messageID": "msg_fae8ee376001lj0NSUqzmNpoPc",
+    "type": "text",
+    "text": "Completed the general change request for task-decomposition-invariant.lino and verified it with `cat task-decomposition-invariant.lino`.\n\nPlan event (.formal-ai/general-change-plan.lino):\n\ngeneral_change_plan\n  id \"general_change_plan_1d6dc22a69aa8b50\"\n  execution_mode \"literal_file\"\n  goal \"Deepen Formal AI issue #847 by making issue-sized tasks descend through general reviewed strategies, reusing the exact inspected tree for recursive execution, and learning only through green regression evidence plus human review. As one smallest leaf of that same task, create file task-decomposition-invariant.lino containing\\ntask_decomposition_contract\\n  record_type meta_invariant\\n  atomic \\\"require an observable completion contract and no pending children\\\"\\n  execution \\\"run the exact inspected content-addressed tree\\\"\\n  learning \\\"activate a strategy only after green regression evidence and human review\\\"\"\n  target \"task-decomposition-invariant.lino\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_01f3bc8f70189f4f\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to task-decomposition-invariant.lino\"\n    expected_evidence \"workspace file task-decomposition-invariant.lino\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"task_decomposition_contract\\n  record_type meta_invariant\\n  atomic \\\"require an observable completion contract and no pending children\\\"\\n  execution \\\"run the exact inspected content-addressed tree\\\"\\n  learning \\\"activate a strategy only after green regression evidence and human review\\\"\"\n    command \"cat task-decomposition-invariant.lino\"\n  verification_command \"cat task-decomposition-invariant.lino\"",
+    "time": {
+      "start": 1785340027858,
+      "end": 1785340027858
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.859Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1785340027860,
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "part": {
+    "id": "prt_fae8ee3d30012N38hUCCPgxMvk",
+    "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+    "messageID": "msg_fae8ee376001lj0NSUqzmNpoPc",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 10971,
+      "output": 1837,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 12808,
+      "headroom": 26048,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.861Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.861Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.862Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.863Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.877Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.877Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.877Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.877Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.890Z",
+  "service": "session.prompt",
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.891Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.894Z",
+  "service": "session.prompt",
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.894Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.894Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1785340027894,
+  "sessionID": "ses_05171239affeLG6WcrsR27Rb8U"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.895Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.895Z",
+  "service": "default",
+  "directory": "/tmp/tmp.mBJnHRLuyH",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.895Z",
+  "service": "state",
+  "key": "/tmp/tmp.mBJnHRLuyH",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.899Z",
+  "service": "state",
+  "key": "/tmp/tmp.mBJnHRLuyH",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T15:47:07.899Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 5,
+  "message": "Agent exiting"
+}
+
