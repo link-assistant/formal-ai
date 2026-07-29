@@ -114,4 +114,22 @@ fn task_ladder_ratchet_preserves_real_formal_ai_authorship_evidence() {
         1
     );
     assert!(decomposition.contains("formal_ai_authored_percent 20"));
+
+    let census_stream = fs::read_to_string(
+        root.join("docs/case-studies/issue-842/self-hosting-census/agent-stream-self-ast.jsonl"),
+    )
+    .expect("real Agent CLI self-AST stream");
+    assert!(census_stream.contains("ses_052baa382ffe4lQ4ABBJC6806D"));
+    assert!(census_stream.contains("formal-ai"));
+
+    for relative in ["index.lino", "src/agentic_coding/web_research.lino"] {
+        let canonical = fs::read(root.join("data/meta/self-ast").join(relative))
+            .unwrap_or_else(|error| panic!("{relative}: {error}"));
+        let snapshot = fs::read(
+            root.join("docs/case-studies/issue-842/self-hosting-census/workspace-census")
+                .join(relative),
+        )
+        .unwrap_or_else(|error| panic!("{relative}: {error}"));
+        assert_eq!(snapshot, canonical, "{relative} census snapshot drifted");
+    }
 }

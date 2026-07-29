@@ -79,3 +79,13 @@ leaf: the durable stable-ID ratchet invariant.
 The replay driver is `experiments/issue_842_self_authoring/run.sh`; its raw
 Agent stream, Formal AI trace, and byte-identical generated artifact are in
 `self-hosting/`.
+
+The differential self-hosting gate also measured this branch's preserved
+pre-merge history. Rather than attribute human commits to Formal AI, a second
+real Agent CLI session (`ses_052baa382ffe4lQ4ABBJC6806D`) ran the existing
+self-AST recipe. The same deterministic CST/AST engine then expanded the live
+slice to all 330 owned-source documents. `self-hosting-census/` preserves the
+session, the focused artifact, and the complete 13,160-line Links Notation
+census. This gives a failed ladder node an auditable map from its routing or
+synthesis observation to the source surface that a reviewed repair would
+change.
