@@ -1,0 +1,19 @@
+general_change_plan
+  id "general_change_plan_93f45bea19e08bf5"
+  goal "Execute the Formal AI TUI contract auto-learning task. Run '/tmp/gh-issue-solver-1785103800873/target/release/formal-ai clients learn /tmp/gh-issue-solver-1785103800873/docs/case-studies/issue-841/tui-contract-learning/observations.jsonl' and write its exact stdout to tui-contract-learning-report.lino. Keep every proposed amendment awaiting human review; do not apply proposals."
+  target "tui-contract-learning-report.lino"
+  step 1
+    capability "Write"
+    action "append the composed plan to .formal-ai/general-change-plan.lino"
+    expected_evidence "written plan event impulse_164a23ab9fce9fc9"
+  step 2
+    capability "Run"
+    action "run the explicit command and capture stdout in tui-contract-learning-report.lino"
+    expected_evidence "command-created workspace file tui-contract-learning-report.lino"
+    command "/tmp/gh-issue-solver-1785103800873/target/release/formal-ai clients learn /tmp/gh-issue-solver-1785103800873/docs/case-studies/issue-841/tui-contract-learning/observations.jsonl > 'tui-contract-learning-report.lino'"
+  step 3
+    capability "Run"
+    action "run the request-derived verification command"
+    expected_evidence "captured stdout from the explicit command in tui-contract-learning-report.lino"
+    command "cat tui-contract-learning-report.lino"
+  verification_command "cat tui-contract-learning-report.lino"

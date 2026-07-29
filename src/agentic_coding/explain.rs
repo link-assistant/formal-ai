@@ -68,6 +68,16 @@ const EXPLAIN_KEYWORDS: [&str; 5] = [
 #[must_use]
 pub fn is_explain_task(prompt: &str) -> bool {
     let lower = prompt.to_lowercase();
+    // Agent CLIs commonly wrap an issue or pull-request transcript around the
+    // actual coding task. A recipe keyword inside that embedded material is
+    // evidence, not the intent of the whole turn. Route the compound work item
+    // through the general planner, which can inspect and edit the repository.
+    let repository_work_item = lower.contains("github.com/")
+        && (lower.contains("/issues/") || lower.contains("/pull/"))
+        && lower.lines().count() > 3;
+    if repository_work_item {
+        return false;
+    }
     // A dedicated keyword routes here directly.
     if EXPLAIN_KEYWORDS
         .iter()

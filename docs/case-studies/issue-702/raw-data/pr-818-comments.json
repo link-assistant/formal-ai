@@ -1,0 +1,19 @@
+{
+  "comments": [
+    {
+      "id": "IC_kwDOSbOoU88AAAABLxgxtA",
+      "author": {
+        "login": "konard"
+      },
+      "authorAssociation": "MEMBER",
+      "body": "We also should support unlimited nested contexts (with inheritance (of axioms, facts, requirements, goals and so on ...; or fully isolated, or partial conditional inheritance).\r\n\r\nAlso it may be useful to references resolution, we first should try to check closest context, then next inherited, then next and so on.\r\n\r\nFor example some word or term that is undefined we try to find in near context (this conversation, this dialog, this task, this pull request, this issue, this repository, this organization and so on). By finding nearest reference resolution we can actually do exact matching of undefined terms first to the user's context, and only if nothing else connected, and internet access is allowed we go to outside world context fully.\r\n\r\nSo that is lazy reference resolution by searching nearest referent for actual reference in natural language.\r\n\r\nThat is quite important feature for reasoning, so we should pay more attention to it, and apply it in all relevant places in the codebase.\r\n\r\nWe need make the analysis deeper and fully implement vision from the issue using auto learning, and same task execution using Formal AI via Agent CLI.\r\n\r\nSee our contributing guidelines, testing guidelines, vision, roadmap and so on. I expect this pull request to cover the most ambitious of requirements through generalization of logic, reasoning, advancing our meta algorithm to the highest possible potential. If you see something that still obsolete or contradicts generalization - it must be fixed.\r\n\r\nIt is ok to change architecture to move toward our goals of generalization in any place you touch.\r\n\r\nPlease plan and execute everything in this single pull request, you have unlimited time and context, as context auto-compacts and you can continue indefinitely, until it is each and every requirement fully addressed, and everything is totally done.",
+      "createdAt": "2026-07-26T19:41:07Z",
+      "includesCreatedEdit": true,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/link-assistant/formal-ai/pull/818#issuecomment-5085082036",
+      "viewerDidAuthor": true
+    }
+  ]
+}

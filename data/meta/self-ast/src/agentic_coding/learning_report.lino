@@ -2,32 +2,33 @@ self_ast_census
   target src/agentic_coding/learning_report.rs
   language rust
   fidelity full_ast
-  byte_len 9764
-  line_count 252
-  content_id source_module_3ffba31d28de33ed
-  symbol_count 14
+  byte_len 9923
+  line_count 258
+  content_id source_module_f5d9ff8926f7572b
+  symbol_count 15
   symbols
-    static REPORTS 42 51
-    module handler_precedence_learning 53 53
-    module hardcoded_language_learning 54 54
-    module lexeme_import_learning 55 55
-    module self_hosting_learning 56 56
-    function route 60 62
-    struct LearningReport 67 85
-    function render_document 90 92
-    function render_document_from 99 101
-    function matches 105 107
-    function plan_step 110 123
-    function final_answer 127 142
-    function render 151 231
-    function field 245 252
+    static REPORTS 45 56
+    module context_hierarchy_learning 58 58
+    module handler_precedence_learning 59 59
+    module hardcoded_language_learning 60 60
+    module lexeme_import_learning 61 61
+    module self_hosting_learning 62 62
+    function route 66 68
+    struct LearningReport 73 91
+    function render_document 96 98
+    function render_document_from 105 107
+    function matches 111 113
+    function plan_step 116 129
+    function final_answer 133 148
+    function render 157 237
+    function field 251 258
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 5463
-    named_node_count 1138
+    total_link_count 5534
+    named_node_count 1150
     distinct_node_kinds 69
     node_kinds
       arguments 65
@@ -57,7 +58,7 @@ self_ast_census
       function_item 8
       generic_function 2
       generic_type 3
-      identifier 198
+      identifier 204
       if_expression 3
       impl_item 1
       inner_doc_comment_marker 27
@@ -67,16 +68,16 @@ self_ast_census
       lifetime 8
       line_comment 71
       macro_invocation 9
-      mod_item 4
+      mod_item 5
       mutable_specifier 17
       outer_doc_comment_marker 44
       parameter 12
       parameters 8
       primitive_type 18
-      reference_expression 35
+      reference_expression 37
       reference_type 22
       remaining_field_pattern 1
-      scoped_identifier 21
+      scoped_identifier 23
       scoped_use_list 2
       self 15
       self_parameter 5
@@ -98,4 +99,4 @@ self_ast_census
       use_as_clause 1
       use_declaration 7
       use_list 2
-      visibility_modifier 19
+      visibility_modifier 20

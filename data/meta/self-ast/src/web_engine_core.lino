@@ -2,23 +2,33 @@ self_ast_census
   target src/web_engine_core.rs
   language rust
   fidelity signature
-  byte_len 10337
-  line_count 292
-  content_id source_module_11c0cf4aa47d3412
-  symbol_count 15
+  byte_len 15897
+  line_count 446
+  content_id source_module_9bfe972bfae3b703
+  symbol_count 25
   symbols
     function normalize_prompt 41 59
     function tokenize_prompt 65 71
     function evaluate_arithmetic_expression 81 83
-    function stable_id 91 99
-    const UNKNOWN_OPENERS_EN 101 107
-    const UNKNOWN_OPENERS_RU 108 114
-    const UNKNOWN_OPENERS_HI 115 121
-    const UNKNOWN_OPENERS_ZH 122 128
-    function unknown_openers_for 131 138
-    function select_unknown_opener 142 155
-    function matches_intent_route_parts 160 192
-    function matches_intent_route_payload 200 244
-    function contains_route_token 246 250
-    function normalize_route_raw_prompt 252 262
-    function is_unicode_letter_or_digit 264 292
+    enum ArithmeticClaimOutcome 88 96
+    struct ArithmeticClaimAssessment 100 107
+    enum ArithmeticComparison 110 117
+    function assess_arithmetic_claim 125 173
+    function split_arithmetic_comparison 175 195
+    const COMPARISONS 176 187
+    function normalize_arithmetic_claim_side 197 209
+    function arithmetic_values_equal 211 219
+    function arithmetic_value_less_than 221 226
+    function arithmetic_comparison_symbol 228 237
+    function stable_id 245 253
+    const UNKNOWN_OPENERS_EN 255 261
+    const UNKNOWN_OPENERS_RU 262 268
+    const UNKNOWN_OPENERS_HI 269 275
+    const UNKNOWN_OPENERS_ZH 276 282
+    function unknown_openers_for 285 292
+    function select_unknown_opener 296 309
+    function matches_intent_route_parts 314 346
+    function matches_intent_route_payload 354 398
+    function contains_route_token 400 404
+    function normalize_route_raw_prompt 406 416
+    function is_unicode_letter_or_digit 418 446

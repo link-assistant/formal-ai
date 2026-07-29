@@ -75,6 +75,7 @@ function statusFromConfig(raw, options = {}) {
   const serverEnabled = cfg.serverEnabled && serverCapable;
   return {
     shell,
+    platform: String(options.platform || ""),
     mode: serverEnabled ? "server" : "in-process",
     apiBase: "",
     staticBase: "",

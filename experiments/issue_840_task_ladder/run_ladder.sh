@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Drive every node of the issue #840 task ladder against a live `formal-ai serve`
-# and record pass/fail per node, so the whole 25-task dataset can be re-measured
+# and record pass/fail per node, so the whole 24-task dataset can be re-measured
 # after each change instead of re-reported by hand.
 #
 # Usage:
@@ -13,16 +13,21 @@
 #   OUT        Results JSON path (default: <scriptdir>/results.json)
 #   ONLY       Optional substring filter on task id (e.g. ONLY=838 or ONLY=838.L4)
 #   SANDBOX    Optional pre-existing sandbox dir; created and populated if unset
+#   MODE       `http` (default) or `tui` for the real OpenCode interface
+#   TUI_ARTIFACT_DIR  Transcript/frames/cast/SVG root in TUI mode
+#   REQUIRE_ALL_PASS  Exit nonzero when a selected TUI node fails (default: 0)
 #
-# A node PASSES when every `expect` substring appears in the answer and no
-# `forbid` substring does. Matching is case-insensitive. Nodes with an empty
-# `expect` list are judged only by `forbid` (used where any sensible answer is
-# acceptable but a specific failure mode must not occur).
+# A node PASSES when every `expect` substring appears in assistant output and
+# no `forbid` substring does. Matching is case-insensitive. Raw tool results
+# remain in the recorded transcript as observation evidence, but are not agent
+# claims and therefore cannot by themselves trigger a forbidden-answer check.
+# Nodes with an empty `expect` list are judged only by `forbid` (used where any
+# sensible answer is acceptable but a specific failure mode must not occur).
 #
-# Exits 0 always: this is a measurement harness, not a gate. Read results.json
-# (and the printed summary) for the outcome. `experiments/` is excluded from
-# `any-code-changed` in scripts/detect-code-changes.rs, so this file does not
-# gate CI.
+# HTTP mode exits 0: this is a measurement harness, not a gate. TUI mode also
+# exits 0 unless REQUIRE_ALL_PASS=1. Read results.json (and the printed summary)
+# for the outcome. `experiments/` is excluded from `any-code-changed` in
+# scripts/detect-code-changes.rs, so this file alone does not gate CI.
 
 set -uo pipefail
 
@@ -34,6 +39,8 @@ TASKS="${TASKS:-$HERE/tasks.json}"
 OUT="${OUT:-$HERE/results.json}"
 ONLY="${ONLY:-}"
 SANDBOX="${SANDBOX:-}"
+MODE="${MODE:-http}"
+TUI_ARTIFACT_DIR="${TUI_ARTIFACT_DIR:-$OUT.artifacts}"
 
 if [ ! -x "$BIN" ]; then
   echo "formal-ai binary not found at $BIN (build with: cargo build --release)" >&2
@@ -41,6 +48,10 @@ if [ ! -x "$BIN" ]; then
 fi
 if ! command -v python3 >/dev/null 2>&1; then
   echo "python3 is required for JSON handling" >&2
+  exit 0
+fi
+if [ "$MODE" = "tui" ] && ! command -v opencode >/dev/null 2>&1; then
+  echo "opencode is required for MODE=tui" >&2
   exit 0
 fi
 
@@ -83,6 +94,19 @@ if ! curl -fsS "http://127.0.0.1:$PORT/v1/models" >/dev/null 2>&1; then
   exit 0
 fi
 
+if [ "$MODE" = "tui" ]; then
+  TUI_DIR="$ROOT/experiments/agent_cli_e2e/issue_819_tui"
+  (cd "$TUI_DIR" && bun install --frozen-lockfile) || exit 1
+  ISSUE840_TASKS="$TASKS" \
+    ISSUE840_OUT="$OUT" \
+    ISSUE840_ONLY="$ONLY" \
+    ISSUE840_SANDBOX="$SANDBOX" \
+    ISSUE840_PORT="$PORT" \
+    ISSUE840_ARTIFACT_DIR="$TUI_ARTIFACT_DIR" \
+    node "$TUI_DIR/capture-ladder.mjs"
+  exit $?
+fi
+
 # --- drive every node --------------------------------------------------------
 python3 - "$TASKS" "$OUT" "$PORT" "$ONLY" "$SANDBOX" <<'PY'
 import json, os, subprocess, sys, urllib.request
@@ -123,6 +147,7 @@ def ask(prompt):
     step is returned so assertions see both narration and tool output."""
     messages = [{"role": "user", "content": prompt}]
     transcript = []
+    assistant_output = []
     try:
         for _ in range(MAX_STEPS):
             payload = post(messages)
@@ -130,6 +155,7 @@ def ask(prompt):
             text = message.get("content") or ""
             if text:
                 transcript.append(text)
+                assistant_output.append(text)
             calls = message.get("tool_calls") or []
             if not calls:
                 break
@@ -149,8 +175,32 @@ def ask(prompt):
                         env={**os.environ, "HOME": sandbox},
                     )
                     result = (proc.stdout + proc.stderr).strip() or "(no output)"
+                elif name == "websearch":
+                    query = str(args.get("query") or "").lower()
+                    if "фуфломицин" in query or "fuflo" in query:
+                        if "english" in query:
+                            result = (
+                                "Fuflomicin is a disparaging colloquial label "
+                                "for a medicine without proven efficacy."
+                            )
+                        else:
+                            result = (
+                                "Фуфломицин — неодобрительное разговорное "
+                                "название лекарства без доказанной эффективности."
+                            )
+                    elif "фбс" in query:
+                        result = (
+                            "ФБС: продавец хранит товар на своём складе, "
+                            "собирает заказ и передаёт его маркетплейсу."
+                        )
+                    elif "фбо" in query:
+                        result = (
+                            "ФБО: товар хранится на складе маркетплейса, "
+                            "который собирает и доставляет заказ."
+                        )
+                    else:
+                        result = "No deterministic fixture evidence for this query."
                 else:
-                    # websearch and anything else: no live network in the harness
                     result = "(tool not executed by harness)"
                 transcript.append(f"[result] {result}")
                 messages.append({
@@ -158,20 +208,20 @@ def ask(prompt):
                     "name": name, "content": result,
                 })
     except Exception as exc:                      # noqa: BLE001 - harness
-        return "\n".join(transcript), f"{type(exc).__name__}: {exc}"
-    return "\n".join(transcript).strip(), None
+        return "\n".join(transcript), "\n".join(assistant_output), f"{type(exc).__name__}: {exc}"
+    return "\n".join(transcript).strip(), "\n".join(assistant_output).strip(), None
 
 results = []
 for node in nodes:
-    answer, error = ask(node["prompt"])
-    low = answer.lower()
+    answer, assistant_output, error = ask(node["prompt"])
+    low = assistant_output.lower()
     missing = [e for e in node.get("expect", []) if e.lower() not in low]
     leaked = [f for f in node.get("forbid", []) if f.lower() in low]
     ok = error is None and not missing and not leaked
     results.append({
         "id": node["id"], "level": node["level"], "seed": node["seed"],
         "lang": node["lang"], "prompt": node["prompt"], "note": node.get("note", ""),
-        "answer": answer, "error": error,
+        "answer": answer, "assistant_output": assistant_output, "error": error,
         "missing_expect": missing, "leaked_forbid": leaked, "pass": ok,
     })
     flag = "PASS" if ok else "FAIL"

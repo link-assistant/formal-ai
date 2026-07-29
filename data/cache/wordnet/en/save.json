@@ -1,0 +1,140 @@
+{
+  "lemma": "save",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01081320-n",
+      "partOfSpeech": "n",
+      "definition": "(sports) the act of preventing the opposition from scoring",
+      "examples": [
+        "the goalie made a brilliant save",
+        "the relief pitcher got credit for a save"
+      ]
+    },
+    {
+      "id": "oewn-02556565-v",
+      "partOfSpeech": "v",
+      "definition": "save from ruin, destruction, or harm",
+      "synonyms": [
+        "salvage",
+        "salve",
+        "relieve"
+      ]
+    },
+    {
+      "id": "oewn-02230274-v",
+      "partOfSpeech": "v",
+      "definition": "to keep up and reserve for personal or special use",
+      "examples": [
+        "She saved the old family photographs in a drawer"
+      ],
+      "synonyms": [
+        "preserve"
+      ]
+    },
+    {
+      "id": "oewn-02557529-v",
+      "partOfSpeech": "v",
+      "definition": "bring into safety",
+      "examples": [
+        "We pulled through most of the victims of the bomb attack"
+      ],
+      "synonyms": [
+        "carry through",
+        "pull through",
+        "bring through"
+      ]
+    },
+    {
+      "id": "oewn-02271765-v",
+      "partOfSpeech": "v",
+      "definition": "spend less; buy at a reduced price"
+    },
+    {
+      "id": "oewn-02270824-v",
+      "partOfSpeech": "v",
+      "definition": "accumulate money for future use",
+      "examples": [
+        "He saves half his salary"
+      ],
+      "synonyms": [
+        "lay aside",
+        "save up"
+      ]
+    },
+    {
+      "id": "oewn-00550632-v",
+      "partOfSpeech": "v",
+      "definition": "make unnecessary an expenditure or effort",
+      "examples": [
+        "This will save money",
+        "I'll save you the trouble",
+        "This will save you a lot of time"
+      ],
+      "synonyms": [
+        "make unnecessary"
+      ]
+    },
+    {
+      "id": "oewn-02557299-v",
+      "partOfSpeech": "v",
+      "definition": "save from sins",
+      "synonyms": [
+        "deliver",
+        "redeem"
+      ]
+    },
+    {
+      "id": "oewn-02470006-v",
+      "partOfSpeech": "v",
+      "definition": "refrain from harming",
+      "synonyms": [
+        "spare"
+      ]
+    },
+    {
+      "id": "oewn-02362227-v",
+      "partOfSpeech": "v",
+      "definition": "spend sparingly, avoid the waste of",
+      "examples": [
+        "This move will save money",
+        "The less fortunate will have to economize now"
+      ],
+      "synonyms": [
+        "economize",
+        "economise"
+      ]
+    },
+    {
+      "id": "oewn-02288561-v",
+      "partOfSpeech": "v",
+      "definition": "retain rights to",
+      "examples": [
+        "keep my job for me while I give birth",
+        "keep my seat, please",
+        "keep open the possibility of a merger"
+      ],
+      "synonyms": [
+        "keep open",
+        "hold open",
+        "keep"
+      ]
+    },
+    {
+      "id": "oewn-01000931-v",
+      "partOfSpeech": "v",
+      "definition": "record data on a computer",
+      "examples": [
+        "boot-up instructions are written on the hard disk"
+      ],
+      "synonyms": [
+        "write"
+      ]
+    }
+  ]
+}

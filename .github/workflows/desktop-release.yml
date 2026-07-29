@@ -192,15 +192,20 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Cache cargo
-        uses: actions/cache@v5
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: desktop-${{ matrix.label }}-cargo-${{ hashFiles('Cargo.lock', 'Cargo.toml') }}
+      - name: Cache Rust compiler outputs
+        uses: mozilla-actions/sccache-action@v0.0.10
 
+      - name: Enable Rust compiler cache
+        run: |
+          echo "SCCACHE_GHA_ENABLED=true" >> "$GITHUB_ENV"
+          echo "RUSTC_WRAPPER=sccache" >> "$GITHUB_ENV"
+
+      # Keep Cargo's dependency cache out of this matrix. A cold Windows build
+      # completes inside the job budget, while actions/cache registers a
+      # post-job archive of Cargo home: on run 30398883119 all product work and
+      # uploads passed, then compressing 194 MB consumed the remaining 3m40 and
+      # GitHub cancelled the otherwise-successful job. sccache above retains the
+      # expensive compiler outputs without that post-packaging failure mode.
       - name: Build formal-ai binary (release)
         run: cargo build --release --bin formal-ai
 

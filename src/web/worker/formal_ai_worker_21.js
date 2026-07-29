@@ -5,12 +5,12 @@
 // deterministic offline plan into its evidence log so the website matches the
 // Rust `FormalAiEngine` byte-for-byte.
 //
-// This module is the issue #535 surface: it holds both the relative-meta-logic
-// statement weigher and the document-verification handler that calls it
-// (`tryDocumentOriginalityCheck`, appended below), so worker_19 stays under the
-// 1500-line ceiling enforced by scripts/check-file-size.rs. Function
-// declarations hoist across the concatenated worker bundle, so worker_20's
-// dispatcher reaches the handler regardless of module order.
+// This module holds the relative-meta-logic statement weigher, the issue #535
+// document-verification handler that calls it, and issue #845's current-dialog
+// audit mirror. Keeping them together lets worker_19 stay under the 1500-line
+// ceiling enforced by scripts/check-file-size.rs. Function declarations hoist
+// across the concatenated worker bundle, so worker_20's dispatcher reaches the
+// handlers regardless of module order.
 const RML_ASSUMED_TRUE_PRIOR = 0.6;
 const RML_TRUSTED_SOURCE_POLICY = [
   { slug: "original_first_party", weight: 1.0 },
@@ -676,4 +676,17 @@ function tryDocumentOriginalityCheck(prompt, language) {
     attachments,
     formalizedObject: attachments.length > 0 ? attachments.join(", ") : "provided text",
   };
+}
+
+function tryCurrentDialogueFactChecking(_prompt, normalized, language, history) {
+  const isRequest = (text) => lexiconMentionsRoleSubstring(
+    ROLE_FACT_CHECK_CURRENT_DIALOGUE_QUERY, text);
+  if (!isRequest(normalized)) return null;
+  const templates = "fact_check_current_dialogue fact_check_statement fact_check_statement_counterexample fact_check_arithmetic_counterexample fact_check_no_statements"
+    .split(" ").map((intent) => answerFor(intent, language));
+  const turns = (Array.isArray(history) ? history : [])
+    .filter((turn) => turn && String(turn.role || "").toLowerCase() === "user")
+    .map((turn) => String(turn.content || "").trim()).filter((text) =>
+      text && !isRequest(normalizePrompt(text)));
+  return wasmFactCheckDialogue([...templates, ...turns].map(encodeURIComponent).join("\n"));
 }

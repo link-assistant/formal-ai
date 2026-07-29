@@ -1,0 +1,85 @@
+self_ast_census
+  target src/agentic_coding/source_links.rs
+  language rust
+  fidelity full_ast
+  byte_len 9464
+  line_count 193
+  content_id source_module_6177a1573de819fc
+  symbol_count 11
+  symbols
+    const SOURCE_LINKS_PATH 44 44
+    const SLICE_SIZE 49 49
+    const SOURCE_LINKS_TASK 57 73
+    const SOURCE_LINKS_KEYWORDS 73 73
+    function is_source_links_task 79 95
+    function representative_slice 100 111
+    function cached_slice 119 122
+    static SLICE 120 120
+    function render_document 132 167
+    function slice 172 174
+    function final_answer 179 193
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 3731
+    named_node_count 756
+    distinct_node_kinds 56
+    node_kinds
+      arguments 31
+      array_expression 1
+      array_type 1
+      attribute 4
+      attribute_item 4
+      binary_expression 9
+      block 11
+      boolean_literal 1
+      call_expression 31
+      char_literal 1
+      closure_expression 3
+      closure_parameters 3
+      const_item 4
+      crate 1
+      doc_comment 77
+      else_clause 1
+      escape_sequence 16
+      expression_statement 7
+      field_expression 22
+      field_identifier 22
+      for_expression 1
+      function_item 6
+      generic_type 2
+      identifier 131
+      if_expression 3
+      index_expression 1
+      inner_doc_comment_marker 34
+      integer_literal 6
+      let_declaration 22
+      lifetime 3
+      line_comment 85
+      macro_invocation 14
+      mutable_specifier 1
+      outer_doc_comment_marker 43
+      parameter 2
+      parameters 6
+      parenthesized_expression 4
+      primitive_type 9
+      range_expression 1
+      reference_expression 1
+      reference_type 8
+      return_expression 2
+      scoped_identifier 9
+      scoped_use_list 1
+      source_file 1
+      static_item 1
+      string_content 37
+      string_literal 27
+      token_tree 24
+      tuple_type 1
+      type_arguments 2
+      type_identifier 7
+      use_as_clause 1
+      use_declaration 3
+      use_list 1
+      visibility_modifier 6

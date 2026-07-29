@@ -1,0 +1,9 @@
+sandbox: /tmp/formal-ai-ladder.uz4Dfn
+bun install v1.3.14 (0d9b296a)
+
+Checked 5 installs across 6 packages (no changes) [21.00ms]
+PASS  838.L1       L1  "Find hive-mind-control center folder on my desktop"
+
+TOTAL 1/1 passed through the real OpenCode TUI
+wrote /tmp/formal-ai-841-ladder.json
+artifacts /tmp/formal-ai-841-ladder-artifacts

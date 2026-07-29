@@ -28,9 +28,8 @@ pub fn tool_action_narration(prompt: &str, calls: &[PlannedToolCall]) -> String 
     // ("Let me look on your Desktop for …") built from the same extraction the
     // `find` command builder uses, so narration and action always agree.
     if capability == Some(Capability::Run) {
-        if let Some(found) = super::shell_command::local_path_search_narration(prompt) {
-            let intent = format!("agentic_action_find_{}", found.scope);
-            if let Some(template) = localized(&intent, language) {
+        if let Some(found) = super::local_search::narration_for(prompt) {
+            if let Some(template) = localized(&found.intent, language) {
                 return template.replace(SUBJECT_SLOT, found.subject.trim());
             }
         }

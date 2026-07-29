@@ -1,0 +1,81 @@
+bun install v1.3.14 (0d9b296a)
+
+Checked 65 installs across 76 packages (no changes) [46.00ms]
+bun test v1.3.14 (0d9b296a)
+
+tui-transcript.test.mjs:
+(pass) published adapter preserves ordered states and writes replay artifacts [897.20ms]
+(pass) published adapter sends text, control keys, and resize through its PTY [292.03ms]
+(pass) published adapter defaults to a faithful publishable replay bundle [661.35ms]
+(pass) published adapter preserves partial replay artifacts after timeout [649.35ms]
+
+ 4 pass
+ 0 fail
+ 43 expect() calls
+Ran 4 tests across 1 file. [2.66s]
+== issue #819 agent E2E OK: user -> find -> result -> final ==
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-27T00:02:40.025Z",
+  "service": "state",
+  "key": "/tmp/tmp.Gp5YvyB0uF",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-27T00:02:40.025Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 7,
+  "message": "Agent exiting"
+}
+
+== issue #819 opencode E2E OK: user -> find -> result -> final ==
+[0m
+> build · formal-ai
+[0m
+Let me look on your Desktop for hive-mind-control-center.
+[0m$ [0mfind "${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}" -type d -iname 'hive-mind-control-center' -print
+(no output)
+[0m
+Let me look on your Desktop for hive-mind-control-center.
+[0m$ [0mfind "${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}" -type d -iname '*hive*' -print
+/tmp/tmp.Gp5YvyB0uF/Desktop/Archive
+/tmp/tmp.Gp5YvyB0uF/Desktop/Archive/hive-control-center
+[0m
+No exact match for hive-mind-control-center; the closest matching name is hive-control-center at /tmp/tmp.Gp5YvyB0uF/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.
+== issue #819 claude E2E OK: user -> find -> result -> final ==
+No exact match for hive-mind-control-center; the closest matching name is hive-control-center at /tmp/tmp.Gp5YvyB0uF/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.
+formal-ai: session files for debugging:
+  claude: /tmp/formal-ai-claude-home-config-90147-1785110573867276092/projects/-tmp-gh-issue-solver-1785103800873/3be5cf2e-6e64-46d1-acbf-b51db356ed39.jsonl   (resume: claude --resume 3be5cf2e-6e64-46d1-acbf-b51db356ed39)
+== issue #819 codex E2E OK: user -> find -> result -> final ==
+2026-07-27T00:03:12.286016Z DEBUG opentelemetry-otlp:  name="HttpMetricsClient.ExportStarted"
+2026-07-27T00:03:12.286085Z DEBUG opentelemetry-http:  name="ReqwestBlockingClient.Send"
+2026-07-27T00:03:12.289533Z DEBUG reqwest::connect: starting new connection: https://ab.chatgpt.com/
+2026-07-27T00:03:12.291909Z DEBUG hyper_util::client::legacy::connect::http: connecting to 172.64.155.209:443
+2026-07-27T00:03:12.299297Z DEBUG hyper_util::client::legacy::connect::http: connected to 172.64.155.209:443
+2026-07-27T00:03:12.355392Z DEBUG hyper_util::client::legacy::pool: pooling idle connection for ("https", ab.chatgpt.com)
+2026-07-27T00:03:12.355573Z DEBUG opentelemetry-otlp:  name="HttpMetricsClient.ExportSucceeded"
+2026-07-27T00:03:12.355599Z DEBUG opentelemetry_sdk:  name="PeriodReaderInvokedExport" export_result="Ok(())"
+2026-07-27T00:03:12.355648Z DEBUG opentelemetry_sdk:  name="PeriodReaderThreadAdjustingRemainingIntervalAfterFlush" remaining_interval=55
+2026-07-27T00:03:12.355660Z DEBUG opentelemetry_sdk:  name="PeriodReaderThreadLoopAlive" Next export will happen after interval, unless flush or shutdown is triggered. interval_in_millisecs=55705
+2026-07-27T00:03:12.355793Z DEBUG opentelemetry_sdk:  name="MeterProvider.Shutdown" User initiated shutdown of MeterProvider.
+2026-07-27T00:03:12.355820Z DEBUG opentelemetry_sdk:  name="PeriodReaderThreadExportingDueToShutdown"
+2026-07-27T00:03:12.355827Z DEBUG opentelemetry_sdk:  name="MeterProviderInvokingObservableCallbacks" count=0
+2026-07-27T00:03:12.356141Z DEBUG opentelemetry_sdk:  name="NoMetricsCollected"
+2026-07-27T00:03:12.356152Z DEBUG opentelemetry_sdk:  name="PeriodReaderInvokedExport" export_result="Ok(())"
+2026-07-27T00:03:12.360541Z DEBUG opentelemetry_sdk:  name="PeriodReaderInvokedExporterShutdown" shutdown_result="Ok(())"
+2026-07-27T00:03:12.360605Z DEBUG opentelemetry_sdk:  name="PeriodReaderThreadExiting" reason="ShutdownRequested"
+2026-07-27T00:03:12.360612Z DEBUG opentelemetry_sdk:  name="PeriodReaderThreadStopped"
+formal-ai: session files for debugging:
+  codex: /tmp/formal-ai-codex-home-config-92316-1785110587383269293/.codex/sessions/2026/07/27/rollout-2026-07-27T00-03-08-019fa0e1-edd1-74b0-bcf2-abfe45bb51a7.jsonl   (resume: codex resume 019fa0e1-edd1-74b0-bcf2-abfe45bb51a7)
+== issue #819 opencode primary TUI OK: transcript + resize + SVG/GIF replay ==
+== issue #819 opencode reworded TUI OK: transcript + resize + SVG/GIF replay ==
+== issue #819 claude primary TUI OK: transcript + resize + SVG/GIF replay ==
+== issue #819 claude reworded TUI OK: transcript + resize + SVG/GIF replay ==
+== issue #819 codex primary TUI OK: transcript + resize + SVG/GIF replay ==
+== issue #819 codex reworded TUI OK: transcript + resize + SVG/GIF replay ==

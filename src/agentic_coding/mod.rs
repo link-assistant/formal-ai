@@ -24,6 +24,7 @@ pub mod change_request;
 mod code_artifact;
 pub mod code_rewrite_learning;
 pub(crate) mod command_reroute;
+mod comparison;
 mod conversation_recall;
 pub mod corpus;
 pub mod diagram;
@@ -31,6 +32,7 @@ pub mod dreaming_audit;
 pub mod driver;
 pub mod execution_learning;
 pub mod explain;
+pub mod external_benchmark_learning;
 mod file_read;
 pub mod formalize;
 pub mod general_planner;
@@ -40,14 +42,17 @@ mod intent_router;
 pub mod learning_report;
 pub mod ledger;
 pub(crate) mod lexicon;
+mod local_search;
 pub mod meaning_detail;
 pub(crate) mod narration;
 pub mod planner;
+pub mod procedure;
 mod progress;
 pub mod question_catalog;
 pub mod rebuild_plan;
 pub mod repair_strategy;
 mod report_issue;
+mod report_script;
 pub mod routing_learning;
 pub mod self_ast;
 pub mod self_heal;
@@ -74,6 +79,8 @@ pub use execution_learning::{
     is_execution_learning_task, EXECUTION_LEARNING_PATH, EXECUTION_LEARNING_TASK,
 };
 pub use explain::{is_explain_task, EXPLAIN_PATH, EXPLAIN_TASK};
+pub use external_benchmark_learning::EXTERNAL_BENCHMARK_LEARNING_PATH;
+pub(crate) use file_read::supplied_file_answer;
 pub use formalize::{
     coverage_line, formalize_text_to_links, FormalizationSummary, FormalizedKnowledgeBase,
     CANONICAL_FISHERMAN_SYNOPSIS, FISHERMAN_DOC_ID, PRIMITIVE_KINDS,
@@ -83,6 +90,10 @@ pub use google_trends_catalog::{
 };
 pub use google_trends_learning::{
     is_google_trends_learning_task, GOOGLE_TRENDS_LEARNING_PATH, GOOGLE_TRENDS_LEARNING_TASK,
+};
+pub use learning_report::context_hierarchy_learning::{
+    is_context_hierarchy_learning_task, CONTEXT_HIERARCHY_LEARNING_PATH,
+    CONTEXT_HIERARCHY_LEARNING_TASK,
 };
 pub use learning_report::handler_precedence_learning::{
     is_handler_precedence_learning_task, HANDLER_PRECEDENCE_LEARNING_PATH,
@@ -106,6 +117,7 @@ pub use meaning_detail::{
 pub use planner::{
     plan_chat_step, AgenticPlan, PlannedToolCall, CANONICAL_SOURCE_URL, KB_PATH, SEARCH_QUERY,
 };
+pub use procedure::{compile_task as compile_procedure_task, COMPILED_PROCEDURE_PATH};
 pub use question_catalog::{
     is_question_catalog_task, QUESTION_CATALOG_PATH, QUESTION_CATALOG_TASK,
 };
@@ -116,5 +128,6 @@ pub use routing_learning::{
 };
 pub use self_ast::{ast_census, is_self_ast_task, render_ast_document, AST_PATH, AST_TASK};
 pub use self_heal::{is_self_heal_task, SELF_HEAL_PATH, SELF_HEAL_TASK};
+pub(crate) use shell_command::semantic_shell_command_for_task;
 pub use source_links::{is_source_links_task, SOURCE_LINKS_PATH, SOURCE_LINKS_TASK};
 pub use statement_audit::{is_statement_audit_task, STATEMENT_AUDIT_COMMAND, STATEMENT_AUDIT_PATH};
