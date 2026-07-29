@@ -1,11 +1,3 @@
-# Reviewed decomposition strategies are data, not parser branches.
-#
-# The first strategy was inferred from the issue-847 false-green observation:
-# an issue-sized implementation request with one grammatical clause was
-# incorrectly certified as atomic. The four stage contracts are general
-# lifecycle invariants, not issue-specific source edits. Promotion records both
-# the green regression gate and the human-review requirement so a runtime
-# learning proposal cannot silently change decomposition behavior.
 task_decomposition_strategies
   schema_version 1
   strategy task_strategy_verified_change
