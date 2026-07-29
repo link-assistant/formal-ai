@@ -306,6 +306,50 @@ fn an_unoriginal_mirror_adds_no_probability() {
 }
 
 #[test]
+fn unoriginal_repetition_cannot_outrank_an_authoritative_source() {
+    let mut observations = vec![SourcedStatement::from_sentence(
+        "The release is signed.",
+        "first-party",
+        SourceTier::OriginalFirstParty,
+    )];
+    for index in 0..8 {
+        observations.push(SourcedStatement::from_sentence(
+            "The rumour is widespread.",
+            format!("mirror-{index}"),
+            SourceTier::Unoriginal,
+        ));
+    }
+
+    let ranked = rank(&deduplicate(&observations));
+    let authoritative = ranked
+        .iter()
+        .find(|item| item.statement.representative.text.contains("release"))
+        .expect("the authoritative fact is ranked");
+    let repeated = ranked
+        .iter()
+        .find(|item| item.statement.representative.text.contains("rumour"))
+        .expect("the repeated mirror is ranked");
+
+    assert_eq!(
+        repeated.score.evidence, 0,
+        "unoriginal assertions carry no ranking evidence"
+    );
+    assert_eq!(repeated.score.authority, 0);
+    assert_eq!(authoritative.score.authority, 100);
+    assert!(
+        authoritative.score.weight > repeated.score.weight,
+        "one first-party assertion must outrank eight zero-trust mirrors: \
+         {:?} vs {:?}",
+        authoritative.score,
+        repeated.score
+    );
+    assert_eq!(
+        ranked[0].statement.representative.text,
+        authoritative.statement.representative.text
+    );
+}
+
+#[test]
 fn contradictions_become_contradicts_edges_and_are_reported_as_disagreement() {
     let observations = vec![
         SourcedStatement::from_sentence(

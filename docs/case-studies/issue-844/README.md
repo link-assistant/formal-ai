@@ -44,7 +44,7 @@ for small unit fixtures but no longer presents it as production behavior.
 | Module | Deliverable |
 | --- | --- |
 | `src/summarization/dedup.rs` | Statement-level merge: a `StatementSignature` over content terms and polarity, one `MergedStatement` per fact, a `MergeLink` per absorbed sentence, a `Contradiction` per asserted/denied pair, and `DedupReport::split` to undo a merge. |
-| `src/summarization/importance.rs` | Evidence-weighted ranking: the kind prior blended with observed frequency (how many sources assert it) and stance (at what tier, and who denies it). |
+| `src/summarization/importance.rs` | Evidence-weighted ranking: the kind prior blended with observed frequency, average source authority, and trust-weighted stance. Unoriginal mirrors contribute zero ranking evidence. |
 | `src/summarization/gathering.rs` | The shared unmet-difference traversal plus the production adapter over exact `SourceCapture`s. `SourceProvider`/`SourceCache` remain fixture seams; `CachedSourceClient` is the real capture boundary. |
 | `src/summarization/recheck.rs` | A compatibility preflight for callers that already have observations but no captures. It is deliberately not described as the production fact checker. |
 | `src/summarization/context.rs` | The translation layer: ranked facts → a named `world_model::Context`, with `variant:`/`source:` receipt links and mutual `Contradicts` edges. |
@@ -111,10 +111,10 @@ cached: 5 urls, 5 distinct bodies
 no fetch lines above means the provider was never called; byte-identical trace: true
 
 === merged facts, ranked by evidence ===
- 26  p=1.000  Install it with cargo install formal-ai.  [asserted by 3 of 5 sources]
- 26  p=0.940  How do I install formal-ai?  [asserted by 1 of 5 sources]
- 23  p=0.800  The crate is published on crates.io.  [asserted by 1 of 5 sources, denied by 1]
- 23  p=0.300  The crate is not published on crates.io.  [asserted by 1 of 5 sources, denied by 1]
+ 29  p=1.000  Install it with cargo install formal-ai.  [asserted by 3 of 5 sources]
+ 21  p=0.940  How do I install formal-ai?  [asserted by 1 of 5 sources]
+ 16  p=0.800  The crate is published on crates.io.  [asserted by 1 of 5 sources, denied by 1]
+ 10  p=0.300  The crate is not published on crates.io.  [asserted by 1 of 5 sources, denied by 1]
 
 === disagreements, reported rather than resolved ===
   "The crate is published on crates.io" (asserted by 1 of 5 sources, denied by 1) contradicts "The crate is not published on crates.io" (asserted by 1 of 5 sources, denied by 1)

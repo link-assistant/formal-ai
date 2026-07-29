@@ -17,10 +17,10 @@ cached: 5 urls, 5 distinct bodies
 no fetch lines above means the provider was never called; byte-identical trace: true
 
 === merged facts, ranked by evidence ===
- 26  p=1.000  Install it with cargo install formal-ai.  [asserted by 3 of 5 sources]
- 26  p=0.940  How do I install formal-ai?  [asserted by 1 of 5 sources]
- 23  p=0.800  The crate is published on crates.io.  [asserted by 1 of 5 sources, denied by 1]
- 23  p=0.300  The crate is not published on crates.io.  [asserted by 1 of 5 sources, denied by 1]
+ 29  p=1.000  Install it with cargo install formal-ai.  [asserted by 3 of 5 sources]
+ 21  p=0.940  How do I install formal-ai?  [asserted by 1 of 5 sources]
+ 16  p=0.800  The crate is published on crates.io.  [asserted by 1 of 5 sources, denied by 1]
+ 10  p=0.300  The crate is not published on crates.io.  [asserted by 1 of 5 sources, denied by 1]
 
 === merges, with the justification of each ===
   "The install is cargo install formal-ai." from https://stackoverflow.com/a/2 folded in on <asserted:ai cargo formal install>

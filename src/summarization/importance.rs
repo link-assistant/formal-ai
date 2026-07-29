@@ -11,18 +11,22 @@
 //!
 //! - `coverage` = distinct asserting sources × 100 / total sources. "Asserted by
 //!   9 of 11 sources" is `81`.
-//! - `agreement` = asserting sources × 100 / (asserting + denying sources). An
-//!   uncontested fact scores `100`; a fact denied by as many sources as assert
-//!   it scores `50`.
+//! - `authority` = average trust weight of the asserting sources. Eight
+//!   unoriginal mirrors therefore score `0`, while one first-party source
+//!   scores `100`.
+//! - `agreement` = trusted asserting mass × 100 / (trusted asserting + denying
+//!   mass). An unoriginal denial does not demote an original claim; a denial at
+//!   the same tier yields `50`.
 //!
 //! Their product is the evidence score, blended with the static prior at
-//! `2:1` — the prior still dominates, because a widely-repeated install
-//! instruction must not outrank the project's purpose, but evidence now breaks
-//! ties and demotes contested claims:
+//! `2:1` in favour of observed evidence. The prior still contributes, but it
+//! cannot let a sentence kind overrule a stronger network of trusted source
+//! links — an install command repeated by the accepted answer and first-party
+//! documentation can therefore outrank incidental prose:
 //!
 //! ```text
-//! evidence = coverage × agreement / 100
-//! weight   = min(100, (2 × prior + evidence) / 3)
+//! evidence = coverage × authority × agreement / 10_000
+//! weight   = min(100, (prior + 2 × evidence) / 3)
 //! ```
 //!
 //! The probability side is delegated to [`crate::relative_meta_logic`] rather
@@ -58,25 +62,28 @@ pub struct ImportanceScore {
     pub prior: u8,
     /// Distinct asserting sources, as a percentage of all sources seen.
     pub coverage: u8,
-    /// Asserting sources as a percentage of asserting plus denying sources.
+    /// Average trust weight of the distinct asserting sources.
+    pub authority: u8,
+    /// Trusted asserting mass as a percentage of asserting plus denying mass.
     pub agreement: u8,
-    /// `coverage × agreement / 100`.
+    /// `coverage × authority × agreement / 10_000`.
     pub evidence: u8,
     /// The blended weight the summarizer ranks by.
     pub weight: u8,
 }
 
 impl ImportanceScore {
-    /// Blend a static prior with observed coverage and agreement.
+    /// Blend a static prior with observed coverage, authority, and agreement.
     #[must_use]
-    pub fn blend(prior: u8, coverage: u8, agreement: u8) -> Self {
-        let product = u16::from(coverage) * u16::from(agreement) / 100;
+    pub fn blend(prior: u8, coverage: u8, authority: u8, agreement: u8) -> Self {
+        let product = u32::from(coverage) * u32::from(authority) * u32::from(agreement) / 10_000;
         let evidence = u8::try_from(product.min(100)).unwrap_or(100);
-        let blended = (2 * u16::from(prior) + u16::from(evidence)) / 3;
+        let blended = (u16::from(prior) + 2 * u16::from(evidence)) / 3;
         let weight = u8::try_from(blended.min(100)).unwrap_or(100);
         Self {
             prior,
             coverage,
+            authority,
             agreement,
             evidence,
             weight,
@@ -201,8 +208,14 @@ pub fn score(
         .unwrap_or_default();
     let asserting = node.source_count();
     let coverage = percentage(asserting, total_sources);
-    let agreement = percentage(asserting, asserting + denied_by.len());
-    let score = ImportanceScore::blend(node.prior(), coverage, agreement);
+    let supporting_mass = trust_mass(node);
+    let denying_mass = denier.map_or(0, trust_mass);
+    let authority = percentage(supporting_mass, asserting.saturating_mul(100));
+    let agreement = percentage(
+        supporting_mass,
+        supporting_mass.saturating_add(denying_mass),
+    );
+    let score = ImportanceScore::blend(node.prior(), coverage, authority, agreement);
 
     let mut evidence: Vec<RelativeEvidence> = node
         .evidence()
@@ -230,6 +243,14 @@ pub fn score(
         denied_by,
         evidence,
     }
+}
+
+/// Sum the integer trust weights of the distinct sources asserting `node`.
+fn trust_mass(node: &MergedStatement) -> usize {
+    node.evidence()
+        .into_iter()
+        .map(|(_, tier)| usize::from(tier.weight_percent()))
+        .sum()
 }
 
 /// `part × 100 / whole`, clamped to `100`, with an empty `whole` scoring `0`.
