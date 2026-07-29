@@ -34,6 +34,7 @@
 
 use super::dedup::{DedupReport, SourcedStatement};
 use super::importance::{rank, RankedStatement};
+use crate::formal_system::FormalSystem;
 use crate::relative_meta_logic::{Stance, TruthValue};
 use crate::world_model::{Context, Dependency, Statement as WorldStatement};
 
@@ -103,9 +104,11 @@ impl MergedContext {
     /// evidence-weighted statements → [`super::summarize`] →
     /// [`super::deformalize`].
     ///
-    /// This renders *everything* the merge established. Callers presenting a
-    /// summary to a user should prefer [`Self::checked_summary`], which runs the
-    /// recheck gate first.
+    /// This renders *everything* the merge established. Callers without an
+    /// exact-capture boundary can use [`Self::checked_summary`] for a lightweight
+    /// preflight. Production callers should use
+    /// [`super::pipeline::execute_multi_source_summary`], which runs the named
+    /// [`crate::fact_checking::FactChecker`] audit before presentation.
     #[must_use]
     pub fn summary(&self, config: &super::SummarizationConfig) -> String {
         self.render(&self.ranked, config)
@@ -121,7 +124,11 @@ impl MergedContext {
     /// alone, because that ranking is the merge's total order — letting
     /// [`super::to_topic`] pick a maximum among equal weights would name the
     /// context after whichever tied fact happened to come last.
-    fn render(&self, ranked: &[RankedStatement], config: &super::SummarizationConfig) -> String {
+    pub(crate) fn render(
+        &self,
+        ranked: &[RankedStatement],
+        config: &super::SummarizationConfig,
+    ) -> String {
         let statements = super::importance::to_statements(ranked, self.total_sources());
         if config.mode.is_label_only() {
             let head = &statements[..statements.len().min(1)];
@@ -131,14 +138,18 @@ impl MergedContext {
         super::deformalize(&summarized)
     }
 
-    /// Run the fact-checking path over every ranked statement.
+    /// Run the capture-independent compatibility preflight over every statement.
     #[must_use]
     pub fn recheck(&self) -> super::recheck::RecheckReport {
         super::recheck::recheck(&self.ranked)
     }
 
-    /// Render only the statements that pass the recheck gate — the
-    /// "recheck before presenting" requirement, wired end to end.
+    /// Render only statements that pass the compatibility preflight.
+    ///
+    /// This method remains for callers that already hold observations but not
+    /// captures. It is not the production fact-check boundary; use
+    /// [`super::pipeline::MultiSourceSummaryExecution::checked_summary`] when
+    /// exact source capture is available.
     #[must_use]
     pub fn checked_summary(&self, config: &super::SummarizationConfig) -> String {
         let survivors: Vec<RankedStatement> = self
@@ -155,9 +166,25 @@ impl MergedContext {
 /// context identified by `id`.
 #[must_use]
 pub fn merge_into_context(id: &str, observations: &[SourcedStatement]) -> MergedContext {
+    merge_into_formal_context(id, FormalSystem::new(id), observations)
+}
+
+/// Merge observations into a context whose probabilities are explicitly
+/// relative to `formal_system`.
+///
+/// The default [`merge_into_context`] remains source-compatible and names its
+/// formal system after the context id. Production multi-source execution uses
+/// this constructor so its fact-checking audit cannot lose the caller's
+/// universe, interpretation, or axioms.
+#[must_use]
+pub fn merge_into_formal_context(
+    id: &str,
+    formal_system: FormalSystem,
+    observations: &[SourcedStatement],
+) -> MergedContext {
     let report = super::dedup::deduplicate(observations);
     let ranked = rank(&report);
-    let mut context = Context::new(id);
+    let mut context = Context::with_formal_system(id, formal_system);
 
     // World-statement ids are content-addressed over the text, so the twin's id
     // is known before either statement is inserted.

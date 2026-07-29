@@ -16,18 +16,20 @@
 //!   an infinitely deep chain of new URLs still terminates, with
 //!   `stopped_at_depth_bound = true` recording *why* it stopped.
 //!
-//! Fetching is behind [`SourceProvider`] rather than wired to a network client:
-//! issue #844 is blocked on #702/#843 for the real fetching path, and a trait
-//! keeps this module deterministic and testable today. Every fetch goes through
-//! [`SourceCache`], which is content-addressed — the cache key of a body is
-//! [`crate::engine::stable_id`] over its text, so two URLs serving the same
-//! bytes share one stored document, and a second run over a warm cache reaches
-//! the provider zero times and replays byte-identically
-//! ([`GatheringReport::trace`]).
+//! [`SourceProvider`] and [`SourceCache`] remain the small deterministic seam
+//! used by unit fixtures. Production callers use
+//! [`execute_captured_gathering`], which runs the same traversal over
+//! [`crate::source_fetch::CachedSourceClient`]. That path retains every exact
+//! [`crate::source_fetch::SourceCapture`], uses its SHA-256 in the traversal
+//! receipt, reports failures as diagnostics rather than evidence, and renders a
+//! replayable, review-gated learning proposal.
 
 use super::dedup::SourcedStatement;
 use crate::engine::stable_id;
+use crate::event_log::EventLog;
+use crate::links_format::format_lino_record;
 use crate::option_network::{Candidate, Constraint, OptionNetwork, Supply, Tier};
+use crate::source_fetch::{CachedSourceClient, FetchError, SourceCapture, SourceTransport};
 
 /// The two line kinds of [`GatheringReport::trace`]: one fetch record per
 /// document, then the single termination record.
@@ -90,6 +92,88 @@ impl FetchedSource {
 pub trait SourceProvider {
     /// Retrieve the document at `url`.
     fn fetch(&mut self, url: &str) -> Option<FetchedSource>;
+}
+
+/// Facts derived by a caller from one exact source capture.
+///
+/// Retrieval owns bytes and provenance; classification owns the trust tier,
+/// requirements supplied, and outgoing links. Keeping those responsibilities
+/// separate prevents a URL or search result from becoming evidence before its
+/// response bytes exist.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CapturedSourceMetadata {
+    /// How much the captured document's origin is trusted.
+    pub tier: SourceTier,
+    /// Text extracted from the captured bytes and suitable for formalization.
+    ///
+    /// Keeping extraction in the classifier lets production adapters remove
+    /// HTML or decode another text format while the callback still has the
+    /// exact [`SourceCapture`] in hand.
+    pub text: String,
+    /// Required attributes established by the captured bytes.
+    pub supplies: Vec<String>,
+    /// Further source URLs extracted from the captured bytes.
+    pub links: Vec<String>,
+}
+
+impl CapturedSourceMetadata {
+    /// Start a classification with text derived from the exact capture.
+    #[must_use]
+    pub fn new(tier: SourceTier, text: impl Into<String>) -> Self {
+        Self {
+            tier,
+            text: text.into(),
+            supplies: Vec::new(),
+            links: Vec::new(),
+        }
+    }
+
+    /// Record an attribute established by the capture.
+    #[must_use]
+    pub fn supplying(mut self, attribute: impl Into<String>) -> Self {
+        self.supplies.push(attribute.into());
+        self
+    }
+
+    /// Record a source URL extracted from the capture.
+    #[must_use]
+    pub fn linking(mut self, url: impl Into<String>) -> Self {
+        self.links.push(url.into());
+        self
+    }
+
+    fn normalized(mut self) -> Self {
+        self.supplies.sort();
+        self.supplies.dedup();
+        self.links.sort();
+        self.links.dedup();
+        self
+    }
+}
+
+/// One successfully captured and classified document.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CapturedSourceObservation {
+    /// Exact URL, retrieval time, SHA-256, cache state, and response bytes.
+    pub capture: SourceCapture,
+    /// Classification derived from those exact bytes.
+    pub metadata: CapturedSourceMetadata,
+    /// Link distance from the nearest seed.
+    pub depth: usize,
+}
+
+/// A URL the production traversal could not capture.
+///
+/// Failures remain outside `sources` and `observations`, so they can be logged
+/// and learned from without masquerading as source evidence.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CapturedGatheringFailure {
+    /// URL whose capture failed.
+    pub url: String,
+    /// Link distance from the nearest seed.
+    pub depth: usize,
+    /// Exact capture-layer diagnostic.
+    pub error: FetchError,
 }
 
 /// What the cache remembers about one URL: its provenance, and the content
@@ -258,9 +342,8 @@ impl GatheringReport {
     }
 
     /// A deterministic, byte-comparable render of the run: one line per fetch
-    /// plus the termination verdict. A warm-cache replay of the same plan
-    /// produces the same text except for the `cache=` flags, which is what makes
-    /// "replays byte-identically from the cache" checkable.
+    /// plus the termination verdict. Cache state is deliberately omitted, so a
+    /// warm replay of the same captures produces byte-identical text.
     ///
     /// Every line is a keyword followed by `name=value` fields, so the trace is
     /// a machine record with no natural language to translate (R379).
@@ -293,6 +376,94 @@ impl GatheringReport {
     }
 }
 
+/// Production gathering result over the exact-capture boundary.
+#[derive(Debug, Clone)]
+pub struct CapturedGatheringReport {
+    /// Subject used by the unmet-difference option network.
+    pub subject: String,
+    /// Required attributes, normalized for deterministic replay.
+    pub required: Vec<String>,
+    /// The shared recursive traversal result.
+    pub report: GatheringReport,
+    /// Every successfully captured source, in traversal order.
+    pub sources: Vec<CapturedSourceObservation>,
+    /// Capture failures, retained only as diagnostics.
+    pub failures: Vec<CapturedGatheringFailure>,
+}
+
+impl CapturedGatheringReport {
+    /// Append truthful source and failure events to the common event log.
+    pub fn record(&self, log: &mut EventLog) {
+        for source in &self.sources {
+            source.capture.record(log);
+        }
+        for failure in &self.failures {
+            log.append(
+                "error:fetch",
+                format!(
+                    "url={} depth={} error={}",
+                    failure.url, failure.depth, failure.error
+                ),
+            );
+        }
+    }
+
+    /// Deterministic, proposal-only auto-learning projection.
+    ///
+    /// Cache-hit state is omitted so a live execution and its offline replay
+    /// produce identical proposals. Promotion into durable memory remains a
+    /// later human-gated operation.
+    #[must_use]
+    pub fn learning_proposal(&self) -> String {
+        let mut records = vec![format_lino_record(
+            "multi_source_gathering",
+            &[
+                ("subject", self.subject.clone()),
+                ("required", self.required.join("|")),
+                ("captured_sources", self.sources.len().to_string()),
+                ("failures", self.failures.len().to_string()),
+                ("converged", self.report.converged.to_string()),
+                (
+                    "stopped_at_depth_bound",
+                    self.report.stopped_at_depth_bound.to_string(),
+                ),
+                ("open", self.report.open_attributes.join("|")),
+            ],
+        )];
+        for source in &self.sources {
+            records.push(format_lino_record(
+                "source_observation",
+                &[
+                    ("url", source.capture.source_url().to_owned()),
+                    ("fetched_at", source.capture.fetched_at().to_owned()),
+                    ("sha256", source.capture.sha256().to_owned()),
+                    ("depth", source.depth.to_string()),
+                ],
+            ));
+            records.push(format_lino_record(
+                "source_classification",
+                &[
+                    ("url", source.capture.source_url().to_owned()),
+                    ("tier", source.metadata.tier.slug().to_owned()),
+                    ("supplies", source.metadata.supplies.join("|")),
+                    ("links", source.metadata.links.join("|")),
+                ],
+            ));
+        }
+        for failure in &self.failures {
+            records.push(format_lino_record(
+                "source_failure",
+                &[
+                    ("url", failure.url.clone()),
+                    ("depth", failure.depth.to_string()),
+                    ("diagnostic", failure.error.to_string()),
+                ],
+            ));
+        }
+        records.join("\n")
+    }
+}
+
 /// Map a source's trust tier onto the option network's provenance ladder, so the
 /// gathering loop and the probability calculation rank origins the same way.
 #[must_use]
@@ -302,6 +473,12 @@ pub const fn research_tier(tier: SourceTier) -> Tier {
         SourceTier::OriginalJournalism => Tier::OfficialCompatible,
         SourceTier::IndependentCorroboration | SourceTier::Unoriginal => Tier::GenericCompatible,
     }
+}
+
+struct LoadedSource {
+    document: FetchedSource,
+    digest: String,
+    from_cache: bool,
 }
 
 /// Gather sources for `plan`, recursing through their links.
@@ -316,6 +493,85 @@ pub fn gather(
     plan: &GatheringPlan,
     provider: &mut dyn SourceProvider,
     cache: &mut SourceCache,
+) -> GatheringReport {
+    run_gathering(plan, |url, _depth| {
+        let cached = cache.get(url);
+        let from_cache = cached.is_some();
+        let document = cached.or_else(|| provider.fetch(url))?;
+        if !from_cache {
+            cache.put(document.clone());
+        }
+        Some(LoadedSource {
+            digest: document.digest(),
+            document,
+            from_cache,
+        })
+    })
+}
+
+/// Execute recursive gathering through the real, replayable capture client.
+///
+/// `classify` sees the exact capture and is the only route by which trust,
+/// supplied attributes, or outgoing links enter the traversal. A failed capture
+/// is retained in [`CapturedGatheringReport::failures`] and contributes no
+/// statement or source evidence.
+pub fn execute_captured_gathering<T, C>(
+    plan: &GatheringPlan,
+    client: &CachedSourceClient<T>,
+    classify: C,
+) -> CapturedGatheringReport
+where
+    T: SourceTransport,
+    C: Fn(&SourceCapture) -> CapturedSourceMetadata,
+{
+    let mut sources = Vec::new();
+    let mut failures = Vec::new();
+    let report = run_gathering(plan, |url, depth| match client.fetch(url) {
+        Ok(capture) => {
+            let metadata = classify(&capture).normalized();
+            let document = FetchedSource {
+                url: capture.source_url().to_owned(),
+                tier: metadata.tier,
+                text: metadata.text.clone(),
+                supplies: metadata.supplies.clone(),
+                links: metadata.links.clone(),
+            };
+            let loaded = LoadedSource {
+                digest: capture.sha256().to_owned(),
+                from_cache: capture.cached(),
+                document,
+            };
+            sources.push(CapturedSourceObservation {
+                capture,
+                metadata,
+                depth,
+            });
+            Some(loaded)
+        }
+        Err(error) => {
+            failures.push(CapturedGatheringFailure {
+                url: url.to_owned(),
+                depth,
+                error,
+            });
+            None
+        }
+    });
+    let mut required = plan.required.clone();
+    required.sort();
+    required.dedup();
+    CapturedGatheringReport {
+        subject: plan.subject.clone(),
+        required,
+        report,
+        sources,
+        failures,
+    }
+}
+
+fn run_gathering(
+    plan: &GatheringPlan,
+    mut fetch: impl FnMut(&str, usize) -> Option<LoadedSource>,
 ) -> GatheringReport {
     let mut network = OptionNetwork::new(plan.subject.clone());
     for attribute in &plan.required {
@@ -347,17 +603,18 @@ pub fn gather(
         let mut next: Vec<String> = Vec::new();
         for url in &frontier {
             seen.push(url.clone());
-            let cached = cache.get(url);
-            let from_cache = cached.is_some();
-            let Some(document) = cached.or_else(|| provider.fetch(url)) else {
+            let Some(loaded) = fetch(url, depth) else {
                 // An unreachable source is recorded by its absence: it is
                 // `seen`, so the loop never retries it, and it supplies nothing.
                 continue;
             };
+            let LoadedSource {
+                document,
+                digest,
+                from_cache,
+            } = loaded;
             if from_cache {
                 cache_hits += 1;
-            } else {
-                cache.put(document.clone());
             }
             let supplied: Vec<String> = plan
                 .required
@@ -380,7 +637,7 @@ pub fn gather(
             fetches.push(FetchRecord {
                 url: document.url.clone(),
                 depth,
-                digest: document.digest(),
+                digest,
                 from_cache,
                 supplies: supplied,
             });

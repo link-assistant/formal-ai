@@ -670,11 +670,12 @@ pub mod gathering;
 pub mod identifier;
 pub mod importance;
 mod markdown;
+pub mod pipeline;
 pub mod recheck;
 mod resource;
 pub mod vocabulary;
 
-pub use context::{merge_into_context, MergedContext};
+pub use context::{merge_into_context, merge_into_formal_context, MergedContext};
 pub use dedup::{
     deduplicate, Contradiction, DedupReport, MergeLink, MergedStatement, Polarity,
     SourcedStatement, StatementSignature, StatementVariant,
@@ -685,7 +686,9 @@ pub use file::{
     MetaLanguageFormalization, RepositoryFileFormalization,
 };
 pub use gathering::{
-    gather, FetchRecord, FetchedSource, GatheringPlan, GatheringReport, SourceCache, SourceProvider,
+    execute_captured_gathering, gather, CapturedGatheringFailure, CapturedGatheringReport,
+    CapturedSourceMetadata, CapturedSourceObservation, FetchRecord, FetchedSource, GatheringPlan,
+    GatheringReport, SourceCache, SourceProvider,
 };
 pub use identifier::{
     is_valid_identifier, to_identifier, IdentifierBudget, NamingConvention,
@@ -693,6 +696,7 @@ pub use identifier::{
 };
 pub use importance::{rank, to_statements_in, ImportanceScore, RankedStatement};
 pub use markdown::{describe_readme, formalize_markdown, strip_markdown_noise};
+pub use pipeline::{execute_multi_source_summary, MultiSourceSummaryExecution};
 pub use recheck::{recheck, RecheckReport, RecheckedStatement, Verdict};
 pub use resource::{
     formalize_repository_directory, formalize_repository_resource, summarize_repository_resource,

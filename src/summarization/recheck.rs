@@ -1,12 +1,15 @@
-//! Recheck merged statements before presenting them.
+//! Lightweight, capture-independent preflight for merged statements.
 //!
-//! Issue #844's fourth requirement: the statements that survive deduplication
-//! and ranking must "pass the fact-checking path" before they are shown. This
-//! module is that gate, and it deliberately reuses
-//! [`crate::statement_verification`] rather than growing a second checker: each
-//! survivor becomes a [`StatementPlan`], so it carries the same grounding query
-//! ([`crate::statement_verification::grounding_query`]) and the same
-//! assumed-true assessment a directly-verified claim would get.
+//! This compatibility path predates the production capture boundary. It turns
+//! an already-ranked fact into a [`StatementPlan`] and can conservatively hide
+//! unsupported claims when no [`crate::source_fetch::SourceCapture`] or named
+//! context is available. It does not perform proof search and must not be called
+//! a production fact check.
+//!
+//! Production multi-source execution goes through
+//! [`super::pipeline::execute_multi_source_summary`], which composes exact
+//! captures, a named [`crate::formal_system::FormalSystem`], and
+//! [`crate::fact_checking::FactChecker`] before presentation.
 //!
 //! The verdict is read off the assessment, which keeps the gate deterministic
 //! (`GOALS.md:54`) and free of any judgement this crate cannot justify:
@@ -72,7 +75,7 @@ impl Verdict {
     }
 }
 
-/// One ranked statement after the fact-checking path ran over it.
+/// One ranked statement after the compatibility preflight ran over it.
 #[derive(Debug, Clone)]
 pub struct RecheckedStatement {
     /// The ranked, merged statement.
@@ -156,7 +159,7 @@ impl RecheckReport {
     }
 }
 
-/// Run the fact-checking path over `ranked` and classify every statement.
+/// Run the capture-independent compatibility preflight over `ranked`.
 ///
 /// The evidence handed to each plan is the evidence the merge already collected
 /// ([`RankedStatement::evidence`]): one supporting record per asserting source at
