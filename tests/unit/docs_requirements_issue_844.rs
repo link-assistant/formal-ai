@@ -7,6 +7,7 @@ const EXAMPLE_LOG: &str = "docs/case-studies/issue-844/test-logs/example-output.
 const EXAMPLE: &str = "examples/issue_844_statement_merge.rs";
 const CAPTURED_EXAMPLE: &str = "examples/issue_844_captured_pipeline.rs";
 const REGRESSIONS: &str = "tests/unit/issue_844_statement_merge.rs";
+const RANKING_REGRESSIONS: &str = "tests/unit/issue_844_statement_ranking.rs";
 const PRODUCTION_REGRESSIONS: &str = "tests/unit/issue_844_production_pipeline.rs";
 const GLOBAL_REQUIREMENTS: &str = "REQUIREMENTS.md";
 
@@ -58,7 +59,12 @@ fn the_case_study_explains_the_merge_its_production_boundaries_and_the_defects_i
 #[test]
 fn every_issue_844_requirement_maps_to_a_regression_test_that_exists() {
     let requirements = read(REQUIREMENTS);
-    let regressions = [read(REGRESSIONS), read(PRODUCTION_REGRESSIONS)].join("\n");
+    let regressions = [
+        read(REGRESSIONS),
+        read(RANKING_REGRESSIONS),
+        read(PRODUCTION_REGRESSIONS),
+    ]
+    .join("\n");
     let mut ids = Vec::new();
     let mut named_tests = Vec::new();
     for line in requirements.lines() {

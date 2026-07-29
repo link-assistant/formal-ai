@@ -2,7 +2,7 @@
 
 The issue's original deliverables and the production integration supplied after
 its blockers closed are kept one-to-one with regression tests in
-`tests/unit/issue_844_statement_merge.rs` and
+`tests/unit/issue_844_statement_{merge,ranking}.rs` and
 `tests/unit/issue_844_production_pipeline.rs`. R844-10 collects the original
 worked example, traceability, and release metadata; R844-11…R844-14 pin the
 exact-capture, named fact-check, learning, and same-task self-application
