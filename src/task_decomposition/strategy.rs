@@ -10,7 +10,15 @@ use super::learning::TaskStrategyLedger;
 
 pub const STRATEGIES_LINO: &str =
     include_str!("../../data/meta/task-decomposition-strategies.lino");
+pub const CONTRACT_LINO: &str = include_str!("../../data/meta/task-decomposition-invariant.lino");
 const TASK_PLACEHOLDER: &str = "{task}";
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct TaskDecompositionContract {
+    pub atomic: String,
+    pub execution: String,
+    pub learning: String,
+}
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct TaskStrategyStage {
@@ -48,6 +56,12 @@ pub(super) struct ShippedStrategyApproval {
 pub fn strategies() -> &'static [TaskDecompositionStrategy] {
     static REGISTRY: OnceLock<Vec<TaskDecompositionStrategy>> = OnceLock::new();
     REGISTRY.get_or_init(parse_strategies)
+}
+
+#[must_use]
+pub fn contract() -> Option<&'static TaskDecompositionContract> {
+    static CONTRACT: OnceLock<Option<TaskDecompositionContract>> = OnceLock::new();
+    CONTRACT.get_or_init(parse_contract).as_ref()
 }
 
 #[must_use]
@@ -189,6 +203,28 @@ fn parse_strategies() -> Vec<TaskDecompositionStrategy> {
             })
         })
         .collect()
+}
+
+fn parse_contract() -> Option<TaskDecompositionContract> {
+    let tree = parse_lino(CONTRACT_LINO);
+    let root = tree
+        .children
+        .iter()
+        .find(|node| node.name == "task_decomposition_contract")?;
+    if root.find_child_value("record_type") != "meta_invariant" {
+        return None;
+    }
+    let atomic = root.find_child_value("atomic");
+    let execution = root.find_child_value("execution");
+    let learning = root.find_child_value("learning");
+    if atomic.is_empty() || execution.is_empty() || learning.is_empty() {
+        return None;
+    }
+    Some(TaskDecompositionContract {
+        atomic: atomic.to_owned(),
+        execution: execution.to_owned(),
+        learning: learning.to_owned(),
+    })
 }
 
 fn localized_stage_text(intent: &str, language: &str, task: &str) -> String {

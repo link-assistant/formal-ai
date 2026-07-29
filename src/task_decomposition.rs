@@ -45,7 +45,8 @@ pub use learning::{
     TaskStrategyProposal,
 };
 pub use strategy::{
-    strategies as task_decomposition_strategies, TaskDecompositionStrategy, TaskStrategyStage,
+    contract as task_decomposition_contract, strategies as task_decomposition_strategies,
+    TaskDecompositionContract, TaskDecompositionStrategy, TaskStrategyStage, CONTRACT_LINO,
     STRATEGIES_LINO,
 };
 

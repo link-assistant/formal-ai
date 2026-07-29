@@ -8,8 +8,9 @@
 
 use formal_ai::recursive_execution::{solve_recursively, RecursiveTask, TaskAttempt, TaskExecutor};
 use formal_ai::task_decomposition::{
-    decompose_task, decompose_task_with_ledger, is_checkable, split_once_checkable, Decomposition,
-    TaskLearningApproval, TaskLearningGate, TaskStrategyLedger, TaskStrategyProposal,
+    decompose_task, decompose_task_with_ledger, is_checkable, split_once_checkable,
+    task_decomposition_contract, Decomposition, TaskLearningApproval, TaskLearningGate,
+    TaskStrategyLedger, TaskStrategyProposal, CONTRACT_LINO,
 };
 use formal_ai::{ExecutionSurface, SolverConfig, UniversalSolver};
 
@@ -73,6 +74,23 @@ fn decomposition_solver() -> UniversalSolver {
         temperature: 0.0,
         ..SolverConfig::default()
     })
+}
+
+#[test]
+fn agent_authored_contract_is_exact_and_controls_the_shipped_ledger() {
+    let evidence = include_str!(
+        "../../../docs/case-studies/issue-847/self-hosting-authorship/task-decomposition-invariant.lino"
+    );
+    assert_eq!(CONTRACT_LINO.as_bytes(), evidence.as_bytes());
+
+    let contract = task_decomposition_contract().expect("the embedded contract must be complete");
+    assert!(!contract.atomic.is_empty());
+    assert!(!contract.execution.is_empty());
+    assert!(!contract.learning.is_empty());
+    assert_eq!(
+        TaskStrategyLedger::shipped().approved_strategy_ids(),
+        ["task_strategy_verified_change"]
+    );
 }
 
 /// Acceptance: recognised in every supported language, never the unknown

@@ -146,6 +146,9 @@ impl TaskStrategyLedger {
 
     #[must_use]
     pub fn shipped() -> Self {
+        if strategy::contract().is_none() {
+            return Self::new();
+        }
         let reviews = strategy::shipped_approvals()
             .into_iter()
             .map(|approval| {

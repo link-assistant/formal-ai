@@ -18,7 +18,7 @@ issue_847_smallest_leaf_4
   leaf "record the generalized task-decomposition contract"
   implementation data/meta/task-decomposition-invariant.lino
   authorship formal_ai_agent_cli
-  session pending_agent_cli_run
+  session ses_05171239affeLG6WcrsR27Rb8U
   evidence docs/case-studies/issue-847/self-hosting-authorship/agent-cli.log
 
 issue_847_self_authorship_measurement

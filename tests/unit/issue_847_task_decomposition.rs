@@ -10,6 +10,8 @@
 //! the answer, determinism, and the `sub_impulse:` trace. The algorithm's
 //! internals are pinned by `tests/unit/specification/task_decomposition.rs`.
 
+use std::fs;
+
 use formal_ai::solver::solve;
 use formal_ai::SymbolicAnswer;
 
@@ -152,4 +154,46 @@ fn decomposition_is_deterministic() {
     let second = solve(SPLIT_PROMPT);
     assert_eq!(first.answer, second.answer);
     assert_eq!(first.links_notation, second.links_notation);
+}
+
+#[test]
+fn same_task_agent_cli_authorship_is_preserved() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
+    let read = |path: &str| {
+        fs::read_to_string(root.join(path)).unwrap_or_else(|error| panic!("{path}: {error}"))
+    };
+    let session = "ses_05171239affeLG6WcrsR27Rb8U";
+    let generated = read(
+        "docs/case-studies/issue-847/self-hosting-authorship/task-decomposition-invariant.lino",
+    );
+    let canonical = read("data/meta/task-decomposition-invariant.lino");
+    assert_eq!(generated, canonical);
+
+    let agent_log = read("docs/case-studies/issue-847/self-hosting-authorship/agent-cli.log");
+    assert!(agent_log.contains(session));
+    let formal_ai_log = read("docs/case-studies/issue-847/self-hosting-authorship/formal-ai.log");
+    for transition in [
+        "planned ToolCalls",
+        "tool=write",
+        "tool: \"bash\"",
+        "planned Final",
+        "task-decomposition-invariant.lino",
+    ] {
+        assert!(
+            formal_ai_log.contains(transition),
+            "server trace is missing {transition}"
+        );
+    }
+
+    let decomposition =
+        read("docs/case-studies/issue-847/self-hosting-authorship/decomposition.lino");
+    assert_eq!(decomposition.matches("issue_847_smallest_leaf_").count(), 4);
+    assert_eq!(
+        decomposition
+            .matches("authorship formal_ai_agent_cli")
+            .count(),
+        1
+    );
+    assert!(decomposition.contains(&format!("session {session}")));
+    assert!(decomposition.contains("formal_ai_authored_percent 25"));
 }
