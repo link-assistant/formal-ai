@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.311.1] - 2026-07-29
+
+### Fixed
+
+- Replace fabricated external-source and cache-hit evidence with an opt-in,
+  SHA-256-verified source cache whose exact bytes and provenance replay
+  offline, and connect captured content to HTTP fetches, search fusion, option
+  observation, statement verification, and statement audits (#843).
+
 ## [0.311.0] - 2026-07-29
 
 ### Fixed
