@@ -1,0 +1,40 @@
+self_ast_census
+  target src/solver_handlers/text_edit_ops.rs
+  language rust
+  fidelity signature
+  byte_len 8817
+  line_count 328
+  content_id source_module_cf0ed8dd0895cdc1
+  symbol_count 31
+  symbols
+    struct WordSpan 4 8
+    function normalized_word_spans 10 40
+    function extract_email_addresses 42 49
+    function clean_email_candidate 51 57
+    function looks_like_email 59 76
+    function is_email_domain_char 78 80
+    function extract_urls 82 93
+    function clean_url_candidate 95 104
+    function extract_numbers 106 149
+    function previous_char_is_alphanumeric 151 156
+    function count_unique_words 158 165
+    function count_words 167 173
+    function clean_word 175 178
+    function title_case 180 186
+    function sentence_case 188 200
+    function delimiter_case 202 204
+    function camel_case 206 217
+    function pascal_case 219 224
+    function case_words 226 231
+    function capitalize_word 233 242
+    function remove_punctuation 244 249
+    function sort_words 251 255
+    function strip_empty_lines 257 263
+    function join_lines 265 272
+    function number_lines 274 280
+    function reverse_lines 282 284
+    function comment_lines 286 292
+    function uncomment_lines 294 300
+    function uncomment_line 302 311
+    function outdent_line 313 317
+    function deduplicate_lines 319 328

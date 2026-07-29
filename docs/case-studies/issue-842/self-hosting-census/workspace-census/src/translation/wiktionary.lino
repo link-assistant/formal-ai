@@ -1,0 +1,34 @@
+self_ast_census
+  target src/translation/wiktionary.rs
+  language rust
+  fidelity signature
+  byte_len 26461
+  line_count 685
+  content_id source_module_0290c17edb50dc0b
+  symbol_count 25
+  symbols
+    struct WiktionaryCandidate 26 33
+    struct Wiktionary 37 40
+    function new 44 49
+    function wikitext 53 62
+    function translations 73 80
+    function translation_blocks 89 96
+    function extract_wikitext_from_parse_response 103 151
+    function extract_translations 160 166
+    function extract_translation_blocks 176 233
+    function extract_t_templates 237 261
+    function extract_chinese_translation_lines 267 301
+    function split_on_colon 305 318
+    function chinese_language_names_for 324 340
+    function scan_named_segments 346 364
+    function scan_trans_segments 371 393
+    function scan_templates 402 453
+    function clean_surface 458 532
+    function strip_trailing_parenthetical 536 565
+    function strip_combining_accents 570 575
+    function split_inline_translations 577 606
+    function parse_qualifier_args 608 617
+    function lang_matches 619 630
+    function deduplicate 632 640
+    function url_encode 647 662
+    function query_encode 671 685

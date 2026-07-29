@@ -1,0 +1,25 @@
+self_ast_census
+  target src/web_search_core.rs
+  language rust
+  fidelity signature
+  byte_len 17456
+  line_count 536
+  content_id source_module_b15e3258cf402b1e
+  symbol_count 16
+  symbols
+    const WEB_SEARCH_RRF_K 33 33
+    const WEB_SEARCH_CONCURRENCY_PER_CATEGORY 40 40
+    const WEB_SEARCH_PROVIDER_LIMIT 44 44
+    enum ProviderCategory 48 53
+    function slug 57 64
+    struct ProviderSpec 69 80
+    const WEB_SEARCH_PROVIDER_REGISTRY 90 97
+    const WEB_SEARCH_PROVIDERS 327 334
+    function default_search_plan_ids 339 344
+    function build_request_evidence 351 362
+    struct ProviderRanking 370 376
+    struct FusedEntry 384 390
+    function reciprocal_rank_fusion 396 438
+    function parse_rrf_input 446 479
+    function serialize_rrf_output 485 509
+    function format_score 515 536

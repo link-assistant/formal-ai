@@ -1,0 +1,16 @@
+self_ast_census
+  target src/summarization/dialog.rs
+  language rust
+  fidelity signature
+  byte_len 3384
+  line_count 98
+  content_id source_module_2e926d9ceba02a59
+  symbol_count 7
+  symbols
+    struct DialogTurn 17 20
+    function new 25 30
+    function user 34 36
+    function assistant 40 42
+    function formalize_dialog 51 66
+    function summarize_dialog 72 85
+    function generate_chat_title 93 98

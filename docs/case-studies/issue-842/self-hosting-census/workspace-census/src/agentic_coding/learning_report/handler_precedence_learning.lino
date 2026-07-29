@@ -1,0 +1,56 @@
+self_ast_census
+  target src/agentic_coding/learning_report/handler_precedence_learning.rs
+  language rust
+  fidelity full_ast
+  byte_len 1906
+  line_count 43
+  content_id source_module_5ff54faf317da562
+  symbol_count 7
+  symbols
+    const HANDLER_PRECEDENCE_LEARNING_PATH 12 12
+    const HANDLER_PRECEDENCE_LEARNING_TASK 13 13
+    static REPORT 15 23
+    function is_handler_precedence_learning_task 26 28
+    function render_document 31 33
+    function render_document_from 36 38
+    function final_answer 41 43
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 834
+    named_node_count 153
+    distinct_node_kinds 31
+    node_kinds
+      arguments 5
+      attribute 4
+      attribute_item 4
+      block 4
+      call_expression 5
+      const_item 2
+      doc_comment 8
+      field_expression 4
+      field_identifier 11
+      field_initializer 7
+      field_initializer_list 1
+      function_item 4
+      identifier 26
+      inner_doc_comment_marker 8
+      line_comment 8
+      macro_invocation 1
+      parameter 3
+      parameters 4
+      primitive_type 6
+      reference_type 5
+      scoped_identifier 1
+      source_file 1
+      static_item 1
+      string_content 7
+      string_literal 7
+      struct_expression 1
+      super 1
+      token_tree 1
+      type_identifier 5
+      use_declaration 1
+      visibility_modifier 7

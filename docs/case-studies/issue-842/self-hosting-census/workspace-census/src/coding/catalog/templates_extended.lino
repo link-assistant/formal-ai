@@ -1,0 +1,23 @@
+self_ast_census
+  target src/coding/catalog/templates_extended.rs
+  language rust
+  fidelity signature
+  byte_len 16117
+  line_count 667
+  content_id source_module_801accd3ed6888f4
+  symbol_count 14
+  symbols
+    const TEMPLATES_EXTENDED 9 29
+    static void 139 151
+    static void 160 172
+    static void 274 280
+    static void 289 295
+    static void 383 386
+    static void 395 399
+    static void 487 493
+    static void 502 508
+    function main 532 534
+    static long 626 631
+    static void 633 635
+    static long 644 649
+    static void 651 653

@@ -1,0 +1,18 @@
+self_ast_census
+  target src/meta_reasoning.rs
+  language rust
+  fidelity signature
+  byte_len 8707
+  line_count 206
+  content_id source_module_b243496e16b9ae75
+  symbol_count 9
+  symbols
+    struct WorkUnitReasoning 30 50
+    function for_unit 55 77
+    function step_count 81 83
+    function to_links_notation 87 109
+    function decision_slug 113 120
+    function observe 123 133
+    function downward_rationale 136 165
+    function upward_rationale 168 185
+    function record_work_unit_reasoning 194 206

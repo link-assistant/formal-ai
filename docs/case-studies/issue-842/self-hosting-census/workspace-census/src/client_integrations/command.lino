@@ -1,0 +1,14 @@
+self_ast_census
+  target src/client_integrations/command.rs
+  language rust
+  fidelity signature
+  byte_len 1884
+  line_count 53
+  content_id source_module_708767cb4cfa58dd
+  symbol_count 5
+  symbols
+    function resolve_integration_command 7 28
+    function expand_command_path 30 41
+    const HOME_PLACEHOLDER 31 31
+    const LOCAL_APP_DATA_PLACEHOLDER 32 32
+    function command_available 43 53

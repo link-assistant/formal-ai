@@ -1,0 +1,66 @@
+self_ast_census
+  target src/solver_handlers/mod.rs
+  language rust
+  fidelity signature
+  byte_len 36773
+  line_count 941
+  content_id source_module_ab860702720d760d
+  symbol_count 57
+  symbols
+    module agent_workspace 3 3
+    module behavior_rule_followups 4 4
+    module behavior_rule_matching 5 5
+    module behavior_rules 6 6
+    module benchmark_prompts 7 7
+    module calculator_rate 8 8
+    module calendar 9 9
+    module calendar_ics 10 10
+    module compound_interest 11 11
+    module conversation_memory 12 12
+    module definition_merge 13 13
+    module document_originality 14 14
+    module document_request 15 15
+    module fact_checking 16 16
+    module feature_capability 17 17
+    module github_repository_traffic 18 18
+    module installation_conversion 19 19
+    module meta_explanation 20 20
+    module natural_language_tools 21 21
+    module number_riddle 22 22
+    module numeric_list 23 23
+    module playwright_script 24 24
+    module procedure_rules 25 25
+    module program_blueprint 26 26
+    module program_synthesis 27 27
+    module research_table 28 28
+    module response_language_followup 29 29
+    module self_awareness 30 30
+    module shell_command_transform 31 31
+    module software_project 32 32
+    module software_project_code 33 33
+    module software_project_followup 34 34
+    module text_edit_ops 35 35
+    module text_manipulation 36 36
+    module user_intent 37 37
+    module web_requests 38 38
+    module web_search_intent 39 39
+    module world_state 40 40
+    function try_arithmetic 116 232
+    function render_calculation_reasoning_step 234 240
+    function try_concept_lookup 242 244
+    function try_concept_lookup_with_response_language 253 322
+    function render_concept_plain 327 350
+    function render_source_link 355 362
+    function render_concept_in_context 379 425
+    function try_javascript_execution 427 450
+    function try_network_query 452 508
+    function try_translation 510 673
+    function render_translation_gap 675 687
+    function try_write_script 689 725
+    function try_algorithm 727 751
+    function try_execution_failure 753 782
+    function try_source_refresh 784 809
+    function try_learn_from_source 822 850
+    function learning_source_summary 857 876
+    function try_source_conflict 878 904
+    function finalize_simple 906 941

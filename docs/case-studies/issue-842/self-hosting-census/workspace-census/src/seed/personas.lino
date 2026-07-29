@@ -1,0 +1,17 @@
+self_ast_census
+  target src/seed/personas.rs
+  language rust
+  fidelity signature
+  byte_len 6285
+  line_count 165
+  content_id source_module_b959a533c4a7a779
+  symbol_count 8
+  symbols
+    struct Persona 29 33
+    struct PersonaTopic 38 42
+    struct PersonaSeeds 50 57
+    function matches_trigger 63 67
+    function pick_persona 71 78
+    function pick_topic 82 89
+    function render_body 98 107
+    function persona_seeds 111 165

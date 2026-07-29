@@ -1,0 +1,14 @@
+self_ast_census
+  target src/client_integrations/url.rs
+  language rust
+  fidelity signature
+  byte_len 1461
+  line_count 44
+  content_id source_module_e3b7a2362cbd33cf
+  symbol_count 5
+  symbols
+    function base_url_with_port 1 7
+    function replace_url_port 9 23
+    function bracketed_authority_host 25 30
+    function unbracketed_authority_host 32 36
+    function join_url_path 38 44
