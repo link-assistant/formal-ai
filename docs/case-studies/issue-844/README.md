@@ -201,7 +201,7 @@ Agent-CLI-authored: one of five leaves, or 20%. The reproducible harness is
 [`experiments/issue_844_self_authoring/run.sh`](../../../experiments/issue_844_self_authoring/run.sh).
 
 After the final source tree was merged with `main`, a separate real Agent CLI
-self-AST run (`ses_050a5a449ffe3RqVe8Vu3EeGPp`) regenerated the exhaustive
+self-AST run (`ses_050768970ffexBZYa9Fh6slPbM`) regenerated the exhaustive
 349-document live census through the same deterministic AST engine. Its client
 stream, server trace, focused artifact, and session record are under
 [`self-hosting-census/`](self-hosting-census/). Issue #842's earlier workspace
