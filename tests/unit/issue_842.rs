@@ -122,6 +122,28 @@ fn task_ladder_ratchet_preserves_real_formal_ai_authorship_evidence() {
     assert!(census_stream.contains("ses_052baa382ffe4lQ4ABBJC6806D"));
     assert!(census_stream.contains("formal-ai"));
 
+    let refresh_stream = fs::read_to_string(root.join(
+        "docs/case-studies/issue-842/self-hosting-census-refresh/agent-stream-self-ast.jsonl",
+    ))
+    .expect("final-source Agent CLI self-AST stream");
+    assert!(refresh_stream.contains("ses_052984123ffenzPVkmsVADtAHL"));
+    assert!(refresh_stream.contains("formal-ai"));
+
+    let self_heal_stream = fs::read_to_string(root.join(
+        "docs/case-studies/issue-842/self-hosting-census-refresh/agent-stream-self-heal.jsonl",
+    ))
+    .expect("final-source Agent CLI self-healing stream");
+    assert!(self_heal_stream.contains("ses_0528b8463ffeTZ6UPSJy5tLHmI"));
+    assert!(self_heal_stream.contains("formal-ai"));
+    assert_eq!(
+        fs::read(root.join("data/meta/self-healing-case.lino")).expect("canonical repair case"),
+        fs::read(root.join(
+            "docs/case-studies/issue-842/self-hosting-census-refresh/self-healing-case.lino",
+        ),)
+        .expect("Agent-authored repair case"),
+        "the committed repair case must match the real Agent CLI artifact"
+    );
+
     for relative in ["index.lino", "src/agentic_coding/web_research.lino"] {
         let canonical = fs::read(root.join("data/meta/self-ast").join(relative))
             .unwrap_or_else(|error| panic!("{relative}: {error}"));

@@ -89,3 +89,12 @@ session, the focused artifact, and the complete 13,160-line Links Notation
 census. This gives a failed ladder node an auditable map from its routing or
 synthesis observation to the source surface that a reviewed repair would
 change.
+
+After the final Clippy correction changed the owned source, session
+`ses_052984123ffenzPVkmsVADtAHL` reran that self-AST axis through the real Agent
+CLI. A separate session, `ses_0528b8463ffeTZ6UPSJy5tLHmI`, reran the
+self-healing axis whose repair-case source map also depends on the planner.
+`self-hosting-census-refresh/` retains both final-source streams, Formal AI
+traces, focused artifacts, and the census renderer summary. The workspace
+snapshot and legacy planner-derived fixtures were regenerated from that same
+live source state; the byte-for-byte tests fail if either drifts again.
