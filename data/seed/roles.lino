@@ -135,6 +135,8 @@ roles
     kind predicate
   definition_antecedent_followup
     kind meaning
+  definition_example_request
+    kind meaning
   definition_artifact_request
     kind meaning
   definition_command

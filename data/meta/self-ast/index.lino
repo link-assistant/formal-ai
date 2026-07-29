@@ -5,8 +5,8 @@ self_ast_census_index
   module_count 329
   full_ast_module_count 49
   signature_module_count 280
-  symbol_count 6771
-  content_id self_ast_census_index_e4989131bdbc8fc7
+  symbol_count 6774
+  content_id self_ast_census_index_10b78c744fbc95ed
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/associative_learning.rs full_ast 7 source_module_926e3e97b31fa30a
@@ -42,7 +42,7 @@ self_ast_census_index
     src/agentic_coding/meaning_detail.rs full_ast 38 source_module_763b6af219dd70d8
     src/agentic_coding/mod.rs full_ast 43 source_module_05b2b1b66957a6fc
     src/agentic_coding/narration.rs full_ast 8 source_module_b9f0fb8457183458
-    src/agentic_coding/planner.rs full_ast 38 source_module_d4efeaf16a192375
+    src/agentic_coding/planner.rs full_ast 38 source_module_d8b1d2932a6f5076
     src/agentic_coding/procedure.rs full_ast 5 source_module_c2f74e9ef41a4ed2
     src/agentic_coding/progress.rs full_ast 10 source_module_c875bf0c4cba80c3
     src/agentic_coding/question_catalog.rs full_ast 24 source_module_512a32489f4c308d
@@ -57,7 +57,7 @@ self_ast_census_index
     src/agentic_coding/source_links.rs full_ast 11 source_module_6177a1573de819fc
     src/agentic_coding/statement_audit.rs full_ast 3 source_module_f46b2ecd4614188b
     src/agentic_coding/tool_result.rs full_ast 28 source_module_9e1d8504f6d0e8f0
-    src/agentic_coding/web_research.rs full_ast 34 source_module_8dc8f24bdf7b2bd9
+    src/agentic_coding/web_research.rs full_ast 36 source_module_536277beb4a6b34b
     src/anthropic.rs signature 22 source_module_4521391b735b65a0
     src/arithmetic.rs signature 50 source_module_0c0cbf53baa417f0
     src/arithmetic_word_tables.rs signature 2 source_module_05d1534ee9527818
@@ -199,7 +199,7 @@ self_ast_census_index
     src/responses_stream.rs signature 9 source_module_ca16c71d79b370b0
     src/route_method_alias.rs signature 6 source_module_d9cf44b71fcb8405
     src/rule_synthesis.rs signature 15 source_module_314f4d56287f7dd7
-    src/seed.rs signature 54 source_module_0c0f031a26c8b7b1
+    src/seed.rs signature 54 source_module_416af564b5458400
     src/seed/agentic_tool_capabilities.rs signature 2 source_module_9847f4d6bab733ff
     src/seed/brainstorm.rs signature 5 source_module_6580e5a2ac5b3691
     src/seed/client_integrations.rs signature 19 source_module_49d7f72ee36c51af
@@ -217,7 +217,7 @@ self_ast_census_index
     src/seed/personas.rs signature 8 source_module_b959a533c4a7a779
     src/seed/projects.rs signature 16 source_module_c91510bc764d4ad9
     src/seed/roles.rs signature 5 source_module_661f810f4c53ace5
-    src/seed/roles/intent.rs signature 77 source_module_5abf818d5438612d
+    src/seed/roles/intent.rs signature 78 source_module_e04884c03d5f3ea5
     src/seed/roles/language.rs signature 33 source_module_33fc2167ea411769
     src/seed/roles/program.rs signature 46 source_module_0edef45840e4d441
     src/seed/roles/reasoning.rs signature 48 source_module_daa8fc30e426955f

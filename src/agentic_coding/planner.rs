@@ -287,6 +287,9 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if let Some(answer) = tool_result::follow_up_answer(messages, &task) {
         return Some(AgenticPlan::Final(answer));
     }
+    if let Some(answer) = web_research::contextual_reference_clarification(&task) {
+        return Some(AgenticPlan::Final(answer));
+    }
     if web_research::is_definition_followup(&task) {
         if let Some(query) = web_research::definition_followup_topic(messages, &task) {
             if let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {

@@ -17,6 +17,7 @@ use crate::world_model_context::{ContextHierarchy, ExternalLookup, InheritancePo
 pub(super) fn web_research_query_for(messages: &[ChatMessage]) -> Option<String> {
     let task = latest_user_text(messages)?;
     if let Some(query) = seed_research_subject(&task)
+        .or_else(|| seed_slotted_subject(&task, seed::ROLE_DEFINITION_EXAMPLE_REQUEST))
         .or_else(|| crate::solver_handlers::detect_web_search_query(&task))
         .or_else(|| seed_definition_subject(&task))
         .or_else(|| seed_unresolved_question_subject(&task))
@@ -97,6 +98,17 @@ pub(super) fn definition_followup_clarification(task: &str) -> String {
         .unwrap_or_default()
 }
 
+/// A word-meaning question can carry a sentence as context while its subject is
+/// still only a pronoun ("what does *this* mean in …"). When that sentence
+/// contains no earlier discourse, searching the pronoun on the public web is a
+/// category error. Reuse the same meanings-driven clarification as a bare
+/// follow-up and let a later turn supply the missing antecedent.
+pub(super) fn contextual_reference_clarification(task: &str) -> Option<String> {
+    let query = crate::concepts::extract_concept_query(task)?;
+    query.context.as_ref()?;
+    is_context_reference(&query.term).then(|| definition_followup_clarification(task))
+}
+
 /// Extract the subject carried by a seed-declared research imperative. The
 /// shared web detector deliberately rejects pronouns as standalone searches;
 /// the agentic planner accepts them here because it can resolve them against
@@ -124,6 +136,32 @@ fn seed_definition_subject(task: &str) -> Option<String> {
                 .strip_prefix(&prefix)
                 .map(trim_question_punctuation)
                 .filter(|subject| !subject.trim().is_empty())
+        })
+}
+
+/// Extract a subject from a role whose surface declares an ellipsis slot.
+///
+/// This is deliberately slot-driven rather than language-driven: English and
+/// Russian put the request before the subject, Hindi puts it after, and Chinese
+/// wraps it. Adding another language is therefore a seed-data change only.
+fn seed_slotted_subject(task: &str, role: &str) -> Option<String> {
+    let normalized = crate::engine::normalize_prompt(task);
+    seed::lexicon()
+        .role_word_forms(role)
+        .into_iter()
+        .find_map(|form| {
+            let before = crate::engine::normalize_prompt(form.before_slot());
+            let after = crate::engine::normalize_prompt(form.after_slot());
+            let subject = match form.slot() {
+                Slot::Prefix => normalized.strip_prefix(&before),
+                Slot::Suffix => normalized.strip_suffix(&after),
+                Slot::Circumfix => normalized
+                    .strip_prefix(&before)
+                    .and_then(|body| body.strip_suffix(&after)),
+                Slot::Bare => None,
+            }?;
+            let subject = trim_question_punctuation(subject);
+            (!subject.is_empty()).then_some(subject)
         })
 }
 

@@ -345,6 +345,25 @@ meanings
     lexeme zh
       surface
         text 那这到底是什么
+  definition_example_request
+    defined-by inquiry
+    role definition_example_request
+    lexeme en
+      surface
+        text "give one example of …"
+      surface
+        text "give me an example of …"
+    lexeme ru
+      surface
+        text "приведи один пример …"
+      surface
+        text "приведи пример …"
+    lexeme hi
+      surface
+        text "… का एक उदाहरण दें"
+    lexeme zh
+      surface
+        text 举一个…的例子
   comparison_infix
     defined-by relation
     role comparison_infix
