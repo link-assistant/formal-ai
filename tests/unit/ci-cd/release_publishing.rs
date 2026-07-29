@@ -735,7 +735,7 @@ fn desktop_release_workflow_signs_and_smoke_tests_macos_artifacts() {
         "APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}",
         "APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}",
         "DEBUG: electron-builder,electron-notarize*",
-        "npx --no-install electron-builder ${{ matrix.ebflag }} --publish never",
+        "bash scripts/package-macos-with-retry.sh ${{ matrix.ebflag }} --publish never",
     ] {
         assert!(
             signed.contains(required),
@@ -749,6 +749,7 @@ fn desktop_release_workflow_signs_and_smoke_tests_macos_artifacts() {
         "CSC_IDENTITY_AUTO_DISCOVERY: \"false\"",
         "MACOS_ADHOC_SIGN: \"1\"",
         "DEBUG: electron-builder,electron-osx-sign*",
+        "bash scripts/package-macos-with-retry.sh ${{ matrix.ebflag }} --publish never",
         "-c.mac.notarize=false",
         // Issue #479: electron-builder 26 only reaches the custom `mac.sign`
         // hook when an identity resolves. With no Apple certificate the sole

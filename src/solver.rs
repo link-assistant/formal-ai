@@ -24,7 +24,7 @@
 use crate::coding::guidance as coding_guidance;
 use crate::engine::{
     answer_links_notation, language_aware_answer_for, language_aware_intent_for, normalize_prompt,
-    response_link_for_intent, stable_id, ExecutionRecipe, SelectedRule, SymbolicAnswer,
+    response_link_for_intent, ExecutionRecipe, SelectedRule, SymbolicAnswer,
 };
 use crate::event_log::{build_evidence_links, EventLog};
 use crate::intent_formalization::{
@@ -898,14 +898,10 @@ impl UniversalSolver {
             return;
         }
         log.append("search:external", prompt.to_owned());
-        let source_id = stable_id("source", prompt);
-        let fetched_at = "1970-01-01T00:00:00Z";
-        let sha256 = stable_id("sha256", prompt);
         log.append(
-            "source:http",
-            format!("https://example.org/{source_id} fetched_at={fetched_at} sha256={sha256}"),
+            "policy:no_fetch_capability",
+            "external search requested but no retrieval was executed".to_owned(),
         );
-        log.append("cache_hit", source_id);
     }
 }
 

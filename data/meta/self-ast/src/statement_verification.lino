@@ -2,42 +2,46 @@ self_ast_census
   target src/statement_verification.rs
   language rust
   fidelity signature
-  byte_len 19356
-  line_count 534
-  content_id source_module_cbdf78b80e23f00e
-  symbol_count 34
+  byte_len 22522
+  line_count 617
+  content_id source_module_71bca433ce0f537a
+  symbol_count 38
   symbols
-    const SENTENCE_TERMINATORS 27 27
-    const MIN_STATEMENT_WORDS 31 31
-    const MIN_STATEMENT_CHARS 37 37
-    const TRUSTED_SOURCE_POLICY 44 49
-    const MARKET_PRICE_CLAIM_STATUS_CONTRADICTED 51 51
-    const MARKET_PRICE_CLAIM_STATUS_WITHIN_RANGE 52 52
-    struct StatementPlan 57 64
-    struct MarketPriceClaim 68 81
-    struct MarketPriceAssessment 85 106
-    function trace_payload 111 126
-    function summary_sentence 130 157
-    function source_quote_currency 159 169
-    function new 177 190
-    struct StatementVerificationPlan 195 198
-    function from_sample 204 210
-    function is_empty 214 216
-    function len 220 222
-    function extract_statements 228 241
-    function extract_market_price_claims 250 265
-    function assess_market_price_claims 269 274
-    function assess_market_price_claim 276 313
-    function market_price_fragments 315 336
-    function asset_positions 344 366
-    function parse_market_price_claim 368 385
-    function alias_occurs 387 396
-    function alias_occurs_at 398 414
-    function extract_year 416 436
-    function extract_currency_amount 438 461
-    function parse_number_after 463 465
-    function parse_number_before 467 478
-    function parse_number 480 497
-    function push_statement 499 513
-    function grounding_query 519 522
-    function stance_for_agreement 528 534
+    const SENTENCE_TERMINATORS 28 28
+    const MIN_STATEMENT_WORDS 32 32
+    const MIN_STATEMENT_CHARS 38 38
+    const TRUSTED_SOURCE_POLICY 45 50
+    const MARKET_PRICE_CLAIM_STATUS_CONTRADICTED 52 52
+    const MARKET_PRICE_CLAIM_STATUS_WITHIN_RANGE 53 53
+    struct StatementPlan 58 65
+    struct MarketPriceClaim 69 82
+    struct MarketPriceAssessment 86 107
+    function trace_payload 112 127
+    function summary_sentence 131 158
+    function source_quote_currency 160 170
+    function new 178 191
+    struct StatementVerificationPlan 196 199
+    struct StatementVerificationExecution 204 208
+    struct CapturedStatementEvidence 212 216
+    function audit_evidence 222 236
+    function from_sample 243 249
+    function is_empty 253 255
+    function len 259 261
+    function execute 269 305
+    function extract_statements 311 324
+    function extract_market_price_claims 333 348
+    function assess_market_price_claims 352 357
+    function assess_market_price_claim 359 396
+    function market_price_fragments 398 419
+    function asset_positions 427 449
+    function parse_market_price_claim 451 468
+    function alias_occurs 470 479
+    function alias_occurs_at 481 497
+    function extract_year 499 519
+    function extract_currency_amount 521 544
+    function parse_number_after 546 548
+    function parse_number_before 550 561
+    function parse_number 563 580
+    function push_statement 582 596
+    function grounding_query 602 605
+    function stance_for_agreement 611 617

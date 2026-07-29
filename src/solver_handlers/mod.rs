@@ -10,6 +10,7 @@ mod calendar;
 mod calendar_ics;
 mod compound_interest;
 mod conversation_memory;
+mod curated_project_fetch;
 mod definition_merge;
 mod document_originality;
 mod document_request;
@@ -79,8 +80,9 @@ pub use user_intent::{
     try_who_is_question,
 };
 pub use web_requests::{
-    detect_web_search_query, try_explicit_repository_lookup, try_http_fetch, try_project_lookup,
-    try_project_lookup_with_response_language, try_url_navigate, try_web_search,
+    detect_web_search_query, try_explicit_repository_lookup, try_http_fetch,
+    try_http_fetch_with_offline, try_project_lookup, try_project_lookup_with_response_language,
+    try_url_navigate, try_web_search, try_web_search_with_client, try_web_search_with_offline,
 };
 pub use world_state::try_world_state;
 pub use {

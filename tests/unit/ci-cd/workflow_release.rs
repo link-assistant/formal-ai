@@ -740,7 +740,8 @@ fn pages_deploy_generates_api_docs_and_copies_them_after_stamping() {
 fn desktop_release_does_not_archive_cargo_dependencies_after_packaging() {
     let workflow = desktop_release_workflow();
     let build = job_block(&workflow, "build");
-    let compiler_cache = workflow_step_block(build, "Cache Rust compiler outputs");
+    let install_sccache = workflow_step_block(build, "Cache Rust compiler outputs");
+    let enable_sccache = workflow_step_block(build, "Enable Rust compiler cache");
 
     assert!(
         !build.contains("uses: actions/cache@"),
@@ -752,8 +753,16 @@ fn desktop_release_does_not_archive_cargo_dependencies_after_packaging() {
         build.contains("mozilla-actions/sccache-action@"),
         "desktop builds should retain the compiler-output cache"
     );
+    for step in [install_sccache, enable_sccache] {
+        assert!(
+            step.contains("if: runner.os != 'Windows'"),
+            "desktop builds must bypass sccache on Windows: wrapping rustc makes \
+             web-sys's generated feature-check command exceed CreateProcess's \
+             command-line limit (os error 206)"
+        );
+    }
     assert!(
-        compiler_cache.contains("version: v0.16.0"),
+        install_sccache.contains("version: v0.16.0"),
         "desktop builds must pin the last known-good sccache version: v0.17.0 \
          expands Rust response files and exceeds the Windows command-line limit"
     );

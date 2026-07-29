@@ -149,8 +149,8 @@ fn how_to_make_tea_uses_source_backed_procedure_plan() {
         "procedural_how_to:stage:wikihow_api",
         "http_fetch:request:https://www.wikihow.com/api.php",
         "web_search:request:how to make tea",
-        "web_search:provider:wikipedia",
-        "web_search:provider:wikidata",
+        "web_search:provider_planned:wikipedia",
+        "web_search:provider_planned:wikidata",
         "procedural_how_to:stage:recursive_fetch_check",
     ] {
         assert!(

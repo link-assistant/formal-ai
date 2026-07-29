@@ -178,8 +178,8 @@ fn latest_news_routes_to_wikinews_search_across_supported_languages() {
             response
                 .evidence_links
                 .iter()
-                .any(|link| link == "web_search:provider:wikinews"),
-            "{language} latest-news prompt should include Wikinews as a search provider: {:?}",
+                .any(|link| link == "web_search:provider_planned:wikinews"),
+            "{language} latest-news prompt should include Wikinews in the search plan: {:?}",
             response.evidence_links,
         );
         assert!(

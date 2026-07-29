@@ -1,0 +1,47 @@
+self_ast_census
+  target src/source_fetch.rs
+  language rust
+  fidelity signature
+  byte_len 11959
+  line_count 391
+  content_id source_module_b19548e6525534d0
+  symbol_count 38
+  symbols
+    const CACHE_FORMAT_VERSION 21 21
+    const LEGACY_CACHE_FORMAT_VERSION 22 22
+    const DEFAULT_TTL_SECONDS 23 23
+    static TEMP_FILE_ID 24 24
+    const USER_AGENT 25 29
+    trait SourceTransport 32 34
+    function get 33 33
+    struct CurlSourceTransport 38 38
+    function get 41 73
+    enum FetchError 78 83
+    function fmt 86 93
+    struct SourceCapture 100 106
+    function source_url 110 112
+    function fetched_at 115 117
+    function sha256 120 122
+    function cached 125 127
+    function bytes 130 132
+    function trace_payload 135 146
+    function record 149 154
+    struct CachedSourceClient 159 165
+    function new 169 177
+    function with_online 180 183
+    function with_clock 186 189
+    function with_ttl_seconds 192 195
+    function fetch 197 226
+    function paths 228 233
+    function validate_url 236 250
+    function read_capture 252 305
+    function field 307 320
+    function write_capture 322 347
+    function content_path 349 351
+    function is_sha256_hex 353 358
+    function unique_temp_path 360 367
+    function cache_error 369 371
+    function cache_diagnostic 373 375
+    function sha256_hex 378 380
+    function unix_now 382 386
+    function format_timestamp 388 391

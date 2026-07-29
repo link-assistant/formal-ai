@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/definition_merge.rs
   language rust
   fidelity signature
-  byte_len 10576
+  byte_len 10597
   line_count 324
-  content_id source_module_f8561ed55c332548
+  content_id source_module_10b624da37ce19eb
   symbol_count 16
   symbols
     struct DefinitionFragment 11 16

@@ -220,7 +220,7 @@ fn definition_merge_examples_show_exact_behavior_across_terms_and_concepts() {
 }
 
 #[test]
-fn definition_merge_keeps_shared_anchor_and_source_evidence() {
+fn definition_merge_keeps_shared_anchor_and_declared_sources() {
     let response = answer("Combine translated definitions for IIR");
 
     assert_eq!(response.intent, "definition_merge");
@@ -234,10 +234,16 @@ fn definition_merge_keeps_shared_anchor_and_source_evidence() {
     );
     assert!(
         response.evidence_links.iter().any(|link| link
-            .starts_with("source:http:https://en.wikipedia.org/wiki/Infinite_impulse_response")),
-        "merged definition should cite the English Wikipedia source: {:?}",
+            .starts_with(
+                "definition_merge:source_declared:https://en.wikipedia.org/wiki/Infinite_impulse_response"
+            )),
+        "merged definition should disclose the English Wikipedia metadata source: {:?}",
         response.evidence_links
     );
+    assert!(response
+        .evidence_links
+        .iter()
+        .all(|link| !link.starts_with("source:http:")));
     assert!(
         response
             .evidence_links
@@ -358,8 +364,8 @@ fn assert_definition_merge_example(example: &DefinitionMergeExample<'_>) {
             response
                 .evidence_links
                 .iter()
-                .any(|link| link == &format!("source:http:{source}")),
-            "merged answer should expose source evidence {:?} for prompt {:?}: {:?}",
+                .any(|link| link == &format!("definition_merge:source_declared:{source}")),
+            "merged answer should expose declared source metadata {:?} for prompt {:?}: {:?}",
             source,
             example.prompt,
             response.evidence_links

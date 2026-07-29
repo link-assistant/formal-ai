@@ -1,4 +1,69 @@
 meanings
+  search
+    defined-by word_surface
+    lexeme en
+      surface
+        text "search"
+  search_query
+    defined-by concept
+    lexeme en
+      surface
+        text "search query"
+  sed
+    defined-by token
+    lexeme en
+      surface
+        text "sed"
+  self_improvement_loop
+    defined-by concept
+    lexeme en
+      surface
+        text "self improvement loop"
+  sentence_case
+    defined-by operation
+    lexeme en
+      surface
+        text "sentence case"
+  shared_dialog_capture_parse_failed
+    defined-by intent
+    lexeme en
+      surface
+        text "shared dialog capture parse failed"
+  shared_dialog_capture_unsupported
+    defined-by intent
+    lexeme en
+      surface
+        text "shared dialog capture unsupported"
+  shell-helpers
+    defined-by category
+    lexeme en
+      surface
+        text "shell helpers"
+  short
+    defined-by word_surface
+    lexeme en
+      surface
+        text "short"
+  short_rule_list
+    defined-by coverage_group
+    lexeme en
+      surface
+        text "short rule list"
+  should
+    defined-by concept
+    lexeme en
+      surface
+        text "should"
+  signal-processing
+    defined-by category
+    lexeme en
+      surface
+        text "signal processing"
+  skill_gap
+    defined-by intent
+    lexeme en
+      surface
+        text "skill gap"
   skill_gap_name
     defined-by intent
     lexeme en
@@ -554,6 +619,16 @@ meanings
     lexeme en
       surface
         text "web research source label"
+  web_search_live_results
+    defined-by intent
+    lexeme en
+      surface
+        text "web search live results"
+  web_search_unavailable
+    defined-by intent
+    lexeme en
+      surface
+        text "web search unavailable"
   webvm
     defined-by word_surface
     lexeme en
