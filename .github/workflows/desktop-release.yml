@@ -272,7 +272,7 @@ jobs:
           APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
           APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
           DEBUG: electron-builder,electron-notarize*
-        run: npx --no-install electron-builder ${{ matrix.ebflag }} --publish never
+        run: bash scripts/package-macos-with-retry.sh ${{ matrix.ebflag }} --publish never
 
       # Issue #479: electron-builder 26 changed macOS signing control flow. Its
       # MacPackager.sign() now calls findSigningIdentity(), which returns null --
@@ -302,7 +302,7 @@ jobs:
           CSC_FOR_PULL_REQUEST: "true"
           FORMAL_AI_MACOS_SIGN_DEBUG: "1"
           DEBUG: electron-builder,electron-osx-sign*
-        run: npx --no-install electron-builder ${{ matrix.ebflag }} --publish never -c.mac.notarize=false -c.mac.identity=- -c.mac.sign=./scripts/adhoc-sign-mac.cjs
+        run: bash scripts/package-macos-with-retry.sh ${{ matrix.ebflag }} --publish never -c.mac.notarize=false -c.mac.identity=- -c.mac.sign=./scripts/adhoc-sign-mac.cjs
 
       - name: Normalize desktop artifact names
         working-directory: desktop

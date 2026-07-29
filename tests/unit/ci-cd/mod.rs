@@ -20,6 +20,7 @@ mod issue_742;
 mod issue_796;
 mod issue_798;
 mod issue_846;
+mod macos_package_retry;
 mod release_publishing;
 #[path = "../../../scripts/rust-paths.rs"]
 mod rust_paths;
