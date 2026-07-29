@@ -2,23 +2,23 @@ self_ast_census
   target src/summarization/recheck.rs
   language rust
   fidelity signature
-  byte_len 7109
-  line_count 198
-  content_id source_module_ef888293c27e8019
+  byte_len 7228
+  line_count 201
+  content_id source_module_a1d91e119f01b6fe
   symbol_count 15
   symbols
-    enum Verdict 32 43
-    function is_presentable 48 50
-    function slug 54 61
-    function reason 65 72
-    struct RecheckedStatement 77 84
-    function text 89 91
-    function query 95 97
-    function trace_payload 104 112
-    struct RecheckReport 117 120
-    function survivors 125 130
-    function withheld 134 139
-    function queries 144 146
-    function trace 150 156
-    function recheck 166 180
-    function verdict_for 183 198
+    enum Verdict 35 46
+    function is_presentable 51 53
+    function slug 57 64
+    function reason 68 75
+    struct RecheckedStatement 80 87
+    function text 92 94
+    function query 98 100
+    function trace_payload 107 115
+    struct RecheckReport 120 123
+    function survivors 128 133
+    function withheld 137 142
+    function queries 147 149
+    function trace 153 159
+    function recheck 169 183
+    function verdict_for 186 201

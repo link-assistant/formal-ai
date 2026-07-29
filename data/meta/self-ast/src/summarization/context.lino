@@ -2,19 +2,20 @@ self_ast_census
   target src/summarization/context.rs
   language rust
   fidelity signature
-  byte_len 9759
-  line_count 235
-  content_id source_module_a87a3f212d8e003c
-  symbol_count 11
+  byte_len 10881
+  line_count 262
+  content_id source_module_f0e8e19bce153e87
+  symbol_count 12
   symbols
-    struct MergedContext 42 49
-    function total_sources 54 56
-    function probability_of 61 64
-    function disagreements 70 87
-    function ranked_by_id 91 93
-    function links_notation 98 100
-    function summary 110 112
-    function render 124 132
-    function recheck 136 138
-    function checked_summary 143 151
-    function merge_into_context 157 235
+    struct MergedContext 43 50
+    function total_sources 55 57
+    function probability_of 62 65
+    function disagreements 71 88
+    function ranked_by_id 92 94
+    function links_notation 99 101
+    function summary 113 115
+    function render 127 139
+    function recheck 143 145
+    function checked_summary 154 162
+    function merge_into_context 168 170
+    function merge_into_formal_context 180 262

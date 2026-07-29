@@ -2,35 +2,48 @@ self_ast_census
   target src/summarization/gathering.rs
   language rust
   fidelity signature
-  byte_len 15160
-  line_count 421
-  content_id source_module_015acad3363f7c2c
-  symbol_count 27
+  byte_len 23782
+  line_count 678
+  content_id source_module_fd83ff7c30762289
+  symbol_count 40
   symbols
-    const FETCH_RECORD 34 34
-    const STOP_RECORD 35 35
-    struct FetchedSource 41 52
-    function new 57 65
-    function supplying 69 72
-    function linking 76 79
-    function digest 83 85
-    trait SourceProvider 90 93
-    function fetch 92 92
-    struct CacheEntry 104 109
-    struct SourceCache 117 120
-    function new 125 127
-    function get 134 144
-    function put 148 160
-    function url_count 164 166
-    function body_count 171 173
-    struct GatheringPlan 178 187
-    function new 192 199
-    function requiring 203 206
-    function seeded_with 210 213
-    struct FetchRecord 218 229
-    struct GatheringReport 233 251
-    function is_closed 256 258
-    function trace 268 293
-    function research_tier 299 305
-    function gather 315 409
-    function dedupe_urls 412 421
+    const FETCH_RECORD 36 36
+    const STOP_RECORD 37 37
+    struct FetchedSource 43 54
+    function new 59 67
+    function supplying 71 74
+    function linking 78 81
+    function digest 85 87
+    trait SourceProvider 92 95
+    function fetch 94 94
+    struct CapturedSourceMetadata 104 117
+    function new 122 129
+    function supplying 133 136
+    function linking 140 143
+    function normalized 145 151
+    struct CapturedSourceObservation 156 163
+    struct CapturedGatheringFailure 170 177
+    struct CacheEntry 188 193
+    struct SourceCache 201 204
+    function new 209 211
+    function get 218 228
+    function put 232 244
+    function url_count 248 250
+    function body_count 255 257
+    struct GatheringPlan 262 271
+    function new 276 283
+    function requiring 287 290
+    function seeded_with 294 297
+    struct FetchRecord 302 313
+    struct GatheringReport 317 335
+    function is_closed 340 342
+    function trace 351 376
+    struct CapturedGatheringReport 381 392
+    function record 396 409
+    function learning_proposal 417 464
+    function research_tier 470 476
+    struct LoadedSource 478 482
+    function gather 492 510
+    function execute_captured_gathering 518 570
+    function run_gathering 572 666
+    function dedupe_urls 669 678
