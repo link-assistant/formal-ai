@@ -1,0 +1,11 @@
+self_ast_census
+  target src/cli_import.rs
+  language rust
+  fidelity signature
+  byte_len 4334
+  line_count 117
+  content_id source_module_a03f4f2a6132bf13
+  symbol_count 2
+  symbols
+    enum ImportAction 10 44
+    function run_import 46 117

@@ -198,6 +198,10 @@ jobs:
         # command and hits CreateProcess's command-line limit (os error 206).
         if: runner.os != 'Windows'
         uses: mozilla-actions/sccache-action@v0.0.10
+        with:
+          # v0.17.0 expands Rust response files before spawning rustc and
+          # exceeds the Windows command-line limit for web-sys.
+          version: v0.16.0
 
       - name: Enable Rust compiler cache
         if: runner.os != 'Windows'

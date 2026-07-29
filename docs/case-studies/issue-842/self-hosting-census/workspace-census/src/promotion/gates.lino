@@ -1,0 +1,18 @@
+self_ast_census
+  target src/promotion/gates.rs
+  language rust
+  fidelity signature
+  byte_len 5747
+  line_count 165
+  content_id source_module_74fc74a473706724
+  symbol_count 9
+  symbols
+    struct GateCommandOutput 17 24
+    function success 29 35
+    function failure 39 45
+    function replay_promotion_gates_with 54 95
+    function replay_promotion_gates 102 119
+    function required_gates 121 131
+    function parse_pass_fail 133 154
+    function count_after 156 160
+    function count_before 162 165

@@ -761,6 +761,21 @@ fn desktop_release_does_not_archive_cargo_dependencies_after_packaging() {
              command-line limit (os error 206)"
         );
     }
+    assert!(
+        install_sccache.contains("version: v0.16.0"),
+        "desktop builds must pin the last known-good sccache version: v0.17.0 \
+         expands Rust response files and exceeds the Windows command-line limit"
+    );
+
+    let shared_setup = fs::read_to_string(format!(
+        "{}/.github/actions/setup-sccache/action.yml",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .expect("read shared sccache setup action");
+    assert!(
+        shared_setup.contains("version: v0.16.0"),
+        "the shared setup action must pin sccache instead of silently tracking its latest release"
+    );
 }
 
 #[test]

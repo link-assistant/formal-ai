@@ -17,6 +17,7 @@ use crate::world_model_context::{ContextHierarchy, ExternalLookup, InheritancePo
 pub(super) fn web_research_query_for(messages: &[ChatMessage]) -> Option<String> {
     let task = latest_user_text(messages)?;
     if let Some(query) = seed_research_subject(&task)
+        .or_else(|| seed_slotted_subject(&task, seed::ROLE_DEFINITION_EXAMPLE_REQUEST))
         .or_else(|| crate::solver_handlers::detect_web_search_query(&task))
         .or_else(|| seed_definition_subject(&task))
         .or_else(|| seed_unresolved_question_subject(&task))
@@ -97,6 +98,17 @@ pub(super) fn definition_followup_clarification(task: &str) -> String {
         .unwrap_or_default()
 }
 
+/// A word-meaning question can carry a sentence as context while its subject is
+/// still only a pronoun ("what does *this* mean in …"). When that sentence
+/// contains no earlier discourse, searching the pronoun on the public web is a
+/// category error. Reuse the same meanings-driven clarification as a bare
+/// follow-up and let a later turn supply the missing antecedent.
+pub(super) fn contextual_reference_clarification(task: &str) -> Option<String> {
+    let query = crate::concepts::extract_concept_query(task)?;
+    query.context.as_ref()?;
+    is_context_reference(&query.term).then(|| definition_followup_clarification(task))
+}
+
 /// Extract the subject carried by a seed-declared research imperative. The
 /// shared web detector deliberately rejects pronouns as standalone searches;
 /// the agentic planner accepts them here because it can resolve them against
@@ -124,6 +136,32 @@ fn seed_definition_subject(task: &str) -> Option<String> {
                 .strip_prefix(&prefix)
                 .map(trim_question_punctuation)
                 .filter(|subject| !subject.trim().is_empty())
+        })
+}
+
+/// Extract a subject from a role whose surface declares an ellipsis slot.
+///
+/// This is deliberately slot-driven rather than language-driven: English and
+/// Russian put the request before the subject, Hindi puts it after, and Chinese
+/// wraps it. Adding another language is therefore a seed-data change only.
+fn seed_slotted_subject(task: &str, role: &str) -> Option<String> {
+    let normalized = crate::engine::normalize_prompt(task);
+    seed::lexicon()
+        .role_word_forms(role)
+        .into_iter()
+        .find_map(|form| {
+            let before = crate::engine::normalize_prompt(form.before_slot());
+            let after = crate::engine::normalize_prompt(form.after_slot());
+            let subject = match form.slot() {
+                Slot::Prefix => normalized.strip_prefix(&before),
+                Slot::Suffix => normalized.strip_suffix(&after),
+                Slot::Circumfix => normalized
+                    .strip_prefix(&before)
+                    .and_then(|body| body.strip_suffix(&after)),
+                Slot::Bare => None,
+            }?;
+            let subject = trim_question_punctuation(subject);
+            (!subject.is_empty()).then_some(subject)
         })
 }
 
@@ -369,7 +407,8 @@ fn final_answer(query: &str, progress: &Progress) -> String {
 /// so it works in every supported language — see [`relevance`] for how the
 /// space-less scripts are handled.
 fn extract_answer(query: &str, evidence: &str) -> String {
-    let sentences = crate::summarization::formalize(evidence);
+    let evidence = structurally_complete_prose(evidence);
+    let sentences = crate::summarization::formalize(&evidence);
     let mut scored: Vec<(usize, f32, &str)> = sentences
         .iter()
         .enumerate()
@@ -385,7 +424,7 @@ fn extract_answer(query: &str, evidence: &str) -> String {
     if scored.is_empty() {
         // Nothing overlaps the query: fall back to the head of the document
         // rather than the whole of it, so the answer stays bounded either way.
-        return truncate_chars(evidence, MAX_EXTRACT_CHARS);
+        return truncate_chars(&evidence, MAX_EXTRACT_CHARS);
     }
     // Rank by relevance, keep the best few, then restore document order.
     scored.sort_by(|left, right| {
@@ -402,6 +441,37 @@ fn extract_answer(query: &str, evidence: &str) -> String {
         .map(|(_, _, text)| *text)
         .collect::<Vec<_>>()
         .join(" ")
+}
+
+/// Prefer complete prose blocks when evidence mixes prose with page furniture.
+///
+/// Search providers often flatten headings, controls, and neighbouring links
+/// into short newline-delimited blocks beside the useful snippet. A complete
+/// sentence has a script-level terminal; navigation fragments generally do
+/// not. The structural signal works across languages and avoids maintaining a
+/// blocklist of provider-specific button labels. If the provider returns no
+/// complete block, preserve all evidence so terse but legitimate answers are
+/// still available to the ordinary relevance ranker.
+fn structurally_complete_prose(evidence: &str) -> String {
+    let blocks: Vec<&str> = evidence
+        .split("\n\n")
+        .map(str::trim)
+        .filter(|block| !block.is_empty())
+        .collect();
+    let prose: Vec<&str> = blocks
+        .iter()
+        .copied()
+        .filter(|block| block.chars().next_back().is_some_and(is_sentence_terminal))
+        .collect();
+    if prose.is_empty() {
+        evidence.trim().to_owned()
+    } else {
+        prose.join("\n")
+    }
+}
+
+const fn is_sentence_terminal(character: char) -> bool {
+    matches!(character, '.' | '!' | '?' | '。' | '…' | '।' | '॥')
 }
 
 /// How much `sentence` bears on `query`, in `0.0..=1.0`.

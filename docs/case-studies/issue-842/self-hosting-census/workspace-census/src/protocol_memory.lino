@@ -1,0 +1,12 @@
+self_ast_census
+  target src/protocol_memory.rs
+  language rust
+  fidelity signature
+  byte_len 1367
+  line_count 38
+  content_id source_module_6e7dd15faed15e86
+  symbol_count 3
+  symbols
+    const REQUEST_HISTORY_CONVERSATION_ID 6 6
+    function answer_from_memory_if_requested 8 18
+    function memory_events_with_request_history 20 38

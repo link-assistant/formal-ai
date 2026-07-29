@@ -1,0 +1,70 @@
+self_ast_census
+  target src/question_generation.rs
+  language rust
+  fidelity signature
+  byte_len 25690
+  line_count 751
+  content_id source_module_7b06e63230c1c8b9
+  symbol_count 61
+  symbols
+    const BASIS_POINTS_DENOMINATOR 15 15
+    const DEFAULT_LANGUAGE 22 22
+    struct QuestionLexicon 36 44
+    struct LanguageLexicon 48 53
+    function words_for 58 62
+    function default_words 65 67
+    function any_language_has_role 72 81
+    enum GrammarRole 85 89
+    struct TierCurve 96 101
+    function basis_points_for_word_count 107 115
+    const QUESTION_LEXICON_LINO 118 118
+    function question_lexicon 121 124
+    static CELL 122 122
+    function load_question_lexicon 126 197
+    function parse_usize 199 201
+    struct QuestionLexiconSummary 207 222
+    function question_lexicon_summary 227 230
+    function question_lexicon_summary_for_language 238 255
+    function sorted 257 261
+    struct QuestionWord 264 268
+    function from_corpus_scores 272 292
+    enum QuestionAcceptance 296 300
+    function accepts 303 311
+    function requires_grammatical_candidate 313 315
+    enum FrequencySelectionPolicy 320 326
+    struct QuestionGenerationConfig 329 335
+    function default 338 342
+    function for_language 351 359
+    function from_words 362 388
+    function with_acceptance 391 394
+    function with_all_ranked_words 397 400
+    function with_minimum_ranked_words 403 406
+    function words 409 411
+    function ranked_word_limit 413 430
+    enum QuestionGrammarClass 434 438
+    enum LogicalMeaningClass 441 445
+    enum GeneratedQuestionClass 448 453
+    struct GeneratedQuestion 456 463
+    struct QuestionGenerator 466 471
+    function new 475 486
+    function default 490 492
+    type Item 496 496
+    function next 498 526
+    function current_question 530 543
+    function advance 545 556
+    struct GeneratedQuestionAnswer 560 563
+    struct GeneratedQuestionAnswerStream 566 569
+    type Item 572 572
+    function next 574 581
+    function generated_question_answers 585 592
+    function classify_question 594 619
+    function classify_grammar 621 664
+    function classify_logical_meaning 666 690
+    function normalize_word_surface 692 700
+    function is_question_like 702 706
+    function is_question_opener 710 715
+    function is_question_pronoun 717 719
+    function is_auxiliary_opener 723 726
+    function is_content_word 731 736
+    function has_duplicate_token 738 743
+    function tail_indices_are_ordered 745 751

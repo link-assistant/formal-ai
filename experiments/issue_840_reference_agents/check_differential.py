@@ -102,7 +102,10 @@ def main():
 
     summary = measured.get("summary", {})
     before = baseline.get("task_ladder_before", {})
-    require(summary.get("total") == before.get("total"), "ladder task count changed")
+    require(
+        summary.get("total", -1) >= before.get("total", -1),
+        "ladder lost one or more recorded tasks",
+    )
     require(
         summary.get("passed", -1) > before.get("passed", -1),
         "Formal AI no longer improves on its recorded pre-change ladder score",
@@ -113,6 +116,13 @@ def main():
     )
 
     rows = measured.get("results", [])
+    require(len(rows) == summary.get("total"), "ladder summary and result count differ")
+    task_ids = [row.get("id") for row in rows]
+    require(
+        all(isinstance(task_id, str) and task_id for task_id in task_ids),
+        "ladder results contain a row without a stable id",
+    )
+    require(len(task_ids) == len(set(task_ids)), "ladder results contain duplicate ids")
     local = next((row for row in rows if row.get("id") == baseline.get("task_id")), None)
     require(local is not None, "results omit the reference local-search task")
     require(local.get("pass") is True, "reference local-search task is marked failed")

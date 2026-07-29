@@ -1,0 +1,11 @@
+self_ast_census
+  target src/arithmetic_word_tables.rs
+  language rust
+  fidelity signature
+  byte_len 2773
+  line_count 93
+  content_id source_module_05d1534ee9527818
+  symbol_count 2
+  symbols
+    static WORD_VALUE_TOKENS 13 81
+    static WORD_VALUE_PHRASES 86 93

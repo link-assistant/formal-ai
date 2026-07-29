@@ -436,6 +436,12 @@ pub const ROLE_LOCAL_PATH_QUERY_NOISE: &str = "local_path_query_noise";
 pub const ROLE_LOCAL_PATH_ROUTE_QUESTION: &str = "local_path_route_question";
 /// Semantic role: a definition follow-up whose subject comes from prior discourse.
 pub const ROLE_DEFINITION_ANTECEDENT_FOLLOWUP: &str = "definition_antecedent_followup";
+/// Semantic role: a request for a concrete instance of an open-world concept.
+///
+/// Every surface carries an ellipsis slot containing the subject. The web
+/// research planner reads the slot structurally, so prefix, suffix, and
+/// circumfix languages share one route without prompt-specific Rust literals.
+pub const ROLE_DEFINITION_EXAMPLE_REQUEST: &str = "definition_example_request";
 /// Semantic role: the relation separating two subjects to compare.
 pub const ROLE_COMPARISON_INFIX: &str = "comparison_infix";
 /// Semantic role: output-format wording excluded from comparison operands.

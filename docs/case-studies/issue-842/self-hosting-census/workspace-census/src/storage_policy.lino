@@ -1,0 +1,20 @@
+self_ast_census
+  target src/storage_policy.rs
+  language rust
+  fidelity signature
+  byte_len 5583
+  line_count 163
+  content_id source_module_30fce61fe2da5564
+  symbol_count 11
+  symbols
+    struct StorageSnapshot 14 17
+    function measure_storage 21 27
+    function auto_free_space_preference_path 31 37
+    enum AutoFreeSpaceChoice 45 52
+    function auto_free_space_choice 56 62
+    function auto_free_space_enabled 67 69
+    function persist_auto_free_space_choice 72 80
+    function plan_for_real_storage 84 99
+    function apply_auto_free_space_for_write 103 118
+    function apply_auto_free_space_with_snapshot 126 146
+    function existing_ancestor 148 163
