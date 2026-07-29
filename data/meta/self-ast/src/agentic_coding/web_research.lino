@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/web_research.rs
   language rust
   fidelity full_ast
-  byte_len 28379
+  byte_len 28385
   line_count 687
-  content_id source_module_bb422f177b5dbe15
+  content_id source_module_552ef01edb1b88ee
   symbol_count 38
   symbols
     function web_research_query_for 17 42
@@ -50,9 +50,9 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 18162
-    named_node_count 3887
-    distinct_node_kinds 72
+    total_link_count 18168
+    named_node_count 3888
+    distinct_node_kinds 73
     node_kinds
       arguments 386
       array_expression 3
@@ -79,6 +79,7 @@ self_ast_census
       float_literal 3
       for_expression 2
       function_item 33
+      function_modifiers 1
       generic_function 4
       generic_type 28
       identifier 809
