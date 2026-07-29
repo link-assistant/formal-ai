@@ -201,44 +201,6 @@ fn localized_seed_response(intent: &str, language: &str) -> String {
         .unwrap_or_else(|| format!("Missing localized response seed: {intent}/{language}"))
 }
 
-/// Answer a bare demonstrative question ("так что это такое то?") that has no
-/// antecedent by asking what is meant.
-///
-/// Issue #842 recorded this prompt being answered with the full capability
-/// menu, which tells the user nothing about what they asked. When the
-/// conversation *does* have a prior turn the pronoun has something to bind to,
-/// so this handler steps aside and lets the coreference and lookup routes run.
-pub fn try_unresolved_reference(
-    prompt: &str,
-    normalized: &str,
-    log: &mut EventLog,
-) -> Option<SymbolicAnswer> {
-    let cleaned = normalize_prompt(normalized);
-    if !seed::lexicon().mentions_role(seed::ROLE_UNRESOLVED_REFERENCE, &cleaned) {
-        return None;
-    }
-    if has_prior_turn(log) {
-        return None;
-    }
-    let language = detect_language(prompt);
-    let body = localized_seed_response("unresolved_reference", language.slug());
-    Some(finalize_simple(
-        prompt,
-        log,
-        "unresolved_reference",
-        "response:unresolved_reference",
-        &body,
-        0.9,
-    ))
-}
-
-/// Does the conversation carry an earlier turn a pronoun could bind to?
-fn has_prior_turn(log: &EventLog) -> bool {
-    log.events()
-        .iter()
-        .any(|event| event.kind == "prior_turn:user" || event.kind == "prior_turn:assistant")
-}
-
 pub fn try_capabilities(
     prompt: &str,
     normalized: &str,

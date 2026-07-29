@@ -32,10 +32,15 @@ fn chat_completions_routes_report_to_bash_not_websearch() {
     assert_eq!(call["function"]["name"], "bash");
     let arguments: serde_json::Value =
         serde_json::from_str(call["function"]["arguments"].as_str().unwrap()).unwrap();
+    // Issue #839: the context is no longer exported by a separate shell step and
+    // pasted into an argument. `formal-ai report body` exports it and renders the
+    // six-section document around it, and `gh` files that file — so what this test
+    // pins is unchanged: both logs are gathered, and no HTTP client is involved.
     assert!(arguments["command"].as_str().is_some_and(|command| command
         .contains("gh issue create")
-        && command.contains("formal-ai context export")
+        && command.contains("formal-ai report body")
         && command.contains("--source both")
+        && command.contains("--body-file")
         && !command.contains("curl")));
 }
 

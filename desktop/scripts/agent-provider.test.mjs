@@ -318,6 +318,8 @@ test("read-only shell command detection covers the first terminal journey", () =
   assert.equal(isReadOnlyShellCommand("ls ~"), true);
   assert.equal(isReadOnlyShellCommand("pwd"), true);
   assert.equal(isReadOnlyShellCommand("git status --short"), true);
+  assert.equal(isReadOnlyShellCommand("ps"), true);
+  assert.equal(isReadOnlyShellCommand("tasklist"), true);
   assert.equal(isReadOnlyShellCommand("rm -rf demo"), false);
 });
 

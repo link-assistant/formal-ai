@@ -1,0 +1,1083 @@
+[
+  {
+    "time": 8.001,
+    "cols": 120,
+    "rows": 14,
+    "cursor": {
+      "x": 0,
+      "y": 3
+    },
+    "alternate": false,
+    "lines": [],
+    "screen": []
+  },
+  {
+    "time": 8.18,
+    "cols": 120,
+    "rows": 14,
+    "cursor": {
+      "x": 120,
+      "y": 4
+    },
+    "alternate": false,
+    "lines": [],
+    "screen": []
+  },
+  {
+    "time": 8.75,
+    "cols": 120,
+    "rows": 14,
+    "cursor": {
+      "x": 120,
+      "y": 7
+    },
+    "alternate": false,
+    "lines": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀"
+    ],
+    "screen": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀"
+    ]
+  },
+  {
+    "time": 8.911,
+    "cols": 120,
+    "rows": 14,
+    "cursor": {
+      "x": 0,
+      "y": 5
+    },
+    "alternate": false,
+    "lines": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "Ask anything... \"Fix a TODO in the codebase\"",
+      "",
+      " BUILD                                                                       Formal AI Symbolic Production · ctrl+p cmd"
+    ],
+    "screen": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "Ask anything... \"Fix a TODO in the codebase\"",
+      "",
+      " BUILD                                                                       Formal AI Symbolic Production · ctrl+p cmd"
+    ]
+  },
+  {
+    "time": 9.207,
+    "cols": 120,
+    "rows": 14,
+    "cursor": {
+      "x": 0,
+      "y": 5
+    },
+    "alternate": false,
+    "lines": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "",
+      "",
+      " BUILD  ■⬝⬝⬝⬝⬝⬝⬝ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ],
+    "screen": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "",
+      "",
+      " BUILD  ■⬝⬝⬝⬝⬝⬝⬝ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ]
+  },
+  {
+    "time": 9.345,
+    "cols": 120,
+    "rows": 14,
+    "cursor": {
+      "x": 0,
+      "y": 7
+    },
+    "alternate": false,
+    "lines": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "",
+      "",
+      " BUILD  ■⬝⬝⬝⬝⬝⬝⬝ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ],
+    "screen": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "",
+      "",
+      " BUILD  ■⬝⬝⬝⬝⬝⬝⬝ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ]
+  },
+  {
+    "time": 9.446,
+    "cols": 120,
+    "rows": 14,
+    "cursor": {
+      "x": 0,
+      "y": 7
+    },
+    "alternate": false,
+    "lines": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "",
+      "",
+      " BUILD  ■■■■⬝⬝⬝⬝ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ],
+    "screen": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "",
+      "",
+      " BUILD  ■■■■⬝⬝⬝⬝ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ]
+  },
+  {
+    "time": 9.773,
+    "cols": 120,
+    "rows": 14,
+    "cursor": {
+      "x": 0,
+      "y": 7
+    },
+    "alternate": false,
+    "lines": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "",
+      "",
+      " BUILD  ■■■■■⬝⬝⬝ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ],
+    "screen": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "",
+      "",
+      " BUILD  ■■■■■⬝⬝⬝ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ]
+  },
+  {
+    "time": 9.875,
+    "cols": 120,
+    "rows": 14,
+    "cursor": {
+      "x": 0,
+      "y": 7
+    },
+    "alternate": false,
+    "lines": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "",
+      "",
+      " BUILD  ■■■■■■⬝⬝ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ],
+    "screen": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "",
+      "",
+      " BUILD  ■■■■■■⬝⬝ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ]
+  },
+  {
+    "time": 9.969,
+    "cols": 120,
+    "rows": 14,
+    "cursor": {
+      "x": 0,
+      "y": 7
+    },
+    "alternate": false,
+    "lines": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "",
+      "",
+      " BUILD  ⬝■■■■■■⬝ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ],
+    "screen": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "",
+      "",
+      " BUILD  ⬝■■■■■■⬝ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ]
+  },
+  {
+    "time": 10.037,
+    "cols": 120,
+    "rows": 14,
+    "cursor": {
+      "x": 0,
+      "y": 7
+    },
+    "alternate": false,
+    "lines": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "",
+      "",
+      " BUILD  ⬝⬝■■■■■■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ],
+    "screen": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "",
+      "",
+      " BUILD  ⬝⬝■■■■■■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ]
+  },
+  {
+    "time": 10.426,
+    "cols": 120,
+    "rows": 14,
+    "cursor": {
+      "x": 0,
+      "y": 7
+    },
+    "alternate": false,
+    "lines": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "",
+      "",
+      " BUILD  ⬝⬝⬝■■■■■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ],
+    "screen": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "",
+      "",
+      " BUILD  ⬝⬝⬝■■■■■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ]
+  },
+  {
+    "time": 10.575,
+    "cols": 120,
+    "rows": 14,
+    "cursor": {
+      "x": 0,
+      "y": 7
+    },
+    "alternate": false,
+    "lines": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "",
+      "",
+      " BUILD  ⬝⬝⬝⬝■■■■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ],
+    "screen": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "",
+      "",
+      " BUILD  ⬝⬝⬝⬝■■■■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ]
+  },
+  {
+    "time": 11.394,
+    "cols": 120,
+    "rows": 14,
+    "cursor": {
+      "x": 0,
+      "y": 7
+    },
+    "alternate": false,
+    "lines": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "",
+      "",
+      " BUILD  ⬝⬝⬝⬝⬝■■■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ],
+    "screen": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "",
+      "",
+      " BUILD  ⬝⬝⬝⬝⬝■■■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ]
+  },
+  {
+    "time": 11.477,
+    "cols": 120,
+    "rows": 14,
+    "cursor": {
+      "x": 0,
+      "y": 7
+    },
+    "alternate": false,
+    "lines": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "",
+      "",
+      " BUILD  ⬝⬝⬝⬝⬝⬝■■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ],
+    "screen": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "",
+      "",
+      " BUILD  ⬝⬝⬝⬝⬝⬝■■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ]
+  },
+  {
+    "time": 12.182,
+    "cols": 120,
+    "rows": 14,
+    "cursor": {
+      "x": 0,
+      "y": 7
+    },
+    "alternate": false,
+    "lines": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "",
+      "",
+      " BUILD  ⬝⬝⬝⬝⬝⬝⬝■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ],
+    "screen": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "",
+      "",
+      " BUILD  ⬝⬝⬝⬝⬝⬝⬝■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ]
+  },
+  {
+    "time": 12.231,
+    "cols": 120,
+    "rows": 14,
+    "cursor": {
+      "x": 0,
+      "y": 7
+    },
+    "alternate": false,
+    "lines": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "",
+      "",
+      " BUILD  ⬝⬝⬝⬝⬝⬝⬝⬝ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ],
+    "screen": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "",
+      "",
+      " BUILD  ⬝⬝⬝⬝⬝⬝⬝⬝ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ]
+  },
+  {
+    "time": 12.353,
+    "cols": 120,
+    "rows": 14,
+    "cursor": {
+      "x": 0,
+      "y": 7
+    },
+    "alternate": false,
+    "lines": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "",
+      "",
+      " BUILD  ⬝⬝⬝⬝⬝⬝■■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ],
+    "screen": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "",
+      "",
+      " BUILD  ⬝⬝⬝⬝⬝⬝■■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ]
+  },
+  {
+    "time": 12.476,
+    "cols": 120,
+    "rows": 14,
+    "cursor": {
+      "x": 0,
+      "y": 7
+    },
+    "alternate": false,
+    "lines": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "",
+      "",
+      " BUILD  ⬝⬝⬝⬝⬝■■■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ],
+    "screen": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "",
+      "",
+      " BUILD  ⬝⬝⬝⬝⬝■■■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ]
+  },
+  {
+    "time": 12.68,
+    "cols": 120,
+    "rows": 14,
+    "cursor": {
+      "x": 0,
+      "y": 7
+    },
+    "alternate": false,
+    "lines": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "",
+      "",
+      " BUILD  ⬝⬝⬝⬝■■■■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ],
+    "screen": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "",
+      "",
+      " BUILD  ⬝⬝⬝⬝■■■■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ]
+  },
+  {
+    "time": 12.729,
+    "cols": 120,
+    "rows": 14,
+    "cursor": {
+      "x": 0,
+      "y": 11
+    },
+    "alternate": false,
+    "lines": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "Let me look on your Desktop for hive mind control center.",
+      "",
+      "$ find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d \\( -iname '*hive*mind*control*center*' -o -iname",
+      "'*mind*control*center*' -o -iname '*hive*control*center*' -o -iname '*hive*mind*center*' -o -iname",
+      "'*hive*mind*control*' \\) -print -quit",
+      "",
+      "",
+      "",
+      "",
+      " BUILD  ⬝⬝⬝⬝■■■■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ],
+    "screen": [
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "Let me look on your Desktop for hive mind control center.",
+      "",
+      "$ find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d \\( -iname '*hive*mind*control*center*' -o -iname",
+      "'*mind*control*center*' -o -iname '*hive*control*center*' -o -iname '*hive*mind*center*' -o -iname",
+      "'*hive*mind*control*' \\) -print -quit",
+      "",
+      "",
+      "",
+      "",
+      " BUILD  ⬝⬝⬝⬝■■■■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ]
+  },
+  {
+    "time": 12.814,
+    "cols": 120,
+    "rows": 14,
+    "cursor": {
+      "x": 0,
+      "y": 11
+    },
+    "alternate": false,
+    "lines": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "Let me look on your Desktop for hive mind control center.",
+      "",
+      "$ find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d \\( -iname '*hive*mind*control*center*' -o -iname",
+      "'*mind*control*center*' -o -iname '*hive*control*center*' -o -iname '*hive*mind*center*' -o -iname",
+      "'*hive*mind*control*' \\) -print -quit",
+      "",
+      "",
+      "",
+      "",
+      " BUILD  ⬝⬝⬝■■■■■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ],
+    "screen": [
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "Let me look on your Desktop for hive mind control center.",
+      "",
+      "$ find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d \\( -iname '*hive*mind*control*center*' -o -iname",
+      "'*mind*control*center*' -o -iname '*hive*control*center*' -o -iname '*hive*mind*center*' -o -iname",
+      "'*hive*mind*control*' \\) -print -quit",
+      "",
+      "",
+      "",
+      "",
+      " BUILD  ⬝⬝⬝■■■■■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd"
+    ]
+  },
+  {
+    "time": 12.888,
+    "cols": 120,
+    "rows": 14,
+    "cursor": {
+      "x": 0,
+      "y": 11
+    },
+    "alternate": false,
+    "lines": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "Let me look on your Desktop for hive mind control center.",
+      "",
+      "$ find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d \\( -iname '*hive*mind*control*center*' -o -iname",
+      "'*mind*control*center*' -o -iname '*hive*control*center*' -o -iname '*hive*mind*center*' -o -iname",
+      "'*hive*mind*control*' \\) -print -quit",
+      "",
+      "/tmp/formal-ai-ladder.uz4Dfn/Desktop/Archive/hive-control-center",
+      "",
+      "",
+      "",
+      " BUILD  ⬝⬝■■■■■■ esc interrupt                                          9.9K Formal AI Symbolic Production · ctrl+p cmd"
+    ],
+    "screen": [
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "Let me look on your Desktop for hive mind control center.",
+      "",
+      "$ find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d \\( -iname '*hive*mind*control*center*' -o -iname",
+      "'*mind*control*center*' -o -iname '*hive*control*center*' -o -iname '*hive*mind*center*' -o -iname",
+      "'*hive*mind*control*' \\) -print -quit",
+      "",
+      "/tmp/formal-ai-ladder.uz4Dfn/Desktop/Archive/hive-control-center",
+      "",
+      "",
+      "",
+      " BUILD  ⬝⬝■■■■■■ esc interrupt                                          9.9K Formal AI Symbolic Production · ctrl+p cmd"
+    ]
+  },
+  {
+    "time": 12.936,
+    "cols": 120,
+    "rows": 14,
+    "cursor": {
+      "x": 0,
+      "y": 11
+    },
+    "alternate": false,
+    "lines": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "Let me look on your Desktop for hive mind control center.",
+      "",
+      "$ find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d \\( -iname '*hive*mind*control*center*' -o -iname",
+      "'*mind*control*center*' -o -iname '*hive*control*center*' -o -iname '*hive*mind*center*' -o -iname",
+      "'*hive*mind*control*' \\) -print -quit",
+      "",
+      "/tmp/formal-ai-ladder.uz4Dfn/Desktop/Archive/hive-control-center",
+      "",
+      "",
+      "",
+      " BUILD  ⬝■■■■■■⬝ esc interrupt                                          9.9K Formal AI Symbolic Production · ctrl+p cmd"
+    ],
+    "screen": [
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "Let me look on your Desktop for hive mind control center.",
+      "",
+      "$ find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d \\( -iname '*hive*mind*control*center*' -o -iname",
+      "'*mind*control*center*' -o -iname '*hive*control*center*' -o -iname '*hive*mind*center*' -o -iname",
+      "'*hive*mind*control*' \\) -print -quit",
+      "",
+      "/tmp/formal-ai-ladder.uz4Dfn/Desktop/Archive/hive-control-center",
+      "",
+      "",
+      "",
+      " BUILD  ⬝■■■■■■⬝ esc interrupt                                          9.9K Formal AI Symbolic Production · ctrl+p cmd"
+    ]
+  },
+  {
+    "time": 12.979,
+    "cols": 120,
+    "rows": 14,
+    "cursor": {
+      "x": 0,
+      "y": 11
+    },
+    "alternate": false,
+    "lines": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "Let me look on your Desktop for hive mind control center.",
+      "",
+      "$ find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d \\( -iname '*hive*mind*control*center*' -o -iname",
+      "'*mind*control*center*' -o -iname '*hive*control*center*' -o -iname '*hive*mind*center*' -o -iname",
+      "'*hive*mind*control*' \\) -print -quit",
+      "",
+      "/tmp/formal-ai-ladder.uz4Dfn/Desktop/Archive/hive-control-center",
+      "",
+      "",
+      "",
+      " BUILD  ■■■■■■⬝⬝ esc interrupt                                          9.9K Formal AI Symbolic Production · ctrl+p cmd"
+    ],
+    "screen": [
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "Let me look on your Desktop for hive mind control center.",
+      "",
+      "$ find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d \\( -iname '*hive*mind*control*center*' -o -iname",
+      "'*mind*control*center*' -o -iname '*hive*control*center*' -o -iname '*hive*mind*center*' -o -iname",
+      "'*hive*mind*control*' \\) -print -quit",
+      "",
+      "/tmp/formal-ai-ladder.uz4Dfn/Desktop/Archive/hive-control-center",
+      "",
+      "",
+      "",
+      " BUILD  ■■■■■■⬝⬝ esc interrupt                                          9.9K Formal AI Symbolic Production · ctrl+p cmd"
+    ]
+  },
+  {
+    "time": 13.076,
+    "cols": 120,
+    "rows": 14,
+    "cursor": {
+      "x": 0,
+      "y": 11
+    },
+    "alternate": false,
+    "lines": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "Let me look on your Desktop for hive mind control center.",
+      "",
+      "$ find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d \\( -iname '*hive*mind*control*center*' -o -iname",
+      "'*mind*control*center*' -o -iname '*hive*control*center*' -o -iname '*hive*mind*center*' -o -iname",
+      "'*hive*mind*control*' \\) -print -quit",
+      "",
+      "/tmp/formal-ai-ladder.uz4Dfn/Desktop/Archive/hive-control-center",
+      "",
+      "",
+      "",
+      " BUILD  ■■■■■⬝⬝⬝ esc interrupt                                          9.9K Formal AI Symbolic Production · ctrl+p cmd"
+    ],
+    "screen": [
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "Let me look on your Desktop for hive mind control center.",
+      "",
+      "$ find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d \\( -iname '*hive*mind*control*center*' -o -iname",
+      "'*mind*control*center*' -o -iname '*hive*control*center*' -o -iname '*hive*mind*center*' -o -iname",
+      "'*hive*mind*control*' \\) -print -quit",
+      "",
+      "/tmp/formal-ai-ladder.uz4Dfn/Desktop/Archive/hive-control-center",
+      "",
+      "",
+      "",
+      " BUILD  ■■■■■⬝⬝⬝ esc interrupt                                          9.9K Formal AI Symbolic Production · ctrl+p cmd"
+    ]
+  },
+  {
+    "time": 13.121,
+    "cols": 120,
+    "rows": 14,
+    "cursor": {
+      "x": 0,
+      "y": 11
+    },
+    "alternate": false,
+    "lines": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "Let me look on your Desktop for hive mind control center.",
+      "",
+      "$ find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d \\( -iname '*hive*mind*control*center*' -o -iname",
+      "'*mind*control*center*' -o -iname '*hive*control*center*' -o -iname '*hive*mind*center*' -o -iname",
+      "'*hive*mind*control*' \\) -print -quit",
+      "",
+      "/tmp/formal-ai-ladder.uz4Dfn/Desktop/Archive/hive-control-center",
+      "",
+      "",
+      "",
+      " BUILD  ■■■■⬝⬝⬝⬝ esc interrupt                                          9.9K Formal AI Symbolic Production · ctrl+p cmd"
+    ],
+    "screen": [
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "Let me look on your Desktop for hive mind control center.",
+      "",
+      "$ find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d \\( -iname '*hive*mind*control*center*' -o -iname",
+      "'*mind*control*center*' -o -iname '*hive*control*center*' -o -iname '*hive*mind*center*' -o -iname",
+      "'*hive*mind*control*' \\) -print -quit",
+      "",
+      "/tmp/formal-ai-ladder.uz4Dfn/Desktop/Archive/hive-control-center",
+      "",
+      "",
+      "",
+      " BUILD  ■■■■⬝⬝⬝⬝ esc interrupt                                          9.9K Formal AI Symbolic Production · ctrl+p cmd"
+    ]
+  },
+  {
+    "time": 13.235,
+    "cols": 120,
+    "rows": 14,
+    "cursor": {
+      "x": 0,
+      "y": 11
+    },
+    "alternate": false,
+    "lines": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "Let me look on your Desktop for hive mind control center.",
+      "",
+      "$ find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d \\( -iname '*hive*mind*control*center*' -o -iname",
+      "'*mind*control*center*' -o -iname '*hive*control*center*' -o -iname '*hive*mind*center*' -o -iname",
+      "'*hive*mind*control*' \\) -print -quit",
+      "",
+      "/tmp/formal-ai-ladder.uz4Dfn/Desktop/Archive/hive-control-center",
+      "",
+      "",
+      "",
+      " BUILD                                                                 10.1K Formal AI Symbolic Production · ctrl+p cmd"
+    ],
+    "screen": [
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "Let me look on your Desktop for hive mind control center.",
+      "",
+      "$ find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d \\( -iname '*hive*mind*control*center*' -o -iname",
+      "'*mind*control*center*' -o -iname '*hive*control*center*' -o -iname '*hive*mind*center*' -o -iname",
+      "'*hive*mind*control*' \\) -print -quit",
+      "",
+      "/tmp/formal-ai-ladder.uz4Dfn/Desktop/Archive/hive-control-center",
+      "",
+      "",
+      "",
+      " BUILD                                                                 10.1K Formal AI Symbolic Production · ctrl+p cmd"
+    ]
+  },
+  {
+    "time": 13.308,
+    "cols": 120,
+    "rows": 14,
+    "cursor": {
+      "x": 0,
+      "y": 11
+    },
+    "alternate": false,
+    "lines": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "Let me look on your Desktop for hive mind control center.",
+      "",
+      "$ find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d \\( -iname '*hive*mind*control*center*' -o -iname",
+      "'*mind*control*center*' -o -iname '*hive*control*center*' -o -iname '*hive*mind*center*' -o -iname",
+      "'*hive*mind*control*' \\) -print -quit",
+      "",
+      "/tmp/formal-ai-ladder.uz4Dfn/Desktop/Archive/hive-control-center",
+      "",
+      "The find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -",
+      "type d \\( -iname '*hive*mind*control*center*' -o -iname '*mind*control*center*' -o -iname '*hive*control*center*' -o -",
+      "iname '*hive*mind*center*' -o -iname '*hive*mind*control*' \\) -print -quit command completed. Output:",
+      "",
+      "/tmp/formal-ai-ladder.uz4Dfn/Desktop/Archive/hive-control-center",
+      "",
+      "▣ Build · Formal AI Symbolic Production · 4.1s",
+      "",
+      "",
+      "",
+      " BUILD                                                                 10.1K Formal AI Symbolic Production · ctrl+p cmd"
+    ],
+    "screen": [
+      "",
+      "/tmp/formal-ai-ladder.uz4Dfn/Desktop/Archive/hive-control-center",
+      "",
+      "The find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -",
+      "type d \\( -iname '*hive*mind*control*center*' -o -iname '*mind*control*center*' -o -iname '*hive*control*center*' -o -",
+      "iname '*hive*mind*center*' -o -iname '*hive*mind*control*' \\) -print -quit command completed. Output:",
+      "",
+      "/tmp/formal-ai-ladder.uz4Dfn/Desktop/Archive/hive-control-center",
+      "",
+      "▣ Build · Formal AI Symbolic Production · 4.1s",
+      "",
+      "",
+      "",
+      " BUILD                                                                 10.1K Formal AI Symbolic Production · ctrl+p cmd"
+    ]
+  },
+  {
+    "time": 14.452,
+    "cols": 120,
+    "rows": 14,
+    "cursor": {
+      "x": 0,
+      "y": 13
+    },
+    "alternate": false,
+    "lines": [
+      "",
+      "█▀▀█  OpenCode",
+      "█  █  ~",
+      "▀▀▀▀",
+      "",
+      "› Find hive-mind-control center folder on my desktop",
+      "",
+      "Let me look on your Desktop for hive mind control center.",
+      "",
+      "$ find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d \\( -iname '*hive*mind*control*center*' -o -iname",
+      "'*mind*control*center*' -o -iname '*hive*control*center*' -o -iname '*hive*mind*center*' -o -iname",
+      "'*hive*mind*control*' \\) -print -quit",
+      "",
+      "/tmp/formal-ai-ladder.uz4Dfn/Desktop/Archive/hive-control-center",
+      "",
+      "The find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -",
+      "type d \\( -iname '*hive*mind*control*center*' -o -iname '*mind*control*center*' -o -iname '*hive*control*center*' -o -",
+      "iname '*hive*mind*center*' -o -iname '*hive*mind*control*' \\) -print -quit command completed. Output:",
+      "",
+      "/tmp/formal-ai-ladder.uz4Dfn/Desktop/Archive/hive-control-center",
+      "",
+      "▣ Build · Formal AI Symbolic Production · 4.1s"
+    ],
+    "screen": [
+      "/tmp/formal-ai-ladder.uz4Dfn/Desktop/Archive/hive-control-center",
+      "",
+      "The find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -",
+      "type d \\( -iname '*hive*mind*control*center*' -o -iname '*mind*control*center*' -o -iname '*hive*control*center*' -o -",
+      "iname '*hive*mind*center*' -o -iname '*hive*mind*control*' \\) -print -quit command completed. Output:",
+      "",
+      "/tmp/formal-ai-ladder.uz4Dfn/Desktop/Archive/hive-control-center",
+      "",
+      "▣ Build · Formal AI Symbolic Production · 4.1s"
+    ]
+  }
+]

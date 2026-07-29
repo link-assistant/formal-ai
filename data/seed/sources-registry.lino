@@ -54,6 +54,28 @@ sources_registry
     license_url "https://creativecommons.org/licenses/by-sa/4.0/"
     cache_path data/cache/stackexchange/
     note "Developer Q&A with accepted answers across the Stack Exchange network (Stack Overflow, Super User, etc.); a structured second source for technical procedures. Consulted live and opt-out-able from settings."
+  source wikifunctions
+    name "Wikifunctions"
+    kind function_catalog
+    service_group external_trusted
+    settings_key externalServiceMediawikiFamily
+    default_enabled true
+    api "https://www.wikifunctions.org/w/api.php?action=opensearch&search={query}&limit=5&format=json&origin=*"
+    license_name "CC0 1.0 (function definitions); Apache-2.0 (implementations)"
+    license_url "https://www.wikifunctions.org/wiki/Wikifunctions:FAQ"
+    cache_path data/cache/wikifunctions/
+    note "Multilingual function definitions and implementations. The unknown-intent research pass queries its MediaWiki search surface and merges matching functions with other trusted sources."
+  source rosetta_code
+    name "Rosetta Code"
+    kind programming_task_catalog
+    service_group external_trusted
+    settings_key externalServiceMediawikiFamily
+    default_enabled true
+    api "https://rosettacode.org/w/api.php?action=opensearch&search={query}&limit=5&format=json&origin=*"
+    license_name "GNU Free Documentation License 1.2"
+    license_url "https://www.gnu.org/licenses/old-licenses/fdl-1.2.html"
+    cache_path data/cache/rosetta-code/
+    note "Programming tasks implemented across languages. The unknown-intent research pass queries its MediaWiki search surface and merges matching examples with other trusted sources."
   source wikibooks
     name "Wikibooks"
     kind open_textbook

@@ -1,6 +1,0 @@
-   Compiling formal-ai v0.303.0 (/tmp/gh-issue-solver-1784929434111)
-    Finished `release` profile [optimized] target(s) in 3m 38s
-     Running `target/release/examples/project_source_links_sharded docs/case-studies/issue-842/self-hosting-evidence`
-shard 1/2: 150 modules, 1060 lines -> docs/case-studies/issue-842/self-hosting-evidence/whole-repository-projection-01.lino
-shard 2/2: 143 modules, 1011 lines -> docs/case-studies/issue-842/self-hosting-evidence/whole-repository-projection-02.lino
-wrote 2 shards, 2071 total projection lines, 293 owned modules

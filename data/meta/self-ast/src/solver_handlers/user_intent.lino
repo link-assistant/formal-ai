@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/user_intent.rs
   language rust
   fidelity signature
-  byte_len 25102
-  line_count 647
-  content_id source_module_2b37029f26f63aa5
-  symbol_count 26
+  byte_len 23777
+  line_count 609
+  content_id source_module_16bead8f2595412c
+  symbol_count 24
   symbols
     function prefix_literals 19 26
     function suffix_literals 31 38
@@ -19,17 +19,15 @@ self_ast_census
     function is_assistant_free_time_prompt 179 186
     function prior_history_mentions_web_search 188 196
     function localized_seed_response 198 202
-    function try_unresolved_reference 211 233
-    function has_prior_turn 236 240
-    function try_capabilities 242 275
-    function try_shell_refusal 276 305
-    function try_opinion_question 307 345
-    function try_proof_request 358 364
-    function try_proof_request_with_config 379 470
-    function is_known_unsolved_bounded_proof_request 472 482
-    function extract_claim_from_prompt 488 512
-    function is_claim_intro_boundary 514 520
-    function strip_claim_prefix_noise 522 524
-    function pipeline_footer 526 545
-    function try_who_is_question 553 598
-    function suggest_correction 603 647
+    function try_capabilities 204 237
+    function try_shell_refusal 238 267
+    function try_opinion_question 269 307
+    function try_proof_request 320 326
+    function try_proof_request_with_config 341 432
+    function is_known_unsolved_bounded_proof_request 434 444
+    function extract_claim_from_prompt 450 474
+    function is_claim_intro_boundary 476 482
+    function strip_claim_prefix_noise 484 486
+    function pipeline_footer 488 507
+    function try_who_is_question 515 560
+    function suggest_correction 565 609

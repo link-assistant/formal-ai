@@ -82,6 +82,160 @@ pub fn evaluate_arithmetic_expression(expression: &str) -> Result<String, String
     evaluate_fallback_formatted(expression).map_err(|err| err.to_string())
 }
 
+/// Result of applying the deterministic arithmetic decision procedure to a
+/// fact-check statement.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ArithmeticClaimOutcome {
+    /// Both closed expressions reduce and the asserted relation holds.
+    Unrefuted,
+    /// Both closed expressions reduce and contradict the asserted relation.
+    Refuted,
+    /// The text has an arithmetic relation, but at least one side does not
+    /// reduce to a numeric value.
+    Inconclusive,
+}
+
+/// Structured arithmetic assessment shared with the browser through WASM.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ArithmeticClaimAssessment {
+    pub outcome: ArithmeticClaimOutcome,
+    pub left_expression: String,
+    pub left_value: String,
+    pub right_expression: String,
+    pub right_value: String,
+    pub relation: &'static str,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum ArithmeticComparison {
+    Equal,
+    NotEqual,
+    Less,
+    Greater,
+    LessOrEqual,
+    GreaterOrEqual,
+}
+
+/// Assess a closed arithmetic equality or inequality without any I/O.
+///
+/// `None` means that the statement is outside this decision procedure. A
+/// recognized relation that cannot be evaluated returns an `Inconclusive`
+/// assessment, preserving the fact checker's prior-only semantics.
+#[must_use]
+pub fn assess_arithmetic_claim(statement: &str) -> Option<ArithmeticClaimAssessment> {
+    let (left, right, comparison) = split_arithmetic_comparison(statement)?;
+    let left_expression = normalize_arithmetic_claim_side(left);
+    let right_expression = normalize_arithmetic_claim_side(right);
+    if left_expression.is_empty()
+        || right_expression.is_empty()
+        || !left_expression.chars().any(|ch| ch.is_ascii_digit())
+        || !right_expression.chars().any(|ch| ch.is_ascii_digit())
+    {
+        return None;
+    }
+
+    let left_result = evaluate_arithmetic_expression(&left_expression);
+    let right_result = evaluate_arithmetic_expression(&right_expression);
+    let (Ok(left_value), Ok(right_value)) = (left_result, right_result) else {
+        return Some(ArithmeticClaimAssessment {
+            outcome: ArithmeticClaimOutcome::Inconclusive,
+            left_expression,
+            left_value: String::new(),
+            right_expression,
+            right_value: String::new(),
+            relation: arithmetic_comparison_symbol(comparison),
+        });
+    };
+    let equal = arithmetic_values_equal(&left_value, &right_value);
+    let less = arithmetic_value_less_than(&left_value, &right_value);
+    let holds = match comparison {
+        ArithmeticComparison::Equal => equal,
+        ArithmeticComparison::NotEqual => !equal,
+        ArithmeticComparison::Less => less,
+        ArithmeticComparison::Greater => arithmetic_value_less_than(&right_value, &left_value),
+        ArithmeticComparison::LessOrEqual => equal || less,
+        ArithmeticComparison::GreaterOrEqual => {
+            equal || arithmetic_value_less_than(&right_value, &left_value)
+        }
+    };
+    Some(ArithmeticClaimAssessment {
+        outcome: if holds {
+            ArithmeticClaimOutcome::Unrefuted
+        } else {
+            ArithmeticClaimOutcome::Refuted
+        },
+        left_expression,
+        left_value,
+        right_expression,
+        right_value,
+        relation: arithmetic_comparison_symbol(comparison),
+    })
+}
+
+fn split_arithmetic_comparison(statement: &str) -> Option<(&str, &str, ArithmeticComparison)> {
+    const COMPARISONS: &[(&str, ArithmeticComparison)] = &[
+        ("==", ArithmeticComparison::Equal),
+        ("!=", ArithmeticComparison::NotEqual),
+        ("≠", ArithmeticComparison::NotEqual),
+        ("<=", ArithmeticComparison::LessOrEqual),
+        (">=", ArithmeticComparison::GreaterOrEqual),
+        ("≤", ArithmeticComparison::LessOrEqual),
+        ("≥", ArithmeticComparison::GreaterOrEqual),
+        ("=", ArithmeticComparison::Equal),
+        ("<", ArithmeticComparison::Less),
+        (">", ArithmeticComparison::Greater),
+    ];
+    for (token, comparison) in COMPARISONS {
+        if let Some(index) = statement.find(token) {
+            let (left, remainder) = statement.split_at(index);
+            return Some((left, &remainder[token.len()..], *comparison));
+        }
+    }
+    None
+}
+
+fn normalize_arithmetic_claim_side(text: &str) -> String {
+    let mut output = String::with_capacity(text.len());
+    for ch in text.trim().chars() {
+        match ch {
+            '×' | '·' => output.push('*'),
+            '÷' => output.push('/'),
+            '−' | '–' | '—' => output.push('-'),
+            ',' => output.push(' '),
+            _ => output.push(ch),
+        }
+    }
+    output.trim().to_string()
+}
+
+fn arithmetic_values_equal(left: &str, right: &str) -> bool {
+    if left == right {
+        return true;
+    }
+    let (Ok(left), Ok(right)) = (left.parse::<f64>(), right.parse::<f64>()) else {
+        return false;
+    };
+    (left - right).abs() < 1e-9
+}
+
+fn arithmetic_value_less_than(left: &str, right: &str) -> bool {
+    let (Ok(left), Ok(right)) = (left.parse::<f64>(), right.parse::<f64>()) else {
+        return false;
+    };
+    left < right
+}
+
+const fn arithmetic_comparison_symbol(comparison: ArithmeticComparison) -> &'static str {
+    match comparison {
+        ArithmeticComparison::Equal => "=",
+        ArithmeticComparison::NotEqual => "≠",
+        ArithmeticComparison::Less => "<",
+        ArithmeticComparison::Greater => ">",
+        ArithmeticComparison::LessOrEqual => "≤",
+        ArithmeticComparison::GreaterOrEqual => "≥",
+    }
+}
+
 /// Stable FNV-1a 64-bit id used by Rust answers and browser-worker memory.
 ///
 /// JavaScript strings are UTF-16 internally, so the browser worker must call

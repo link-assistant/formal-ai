@@ -2,8 +2,12 @@
 
 use std::{collections::BTreeSet, fs, path::Path};
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
-use formal_ai::seed::shell_intent_vocabulary;
+use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan, PlannedToolCall};
+use formal_ai::protocol::ToolCall;
+use formal_ai::seed::{
+    self, ROLE_LOCAL_PATH_DIRECTORY_KIND, ROLE_LOCAL_PATH_FILE_KIND, ROLE_LOCAL_PATH_SCOPE_CURRENT,
+    ROLE_LOCAL_PATH_SCOPE_DESKTOP, ROLE_LOCAL_PATH_SCOPE_HOME, ROLE_LOCAL_PATH_SEARCH_ACTION,
+};
 use formal_ai::ChatMessage;
 
 fn first_tool_call(prompt: &str) -> (String, serde_json::Value) {
@@ -18,6 +22,15 @@ fn first_tool_call(prompt: &str) -> (String, serde_json::Value) {
     let call = calls.first().expect("one tool call");
     let arguments = serde_json::from_str(&call.arguments).expect("JSON tool arguments");
     (call.tool.clone(), arguments)
+}
+
+fn next_tool_call(messages: &[ChatMessage]) -> PlannedToolCall {
+    let plan = plan_chat_step(messages, &["bash", "websearch", "webfetch"]).expect("next plan");
+    let AgenticPlan::ToolCalls(calls) = plan else {
+        panic!("expected a tool call: {plan:?}");
+    };
+    assert_eq!(calls.len(), 1);
+    calls.into_iter().next().unwrap()
 }
 
 #[test]
@@ -73,9 +86,9 @@ fn local_path_discovery_generalizes_across_language_action_kind_and_scope() {
 
 #[test]
 fn every_seeded_local_path_phrase_routes_to_find() {
-    let vocabulary = shell_intent_vocabulary();
+    let lexicon = seed::lexicon();
 
-    for action in &vocabulary.local_path_search_actions {
+    for action in lexicon.words_for_role(ROLE_LOCAL_PATH_SEARCH_ACTION) {
         let prompt = format!("{action} hive-control-center folder on my desktop");
         let (tool, arguments) = first_tool_call(&prompt);
         assert_eq!(tool, "bash", "action {action:?}");
@@ -87,47 +100,93 @@ fn every_seeded_local_path_phrase_routes_to_find() {
         );
     }
 
-    for scope in &vocabulary.local_path_search_scopes {
-        for cue in &scope.cues {
+    for (role, root) in [
+        (ROLE_LOCAL_PATH_SCOPE_DESKTOP, "FORMAL_AI_DESKTOP_DIR"),
+        (ROLE_LOCAL_PATH_SCOPE_HOME, "FORMAL_AI_HOME_DIR"),
+        (ROLE_LOCAL_PATH_SCOPE_CURRENT, "\".\""),
+    ] {
+        for cue in lexicon.words_for_role(role) {
             let prompt = format!("Find hive-control-center folder {cue}");
             let (_, arguments) = first_tool_call(&prompt);
             let command = arguments["command"].as_str().expect("shell command");
             assert!(command.starts_with("find "), "scope {cue:?}: {command}");
-            assert!(command.contains(&scope.root), "scope {cue:?}: {command}");
+            assert!(command.contains(root), "scope {cue:?}: {command}");
         }
     }
 
-    for kind in &vocabulary.local_path_search_kinds {
-        for cue in &kind.cues {
+    for (role, predicate) in [
+        (ROLE_LOCAL_PATH_DIRECTORY_KIND, "-type d"),
+        (ROLE_LOCAL_PATH_FILE_KIND, "-type f"),
+    ] {
+        for cue in lexicon.words_for_role(role) {
             let prompt = format!("Find hive-control-center {cue} on my desktop");
             let (_, arguments) = first_tool_call(&prompt);
             let command = arguments["command"].as_str().expect("shell command");
             assert!(command.starts_with("find "), "kind {cue:?}: {command}");
-            assert!(command.contains(&kind.predicate), "kind {cue:?}: {command}");
+            assert!(command.contains(predicate), "kind {cue:?}: {command}");
         }
     }
 }
 
 #[test]
 fn fuzzy_find_command_locates_the_reported_folder_name() {
-    let (_, arguments) = first_tool_call("Find hive-mind-control center folder on my desktop");
-    let command = arguments["command"].as_str().expect("shell command");
+    let prompt = "Find hive-mind-control center folder on my desktop";
+    let mut messages = vec![ChatMessage::user(prompt)];
+    let exact = next_tool_call(&messages);
     let fixture =
         std::env::temp_dir().join(format!("formal-ai-issue819-find-{}", std::process::id()));
     let expected = fixture.join("Archive/hive-control-center");
     std::fs::create_dir_all(&expected).expect("reported folder fixture");
 
-    let output = std::process::Command::new("bash")
-        .args(["-c", command])
+    let exact_arguments: serde_json::Value =
+        serde_json::from_str(&exact.arguments).expect("exact arguments");
+    let exact_command = exact_arguments["command"].as_str().expect("exact command");
+    let exact_output = std::process::Command::new("bash")
+        .args(["-c", exact_command])
         .env("FORMAL_AI_DESKTOP_DIR", &fixture)
         .output()
         .expect("execute generated find command");
+    assert!(exact_output.stdout.is_empty(), "{exact_output:?}");
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        "exact",
+        exact.tool,
+        exact.arguments,
+    )]));
+    messages.push(ChatMessage::tool_result("exact", "bash", "(no output)"));
+
+    let widened = next_tool_call(&messages);
+    let widened_arguments: serde_json::Value =
+        serde_json::from_str(&widened.arguments).expect("widened arguments");
+    let widened_command = widened_arguments["command"]
+        .as_str()
+        .expect("widened command");
+    assert!(widened_command.contains("*hive*"), "{widened_command}");
+    let output = std::process::Command::new("bash")
+        .args(["-c", widened_command])
+        .env("FORMAL_AI_DESKTOP_DIR", &fixture)
+        .output()
+        .expect("execute widened find command");
 
     assert!(output.status.success(), "{output:?}");
-    assert_eq!(
-        String::from_utf8(output.stdout).unwrap().trim(),
-        expected.to_string_lossy()
+    let widened_output = String::from_utf8(output.stdout).unwrap();
+    let expected_text = expected.to_string_lossy();
+    assert!(
+        widened_output.lines().any(|line| line == expected_text),
+        "{widened_command}: {widened_output}"
     );
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        "widened",
+        widened.tool,
+        widened.arguments,
+    )]));
+    messages.push(ChatMessage::tool_result("widened", "bash", &widened_output));
+    let answer = plan_chat_step(&messages, &["bash", "websearch", "webfetch"])
+        .expect("grounded final answer");
+    let AgenticPlan::Final(answer) = answer else {
+        panic!("expected final answer, got {answer:?}");
+    };
+    assert!(answer.contains(expected_text.as_ref()), "{answer}");
+    assert!(!answer.ends_with("/Archive"), "{answer}");
     std::fs::remove_dir_all(&fixture).expect("remove isolated fixture");
 }
 
@@ -209,12 +268,8 @@ fn local_path_discovery_benchmark_routes_every_case_to_find() {
                 marker => assert!(command.contains(marker), "{id}: {command}"),
             }
             assert!(command.contains(expected_predicate), "{id}: {command}");
-            // `-print`, not `-print -quit`: issue #842 measured the desktop
-            // lookup answering with one match where several existed, because
-            // `-quit` stops the walk at the first hit. Every match is printed
-            // now, so the answer can report what is actually there.
             assert!(command.ends_with("-print"), "{id}: {command}");
-            assert!(!command.contains("-quit"), "{id}: {command}");
+            assert!(!command.contains("-print -quit"), "{id}: {command}");
             languages.insert(language);
             passed += 1;
         }

@@ -21,8 +21,11 @@
 
 use crate::engine::stable_id;
 use crate::event_log::EventLog;
-use crate::intent_formalization::{formalize_intent, IntentFormalization, IntentKind};
+use crate::intent_formalization::{
+    formalize_intent, ordered_requirement_spans, IntentFormalization, IntentKind,
+};
 use crate::links_format::format_lino_record;
+use crate::seed::{self, ROLE_SKILL_PROCEDURE_CLAUSE_SEPARATOR};
 use crate::translation::formalize_prompt;
 
 /// Formalize a single span the same way the solver formalizes a whole prompt:
@@ -503,12 +506,15 @@ fn split_sentences(text: &str) -> Vec<String> {
 /// decomposition so the frame agrees with `record_decomposition`.
 #[must_use]
 fn split_clauses(sentence: &str) -> Vec<String> {
-    sentence
-        .split([',', ';'])
-        .flat_map(|chunk| chunk.split(" and "))
-        .flat_map(|chunk| chunk.split(" with "))
-        .map(|chunk| chunk.trim().to_owned())
-        .filter(|chunk| !chunk.is_empty())
+    let surfaces = seed::lexicon()
+        .meanings_with_role(ROLE_SKILL_PROCEDURE_CLAUSE_SEPARATOR)
+        .flat_map(|meaning| &meaning.lexemes)
+        .flat_map(|lexeme| &lexeme.words)
+        .map(|word| word.text.as_str())
+        .collect::<Vec<_>>();
+    ordered_requirement_spans(sentence, &surfaces)
+        .into_iter()
+        .map(|requirement| requirement.source_text)
         .collect()
 }
 

@@ -1,4 +1,4 @@
-import { captureTuiTranscript } from './tui-transcript.mjs';
+import { captureAgentTui } from 'agent-commander';
 
 const required = (name) => {
   const value = process.env[name];
@@ -8,25 +8,46 @@ const required = (name) => {
 
 const question = 'What would you like to report? Select one or more.';
 const issueUrl = required('ISSUE819_REPORT_URL');
-const transcript = await captureTuiTranscript({
-  command: required('ISSUE819_TUI_COMMAND'),
-  cwd: required('ISSUE819_TUI_CWD'),
-  environment: {
+const capture = await captureAgentTui({
+  tool: 'opencode',
+  workingDirectory: required('ISSUE819_TUI_CWD'),
+  executable: required('ISSUE819_TUI_EXECUTABLE'),
+  extraArgs: ['.'],
+  model: 'formal-ai/formal-ai',
+  prompt: 'Report',
+  promptAfter: 'Ask anything...',
+  extraEnv: {
     PATH: required('ISSUE819_TUI_PATH'),
   },
   interactions: [
     {
       after: question,
-      inputs: ['1', '2', '3', '\t', '\r'],
-      delayMs: 150,
+      text: '1',
+    },
+    {
+      after: '[✓] Harness log',
+      text: '2',
+    },
+    {
+      after: '[✓] Server log',
+      text: '3',
+    },
+    {
+      after: '[✓] GitHub issue',
+      key: 'TAB',
+    },
+    {
+      after: 'Harness log, Server log, GitHub issue',
+      key: 'ENTER',
     },
   ],
   stopMarker: issueUrl,
-  outputPath: required('ISSUE819_TUI_OUTPUT'),
-  timeoutMs: 120_000,
+  stopMarkerGraceMilliseconds: 1_000,
+  timeoutMilliseconds: 120_000,
+  artifactDirectory: required('ISSUE819_TUI_ARTIFACT_DIR'),
 });
 
-const rendered = transcript.sequence.join('\n');
+const rendered = capture.transcript;
 for (const expected of [
   'Report',
   question,
@@ -43,9 +64,11 @@ for (const expected of [
     );
   }
 }
-if (transcript.interaction_count !== 1) {
+if (capture.interactionCount !== 6) {
   throw new Error('OpenCode did not reach the report multi-select interaction');
 }
-if (!transcript.stop_marker_seen) {
+if (!capture.output.includes(issueUrl)) {
   throw new Error('OpenCode TUI ended before displaying the created issue URL');
 }
+
+process.stdout.write(`${rendered}\n`);

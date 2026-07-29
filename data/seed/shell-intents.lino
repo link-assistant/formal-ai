@@ -32,8 +32,6 @@ shell_intents
       word search
       word find
       word grep
-      word exactly
-      word please
     language ru
       word файл
       word папку
@@ -81,44 +79,17 @@ shell_intents
       scope 在源码中
       scope 在仓库中
   local_path_search
-    command_template "find \"{root}\"{predicate} \\( {patterns} \\) -print"
-    listing_command_template "ls -A \"{root}\""
-    listing_subject_command_template "find \"{root}\" -maxdepth 3 -type d -iname '*{subject}*' -exec ls -A {} +"
-    listing_actions
-      language en
-        action "list"
-        action "what is inside"
-        action "what's inside"
-        action "what is in"
-        action "what's in"
-        action "contents of"
-      language ru
-        action "покажи содержимое"
-        action "что внутри"
-        action "перечисли"
-        action "список"
-      language hi
-        action "में क्या है"
-        action "सूची"
-      language zh
-        action 列出
-        action 里面有什么
+    command_template "find \"{root}\"{predicate} \\( {patterns} \\) -print -quit"
     actions
       language en
         action find
         action locate
         action "look for"
         action "search for"
-        action search
-        action "is there"
-        action "where is"
       language ru
         action найди
         action найти
         action отыщи
-        action поищи
-        action "есть ли"
-        action "где находится"
       language hi
         action खोजें
         action ढूँढें
@@ -134,8 +105,6 @@ shell_intents
           cue "on the desktop"
           cue "in my desktop"
           cue "in the desktop"
-          cue "on desktop"
-          cue "in desktop"
         language ru
           cue "на моём рабочем столе"
           cue "на моем рабочем столе"
@@ -369,19 +338,24 @@ shell_intents
       argument "none"
       language en
         cue "running processes"
+        cue "processes are running"
         cue "process list"
         cue "list of processes"
         cue "which processes"
         cue "list processes"
       language ru
         cue "запущенные процессы"
+        cue "процессы запущены"
+        cue "какие процессы"
         cue "список процессов"
         cue "работающие процессы"
       language hi
         cue "चल रही प्रक्रियाएं"
+        cue "कौन सी प्रक्रियाएं"
         cue "प्रक्रियाओं की सूची"
       language zh
         cue 正在运行的进程
+        cue 哪些进程正在运行
         cue 进程列表
     intent
       command ls

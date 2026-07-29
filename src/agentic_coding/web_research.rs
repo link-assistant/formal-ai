@@ -11,11 +11,15 @@ use super::planner::{fetch_arguments, plan_one, tool_for, AgenticPlan, Capabilit
 use crate::engine::FormalAiEngine;
 use crate::protocol::ChatMessage;
 use crate::seed::{self, Slot};
+use crate::world_model::Context;
+use crate::world_model_context::{ContextHierarchy, ExternalLookup, InheritancePolicy};
 
 pub(super) fn web_research_query_for(messages: &[ChatMessage]) -> Option<String> {
     let task = latest_user_text(messages)?;
     if let Some(query) = seed_research_subject(&task)
         .or_else(|| crate::solver_handlers::detect_web_search_query(&task))
+        .or_else(|| seed_definition_subject(&task))
+        .or_else(|| seed_unresolved_question_subject(&task))
     {
         return if is_context_reference(&query) {
             topic_from_history(messages)
@@ -36,14 +40,112 @@ pub(super) fn web_research_query_for(messages: &[ChatMessage]) -> Option<String>
     (asks_question && unresolved).then(|| trim_question_punctuation(&task))
 }
 
+pub(super) fn is_definition_followup(task: &str) -> bool {
+    seed::lexicon().mentions_role(
+        seed::ROLE_DEFINITION_ANTECEDENT_FOLLOWUP,
+        &crate::engine::normalize_prompt(task),
+    )
+}
+
+pub(super) fn definition_followup_topic(messages: &[ChatMessage], task: &str) -> Option<String> {
+    // A compound one-turn prompt can state the antecedent before the follow-up.
+    let normalized = crate::engine::normalize_prompt(task);
+    let mut forms = seed::lexicon().words_for_role(seed::ROLE_DEFINITION_ANTECEDENT_FOLLOWUP);
+    forms.sort_by_key(|form| std::cmp::Reverse(form.chars().count()));
+    if let Some(prefix) = forms.into_iter().find_map(|form| {
+        let form = crate::engine::normalize_prompt(&form);
+        normalized
+            .find(&form)
+            .map(|position| normalized[..position].trim())
+            .filter(|prefix| !prefix.is_empty())
+    }) {
+        let mut antecedent = prefix
+            .trim_end_matches(|character: char| {
+                character.is_whitespace()
+                    || character.is_ascii_punctuation()
+                    || matches!(character, '？' | '。')
+            })
+            .trim()
+            .to_owned();
+        let mut continuations =
+            seed::lexicon().words_for_role(seed::ROLE_CLAUSE_CONTINUATION_MARKER);
+        continuations.sort_by_key(|marker| std::cmp::Reverse(marker.chars().count()));
+        for marker in continuations {
+            let marker = crate::engine::normalize_prompt(&marker);
+            if antecedent == marker {
+                antecedent.clear();
+                break;
+            }
+            if antecedent.ends_with(&format!(" {marker}")) {
+                antecedent.truncate(antecedent.len() - marker.len() - 1);
+                break;
+            }
+        }
+        if !antecedent.is_empty() {
+            return crate::solver_handlers::detect_web_search_query(&antecedent)
+                .or_else(|| seed_prefix_subject(&antecedent, seed::ROLE_RESEARCH_QUESTION_OPENER))
+                .or(Some(antecedent));
+        }
+    }
+    topic_from_history(messages)
+}
+
+pub(super) fn definition_followup_clarification(task: &str) -> String {
+    let language = crate::language::detect(task).slug();
+    seed::response_for("definition_followup_clarify", language)
+        .or_else(|| seed::response_for("definition_followup_clarify", "en"))
+        .unwrap_or_default()
+}
+
 /// Extract the subject carried by a seed-declared research imperative. The
 /// shared web detector deliberately rejects pronouns as standalone searches;
 /// the agentic planner accepts them here because it can resolve them against
 /// conversation history before creating a tool call.
 fn seed_research_subject(task: &str) -> Option<String> {
+    seed_prefix_subject(task, seed::ROLE_WEB_SEARCH_IMPERATIVE_LEAD)
+}
+
+fn seed_definition_subject(task: &str) -> Option<String> {
+    let normalized = crate::engine::normalize_prompt(task);
+    let lexicon = seed::lexicon();
+    lexicon
+        .role_word_forms(seed::ROLE_RESEARCH_QUESTION_OPENER)
+        .into_iter()
+        .filter(|form| form.slot() == Slot::Prefix)
+        .filter(|form| {
+            lexicon.mentions_role(
+                seed::ROLE_DEFINITION_COMMAND,
+                &crate::engine::normalize_prompt(form.before_slot()),
+            )
+        })
+        .find_map(|form| {
+            let prefix = crate::engine::normalize_prompt(form.before_slot());
+            normalized
+                .strip_prefix(&prefix)
+                .map(trim_question_punctuation)
+                .filter(|subject| !subject.trim().is_empty())
+        })
+}
+
+/// Recover an open-world question whose output instruction follows its question
+/// mark (for example, "What is X? Answer in English."). The ordinary web intent
+/// detector sees the seeded opener but deliberately leaves broad factual
+/// questions to the symbolic solver. Only promote that subject after the local
+/// engine reports it unresolved, so locally known facts keep their established
+/// route.
+fn seed_unresolved_question_subject(task: &str) -> Option<String> {
+    let subject = seed_prefix_subject(task, seed::ROLE_RESEARCH_QUESTION_OPENER)?;
+    matches!(
+        FormalAiEngine.answer(task).intent.as_str(),
+        "unknown" | "web_search"
+    )
+    .then_some(subject)
+}
+
+fn seed_prefix_subject(task: &str, role: &str) -> Option<String> {
     let normalized = crate::engine::normalize_prompt(task);
     seed::lexicon()
-        .role_word_forms(seed::ROLE_WEB_SEARCH_IMPERATIVE_LEAD)
+        .role_word_forms(role)
         .into_iter()
         .filter(|form| form.slot() == Slot::Prefix)
         .find_map(|form| {
@@ -209,11 +311,10 @@ fn aspects_of(query: &str) -> Vec<String> {
         .collect()
 }
 
-/// Evidence at or below this many characters is already an answer, so it is
-/// reported verbatim. Above it the fetch result is a whole web page — site
-/// chrome, navigation and unrelated articles around the part that answers the
-/// question — and must be extracted from rather than dumped (issue #771).
-const VERBATIM_EVIDENCE_LIMIT: usize = 600;
+/// Maximum fallback length when no sentence overlaps the question. Even a
+/// short fetch can be a whole page made of terse navigation labels, so length
+/// is never treated as proof that a payload is already an answer.
+const MAX_EXTRACT_CHARS: usize = 600;
 
 /// How many sentences an extract keeps. Enough for a claim plus its immediate
 /// qualification, short enough to stay an answer rather than a transcript.
@@ -233,6 +334,11 @@ fn final_answer(query: &str, progress: &Progress) -> String {
             })
             .collect::<Vec<_>>()
             .join("\n\n");
+    }
+    if !progress.attempted_fetches.is_empty() {
+        // Search-result snippets and URLs are discovery metadata, not a
+        // substitute for pages that every fetch attempt failed to read.
+        return render_seed_text("web_research_no_content", "query", query);
     }
     let evidence = progress
         .fetched_text
@@ -263,9 +369,6 @@ fn final_answer(query: &str, progress: &Progress) -> String {
 /// so it works in every supported language — see [`relevance`] for how the
 /// space-less scripts are handled.
 fn extract_answer(query: &str, evidence: &str) -> String {
-    if evidence.chars().count() <= VERBATIM_EVIDENCE_LIMIT {
-        return evidence.to_owned();
-    }
     let sentences = crate::summarization::formalize(evidence);
     let mut scored: Vec<(usize, f32, &str)> = sentences
         .iter()
@@ -282,7 +385,7 @@ fn extract_answer(query: &str, evidence: &str) -> String {
     if scored.is_empty() {
         // Nothing overlaps the query: fall back to the head of the document
         // rather than the whole of it, so the answer stays bounded either way.
-        return truncate_chars(evidence, VERBATIM_EVIDENCE_LIMIT);
+        return truncate_chars(evidence, MAX_EXTRACT_CHARS);
     }
     // Rank by relevance, keep the best few, then restore document order.
     scored.sort_by(|left, right| {
@@ -438,24 +541,49 @@ fn topic_from_history(messages: &[ChatMessage]) -> Option<String> {
     let latest = messages
         .iter()
         .rposition(|message| message.role.eq_ignore_ascii_case("user"))?;
-    messages[..latest]
-        .iter()
-        .enumerate()
-        .rev()
-        .find_map(|(index, message)| {
-            if !message.role.eq_ignore_ascii_case("user") {
-                return None;
-            }
+    let mut hierarchy = ContextHierarchy::new();
+    hierarchy.insert(Context::new("conversation")).ok()?;
+    let mut parent_id = String::from("conversation");
+
+    for (index, message) in messages[..latest].iter().enumerate() {
+        let context_id = format!("conversation:turn:{}", index + 1);
+        let mut context = Context::new(&context_id);
+        if message.role.eq_ignore_ascii_case("user") {
             let text = message.content.plain_text();
-            if super::report_issue::is_report_intent(&text)
-                || is_conversation_meta_request(&text, &messages[..index])
+            if !super::report_issue::is_report_intent(&text)
+                && !is_conversation_meta_request(&text, &messages[..index])
             {
-                return None;
+                let topic = crate::solver_handlers::detect_web_search_query(&text)
+                    .or_else(|| seed_prefix_subject(&text, seed::ROLE_RESEARCH_QUESTION_OPENER))
+                    .unwrap_or_else(|| trim_question_punctuation(&text));
+                if !topic.trim().is_empty() && !is_context_reference(&topic) {
+                    context.assert_link("research_topic", &topic);
+                }
             }
-            let topic = crate::solver_handlers::detect_web_search_query(&text)
-                .unwrap_or_else(|| trim_question_punctuation(&text));
-            (!topic.trim().is_empty() && !is_context_reference(&topic)).then_some(topic)
-        })
+        }
+        hierarchy
+            .nest(context, &parent_id, InheritancePolicy::Full)
+            .ok()?;
+        parent_id = context_id;
+    }
+
+    hierarchy
+        .nest(
+            Context::new("conversation:current"),
+            &parent_id,
+            InheritancePolicy::Full,
+        )
+        .ok()?;
+    hierarchy
+        .resolve(
+            "conversation:current",
+            "research_topic",
+            ExternalLookup::Denied,
+        )
+        .ok()?
+        .links
+        .first()
+        .map(|link| link.to.clone())
 }
 
 fn is_conversation_meta_request(prompt: &str, preceding: &[ChatMessage]) -> bool {
@@ -485,9 +613,5 @@ fn trim_question_punctuation(text: &str) -> String {
 }
 
 fn latest_user_text(messages: &[ChatMessage]) -> Option<String> {
-    messages
-        .iter()
-        .rev()
-        .find(|message| message.role.eq_ignore_ascii_case("user"))
-        .map(|message| message.content.user_request_text())
+    crate::protocol::latest_user_request(messages)
 }

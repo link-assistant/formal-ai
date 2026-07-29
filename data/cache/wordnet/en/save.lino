@@ -1,0 +1,73 @@
+language en
+lemma save
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "(sports) the act of preventing the opposition from scoring"
+    examples ("the goalie made a brilliant save" "the relief pitcher got credit for a save")
+    id oewn-01081320-n
+    partOfSpeech n
+  entry
+    definition "save from ruin, destruction, or harm"
+    id oewn-02556565-v
+    partOfSpeech v
+    synonyms (salvage salve relieve)
+  entry
+    definition "to keep up and reserve for personal or special use"
+    examples ("She saved the old family photographs in a drawer")
+    id oewn-02230274-v
+    partOfSpeech v
+    synonyms (preserve)
+  entry
+    definition "bring into safety"
+    examples ("We pulled through most of the victims of the bomb attack")
+    id oewn-02557529-v
+    partOfSpeech v
+    synonyms ("carry through" "pull through" "bring through")
+  entry
+    definition "spend less; buy at a reduced price"
+    id oewn-02271765-v
+    partOfSpeech v
+  entry
+    definition "accumulate money for future use"
+    examples ("He saves half his salary")
+    id oewn-02270824-v
+    partOfSpeech v
+    synonyms ("lay aside" "save up")
+  entry
+    definition "make unnecessary an expenditure or effort"
+    examples ("This will save money" "I'll save you the trouble" "This will save you a lot of time")
+    id oewn-00550632-v
+    partOfSpeech v
+    synonyms ("make unnecessary")
+  entry
+    definition "save from sins"
+    id oewn-02557299-v
+    partOfSpeech v
+    synonyms (deliver redeem)
+  entry
+    definition "refrain from harming"
+    id oewn-02470006-v
+    partOfSpeech v
+    synonyms (spare)
+  entry
+    definition "spend sparingly, avoid the waste of"
+    examples ("This move will save money" "The less fortunate will have to economize now")
+    id oewn-02362227-v
+    partOfSpeech v
+    synonyms (economize economise)
+  entry
+    definition "retain rights to"
+    examples ("keep my job for me while I give birth" "keep my seat, please" "keep open the possibility of a merger")
+    id oewn-02288561-v
+    partOfSpeech v
+    synonyms ("keep open" "hold open" keep)
+  entry
+    definition "record data on a computer"
+    examples ("boot-up instructions are written on the hard disk")
+    id oewn-01000931-v
+    partOfSpeech v
+    synonyms (write)
+source "oewn:2024"

@@ -77,10 +77,14 @@ roles
     kind predicate
   common_typo
     kind meaning
-  comparison_connective
-    kind meaning
   comparison_difference_cue
     kind predicate
+  comparison_infix
+    kind meaning
+  comparison_query_noise
+    kind meaning
+  comparison_rhs_marker
+    kind meaning
   comparison_table_noun
     kind predicate
   comparison_table_trigger
@@ -129,6 +133,8 @@ roles
     kind predicate
   currency_usd_reference
     kind predicate
+  definition_antecedent_followup
+    kind meaning
   definition_artifact_request
     kind meaning
   definition_command
@@ -155,6 +161,8 @@ roles
     kind predicate
   explanation_request_lead
     kind predicate
+  fact_check_current_dialogue_query
+    kind meaning
   fact_relation
     kind predicate
   feature_action_arithmetic
@@ -174,6 +182,8 @@ roles
   file_read_action_cue
     kind predicate
   file_write_action_cue
+    kind predicate
+  file_write_command_output_reference
     kind predicate
   file_write_content_lead
     kind predicate
@@ -231,6 +241,28 @@ roles
     kind predicate
   live_rate_freshness_cue
     kind predicate
+  local_path_contents_request
+    kind meaning
+  local_path_directory_kind
+    kind meaning
+  local_path_file_kind
+    kind meaning
+  local_path_list_action
+    kind meaning
+  local_path_query_noise
+    kind meaning
+  local_path_route_question
+    kind meaning
+  local_path_scope_current
+    kind meaning
+  local_path_scope_desktop
+    kind meaning
+  local_path_scope_home
+    kind meaning
+  local_path_search_action
+    kind meaning
+  local_path_type_request
+    kind meaning
   local_shell_request_cue
     kind predicate
   math_function_name
@@ -391,6 +423,14 @@ roles
     kind predicate
   shell_capability_cue
     kind predicate
+  skill_procedure_clause_separator
+    kind predicate
+  skill_procedure_step_object
+    kind predicate
+  skill_procedure_step_verb
+    kind predicate
+  skill_procedure_trigger_lead
+    kind predicate
   skill_teaching_response_verb
     kind predicate
   skill_teaching_trigger_lead
@@ -447,6 +487,8 @@ roles
     kind meaning
   tool_result_detail_request
     kind meaning
+  tool_result_failure_signal
+    kind predicate
   tool_result_first_reference
     kind meaning
   tool_result_line_request
@@ -478,8 +520,6 @@ roles
   translation_target_marker
     kind predicate
   translation_unquoted_frame
-    kind meaning
-  unresolved_reference
     kind meaning
   url_navigate
     kind meaning

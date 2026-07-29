@@ -124,21 +124,6 @@ prompt_patterns
     language ru
     kind prefix
     text "расскажи за "
-  pattern pattern_concept_prefix_day_opredelenie_slova
-    intent concept_lookup
-    language ru
-    kind prefix
-    text "дай определение слова "
-  pattern pattern_concept_prefix_day_opredelenie
-    intent concept_lookup
-    language ru
-    kind prefix
-    text "дай определение "
-  pattern pattern_concept_prefix_opredelenie_slova
-    intent concept_lookup
-    language ru
-    kind prefix
-    text "определение слова "
   pattern pattern_concept_prefix_opishi
     intent concept_lookup
     language ru
@@ -219,21 +204,6 @@ prompt_patterns
     language en
     kind prefix
     text "can you describe "
-  pattern pattern_concept_prefix_give_the_definition_of_the_word
-    intent concept_lookup
-    language en
-    kind prefix
-    text "give the definition of the word "
-  pattern pattern_concept_prefix_give_the_definition_of
-    intent concept_lookup
-    language en
-    kind prefix
-    text "give the definition of "
-  pattern pattern_concept_prefix_definition_of_the_word
-    intent concept_lookup
-    language en
-    kind prefix
-    text "definition of the word "
   pattern pattern_concept_prefix_chto_znachit
     intent concept_lookup
     language ru
@@ -369,36 +339,6 @@ prompt_patterns
     language hi
     kind suffix
     text " का मतलब क्या है"
-  pattern pattern_concept_suffix_shabd_ki_paribhasha_batao
-    intent concept_lookup
-    language hi
-    kind suffix
-    text " शब्द की परिभाषा बताओ"
-  pattern pattern_concept_suffix_ki_paribhasha_batao
-    intent concept_lookup
-    language hi
-    kind suffix
-    text " की परिभाषा बताओ"
-  pattern pattern_concept_suffix_ki_paribhasha_kya_hai
-    intent concept_lookup
-    language hi
-    kind suffix
-    text " की परिभाषा क्या है"
-  pattern pattern_concept_suffix_zhege_ci_de_dingyi
-    intent concept_lookup
-    language zh
-    kind suffix
-    text 这个词的定义是什么
-  pattern pattern_concept_suffix_de_dingyi_shi_shenme
-    intent concept_lookup
-    language zh
-    kind suffix
-    text 的定义是什么
-  pattern pattern_concept_suffix_de_dingyi
-    intent concept_lookup
-    language zh
-    kind suffix
-    text 的定义
   pattern pattern_concept_context_delimiter_in_en
     intent concept_lookup
     language en

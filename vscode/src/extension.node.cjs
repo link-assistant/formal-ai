@@ -178,7 +178,11 @@ function activate(context) {
     return REPO_ROOT;
   }
 
-  let status = statusFromConfig(currentConfig(), { shell: SHELL, serverCapable: true });
+  let status = statusFromConfig(currentConfig(), {
+    shell: SHELL,
+    platform: process.platform,
+    serverCapable: true,
+  });
   let serverProc = null;
   let memorySync = null;
   let resolvedView = null;
@@ -262,7 +266,11 @@ function activate(context) {
   let applying = null;
   async function applyServerState() {
     const config = currentConfig();
-    status = statusFromConfig(config, { shell: SHELL, serverCapable: true });
+    status = statusFromConfig(config, {
+      shell: SHELL,
+      platform: process.platform,
+      serverCapable: true,
+    });
     toolRouter.setGrants({ all: status.allowToolsByDefault === true });
     stopServer();
     memorySync = null;

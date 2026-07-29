@@ -24,12 +24,6 @@ meanings
         text создать
       surface
         text зарепорти
-      surface
-        text зарепортить
-      surface
-        text отправь
-      surface
-        text заведи
     lexeme hi
       surface
         text रिपोर्ट
@@ -56,6 +50,8 @@ meanings
         text repo
     lexeme ru
       surface
+        text баг
+      surface
         text проблема
       surface
         text проблеме
@@ -65,12 +61,6 @@ meanings
         text ошибке
       surface
         text issue
-      surface
-        text баг
-      surface
-        text багу
-      surface
-        text баге
     lexeme hi
       surface
         text समस्या

@@ -12,14 +12,6 @@
 /// "समझ नहीं आया", "我不明白", …). A meaning carrying this role is `defined_by`
 /// the `clarification` and `understanding` concepts.
 pub const ROLE_CLARIFICATION_REQUEST: &str = "clarification_request";
-/// Semantic role: a question whose subject is a bare demonstrative.
-///
-/// "так что это такое то?", "what is that then?", … — the request names no
-/// topic of its own and only makes sense against an antecedent. Issue #842
-/// recorded these being answered with the full capability menu, which is never
-/// a useful reply to "so what is it, then?"; the correct response is to ask
-/// what is meant.
-pub const ROLE_UNRESOLVED_REFERENCE: &str = "unresolved_reference";
 /// Semantic role: the user asking what the assistant is able to do.
 ///
 /// A request to enumerate its capabilities ("what can you do", "что ты умеешь",
@@ -36,6 +28,13 @@ pub const ROLE_CAPABILITY_QUERY_MORE: &str = "capability_query_more";
 /// "facts about yourself", "факты о себе", "自我事实", …. Checked before the
 /// broader self-introduction and known-facts queries so it wins the overlap.
 pub const ROLE_SELF_FACT_QUERY: &str = "self_fact_query";
+/// Semantic role: a request to audit every statement in the current dialogue.
+///
+/// The complete multilingual surfaces ("fact-check this dialogue", "проверь
+/// факты в диалоге", …) live in `data/seed/meanings-intent.lino`. A dedicated
+/// role keeps this dialog-scoped operation distinct from document originality
+/// checks and from open-ended web fact searches.
+pub const ROLE_FACT_CHECK_CURRENT_DIALOGUE_QUERY: &str = "fact_check_current_dialogue_query";
 /// Semantic role: the user asking the assistant to introduce itself.
 ///
 /// A get-acquainted request ("tell me about yourself", "расскажи о себе",
@@ -413,6 +412,36 @@ pub const ROLE_WEB_SEARCH_SOURCE_ONLY: &str = "web_search_source_only";
 /// ("search it") be read as referring back to a web search the assistant already
 /// offered. Lexicalised in every supported language. Carried by `web_search_mention`.
 pub const ROLE_WEB_SEARCH_HISTORY_SIGNAL: &str = "web_search_history_signal";
+/// Semantic role: a verb or interrogative that requests local path discovery.
+pub const ROLE_LOCAL_PATH_SEARCH_ACTION: &str = "local_path_search_action";
+/// Semantic role: an action that lists children of an explicit local scope.
+pub const ROLE_LOCAL_PATH_LIST_ACTION: &str = "local_path_list_action";
+/// Semantic role: a request to inspect the children of a named local directory.
+pub const ROLE_LOCAL_PATH_CONTENTS_REQUEST: &str = "local_path_contents_request";
+/// Semantic role: a request to classify a local path as a file or directory.
+pub const ROLE_LOCAL_PATH_TYPE_REQUEST: &str = "local_path_type_request";
+/// Semantic role: a local-search scope rooted at the user's Desktop.
+pub const ROLE_LOCAL_PATH_SCOPE_DESKTOP: &str = "local_path_scope_desktop";
+/// Semantic role: a local-search scope rooted at the user's home directory.
+pub const ROLE_LOCAL_PATH_SCOPE_HOME: &str = "local_path_scope_home";
+/// Semantic role: a local-search scope rooted at the current workspace.
+pub const ROLE_LOCAL_PATH_SCOPE_CURRENT: &str = "local_path_scope_current";
+/// Semantic role: the requested path must be a directory.
+pub const ROLE_LOCAL_PATH_DIRECTORY_KIND: &str = "local_path_directory_kind";
+/// Semantic role: the requested path must be a regular file.
+pub const ROLE_LOCAL_PATH_FILE_KIND: &str = "local_path_file_kind";
+/// Semantic role: grammatical glue excluded from a local path name.
+pub const ROLE_LOCAL_PATH_QUERY_NOISE: &str = "local_path_query_noise";
+/// Semantic role: a question asking whether an embedded request is local or web.
+pub const ROLE_LOCAL_PATH_ROUTE_QUESTION: &str = "local_path_route_question";
+/// Semantic role: a definition follow-up whose subject comes from prior discourse.
+pub const ROLE_DEFINITION_ANTECEDENT_FOLLOWUP: &str = "definition_antecedent_followup";
+/// Semantic role: the relation separating two subjects to compare.
+pub const ROLE_COMPARISON_INFIX: &str = "comparison_infix";
+/// Semantic role: output-format wording excluded from comparison operands.
+pub const ROLE_COMPARISON_QUERY_NOISE: &str = "comparison_query_noise";
+/// Semantic role: the right-hand marker in an inflected comparison frame.
+pub const ROLE_COMPARISON_RHS_MARKER: &str = "comparison_rhs_marker";
 /// Semantic role: the predicate verb of a follow-up instruction clause.
 ///
 /// "search X **and then compare** …", "search X**. summarize** …" — the verb
@@ -461,13 +490,6 @@ pub const ROLE_RESEARCH_EVIDENCE_DOMAIN: &str = "research_evidence_domain";
 /// "evaluation", "comparison", "discount", "price", "cost", … — the assessment
 /// a research question is framed around.
 pub const ROLE_RESEARCH_EVALUATION_DOMAIN: &str = "research_evaluation_domain";
-/// Semantic role: the connective of a bare two-term comparison.
-///
-/// "vs", "versus", "против", "对比", … — the whole of a request like
-/// `ФБС vs ФБО`, which names two topics and asks, without any verb, how they
-/// differ. Issue #842 recorded that shape being refused while both of its
-/// halves ("Что такое ФБО?", "Что такое ФБС?") were researched normally.
-pub const ROLE_COMPARISON_CONNECTIVE: &str = "comparison_connective";
 /// Semantic role: an opener that asks to list every member of a set.
 ///
 /// "list all …", "show all …", "перечисли всех …", "列出所有 …", … — the lead-in
