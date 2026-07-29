@@ -6,6 +6,10 @@ runs:
   steps:
     - name: Install sccache
       uses: mozilla-actions/sccache-action@v0.0.10
+      with:
+        # v0.17.0 expands Rust response files before spawning rustc and can
+        # exceed the Windows command-line limit (mozilla/sccache#2397).
+        version: v0.16.0
 
     - name: Enable sccache for Rust
       shell: bash
