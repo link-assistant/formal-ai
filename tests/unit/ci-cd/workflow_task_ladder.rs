@@ -33,6 +33,18 @@ fn the_ladder_runs_against_the_committed_baseline() {
         contents.contains("set -euo pipefail\n          bash experiments/issue_840_task_ladder"),
         "the run step must keep pipefail so the ratchet's exit code survives tee"
     );
+    assert!(
+        contents.contains("python3 -m unittest -v test_ladder.py"),
+        "the judge's own regression tests must run before it gates the server"
+    );
+    assert!(
+        contents.contains("uses: ./.github/actions/setup-sccache"),
+        "the release build should reuse the repository's Rust cache"
+    );
+    assert!(
+        contents.contains("LEARNING_OUT: ${{ runner.temp }}/ladder-learning.json"),
+        "failed nodes must produce a retained review-gated learning artifact"
+    );
 }
 
 #[test]

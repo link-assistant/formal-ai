@@ -68,6 +68,13 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
+      - uses: ./.github/actions/setup-sccache
+
+      - name: Test the falsifiable ladder judge
+        run: |
+          cd experiments/issue_840_task_ladder
+          python3 -m unittest -v test_ladder.py
+
       - name: Build the server
         run: cargo build --release --bin formal-ai
 
@@ -77,6 +84,7 @@ jobs:
         env:
           BASELINE: experiments/issue_840_task_ladder/results.json
           OUT: ${{ runner.temp }}/ladder-results.json
+          LEARNING_OUT: ${{ runner.temp }}/ladder-learning.json
         # pipefail, or `tee` would swallow the ratchet's non-zero exit code.
         run: |
           set -euo pipefail
@@ -107,5 +115,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: task-ladder-results
-          path: ${{ runner.temp }}/ladder-results.json
+          path: |
+            ${{ runner.temp }}/ladder-results.json
+            ${{ runner.temp }}/ladder-learning.json
           if-no-files-found: ignore
