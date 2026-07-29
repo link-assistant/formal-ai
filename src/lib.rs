@@ -129,6 +129,7 @@ pub mod web_search_core;
 pub mod world_model;
 pub mod world_model_atoms;
 pub mod world_model_context;
+pub(crate) mod world_model_cycles;
 pub mod world_model_dialog;
 
 pub use agent::{
@@ -356,14 +357,22 @@ pub use substitution::{
     SubstitutionTraceReport,
 };
 pub use summarization::{
-    apply_compound_words, apply_semantic_primes, classify_sentence, deformalize, describe_project,
-    describe_readme, formalize, formalize_dialog, formalize_markdown,
-    formalize_repository_directory, formalize_repository_file, formalize_repository_resource,
-    generate_chat_title, strip_markdown_noise, summarize, summarize_dialog,
-    summarize_repository_file, summarize_repository_resource, to_topic, DialogTurn,
-    EmbeddedGrammarFormalization, MetaLanguageFormalization, RepositoryDirectoryFormalization,
-    RepositoryEntry, RepositoryFileFormalization, RepositoryResourceFormalization, Statement,
-    StatementKind, SummarizationConfig, SummarizationMode, DEFAULT_MAX_STATEMENTS,
+    apply_compound_words, apply_semantic_primes, classify_sentence, deduplicate, deformalize,
+    describe_project, describe_readme, execute_captured_gathering, execute_multi_source_summary,
+    formalize, formalize_dialog, formalize_markdown, formalize_repository_directory,
+    formalize_repository_file, formalize_repository_resource, gather, generate_chat_title,
+    is_valid_identifier, label_for_mode, merge_into_context, merge_into_formal_context, rank,
+    recheck, strip_markdown_noise, summarize, summarize_dialog, summarize_repository_file,
+    summarize_repository_resource, to_identifier, to_topic, CapturedGatheringFailure,
+    CapturedGatheringReport, CapturedSourceMetadata, CapturedSourceObservation, Contradiction,
+    DedupReport, DialogTurn, EmbeddedGrammarFormalization, FetchRecord, FetchedSource,
+    GatheringPlan, GatheringReport, IdentifierBudget, ImportanceScore, MergeLink, MergedContext,
+    MergedStatement, MetaLanguageFormalization, MultiSourceSummaryExecution, NamingConvention,
+    Polarity, RankedStatement, RecheckReport, RecheckedStatement, RepositoryDirectoryFormalization,
+    RepositoryEntry, RepositoryFileFormalization, RepositoryResourceFormalization, SourceCache,
+    SourceProvider, SourcedStatement, Statement, StatementKind, StatementSignature,
+    StatementVariant, SummarizationConfig, SummarizationMode, Verdict,
+    DEFAULT_IDENTIFIER_MAX_LENGTH, DEFAULT_IDENTIFIER_MAX_WORDS, DEFAULT_MAX_STATEMENTS,
 };
 pub use telegram::{
     handle_telegram_webhook, parse_get_updates_response, telegram_html_from_markdown,

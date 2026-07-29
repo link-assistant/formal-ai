@@ -1,0 +1,32 @@
+issue_844_smallest_leaf_1
+  parent multi_source_summary
+  leaf "capture and recursively gather exact source bytes"
+  implementation src/summarization/gathering.rs
+  authorship human
+issue_844_smallest_leaf_2
+  parent multi_source_summary
+  leaf "deduplicate observations into one named context"
+  implementation src/summarization/context.rs
+  authorship human
+issue_844_smallest_leaf_3
+  parent multi_source_summary
+  leaf "run disproof-first fact checking before presentation"
+  implementation src/summarization/pipeline.rs
+  authorship human
+issue_844_smallest_leaf_4
+  parent multi_source_summary
+  leaf "render a deterministic replayable learning proposal"
+  implementation src/summarization/pipeline.rs
+  authorship human
+issue_844_smallest_leaf_5
+  parent multi_source_summary
+  leaf "record the multi-source summary honesty invariant"
+  implementation data/meta/multi-source-summary-honesty-invariant.lino
+  authorship formal_ai_agent_cli
+  session ses_050f9a572ffefpehWRjysug6cv
+  evidence docs/case-studies/issue-844/self-hosting-authorship/agent-cli.log
+
+issue_844_self_authorship_measurement
+  reviewed_smallest_leaves 5
+  formal_ai_authored_leaves 1
+  formal_ai_authored_percent 20

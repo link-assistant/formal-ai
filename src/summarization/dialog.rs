@@ -71,10 +71,10 @@ pub fn formalize_dialog(turns: &[DialogTurn]) -> Vec<Statement> {
 #[must_use]
 pub fn summarize_dialog(turns: &[DialogTurn], config: &SummarizationConfig) -> String {
     let statements = formalize_dialog(turns);
-    if config.mode == SummarizationMode::Topic {
+    if config.mode.is_label_only() {
         let highest = statements.iter().max_by_key(|s| s.weight);
         return highest
-            .map(|s| to_topic("", std::slice::from_ref(s)))
+            .map(|s| super::label_for_mode(config.mode, &to_topic("", std::slice::from_ref(s))))
             .unwrap_or_default();
     }
     if statements.is_empty() {

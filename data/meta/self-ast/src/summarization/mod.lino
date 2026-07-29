@@ -2,10 +2,10 @@ self_ast_census
   target src/summarization/mod.rs
   language rust
   fidelity signature
-  byte_len 23845
-  line_count 616
-  content_id source_module_4beb55fffbd47c28
-  symbol_count 35
+  byte_len 27894
+  line_count 704
+  content_id source_module_8151256303bd9ed4
+  symbol_count 46
   symbols
     const DEFAULT_MAX_STATEMENTS 57 57
     enum StatementKind 63 83
@@ -16,29 +16,40 @@ self_ast_census
     struct Statement 143 147
     function new 152 158
     function from_seed 163 169
-    enum SummarizationMode 174 189
-    function target_percent 197 205
-    function one_step_shorter 211 217
-    struct SummarizationConfig 224 240
-    function default 243 252
-    function with_mode 258 261
-    function with_language 265 268
-    function with_max_statements 272 275
-    function effective_max_statements 281 300
-    function formalize 312 327
-    function period_belongs_to_token 335 359
-    function push_sentence 361 375
-    function classify_sentence 388 408
-    function weight_for_kind 410 422
-    function summarize 430 468
-    function deformalize 474 490
-    function ends_with_terminal_punct 492 496
-    function to_topic 504 514
-    function clamp_words 516 523
-    function apply_compound_words 528 549
-    function apply_semantic_primes 558 584
-    function describe_project 592 600
-    module dialog 602 602
-    module file 603 603
-    module markdown 604 604
-    module resource 605 605
+    enum SummarizationMode 174 194
+    function target_percent 202 212
+    function one_step_shorter 219 226
+    function is_label_only 235 237
+    function label_for_mode 248 257
+    struct SummarizationConfig 263 279
+    function default 282 291
+    function with_mode 297 300
+    function with_language 304 307
+    function keeping_boilerplate 319 322
+    function with_max_statements 326 329
+    function effective_max_statements 335 354
+    function formalize 374 389
+    function period_belongs_to_token 397 421
+    function push_sentence 423 437
+    function classify_sentence 450 470
+    function weight_for_kind 472 484
+    function summarize 492 530
+    function deformalize 536 552
+    function ends_with_terminal_punct 554 558
+    function to_topic 566 576
+    function clamp_words 578 585
+    function apply_compound_words 590 611
+    function apply_semantic_primes 620 646
+    function describe_project 654 663
+    module context 665 665
+    module dedup 666 666
+    module dialog 667 667
+    module file 668 668
+    module gathering 669 669
+    module identifier 670 670
+    module importance 671 671
+    module markdown 672 672
+    module pipeline 673 673
+    module recheck 674 674
+    module resource 675 675
+    module vocabulary 676 676

@@ -172,6 +172,11 @@ impl Statement {
 /// Compression / expansion target for [`summarize`].
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum SummarizationMode {
+    /// One token — a legal identifier (function name, variable name, commit
+    /// subject). The bottom rung of the ladder, one step shorter than
+    /// [`Self::Topic`]; rendered by [`identifier::to_identifier`] under a length
+    /// budget and a naming convention.
+    Identifier,
     /// 1–5 words — return just the project / topic name. Used for chat titles
     /// and topic labels.
     Topic,
@@ -196,7 +201,9 @@ impl SummarizationMode {
     #[must_use]
     pub const fn target_percent(self) -> u32 {
         match self {
-            Self::Topic => 0,
+            // Both label rungs are below the statement scale: they render a name,
+            // not a percentage of the input.
+            Self::Identifier | Self::Topic => 0,
             Self::Short => 20,
             Self::Standard => 50,
             Self::Full => 100,
@@ -206,15 +213,47 @@ impl SummarizationMode {
 
     /// The next-shorter mode on the detail ladder, used to bound recursion when
     /// composing nested summaries (a directory describes its children one mode
-    /// shorter than itself). `Topic` is the fixed point: it cannot get shorter.
+    /// shorter than itself). `Identifier` is the fixed point: a single token
+    /// cannot get shorter.
     #[must_use]
     pub const fn one_step_shorter(self) -> Self {
         match self {
             Self::Expand | Self::Full => Self::Standard,
             Self::Standard => Self::Short,
-            Self::Short | Self::Topic => Self::Topic,
+            Self::Short => Self::Topic,
+            Self::Topic | Self::Identifier => Self::Identifier,
         }
     }
+
+    /// Do the rungs below the statement scale — the ones that render a label
+    /// rather than a body of prose?
+    ///
+    /// Call sites that special-cased `== Topic` before #844 must use this, or an
+    /// `Identifier` request would fall through to the prose path and return a
+    /// sentence where a name was asked for.
+    #[must_use]
+    pub const fn is_label_only(self) -> bool {
+        matches!(self, Self::Topic | Self::Identifier)
+    }
+}
+
+/// Render the label for a label-only rung ([`SummarizationMode::is_label_only`]).
+///
+/// `label` is the topic text the caller already computed (via [`to_topic`] or an
+/// identity sentence). In [`SummarizationMode::Topic`] it is returned unchanged;
+/// in [`SummarizationMode::Identifier`] it is shortened one more rung into a
+/// legal `snake_case` name under the default budget. Callers needing another
+/// convention or budget call [`identifier::to_identifier`] directly.
+#[must_use]
+pub fn label_for_mode(mode: SummarizationMode, label: &str) -> String {
+    if mode == SummarizationMode::Identifier {
+        return identifier::to_identifier(
+            label,
+            identifier::NamingConvention::SnakeCase,
+            &identifier::IdentifierBudget::default(),
+        );
+    }
+    label.to_string()
 }
 
 /// Configuration for the summarization pipeline. Every knob has a sensible
@@ -267,6 +306,21 @@ impl SummarizationConfig {
         self
     }
 
+    /// Builder helper to keep the boilerplate kinds (`install`, `example`) in
+    /// the output.
+    ///
+    /// The default drops them because a compressed project summary should not
+    /// carry setup steps. A merged multi-source context is the case that needs
+    /// the opposite: when the sources are a question and its answers, the
+    /// install command *is* the answer, and the evidence weight of
+    /// [`importance::score`] — not the sentence's kind — is what decides its
+    /// importance.
+    #[must_use]
+    pub const fn keeping_boilerplate(mut self) -> Self {
+        self.drop_boilerplate = false;
+        self
+    }
+
     /// Builder helper to clamp the number of statements.
     #[must_use]
     pub const fn with_max_statements(mut self, cap: usize) -> Self {
@@ -283,9 +337,9 @@ impl SummarizationConfig {
             return 0;
         }
         let ratio_target = match self.mode {
-            // Topic mode is rendered separately, but still returns at most 1
+            // The label rungs are rendered separately, but still return at most 1
             // statement when summarize() is asked to enforce it.
-            SummarizationMode::Topic => 1,
+            SummarizationMode::Identifier | SummarizationMode::Topic => 1,
             SummarizationMode::Full | SummarizationMode::Expand => input_count,
             other => {
                 // Round-to-nearest using only integer math:
@@ -308,6 +362,14 @@ impl SummarizationConfig {
 /// with a full stop. Without them a Hindi page is one enormous statement, so
 /// anything that ranks or trims sentences — the web-research extract of issue
 /// #771, for one — degrades to returning the whole document.
+///
+/// A full stop glued to the next character ends nothing: `crates.io`, `docs.rs`
+/// and `1.96` are single tokens, and splitting inside them turns one fact into
+/// two fragments ("the crate is published on crates" and "io"), which a
+/// multi-source merge then ranks and presents as separate facts. Only a full
+/// stop followed by whitespace, punctuation or the end of the text closes a
+/// sentence; the other terminators stay eager, because none of them appears
+/// inside a word.
 #[must_use]
 pub fn formalize(text: &str) -> Vec<Statement> {
     let mut out = Vec::new();
@@ -592,24 +654,50 @@ pub fn apply_semantic_primes(text: &str, language: &str) -> String {
 pub fn describe_project(project: &ProjectRecord, config: &SummarizationConfig) -> String {
     let seed_statements = project.statements_for(&config.language);
     let statements: Vec<Statement> = seed_statements.iter().map(Statement::from_seed).collect();
-    if config.mode == SummarizationMode::Topic {
-        return to_topic(project.topic_for(&config.language), &statements);
+    if config.mode.is_label_only() {
+        let topic = to_topic(project.topic_for(&config.language), &statements);
+        return label_for_mode(config.mode, &topic);
     }
     let summarized = summarize(&statements, config);
     deformalize(&summarized)
 }
 
+pub mod context;
+pub mod dedup;
 mod dialog;
 mod file;
+pub mod gathering;
+pub mod identifier;
+pub mod importance;
 mod markdown;
+pub mod pipeline;
+pub mod recheck;
 mod resource;
+pub mod vocabulary;
 
+pub use context::{merge_into_context, merge_into_formal_context, MergedContext};
+pub use dedup::{
+    deduplicate, Contradiction, DedupReport, MergeLink, MergedStatement, Polarity,
+    SourcedStatement, StatementSignature, StatementVariant,
+};
 pub use dialog::{formalize_dialog, generate_chat_title, summarize_dialog, DialogTurn};
 pub use file::{
     formalize_repository_file, summarize_repository_file, EmbeddedGrammarFormalization,
     MetaLanguageFormalization, RepositoryFileFormalization,
 };
+pub use gathering::{
+    execute_captured_gathering, gather, CapturedGatheringFailure, CapturedGatheringReport,
+    CapturedSourceMetadata, CapturedSourceObservation, FetchRecord, FetchedSource, GatheringPlan,
+    GatheringReport, SourceCache, SourceProvider,
+};
+pub use identifier::{
+    is_valid_identifier, to_identifier, IdentifierBudget, NamingConvention,
+    DEFAULT_IDENTIFIER_MAX_LENGTH, DEFAULT_IDENTIFIER_MAX_WORDS,
+};
+pub use importance::{rank, to_statements_in, ImportanceScore, RankedStatement};
 pub use markdown::{describe_readme, formalize_markdown, strip_markdown_noise};
+pub use pipeline::{execute_multi_source_summary, MultiSourceSummaryExecution};
+pub use recheck::{recheck, RecheckReport, RecheckedStatement, Verdict};
 pub use resource::{
     formalize_repository_directory, formalize_repository_resource, summarize_repository_resource,
     RepositoryDirectoryFormalization, RepositoryEntry, RepositoryResourceFormalization,
