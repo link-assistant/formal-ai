@@ -1,0 +1,30 @@
+self_ast_census
+  target src/world_model_context.rs
+  language rust
+  fidelity signature
+  byte_len 13468
+  line_count 396
+  content_id source_module_c2cb46666cde2fc4
+  symbol_count 21
+  symbols
+    enum InheritancePolicy 27 37
+    function slug 41 47
+    enum ExternalLookup 52 55
+    enum ReferenceResolutionKind 59 66
+    function slug 70 76
+    struct ReferenceResolution 81 94
+    function links_notation 99 140
+    struct ParentContext 145 148
+    enum ContextHierarchyError 152 157
+    function fmt 160 172
+    struct ContextHierarchy 179 182
+    function new 186 191
+    function insert 194 200
+    function nest 203 216
+    function set_parent 219 254
+    function context 257 259
+    function context_mut 262 264
+    function parent 267 269
+    function resolve 276 349
+    function links_notation 353 387
+    function require_context 389 395

@@ -1,0 +1,29 @@
+self_ast_census
+  target src/statement_audit/extract.rs
+  language rust
+  fidelity signature
+  byte_len 8447
+  line_count 279
+  content_id source_module_9a53c4513756e5a9
+  symbol_count 20
+  symbols
+    const REGISTRY 5 5
+    struct ExtractedStatement 8 12
+    struct RequirementRegistry 15 19
+    function registry 21 36
+    function proposed_resolution 38 40
+    function requirement_claim 44 58
+    function strip_surface 60 72
+    function extract_corpus 74 86
+    function extract_prose 88 104
+    function extract_structured 106 131
+    function extract_code_comments 133 168
+    function leading_comment 170 177
+    function push_statement 179 203
+    function path_claim 205 218
+    function strip_list_marker 220 225
+    function trim_statement 227 232
+    function extension 234 239
+    function is_prose_path 241 243
+    function is_structured_path 245 247
+    function is_code_path 249 279

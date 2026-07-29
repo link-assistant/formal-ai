@@ -179,6 +179,28 @@ impl EvidenceCapture {
         self.sha256 = sha256.into();
         self
     }
+
+    /// Build audit evidence from bytes captured by the source-fetch boundary.
+    /// The timestamp and SHA-256 cannot drift from the underlying retrieval.
+    #[must_use]
+    pub fn from_source_capture(
+        statement: impl Into<String>,
+        source_label: impl Into<String>,
+        capture: &crate::source_fetch::SourceCapture,
+        tier: SourceTier,
+        stance: Stance,
+        strength: f64,
+    ) -> Self {
+        Self::for_statement(
+            statement,
+            source_label,
+            capture.source_url(),
+            tier,
+            stance,
+            strength,
+        )
+        .with_capture(capture.fetched_at(), capture.sha256())
+    }
 }
 
 /// Captured provenance paired with the mass it contributed to the posterior.

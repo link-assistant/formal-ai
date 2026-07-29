@@ -300,7 +300,8 @@ Sometimes crates.io has issues. Check: https://status.crates.io/
 Before pushing, verify your package builds and passes checks:
 ```bash
 cargo fmt --all -- --check
-cargo clippy --all-targets --all-features
-cargo test --all-features
+cargo clippy --lib --bins --tests --all-features
+cargo check --examples --all-features
+cargo test --lib --bins --tests --all-features
 cargo package --list
 ```

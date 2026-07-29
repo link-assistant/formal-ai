@@ -36,16 +36,50 @@ impl ProbabilityModel {
     }
 }
 
-/// Cached-source provenance attached to probability evidence.
+/// Source provenance attached to probability evidence.
+///
+/// Its fields are private so a URL, timestamp, digest, and cache flag cannot
+/// be assembled independently of the retrieval that established them.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ProbabilitySourceProvenance {
-    pub source_url: String,
-    pub fetched_at: String,
-    pub sha256: String,
-    pub cached: bool,
+    source_url: String,
+    fetched_at: String,
+    sha256: String,
+    cached: bool,
 }
 
 impl ProbabilitySourceProvenance {
+    /// Bind probability provenance to an exact source capture.
+    #[must_use]
+    pub fn from_source_capture(capture: &crate::source_fetch::SourceCapture) -> Self {
+        Self {
+            source_url: capture.source_url().to_owned(),
+            fetched_at: capture.fetched_at().to_owned(),
+            sha256: capture.sha256().to_owned(),
+            cached: capture.cached(),
+        }
+    }
+
+    #[must_use]
+    pub fn source_url(&self) -> &str {
+        &self.source_url
+    }
+
+    #[must_use]
+    pub fn fetched_at(&self) -> &str {
+        &self.fetched_at
+    }
+
+    #[must_use]
+    pub fn sha256(&self) -> &str {
+        &self.sha256
+    }
+
+    #[must_use]
+    pub const fn cached(&self) -> bool {
+        self.cached
+    }
+
     #[must_use]
     pub fn trace_payload(&self) -> String {
         format!(

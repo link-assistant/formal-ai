@@ -7,6 +7,160 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.311.1] - 2026-07-29
+
+### Fixed
+
+- Replace fabricated external-source and cache-hit evidence with an opt-in,
+  SHA-256-verified source cache whose exact bytes and provenance replay
+  offline, and connect captured content to HTTP fetches, search fusion, option
+  observation, statement verification, and statement audits (#843).
+
+## [0.311.0] - 2026-07-29
+
+### Fixed
+- Multilingual definition-example requests now use one slot-driven meanings rule and the open-web research route in English, Russian, Hindi, and Chinese; the previously unhandled Russian ladder node no longer falls through to a generic refusal (#842, #827).
+- A word-meaning question whose subject is only a contextual pronoun now asks for the missing antecedent instead of searching the public web for the pronoun (#842, #827).
+
+### Added
+- The issue #840/#842 task ladder now judges assistant-authored claims separately from raw tool results, plus refusals, capability menus, tool routes, and shell-command shape. Its deliberately noisy web fixtures exercise synthesis without leaking page furniture.
+- The ladder baseline is an appendable stable-ID ratchet: no recorded node can disappear or regress, and every newly reported node must pass before the baseline advances. The strict measurement is 24/24, up from the historical 8/24, with L1 and L4 both at 100%.
+- Every run derives an evidence-bearing learning proposal from each failed node and retains it in CI. Proposals remain `awaiting_human_review` and cannot promote behavior until the complete ratchet passes.
+
+## [0.310.0] - 2026-07-29
+
+### Added
+- External benchmark harness that downloads immutable upstream suite revisions at run time and grades the solver by the upstream criterion: HumanEval, MBPP, GSM8K, MATH, BIG-bench object counting, CoEdIT and a SWE-bench Lite slice. Cached payloads carry source-reference and content-hash provenance under `target/formal-ai-benchmarks` and are never vendored (issue #698).
+- `formal-ai benchmark list | run | ratchet` commands, with `--suite`, `--slice`, `--append`, `--learning-report`, and `--base-ref` for publishing measured runs, review-gated failure-learning proposals, and base-branch comparisons (issue #698).
+- Committed results ledger `data/benchmarks/external-results.lino` recording date, suite, slice size, pass count and solver version per run, plus explicit `benchmark_unavailable` entries with the blocking reason instead of a substituted local proxy (issue #698).
+- Monotonic per-suite ratchet against the pull request's base-branch ledger, so a pull request cannot reduce any recorded upstream pass count, and the weekly `external-benchmarks` workflow that refreshes the ledger and verifies the ratchet (issue #698).
+- Official pinned SWE-bench evaluation that applies non-empty candidate patches in the upstream container harness and executes repository tests; infrastructure failures remain `benchmark_unavailable`, and the obsolete gold-patch-equality proxy is withdrawn (issue #698).
+- `docs/benchmarks.md` § "External (upstream) results" with the honest first measurement, and the case study in `docs/case-studies/issue-698` (issue #698).
+
+## [0.309.0] - 2026-07-28
+
+### Added
+- Freely phrased multi-step procedures now reuse the solver's intent formalization and shared source-span decomposition before lowering every ordered requirement into a typed executable operation (issue #674).
+- The compiled program carries canonical slugs only, so the English, Russian, Hindi, and Chinese phrasings of the same procedure content-address to one identical set of skill links (issue #674).
+- Complete `.lino` procedure artifacts now round-trip through integrity validation and a generic host interpreter; the solver, later "why?" explanation, and Agent planner consume that persisted artifact instead of recompiling prose (issue #674).
+- A step outside the vocabulary compiles nothing at all and records a complete review-only learning proposal. Successful seeded paraphrases let the learner infer one typed multilingual candidate without being handed its canonical operation; aliases enter the durable, evidence-bearing ledger only after a green regression suite and explicit human approval (issue #674).
+- Formal AI's Agent path writes the same compiled artifact, reads it back, executes it through the public conformance CLI, verifies every step outcome, and returns its source-cited restatement; a reproducible external Agent CLI replay preserves byte-exact artifact and execution evidence (issue #674).
+- Every sentence the procedure compiler shows the user — compiled output, later explanation, named gap, and proposal notice — is seeded prose under `compiled_procedure`, `compiled_procedure_explanation`, `skill_gap`, and `skill_gap_name` in en/ru/hi/zh (issue #674).
+
+### Fixed
+
+- Bound Rust development/test artifact growth and replace whole-`target`
+  GitHub Actions caches with sccache compiler-output caching.
+
+## [0.308.0] - 2026-07-27
+
+### Added
+
+- Added deterministic, disproof-first fact checking with named formal-system probabilities, tiered evidence fallback, JTMS dependency traces, and explicit permission for general-memory audits.
+
+## [0.307.1] - 2026-07-27
+
+### Added
+- Capture two independently worded real OpenCode, Claude Code, and Codex terminal sessions as lossless transcripts, styled frame data, asciicasts, exact-grid SVG snapshots, CSS-keyframe SVG replays, and GIF fallbacks in agent CLI CI, preserving partial captures when a run fails.
+- Exercise the report multiselect and a representative task-ladder node through the real OpenCode TUI.
+- Learn stable TUI replay facts through the human-gated client-contract learner and prove the same task through a real Agent CLI with byte-identical output.
+
+### Fixed
+- Seed Claude's ephemeral configuration with the correct JSON onboarding value so interactive sessions do not repeat setup prompts.
+- Consume the published `agent-commander` 0.10.1 and `command-stream` 0.17.2 renderer fixes instead of Formal AI's lossy local terminal stack, including exact visible-text geometry without padded SVG text runs and clean consumer installs.
+- Upgrade all direct Rust and JavaScript dependencies to their latest compatible releases.
+
+## [0.307.0] - 2026-07-27
+
+### Added
+- Dialogue world model (issue #702): `src/world_model_atoms.rs` classifies each
+  turn (fact / wish / confirmation / correction / state query) from the
+  `world_state_*` cue sets in `data/meta/cue-lexicon.lino`, and
+  `src/world_model_dialog.rs` maintains current and target contexts as links
+  networks with provenance back to the turn that asserted each fact, a
+  hash-chained append-only synchronization log, merge with conflict detection,
+  split, relative-meta-logic recalculation of dependent statements, and
+  `forecast` for action-consequence prediction.
+- `world_state` chat handler: "what is left to do?" (en/ru/hi/zh) is answered
+  from the current→target difference and backed by `world_state:*` evidence
+  links, never from remembered prose.
+- bAbI-style world-state tracking benchmark slice
+  (`data/benchmarks/world-state-tracking-suite.lino`, 16 self-authored dialogues
+  with held-out paraphrases) with a `minimum_pass_count` ratchet, catalogued in
+  `docs/benchmarks.md`.
+- Case study `docs/case-studies/issue-702/` and requirements R702-1 … R702-10 in
+  `REQUIREMENTS.md`.
+- Unlimited nested symbolic contexts with full, isolated, or conditional
+  inheritance; lazy nearest-first reference resolution returns an inspectable
+  local trace and requires explicit permission before an outside lookup.
+- Review-gated issue-702 auto-learning report derived through the shared
+  associative-memory pipeline and reproduced through the real Agent CLI.
+
+### Changed
+- `SolverConfig` gains `world_model_mode` (`WorldModelMode::{Off, Track}`, env
+  override `FORMAL_AI_WORLD_MODEL_MODE`). It defaults to `Off`, so the feature is
+  trace-only until opted in and existing behaviour is unchanged.
+- Dialogue turns, solver coreference, and agentic research-topic recall now use
+  the common context hierarchy. Rust and browser coding-language inheritance no
+  longer stop after four scopes; both use cycle-safe visited sets.
+- Promoting dialogue-local current state into shared general memory now fails
+  closed unless `GeneralMemoryPermission::Allowed` is supplied explicitly.
+
+## [0.306.1] - 2026-07-26
+
+### Added
+
+- A standalone associative technology stack guide that links each component
+  and explains its runtime, architecture, or development role (#874).
+
+## [0.306.0] - 2026-07-26
+
+### Fixed
+- The planner could not recognise the result of its own tool call once the client's schema renamed the argument (issue #671). Codex's `exec_command` takes `cmd` where the planner plans `command`, and Gemini's `read_file` takes an absolutised `absolute_path` where the planner plans `path`, so `formal-ai with --non-interactive codex "read the file alpha.txt"` re-planned the identical call 281 times and never terminated. Recorded tool results are now matched through the same alias set `protocol_responses` projects with, and a shell result is stripped of its transport envelope (Codex's `Chunk ID` / `Wall time` / `Process exited with code` preamble) before it is quoted back. The same request now converges in two model rounds. A hand-written `curl` never reproduced this, because it uses the canonical key.
+- A request to *read* a file could plan a *write* that destroyed it (issue #671). `show me the contents of the file beta.md` planned `write(beta.md, "of the")`, because the marker-led branch of the write parser accepted any content-lead surface — "contents" is one — without also requiring a write verb. A marker that precedes the file clause now needs the same write cue the destination-led branch already demanded, and a recovered payload with no alphanumeric character at all (the `opencode` leg recovered a lone `"`) is rejected rather than written.
+- Tool arguments naming a file are absolutised when, and only when, the client's own schema says they must be (issue #671). The `agent` leg answered `Error: File not found: /alpha.txt` and the `qwen` leg `File path must be absolute, but was relative: alpha.txt`, because the projection absolutised only Gemini's literally-named `absolute_path` property. The requirement is advertised — in the property name, the property description or the tool description — so it is read rather than hardcoded per client, and a client that accepts relative paths keeps the request's own spelling.
+- An absolutised path is resolved against the *client's* working directory, not the server's (issue #671). The two share one whenever the CLI is launched from the same place, which is why the matrix never saw it; the issue-#715 Agent CLI E2E starts `formal-ai serve` in the repository and each CLI in a fresh temporary workspace, and the report the task derives landed in the repository root while the CLI looked for it in its own directory. Every client declares where it runs — `agent` and `opencode` as `<env>  Working directory: …`, `codex` as `<environment_context><cwd>…</cwd>`, `gemini` as a `**Workspace Directories:**` list — so the declaration is read from the request, with the server's own directory kept as the fallback and a directory that is not on this machine ignored.
+- `formal-ai serve` answers `HEAD` on `/`, `/health` and the protocol roots. Claude Code probes reachability with `HEAD` and reported the server as unavailable when it 405'd.
+- The Gemini protocol path accepts the utility model ids the vendor CLI hardcodes instead of rejecting them with a 400, and `formal-ai proxy` recovers the model id from the request path when the body carries none, so a Gemini-shaped exchange is no longer logged with a null `request_model`.
+
+### Changed
+- The tool-free reader's two answer headings are grounded meanings rather than English typed into the engine (R379): `data/seed/multilingual-responses.lino` carries `supplied_file_contents` and `supplied_file_first_line` for all four supported languages, and `src/agentic_coding/file_read.rs` reads them back through `seed::response_for` in the request's own language.
+- The Gemini headless-`-p`-advertises-no-`functionDeclarations` constraint (#620) was lifted upstream in `@google/gemini-cli@0.51.0`, and the matrix is what found out: the `constraints` assertion failed loudly, exactly as issue #671 asked. It is inverted rather than deleted — the leg now fails if `read_file` stops being advertised — and the `read-file` case proves a real headless tool call round-trips.
+
+### Added
+- A multi-CLI agentic end-to-end matrix (issue #671): `.github/workflows/agentic-cli-matrix.yml` runs one leg per client `formal-ai clients` knows about — codex, t3code, opencode, opencode-vscode, opencode-desktop, agent, cursor, gemini, claude, qwen, grok, aider — driving the **real** CLI, headless and through a real PTY, against a local `formal-ai serve --agent-mode` with `formal-ai proxy` recording every exchange. Our server is the model provider, so no leg needs vendor credentials, and every recorded `proxy.jsonl` is uploaded — including on green legs, so `claude`, `grok` and `aider` finally have replayable sessions.
+- `experiments/agentic_cli_matrix/` holds the harness: `clients.lock` pins every client's version, `install_client.sh` installs one, `lib.sh` manages the server/proxy stack and the assertions, and `run_leg.sh` runs the case sequence. Per-leg shape is read from the seed registry rather than hardcoded, and a case that exceeds its model-round budget fails as a tool-call loop instead of as a slow leg.
+- Cases cover the issue-#650 defect surface (`/responses` instructions, empty interactive messages, summarization requests, the `--globally` alias), the issue-#713 interactive-only launch blockers, and issue #746's hosted `web_search` advertisement. Documented upstream limitations — Gemini's headless `-p` advertising no `functionDeclarations` (#620), the missing headless approval handshake in codex/gemini/qwen (#511) — are assertions that fail when upstream lifts them, never skips.
+- Every log assertion in the harness reads the client's output through `matrix_log_matches` instead of `matrix_strip_ansi | grep -q`. Under `set -o pipefail` the pipe form reports 141 — a failure — whenever `grep -q` exits early enough to SIGPIPE `sed`, so it announced a *present* marker as missing on long logs (the `agent` and `codex` TUI legs), silently disarmed the negative checks such as the client-sandbox diagnosis, and made every `await:` step spin for its full timeout rather than returning when the answer rendered. The interactive case now runs the same sandbox diagnosis the headless read does, so a host kernel that cannot start the client's own sandbox is named identically in both.
+- `formal-ai clients [--format text|json]` prints the seed-baked registry of supported CLI clients and what each one can do, so the matrix and the `with` wrapper cannot drift apart.
+- Every client is covered by the leg shape its integration actually has, so no client is skipped and none is handed assertions it can never satisfy: `cli` (prompt in, answer out), `server` (t3code serves a web UI), `gui` (opencode-vscode, opencode-desktop, under Xvfb) and `mcp` (cursor, where we are the *tool server* and the client's own model drives). The `mcp` leg exercises `/mcp` directly — `initialize`, `tools/list`, a `tools/call` that must reach the real solver, and an unknown tool name that must be refused with JSON-RPC `-32601` — and asserts Cursor's own credential requirement as an upstream constraint. The launch legs prove the wrapper's configuration reached the *running application* by reading the launched process tree, because a GUI issues no model request until a human types; the earlier "something reached the proxy" check was satisfied by the harness's own `/health` probe and could never fail.
+- `replay.sh` validates each committed transcript according to its shape: a `cli` transcript must carry bounded model rounds naming `formal-ai` (in the body or, for Gemini, in the request path), an `mcp` transcript must carry the three `/mcp` round trips and must not name our model, and a `launch` transcript legitimately holds startup traffic only.
+- `tests/unit/issue_671_matrix_coverage.rs` fails the build if a client is added to `data/seed/client-integrations.lino` without a pinned version, a CI leg and a documented row; `tests/unit/issue_671_planner_tool_alias.rs` covers the projected-argument regression directly.
+- Client verification behavior now lives beside each integration in `data/seed/client-integrations.lino`. The workflow and local runner generate their leg plan from those contracts instead of repeating client identities or branching on names; seeded fields cover surface, file delivery, headless/interactive invocation, tool constraints, launch readiness, extensions, sandboxes and vendor-auth boundaries.
+- Successful real-client sessions now feed `formal-ai clients observe` and `formal-ai clients learn`. Reusable behavior requires two independently worded observations, stable tools are inferred by intersection, and every proposed seed amendment carries transcript evidence and remains `awaiting_human_review`. The CI learner publishes that deterministic review artifact after all generated legs pass.
+- A real Agent CLI reference run executes the learning command through Formal AI and writes the exact report. That run exposed a general planner bug that treated “its exact stdout” as literal file content; command-output requests now plan the explicit command, redirect its output to the safe relative target, and read the target back before completing.
+
+## [0.305.1] - 2026-07-26
+
+### Fixed
+
+- Route multilingual process-list requests through explicit Agent permissions,
+  use `tasklist` on Windows, and learn successful trusted research for otherwise
+  unknown browser requests.
+
+## [0.305.0] - 2026-07-26
+
+### Added
+
+- Add a meanings-driven grounded-action recipe with stateful local discovery, definition follow-up, comparison, and report journeys.
+
+## [0.304.1] - 2026-07-25
+
+### Fixed
+
+- Honor excluded CI paths on direct pushes instead of unconditionally running
+  tests, coverage, and end-to-end jobs.
+
 ## [0.304.0] - 2026-07-25
 
 ### Added

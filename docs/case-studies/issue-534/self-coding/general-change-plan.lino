@@ -1,0 +1,18 @@
+general_change_plan
+  id "general_change_plan_0b16d9cfee5a7cbb"
+  goal "Create file docs/case-studies/issue-534/self-coding/agent-authored-policy.lino containing disk_cleanup_policy: preserve_source; prune_recomputable_build_artifacts; cache_compiler_outputs_not_target_tree"
+  target "docs/case-studies/issue-534/self-coding/agent-authored-policy.lino"
+  step 1
+    capability "Write"
+    action "append the composed plan to .formal-ai/general-change-plan.lino"
+    expected_evidence "written plan event impulse_e986d5ae884a5c34"
+  step 2
+    capability "Write"
+    action "write the requested content to docs/case-studies/issue-534/self-coding/agent-authored-policy.lino"
+    expected_evidence "workspace file docs/case-studies/issue-534/self-coding/agent-authored-policy.lino"
+  step 3
+    capability "Run"
+    action "run the request-derived verification command"
+    expected_evidence "disk_cleanup_policy: preserve_source; prune_recomputable_build_artifacts; cache_compiler_outputs_not_target_tree"
+    command "cat docs/case-studies/issue-534/self-coding/agent-authored-policy.lino"
+  verification_command "cat docs/case-studies/issue-534/self-coding/agent-authored-policy.lino"

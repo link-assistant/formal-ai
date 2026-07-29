@@ -9,7 +9,10 @@ use crate::seed::{
     self, Antecedent, BrainstormSeeds, CoreferenceSeeds, FactRecord, Meaning, PersonaSeeds,
     Pronoun, SummaryTopicSeeds,
 };
-use crate::solver_helpers::last_user_turn;
+use crate::world_model::Context;
+use crate::world_model_context::{
+    ContextHierarchy, ExternalLookup, InheritancePolicy, ReferenceResolution,
+};
 
 fn summary_topic_seed_data() -> &'static SummaryTopicSeeds {
     static CELL: OnceLock<SummaryTopicSeeds> = OnceLock::new();
@@ -316,8 +319,8 @@ pub fn try_coreference_request(
     let seeds = coreference_seed_data();
     let pronoun = matching_coreference_pronoun(seeds, normalized)?;
 
-    let previous = last_user_turn(log)?;
-    let antecedent = seeds.pick_antecedent(&previous.to_lowercase())?;
+    let (antecedent, resolution) = resolve_coreference_antecedent(seeds, log)?;
+    log.append("context_resolution", resolution.links_notation());
 
     log.append(
         "coreference:resolved",
@@ -342,6 +345,60 @@ pub fn try_coreference_request(
         &antecedent.body,
         0.85,
     ))
+}
+
+/// Resolve the nearest relevant user subject through the same nested-context
+/// substrate used by dialogue/task/repository scopes.
+///
+/// Every prior turn is a real context (assistant turns intentionally contribute
+/// no subject), and the current impulse inherits the most recent turn. An
+/// unrelated user message therefore does not erase a still-visible antecedent,
+/// while a nearer recognized subject shadows an older one.
+fn resolve_coreference_antecedent<'a>(
+    seeds: &'a CoreferenceSeeds,
+    log: &EventLog,
+) -> Option<(&'a Antecedent, ReferenceResolution)> {
+    const REFERENCE: &str = "coreference_subject";
+    let mut hierarchy = ContextHierarchy::new();
+    hierarchy.insert(Context::new("conversation")).ok()?;
+
+    let mut parent_id = String::from("conversation");
+    let mut turn_index = 0_usize;
+    for event in log
+        .events()
+        .iter()
+        .filter(|event| event.kind.starts_with("prior_turn:"))
+    {
+        turn_index += 1;
+        let context_id = format!("conversation:turn:{turn_index}");
+        let mut context = Context::new(&context_id);
+        if event.kind == "prior_turn:user" {
+            if let Some(antecedent) = seeds.pick_antecedent(&event.payload.to_lowercase()) {
+                context.assert_link(REFERENCE, &antecedent.display_name);
+            }
+        }
+        hierarchy
+            .nest(context, &parent_id, InheritancePolicy::Full)
+            .ok()?;
+        parent_id = context_id;
+    }
+
+    hierarchy
+        .nest(
+            Context::new("conversation:current"),
+            &parent_id,
+            InheritancePolicy::Full,
+        )
+        .ok()?;
+    let resolution = hierarchy
+        .resolve("conversation:current", REFERENCE, ExternalLookup::Denied)
+        .ok()?;
+    let display_name = &resolution.links.first()?.to;
+    let antecedent = seeds
+        .antecedents
+        .iter()
+        .find(|antecedent| antecedent.display_name == *display_name)?;
+    Some((antecedent, resolution))
 }
 
 fn matching_coreference_pronoun<'a>(

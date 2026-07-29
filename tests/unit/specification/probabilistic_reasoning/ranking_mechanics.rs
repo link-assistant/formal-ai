@@ -199,18 +199,8 @@ fn combined_utility_and_count_thresholds_withhold_evidence() {
 
 #[test]
 fn offline_filter_reduces_both_weight_and_evidence_count() {
-    let cached = ProbabilitySourceProvenance {
-        source_url: String::from("https://example.org/cached"),
-        fetched_at: String::from("2026-06-13T00:00:00Z"),
-        sha256: String::from("sha256:cached"),
-        cached: true,
-    };
-    let live_only = ProbabilitySourceProvenance {
-        source_url: String::from("https://example.org/live"),
-        fetched_at: String::from("2026-06-13T00:00:00Z"),
-        sha256: String::from("sha256:live"),
-        cached: false,
-    };
+    let cached = captured_probability_source("https://fixture.invalid/cached", true);
+    let live_only = captured_probability_source("https://fixture.invalid/live", false);
     let mut store = ProbabilityStore::new();
     store.record(
         ProbabilityEvidence::symbolic("answer:t", "cached_obs", 0.3, "src", "2026-06-13T00:00:00Z")
@@ -291,27 +281,17 @@ fn probability_model_slugs_are_stable() {
 
 #[test]
 fn source_provenance_trace_payload_includes_all_fields() {
-    let source = ProbabilitySourceProvenance {
-        source_url: String::from("https://example.org/e"),
-        fetched_at: String::from("2026-06-13T00:00:00Z"),
-        sha256: String::from("sha256:abc"),
-        cached: true,
-    };
+    let source = captured_probability_source("https://fixture.invalid/e", true);
     let payload = source.trace_payload();
-    assert!(payload.contains("https://example.org/e"));
-    assert!(payload.contains("fetched_at=2026-06-13T00:00:00Z"));
-    assert!(payload.contains("sha256=sha256:abc"));
+    assert!(payload.contains("https://fixture.invalid/e"));
+    assert!(payload.contains("fetched_at=1753444800"));
+    assert!(payload.contains(&format!("sha256={}", source.sha256())));
     assert!(payload.contains("cached=true"));
 }
 
 #[test]
 fn evidence_serialization_includes_transition_and_source_fields() {
-    let source = ProbabilitySourceProvenance {
-        source_url: String::from("https://example.org/e"),
-        fetched_at: String::from("2026-06-13T00:00:00Z"),
-        sha256: String::from("sha256:abc"),
-        cached: false,
-    };
+    let source = captured_probability_source("https://fixture.invalid/e", false);
     let evidence =
         ProbabilityEvidence::symbolic("answer:t", "obs", 0.5, "src", "2026-06-13T00:00:00Z")
             .with_model(ProbabilityModel::MarkovTransition)
@@ -321,7 +301,7 @@ fn evidence_serialization_includes_transition_and_source_fields() {
     let lino = evidence.to_links_notation();
     assert!(lino.contains("transition_from \"state:prev\""), "{lino}");
     assert!(
-        lino.contains("source_url \"https://example.org/e\""),
+        lino.contains("source_url \"https://fixture.invalid/e\""),
         "{lino}"
     );
     assert!(lino.contains("model \"markov_transition\""), "{lino}");
@@ -329,7 +309,7 @@ fn evidence_serialization_includes_transition_and_source_fields() {
     let trace = evidence.trace_payload();
     assert!(trace.contains("transition_from=state:prev"), "{trace}");
     assert!(
-        trace.contains("source_url=https://example.org/e"),
+        trace.contains("source_url=https://fixture.invalid/e"),
         "{trace}"
     );
     assert!(trace.contains("model=markov_transition"), "{trace}");
@@ -340,12 +320,10 @@ fn stable_ids_change_when_any_distinguishing_field_changes() {
     let base = ProbabilityEvidence::symbolic("answer:t", "obs", 0.5, "src", "2026-06-13T00:00:00Z");
     let markov = base.clone().with_model(ProbabilityModel::MarkovTransition);
     let transitioned = base.clone().with_transition_from("state:a");
-    let sourced = base.clone().with_source(ProbabilitySourceProvenance {
-        source_url: String::from("https://example.org/e"),
-        fetched_at: String::from("2026-06-13T00:00:00Z"),
-        sha256: String::from("sha256:abc"),
-        cached: true,
-    });
+    let sourced = base.clone().with_source(captured_probability_source(
+        "https://fixture.invalid/e",
+        true,
+    ));
 
     // Every distinguishing change yields a distinct stable id, and re-deriving
     // the same evidence reproduces the same id (deterministic).

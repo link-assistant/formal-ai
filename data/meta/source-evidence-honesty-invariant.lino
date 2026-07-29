@@ -1,0 +1,6 @@
+source_evidence_honesty
+  record_type meta_invariant
+  observation "emit source evidence only after exact bytes are captured"
+  replay "preserve URL fetched_at SHA-256 and bytes"
+  failure "treat transport and cache misses as diagnostics never evidence"
+  learning "derive a human-gated proposal from captured observations"

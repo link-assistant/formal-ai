@@ -210,7 +210,7 @@ mod report_issue {
     }
 
     #[test]
-    fn report_request_emits_gh_issue_create() {
+    fn report_request_emits_atomic_report_script() {
         for prompt in [
             "Report this issue on GitHub",
             "Please file a bug report for the Formal AI repository",
@@ -227,13 +227,16 @@ mod report_issue {
             let args = arguments(&calls[0]);
             let command = args["command"].as_str().expect("command string");
             assert!(
-                command.contains("gh issue create"),
-                "{prompt:?} should run `gh issue create`, got: {command}"
+                command.starts_with("set -eu\n")
+                    && command.contains("formal-ai report body")
+                    && command.contains("gh issue create"),
+                "{prompt:?} should render and file one atomic report script, got: {command}"
             );
             assert!(
                 command.contains("link-assistant/formal-ai"),
                 "{prompt:?} should target the Formal AI repo, got: {command}"
             );
+            assert!(command.contains("--source both"), "{command}");
         }
     }
 
@@ -349,7 +352,11 @@ mod report_issue {
         let calls = tool_calls(&messages);
         let args = arguments(&calls[0]);
         let command = args["command"].as_str().unwrap();
-        assert!(command.contains("gh issue create --repo link-assistant/formal-ai"));
+        assert!(command.contains("gh issue create"), "{command}");
+        assert!(
+            command.contains("gh issue create --repo link-assistant/formal-ai"),
+            "{command}"
+        );
         // POSIX single-quote escaping renders a literal `'` as `'\''`.
         assert!(
             command.contains("'\\''"),

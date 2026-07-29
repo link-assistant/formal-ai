@@ -1,0 +1,137 @@
+self_ast_census
+  target src/agentic_coding/report_issue.rs
+  language rust
+  fidelity full_ast
+  byte_len 18656
+  line_count 524
+  content_id source_module_8d2065582b85992b
+  symbol_count 43
+  symbols
+    const REPORT_BODY_COMMAND 14 14
+    const CONTEXT_EXPORT_COMMAND 15 15
+    const CONTEXT_LEARN_COMMAND 16 16
+    const ISSUE_CREATE_COMMAND 17 17
+    const CONTEXT_SESSION_FLAG 18 18
+    const SOURCE_FLAG 19 19
+    const OUTPUT_FLAG 20 20
+    const CONTEXT_OUTPUT_FLAG 21 21
+    const SURFACE_FLAG 22 22
+    const TITLE_FLAG 23 23
+    const BODY_FILE_FLAG 24 24
+    const FORMAL_AI_PROGRAM 26 26
+    const GH_PROGRAM 27 27
+    const AGENTIC_SURFACE 29 29
+    const BODY_FILE 30 30
+    const CONTEXT_FILE 31 31
+    const LATEST_SESSION 33 33
+    enum ReportTarget 36 41
+    enum ReportContents 44 48
+    function plan_report_flow 52 140
+    function ask_or_render 142 182
+    function localized 184 188
+    function localized_options 190 197
+    function is_report_question 199 208
+    function answer_texts 210 220
+    function parse_targets 222 240
+    function parse_contents 242 251
+    function matches_option 253 261
+    function is_report_intent 264 276
+    function report_action_governs_subject 278 322
+    function commands_for_targets 331 344
+    function command_for 346 367
+    function export_command 369 380
+    function learning_command 382 389
+    function github_command 396 428
+    function source_name 430 436
+    function dialog_id 446 451
+    function report_title 453 458
+    function title_turns 465 475
+    function report_finished 478 508
+    function formal_ai_repo 510 512
+    function config 514 518
+    function render 520 524
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 13826
+    named_node_count 2791
+    distinct_node_kinds 76
+    node_kinds
+      arguments 256
+      array_expression 7
+      array_type 13
+      assignment_expression 1
+      attribute 2
+      attribute_item 2
+      base_field_initializer 1
+      binary_expression 23
+      block 55
+      boolean_literal 10
+      call_expression 256
+      closure_expression 39
+      closure_parameters 39
+      const_item 17
+      crate 5
+      doc_comment 33
+      else_clause 3
+      enum_item 2
+      enum_variant 7
+      enum_variant_list 2
+      escape_sequence 10
+      expression_statement 51
+      field_expression 189
+      field_identifier 190
+      field_initializer 1
+      field_initializer_list 1
+      for_expression 1
+      function_item 24
+      function_modifiers 1
+      generic_function 4
+      generic_type 11
+      identifier 678
+      if_expression 11
+      index_expression 6
+      inner_doc_comment_marker 1
+      integer_literal 16
+      let_condition 3
+      let_declaration 47
+      lifetime 1
+      line_comment 42
+      macro_invocation 11
+      match_arm 11
+      match_block 3
+      match_expression 3
+      match_pattern 11
+      mutable_specifier 9
+      outer_doc_comment_marker 32
+      parameter 53
+      parameters 24
+      parenthesized_expression 3
+      primitive_type 60
+      range_expression 3
+      reference_expression 38
+      reference_type 61
+      return_expression 10
+      scoped_identifier 64
+      scoped_type_identifier 1
+      scoped_use_list 4
+      source_file 1
+      string_content 87
+      string_literal 82
+      struct_expression 1
+      super 4
+      token_tree 18
+      try_expression 1
+      tuple_expression 11
+      tuple_pattern 20
+      tuple_struct_pattern 5
+      tuple_type 3
+      type_arguments 15
+      type_identifier 55
+      unary_expression 11
+      use_as_clause 1
+      use_declaration 8
+      use_list 4
+      visibility_modifier 2

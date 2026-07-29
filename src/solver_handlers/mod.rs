@@ -10,9 +10,11 @@ mod calendar;
 mod calendar_ics;
 mod compound_interest;
 mod conversation_memory;
+mod curated_project_fetch;
 mod definition_merge;
 mod document_originality;
 mod document_request;
+mod fact_checking;
 mod feature_capability;
 mod github_repository_traffic;
 mod installation_conversion;
@@ -21,6 +23,7 @@ mod natural_language_tools;
 mod number_riddle;
 mod numeric_list;
 mod playwright_script;
+mod procedure_rules;
 mod program_blueprint;
 mod program_synthesis;
 mod research_table;
@@ -35,6 +38,7 @@ mod text_manipulation;
 mod user_intent;
 mod web_requests;
 mod web_search_intent;
+mod world_state;
 
 pub use agent_workspace::try_agent_workspace_task;
 pub use behavior_rules::try_behavior_rules_with_runtime;
@@ -50,6 +54,7 @@ pub use conversation_memory::{
 pub use definition_merge::{try_definition_merge, try_definition_merge_by_default};
 pub use document_originality::try_document_originality_check;
 pub use document_request::try_document_request;
+pub use fact_checking::try_fact_checking;
 pub use feature_capability::{try_feature_capability, CapabilityRuntime};
 pub use github_repository_traffic::try_github_repository_traffic;
 pub use installation_conversion::try_installation_conversion;
@@ -75,9 +80,11 @@ pub use user_intent::{
     try_who_is_question,
 };
 pub use web_requests::{
-    detect_web_search_query, try_explicit_repository_lookup, try_http_fetch, try_project_lookup,
-    try_project_lookup_with_response_language, try_url_navigate, try_web_search,
+    detect_web_search_query, try_explicit_repository_lookup, try_http_fetch,
+    try_http_fetch_with_offline, try_project_lookup, try_project_lookup_with_response_language,
+    try_url_navigate, try_web_search, try_web_search_with_client, try_web_search_with_offline,
 };
+pub use world_state::try_world_state;
 pub use {
     web_requests::agentic_fetch_url_for, web_requests::answer_web_search_query,
     web_search_intent::web_search_query_for, web_search_intent::WebSearchQueryKind,

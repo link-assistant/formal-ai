@@ -1,0 +1,12 @@
+self_ast_census
+  target src/solver_handlers/web_requests/live_search.rs
+  language rust
+  fidelity signature
+  byte_len 4360
+  line_count 113
+  content_id source_module_0f3dbdf9efc5943d
+  symbol_count 3
+  symbols
+    function try_web_search_with_client 19 65
+    function try_web_search_with_offline 69 79
+    function answer_executed_web_search 81 113

@@ -1,0 +1,3 @@
+shard 1/2: 150 modules, 1060 lines -> /tmp/gh-issue-solver-1784951216687/docs/case-studies/issue-843/self-hosting-evidence/whole-repository-projection-01.lino
+shard 2/2: 144 modules, 1018 lines -> /tmp/gh-issue-solver-1784951216687/docs/case-studies/issue-843/self-hosting-evidence/whole-repository-projection-02.lino
+wrote 2 shards, 2078 total projection lines, 294 owned modules

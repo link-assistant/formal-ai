@@ -715,6 +715,11 @@ pub fn config_from_env() -> SolverConfig {
             config.blueprint_composition = mode;
         }
     }
+    if let Ok(value) = std::env::var("FORMAL_AI_WORLD_MODEL_MODE") {
+        if let Some(mode) = crate::world_model_dialog::WorldModelMode::from_slug(&value) {
+            config.world_model_mode = mode;
+        }
+    }
     crate::meta_core::apply_env_modes(
         &mut config.recursion_mode,
         &mut config.selection_mode,

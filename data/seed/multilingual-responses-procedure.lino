@@ -1,0 +1,161 @@
+multilingual_responses
+  response response_compiled_procedure_en
+    intent compiled_procedure
+    language en
+    text "Procedure compiled into a skill.\n\n```links\n{program}```\n\nCompiled steps:\n\n{steps}\nSend the trigger value and I will run these steps in order. Ask ""why did you do that?"" and I will cite these steps with their source spans."
+  response response_compiled_procedure_ru
+    intent compiled_procedure
+    language ru
+    text "Процедура скомпилирована в навык.\n\n```links\n{program}```\n\nСкомпилированные шаги:\n\n{steps}\nОтправьте значение триггера, и я выполню эти шаги по порядку. Спросите «почему ты так сделал?», и я процитирую эти шаги вместе с исходными фрагментами."
+  response response_compiled_procedure_hi
+    intent compiled_procedure
+    language hi
+    text "प्रक्रिया एक skill में compile की गई.\n\n```links\n{program}```\n\nCompile किए गए steps:\n\n{steps}\nTrigger मान भेजें और मैं इन steps को क्रम से चलाऊँगा. «तुमने ऐसा क्यों किया?» पूछें और मैं ये steps उनके source अंशों सहित उद्धृत करूँगा."
+  response response_compiled_procedure_zh
+    intent compiled_procedure
+    language zh
+    text "已将该流程编译为技能。\n\n```links\n{program}```\n\n已编译的步骤：\n\n{steps}\n发送触发值，我会按顺序执行这些步骤。问「你为什么这样做？」，我会引用这些步骤及其源文片段。"
+  response response_compiled_procedure_explanation_en
+    intent compiled_procedure_explanation
+    language en
+    text "The persisted compiled procedure was executed in order:\n\n{steps}"
+  response response_compiled_procedure_explanation_ru
+    intent compiled_procedure_explanation
+    language ru
+    text "Сохранённая скомпилированная процедура была выполнена по порядку:\n\n{steps}"
+  response response_compiled_procedure_explanation_hi
+    intent compiled_procedure_explanation
+    language hi
+    text "सहेजी गई compiled procedure क्रम से चलाई गई थी:\n\n{steps}"
+  response response_compiled_procedure_explanation_zh
+    intent compiled_procedure_explanation
+    language zh
+    text "已按顺序执行持久化的编译流程：\n\n{steps}"
+  response response_skill_gap_en
+    intent skill_gap
+    language en
+    text "I cannot compile the step ""{step}"" — {gap}.\n\nNothing was compiled — I do not run a procedure partially. I recorded this review-only proposal; it changes no capability until regression tests pass and a human approves it:\n\n```links-notation\n{proposal}```\n\nDrop that step or restate it with actions I already support."
+  response response_skill_gap_ru
+    intent skill_gap
+    language ru
+    text "Я не могу скомпилировать шаг «{step}»: {gap}.\n\nНичего не скомпилировано — я не выполняю процедуру частично. Я записал это предложение только для проверки; оно не изменит возможности, пока регрессионные тесты не пройдут и человек не одобрит его:\n\n```links-notation\n{proposal}```\n\nУберите этот шаг или опишите его через уже поддерживаемые действия."
+  response response_skill_gap_hi
+    intent skill_gap
+    language hi
+    text "मैं step «{step}» compile नहीं कर सकता: {gap}.\n\nकुछ भी compile नहीं हुआ — मैं procedure को आंशिक रूप से नहीं चलाता. मैंने यह proposal केवल review के लिए दर्ज किया है; regression tests pass होने और human approval मिलने तक यह कोई capability नहीं बदलता:\n\n```links-notation\n{proposal}```\n\nइस step को हटाएँ या पहले से समर्थित actions में बताएँ."
+  response response_skill_gap_zh
+    intent skill_gap
+    language zh
+    text "我无法编译步骤「{step}」：{gap}。\n\n没有编译任何内容——我不会部分执行流程。我只记录了这份待审提案；只有回归测试通过并经人工批准后，它才会改变能力：\n\n```links-notation\n{proposal}```\n\n请去掉该步骤，或用已支持的动作重述它。"
+  response response_skill_gap_name_en
+    intent skill_gap_name
+    language en
+    text "no compiled capability for ""{step}"""
+  response response_skill_gap_name_ru
+    intent skill_gap_name
+    language ru
+    text "нет скомпилированной способности для «{step}»"
+  response response_skill_gap_name_hi
+    intent skill_gap_name
+    language hi
+    text "«{step}» के लिए कोई compile की गई capability नहीं है"
+  response response_skill_gap_name_zh
+    intent skill_gap_name
+    language zh
+    text "没有针对「{step}」的已编译能力"
+  response response_agent_procedure_write_unavailable_en
+    intent agent_procedure_write_unavailable
+    language en
+    text "Procedure compiled, but no workspace write tool was advertised; the artifact was not persisted or verified.\n\n```links\n{artifact}```"
+  response response_agent_procedure_write_unavailable_ru
+    intent agent_procedure_write_unavailable
+    language ru
+    text "Процедура скомпилирована, но инструмент записи в рабочую область не предоставлен; артефакт не сохранён и не проверен.\n\n```links\n{artifact}```"
+  response response_agent_procedure_write_unavailable_hi
+    intent agent_procedure_write_unavailable
+    language hi
+    text "Procedure compile हो गई, लेकिन workspace write tool उपलब्ध नहीं था; artifact न persist हुआ, न verify.\n\n```links\n{artifact}```"
+  response response_agent_procedure_write_unavailable_zh
+    intent agent_procedure_write_unavailable
+    language zh
+    text "流程已编译，但未提供工作区写入工具；制品尚未持久化或验证。\n\n```links\n{artifact}```"
+  response response_agent_procedure_readback_unavailable_en
+    intent agent_procedure_readback_unavailable
+    language en
+    text "Procedure artifact `{path}` was written, but no shell tool was advertised for read-back verification.\n\n```links\n{artifact}```"
+  response response_agent_procedure_readback_unavailable_ru
+    intent agent_procedure_readback_unavailable
+    language ru
+    text "Артефакт процедуры `{path}` записан, но инструмент оболочки для проверки чтением не предоставлен.\n\n```links\n{artifact}```"
+  response response_agent_procedure_readback_unavailable_hi
+    intent agent_procedure_readback_unavailable
+    language hi
+    text "Procedure artifact `{path}` लिखा गया, लेकिन read-back verification के लिए shell tool उपलब्ध नहीं था.\n\n```links\n{artifact}```"
+  response response_agent_procedure_readback_unavailable_zh
+    intent agent_procedure_readback_unavailable
+    language zh
+    text "流程制品 `{path}` 已写入，但未提供用于回读验证的 shell 工具。\n\n```links\n{artifact}```"
+  response response_agent_procedure_verification_failed_en
+    intent agent_procedure_verification_failed
+    language en
+    text "Procedure artifact verification failed for `{path}`; the read-back content was missing, invalid, or different from compiled procedure `{procedure_id}`. I will not claim or execute an unverified artifact."
+  response response_agent_procedure_verification_failed_ru
+    intent agent_procedure_verification_failed
+    language ru
+    text "Проверка артефакта процедуры `{path}` не удалась: считанное содержимое отсутствует, недействительно или отличается от скомпилированной процедуры `{procedure_id}`. Я не буду утверждать, что непроверенный артефакт готов, или выполнять его."
+  response response_agent_procedure_verification_failed_hi
+    intent agent_procedure_verification_failed
+    language hi
+    text "Procedure artifact `{path}` का verification विफल हुआ; read-back content मौजूद नहीं था, अमान्य था या compiled procedure `{procedure_id}` से अलग था. मैं unverified artifact के तैयार होने का दावा या उसे execute नहीं करूँगा."
+  response response_agent_procedure_verification_failed_zh
+    intent agent_procedure_verification_failed
+    language zh
+    text "流程制品 `{path}` 验证失败：回读内容缺失、无效，或与已编译流程 `{procedure_id}` 不同。我不会声称未经验证的制品已就绪，也不会执行它。"
+  response response_agent_procedure_verified_en
+    intent agent_procedure_verified
+    language en
+    text "Procedure artifact `{path}` was written and verified.\n\n```links\n{artifact}```\n\nCompiled steps:\n\n{steps}"
+  response response_agent_procedure_verified_ru
+    intent agent_procedure_verified
+    language ru
+    text "Артефакт процедуры `{path}` записан и проверен.\n\n```links\n{artifact}```\n\nСкомпилированные шаги:\n\n{steps}"
+  response response_agent_procedure_verified_hi
+    intent agent_procedure_verified
+    language hi
+    text "Procedure artifact `{path}` लिखा और verify किया गया.\n\n```links\n{artifact}```\n\nCompile किए गए steps:\n\n{steps}"
+  response response_agent_procedure_verified_zh
+    intent agent_procedure_verified
+    language zh
+    text "流程制品 `{path}` 已写入并验证。\n\n```links\n{artifact}```\n\n已编译的步骤：\n\n{steps}"
+  response response_agent_procedure_executed_en
+    intent agent_procedure_executed
+    language en
+    text "Procedure artifact `{path}` was written, read back, and executed end to end with the side-effect-free conformance host.\n\n```links\n{artifact}```\n\nExecution evidence:\n\n```links\n{execution}```\n\nCompiled steps:\n\n{steps}"
+  response response_agent_procedure_executed_ru
+    intent agent_procedure_executed
+    language ru
+    text "Артефакт процедуры `{path}` записан, считан и полностью выполнен в среде проверки без побочных эффектов.\n\n```links\n{artifact}```\n\nСвидетельство выполнения:\n\n```links\n{execution}```\n\nСкомпилированные шаги:\n\n{steps}"
+  response response_agent_procedure_executed_hi
+    intent agent_procedure_executed
+    language hi
+    text "Procedure artifact `{path}` लिखा गया, वापस पढ़ा गया और side-effect-free conformance host में शुरू से अंत तक चलाया गया.\n\n```links\n{artifact}```\n\nExecution evidence:\n\n```links\n{execution}```\n\nCompile किए गए steps:\n\n{steps}"
+  response response_agent_procedure_executed_zh
+    intent agent_procedure_executed
+    language zh
+    text "流程制品 `{path}` 已写入、回读，并在无副作用的一致性主机中端到端执行。\n\n```links\n{artifact}```\n\n执行证据：\n\n```links\n{execution}```\n\n已编译的步骤：\n\n{steps}"
+  response response_agent_procedure_execution_failed_en
+    intent agent_procedure_execution_failed
+    language en
+    text "Procedure artifact `{path}` was written and verified, but its end-to-end conformance execution failed. I will not claim the procedure was executed."
+  response response_agent_procedure_execution_failed_ru
+    intent agent_procedure_execution_failed
+    language ru
+    text "Артефакт процедуры `{path}` записан и проверен, но его сквозное проверочное выполнение завершилось неудачно. Я не буду утверждать, что процедура выполнена."
+  response response_agent_procedure_execution_failed_hi
+    intent agent_procedure_execution_failed
+    language hi
+    text "Procedure artifact `{path}` लिखा और verify किया गया, लेकिन उसका end-to-end conformance execution विफल रहा. मैं procedure के execute होने का दावा नहीं करूँगा."
+  response response_agent_procedure_execution_failed_zh
+    intent agent_procedure_execution_failed
+    language zh
+    text "流程制品 `{path}` 已写入并验证，但端到端一致性执行失败。我不会声称该流程已执行。"

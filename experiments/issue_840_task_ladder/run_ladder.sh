@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Drive every node of the issue #840 task ladder against a live `formal-ai serve`
-# and record pass/fail per node, so the whole 25-task dataset can be re-measured
+# and record pass/fail per node, so the whole 24-task dataset can be re-measured
 # after each change instead of re-reported by hand.
 #
 # Usage:
@@ -13,16 +13,21 @@
 #   OUT        Results JSON path (default: <scriptdir>/results.json)
 #   ONLY       Optional substring filter on task id (e.g. ONLY=838 or ONLY=838.L4)
 #   SANDBOX    Optional pre-existing sandbox dir; created and populated if unset
+#   MODE       `http` (default) or `tui` for the real OpenCode interface
+#   TUI_ARTIFACT_DIR  Transcript/frames/cast/SVG root in TUI mode
+#   REQUIRE_ALL_PASS  Exit nonzero when a selected TUI node fails (default: 0)
+#   FIXTURES   Offline web corpus (default: web_fixtures.json; `none` disables)
+#   BASELINE   Optional prior results; enforce a stable-ID, all-green ratchet
+#   LEARNING_OUT  Review-gated failure proposals (default: beside OUT)
 #
-# A node PASSES when every `expect` substring appears in the answer and no
-# `forbid` substring does. Matching is case-insensitive. Nodes with an empty
-# `expect` list are judged only by `forbid` (used where any sensible answer is
-# acceptable but a specific failure mode must not occur).
+# A node passes only when its answer, route, and command-shape assertions all
+# hold. Generic refusals and capability-menu fallbacks always fail. Raw tool
+# results remain in the transcript as evidence but cannot satisfy answer claims.
 #
-# Exits 0 always: this is a measurement harness, not a gate. Read results.json
-# (and the printed summary) for the outcome. `experiments/` is excluded from
-# `any-code-changed` in scripts/detect-code-changes.rs, so this file does not
-# gate CI.
+# HTTP mode exits 0: this is a measurement harness, not a gate. TUI mode also
+# exits 0 unless REQUIRE_ALL_PASS=1. Setting BASELINE makes HTTP mode a gate:
+# every prior stable task id must remain and pass, and every appended task must
+# pass before the baseline may move. Read results.json for the full evidence.
 
 set -uo pipefail
 
@@ -34,20 +39,30 @@ TASKS="${TASKS:-$HERE/tasks.json}"
 OUT="${OUT:-$HERE/results.json}"
 ONLY="${ONLY:-}"
 SANDBOX="${SANDBOX:-}"
+CREATED_SANDBOX=0
+MODE="${MODE:-http}"
+TUI_ARTIFACT_DIR="${TUI_ARTIFACT_DIR:-$OUT.artifacts}"
+FIXTURES="${FIXTURES:-$HERE/web_fixtures.json}"
+BASELINE="${BASELINE:-}"
+LEARNING_OUT="${LEARNING_OUT:-${OUT%.json}-learning.json}"
 
 if [ ! -x "$BIN" ]; then
   echo "formal-ai binary not found at $BIN (build with: cargo build --release)" >&2
-  exit 0
+  exit 1
 fi
 if ! command -v python3 >/dev/null 2>&1; then
   echo "python3 is required for JSON handling" >&2
-  exit 0
+  exit 1
+fi
+if [ "$MODE" = "tui" ] && ! command -v opencode >/dev/null 2>&1; then
+  echo "opencode is required for MODE=tui" >&2
+  exit 1
 fi
 
 # --- sandbox reproducing the #838 desktop layout -----------------------------
 if [ -z "$SANDBOX" ]; then
   SANDBOX="$(mktemp -d "${TMPDIR:-/tmp}/formal-ai-ladder.XXXXXX")"
-  trap 'rm -rf "$SANDBOX"' EXIT
+  CREATED_SANDBOX=1
 fi
 python3 - "$TASKS" "$SANDBOX" <<'PY'
 import json, os, sys
@@ -71,7 +86,13 @@ SERVER_LOG="$(mktemp "${TMPDIR:-/tmp}/formal-ai-ladder-server.XXXXXX")"
 FORMAL_AI_AGENT_MODE=1 "$BIN" serve --host 127.0.0.1 --port "$PORT" --agent-mode >"$SERVER_LOG" 2>&1 &
 SERVER_PID=$!
 cleanup_server() { kill "$SERVER_PID" 2>/dev/null || true; wait "$SERVER_PID" 2>/dev/null || true; }
-trap 'cleanup_server; [ -z "${SANDBOX_KEEP:-}" ] && rm -rf "$SANDBOX"' EXIT
+cleanup() {
+  cleanup_server
+  if [ "$CREATED_SANDBOX" -eq 1 ] && [ -z "${SANDBOX_KEEP:-}" ]; then
+    rm -rf -- "$SANDBOX"
+  fi
+}
+trap cleanup EXIT
 
 for _ in $(seq 1 60); do
   if curl -fsS "http://127.0.0.1:$PORT/v1/models" >/dev/null 2>&1; then break; fi
@@ -80,126 +101,29 @@ done
 if ! curl -fsS "http://127.0.0.1:$PORT/v1/models" >/dev/null 2>&1; then
   echo "server never came up on port $PORT; log tail:" >&2
   tail -20 "$SERVER_LOG" >&2
-  exit 0
+  exit 1
+fi
+
+if [ "$MODE" = "tui" ]; then
+  TUI_DIR="$ROOT/experiments/agent_cli_e2e/issue_819_tui"
+  (cd "$TUI_DIR" && bun install --frozen-lockfile) || exit 1
+  ISSUE840_TASKS="$TASKS" \
+    ISSUE840_OUT="$OUT" \
+    ISSUE840_ONLY="$ONLY" \
+    ISSUE840_SANDBOX="$SANDBOX" \
+    ISSUE840_PORT="$PORT" \
+    ISSUE840_ARTIFACT_DIR="$TUI_ARTIFACT_DIR" \
+    node "$TUI_DIR/capture-ladder.mjs"
+  exit $?
 fi
 
 # --- drive every node --------------------------------------------------------
-python3 - "$TASKS" "$OUT" "$PORT" "$ONLY" "$SANDBOX" <<'PY'
-import json, os, subprocess, sys, urllib.request
-
-tasks_path, out_path, port, only, sandbox = sys.argv[1:6]
-data = json.load(open(tasks_path))
-nodes = [t for t in data["tasks"] if not only or only in t["id"]]
-
-# Mirrors the tool set opencode advertises, so routing is measured under the
-# same conditions that produced #838 rather than in a tool-less chat context.
-TOOLS = [
-    {"type": "function", "function": {
-        "name": "bash", "description": "Execute a shell command",
-        "parameters": {"type": "object", "properties": {
-            "command": {"type": "string"}}, "required": ["command"]}}},
-    {"type": "function", "function": {
-        "name": "websearch", "description": "Search the web",
-        "parameters": {"type": "object", "properties": {
-            "query": {"type": "string"}}, "required": ["query"]}}},
-]
-
-MAX_STEPS = 4
-
-def post(messages):
-    body = json.dumps({
-        "model": "formal-ai", "messages": messages, "tools": TOOLS,
-    }).encode()
-    req = urllib.request.Request(
-        f"http://127.0.0.1:{port}/v1/chat/completions",
-        data=body, headers={"Content-Type": "application/json"},
-    )
-    with urllib.request.urlopen(req, timeout=120) as r:
-        return json.load(r)
-
-def ask(prompt):
-    """Run a real agentic loop: execute returned shell commands in the sandbox
-    and feed results back, exactly as opencode does. The transcript of every
-    step is returned so assertions see both narration and tool output."""
-    messages = [{"role": "user", "content": prompt}]
-    transcript = []
-    try:
-        for _ in range(MAX_STEPS):
-            payload = post(messages)
-            message = (payload.get("choices") or [{}])[0].get("message") or {}
-            text = message.get("content") or ""
-            if text:
-                transcript.append(text)
-            calls = message.get("tool_calls") or []
-            if not calls:
-                break
-            messages.append({k: v for k, v in message.items() if v is not None})
-            for call in calls:
-                fn = call.get("function") or {}
-                name = fn.get("name")
-                try:
-                    args = json.loads(fn.get("arguments") or "{}")
-                except json.JSONDecodeError:
-                    args = {}
-                transcript.append(f"[tool {name}] {fn.get('arguments')}")
-                if name == "bash" and args.get("command"):
-                    proc = subprocess.run(
-                        ["/bin/sh", "-c", args["command"]], cwd=sandbox,
-                        capture_output=True, text=True, timeout=60,
-                        env={**os.environ, "HOME": sandbox},
-                    )
-                    result = (proc.stdout + proc.stderr).strip() or "(no output)"
-                else:
-                    # websearch and anything else: no live network in the harness
-                    result = "(tool not executed by harness)"
-                transcript.append(f"[result] {result}")
-                messages.append({
-                    "role": "tool", "tool_call_id": call.get("id") or name,
-                    "name": name, "content": result,
-                })
-    except Exception as exc:                      # noqa: BLE001 - harness
-        return "\n".join(transcript), f"{type(exc).__name__}: {exc}"
-    return "\n".join(transcript).strip(), None
-
-results = []
-for node in nodes:
-    answer, error = ask(node["prompt"])
-    low = answer.lower()
-    missing = [e for e in node.get("expect", []) if e.lower() not in low]
-    leaked = [f for f in node.get("forbid", []) if f.lower() in low]
-    ok = error is None and not missing and not leaked
-    results.append({
-        "id": node["id"], "level": node["level"], "seed": node["seed"],
-        "lang": node["lang"], "prompt": node["prompt"], "note": node.get("note", ""),
-        "answer": answer, "error": error,
-        "missing_expect": missing, "leaked_forbid": leaked, "pass": ok,
-    })
-    flag = "PASS" if ok else "FAIL"
-    why = ""
-    if error: why = f"  error={error}"
-    elif missing: why = f"  missing={missing}"
-    elif leaked: why = f"  leaked={leaked}"
-    print(f"{flag}  {node['id']:<12} L{node['level']}  {node['prompt'][:58]!r}{why}")
-
-passed = sum(1 for r in results if r["pass"])
-summary = {
-    "total": len(results), "passed": passed, "failed": len(results) - passed,
-    "by_level": {}, "by_seed": {},
-}
-for r in results:
-    lvl = summary["by_level"].setdefault(f"L{r['level']}", {"passed": 0, "total": 0})
-    lvl["total"] += 1; lvl["passed"] += 1 if r["pass"] else 0
-    sd = summary["by_seed"].setdefault(r["seed"], {"passed": 0, "total": 0})
-    sd["total"] += 1; sd["passed"] += 1 if r["pass"] else 0
-
-json.dump({"summary": summary, "results": results}, open(out_path, "w"), indent=2, ensure_ascii=False)
-print()
-print(f"TOTAL {passed}/{len(results)} passed")
-for level in sorted(summary["by_level"]):
-    v = summary["by_level"][level]
-    print(f"  {level}: {v['passed']}/{v['total']}")
-for seed in sorted(summary["by_seed"]):
-    v = summary["by_seed"][seed]
-    print(f"  #{seed}: {v['passed']}/{v['total']}")
-print(f"\nwrote {out_path}")
-PY
+python3 "$HERE/ladder.py" \
+  --tasks "$TASKS" \
+  --out "$OUT" \
+  --port "$PORT" \
+  --only "$ONLY" \
+  --sandbox "$SANDBOX" \
+  --fixtures "$FIXTURES" \
+  --baseline "$BASELINE" \
+  --learning-out "$LEARNING_OUT"

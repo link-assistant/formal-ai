@@ -1,0 +1,22 @@
+self_ast_census
+  target src/translation/wikidata.rs
+  language rust
+  fidelity signature
+  byte_len 12066
+  line_count 311
+  content_id source_module_1dbc257c5790a0b5
+  symbol_count 13
+  symbols
+    struct Wikidata 19 21
+    function new 24 26
+    function sparql 31 41
+    function lexeme_translations 58 74
+    function search_lexeme 81 95
+    struct SparqlLemma 102 105
+    struct LexemeSearchHit 109 112
+    function parse_sparql_lemmas 121 144
+    function find_matching_brace 148 175
+    function read_json_field 179 195
+    function parse_wbsearch_hits 199 229
+    function read_json_string 233 285
+    function escaped_string_advance 289 311

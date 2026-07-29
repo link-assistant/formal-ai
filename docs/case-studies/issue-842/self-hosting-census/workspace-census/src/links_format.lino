@@ -1,0 +1,16 @@
+self_ast_census
+  target src/links_format.rs
+  language rust
+  fidelity signature
+  byte_len 6127
+  line_count 132
+  content_id source_module_17ae7d7e69b8c450
+  symbol_count 7
+  symbols
+    const PROBE 7 7
+    function format_lino_record 9 21
+    function format_lino_value_verbatim 41 52
+    function format_lino_value 68 70
+    function push_lino_node 74 84
+    function sanitize_lino_value 100 106
+    function flatten_lino_value 127 132

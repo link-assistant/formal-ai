@@ -1,0 +1,15 @@
+self_ast_census
+  target src/route_method_alias.rs
+  language rust
+  fidelity signature
+  byte_len 3170
+  line_count 74
+  content_id source_module_d9cf44b71fcb8405
+  symbol_count 6
+  symbols
+    struct RouteMethodAlias 28 35
+    const ALIASES_LINO 37 37
+    function aliases 41 44
+    static CELL 42 42
+    function load_aliases 46 65
+    function method_for_alias 69 74

@@ -1,0 +1,36 @@
+self_ast_census
+  target src/client_contract_learning.rs
+  language rust
+  fidelity signature
+  byte_len 18785
+  line_count 539
+  content_id source_module_b3af1922ebb1ae7e
+  symbol_count 27
+  symbols
+    const PATH_PLACEHOLDER 19 19
+    const LINE_PLACEHOLDER 20 20
+    const ERROR_PLACEHOLDER 21 21
+    const EXPECTED_MARKER_PLACEHOLDER 22 22
+    enum DeliveryMode 27 32
+    struct ClientContractObservation 36 50
+    function new 55 77
+    function json_line 81 83
+    struct ClientContractProposal 88 95
+    struct ClientContractFinding 99 107
+    struct ClientContractLearningReport 111 117
+    function links_notation 122 176
+    function learn_client_contracts 186 315
+    function slug 318 323
+    function consistent_delivery 326 332
+    function stable_invoked_tools 334 349
+    function stable_observed_contract 351 370
+    function normalized_contract 372 388
+    function is_observed_contract_field 390 397
+    function load_observations 400 432
+    struct ProxyRow 435 442
+    struct ProxyToolCall 445 447
+    function observe_proxy_transcript 450 511
+    function learning_message 513 519
+    function normalize 521 527
+    function field 529 531
+    function quote 533 539

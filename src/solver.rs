@@ -24,7 +24,7 @@
 use crate::coding::guidance as coding_guidance;
 use crate::engine::{
     answer_links_notation, language_aware_answer_for, language_aware_intent_for, normalize_prompt,
-    response_link_for_intent, stable_id, ExecutionRecipe, SelectedRule, SymbolicAnswer,
+    response_link_for_intent, ExecutionRecipe, SelectedRule, SymbolicAnswer,
 };
 use crate::event_log::{build_evidence_links, EventLog};
 use crate::intent_formalization::{
@@ -197,6 +197,13 @@ pub struct SolverConfig {
     /// item. Proposal-only — no skill is auto-promoted without review — and
     /// trace-only either way (R13/C3).
     pub skill_mode: crate::skill_ledger::SkillMode,
+    /// Whether the dialogue's symbolic world model is maintained and traced
+    /// (issue #702): `Off` (default) leaves the solver exactly as it was — no
+    /// current/target contexts are built and the state-query handler declines;
+    /// `Track` rebuilds the model from the conversation, records it as a trace
+    /// artifact, and answers "what is left to reach my goal?" from the
+    /// current->target difference. Trace-only in either mode (R13).
+    pub world_model_mode: crate::world_model_dialog::WorldModelMode,
     /// Whether agent mode is opted in. Off by default.
     pub agent_mode: bool,
     /// Whether diagnostic links are echoed inside the user-facing reply.
@@ -257,6 +264,7 @@ impl Default for SolverConfig {
             recursion_mode: crate::meta_construction::RecursionMode::default(),
             selection_mode: crate::selection::SelectionMode::default(),
             skill_mode: crate::skill_ledger::SkillMode::default(),
+            world_model_mode: crate::world_model_dialog::WorldModelMode::default(),
             agent_mode: false,
             diagnostic_mode: false,
             offline: false,
@@ -890,14 +898,10 @@ impl UniversalSolver {
             return;
         }
         log.append("search:external", prompt.to_owned());
-        let source_id = stable_id("source", prompt);
-        let fetched_at = "1970-01-01T00:00:00Z";
-        let sha256 = stable_id("sha256", prompt);
         log.append(
-            "source:http",
-            format!("https://example.org/{source_id} fetched_at={fetched_at} sha256={sha256}"),
+            "policy:no_fetch_capability",
+            "external search requested but no retrieval was executed".to_owned(),
         );
-        log.append("cache_hit", source_id);
     }
 }
 

@@ -1,0 +1,12 @@
+self_ast_census
+  target src/cli_procedure.rs
+  language rust
+  fidelity signature
+  byte_len 1132
+  line_count 38
+  content_id source_module_c9c5b58779d0ecd8
+  symbol_count 3
+  symbols
+    struct ProcedureArgs 10 13
+    enum ProcedureAction 16 27
+    function run_procedure 29 38

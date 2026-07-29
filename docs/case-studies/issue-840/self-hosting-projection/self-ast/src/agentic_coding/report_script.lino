@@ -1,0 +1,84 @@
+self_ast_census
+  target src/agentic_coding/report_script.rs
+  language rust
+  fidelity full_ast
+  byte_len 3602
+  line_count 91
+  content_id source_module_0f6a913cb608bf14
+  symbol_count 13
+  symbols
+    const COMMAND_PLACEHOLDER 16 16
+    const MESSAGE_PLACEHOLDER 17 17
+    const PREFLIGHT 20 21
+    const STRICT_MODE 23 23
+    const SCRATCH_VARIABLE 25 25
+    const SCRATCH_SETUP 32 33
+    struct ReportScript 36 40
+    function new 43 49
+    function step 52 57
+    function scratch 60 63
+    function render 66 74
+    function preflight 78 86
+    function shell_quote 89 91
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 2060
+    named_node_count 434
+    distinct_node_kinds 53
+    node_kinds
+      arguments 24
+      assignment_expression 1
+      binary_expression 1
+      block 8
+      boolean_literal 2
+      call_expression 24
+      char_literal 1
+      closure_expression 2
+      closure_parameters 2
+      const_item 6
+      crate 1
+      declaration_list 1
+      doc_comment 28
+      escape_sequence 11
+      expression_statement 8
+      field_declaration 3
+      field_declaration_list 1
+      field_expression 25
+      field_identifier 31
+      field_initializer 3
+      field_initializer_list 1
+      function_item 6
+      function_modifiers 1
+      generic_type 2
+      identifier 57
+      if_expression 2
+      impl_item 1
+      inner_doc_comment_marker 12
+      let_declaration 2
+      line_comment 28
+      macro_invocation 3
+      mutable_specifier 3
+      outer_doc_comment_marker 16
+      parameter 5
+      parameters 6
+      primitive_type 11
+      reference_expression 2
+      reference_type 10
+      scoped_identifier 5
+      self 10
+      self_parameter 3
+      source_file 1
+      string_content 17
+      string_literal 11
+      struct_expression 1
+      struct_item 1
+      super 6
+      token_tree 5
+      type_arguments 2
+      type_identifier 13
+      unary_expression 1
+      use_declaration 1
+      visibility_modifier 6

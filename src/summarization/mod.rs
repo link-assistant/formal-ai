@@ -374,16 +374,50 @@ impl SummarizationConfig {
 pub fn formalize(text: &str) -> Vec<Statement> {
     let mut out = Vec::new();
     let mut buffer = String::new();
-    let mut chars = text.chars().peekable();
-    while let Some(ch) = chars.next() {
+    let mut characters = text.chars().peekable();
+    while let Some(ch) = characters.next() {
+        let internal_period =
+            ch == '.' && period_belongs_to_token(&buffer, characters.peek().copied());
         buffer.push(ch);
-        let inside_token = ch == '.' && chars.peek().is_some_and(|next| next.is_alphanumeric());
-        if !inside_token && matches!(ch, '.' | '!' | '?' | '。' | '…' | '।' | '॥' | '\n') {
+        if !internal_period && matches!(ch, '.' | '!' | '?' | '。' | '…' | '।' | '॥' | '\n')
+        {
             push_sentence(&mut buffer, &mut out);
         }
     }
     push_sentence(&mut buffer, &mut out);
     out
+}
+
+/// Whether a full stop is part of the token being written, rather than a
+/// sentence boundary.
+///
+/// This covers decimals, dotted names and abbreviations, and domain-like
+/// tokens. In particular, both stops in `U.S.` stay with the following words:
+/// the first joins adjacent letters, while the second closes an initialism.
+fn period_belongs_to_token(buffer: &str, next: Option<char>) -> bool {
+    let previous = buffer.chars().next_back();
+    if previous.is_some_and(char::is_alphanumeric) && next.is_some_and(char::is_alphanumeric) {
+        return true;
+    }
+
+    let token = buffer
+        .split_whitespace()
+        .next_back()
+        .unwrap_or_default()
+        .trim_matches(|character: char| !character.is_alphabetic() && character != '.');
+    let mut segments = token.split('.');
+    let first = segments.next().unwrap_or_default();
+    if first.chars().count() != 1 || !first.chars().all(char::is_alphabetic) {
+        return false;
+    }
+    let mut segment_count = 1;
+    for segment in segments {
+        if segment.chars().count() != 1 || !segment.chars().all(char::is_alphabetic) {
+            return false;
+        }
+        segment_count += 1;
+    }
+    segment_count >= 2
 }
 
 fn push_sentence(buffer: &mut String, out: &mut Vec<Statement>) {

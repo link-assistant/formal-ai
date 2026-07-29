@@ -1,4 +1,100 @@
 multilingual_responses
+  response response_http_fetch_curated_project_en
+    intent http_fetch_curated_project
+    language en
+    text "HTTP fetch requested for `{url}`.\n\nThis URL matches a curated promoted project. README summary (through the formalize → summarize → deformalize pipeline): {summary}\n\nSource: [{url}]({url})"
+  response response_http_fetch_curated_project_ru
+    intent http_fetch_curated_project
+    language ru
+    text "HTTP-запрос на `{url}`.\n\nЭтот URL соответствует курируемому продвигаемому проекту. Резюме README (через formalize → summarize → deformalize): {summary}\n\nSource: [{url}]({url})"
+  response response_http_fetch_curated_project_hi
+    intent http_fetch_curated_project
+    language hi
+    text "HTTP अनुरोध `{url}` के लिए किया गया।\n\nयह URL स्थानीय रूप से क्यूरेट की गई परियोजना से मेल खाता है। README सारांश: {summary}\n\nस्रोत: [{url}]({url})"
+  response response_http_fetch_curated_project_zh
+    intent http_fetch_curated_project
+    language zh
+    text "已请求获取 `{url}`。\n\n此 URL 与本地精选项目匹配。README 摘要：{summary}\n\n来源：[{url}]({url})"
+  response response_web_search_live_results_en
+    intent web_search_live_results
+    language en
+    text "Executed web search for `{query}`. The captured provider response produced {count} fused result(s):\n\n{results}"
+  response response_web_search_live_results_ru
+    intent web_search_live_results
+    language ru
+    text "Выполнен веб-поиск по запросу `{query}`. Захваченный ответ провайдера дал {count} объединённых результатов:\n\n{results}"
+  response response_web_search_live_results_hi
+    intent web_search_live_results
+    language hi
+    text "`{query}` के लिए वेब खोज पूरी हुई। कैप्चर की गई प्रदाता प्रतिक्रिया से {count} संयुक्त परिणाम मिले:\n\n{results}"
+  response response_web_search_live_results_zh
+    intent web_search_live_results
+    language zh
+    text "已执行 `{query}` 的网页搜索。捕获的提供商响应生成了 {count} 个融合结果：\n\n{results}"
+  response response_web_search_unavailable_en
+    intent web_search_unavailable
+    language en
+    text "No captured provider response is available for `{query}`. Live fetching is off by default; enable it explicitly to populate the replayable source cache. The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and Wikinews."
+  response response_web_search_unavailable_ru
+    intent web_search_unavailable
+    language ru
+    text "Для `{query}` нет захваченного ответа провайдера. Получение из сети по умолчанию отключено; включите его явно, чтобы заполнить воспроизводимый кэш источников. Невыполненный план включает DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary и Wikinews."
+  response response_web_search_unavailable_hi
+    intent web_search_unavailable
+    language hi
+    text "`{query}` के लिए कोई कैप्चर की गई प्रदाता प्रतिक्रिया उपलब्ध नहीं है। लाइव फ़ेच डिफ़ॉल्ट रूप से बंद है; पुनः चलाए जा सकने वाले स्रोत कैश को भरने के लिए इसे स्पष्ट रूप से चालू करें। निष्पादित न की गई योजना में DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary और Wikinews शामिल हैं।"
+  response response_web_search_unavailable_zh
+    intent web_search_unavailable
+    language zh
+    text "`{query}` 没有可用的已捕获提供商响应。实时抓取默认关闭；请明确启用它以填充可重放的来源缓存。未执行的计划包括 DuckDuckGo、Internet Archive、Wikipedia、Wikidata、Wiktionary 和 Wikinews。"
+  response response_agentic_action_list_desktop_en
+    intent agentic_action_list_desktop
+    language en
+    text "Let me list the items directly on your Desktop."
+  response response_agentic_action_list_desktop_ru
+    intent agentic_action_list_desktop
+    language ru
+    text "Покажу объекты непосредственно на вашем рабочем столе."
+  response response_agentic_action_list_desktop_hi
+    intent agentic_action_list_desktop
+    language hi
+    text "मैं आपके डेस्कटॉप पर सीधे मौजूद आइटम सूचीबद्ध करता हूँ।"
+  response response_agentic_action_list_desktop_zh
+    intent agentic_action_list_desktop
+    language zh
+    text "我来列出桌面上的直接项目。"
+  response response_agentic_action_list_home_en
+    intent agentic_action_list_home
+    language en
+    text "Let me list the items directly in your home folder."
+  response response_agentic_action_list_home_ru
+    intent agentic_action_list_home
+    language ru
+    text "Покажу объекты непосредственно в вашей домашней папке."
+  response response_agentic_action_list_home_hi
+    intent agentic_action_list_home
+    language hi
+    text "मैं आपके होम फ़ोल्डर में सीधे मौजूद आइटम सूचीबद्ध करता हूँ।"
+  response response_agentic_action_list_home_zh
+    intent agentic_action_list_home
+    language zh
+    text "我来列出主目录中的直接项目。"
+  response response_agentic_action_list_current_en
+    intent agentic_action_list_current
+    language en
+    text "Let me list the items directly in the current folder."
+  response response_agentic_action_list_current_ru
+    intent agentic_action_list_current
+    language ru
+    text "Покажу объекты непосредственно в текущей папке."
+  response response_agentic_action_list_current_hi
+    intent agentic_action_list_current
+    language hi
+    text "मैं मौजूदा फ़ोल्डर में सीधे मौजूद आइटम सूचीबद्ध करता हूँ।"
+  response response_agentic_action_list_current_zh
+    intent agentic_action_list_current
+    language zh
+    text "我来列出当前目录中的直接项目。"
   response response_agentic_action_find_desktop_en
     intent agentic_action_find_desktop
     language en
@@ -159,3 +255,711 @@ multilingual_responses
     intent agentic_action_generic
     language zh
     text "我来采取下一步来处理这个。"
+  response response_local_search_route_local_en
+    intent local_search_route_local
+    language en
+    text "It is a local filesystem request."
+  response response_local_search_route_local_ru
+    intent local_search_route_local
+    language ru
+    text "Это запрос к локальной файловой системе."
+  response response_local_search_route_local_hi
+    intent local_search_route_local
+    language hi
+    text "यह स्थानीय फ़ाइल सिस्टम का अनुरोध है।"
+  response response_local_search_route_local_zh
+    intent local_search_route_local
+    language zh
+    text "这是本地文件系统请求。"
+  response response_local_search_found_directory_en
+    intent local_search_found_directory
+    language en
+    text "Found the folder at {path}. The search was limited to {scope}."
+  response response_local_search_found_directory_ru
+    intent local_search_found_directory
+    language ru
+    text "Папка найдена: {path}. Поиск был ограничен областью {scope}."
+  response response_local_search_found_directory_hi
+    intent local_search_found_directory
+    language hi
+    text "फ़ोल्डर {path} पर मिला। खोज {scope} तक सीमित थी।"
+  response response_local_search_found_directory_zh
+    intent local_search_found_directory
+    language zh
+    text "在 {path} 找到文件夹。搜索范围仅限于 {scope}。"
+  response response_local_search_found_file_en
+    intent local_search_found_file
+    language en
+    text "Found the file at {path}. The search was limited to {scope}."
+  response response_local_search_found_file_ru
+    intent local_search_found_file
+    language ru
+    text "Файл найден: {path}. Поиск был ограничен областью {scope}."
+  response response_local_search_found_file_hi
+    intent local_search_found_file
+    language hi
+    text "फ़ाइल {path} पर मिली। खोज {scope} तक सीमित थी।"
+  response response_local_search_found_file_zh
+    intent local_search_found_file
+    language zh
+    text "在 {path} 找到文件。搜索范围仅限于 {scope}。"
+  response response_local_search_found_path_en
+    intent local_search_found_path
+    language en
+    text "Found {path}. The search was limited to {scope}."
+  response response_local_search_found_path_ru
+    intent local_search_found_path
+    language ru
+    text "Найден путь {path}. Поиск был ограничен областью {scope}."
+  response response_local_search_found_path_hi
+    intent local_search_found_path
+    language hi
+    text "{path} मिला। खोज {scope} तक सीमित थी।"
+  response response_local_search_found_path_zh
+    intent local_search_found_path
+    language zh
+    text "找到 {path}。搜索范围仅限于 {scope}。"
+  response response_local_search_found_closest_en
+    intent local_search_found_closest
+    language en
+    text "No exact match for {requested}; the closest matching name is {actual} at {path}. The search was limited to {scope}."
+  response response_local_search_found_closest_ru
+    intent local_search_found_closest
+    language ru
+    text "Точного совпадения для {requested} нет; ближайшее имя — {actual}, путь {path}. Поиск был ограничен областью {scope}."
+  response response_local_search_found_closest_hi
+    intent local_search_found_closest
+    language hi
+    text "{requested} का सटीक मिलान नहीं मिला; निकटतम नाम {actual} है: {path}। खोज {scope} तक सीमित थी।"
+  response response_local_search_found_closest_zh
+    intent local_search_found_closest
+    language zh
+    text "没有与 {requested} 完全匹配的名称；最接近的是 {actual}，路径为 {path}。搜索范围仅限于 {scope}。"
+  response response_local_search_mismatch_requested_directory_en
+    intent local_search_mismatch_requested_directory
+    language en
+    text "No folder matched {requested}; the closest name is a non-directory path, {actual}, at {path}. The search was limited to {scope}."
+  response response_local_search_mismatch_requested_directory_ru
+    intent local_search_mismatch_requested_directory
+    language ru
+    text "Папка {requested} не найдена; ближайшее имя {actual} относится не к папке, путь {path}. Поиск был ограничен областью {scope}."
+  response response_local_search_mismatch_requested_directory_hi
+    intent local_search_mismatch_requested_directory
+    language hi
+    text "{requested} नाम का फ़ोल्डर नहीं मिला; निकटतम नाम {actual} फ़ोल्डर नहीं है: {path}। खोज {scope} तक सीमित थी।"
+  response response_local_search_mismatch_requested_directory_zh
+    intent local_search_mismatch_requested_directory
+    language zh
+    text "未找到名为 {requested} 的文件夹；最接近的名称 {actual} 不是文件夹，路径为 {path}。搜索范围仅限于 {scope}。"
+  response response_local_search_mismatch_requested_file_en
+    intent local_search_mismatch_requested_file
+    language en
+    text "No regular file matched {requested}; the closest name is a different path type, {actual}, at {path}. The search was limited to {scope}."
+  response response_local_search_mismatch_requested_file_ru
+    intent local_search_mismatch_requested_file
+    language ru
+    text "Обычный файл {requested} не найден; ближайшее имя {actual} относится к другому типу пути, путь {path}. Поиск был ограничен областью {scope}."
+  response response_local_search_mismatch_requested_file_hi
+    intent local_search_mismatch_requested_file
+    language hi
+    text "{requested} नाम की सामान्य फ़ाइल नहीं मिली; निकटतम नाम {actual} किसी अन्य पथ प्रकार का है: {path}। खोज {scope} तक सीमित थी।"
+  response response_local_search_mismatch_requested_file_zh
+    intent local_search_mismatch_requested_file
+    language zh
+    text "未找到名为 {requested} 的常规文件；最接近的名称 {actual} 属于其他路径类型，路径为 {path}。搜索范围仅限于 {scope}。"
+  response response_local_search_not_found_en
+    intent local_search_not_found
+    language en
+    text "{requested} was not found after exact, substring, and nearby-name checks within {scope}. No wider location was searched."
+  response response_local_search_not_found_ru
+    intent local_search_not_found
+    language ru
+    text "{requested} не найден после точной проверки, поиска по части имени и проверки близких имён в {scope}. За пределами этой области поиск не выполнялся."
+  response response_local_search_not_found_hi
+    intent local_search_not_found
+    language hi
+    text "{scope} में सटीक, आंशिक और निकटतम नाम की जाँच के बाद {requested} नहीं मिला। इसके बाहर खोज नहीं की गई।"
+  response response_local_search_not_found_zh
+    intent local_search_not_found
+    language zh
+    text "在 {scope} 内完成精确、子串和近似名称检查后仍未找到 {requested}。未搜索更大的范围。"
+  response response_local_search_scope_listing_en
+    intent local_search_scope_listing
+    language en
+    text "Items found directly within {scope}:\n{items}"
+  response response_local_search_scope_listing_ru
+    intent local_search_scope_listing
+    language ru
+    text "Объекты непосредственно в {scope}:\n{items}"
+  response response_local_search_scope_listing_hi
+    intent local_search_scope_listing
+    language hi
+    text "{scope} के भीतर सीधे मिले आइटम:\n{items}"
+  response response_local_search_scope_listing_zh
+    intent local_search_scope_listing
+    language zh
+    text "{scope} 内的直接项目：\n{items}"
+  response response_local_search_contents_listing_en
+    intent local_search_contents_listing
+    language en
+    text "Contents of {scope}:\n{items}"
+  response response_local_search_contents_listing_ru
+    intent local_search_contents_listing
+    language ru
+    text "Содержимое {scope}:\n{items}"
+  response response_local_search_contents_listing_hi
+    intent local_search_contents_listing
+    language hi
+    text "{scope} की सामग्री:\n{items}"
+  response response_local_search_contents_listing_zh
+    intent local_search_contents_listing
+    language zh
+    text "{scope} 的内容：\n{items}"
+  response response_local_search_type_directory_en
+    intent local_search_type_directory
+    language en
+    text "{path} is a folder. It was verified within {scope}."
+  response response_local_search_type_directory_ru
+    intent local_search_type_directory
+    language ru
+    text "{path} — это папка. Тип проверен в области {scope}."
+  response response_local_search_type_directory_hi
+    intent local_search_type_directory
+    language hi
+    text "{path} एक फ़ोल्डर है। प्रकार {scope} में सत्यापित किया गया।"
+  response response_local_search_type_directory_zh
+    intent local_search_type_directory
+    language zh
+    text "{path} 是文件夹。已在 {scope} 范围内验证类型。"
+  response response_local_search_type_file_en
+    intent local_search_type_file
+    language en
+    text "{path} is a file. It was verified within {scope}."
+  response response_local_search_type_file_ru
+    intent local_search_type_file
+    language ru
+    text "{path} — это файл. Тип проверен в области {scope}."
+  response response_local_search_type_file_hi
+    intent local_search_type_file
+    language hi
+    text "{path} एक फ़ाइल है। प्रकार {scope} में सत्यापित किया गया।"
+  response response_local_search_type_file_zh
+    intent local_search_type_file
+    language zh
+    text "{path} 是文件。已在 {scope} 范围内验证类型。"
+  response response_definition_followup_clarify_en
+    intent definition_followup_clarify
+    language en
+    text "What does “it” refer to here?"
+  response response_definition_followup_clarify_ru
+    intent definition_followup_clarify
+    language ru
+    text "Что именно вы имеете в виду под «это»?"
+  response response_definition_followup_clarify_hi
+    intent definition_followup_clarify
+    language hi
+    text "यहाँ “यह” से आपका क्या मतलब है?"
+  response response_definition_followup_clarify_zh
+    intent definition_followup_clarify
+    language zh
+    text "这里的“这”具体指什么？"
+  response response_comparison_decomposed_no_evidence_en
+    intent comparison_decomposed_no_evidence
+    language en
+    text "I searched for {left} and {right} separately, but the available search tool returned no usable evidence. The comparison remains unverified."
+  response response_comparison_decomposed_no_evidence_ru
+    intent comparison_decomposed_no_evidence
+    language ru
+    text "Я выполнил отдельный поиск по {left} и {right}, но инструмент не вернул пригодных свидетельств. Сравнение остаётся непроверенным."
+  response response_comparison_decomposed_no_evidence_hi
+    intent comparison_decomposed_no_evidence
+    language hi
+    text "मैंने {left} और {right} को अलग-अलग खोजा, लेकिन खोज साधन ने उपयोगी साक्ष्य नहीं लौटाया। तुलना अभी सत्यापित नहीं है।"
+  response response_comparison_decomposed_no_evidence_zh
+    intent comparison_decomposed_no_evidence
+    language zh
+    text "我分别搜索了 {left} 和 {right}，但搜索工具没有返回可用证据，因此比较尚未验证。"
+  response response_comparison_decomposed_evidence_en
+    intent comparison_decomposed_evidence
+    language en
+    text "Separate evidence for {left} and {right}:\n\n{evidence}"
+  response response_comparison_decomposed_evidence_ru
+    intent comparison_decomposed_evidence
+    language ru
+    text "Отдельно собранные сведения по {left} и {right}:\n\n{evidence}"
+  response response_comparison_decomposed_evidence_hi
+    intent comparison_decomposed_evidence
+    language hi
+    text "{left} और {right} के लिए अलग-अलग साक्ष्य:\n\n{evidence}"
+  response response_comparison_decomposed_evidence_zh
+    intent comparison_decomposed_evidence
+    language zh
+    text "{left} 和 {right} 的独立证据：\n\n{evidence}"
+  response response_supplied_file_contents_en
+    intent supplied_file_contents
+    language en
+    text "Contents of `{path}`:\n\n{body}"
+  response response_supplied_file_contents_ru
+    intent supplied_file_contents
+    language ru
+    text "Содержимое `{path}`:\n\n{body}"
+  response response_supplied_file_contents_hi
+    intent supplied_file_contents
+    language hi
+    text "`{path}` की सामग्री:\n\n{body}"
+  response response_supplied_file_contents_zh
+    intent supplied_file_contents
+    language zh
+    text "`{path}` 的内容：\n\n{body}"
+  response response_supplied_file_first_line_en
+    intent supplied_file_first_line
+    language en
+    text "First line of `{path}`: {line}"
+  response response_supplied_file_first_line_ru
+    intent supplied_file_first_line
+    language ru
+    text "Первая строка `{path}`: {line}"
+  response response_supplied_file_first_line_hi
+    intent supplied_file_first_line
+    language hi
+    text "`{path}` की पहली पंक्ति: {line}"
+  response response_supplied_file_first_line_zh
+    intent supplied_file_first_line
+    language zh
+    text "`{path}` 的第一行：{line}"
+  response response_general_plan_command_capture_action_en
+    intent general_plan_command_capture_action
+    language en
+    text "run the explicit command and capture stdout in {target}"
+  response response_general_plan_command_capture_action_ru
+    intent general_plan_command_capture_action
+    language ru
+    text "выполнить явно указанную команду и сохранить stdout в {target}"
+  response response_general_plan_command_capture_action_hi
+    intent general_plan_command_capture_action
+    language hi
+    text "स्पष्ट कमांड चलाएँ और stdout को {target} में सहेजें"
+  response response_general_plan_command_capture_action_zh
+    intent general_plan_command_capture_action
+    language zh
+    text "运行明确指定的命令并将 stdout 保存到 {target}"
+  response response_general_plan_command_output_evidence_en
+    intent general_plan_command_output_evidence
+    language en
+    text "command-created workspace file {target}"
+  response response_general_plan_command_output_evidence_ru
+    intent general_plan_command_output_evidence
+    language ru
+    text "файл рабочей области {target}, созданный командой"
+  response response_general_plan_command_output_evidence_hi
+    intent general_plan_command_output_evidence
+    language hi
+    text "कमांड से बनाई गई कार्यक्षेत्र फ़ाइल {target}"
+  response response_general_plan_command_output_evidence_zh
+    intent general_plan_command_output_evidence
+    language zh
+    text "由命令创建的工作区文件 {target}"
+  response response_general_plan_command_verification_evidence_en
+    intent general_plan_command_verification_evidence
+    language en
+    text "captured stdout from the explicit command in {target}"
+  response response_general_plan_command_verification_evidence_ru
+    intent general_plan_command_verification_evidence
+    language ru
+    text "stdout явно указанной команды сохранён в {target}"
+  response response_general_plan_command_verification_evidence_hi
+    intent general_plan_command_verification_evidence
+    language hi
+    text "स्पष्ट कमांड का stdout {target} में सहेजा गया"
+  response response_general_plan_command_verification_evidence_zh
+    intent general_plan_command_verification_evidence
+    language zh
+    text "明确指定的命令的 stdout 已保存到 {target}"
+  response response_general_plan_repository_action_en
+    intent general_plan_repository_action
+    language en
+    text "append the bounded repository work-item plan to {target}"
+  response response_general_plan_repository_action_ru
+    intent general_plan_repository_action
+    language ru
+    text "добавить ограниченный план работы над репозиторием в {target}"
+  response response_general_plan_repository_action_hi
+    intent general_plan_repository_action
+    language hi
+    text "सीमित रिपॉज़िटरी कार्य योजना को {target} में जोड़ें"
+  response response_general_plan_repository_action_zh
+    intent general_plan_repository_action
+    language zh
+    text "将有界仓库工作项计划追加到 {target}"
+  response response_general_plan_repository_evidence_en
+    intent general_plan_repository_evidence
+    language en
+    text "the exact repository work-item goal and execution boundary"
+  response response_general_plan_repository_evidence_ru
+    intent general_plan_repository_evidence
+    language ru
+    text "точная цель задачи репозитория и граница выполнения"
+  response response_general_plan_repository_evidence_hi
+    intent general_plan_repository_evidence
+    language hi
+    text "सटीक रिपॉज़िटरी कार्य लक्ष्य और निष्पादन सीमा"
+  response response_general_plan_repository_evidence_zh
+    intent general_plan_repository_evidence
+    language zh
+    text "准确的仓库工作项目标和执行边界"
+  response response_general_plan_repository_verify_action_en
+    intent general_plan_repository_verify_action
+    language en
+    text "read back the persisted work-item plan"
+  response response_general_plan_repository_verify_action_ru
+    intent general_plan_repository_verify_action
+    language ru
+    text "прочитать сохранённый план работы"
+  response response_general_plan_repository_verify_action_hi
+    intent general_plan_repository_verify_action
+    language hi
+    text "सहेजी गई कार्य योजना को वापस पढ़ें"
+  response response_general_plan_repository_verify_action_zh
+    intent general_plan_repository_verify_action
+    language zh
+    text "读回已保存的工作项计划"
+  response response_general_plan_repository_complete_en
+    intent general_plan_repository_complete
+    language en
+    text "Recorded and verified the bounded repository work-item plan for {target}.\n\nThe deterministic sandbox preserved the requested goal without claiming unobserved source edits. Plan event ({plan_path}):\n\n{plan}"
+  response response_general_plan_repository_complete_ru
+    intent general_plan_repository_complete
+    language ru
+    text "Ограниченный план работы над репозиторием для {target} записан и проверен.\n\nДетерминированная песочница сохранила запрошенную цель, не заявляя о ненаблюдавшихся изменениях исходного кода. Событие плана ({plan_path}):\n\n{plan}"
+  response response_general_plan_repository_complete_hi
+    intent general_plan_repository_complete
+    language hi
+    text "{target} के लिए सीमित रिपॉज़िटरी कार्य योजना दर्ज और सत्यापित की गई।\n\nनियतात्मक सैंडबॉक्स ने अनदेखे स्रोत परिवर्तनों का दावा किए बिना अनुरोधित लक्ष्य सुरक्षित रखा। योजना घटना ({plan_path}):\n\n{plan}"
+  response response_general_plan_repository_complete_zh
+    intent general_plan_repository_complete
+    language zh
+    text "已记录并验证 {target} 的有界仓库工作项计划。\n\n确定性沙箱保留了请求的目标，且未声称存在未经观察的源代码编辑。计划事件（{plan_path}）：\n\n{plan}"
+  response response_client_contract_read_observations_error_en
+    intent client_contract_read_observations_error
+    language en
+    text "read observations {path}: {error}"
+  response response_client_contract_read_observations_error_ru
+    intent client_contract_read_observations_error
+    language ru
+    text "не удалось прочитать наблюдения {path}: {error}"
+  response response_client_contract_read_observations_error_hi
+    intent client_contract_read_observations_error
+    language hi
+    text "अवलोकन {path} पढ़ने में विफल: {error}"
+  response response_client_contract_read_observations_error_zh
+    intent client_contract_read_observations_error
+    language zh
+    text "无法读取观测记录 {path}：{error}"
+  response response_client_contract_parse_observation_error_en
+    intent client_contract_parse_observation_error
+    language en
+    text "parse observation {path}:{line}: {error}"
+  response response_client_contract_parse_observation_error_ru
+    intent client_contract_parse_observation_error
+    language ru
+    text "не удалось разобрать наблюдение {path}:{line}: {error}"
+  response response_client_contract_parse_observation_error_hi
+    intent client_contract_parse_observation_error
+    language hi
+    text "अवलोकन {path}:{line} का विश्लेषण विफल: {error}"
+  response response_client_contract_parse_observation_error_zh
+    intent client_contract_parse_observation_error
+    language zh
+    text "无法解析观测记录 {path}:{line}：{error}"
+  response response_client_contract_read_transcript_error_en
+    intent client_contract_read_transcript_error
+    language en
+    text "read transcript {path}: {error}"
+  response response_client_contract_read_transcript_error_ru
+    intent client_contract_read_transcript_error
+    language ru
+    text "не удалось прочитать протокол {path}: {error}"
+  response response_client_contract_read_transcript_error_hi
+    intent client_contract_read_transcript_error
+    language hi
+    text "प्रतिलेख {path} पढ़ने में विफल: {error}"
+  response response_client_contract_read_transcript_error_zh
+    intent client_contract_read_transcript_error
+    language zh
+    text "无法读取交互记录 {path}：{error}"
+  response response_client_contract_parse_transcript_error_en
+    intent client_contract_parse_transcript_error
+    language en
+    text "parse transcript {path}:{line}: {error}"
+  response response_client_contract_parse_transcript_error_ru
+    intent client_contract_parse_transcript_error
+    language ru
+    text "не удалось разобрать протокол {path}:{line}: {error}"
+  response response_client_contract_parse_transcript_error_hi
+    intent client_contract_parse_transcript_error
+    language hi
+    text "प्रतिलेख {path}:{line} का विश्लेषण विफल: {error}"
+  response response_client_contract_parse_transcript_error_zh
+    intent client_contract_parse_transcript_error
+    language zh
+    text "无法解析交互记录 {path}:{line}：{error}"
+  response response_client_contract_missing_evidence_error_en
+    intent client_contract_missing_evidence_error
+    language en
+    text "{path} contains neither a tool call nor expected marker `{expected_marker}`"
+  response response_client_contract_missing_evidence_error_ru
+    intent client_contract_missing_evidence_error
+    language ru
+    text "{path} не содержит ни вызова инструмента, ни ожидаемого маркера `{expected_marker}`"
+  response response_client_contract_missing_evidence_error_hi
+    intent client_contract_missing_evidence_error
+    language hi
+    text "{path} में न साधन आमंत्रण है, न अपेक्षित चिह्न `{expected_marker}`"
+  response response_client_contract_missing_evidence_error_zh
+    intent client_contract_missing_evidence_error
+    language zh
+    text "{path} 既不包含工具调用，也不包含预期标记 `{expected_marker}`"
+  response response_agentic_action_before_tool_en
+    intent agentic_action_before_tool
+    language en
+    text "I'll use {tool} on {target} so I can verify the next step before continuing."
+  response response_agentic_action_before_tool_ru
+    intent agentic_action_before_tool
+    language ru
+    text "Я использую {tool} для «{target}», чтобы проверить следующий шаг перед продолжением."
+  response response_agentic_action_before_tool_hi
+    intent agentic_action_before_tool
+    language hi
+    text "अगला कदम जारी रखने से पहले उसकी पुष्टि करने के लिए मैं {target} पर {tool} का उपयोग करूँगा।"
+  response response_agentic_action_before_tool_zh
+    intent agentic_action_before_tool
+    language zh
+    text "我会对 {target} 使用 {tool}，以便在继续之前验证下一步。"
+  response response_world_state_remaining_en
+    intent world_state_remaining
+    language en
+    text "{count} statement(s) still separate the current state from your target: {remaining}.\nThe answer is the current->target difference, computed as a links network, not retrieved from memory.\nDifference: {diff_id}"
+  response response_world_state_remaining_ru
+    intent world_state_remaining
+    language ru
+    text "Текущее состояние отделяют от вашей цели ещё {count} утверждений: {remaining}.\nОтвет — это разность текущее->целевое, вычисленная как сеть связей, а не извлечённая из памяти.\nРазность: {diff_id}"
+  response response_world_state_remaining_hi
+    intent world_state_remaining
+    language hi
+    text "वर्तमान स्थिति को आपके लक्ष्य से अभी {count} कथन अलग करते हैं: {remaining}।\nउत्तर वर्तमान->लक्ष्य अंतर है, जो संबंध-नेटवर्क के रूप में गणना किया गया है, स्मृति से लिया गया नहीं।\nअंतर: {diff_id}"
+  response response_world_state_remaining_zh
+    intent world_state_remaining
+    language zh
+    text "当前状态与你的目标之间还有 {count} 条陈述：{remaining}。\n答案是当前->目标的差异，作为链接网络计算得出，而不是从记忆中取出。\n差异：{diff_id}"
+  response response_world_state_reached_en
+    intent world_state_reached
+    language en
+    text "Nothing is left: every target statement already holds in the current state.\nDifference: {diff_id}"
+  response response_world_state_reached_ru
+    intent world_state_reached
+    language ru
+    text "Ничего не осталось: каждое целевое утверждение уже выполняется в текущем состоянии.\nРазность: {diff_id}"
+  response response_world_state_reached_hi
+    intent world_state_reached
+    language hi
+    text "कुछ भी शेष नहीं है: प्रत्येक लक्ष्य कथन वर्तमान स्थिति में पहले से सत्य है।\nअंतर: {diff_id}"
+  response response_world_state_reached_zh
+    intent world_state_reached
+    language zh
+    text "没有剩余：每一条目标陈述在当前状态中都已成立。\n差异：{diff_id}"
+  response response_fact_check_current_dialogue_en
+    intent fact_check_current_dialogue
+    language en
+    text "Checked all {count} statements in the current dialogue relative to {formal_system}.\n{summary}"
+  response response_fact_check_current_dialogue_ru
+    intent fact_check_current_dialogue
+    language ru
+    text "Проверены все утверждения текущего диалога ({count}) относительно системы {formal_system}.\n{summary}"
+  response response_fact_check_current_dialogue_hi
+    intent fact_check_current_dialogue
+    language hi
+    text "वर्तमान संवाद के सभी {count} कथनों की {formal_system} के सापेक्ष जाँच की गई।\n{summary}"
+  response response_fact_check_current_dialogue_zh
+    intent fact_check_current_dialogue
+    language zh
+    text "已相对于 {formal_system} 核查当前对话中的全部 {count} 条陈述。\n{summary}"
+  response response_fact_check_statement_en
+    intent fact_check_statement
+    language en
+    text "{statement}: probability {probability} ({basis})."
+  response response_fact_check_statement_ru
+    intent fact_check_statement
+    language ru
+    text "{statement}: вероятность {probability} ({basis})."
+  response response_fact_check_statement_hi
+    intent fact_check_statement
+    language hi
+    text "{statement}: प्रायिकता {probability} ({basis})।"
+  response response_fact_check_statement_zh
+    intent fact_check_statement
+    language zh
+    text "{statement}：概率 {probability}（{basis}）。"
+  response response_fact_check_statement_counterexample_en
+    intent fact_check_statement_counterexample
+    language en
+    text "{statement}: probability {probability} ({basis}); counterexample: {counterexample}."
+  response response_fact_check_statement_counterexample_ru
+    intent fact_check_statement_counterexample
+    language ru
+    text "{statement}: вероятность {probability} ({basis}); контрпример: {counterexample}."
+  response response_fact_check_statement_counterexample_hi
+    intent fact_check_statement_counterexample
+    language hi
+    text "{statement}: प्रायिकता {probability} ({basis}); प्रतिउदाहरण: {counterexample}।"
+  response response_fact_check_statement_counterexample_zh
+    intent fact_check_statement_counterexample
+    language zh
+    text "{statement}：概率 {probability}（{basis}）；反例：{counterexample}。"
+  response response_fact_check_arithmetic_counterexample_en
+    intent fact_check_arithmetic_counterexample
+    language en
+    text "Evaluated values: {left} = {left_value}, {right} = {right_value}. The relation {relation} does not hold"
+  response response_fact_check_arithmetic_counterexample_ru
+    intent fact_check_arithmetic_counterexample
+    language ru
+    text "Вычисленные значения: {left} = {left_value}, {right} = {right_value}. Отношение {relation} не выполняется"
+  response response_fact_check_arithmetic_counterexample_hi
+    intent fact_check_arithmetic_counterexample
+    language hi
+    text "परिकलित मान: {left} = {left_value}, {right} = {right_value}। संबंध {relation} सत्य नहीं है"
+  response response_fact_check_arithmetic_counterexample_zh
+    intent fact_check_arithmetic_counterexample
+    language zh
+    text "计算值：{left} = {left_value}，{right} = {right_value}。关系 {relation} 不成立"
+  response response_fact_check_no_statements_en
+    intent fact_check_no_statements
+    language en
+    text "There are no declarative statements to check."
+  response response_fact_check_no_statements_ru
+    intent fact_check_no_statements
+    language ru
+    text "В диалоге нет утверждений для проверки."
+  response response_fact_check_no_statements_hi
+    intent fact_check_no_statements
+    language hi
+    text "जाँचने के लिए कोई घोषणात्मक कथन नहीं है।"
+  response response_fact_check_no_statements_zh
+    intent fact_check_no_statements
+    language zh
+    text "没有可核查的陈述。"
+  response response_external_benchmark_learning_task_en
+    intent external_benchmark_learning_task
+    language en
+    text "Use Formal AI auto-learning to inspect the persisted issue 698 external benchmark failures as an associative links network, rank the evidence and general evaluator-boundary amendments, keep promotion human-review gated, and write external-benchmark-learning-report.lino."
+  response response_external_benchmark_ratchet_reference_suffix_en
+    intent external_benchmark_ratchet_reference_suffix
+    language en
+    text " against {reference}"
+  response response_external_benchmark_baseline_read_error_en
+    intent external_benchmark_baseline_read_error
+    language en
+    text "failed to read benchmark baseline {object}: {error}"
+  response response_external_benchmark_provenance_en
+    intent external_benchmark_provenance
+    language en
+    text "external_benchmark_cache\n  suite {suite}\n  source_ref {source_ref}\n  download_url {url}\n  payload_bytes {payload_bytes}\n  content_id fnv1a64:{content_id}\n"
+  response response_external_benchmark_parquet_module_unavailable_en
+    intent external_benchmark_parquet_module_unavailable
+    language en
+    text "python3 module `pyarrow.parquet` is unavailable, so the pinned upstream parquet payload cannot be decoded"
+  response response_external_benchmark_python_import_en
+    intent external_benchmark_python_import
+    language en
+    text "import {module}"
+  response response_external_benchmark_parquet_start_error_en
+    intent external_benchmark_parquet_start_error
+    language en
+    text "failed to start Python parquet decoder for {path}: {error}"
+  response response_external_benchmark_parquet_decode_error_en
+    intent external_benchmark_parquet_decode_error
+    language en
+    text "{suite}: failed to decode pinned parquet payload {path}: {error}"
+  response response_external_benchmark_parquet_utf8_error_en
+    intent external_benchmark_parquet_utf8_error
+    language en
+    text "{suite} parquet decoder emitted non-UTF-8: {error}"
+  response response_external_benchmark_provenance_write_error_en
+    intent external_benchmark_provenance_write_error
+    language en
+    text "failed to write cache provenance {path}: {error}"
+  response response_external_benchmark_swe_record_error_en
+    intent external_benchmark_swe_record_error
+    language en
+    text "pinned SWE-bench record for {case} is invalid JSON: {error}"
+  response response_external_benchmark_not_swe_case_en
+    intent external_benchmark_not_swe_case
+    language en
+    text "{case} is not a SWE-bench case"
+  response response_external_benchmark_swe_encode_error_en
+    intent external_benchmark_swe_encode_error
+    language en
+    text "failed to encode pinned SWE-bench slice: {error}"
+  response response_external_benchmark_swe_slice_write_error_en
+    intent external_benchmark_swe_slice_write_error
+    language en
+    text "failed to write pinned SWE-bench slice {path}: {error}"
+  response response_external_benchmark_swe_predictions_write_error_en
+    intent external_benchmark_swe_predictions_write_error
+    language en
+    text "failed to write SWE-bench predictions {path}: {error}"
+  response response_external_benchmark_swe_clear_logs_error_en
+    intent external_benchmark_swe_clear_logs_error
+    language en
+    text "failed to clear stale SWE-bench logs {path}: {error}"
+  response response_external_benchmark_swe_remove_report_error_en
+    intent external_benchmark_swe_remove_report_error
+    language en
+    text "failed to remove stale SWE-bench report {path}: {error}"
+  response response_external_benchmark_swe_start_error_en
+    intent external_benchmark_swe_start_error
+    language en
+    text "failed to start the official SWE-bench evaluator: {error}"
+  response response_external_benchmark_swe_exit_error_en
+    intent external_benchmark_swe_exit_error
+    language en
+    text "official SWE-bench evaluator exited with {status}: {error}"
+  response response_external_benchmark_swe_missing_report_en
+    intent external_benchmark_swe_missing_report
+    language en
+    text "official SWE-bench evaluator did not publish {path}: {error}"
+  response response_external_benchmark_swe_inspect_error_en
+    intent external_benchmark_swe_inspect_error
+    language en
+    text "failed to inspect the SWE-bench Python environment: {error}"
+  response response_external_benchmark_swe_docker_error_en
+    intent external_benchmark_swe_docker_error
+    language en
+    text "Docker is unavailable for SWE-bench evaluation: {error}"
+  response response_external_benchmark_swe_report_error_en
+    intent external_benchmark_swe_report_error
+    language en
+    text "official SWE-bench report is invalid JSON: {error}"
+  response response_external_benchmark_swe_infrastructure_error_en
+    intent external_benchmark_swe_infrastructure_error
+    language en
+    text "official SWE-bench evaluator reported infrastructure errors for: {cases}"
+  response response_external_benchmark_unavailable_observation_en
+    intent external_benchmark_unavailable_observation
+    language en
+    text "suite={suite} benchmark_unavailable evaluator_detail={reason}"
+  response response_external_benchmark_failure_observation_en
+    intent external_benchmark_failure_observation
+    language en
+    text "suite={suite} case={case} evaluator_detail={detail}"
+  response response_external_benchmark_learning_event_en
+    intent external_benchmark_learning_event
+    language en
+    text "  event lesson:evaluator-grounded-repair\n"
+  response response_external_benchmark_learning_lesson_en
+    intent external_benchmark_learning_lesson
+    language en
+    text "Retain each failed upstream case and evaluator detail as evidence; propose a general repair at the solver/evaluator boundary, and do not promote it until the benchmark ratchet and Agent CLI replay pass under human review."
+  response response_external_benchmark_swe_unavailable_en
+    intent external_benchmark_swe_unavailable
+    language en
+    text "official SWE-bench evaluation unavailable: {reason}"

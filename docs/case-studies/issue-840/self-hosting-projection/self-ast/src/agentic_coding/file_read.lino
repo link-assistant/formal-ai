@@ -1,0 +1,140 @@
+self_ast_census
+  target src/agentic_coding/file_read.rs
+  language rust
+  fidelity full_ast
+  byte_len 19865
+  line_count 629
+  content_id source_module_d2579b19a103da3a
+  symbol_count 37
+  symbols
+    enum FileReadTask 11 22
+    enum FileReadMode 25 30
+    enum FileSelection 33 37
+    struct ToolResultRecord 39 43
+    function plan_file_read_step 48 69
+    function plan_direct_file_read 71 110
+    function plan_list_then_read 112 177
+    function file_read_task_for 179 235
+    function has_file_read_intent 237 239
+    function asks_to_read_every_file 241 244
+    function asks_to_list_then_read 246 256
+    function asks_to_read_file_in_folder 258 260
+    function selection_for_prompt 262 268
+    function mode_for_prompt 270 282
+    function extract_value_key 284 295
+    function leading_cat_path 297 308
+    function first_local_file_path 310 315
+    function clean_file_token 317 329
+    function looks_like_local_file_path 331 349
+    function is_file_path_char 351 353
+    function directory_for_list_read 355 386
+    function tool_result_records 388 419
+    function tool_result_call 421 427
+    function read_result_for_path 429 437
+    function read_results_for_paths 439 449
+    function run_result_for_command 451 463
+    function path_argument 465 470
+    function read_arguments 472 479
+    function read_command_for 481 488
+    function list_files_command 490 499
+    function cat_many_command 501 513
+    function shell_path 515 523
+    function selected_paths_from_listing 525 555
+    function file_read_final_answer 557 586
+    function extract_jsonish_value 588 615
+    function tool_for 617 622
+    function plan_one 624 629
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 16565
+    named_node_count 3337
+    distinct_node_kinds 85
+    node_kinds
+      arguments 291
+      array_expression 4
+      array_type 13
+      attribute 3
+      attribute_item 3
+      binary_expression 53
+      block 97
+      boolean_literal 4
+      call_expression 291
+      char_literal 34
+      closure_expression 28
+      closure_parameters 28
+      continue_expression 1
+      crate 2
+      doc_comment 4
+      else_clause 6
+      enum_item 3
+      enum_variant 9
+      enum_variant_list 3
+      escape_sequence 13
+      expression_statement 81
+      field_declaration 9
+      field_declaration_list 3
+      field_expression 221
+      field_identifier 246
+      field_initializer 16
+      field_initializer_list 7
+      field_pattern 6
+      for_expression 5
+      function_item 33
+      function_modifiers 1
+      generic_function 4
+      generic_type 23
+      identifier 769
+      if_expression 39
+      index_expression 25
+      inner_doc_comment_marker 1
+      integer_literal 27
+      let_condition 17
+      let_declaration 44
+      lifetime 9
+      lifetime_parameter 3
+      line_comment 16
+      macro_invocation 23
+      match_arm 13
+      match_block 5
+      match_expression 5
+      match_pattern 13
+      mutable_specifier 5
+      or_pattern 2
+      ordered_field_declaration_list 1
+      outer_doc_comment_marker 3
+      parameter 60
+      parameters 33
+      parenthesized_expression 7
+      primitive_type 48
+      range_expression 5
+      reference_expression 28
+      reference_type 55
+      return_expression 30
+      scoped_identifier 64
+      scoped_type_identifier 10
+      scoped_use_list 2
+      shorthand_field_identifier 6
+      shorthand_field_initializer 4
+      source_file 1
+      string_content 84
+      string_literal 77
+      struct_expression 7
+      struct_item 1
+      struct_pattern 2
+      super 7
+      token_tree 44
+      try_expression 7
+      tuple_expression 5
+      tuple_pattern 7
+      tuple_struct_pattern 22
+      tuple_type 2
+      type_arguments 27
+      type_identifier 97
+      type_parameters 3
+      unary_expression 15
+      use_declaration 5
+      use_list 2
+      visibility_modifier 5

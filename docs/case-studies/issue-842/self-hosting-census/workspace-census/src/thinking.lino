@@ -1,0 +1,20 @@
+self_ast_census
+  target src/thinking.rs
+  language rust
+  fidelity signature
+  byte_len 18287
+  line_count 455
+  content_id source_module_aaeda81235e68b4a
+  symbol_count 11
+  symbols
+    struct ThinkingStep 20 38
+    function new 42 65
+    function with_parent 71 74
+    function thinking_language_label 79 93
+    function humanize_meta_identifier 99 115
+    function thinking_narrative 136 199
+    function render_thinking_steps 208 226
+    function indefinite_article 231 236
+    function strip_agent_substep_prefix 240 249
+    function truncate_thinking_detail 251 266
+    function naturalize_thinking_step 275 455

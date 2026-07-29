@@ -1,0 +1,1 @@
+Formal AI stores inspectable knowledge as a links network with Links Notation as its portable text representation.

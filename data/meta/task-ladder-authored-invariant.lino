@@ -1,0 +1,5 @@
+task_ladder_authored_invariant
+  record_type meta_invariant
+  identity "stable task id"
+  preservation "every recorded task remains passing"
+  extension "a new report adds a passing task before the baseline advances"

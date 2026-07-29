@@ -192,15 +192,30 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Cache cargo
-        uses: actions/cache@v5
+      - name: Cache Rust compiler outputs
+        # Cargo can use a response file for web-sys's generated feature-check
+        # arguments on Windows, but sccache respawns rustc with the expanded
+        # command and hits CreateProcess's command-line limit (os error 206).
+        if: runner.os != 'Windows'
+        uses: mozilla-actions/sccache-action@v0.0.10
         with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: desktop-${{ matrix.label }}-cargo-${{ hashFiles('Cargo.lock', 'Cargo.toml') }}
+          # v0.17.0 expands Rust response files before spawning rustc and
+          # exceeds the Windows command-line limit for web-sys.
+          version: v0.16.0
 
+      - name: Enable Rust compiler cache
+        if: runner.os != 'Windows'
+        run: |
+          echo "SCCACHE_GHA_ENABLED=true" >> "$GITHUB_ENV"
+          echo "RUSTC_WRAPPER=sccache" >> "$GITHUB_ENV"
+
+      # Keep Cargo's dependency cache out of this matrix. A cold Windows build
+      # completes inside the job budget, while actions/cache registers a
+      # post-job archive of Cargo home: on run 30398883119 all product work and
+      # uploads passed, then compressing 194 MB consumed the remaining 3m40 and
+      # GitHub cancelled the otherwise-successful job. Unix runners retain
+      # expensive compiler outputs through sccache without that post-packaging
+      # failure mode; Windows uses Cargo's direct rustc response-file path.
       - name: Build formal-ai binary (release)
         run: cargo build --release --bin formal-ai
 
@@ -261,7 +276,7 @@ jobs:
           APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
           APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
           DEBUG: electron-builder,electron-notarize*
-        run: npx --no-install electron-builder ${{ matrix.ebflag }} --publish never
+        run: bash scripts/package-macos-with-retry.sh ${{ matrix.ebflag }} --publish never
 
       # Issue #479: electron-builder 26 changed macOS signing control flow. Its
       # MacPackager.sign() now calls findSigningIdentity(), which returns null --
@@ -291,7 +306,7 @@ jobs:
           CSC_FOR_PULL_REQUEST: "true"
           FORMAL_AI_MACOS_SIGN_DEBUG: "1"
           DEBUG: electron-builder,electron-osx-sign*
-        run: npx --no-install electron-builder ${{ matrix.ebflag }} --publish never -c.mac.notarize=false -c.mac.identity=- -c.mac.sign=./scripts/adhoc-sign-mac.cjs
+        run: bash scripts/package-macos-with-retry.sh ${{ matrix.ebflag }} --publish never -c.mac.notarize=false -c.mac.identity=- -c.mac.sign=./scripts/adhoc-sign-mac.cjs
 
       - name: Normalize desktop artifact names
         working-directory: desktop

@@ -1,0 +1,11 @@
+self_ast_census
+  target src/solver_handlers/curated_project_fetch.rs
+  language rust
+  fidelity signature
+  byte_len 2121
+  line_count 55
+  content_id source_module_bf19dc9b83ee0654
+  symbol_count 2
+  symbols
+    function try_curated_http_fetch 11 37
+    function match_curated_github_url 40 55
