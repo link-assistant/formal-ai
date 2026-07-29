@@ -222,6 +222,25 @@ fn formalize_summarize_deformalize_round_trip_keeps_meaning() {
 }
 
 #[test]
+fn sentence_formalization_preserves_decimals_and_initialisms() {
+    let statements = formalize(
+        "The next U.S. general election is on Tuesday, November 3, 2026. \
+         Turnout was 63.7%.",
+    );
+    let text: Vec<&str> = statements
+        .iter()
+        .map(|statement| statement.text.as_str())
+        .collect();
+    assert_eq!(
+        text,
+        [
+            "The next U.S. general election is on Tuesday, November 3, 2026.",
+            "Turnout was 63.7%."
+        ]
+    );
+}
+
+#[test]
 fn compound_words_and_semantic_primes_are_reversible_by_size() {
     let prose = "the AI orchestrates multiple agents";
     let compressed = apply_compound_words(prose, "en");

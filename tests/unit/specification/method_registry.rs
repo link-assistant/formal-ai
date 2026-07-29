@@ -37,8 +37,8 @@ fn registry_covers_all_dispatch_surfaces() {
     );
     assert_eq!(
         registry.count_on(MethodSurface::Contextual),
-        6,
-        "there are exactly six contextual override handlers"
+        11,
+        "there are exactly eleven contextual override handlers"
     );
     assert_eq!(
         registry.method_count(),
@@ -47,6 +47,22 @@ fn registry_covers_all_dispatch_surfaces() {
             + registry.count_on(MethodSurface::Contextual),
         "every method must belong to exactly one surface"
     );
+}
+
+#[test]
+fn task_decomposition_has_one_configured_contextual_dispatch_path() {
+    let registry = MethodRegistry::from_dispatch();
+    let entries = registry
+        .methods
+        .iter()
+        .filter(|method| method.name == "task_decomposition")
+        .collect::<Vec<_>>();
+    assert_eq!(
+        entries.len(),
+        1,
+        "the depth-aware handler must not also live in the regular specialized table"
+    );
+    assert_eq!(entries[0].surface, MethodSurface::Contextual);
 }
 
 #[test]

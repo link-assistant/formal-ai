@@ -1,0 +1,151 @@
+grounded_action_recipe
+  record_type "meta_recipe"
+  topic "grounded_action"
+  generalization "Apply the same observe, act, verify, widen, and synthesize loop to any tool-backed task by changing meanings, slots, and capability lowering without changing the procedure."
+grounded_action_step_meanings
+  record_type "meta_step"
+  order "1"
+  operation "Declare translatable concepts, actions, scopes, kinds, and relation markers as semantic roles."
+  invariant "User-language surfaces live in Links Notation seed data."
+grounded_action_step_recognize
+  record_type "meta_step"
+  order "2"
+  operation "Recognize the requested action and let explicit object location constrain the route."
+  invariant "A specific local scope dominates a generic search verb."
+grounded_action_step_slots
+  record_type "meta_step"
+  order "3"
+  operation "Extract scope, target, kind, and requested operation into typed slots."
+  invariant "Unrecognized or empty required slots do not produce a guessed action."
+grounded_action_step_minimal_plan
+  record_type "meta_step"
+  order "4"
+  operation "Lower the slots to the smallest deterministic tool action."
+  invariant "Each planner step emits one simple command."
+grounded_action_step_verify
+  record_type "meta_step"
+  order "5"
+  operation "Read the observed tool result and verify it against the requested type and target."
+  invariant "An empty observation is evidence for widening, not proof of absence."
+grounded_action_step_widen
+  record_type "meta_step"
+  order "6"
+  operation "Widen exact matching to a stable token and then to a bounded inventory only when prior evidence is empty."
+  invariant "Every widening stage is bounded, ordered, and visible in the transcript."
+grounded_action_step_synthesize
+  record_type "meta_step"
+  order "7"
+  operation "Synthesize the answer from observed evidence, naming scope, mismatch, and uncertainty."
+  invariant "Never silently substitute a near match or claim success without evidence."
+grounded_action_step_parity
+  record_type "meta_step"
+  order "8"
+  operation "Mirror semantic routing at every runtime boundary and measure generated variations plus a whole-task journey."
+  invariant "Rust and JavaScript read the same meanings and preserve the same local-versus-web boundary."
+grounded_action_role_search
+  record_type "meta_role"
+  role "local_path_search_action"
+  const "ROLE_LOCAL_PATH_SEARCH_ACTION"
+  seed_file "data/seed/meanings-local-search.lino"
+grounded_action_role_list
+  record_type "meta_role"
+  role "local_path_list_action"
+  const "ROLE_LOCAL_PATH_LIST_ACTION"
+  seed_file "data/seed/meanings-local-search.lino"
+grounded_action_role_contents
+  record_type "meta_role"
+  role "local_path_contents_request"
+  const "ROLE_LOCAL_PATH_CONTENTS_REQUEST"
+  seed_file "data/seed/meanings-local-search.lino"
+grounded_action_role_type
+  record_type "meta_role"
+  role "local_path_type_request"
+  const "ROLE_LOCAL_PATH_TYPE_REQUEST"
+  seed_file "data/seed/meanings-local-search.lino"
+grounded_action_role_desktop
+  record_type "meta_role"
+  role "local_path_scope_desktop"
+  const "ROLE_LOCAL_PATH_SCOPE_DESKTOP"
+  seed_file "data/seed/meanings-local-search.lino"
+grounded_action_role_home
+  record_type "meta_role"
+  role "local_path_scope_home"
+  const "ROLE_LOCAL_PATH_SCOPE_HOME"
+  seed_file "data/seed/meanings-local-search.lino"
+grounded_action_role_current
+  record_type "meta_role"
+  role "local_path_scope_current"
+  const "ROLE_LOCAL_PATH_SCOPE_CURRENT"
+  seed_file "data/seed/meanings-local-search.lino"
+grounded_action_role_directory
+  record_type "meta_role"
+  role "local_path_directory_kind"
+  const "ROLE_LOCAL_PATH_DIRECTORY_KIND"
+  seed_file "data/seed/meanings-local-search.lino"
+grounded_action_role_file
+  record_type "meta_role"
+  role "local_path_file_kind"
+  const "ROLE_LOCAL_PATH_FILE_KIND"
+  seed_file "data/seed/meanings-local-search.lino"
+grounded_action_role_followup
+  record_type "meta_role"
+  role "definition_antecedent_followup"
+  const "ROLE_DEFINITION_ANTECEDENT_FOLLOWUP"
+  seed_file "data/seed/meanings-local-search.lino"
+grounded_action_role_comparison
+  record_type "meta_role"
+  role "comparison_infix"
+  const "ROLE_COMPARISON_INFIX"
+  seed_file "data/seed/meanings-local-search.lino"
+grounded_action_role_comparison_noise
+  record_type "meta_role"
+  role "comparison_query_noise"
+  const "ROLE_COMPARISON_QUERY_NOISE"
+  seed_file "data/seed/meanings-local-search.lino"
+grounded_action_function_recognize
+  record_type "meta_function"
+  source_file "src/agentic_coding/local_search.rs"
+  function "request_for"
+grounded_action_function_plan
+  record_type "meta_function"
+  source_file "src/agentic_coding/local_search.rs"
+  function "plan_local_search_step"
+grounded_action_function_compare
+  record_type "meta_function"
+  source_file "src/agentic_coding/comparison.rs"
+  function "comparison_sides"
+grounded_action_function_followup
+  record_type "meta_function"
+  source_file "src/agentic_coding/web_research.rs"
+  function "is_definition_followup"
+grounded_action_function_report
+  record_type "meta_function"
+  source_file "src/agentic_coding/report_issue.rs"
+  function "is_report_intent"
+grounded_action_runtime_parity
+  record_type "meta_parity"
+  rust_source "src/agentic_coding/local_search.rs"
+  rust_function "request_for"
+  js_source "src/web/worker/formal_ai_worker_17.js"
+  js_function "extractWebSearchRequest"
+grounded_action_property_benchmark
+  record_type "meta_benchmark"
+  source_file "tests/unit/issue_819.rs"
+  test "every_seeded_local_path_phrase_routes_to_find"
+  coverage "generated_meaning_surfaces"
+grounded_action_reproduction_benchmark
+  record_type "meta_benchmark"
+  source_file "tests/unit/issue_840.rs"
+  test "empty_exact_local_lookup_widens_instead_of_claiming_absence"
+  coverage "evidence_driven_widening"
+grounded_action_whole_task_benchmark
+  record_type "meta_benchmark"
+  source_file "tests/integration/issue_840_grounded_action.rs"
+  test "exact_observation_widens_then_reports_the_verified_directory_and_discrepancy"
+  coverage "whole_task_protocol"
+grounded_action_self_authored_invariant
+  record_type "meta_evidence"
+  source_file "data/meta/grounded-action-authored-invariant.lino"
+  authoring_surface "Formal AI served to Agent CLI"
+  session "ses_069af4151ffep7T8HoP6ObsuBY"
+  evidence_file "docs/case-studies/issue-840/self-hosting/agent-stream.jsonl"

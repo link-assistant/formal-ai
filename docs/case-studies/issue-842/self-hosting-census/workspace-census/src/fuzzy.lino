@@ -1,0 +1,11 @@
+self_ast_census
+  target src/fuzzy.rs
+  language rust
+  fidelity signature
+  byte_len 1790
+  line_count 50
+  content_id source_module_5143524b0b1c425e
+  symbol_count 2
+  symbols
+    function typo_distance 12 41
+    function is_close_token_typo 44 50

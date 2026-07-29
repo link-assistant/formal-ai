@@ -45,24 +45,28 @@ rule reached the log and the prose, never the routing.
 
 | Requirement | Registry row | Change | Proof |
 | --- | --- | --- | --- |
-| Adoption contract | R484 | `formal-ai learn cycle --frontier google-trends --dry-run [--proposals]` (`src/learning_cycle.rs`, `src/cli_learn.rs`) | `tests/unit/issue_701_learning_adoption.rs` |
-| Capability delta | R485 | `data/meta/learning-adoption-ledger.lino`, tool-authored and byte-pinned | ledger render test |
-| Trends gap closed | R486 | learned request-opener surfaces in `data/seed/` | `the_trends_corpus_unknown_rate_is_ratcheted_to_zero` |
-| Decoration path deleted | R487 | `src/dreaming_application.rs`: one selection rule, one projection, intent reclassification | `tests/unit/issue_701_dreaming_amendment_class.rs` |
-| Periodic proposal-only run | R488 | idle dreaming record + `.github/workflows/learning-cycle.yml` | `every_idle_dreaming_run_leaves_a_proposal_only_learning_cycle_record` |
-| Durable failure records | R489 | frozen frontier record + blocked classes | frontier-record tests |
+| Adoption contract | R701-1 | `formal-ai learn cycle --frontier google-trends --dry-run [--proposals]` (`src/learning_cycle.rs`, `src/cli_learn.rs`) | `tests/unit/issue_701_learning_adoption.rs` |
+| Capability delta | R701-2 | `data/meta/learning-adoption-ledger.lino`, tool-authored and byte-pinned | ledger render test |
+| Trends gap closed | R701-3 | learned request-opener surfaces in `data/seed/` | `the_trends_corpus_unknown_rate_is_ratcheted_to_zero` |
+| Decoration path deleted | R701-4 | `src/dreaming_application.rs`: one selection rule, one projection, intent reclassification | `tests/unit/issue_701_dreaming_amendment_class.rs` |
+| Periodic proposal-only run | R701-5 | idle dreaming record + `.github/workflows/learning-cycle.yml` | `every_idle_dreaming_run_leaves_a_proposal_only_learning_cycle_record` |
+| Durable failure records | R701-6 | frozen frontier record + blocked classes | frontier-record tests |
 
 ## 3. Verification run in this session
 
 | Command | Result |
 | --- | --- |
-| `cargo test --release` | 1966 unit tests passed, 0 failed, 2 ignored |
-| `rust-script scripts/check-hardcoded-language.rs` | in sync (1327 entries) |
+| `cargo test --lib --bins --tests --all-features --verbose` | 2241 unit tests passed, 0 failed, 3 ignored; every library, binary, and integration test binary passed |
+| `cargo test --doc --verbose` | passed |
+| `cargo clippy --lib --bins --tests --all-features -- -D warnings` | passed with warnings denied |
+| `cargo check --examples --all-features` | passed |
+| `rust-script scripts/check-hardcoded-language.rs` | in sync (1371 entries) |
 | `rust-script scripts/check-file-size.rs` | all files within limits |
 | `rust-script scripts/check-changelog-fragment.rs` | passed (1 fragment) |
 | `rust-script scripts/check-associative-terminology.rs` | passed |
-| `cargo fmt --all -- --check` | clean after `cargo fmt --all` |
-| `rust-script scripts/check-worker-line-budget.rs` | 26 819 of 26 819 lines (re-baselined for the mandated mirror) |
+| `cargo fmt --all -- --check` | passed |
+| `rust-script scripts/check-worker-line-budget.rs` | 26 817 of 26 817 lines (re-baselined for the mandated mirror) |
+| `rust-script scripts/check-wasm-worker-size.rs` | 104.73 KiB, below the 512 KiB maximum |
 | `node experiments/issue_701_worker_mirror_check.mjs` | `checked=90 mismatched=0` |
 
 The last row is the evidence for the worker-mirror compaction: the JS

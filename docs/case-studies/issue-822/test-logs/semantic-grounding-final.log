@@ -1,0 +1,12 @@
+   Compiling formal-ai v0.301.0 (/tmp/gh-issue-solver-1784701857721)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 21.31s
+     Running tests/unit/mod.rs (target/debug/deps/unit-2acf671e24946423)
+
+running 5 tests
+test semantic_grounding::links_root_seed_uses_colon_definitions ... ok
+test semantic_grounding::semantic_definition_graph_is_closed ... ok
+test semantic_grounding::seed_and_source_wikidata_ids_have_checked_in_cache_records ... ok
+test semantic_grounding::wiktionary_cache_records_are_present_and_parseable ... ok
+test semantic_grounding::wikidata_cache_records_cover_recursive_grounding_closure ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 1962 filtered out; finished in 2.89s

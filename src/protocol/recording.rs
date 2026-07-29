@@ -102,7 +102,9 @@ pub(super) fn chat_prompt_and_history(messages: &[ChatMessage]) -> (String, Vec<
         return (String::new(), Vec::new());
     };
 
-    let prompt = messages[latest_user_index].content.user_request_text();
+    let prompt = messages[latest_user_index]
+        .content
+        .user_request_text_without_system_echo(&super::system_prompt_text(messages));
     let history = messages[..latest_user_index]
         .iter()
         .filter_map(chat_message_to_turn)

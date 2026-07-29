@@ -96,6 +96,50 @@ pub struct ClientIntegrationGlobalConfig {
     pub shell_env: Vec<TemplateEnv>,
 }
 
+/// Seed-defined facts the real-client matrix needs to exercise an integration.
+///
+/// These facts live beside the invocation contract because they describe the
+/// same upstream client. The matrix consumes them as data; adding a client or
+/// changing an upstream limitation must not require another client-id branch in
+/// shell or workflow code.
+#[derive(Debug, Clone, Default)]
+pub struct ClientVerification {
+    /// Interaction surface: `cli`, `server`, `gui`, or `mcp`.
+    pub surface: String,
+    /// How a CLI makes fixture bytes available: `tool_call` or `in_band`.
+    pub file_delivery: String,
+    /// Arguments appended after the headless prompt for file-delivery clients.
+    pub headless_args: Vec<String>,
+    /// Environment required only while launching an interactive client.
+    pub interactive_env: Vec<TemplateEnv>,
+    /// Client-specific keystrokes performed before the common TUI task.
+    pub interactive_preamble: Vec<String>,
+    /// Tools that must be advertised by a constraint probe.
+    pub required_request_tools: Vec<String>,
+    /// Stable response tools already accepted as contract requirements.
+    pub required_response_tools: Vec<String>,
+    /// Text that must remain absent from headless client output.
+    pub forbidden_output: Vec<String>,
+    /// Arguments used to launch a server or GUI surface.
+    pub launch_args: Vec<String>,
+    /// Output proving that a launched server is ready.
+    pub launch_ready: String,
+    /// Additional rendered output required from a launched application.
+    pub launch_required_output: Vec<String>,
+    /// HTTP path that must answer after a server launch.
+    pub launch_http_path: String,
+    /// Exact upstream subcommand set for a server with no prompt path.
+    pub launch_subcommands: Vec<String>,
+    /// Required installed extension, expressed as a template/glob.
+    pub extension_glob: String,
+    /// Whether a GUI may need Chromium's no-sandbox fallback on restricted hosts.
+    pub chromium_sandbox_fallback: bool,
+    /// Whether CI must enable unprivileged namespaces for the client's sandbox.
+    pub sandbox_user_namespaces: bool,
+    /// Expected error when an MCP-shaped client has no vendor credentials.
+    pub vendor_auth_error: String,
+}
+
 #[derive(Debug, Clone)]
 pub struct ClientIntegration {
     pub id: String,
@@ -112,6 +156,7 @@ pub struct ClientIntegration {
     pub api_key_default: String,
     pub model_selector: String,
     pub invocation: ClientIntegrationInvocation,
+    pub verification: ClientVerification,
     /// The default-protocol global configuration, retained for callers that
     /// inspect the registry directly.
     pub global_config: ClientIntegrationGlobalConfig,
@@ -199,6 +244,12 @@ fn parse_tool(tool: &super::parser::LinoNode) -> Option<ClientIntegration> {
         .find(|node| node.name == "ephemeral")
         .map(parse_invocation)
         .unwrap_or_default();
+    let verification = tool
+        .children
+        .iter()
+        .find(|node| node.name == "verification")
+        .map(parse_verification)
+        .unwrap_or_default();
     let global_configs = tool
         .children
         .iter()
@@ -228,9 +279,53 @@ fn parse_tool(tool: &super::parser::LinoNode) -> Option<ClientIntegration> {
         api_key_default,
         model_selector,
         invocation,
+        verification,
         global_config,
         global_configs,
     })
+}
+
+fn parse_verification(node: &super::parser::LinoNode) -> ClientVerification {
+    let mut verification = ClientVerification {
+        surface: node.find_child_value("surface").to_string(),
+        file_delivery: node.find_child_value("file_delivery").to_string(),
+        launch_ready: node.find_child_value("launch_ready").to_string(),
+        launch_http_path: node.find_child_value("launch_http_path").to_string(),
+        extension_glob: node.find_child_value("extension_glob").to_string(),
+        chromium_sandbox_fallback: node.find_child_value("chromium_sandbox_fallback") == "true",
+        sandbox_user_namespaces: node.find_child_value("sandbox_user_namespaces") == "true",
+        vendor_auth_error: node.find_child_value("vendor_auth_error").to_string(),
+        ..ClientVerification::default()
+    };
+    for child in &node.children {
+        match child.name.as_str() {
+            "headless_arg" => verification.headless_args.push(child.id.clone()),
+            "interactive_env" => {
+                if let Some((key, value)) = split_once_equals(&child.id) {
+                    verification
+                        .interactive_env
+                        .push(TemplateEnv { key, value });
+                }
+            }
+            "interactive_preamble" => {
+                verification.interactive_preamble.push(child.id.clone());
+            }
+            "required_request_tool" => {
+                verification.required_request_tools.push(child.id.clone());
+            }
+            "required_response_tool" => {
+                verification.required_response_tools.push(child.id.clone());
+            }
+            "forbidden_output" => verification.forbidden_output.push(child.id.clone()),
+            "launch_arg" => verification.launch_args.push(child.id.clone()),
+            "launch_required_output" => {
+                verification.launch_required_output.push(child.id.clone());
+            }
+            "launch_subcommand" => verification.launch_subcommands.push(child.id.clone()),
+            _ => {}
+        }
+    }
+    verification
 }
 
 fn parse_invocation(node: &super::parser::LinoNode) -> ClientIntegrationInvocation {

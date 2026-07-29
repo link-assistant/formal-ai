@@ -1,0 +1,42 @@
+self_ast_census
+  target src/google_trends_catalog.rs
+  language rust
+  fidelity signature
+  byte_len 16922
+  line_count 465
+  content_id source_module_ee49e2390496ff67
+  symbol_count 33
+  symbols
+    const GOOGLE_TRENDS_TOP_LIMIT 25 25
+    const GOOGLE_TRENDS_SNAPSHOT_LINO 27 27
+    const GOOGLE_TRENDS_PROMPTS_LINO 28 28
+    struct GoogleTrendsCatalog 32 45
+    struct GoogleTrendTopic 49 64
+    struct GoogleTrendNewsItem 68 75
+    struct GoogleTrendPromptVariant 79 86
+    function is_trends_context_request 91 93
+    struct GoogleTrendPromptAnswer 98 113
+    enum GoogleTrendsParseError 117 120
+    function fmt 123 127
+    function parse_google_trends_rss 142 182
+    function google_trends_catalog 186 188
+    function render_google_trends_snapshot_lino 200 230
+    function cached_catalog 232 235
+    static CATALOG 233 233
+    function build_catalog 237 264
+    function load_seed_snapshot 266 325
+    function child_value 327 330
+    function optional_child 332 335
+    struct GoogleTrendPromptTemplate 343 347
+    const QUERY_PLACEHOLDER 350 350
+    function prompt_variants_for_topic 358 374
+    function prompt_templates 377 380
+    static TEMPLATES 378 378
+    function load_prompt_templates 382 401
+    function parse_news_item 403 408
+    function extract_blocks 410 427
+    function extract_text 429 439
+    function decode_xml_text 441 452
+    function field 454 457
+    function escape_lino_value 459 461
+    function collapse_whitespace 463 465

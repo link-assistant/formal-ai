@@ -91,7 +91,6 @@ src/agentic_coding/rebuild_plan.rs	Composed the rebuild-and-reattach plan for ac
 src/agentic_coding/repair_strategy.rs	  covers \"solver_method,data_record,test\"\n
 src/agentic_coding/repair_strategy.rs	Classified {count} failure traces, one per repair class ({targets}), and composed a grounded, human-gated repair strategy for each: the general repair loop now decides *which part* to change — a solver method, a data record, or a test — for every failure, not just one canonical case. Nothing is applied — each strategy is a reviewable plan that merges only through the same human-gated loop. Neural inference is not used; every classification and plan is a deterministic function of the trace.\n\nGenerated document ({REPAIR_STRATEGY_PATH}):\n\n{document}
 src/agentic_coding/repair_strategy.rs	Classify a failure and decide which part to repair: given a failure trace the system could not answer, determine whether the repair is a solver method, a data record, or a test change, then compose the grounded, human-gated repair strategy for it — for every class of failure, not just one.
-src/agentic_coding/report_issue.rs	gh issue create --repo {} --title {} --body {}
 src/agentic_coding/routing_learning.rs	Use Formal AI auto-learning to inspect the persisted issue 712 tool-routing failures as an associative links network, rank the observations and semantic-frame amendments, keep the result human-review gated, and write tool-routing-learning-report.lino.
 src/agentic_coding/self_ast.rs	Store the CST/AST of our Rust meta algorithm in our data so the system can reason about itself: parse the planner module and record its abstract-syntax node census in Links Notation.
 src/agentic_coding/self_ast.rs	Stored the CST/AST of our Rust meta algorithm ({TARGET_MODULE_PATH}) in our data, parsed through the meta-language links network (the sole CST/AST engine here) and recorded as an abstract-syntax node census — a real step toward the system reasoning about itself.\n\nGenerated document ({AST_PATH}):\n\n{document}
@@ -125,6 +124,12 @@ src/change_request.rs	Edit the grounded target module `{target_module}` until th
 src/change_request.rs	Please add a new capability to Formal AI: let users ask it to reverse-sort a program's output.
 src/change_request.rs	Record the derived requirement for review: {requirement}
 src/change_request.rs	The system must {}.
+src/cli_benchmark.rs	failed to read {}: {error}
+src/cli_benchmark.rs	failed to write {}: {error}
+src/cli_benchmark.rs	formal-ai benchmark run --suite {} --slice {slice}
+src/cli_benchmark.rs	ledger ratchet violated:\n{}
+src/cli_benchmark.rs	unavailable: {reason}
+src/cli_benchmark.rs	unknown suite `{selector}`; known suites: {}
 src/cli_improve.rs	Appended {appended} promotion event(s) to {}; total now {}.
 src/cli_improve.rs	Dry run only; no files were changed. Rerun with `--apply --confirm` and preferably `--seed-root <workspace>` to materialize the {promoted} accepted seed edit(s).
 src/cli_improve.rs	Materialized {} ({} byte(s)) at {}.
@@ -155,8 +160,6 @@ src/cli_memory.rs	Wrote {} events (events-only)
 src/cli_shared_dialog.rs	Wrote demo_memory to {}.
 src/client_integrations.rs	# <<< formal-ai {tool}
 src/client_integrations.rs	# >>> formal-ai {tool}
-src/client_integrations.rs	formal-ai serve did not listen on {address}
-src/client_integrations.rs	formal-ai serve exited before listening: {status}
 src/client_integrations.rs	temporary config path escapes its root: {relative}
 src/client_integrations.rs	temporary config path must be relative: {relative}
 src/client_integrations.rs	unsupported tool `{tool}`; supported tools: {supported}
@@ -289,6 +292,48 @@ src/engine_responses.rs	What is formal-ai?
 src/engine_responses.rs	Who are you?
 src/engine_responses.rs	add a rule in Links Notation, then run the request again.
 src/engine_responses.rs	Что делаешь в свободное время?
+src/external_benchmarks/cases.rs	Repository {repository}. Resolve this issue and reply with the fix as a unified diff patch.\n\n{statement}
+src/external_benchmarks/cases.rs	no case parser for suite `{other}`
+src/external_benchmarks/cases.rs	{}: record {index} is missing a `target`
+src/external_benchmarks/cases.rs	{}: record {index} is missing the numeric field `{field}`
+src/external_benchmarks/cases.rs	{}: record {index} is missing the string array `{field}`
+src/external_benchmarks/cases.rs	{}: record {index} is missing the string field `{field}`
+src/external_benchmarks/cases.rs	{}: record {index} is not valid JSON: {error}
+src/external_benchmarks/fetch.rs	curl failed for {url} with status {status}
+src/external_benchmarks/fetch.rs	failed to create cache directory {}: {error}
+src/external_benchmarks/fetch.rs	failed to create {}: {error}
+src/external_benchmarks/fetch.rs	failed to publish {}: {error}
+src/external_benchmarks/fetch.rs	failed to read cached payload {}: {error}
+src/external_benchmarks/fetch.rs	failed to start curl for {url}: {error}
+src/external_benchmarks/fetch.rs	failed to start gzip for {}: {error}
+src/external_benchmarks/fetch.rs	gzip failed for {} with status {status}
+src/external_benchmarks/fetch.rs	{} has no fetchable payload
+src/external_benchmarks/fetch.rs	{} task.json has no `examples` array
+src/external_benchmarks/fetch.rs	{} task.json is not valid JSON: {error}
+src/external_benchmarks/grade.rs	expected `{}`, answer `{}`
+src/external_benchmarks/grade.rs	failed to create {}: {error}
+src/external_benchmarks/grade.rs	failed to run python3: {error}
+src/external_benchmarks/grade.rs	failed to write {}: {error}
+src/external_benchmarks/grade.rs	python exited with {}: {}
+src/external_benchmarks/grade.rs	{code}\n\n{setup}\n\n{}\n
+src/external_benchmarks/grade.rs	{code}\n\n{test_code}\n\ncheck({entry_point})\n
+src/external_benchmarks/ledger.rs	line {}: expected `key \"value\"`, got `{line}`
+src/external_benchmarks/ledger.rs	line {}: field before any record id
+src/external_benchmarks/ledger.rs	line {}: unexpected indentation
+src/external_benchmarks/manifest.rs	EditEval ships an evaluation harness with no task payload (configs/dataset_paths.json points at per-corpus download directories), and its constituent corpora fail the permissive-only policy: ASSET is CC BY-NC 4.0 and JFLEG is CC BY-NC-SA 4.0. The instructed-text-editing requirement is executed through the Apache-2.0 CoEdIT suite instead.
+src/external_benchmarks/mod.rs	suite={} benchmark_unavailable: {reason}
+src/external_benchmarks/mod.rs	suite={} passed={} failed={} total={}
+src/external_benchmarks/mod.rs	{} provided only {} upstream cases, {slice} were requested
+src/external_benchmarks/ratchet.rs	result row for `{}` has no external_benchmark_suite record
+src/external_benchmarks/ratchet.rs	{suite_id}: minimum_pass_count fell from {} to {}
+src/external_benchmarks/ratchet.rs	{suite_id}: minimum_pass_count={} is below the best recorded pass count {best} at slice {}
+src/external_benchmarks/ratchet.rs	{suite_id}: the external_benchmark_suite record was removed
+src/external_benchmarks/ratchet.rs	{suite}: pass count at slice {slice} fell from {} ({}) to {} ({})
+src/external_benchmarks/ratchet.rs	{} {}: passed={} + failed={} does not equal total={}
+src/external_benchmarks/ratchet.rs	{} {}: passed={} is below the recorded minimum_pass_count={}
+src/external_benchmarks/ratchet.rs	{} {}: recorded pass count fell from {} to {}
+src/external_benchmarks/ratchet.rs	{} {}: the recorded result row at slice {} was removed
+src/external_benchmarks/ratchet.rs	{} {}: total={} does not equal slice={}
 src/gemini.rs	Formal AI symbolic solver exposed through the Gemini generateContent envelope.
 src/gemini.rs	Formal AI symbolic solver exposed through the Vertex AI generateContent envelope.
 src/gemini.rs	data: {response}\n\n
@@ -684,7 +729,6 @@ src/skill_ledger.rs	The need resolved to a method but was not satisfied; recorde
 src/solver.rs	Flushing the source cache is an auditable action. Confirm explicitly.
 src/solver.rs	That message contains inappropriate content. Please keep the conversation respectful.
 src/solver.rs	The action will run inside an isolated sandbox once confirmed.
-src/solver.rs	https://example.org/{source_id} fetched_at={fetched_at} sha256={sha256}
 src/solver.rs	loops are refused. Re-send a bounded version inside an isolated sandbox.
 src/solver.rs	mode runs in an isolated sandbox so the host stays safe.
 src/solver.rs	step will be appended to the action log.
@@ -960,8 +1004,8 @@ src/solver_handlers/mod.rs	{expression} = {formatted}
 src/solver_handlers/mod.rs	{intro}\n\n{summary}
 src/solver_handlers/mod.rs	{term} ({category}): {summary}\n\nSource: {source_markup} ({source_kind}).
 src/solver_handlers/natural_language_tools.rs	Execution status: executed.\nTool call: calculator\nInput: `{expression}`\nResult: {}
-src/solver_handlers/natural_language_tools.rs	Execution status: executed.\nTool call: web_search\nQuery: `{query}`\nResult: search plan recorded with providers {providers}; combined ranking uses reciprocal rank fusion (k = {WEB_SEARCH_RRF_K}).
 src/solver_handlers/natural_language_tools.rs	Execution status: failed.\nTool call: calculator\nInput: `{expression}`\nError: {error}
+src/solver_handlers/natural_language_tools.rs	Execution status: planned.\nTool call: web_search\nQuery: `{query}`\nResult: search plan recorded with providers {providers}; combined ranking uses reciprocal rank fusion (k = {WEB_SEARCH_RRF_K}).
 src/solver_handlers/natural_language_tools.rs	Execution status: refused. Natural-language tool calls require explicit agent mode before `{capability}` can run.
 src/solver_handlers/natural_language_tools.rs	Execution status: refused. Tool calls are not allowed for `{capability}`: {reason}. Install or import an associative package that grants this capability before enabling the tool.
 src/solver_handlers/natural_language_tools.rs	Execution status: refused. local_shell is permissioned, but this Rust core does not provide a shell executor.
@@ -1165,9 +1209,6 @@ src/solver_handlers/user_intent.rs	I'm sorry for the confusion. I am formal-ai, 
 src/solver_handlers/user_intent.rs	Missing localized response seed: {intent}/{language}
 src/solver_handlers/user_intent.rs	\n\nSupported pipeline: impulse → formalize (Wikidata-backed) → context → proof plan → verification in relative-meta-logic → deformalize → finalize.
 src/solver_handlers/user_intent.rs	\n\nПоддерживаемый конвейер: impulse → formalize (Викиданные) → context → план доказательства → проверка в relative-meta-logic → deformalize → finalize.
-src/solver_handlers/web_requests.rs	HTTP fetch requested for `{url}`.\n\nThe browser web app attempts a direct `fetch()` first and shows the response body when the server allows CORS. If the request is blocked by CORS, the web app checks CORS-readable frame-policy metadata before deciding whether to show an embedded iframe or keep a direct external link.\n\nSource: [{url}]({url})
-src/solver_handlers/web_requests.rs	HTTP fetch requested for `{url}`.\n\nThis URL matches a curated promoted project. README summary (through the formalize → summarize → deformalize pipeline): {summary}\n\nThe browser web app attempts a direct `fetch()` first and shows the response body when the server allows CORS. If the request is blocked by CORS, the web app checks CORS-readable frame-policy metadata before deciding whether to show an embedded iframe or keep a direct external link.\n\nSource: [{url}]({url})
-src/solver_handlers/web_requests.rs	HTTP-запрос на `{url}`.\n\nЭтот URL соответствует курируемому продвигаемому проекту. Резюме README (через formalize → summarize → deformalize): {summary}\n\nВ браузерной демо-версии сначала выполняется прямой `fetch()`; если CORS блокирует ответ, проверяется frame-policy и при необходимости открывается iframe или показывается прямая ссылка.\n\nSource: [{url}]({url})
 src/solver_handlers/web_requests.rs	I suggest opening this in a new tab: [{url}]({url}).\n\nIn the browser web app, this URL is checked with browser-readable frame-policy metadata before any embedded preview is attempted. If X-Frame-Options or CSP frame-ancestors blocks embedding, the web app keeps the direct external link instead.
 src/solver_handlers/web_requests.rs	In the {promoted_orgs} repository context, `{display_name}` should first mean [{repo_slug}]({project_url}) — {description}\n\nOther repositories and entities found online are shown by the browser demo through a web search for `{display_name}`. Providers: {provider_summary}. Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K}). Associative repository promotion can be switched off; then the answer follows the generic GitHub, GitLab, and Bitbucket project lookup path.
 src/solver_handlers/web_requests.rs	Latest-news search requested for `{query}`.\n\nIn the browser demo formal-ai uses web search for freshness-sensitive news prompts: DuckDuckGo Instant Answer by default, then Internet Archive, Wikipedia REST, Wikidata, Wiktionary, and Wikinews (https://www.wikinews.org/) in priority order. The top-10 links from each provider are merged with reciprocal rank fusion (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + rank_i(d))`), and diagnostics record each provider, rank, fusion step, and final source link so the reasoning path can be inspected.\n\nProvider: duckduckgo (default)\nProviders considered: {provider_summary}\nCombined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})
@@ -1209,6 +1250,9 @@ src/solver_unknown_reasoning.rs	Missing localized response seed: {intent}/{langu
 src/solver_unknown_reasoning.rs	gave up after {} reasoning steps; legacy_unknown_fallback
 src/solver_unknown_reasoning.rs	language={} local_search=complete prompt_state={} questioning_rigor={:.2}
 src/solver_unknown_reasoning.rs	{term} ({category}): {summary}\n\nSource: {source} ({source_kind}).
+src/source_research.rs	provider={} rank={} url={}
+src/source_research.rs	rrf:k={WEB_SEARCH_RRF_K} results={}
+src/source_research.rs	url={} error={}
 src/statement_verification.rs	\"{condensed}\" fact check source
 src/statement_verification.rs	asset={} period={} claimed={:.2} status={} source={} min={:.2} min_date={} max={:.2} max_date={} posterior={}
 src/statement_verification.rs	{} is contradicted: {} reports {} {} daily candles in {} stayed between ${:.2} on {} and ${:.2} on {}.

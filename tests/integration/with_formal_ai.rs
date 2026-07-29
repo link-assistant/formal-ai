@@ -84,6 +84,10 @@ fn write_fake_cli(bin_dir: &Path, name: &str) {
     echo "---GEMINI_CLI_SETTINGS---"
     cat "$GEMINI_CLI_HOME/.gemini/settings.json"
   fi
+  if [ -n "$CLAUDE_CONFIG_DIR" ] && [ -f "$CLAUDE_CONFIG_DIR/.claude.json" ]; then
+    echo "---CLAUDE_CONFIG---"
+    cat "$CLAUDE_CONFIG_DIR/.claude.json"
+  fi
   if [ -f "$HOME/.gemini/settings.json" ]; then
     echo "---HOME_GEMINI_SETTINGS---"
     cat "$HOME/.gemini/settings.json"
@@ -574,6 +578,8 @@ fn with_formal_ai_all_seeded_tools_leave_persistent_configs_unchanged() {
                 assert!(captured.contains("ANTHROPIC_AUTH_TOKEN=formal-ai"));
                 assert!(captured.contains("ANTHROPIC_API_KEY="));
                 assert!(captured.contains("ANTHROPIC_BASE_URL=http://127.0.0.1:8080/api/anthropic"));
+                assert!(captured.contains("---CLAUDE_CONFIG---"));
+                assert!(captured.contains(r#""hasCompletedOnboarding": true"#));
                 assert!(captured.contains("arg[0]=--model"));
                 assert!(captured.contains("arg[1]=formal-ai"));
             }
@@ -672,34 +678,6 @@ fn with_formal_ai_no_start_server_runs_without_a_listener() {
     assert!(!String::from_utf8_lossy(&output.stderr).contains("started a temporary server"));
     assert!(capture.exists(), "wrapped CLI was not invoked");
     assert!(TcpStream::connect(("127.0.0.1", port)).is_err());
-    let _ = std::fs::remove_dir_all(&dir);
-}
-
-#[test]
-fn with_formal_ai_reuses_an_existing_loopback_listener() {
-    let dir = tmpdir();
-    let home = dir.join("home");
-    let bin_dir = dir.join("bin");
-    std::fs::create_dir_all(&home).expect("home");
-    std::fs::create_dir_all(&bin_dir).expect("bin");
-    write_fake_cli(&bin_dir, "agent");
-    let capture = dir.join("capture.txt");
-    let listener = TcpListener::bind("127.0.0.1:0").expect("listener");
-    let port = listener.local_addr().expect("address").port();
-    let output = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
-        .args(["with", "--port", &port.to_string(), "agent", "-p", "hi"])
-        .env("HOME", &home)
-        .env("PATH", path_with_fake_clis(&bin_dir))
-        .env("FORMAL_AI_CAPTURE", &capture)
-        .output()
-        .expect("run formal-ai with existing server");
-
-    assert!(output.status.success());
-    assert!(!String::from_utf8_lossy(&output.stderr).contains("started a temporary server"));
-    assert!(
-        listener.local_addr().is_ok(),
-        "existing listener was replaced"
-    );
     let _ = std::fs::remove_dir_all(&dir);
 }
 

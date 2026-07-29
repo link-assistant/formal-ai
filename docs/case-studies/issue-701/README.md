@@ -55,7 +55,7 @@ fact, and it generalizes over every term.
 
 The before state is not deleted. `data/meta/learning-frontier-google-trends.lino`
 freezes all 60 pre-adoption verdicts permanently, so the failure stays auditable
-after the gap closed (R425, R489).
+after the gap closed (R425, R701-6).
 
 ## 2. The adoption contract
 

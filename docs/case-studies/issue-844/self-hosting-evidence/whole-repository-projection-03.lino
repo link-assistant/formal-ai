@@ -1,0 +1,45 @@
+source_links
+  engine meta_language
+  language rust
+  module_count 5
+  faithful_count 5
+  coverage_permille 1000
+  fully_faithful true
+  total_link_count 49121
+  total_named_node_count 9786
+  modules
+    module
+      path "src/unknown_opener.rs"
+      byte_len 2707
+      content_id "source_module_3fe6cb7298a31a33"
+      total_link_count 1715
+      named_node_count 329
+      faithful true
+    module
+      path "src/web/wasm-worker/src/lib.rs"
+      byte_len 15487
+      content_id "source_module_13707cfd80fdfffb"
+      total_link_count 12334
+      named_node_count 2349
+      faithful true
+    module
+      path "src/web_engine_core.rs"
+      byte_len 10337
+      content_id "source_module_11c0cf4aa47d3412"
+      total_link_count 6725
+      named_node_count 1363
+      faithful true
+    module
+      path "src/web_search_core.rs"
+      byte_len 17456
+      content_id "source_module_b15e3258cf402b1e"
+      total_link_count 10974
+      named_node_count 2164
+      faithful true
+    module
+      path "src/world_model.rs"
+      byte_len 32125
+      content_id "source_module_b497c4f0f2c013ac"
+      total_link_count 17373
+      named_node_count 3581
+      faithful true

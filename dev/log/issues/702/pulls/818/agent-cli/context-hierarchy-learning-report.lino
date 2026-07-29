@@ -1,0 +1,123 @@
+context_hierarchy_learning_report
+  issue "702"
+  decision "awaiting_human_review"
+  promotion_gate "nested_context_runtime_and_parity_fixtures_pass"
+  record_type "agent_cli_auto_learning"
+  substrate "links_network"
+  retention_formula "reads + writes + incoming_links + outgoing_links"
+  expression_count "9"
+  validation_warning_count "0"
+  multi_hop_seed "observation:last-turn-only"
+  multi_hop_recall "observation:last-turn-only"
+  learned_expression_01
+    id "observation:last-turn-only"
+    text "message
+user
+Coreference inspected only the immediately preceding user turn, so an unrelated intervening turn hid the still-relevant subject."
+    reads "9"
+    writes "1"
+    incoming_links "0"
+    outgoing_links "0"
+    retention_score "10"
+    qualifiers "conversation_id=issue-702|kind=message|role=user"
+    validation "aligned"
+  learned_expression_02
+    id "observation:fixed-depth-cap"
+    text "message
+user
+Coding-idiom inheritance stopped after four parent languages even when a deeper ancestor was valid."
+    reads "7"
+    writes "1"
+    incoming_links "0"
+    outgoing_links "0"
+    retention_score "8"
+    qualifiers "conversation_id=issue-702|kind=message|role=user"
+    validation "aligned"
+  learned_expression_03
+    id "observation:nested-scope-demand"
+    text "message
+user
+Conversation, dialogue, task, pull request, issue, repository, and organization scopes need one mechanism that can extend to arbitrary future nesting."
+    reads "4"
+    writes "1"
+    incoming_links "3"
+    outgoing_links "0"
+    retention_score "8"
+    qualifiers "conversation_id=issue-702|kind=message|role=user"
+    validation "aligned"
+  learned_expression_04
+    id "lesson:shared-context-hierarchy"
+    text "learning_amendment
+assistant
+Represent every scope with the existing link-carried Context and reuse one ContextHierarchy in dialogue turns, solver coreference, and agentic research so reference behavior and traces cannot drift.
+observation:nested-scope-demand"
+    reads "0"
+    writes "6"
+    incoming_links "0"
+    outgoing_links "1"
+    retention_score "7"
+    qualifiers "conversation_id=issue-702|kind=learning_amendment|role=assistant"
+    validation "aligned"
+  learned_expression_05
+    id "observation:duplicate-reverse-scans"
+    text "message
+user
+Solver coreference and agentic research each carried a private reverse history scan with different relevance rules and no shared trace."
+    reads "6"
+    writes "1"
+    incoming_links "0"
+    outgoing_links "0"
+    retention_score "7"
+    qualifiers "conversation_id=issue-702|kind=message|role=user"
+    validation "aligned"
+  learned_expression_06
+    id "observation:implicit-boundary"
+    text "message
+user
+A local miss did not distinguish an unresolved reference from permission to consult the outside world."
+    reads "5"
+    writes "1"
+    incoming_links "1"
+    outgoing_links "0"
+    retention_score "7"
+    qualifiers "conversation_id=issue-702|kind=message|role=user"
+    validation "aligned"
+  learned_expression_07
+    id "lesson:lazy-nearest-first"
+    text "learning_amendment
+assistant
+Resolve an exact local reference first, then walk inherited parents nearest-first and stop on the first match; report every visited scope and require an explicit decision before outside lookup.
+observation:implicit-boundary"
+    reads "0"
+    writes "5"
+    incoming_links "0"
+    outgoing_links "1"
+    retention_score "6"
+    qualifiers "conversation_id=issue-702|kind=learning_amendment|role=assistant"
+    validation "aligned"
+  learned_expression_08
+    id "lesson:explicit-inheritance"
+    text "learning_amendment
+assistant
+Put full, isolated, or conditional LinkPattern inheritance on every child-to-parent boundary and accumulate conditional filters across all boundaries crossed.
+observation:nested-scope-demand"
+    reads "0"
+    writes "4"
+    incoming_links "0"
+    outgoing_links "1"
+    retention_score "5"
+    qualifiers "conversation_id=issue-702|kind=learning_amendment|role=assistant"
+    validation "aligned"
+  learned_expression_09
+    id "lesson:cycle-safe-unbounded"
+    text "learning_amendment
+assistant
+Reject parent cycles and use an iterative visited set rather than a fixed depth constant, preserving termination without limiting valid nesting.
+observation:nested-scope-demand"
+    reads "0"
+    writes "3"
+    incoming_links "0"
+    outgoing_links "1"
+    retention_score "4"
+    qualifiers "conversation_id=issue-702|kind=learning_amendment|role=assistant"
+    validation "aligned"

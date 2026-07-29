@@ -1,0 +1,28 @@
+self_ast_census
+  target src/self_explanation.rs
+  language rust
+  fidelity signature
+  byte_len 13911
+  line_count 326
+  content_id source_module_63e0dac82b827118
+  symbol_count 19
+  symbols
+    enum CitationKind 38 45
+    function slug 50 56
+    struct Citation 62 70
+    function source 81 94
+    function data 99 105
+    function test 110 116
+    struct ExplanationSection 122 129
+    function new 134 140
+    struct SystemExplanation 149 152
+    function canonical 163 222
+    function section_count 226 228
+    function citations 232 237
+    function citation_count 241 243
+    function citations_of 247 252
+    function summary 256 264
+    function links_notation 273 301
+    function content_id 305 307
+    function canonical_explanation 315 317
+    function quote 319 326

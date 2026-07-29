@@ -33,13 +33,13 @@ const TARGET_TOTAL_LINES: usize = 3_000;
 /// The ratchet stops *this* migration from silently regrowing the mirror; it
 /// does not veto merging upstream `main`. When a merge brings in legitimate
 /// worker changes from other PRs, re-baseline this ceiling to the merged count
-/// (previously re-baselined at 26_809 after main's attachment-routing fix added
-/// a net 14 lines after the semantic web-search re-baseline; re-baselined again
-/// at 26_819 for issue #701, whose generalized term-information recognizer —
-/// prefix openers, verb-final closers and circumfix frames — must be mirrored in
-/// `formal_ai_worker_17.js` to keep Rust↔JS parity, a net 10 lines).
+/// Issue #845's Rust→WASM dialogue fact checker then removed a net 2 lines
+/// from the browser mirror, lowering the ratchet from 26_807 to 26_805. Issue
+/// #701's generalized term-information recognizer — prefix openers, verb-final
+/// closers and circumfix frames — must be mirrored in the browser worker for
+/// Rust↔JS parity, adding a net 12 lines on that baseline.
 #[cfg(not(test))]
-const CEILING_TOTAL_LINES: usize = 26_819;
+const CEILING_TOTAL_LINES: usize = 26_817;
 
 const WORKER_DIR: &str = "src/web/worker";
 

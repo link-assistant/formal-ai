@@ -1,0 +1,29 @@
+view
+  id M-6280ebf114cb
+  lemma store
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a mercantile establishment for the retail sale of goods or services"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a supply of something available for future use"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an electronic memory device"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a depository for goods"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "keep or lay aside for future use"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "find a place for and put away for storage"
+    provenance (wordnet)

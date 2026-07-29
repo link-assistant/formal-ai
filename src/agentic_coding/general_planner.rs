@@ -16,6 +16,28 @@ use super::planner::Capability;
 
 /// Workspace-relative event-log artifact written before a general plan executes.
 pub const PLAN_PATH: &str = ".formal-ai/general-change-plan.lino";
+const TARGET_PLACEHOLDER: &str = "{target}";
+
+/// What the bounded general planner can truthfully execute.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum GeneralPlanMode {
+    /// Write literal request content to a workspace-relative file.
+    LiteralFile,
+    /// Capture the output of an explicitly quoted command in a file.
+    CommandOutput,
+    /// Persist a referenced repository work item without fabricating a patch.
+    RepositoryWorkItem,
+}
+
+impl GeneralPlanMode {
+    const fn slug(self) -> &'static str {
+        match self {
+            Self::LiteralFile => "literal_file",
+            Self::CommandOutput => "command_output",
+            Self::RepositoryWorkItem => "repository_work_item",
+        }
+    }
+}
 
 /// One ordered, capability-tagged operation in a general change plan.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -30,6 +52,7 @@ pub struct GeneralPlanStep {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GeneralChangePlan {
     pub id: String,
+    pub mode: GeneralPlanMode,
     pub goal: String,
     pub target: String,
     pub content: String,
@@ -43,6 +66,7 @@ impl GeneralChangePlan {
     pub fn links_notation(&self) -> String {
         let mut out = String::from("general_change_plan\n");
         field(&mut out, "id", &self.id);
+        field(&mut out, "execution_mode", self.mode.slug());
         field(&mut out, "goal", &self.goal);
         field(&mut out, "target", &self.target);
         for (index, step) in self.steps.iter().enumerate() {
@@ -59,13 +83,16 @@ impl GeneralChangePlan {
     }
 }
 
-/// Compose a safe file-creation plan from arbitrary wording in any supported
+/// Compose a safe, bounded plan from arbitrary wording in any supported
 /// language (issue #680).
 ///
 /// The universal intent formalizer supplies the stable impulse identity.  The
-/// decomposition is deliberately bounded to requests that state both a relative
-/// target file and literal content; ambiguous requests continue to the ordinary
-/// solver instead of inventing a patch or shell command.
+/// executable decomposition accepts either a relative target plus literal
+/// content, an explicit command-output capture, or a software-authoring request
+/// attached to a concrete GitHub issue/pull reference. The last shape persists
+/// and verifies a work-item plan, but deliberately does not invent source edits:
+/// arbitrary repository implementation remains outside this deterministic
+/// sandbox's evidence boundary.
 ///
 /// The target, the content, and the write *intent* itself are all recognised
 /// from the seed lexicon (the `file_write_*` roles in
@@ -74,43 +101,265 @@ impl GeneralChangePlan {
 /// any phrasing — routes to the write tool (CONTRIBUTING §2).
 #[must_use]
 pub fn compose_general_change_plan(request: &str) -> Option<GeneralChangePlan> {
-    let (target, content) = parse_write_request(request)?;
+    let command_output = parse_command_output_request(request);
+    let file_request = command_output.as_ref().map_or_else(
+        || parse_write_request(request),
+        |(target, _)| Some((target.clone(), String::new())),
+    );
+    let Some((target, content)) = file_request else {
+        return compose_repository_work_plan(request);
+    };
     if !safe_relative_path(&target) {
         return None;
     }
-    let intent = formalize_intent(request, language(request), None);
+    let response_language = language(request);
+    let intent = formalize_intent(request, response_language, None);
     let verification_command = format!("cat {target}");
-    let steps = vec![
-        GeneralPlanStep {
-            capability: Capability::Write,
-            action: format!("append the composed plan to {PLAN_PATH}"),
-            expected_evidence: format!("written plan event {}", intent.impulse_id),
-            command: None,
-        },
-        GeneralPlanStep {
+    let mut steps = vec![GeneralPlanStep {
+        capability: Capability::Write,
+        action: format!("append the composed plan to {PLAN_PATH}"),
+        expected_evidence: format!("written plan event {}", intent.impulse_id),
+        command: None,
+    }];
+    if let Some((_, command)) = &command_output {
+        let generation_command = format!("{command} > {}", shell_quote(&target));
+        steps.push(GeneralPlanStep {
+            capability: Capability::Run,
+            action: command_plan_text(
+                "general_plan_command_capture_action",
+                response_language,
+                &target,
+            ),
+            expected_evidence: command_plan_text(
+                "general_plan_command_output_evidence",
+                response_language,
+                &target,
+            ),
+            command: Some(generation_command),
+        });
+    } else {
+        steps.push(GeneralPlanStep {
             capability: Capability::Write,
             action: format!("write the requested content to {target}"),
             expected_evidence: format!("workspace file {target}"),
             command: None,
+        });
+    }
+    steps.push(GeneralPlanStep {
+        capability: Capability::Run,
+        action: String::from("run the request-derived verification command"),
+        expected_evidence: if command_output.is_some() {
+            command_plan_text(
+                "general_plan_command_verification_evidence",
+                response_language,
+                &target,
+            )
+        } else {
+            content.clone()
         },
-        GeneralPlanStep {
-            capability: Capability::Run,
-            action: String::from("run the request-derived verification command"),
-            expected_evidence: content.clone(),
-            command: Some(verification_command.clone()),
-        },
-    ];
+        command: Some(verification_command.clone()),
+    });
     Some(GeneralChangePlan {
         id: stable_id(
             "general_change_plan",
-            &format!("{}:{target}:{content}", intent.impulse_id),
+            &format!(
+                "{}:{target}:{content}:{}",
+                intent.impulse_id,
+                command_output
+                    .as_ref()
+                    .map_or("", |(_, command)| command.as_str())
+            ),
         ),
+        mode: if command_output.is_some() {
+            GeneralPlanMode::CommandOutput
+        } else {
+            GeneralPlanMode::LiteralFile
+        },
         goal: intent.source_text,
         target,
         content,
         steps,
         verification_command,
     })
+}
+
+fn compose_repository_work_plan(request: &str) -> Option<GeneralChangePlan> {
+    let target = repository_work_reference(request)?;
+    if !mentions_bare_role(request, seed::ROLE_SOFTWARE_AUTHORING_ACTION) {
+        return None;
+    }
+
+    let response_language = language(request);
+    let intent = formalize_intent(request, response_language, None);
+    let verification_command = ["cat", PLAN_PATH].join(" ");
+    Some(GeneralChangePlan {
+        id: stable_id(
+            "repository_work_item_plan",
+            &format!("{}:{target}", intent.impulse_id),
+        ),
+        mode: GeneralPlanMode::RepositoryWorkItem,
+        goal: intent.source_text,
+        target,
+        content: String::new(),
+        steps: vec![
+            GeneralPlanStep {
+                capability: Capability::Write,
+                action: command_plan_text(
+                    "general_plan_repository_action",
+                    response_language,
+                    PLAN_PATH,
+                ),
+                expected_evidence: format!("written plan event {}", intent.impulse_id),
+                command: None,
+            },
+            GeneralPlanStep {
+                capability: Capability::Run,
+                action: command_plan_text(
+                    "general_plan_repository_verify_action",
+                    response_language,
+                    PLAN_PATH,
+                ),
+                expected_evidence: command_plan_text(
+                    "general_plan_repository_evidence",
+                    response_language,
+                    PLAN_PATH,
+                ),
+                command: Some(verification_command.clone()),
+            },
+        ],
+        verification_command,
+    })
+}
+
+/// Extract a concrete GitHub issue or pull-request URL structurally.
+///
+/// The software action itself comes from the multilingual seed. URL host/path
+/// segments are protocol identifiers, not natural-language routing phrases.
+fn repository_work_reference(request: &str) -> Option<String> {
+    request.split_whitespace().find_map(|token| {
+        let url = token.trim_matches(|character: char| {
+            matches!(
+                character,
+                '<' | '>' | '(' | ')' | '[' | ']' | '{' | '}' | ',' | ';' | '.' | '"' | '\''
+            )
+        });
+        let path = url
+            .strip_prefix("https://github.com/")
+            .or_else(|| url.strip_prefix("http://github.com/"))?;
+        let segments: Vec<&str> = path.split('/').collect();
+        (segments.len() == 4
+            && !segments[0].is_empty()
+            && !segments[1].is_empty()
+            && matches!(segments[2], "issues" | "pull")
+            && segments[3]
+                .chars()
+                .all(|character| character.is_ascii_digit()))
+        .then(|| url.to_owned())
+    })
+}
+
+/// Recover a command-output file request from a structural, seed-backed frame.
+///
+/// The command must immediately follow a seed-defined run verb and be enclosed
+/// in single quotes, double quotes, or backticks. The suffix must name a
+/// seed-defined command-output reference, a file-write action, and a safe target
+/// introduced by a write target/destination cue. Requiring every element keeps
+/// an incidental quoted phrase or filename from becoming executable.
+fn parse_command_output_request(request: &str) -> Option<(String, String)> {
+    let toks = tokens(request);
+    let run_verbs = seed::terminal_command_vocabulary().run_verbs;
+    let actions = bare_surfaces(seed::ROLE_FILE_WRITE_ACTION_CUE);
+    let targets = bare_surfaces(seed::ROLE_FILE_WRITE_TARGET_CUE);
+    let destinations = bare_surfaces(seed::ROLE_FILE_WRITE_DESTINATION_CUE);
+
+    for run in toks
+        .iter()
+        .filter(|token| run_verbs.contains(&clean_cue_token(token.text)))
+    {
+        let tail = request.get(run.end..)?;
+        let leading = tail.len() - tail.trim_start().len();
+        let quoted = tail.get(leading..)?;
+        let quote = quoted.chars().next()?;
+        if !matches!(quote, '\'' | '"' | '`') {
+            continue;
+        }
+        let body = quoted.get(quote.len_utf8()..)?;
+        let Some(close) = body.find(quote) else {
+            continue;
+        };
+        let command = body.get(..close)?.trim();
+        if command.is_empty() || command.contains(['\n', '\r', '\0']) {
+            continue;
+        }
+        let suffix_offset = run.end + leading + quote.len_utf8() + close + quote.len_utf8();
+        let suffix = request.get(suffix_offset..)?;
+        if !mentions_bare_role(suffix, seed::ROLE_FILE_WRITE_COMMAND_OUTPUT_REFERENCE) {
+            continue;
+        }
+        let suffix_tokens = tokens(suffix);
+        let has_write_action = suffix_tokens
+            .iter()
+            .any(|token| actions.contains(&clean_cue_token(token.text)));
+        if !has_write_action {
+            continue;
+        }
+        let target = suffix_tokens.iter().enumerate().find_map(|(index, token)| {
+            let cleaned = clean_path_token(token.text);
+            let looks_like_file = looks_like_file_path(cleaned);
+            let previous = index
+                .checked_sub(1)
+                .map(|position| &suffix_tokens[position])?;
+            let cue = clean_cue_token(previous.text);
+            (looks_like_file
+                && safe_relative_path(cleaned)
+                && (targets.contains(&cue) || destinations.contains(&cue)))
+            .then(|| cleaned.to_owned())
+        });
+        if let Some(target) = target {
+            return Some((target, command.to_owned()));
+        }
+    }
+    None
+}
+
+fn mentions_bare_role(text: &str, role: &str) -> bool {
+    let lower = text.to_lowercase();
+    seed::lexicon()
+        .role_word_forms(role)
+        .iter()
+        .filter(|form| form.slot() == Slot::Bare)
+        .any(|form| {
+            let needle = form.text.to_lowercase();
+            let Some(start) = lower.find(&needle) else {
+                return false;
+            };
+            if !needle.is_ascii() {
+                return true;
+            }
+            let end = start + needle.len();
+            let before_ok = start == 0
+                || lower[..start]
+                    .chars()
+                    .next_back()
+                    .is_some_and(|character| !character.is_alphanumeric());
+            let after_ok = end == lower.len()
+                || lower[end..]
+                    .chars()
+                    .next()
+                    .is_some_and(|character| !character.is_alphanumeric());
+            before_ok && after_ok
+        })
+}
+
+fn shell_quote(value: &str) -> String {
+    format!("'{}'", value.replace('\'', "'\\''"))
+}
+
+fn command_plan_text(intent: &str, language: &str, target: &str) -> String {
+    seed::response_for(intent, language)
+        .or_else(|| seed::response_for(intent, "en"))
+        .unwrap_or_else(|| intent.to_owned())
+        .replace(TARGET_PLACEHOLDER, target)
 }
 
 /// Whether `lower` (an already-lowercased request) is a file **write / create**
@@ -165,7 +414,7 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
     // incidental dotted token (a version, an abbreviation) out of the write path.
     let (file_index, target) = toks.iter().enumerate().find_map(|(index, token)| {
         let cleaned = clean_path_token(token.text);
-        let looks_like_file = cleaned.contains('.') && !cleaned.contains("://");
+        let looks_like_file = looks_like_file_path(cleaned);
         if !looks_like_file || !safe_relative_path(cleaned) {
             return None;
         }
@@ -181,14 +430,31 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
     let clause_start = cue.start;
     let cue_is_destination = dest_cues.contains(&clean_cue_token(cue.text));
 
+    // Marker-led content. The payload sits after the marker, bounded by the file
+    // clause when the marker comes first ("write the following: hello to x.txt")
+    // and running to the end when the clause comes first ("store file x.txt
+    // containing hello").
+    //
+    // A marker that *precedes* the clause additionally needs a write verb, which
+    // is the same rule the destination-led and assignment-shaped branches below
+    // already apply — without it a read request whose object happens to be a
+    // content-lead surface claims a write. The issue-#671 matrix caught
+    // `show me the contents of the file beta.md` planning
+    // `write(beta.md, "of the")`, destroying the fixture it was asked to read.
     if let Some((_, marker_end)) = first_content_lead_end(&lowered) {
-        let marker_span = if marker_end <= clause_start {
+        let marker_leads = marker_end <= clause_start;
+        let marker_span = if marker_leads {
             request.get(marker_end..clause_start)
         } else {
             request.get(marker_end..)
         };
-        if let Some(content) = marker_span.and_then(clean_content) {
-            return Some((target, content));
+        if !marker_leads || first_action_cue_end(&toks).is_some() {
+            if let Some(content) = marker_span
+                .and_then(clean_content)
+                .filter(|content| is_literal_content(content))
+            {
+                return Some((target, content));
+            }
         }
     }
 
@@ -217,10 +483,19 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
     // it as a literal write both fabricates the wrong file (the string "it") and
     // steals the request from the keyword recipe that would author the real
     // artifact, so fall through instead (issue #663).
-    if is_non_referential_content(&content) {
+    if is_non_referential_content(&content) || !is_literal_content(&content) {
         return None;
     }
     Some((target, content))
+}
+
+/// Whether a recovered payload says anything at all. A span of nothing but
+/// punctuation is what a mis-parse leaves behind — the `opencode` leg of the
+/// issue-#671 matrix recovered a single `"`, the tail of a quoted prompt after
+/// its trailing content-lead marker — and writing it would replace real file
+/// bytes with a stray delimiter.
+fn is_literal_content(content: &str) -> bool {
+    content.chars().any(char::is_alphanumeric)
 }
 
 /// Whether a recovered write payload is nothing but a non-referential subject —
@@ -309,7 +584,7 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
         // `is_source_links_task` — in which case the workspace self-AST census
         // (issue #673) resolves it to the module that actually declares it.
         let resolved = resolve_census_target(cleaned);
-        let looks_like_file = cleaned.contains('.') && !cleaned.contains("://");
+        let looks_like_file = looks_like_file_path(cleaned);
         if resolved.is_none() && (!looks_like_file || !safe_relative_path(cleaned)) {
             return None;
         }
@@ -413,6 +688,22 @@ fn bare_surfaces(role: &str) -> Vec<String> {
 fn clean_path_token(word: &str) -> &str {
     word.trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | ',' | ':' | ';'))
         .trim_end_matches(['.', '!', '?'])
+}
+
+/// Whether a safe-looking token names a file rather than merely using the
+/// conventional `./` prefix for a directory.
+///
+/// Checking the whole token for a dot made policy prose such as "keep examples
+/// in ./examples" file-shaped. When a later sentence contained a write-content
+/// marker, the generic planner consequently tried to overwrite that directory.
+/// File shape belongs to the final path component; dots in parent components or
+/// in the relative-path prefix do not make the target a file.
+fn looks_like_file_path(path: &str) -> bool {
+    !path.contains("://")
+        && path
+            .rsplit('/')
+            .next()
+            .is_some_and(|file_name| file_name.contains('.'))
 }
 
 /// Lowercase a token stripped of edge punctuation, for cue/action comparison.
@@ -519,18 +810,12 @@ const fn capability_slug(capability: Capability) -> &'static str {
         Capability::Subagent => "Subagent",
         Capability::ReadMany => "ReadMany",
         Capability::MultiEdit => "MultiEdit",
+        Capability::AskUser => "AskUser",
     }
 }
 
 fn language(request: &str) -> &'static str {
-    if request
-        .chars()
-        .any(|c| ('\u{0400}'..='\u{04ff}').contains(&c))
-    {
-        "ru"
-    } else {
-        "en"
-    }
+    crate::language::detect(request).slug()
 }
 
 fn escape(value: &str) -> String {

@@ -1,0 +1,22 @@
+self_ast_census
+  target src/solver_handlers/calendar_ics.rs
+  language rust
+  fidelity signature
+  byte_len 6609
+  line_count 198
+  content_id source_module_559c87cd6384e27c
+  symbol_count 13
+  symbols
+    struct ScheduledEvent 16 25
+    function iso_date 28 30
+    function start_stamp 33 38
+    function end_stamp 42 52
+    function uid 56 58
+    function to_ics 63 82
+    function to_google_calendar_url 87 95
+    function add_minutes 99 129
+    function days_in_month 131 143
+    function ics_dtstamp 146 163
+    function ics_escape 166 178
+    function percent_encode 182 198
+    const HEX 183 183

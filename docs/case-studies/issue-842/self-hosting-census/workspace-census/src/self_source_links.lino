@@ -1,0 +1,35 @@
+self_ast_census
+  target src/self_source_links.rs
+  language rust
+  fidelity signature
+  byte_len 14643
+  line_count 344
+  content_id source_module_2331204f81670611
+  symbol_count 26
+  symbols
+    function owned_source_files 54 56
+    struct SourceModuleDigest 64 71
+    function of 76 82
+    struct SourceModuleProjection 93 106
+    function project 112 124
+    function digest 128 134
+    struct SourceLinks 140 143
+    function compile 151 157
+    function owned 167 170
+    static LINKS 168 168
+    function module_count 174 176
+    function faithful_count 180 182
+    function is_fully_faithful 187 189
+    function coverage_permille 195 202
+    function unfaithful_modules 207 212
+    function total_link_count 216 218
+    function total_named_node_count 222 224
+    function total_byte_len 228 230
+    function summary 234 243
+    function links_notation 249 274
+    function owned_manifest 280 285
+    function owned_file_count 289 291
+    function owned_total_bytes 295 300
+    function owned_manifest_content_id 309 311
+    function owned_manifest_notation 320 335
+    function quote 337 344

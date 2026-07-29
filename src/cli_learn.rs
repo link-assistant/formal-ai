@@ -2,6 +2,7 @@ use std::error::Error;
 use std::fs;
 use std::path::PathBuf;
 
+use clap::Subcommand;
 use formal_ai::learning_cycle::{
     run_learning_cycle, LearningCycleRun, GOOGLE_TRENDS_FRONTIER, GOOGLE_TRENDS_FRONTIER_RECORD,
 };
@@ -13,6 +14,36 @@ use formal_ai::{parse_frontier_record, FrontierItem};
 pub enum LearnFrontier {
     /// The Google Trends frontier recorded by issues #498/#499.
     GoogleTrends,
+}
+
+/// Auto-learning commands.
+#[derive(Debug, Subcommand)]
+pub enum LearnAction {
+    /// Derive candidate knowledge from a recorded frontier, validate it against
+    /// held-out prompts of the same class, and emit promotion proposals in the
+    /// issue-#656 shape. Proposal-only and offline: no seed file is written and
+    /// no network call is made, so the run is deterministic and reproducible.
+    Cycle {
+        /// The recorded frontier to replay.
+        #[arg(long, value_enum, default_value_t = LearnFrontier::GoogleTrends)]
+        frontier: LearnFrontier,
+
+        /// Read frontier items from this `learning_frontier` document instead of
+        /// the committed record.
+        #[arg(long, value_name = "PATH")]
+        from: Option<PathBuf>,
+
+        /// Explicit acknowledgement that the cycle only proposes. The cycle is
+        /// proposal-only either way; the flag documents the intent at the call
+        /// site and keeps the acceptance-criteria invocation literal.
+        #[arg(long, default_value_t = false)]
+        dry_run: bool,
+
+        /// Print the `promotion_proposals` document instead of the full cycle
+        /// record, ready to pipe into `formal-ai improve --promote`.
+        #[arg(long, default_value_t = false)]
+        proposals: bool,
+    },
 }
 
 /// Arguments for `formal-ai learn cycle` (issue #701, E59).
@@ -27,6 +58,27 @@ pub struct LearnCycleArgs {
     /// Print the promotion proposals as a `promotion_proposals` document that
     /// `formal-ai improve --promote --proposals -` consumes.
     pub proposals: bool,
+}
+
+/// Dispatch one auto-learning command.
+///
+/// # Errors
+///
+/// Returns an error when a cycle's custom frontier cannot be read.
+pub fn run_learn_action(action: LearnAction) -> Result<(), Box<dyn Error>> {
+    match action {
+        LearnAction::Cycle {
+            frontier,
+            from,
+            dry_run,
+            proposals,
+        } => run_learn_cycle(&LearnCycleArgs {
+            frontier,
+            from,
+            dry_run,
+            proposals,
+        }),
+    }
 }
 
 /// Run one learning cycle and print its auditable record.

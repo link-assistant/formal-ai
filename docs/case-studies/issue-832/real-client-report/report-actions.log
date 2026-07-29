@@ -1,0 +1,4 @@
+formal-ai context export --session dialog_9b6b1422027158eb --source harness --output formal-ai-harness-dialog_9b6b1422027158eb.lino
+formal-ai context export --session dialog_9b6b1422027158eb --source server --output formal-ai-server-dialog_9b6b1422027158eb.lino
+formal-ai context export --session dialog_9b6b1422027158eb --source both --output /tmp/formal-ai-report.JlJgvE.lino
+gh issue create --repo link-assistant/formal-ai --title Formal AI agentic session report --body-file /tmp/formal-ai-report.z40KTk.md

@@ -1,0 +1,8 @@
+issue
+create
+--repo
+link-assistant/formal-ai
+--title
+Formal AI: `Зарепорти баг`
+--body-file
+/tmp/formal-ai-report.DxNpYL/body.md

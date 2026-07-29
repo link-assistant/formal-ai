@@ -11,12 +11,14 @@
 //! it; roles that exist purely to group data (for example
 //! `web_navigation_concept`) stay in the seed without a mirror here.
 
+mod decomposition;
 mod intent;
 mod language;
 mod program;
 mod reasoning;
 mod tooling;
 
+pub use decomposition::*;
 pub use intent::*;
 pub use language::*;
 pub use program::*;

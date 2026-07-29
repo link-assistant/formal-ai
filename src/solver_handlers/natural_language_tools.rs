@@ -165,14 +165,17 @@ fn try_web_search_api_call(
     log.append("web_search:request", query.clone());
     log.append("web_search:query_kind", "direct_api_call".to_owned());
     for provider in WEB_SEARCH_PROVIDERS {
-        log.append("web_search:provider", (*provider).to_owned());
+        log.append("web_search:provider_planned", (*provider).to_owned());
     }
-    log.append("web_search:combined", format!("rrf:k={WEB_SEARCH_RRF_K}"));
+    log.append(
+        "web_search:fusion_planned",
+        format!("rrf:k={WEB_SEARCH_RRF_K}"),
+    );
     log.append("tool_result", "search_plan_recorded".to_owned());
-    log.append("execution_status", "web_search:executed".to_owned());
+    log.append("execution_status", "web_search:planned".to_owned());
     let providers = WEB_SEARCH_PROVIDERS.join(", ");
     let body = format!(
-        "Execution status: executed.\nTool call: web_search\nQuery: `{query}`\nResult: search plan recorded with providers {providers}; combined ranking uses reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})."
+        "Execution status: planned.\nTool call: web_search\nQuery: `{query}`\nResult: search plan recorded with providers {providers}; combined ranking uses reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})."
     );
     Some(finalize_simple(
         prompt,

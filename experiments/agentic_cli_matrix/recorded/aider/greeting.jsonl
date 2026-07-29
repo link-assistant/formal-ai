@@ -1,0 +1,2 @@
+{"method":"GET","path":"/health","request_model":null,"request_tools":[],"status":200,"response_model":"formal-ai","response_tool_calls":[],"response_content_preview":""}
+{"method":"POST","path":"/api/openai/v1/chat/completions","request_model":"formal-ai","request_tools":[],"status":200,"response_model":"formal-ai","response_tool_calls":[],"response_content_preview":"Hi, how may I help you?"}

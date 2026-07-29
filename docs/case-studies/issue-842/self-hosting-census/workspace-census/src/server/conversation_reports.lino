@@ -1,0 +1,13 @@
+self_ast_census
+  target src/server/conversation_reports.rs
+  language rust
+  fidelity signature
+  byte_len 2331
+  line_count 61
+  content_id source_module_605a703e153ee173
+  symbol_count 4
+  symbols
+    const ERROR_PLACEHOLDER 5 5
+    function handle_context_request 7 39
+    function handle_learning_request 41 55
+    function config 57 61

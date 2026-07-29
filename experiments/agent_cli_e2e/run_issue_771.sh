@@ -7,8 +7,8 @@
 # execution, and the server's reading of the resulting history. Two properties
 # are asserted on the argv a PATH-local fake gh records:
 #
-#   1. the transcribed turns stay inside attributed blockquote blocks, so no
-#      line of a multi-line turn escapes and renders as top-level markdown;
+#   1. the transcribed turns stay inside a fenced code block, so no line of a
+#      multi-line turn escapes and renders as top-level markdown;
 #   2. the body stays far under GitHub's 65536-character issue limit even though
 #      the fetched page is much larger than that.
 #
@@ -19,6 +19,7 @@ set -uo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 BIN="${BIN:-$ROOT/target/release/formal-ai}"
+BIN_DIR="$(cd "$(dirname "$BIN")" && pwd)"
 PORT="${PORT:-8781}"
 AGENT="${AGENT:-agent}"
 LOG="/tmp/formal-ai-serve-$PORT.log"
@@ -27,6 +28,7 @@ WORKDIR="$(mktemp -d)"
 FAKE_BIN="$WORKDIR/fake-bin"
 GH_LOG="$WORKDIR/gh-invocations.log"
 BODY_FILE="$WORKDIR/issue-body.md"
+GIST_FILE="$WORKDIR/formal-ai-context.lino"
 GITHUB_BODY_LIMIT=65536
 
 mkdir -p "$FAKE_BIN"
@@ -47,6 +49,17 @@ cat > opencode.json <<EOF
         "formal-ai": { "name": "Formal AI Symbolic Production" }
       }
     }
+  },
+  "mcp": {
+    "issue771": {
+      "type": "local",
+      "command": ["node", "$ROOT/experiments/agent_cli_e2e/mock-research-mcp.mjs"],
+      "enabled": true
+    }
+  },
+  "tools": {
+    "websearch": false,
+    "webfetch": false
   }
 }
 EOF
@@ -58,9 +71,17 @@ EOF
 cat > "$FAKE_BIN/gh" <<EOF
 #!/usr/bin/env bash
 printf '%s\n' "\$*" >> "$GH_LOG"
+if [ "\${1:-} \${2:-}" = "gist create" ]; then
+  cp "\${@: -1}" "$GIST_FILE"
+  printf '%s\n' 'https://gist.github.com/formal-ai/complete-context'
+  exit 0
+fi
 while [ \$# -gt 0 ]; do
   if [ "\$1" = "--body" ]; then
     printf '%s' "\$2" > "$BODY_FILE"
+    break
+  elif [ "\$1" = "--body-file" ]; then
+    cp "\$2" "$BODY_FILE"
     break
   fi
   shift
@@ -69,7 +90,12 @@ printf '%s\n' 'https://github.com/link-assistant/formal-ai/issues/999999'
 EOF
 chmod +x "$FAKE_BIN/gh"
 
+# Private, empty memory per run so the chat handler's memory-fed planning and the
+# `POST /v1/chat/completions` round count stay deterministic and independent of
+# what earlier E2E scripts recorded into the shared ~/.formal-ai/memory.lino
+# (issue #828). FORMAL_AI_DREAMING=0 stops background compaction of that file.
 FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
+  FORMAL_AI_MEMORY_PATH="$WORKDIR/memory.lino" FORMAL_AI_DREAMING=0 \
   "$BIN" serve --host 127.0.0.1 --port "$PORT" > "$LOG" 2>&1 &
 SRV=$!
 trap 'kill $SRV 2>/dev/null; rm -rf "$WORKDIR"' EXIT
@@ -97,7 +123,10 @@ run_turn() {
   local prompt="$2"
   shift 2
   echo "== $label: $prompt ==" | tee -a "$AGENT_LOG"
-  PATH="$FAKE_BIN:$PATH" timeout 180 "$AGENT" \
+  FORMAL_AI_BASE_URL="http://127.0.0.1:$PORT/v1" \
+    FORMAL_AI_DIALOG_LOG_DIR="$WORKDIR/dialog-logs" \
+    LINK_ASSISTANT_AGENT_DISABLE_AUTOUPDATE=1 \
+    PATH="$FAKE_BIN:$BIN_DIR:$PATH" timeout 180 "$AGENT" \
     --prompt "$prompt" \
     --disable-stdin \
     --model formal-ai/formal-ai \
@@ -105,29 +134,22 @@ run_turn() {
     "$@" >> "$AGENT_LOG" 2>&1 || fail "$label failed"
 }
 
-# The reported session: a question the local engine cannot answer, then a bare
-# report request.
+# The reported session: a question the local engine cannot answer, then the
+# report request and its two required confirmations.
 run_turn research "В каких странах есть частные космические компании?"
 
-# The fetched page is far larger than the client's context budget, so the client
-# prunes and summarizes the session before serving the next prompt -- and the
-# turn that triggers that pruning is consumed by it rather than reaching us.
-# That is client behaviour we do not control, and a real user simply asks again,
-# so ask again. What the test pins is that a report request *does* land and that
-# the body it produces is well-formed; not how many prompts the client spends
-# reorganising its own history first.
-attempt=1
-while [ ! -f "$GH_LOG" ] && [ "$attempt" -le 3 ]; do
-  run_turn "report (attempt $attempt)" "report" --continue --no-fork
-  attempt=$((attempt + 1))
-done
+# The report flow exercises both issue #822 confirmation gates in the same
+# session after deterministic fixture-backed research.
+run_turn report "report" --continue --no-fork
+run_turn report_destination "GitHub issue" --continue --no-fork
+run_turn report_context "Both logs" --continue --no-fork
 
-[ -f "$GH_LOG" ] || fail "report request did not execute gh after $((attempt - 1)) attempts"
+[ -f "$GH_LOG" ] || fail "confirmed report request did not execute gh"
 grep -q 'issue create --repo link-assistant/formal-ai' "$GH_LOG" \
   || fail "gh invocation did not target the Formal AI repository"
 
-# Requirement 2: the transcript stays inside attributed blocks and within the
-# body limit.
+# Requirement 2: the transcript stays inside a LiNo block and within the body
+# limit.
 [ -s "$BODY_FILE" ] || fail "the gh invocation carried no --body argument"
 body="$(cat "$BODY_FILE")"
 
@@ -135,39 +157,84 @@ size="$(wc -m < "$BODY_FILE" | tr -d ' ')"
 [ "$size" -lt "$GITHUB_BODY_LIMIT" ] \
   || fail "issue body was $size characters, over GitHub's $GITHUB_BODY_LIMIT limit"
 
-grep -q '^\*\*user:\*\*$' <<<"$body" \
-  || fail "issue body did not attribute the user turn to its role"
-grep -q '^\*\*assistant:\*\*$' <<<"$body" \
-  || fail "issue body did not attribute the assistant turn to its role"
-
-# Every transcript line between the conversation heading and the footer must be
-# blank, a role label, a quote line, or an italic notice -- never bare prose that
-# would render as top-level markdown.
+# Every transcribed turn must sit between an opening and a closing fence --
+# never bare prose that would render as top-level markdown.
+#
+# Issue #839 gave this surface the web reporter's six-section document, so the
+# body now carries several fenced blocks (the dialog, the reasoning trace, and
+# the LiNo context attachment) instead of the single `lino` block #771 shipped.
+# The property being pinned is unchanged and asserted more precisely: fences
+# balance, exactly one of them is the complete LiNo context, that context is the
+# last block in the document, and no transcript line escapes into the markdown.
 escaped="$(REPORT_BODY="$body" python3 - <<'PY'
 import os
+import re
 
-body = os.environ["REPORT_BODY"]
-start = body.find("\n", body.find("### ")) + 1
-end = body.rfind("\n\n")
-for line in body[start:end].splitlines():
-    if line.strip() and not line.startswith(("**", ">", "_")):
-        print(line)
+lines = os.environ["REPORT_BODY"].splitlines()
+# A block opens with a run of backticks plus an optional language and closes
+# with the identical run. The renderer lengthens the run until no content can
+# terminate it early, so a line inside a block never looks like a fence.
+fence_pattern = re.compile(r"^(`{3,})(\S*)\s*$")
+# `U: `, `A (intent: unknown): `, `T: ` and the indented continuation rows of a
+# multi-line turn -- the shapes issue #771 saw leak out of the block.
+turn_pattern = re.compile(r"^(?:[UAT](?: \([^)]*\))?: |   \S)")
+
+fence = None
+outside = []
+lino_blocks = 0
+last_close = -1
+for index, line in enumerate(lines):
+    if fence is None:
+        opening = fence_pattern.match(line)
+        if opening:
+            fence = opening.group(1)
+            if opening.group(2) == "lino":
+                lino_blocks += 1
+            continue
+        outside.append(line)
+    elif line.rstrip() == fence:
+        fence = None
+        last_close = index
+
+problems = []
+if fence is not None:
+    problems.append("a fenced block was never closed")
+if lino_blocks != 1:
+    problems.append(f"expected exactly one lino context block, found {lino_blocks}")
+if any(line.strip() for line in lines[last_close + 1:]):
+    problems.append("content follows the last closing fence")
+leaked = [line for line in outside if turn_pattern.match(line)]
+if leaked:
+    problems.append(f"transcript lines outside any fence: {leaked[:3]}")
+print("\n".join(problems))
 PY
 )" || fail "could not scan the transcript"
 [ -z "$escaped" ] \
-  || fail "these transcript lines escaped their block and render as top-level markdown:
+  || fail "the transcript escaped its LiNo block:
 $escaped"
 
+if [ -s "$GIST_FILE" ]; then
+  grep -q 'conversation' "$GIST_FILE" \
+    || fail "the linked context did not contain the conversation"
+  grep -q 'server_logs' "$GIST_FILE" \
+    || fail "the linked context did not contain server logs"
+else
+  grep -q 'conversation' <<<"$body" \
+    || fail "the inline context did not contain the conversation"
+  grep -q 'server_logs' <<<"$body" \
+    || fail "the inline context did not contain server logs"
+fi
+
 # Requirement 1: the answer under review is an extract, not the whole page. The
-# extract's exact content depends on what the live web returned, so the size
-# bound above is the assertion; the citation is reported for the log only.
+# extract's exact content is not part of this regression, so the size bound above
+# is the assertion; the citation is reported for the log only.
 grep -q 'Source:' <<<"$body" \
   && echo "-- transcribed answer cites its source" \
   || echo "-- note: no source citation in this run (search returned no URL)"
 
 posts="$(grep -c 'POST /v1/chat/completions' "$LOG" || true)"
-searches="$(grep -c 'agentic_outcome: planned ToolCalls.*tool: "websearch"' "$LOG" || true)"
+searches="$(grep -c 'agentic_outcome: planned ToolCalls.*websearch' "$LOG" || true)"
 [ "$searches" -ge 1 ] || fail "the question never reached websearch"
 
-echo "== issue #771 E2E OK: report body is $size characters, every turn attributed and contained ($posts rounds) =="
+echo "== issue #771 E2E OK: report body is $size characters and its LiNo context is contained ($posts rounds) =="
 tail -40 "$AGENT_LOG"

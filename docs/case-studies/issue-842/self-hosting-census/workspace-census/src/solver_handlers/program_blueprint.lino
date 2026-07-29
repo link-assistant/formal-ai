@@ -1,0 +1,10 @@
+self_ast_census
+  target src/solver_handlers/program_blueprint.rs
+  language rust
+  fidelity signature
+  byte_len 4395
+  line_count 98
+  content_id source_module_69aab15b5c0e2948
+  symbol_count 1
+  symbols
+    function try_program_blueprint 37 98

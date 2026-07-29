@@ -10,7 +10,7 @@
 
 Formal AI is a Rust implementation of a symbolic, deterministic assistant that exposes OpenAI-shaped interfaces without neural-network inference.
 
-It belongs to the tradition of [symbolic artificial intelligence](https://en.wikipedia.org/wiki/Symbolic_artificial_intelligence) (a.k.a. GOFAI): its knowledge is an inspectable [semantic network](https://en.wikipedia.org/wiki/Semantic_network) of human-readable links rather than hidden neural weights. The case study in [docs/case-studies/issue-451](docs/case-studies/issue-451/README.md) maps the field's best practices onto this associative stack; the design study in [docs/case-studies/issue-649](docs/case-studies/issue-649/README.md) audits how the same stack expresses symbolic **world models** — a current-state and target-state context, their difference, context merge/split, and predicting the consequences of an action, all as links networks rather than embeddings; and the study in [docs/case-studies/issue-686](docs/case-studies/issue-686/README.md) adds **usage-weighted persistence** of meta-language expressions — counting reads and writes and incoming/outgoing link degree so the most used, most changed, and most connected knowledge persists longest, all as a links network.
+It belongs to the tradition of [symbolic artificial intelligence](https://en.wikipedia.org/wiki/Symbolic_artificial_intelligence) (a.k.a. GOFAI): its knowledge is an inspectable [semantic network](https://en.wikipedia.org/wiki/Semantic_network) of human-readable links rather than hidden neural weights. The [associative technology stack guide](docs/associative-tech-stack.md) links every component and distinguishes direct runtime dependencies from architecture and development tooling. The case study in [docs/case-studies/issue-451](docs/case-studies/issue-451/README.md) maps the field's best practices onto this associative stack; the design study in [docs/case-studies/issue-649](docs/case-studies/issue-649/README.md) audits how the same stack expresses symbolic **world models** — a current-state and target-state context, their difference, context merge/split, and predicting the consequences of an action, all as links networks rather than embeddings; and the study in [docs/case-studies/issue-686](docs/case-studies/issue-686/README.md) adds **usage-weighted persistence** of meta-language expressions — counting reads and writes and incoming/outgoing link degree so the most used, most changed, and most connected knowledge persists longest, all as a links network.
 
 The current implementation covers the surface area requested in issue #1:
 
@@ -32,6 +32,10 @@ Project direction is tracked in [VISION.md](VISION.md), [GOALS.md](GOALS.md), an
 For one end-to-end reference covering every client, runtime mode, tool,
 memory/API setting, transcript location, language, and user surface, start with
 the **[Configuration guide](docs/configuration/README.md)**.
+
+Complete agentic transcript capture, JSON/Links Notation export, OpenCode
+SQLite extraction, and redaction guidance are covered in
+**[Output and session debugging](docs/configuration/output-sessions.md)**.
 
 Every interface has a dedicated landing page on the
 [site](https://link-assistant.github.io/formal-ai/) with copy-paste install
@@ -793,6 +797,10 @@ operation, and recommend larger storage when the reserve cannot be met.
 
 The Rust library re-exports the same helpers — `export_memory_full`, `import_memory_full`, `suggest_memory_migrations`, `BundleInfo`, `ParsedBundle` — so embedders writing their own surface get the same defaults. The prefilled **Report issue** link records the dialog as a single compact `U:`/`A:` code block and points to [`docs/upload-memory.md`](docs/upload-memory.md) for attaching the full memory export (GitHub Gist or `.zip` workflow, plus redaction reminders) instead of repeating those instructions inline.
 
+### Reporting an issue
+
+Asking Formal AI to `report issue` — in the web app, from a coding harness, or through `formal-ai report body` — files the same six-section document from every surface: environment, user context, the whole dialog, the reasoning trace, a description placeholder, and the memory-attachment pointer. One builder produces it, so the surfaces cannot drift apart. [`docs/report-issue.md`](docs/report-issue.md) documents the document, the CLI flags, what each `--source` means, how oversize conversations are attached, and who can read the gist that carries them.
+
 ### Teaching behavior in chat
 
 The chat surface can explain and modify behavior rules without leaving the dialog. Behavior is surfaced as a series of `When X then Y` (or `When X do Y`) statements grouped by topic, and the same grammar can also update the dialog:
@@ -922,12 +930,23 @@ rust-script scripts/mine-hive-mind-dataset.rs --collect
 The script wraps `formal-ai github-logs plan|collect` with the focused Hive
 Mind defaults used by `docs/case-studies/issue-115/`.
 
+## Legal and Data-Source Compliance
+
+Read [LEGAL-COMPLIANCE.md](LEGAL-COMPLIANCE.md) before adding third-party
+material, model output, personal-data-adjacent content, or a training or
+distillation pipeline. Formal AI currently has no approved neural training
+sources. Future parameter-updating artifacts must pass the fail-closed review
+in [`data/training/`](data/training/README.md); benchmark fixtures and runtime
+retrieval data are separate classifications and cannot silently become
+training data.
+
 ## Development
 
 ```bash
 cargo fmt --all -- --check
-cargo clippy --all-targets --all-features
-cargo test --all-features --verbose
+cargo clippy --lib --bins --tests --all-features
+cargo check --examples --all-features
+cargo test --lib --bins --tests --all-features --verbose
 cargo test --doc --verbose
 rust-script scripts/check-file-size.rs
 ```

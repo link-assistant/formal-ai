@@ -1,0 +1,2428 @@
+== Agent CLI attempt 1 ==
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:28.832Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": true,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:28.843Z",
+  "service": "default",
+  "version": "0.25.0",
+  "command": "/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js --prompt Что такое фуфломицин? Затем: так что это такое то? --disable-stdin --model formal-ai/formal-ai --no-summarize-session --read-only",
+  "workingDirectory": "/tmp/tmp.elUat1xil2",
+  "scriptPath": "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:28.844Z",
+  "service": "default",
+  "directory": "/tmp/tmp.elUat1xil2",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:28.845Z",
+  "service": "project",
+  "directory": "/tmp/tmp.elUat1xil2",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:28.952Z",
+  "service": "default",
+  "processArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "--prompt",
+    "Что такое фуфломицин? Затем: так что это такое то?",
+    "--disable-stdin",
+    "--model",
+    "formal-ai/formal-ai",
+    "--no-summarize-session",
+    "--read-only"
+  ],
+  "bunArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "--prompt",
+    "Что такое фуфломицин? Затем: так что это такое то?",
+    "--disable-stdin",
+    "--model",
+    "formal-ai/formal-ai",
+    "--no-summarize-session",
+    "--read-only"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:28.952Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:28.956Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:28.959Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:28.962Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:28.970Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:28.976Z",
+  "service": "config",
+  "path": "/tmp/tmp.elUat1xil2/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.015Z",
+  "service": "models.dev",
+  "path": "/home/box/.cache/link-assistant-agent/models.json",
+  "age": 4413,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.016Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.090Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.114Z",
+  "service": "claude-oauth",
+  "path": "/home/box/.claude/.credentials.json",
+  "message": "credentials file not found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.115Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.115Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.115Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.115Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.115Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.115Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 159,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.117Z",
+  "service": "provider",
+  "modelID": "big-pickle",
+  "providerID": "opencode",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.117Z",
+  "service": "provider",
+  "modelID": "minimax-m2.5-free",
+  "providerID": "kilo",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.118Z",
+  "service": "default",
+  "models": [
+    "opencode/big-pickle",
+    "kilo/minimax-m2.5-free",
+    "same"
+  ],
+  "source": "default",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.170Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.170Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.174Z",
+  "service": "session",
+  "id": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "version": "agent-cli-1.0.0",
+  "projectID": "global",
+  "directory": "/tmp/tmp.elUat1xil2",
+  "title": "New session - 2026-07-25T02:26:29.174Z",
+  "time": {
+    "created": 1784946389174,
+    "updated": 1784946389174
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.176Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.176Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.177Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 7,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.183Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.184Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_068e78f49ffevqE3sj3evFgSO6/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.184Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_068e78f49ffevqE3sj3evFgSO6/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.199Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 15,
+  "method": "POST",
+  "path": "/session/ses_068e78f49ffevqE3sj3evFgSO6/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.230Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.252Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.254Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.260Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.278Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.278Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.281Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.282Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.283Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.283Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.283Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 1,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.284Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.284Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.284Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.285Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.285Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.285Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.285Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:29.286Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:30.285Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:30.299Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "local",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:30.340Z",
+  "service": "mcp",
+  "key": "issue840",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:30.453Z",
+  "service": "mcp",
+  "key": "issue840",
+  "toolCount": 2,
+  "message": "create() successfully created client"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:30.497Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:30.519Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:30.548Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:30.548Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:30.549Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:30.549Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+TimeoutNaNWarning: NaN is not a number.
+Timeout duration was set to 1.
+      at <anonymous> (/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/util/timeout.ts:9:17)
+      at new Promise (1:11)
+      at withTimeout (/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/util/timeout.ts:8:5)
+      at <anonymous> (/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/session/prompt.ts:1201:26)
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.301Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784946391301,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "part": {
+    "id": "prt_f971878f4001RmLtNZDF5xvR2J",
+    "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+    "messageID": "msg_f97187517001WiVpr2Cbg8e7QT",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.303Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.307Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784946391307,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "part": {
+    "id": "prt_f97187909001GlIsVegvCZvJmu",
+    "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+    "messageID": "msg_f97187517001WiVpr2Cbg8e7QT",
+    "type": "tool",
+    "callID": "call_8482f7e3baf0e2ae",
+    "tool": "issue840_websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.315Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784946391315,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "part": {
+    "id": "prt_f97187909001GlIsVegvCZvJmu",
+    "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+    "messageID": "msg_f97187517001WiVpr2Cbg8e7QT",
+    "type": "tool",
+    "callID": "call_8482f7e3baf0e2ae",
+    "tool": "issue840_websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "фуфломицин"
+      },
+      "time": {
+        "start": 1784946391308
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.341Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1784946391341,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "part": {
+    "id": "prt_f97187906001WPRQfE9dfXzacU",
+    "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+    "messageID": "msg_f97187517001WiVpr2Cbg8e7QT",
+    "type": "text",
+    "text": "Поищу в интернете: фуфломицин.",
+    "time": {
+      "start": 1784946391340,
+      "end": 1784946391340
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.346Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784946391346,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "part": {
+    "id": "prt_f97187909001GlIsVegvCZvJmu",
+    "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+    "messageID": "msg_f97187517001WiVpr2Cbg8e7QT",
+    "type": "tool",
+    "callID": "call_8482f7e3baf0e2ae",
+    "tool": "issue840_websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "фуфломицин"
+      },
+      "output": "Словарное определение https://dictionary.example.test/ru/fuflomicin\nСправка о доказательности https://evidence.example.test/ru/unproven-medicine\nУпотребление термина https://language.example.test/ru/fuflomicin-usage",
+      "title": "",
+      "metadata": {},
+      "time": {
+        "start": 1784946391308,
+        "end": 1784946391343
+      },
+      "attachments": []
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-25T02:26:31.352Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 10317,
+    "output": 70,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 10317,
+  "sseCompletionTokens": 70,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.357Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784946391357,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "part": {
+    "id": "prt_f97187939001ZI1zbX6jWWrmZB",
+    "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+    "messageID": "msg_f97187517001WiVpr2Cbg8e7QT",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 10317,
+      "output": 70,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 10387,
+      "headroom": 28469,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.358Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.358Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.367Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.367Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.368Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.368Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.369Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.369Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.372Z",
+  "service": "session.prompt",
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "finishReason": "unknown",
+  "zeroTokens": false,
+  "hint": "Provider returned undefined finishReason but made tool calls",
+  "message": "continuing loop despite unknown finish reason - tool calls detected"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.373Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.373Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.375Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.375Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 10387,
+  "providerTokens": 10387,
+  "estimatedInputTokens": 88,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 10317,
+    "cacheRead": 0,
+    "output": 70
+  },
+  "overflow": false,
+  "headroom": 41421,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.376Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.438Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.451Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.752Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784946391752,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "part": {
+    "id": "prt_f97187abc001N2YtRy4DL7HljL",
+    "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+    "messageID": "msg_f9718794f001LFR094bltHo1K1",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.754Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.755Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784946391755,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "part": {
+    "id": "prt_f97187aca001XBcaOAeKfXvLRJ",
+    "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+    "messageID": "msg_f9718794f001LFR094bltHo1K1",
+    "type": "tool",
+    "callID": "call_55aa7fa4954d6400",
+    "tool": "issue840_webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.755Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784946391755,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "part": {
+    "id": "prt_f97187aca001XBcaOAeKfXvLRJ",
+    "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+    "messageID": "msg_f9718794f001LFR094bltHo1K1",
+    "type": "tool",
+    "callID": "call_55aa7fa4954d6400",
+    "tool": "issue840_webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "url": "https://dictionary.example.test/ru/fuflomicin"
+      },
+      "time": {
+        "start": 1784946391755
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.767Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1784946391767,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "part": {
+    "id": "prt_f97187ac80013kYMpLd7mKVBNM",
+    "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+    "messageID": "msg_f9718794f001LFR094bltHo1K1",
+    "type": "text",
+    "text": "Открою https://dictionary.example.test/ru/fuflomicin и прочитаю содержимое.",
+    "time": {
+      "start": 1784946391766,
+      "end": 1784946391766
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.769Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784946391770,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "part": {
+    "id": "prt_f97187aca001XBcaOAeKfXvLRJ",
+    "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+    "messageID": "msg_f9718794f001LFR094bltHo1K1",
+    "type": "tool",
+    "callID": "call_55aa7fa4954d6400",
+    "tool": "issue840_webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "url": "https://dictionary.example.test/ru/fuflomicin"
+      },
+      "output": "Фуфломицин — разговорное неодобрительное название лекарства или метода лечения, клиническая эффективность которого не доказана.",
+      "title": "",
+      "metadata": {},
+      "time": {
+        "start": 1784946391755,
+        "end": 1784946391767
+      },
+      "attachments": []
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-25T02:26:31.771Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 10562,
+    "output": 147,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 10562,
+  "sseCompletionTokens": 147,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.772Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784946391772,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "part": {
+    "id": "prt_f97187adb001QwreZQxJ5k5euD",
+    "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+    "messageID": "msg_f9718794f001LFR094bltHo1K1",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 10562,
+      "output": 147,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 10709,
+      "headroom": 28147,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.772Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.773Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.786Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.786Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.798Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.798Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.798Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.798Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.826Z",
+  "service": "session.prompt",
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "finishReason": "unknown",
+  "zeroTokens": false,
+  "hint": "Provider returned undefined finishReason but made tool calls",
+  "message": "continuing loop despite unknown finish reason - tool calls detected"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.826Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.826Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.833Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.833Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 10709,
+  "providerTokens": 10709,
+  "estimatedInputTokens": 137,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 10562,
+    "cacheRead": 0,
+    "output": 147
+  },
+  "overflow": false,
+  "headroom": 41099,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.834Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.868Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:31.873Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.109Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784946392109,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "part": {
+    "id": "prt_f97187c2b001ZVe89x2h7rAsRv",
+    "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+    "messageID": "msg_f97187b19001Ob8IS3BKPbeyTS",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.111Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.113Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784946392113,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "part": {
+    "id": "prt_f97187c2f001k5EGw826Prl5wg",
+    "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+    "messageID": "msg_f97187b19001Ob8IS3BKPbeyTS",
+    "type": "tool",
+    "callID": "call_981098f0ac508591",
+    "tool": "issue840_webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.113Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784946392114,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "part": {
+    "id": "prt_f97187c2f001k5EGw826Prl5wg",
+    "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+    "messageID": "msg_f97187b19001Ob8IS3BKPbeyTS",
+    "type": "tool",
+    "callID": "call_981098f0ac508591",
+    "tool": "issue840_webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "url": "https://evidence.example.test/ru/unproven-medicine"
+      },
+      "time": {
+        "start": 1784946392113
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.119Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1784946392119,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "part": {
+    "id": "prt_f97187c2e0018FyF6cf2JO8iVK",
+    "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+    "messageID": "msg_f97187b19001Ob8IS3BKPbeyTS",
+    "type": "text",
+    "text": "Открою https://evidence.example.test/ru/unproven-medicine и прочитаю содержимое.",
+    "time": {
+      "start": 1784946392118,
+      "end": 1784946392118
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.120Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784946392120,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "part": {
+    "id": "prt_f97187c2f001k5EGw826Prl5wg",
+    "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+    "messageID": "msg_f97187b19001Ob8IS3BKPbeyTS",
+    "type": "tool",
+    "callID": "call_981098f0ac508591",
+    "tool": "issue840_webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "url": "https://evidence.example.test/ru/unproven-medicine"
+      },
+      "output": "Термин «фуфломицин» применяют к препаратам без надёжных доказательств эффективности; это не официальное фармакологическое название.",
+      "title": "",
+      "metadata": {},
+      "time": {
+        "start": 1784946392113,
+        "end": 1784946392119
+      },
+      "attachments": []
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-25T02:26:32.121Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 10764,
+    "output": 157,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 10764,
+  "sseCompletionTokens": 157,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.122Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784946392122,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "part": {
+    "id": "prt_f97187c39001YQq7ABN5UYSKKT",
+    "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+    "messageID": "msg_f97187b19001Ob8IS3BKPbeyTS",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 10764,
+      "output": 157,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 10921,
+      "headroom": 27935,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.122Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.123Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.128Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.128Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.150Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.150Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.150Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.150Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.151Z",
+  "service": "session.prompt",
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "finishReason": "unknown",
+  "zeroTokens": false,
+  "hint": "Provider returned undefined finishReason but made tool calls",
+  "message": "continuing loop despite unknown finish reason - tool calls detected"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.151Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.151Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.153Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.153Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 10921,
+  "providerTokens": 10921,
+  "estimatedInputTokens": 193,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 10764,
+    "cacheRead": 0,
+    "output": 157
+  },
+  "overflow": false,
+  "headroom": 40887,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.153Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.159Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.162Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.432Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784946392432,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "part": {
+    "id": "prt_f97187d69001RAaSV1F8sabLHH",
+    "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+    "messageID": "msg_f97187c5900174UqMHeulYPxd9",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.433Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.437Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784946392437,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "part": {
+    "id": "prt_f97187d71001TOa4EiCJyNw4p2",
+    "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+    "messageID": "msg_f97187c5900174UqMHeulYPxd9",
+    "type": "tool",
+    "callID": "call_8bbf9d7b1a22675c",
+    "tool": "issue840_webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.443Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784946392444,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "part": {
+    "id": "prt_f97187d71001TOa4EiCJyNw4p2",
+    "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+    "messageID": "msg_f97187c5900174UqMHeulYPxd9",
+    "type": "tool",
+    "callID": "call_8bbf9d7b1a22675c",
+    "tool": "issue840_webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "url": "https://language.example.test/ru/fuflomicin-usage"
+      },
+      "time": {
+        "start": 1784946392441
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.452Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1784946392452,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "part": {
+    "id": "prt_f97187d70001Eh0Vx87pU2g7BM",
+    "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+    "messageID": "msg_f97187c5900174UqMHeulYPxd9",
+    "type": "text",
+    "text": "Открою https://language.example.test/ru/fuflomicin-usage и прочитаю содержимое.",
+    "time": {
+      "start": 1784946392452,
+      "end": 1784946392452
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.453Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784946392453,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "part": {
+    "id": "prt_f97187d71001TOa4EiCJyNw4p2",
+    "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+    "messageID": "msg_f97187c5900174UqMHeulYPxd9",
+    "type": "tool",
+    "callID": "call_8bbf9d7b1a22675c",
+    "tool": "issue840_webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "url": "https://language.example.test/ru/fuflomicin-usage"
+      },
+      "output": "В разговорной речи слово «фуфломицин» выражает сомнение в доказательной базе и не определяет конкретное действующее вещество.",
+      "title": "",
+      "metadata": {},
+      "time": {
+        "start": 1784946392441,
+        "end": 1784946392453
+      },
+      "attachments": []
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-25T02:26:32.454Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 10975,
+    "output": 155,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 10975,
+  "sseCompletionTokens": 155,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.454Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784946392454,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "part": {
+    "id": "prt_f97187d86001HinrFlkN4BMX6l",
+    "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+    "messageID": "msg_f97187c5900174UqMHeulYPxd9",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 10975,
+      "output": 155,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 11130,
+      "headroom": 27726,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.455Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.455Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.460Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.460Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.504Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.505Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.505Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.505Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.508Z",
+  "service": "session.prompt",
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "finishReason": "unknown",
+  "zeroTokens": false,
+  "hint": "Provider returned undefined finishReason but made tool calls",
+  "message": "continuing loop despite unknown finish reason - tool calls detected"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.508Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.508Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.511Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.511Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 11130,
+  "providerTokens": 11130,
+  "estimatedInputTokens": 247,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 10975,
+    "cacheRead": 0,
+    "output": 155
+  },
+  "overflow": false,
+  "headroom": 40678,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.513Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.533Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.538Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.751Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784946392752,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "part": {
+    "id": "prt_f97187ead001MLvNWLURDG6Dg9",
+    "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+    "messageID": "msg_f97187dc00010C9FJzEB79WHOH",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.752Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.753Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1784946392753,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "part": {
+    "id": "prt_f97187eb0001Hff7s5gLZpcRus",
+    "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+    "messageID": "msg_f97187dc00010C9FJzEB79WHOH",
+    "type": "text",
+    "text": "Фуфломицин — разговорное неодобрительное название лекарства или метода лечения, клиническая эффективность которого не доказана.\n\nSource: https://dictionary.example.test/ru/fuflomicin\n\nТермин «фуфломицин» применяют к препаратам без надёжных доказательств эффективности; это не официальное фармакологическое название.\n\nSource: https://evidence.example.test/ru/unproven-medicine\n\nВ разговорной речи слово «фуфломицин» выражает сомнение в доказательной базе и не определяет конкретное действующее вещество.\n\nSource: https://language.example.test/ru/fuflomicin-usage",
+    "time": {
+      "start": 1784946392753,
+      "end": 1784946392753
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-25T02:26:32.755Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 11179,
+    "output": 561,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 11179,
+  "sseCompletionTokens": 561,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.755Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784946392755,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "part": {
+    "id": "prt_f97187eb3001OA1yf4xS58f430",
+    "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+    "messageID": "msg_f97187dc00010C9FJzEB79WHOH",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 11179,
+      "output": 561,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 11740,
+      "headroom": 27116,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.756Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.758Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.764Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.765Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.809Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.809Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.809Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.809Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.811Z",
+  "service": "session.prompt",
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.815Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.823Z",
+  "service": "session.prompt",
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.825Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.826Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1784946392826,
+  "sessionID": "ses_068e78f49ffevqE3sj3evFgSO6"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.826Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.827Z",
+  "service": "default",
+  "directory": "/tmp/tmp.elUat1xil2",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.830Z",
+  "service": "state",
+  "key": "/tmp/tmp.elUat1xil2",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.862Z",
+  "service": "state",
+  "key": "/tmp/tmp.elUat1xil2",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-25T02:26:32.862Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 5,
+  "message": "Agent exiting"
+}

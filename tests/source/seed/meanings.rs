@@ -945,3 +945,9 @@ pub fn lexicon() -> &'static Lexicon {
     static CACHE: OnceLock<Lexicon> = OnceLock::new();
     CACHE.get_or_init(|| parse_lexicon(&MEANING_FILES.join("\n")))
 }
+
+/// Parse an in-memory meaning-lexicon document into a [`Lexicon`].
+#[must_use]
+pub fn parse_lexicon_text(text: &str) -> Lexicon {
+    parse_lexicon(text)
+}

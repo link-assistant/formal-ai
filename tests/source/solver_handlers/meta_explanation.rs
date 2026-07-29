@@ -2,6 +2,7 @@ use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::seed::{self, response_for, Slot};
+use crate::skill_procedure::{extract_compiled_procedure_artifact, CompiledProcedure};
 
 use super::finalize_simple;
 use super::self_awareness::{
@@ -30,7 +31,12 @@ pub fn try_meta_explanation_with_runtime(
     }
     let language = meta_language(prompt, normalized);
     let body = if is_why_question {
-        why_explanation_body(language)
+        let mut body = why_explanation_body(language);
+        if let Some(procedure) = compiled_procedure_from_history(log) {
+            log.append("skill_compile:procedure", procedure.id.clone());
+            body.push_str(&cited_procedure_steps(&procedure, language));
+        }
+        body
     } else if is_architecture_question {
         architecture_explanation_body(language, runtime)
     } else {
@@ -76,6 +82,29 @@ fn why_explanation_body(language: &str) -> String {
              full chain.",
         ),
     }
+}
+
+/// Recover the most recent persisted artifact from an earlier assistant turn.
+///
+/// The original user prose is deliberately not recompiled: the explanation cites
+/// the exact integrity-checked program that was published and could be executed.
+fn compiled_procedure_from_history(log: &EventLog) -> Option<CompiledProcedure> {
+    log.events()
+        .iter()
+        .rev()
+        .filter(|event| event.kind == "prior_turn:assistant")
+        .find_map(|event| extract_compiled_procedure_artifact(&event.payload).ok())
+}
+
+/// Cite the compiled steps and the source sentence spans they were read from.
+fn cited_procedure_steps(procedure: &CompiledProcedure, language: &str) -> String {
+    let template = response_for("compiled_procedure_explanation", language)
+        .or_else(|| response_for("compiled_procedure_explanation", "en"))
+        .unwrap_or_default();
+    format!(
+        "\n\n{}",
+        template.replace("{steps}", &procedure.restate_steps())
+    )
 }
 
 /// True when the prompt asks the assistant to justify its previous answer.

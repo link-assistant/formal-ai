@@ -1,5 +1,4 @@
 name: CI/CD Pipeline
-
 on:
   push:
     branches:
@@ -28,7 +27,6 @@ on:
         description: 'Release description (optional)'
         required: false
         type: string
-
 permissions:
   contents: read
 
@@ -40,7 +38,6 @@ concurrency:
   # leave a release half-published. desktop-release.yml uses cancel-in-progress:
   # false for the same reason (issue #479).
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-
 env:
   GIT_CONFIG_COUNT: '1'
   GIT_CONFIG_KEY_0: init.defaultBranch
@@ -56,7 +53,6 @@ env:
   GHCR_IMAGE: ghcr.io/${{ github.repository }}
   # Optional: set repository variable DOCKERHUB_IMAGE to namespace/image to publish Docker Hub releases.
   DOCKERHUB_IMAGE: ${{ vars.DOCKERHUB_IMAGE }}
-
 jobs:
   # === DETECT CHANGES - determines which jobs should run ===
   detect-changes:
@@ -74,20 +70,16 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
-
       - name: Install rust-script
         run: bash scripts/install-rust-script.sh
-
       - name: Detect changes
         id: changes
         env:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_EVENT_BEFORE: ${{ github.event.before }}
         run: rust-script scripts/detect-code-changes.rs
-
   # === CHANGELOG CHECK - only runs on PRs with code changes ===
   # Docs-only PRs (./docs folder, markdown files) don't require changelog fragments
   changelog:
@@ -100,18 +92,14 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
-
       - name: Install rust-script
         run: bash scripts/install-rust-script.sh
-
       - name: Check for changelog fragments
         env:
           GITHUB_BASE_REF: ${{ github.base_ref }}
         run: rust-script scripts/check-changelog-fragment.rs
-
   # === SELF-HOSTING EVIDENCE CHECK ===
   # Issue #808: run 29723467001 failed the whole Auto Release job with
   # "no committed Formal-AI-Evidence in 10e65ae2 records session
@@ -130,13 +118,10 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
-
       - name: Install rust-script
         run: bash scripts/install-rust-script.sh
-
       - name: Validate Formal-AI trailers on this pull request
         env:
           GITHUB_BASE_REF: ${{ github.base_ref }}
@@ -146,23 +131,12 @@ jobs:
           merge_base="$(git merge-base "$base" HEAD)"
           echo "Validating commits in ${merge_base}..HEAD"
           rust-script scripts/self-hosting-metric.rs --since "$merge_base" --until HEAD
-
-      # Issue #812: `Auto Release` died on main with "self-hosting ratchet would
-      # fall from 32.68% to 18.24% for v0.301.0" -- after every contributing
-      # commit was already immutable, and while the only way to move the measured
-      # range forward (cutting a tag) was what it blocked. Enforcement belongs
-      # here, where the commits can still be amended. The check is differential:
-      # it compares the release share projected *with* this branch against the
-      # one projected for the base alone, so a regression already on main cannot
-      # block unrelated pull requests.
-      - name: Check the self-hosting ratchet against the merge base
-        env:
-          GITHUB_BASE_REF: ${{ github.base_ref }}
-        run: |
-          set -euo pipefail
-          base="origin/${GITHUB_BASE_REF}"
-          rust-script scripts/self-hosting-metric.rs --check-ratchet "$base" --until HEAD
-
+      # Issue #846: do not enforce the percentage ratchet on pull requests.
+      # CONTRIBUTING.md permits honest 0% releases and explicitly forbids adding
+      # Formal-AI trailers to human-authored or manually corrected work. A
+      # percentage gate made those valid contributions impossible to merge.
+      # The validation above remains strict for commits that claim Formal AI
+      # authorship; release recording still reports the measured percentage.
   # === DOCKER IMAGE CHECK ===
   # Issue #808: the Dockerfile was only ever built inside `auto-release` /
   # `manual-release`, i.e. after the crate had already been published to
@@ -182,16 +156,13 @@ jobs:
     if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
     steps:
       - uses: actions/checkout@v6
-
       # Same "No space left on device" class of failure the release job guards
       # against (issue #523): a full release build inside the image on top of a
       # multi-GB DinD base image does not fit on a stock runner.
       - name: Free up runner disk space
         run: bash scripts/free-runner-disk.sh
-
       - name: Set up Docker Buildx
         uses: ./.github/actions/setup-buildx-resilient
-
       # load: true (not push) so the image stays local and the check works
       # unchanged for pull requests from forks, which have no registry
       # credentials. The GHA layer cache keeps the common case off a cold build.
@@ -204,7 +175,6 @@ jobs:
           tags: formal-ai:pr-check
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
       # --privileged is required: verify-docker-runtime.sh asserts that the
       # inner Docker daemon started by the DinD entrypoint is reachable, which
       # is the whole point of the dind image variant.
@@ -212,7 +182,6 @@ jobs:
         run: |
           set -euo pipefail
           docker run --rm --privileged formal-ai:pr-check verify-formal-ai-dind
-
   # === SECRETS SCAN ===
   # Issue #808 / R5 (CI-CD-BEST-PRACTICES.md section 11): no secrets scan
   # existed anywhere in this pipeline. secretlint is language-agnostic, so it
@@ -233,7 +202,6 @@ jobs:
     needs: [detect-changes]
     if: |
       !cancelled() && (
-        github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.docs-changed == 'true' ||
@@ -244,19 +212,16 @@ jobs:
         with:
           # check-secrets.sh diffs against the base branch / previous commit.
           fetch-depth: 0
-
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
           node-version: 22
-
       - name: Check for secrets
         env:
           # pull_request -> base branch; push -> the pre-push SHA;
           # workflow_dispatch has neither, so scan the tip commit.
           BASE_REF: ${{ github.base_ref || github.event.before || 'HEAD~1' }}
         run: bash scripts/check-secrets.sh
-
   # === VERSION CHECK - prevents manual version modification in PRs ===
   # This ensures versions are only modified by the automated release pipeline
   version-check:
@@ -268,20 +233,16 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
-
       - name: Install rust-script
         run: bash scripts/install-rust-script.sh
-
       - name: Check for manual version changes
         env:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_HEAD_REF: ${{ github.head_ref }}
           GITHUB_BASE_REF: ${{ github.base_ref }}
         run: rust-script scripts/check-version-modification.rs
-
   # === LINT AND FORMAT CHECK ===
   # Lint runs independently of changelog check - it's a fast check that should always run
   # See: https://github.com/link-assistant/hive-mind/pull/1024 for why this dependency was removed
@@ -300,7 +261,6 @@ jobs:
     # See: https://github.com/actions/runner/issues/491
     if: |
       !cancelled() && (
-        github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
@@ -330,6 +290,8 @@ jobs:
           components: rustfmt, clippy
           targets: wasm32-unknown-unknown
 
+      - uses: ./.github/actions/setup-sccache
+
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
@@ -344,7 +306,6 @@ jobs:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-
@@ -399,7 +360,7 @@ jobs:
       # (issue #812). The tree is clippy-clean at the time this was added, so
       # this promotes existing behaviour rather than introducing new failures.
       - name: Run Clippy
-        run: cargo clippy --all-targets --all-features -- -D warnings
+        run: cargo clippy --lib --bins --tests --all-features -- -D warnings && cargo check --examples --all-features
 
       # rustdoc-only lints are not exercised by rustc, clippy, or doctests.
       # Build the same public API docs deployed by Pages before release so a
@@ -439,6 +400,9 @@ jobs:
       # docs/design/no-hardcoded-natural-language.md.
       - name: Check hardcoded natural language
         run: rust-script scripts/check-hardcoded-language.rs
+
+      - name: Check development disk policy
+        run: rust-script scripts/check-disk-usage-policy.rs
 
       - name: Check worker JS line budget
         run: rust-script scripts/check-worker-line-budget.rs
@@ -579,7 +543,6 @@ jobs:
     # See: https://github.com/actions/runner/issues/491
     if: |
       !cancelled() && (
-        github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
@@ -606,29 +569,28 @@ jobs:
           BASE_REF: ${{ github.base_ref }}
         run: bash scripts/simulate-fresh-merge.sh
 
+      # Run 30087447926 exhausted `/` after restoring the target-heavy cache;
+      # reuse the cleanup already required by the other heavy build jobs.
+      - name: Free up runner disk space
+        run: bash scripts/free-runner-disk.sh
+
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
-      # Restore the cargo cache here, but leave cache writes to the lint/build
-      # jobs. This test job runs close to its timeout after the full suite, and
-      # saving a target-heavy cache in post-job cleanup can cancel an otherwise
-      # successful run.
+      - uses: ./.github/actions/setup-sccache
+
+      # Cache downloaded sources, but never restore the branch-dependent target
+      # tree. sccache reuses compiler outputs without retaining stale test
+      # binaries and multi-GiB incremental directories.
       - name: Restore cargo registry cache
         uses: actions/cache/restore@v5
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-
-
-      # The shared target cache can retain binaries for test files removed on
-      # another branch. Rebuild this package's artifacts while preserving its
-      # cached dependencies so Cargo never executes an orphaned test binary.
-      - name: Clean stale package test artifacts
-        run: cargo clean -p formal-ai
 
       - name: Check LiNo data integrity
         run: cargo test --test unit data_files -- --nocapture
@@ -656,7 +618,7 @@ jobs:
         run: |
           set -euo pipefail
           started=$SECONDS
-          cargo test --all-features --verbose
+          cargo test --lib --bins --tests --all-features --verbose
           elapsed=$((SECONDS - started))
           threshold=$((TEST_BUDGET_SECONDS * TEST_WARN_RATIO_PERCENT / 100))
           printf 'Test suite took %ss of the %ss job budget.\n' \
@@ -681,7 +643,6 @@ jobs:
     needs: [detect-changes]
     if: |
       !cancelled() && (
-        github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
         needs.detect-changes.outputs.toml-changed == 'true'
@@ -694,13 +655,14 @@ jobs:
         with:
           components: llvm-tools-preview
 
+      - uses: ./.github/actions/setup-sccache
+
       - name: Cache cargo registry
         uses: actions/cache@v5
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            target
           key: ${{ runner.os }}-cargo-coverage-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-coverage-
@@ -760,6 +722,8 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
+      - uses: ./.github/actions/setup-sccache
+
       - name: Install rust-script
         run: bash scripts/install-rust-script.sh
 
@@ -769,7 +733,6 @@ jobs:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            target
           key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-build-
@@ -1341,7 +1304,6 @@ jobs:
     needs: [detect-changes]
     if: |
       !cancelled() && (
-        github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true'
       )
@@ -1430,18 +1392,23 @@ jobs:
     needs: [detect-changes]
     if: |
       !cancelled() && (
-        github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
         needs.detect-changes.outputs.toml-changed == 'true' ||
         needs.detect-changes.outputs.workflow-changed == 'true'
       )
+    env:
+      # Keep every real Agent invocation inside this required gate local. Some
+      # issue-specific scripts do not pass the CLI's no-summary flag directly.
+      LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: "false"
     steps:
       - uses: actions/checkout@v6
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
+
+      - uses: ./.github/actions/setup-sccache
 
       - name: Cache cargo registry
         uses: actions/cache@v5
@@ -1449,7 +1416,6 @@ jobs:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            target
           key: ${{ runner.os }}-cargo-agentcli-e2e-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-agentcli-e2e-
@@ -1493,10 +1459,13 @@ jobs:
       - name: Run agent CLI E2E — tomato meaning (search → fetch → write → verify)
         # Distinct port per step to avoid collisions if a runner is shared.
         # Canary: the Russian plural `томаты`, previously missing from `томат`.
+        # Search/fetch stay real client-executed MCP turns, backed by the cached
+        # Wikidata documents rather than Agent's availability-sensitive Exa tool.
         env:
           PORT: 8768
           EXPECT_FILE: meanings-tomato-detail.lino
           EXPECT_TEXT: томаты
+          RESEARCH_MCP_FIXTURE: experiments/agent_cli_e2e/mock-meaning-mcp.mjs
         run: experiments/agent_cli_e2e/run_agent_cli.sh
 
       - name: Run agent CLI E2E — potato meaning (different wording, same recipe)
@@ -1507,6 +1476,7 @@ jobs:
           TASK: "Please make the potato word and meaning richer — record the singular/plural of each surface, add the missing plural form potatoes, and keep it grounded in Wikidata."
           EXPECT_FILE: meanings-potato-detail.lino
           EXPECT_TEXT: potatoes
+          RESEARCH_MCP_FIXTURE: experiments/agent_cli_e2e/mock-meaning-mcp.mjs
         run: experiments/agent_cli_e2e/run_agent_cli.sh
 
       - name: Run agent CLI E2E — generated diagrams (non-lexeme axis, no web step)
@@ -1648,11 +1618,20 @@ jobs:
       - name: "Run agent CLI E2E — filed report stays readable and bounded (issue #771)"
         # The reported session answered a question from a whole scraped page and
         # then filed it, producing a 51KB issue whose transcript escaped its own
-        # markdown. Asserts over the real transport that every turn stays inside
-        # an attributed block and the body fits GitHub's issue size limit.
+        # markdown. Asserts over the real transport that the context stays in a
+        # LiNo fence and the body fits GitHub's issue size limit.
         env:
           PORT: 8781
         run: experiments/agent_cli_e2e/run_issue_771.sh
+
+      - name: "Run agent CLI E2E — confirmed complete-context reports (issue #822)"
+        # The first two turns must only ask for destination and included logs;
+        # the third executes a PATH-local fake gh and validates the full Lino
+        # context obtained from the matching server conversation.
+        timeout-minutes: 10
+        env:
+          PORT: 8783
+        run: experiments/agent_cli_e2e/run_issue_822.sh
 
       - name: "Run four-client E2E — narrated compatibility research (issue #781)"
         # The exact reported marketplace question drives Agent, OpenCode,
@@ -1662,6 +1641,38 @@ jobs:
         env:
           PORT: 8783
         run: experiments/agent_cli_e2e/run_issue_781.sh
+
+      - name: "Run real-client + TUI E2E — grounded action recipe (issues #819/#840)"
+        timeout-minutes: 15
+        env:
+          PORT: 8784
+          ARTIFACT_DIR: /tmp/formal-ai-tui-artifacts/path-discovery
+        run: experiments/agent_cli_e2e/run_issue_840.sh
+
+      - name: "Run agent CLI E2E — learn stable TUI replay contracts (issue #841)"
+        timeout-minutes: 5
+        env: { PORT: 8795, OBSERVATIONS: /tmp/formal-ai-tui-artifacts/path-discovery/local-search/tui-contract-observations.jsonl, OUT: /tmp/formal-ai-tui-artifacts/tui-contract-learning, GENERATE_EXPECTED: 1 }
+        run: experiments/agent_cli_e2e/run_issue_841_tui_learning.sh
+      - name: "Run reference differential gate — grounded action recipe (issue #840)"
+        # Third-party free-model runs are recorded rather than repeated here:
+        # live quota exhaustion is INCONCLUSIVE, not a model failure. This step
+        # reruns Formal AI's 24-node real-server ladder and checks its raw local
+        # transcript against the best conclusive reference run, including the
+        # widening procedure, command simplicity, kind check, and PEM decoy.
+        timeout-minutes: 5
+        env:
+          PORT: 8785
+        run: experiments/issue_840_reference_agents/run_differential_gate.sh
+
+      - name: "Run OpenCode TUI E2E — report multiselect and issue body (issue #838)"
+        timeout-minutes: 3
+        env: { PORT: 8804, ARTIFACT_DIR: /tmp/formal-ai-tui-artifacts/report-flow }
+        run: experiments/agent_cli_e2e/run_issue_819_report_tui.sh
+
+      - name: "Run OpenCode TUI E2E — representative task-ladder node (issue #840)"
+        timeout-minutes: 3
+        env: { PORT: 8805, MODE: tui, ONLY: 838.L1, OUT: /tmp/formal-ai-tui-artifacts/task-ladder-results.json, TUI_ARTIFACT_DIR: /tmp/formal-ai-tui-artifacts/task-ladder, REQUIRE_ALL_PASS: 1 }
+        run: experiments/issue_840_task_ladder/run_ladder.sh
 
       - name: "Run agent CLI E2E — auto-learning across two harnesses (issue #715)"
         # The derived report names its own promotion gate
@@ -1715,6 +1726,14 @@ jobs:
           PORT: 8885
         run: experiments/agent_cli_e2e/run_issue_663_learning.sh
 
+      - name: "Run agent CLI E2E — client-contract auto-learning (issue #671)"
+        # The real Agent CLI asks Formal AI to derive the human-gated client
+        # contract proposals, write the exact command output, and verify it.
+        timeout-minutes: 5
+        env:
+          PORT: 8886
+        run: experiments/agent_cli_e2e/run_issue_671_contract_learning.sh
+
       - name: "Run agent CLI E2E — repository statement audit (issue #661)"
         # The real Agent CLI delegates the repository scan to the public release
         # binary in its own workspace, then consumes the command result before
@@ -1741,6 +1760,10 @@ jobs:
             /tmp/formal-ai-serve-*.log
             /tmp/agent-out-*.log
           retention-days: 7
+      - name: Upload TUI transcripts and replay artifacts
+        if: always()
+        uses: actions/upload-artifact@v7
+        with: { name: agent-cli-tui-replays, path: /tmp/formal-ai-tui-artifacts, if-no-files-found: ignore, retention-days: 7 }
 
   # === DEPLOY WEB APP ===
   # Deploy the production web app from src/web/ to GitHub Pages after a successful build.
@@ -1813,7 +1836,7 @@ jobs:
 
       # IMPORTANT (issue #523): cache only the downloaded crate sources, NOT the
       # `target/` directory. The other Rust jobs (notably `lint`, which runs
-      # `cargo clippy --all-targets --all-features`) share the same cache key and
+      # the repository's targeted Clippy and example checks share the same cache key and
       # populate `target/` with a multi-gigabyte debug tree. Restoring that here
       # on top of the web bundle and then running `cargo doc` exhausted the
       # runner disk. `cargo doc --no-deps --lib` rebuilds its own (much smaller)

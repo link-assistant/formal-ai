@@ -361,13 +361,13 @@ function extractEnumerationResearchRequest(prompt, normalized) {
 
 function extractWebSearchRequest(prompt, normalized) {
   if (
+    (["local_path_scope_desktop", "local_path_scope_home", "local_path_scope_current"].some((role) => lexiconMentionsRole(role, normalized)) &&
+      ["local_path_search_action", "local_path_list_action", "local_path_contents_request", "local_path_type_request", "local_path_route_question"].some((role) => lexiconMentionsRole(role, normalized) || roleWordForms(role).some((form) => surfacePresent(normalized, normalizePrompt(form.before || form.after))))) ||
     normalized.startsWith("search conversations ") ||
     normalized.startsWith("search my conversations ") ||
     normalized.startsWith("search my chats ") ||
     isPersonalFactFilterRequest(normalized)
-  ) {
-    return "";
-  }
+  ) return "";
   const explicitQuery =
     extractExplicitWebSearchQuery(prompt) || extractExplicitWebSearchQuery(normalized);
   if (explicitQuery) {

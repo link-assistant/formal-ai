@@ -209,17 +209,28 @@ impl SourceTier {
         }
     }
 
+    /// The trust weight as an integer percentage.
+    ///
+    /// Ranking code uses this form so authority-weighted ordering stays integer
+    /// and byte-for-byte reproducible. [`Self::weight`] exposes the same values
+    /// on the probability scale.
+    #[must_use]
+    pub const fn weight_percent(self) -> u8 {
+        match self {
+            Self::OriginalFirstParty => 100,
+            Self::OriginalJournalism => 85,
+            Self::IndependentCorroboration => 50,
+            Self::Unoriginal => 0,
+        }
+    }
+
     /// The trust weight in `[0, 1]` this tier lends to a piece of evidence.
     /// [`Self::Unoriginal`] is exactly `0`, so unoriginal content never moves a
     /// statement's probability.
     #[must_use]
+    #[allow(clippy::cast_lossless)]
     pub const fn weight(self) -> f64 {
-        match self {
-            Self::OriginalFirstParty => 1.0,
-            Self::OriginalJournalism => 0.85,
-            Self::IndependentCorroboration => 0.5,
-            Self::Unoriginal => 0.0,
-        }
+        self.weight_percent() as f64 / 100.0
     }
 
     /// Whether this tier is an *original first* source that should be trusted at

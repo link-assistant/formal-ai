@@ -37,13 +37,16 @@
 //! decimal grid so the trace is byte-for-byte reproducible.
 
 use std::collections::{BTreeMap, BTreeSet};
-use std::fmt::Write as _;
+use std::error::Error;
+use std::fmt::{self, Write as _};
 
 use crate::engine::stable_id;
+use crate::formal_system::FormalSystem;
 use crate::relative_meta_logic::{
     RelativeEvidence, SourceTier, Stance, StatementAssessment, TruthValue, ASSUMED_TRUE_PRIOR,
 };
 use crate::substitution::{SubstitutionGraph, SubstitutionLink};
+use crate::world_model_cycles::collapse_truth_cycle;
 
 /// Upper bound on relaxation passes in [`Context::recalculate`].
 ///
@@ -54,6 +57,11 @@ use crate::substitution::{SubstitutionGraph, SubstitutionLink};
 /// dependency cycle (a statement whose dependency contradicts it), which can
 /// oscillate rather than settle. It is multiplied by the statement count so a
 /// deep dependency chain still relaxes fully before the guard trips.
+///
+/// A cycle that repeats a visited state exactly never reaches this guard:
+/// [`Context::recalculate`] collapses it to the mean of the cycle. The guard
+/// still catches the slow case — a cycle that spirals towards its fixpoint
+/// without ever revisiting a state.
 const MAX_RECALCULATION_PASSES_PER_STATEMENT: usize = 4;
 
 /// How one statement depends on another inside a context.
@@ -219,6 +227,8 @@ impl Action {
 pub struct Context {
     /// The context id.
     pub id: String,
+    /// Named truth scope for every statement probability in this context.
+    formal_system: FormalSystem,
     /// The world-state links network (STRIPS atoms).
     links: SubstitutionGraph,
     /// The dependent statements, keyed by id for stable iteration and merge.
@@ -229,11 +239,30 @@ impl Context {
     /// An empty context with the given id.
     #[must_use]
     pub fn new(id: impl Into<String>) -> Self {
+        let id = id.into();
         Self {
-            id: id.into(),
+            formal_system: FormalSystem::new(id.clone()),
+            id,
             links: SubstitutionGraph::new(),
             statements: BTreeMap::new(),
         }
+    }
+
+    /// Create a context explicitly scoped to `formal_system`.
+    #[must_use]
+    pub fn with_formal_system(id: impl Into<String>, formal_system: FormalSystem) -> Self {
+        Self {
+            id: id.into(),
+            formal_system,
+            links: SubstitutionGraph::new(),
+            statements: BTreeMap::new(),
+        }
+    }
+
+    /// The named formal system relative to which probabilities are calculated.
+    #[must_use]
+    pub const fn formal_system(&self) -> &FormalSystem {
+        &self.formal_system
     }
 
     /// Assert a world-state atom (a link). Returns `true` if newly added.
@@ -296,6 +325,39 @@ impl Context {
         self.recalculate()
     }
 
+    /// Apply a deterministic batch of fact-check evidence and remove rejected
+    /// source labels, then recalculate the context once.
+    pub(crate) fn apply_fact_check_evidence(
+        &mut self,
+        evidence: &BTreeMap<String, Vec<RelativeEvidence>>,
+        rejected: &BTreeMap<String, BTreeSet<String>>,
+    ) -> RecalculationReport {
+        for (id, statement) in &mut self.statements {
+            if let Some(labels) = rejected.get(id) {
+                statement
+                    .evidence
+                    .retain(|item| !labels.contains(&item.source_label));
+            }
+            if let Some(additions) = evidence.get(id) {
+                for addition in additions {
+                    if let Some(existing) = statement
+                        .evidence
+                        .iter_mut()
+                        .find(|item| item.source_label == addition.source_label)
+                    {
+                        *existing = addition.clone();
+                    } else {
+                        statement.evidence.push(addition.clone());
+                    }
+                }
+                statement
+                    .evidence
+                    .sort_by(|left, right| left.source_label.cmp(&right.source_label));
+            }
+        }
+        self.recalculate()
+    }
+
     /// Re-evaluate every statement to a fixpoint (JTMS-style cascade).
     ///
     /// Each pass recomputes every statement's [`TruthValue`] from its own
@@ -305,6 +367,10 @@ impl Context {
     /// changes (converged) or the `MAX_RECALCULATION_PASSES_PER_STATEMENT`
     /// bound trips. The dependency structure is mirrored into the links network
     /// so the context stays a single inspectable graph.
+    ///
+    /// Repeated states are collapsed to their mean, then verified with one more
+    /// assessment pass. This settles exact negative-feedback oscillations at
+    /// maximal uncertainty instead of returning an arbitrary half-cycle.
     pub fn recalculate(&mut self) -> RecalculationReport {
         let ids: Vec<String> = self.statements.keys().cloned().collect();
         let before: BTreeMap<String, TruthValue> = ids
@@ -318,15 +384,34 @@ impl Context {
 
         let mut iterations = 0;
         let mut converged = false;
+        let mut visited: Vec<BTreeMap<String, TruthValue>> = Vec::new();
+        let mut checked_links = Vec::new();
         while iterations < limit {
             iterations += 1;
             let snapshot: BTreeMap<String, TruthValue> = ids
                 .iter()
                 .map(|id| (id.clone(), self.statements[id].truth))
                 .collect();
+            if let Some(start) = visited.iter().position(|seen| *seen == snapshot) {
+                converged = self.collapse_cycle(&ids, &visited[start..]);
+                break;
+            }
+            visited.push(snapshot.clone());
             let mut changed = false;
             for id in &ids {
                 let recomputed = self.assess_with_dependencies(id, &snapshot);
+                for dependency in &self.statements[id].dependencies {
+                    if let Some(dependency_truth) = snapshot.get(&dependency.on) {
+                        checked_links.push(RecalculatedLink {
+                            iteration: iterations,
+                            statement_id: id.clone(),
+                            depends_on: dependency.on.clone(),
+                            stance: dependency.stance,
+                            dependency_truth: *dependency_truth,
+                            result: recomputed,
+                        });
+                    }
+                }
                 if recomputed != self.statements[id].truth {
                     if let Some(statement) = self.statements.get_mut(id) {
                         statement.truth = recomputed;
@@ -360,7 +445,24 @@ impl Context {
             iterations,
             converged,
             updated,
+            checked_links,
         }
+    }
+
+    /// Settle an oscillating cascade on the mean of the cycle it fell into.
+    ///
+    /// Returns whether one further pass leaves the cycle's mean unchanged.
+    fn collapse_cycle(&mut self, ids: &[String], cycle: &[BTreeMap<String, TruthValue>]) -> bool {
+        let Some(collapsed) = collapse_truth_cycle(ids, cycle) else {
+            return false;
+        };
+        for (id, value) in &collapsed {
+            if let Some(statement) = self.statements.get_mut(id) {
+                statement.truth = *value;
+            }
+        }
+        ids.iter()
+            .all(|id| self.assess_with_dependencies(id, &collapsed) == collapsed[id])
     }
 
     /// Assess one statement from its own evidence plus the current truth values
@@ -394,7 +496,7 @@ impl Context {
     fn sync_statement_links(&mut self) {
         // Drop stale statement-layer links, then re-emit from the current state.
         for link in self.links.links() {
-            if is_statement_layer_link(&link) {
+            if is_derived_statement_link(&link) {
                 self.links.remove_link(&link.from, &link.to);
             }
         }
@@ -506,7 +608,7 @@ impl Context {
     /// two contexts can then diverge independently. Unknown ids are ignored.
     #[must_use]
     pub fn split_off(&self, child_id: impl Into<String>, statement_ids: &[String]) -> Self {
-        let mut child = Self::new(child_id);
+        let mut child = Self::with_formal_system(child_id, self.formal_system.clone());
         let selected: BTreeSet<&String> = statement_ids
             .iter()
             .filter(|id| self.statements.contains_key(*id))
@@ -563,7 +665,22 @@ impl Context {
 
 /// Whether a link belongs to the statement bookkeeping layer rather than the
 /// world state, so diffs and merges can operate on state atoms alone.
+///
+/// The layer has two halves: links [`Context::recalculate`] derives itself (see
+/// [`is_derived_statement_link`]) and links a caller attaches to a statement —
+/// the `provenance:` trail back to the dialogue turn that asserted it and the
+/// `asserts:` pointer to the state atom it produced (issue #702). Both halves
+/// are bookkeeping, so neither ever shows up in a state difference; only the
+/// derived half is regenerated on every recalculation.
 fn is_statement_layer_link(link: &SubstitutionLink) -> bool {
+    is_derived_statement_link(link)
+        || link.to.starts_with("provenance:")
+        || link.to.starts_with("asserts:")
+}
+
+/// Whether a link is one [`Context::sync_statement_links`] regenerates from the
+/// statements themselves, and must therefore sweep before re-emitting.
+fn is_derived_statement_link(link: &SubstitutionLink) -> bool {
     link.to == "world:statement"
         || link.to.starts_with("truth:")
         || link.to.starts_with("supports:")
@@ -580,6 +697,25 @@ pub struct RecalculationReport {
     pub converged: bool,
     /// The statements whose truth value moved during this recalculation.
     pub updated: Vec<StatementChange>,
+    /// Every dependency edge consulted, in deterministic pass/order sequence.
+    pub checked_links: Vec<RecalculatedLink>,
+}
+
+/// One dependency edge consulted during a JTMS recalculation pass.
+#[derive(Debug, Clone, PartialEq)]
+pub struct RecalculatedLink {
+    /// One-based relaxation pass.
+    pub iteration: usize,
+    /// Dependent statement whose value was recalculated.
+    pub statement_id: String,
+    /// Statement supplying the dependency truth value.
+    pub depends_on: String,
+    /// Whether the dependency supports or contradicts the dependent.
+    pub stance: Stance,
+    /// Dependency value read during this pass.
+    pub dependency_truth: TruthValue,
+    /// Recalculated value produced for the dependent.
+    pub result: TruthValue,
 }
 
 /// One statement's probability moving from `before` to `after`.
@@ -673,6 +809,59 @@ impl Prediction {
     }
 }
 
+/// Append-only event kinds for the current/general context boundary.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ContextAccessEventKind {
+    /// A user explicitly approved general-memory access.
+    PermissionGranted,
+    /// General-memory access was considered without approval.
+    PermissionDenied,
+    /// A permission token was used to read/audit general memory.
+    GeneralContextRead,
+    /// Current-dialogue knowledge was committed to general memory.
+    CurrentCommitted,
+}
+
+/// An append-only record of a permission decision or boundary crossing.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ContextAccessEvent {
+    /// Zero-based append sequence.
+    pub sequence: usize,
+    /// Event kind.
+    pub kind: ContextAccessEventKind,
+    /// Stable permission id when a grant exists.
+    pub permission_id: Option<String>,
+    /// Caller-supplied purpose/reason retained in the trace.
+    pub reason: String,
+}
+
+/// Whether dialogue-local state may be promoted into shared general memory.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum GeneralMemoryPermission {
+    /// Keep dialogue state confined to its current context.
+    Denied,
+    /// Permit an explicit promotion into shared general memory.
+    Allowed,
+}
+
+/// A rejected attempt to cross the dialogue-to-general-memory boundary.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum GeneralMemoryCommitError {
+    PermissionDenied,
+}
+
+impl fmt::Display for GeneralMemoryCommitError {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::PermissionDenied => {
+                formatter.write_str("general-memory promotion requires explicit permission")
+            }
+        }
+    }
+}
+
+impl Error for GeneralMemoryCommitError {}
+
 /// The per-dialogue world model: a `current` context, a `target` context, and a
 /// shared `general` context that per-dialogue contexts merge into.
 ///
@@ -688,7 +877,9 @@ pub struct WorldModel {
     /// The target state the user wants.
     pub target: Context,
     /// The shared world model per-dialogue contexts merge into.
-    pub general: Context,
+    general: Context,
+    /// Append-only permission/crossing trace.
+    context_access_events: Vec<ContextAccessEvent>,
 }
 
 impl WorldModel {
@@ -699,6 +890,7 @@ impl WorldModel {
             current: Context::new("current"),
             target: Context::new("target"),
             general: Context::new("general"),
+            context_access_events: Vec::new(),
         }
     }
 
@@ -724,9 +916,85 @@ impl WorldModel {
         self.difference().is_empty()
     }
 
+    /// Read the shared context without exposing a mutation path around the
+    /// dialogue-to-general permission gate.
+    #[must_use]
+    pub const fn general(&self) -> &Context {
+        &self.general
+    }
+
     /// Merge the current dialogue context into the shared general world model
-    /// (ATMS context combination), returning the recalculation report.
-    pub fn commit_current_to_general(&mut self) -> RecalculationReport {
-        self.general.merge_from(&self.current)
+    /// (ATMS context combination) only when the caller explicitly permits that
+    /// boundary crossing.
+    pub fn commit_current_to_general(
+        &mut self,
+        permission: GeneralMemoryPermission,
+    ) -> Result<RecalculationReport, GeneralMemoryCommitError> {
+        let reason = "current-to-general-memory commit";
+        let permission_id = self.record_general_memory_permission(permission, reason)?;
+        let report = self.general.merge_from(&self.current);
+        self.push_context_access_event(
+            ContextAccessEventKind::CurrentCommitted,
+            Some(permission_id),
+            reason,
+        );
+        Ok(report)
+    }
+
+    /// Append-only permission and boundary-crossing trace.
+    #[must_use]
+    pub fn context_access_events(&self) -> &[ContextAccessEvent] {
+        &self.context_access_events
+    }
+
+    /// Permissioned mutable access used by whole-memory fact-check operations.
+    pub(crate) fn general_context_for_audit(
+        &mut self,
+        permission: GeneralMemoryPermission,
+    ) -> Result<&mut Context, GeneralMemoryCommitError> {
+        let reason = "fact-check general-memory audit";
+        let permission_id = self.record_general_memory_permission(permission, reason)?;
+        self.push_context_access_event(
+            ContextAccessEventKind::GeneralContextRead,
+            Some(permission_id),
+            reason,
+        );
+        Ok(&mut self.general)
+    }
+
+    fn record_general_memory_permission(
+        &mut self,
+        permission: GeneralMemoryPermission,
+        reason: &str,
+    ) -> Result<String, GeneralMemoryCommitError> {
+        if permission == GeneralMemoryPermission::Denied {
+            self.push_context_access_event(ContextAccessEventKind::PermissionDenied, None, reason);
+            return Err(GeneralMemoryCommitError::PermissionDenied);
+        }
+        let sequence = self.context_access_events.len();
+        let permission_id = stable_id(
+            "general_memory_permission",
+            &format!("sequence:{sequence};reason:{reason}"),
+        );
+        self.push_context_access_event(
+            ContextAccessEventKind::PermissionGranted,
+            Some(permission_id.clone()),
+            reason,
+        );
+        Ok(permission_id)
+    }
+
+    fn push_context_access_event(
+        &mut self,
+        kind: ContextAccessEventKind,
+        permission_id: Option<String>,
+        reason: &str,
+    ) {
+        self.context_access_events.push(ContextAccessEvent {
+            sequence: self.context_access_events.len(),
+            kind,
+            permission_id,
+            reason: reason.to_owned(),
+        });
     }
 }

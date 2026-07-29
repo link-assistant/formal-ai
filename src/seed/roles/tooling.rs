@@ -91,6 +91,14 @@ pub const ROLE_LOCAL_SHELL_REQUEST_CUE: &str = "local_shell_request_cue";
 /// self-description. Carried by `tool_argument_marker`; read by the Rust
 /// natural-language-tool handler.
 pub const ROLE_TOOL_ARGUMENT_MARKER: &str = "tool_argument_marker";
+/// Semantic role: plain-text payloads that report a failed tool operation.
+///
+/// Some client-owned tools return a successful transport envelope whose text
+/// is only a provider denial, quota response, or other failure notice. These
+/// multilingual forms live in `data/seed/meanings-tool-access.lino`; result
+/// consumers query the role after normalizing the payload so failed operations
+/// cannot be mistaken for grounded evidence.
+pub const ROLE_TOOL_RESULT_FAILURE_SIGNAL: &str = "tool_result_failure_signal";
 /// Semantic role: a natural-language request to create a repository issue.
 ///
 /// Surface templates live in `data/seed/meanings-agent-actions.lino`; the
@@ -166,6 +174,16 @@ pub const ROLE_FILE_WRITE_ACTION_CUE: &str = "file_write_action_cue";
 /// so a *read* request ("show me the contents of …") is never mistaken for a
 /// write.
 pub const ROLE_FILE_WRITE_CONTENT_LEAD: &str = "file_write_content_lead";
+/// Semantic role: a reference to bytes produced by an explicitly requested
+/// command rather than literal prose to write.
+///
+/// Forms such as "stdout" and "command output" (plus translations) are carried
+/// by `file_write_command_output` in
+/// `data/seed/meanings-file-write.lino`. The general change planner combines
+/// this role with a seed-defined run verb, a quoted command, and a safe target
+/// path. That structural frame lowers "run COMMAND and write its output to
+/// FILE" to a shell redirect instead of writing the words "its output".
+pub const ROLE_FILE_WRITE_COMMAND_OUTPUT_REFERENCE: &str = "file_write_command_output_reference";
 /// Semantic role: a word that introduces or names the target file of a write
 /// (issue #680).
 ///
@@ -353,6 +371,30 @@ pub const ROLE_RESEARCH_CRITERION: &str = "research_criterion";
 /// additionally requires at most twelve whitespace words. Read only by the Rust
 /// summarization classifier (there is no JS worker mirror of that pipeline).
 pub const ROLE_SUMMARY_CLASSIFICATION_CUE: &str = "summary_classification_cue";
+/// Semantic role: a word that carries no content in a statement signature.
+///
+/// Articles, prepositions, copulas and coordinators — the words that differ
+/// between two phrasings of the same fact. Carried by `statement_function_word`
+/// in `data/seed/meanings-statement-merge.lino`, with surfaces for en/ru/hi/zh.
+/// The statement-level deduplicator of issue #844 reads them through
+/// [`crate::seed::Lexicon::words_for_role`] and drops matching *whole tokens*
+/// (never substrings, so "a" cannot hollow out "parser") before hashing a
+/// statement into its merge signature. Quantifiers are deliberately absent from
+/// the data: dropping "all"/"some" would merge "all tests pass" with "some tests
+/// pass". Read only by the Rust summarization deduplicator.
+pub const ROLE_STATEMENT_FUNCTION_WORD: &str = "statement_function_word";
+/// Semantic role: a word that flips the polarity of a statement.
+///
+/// Syntactic negation only ("not", "never", "without", "не", "नहीं", "不", …),
+/// carried by `statement_negation_cue` in
+/// `data/seed/meanings-statement-merge.lino`. The deduplicator removes matching
+/// whole tokens from a statement's terms and records the removal as
+/// `Polarity::Denied`, so "the parser is fast" and "the parser is not fast"
+/// reach the *same* signature with opposite signs and are reported as a
+/// contradiction rather than merged. Semantic near-misses ("fails", "false")
+/// stay out of the data: those belong to a statement's content, not its sign.
+/// Read only by the Rust summarization deduplicator.
+pub const ROLE_STATEMENT_NEGATION_CUE: &str = "statement_negation_cue";
 /// Semantic role: a surface that names one coding-catalog target language.
 ///
 /// Carried by the ten `program_language_<slug>` leaf meanings (rust, python,

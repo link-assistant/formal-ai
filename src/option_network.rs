@@ -56,6 +56,7 @@
 use std::collections::{BTreeMap, BTreeSet};
 
 use crate::links_format::format_lino_record;
+use crate::source_fetch::{CachedSourceClient, FetchError, SourceCapture, SourceTransport};
 use crate::world_model::{Context, ContextDiff};
 
 /// Scale for fixed-point quantities and prices: thousandths of a unit.
@@ -443,6 +444,27 @@ impl OptionNetwork {
             return;
         }
         self.candidates.push(candidate);
+    }
+
+    /// Fetch a source through the replayable cache, parse one candidate from
+    /// its exact bytes, and add that candidate to the network.
+    ///
+    /// Keeping the fetch and [`Self::observe`] in one operation prevents a
+    /// caller from claiming a live research observation when retrieval failed.
+    pub fn fetch_and_observe<T, F>(
+        &mut self,
+        client: &CachedSourceClient<T>,
+        url: &str,
+        parse: F,
+    ) -> Result<SourceCapture, FetchError>
+    where
+        T: SourceTransport,
+        F: FnOnce(&SourceCapture) -> Result<Candidate, FetchError>,
+    {
+        let capture = client.fetch(url)?;
+        let candidate = parse(&capture)?;
+        self.observe(candidate);
+        Ok(capture)
     }
 
     /// The subject being sourced.

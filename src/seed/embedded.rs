@@ -16,6 +16,14 @@ pub const INTERFACE_CAPABILITIES_LINO: &str =
     include_str!("../../data/seed/interface-capabilities.lino");
 pub const MULTILINGUAL_RESPONSES_LINO: &str =
     include_str!("../../data/seed/multilingual-responses.lino");
+pub const MULTILINGUAL_RESPONSES_AGENTIC_LINO: &str =
+    include_str!("../../data/seed/multilingual-responses-agentic.lino");
+pub const MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO: &str =
+    include_str!("../../data/seed/multilingual-responses-decomposition.lino");
+pub const MULTILINGUAL_RESPONSES_PROCEDURE_LINO: &str =
+    include_str!("../../data/seed/multilingual-responses-procedure.lino");
+pub const MULTILINGUAL_RESPONSES_SUMMARIZATION_LINO: &str =
+    include_str!("../../data/seed/multilingual-responses-summarization.lino");
 pub const CONCEPTS_LINO: &str = include_str!("../../data/seed/concepts.lino");
 pub const CONCEPT_CONTEXTS_LINO: &str = include_str!("../../data/seed/concept-contexts.lino");
 pub const FACTS_LINO: &str = include_str!("../../data/seed/facts.lino");
@@ -86,6 +94,8 @@ pub const MEANINGS_POLICY_LINO: &str = include_str!("../../data/seed/meanings-po
 pub const MEANINGS_DOCS_LINO: &str = include_str!("../../data/seed/meanings-docs.lino");
 pub const MEANINGS_SKILL_COMPILER_LINO: &str =
     include_str!("../../data/seed/meanings-skill-compiler.lino");
+pub const MEANINGS_SKILL_PROCEDURE_LINO: &str =
+    include_str!("../../data/seed/meanings-skill-procedure.lino");
 pub const MEANINGS_FINANCE_LINO: &str = include_str!("../../data/seed/meanings-finance.lino");
 pub const MEANINGS_DEFINITION_MERGE_LINO: &str =
     include_str!("../../data/seed/meanings-definition-merge.lino");
@@ -95,13 +105,19 @@ pub const MEANINGS_FEATURE_CAPABILITY_LINO: &str =
     include_str!("../../data/seed/meanings-feature-capability.lino");
 pub const MEANINGS_FILE_WRITE_LINO: &str = include_str!("../../data/seed/meanings-file-write.lino");
 pub const MEANINGS_FILE_EDIT_LINO: &str = include_str!("../../data/seed/meanings-file-edit.lino");
+pub const MEANINGS_DECOMPOSITION_LINO: &str =
+    include_str!("../../data/seed/meanings-decomposition.lino");
 pub const MEANINGS_AGENT_ACTIONS_LINO: &str =
     include_str!("../../data/seed/meanings-agent-actions.lino");
+pub const MEANINGS_LOCAL_SEARCH_LINO: &str =
+    include_str!("../../data/seed/meanings-local-search.lino");
 pub const MEANINGS_PLAYWRIGHT_LINO: &str = include_str!("../../data/seed/meanings-playwright.lino");
 pub const MEANINGS_RESEARCH_TABLE_LINO: &str =
     include_str!("../../data/seed/meanings-research-table.lino");
 pub const MEANINGS_CONVERSATION_LINO: &str =
     include_str!("../../data/seed/meanings-conversation.lino");
+pub const MEANINGS_STATEMENT_MERGE_LINO: &str =
+    include_str!("../../data/seed/meanings-statement-merge.lino");
 pub const MEANINGS_SUMMARY_LINO: &str = include_str!("../../data/seed/meanings-summary.lino");
 pub const MEANINGS_CODING_CATALOG_LINO: &str =
     include_str!("../../data/seed/meanings-coding-catalog.lino");
@@ -141,6 +157,22 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         (
             "data/seed/multilingual-responses.lino",
             MULTILINGUAL_RESPONSES_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-agentic.lino",
+            MULTILINGUAL_RESPONSES_AGENTIC_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-decomposition.lino",
+            MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-procedure.lino",
+            MULTILINGUAL_RESPONSES_PROCEDURE_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-summarization.lino",
+            MULTILINGUAL_RESPONSES_SUMMARIZATION_LINO,
         ),
         ("data/seed/concepts.lino", CONCEPTS_LINO),
         ("data/seed/concept-contexts.lino", CONCEPT_CONTEXTS_LINO),
@@ -251,6 +283,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             "data/seed/meanings-skill-compiler.lino",
             MEANINGS_SKILL_COMPILER_LINO,
         ),
+        (
+            "data/seed/meanings-skill-procedure.lino",
+            MEANINGS_SKILL_PROCEDURE_LINO,
+        ),
         ("data/seed/meanings-finance.lino", MEANINGS_FINANCE_LINO),
         (
             "data/seed/meanings-definition-merge.lino",
@@ -270,8 +306,16 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ),
         ("data/seed/meanings-file-edit.lino", MEANINGS_FILE_EDIT_LINO),
         (
+            "data/seed/meanings-decomposition.lino",
+            MEANINGS_DECOMPOSITION_LINO,
+        ),
+        (
             "data/seed/meanings-agent-actions.lino",
             MEANINGS_AGENT_ACTIONS_LINO,
+        ),
+        (
+            "data/seed/meanings-local-search.lino",
+            MEANINGS_LOCAL_SEARCH_LINO,
         ),
         (
             "data/seed/meanings-playwright.lino",
@@ -284,6 +328,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         (
             "data/seed/meanings-conversation.lino",
             MEANINGS_CONVERSATION_LINO,
+        ),
+        (
+            "data/seed/meanings-statement-merge.lino",
+            MEANINGS_STATEMENT_MERGE_LINO,
         ),
         ("data/seed/meanings-summary.lino", MEANINGS_SUMMARY_LINO),
         (
@@ -323,6 +371,20 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
     ]
 }
 
+/// The ordered set of multilingual-response files, walked by
+/// [`super::multilingual_responses`].
+///
+/// Split so neither breaches the seed file-size guard; each wraps its records
+/// under a top-level `multilingual_responses` node and the parser walks all of
+/// them, so an intent may live in whichever file keeps the sizes balanced.
+pub const RESPONSE_FILES: &[&str] = &[
+    MULTILINGUAL_RESPONSES_LINO,
+    MULTILINGUAL_RESPONSES_AGENTIC_LINO,
+    MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,
+    MULTILINGUAL_RESPONSES_PROCEDURE_LINO,
+    MULTILINGUAL_RESPONSES_SUMMARIZATION_LINO,
+];
+
 /// The ordered set of meaning-lexicon files, concatenated by [`super::lexicon`].
 ///
 /// Split across several `.lino` files so none breaches the seed file-size guard;
@@ -356,16 +418,20 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_POLICY_LINO,
     MEANINGS_DOCS_LINO,
     MEANINGS_SKILL_COMPILER_LINO,
+    MEANINGS_SKILL_PROCEDURE_LINO,
     MEANINGS_FINANCE_LINO,
     MEANINGS_DEFINITION_MERGE_LINO,
     MEANINGS_TOOL_ACCESS_LINO,
     MEANINGS_FEATURE_CAPABILITY_LINO,
     MEANINGS_FILE_WRITE_LINO,
     MEANINGS_FILE_EDIT_LINO,
+    MEANINGS_DECOMPOSITION_LINO,
     MEANINGS_AGENT_ACTIONS_LINO,
+    MEANINGS_LOCAL_SEARCH_LINO,
     MEANINGS_PLAYWRIGHT_LINO,
     MEANINGS_RESEARCH_TABLE_LINO,
     MEANINGS_CONVERSATION_LINO,
+    MEANINGS_STATEMENT_MERGE_LINO,
     MEANINGS_SUMMARY_LINO,
     MEANINGS_CODING_CATALOG_LINO,
     MEANINGS_LEXICON_IMPORT_01_LINO,

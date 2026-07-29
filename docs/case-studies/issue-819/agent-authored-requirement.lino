@@ -1,0 +1,4 @@
+requirement issue_819_local_path_search
+  local_path_search_before_web_search
+  supported_clients agent opencode claude codex
+  tui_frames_via_command_stream

@@ -10,6 +10,7 @@ use super::capability_router;
 pub(super) use super::capability_router::tool_for;
 use super::change_request;
 use super::code_artifact;
+use super::comparison;
 use super::conversation_recall;
 use super::diagram;
 use super::dreaming_audit;
@@ -19,13 +20,17 @@ use super::formalize::{
     coverage_line, formalize_text_to_links, FormalizedKnowledgeBase, CANONICAL_FISHERMAN_SYNOPSIS,
     FISHERMAN_DOC_ID,
 };
-use super::general_planner::{compose_general_change_plan, GeneralChangePlan, PLAN_PATH};
+use super::general_planner::{
+    compose_general_change_plan, GeneralChangePlan, GeneralPlanMode, PLAN_PATH,
+};
 use super::google_trends_catalog;
 use super::google_trends_learning;
 use super::intent_router;
 use super::learning_report;
 use super::ledger;
+use super::local_search;
 use super::meaning_detail;
+use super::procedure;
 pub(super) use super::progress::Progress;
 use super::question_catalog;
 use super::rebuild_plan;
@@ -49,6 +54,8 @@ pub const CANONICAL_SOURCE_URL: &str =
 
 /// The path the planner writes the knowledge base to.
 pub const KB_PATH: &str = "knowledge-base.lino";
+
+const GENERAL_PLAN_BODY_PLACEHOLDER: &str = concat!("{", "plan", "}");
 
 /// The next deterministic step the server takes in an agentic coding loop.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -90,6 +97,7 @@ pub enum Capability {
     Subagent,
     ReadMany,
     MultiEdit,
+    AskUser,
 }
 
 impl Capability {
@@ -113,6 +121,7 @@ impl Capability {
             Self::Subagent => "tool:capability:subagent",
             Self::ReadMany => "tool:capability:read_many",
             Self::MultiEdit => "tool:capability:multi_edit",
+            Self::AskUser => "tool:capability:ask_user",
         }
     }
 
@@ -131,6 +140,7 @@ impl Capability {
             Self::Subagent => "subagent",
             Self::ReadMany => "read_many",
             Self::MultiEdit => "multi_edit",
+            Self::AskUser => "ask_user",
         }
     }
 }
@@ -157,6 +167,11 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
         .map(|plan| plan_general_change_step(messages, tool_names, &plan))
     {
         return Some(plan);
+    }
+    // A freely phrased procedure is one generalized compile → persist → verify
+    // recipe on both the symbolic and Agent CLI surfaces.
+    if let Some(procedure) = procedure::compile_task(&task) {
+        return Some(procedure::plan_step(messages, tool_names, &procedure));
     }
     // Specific self-inspection routes precede broad formalization. Associative
     // learning comes before self-healing because both accept auto-learning terms;
@@ -260,17 +275,31 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if question_catalog::is_question_catalog_task(&task) {
         return Some(plan_question_catalog_step(messages, tool_names));
     }
-    // Agent-mode counterpart of the web UI's report action (issue #687).
-    if let Some(request) = report_issue::report_issue_request_for(&task, messages) {
-        return Some(report_issue::plan_report_issue_step(
-            messages, tool_names, &request,
-        ));
+    // Agent-mode counterpart of the web UI's report action (issues #687 + #822).
+    // This is a conversation state machine: after the initial report intent it
+    // continues across structured tool results or plain-text user choices.
+    if let Some(plan) = report_issue::plan_report_flow(messages, tool_names) {
+        return Some(plan);
     }
     if let Some(answer) = conversation_recall::recall_answer_for(messages) {
         return Some(AgenticPlan::Final(answer));
     }
     if let Some(answer) = tool_result::follow_up_answer(messages, &task) {
         return Some(AgenticPlan::Final(answer));
+    }
+    if let Some(answer) = web_research::contextual_reference_clarification(&task) {
+        return Some(AgenticPlan::Final(answer));
+    }
+    if web_research::is_definition_followup(&task) {
+        if let Some(query) = web_research::definition_followup_topic(messages, &task) {
+            if let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
+                return Some(plan);
+            }
+        } else {
+            return Some(AgenticPlan::Final(
+                web_research::definition_followup_clarification(&task),
+            ));
+        }
     }
     if let Some(plan) = intent_router::plan_edit_step(&task, messages, tool_names) {
         return Some(plan);
@@ -282,6 +311,14 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
         if let Some(file_task) = file_read_task_for(&task) {
             return Some(plan_file_read_step(&file_task, messages, tool_names));
         }
+    }
+    // A meanings-driven explicit local scope dominates generic search verbs.
+    // This state machine observes each result and widens only after emptiness.
+    if let Some(plan) = local_search::plan_local_search_step(messages, tool_names) {
+        return Some(plan);
+    }
+    if let Some(plan) = comparison::plan_comparison_step(&task, messages, tool_names) {
+        return Some(plan);
     }
     if let Some(plan) = capability_router::plan_shared_capability_step(&task, messages, tool_names)
     {
@@ -350,17 +387,49 @@ fn plan_general_change_step(
         if writes == 0 {
             return plan_one(tool, write_arguments(PLAN_PATH, &plan.links_notation()));
         }
-        if writes == 1 {
+        if writes == 1 && plan.mode == GeneralPlanMode::LiteralFile {
             return plan_one(tool, write_arguments(&plan.target, &plan.content));
         }
     }
-    if let Some(tool) =
-        tool_for(tool_names, Capability::Run).filter(|_| !progress.done(Capability::Run))
-    {
-        return plan_one(
-            tool,
-            json!({ "command": plan.verification_command }).to_string(),
+    if let Some(tool) = tool_for(tool_names, Capability::Run) {
+        let runs = progress.count(Capability::Run);
+        match plan.mode {
+            GeneralPlanMode::CommandOutput => {
+                if let Some(generation) = plan.steps.get(1).and_then(|step| step.command.as_deref())
+                {
+                    if runs == 0 {
+                        return plan_one(tool, json!({ "command": generation }).to_string());
+                    }
+                    if runs == 1 {
+                        return plan_one(
+                            tool,
+                            json!({ "command": plan.verification_command }).to_string(),
+                        );
+                    }
+                }
+            }
+            GeneralPlanMode::LiteralFile | GeneralPlanMode::RepositoryWorkItem if runs == 0 => {
+                return plan_one(
+                    tool,
+                    json!({ "command": plan.verification_command }).to_string(),
+                );
+            }
+            GeneralPlanMode::LiteralFile | GeneralPlanMode::RepositoryWorkItem => {}
+        }
+    }
+    if plan.mode == GeneralPlanMode::RepositoryWorkItem {
+        let response_language = crate::language::detect(&plan.goal).slug();
+        let mut answer =
+            crate::seed::response_for("general_plan_repository_complete", response_language)
+                .or_else(|| crate::seed::response_for("general_plan_repository_complete", "en"))
+                .unwrap_or_default();
+        answer = answer.replace("{target}", &plan.target);
+        answer = answer.replace("{plan_path}", PLAN_PATH);
+        answer = answer.replace(
+            GENERAL_PLAN_BODY_PLACEHOLDER,
+            plan.links_notation().trim_end(),
         );
+        return AgenticPlan::Final(answer);
     }
     AgenticPlan::Final(format!(
         "Completed the general change request for {} and verified it with `{}`.\n\nPlan event ({}):\n\n{}",
@@ -377,7 +446,7 @@ fn plan_shell_step(messages: &[ChatMessage], tool_names: &[&str], command: &str)
     if progress.done(Capability::Run) {
         return AgenticPlan::Final(tool_result::render(
             command,
-            progress.run_output.as_deref().unwrap_or_default(),
+            progress.run_outputs.last().map_or("", String::as_str),
             latest_user_text(messages).as_deref().unwrap_or_default(),
         ));
     }
@@ -848,11 +917,7 @@ pub(super) fn classify_tool(name: &str) -> Option<Capability> {
 
 /// The text of the most recent `user` turn.
 fn latest_user_text(messages: &[ChatMessage]) -> Option<String> {
-    messages
-        .iter()
-        .rev()
-        .find(|message| message.role.eq_ignore_ascii_case("user"))
-        .map(|message| message.content.user_request_text())
+    crate::protocol::latest_user_request(messages)
 }
 
 /// Keywords that mark a user turn as the canonical issue-#468 formalization task.

@@ -244,6 +244,37 @@ meanings
         text "内容为 …"
       surface
         text "包含 …"
+  file_write_command_output
+    defined-by relation
+    role file_write_command_output_reference
+    lexeme en
+      surface
+        text stdout
+      surface
+        text "standard output"
+      surface
+        text "command output"
+      surface
+        text "its output"
+      surface
+        text "the output"
+    lexeme ru
+      surface
+        text "стандартный вывод"
+      surface
+        text "вывод команды"
+      surface
+        text "его вывод"
+    lexeme hi
+      surface
+        text "मानक आउटपुट"
+      surface
+        text "कमांड आउटपुट"
+    lexeme zh
+      surface
+        text 标准输出
+      surface
+        text 命令输出
   file_write_target
     defined-by relation
     role file_write_target_cue

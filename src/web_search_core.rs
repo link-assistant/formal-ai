@@ -389,6 +389,94 @@ pub struct FusedEntry {
     pub providers: Vec<(String, u32)>,
 }
 
+/// Search-provider response plus the capture proving where its rankings came
+/// from.
+#[cfg(not(target_arch = "wasm32"))]
+#[derive(Debug, Clone, PartialEq)]
+pub struct SearchExecution {
+    pub captures: Vec<crate::source_fetch::SourceCapture>,
+    pub rankings: Vec<ProviderRanking>,
+    pub fused: Vec<FusedEntry>,
+}
+
+/// Execute `DuckDuckGo`'s public Instant Answer provider through the common
+/// cached fetch boundary and feed its returned URLs into RRF.
+#[cfg(not(target_arch = "wasm32"))]
+pub fn execute_duckduckgo_search<T: crate::source_fetch::SourceTransport>(
+    client: &crate::source_fetch::CachedSourceClient<T>,
+    query: &str,
+) -> Result<SearchExecution, crate::source_fetch::FetchError> {
+    let url = format!(
+        "https://api.duckduckgo.com/?q={}&format=json&no_html=1&skip_disambig=1",
+        percent_encode_query(query)
+    );
+    let capture = client.fetch(&url)?;
+    let document: serde_json::Value = serde_json::from_slice(capture.bytes()).map_err(|error| {
+        crate::source_fetch::FetchError::Transport(
+            ["duckduckgo_invalid_json", &error.to_string()].join(":"),
+        )
+    })?;
+    let mut rows = Vec::new();
+    collect_duckduckgo_topics(&document["RelatedTopics"], &mut rows);
+    if let (Some(url), Some(text)) = (
+        document["AbstractURL"].as_str(),
+        document["AbstractText"].as_str(),
+    ) {
+        if !url.is_empty() {
+            rows.insert(0, (url.to_owned(), text.to_owned()));
+        }
+    }
+    rows.truncate(10);
+    let rankings = rows
+        .into_iter()
+        .enumerate()
+        .map(|(index, (url, text))| ProviderRanking {
+            provider_id: String::from("duckduckgo"),
+            rank: u32::try_from(index + 1).unwrap_or(u32::MAX),
+            url,
+            title: text.clone(),
+            excerpt: text,
+        })
+        .collect::<Vec<_>>();
+    let fused = reciprocal_rank_fusion(&rankings, WEB_SEARCH_RRF_K);
+    Ok(SearchExecution {
+        captures: vec![capture],
+        rankings,
+        fused,
+    })
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn collect_duckduckgo_topics(value: &serde_json::Value, rows: &mut Vec<(String, String)>) {
+    let Some(items) = value.as_array() else {
+        return;
+    };
+    for item in items {
+        if let (Some(url), Some(text)) = (item["FirstURL"].as_str(), item["Text"].as_str()) {
+            if !url.is_empty() {
+                rows.push((url.to_owned(), text.to_owned()));
+            }
+        } else {
+            collect_duckduckgo_topics(&item["Topics"], rows);
+        }
+    }
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn percent_encode_query(query: &str) -> String {
+    use core::fmt::Write;
+
+    let mut encoded = String::new();
+    for byte in query.bytes() {
+        if byte.is_ascii_alphanumeric() || matches!(byte, b'-' | b'_' | b'.' | b'~') {
+            encoded.push(char::from(byte));
+        } else {
+            write!(encoded, "%{byte:02X}").expect("writing to a String cannot fail");
+        }
+    }
+    encoded
+}
+
 /// Compute the reciprocal-rank-fusion ranking for a flat list of provider
 /// rows. Equivalent to the JS implementation in `formal_ai_worker.js` and
 /// the offline trace in `web_requests.rs`.

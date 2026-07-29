@@ -69,7 +69,7 @@ fn natural_language_web_search_api_call_records_parameters_and_result() {
     let response = agent_answer("Call the web_search API with query `Rust ownership`");
 
     assert_eq!(response.intent, "natural_language_api_call");
-    assert!(response.answer.contains("Execution status: executed"));
+    assert!(response.answer.contains("Execution status: planned"));
     assert!(response.answer.contains("Tool call: web_search"));
     assert!(response
         .evidence_links

@@ -1,0 +1,45 @@
+self_ast_census
+  target src/proof_engine/decision/boolean.rs
+  language rust
+  fidelity signature
+  byte_len 20758
+  line_count 601
+  content_id source_module_4171702e82d3b59d
+  symbol_count 36
+  symbols
+    const TRUTH_TABLE_VARIABLE_LIMIT 12 12
+    const MAX_SAT_VARIABLES 17 17
+    enum BoolExpr 19 25
+    function variables 28 39
+    function evaluate 41 49
+    enum BoolToken 53 61
+    function attempt_boolean_claim 63 104
+    function attempt_boolean_via_sat 114 155
+    function decode_named_model 159 165
+    struct TseitinEncoder 173 177
+    function new 180 186
+    function fresh_gate 188 192
+    function assert_literal 194 196
+    function encode 199 221
+    function define_and 223 230
+    function define_or 232 239
+    function into_formula 241 247
+    function sat_tautology_proof 250 284
+    function sat_disproof 286 321
+    function rewrite_boolean_if_then 323 332
+    function tokenize_boolean 334 405
+    struct BoolParser 407 410
+    function new 413 418
+    function parse 420 423
+    function parse_implication 425 432
+    function parse_or 434 440
+    function parse_and 442 448
+    function parse_not 450 455
+    function parse_primary 457 470
+    function consume 472 479
+    function boolean_tautology_proof 482 508
+    function boolean_disproof 510 540
+    function format_truth_rows 542 553
+    function format_bool_assignment 555 561
+    function format_bool_expr 563 565
+    function format_bool_expr_prec 567 601

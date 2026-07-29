@@ -699,6 +699,10 @@ pub fn default_associative_packages() -> Vec<AssociativePackage> {
         .with_permission(
             "tool:capability:multi_edit",
             "agentic-coding multi-file edit (any CLI naming, client-executed)",
+        )
+        .with_permission(
+            "tool:capability:ask_user",
+            "agentic-coding structured user confirmation (any CLI naming)",
         ),
     ]
 }

@@ -1,0 +1,78 @@
+self_ast_census
+  target src/proof_engine/decision/linear.rs
+  language rust
+  fidelity signature
+  byte_len 26526
+  line_count 875
+  content_id source_module_ff27915ed529c29a
+  symbol_count 69
+  symbols
+    module proofs 3 3
+    module search 4 4
+    const EPSILON 17 17
+    function attempt_linear_claim 19 30
+    function split_implication 32 48
+    function parse_constraint_list 50 64
+    function attempt_constraint_satisfiability 66 134
+    enum Comparison 137 144
+    function symbol 147 156
+    function negate 158 167
+    function flip 169 178
+    struct AffineExpr 182 185
+    function constant 188 193
+    function variable 195 202
+    function add 204 212
+    function subtract 214 216
+    function scale 218 229
+    function multiply 231 239
+    function divide 241 246
+    function is_constant 248 250
+    function is_zero 252 254
+    function variables 256 258
+    function evaluate 260 266
+    function clean 268 273
+    struct LinearAtom 277 281
+    function variables 284 286
+    function evaluate 288 290
+    function negated 292 298
+    function compare_zero 301 310
+    function parse_linear_atom 312 335
+    struct LinearParser 337 340
+    function new 343 345
+    function parse 347 351
+    function parse_expression 353 365
+    function parse_term 367 381
+    function parse_factor 383 406
+    function parse_number 408 429
+    function parse_variable 431 441
+    function next_starts_factor 443 448
+    function skip_whitespace 450 458
+    function consume 460 467
+    function peek 469 471
+    function advance 473 475
+    function is_variable_start 478 480
+    function decide_universal_linear_atom 482 518
+    function decide_linear_entailment 520 563
+    struct Bound 566 569
+    struct Interval 572 578
+    function unconstrained 581 589
+    function apply_relation 591 613
+    function apply_equality 615 627
+    function apply_lower 629 636
+    function apply_upper 638 645
+    function validate 647 673
+    function contains 675 695
+    function stronger_lower 698 701
+    function stronger_upper 703 706
+    struct IntervalSystem 709 712
+    function is_satisfiable 715 717
+    function witness_assignment 719 724
+    function witness_value 726 755
+    function interval_summary 757 782
+    function build_interval_system 785 827
+    function format_atoms 829 835
+    function format_assignment 837 843
+    function format_affine 845 854
+    function format_number 856 867
+    function nearly_zero 869 871
+    function nearly_equal 873 875

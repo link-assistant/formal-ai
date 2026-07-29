@@ -6,17 +6,27 @@ use std::sync::Arc;
 use clap::{Args as ClapArgs, Subcommand, ValueEnum};
 use lino_arguments::Parser;
 
+mod cli_benchmark;
+mod cli_clients;
+mod cli_context;
 mod cli_import;
 mod cli_improve;
 mod cli_learn;
 mod cli_memory;
+mod cli_procedure;
+mod cli_report;
 mod cli_shared_dialog;
 mod cli_statement_audit;
 
+use cli_benchmark::{run_benchmark, BenchmarkAction};
+use cli_clients::{run_clients, ClientsAction, ClientsFormat};
+use cli_context::{run_context, ContextArgs};
 use cli_import::{run_import, ImportAction};
 use cli_improve::{run_improve, ImproveArgs};
-use cli_learn::{run_learn_cycle, LearnCycleArgs, LearnFrontier};
+use cli_learn::{run_learn_action, LearnAction};
 use cli_memory::{load_memory_or_empty, run_memory};
+use cli_procedure::{run_procedure, ProcedureArgs};
+use cli_report::{run_report, ReportArgs};
 use cli_shared_dialog::{run_shared_dialog, SharedDialogAction};
 use cli_statement_audit::{run_statement_audit, StatementAuditArgs};
 use formal_ai::agentic_coding::run_agentic_task;
@@ -44,6 +54,14 @@ const DEFAULT_AGENT_TASK: &str = "Formalize «Сказка о рыбаке и р
     about = "Formal symbolic AI implementation"
 )]
 struct Args {
+    /// Print and persist complete diagnostics (enabled by default).
+    #[arg(long, global = true, default_value_t = true)]
+    verbose: bool,
+
+    /// Disable verbose output and automatic complete dialog logging.
+    #[arg(long, global = true, env = "FORMAL_AI_SILENT", default_value_t = false)]
+    silent: bool,
+
     #[command(subcommand)]
     command: Option<Command>,
 }
@@ -75,6 +93,10 @@ enum Command {
         compute_budget: Option<u32>,
     },
     Dataset,
+    /// Export complete conversations or convert arbitrary JSON to Links Notation.
+    Context(ContextArgs),
+    /// Build the issue-report document every Formal AI surface files (#839).
+    Report(ReportArgs),
     Serve {
         #[arg(long, env = "FORMAL_AI_HOST", default_value = "127.0.0.1")]
         host: String,
@@ -124,6 +146,17 @@ enum Command {
     /// every interface the agent supports and how to migrate memory between
     /// them.
     Environments,
+    /// Print the seed-baked registry of external agentic CLI clients that
+    /// `formal-ai with` can drive, including each client's protocols, endpoints,
+    /// headless invocation, and persistent-config location. `--format json`
+    /// makes the registry machine-readable so the multi-CLI end-to-end matrix
+    /// (issue #671) derives its legs from the same data the wrapper uses.
+    Clients {
+        #[arg(long, value_enum, default_value_t = ClientsFormat::Text)]
+        format: ClientsFormat,
+        #[command(subcommand)]
+        action: Option<ClientsAction>,
+    },
     /// Import lexical semantics in bulk from external sources (issue #660,
     /// R378). Generalises `scripts/ground-meanings.rs` into a deterministic,
     /// validate-then-write pipeline.
@@ -137,10 +170,18 @@ enum Command {
         #[command(subcommand)]
         action: GithubLogsAction,
     },
+    /// Run real upstream benchmark suites (issue #698) and record honest
+    /// `passed/total` scores in `data/benchmarks/external-results.lino`.
+    Benchmark {
+        #[command(subcommand)]
+        action: BenchmarkAction,
+    },
     /// Weigh statement-bearing repository text against captured provenance.
     StatementAudit(StatementAuditArgs),
     /// Run or permanently configure external CLIs against a local Formal AI server.
     With(WithFormalAiArgs),
+    /// Execute and inspect persisted natural-language procedure artifacts.
+    Procedure(ProcedureArgs),
     /// Drive the full agentic-coding loop offline (issue #468). The in-repo
     /// driver plays the role of an external agentic CLI against our
     /// OpenAI-compatible server: it advertises tools, executes every emitted
@@ -248,35 +289,6 @@ enum Command {
     Learn {
         #[command(subcommand)]
         action: LearnAction,
-    },
-}
-
-#[derive(Debug, Subcommand)]
-enum LearnAction {
-    /// Derive candidate knowledge from a recorded frontier, validate it against
-    /// held-out prompts of the same class, and emit promotion proposals in the
-    /// issue-#656 shape. Proposal-only and offline: no seed file is written and
-    /// no network call is made, so the run is deterministic and reproducible.
-    Cycle {
-        /// The recorded frontier to replay.
-        #[arg(long, value_enum, default_value_t = LearnFrontier::GoogleTrends)]
-        frontier: LearnFrontier,
-
-        /// Read frontier items from this `learning_frontier` document instead of
-        /// the committed record.
-        #[arg(long, value_name = "PATH")]
-        from: Option<PathBuf>,
-
-        /// Explicit acknowledgement that the cycle only proposes. The cycle is
-        /// proposal-only either way; the flag documents the intent at the call
-        /// site and keeps the acceptance-criteria invocation literal.
-        #[arg(long, default_value_t = false)]
-        dry_run: bool,
-
-        /// Print the `promotion_proposals` document instead of the full cycle
-        /// record, ready to pipe into `formal-ai improve --promote`.
-        #[arg(long, default_value_t = false)]
-        proposals: bool,
     },
 }
 
@@ -553,6 +565,8 @@ impl std::fmt::Display for TelegramMode {
 fn main() -> Result<(), Box<dyn Error>> {
     lino_arguments::init();
     let args = Args::parse();
+    let verbose = args.verbose && !args.silent;
+    formal_ai::dialog_log::configure_verbose(verbose);
     let command = args.command.unwrap_or_else(|| Command::Chat {
         prompt: String::from("Hi"),
         format: OutputFormat::Text,
@@ -568,21 +582,32 @@ fn main() -> Result<(), Box<dyn Error>> {
             definition_fusion,
             thinking,
             compute_budget,
-        } => run_chat(&prompt, format, definition_fusion, thinking, compute_budget)?,
+        } => run_chat(
+            &prompt,
+            format,
+            definition_fusion,
+            thinking || verbose,
+            compute_budget,
+        )?,
         Command::Dataset => println!("{}", knowledge_links_notation()),
+        Command::Context(args) => run_context(args)?,
+        Command::Report(args) => run_report(args)?,
         Command::Memory { action } => run_memory(action)?,
         Command::SharedDialog { action } => run_shared_dialog(action)?,
         Command::Bundle { action } => run_bundle(action)?,
         Command::Environments => run_environments(),
+        Command::Clients { format, action } => run_clients(format, action)?,
         Command::Import { action } => run_import(action)?,
         Command::GithubLogs { action } => run_github_logs(action)?,
+        Command::Benchmark { action } => run_benchmark(action)?,
         Command::StatementAudit(args) => run_statement_audit(&args)?,
         Command::With(args) => run_with_formal_ai(&args)?,
+        Command::Procedure(args) => run_procedure(args)?,
         Command::Agent {
             task,
             transcript,
             session_json,
-        } => run_agent(&task, transcript, session_json.as_deref())?,
+        } => run_agent(&task, transcript || verbose, session_json.as_deref())?,
         Command::Serve {
             host,
             port,
@@ -602,7 +627,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             listen,
             upstream,
             log_path: log,
-            log_bodies: body,
+            log_bodies: body || verbose,
         })?,
         Command::Telegram {
             mode,
@@ -640,19 +665,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             backup,
             confirm,
         })?,
-        Command::Learn { action } => match action {
-            LearnAction::Cycle {
-                frontier,
-                from,
-                dry_run,
-                proposals,
-            } => run_learn_cycle(&LearnCycleArgs {
-                frontier,
-                from,
-                dry_run,
-                proposals,
-            })?,
-        },
+        Command::Learn { action } => run_learn_action(action)?,
     }
 
     Ok(())
