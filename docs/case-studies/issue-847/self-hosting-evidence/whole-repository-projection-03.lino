@@ -1,0 +1,17 @@
+source_links
+  engine meta_language
+  language rust
+  module_count 1
+  faithful_count 1
+  coverage_permille 1000
+  fully_faithful true
+  total_link_count 15799
+  total_named_node_count 3242
+  modules
+    module
+      path "src/world_model.rs"
+      byte_len 28673
+      content_id "source_module_d4b7f287ac56afc1"
+      total_link_count 15799
+      named_node_count 3242
+      faithful true

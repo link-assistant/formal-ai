@@ -145,14 +145,31 @@ fn task_ladder_ratchet_preserves_real_formal_ai_authorship_evidence() {
         "the committed repair case must match the real Agent CLI artifact"
     );
 
-    for relative in ["index.lino", "src/agentic_coding/web_research.lino"] {
-        let canonical = fs::read(root.join("data/meta/self-ast").join(relative))
-            .unwrap_or_else(|error| panic!("{relative}: {error}"));
-        let snapshot = fs::read(
-            root.join("docs/case-studies/issue-842/self-hosting-census/workspace-census")
-                .join(relative),
-        )
-        .unwrap_or_else(|error| panic!("{relative}: {error}"));
-        assert_eq!(snapshot, canonical, "{relative} census snapshot drifted");
-    }
+    let snapshot_root =
+        root.join("docs/case-studies/issue-842/self-hosting-census/workspace-census");
+    let snapshot_index =
+        fs::read_to_string(snapshot_root.join("index.lino")).expect("historical census index");
+    assert!(snapshot_index.starts_with("self_ast_census_index\n"));
+    assert!(snapshot_index.contains("  engine meta_language\n"));
+
+    let snapshot_module =
+        fs::read_to_string(snapshot_root.join("src/agentic_coding/web_research.lino"))
+            .expect("historical census module");
+    let target = snapshot_module
+        .lines()
+        .find_map(|line| line.strip_prefix("  target "))
+        .expect("historical module target");
+    let content_id = snapshot_module
+        .lines()
+        .find_map(|line| line.strip_prefix("  content_id "))
+        .expect("historical module content id");
+    let indexed = snapshot_index
+        .lines()
+        .find(|line| line.trim_start().starts_with(target))
+        .expect("historical module is referenced by its index");
+    assert!(indexed.contains(" full_ast "), "{indexed}");
+    assert!(
+        indexed.ends_with(content_id),
+        "historical index and module content ids disagree: {indexed}"
+    );
 }

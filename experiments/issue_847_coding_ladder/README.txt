@@ -20,8 +20,12 @@ FILES
 -----
   prompts.json   13 tasks across 4 levels, seeded from issues #846, #843,
                  #700, #710 plus two decomposition meta-tasks (#847).
+  generate_prompts.py   Writes prompts.json. Edit this, never prompts.json.
   run_coding_ladder.sh  Runs each task, verifies by observed effect, reverts
                  the tree between tasks, writes results.json.
+  new_branch_for.sh     The L1 verify: exits 0 only for a branch that appeared
+                 DURING the task, measured against the ref snapshot the runner
+                 takes before launching it.
   results.json   Output of the last run. Regenerate; do not hand-edit.
 
 USAGE
@@ -34,18 +38,30 @@ The working tree must be clean: tasks edit the real repository and are
 reverted with `git checkout -- .` between runs. Changes under experiments/
 are ignored by that guard so the harness can write its own results.
 
-BASELINE @ v0.303.0 (main), agent CLI 0.25.0, 2026-07-25
---------------------------------------------------------
+BASELINE @ v0.304.0 (this branch), agent CLI 0.25.0, Linux, 2026-07-25
+----------------------------------------------------------------------
 Dataset expanded to 130 tasks across 16 families (see generate_prompts.py).
+Measured with the fixed harness: L1 verified through new_branch_for.sh, the
+agent scratch home reclaimed after every task, 0 tasks NOT MEASURED.
 
-  TOTAL 38/130
-    L1 0/16   L2 0/12   L3 3/28   L4 35/74
+  TOTAL 45/130
+    L1 0/16   L2 3/12   L3 4/28   L4 38/74
 
-  read 12/12   atomic_edit 6/22   knowledge 4/8   verification 4/5
-  create 3/6   multilingual 3/11  decomposition 2/6  error_recovery 2/4
+  read 12/12   atomic_edit 6/22   knowledge 6/8   verification 4/5
+  create 3/6   multilingual 4/11  decomposition 6/6  error_recovery 2/4
   search 1/8   replace_delete 1/5
   issue_to_pr 0/16   test_authoring 0/8   targeted_edit 0/7
   deliverable 0/5    multifile 0/4       refactor 0/3
+
+decomposition 6/6 is this PR's contribution: every split, atomicity and
+first-step prompt now routes to the decomposition handler instead of the
+unknown-prompt fallback. On the pre-PR binary the same six scored 2/6.
+
+The v0.303.0 (main) baseline of this dataset read 38/130 with
+decomposition 2/6 and L1 0/16. The three deltas -- decomposition 2->6,
+knowledge 4->6, multilingual 3->4 -- are the decomposition surfaces this PR
+adds; L1 held at 0/16 under the corrected verify (an intermediate Linux run
+mismeasured it as 7/16 before new_branch_for.sh landed; see defect six below).
 
 An earlier 13-task sample reported 2/13 and concluded "no level where
 Formal AI can write code". That was too small a sample and partly wrong.
@@ -108,6 +124,25 @@ whose entire content is the echoed prompt fragment --
 -- and a grep for the test name passes on that. The runner now requires any
 .rs file a task was asked to create to contain an `fn` item. Ten tasks were
 reclassified pass -> fail and test_authoring went 7/8 -> 0/8.
+
+A sixth, found when the 130-task run was first repeated on Linux: L1 jumped
+from 0/16 to 7/16 with no engine change that could explain it. The verify was
+`git branch -a | grep -q "issue-846"`, and `-a` includes remote-tracking refs.
+The machine that produced 0/16 had never fetched them; the machine that
+produced 7/16 had. Every one of those seven "passes" was a branch pushed by
+someone else weeks earlier -- one of them the very branch the measurement was
+running from. L1 tasks now verify through new_branch_for.sh, which requires a
+ref that is absent from a snapshot taken immediately before the task starts.
+
+A seventh, on the same run: `formal-ai with agent` copies its whole
+configuration into $TMPDIR/formal-ai-agent-home-config-<pid>-<nanos>/ and never
+removes it -- about 200 MB per task. At task 88 of 130 the filesystem tightened
+and the temporary server stopped coming up, so the last 42 tasks measured
+nothing at all while recording ordinary FAILs (and, where `verify` happened to
+be satisfied by the tree's existing state, ordinary PASSes). The runner now
+reclaims the scratch home after every task and reports a task whose server
+never started as NOT MEASURED, counted separately from a failure. A run with a
+non-zero NOT MEASURED count is incomplete, not bad news.
 
 Generalisable lesson, and the same one behind #839 and #842: assert on the
 OBSERVED EFFECT, never on narration. "I created the file" with no file is a

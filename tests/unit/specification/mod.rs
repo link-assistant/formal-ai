@@ -106,6 +106,7 @@ mod source_cache;
 mod substitution_rules;
 mod summarization_pipeline;
 mod synthesis;
+mod task_decomposition;
 mod telegram_surface;
 mod text_manipulation;
 mod text_manipulation_benchmarks;

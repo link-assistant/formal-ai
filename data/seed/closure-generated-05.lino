@@ -989,6 +989,226 @@ meanings
     lexeme en
       surface
         text "response supplied file first line zh"
+  response_task_atomicity_no_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task atomicity no en"
+  response_task_atomicity_no_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task atomicity no hi"
+  response_task_atomicity_no_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task atomicity no ru"
+  response_task_atomicity_no_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task atomicity no zh"
+  response_task_atomicity_yes_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task atomicity yes en"
+  response_task_atomicity_yes_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task atomicity yes hi"
+  response_task_atomicity_yes_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task atomicity yes ru"
+  response_task_atomicity_yes_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task atomicity yes zh"
+  response_task_decomposition_atomic_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition atomic en"
+  response_task_decomposition_atomic_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition atomic hi"
+  response_task_decomposition_atomic_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition atomic ru"
+  response_task_decomposition_atomic_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition atomic zh"
+  response_task_decomposition_depth_bound_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition depth bound en"
+  response_task_decomposition_depth_bound_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition depth bound hi"
+  response_task_decomposition_depth_bound_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition depth bound ru"
+  response_task_decomposition_depth_bound_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition depth bound zh"
+  response_task_decomposition_depth_marker_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition depth marker en"
+  response_task_decomposition_depth_marker_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition depth marker hi"
+  response_task_decomposition_depth_marker_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition depth marker ru"
+  response_task_decomposition_depth_marker_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition depth marker zh"
+  response_task_decomposition_lead_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition lead en"
+  response_task_decomposition_lead_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition lead hi"
+  response_task_decomposition_lead_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition lead ru"
+  response_task_decomposition_lead_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition lead zh"
+  response_task_first_step_lead_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task first step lead en"
+  response_task_first_step_lead_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task first step lead hi"
+  response_task_first_step_lead_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task first step lead ru"
+  response_task_first_step_lead_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task first step lead zh"
+  response_task_plan_stage_implementation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage implementation en"
+  response_task_plan_stage_implementation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage implementation hi"
+  response_task_plan_stage_implementation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage implementation ru"
+  response_task_plan_stage_implementation_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage implementation zh"
+  response_task_plan_stage_regression_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage regression en"
+  response_task_plan_stage_regression_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage regression hi"
+  response_task_plan_stage_regression_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage regression ru"
+  response_task_plan_stage_regression_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage regression zh"
+  response_task_plan_stage_requirements_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage requirements en"
+  response_task_plan_stage_requirements_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage requirements hi"
+  response_task_plan_stage_requirements_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage requirements ru"
+  response_task_plan_stage_requirements_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage requirements zh"
+  response_task_plan_stage_verification_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage verification en"
+  response_task_plan_stage_verification_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage verification hi"
+  response_task_plan_stage_verification_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage verification ru"
+  response_task_plan_stage_verification_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage verification zh"
   response_test_status_en
     defined-by response_template
     lexeme en
@@ -1174,223 +1394,3 @@ meanings
     lexeme en
       surface
         text "response unknown reasoning trace hi"
-  response_unknown_reasoning_trace_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown reasoning trace ru"
-  response_unknown_reasoning_trace_unknown
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown reasoning trace unknown"
-  response_unknown_reasoning_trace_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown reasoning trace zh"
-  response_unknown_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown ru"
-  response_unknown_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown zh"
-  response_web_search_live_results_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response web search live results en"
-  response_web_search_live_results_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response web search live results hi"
-  response_web_search_live_results_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response web search live results ru"
-  response_web_search_live_results_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response web search live results zh"
-  response_web_search_unavailable_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response web search unavailable en"
-  response_web_search_unavailable_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response web search unavailable hi"
-  response_web_search_unavailable_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response web search unavailable ru"
-  response_web_search_unavailable_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response web search unavailable zh"
-  response_wellbeing_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response wellbeing en"
-  response_wellbeing_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response wellbeing hi"
-  response_wellbeing_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response wellbeing ru"
-  response_wellbeing_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response wellbeing zh"
-  response_world_state_reached_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response world state reached en"
-  response_world_state_reached_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response world state reached hi"
-  response_world_state_reached_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response world state reached ru"
-  response_world_state_reached_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response world state reached zh"
-  response_world_state_remaining_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response world state remaining en"
-  response_world_state_remaining_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response world state remaining hi"
-  response_world_state_remaining_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response world state remaining ru"
-  response_world_state_remaining_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response world state remaining zh"
-  reverse_lines
-    defined-by operation
-    lexeme en
-      surface
-        text "reverse lines"
-  reverse_sort
-    defined-by operation
-    lexeme en
-      surface
-        text "reverse sort"
-  reverse_sort_list_files
-    defined-by rule
-    lexeme en
-      surface
-        text "reverse sort list files"
-  reverse_sort_list_files_arg
-    defined-by rule
-    lexeme en
-      surface
-        text "reverse sort list files arg"
-  reverse_string
-    defined-by task
-    lexeme en
-      surface
-        text "reverse string"
-  reverse_words
-    defined-by operation
-    lexeme en
-      surface
-        text "reverse words"
-  rg
-    defined-by concept
-    lexeme en
-      surface
-        text "rg"
-  rm
-    defined-by concept
-    lexeme en
-      surface
-        text "rm"
-  rmdir
-    defined-by concept
-    lexeme en
-      surface
-        text "rmdir"
-  role-only
-    defined-by concept
-    lexeme en
-      surface
-        text "role only"
-  rosetta_code
-    defined-by source
-    lexeme en
-      surface
-        text "rosetta code"
-  rs
-    defined-by word_surface
-    lexeme en
-      surface
-        text "rs"
-  rule_chinese
-    defined-by rule
-    lexeme en
-      surface
-        text "rule chinese"
-  rule_english
-    defined-by rule
-    lexeme en
-      surface
-        text "rule english"
-  rule_hindi
-    defined-by rule
-    lexeme en
-      surface
-        text "rule hindi"
-  rule_russian
-    defined-by rule
-    lexeme en
-      surface
-        text "rule russian"
-  russian-colloquial-verb
-    defined-by category
-    lexeme en
-      surface
-        text "russian colloquial verb"
-  rust_library
-    defined-by environment
-    lexeme en
-      surface
-        text "rust library"
-  sdk
-    defined-by word_surface
-    lexeme en
-      surface
-        text "sdk"

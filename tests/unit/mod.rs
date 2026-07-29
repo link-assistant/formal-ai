@@ -119,6 +119,7 @@ mod issue_841;
 mod issue_842;
 mod issue_843;
 mod issue_845_fact_checking;
+mod issue_847_task_decomposition;
 mod issue_870_routing;
 mod local_surface;
 mod memory_learning;

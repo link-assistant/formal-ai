@@ -1,0 +1,27 @@
+issue_847_smallest_leaf_1
+  parent task_decomposition_generalization
+  leaf "define operation-contract atomicity and data-backed lifecycle strategies"
+  implementation src/task_decomposition/strategy.rs
+  authorship human
+issue_847_smallest_leaf_2
+  parent task_decomposition_generalization
+  leaf "round-trip and execute the exact inspected content-addressed tree"
+  implementation src/task_decomposition/artifact.rs
+  authorship human
+issue_847_smallest_leaf_3
+  parent task_decomposition_generalization
+  leaf "derive durable learning proposals from failed execution with green and human gates"
+  implementation src/task_decomposition/learning.rs
+  authorship human
+issue_847_smallest_leaf_4
+  parent task_decomposition_generalization
+  leaf "record the generalized task-decomposition contract"
+  implementation data/meta/task-decomposition-invariant.lino
+  authorship formal_ai_agent_cli
+  session ses_05171239affeLG6WcrsR27Rb8U
+  evidence docs/case-studies/issue-847/self-hosting-authorship/agent-cli.log
+
+issue_847_self_authorship_measurement
+  reviewed_smallest_leaves 4
+  formal_ai_authored_leaves 1
+  formal_ai_authored_percent 25
