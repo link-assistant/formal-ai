@@ -304,3 +304,51 @@ fn a_real_corpus_task_splits_into_smaller_jointly_sufficient_children() {
 fn an_atomic_task_yields_no_split() {
     assert!(split_once_checkable("Add dev/log/ to the excluded_folders array.").is_empty());
 }
+
+/// Regression found while reviewing issue #847 after the arbitrary-procedure
+/// framework landed: punctuation is not an atomicity oracle. A one-clause
+/// repository issue still contains requirement, regression, implementation,
+/// and verification work, so treating its single verb as a directly
+/// executable leaf is a false green.
+#[test]
+fn a_single_clause_issue_is_not_misreported_as_an_atomic_operation() {
+    let task = "Implement task decomposition as a first-class working task for \
+                https://github.com/link-assistant/formal-ai/issues/847";
+    assert!(
+        !is_checkable(task),
+        "an observable verb without a concrete operation contract is not independently checkable"
+    );
+
+    let decomposition = decompose_task(task, 6);
+    assert!(
+        !decomposition.is_atomic(),
+        "issue-sized work needs a learned plan even when its prose has one clause"
+    );
+    assert!(
+        decomposition.leaves().len() >= 3,
+        "the issue must reduce through multiple independently checkable leaves: {:?}",
+        decomposition.numbered_lines("[cut]")
+    );
+    assert!(
+        decomposition
+            .to_links_notation()
+            .contains("completion_criterion"),
+        "every planned child must expose its verification contract"
+    );
+}
+
+/// Reaching the recursion guard creates an unresolved leaf, not an atomic one.
+/// `children.is_empty()` and `atomic` are intentionally different facts.
+#[test]
+fn a_depth_bounded_unsolved_root_is_not_reported_as_atomic() {
+    let bounded = decompose_task(
+        "Implement task decomposition for https://github.com/link-assistant/formal-ai/issues/847",
+        0,
+    );
+    assert!(bounded.depth_bound_reached());
+    assert!(
+        !bounded.is_atomic(),
+        "the depth guard cannot certify work it did not inspect"
+    );
+    assert_eq!(bounded.root.reason.slug(), "depth_bound");
+}
