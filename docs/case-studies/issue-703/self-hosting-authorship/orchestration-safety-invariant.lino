@@ -1,0 +1,6 @@
+orchestration_safety
+  record_type meta_invariant
+  permission "require an explicit workspace-scoped grant before starting an external agent"
+  isolation "run every candidate in a bounded workspace"
+  provenance "record process output file effects verification and chained events"
+  retry "never retry an external agent implicitly"
