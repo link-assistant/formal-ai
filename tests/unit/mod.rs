@@ -116,6 +116,7 @@ mod issue_823_recursive_learning;
 mod issue_832;
 mod issue_840;
 mod issue_841;
+mod issue_842;
 mod issue_845_fact_checking;
 mod issue_870_routing;
 mod local_surface;

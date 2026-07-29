@@ -1,0 +1,42 @@
+self_ast_census
+  target src/fact_checking.rs
+  language rust
+  fidelity signature
+  byte_len 23887
+  line_count 698
+  content_id source_module_4f1b8b6430d36281
+  symbol_count 33
+  symbols
+    enum AuditScope 21 27
+    enum FactCheckError 31 36
+    function from 39 41
+    enum ProbabilityBasis 46 51
+    function slug 56 61
+    enum RefutationStage 66 75
+    enum RefutationOutcome 79 86
+    struct RefutationAttempt 90 103
+    struct EvidenceTrace 107 120
+    struct StatementVerification 124 143
+    struct ContextAudit 147 160
+    function statement 165 169
+    function links_notation 173 228
+    struct FactChecker 233 235
+    function from_solver_config 241 245
+    function verify_statement 248 279
+    function audit_context 283 285
+    function audit_world_model 288 304
+    function audit_context_with_scope 306 347
+    function refute_recursive 350 517
+    function attempt 520 536
+    function add_proof_evidence 538 553
+    function collect_rejected_evidence 555 569
+    function rejected_labels 571 586
+    function is_placeholder_source 588 594
+    function build_statement_report 596 636
+    function evidence_trace 638 647
+    function push_link 649 657
+    function escape 659 664
+    function scope_slug 666 671
+    function stage_slug 673 680
+    function outcome_slug 682 688
+    function evidence_status 690 698

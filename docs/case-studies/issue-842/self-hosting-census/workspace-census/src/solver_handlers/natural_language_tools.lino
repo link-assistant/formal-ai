@@ -1,0 +1,22 @@
+self_ast_census
+  target src/solver_handlers/natural_language_tools.rs
+  language rust
+  fidelity signature
+  byte_len 12295
+  line_count 331
+  content_id source_module_ca85e7f6f46e55f4
+  symbol_count 13
+  symbols
+    function try_natural_language_tool_request 15 34
+    function try_javascript_code_execution 36 78
+    function try_calculator_api_call 80 138
+    function try_web_search_api_call 140 185
+    function try_local_shell_tool_call 187 221
+    function require_tool_permission 223 254
+    function execute_javascript_subset 256 264
+    function extract_console_log_expression 266 271
+    function is_explicit_tool_api_request 273 282
+    function is_explicit_local_shell_request 284 290
+    function extract_argument 292 298
+    function after_argument_marker 300 317
+    function clean_argument 319 331

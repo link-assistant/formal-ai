@@ -1,0 +1,26 @@
+self_ast_census
+  target src/self_healing.rs
+  language rust
+  fidelity signature
+  byte_len 13305
+  line_count 310
+  content_id source_module_444e90593e01e8e0
+  symbol_count 17
+  symbols
+    struct SourceRoundTrip 40 49
+    function for_module 55 66
+    function for_pinned_target 72 74
+    enum RepairOutcome 80 90
+    function slug 95 101
+    function has_reviewable_proposal 105 107
+    struct RepairCase 118 131
+    function from_trace 137 165
+    function is_human_gated 171 173
+    function summary 177 199
+    function links_notation 204 232
+    function canonical_failure_trace 242 262
+    function canonical_case 272 278
+    function field 280 282
+    function nested 284 286
+    function push_indented 292 301
+    function quote 303 310

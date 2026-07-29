@@ -1,0 +1,31 @@
+self_ast_census
+  target src/coding/catalog/mod.rs
+  language rust
+  fidelity signature
+  byte_len 6650
+  line_count 170
+  content_id source_module_4bdf510848b96cbc
+  symbol_count 22
+  symbols
+    module languages 18 18
+    module tasks 19 19
+    module templates_core 20 20
+    module templates_extended 21 21
+    module types 22 22
+    const WRITE_PROGRAM_INTENT 30 30
+    const TEMPLATE_GROUPS 35 38
+    function program_templates 41 43
+    function program_template_count 47 49
+    function program_language_by_slug 52 56
+    function program_task_by_slug 59 61
+    function program_template 64 67
+    function program_spec 70 76
+    function alias_surfaces 87 92
+    function program_language_by_alias 95 100
+    function program_task_by_alias 103 107
+    function supported_program_languages 110 116
+    function supported_program_tasks 119 125
+    function contains_cjk 133 142
+    function contains_devanagari 150 153
+    function contains_token 155 160
+    function contains_phrase 162 170

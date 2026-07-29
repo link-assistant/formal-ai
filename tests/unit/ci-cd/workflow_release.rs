@@ -740,6 +740,7 @@ fn pages_deploy_generates_api_docs_and_copies_them_after_stamping() {
 fn desktop_release_does_not_archive_cargo_dependencies_after_packaging() {
     let workflow = desktop_release_workflow();
     let build = job_block(&workflow, "build");
+    let compiler_cache = workflow_step_block(build, "Cache Rust compiler outputs");
 
     assert!(
         !build.contains("uses: actions/cache@"),
@@ -750,6 +751,21 @@ fn desktop_release_does_not_archive_cargo_dependencies_after_packaging() {
     assert!(
         build.contains("mozilla-actions/sccache-action@"),
         "desktop builds should retain the compiler-output cache"
+    );
+    assert!(
+        compiler_cache.contains("version: v0.16.0"),
+        "desktop builds must pin the last known-good sccache version: v0.17.0 \
+         expands Rust response files and exceeds the Windows command-line limit"
+    );
+
+    let shared_setup = fs::read_to_string(format!(
+        "{}/.github/actions/setup-sccache/action.yml",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .expect("read shared sccache setup action");
+    assert!(
+        shared_setup.contains("version: v0.16.0"),
+        "the shared setup action must pin sccache instead of silently tracking its latest release"
     );
 }
 

@@ -1,0 +1,14 @@
+self_ast_census
+  target src/requirement_contradiction.rs
+  language rust
+  fidelity signature
+  byte_len 3686
+  line_count 117
+  content_id source_module_58f2d8ac83b96da9
+  symbol_count 5
+  symbols
+    const RESPONSE_INTENT 11 11
+    const PRIOR_PLACEHOLDER 12 12
+    const CURRENT_PLACEHOLDER 13 13
+    function detect_and_report 20 109
+    function render_template 111 117

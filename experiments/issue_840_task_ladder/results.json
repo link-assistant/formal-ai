@@ -1,4 +1,5 @@
 {
+  "schema_version": 2,
   "summary": {
     "total": 24,
     "passed": 24,
@@ -44,11 +45,25 @@
       "lang": "en",
       "prompt": "Find hive-mind-control center folder on my desktop",
       "note": "Ground truth Desktop/Archive/hive-control-center. Must not return the .pem decoy, must not web-search.",
-      "answer": "Let me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname 'hive-mind-control-center' -print\"}\n[result] (no output)\nLet me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname '*hive*' -print\"}\n[result] /tmp/formal-ai-ladder.HBOALZ/Desktop/Archive\n/tmp/formal-ai-ladder.HBOALZ/Desktop/Archive/hive-control-center\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /tmp/formal-ai-ladder.HBOALZ/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
-      "assistant_output": "Let me look on your Desktop for hive-mind-control-center.\nLet me look on your Desktop for hive-mind-control-center.\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /tmp/formal-ai-ladder.HBOALZ/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "answer": "Let me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname 'hive-mind-control-center' -print\"}\n[result] (no output)\nLet me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname '*hive*' -print\"}\n[result] /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "assistant_output": "Let me look on your Desktop for hive-mind-control-center.\nLet me look on your Desktop for hive-mind-control-center.\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "tools_called": [
+        "bash",
+        "bash"
+      ],
+      "bash_commands": [
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname 'hive-mind-control-center' -print",
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname '*hive*' -print"
+      ],
       "error": null,
       "missing_expect": [],
+      "unmet_expect_any": false,
       "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
       "pass": true
     },
     {
@@ -60,9 +75,17 @@
       "note": "Routing decision in isolation.",
       "answer": "It is a local filesystem request.",
       "assistant_output": "It is a local filesystem request.",
+      "tools_called": [],
+      "bash_commands": [],
       "error": null,
       "missing_expect": [],
+      "unmet_expect_any": false,
       "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
       "pass": true
     },
     {
@@ -72,11 +95,23 @@
       "lang": "en",
       "prompt": "List the folders on my desktop",
       "note": "The observe step, alone.",
-      "answer": "Let me list the items directly on your Desktop.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -mindepth 1 -maxdepth 1 -type d -print\"}\n[result] /tmp/formal-ai-ladder.HBOALZ/Desktop/Archive\nItems found directly within ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}:\n/tmp/formal-ai-ladder.HBOALZ/Desktop/Archive",
-      "assistant_output": "Let me list the items directly on your Desktop.\nItems found directly within ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}:\n/tmp/formal-ai-ladder.HBOALZ/Desktop/Archive",
+      "answer": "Let me list the items directly on your Desktop.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -mindepth 1 -maxdepth 1 -type d -print\"}\n[result] /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive\nItems found directly within ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}:\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive",
+      "assistant_output": "Let me list the items directly on your Desktop.\nItems found directly within ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}:\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive",
+      "tools_called": [
+        "bash"
+      ],
+      "bash_commands": [
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -mindepth 1 -maxdepth 1 -type d -print"
+      ],
       "error": null,
       "missing_expect": [],
+      "unmet_expect_any": false,
       "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
       "pass": true
     },
     {
@@ -86,11 +121,25 @@
       "lang": "en",
       "prompt": "Search hive-mind-control-center on my desktop",
       "note": "Verb 'Search' must route local exactly like 'Find'.",
-      "answer": "Let me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -iname 'hive-mind-control-center' -print\"}\n[result] (no output)\nLet me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -iname '*hive*' -print\"}\n[result] /tmp/formal-ai-ladder.HBOALZ/Desktop/Archive\n/tmp/formal-ai-ladder.HBOALZ/Desktop/Archive/hive-control-center\n/tmp/formal-ai-ladder.HBOALZ/Desktop/Archive/hive-mind-bot.2025-12-26.private-key.pem\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /tmp/formal-ai-ladder.HBOALZ/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
-      "assistant_output": "Let me look on your Desktop for hive-mind-control-center.\nLet me look on your Desktop for hive-mind-control-center.\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /tmp/formal-ai-ladder.HBOALZ/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "answer": "Let me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -iname 'hive-mind-control-center' -print\"}\n[result] (no output)\nLet me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -iname '*hive*' -print\"}\n[result] /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-mind-bot.2025-12-26.private-key.pem\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "assistant_output": "Let me look on your Desktop for hive-mind-control-center.\nLet me look on your Desktop for hive-mind-control-center.\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "tools_called": [
+        "bash",
+        "bash"
+      ],
+      "bash_commands": [
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -iname 'hive-mind-control-center' -print",
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -iname '*hive*' -print"
+      ],
       "error": null,
       "missing_expect": [],
+      "unmet_expect_any": false,
       "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
       "pass": true
     },
     {
@@ -100,11 +149,25 @@
       "lang": "en",
       "prompt": "Find hive-mind-control center folder on desktop",
       "note": "Dropping the possessive 'my' must not change the route (the #838 flip).",
-      "answer": "Let me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname 'hive-mind-control-center' -print\"}\n[result] (no output)\nLet me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname '*hive*' -print\"}\n[result] /tmp/formal-ai-ladder.HBOALZ/Desktop/Archive\n/tmp/formal-ai-ladder.HBOALZ/Desktop/Archive/hive-control-center\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /tmp/formal-ai-ladder.HBOALZ/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
-      "assistant_output": "Let me look on your Desktop for hive-mind-control-center.\nLet me look on your Desktop for hive-mind-control-center.\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /tmp/formal-ai-ladder.HBOALZ/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "answer": "Let me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname 'hive-mind-control-center' -print\"}\n[result] (no output)\nLet me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname '*hive*' -print\"}\n[result] /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "assistant_output": "Let me look on your Desktop for hive-mind-control-center.\nLet me look on your Desktop for hive-mind-control-center.\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "tools_called": [
+        "bash",
+        "bash"
+      ],
+      "bash_commands": [
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname 'hive-mind-control-center' -print",
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname '*hive*' -print"
+      ],
       "error": null,
       "missing_expect": [],
+      "unmet_expect_any": false,
       "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
       "pass": true
     },
     {
@@ -114,11 +177,25 @@
       "lang": "en",
       "prompt": "What is inside the Archive folder on my desktop?",
       "note": "One level of recursion; both entries should be visible.",
-      "answer": "Let me look on your Desktop for archive.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname 'archive' -print\"}\n[result] /tmp/formal-ai-ladder.HBOALZ/Desktop/Archive\nLet me look on your Desktop for archive.\n[tool bash] {\"command\":\"find '/tmp/formal-ai-ladder.HBOALZ/Desktop/Archive' -mindepth 1 -maxdepth 1 -print\"}\n[result] /tmp/formal-ai-ladder.HBOALZ/Desktop/Archive/hive-control-center\n/tmp/formal-ai-ladder.HBOALZ/Desktop/Archive/hive-mind-bot.2025-12-26.private-key.pem\nContents of /tmp/formal-ai-ladder.HBOALZ/Desktop/Archive:\n/tmp/formal-ai-ladder.HBOALZ/Desktop/Archive/hive-control-center\n/tmp/formal-ai-ladder.HBOALZ/Desktop/Archive/hive-mind-bot.2025-12-26.private-key.pem",
-      "assistant_output": "Let me look on your Desktop for archive.\nLet me look on your Desktop for archive.\nContents of /tmp/formal-ai-ladder.HBOALZ/Desktop/Archive:\n/tmp/formal-ai-ladder.HBOALZ/Desktop/Archive/hive-control-center\n/tmp/formal-ai-ladder.HBOALZ/Desktop/Archive/hive-mind-bot.2025-12-26.private-key.pem",
+      "answer": "Let me look on your Desktop for archive.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname 'archive' -print\"}\n[result] /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive\nLet me look on your Desktop for archive.\n[tool bash] {\"command\":\"find '/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive' -mindepth 1 -maxdepth 1 -print\"}\n[result] /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-mind-bot.2025-12-26.private-key.pem\nContents of /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive:\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-mind-bot.2025-12-26.private-key.pem",
+      "assistant_output": "Let me look on your Desktop for archive.\nLet me look on your Desktop for archive.\nContents of /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive:\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-mind-bot.2025-12-26.private-key.pem",
+      "tools_called": [
+        "bash",
+        "bash"
+      ],
+      "bash_commands": [
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname 'archive' -print",
+        "find '/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive' -mindepth 1 -maxdepth 1 -print"
+      ],
       "error": null,
       "missing_expect": [],
+      "unmet_expect_any": false,
       "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
       "pass": true
     },
     {
@@ -128,11 +205,25 @@
       "lang": "ru",
       "prompt": "Найди папку hive-mind-control center на моём рабочем столе",
       "note": "Same intent in Russian must route identically (#386 convention).",
-      "answer": "Посмотрю на вашем рабочем столе: hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname 'hive-mind-control-center' -print\"}\n[result] (no output)\nПосмотрю на вашем рабочем столе: hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname '*hive*' -print\"}\n[result] /tmp/formal-ai-ladder.HBOALZ/Desktop/Archive\n/tmp/formal-ai-ladder.HBOALZ/Desktop/Archive/hive-control-center\nТочного совпадения для hive-mind-control-center нет; ближайшее имя — hive-control-center, путь /tmp/formal-ai-ladder.HBOALZ/Desktop/Archive/hive-control-center. Поиск был ограничен областью ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
-      "assistant_output": "Посмотрю на вашем рабочем столе: hive-mind-control-center.\nПосмотрю на вашем рабочем столе: hive-mind-control-center.\nТочного совпадения для hive-mind-control-center нет; ближайшее имя — hive-control-center, путь /tmp/formal-ai-ladder.HBOALZ/Desktop/Archive/hive-control-center. Поиск был ограничен областью ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "answer": "Посмотрю на вашем рабочем столе: hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname 'hive-mind-control-center' -print\"}\n[result] (no output)\nПосмотрю на вашем рабочем столе: hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname '*hive*' -print\"}\n[result] /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center\nТочного совпадения для hive-mind-control-center нет; ближайшее имя — hive-control-center, путь /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center. Поиск был ограничен областью ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "assistant_output": "Посмотрю на вашем рабочем столе: hive-mind-control-center.\nПосмотрю на вашем рабочем столе: hive-mind-control-center.\nТочного совпадения для hive-mind-control-center нет; ближайшее имя — hive-control-center, путь /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center. Поиск был ограничен областью ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "tools_called": [
+        "bash",
+        "bash"
+      ],
+      "bash_commands": [
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname 'hive-mind-control-center' -print",
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname '*hive*' -print"
+      ],
       "error": null,
       "missing_expect": [],
+      "unmet_expect_any": false,
       "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
       "pass": true
     },
     {
@@ -142,11 +233,25 @@
       "lang": "en",
       "prompt": "Is there a folder named exactly 'hive-mind-control-center' on my desktop? Answer yes or no and say what the closest match is.",
       "note": "Fuzzy near-match must be named, not silently substituted (standard 3.3).",
-      "answer": "Let me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname 'hive-mind-control-center' -print\"}\n[result] (no output)\nLet me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname '*hive*' -print\"}\n[result] /tmp/formal-ai-ladder.HBOALZ/Desktop/Archive\n/tmp/formal-ai-ladder.HBOALZ/Desktop/Archive/hive-control-center\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /tmp/formal-ai-ladder.HBOALZ/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
-      "assistant_output": "Let me look on your Desktop for hive-mind-control-center.\nLet me look on your Desktop for hive-mind-control-center.\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /tmp/formal-ai-ladder.HBOALZ/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "answer": "Let me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname 'hive-mind-control-center' -print\"}\n[result] (no output)\nLet me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname '*hive*' -print\"}\n[result] /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "assistant_output": "Let me look on your Desktop for hive-mind-control-center.\nLet me look on your Desktop for hive-mind-control-center.\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "tools_called": [
+        "bash",
+        "bash"
+      ],
+      "bash_commands": [
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname 'hive-mind-control-center' -print",
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname '*hive*' -print"
+      ],
       "error": null,
       "missing_expect": [],
+      "unmet_expect_any": false,
       "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
       "pass": true
     },
     {
@@ -156,11 +261,25 @@
       "lang": "en",
       "prompt": "On my desktop, is hive-control-center a file or a folder?",
       "note": "Type discrimination (standard 3.4) - the .pem decoy is a file.",
-      "answer": "Let me look on your Desktop for hive-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -iname 'hive-control-center' -print\"}\n[result] /tmp/formal-ai-ladder.HBOALZ/Desktop/Archive/hive-control-center\nLet me look on your Desktop for hive-control-center.\n[tool bash] {\"command\":\"ls -ld -- '/tmp/formal-ai-ladder.HBOALZ/Desktop/Archive/hive-control-center'\"}\n[result] drwxr-xr-x 2 box box 4096 Jul 25 02:26 /tmp/formal-ai-ladder.HBOALZ/Desktop/Archive/hive-control-center\n/tmp/formal-ai-ladder.HBOALZ/Desktop/Archive/hive-control-center is a folder. It was verified within ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
-      "assistant_output": "Let me look on your Desktop for hive-control-center.\nLet me look on your Desktop for hive-control-center.\n/tmp/formal-ai-ladder.HBOALZ/Desktop/Archive/hive-control-center is a folder. It was verified within ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "answer": "Let me look on your Desktop for hive-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -iname 'hive-control-center' -print\"}\n[result] /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center\nLet me look on your Desktop for hive-control-center.\n[tool bash] {\"command\":\"ls -ld -- '/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center'\"}\n[result] drwxr-xr-x 2 box box 4096 Jul 29 09:35 /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center is a folder. It was verified within ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "assistant_output": "Let me look on your Desktop for hive-control-center.\nLet me look on your Desktop for hive-control-center.\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center is a folder. It was verified within ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "tools_called": [
+        "bash",
+        "bash"
+      ],
+      "bash_commands": [
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -iname 'hive-control-center' -print",
+        "ls -ld -- '/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center'"
+      ],
       "error": null,
       "missing_expect": [],
+      "unmet_expect_any": false,
       "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
       "pass": true
     },
     {
@@ -169,12 +288,28 @@
       "seed": "838",
       "lang": "en",
       "prompt": "Find a folder called zzz-nonexistent-folder on my desktop",
-      "note": "True negative: absence must be reported honestly, scoped, without inventing a match.",
-      "answer": "Let me look on your Desktop for zzz-nonexistent.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname 'zzz-nonexistent' -print\"}\n[result] (no output)\nLet me look on your Desktop for zzz-nonexistent.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname '*nonexistent*' -print\"}\n[result] (no output)\nLet me look on your Desktop for zzz-nonexistent.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -mindepth 1 -maxdepth 3 -print\"}\n[result] /tmp/formal-ai-ladder.HBOALZ/Desktop/Archive\n/tmp/formal-ai-ladder.HBOALZ/Desktop/Archive/hive-control-center\n/tmp/formal-ai-ladder.HBOALZ/Desktop/Archive/hive-mind-bot.2025-12-26.private-key.pem\nzzz-nonexistent was not found after exact, substring, and nearby-name checks within ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}. No wider location was searched.",
+      "note": "True negative: absence must be reported honestly, scoped, without inventing a match. Any of the wordings in expect_any counts; a bare 'not' matched too much.",
+      "answer": "Let me look on your Desktop for zzz-nonexistent.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname 'zzz-nonexistent' -print\"}\n[result] (no output)\nLet me look on your Desktop for zzz-nonexistent.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname '*nonexistent*' -print\"}\n[result] (no output)\nLet me look on your Desktop for zzz-nonexistent.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -mindepth 1 -maxdepth 3 -print\"}\n[result] /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-mind-bot.2025-12-26.private-key.pem\nzzz-nonexistent was not found after exact, substring, and nearby-name checks within ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}. No wider location was searched.",
       "assistant_output": "Let me look on your Desktop for zzz-nonexistent.\nLet me look on your Desktop for zzz-nonexistent.\nLet me look on your Desktop for zzz-nonexistent.\nzzz-nonexistent was not found after exact, substring, and nearby-name checks within ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}. No wider location was searched.",
+      "tools_called": [
+        "bash",
+        "bash",
+        "bash"
+      ],
+      "bash_commands": [
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname 'zzz-nonexistent' -print",
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname '*nonexistent*' -print",
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -mindepth 1 -maxdepth 3 -print"
+      ],
       "error": null,
       "missing_expect": [],
+      "unmet_expect_any": false,
       "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
       "pass": true
     },
     {
@@ -184,11 +319,21 @@
       "lang": "ru",
       "prompt": "Что такое фуфломицин?",
       "note": "Must synthesize a definition (drugs without proven efficacy), not echo page titles.",
-      "answer": "Поищу в интернете: фуфломицин.\n[tool websearch] {\"query\":\"фуфломицин\"}\n[result] Фуфломицин — неодобрительное разговорное название лекарства без доказанной эффективности.\nФуфломицин — неодобрительное разговорное название лекарства без доказанной эффективности.",
-      "assistant_output": "Поищу в интернете: фуфломицин.\nФуфломицин — неодобрительное разговорное название лекарства без доказанной эффективности.",
+      "answer": "Поищу в интернете: фуфломицин.\n[tool websearch] {\"query\":\"фуфломицин\"}\n[result] Фуфломицин — развернуть\nЧто такое рок — развернуть\n\nФуфломицин (жаргонное, от «фуфло» + «-мицин») — пренебрежительное название лекарственных препаратов с недоказанной эффективностью: их эффективность не подтверждена качественными клиническими исследованиями. К ним обычно относят ряд иммуномодуляторов и «противовирусных» средств, например арбидол (умифеновир), а также гомеопатические препараты вроде оциллококцинума. Термин широко используется врачами доказательной медицины.\n\nЧитайте также — развернуть\nФуфломицин (жаргонное, от «фуфло» + «-мицин») — пренебрежительное название лекарственных препаратов с недоказанной эффективностью: их эффективность не подтверждена качественными клиническими исследованиями.",
+      "assistant_output": "Поищу в интернете: фуфломицин.\nФуфломицин (жаргонное, от «фуфло» + «-мицин») — пренебрежительное название лекарственных препаратов с недоказанной эффективностью: их эффективность не подтверждена качественными клиническими исследованиями.",
+      "tools_called": [
+        "websearch"
+      ],
+      "bash_commands": [],
       "error": null,
       "missing_expect": [],
+      "unmet_expect_any": false,
       "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
       "pass": true
     },
     {
@@ -198,11 +343,21 @@
       "lang": "ru",
       "prompt": "Дай определение слова фуфломицин одним предложением",
       "note": "Synthesis step alone, explicitly one sentence.",
-      "answer": "Поищу в интернете: слова фуфломицин одним предложением.\n[tool websearch] {\"query\":\"слова фуфломицин одним предложением\"}\n[result] Фуфломицин — неодобрительное разговорное название лекарства без доказанной эффективности.\nФуфломицин — неодобрительное разговорное название лекарства без доказанной эффективности.",
-      "assistant_output": "Поищу в интернете: слова фуфломицин одним предложением.\nФуфломицин — неодобрительное разговорное название лекарства без доказанной эффективности.",
+      "answer": "Поищу в интернете: слова фуфломицин одним предложением.\n[tool websearch] {\"query\":\"слова фуфломицин одним предложением\"}\n[result] Фуфломицин — развернуть\nЧто такое рок — развернуть\n\nФуфломицин (жаргонное, от «фуфло» + «-мицин») — пренебрежительное название лекарственных препаратов с недоказанной эффективностью: их эффективность не подтверждена качественными клиническими исследованиями. К ним обычно относят ряд иммуномодуляторов и «противовирусных» средств, например арбидол (умифеновир), а также гомеопатические препараты вроде оциллококцинума. Термин широко используется врачами доказательной медицины.\n\nЧитайте также — развернуть\nФуфломицин (жаргонное, от «фуфло» + «-мицин») — пренебрежительное название лекарственных препаратов с недоказанной эффективностью: их эффективность не подтверждена качественными клиническими исследованиями.",
+      "assistant_output": "Поищу в интернете: слова фуфломицин одним предложением.\nФуфломицин (жаргонное, от «фуфло» + «-мицин») — пренебрежительное название лекарственных препаратов с недоказанной эффективностью: их эффективность не подтверждена качественными клиническими исследованиями.",
+      "tools_called": [
+        "websearch"
+      ],
+      "bash_commands": [],
       "error": null,
       "missing_expect": [],
+      "unmet_expect_any": false,
       "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
       "pass": true
     },
     {
@@ -212,11 +367,21 @@
       "lang": "ru",
       "prompt": "Что такое фуфломицин? Затем: так что это такое то?",
       "note": "Follow-up must resolve against the antecedent, never fall back to the capability menu.",
-      "answer": "Поищу в интернете: фуфломицин.\n[tool websearch] {\"query\":\"фуфломицин\"}\n[result] Фуфломицин — неодобрительное разговорное название лекарства без доказанной эффективности.\nФуфломицин — неодобрительное разговорное название лекарства без доказанной эффективности.",
-      "assistant_output": "Поищу в интернете: фуфломицин.\nФуфломицин — неодобрительное разговорное название лекарства без доказанной эффективности.",
+      "answer": "Поищу в интернете: фуфломицин.\n[tool websearch] {\"query\":\"фуфломицин\"}\n[result] Фуфломицин — развернуть\nЧто такое рок — развернуть\n\nФуфломицин (жаргонное, от «фуфло» + «-мицин») — пренебрежительное название лекарственных препаратов с недоказанной эффективностью: их эффективность не подтверждена качественными клиническими исследованиями. К ним обычно относят ряд иммуномодуляторов и «противовирусных» средств, например арбидол (умифеновир), а также гомеопатические препараты вроде оциллококцинума. Термин широко используется врачами доказательной медицины.\n\nЧитайте также — развернуть\nФуфломицин (жаргонное, от «фуфло» + «-мицин») — пренебрежительное название лекарственных препаратов с недоказанной эффективностью: их эффективность не подтверждена качественными клиническими исследованиями.",
+      "assistant_output": "Поищу в интернете: фуфломицин.\nФуфломицин (жаргонное, от «фуфло» + «-мицин») — пренебрежительное название лекарственных препаратов с недоказанной эффективностью: их эффективность не подтверждена качественными клиническими исследованиями.",
+      "tools_called": [
+        "websearch"
+      ],
+      "bash_commands": [],
       "error": null,
       "missing_expect": [],
+      "unmet_expect_any": false,
       "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
       "pass": true
     },
     {
@@ -226,11 +391,21 @@
       "lang": "en",
       "prompt": "What is a fufloмицин (фуфломицин)? Answer in English.",
       "note": "Cross-language synthesis of the same concept.",
-      "answer": "Let me search the web for fufloмицин фуфломицин answer in english.\n[tool websearch] {\"query\":\"fufloмицин фуфломицин answer in english\"}\n[result] Fuflomicin is a disparaging colloquial label for a medicine without proven efficacy.\nFuflomicin is a disparaging colloquial label for a medicine without proven efficacy.",
-      "assistant_output": "Let me search the web for fufloмицин фуфломицин answer in english.\nFuflomicin is a disparaging colloquial label for a medicine without proven efficacy.",
+      "answer": "Let me search the web for fufloмицин фуфломицин answer in english.\n[tool websearch] {\"query\":\"fufloмицин фуфломицин answer in english\"}\n[result] Fufloмицин (фуфломицин) is a Russian slang term for a medicine of unproven efficacy: a drug whose efficacy has never been confirmed by good-quality clinical trials. Evidence-based physicians apply it to a range of immunomodulators, so-called antivirals such as umifenovir (Arbidol), and homeopathic products.\nFufloмицин (фуфломицин) is a Russian slang term for a medicine of unproven efficacy: a drug whose efficacy has never been confirmed by good-quality clinical trials.",
+      "assistant_output": "Let me search the web for fufloмицин фуфломицин answer in english.\nFufloмицин (фуфломицин) is a Russian slang term for a medicine of unproven efficacy: a drug whose efficacy has never been confirmed by good-quality clinical trials.",
+      "tools_called": [
+        "websearch"
+      ],
+      "bash_commands": [],
       "error": null,
       "missing_expect": [],
+      "unmet_expect_any": false,
       "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
       "pass": true
     },
     {
@@ -242,9 +417,17 @@
       "note": "Bare follow-up with NO antecedent: must ask what is meant, never print the capability menu.",
       "answer": "Что именно вы имеете в виду под «это»?",
       "assistant_output": "Что именно вы имеете в виду под «это»?",
+      "tools_called": [],
+      "bash_commands": [],
       "error": null,
       "missing_expect": [],
+      "unmet_expect_any": false,
       "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
       "pass": true
     },
     {
@@ -254,11 +437,21 @@
       "lang": "ru",
       "prompt": "Приведи один пример препарата, который называют фуфломицином",
       "note": "Instantiation: needs a concrete example, not page furniture.",
-      "answer": "Я не смог определить `Приведи один пример препарата, который называют фуфломицином` по локальной памяти Links Notation, кэшу публичных знаний или доступным источникам. Я записал неудачные попытки сбора данных в диагностическую трассировку.\n\nЕсли после этих проверок всё ещё нужен общий seed-факт или правило связей в формате Links Notation, сообщите о недостающем правиле с диагностической трассировкой. Для этого диалога можно экспортировать память или обучить правило: `Покажи правила поведения`, `Покажи правило unknown`, `Когда я скажу ... ответь ...`.",
-      "assistant_output": "Я не смог определить `Приведи один пример препарата, который называют фуфломицином` по локальной памяти Links Notation, кэшу публичных знаний или доступным источникам. Я записал неудачные попытки сбора данных в диагностическую трассировку.\n\nЕсли после этих проверок всё ещё нужен общий seed-факт или правило связей в формате Links Notation, сообщите о недостающем правиле с диагностической трассировкой. Для этого диалога можно экспортировать память или обучить правило: `Покажи правила поведения`, `Покажи правило unknown`, `Когда я скажу ... ответь ...`.",
+      "answer": "Поищу в интернете: препарата который называют фуфломицином.\n[tool websearch] {\"query\":\"препарата который называют фуфломицином\"}\n[result] Фуфломицин — развернуть\nЧто такое рок — развернуть\n\nФуфломицин (жаргонное, от «фуфло» + «-мицин») — пренебрежительное название лекарственных препаратов с недоказанной эффективностью: их эффективность не подтверждена качественными клиническими исследованиями. К ним обычно относят ряд иммуномодуляторов и «противовирусных» средств, например арбидол (умифеновир), а также гомеопатические препараты вроде оциллококцинума. Термин широко используется врачами доказательной медицины.\n\nЧитайте также — развернуть\nФуфломицин (жаргонное, от «фуфло» + «-мицин») — пренебрежительное название лекарственных препаратов с недоказанной эффективностью: их эффективность не подтверждена качественными клиническими исследованиями. К ним обычно относят ряд иммуномодуляторов и «противовирусных» средств, например арбидол (умифеновир), а также гомеопатические препараты вроде оциллококцинума. Термин широко используется врачами доказательной медицины.",
+      "assistant_output": "Поищу в интернете: препарата который называют фуфломицином.\nФуфломицин (жаргонное, от «фуфло» + «-мицин») — пренебрежительное название лекарственных препаратов с недоказанной эффективностью: их эффективность не подтверждена качественными клиническими исследованиями. К ним обычно относят ряд иммуномодуляторов и «противовирусных» средств, например арбидол (умифеновир), а также гомеопатические препараты вроде оциллококцинума. Термин широко используется врачами доказательной медицины.",
+      "tools_called": [
+        "websearch"
+      ],
+      "bash_commands": [],
       "error": null,
       "missing_expect": [],
+      "unmet_expect_any": false,
       "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
       "pass": true
     },
     {
@@ -268,11 +461,19 @@
       "lang": "ru",
       "prompt": "Что означает слово это в предложении: так что это такое то?",
       "note": "Pure anaphora resolution, isolated from any lookup.",
-      "answer": "Поищу в интернете: что означает слово это в предложении.\n[tool websearch] {\"query\":\"что означает слово это в предложении\"}\n[result] No deterministic fixture evidence for this query.\nNo deterministic fixture evidence for this query.",
-      "assistant_output": "Поищу в интернете: что означает слово это в предложении.\nNo deterministic fixture evidence for this query.",
+      "answer": "Что именно вы имеете в виду под «это»?",
+      "assistant_output": "Что именно вы имеете в виду под «это»?",
+      "tools_called": [],
+      "bash_commands": [],
       "error": null,
       "missing_expect": [],
+      "unmet_expect_any": false,
       "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
       "pass": true
     },
     {
@@ -282,11 +483,22 @@
       "lang": "ru",
       "prompt": "ФБС vs ФБО",
       "note": "Comparison of two marketplace fulfilment models; refusal is a failure.",
-      "answer": "Поищу в интернете: фбс.\n[tool websearch] {\"query\":\"фбс\"}\n[result] ФБС: продавец хранит товар на своём складе, собирает заказ и передаёт его маркетплейсу.\nПоищу в интернете: фбо.\n[tool websearch] {\"query\":\"фбо\"}\n[result] ФБО: товар хранится на складе маркетплейса, который собирает и доставляет заказ.\nОтдельно собранные сведения по фбс и фбо:\n\nФБС: продавец хранит товар на своём складе, собирает заказ и передаёт его маркетплейсу.\n\nФБО: товар хранится на складе маркетплейса, который собирает и доставляет заказ.",
-      "assistant_output": "Поищу в интернете: фбс.\nПоищу в интернете: фбо.\nОтдельно собранные сведения по фбс и фбо:\n\nФБС: продавец хранит товар на своём складе, собирает заказ и передаёт его маркетплейсу.\n\nФБО: товар хранится на складе маркетплейса, который собирает и доставляет заказ.",
+      "answer": "Поищу в интернете: фбс.\n[tool websearch] {\"query\":\"фбс\"}\n[result] ФБС («Фулфилмент силами продавца») — модель, при которой товар хранится на складе продавца. Продавец сам собирает и упаковывает заказ, а маркетплейс только доставляет его покупателю.\nПоищу в интернете: фбо.\n[tool websearch] {\"query\":\"фбо\"}\n[result] ФБО («Фулфилмент оператором») — модель, при которой продавец заранее поставляет товар на склад маркетплейса. Склад маркетплейса хранит товар, собирает и отправляет заказы покупателям.\nОтдельно собранные сведения по фбс и фбо:\n\nФБС («Фулфилмент силами продавца») — модель, при которой товар хранится на складе продавца. Продавец сам собирает и упаковывает заказ, а маркетплейс только доставляет его покупателю.\n\nФБО («Фулфилмент оператором») — модель, при которой продавец заранее поставляет товар на склад маркетплейса. Склад маркетплейса хранит товар, собирает и отправляет заказы покупателям.",
+      "assistant_output": "Поищу в интернете: фбс.\nПоищу в интернете: фбо.\nОтдельно собранные сведения по фбс и фбо:\n\nФБС («Фулфилмент силами продавца») — модель, при которой товар хранится на складе продавца. Продавец сам собирает и упаковывает заказ, а маркетплейс только доставляет его покупателю.\n\nФБО («Фулфилмент оператором») — модель, при которой продавец заранее поставляет товар на склад маркетплейса. Склад маркетплейса хранит товар, собирает и отправляет заказы покупателям.",
+      "tools_called": [
+        "websearch",
+        "websearch"
+      ],
+      "bash_commands": [],
       "error": null,
       "missing_expect": [],
+      "unmet_expect_any": false,
       "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
       "pass": true
     },
     {
@@ -296,11 +508,21 @@
       "lang": "ru",
       "prompt": "Что такое ФБО?",
       "note": "One half of the comparison; decomposition target.",
-      "answer": "Поищу в интернете: фбо.\n[tool websearch] {\"query\":\"фбо\"}\n[result] ФБО: товар хранится на складе маркетплейса, который собирает и доставляет заказ.\nФБО: товар хранится на складе маркетплейса, который собирает и доставляет заказ.",
-      "assistant_output": "Поищу в интернете: фбо.\nФБО: товар хранится на складе маркетплейса, который собирает и доставляет заказ.",
+      "answer": "Поищу в интернете: фбо.\n[tool websearch] {\"query\":\"фбо\"}\n[result] ФБО («Фулфилмент оператором») — модель, при которой продавец заранее поставляет товар на склад маркетплейса. Склад маркетплейса хранит товар, собирает и отправляет заказы покупателям.\nФБО («Фулфилмент оператором») — модель, при которой продавец заранее поставляет товар на склад маркетплейса.",
+      "assistant_output": "Поищу в интернете: фбо.\nФБО («Фулфилмент оператором») — модель, при которой продавец заранее поставляет товар на склад маркетплейса.",
+      "tools_called": [
+        "websearch"
+      ],
+      "bash_commands": [],
       "error": null,
       "missing_expect": [],
+      "unmet_expect_any": false,
       "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
       "pass": true
     },
     {
@@ -312,9 +534,17 @@
       "note": "Russian report intent must be recognized without falling back to English.",
       "answer": "Что вы хотите отправить? Выберите один или несколько вариантов.\n1. Журнал агента — Экспортировать полный журнал агентного клиента.\n2. Журнал сервера — Экспортировать соответствующий журнал сервера Formal AI.\n3. Задача GitHub — Создать задачу с полным контекстом.\n4. Сообщить Formal AI — Сохранить отчёт для обучения этого экземпляра.",
       "assistant_output": "Что вы хотите отправить? Выберите один или несколько вариантов.\n1. Журнал агента — Экспортировать полный журнал агентного клиента.\n2. Журнал сервера — Экспортировать соответствующий журнал сервера Formal AI.\n3. Задача GitHub — Создать задачу с полным контекстом.\n4. Сообщить Formal AI — Сохранить отчёт для обучения этого экземпляра.",
+      "tools_called": [],
+      "bash_commands": [],
       "error": null,
       "missing_expect": [],
+      "unmet_expect_any": false,
       "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
       "pass": true
     },
     {
@@ -324,11 +554,21 @@
       "lang": "ru",
       "prompt": "Что такое ФБС?",
       "note": "The other half.",
-      "answer": "Поищу в интернете: фбс.\n[tool websearch] {\"query\":\"фбс\"}\n[result] ФБС: продавец хранит товар на своём складе, собирает заказ и передаёт его маркетплейсу.\nФБС: продавец хранит товар на своём складе, собирает заказ и передаёт его маркетплейсу.",
-      "assistant_output": "Поищу в интернете: фбс.\nФБС: продавец хранит товар на своём складе, собирает заказ и передаёт его маркетплейсу.",
+      "answer": "Поищу в интернете: фбс.\n[tool websearch] {\"query\":\"фбс\"}\n[result] ФБС («Фулфилмент силами продавца») — модель, при которой товар хранится на складе продавца. Продавец сам собирает и упаковывает заказ, а маркетплейс только доставляет его покупателю.\nФБС («Фулфилмент силами продавца») — модель, при которой товар хранится на складе продавца.",
+      "assistant_output": "Поищу в интернете: фбс.\nФБС («Фулфилмент силами продавца») — модель, при которой товар хранится на складе продавца.",
+      "tools_called": [
+        "websearch"
+      ],
+      "bash_commands": [],
       "error": null,
       "missing_expect": [],
+      "unmet_expect_any": false,
       "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
       "pass": true
     },
     {
@@ -340,9 +580,17 @@
       "note": "Second Russian phrasing of the same report intent.",
       "answer": "Что вы хотите отправить? Выберите один или несколько вариантов.\n1. Журнал агента — Экспортировать полный журнал агентного клиента.\n2. Журнал сервера — Экспортировать соответствующий журнал сервера Formal AI.\n3. Задача GitHub — Создать задачу с полным контекстом.\n4. Сообщить Formal AI — Сохранить отчёт для обучения этого экземпляра.",
       "assistant_output": "Что вы хотите отправить? Выберите один или несколько вариантов.\n1. Журнал агента — Экспортировать полный журнал агентного клиента.\n2. Журнал сервера — Экспортировать соответствующий журнал сервера Formal AI.\n3. Задача GitHub — Создать задачу с полным контекстом.\n4. Сообщить Formal AI — Сохранить отчёт для обучения этого экземпляра.",
+      "tools_called": [],
+      "bash_commands": [],
       "error": null,
       "missing_expect": [],
+      "unmet_expect_any": false,
       "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
       "pass": true
     },
     {
@@ -352,11 +600,22 @@
       "lang": "ru",
       "prompt": "Чем отличается ФБС от ФБО одним предложением?",
       "note": "The comparison reduced to its single distinguishing axis (who stores the goods).",
-      "answer": "Поищу в интернете: фбс.\n[tool websearch] {\"query\":\"фбс\"}\n[result] ФБС: продавец хранит товар на своём складе, собирает заказ и передаёт его маркетплейсу.\nПоищу в интернете: фбо.\n[tool websearch] {\"query\":\"фбо\"}\n[result] ФБО: товар хранится на складе маркетплейса, который собирает и доставляет заказ.\nОтдельно собранные сведения по фбс и фбо:\n\nФБС: продавец хранит товар на своём складе, собирает заказ и передаёт его маркетплейсу.\n\nФБО: товар хранится на складе маркетплейса, который собирает и доставляет заказ.",
-      "assistant_output": "Поищу в интернете: фбс.\nПоищу в интернете: фбо.\nОтдельно собранные сведения по фбс и фбо:\n\nФБС: продавец хранит товар на своём складе, собирает заказ и передаёт его маркетплейсу.\n\nФБО: товар хранится на складе маркетплейса, который собирает и доставляет заказ.",
+      "answer": "Поищу в интернете: фбс.\n[tool websearch] {\"query\":\"фбс\"}\n[result] ФБС («Фулфилмент силами продавца») — модель, при которой товар хранится на складе продавца. Продавец сам собирает и упаковывает заказ, а маркетплейс только доставляет его покупателю.\nПоищу в интернете: фбо.\n[tool websearch] {\"query\":\"фбо\"}\n[result] ФБО («Фулфилмент оператором») — модель, при которой продавец заранее поставляет товар на склад маркетплейса. Склад маркетплейса хранит товар, собирает и отправляет заказы покупателям.\nОтдельно собранные сведения по фбс и фбо:\n\nФБС («Фулфилмент силами продавца») — модель, при которой товар хранится на складе продавца. Продавец сам собирает и упаковывает заказ, а маркетплейс только доставляет его покупателю.\n\nФБО («Фулфилмент оператором») — модель, при которой продавец заранее поставляет товар на склад маркетплейса. Склад маркетплейса хранит товар, собирает и отправляет заказы покупателям.",
+      "assistant_output": "Поищу в интернете: фбс.\nПоищу в интернете: фбо.\nОтдельно собранные сведения по фбс и фбо:\n\nФБС («Фулфилмент силами продавца») — модель, при которой товар хранится на складе продавца. Продавец сам собирает и упаковывает заказ, а маркетплейс только доставляет его покупателю.\n\nФБО («Фулфилмент оператором») — модель, при которой продавец заранее поставляет товар на склад маркетплейса. Склад маркетплейса хранит товар, собирает и отправляет заказы покупателям.",
+      "tools_called": [
+        "websearch",
+        "websearch"
+      ],
+      "bash_commands": [],
       "error": null,
       "missing_expect": [],
+      "unmet_expect_any": false,
       "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
       "pass": true
     },
     {
@@ -368,9 +627,17 @@
       "note": "English baseline for the same intent; must behave identically to the Russian forms.",
       "answer": "What would you like to report? Select one or more.\n1. Harness log — Export the complete agentic harness log.\n2. Server log — Export the matching Formal AI server log.\n3. GitHub issue — File an issue with complete context.\n4. Report to Formal AI — Store the report so this instance can learn.",
       "assistant_output": "What would you like to report? Select one or more.\n1. Harness log — Export the complete agentic harness log.\n2. Server log — Export the matching Formal AI server log.\n3. GitHub issue — File an issue with complete context.\n4. Report to Formal AI — Store the report so this instance can learn.",
+      "tools_called": [],
+      "bash_commands": [],
       "error": null,
       "missing_expect": [],
+      "unmet_expect_any": false,
       "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
       "pass": true
     }
   ]

@@ -1,0 +1,49 @@
+self_ast_census
+  target src/agentic_coding/statement_audit.rs
+  language rust
+  fidelity full_ast
+  byte_len 1361
+  line_count 29
+  content_id source_module_f46b2ecd4614188b
+  symbol_count 3
+  symbols
+    const STATEMENT_AUDIT_PATH 9 9
+    const STATEMENT_AUDIT_COMMAND 12 13
+    function is_statement_audit_task 17 29
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 797
+    named_node_count 154
+    distinct_node_kinds 28
+    node_kinds
+      arguments 11
+      attribute 1
+      attribute_item 1
+      binary_expression 8
+      block 2
+      boolean_literal 1
+      call_expression 11
+      const_item 2
+      doc_comment 9
+      expression_statement 2
+      field_expression 11
+      field_identifier 11
+      function_item 1
+      identifier 24
+      if_expression 1
+      inner_doc_comment_marker 6
+      let_declaration 4
+      line_comment 9
+      outer_doc_comment_marker 3
+      parameter 1
+      parameters 1
+      primitive_type 4
+      reference_type 3
+      return_expression 1
+      source_file 1
+      string_content 11
+      string_literal 11
+      visibility_modifier 3

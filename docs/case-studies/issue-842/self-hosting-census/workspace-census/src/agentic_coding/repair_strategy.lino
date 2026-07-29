@@ -1,0 +1,74 @@
+self_ast_census
+  target src/agentic_coding/repair_strategy.rs
+  language rust
+  fidelity full_ast
+  byte_len 7235
+  line_count 142
+  content_id source_module_7dd17a52ae12d7d3
+  symbol_count 9
+  symbols
+    const REPAIR_STRATEGY_PATH 38 38
+    function cached_strategies 46 49
+    static STRATEGIES 47 47
+    const REPAIR_STRATEGY_TASK 60 71
+    const REPAIR_STRATEGY_KEYWORDS 71 71
+    function is_repair_strategy_task 83 88
+    function render_document 99 112
+    function strategies 117 119
+    function final_answer 124 142
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 2346
+    named_node_count 527
+    distinct_node_kinds 47
+    node_kinds
+      arguments 22
+      array_expression 1
+      array_type 2
+      attribute 4
+      attribute_item 4
+      block 7
+      call_expression 22
+      char_literal 1
+      closure_expression 2
+      closure_parameters 2
+      const_item 3
+      crate 1
+      doc_comment 65
+      escape_sequence 20
+      expression_statement 6
+      field_expression 18
+      field_identifier 18
+      for_expression 2
+      function_item 5
+      generic_function 1
+      generic_type 4
+      identifier 71
+      inner_doc_comment_marker 29
+      integer_literal 1
+      let_declaration 6
+      lifetime 1
+      line_comment 65
+      macro_invocation 3
+      mutable_specifier 1
+      outer_doc_comment_marker 36
+      parameter 2
+      parameters 5
+      primitive_type 6
+      reference_type 6
+      scoped_identifier 7
+      scoped_use_list 1
+      source_file 1
+      static_item 1
+      string_content 27
+      string_literal 15
+      token_tree 7
+      type_arguments 5
+      type_identifier 10
+      use_as_clause 1
+      use_declaration 3
+      use_list 1
+      visibility_modifier 6

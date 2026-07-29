@@ -1,0 +1,90 @@
+self_ast_census
+  target src/agentic_coding/comparison.rs
+  language rust
+  fidelity full_ast
+  byte_len 5473
+  line_count 138
+  content_id source_module_b56c47f15062076f
+  symbol_count 9
+  symbols
+    const LEFT_SLOT 9 9
+    const RIGHT_SLOT 10 10
+    const EVIDENCE_SLOT 11 11
+    function plan_comparison_step 13 28
+    function comparison_sides 30 60
+    function bounded_find 62 70
+    function clean_side 72 86
+    function remove_bounded_surface 88 110
+    function comparison_answer 112 138
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 5136
+    named_node_count 1037
+    distinct_node_kinds 63
+    node_kinds
+      arguments 104
+      array_type 3
+      assignment_expression 2
+      binary_expression 17
+      block 21
+      call_expression 104
+      char_literal 4
+      closure_expression 16
+      closure_parameters 16
+      const_item 3
+      continue_expression 1
+      crate 7
+      doc_comment 1
+      else_clause 2
+      escape_sequence 2
+      expression_statement 18
+      field_expression 78
+      field_identifier 78
+      for_expression 3
+      function_item 6
+      generic_function 2
+      generic_type 5
+      identifier 259
+      if_expression 5
+      index_expression 9
+      inner_doc_comment_marker 1
+      integer_literal 7
+      let_condition 2
+      let_declaration 28
+      line_comment 3
+      macro_invocation 6
+      match_arm 3
+      match_block 1
+      match_expression 1
+      match_pattern 3
+      mutable_specifier 6
+      parameter 14
+      parameters 6
+      parenthesized_expression 1
+      primitive_type 15
+      range_expression 10
+      reference_expression 14
+      reference_type 17
+      return_expression 2
+      scoped_identifier 32
+      scoped_use_list 1
+      source_file 1
+      string_content 18
+      string_literal 19
+      super 4
+      token_tree 8
+      try_expression 1
+      tuple_expression 2
+      tuple_pattern 2
+      tuple_struct_pattern 3
+      tuple_type 1
+      type_arguments 7
+      type_identifier 15
+      unary_expression 9
+      use_declaration 4
+      use_list 1
+      visibility_modifier 2
+      while_expression 1

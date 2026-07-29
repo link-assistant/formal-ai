@@ -1,0 +1,64 @@
+self_ast_census
+  target src/option_network.rs
+  language rust
+  fidelity signature
+  byte_len 28795
+  line_count 833
+  content_id source_module_ae6baa27a0c553b5
+  symbol_count 55
+  symbols
+    const SCALE 67 67
+    function units 71 73
+    function milli 77 79
+    enum Comparison 83 97
+    enum Demand 101 113
+    struct Constraint 117 124
+    function nominal 129 135
+    function quantity 139 154
+    function from_source 158 161
+    function satisfied_by 165 190
+    enum Supply 195 205
+    function nominal 210 212
+    function quantity 216 221
+    function render 224 229
+    enum Tier 238 245
+    const LADDER 249 249
+    function id 257 263
+    function next 267 273
+    struct Offer 278 290
+    function new 295 308
+    function with_available 312 315
+    struct Candidate 320 329
+    function new 334 341
+    function supplying 345 348
+    function offered 352 355
+    function covers 358 368
+    struct Plan 373 385
+    function is_composite 390 392
+    struct OptionNetwork 397 402
+    const MAX_PLAN_ITEMS 409 409
+    function new 414 420
+    function require 423 433
+    function observe 436 446
+    function subject 450 452
+    function constraints 456 458
+    function candidates 462 464
+    function at_tier 468 473
+    function target_context 481 487
+    function current_context 491 503
+    function unmet 510 512
+    function open_attributes 520 532
+    function is_closed 536 538
+    function ranked_plans 553 563
+    function best_plan 567 569
+    function satisfying_plans 572 592
+    function walk 595 625
+    function plan_for 628 658
+    function links_notation 667 745
+    function is_minimal 749 767
+    function union_of 770 775
+    function price_key 778 780
+    function constraint_link 783 789
+    function render_demand 792 811
+    function render_fixed 814 824
+    function normalize 827 833

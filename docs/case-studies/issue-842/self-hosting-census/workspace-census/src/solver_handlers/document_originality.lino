@@ -1,0 +1,23 @@
+self_ast_census
+  target src/solver_handlers/document_originality.rs
+  language rust
+  fidelity signature
+  byte_len 12036
+  line_count 347
+  content_id source_module_7e55a14d8c7f0490
+  symbol_count 14
+  symbols
+    const TARGET_PLACEHOLDER 20 20
+    function try_document_originality_check 22 80
+    function extract_attached_file_names 82 116
+    function has_text_sample 118 125
+    function text_sample 127 140
+    function full_text_sample 144 151
+    function full_text_samples 153 177
+    function push_current_text_sample 179 186
+    function text_sample_prefix_value 188 192
+    function is_attachment_context_boundary 194 200
+    function is_attachment_file_line 202 209
+    function log_statement_verification 215 294
+    function document_originality_query 296 304
+    function document_originality_body 306 347

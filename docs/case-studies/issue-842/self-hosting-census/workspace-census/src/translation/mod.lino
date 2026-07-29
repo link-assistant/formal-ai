@@ -1,0 +1,23 @@
+self_ast_census
+  target src/translation/mod.rs
+  language rust
+  fidelity signature
+  byte_len 5107
+  line_count 113
+  content_id source_module_c82f5b6936a8d061
+  symbol_count 14
+  symbols
+    module cache 51 51
+    module formalization 52 52
+    module formatting 53 53
+    module http 54 54
+    module language_markers 55 55
+    module meaning 56 56
+    module pipeline 57 57
+    module prompt 58 58
+    module selection 59 59
+    module wikidata 60 60
+    module wiktionary 61 61
+    function default_cached_client 92 95
+    static CLIENT 93 93
+    function translate_via_default_pipeline 106 113

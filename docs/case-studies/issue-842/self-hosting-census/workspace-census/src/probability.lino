@@ -1,0 +1,58 @@
+self_ast_census
+  target src/probability.rs
+  language rust
+  fidelity signature
+  byte_len 30740
+  line_count 837
+  content_id source_module_3f3c6886898f65a7
+  symbol_count 49
+  symbols
+    enum ProbabilityModel 20 27
+    function slug 31 36
+    struct ProbabilitySourceProvenance 41 46
+    function trace_payload 50 55
+    struct ProbabilityEvidence 60 70
+    function symbolic 74 94
+    function with_model 97 101
+    function with_source 104 108
+    function with_transition_from 111 115
+    function trace_payload 118 138
+    function to_links_notation 141 163
+    function stable_record_id 165 186
+    function usable_offline 188 193
+    function applies_to_markov_state 195 200
+    struct ProbabilityStore 205 207
+    function new 211 215
+    function from_records 218 220
+    function record 222 226
+    function update 228 243
+    function reinforce_transition_path 261 287
+    function records 290 292
+    function target_weight 295 303
+    function target_evidence_count 315 327
+    function nearest_similar_evidence 339 380
+    function to_links_notation 383 394
+    function replay_into_event_log 396 416
+    function append_to_link_store 418 439
+    struct SimilarEvidence 444 453
+    struct ProbabilityCandidate 457 460
+    function new 464 469
+    struct ProbabilityRankingConfig 481 505
+    function with_decision_policy 514 520
+    function decision_policy 524 531
+    struct ProbabilityDecisionPolicy 546 556
+    struct RankedProbabilityCandidate 566 578
+    struct ProbabilityRanking 582 585
+    function probability_for 589 594
+    function trace_summary 597 608
+    function rank_probability_candidates 612 720
+    function softmax_scores 722 744
+    function highest_score_index 746 752
+    function finite_or_zero 754 760
+    function finite_clamped 762 768
+    function usize_to_f32 770 773
+    function count_to_f32 779 781
+    function symbolic_cosine_similarity 790 810
+    function tokenize_symbolic 812 818
+    function bag_of_words 820 826
+    function vector_norm 828 837

@@ -1,0 +1,42 @@
+self_ast_census
+  target src/solver_handlers/document_request.rs
+  language rust
+  fidelity signature
+  byte_len 24045
+  line_count 645
+  content_id source_module_2ddfa087dec9b36e
+  symbol_count 33
+  symbols
+    enum DocFormat 29 36
+    function label 41 50
+    function try_document_request 59 97
+    function try_document_conversion_request 99 149
+    function looks_like_document_conversion_request 151 155
+    function mentions_conversion_action 157 180
+    const ACTIONS 158 178
+    struct FormatMention 183 186
+    function format_mentions 188 214
+    const ALIASES 189 201
+    function conversion_formats 216 249
+    const SOURCE_MARKERS 251 251
+    const TARGET_MARKERS 253 265
+    function has_direction_marker_before 267 272
+    function find_alias_positions 274 286
+    function is_token_boundary 288 292
+    function is_ascii_word_char 294 296
+    function extract_document_source_text 298 303
+    function first_fenced_code_block 305 314
+    function text_after_colon 316 320
+    function non_empty 322 324
+    function render_conversion_answer 326 366
+    function output_fence 368 377
+    function mentions_software_artifact 381 420
+    const SOFTWARE 382 418
+    function mentions_authoring_action 424 472
+    const ACTIONS 425 470
+    function detect_document_format 477 544
+    function render_document_plan 550 557
+    function render_plan_ru 559 581
+    function render_plan_hi 583 602
+    function render_plan_zh 604 619
+    function render_plan_en 621 645

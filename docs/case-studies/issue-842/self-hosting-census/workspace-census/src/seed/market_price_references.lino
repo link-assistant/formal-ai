@@ -1,0 +1,18 @@
+self_ast_census
+  target src/seed/market_price_references.rs
+  language rust
+  fidelity signature
+  byte_len 5137
+  line_count 129
+  content_id source_module_25add604cd30ffb3
+  symbol_count 9
+  symbols
+    struct MarketPriceAsset 19 33
+    struct MarketPricePeriod 37 54
+    function market_price_assets 58 61
+    static REGISTRY 59 59
+    function parse_market_price_assets 63 75
+    function parse_asset 77 91
+    function parse_asset_aliases 97 112
+    function parse_reference 114 125
+    function parse_price 127 129
