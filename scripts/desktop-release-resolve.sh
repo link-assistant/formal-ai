@@ -241,7 +241,9 @@ else
   existing_count="$(printf '%s\n' "$existing_names" | sed '/^$/d' | wc -l | tr -d ' ')"
   missing=()
   while IFS= read -r expected; do
-    if ! printf '%s\n' "$existing_names" | grep -Fxq "$expected"; then
+    # Feed grep directly: with pipefail, `printf | grep -q` can report failure
+    # after a successful early match when printf receives SIGPIPE.
+    if ! grep -Fxq "$expected" <<<"$existing_names"; then
       missing+=("$expected")
     fi
   done < <(expected_desktop_assets "$release_version")
