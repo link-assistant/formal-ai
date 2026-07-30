@@ -109,6 +109,7 @@ fn run_client(
     home: &Path,
     bin_dir: &Path,
     tool: &str,
+    task: &str,
     extra_args: &[&str],
 ) -> std::process::Output {
     let attempts = directory.join(format!("{tool}-attempts.txt"));
@@ -118,7 +119,7 @@ fn run_client(
     let mut args = vec!["with", "--no-start-server", "--non-interactive"];
     args.extend_from_slice(extra_args);
     args.push(tool);
-    args.push("Implement Hello World in Scala");
+    args.push(task);
     Command::new(env!("CARGO_BIN_EXE_formal-ai"))
         .args(args)
         .current_dir(workspace)
@@ -259,6 +260,7 @@ fn corrective_retry_reuses_the_native_session_and_can_complete() {
         &home,
         &bin_dir,
         "agent",
+        "Implement Hello World in Scala",
         &[
             "--orchestration",
             "--orchestration-home",
@@ -335,7 +337,15 @@ fn six_supported_coding_clients_share_the_completion_contract() {
             .success());
         write_effect_client(&bin_dir, tool, 1);
 
-        let output = run_client(&directory, &workspace, &home, &bin_dir, tool, &[]);
+        let output = run_client(
+            &directory,
+            &workspace,
+            &home,
+            &bin_dir,
+            tool,
+            "Implement Hello World in Scala",
+            &[],
+        );
         assert!(
             output.status.success(),
             "{tool} did not satisfy the shared contract:\nstdout:\n{}\nstderr:\n{}",
@@ -389,6 +399,58 @@ fn six_supported_coding_clients_share_the_completion_contract() {
 }
 
 #[test]
+fn authoring_prompts_in_every_supported_language_require_workspace_effects() {
+    let tasks = [
+        ("en", "English", "Implement Hello World in Scala"),
+        ("ru", "Russian", "Реализуй Hello World на Scala"),
+        ("hi", "Hindi", "Scala में Hello World लागू करो"),
+        ("zh", "Chinese", "用 Scala 实现 Hello World"),
+    ];
+    for (language, language_name, task) in tasks {
+        let directory = tmpdir();
+        let workspace = directory.join("workspace");
+        let home = directory.join("home");
+        let bin_dir = directory.join("bin");
+        for path in [&workspace, &home, &bin_dir] {
+            std::fs::create_dir_all(path).expect("fixture directory");
+        }
+        assert!(Command::new("git")
+            .args(["init", "--quiet"])
+            .current_dir(&workspace)
+            .status()
+            .expect("initialize fixture repository")
+            .success());
+        write_effect_client(&bin_dir, "agent", 1);
+
+        let output = run_client(&directory, &workspace, &home, &bin_dir, "agent", task, &[]);
+        assert!(
+            output.status.success(),
+            "{language_name} ({language}) authoring did not complete:\nstdout:\n{}\nstderr:\n{}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        );
+        let completion = json_records(&output.stdout)
+            .into_iter()
+            .last()
+            .expect("completion record");
+        assert_eq!(
+            completion["completion_state"], "complete",
+            "{language_name} ({language})"
+        );
+        assert_eq!(
+            completion["reason"], "workspace_effect_observed",
+            "{language_name} ({language})"
+        );
+        assert_eq!(completion["attempts"], 1, "{language_name} ({language})");
+        assert!(
+            workspace.join("Hello.scala").is_file(),
+            "{language_name} ({language}) authoring produced no artifact"
+        );
+        let _ = std::fs::remove_dir_all(directory);
+    }
+}
+
+#[test]
 fn public_vendor_endpoint_diversion_fails_closed() {
     let directory = tmpdir();
     let workspace = directory.join("workspace");
@@ -419,7 +481,15 @@ printf 'request failed: https://api.openai.com/v1/responses\n' >&2
     permissions.set_mode(0o755);
     std::fs::set_permissions(&path, permissions).expect("make client executable");
 
-    let output = run_client(&directory, &workspace, &home, &bin_dir, "codex", &[]);
+    let output = run_client(
+        &directory,
+        &workspace,
+        &home,
+        &bin_dir,
+        "codex",
+        "Implement Hello World in Scala",
+        &[],
+    );
     assert!(!output.status.success(), "vendor endpoint diversion passed");
     let completion = json_records(&output.stdout)
         .into_iter()
