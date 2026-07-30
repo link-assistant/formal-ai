@@ -127,3 +127,19 @@ fn migration_ledger_is_a_complete_live_registry_census() {
         "every other current method must honestly remain pending",
     );
 }
+
+#[test]
+fn committed_agent_cli_batch_record_is_byte_reproducible() {
+    const EXPECTED: &str = concat!(
+        "handler_migration_batch:number_constraints status \"migrated\" ",
+        "recognition \"seed_roles\" native_primitive \"interval_reasoning\" ",
+        "held_out_languages \"en,ru,hi,zh\".",
+    );
+    const COMMITTED: &str = include_str!(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/docs/case-studies/issue-699/agent-cli-evidence/",
+        "handler-migration-batch-report.lino",
+    ));
+
+    assert_eq!(COMMITTED, EXPECTED);
+}
