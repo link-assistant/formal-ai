@@ -1233,6 +1233,20 @@ world-model behaviors ([#702](https://github.com/link-assistant/formal-ai/issues
 and driving external agent CLIs as an orchestrator
 ([#703](https://github.com/link-assistant/formal-ai/issues/703)).
 
+Issue #703's controller is rooted at `src/orchestration/`. A deny-by-default
+workspace capability gates every run; the seed client registry supplies six
+structured editing and native-resume contracts; an explicitly supplied custom
+argv requires an independent executable grant even when it borrows a registered
+CLI label. `dispatch` copies candidates, decomposes or compares in parallel,
+verifies them and composes only passing non-conflicting effects. `runner`
+records canonical hash-chained sessions, native client ids and parent-digest
+continuations, while `analysis` extracts answer events, formalizes them into
+the meta-language, deduplicates/ranks/rechecks claims, reports contradictions,
+requests same-session correction, and verifies any separately recorded
+translation. Completed sessions can enter the existing client-contract learner
+only as evidence-linked, human-review-gated proposals. Model agreement is
+labelled a cross-agent preflight, never external factual proof.
+
 A later issue #349 roadmap closed the concrete program-modification gap that the
 parity batch exposed in a user dialog: after an active program artifact exists,
 bare follow-ups such as "sort the results in reverse order" are rewritten

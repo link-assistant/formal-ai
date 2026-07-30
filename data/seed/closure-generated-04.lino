@@ -1,4 +1,19 @@
 meanings
+  response_agentic_action_search_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action search hi"
+  response_agentic_action_search_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action search ru"
+  response_agentic_action_search_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action search zh"
   response_agentic_report_contents_options_en
     defined-by response_template
     lexeme en
@@ -1379,18 +1394,3 @@ meanings
     lexeme en
       surface
         text "response lexeme import duplicate qid ru"
-  response_lexeme_import_duplicate_qid_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import duplicate qid zh"
-  response_lexeme_import_duplicate_slug_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import duplicate slug en"
-  response_lexeme_import_duplicate_slug_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import duplicate slug hi"

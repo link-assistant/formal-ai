@@ -1363,6 +1363,34 @@ The whole feature is **trace-only until opted in**:
 | R702-15 | Exercise the same task through Formal AI auto-learning and the real Agent CLI, retaining self-hosting evidence required by the contributing workflow. | `context_hierarchy_learning::REPORT` ranks the persisted issue-702 observations through the shared `AssociativeMemory` pipeline; the external Agent CLI wrote and verified the byte-reproducible report in three live server turns. Evidence is retained under `dev/log/issues/702/pulls/818/agent-cli/`. |
 | R702-16 | Treat the dialogue `current` → shared `general` memory transition as an explicit permission boundary. | `WorldModel::general` is read-only and `commit_current_to_general(GeneralMemoryPermission)` fails closed on `Denied`; covered by `dialogue_state_requires_explicit_permission_before_entering_general_memory`. |
 
+## Issue #703 External-Agent Orchestration
+
+Issue [#703](https://github.com/link-assistant/formal-ai/issues/703) and the
+maintainer follow-up on PR
+[#876](https://github.com/link-assistant/formal-ai/pull/876#issuecomment-5127332907)
+require Formal AI to become the explicit controller of external agents:
+registered and requested custom clients, bounded workspaces, parallel
+comparison and composition, replayable evidence, exact-session correction,
+meta-language synthesis, requested-language output, fact cross-checking, and
+learning from completed work. The implementation keeps execution,
+fact-verification, translation, and learning grants visible rather than
+conflating model confidence with authority.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R703-1 | External agents must be denied by default and receive only an explicit canonical workspace, hard timeout, captured output/effects, and reviewable provenance. | `AgentRunPermission`, `workspace`, `runner`, and canonical hash-chained `AgentSession` records implement the boundary; timeout kills the Unix process group and records one failed attempt. Covered by permission, containment, timeout, no-retry, effect, and replay tests in `tests/integration/issue_703_orchestration.rs`. |
+| R703-2 | Drive Agent CLI, Claude Code, Codex, Gemini CLI, Qwen Code, and OpenCode from a data-defined adapter registry, against loopback Formal AI or existing vendor authentication. | `data/seed/client-integrations.lino` carries editing, structured-output, and resume argv; `AgentTarget::{FormalAi,Vendor}` selects the target. The deterministic six-entrypoint test and opt-in real-client matrix exercise the public CLI. |
+| R703-3 | Decompose a task into bounded leaves, dispatch them, verify their work, and compose only passing non-conflicting effects. | `orchestration::dispatch` uses the universal task decomposer, isolated copies, argv-based executable-allowlisted verification, drift revalidation, conflict detection, and transactional composition. |
+| R703-4 | Run the same task through several agents in parallel and choose a passing result by a deterministic recorded rule. | `DispatchMode::Compare` emits canonical candidate sessions and `comparison-ledger.json`, ordering by passing status, diff size, wall time, CLI id, then session path; covered by parallelism, selection, failure isolation, and committed-ledger replay tests. |
+| R703-5 | Explicitly control a requested custom CLI/TUI entrypoint, Bash adapter, local model frontend, or other neural client, including several custom agents. | `agent run --command JSON_ARGV` and repeated dispatch `--command CLI=JSON_ARGV` mappings require `{task}` and an independent exact `--allow-agent-command` grant. Unknown executables and registered-label grant bypasses are rejected; public single/multi Bash regressions prove the surface. |
+| R703-6 | Preserve each client's native conversation and resume that exact session with feedback when a claim is disproved. | Sessions record `NativeAgentSession`; `agent resume` binds `CorrectionRequest` to the canonical parent digest, inherits the original client/target/model/base URL, renders multilingual feedback from seed data, and records `AgentContinuation`. A changed reported id fails. All six resume argv contracts and the real Agent CLI `--resume ID --no-fork` chain are byte-pinned. |
+| R703-7 | Capture complete sessions and replay them byte-for-byte, detecting edits, truncation, reordering, or broken ancestry. | Canonical pretty JSON, terminal newline, event sequence, previous-event links, event SHA-256, parent session SHA-256, and exact serialization checks are exercised by positive and tamper tests. |
+| R703-8 | Formalize agent answers in the meta-language, summarize them, rank/recheck claims, report contradictions, and feed proven denials back as corrections. | `orchestration::analysis` extracts only answer-bearing events, preserves complete streams in sessions, uses the production formalize/deduplicate/rank/recheck/summarize ladder, records meta-language per source, and emits evidence-linked `CorrectionRequest`s. |
+| R703-9 | Cross-check facts without presenting model agreement as external proof. | Every synthesis report labels `fact_check_scope` as `cross_agent_evidence_preflight`; unsupported/denied claims are withheld and contradictions retained. Documentation requires captured primary sources and the production fact-check path for external guarantees. |
+| R703-10 | Return the result in requested `en`, `ru`, `hi`, or `zh`, without falsely labelling untranslated text. | Synthesis records target, detected final language, and `translation_required`. `apply_verified_translation` accepts only a separately recorded translator-agent result detected in the target language and retains its session digest; mismatch tests fail closed. |
+| R703-11 | Learn from completed orchestration while retaining review and promotion gates. | `observe_orchestration_session` projects canonical evidence into the existing client-contract learner; `formal-ai agent learn` emits proposal-only Links Notation. It cannot mutate the registry or approve promotion, consistent with the repository's human gate. |
+| R703-12 | Prove the controller through Formal AI and the real Agent CLI, preserve failures honestly, and meet the self-authorship policy. | `docs/case-studies/issue-703/` records the six-client matrix, original self-hosted leaf, and a three-turn same-native-session correction chain. Commit `70848eb3` carries `Formal-AI-Session` and `Formal-AI-Evidence` trailers; the focused suite pins every canonical byte, parent digest, resume argv, and final artifact hash. |
+
 ## Issue #834 Legal & Compliance Self-Audit
 
 Issue [#834](https://github.com/link-assistant/formal-ai/issues/834) asks for a

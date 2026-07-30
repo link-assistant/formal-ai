@@ -1,0 +1,93 @@
+{
+  "schema": "formal-ai-agent-session-v1",
+  "cli": "codex",
+  "target": "formal_ai",
+  "task": "add a README badge",
+  "model": "formal-ai",
+  "base_url": "http://127.0.0.1:8705",
+  "workspace": ".",
+  "program": "/tmp/gh-issue-solver-1785354487077/target/debug/formal-ai",
+  "args": [
+    "with",
+    "--orchestration",
+    "--base-url",
+    "http://127.0.0.1:8705",
+    "--model",
+    "formal-ai",
+    "--non-interactive",
+    "codex",
+    "add a README badge"
+  ],
+  "status": "succeeded",
+  "exit_code": 0,
+  "wall_time_ms": 55,
+  "stdout": "scripted client completed: codex\n",
+  "stderr": "",
+  "changes": [
+    {
+      "path": "README.md",
+      "kind": "modified",
+      "before_sha256": "e757448c8f9339e876d9e68aac3df85251a13cc60c8b86f41bd063e31e4cdb8d",
+      "after_sha256": "6f21d3d5b1667a503a5ddd407fd1ea1bffb397d63110ce2816b01d2fe573ea32",
+      "bytes_changed": 21
+    }
+  ],
+  "verification": [
+    {
+      "program": "test",
+      "args": [
+        "-s",
+        "README.md"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "timed_out": false,
+      "passed": true
+    }
+  ],
+  "events": [
+    {
+      "sequence": 0,
+      "kind": "permission_granted",
+      "detail": ".",
+      "previous_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "sha256": "594cfd75a17289096b5ce1617774bc5f7d756e69826aa032dc51c109f180db59"
+    },
+    {
+      "sequence": 1,
+      "kind": "adapter_selected",
+      "detail": "codex",
+      "previous_sha256": "594cfd75a17289096b5ce1617774bc5f7d756e69826aa032dc51c109f180db59",
+      "sha256": "f5ae94ef518d2b58e7e06e605d6ae4aed10deca42b855b205f5b4d70bf89c9b6"
+    },
+    {
+      "sequence": 2,
+      "kind": "process_started",
+      "detail": "codex",
+      "previous_sha256": "f5ae94ef518d2b58e7e06e605d6ae4aed10deca42b855b205f5b4d70bf89c9b6",
+      "sha256": "799c3eee3bc92052872e0a3c3865324bd7217c1a2c671ddc7dd466f056370a1a"
+    },
+    {
+      "sequence": 3,
+      "kind": "process_succeeded",
+      "detail": "codex",
+      "previous_sha256": "799c3eee3bc92052872e0a3c3865324bd7217c1a2c671ddc7dd466f056370a1a",
+      "sha256": "2d3cb7059875f5001c085fc0e2711be2091cbd3c650ecc7547130f9fe64e8919"
+    },
+    {
+      "sequence": 4,
+      "kind": "verification_passed",
+      "detail": "test",
+      "previous_sha256": "2d3cb7059875f5001c085fc0e2711be2091cbd3c650ecc7547130f9fe64e8919",
+      "sha256": "a9e837fc4b064bc96c2e4d192cba5273d1da82edd71d01d1475559c71b68792f"
+    },
+    {
+      "sequence": 5,
+      "kind": "workspace_effect",
+      "detail": "README.md",
+      "previous_sha256": "a9e837fc4b064bc96c2e4d192cba5273d1da82edd71d01d1475559c71b68792f",
+      "sha256": "356b07dfa09e913836ab09a25f4efa45706a44f04aaa8640fe7c8ece6e0ad636"
+    }
+  ]
+}

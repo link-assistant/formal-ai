@@ -1,0 +1,33 @@
+multilingual_responses
+  response response_orchestration_correction_prompt_en
+    intent orchestration_correction_prompt
+    language en
+    text "Continue the requested correction in this exact session.\nDisproved claim: {claim}\nEvidence: {evidence}\nRe-evaluate the claim against the evidence, correct the result, and state what changed.\nComplete this correction goal: {task}"
+  response response_orchestration_correction_prompt_ru
+    intent orchestration_correction_prompt
+    language ru
+    text "Продолжите запрошенное исправление в этой же сессии.\nОпровергнутое утверждение: {claim}\nДоказательство: {evidence}\nПовторно оцените утверждение с учётом доказательства, исправьте результат и укажите, что изменилось.\nВыполните эту цель исправления: {task}"
+  response response_orchestration_correction_prompt_hi
+    intent orchestration_correction_prompt
+    language hi
+    text "इसी सत्र में अनुरोधित सुधार जारी रखें।\nअसत्य सिद्ध दावा: {claim}\nसाक्ष्य: {evidence}\nसाक्ष्य के आधार पर दावे का पुनर्मूल्यांकन करें, परिणाम सुधारें और बताएं कि क्या बदला।\nसुधार का यह लक्ष्य पूरा करें: {task}"
+  response response_orchestration_correction_prompt_zh
+    intent orchestration_correction_prompt
+    language zh
+    text "在同一会话中继续请求的更正。\n已证伪的主张：{claim}\n证据：{evidence}\n依据证据重新评估该主张，更正结果，并说明发生了什么变化。\n完成此更正目标：{task}"
+  response response_orchestration_cross_agent_denial_en
+    intent orchestration_cross_agent_denial
+    language en
+    text "Cross-agent denial: sources={sources}; probability={probability}"
+  response response_orchestration_cross_agent_denial_ru
+    intent orchestration_cross_agent_denial
+    language ru
+    text "Межагентное опровержение: источники={sources}; вероятность={probability}"
+  response response_orchestration_cross_agent_denial_hi
+    intent orchestration_cross_agent_denial
+    language hi
+    text "अंतर-एजेंट खंडन: स्रोत={sources}; प्रायिकता={probability}"
+  response response_orchestration_cross_agent_denial_zh
+    intent orchestration_cross_agent_denial
+    language zh
+    text "跨代理否定：来源={sources}；概率={probability}"

@@ -1,0 +1,13 @@
+self_ast_census
+  target src/orchestration/permission.rs
+  language rust
+  fidelity signature
+  byte_len 835
+  line_count 30
+  content_id source_module_880e1531fba723f8
+  symbol_count 4
+  symbols
+    struct AgentRunPermission 5 7
+    function grant_for 12 16
+    function permits 18 22
+    function same_path 25 30

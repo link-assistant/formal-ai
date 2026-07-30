@@ -1,0 +1,11 @@
+Add the capability token that will guard external process execution.
+
+Work only in a new file named `src/orchestration/permission.rs`; leave every
+existing path untouched. The file should expose a small Rust value that is
+denied when constructed with `Default`, can be deliberately granted through a
+public associated function, and can be queried by a future runner. Include a
+permission-denied error type or variant that the future runner can return.
+
+Write focused in-file tests for both states. This module must remain independent
+of particular agents, issue text, commands, and workspaces, and stay below 150
+lines. Do not run any process from this module.

@@ -36,6 +36,8 @@ Windows stores native memory below `%APPDATA%\formal-ai\`; macOS and Linux use
 - [Agentic CLIs and TUIs](agentic-clis.md): one-shot and permanent setup for
   Codex, T3 Code, OpenCode, OpenCode Desktop, Agent, Cursor, Gemini, Claude,
   Qwen, Grok, and Aider.
+- [Multi-agent orchestration](orchestration.md): permission-gated editing,
+  verification, decomposition, comparison, and replay.
 - [Out-of-box and passthrough modes](modes.md): engine selection, permissions,
   and `agent-commander`.
 - [Tools reference](tools.md): internal/external tools and capability routing.

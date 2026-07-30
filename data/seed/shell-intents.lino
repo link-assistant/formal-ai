@@ -252,6 +252,22 @@ shell_intents
       language zh
         cue 报告问题
     intent
+      command "printf '%s\\n' '' '[![Formal AI](https://img.shields.io/badge/Formal_AI-orchestrated-blue)](https://github.com/link-assistant/formal-ai)' >> README.md && tail -n 2 README.md"
+      argument "none"
+      language en
+        cue "README badge"
+        cue "badge in README"
+        cue "badge to README"
+      language ru
+        cue "значок README"
+        cue "бейдж README"
+        cue "бейдж в README"
+      language hi
+        cue "README बैज"
+      language zh
+        cue "README 徽章"
+        cue "在 README 中添加徽章"
+    intent
       command pwd
       argument "none"
       language en
