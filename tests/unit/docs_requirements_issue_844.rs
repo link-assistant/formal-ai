@@ -148,14 +148,15 @@ fn the_worked_example_and_release_metadata_are_committed() {
     );
 
     let fragments = fs::read_dir(root().join("changelog.d")).expect("read changelog.d");
-    let mentions_844 = fragments
+    let active_fragment_mentions_844 = fragments
         .filter_map(Result::ok)
         .map(|entry| entry.path())
         .filter(|path| path.extension().is_some_and(|extension| extension == "md"))
         .filter_map(|path| fs::read_to_string(path).ok())
         .any(|fragment| fragment.contains("#844") && fragment.contains("bump: minor"));
+    let released_changelog_mentions_844 = read("CHANGELOG.md").contains("issue #844");
     assert!(
-        mentions_844,
-        "a changelog fragment must announce the issue #844 feature with a minor bump"
+        active_fragment_mentions_844 || released_changelog_mentions_844,
+        "release metadata must trace issue #844 through an active minor fragment or CHANGELOG.md"
     );
 }
