@@ -1,6 +1,3 @@
-# Issue #699 batch 1: language surfaces for interval-constraint recognition.
-# The Rust primitive names only these semantic roles; adding a paraphrase or a
-# language is a data change.
 meanings
   number_constraint_entity
     defined-by entity

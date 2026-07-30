@@ -117,7 +117,7 @@ fn migration_ledger_is_a_complete_live_registry_census() {
         "batch 1 migrates exactly one method",
     );
     assert_eq!(
-        ledger.matches("status justified-native").count(),
+        ledger.matches("status \"justified-native\"").count(),
         2,
         "the native set must stay explicit and small",
     );

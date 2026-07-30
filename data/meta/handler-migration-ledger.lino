@@ -1,10 +1,3 @@
-# Issue #699 handler migration ledger.
-# Status vocabulary:
-# - migrated: recognition/selection is link data and only a general/native
-#   operation remains in Rust.
-# - justified-native: compiled execution is intrinsically host/native and its
-#   justification is recorded here.
-# - pending: intent-specific Rust behavior still needs a later migration batch.
 handler_migration_ledger
   issue 699
   batch 1
@@ -68,17 +61,17 @@ handler_migration_ledger
     status pending
   handler number_constraint_reasoning
     status migrated
-    data data/seed/meanings-number-constraints.lino
-    primitive src/number_constraints.rs
+    data "data/seed/meanings-number-constraints.lino"
+    primitive "src/number_constraints.rs"
     justification "Interval extraction, integer enumeration, and proof-engine invocation are language-neutral native operations; all intent surfaces and relation vocabulary are seed roles."
-    held_out tests/unit/issue_699_handler_migration.rs
+    held_out "tests/unit/issue_699_handler_migration.rs"
   handler arithmetic
-    status justified-native
-    primitive src/calculation.rs
+    status "justified-native"
+    primitive "src/calculation.rs"
     justification "Exact arithmetic evaluation is a compiled host primitive; recognition and operator vocabulary are seed data."
   handler javascript_execution
-    status justified-native
-    primitive src/solver_handlers/mod.rs
+    status "justified-native"
+    primitive "src/solver_handlers/mod.rs"
     justification "Sandboxed JavaScript evaluation is a host execution boundary; replacing it with declarative links would not remove the native runtime."
   handler definition_merge
     status pending
