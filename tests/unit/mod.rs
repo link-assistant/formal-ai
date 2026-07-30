@@ -93,6 +93,7 @@ mod issue_701_learning_adoption;
 mod issue_702_nested_contexts;
 mod issue_702_world_model_dialog;
 mod issue_702_world_state_chat;
+mod issue_706_any_language;
 mod issue_712_routing_learning;
 mod issue_714_agentic_mode;
 mod issue_715_code_rewrite_learning;

@@ -5,8 +5,8 @@ self_ast_census_index
   module_count 360
   full_ast_module_count 50
   signature_module_count 310
-  symbol_count 7356
-  content_id self_ast_census_index_c8dca97d17892a8c
+  symbol_count 7358
+  content_id self_ast_census_index_11c544ffb065bbb3
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/associative_learning.rs full_ast 7 source_module_926e3e97b31fa30a
@@ -144,7 +144,7 @@ self_ast_census_index
     src/learning_adoption_ledger.rs signature 21 source_module_df465e611504387a
     src/learning_cycle.rs signature 29 source_module_a3003053e3ce0dc6
     src/learning_ledger.rs signature 26 source_module_b3603c2c577cd078
-    src/lexeme_import.rs signature 49 source_module_d380e6fbec7c2969
+    src/lexeme_import.rs signature 49 source_module_e2ce6b037df91459
     src/lib.rs signature 134 source_module_4ff9fdb14f851f28
     src/link_store.rs signature 53 source_module_4163b0ff62ebee82
     src/links_format.rs signature 7 source_module_17ae7d7e69b8c450
@@ -211,12 +211,12 @@ self_ast_census_index
     src/responses_stream.rs signature 9 source_module_ca16c71d79b370b0
     src/route_method_alias.rs signature 6 source_module_d9cf44b71fcb8405
     src/rule_synthesis.rs signature 15 source_module_314f4d56287f7dd7
-    src/seed.rs signature 54 source_module_14436949ca4a5b71
+    src/seed.rs signature 54 source_module_00e5bdde85436e76
     src/seed/agentic_tool_capabilities.rs signature 2 source_module_9847f4d6bab733ff
     src/seed/brainstorm.rs signature 5 source_module_6580e5a2ac5b3691
     src/seed/client_integrations.rs signature 19 source_module_9207f94472e96872
     src/seed/coreference.rs signature 6 source_module_2a031fb4770187f1
-    src/seed/embedded.rs signature 90 source_module_fd503fbd6da2e477
+    src/seed/embedded.rs signature 92 source_module_5034e202c537c9cc
     src/seed/facts.rs signature 9 source_module_986f7657cab5c21a
     src/seed/grounding_overrides.rs signature 6 source_module_e1e4f825307e3b33
     src/seed/handler_precedence.rs signature 2 source_module_0153cbdf1badb1d6

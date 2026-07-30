@@ -11,8 +11,8 @@ use std::path::PathBuf;
 
 use formal_ai::event_log::EventLog;
 use formal_ai::lexeme_import::{
-    self, Concept, GroundedLexeme, ImportConfig, SurfaceSource, DEFINED_BY, GRAMMATICAL_NUMBER,
-    IMPORT_LANGUAGES, PART_OF_SPEECH,
+    self, import_languages, Concept, GroundedLexeme, ImportConfig, SurfaceSource, DEFINED_BY,
+    GRAMMATICAL_NUMBER, PART_OF_SPEECH,
 };
 
 #[test]
@@ -94,8 +94,8 @@ fn template_emission_matches_contract() {
     let lexeme = GroundedLexeme {
         slug: "dog".to_string(),
         qid: "Q144".to_string(),
-        labels: IMPORT_LANGUAGES
-            .iter()
+        labels: import_languages()
+            .into_iter()
             .zip(["dog", "собака", "कुत्ता", "犬"])
             .map(|(language, surface)| (language.to_string(), surface.to_string()))
             .collect(),
@@ -248,7 +248,7 @@ fn cache_records_ground_every_import() {
             .get(&concept.slug)
             .unwrap_or_else(|| panic!("{} not present in committed shards", concept.slug));
         assert_eq!(qid, &concept.qid, "{} grounding mismatch", concept.slug);
-        for language in IMPORT_LANGUAGES {
+        for language in import_languages() {
             assert_eq!(
                 labels.get(language),
                 emitted_labels.get(language),
@@ -372,8 +372,8 @@ fn coverage_accounts_for_requested_concepts_languages_and_surfaces() {
 
     assert_eq!(report.coverage.requested_concepts, 1);
     assert_eq!(report.coverage.accepted_concepts, 1);
-    assert_eq!(report.coverage.expected_surfaces, IMPORT_LANGUAGES.len());
-    assert_eq!(report.coverage.emitted_surfaces, IMPORT_LANGUAGES.len());
+    assert_eq!(report.coverage.expected_surfaces, import_languages().len());
+    assert_eq!(report.coverage.emitted_surfaces, import_languages().len());
     assert_eq!(report.coverage.permille(), 1_000);
 }
 
@@ -394,7 +394,7 @@ fn every_surface_carries_truthful_source_record_provenance() {
     let report = lexeme_import::run(&config, None, &mut events);
     let dog = report.accepted.first().expect("dog accepted");
 
-    for language in IMPORT_LANGUAGES {
+    for language in import_languages() {
         assert_eq!(
             dog.sources.get(language),
             Some(&SurfaceSource {
@@ -458,8 +458,8 @@ fn sample() -> GroundedLexeme {
     GroundedLexeme {
         slug: "dog".to_string(),
         qid: "Q144".to_string(),
-        labels: IMPORT_LANGUAGES
-            .iter()
+        labels: import_languages()
+            .into_iter()
             .zip(["dog", "собака", "कुत्ता", "犬"])
             .map(|(language, surface)| (language.to_string(), surface.to_string()))
             .collect(),
@@ -468,8 +468,8 @@ fn sample() -> GroundedLexeme {
 }
 
 fn sample_sources(qid: &str) -> std::collections::BTreeMap<String, SurfaceSource> {
-    IMPORT_LANGUAGES
-        .iter()
+    import_languages()
+        .into_iter()
         .map(|language| {
             (
                 language.to_string(),
@@ -517,8 +517,8 @@ fn rendered_block_validates() {
 #[test]
 fn every_supported_language_surface_is_pinned() {
     let labels = sample().labels;
-    let mut expected = IMPORT_LANGUAGES
-        .iter()
+    let mut expected = import_languages()
+        .into_iter()
         .map(ToString::to_string)
         .collect::<Vec<_>>();
     expected.sort();

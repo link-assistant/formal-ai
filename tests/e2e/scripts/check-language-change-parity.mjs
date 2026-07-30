@@ -11,17 +11,21 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import {
   parseLinoEntry,
-  parseSupportedLanguagesFromAgentInfo,
+  parseRegisteredLanguages,
 } from './lino-seed-parser.mjs';
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, '../../..');
+const responseFiles = fs
+  .readdirSync(path.join(repoRoot, 'data/seed'))
+  .filter((file) => /^multilingual-responses.*\.lino$/u.test(file))
+  .map((file) => `data/seed/${file}`);
 const watchedFiles = [
   'src/web/i18n-catalog.lino',
   'src/web/i18n-catalog-permissions.lino',
   'src/web/i18n-catalog-messages.lino',
   'data/seed/prompt-patterns.lino',
-  'data/seed/multilingual-responses.lino',
+  ...responseFiles,
   'data/seed/concepts.lino',
   'data/seed/tools.lino',
   'data/seed/concept-contexts.lino',
@@ -65,8 +69,14 @@ function readFileAtRef(ref, relativePath) {
 }
 
 function parseSupportedLanguages() {
-  const text = readCurrentFile('data/seed/agent-info.lino');
-  return parseSupportedLanguagesFromAgentInfo(text);
+  const text = readCurrentFile('data/seed/languages.lino');
+  return parseRegisteredLanguages(text);
+}
+
+function parseLanguagesAtRef(ref) {
+  return parseRegisteredLanguages(
+    readFileAtRef(ref, 'data/seed/languages.lino'),
+  );
 }
 
 function appendSignature(map, language, lines) {
@@ -182,6 +192,9 @@ function collectToolSignatures(text) {
 }
 
 function signaturesForFile(relativePath, text, supportedLanguages) {
+  if (/^data\/seed\/multilingual-responses.*\.lino$/u.test(relativePath)) {
+    return collectRecordsByLanguage(text, 'response');
+  }
   switch (relativePath) {
     case 'src/web/i18n-catalog.lino':
     case 'src/web/i18n-catalog-permissions.lino':
@@ -189,8 +202,6 @@ function signaturesForFile(relativePath, text, supportedLanguages) {
       return collectTopLevelLocaleBlocks(text, supportedLanguages);
     case 'data/seed/prompt-patterns.lino':
       return collectRecordsByLanguage(text, 'pattern');
-    case 'data/seed/multilingual-responses.lino':
-      return collectRecordsByLanguage(text, 'response');
     case 'data/seed/concepts.lino':
       return collectIndentedLanguageBlocks(text, 2, 'localized');
     case 'data/seed/tools.lino':
@@ -224,6 +235,11 @@ if (!baseRef) {
   process.exit(0);
 }
 
+const previousLanguages = new Set(parseLanguagesAtRef(baseRef));
+const newlyRegisteredLanguages = new Set(
+  supportedLanguages.filter((language) => !previousLanguages.has(language)),
+);
+
 for (const relativePath of watchedFiles) {
   const oldText = readFileAtRef(baseRef, relativePath);
   const newText = readCurrentFile(relativePath);
@@ -232,6 +248,9 @@ for (const relativePath of watchedFiles) {
   const changed = changedLanguages(oldSignatures, newSignatures, supportedLanguages);
 
   if (changed.length === 0) continue;
+  if (changed.every((language) => newlyRegisteredLanguages.has(language))) {
+    continue;
+  }
 
   const missingLocales = requiredLocales.filter(
     (language) => !changed.includes(language),

@@ -1,0 +1,31 @@
+languages
+  protocol_version 1
+  fallback_policy explicit_gap
+  language en
+    name English
+    status full
+    detection_confidence_permille 1000
+    suites_passing ("greetings" "identity" "concept_lookup" "math_wrappers" "operation_vocabulary" "translation_round_trip")
+  language ru
+    name Russian
+    status full
+    detection_confidence_permille 1000
+    suites_passing ("greetings" "identity" "concept_lookup" "math_wrappers" "operation_vocabulary" "translation_round_trip")
+  language hi
+    name Hindi
+    status full
+    detection_confidence_permille 1000
+    suites_passing ("greetings" "identity" "concept_lookup" "math_wrappers" "operation_vocabulary" "translation_round_trip")
+  language zh
+    name Chinese
+    status full
+    detection_confidence_permille 1000
+    suites_passing ("greetings" "identity" "concept_lookup" "math_wrappers" "operation_vocabulary" "translation_round_trip")
+  language es
+    name Spanish
+    status partial
+    detection_mode explicit_language_context
+    detection_confidence_permille 1000
+    meanings_with_labels 6
+    suites_passing ("greetings" "identity" "concept_lookup" "math_wrappers" "operation_vocabulary" "translation_round_trip")
+    uncovered_behavior language_gap
