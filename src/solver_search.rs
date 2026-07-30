@@ -23,6 +23,8 @@ use crate::seed;
 use crate::solver::SolverConfig;
 use crate::solver_handlers::finalize_simple;
 
+mod portfolio;
+
 /// One arithmetic operator the search can place between operands, identified by
 /// its language-neutral notation `symbol`.
 ///
@@ -167,7 +169,19 @@ pub fn try_budget_search(
     log.append("search:budget", config.compute_budget.to_string());
     record_generated_tests(log, &problem);
 
-    let outcome = run_search(prompt, log, &problem, config.compute_budget);
+    let (outcome, comparison_artifact) = if config.draft_count <= 1 {
+        (
+            run_search(
+                seed_from_prompt(prompt),
+                log,
+                &problem,
+                config.compute_budget,
+            ),
+            None,
+        )
+    } else {
+        portfolio::run_draft_portfolio(prompt, log, &problem, config)
+    };
     match outcome {
         Some(solution) => {
             log.append(
@@ -181,6 +195,7 @@ pub fn try_budget_search(
                 &problem,
                 &solution,
                 config.compute_budget,
+                comparison_artifact.as_deref(),
             ))
         }
         None => {
@@ -193,13 +208,15 @@ pub fn try_budget_search(
 
 /// The best composition found by the search, with the evaluation count that
 /// produced it.
+#[derive(Debug, Clone)]
 struct SearchSolution {
     expression: String,
     evaluations: u32,
+    candidate: Candidate,
 }
 
 fn run_search(
-    prompt: &str,
+    seed: u64,
     log: &mut EventLog,
     problem: &SearchProblem,
     budget: u32,
@@ -210,7 +227,7 @@ fn run_search(
         return None;
     }
 
-    let mut prng = Prng::seeded(seed_from_prompt(prompt));
+    let mut prng = Prng::seeded(seed);
     let mut evaluations: u32 = 0;
     let mut best: Option<(Candidate, i64)> = None;
 
@@ -306,6 +323,7 @@ fn finish_solution(
     SearchSolution {
         expression: candidate.render(&problem.numbers),
         evaluations,
+        candidate: candidate.clone(),
     }
 }
 
@@ -409,6 +427,7 @@ fn build_answer(
     problem: &SearchProblem,
     solution: &SearchSolution,
     budget: u32,
+    comparison_artifact: Option<&str>,
 ) -> SymbolicAnswer {
     // The reply prose lives in the seed knowledge base (R379: "data is the
     // interface"), localized to the prompt's language with an English fallback,
@@ -427,11 +446,16 @@ fn build_answer(
         ("{evaluations}", solution.evaluations.to_string()),
         ("{trace_id}", stable_id("search", prompt)),
     ];
-    let body = substitutions
+    let mut body = substitutions
         .iter()
         .fold(template, |acc, (placeholder, value)| {
             acc.replace(placeholder, value)
         });
+    if let Some(artifact) = comparison_artifact {
+        body.push_str("\n\n```links\n");
+        body.push_str(artifact);
+        body.push_str("```\n");
+    }
     finalize_simple(
         prompt,
         log,

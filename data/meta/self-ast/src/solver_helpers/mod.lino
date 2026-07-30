@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_helpers/mod.rs
   language rust
   fidelity signature
-  byte_len 25858
-  line_count 729
-  content_id source_module_c775023e9e7de706
+  byte_len 26043
+  line_count 734
+  content_id source_module_85b5a39f3b718f1d
   symbol_count 48
   symbols
     module code 13 13
@@ -54,4 +54,4 @@ self_ast_census
     function env_bool_with_extra_truthy 626 639
     function env_bounded_f32 642 649
     function env_truthy 652 661
-    function config_from_env 666 729
+    function config_from_env 666 734

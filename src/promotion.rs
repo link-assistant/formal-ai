@@ -520,7 +520,7 @@ pub fn demonstration_promotion_proposals() -> Vec<PromotionProposal> {
         ),
         vec![
             PromotionRatchet::coding_modification(5, 0),
-            PromotionRatchet::industry(12, 3),
+            PromotionRatchet::industry(13, 3),
             PromotionRatchet::unit_specs(1, 0),
         ],
     );

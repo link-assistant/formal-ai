@@ -1,4 +1,9 @@
 meanings
+  pattern_concept_prefix_chto_znachit
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix chto znachit"
   pattern_concept_prefix_define
     defined-by prompt_pattern
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "response agentic action search code zh"
-  response_agentic_action_search_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action search en"

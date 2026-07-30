@@ -250,6 +250,11 @@ pub struct SolverConfig {
     /// stream is seeded from the impulse content hash, so the stage stays
     /// deterministic for a given config per the `VISION.md` contract.
     pub compute_budget: u32,
+    /// Maximum number of independent candidate drafts evaluated for one
+    /// synthesis leaf (issue #704). `1` preserves the historical single-path
+    /// behavior. Values above one enable the deterministic parallel portfolio;
+    /// each draft is seeded from the impulse plus its ordered draft index.
+    pub draft_count: u8,
 }
 
 impl Default for SolverConfig {
@@ -276,6 +281,7 @@ impl Default for SolverConfig {
             probability_policy: ProbabilityDecisionPolicy::default(),
             forced_response_language: None,
             compute_budget: 512,
+            draft_count: 1,
         }
     }
 }

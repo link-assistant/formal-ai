@@ -1,0 +1,60 @@
+draft_portfolio_meta_recipe
+  record_type "meta_recipe"
+  topic "candidate_solution_portfolio"
+  issue "704"
+  summary "Grounded recipe for deterministic k-draft synthesis, concurrent evaluation, least-action selection, hierarchical backtracking, comparison explanations, and durable failed-attempt learning."
+  implementation "src/solver_search/portfolio.rs"
+  configuration "src/solver.rs"
+  benchmark "data/benchmarks/industry-suite.lino"
+portfolio_step_generate
+  record_type "meta_step"
+  order "1"
+  id "generate"
+  invariant "derive each draft seed from the same impulse hash plus its draft index"
+portfolio_step_evaluate
+  record_type "meta_step"
+  order "2"
+  id "evaluate"
+  invariant "run every generated test against every draft and retain pass counts and cost"
+portfolio_step_parallelize
+  record_type "meta_step"
+  order "3"
+  id "parallelize"
+  invariant "evaluate independent drafts concurrently without sharing mutable trace state"
+portfolio_step_order
+  record_type "meta_step"
+  order "4"
+  id "order"
+  invariant "merge completed evaluations by draft index so scheduler order cannot change output"
+portfolio_step_rank
+  record_type "meta_step"
+  order "5"
+  id "rank"
+  invariant "rank only fully passing drafts by size, evaluation steps, then draft index"
+portfolio_step_compose
+  record_type "meta_step"
+  order "6"
+  id "compose"
+  invariant "verify the selected draft at composition level and backtrack to the next passing draft on failure"
+portfolio_step_record
+  record_type "meta_step"
+  order "7"
+  id "record"
+  invariant "append one draft result per candidate, one comparison ledger, and bounded retry metadata for failures"
+portfolio_step_explain
+  record_type "meta_step"
+  order "8"
+  id "explain"
+  invariant "answer why follow-ups from the recoverable comparison artifact in the prior answer"
+portfolio_selector
+  record_type "meta_selector"
+  passing_gate "passed_tests equals total_tests"
+  least_action_order "cost_size, cost_steps, draft_index"
+  composition_backtrack "enabled"
+  ordered_merge "draft_index"
+portfolio_learning
+  record_type "meta_learning"
+  failed_event "draft_failure"
+  retry_policy "bounded"
+  max_attempts "3"
+  dreaming_status "available_for_dreaming"

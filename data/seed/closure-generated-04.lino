@@ -1,4 +1,9 @@
 meanings
+  response_agentic_action_search_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action search en"
   response_agentic_action_search_hi
     defined-by response_template
     lexeme en
@@ -554,6 +559,26 @@ meanings
     lexeme en
       surface
         text "response document originality check sample present zh"
+  response_draft_comparison_explanation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response draft comparison explanation en"
+  response_draft_comparison_explanation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response draft comparison explanation hi"
+  response_draft_comparison_explanation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response draft comparison explanation ru"
+  response_draft_comparison_explanation_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response draft comparison explanation zh"
   response_external_benchmark_baseline_read_error_en
     defined-by response_template
     lexeme en
@@ -1369,28 +1394,3 @@ meanings
     lexeme en
       surface
         text "response lexeme import denotation lost hi"
-  response_lexeme_import_denotation_lost_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import denotation lost ru"
-  response_lexeme_import_denotation_lost_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import denotation lost zh"
-  response_lexeme_import_duplicate_qid_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import duplicate qid en"
-  response_lexeme_import_duplicate_qid_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import duplicate qid hi"
-  response_lexeme_import_duplicate_qid_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import duplicate qid ru"

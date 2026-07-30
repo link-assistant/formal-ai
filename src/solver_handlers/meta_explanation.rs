@@ -30,13 +30,22 @@ pub fn try_meta_explanation_with_runtime(
         return None;
     }
     let language = meta_language(prompt, normalized);
+    let mut intent = "meta_explanation";
     let body = if is_why_question {
-        let mut body = why_explanation_body(language);
-        if let Some(procedure) = compiled_procedure_from_history(log) {
-            log.append("skill_compile:procedure", procedure.id.clone());
-            body.push_str(&cited_procedure_steps(&procedure, language));
-        }
-        body
+        draft_comparison_from_history(log).map_or_else(
+            || {
+                let mut body = why_explanation_body(language);
+                if let Some(procedure) = compiled_procedure_from_history(log) {
+                    log.append("skill_compile:procedure", procedure.id.clone());
+                    body.push_str(&cited_procedure_steps(&procedure, language));
+                }
+                body
+            },
+            |comparison| {
+                intent = "draft_comparison_explanation";
+                draft_comparison_explanation(&comparison, language)
+            },
+        )
     } else if is_architecture_question {
         architecture_explanation_body(language, runtime)
     } else {
@@ -54,11 +63,69 @@ pub fn try_meta_explanation_with_runtime(
     Some(finalize_simple(
         prompt,
         log,
-        "meta_explanation",
-        "response:meta_explanation",
+        intent,
+        if intent == "draft_comparison_explanation" {
+            "response:draft_comparison_explanation"
+        } else {
+            "response:meta_explanation"
+        },
         &body,
         1.0,
     ))
+}
+
+struct DraftComparison {
+    winner_index: String,
+    strategy: String,
+    passed_tests: String,
+    total_tests: String,
+    smaller_percent: String,
+}
+
+fn draft_comparison_from_history(log: &EventLog) -> Option<DraftComparison> {
+    let artifact = log
+        .events()
+        .iter()
+        .rev()
+        .filter(|event| event.kind == "prior_turn:assistant")
+        .find_map(|event| {
+            event
+                .payload
+                .contains("draft_comparison_artifact")
+                .then_some(event.payload.as_str())
+        })?;
+    Some(DraftComparison {
+        winner_index: artifact_field(artifact, "winner_index")?,
+        strategy: artifact_field(artifact, "winner_strategy")?,
+        passed_tests: artifact_field(artifact, "passed_tests")?,
+        total_tests: artifact_field(artifact, "total_tests")?,
+        smaller_percent: artifact_field(artifact, "smaller_percent")?,
+    })
+}
+
+fn artifact_field(artifact: &str, field: &str) -> Option<String> {
+    artifact.lines().find_map(|line| {
+        let line = line.trim();
+        let value = line.strip_prefix(field)?.trim();
+        (!value.is_empty()).then(|| value.trim_matches('"').to_owned())
+    })
+}
+
+fn draft_comparison_explanation(comparison: &DraftComparison, language: &str) -> String {
+    let template = response_for("draft_comparison_explanation", language)
+        .or_else(|| response_for("draft_comparison_explanation", "en"))
+        .unwrap_or_default();
+    [
+        ("{winner_index}", comparison.winner_index.as_str()),
+        ("{strategy}", comparison.strategy.as_str()),
+        ("{passed_tests}", comparison.passed_tests.as_str()),
+        ("{total_tests}", comparison.total_tests.as_str()),
+        ("{smaller_percent}", comparison.smaller_percent.as_str()),
+    ]
+    .into_iter()
+    .fold(template, |body, (placeholder, value)| {
+        body.replace(placeholder, value)
+    })
 }
 
 fn why_explanation_body(language: &str) -> String {
