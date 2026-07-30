@@ -1174,42 +1174,42 @@ meanings
       surface
         text "explicit language context detection"
   language_gap
-    defined-by intent
+    defined-by concept
     lexeme en
       surface
         text "language coverage gap"
   response_greeting_es
-    defined-by response_template
+    defined-by concept
     lexeme en
       surface
         text "Spanish greeting response"
   response_identity_es
-    defined-by response_template
+    defined-by concept
     lexeme en
       surface
         text "Spanish identity response"
   response_language_gap_en
-    defined-by response_template
+    defined-by concept
     lexeme en
       surface
         text "English language gap response"
   response_language_gap_ru
-    defined-by response_template
+    defined-by concept
     lexeme en
       surface
         text "Russian language gap response"
   response_language_gap_hi
-    defined-by response_template
+    defined-by concept
     lexeme en
       surface
         text "Hindi language gap response"
   response_language_gap_zh
-    defined-by response_template
+    defined-by concept
     lexeme en
       surface
         text "Chinese language gap response"
   response_language_gap_es
-    defined-by response_template
+    defined-by concept
     lexeme en
       surface
         text "Spanish language gap response"
