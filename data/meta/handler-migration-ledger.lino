@@ -1,8 +1,8 @@
 handler_migration_ledger
   issue 699
-  batch 1
-  specialized_handler_files_max 38
-  try_dispatch_entries_max 50
+  batch 2
+  specialized_handler_files_max 37
+  try_dispatch_entries_max 48
   handler http_fetch
     status pending
   handler url_navigate
@@ -74,11 +74,19 @@ handler_migration_ledger
     primitive "src/solver_handlers/mod.rs"
     justification "Sandboxed JavaScript evaluation is a host execution boundary; replacing it with declarative links would not remove the native runtime."
   handler definition_merge
-    status pending
+    status migrated
+    data "data/seed/language-detection.lino|data/seed/multilingual-responses.lino"
+    primitive "src/definition_merge.rs"
+    justification "Fragment deduplication, ordering, and rendering are language-neutral operations; the source-host language mapping moved to the language-detection rules and every rendered label is a seed response with en/ru/hi/zh coverage."
+    held_out "tests/unit/issue_699_handler_migration.rs"
   handler concept_lookup
     status pending
   handler who_is
-    status pending
+    status migrated
+    data "data/seed/entity-names.lino|data/seed/multilingual-responses.lino"
+    primitive "src/entity_resolution.rs"
+    justification "The fixed table of eight people and their hand-written misspellings is gone; nearest-surface search under a length-scaled edit budget is the only native part, and candidate names come from the entity registry, concept terms and aliases, and fact labels, so no misspelling is stored anywhere."
+    held_out "tests/unit/issue_699_handler_migration.rs"
   handler how_it_works
     status pending
   handler meta_explanation

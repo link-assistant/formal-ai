@@ -26,6 +26,7 @@ mod brainstorm;
 mod client_integrations;
 mod coreference;
 mod embedded;
+mod entity_names;
 mod facts;
 mod grounding_overrides;
 mod handler_precedence;
@@ -59,18 +60,20 @@ pub use coreference::{coreference_seeds, Antecedent, CoreferenceSeeds, Pronoun};
 pub use embedded::{
     seed_files, AGENTIC_TOOL_CAPABILITIES_LINO, AGENT_INFO_LINO, BRAINSTORM_SEEDS_LINO,
     CLIENT_INTEGRATIONS_LINO, CODING_IDIOMS_LINO, CONCEPTS_LINO, CONCEPT_CONTEXTS_LINO,
-    COREFERENCE_LINO, DEMO_DIALOGS_LINO, ENVIRONMENTS_LINO, FACTS_LINO, GREETINGS_LINO,
-    HANDLER_PRECEDENCE_LINO, HELLO_WORLD_PROGRAMS_LINO, IDENTITY_LINO, INTENT_ROUTING_LINO,
-    LANGUAGE_DETECTION_LINO, LEARNING_SOURCES_LINO, MARKET_PRICE_REFERENCES_LINO,
-    MEANINGS_CALENDAR_LINO, MEANINGS_FACTS_LINO, MEANINGS_LINKS_ROOT_LINO, MEANINGS_LINO,
-    MEANINGS_NUMBER_CONSTRAINTS_LINO, MEANINGS_SEMANTIC_META_LINO, MEANINGS_SOFTWARE_PROJECT_LINO,
-    MEANINGS_UNITS_LINO, MEANING_FILES, MODEL_ALIASES_LINO,
-    MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO, MULTILINGUAL_RESPONSES_LINO,
+    COREFERENCE_LINO, DEMO_DIALOGS_LINO, ENTITY_NAMES_LINO, ENVIRONMENTS_LINO, FACTS_LINO,
+    GREETINGS_LINO, HANDLER_PRECEDENCE_LINO, HELLO_WORLD_PROGRAMS_LINO, IDENTITY_LINO,
+    INTENT_ROUTING_LINO, LANGUAGE_DETECTION_LINO, LEARNING_SOURCES_LINO,
+    MARKET_PRICE_REFERENCES_LINO, MEANINGS_CALENDAR_LINO, MEANINGS_FACTS_LINO,
+    MEANINGS_LINKS_ROOT_LINO, MEANINGS_LINO, MEANINGS_NUMBER_CONSTRAINTS_LINO,
+    MEANINGS_SEMANTIC_META_LINO, MEANINGS_SOFTWARE_PROJECT_LINO, MEANINGS_UNITS_LINO,
+    MEANING_FILES, MODEL_ALIASES_LINO, MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,
+    MULTILINGUAL_RESPONSES_ENTITIES_LINO, MULTILINGUAL_RESPONSES_LINO,
     MULTILINGUAL_RESPONSES_PROCEDURE_LINO, NUMERIC_LIST_OPERATIONS_LINO, OPERATION_VOCABULARY_LINO,
     PERSONAS_LINO, PROGRAM_CST_GRAMMARS_LINO, PROGRAM_PLAN_RULES_LINO, PROJECTS_LINO,
     PROMPT_PATTERNS_LINO, RESPONSE_FILES, SELF_IMPROVEMENT_LOOP_LINO, SHELL_INTENTS_LINO,
     SUMMARY_TOPICS_LINO, TERMINAL_COMMANDS_LINO, TOOLS_LINO,
 };
+pub use entity_names::{entity_names, EntityName};
 pub use facts::{facts, FactRecord, LocalizedFact};
 pub use grounding_overrides::{
     cache_contains, override_facts, override_reason, parse_record, resolve, OverrideFact,
@@ -425,6 +428,13 @@ pub struct LanguageRule {
     pub label: String,
     pub start: u32,
     pub end: u32,
+    /// URL fragment identifying a source host that publishes in this language,
+    /// e.g. `://ru.wikipedia.org/`. Empty when the language declares no host.
+    ///
+    /// Issue #699 batch 2: the definition merger used to branch on Wikipedia
+    /// hosts in Rust. Host-to-language is language identity data, so it lives
+    /// beside the script ranges that already answer the same question.
+    pub source_host: String,
 }
 
 #[must_use]
@@ -443,10 +453,23 @@ pub fn language_rules() -> Vec<LanguageRule> {
                 label: entry.find_child_value("label").to_string(),
                 start: parse_codepoint(entry.find_child_value("start")),
                 end: parse_codepoint(entry.find_child_value("end")),
+                source_host: entry.find_child_value("source-host").to_string(),
             });
         }
     }
     out
+}
+
+/// The language of a source URL, decided by the `source-host` fragments
+/// declared in `data/seed/language-detection.lino`.
+///
+/// Falls back to `en`, matching the detection rules' own default.
+#[must_use]
+pub fn language_of_source(source: &str) -> String {
+    language_rules()
+        .into_iter()
+        .find(|rule| !rule.source_host.is_empty() && source.contains(&rule.source_host))
+        .map_or_else(|| String::from("en"), |rule| rule.language)
 }
 
 /// A multilingual question pattern for routing intents.

@@ -947,7 +947,6 @@ src/solver_handlers/conversation_memory/mod.rs	在记忆中找到 \"{}\" 的记�
 src/solver_handlers/conversation_memory/mod.rs	好的，从现在起就叫我 {name} 吧。很高兴认识你！
 src/solver_handlers/conversation_memory/mod.rs	对话摘要:{summary}\n\n标题:{title}\n\n用户发言:\n
 src/solver_handlers/conversation_memory/mod.rs	我叫 {name}，这是你给我起的名字。
-src/solver_handlers/definition_merge.rs	Merged definition of {display_term}{anchor}\nSource languages: {languages}\n\nFacts:
 src/solver_handlers/document_originality.rs	Recognized an originality and plagiarism check for `{target}`.
 src/solver_handlers/document_originality.rs	\"{sample}\" plagiarism originality
 src/solver_handlers/document_originality.rs	asset={} period={} source={} min={:.2} min_date={} max={:.2} max_date={}
@@ -1202,8 +1201,6 @@ src/solver_handlers/text_manipulation.rs	stage:{index} -> {}
 src/solver_handlers/text_manipulation.rs	stage:{} -> operation:{}
 src/solver_handlers/user_intent.rs	I am a deterministic symbolic AI. I do not hold opinions, beliefs, or feelings — every answer I give is derived from an explicit Links Notation rule. If you are looking for factual information on this topic, try asking \"what is <topic>\" and I will look it up in my knowledge base.
 src/solver_handlers/user_intent.rs	I can only respond with a chat reply. Running shell commands on your behalf is not allowed without explicit agent mode opt-in, and even then only inside an isolated sandbox.
-src/solver_handlers/user_intent.rs	I don't have a Links Notation fact for \"{term}\" yet. Add a fact or rule in Links Notation and run the request again.
-src/solver_handlers/user_intent.rs	I don't have a Links Notation fact for \"{term}\" yet. Did you mean \"{corrected}\"? Add a fact or rule in Links Notation and run the request again.
 src/solver_handlers/user_intent.rs	I received only punctuation (`{trimmed}`). What would you like me to do next?
 src/solver_handlers/user_intent.rs	I'm sorry for the confusion. I am formal-ai, a deterministic symbolic AI. I can answer greetings, identity questions, concept lookups (\"what is X?\"), arithmetic, and Hello World programs.
 src/solver_handlers/user_intent.rs	Missing localized response seed: {intent}/{language}

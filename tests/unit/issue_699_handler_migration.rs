@@ -1,5 +1,10 @@
-//! Issue #699 batch 1: migrate fixed number-riddle routing into seed data while
-//! keeping only the language-neutral interval/proof primitive in Rust.
+//! Issue #699 handler migration batches.
+//!
+//! Batch 1 migrated fixed number-riddle routing into seed data, keeping only
+//! the language-neutral interval/proof primitive in Rust. Batch 2 migrated the
+//! `who_is` and `definition_merge` methods: the fixed misspelling table became
+//! approximate matching over remembered names, and the definition merger's
+//! host-to-language mapping and rendered labels became seed data.
 
 use std::fs;
 use std::path::Path;
@@ -7,8 +12,8 @@ use std::path::Path;
 use formal_ai::seed;
 use formal_ai::FormalAiEngine;
 
-const RECORDED_SPECIALIZED_HANDLER_FILES_MAX: usize = 38;
-const RECORDED_TRY_DISPATCH_ENTRIES_MAX: usize = 50;
+const RECORDED_SPECIALIZED_HANDLER_FILES_MAX: usize = 37;
+const RECORDED_TRY_DISPATCH_ENTRIES_MAX: usize = 48;
 
 #[test]
 fn held_out_number_constraint_paraphrases_are_data_driven() {
@@ -49,6 +54,57 @@ fn held_out_number_constraint_paraphrases_are_data_driven() {
             response.answer,
         );
     }
+}
+
+#[test]
+fn held_out_entity_typos_resolve_from_memory() {
+    // Batch 2: the retired `suggest_correction` table listed eight people and
+    // three hand-written misspellings each. None of these names or spellings
+    // appeared in it, and no misspelling is stored anywhere: every suggestion
+    // below comes from approximate matching against remembered correct names.
+    for (language, prompt, expected) in [
+        ("en", "who is ada lovlace", "Ada Lovelace"),
+        ("en", "who was alan turring", "Alan Turing"),
+        ("ru", "кто такой альберт эйнштеин", "Альберт Эйнштейн"),
+        ("hi", "निकोला टेस्ल कौन है", "निकोला टेस्ला"),
+    ] {
+        let response = FormalAiEngine.answer(prompt);
+        assert_eq!(
+            response.intent, "who_is_question",
+            "{language} held-out prompt left the migrated method: {}",
+            response.answer,
+        );
+        assert!(
+            response.answer.contains(expected),
+            "{language} held-out typo did not resolve to {expected}: {}",
+            response.answer,
+        );
+    }
+}
+
+#[test]
+fn entity_suggestions_never_come_from_stored_misspellings() {
+    // Anti-memoization guard: the seed registry stores canonical spellings
+    // only. If a future edit smuggles a typo back into data, the suggestion
+    // path would stop proving generality, so assert the registry itself is
+    // clean of the historical hardcoded variants.
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let registry =
+        fs::read_to_string(root.join("data/seed/entity-names.lino")).expect("entity names seed");
+    for misspelling in [
+        "mask", "tramp", "tromp", "bidan", "bidon", "einstien", "enstien", "issac", "isaak",
+        "vladmir", "puting", "barrack",
+    ] {
+        assert!(
+            !registry.to_lowercase().contains(misspelling),
+            "entity-names.lino must not store the misspelling {misspelling:?}",
+        );
+    }
+    // Correct spellings resolve to themselves, i.e. produce no correction.
+    assert_eq!(
+        formal_ai::entity_resolution::suggest_known_name("Ada Lovelace"),
+        None
+    );
 }
 
 #[test]
@@ -114,8 +170,8 @@ fn migration_ledger_is_a_complete_live_registry_census() {
     );
     assert_eq!(
         ledger.matches("status migrated").count(),
-        1,
-        "batch 1 migrates exactly one method",
+        3,
+        "batches 1-2 migrate three methods in total",
     );
     assert_eq!(
         ledger.matches("status \"justified-native\"").count(),
@@ -124,7 +180,7 @@ fn migration_ledger_is_a_complete_live_registry_census() {
     );
     assert_eq!(
         ledger.matches("status pending").count(),
-        expected.len() - 3,
+        expected.len() - 5,
         "every other current method must honestly remain pending",
     );
 }

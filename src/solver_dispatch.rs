@@ -5,7 +5,9 @@
 //! registry: the registry chooses method names, then this module supplies the
 //! Rust function for names implemented as regular solver handlers.
 
+use crate::definition_merge::merge_definitions;
 use crate::engine::SymbolicAnswer;
+use crate::entity_resolution::resolve_who_is;
 use crate::event_log::EventLog;
 use crate::number_constraints::solve_number_constraints;
 use crate::proof_engine::ProofRenderConfig;
@@ -19,11 +21,11 @@ use crate::solver_handlers::{
     try_algorithm, try_arithmetic, try_brainstorming_request, try_calendar_create_event,
     try_calendar_reasoning, try_capabilities, try_clarification, try_compound_interest,
     try_concept_lookup, try_conversation_memory, try_conversation_topic_request,
-    try_coreference_request, try_definition_merge, try_document_originality_check,
-    try_document_request, try_execution_failure, try_fact_checking, try_fact_lookup,
-    try_github_repository_traffic, try_http_fetch, try_http_fetch_with_offline, try_ill_formed,
-    try_installation_conversion, try_javascript_execution, try_learn_from_source,
-    try_meta_explanation, try_meta_explanation_with_runtime, try_network_query, try_numeric_list,
+    try_coreference_request, try_document_originality_check, try_document_request,
+    try_execution_failure, try_fact_checking, try_fact_lookup, try_github_repository_traffic,
+    try_http_fetch, try_http_fetch_with_offline, try_ill_formed, try_installation_conversion,
+    try_javascript_execution, try_learn_from_source, try_meta_explanation,
+    try_meta_explanation_with_runtime, try_network_query, try_numeric_list,
     try_numeric_list_with_history, try_opinion_question, try_program_synthesis, try_proof_request,
     try_proof_request_with_config, try_punctuation_only_prompt, try_research_comparison_table,
     try_research_result_followup, try_response_language_followup, try_roleplay_request,
@@ -31,8 +33,8 @@ use crate::solver_handlers::{
     try_software_project_followup, try_software_project_request, try_source_conflict,
     try_source_refresh, try_summarization_request, try_task_decomposition_with_depth,
     try_text_manipulation, try_text_manipulation_with_history, try_translation, try_url_navigate,
-    try_web_search, try_web_search_with_offline, try_who_is_question, try_world_state,
-    try_write_script, SelfAwarenessRuntime,
+    try_web_search, try_web_search_with_offline, try_world_state, try_write_script,
+    SelfAwarenessRuntime,
 };
 use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 
@@ -299,9 +301,9 @@ const HANDLER_FUNCTIONS: &[(&str, SpecializedHandler)] = &[
     ("number_constraint_reasoning", solve_number_constraints),
     ("arithmetic", handle_arithmetic),
     ("javascript_execution", handle_javascript_execution),
-    ("definition_merge", try_definition_merge),
+    ("definition_merge", merge_definitions),
     ("concept_lookup", handle_concept_lookup),
-    ("who_is", try_who_is_question),
+    ("who_is", resolve_who_is),
     ("how_it_works", try_how_it_works),
     ("meta_explanation", try_meta_explanation),
     ("network_query", try_network_query),

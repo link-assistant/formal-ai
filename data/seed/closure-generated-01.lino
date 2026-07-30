@@ -94,6 +94,11 @@ meanings
     lexeme en
       surface
         text "accuracy"
+  ada_lovelace
+    defined-by concept
+    lexeme en
+      surface
+        text "ada lovelace"
   addon
     defined-by word_surface
     lexeme en
@@ -244,6 +249,16 @@ meanings
     lexeme en
       surface
         text "ai orchestration"
+  alan_turing
+    defined-by concept
+    lexeme en
+      surface
+        text "alan turing"
+  albert_einstein
+    defined-by concept
+    lexeme en
+      surface
+        text "albert einstein"
   am
     defined-by concept
     lexeme en
@@ -349,6 +364,11 @@ meanings
     lexeme en
       surface
         text "awk"
+  barack_obama
+    defined-by concept
+    lexeme en
+      surface
+        text "barack obama"
   behavior_rules_list
     defined-by intent
     lexeme en
@@ -894,6 +914,16 @@ meanings
     lexeme en
       surface
         text "definition followup clarify"
+  definition_merge_header
+    defined-by intent
+    lexeme en
+      surface
+        text "definition merge header"
+  definition_merge_sources_label
+    defined-by intent
+    lexeme en
+      surface
+        text "definition merge sources label"
   delete
     defined-by phrase
     lexeme en
@@ -984,6 +1014,11 @@ meanings
     lexeme en
       surface
         text "document originality check sample present"
+  donald_trump
+    defined-by concept
+    lexeme en
+      surface
+        text "donald trump"
   dotnet
     defined-by word_surface
     lexeme en
@@ -1009,6 +1044,11 @@ meanings
     lexeme en
       surface
         text "echo"
+  elon_musk
+    defined-by concept
+    lexeme en
+      surface
+        text "elon musk"
   enum
     defined-by kind
     lexeme en
@@ -1354,43 +1394,3 @@ meanings
     lexeme en
       surface
         text "general plan command capture action"
-  general_plan_command_output_evidence
-    defined-by intent
-    lexeme en
-      surface
-        text "general plan command output evidence"
-  general_plan_command_verification_evidence
-    defined-by intent
-    lexeme en
-      surface
-        text "general plan command verification evidence"
-  general_plan_repository_action
-    defined-by intent
-    lexeme en
-      surface
-        text "general plan repository action"
-  general_plan_repository_complete
-    defined-by intent
-    lexeme en
-      surface
-        text "general plan repository complete"
-  general_plan_repository_evidence
-    defined-by intent
-    lexeme en
-      surface
-        text "general plan repository evidence"
-  general_plan_repository_verify_action
-    defined-by intent
-    lexeme en
-      surface
-        text "general plan repository verify action"
-  genuine
-    defined-by word_surface
-    lexeme en
-      surface
-        text "genuine"
-  get
-    defined-by word_surface
-    lexeme en
-      surface
-        text "get"

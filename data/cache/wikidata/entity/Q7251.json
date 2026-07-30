@@ -1,0 +1,93 @@
+{
+  "entities": {
+    "Q7251": {
+      "type": "item",
+      "id": "Q7251",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Alan Turing"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Алан Тьюринг"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "एलेन ट्यूरिंग"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "艾倫·圖靈"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "English computer scientist (1912–1954)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "английский математик, логик, криптограф"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "英國數學家、計算機科學家"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Alan M. Turing"
+          },
+          {
+            "language": "en",
+            "value": "Alan Mathieson Turing"
+          },
+          {
+            "language": "en",
+            "value": "Turing"
+          },
+          {
+            "language": "en",
+            "value": "Alan Mathison Turing"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Тьюринг, Алан"
+          },
+          {
+            "language": "ru",
+            "value": "Тьюринг, Алан Матисон"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "圖靈"
+          },
+          {
+            "language": "zh",
+            "value": "艾伦·图灵"
+          },
+          {
+            "language": "zh",
+            "value": "图灵"
+          },
+          {
+            "language": "zh",
+            "value": "阿兰·图灵"
+          },
+          {
+            "language": "zh",
+            "value": "阿兰·麦席森·图灵"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

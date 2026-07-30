@@ -16,6 +16,8 @@ pub const INTERFACE_CAPABILITIES_LINO: &str =
     include_str!("../../data/seed/interface-capabilities.lino");
 pub const MULTILINGUAL_RESPONSES_LINO: &str =
     include_str!("../../data/seed/multilingual-responses.lino");
+pub const MULTILINGUAL_RESPONSES_ENTITIES_LINO: &str =
+    include_str!("../../data/seed/multilingual-responses-entities.lino");
 pub const MULTILINGUAL_RESPONSES_ORCHESTRATION_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-orchestration.lino");
 pub const MULTILINGUAL_RESPONSES_AGENTIC_LINO: &str =
@@ -32,6 +34,7 @@ pub const FACTS_LINO: &str = include_str!("../../data/seed/facts.lino");
 pub const MODEL_ALIASES_LINO: &str = include_str!("../../data/seed/model-aliases.lino");
 pub const MARKET_PRICE_REFERENCES_LINO: &str =
     include_str!("../../data/seed/market-price-references.lino");
+pub const ENTITY_NAMES_LINO: &str = include_str!("../../data/seed/entity-names.lino");
 pub const CLIENT_INTEGRATIONS_LINO: &str = include_str!("../../data/seed/client-integrations.lino");
 pub const BRAINSTORM_SEEDS_LINO: &str = include_str!("../../data/seed/brainstorm-seeds.lino");
 pub const PERSONAS_LINO: &str = include_str!("../../data/seed/personas.lino");
@@ -163,6 +166,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             MULTILINGUAL_RESPONSES_LINO,
         ),
         (
+            "data/seed/multilingual-responses-entities.lino",
+            MULTILINGUAL_RESPONSES_ENTITIES_LINO,
+        ),
+        (
             "data/seed/multilingual-responses-orchestration.lino",
             MULTILINGUAL_RESPONSES_ORCHESTRATION_LINO,
         ),
@@ -190,6 +197,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             "data/seed/market-price-references.lino",
             MARKET_PRICE_REFERENCES_LINO,
         ),
+        ("data/seed/entity-names.lino", ENTITY_NAMES_LINO),
         (
             "data/seed/client-integrations.lino",
             CLIENT_INTEGRATIONS_LINO,
@@ -391,6 +399,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
 /// them, so an intent may live in whichever file keeps the sizes balanced.
 pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_LINO,
+    MULTILINGUAL_RESPONSES_ENTITIES_LINO,
     MULTILINGUAL_RESPONSES_ORCHESTRATION_LINO,
     MULTILINGUAL_RESPONSES_AGENTIC_LINO,
     MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,
