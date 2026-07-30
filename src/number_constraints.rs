@@ -46,7 +46,7 @@ struct IntervalBounds {
     upper: Bound,
 }
 
-pub(crate) fn solve_number_constraints(
+pub fn solve_number_constraints(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
