@@ -46,6 +46,7 @@ use crate::relative_meta_logic::{
     RelativeEvidence, SourceTier, Stance, StatementAssessment, TruthValue, ASSUMED_TRUE_PRIOR,
 };
 use crate::substitution::{SubstitutionGraph, SubstitutionLink};
+use crate::world_model_cycles::collapse_truth_cycle;
 
 /// Upper bound on relaxation passes in [`Context::recalculate`].
 ///
@@ -56,6 +57,11 @@ use crate::substitution::{SubstitutionGraph, SubstitutionLink};
 /// dependency cycle (a statement whose dependency contradicts it), which can
 /// oscillate rather than settle. It is multiplied by the statement count so a
 /// deep dependency chain still relaxes fully before the guard trips.
+///
+/// A cycle that repeats a visited state exactly never reaches this guard:
+/// [`Context::recalculate`] collapses it to the mean of the cycle. The guard
+/// still catches the slow case — a cycle that spirals towards its fixpoint
+/// without ever revisiting a state.
 const MAX_RECALCULATION_PASSES_PER_STATEMENT: usize = 4;
 
 /// How one statement depends on another inside a context.
@@ -361,6 +367,10 @@ impl Context {
     /// changes (converged) or the `MAX_RECALCULATION_PASSES_PER_STATEMENT`
     /// bound trips. The dependency structure is mirrored into the links network
     /// so the context stays a single inspectable graph.
+    ///
+    /// Repeated states are collapsed to their mean, then verified with one more
+    /// assessment pass. This settles exact negative-feedback oscillations at
+    /// maximal uncertainty instead of returning an arbitrary half-cycle.
     pub fn recalculate(&mut self) -> RecalculationReport {
         let ids: Vec<String> = self.statements.keys().cloned().collect();
         let before: BTreeMap<String, TruthValue> = ids
@@ -374,6 +384,7 @@ impl Context {
 
         let mut iterations = 0;
         let mut converged = false;
+        let mut visited: Vec<BTreeMap<String, TruthValue>> = Vec::new();
         let mut checked_links = Vec::new();
         while iterations < limit {
             iterations += 1;
@@ -381,6 +392,11 @@ impl Context {
                 .iter()
                 .map(|id| (id.clone(), self.statements[id].truth))
                 .collect();
+            if let Some(start) = visited.iter().position(|seen| *seen == snapshot) {
+                converged = self.collapse_cycle(&ids, &visited[start..]);
+                break;
+            }
+            visited.push(snapshot.clone());
             let mut changed = false;
             for id in &ids {
                 let recomputed = self.assess_with_dependencies(id, &snapshot);
@@ -431,6 +447,22 @@ impl Context {
             updated,
             checked_links,
         }
+    }
+
+    /// Settle an oscillating cascade on the mean of the cycle it fell into.
+    ///
+    /// Returns whether one further pass leaves the cycle's mean unchanged.
+    fn collapse_cycle(&mut self, ids: &[String], cycle: &[BTreeMap<String, TruthValue>]) -> bool {
+        let Some(collapsed) = collapse_truth_cycle(ids, cycle) else {
+            return false;
+        };
+        for (id, value) in &collapsed {
+            if let Some(statement) = self.statements.get_mut(id) {
+                statement.truth = *value;
+            }
+        }
+        ids.iter()
+            .all(|id| self.assess_with_dependencies(id, &collapsed) == collapsed[id])
     }
 
     /// Assess one statement from its own evidence plus the current truth values

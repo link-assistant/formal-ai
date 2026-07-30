@@ -229,3 +229,14 @@ pub const ROLE_PROGRAM_SYNTHESIS_SIGNAL: &str = "program_synthesis_signal";
 /// selected when its name is declared or when every `program_synthesis_signal`
 /// it is `defined_by` is evidenced in the prompt.
 pub const ROLE_PROGRAM_SYNTHESIS_TASK: &str = "program_synthesis_task";
+/// Semantic role: a word an identifier may not be, because a programming
+/// language reserves it.
+///
+/// The union of the Rust, Python and JavaScript keyword sets, carried by
+/// `identifier_reserved_word` in `data/seed/meanings-statement-merge.lino`. The
+/// identifier rung of the summarization ladder (issue #844) reads it through
+/// [`crate::seed::Lexicon::words_for_role`] and suffixes any candidate whose
+/// whole rendered form collides, so shortening "the type of a match" to an
+/// identifier yields `type_match`, and shortening "the type" yields `type_`
+/// rather than the reserved `type`. Read only by the Rust identifier renderer.
+pub const ROLE_IDENTIFIER_RESERVED_WORD: &str = "identifier_reserved_word";

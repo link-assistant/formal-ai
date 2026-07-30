@@ -467,6 +467,8 @@ changelog.d/20260725_002000_issue-839-report-full-conversation.md	0.304.0
 changelog.d/20260725_004500_terminal_tui_capture.md	0.307.1
 changelog.d/20260725_010000_issue_842_task_ladder.md	0.311.0
 changelog.d/20260725_062200_excluded_ci_paths.md	0.304.1
+changelog.d/20260725_090000_issue_844_statement_merge.md	0.312.0
+changelog.d/20260725_094500_issue_847_task_decomposition.md	0.312.0
 changelog.d/20260725_113500_bound_development_disk.md	0.309.0
 changelog.d/20260725_120000_issue_845_fact_checking.md	0.308.0
 changelog.d/20260725_evidence_honesty.md	0.311.1

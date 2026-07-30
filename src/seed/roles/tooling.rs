@@ -371,6 +371,30 @@ pub const ROLE_RESEARCH_CRITERION: &str = "research_criterion";
 /// additionally requires at most twelve whitespace words. Read only by the Rust
 /// summarization classifier (there is no JS worker mirror of that pipeline).
 pub const ROLE_SUMMARY_CLASSIFICATION_CUE: &str = "summary_classification_cue";
+/// Semantic role: a word that carries no content in a statement signature.
+///
+/// Articles, prepositions, copulas and coordinators — the words that differ
+/// between two phrasings of the same fact. Carried by `statement_function_word`
+/// in `data/seed/meanings-statement-merge.lino`, with surfaces for en/ru/hi/zh.
+/// The statement-level deduplicator of issue #844 reads them through
+/// [`crate::seed::Lexicon::words_for_role`] and drops matching *whole tokens*
+/// (never substrings, so "a" cannot hollow out "parser") before hashing a
+/// statement into its merge signature. Quantifiers are deliberately absent from
+/// the data: dropping "all"/"some" would merge "all tests pass" with "some tests
+/// pass". Read only by the Rust summarization deduplicator.
+pub const ROLE_STATEMENT_FUNCTION_WORD: &str = "statement_function_word";
+/// Semantic role: a word that flips the polarity of a statement.
+///
+/// Syntactic negation only ("not", "never", "without", "не", "नहीं", "不", …),
+/// carried by `statement_negation_cue` in
+/// `data/seed/meanings-statement-merge.lino`. The deduplicator removes matching
+/// whole tokens from a statement's terms and records the removal as
+/// `Polarity::Denied`, so "the parser is fast" and "the parser is not fast"
+/// reach the *same* signature with opposite signs and are reported as a
+/// contradiction rather than merged. Semantic near-misses ("fails", "false")
+/// stay out of the data: those belong to a statement's content, not its sign.
+/// Read only by the Rust summarization deduplicator.
+pub const ROLE_STATEMENT_NEGATION_CUE: &str = "statement_negation_cue";
 /// Semantic role: a surface that names one coding-catalog target language.
 ///
 /// Carried by the ten `program_language_<slug>` leaf meanings (rust, python,

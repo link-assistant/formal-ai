@@ -5,9 +5,7 @@
 //! shortcut that runs the full formalize → summarize → deformalize pipeline
 //! over the cleaned text.
 
-use super::{
-    deformalize, formalize, summarize, to_topic, Statement, SummarizationConfig, SummarizationMode,
-};
+use super::{deformalize, formalize, summarize, to_topic, Statement, SummarizationConfig};
 
 /// Strip the most common GitHub README noise from a block of Markdown text:
 ///
@@ -190,8 +188,8 @@ pub fn formalize_markdown(markdown: &str) -> Vec<Statement> {
 #[must_use]
 pub fn describe_readme(repo_slug: &str, markdown: &str, config: &SummarizationConfig) -> String {
     let statements = formalize_markdown(markdown);
-    if config.mode == SummarizationMode::Topic {
-        return to_topic(repo_slug, &statements);
+    if config.mode.is_label_only() {
+        return super::label_for_mode(config.mode, &to_topic(repo_slug, &statements));
     }
     if statements.is_empty() {
         return String::new();

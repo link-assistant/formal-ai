@@ -1,0 +1,1971 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:36.479Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:36.481Z",
+  "service": "default",
+  "version": "0.25.3",
+  "command": "/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Finish Formal AI issue #844 by gathering multiple exact source captures, deduplicating their statements into one named context, fact-checking before presentation, and producing deterministic human-gated learning proposals. As one smallest leaf of that same task, create file multi-source-summary-honesty-invariant.lino containing\nmulti_source_summary_honesty\n  record_type meta_invariant\n  capture \"derive evidence only from exact captured bytes\"\n  merge \"deduplicate statements into one named context with reversible provenance\"\n  verification \"run disproof-first fact checking before presentation\"\n  learning \"render deterministic human-gated proposals from captures merge and audit\" --disable-stdin --no-summarize-session --compaction-model same --model formal-ai/formal-ai",
+  "workingDirectory": "/tmp/tmp.MlmM8GToDw",
+  "scriptPath": "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:36.482Z",
+  "service": "default",
+  "directory": "/tmp/tmp.MlmM8GToDw",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:36.483Z",
+  "service": "project",
+  "directory": "/tmp/tmp.MlmM8GToDw",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:36.558Z",
+  "service": "storage",
+  "index": 0,
+  "message": "running migration"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:36.562Z",
+  "service": "storage",
+  "index": 1,
+  "message": "running migration"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:36.568Z",
+  "service": "default",
+  "processArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Finish Formal AI issue #844 by gathering multiple exact source captures, deduplicating their statements into one named context, fact-checking before presentation, and producing deterministic human-gated learning proposals. As one smallest leaf of that same task, create file multi-source-summary-honesty-invariant.lino containing\nmulti_source_summary_honesty\n  record_type meta_invariant\n  capture \"derive evidence only from exact captured bytes\"\n  merge \"deduplicate statements into one named context with reversible provenance\"\n  verification \"run disproof-first fact checking before presentation\"\n  learning \"render deterministic human-gated proposals from captures merge and audit\"",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-model",
+    "same",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Finish Formal AI issue #844 by gathering multiple exact source captures, deduplicating their statements into one named context, fact-checking before presentation, and producing deterministic human-gated learning proposals. As one smallest leaf of that same task, create file multi-source-summary-honesty-invariant.lino containing\nmulti_source_summary_honesty\n  record_type meta_invariant\n  capture \"derive evidence only from exact captured bytes\"\n  merge \"deduplicate statements into one named context with reversible provenance\"\n  verification \"run disproof-first fact checking before presentation\"\n  learning \"render deterministic human-gated proposals from captures merge and audit\"",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-model",
+    "same",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:36.568Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:36.571Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:36.577Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:36.578Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:36.578Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:36.584Z",
+  "service": "config",
+  "path": "/tmp/tmp.MlmM8GToDw/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:36.635Z",
+  "service": "models.dev",
+  "path": "/home/box/.cache/link-assistant-agent/models.json",
+  "message": "no cache found, awaiting refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:36.636Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:36.808Z",
+  "service": "models.dev",
+  "path": "/home/box/.cache/link-assistant-agent/models.json",
+  "message": "cache unavailable, using bundled data"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:36.927Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:36.967Z",
+  "service": "claude-oauth",
+  "path": "/home/box/.claude/.credentials.json",
+  "message": "credentials file not found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:36.968Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:36.968Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:36.968Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:36.968Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:36.968Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:36.968Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 397,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:36.971Z",
+  "service": "provider",
+  "modelID": "big-pickle",
+  "providerID": "opencode",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:36.971Z",
+  "service": "provider",
+  "modelID": "minimax-m2.5-free",
+  "providerID": "kilo",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:36.972Z",
+  "service": "default",
+  "models": [
+    "opencode/big-pickle",
+    "kilo/minimax-m2.5-free",
+    "same"
+  ],
+  "source": "default",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:37.032Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:37.032Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:37.037Z",
+  "service": "session",
+  "id": "ses_050f9a572ffefpehWRjysug6cv",
+  "version": "agent-cli-1.0.0",
+  "projectID": "global",
+  "directory": "/tmp/tmp.MlmM8GToDw",
+  "title": "New session - 2026-07-29T17:57:37.037Z",
+  "time": {
+    "created": 1785347857037,
+    "updated": 1785347857037
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:37.051Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:37.051Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:37.051Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 19,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:37.053Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:37.054Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_050f9a572ffefpehWRjysug6cv/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:37.054Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_050f9a572ffefpehWRjysug6cv/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:37.077Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 23,
+  "method": "POST",
+  "path": "/session/ses_050f9a572ffefpehWRjysug6cv/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:37.088Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:37.109Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:37.111Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:37.116Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:37.131Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:37.135Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:37.137Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:37.138Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:37.139Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:37.139Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:37.140Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 2,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:37.141Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:37.141Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:37.141Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:37.141Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:37.142Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:37.142Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:37.142Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 1,
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:37.142Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.257Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.270Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.317Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.341Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.361Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.361Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.362Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.363Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.497Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1785347858498,
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "part": {
+    "id": "prt_faf066034001IMwPeayaINUE2z",
+    "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+    "messageID": "msg_faf065f590016Ux2i6sy8yQcNU",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.500Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.504Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785347858504,
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "part": {
+    "id": "prt_faf066044001OIF4gH03a1CfDx",
+    "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+    "messageID": "msg_faf065f590016Ux2i6sy8yQcNU",
+    "type": "tool",
+    "callID": "call_0be205673c02b2be",
+    "tool": "write",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.504Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1785347858504,
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "part": {
+    "id": "prt_faf066042001O95BygyrZamgDv",
+    "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+    "messageID": "msg_faf065f590016Ux2i6sy8yQcNU",
+    "type": "text",
+    "text": "Let me update .formal-ai/general-change-plan.lino for you.",
+    "time": {
+      "start": 1785347858504,
+      "end": 1785347858504
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.511Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785347858511,
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "part": {
+    "id": "prt_faf066044001OIF4gH03a1CfDx",
+    "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+    "messageID": "msg_faf065f590016Ux2i6sy8yQcNU",
+    "type": "tool",
+    "callID": "call_0be205673c02b2be",
+    "tool": "write",
+    "state": {
+      "status": "running",
+      "input": {
+        "content": "general_change_plan\n  id \"general_change_plan_c1af2d71a8469b78\"\n  execution_mode \"literal_file\"\n  goal \"Finish Formal AI issue #844 by gathering multiple exact source captures, deduplicating their statements into one named context, fact-checking before presentation, and producing deterministic human-gated learning proposals. As one smallest leaf of that same task, create file multi-source-summary-honesty-invariant.lino containing\\nmulti_source_summary_honesty\\n  record_type meta_invariant\\n  capture \\\"derive evidence only from exact captured bytes\\\"\\n  merge \\\"deduplicate statements into one named context with reversible provenance\\\"\\n  verification \\\"run disproof-first fact checking before presentation\\\"\\n  learning \\\"render deterministic human-gated proposals from captures merge and audit\\\"\"\n  target \"multi-source-summary-honesty-invariant.lino\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_3799d261bf1122e3\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to multi-source-summary-honesty-invariant.lino\"\n    expected_evidence \"workspace file multi-source-summary-honesty-invariant.lino\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"multi_source_summary_honesty\\n  record_type meta_invariant\\n  capture \\\"derive evidence only from exact captured bytes\\\"\\n  merge \\\"deduplicate statements into one named context with reversible provenance\\\"\\n  verification \\\"run disproof-first fact checking before presentation\\\"\\n  learning \\\"render deterministic human-gated proposals from captures merge and audit\\\"\"\n    command \"cat multi-source-summary-honesty-invariant.lino\"\n  verification_command \"cat multi-source-summary-honesty-invariant.lino\"\n",
+        "filePath": "/tmp/tmp.MlmM8GToDw/.formal-ai/general-change-plan.lino"
+      },
+      "time": {
+        "start": 1785347858505
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.534Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785347858534,
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "part": {
+    "id": "prt_faf066044001OIF4gH03a1CfDx",
+    "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+    "messageID": "msg_faf065f590016Ux2i6sy8yQcNU",
+    "type": "tool",
+    "callID": "call_0be205673c02b2be",
+    "tool": "write",
+    "state": {
+      "status": "completed",
+      "input": {
+        "content": "general_change_plan\n  id \"general_change_plan_c1af2d71a8469b78\"\n  execution_mode \"literal_file\"\n  goal \"Finish Formal AI issue #844 by gathering multiple exact source captures, deduplicating their statements into one named context, fact-checking before presentation, and producing deterministic human-gated learning proposals. As one smallest leaf of that same task, create file multi-source-summary-honesty-invariant.lino containing\\nmulti_source_summary_honesty\\n  record_type meta_invariant\\n  capture \\\"derive evidence only from exact captured bytes\\\"\\n  merge \\\"deduplicate statements into one named context with reversible provenance\\\"\\n  verification \\\"run disproof-first fact checking before presentation\\\"\\n  learning \\\"render deterministic human-gated proposals from captures merge and audit\\\"\"\n  target \"multi-source-summary-honesty-invariant.lino\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_3799d261bf1122e3\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to multi-source-summary-honesty-invariant.lino\"\n    expected_evidence \"workspace file multi-source-summary-honesty-invariant.lino\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"multi_source_summary_honesty\\n  record_type meta_invariant\\n  capture \\\"derive evidence only from exact captured bytes\\\"\\n  merge \\\"deduplicate statements into one named context with reversible provenance\\\"\\n  verification \\\"run disproof-first fact checking before presentation\\\"\\n  learning \\\"render deterministic human-gated proposals from captures merge and audit\\\"\"\n    command \"cat multi-source-summary-honesty-invariant.lino\"\n  verification_command \"cat multi-source-summary-honesty-invariant.lino\"\n",
+        "filePath": "/tmp/tmp.MlmM8GToDw/.formal-ai/general-change-plan.lino"
+      },
+      "output": "",
+      "title": "tmp/tmp.MlmM8GToDw/.formal-ai/general-change-plan.lino",
+      "metadata": {
+        "diagnostics": {},
+        "filepath": "/tmp/tmp.MlmM8GToDw/.formal-ai/general-change-plan.lino",
+        "exists": false
+      },
+      "time": {
+        "start": 1785347858505,
+        "end": 1785347858530
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.545Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1785347858545,
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "part": {
+    "id": "prt_faf06606b0016D34tKbX3tmeE4",
+    "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+    "messageID": "msg_faf065f590016Ux2i6sy8yQcNU",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 10606,
+      "output": 2094,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 12700,
+      "headroom": 26156,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.546Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.547Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.562Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.562Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.565Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.565Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.565Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.566Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.574Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.574Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.576Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.576Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 12700,
+  "providerTokens": 12700,
+  "estimatedInputTokens": 141,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 10606,
+    "cacheRead": 0,
+    "output": 2094
+  },
+  "overflow": false,
+  "headroom": 39108,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.578Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.588Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.612Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.703Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1785347858703,
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "part": {
+    "id": "prt_faf06610a001QKsjW2r08B2M83",
+    "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+    "messageID": "msg_faf066090001HSq876IRJf6aEK",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.706Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.707Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785347858707,
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "part": {
+    "id": "prt_faf066112001Y13QugcpjcCkpz",
+    "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+    "messageID": "msg_faf066090001HSq876IRJf6aEK",
+    "type": "tool",
+    "callID": "call_3b7661557d571a59",
+    "tool": "write",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.708Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1785347858708,
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "part": {
+    "id": "prt_faf06610f001G6X2KnkDS8OGdo",
+    "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+    "messageID": "msg_faf066090001HSq876IRJf6aEK",
+    "type": "text",
+    "text": "Let me update multi-source-summary-honesty-invariant.lino for you.",
+    "time": {
+      "start": 1785347858707,
+      "end": 1785347858707
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.708Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785347858709,
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "part": {
+    "id": "prt_faf066112001Y13QugcpjcCkpz",
+    "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+    "messageID": "msg_faf066090001HSq876IRJf6aEK",
+    "type": "tool",
+    "callID": "call_3b7661557d571a59",
+    "tool": "write",
+    "state": {
+      "status": "running",
+      "input": {
+        "content": "multi_source_summary_honesty\n  record_type meta_invariant\n  capture \"derive evidence only from exact captured bytes\"\n  merge \"deduplicate statements into one named context with reversible provenance\"\n  verification \"run disproof-first fact checking before presentation\"\n  learning \"render deterministic human-gated proposals from captures merge and audit\"",
+        "filePath": "/tmp/tmp.MlmM8GToDw/multi-source-summary-honesty-invariant.lino"
+      },
+      "time": {
+        "start": 1785347858708
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.711Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785347858711,
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "part": {
+    "id": "prt_faf066112001Y13QugcpjcCkpz",
+    "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+    "messageID": "msg_faf066090001HSq876IRJf6aEK",
+    "type": "tool",
+    "callID": "call_3b7661557d571a59",
+    "tool": "write",
+    "state": {
+      "status": "completed",
+      "input": {
+        "content": "multi_source_summary_honesty\n  record_type meta_invariant\n  capture \"derive evidence only from exact captured bytes\"\n  merge \"deduplicate statements into one named context with reversible provenance\"\n  verification \"run disproof-first fact checking before presentation\"\n  learning \"render deterministic human-gated proposals from captures merge and audit\"",
+        "filePath": "/tmp/tmp.MlmM8GToDw/multi-source-summary-honesty-invariant.lino"
+      },
+      "output": "",
+      "title": "tmp/tmp.MlmM8GToDw/multi-source-summary-honesty-invariant.lino",
+      "metadata": {
+        "diagnostics": {},
+        "filepath": "/tmp/tmp.MlmM8GToDw/multi-source-summary-honesty-invariant.lino",
+        "exists": false
+      },
+      "time": {
+        "start": 1785347858708,
+        "end": 1785347858710
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.712Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1785347858712,
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "part": {
+    "id": "prt_faf0661180011GWDR15R8HL0RT",
+    "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+    "messageID": "msg_faf066090001HSq876IRJf6aEK",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 10664,
+      "output": 530,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 11194,
+      "headroom": 27662,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.713Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.714Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.717Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.717Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.726Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.726Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.727Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.727Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.743Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.743Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.744Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.744Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 11194,
+  "providerTokens": 11194,
+  "estimatedInputTokens": 157,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 10664,
+    "cacheRead": 0,
+    "output": 530
+  },
+  "overflow": false,
+  "headroom": 40614,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.744Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.755Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.758Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.884Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1785347858884,
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "part": {
+    "id": "prt_faf0661ad001F1nJNvRE6LgnE0",
+    "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+    "messageID": "msg_faf066138001EI4gQkU92VtgSl",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.885Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.886Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785347858886,
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "part": {
+    "id": "prt_faf0661c5001UIPmd3DmG5SqyI",
+    "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+    "messageID": "msg_faf066138001EI4gQkU92VtgSl",
+    "type": "tool",
+    "callID": "call_862119b1688561d4",
+    "tool": "bash",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.886Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1785347858886,
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "part": {
+    "id": "prt_faf0661c4001E0VCxCn2WNz73r",
+    "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+    "messageID": "msg_faf066138001EI4gQkU92VtgSl",
+    "type": "text",
+    "text": "Let me run a quick command to get that for you.",
+    "time": {
+      "start": 1785347858886,
+      "end": 1785347858886
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.887Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785347858887,
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "part": {
+    "id": "prt_faf0661c5001UIPmd3DmG5SqyI",
+    "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+    "messageID": "msg_faf066138001EI4gQkU92VtgSl",
+    "type": "tool",
+    "callID": "call_862119b1688561d4",
+    "tool": "bash",
+    "state": {
+      "status": "running",
+      "input": {
+        "command": "cat multi-source-summary-honesty-invariant.lino"
+      },
+      "time": {
+        "start": 1785347858887
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.889Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785347858889,
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "part": {
+    "id": "prt_faf0661c5001UIPmd3DmG5SqyI",
+    "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+    "messageID": "msg_faf066138001EI4gQkU92VtgSl",
+    "type": "tool",
+    "callID": "call_862119b1688561d4",
+    "tool": "bash",
+    "state": {
+      "status": "running",
+      "input": {
+        "command": "cat multi-source-summary-honesty-invariant.lino"
+      },
+      "metadata": {
+        "output": "multi_source_summary_honesty\n  record_type meta_invariant\n  capture \"derive evidence only from exact captured bytes\"\n  merge \"deduplicate statements into one named context with reversible provenance\"\n  verification \"run disproof-first fact checking before presentation\"\n  learning \"render deterministic human-gated proposals from captures merge and audit\""
+      },
+      "time": {
+        "start": 1785347858888
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.896Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785347858896,
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "part": {
+    "id": "prt_faf0661c5001UIPmd3DmG5SqyI",
+    "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+    "messageID": "msg_faf066138001EI4gQkU92VtgSl",
+    "type": "tool",
+    "callID": "call_862119b1688561d4",
+    "tool": "bash",
+    "state": {
+      "status": "completed",
+      "input": {
+        "command": "cat multi-source-summary-honesty-invariant.lino"
+      },
+      "output": "multi_source_summary_honesty\n  record_type meta_invariant\n  capture \"derive evidence only from exact captured bytes\"\n  merge \"deduplicate statements into one named context with reversible provenance\"\n  verification \"run disproof-first fact checking before presentation\"\n  learning \"render deterministic human-gated proposals from captures merge and audit\"",
+      "title": "cat multi-source-summary-honesty-invariant.lino",
+      "metadata": {
+        "output": "multi_source_summary_honesty\n  record_type meta_invariant\n  capture \"derive evidence only from exact captured bytes\"\n  merge \"deduplicate statements into one named context with reversible provenance\"\n  verification \"run disproof-first fact checking before presentation\"\n  learning \"render deterministic human-gated proposals from captures merge and audit\"",
+        "exit": 0
+      },
+      "time": {
+        "start": 1785347858887,
+        "end": 1785347858895
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.897Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1785347858897,
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "part": {
+    "id": "prt_faf0661d1001aVVTSSAvQJVA09",
+    "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+    "messageID": "msg_faf066138001EI4gQkU92VtgSl",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 10730,
+      "output": 112,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 10842,
+      "headroom": 28014,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.898Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.898Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.900Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.900Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.914Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.915Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.915Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.915Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.918Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.918Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.919Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.919Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 10842,
+  "providerTokens": 10842,
+  "estimatedInputTokens": 234,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 10730,
+    "cacheRead": 0,
+    "output": 112
+  },
+  "overflow": false,
+  "headroom": 40966,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.920Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.944Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:38.948Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:39.046Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1785347859046,
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "part": {
+    "id": "prt_faf066261001VajvHs8TRAZHHq",
+    "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+    "messageID": "msg_faf0661e7001STOGITEOK7Rnxo",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:39.050Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:39.052Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1785347859052,
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "part": {
+    "id": "prt_faf066266001u3fqYrm229PQ6i",
+    "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+    "messageID": "msg_faf0661e7001STOGITEOK7Rnxo",
+    "type": "text",
+    "text": "Completed the general change request for multi-source-summary-honesty-invariant.lino and verified it with `cat multi-source-summary-honesty-invariant.lino`.\n\nPlan event (.formal-ai/general-change-plan.lino):\n\ngeneral_change_plan\n  id \"general_change_plan_c1af2d71a8469b78\"\n  execution_mode \"literal_file\"\n  goal \"Finish Formal AI issue #844 by gathering multiple exact source captures, deduplicating their statements into one named context, fact-checking before presentation, and producing deterministic human-gated learning proposals. As one smallest leaf of that same task, create file multi-source-summary-honesty-invariant.lino containing\\nmulti_source_summary_honesty\\n  record_type meta_invariant\\n  capture \\\"derive evidence only from exact captured bytes\\\"\\n  merge \\\"deduplicate statements into one named context with reversible provenance\\\"\\n  verification \\\"run disproof-first fact checking before presentation\\\"\\n  learning \\\"render deterministic human-gated proposals from captures merge and audit\\\"\"\n  target \"multi-source-summary-honesty-invariant.lino\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_3799d261bf1122e3\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to multi-source-summary-honesty-invariant.lino\"\n    expected_evidence \"workspace file multi-source-summary-honesty-invariant.lino\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"multi_source_summary_honesty\\n  record_type meta_invariant\\n  capture \\\"derive evidence only from exact captured bytes\\\"\\n  merge \\\"deduplicate statements into one named context with reversible provenance\\\"\\n  verification \\\"run disproof-first fact checking before presentation\\\"\\n  learning \\\"render deterministic human-gated proposals from captures merge and audit\\\"\"\n    command \"cat multi-source-summary-honesty-invariant.lino\"\n  verification_command \"cat multi-source-summary-honesty-invariant.lino\"",
+    "time": {
+      "start": 1785347859051,
+      "end": 1785347859051
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:39.054Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1785347859054,
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "part": {
+    "id": "prt_faf06626d00192eBjvk4O1w14i",
+    "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+    "messageID": "msg_faf0661e7001STOGITEOK7Rnxo",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 11132,
+      "output": 2064,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 13196,
+      "headroom": 25660,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:39.055Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:39.055Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:39.062Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:39.062Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:39.091Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:39.091Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:39.103Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:39.103Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:39.107Z",
+  "service": "session.prompt",
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:39.108Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:39.127Z",
+  "service": "session.prompt",
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:39.127Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:39.127Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1785347859127,
+  "sessionID": "ses_050f9a572ffefpehWRjysug6cv"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:39.128Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:39.128Z",
+  "service": "default",
+  "directory": "/tmp/tmp.MlmM8GToDw",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:39.128Z",
+  "service": "state",
+  "key": "/tmp/tmp.MlmM8GToDw",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:39.139Z",
+  "service": "state",
+  "key": "/tmp/tmp.MlmM8GToDw",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-29T17:57:39.139Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 5,
+  "message": "Agent exiting"
+}
+
