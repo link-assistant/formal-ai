@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/mod.rs
   language rust
   fidelity signature
-  byte_len 37010
-  line_count 945
-  content_id source_module_5245ad93b6b7086b
-  symbol_count 59
+  byte_len 36949
+  line_count 943
+  content_id source_module_b11e5af28034b133
+  symbol_count 58
   symbols
     module agent_workspace 3 3
     module behavior_rule_followups 4 4
@@ -27,42 +27,41 @@ self_ast_census
     module installation_conversion 20 20
     module meta_explanation 21 21
     module natural_language_tools 22 22
-    module number_riddle 23 23
-    module numeric_list 24 24
-    module playwright_script 25 25
-    module procedure_rules 26 26
-    module program_blueprint 27 27
-    module program_synthesis 28 28
-    module research_table 29 29
-    module response_language_followup 30 30
-    module self_awareness 31 31
-    module shell_command_transform 32 32
-    module software_project 33 33
-    module software_project_code 34 34
-    module software_project_followup 35 35
-    module task_decomposition 36 36
-    module text_edit_ops 37 37
-    module text_manipulation 38 38
-    module user_intent 39 39
-    module web_requests 40 40
-    module web_search_intent 41 41
-    module world_state 42 42
-    function try_arithmetic 120 236
-    function render_calculation_reasoning_step 238 244
-    function try_concept_lookup 246 248
-    function try_concept_lookup_with_response_language 257 326
-    function render_concept_plain 331 354
-    function render_source_link 359 366
-    function render_concept_in_context 383 429
-    function try_javascript_execution 431 454
-    function try_network_query 456 512
-    function try_translation 514 677
-    function render_translation_gap 679 691
-    function try_write_script 693 729
-    function try_algorithm 731 755
-    function try_execution_failure 757 786
-    function try_source_refresh 788 813
-    function try_learn_from_source 826 854
-    function learning_source_summary 861 880
-    function try_source_conflict 882 908
-    function finalize_simple 910 945
+    module numeric_list 23 23
+    module playwright_script 24 24
+    module procedure_rules 25 25
+    module program_blueprint 26 26
+    module program_synthesis 27 27
+    module research_table 28 28
+    module response_language_followup 29 29
+    module self_awareness 30 30
+    module shell_command_transform 31 31
+    module software_project 32 32
+    module software_project_code 33 33
+    module software_project_followup 34 34
+    module task_decomposition 35 35
+    module text_edit_ops 36 36
+    module text_manipulation 37 37
+    module user_intent 38 38
+    module web_requests 39 39
+    module web_search_intent 40 40
+    module world_state 41 41
+    function try_arithmetic 118 234
+    function render_calculation_reasoning_step 236 242
+    function try_concept_lookup 244 246
+    function try_concept_lookup_with_response_language 255 324
+    function render_concept_plain 329 352
+    function render_source_link 357 364
+    function render_concept_in_context 381 427
+    function try_javascript_execution 429 452
+    function try_network_query 454 510
+    function try_translation 512 675
+    function render_translation_gap 677 689
+    function try_write_script 691 727
+    function try_algorithm 729 753
+    function try_execution_failure 755 784
+    function try_source_refresh 786 811
+    function try_learn_from_source 824 852
+    function learning_source_summary 859 878
+    function try_source_conflict 880 906
+    function finalize_simple 908 943

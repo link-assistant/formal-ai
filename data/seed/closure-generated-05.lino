@@ -1,4 +1,24 @@
 meanings
+  response_lexeme_import_denotation_lost_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import denotation lost zh"
+  response_lexeme_import_duplicate_qid_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import duplicate qid en"
+  response_lexeme_import_duplicate_qid_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import duplicate qid hi"
+  response_lexeme_import_duplicate_qid_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import duplicate qid ru"
   response_lexeme_import_duplicate_qid_zh
     defined-by response_template
     lexeme en
@@ -1374,23 +1394,3 @@ meanings
     lexeme en
       surface
         text "response tool result empty generic hi"
-  response_tool_result_empty_generic_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty generic ru"
-  response_tool_result_empty_generic_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty generic zh"
-  response_tool_result_empty_list_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty list en"
-  response_tool_result_empty_list_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty list hi"

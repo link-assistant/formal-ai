@@ -1,4 +1,24 @@
 meanings
+  response_tool_result_empty_generic_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty generic ru"
+  response_tool_result_empty_generic_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty generic zh"
+  response_tool_result_empty_list_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty list en"
+  response_tool_result_empty_list_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty list hi"
   response_tool_result_empty_list_ru
     defined-by response_template
     lexeme en
@@ -939,6 +959,11 @@ meanings
     lexeme en
       surface
         text "uncomment lines"
+  under
+    defined-by word_surface
+    lexeme en
+      surface
+        text "under"
   uniqueness
     defined-by word_surface
     lexeme en

@@ -1,4 +1,19 @@
 meanings
+  git
+    defined-by token
+    lexeme en
+      surface
+        text "git"
+  github
+    defined-by source_kind
+    lexeme en
+      surface
+        text "github"
+  github_repository_traffic
+    defined-by intent
+    lexeme en
+      surface
+        text "github repository traffic"
   gives
     defined-by word_surface
     lexeme en
@@ -99,6 +114,11 @@ meanings
     lexeme en
       surface
         text "indent lines"
+  integer
+    defined-by word_surface
+    lexeme en
+      surface
+        text "integer"
   intent_algorithm
     defined-by intent
     lexeme en
@@ -1374,23 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern concept prefix chto oboznachaet"
-  pattern_concept_prefix_chto_oznachaet_slovo
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix chto oznachaet slovo"
-  pattern_concept_prefix_chto_podrazumevaetsya_pod
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix chto podrazumevaetsya pod"
-  pattern_concept_prefix_chto_takoe
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix chto takoe"
-  pattern_concept_prefix_chto_znachit
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix chto znachit"
