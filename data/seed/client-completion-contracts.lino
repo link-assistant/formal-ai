@@ -4,3 +4,5 @@ completion_contracts
     max_attempts 2
     incomplete_reason "required_workspace_effect_missing"
     scratch_directory ".formal-ai"
+    incomplete_error "{command} did not satisfy the software-authoring completion contract"
+    process_error "{command} exited with status {status}"

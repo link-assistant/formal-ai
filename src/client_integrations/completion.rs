@@ -27,17 +27,22 @@ pub(super) fn require_completed(
     status_label: &str,
     command: &Path,
 ) -> Result<(), Box<dyn Error>> {
+    const COMMAND_PLACEHOLDER: &str = concat!("{", "command", "}");
+    const STATUS_PLACEHOLDER: &str = concat!("{", "status", "}");
     if completion_passed.unwrap_or(status_success) {
         return Ok(());
     }
-    if completion_passed.is_some() && status_success {
-        return Err(format!(
-            "{} did not satisfy the software-authoring completion contract",
-            command.display()
-        )
-        .into());
-    }
-    Err(format!("{} exited with status {status_label}", command.display()).into())
+    let contract = seed::software_authoring_completion_contract()
+        .ok_or("software-authoring completion contract is unavailable")?;
+    let template = if completion_passed.is_some() && status_success {
+        &contract.incomplete_error
+    } else {
+        &contract.process_error
+    };
+    Err(template
+        .replace(COMMAND_PLACEHOLDER, &command.display().to_string())
+        .replace(STATUS_PLACEHOLDER, status_label)
+        .into())
 }
 
 #[derive(Debug)]
@@ -114,19 +119,22 @@ impl AuthoringRun {
         Ok(changes(&self.before, &after))
     }
 
-    pub(super) fn can_retry(&self) -> bool {
+    pub(super) const fn can_retry(&self) -> bool {
         self.attempts < self.contract.max_attempts
     }
 
-    pub(super) fn completion_prompt(&self, task: &str) -> Result<String, Box<dyn Error>> {
+    pub(super) fn completion_prompt(task: &str) -> Result<String, Box<dyn Error>> {
+        const TASK_PLACEHOLDER: &str = concat!("{", "task", "}");
+        const CLAIM_PLACEHOLDER: &str = concat!("{", "claim", "}");
+        const EVIDENCE_PLACEHOLDER: &str = concat!("{", "evidence", "}");
         let language = crate::language::detect(task).slug();
         let template = seed::response_for("orchestration_correction_prompt", language)
             .or_else(|| seed::response_for("orchestration_correction_prompt", "en"))
             .ok_or("orchestration correction prompt is unavailable")?;
         Ok(template
-            .replace("{task}", task)
-            .replace("{claim}", "workspace_effect_present=true")
-            .replace("{evidence}", "workspace_effect_count=0"))
+            .replace(TASK_PLACEHOLDER, task)
+            .replace(CLAIM_PLACEHOLDER, "workspace_effect_present=true")
+            .replace(EVIDENCE_PLACEHOLDER, "workspace_effect_count=0"))
     }
 
     pub(super) fn print_completion(
@@ -178,21 +186,36 @@ impl AuthoringRun {
     }
 }
 
+#[derive(Clone, Copy)]
+pub(super) struct CompletionInvocation<'a> {
+    pub(super) command: &'a Command,
+    pub(super) integration: &'a ClientIntegration,
+    pub(super) user_args: &'a [String],
+    pub(super) context: &'a RenderContext,
+    pub(super) options: InvocationOptions,
+    pub(super) session_root: Option<&'a Path>,
+    pub(super) session_before: &'a SessionSnapshot,
+    pub(super) initial_resume: Option<&'a str>,
+}
+
 pub(super) fn run_to_completion(
     authoring: &mut AuthoringRun,
-    template: &Command,
-    integration: &ClientIntegration,
-    user_args: &[String],
-    context: &RenderContext,
-    options: InvocationOptions,
-    session_root: Option<&Path>,
-    session_before: &SessionSnapshot,
-    initial_resume: Option<&str>,
+    invocation: CompletionInvocation<'_>,
 ) -> Result<CapturedOutcome, Box<dyn Error>> {
+    let CompletionInvocation {
+        command,
+        integration,
+        user_args,
+        context,
+        options,
+        session_root,
+        session_before,
+        initial_resume,
+    } = invocation;
     let task = user_args.join(" ");
     let initial_args =
         build_invocation_args(integration, user_args, context, options, initial_resume);
-    let mut output = clone_command(template, &initial_args).output()?;
+    let mut output = clone_command(command, &initial_args).output()?;
     authoring.observe_output(&output, &context.endpoint_base_url)?;
     let mut workspace_changes = authoring.changes()?;
     if output.status.success()
@@ -211,7 +234,7 @@ pub(super) fn run_to_completion(
             .as_deref()
             .and_then(|path| native_session_id(integration, path))
             .or_else(|| initial_resume.map(str::to_owned));
-        let correction = authoring.completion_prompt(&task)?;
+        let correction = AuthoringRun::completion_prompt(&task)?;
         let retry_args = build_invocation_args(
             integration,
             &[correction],
@@ -219,7 +242,7 @@ pub(super) fn run_to_completion(
             options,
             resume_id.as_deref(),
         );
-        output = clone_command(template, &retry_args).output()?;
+        output = clone_command(command, &retry_args).output()?;
         authoring.observe_output(&output, &context.endpoint_base_url)?;
         workspace_changes = authoring.changes()?;
     }
@@ -310,24 +333,21 @@ fn normalize_json_stream(bytes: &[u8]) -> Vec<Value> {
     while !remaining.trim_start().is_empty() {
         remaining = remaining.trim_start();
         let mut stream = serde_json::Deserializer::from_str(remaining).into_iter::<Value>();
-        match stream.next() {
-            Some(Ok(value)) => {
-                let consumed = stream.byte_offset();
-                records.push(value);
-                remaining = &remaining[consumed..];
+        if let Some(Ok(value)) = stream.next() {
+            let consumed = stream.byte_offset();
+            records.push(value);
+            remaining = &remaining[consumed..];
+        } else {
+            let split = remaining.find('\n').unwrap_or(remaining.len());
+            let line = remaining[..split].trim_end_matches('\r');
+            if !line.is_empty() {
+                records.push(json!({
+                    "type": "formal_ai_client_output",
+                    "stream": "stdout",
+                    "text": line,
+                }));
             }
-            _ => {
-                let split = remaining.find('\n').unwrap_or(remaining.len());
-                let line = remaining[..split].trim_end_matches('\r');
-                if !line.is_empty() {
-                    records.push(json!({
-                        "type": "formal_ai_client_output",
-                        "stream": "stdout",
-                        "text": line,
-                    }));
-                }
-                remaining = remaining.get(split + 1..).unwrap_or_default();
-            }
+            remaining = remaining.get(split + 1..).unwrap_or_default();
         }
     }
     records

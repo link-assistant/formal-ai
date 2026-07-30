@@ -9,6 +9,8 @@ pub struct ClientCompletionContract {
     pub max_attempts: usize,
     pub incomplete_reason: String,
     pub scratch_directory: String,
+    pub incomplete_error: String,
+    pub process_error: String,
 }
 
 #[must_use]
@@ -29,6 +31,8 @@ pub fn software_authoring_completion_contract() -> Option<ClientCompletionContra
         max_attempts: contract.find_child_value("max_attempts").parse().ok()?,
         incomplete_reason: contract.find_child_value("incomplete_reason").to_owned(),
         scratch_directory: contract.find_child_value("scratch_directory").to_owned(),
+        incomplete_error: contract.find_child_value("incomplete_error").to_owned(),
+        process_error: contract.find_child_value("process_error").to_owned(),
     })
 }
 
@@ -46,5 +50,13 @@ mod tests {
             "required_workspace_effect_missing"
         );
         assert_eq!(contract.scratch_directory, ".formal-ai");
+        assert_eq!(
+            contract.incomplete_error,
+            "{command} did not satisfy the software-authoring completion contract"
+        );
+        assert_eq!(
+            contract.process_error,
+            "{command} exited with status {status}"
+        );
     }
 }

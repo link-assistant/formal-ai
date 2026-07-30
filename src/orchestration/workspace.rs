@@ -24,7 +24,7 @@ pub struct WorkspaceChange {
 }
 
 #[derive(Debug, Clone)]
-pub(crate) struct Snapshot {
+pub struct Snapshot {
     files: BTreeMap<String, FileState>,
 }
 
@@ -34,7 +34,7 @@ struct FileState {
     bytes: u64,
 }
 
-pub(crate) fn snapshot(root: &Path) -> io::Result<Snapshot> {
+pub fn snapshot(root: &Path) -> io::Result<Snapshot> {
     let mut files = BTreeMap::new();
     for entry in WalkDir::new(root)
         .follow_links(false)
@@ -70,7 +70,7 @@ pub(crate) fn snapshot(root: &Path) -> io::Result<Snapshot> {
     Ok(Snapshot { files })
 }
 
-pub(crate) fn changes(before: &Snapshot, after: &Snapshot) -> Vec<WorkspaceChange> {
+pub fn changes(before: &Snapshot, after: &Snapshot) -> Vec<WorkspaceChange> {
     let paths = before
         .files
         .keys()

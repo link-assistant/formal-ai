@@ -20,8 +20,8 @@ mod completion;
 mod server;
 mod session_files;
 mod url;
-use command::{contains_model_arg, resolve_integration_command};
-use completion::{require_completed, run_to_completion, AuthoringRun};
+use command::{contains_model_arg, ensure_trailing_newline, resolve_integration_command};
+use completion::{require_completed, run_to_completion, AuthoringRun, CompletionInvocation};
 use server::maybe_start_server;
 use session_files::{
     newest_changed_session_file, print_session_files, session_file_snapshot, user_home_dir,
@@ -415,14 +415,16 @@ fn run_ephemeral(
         if let Some(authoring) = authoring.as_mut() {
             let outcome = run_to_completion(
                 authoring,
-                &command,
-                integration,
-                user_args,
-                &context,
-                options,
-                session_root.as_deref(),
-                &session_before,
-                orchestration_resume,
+                CompletionInvocation {
+                    command: &command,
+                    integration,
+                    user_args,
+                    context: &context,
+                    options,
+                    session_root: session_root.as_deref(),
+                    session_before: &session_before,
+                    initial_resume: orchestration_resume,
+                },
             )?;
             (
                 outcome.status_success,
@@ -990,11 +992,4 @@ fn write_file(path: &Path, contents: &str) -> Result<(), Box<dyn Error>> {
     }
     fs::write(path, contents)?;
     Ok(())
-}
-
-fn ensure_trailing_newline(mut value: String) -> String {
-    if !value.ends_with('\n') {
-        value.push('\n');
-    }
-    value
 }
