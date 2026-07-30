@@ -33,10 +33,11 @@ while [ "$attempt" -le "$max_attempts" ]; do
   fi
 
   # Do not hide signing, notarization, dependency, or arbitrary builder
-  # failures. These are the runner disk-image service signatures documented in
-  # actions/runner-images#7522; everything else fails on its first attempt.
+  # failures. These create/attach errors are the runner disk-image service
+  # signatures documented in actions/runner-images#7522; everything else fails
+  # on its first attempt.
   if ! grep -Eq \
-    'hdiutil: create failed - (Device not configured|Resource busy|No child processes)' \
+    'hdiutil: (create|attach) failed - (Device not configured|Resource busy|No child processes)' \
     "$package_log"; then
     exit "$package_status"
   fi
