@@ -71,6 +71,7 @@ pub mod orchestration;
 pub mod probability;
 pub(crate) mod program_coreference;
 pub mod program_plan;
+pub mod program_skill_gap;
 pub mod promotion;
 pub mod proof_engine;
 pub mod protocol;

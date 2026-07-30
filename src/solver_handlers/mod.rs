@@ -351,7 +351,7 @@ fn render_concept_plain(language: &str, record: &ConceptRecord) -> String {
 /// Issue #21: render a URL as a readable IRI while keeping the canonical
 /// percent-encoded form as the link target. Returns the bare URL when the
 /// humanized and encoded forms match (no link wrapping needed).
-pub(crate) fn render_source_link(source: &str) -> String {
+pub fn render_source_link(source: &str) -> String {
     let human = humanize_url(source);
     if human == source {
         source.to_owned()

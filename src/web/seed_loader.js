@@ -23,6 +23,7 @@
     "seed/interface-capabilities.lino",
     "seed/multilingual-responses.lino",
     "seed/multilingual-responses-entities.lino",
+    "seed/multilingual-responses-synthesis.lino",
     "seed/multilingual-responses-orchestration.lino",
     "seed/multilingual-responses-agentic.lino",
     "seed/multilingual-responses-decomposition.lino",

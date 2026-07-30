@@ -399,6 +399,46 @@ meanings
     lexeme en
       surface
         text "response world state remaining zh"
+  response_write_program_skill_gap_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap en"
+  response_write_program_skill_gap_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap hi"
+  response_write_program_skill_gap_name_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap name en"
+  response_write_program_skill_gap_name_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap name hi"
+  response_write_program_skill_gap_name_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap name ru"
+  response_write_program_skill_gap_name_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap name zh"
+  response_write_program_skill_gap_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap ru"
+  response_write_program_skill_gap_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap zh"
   reverse_lines
     defined-by operation
     lexeme en
@@ -1354,13 +1394,3 @@ meanings
     lexeme en
       surface
         text "write program"
-  writing
-    defined-by word_surface
-    lexeme en
-      surface
-        text "writing"
-  your
-    defined-by word_surface
-    lexeme en
-      surface
-        text "your"

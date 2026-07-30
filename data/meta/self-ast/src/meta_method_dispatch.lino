@@ -2,17 +2,17 @@ self_ast_census
   target src/meta_method_dispatch.rs
   language rust
   fidelity signature
-  byte_len 10470
-  line_count 273
-  content_id source_module_a6c4af6fa9ba2cda
+  byte_len 10482
+  line_count 274
+  content_id source_module_ace0de3ba6246ccc
   symbol_count 9
   symbols
-    function try_dispatch 29 132
-    struct MethodRuntime 135 139
-    function new 142 163
-    function try_prelude_method 166 191
-    function try_diagnostic 193 231
-    function record_method 233 235
-    function record_method_answer 237 245
-    function record_contextual_method_answer 247 255
-    function refresh_answer_projection 257 273
+    function try_dispatch 29 133
+    struct MethodRuntime 136 140
+    function new 143 164
+    function try_prelude_method 167 192
+    function try_diagnostic 194 232
+    function record_method 234 236
+    function record_method_answer 238 246
+    function record_contextual_method_answer 248 256
+    function refresh_answer_projection 258 274

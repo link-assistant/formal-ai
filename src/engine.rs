@@ -533,7 +533,7 @@ impl SelectedRule {
             Self::Identity => String::from("identity"),
             Self::AssistantName => String::from("assistant_name"),
             Self::WriteProgram(_) => String::from(WRITE_PROGRAM_INTENT),
-            Self::UnsupportedWriteProgram { .. } => String::from("write_program_unsupported"),
+            Self::UnsupportedWriteProgram { .. } => String::from("write_program_skill_gap"),
             Self::Unknown => String::from("unknown"),
         }
     }
@@ -550,7 +550,7 @@ impl SelectedRule {
             Self::AssistantName => String::from("response:assistant_name"),
             Self::WriteProgram(spec) => spec.response_link(),
             Self::UnsupportedWriteProgram { .. } => {
-                String::from("response:write_program:unsupported")
+                String::from("response:write_program:skill_gap")
             }
             Self::Unknown => String::from("response:unknown"),
         }
@@ -567,7 +567,7 @@ impl SelectedRule {
             Self::Identity => String::from(identity_answer()),
             Self::AssistantName => String::from(assistant_name_answer()),
             Self::WriteProgram(spec) => write_program_answer(*spec, Language::English, false),
-            Self::UnsupportedWriteProgram { task, language } => unsupported_write_program_answer(
+            Self::UnsupportedWriteProgram { task, language } => crate::program_skill_gap::render(
                 task.as_deref(),
                 language.as_deref(),
                 Language::English,
@@ -642,7 +642,7 @@ pub(crate) fn language_aware_answer_for(
             },
             language,
         ) => {
-            unsupported_write_program_answer(task.as_deref(), program_language.as_deref(), language)
+            crate::program_skill_gap::render(task.as_deref(), program_language.as_deref(), language)
         }
         (SelectedRule::Unknown, _) => {
             crate::unknown_opener::language_aware_unknown_answer(prompt, language)
@@ -819,38 +819,6 @@ fn write_program_intro(language_name: &str, task_label: &str, language: Language
         }
         Language::Chinese => format!("这是一个最小的 {language_name} 程序（{task_label}）："),
         _ => format!("Here is a minimal {language_name} {task_label} program:"),
-    }
-}
-
-fn unsupported_write_program_answer(
-    task: Option<&str>,
-    language: Option<&str>,
-    response_language: Language,
-) -> String {
-    let task = task.unwrap_or("missing");
-    let language = language.unwrap_or("missing");
-    let languages = supported_program_languages();
-    let tasks = supported_program_tasks();
-    match response_language {
-        Language::Russian => format!(
-            "Я могу выполнить `write_program(language, task)`, но у меня нет шаблона для \
-             языка `{language}` и задачи `{task}`. Поддерживаемые языки: {languages}. \
-             Поддерживаемые задачи: {tasks}."
-        ),
-        Language::Hindi => format!(
-            "मैं `write_program(language, task)` रूट कर सकता हूँ, लेकिन भाषा `{language}` और \
-             कार्य `{task}` के लिए मेरे पास कोई टेम्पलेट नहीं है। समर्थित भाषाएँ: {languages}. \
-             समर्थित कार्य: {tasks}."
-        ),
-        Language::Chinese => format!(
-            "我可以路由 `write_program(language, task)`，但我没有语言 `{language}` 和任务 \
-             `{task}` 的模板。支持的语言：{languages}。支持的任务：{tasks}。"
-        ),
-        _ => format!(
-            "I can route `write_program(language, task)`, but I do not have a template for \
-             language `{language}` and task `{task}`. Supported languages: {languages}. \
-             Supported tasks: {tasks}."
-        ),
     }
 }
 

@@ -260,7 +260,6 @@ src/dreaming_application.rs	Standing requirement ({}): {}
 src/engine.rs	Check command: `{check_command}`\nRun command: `{}`
 src/engine.rs	Execution status: {status_phrase} in {}.
 src/engine.rs	Here is a minimal {language_name} {task_label} program:
-src/engine.rs	I can route `write_program(language, task)`, but I do not have a template for language `{language}` and task `{task}`. Supported languages: {languages}. Supported tasks: {tasks}.
 src/engine.rs	Run command: `{}`
 src/engine.rs	Write-program template catalog is unavailable.
 src/engine.rs	rule_assistant_free_time answer={}
@@ -274,11 +273,8 @@ src/engine.rs	rule_write_program parameters=language,task languages={} tasks={}
 src/engine.rs	step_{index} {} {}
 src/engine.rs	Вот минимальная программа на языке {language_name} ({task_label}):
 src/engine.rs	Статус выполнения: {status_phrase} в среде «{}».
-src/engine.rs	Я могу выполнить `write_program(language, task)`, но у меня нет шаблона для языка `{language}` и задачи `{task}`. Поддерживаемые языки: {languages}. Поддерживаемые задачи: {tasks}.
 src/engine.rs	निष्पादन स्थिति: {status_phrase} ({} में)।
-src/engine.rs	मैं `write_program(language, task)` रूट कर सकता हूँ, लेकिन भाषा `{language}` और कार्य `{task}` के लिए मेरे पास कोई टेम्पलेट नहीं है। समर्थित भाषाएँ: {languages}. समर्थित कार्य: {tasks}.
 src/engine.rs	यहाँ {language_name} में एक न्यूनतम प्रोग्राम है ({task_label}):
-src/engine.rs	我可以路由 `write_program(language, task)`，但我没有语言 `{language}` 和任务 `{task}` 的模板。支持的语言：{languages}。支持的任务：{tasks}。
 src/engine.rs	这是一个最小的 {language_name} 程序（{task_label}）：
 src/engine_assistant_name.rs	I'm formal AI, and currently I don't have a name. But you can name me as you like.
 src/engine_assistant_name.rs	What is your name?

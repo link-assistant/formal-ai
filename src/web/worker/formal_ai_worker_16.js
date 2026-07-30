@@ -260,16 +260,12 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
     const oracleAnswer = language ? codingOracleAnswer(oracleTask, language) : null;
     if (oracleAnswer) return oracleAnswer;
     return {
-      intent: "write_program_unsupported",
-      content: i18n.unsupported(
-        language || "missing",
-        task || "missing",
-        Object.keys(WRITE_PROGRAM_LANGUAGES).join(", "),
-        Object.keys(WRITE_PROGRAM_TASKS).join(", "),
-      ),
+      intent: "write_program_skill_gap",
+      content: programSkillGapAnswer(task, language, responseLanguage),
       confidence: 0.4,
       evidence: [
-        "response:write_program:unsupported",
+        "response:write_program:skill_gap",
+        `skill_gap:${programSkillGapName(task, language, "en")}`,
         `program_parameter:language:${language || "missing"}`,
         `program_parameter:task:${task || "missing"}`,
       ],

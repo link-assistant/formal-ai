@@ -194,12 +194,14 @@ fn go_alias_golang_is_supported() {
 }
 
 #[test]
-fn hello_world_without_recognized_language_returns_unsupported_parameters() {
+fn hello_world_without_recognized_language_returns_a_named_skill_gap() {
+    // Issue #699 batch 3: the answer names the gap and the routes that missed;
+    // it never recites the template catalogue back at the requester.
     let response = answer("hello world in elvish");
-    assert_eq!(response.intent, "write_program_unsupported");
-    assert!(response.answer.contains("language `elvish`"));
-    assert!(response.answer.contains("task `hello_world`"));
-    assert!(response.answer.contains("Supported languages:"));
+    assert_eq!(response.intent, "write_program_skill_gap");
+    assert!(response.answer.contains("elvish"));
+    assert!(response.answer.contains("hello_world"));
+    assert!(response.answer.contains("seed_idiom_composer"));
 }
 
 // ---------------------------------------------------------------------------
@@ -340,12 +342,12 @@ fn parametric_write_program_handles_new_task_for_supported_language() {
 }
 
 #[test]
-fn supported_language_with_missing_template_returns_unsupported_parameters() {
+fn supported_language_with_missing_template_returns_a_named_skill_gap() {
     let response = answer("Write a Ruby program that counts to three");
-    assert_eq!(response.intent, "write_program_unsupported");
-    assert!(response.answer.contains("language `ruby`"));
-    assert!(response.answer.contains("task `count_to_three`"));
-    assert!(response.answer.contains("Supported tasks:"));
+    assert_eq!(response.intent, "write_program_skill_gap");
+    assert!(response.answer.contains("ruby"));
+    assert!(response.answer.contains("count_to_three"));
+    assert!(response.answer.contains("seed_idiom_composer"));
 }
 
 // ---------------------------------------------------------------------------
@@ -473,21 +475,23 @@ fn russian_program_request_with_unknown_task_is_not_unknown() {
     // unsupported) write_program request instead of falling through to unknown.
     let response = answer("Напиши программу на Python, которая вычисляет факториал числа");
     assert_eq!(
-        response.intent, "write_program_unsupported",
+        response.intent, "write_program_skill_gap",
         "Russian program request should be recognized as write_program, got: {}",
         response.intent
     );
-    // Issue #324: the unsupported message is localized to Russian, so assert on
-    // the backtick-quoted parameter (stable across languages) rather than the
+    // Issue #324: the message is localized to Russian, so assert on the
+    // backtick-quoted parameter (stable across languages) rather than the
     // English word "language".
     assert!(
         response.answer.contains("`python`"),
-        "unsupported answer should name the extracted python parameter, got: {}",
+        "skill-gap answer should name the extracted python parameter, got: {}",
         response.answer
     );
+    // Issue #699 batch 3: it names the routes that missed instead of the
+    // `write_program(language, task)` signature and the template catalogue.
     assert!(
-        response.answer.contains("write_program(language, task)"),
-        "unsupported answer should reference the write_program route, got: {}",
+        response.answer.contains("coding_oracle"),
+        "skill-gap answer should name the synthesis routes it tried, got: {}",
         response.answer
     );
 }
@@ -503,8 +507,8 @@ fn unknown_language_after_the_language_noun_is_extracted_in_both_head_initial_la
     // both head-initial languages so the seed-driven extractor stays covered.
     let english = answer("hello world in language elvish");
     assert_eq!(
-        english.intent, "write_program_unsupported",
-        "English noun-skip request should be an unsupported write_program, got: {}",
+        english.intent, "write_program_skill_gap",
+        "English noun-skip request should be an write_program skill gap, got: {}",
         english.intent
     );
     assert!(
@@ -515,8 +519,8 @@ fn unknown_language_after_the_language_noun_is_extracted_in_both_head_initial_la
 
     let russian = answer("хелло ворлд на языке elvish");
     assert_eq!(
-        russian.intent, "write_program_unsupported",
-        "Russian noun-skip request should be an unsupported write_program, got: {}",
+        russian.intent, "write_program_skill_gap",
+        "Russian noun-skip request should be an write_program skill gap, got: {}",
         russian.intent
     );
     assert!(

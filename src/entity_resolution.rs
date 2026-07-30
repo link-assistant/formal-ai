@@ -24,10 +24,15 @@ use crate::language::detect as detect_language;
 use crate::seed::{self, response_for, Slot, WordForm};
 use crate::solver_handlers::finalize_simple;
 
-/// Every correctly spelled name surface the system remembers, in a stable
-/// order: canonical registry first, then concept terms and aliases, then fact
-/// labels. Deduplicated case-insensitively, keeping the first spelling seen so
-/// suggestions render with their canonical casing.
+/// Placeholders the seed response records carry.
+const TERM_PLACEHOLDER: &str = "{term}";
+const CORRECTED_PLACEHOLDER: &str = "{corrected}";
+
+/// Every correctly spelled name surface the system remembers.
+///
+/// The order is stable: canonical registry first, then concept terms and
+/// aliases, then fact labels. Deduplicated case-insensitively, keeping the
+/// first spelling seen so suggestions render with their canonical casing.
 #[must_use]
 pub fn known_entity_names() -> &'static [String] {
     static NAMES: OnceLock<Vec<String>> = OnceLock::new();
@@ -163,8 +168,9 @@ fn suffix_literals(role: &str) -> Vec<&'static str> {
         .collect()
 }
 
-/// Answer a "who is X" prompt that the concept lookup could not claim because
-/// the entity is not in the knowledge base: acknowledge the question form,
+/// Answer a "who is X" prompt the concept lookup could not claim.
+///
+/// The entity is not in the knowledge base, so acknowledge the question form,
 /// report the miss, and offer the nearest remembered spelling when the term
 /// looks like a typo of one.
 pub fn resolve_who_is(
@@ -197,10 +203,10 @@ pub fn resolve_who_is(
     };
     let mut body = response_for(intent, &language)
         .or_else(|| response_for(intent, "en"))?
-        .replace("{term}", term);
+        .replace(TERM_PLACEHOLDER, term);
     if let Some(corrected) = suggestion {
         log.append("entity_resolution:suggestion", corrected.clone());
-        body = body.replace("{corrected}", &corrected);
+        body = body.replace(CORRECTED_PLACEHOLDER, &corrected);
     }
 
     Some(finalize_simple(

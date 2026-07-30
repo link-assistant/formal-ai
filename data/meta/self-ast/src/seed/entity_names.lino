@@ -2,9 +2,9 @@ self_ast_census
   target src/seed/entity_names.rs
   language rust
   fidelity signature
-  byte_len 2971
+  byte_len 2975
   line_count 79
-  content_id source_module_e1de440079caccb7
+  content_id source_module_ba95cc916c77b0a9
   symbol_count 6
   symbols
     struct EntityName 21 29

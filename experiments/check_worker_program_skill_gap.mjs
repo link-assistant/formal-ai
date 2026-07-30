@@ -1,9 +1,9 @@
-// Issue #699 batch 2: verify the browser worker resolves misspelled names from
-// remembered surfaces (no hardcoded person table) and localizes the merged
-// definition headings, exactly like `src/entity_resolution.rs` /
-// `src/definition_merge.rs`.
+// Issue #699 batch 3: verify the browser worker fails an underivable
+// `write_program` request with a named, seed-driven skill gap instead of
+// reciting the template catalogue — the same behavior as
+// `src/program_skill_gap.rs`.
 //
-// Run: node experiments/check_worker_entity_resolution.mjs
+// Run: node experiments/check_worker_program_skill_gap.mjs
 import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
@@ -29,7 +29,6 @@ for (const part of parts) {
   });
 }
 
-// Hydrate the seed text the same way loadSeed() does, straight from data/seed.
 const raw = {};
 for (const file of fs.readdirSync('data/seed').filter((n) => n.endsWith('.lino'))) {
   raw[`seed/${file}`] = fs.readFileSync(path.join('data/seed', file), 'utf8');
@@ -61,26 +60,26 @@ function check(name, condition) {
   if (!condition) failures += 1;
 }
 
-// Held-out typos: none of these names or spellings were in the retired table.
-check('ada lovlace -> Ada Lovelace', sandbox.suggestNameCorrection('ada lovlace') === 'Ada Lovelace');
-check('alan turring -> Alan Turing', sandbox.suggestNameCorrection('alan turring') === 'Alan Turing');
-check(
-  'альберт эйнштеин -> Альберт Эйнштейн',
-  sandbox.suggestNameCorrection('альберт эйнштеин') === 'Альберт Эйнштейн',
-);
-check('निकोला टेस्ल -> निकोला टेस्ला', sandbox.suggestNameCorrection('निकोला टेस्ल') === 'निकोला टेस्ला');
-// Pinned behavior from before the migration.
-check('elon mask -> Elon Musk', sandbox.suggestNameCorrection('elon mask') === 'Elon Musk');
-// Correct spellings are not "corrected".
-check('Ada Lovelace has no correction', sandbox.suggestNameCorrection('Ada Lovelace') === null);
-// No misspelling is stored anywhere in the registry.
-check(
-  'registry stores no misspellings',
-  !/mask|tramp|tromp|bidan|einstien|issac|vladmir|puting/i.test(raw['seed/entity-names.lino']),
-);
-// Localized headings come from seed data, not from JavaScript literals.
-const worker09 = fs.readFileSync(path.join(WORKER_DIR, 'formal_ai_worker_09.js'), 'utf8');
-check('no hardcoded merge headings', !worker09.includes('Merged definition of'));
-check('no hardcoded person table', !worker09.includes('KNOWN_PERSON_VARIANTS'));
+// The gap identity is English and names both parameters.
+const name = sandbox.programSkillGapName(null, 'rust', 'en');
+check('gap name reports the language', name.includes('rust'));
+check('gap name reports the missing task', name.includes('missing'));
+
+// Every supported response language renders a localized reply that names the
+// gap and the routes, and never recites the catalogue.
+for (const language of ['en', 'ru', 'hi', 'zh']) {
+  const answer = sandbox.programSkillGapAnswer(null, 'rust', language);
+  check(`${language}: reply is rendered`, answer.length > 0);
+  check(`${language}: reply names the routes`, answer.includes('seed_idiom_composer'));
+  check(`${language}: reply does not recite tasks`, !/hello_world|count_to_three/.test(answer));
+}
+
+// The retired dead end is gone from the worker sources.
+const RETIRED_RECITATION = ['Supported', 'tasks:'].join(' ');
+const workerText = parts
+  .map((part) => fs.readFileSync(path.join(WORKER_DIR, part), 'utf8'))
+  .join('\n');
+check('no catalogue recitation', !workerText.includes(RETIRED_RECITATION));
+check('no unsupported intent', !workerText.includes('"write_program_unsupported"'));
 
 process.exitCode = failures ? 1 : 0;

@@ -18,6 +18,8 @@ pub const MULTILINGUAL_RESPONSES_LINO: &str =
     include_str!("../../data/seed/multilingual-responses.lino");
 pub const MULTILINGUAL_RESPONSES_ENTITIES_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-entities.lino");
+pub const MULTILINGUAL_RESPONSES_SYNTHESIS_LINO: &str =
+    include_str!("../../data/seed/multilingual-responses-synthesis.lino");
 pub const MULTILINGUAL_RESPONSES_ORCHESTRATION_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-orchestration.lino");
 pub const MULTILINGUAL_RESPONSES_AGENTIC_LINO: &str =
@@ -168,6 +170,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         (
             "data/seed/multilingual-responses-entities.lino",
             MULTILINGUAL_RESPONSES_ENTITIES_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-synthesis.lino",
+            MULTILINGUAL_RESPONSES_SYNTHESIS_LINO,
         ),
         (
             "data/seed/multilingual-responses-orchestration.lino",
@@ -400,6 +406,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
 pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_LINO,
     MULTILINGUAL_RESPONSES_ENTITIES_LINO,
+    MULTILINGUAL_RESPONSES_SYNTHESIS_LINO,
     MULTILINGUAL_RESPONSES_ORCHESTRATION_LINO,
     MULTILINGUAL_RESPONSES_AGENTIC_LINO,
     MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,

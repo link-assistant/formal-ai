@@ -4,7 +4,9 @@
 //! the language-neutral interval/proof primitive in Rust. Batch 2 migrated the
 //! `who_is` and `definition_merge` methods: the fixed misspelling table became
 //! approximate matching over remembered names, and the definition merger's
-//! host-to-language mapping and rendered labels became seed data.
+//! host-to-language mapping and rendered labels became seed data. Batch 3
+//! migrated the `program_synthesis` dead end: an underivable request now fails
+//! with a named, seed-driven skill gap instead of reciting the catalogue.
 
 use std::fs;
 use std::path::Path;
@@ -108,6 +110,66 @@ fn entity_suggestions_never_come_from_stored_misspellings() {
 }
 
 #[test]
+fn unsupported_write_program_fails_with_a_named_skill_gap() {
+    // Issue #699 requirement 3: the `write_program` meta-builder must either
+    // synthesize outside the curated catalogue — it already does, via the
+    // blueprint recipes, the coding oracle and the seed idiom composer — or
+    // fail with a *named* skill gap. Reciting the curated catalogue back at the
+    // requester ("Supported tasks: hello_world, …") is neither.
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    for (language, prompt) in [
+        ("en", "write a rust program that reverses a linked list"),
+        (
+            "ru",
+            "Напиши программу на Rust, которая разворачивает связный список",
+        ),
+    ] {
+        let response = FormalAiEngine.answer(prompt);
+        assert_eq!(
+            response.intent, "write_program_skill_gap",
+            "{language} underivable program request must name a skill gap: {}",
+            response.answer,
+        );
+        assert!(
+            response.answer.contains("seed_idiom_composer"),
+            "{language} skill gap must name the synthesis routes that missed: {}",
+            response.answer,
+        );
+        // The named gap is a stable English identity, whatever the request
+        // language, so the event log and the ledger can quote it.
+        let gap = formal_ai::program_skill_gap::gap_name(None, Some("rust"));
+        assert!(
+            gap.contains("rust") && !gap.is_empty(),
+            "{language} gap name must identify the program language: {gap}",
+        );
+    }
+
+    // Anti-recitation guard: neither engine may answer with the catalogue.
+    let recitation = ["Supported", "tasks:"].join(" ");
+    for source in [
+        "src/engine.rs",
+        "src/web/worker/formal_ai_worker_14.js",
+        "src/web/worker/formal_ai_worker_16.js",
+    ] {
+        let text = fs::read_to_string(root.join(source)).expect("engine source");
+        assert!(
+            !text.contains(&recitation),
+            "{source} still recites the template catalogue as an answer",
+        );
+    }
+
+    // The gap wording is seed data in every supported response language (R379).
+    for language in ["en", "ru", "hi", "zh"] {
+        for intent in ["write_program_skill_gap", "write_program_skill_gap_name"] {
+            assert!(
+                seed::response_for(intent, language).is_some(),
+                "{intent} must be seeded for {language}",
+            );
+        }
+    }
+}
+
+#[test]
 fn handler_migration_ratchet() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
     let handler_files = fs::read_dir(root.join("src/solver_handlers"))
@@ -170,8 +232,8 @@ fn migration_ledger_is_a_complete_live_registry_census() {
     );
     assert_eq!(
         ledger.matches("status migrated").count(),
-        3,
-        "batches 1-2 migrate three methods in total",
+        4,
+        "batches 1-3 migrate four methods in total",
     );
     assert_eq!(
         ledger.matches("status \"justified-native\"").count(),
@@ -180,7 +242,7 @@ fn migration_ledger_is_a_complete_live_registry_census() {
     );
     assert_eq!(
         ledger.matches("status pending").count(),
-        expected.len() - 5,
+        expected.len() - 6,
         "every other current method must honestly remain pending",
     );
 }

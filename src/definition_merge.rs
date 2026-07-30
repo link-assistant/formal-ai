@@ -278,6 +278,12 @@ fn normalize_fact(value: &str) -> String {
 /// own record. Only the list structure — one bullet per fact and per source,
 /// each tagged with its own source language — is code, because that shape is
 /// the same in every language.
+/// Placeholders the seed header record carries, named so the rendering code
+/// reads as substitution rather than as formatting.
+const TERM_PLACEHOLDER: &str = "{term}";
+const ANCHOR_PLACEHOLDER: &str = "{anchor}";
+const LANGUAGES_PLACEHOLDER: &str = "{languages}";
+
 fn render_definition_merge(
     language: &str,
     record: &ConceptRecord,
@@ -296,9 +302,9 @@ fn render_definition_merge(
         format!(" [{}]", record.wikidata)
     };
     let mut body = localized_label("definition_merge_header", language)
-        .replace("{term}", display_term)
-        .replace("{anchor}", &anchor)
-        .replace("{languages}", &languages);
+        .replace(TERM_PLACEHOLDER, display_term)
+        .replace(ANCHOR_PLACEHOLDER, &anchor)
+        .replace(LANGUAGES_PLACEHOLDER, &languages);
     for (language, fact) in facts {
         let _ = writeln!(body, "\n- [{language}] {fact}");
     }

@@ -1,6 +1,6 @@
 handler_migration_ledger
   issue 699
-  batch 2
+  batch 3
   specialized_handler_files_max 37
   try_dispatch_entries_max 48
   handler http_fetch
@@ -100,7 +100,11 @@ handler_migration_ledger
   handler write_script
     status pending
   handler program_synthesis
-    status pending
+    status migrated
+    data "data/seed/coding-idioms.lino|data/seed/multilingual-responses-synthesis.lino"
+    primitive "src/program_skill_gap.rs"
+    justification "Synthesis already reaches outside the curated catalogue through the blueprint recipes, the cached coding oracle and the seed idiom composer; the migrated part is the dead end, which no longer recites the templates the catalogue happens to hold but names a skill gap from seed wording in en/ru/hi/zh and logs the stable English gap identity as a skill_gap event."
+    held_out "tests/unit/issue_699_handler_migration.rs"
   handler document_generation_plan
     status pending
   handler software_project

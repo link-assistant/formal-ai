@@ -68,6 +68,51 @@ phrasing, and attached Chinese comparisons. All four resolve the unique integer
 5. The original issue #403 Russian prompt remains covered by its existing
 behavior-preservation test.
 
+## Batch 2: `who_is` and `definition_merge`
+
+Both rows were substitution methods holding memorized specifics.
+
+`who_is` carried a fixed table of eight people, each with three hand-written
+misspellings. The table is gone. The only native part left is nearest-surface
+search under a length-scaled edit budget, and its candidates come from the
+entity registry, concept terms and aliases, and fact labels — so a corrected
+name is derived from what the system remembers, never from a stored typo. The
+held-out suite spells four names the retired table never listed
+(`ada lovlace`, `alan turring`, `альберт эйнштеин`, `निकोला टेस्ल`), and a
+guard asserts `data/seed/entity-names.lino` stores no misspelling at all, so a
+later edit cannot quietly restore memoization.
+
+`definition_merge` kept a host-to-language mapping and rendered labels in Rust.
+The mapping moved into the language-detection rules and every label is now a
+seed response with en/ru/hi/zh coverage; deduplication, ordering and rendering
+stay native because they are language-neutral list operations.
+
+## Batch 3: `program_synthesis` fails with a named skill gap
+
+Requirement 3 has two halves, and only one of them was missing. Synthesis
+already reaches outside the curated catalogue: a request the verified templates
+cannot serve is retried against the composite blueprint recipes
+(`src/coding/blueprint.rs`), the cached coding oracle
+(`src/solver_handler_oracle.rs`), and the seed idiom composer
+(`data/seed/coding-idioms.lino`), each of which derives code the catalogue
+never stored.
+
+What was missing is the honest failure. When every route missed, the engine
+answered by reciting what it happens to hold — "Supported tasks: hello_world,
+count_to_three, …". Under the issue's generality-first rule that is doubly
+wrong: it advertises memorized specifics as the capability surface, and it
+names no gap anyone can act on.
+
+`src/program_skill_gap.rs` replaces it with the `skill_gap` protocol already
+established for procedure compilation (issue #674): a stable English gap
+*identity* appended to the evidence trail as a `skill_gap` event, and a
+localized reply rendered from
+`data/seed/multilingual-responses-synthesis.lino` that names the gap and the
+routes that were tried, in en/ru/hi/zh. The browser worker was migrated in
+lockstep (`programSkillGapName`/`programSkillGapAnswer`), verified by
+`experiments/check_worker_program_skill_gap.mjs`. An anti-recitation guard in
+the test suite scans both engines for the retired catalogue sentence.
+
 ## Migration plan
 
 Later one-batch PRs should select pending rows by general mechanism rather than

@@ -17,7 +17,7 @@ use super::parser::{parse_lino, LinoNode};
 use super::ENTITY_NAMES_LINO;
 
 /// One named entity with its correctly spelled surfaces per language.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct EntityName {
     /// Stable slug used in trace logs, e.g. `elon_musk`.
     pub slug: String,
