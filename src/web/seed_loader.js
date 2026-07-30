@@ -52,6 +52,7 @@
     "seed/meanings-coding-catalog.lino",
     "seed/meanings-conversation.lino",
     "seed/meanings-decomposition.lino",
+    "seed/meanings-number-constraints.lino",
     "seed/meanings-definition-merge.lino",
     "seed/meanings-docs.lino",
     "seed/meanings-facts.lino",

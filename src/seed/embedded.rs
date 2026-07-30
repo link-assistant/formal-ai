@@ -107,6 +107,8 @@ pub const MEANINGS_FILE_WRITE_LINO: &str = include_str!("../../data/seed/meaning
 pub const MEANINGS_FILE_EDIT_LINO: &str = include_str!("../../data/seed/meanings-file-edit.lino");
 pub const MEANINGS_DECOMPOSITION_LINO: &str =
     include_str!("../../data/seed/meanings-decomposition.lino");
+pub const MEANINGS_NUMBER_CONSTRAINTS_LINO: &str =
+    include_str!("../../data/seed/meanings-number-constraints.lino");
 pub const MEANINGS_AGENT_ACTIONS_LINO: &str =
     include_str!("../../data/seed/meanings-agent-actions.lino");
 pub const MEANINGS_LOCAL_SEARCH_LINO: &str =
@@ -310,6 +312,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             MEANINGS_DECOMPOSITION_LINO,
         ),
         (
+            "data/seed/meanings-number-constraints.lino",
+            MEANINGS_NUMBER_CONSTRAINTS_LINO,
+        ),
+        (
             "data/seed/meanings-agent-actions.lino",
             MEANINGS_AGENT_ACTIONS_LINO,
         ),
@@ -426,6 +432,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_FILE_WRITE_LINO,
     MEANINGS_FILE_EDIT_LINO,
     MEANINGS_DECOMPOSITION_LINO,
+    MEANINGS_NUMBER_CONSTRAINTS_LINO,
     MEANINGS_AGENT_ACTIONS_LINO,
     MEANINGS_LOCAL_SEARCH_LINO,
     MEANINGS_PLAYWRIGHT_LINO,

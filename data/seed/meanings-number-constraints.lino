@@ -1,0 +1,219 @@
+# Issue #699 batch 1: language surfaces for interval-constraint recognition.
+# The Rust primitive names only these semantic roles; adding a paraphrase or a
+# language is a data change.
+meanings
+  number_constraint_entity
+    defined-by entity
+    role number_constraint_entity
+    lexeme en
+      surface
+        text number
+      surface
+        text integer
+    lexeme ru
+      surface
+        text число
+      surface
+        text целое
+    lexeme hi
+      surface
+        text संख्या
+      surface
+        text पूर्णांक
+    lexeme zh
+      surface
+        text 数字
+      surface
+        text 整数
+  number_constraint_query
+    defined-by action
+    role number_constraint_query
+    lexeme en
+      surface
+        text "what is the number"
+      surface
+        text "what number"
+      surface
+        text "which number"
+      surface
+        text "find the integer"
+      surface
+        text "find the number"
+    lexeme ru
+      surface
+        text "что это за число"
+      surface
+        text "какое это число"
+      surface
+        text "какое число"
+      surface
+        text "найди задуманное"
+    lexeme hi
+      surface
+        text बताइए
+      surface
+        text बताओ
+      surface
+        text खोजिए
+    lexeme zh
+      surface
+        text 找出
+      surface
+        text 是什么数
+      surface
+        text 哪个数
+  number_constraint_hidden
+    defined-by property
+    role number_constraint_hidden
+    lexeme en
+      surface
+        text "i guessed"
+      surface
+        text "i picked"
+      surface
+        text "i chose"
+      surface
+        text "i thought of"
+      surface
+        text "i am thinking of"
+    lexeme ru
+      surface
+        text загадал
+      surface
+        text загадала
+      surface
+        text задумал
+      surface
+        text задумала
+      surface
+        text задуманное
+    lexeme hi
+      surface
+        text सोचा
+      surface
+        text चुना
+    lexeme zh
+      surface
+        text 想的
+      surface
+        text 选的
+  number_constraint_lower_strict
+    defined-by relation
+    role number_constraint_lower
+    role number_constraint_lower_strict
+    lexeme en
+      surface
+        text "greater than"
+      surface
+        text "more than"
+      surface
+        text exceeds
+      surface
+        text above
+    lexeme ru
+      surface
+        text больше
+      surface
+        text более
+      surface
+        text превышает
+    lexeme hi
+      surface
+        text "से अधिक"
+      surface
+        text "से बड़ा"
+    lexeme zh
+      surface
+        text 大于
+      surface
+        text 超过
+  number_constraint_lower_inclusive
+    defined-by relation
+    role number_constraint_lower
+    role number_constraint_lower_inclusive
+    lexeme en
+      surface
+        text "greater than or equal to"
+      surface
+        text "more than or equal to"
+      surface
+        text "not less than"
+      surface
+        text "at least"
+    lexeme ru
+      surface
+        text "больше или равно"
+      surface
+        text "более или равно"
+      surface
+        text "не меньше"
+    lexeme hi
+      surface
+        text "से कम नहीं"
+      surface
+        text "कम से कम"
+    lexeme zh
+      surface
+        text 大于等于
+      surface
+        text 不小于
+      surface
+        text 至少
+  number_constraint_upper_strict
+    defined-by relation
+    role number_constraint_upper
+    role number_constraint_upper_strict
+    lexeme en
+      surface
+        text "less than"
+      surface
+        text below
+      surface
+        text under
+    lexeme ru
+      surface
+        text меньше
+      surface
+        text менее
+      surface
+        text "не достигает"
+    lexeme hi
+      surface
+        text "से कम"
+      surface
+        text "से छोटा"
+    lexeme zh
+      surface
+        text 小于
+      surface
+        text 不到
+  number_constraint_upper_inclusive
+    defined-by relation
+    role number_constraint_upper
+    role number_constraint_upper_inclusive
+    lexeme en
+      surface
+        text "less than or equal to"
+      surface
+        text "not more than"
+      surface
+        text "at most"
+    lexeme ru
+      surface
+        text "меньше или равно"
+      surface
+        text "менее или равно"
+      surface
+        text "не больше"
+    lexeme hi
+      surface
+        text "से अधिक नहीं"
+      surface
+        text "अधिकतम"
+    lexeme zh
+      surface
+        text 小于等于
+      surface
+        text 不大于
+      surface
+        text 至多

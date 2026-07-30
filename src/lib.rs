@@ -62,6 +62,7 @@ pub mod meta_self_improvement;
 pub mod method_registry;
 pub(crate) mod network_endpoint;
 pub mod normal_markov;
+pub(crate) mod number_constraints;
 pub mod option_evidence;
 pub mod option_network;
 pub mod probability;

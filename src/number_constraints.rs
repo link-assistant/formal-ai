@@ -1,4 +1,9 @@
-//! Hidden-number interval riddles translated into linear constraints.
+//! Native interval extraction, arithmetic, and proof projection.
+//!
+//! Issue #699 moved this primitive out of the specialized-handler directory.
+//! Natural-language recognition is supplied by semantic roles in
+//! `data/seed/meanings-number-constraints.lino`; this module keeps only the
+//! language-neutral constraint/proof operation and answer projection.
 
 use std::fmt::Write as _;
 
@@ -8,6 +13,7 @@ use crate::language::detect as detect_language;
 use crate::proof_engine::{
     attempt_proof_with_config, render_outcome_with_config, ProofRenderConfig,
 };
+use crate::seed;
 use crate::solver_handlers::finalize_simple;
 
 #[derive(Clone, Copy, Debug)]
@@ -40,7 +46,7 @@ struct IntervalBounds {
     upper: Bound,
 }
 
-pub fn try_number_riddle(
+pub(crate) fn solve_number_constraints(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
@@ -91,47 +97,16 @@ pub fn try_number_riddle(
 }
 
 fn looks_like_number_riddle(cleaned: &str, source: &str) -> bool {
-    let mentions_number = contains_any(cleaned, &["число", "number", "integer"]);
-    let asks_identity = contains_any(
-        cleaned,
-        &[
-            "что это за число",
-            "какое это число",
-            "какое число",
-            "what is the number",
-            "what number",
-            "which number",
-        ],
-    );
-    let hidden_number = contains_any(
-        cleaned,
-        &[
-            "загадал",
-            "загадала",
-            "задумал",
-            "задумала",
-            "i guessed",
-            "i picked",
-            "i chose",
-            "i thought of",
-        ],
-    );
-    let has_bounds = contains_any(
-        cleaned,
-        &[
-            "больше",
-            "более",
-            "меньше",
-            "менее",
-            "greater than",
-            "more than",
-            "less than",
-            "at least",
-            "at most",
-        ],
-    ) || contains_any(source, &[">", "<", "≥", "≤"]);
+    let lexicon = seed::lexicon();
+    let mentions_number = lexicon.mentions_role(seed::ROLE_NUMBER_CONSTRAINT_ENTITY, cleaned);
+    let asks_identity = lexicon.mentions_role(seed::ROLE_NUMBER_CONSTRAINT_QUERY, cleaned);
+    let hidden_number = lexicon.mentions_role(seed::ROLE_NUMBER_CONSTRAINT_HIDDEN, cleaned);
+    let has_lower = lexicon.mentions_role(seed::ROLE_NUMBER_CONSTRAINT_LOWER, cleaned)
+        || contains_any(source, &[">", "≥"]);
+    let has_upper = lexicon.mentions_role(seed::ROLE_NUMBER_CONSTRAINT_UPPER, cleaned)
+        || contains_any(source, &["<", "≤"]);
 
-    mentions_number && has_bounds && (asks_identity || hidden_number)
+    mentions_number && has_lower && has_upper && (asks_identity || hidden_number)
 }
 
 fn contains_any(text: &str, needles: &[&str]) -> bool {
@@ -139,40 +114,33 @@ fn contains_any(text: &str, needles: &[&str]) -> bool {
 }
 
 fn extract_interval_bounds(word_text: &str, symbol_text: &str) -> Option<IntervalBounds> {
-    let lower = find_bound(
+    let lower = find_role_bound(
         word_text,
-        &[
-            ("больше или равно", true),
-            ("более или равно", true),
-            ("не меньше", true),
-            ("not less than", true),
-            ("greater than or equal to", true),
-            ("more than or equal to", true),
-            ("at least", true),
-            ("больше", false),
-            ("более", false),
-            ("greater than", false),
-            ("more than", false),
-        ],
+        seed::ROLE_NUMBER_CONSTRAINT_LOWER_INCLUSIVE,
+        true,
     )
+    .or_else(|| find_role_bound(word_text, seed::ROLE_NUMBER_CONSTRAINT_LOWER_STRICT, false))
     .or_else(|| find_bound(symbol_text, &[(">=", true), (">", false)]))?;
-    let upper = find_bound(
+    let upper = find_role_bound(
         word_text,
-        &[
-            ("меньше или равно", true),
-            ("менее или равно", true),
-            ("не больше", true),
-            ("not more than", true),
-            ("less than or equal to", true),
-            ("at most", true),
-            ("меньше", false),
-            ("менее", false),
-            ("less than", false),
-        ],
+        seed::ROLE_NUMBER_CONSTRAINT_UPPER_INCLUSIVE,
+        true,
     )
+    .or_else(|| find_role_bound(word_text, seed::ROLE_NUMBER_CONSTRAINT_UPPER_STRICT, false))
     .or_else(|| find_bound(symbol_text, &[("<=", true), ("<", false)]))?;
 
     Some(IntervalBounds { lower, upper })
+}
+
+fn find_role_bound(text: &str, role: &str, inclusive: bool) -> Option<Bound> {
+    seed::lexicon()
+        .role_word_forms(role)
+        .iter()
+        .find_map(|form| {
+            find_number_after_phrase(text, &form.text)
+                .or_else(|| find_number_before_phrase(text, &form.text))
+                .map(|value| Bound { value, inclusive })
+        })
 }
 
 fn find_bound(text: &str, phrases: &[(&str, bool)]) -> Option<Bound> {
@@ -197,7 +165,29 @@ fn find_number_after_phrase(text: &str, phrase: &str) -> Option<i64> {
     None
 }
 
+fn find_number_before_phrase(text: &str, phrase: &str) -> Option<i64> {
+    text.match_indices(phrase).find_map(|(index, _)| {
+        if !phrase_has_boundary(text, index, phrase) {
+            return None;
+        }
+        let head = text[..index].trim_end();
+        let start = head
+            .char_indices()
+            .rev()
+            .take_while(|(_, character)| character.is_ascii_digit() || *character == '-')
+            .last()
+            .map_or(head.len(), |(position, _)| position);
+        let candidate = &head[start..];
+        (!candidate.is_empty() && candidate != "-")
+            .then(|| candidate.parse().ok())
+            .flatten()
+    })
+}
+
 fn phrase_has_boundary(text: &str, index: usize, phrase: &str) -> bool {
+    if crate::coding::contains_cjk(phrase) {
+        return true;
+    }
     let before_ok = text[..index]
         .chars()
         .next_back()
