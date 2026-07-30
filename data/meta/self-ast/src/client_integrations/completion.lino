@@ -2,10 +2,10 @@ self_ast_census
   target src/client_integrations/completion.rs
   language rust
   fidelity signature
-  byte_len 16311
-  line_count 474
-  content_id source_module_c0e0ab8a3b19cef6
-  symbol_count 29
+  byte_len 15370
+  line_count 440
+  content_id source_module_be029ded53764dd6
+  symbol_count 26
   symbols
     struct CapturedOutcome 18 22
     function require_completed 24 46
@@ -33,6 +33,3 @@ self_ast_census
     function collect_object_token_usage 402 423
     function detect_vendor_endpoint 425 440
     const VENDOR_ENDPOINTS 426 426
-    module tests 443 459
-    function pretty_and_concatenated_json_becomes_records 447 451
-    function token_usage_reads_nested_string_metadata 462 473

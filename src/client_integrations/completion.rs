@@ -438,37 +438,3 @@ fn detect_vendor_endpoint(stdout: &[u8], stderr: &[u8], expected: &str) -> Optio
         .find(|endpoint| !expected.starts_with(endpoint) && output.contains(endpoint))
         .map(str::to_owned)
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn pretty_and_concatenated_json_becomes_records() {
-        let records = normalize_json_stream(
-            br#"{
-  "type": "one"
-}{"type":"two"}
-plain text
-"#,
-        );
-        assert_eq!(records.len(), 3);
-        assert_eq!(records[0]["type"], "one");
-        assert_eq!(records[1]["type"], "two");
-        assert_eq!(records[2]["type"], "formal_ai_client_output");
-    }
-
-    #[test]
-    fn token_usage_reads_nested_string_metadata() {
-        let value = json!({
-            "rawMetadata": concat!(
-                "diagnostic preface\n",
-                "{\"usage\":{\"inputTokens\":17,\"outputTokens\":9}}\n",
-                "{\"tokensBreakdown\":{\"input\":21,\"output\":11}}\n"
-            )
-        });
-        let (mut input, mut output) = (0, 0);
-        collect_token_usage(&value, &mut input, &mut output);
-        assert_eq!((input, output), (21, 11));
-    }
-}

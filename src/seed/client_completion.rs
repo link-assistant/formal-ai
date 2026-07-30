@@ -35,28 +35,3 @@ pub fn software_authoring_completion_contract() -> Option<ClientCompletionContra
         process_error: contract.find_child_value("process_error").to_owned(),
     })
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn software_authoring_contract_is_complete_and_bounded() {
-        let contract = software_authoring_completion_contract().expect("completion contract");
-        assert_eq!(contract.observable_postcondition, "workspace_effect");
-        assert_eq!(contract.max_attempts, 2);
-        assert_eq!(
-            contract.incomplete_reason,
-            "required_workspace_effect_missing"
-        );
-        assert_eq!(contract.scratch_directory, ".formal-ai");
-        assert_eq!(
-            contract.incomplete_error,
-            "{command} did not satisfy the software-authoring completion contract"
-        );
-        assert_eq!(
-            contract.process_error,
-            "{command} exited with status {status}"
-        );
-    }
-}

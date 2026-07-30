@@ -3,6 +3,7 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::sync::atomic::{AtomicU64, Ordering};
 
+use formal_ai::seed::software_authoring_completion_contract;
 use serde_json::Value;
 
 static TMPDIR_SEQ: AtomicU64 = AtomicU64::new(0);
@@ -37,8 +38,10 @@ printf '%s\n' "$attempt" > "$FORMAL_AI_ATTEMPTS"
 printf '{\n'
 printf '  "type": "result",\n'
 printf '  "subtype": "success",\n'
-printf '  "rawMetadata": "{\\"formalai\\":{}}"\n'
+printf '  "rawMetadata": "diagnostic preface\\n{\\"usage\\":{\\"inputTokens\\":17,\\"outputTokens\\":9}}\\n{\\"tokensBreakdown\\":{\\"input\\":21,\\"output\\":11}}"\n'
 printf '}\n'
+printf '{"type":"concatenated"}'
+printf 'plain text\n'
 "#,
     )
     .expect("write fake Agent CLI");
@@ -145,6 +148,26 @@ fn json_records(output: &[u8]) -> Vec<Value> {
 }
 
 #[test]
+fn seeded_contract_is_complete_and_bounded() {
+    let contract = software_authoring_completion_contract().expect("completion contract");
+    assert_eq!(contract.observable_postcondition, "workspace_effect");
+    assert_eq!(contract.max_attempts, 2);
+    assert_eq!(
+        contract.incomplete_reason,
+        "required_workspace_effect_missing"
+    );
+    assert_eq!(contract.scratch_directory, ".formal-ai");
+    assert_eq!(
+        contract.incomplete_error,
+        "{command} did not satisfy the software-authoring completion contract"
+    );
+    assert_eq!(
+        contract.process_error,
+        "{command} exited with status {status}"
+    );
+}
+
+#[test]
 fn software_authoring_cannot_succeed_without_an_artifact() {
     let directory = tmpdir();
     let workspace = directory.join("workspace");
@@ -204,8 +227,26 @@ fn software_authoring_cannot_succeed_without_an_artifact() {
         completion["rawMetadata"]["formalai"]["endpoint"],
         "http://127.0.0.1:8080/api/openai/v1"
     );
-    assert!(completion["rawMetadata"]["formalai"]["input_tokens"].is_number());
-    assert!(completion["rawMetadata"]["formalai"]["output_tokens"].is_number());
+    assert_eq!(completion["rawMetadata"]["formalai"]["input_tokens"], 21);
+    assert_eq!(completion["rawMetadata"]["formalai"]["output_tokens"], 11);
+    assert_eq!(
+        records
+            .iter()
+            .filter(|record| record["type"] == "concatenated")
+            .count(),
+        2,
+        "each attempt must preserve concatenated JSON output"
+    );
+    assert_eq!(
+        records
+            .iter()
+            .filter(|record| {
+                record["type"] == "formal_ai_client_output" && record["text"] == "plain text"
+            })
+            .count(),
+        2,
+        "each attempt must wrap plain stdout in a machine-readable record"
+    );
 
     let invocation = std::fs::read_to_string(&capture).expect("captured invocation");
     assert!(

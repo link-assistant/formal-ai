@@ -5,8 +5,8 @@ self_ast_census_index
   module_count 362
   full_ast_module_count 50
   signature_module_count 312
-  symbol_count 7392
-  content_id self_ast_census_index_e6a029c286855abb
+  symbol_count 7387
+  content_id self_ast_census_index_8eb80ef22501a106
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/associative_learning.rs full_ast 7 source_module_926e3e97b31fa30a
@@ -85,7 +85,7 @@ self_ast_census_index
     src/client_contract_learning.rs signature 27 source_module_b3af1922ebb1ae7e
     src/client_integrations.rs signature 42 source_module_5b9b0c1b794f9ae1
     src/client_integrations/command.rs signature 7 source_module_d70321ad602a094c
-    src/client_integrations/completion.rs signature 29 source_module_c0e0ab8a3b19cef6
+    src/client_integrations/completion.rs signature 26 source_module_be029ded53764dd6
     src/client_integrations/server.rs signature 9 source_module_3f888a869002c4ed
     src/client_integrations/session_files.rs signature 17 source_module_bf73a9e540f76a0d
     src/client_integrations/url.rs signature 5 source_module_e3b7a2362cbd33cf
@@ -215,7 +215,7 @@ self_ast_census_index
     src/seed.rs signature 55 source_module_4c8c7a1de4309ede
     src/seed/agentic_tool_capabilities.rs signature 2 source_module_9847f4d6bab733ff
     src/seed/brainstorm.rs signature 5 source_module_6580e5a2ac5b3691
-    src/seed/client_completion.rs signature 4 source_module_514b9bb8e34fb0ca
+    src/seed/client_completion.rs signature 2 source_module_ec494279db15cb89
     src/seed/client_integrations.rs signature 19 source_module_9207f94472e96872
     src/seed/coreference.rs signature 6 source_module_2a031fb4770187f1
     src/seed/embedded.rs signature 91 source_module_4d4554a5d8059da5
