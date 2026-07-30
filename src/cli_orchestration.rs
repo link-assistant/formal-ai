@@ -1,15 +1,20 @@
 use clap::{Args as ClapArgs, Subcommand, ValueEnum};
 use formal_ai::orchestration::{
-    dispatch_agents, read_session, run_agent, write_session, AgentRunConfig, AgentRunPermission,
-    AgentTarget, DispatchConfig, DispatchMode, VerificationCommand,
+    apply_verified_translation, dispatch_agents, observe_orchestration_session, read_session,
+    resume_agent, run_agent, session_sha256, synthesize_sessions, write_session, AgentCommand,
+    AgentRunConfig, AgentRunPermission, AgentTarget, CorrectionRequest, DispatchConfig,
+    DispatchMode, VerificationCommand,
 };
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use std::error::Error;
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 
 use crate::DEFAULT_AGENT_TASK;
+
+const TASK_PLACEHOLDER: &str = concat!("{", "task", "}");
+const SESSION_ID_PLACEHOLDER: &str = concat!("{", "session_id", "}");
 
 #[derive(Debug, ClapArgs)]
 pub struct AgentArgs {
@@ -35,6 +40,15 @@ pub enum AgentAction {
     Run(ExternalRunArgs),
     /// Decompose work across CLIs or compare several CLIs on the same task.
     Dispatch(ExternalDispatchArgs),
+    /// Resume the exact native session after a claim is disproved.
+    Resume(ExternalResumeArgs),
+    /// Formalize, summarize, and cross-check recorded agent results.
+    Synthesize(ExternalSynthesisArgs),
+    /// Feed repeated sessions into proposal-only adapter learning.
+    Learn {
+        #[arg(value_name = "SESSION_JSON", required = true)]
+        sessions: Vec<PathBuf>,
+    },
     /// Verify and print a canonical recorded orchestration session.
     Replay {
         #[arg(value_name = "SESSION_JSON")]
@@ -83,6 +97,13 @@ pub struct ExternalRunArgs {
     /// Optional canonical session destination.
     #[arg(long)]
     pub session: Option<PathBuf>,
+    /// Arbitrary agent argv as a JSON string array; `{task}` is replaced
+    /// literally. The executable also requires --allow-agent-command.
+    #[arg(long, value_name = "JSON_ARGV")]
+    pub command: Option<String>,
+    /// Exact executable path/name granted for an arbitrary agent adapter.
+    #[arg(long = "allow-agent-command")]
+    pub allow_agent_commands: Vec<String>,
     /// Executable name allowed for a post-run verification command.
     #[arg(long = "allow-command")]
     pub allow_commands: Vec<String>,
@@ -113,18 +134,80 @@ pub struct ExternalDispatchArgs {
     pub target: TargetArg,
     #[arg(long, default_value_t = 900)]
     pub timeout_seconds: u64,
+    /// Custom adapter in `CLI=JSON_ARGV` form. JSON argv must contain
+    /// `{task}`; repeat for multiple adapters.
+    #[arg(long = "command", value_name = "CLI=JSON_ARGV")]
+    pub commands: Vec<String>,
+    /// Exact executable path/name granted for custom agent adapters.
+    #[arg(long = "allow-agent-command")]
+    pub allow_agent_commands: Vec<String>,
     #[arg(long = "allow-command")]
     pub allow_commands: Vec<String>,
     #[arg(long = "verify", value_name = "JSON_ARGV")]
     pub verification: Vec<String>,
     #[arg(long, default_value_t = 3)]
     pub max_depth: u8,
+    /// Produce a meta-language, summarized, cross-agent evidence report.
+    #[arg(long, default_value_t = false)]
+    pub synthesize: bool,
+    /// Requested language for the synthesized result.
+    #[arg(long, default_value = "en")]
+    pub response_language: String,
+    /// A separately recorded translator-agent session whose stdout is the
+    /// translated answer.
+    #[arg(long, requires = "synthesize")]
+    pub translation_session: Option<PathBuf>,
+}
+
+#[derive(Debug, ClapArgs)]
+pub struct ExternalResumeArgs {
+    /// Canonical parent session containing the native client session id.
+    #[arg(long)]
+    pub parent: PathBuf,
+    /// Corrective task sent into the original native session.
+    #[arg(long)]
+    pub task: String,
+    #[arg(long)]
+    pub workspace: PathBuf,
+    /// Exact statement shown to be wrong.
+    #[arg(long)]
+    pub disproved_claim: String,
+    /// Reviewable proof supplied to the original model.
+    #[arg(long)]
+    pub evidence: String,
+    #[arg(long, default_value_t = 900)]
+    pub timeout_seconds: u64,
+    #[arg(long)]
+    pub session: Option<PathBuf>,
+    #[arg(long, value_name = "JSON_ARGV")]
+    pub command: Option<String>,
+    #[arg(long = "allow-agent-command")]
+    pub allow_agent_commands: Vec<String>,
+    #[arg(long = "allow-command")]
+    pub allow_commands: Vec<String>,
+    #[arg(long = "verify", value_name = "JSON_ARGV")]
+    pub verification: Vec<String>,
+}
+
+#[derive(Debug, ClapArgs)]
+pub struct ExternalSynthesisArgs {
+    #[arg(value_name = "SESSION_JSON", required = true)]
+    pub sessions: Vec<PathBuf>,
+    #[arg(long, default_value = "en")]
+    pub response_language: String,
+    /// A translator-agent session whose stdout must detect as the requested
+    /// response language.
+    #[arg(long)]
+    pub translation_session: Option<PathBuf>,
 }
 
 pub fn run_external_action(action: AgentAction) -> Result<(), Box<dyn Error>> {
     match action {
         AgentAction::Run(args) => run_one(args),
         AgentAction::Dispatch(args) => run_dispatch(args),
+        AgentAction::Resume(args) => run_resume(args),
+        AgentAction::Synthesize(args) => run_synthesis(args),
+        AgentAction::Learn { sessions } => run_learning(&sessions),
         AgentAction::Replay { session } => {
             let session = read_session(&session)?;
             println!("{}", serde_json::to_string_pretty(&session)?);
@@ -142,8 +225,14 @@ fn run_one(args: ExternalRunArgs) -> Result<(), Box<dyn Error>> {
     config.target = args.target.into();
     config.timeout = Duration::from_secs(args.timeout_seconds);
     config.controller_program = std::env::current_exe()?;
+    config.allowlisted_agent_commands = args.allow_agent_commands.into_iter().collect();
     config.allowlisted_commands = args.allow_commands.into_iter().collect();
     config.verification = parse_verification(&args.verification)?;
+    config.command_override = args
+        .command
+        .as_deref()
+        .map(|value| parse_agent_command(value, None))
+        .transpose()?;
     let session = run_agent(&config)?;
     if let Some(path) = args.session {
         ensure_parent(&path)?;
@@ -174,11 +263,32 @@ fn run_dispatch(args: ExternalDispatchArgs) -> Result<(), Box<dyn Error>> {
     config.timeout = Duration::from_secs(args.timeout_seconds);
     config.permission = AgentRunPermission::grant_for(&workspace);
     config.controller_program = std::env::current_exe()?;
+    config.allowlisted_agent_commands = args.allow_agent_commands.into_iter().collect();
     config.allowlisted_commands = args.allow_commands.into_iter().collect::<BTreeSet<_>>();
     config.verification = parse_verification(&args.verification)?;
+    config.command_overrides = parse_agent_commands(&args.commands)?;
     config.max_depth = args.max_depth;
     let report = dispatch_agents(&config)?;
-    println!("{}", serde_json::to_string_pretty(&report)?);
+    if args.synthesize {
+        let mut synthesis = synthesize_sessions(&report.sessions, &args.response_language)?;
+        if let Some(path) = args.translation_session {
+            let translation = read_session(&path)?;
+            apply_verified_translation(
+                &mut synthesis,
+                &formal_ai::orchestration::extract_agent_result(&translation.stdout),
+                &session_sha256(&translation)?,
+            )?;
+        }
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&serde_json::json!({
+                "dispatch": &report,
+                "synthesis": synthesis,
+            }))?
+        );
+    } else {
+        println!("{}", serde_json::to_string_pretty(&report)?);
+    }
     let passed = match report.mode {
         DispatchMode::Compare => report.ledger.winner.is_some(),
         DispatchMode::Decompose => report
@@ -191,6 +301,130 @@ fn run_dispatch(args: ExternalDispatchArgs) -> Result<(), Box<dyn Error>> {
     } else {
         Err("agent_dispatch_failed".into())
     }
+}
+
+fn run_resume(args: ExternalResumeArgs) -> Result<(), Box<dyn Error>> {
+    let parent = read_session(&args.parent)?;
+    let workspace = args.workspace.canonicalize()?;
+    let request = CorrectionRequest {
+        cli: parent.cli.clone(),
+        claim: args.disproved_claim,
+        evidence: args.evidence,
+        source_session_sha256: session_sha256(&parent)?,
+    };
+    let mut config = AgentRunConfig::new(&parent.cli, args.task, &workspace)
+        .with_permission(AgentRunPermission::grant_for(&workspace));
+    config.timeout = Duration::from_secs(args.timeout_seconds);
+    config.controller_program = std::env::current_exe()?;
+    config.allowlisted_agent_commands = args.allow_agent_commands.into_iter().collect();
+    config.allowlisted_commands = args.allow_commands.into_iter().collect();
+    config.verification = parse_verification(&args.verification)?;
+    config.command_override = args
+        .command
+        .as_deref()
+        .map(|value| {
+            parse_agent_command(
+                value,
+                parent
+                    .native_session
+                    .as_ref()
+                    .map(|session| session.id.as_str()),
+            )
+        })
+        .transpose()?;
+    let session = resume_agent(&parent, &request, config)?;
+    if let Some(path) = args.session {
+        ensure_parent(&path)?;
+        write_session(&path, &session)?;
+    }
+    println!("{}", serde_json::to_string_pretty(&session)?);
+    if session.passed() {
+        Ok(())
+    } else {
+        Err("agent_resume_failed".into())
+    }
+}
+
+fn run_synthesis(args: ExternalSynthesisArgs) -> Result<(), Box<dyn Error>> {
+    let sessions = args
+        .sessions
+        .iter()
+        .map(|path| read_session(path))
+        .collect::<Result<Vec<_>, _>>()?;
+    let mut report = synthesize_sessions(&sessions, &args.response_language)?;
+    if let Some(path) = args.translation_session {
+        let translation = read_session(&path)?;
+        apply_verified_translation(
+            &mut report,
+            &formal_ai::orchestration::extract_agent_result(&translation.stdout),
+            &session_sha256(&translation)?,
+        )?;
+    }
+    println!("{}", serde_json::to_string_pretty(&report)?);
+    Ok(())
+}
+
+fn run_learning(paths: &[PathBuf]) -> Result<(), Box<dyn Error>> {
+    let observations = paths
+        .iter()
+        .map(|path| {
+            read_session(path)
+                .map(|session| observe_orchestration_session(&session, path.to_string_lossy()))
+        })
+        .collect::<Result<Vec<_>, _>>()?;
+    let report =
+        formal_ai::learn_client_contracts(&observations, &formal_ai::seed::client_integrations());
+    println!("{}", report.links_notation());
+    Ok(())
+}
+
+fn parse_agent_command(
+    value: &str,
+    session_id: Option<&str>,
+) -> Result<AgentCommand, Box<dyn Error>> {
+    let argv: Vec<String> = serde_json::from_str(value)?;
+    let (program, arguments) = argv.split_first().ok_or("empty_agent_argv")?;
+    if !arguments
+        .iter()
+        .any(|argument| argument.contains(TASK_PLACEHOLDER))
+    {
+        return Err("missing_task_placeholder".into());
+    }
+    if session_id.is_some()
+        && !arguments
+            .iter()
+            .any(|argument| argument.contains(SESSION_ID_PLACEHOLDER))
+    {
+        return Err("missing_session_id_placeholder".into());
+    }
+    let mut command = AgentCommand::new(program);
+    command.args = arguments
+        .iter()
+        .map(|argument| {
+            let mut rendered = argument.clone();
+            if let Some(session_id) = session_id {
+                rendered = rendered.replace(SESSION_ID_PLACEHOLDER, session_id);
+            }
+            rendered
+        })
+        .collect();
+    Ok(command)
+}
+
+fn parse_agent_commands(
+    values: &[String],
+) -> Result<BTreeMap<String, AgentCommand>, Box<dyn Error>> {
+    let mut commands = BTreeMap::new();
+    for value in values {
+        let (cli, argv) = value
+            .split_once('=')
+            .ok_or("invalid_agent_command_mapping")?;
+        if cli.is_empty() || commands.contains_key(cli) {
+            return Err("invalid_agent_command_mapping".into());
+        }
+        commands.insert(cli.to_string(), parse_agent_command(argv, None)?);
+    }
+    Ok(commands)
 }
 
 fn parse_verification(values: &[String]) -> Result<Vec<VerificationCommand>, Box<dyn Error>> {

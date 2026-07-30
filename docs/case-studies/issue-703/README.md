@@ -43,6 +43,10 @@ preflight conflicts and never compose changes from a failed candidate.
 | Safe errors and no silent retries | Default-denied, allowlisted verification, one process-start event, timeout/failure regression tests |
 | Byte-for-byte replay | Canonical serializer plus replay tests that reject altered bytes or event chains |
 | Self-hosting authorship evidence | Formal AI + Agent CLI session `ses_050646852ffetdnQ73vR1yZ8la`, captured below |
+| Explicit control of another CLI, TUI entrypoint, Bash adapter, or local model frontend | `agent run --command`, multi-command `agent dispatch`, and a separate executable grant that cannot be bypassed by a registered CLI label |
+| Correct a disproved result in its original conversation | Native ids and parent digests in canonical sessions, six seed-defined resume contracts, mismatch rejection, and the live same-session chain below |
+| Formalize, cross-check, summarize, and answer in the requested language | `orchestration::analysis`, `agent synthesize`, dispatch synthesis, correction requests, and verified translator-session provenance |
+| Learn from completed work | Orchestration observations feed the existing evidence-linked, proposal-only client-contract learner; promotion remains human-gated |
 
 ## Reproduction and verification
 
@@ -138,6 +142,66 @@ cargo test --all-features --test integration issue_703_orchestration -- --nocapt
 The reusable library walkthrough is
 [`examples/issue_703_orchestration.rs`](../../../examples/issue_703_orchestration.rs).
 
+## Maintainer follow-up: correction, synthesis, and learning
+
+The maintainer's
+[follow-up comment](https://github.com/link-assistant/formal-ai/pull/876#issuecomment-5127332907)
+asked the controller to reach beyond the initial six adapters: explicitly
+control any requested CLI/TUI or Bash-backed model, use several agents,
+formalize and summarize their answers, cross-check facts, answer in a requested
+language, learn from the work, and resume a model's exact session when evidence
+disproves it.
+
+The public surface now separates those responsibilities:
+
+1. `--command` supplies JSON argv for a requested custom adapter, while
+   `--allow-agent-command` independently grants its exact executable. Dispatch
+   accepts several `CLI=JSON_ARGV` mappings and applies the same isolation and
+   evidence protocol to every candidate.
+2. Native session ids and resume argv are discovered from real client output
+   and seed data. `agent resume` binds a correction to the parent digest,
+   carries the disproved claim and evidence, and fails if a client switches
+   session ids.
+3. `agent synthesize` extracts only answer events, formalizes them in the
+   meta-language, performs statement-level deduplication, evidence ranking,
+   contradiction reporting and recheck, summarizes them, and emits
+   evidence-linked correction requests.
+4. Requested output language is verified rather than assumed. A summary that
+   is not in `en`, `ru`, `hi`, or `zh` as requested remains marked
+   `translation_required`; an independently recorded translator session must
+   detect as the target language before its bytes are accepted.
+5. `agent learn` converts recorded runs into the existing client-contract
+   learner. It proposes evidence-linked contract facts but cannot promote
+   itself.
+
+The fact-checking claim is deliberately bounded. The synthesis report calls
+its scope `cross_agent_evidence_preflight`: independent model outputs can expose
+agreement and contradictions, but are not primary evidence about the outside
+world. External factual guarantees still require captured sources and the
+production fact-checking path.
+
+### Live mistake-to-correction chain
+
+A real run used Formal AI as controller, the real Agent CLI 0.25.3 as client,
+and Formal AI as that client's model. The initial model turn exited
+successfully but did not create the requested invariant. Formal AI then resumed
+native session `ses_04e25ba4cffeibfMekv188DNLX` with that proof. The first
+correction created a contaminated artifact, exposing a correction-template
+ordering defect. After moving the task to the final prompt position, the
+controller supplied the new evidence and resumed the same native session once
+more. The final artifact contains exactly:
+
+```text
+orchestration_continuation resume_exact_native_id.
+```
+
+The three canonical sessions, their SHA-256 parent chain, actual Agent CLI
+`--resume ID --no-fork` argv, failure observations, and final artifact digest
+are preserved in the
+[exact-session correction evidence](followup-authorship/README.md). The focused
+suite byte-replays the evidence and rejects any changed native id, parent hash,
+argv contract, canonical bytes, or artifact.
+
 ## Formal AI authorship boundary
 
 The change was reviewed as five leaves:
@@ -156,6 +220,14 @@ and byte-pinned against the captured artifact. The complete
 log](self-hosting-authorship/formal-ai.log), and [generated
 artifact](self-hosting-authorship/orchestration-safety-invariant.lino) are
 committed as provenance.
+
+For the maintainer follow-up, Formal AI through the real Agent CLI also authored
+the exact-session invariant in
+[`data/meta/orchestration-continuation-invariant.lino`](../../../data/meta/orchestration-continuation-invariant.lino).
+The commit carries the required `Formal-AI-Session` and `Formal-AI-Evidence`
+trailers, and the evidence is the final canonical session from the live
+correction chain. Failed earlier turns are retained rather than presented as
+successful authorship.
 
 The controller implementation, tests, documentation, and harness were written
 manually with Codex assistance and are not claimed as Formal AI-authored. Two

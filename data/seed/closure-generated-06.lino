@@ -1,4 +1,54 @@
 meanings
+  response_tool_result_empty_list_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty list ru"
+  response_tool_result_empty_list_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty list zh"
+  response_tool_result_empty_local_path_search_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty local path search en"
+  response_tool_result_empty_local_path_search_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty local path search hi"
+  response_tool_result_empty_local_path_search_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty local path search ru"
+  response_tool_result_empty_local_path_search_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty local path search zh"
+  response_tool_result_empty_search_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty search en"
+  response_tool_result_empty_search_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty search hi"
+  response_tool_result_empty_search_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty search ru"
+  response_tool_result_empty_search_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty search zh"
   response_tool_result_failed_en
     defined-by response_template
     lexeme en

@@ -2,10 +2,10 @@ self_ast_census
   target src/client_integrations.rs
   language rust
   fidelity signature
-  byte_len 31912
-  line_count 936
-  content_id source_module_8f9b2ecb25ef058f
-  symbol_count 43
+  byte_len 33381
+  line_count 981
+  content_id source_module_c86faff05410c295
+  symbol_count 44
   symbols
     module command 18 18
     module server 19 19
@@ -15,38 +15,39 @@ self_ast_census
     const EMPTY_BACKUP_SENTINEL 31 31
     const RENDERED_PLACEHOLDER 32 32
     const ERROR_PLACEHOLDER 33 33
-    enum ClientProtocol 36 41
-    function as_str 44 51
-    struct WithFormalAiArgs 57 126
-    struct RenderContext 129 143
-    struct InvocationOptions 147 152
-    function run_with_formal_ai 154 198
-    function select_integrations 200 212
-    function find_integration 214 234
-    function render_context 236 305
-    function run_ephemeral 307 420
-    function temp_scoped_path 422 436
-    function build_invocation_args 438 533
-    function contains_model_arg 535 538
-    function write_global_config 540 577
-    function undo_global_config 579 615
-    function restore_backup 617 633
-    function ensure_backup 635 648
-    function render_toml_settings 650 668
-    function set_toml_string 670 686
-    function table_at_path_mut 688 699
-    function merge_json_config 701 714
-    function render_json_settings 716 724
-    function json_settings_value 726 735
-    function set_json_setting 737 774
-    function invalid_typed_json_setting_error 776 781
-    function merge_json_value 783 797
-    function merge_shell_env_config 799 819
-    function remove_managed_block 821 841
-    function shell_double_quote 843 846
-    function render_template 848 868
-    function codex_model_catalog 870 904
-    function global_config_path 906 915
-    function backup_path 917 921
-    function write_file 923 929
-    function ensure_trailing_newline 931 936
+    const SESSION_ID_PLACEHOLDER 34 34
+    enum ClientProtocol 37 42
+    function as_str 45 52
+    struct WithFormalAiArgs 58 135
+    struct RenderContext 138 152
+    struct InvocationOptions 156 161
+    function run_with_formal_ai 163 209
+    function select_integrations 211 223
+    function find_integration 225 245
+    function render_context 247 316
+    function run_ephemeral 318 456
+    function temp_scoped_path 458 472
+    function build_invocation_args 474 578
+    function contains_model_arg 580 583
+    function write_global_config 585 622
+    function undo_global_config 624 660
+    function restore_backup 662 678
+    function ensure_backup 680 693
+    function render_toml_settings 695 713
+    function set_toml_string 715 731
+    function table_at_path_mut 733 744
+    function merge_json_config 746 759
+    function render_json_settings 761 769
+    function json_settings_value 771 780
+    function set_json_setting 782 819
+    function invalid_typed_json_setting_error 821 826
+    function merge_json_value 828 842
+    function merge_shell_env_config 844 864
+    function remove_managed_block 866 886
+    function shell_double_quote 888 891
+    function render_template 893 913
+    function codex_model_catalog 915 949
+    function global_config_path 951 960
+    function backup_path 962 966
+    function write_file 968 974
+    function ensure_trailing_newline 976 981

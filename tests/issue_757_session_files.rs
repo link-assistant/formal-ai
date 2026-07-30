@@ -98,7 +98,7 @@ fn prints_persistent_session_file_after_one_shot_and_interactive_runs() {
         );
         assert!(stderr.contains("codex:"), "stderr:\n{stderr}");
         assert!(stderr.contains("rollout-test-019f70d1-1111-7222-8333-444455556666.jsonl"));
-        assert!(stderr.contains("resume: codex resume 019f70d1-1111-7222-8333-444455556666"));
+        assert!(stderr.contains("resume: codex exec resume 019f70d1-1111-7222-8333-444455556666"));
         let reported = stderr
             .lines()
             .find_map(|line| line.trim().strip_prefix("codex: "))

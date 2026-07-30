@@ -1,8 +1,7 @@
 use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
 use formal_ai::orchestration::{
-    dispatch_agents, replay_session, run_agent, write_session, AgentCommand, AgentRunConfig,
-    AgentRunError, AgentRunPermission, AgentStatus, ComparisonEntry, ComparisonLedger,
-    DispatchConfig, DispatchMode, ReplayError, VerificationCommand,
+    replay_session, run_agent, AgentCommand, AgentRunConfig, AgentRunError, AgentRunPermission,
+    AgentStatus, DispatchConfig,
 };
 use formal_ai::protocol::{ChatMessage, ToolCall};
 use std::collections::BTreeMap;
@@ -12,11 +11,10 @@ use std::net::TcpListener;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::sync::atomic::{AtomicU64, Ordering};
-use std::time::{Duration, Instant};
+use std::time::Duration;
 
-const FIXTURE_ENV: &str = "FORMAL_AI_ISSUE_703_FIXTURE";
+pub const FIXTURE_ENV: &str = "FORMAL_AI_ISSUE_703_FIXTURE";
 const FIXTURE_TEST: &str = "issue_703_orchestration::external_agent_fixture_process";
-const AUTHORSHIP_SESSION: &str = "ses_050646852ffetdnQ73vR1yZ8la";
 const REQUIRED_CLIS: [&str; 6] = ["agent", "claude", "codex", "gemini", "qwen", "opencode"];
 
 static NEXT_WORKSPACE: AtomicU64 = AtomicU64::new(0);
@@ -142,6 +140,66 @@ fn qwen_orchestration_uses_noninteractive_auto_edit_config() {
 }
 
 #[test]
+fn seed_registry_pins_each_clients_exact_native_resume_contract() {
+    let expected = [
+        (
+            "agent",
+            "agent --resume session-703 --no-fork",
+            &["--resume", "{session_id}", "--no-fork"][..],
+        ),
+        (
+            "claude",
+            "claude --resume session-703",
+            &["--resume", "{session_id}"][..],
+        ),
+        (
+            "codex",
+            "codex exec resume session-703",
+            &["resume", "{session_id}"][..],
+        ),
+        (
+            "gemini",
+            "gemini --resume session-703",
+            &["--resume", "{session_id}"][..],
+        ),
+        (
+            "opencode",
+            "opencode --session session-703",
+            &["--session", "{session_id}"][..],
+        ),
+        (
+            "qwen",
+            "qwen --resume session-703",
+            &["--resume", "{session_id}"][..],
+        ),
+    ];
+    let integrations = formal_ai::seed::client_integrations();
+
+    for (cli, display, argv) in expected {
+        let integration = integrations
+            .iter()
+            .find(|integration| integration.id == cli)
+            .unwrap_or_else(|| panic!("missing {cli} adapter"));
+        assert_eq!(
+            integration
+                .invocation
+                .resume_command
+                .replace("{session_id}", "session-703"),
+            display
+        );
+        assert_eq!(
+            integration
+                .invocation
+                .resume_args
+                .iter()
+                .map(String::as_str)
+                .collect::<Vec<_>>(),
+            argv
+        );
+    }
+}
+
+#[test]
 fn external_agent_exports_the_canonical_workspace_as_pwd() {
     let workspace = TestWorkspace::new("canonical-pwd");
     let session = run_agent(&fixture_config("opencode", workspace.path(), "assert_pwd"))
@@ -158,6 +216,61 @@ fn external_agent_run_requires_an_explicit_permission_grant() {
     let error = run_agent(&config).expect_err("an ungranted external process must not start");
 
     assert!(matches!(error, AgentRunError::PermissionDenied));
+}
+
+#[test]
+fn arbitrary_agent_program_requires_a_separate_explicit_grant() {
+    let workspace = TestWorkspace::new("custom-agent-grant");
+    let command = fixture_command("success");
+    let program = command.program.to_string_lossy().into_owned();
+    let mut config = AgentRunConfig::new("private-neural-tui", "answer the task", workspace.path())
+        .with_permission(AgentRunPermission::grant_for(workspace.path()))
+        .with_command(command);
+
+    let denied = run_agent(&config).expect_err("workspace permission is not a program grant");
+    assert!(matches!(
+        denied,
+        AgentRunError::AgentCommandNotAllowlisted(command) if command == program
+    ));
+
+    config.allowlisted_agent_commands.insert(program);
+    let session = run_agent(&config).expect("the exact custom argv is now explicitly granted");
+    assert_eq!(session.cli, "private-neural-tui");
+    assert!(session.passed());
+    assert!(session
+        .events
+        .iter()
+        .any(|event| event.kind == "custom_adapter_granted"));
+}
+
+#[test]
+fn a_registered_cli_label_does_not_bypass_the_custom_program_grant() {
+    let workspace = TestWorkspace::new("registered-label-custom-grant");
+    let command =
+        fixture_command("success").env("FORMAL_AI_ISSUE_703_OUTPUT", r#"{"session_id":"forged"}"#);
+    let program = command.program.to_string_lossy().into_owned();
+    let mut config = AgentRunConfig::new("codex", "answer the task", workspace.path())
+        .with_permission(AgentRunPermission::grant_for(workspace.path()))
+        .with_command(command);
+
+    let error = run_agent(&config).expect_err("the executable grant applies to every override");
+
+    assert!(matches!(
+        error,
+        AgentRunError::AgentCommandNotAllowlisted(command) if command == program
+    ));
+
+    config.allowlisted_agent_commands.insert(program.clone());
+    let session = run_agent(&config).expect("the explicitly granted override runs");
+    assert!(session.native_session.is_none());
+    assert!(session
+        .events
+        .iter()
+        .any(|event| { event.kind == "custom_adapter_granted" && event.detail == program }));
+    assert!(session
+        .events
+        .iter()
+        .any(|event| event.kind == "process_started" && event.detail == program));
 }
 
 #[test]
@@ -278,6 +391,233 @@ fn all_six_cli_entrypoints_run_a_scripted_repo_task_through_the_real_wrapper() {
             .iter()
             .any(|change| change.path == "README.md"));
     }
+}
+
+#[cfg(unix)]
+#[test]
+fn public_cli_runs_an_explicitly_granted_agent_through_bash() {
+    let workspace = TestWorkspace::new("custom-bash-cli");
+    let session_path = workspace.path().join("bash-session.json");
+    let command = serde_json::to_string(&[
+        "sh",
+        "-c",
+        "printf 'bash-agent:%s\\n' \"$1\"",
+        "formal-ai-custom-agent",
+        "{task}",
+    ])
+    .unwrap();
+    let base_args = [
+        "agent",
+        "run",
+        "--cli",
+        "private-neural-agent",
+        "--target",
+        "vendor",
+        "--task",
+        "answer through bash",
+        "--workspace",
+    ];
+
+    let denied = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args(base_args)
+        .arg(workspace.path())
+        .args(["--command", &command])
+        .output()
+        .unwrap();
+    assert!(!denied.status.success());
+    assert!(String::from_utf8_lossy(&denied.stderr).contains("AgentCommandNotAllowlisted(\"sh\")"));
+
+    let allowed = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args(base_args)
+        .arg(workspace.path())
+        .args([
+            "--command",
+            &command,
+            "--allow-agent-command",
+            "sh",
+            "--session",
+        ])
+        .arg(&session_path)
+        .output()
+        .unwrap();
+    assert!(
+        allowed.status.success(),
+        "stdout={} stderr={}",
+        String::from_utf8_lossy(&allowed.stdout),
+        String::from_utf8_lossy(&allowed.stderr)
+    );
+    let session = replay_session(&fs::read(session_path).unwrap()).unwrap();
+    assert_eq!(session.cli, "private-neural-agent");
+    assert_eq!(session.stdout.trim(), "bash-agent:answer through bash");
+    assert!(session
+        .events
+        .iter()
+        .any(|event| event.kind == "custom_adapter_granted"));
+}
+
+#[cfg(unix)]
+#[test]
+fn public_cli_compares_multiple_explicitly_granted_bash_agents() {
+    let workspace = TestWorkspace::new("custom-bash-dispatch");
+    fs::write(workspace.path().join("README.md"), "before\n").unwrap();
+    let argv = serde_json::to_string(&[
+        "sh",
+        "-c",
+        "printf '# %s\\n' \"$1\" > README.md",
+        "formal-ai-custom-agent",
+        "{task}",
+    ])
+    .unwrap();
+    let first = format!("neural-a={argv}");
+    let second = format!("neural-b={argv}");
+
+    let output = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args([
+            "agent",
+            "dispatch",
+            "--cli",
+            "neural-a,neural-b",
+            "--compare",
+            "--target",
+            "vendor",
+            "--task",
+            "custom neural result",
+            "--workspace",
+        ])
+        .arg(workspace.path())
+        .args([
+            "--command",
+            &first,
+            "--command",
+            &second,
+            "--allow-agent-command",
+            "sh",
+        ])
+        .output()
+        .unwrap();
+
+    assert!(
+        output.status.success(),
+        "stdout={} stderr={}",
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let report: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(report["sessions"].as_array().map(Vec::len), Some(2));
+    assert!(report["sessions"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .all(|session| {
+            session["events"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|event| event["kind"] == "custom_adapter_granted" && event["detail"] == "sh")
+        }));
+    assert_eq!(
+        fs::read_to_string(workspace.path().join("README.md")).unwrap(),
+        "# custom neural result\n"
+    );
+}
+
+#[cfg(unix)]
+#[test]
+fn public_cli_resumes_the_recorded_vendor_session_with_correction_evidence() {
+    use std::os::unix::fs::PermissionsExt as _;
+
+    let fake_bin = TestWorkspace::new("native-resume-cli-bin");
+    let agent = fake_bin.path().join("agent");
+    fs::write(
+        &agent,
+        concat!(
+            "#!/bin/sh\n",
+            "printf '%s\\n' '{\"type\":\"result\",\"session_id\":",
+            "\"ses_vendor_703\",\"result\":\"vendor answer\"}'\n",
+            "printf 'argv:%s\\n' \"$*\"\n",
+        ),
+    )
+    .unwrap();
+    fs::set_permissions(&agent, fs::Permissions::from_mode(0o755)).unwrap();
+    let path = std::env::join_paths(std::iter::once(fake_bin.path().to_path_buf()).chain(
+        std::env::split_paths(&std::env::var_os("PATH").unwrap_or_default()),
+    ))
+    .unwrap();
+    let workspace = TestWorkspace::new("native-resume-cli");
+    let parent_path = workspace.path().join("parent.json");
+    let corrected_path = workspace.path().join("corrected.json");
+
+    let initial = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args([
+            "agent",
+            "run",
+            "--cli",
+            "agent",
+            "--target",
+            "vendor",
+            "--task",
+            "state the release date",
+            "--workspace",
+        ])
+        .arg(workspace.path())
+        .args(["--session"])
+        .arg(&parent_path)
+        .env("PATH", &path)
+        .output()
+        .unwrap();
+    assert!(
+        initial.status.success(),
+        "{}",
+        String::from_utf8_lossy(&initial.stderr)
+    );
+    let parent = replay_session(&fs::read(&parent_path).unwrap()).unwrap();
+    assert_eq!(
+        parent
+            .native_session
+            .as_ref()
+            .map(|session| session.id.as_str()),
+        Some("ses_vendor_703")
+    );
+
+    let resumed = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args(["agent", "resume", "--parent"])
+        .arg(&parent_path)
+        .args(["--task", "correct the release date", "--workspace"])
+        .arg(workspace.path())
+        .args([
+            "--disproved-claim",
+            "The release date is 2027.",
+            "--evidence",
+            "The signed release record says 2026.",
+            "--session",
+        ])
+        .arg(&corrected_path)
+        .env("PATH", &path)
+        .output()
+        .unwrap();
+    assert!(
+        resumed.status.success(),
+        "stdout={} stderr={}",
+        String::from_utf8_lossy(&resumed.stdout),
+        String::from_utf8_lossy(&resumed.stderr)
+    );
+    let corrected = replay_session(&fs::read(corrected_path).unwrap()).unwrap();
+    assert!(corrected
+        .args
+        .windows(2)
+        .any(|args| args == ["--resume", "ses_vendor_703"]));
+    assert!(corrected.args.iter().any(|arg| arg == "--no-fork"));
+    assert!(corrected.task.contains("The release date is 2027."));
+    assert!(corrected
+        .task
+        .contains("The signed release record says 2026."));
+    assert_eq!(
+        corrected
+            .continuation
+            .as_ref()
+            .map(|continuation| continuation.native_session_id.as_str()),
+        Some("ses_vendor_703")
+    );
 }
 
 #[cfg(unix)]
@@ -432,435 +772,6 @@ fn comparison_cli_succeeds_when_one_verified_winner_passes() {
 }
 
 #[test]
-fn formal_ai_authored_invariant_is_byte_pinned_to_its_session_evidence() {
-    let repository_artifact = include_bytes!("../../data/meta/orchestration-safety-invariant.lino");
-    let captured_artifact = include_bytes!(
-        "../../docs/case-studies/issue-703/self-hosting-authorship/orchestration-safety-invariant.lino"
-    );
-    let evidence =
-        include_str!("../../docs/case-studies/issue-703/self-hosting-authorship/agent-cli.log");
-
-    assert_eq!(repository_artifact, captured_artifact);
-    assert!(evidence.contains(AUTHORSHIP_SESSION));
-    assert!(evidence.contains("\"providerID\": \"formal-ai\""));
-    assert!(evidence.contains("\"tool\": \"write\""));
-}
-
-#[test]
-fn real_formal_ai_controller_agent_run_replays_from_committed_bytes() {
-    let bytes = include_bytes!(
-        "../../docs/case-studies/issue-703/controller-agent-run/controller-session.json"
-    );
-    let artifact = include_bytes!(
-        "../../docs/case-studies/issue-703/controller-agent-run/controller-proof.lino"
-    );
-
-    let session = replay_session(bytes).expect("committed controller session is canonical");
-
-    assert_eq!(session.cli, "agent");
-    assert!(session.passed());
-    assert!(session.stdout.contains("ses_05046b1c9ffe59CvG0N3QrrsV4"));
-    assert!(session.stdout.contains("--no-retry-on-rate-limits"));
-    assert!(session.stdout.contains("\"name\":\"write\""));
-    let change = session
-        .changes
-        .iter()
-        .find(|change| change.path == "controller-proof.lino")
-        .expect("the real Agent CLI run recorded its file effect");
-    assert_eq!(
-        change.after_sha256.as_deref(),
-        Some("b70e7374ba7654d7d57a908ae0d1b7d40e7b1c1651d6bcc2dd80671d35777637")
-    );
-    assert_eq!(
-        artifact,
-        b"controller_proof and the phrase replayable workspace edit."
-    );
-}
-
-#[test]
-fn committed_parallel_comparison_ledger_records_the_selected_winner() {
-    let ledger: ComparisonLedger = serde_json::from_slice(include_bytes!(
-        "../../docs/case-studies/issue-703/comparison/comparison-ledger.json"
-    ))
-    .unwrap();
-
-    assert_eq!(ledger.schema, "formal-ai-comparison-ledger-v1");
-    assert_eq!(ledger.entries.len(), 2);
-    assert!(ledger.entries.iter().all(|entry| entry.passed));
-    assert_eq!(ledger.winner.as_deref(), Some("codex"));
-    assert_eq!(
-        ComparisonLedger::select_winner(&ledger.entries),
-        ledger.winner
-    );
-    for bytes in [
-        include_bytes!("../../docs/case-studies/issue-703/comparison/sessions/000-codex.json")
-            .as_slice(),
-        include_bytes!("../../docs/case-studies/issue-703/comparison/sessions/001-claude.json")
-            .as_slice(),
-    ] {
-        let session = replay_session(bytes).unwrap();
-        assert!(session.passed());
-        assert_eq!(session.verification.len(), 1);
-        assert_eq!(session.verification[0].program, "test");
-    }
-}
-
-#[test]
-fn timeout_is_recorded_without_an_implicit_retry() {
-    let workspace = TestWorkspace::new("timeout");
-    let mut config = fixture_config("codex", workspace.path(), "timeout");
-    config.timeout = Duration::from_millis(20);
-
-    let session = run_agent(&config).expect("timeout is a recorded agent result");
-
-    assert_eq!(session.status, AgentStatus::TimedOut);
-    assert_eq!(
-        session
-            .events
-            .iter()
-            .filter(|event| event.kind == "process_started")
-            .count(),
-        1
-    );
-}
-
-#[cfg(unix)]
-#[test]
-fn timeout_terminates_descendant_processes() {
-    let workspace = TestWorkspace::new("descendant-timeout");
-    let mut config = fixture_config("codex", workspace.path(), "descendant_timeout");
-    config.timeout = Duration::from_millis(20);
-
-    let session = run_agent(&config).expect("timeout is recorded");
-    std::thread::sleep(Duration::from_millis(250));
-
-    assert_eq!(session.status, AgentStatus::TimedOut);
-    assert!(!workspace.path().join("descendant-survived").exists());
-}
-
-#[test]
-fn verification_commands_must_be_explicitly_allowlisted() {
-    let workspace = TestWorkspace::new("allowlist");
-    let mut config = fixture_config("codex", workspace.path(), "success");
-    config.verification.push(VerificationCommand::new(
-        "unreviewed-command",
-        std::iter::empty::<String>(),
-    ));
-
-    let error = run_agent(&config).expect_err("unreviewed command must not execute");
-
-    assert!(matches!(
-        error,
-        AgentRunError::CommandNotAllowlisted(command) if command == "unreviewed-command"
-    ));
-}
-
-#[test]
-fn verification_timeout_is_recorded_and_fails_the_session() {
-    let workspace = TestWorkspace::new("verification-timeout");
-    let mut config = fixture_config("codex", workspace.path(), "success");
-    let test_binary = std::env::current_exe()
-        .unwrap()
-        .to_string_lossy()
-        .into_owned();
-    config.timeout = Duration::from_millis(20);
-    config.allowlisted_commands.insert(test_binary.clone());
-    config.verification.push(VerificationCommand::new(
-        test_binary,
-        [
-            "--ignored",
-            "--exact",
-            "issue_703_orchestration::external_slow_verification_fixture",
-        ],
-    ));
-
-    let session = run_agent(&config).expect("verification timeout is recorded");
-
-    assert!(!session.passed());
-    assert_eq!(session.verification.len(), 1);
-    assert!(session.verification[0].timed_out);
-    assert!(session
-        .events
-        .iter()
-        .any(|event| event.kind == "verification_started"));
-    assert!(session
-        .events
-        .iter()
-        .any(|event| event.kind == "verification_timed_out"));
-}
-
-#[test]
-fn failed_external_process_is_visible_in_the_session() {
-    let workspace = TestWorkspace::new("failed");
-    let config = fixture_config("agent", workspace.path(), "failed");
-
-    let session = run_agent(&config).expect("non-zero status is evidence, not a controller error");
-
-    assert_eq!(session.status, AgentStatus::Failed);
-    assert_eq!(session.exit_code, Some(7));
-    assert_eq!(
-        session
-            .events
-            .iter()
-            .filter(|event| event.kind == "process_started")
-            .count(),
-        1
-    );
-}
-
-#[test]
-fn recorded_session_replays_byte_for_byte() {
-    let workspace = TestWorkspace::new("replay");
-    let session = run_agent(&fixture_config("gemini", workspace.path(), "success")).unwrap();
-    let path = workspace.path().join("session.json");
-    write_session(&path, &session).unwrap();
-    let bytes = fs::read(path).unwrap();
-
-    assert_eq!(replay_session(&bytes).unwrap(), session);
-}
-
-#[test]
-fn replay_rejects_valid_but_noncanonical_json() {
-    let workspace = TestWorkspace::new("noncanonical-replay");
-    let session = run_agent(&fixture_config("gemini", workspace.path(), "success")).unwrap();
-    let bytes = serde_json::to_vec(&session).unwrap();
-
-    assert!(matches!(
-        replay_session(&bytes),
-        Err(ReplayError::NonCanonical)
-    ));
-}
-
-#[test]
-fn parallel_comparison_records_a_ledger_and_composes_the_winner() {
-    let workspace = TestWorkspace::new("compare");
-    fs::write(workspace.path().join("README.md"), "before\n").unwrap();
-    let mut config = DispatchConfig::new(
-        "add a README badge",
-        workspace.path(),
-        vec!["codex".to_string(), "claude".to_string()],
-    );
-    config.mode = DispatchMode::Compare;
-    config.permission = AgentRunPermission::grant_for(workspace.path());
-    config.command_overrides = fixture_commands(&["codex", "claude"], "success");
-
-    let report = dispatch_agents(&config).expect("parallel comparison");
-
-    assert_eq!(report.sessions.len(), 2);
-    assert_eq!(report.ledger.entries.len(), 2);
-    assert!(report.ledger.winner.is_some());
-    assert_eq!(
-        fs::read_to_string(workspace.path().join("README.md")).unwrap(),
-        "fixture change\n"
-    );
-    assert!(config.output_dir.join("comparison-ledger.json").is_file());
-}
-
-#[test]
-fn comparison_rejects_duplicate_cli_identities_before_creating_candidates() {
-    let workspace = TestWorkspace::new("duplicate-cli");
-    let mut config = DispatchConfig::new(
-        "add a README badge",
-        workspace.path(),
-        vec!["codex".to_string(), "codex".to_string()],
-    );
-    config.mode = DispatchMode::Compare;
-    config.permission = AgentRunPermission::grant_for(workspace.path());
-    config
-        .command_overrides
-        .insert("codex".to_string(), fixture_command("success"));
-
-    let error = dispatch_agents(&config).expect_err("duplicate identities are ambiguous");
-
-    assert_eq!(error.to_string(), "duplicate_cli:codex");
-    assert!(!config.output_dir.exists());
-}
-
-#[test]
-fn comparison_refuses_to_overwrite_workspace_drift_after_candidates_fork() {
-    let workspace = TestWorkspace::new("workspace-drift");
-    fs::write(workspace.path().join("README.md"), "before\n").unwrap();
-    let mut config = DispatchConfig::new(
-        "add a README badge",
-        workspace.path(),
-        vec!["codex".to_string()],
-    );
-    config.mode = DispatchMode::Compare;
-    config.permission = AgentRunPermission::grant_for(workspace.path());
-    config
-        .command_overrides
-        .insert("codex".to_string(), fixture_command("delayed_success"));
-    let original = workspace.path().join("README.md");
-    let concurrent_update = std::thread::spawn(move || {
-        std::thread::sleep(Duration::from_millis(50));
-        fs::write(original, "external update\n").unwrap();
-    });
-
-    let error = dispatch_agents(&config).expect_err("composition must detect workspace drift");
-    concurrent_update.join().unwrap();
-
-    assert!(error.to_string().contains("workspace_drift:README.md"));
-    assert_eq!(
-        fs::read_to_string(workspace.path().join("README.md")).unwrap(),
-        "external update\n"
-    );
-}
-
-#[test]
-fn custom_output_directory_inside_workspace_is_excluded_from_candidate_copies() {
-    let workspace = TestWorkspace::new("nested-output");
-    fs::write(workspace.path().join("README.md"), "before\n").unwrap();
-    let mut config = DispatchConfig::new(
-        "add a README badge",
-        workspace.path(),
-        vec!["codex".to_string()],
-    );
-    config.mode = DispatchMode::Compare;
-    config.output_dir = workspace.path().join("agent-artifacts");
-    config.permission = AgentRunPermission::grant_for(workspace.path());
-    config.command_overrides = fixture_commands(&["codex"], "success");
-
-    let report = dispatch_agents(&config).expect("nested output stays out of candidate snapshots");
-
-    assert_eq!(report.sessions.len(), 1);
-    assert!(config.output_dir.join("comparison-ledger.json").is_file());
-    assert!(!config
-        .output_dir
-        .join("candidates/000-codex/agent-artifacts")
-        .exists());
-}
-
-#[test]
-fn dispatch_output_cannot_escape_the_granted_workspace() {
-    let workspace = TestWorkspace::new("output-boundary");
-    let outside = TestWorkspace::new("outside-output");
-    let mut config = DispatchConfig::new(
-        "add a README badge",
-        workspace.path(),
-        vec!["codex".to_string()],
-    );
-    config.output_dir = outside.path().join("agent-artifacts");
-    config.permission = AgentRunPermission::grant_for(workspace.path());
-    config
-        .command_overrides
-        .insert("codex".to_string(), fixture_command("success"));
-
-    let error = dispatch_agents(&config).unwrap_err();
-
-    assert_eq!(error.to_string(), "output_outside_workspace");
-    assert!(!config.output_dir.exists());
-}
-
-#[test]
-fn dispatch_joins_every_worker_before_returning_an_error() {
-    let workspace = TestWorkspace::new("join-on-error");
-    let mut config = DispatchConfig::new(
-        "add a README badge",
-        workspace.path(),
-        vec!["codex".to_string(), "claude".to_string()],
-    );
-    config.mode = DispatchMode::Compare;
-    config.permission = AgentRunPermission::grant_for(workspace.path());
-    config.command_overrides.insert(
-        "codex".to_string(),
-        AgentCommand::new(workspace.path().join("missing-program")),
-    );
-    config
-        .command_overrides
-        .insert("claude".to_string(), fixture_command("delayed_success"));
-    let started = Instant::now();
-
-    let error = dispatch_agents(&config).expect_err("one worker cannot be started");
-
-    assert!(error.to_string().contains("process:"));
-    assert!(started.elapsed() >= Duration::from_millis(100));
-    assert_eq!(
-        fs::read_to_string(config.output_dir.join("candidates/001-claude/README.md")).unwrap(),
-        "fixture change\n"
-    );
-}
-
-#[test]
-fn universal_decomposition_dispatches_independent_leaves_in_parallel() {
-    let workspace = TestWorkspace::new("decompose");
-    let mut config = DispatchConfig::new(
-        "Create a README badge and add a release note.",
-        workspace.path(),
-        vec!["codex".to_string(), "opencode".to_string()],
-    );
-    config.permission = AgentRunPermission::grant_for(workspace.path());
-    config.command_overrides = fixture_commands(&["codex", "opencode"], "success");
-
-    let report = dispatch_agents(&config).expect("decomposed dispatch");
-
-    assert!(report.tasks.len() >= 2, "{:?}", report.tasks);
-    assert_eq!(report.tasks.len(), report.sessions.len());
-    assert!(!report.composed_changes.is_empty());
-}
-
-#[test]
-fn decomposition_never_composes_changes_from_a_failed_agent() {
-    let workspace = TestWorkspace::new("failed-decomposition");
-    fs::write(workspace.path().join("README.md"), "before\n").unwrap();
-    let mut config = DispatchConfig::new(
-        "Create a README badge and add a release note.",
-        workspace.path(),
-        vec!["codex".to_string(), "opencode".to_string()],
-    );
-    config.permission = AgentRunPermission::grant_for(workspace.path());
-    config
-        .command_overrides
-        .insert("codex".to_string(), fixture_command("success"));
-    config
-        .command_overrides
-        .insert("opencode".to_string(), fixture_command("failed_change"));
-
-    let report = dispatch_agents(&config).expect("failed candidate stays isolated");
-
-    assert!(report.sessions.iter().any(|session| !session.passed()));
-    assert_eq!(
-        fs::read_to_string(workspace.path().join("README.md")).unwrap(),
-        "fixture change\n"
-    );
-}
-
-#[test]
-fn winner_selection_is_deterministic_for_a_recorded_ledger() {
-    let entries = vec![
-        ComparisonEntry {
-            cli: "codex".to_string(),
-            task: "task".to_string(),
-            passed: true,
-            diff_size: 20,
-            wall_time_ms: 10,
-            session_file: "codex.json".to_string(),
-        },
-        ComparisonEntry {
-            cli: "claude".to_string(),
-            task: "task".to_string(),
-            passed: true,
-            diff_size: 10,
-            wall_time_ms: 50,
-            session_file: "claude.json".to_string(),
-        },
-        ComparisonEntry {
-            cli: "agent".to_string(),
-            task: "task".to_string(),
-            passed: false,
-            diff_size: 1,
-            wall_time_ms: 1,
-            session_file: "agent.json".to_string(),
-        },
-    ];
-
-    assert_eq!(
-        ComparisonLedger::select_winner(&entries).as_deref(),
-        Some("claude")
-    );
-    assert_eq!(ComparisonLedger::select_winner(&entries[2..]), None);
-}
-
-#[test]
 #[ignore = "spawned explicitly by the verification-timeout test"]
 fn external_slow_verification_fixture() {
     std::thread::sleep(Duration::from_millis(250));
@@ -874,8 +785,27 @@ fn external_agent_fixture_process() {
     match mode.as_str() {
         "success" => {
             fs::write("README.md", "fixture change\n").unwrap();
-            println!("fixture_stdout");
+            println!(
+                "{}",
+                std::env::var("FORMAL_AI_ISSUE_703_OUTPUT")
+                    .unwrap_or_else(|_| "fixture_stdout".to_string())
+            );
             eprintln!("fixture_stderr");
+        }
+        "native_session" => {
+            println!(
+                "{}",
+                std::env::var("FORMAL_AI_ISSUE_703_OUTPUT")
+                    .unwrap_or_else(|_| "fixture_stdout".to_string())
+            );
+            eprintln!(
+                "formal-ai: orchestration-session-json:{{\"id\":\"ses_issue_703\",\"resume_command\":\"agent --resume ses_issue_703\"}}"
+            );
+        }
+        "mismatched_native_session" => {
+            eprintln!(
+                "formal-ai: orchestration-session-json:{{\"id\":\"ses_fresh_703\",\"resume_command\":\"agent --resume ses_fresh_703\"}}"
+            );
         }
         "delayed_success" => {
             std::thread::sleep(Duration::from_millis(150));
@@ -906,19 +836,41 @@ fn external_agent_fixture_process() {
     }
 }
 
-fn fixture_config(cli: &str, workspace: &Path, mode: &str) -> AgentRunConfig {
-    AgentRunConfig::new(cli, "fixture task", workspace)
+pub fn fixture_config(cli: &str, workspace: &Path, mode: &str) -> AgentRunConfig {
+    let command = fixture_command(mode);
+    let program = command.program.to_string_lossy().into_owned();
+    let mut config = AgentRunConfig::new(cli, "fixture task", workspace)
         .with_permission(AgentRunPermission::grant_for(workspace))
-        .with_command(fixture_command(mode))
+        .with_command(command);
+    config.allowlisted_agent_commands.insert(program);
+    config
 }
 
-fn fixture_commands(clis: &[&str], mode: &str) -> BTreeMap<String, AgentCommand> {
+pub fn fixture_config_with_output(cli: &str, workspace: &Path, output: &str) -> AgentRunConfig {
+    let mut config = fixture_config(cli, workspace, "success");
+    config.command_override = Some(
+        config
+            .command_override
+            .take()
+            .unwrap()
+            .env("FORMAL_AI_ISSUE_703_OUTPUT", output),
+    );
+    config
+}
+
+pub fn fixture_commands(clis: &[&str], mode: &str) -> BTreeMap<String, AgentCommand> {
     clis.iter()
         .map(|cli| ((*cli).to_string(), fixture_command(mode)))
         .collect()
 }
 
-fn fixture_command(mode: &str) -> AgentCommand {
+pub fn grant_fixture_agent_command(config: &mut DispatchConfig) {
+    config
+        .allowlisted_agent_commands
+        .insert(std::env::current_exe().unwrap().display().to_string());
+}
+
+pub fn fixture_command(mode: &str) -> AgentCommand {
     AgentCommand::new(std::env::current_exe().unwrap())
         .arg("--exact")
         .arg(FIXTURE_TEST)
@@ -947,10 +899,10 @@ fn one_request_health_server() -> (String, std::thread::JoinHandle<()>) {
     (format!("http://{address}"), server)
 }
 
-struct TestWorkspace(PathBuf);
+pub struct TestWorkspace(PathBuf);
 
 impl TestWorkspace {
-    fn new(label: &str) -> Self {
+    pub(super) fn new(label: &str) -> Self {
         let sequence = NEXT_WORKSPACE.fetch_add(1, Ordering::Relaxed);
         let path = std::env::temp_dir().join(format!(
             "formal-ai-issue-703-{}-{label}-{sequence}",
@@ -960,7 +912,7 @@ impl TestWorkspace {
         Self(path)
     }
 
-    fn path(&self) -> &Path {
+    pub(super) fn path(&self) -> &Path {
         &self.0
     }
 }

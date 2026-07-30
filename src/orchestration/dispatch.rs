@@ -34,6 +34,7 @@ pub struct DispatchConfig {
     pub target: AgentTarget,
     pub timeout: Duration,
     pub permission: AgentRunPermission,
+    pub allowlisted_agent_commands: BTreeSet<String>,
     pub allowlisted_commands: BTreeSet<String>,
     pub verification: Vec<VerificationCommand>,
     pub controller_program: PathBuf,
@@ -57,6 +58,7 @@ impl DispatchConfig {
             target: run.target,
             timeout: run.timeout,
             permission: AgentRunPermission::default(),
+            allowlisted_agent_commands: BTreeSet::new(),
             allowlisted_commands: BTreeSet::new(),
             verification: Vec::new(),
             controller_program: run.controller_program,
@@ -338,6 +340,8 @@ fn candidate_run_config(
     run.base_url.clone_from(&dispatch.base_url);
     run.target = dispatch.target;
     run.timeout = dispatch.timeout;
+    run.allowlisted_agent_commands
+        .clone_from(&dispatch.allowlisted_agent_commands);
     run.allowlisted_commands
         .clone_from(&dispatch.allowlisted_commands);
     run.verification.clone_from(&dispatch.verification);

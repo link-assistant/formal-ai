@@ -376,7 +376,7 @@ for capture and optional `gh-upload-log` upload instructions.
 
 ```text
 formal-ai: session files for debugging:
-  codex: /tmp/formal-ai-codex-home-.../.codex/sessions/2026/07/18/rollout-...jsonl   (resume: codex resume ...)
+  codex: /tmp/formal-ai-codex-home-.../.codex/sessions/2026/07/18/rollout-...jsonl   (resume: codex exec resume ...)
   server log: /work/proxy.jsonl
 ```
 For permanent setup, use the standalone wrapper or the subcommand with `-g`.
@@ -458,7 +458,18 @@ Comparison selects only passing candidates, then orders them by diff size,
 wall time, CLI id, and session path. The resulting sessions and
 `comparison-ledger.json` live under `.formal-ai-orchestration/`. Runs have one
 hard timeout, no implicit retry, captured stdout/stderr, file-effect hashes,
-verification results, and a hash-chained event stream. See the
+verification results, and a hash-chained event stream.
+
+Custom CLI/TUI entrypoints and Bash-backed local models use JSON
+`--command` argv containing `{task}` plus a separate exact
+`--allow-agent-command` executable grant. Dispatch accepts several custom
+command mappings. Registered clients also record their native session id:
+`agent resume` sends a disproved claim and its evidence back into that exact
+conversation, rejecting an id switch. `agent synthesize` formalizes recorded
+answers in the meta-language, summarizes and cross-checks them, and verifies a
+separately recorded translation before claiming the requested language.
+`agent learn` feeds sessions into the proposal-only, human-gated client
+contract learner. See the
 [orchestration guide](docs/configuration/orchestration.md), the
 [agentic CLI guide](docs/configuration/agentic-clis.md), and the
 [issue 703 case study](docs/case-studies/issue-703/README.md).

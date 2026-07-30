@@ -2,11 +2,11 @@ self_ast_census_index
   language rust
   engine meta_language
   full_fidelity_prefix src/agentic_coding/
-  module_count 359
+  module_count 360
   full_ast_module_count 50
-  signature_module_count 309
-  symbol_count 7316
-  content_id self_ast_census_index_f750ac5a89f879d5
+  signature_module_count 310
+  symbol_count 7356
+  content_id self_ast_census_index_c8dca97d17892a8c
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/associative_learning.rs full_ast 7 source_module_926e3e97b31fa30a
@@ -77,16 +77,16 @@ self_ast_census_index
     src/cli_improve.rs signature 5 source_module_9c508efbe830879e
     src/cli_learn.rs signature 7 source_module_bff495a0b0cc21d0
     src/cli_memory.rs signature 5 source_module_d10c6067fc63e984
-    src/cli_orchestration.rs signature 11 source_module_192f4a1c0219894d
+    src/cli_orchestration.rs signature 20 source_module_3cc7a5de6d3d9b9b
     src/cli_procedure.rs signature 3 source_module_c9c5b58779d0ecd8
     src/cli_report.rs signature 26 source_module_c317d32202610bc8
     src/cli_shared_dialog.rs signature 5 source_module_db14f3ca2c903557
     src/cli_statement_audit.rs signature 5 source_module_374652e87d6c3b7b
     src/client_contract_learning.rs signature 27 source_module_b3af1922ebb1ae7e
-    src/client_integrations.rs signature 43 source_module_8f9b2ecb25ef058f
+    src/client_integrations.rs signature 44 source_module_c86faff05410c295
     src/client_integrations/command.rs signature 5 source_module_708767cb4cfa58dd
     src/client_integrations/server.rs signature 9 source_module_3f888a869002c4ed
-    src/client_integrations/session_files.rs signature 15 source_module_95e0d5b8ee2dac03
+    src/client_integrations/session_files.rs signature 16 source_module_6c03f20ac0228990
     src/client_integrations/url.rs signature 5 source_module_e3b7a2362cbd33cf
     src/code_editing.rs signature 3 source_module_413d0ed57919a2dc
     src/coding/blueprint.rs signature 25 source_module_781f64bb9be78111
@@ -168,11 +168,12 @@ self_ast_census_index
     src/normal_markov.rs signature 17 source_module_067ff2a2160ba9ec
     src/option_evidence.rs signature 7 source_module_1f2d1da71ed9537a
     src/option_network.rs signature 56 source_module_607db13d08ad03bb
-    src/orchestration/dispatch.rs signature 16 source_module_6581624211f6d039
-    src/orchestration/mod.rs signature 5 source_module_00a2d69ba0af4be7
+    src/orchestration/analysis.rs signature 19 source_module_b43fe74ff73876a3
+    src/orchestration/dispatch.rs signature 16 source_module_ba56ed42d2ed0935
+    src/orchestration/mod.rs signature 6 source_module_5efa05f048bd4ac8
     src/orchestration/permission.rs signature 4 source_module_880e1531fba723f8
     src/orchestration/replay.rs signature 7 source_module_a9e54b7677683801
-    src/orchestration/runner.rs signature 33 source_module_29743c90d15f6a2f
+    src/orchestration/runner.rs signature 41 source_module_ab2ce622fc42d20f
     src/orchestration/workspace.rs signature 15 source_module_341cef342bd4fe7b
     src/probability.rs signature 54 source_module_00112242017176e8
     src/program_coreference.rs signature 1 source_module_0a7619805d84aa4a
@@ -213,9 +214,9 @@ self_ast_census_index
     src/seed.rs signature 54 source_module_14436949ca4a5b71
     src/seed/agentic_tool_capabilities.rs signature 2 source_module_9847f4d6bab733ff
     src/seed/brainstorm.rs signature 5 source_module_6580e5a2ac5b3691
-    src/seed/client_integrations.rs signature 19 source_module_8fa8023818ac86a9
+    src/seed/client_integrations.rs signature 19 source_module_9207f94472e96872
     src/seed/coreference.rs signature 6 source_module_2a031fb4770187f1
-    src/seed/embedded.rs signature 89 source_module_24bc46d46132e6e6
+    src/seed/embedded.rs signature 90 source_module_fd503fbd6da2e477
     src/seed/facts.rs signature 9 source_module_986f7657cab5c21a
     src/seed/grounding_overrides.rs signature 6 source_module_e1e4f825307e3b33
     src/seed/handler_precedence.rs signature 2 source_module_0153cbdf1badb1d6

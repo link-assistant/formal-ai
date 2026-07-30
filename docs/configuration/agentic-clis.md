@@ -57,7 +57,10 @@ Use `agent dispatch --compare` to run an identical task in parallel candidate
 copies and deterministically compose one passing winner. Without `--compare`,
 the universal solver decomposes the request into bounded leaves, dispatches
 them round-robin, rejects conflicting effects, and composes only passing
-results. Session JSON is canonical and replay-validated:
+results. `--command CLI=JSON_ARGV` plus an independent
+`--allow-agent-command` grant brings explicitly requested custom CLI/TUI
+entrypoints, local model frontends, or fixed Bash adapters under those same
+boundaries. Session JSON is canonical and replay-validated:
 
 ```bash
 formal-ai agent dispatch \
@@ -67,6 +70,15 @@ formal-ai agent dispatch \
   --workspace /tmp/example-repository
 formal-ai agent replay /tmp/codex-session.json
 ```
+
+Each registered adapter also defines its native resume argv in seed data.
+`agent resume` carries a disproved claim and evidence into the parent session's
+exact native conversation; `agent synthesize` performs meta-language
+formalization, statement-level cross-checking and requested-language
+verification; and `agent learn` emits evidence-linked, human-gated adapter
+proposals. The [orchestration guide](orchestration.md) documents the exact six
+resume contracts and the honest boundary between cross-agent agreement and
+external fact proof.
 
 The default is one-shot/temporary. `--interactive` or `--non-interactive`
 overrides a client's normal mode. Use `--global` only for permanent setup;

@@ -3,6 +3,7 @@ use super::workspace::{changes, snapshot, WorkspaceChange};
 use crate::seed::client_integrations;
 use crate::DEFAULT_MODEL;
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
@@ -83,10 +84,12 @@ pub struct AgentRunConfig {
     pub target: AgentTarget,
     pub timeout: Duration,
     pub permission: AgentRunPermission,
+    pub allowlisted_agent_commands: BTreeSet<String>,
     pub allowlisted_commands: BTreeSet<String>,
     pub verification: Vec<VerificationCommand>,
     pub controller_program: PathBuf,
     pub command_override: Option<AgentCommand>,
+    pub continuation: Option<AgentContinuation>,
 }
 
 impl AgentRunConfig {
@@ -105,10 +108,12 @@ impl AgentRunConfig {
             target: AgentTarget::FormalAi,
             timeout: Duration::from_mins(15),
             permission: AgentRunPermission::default(),
+            allowlisted_agent_commands: BTreeSet::new(),
             allowlisted_commands: BTreeSet::new(),
             verification: Vec::new(),
             controller_program: PathBuf::from("formal-ai"),
             command_override: None,
+            continuation: None,
         }
     }
 
@@ -131,6 +136,10 @@ pub enum AgentRunError {
     UnsupportedCli(String),
     Workspace(io::Error),
     CommandNotAllowlisted(String),
+    AgentCommandNotAllowlisted(String),
+    NativeSessionUnavailable,
+    ContinuationMismatch,
+    SeedContractUnavailable(&'static str),
     Process(io::Error),
 }
 
@@ -142,6 +151,14 @@ impl fmt::Display for AgentRunError {
             Self::Workspace(error) => write!(formatter, "workspace:{error}"),
             Self::CommandNotAllowlisted(command) => {
                 write!(formatter, "command_not_allowlisted:{command}")
+            }
+            Self::AgentCommandNotAllowlisted(command) => {
+                write!(formatter, "agent_command_not_allowlisted:{command}")
+            }
+            Self::NativeSessionUnavailable => formatter.write_str("native_session_unavailable"),
+            Self::ContinuationMismatch => formatter.write_str("continuation_mismatch"),
+            Self::SeedContractUnavailable(intent) => {
+                write!(formatter, "seed_contract_unavailable:{intent}")
             }
             Self::Process(error) => write!(formatter, "process:{error}"),
         }
@@ -179,6 +196,28 @@ pub struct VerificationResult {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct NativeAgentSession {
+    pub id: String,
+    pub resume_command: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct AgentContinuation {
+    pub parent_session_sha256: String,
+    pub native_session_id: String,
+    pub disproved_claim: String,
+    pub evidence: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct CorrectionRequest {
+    pub cli: String,
+    pub claim: String,
+    pub evidence: String,
+    pub source_session_sha256: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct AgentSession {
     pub schema: String,
     pub cli: String,
@@ -197,6 +236,10 @@ pub struct AgentSession {
     pub changes: Vec<WorkspaceChange>,
     pub verification: Vec<VerificationResult>,
     pub events: Vec<AgentEvent>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub native_session: Option<NativeAgentSession>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub continuation: Option<AgentContinuation>,
 }
 
 impl AgentSession {
@@ -227,35 +270,67 @@ pub fn run_agent(config: &AgentRunConfig) -> Result<AgentSession, AgentRunError>
             "workspace_not_directory",
         )));
     }
-    let integration = client_integrations()
-        .into_iter()
-        .find(|entry| {
-            entry.id == config.cli || entry.aliases.iter().any(|alias| alias == &config.cli)
-        })
-        .ok_or_else(|| AgentRunError::UnsupportedCli(config.cli.clone()))?;
-    if integration.verification.surface != "cli" {
+    let integration = client_integrations().into_iter().find(|entry| {
+        entry.id == config.cli || entry.aliases.iter().any(|alias| alias == &config.cli)
+    });
+    if integration
+        .as_ref()
+        .is_some_and(|integration| integration.verification.surface != "cli")
+    {
         return Err(AgentRunError::UnsupportedCli(config.cli.clone()));
     }
+    if integration.is_none() && config.command_override.is_none() {
+        return Err(AgentRunError::UnsupportedCli(config.cli.clone()));
+    }
+    if let Some(command) = &config.command_override {
+        let program = command.program.to_string_lossy().into_owned();
+        if !config.allowlisted_agent_commands.contains(&program) {
+            return Err(AgentRunError::AgentCommandNotAllowlisted(program));
+        }
+    }
     let before = snapshot(&workspace).map_err(AgentRunError::Workspace)?;
-    let command = config
-        .command_override
-        .clone()
-        .unwrap_or_else(|| build_command(config, &integration));
+    let command = config.command_override.clone().map_or_else(
+        || build_command(config, integration.as_ref().expect("registered adapter")),
+        |mut command| {
+            for argument in &mut command.args {
+                *argument = argument.replace("{task}", &config.task);
+            }
+            command
+        },
+    );
+    let adapter_id = integration
+        .as_ref()
+        .map_or(config.cli.as_str(), |integration| integration.id.as_str());
+    let process_name = if config.command_override.is_some() {
+        command.program.to_string_lossy().into_owned()
+    } else {
+        integration
+            .as_ref()
+            .expect("registered adapter")
+            .command
+            .clone()
+    };
     let mut events = EventChain::default();
     events.push("permission_granted", ".");
-    events.push("adapter_selected", &integration.id);
-    events.push("process_started", &integration.command);
+    if config.command_override.is_some() {
+        events.push("custom_adapter_granted", &process_name);
+    }
+    events.push("adapter_selected", adapter_id);
+    if config.continuation.is_some() {
+        events.push("native_session_resumed", adapter_id);
+    }
+    events.push("process_started", &process_name);
     let started = Instant::now();
     let output = execute(&command, &workspace, config.timeout)?;
     let wall_time_ms = u64::try_from(started.elapsed().as_millis()).unwrap_or(u64::MAX);
     let (status, exit_code) = if output.timed_out {
-        events.push("process_timed_out", &integration.id);
+        events.push("process_timed_out", adapter_id);
         (AgentStatus::TimedOut, output.exit_code)
     } else if output.exit_code == Some(0) {
-        events.push("process_succeeded", &integration.id);
+        events.push("process_succeeded", adapter_id);
         (AgentStatus::Succeeded, output.exit_code)
     } else {
-        events.push("process_failed", &integration.id);
+        events.push("process_failed", adapter_id);
         (AgentStatus::Failed, output.exit_code)
     };
     let verification = run_verification(config, &workspace, &mut events)?;
@@ -264,9 +339,18 @@ pub fn run_agent(config: &AgentRunConfig) -> Result<AgentSession, AgentRunError>
     for effect in &effects {
         events.push("workspace_effect", &effect.path);
     }
+    let native_session = parse_native_session(
+        &output.stderr,
+        &output.stdout,
+        config
+            .command_override
+            .is_none()
+            .then_some(integration.as_ref())
+            .flatten(),
+    );
     Ok(AgentSession {
         schema: "formal-ai-agent-session-v1".to_string(),
-        cli: integration.id,
+        cli: adapter_id.to_string(),
         target: config.target,
         task: config.task.clone(),
         model: config.model.clone(),
@@ -282,7 +366,66 @@ pub fn run_agent(config: &AgentRunConfig) -> Result<AgentSession, AgentRunError>
         changes: effects,
         verification,
         events: events.events,
+        native_session,
+        continuation: config.continuation.clone(),
     })
+}
+
+/// Continue the exact external session that produced a disproved claim.
+///
+/// The caller supplies the correction goal. This function embeds that goal,
+/// the disproved claim, and its proof using a localized seed template, then
+/// binds the run to the parent digest and native session id. A mismatch fails
+/// closed instead of silently starting a fresh model turn.
+pub fn resume_agent(
+    parent: &AgentSession,
+    request: &CorrectionRequest,
+    mut config: AgentRunConfig,
+) -> Result<AgentSession, AgentRunError> {
+    let parent_digest = session_sha256(parent).map_err(|_| AgentRunError::ContinuationMismatch)?;
+    if parent.cli != request.cli || parent_digest != request.source_session_sha256 {
+        return Err(AgentRunError::ContinuationMismatch);
+    }
+    let native = parent
+        .native_session
+        .as_ref()
+        .ok_or(AgentRunError::NativeSessionUnavailable)?;
+    config.cli.clone_from(&parent.cli);
+    config.target = parent.target;
+    config.model.clone_from(&parent.model);
+    config.base_url.clone_from(&parent.base_url);
+    let language = crate::language::detect(&config.task).slug();
+    let template = crate::seed::response_for("orchestration_correction_prompt", language)
+        .or_else(|| crate::seed::response_for("orchestration_correction_prompt", "en"))
+        .ok_or(AgentRunError::SeedContractUnavailable(
+            "orchestration_correction_prompt",
+        ))?;
+    config.task = template
+        .replace("{task}", &config.task)
+        .replace("{claim}", &request.claim)
+        .replace("{evidence}", &request.evidence);
+    config.continuation = Some(AgentContinuation {
+        parent_session_sha256: parent_digest,
+        native_session_id: native.id.clone(),
+        disproved_claim: request.claim.clone(),
+        evidence: request.evidence.clone(),
+    });
+    let mut session = run_agent(&config)?;
+    match &session.native_session {
+        Some(resumed) if resumed.id != native.id => {
+            return Err(AgentRunError::ContinuationMismatch);
+        }
+        None => session.native_session = Some(native.clone()),
+        Some(_) => {}
+    }
+    Ok(session)
+}
+
+/// Content digest of the canonical replay bytes for one session.
+pub fn session_sha256(session: &AgentSession) -> Result<String, serde_json::Error> {
+    let mut bytes = serde_json::to_vec_pretty(session)?;
+    bytes.push(b'\n');
+    Ok(format!("{:x}", Sha256::digest(bytes)))
 }
 
 fn validate_verification(config: &AgentRunConfig) -> Result<(), AgentRunError> {
@@ -311,8 +454,24 @@ fn build_command(
                 "--model".to_string(),
                 config.model.clone(),
                 "--non-interactive".to_string(),
-                integration.id.clone(),
             ];
+            command.args.extend([
+                "--orchestration-home".to_string(),
+                config
+                    .workspace
+                    .join(".formal-ai-orchestration")
+                    .join("native-sessions")
+                    .join(&integration.id)
+                    .to_string_lossy()
+                    .into_owned(),
+            ]);
+            if let Some(continuation) = &config.continuation {
+                command.args.extend([
+                    "--orchestration-resume".to_string(),
+                    continuation.native_session_id.clone(),
+                ]);
+            }
+            command.args.push(integration.id.clone());
             command.args.push(config.task.clone());
             command
         }
@@ -338,9 +497,6 @@ fn build_vendor_command(
         &invocation.vendor_orchestration_args
     };
     args.extend(orchestration_args.iter().cloned());
-    if invocation.mode_arg_position != Some(crate::seed::ModeArgPosition::BeforeInvocation) {
-        args.extend(invocation.non_interactive_args.iter().cloned());
-    }
     let model_arg = if invocation.vendor_model_arg.is_empty() {
         &invocation.model_arg
     } else {
@@ -358,12 +514,69 @@ fn build_vendor_command(
             }
         }
     }
+    if let Some(continuation) = &config.continuation {
+        args.extend(
+            invocation
+                .resume_args
+                .iter()
+                .map(|argument| argument.replace("{session_id}", &continuation.native_session_id)),
+        );
+    }
+    if invocation.mode_arg_position != Some(crate::seed::ModeArgPosition::BeforeInvocation) {
+        args.extend(invocation.non_interactive_args.iter().cloned());
+    }
     args.push(config.task.clone());
     AgentCommand {
         program,
         args,
         env: BTreeMap::new(),
     }
+}
+
+fn parse_native_session(
+    stderr: &str,
+    stdout: &str,
+    integration: Option<&crate::seed::ClientIntegration>,
+) -> Option<NativeAgentSession> {
+    const PREFIX: &str = "formal-ai: orchestration-session-json:";
+    if let Some(evidence) = stderr.lines().find_map(|line| {
+        let json = line.trim().strip_prefix(PREFIX)?;
+        serde_json::from_str(json).ok()
+    }) {
+        return Some(evidence);
+    }
+    let integration = integration?;
+    if integration.invocation.resume_command.is_empty() {
+        return None;
+    }
+    let stream = serde_json::Deserializer::from_str(stdout).into_iter::<Value>();
+    for value in stream {
+        let Ok(value) = value else {
+            return None;
+        };
+        if let Some(id) = find_session_id(&value) {
+            return Some(NativeAgentSession {
+                resume_command: integration
+                    .invocation
+                    .resume_command
+                    .replace("{session_id}", &id),
+                id,
+            });
+        }
+    }
+    None
+}
+
+fn find_session_id(value: &Value) -> Option<String> {
+    if let Some(object) = value.as_object() {
+        for key in ["sessionId", "session_id", "thread_id"] {
+            if let Some(id) = object.get(key).and_then(Value::as_str) {
+                return Some(id.to_string());
+            }
+        }
+        return object.values().find_map(find_session_id);
+    }
+    value.as_array()?.iter().find_map(find_session_id)
 }
 
 struct ProcessOutput {

@@ -85,6 +85,7 @@ pub struct ClientIntegrationInvocation {
     pub session_root: String,
     pub session_file_suffix: String,
     pub resume_command: String,
+    pub resume_args: Vec<String>,
     pub session_id_query_args: Vec<String>,
 }
 
@@ -390,6 +391,7 @@ fn parse_invocation(node: &super::parser::LinoNode) -> ClientIntegrationInvocati
             "session_root" => invocation.session_root.clone_from(&child.id),
             "session_file_suffix" => invocation.session_file_suffix.clone_from(&child.id),
             "resume_command" => invocation.resume_command.clone_from(&child.id),
+            "resume_arg" => invocation.resume_args.push(child.id.clone()),
             "session_id_query_arg" => invocation.session_id_query_args.push(child.id.clone()),
             _ => {}
         }

@@ -21,9 +21,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     let command = AgentCommand::new("sh")
         .arg("-c")
         .arg("printf '\\n[![Formal AI](https://img.shields.io/badge/Formal-AI-blue)]\\n' >> README.md; printf 'scripted agent complete\\n'");
-    let config = AgentRunConfig::new("codex", "add a README badge", &workspace)
+    let mut config = AgentRunConfig::new("codex", "add a README badge", &workspace)
         .with_permission(AgentRunPermission::grant_for(&workspace))
         .with_command(command);
+    config.allowlisted_agent_commands.insert("sh".to_string());
     let session = run_agent(&config)?;
     let session_path = workspace.join("agent-session.json");
     write_session(&session_path, &session)?;

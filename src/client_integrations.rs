@@ -31,6 +31,7 @@ const DEFAULT_BASE_URL: &str = "http://127.0.0.1:8080";
 const EMPTY_BACKUP_SENTINEL: &str = "# formal-ai-empty-config-backup-v1\n";
 const RENDERED_PLACEHOLDER: &str = concat!("{", "rendered", "}");
 const ERROR_PLACEHOLDER: &str = concat!("{", "error", "}");
+const SESSION_ID_PLACEHOLDER: &str = concat!("{", "session_id", "}");
 
 #[derive(Debug, Clone, Copy, ValueEnum)]
 pub enum ClientProtocol {
@@ -103,6 +104,14 @@ pub struct WithFormalAiArgs {
     /// Apply the seed-defined permission-gated orchestration invocation overlay.
     #[arg(long, default_value_t = false, hide = true)]
     pub orchestration: bool,
+
+    /// Stable client home used only by the permission-gated orchestrator.
+    #[arg(long, hide = true, requires = "orchestration")]
+    pub orchestration_home: Option<PathBuf>,
+
+    /// Native client session id resumed only by the orchestrator.
+    #[arg(long, hide = true, requires = "orchestration")]
+    pub orchestration_resume: Option<String>,
 
     /// Protocol namespace to use for tools that support more than one protocol.
     #[arg(long, value_enum)]
@@ -194,6 +203,8 @@ pub fn run_with_formal_ai(args: &WithFormalAiArgs) -> Result<(), Box<dyn Error>>
             orchestration: args.orchestration,
         },
         server.as_ref().map(|server| server.output_log.as_path()),
+        args.orchestration_home.as_deref(),
+        args.orchestration_resume.as_deref(),
     )
 }
 
@@ -310,6 +321,8 @@ fn run_ephemeral(
     context: &RenderContext,
     options: InvocationOptions,
     temporary_server_log: Option<&Path>,
+    orchestration_home: Option<&Path>,
+    orchestration_resume: Option<&str>,
 ) -> Result<(), Box<dyn Error>> {
     let invocation = &integration.invocation;
     let mut context = context.clone();
@@ -344,18 +357,26 @@ fn run_ephemeral(
             temp_dirs.push(temp);
         }
     }
-    if !invocation.temp_home_env.is_empty() {
-        let temp = TempConfigDir::new(&format!("{}-home", integration.id))?;
-        session_home = Some(temp.path.clone());
+    let temporary_home = if orchestration_home.is_none() && !invocation.temp_home_env.is_empty() {
+        Some(TempConfigDir::new(&format!("{}-home", integration.id))?)
+    } else {
+        None
+    };
+    let scoped_home = orchestration_home
+        .map(Path::to_path_buf)
+        .or_else(|| temporary_home.as_ref().map(|temp| temp.path.clone()));
+    if let Some(home) = scoped_home {
+        fs::create_dir_all(&home)?;
+        session_home = Some(home.clone());
         if !invocation.model_catalog_path.is_empty() {
             let relative_catalog_path = render_template(&invocation.model_catalog_path, &context);
-            let catalog_path = temp_scoped_path(&temp.path, &relative_catalog_path)?;
+            let catalog_path = temp_scoped_path(&home, &relative_catalog_path)?;
             context.model_catalog_path = catalog_path.display().to_string();
             write_file(&catalog_path, &codex_model_catalog(&context.model)?)?;
         }
         if !invocation.temp_home_config_path.is_empty() {
             let relative_config_path = render_template(&invocation.temp_home_config_path, &context);
-            let config_path = temp_scoped_path(&temp.path, &relative_config_path)?;
+            let config_path = temp_scoped_path(&home, &relative_config_path)?;
             if let Some(parent) = config_path.parent() {
                 fs::create_dir_all(parent)?;
             }
@@ -366,10 +387,14 @@ fn run_ephemeral(
             };
             fs::write(&config_path, contents)?;
         }
-        command.env(
-            render_template(&invocation.temp_home_env, &context),
-            &temp.path,
-        );
+        let home_env = if invocation.temp_home_env.is_empty() {
+            "HOME".to_string()
+        } else {
+            render_template(&invocation.temp_home_env, &context)
+        };
+        command.env(home_env, &home);
+    }
+    if let Some(temp) = temporary_home {
         temp_dirs.push(temp);
     }
 
@@ -384,7 +409,13 @@ fn run_ephemeral(
         .map(|root| session_file_snapshot(root, &invocation.session_file_suffix))
         .unwrap_or_default();
 
-    let final_args = build_invocation_args(integration, user_args, &context, options);
+    let final_args = build_invocation_args(
+        integration,
+        user_args,
+        &context,
+        options,
+        orchestration_resume,
+    );
     command.args(final_args);
     let status = command.status()?;
     let session_file = session_root.as_deref().and_then(|root| {
@@ -395,7 +426,12 @@ fn run_ephemeral(
         .filter(|path| path.exists())
         .map(|path| fs::canonicalize(&path).unwrap_or(path))
         .or_else(|| temporary_server_log.map(Path::to_path_buf));
-    print_session_files(integration, session_file.as_deref(), server_log.as_deref());
+    print_session_files(
+        integration,
+        session_file.as_deref(),
+        server_log.as_deref(),
+        options.orchestration,
+    );
     let preserve_temp = session_file
         .as_deref()
         .is_some_and(|path| temp_dirs.iter().any(|temp| path.starts_with(&temp.path)));
@@ -440,6 +476,7 @@ fn build_invocation_args(
     user_args: &[String],
     context: &RenderContext,
     options: InvocationOptions,
+    orchestration_resume: Option<&str>,
 ) -> Vec<String> {
     let invocation = &integration.invocation;
     let mut args = invocation
@@ -495,6 +532,14 @@ fn build_invocation_args(
                 .orchestration_args
                 .iter()
                 .map(|arg| render_template(arg, context)),
+        );
+    }
+    if let Some(session_id) = orchestration_resume {
+        effective_user_args.extend(
+            invocation
+                .resume_args
+                .iter()
+                .map(|argument| argument.replace(SESSION_ID_PLACEHOLDER, session_id)),
         );
     }
     if invocation.mode_arg_position != Some(ModeArgPosition::BeforeInvocation) {
