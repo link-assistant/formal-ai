@@ -13,6 +13,7 @@ const RECORDED_TRY_DISPATCH_ENTRIES_MAX: usize = 50;
 #[test]
 fn held_out_number_constraint_paraphrases_are_data_driven() {
     for (language, prompt) in [
+        // English held-out paraphrase: neither relation appeared in the old recognizer.
         (
             "en",
             "Find the integer I am thinking of: it exceeds 4 and is below 6.",
