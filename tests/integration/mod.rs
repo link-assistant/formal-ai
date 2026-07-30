@@ -26,6 +26,7 @@ mod issue_671_aider_system_echo;
 mod issue_671_supplied_file_bytes;
 mod issue_680_intent_routing;
 mod issue_703_orchestration;
+mod issue_703_orchestration_languages;
 mod issue_712_intent_routing;
 mod issue_714_agentic_mode;
 mod issue_716_agentic_execution;
