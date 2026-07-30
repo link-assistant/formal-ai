@@ -147,15 +147,18 @@ fn the_worked_example_and_release_metadata_are_committed() {
         ],
     );
 
+    // Release automation consumes changelog fragments after copying them into
+    // CHANGELOG.md. Keep this traceability check valid on both sides of that
+    // lifecycle, as the issue #656 requirements test does.
     let fragments = fs::read_dir(root().join("changelog.d")).expect("read changelog.d");
-    let mentions_844 = fragments
+    let unreleased_entry = fragments
         .filter_map(Result::ok)
         .map(|entry| entry.path())
         .filter(|path| path.extension().is_some_and(|extension| extension == "md"))
         .filter_map(|path| fs::read_to_string(path).ok())
         .any(|fragment| fragment.contains("#844") && fragment.contains("bump: minor"));
     assert!(
-        mentions_844,
-        "a changelog fragment must announce the issue #844 feature with a minor bump"
+        unreleased_entry || read("CHANGELOG.md").contains("issue #844"),
+        "issue #844 must have either an unreleased minor-bump fragment or a released CHANGELOG entry"
     );
 }

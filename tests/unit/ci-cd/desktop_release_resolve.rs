@@ -331,6 +331,46 @@ fn workflow_run_skips_when_release_has_all_required_assets() {
 }
 
 #[test]
+fn workflow_run_asset_membership_is_stable_under_pipefail() {
+    // `grep -q` exits as soon as it finds a match. Piping a sufficiently large
+    // shell `printf` into that probe under `set -o pipefail` makes the producer
+    // receive SIGPIPE, which used to turn a successful match into a missing
+    // asset. A loaded CI runner reproduced the same race with the normal
+    // 17-name list, so force the pipe to fill here and keep the regression
+    // deterministic.
+    if !bash_available() {
+        eprintln!("skipping: /bin/bash not available");
+        return;
+    }
+    let padding = (0..3_000)
+        .map(|index| format!("formal-ai-desktop-padding-{index:04}"))
+        .collect::<Vec<_>>()
+        .join("\n");
+    let assets = format!("{}\n{padding}", expected_asset_names("0.201.0"));
+    let result = run_resolve(
+        "pipefail-membership",
+        &[
+            ("EVENT", "workflow_run"),
+            ("WORKFLOW_RUN_HEAD_SHA", "0abd3f45parenthead"),
+        ],
+        &GhMock {
+            tags_jq_output: "",
+            latest_tag: "v0.201.0",
+            parent_sha: "0abd3f45parenthead",
+            release_exists: true,
+            asset_names: &assets,
+        },
+    );
+
+    assert!(result.ok, "resolve script failed: {}", result.stderr);
+    assert_eq!(
+        result.should_build, "false",
+        "membership checks must not mistake grep's early exit for a missing asset\nstdout:\n{}\nstderr:\n{}",
+        result.stdout, result.stderr
+    );
+}
+
+#[test]
 fn workflow_run_builds_when_release_is_missing_updater_metadata() {
     // Issue #548: installers alone are not enough for auto-update. The updater
     // queries latest.yml / latest-mac.yml / latest-linux.yml from the release,

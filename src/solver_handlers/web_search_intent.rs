@@ -297,6 +297,10 @@ struct WebSearchMarkers {
     continuation_markers: Vec<&'static str>,
     /// Tell-me-about openers whose object is a public term.
     term_information_prefixes: Vec<&'static str>,
+    /// Tell-me-about closers of verb-final languages ("… के बारे में बताओ").
+    term_information_suffixes: Vec<&'static str>,
+    /// Tell-me-about frames that wrap the term on both sides.
+    term_information_circumfixes: Vec<(&'static str, &'static str)>,
     /// Question openers of an implicit research request ("what is …", "is there …").
     research_question_prefixes: Vec<&'static str>,
     /// Superlative/recency modifiers that make a question researchable.
@@ -338,6 +342,8 @@ fn markers() -> &'static WebSearchMarkers {
         followup_verbs: bare_literals(ROLE_FOLLOWUP_INSTRUCTION_VERB),
         continuation_markers: bare_literals(ROLE_CLAUSE_CONTINUATION_MARKER),
         term_information_prefixes: prefix_literals(ROLE_TERM_INFORMATION_REQUEST_OPENER),
+        term_information_suffixes: suffix_literals(ROLE_TERM_INFORMATION_REQUEST_OPENER),
+        term_information_circumfixes: circumfix_literals(ROLE_TERM_INFORMATION_REQUEST_OPENER),
         research_question_prefixes: prefix_literals(ROLE_RESEARCH_QUESTION_OPENER),
         research_modifiers: bare_literals(ROLE_RESEARCH_SUPERLATIVE_MODIFIER),
         research_evidence_domains: bare_literals(ROLE_RESEARCH_EVIDENCE_DOMAIN),
@@ -620,18 +626,47 @@ fn extract_current_public_event_question(normalized: &str) -> Option<String> {
     valid_search_query(strip_implicit_research_prefix(normalized))
 }
 
+/// A request to be told about a public term, in every slot form the lexicon
+/// declares for [`ROLE_TERM_INFORMATION_REQUEST_OPENER`].
+///
+/// Word order is a property of the language, not of the intent: English and
+/// Russian put the opener first ("tell me about …"), Hindi puts it last
+/// ("… के बारे में बताओ"), and Chinese can wrap the term ("给出 … 的 … 背景").
+/// Consulting only [`Slot::Prefix`] forms therefore made the recognizer
+/// structurally unable to route verb-final and circumfix phrasings, however many
+/// surfaces the seed learned (issue #701). All four slot forms are read here, so
+/// a learned surface changes behaviour purely as data.
 fn extract_term_information_request(prompt: &str, normalized: &str) -> Option<String> {
     if concept_lookup_resolves(prompt) || term_information_prompt_is_local_context(normalized) {
         return None;
     }
-    for &prefix in &markers().term_information_prefixes {
-        if let Some(query) = normalized.strip_prefix(prefix) {
-            if term_information_query_is_local_context(query) {
-                return None;
-            }
-            if let Some(query) = valid_search_query(query) {
-                return Some(query);
-            }
+    let markers = markers();
+    let candidates = markers
+        .term_information_prefixes
+        .iter()
+        .filter_map(|prefix| normalized.strip_prefix(prefix))
+        .chain(
+            markers
+                .term_information_suffixes
+                .iter()
+                .filter_map(|suffix| normalized.strip_suffix(suffix)),
+        )
+        .chain(
+            markers
+                .term_information_circumfixes
+                .iter()
+                .filter_map(|(before, after)| {
+                    normalized
+                        .strip_prefix(before)
+                        .and_then(|rest| rest.strip_suffix(after))
+                }),
+        );
+    for candidate in candidates {
+        if term_information_query_is_local_context(candidate) {
+            return None;
+        }
+        if let Some(query) = valid_search_query(candidate) {
+            return Some(query);
         }
     }
     None

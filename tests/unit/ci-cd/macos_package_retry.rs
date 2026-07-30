@@ -59,6 +59,12 @@ case "$FORMAL_AI_TEST_MODE" in
       exit 99
     fi
     ;;
+  transient-attach-then-success)
+    if [ "$attempt" -eq 1 ]; then
+      echo 'hdiutil: attach failed - Device not configured' >&2
+      exit 38
+    fi
+    ;;
   persistent-transient)
     echo 'hdiutil: create failed - Resource busy' >&2
     exit 37
@@ -112,6 +118,21 @@ fn retries_known_hdiutil_device_failures_and_cleans_incomplete_dmg() {
     assert!(
         output.status.success(),
         "a known transient should recover; stderr: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(count, "2", "the successful retry should be attempt two");
+}
+
+#[test]
+fn retries_known_hdiutil_attach_device_failure() {
+    let root = sandbox("attach-retry");
+    let output = run_wrapper(&root, "transient-attach-then-success");
+    let count = attempt_count(&root);
+    fs::remove_dir_all(&root).expect("sandbox must be removed");
+
+    assert!(
+        output.status.success(),
+        "the observed transient attach failure should recover; stderr: {}",
         String::from_utf8_lossy(&output.stderr)
     );
     assert_eq!(count, "2", "the successful retry should be attempt two");
