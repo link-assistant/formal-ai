@@ -81,23 +81,47 @@ fn default_one_draft_preserves_the_existing_search_path() {
 
 #[test]
 fn comparison_ledger_answers_why_in_all_supported_languages() {
+    struct LanguageCase {
+        language: &'static str,
+        prompt: &'static str,
+        expected: &'static str,
+    }
+
     let answer = portfolio_solver(3).solve(SEARCH_PROMPT);
     let cases = [
-        ("Why did you choose that solution?", "passed 3/3"),
-        ("Почему ты выбрал это решение?", "3/3"),
-        ("आपने वह समाधान क्यों चुना?", "3/3"),
-        ("你为什么选择那个解决方案？", "3/3"),
+        LanguageCase {
+            language: "en",
+            prompt: "Why did you choose that solution?",
+            expected: "passed 3/3",
+        },
+        LanguageCase {
+            language: "ru",
+            prompt: "Почему ты выбрал это решение?",
+            expected: "3/3",
+        },
+        LanguageCase {
+            language: "hi",
+            prompt: "आपने वह समाधान क्यों चुना?",
+            expected: "3/3",
+        },
+        LanguageCase {
+            language: "zh",
+            prompt: "你为什么选择那个解决方案？",
+            expected: "3/3",
+        },
     ];
 
-    for (prompt, expected) in cases {
+    for case in cases {
         let explanation = portfolio_solver(3).solve_with_history(
-            prompt,
+            case.prompt,
             &[ConversationTurn::assistant(answer.answer.clone())],
         );
         assert_eq!(explanation.intent, "draft_comparison_explanation");
         assert!(
-            explanation.answer.contains(expected),
-            "{prompt:?} should explain the recorded comparison: {}",
+            explanation.answer.contains(case.expected),
+            "{} prompt {:?} should explain the recorded comparison: {}",
+            case.language,
+            case.prompt,
             explanation.answer
         );
     }
