@@ -1,0 +1,6 @@
+draft_strategies
+  reuse # cheapest first: replay a composition that is already known to work
+  rule_derivation # derive the composition from a rule instead of guessing
+  oracle_lookup # consult an exhaustive table when the instance is small enough
+  search # budget-driven random and evolutionary search (issue 662)
+  program_synthesis # bounded exhaustive enumeration; most general, most expensive

@@ -25,6 +25,7 @@ mod agentic_tool_capabilities;
 mod brainstorm;
 mod client_integrations;
 mod coreference;
+mod draft_strategies;
 mod embedded;
 mod facts;
 mod grounding_overrides;
@@ -59,7 +60,8 @@ pub use coreference::{coreference_seeds, Antecedent, CoreferenceSeeds, Pronoun};
 pub use embedded::{
     seed_files, AGENTIC_TOOL_CAPABILITIES_LINO, AGENT_INFO_LINO, BRAINSTORM_SEEDS_LINO,
     CLIENT_INTEGRATIONS_LINO, CODING_IDIOMS_LINO, CONCEPTS_LINO, CONCEPT_CONTEXTS_LINO,
-    COREFERENCE_LINO, DEMO_DIALOGS_LINO, ENVIRONMENTS_LINO, FACTS_LINO, GREETINGS_LINO,
+    COREFERENCE_LINO, DEMO_DIALOGS_LINO, DRAFT_STRATEGIES_LINO, ENVIRONMENTS_LINO, FACTS_LINO,
+    GREETINGS_LINO,
     HANDLER_PRECEDENCE_LINO, HELLO_WORLD_PROGRAMS_LINO, IDENTITY_LINO, INTENT_ROUTING_LINO,
     LANGUAGE_DETECTION_LINO, LEARNING_SOURCES_LINO, MARKET_PRICE_REFERENCES_LINO,
     MEANINGS_CALENDAR_LINO, MEANINGS_FACTS_LINO, MEANINGS_LINKS_ROOT_LINO, MEANINGS_LINO,
@@ -75,6 +77,7 @@ pub use facts::{facts, FactRecord, LocalizedFact};
 pub use grounding_overrides::{
     cache_contains, override_facts, override_reason, parse_record, resolve, OverrideFact,
 };
+pub use draft_strategies::{draft_strategies, draft_strategies_from};
 pub use handler_precedence::{handler_precedence, handler_precedence_from};
 pub use market_price_references::{market_price_assets, MarketPriceAsset, MarketPricePeriod};
 pub use meanings::{
