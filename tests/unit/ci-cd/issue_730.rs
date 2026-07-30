@@ -39,6 +39,21 @@ fn every_desktop_job_has_a_bounded_runtime_and_least_privilege() {
 }
 
 #[test]
+fn desktop_build_budget_covers_the_measured_windows_arm64_path() {
+    let desktop = workflow("desktop-release.yml");
+    let build = desktop
+        .split("  build:\n")
+        .nth(1)
+        .and_then(|tail| tail.split("\n  vscode:\n").next())
+        .expect("desktop build job");
+
+    assert!(
+        build.contains("    timeout-minutes: 40\n"),
+        "the desktop matrix needs headroom above the repeated 30-minute Windows ARM64 path"
+    );
+}
+
+#[test]
 fn main_pipeline_defaults_to_read_only_permissions() {
     let release = workflow("release.yml");
     assert!(
