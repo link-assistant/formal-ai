@@ -1,0 +1,6 @@
+completion_contracts
+  software_authoring
+    observable_postcondition "workspace_effect"
+    max_attempts 2
+    incomplete_reason "required_workspace_effect_missing"
+    scratch_directory ".formal-ai"

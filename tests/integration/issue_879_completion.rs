@@ -49,6 +49,100 @@ printf '}\n'
     std::fs::set_permissions(path, permissions).expect("make fake Agent CLI executable");
 }
 
+fn write_effect_client(bin_dir: &Path, name: &str, artifact_attempt: usize) {
+    let path = bin_dir.join(name);
+    let script = format!(
+        r#"#!/bin/sh
+attempt=0
+if [ -f "$FORMAL_AI_ATTEMPTS" ]; then
+  attempt=$(cat "$FORMAL_AI_ATTEMPTS")
+fi
+attempt=$((attempt + 1))
+printf '%s\n' "$attempt" > "$FORMAL_AI_ATTEMPTS"
+{{
+  printf 'command=%s attempt=%s\n' "$(basename "$0")" "$attempt"
+  printf 'args='
+  printf ' <%s>' "$@"
+  printf '\n'
+  printf 'OPENAI_BASE_URL=%s\n' "$OPENAI_BASE_URL"
+  printf 'ANTHROPIC_BASE_URL=%s\n' "$ANTHROPIC_BASE_URL"
+  printf 'GOOGLE_GEMINI_BASE_URL=%s\n' "$GOOGLE_GEMINI_BASE_URL"
+  printf 'LINK_ASSISTANT_AGENT_CONFIG_CONTENT=%s\n' "$LINK_ASSISTANT_AGENT_CONFIG_CONTENT"
+  if [ -n "$OPENCODE_CONFIG" ] && [ -f "$OPENCODE_CONFIG" ]; then
+    printf 'opencode_config='
+    tr -d '\n' < "$OPENCODE_CONFIG"
+    printf '\n'
+  fi
+  if [ -n "$HOME" ] && [ -f "$HOME/.qwen/settings.json" ]; then
+    printf 'qwen_config='
+    tr -d '\n' < "$HOME/.qwen/settings.json"
+    printf '\n'
+  fi
+}} >> "$FORMAL_AI_CAPTURE"
+if [ -f "$FORMAL_AI_CREATE_SESSION" ]; then
+  session_dir="$HOME/.local/share/link-assistant-agent/storage/session"
+  mkdir -p "$session_dir"
+  printf '{{"sessionId":"ses_issue879","attempt":%s}}\n' "$attempt" \
+    > "$session_dir/ses_issue879.json"
+fi
+if [ "$attempt" -ge "{artifact_attempt}" ]; then
+  printf 'object HelloWorld extends App {{ println("Hello, World!") }}\n' > Hello.scala
+fi
+printf '{{\n'
+printf '  "type": "result",\n'
+printf '  "subtype": "success",\n'
+printf '  "usage": {{ "input_tokens": 21, "output_tokens": 8 }}\n'
+printf '}}\n'
+"#
+    );
+    std::fs::write(&path, script).expect("write fake coding client");
+    let mut permissions = std::fs::metadata(&path)
+        .expect("fake coding client metadata")
+        .permissions();
+    permissions.set_mode(0o755);
+    std::fs::set_permissions(path, permissions).expect("make fake coding client executable");
+}
+
+fn run_client(
+    directory: &Path,
+    workspace: &Path,
+    home: &Path,
+    bin_dir: &Path,
+    tool: &str,
+    extra_args: &[&str],
+) -> std::process::Output {
+    let attempts = directory.join(format!("{tool}-attempts.txt"));
+    let capture = directory.join(format!("{tool}-capture.txt"));
+    let existing_path = std::env::var_os("PATH").unwrap_or_default();
+    let path = format!("{}:{}", bin_dir.display(), existing_path.to_string_lossy());
+    let mut args = vec!["with", "--no-start-server", "--non-interactive"];
+    args.extend_from_slice(extra_args);
+    args.push(tool);
+    args.push("Implement Hello World in Scala");
+    Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args(args)
+        .current_dir(workspace)
+        .env("HOME", home)
+        .env("PATH", path)
+        .env("FORMAL_AI_ATTEMPTS", attempts)
+        .env("FORMAL_AI_CAPTURE", capture)
+        .env(
+            "FORMAL_AI_CREATE_SESSION",
+            directory.join("create-native-session"),
+        )
+        .output()
+        .expect("run formal-ai with coding client")
+}
+
+fn json_records(output: &[u8]) -> Vec<Value> {
+    String::from_utf8(output.to_vec())
+        .expect("UTF-8 stdout")
+        .lines()
+        .filter(|line| !line.trim().is_empty())
+        .map(|line| serde_json::from_str::<Value>(line).expect("one compact JSON value per line"))
+        .collect()
+}
+
 #[test]
 fn software_authoring_cannot_succeed_without_an_artifact() {
     let directory = tmpdir();
@@ -98,12 +192,7 @@ fn software_authoring_cannot_succeed_without_an_artifact() {
         "the incomplete run must receive one bounded corrective retry"
     );
 
-    let records = String::from_utf8(output.stdout)
-        .expect("UTF-8 stdout")
-        .lines()
-        .filter(|line| !line.trim().is_empty())
-        .map(|line| serde_json::from_str::<Value>(line).expect("one compact JSON value per line"))
-        .collect::<Vec<_>>();
+    let records = json_records(&output.stdout);
     let completion = records.last().expect("completion record");
     assert_eq!(completion["type"], "formal_ai_completion");
     assert_eq!(completion["completion_state"], "incomplete");
@@ -142,5 +231,206 @@ fn software_authoring_cannot_succeed_without_an_artifact() {
         String::from_utf8_lossy(&status.stdout)
     );
 
+    let _ = std::fs::remove_dir_all(directory);
+}
+
+#[test]
+fn corrective_retry_reuses_the_native_session_and_can_complete() {
+    let directory = tmpdir();
+    let workspace = directory.join("workspace");
+    let home = directory.join("home");
+    let orchestration_home = directory.join("orchestration-home");
+    let bin_dir = directory.join("bin");
+    for path in [&workspace, &home, &orchestration_home, &bin_dir] {
+        std::fs::create_dir_all(path).expect("fixture directory");
+    }
+    assert!(Command::new("git")
+        .args(["init", "--quiet"])
+        .current_dir(&workspace)
+        .status()
+        .expect("initialize fixture repository")
+        .success());
+    write_effect_client(&bin_dir, "agent", 2);
+
+    std::fs::write(directory.join("create-native-session"), "").expect("session sentinel");
+    let output = run_client(
+        &directory,
+        &workspace,
+        &home,
+        &bin_dir,
+        "agent",
+        &[
+            "--orchestration",
+            "--orchestration-home",
+            orchestration_home.to_str().expect("UTF-8 path"),
+        ],
+    );
+    assert!(
+        output.status.success(),
+        "corrective retry did not complete:\nstdout:\n{}\nstderr:\n{}",
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let completion = json_records(&output.stdout)
+        .into_iter()
+        .last()
+        .expect("completion record");
+    assert_eq!(completion["completion_state"], "complete");
+    assert_eq!(completion["reason"], "workspace_effect_observed");
+    assert_eq!(completion["attempts"], 2);
+    assert_eq!(completion["rawMetadata"]["formalai"]["input_tokens"], 21);
+    assert_eq!(completion["rawMetadata"]["formalai"]["output_tokens"], 8);
+    assert!(workspace.join("Hello.scala").is_file());
+
+    let capture =
+        std::fs::read_to_string(directory.join("agent-capture.txt")).expect("captured invocations");
+    assert!(
+        capture.contains("<--resume> <ses_issue879> <--no-fork>"),
+        "retry did not resume the native session:\n{capture}"
+    );
+    assert!(
+        capture.contains("workspace_effect_present=true")
+            && capture.contains("workspace_effect_count=0"),
+        "retry did not include evidence disproving completion:\n{capture}"
+    );
+    let _ = std::fs::remove_dir_all(directory);
+}
+
+#[test]
+fn six_supported_coding_clients_share_the_completion_contract() {
+    let clients = [
+        (
+            "agent",
+            "--permission-mode",
+            "http://127.0.0.1:8080/api/openai/v1",
+        ),
+        (
+            "claude",
+            "acceptEdits",
+            "http://127.0.0.1:8080/api/anthropic",
+        ),
+        ("opencode", "--auto", "http://127.0.0.1:8080/api/openai/v1"),
+        (
+            "codex",
+            "workspace-write",
+            "http://127.0.0.1:8080/api/openai/v1",
+        ),
+        ("qwen", "auto-edit", "http://127.0.0.1:8080/api/openai/v1"),
+        ("gemini", "auto_edit", "http://127.0.0.1:8080/api/gemini"),
+    ];
+    for (tool, editing_marker, endpoint) in clients {
+        let directory = tmpdir();
+        let workspace = directory.join("workspace");
+        let home = directory.join("home");
+        let bin_dir = directory.join("bin");
+        for path in [&workspace, &home, &bin_dir] {
+            std::fs::create_dir_all(path).expect("fixture directory");
+        }
+        assert!(Command::new("git")
+            .args(["init", "--quiet"])
+            .current_dir(&workspace)
+            .status()
+            .expect("initialize fixture repository")
+            .success());
+        write_effect_client(&bin_dir, tool, 1);
+
+        let output = run_client(&directory, &workspace, &home, &bin_dir, tool, &[]);
+        assert!(
+            output.status.success(),
+            "{tool} did not satisfy the shared contract:\nstdout:\n{}\nstderr:\n{}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        );
+        let completion = json_records(&output.stdout)
+            .into_iter()
+            .last()
+            .expect("completion record");
+        assert_eq!(completion["completion_state"], "complete", "{tool}");
+        assert_eq!(completion["attempts"], 1, "{tool}");
+        assert_eq!(
+            completion["rawMetadata"]["formalai"]["endpoint"], endpoint,
+            "{tool}"
+        );
+        assert_eq!(
+            completion["rawMetadata"]["formalai"]["input_tokens"], 21,
+            "{tool}"
+        );
+        assert_eq!(
+            completion["rawMetadata"]["formalai"]["output_tokens"], 8,
+            "{tool}"
+        );
+        let capture = std::fs::read_to_string(directory.join(format!("{tool}-capture.txt")))
+            .expect("captured invocation");
+        assert!(
+            capture.contains(editing_marker),
+            "{tool} did not enable its editing profile ({editing_marker}):\n{capture}"
+        );
+        assert!(
+            capture.contains(endpoint),
+            "{tool} did not receive the local endpoint ({endpoint}):\n{capture}"
+        );
+        assert!(
+            workspace.join("Hello.scala").is_file(),
+            "{tool} did not produce an artifact"
+        );
+        let status = Command::new("git")
+            .args(["status", "--porcelain=v1", "--untracked-files=all"])
+            .current_dir(&workspace)
+            .output()
+            .expect("inspect fixture repository");
+        assert_eq!(
+            String::from_utf8(status.stdout).expect("UTF-8 status"),
+            "?? Hello.scala\n",
+            "{tool} left wrapper scratch files"
+        );
+        let _ = std::fs::remove_dir_all(directory);
+    }
+}
+
+#[test]
+fn public_vendor_endpoint_diversion_fails_closed() {
+    let directory = tmpdir();
+    let workspace = directory.join("workspace");
+    let home = directory.join("home");
+    let bin_dir = directory.join("bin");
+    for path in [&workspace, &home, &bin_dir] {
+        std::fs::create_dir_all(path).expect("fixture directory");
+    }
+    assert!(Command::new("git")
+        .args(["init", "--quiet"])
+        .current_dir(&workspace)
+        .status()
+        .expect("initialize fixture repository")
+        .success());
+    let path = bin_dir.join("codex");
+    std::fs::write(
+        &path,
+        r#"#!/bin/sh
+printf 'object HelloWorld extends App {}\n' > Hello.scala
+printf '{"type":"result","subtype":"success"}\n'
+printf 'request failed: https://api.openai.com/v1/responses\n' >&2
+"#,
+    )
+    .expect("write endpoint-diverting client");
+    let mut permissions = std::fs::metadata(&path)
+        .expect("client metadata")
+        .permissions();
+    permissions.set_mode(0o755);
+    std::fs::set_permissions(&path, permissions).expect("make client executable");
+
+    let output = run_client(&directory, &workspace, &home, &bin_dir, "codex", &[]);
+    assert!(!output.status.success(), "vendor endpoint diversion passed");
+    let completion = json_records(&output.stdout)
+        .into_iter()
+        .last()
+        .expect("completion record");
+    assert_eq!(completion["completion_state"], "failed");
+    assert_eq!(completion["reason"], "endpoint_mismatch");
+    assert_eq!(completion["attempts"], 1);
+    assert_eq!(
+        completion["rawMetadata"]["formalai"]["actual_endpoint"],
+        "https://api.openai.com"
+    );
     let _ = std::fs::remove_dir_all(directory);
 }
