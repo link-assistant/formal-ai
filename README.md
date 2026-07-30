@@ -407,6 +407,62 @@ Persistent targets are `~/.codex/config.toml`,
 `~/.profile` for environment-configured clients, plus `~/.cursor/mcp.json` for
 Cursor. Re-running `-g` is idempotent.
 
+### Permission-gated multi-agent orchestration
+
+`formal-ai agent run` is the explicit permission boundary for asking an
+external agent to edit a workspace. The library API is denied by default; this
+CLI command grants only the canonical directory passed with `--workspace`.
+Registered adapters cover Agent CLI, Claude Code, Codex, Gemini CLI, Qwen Code,
+and OpenCode:
+
+```bash
+formal-ai agent run \
+  --cli codex \
+  --task "add a README badge" \
+  --workspace /tmp/example-repository \
+  --session /tmp/codex-session.json
+```
+
+The default target routes the selected CLI through the loopback Formal AI
+server with model `formal-ai`. `--base-url` and `--model` override those
+values. Use `--target vendor` together with a vendor-provided `--model` to
+invoke the registered CLI directly with its existing configuration and
+credentials.
+
+Post-run checks are opt-in and executable-allowlisted. Each `--verify` value is
+a JSON argv array, so no shell parsing is involved:
+
+```bash
+formal-ai agent run \
+  --cli codex \
+  --task "add a README badge" \
+  --workspace /tmp/example-repository \
+  --allow-command cargo \
+  --verify '["cargo","test","--workspace"]'
+```
+
+Dispatch the same task to several isolated candidates with `--compare`, or
+omit it to use the bounded universal task decomposition:
+
+```bash
+formal-ai agent dispatch \
+  --cli codex,claude,opencode \
+  --compare \
+  --task "add a README badge" \
+  --workspace /tmp/example-repository
+
+formal-ai agent replay /tmp/codex-session.json
+```
+
+Comparison selects only passing candidates, then orders them by diff size,
+wall time, CLI id, and session path. The resulting sessions and
+`comparison-ledger.json` live under `.formal-ai-orchestration/`. Runs have one
+hard timeout, no implicit retry, captured stdout/stderr, file-effect hashes,
+verification results, and a hash-chained event stream. See the
+[orchestration guide](docs/configuration/orchestration.md), the
+[agentic CLI guide](docs/configuration/agentic-clis.md), and the
+[issue 703 case study](docs/case-studies/issue-703/README.md).
+
 ### Codex CLI
 
 Codex 0.142+ does not support `wire_api = "chat"`. Custom providers use the

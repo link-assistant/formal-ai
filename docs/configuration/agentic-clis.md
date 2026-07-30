@@ -13,6 +13,61 @@ formal-ai with --interactive agent
 formal-ai with --base-url http://127.0.0.1:9090 opencode run "hi"
 ```
 
+### Permission-gated orchestration controller
+
+The `with` command above keeps its conservative client defaults, including
+Codex's read-only sandbox. External editing is a separate, explicit surface.
+See the dedicated [multi-agent orchestration guide](orchestration.md) for its
+permission boundary, verification protocol, dispatch behavior, and replay
+format:
+
+```bash
+formal-ai agent run \
+  --cli codex \
+  --task "add a README badge" \
+  --workspace /tmp/example-repository \
+  --session /tmp/codex-session.json
+```
+
+The selected workspace is canonicalized and is the only directory covered by
+the grant. The controller captures stdout, stderr, exit status, wall time,
+hashed file effects, verification results, and ordered hash-chained events.
+The default 15-minute deadline can be reduced with `--timeout-seconds`; timeout
+and process failure are recorded once and are never silently retried.
+
+Supported orchestration adapters are `agent`, `claude`, `codex`, `gemini`,
+`qwen`, and `opencode`. Their editing and structured-output switches are stored
+in the same seed registry as the ordinary wrapper. The default target uses the
+loopback Formal AI server and model `formal-ai`; `--target vendor`, paired with
+a vendor-provided `--model`, uses the CLI's existing vendor credentials
+instead.
+
+Checks must be both argv-encoded and executable-allowlisted:
+
+```bash
+formal-ai agent run \
+  --cli codex \
+  --task "add a README badge" \
+  --workspace /tmp/example-repository \
+  --allow-command cargo \
+  --verify '["cargo","test","--workspace"]'
+```
+
+Use `agent dispatch --compare` to run an identical task in parallel candidate
+copies and deterministically compose one passing winner. Without `--compare`,
+the universal solver decomposes the request into bounded leaves, dispatches
+them round-robin, rejects conflicting effects, and composes only passing
+results. Session JSON is canonical and replay-validated:
+
+```bash
+formal-ai agent dispatch \
+  --cli codex,claude,opencode \
+  --compare \
+  --task "add a README badge" \
+  --workspace /tmp/example-repository
+formal-ai agent replay /tmp/codex-session.json
+```
+
 The default is one-shot/temporary. `--interactive` or `--non-interactive`
 overrides a client's normal mode. Use `--global` only for permanent setup;
 the wrapper merges its provider into the normal client config and makes a

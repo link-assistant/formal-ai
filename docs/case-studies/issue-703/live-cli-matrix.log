@@ -1,0 +1,39 @@
+Issue 703 real-client orchestration matrix
+Run date: 2026-07-29 UTC
+
+Command:
+  FORMAL_AI_ISSUE_703_LIVE=1 \
+  FORMAL_AI_ISSUE_703_CODEX_UNSANDBOXED=1 \
+  KEEP_MATRIX_ROOT=1 \
+  experiments/issue_703_orchestration/run_live_cli_matrix.sh
+
+Task passed to every public command:
+  add a README badge
+
+Assertions per isolated workspace:
+  session status == succeeded
+  session changes contains README.md
+  README.md contains img.shields.io
+
+Client versions and recorded controller wall time:
+  agent     0.25.3                    17714 ms  PASS
+  claude    2.1.220 (Claude Code)     23219 ms  PASS
+  codex     codex-cli 0.145.0         17373 ms  PASS
+  gemini    0.52.0                    20861 ms  PASS
+  qwen      0.21.0                    85266 ms  PASS
+  opencode  1.18.7                    24499 ms  PASS
+
+Final harness output:
+  ok agent: real client changed README.md and the session recorded the effect
+  ok claude: real client changed README.md and the session recorded the effect
+  ok codex: real client changed README.md and the session recorded the effect
+  ok gemini: real client changed README.md and the session recorded the effect
+  ok qwen: real client changed README.md and the session recorded the effect
+  ok opencode: real client changed README.md and the session recorded the effect
+  ok live matrix: agent claude codex gemini qwen opencode
+
+Environment note:
+  Codex selected workspace-write. This container blocks its required user
+  namespaces, so the opt-in harness replaced that argument with
+  danger-full-access only inside the already externally sandboxed live job.
+  Product defaults and deterministic tests continue to require workspace-write.

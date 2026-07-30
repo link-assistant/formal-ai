@@ -1,0 +1,23 @@
+{
+  "schema": "formal-ai-comparison-ledger-v1",
+  "selection_rule": "pass,diff_size,wall_time,cli,session_file",
+  "entries": [
+    {
+      "cli": "codex",
+      "task": "add a README badge",
+      "passed": true,
+      "diff_size": 21,
+      "wall_time_ms": 55,
+      "session_file": "sessions/000-codex.json"
+    },
+    {
+      "cli": "claude",
+      "task": "add a README badge",
+      "passed": true,
+      "diff_size": 53,
+      "wall_time_ms": 55,
+      "session_file": "sessions/001-claude.json"
+    }
+  ],
+  "winner": "codex"
+}

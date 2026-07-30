@@ -1,0 +1,19 @@
+general_change_plan
+  id "general_change_plan_ef83c1ba1b724487"
+  execution_mode "literal_file"
+  goal "Create file controller-proof.lino containing controller_proof and the phrase replayable workspace edit."
+  target "controller-proof.lino"
+  step 1
+    capability "Write"
+    action "append the composed plan to .formal-ai/general-change-plan.lino"
+    expected_evidence "written plan event impulse_7c13c2c2d2a18a9a"
+  step 2
+    capability "Write"
+    action "write the requested content to controller-proof.lino"
+    expected_evidence "workspace file controller-proof.lino"
+  step 3
+    capability "Run"
+    action "run the request-derived verification command"
+    expected_evidence "controller_proof and the phrase replayable workspace edit."
+    command "cat controller-proof.lino"
+  verification_command "cat controller-proof.lino"
