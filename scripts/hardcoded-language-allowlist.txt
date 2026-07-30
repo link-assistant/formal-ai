@@ -429,6 +429,23 @@ src/meta_self_improvement.rs	Propose citing {add}; propose dropping stale citati
 src/meta_self_improvement.rs	Propose dropping stale recipe citation(s): {drop}.
 src/meta_self_improvement.rs	The recipe already describes every pipeline stage; no update proposed.
 src/network_endpoint.rs	invalid LinksQL query: {error}
+src/number_constraints.rs	If real numbers are allowed, the answer is not unique; for example, x = {} also fits.
+src/number_constraints.rs	If this is an integer-number riddle, the answer is not unique: every integer from {start} through {end} fits.
+src/number_constraints.rs	If this is an integer-number riddle, the answer is not unique: {} all fit.
+src/number_constraints.rs	If this is an integer-number riddle, the unique answer is {only}.
+src/number_constraints.rs	If this is an integer-number riddle, there is no solution.
+src/number_constraints.rs	Over the real numbers there is also a single solution: x = {}.
+src/number_constraints.rs	Over the real numbers, these constraints are inconsistent.
+src/number_constraints.rs	x {} {} and x {} {} is satisfiable
+src/number_constraints.rs	{integer_line}\n\nInteger formalization: x in Z, x {} {}, x {} {}. Solver form: `{statement}`.\n\n{real_line}\n\nFormal relative-meta-logic / SMT check:\n{formal_check}
+src/number_constraints.rs	{integer_line}\n\nФормализация над целыми: x in Z, x {} {}, x {} {}. Проверяемая форма для решателя: `{statement}`.\n\n{real_line}\n\nФормальная проверка relative-meta-logic / SMT:\n{formal_check}
+src/number_constraints.rs	Если разрешены вещественные числа, ответ не единственный: например, x = {} тоже подходит.
+src/number_constraints.rs	Если это задача про целое число, единственный ответ: {only}.
+src/number_constraints.rs	Если это задача про целое число, решения нет.
+src/number_constraints.rs	Если это задача про целые числа, ответ не единственный: подходит любое целое от {start} до {end}.
+src/number_constraints.rs	Если это задача про целые числа, ответ не единственный: подходят {}.
+src/number_constraints.rs	На вещественных числах тоже есть единственное решение: x = {}.
+src/number_constraints.rs	На вещественных числах эти ограничения несовместимы.
 src/probability.rs	{} fetched_at={} sha256={} cached={}
 src/program_plan.rs	program_plan\n
 src/program_plan.rs	{MODIFIER_NODE} -> {cancel_op}
@@ -1010,23 +1027,6 @@ src/solver_handlers/natural_language_tools.rs	Execution status: refused. Natural
 src/solver_handlers/natural_language_tools.rs	Execution status: refused. Tool calls are not allowed for `{capability}`: {reason}. Install or import an associative package that grants this capability before enabling the tool.
 src/solver_handlers/natural_language_tools.rs	Execution status: refused. local_shell is permissioned, but this Rust core does not provide a shell executor.
 src/solver_handlers/natural_language_tools.rs	Execution status: {status}.\nTool call: javascript_execution\nOutput: {result}
-src/solver_handlers/number_riddle.rs	If real numbers are allowed, the answer is not unique; for example, x = {} also fits.
-src/solver_handlers/number_riddle.rs	If this is an integer-number riddle, the answer is not unique: every integer from {start} through {end} fits.
-src/solver_handlers/number_riddle.rs	If this is an integer-number riddle, the answer is not unique: {} all fit.
-src/solver_handlers/number_riddle.rs	If this is an integer-number riddle, the unique answer is {only}.
-src/solver_handlers/number_riddle.rs	If this is an integer-number riddle, there is no solution.
-src/solver_handlers/number_riddle.rs	Over the real numbers there is also a single solution: x = {}.
-src/solver_handlers/number_riddle.rs	Over the real numbers, these constraints are inconsistent.
-src/solver_handlers/number_riddle.rs	x {} {} and x {} {} is satisfiable
-src/solver_handlers/number_riddle.rs	{integer_line}\n\nInteger formalization: x in Z, x {} {}, x {} {}. Solver form: `{statement}`.\n\n{real_line}\n\nFormal relative-meta-logic / SMT check:\n{formal_check}
-src/solver_handlers/number_riddle.rs	{integer_line}\n\nФормализация над целыми: x in Z, x {} {}, x {} {}. Проверяемая форма для решателя: `{statement}`.\n\n{real_line}\n\nФормальная проверка relative-meta-logic / SMT:\n{formal_check}
-src/solver_handlers/number_riddle.rs	Если разрешены вещественные числа, ответ не единственный: например, x = {} тоже подходит.
-src/solver_handlers/number_riddle.rs	Если это задача про целое число, единственный ответ: {only}.
-src/solver_handlers/number_riddle.rs	Если это задача про целое число, решения нет.
-src/solver_handlers/number_riddle.rs	Если это задача про целые числа, ответ не единственный: подходит любое целое от {start} до {end}.
-src/solver_handlers/number_riddle.rs	Если это задача про целые числа, ответ не единственный: подходят {}.
-src/solver_handlers/number_riddle.rs	На вещественных числах тоже есть единственное решение: x = {}.
-src/solver_handlers/number_riddle.rs	На вещественных числах эти ограничения несовместимы.
 src/solver_handlers/numeric_list/mod.rs	(@USER OP:{} values:[{}] value_type:{} language:{} result_kind:{} request:[code result])
 src/solver_handlers/numeric_list/mod.rs	Here is {lang} code that finds the largest of the {noun} {given}:
 src/solver_handlers/numeric_list/mod.rs	Here is {lang} code that finds the smallest of the {noun} {given}:

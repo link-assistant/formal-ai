@@ -63,7 +63,7 @@ handler_migration_ledger
     status migrated
     data "data/seed/meanings-number-constraints.lino"
     primitive "src/number_constraints.rs"
-    justification "Interval extraction, integer enumeration, and proof-engine invocation are language-neutral native operations; all intent surfaces and relation vocabulary are seed roles."
+    justification "Interval extraction, integer enumeration, and proof-engine invocation are native operations; all recognition surfaces and relation vocabulary are seed roles, while the existing response projection is preserved."
     held_out "tests/unit/issue_699_handler_migration.rs"
   handler arithmetic
     status "justified-native"
