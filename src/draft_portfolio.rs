@@ -235,7 +235,9 @@ fn evaluate_slot<L: PortfolioLeaf>(
     impulse_seed: u64,
 ) -> DraftEvaluation<L::Artifact> {
     let mut best: Option<DraftEvaluation<L::Artifact>> = None;
+    let mut spent = 0;
     for attempt in 1..=MAX_ATTEMPTS {
+        spent = attempt;
         let attempt_plan = DraftPlan {
             index: plan.index,
             strategy: plan.strategy.clone(),
@@ -255,7 +257,10 @@ fn evaluate_slot<L: PortfolioLeaf>(
         }
     }
     let mut selected = best.expect("MAX_ATTEMPTS is non-zero so a slot always reports an attempt");
-    selected.attempts = selected.attempts.max(1);
+    // Report the retry budget actually spent, not the index of the attempt that
+    // happened to win: the dreaming loop needs to know a slot exhausted its
+    // budget, which "attempt 1 was best" would hide.
+    selected.attempts = spent.max(1);
     selected
 }
 
@@ -303,6 +308,9 @@ fn evaluate_attempt<L: PortfolioLeaf>(leaf: &L, plan: &DraftPlan) -> DraftEvalua
 /// Callers sort by draft index afterwards, which is what makes the concurrency
 /// invisible in the answer. Scoped threads keep the borrow of `leaf` alive
 /// without requiring `'static`, so no cloning of the problem is needed.
+// The intermediate `collect` is the parallelism: every draft must be spawned
+// before the first `join`, or the slots would run one after another.
+#[allow(clippy::needless_collect)]
 fn evaluate_in_parallel<R, F>(plans: &[DraftPlan], evaluate: F) -> Vec<R>
 where
     R: Send,

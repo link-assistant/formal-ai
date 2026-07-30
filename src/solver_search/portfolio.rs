@@ -1,313 +1,290 @@
-use super::{run_search, seed_from_prompt, SearchProblem, SearchSolution};
-use crate::event_log::EventLog;
-use crate::links_format::format_lino_record;
-use crate::solver::SolverConfig;
+//! The arithmetic-reachability leaf of the candidate-solution portfolio
+//! (issue #704).
+//!
+//! [`crate::draft_portfolio`] owns everything that is *not* arithmetic: planning
+//! `k` slots, seeding them, running them concurrently, merging in draft order,
+//! ranking by least action, backtracking on composition failure, and recording
+//! the comparison. This module only answers the four questions the engine asks a
+//! leaf: which strategies this instance can run, how to draft under one of them,
+//! how to test a draft, and whether a draft composes.
+//!
+//! Every strategy here is a genuinely different generator, not a placeholder:
+//! `reuse` replays the composition the impulse itself suggests, `rule_derivation`
+//! derives one greedily from the target, `oracle_lookup` tabulates every
+//! reachable value when the instance is small enough to tabulate,
+//! `search` is the budget-driven random/evolutionary search of issue #662, and
+//! `program_synthesis` enumerates the canonical composition space exhaustively.
+//! They disagree on real problems, which is what makes the recorded comparison
+//! evidence rather than decoration.
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum DraftStrategy {
-    Reuse,
-    RuleDerivation,
-    Search,
-    OracleLookup,
-    ProgramSynthesis,
+use super::{run_search, seed_from_prompt, Candidate, Op, SearchProblem, SearchSolution};
+use crate::draft_portfolio::{run_portfolio, DraftArtifact, DraftPlan, PortfolioLeaf};
+use crate::event_log::EventLog;
+use crate::solver::SolverConfig;
+use std::collections::BTreeMap;
+
+/// Largest instance an exhaustive oracle table is allowed to cover. Beyond this
+/// the table is not "a lookup" any more, so the strategy honestly declines.
+const ORACLE_MAX_OPERANDS: usize = 2;
+
+/// Cap on the compositions bounded program synthesis may enumerate before it
+/// gives up, so the most general strategy still terminates in bounded work.
+const SYNTHESIS_MAX_COMPOSITIONS: u32 = 200_000;
+
+/// The generated tests of step 6, in declaration order.
+const TEST_COUNT: usize = 3;
+
+/// One arithmetic-reachability instance, viewed as a portfolio leaf.
+struct ReachabilityLeaf<'a> {
+    problem: &'a SearchProblem,
+    budget: u32,
 }
 
-impl DraftStrategy {
-    const fn slug(self) -> &'static str {
-        match self {
-            Self::Reuse => "reuse",
-            Self::RuleDerivation => "rule_derivation",
-            Self::Search => "search",
-            Self::OracleLookup => "oracle_lookup",
-            Self::ProgramSynthesis => "program_synthesis",
+impl PortfolioLeaf for ReachabilityLeaf<'_> {
+    type Artifact = SearchSolution;
+
+    fn supports(&self, strategy: &str) -> bool {
+        if self.problem.numbers.is_empty() || self.problem.ops.is_empty() {
+            return false;
+        }
+        match strategy {
+            "reuse" | "rule_derivation" | "search" | "program_synthesis" => true,
+            // Applicability is a property of the instance, not of the leaf: a
+            // table is only a table while it fits.
+            "oracle_lookup" => self.problem.numbers.len() <= ORACLE_MAX_OPERANDS,
+            _ => false,
+        }
+    }
+
+    fn draft(&self, plan: &DraftPlan) -> Option<DraftArtifact<Self::Artifact>> {
+        match plan.strategy.as_str() {
+            "reuse" => self.draft_reuse(),
+            "rule_derivation" => self.draft_rule_derivation(),
+            "oracle_lookup" => self.draft_oracle_lookup(),
+            "search" => self.draft_search(plan.seed),
+            "program_synthesis" => self.draft_program_synthesis(),
+            _ => None,
+        }
+    }
+
+    fn run_tests(&self, artifact: &Self::Artifact) -> Vec<bool> {
+        run_generated_tests(artifact, self.problem).to_vec()
+    }
+
+    fn test_count(&self) -> usize {
+        TEST_COUNT
+    }
+
+    fn composes(&self, artifact: &Self::Artifact) -> bool {
+        run_generated_tests(artifact, self.problem)
+            .into_iter()
+            .all(|passed| passed)
+    }
+}
+
+impl ReachabilityLeaf<'_> {
+    /// Replay the composition the impulse already names: the operands in the
+    /// order they were given, joined by the first allowed operator. The cheapest
+    /// possible draft, and on a genuinely reusable instance the correct one.
+    fn draft_reuse(&self) -> Option<DraftArtifact<SearchSolution>> {
+        let first = *self.problem.ops.first()?;
+        let candidate = Candidate {
+            order: (0..self.problem.numbers.len()).collect(),
+            ops: vec![first; self.problem.numbers.len().saturating_sub(1)],
+        };
+        Some(self.artifact(candidate, 1))
+    }
+
+    /// Derive the composition from a rule instead of guessing: keep the operands
+    /// in their given order and, at each step, take the operator whose result is
+    /// closest to the target. Deterministic, linear, and right whenever the rule
+    /// "move towards the target" happens to hold.
+    fn draft_rule_derivation(&self) -> Option<DraftArtifact<SearchSolution>> {
+        let numbers = &self.problem.numbers;
+        let mut acc = *numbers.first()?;
+        let mut ops = Vec::with_capacity(numbers.len().saturating_sub(1));
+        let mut steps = 0;
+        for operand in numbers.iter().skip(1) {
+            let mut best: Option<(Op, i64, i64)> = None;
+            for op in &self.problem.ops {
+                steps += 1;
+                let Some(value) = op.apply(acc, *operand) else {
+                    continue;
+                };
+                let distance = value.saturating_sub(self.problem.target).abs();
+                if best.is_none_or(|(_, _, current)| distance < current) {
+                    best = Some((*op, value, distance));
+                }
+            }
+            let (op, value, _) = best?;
+            ops.push(op);
+            acc = value;
+        }
+        let candidate = Candidate {
+            order: (0..numbers.len()).collect(),
+            ops,
+        };
+        Some(self.artifact(candidate, steps))
+    }
+
+    /// Tabulate every value the instance can reach, then look the target up.
+    /// A lookup, not a scan: the table is built once and keyed by value, which
+    /// is only affordable while the instance stays small.
+    fn draft_oracle_lookup(&self) -> Option<DraftArtifact<SearchSolution>> {
+        let mut table: BTreeMap<i64, Candidate> = BTreeMap::new();
+        let mut steps = 0;
+        for_each_composition(self.problem, SYNTHESIS_MAX_COMPOSITIONS, |candidate| {
+            steps += 1;
+            if let Some(value) = candidate.evaluate(&self.problem.numbers) {
+                table.entry(value).or_insert_with(|| candidate.clone());
+            }
+            true
+        });
+        let candidate = table.get(&self.problem.target)?.clone();
+        Some(self.artifact(candidate, steps))
+    }
+
+    /// The budget-driven random and evolutionary search of issue #662, seeded
+    /// from this slot's seed so sibling slots explore different paths.
+    fn draft_search(&self, seed: u64) -> Option<DraftArtifact<SearchSolution>> {
+        let mut trace = EventLog::new();
+        let solution = run_search(seed, &mut trace, self.problem, self.budget)?;
+        let cost_size = solution.expression.chars().count();
+        Some(DraftArtifact {
+            cost_steps: solution.evaluations,
+            cost_size,
+            value: solution,
+            trace,
+        })
+    }
+
+    /// Bounded exhaustive enumeration of the canonical composition space: every
+    /// operand ordering crossed with every operator assignment, in a fixed order,
+    /// stopping at the first exact hit. The most general strategy and the most
+    /// expensive one, which is why the seed catalog places it last.
+    fn draft_program_synthesis(&self) -> Option<DraftArtifact<SearchSolution>> {
+        let mut found: Option<Candidate> = None;
+        let mut steps = 0;
+        for_each_composition(self.problem, SYNTHESIS_MAX_COMPOSITIONS, |candidate| {
+            steps += 1;
+            if candidate.evaluate(&self.problem.numbers) == Some(self.problem.target) {
+                found = Some(candidate.clone());
+                return false;
+            }
+            true
+        });
+        Some(self.artifact(found?, steps))
+    }
+
+    fn artifact(&self, candidate: Candidate, cost_steps: u32) -> DraftArtifact<SearchSolution> {
+        let expression = candidate.render(&self.problem.numbers);
+        let cost_size = expression.chars().count();
+        DraftArtifact {
+            value: SearchSolution {
+                expression,
+                evaluations: cost_steps,
+                candidate,
+            },
+            cost_steps,
+            cost_size,
+            trace: EventLog::new(),
         }
     }
 }
 
-struct DraftEvaluation {
-    index: usize,
-    strategy: DraftStrategy,
-    seed: u64,
-    passed_tests: u8,
-    total_tests: u8,
-    steps: u32,
-    size: usize,
-    composition_passed: bool,
-    solution: Option<SearchSolution>,
-    trace: EventLog,
-}
-
-impl DraftEvaluation {
-    const fn passed(&self) -> bool {
-        self.passed_tests == self.total_tests
+/// Visit the canonical composition space in a fixed order — operand orderings in
+/// lexicographic order, operator assignments as an odometer over the allowed
+/// operators — until `visit` returns `false` or `cap` compositions are visited.
+///
+/// The order is what makes exhaustive strategies reproducible: the same instance
+/// always yields the same first hit, on any machine and any thread.
+fn for_each_composition<F>(problem: &SearchProblem, cap: u32, mut visit: F)
+where
+    F: FnMut(&Candidate) -> bool,
+{
+    let slots = problem.numbers.len().saturating_sub(1);
+    let mut order: Vec<usize> = (0..problem.numbers.len()).collect();
+    let mut visited: u32 = 0;
+    loop {
+        let mut assignment = vec![0_usize; slots];
+        loop {
+            let candidate = Candidate {
+                order: order.clone(),
+                ops: assignment.iter().map(|slot| problem.ops[*slot]).collect(),
+            };
+            visited += 1;
+            if !visit(&candidate) || visited >= cap {
+                return;
+            }
+            if !advance_assignment(&mut assignment, problem.ops.len()) {
+                break;
+            }
+        }
+        if !next_permutation(&mut order) {
+            return;
+        }
     }
 }
 
+/// Odometer step over operator assignments; `false` once every assignment has
+/// been produced.
+fn advance_assignment(assignment: &mut [usize], radix: usize) -> bool {
+    for slot in assignment.iter_mut().rev() {
+        *slot += 1;
+        if *slot < radix {
+            return true;
+        }
+        *slot = 0;
+    }
+    false
+}
+
+/// Next lexicographic permutation; `false` once the ordering is descending.
+fn next_permutation(order: &mut [usize]) -> bool {
+    let Some(pivot) = order.windows(2).rposition(|pair| pair[0] < pair[1]) else {
+        return false;
+    };
+    let successor = order
+        .iter()
+        .rposition(|value| *value > order[pivot])
+        .unwrap_or(pivot);
+    order.swap(pivot, successor);
+    order[pivot + 1..].reverse();
+    true
+}
+
+/// The generated tests of step 6: the draft must use every operand exactly once,
+/// use only the allowed operators, and actually reach the target.
+fn run_generated_tests(solution: &SearchSolution, problem: &SearchProblem) -> [bool; TEST_COUNT] {
+    let mut used = solution.candidate.order.clone();
+    used.sort_unstable();
+    [
+        used == (0..problem.numbers.len()).collect::<Vec<_>>(),
+        solution
+            .candidate
+            .ops
+            .iter()
+            .all(|candidate_op| problem.ops.contains(candidate_op)),
+        solution.candidate.evaluate(&problem.numbers) == Some(problem.target),
+    ]
+}
+
+/// Run the candidate-solution portfolio for one recognized reachability problem.
 pub(super) fn run_draft_portfolio(
     prompt: &str,
     log: &mut EventLog,
     problem: &SearchProblem,
     config: SolverConfig,
 ) -> (Option<SearchSolution>, Option<String>) {
-    let strategies = strategies_for_count(usize::from(config.draft_count));
-    let mut drafts = ordered_parallel_map(strategies, |index, strategy| {
-        evaluate_draft(prompt, problem, config.compute_budget, index, strategy)
-    });
-    drafts.sort_by_key(|draft| draft.index);
-
-    let winner_index = select_composable_draft(&drafts);
-    record_draft_results(log, &drafts, winner_index);
-
-    let comparison = comparison_record(&drafts, winner_index);
-    log.append("draft_comparison", comparison.clone());
-    let winner = winner_index.map(|index| {
-        for event in drafts[index].trace.events() {
-            log.append(event.kind, event.payload.clone());
-        }
-        drafts[index]
-            .solution
-            .clone()
-            .expect("a selected passing draft must have a solution")
-    });
-    let artifact = winner_index
-        .map(|_| comparison.replacen("draft_comparison\n", "draft_comparison_artifact\n", 1));
-    (winner, artifact)
-}
-
-fn record_draft_results(
-    log: &mut EventLog,
-    drafts: &[DraftEvaluation],
-    winner_index: Option<usize>,
-) {
-    for draft in drafts {
-        let verdict = if Some(draft.index) == winner_index {
-            "selected"
-        } else if draft.passed() && !draft.composition_passed {
-            "backtracked"
-        } else {
-            "rejected"
-        };
-        log.append(
-            "draft:result",
-            format_lino_record(
-                &format!("draft_{}", draft.index),
-                &[
-                    ("draft_index", draft.index.to_string()),
-                    ("strategy", draft.strategy.slug().to_owned()),
-                    ("seed", draft.seed.to_string()),
-                    (
-                        "status",
-                        if draft.passed() {
-                            "passed".to_owned()
-                        } else {
-                            "failed".to_owned()
-                        },
-                    ),
-                    ("passed_tests", draft.passed_tests.to_string()),
-                    ("total_tests", draft.total_tests.to_string()),
-                    ("cost_steps", draft.steps.to_string()),
-                    ("cost_size", draft.size.to_string()),
-                    ("selection_verdict", verdict.to_owned()),
-                ],
-            ),
-        );
-        if !draft.passed() {
-            log.append(
-                "draft_failure",
-                format_lino_record(
-                    &format!("draft_failure_{}", draft.index),
-                    &[
-                        ("draft_index", draft.index.to_string()),
-                        ("strategy", draft.strategy.slug().to_owned()),
-                        ("attempt", "1".to_owned()),
-                        ("max_attempts", "3".to_owned()),
-                        ("learning_status", "available_for_dreaming".to_owned()),
-                    ],
-                ),
-            );
-        }
-    }
-}
-
-fn ordered_parallel_map<T, R, F>(items: Vec<T>, evaluate: F) -> Vec<R>
-where
-    T: Send,
-    R: Send,
-    F: Fn(usize, T) -> R + Sync,
-{
-    std::thread::scope(|scope| {
-        let evaluate = &evaluate;
-        let handles = items
-            .into_iter()
-            .enumerate()
-            .map(|(index, item)| scope.spawn(move || evaluate(index, item)))
-            .collect::<Vec<_>>();
-        handles
-            .into_iter()
-            .map(|handle| handle.join().expect("draft evaluation panicked"))
-            .collect()
-    })
-}
-
-fn strategies_for_count(count: usize) -> Vec<DraftStrategy> {
-    match count {
-        0 => Vec::new(),
-        1 => vec![DraftStrategy::Search],
-        2 => vec![DraftStrategy::Reuse, DraftStrategy::Search],
-        _ => {
-            let mut strategies = vec![
-                DraftStrategy::Reuse,
-                DraftStrategy::RuleDerivation,
-                DraftStrategy::Search,
-            ];
-            if count >= 4 {
-                strategies.push(DraftStrategy::OracleLookup);
-            }
-            if count >= 5 {
-                strategies.push(DraftStrategy::ProgramSynthesis);
-            }
-            while strategies.len() < count {
-                strategies.push(DraftStrategy::Search);
-            }
-            strategies
-        }
-    }
-}
-
-fn seed_for_draft(prompt: &str, draft_index: usize) -> u64 {
-    seed_from_prompt(prompt)
-        ^ (draft_index as u64)
-            .wrapping_add(1)
-            .wrapping_mul(0x9e37_79b9_7f4a_7c15)
-}
-
-fn evaluate_draft(
-    prompt: &str,
-    problem: &SearchProblem,
-    budget: u32,
-    index: usize,
-    strategy: DraftStrategy,
-) -> DraftEvaluation {
-    let seed = seed_for_draft(prompt, index);
-    let mut trace = EventLog::new();
-    let solution = if strategy == DraftStrategy::Search {
-        run_search(seed, &mut trace, problem, budget)
-    } else {
-        None
+    let leaf = ReachabilityLeaf {
+        problem,
+        budget: config.compute_budget,
     };
-    let passed_tests = u8::try_from(
-        run_generated_tests(solution.as_ref(), problem)
-            .into_iter()
-            .filter(|passed| *passed)
-            .count(),
-    )
-    .unwrap_or(0);
-    let steps = solution.as_ref().map_or(0, |value| value.evaluations);
-    let size = solution
-        .as_ref()
-        .map_or(0, |value| value.expression.chars().count());
-    DraftEvaluation {
-        index,
-        strategy,
-        seed,
-        passed_tests,
-        total_tests: 3,
-        steps,
-        size,
-        composition_passed: solution
-            .as_ref()
-            .is_some_and(|value| composition_is_valid(value, problem)),
-        solution,
-        trace,
-    }
-}
-
-fn run_generated_tests(solution: Option<&SearchSolution>, problem: &SearchProblem) -> [bool; 3] {
-    let Some(solution) = solution else {
-        return [false; 3];
-    };
-    let mut used = solution.candidate.order.clone();
-    used.sort_unstable();
-    let uses_every_operand_once = used == (0..problem.numbers.len()).collect::<Vec<_>>();
-    let uses_only_allowed_operators = solution
-        .candidate
-        .ops
-        .iter()
-        .all(|candidate_op| problem.ops.contains(candidate_op));
-    let reaches_target = solution.candidate.evaluate(&problem.numbers) == Some(problem.target);
-    [
-        uses_every_operand_once,
-        uses_only_allowed_operators,
-        reaches_target,
-    ]
-}
-
-fn composition_is_valid(solution: &SearchSolution, problem: &SearchProblem) -> bool {
-    run_generated_tests(Some(solution), problem)
-        .into_iter()
-        .all(|passed| passed)
-}
-
-fn rank_passing_drafts(drafts: &[DraftEvaluation]) -> Vec<usize> {
-    let mut ranked = drafts
-        .iter()
-        .filter(|draft| draft.passed())
-        .map(|draft| draft.index)
-        .collect::<Vec<_>>();
-    ranked.sort_by_key(|index| {
-        let draft = &drafts[*index];
-        (draft.size, draft.steps, draft.index)
-    });
-    ranked
-}
-
-fn select_composable_draft(drafts: &[DraftEvaluation]) -> Option<usize> {
-    rank_passing_drafts(drafts)
-        .into_iter()
-        .find(|index| drafts[*index].composition_passed)
-}
-
-fn comparison_record(drafts: &[DraftEvaluation], winner_index: Option<usize>) -> String {
-    let winner = winner_index.map(|index| &drafts[index]);
-    let runner_up_size = winner.and_then(|selected| {
-        drafts
-            .iter()
-            .filter(|draft| draft.index != selected.index && draft.passed())
-            .map(|draft| draft.size)
-            .min()
-    });
-    let smaller_percent = winner.zip(runner_up_size).map_or(0, |(selected, other)| {
-        other
-            .saturating_sub(selected.size)
-            .saturating_mul(100)
-            .checked_div(other.max(1))
-            .unwrap_or(0)
-    });
-    format_lino_record(
-        "draft_comparison",
-        &[
-            ("draft_count", drafts.len().to_string()),
-            (
-                "winner_index",
-                winner_index.map_or_else(|| "none".to_owned(), |index| index.to_string()),
-            ),
-            (
-                "winner_strategy",
-                winner
-                    .map_or("none", |draft| draft.strategy.slug())
-                    .to_owned(),
-            ),
-            (
-                "passed_tests",
-                winner.map_or(0, |draft| draft.passed_tests).to_string(),
-            ),
-            (
-                "total_tests",
-                winner.map_or(3, |draft| draft.total_tests).to_string(),
-            ),
-            ("smaller_percent", smaller_percent.to_string()),
-            ("tie_break", "least_action".to_owned()),
-            ("merge_order", "draft_index".to_owned()),
-        ],
-    )
+    let selection = run_portfolio(
+        &leaf,
+        seed_from_prompt(prompt),
+        usize::from(config.draft_count),
+        log,
+    );
+    (selection.winner, selection.comparison_artifact)
 }

@@ -1,6 +1,7 @@
 //! Issue #704: deterministic parallel candidate-solution portfolios.
 
-use formal_ai::{ConversationTurn, SolverConfig, UniversalSolver};
+use formal_ai::draft_portfolio::{DraftArtifact, DraftPlan, PortfolioLeaf};
+use formal_ai::{ConversationTurn, EventLog, SolverConfig, UniversalSolver};
 use std::time::Instant;
 
 const SEARCH_PROMPT: &str =
@@ -166,24 +167,219 @@ fn grounded_meta_recipe_covers_the_complete_portfolio_loop() {
     }
 }
 
-#[test]
-fn composition_backtracking_and_ordered_parallelism_are_grounded_in_source() {
-    let source = std::fs::read_to_string(
-        std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("src/solver_search/portfolio.rs"),
-    )
-    .expect("portfolio implementation");
+/// A synthetic leaf that lets a test dictate, per strategy, whether a draft is
+/// produced, whether it passes its tests, whether it composes, and how large it
+/// is — so the engine's own behaviour can be asserted without arithmetic.
+struct ScriptedLeaf {
+    /// `strategy -> (drafts, passes_tests, composes, cost_size)`
+    script: Vec<(&'static str, bool, bool, bool, usize)>,
+}
 
-    for expected in [
-        "std::thread::scope",
-        "drafts.sort_by_key(|draft| draft.index)",
-        ".find(|index| drafts[*index].composition_passed)",
-        r#""backtracked""#,
-    ] {
-        assert!(
-            source.contains(expected),
-            "missing implementation marker {expected}"
-        );
+impl ScriptedLeaf {
+    fn row(&self, strategy: &str) -> Option<&(&'static str, bool, bool, bool, usize)> {
+        self.script.iter().find(|row| row.0 == strategy)
     }
+}
+
+impl PortfolioLeaf for ScriptedLeaf {
+    type Artifact = String;
+
+    fn supports(&self, strategy: &str) -> bool {
+        self.row(strategy).is_some()
+    }
+
+    fn draft(&self, plan: &DraftPlan) -> Option<DraftArtifact<Self::Artifact>> {
+        let row = self.row(&plan.strategy)?;
+        row.1.then(|| DraftArtifact {
+            value: format!("{}:{}", row.0, plan.seed),
+            cost_steps: 1,
+            cost_size: row.4,
+            trace: EventLog::new(),
+        })
+    }
+
+    fn run_tests(&self, artifact: &Self::Artifact) -> Vec<bool> {
+        let passes = artifact
+            .split(':')
+            .next()
+            .and_then(|strategy| self.row(strategy))
+            .is_some_and(|row| row.2);
+        vec![passes, passes]
+    }
+
+    fn test_count(&self) -> usize {
+        2
+    }
+
+    fn composes(&self, artifact: &Self::Artifact) -> bool {
+        artifact
+            .split(':')
+            .next()
+            .and_then(|strategy| self.row(strategy))
+            .is_some_and(|row| row.3)
+    }
+}
+
+fn payloads(log: &EventLog, kind: &str) -> Vec<String> {
+    log.events()
+        .iter()
+        .filter(|event| event.kind == kind)
+        .map(|event| event.payload.clone())
+        .collect()
+}
+
+#[test]
+fn a_passing_draft_that_fails_composition_is_backtracked_past() {
+    // The cheapest passing draft (`reuse`, size 4) does not compose, so
+    // selection must fall through to the larger `rule_derivation` draft.
+    let leaf = ScriptedLeaf {
+        script: vec![
+            ("reuse", true, true, false, 4),
+            ("rule_derivation", true, true, true, 9),
+        ],
+    };
+    let mut log = EventLog::new();
+    let selection = formal_ai::draft_portfolio::run_portfolio(&leaf, 7, 2, &mut log);
+
+    assert!(selection
+        .winner
+        .as_ref()
+        .is_some_and(|winner| winner.starts_with("rule_derivation")));
+    let results = payloads(&log, "draft:result");
+    assert_eq!(results.len(), 2);
+    assert!(
+        results[0].contains(r#"selection_verdict "backtracked""#),
+        "{}",
+        results[0]
+    );
+    assert!(
+        results[1].contains(r#"selection_verdict "selected""#),
+        "{}",
+        results[1]
+    );
+    let comparison = payloads(&log, "draft_comparison");
+    assert_eq!(comparison.len(), 1);
+    assert!(
+        comparison[0].contains(r#"backtracked_drafts "1""#),
+        "{}",
+        comparison[0]
+    );
+}
+
+#[test]
+fn concurrent_drafts_are_merged_in_draft_index_order() {
+    let leaf = ScriptedLeaf {
+        script: vec![
+            ("reuse", true, false, false, 4),
+            ("rule_derivation", true, false, false, 6),
+            ("oracle_lookup", true, true, true, 8),
+            ("search", true, true, true, 3),
+            ("program_synthesis", true, true, true, 5),
+        ],
+    };
+    let mut first = EventLog::new();
+    let selection = formal_ai::draft_portfolio::run_portfolio(&leaf, 11, 5, &mut first);
+    let mut second = EventLog::new();
+    let repeat = formal_ai::draft_portfolio::run_portfolio(&leaf, 11, 5, &mut second);
+
+    assert_eq!(selection.winner, repeat.winner);
+    assert_eq!(
+        payloads(&first, "draft:result"),
+        payloads(&second, "draft:result")
+    );
+    let indices = payloads(&first, "draft:result")
+        .iter()
+        .map(|record| {
+            record
+                .lines()
+                .find_map(|line| line.trim().strip_prefix("draft_index "))
+                .map(|value| value.trim_matches('"').to_owned())
+                .expect("draft_index field")
+        })
+        .collect::<Vec<_>>();
+    assert_eq!(indices, ["0", "1", "2", "3", "4"]);
+    // Least action decides among the passing drafts, not the draft order:
+    // `search` (size 3) beats `program_synthesis` (5) and `oracle_lookup` (8).
+    assert!(selection
+        .winner
+        .as_ref()
+        .is_some_and(|winner| winner.starts_with("search")));
+}
+
+#[test]
+fn a_failing_slot_exhausts_its_bounded_retry_budget_and_records_the_failure() {
+    let leaf = ScriptedLeaf {
+        script: vec![("reuse", true, false, false, 4)],
+    };
+    let mut log = EventLog::new();
+    let selection = formal_ai::draft_portfolio::run_portfolio(&leaf, 3, 1, &mut log);
+
+    assert!(selection.winner.is_none());
+    assert!(selection.comparison_artifact.is_none());
+    let failures = payloads(&log, "draft_failure");
+    assert_eq!(failures.len(), 1);
+    assert!(
+        failures[0].contains(&format!(
+            r#"max_attempts "{}""#,
+            formal_ai::draft_portfolio::MAX_ATTEMPTS
+        )),
+        "{}",
+        failures[0]
+    );
+    assert!(
+        payloads(&log, "draft:result")[0].contains(&format!(
+            r#"attempts "{}""#,
+            formal_ai::draft_portfolio::MAX_ATTEMPTS
+        )),
+        "a failing slot must spend its whole bounded retry budget"
+    );
+}
+
+#[test]
+fn each_slot_and_attempt_gets_a_distinct_reproducible_seed() {
+    let leaf = ScriptedLeaf {
+        script: vec![("reuse", true, false, false, 4)],
+    };
+    let planned = formal_ai::draft_portfolio::plan_drafts(&leaf, 42, 4);
+    let mut seeds = planned.iter().map(|plan| plan.seed).collect::<Vec<_>>();
+    let unique = {
+        seeds.sort_unstable();
+        seeds.dedup();
+        seeds.len()
+    };
+    assert_eq!(unique, 4, "sibling drafts must explore different streams");
+    assert_eq!(
+        formal_ai::draft_portfolio::seed_for_draft(42, 1, 1),
+        formal_ai::draft_portfolio::seed_for_draft(42, 1, 1),
+        "seeds are a pure function of the impulse, slot, and attempt"
+    );
+    assert_ne!(
+        formal_ai::draft_portfolio::seed_for_draft(42, 1, 1),
+        formal_ai::draft_portfolio::seed_for_draft(42, 1, 2),
+        "a retry must not repeat the attempt that already failed"
+    );
+}
+
+#[test]
+fn the_strategy_catalog_is_seed_data_not_rust() {
+    let catalog = formal_ai::draft_portfolio::strategy_catalog();
+    assert_eq!(
+        catalog,
+        [
+            "reuse",
+            "rule_derivation",
+            "oracle_lookup",
+            "search",
+            "program_synthesis"
+        ],
+        "the shipped seed declares the portfolio's preference order"
+    );
+    let reordered = formal_ai::seed::draft_strategies_from("draft_strategies\n  search\n  reuse\n");
+    assert_eq!(
+        reordered,
+        ["search", "reuse"],
+        "reordering the seed reorders the portfolio, with no Rust change"
+    );
 }
 
 #[test]
