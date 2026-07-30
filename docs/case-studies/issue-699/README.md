@@ -122,6 +122,17 @@ cargo test --test unit issue_699_handler_migration -- --nocapture
 cargo test --test unit issue_403 -- --nocapture
 ```
 
+The smallest self-coding leaf is replayed with:
+
+```bash
+cargo build --release --bin formal-ai
+experiments/issue-699-agent-cli/run.sh
+```
+
+That harness boots the local server, drives it through the real Agent CLI, and
+captures the raw stream plus the migration verification record under
+`agent-cli-evidence/`.
+
 The first whole-issue `solve` attempt remains visible in PR #877: its configured
 service incorrectly tried to write the `./examples` directory. The focused
 before/after test logs are retained locally under `experiments/issue-699-agent-cli/`.
