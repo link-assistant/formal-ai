@@ -1,0 +1,93 @@
+{
+  "schema": "formal-ai-agent-session-v1",
+  "cli": "claude",
+  "target": "formal_ai",
+  "task": "add a README badge",
+  "model": "formal-ai",
+  "base_url": "http://127.0.0.1:8705",
+  "workspace": ".",
+  "program": "/tmp/gh-issue-solver-1785354487077/target/debug/formal-ai",
+  "args": [
+    "with",
+    "--orchestration",
+    "--base-url",
+    "http://127.0.0.1:8705",
+    "--model",
+    "formal-ai",
+    "--non-interactive",
+    "claude",
+    "add a README badge"
+  ],
+  "status": "succeeded",
+  "exit_code": 0,
+  "wall_time_ms": 55,
+  "stdout": "scripted client completed: claude\n",
+  "stderr": "",
+  "changes": [
+    {
+      "path": "README.md",
+      "kind": "modified",
+      "before_sha256": "e757448c8f9339e876d9e68aac3df85251a13cc60c8b86f41bd063e31e4cdb8d",
+      "after_sha256": "c3f69723d079855caf642fb00029ab88c0de253fb23f0195cac0b7d65b136705",
+      "bytes_changed": 53
+    }
+  ],
+  "verification": [
+    {
+      "program": "test",
+      "args": [
+        "-s",
+        "README.md"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "timed_out": false,
+      "passed": true
+    }
+  ],
+  "events": [
+    {
+      "sequence": 0,
+      "kind": "permission_granted",
+      "detail": ".",
+      "previous_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "sha256": "594cfd75a17289096b5ce1617774bc5f7d756e69826aa032dc51c109f180db59"
+    },
+    {
+      "sequence": 1,
+      "kind": "adapter_selected",
+      "detail": "claude",
+      "previous_sha256": "594cfd75a17289096b5ce1617774bc5f7d756e69826aa032dc51c109f180db59",
+      "sha256": "db7d519d601785506eb9b00332526b2942839f4001df51e4aee8cc0a0c9aa28a"
+    },
+    {
+      "sequence": 2,
+      "kind": "process_started",
+      "detail": "claude",
+      "previous_sha256": "db7d519d601785506eb9b00332526b2942839f4001df51e4aee8cc0a0c9aa28a",
+      "sha256": "41e9eeabbb330cefedd520d0b72af2f4ba76a145e09c40af052364ac25f8d7ff"
+    },
+    {
+      "sequence": 3,
+      "kind": "process_succeeded",
+      "detail": "claude",
+      "previous_sha256": "41e9eeabbb330cefedd520d0b72af2f4ba76a145e09c40af052364ac25f8d7ff",
+      "sha256": "31c7e73e5627f1814265e534419b708b99ab72fad065425e4eb062219869a3d3"
+    },
+    {
+      "sequence": 4,
+      "kind": "verification_passed",
+      "detail": "test",
+      "previous_sha256": "31c7e73e5627f1814265e534419b708b99ab72fad065425e4eb062219869a3d3",
+      "sha256": "0e174bab9e6eacb71335c426cfadb271fc21e83a34eb9a75a3d1adcd41af866f"
+    },
+    {
+      "sequence": 5,
+      "kind": "workspace_effect",
+      "detail": "README.md",
+      "previous_sha256": "0e174bab9e6eacb71335c426cfadb271fc21e83a34eb9a75a3d1adcd41af866f",
+      "sha256": "cabf77813fb8917fe0a812bc15adf9123fe0f2c2980d54224e66d515927a6b89"
+    }
+  ]
+}

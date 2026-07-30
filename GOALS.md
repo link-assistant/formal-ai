@@ -81,10 +81,13 @@ This project should build a practical, inspectable symbolic assistant before it 
 
 ## Agent Orchestration Goals
 
-These are target capabilities. The current implementation can serve Agent CLIs
-and execute a bounded caller-supplied recursive task tree, but it does not yet
-dispatch arbitrary decompositions to every external CLI or run parallel
-portfolios autonomously.
+These are target capabilities. The current implementation serves the six
+registered Agent CLIs and explicitly granted custom CLI/TUI or Bash adapters,
+dispatches bounded decompositions, compares parallel candidates, composes
+passing effects, resumes a disproved result in its exact native session, and
+produces evidence-linked synthesis and learning proposals. Autonomous
+promotion remains human-gated, and cross-agent agreement is not a substitute
+for primary-source fact verification.
 
 - Serve as an OpenAI-compatible backend that any agentic CLI (codex, opencode, gemini, qwen, claude, agent) can drive, with tools selected by formalized intent rather than phrasing.
 - Act as an orchestrator that drives those same agent CLIs as permissioned, isolated tools: dispatch decomposed sub-tasks, capture full sessions as append-only evidence, and verify results with generated tests.

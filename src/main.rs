@@ -13,6 +13,7 @@ mod cli_import;
 mod cli_improve;
 mod cli_learn;
 mod cli_memory;
+mod cli_orchestration;
 mod cli_procedure;
 mod cli_report;
 mod cli_shared_dialog;
@@ -25,6 +26,7 @@ use cli_import::{run_import, ImportAction};
 use cli_improve::{run_improve, ImproveArgs};
 use cli_learn::{run_learn_action, LearnAction};
 use cli_memory::{load_memory_or_empty, run_memory};
+use cli_orchestration::{run_external_action, AgentArgs};
 use cli_procedure::{run_procedure, ProcedureArgs};
 use cli_report::{run_report, ReportArgs};
 use cli_shared_dialog::{run_shared_dialog, SharedDialogAction};
@@ -188,20 +190,7 @@ enum Command {
     /// tool call (web search/fetch against an offline corpus, file writes and
     /// commands in a sandboxed workspace), feeds results back, and loops until
     /// the server returns the finished Links Notation knowledge base.
-    Agent {
-        /// The task to solve. Defaults to the canonical issue-#468 task.
-        #[arg(long, default_value = DEFAULT_AGENT_TASK)]
-        task: String,
-
-        /// Print the full tool-call transcript before the final answer.
-        #[arg(long, default_value_t = false)]
-        transcript: bool,
-
-        /// Write the full, replayable Agent-CLI session as JSON to this path (the
-        /// task, every executed tool call, and the final answer).
-        #[arg(long, value_name = "PATH")]
-        session_json: Option<PathBuf>,
-    },
+    Agent(AgentArgs),
     /// Run the Telegram bot client (long polling by default; webhook server is opt-in).
     Telegram {
         #[arg(
@@ -603,11 +592,17 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::StatementAudit(args) => run_statement_audit(&args)?,
         Command::With(args) => run_with_formal_ai(&args)?,
         Command::Procedure(args) => run_procedure(args)?,
-        Command::Agent {
-            task,
-            transcript,
-            session_json,
-        } => run_agent(&task, transcript || verbose, session_json.as_deref())?,
+        Command::Agent(args) => {
+            if let Some(action) = args.action {
+                run_external_action(action)?;
+            } else {
+                run_agent(
+                    &args.task,
+                    args.transcript || verbose,
+                    args.session_json.as_deref(),
+                )?;
+            }
+        }
         Command::Serve {
             host,
             port,

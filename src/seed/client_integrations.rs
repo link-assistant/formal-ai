@@ -61,6 +61,9 @@ pub struct TemplateEnv {
 pub struct ClientIntegrationInvocation {
     pub prepend_args: Vec<String>,
     pub args: Vec<String>,
+    pub orchestration_args: Vec<String>,
+    pub vendor_orchestration_args: Vec<String>,
+    pub orchestration_arg_replacements: Vec<(String, String)>,
     pub no_summarize_args: Vec<String>,
     pub interactive_args: Vec<String>,
     pub interactive_args_require_prompt: bool,
@@ -77,10 +80,12 @@ pub struct ClientIntegrationInvocation {
     pub temp_home_toml_settings: Vec<(String, String)>,
     pub model_catalog_path: String,
     pub model_arg: String,
+    pub vendor_model_arg: String,
     pub model_arg_position: Option<ModelArgPosition>,
     pub session_root: String,
     pub session_file_suffix: String,
     pub resume_command: String,
+    pub resume_args: Vec<String>,
     pub session_id_query_args: Vec<String>,
 }
 
@@ -334,6 +339,15 @@ fn parse_invocation(node: &super::parser::LinoNode) -> ClientIntegrationInvocati
         match child.name.as_str() {
             "prepend_arg" => invocation.prepend_args.push(child.id.clone()),
             "arg" => invocation.args.push(child.id.clone()),
+            "orchestration_arg" => invocation.orchestration_args.push(child.id.clone()),
+            "vendor_orchestration_arg" => {
+                invocation.vendor_orchestration_args.push(child.id.clone());
+            }
+            "orchestration_replace_arg" => {
+                if let Some((from, to)) = split_once_equals(&child.id) {
+                    invocation.orchestration_arg_replacements.push((from, to));
+                }
+            }
             "no_summarize_arg" => invocation.no_summarize_args.push(child.id.clone()),
             "interactive_arg" => invocation.interactive_args.push(child.id.clone()),
             "interactive_args_require_prompt" => {
@@ -370,12 +384,14 @@ fn parse_invocation(node: &super::parser::LinoNode) -> ClientIntegrationInvocati
             }
             "model_catalog_path" => invocation.model_catalog_path.clone_from(&child.id),
             "model_arg" => invocation.model_arg.clone_from(&child.id),
+            "vendor_model_arg" => invocation.vendor_model_arg.clone_from(&child.id),
             "model_arg_position" => {
                 invocation.model_arg_position = ModelArgPosition::from_seed(&child.id);
             }
             "session_root" => invocation.session_root.clone_from(&child.id),
             "session_file_suffix" => invocation.session_file_suffix.clone_from(&child.id),
             "resume_command" => invocation.resume_command.clone_from(&child.id),
+            "resume_arg" => invocation.resume_args.push(child.id.clone()),
             "session_id_query_arg" => invocation.session_id_query_args.push(child.id.clone()),
             _ => {}
         }

@@ -1,6 +1,6 @@
 [package]
 name = "formal-ai"
-version = "0.312.1"
+version = "0.313.0"
 edition = "2021"
 description = "Formal symbolic AI implementation with OpenAI-compatible APIs"
 readme = "README.md"
@@ -59,6 +59,7 @@ sha2 = "0.10"
 fs2 = "0.4"
 thread-priority = "3.1.1"
 toml_edit = "0.25.13"
+walkdir = "2"
 
 [features]
 default = ["doublets-native", "meta-language"]
@@ -70,7 +71,6 @@ meta-language = ["dep:meta-language"]
 # artifacts to the notation they claim to be written in.
 lino-objects-codec = "0.2.1"
 regex = "1"
-walkdir = "2"
 
 [lints.rust]
 unsafe_code = "forbid"

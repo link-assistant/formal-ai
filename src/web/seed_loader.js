@@ -22,6 +22,7 @@
     "seed/agent-info.lino",
     "seed/interface-capabilities.lino",
     "seed/multilingual-responses.lino",
+    "seed/multilingual-responses-orchestration.lino",
     "seed/multilingual-responses-agentic.lino",
     "seed/multilingual-responses-decomposition.lino",
     "seed/multilingual-responses-procedure.lino",

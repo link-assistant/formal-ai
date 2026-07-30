@@ -18,10 +18,10 @@ existing logging-proxy file to include it in the same report.
 
 | Harness | Session/transcript location | Resume form |
 | --- | --- | --- |
-| Codex | `$CODEX_HOME/sessions/YYYY/MM/DD/rollout-*.jsonl` (normally `~/.codex/sessions/...`) | `codex resume <id>` |
+| Codex | `$CODEX_HOME/sessions/YYYY/MM/DD/rollout-*.jsonl` (normally `~/.codex/sessions/...`) | `codex exec resume <id>` |
 | T3 Code (Codex) | isolated `CODEX_HOME/sessions/**/*.jsonl` | open the preserved T3/Codex session |
 | OpenCode | `~/.local/share/opencode/opencode.db` | `opencode --session <id>` |
-| Agent CLI | `~/.local/share/link-assistant-agent/storage/session/**/*.json` | `agent --resume <id>` |
+| Agent CLI | `~/.local/share/link-assistant-agent/storage/session/**/*.json` | `agent --resume <id> --no-fork` |
 | Gemini | `$GEMINI_CLI_HOME/.gemini/tmp/**/*.jsonl` | `gemini --resume <id>` |
 | Claude | `$CLAUDE_CONFIG_DIR/projects/**/*.jsonl` | `claude --resume <id>` |
 | Qwen | `~/.qwen/projects/**/*.jsonl` inside its selected home | `qwen --resume <id>` |

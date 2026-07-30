@@ -1,0 +1,29 @@
+self_ast_census
+  target src/cli_orchestration.rs
+  language rust
+  fidelity signature
+  byte_len 16257
+  line_count 452
+  content_id source_module_3cc7a5de6d3d9b9b
+  symbol_count 20
+  symbols
+    const TASK_PLACEHOLDER 16 16
+    const SESSION_ID_PLACEHOLDER 17 17
+    struct AgentArgs 20 35
+    enum AgentAction 38 57
+    enum TargetArg 60 63
+    function from 66 71
+    struct ExternalRunArgs 75 113
+    struct ExternalDispatchArgs 116 160
+    struct ExternalResumeArgs 163 190
+    struct ExternalSynthesisArgs 193 202
+    function run_external_action 204 217
+    function run_one 219 247
+    function run_dispatch 249 304
+    function run_resume 306 346
+    function run_synthesis 348 365
+    function run_learning 367 379
+    function parse_agent_command 381 412
+    function parse_agent_commands 414 428
+    function parse_verification 430 442
+    function ensure_parent 444 452

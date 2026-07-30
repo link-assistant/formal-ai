@@ -65,6 +65,7 @@ pub mod normal_markov;
 pub(crate) mod number_constraints;
 pub mod option_evidence;
 pub mod option_network;
+pub mod orchestration;
 pub mod probability;
 pub(crate) mod program_coreference;
 pub mod program_plan;

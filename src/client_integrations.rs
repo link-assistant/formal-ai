@@ -31,6 +31,7 @@ const DEFAULT_BASE_URL: &str = "http://127.0.0.1:8080";
 const EMPTY_BACKUP_SENTINEL: &str = "# formal-ai-empty-config-backup-v1\n";
 const RENDERED_PLACEHOLDER: &str = concat!("{", "rendered", "}");
 const ERROR_PLACEHOLDER: &str = concat!("{", "error", "}");
+const SESSION_ID_PLACEHOLDER: &str = concat!("{", "session_id", "}");
 
 #[derive(Debug, Clone, Copy, ValueEnum)]
 pub enum ClientProtocol {
@@ -100,6 +101,18 @@ pub struct WithFormalAiArgs {
     #[arg(long, alias = "print", alias = "one-shot", default_value_t = false)]
     pub non_interactive: bool,
 
+    /// Apply the seed-defined permission-gated orchestration invocation overlay.
+    #[arg(long, default_value_t = false, hide = true)]
+    pub orchestration: bool,
+
+    /// Stable client home used only by the permission-gated orchestrator.
+    #[arg(long, hide = true, requires = "orchestration")]
+    pub orchestration_home: Option<PathBuf>,
+
+    /// Native client session id resumed only by the orchestrator.
+    #[arg(long, hide = true, requires = "orchestration")]
+    pub orchestration_resume: Option<String>,
+
     /// Protocol namespace to use for tools that support more than one protocol.
     #[arg(long, value_enum)]
     pub protocol: Option<ClientProtocol>,
@@ -138,6 +151,15 @@ struct RenderContext {
     model_catalog_path: String,
 }
 
+#[derive(Debug, Clone, Copy)]
+#[allow(clippy::struct_excessive_bools)]
+struct InvocationOptions {
+    keep_summarization: bool,
+    force_interactive: bool,
+    force_non_interactive: bool,
+    orchestration: bool,
+}
+
 pub fn run_with_formal_ai(args: &WithFormalAiArgs) -> Result<(), Box<dyn Error>> {
     let integrations = seed_client_integrations();
     if args.global || args.undo {
@@ -174,10 +196,15 @@ pub fn run_with_formal_ai(args: &WithFormalAiArgs) -> Result<(), Box<dyn Error>>
         integration,
         &args.tool_args,
         &context,
-        args.summarize,
-        args.interactive,
-        args.non_interactive,
+        InvocationOptions {
+            keep_summarization: args.summarize,
+            force_interactive: args.interactive,
+            force_non_interactive: args.non_interactive,
+            orchestration: args.orchestration,
+        },
         server.as_ref().map(|server| server.output_log.as_path()),
+        args.orchestration_home.as_deref(),
+        args.orchestration_resume.as_deref(),
     )
 }
 
@@ -292,10 +319,10 @@ fn run_ephemeral(
     integration: &ClientIntegration,
     user_args: &[String],
     context: &RenderContext,
-    keep_summarization: bool,
-    force_interactive: bool,
-    force_non_interactive: bool,
+    options: InvocationOptions,
     temporary_server_log: Option<&Path>,
+    orchestration_home: Option<&Path>,
+    orchestration_resume: Option<&str>,
 ) -> Result<(), Box<dyn Error>> {
     let invocation = &integration.invocation;
     let mut context = context.clone();
@@ -330,18 +357,26 @@ fn run_ephemeral(
             temp_dirs.push(temp);
         }
     }
-    if !invocation.temp_home_env.is_empty() {
-        let temp = TempConfigDir::new(&format!("{}-home", integration.id))?;
-        session_home = Some(temp.path.clone());
+    let temporary_home = if orchestration_home.is_none() && !invocation.temp_home_env.is_empty() {
+        Some(TempConfigDir::new(&format!("{}-home", integration.id))?)
+    } else {
+        None
+    };
+    let scoped_home = orchestration_home
+        .map(Path::to_path_buf)
+        .or_else(|| temporary_home.as_ref().map(|temp| temp.path.clone()));
+    if let Some(home) = scoped_home {
+        fs::create_dir_all(&home)?;
+        session_home = Some(home.clone());
         if !invocation.model_catalog_path.is_empty() {
             let relative_catalog_path = render_template(&invocation.model_catalog_path, &context);
-            let catalog_path = temp_scoped_path(&temp.path, &relative_catalog_path)?;
+            let catalog_path = temp_scoped_path(&home, &relative_catalog_path)?;
             context.model_catalog_path = catalog_path.display().to_string();
             write_file(&catalog_path, &codex_model_catalog(&context.model)?)?;
         }
         if !invocation.temp_home_config_path.is_empty() {
             let relative_config_path = render_template(&invocation.temp_home_config_path, &context);
-            let config_path = temp_scoped_path(&temp.path, &relative_config_path)?;
+            let config_path = temp_scoped_path(&home, &relative_config_path)?;
             if let Some(parent) = config_path.parent() {
                 fs::create_dir_all(parent)?;
             }
@@ -352,10 +387,14 @@ fn run_ephemeral(
             };
             fs::write(&config_path, contents)?;
         }
-        command.env(
-            render_template(&invocation.temp_home_env, &context),
-            &temp.path,
-        );
+        let home_env = if invocation.temp_home_env.is_empty() {
+            "HOME".to_string()
+        } else {
+            render_template(&invocation.temp_home_env, &context)
+        };
+        command.env(home_env, &home);
+    }
+    if let Some(temp) = temporary_home {
         temp_dirs.push(temp);
     }
 
@@ -374,9 +413,8 @@ fn run_ephemeral(
         integration,
         user_args,
         &context,
-        keep_summarization,
-        force_interactive,
-        force_non_interactive,
+        options,
+        orchestration_resume,
     );
     command.args(final_args);
     let status = command.status()?;
@@ -388,7 +426,12 @@ fn run_ephemeral(
         .filter(|path| path.exists())
         .map(|path| fs::canonicalize(&path).unwrap_or(path))
         .or_else(|| temporary_server_log.map(Path::to_path_buf));
-    print_session_files(integration, session_file.as_deref(), server_log.as_deref());
+    print_session_files(
+        integration,
+        session_file.as_deref(),
+        server_log.as_deref(),
+        options.orchestration,
+    );
     let preserve_temp = session_file
         .as_deref()
         .is_some_and(|path| temp_dirs.iter().any(|temp| path.starts_with(&temp.path)));
@@ -432,9 +475,8 @@ fn build_invocation_args(
     integration: &ClientIntegration,
     user_args: &[String],
     context: &RenderContext,
-    keep_summarization: bool,
-    force_interactive: bool,
-    force_non_interactive: bool,
+    options: InvocationOptions,
+    orchestration_resume: Option<&str>,
 ) -> Vec<String> {
     let invocation = &integration.invocation;
     let mut args = invocation
@@ -443,7 +485,16 @@ fn build_invocation_args(
         .chain(invocation.args.iter())
         .map(|arg| render_template(arg, context))
         .collect::<Vec<_>>();
-    let interactive = force_interactive || (!force_non_interactive && user_args.is_empty());
+    if options.orchestration {
+        for (from, to) in &invocation.orchestration_arg_replacements {
+            let rendered_from = render_template(from, context);
+            if let Some(argument) = args.iter_mut().find(|argument| **argument == rendered_from) {
+                *argument = render_template(to, context);
+            }
+        }
+    }
+    let interactive =
+        options.force_interactive || (!options.force_non_interactive && user_args.is_empty());
     let mode_args: &[String] =
         if interactive && invocation.interactive_args_require_prompt && user_args.is_empty() {
             &[]
@@ -466,7 +517,7 @@ fn build_invocation_args(
     if invocation.mode_arg_position == Some(ModeArgPosition::BeforeInvocation) {
         args.splice(0..0, rendered_mode_args.iter().cloned());
     }
-    if !keep_summarization {
+    if !options.keep_summarization {
         args.extend(
             invocation
                 .no_summarize_args
@@ -475,6 +526,22 @@ fn build_invocation_args(
         );
     }
     let mut effective_user_args = Vec::new();
+    if options.orchestration {
+        effective_user_args.extend(
+            invocation
+                .orchestration_args
+                .iter()
+                .map(|arg| render_template(arg, context)),
+        );
+    }
+    if let Some(session_id) = orchestration_resume {
+        effective_user_args.extend(
+            invocation
+                .resume_args
+                .iter()
+                .map(|argument| argument.replace(SESSION_ID_PLACEHOLDER, session_id)),
+        );
+    }
     if invocation.mode_arg_position != Some(ModeArgPosition::BeforeInvocation) {
         effective_user_args.extend(rendered_mode_args);
     }

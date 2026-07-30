@@ -115,6 +115,14 @@ fn client_json(integration: &ClientIntegration) -> Value {
         "interactive_args": invocation.interactive_args,
         "interactive_args_require_prompt": invocation.interactive_args_require_prompt,
         "non_interactive_args": invocation.non_interactive_args,
+        "orchestration_args": invocation.orchestration_args,
+        "vendor_orchestration_args": invocation.vendor_orchestration_args,
+        "vendor_model_arg": invocation.vendor_model_arg,
+        "orchestration_arg_replacements": invocation
+            .orchestration_arg_replacements
+            .iter()
+            .map(|(from, to)| json!({ "from": from, "to": to }))
+            .collect::<Vec<_>>(),
         // A client with no headless invocation (the packaged desktop app, the
         // VS Code extension) can only ever be exercised interactively; the
         // matrix uses this flag to pick the leg shape instead of hardcoding ids.
@@ -174,6 +182,27 @@ fn client_text(integration: &ClientIntegration) -> String {
         } else {
             invocation.non_interactive_args.join(" ")
         }
+    );
+    let _ = writeln!(
+        out,
+        "  orchestration: {}",
+        invocation.orchestration_args.join(" ")
+    );
+    let _ = writeln!(
+        out,
+        "  vendor_orchestration: {}",
+        invocation.vendor_orchestration_args.join(" ")
+    );
+    let _ = writeln!(out, "  vendor_model_arg: {}", invocation.vendor_model_arg);
+    let orchestration_replacements = invocation
+        .orchestration_arg_replacements
+        .iter()
+        .map(|(from, to)| format!("{from}={to}"))
+        .collect::<Vec<_>>()
+        .join(", ");
+    let _ = writeln!(
+        out,
+        "  orchestration_replacements: {orchestration_replacements}"
     );
     let _ = writeln!(
         out,

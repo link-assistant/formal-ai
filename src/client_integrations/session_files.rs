@@ -7,6 +7,7 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::time::{SystemTime, UNIX_EPOCH};
 
+use serde::Serialize;
 use serde_json::Value;
 
 use crate::seed::ClientIntegration;
@@ -112,23 +113,23 @@ pub(super) fn print_session_files(
     integration: &ClientIntegration,
     session_file: Option<&Path>,
     server_log: Option<&Path>,
+    orchestration: bool,
 ) {
     if session_file.is_none() && server_log.is_none() {
         return;
     }
     eprintln!("formal-ai: session files for debugging:");
     if let Some(path) = session_file {
-        let resume = session_id(path)
-            .or_else(|| query_session_id(integration))
-            .and_then(|id| {
-                (!integration.invocation.resume_command.is_empty()).then(|| {
-                    integration
-                        .invocation
-                        .resume_command
-                        .replace("{session_id}", &id)
-                })
-            });
-        if let Some(resume) = resume {
+        let native_session_id = session_id(path).or_else(|| query_session_id(integration));
+        let resume = native_session_id.as_ref().and_then(|id| {
+            (!integration.invocation.resume_command.is_empty()).then(|| {
+                integration
+                    .invocation
+                    .resume_command
+                    .replace("{session_id}", id)
+            })
+        });
+        if let Some(resume) = &resume {
             eprintln!(
                 "  {}: {}   (resume: {resume})",
                 integration.id,
@@ -137,10 +138,27 @@ pub(super) fn print_session_files(
         } else {
             eprintln!("  {}: {}", integration.id, path.display());
         }
+        if orchestration {
+            if let Some(id) = native_session_id {
+                let evidence = OrchestrationSessionEvidence {
+                    id,
+                    resume_command: resume.unwrap_or_default(),
+                };
+                if let Ok(json) = serde_json::to_string(&evidence) {
+                    eprintln!("formal-ai: orchestration-session-json:{json}");
+                }
+            }
+        }
     }
     if let Some(path) = server_log {
         eprintln!("  server log: {}", path.display());
     }
+}
+
+#[derive(Serialize)]
+struct OrchestrationSessionEvidence {
+    id: String,
+    resume_command: String,
 }
 
 fn query_session_id(integration: &ClientIntegration) -> Option<String> {

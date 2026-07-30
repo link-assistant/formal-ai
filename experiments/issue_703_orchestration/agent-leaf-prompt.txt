@@ -1,0 +1,18 @@
+Implement one smallest leaf for issue #703 in this Rust repository.
+
+Create only `src/orchestration/permission.rs`. Do not edit any other file.
+
+The module must provide an explicit, capability-style permission boundary for
+launching an external agent CLI:
+
+- A public `AgentRunPermission` type whose default state is denied.
+- A public constructor or associated function that creates an explicit grant.
+- A public check usable by the orchestration runner.
+- A public `AgentRunError::PermissionDenied` error (or a permission-specific
+  error that can cleanly map to that runner error).
+- Focused unit tests proving the default is denied and the explicit grant is
+  accepted.
+
+Keep the implementation general: do not branch on issue numbers, client names,
+tasks, or paths. Do not launch a process. Do not add natural-language user
+messages. Keep this leaf independently reviewable and under 150 lines.
