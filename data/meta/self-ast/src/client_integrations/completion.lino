@@ -1,0 +1,38 @@
+self_ast_census
+  target src/client_integrations/completion.rs
+  language rust
+  fidelity signature
+  byte_len 16311
+  line_count 474
+  content_id source_module_c0e0ab8a3b19cef6
+  symbol_count 29
+  symbols
+    struct CapturedOutcome 18 22
+    function require_completed 24 46
+    const COMMAND_PLACEHOLDER 30 30
+    const STATUS_PLACEHOLDER 31 31
+    struct AuthoringRun 49 57
+    function for_invocation 60 72
+    function start 74 95
+    function observe_output 97 115
+    function changes 117 120
+    function can_retry 122 124
+    function completion_prompt 126 138
+    const TASK_PLACEHOLDER 127 127
+    const CLAIM_PLACEHOLDER 128 128
+    const EVIDENCE_PLACEHOLDER 129 129
+    function print_completion 140 186
+    struct CompletionInvocation 190 199
+    function run_to_completion 201 261
+    function clone_command 263 280
+    function requires_workspace_effect 282 287
+    function ignore_scratch_directory 289 327
+    function normalize_json_stream 329 354
+    function collect_token_usage 356 388
+    function collect_short_token_usage 390 400
+    function collect_object_token_usage 402 423
+    function detect_vendor_endpoint 425 440
+    const VENDOR_ENDPOINTS 426 426
+    module tests 443 459
+    function pretty_and_concatenated_json_becomes_records 447 451
+    function token_usage_reads_nested_string_metadata 462 473

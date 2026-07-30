@@ -2,9 +2,9 @@ self_ast_census
   target src/orchestration/workspace.rs
   language rust
   fidelity signature
-  byte_len 8344
+  byte_len 8338
   line_count 277
-  content_id source_module_341cef342bd4fe7b
+  content_id source_module_14d6810946814ad7
   symbol_count 15
   symbols
     enum WorkspaceChangeKind 11 15
