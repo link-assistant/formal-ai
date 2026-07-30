@@ -1,0 +1,5 @@
+issue_879_verification
+  completion_gate "workspace effect observed"
+  endpoint "http://127.0.0.1:18080/api/openai/v1"
+  machine_output "compact NDJSON"
+  metadata "15186 input tokens and 1553 output tokens"

@@ -1,0 +1,9 @@
+issue_879_requirements
+  no_false_success "a software-authoring run requires an observable workspace effect"
+  bounded_recovery "one corrective retry, preferably in the native session"
+  local_endpoint "the configured Formal AI endpoint is authoritative"
+  machine_output "each stdout record is compact NDJSON"
+  usage_metadata "model, endpoint, input tokens, and output tokens are reported"
+  scratch_hygiene ".formal-ai is excluded from user changes"
+  uniform_clients "agent claude opencode codex qwen gemini share one contract"
+  reproducing_test "a zero exit without an artifact fails before the fix"
