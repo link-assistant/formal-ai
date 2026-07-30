@@ -1,0 +1,30 @@
+self_ast_census
+  target src/learning_adoption_ledger.rs
+  language rust
+  fidelity signature
+  byte_len 10903
+  line_count 289
+  content_id source_module_df465e611504387a
+  symbol_count 21
+  symbols
+    const UNKNOWN_INTENT 33 33
+    struct AdoptionPair 38 55
+    function topic_recovered 61 64
+    function adopted 69 73
+    function capability_delta 77 85
+    struct AdoptionLedger 91 102
+    function adopted 107 109
+    function unadopted 113 115
+    function adopted_topics 119 124
+    function adopted_languages 128 133
+    function unknown_rate_before_basis_points 137 139
+    function unknown_rate_after_basis_points 144 146
+    function links_notation 151 212
+    function google_trends_adoption_ledger 217 228
+    function adoption_pair 231 243
+    function corpus_unknown_counts 247 260
+    function rate_basis_points 263 268
+    function field 270 272
+    function count 274 276
+    function nested 278 280
+    function quote 282 289

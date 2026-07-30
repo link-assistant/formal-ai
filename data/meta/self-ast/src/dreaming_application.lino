@@ -2,21 +2,23 @@ self_ast_census
   target src/dreaming_application.rs
   language rust
   fidelity signature
-  byte_len 8316
-  line_count 224
-  content_id source_module_320e816503e53256
-  symbol_count 13
+  byte_len 9136
+  line_count 238
+  content_id source_module_6730530bbc27a989
+  symbol_count 15
   symbols
     struct RetainedAmendment 24 28
     function retained_amendments 36 57
     function solve_with_standing_requirements 65 72
-    function solve_with_amendment_records 80 103
-    function replay_answer_with_amendments 110 112
-    function apply_retained_amendments 119 130
-    function amended_answer 135 142
-    function amendment_line 146 151
-    function append_amendments 153 170
-    function matching_amendment_lines 172 178
-    function structured_value 180 186
-    function topic_matches 196 207
-    function contains_token 209 224
+    function solve_with_amendment_records 80 100
+    function replay_answer_with_amendments 107 109
+    function apply_retained_amendments 116 123
+    function amended_answer 128 136
+    function matching_amendments 141 149
+    function amendment_lines 151 157
+    function amendment_line 161 166
+    const STANDING_REQUIREMENT_INTENT 170 170
+    function append_amendments 172 192
+    function structured_value 194 200
+    function topic_matches 210 221
+    function contains_token 223 238

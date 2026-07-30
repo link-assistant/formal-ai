@@ -34,9 +34,12 @@ const TARGET_TOTAL_LINES: usize = 3_000;
 /// does not veto merging upstream `main`. When a merge brings in legitimate
 /// worker changes from other PRs, re-baseline this ceiling to the merged count
 /// Issue #845's Rust→WASM dialogue fact checker then removed a net 2 lines
-/// from the browser mirror, lowering the ratchet from 26_807 to 26_805.
+/// from the browser mirror, lowering the ratchet from 26_807 to 26_805. Issue
+/// #701's generalized term-information recognizer — prefix openers, verb-final
+/// closers and circumfix frames — must be mirrored in the browser worker for
+/// Rust↔JS parity, adding a net 12 lines on that baseline.
 #[cfg(not(test))]
-const CEILING_TOTAL_LINES: usize = 26_805;
+const CEILING_TOTAL_LINES: usize = 26_817;
 
 const WORKER_DIR: &str = "src/web/worker";
 

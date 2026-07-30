@@ -83,10 +83,7 @@ pub fn solve_with_amendment_records(
     history: &[ConversationTurn],
     amendments: &[RetainedAmendment],
 ) -> SymbolicAnswer {
-    let matching = amendments
-        .iter()
-        .filter(|amendment| topic_matches(prompt, &amendment.topic))
-        .collect::<Vec<_>>();
+    let matching = matching_amendments(prompt, amendments);
     let mut turns = matching
         .iter()
         .map(|amendment| {
@@ -122,23 +119,41 @@ pub fn apply_retained_amendments(
     events: &[MemoryEvent],
 ) {
     let amendments = retained_amendments(events);
-    let matching = amendments
-        .iter()
-        .filter(|amendment| topic_matches(prompt, &amendment.topic))
-        .collect::<Vec<_>>();
-    append_amendments(answer, &matching);
+    append_amendments(answer, &matching_amendments(prompt, &amendments));
 }
 
 /// Apply retained requirements to a plain final answer, including agentic
 /// final responses that do not pass through [`SymbolicAnswer`].
 #[must_use]
 pub fn amended_answer(prompt: &str, answer: &str, events: &[MemoryEvent]) -> String {
-    let additions = matching_amendment_lines(prompt, events);
-    if additions.is_empty() {
+    let amendments = retained_amendments(events);
+    let matching = matching_amendments(prompt, &amendments);
+    if matching.is_empty() {
         answer.to_owned()
     } else {
-        format!("{answer}\n\n{}", additions.join("\n"))
+        format!("{answer}\n\n{}", amendment_lines(&matching))
     }
+}
+
+/// Amendments whose topic matches the task — the single selection rule shared by
+/// every application path, so no surface can drift into its own notion of
+/// "covered".
+fn matching_amendments<'a>(
+    prompt: &str,
+    amendments: &'a [RetainedAmendment],
+) -> Vec<&'a RetainedAmendment> {
+    amendments
+        .iter()
+        .filter(|amendment| topic_matches(prompt, &amendment.topic))
+        .collect()
+}
+
+fn amendment_lines(matching: &[&RetainedAmendment]) -> String {
+    matching
+        .iter()
+        .map(|amendment| amendment_line(amendment))
+        .collect::<Vec<_>>()
+        .join("\n")
 }
 
 /// The visible per-amendment compliance projection appended to answers.
@@ -150,31 +165,30 @@ pub fn amendment_line(amendment: &RetainedAmendment) -> String {
     )
 }
 
+/// The intent an answer carries once a retained standing requirement applies to
+/// it but the solver itself found no route.
+pub const STANDING_REQUIREMENT_INTENT: &str = "standing_requirement";
+
 fn append_amendments(answer: &mut SymbolicAnswer, matching: &[&RetainedAmendment]) {
     if matching.is_empty() {
         return;
     }
+    // Issue #701 §4: a retained amendment must change *solving*, not only the
+    // prose. When the solver found no route at all, the retained rule is the
+    // applicable knowledge for this task, so the answer stops being classified
+    // as unresolved. That reclassification is the machine-checkable delta a
+    // decoration-only append could never produce — and it is confined to tasks
+    // whose topic a retained amendment actually matches.
+    if answer.intent == "unknown" {
+        answer.intent = String::from(STANDING_REQUIREMENT_INTENT);
+    }
     answer.answer.push_str("\n\n");
-    answer.answer.push_str(
-        &matching
-            .iter()
-            .map(|amendment| amendment_line(amendment))
-            .collect::<Vec<_>>()
-            .join("\n"),
-    );
+    answer.answer.push_str(&amendment_lines(matching));
     for amendment in matching {
         answer
             .evidence_links
             .push(format!("meta_algorithm_amendment:{}", amendment.id));
     }
-}
-
-fn matching_amendment_lines(prompt: &str, events: &[MemoryEvent]) -> Vec<String> {
-    retained_amendments(events)
-        .into_iter()
-        .filter(|amendment| topic_matches(prompt, &amendment.topic))
-        .map(|amendment| amendment_line(&amendment))
-        .collect()
 }
 
 fn structured_value<'a>(value: Option<&'a str>, key: &str) -> Option<&'a str> {

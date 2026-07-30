@@ -99,6 +99,26 @@ impl TrendingLearningReport {
             .then_some(first.reason.as_str())
     }
 
+    /// The report's own account of its frontier, derived from the frontier
+    /// rather than asserted: an empty frontier and a non-empty one are two
+    /// different findings and must not read the same.
+    #[must_use]
+    pub const fn summary(&self) -> &'static str {
+        if self.frontier.is_empty() {
+            "The trending-prompt frontier is empty: every catalog prompt now routes through the \
+             engine. Issue #701's learning cycle closed the gap by deriving the request-opener \
+             surfaces in `data/seed/learned-request-openers.lino` from the frozen frontier record \
+             (`data/meta/learning-frontier-google-trends.lino`) and promoting them through the \
+             human-gated issue-#656 protocol; the per-prompt capability deltas are recorded in \
+             `data/meta/learning-adoption-ledger.lino`. Nothing is auto-adopted here."
+        } else {
+            "Trending searches are open-domain questions, not program-plan modifiers, so the \
+             rule-synthesis learner declines to fabricate seed rules for them. The learning \
+             frontier — every trending prompt the engine cannot yet route — is recorded here and \
+             handed to the human-gated self-improvement loop for triage; nothing is auto-adopted."
+        }
+    }
+
     /// Render the report as Links Notation — the committable, auditable artifact a
     /// human reviews. Ends trimmed of trailing whitespace.
     #[must_use]
@@ -108,15 +128,7 @@ impl TrendingLearningReport {
         field(&mut out, "issue", "498");
         field(&mut out, "auto_learning_loop", "issue_558_self_improvement");
         field(&mut out, "human_gated", "true");
-        field(
-            &mut out,
-            "summary",
-            "Trending searches are open-domain questions, not program-plan modifiers, \
-             so the rule-synthesis learner declines to fabricate seed rules for them. \
-             The learning frontier — every trending prompt the engine cannot yet route — \
-             is recorded here and handed to the human-gated self-improvement loop for \
-             triage; nothing is auto-adopted.",
-        );
+        field(&mut out, "summary", self.summary());
         let _ = writeln!(out, "  total_prompts \"{}\"", self.total_prompts);
         let _ = writeln!(out, "  handled_by_engine \"{}\"", self.handled_by_engine);
         let _ = writeln!(out, "  learning_frontier \"{}\"", self.frontier.len());

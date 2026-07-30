@@ -11,6 +11,7 @@ mod cli_clients;
 mod cli_context;
 mod cli_import;
 mod cli_improve;
+mod cli_learn;
 mod cli_memory;
 mod cli_orchestration;
 mod cli_procedure;
@@ -23,6 +24,7 @@ use cli_clients::{run_clients, ClientsAction, ClientsFormat};
 use cli_context::{run_context, ContextArgs};
 use cli_import::{run_import, ImportAction};
 use cli_improve::{run_improve, ImproveArgs};
+use cli_learn::{run_learn_action, LearnAction};
 use cli_memory::{load_memory_or_empty, run_memory};
 use cli_orchestration::{run_external_action, AgentArgs};
 use cli_procedure::{run_procedure, ProcedureArgs};
@@ -270,6 +272,12 @@ enum Command {
         /// Required acknowledgement when `--apply` is used.
         #[arg(long, default_value_t = false)]
         confirm: bool,
+    },
+    /// Run the auto-learning adoption cycle over a recorded learning frontier
+    /// (issue #701, E59).
+    Learn {
+        #[command(subcommand)]
+        action: LearnAction,
     },
 }
 
@@ -652,6 +660,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             backup,
             confirm,
         })?,
+        Command::Learn { action } => run_learn_action(action)?,
     }
 
     Ok(())
