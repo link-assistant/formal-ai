@@ -1,4 +1,9 @@
 meanings
+  response_unknown_reasoning_trace_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown reasoning trace hi"
   response_unknown_reasoning_trace_ru
     defined-by response_template
     lexeme en
@@ -204,6 +209,11 @@ meanings
     lexeme en
       surface
         text "rule russian"
+  run_agent
+    defined-by name
+    lexeme en
+      surface
+        text "run agent"
   russian-colloquial-verb
     defined-by category
     lexeme en
@@ -699,6 +709,11 @@ meanings
     lexeme en
       surface
         text "tool roleplay"
+  tool_run_agent
+    defined-by tool
+    lexeme en
+      surface
+        text "tool run agent"
   tool_summarize_conversation
     defined-by tool
     lexeme en

@@ -39,6 +39,7 @@ use super::report_issue;
 use super::self_ast;
 use super::self_heal;
 use super::shell_command;
+use super::shell_file_fallback;
 use super::source_links;
 use super::statement_audit;
 use super::tool_result;
@@ -325,6 +326,9 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
         return Some(plan);
     }
     if let Some(command) = shell_command::shell_command_for_task(&task) {
+        if let Some(plan) = shell_file_fallback::plan_step(&task, messages, tool_names, &command) {
+            return Some(plan);
+        }
         return Some(plan_shell_step(messages, tool_names, &command));
     }
     if let Some(file_task) = file_read_task_for(&task) {

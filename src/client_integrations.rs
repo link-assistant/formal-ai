@@ -100,6 +100,10 @@ pub struct WithFormalAiArgs {
     #[arg(long, alias = "print", alias = "one-shot", default_value_t = false)]
     pub non_interactive: bool,
 
+    /// Apply the seed-defined permission-gated orchestration invocation overlay.
+    #[arg(long, default_value_t = false, hide = true)]
+    pub orchestration: bool,
+
     /// Protocol namespace to use for tools that support more than one protocol.
     #[arg(long, value_enum)]
     pub protocol: Option<ClientProtocol>,
@@ -138,6 +142,15 @@ struct RenderContext {
     model_catalog_path: String,
 }
 
+#[derive(Debug, Clone, Copy)]
+#[allow(clippy::struct_excessive_bools)]
+struct InvocationOptions {
+    keep_summarization: bool,
+    force_interactive: bool,
+    force_non_interactive: bool,
+    orchestration: bool,
+}
+
 pub fn run_with_formal_ai(args: &WithFormalAiArgs) -> Result<(), Box<dyn Error>> {
     let integrations = seed_client_integrations();
     if args.global || args.undo {
@@ -174,9 +187,12 @@ pub fn run_with_formal_ai(args: &WithFormalAiArgs) -> Result<(), Box<dyn Error>>
         integration,
         &args.tool_args,
         &context,
-        args.summarize,
-        args.interactive,
-        args.non_interactive,
+        InvocationOptions {
+            keep_summarization: args.summarize,
+            force_interactive: args.interactive,
+            force_non_interactive: args.non_interactive,
+            orchestration: args.orchestration,
+        },
         server.as_ref().map(|server| server.output_log.as_path()),
     )
 }
@@ -292,9 +308,7 @@ fn run_ephemeral(
     integration: &ClientIntegration,
     user_args: &[String],
     context: &RenderContext,
-    keep_summarization: bool,
-    force_interactive: bool,
-    force_non_interactive: bool,
+    options: InvocationOptions,
     temporary_server_log: Option<&Path>,
 ) -> Result<(), Box<dyn Error>> {
     let invocation = &integration.invocation;
@@ -370,14 +384,7 @@ fn run_ephemeral(
         .map(|root| session_file_snapshot(root, &invocation.session_file_suffix))
         .unwrap_or_default();
 
-    let final_args = build_invocation_args(
-        integration,
-        user_args,
-        &context,
-        keep_summarization,
-        force_interactive,
-        force_non_interactive,
-    );
+    let final_args = build_invocation_args(integration, user_args, &context, options);
     command.args(final_args);
     let status = command.status()?;
     let session_file = session_root.as_deref().and_then(|root| {
@@ -432,9 +439,7 @@ fn build_invocation_args(
     integration: &ClientIntegration,
     user_args: &[String],
     context: &RenderContext,
-    keep_summarization: bool,
-    force_interactive: bool,
-    force_non_interactive: bool,
+    options: InvocationOptions,
 ) -> Vec<String> {
     let invocation = &integration.invocation;
     let mut args = invocation
@@ -443,7 +448,16 @@ fn build_invocation_args(
         .chain(invocation.args.iter())
         .map(|arg| render_template(arg, context))
         .collect::<Vec<_>>();
-    let interactive = force_interactive || (!force_non_interactive && user_args.is_empty());
+    if options.orchestration {
+        for (from, to) in &invocation.orchestration_arg_replacements {
+            let rendered_from = render_template(from, context);
+            if let Some(argument) = args.iter_mut().find(|argument| **argument == rendered_from) {
+                *argument = render_template(to, context);
+            }
+        }
+    }
+    let interactive =
+        options.force_interactive || (!options.force_non_interactive && user_args.is_empty());
     let mode_args: &[String] =
         if interactive && invocation.interactive_args_require_prompt && user_args.is_empty() {
             &[]
@@ -466,7 +480,7 @@ fn build_invocation_args(
     if invocation.mode_arg_position == Some(ModeArgPosition::BeforeInvocation) {
         args.splice(0..0, rendered_mode_args.iter().cloned());
     }
-    if !keep_summarization {
+    if !options.keep_summarization {
         args.extend(
             invocation
                 .no_summarize_args
@@ -475,6 +489,14 @@ fn build_invocation_args(
         );
     }
     let mut effective_user_args = Vec::new();
+    if options.orchestration {
+        effective_user_args.extend(
+            invocation
+                .orchestration_args
+                .iter()
+                .map(|arg| render_template(arg, context)),
+        );
+    }
     if invocation.mode_arg_position != Some(ModeArgPosition::BeforeInvocation) {
         effective_user_args.extend(rendered_mode_args);
     }

@@ -220,6 +220,23 @@ tools_registry
     localized hi
       name write_program
       note "language और task parameters से seeded programs दिखाता है।"
+  tool tool_run_agent
+    name run_agent
+    note "Run one seed-registered external agent CLI only after an explicit workspace-scoped grant; capture process output, file effects, verification results, and chained provenance without implicit retries."
+    mode agent
+    inputs ("cli" "task" "workspace" "model" "base_url" "timeout" "allowlisted_commands")
+    outputs ("status" "stdout" "stderr" "workspace_changes" "verification" "events" "provenance")
+    isolation isolated-workspace
+    sources ("data/seed/client-integrations.lino" "rust:orchestration")
+    localized ru
+      name run_agent
+      note "Запускает один зарегистрированный внешний агентский CLI только после явного разрешения для рабочей области; сохраняет вывод процесса, изменения файлов, проверку и связанную цепочку происхождения без неявных повторов."
+    localized zh
+      name run_agent
+      note "仅在获得绑定到工作区的明确授权后运行一个 seed 注册的外部代理 CLI；记录进程输出、文件影响、验证结果和链式来源，且不隐式重试。"
+    localized hi
+      name run_agent
+      note "केवल workspace से बंधी स्पष्ट अनुमति के बाद seed-registered external agent CLI चलाता है; बिना implicit retry के process output, file effects, verification और chained provenance दर्ज करता है।"
   tool tool_intent_routing
     name intent_routing
     note "Route normalized prompts through seeded multilingual keywords, phrases, tokens, and combos."

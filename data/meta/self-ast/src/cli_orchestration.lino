@@ -1,0 +1,20 @@
+self_ast_census
+  target src/cli_orchestration.rs
+  language rust
+  fidelity signature
+  byte_len 7484
+  line_count 218
+  content_id source_module_192f4a1c0219894d
+  symbol_count 11
+  symbols
+    struct AgentArgs 15 30
+    enum AgentAction 33 43
+    enum TargetArg 46 49
+    function from 52 57
+    struct ExternalRunArgs 61 92
+    struct ExternalDispatchArgs 95 122
+    function run_external_action 124 134
+    function run_one 136 158
+    function run_dispatch 160 194
+    function parse_verification 196 208
+    function ensure_parent 210 218

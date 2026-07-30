@@ -1,4 +1,9 @@
 meanings
+  pattern_concept_prefix_describe
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix describe"
   pattern_concept_prefix_explain
     defined-by prompt_pattern
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "response agentic action search ru"
-  response_agentic_action_search_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action search zh"

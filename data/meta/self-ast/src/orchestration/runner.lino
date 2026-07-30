@@ -1,0 +1,42 @@
+self_ast_census
+  target src/orchestration/runner.rs
+  language rust
+  fidelity signature
+  byte_len 16135
+  line_count 515
+  content_id source_module_29743c90d15f6a2f
+  symbol_count 33
+  symbols
+    const DEFAULT_BASE_URL 18 18
+    enum AgentTarget 22 25
+    struct AgentCommand 28 32
+    function new 36 42
+    function arg 45 48
+    function env 51 54
+    struct VerificationCommand 58 61
+    function new 65 73
+    struct AgentRunConfig 77 90
+    function new 94 113
+    function with_permission 116 119
+    function with_command 122 125
+    enum AgentRunError 129 135
+    function fmt 138 148
+    struct AgentEvent 154 160
+    enum AgentStatus 164 168
+    struct VerificationResult 171 179
+    struct AgentSession 182 200
+    function passed 204 207
+    function diff_size 210 212
+    function run_agent 215 286
+    function validate_verification 288 297
+    function build_command 299 321
+    function build_vendor_command 323 367
+    struct ProcessOutput 369 374
+    function execute 376 423
+    function terminate_process_tree 426 436
+    function terminate_process_tree 439 441
+    function read_all 443 447
+    function join_reader 449 454
+    function run_verification 456 492
+    struct EventChain 495 497
+    function push 500 514
