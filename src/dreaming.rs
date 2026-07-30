@@ -29,6 +29,7 @@ use support::{
 };
 
 pub mod cues;
+pub mod draft_failures;
 mod learning;
 pub mod lexicon;
 mod support;
@@ -227,6 +228,9 @@ pub struct DreamingPlan {
     /// New tasks synthesized from patterns on the most-used topics and solved
     /// through the production amendment path while dreaming.
     pub synthesized_tasks: Vec<DreamingSynthesizedTask>,
+    /// Lessons mined from the durable `draft_failure` records candidate-solution
+    /// portfolios leave behind (issue #704).
+    pub draft_failures: Vec<draft_failures::DraftFailureLesson>,
 }
 
 impl DreamingPlan {
@@ -301,6 +305,7 @@ pub fn plan_memory_dreaming(events: &[MemoryEvent], config: &DreamingConfig) -> 
             candidate_tasks: Vec::new(),
             patterns: Vec::new(),
             synthesized_tasks: Vec::new(),
+            draft_failures: Vec::new(),
         };
     }
 
@@ -340,6 +345,9 @@ pub fn plan_memory_dreaming(events: &[MemoryEvent], config: &DreamingConfig) -> 
     let candidate_tasks = learning.candidate_tasks;
     let patterns = learning.patterns;
     let synthesized_tasks = learning.synthesized_tasks;
+    // A losing draft is retained learning, not waste: the portfolio's durable
+    // failure records are mined in the same pass as every other memory link.
+    let draft_failures = draft_failures::draft_failure_lessons(events);
     let covered_event_ids: BTreeSet<&str> = amendments
         .iter()
         .flat_map(|amendment| amendment.covered_event_ids.iter().map(String::as_str))
@@ -501,6 +509,7 @@ pub fn plan_memory_dreaming(events: &[MemoryEvent], config: &DreamingConfig) -> 
         candidate_tasks,
         patterns,
         synthesized_tasks,
+        draft_failures,
     }
 }
 
@@ -768,6 +777,17 @@ pub fn render_dreaming_plan(plan: &DreamingPlan) -> String {
         lines.push(format!(
             "  synthesized_trial topic={} structure={} input={}",
             trial.topic, trial.structure, trial.input
+        ));
+    }
+    for lesson in &plan.draft_failures {
+        lines.push(format!(
+            "  draft_failure_lesson strategy={} occurrences={} passed={}/{} attempts={} lesson={}",
+            lesson.strategy,
+            lesson.occurrences,
+            lesson.passed_tests,
+            lesson.total_tests,
+            lesson.attempts,
+            lesson.lesson
         ));
     }
 

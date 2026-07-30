@@ -171,13 +171,22 @@ fn grounded_meta_recipe_covers_the_complete_portfolio_loop() {
 /// produced, whether it passes its tests, whether it composes, and how large it
 /// is — so the engine's own behaviour can be asserted without arithmetic.
 struct ScriptedLeaf {
-    /// `strategy -> (drafts, passes_tests, composes, cost_size)`
-    script: Vec<(&'static str, bool, bool, bool, usize)>,
+    script: Vec<ScriptedStrategy>,
+}
+
+struct ScriptedStrategy {
+    strategy: &'static str,
+    /// Does this strategy produce a draft at all?
+    drafts: bool,
+    /// How many of the two generated tests the draft passes.
+    passed_tests: usize,
+    composes: bool,
+    cost_size: usize,
 }
 
 impl ScriptedLeaf {
-    fn row(&self, strategy: &str) -> Option<&(&'static str, bool, bool, bool, usize)> {
-        self.script.iter().find(|row| row.0 == strategy)
+    fn row(&self, strategy: &str) -> Option<&ScriptedStrategy> {
+        self.script.iter().find(|row| row.strategy == strategy)
     }
 }
 
@@ -190,21 +199,21 @@ impl PortfolioLeaf for ScriptedLeaf {
 
     fn draft(&self, plan: &DraftPlan) -> Option<DraftArtifact<Self::Artifact>> {
         let row = self.row(&plan.strategy)?;
-        row.1.then(|| DraftArtifact {
-            value: format!("{}:{}", row.0, plan.seed),
+        row.drafts.then(|| DraftArtifact {
+            value: format!("{}:{}", row.strategy, plan.seed),
             cost_steps: 1,
-            cost_size: row.4,
+            cost_size: row.cost_size,
             trace: EventLog::new(),
         })
     }
 
     fn run_tests(&self, artifact: &Self::Artifact) -> Vec<bool> {
-        let passes = artifact
+        let passed = artifact
             .split(':')
             .next()
             .and_then(|strategy| self.row(strategy))
-            .is_some_and(|row| row.2);
-        vec![passes, passes]
+            .map_or(0, |row| row.passed_tests);
+        (0..self.test_count()).map(|index| index < passed).collect()
     }
 
     fn test_count(&self) -> usize {
@@ -216,7 +225,7 @@ impl PortfolioLeaf for ScriptedLeaf {
             .split(':')
             .next()
             .and_then(|strategy| self.row(strategy))
-            .is_some_and(|row| row.3)
+            .is_some_and(|row| row.composes)
     }
 }
 
@@ -234,8 +243,20 @@ fn a_passing_draft_that_fails_composition_is_backtracked_past() {
     // selection must fall through to the larger `rule_derivation` draft.
     let leaf = ScriptedLeaf {
         script: vec![
-            ("reuse", true, true, false, 4),
-            ("rule_derivation", true, true, true, 9),
+            ScriptedStrategy {
+                strategy: "reuse",
+                drafts: true,
+                passed_tests: 2,
+                composes: false,
+                cost_size: 4,
+            },
+            ScriptedStrategy {
+                strategy: "rule_derivation",
+                drafts: true,
+                passed_tests: 2,
+                composes: true,
+                cost_size: 9,
+            },
         ],
     };
     let mut log = EventLog::new();
@@ -270,11 +291,41 @@ fn a_passing_draft_that_fails_composition_is_backtracked_past() {
 fn concurrent_drafts_are_merged_in_draft_index_order() {
     let leaf = ScriptedLeaf {
         script: vec![
-            ("reuse", true, false, false, 4),
-            ("rule_derivation", true, false, false, 6),
-            ("oracle_lookup", true, true, true, 8),
-            ("search", true, true, true, 3),
-            ("program_synthesis", true, true, true, 5),
+            ScriptedStrategy {
+                strategy: "reuse",
+                drafts: true,
+                passed_tests: 0,
+                composes: false,
+                cost_size: 4,
+            },
+            ScriptedStrategy {
+                strategy: "rule_derivation",
+                drafts: true,
+                passed_tests: 0,
+                composes: false,
+                cost_size: 6,
+            },
+            ScriptedStrategy {
+                strategy: "oracle_lookup",
+                drafts: true,
+                passed_tests: 2,
+                composes: true,
+                cost_size: 8,
+            },
+            ScriptedStrategy {
+                strategy: "search",
+                drafts: true,
+                passed_tests: 2,
+                composes: true,
+                cost_size: 3,
+            },
+            ScriptedStrategy {
+                strategy: "program_synthesis",
+                drafts: true,
+                passed_tests: 2,
+                composes: true,
+                cost_size: 5,
+            },
         ],
     };
     let mut first = EventLog::new();
@@ -309,7 +360,13 @@ fn concurrent_drafts_are_merged_in_draft_index_order() {
 #[test]
 fn a_failing_slot_exhausts_its_bounded_retry_budget_and_records_the_failure() {
     let leaf = ScriptedLeaf {
-        script: vec![("reuse", true, false, false, 4)],
+        script: vec![ScriptedStrategy {
+            strategy: "reuse",
+            drafts: true,
+            passed_tests: 0,
+            composes: false,
+            cost_size: 4,
+        }],
     };
     let mut log = EventLog::new();
     let selection = formal_ai::draft_portfolio::run_portfolio(&leaf, 3, 1, &mut log);
@@ -338,7 +395,13 @@ fn a_failing_slot_exhausts_its_bounded_retry_budget_and_records_the_failure() {
 #[test]
 fn each_slot_and_attempt_gets_a_distinct_reproducible_seed() {
     let leaf = ScriptedLeaf {
-        script: vec![("reuse", true, false, false, 4)],
+        script: vec![ScriptedStrategy {
+            strategy: "reuse",
+            drafts: true,
+            passed_tests: 0,
+            composes: false,
+            cost_size: 4,
+        }],
     };
     let planned = formal_ai::draft_portfolio::plan_drafts(&leaf, 42, 4);
     let mut seeds = planned.iter().map(|plan| plan.seed).collect::<Vec<_>>();
@@ -403,5 +466,87 @@ fn parallel_wall_clock_stays_within_single_plus_slowest_when_enabled() {
     assert!(
         parallel_elapsed <= single_baseline.saturating_mul(2),
         "parallel={parallel_elapsed:?}, single={single_baseline:?}"
+    );
+}
+
+#[test]
+fn losing_drafts_become_durable_lessons_the_dreaming_loop_mines() {
+    use formal_ai::dreaming::{plan_memory_dreaming, render_dreaming_plan, DreamingConfig};
+    use formal_ai::memory::MemoryStore;
+
+    // Two slots fail (`reuse` exhausts its retry budget passing nothing,
+    // `rule_derivation` gets halfway), one succeeds.
+    let leaf = ScriptedLeaf {
+        script: vec![
+            ScriptedStrategy {
+                strategy: "reuse",
+                drafts: false,
+                passed_tests: 0,
+                composes: false,
+                cost_size: 0,
+            },
+            ScriptedStrategy {
+                strategy: "rule_derivation",
+                drafts: true,
+                passed_tests: 1,
+                composes: false,
+                cost_size: 6,
+            },
+            ScriptedStrategy {
+                strategy: "oracle_lookup",
+                drafts: true,
+                passed_tests: 2,
+                composes: true,
+                cost_size: 8,
+            },
+        ],
+    };
+    let mut log = EventLog::new();
+    let selection = formal_ai::draft_portfolio::run_portfolio(&leaf, 5, 3, &mut log);
+    assert!(selection.winner.is_some());
+
+    // The portfolio's records are persisted through the ordinary projection.
+    let mut memory = MemoryStore::new();
+    log.append_to_link_store(&mut memory)
+        .expect("portfolio evidence should project into the durable store");
+
+    let lessons = formal_ai::dreaming::draft_failures::draft_failure_lessons(memory.events());
+    let strategies = lessons
+        .iter()
+        .map(|lesson| lesson.strategy.as_str())
+        .collect::<Vec<_>>();
+    assert!(
+        strategies.contains(&"reuse") && strategies.contains(&"rule_derivation"),
+        "both failing strategies must survive as retained learning: {strategies:?}"
+    );
+    let reuse = lessons
+        .iter()
+        .find(|lesson| lesson.strategy == "reuse")
+        .expect("reuse lesson");
+    assert!(reuse.exhausted_retry_budget);
+    assert_eq!(reuse.lesson, "deprioritize_strategy");
+    assert_eq!(reuse.attempts, formal_ai::draft_portfolio::MAX_ATTEMPTS);
+    let derivation = lessons
+        .iter()
+        .find(|lesson| lesson.strategy == "rule_derivation")
+        .expect("rule_derivation lesson");
+    assert_eq!(
+        derivation.lesson, "extend_strategy",
+        "a strategy that passed some tests is close, not useless"
+    );
+
+    // And the lessons reach the dreaming plan itself, not just the miner.
+    let plan = plan_memory_dreaming(
+        memory.events(),
+        &DreamingConfig {
+            daydreaming_enabled: true,
+            ..DreamingConfig::default()
+        },
+    );
+    assert_eq!(plan.draft_failures, lessons);
+    let rendered = render_dreaming_plan(&plan);
+    assert!(
+        rendered.contains("draft_failure_lesson strategy=reuse"),
+        "{rendered}"
     );
 }
