@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.315.0] - 2026-07-31
+
+### Added
+
+- Add deterministic parallel candidate-solution portfolios as a domain-independent
+  engine: seed-declared draft strategies, a `PortfolioLeaf` trait implemented by
+  both arithmetic reachability and rule synthesis, per-draft test ledgers,
+  least-action selection, composition backtracking, and multilingual winner
+  explanations (issue #704).
+- Mine durable `draft_failure` records into per-strategy dreaming-loop lessons,
+  so a losing draft becomes retained learning instead of a discarded attempt
+  (issue #704).
+
 ## [0.314.0] - 2026-07-31
 
 ### Changed
