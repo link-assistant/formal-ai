@@ -15,7 +15,7 @@
 /// Carried by `computer_use_*` action meanings (fetch, filter, count, unique,
 /// extract, selector query, form submission, directory listing, archive
 /// pack/unpack, move, process status). The induction pass in
-/// [`crate::computer_use::induction`] learns which primitive step each operation
+/// [`crate::computer_use::learned`] learns which primitive step each operation
 /// slug denotes by aligning the recognised operations of every seeded benchmark
 /// prompt with that task's recorded plan.
 pub const ROLE_COMPUTER_USE_OPERATION_CUE: &str = "computer_use_operation_cue";
