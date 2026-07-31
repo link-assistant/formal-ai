@@ -479,3 +479,5 @@ changelog.d/20260729_210000_issue_703_multi_agent_orchestration.md	0.313.0
 changelog.d/20260730_120000_candidate_solution_portfolio.md	0.315.0
 changelog.d/20260730_120000_issue_699_handler_migration.md	0.314.0
 changelog.d/20260730_180000_issue_699_skill_gap.md	0.314.0
+changelog.d/20260730_203000_verified_computer_use.md	0.316.0
+changelog.d/20260731_090000_generalized_computer_use.md	0.316.0

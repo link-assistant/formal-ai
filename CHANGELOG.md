@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.316.0] - 2026-07-31
+
+### Added
+
+- Add permission-gated, isolated, and replayable non-visual computer-use plans
+  across the native CLI, MCP server, universal agent planner, and desktop,
+  including twelve typed primitives, structured HTTP/DOM provenance, ten
+  deterministic multilingual tasks, and honest GUI-rendering capability gaps.
+
+### Added
+
+- Induce computer-use plan schemas from the recorded example tasks and
+  synthesize verified plans for requests never seen before, ratcheted by twelve
+  held-out four-language cases that also run through the real external Agent
+  CLI, with the induced schemas committed as drift-tested evidence and the
+  observe/induce/bind/synthesize/verify/refuse loop recorded as a grounded
+  meta-recipe.
+
+### Fixed
+
+- Stop computer-use plan synthesis from inheriting another example's state:
+  resource-scoped arguments (`selector`, `pointer`, `column`, `equals`) now come
+  only from the learned resource binding, operation constants are gated by both
+  the primitive's advertised schema and the learned operation schema, and a
+  request the corpus never evidenced yields an honest refusal instead of a
+  plausible wrong plan. Recognition also runs over the request's instruction
+  surface rather than content it merely transports, so words inside an indented
+  structured block or a quoted literal no longer plan a run of their own.
+
 ## [0.315.0] - 2026-07-31
 
 ### Added
