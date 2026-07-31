@@ -20,6 +20,7 @@
 // friendly (plain structured objects), and no new external REST surface is added.
 
 const path = require("node:path");
+const crypto = require("node:crypto");
 
 const SANDBOX_IMAGE = "konard/box-dind:2.1.1";
 
@@ -53,9 +54,29 @@ const SUPPORTED_TOOLS = Object.freeze([
   "search_web",
   "fetch_url",
   "exec_command",
+  "fs.read",
+  "fs.write",
+  "fs.list",
+  "fs.move",
+  "shell.run",
+  "http.fetch",
+  "http.post",
+  "dom.query",
+  "dom.extract",
+  "archive.pack",
+  "archive.unpack",
+  "process.status",
 ]);
 
 const SANDBOXED_TOOLS = Object.freeze(["eval_js", "code_exec"]);
+const COMPUTER_USE_TOOLS = Object.freeze([
+  "fs.read", "fs.write", "fs.list", "fs.move", "shell.run", "http.fetch",
+  "http.post", "dom.query", "dom.extract", "archive.pack", "archive.unpack",
+  "process.status",
+]);
+const COMPUTER_USE_EFFECTS = Object.freeze([
+  "fs.write", "fs.move", "shell.run", "http.post", "archive.pack", "archive.unpack",
+]);
 const READ_ONLY_TOOLS = Object.freeze([
   "web_search",
   "web_fetch",
@@ -127,6 +148,8 @@ function createToolRouter(options = {}) {
   const readFile = options.readFile || null;
   const writeFile = options.writeFile || null;
   const readDirectory = options.readDirectory || null;
+  const moveFile = options.moveFile || null;
+  const createDirectory = options.createDirectory || null;
   const runInSandbox = options.runInSandbox || null;
   const runOnHost = options.runOnHost || null;
   const dockerAvailable =
@@ -134,6 +157,7 @@ function createToolRouter(options = {}) {
       ? options.dockerAvailable
       : () => Boolean(runInSandbox);
   const allowedReadRoot = options.allowedReadRoot || null;
+  const computerUseRoot = options.computerUseRoot || allowedReadRoot;
   const resolvePath = options.resolvePath || ((value) => String(value || ""));
   const webSearch = options.webSearch || null;
   const webFetch = options.webFetch || null;
@@ -153,9 +177,92 @@ function createToolRouter(options = {}) {
     return { requested };
   }
 
+  function computerSafePath(input, value) {
+    if (!computerUseRoot) return { error: "computer-use isolation root is not configured" };
+    const planId = String(input && input.plan_id || "");
+    if (
+      planId.length > 128
+      || !/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(planId)
+      || planId === "."
+      || planId === ".."
+    ) {
+      return { error: "computer-use plan_id is not safe for workspace isolation" };
+    }
+    const relative = String(value || "");
+    if (!relative || path.isAbsolute(relative)) {
+      return { error: "computer-use paths must be non-empty and relative" };
+    }
+    const planRoot = path.resolve(computerUseRoot, planId);
+    const requested = path.resolve(planRoot, relative);
+    const confined = path.relative(planRoot, requested);
+    if (confined.startsWith("..") || path.isAbsolute(confined)) {
+      return { error: "path is outside the isolated computer-use workspace" };
+    }
+    return { requested };
+  }
+
+  function computerArchiveTarget(input, destination, entryPath) {
+    const destinationPath = computerSafePath(input, destination);
+    const entry = String(entryPath || "");
+    if (!destinationPath.requested || !entry || path.isAbsolute(entry)) {
+      return {
+        error: destinationPath.error || "archive entry path must be non-empty and relative",
+      };
+    }
+    const relative = path.join(String(destination), entry);
+    const targetPath = computerSafePath(input, relative);
+    if (!targetPath.requested) return targetPath;
+    const confined = path.relative(destinationPath.requested, targetPath.requested);
+    if (
+      confined === ""
+      || confined === ".."
+      || confined.startsWith(`..${path.sep}`)
+      || path.isAbsolute(confined)
+    ) {
+      return { error: "archive entry is outside the requested extraction directory" };
+    }
+    return { requested: targetPath.requested, relative };
+  }
+
   function setGrants(next) {
     grants = next && typeof next === "object" ? { ...next } : { all: false };
     return grants;
+  }
+
+  function sha256(value) {
+    return crypto.createHash("sha256").update(String(value ?? "")).digest("hex");
+  }
+
+  function computerRecord(tool, input, result, postconditionVerified) {
+    const planId = String(input && input.plan_id || "desktop");
+    const stepId = String(input && input.step_id || `${tool}-01`);
+    const effectPassed = Boolean(result && result.ok);
+    const postPassed = effectPassed && Boolean(postconditionVerified);
+    const postcondition = String(input && input.postcondition || "primitive output verified");
+    return {
+      ...result,
+      tool,
+      verified: effectPassed && postPassed,
+      verificationEvents: [
+        { id: `${planId}:${stepId}:precondition`, phase: "precondition", passed: true, detail: String(input && input.precondition) },
+        { id: `${planId}:${stepId}:effect`, phase: "effect", passed: effectPassed, detail: effectPassed ? `executed=${tool}` : String(result && result.reason || "effect failed") },
+        { id: `${planId}:${stepId}:postcondition`, phase: "postcondition", passed: postPassed, detail: postPassed ? postcondition : `postcondition_failed: ${postcondition}` },
+      ],
+    };
+  }
+
+  function computerFailure(tool, input, status, reason) {
+    const planId = String(input && input.plan_id || "desktop");
+    const stepId = String(input && input.step_id || `${tool}-01`);
+    return {
+      ...failure(tool, status, reason),
+      verified: false,
+      verificationEvents: [
+        { id: `${planId}:${stepId}:precondition`, phase: "precondition", passed: false, detail: reason },
+        { id: `${planId}:${stepId}:effect`, phase: "effect", passed: false, detail: reason },
+        { id: `${planId}:${stepId}:postcondition`, phase: "postcondition", passed: false, detail: reason },
+      ],
+    };
   }
 
   async function httpFetch(tool, input) {
@@ -183,11 +290,11 @@ function createToolRouter(options = {}) {
     }
   }
 
-  async function readLocalFile(tool, input) {
+  async function readLocalFile(tool, input, checkPath = safePath) {
     if (typeof readFile !== "function") {
       return failure(tool, "unavailable", "no filesystem reader is configured");
     }
-    const checked = safePath(input && (input.path || input.filePath || input.file_path));
+    const checked = checkPath(input && (input.path || input.filePath || input.file_path));
     if (!checked.requested) {
       return failure(
         tool,
@@ -212,11 +319,11 @@ function createToolRouter(options = {}) {
     }
   }
 
-  async function writeLocalFile(tool, input, edits = null) {
+  async function writeLocalFile(tool, input, edits = null, checkPath = safePath) {
     if (typeof writeFile !== "function" || typeof readFile !== "function") {
       return failure(tool, "unavailable", "filesystem writer is not configured");
     }
-    const checked = safePath(input && (input.path || input.filePath || input.file_path));
+    const checked = checkPath(input && (input.path || input.filePath || input.file_path));
     if (!checked.requested) return failure(tool, "forbidden", checked.error);
     try {
       let body = edits ? String(await readFile(checked.requested)) : String(input.content ?? "");
@@ -256,7 +363,159 @@ function createToolRouter(options = {}) {
       }
     }
     await visit(root);
+    output.sort((left, right) => left.path.localeCompare(right.path));
     return output;
+  }
+
+  async function observedFile(input, relative) {
+    if (typeof readFile !== "function") return null;
+    const checked = computerSafePath(input, relative);
+    if (!checked.requested) return null;
+    try {
+      const body = String(await readFile(checked.requested));
+      return { path: checked.requested, body, sha256: sha256(body) };
+    } catch {
+      return null;
+    }
+  }
+
+  async function readComputerFile(tool, input, relative) {
+    return readLocalFile(
+      tool,
+      { ...input, path: relative },
+      (value) => computerSafePath(input, value),
+    );
+  }
+
+  async function writeComputerFile(tool, input, relative, content) {
+    const checked = computerSafePath(input, relative);
+    if (!checked.requested) return failure(tool, "forbidden", checked.error);
+    if (typeof createDirectory === "function") {
+      try {
+        await createDirectory(path.dirname(checked.requested));
+      } catch (error) {
+        return failure(
+          tool,
+          "error",
+          error && error.message ? error.message : String(error),
+        );
+      }
+    }
+    return writeLocalFile(
+      tool,
+      { ...input, path: relative, content },
+      null,
+      (value) => computerSafePath(input, value),
+    );
+  }
+
+  async function computerDirectoryEntries(input, relative) {
+    if (typeof readDirectory !== "function") throw new Error("directory reader is not configured");
+    const checked = computerSafePath(input, relative);
+    if (!checked.requested) throw new Error(checked.error);
+    const entries = await readDirectory(checked.requested);
+    return entries
+      .map((entry) => typeof entry === "string" ? entry : entry.name)
+      .sort((left, right) => left.localeCompare(right));
+  }
+
+  async function verifyComputerPostcondition(tool, input, result) {
+    if (!result || !result.ok) return false;
+    if (tool === "fs.read") {
+      const observed = await observedFile(input, input.path);
+      return Boolean(observed)
+        && observed.body === String(result.body ?? "")
+        && observed.sha256 === result.sha256;
+    }
+    if (tool === "fs.write") {
+      const observed = await observedFile(input, input.path);
+      return Boolean(observed)
+        && observed.body === String(input.content ?? "")
+        && observed.sha256 === result.sha256;
+    }
+    if (tool === "fs.list") {
+      try {
+        const observed = await computerDirectoryEntries(input, input.path);
+        return JSON.stringify(observed) === JSON.stringify(result.entries);
+      } catch {
+        return false;
+      }
+    }
+    if (tool === "fs.move") {
+      const source = await observedFile(input, input.from);
+      const destination = await observedFile(input, input.to);
+      return source === null
+        && Boolean(destination)
+        && destination.sha256 === result.sha256;
+    }
+    if (tool === "shell.run") {
+      const observed = await observedFile(input, input.output);
+      return Boolean(observed)
+        && observed.body === String(result.body ?? "")
+        && observed.sha256 === result.sha256;
+    }
+    if (tool === "http.fetch" || tool === "http.post") {
+      const observed = await observedFile(input, input.save_as);
+      return Boolean(observed)
+        && observed.body === String(result.body ?? "")
+        && observed.sha256 === result.sha256
+        && result.provenance
+        && result.provenance.sha256 === result.sha256;
+    }
+    if (tool === "dom.query" || tool === "dom.extract") {
+      const observed = await observedFile(input, input.save_as);
+      return Boolean(observed)
+        && observed.body === String(result.body ?? "")
+        && observed.sha256 === result.sha256;
+    }
+    if (tool === "archive.pack") {
+      const observed = await observedFile(input, input.archive);
+      return Boolean(observed) && observed.sha256 === result.sha256;
+    }
+    if (tool === "archive.unpack") {
+      if (!Array.isArray(result.entries) || result.entries.length === 0) return false;
+      const archiveFile = await observedFile(input, input.archive);
+      if (!archiveFile || archiveFile.sha256 !== result.sha256) return false;
+      let archive;
+      try {
+        archive = JSON.parse(archiveFile.body);
+      } catch {
+        return false;
+      }
+      if (
+        archive.format !== "formal-ai-archive-v1"
+        || !Array.isArray(archive.entries)
+        || JSON.stringify(archive.entries.map((entry) => entry.path)) !== JSON.stringify(result.entries)
+      ) {
+        return false;
+      }
+      for (const entry of archive.entries) {
+        const target = computerArchiveTarget(input, input.destination, entry.path);
+        if (!target.requested) return false;
+        const restored = await observedFile(
+          input,
+          target.relative,
+        );
+        if (
+          !restored
+          || restored.body !== Buffer.from(String(entry.contentBase64 || ""), "base64").toString()
+        ) {
+          return false;
+        }
+      }
+      return true;
+    }
+    if (tool === "process.status") {
+      const observed = await observedFile(input, input.save_as);
+      if (!observed || observed.sha256 !== result.sha256) return false;
+      try {
+        const status = JSON.parse(observed.body);
+        return status.state === "running" && status.scope === "isolated_workspace";
+      } catch {
+        return false;
+      }
+    }
+    return false;
   }
 
   function wildcardRegex(pattern) {
@@ -365,6 +624,188 @@ function createToolRouter(options = {}) {
     }
   }
 
+  async function structuredShell(tool, input) {
+    const operation = String(input && input.operation || "");
+    if (!["count_lines", "filter_csv", "unique_csv"].includes(operation)) {
+      return failure(tool, "invalid_input", `unsupported allowlisted operation: ${operation}`);
+    }
+    const source = await readComputerFile(tool, input, input.input);
+    if (!source.ok) return source;
+    const lines = String(source.body || "").split(/\r?\n/);
+    if (lines.at(-1) === "") lines.pop();
+    let body = "";
+    if (operation === "count_lines") {
+      body = `${lines.length}\n`;
+    } else {
+      const header = String(lines.shift() || "").split(",");
+      const column = header.indexOf(String(input.column || ""));
+      if (column < 0) return failure(tool, "invalid_input", `CSV column not found: ${input.column || ""}`);
+      if (operation === "filter_csv") {
+        body = `${header.join(",")}\n${lines.filter((line) => line.split(",")[column] === String(input.equals || "")).join("\n")}\n`;
+      } else {
+        const values = [...new Set(lines.map((line) => line.split(",")[column]).filter(Boolean))].sort();
+        body = `${values.join("\n")}\n`;
+      }
+    }
+    return writeComputerFile(tool, input, input.output, body);
+  }
+
+  async function computerHttp(tool, input) {
+    const url = String(input && input.url || "");
+    if (!/^https?:\/\//i.test(url)) {
+      return failure(tool, "invalid_input", `${tool} requires an http(s) url`);
+    }
+    if (typeof fetchImpl !== "function") return failure(tool, "unavailable", "no fetch implementation is configured");
+    try {
+      const method = tool === "http.post" ? "POST" : "GET";
+      const response = await fetchImpl(url, {
+        method,
+        ...(method === "POST" ? { body: String(input.body || "") } : {}),
+      });
+      const body = typeof response.text === "function" ? await response.text() : "";
+      if (input.save_as) {
+        const saved = await writeComputerFile(tool, input, input.save_as, body);
+        if (!saved.ok) return saved;
+      }
+      const digest = sha256(body);
+      return {
+        ok: true, tool, status: "ok", executed: true, servedBy: "local-process",
+        method, url, httpStatus: response.status, body, sha256: digest,
+        provenance: { method, url, status: response.status, sha256: digest, cachePath: String(input.save_as || "") },
+      };
+    } catch (error) {
+      return failure(tool, "error", error && error.message ? error.message : String(error));
+    }
+  }
+
+  function queryHtml(html, selector) {
+    const escaped = String(selector || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const pattern = selector.startsWith("#")
+      ? new RegExp(`<([a-z][\\w-]*)[^>]*\\bid=["']${escaped.slice(1)}["'][^>]*>([\\s\\S]*?)<\\/\\1>`, "i")
+      : new RegExp(`<${escaped}[^>]*>([\\s\\S]*?)<\\/${escaped}>`, "i");
+    const match = pattern.exec(html);
+    if (!match) return null;
+    return String(match[2] ?? match[1] ?? "").replace(/<[^>]*>/g, "").trim();
+  }
+
+  async function computerDom(tool, input) {
+    const source = await readComputerFile(tool, input, input.source);
+    if (!source.ok) return source;
+    let body;
+    try {
+      if (tool === "dom.extract") {
+        const segments = String(input.pointer || "").split("/").slice(1).map((value) => value.replace(/~1/g, "/").replace(/~0/g, "~"));
+        let value = JSON.parse(source.body);
+        for (const segment of segments) value = value[segment];
+        if (value === undefined) return failure(tool, "invalid_input", `JSON pointer not found: ${input.pointer || ""}`);
+        body = typeof value === "string" ? value : JSON.stringify(value);
+      } else {
+        body = queryHtml(String(source.body || ""), String(input.selector || ""));
+        if (body === null) return failure(tool, "invalid_input", `selector not found: ${input.selector || ""}`);
+      }
+      const saved = await writeComputerFile(tool, input, input.save_as, body);
+      return saved.ok ? { ...saved, body, sha256: sha256(body) } : saved;
+    } catch (error) {
+      return failure(tool, "error", error && error.message ? error.message : String(error));
+    }
+  }
+
+  async function computerArchive(tool, input) {
+    if (tool === "archive.pack") {
+      const entries = [];
+      for (const filePath of Array.isArray(input.paths) ? [...input.paths].sort() : []) {
+        const read = await readComputerFile(tool, input, filePath);
+        if (!read.ok) return read;
+        entries.push({ path: String(filePath), contentBase64: Buffer.from(String(read.body)).toString("base64") });
+      }
+      if (!entries.length) return failure(tool, "invalid_input", "archive.pack requires paths");
+      const body = JSON.stringify({ format: "formal-ai-archive-v1", entries });
+      const saved = await writeComputerFile(tool, input, input.archive, body);
+      return saved.ok ? { ...saved, entries: entries.map((entry) => entry.path), sha256: sha256(body) } : saved;
+    }
+    const read = await readComputerFile(tool, input, input.archive);
+    if (!read.ok) return read;
+    try {
+      const archive = JSON.parse(read.body);
+      if (archive.format !== "formal-ai-archive-v1" || !Array.isArray(archive.entries)) {
+        return failure(tool, "invalid_input", "unsupported archive format");
+      }
+      for (const entry of archive.entries) {
+        const target = computerArchiveTarget(input, input.destination, entry.path);
+        if (!target.requested) return failure(tool, "forbidden", target.error);
+        const content = Buffer.from(String(entry.contentBase64 || ""), "base64").toString();
+        const saved = await writeComputerFile(tool, input, target.relative, content);
+        if (!saved.ok) return saved;
+      }
+      return { ok: true, tool, status: "ok", executed: true, servedBy: "local-process", entries: archive.entries.map((entry) => entry.path), sha256: sha256(read.body) };
+    } catch (error) {
+      return failure(tool, "invalid_input", error && error.message ? error.message : String(error));
+    }
+  }
+
+  async function invokeComputerPrimitive(tool, input) {
+    const verificationFields = ["plan_id", "step_id", "precondition", "postcondition"];
+    if (verificationFields.some((field) => typeof input[field] !== "string" || !input[field].trim())) {
+      return computerFailure(
+        tool,
+        input,
+        "invalid_input",
+        "computer_use_verification_context_required",
+      );
+    }
+    if (COMPUTER_USE_EFFECTS.includes(tool) && input.confirmed !== true) {
+      return computerFailure(tool, input, "confirmation_required", `explicit confirmation required for ${tool}`);
+    }
+    let result;
+    if (tool === "fs.read") result = await readComputerFile(tool, input, input.path);
+    else if (tool === "fs.write") {
+      result = await writeComputerFile(tool, input, input.path, input.content);
+    } else if (tool === "fs.list") {
+      try {
+        result = {
+          ok: true,
+          tool,
+          status: "ok",
+          executed: true,
+          servedBy: "local-process",
+          entries: await computerDirectoryEntries(input, input.path),
+        };
+      } catch (error) {
+        result = failure(tool, "error", error && error.message ? error.message : String(error));
+      }
+    }
+    else if (tool === "fs.move") {
+      if (typeof moveFile !== "function") result = failure(tool, "unavailable", "filesystem move is not configured");
+      else {
+        const from = computerSafePath(input, input.from);
+        const to = computerSafePath(input, input.to);
+        if (!from.requested || !to.requested) result = failure(tool, "forbidden", from.error || to.error);
+        else {
+          try {
+            const source = await observedFile(input, input.from);
+            if (!source) return computerFailure(tool, input, "error", "move source is not readable");
+            await moveFile(from.requested, to.requested);
+            result = { ok: true, tool, status: "ok", executed: true, servedBy: "local-process", from: from.requested, to: to.requested, sha256: source.sha256 };
+          } catch (error) {
+            result = failure(tool, "error", error && error.message ? error.message : String(error));
+          }
+        }
+      }
+    } else if (tool === "shell.run") result = await structuredShell(tool, input);
+    else if (tool === "http.fetch" || tool === "http.post") result = await computerHttp(tool, input);
+    else if (tool === "dom.query" || tool === "dom.extract") result = await computerDom(tool, input);
+    else if (tool === "archive.pack" || tool === "archive.unpack") result = await computerArchive(tool, input);
+    else if (tool === "process.status") {
+      const body = JSON.stringify({ state: "running", scope: "isolated_workspace", planId: String(input.plan_id || "desktop") });
+      const saved = await writeComputerFile(tool, input, input.save_as, body);
+      result = saved.ok ? { ...saved, state: "running", scope: "isolated_workspace", sha256: sha256(body) } : saved;
+    }
+    if (result && result.ok && result.body !== undefined && !result.sha256) result.sha256 = sha256(result.body);
+    const completed = result || failure(tool, "unknown_tool", `unsupported tool: ${tool}`);
+    const postconditionVerified = await verifyComputerPostcondition(tool, input, completed);
+    return computerRecord(tool, input, completed, postconditionVerified);
+  }
+
   async function invoke(request) {
     const tool = String((request && request.tool) || "");
     const dispatchTool = canonicalTool(tool);
@@ -373,9 +814,14 @@ function createToolRouter(options = {}) {
       return failure(tool, "unknown_tool", `unsupported tool: ${tool || "(none)"}`);
     }
     // Explicit-permission gate (default-deny) runs before any side effect.
-    if (!READ_ONLY_TOOLS.includes(tool) && !READ_ONLY_TOOLS.includes(dispatchTool) && !isPermitted(grants, tool)) {
-      return refusal(tool, "tool call denied by explicit-permission policy");
+    const needsExplicitGrant = COMPUTER_USE_TOOLS.includes(tool)
+      || (!READ_ONLY_TOOLS.includes(tool) && !READ_ONLY_TOOLS.includes(dispatchTool));
+    if (needsExplicitGrant && !isPermitted(grants, tool)) {
+      return COMPUTER_USE_TOOLS.includes(tool)
+        ? computerFailure(tool, input, "refused", "tool call denied by explicit-permission policy")
+        : refusal(tool, "tool call denied by explicit-permission policy");
     }
+    if (COMPUTER_USE_TOOLS.includes(tool)) return invokeComputerPrimitive(tool, input);
     if (dispatchTool === "web_search" || dispatchTool === "web_fetch") {
       const executor = dispatchTool === "web_search" ? webSearch : webFetch;
       if (typeof executor !== "function") {
@@ -425,6 +871,7 @@ function createToolRouter(options = {}) {
     SANDBOX_IMAGE,
     SUPPORTED_TOOLS,
     SANDBOXED_TOOLS,
+    COMPUTER_USE_TOOLS,
     setGrants,
     getGrants: () => ({ ...grants }),
     isPermitted: (tool) => isPermitted(grants, tool),
@@ -437,6 +884,7 @@ module.exports = {
   SANDBOX_IMAGE,
   SUPPORTED_TOOLS,
   SANDBOXED_TOOLS,
+  COMPUTER_USE_TOOLS,
   READ_ONLY_TOOLS,
   TOOL_ALIASES,
   canonicalTool,

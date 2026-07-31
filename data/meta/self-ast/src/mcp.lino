@@ -2,15 +2,22 @@ self_ast_census
   target src/mcp.rs
   language rust
   fidelity signature
-  byte_len 3691
-  line_count 108
-  content_id source_module_654776bf80d8f389
-  symbol_count 7
+  byte_len 7622
+  line_count 219
+  content_id source_module_ef53f007e3562f02
+  symbol_count 14
   symbols
-    const PROTOCOL_VERSION 6 6
-    function handle_mcp_request 8 63
-    function call_tool 65 83
-    function mcp_text 85 87
-    function json_rpc_result 89 91
-    function json_rpc_error 93 99
-    function json_response 101 108
+    const PROTOCOL_VERSION 14 14
+    function handle_mcp_request 16 52
+    function call_tool 54 65
+    function call_chat 67 82
+    function call_computer_primitive 84 150
+    function required_computer_argument 152 158
+    function listed_tools 160 178
+    function computer_sessions 180 183
+    static SESSIONS 181 181
+    function append_computer_use_audit 185 194
+    function mcp_text 196 198
+    function json_rpc_result 200 202
+    function json_rpc_error 204 210
+    function json_response 212 219

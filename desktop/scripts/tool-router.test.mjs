@@ -12,6 +12,7 @@ const {
   SANDBOX_IMAGE,
   SUPPORTED_TOOLS,
   READ_ONLY_TOOLS,
+  COMPUTER_USE_TOOLS,
 } = require("../lib/tool-router.cjs");
 
 function requestForTool(tool) {
@@ -333,4 +334,242 @@ test("unknown tools are rejected without executing", async () => {
   assert.equal(result.ok, false);
   assert.equal(result.status, "unknown_tool");
   assert.equal(result.executed, false);
+});
+
+test("computer-use calls require explicit verification context before effects", async () => {
+  let writes = 0;
+  const router = createToolRouter({
+    readFile: async () => "",
+    writeFile: async () => {
+      writes += 1;
+    },
+  });
+  router.setGrants({ "fs.write": true });
+  const result = await router.invoke({
+    tool: "fs.write",
+    input: { path: "unscoped.txt", content: "must not be written", confirmed: true },
+  });
+  assert.equal(result.status, "invalid_input");
+  assert.equal(result.verified, false);
+  assert.equal(writes, 0);
+});
+
+test("computer-use postconditions fail when an adapter claims an effect without changing state", async () => {
+  const router = createToolRouter({
+    readFile: async () => "",
+    writeFile: async () => {},
+    computerUseRoot: path.join(os.tmpdir(), "formal-ai-computer-no-op"),
+  });
+  router.setGrants({ "fs.write": true });
+  const result = await router.invoke({
+    tool: "fs.write",
+    input: {
+      plan_id: "no-op-adapter",
+      step_id: "01",
+      precondition: "writer is available",
+      postcondition: "written bytes are independently readable",
+      path: "unchanged.txt",
+      content: "expected",
+      confirmed: true,
+    },
+  });
+  assert.equal(result.ok, true);
+  assert.equal(result.verified, false);
+  assert.equal(result.verificationEvents[2].passed, false);
+});
+
+test("computer-use paths are confined to an isolated plan workspace", async (t) => {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "formal-ai-computer-isolation-"));
+  t.after(() => fs.rm(root, { recursive: true, force: true }));
+  const router = createToolRouter({
+    readFile: (file) => fs.readFile(file, "utf8"),
+    writeFile: async (file, body) => {
+      await fs.mkdir(path.dirname(file), { recursive: true });
+      await fs.writeFile(file, body, "utf8");
+    },
+    allowedReadRoot: root,
+    computerUseRoot: root,
+    resolvePath: (value) => path.resolve(root, String(value || "")),
+  });
+  router.setGrants({ "fs.write": true });
+  const result = await router.invoke({
+    tool: "fs.write",
+    input: {
+      plan_id: "isolated-plan",
+      step_id: "01",
+      precondition: "isolated writer is available",
+      postcondition: "bytes exist only inside the plan workspace",
+      path: "output.txt",
+      content: "isolated",
+      confirmed: true,
+    },
+  });
+  assert.equal(result.verified, true);
+  assert.equal(
+    await fs.readFile(path.join(root, "isolated-plan", "output.txt"), "utf8"),
+    "isolated",
+  );
+  await assert.rejects(fs.access(path.join(root, "output.txt")));
+
+  for (const [planId, filePath] of [
+    ["isolated-plan", "../escape.txt"],
+    ["../unsafe-plan", "escape.txt"],
+  ]) {
+    const escaped = await router.invoke({
+      tool: "fs.write",
+      input: {
+        plan_id: planId,
+        step_id: "escape",
+        precondition: "workspace confinement",
+        postcondition: "no escaped file",
+        path: filePath,
+        content: "escape",
+        confirmed: true,
+      },
+    });
+    assert.equal(escaped.verified, false);
+  }
+  await assert.rejects(fs.access(path.join(root, "escape.txt")));
+});
+
+test("computer-use archive entries cannot escape their extraction directory", async (t) => {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "formal-ai-archive-isolation-"));
+  t.after(() => fs.rm(root, { recursive: true, force: true }));
+  const planRoot = path.join(root, "archive-plan");
+  await fs.mkdir(planRoot, { recursive: true });
+  await fs.writeFile(
+    path.join(planRoot, "bundle.fai"),
+    JSON.stringify({
+      format: "formal-ai-archive-v1",
+      entries: [{
+        path: "../escaped.txt",
+        contentBase64: Buffer.from("escape").toString("base64"),
+      }],
+    }),
+  );
+  const router = createToolRouter({
+    readFile: (file) => fs.readFile(file, "utf8"),
+    writeFile: async (file, body) => {
+      await fs.mkdir(path.dirname(file), { recursive: true });
+      await fs.writeFile(file, body, "utf8");
+    },
+    computerUseRoot: root,
+  });
+  router.setGrants({ "archive.unpack": true });
+
+  const result = await router.invoke({
+    tool: "archive.unpack",
+    input: {
+      plan_id: "archive-plan",
+      step_id: "01",
+      precondition: "archive bytes are present",
+      postcondition: "entries stay beneath the extraction directory",
+      archive: "bundle.fai",
+      destination: "restored",
+      confirmed: true,
+    },
+  });
+
+  assert.equal(result.verified, false);
+  await assert.rejects(fs.access(path.join(planRoot, "escaped.txt")));
+});
+
+test("computer-use primitives are permissioned, confirmed, isolated, and verified", async (t) => {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "formal-ai-computer-use-"));
+  t.after(() => fs.rm(root, { recursive: true, force: true }));
+  const resolve = (value) => path.resolve(root, String(value || ""));
+  const write = async (file, body) => {
+    await fs.mkdir(path.dirname(file), { recursive: true });
+    await fs.writeFile(file, body, "utf8");
+  };
+  await write(resolve("desktop-parity/input/data.csv"), "name,status\nAda,active\nLin,open\n");
+  await write(resolve("desktop-parity/input/page.html"), "<html><title>Formal AI</title></html>");
+  await write(resolve("desktop-parity/input/data.json"), JSON.stringify({ order: { id: 42 } }));
+
+  const router = createToolRouter({
+    readFile: (file) => fs.readFile(file, "utf8"),
+    writeFile: write,
+    readDirectory: (directory) => fs.readdir(directory, { withFileTypes: true }),
+    moveFile: async (from, to) => {
+      await fs.mkdir(path.dirname(to), { recursive: true });
+      await fs.rename(from, to);
+    },
+    fetchImpl: async (url, request) => ({
+      status: request.method === "POST" ? 201 : 200,
+      text: async () => request.method === "POST"
+        ? JSON.stringify({ accepted: true, url })
+        : "<html><title>Fetched</title></html>",
+    }),
+    allowedReadRoot: root,
+    computerUseRoot: root,
+    resolvePath: resolve,
+  });
+
+  const denied = await router.invoke({
+    tool: "fs.read",
+    input: { plan_id: "denied", step_id: "01", path: "input/data.csv" },
+  });
+  assert.equal(denied.status, "refused");
+  assert.equal(denied.verificationEvents.length, 3);
+  assert.equal(denied.verificationEvents.every((event) => !event.passed), true);
+
+  router.setGrants(Object.fromEntries(COMPUTER_USE_TOOLS.map((tool) => [tool, true])));
+  const needsConfirmation = await router.invoke({
+    tool: "fs.write",
+    input: {
+      plan_id: "confirm",
+      step_id: "01",
+      precondition: "inputs are present",
+      postcondition: "output is independently readable",
+      path: "output/no.txt",
+      content: "no",
+    },
+  });
+  assert.equal(needsConfirmation.status, "confirmation_required");
+  await assert.rejects(fs.access(resolve("output/no.txt")));
+
+  const requests = [
+    ["fs.read", { path: "input/data.csv" }],
+    ["fs.write", { path: "output/note.txt", content: "hello", confirmed: true }],
+    ["fs.list", { path: "input" }],
+    ["fs.move", { from: "output/note.txt", to: "output/moved.txt", confirmed: true }],
+    ["shell.run", { operation: "count_lines", input: "input/data.csv", output: "output/count.txt", confirmed: true }],
+    ["http.fetch", { url: "https://example.test/page", save_as: "cache/page.html" }],
+    ["http.post", { url: "https://example.test/submit", body: "{}", save_as: "cache/post.json", confirmed: true }],
+    ["dom.query", { source: "input/page.html", selector: "title", save_as: "output/title.txt" }],
+    ["dom.extract", { source: "input/data.json", pointer: "/order/id", save_as: "output/id.txt" }],
+    ["archive.pack", { paths: ["output/count.txt", "output/title.txt"], archive: "output/bundle.fai", confirmed: true }],
+    ["archive.unpack", { archive: "output/bundle.fai", destination: "unpacked", confirmed: true }],
+    ["process.status", { save_as: "output/status.json" }],
+  ];
+  const records = [];
+  for (const [tool, input] of requests) {
+    records.push(await router.invoke({
+      tool,
+      input: {
+        plan_id: "desktop-parity",
+        step_id: String(records.length + 1).padStart(2, "0"),
+        precondition: "inputs are present",
+        postcondition: "output is independently readable",
+        ...input,
+      },
+    }));
+  }
+
+  assert.equal(records.length, COMPUTER_USE_TOOLS.length);
+  for (const record of records) {
+    assert.equal(record.ok, true, `${record.tool}: ${record.reason || "failed"}`);
+    assert.equal(record.verified, true, record.tool);
+    assert.deepEqual(record.verificationEvents.map((event) => event.phase), [
+      "precondition", "effect", "postcondition",
+    ]);
+    assert.equal(record.verificationEvents.every((event) => event.passed), true, record.tool);
+  }
+  assert.equal(await fs.readFile(resolve("desktop-parity/output/count.txt"), "utf8"), "3\n");
+  assert.equal(await fs.readFile(resolve("desktop-parity/output/title.txt"), "utf8"), "Formal AI");
+  assert.equal(await fs.readFile(resolve("desktop-parity/output/id.txt"), "utf8"), "42");
+  assert.equal(
+    JSON.parse(await fs.readFile(resolve("desktop-parity/cache/post.json"), "utf8")).accepted,
+    true,
+  );
 });

@@ -15,6 +15,7 @@ pub mod client_contract_learning;
 pub mod client_integrations;
 pub(crate) mod code_editing;
 pub(crate) mod coding;
+pub mod computer_use;
 pub(crate) mod concepts;
 pub mod context_capacity;
 pub mod conversation_context;

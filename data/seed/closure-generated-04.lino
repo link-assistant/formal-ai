@@ -1,4 +1,184 @@
 meanings
+  response_agentic_action_ask_user_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action ask user en"
+  response_agentic_action_ask_user_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action ask user hi"
+  response_agentic_action_ask_user_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action ask user ru"
+  response_agentic_action_ask_user_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action ask user zh"
+  response_agentic_action_before_tool_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action before tool en"
+  response_agentic_action_before_tool_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action before tool hi"
+  response_agentic_action_before_tool_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action before tool ru"
+  response_agentic_action_before_tool_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action before tool zh"
+  response_agentic_action_edit_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action edit en"
+  response_agentic_action_edit_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action edit hi"
+  response_agentic_action_edit_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action edit ru"
+  response_agentic_action_edit_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action edit zh"
+  response_agentic_action_find_current_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action find current en"
+  response_agentic_action_find_current_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action find current hi"
+  response_agentic_action_find_current_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action find current ru"
+  response_agentic_action_find_current_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action find current zh"
+  response_agentic_action_find_desktop_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action find desktop en"
+  response_agentic_action_find_desktop_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action find desktop hi"
+  response_agentic_action_find_desktop_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action find desktop ru"
+  response_agentic_action_find_desktop_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action find desktop zh"
+  response_agentic_action_find_home_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action find home en"
+  response_agentic_action_find_home_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action find home hi"
+  response_agentic_action_find_home_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action find home ru"
+  response_agentic_action_find_home_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action find home zh"
+  response_agentic_action_generic_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action generic en"
+  response_agentic_action_generic_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action generic hi"
+  response_agentic_action_generic_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action generic ru"
+  response_agentic_action_generic_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action generic zh"
+  response_agentic_action_list_current_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list current en"
+  response_agentic_action_list_current_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list current hi"
+  response_agentic_action_list_current_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list current ru"
+  response_agentic_action_list_current_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list current zh"
+  response_agentic_action_list_desktop_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list desktop en"
+  response_agentic_action_list_desktop_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list desktop hi"
+  response_agentic_action_list_desktop_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list desktop ru"
+  response_agentic_action_list_desktop_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list desktop zh"
   response_agentic_action_list_home_en
     defined-by response_template
     lexeme en
@@ -1214,183 +1394,3 @@ meanings
     lexeme en
       surface
         text "response kupi slona hi"
-  response_kupi_slona_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response kupi slona ru"
-  response_kupi_slona_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response kupi slona zh"
-  response_learn_from_source_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response learn from source en"
-  response_learn_from_source_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response learn from source hi"
-  response_learn_from_source_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response learn from source ru"
-  response_learn_from_source_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response learn from source zh"
-  response_lexeme_import_block_parse_failed_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import block parse failed en"
-  response_lexeme_import_block_parse_failed_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import block parse failed hi"
-  response_lexeme_import_block_parse_failed_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import block parse failed ru"
-  response_lexeme_import_block_parse_failed_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import block parse failed zh"
-  response_lexeme_import_cache_budget_reached_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache budget reached en"
-  response_lexeme_import_cache_budget_reached_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache budget reached hi"
-  response_lexeme_import_cache_budget_reached_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache budget reached ru"
-  response_lexeme_import_cache_budget_reached_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache budget reached zh"
-  response_lexeme_import_cache_invalid_json_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache invalid json en"
-  response_lexeme_import_cache_invalid_json_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache invalid json hi"
-  response_lexeme_import_cache_invalid_json_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache invalid json ru"
-  response_lexeme_import_cache_invalid_json_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache invalid json zh"
-  response_lexeme_import_cache_miss_offline_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache miss offline en"
-  response_lexeme_import_cache_miss_offline_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache miss offline hi"
-  response_lexeme_import_cache_miss_offline_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache miss offline ru"
-  response_lexeme_import_cache_miss_offline_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache miss offline zh"
-  response_lexeme_import_cache_unreadable_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache unreadable en"
-  response_lexeme_import_cache_unreadable_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache unreadable hi"
-  response_lexeme_import_cache_unreadable_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache unreadable ru"
-  response_lexeme_import_cache_unreadable_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache unreadable zh"
-  response_lexeme_import_cannot_create_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot create en"
-  response_lexeme_import_cannot_create_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot create hi"
-  response_lexeme_import_cannot_create_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot create ru"
-  response_lexeme_import_cannot_create_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot create zh"
-  response_lexeme_import_cannot_inspect_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot inspect en"
-  response_lexeme_import_cannot_inspect_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot inspect hi"
-  response_lexeme_import_cannot_inspect_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot inspect ru"
-  response_lexeme_import_cannot_inspect_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot inspect zh"
-  response_lexeme_import_cannot_install_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot install en"
-  response_lexeme_import_cannot_install_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot install hi"

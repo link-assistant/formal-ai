@@ -1,4 +1,64 @@
 meanings
+  first_open_order
+    defined-by task
+    lexeme en
+      surface
+        text "first open order"
+  fizzbuzz
+    defined-by task
+    lexeme en
+      surface
+        text "fizzbuzz"
+  folder
+    defined-by word_surface
+    lexeme en
+      surface
+        text "folder"
+  folders
+    defined-by word_surface
+    lexeme en
+      surface
+        text "folders"
+  fontawesome
+    defined-by concept
+    lexeme en
+      surface
+        text "fontawesome"
+  for
+    defined-by word_surface
+    lexeme en
+      surface
+        text "for"
+  form
+    defined-by word_surface
+    lexeme en
+      surface
+        text "form"
+  formal-ai
+    defined-by name
+    lexeme en
+      surface
+        text "formal ai"
+  formal_ai_bundle
+    defined-by value
+    lexeme en
+      surface
+        text "formal ai bundle"
+  fuckyou
+    defined-by word_surface
+    lexeme en
+      surface
+        text "fuckyou"
+  func
+    defined-by word_surface
+    lexeme en
+      surface
+        text "func"
+  function_catalog
+    defined-by kind
+    lexeme en
+      surface
+        text "function catalog"
   general_plan_command_capture_action
     defined-by intent
     lexeme en
@@ -94,6 +154,16 @@ meanings
     lexeme en
       surface
         text "grep"
+  gui
+    defined-by word_surface
+    lexeme en
+      surface
+        text "gui"
+  gui_rendering
+    defined-by concept
+    lexeme en
+      surface
+        text "gui rendering"
   has
     defined-by concept
     lexeme en
@@ -104,6 +174,11 @@ meanings
     lexeme en
       surface
         text "head"
+  heading
+    defined-by word_surface
+    lexeme en
+      surface
+        text "heading"
   hive-mind
     defined-by name
     lexeme en
@@ -149,6 +224,11 @@ meanings
     lexeme en
       surface
         text "inappropriate content"
+  inbox
+    defined-by word_surface
+    lexeme en
+      surface
+        text "inbox"
   indent
     defined-by concept
     lexeme en
@@ -289,6 +369,16 @@ meanings
     lexeme en
       surface
         text "interface"
+  inventory
+    defined-by word_surface
+    lexeme en
+      surface
+        text "inventory"
+  inventory_bundle
+    defined-by task
+    lexeme en
+      surface
+        text "inventory bundle"
   invert
     defined-by concept
     lexeme en
@@ -304,11 +394,21 @@ meanings
     lexeme en
       surface
         text "isaac newton"
+  isolated-process-view
+    defined-by isolation_mode
+    lexeme en
+      surface
+        text "isolated process view"
   isolated-workspace
     defined-by isolation_mode
     lexeme en
       surface
         text "isolated workspace"
+  isolated-workspace-allowlist
+    defined-by isolation_mode
+    lexeme en
+      surface
+        text "isolated workspace allowlist"
   issue
     defined-by word_surface
     lexeme en
@@ -829,6 +929,11 @@ meanings
     lexeme en
       surface
         text "lino text"
+  list_and_pack
+    defined-by task
+    lexeme en
+      surface
+        text "list and pack"
   list_files
     defined-by task
     lexeme en
@@ -1014,6 +1119,16 @@ meanings
     lexeme en
       surface
         text "mode"
+  move
+    defined-by word_surface
+    lexeme en
+      surface
+        text "move"
+  move_note
+    defined-by task
+    lexeme en
+      surface
+        text "move note"
   multi-step
     defined-by word_surface
     lexeme en
@@ -1059,6 +1174,11 @@ meanings
     lexeme en
       surface
         text "normalize whitespace"
+  notes
+    defined-by word_surface
+    lexeme en
+      surface
+        text "notes"
   npm
     defined-by token
     lexeme en
@@ -1124,6 +1244,11 @@ meanings
     lexeme en
       surface
         text "orchestration cross agent denial"
+  orders
+    defined-by word_surface
+    lexeme en
+      surface
+        text "orders"
   original_journalism
     defined-by kind
     lexeme en
@@ -1149,11 +1274,21 @@ meanings
     lexeme en
       surface
         text "owlbear"
+  pack
+    defined-by word_surface
+    lexeme en
+      surface
+        text "pack"
   package-management
     defined-by category
     lexeme en
       surface
         text "package management"
+  page_title
+    defined-by task
+    lexeme en
+      surface
+        text "page title"
   paper
     defined-by word_surface
     lexeme en
@@ -1259,138 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern assistant free time phrase what do you do in your free time en"
-  pattern_assistant_free_time_phrase_what_do_you_do_when_you_are_not_working_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase what do you do when you are not working en"
-  pattern_behavior_rules_list_apne_niyam_ginao_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list apne niyam ginao hi"
-  pattern_behavior_rules_list_apne_niyamon_ki_suchi_dikhao_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list apne niyamon ki suchi dikhao hi"
-  pattern_behavior_rules_list_liechu_nide_guize_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list liechu nide guize zh"
-  pattern_behavior_rules_list_liechu_xingwei_guize_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list liechu xingwei guize zh"
-  pattern_behavior_rules_list_list_your_rules_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list list your rules en"
-  pattern_behavior_rules_list_niyam_dikhao_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list niyam dikhao hi"
-  pattern_behavior_rules_list_perechisli_svoi_pravila_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list perechisli svoi pravila ru"
-  pattern_behavior_rules_list_pokazhi_pravila_povedeniya_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list pokazhi pravila povedeniya ru"
-  pattern_behavior_rules_list_pokazhi_pravila_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list pokazhi pravila ru"
-  pattern_behavior_rules_list_pokazhi_spisok_svoih_pravil_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list pokazhi spisok svoih pravil ru"
-  pattern_behavior_rules_list_show_behavior_rules_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list show behavior rules en"
-  pattern_behavior_rules_list_show_list_your_rules_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list show list your rules en"
-  pattern_behavior_rules_list_show_rules_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list show rules en"
-  pattern_behavior_rules_list_vyavahar_niyam_suchibaddh_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list vyavahar niyam suchibaddh hi"
-  pattern_behavior_rules_list_xianshi_guize_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list xianshi guize zh"
-  pattern_behavior_rules_list_xianshi_nide_guize_liebiao_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list xianshi nide guize liebiao zh"
-  pattern_concept_context_delimiter_dlya_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter dlya ru"
-  pattern_concept_context_delimiter_for_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter for en"
-  pattern_concept_context_delimiter_in_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter in en"
-  pattern_concept_context_delimiter_ke_liye_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter ke liye hi"
-  pattern_concept_context_delimiter_ke_sandarbh_men_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter ke sandarbh men hi"
-  pattern_concept_context_delimiter_li_de_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter li de zh"
-  pattern_concept_context_delimiter_lingyu_de_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter lingyu de zh"
-  pattern_concept_context_delimiter_lingyu_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter lingyu zh"
-  pattern_concept_context_delimiter_men_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter men hi"
-  pattern_concept_context_delimiter_primenitelno_k_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter primenitelno k ru"

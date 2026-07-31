@@ -581,7 +581,13 @@ const toolRouter = createToolRouter({
   readFile: (filePath) => fs.promises.readFile(filePath, "utf8"),
   writeFile: (filePath, body) => fs.promises.writeFile(filePath, body, "utf8"),
   readDirectory: (directory) => fs.promises.readdir(directory, { withFileTypes: true }),
+  createDirectory: (directory) => fs.promises.mkdir(directory, { recursive: true }),
+  moveFile: async (from, to) => {
+    await fs.promises.mkdir(path.dirname(to), { recursive: true });
+    return fs.promises.rename(from, to);
+  },
   allowedReadRoot: REPO_ROOT,
+  computerUseRoot: path.join(app.getPath("userData"), "computer-use"),
   resolvePath: (value) => path.resolve(REPO_ROOT, value),
   dockerAvailable: dockerIsAvailable,
   runInSandbox,

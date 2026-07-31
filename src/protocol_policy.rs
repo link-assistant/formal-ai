@@ -73,6 +73,11 @@ pub fn agentic_tool_permission_denial(names: &[String]) -> Option<PackagePermiss
         return matches!(decision, PackagePermissionDecision::Denied { .. }).then_some(decision);
     }
     names.iter().find_map(|name| {
+        if let Some(primitive) = crate::computer_use::ComputerUsePrimitive::from_tool_name(name) {
+            let decision = store.permission_for_capability(&primitive.permission_key());
+            return matches!(decision, PackagePermissionDecision::Denied { .. })
+                .then_some(decision);
+        }
         let capability = tool_capability(name)?;
         let decision = store.permission_for_capability(capability.permission_key());
         matches!(decision, PackagePermissionDecision::Denied { .. }).then_some(decision)
