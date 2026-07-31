@@ -17,6 +17,7 @@ use crate::DEFAULT_MODEL;
 
 mod command;
 mod completion;
+mod completion_learning;
 mod server;
 mod session_files;
 mod url;

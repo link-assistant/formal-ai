@@ -11,6 +11,7 @@ use serde_json::{json, Map, Value};
 use crate::orchestration::workspace::{changes, snapshot, Snapshot, WorkspaceChange};
 use crate::seed::{self, ClientCompletionContract};
 
+use super::completion_learning::{RecoveryKey, RecoveryLedger, RecoveryOutcome};
 use super::session_files::{native_session_id, newest_changed_session_file, SessionSnapshot};
 use super::{build_invocation_args, ClientIntegration, InvocationOptions, RenderContext};
 
@@ -54,6 +55,13 @@ pub(super) struct AuthoringRun {
     pub(super) input_tokens: u64,
     pub(super) output_tokens: u64,
     pub(super) endpoint_mismatch: Option<String>,
+    /// Durable cross-run memory of which recovery strategy works for which
+    /// client. Ranking only reorders the seeded list, so an empty ledger
+    /// reproduces the declared order exactly.
+    pub(super) ledger: RecoveryLedger,
+    /// Recovery strategies spent so far, in the order they were spent. This is
+    /// the run's own evidence that a retry was a *different* decomposition.
+    pub(super) spent_strategies: Vec<String>,
 }
 
 impl AuthoringRun {
@@ -77,7 +85,11 @@ impl AuthoringRun {
         }
         let contract = seed::software_authoring_completion_contract()
             .ok_or("software-authoring completion contract is unavailable")?;
-        if contract.observable_postcondition != "workspace_effect" || contract.max_attempts == 0 {
+        if contract.observable_postcondition != "workspace_effect"
+            || contract.max_attempts == 0
+            || contract.recovery_strategies.is_empty()
+            || contract.diverted_endpoints.is_empty()
+        {
             return Err("software-authoring completion contract is invalid".into());
         }
         let workspace = std::env::current_dir()?;
@@ -91,7 +103,42 @@ impl AuthoringRun {
             input_tokens: 0,
             output_tokens: 0,
             endpoint_mismatch: None,
+            ledger: RecoveryLedger::load(),
+            spent_strategies: Vec::new(),
         }))
+    }
+
+    /// The learning key for this run: one client driving one postcondition.
+    fn recovery_key(&self, client: &str) -> RecoveryKey {
+        RecoveryKey {
+            client: client.to_owned(),
+            postcondition: self.contract.observable_postcondition.clone(),
+        }
+    }
+
+    /// Plan the recovery ladder for `client`: the seed-declared strategies,
+    /// reordered by what the ledger has seen actually produce an effect.
+    pub(super) fn plan_recovery(&self, client: &str) -> Vec<String> {
+        self.ledger.rank(
+            &self.recovery_key(client),
+            &self.contract.recovery_strategies,
+        )
+    }
+
+    /// Record one spent recovery strategy and whether it produced an effect.
+    pub(super) fn record_recovery(
+        &mut self,
+        client: &str,
+        strategy: &str,
+        effect: bool,
+    ) -> Result<(), Box<dyn Error>> {
+        self.spent_strategies.push(strategy.to_owned());
+        let outcome = RecoveryOutcome {
+            key: self.recovery_key(client),
+            strategy: strategy.to_owned(),
+            effect,
+        };
+        self.ledger.record(&outcome)
     }
 
     pub(super) fn observe_output(
@@ -107,10 +154,14 @@ impl AuthoringRun {
         }
         std::io::stdout().flush()?;
         std::io::stderr().write_all(&output.stderr)?;
-        self.endpoint_mismatch = self
-            .endpoint_mismatch
-            .take()
-            .or_else(|| detect_vendor_endpoint(&output.stdout, &output.stderr, expected_endpoint));
+        self.endpoint_mismatch = self.endpoint_mismatch.take().or_else(|| {
+            detect_diverted_endpoint(
+                &self.contract.diverted_endpoints,
+                &output.stdout,
+                &output.stderr,
+                expected_endpoint,
+            )
+        });
         Ok(())
     }
 
@@ -123,13 +174,25 @@ impl AuthoringRun {
         self.attempts < self.contract.max_attempts
     }
 
-    pub(super) fn completion_prompt(task: &str) -> Result<String, Box<dyn Error>> {
+    /// Render the correction prompt for one recovery strategy, in the language
+    /// the request was written in.
+    ///
+    /// Each strategy has its own seeded intent, so the ladder escalates from
+    /// "restate the postcondition" to "name the file" to "decompose into the
+    /// smallest leaf" instead of repeating one correction verbatim. A strategy
+    /// without a seeded prompt falls back to the generic correction intent, so
+    /// declaring a new strategy row can never leave the ladder promptless.
+    pub(super) fn recovery_prompt(task: &str, strategy: &str) -> Result<String, Box<dyn Error>> {
         const TASK_PLACEHOLDER: &str = concat!("{", "task", "}");
         const CLAIM_PLACEHOLDER: &str = concat!("{", "claim", "}");
         const EVIDENCE_PLACEHOLDER: &str = concat!("{", "evidence", "}");
+        const FALLBACK_INTENT: &str = "orchestration_correction_prompt";
         let language = crate::language::detect(task).slug();
-        let template = seed::response_for("orchestration_correction_prompt", language)
-            .or_else(|| seed::response_for("orchestration_correction_prompt", "en"))
+        let intent = format!("completion_recovery_{strategy}");
+        let template = seed::response_for(&intent, language)
+            .or_else(|| seed::response_for(&intent, "en"))
+            .or_else(|| seed::response_for(FALLBACK_INTENT, language))
+            .or_else(|| seed::response_for(FALLBACK_INTENT, "en"))
             .ok_or("orchestration correction prompt is unavailable")?;
         Ok(template
             .replace(TASK_PLACEHOLDER, task)
@@ -165,6 +228,12 @@ impl AuthoringRun {
             "completion_state": completion_state,
             "reason": reason,
             "attempts": self.attempts,
+            "recovery": {
+                "strategies_spent": self.spent_strategies,
+                "strategies_available": self.contract.recovery_strategies,
+                "max_attempts": self.contract.max_attempts,
+                "ledger": self.ledger.location(),
+            },
             "observable_postcondition": {
                 "kind": self.contract.observable_postcondition,
                 "expected": true,
@@ -218,23 +287,27 @@ pub(super) fn run_to_completion(
     let mut output = clone_command(command, &initial_args).output()?;
     authoring.observe_output(&output, &context.endpoint_base_url)?;
     let mut workspace_changes = authoring.changes()?;
-    if output.status.success()
+    let mut ladder = authoring.plan_recovery(&integration.id).into_iter();
+    while output.status.success()
         && authoring.endpoint_mismatch.is_none()
         && workspace_changes.is_empty()
         && authoring.can_retry()
     {
-        let initial_session_file = session_root.and_then(|root| {
+        let Some(strategy) = ladder.next() else {
+            break;
+        };
+        let session_file = session_root.and_then(|root| {
             newest_changed_session_file(
                 root,
                 &integration.invocation.session_file_suffix,
                 session_before,
             )
         });
-        let resume_id = initial_session_file
+        let resume_id = session_file
             .as_deref()
             .and_then(|path| native_session_id(integration, path))
             .or_else(|| initial_resume.map(str::to_owned));
-        let correction = AuthoringRun::completion_prompt(&task)?;
+        let correction = AuthoringRun::recovery_prompt(&task, &strategy)?;
         let retry_args = build_invocation_args(
             integration,
             &[correction],
@@ -245,6 +318,7 @@ pub(super) fn run_to_completion(
         output = clone_command(command, &retry_args).output()?;
         authoring.observe_output(&output, &context.endpoint_base_url)?;
         workspace_changes = authoring.changes()?;
+        authoring.record_recovery(&integration.id, &strategy, !workspace_changes.is_empty())?;
     }
     let status_success = output.status.success();
     let status_label = output
@@ -422,19 +496,25 @@ fn collect_object_token_usage(object: &Map<String, Value>, input: &mut u64, outp
     }
 }
 
-fn detect_vendor_endpoint(stdout: &[u8], stderr: &[u8], expected: &str) -> Option<String> {
-    const VENDOR_ENDPOINTS: [&str; 3] = [
-        "https://api.openai.com",
-        "https://api.anthropic.com",
-        "https://generativelanguage.googleapis.com",
-    ];
+/// Fail closed on a public vendor endpoint the local invocation must not reach.
+///
+/// The endpoint list is seed data, so covering a new vendor — or a seventh
+/// client that talks to one — is a declared row rather than an edit here.
+fn detect_diverted_endpoint(
+    diverted: &[String],
+    stdout: &[u8],
+    stderr: &[u8],
+    expected: &str,
+) -> Option<String> {
     let output = format!(
         "{}\n{}",
         String::from_utf8_lossy(stdout),
         String::from_utf8_lossy(stderr)
     );
-    VENDOR_ENDPOINTS
-        .into_iter()
-        .find(|endpoint| !expected.starts_with(endpoint) && output.contains(endpoint))
-        .map(str::to_owned)
+    diverted
+        .iter()
+        .find(|endpoint| {
+            !expected.starts_with(endpoint.as_str()) && output.contains(endpoint.as_str())
+        })
+        .cloned()
 }
