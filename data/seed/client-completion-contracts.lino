@@ -1,8 +1,14 @@
 completion_contracts
   software_authoring
     observable_postcondition "workspace_effect"
-    max_attempts 2
+    max_attempts 4
     incomplete_reason "required_workspace_effect_missing"
     scratch_directory ".formal-ai"
     incomplete_error "{command} did not satisfy the software-authoring completion contract"
     process_error "{command} exited with status {status}"
+    recovery_strategy restate_postcondition
+    recovery_strategy name_target_artifact
+    recovery_strategy decompose_into_leaf
+    diverted_endpoint "https://api.openai.com"
+    diverted_endpoint "https://api.anthropic.com"
+    diverted_endpoint "https://generativelanguage.googleapis.com"

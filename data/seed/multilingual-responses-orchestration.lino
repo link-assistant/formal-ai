@@ -47,3 +47,51 @@ multilingual_responses
     intent draft_comparison_explanation
     language zh
     text "我选择了草案 {winner_index}（{strategy}），因为它通过了 {passed_tests}/{total_tests} 个生成测试。随后，确定性的最小作用量决胜规则选择了最小且充分的通过草案；若存在另一个通过草案，账本会记录 {smaller_percent}% 的大小缩减。提交前已验证组合。"
+  response response_completion_recovery_restate_postcondition_en
+    intent completion_recovery_restate_postcondition
+    language en
+    text "The previous attempt in this session finished without changing the workspace.\nDisproved claim: {claim}\nEvidence: {evidence}\nRestate, in one line, the observable postcondition the request implies: which file must exist afterwards and what it must do.\nThen make that postcondition true by writing the file, and report the path you wrote.\nRequest: {task}"
+  response response_completion_recovery_restate_postcondition_ru
+    intent completion_recovery_restate_postcondition
+    language ru
+    text "Предыдущая попытка в этой сессии завершилась, не изменив рабочую область.\nОпровергнутое утверждение: {claim}\nДоказательство: {evidence}\nСформулируйте одной строкой наблюдаемое постусловие, следующее из запроса: какой файл должен существовать после выполнения и что он должен делать.\nЗатем выполните это постусловие, записав файл, и укажите записанный путь.\nЗапрос: {task}"
+  response response_completion_recovery_restate_postcondition_hi
+    intent completion_recovery_restate_postcondition
+    language hi
+    text "इस सत्र का पिछला प्रयास कार्यक्षेत्र बदले बिना समाप्त हो गया।\nअसत्य सिद्ध दावा: {claim}\nसाक्ष्य: {evidence}\nएक पंक्ति में वह प्रेक्षणीय पश्चशर्त बताएं जो अनुरोध से निकलती है: बाद में कौन-सी फ़ाइल मौजूद होनी चाहिए और वह क्या करे।\nफिर फ़ाइल लिखकर उस पश्चशर्त को सत्य करें और लिखा गया पथ बताएं।\nअनुरोध: {task}"
+  response response_completion_recovery_restate_postcondition_zh
+    intent completion_recovery_restate_postcondition
+    language zh
+    text "本会话中的上一次尝试结束时未更改工作区。\n已证伪的主张：{claim}\n证据：{evidence}\n请用一行说明该请求隐含的可观察后置条件：之后必须存在哪个文件，它必须做什么。\n然后通过写入该文件使后置条件成立，并报告你写入的路径。\n请求：{task}"
+  response response_completion_recovery_name_target_artifact_en
+    intent completion_recovery_name_target_artifact
+    language en
+    text "Restating the goal did not produce a file.\nDisproved claim: {claim}\nEvidence: {evidence}\nDo not plan and do not inspect the directory again. Choose one concrete relative path now, create that file with the smallest content that satisfies the request, and print the path.\nRequest: {task}"
+  response response_completion_recovery_name_target_artifact_ru
+    intent completion_recovery_name_target_artifact
+    language ru
+    text "Переформулировка цели не привела к созданию файла.\nОпровергнутое утверждение: {claim}\nДоказательство: {evidence}\nНе планируйте и не осматривайте каталог снова. Выберите один конкретный относительный путь, создайте этот файл с минимальным содержимым, удовлетворяющим запросу, и выведите путь.\nЗапрос: {task}"
+  response response_completion_recovery_name_target_artifact_hi
+    intent completion_recovery_name_target_artifact
+    language hi
+    text "लक्ष्य दोहराने से कोई फ़ाइल नहीं बनी।\nअसत्य सिद्ध दावा: {claim}\nसाक्ष्य: {evidence}\nअब योजना न बनाएं और निर्देशिका दोबारा न देखें। एक ठोस सापेक्ष पथ चुनें, अनुरोध को पूरा करने वाली न्यूनतम सामग्री के साथ वह फ़ाइल बनाएं, और पथ छापें।\nअनुरोध: {task}"
+  response response_completion_recovery_name_target_artifact_zh
+    intent completion_recovery_name_target_artifact
+    language zh
+    text "重述目标并未产生文件。\n已证伪的主张：{claim}\n证据：{evidence}\n不要再做计划，也不要再查看目录。现在选定一个具体的相对路径，用满足请求的最小内容创建该文件，并打印该路径。\n请求：{task}"
+  response response_completion_recovery_decompose_into_leaf_en
+    intent completion_recovery_decompose_into_leaf
+    language en
+    text "Two attempts produced no file. Decompose the request instead.\nDisproved claim: {claim}\nEvidence: {evidence}\nName the smallest leaf of this task that on its own leaves a file behind, execute only that leaf, and ignore every other part for now. Print the path you wrote.\nRequest: {task}"
+  response response_completion_recovery_decompose_into_leaf_ru
+    intent completion_recovery_decompose_into_leaf
+    language ru
+    text "Две попытки не создали файл. Вместо этого декомпозируйте запрос.\nОпровергнутое утверждение: {claim}\nДоказательство: {evidence}\nНазовите наименьший лист этой задачи, который сам по себе оставляет файл, выполните только этот лист и пока игнорируйте остальные части. Выведите записанный путь.\nЗапрос: {task}"
+  response response_completion_recovery_decompose_into_leaf_hi
+    intent completion_recovery_decompose_into_leaf
+    language hi
+    text "दो प्रयासों में कोई फ़ाइल नहीं बनी। इसके बजाय अनुरोध का विघटन करें।\nअसत्य सिद्ध दावा: {claim}\nसाक्ष्य: {evidence}\nइस कार्य का सबसे छोटा पत्ता बताएं जो स्वयं एक फ़ाइल छोड़ता है, केवल उसी पत्ते को निष्पादित करें, और शेष भागों को अभी छोड़ दें। लिखा गया पथ छापें।\nअनुरोध: {task}"
+  response response_completion_recovery_decompose_into_leaf_zh
+    intent completion_recovery_decompose_into_leaf
+    language zh
+    text "两次尝试都没有产生文件。改为分解该请求。\n已证伪的主张：{claim}\n证据：{evidence}\n指出该任务中自身即可留下文件的最小叶子，只执行该叶子，暂时忽略其他部分。打印你写入的路径。\n请求：{task}"
