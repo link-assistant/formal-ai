@@ -550,3 +550,71 @@ fn losing_drafts_become_durable_lessons_the_dreaming_loop_mines() {
         "{rendered}"
     );
 }
+
+/// Issue #704, requirement 1: the portfolio must be a property of the meta
+/// algorithm, not of one handler. This exercises a *second*, unrelated leaf —
+/// rule synthesis for a bare program-modification follow-up — through the same
+/// engine, with a differently worded request than the arithmetic case above.
+///
+/// Both applicable strategies (`reuse` from the learning ledger, `rule_derivation`
+/// from the operation vocabulary) draft independently, are tested against the
+/// same verification fixture, and the comparison is recorded. The answer must be
+/// the same one the sequential fallback chain produces — a portfolio changes how
+/// the rule is chosen, never what a correct answer is.
+#[test]
+fn rule_synthesis_is_a_second_portfolio_leaf_with_the_same_engine() {
+    const FIRST: &str = "Write me a Rust program that lists the files in the current directory";
+    const FOLLOW_UP: &str = "Sort the results in reverse order";
+
+    let sequential = UniversalSolver::default();
+    let first = sequential.solve(FIRST);
+    assert_eq!(first.intent, "write_program", "{}", first.answer);
+    let history = [
+        ConversationTurn::user(FIRST),
+        ConversationTurn::assistant(first.answer),
+    ];
+    let baseline = sequential.solve_with_history(FOLLOW_UP, &history);
+    assert_eq!(baseline.intent, "write_program", "{}", baseline.answer);
+
+    let portfolio = UniversalSolver::new(SolverConfig {
+        draft_count: 3,
+        diagnostic_mode: true,
+        ..SolverConfig::default()
+    });
+    let drafted = portfolio.solve_with_history(FOLLOW_UP, &history);
+
+    let answer = drafted
+        .answer
+        .split("\n\n[diagnostic]")
+        .next()
+        .expect("answer before the diagnostic block");
+    assert_eq!(
+        answer, baseline.answer,
+        "the portfolio selects among drafts; it must not change what a correct answer is"
+    );
+    let repeated = portfolio.solve_with_history(FOLLOW_UP, &history);
+    assert_eq!(
+        repeated.answer, drafted.answer,
+        "the same impulse must seed the same drafts and reach the same answer"
+    );
+
+    // Issue #704 acceptance: a case where the first strategy fails outright and
+    // a parallel draft rescues the turn. `reuse` has no approved ledger lesson
+    // for this wording, so it drafts nothing and burns its bounded retry budget;
+    // `rule_derivation` derives the rule from the operation vocabulary and wins.
+    for marker in [
+        "strategy \"reuse\"",
+        "status \"failed\"",
+        "record_type \"draft_failure\"",
+        "strategy \"rule_derivation\"",
+        "status \"passed\"",
+        "winner_strategy \"rule_derivation\"",
+        "tie_break \"least_action\"",
+        "merge_order \"draft_index\"",
+    ] {
+        assert!(
+            drafted.answer.contains(marker),
+            "the second leaf must record its comparison, missing {marker}"
+        );
+    }
+}

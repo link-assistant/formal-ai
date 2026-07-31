@@ -86,6 +86,7 @@ pub mod requirement_contradiction;
 pub(crate) mod responses_stream;
 pub mod route_method_alias;
 pub(crate) mod rule_synthesis;
+pub(crate) mod rule_synthesis_portfolio;
 pub mod seed;
 pub mod selection;
 pub mod self_ast_census;
