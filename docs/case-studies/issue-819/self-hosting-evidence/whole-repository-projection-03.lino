@@ -1,0 +1,563 @@
+source_links
+  engine meta_language
+  language rust
+  module_count 79
+  faithful_count 79
+  coverage_permille 1000
+  fully_faithful true
+  total_link_count 752218
+  total_named_node_count 151575
+  modules
+    module
+      path "src/solver_handlers/playwright_script.rs"
+      byte_len 5593
+      content_id "source_module_2dcc622303980932"
+      total_link_count 2811
+      named_node_count 581
+      faithful true
+    module
+      path "src/solver_handlers/procedure_rules.rs"
+      byte_len 4512
+      content_id "source_module_048a368589aa09d7"
+      total_link_count 2295
+      named_node_count 471
+      faithful true
+    module
+      path "src/solver_handlers/program_blueprint.rs"
+      byte_len 4395
+      content_id "source_module_69aab15b5c0e2948"
+      total_link_count 1918
+      named_node_count 402
+      faithful true
+    module
+      path "src/solver_handlers/program_synthesis.rs"
+      byte_len 21923
+      content_id "source_module_681d648dadbec66c"
+      total_link_count 14692
+      named_node_count 2808
+      faithful true
+    module
+      path "src/solver_handlers/research_table.rs"
+      byte_len 18549
+      content_id "source_module_6091ab70dc0b5777"
+      total_link_count 11056
+      named_node_count 2217
+      faithful true
+    module
+      path "src/solver_handlers/response_language_followup.rs"
+      byte_len 5576
+      content_id "source_module_27705e51071bc6d0"
+      total_link_count 2430
+      named_node_count 496
+      faithful true
+    module
+      path "src/solver_handlers/self_awareness.rs"
+      byte_len 23519
+      content_id "source_module_ba5380d4e6889c5a"
+      total_link_count 10480
+      named_node_count 2087
+      faithful true
+    module
+      path "src/solver_handlers/shell_command_transform.rs"
+      byte_len 7958
+      content_id "source_module_5037a22174d9596e"
+      total_link_count 6714
+      named_node_count 1363
+      faithful true
+    module
+      path "src/solver_handlers/software_project.rs"
+      byte_len 34156
+      content_id "source_module_3cbe66bc76240243"
+      total_link_count 22075
+      named_node_count 4459
+      faithful true
+    module
+      path "src/solver_handlers/software_project_code.rs"
+      byte_len 5983
+      content_id "source_module_96880918bf6d10f8"
+      total_link_count 1048
+      named_node_count 168
+      faithful true
+    module
+      path "src/solver_handlers/software_project_followup.rs"
+      byte_len 14729
+      content_id "source_module_dfa774b32e1a7d62"
+      total_link_count 8707
+      named_node_count 1728
+      faithful true
+    module
+      path "src/solver_handlers/task_decomposition.rs"
+      byte_len 10395
+      content_id "source_module_f3ea370b8c6ec733"
+      total_link_count 6156
+      named_node_count 1234
+      faithful true
+    module
+      path "src/solver_handlers/text_edit_ops.rs"
+      byte_len 8817
+      content_id "source_module_cf0ed8dd0895cdc1"
+      total_link_count 9041
+      named_node_count 1801
+      faithful true
+    module
+      path "src/solver_handlers/text_manipulation.rs"
+      byte_len 26500
+      content_id "source_module_4d076a37c10da367"
+      total_link_count 22568
+      named_node_count 4672
+      faithful true
+    module
+      path "src/solver_handlers/user_intent.rs"
+      byte_len 19389
+      content_id "source_module_bf501ea4235275af"
+      total_link_count 11079
+      named_node_count 2273
+      faithful true
+    module
+      path "src/solver_handlers/web_requests.rs"
+      byte_len 42640
+      content_id "source_module_3342e8e91041291a"
+      total_link_count 20199
+      named_node_count 4233
+      faithful true
+    module
+      path "src/solver_handlers/web_requests/live_search.rs"
+      byte_len 4219
+      content_id "source_module_fea6996dffcdc812"
+      total_link_count 2988
+      named_node_count 613
+      faithful true
+    module
+      path "src/solver_handlers/web_search_intent.rs"
+      byte_len 42244
+      content_id "source_module_fdfa75fc8ec2e19b"
+      total_link_count 22701
+      named_node_count 4663
+      faithful true
+    module
+      path "src/solver_handlers/world_state.rs"
+      byte_len 4062
+      content_id "source_module_1a6c1d7dae52d602"
+      total_link_count 2255
+      named_node_count 466
+      faithful true
+    module
+      path "src/solver_handlers_policy.rs"
+      byte_len 3831
+      content_id "source_module_a264a68f6d76c720"
+      total_link_count 1582
+      named_node_count 342
+      faithful true
+    module
+      path "src/solver_helpers/code.rs"
+      byte_len 13457
+      content_id "source_module_da127d9d69b86a44"
+      total_link_count 7533
+      named_node_count 1535
+      faithful true
+    module
+      path "src/solver_helpers/mod.rs"
+      byte_len 26043
+      content_id "source_module_85b5a39f3b718f1d"
+      total_link_count 20158
+      named_node_count 4012
+      faithful true
+    module
+      path "src/solver_search.rs"
+      byte_len 25478
+      content_id "source_module_b3a2ef55e7cdae3d"
+      total_link_count 16706
+      named_node_count 3401
+      faithful true
+    module
+      path "src/solver_search/portfolio.rs"
+      byte_len 11390
+      content_id "source_module_1821c8ddece698aa"
+      total_link_count 7552
+      named_node_count 1538
+      faithful true
+    module
+      path "src/solver_synthesis.rs"
+      byte_len 25240
+      content_id "source_module_84f465acd66f6084"
+      total_link_count 21599
+      named_node_count 4259
+      faithful true
+    module
+      path "src/solver_terminal.rs"
+      byte_len 5699
+      content_id "source_module_7a09b193a05825e2"
+      total_link_count 3715
+      named_node_count 763
+      faithful true
+    module
+      path "src/solver_unknown_reasoning.rs"
+      byte_len 15504
+      content_id "source_module_793ca4d9b7f52a0b"
+      total_link_count 12441
+      named_node_count 2468
+      faithful true
+    module
+      path "src/source_fetch.rs"
+      byte_len 11959
+      content_id "source_module_b19548e6525534d0"
+      total_link_count 10182
+      named_node_count 2039
+      faithful true
+    module
+      path "src/source_research.rs"
+      byte_len 9511
+      content_id "source_module_0ddda8b55e6bc6fc"
+      total_link_count 6279
+      named_node_count 1256
+      faithful true
+    module
+      path "src/statement_audit/audit.rs"
+      byte_len 17880
+      content_id "source_module_90287f161cf60b0d"
+      total_link_count 13005
+      named_node_count 2693
+      faithful true
+    module
+      path "src/statement_audit/evidence.rs"
+      byte_len 6038
+      content_id "source_module_975ca8f2588bc784"
+      total_link_count 4961
+      named_node_count 985
+      faithful true
+    module
+      path "src/statement_audit/extract.rs"
+      byte_len 8447
+      content_id "source_module_9a53c4513756e5a9"
+      total_link_count 7939
+      named_node_count 1519
+      faithful true
+    module
+      path "src/statement_audit/mod.rs"
+      byte_len 738
+      content_id "source_module_dddfe3327c58d4e3"
+      total_link_count 382
+      named_node_count 62
+      faithful true
+    module
+      path "src/statement_audit/model.rs"
+      byte_len 7436
+      content_id "source_module_d095fe3eb7e28987"
+      total_link_count 5633
+      named_node_count 1057
+      faithful true
+    module
+      path "src/statement_audit/repository.rs"
+      byte_len 3310
+      content_id "source_module_cd5fd48a3081543a"
+      total_link_count 2895
+      named_node_count 594
+      faithful true
+    module
+      path "src/statement_verification.rs"
+      byte_len 22522
+      content_id "source_module_71bca433ce0f537a"
+      total_link_count 14580
+      named_node_count 2930
+      faithful true
+    module
+      path "src/storage_policy.rs"
+      byte_len 5583
+      content_id "source_module_30fce61fe2da5564"
+      total_link_count 3555
+      named_node_count 716
+      faithful true
+    module
+      path "src/substitution.rs"
+      byte_len 25206
+      content_id "source_module_cc0ff76aad03d096"
+      total_link_count 21597
+      named_node_count 4338
+      faithful true
+    module
+      path "src/summarization/context.rs"
+      byte_len 10881
+      content_id "source_module_f0e8e19bce153e87"
+      total_link_count 5724
+      named_node_count 1205
+      faithful true
+    module
+      path "src/summarization/dedup.rs"
+      byte_len 15182
+      content_id "source_module_5a9b15426d331b77"
+      total_link_count 9193
+      named_node_count 1883
+      faithful true
+    module
+      path "src/summarization/dialog.rs"
+      byte_len 3409
+      content_id "source_module_ab1a647e1983251e"
+      total_link_count 2302
+      named_node_count 470
+      faithful true
+    module
+      path "src/summarization/file.rs"
+      byte_len 23768
+      content_id "source_module_f8c3e193c5ff28a1"
+      total_link_count 21077
+      named_node_count 4142
+      faithful true
+    module
+      path "src/summarization/gathering.rs"
+      byte_len 23950
+      content_id "source_module_089251f60b9fc774"
+      total_link_count 14458
+      named_node_count 2972
+      faithful true
+    module
+      path "src/summarization/identifier.rs"
+      byte_len 10229
+      content_id "source_module_a6730e8b4c415cb1"
+      total_link_count 5988
+      named_node_count 1246
+      faithful true
+    module
+      path "src/summarization/importance.rs"
+      byte_len 11594
+      content_id "source_module_50a811eed65f8c88"
+      total_link_count 6324
+      named_node_count 1294
+      faithful true
+    module
+      path "src/summarization/markdown.rs"
+      byte_len 6567
+      content_id "source_module_26ef8adcabd82c46"
+      total_link_count 4560
+      named_node_count 890
+      faithful true
+    module
+      path "src/summarization/mod.rs"
+      byte_len 27894
+      content_id "source_module_8151256303bd9ed4"
+      total_link_count 15053
+      named_node_count 3034
+      faithful true
+    module
+      path "src/summarization/pipeline.rs"
+      byte_len 8387
+      content_id "source_module_7436071879e680a6"
+      total_link_count 4902
+      named_node_count 1009
+      faithful true
+    module
+      path "src/summarization/recheck.rs"
+      byte_len 7228
+      content_id "source_module_a1d91e119f01b6fe"
+      total_link_count 3707
+      named_node_count 776
+      faithful true
+    module
+      path "src/summarization/resource.rs"
+      byte_len 12921
+      content_id "source_module_38f92a468be1b09a"
+      total_link_count 7150
+      named_node_count 1429
+      faithful true
+    module
+      path "src/summarization/vocabulary.rs"
+      byte_len 7346
+      content_id "source_module_16af636d118b518c"
+      total_link_count 4653
+      named_node_count 1021
+      faithful true
+    module
+      path "src/task_decomposition.rs"
+      byte_len 23115
+      content_id "source_module_45093599dd4c0f1a"
+      total_link_count 14895
+      named_node_count 3001
+      faithful true
+    module
+      path "src/task_decomposition/artifact.rs"
+      byte_len 7059
+      content_id "source_module_b03830849be5aeca"
+      total_link_count 5903
+      named_node_count 1204
+      faithful true
+    module
+      path "src/task_decomposition/learning.rs"
+      byte_len 12770
+      content_id "source_module_4c14eb0a63548849"
+      total_link_count 10099
+      named_node_count 2026
+      faithful true
+    module
+      path "src/task_decomposition/strategy.rs"
+      byte_len 9146
+      content_id "source_module_e4fe69dc6b78e655"
+      total_link_count 7447
+      named_node_count 1471
+      faithful true
+    module
+      path "src/telegram.rs"
+      byte_len 27735
+      content_id "source_module_e89425cdf4910b35"
+      total_link_count 18024
+      named_node_count 3638
+      faithful true
+    module
+      path "src/telegram_runtime.rs"
+      byte_len 11108
+      content_id "source_module_25a895fab176ea65"
+      total_link_count 6458
+      named_node_count 1227
+      faithful true
+    module
+      path "src/thinking.rs"
+      byte_len 18421
+      content_id "source_module_ecb2d81c327fb91d"
+      total_link_count 9780
+      named_node_count 1913
+      faithful true
+    module
+      path "src/translation/cache.rs"
+      byte_len 22402
+      content_id "source_module_9c21361f0148bd6b"
+      total_link_count 15240
+      named_node_count 3156
+      faithful true
+    module
+      path "src/translation/formalization.rs"
+      byte_len 26791
+      content_id "source_module_cd76c40c98cd6a1f"
+      total_link_count 19501
+      named_node_count 3928
+      faithful true
+    module
+      path "src/translation/formatting.rs"
+      byte_len 2996
+      content_id "source_module_cf7c401e1071c942"
+      total_link_count 1902
+      named_node_count 379
+      faithful true
+    module
+      path "src/translation/http.rs"
+      byte_len 4962
+      content_id "source_module_93827379eecc3323"
+      total_link_count 3380
+      named_node_count 667
+      faithful true
+    module
+      path "src/translation/language_markers.rs"
+      byte_len 4627
+      content_id "source_module_52a9d0dce3bbd259"
+      total_link_count 1709
+      named_node_count 397
+      faithful true
+    module
+      path "src/translation/meaning.rs"
+      byte_len 3634
+      content_id "source_module_861b6d4ab1fa9d3c"
+      total_link_count 1979
+      named_node_count 400
+      faithful true
+    module
+      path "src/translation/mod.rs"
+      byte_len 5107
+      content_id "source_module_c82f5b6936a8d061"
+      total_link_count 1782
+      named_node_count 384
+      faithful true
+    module
+      path "src/translation/pipeline.rs"
+      byte_len 31860
+      content_id "source_module_423724a02ec54d66"
+      total_link_count 18414
+      named_node_count 3763
+      faithful true
+    module
+      path "src/translation/prompt.rs"
+      byte_len 12051
+      content_id "source_module_a3aa2e0a9b83b9f7"
+      total_link_count 6629
+      named_node_count 1393
+      faithful true
+    module
+      path "src/translation/selection.rs"
+      byte_len 12837
+      content_id "source_module_da42dcb84f10cfff"
+      total_link_count 9288
+      named_node_count 1797
+      faithful true
+    module
+      path "src/translation/wikidata.rs"
+      byte_len 12066
+      content_id "source_module_1dbc257c5790a0b5"
+      total_link_count 7949
+      named_node_count 1524
+      faithful true
+    module
+      path "src/translation/wiktionary.rs"
+      byte_len 26461
+      content_id "source_module_0290c17edb50dc0b"
+      total_link_count 18449
+      named_node_count 3635
+      faithful true
+    module
+      path "src/unknown_opener.rs"
+      byte_len 3089
+      content_id "source_module_6b6c4a9ed0fd3e01"
+      total_link_count 1607
+      named_node_count 309
+      faithful true
+    module
+      path "src/web/wasm-worker/src/lib.rs"
+      byte_len 25772
+      content_id "source_module_aefb23640266694d"
+      total_link_count 20760
+      named_node_count 4056
+      faithful true
+    module
+      path "src/web_engine_core.rs"
+      byte_len 18291
+      content_id "source_module_7d6bf190dc0f09e0"
+      total_link_count 12672
+      named_node_count 2584
+      faithful true
+    module
+      path "src/web_search_core.rs"
+      byte_len 20449
+      content_id "source_module_e095e802b74ba3b5"
+      total_link_count 13628
+      named_node_count 2713
+      faithful true
+    module
+      path "src/world_model.rs"
+      byte_len 39180
+      content_id "source_module_a023fbe5405aff2a"
+      total_link_count 21537
+      named_node_count 4408
+      faithful true
+    module
+      path "src/world_model_atoms.rs"
+      byte_len 11636
+      content_id "source_module_ac97972ce4f35578"
+      total_link_count 7472
+      named_node_count 1555
+      faithful true
+    module
+      path "src/world_model_context.rs"
+      byte_len 13468
+      content_id "source_module_c2cb46666cde2fc4"
+      total_link_count 8608
+      named_node_count 1688
+      faithful true
+    module
+      path "src/world_model_cycles.rs"
+      byte_len 1032
+      content_id "source_module_c73fa26435bf6e36"
+      total_link_count 783
+      named_node_count 160
+      faithful true
+    module
+      path "src/world_model_dialog.rs"
+      byte_len 29508
+      content_id "source_module_489fa9e08489c729"
+      total_link_count 17725
+      named_node_count 3586
+      faithful true
