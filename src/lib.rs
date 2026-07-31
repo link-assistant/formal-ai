@@ -45,6 +45,7 @@ pub mod issue_report;
 pub mod json_lino;
 pub mod knowledge;
 pub mod language;
+pub mod language_frontier;
 pub mod learning_adoption_ledger;
 pub mod learning_cycle;
 pub mod learning_ledger;
