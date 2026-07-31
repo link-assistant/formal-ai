@@ -16,10 +16,13 @@ use crate::seed::{
 use crate::DEFAULT_MODEL;
 
 mod command;
+mod completion;
+mod completion_learning;
 mod server;
 mod session_files;
 mod url;
-use command::resolve_integration_command;
+use command::{contains_model_arg, ensure_trailing_newline, resolve_integration_command};
+use completion::{require_completed, run_to_completion, AuthoringRun, CompletionInvocation};
 use server::maybe_start_server;
 use session_files::{
     newest_changed_session_file, print_session_files, session_file_snapshot, user_home_dir,
@@ -31,7 +34,6 @@ const DEFAULT_BASE_URL: &str = "http://127.0.0.1:8080";
 const EMPTY_BACKUP_SENTINEL: &str = "# formal-ai-empty-config-backup-v1\n";
 const RENDERED_PLACEHOLDER: &str = concat!("{", "rendered", "}");
 const ERROR_PLACEHOLDER: &str = concat!("{", "error", "}");
-const SESSION_ID_PLACEHOLDER: &str = concat!("{", "session_id", "}");
 
 #[derive(Debug, Clone, Copy, ValueEnum)]
 pub enum ClientProtocol {
@@ -319,13 +321,14 @@ fn run_ephemeral(
     integration: &ClientIntegration,
     user_args: &[String],
     context: &RenderContext,
-    options: InvocationOptions,
+    mut options: InvocationOptions,
     temporary_server_log: Option<&Path>,
     orchestration_home: Option<&Path>,
     orchestration_resume: Option<&str>,
 ) -> Result<(), Box<dyn Error>> {
     let invocation = &integration.invocation;
     let mut context = context.clone();
+    let mut authoring = AuthoringRun::for_invocation(user_args, &mut options)?;
     let mut temp_dirs = Vec::new();
     let mut session_home = None;
     let resolved_command = resolve_integration_command(integration);
@@ -409,15 +412,44 @@ fn run_ephemeral(
         .map(|root| session_file_snapshot(root, &invocation.session_file_suffix))
         .unwrap_or_default();
 
-    let final_args = build_invocation_args(
-        integration,
-        user_args,
-        &context,
-        options,
-        orchestration_resume,
-    );
-    command.args(final_args);
-    let status = command.status()?;
+    let (status_success, status_label, completion_passed) =
+        if let Some(authoring) = authoring.as_mut() {
+            let outcome = run_to_completion(
+                authoring,
+                CompletionInvocation {
+                    command: &command,
+                    integration,
+                    user_args,
+                    context: &context,
+                    options,
+                    session_root: session_root.as_deref(),
+                    session_before: &session_before,
+                    initial_resume: orchestration_resume,
+                },
+            )?;
+            (
+                outcome.status_success,
+                outcome.status_label,
+                Some(outcome.completion_passed),
+            )
+        } else {
+            let final_args = build_invocation_args(
+                integration,
+                user_args,
+                &context,
+                options,
+                orchestration_resume,
+            );
+            command.args(final_args);
+            let status = command.status()?;
+            (
+                status.success(),
+                status
+                    .code()
+                    .map_or_else(|| String::from("signal"), |code| code.to_string()),
+                None,
+            )
+        };
     let session_file = session_root.as_deref().and_then(|root| {
         newest_changed_session_file(root, &invocation.session_file_suffix, &session_before)
     });
@@ -442,17 +474,12 @@ fn run_ephemeral(
     } else {
         drop(temp_dirs);
     }
-    if status.success() {
-        return Ok(());
-    }
-    Err(format!(
-        "{} exited with status {}",
-        resolved_command.display(),
-        status
-            .code()
-            .map_or_else(|| String::from("signal"), |code| code.to_string())
+    require_completed(
+        completion_passed,
+        status_success,
+        &status_label,
+        &resolved_command,
     )
-    .into())
 }
 
 fn temp_scoped_path(root: &Path, relative: &str) -> Result<PathBuf, Box<dyn Error>> {
@@ -539,7 +566,7 @@ fn build_invocation_args(
             invocation
                 .resume_args
                 .iter()
-                .map(|argument| argument.replace(SESSION_ID_PLACEHOLDER, session_id)),
+                .map(|argument| argument.replace(concat!("{", "session_id", "}"), session_id)),
         );
     }
     if invocation.mode_arg_position != Some(ModeArgPosition::BeforeInvocation) {
@@ -575,11 +602,6 @@ fn build_invocation_args(
         }
     }
     args
-}
-
-fn contains_model_arg(args: &[String]) -> bool {
-    args.iter()
-        .any(|arg| matches!(arg.as_str(), "-m" | "--model") || arg.starts_with("--model="))
 }
 
 fn write_global_config(
@@ -971,11 +993,4 @@ fn write_file(path: &Path, contents: &str) -> Result<(), Box<dyn Error>> {
     }
     fs::write(path, contents)?;
     Ok(())
-}
-
-fn ensure_trailing_newline(mut value: String) -> String {
-    if !value.ends_with('\n') {
-        value.push('\n');
-    }
-    value
 }

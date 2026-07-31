@@ -1,0 +1,18 @@
+completion_recovery
+  record_type "completion_recovery"
+  client "agent"
+  postcondition "workspace_effect"
+  strategy "restate_postcondition"
+  effect "false"
+completion_recovery
+  record_type "completion_recovery"
+  client "agent"
+  postcondition "workspace_effect"
+  strategy "name_target_artifact"
+  effect "false"
+completion_recovery
+  record_type "completion_recovery"
+  client "agent"
+  postcondition "workspace_effect"
+  strategy "decompose_into_leaf"
+  effect "false"

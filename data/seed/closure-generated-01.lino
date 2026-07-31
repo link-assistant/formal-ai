@@ -669,6 +669,21 @@ meanings
     lexeme en
       surface
         text "compiled procedure explanation"
+  completion_recovery_decompose_into_leaf
+    defined-by intent
+    lexeme en
+      surface
+        text "completion recovery decompose into leaf"
+  completion_recovery_name_target_artifact
+    defined-by intent
+    lexeme en
+      surface
+        text "completion recovery name target artifact"
+  completion_recovery_restate_postcondition
+    defined-by intent
+    lexeme en
+      surface
+        text "completion recovery restate postcondition"
   concept_lookup
     defined-by intent
     lexeme en
@@ -924,6 +939,11 @@ meanings
     lexeme en
       surface
         text "data structure"
+  decompose_into_leaf
+    defined-by concept
+    lexeme en
+      surface
+        text "decompose into leaf"
   deduplicate_lines
     defined-by operation
     lexeme en
@@ -1374,23 +1394,3 @@ meanings
     lexeme en
       surface
         text "file handle"
-  files
-    defined-by word_surface
-    lexeme en
-      surface
-        text "files"
-  filesystem
-    defined-by word_surface
-    lexeme en
-      surface
-        text "filesystem"
-  filtered
-    defined-by word_surface
-    lexeme en
-      surface
-        text "filtered"
-  first
-    defined-by word_surface
-    lexeme en
-      surface
-        text "first"

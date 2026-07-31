@@ -38,6 +38,8 @@ pub const MARKET_PRICE_REFERENCES_LINO: &str =
     include_str!("../../data/seed/market-price-references.lino");
 pub const ENTITY_NAMES_LINO: &str = include_str!("../../data/seed/entity-names.lino");
 pub const CLIENT_INTEGRATIONS_LINO: &str = include_str!("../../data/seed/client-integrations.lino");
+pub const CLIENT_COMPLETION_CONTRACTS_LINO: &str =
+    include_str!("../../data/seed/client-completion-contracts.lino");
 pub const BRAINSTORM_SEEDS_LINO: &str = include_str!("../../data/seed/brainstorm-seeds.lino");
 pub const PERSONAS_LINO: &str = include_str!("../../data/seed/personas.lino");
 pub const SUMMARY_TOPICS_LINO: &str = include_str!("../../data/seed/summary-topics.lino");
@@ -211,6 +213,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         (
             "data/seed/client-integrations.lino",
             CLIENT_INTEGRATIONS_LINO,
+        ),
+        (
+            "data/seed/client-completion-contracts.lino",
+            CLIENT_COMPLETION_CONTRACTS_LINO,
         ),
         ("data/seed/brainstorm-seeds.lino", BRAINSTORM_SEEDS_LINO),
         ("data/seed/personas.lino", PERSONAS_LINO),

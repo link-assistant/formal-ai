@@ -1,4 +1,89 @@
 meanings
+  response_statement_audit_strength_range_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response statement audit strength range en"
+  response_statement_audit_temperature_range_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response statement audit temperature range en"
+  response_statement_audit_unknown_stance_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response statement audit unknown stance en"
+  response_statement_audit_unknown_tier_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response statement audit unknown tier en"
+  response_summarization_disputed_statement_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization disputed statement en"
+  response_summarization_disputed_statement_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization disputed statement hi"
+  response_summarization_disputed_statement_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization disputed statement ru"
+  response_summarization_disputed_statement_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization disputed statement zh"
+  response_summarization_evidence_denied_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization evidence denied en"
+  response_summarization_evidence_denied_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization evidence denied hi"
+  response_summarization_evidence_denied_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization evidence denied ru"
+  response_summarization_evidence_denied_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization evidence denied zh"
+  response_summarization_evidence_summary_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization evidence summary en"
+  response_summarization_evidence_summary_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization evidence summary hi"
+  response_summarization_evidence_summary_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization evidence summary ru"
+  response_summarization_evidence_summary_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization evidence summary zh"
+  response_supplied_file_contents_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response supplied file contents en"
   response_supplied_file_contents_hi
     defined-by response_template
     lexeme en
@@ -644,6 +729,11 @@ meanings
     lexeme en
       surface
         text "response write program skill gap zh"
+  restate_postcondition
+    defined-by concept
+    lexeme en
+      surface
+        text "restate postcondition"
   restore
     defined-by word_surface
     lexeme en
@@ -1304,93 +1394,3 @@ meanings
     lexeme en
       surface
         text "tool result completed"
-  tool_result_empty_generic
-    defined-by intent
-    lexeme en
-      surface
-        text "tool result empty generic"
-  tool_result_empty_list
-    defined-by intent
-    lexeme en
-      surface
-        text "tool result empty list"
-  tool_result_empty_local_path_search
-    defined-by intent
-    lexeme en
-      surface
-        text "tool result empty local path search"
-  tool_result_empty_search
-    defined-by intent
-    lexeme en
-      surface
-        text "tool result empty search"
-  tool_result_failed
-    defined-by intent
-    lexeme en
-      surface
-        text "tool result failed"
-  tool_roleplay
-    defined-by tool
-    lexeme en
-      surface
-        text "tool roleplay"
-  tool_run_agent
-    defined-by tool
-    lexeme en
-      surface
-        text "tool run agent"
-  tool_shell_run
-    defined-by tool
-    lexeme en
-      surface
-        text "tool shell run"
-  tool_summarize_conversation
-    defined-by tool
-    lexeme en
-      surface
-        text "tool summarize conversation"
-  tool_url_navigate
-    defined-by tool
-    lexeme en
-      surface
-        text "tool url navigate"
-  tool_web_search
-    defined-by tool
-    lexeme en
-      surface
-        text "tool web search"
-  tool_wikipedia_lookup
-    defined-by tool
-    lexeme en
-      surface
-        text "tool wikipedia lookup"
-  tool_write_program
-    defined-by tool
-    lexeme en
-      surface
-        text "tool write program"
-  total
-    defined-by word_surface
-    lexeme en
-      surface
-        text "total"
-  touch
-    defined-by concept
-    lexeme en
-      surface
-        text "touch"
-  trace_
-    defined-by identifier
-    lexeme en
-      surface
-        text "trace"
-  traffic
-    defined-by word_surface
-    lexeme en
-      surface
-        text "traffic"
-  travel_guide
-    defined-by category
-    lexeme en
-      surface
-        text "travel guide"

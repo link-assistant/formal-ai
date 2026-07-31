@@ -120,7 +120,7 @@ pub(super) fn print_session_files(
     }
     eprintln!("formal-ai: session files for debugging:");
     if let Some(path) = session_file {
-        let native_session_id = session_id(path).or_else(|| query_session_id(integration));
+        let native_session_id = native_session_id(integration, path);
         let resume = native_session_id.as_ref().and_then(|id| {
             (!integration.invocation.resume_command.is_empty()).then(|| {
                 integration
@@ -155,6 +155,10 @@ pub(super) fn print_session_files(
     }
 }
 
+pub(super) fn native_session_id(integration: &ClientIntegration, path: &Path) -> Option<String> {
+    session_id(path).or_else(|| query_session_id(integration))
+}
+
 #[derive(Serialize)]
 struct OrchestrationSessionEvidence {
     id: String,
@@ -181,7 +185,7 @@ fn query_session_id(integration: &ClientIntegration) -> Option<String> {
         .map(str::to_string)
 }
 
-fn session_id(path: &Path) -> Option<String> {
+pub(super) fn session_id(path: &Path) -> Option<String> {
     let mut contents = String::new();
     fs::File::open(path)
         .ok()?

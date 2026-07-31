@@ -13,13 +13,32 @@ formal-ai with --interactive agent
 formal-ai with --base-url http://127.0.0.1:9090 opencode run "hi"
 ```
 
+### Observable completion for software-authoring requests
+
+The `with` command keeps conservative client defaults for ordinary conversation
+and read-only requests. A one-shot request that the seed lexicon classifies as
+software authoring is the deliberate exception: the wrapper enables the
+registered editing and machine-output arguments, records a workspace snapshot,
+and requires an observable file effect before accepting a zero exit status.
+
+If the client reports success without an effect, the seeded completion contract
+supplies one corrective prompt. The wrapper resumes the exact native session
+when the client exposes one. A second no-effect result exits nonzero with a
+structured `completion_state: "incomplete"` record instead of silently
+succeeding. Client failure and evidence that a `formal-ai` run reached a public
+vendor endpoint fail immediately.
+
+Wrapper planning state under `.formal-ai/` is excluded from both the completion
+snapshot and the repository's local `.git/info/exclude`, so it cannot satisfy
+the gate or appear as a user change. See [Output and
+sessions](output-sessions.md#software-authoring-completion-records) for the
+strict NDJSON result contract.
+
 ### Permission-gated orchestration controller
 
-The `with` command above keeps its conservative client defaults, including
-Codex's read-only sandbox. External editing is a separate, explicit surface.
-See the dedicated [multi-agent orchestration guide](orchestration.md) for its
-permission boundary, verification protocol, dispatch behavior, and replay
-format:
+Explicit controller runs add a canonical permission boundary, verification
+protocol, dispatch behavior, and replay format. See the dedicated
+[multi-agent orchestration guide](orchestration.md):
 
 ```bash
 formal-ai agent run \
@@ -33,7 +52,9 @@ The selected workspace is canonicalized and is the only directory covered by
 the grant. The controller captures stdout, stderr, exit status, wall time,
 hashed file effects, verification results, and ordered hash-chained events.
 The default 15-minute deadline can be reduced with `--timeout-seconds`; timeout
-and process failure are recorded once and are never silently retried.
+and process failure are recorded once and are never silently retried. The
+bounded no-effect recovery described above belongs to the nested one-shot
+`with` invocation and is visible in its completion record.
 
 Supported orchestration adapters are `agent`, `claude`, `codex`, `gemini`,
 `qwen`, and `opencode`. Their editing and structured-output switches are stored
@@ -126,8 +147,9 @@ formal-ai with --interactive codex
 
 Codex custom providers must use `wire_api = "responses"`; Chat Completions is
 not supported by current Codex. The wrapper creates a model catalog so Codex
-knows the disk-backed context size, and defaults non-interactive runs to
-`exec --skip-git-repo-check --sandbox read-only`.
+knows the disk-backed context size. Non-authoring runs default to
+`exec --skip-git-repo-check --sandbox read-only`; detected software-authoring
+runs use the seed-registered `workspace-write` replacement.
 
 ## `t3code`
 

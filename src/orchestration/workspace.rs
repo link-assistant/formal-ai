@@ -24,7 +24,7 @@ pub struct WorkspaceChange {
 }
 
 #[derive(Debug, Clone)]
-pub(super) struct Snapshot {
+pub struct Snapshot {
     files: BTreeMap<String, FileState>,
 }
 
@@ -34,7 +34,7 @@ struct FileState {
     bytes: u64,
 }
 
-pub(super) fn snapshot(root: &Path) -> io::Result<Snapshot> {
+pub fn snapshot(root: &Path) -> io::Result<Snapshot> {
     let mut files = BTreeMap::new();
     for entry in WalkDir::new(root)
         .follow_links(false)
@@ -70,7 +70,7 @@ pub(super) fn snapshot(root: &Path) -> io::Result<Snapshot> {
     Ok(Snapshot { files })
 }
 
-pub(super) fn changes(before: &Snapshot, after: &Snapshot) -> Vec<WorkspaceChange> {
+pub fn changes(before: &Snapshot, after: &Snapshot) -> Vec<WorkspaceChange> {
     let paths = before
         .files
         .keys()
@@ -246,7 +246,7 @@ fn ignored(path: &Path, root: &Path) -> bool {
         relative.components().next().is_some_and(|part| {
             matches!(
                 part.as_os_str().to_str(),
-                Some(".git" | "target" | ".formal-ai-orchestration")
+                Some(".git" | "target" | ".formal-ai" | ".formal-ai-orchestration")
             )
         })
     })

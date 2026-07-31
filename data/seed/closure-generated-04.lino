@@ -1,4 +1,29 @@
 meanings
+  response_agent_suggestion_active_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion active zh"
+  response_agent_suggestion_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion en"
+  response_agent_suggestion_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion hi"
+  response_agent_suggestion_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion ru"
+  response_agent_suggestion_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion zh"
   response_agentic_action_ask_user_en
     defined-by response_template
     lexeme en
@@ -699,6 +724,66 @@ meanings
     lexeme en
       surface
         text "response compiled procedure zh"
+  response_completion_recovery_decompose_into_leaf_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery decompose into leaf en"
+  response_completion_recovery_decompose_into_leaf_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery decompose into leaf hi"
+  response_completion_recovery_decompose_into_leaf_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery decompose into leaf ru"
+  response_completion_recovery_decompose_into_leaf_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery decompose into leaf zh"
+  response_completion_recovery_name_target_artifact_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery name target artifact en"
+  response_completion_recovery_name_target_artifact_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery name target artifact hi"
+  response_completion_recovery_name_target_artifact_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery name target artifact ru"
+  response_completion_recovery_name_target_artifact_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery name target artifact zh"
+  response_completion_recovery_restate_postcondition_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery restate postcondition en"
+  response_completion_recovery_restate_postcondition_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery restate postcondition hi"
+  response_completion_recovery_restate_postcondition_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery restate postcondition ru"
+  response_completion_recovery_restate_postcondition_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery restate postcondition zh"
   response_concept_lookup_in_context_en
     defined-by response_template
     lexeme en
@@ -1309,88 +1394,3 @@ meanings
     lexeme en
       surface
         text "response greeting en"
-  response_greeting_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response greeting hi"
-  response_greeting_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response greeting ru"
-  response_greeting_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response greeting zh"
-  response_http_fetch_curated_project_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response http fetch curated project en"
-  response_http_fetch_curated_project_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response http fetch curated project hi"
-  response_http_fetch_curated_project_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response http fetch curated project ru"
-  response_http_fetch_curated_project_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response http fetch curated project zh"
-  response_identity_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response identity en"
-  response_identity_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response identity hi"
-  response_identity_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response identity ru"
-  response_identity_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response identity zh"
-  response_inappropriate_content_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response inappropriate content en"
-  response_inappropriate_content_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response inappropriate content hi"
-  response_inappropriate_content_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response inappropriate content ru"
-  response_inappropriate_content_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response inappropriate content zh"
-  response_kupi_slona_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response kupi slona en"
-  response_kupi_slona_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response kupi slona hi"
