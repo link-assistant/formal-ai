@@ -5,6 +5,13 @@
 //! ```sh
 //! cargo run --example issue_706_language_frontier > data/meta/learning-frontier-language-gap.lino
 //! ```
+//!
+//! The committed record is deliberately **frozen at the pre-adoption state**:
+//! it is the "before" half of `data/meta/language-adoption-ledger.lino`. Re-run
+//! this example to record a *new* frontier (a language whose corpus the engine
+//! still fails), not to refresh the committed one — after the issue-#706
+//! adoption every Spanish prompt routes, so a re-run prints an empty frontier
+//! with an explicit `frontier_gap`, which is exactly the proof the cycle worked.
 
 use std::path::Path;
 

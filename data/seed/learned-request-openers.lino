@@ -1,8 +1,18 @@
 meanings
+  concept_lookup_request_opener
+    defined-by inquiry
+    defined-by concept
+    role term_information_request_opener
+    lexeme es
+      surface
+        text "qué es …"
   tell_me_about_request_opener
     defined-by inquiry
     defined-by concept
     role term_information_request_opener
+    lexeme es
+      surface
+        text "cuéntame sobre …"
     lexeme hi
       surface
         text "… के बारे में बताओ"

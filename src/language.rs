@@ -275,7 +275,9 @@ fn unquote(value: &'static str) -> &'static str {
 }
 
 fn parse_codepoint(value: &str) -> u32 {
-    let digits = value.strip_prefix("0x").or_else(|| value.strip_prefix("0X"));
+    let digits = value
+        .strip_prefix("0x")
+        .or_else(|| value.strip_prefix("0X"));
     digits.map_or(0, |digits| u32::from_str_radix(digits, 16).unwrap_or(0))
 }
 

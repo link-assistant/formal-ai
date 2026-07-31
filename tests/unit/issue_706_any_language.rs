@@ -135,7 +135,10 @@ fn detection_registry_is_seed_data_not_rust_constants() {
         .map(|language| language.slug().to_owned())
         .collect();
     for slug in ["en", "ru", "hi", "zh", "es"] {
-        assert!(slugs.contains(&slug.to_owned()), "{slug} missing from registry");
+        assert!(
+            slugs.contains(&slug.to_owned()),
+            "{slug} missing from registry"
+        );
     }
     assert_eq!(formal_ai::language::fallback_language().slug(), "en");
     assert_eq!(
@@ -223,12 +226,141 @@ fn unknown_openers_are_seed_data_on_every_surface() {
 }
 
 #[test]
+fn language_metadata_comes_from_the_ledger_not_from_rust_branches() {
+    // The thinking-log label table, the concept-slug map and the script check
+    // used to be three separate Rust `match` arms over the four original
+    // languages. All three must now answer for the fifth language without a
+    // Rust edit.
+    assert_eq!(formal_ai::language::language_name("es"), Some("Spanish"));
+    assert_eq!(formal_ai::language::language_name("qq"), None);
+    assert_eq!(
+        formal_ai::language::language_for_concept_slug("language_spanish")
+            .map(formal_ai::Language::slug),
+        Some("es")
+    );
+    assert!(formal_ai::language::surface_matches_language(
+        "manzana", "es"
+    ));
+    assert!(formal_ai::language::surface_matches_language(
+        "яблоко",
+        "ru"
+    ));
+    assert!(!formal_ai::language::surface_matches_language(
+        "яблоко",
+        "zh"
+    ));
+
+    let thinking = read("src/thinking.rs");
+    assert!(
+        !thinking.contains("\"Russian\""),
+        "language display names must come from the ledger"
+    );
+}
+
+#[test]
+fn the_learn_cli_replays_the_language_frontier_through_the_shared_cycle() {
+    // Issue #706 asked for auto-learning over languages. The issue-#701 cycle
+    // is frontier-agnostic, so this must need a *recorded frontier*, not new
+    // learning logic: the same cycle, a second registered frontier.
+    let slugs: Vec<&str> = formal_ai::learning_cycle::recorded_frontiers()
+        .iter()
+        .map(|frontier| frontier.slug)
+        .collect();
+    assert!(slugs.contains(&"google-trends"));
+    assert!(slugs.contains(&"language-gap"));
+    assert!(formal_ai::learning_cycle::recorded_frontier("nope").is_none());
+
+    let run = formal_ai::learning_cycle::language_gap_learning_cycle();
+    assert_eq!(run.frontier, "language-gap");
+    assert_eq!(
+        run.frontier_items, 7,
+        "the frozen frontier keeps all 7 prompts"
+    );
+    assert!(
+        !run.proposals.is_empty(),
+        "the cycle must propose something"
+    );
+    for candidate in &run.candidates {
+        assert_eq!(candidate.language, "es");
+        assert!(
+            candidate.validated(),
+            "a proposed frame must pass every held-out test"
+        );
+    }
+    // Both Spanish request frames were derived from the corpus, never written
+    // by hand in Rust.
+    let rendered = run.links_notation();
+    assert!(rendered.contains("qué es …"), "{rendered}");
+    assert!(rendered.contains("cuéntame sobre …"), "{rendered}");
+}
+
+#[test]
+fn adopting_the_proposals_changed_what_the_engine_answers() {
+    // A learning loop that only emits proposals proves nothing (issue #701's
+    // rule). The ledger replays the frozen "before" record through the live
+    // engine and must show a real capability delta for every prompt.
+    let ledger = formal_ai::language_adoption::language_adoption_ledger();
+    assert_eq!(ledger.pairs.len(), 7);
+    assert_eq!(ledger.unadopted().len(), 0, "every recorded prompt adopted");
+    for pair in ledger.adopted() {
+        assert_eq!(pair.before_intent, "unknown");
+        assert_ne!(pair.after_intent, "unknown");
+        assert!(pair.term_recovered(), "{pair:?}");
+    }
+
+    // The committed artifact is the byte-for-byte rendering of that ledger.
+    assert_eq!(
+        read("data/meta/language-adoption-ledger.lino"),
+        ledger.links_notation(),
+        "run `cargo run --example issue_706_language_adoption > data/meta/language-adoption-ledger.lino`"
+    );
+
+    // The adopted surfaces live in seed data, not in Rust.
+    let seed = read("data/seed/learned-request-openers.lino");
+    assert!(seed.contains("    lexeme es"));
+    assert!(seed.contains("qué es …"));
+    assert!(seed.contains("cuéntame sobre …"));
+}
+
+#[test]
+fn re_recording_the_language_frontier_now_finds_nothing_to_learn() {
+    // The closing half of the loop: recording the frontier again from the same
+    // candidate corpus, through the live engine, must come back empty — and the
+    // languages that produced nothing must be preserved as explicit gaps rather
+    // than silently dropped.
+    let directory = root().join("data/language-additions");
+    let record = formal_ai::language_frontier::record_language_gap_frontier(&directory)
+        .expect("the candidate directory is readable");
+    assert!(record.contains("total_prompts \"7\""), "{record}");
+    assert!(record.contains("learning_frontier \"0\""), "{record}");
+    assert!(
+        record.contains("reason \"every_recorded_prompt_already_routes\""),
+        "{record}"
+    );
+    assert!(
+        record.contains("reason \"no_prompt_corpus_in_language_addition_file\""),
+        "a candidate language without a corpus is an explicit gap, not a silent skip: {record}"
+    );
+}
+
+#[test]
 fn a_language_without_localized_openers_reports_a_gap_not_english() {
-    // "¿Qué tal la fotosíntesis submarina?" is Spanish (detected from seed
-    // rules alone) and has no memoized answer. Issue #706 requires the honest
-    // `language_gap` behavior instead of a silent English fallback.
+    // "¿Cómo funciona …?" is Spanish (detected from seed rules alone), carries
+    // no learned request frame and has no memoized answer. Issue #706 requires
+    // the honest `language_gap` behavior instead of a silent English fallback.
+    //
+    // Its sibling "¿Qué es …?" deliberately does *not* land here any more: the
+    // learning cycle adopted that frame, so the prompt now routes exactly like
+    // its English counterpart. Adoption narrows the gap; it never hides it.
     let engine = formal_ai::FormalAiEngine;
-    let answer = engine.answer("¿Qué es la fotosíntesis submarina de xyzzy?");
+    assert_eq!(
+        engine
+            .answer("¿Qué es la fotosíntesis submarina de xyzzy?")
+            .intent,
+        "web_search",
+        "an adopted Spanish frame must route like English"
+    );
+    let answer = engine.answer("¿Cómo funciona la fotosíntesis submarina de xyzzy?");
     assert!(
         answer.answer.contains("I detected an unsupported language"),
         "expected the explicit language gap answer, got: {}",

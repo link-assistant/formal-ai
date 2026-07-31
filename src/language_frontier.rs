@@ -101,15 +101,17 @@ pub fn load_language_candidates(directory: &Path) -> Result<Vec<LanguageCandidat
         .map_err(|error| format!("cannot read {}: {error}", directory.display()))?
         .filter_map(Result::ok)
         .map(|entry| entry.path())
-        .filter(|path| path.extension().is_some_and(|extension| extension == "lino"))
+        .filter(|path| {
+            path.extension()
+                .is_some_and(|extension| extension == "lino")
+        })
         .collect();
     paths.sort();
 
     let mut candidates = Vec::new();
     for path in paths {
-        let document =
-            fs::read_to_string(&path)
-                .map_err(|error| format!("cannot read {}: {error}", path.display()))?;
+        let document = fs::read_to_string(&path)
+            .map_err(|error| format!("cannot read {}: {error}", path.display()))?;
         if let Some(candidate) = parse_language_candidate(&document) {
             candidates.push(candidate);
         }
