@@ -1,0 +1,167 @@
+computer_use_recipe
+  record_type "meta_recipe"
+  topic "computer_use"
+  summary "Turn a natural-language computer-use request into a permissioned, isolated, per-step verified plan, learning the plan schemas from recorded examples instead of matching prompts."
+  generalization "Apply the same record, partition, induce, bind, synthesize, verify loop to any tool-backed capability: change the primitive taxonomy and the seed cues, and the procedure is unchanged. A capability is learned when its recorded examples agree on one step signature; it is refused by name when they do not."
+computer_use_step_taxonomy
+  record_type "meta_step"
+  order "1"
+  operation "Declare the capability taxonomy as seed data: one primitive per row with its permission key, isolation, precondition, and postcondition."
+  invariant "No primitive exists in code that the seed does not advertise with a permission and a verification context."
+computer_use_step_record
+  record_type "meta_step"
+  order "2"
+  operation "Record deterministic example tasks as literal primitive steps with prompts in every supported language."
+  invariant "Examples are self-authored and license-clean; no third-party benchmark text is redistributed."
+computer_use_step_meanings
+  record_type "meta_step"
+  order "3"
+  operation "Declare operation, resource, and capability-gap cues as seed meanings carrying semantic roles."
+  invariant "Recognition code never names a natural-language word; every surface lives in Links Notation seed data."
+computer_use_step_partition
+  record_type "meta_step"
+  order "4"
+  operation "Partition every recorded task into a materialisation prefix, an operation body, and a verification suffix."
+  invariant "The partition is derived from primitive kinds, not from the task identifier."
+computer_use_step_induce
+  record_type "meta_step"
+  order "5"
+  operation "Associate each operation cue with the step signature its examples share, keeping unanimous fields as constants and differing fields as slots."
+  invariant "An operation whose examples disagree on a signature is rejected by name; a step no cue explains is recorded as unexplained residue."
+computer_use_step_bind
+  record_type "meta_step"
+  order "6"
+  operation "Bind each resource to the materialisation that produces it and to the parameters that describe it."
+  invariant "Selector, pointer, column, and comparison value belong to the resource, never to the example that taught the operation."
+computer_use_step_synthesize
+  record_type "meta_step"
+  order "7"
+  operation "Synthesize an unseen request by chaining the learned operation schemas in the order the speaker named them, binding every path from the data flow."
+  invariant "A path field is never inherited from an example; a request whose operation needs a parameter the corpus never evidenced for that resource yields no plan."
+computer_use_step_verify
+  record_type "meta_step"
+  order "8"
+  operation "Execute each step in an isolated workspace behind its permission, emitting precondition, effect, and postcondition events."
+  invariant "A step is complete only when independent observation of the produced bytes passes; no later effect is scheduled after a failure."
+computer_use_step_refuse
+  record_type "meta_step"
+  order "9"
+  operation "Answer a request outside the boundary with the named, localized capability gap the seed declares."
+  invariant "Rendering, pixels, and GUI automation are refused by name in every supported language rather than approximated."
+computer_use_step_parity
+  record_type "meta_step"
+  order "10"
+  operation "Mirror the same plan across chat, agent mode, MCP, and an external agentic CLI, and ratchet both the recorded and the held-out slices in CI."
+  invariant "The external client reaches the same plan id and primitive order as the local run, in record and in replay."
+computer_use_role_operation
+  record_type "meta_role"
+  role "computer_use_operation_cue"
+  const "ROLE_COMPUTER_USE_OPERATION_CUE"
+  seed_file "data/seed/meanings-computer-use.lino"
+computer_use_role_resource
+  record_type "meta_role"
+  role "computer_use_resource_cue"
+  const "ROLE_COMPUTER_USE_RESOURCE_CUE"
+  seed_file "data/seed/meanings-computer-use.lino"
+computer_use_role_gap
+  record_type "meta_role"
+  role "computer_use_capability_gap_cue"
+  const "ROLE_COMPUTER_USE_CAPABILITY_GAP_CUE"
+  seed_file "data/seed/meanings-computer-use.lino"
+computer_use_function_normalize
+  record_type "meta_function"
+  source_file "src/computer_use/lexicon.rs"
+  function "normalize"
+computer_use_function_operations
+  record_type "meta_function"
+  source_file "src/computer_use/lexicon.rs"
+  function "operation_cues"
+computer_use_function_resource
+  record_type "meta_function"
+  source_file "src/computer_use/lexicon.rs"
+  function "resource_cue"
+computer_use_function_partition
+  record_type "meta_function"
+  source_file "src/computer_use/induction.rs"
+  function "partition"
+computer_use_function_induce
+  record_type "meta_function"
+  source_file "src/computer_use/induction.rs"
+  function "induce"
+computer_use_function_synthesize
+  record_type "meta_function"
+  source_file "src/computer_use/synthesis.rs"
+  function "synthesize_with"
+computer_use_function_plan
+  record_type "meta_function"
+  source_file "src/computer_use/mod.rs"
+  function "plan_request"
+computer_use_function_gap
+  record_type "meta_function"
+  source_file "src/computer_use/mod.rs"
+  function "capability_gap_for_request"
+computer_use_function_execute
+  record_type "meta_function"
+  source_file "src/computer_use/mod.rs"
+  function "run_verified_plan"
+computer_use_data_taxonomy
+  record_type "meta_data"
+  source_file "data/seed/tools.lino"
+  purpose "primitive taxonomy with permission, isolation, and verification context"
+computer_use_data_corpus
+  record_type "meta_data"
+  source_file "data/seed/computer-use-tasks.lino"
+  purpose "recorded example tasks in four languages"
+computer_use_data_meanings
+  record_type "meta_data"
+  source_file "data/seed/meanings-computer-use.lino"
+  purpose "operation, resource, and capability-gap surfaces"
+computer_use_data_generalization
+  record_type "meta_data"
+  source_file "data/benchmarks/computer-use-generalization.lino"
+  purpose "held-out requests that no recorded plan answers"
+computer_use_evidence_schemas
+  record_type "meta_evidence"
+  source_file "docs/case-studies/issue-707/learned-schemas.lino"
+  produced_by "cargo run --bin formal-ai -- computer-use --learn"
+  purpose "the induced schemas, committed so drift is a CI failure"
+computer_use_benchmark_recorded
+  record_type "meta_benchmark"
+  source_file "tests/issue_707_computer_use.rs"
+  test "ten_seeded_tasks_execute_and_replay_with_every_step_verified"
+  coverage "recorded_corpus"
+computer_use_benchmark_generalization
+  record_type "meta_benchmark"
+  source_file "tests/issue_707_generalization.rs"
+  test "every_synthesized_plan_executes_with_every_step_verified"
+  coverage "held_out_requests"
+computer_use_benchmark_parity
+  record_type "meta_benchmark"
+  source_file "tests/issue_707_generalization.rs"
+  test "the_four_languages_of_a_case_agree_on_one_plan"
+  coverage "cross_language_parity"
+computer_use_benchmark_drift
+  record_type "meta_benchmark"
+  source_file "tests/issue_707_learning.rs"
+  test "the_committed_schema_snapshot_matches_a_fresh_induction"
+  coverage "learning_evidence"
+computer_use_benchmark_memorisation
+  record_type "meta_benchmark"
+  source_file "tests/issue_707_learning.rs"
+  test "no_synthesized_plan_inherits_a_path_from_another_resource"
+  coverage "anti_memorisation"
+computer_use_benchmark_boundary
+  record_type "meta_benchmark"
+  source_file "tests/issue_707_generalization.rs"
+  test "out_of_boundary_requests_are_refused_honestly_in_all_four_languages"
+  coverage "named_capability_gap"
+computer_use_external_client
+  record_type "meta_parity"
+  script "experiments/agent_cli_e2e/run_issue_707.sh"
+  verifier "experiments/agent_cli_e2e/verify_issue_707.mjs"
+  coverage "recorded_corpus"
+computer_use_external_client_generalization
+  record_type "meta_parity"
+  script "experiments/agent_cli_e2e/run_issue_707_generalization.sh"
+  verifier "experiments/agent_cli_e2e/verify_issue_707_generalization.mjs"
+  coverage "held_out_requests"

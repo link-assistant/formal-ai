@@ -168,7 +168,10 @@ fn every_synthesized_plan_executes_with_every_step_verified() {
 #[test]
 fn out_of_boundary_requests_are_refused_honestly_in_all_four_languages() {
     for (locale, prompt) in [
-        ("en", "Take a screenshot of the rendered customers dashboard"),
+        (
+            "en",
+            "Take a screenshot of the rendered customers dashboard",
+        ),
         ("ru", "Сделай снимок отрисованной страницы с клиентами"),
         ("hi", "ग्राहकों के rendered page का screenshot लो"),
         ("zh", "截图渲染后的客户页面"),
