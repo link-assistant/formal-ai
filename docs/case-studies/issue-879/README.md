@@ -130,6 +130,19 @@ Formal AI was used through the real Agent CLI while developing this change:
 The Rust implementation, regression tests, and prose documentation were
 written with Codex assistance and are not claimed as Formal AI-authored.
 
+## Live ladder evidence
+
+The ladder was also exercised end to end against the installed Agent CLI and a
+temporary local Formal AI server on port 18099, in an empty Git repository, with
+a request the local model could not satisfy. Session
+`ses_048503119ffe9cCHeMerd8wBVF` spent all three strategies, the wrapper exited
+nonzero with `completion_state: "incomplete"` instead of reporting a false
+success, and the workspace stayed empty to Git. The
+[completion record](raw-data/live-recovery-completion-record.json) and the
+[recovery ledger it wrote](raw-data/live-recovery-ledger.lino) are retained
+verbatim; the ledger landed in `~/.local/state/formal-ai/`, outside the
+repository the client ran in.
+
 ## Source evidence
 
 The issue had no comments or embedded screenshots when collected on
