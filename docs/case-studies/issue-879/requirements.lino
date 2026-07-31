@@ -1,6 +1,9 @@
 issue_879_requirements
   no_false_success "a software-authoring run requires an observable workspace effect"
-  bounded_recovery "one corrective retry, preferably in the native session"
+  bounded_recovery "each retry spends the next seeded strategy, preferably in the native session"
+  different_decomposition "a retry restates, names an artifact, or decomposes, never repeats"
+  self_learning "the strategy that produced an effect is tried first on later runs"
+  learning_hygiene "durable learning state lives outside the caller's workspace"
   local_endpoint "the configured Formal AI endpoint is authoritative"
   machine_output "each stdout record is compact NDJSON"
   usage_metadata "model, endpoint, input tokens, and output tokens are reported"
