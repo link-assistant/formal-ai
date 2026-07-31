@@ -2,9 +2,9 @@ self_ast_census
   target src/main.rs
   language rust
   fidelity signature
-  byte_len 35427
-  line_count 1012
-  content_id source_module_49d8f86fafb170a1
+  byte_len 34821
+  line_count 992
+  content_id source_module_997429445ce24efa
   symbol_count 39
   symbols
     module cli_benchmark 9 9
@@ -22,27 +22,27 @@ self_ast_census
     module cli_statement_audit 21 21
     const DEFAULT_AGENT_TASK 51 71
     struct Args 60 71
-    enum Command 74 307
-    enum MemoryAction 310 456
-    enum BundleAction 459 483
-    enum GithubLogsAction 486 491
-    struct GithubLogsOptions 494 530
-    enum OutputFormat 533 537
-    enum DefinitionFusionMode 540 543
-    enum TelegramMode 546 549
-    function fmt 552 558
-    function fmt 562 567
-    function fmt 571 576
-    function main 579 701
-    function run_github_logs 703 724
-    function run_agent 726 750
-    function into_config 753 765
-    struct TelegramRunArgs 768 777
-    function solver_for_chat 779 796
-    function print_thinking_trace 805 823
-    function run_chat 825 878
-    function run_bundle 880 944
-    function run_environments 946 967
-    function read_input 969 977
-    function run_telegram 979 1004
-    function parse_allowed_updates 1006 1012
+    enum Command 74 292
+    enum MemoryAction 295 441
+    enum BundleAction 444 468
+    enum GithubLogsAction 471 476
+    struct GithubLogsOptions 479 515
+    enum OutputFormat 518 522
+    enum DefinitionFusionMode 525 528
+    enum TelegramMode 531 534
+    function fmt 537 543
+    function fmt 547 552
+    function fmt 556 561
+    function main 564 681
+    function run_github_logs 683 704
+    function run_agent 706 730
+    function into_config 733 745
+    struct TelegramRunArgs 748 757
+    function solver_for_chat 759 776
+    function print_thinking_trace 785 803
+    function run_chat 805 858
+    function run_bundle 860 924
+    function run_environments 926 947
+    function read_input 949 957
+    function run_telegram 959 984
+    function parse_allowed_updates 986 992
