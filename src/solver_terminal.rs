@@ -113,8 +113,7 @@ fn detect_terminal_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> O
 /// the detected command — no per-language wording is hardcoded here.
 #[allow(clippy::literal_string_with_formatting_args)]
 fn terminal_body(command: &str, language: Language) -> String {
-    let template = seed::response_for("agent_suggestion", language.slug())
-        .or_else(|| seed::response_for("agent_suggestion", "en"))
+    let template = seed::localized_response("agent_suggestion", language.slug())
         .unwrap_or_default();
     template.replace("{command}", command)
 }

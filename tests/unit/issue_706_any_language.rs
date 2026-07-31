@@ -110,3 +110,69 @@ fn ci_contract_discovers_every_registered_language_from_the_ledger() {
         assert!(guard.contains("data/seed/languages.lino"));
     }
 }
+
+#[test]
+fn detection_registry_is_seed_data_not_rust_constants() {
+    // Every language the detector knows must come from the seed registry, and
+    // the detector's own source must not enumerate them. Issue #706 requires a
+    // new language to be addable with zero Rust edits.
+    let registry = read("data/seed/language-detection.lino");
+    for slug in ["en", "ru", "hi", "zh", "es"] {
+        assert!(
+            registry.contains(&format!("    language {slug}")),
+            "{slug} must be a seed record"
+        );
+    }
+
+    let detector = read("src/language.rs");
+    assert!(
+        detector.contains("include_str!(\"../data/seed/language-detection.lino\")"),
+        "the detector must read its rules from seed data"
+    );
+
+    let slugs: Vec<String> = formal_ai::language::registered_languages()
+        .iter()
+        .map(|language| language.slug().to_owned())
+        .collect();
+    for slug in ["en", "ru", "hi", "zh", "es"] {
+        assert!(slugs.contains(&slug.to_owned()), "{slug} missing from registry");
+    }
+    assert_eq!(formal_ai::language::fallback_language().slug(), "en");
+    assert_eq!(
+        formal_ai::language::from_slug("es").map(|language| language.slug()),
+        Some("es")
+    );
+}
+
+#[test]
+fn fifth_language_is_detected_without_any_rust_change() {
+    use formal_ai::language::detect;
+
+    for prompt in ["¿Cómo estás?", "hola, ¿quién eres?", "gracias por favor"] {
+        assert_eq!(
+            detect(prompt).slug(),
+            "es",
+            "Spanish prompt {prompt:?} must detect as es"
+        );
+    }
+
+    // The registry must not regress the four pre-existing languages.
+    assert_eq!(detect("hello there").slug(), "en");
+    assert_eq!(detect("что это такое").slug(), "ru");
+    assert_eq!(detect("क्या हाल है").slug(), "hi");
+    assert_eq!(detect("你是谁").slug(), "zh");
+}
+
+#[test]
+fn a_language_without_localized_openers_reports_a_gap_not_english() {
+    // "¿Qué tal la fotosíntesis submarina?" is Spanish (detected from seed
+    // rules alone) and has no memoized answer. Issue #706 requires the honest
+    // `language_gap` behavior instead of a silent English fallback.
+    let engine = formal_ai::FormalAiEngine::default();
+    let answer = engine.answer("¿Qué es la fotosíntesis submarina de xyzzy?");
+    assert!(
+        answer.answer.contains("I detected an unsupported language"),
+        "expected the explicit language gap answer, got: {}",
+        answer.answer
+    );
+}

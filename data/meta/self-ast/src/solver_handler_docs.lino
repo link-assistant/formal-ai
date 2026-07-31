@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handler_docs.rs
   language rust
   fidelity signature
-  byte_len 10867
+  byte_len 10831
   line_count 195
-  content_id source_module_2a605c8e0cac31e2
+  content_id source_module_a45251c807545393
   symbol_count 7
   symbols
     const PANDAS_DATAFRAME_JOIN_DOCS_URL 9 10

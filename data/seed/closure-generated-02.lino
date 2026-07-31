@@ -1,4 +1,9 @@
 meanings
+  function_catalog
+    defined-by kind
+    lexeme en
+      surface
+        text "function catalog"
   general_plan_command_capture_action
     defined-by intent
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern concept context delimiter men hi"
-  pattern_concept_context_delimiter_primenitelno_k_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter primenitelno k ru"

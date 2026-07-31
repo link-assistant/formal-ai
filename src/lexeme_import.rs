@@ -34,7 +34,7 @@ use serde_json::Value;
 use crate::event_log::EventLog;
 use crate::json_lino::json_cache_file;
 use crate::knowledge::cache_capacity;
-use crate::seed::{parse_lexicon_text, response_for, LANGUAGES_LINO};
+use crate::seed::{parse_lexicon_text, localized_response, LANGUAGES_LINO};
 use crate::translation::http::HttpClient;
 
 /// Full-support project languages, derived from the registry in ledger order.
@@ -82,8 +82,7 @@ pub fn diagnostic(intent: &str, values: &[(&str, &str)]) -> String {
 /// requested locale has no grounded record.
 #[must_use]
 pub fn diagnostic_for_language(intent: &str, language: &str, values: &[(&str, &str)]) -> String {
-    let mut rendered = response_for(intent, language)
-        .or_else(|| response_for(intent, "en"))
+    let mut rendered = localized_response(intent, language)
         .unwrap_or_else(|| intent.to_owned());
     for (name, value) in values {
         rendered = rendered.replace(&format!("{{{name}}}"), value);

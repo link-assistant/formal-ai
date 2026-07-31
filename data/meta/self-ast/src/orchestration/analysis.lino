@@ -2,9 +2,9 @@ self_ast_census
   target src/orchestration/analysis.rs
   language rust
   fidelity signature
-  byte_len 14287
-  line_count 413
-  content_id source_module_b43fe74ff73876a3
+  byte_len 14192
+  line_count 412
+  content_id source_module_a9ac07eb8811970c
   symbol_count 19
   symbols
     const SOURCES_PLACEHOLDER 14 14
@@ -22,7 +22,7 @@ self_ast_census
     function result_candidate 244 278
     function text_at 280 287
     function content_text 289 307
-    function correction_requests 309 350
-    function apply_verified_translation 354 375
-    function observe_orchestration_session 380 406
-    function target_slug 408 413
+    function correction_requests 309 349
+    function apply_verified_translation 353 374
+    function observe_orchestration_session 379 405
+    function target_slug 407 412

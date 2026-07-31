@@ -722,8 +722,7 @@ fn supplied_file_template(
     path: &str,
 ) -> String {
     let language = crate::language::detect(request);
-    let mut rendered = seed::response_for(intent, language.slug())
-        .or_else(|| seed::response_for(intent, "en"))
+    let mut rendered = seed::localized_response(intent, language.slug())
         .unwrap_or_default();
     rendered = rendered.replace("{path}", path);
     for (placeholder, value) in substitutions {

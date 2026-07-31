@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/world_state.rs
   language rust
   fidelity signature
-  byte_len 4110
-  line_count 100
-  content_id source_module_697e7e844844f37e
+  byte_len 4062
+  line_count 99
+  content_id source_module_1a6c1d7dae52d602
   symbol_count 1
   symbols
-    function try_world_state 37 100
+    function try_world_state 37 99

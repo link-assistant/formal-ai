@@ -395,8 +395,7 @@ pub fn resume_agent(
     config.model.clone_from(&parent.model);
     config.base_url.clone_from(&parent.base_url);
     let language = crate::language::detect(&config.task).slug();
-    let template = crate::seed::response_for("orchestration_correction_prompt", language)
-        .or_else(|| crate::seed::response_for("orchestration_correction_prompt", "en"))
+    let template = crate::seed::localized_response("orchestration_correction_prompt", language)
         .ok_or(AgentRunError::SeedContractUnavailable(
             "orchestration_correction_prompt",
         ))?;

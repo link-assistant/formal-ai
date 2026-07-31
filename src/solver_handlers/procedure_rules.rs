@@ -79,8 +79,7 @@ pub fn try_compiled_procedure(
 
 /// Look a response template up by intent, falling back to English (R379).
 fn template(intent: &str, language: &str) -> String {
-    seed::response_for(intent, language)
-        .or_else(|| seed::response_for(intent, "en"))
+    seed::localized_response(intent, language)
         .unwrap_or_default()
 }
 

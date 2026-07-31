@@ -2,9 +2,9 @@ self_ast_census
   target src/lexeme_import.rs
   language rust
   fidelity signature
-  byte_len 35115
-  line_count 999
-  content_id source_module_e2ce6b037df91459
+  byte_len 35079
+  line_count 998
+  content_id source_module_f5b99fc650394820
   symbol_count 49
   symbols
     function import_languages 42 55
@@ -13,46 +13,46 @@ self_ast_census
     const DEFINED_BY 64 64
     const CONCEPTS_PER_SHARD 69 69
     function diagnostic 77 79
-    function diagnostic_for_language 84 92
-    const SHARD_HEADER 95 97
-    const MEANINGS_HEAD 101 101
-    struct Concept 105 108
-    struct GroundedLexeme 112 120
-    struct SurfaceSource 124 127
-    type SurfaceMaps 130 130
-    struct Rejection 134 138
-    struct Shard 142 145
-    struct ImportReport 149 154
-    struct ImportCoverage 158 163
-    function permille 168 174
-    struct ImportConfig 178 187
-    function live_api_enabled 192 199
-    function parse_concepts 204 231
-    function is_entity_id 235 238
-    function entity_json_path 242 244
-    function entity_lino_path 248 250
-    function run 257 331
-    function reject 333 343
-    function resolve_surfaces 347 398
-    function surfaces_from_entity 402 456
-    function labels_from_entity 459 461
-    function surface_matches_language 463 479
-    function fetch_and_cache 485 537
-    function trim_entity 543 567
-    enum Ordered 571 576
-    function keep_languages 578 587
-    function keep_language_arrays 589 603
-    function value_to_ordered 605 618
-    function serialize_trimmed 624 629
-    function write_ordered 631 679
-    function pad 681 685
-    function escape_json 687 700
-    function validate 707 823
-    function slug_is_clean 827 832
-    function surface_is_clean 836 840
-    function render_block 844 863
-    function shard 871 893
-    function render_import_events 900 912
-    function write_event_field 914 916
-    function write_shards 923 992
-    function escape_lino 994 999
+    function diagnostic_for_language 84 91
+    const SHARD_HEADER 94 96
+    const MEANINGS_HEAD 100 100
+    struct Concept 104 107
+    struct GroundedLexeme 111 119
+    struct SurfaceSource 123 126
+    type SurfaceMaps 129 129
+    struct Rejection 133 137
+    struct Shard 141 144
+    struct ImportReport 148 153
+    struct ImportCoverage 157 162
+    function permille 167 173
+    struct ImportConfig 177 186
+    function live_api_enabled 191 198
+    function parse_concepts 203 230
+    function is_entity_id 234 237
+    function entity_json_path 241 243
+    function entity_lino_path 247 249
+    function run 256 330
+    function reject 332 342
+    function resolve_surfaces 346 397
+    function surfaces_from_entity 401 455
+    function labels_from_entity 458 460
+    function surface_matches_language 462 478
+    function fetch_and_cache 484 536
+    function trim_entity 542 566
+    enum Ordered 570 575
+    function keep_languages 577 586
+    function keep_language_arrays 588 602
+    function value_to_ordered 604 617
+    function serialize_trimmed 623 628
+    function write_ordered 630 678
+    function pad 680 684
+    function escape_json 686 699
+    function validate 706 822
+    function slug_is_clean 826 831
+    function surface_is_clean 835 839
+    function render_block 843 862
+    function shard 870 892
+    function render_import_events 899 911
+    function write_event_field 913 915
+    function write_shards 922 991
+    function escape_lino 993 998

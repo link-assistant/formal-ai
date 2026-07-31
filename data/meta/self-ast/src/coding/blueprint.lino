@@ -2,9 +2,9 @@ self_ast_census
   target src/coding/blueprint.rs
   language rust
   fidelity signature
-  byte_len 28400
+  byte_len 28388
   line_count 574
-  content_id source_module_781f64bb9be78111
+  content_id source_module_2539ecafe5a5286b
   symbol_count 25
   symbols
     struct Capability 47 54

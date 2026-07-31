@@ -120,8 +120,7 @@ fn render_response(
     execution: &str,
 ) -> String {
     let language = detect_language(&procedure.source_description);
-    seed::response_for(intent, language.slug())
-        .or_else(|| seed::response_for(intent, "en"))
+    seed::localized_response(intent, language.slug())
         .unwrap_or_default()
         .replace("{path}", COMPILED_PROCEDURE_PATH)
         .replace("{procedure_id}", &procedure.id)

@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/self_awareness.rs
   language rust
   fidelity signature
-  byte_len 23580
-  line_count 552
-  content_id source_module_a691737d1e14223a
+  byte_len 23528
+  line_count 551
+  content_id source_module_fd9b8d47421e5712
   symbol_count 21
   symbols
     struct SelfAwarenessRuntime 14 21
@@ -25,6 +25,6 @@ self_ast_census
     function is_self_introduction_query 485 492
     function self_awareness_language 494 510
     function has_char_in_range 512 514
-    function identity_body 516 520
-    function is_known_fact_query 522 542
-    function stable_variant_index 544 552
+    function identity_body 516 519
+    function is_known_fact_query 521 541
+    function stable_variant_index 543 551

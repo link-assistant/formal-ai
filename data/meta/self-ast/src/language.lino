@@ -2,29 +2,55 @@ self_ast_census
   target src/language.rs
   language rust
   fidelity signature
-  byte_len 8634
-  line_count 266
-  content_id source_module_d8ae2ac3b4b16847
-  symbol_count 21
+  byte_len 15239
+  line_count 442
+  content_id source_module_de5ecf24b0e0bcff
+  symbol_count 47
   symbols
-    enum Language 11 17
-    module forced_language 30 49
-    static FORCED_LANGUAGE 35 35
-    function replace 38 40
-    function set 42 44
-    function get 46 48
-    module forced_language 52 75
-    struct Slot 56 56
-    static FORCED_LANGUAGE 62 62
-    function replace 64 66
-    function set 68 70
-    function get 72 74
-    function set_forced_language 83 86
-    function from_slug 90 98
-    struct ForcedLanguageGuard 101 103
-    function drop 106 108
-    enum Script 112 118
-    function slug 122 130
-    function detect 142 212
-    function marker_language 214 236
-    function contains_question_marker 238 266
+    const LANGUAGE_DETECTION 22 22
+    struct Language 31 31
+    const English 36 36
+    const Russian 38 38
+    const Hindi 40 40
+    const Chinese 42 42
+    const Unknown 44 44
+    function slug 48 50
+    function from_static_slug 54 56
+    function fmt 60 62
+    module forced_language 76 95
+    static FORCED_LANGUAGE 81 81
+    function replace 84 86
+    function set 88 90
+    function get 92 94
+    module forced_language 98 121
+    struct Slot 102 102
+    static FORCED_LANGUAGE 108 108
+    function replace 110 112
+    function set 114 116
+    function get 118 120
+    function set_forced_language 129 132
+    function from_slug 140 147
+    function registered_languages 151 153
+    function fallback_language 157 159
+    struct ForcedLanguageGuard 162 164
+    function drop 167 169
+    struct Rule 176 190
+    function unquote 192 197
+    function parse_codepoint 199 202
+    function parse_quoted_list 205 215
+    function parse_rules 217 254
+    function with_rules 261 265
+    static RULES 263 263
+    function with_rules 268 270
+    function fallback_of 272 277
+    function fallback_script_of 279 284
+    function default_language_of 287 293
+    struct ScriptCounts 296 300
+    function of 303 308
+    function bump 310 317
+    function max_excluding 320 327
+    function total 329 331
+    function count_scripts 334 356
+    function marker_language 360 381
+    function detect 392 399
+    function detect_with 401 442

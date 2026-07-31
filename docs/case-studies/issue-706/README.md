@@ -38,14 +38,33 @@ matrix against the real translation pipeline using the seeded `apple` meaning.
 ## Fifth-language proof
 
 Spanish was selected as the fifth language because a useful Latin-script
-slice could be audited without confusing script detection with fluency. Its
-detection claim is intentionally limited to an explicit `es` language context;
-plain Latin text remains ambiguous. The covered slice contains:
+slice could be audited without confusing script detection with fluency. The
+covered slice contains:
 
 - greetings and identity responses;
 - six meaning surfaces (`manzana`, `hola`, `gracias`, `sí`, `pan`, `agua`);
 - an uppercase operation phrase;
 - concept lookup, math wrapper, and translation round-trip specimens.
+
+Spanish detection needs no Rust edit either. `src/language.rs` no longer
+enumerates languages: it embeds `data/seed/language-detection.lino` and derives
+the whole detector from it. A rule declares its `script`, Unicode range,
+`markers`, and whether it is the `fallback`. Spanish shares the Latin script
+with the fallback language, so its range only widens the Latin count to the
+accented letters and the vote is carried by its markers (`¿`, `¡`, `ñ`, `qué`,
+`hola`, …). `data/seed/languages.lino` therefore records `detection_mode
+script_and_markers`, not the earlier `explicit_language_context` workaround.
+The JS worker (`src/web/worker/formal_ai_worker_00.js`) and the `no_std` WASM
+worker read the same registry, so all three surfaces agree by construction.
+
+### Honest gaps instead of silent English
+
+`seed::localized_response(intent, language)` implements the ledger's
+`fallback_policy explicit_gap`: exact language → the seed's `language unknown`
+"unsupported language" record → English as the last resort. Handlers that
+previously wrote `response_for(intent, language).or_else(|| response_for(intent,
+"en"))` answered a Spanish speaker in English without saying so; all 43 such
+sites now route through the helper.
 
 All six declared suites pass, recorded as 1000 permille in
 `coverage-es.lino`. Meaning coverage remains `partial`, and the response

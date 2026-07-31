@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/planner.rs
   language rust
   fidelity full_ast
-  byte_len 42300
-  line_count 962
-  content_id source_module_68a696791e2b90e5
+  byte_len 42209
+  line_count 961
+  content_id source_module_ef1caede8c85665f
   symbol_count 38
   symbols
     const SEARCH_QUERY 50 50
@@ -18,43 +18,43 @@ self_ast_census
     function registry_id 129 146
     function tool_capability 155 157
     function plan_chat_step 162 381
-    function plan_general_change_step 383 445
-    function plan_shell_step 448 465
-    struct DocumentRecipe 477 486
-    function plan_document_recipe 491 515
-    function plan_formalization_step 518 563
-    function plan_meaning_detail_step 572 621
-    function plan_diagram_step 628 641
-    function plan_self_ast_step 648 661
-    function plan_self_heal_step 668 681
-    function plan_source_links_step 689 702
-    function plan_ledger_step 709 722
-    function plan_explain_step 729 742
-    function plan_change_request_step 750 763
-    function plan_repair_strategy_step 771 784
-    function plan_rebuild_step 793 806
-    function plan_question_catalog_step 814 827
-    function plan_dreaming_audit_step 829 842
-    function plan_google_trends_learning_step 850 863
-    function plan_google_trends_catalog_step 865 878
-    function plan_one 880 885
-    function write_arguments 893 901
-    function fetch_arguments 910 916
-    function classify_tool 918 920
-    function latest_user_text 923 925
-    const FORMALIZATION_KEYWORDS 928 928
-    function is_formalization_task 939 944
-    function final_answer 948 962
+    function plan_general_change_step 383 444
+    function plan_shell_step 447 464
+    struct DocumentRecipe 476 485
+    function plan_document_recipe 490 514
+    function plan_formalization_step 517 562
+    function plan_meaning_detail_step 571 620
+    function plan_diagram_step 627 640
+    function plan_self_ast_step 647 660
+    function plan_self_heal_step 667 680
+    function plan_source_links_step 688 701
+    function plan_ledger_step 708 721
+    function plan_explain_step 728 741
+    function plan_change_request_step 749 762
+    function plan_repair_strategy_step 770 783
+    function plan_rebuild_step 792 805
+    function plan_question_catalog_step 813 826
+    function plan_dreaming_audit_step 828 841
+    function plan_google_trends_learning_step 849 862
+    function plan_google_trends_catalog_step 864 877
+    function plan_one 879 884
+    function write_arguments 892 900
+    function fetch_arguments 909 915
+    function classify_tool 917 919
+    function latest_user_text 922 924
+    const FORMALIZATION_KEYWORDS 927 927
+    function is_formalization_task 938 943
+    function final_answer 947 961
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 21157
-    named_node_count 4231
+    total_link_count 21085
+    named_node_count 4214
     distinct_node_kinds 74
     node_kinds
-      arguments 275
+      arguments 273
       array_expression 1
       array_type 40
       assignment_expression 3
@@ -62,11 +62,11 @@ self_ast_census
       attribute_item 6
       binary_expression 9
       block 107
-      call_expression 275
-      closure_expression 8
-      closure_parameters 8
+      call_expression 273
+      closure_expression 7
+      closure_parameters 7
       const_item 5
-      crate 5
+      crate 4
       declaration_list 1
       doc_comment 137
       else_clause 2
@@ -77,14 +77,14 @@ self_ast_census
       expression_statement 135
       field_declaration 6
       field_declaration_list 2
-      field_expression 77
-      field_identifier 109
+      field_expression 76
+      field_identifier 108
       field_initializer 26
       field_initializer_list 13
       function_item 29
       function_modifiers 2
       generic_type 5
-      identifier 1204
+      identifier 1202
       if_expression 73
       impl_item 1
       inner_doc_comment_marker 5
@@ -108,14 +108,14 @@ self_ast_census
       reference_expression 72
       reference_type 77
       return_expression 57
-      scoped_identifier 217
+      scoped_identifier 215
       scoped_use_list 3
       self 4
       self_parameter 2
       shorthand_field_initializer 26
       source_file 1
-      string_content 87
-      string_literal 84
+      string_content 85
+      string_literal 82
       struct_expression 13
       struct_item 2
       super 46

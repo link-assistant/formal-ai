@@ -1485,3 +1485,21 @@ judgement as its base case.
 | R847-6 | The decomposition must be deterministic: the same task and configuration always produce the same result. | The splitter is a pure function of the task text and the depth bound, with no clock, randomness or ordering by hash; covered by `decomposition_is_deterministic_for_a_given_config` and `decomposition_is_deterministic`. |
 | R847-7 | A real corpus task must decompose into children a human agrees are smaller and jointly sufficient. | Covered by `a_real_corpus_task_splits_into_smaller_jointly_sufficient_children`, which splits this repository's own `experiments/` code-change-detector task into its two edits. |
 | R847-8 | The spectrum must run from a GitHub issue down to a single atomic edit, with regression coverage in the specification suites in all four languages. | `the_spectrum_runs_from_issue_to_atomic_edit` pins both ends of the ladder; `tests/unit/specification/task_decomposition.rs` holds the four-language specifications and `tests/unit/issue_847_task_decomposition.rs` the reproduction cases. |
+
+## Issue #706 Any-Language Protocol
+
+Issue [#706](https://github.com/link-assistant/formal-ai/issues/706) (E64)
+records that the four supported languages were coordinated by hand: every
+addition touched Rust. PR
+[#880](https://github.com/link-assistant/formal-ai/pull/880) turns the language
+set into one registry of seed data — detection, coverage ledger, generated
+round-trip matrix, and CI guards all read the same records.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R706-1 | Adding a language must be a data-only edit: no Rust change for detection, registration, or coverage. | `src/language.rs` embeds `data/seed/language-detection.lino` and derives `Language`, the script table, ranges, markers, and the fallback from it; `Language` is a registry-backed newtype, not an enum. Covered by `issue_706_any_language::detection_registry_is_seed_data_not_rust_constants`. |
+| R706-2 | The round-trip contract (language→meta→same language, plus every directed pair) must be generated from the registry, not written per language. | `scripts/language-protocol.mjs` generates `docs/case-studies/issue-706/round-trip-matrix.lino` for all N² pairs; covered by `registry_drives_an_automatically_generated_round_trip_matrix`. |
+| R706-3 | A fifth language must pass the generated matrix and at least 80% of the multilingual suite end-to-end. | Spanish is registered with `detection_mode script_and_markers` and 1000‰ suite coverage in `docs/case-studies/issue-706/coverage-es.lino`; detection is proved by `fifth_language_is_detected_without_any_rust_change`. |
+| R706-4 | Coverage must be honest: a partial language emits `language_gap` instead of a silent English fallback. | `data/seed/languages.lino` declares `fallback_policy explicit_gap`; `seed::localized_response` resolves exact language → the seed's `language unknown` record → English, and every handler uses it. Covered by `a_language_without_localized_openers_reports_a_gap_not_english`. |
+| R706-5 | The sixth-language dry run must need no code edit, and CI language parity must extend automatically to every registered language. | `data/language-additions/ar.lino` with `--dry-run` reports `code_changes 0`; `tests/e2e/scripts/check-language-{test-coverage,change-parity}.mjs` discover languages from the ledger. Covered by `sixth_language_dry_run_is_data_only_and_reports_coverage` and `ci_contract_discovers_every_registered_language_from_the_ledger`. |
+| R706-6 | The Rust core, the `no_std` WASM worker, and the JS worker must share one detection registry. | `src/language.rs` compiles into `src/web/wasm-worker/src/lib.rs` (re-parsing per call because the bump allocator resets); `src/web/worker/formal_ai_worker_00.js` mirrors `detect_with` over `LANGUAGE_RULES` hydrated from the same seed file by `src/web/seed_loader.js`. |

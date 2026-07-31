@@ -330,8 +330,7 @@ fn correction_requests(
             };
             let evidence_language = language::detect(&claim.text).slug();
             let evidence =
-                crate::seed::response_for("orchestration_cross_agent_denial", evidence_language)
-                    .or_else(|| crate::seed::response_for("orchestration_cross_agent_denial", "en"))
+                crate::seed::localized_response("orchestration_cross_agent_denial", evidence_language)
                     .unwrap_or_else(|| "orchestration_cross_agent_denial".to_string())
                     .replace(SOURCES_PLACEHOLDER, &claim.denied_by.join(","))
                     .replace(

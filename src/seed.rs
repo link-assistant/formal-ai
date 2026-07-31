@@ -383,6 +383,29 @@ pub fn response_for(intent: &str, language: &str) -> Option<String> {
     None
 }
 
+/// Look up a localized response, applying the registry's `explicit_gap`
+/// fallback policy (`data/seed/languages.lino`).
+///
+/// Issue #706: a language that the detection registry knows but a given intent
+/// has no localized text for is a *gap*, not an English prompt. Handlers that
+/// used to write `response_for(intent, language).or_else(|| response_for(intent,
+/// "en"))` silently answered a Spanish speaker in English; going through this
+/// helper instead prefers the seed's `language unknown` variant — the record
+/// that says out loud that the language is unsupported — before falling back to
+/// English as a last resort.
+#[must_use]
+pub fn localized_response(intent: &str, language: &str) -> Option<String> {
+    if let Some(text) = response_for(intent, language) {
+        return Some(text);
+    }
+    if crate::language::from_slug(language).is_some() {
+        if let Some(text) = response_for(intent, "unknown") {
+            return Some(text);
+        }
+    }
+    response_for(intent, "en")
+}
+
 /// Look up a localized response whose `text` is a native reference list.
 ///
 /// Scalar text is returned as a one-element vector, which keeps this helper

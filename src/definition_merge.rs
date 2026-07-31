@@ -325,8 +325,7 @@ fn render_definition_merge(
 /// A seed label for `language`, falling back to the English record so a
 /// language that has not been translated yet still renders.
 fn localized_label(intent: &str, language: &str) -> String {
-    seed::response_for(intent, language)
-        .or_else(|| seed::response_for(intent, "en"))
+    seed::localized_response(intent, language)
         .unwrap_or_default()
 }
 

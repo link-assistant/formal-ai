@@ -40,8 +40,7 @@ pub fn try_meta_explanation_with_runtime(
     } else if is_architecture_question {
         architecture_explanation_body(language, runtime)
     } else {
-        response_for("meta_explanation", language)
-            .or_else(|| response_for("meta_explanation", "en"))
+        localized_response("meta_explanation", language)
             .unwrap_or_else(|| {
                 String::from(
                     "I work by matching your prompt against deterministic Links Notation rules stored \
@@ -98,8 +97,7 @@ fn compiled_procedure_from_history(log: &EventLog) -> Option<CompiledProcedure> 
 
 /// Cite the compiled steps and the source sentence spans they were read from.
 fn cited_procedure_steps(procedure: &CompiledProcedure, language: &str) -> String {
-    let template = response_for("compiled_procedure_explanation", language)
-        .or_else(|| response_for("compiled_procedure_explanation", "en"))
+    let template = localized_response("compiled_procedure_explanation", language)
         .unwrap_or_default();
     format!(
         "\n\n{}",

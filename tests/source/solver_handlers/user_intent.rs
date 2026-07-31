@@ -58,8 +58,7 @@ pub fn try_clarification(
         return None;
     }
     let language = detect_language(prompt);
-    let body = response_for("clarification", language.slug())
-        .or_else(|| response_for("clarification", "en"))
+    let body = localized_response("clarification", language.slug())
         .unwrap_or_else(|| {
             String::from(
                 "I'm sorry for the confusion. I am formal-ai, a deterministic symbolic AI. \
@@ -196,8 +195,7 @@ fn prior_history_mentions_web_search(log: &EventLog) -> bool {
 }
 
 fn localized_seed_response(intent: &str, language: &str) -> String {
-    response_for(intent, language)
-        .or_else(|| response_for(intent, "en"))
+    localized_response(intent, language)
         .unwrap_or_else(|| format!("Missing localized response seed: {intent}/{language}"))
 }
 

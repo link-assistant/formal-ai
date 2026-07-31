@@ -19,7 +19,7 @@ use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::seed::{
-    self, response_for, ROLE_DECOMPOSABLE_TASK_NOUN, ROLE_SUBTASK_ENUMERATION_CUE,
+    self, localized_response, ROLE_DECOMPOSABLE_TASK_NOUN, ROLE_SUBTASK_ENUMERATION_CUE,
     ROLE_SUBTASK_UNIT_NOUN, ROLE_TASK_ATOMICITY_PREDICATE, ROLE_TASK_DECOMPOSITION_ACTION,
     ROLE_TASK_FIRST_STEP_CUE,
 };
@@ -196,8 +196,7 @@ fn with_sub_tasks(lead: &str, decomposition: &Decomposition, language: &str) -> 
 /// English and then to a built-in string so a missing translation degrades to a
 /// readable answer instead of an empty one.
 fn response(language: &str, intent: &str, fallback: &str) -> String {
-    response_for(intent, language)
-        .or_else(|| response_for(intent, "en"))
+    localized_response(intent, language)
         .unwrap_or_else(|| fallback.to_owned())
 }
 
@@ -206,8 +205,7 @@ fn response(language: &str, intent: &str, fallback: &str) -> String {
 /// present and test-pinned, so a missing translation degrades to English and
 /// never to an empty answer in practice.
 fn seeded(language: &str, intent: &str) -> String {
-    response_for(intent, language)
-        .or_else(|| response_for(intent, "en"))
+    localized_response(intent, language)
         .unwrap_or_default()
 }
 

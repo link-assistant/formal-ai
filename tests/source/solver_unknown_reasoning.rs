@@ -356,8 +356,7 @@ fn render_unresolved_unknown(language: Language, focus: &str, questioning_rigor:
 }
 
 fn localized_seed_response(intent: &str, language: &str) -> String {
-    response_for(intent, language)
-        .or_else(|| response_for(intent, "en"))
+    localized_response(intent, language)
         .unwrap_or_else(|| format!("Missing localized response seed: {intent}/{language}"))
 }
 

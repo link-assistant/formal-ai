@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/comparison.rs
   language rust
   fidelity full_ast
-  byte_len 5473
-  line_count 138
-  content_id source_module_b56c47f15062076f
+  byte_len 5425
+  line_count 137
+  content_id source_module_1ae5970a69f80627
   symbol_count 9
   symbols
     const LEFT_SLOT 9 9
@@ -15,25 +15,25 @@ self_ast_census
     function bounded_find 62 70
     function clean_side 72 86
     function remove_bounded_surface 88 110
-    function comparison_answer 112 138
+    function comparison_answer 112 137
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 5136
-    named_node_count 1037
+    total_link_count 5076
+    named_node_count 1023
     distinct_node_kinds 63
     node_kinds
-      arguments 104
+      arguments 102
       array_type 3
       assignment_expression 2
       binary_expression 17
       block 21
-      call_expression 104
+      call_expression 102
       char_literal 4
-      closure_expression 16
-      closure_parameters 16
+      closure_expression 15
+      closure_parameters 15
       const_item 3
       continue_expression 1
       crate 7
@@ -41,13 +41,13 @@ self_ast_census
       else_clause 2
       escape_sequence 2
       expression_statement 18
-      field_expression 78
-      field_identifier 78
+      field_expression 77
+      field_identifier 77
       for_expression 3
       function_item 6
       generic_function 2
       generic_type 5
-      identifier 259
+      identifier 256
       if_expression 5
       index_expression 9
       inner_doc_comment_marker 1
@@ -69,11 +69,11 @@ self_ast_census
       reference_expression 14
       reference_type 17
       return_expression 2
-      scoped_identifier 32
+      scoped_identifier 31
       scoped_use_list 1
       source_file 1
-      string_content 18
-      string_literal 19
+      string_content 17
+      string_literal 18
       super 4
       token_tree 8
       try_expression 1

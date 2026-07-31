@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/file_read.rs
   language rust
   fidelity full_ast
-  byte_len 26576
-  line_count 784
-  content_id source_module_b2846a8dfce7f79e
+  byte_len 26528
+  line_count 783
+  content_id source_module_be7040ffee768c12
   symbol_count 43
   symbols
     enum FileReadTask 11 22
@@ -46,20 +46,20 @@ self_ast_census
     function extract_jsonish_value 614 641
     function supplied_file_answer 657 664
     function supplied_file_final_answer 681 710
-    function supplied_file_template 718 733
-    function supplied_file_content 743 770
-    function tool_for 772 777
-    function plan_one 779 784
+    function supplied_file_template 718 732
+    function supplied_file_content 742 769
+    function tool_for 771 776
+    function plan_one 778 783
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 20245
-    named_node_count 4131
+    total_link_count 20185
+    named_node_count 4117
     distinct_node_kinds 87
     node_kinds
-      arguments 349
+      arguments 347
       array_expression 8
       array_type 16
       assignment_expression 3
@@ -68,10 +68,10 @@ self_ast_census
       binary_expression 57
       block 114
       boolean_literal 5
-      call_expression 349
+      call_expression 347
       char_literal 35
-      closure_expression 35
-      closure_parameters 35
+      closure_expression 34
+      closure_parameters 34
       continue_expression 4
       crate 4
       doc_comment 59
@@ -83,8 +83,8 @@ self_ast_census
       expression_statement 97
       field_declaration 9
       field_declaration_list 3
-      field_expression 265
-      field_identifier 290
+      field_expression 264
+      field_identifier 289
       field_initializer 16
       field_initializer_list 7
       field_pattern 8
@@ -93,7 +93,7 @@ self_ast_census
       function_modifiers 1
       generic_function 5
       generic_type 29
-      identifier 914
+      identifier 911
       if_expression 43
       index_expression 26
       inner_doc_comment_marker 1
@@ -121,14 +121,14 @@ self_ast_census
       reference_type 72
       remaining_field_pattern 1
       return_expression 32
-      scoped_identifier 77
+      scoped_identifier 76
       scoped_type_identifier 12
       scoped_use_list 2
       shorthand_field_identifier 8
       shorthand_field_initializer 4
       source_file 1
-      string_content 97
-      string_literal 92
+      string_content 96
+      string_literal 91
       struct_expression 7
       struct_item 1
       struct_pattern 3

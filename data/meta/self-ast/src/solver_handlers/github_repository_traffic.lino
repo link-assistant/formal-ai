@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/github_repository_traffic.rs
   language rust
   fidelity signature
-  byte_len 4321
-  line_count 111
-  content_id source_module_013ac75131e472a9
+  byte_len 4264
+  line_count 110
+  content_id source_module_e21549f68e790ef2
   symbol_count 9
   symbols
     const TRAFFIC_UI_DOC 14 14
@@ -15,4 +15,4 @@ self_ast_census
     const TRAFFIC_API_DOCS_PLACEHOLDER 19 19
     function try_github_repository_traffic 21 66
     function is_github_repository_traffic_question 68 97
-    function github_repository_traffic_body 99 111
+    function github_repository_traffic_body 99 110

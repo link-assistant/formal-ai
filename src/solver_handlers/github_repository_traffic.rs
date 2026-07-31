@@ -8,7 +8,7 @@
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
-use crate::seed::{self, response_for};
+use crate::seed::{self, localized_response};
 use crate::solver_handlers::finalize_simple;
 
 const TRAFFIC_UI_DOC: &str = "https://docs.github.com/en/repositories/viewing-activity-and-data-for-your-repository/viewing-traffic-to-a-repository";
@@ -102,8 +102,7 @@ fn github_repository_traffic_body(language: &str, repository: &str) -> String {
     let fallback = format!(
         "Partly. For a GitHub repository such as {repository}, GitHub can show aggregate traffic to people with push or write access: views, unique visitors, clones, referring sites, and popular content for the recent traffic window. It does not show the identity of an individual visitor. Check GitHub Insights > Traffic or the REST traffic endpoints: {traffic_ui_doc}; {traffic_api_doc}."
     );
-    response_for("github_repository_traffic", language)
-        .or_else(|| response_for("github_repository_traffic", "en"))
+    localized_response("github_repository_traffic", language)
         .unwrap_or(fallback)
         .replace(REPOSITORY_PLACEHOLDER, repository)
         .replace(TRAFFIC_UI_DOCS_PLACEHOLDER, TRAFFIC_UI_DOC)

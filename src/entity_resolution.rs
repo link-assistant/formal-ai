@@ -21,7 +21,7 @@ use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::fuzzy::typo_distance;
 use crate::language::detect as detect_language;
-use crate::seed::{self, response_for, Slot, WordForm};
+use crate::seed::{self, localized_response, Slot, WordForm};
 use crate::solver_handlers::finalize_simple;
 
 /// Placeholders the seed response records carry.
@@ -201,8 +201,7 @@ pub fn resolve_who_is(
     } else {
         "who_is_unknown_entity"
     };
-    let mut body = response_for(intent, &language)
-        .or_else(|| response_for(intent, "en"))?
+    let mut body = localized_response(intent, &language)?
         .replace(TERM_PLACEHOLDER, term);
     if let Some(corrected) = suggestion {
         log.append("entity_resolution:suggestion", corrected.clone());

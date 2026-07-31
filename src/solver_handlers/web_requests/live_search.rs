@@ -48,8 +48,7 @@ pub fn try_web_search_with_client<T: SourceTransport>(
                 format!("rrf:k={WEB_SEARCH_RRF_K}"),
             );
             let language = detect_language(prompt).slug();
-            let body = seed::response_for("web_search_unavailable", language)
-                .or_else(|| seed::response_for("web_search_unavailable", "en"))
+            let body = seed::localized_response("web_search_unavailable", language)
                 .unwrap_or_else(|| String::from("web_search_unavailable"))
                 .replace("{query}", &request.query);
             Some(finalize_simple(
@@ -100,8 +99,7 @@ fn answer_executed_web_search(
         .collect::<Vec<_>>()
         .join("\n");
     let language = detect_language(prompt).slug();
-    let body = seed::response_for("web_search_live_results", language)
-        .or_else(|| seed::response_for("web_search_live_results", "en"))
+    let body = seed::localized_response("web_search_live_results", language)
         .unwrap_or_else(|| String::from("{query}\n\n{results}"))
         .replace(concat!("{", "query", "}"), query)
         .replace(

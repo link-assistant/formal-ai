@@ -129,8 +129,7 @@ fn comparison_answer(messages: &[ChatMessage], task: &str, left: &str, right: &s
     } else {
         "comparison_decomposed_evidence"
     };
-    seed::response_for(intent, language)
-        .or_else(|| seed::response_for(intent, "en"))
+    seed::localized_response(intent, language)
         .unwrap_or_default()
         .replace(LEFT_SLOT, left)
         .replace(RIGHT_SLOT, right)

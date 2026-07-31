@@ -93,8 +93,7 @@ pub(super) fn definition_followup_topic(messages: &[ChatMessage], task: &str) ->
 
 pub(super) fn definition_followup_clarification(task: &str) -> String {
     let language = crate::language::detect(task).slug();
-    seed::response_for("definition_followup_clarify", language)
-        .or_else(|| seed::response_for("definition_followup_clarify", "en"))
+    seed::localized_response("definition_followup_clarify", language)
         .unwrap_or_default()
 }
 

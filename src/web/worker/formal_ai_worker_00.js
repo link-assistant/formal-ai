@@ -189,10 +189,22 @@ let ENTITY_NAMES_LINO = "";
 let cachedKnownEntityNames = null;
 let MEANINGS_LINO = "";
 let AGENT_INFO = {};
+// Bootstrap copy of `data/seed/language-detection.lino`, replaced verbatim by
+// the seed registry at init() time. Issue #706: every field a language needs
+// lives here as data, so registering a new language never edits worker code.
 let LANGUAGE_RULES = [
-  { language: "ru", start: 0x0400, end: 0x04ff },
-  { language: "hi", start: 0x0900, end: 0x097f },
-  { language: "zh", start: 0x4e00, end: 0x9fff },
+  { language: "ru", script: "Cyrillic", start: 0x0400, end: 0x04ff, markers: [] },
+  { language: "hi", script: "Devanagari", start: 0x0900, end: 0x097f, markers: [] },
+  { language: "zh", script: "Han", start: 0x4e00, end: 0x9fff, markers: [] },
+  {
+    language: "en",
+    script: "Latin",
+    start: 0x0041,
+    end: 0x007a,
+    markers: [],
+    fallback: true,
+    alphabeticOnly: true,
+  },
 ];
 let PROMPT_PATTERNS = [];
 
@@ -844,20 +856,119 @@ function detectLanguage(prompt) {
     }
     return fromWasm;
   }
-  for (const ch of text) {
-    const code = ch.codePointAt(0);
-    for (const rule of LANGUAGE_RULES) {
-      if (
-        rule.language !== "en" &&
-        code >= rule.start &&
-        code <= rule.end
-      ) {
-        return rule.language;
-      }
+  const detected = detectLanguageFromRules(text);
+  if (detected === "unknown") return AGENT_INFO.default_language || "en";
+  return detected;
+}
+
+// Registry-driven detection, a line-for-line mirror of `detect_with` in
+// `src/language.rs`. It runs when the WASM worker is unavailable, so the
+// JS-only path must reach the same verdict for the same registry.
+function fallbackRule() {
+  return LANGUAGE_RULES.find((rule) => rule.fallback) || null;
+}
+
+function scriptOf(rule) {
+  return (rule && rule.script) || "";
+}
+
+function defaultLanguageForScript(script) {
+  const preferred =
+    LANGUAGE_RULES.find((rule) => scriptOf(rule) === script && rule.fallback) ||
+    LANGUAGE_RULES.find((rule) => scriptOf(rule) === script);
+  if (preferred) return preferred.language;
+  const back = fallbackRule();
+  return back ? back.language : "en";
+}
+
+function countScripts(text) {
+  const counts = new Map();
+  let other = 0;
+  let first = null;
+  for (const character of text) {
+    const code = character.codePointAt(0);
+    const rule = LANGUAGE_RULES.find(
+      (candidate) =>
+        code >= candidate.start &&
+        code <= candidate.end &&
+        (!candidate.alphabeticOnly || /\p{L}/u.test(character)),
+    );
+    if (rule) {
+      const script = scriptOf(rule);
+      counts.set(script, (counts.get(script) || 0) + 1);
+      if (first === null) first = script;
+    } else if (/\p{L}/u.test(character)) {
+      other += 1;
+      if (first === null) first = "";
     }
   }
-  if (/[a-zA-Z]/.test(text)) return "en";
-  return AGENT_INFO.default_language || "en";
+  return { counts, other, first };
+}
+
+function countOf(counts, script) {
+  return counts.get(script) || 0;
+}
+
+function maxExcluding(counts, script) {
+  let max = 0;
+  for (const [name, count] of counts) {
+    if (name !== script && count > max) max = count;
+  }
+  return max;
+}
+
+function markerLanguage(text, counts) {
+  const normalized = text.toLowerCase();
+  let best = null;
+  for (const rule of LANGUAGE_RULES) {
+    const markers = Array.isArray(rule.markers) ? rule.markers : [];
+    if (markers.length === 0) continue;
+    const count = countOf(counts, scriptOf(rule));
+    if (count === 0) continue;
+    if (!markers.some((marker) => normalized.includes(String(marker).toLowerCase()))) {
+      continue;
+    }
+    if (best === null || count > best.count) best = { count, language: rule.language };
+  }
+  return best ? best.language : null;
+}
+
+function detectLanguageFromRules(text) {
+  const back = fallbackRule();
+  const fallback = back ? back.language : "en";
+  const fallbackScript = scriptOf(back);
+  const { counts, other, first } = countScripts(text);
+
+  let total = other;
+  for (const count of counts.values()) total += count;
+  if (total === 0) return fallback;
+
+  const fallbackCount = countOf(counts, fallbackScript);
+  if (other > fallbackCount && other >= maxExcluding(counts, fallbackScript)) {
+    return "unknown";
+  }
+
+  if (fallbackCount > 0) {
+    const byMarker = markerLanguage(text, counts);
+    if (byMarker) return byMarker;
+    if (first && first !== fallbackScript) {
+      let rival = 0;
+      for (const [name, count] of counts) {
+        if (name !== fallbackScript && name !== first && count > rival) rival = count;
+      }
+      if (countOf(counts, first) >= rival) return defaultLanguageForScript(first);
+    }
+  }
+
+  for (const rule of LANGUAGE_RULES) {
+    if (rule.fallback) continue;
+    const script = scriptOf(rule);
+    const count = countOf(counts, script);
+    if (count > 0 && count >= maxExcluding(counts, script)) {
+      return defaultLanguageForScript(script);
+    }
+  }
+  return fallback;
 }
 
 // Issue #324: the user can choose which language drives responses. The default
@@ -868,8 +979,12 @@ function detectLanguage(prompt) {
 // the deterministic default behavior is never lost.
 const RESPONSE_LANGUAGE_MODES = ["last_message", "preferred", "ui"];
 
+// Issue #706: the set of answerable languages is the detection registry, not
+// a hardcoded list — registering a language in
+// `data/seed/language-detection.lino` makes it selectable here too.
 function isKnownResponseLanguage(slug) {
-  return slug === "en" || slug === "ru" || slug === "hi" || slug === "zh";
+  if (!slug) return false;
+  return LANGUAGE_RULES.some((rule) => rule.language === slug);
 }
 
 function responseLanguageFor(detected, preferences, userContext) {
