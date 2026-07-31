@@ -22,6 +22,7 @@ use alloc::vec::Vec;
 use core::convert::TryFrom;
 
 pub use super::arithmetic::evaluate_fallback_formatted;
+#[allow(unused_imports)]
 pub use super::language::{detect as detect_language, Language};
 
 /// Normalize an arbitrary prompt to a lowercase, single-space-delimited stream.

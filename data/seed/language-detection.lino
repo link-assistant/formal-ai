@@ -3,27 +3,45 @@ language_detection
     language ru
     source-host "://ru.wikipedia.org/"
     label Cyrillic
+    script Cyrillic
     start 0x0400
     end 0x04FF
+    markers ("что" "как" "кто" "где" "когда" "почему")
     note "Catches Russian, Belarusian, Ukrainian, Bulgarian — all Cyrillic-block scripts route to the ru response set."
   rule rule_hindi
     language hi
     source-host "://hi.wikipedia.org/"
     label Devanagari
+    script Devanagari
     start 0x0900
     end 0x097F
+    markers ("क्या" "कौन" "कहाँ" "कब" "कैसे" "क्यों")
     note "Catches Hindi, Marathi, Sanskrit — Devanagari is the shared script."
   rule rule_chinese
     language zh
     source-host "://zh.wikipedia.org/"
     label "CJK Unified Ideographs"
+    script Han
     start 0x4E00
     end 0x9FFF
+    markers ("什么" "吗" "怎么" "谁" "哪")
     note "Catches Simplified and Traditional Chinese. Worker normalises to the zh response set."
+  rule rule_spanish
+    language es
+    source-host "://es.wikipedia.org/"
+    label "Latin-1 Supplement"
+    script Latin
+    start 0x00C0
+    end 0x00FF
+    markers ("¿" "¡" "ñ" "qué" "cómo" "quién" "dónde" "cuándo" "cuál" "hola" "gracias" "por favor")
+    note "Spanish shares the Latin script with the fallback language, so its range cannot decide a prompt on its own — the markers below carry the vote and the range only widens the Latin count to the accented letters. Registered as seed data only (issue #706): no Rust edit was needed to add the fifth language."
   rule rule_english
     language en
     source-host "://en.wikipedia.org/"
     label "Basic Latin"
+    script Latin
+    fallback yes
+    alphabetic-only yes
     start 0x0041
     end 0x007A
-    note "Fallback / default. Worker also returns en when no Unicode block above matches."
+    note "Fallback / default. Worker also returns en when no Unicode block above matches. `fallback yes` makes the default language a seed record instead of a Rust constant; `alphabetic-only yes` keeps the six ASCII punctuation code points inside 0x0041-0x007A out of the Latin count."

@@ -57,7 +57,7 @@ pub fn language_aware_unknown_answer(prompt: &str, language: Language) -> String
         Language::Hindi => (hindi_unknown_answer(), "hi"),
         Language::Chinese => (chinese_unknown_answer(), "zh"),
         Language::English => (unknown_answer(), "en"),
-        Language::Unknown => return String::from(unknown_language_fallback_answer()),
+        _ => return String::from(unknown_language_fallback_answer()),
     };
     unknown_answer_with_variation(prompt, slug, seed_text)
 }

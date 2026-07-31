@@ -862,7 +862,7 @@ fn execution_report(execution: &ProgramExecution, output: &str, language: Langua
     )
 }
 
-const fn execution_status_phrase(status: ExecutionStatus, language: Language) -> &'static str {
+fn execution_status_phrase(status: ExecutionStatus, language: Language) -> &'static str {
     match (status, language) {
         (ExecutionStatus::Verified, Language::Russian) => "скомпилировано и запущено",
         (ExecutionStatus::Verified, Language::Hindi) => "संकलित और चलाया गया",
@@ -874,7 +874,7 @@ const fn execution_status_phrase(status: ExecutionStatus, language: Language) ->
     }
 }
 
-const fn execution_output_label(verified: bool, language: Language) -> &'static str {
+fn execution_output_label(verified: bool, language: Language) -> &'static str {
     match (verified, language) {
         (true, Language::Russian) => "Вывод",
         (false, Language::Russian) => "Ожидаемый вывод после проверки",

@@ -57,7 +57,11 @@ pub fn language_aware_unknown_answer(prompt: &str, language: Language) -> String
         Language::Hindi => (hindi_unknown_answer(), "hi"),
         Language::Chinese => (chinese_unknown_answer(), "zh"),
         Language::English => (unknown_answer(), "en"),
-        Language::Unknown => return String::from(unknown_language_fallback_answer()),
+        // Issue #706: a language the registry knows but this handler has no
+        // localized opener for is a gap, not an English prompt. Both it and
+        // `Language::Unknown` get the explicit "I cannot answer in your
+        // language" text rather than a silent English substitution.
+        _ => return String::from(unknown_language_fallback_answer()),
     };
     unknown_answer_with_variation(prompt, slug, seed_text)
 }

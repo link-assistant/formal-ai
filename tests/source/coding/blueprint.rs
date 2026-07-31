@@ -386,7 +386,7 @@ pub fn capability_label(capability: &Capability, language: Language) -> &'static
 
 /// Localized libraries heading.
 #[must_use]
-pub const fn libraries_heading(language: Language) -> &'static str {
+pub fn libraries_heading(language: Language) -> &'static str {
     match language {
         Language::Russian => "Необходимые библиотеки:",
         Language::Hindi => "आवश्यक लाइब्रेरियाँ:",
@@ -502,7 +502,7 @@ fn recipe_addendum(recipe: &BlueprintRecipe, _language: Language) -> Option<&'st
 
 /// Localized "Run it yourself" heading shown above the execution report.
 #[must_use]
-const fn how_to_run_heading(language: Language) -> &'static str {
+fn how_to_run_heading(language: Language) -> &'static str {
     match language {
         Language::Russian => "Как запустить самостоятельно:",
         Language::Hindi => "इसे स्वयं कैसे चलाएँ:",
