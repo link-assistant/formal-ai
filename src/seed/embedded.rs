@@ -38,6 +38,7 @@ pub const PERSONAS_LINO: &str = include_str!("../../data/seed/personas.lino");
 pub const SUMMARY_TOPICS_LINO: &str = include_str!("../../data/seed/summary-topics.lino");
 pub const COREFERENCE_LINO: &str = include_str!("../../data/seed/coreference.lino");
 pub const TOOLS_LINO: &str = include_str!("../../data/seed/tools.lino");
+pub const COMPUTER_USE_TASKS_LINO: &str = include_str!("../../data/seed/computer-use-tasks.lino");
 pub const LANGUAGE_DETECTION_LINO: &str = include_str!("../../data/seed/language-detection.lino");
 pub const PROMPT_PATTERNS_LINO: &str = include_str!("../../data/seed/prompt-patterns.lino");
 pub const INTENT_ROUTING_LINO: &str = include_str!("../../data/seed/intent-routing.lino");
@@ -197,6 +198,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/summary-topics.lino", SUMMARY_TOPICS_LINO),
         ("data/seed/coreference.lino", COREFERENCE_LINO),
         ("data/seed/tools.lino", TOOLS_LINO),
+        ("data/seed/computer-use-tasks.lino", COMPUTER_USE_TASKS_LINO),
         ("data/seed/language-detection.lino", LANGUAGE_DETECTION_LINO),
         ("data/seed/prompt-patterns.lino", PROMPT_PATTERNS_LINO),
         ("data/seed/intent-routing.lino", INTENT_ROUTING_LINO),

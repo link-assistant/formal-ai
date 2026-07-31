@@ -1,4 +1,59 @@
 meanings
+  pattern_concept_context_delimiter_zhong_de_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter zhong de zh"
+  pattern_concept_context_delimiter_zhong_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter zhong zh"
+  pattern_concept_prefix_can_you_define
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix can you define"
+  pattern_concept_prefix_can_you_describe
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix can you describe"
+  pattern_concept_prefix_can_you_explain
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix can you explain"
+  pattern_concept_prefix_chto_eto
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix chto eto"
+  pattern_concept_prefix_chto_oboznachaet
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix chto oboznachaet"
+  pattern_concept_prefix_chto_oznachaet_slovo
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix chto oznachaet slovo"
+  pattern_concept_prefix_chto_podrazumevaetsya_pod
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix chto podrazumevaetsya pod"
+  pattern_concept_prefix_chto_takoe
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix chto takoe"
+  pattern_concept_prefix_chto_znachit
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix chto znachit"
   pattern_concept_prefix_define
     defined-by prompt_pattern
     lexeme en
@@ -759,6 +814,11 @@ meanings
     lexeme en
       surface
         text "periodic or manual"
+  permissioned-network
+    defined-by isolation_mode
+    lexeme en
+      surface
+        text "permissioned network"
   philosophy-text
     defined-by source_kind
     lexeme en
@@ -824,6 +884,11 @@ meanings
     lexeme en
       surface
         text "problem"
+  process_report
+    defined-by task
+    lexeme en
+      surface
+        text "process report"
   program_plan_rules
     defined-by concept
     lexeme en
@@ -1329,68 +1394,3 @@ meanings
     lexeme en
       surface
         text "response agentic action list home zh"
-  response_agentic_action_read_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action read en"
-  response_agentic_action_read_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action read hi"
-  response_agentic_action_read_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action read ru"
-  response_agentic_action_read_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action read zh"
-  response_agentic_action_run_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action run en"
-  response_agentic_action_run_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action run hi"
-  response_agentic_action_run_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action run ru"
-  response_agentic_action_run_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action run zh"
-  response_agentic_action_search_code_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action search code en"
-  response_agentic_action_search_code_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action search code hi"
-  response_agentic_action_search_code_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action search code ru"
-  response_agentic_action_search_code_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action search code zh"
-  response_agentic_action_search_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action search en"

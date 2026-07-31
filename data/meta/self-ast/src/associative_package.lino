@@ -2,9 +2,9 @@ self_ast_census
   target src/associative_package.rs
   language rust
   fidelity signature
-  byte_len 29574
-  line_count 841
-  content_id source_module_5dd11f9849f8ff8f
+  byte_len 31216
+  line_count 889
+  content_id source_module_1f340d7636cff958
   symbol_count 39
   symbols
     struct PackageDependency 22 25
@@ -39,10 +39,10 @@ self_ast_census
     function permission_for_capability 539 553
     function permission_for_tool 556 558
     function packages 561 563
-    function default_associative_packages 567 708
-    function default_package_store 711 719
-    function default_package_graph_projection 722 779
-    function required_child 781 791
-    function link_record 793 823
-    function push_field 825 833
-    function push_doublet 835 841
+    function default_associative_packages 567 756
+    function default_package_store 759 767
+    function default_package_graph_projection 770 827
+    function required_child 829 839
+    function link_record 841 871
+    function push_field 873 881
+    function push_doublet 883 889

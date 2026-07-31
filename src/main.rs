@@ -8,6 +8,7 @@ use lino_arguments::Parser;
 
 mod cli_benchmark;
 mod cli_clients;
+mod cli_computer_use;
 mod cli_context;
 mod cli_import;
 mod cli_improve;
@@ -21,6 +22,7 @@ mod cli_statement_audit;
 
 use cli_benchmark::{run_benchmark, BenchmarkAction};
 use cli_clients::{run_clients, ClientsAction, ClientsFormat};
+use cli_computer_use::run_computer_use;
 use cli_context::{run_context, ContextArgs};
 use cli_import::{run_import, ImportAction};
 use cli_improve::{run_improve, ImproveArgs};
@@ -184,6 +186,24 @@ enum Command {
     With(WithFormalAiArgs),
     /// Execute and inspect persisted natural-language procedure artifacts.
     Procedure(ProcedureArgs),
+    /// Execute a seeded natural-language computer-use plan inside a fresh,
+    /// isolated workspace and emit its per-step verification record.
+    ComputerUse {
+        #[arg(long)]
+        prompt: String,
+
+        /// Grant the complete computer-use primitive set for this invocation.
+        #[arg(long, default_value_t = false)]
+        agent_mode: bool,
+
+        /// Confirm the plan's write, move, POST, command, and archive effects.
+        #[arg(long, default_value_t = false)]
+        confirm_effects: bool,
+
+        /// Re-run independent verification over the recorded outcome.
+        #[arg(long, default_value_t = false)]
+        replay: bool,
+    },
     /// Drive the full agentic-coding loop offline (issue #468). The in-repo
     /// driver plays the role of an external agentic CLI against our
     /// OpenAI-compatible server: it advertises tools, executes every emitted
@@ -592,6 +612,12 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::StatementAudit(args) => run_statement_audit(&args)?,
         Command::With(args) => run_with_formal_ai(&args)?,
         Command::Procedure(args) => run_procedure(args)?,
+        Command::ComputerUse {
+            prompt,
+            agent_mode,
+            confirm_effects,
+            replay,
+        } => run_computer_use(&prompt, agent_mode, confirm_effects, replay)?,
         Command::Agent(args) => {
             if let Some(action) = args.action {
                 run_external_action(action)?;

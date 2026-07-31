@@ -64,7 +64,7 @@ test.describe('Issue #280: desktop shell bridge', () => {
       'Off',
     );
     await expect(page.locator('[data-testid="desktop-tool-permission"]')).toHaveText(
-      '0/6 tools granted',
+      '0/18 tools granted',
     );
 
     await page.locator('[data-testid="mode-option-agent"]').click();
@@ -72,7 +72,7 @@ test.describe('Issue #280: desktop shell bridge', () => {
       'Opted in',
     );
     await expect(page.locator('[data-testid="desktop-tool-permission"]')).toHaveText(
-      '0/6 tools granted',
+      '0/18 tools granted',
     );
   });
 
@@ -99,7 +99,7 @@ test.describe('Issue #280: desktop shell bridge', () => {
       // so assert against the active language's translation rather than English.
       const expectedToolCount = await page.evaluate(async (lang) => {
         await window.FormalAiI18n.ready;
-        return window.FormalAiI18n.t('permissions.toolCount', lang, { granted: 0, total: 6 });
+        return window.FormalAiI18n.t('permissions.toolCount', lang, { granted: 0, total: 18 });
       }, language);
       await expect(page.locator('[data-testid="desktop-tool-permission"]')).toHaveText(
         expectedToolCount,

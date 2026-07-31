@@ -1,4 +1,69 @@
 meanings
+  response_test_status_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response test status hi"
+  response_test_status_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response test status ru"
+  response_test_status_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response test status zh"
+  response_tool_result_completed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result completed en"
+  response_tool_result_completed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result completed hi"
+  response_tool_result_completed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result completed ru"
+  response_tool_result_completed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result completed zh"
+  response_tool_result_empty_generic_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty generic en"
+  response_tool_result_empty_generic_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty generic hi"
+  response_tool_result_empty_generic_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty generic ru"
+  response_tool_result_empty_generic_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty generic zh"
+  response_tool_result_empty_list_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty list en"
+  response_tool_result_empty_list_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty list hi"
   response_tool_result_empty_list_ru
     defined-by response_template
     lexeme en
@@ -354,6 +419,11 @@ meanings
     lexeme en
       surface
         text "sed"
+  self_authored_for_issue_707
+    defined-by source
+    lexeme en
+      surface
+        text "self authored for issue 707"
   self_improvement_loop
     defined-by concept
     lexeme en
@@ -554,6 +624,11 @@ meanings
     lexeme en
       surface
         text "strip empty lines"
+  structured-document
+    defined-by isolation_mode
+    lexeme en
+      surface
+        text "structured document"
   structured-knowledge
     defined-by category
     lexeme en
@@ -574,6 +649,11 @@ meanings
     lexeme en
       surface
         text "submit"
+  submit_form
+    defined-by task
+    lexeme en
+      surface
+        text "submit form"
   substitute
     defined-by word_surface
     lexeme en
@@ -739,6 +819,16 @@ meanings
     lexeme en
       surface
         text "tool append memory"
+  tool_archive_pack
+    defined-by tool
+    lexeme en
+      surface
+        text "tool archive pack"
+  tool_archive_unpack
+    defined-by tool
+    lexeme en
+      surface
+        text "tool archive unpack"
   tool_brainstorm
     defined-by tool
     lexeme en
@@ -764,6 +854,16 @@ meanings
     lexeme en
       surface
         text "tool coreference"
+  tool_dom_extract
+    defined-by tool
+    lexeme en
+      surface
+        text "tool dom extract"
+  tool_dom_query
+    defined-by tool
+    lexeme en
+      surface
+        text "tool dom query"
   tool_eval_js
     defined-by tool
     lexeme en
@@ -779,11 +879,41 @@ meanings
     lexeme en
       surface
         text "tool fact lookup"
+  tool_fs_list
+    defined-by tool
+    lexeme en
+      surface
+        text "tool fs list"
+  tool_fs_move
+    defined-by tool
+    lexeme en
+      surface
+        text "tool fs move"
+  tool_fs_read
+    defined-by tool
+    lexeme en
+      surface
+        text "tool fs read"
+  tool_fs_write
+    defined-by tool
+    lexeme en
+      surface
+        text "tool fs write"
   tool_http_fetch
     defined-by tool
     lexeme en
       surface
         text "tool http fetch"
+  tool_http_fetch_primitive
+    defined-by tool
+    lexeme en
+      surface
+        text "tool http fetch primitive"
+  tool_http_post_primitive
+    defined-by tool
+    lexeme en
+      surface
+        text "tool http post primitive"
   tool_import_memory
     defined-by tool
     lexeme en
@@ -794,6 +924,11 @@ meanings
     lexeme en
       surface
         text "tool intent routing"
+  tool_process_status
+    defined-by tool
+    lexeme en
+      surface
+        text "tool process status"
   tool_read_local_file
     defined-by tool
     lexeme en
@@ -839,6 +974,11 @@ meanings
     lexeme en
       surface
         text "tool run agent"
+  tool_shell_run
+    defined-by tool
+    lexeme en
+      surface
+        text "tool shell run"
   tool_summarize_conversation
     defined-by tool
     lexeme en

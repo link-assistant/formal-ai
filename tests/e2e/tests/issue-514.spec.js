@@ -100,7 +100,7 @@ test.describe('Issue #514: per-tool permissions and command approval', () => {
   test('onboarding appears once and per-tool grants persist', async ({ page }) => {
     await expect.poll(() => page.evaluate(() => window.__toolGrants.all)).toBe(false);
     await expect(page.locator('[data-testid="desktop-tool-permission"]')).toHaveText(
-      '0/6 tools granted',
+      '0/18 tools granted',
     );
 
     await page.locator('[data-testid="mode-option-agent"]').click();
@@ -115,7 +115,7 @@ test.describe('Issue #514: per-tool permissions and command approval', () => {
     ).toHaveText('Granted');
     await expect.poll(() => page.evaluate(() => window.__toolGrants.shell)).toBe(true);
     await expect(page.locator('[data-testid="desktop-tool-permission"]')).toHaveText(
-      '1/6 tools granted',
+      '1/18 tools granted',
     );
 
     await page.locator('[data-testid="desktop-permission-panel-sidebar-decline-write_file"]').click();
@@ -171,10 +171,10 @@ test.describe('Issue #514: per-tool permissions and command approval', () => {
         const local = (key, params) => api.t(key, lang, params);
         const english = (key, params) => api.t(key, 'en', params);
         return {
-          zeroGranted: local('permissions.toolCount', { granted: 0, total: 6 }),
-          oneGranted: local('permissions.toolCount', { granted: 1, total: 6 }),
+          zeroGranted: local('permissions.toolCount', { granted: 0, total: 18 }),
+          oneGranted: local('permissions.toolCount', { granted: 1, total: 18 }),
           granted: local('permissions.state.granted'),
-          enZeroGranted: english('permissions.toolCount', { granted: 0, total: 6 }),
+          enZeroGranted: english('permissions.toolCount', { granted: 0, total: 18 }),
           enGranted: english('permissions.state.granted'),
         };
       }, language);

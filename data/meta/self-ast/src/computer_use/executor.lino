@@ -1,0 +1,60 @@
+self_ast_census
+  target src/computer_use/executor.rs
+  language rust
+  fidelity signature
+  byte_len 33285
+  line_count 904
+  content_id source_module_8d44cd1789b2f364
+  symbol_count 51
+  symbols
+    static SESSION_SEQUENCE 19 19
+    enum ComputerUseError 22 25
+    function fmt 28 33
+    function from 39 41
+    struct ComputerUsePolicy 45 48
+    function deny_all 52 57
+    function agent_mode_all 60 68
+    function with_grants 71 76
+    function permits 79 81
+    struct ComputerUseSession 84 88
+    function new 91 94
+    function in_base 96 119
+    function root 122 124
+    function execute_step 127 135
+    function execute_primitive 138 206
+    function precondition_error 208 231
+    function validate_arguments 233 294
+    function apply 296 315
+    function verify_postcondition 317 393
+    function path 395 407
+    function read_file 409 420
+    function write_file 422 429
+    function write_bytes 431 438
+    function list_directory 440 448
+    function directory_entries 450 462
+    function move_file 464 476
+    function run_allowlisted 478 501
+    function http_fetch 503 509
+    function http_post 511 528
+    function dom_query 530 545
+    function dom_extract 547 563
+    function archive_pack 565 591
+    function archive_unpack 593 618
+    function verify_archive_unpack 620 669
+    function process_status 671 686
+    function file_digest 688 691
+    struct DeterministicArchive 695 698
+    struct ArchiveEntry 701 704
+    function event 706 727
+    function arg 729 735
+    function arg_or_empty 737 742
+    function string_array 744 762
+    function digest 764 766
+    function fixture 768 784
+    function http_output 786 805
+    function content_type 807 816
+    function filter_csv 818 832
+    function unique_csv 834 848
+    function query_html 850 873
+    function extract_tag_contents 875 890
+    function strip_tags 892 904

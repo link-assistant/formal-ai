@@ -703,6 +703,54 @@ pub fn default_associative_packages() -> Vec<AssociativePackage> {
         .with_permission(
             "tool:capability:ask_user",
             "agentic-coding structured user confirmation (any CLI naming)",
+        )
+        .with_permission(
+            "tool:computer:fs.read",
+            "permissioned isolated workspace file read",
+        )
+        .with_permission(
+            "tool:computer:fs.write",
+            "permissioned isolated workspace file write",
+        )
+        .with_permission(
+            "tool:computer:fs.list",
+            "permissioned isolated workspace directory list",
+        )
+        .with_permission(
+            "tool:computer:fs.move",
+            "permissioned isolated workspace path move",
+        )
+        .with_permission(
+            "tool:computer:shell.run",
+            "permissioned allowlisted isolated operation",
+        )
+        .with_permission(
+            "tool:computer:http.fetch",
+            "permissioned structured HTTP GET with provenance",
+        )
+        .with_permission(
+            "tool:computer:http.post",
+            "permissioned structured HTTP POST with provenance",
+        )
+        .with_permission(
+            "tool:computer:dom.query",
+            "permissioned non-visual structured HTML query",
+        )
+        .with_permission(
+            "tool:computer:dom.extract",
+            "permissioned non-visual structured JSON extraction",
+        )
+        .with_permission(
+            "tool:computer:archive.pack",
+            "permissioned deterministic workspace archive pack",
+        )
+        .with_permission(
+            "tool:computer:archive.unpack",
+            "permissioned deterministic workspace archive unpack",
+        )
+        .with_permission(
+            "tool:computer:process.status",
+            "permissioned isolated process status",
         ),
     ]
 }

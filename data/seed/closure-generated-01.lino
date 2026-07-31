@@ -89,6 +89,11 @@ meanings
     lexeme en
       surface
         text "accuracy"
+  active_customers
+    defined-by task
+    lexeme en
+      surface
+        text "active customers"
   addon
     defined-by word_surface
     lexeme en
@@ -279,6 +284,11 @@ meanings
     lexeme en
       surface
         text "append text"
+  archive_round_trip
+    defined-by task
+    lexeme en
+      surface
+        text "archive round trip"
   are
     defined-by concept
     lexeme en
@@ -795,7 +805,7 @@ meanings
       surface
         text "count characters"
   count_lines
-    defined-by operation
+    defined-by task
     lexeme en
       surface
         text "count lines"
@@ -999,6 +1009,11 @@ meanings
     lexeme en
       surface
         text "echo"
+  entries
+    defined-by concept
+    lexeme en
+      surface
+        text "entries"
   enum
     defined-by kind
     lexeme en
@@ -1284,6 +1299,11 @@ meanings
     lexeme en
       surface
         text "first"
+  first_open_order
+    defined-by task
+    lexeme en
+      surface
+        text "first open order"
   fizzbuzz
     defined-by task
     lexeme en
@@ -1374,23 +1394,3 @@ meanings
     lexeme en
       surface
         text "genuine"
-  get
-    defined-by word_surface
-    lexeme en
-      surface
-        text "get"
-  git
-    defined-by token
-    lexeme en
-      surface
-        text "git"
-  github
-    defined-by source_kind
-    lexeme en
-      surface
-        text "github"
-  github_repository_traffic
-    defined-by intent
-    lexeme en
-      surface
-        text "github repository traffic"
