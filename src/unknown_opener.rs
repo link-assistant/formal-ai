@@ -4,12 +4,15 @@
 //! unknown prompt. This module picks an opener for the language from a small,
 //! deterministic pool driven by the prompt's stable hash so a given prompt
 //! always picks the same opener but different prompts can pick different ones.
+//!
+//! Issue #706: neither the pools nor the localized seed texts are enumerated in
+//! Rust any more. The pools live in `data/seed/unknown-openers.lino` and the
+//! texts in the multilingual response seeds, so a new language is a data edit.
 
-use crate::engine::{
-    chinese_unknown_answer, hindi_unknown_answer, russian_unknown_answer, unknown_answer,
-    unknown_language_fallback_answer,
+use crate::engine::{unknown_answer, unknown_language_fallback_answer};
+use crate::web_engine_core::{
+    select_unknown_opener, unknown_opener_sentence_separators, unknown_openers_for,
 };
-use crate::web_engine_core::{select_unknown_opener, unknown_openers_for};
 use crate::Language;
 
 /// Replace the leading opener of the cached seed answer with a deterministic
@@ -17,7 +20,7 @@ use crate::Language;
 /// the structured teaching instructions remain identical across variations.
 fn unknown_answer_with_variation(prompt: &str, language: &str, seed_text: &str) -> String {
     let opener = select_unknown_opener(prompt, language);
-    let body = strip_leading_opener(seed_text, unknown_openers_for(language));
+    let body = strip_leading_opener(seed_text, &unknown_openers_for(language));
     if body.is_empty() {
         return String::from(opener);
     }
@@ -32,8 +35,9 @@ fn strip_leading_opener(text: &str, openers: &[&str]) -> String {
         }
     }
     // Fallback: split on the first sentence boundary so the structured
-    // instructions stay intact even when the seed opener drifts.
-    for separator in [". ", "。", "। "] {
+    // instructions stay intact even when the seed opener drifts. The
+    // separators are seed data so a new script can register its own.
+    for separator in unknown_opener_sentence_separators() {
         if let Some(idx) = trimmed.find(separator) {
             let start = idx + separator.len();
             return trimmed[start..].trim_start().to_owned();
@@ -52,16 +56,13 @@ pub fn unknown_answer_variation_for(prompt: &str) -> String {
 
 #[must_use]
 pub fn language_aware_unknown_answer(prompt: &str, language: Language) -> String {
-    let (seed_text, slug) = match language {
-        Language::Russian => (russian_unknown_answer(), "ru"),
-        Language::Hindi => (hindi_unknown_answer(), "hi"),
-        Language::Chinese => (chinese_unknown_answer(), "zh"),
-        Language::English => (unknown_answer(), "en"),
-        // Issue #706: a language the registry knows but this handler has no
-        // localized opener for is a gap, not an English prompt. Both it and
-        // `Language::Unknown` get the explicit "I cannot answer in your
-        // language" text rather than a silent English substitution.
-        _ => return String::from(unknown_language_fallback_answer()),
+    let slug = language.slug();
+    // Issue #706: a language the registry knows but the seed has no localized
+    // `unknown` text for is a gap, not an English prompt. Both it and
+    // `Language::Unknown` get the explicit "I cannot answer in your language"
+    // text rather than a silent English substitution.
+    let Some(seed_text) = crate::seed::response_for("unknown", slug) else {
+        return String::from(unknown_language_fallback_answer());
     };
-    unknown_answer_with_variation(prompt, slug, seed_text)
+    unknown_answer_with_variation(prompt, slug, &seed_text)
 }

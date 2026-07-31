@@ -197,21 +197,6 @@ pub fn chinese_identity_answer() -> &'static str {
     cached_response(&CELL, "identity", "zh")
 }
 
-pub fn russian_unknown_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "unknown", "ru")
-}
-
-pub fn hindi_unknown_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "unknown", "hi")
-}
-
-pub fn chinese_unknown_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "unknown", "zh")
-}
-
 pub const fn unknown_language_fallback_answer() -> &'static str {
     FALLBACK_UNKNOWN_LANGUAGE_ANSWER
 }

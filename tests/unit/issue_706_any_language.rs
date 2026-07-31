@@ -176,6 +176,53 @@ fn markers_never_outrank_another_registered_script() {
 }
 
 #[test]
+fn unknown_openers_are_seed_data_on_every_surface() {
+    // The unknown-intent opener pools used to be four Rust constants and a
+    // JavaScript object literal keyed by language. Issue #706 requires a new
+    // language's openers to be a data edit, so all three surfaces must read
+    // `data/seed/unknown-openers.lino`.
+    let pools = read("data/seed/unknown-openers.lino");
+    for slug in ["en", "ru", "hi", "zh"] {
+        assert!(
+            pools.contains(&format!("    language {slug}")),
+            "{slug} openers must be seed records"
+        );
+    }
+    assert!(pools.contains("fallback_language en"));
+
+    let core = read("src/web_engine_core.rs");
+    assert!(
+        core.contains("include_str!(\"../data/seed/unknown-openers.lino\")"),
+        "the Rust core must read the opener pools from seed data"
+    );
+    assert!(
+        !core.contains("UNKNOWN_OPENERS_RU"),
+        "per-language opener constants must not come back"
+    );
+
+    let worker = read("src/web/worker/formal_ai_worker_00.js");
+    assert!(
+        worker.contains("unknown-openers.lino"),
+        "the JS worker must hydrate its pools from the seed file"
+    );
+    assert!(
+        !worker.contains("UNKNOWN_OPENERS_BY_LANGUAGE"),
+        "the JS worker must not keep a per-language opener literal"
+    );
+
+    let loader = read("src/web/seed_loader.js");
+    assert!(loader.contains("seed/unknown-openers.lino"));
+
+    // A language with no pool of its own borrows the fallback language's pool
+    // rather than resolving to an empty one.
+    assert_eq!(
+        formal_ai::web_engine_core::unknown_openers_for("es"),
+        formal_ai::web_engine_core::unknown_openers_for("en")
+    );
+    assert!(!formal_ai::web_engine_core::unknown_opener_sentence_separators().is_empty());
+}
+
+#[test]
 fn a_language_without_localized_openers_reports_a_gap_not_english() {
     // "¿Qué tal la fotosíntesis submarina?" is Spanish (detected from seed
     // rules alone) and has no memoized answer. Issue #706 requires the honest

@@ -40,6 +40,7 @@
     "seed/tools.lino",
     "seed/languages.lino",
     "seed/language-detection.lino",
+    "seed/unknown-openers.lino",
     "seed/prompt-patterns.lino",
     "seed/intent-routing.lino",
     "seed/handler-precedence.lino",

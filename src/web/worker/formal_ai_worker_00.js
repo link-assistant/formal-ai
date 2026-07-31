@@ -236,6 +236,11 @@ function hydrateLinoSeedText(raw) {
   OPERATION_VOCABULARY_LINO = seedRawText(raw, "operation-vocabulary.lino");
   MARKET_PRICE_REFERENCES_LINO = seedRawText(raw, "market-price-references.lino");
   ENTITY_NAMES_LINO = seedRawText(raw, "entity-names.lino");
+  const unknownOpeners = seedRawText(raw, "unknown-openers.lino");
+  if (unknownOpeners) {
+    UNKNOWN_OPENERS_LINO = unknownOpeners;
+    cachedUnknownOpenerRegistry = null;
+  }
   cachedKnownEntityNames = null;
   MEANINGS_LINO = seedRawTexts(
     raw,
@@ -685,44 +690,74 @@ function assistantNameAnswer(language, preferences) {
   return `My name is ${name}. I'm formal AI.`;
 }
 
-// Mirrors `src/engine.rs::UNKNOWN_OPENERS_*`. The first entry of each pool
-// equals the opener already embedded in the seed text so the "with-variations"
-// answer is a strict superset of the seed. Different prompts get different
-// openers; the same prompt always picks the same one (FNV-1a hash, mirrored
-// from `stableBehaviorRuleId`).
-const UNKNOWN_OPENERS_BY_LANGUAGE = {
-  en: [
-    "I don't know how to answer that yet.",
-    "I didn't understand you.",
-    "I'm not sure how to respond to that yet.",
-    "I haven't learned to answer that yet.",
-    "That one is new to me.",
-  ],
-  ru: [
-    "Я пока не знаю, как ответить на это.",
-    "Я тебя не понял.",
-    "Я не уверен, как на это ответить.",
-    "Я ещё не научился отвечать на это.",
-    "Это для меня новое.",
-  ],
-  hi: [
-    "मुझे अभी इसका उत्तर देना नहीं आता।",
-    "मैं समझ नहीं पाया।",
-    "मुझे यकीन नहीं है कि कैसे उत्तर दूँ।",
-    "मैंने अभी तक यह उत्तर देना नहीं सीखा।",
-    "यह मेरे लिए नया है।",
-  ],
-  zh: [
-    "我还不知道如何回答这个问题。",
-    "我不太明白你说的意思。",
-    "我不确定该如何回答。",
-    "我还没有学会回答这个问题。",
-    "这对我来说是新的。",
-  ],
-};
+// Mirrors `src/web_engine_core.rs::parse_opener_registry`. Issue #706 moved the
+// pools out of this file into `data/seed/unknown-openers.lino`, so registering a
+// language's openers is a data edit shared by the Rust core, the WASM worker and
+// this worker. The first entry of each pool equals the opener already embedded
+// in the seed text, so the "with-variations" answer is a strict superset of the
+// seed. Different prompts get different openers; the same prompt always picks
+// the same one (FNV-1a hash, mirrored from `stableBehaviorRuleId`).
+//
+// The literal below is only the bootstrap copy used before `init()` hydrates the
+// seed text (for example when the demo is opened from `file://`).
+let UNKNOWN_OPENERS_LINO = `unknown_openers
+  fallback_language en
+  pool
+    language en
+    opener "I don't know how to answer that yet."
+    opener "I didn't understand you."
+    opener "I'm not sure how to respond to that yet."
+    opener "I haven't learned to answer that yet."
+    opener "That one is new to me."
+  sentence_separator ". "
+  sentence_separator "\u3002"
+  sentence_separator "\u0964 "
+`;
+let cachedUnknownOpenerRegistry = null;
+
+function unquoteSeedValue(value) {
+  const text = String(value || "");
+  if (text.length >= 2 && text.startsWith('"') && text.endsWith('"')) {
+    return text.slice(1, -1);
+  }
+  return text;
+}
+
+function unknownOpenerRegistry() {
+  if (cachedUnknownOpenerRegistry) return cachedUnknownOpenerRegistry;
+  const registry = { pools: [], fallbackLanguage: "en", sentenceSeparators: [] };
+  for (const line of String(UNKNOWN_OPENERS_LINO || "").split("\n")) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+    const space = trimmed.indexOf(" ");
+    const key = space === -1 ? trimmed : trimmed.slice(0, space);
+    const value = space === -1 ? "" : trimmed.slice(space + 1);
+    const pool = registry.pools[registry.pools.length - 1];
+    if (key === "pool") {
+      registry.pools.push({ language: "", openers: [] });
+    } else if (key === "fallback_language") {
+      registry.fallbackLanguage = unquoteSeedValue(value);
+    } else if (key === "sentence_separator") {
+      registry.sentenceSeparators.push(unquoteSeedValue(value));
+    } else if (key === "language" && pool) {
+      pool.language = unquoteSeedValue(value);
+    } else if (key === "opener" && pool) {
+      pool.openers.push(unquoteSeedValue(value));
+    }
+  }
+  registry.pools = registry.pools.filter((pool) => pool.openers.length > 0);
+  cachedUnknownOpenerRegistry = registry;
+  return registry;
+}
 
 function unknownOpenersFor(language) {
-  return UNKNOWN_OPENERS_BY_LANGUAGE[language] || UNKNOWN_OPENERS_BY_LANGUAGE.en;
+  const registry = unknownOpenerRegistry();
+  const match = registry.pools.find((pool) => pool.language === language);
+  if (match) return match.openers;
+  const fallback = registry.pools.find(
+    (pool) => pool.language === registry.fallbackLanguage,
+  );
+  return fallback ? fallback.openers : [];
 }
 
 function selectUnknownOpener(prompt, language) {
@@ -751,7 +786,7 @@ function stripLeadingUnknownOpener(text, language) {
       return trimmed.slice(known.length).trimStart();
     }
   }
-  for (const separator of [". ", "。", "। "]) {
+  for (const separator of unknownOpenerRegistry().sentenceSeparators) {
     const idx = trimmed.indexOf(separator);
     if (idx >= 0) {
       return trimmed.slice(idx + separator.length).trimStart();
