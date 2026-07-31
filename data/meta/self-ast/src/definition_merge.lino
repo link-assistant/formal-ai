@@ -1,0 +1,28 @@
+self_ast_census
+  target src/definition_merge.rs
+  language rust
+  fidelity signature
+  byte_len 12176
+  line_count 347
+  content_id source_module_36aa389bc6e69e78
+  symbol_count 19
+  symbols
+    struct DefinitionFragment 12 17
+    function merge_definitions 26 33
+    function merge_definitions_by_default 37 43
+    function definition_merge_for_term 45 92
+    function extract_definition_merge_term 94 128
+    function trim_definition_merge_tail 130 155
+    function definition_fragments 157 176
+    function push_definition_fragment 178 202
+    function source_languages 204 215
+    function source_urls 217 228
+    function merged_definition_facts 230 244
+    function split_definition_sentences 246 264
+    function normalize_fact 266 272
+    const TERM_PLACEHOLDER 283 283
+    const ANCHOR_PLACEHOLDER 284 284
+    const LANGUAGES_PLACEHOLDER 285 285
+    function render_definition_merge 287 323
+    function localized_label 327 331
+    function unique_source_fragments 333 347

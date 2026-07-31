@@ -1,0 +1,17 @@
+self_ast_census
+  target src/program_skill_gap.rs
+  language rust
+  fidelity signature
+  byte_len 4248
+  line_count 84
+  content_id source_module_fdf1533c20005cfb
+  symbol_count 8
+  symbols
+    const TASK_PLACEHOLDER 30 30
+    const LANGUAGE_PLACEHOLDER 31 31
+    const GAP_PLACEHOLDER 32 32
+    const ROUTES_PLACEHOLDER 33 33
+    const MISSING_PARAMETER 39 39
+    const SYNTHESIS_ROUTES 46 51
+    function gap_name 59 64
+    function render 71 84

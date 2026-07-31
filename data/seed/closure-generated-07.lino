@@ -1,0 +1,51 @@
+meanings
+  wordnet
+    defined-by source
+    lexeme en
+      surface
+        text "wordnet"
+  words
+    defined-by concept
+    lexeme en
+      surface
+        text "words"
+  world_state_reached
+    defined-by intent
+    lexeme en
+      surface
+        text "world state reached"
+  world_state_remaining
+    defined-by intent
+    lexeme en
+      surface
+        text "world state remaining"
+  would
+    defined-by concept
+    lexeme en
+      surface
+        text "would"
+  write_program
+    defined-by intent
+    lexeme en
+      surface
+        text "write program"
+  write_program_skill_gap
+    defined-by intent
+    lexeme en
+      surface
+        text "write program skill gap"
+  write_program_skill_gap_name
+    defined-by intent
+    lexeme en
+      surface
+        text "write program skill gap name"
+  writing
+    defined-by word_surface
+    lexeme en
+      surface
+        text "writing"
+  your
+    defined-by word_surface
+    lexeme en
+      surface
+        text "your"

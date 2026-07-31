@@ -612,6 +612,14 @@ impl UniversalSolver {
             ) {
                 return answer;
             }
+            // Issue #699 batch 3: every synthesis route missed. Name the gap in
+            // the evidence trail — the same `skill_gap` event the procedure
+            // compiler emits — so the miss is actionable instead of being
+            // rendered as a recitation of the templates we happen to hold.
+            log.append(
+                "skill_gap",
+                crate::program_skill_gap::gap_name(task.as_deref(), language.as_deref()),
+            );
         }
 
         if let Some(answer) = try_synthesize_from_sub_results(

@@ -98,6 +98,24 @@ pub const ROLE_CALCULATION_RESULT_QUERY_CUE: &str = "calculation_result_query_cu
 /// to `link-calculator`; the cue alone never marks a prompt as arithmetic. Read
 /// by the Rust solver and the JS worker.
 pub const ROLE_TIME_DURATION_CUE: &str = "time_duration_cue";
+/// Semantic role: a number or integer constrained by lower and upper bounds.
+pub const ROLE_NUMBER_CONSTRAINT_ENTITY: &str = "number_constraint_entity";
+/// Semantic role: a request to identify the constrained value.
+pub const ROLE_NUMBER_CONSTRAINT_QUERY: &str = "number_constraint_query";
+/// Semantic role: a cue that the constrained value was chosen but not named.
+pub const ROLE_NUMBER_CONSTRAINT_HIDDEN: &str = "number_constraint_hidden";
+/// Semantic role: either kind of lower-bound relation.
+pub const ROLE_NUMBER_CONSTRAINT_LOWER: &str = "number_constraint_lower";
+/// Semantic role: either kind of upper-bound relation.
+pub const ROLE_NUMBER_CONSTRAINT_UPPER: &str = "number_constraint_upper";
+/// Semantic role: a strict lower-bound relation.
+pub const ROLE_NUMBER_CONSTRAINT_LOWER_STRICT: &str = "number_constraint_lower_strict";
+/// Semantic role: an inclusive lower-bound relation.
+pub const ROLE_NUMBER_CONSTRAINT_LOWER_INCLUSIVE: &str = "number_constraint_lower_inclusive";
+/// Semantic role: a strict upper-bound relation.
+pub const ROLE_NUMBER_CONSTRAINT_UPPER_STRICT: &str = "number_constraint_upper_strict";
+/// Semantic role: an inclusive upper-bound relation.
+pub const ROLE_NUMBER_CONSTRAINT_UPPER_INCLUSIVE: &str = "number_constraint_upper_inclusive";
 /// Semantic role: a politeness or courtesy marker that softens a request.
 ///
 /// A please/for-me style tail ("please", "for me", "пожалуйста", "कृपया", "请")

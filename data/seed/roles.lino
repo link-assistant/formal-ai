@@ -297,6 +297,24 @@ roles
     kind meaning
   nondeterministic_marker
     kind predicate
+  number_constraint_entity
+    kind meaning
+  number_constraint_hidden
+    kind meaning
+  number_constraint_lower
+    kind predicate
+  number_constraint_lower_inclusive
+    kind meaning
+  number_constraint_lower_strict
+    kind meaning
+  number_constraint_query
+    kind meaning
+  number_constraint_upper
+    kind predicate
+  number_constraint_upper_inclusive
+    kind meaning
+  number_constraint_upper_strict
+    kind meaning
   numeric_concept
     kind predicate
   observable_task_action
