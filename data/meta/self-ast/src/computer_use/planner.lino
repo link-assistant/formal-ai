@@ -1,0 +1,12 @@
+self_ast_census
+  target src/computer_use/planner.rs
+  language rust
+  fidelity signature
+  byte_len 3903
+  line_count 111
+  content_id source_module_b8c3fde344d55d83
+  symbol_count 3
+  symbols
+    function tool_for_primitive 10 18
+    function plan_agentic_step 21 97
+    function tool_name_for_result 99 111

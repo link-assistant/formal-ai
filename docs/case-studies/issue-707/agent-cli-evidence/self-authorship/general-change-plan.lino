@@ -1,0 +1,19 @@
+general_change_plan
+  id "general_change_plan_eeebdf794d30c95b"
+  execution_mode "literal_file"
+  goal "Create file issue_707_seed_taxonomy.rs containing\n//! Agent CLI-authored red regression for GitHub issue #707.\n\nuse std::fs;\n\nconst REQUIRED: [&str; 12] = [\n    \"fs.read\",\n    \"fs.write\",\n    \"fs.list\",\n    \"fs.move\",\n    \"shell.run\",\n    \"http.fetch\",\n    \"http.post\",\n    \"dom.query\",\n    \"dom.extract\",\n    \"archive.pack\",\n    \"archive.unpack\",\n    \"process.status\",\n];\n\n#[test]\nfn computer_use_primitive_taxonomy_is_seeded() {\n    let seed = fs::read_to_string(\"data/seed/tools.lino\").expect(\"tool registry\");\n    for primitive in REQUIRED {\n        assert!(\n            seed.contains(&format!(\"name {primitive}\")),\n            \"missing primitive {primitive}\"\n        );\n    }\n}"
+  target "issue_707_seed_taxonomy.rs"
+  step 1
+    capability "Write"
+    action "append the composed plan to .formal-ai/general-change-plan.lino"
+    expected_evidence "written plan event impulse_9c96c293e66284e6"
+  step 2
+    capability "Write"
+    action "write the requested content to issue_707_seed_taxonomy.rs"
+    expected_evidence "workspace file issue_707_seed_taxonomy.rs"
+  step 3
+    capability "Run"
+    action "run the request-derived verification command"
+    expected_evidence "//! Agent CLI-authored red regression for GitHub issue #707.\n\nuse std::fs;\n\nconst REQUIRED: [&str; 12] = [\n    \"fs.read\",\n    \"fs.write\",\n    \"fs.list\",\n    \"fs.move\",\n    \"shell.run\",\n    \"http.fetch\",\n    \"http.post\",\n    \"dom.query\",\n    \"dom.extract\",\n    \"archive.pack\",\n    \"archive.unpack\",\n    \"process.status\",\n];\n\n#[test]\nfn computer_use_primitive_taxonomy_is_seeded() {\n    let seed = fs::read_to_string(\"data/seed/tools.lino\").expect(\"tool registry\");\n    for primitive in REQUIRED {\n        assert!(\n            seed.contains(&format!(\"name {primitive}\")),\n            \"missing primitive {primitive}\"\n        );\n    }\n}"
+    command "cat issue_707_seed_taxonomy.rs"
+  verification_command "cat issue_707_seed_taxonomy.rs"

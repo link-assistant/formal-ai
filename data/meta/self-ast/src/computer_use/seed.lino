@@ -1,0 +1,32 @@
+self_ast_census
+  target src/computer_use/seed.rs
+  language rust
+  fidelity signature
+  byte_len 10905
+  line_count 339
+  content_id source_module_fffdd954f003cba2
+  symbol_count 23
+  symbols
+    const TASKS_LINO 8 8
+    struct BenchmarkTask 11 15
+    struct CapabilityGap 18 22
+    struct ParsedSeed 25 34
+    function benchmark_tasks 37 39
+    function plan_for_prompt 42 57
+    function capability_gap_for_prompt 60 76
+    function completion_message 79 85
+    function missing_primitive_message 88 102
+    function verification_failed_message 105 119
+    function step_conditions 124 133
+    function capability_gap_response 138 154
+    function tool_description 157 167
+    function parsed 169 172
+    static PARSED 170 170
+    function parse_seed 174 285
+    function localized_template 287 292
+    function parse_localized 294 298
+    function parse_primitive_template 300 305
+    function parse_step_arguments 307 314
+    function primitive_template 316 323
+    function render_template 325 331
+    function normalize 333 339

@@ -27,6 +27,9 @@ const READ_ONLY_DESKTOP_TOOLS = Object.freeze([
 ]);
 const WRITE_CAPABLE_DESKTOP_TOOLS = Object.freeze([
   "write_file", "edit_file", "multi_edit", "shell", "bash", "eval_js", "code_exec", "todo", "plan", "subagent", "task",
+  "fs.read", "fs.write", "fs.list", "fs.move", "shell.run", "http.fetch",
+  "http.post", "dom.query", "dom.extract", "archive.pack", "archive.unpack",
+  "process.status",
 ]);
 const HOST_SUBSCRIPTION_ENV_KEYS = Object.freeze([
   "ANTHROPIC_API_KEY",

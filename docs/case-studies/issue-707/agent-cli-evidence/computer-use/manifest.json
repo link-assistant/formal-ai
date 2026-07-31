@@ -1,0 +1,281 @@
+{
+  "issue": 707,
+  "client": "@link-assistant/agent",
+  "task_count": 10,
+  "record": {
+    "active_customers": {
+      "session_id": "ses_04b164c02ffew5aWg6HpX4iw4g",
+      "tools": [
+        "formal_ai_fs_write",
+        "formal_ai_shell_run",
+        "formal_ai_fs_read"
+      ]
+    },
+    "first_open_order": {
+      "session_id": "ses_04b16343affeSOrV6nI3XmuQWu",
+      "tools": [
+        "formal_ai_http_fetch",
+        "formal_ai_dom_extract",
+        "formal_ai_fs_read"
+      ]
+    },
+    "page_title": {
+      "session_id": "ses_04b162185ffekIf54QQSXkPHVT",
+      "tools": [
+        "formal_ai_http_fetch",
+        "formal_ai_dom_query",
+        "formal_ai_fs_read"
+      ]
+    },
+    "submit_form": {
+      "session_id": "ses_04b160c5affe6HsjLVnWPqX9J7",
+      "tools": [
+        "formal_ai_http_fetch",
+        "formal_ai_dom_query",
+        "formal_ai_http_post",
+        "formal_ai_fs_read"
+      ]
+    },
+    "count_lines": {
+      "session_id": "ses_04b15f3f2ffecs28sjrGKP7zsX",
+      "tools": [
+        "formal_ai_fs_write",
+        "formal_ai_shell_run",
+        "formal_ai_fs_read"
+      ]
+    },
+    "list_and_pack": {
+      "session_id": "ses_04b15df86ffeNx3qb3OFiXXZCE",
+      "tools": [
+        "formal_ai_fs_write",
+        "formal_ai_fs_write",
+        "formal_ai_fs_list",
+        "formal_ai_archive_pack"
+      ]
+    },
+    "archive_round_trip": {
+      "session_id": "ses_04b15c7f3ffepO3X4vJAVI6qs2",
+      "tools": [
+        "formal_ai_fs_write",
+        "formal_ai_archive_pack",
+        "formal_ai_archive_unpack",
+        "formal_ai_fs_list"
+      ]
+    },
+    "move_note": {
+      "session_id": "ses_04b15b2ebffeg4dsGcf2Icl7Wi",
+      "tools": [
+        "formal_ai_fs_write",
+        "formal_ai_fs_move",
+        "formal_ai_fs_list",
+        "formal_ai_fs_read"
+      ]
+    },
+    "process_report": {
+      "session_id": "ses_04b159c7bffebdXaZFJIuCXl2u",
+      "tools": [
+        "formal_ai_process_status",
+        "formal_ai_fs_read"
+      ]
+    },
+    "inventory_bundle": {
+      "session_id": "ses_04b1589d6ffeMRmx5VElfZyNd0",
+      "tools": [
+        "formal_ai_http_fetch",
+        "formal_ai_shell_run",
+        "formal_ai_archive_pack",
+        "formal_ai_process_status"
+      ]
+    }
+  },
+  "replay": {
+    "active_customers": {
+      "session_id": "ses_04b157424ffelZSPdRXdvwUvbN",
+      "tools": [
+        "formal_ai_fs_write",
+        "formal_ai_shell_run",
+        "formal_ai_fs_read"
+      ]
+    },
+    "first_open_order": {
+      "session_id": "ses_04b1559b3ffeLogFJAJ4L7NFlt",
+      "tools": [
+        "formal_ai_http_fetch",
+        "formal_ai_dom_extract",
+        "formal_ai_fs_read"
+      ]
+    },
+    "page_title": {
+      "session_id": "ses_04b15423fffeBK4I65gB5HQ58y",
+      "tools": [
+        "formal_ai_http_fetch",
+        "formal_ai_dom_query",
+        "formal_ai_fs_read"
+      ]
+    },
+    "submit_form": {
+      "session_id": "ses_04b152a7fffeXK14Ll0q2sKn8W",
+      "tools": [
+        "formal_ai_http_fetch",
+        "formal_ai_dom_query",
+        "formal_ai_http_post",
+        "formal_ai_fs_read"
+      ]
+    },
+    "count_lines": {
+      "session_id": "ses_04b151204ffeqgJs2e7JaCzvNn",
+      "tools": [
+        "formal_ai_fs_write",
+        "formal_ai_shell_run",
+        "formal_ai_fs_read"
+      ]
+    },
+    "list_and_pack": {
+      "session_id": "ses_04b14fc90ffeex5ywsUnO73tBy",
+      "tools": [
+        "formal_ai_fs_write",
+        "formal_ai_fs_write",
+        "formal_ai_fs_list",
+        "formal_ai_archive_pack"
+      ]
+    },
+    "archive_round_trip": {
+      "session_id": "ses_04b14e4afffe5infTzY17YBDh9",
+      "tools": [
+        "formal_ai_fs_write",
+        "formal_ai_archive_pack",
+        "formal_ai_archive_unpack",
+        "formal_ai_fs_list"
+      ]
+    },
+    "move_note": {
+      "session_id": "ses_04b14cd11ffeaFHYX5s0iiCUkV",
+      "tools": [
+        "formal_ai_fs_write",
+        "formal_ai_fs_move",
+        "formal_ai_fs_list",
+        "formal_ai_fs_read"
+      ]
+    },
+    "process_report": {
+      "session_id": "ses_04b14b43bffeh3xpr8yemOm1rk",
+      "tools": [
+        "formal_ai_process_status",
+        "formal_ai_fs_read"
+      ]
+    },
+    "inventory_bundle": {
+      "session_id": "ses_04b14a1b8ffeG8W9oxJkvSTjOU",
+      "tools": [
+        "formal_ai_http_fetch",
+        "formal_ai_shell_run",
+        "formal_ai_archive_pack",
+        "formal_ai_process_status"
+      ]
+    }
+  },
+  "record_audit": {
+    "active_customers": {
+      "steps": 3,
+      "verified_records": 3,
+      "verification_events": 9
+    },
+    "first_open_order": {
+      "steps": 3,
+      "verified_records": 3,
+      "verification_events": 9
+    },
+    "page_title": {
+      "steps": 3,
+      "verified_records": 3,
+      "verification_events": 9
+    },
+    "submit_form": {
+      "steps": 4,
+      "verified_records": 4,
+      "verification_events": 12
+    },
+    "count_lines": {
+      "steps": 3,
+      "verified_records": 3,
+      "verification_events": 9
+    },
+    "list_and_pack": {
+      "steps": 4,
+      "verified_records": 4,
+      "verification_events": 12
+    },
+    "archive_round_trip": {
+      "steps": 4,
+      "verified_records": 4,
+      "verification_events": 12
+    },
+    "move_note": {
+      "steps": 4,
+      "verified_records": 4,
+      "verification_events": 12
+    },
+    "process_report": {
+      "steps": 2,
+      "verified_records": 2,
+      "verification_events": 6
+    },
+    "inventory_bundle": {
+      "steps": 4,
+      "verified_records": 4,
+      "verification_events": 12
+    }
+  },
+  "replay_audit": {
+    "active_customers": {
+      "steps": 3,
+      "verified_records": 3,
+      "verification_events": 9
+    },
+    "first_open_order": {
+      "steps": 3,
+      "verified_records": 3,
+      "verification_events": 9
+    },
+    "page_title": {
+      "steps": 3,
+      "verified_records": 3,
+      "verification_events": 9
+    },
+    "submit_form": {
+      "steps": 4,
+      "verified_records": 4,
+      "verification_events": 12
+    },
+    "count_lines": {
+      "steps": 3,
+      "verified_records": 3,
+      "verification_events": 9
+    },
+    "list_and_pack": {
+      "steps": 4,
+      "verified_records": 4,
+      "verification_events": 12
+    },
+    "archive_round_trip": {
+      "steps": 4,
+      "verified_records": 4,
+      "verification_events": 12
+    },
+    "move_note": {
+      "steps": 4,
+      "verified_records": 4,
+      "verification_events": 12
+    },
+    "process_report": {
+      "steps": 2,
+      "verified_records": 2,
+      "verification_events": 6
+    },
+    "inventory_bundle": {
+      "steps": 4,
+      "verified_records": 4,
+      "verification_events": 12
+    }
+  }
+}

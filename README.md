@@ -216,6 +216,11 @@ curl -s http://127.0.0.1:8080/api/openai/v1/models
 curl -s http://127.0.0.1:8080/api/gemini/v1beta/models
 ```
 
+Permission-gated file, structured shell, HTTP/DOM, archive, and process plans
+are documented in the
+[verified computer-use guide](docs/computer-use.md), including the native CLI,
+MCP endpoint, desktop boundary, replay, and the explicit no-vision limit.
+
 Primary routes live under `/api/<protocol>/...`: OpenAI at
 `/api/openai/v1`, Anthropic at `/api/anthropic/v1`, Gemini at
 `/api/gemini/v1beta`, and Vertex at `/api/vertex/v1`. Existing `/v1/models`,

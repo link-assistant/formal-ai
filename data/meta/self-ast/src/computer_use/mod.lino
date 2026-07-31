@@ -1,0 +1,35 @@
+self_ast_census
+  target src/computer_use/mod.rs
+  language rust
+  fidelity signature
+  byte_len 11873
+  line_count 334
+  content_id source_module_124833919e1d1abd
+  symbol_count 26
+  symbols
+    module executor 9 9
+    module induction 10 10
+    module lexicon 11 11
+    module planner 12 12
+    module seed 13 13
+    module synthesis 14 14
+    const COMPUTER_USE_PRIMITIVES 32 32
+    enum ComputerUsePrimitive 48 61
+    function name 65 80
+    function from_tool_name 83 94
+    function permission_key 97 99
+    function changes_state 102 112
+    function input_schema 115 173
+    function merge_plan_properties 176 191
+    function required_arguments 193 207
+    struct ComputerPlanStep 210 216
+    struct ComputerUsePlan 219 224
+    enum VerificationPhase 228 232
+    struct VerificationEvent 235 242
+    struct ComputerStepRecord 245 253
+    struct ComputerUseOutcome 256 261
+    function plan_request 271 273
+    function capability_gap_for_request 280 282
+    function run_verified_plan 288 304
+    function replay_verified_plan 308 320
+    function mcp_tool_definitions 323 334

@@ -1,0 +1,12 @@
+self_ast_census
+  target src/seed/roles/computer_use.rs
+  language rust
+  fidelity signature
+  byte_len 2149
+  line_count 37
+  content_id source_module_64986f26417e615d
+  symbol_count 3
+  symbols
+    const ROLE_COMPUTER_USE_OPERATION_CUE 21 21
+    const ROLE_COMPUTER_USE_RESOURCE_CUE 29 29
+    const ROLE_COMPUTER_USE_CAPABILITY_GAP_CUE 37 37

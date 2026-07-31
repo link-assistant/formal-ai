@@ -94,6 +94,11 @@ meanings
     lexeme en
       surface
         text "accuracy"
+  active_customers
+    defined-by task
+    lexeme en
+      surface
+        text "active customers"
   ada_lovelace
     defined-by concept
     lexeme en
@@ -299,6 +304,16 @@ meanings
     lexeme en
       surface
         text "append text"
+  archive
+    defined-by word_surface
+    lexeme en
+      surface
+        text "archive"
+  archive_round_trip
+    defined-by task
+    lexeme en
+      surface
+        text "archive round trip"
   are
     defined-by concept
     lexeme en
@@ -454,6 +469,11 @@ meanings
     lexeme en
       surface
         text "budget search solution"
+  bundle
+    defined-by word_surface
+    lexeme en
+      surface
+        text "bundle"
   bundle_export_filename
     defined-by field
     lexeme en
@@ -649,21 +669,6 @@ meanings
     lexeme en
       surface
         text "compiled procedure explanation"
-  completion_recovery_decompose_into_leaf
-    defined-by intent
-    lexeme en
-      surface
-        text "completion recovery decompose into leaf"
-  completion_recovery_name_target_artifact
-    defined-by intent
-    lexeme en
-      surface
-        text "completion recovery name target artifact"
-  completion_recovery_restate_postcondition
-    defined-by intent
-    lexeme en
-      surface
-        text "completion recovery restate postcondition"
   concept_lookup
     defined-by intent
     lexeme en
@@ -840,7 +845,7 @@ meanings
       surface
         text "count characters"
   count_lines
-    defined-by operation
+    defined-by task
     lexeme en
       surface
         text "count lines"
@@ -904,6 +909,11 @@ meanings
     lexeme en
       surface
         text "curl"
+  customers
+    defined-by word_surface
+    lexeme en
+      surface
+        text "customers"
   data-format
     defined-by category
     lexeme en
@@ -914,11 +924,6 @@ meanings
     lexeme en
       surface
         text "data structure"
-  decompose_into_leaf
-    defined-by concept
-    lexeme en
-      surface
-        text "decompose into leaf"
   deduplicate_lines
     defined-by operation
     lexeme en
@@ -1034,6 +1039,11 @@ meanings
     lexeme en
       surface
         text "document originality check sample present"
+  documents
+    defined-by word_surface
+    lexeme en
+      surface
+        text "documents"
   donald_trump
     defined-by concept
     lexeme en
@@ -1044,6 +1054,11 @@ meanings
     lexeme en
       surface
         text "dotnet"
+  download
+    defined-by word_surface
+    lexeme en
+      surface
+        text "download"
   draft_comparison_explanation
     defined-by intent
     lexeme en
@@ -1074,11 +1089,21 @@ meanings
     lexeme en
       surface
         text "elon musk"
+  entries
+    defined-by concept
+    lexeme en
+      surface
+        text "entries"
   enum
     defined-by kind
     lexeme en
       surface
         text "enum"
+  enumerate
+    defined-by word_surface
+    lexeme en
+      surface
+        text "enumerate"
   enumerate_possessive
     defined-by coverage_group
     lexeme en
@@ -1359,38 +1384,13 @@ meanings
     lexeme en
       surface
         text "filesystem"
+  filtered
+    defined-by word_surface
+    lexeme en
+      surface
+        text "filtered"
   first
     defined-by word_surface
     lexeme en
       surface
         text "first"
-  fizzbuzz
-    defined-by task
-    lexeme en
-      surface
-        text "fizzbuzz"
-  folder
-    defined-by word_surface
-    lexeme en
-      surface
-        text "folder"
-  folders
-    defined-by word_surface
-    lexeme en
-      surface
-        text "folders"
-  fontawesome
-    defined-by concept
-    lexeme en
-      surface
-        text "fontawesome"
-  for
-    defined-by word_surface
-    lexeme en
-      surface
-        text "for"
-  formal-ai
-    defined-by name
-    lexeme en
-      surface
-        text "formal ai"

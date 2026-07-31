@@ -69,17 +69,23 @@ documentation contract can detect drift:
   `conversation_recall`, `read_local_file`, `eval_js`, `append_memory`,
   `export_memory`, `import_memory`.
 - Rust library: the shared reasoning tools plus `recall`, `telegram_html`, and
-  `http_chat`.
-- CLI: `chat`, `dataset`, `memory`, `bundle`, `serve`, `telegram`.
+  `http_chat`, together with the isolated computer-use primitives `fs.read`,
+  `fs.write`, `fs.list`, `fs.move`, `shell.run`, `http.fetch`, `http.post`,
+  `dom.query`, `dom.extract`, `archive.pack`, `archive.unpack`, and
+  `process.status`.
+- CLI: `chat`, `dataset`, `memory`, `bundle`, `serve`, `telegram`,
+  `computer-use`, and the same twelve isolated computer-use primitives.
 - HTTP server: `v1_chat_completions`, `v1_responses`, `v1_graph`, `v1_bundle`,
-  `telegram_webhook`, `agent_permission_gate`, `tool_router`, `web_search`,
-  `web_fetch`, `http_fetch`.
+  `mcp`, `telegram_webhook`, `agent_permission_gate`, `tool_router`,
+  `web_search`, `web_fetch`, `http_fetch`, and the same twelve isolated
+  computer-use primitives.
 - Desktop: `desktop_shell`, `formal-ai serve`, `v1_chat_completions`,
   `v1_graph`, `export_memory`, `import_memory`, `agent_permission_gate`,
   `tool_router`, `read_file`, `write_file`, `edit_file`, `multi_edit`, `shell`,
   `bash`, `grep`, `glob`, `list_directory`, `read_many_files`, `web_search`,
   `web_fetch`, `web_capture_playwright`, `rrf_google_bing_duckduckgo`, `todo`,
-  `plan`, `subagent`, `task`, `code_exec_box_dind`, `memory_sync`.
+  `plan`, `subagent`, `task`, `code_exec_box_dind`, `memory_sync`, and the same
+  twelve isolated computer-use primitives.
 - VS Code: `vscode_webview` followed by the same server, file, web, planning,
   execution, and memory-sync identifiers as Desktop.
 - Telegram: shared reasoning plus `html_replies`.

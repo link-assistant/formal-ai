@@ -1,0 +1,22 @@
+   Compiling formal-ai v0.313.0 (/tmp/gh-issue-solver-1785440407008)
+    Finished `test` profile [unoptimized] target(s) in 42.56s
+     Running tests/issue_707_seed_taxonomy.rs (target/debug/deps/issue_707_seed_taxonomy-5586dee1cc488024)
+
+running 1 test
+test computer_use_primitive_taxonomy_is_seeded ... FAILED
+
+failures:
+
+---- computer_use_primitive_taxonomy_is_seeded stdout ----
+
+thread 'computer_use_primitive_taxonomy_is_seeded' (13383) panicked at tests/issue_707_seed_taxonomy.rs:24:9:
+missing primitive fs.read
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    computer_use_primitive_taxonomy_is_seeded
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--test issue_707_seed_taxonomy`
