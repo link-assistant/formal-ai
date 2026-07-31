@@ -2,29 +2,29 @@ self_ast_census
   target src/solver_handlers/user_intent.rs
   language rust
   fidelity signature
-  byte_len 19414
-  line_count 491
-  content_id source_module_1dbd0be28e05b7e7
+  byte_len 19389
+  line_count 490
+  content_id source_module_bf501ea4235275af
   symbol_count 21
   symbols
     function prefix_literals 17 24
     function bare_literals 29 36
-    function try_clarification 38 63
-    function is_clarification_request 74 79
-    function try_punctuation_only_prompt 81 104
-    function try_ill_formed 106 129
-    function is_more_capabilities_prompt 140 145
-    function is_capability_query 157 162
-    function is_assistant_free_time_prompt 164 171
-    function prior_history_mentions_web_search 173 181
-    function localized_seed_response 183 186
-    function try_capabilities 188 221
-    function try_shell_refusal 222 251
-    function try_opinion_question 253 291
-    function try_proof_request 304 310
-    function try_proof_request_with_config 325 416
-    function is_known_unsolved_bounded_proof_request 418 428
-    function extract_claim_from_prompt 434 458
-    function is_claim_intro_boundary 460 466
-    function strip_claim_prefix_noise 468 470
-    function pipeline_footer 472 491
+    function try_clarification 38 62
+    function is_clarification_request 73 78
+    function try_punctuation_only_prompt 80 103
+    function try_ill_formed 105 128
+    function is_more_capabilities_prompt 139 144
+    function is_capability_query 156 161
+    function is_assistant_free_time_prompt 163 170
+    function prior_history_mentions_web_search 172 180
+    function localized_seed_response 182 185
+    function try_capabilities 187 220
+    function try_shell_refusal 221 250
+    function try_opinion_question 252 290
+    function try_proof_request 303 309
+    function try_proof_request_with_config 324 415
+    function is_known_unsolved_bounded_proof_request 417 427
+    function extract_claim_from_prompt 433 457
+    function is_claim_intro_boundary 459 465
+    function strip_claim_prefix_noise 467 469
+    function pipeline_footer 471 490

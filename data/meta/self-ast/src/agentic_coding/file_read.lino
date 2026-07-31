@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/file_read.rs
   language rust
   fidelity full_ast
-  byte_len 26528
-  line_count 783
-  content_id source_module_be7040ffee768c12
+  byte_len 26519
+  line_count 782
+  content_id source_module_7df97238be9a32aa
   symbol_count 43
   symbols
     enum FileReadTask 11 22
@@ -46,16 +46,16 @@ self_ast_census
     function extract_jsonish_value 614 641
     function supplied_file_answer 657 664
     function supplied_file_final_answer 681 710
-    function supplied_file_template 718 732
-    function supplied_file_content 742 769
-    function tool_for 771 776
-    function plan_one 778 783
+    function supplied_file_template 718 731
+    function supplied_file_content 741 768
+    function tool_for 770 775
+    function plan_one 777 782
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 20185
+    total_link_count 20182
     named_node_count 4117
     distinct_node_kinds 87
     node_kinds

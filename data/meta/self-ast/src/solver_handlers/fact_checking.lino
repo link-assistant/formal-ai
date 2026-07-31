@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/fact_checking.rs
   language rust
   fidelity signature
-  byte_len 4039
-  line_count 110
-  content_id source_module_932b70b010059eee
+  byte_len 4030
+  line_count 109
+  content_id source_module_c50b87d695f4da76
   symbol_count 10
   symbols
     const COUNT_PLACEHOLDER 21 21
@@ -16,4 +16,4 @@ self_ast_census
     const COUNTEREXAMPLE_PLACEHOLDER 27 27
     function try_fact_checking 30 86
     function render_statement 88 105
-    function localized_template 107 110
+    function localized_template 107 109

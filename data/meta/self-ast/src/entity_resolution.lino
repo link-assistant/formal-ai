@@ -2,9 +2,9 @@ self_ast_census
   target src/entity_resolution.rs
   language rust
   fidelity signature
-  byte_len 7788
-  line_count 219
-  content_id source_module_061999d060380f5b
+  byte_len 7779
+  line_count 218
+  content_id source_module_40d6b0438c3f0a99
   symbol_count 12
   symbols
     const TERM_PLACEHOLDER 28 28
@@ -18,4 +18,4 @@ self_ast_census
     function edit_budget 145 147
     function prefix_literals 151 158
     function suffix_literals 162 169
-    function resolve_who_is 176 219
+    function resolve_who_is 176 218

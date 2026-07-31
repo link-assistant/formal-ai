@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/report_issue.rs
   language rust
   fidelity full_ast
-  byte_len 18608
-  line_count 523
-  content_id source_module_5aa8fabab2916d83
+  byte_len 18599
+  line_count 522
+  content_id source_module_753872faaa036a31
   symbol_count 43
   symbols
     const REPORT_BODY_COMMAND 14 14
@@ -28,34 +28,34 @@ self_ast_census
     enum ReportContents 44 48
     function plan_report_flow 52 140
     function ask_or_render 142 182
-    function localized 184 187
-    function localized_options 189 196
-    function is_report_question 198 207
-    function answer_texts 209 219
-    function parse_targets 221 239
-    function parse_contents 241 250
-    function matches_option 252 260
-    function is_report_intent 263 275
-    function report_action_governs_subject 277 321
-    function commands_for_targets 330 343
-    function command_for 345 366
-    function export_command 368 379
-    function learning_command 381 388
-    function github_command 395 427
-    function source_name 429 435
-    function dialog_id 445 450
-    function report_title 452 457
-    function title_turns 464 474
-    function report_finished 477 507
-    function formal_ai_repo 509 511
-    function config 513 517
-    function render 519 523
+    function localized 184 186
+    function localized_options 188 195
+    function is_report_question 197 206
+    function answer_texts 208 218
+    function parse_targets 220 238
+    function parse_contents 240 249
+    function matches_option 251 259
+    function is_report_intent 262 274
+    function report_action_governs_subject 276 320
+    function commands_for_targets 329 342
+    function command_for 344 365
+    function export_command 367 378
+    function learning_command 380 387
+    function github_command 394 426
+    function source_name 428 434
+    function dialog_id 444 449
+    function report_title 451 456
+    function title_turns 463 473
+    function report_finished 476 506
+    function formal_ai_repo 508 510
+    function config 512 516
+    function render 518 522
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 13766
+    total_link_count 13763
     named_node_count 2777
     distinct_node_kinds 76
     node_kinds

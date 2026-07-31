@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_terminal.rs
   language rust
   fidelity signature
-  byte_len 5700
+  byte_len 5699
   line_count 142
-  content_id source_module_8eb07dc4eeabbd28
+  content_id source_module_7a09b193a05825e2
   symbol_count 6
   symbols
     function extract_backtick_command 27 49

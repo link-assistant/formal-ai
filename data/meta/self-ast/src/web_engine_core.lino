@@ -2,9 +2,9 @@ self_ast_census
   target src/web_engine_core.rs
   language rust
   fidelity signature
-  byte_len 18325
-  line_count 519
-  content_id source_module_58484dbbca07d240
+  byte_len 18291
+  line_count 517
+  content_id source_module_7d6bf190dc0f09e0
   symbol_count 30
   symbols
     function normalize_prompt 42 60
@@ -25,15 +25,15 @@ self_ast_census
     function unquote_seed_value 263 268
     struct OpenerPool 271 274
     struct OpenerRegistry 278 282
-    function parse_opener_registry 284 320
-    function with_opener_registry 326 330
-    static REGISTRY 328 328
-    function with_opener_registry 333 335
-    function unknown_openers_for 343 358
-    function unknown_opener_sentence_separators 363 365
-    function select_unknown_opener 369 382
-    function matches_intent_route_parts 387 419
-    function matches_intent_route_payload 427 471
-    function contains_route_token 473 477
-    function normalize_route_raw_prompt 479 489
-    function is_unicode_letter_or_digit 491 519
+    function parse_opener_registry 284 318
+    function with_opener_registry 324 328
+    static REGISTRY 326 326
+    function with_opener_registry 331 333
+    function unknown_openers_for 341 356
+    function unknown_opener_sentence_separators 361 363
+    function select_unknown_opener 367 380
+    function matches_intent_route_parts 385 417
+    function matches_intent_route_payload 425 469
+    function contains_route_token 471 475
+    function normalize_route_raw_prompt 477 487
+    function is_unicode_letter_or_digit 489 517
