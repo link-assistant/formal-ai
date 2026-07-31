@@ -5,7 +5,8 @@ use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::seed;
 
-use super::{finalize_simple, render_source_link};
+use crate::language::detect as detect_language;
+use crate::solver_handlers::{finalize_simple, render_source_link};
 
 #[derive(Debug, Clone)]
 struct DefinitionFragment {
@@ -15,7 +16,14 @@ struct DefinitionFragment {
     source_kind: String,
 }
 
-pub fn try_definition_merge(
+/// Merge every stored definition of a term across languages into one answer.
+///
+/// Issue #699 batch 2 moved this method out of `src/solver_handlers/`: nothing
+/// about merging localized definitions is intent-specific routing. What is left
+/// in Rust is the language-neutral merge — deduplicate fragments, order them,
+/// render them — while the source-host language mapping and every rendered
+/// label now come from seed data.
+pub fn merge_definitions(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
@@ -24,7 +32,9 @@ pub fn try_definition_merge(
     definition_merge_for_term(prompt, log, term, None)
 }
 
-pub fn try_definition_merge_by_default(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
+/// Merge definitions for a bare "what is X" prompt, used by the meta method
+/// dispatcher when no explicit merge request was made.
+pub fn merge_definitions_by_default(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
     let query = extract_concept_query(prompt)?;
     if query.context.is_some() {
         return None;
@@ -69,7 +79,8 @@ fn definition_merge_for_term(
     }
     let facts = merged_definition_facts(&fragments);
     log.append("definition_merge:facts", facts.len().to_string());
-    let body = render_definition_merge(record, &fragments, &facts);
+    let language = detect_language(prompt).slug().to_owned();
+    let body = render_definition_merge(&language, record, &fragments, &facts);
     Some(finalize_simple(
         prompt,
         log,
@@ -147,7 +158,7 @@ fn definition_fragments(record: &ConceptRecord) -> Vec<DefinitionFragment> {
     let mut fragments = Vec::new();
     push_definition_fragment(
         &mut fragments,
-        inferred_source_language(&record.source),
+        &seed::language_of_source(&record.source),
         &record.summary,
         &record.source,
         &record.source_kind,
@@ -188,18 +199,6 @@ fn push_definition_fragment(
         source: source.trim().to_owned(),
         source_kind: source_kind.trim().to_owned(),
     });
-}
-
-fn inferred_source_language(source: &str) -> &str {
-    if source.contains("://ru.wikipedia.org/") {
-        "ru"
-    } else if source.contains("://hi.wikipedia.org/") {
-        "hi"
-    } else if source.contains("://zh.wikipedia.org/") {
-        "zh"
-    } else {
-        "en"
-    }
 }
 
 fn source_languages(fragments: &[DefinitionFragment]) -> Vec<String> {
@@ -272,7 +271,21 @@ fn normalize_fact(value: &str) -> String {
         .collect()
 }
 
+/// Render the merged definition in `language`.
+///
+/// Every fixed label is a seed response: the header carries `{term}`,
+/// `{anchor}`, and `{languages}` placeholders, and the sources heading is its
+/// own record. Only the list structure — one bullet per fact and per source,
+/// each tagged with its own source language — is code, because that shape is
+/// the same in every language.
+/// Placeholders the seed header record carries, named so the rendering code
+/// reads as substitution rather than as formatting.
+const TERM_PLACEHOLDER: &str = "{term}";
+const ANCHOR_PLACEHOLDER: &str = "{anchor}";
+const LANGUAGES_PLACEHOLDER: &str = "{languages}";
+
 fn render_definition_merge(
+    language: &str,
     record: &ConceptRecord,
     fragments: &[DefinitionFragment],
     facts: &[(String, String)],
@@ -288,13 +301,15 @@ fn render_definition_merge(
     } else {
         format!(" [{}]", record.wikidata)
     };
-    let mut body = format!(
-        "Merged definition of {display_term}{anchor}\nSource languages: {languages}\n\nFacts:"
-    );
+    let mut body = localized_label("definition_merge_header", language)
+        .replace(TERM_PLACEHOLDER, display_term)
+        .replace(ANCHOR_PLACEHOLDER, &anchor)
+        .replace(LANGUAGES_PLACEHOLDER, &languages);
     for (language, fact) in facts {
         let _ = writeln!(body, "\n- [{language}] {fact}");
     }
-    body.push_str("\nSources:");
+    body.push('\n');
+    body.push_str(&localized_label("definition_merge_sources_label", language));
     for fragment in unique_source_fragments(fragments) {
         let source = render_source_link(&fragment.source);
         let _ = writeln!(
@@ -305,6 +320,14 @@ fn render_definition_merge(
         );
     }
     body
+}
+
+/// A seed label for `language`, falling back to the English record so a
+/// language that has not been translated yet still renders.
+fn localized_label(intent: &str, language: &str) -> String {
+    seed::response_for(intent, language)
+        .or_else(|| seed::response_for(intent, "en"))
+        .unwrap_or_default()
 }
 
 fn unique_source_fragments(fragments: &[DefinitionFragment]) -> Vec<&DefinitionFragment> {

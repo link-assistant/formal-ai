@@ -37,9 +37,13 @@ const TARGET_TOTAL_LINES: usize = 3_000;
 /// from the browser mirror, lowering the ratchet from 26_807 to 26_805. Issue
 /// #701's generalized term-information recognizer — prefix openers, verb-final
 /// closers and circumfix frames — must be mirrored in the browser worker for
-/// Rust↔JS parity, adding a net 12 lines on that baseline.
+/// Rust↔JS parity, adding a net 12 lines on that baseline. Issue #699's
+/// seed-driven `who_is` / `definition_merge` generality and the named
+/// skill-gap failure for underivable `write_program` requests likewise have to
+/// be mirrored in the browser worker, adding a net 94 lines and raising the
+/// ratchet from 26_817 to 26_911.
 #[cfg(not(test))]
-const CEILING_TOTAL_LINES: usize = 26_817;
+const CEILING_TOTAL_LINES: usize = 26_911;
 
 const WORKER_DIR: &str = "src/web/worker";
 

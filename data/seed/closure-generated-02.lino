@@ -1,4 +1,64 @@
 meanings
+  general_plan_command_capture_action
+    defined-by intent
+    lexeme en
+      surface
+        text "general plan command capture action"
+  general_plan_command_output_evidence
+    defined-by intent
+    lexeme en
+      surface
+        text "general plan command output evidence"
+  general_plan_command_verification_evidence
+    defined-by intent
+    lexeme en
+      surface
+        text "general plan command verification evidence"
+  general_plan_repository_action
+    defined-by intent
+    lexeme en
+      surface
+        text "general plan repository action"
+  general_plan_repository_complete
+    defined-by intent
+    lexeme en
+      surface
+        text "general plan repository complete"
+  general_plan_repository_evidence
+    defined-by intent
+    lexeme en
+      surface
+        text "general plan repository evidence"
+  general_plan_repository_verify_action
+    defined-by intent
+    lexeme en
+      surface
+        text "general plan repository verify action"
+  genuine
+    defined-by word_surface
+    lexeme en
+      surface
+        text "genuine"
+  get
+    defined-by word_surface
+    lexeme en
+      surface
+        text "get"
+  git
+    defined-by token
+    lexeme en
+      surface
+        text "git"
+  github
+    defined-by source_kind
+    lexeme en
+      surface
+        text "github"
+  github_repository_traffic
+    defined-by intent
+    lexeme en
+      surface
+        text "github repository traffic"
   gives
     defined-by word_surface
     lexeme en
@@ -99,6 +159,11 @@ meanings
     lexeme en
       surface
         text "indent lines"
+  integer
+    defined-by word_surface
+    lexeme en
+      surface
+        text "integer"
   intent_algorithm
     defined-by intent
     lexeme en
@@ -234,6 +299,11 @@ meanings
     lexeme en
       surface
         text "ionicons"
+  isaac_newton
+    defined-by concept
+    lexeme en
+      surface
+        text "isaac newton"
   isolated-workspace
     defined-by isolation_mode
     lexeme en
@@ -444,6 +514,11 @@ meanings
     lexeme en
       surface
         text "javascript"
+  joe_biden
+    defined-by concept
+    lexeme en
+      surface
+        text "joe biden"
   join
     defined-by concept
     lexeme en
@@ -864,6 +939,11 @@ meanings
     lexeme en
       surface
         text "manuscript"
+  marie_curie
+    defined-by concept
+    lexeme en
+      surface
+        text "marie curie"
   material
     defined-by concept
     lexeme en
@@ -949,6 +1029,11 @@ meanings
     lexeme en
       surface
         text "named"
+  nikola_tesla
+    defined-by concept
+    lexeme en
+      surface
+        text "nikola tesla"
   non-deterministic
     defined-by word_surface
     lexeme en
@@ -1309,88 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern concept context delimiter primenitelno k ru"
-  pattern_concept_context_delimiter_v_kontekste_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter v kontekste ru"
-  pattern_concept_context_delimiter_v_oblasti_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter v oblasti ru"
-  pattern_concept_context_delimiter_v_ramkakh_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter v ramkakh ru"
-  pattern_concept_context_delimiter_v_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter v ru"
-  pattern_concept_context_delimiter_vo_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter vo ru"
-  pattern_concept_context_delimiter_within_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter within en"
-  pattern_concept_context_delimiter_zhong_de_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter zhong de zh"
-  pattern_concept_context_delimiter_zhong_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter zhong zh"
-  pattern_concept_prefix_can_you_define
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix can you define"
-  pattern_concept_prefix_can_you_describe
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix can you describe"
-  pattern_concept_prefix_can_you_explain
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix can you explain"
-  pattern_concept_prefix_chto_eto
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix chto eto"
-  pattern_concept_prefix_chto_oboznachaet
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix chto oboznachaet"
-  pattern_concept_prefix_chto_oznachaet_slovo
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix chto oznachaet slovo"
-  pattern_concept_prefix_chto_podrazumevaetsya_pod
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix chto podrazumevaetsya pod"
-  pattern_concept_prefix_chto_takoe
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix chto takoe"
-  pattern_concept_prefix_chto_znachit
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix chto znachit"

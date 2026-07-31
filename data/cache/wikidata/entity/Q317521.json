@@ -1,0 +1,117 @@
+{
+  "entities": {
+    "Q317521": {
+      "type": "item",
+      "id": "Q317521",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Elon Musk"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Илон Маск"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "एलन मस्क"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "伊隆·马斯克"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "American businessman (born 1971)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "американский предприниматель и политик"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "दक्षिण अफ्रीकी-कनाडाई-अमेरिकी व्यापारी (जन्म: 1971)"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "美國企業家、投資人，前任美國政府效率部負責人"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Маск, Илон"
+          },
+          {
+            "language": "ru",
+            "value": "Элон Маск"
+          },
+          {
+            "language": "ru",
+            "value": "Илон Рив Маск"
+          },
+          {
+            "language": "ru",
+            "value": "Маск, Элон"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "एलोन रीव मस्क"
+          },
+          {
+            "language": "hi",
+            "value": "एलोन आर.मस्क"
+          },
+          {
+            "language": "hi",
+            "value": "एलोन मस्क"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "艾伦·马斯克"
+          },
+          {
+            "language": "zh",
+            "value": "马斯克"
+          },
+          {
+            "language": "zh",
+            "value": "马一龙"
+          },
+          {
+            "language": "zh",
+            "value": "伊隆·馬斯克"
+          },
+          {
+            "language": "zh",
+            "value": "穆斯克"
+          },
+          {
+            "language": "zh",
+            "value": "馬斯克"
+          },
+          {
+            "language": "zh",
+            "value": "伊隆·穆斯克"
+          },
+          {
+            "language": "zh",
+            "value": "埃隆·马斯克"
+          },
+          {
+            "language": "zh",
+            "value": "馬誼郎"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

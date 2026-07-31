@@ -1,0 +1,25 @@
+self_ast_census
+  target src/rule_synthesis_portfolio.rs
+  language rust
+  fidelity signature
+  byte_len 8376
+  line_count 217
+  content_id source_module_52d068d8796d049c
+  symbol_count 16
+  symbols
+    struct RuleDraft 34 42
+    struct RuleLeaf 44 47
+    type Artifact 50 50
+    function supports 52 54
+    function draft 56 62
+    function run_tests 64 70
+    function test_count 72 74
+    function composes 76 80
+    function language 84 86
+    function draft_from_ledger 90 103
+    function draft_from_vocabulary 106 124
+    function artifact_from 127 142
+    function draft_artifact 146 154
+    function record_construction 156 173
+    function seed_from_impulse 176 183
+    function try_portfolio_rule 190 217

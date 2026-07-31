@@ -7,6 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.315.0] - 2026-07-31
+
+### Added
+
+- Add deterministic parallel candidate-solution portfolios as a domain-independent
+  engine: seed-declared draft strategies, a `PortfolioLeaf` trait implemented by
+  both arithmetic reachability and rule synthesis, per-draft test ledgers,
+  least-action selection, composition backtracking, and multilingual winner
+  explanations (issue #704).
+- Mine durable `draft_failure` records into per-strategy dreaming-loop lessons,
+  so a losing draft becomes retained learning instead of a discarded attempt
+  (issue #704).
+
+## [0.314.0] - 2026-07-31
+
+### Changed
+
+- Start issue #699's generality-first handler migration with a complete,
+  machine-checked ledger and monotonic 38-file/50-`try_*` ratchet. Number
+  constraint recognition is now multilingual seed data, while interval solving
+  and proof invocation remain an explicitly justified native primitive.
+
+### Changed
+
+- Continue issue #699's handler migration. `who_is` no longer stores
+  misspellings — corrections are derived by nearest-surface search over
+  remembered names — and `definition_merge` renders every label from seed data.
+- An underivable `write_program` request now fails with a named skill gap
+  instead of reciting the curated template catalogue. The gap identity travels
+  in the evidence trail as a `skill_gap` event and the reply is seeded in
+  en/ru/hi/zh, in both the Rust engine and the browser worker.
+
 ## [0.313.0] - 2026-07-30
 
 ### Added

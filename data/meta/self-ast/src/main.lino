@@ -2,9 +2,9 @@ self_ast_census
   target src/main.rs
   language rust
   fidelity signature
-  byte_len 34028
-  line_count 973
-  content_id source_module_a32d03d98d88240c
+  byte_len 34497
+  line_count 986
+  content_id source_module_0eb21b82a2da347a
   symbol_count 38
   symbols
     module cli_benchmark 9 9
@@ -21,27 +21,27 @@ self_ast_census
     module cli_statement_audit 20 20
     const DEFAULT_AGENT_TASK 49 69
     struct Args 58 69
-    enum Command 72 282
-    enum MemoryAction 285 431
-    enum BundleAction 434 458
-    enum GithubLogsAction 461 466
-    struct GithubLogsOptions 469 505
-    enum OutputFormat 508 512
-    enum DefinitionFusionMode 515 518
-    enum TelegramMode 521 524
-    function fmt 527 533
-    function fmt 537 542
-    function fmt 546 551
-    function main 554 667
-    function run_github_logs 669 690
-    function run_agent 692 716
-    function into_config 719 731
-    struct TelegramRunArgs 734 743
-    function solver_for_chat 745 758
-    function print_thinking_trace 767 785
-    function run_chat 787 839
-    function run_bundle 841 905
-    function run_environments 907 928
-    function read_input 930 938
-    function run_telegram 940 965
-    function parse_allowed_updates 967 973
+    enum Command 72 287
+    enum MemoryAction 290 436
+    enum BundleAction 439 463
+    enum GithubLogsAction 466 471
+    struct GithubLogsOptions 474 510
+    enum OutputFormat 513 517
+    enum DefinitionFusionMode 520 523
+    enum TelegramMode 526 529
+    function fmt 532 538
+    function fmt 542 547
+    function fmt 551 556
+    function main 559 675
+    function run_github_logs 677 698
+    function run_agent 700 724
+    function into_config 727 739
+    struct TelegramRunArgs 742 751
+    function solver_for_chat 753 770
+    function print_thinking_trace 779 797
+    function run_chat 799 852
+    function run_bundle 854 918
+    function run_environments 920 941
+    function read_input 943 951
+    function run_telegram 953 978
+    function parse_allowed_updates 980 986

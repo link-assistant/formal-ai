@@ -11,7 +11,6 @@ mod calendar_ics;
 mod compound_interest;
 mod conversation_memory;
 mod curated_project_fetch;
-mod definition_merge;
 mod document_originality;
 mod document_request;
 mod fact_checking;
@@ -20,7 +19,6 @@ mod github_repository_traffic;
 mod installation_conversion;
 mod meta_explanation;
 mod natural_language_tools;
-mod number_riddle;
 mod numeric_list;
 mod playwright_script;
 mod procedure_rules;
@@ -52,7 +50,6 @@ pub use compound_interest::try_compound_interest;
 pub use conversation_memory::{
     answer_memory_recall, execute_memory_query, try_conversation_memory, MemoryQueryExecution,
 };
-pub use definition_merge::{try_definition_merge, try_definition_merge_by_default};
 pub use document_originality::try_document_originality_check;
 pub use document_request::try_document_request;
 pub use fact_checking::try_fact_checking;
@@ -61,7 +58,6 @@ pub use github_repository_traffic::try_github_repository_traffic;
 pub use installation_conversion::try_installation_conversion;
 pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
 pub use natural_language_tools::try_natural_language_tool_request;
-pub use number_riddle::try_number_riddle;
 pub use numeric_list::{try_numeric_list, try_numeric_list_with_history};
 pub use playwright_script::try_playwright_script;
 pub use program_blueprint::try_program_blueprint;
@@ -79,7 +75,6 @@ pub use text_manipulation::{try_text_manipulation, try_text_manipulation_with_hi
 pub use user_intent::{
     try_capabilities, try_clarification, try_ill_formed, try_opinion_question, try_proof_request,
     try_proof_request_with_config, try_punctuation_only_prompt, try_shell_refusal,
-    try_who_is_question,
 };
 pub use web_requests::{
     detect_web_search_query, try_explicit_repository_lookup, try_http_fetch,
@@ -356,7 +351,7 @@ fn render_concept_plain(language: &str, record: &ConceptRecord) -> String {
 /// Issue #21: render a URL as a readable IRI while keeping the canonical
 /// percent-encoded form as the link target. Returns the bare URL when the
 /// humanized and encoded forms match (no link wrapping needed).
-fn render_source_link(source: &str) -> String {
+pub fn render_source_link(source: &str) -> String {
     let human = humanize_url(source);
     if human == source {
         source.to_owned()

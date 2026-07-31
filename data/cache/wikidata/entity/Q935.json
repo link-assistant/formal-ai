@@ -1,0 +1,101 @@
+{
+  "entities": {
+    "Q935": {
+      "type": "item",
+      "id": "Q935",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Isaac Newton"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Исаак Ньютон"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "आइज़क न्यूटन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "艾薩克·牛頓"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "English mathematician and physicist (1642–1727)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "английский физик, математик и астроном, один из создателей классической физики"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "ब्रिटिश भौतिक विज्ञानी ओर गणितज्ञ (1642-1726/27)"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "英國物理學家"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Ньютон, Исаак"
+          },
+          {
+            "language": "ru",
+            "value": "Невтон, Исаак"
+          },
+          {
+            "language": "ru",
+            "value": "Ньютон"
+          },
+          {
+            "language": "ru",
+            "value": "Нютон, Исаак"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "न्यूटन"
+          },
+          {
+            "language": "hi",
+            "value": "सर न्यूटन"
+          },
+          {
+            "language": "hi",
+            "value": "सर इज़ाक न्यूटन"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "伊薩克·牛頓"
+          },
+          {
+            "language": "zh",
+            "value": "牛頓"
+          },
+          {
+            "language": "zh",
+            "value": "牛顿"
+          },
+          {
+            "language": "zh",
+            "value": "伊萨克·牛顿"
+          },
+          {
+            "language": "zh",
+            "value": "牛顿，I."
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,163 @@
+{
+  "entities": {
+    "Q22686": {
+      "type": "item",
+      "id": "Q22686",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Donald Trump"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Дональд Трамп"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "डॉनल्ड ट्रम्प"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "唐納·川普"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "American businessman and politician (born 1946), President of the United States (2017–2021; since 2025)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "президент США (2017–2021 и 2025–н.в.), миллиардер"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "संयुक्त राज्य के राष्ट्रपति (2017–2021; 2025 से)"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "第45、47任美國總統"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "POTUS 45"
+          },
+          {
+            "language": "en",
+            "value": "President Donald Trump"
+          },
+          {
+            "language": "en",
+            "value": "President Trump"
+          },
+          {
+            "language": "en",
+            "value": "President Donald J. Trump"
+          },
+          {
+            "language": "en",
+            "value": "President Donald John Trump"
+          },
+          {
+            "language": "en",
+            "value": "President Donald J Trump"
+          },
+          {
+            "language": "en",
+            "value": "@realDonaldTrump"
+          },
+          {
+            "language": "en",
+            "value": "POTUS 47"
+          },
+          {
+            "language": "en",
+            "value": "President DJT"
+          },
+          {
+            "language": "en",
+            "value": "DJT"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Трамп"
+          },
+          {
+            "language": "ru",
+            "value": "Трамп, Дональд"
+          },
+          {
+            "language": "ru",
+            "value": "Дональд Джон Трамп"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "ट्रम्प"
+          },
+          {
+            "language": "hi",
+            "value": "डॉनल्ड ज॰ ट्रम्प"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "唐纳德·特朗普"
+          },
+          {
+            "language": "zh",
+            "value": "杜林普"
+          },
+          {
+            "language": "zh",
+            "value": "當奴·杜林普"
+          },
+          {
+            "language": "zh",
+            "value": "唐納德川普"
+          },
+          {
+            "language": "zh",
+            "value": "唐納川普"
+          },
+          {
+            "language": "zh",
+            "value": "川普"
+          },
+          {
+            "language": "zh",
+            "value": "特朗普"
+          },
+          {
+            "language": "zh",
+            "value": "當勞·特朗普"
+          },
+          {
+            "language": "zh",
+            "value": "唐納德·川普"
+          },
+          {
+            "language": "zh",
+            "value": "唐納德·特朗普"
+          },
+          {
+            "language": "zh",
+            "value": "川普總統"
+          },
+          {
+            "language": "zh",
+            "value": "特朗普總統"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

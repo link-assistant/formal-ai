@@ -34,6 +34,7 @@ use crate::intent_formalization::{
 use crate::language::{detect as detect_language, Language};
 use crate::probability::{ProbabilityDecisionPolicy, ProbabilityStore};
 use crate::rule_synthesis::{try_construct_unknown_rule, try_recall_approved_rule};
+use crate::rule_synthesis_portfolio::try_portfolio_rule;
 use crate::seed;
 use crate::solver_diagnostics::append_diagnostic_trace;
 use crate::solver_formalization::{record_formalization, record_formalization_selection};
@@ -250,6 +251,11 @@ pub struct SolverConfig {
     /// stream is seeded from the impulse content hash, so the stage stays
     /// deterministic for a given config per the `VISION.md` contract.
     pub compute_budget: u32,
+    /// Maximum number of independent candidate drafts evaluated for one
+    /// synthesis leaf (issue #704). `1` preserves the historical single-path
+    /// behavior. Values above one enable the deterministic parallel portfolio;
+    /// each draft is seeded from the impulse plus its ordered draft index.
+    pub draft_count: u8,
 }
 
 impl Default for SolverConfig {
@@ -276,6 +282,7 @@ impl Default for SolverConfig {
             probability_policy: ProbabilityDecisionPolicy::default(),
             forced_response_language: None,
             compute_budget: 512,
+            draft_count: 1,
         }
     }
 }
@@ -522,7 +529,19 @@ impl UniversalSolver {
             self.solve_sub_impulses(&mut log, &sub_impulses, probability_store, intent_cache);
 
         let selected_rule = select_rule_for_intent(&intent_formalization);
-        let recalled_rule = try_recall_approved_rule(selected_rule, prompt, history, &mut log);
+        // Issue #704: with a portfolio configured, the ledger recall and the
+        // vocabulary derivation stop being an ordered fallback chain and become
+        // independent drafts that are tested against the same fixture and
+        // compared. At the default `draft_count` of 1 this is a no-op and the
+        // sequential path below runs exactly as before.
+        let drafted_rule = try_portfolio_rule(
+            selected_rule,
+            prompt,
+            history,
+            &mut log,
+            self.config.draft_count,
+        );
+        let recalled_rule = try_recall_approved_rule(drafted_rule, prompt, history, &mut log);
         let rule = try_construct_unknown_rule(recalled_rule, prompt, history, &mut log);
         let rule =
             if let Some(rewrite) = rewrite_bare_program_coreference_rule(&rule, prompt, history) {
@@ -593,6 +612,14 @@ impl UniversalSolver {
             ) {
                 return answer;
             }
+            // Issue #699 batch 3: every synthesis route missed. Name the gap in
+            // the evidence trail — the same `skill_gap` event the procedure
+            // compiler emits — so the miss is actionable instead of being
+            // rendered as a recitation of the templates we happen to hold.
+            log.append(
+                "skill_gap",
+                crate::program_skill_gap::gap_name(task.as_deref(), language.as_deref()),
+            );
         }
 
         if let Some(answer) = try_synthesize_from_sub_results(

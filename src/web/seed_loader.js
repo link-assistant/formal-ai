@@ -23,6 +23,8 @@
     "seed/interface-capabilities.lino",
     "seed/multilingual-responses.lino",
     "seed/multilingual-responses-language-protocol.lino",
+    "seed/multilingual-responses-entities.lino",
+    "seed/multilingual-responses-synthesis.lino",
     "seed/multilingual-responses-orchestration.lino",
     "seed/multilingual-responses-agentic.lino",
     "seed/multilingual-responses-decomposition.lino",
@@ -48,6 +50,7 @@
     "seed/shell-intents.lino",
     "seed/program-plan-rules.lino",
     "seed/market-price-references.lino",
+    "seed/entity-names.lino",
     "seed/meanings.lino",
     "seed/meanings-behavior-rules.lino",
     "seed/meanings-calculator.lino",
@@ -55,6 +58,7 @@
     "seed/meanings-coding-catalog.lino",
     "seed/meanings-conversation.lino",
     "seed/meanings-decomposition.lino",
+    "seed/meanings-number-constraints.lino",
     "seed/meanings-definition-merge.lino",
     "seed/meanings-docs.lino",
     "seed/meanings-facts.lino",
@@ -733,6 +737,7 @@
         start: parseCodepoint(findChildValue(entry, "start")),
         end: parseCodepoint(findChildValue(entry, "end")),
         note: findChildValue(entry, "note"),
+        sourceHost: findChildValue(entry, "source-host"),
       });
     }
     return rules;

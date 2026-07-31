@@ -1248,11 +1248,13 @@ function trimDefinitionMergeTail(value) {
 }
 
 function inferredSourceLanguage(source) {
+  // Issue #699 batch 2: the host-to-language table moved into
+  // language-detection.lino, so a new language is one seed record away.
   const value = String(source || "");
-  if (value.includes("://ru.wikipedia.org/")) return "ru";
-  if (value.includes("://hi.wikipedia.org/")) return "hi";
-  if (value.includes("://zh.wikipedia.org/")) return "zh";
-  return "en";
+  const match = LANGUAGE_RULES.find(
+    (rule) => rule && rule.sourceHost && value.includes(rule.sourceHost),
+  );
+  return match ? match.language : "en";
 }
 
 function normalizeDefinitionFact(value) {

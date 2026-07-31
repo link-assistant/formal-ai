@@ -93,6 +93,11 @@ enum Command {
         /// `FORMAL_AI_COMPUTE_BUDGET`. `0` disables the search.
         #[arg(long, env = "FORMAL_AI_COMPUTE_BUDGET")]
         compute_budget: Option<u32>,
+
+        /// Independent candidate drafts to evaluate for each eligible synthesis
+        /// leaf (issue #704). Overrides `FORMAL_AI_DRAFT_COUNT`.
+        #[arg(long, env = "FORMAL_AI_DRAFT_COUNT")]
+        draft_count: Option<u8>,
     },
     Dataset,
     /// Export complete conversations or convert arbitrary JSON to Links Notation.
@@ -562,6 +567,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         definition_fusion: None,
         thinking: false,
         compute_budget: None,
+        draft_count: None,
     });
 
     match command {
@@ -571,12 +577,14 @@ fn main() -> Result<(), Box<dyn Error>> {
             definition_fusion,
             thinking,
             compute_budget,
+            draft_count,
         } => run_chat(
             &prompt,
             format,
             definition_fusion,
             thinking || verbose,
             compute_budget,
+            draft_count,
         )?,
         Command::Dataset => println!("{}", knowledge_links_notation()),
         Command::Context(args) => run_context(args)?,
@@ -745,6 +753,7 @@ struct TelegramRunArgs {
 fn solver_for_chat(
     definition_fusion: Option<DefinitionFusionMode>,
     compute_budget: Option<u32>,
+    draft_count: Option<u8>,
 ) -> UniversalSolver {
     let mut config = SolverConfig::from_env();
     config.execution_surface = ExecutionSurface::Cli;
@@ -753,6 +762,9 @@ fn solver_for_chat(
     }
     if let Some(budget) = compute_budget {
         config.compute_budget = budget;
+    }
+    if let Some(count) = draft_count {
+        config.draft_count = count.max(1);
     }
     UniversalSolver::new(config)
 }
@@ -790,8 +802,9 @@ fn run_chat(
     definition_fusion: Option<DefinitionFusionMode>,
     thinking: bool,
     compute_budget: Option<u32>,
+    draft_count: Option<u8>,
 ) -> Result<(), Box<dyn Error>> {
-    let solver = solver_for_chat(definition_fusion, compute_budget);
+    let solver = solver_for_chat(definition_fusion, compute_budget, draft_count);
     match format {
         OutputFormat::Text => {
             let response = solver.solve(prompt);

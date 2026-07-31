@@ -1,0 +1,147 @@
+{
+  "entities": {
+    "Q76": {
+      "type": "item",
+      "id": "Q76",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Barack Obama"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Барак Обама"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "बराक ओबामा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "贝拉克·奥巴马"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "president of the United States from 2009 to 2017"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "американский политик, 44-й президент США (2009—2017)"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "संयुक्त राज्य अमेरिका के राष्ट्रपति 2009 से 2017 तक"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "第44任美國總統"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "POTUS 44"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Барак Хуссейн Обама II"
+          },
+          {
+            "language": "ru",
+            "value": "Барак Хуссейн Обама-младший"
+          },
+          {
+            "language": "ru",
+            "value": "Бара́к Хуссе́йн Оба́ма"
+          },
+          {
+            "language": "ru",
+            "value": "Обама, Барак"
+          },
+          {
+            "language": "ru",
+            "value": "Обама"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "बराक हुसैन ओबामा द्वितीय"
+          },
+          {
+            "language": "hi",
+            "value": "बराक ओबामा द्वितीय"
+          },
+          {
+            "language": "hi",
+            "value": "बराक हुसैन ओबामा"
+          },
+          {
+            "language": "hi",
+            "value": "ओबामा"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "奧巴馬"
+          },
+          {
+            "language": "zh",
+            "value": "歐巴馬"
+          },
+          {
+            "language": "zh",
+            "value": "巴拉克·歐巴馬"
+          },
+          {
+            "language": "zh",
+            "value": "巴拉克·欧巴马"
+          },
+          {
+            "language": "zh",
+            "value": "巴拉克·奧巴馬"
+          },
+          {
+            "language": "zh",
+            "value": "貝拉克·奧巴馬"
+          },
+          {
+            "language": "zh",
+            "value": "贝拉克·侯赛因·奥巴马"
+          },
+          {
+            "language": "zh",
+            "value": "贝拉克·侯赛因·奥巴马二世"
+          },
+          {
+            "language": "zh",
+            "value": "巴拉克·海珊·歐巴馬二世"
+          },
+          {
+            "language": "zh",
+            "value": "巴拉克·奥巴马"
+          },
+          {
+            "language": "zh",
+            "value": "歐巴馬總統"
+          },
+          {
+            "language": "zh",
+            "value": "奧巴馬總統"
+          },
+          {
+            "language": "zh",
+            "value": "奥巴马"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}
