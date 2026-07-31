@@ -1,4 +1,29 @@
 meanings
+  pattern_concept_context_delimiter_li_de_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter li de zh"
+  pattern_concept_context_delimiter_lingyu_de_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter lingyu de zh"
+  pattern_concept_context_delimiter_lingyu_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter lingyu zh"
+  pattern_concept_context_delimiter_men_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter men hi"
+  pattern_concept_context_delimiter_primenitelno_k_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter primenitelno k ru"
   pattern_concept_context_delimiter_v_kontekste_ru
     defined-by prompt_pattern
     lexeme en
@@ -1369,28 +1394,3 @@ meanings
     lexeme en
       surface
         text "response agentic action list current ru"
-  response_agentic_action_list_current_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action list current zh"
-  response_agentic_action_list_desktop_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action list desktop en"
-  response_agentic_action_list_desktop_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action list desktop hi"
-  response_agentic_action_list_desktop_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action list desktop ru"
-  response_agentic_action_list_desktop_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action list desktop zh"

@@ -1,4 +1,89 @@
 meanings
+  response_task_decomposition_depth_bound_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition depth bound en"
+  response_task_decomposition_depth_bound_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition depth bound hi"
+  response_task_decomposition_depth_bound_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition depth bound ru"
+  response_task_decomposition_depth_bound_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition depth bound zh"
+  response_task_decomposition_depth_marker_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition depth marker en"
+  response_task_decomposition_depth_marker_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition depth marker hi"
+  response_task_decomposition_depth_marker_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition depth marker ru"
+  response_task_decomposition_depth_marker_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition depth marker zh"
+  response_task_decomposition_lead_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition lead en"
+  response_task_decomposition_lead_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition lead hi"
+  response_task_decomposition_lead_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition lead ru"
+  response_task_decomposition_lead_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition lead zh"
+  response_task_first_step_lead_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task first step lead en"
+  response_task_first_step_lead_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task first step lead hi"
+  response_task_first_step_lead_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task first step lead ru"
+  response_task_first_step_lead_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task first step lead zh"
+  response_task_plan_stage_implementation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage implementation en"
   response_task_plan_stage_implementation_hi
     defined-by response_template
     lexeme en
@@ -464,6 +549,11 @@ meanings
     lexeme en
       surface
         text "response write program skill gap zh"
+  restate_postcondition
+    defined-by concept
+    lexeme en
+      surface
+        text "restate postcondition"
   reverse_lines
     defined-by operation
     lexeme en
@@ -1304,93 +1394,3 @@ meanings
     lexeme en
       surface
         text "wget"
-  whitespace
-    defined-by concept
-    lexeme en
-      surface
-        text "whitespace"
-  who_is_unknown_entity
-    defined-by intent
-    lexeme en
-      surface
-        text "who is unknown entity"
-  who_is_unknown_entity_suggestion
-    defined-by intent
-    lexeme en
-      surface
-        text "who is unknown entity suggestion"
-  whoami
-    defined-by concept
-    lexeme en
-      surface
-        text "whoami"
-  wikibooks
-    defined-by source
-    lexeme en
-      surface
-        text "wikibooks"
-  wikidata
-    defined-by source
-    lexeme en
-      surface
-        text "wikidata"
-  wikifunctions
-    defined-by source
-    lexeme en
-      surface
-        text "wikifunctions"
-  wikihow
-    defined-by source
-    lexeme en
-      surface
-        text "wikihow"
-  wikinews
-    defined-by source
-    lexeme en
-      surface
-        text "wikinews"
-  wikipedia
-    defined-by source_kind
-    lexeme en
-      surface
-        text "wikipedia"
-  wikipedia_article_question
-    defined-by intent
-    lexeme en
-      surface
-        text "wikipedia article question"
-  wikipedia_fallback_language
-    defined-by field
-    lexeme en
-      surface
-        text "wikipedia fallback language"
-  wikipedia_lookup
-    defined-by name
-    lexeme en
-      surface
-        text "wikipedia lookup"
-  wikipedia_summary_endpoint_template
-    defined-by field
-    lexeme en
-      surface
-        text "wikipedia summary endpoint template"
-  wikiversity
-    defined-by source
-    lexeme en
-      surface
-        text "wikiversity"
-  wikivoyage
-    defined-by source
-    lexeme en
-      surface
-        text "wikivoyage"
-  wiktionary
-    defined-by source_kind
-    lexeme en
-      surface
-        text "wiktionary"
-  will
-    defined-by concept
-    lexeme en
-      surface
-        text "will"

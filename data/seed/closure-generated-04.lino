@@ -1,4 +1,29 @@
 meanings
+  response_agentic_action_list_current_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list current zh"
+  response_agentic_action_list_desktop_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list desktop en"
+  response_agentic_action_list_desktop_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list desktop hi"
+  response_agentic_action_list_desktop_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list desktop ru"
+  response_agentic_action_list_desktop_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list desktop zh"
   response_agentic_action_list_home_en
     defined-by response_template
     lexeme en
@@ -519,6 +544,66 @@ meanings
     lexeme en
       surface
         text "response compiled procedure zh"
+  response_completion_recovery_decompose_into_leaf_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery decompose into leaf en"
+  response_completion_recovery_decompose_into_leaf_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery decompose into leaf hi"
+  response_completion_recovery_decompose_into_leaf_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery decompose into leaf ru"
+  response_completion_recovery_decompose_into_leaf_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery decompose into leaf zh"
+  response_completion_recovery_name_target_artifact_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery name target artifact en"
+  response_completion_recovery_name_target_artifact_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery name target artifact hi"
+  response_completion_recovery_name_target_artifact_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery name target artifact ru"
+  response_completion_recovery_name_target_artifact_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery name target artifact zh"
+  response_completion_recovery_restate_postcondition_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery restate postcondition en"
+  response_completion_recovery_restate_postcondition_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery restate postcondition hi"
+  response_completion_recovery_restate_postcondition_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery restate postcondition ru"
+  response_completion_recovery_restate_postcondition_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery restate postcondition zh"
   response_concept_lookup_in_context_en
     defined-by response_template
     lexeme en
@@ -1309,88 +1394,3 @@ meanings
     lexeme en
       surface
         text "response lexeme import cache miss offline en"
-  response_lexeme_import_cache_miss_offline_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache miss offline hi"
-  response_lexeme_import_cache_miss_offline_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache miss offline ru"
-  response_lexeme_import_cache_miss_offline_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache miss offline zh"
-  response_lexeme_import_cache_unreadable_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache unreadable en"
-  response_lexeme_import_cache_unreadable_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache unreadable hi"
-  response_lexeme_import_cache_unreadable_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache unreadable ru"
-  response_lexeme_import_cache_unreadable_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache unreadable zh"
-  response_lexeme_import_cannot_create_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot create en"
-  response_lexeme_import_cannot_create_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot create hi"
-  response_lexeme_import_cannot_create_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot create ru"
-  response_lexeme_import_cannot_create_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot create zh"
-  response_lexeme_import_cannot_inspect_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot inspect en"
-  response_lexeme_import_cannot_inspect_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot inspect hi"
-  response_lexeme_import_cannot_inspect_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot inspect ru"
-  response_lexeme_import_cannot_inspect_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot inspect zh"
-  response_lexeme_import_cannot_install_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot install en"
-  response_lexeme_import_cannot_install_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot install hi"
