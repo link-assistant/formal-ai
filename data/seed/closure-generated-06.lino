@@ -1,4 +1,124 @@
 meanings
+  response_task_decomposition_lead_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition lead hi"
+  response_task_decomposition_lead_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition lead ru"
+  response_task_decomposition_lead_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition lead zh"
+  response_task_first_step_lead_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task first step lead en"
+  response_task_first_step_lead_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task first step lead hi"
+  response_task_first_step_lead_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task first step lead ru"
+  response_task_first_step_lead_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task first step lead zh"
+  response_task_plan_stage_implementation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage implementation en"
+  response_task_plan_stage_implementation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage implementation hi"
+  response_task_plan_stage_implementation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage implementation ru"
+  response_task_plan_stage_implementation_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage implementation zh"
+  response_task_plan_stage_regression_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage regression en"
+  response_task_plan_stage_regression_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage regression hi"
+  response_task_plan_stage_regression_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage regression ru"
+  response_task_plan_stage_regression_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage regression zh"
+  response_task_plan_stage_requirements_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage requirements en"
+  response_task_plan_stage_requirements_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage requirements hi"
+  response_task_plan_stage_requirements_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage requirements ru"
+  response_task_plan_stage_requirements_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage requirements zh"
+  response_task_plan_stage_verification_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage verification en"
+  response_task_plan_stage_verification_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage verification hi"
+  response_task_plan_stage_verification_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage verification ru"
+  response_task_plan_stage_verification_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage verification zh"
+  response_test_status_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response test status en"
   response_test_status_hi
     defined-by response_template
     lexeme en
@@ -264,6 +384,46 @@ meanings
     lexeme en
       surface
         text "response wellbeing zh"
+  response_who_is_unknown_entity_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response who is unknown entity en"
+  response_who_is_unknown_entity_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response who is unknown entity hi"
+  response_who_is_unknown_entity_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response who is unknown entity ru"
+  response_who_is_unknown_entity_suggestion_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response who is unknown entity suggestion en"
+  response_who_is_unknown_entity_suggestion_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response who is unknown entity suggestion hi"
+  response_who_is_unknown_entity_suggestion_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response who is unknown entity suggestion ru"
+  response_who_is_unknown_entity_suggestion_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response who is unknown entity suggestion zh"
+  response_who_is_unknown_entity_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response who is unknown entity zh"
   response_world_state_reached_en
     defined-by response_template
     lexeme en
@@ -304,6 +464,46 @@ meanings
     lexeme en
       surface
         text "response world state remaining zh"
+  response_write_program_skill_gap_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap en"
+  response_write_program_skill_gap_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap hi"
+  response_write_program_skill_gap_name_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap name en"
+  response_write_program_skill_gap_name_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap name hi"
+  response_write_program_skill_gap_name_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap name ru"
+  response_write_program_skill_gap_name_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap name zh"
+  response_write_program_skill_gap_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap ru"
+  response_write_program_skill_gap_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap zh"
   reverse_lines
     defined-by operation
     lexeme en
@@ -1079,6 +1279,11 @@ meanings
     lexeme en
       surface
         text "uncomment lines"
+  under
+    defined-by word_surface
+    lexeme en
+      surface
+        text "under"
   uniqueness
     defined-by word_surface
     lexeme en
@@ -1139,6 +1344,11 @@ meanings
     lexeme en
       surface
         text "visual property"
+  vladimir_putin
+    defined-by concept
+    lexeme en
+      surface
+        text "vladimir putin"
   vs
     defined-by word_surface
     lexeme en
@@ -1184,143 +1394,3 @@ meanings
     lexeme en
       surface
         text "web search unavailable"
-  webvm
-    defined-by word_surface
-    lexeme en
-      surface
-        text "webvm"
-  wellbeing
-    defined-by intent
-    lexeme en
-      surface
-        text "wellbeing"
-  were
-    defined-by concept
-    lexeme en
-      surface
-        text "were"
-  wget
-    defined-by token
-    lexeme en
-      surface
-        text "wget"
-  whitespace
-    defined-by concept
-    lexeme en
-      surface
-        text "whitespace"
-  whoami
-    defined-by concept
-    lexeme en
-      surface
-        text "whoami"
-  wikibooks
-    defined-by source
-    lexeme en
-      surface
-        text "wikibooks"
-  wikidata
-    defined-by source
-    lexeme en
-      surface
-        text "wikidata"
-  wikifunctions
-    defined-by source
-    lexeme en
-      surface
-        text "wikifunctions"
-  wikihow
-    defined-by source
-    lexeme en
-      surface
-        text "wikihow"
-  wikinews
-    defined-by source
-    lexeme en
-      surface
-        text "wikinews"
-  wikipedia
-    defined-by source_kind
-    lexeme en
-      surface
-        text "wikipedia"
-  wikipedia_article_question
-    defined-by intent
-    lexeme en
-      surface
-        text "wikipedia article question"
-  wikipedia_fallback_language
-    defined-by field
-    lexeme en
-      surface
-        text "wikipedia fallback language"
-  wikipedia_lookup
-    defined-by name
-    lexeme en
-      surface
-        text "wikipedia lookup"
-  wikipedia_summary_endpoint_template
-    defined-by field
-    lexeme en
-      surface
-        text "wikipedia summary endpoint template"
-  wikiversity
-    defined-by source
-    lexeme en
-      surface
-        text "wikiversity"
-  wikivoyage
-    defined-by source
-    lexeme en
-      surface
-        text "wikivoyage"
-  wiktionary
-    defined-by source_kind
-    lexeme en
-      surface
-        text "wiktionary"
-  will
-    defined-by concept
-    lexeme en
-      surface
-        text "will"
-  wordnet
-    defined-by source
-    lexeme en
-      surface
-        text "wordnet"
-  words
-    defined-by concept
-    lexeme en
-      surface
-        text "words"
-  world_state_reached
-    defined-by intent
-    lexeme en
-      surface
-        text "world state reached"
-  world_state_remaining
-    defined-by intent
-    lexeme en
-      surface
-        text "world state remaining"
-  would
-    defined-by concept
-    lexeme en
-      surface
-        text "would"
-  write_program
-    defined-by intent
-    lexeme en
-      surface
-        text "write program"
-  writing
-    defined-by word_surface
-    lexeme en
-      surface
-        text "writing"
-  your
-    defined-by word_surface
-    lexeme en
-      surface
-        text "your"

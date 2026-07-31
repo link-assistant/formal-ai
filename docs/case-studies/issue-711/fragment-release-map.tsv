@@ -476,3 +476,5 @@ changelog.d/20260725_evidence_honesty.md	0.311.1
 changelog.d/20260726_093200_issue_870_process_routing.md	0.305.1
 changelog.d/20260726_195500_associative_tech_stack.md	0.306.1
 changelog.d/20260729_210000_issue_703_multi_agent_orchestration.md	0.313.0
+changelog.d/20260730_120000_issue_699_handler_migration.md	0.314.0
+changelog.d/20260730_180000_issue_699_skill_gap.md	0.314.0

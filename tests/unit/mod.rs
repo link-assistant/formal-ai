@@ -88,6 +88,7 @@ mod issue_686_agent_cli;
 mod issue_686_associative_persistence;
 mod issue_687;
 mod issue_698_external_benchmark_learning;
+mod issue_699_handler_migration;
 mod issue_701_dreaming_amendment_class;
 mod issue_701_learning_adoption;
 mod issue_702_nested_contexts;

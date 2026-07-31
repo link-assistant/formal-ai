@@ -1,4 +1,59 @@
 meanings
+  fuckyou
+    defined-by word_surface
+    lexeme en
+      surface
+        text "fuckyou"
+  func
+    defined-by word_surface
+    lexeme en
+      surface
+        text "func"
+  function_catalog
+    defined-by kind
+    lexeme en
+      surface
+        text "function catalog"
+  general_plan_command_capture_action
+    defined-by intent
+    lexeme en
+      surface
+        text "general plan command capture action"
+  general_plan_command_output_evidence
+    defined-by intent
+    lexeme en
+      surface
+        text "general plan command output evidence"
+  general_plan_command_verification_evidence
+    defined-by intent
+    lexeme en
+      surface
+        text "general plan command verification evidence"
+  general_plan_repository_action
+    defined-by intent
+    lexeme en
+      surface
+        text "general plan repository action"
+  general_plan_repository_complete
+    defined-by intent
+    lexeme en
+      surface
+        text "general plan repository complete"
+  general_plan_repository_evidence
+    defined-by intent
+    lexeme en
+      surface
+        text "general plan repository evidence"
+  general_plan_repository_verify_action
+    defined-by intent
+    lexeme en
+      surface
+        text "general plan repository verify action"
+  genuine
+    defined-by word_surface
+    lexeme en
+      surface
+        text "genuine"
   get
     defined-by word_surface
     lexeme en
@@ -124,6 +179,11 @@ meanings
     lexeme en
       surface
         text "indent lines"
+  integer
+    defined-by word_surface
+    lexeme en
+      surface
+        text "integer"
   intent_algorithm
     defined-by intent
     lexeme en
@@ -264,6 +324,11 @@ meanings
     lexeme en
       surface
         text "ionicons"
+  isaac_newton
+    defined-by concept
+    lexeme en
+      surface
+        text "isaac newton"
   isolated-process-view
     defined-by isolation_mode
     lexeme en
@@ -484,6 +549,11 @@ meanings
     lexeme en
       surface
         text "javascript"
+  joe_biden
+    defined-by concept
+    lexeme en
+      surface
+        text "joe biden"
   join
     defined-by concept
     lexeme en
@@ -909,6 +979,11 @@ meanings
     lexeme en
       surface
         text "manuscript"
+  marie_curie
+    defined-by concept
+    lexeme en
+      surface
+        text "marie curie"
   material
     defined-by concept
     lexeme en
@@ -999,6 +1074,11 @@ meanings
     lexeme en
       surface
         text "named"
+  nikola_tesla
+    defined-by concept
+    lexeme en
+      surface
+        text "nikola tesla"
   non-deterministic
     defined-by word_surface
     lexeme en
@@ -1314,83 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern behavior rules list xianshi nide guize liebiao zh"
-  pattern_concept_context_delimiter_dlya_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter dlya ru"
-  pattern_concept_context_delimiter_for_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter for en"
-  pattern_concept_context_delimiter_in_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter in en"
-  pattern_concept_context_delimiter_ke_liye_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter ke liye hi"
-  pattern_concept_context_delimiter_ke_sandarbh_men_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter ke sandarbh men hi"
-  pattern_concept_context_delimiter_li_de_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter li de zh"
-  pattern_concept_context_delimiter_lingyu_de_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter lingyu de zh"
-  pattern_concept_context_delimiter_lingyu_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter lingyu zh"
-  pattern_concept_context_delimiter_men_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter men hi"
-  pattern_concept_context_delimiter_primenitelno_k_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter primenitelno k ru"
-  pattern_concept_context_delimiter_v_kontekste_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter v kontekste ru"
-  pattern_concept_context_delimiter_v_oblasti_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter v oblasti ru"
-  pattern_concept_context_delimiter_v_ramkakh_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter v ramkakh ru"
-  pattern_concept_context_delimiter_v_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter v ru"
-  pattern_concept_context_delimiter_vo_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter vo ru"
-  pattern_concept_context_delimiter_within_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter within en"

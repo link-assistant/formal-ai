@@ -185,6 +185,8 @@ let SHELL_INTENTS_LINO = "";
 let PROGRAM_PLAN_RULES_LINO = "";
 let OPERATION_VOCABULARY_LINO = "";
 let MARKET_PRICE_REFERENCES_LINO = "";
+let ENTITY_NAMES_LINO = "";
+let cachedKnownEntityNames = null;
 let MEANINGS_LINO = "";
 let AGENT_INFO = {};
 let LANGUAGE_RULES = [
@@ -221,6 +223,8 @@ function hydrateLinoSeedText(raw) {
   PROGRAM_PLAN_RULES_LINO = seedRawText(raw, "program-plan-rules.lino");
   OPERATION_VOCABULARY_LINO = seedRawText(raw, "operation-vocabulary.lino");
   MARKET_PRICE_REFERENCES_LINO = seedRawText(raw, "market-price-references.lino");
+  ENTITY_NAMES_LINO = seedRawText(raw, "entity-names.lino");
+  cachedKnownEntityNames = null;
   MEANINGS_LINO = seedRawTexts(
     raw,
     (fileName) => fileName === "meanings.lino" || /^meanings-[a-z0-9-]+\.lino$/.test(fileName),

@@ -1,0 +1,73 @@
+{
+  "entities": {
+    "Q9036": {
+      "type": "item",
+      "id": "Q9036",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Nikola Tesla"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Никола Тесла"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "निकोला टेस्ला"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "尼古拉·特斯拉"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "Serbian-American engineer and inventor (1856–1943)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "сербский физик, инженер, изобретатель"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सर्बियाई-अमेरिकी वैज्ञानिक तथा आविष्कारक (1856-1943)"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "美籍塞尔维亚族发明家、机械工程师、电机工程师、未来学家、实验物理学家"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Nicola Tesla"
+          },
+          {
+            "language": "en",
+            "value": "Tesla"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Тесла, Никола"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "尼科拉·特斯拉"
+          },
+          {
+            "language": "zh",
+            "value": "特斯拉"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

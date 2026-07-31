@@ -558,16 +558,16 @@ fn python_comments_omitted_drops_docstring_and_hash_comments_end_to_end() {
 }
 
 #[test]
-fn partial_composite_request_without_statistics_stays_unsupported() {
-    // http + json but NO statistics -> no recipe matches, so the honest
-    // unsupported answer is preserved (we do not fabricate a program).
+fn partial_composite_request_without_statistics_stays_a_named_skill_gap() {
+    // http + json but NO statistics -> no recipe matches, so the honest named
+    // skill gap is preserved (we do not fabricate a program).
     let response = answer(
         "Write a Rust program that makes an HTTP GET request to a URL and parses the JSON \
          response.",
     );
     assert_eq!(
-        response.intent, "write_program_unsupported",
-        "an unmatched composite request keeps the honest unsupported answer, got: {}",
+        response.intent, "write_program_skill_gap",
+        "an unmatched composite request keeps the honest named skill gap, got: {}",
         response.intent
     );
 }

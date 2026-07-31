@@ -1,4 +1,84 @@
 meanings
+  pattern_concept_context_delimiter_dlya_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter dlya ru"
+  pattern_concept_context_delimiter_for_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter for en"
+  pattern_concept_context_delimiter_in_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter in en"
+  pattern_concept_context_delimiter_ke_liye_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter ke liye hi"
+  pattern_concept_context_delimiter_ke_sandarbh_men_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter ke sandarbh men hi"
+  pattern_concept_context_delimiter_li_de_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter li de zh"
+  pattern_concept_context_delimiter_lingyu_de_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter lingyu de zh"
+  pattern_concept_context_delimiter_lingyu_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter lingyu zh"
+  pattern_concept_context_delimiter_men_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter men hi"
+  pattern_concept_context_delimiter_primenitelno_k_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter primenitelno k ru"
+  pattern_concept_context_delimiter_v_kontekste_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter v kontekste ru"
+  pattern_concept_context_delimiter_v_oblasti_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter v oblasti ru"
+  pattern_concept_context_delimiter_v_ramkakh_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter v ramkakh ru"
+  pattern_concept_context_delimiter_v_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter v ru"
+  pattern_concept_context_delimiter_vo_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter vo ru"
+  pattern_concept_context_delimiter_within_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter within en"
   pattern_concept_context_delimiter_zhong_de_zh
     defined-by prompt_pattern
     lexeme en
@@ -1314,83 +1394,3 @@ meanings
     lexeme en
       surface
         text "response agentic action find home zh"
-  response_agentic_action_generic_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action generic en"
-  response_agentic_action_generic_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action generic hi"
-  response_agentic_action_generic_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action generic ru"
-  response_agentic_action_generic_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action generic zh"
-  response_agentic_action_list_current_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action list current en"
-  response_agentic_action_list_current_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action list current hi"
-  response_agentic_action_list_current_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action list current ru"
-  response_agentic_action_list_current_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action list current zh"
-  response_agentic_action_list_desktop_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action list desktop en"
-  response_agentic_action_list_desktop_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action list desktop hi"
-  response_agentic_action_list_desktop_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action list desktop ru"
-  response_agentic_action_list_desktop_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action list desktop zh"
-  response_agentic_action_list_home_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action list home en"
-  response_agentic_action_list_home_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action list home hi"
-  response_agentic_action_list_home_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action list home ru"
-  response_agentic_action_list_home_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action list home zh"

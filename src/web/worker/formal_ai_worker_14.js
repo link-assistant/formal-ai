@@ -319,10 +319,6 @@ function recoverWriteProgramParameters(parameters, prompt, history) {
 const WRITE_PROGRAM_I18N = {
   en: {
     intro: (name, label) => `Here is a minimal ${name} ${label} program:`,
-    unsupported: (language, task, languages, tasks) =>
-      `I can route \`write_program(language, task)\`, but I do not have a template for ` +
-      `language \`${language}\` and task \`${task}\`. ` +
-      `Supported languages: ${languages}. Supported tasks: ${tasks}.`,
     ranInSandbox: "Execution status: ran in the demo's Web Worker sandbox.",
     outputLabel: "Output:",
     noOutput: "(no output)",
@@ -343,10 +339,6 @@ const WRITE_PROGRAM_I18N = {
   },
   ru: {
     intro: (name, label) => `Вот минимальная программа на языке ${name} (${label}):`,
-    unsupported: (language, task, languages, tasks) =>
-      `Я могу выполнить \`write_program(language, task)\`, но у меня нет шаблона для ` +
-      `языка \`${language}\` и задачи \`${task}\`. ` +
-      `Поддерживаемые языки: ${languages}. Поддерживаемые задачи: ${tasks}.`,
     ranInSandbox: "Статус выполнения: запущено в песочнице Web Worker демо.",
     outputLabel: "Вывод:",
     noOutput: "(нет вывода)",
@@ -368,10 +360,6 @@ const WRITE_PROGRAM_I18N = {
   },
   hi: {
     intro: (name, label) => `यहाँ ${name} में एक न्यूनतम प्रोग्राम है (${label}):`,
-    unsupported: (language, task, languages, tasks) =>
-      `मैं \`write_program(language, task)\` रूट कर सकता हूँ, लेकिन भाषा \`${language}\` और ` +
-      `कार्य \`${task}\` के लिए मेरे पास कोई टेम्पलेट नहीं है। ` +
-      `समर्थित भाषाएँ: ${languages}. समर्थित कार्य: ${tasks}.`,
     ranInSandbox: "निष्पादन स्थिति: डेमो के Web Worker सैंडबॉक्स में चला।",
     outputLabel: "आउटपुट:",
     noOutput: "(कोई आउटपुट नहीं)",
@@ -393,9 +381,6 @@ const WRITE_PROGRAM_I18N = {
   },
   zh: {
     intro: (name, label) => `这是一个最小的 ${name} 程序（${label}）：`,
-    unsupported: (language, task, languages, tasks) =>
-      `我可以路由 \`write_program(language, task)\`，但我没有语言 \`${language}\` 和任务 ` +
-      `\`${task}\` 的模板。支持的语言：${languages}。支持的任务：${tasks}。`,
     ranInSandbox: "执行状态：已在演示的 Web Worker 沙箱中运行。",
     outputLabel: "输出：",
     noOutput: "（无输出）",
@@ -410,6 +395,42 @@ const WRITE_PROGRAM_I18N = {
     expectedOutput: "验证后的预期输出：",
   },
 };
+
+// Issue #699 batch 3: the dead end that recited the template catalogue back at
+// the user is gone from both engines. When every synthesis route misses, the worker names
+// the gap from seed data, exactly like `src/program_skill_gap.rs`. The route
+// slugs are language-neutral, so adding a route updates every language at once.
+const PROGRAM_SYNTHESIS_ROUTES = [
+  "catalog",
+  "blueprint_recipes",
+  "coding_oracle",
+  "seed_idiom_composer",
+];
+const MISSING_PROGRAM_PARAMETER = "missing";
+
+// The English name is the gap's identity (it travels in the evidence trail);
+// the localized name is what the reader sees inside the reply.
+function programSkillGapName(task, language, responseLanguage) {
+  const template =
+    answerFor("write_program_skill_gap_name", responseLanguage) ||
+    answerFor("write_program_skill_gap_name", "en") ||
+    "";
+  return template
+    .replace("{task}", task || MISSING_PROGRAM_PARAMETER)
+    .replace("{language}", language || MISSING_PROGRAM_PARAMETER);
+}
+
+function programSkillGapAnswer(task, language, responseLanguage) {
+  const template =
+    answerFor("write_program_skill_gap", responseLanguage) ||
+    answerFor("write_program_skill_gap", "en") ||
+    "";
+  return template
+    .replace("{gap}", programSkillGapName(task, language, responseLanguage))
+    .replace("{routes}", PROGRAM_SYNTHESIS_ROUTES.join(", "))
+    .replace("{task}", task || MISSING_PROGRAM_PARAMETER)
+    .replace("{language}", language || MISSING_PROGRAM_PARAMETER);
+}
 
 function writeProgramStrings(language) {
   return WRITE_PROGRAM_I18N[language] || WRITE_PROGRAM_I18N.en;

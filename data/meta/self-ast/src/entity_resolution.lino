@@ -1,0 +1,21 @@
+self_ast_census
+  target src/entity_resolution.rs
+  language rust
+  fidelity signature
+  byte_len 7824
+  line_count 220
+  content_id source_module_e8c898f53b5e05f4
+  symbol_count 12
+  symbols
+    const TERM_PLACEHOLDER 28 28
+    const CORRECTED_PLACEHOLDER 29 29
+    function known_entity_names 37 40
+    static NAMES 38 38
+    function collect_known_entity_names 42 83
+    function looks_like_a_name 88 91
+    function suggest_known_name 102 124
+    function normalize_name 128 143
+    function edit_budget 145 147
+    function prefix_literals 151 158
+    function suffix_literals 162 169
+    function resolve_who_is 176 220
