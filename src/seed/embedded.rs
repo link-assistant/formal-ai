@@ -16,6 +16,10 @@ pub const INTERFACE_CAPABILITIES_LINO: &str =
     include_str!("../../data/seed/interface-capabilities.lino");
 pub const MULTILINGUAL_RESPONSES_LINO: &str =
     include_str!("../../data/seed/multilingual-responses.lino");
+pub const MULTILINGUAL_RESPONSES_ENTITIES_LINO: &str =
+    include_str!("../../data/seed/multilingual-responses-entities.lino");
+pub const MULTILINGUAL_RESPONSES_SYNTHESIS_LINO: &str =
+    include_str!("../../data/seed/multilingual-responses-synthesis.lino");
 pub const MULTILINGUAL_RESPONSES_ORCHESTRATION_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-orchestration.lino");
 pub const MULTILINGUAL_RESPONSES_AGENTIC_LINO: &str =
@@ -32,6 +36,7 @@ pub const FACTS_LINO: &str = include_str!("../../data/seed/facts.lino");
 pub const MODEL_ALIASES_LINO: &str = include_str!("../../data/seed/model-aliases.lino");
 pub const MARKET_PRICE_REFERENCES_LINO: &str =
     include_str!("../../data/seed/market-price-references.lino");
+pub const ENTITY_NAMES_LINO: &str = include_str!("../../data/seed/entity-names.lino");
 pub const CLIENT_INTEGRATIONS_LINO: &str = include_str!("../../data/seed/client-integrations.lino");
 pub const CLIENT_COMPLETION_CONTRACTS_LINO: &str =
     include_str!("../../data/seed/client-completion-contracts.lino");
@@ -44,6 +49,7 @@ pub const LANGUAGE_DETECTION_LINO: &str = include_str!("../../data/seed/language
 pub const PROMPT_PATTERNS_LINO: &str = include_str!("../../data/seed/prompt-patterns.lino");
 pub const INTENT_ROUTING_LINO: &str = include_str!("../../data/seed/intent-routing.lino");
 pub const HANDLER_PRECEDENCE_LINO: &str = include_str!("../../data/seed/handler-precedence.lino");
+pub const DRAFT_STRATEGIES_LINO: &str = include_str!("../../data/seed/draft-strategies.lino");
 pub const LEARNING_SOURCES_LINO: &str = include_str!("../../data/seed/learning-sources.lino");
 pub const OPERATION_VOCABULARY_LINO: &str =
     include_str!("../../data/seed/operation-vocabulary.lino");
@@ -111,6 +117,8 @@ pub const MEANINGS_FILE_WRITE_LINO: &str = include_str!("../../data/seed/meaning
 pub const MEANINGS_FILE_EDIT_LINO: &str = include_str!("../../data/seed/meanings-file-edit.lino");
 pub const MEANINGS_DECOMPOSITION_LINO: &str =
     include_str!("../../data/seed/meanings-decomposition.lino");
+pub const MEANINGS_NUMBER_CONSTRAINTS_LINO: &str =
+    include_str!("../../data/seed/meanings-number-constraints.lino");
 pub const MEANINGS_AGENT_ACTIONS_LINO: &str =
     include_str!("../../data/seed/meanings-agent-actions.lino");
 pub const MEANINGS_LOCAL_SEARCH_LINO: &str =
@@ -163,6 +171,14 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             MULTILINGUAL_RESPONSES_LINO,
         ),
         (
+            "data/seed/multilingual-responses-entities.lino",
+            MULTILINGUAL_RESPONSES_ENTITIES_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-synthesis.lino",
+            MULTILINGUAL_RESPONSES_SYNTHESIS_LINO,
+        ),
+        (
             "data/seed/multilingual-responses-orchestration.lino",
             MULTILINGUAL_RESPONSES_ORCHESTRATION_LINO,
         ),
@@ -190,6 +206,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             "data/seed/market-price-references.lino",
             MARKET_PRICE_REFERENCES_LINO,
         ),
+        ("data/seed/entity-names.lino", ENTITY_NAMES_LINO),
         (
             "data/seed/client-integrations.lino",
             CLIENT_INTEGRATIONS_LINO,
@@ -207,6 +224,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/prompt-patterns.lino", PROMPT_PATTERNS_LINO),
         ("data/seed/intent-routing.lino", INTENT_ROUTING_LINO),
         ("data/seed/handler-precedence.lino", HANDLER_PRECEDENCE_LINO),
+        ("data/seed/draft-strategies.lino", DRAFT_STRATEGIES_LINO),
         ("data/seed/learning-sources.lino", LEARNING_SOURCES_LINO),
         (
             "data/seed/operation-vocabulary.lino",
@@ -322,6 +340,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             MEANINGS_DECOMPOSITION_LINO,
         ),
         (
+            "data/seed/meanings-number-constraints.lino",
+            MEANINGS_NUMBER_CONSTRAINTS_LINO,
+        ),
+        (
             "data/seed/meanings-agent-actions.lino",
             MEANINGS_AGENT_ACTIONS_LINO,
         ),
@@ -391,6 +413,8 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
 /// them, so an intent may live in whichever file keeps the sizes balanced.
 pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_LINO,
+    MULTILINGUAL_RESPONSES_ENTITIES_LINO,
+    MULTILINGUAL_RESPONSES_SYNTHESIS_LINO,
     MULTILINGUAL_RESPONSES_ORCHESTRATION_LINO,
     MULTILINGUAL_RESPONSES_AGENTIC_LINO,
     MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,
@@ -439,6 +463,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_FILE_WRITE_LINO,
     MEANINGS_FILE_EDIT_LINO,
     MEANINGS_DECOMPOSITION_LINO,
+    MEANINGS_NUMBER_CONSTRAINTS_LINO,
     MEANINGS_AGENT_ACTIONS_LINO,
     MEANINGS_LOCAL_SEARCH_LINO,
     MEANINGS_PLAYWRIGHT_LINO,

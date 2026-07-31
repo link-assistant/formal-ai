@@ -20,17 +20,25 @@ meanings
     lexeme en
       surface
         text answer
+      surface
+        text solution
     lexeme ru
       surface
         text ответ
+      surface
+        text решение
     lexeme hi
       surface
         text जवाब
       surface
         text उत्तर
+      surface
+        text समाधान
     lexeme zh
       surface
         text 回答
+      surface
+        text 解决方案
   answer_rationale_inquiry
     defined-by causal_interrogative
     defined-by prior_answer_reference

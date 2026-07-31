@@ -17,15 +17,15 @@ use crate::program_coreference::looks_like_bare_program_artifact_follow_up;
 use crate::program_plan::ProgramPlan;
 use crate::solver::ConversationTurn;
 
-struct UnknownRuleConstruction {
-    rule: SelectedRule,
-    coreference_trace: String,
-    recovery_trace: String,
-    operation_hits: String,
-    request: String,
-    candidate: String,
-    verification: String,
-    plan: String,
+pub struct UnknownRuleConstruction {
+    pub rule: SelectedRule,
+    pub coreference_trace: String,
+    pub recovery_trace: String,
+    pub operation_hits: String,
+    pub request: String,
+    pub candidate: String,
+    pub verification: String,
+    pub plan: String,
 }
 
 pub fn try_construct_unknown_rule(
@@ -100,7 +100,7 @@ pub fn try_recall_approved_rule(
 }
 
 #[must_use]
-fn construct_rule_from_unknown(
+pub fn construct_rule_from_unknown(
     follow_up: &str,
     history: &[ConversationTurn],
 ) -> Option<UnknownRuleConstruction> {

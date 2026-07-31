@@ -1261,6 +1261,7 @@ async function loadSeed() {
             language: rule.language,
             start: Number(rule.start),
             end: Number(rule.end),
+            sourceHost: rule.sourceHost || "",
           }));
       }
       if (

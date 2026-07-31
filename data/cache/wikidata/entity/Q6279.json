@@ -1,0 +1,129 @@
+{
+  "entities": {
+    "Q6279": {
+      "type": "item",
+      "id": "Q6279",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Joe Biden"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Джо Байден"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जो बाइडेन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "乔·拜登"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "46th President of the United States (2021–2025)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "46-й президент США (2021—2025), американский политик"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "संयुक्त राज्य अमेरिका के 47 वें राष्ट्रपति"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "第46任美國總統"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "POTUS 46"
+          },
+          {
+            "language": "en",
+            "value": "President Joe Biden"
+          },
+          {
+            "language": "en",
+            "value": "President Joseph Biden"
+          },
+          {
+            "language": "en",
+            "value": "President Joseph R. Biden"
+          },
+          {
+            "language": "en",
+            "value": "Joseph Robinette Biden Jr."
+          },
+          {
+            "language": "en",
+            "value": "President Joseph Biden Jr."
+          },
+          {
+            "language": "en",
+            "value": "President Joseph Robinette Biden"
+          },
+          {
+            "language": "en",
+            "value": "President Joseph R. Biden Jr."
+          },
+          {
+            "language": "en",
+            "value": "Joe R. Biden"
+          },
+          {
+            "language": "en",
+            "value": "President Joseph Robinette Biden Jr."
+          },
+          {
+            "language": "en",
+            "value": "Joe Biden Jr."
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Байден, Джо"
+          },
+          {
+            "language": "ru",
+            "value": "Джозеф Байден"
+          },
+          {
+            "language": "ru",
+            "value": "Джозеф Робинетт Байден-мл."
+          },
+          {
+            "language": "ru",
+            "value": "Джозеф Робинетт Байден"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "拜登"
+          },
+          {
+            "language": "zh",
+            "value": "祖·拜登"
+          },
+          {
+            "language": "zh",
+            "value": "小约瑟夫·罗比内特·拜登"
+          },
+          {
+            "language": "zh",
+            "value": "喬·拜登"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}
