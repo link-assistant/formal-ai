@@ -31,3 +31,19 @@ multilingual_responses
     intent orchestration_cross_agent_denial
     language zh
     text "跨代理否定：来源={sources}；概率={probability}"
+  response response_draft_comparison_explanation_en
+    intent draft_comparison_explanation
+    language en
+    text "I selected draft {winner_index} ({strategy}) because it passed {passed_tests}/{total_tests} generated tests. The deterministic least-action tie-break then preferred the smallest sufficient passing draft; the ledger records a {smaller_percent}% size reduction where another passing draft was available. Composition was verified before committing it."
+  response response_draft_comparison_explanation_ru
+    intent draft_comparison_explanation
+    language ru
+    text "Я выбрал черновик {winner_index} ({strategy}), потому что он прошёл {passed_tests}/{total_tests} сгенерированных тестов. Затем детерминированное правило наименьшего действия выбрало наименьший достаточный прошедший черновик; при наличии другого прошедшего черновика реестр записывает уменьшение размера на {smaller_percent}%. Композиция была проверена до выбора."
+  response response_draft_comparison_explanation_hi
+    intent draft_comparison_explanation
+    language hi
+    text "मैंने मसौदा {winner_index} ({strategy}) चुना क्योंकि उसने {passed_tests}/{total_tests} उत्पन्न परीक्षण पास किए। फिर नियतात्मक न्यूनतम-क्रिया निर्णायक ने सबसे छोटा पर्याप्त सफल मसौदा चुना; कोई अन्य सफल मसौदा उपलब्ध होने पर खाता {smaller_percent}% आकार कमी दर्ज करता है। चयन से पहले संयोजन सत्यापित किया गया।"
+  response response_draft_comparison_explanation_zh
+    intent draft_comparison_explanation
+    language zh
+    text "我选择了草案 {winner_index}（{strategy}），因为它通过了 {passed_tests}/{total_tests} 个生成测试。随后，确定性的最小作用量决胜规则选择了最小且充分的通过草案；若存在另一个通过草案，账本会记录 {smaller_percent}% 的大小缩减。提交前已验证组合。"

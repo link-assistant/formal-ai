@@ -2,35 +2,35 @@ self_ast_census
   target src/solver.rs
   language rust
   fidelity signature
-  byte_len 40458
-  line_count 928
-  content_id source_module_982859bf13d12f52
+  byte_len 41429
+  line_count 947
+  content_id source_module_bfba0e0d3f9e3365
   symbol_count 27
   symbols
-    enum ExecutionSurface 60 68
-    function slug 72 81
-    function from_env_value 83 93
-    enum BlueprintComposition 118 124
-    function slug 129 134
-    function from_value 140 148
-    struct SolverConfig 159 253
-    function default 256 280
-    function from_env 289 291
-    enum ConversationRole 298 301
-    function slug 306 311
-    struct ConversationTurn 320 323
-    function user 328 333
-    function assistant 337 342
-    struct UniversalSolver 347 349
-    function default 352 356
-    function new 362 364
-    function solve 371 373
-    function solve_with_history 380 382
-    function solve_with_probability_store 385 391
-    function solve_with_history_and_probability_store 394 407
-    function solve_with_history_probability_store_and_intent_cache 409 759
-    function handle_policy 761 889
-    function finalize_policy 891 901
-    function record_external_search 903 913
-    function solve 920 922
-    function solve_with_history 926 928
+    enum ExecutionSurface 61 69
+    function slug 73 82
+    function from_env_value 84 94
+    enum BlueprintComposition 119 125
+    function slug 130 135
+    function from_value 141 149
+    struct SolverConfig 160 259
+    function default 262 287
+    function from_env 296 298
+    enum ConversationRole 305 308
+    function slug 313 318
+    struct ConversationTurn 327 330
+    function user 335 340
+    function assistant 344 349
+    struct UniversalSolver 354 356
+    function default 359 363
+    function new 369 371
+    function solve 378 380
+    function solve_with_history 387 389
+    function solve_with_probability_store 392 398
+    function solve_with_history_and_probability_store 401 414
+    function solve_with_history_probability_store_and_intent_cache 416 778
+    function handle_policy 780 908
+    function finalize_policy 910 920
+    function record_external_search 922 932
+    function solve 939 941
+    function solve_with_history 945 947

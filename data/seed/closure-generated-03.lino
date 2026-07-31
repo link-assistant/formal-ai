@@ -1,4 +1,9 @@
 meanings
+  pattern_behavior_rules_list_xianshi_nide_guize_liebiao_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list xianshi nide guize liebiao zh"
   pattern_concept_context_delimiter_dlya_ru
     defined-by prompt_pattern
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "response agentic action find home ru"
-  response_agentic_action_find_home_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action find home zh"

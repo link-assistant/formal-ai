@@ -1,4 +1,34 @@
 meanings
+  was
+    defined-by concept
+    lexeme en
+      surface
+        text "was"
+  web-search
+    defined-by word_surface
+    lexeme en
+      surface
+        text "web search"
+  web_research_no_content
+    defined-by field
+    lexeme en
+      surface
+        text "web research no content"
+  web_research_source_label
+    defined-by field
+    lexeme en
+      surface
+        text "web research source label"
+  web_search_live_results
+    defined-by intent
+    lexeme en
+      surface
+        text "web search live results"
+  web_search_unavailable
+    defined-by intent
+    lexeme en
+      surface
+        text "web search unavailable"
   webvm
     defined-by word_surface
     lexeme en
