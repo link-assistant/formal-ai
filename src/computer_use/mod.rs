@@ -7,17 +7,25 @@
 //! honestly as a named `capability_gap`.
 
 mod executor;
+mod induction;
+mod lexicon;
 mod planner;
 mod seed;
+mod synthesis;
 
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
 pub use executor::{ComputerUseError, ComputerUsePolicy, ComputerUseSession};
+pub use induction::{learned, LearnedSchemas, OperationSchema, ResourceBinding, StepSignature};
+pub use lexicon::{
+    capability_gap_cue, normalize as normalize_request, operation_cues, resource_cue,
+};
 pub use planner::{plan_agentic_step, tool_for_primitive};
 pub use seed::{
     benchmark_tasks, capability_gap_for_prompt, plan_for_prompt, BenchmarkTask, CapabilityGap,
 };
+pub use synthesis::{synthesize, Synthesis};
 
 /// The complete issue-#707 primitive taxonomy, in seed and MCP advertisement
 /// order.
@@ -36,7 +44,7 @@ pub const COMPUTER_USE_PRIMITIVES: [ComputerUsePrimitive; 12] = [
     ComputerUsePrimitive::ProcessStatus,
 ];
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 pub enum ComputerUsePrimitive {
     FsRead,
     FsWrite,
@@ -252,13 +260,33 @@ pub struct ComputerUseOutcome {
     pub verified: bool,
 }
 
-/// Execute one of the ten seeded plans with all issue-#707 permissions granted.
+/// Plan any computer-use request: the recorded plan when the prompt is one of
+/// the seeded benchmark tasks verbatim, otherwise a plan synthesized from the
+/// schemas auto-learned from that corpus.
+///
+/// The recorded branch comes first only so replays of the benchmark stay
+/// byte-identical to what CI ratcheted; every other phrasing, in any of the four
+/// supported languages, is planned by generalization.
+#[must_use]
+pub fn plan_request(prompt: &str) -> Option<ComputerUsePlan> {
+    plan_for_prompt(prompt).or_else(|| synthesize(prompt).map(|synthesis| synthesis.plan))
+}
+
+/// The honest, localized `capability_gap` answer for a request we cannot plan —
+/// recognised from the seeded capability-gap meanings, so any phrasing that
+/// evidences the gap is answered, not only the four recorded cues.
+#[must_use]
+pub fn capability_gap_for_request(prompt: &str) -> Option<CapabilityGap> {
+    capability_gap_for_prompt(prompt).or_else(|| synthesis::capability_gap_for_request(prompt))
+}
+
+/// Execute a computer-use request with all issue-#707 permissions granted.
 ///
 /// This is the native orchestration surface. Protocol and MCP clients use the
 /// same plan and [`ComputerUseSession::execute_step`] one primitive at a time.
 pub fn run_verified_plan(prompt: &str) -> Result<ComputerUseOutcome, ComputerUseError> {
     let plan =
-        plan_for_prompt(prompt).ok_or_else(|| ComputerUseError::UnknownPlan(prompt.to_owned()))?;
+        plan_request(prompt).ok_or_else(|| ComputerUseError::UnknownPlan(prompt.to_owned()))?;
     let policy = ComputerUsePolicy::agent_mode_all();
     let mut session = ComputerUseSession::new(&plan.id, policy)?;
     let mut records = Vec::with_capacity(plan.steps.len());

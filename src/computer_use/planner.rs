@@ -4,7 +4,7 @@ use crate::agentic_coding::{AgenticPlan, PlannedToolCall};
 use crate::protocol::ChatMessage;
 
 use super::seed::{completion_message, missing_primitive_message, verification_failed_message};
-use super::{capability_gap_for_prompt, plan_for_prompt, ComputerUsePrimitive};
+use super::{capability_gap_for_request, plan_request, ComputerUsePrimitive};
 
 #[must_use]
 pub fn tool_for_primitive<'a>(
@@ -23,10 +23,10 @@ pub fn plan_agentic_step(messages: &[ChatMessage], tool_names: &[&str]) -> Optio
         .iter()
         .rposition(|message| message.role == "user")?;
     let task = messages[user_index].content.plain_text();
-    if let Some(gap) = capability_gap_for_prompt(&task) {
+    if let Some(gap) = capability_gap_for_request(&task) {
         return Some(AgenticPlan::Final(gap.response));
     }
-    let plan = plan_for_prompt(&task)?;
+    let plan = plan_request(&task)?;
     let tool_results = messages
         .iter()
         .enumerate()

@@ -1,0 +1,574 @@
+meanings
+  computer_use_fetch
+    defined-by action
+    role computer_use_operation_cue
+    lexeme en
+      surface
+        text fetch
+      surface
+        text download
+      surface
+        text retrieve
+      surface
+        text "get the"
+    lexeme ru
+      surface
+        text получи
+      surface
+        text скачай
+      surface
+        text загрузи
+      surface
+        text запроси
+    lexeme hi
+      surface
+        text लाओ
+      surface
+        text डाउनलोड
+      surface
+        text प्राप्त
+    lexeme zh
+      surface
+        text 获取
+      surface
+        text 下载
+  computer_use_filter_rows
+    defined-by action
+    role computer_use_operation_cue
+    lexeme en
+      surface
+        text filter
+      surface
+        text filtered
+    lexeme ru
+      surface
+        text отфильтруй
+      surface
+        text фильтруй
+      surface
+        text отбери
+    lexeme hi
+      surface
+        text फ़िल्टर
+      surface
+        text छाँटो
+    lexeme zh
+      surface
+        text 筛选
+      surface
+        text 过滤
+  computer_use_count_lines
+    defined-by action
+    role computer_use_operation_cue
+    lexeme en
+      surface
+        text count
+      surface
+        text "count the lines"
+      surface
+        text "how many lines"
+    lexeme ru
+      surface
+        text посчитай
+      surface
+        text сосчитай
+      surface
+        text подсчитай
+    lexeme hi
+      surface
+        text गिनो
+      surface
+        text गिनती
+    lexeme zh
+      surface
+        text 统计
+      surface
+        text 行数
+  computer_use_unique_values
+    defined-by action
+    role computer_use_operation_cue
+    lexeme en
+      surface
+        text unique
+      surface
+        text distinct
+    lexeme ru
+      surface
+        text уникальных
+      surface
+        text уникальные
+      surface
+        text различных
+    lexeme hi
+      surface
+        text unique
+      surface
+        text अद्वितीय
+    lexeme zh
+      surface
+        text 唯一
+      surface
+        text 去重
+  computer_use_extract_field
+    defined-by action
+    role computer_use_operation_cue
+    lexeme en
+      surface
+        text "order id"
+      surface
+        text identifier
+      surface
+        text "first order"
+      surface
+        text extract
+    lexeme ru
+      surface
+        text идентификатор
+      surface
+        text "первого заказа"
+      surface
+        text извлеки
+    lexeme hi
+      surface
+        text आईडी
+      surface
+        text पहचानकर्ता
+    lexeme zh
+      surface
+        text 编号
+      surface
+        text 标识
+  computer_use_query_selector
+    defined-by action
+    role computer_use_operation_cue
+    lexeme en
+      surface
+        text title
+      surface
+        text heading
+      surface
+        text token
+      surface
+        text selector
+    lexeme ru
+      surface
+        text заголовок
+      surface
+        text заголовка
+      surface
+        text токен
+      surface
+        text селектор
+    lexeme hi
+      surface
+        text शीर्षक
+      surface
+        text टोकन
+      surface
+        text token
+    lexeme zh
+      surface
+        text 标题
+      surface
+        text 令牌
+  computer_use_submit_form
+    defined-by action
+    role computer_use_operation_cue
+    lexeme en
+      surface
+        text submit
+      surface
+        text post
+      surface
+        text send
+    lexeme ru
+      surface
+        text отправь
+      surface
+        text отправить
+      surface
+        text подай
+    lexeme hi
+      surface
+        text जमा
+      surface
+        text भेजो
+    lexeme zh
+      surface
+        text 提交
+      surface
+        text 发送
+  computer_use_list_directory
+    defined-by action
+    role computer_use_operation_cue
+    lexeme en
+      surface
+        text list
+      surface
+        text "list the"
+      surface
+        text enumerate
+    lexeme ru
+      surface
+        text перечисли
+      surface
+        text список
+      surface
+        text перечислить
+    lexeme hi
+      surface
+        text सूचीबद्ध
+      surface
+        text सूची
+    lexeme zh
+      surface
+        text 列出
+      surface
+        text 列表
+  computer_use_pack_archive
+    defined-by action
+    role computer_use_operation_cue
+    lexeme en
+      surface
+        text pack
+      surface
+        text archive
+      surface
+        text bundle
+      surface
+        text "archive it"
+    lexeme ru
+      surface
+        text упакуй
+      surface
+        text архив
+      surface
+        text заархивируй
+    lexeme hi
+      surface
+        text pack
+      surface
+        text archive
+      surface
+        text संग्रह
+    lexeme zh
+      surface
+        text 打包
+      surface
+        text 归档
+  computer_use_unpack_archive
+    defined-by action
+    role computer_use_operation_cue
+    lexeme en
+      surface
+        text unpack
+      surface
+        text unzip
+      surface
+        text restore
+    lexeme ru
+      surface
+        text распакуй
+      surface
+        text восстанови
+    lexeme hi
+      surface
+        text unpack
+      surface
+        text खोलो
+    lexeme zh
+      surface
+        text 解包
+      surface
+        text 解压
+  computer_use_move_file
+    defined-by action
+    role computer_use_operation_cue
+    lexeme en
+      surface
+        text move
+      surface
+        text relocate
+    lexeme ru
+      surface
+        text перемести
+      surface
+        text перенеси
+    lexeme hi
+      surface
+        text move
+      surface
+        text स्थानांतरित
+    lexeme zh
+      surface
+        text 移动
+  computer_use_process_status
+    defined-by action
+    role computer_use_operation_cue
+    lexeme en
+      surface
+        text "process status"
+      surface
+        text "isolated process"
+      surface
+        text process
+    lexeme ru
+      surface
+        text "статус процесса"
+      surface
+        text процесса
+      surface
+        text процесс
+    lexeme hi
+      surface
+        text "process status"
+      surface
+        text प्रक्रिया
+    lexeme zh
+      surface
+        text 进程状态
+      surface
+        text 进程
+  computer_use_resource_customers
+    defined-by object
+    role computer_use_resource_cue
+    lexeme en
+      surface
+        text customers
+      surface
+        text customer
+    lexeme ru
+      surface
+        text клиентов
+      surface
+        text клиенты
+      surface
+        text клиента
+      surface
+        text клиентах
+      surface
+        text клиентам
+      surface
+        text клиентами
+    lexeme hi
+      surface
+        text ग्राहकों
+      surface
+        text ग्राहक
+    lexeme zh
+      surface
+        text 客户
+  computer_use_resource_notes
+    defined-by object
+    role computer_use_resource_cue
+    lexeme en
+      surface
+        text notes
+      surface
+        text "notes file"
+    lexeme ru
+      surface
+        text заметок
+      surface
+        text заметки
+      surface
+        text заметках
+      surface
+        text заметкам
+      surface
+        text заметками
+    lexeme hi
+      surface
+        text नोट्स
+    lexeme zh
+      surface
+        text 笔记
+  computer_use_resource_documents
+    defined-by object
+    role computer_use_resource_cue
+    lexeme en
+      surface
+        text documents
+      surface
+        text document
+    lexeme ru
+      surface
+        text документы
+      surface
+        text документ
+      surface
+        text документов
+      surface
+        text документах
+      surface
+        text документами
+      surface
+        text документе
+    lexeme hi
+      surface
+        text दस्तावेज़
+    lexeme zh
+      surface
+        text 文档
+  computer_use_resource_inbox_note
+    defined-by object
+    role computer_use_resource_cue
+    lexeme en
+      surface
+        text "inbox note"
+      surface
+        text inbox
+    lexeme ru
+      surface
+        text входящих
+      surface
+        text "заметку из входящих"
+    lexeme hi
+      surface
+        text इनबॉक्स
+    lexeme zh
+      surface
+        text 收件箱笔记
+      surface
+        text 收件箱
+  computer_use_resource_orders
+    defined-by object
+    role computer_use_resource_cue
+    lexeme en
+      surface
+        text orders
+      surface
+        text order
+    lexeme ru
+      surface
+        text заказы
+      surface
+        text заказа
+      surface
+        text заказов
+      surface
+        text заказах
+      surface
+        text заказами
+      surface
+        text заказе
+    lexeme hi
+      surface
+        text ऑर्डर
+    lexeme zh
+      surface
+        text 订单
+  computer_use_resource_status_page
+    defined-by object
+    role computer_use_resource_cue
+    lexeme en
+      surface
+        text "status page"
+    lexeme ru
+      surface
+        text "страницу статуса"
+      surface
+        text "странице статуса"
+      surface
+        text "страница статуса"
+    lexeme hi
+      surface
+        text "स्थिति पृष्ठ"
+    lexeme zh
+      surface
+        text 状态页面
+  computer_use_resource_form
+    defined-by object
+    role computer_use_resource_cue
+    lexeme en
+      surface
+        text form
+      surface
+        text "fixture form"
+    lexeme ru
+      surface
+        text форму
+      surface
+        text формы
+      surface
+        text форма
+      surface
+        text форме
+      surface
+        text формой
+    lexeme hi
+      surface
+        text फ़ॉर्म
+    lexeme zh
+      surface
+        text 表单
+  computer_use_resource_inventory
+    defined-by object
+    role computer_use_resource_cue
+    lexeme en
+      surface
+        text inventory
+    lexeme ru
+      surface
+        text инвентаря
+      surface
+        text инвентарь
+      surface
+        text инвентаре
+      surface
+        text инвентарём
+    lexeme hi
+      surface
+        text inventory
+      surface
+        text सूचीपत्र
+    lexeme zh
+      surface
+        text 库存
+  computer_use_gap_gui_rendering
+    defined-by object
+    role computer_use_capability_gap_cue
+    lexeme en
+      surface
+        text screenshot
+      surface
+        text "screen shot"
+      surface
+        text rendered
+      surface
+        text render
+      surface
+        text pixels
+      surface
+        text pixel
+      surface
+        text gui
+      surface
+        text visually
+    lexeme ru
+      surface
+        text снимок
+      surface
+        text скриншот
+      surface
+        text отрисованной
+      surface
+        text отрисованную
+      surface
+        text пикселей
+    lexeme hi
+      surface
+        text screenshot
+      surface
+        text rendered
+      surface
+        text स्क्रीनशॉट
+    lexeme zh
+      surface
+        text 截图
+      surface
+        text 屏幕截图
+      surface
+        text 渲染
+      surface
+        text 像素

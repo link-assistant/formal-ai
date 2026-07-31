@@ -118,6 +118,41 @@ pub fn verification_failed_message(
     )
 }
 
+/// The seeded pre- and postcondition text for a primitive, so synthesized steps
+/// carry exactly the same verification contract as recorded ones.
+#[must_use]
+pub fn step_conditions(primitive: ComputerUsePrimitive) -> (String, String) {
+    let parsed = parsed();
+    (
+        render_template(
+            primitive_template(&parsed.preconditions, primitive),
+            &[("permission", &primitive.permission_key())],
+        ),
+        primitive_template(&parsed.postconditions, primitive).to_owned(),
+    )
+}
+
+/// The localized honest response for a named capability gap, falling back to
+/// English when the gap has no surface in that locale.
+#[must_use]
+pub fn capability_gap_response(capability: &str, locale: &str) -> Option<CapabilityGap> {
+    let parsed = parsed();
+    let response = parsed
+        .gap_responses
+        .get(&(capability.to_owned(), locale.to_owned()))
+        .or_else(|| {
+            parsed
+                .gap_responses
+                .get(&(capability.to_owned(), String::from("en")))
+        })?
+        .clone();
+    Some(CapabilityGap {
+        capability: capability.to_owned(),
+        locale: locale.to_owned(),
+        response,
+    })
+}
+
 #[must_use]
 pub fn tool_description(primitive: ComputerUsePrimitive) -> String {
     let lines = crate::seed::TOOLS_LINO.lines().collect::<Vec<_>>();

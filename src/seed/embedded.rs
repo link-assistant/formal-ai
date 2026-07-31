@@ -112,6 +112,8 @@ pub const MEANINGS_TOOL_ACCESS_LINO: &str =
     include_str!("../../data/seed/meanings-tool-access.lino");
 pub const MEANINGS_FEATURE_CAPABILITY_LINO: &str =
     include_str!("../../data/seed/meanings-feature-capability.lino");
+pub const MEANINGS_COMPUTER_USE_LINO: &str =
+    include_str!("../../data/seed/meanings-computer-use.lino");
 pub const MEANINGS_FILE_WRITE_LINO: &str = include_str!("../../data/seed/meanings-file-write.lino");
 pub const MEANINGS_FILE_EDIT_LINO: &str = include_str!("../../data/seed/meanings-file-edit.lino");
 pub const MEANINGS_DECOMPOSITION_LINO: &str =
@@ -327,6 +329,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             MEANINGS_FEATURE_CAPABILITY_LINO,
         ),
         (
+            "data/seed/meanings-computer-use.lino",
+            MEANINGS_COMPUTER_USE_LINO,
+        ),
+        (
             "data/seed/meanings-file-write.lino",
             MEANINGS_FILE_WRITE_LINO,
         ),
@@ -456,6 +462,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_DEFINITION_MERGE_LINO,
     MEANINGS_TOOL_ACCESS_LINO,
     MEANINGS_FEATURE_CAPABILITY_LINO,
+    MEANINGS_COMPUTER_USE_LINO,
     MEANINGS_FILE_WRITE_LINO,
     MEANINGS_FILE_EDIT_LINO,
     MEANINGS_DECOMPOSITION_LINO,
