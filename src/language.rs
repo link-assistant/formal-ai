@@ -357,12 +357,32 @@ fn count_scripts(prompt: &str, rules: &[Rule]) -> ScriptCounts {
 
 /// The language whose markers appear in the prompt, preferring the one whose
 /// script carries the most characters.
-fn marker_language(prompt: &str, rules: &[Rule], counts: &ScriptCounts) -> Option<Language> {
+///
+/// Markers are weaker evidence than a script: they are ordinary tokens that can
+/// appear inside a foreign proper name ("Расскажи о julián andrés quiñones"
+/// carries Spanish markers but is Russian). So a marker rule only votes when no
+/// *rival* script — a registered script other than the rule's own and other than
+/// the fallback script every language may borrow identifiers from — appears in
+/// the prompt; otherwise the script rules below decide.
+fn marker_language(
+    prompt: &str,
+    rules: &[Rule],
+    counts: &ScriptCounts,
+    fallback_script: &str,
+) -> Option<Language> {
     let normalized: String = prompt.to_lowercase();
     let mut best: Option<(usize, Language)> = None;
     for rule in rules.iter().filter(|rule| !rule.markers.is_empty()) {
         let count = counts.of(rule.script);
         if count == 0 {
+            continue;
+        }
+        let contested = rules.iter().any(|other| {
+            other.script != rule.script
+                && other.script != fallback_script
+                && counts.of(other.script) > 0
+        });
+        if contested {
             continue;
         }
         if !rule
@@ -413,7 +433,7 @@ fn detect_with(prompt: &str, rules: &[Rule]) -> Language {
     }
 
     if fallback_count > 0 {
-        if let Some(language) = marker_language(prompt, rules, &counts) {
+        if let Some(language) = marker_language(prompt, rules, &counts, fallback_script) {
             return language;
         }
         if let Some(first) = counts.first {

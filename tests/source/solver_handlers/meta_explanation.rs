@@ -1,7 +1,7 @@
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
-use crate::seed::{self, response_for, Slot};
+use crate::seed::{self, localized_response, Slot};
 use crate::skill_procedure::{extract_compiled_procedure_artifact, CompiledProcedure};
 
 use super::finalize_simple;

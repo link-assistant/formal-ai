@@ -10,7 +10,7 @@ use crate::language::detect as detect_language;
 use crate::proof_engine::{
     attempt_proof_with_config, render_outcome_with_config, ProofOutcome, ProofRenderConfig,
 };
-use crate::seed::{self, response_for, Slot, WordForm};
+use crate::seed::{self, localized_response, Slot, WordForm};
 use crate::solver_handlers::finalize_simple;
 
 /// The literal lead-in (text before the `…` slot) of every prefix-slot form of

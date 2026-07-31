@@ -139,7 +139,7 @@ fn detection_registry_is_seed_data_not_rust_constants() {
     }
     assert_eq!(formal_ai::language::fallback_language().slug(), "en");
     assert_eq!(
-        formal_ai::language::from_slug("es").map(|language| language.slug()),
+        formal_ai::language::from_slug("es").map(formal_ai::Language::slug),
         Some("es")
     );
 }
@@ -164,11 +164,23 @@ fn fifth_language_is_detected_without_any_rust_change() {
 }
 
 #[test]
+fn markers_never_outrank_another_registered_script() {
+    // A Latin proper name carries Spanish markers ("julián andrés quiñones"),
+    // but the surrounding script is the real evidence: the marker rules only
+    // vote when no other registered script is present.
+    use formal_ai::language::detect;
+
+    assert_eq!(detect("Расскажи о julián andrés quiñones?").slug(), "ru");
+    assert_eq!(detect("介绍一下 julián andrés quiñones?").slug(), "zh");
+    assert_eq!(detect("julián andrés quiñones ¿quién es?").slug(), "es");
+}
+
+#[test]
 fn a_language_without_localized_openers_reports_a_gap_not_english() {
     // "¿Qué tal la fotosíntesis submarina?" is Spanish (detected from seed
     // rules alone) and has no memoized answer. Issue #706 requires the honest
     // `language_gap` behavior instead of a silent English fallback.
-    let engine = formal_ai::FormalAiEngine::default();
+    let engine = formal_ai::FormalAiEngine;
     let answer = engine.answer("¿Qué es la fotosíntesis submarina de xyzzy?");
     assert!(
         answer.answer.contains("I detected an unsupported language"),

@@ -11,7 +11,7 @@ use crate::concepts::{lookup_concept_query, ConceptQuery};
 use crate::engine::{stable_id, SymbolicAnswer};
 use crate::event_log::EventLog;
 use crate::language::Language;
-use crate::seed::{self, response_for, ConceptRecord};
+use crate::seed::{self, localized_response, ConceptRecord};
 use crate::solver_handlers::{answer_web_search_query, finalize_simple, WebSearchQueryKind};
 use crate::solver_helpers::humanize_url;
 use crate::unknown_opener::language_aware_unknown_answer;

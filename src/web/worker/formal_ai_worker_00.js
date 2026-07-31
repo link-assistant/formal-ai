@@ -917,17 +917,30 @@ function maxExcluding(counts, script) {
   return max;
 }
 
-function markerLanguage(text, counts) {
+function markerLanguage(text, counts, fallbackScript) {
   const normalized = text.toLowerCase();
   let best = null;
   for (const rule of LANGUAGE_RULES) {
     const markers = Array.isArray(rule.markers) ? rule.markers : [];
     if (markers.length === 0) continue;
-    const count = countOf(counts, scriptOf(rule));
+    const script = scriptOf(rule);
+    const count = countOf(counts, script);
     if (count === 0) continue;
     if (!markers.some((marker) => normalized.includes(String(marker).toLowerCase()))) {
       continue;
     }
+    // Markers are weaker evidence than a script: they can appear inside a
+    // foreign proper name. A marker rule only votes when no rival script — one
+    // other than its own and other than the fallback script every language
+    // borrows identifiers from — is present. Mirrors `marker_language` in
+    // src/language.rs.
+    const contested = LANGUAGE_RULES.some(
+      (other) =>
+        scriptOf(other) !== script &&
+        scriptOf(other) !== fallbackScript &&
+        countOf(counts, scriptOf(other)) > 0,
+    );
+    if (contested) continue;
     if (best === null || count > best.count) best = { count, language: rule.language };
   }
   return best ? best.language : null;
@@ -949,7 +962,7 @@ function detectLanguageFromRules(text) {
   }
 
   if (fallbackCount > 0) {
-    const byMarker = markerLanguage(text, counts);
+    const byMarker = markerLanguage(text, counts, fallbackScript);
     if (byMarker) return byMarker;
     if (first && first !== fallbackScript) {
       let rival = 0;
