@@ -1,0 +1,11 @@
+self_ast_census
+  target src/seed/client_completion.rs
+  language rust
+  fidelity signature
+  byte_len 2297
+  line_count 56
+  content_id source_module_f8ccbc3460b19224
+  symbol_count 2
+  symbols
+    struct ClientCompletionContract 7 23
+    function software_authoring_completion_contract 26 56

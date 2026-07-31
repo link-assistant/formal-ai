@@ -27,6 +27,18 @@ pub(super) fn resolve_integration_command(integration: &ClientIntegration) -> Pa
         .unwrap_or(primary)
 }
 
+pub(super) fn contains_model_arg(args: &[String]) -> bool {
+    args.iter()
+        .any(|arg| matches!(arg.as_str(), "-m" | "--model") || arg.starts_with("--model="))
+}
+
+pub(super) fn ensure_trailing_newline(mut value: String) -> String {
+    if !value.ends_with('\n') {
+        value.push('\n');
+    }
+    value
+}
+
 fn expand_command_path(value: &str) -> String {
     const HOME_PLACEHOLDER: &str = "{home}";
     const LOCAL_APP_DATA_PLACEHOLDER: &str = "{local_app_data}";

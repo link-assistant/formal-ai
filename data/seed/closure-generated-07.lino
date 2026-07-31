@@ -1,4 +1,94 @@
 meanings
+  tool_process_status
+    defined-by tool
+    lexeme en
+      surface
+        text "tool process status"
+  tool_read_local_file
+    defined-by tool
+    lexeme en
+      surface
+        text "tool read local file"
+  tool_result_completed
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result completed"
+  tool_result_empty_generic
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result empty generic"
+  tool_result_empty_list
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result empty list"
+  tool_result_empty_local_path_search
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result empty local path search"
+  tool_result_empty_search
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result empty search"
+  tool_result_failed
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result failed"
+  tool_roleplay
+    defined-by tool
+    lexeme en
+      surface
+        text "tool roleplay"
+  tool_run_agent
+    defined-by tool
+    lexeme en
+      surface
+        text "tool run agent"
+  tool_shell_run
+    defined-by tool
+    lexeme en
+      surface
+        text "tool shell run"
+  tool_summarize_conversation
+    defined-by tool
+    lexeme en
+      surface
+        text "tool summarize conversation"
+  tool_url_navigate
+    defined-by tool
+    lexeme en
+      surface
+        text "tool url navigate"
+  tool_web_search
+    defined-by tool
+    lexeme en
+      surface
+        text "tool web search"
+  tool_wikipedia_lookup
+    defined-by tool
+    lexeme en
+      surface
+        text "tool wikipedia lookup"
+  tool_write_program
+    defined-by tool
+    lexeme en
+      surface
+        text "tool write program"
+  total
+    defined-by word_surface
+    lexeme en
+      surface
+        text "total"
+  touch
+    defined-by concept
+    lexeme en
+      surface
+        text "touch"
   trace_
     defined-by identifier
     lexeme en

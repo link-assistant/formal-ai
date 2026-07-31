@@ -9,7 +9,7 @@ mod dispatch;
 mod permission;
 mod replay;
 mod runner;
-mod workspace;
+pub(crate) mod workspace;
 
 pub use analysis::{
     apply_verified_translation, extract_agent_result, observe_orchestration_session,

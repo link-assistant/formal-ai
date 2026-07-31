@@ -11,6 +11,26 @@ Tool results are retained byte-for-byte in the client conversation, then
 normalized into a localized friendly answer. A follow-up can therefore request
 a particular line, URL, or the complete result without losing the transcript.
 
+## Software-authoring completion records
+
+For one-shot software-authoring requests, `formal-ai with` emits each child
+stdout value as one compact JSON line. Pretty-printed, concatenated, and
+plain-text child output is normalized without putting multi-line values on
+stdout. The final line is owned by Formal AI:
+
+```json
+{"attempts":1,"completion_state":"complete","observable_postcondition":{"expected":true,"kind":"workspace_effect","observed":true,"paths":["Hello.scala"]},"rawMetadata":{"formalai":{"actual_endpoint":null,"endpoint":"http://127.0.0.1:8080/api/openai/v1","input_tokens":15186,"model":"formal-ai","output_tokens":1553}},"reason":"workspace_effect_observed","type":"formal_ai_completion"}
+```
+
+`complete` requires a non-scratch workspace effect. `incomplete` means the
+client exited successfully but still produced no effect after the bounded
+corrective attempt. `failed` covers client failure and endpoint mismatch.
+`attempts` makes recovery visible to callers. Token fields are populated from
+the supported clients' direct, nested, or JSON-string usage envelopes; the
+configured model and protocol endpoint are always present. If client output
+names a conflicting public vendor endpoint, `actual_endpoint` records it and
+the wrapper exits nonzero.
+
 After `formal-ai with` exits, it reports only the session artifact created or
 changed by that run and prints a resume command where supported. Temporary
 homes containing a transcript are preserved. Set `FORMAL_AI_PROXY_LOG` to an
