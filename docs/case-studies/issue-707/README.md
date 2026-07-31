@@ -101,7 +101,7 @@ every CI run, so it cannot drift silently.
 Synthesis (`src/computer_use/synthesis.rs`) then answers unseen requests by
 chaining the learned schemas in the order the speaker named the operations,
 binding each field from the source that owns it. Getting that binding wrong is
-precisely how memorisation leaks back in, and three separate leaks were found
+precisely how memorisation leaks back in, and four separate leaks were found
 and closed while building the held-out slice:
 
 | Leak | Symptom | Fix |
@@ -109,6 +109,7 @@ and closed while building the held-out slice:
 | Operation constants carried resource state | `unique_values` learned `column = "category"` from the only inventory example and injected it into a customers plan | `selector`, `pointer`, `column`, and `equals` are resource-scoped: they come only from the resource binding, and a missing binding parameter yields no plan |
 | Fields leaked across primitives | `archive.pack` carried a CSV `column`; `shell.run:count_lines` carried a filter it never applied | Two independent gates — the primitive's own advertised input schema must declare the field, *and* the learned operation schema must use it |
 | Verification guessed a path it could not know | unpack verified `restored/out`, a path derived from the input rather than observed | An unpack observes its destination directory; entry paths inside an archive are not known before it is opened |
+| Payload was read as instruction | a request to *write* a Links Notation record planned a computer-use run from an incidental `order "90"` and a quoted `list_files_arg` inside the content being written | Recognition runs over the instruction surface only: an indented line continues a structured block and a double-quoted span is a literal the speaker is quoting, so neither can name an operation. Both signals are structural, so no language is privileged |
 
 The held-out ratchet
 ([`data/benchmarks/computer-use-generalization.lino`](../../../data/benchmarks/computer-use-generalization.lino))
@@ -188,7 +189,7 @@ node --test desktop/scripts/tool-router.test.mjs
   real-Agent record/replay harness were implemented and verified.
 - 2026-07-31: review asked for the ambitious reading of the issue — generalization
   rather than a ten-answer table. The recorded tasks were demoted to evidence,
-  induction and synthesis were added, three memorisation leaks were found and
+  induction and synthesis were added, four memorisation leaks were found and
   closed, and a twelve-case held-out ratchet was added in four languages and
   through the external Agent CLI.
 

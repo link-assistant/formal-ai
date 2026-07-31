@@ -18,4 +18,6 @@ bump: minor
   only from the learned resource binding, operation constants are gated by both
   the primitive's advertised schema and the learned operation schema, and a
   request the corpus never evidenced yields an honest refusal instead of a
-  plausible wrong plan.
+  plausible wrong plan. Recognition also runs over the request's instruction
+  surface rather than content it merely transports, so words inside an indented
+  structured block or a quoted literal no longer plan a run of their own.
