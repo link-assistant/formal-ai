@@ -304,6 +304,11 @@ meanings
     lexeme en
       surface
         text "append text"
+  archive
+    defined-by word_surface
+    lexeme en
+      surface
+        text "archive"
   archive_round_trip
     defined-by task
     lexeme en
@@ -464,6 +469,11 @@ meanings
     lexeme en
       surface
         text "budget search solution"
+  bundle
+    defined-by word_surface
+    lexeme en
+      surface
+        text "bundle"
   bundle_export_filename
     defined-by field
     lexeme en
@@ -899,6 +909,11 @@ meanings
     lexeme en
       surface
         text "curl"
+  customers
+    defined-by word_surface
+    lexeme en
+      surface
+        text "customers"
   data-format
     defined-by category
     lexeme en
@@ -1024,6 +1039,11 @@ meanings
     lexeme en
       surface
         text "document originality check sample present"
+  documents
+    defined-by word_surface
+    lexeme en
+      surface
+        text "documents"
   donald_trump
     defined-by concept
     lexeme en
@@ -1034,6 +1054,11 @@ meanings
     lexeme en
       surface
         text "dotnet"
+  download
+    defined-by word_surface
+    lexeme en
+      surface
+        text "download"
   draft_comparison_explanation
     defined-by intent
     lexeme en
@@ -1074,6 +1099,11 @@ meanings
     lexeme en
       surface
         text "enum"
+  enumerate
+    defined-by word_surface
+    lexeme en
+      surface
+        text "enumerate"
   enumerate_possessive
     defined-by coverage_group
     lexeme en
@@ -1354,43 +1384,13 @@ meanings
     lexeme en
       surface
         text "filesystem"
+  filtered
+    defined-by word_surface
+    lexeme en
+      surface
+        text "filtered"
   first
     defined-by word_surface
     lexeme en
       surface
         text "first"
-  first_open_order
-    defined-by task
-    lexeme en
-      surface
-        text "first open order"
-  fizzbuzz
-    defined-by task
-    lexeme en
-      surface
-        text "fizzbuzz"
-  folder
-    defined-by word_surface
-    lexeme en
-      surface
-        text "folder"
-  folders
-    defined-by word_surface
-    lexeme en
-      surface
-        text "folders"
-  fontawesome
-    defined-by concept
-    lexeme en
-      surface
-        text "fontawesome"
-  for
-    defined-by word_surface
-    lexeme en
-      surface
-        text "for"
-  formal-ai
-    defined-by name
-    lexeme en
-      surface
-        text "formal ai"

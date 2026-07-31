@@ -1,5 +1,9 @@
 use std::error::Error;
 
+/// Each flag is an independent operator decision — grant, confirm, replay, or
+/// inspect what was learned — so they stay separate switches rather than one
+/// mode enum that would make illegal combinations expressible.
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Debug, clap::Args)]
 pub struct ComputerUseArgs {
     #[arg(long, default_value_t = String::new())]

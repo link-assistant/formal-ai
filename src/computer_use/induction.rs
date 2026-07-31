@@ -38,6 +38,13 @@ use super::lexicon::{normalize, operation_cues, resource_cue};
 use super::seed::{benchmark_tasks, BenchmarkTask};
 use super::{ComputerPlanStep, ComputerUsePrimitive};
 
+/// Head of the Links Notation record [`LearnedSchemas::links_notation`] emits.
+const RECORD_TYPE: &str = "computer_use_learned_schemas";
+
+/// The corpus the schemas are induced from, cited in that record so a reader can
+/// re-derive them from the same evidence.
+const CORPUS_PATH: &str = "data/seed/computer-use-tasks.lino";
+
 /// The primitive-level identity of a step, ignoring its concrete paths: the
 /// primitive plus, for `shell.run`, its structured operation. Two steps with
 /// the same signature do the same *kind* of work.
@@ -427,8 +434,8 @@ impl LearnedSchemas {
     #[must_use]
     pub fn links_notation(&self) -> String {
         let mut out = String::new();
-        out.push_str("computer_use_learned_schemas\n");
-        out.push_str("  source data/seed/computer-use-tasks.lino\n");
+        let _ = writeln!(out, "{RECORD_TYPE}");
+        let _ = writeln!(out, "  source {CORPUS_PATH}");
         for schema in self.operations.values() {
             let _ = writeln!(out, "  operation {}", schema.operation);
             let _ = writeln!(out, "    step {}", schema.step.signature.label());

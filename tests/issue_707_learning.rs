@@ -10,7 +10,10 @@
 use std::collections::BTreeSet;
 use std::fs;
 
-use formal_ai::computer_use::{learned, synthesize, ComputerUsePrimitive};
+use formal_ai::computer_use::{
+    capability_gap_cue, learned, normalize_request, operation_cues, resource_cue, synthesize,
+    ComputerUsePrimitive,
+};
 
 const SNAPSHOT: &str = "docs/case-studies/issue-707/learned-schemas.lino";
 
@@ -120,18 +123,20 @@ fn no_synthesized_plan_inherits_a_path_from_another_resource() {
             .collect::<BTreeSet<_>>();
         for step in &synthesis.plan.steps {
             for (field, value) in step.arguments.as_object().expect("object") {
-                let candidates = match value.as_str() {
-                    Some(text) => vec![text.to_owned()],
-                    None => value
-                        .as_array()
-                        .map(|entries| {
-                            entries
-                                .iter()
-                                .filter_map(|entry| entry.as_str().map(ToOwned::to_owned))
-                                .collect()
-                        })
-                        .unwrap_or_default(),
-                };
+                let candidates = value.as_str().map_or_else(
+                    || {
+                        value
+                            .as_array()
+                            .map(|entries| {
+                                entries
+                                    .iter()
+                                    .filter_map(|entry| entry.as_str().map(ToOwned::to_owned))
+                                    .collect()
+                            })
+                            .unwrap_or_default()
+                    },
+                    |text| vec![text.to_owned()],
+                );
                 for candidate in candidates {
                     if !candidate.contains('/') || candidate.starts_with("fixture://") {
                         continue;
@@ -146,5 +151,46 @@ fn no_synthesized_plan_inherits_a_path_from_another_resource() {
                 }
             }
         }
+    }
+}
+
+#[test]
+fn recognises_operations_in_prompt_order() {
+    let normalized = normalize_request("Pack and unpack a document, then verify it");
+    let slugs = operation_cues(&normalized)
+        .into_iter()
+        .map(|cue| cue.slug)
+        .collect::<Vec<_>>();
+    assert_eq!(
+        slugs,
+        vec![
+            "computer_use_pack_archive".to_owned(),
+            "computer_use_unpack_archive".to_owned()
+        ]
+    );
+}
+
+#[test]
+fn prefers_the_most_specific_resource() {
+    let normalized = normalize_request("Move the inbox note into the processed folder");
+    assert_eq!(
+        resource_cue(&normalized).map(|cue| cue.slug),
+        Some("computer_use_resource_inbox_note".to_owned())
+    );
+}
+
+#[test]
+fn recognises_a_capability_gap_in_every_language() {
+    for prompt in [
+        "Please take a screenshot of the rendered dashboard",
+        "Сделай снимок отрисованной страницы отчёта",
+        "इस page का screenshot लेकर भेजो",
+        "请截图渲染后的页面并发送",
+    ] {
+        assert_eq!(
+            capability_gap_cue(&normalize_request(prompt)),
+            Some("gui_rendering".to_owned()),
+            "prompt: {prompt}"
+        );
     }
 }

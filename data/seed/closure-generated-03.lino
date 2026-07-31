@@ -1,4 +1,84 @@
 meanings
+  pattern_assistant_free_time_phrase_what_do_you_do_when_you_are_not_working_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase what do you do when you are not working en"
+  pattern_behavior_rules_list_apne_niyam_ginao_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list apne niyam ginao hi"
+  pattern_behavior_rules_list_apne_niyamon_ki_suchi_dikhao_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list apne niyamon ki suchi dikhao hi"
+  pattern_behavior_rules_list_liechu_nide_guize_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list liechu nide guize zh"
+  pattern_behavior_rules_list_liechu_xingwei_guize_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list liechu xingwei guize zh"
+  pattern_behavior_rules_list_list_your_rules_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list list your rules en"
+  pattern_behavior_rules_list_niyam_dikhao_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list niyam dikhao hi"
+  pattern_behavior_rules_list_perechisli_svoi_pravila_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list perechisli svoi pravila ru"
+  pattern_behavior_rules_list_pokazhi_pravila_povedeniya_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list pokazhi pravila povedeniya ru"
+  pattern_behavior_rules_list_pokazhi_pravila_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list pokazhi pravila ru"
+  pattern_behavior_rules_list_pokazhi_spisok_svoih_pravil_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list pokazhi spisok svoih pravil ru"
+  pattern_behavior_rules_list_show_behavior_rules_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list show behavior rules en"
+  pattern_behavior_rules_list_show_list_your_rules_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list show list your rules en"
+  pattern_behavior_rules_list_show_rules_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list show rules en"
+  pattern_behavior_rules_list_vyavahar_niyam_suchibaddh_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list vyavahar niyam suchibaddh hi"
+  pattern_behavior_rules_list_xianshi_guize_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list xianshi guize zh"
   pattern_behavior_rules_list_xianshi_nide_guize_liebiao_zh
     defined-by prompt_pattern
     lexeme en
@@ -919,6 +999,16 @@ meanings
     lexeme en
       surface
         text "pip"
+  pixel
+    defined-by word_surface
+    lexeme en
+      surface
+        text "pixel"
+  pixels
+    defined-by word_surface
+    lexeme en
+      surface
+        text "pixels"
   plagiaris
     defined-by word_surface
     lexeme en
@@ -944,6 +1034,11 @@ meanings
     lexeme en
       surface
         text "possessive list"
+  post
+    defined-by word_surface
+    lexeme en
+      surface
+        text "post"
   powershell
     defined-by token
     lexeme en
@@ -969,6 +1064,11 @@ meanings
     lexeme en
       surface
         text "problem"
+  process
+    defined-by word_surface
+    lexeme en
+      surface
+        text "process"
   process_report
     defined-by task
     lexeme en
@@ -1079,6 +1179,11 @@ meanings
     lexeme en
       surface
         text "relative meta logic"
+  relocate
+    defined-by word_surface
+    lexeme en
+      surface
+        text "relocate"
   remix
     defined-by concept
     lexeme en
@@ -1099,6 +1204,16 @@ meanings
     lexeme en
       surface
         text "remove text"
+  render
+    defined-by word_surface
+    lexeme en
+      surface
+        text "render"
+  rendered
+    defined-by word_surface
+    lexeme en
+      surface
+        text "rendered"
   repo
     defined-by word_surface
     lexeme en
@@ -1279,118 +1394,3 @@ meanings
     lexeme en
       surface
         text "response agent suggestion zh"
-  response_agentic_action_ask_user_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action ask user en"
-  response_agentic_action_ask_user_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action ask user hi"
-  response_agentic_action_ask_user_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action ask user ru"
-  response_agentic_action_ask_user_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action ask user zh"
-  response_agentic_action_before_tool_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action before tool en"
-  response_agentic_action_before_tool_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action before tool hi"
-  response_agentic_action_before_tool_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action before tool ru"
-  response_agentic_action_before_tool_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action before tool zh"
-  response_agentic_action_edit_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action edit en"
-  response_agentic_action_edit_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action edit hi"
-  response_agentic_action_edit_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action edit ru"
-  response_agentic_action_edit_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action edit zh"
-  response_agentic_action_find_current_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action find current en"
-  response_agentic_action_find_current_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action find current hi"
-  response_agentic_action_find_current_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action find current ru"
-  response_agentic_action_find_current_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action find current zh"
-  response_agentic_action_find_desktop_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action find desktop en"
-  response_agentic_action_find_desktop_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action find desktop hi"
-  response_agentic_action_find_desktop_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action find desktop ru"
-  response_agentic_action_find_desktop_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action find desktop zh"
-  response_agentic_action_find_home_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action find home en"
-  response_agentic_action_find_home_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action find home hi"
-  response_agentic_action_find_home_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action find home ru"

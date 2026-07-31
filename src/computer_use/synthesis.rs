@@ -25,7 +25,9 @@ use std::collections::{BTreeMap, BTreeSet};
 use serde_json::{json, Map, Value};
 
 use super::induction::{learned, LearnedSchemas, FETCH_OPERATION};
-use super::lexicon::{capability_gap_cue, normalize, operation_cues, resource_cue};
+use super::lexicon::{
+    capability_gap_cue, instruction_surface, normalize, operation_cues, resource_cue,
+};
 use super::seed::{capability_gap_response, step_conditions, CapabilityGap};
 use super::{ComputerPlanStep, ComputerUsePlan, ComputerUsePrimitive};
 
@@ -72,7 +74,7 @@ struct Artifact {
 #[must_use]
 pub fn capability_gap_for_request(prompt: &str) -> Option<CapabilityGap> {
     let locale = crate::language::detect(prompt).slug().to_owned();
-    let capability = capability_gap_cue(&normalize(prompt))?;
+    let capability = capability_gap_cue(&normalize(&instruction_surface(prompt)))?;
     capability_gap_response(&capability, &locale)
 }
 
@@ -87,7 +89,7 @@ pub fn synthesize(prompt: &str) -> Option<Synthesis> {
 /// synthetic corpus.
 #[must_use]
 pub fn synthesize_with(prompt: &str, schemas: &LearnedSchemas) -> Option<Synthesis> {
-    let normalized = normalize(prompt);
+    let normalized = normalize(&instruction_surface(prompt));
     if capability_gap_cue(&normalized).is_some() {
         return None;
     }
@@ -119,7 +121,7 @@ pub fn synthesize_with(prompt: &str, schemas: &LearnedSchemas) -> Option<Synthes
         }
         let schema = schemas.operations.get(operation)?;
         let (step, produced) = realise(
-            &schema.step.signature.primitive,
+            schema.step.signature.primitive,
             schema.step.signature.operation.as_deref(),
             &schema.step.constants,
             &schema.step.varying,
@@ -165,7 +167,7 @@ fn last_artifact(steps: &[ComputerPlanStep]) -> Option<Artifact> {
 /// Build one operation step, binding its path fields from the data flow and
 /// inheriting the learned non-path constants.
 fn realise(
-    primitive: &ComputerUsePrimitive,
+    primitive: ComputerUsePrimitive,
     operation: Option<&str>,
     constants: &BTreeMap<String, Value>,
     varying: &BTreeSet<String>,
@@ -178,7 +180,7 @@ fn realise(
     // the learned operation schema must actually use it. `archive.pack` fails
     // the first (an archive has no CSV column); `shell.run:count_lines` fails
     // the second (counting lines never filtered by one).
-    let accepted = accepted_fields(*primitive);
+    let accepted = accepted_fields(primitive);
     let uses = |key: &str| {
         accepted.iter().any(|field| field == key)
             && (constants.contains_key(key) || varying.contains(key))
@@ -192,10 +194,7 @@ fn realise(
     // evidenced it for this resource, there is no honest plan to give.
     for key in RESOURCE_FIELDS {
         if uses(key) {
-            let Some(value) = parameters.get(key) else {
-                return None;
-            };
-            arguments.insert(key.to_owned(), value.clone());
+            arguments.insert(key.to_owned(), parameters.get(key)?.clone());
         }
     }
     for (key, value) in constants {
@@ -219,7 +218,7 @@ fn realise(
                 ("source", "save_as")
             };
             arguments.insert(field.0.to_owned(), json!(input.path));
-            arguments.insert(field.1.to_owned(), json!(output.clone()));
+            arguments.insert(field.1.to_owned(), json!(&output));
             Artifact {
                 path: output,
                 directory: false,
@@ -227,11 +226,11 @@ fn realise(
         }
         ComputerUsePrimitive::FsList => {
             let directory = parent_of(&input.path);
-            arguments.insert("path".to_owned(), json!(directory.clone()));
+            arguments.insert("path".to_owned(), json!(&directory));
             // Listing observes; the data flow continues from its input.
             arguments.remove("confirmed");
             return Some((
-                step(*primitive, Value::Object(arguments)),
+                step(primitive, Value::Object(arguments)),
                 Artifact {
                     path: input.path.clone(),
                     directory: false,
@@ -241,7 +240,7 @@ fn realise(
         ComputerUsePrimitive::ArchivePack => {
             let archive = format!("out/{stem}.fai");
             arguments.insert("paths".to_owned(), json!([input.path]));
-            arguments.insert("archive".to_owned(), json!(archive.clone()));
+            arguments.insert("archive".to_owned(), json!(&archive));
             Artifact {
                 path: archive,
                 directory: false,
@@ -261,7 +260,7 @@ fn realise(
         ComputerUsePrimitive::FsMove => {
             let destination = format!("processed/{}", basename_of(&input.path));
             arguments.insert("from".to_owned(), json!(input.path));
-            arguments.insert("to".to_owned(), json!(destination.clone()));
+            arguments.insert("to".to_owned(), json!(&destination));
             Artifact {
                 path: destination,
                 directory: false,
@@ -269,7 +268,7 @@ fn realise(
         }
         ComputerUsePrimitive::ProcessStatus => {
             let output = format!("reports/process-{stem}.json");
-            arguments.insert("save_as".to_owned(), json!(output.clone()));
+            arguments.insert("save_as".to_owned(), json!(&output));
             Artifact {
                 path: output,
                 directory: false,
@@ -277,7 +276,7 @@ fn realise(
         }
         ComputerUsePrimitive::HttpPost => {
             let output = format!("reports/submission-{stem}.json");
-            arguments.insert("save_as".to_owned(), json!(output.clone()));
+            arguments.insert("save_as".to_owned(), json!(&output));
             Artifact {
                 path: output,
                 directory: false,
@@ -287,7 +286,7 @@ fn realise(
         | ComputerUsePrimitive::FsRead
         | ComputerUsePrimitive::FsWrite => return None,
     };
-    Some((step(*primitive, Value::Object(arguments)), produced))
+    Some((step(primitive, Value::Object(arguments)), produced))
 }
 
 /// The argument names a primitive advertises in its own MCP input schema.

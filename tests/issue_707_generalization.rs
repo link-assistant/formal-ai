@@ -41,7 +41,7 @@ fn suite() -> Vec<Case> {
             continue;
         };
         if let Some(resource) = trimmed.strip_prefix("resource ") {
-            case.resource = resource.to_owned();
+            resource.clone_into(&mut case.resource);
         } else if let Some(operation) = trimmed.strip_prefix("operation ") {
             case.operations.push(operation.to_owned());
         } else if let Some(rest) = trimmed.strip_prefix("prompt ") {
@@ -186,4 +186,24 @@ fn out_of_boundary_requests_are_refused_honestly_in_all_four_languages() {
         assert_eq!(gap.locale, locale);
         assert!(gap.response.contains("capability_gap"), "[{locale}]");
     }
+}
+
+/// A request that *transports* content must not be planned from words inside
+/// that content. `order "90"` in a Links Notation payload is data being
+/// written, not a request about the orders resource, and `list_files_arg`
+/// inside a quoted literal names nothing the speaker asked to list.
+#[test]
+fn literal_payload_inside_a_request_is_not_read_as_a_computer_use_plan() {
+    let task = "Create file data/seed/learned-program-rules.lino containing\n\
+                substitution_rules\n  id \"learned_program_plan_rules\"\n  \
+                rule \"learned_reverse\"\n    order \"90\"\n    \
+                replace \"request:task -> list_files_arg\"\n";
+    assert!(
+        formal_ai::computer_use::plan_request(task).is_none(),
+        "payload tokens must not synthesize a plan"
+    );
+    assert!(
+        formal_ai::computer_use::capability_gap_for_request(task).is_none(),
+        "a file-authoring request is not a computer-use capability gap"
+    );
 }

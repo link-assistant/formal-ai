@@ -48,12 +48,48 @@ pub fn normalize(prompt: &str) -> String {
     normalized.split_whitespace().collect::<Vec<_>>().join(" ")
 }
 
+/// The part of `prompt` that is the speaker's *instruction*, with embedded
+/// literal payload removed.
+///
+/// A request may carry content it wants written somewhere — a Links Notation
+/// record, a snippet, a quoted string. Words inside that payload are data the
+/// speaker is transporting, not operations they are asking for, and reading
+/// them as cues is how a planner hallucinates a plan out of an incidental
+/// `order "90"` or `list_files_arg`. Two structural signals separate the two,
+/// neither of them language-specific:
+///
+///   * an indented line continues a structured block, so it is payload; and
+///   * a double-quoted span is a literal the speaker is quoting, not naming.
+///
+/// Recognition therefore runs over the remainder. A request written as ordinary
+/// prose — one line, unquoted, in any of the four languages — is unaffected.
+#[must_use]
+pub fn instruction_surface(prompt: &str) -> String {
+    let mut instruction = String::with_capacity(prompt.len());
+    for line in prompt.lines() {
+        if line.starts_with(' ') || line.starts_with('\t') {
+            continue;
+        }
+        let mut quoted = false;
+        for character in line.chars() {
+            if character == '"' {
+                quoted = !quoted;
+                instruction.push(' ');
+            } else if !quoted {
+                instruction.push(character);
+            }
+        }
+        instruction.push('\n');
+    }
+    instruction
+}
+
 /// Is `character` a combining mark that belongs to the word it follows?
 ///
 /// Covers the Unicode combining blocks and the Brahmic dependent-sign ranges of
 /// the scripts the seed lexicon uses; marks are classified `Mn`/`Mc` and are
 /// therefore invisible to [`char::is_alphanumeric`].
-fn is_combining_mark(character: char) -> bool {
+const fn is_combining_mark(character: char) -> bool {
     matches!(character as u32,
         0x0300..=0x036F      // combining diacritical marks
         | 0x0483..=0x0489    // Cyrillic combining marks
@@ -152,50 +188,4 @@ fn surface_position(normalized: &str, surface: &str) -> Option<usize> {
         }
     }
     None
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn recognises_operations_in_prompt_order() {
-        let normalized = normalize("Pack and unpack a document, then verify it");
-        let slugs = operation_cues(&normalized)
-            .into_iter()
-            .map(|cue| cue.slug)
-            .collect::<Vec<_>>();
-        assert_eq!(
-            slugs,
-            vec![
-                "computer_use_pack_archive".to_owned(),
-                "computer_use_unpack_archive".to_owned()
-            ]
-        );
-    }
-
-    #[test]
-    fn prefers_the_most_specific_resource() {
-        let normalized = normalize("Move the inbox note into the processed folder");
-        assert_eq!(
-            resource_cue(&normalized).map(|cue| cue.slug),
-            Some("computer_use_resource_inbox_note".to_owned())
-        );
-    }
-
-    #[test]
-    fn recognises_a_capability_gap_in_every_language() {
-        for prompt in [
-            "Please take a screenshot of the rendered dashboard",
-            "Сделай снимок отрисованной страницы отчёта",
-            "इस page का screenshot लेकर भेजो",
-            "请截图渲染后的页面并发送",
-        ] {
-            assert_eq!(
-                capability_gap_cue(&normalize(prompt)),
-                Some("gui_rendering".to_owned()),
-                "prompt: {prompt}"
-            );
-        }
-    }
 }

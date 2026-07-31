@@ -2,10 +2,10 @@ self_ast_census
   target src/computer_use/seed.rs
   language rust
   fidelity signature
-  byte_len 9719
-  line_count 304
-  content_id source_module_6822410e3e674bc8
-  symbol_count 21
+  byte_len 10905
+  line_count 339
+  content_id source_module_fffdd954f003cba2
+  symbol_count 23
   symbols
     const TASKS_LINO 8 8
     struct BenchmarkTask 11 15
@@ -17,14 +17,16 @@ self_ast_census
     function completion_message 79 85
     function missing_primitive_message 88 102
     function verification_failed_message 105 119
-    function tool_description 122 132
-    function parsed 134 137
-    static PARSED 135 135
-    function parse_seed 139 250
-    function localized_template 252 257
-    function parse_localized 259 263
-    function parse_primitive_template 265 270
-    function parse_step_arguments 272 279
-    function primitive_template 281 288
-    function render_template 290 296
-    function normalize 298 304
+    function step_conditions 124 133
+    function capability_gap_response 138 154
+    function tool_description 157 167
+    function parsed 169 172
+    static PARSED 170 170
+    function parse_seed 174 285
+    function localized_template 287 292
+    function parse_localized 294 298
+    function parse_primitive_template 300 305
+    function parse_step_arguments 307 314
+    function primitive_template 316 323
+    function render_template 325 331
+    function normalize 333 339

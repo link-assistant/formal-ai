@@ -1,4 +1,44 @@
 meanings
+  first_open_order
+    defined-by task
+    lexeme en
+      surface
+        text "first open order"
+  fizzbuzz
+    defined-by task
+    lexeme en
+      surface
+        text "fizzbuzz"
+  folder
+    defined-by word_surface
+    lexeme en
+      surface
+        text "folder"
+  folders
+    defined-by word_surface
+    lexeme en
+      surface
+        text "folders"
+  fontawesome
+    defined-by concept
+    lexeme en
+      surface
+        text "fontawesome"
+  for
+    defined-by word_surface
+    lexeme en
+      surface
+        text "for"
+  form
+    defined-by word_surface
+    lexeme en
+      surface
+        text "form"
+  formal-ai
+    defined-by name
+    lexeme en
+      surface
+        text "formal ai"
   formal_ai_bundle
     defined-by value
     lexeme en
@@ -114,6 +154,11 @@ meanings
     lexeme en
       surface
         text "grep"
+  gui
+    defined-by word_surface
+    lexeme en
+      surface
+        text "gui"
   gui_rendering
     defined-by concept
     lexeme en
@@ -129,6 +174,11 @@ meanings
     lexeme en
       surface
         text "head"
+  heading
+    defined-by word_surface
+    lexeme en
+      surface
+        text "heading"
   hive-mind
     defined-by name
     lexeme en
@@ -174,6 +224,11 @@ meanings
     lexeme en
       surface
         text "inappropriate content"
+  inbox
+    defined-by word_surface
+    lexeme en
+      surface
+        text "inbox"
   indent
     defined-by concept
     lexeme en
@@ -314,6 +369,11 @@ meanings
     lexeme en
       surface
         text "interface"
+  inventory
+    defined-by word_surface
+    lexeme en
+      surface
+        text "inventory"
   inventory_bundle
     defined-by task
     lexeme en
@@ -1059,6 +1119,11 @@ meanings
     lexeme en
       surface
         text "mode"
+  move
+    defined-by word_surface
+    lexeme en
+      surface
+        text "move"
   move_note
     defined-by task
     lexeme en
@@ -1109,6 +1174,11 @@ meanings
     lexeme en
       surface
         text "normalize whitespace"
+  notes
+    defined-by word_surface
+    lexeme en
+      surface
+        text "notes"
   npm
     defined-by token
     lexeme en
@@ -1174,6 +1244,11 @@ meanings
     lexeme en
       surface
         text "orchestration cross agent denial"
+  orders
+    defined-by word_surface
+    lexeme en
+      surface
+        text "orders"
   original_journalism
     defined-by kind
     lexeme en
@@ -1199,6 +1274,11 @@ meanings
     lexeme en
       surface
         text "owlbear"
+  pack
+    defined-by word_surface
+    lexeme en
+      surface
+        text "pack"
   package-management
     defined-by category
     lexeme en
@@ -1314,83 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern assistant free time phrase what do you do in your free time en"
-  pattern_assistant_free_time_phrase_what_do_you_do_when_you_are_not_working_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase what do you do when you are not working en"
-  pattern_behavior_rules_list_apne_niyam_ginao_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list apne niyam ginao hi"
-  pattern_behavior_rules_list_apne_niyamon_ki_suchi_dikhao_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list apne niyamon ki suchi dikhao hi"
-  pattern_behavior_rules_list_liechu_nide_guize_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list liechu nide guize zh"
-  pattern_behavior_rules_list_liechu_xingwei_guize_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list liechu xingwei guize zh"
-  pattern_behavior_rules_list_list_your_rules_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list list your rules en"
-  pattern_behavior_rules_list_niyam_dikhao_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list niyam dikhao hi"
-  pattern_behavior_rules_list_perechisli_svoi_pravila_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list perechisli svoi pravila ru"
-  pattern_behavior_rules_list_pokazhi_pravila_povedeniya_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list pokazhi pravila povedeniya ru"
-  pattern_behavior_rules_list_pokazhi_pravila_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list pokazhi pravila ru"
-  pattern_behavior_rules_list_pokazhi_spisok_svoih_pravil_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list pokazhi spisok svoih pravil ru"
-  pattern_behavior_rules_list_show_behavior_rules_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list show behavior rules en"
-  pattern_behavior_rules_list_show_list_your_rules_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list show list your rules en"
-  pattern_behavior_rules_list_show_rules_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list show rules en"
-  pattern_behavior_rules_list_vyavahar_niyam_suchibaddh_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list vyavahar niyam suchibaddh hi"
-  pattern_behavior_rules_list_xianshi_guize_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list xianshi guize zh"

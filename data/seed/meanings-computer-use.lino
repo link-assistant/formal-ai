@@ -330,7 +330,7 @@ meanings
       surface
         text 进程
   computer_use_resource_customers
-    defined-by object
+    defined-by entity
     role computer_use_resource_cue
     lexeme en
       surface
@@ -359,7 +359,7 @@ meanings
       surface
         text 客户
   computer_use_resource_notes
-    defined-by object
+    defined-by entity
     role computer_use_resource_cue
     lexeme en
       surface
@@ -384,7 +384,7 @@ meanings
       surface
         text 笔记
   computer_use_resource_documents
-    defined-by object
+    defined-by entity
     role computer_use_resource_cue
     lexeme en
       surface
@@ -411,7 +411,7 @@ meanings
       surface
         text 文档
   computer_use_resource_inbox_note
-    defined-by object
+    defined-by entity
     role computer_use_resource_cue
     lexeme en
       surface
@@ -432,7 +432,7 @@ meanings
       surface
         text 收件箱
   computer_use_resource_orders
-    defined-by object
+    defined-by entity
     role computer_use_resource_cue
     lexeme en
       surface
@@ -459,7 +459,7 @@ meanings
       surface
         text 订单
   computer_use_resource_status_page
-    defined-by object
+    defined-by entity
     role computer_use_resource_cue
     lexeme en
       surface
@@ -480,7 +480,7 @@ meanings
       surface
         text 状态页面
   computer_use_resource_form
-    defined-by object
+    defined-by entity
     role computer_use_resource_cue
     lexeme en
       surface
@@ -505,7 +505,7 @@ meanings
       surface
         text 表单
   computer_use_resource_inventory
-    defined-by object
+    defined-by entity
     role computer_use_resource_cue
     lexeme en
       surface
@@ -528,7 +528,7 @@ meanings
       surface
         text 库存
   computer_use_gap_gui_rendering
-    defined-by object
+    defined-by concept
     role computer_use_capability_gap_cue
     lexeme en
       surface

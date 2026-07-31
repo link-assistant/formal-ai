@@ -101,6 +101,12 @@ roles
     kind predicate
   comprehension_failure_marker
     kind predicate
+  computer_use_capability_gap_cue
+    kind predicate
+  computer_use_operation_cue
+    kind predicate
+  computer_use_resource_cue
+    kind predicate
   conversation_recall_other_query
     kind meaning
   conversation_recall_previous_message

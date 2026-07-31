@@ -272,8 +272,9 @@ pub fn plan_request(prompt: &str) -> Option<ComputerUsePlan> {
     plan_for_prompt(prompt).or_else(|| synthesize(prompt).map(|synthesis| synthesis.plan))
 }
 
-/// The honest, localized `capability_gap` answer for a request we cannot plan —
-/// recognised from the seeded capability-gap meanings, so any phrasing that
+/// The honest, localized `capability_gap` answer for a request we cannot plan.
+///
+/// Recognised from the seeded capability-gap meanings, so any phrasing that
 /// evidences the gap is answered, not only the four recorded cues.
 #[must_use]
 pub fn capability_gap_for_request(prompt: &str) -> Option<CapabilityGap> {
