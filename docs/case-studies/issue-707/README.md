@@ -78,6 +78,54 @@ Each prompt exists in English, Russian, Hindi, and Chinese. The same seed parser
 drives native orchestration and the agentic planner, so clients receive the same
 primitive order and pre/postconditions.
 
+## From ten recalled tasks to induced schemas
+
+A ten-task ratchet proves the loop works; it does not prove the system *plans*.
+Review of this pull request raised exactly that: an answer table that maps ten
+prompts to ten plans is memorisation wearing a planner's clothes. So the ten
+tasks were demoted from answers to evidence, and the plans are now induced from
+them.
+
+Induction (`src/computer_use/induction.rs`) partitions every recorded task into
+a materialisation prefix, an operation body, and a verification suffix; the
+partition follows from primitive kinds, never from the task id. It then
+associates each seed operation cue with the step signature its examples share —
+fields all examples agree on become constants, fields they differ on become
+slots — and binds each resource to the steps that materialise it plus the
+parameters that describe it. Two honesty rules govern the result: an operation
+whose examples disagree on a signature is **rejected by name**, and a recorded
+step no cue explains is reported as **unexplained residue**. The induced result
+is committed at [`learned-schemas.lino`](learned-schemas.lino) and re-derived on
+every CI run, so it cannot drift silently.
+
+Synthesis (`src/computer_use/synthesis.rs`) then answers unseen requests by
+chaining the learned schemas in the order the speaker named the operations,
+binding each field from the source that owns it. Getting that binding wrong is
+precisely how memorisation leaks back in, and three separate leaks were found
+and closed while building the held-out slice:
+
+| Leak | Symptom | Fix |
+| --- | --- | --- |
+| Operation constants carried resource state | `unique_values` learned `column = "category"` from the only inventory example and injected it into a customers plan | `selector`, `pointer`, `column`, and `equals` are resource-scoped: they come only from the resource binding, and a missing binding parameter yields no plan |
+| Fields leaked across primitives | `archive.pack` carried a CSV `column`; `shell.run:count_lines` carried a filter it never applied | Two independent gates — the primitive's own advertised input schema must declare the field, *and* the learned operation schema must use it |
+| Verification guessed a path it could not know | unpack verified `restored/out`, a path derived from the input rather than observed | An unpack observes its destination directory; entry paths inside an archive are not known before it is opened |
+
+The held-out ratchet
+([`data/benchmarks/computer-use-generalization.lino`](../../../data/benchmarks/computer-use-generalization.lino))
+is twelve requests × four languages, none of them in the recorded corpus. A test
+asserts that absence directly, so the suite cannot decay into a second answer
+table. Every case must synthesize (plan id prefixed `synthesized-`), the four
+languages of a case must agree on one plan, and all 48 plans must execute in 48
+distinct workspaces with every verification event passing. Widening this slice
+is also what exposed the missing Russian locative and instrumental surfaces
+(`заметках`, `клиентами`, `"страницы статуса"`): a real generalization gap in
+the seed lexicon that ten fixed prompts could never have surfaced.
+
+`cargo run --bin formal-ai -- computer-use --learn` prints the schemas, and
+[`data/meta/computer-use-recipe.lino`](../../../data/meta/computer-use-recipe.lino)
+records the ordered loop and the invariant each step preserves, grounded by
+`tests/unit/specification/computer_use_meta_algorithm.rs`.
+
 ## Cross-surface evidence
 
 | Requirement | Evidence |
@@ -90,6 +138,10 @@ primitive order and pre/postconditions.
 | Desktop | permission-gated per-plan workspace router, injected filesystem boundaries, UI tool options, and Node integration test |
 | Four-language honest gap | seed responses plus exact locale regression |
 | Ten real external-Agent record/replays | `agent-cli-evidence/computer-use/manifest.json`, phase JSONL, and the required release-workflow gate |
+| Auto-learned schemas, no drift, no invention | `learned-schemas.lino` and `tests/issue_707_learning.rs` |
+| Twelve held-out requests × four languages | `data/benchmarks/computer-use-generalization.lino` and `tests/issue_707_generalization.rs` |
+| Held-out requests through the real external Agent CLI | `agent-cli-evidence/generalization/manifest.json` and its required release-workflow gate |
+| Grounded meta-recipe | `data/meta/computer-use-recipe.lino` and `tests/unit/specification/computer_use_meta_algorithm.rs` |
 
 The browser permission panel exposes the exact same twelve primitives as
 individually grantable capabilities:
@@ -120,6 +172,8 @@ Focused deterministic checks are:
 cargo test --test issue_707_seed_taxonomy
 cargo test --test issue_707_computer_use
 cargo test --test issue_707_mcp --test issue_707_mcp_denial
+cargo test --test issue_707_learning
+cargo test --test issue_707_generalization
 node --test desktop/scripts/tool-router.test.mjs
 ```
 
@@ -132,6 +186,11 @@ node --test desktop/scripts/tool-router.test.mjs
   taxonomy regression before implementation.
 - 2026-07-30: the primitive layer, ten-task ratchet, surfaces, localization, and
   real-Agent record/replay harness were implemented and verified.
+- 2026-07-31: review asked for the ambitious reading of the issue — generalization
+  rather than a ten-answer table. The recorded tasks were demoted to evidence,
+  induction and synthesis were added, three memorisation leaks were found and
+  closed, and a twelve-case held-out ratchet was added in four languages and
+  through the external Agent CLI.
 
 Self-authorship session `ses_04b692ed9ffeq4R6ehluc7r7nh` produced the original
 test in
