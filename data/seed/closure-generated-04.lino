@@ -1,4 +1,9 @@
 meanings
+  response_agent_suggestion_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion zh"
   response_agentic_action_ask_user_en
     defined-by response_template
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "response kupi slona en"
-  response_kupi_slona_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response kupi slona hi"

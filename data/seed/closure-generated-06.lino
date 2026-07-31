@@ -1,4 +1,9 @@
 meanings
+  response_supplied_file_contents_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response supplied file contents en"
   response_supplied_file_contents_hi
     defined-by response_template
     lexeme en
@@ -729,6 +734,11 @@ meanings
     lexeme en
       surface
         text "rule russian"
+  rule_spanish
+    defined-by rule
+    lexeme en
+      surface
+        text "rule spanish"
   run_agent
     defined-by name
     lexeme en
@@ -749,6 +759,11 @@ meanings
     lexeme en
       surface
         text "screenshot"
+  script_and_markers
+    defined-by concept
+    lexeme en
+      surface
+        text "script and markers"
   sdk
     defined-by word_surface
     lexeme en
@@ -1379,18 +1394,3 @@ meanings
     lexeme en
       surface
         text "touch"
-  trace_
-    defined-by identifier
-    lexeme en
-      surface
-        text "trace"
-  traffic
-    defined-by word_surface
-    lexeme en
-      surface
-        text "traffic"
-  travel_guide
-    defined-by category
-    lexeme en
-      surface
-        text "travel guide"
