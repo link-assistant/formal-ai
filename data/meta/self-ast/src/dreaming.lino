@@ -2,9 +2,9 @@ self_ast_census
   target src/dreaming.rs
   language rust
   fidelity signature
-  byte_len 34675
-  line_count 923
-  content_id source_module_3b508908e41ee85e
+  byte_len 35064
+  line_count 928
+  content_id source_module_48ec38a01133af7a
   symbol_count 38
   symbols
     module cues 31 31
@@ -37,11 +37,11 @@ self_ast_census
     function synthesized_trial_event 627 644
     function pattern_event 646 663
     function amendment_event 666 685
-    function render_dreaming_plan 688 795
-    function compose_recipe_with_amendments 805 822
-    function push_action_once 824 833
-    function deleted_conversation_ids 835 842
-    function deleted_event_indices 844 859
-    function classify_event 861 896
-    function duplicate_key 898 915
-    function usage_counts 917 923
+    function render_dreaming_plan 688 800
+    function compose_recipe_with_amendments 810 827
+    function push_action_once 829 838
+    function deleted_conversation_ids 840 847
+    function deleted_event_indices 849 864
+    function classify_event 866 901
+    function duplicate_key 903 920
+    function usage_counts 922 928

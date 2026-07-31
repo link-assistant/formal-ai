@@ -779,15 +779,20 @@ pub fn render_dreaming_plan(plan: &DreamingPlan) -> String {
             trial.topic, trial.structure, trial.input
         ));
     }
+    // Rendered as a Links Notation record rather than a prose line: the field
+    // names are the record's own keys, so nothing user-facing is minted here
+    // (R379) and the lesson stays inspectable data.
     for lesson in &plan.draft_failures {
-        lines.push(format!(
-            "  draft_failure_lesson strategy={} occurrences={} passed={}/{} attempts={} lesson={}",
-            lesson.strategy,
-            lesson.occurrences,
-            lesson.passed_tests,
-            lesson.total_tests,
-            lesson.attempts,
-            lesson.lesson
+        lines.push(crate::links_format::format_lino_record(
+            "draft_failure_lesson",
+            &[
+                ("strategy", lesson.strategy.clone()),
+                ("occurrences", lesson.occurrences.to_string()),
+                ("passed_tests", lesson.passed_tests.to_string()),
+                ("total_tests", lesson.total_tests.to_string()),
+                ("attempts", lesson.attempts.to_string()),
+                ("lesson", lesson.lesson.clone()),
+            ],
         ));
     }
 

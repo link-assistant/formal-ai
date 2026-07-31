@@ -552,7 +552,7 @@ fn losing_drafts_become_durable_lessons_the_dreaming_loop_mines() {
     assert_eq!(plan.draft_failures, lessons);
     let rendered = render_dreaming_plan(&plan);
     assert!(
-        rendered.contains("draft_failure_lesson strategy=reuse"),
+        rendered.contains("draft_failure_lesson") && rendered.contains(r#"strategy "reuse""#),
         "{rendered}"
     );
 }
