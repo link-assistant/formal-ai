@@ -708,6 +708,11 @@ pub fn config_from_env() -> SolverConfig {
             config.compute_budget = parsed;
         }
     }
+    if let Ok(value) = std::env::var("FORMAL_AI_DRAFT_COUNT") {
+        if let Ok(parsed) = value.trim().parse::<u8>() {
+            config.draft_count = parsed.max(1);
+        }
+    }
     if let Ok(value) = std::env::var("FORMAL_AI_BLUEPRINT_COMPOSITION")
         .or_else(|_| std::env::var("FORMAL_AI_PROGRAM_COMPOSITION"))
     {

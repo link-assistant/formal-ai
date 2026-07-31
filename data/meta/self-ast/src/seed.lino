@@ -2,64 +2,65 @@ self_ast_census
   target src/seed.rs
   language rust
   fidelity signature
-  byte_len 42434
-  line_count 976
-  content_id source_module_1d4ec6a5471602b4
-  symbol_count 56
+  byte_len 42548
+  line_count 978
+  content_id source_module_9a366c4bc573834b
+  symbol_count 57
   symbols
     module agentic_tool_capabilities 24 24
     module brainstorm 25 25
     module client_integrations 26 26
     module coreference 27 27
-    module embedded 28 28
-    module entity_names 29 29
-    module facts 30 30
-    module grounding_overrides 31 31
-    module handler_precedence 32 32
-    module market_price_references 33 33
-    module meanings 34 34
-    module model_aliases 35 35
-    module operation_vocabulary 36 36
-    module parser 37 37
-    module personas 38 38
-    module projects 39 39
-    module roles 40 40
-    module shell_intents 41 41
-    module summary_topics 42 42
-    module terminal_commands 43 43
-    function merged_bundle 211 213
-    function bundle_from_files 221 238
-    function parse_bundle 259 334
-    struct ResponseRecord 338 343
-    function multilingual_responses 347 369
-    function response_for 374 381
-    function response_values_for 388 390
-    function agent_info 394 407
-    function supported_languages 416 421
-    struct LanguageRule 425 438
-    function language_rules 441 461
-    function language_of_source 468 473
-    struct PromptPattern 477 483
-    struct LocalizedConcept 491 498
-    struct ConceptRecord 521 533
-    function localized_for 539 544
-    function concepts 548 598
-    struct LocalizedContextLabel 602 605
-    struct ContextRecord 611 616
-    function label_for 622 630
-    function matches 635 650
-    function concept_contexts 654 684
-    struct IntentRoute 696 704
-    struct IntentRouting 707 711
-    function intent_routing 714 759
-    struct LearningSource 769 774
-    struct LearningSources 779 782
-    function match_directive 800 815
-    function learning_sources 824 854
-    function prompt_patterns 857 876
-    struct EnvironmentRecord 886 898
-    struct MigrationFlow 901 905
-    struct EnvironmentDirectory 908 912
-    function environment_directory 915 959
-    function child_value_alias 961 968
-    function environment_records 974 976
+    module draft_strategies 28 28
+    module embedded 29 29
+    module entity_names 30 30
+    module facts 31 31
+    module grounding_overrides 32 32
+    module handler_precedence 33 33
+    module market_price_references 34 34
+    module meanings 35 35
+    module model_aliases 36 36
+    module operation_vocabulary 37 37
+    module parser 38 38
+    module personas 39 39
+    module projects 40 40
+    module roles 41 41
+    module shell_intents 42 42
+    module summary_topics 43 43
+    module terminal_commands 44 44
+    function merged_bundle 213 215
+    function bundle_from_files 223 240
+    function parse_bundle 261 336
+    struct ResponseRecord 340 345
+    function multilingual_responses 349 371
+    function response_for 376 383
+    function response_values_for 390 392
+    function agent_info 396 409
+    function supported_languages 418 423
+    struct LanguageRule 427 440
+    function language_rules 443 463
+    function language_of_source 470 475
+    struct PromptPattern 479 485
+    struct LocalizedConcept 493 500
+    struct ConceptRecord 523 535
+    function localized_for 541 546
+    function concepts 550 600
+    struct LocalizedContextLabel 604 607
+    struct ContextRecord 613 618
+    function label_for 624 632
+    function matches 637 652
+    function concept_contexts 656 686
+    struct IntentRoute 698 706
+    struct IntentRouting 709 713
+    function intent_routing 716 761
+    struct LearningSource 771 776
+    struct LearningSources 781 784
+    function match_directive 802 817
+    function learning_sources 826 856
+    function prompt_patterns 859 878
+    struct EnvironmentRecord 888 900
+    struct MigrationFlow 903 907
+    struct EnvironmentDirectory 910 914
+    function environment_directory 917 961
+    function child_value_alias 963 970
+    function environment_records 976 978

@@ -1,4 +1,29 @@
 meanings
+  response_task_plan_stage_implementation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage implementation hi"
+  response_task_plan_stage_implementation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage implementation ru"
+  response_task_plan_stage_implementation_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage implementation zh"
+  response_task_plan_stage_regression_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage regression en"
+  response_task_plan_stage_regression_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage regression hi"
   response_task_plan_stage_regression_ru
     defined-by response_template
     lexeme en
@@ -644,6 +669,11 @@ meanings
     lexeme en
       surface
         text "software project plan"
+  solution
+    defined-by word_surface
+    lexeme en
+      surface
+        text "solution"
   sort_lines
     defined-by operation
     lexeme en
@@ -1364,33 +1394,3 @@ meanings
     lexeme en
       surface
         text "will"
-  wordnet
-    defined-by source
-    lexeme en
-      surface
-        text "wordnet"
-  words
-    defined-by concept
-    lexeme en
-      surface
-        text "words"
-  world_state_reached
-    defined-by intent
-    lexeme en
-      surface
-        text "world state reached"
-  world_state_remaining
-    defined-by intent
-    lexeme en
-      surface
-        text "world state remaining"
-  would
-    defined-by concept
-    lexeme en
-      surface
-        text "would"
-  write_program
-    defined-by intent
-    lexeme en
-      surface
-        text "write program"

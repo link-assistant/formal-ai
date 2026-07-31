@@ -1,4 +1,9 @@
 meanings
+  pattern_concept_context_delimiter_v_kontekste_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter v kontekste ru"
   pattern_concept_context_delimiter_v_oblasti_ru
     defined-by prompt_pattern
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "response agentic action list desktop zh"
-  response_agentic_action_list_home_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic action list home en"

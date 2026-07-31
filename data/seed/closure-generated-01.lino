@@ -1024,6 +1024,11 @@ meanings
     lexeme en
       surface
         text "dotnet"
+  draft_comparison_explanation
+    defined-by intent
+    lexeme en
+      surface
+        text "draft comparison explanation"
   du
     defined-by token
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "function catalog"
-  general_plan_command_capture_action
-    defined-by intent
-    lexeme en
-      surface
-        text "general plan command capture action"

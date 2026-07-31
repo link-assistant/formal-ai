@@ -1,0 +1,35 @@
+self_ast_census
+  target src/draft_portfolio.rs
+  language rust
+  fidelity signature
+  byte_len 18495
+  line_count 477
+  content_id source_module_ee32d5b6d60cbb03
+  symbol_count 26
+  symbols
+    const MAX_ATTEMPTS 39 39
+    struct DraftPlan 44 53
+    struct DraftArtifact 61 69
+    trait PortfolioLeaf 72 97
+    type Artifact 74 74
+    function supports 79 79
+    function draft 83 83
+    function run_tests 87 87
+    function test_count 91 91
+    function composes 96 96
+    struct PortfolioSelection 100 106
+    struct DraftEvaluation 109 121
+    function passed 124 126
+    function strategy_catalog 136 138
+    function plan_drafts 150 170
+    function seed_for_draft 178 186
+    function run_portfolio 194 225
+    function evaluate_slot 232 265
+    function is_better 269 279
+    function evaluate_attempt 281 304
+    function evaluate_in_parallel 314 330
+    function rank_passing_drafts 335 346
+    function select_composable_draft 351 355
+    function record_draft_results 357 395
+    function failure_record 403 417
+    function comparison_record 419 477

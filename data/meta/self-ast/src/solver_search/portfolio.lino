@@ -1,0 +1,30 @@
+self_ast_census
+  target src/solver_search/portfolio.rs
+  language rust
+  fidelity signature
+  byte_len 11390
+  line_count 290
+  content_id source_module_1821c8ddece698aa
+  symbol_count 21
+  symbols
+    const ORACLE_MAX_OPERANDS 28 28
+    const SYNTHESIS_MAX_COMPOSITIONS 32 32
+    const TEST_COUNT 35 35
+    struct ReachabilityLeaf 38 41
+    type Artifact 44 44
+    function supports 46 57
+    function draft 59 68
+    function run_tests 70 72
+    function test_count 74 76
+    function composes 78 82
+    function draft_reuse 89 96
+    function draft_rule_derivation 102 128
+    function draft_oracle_lookup 133 145
+    function draft_search 149 159
+    function draft_program_synthesis 165 177
+    function artifact 179 192
+    function for_each_composition 201 227
+    function advance_assignment 231 240
+    function next_permutation 243 254
+    function run_generated_tests 258 258
+    function run_draft_portfolio 273 290
