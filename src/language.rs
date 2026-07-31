@@ -158,6 +158,84 @@ pub fn fallback_language() -> Language {
     with_rules(fallback_of)
 }
 
+/// The coverage ledger, embedded next to the detection registry. It carries the
+/// English `name` of every registered language, which handlers used to spell out
+/// in `match` arms.
+const LANGUAGE_LEDGER: &str = include_str!("../data/seed/languages.lino");
+
+/// The English name of a registered language slug (`en` → `English`).
+///
+/// Issue #706: the names live in `data/seed/languages.lino`, so a newly
+/// registered language is named by its ledger entry and never by a Rust arm.
+#[must_use]
+pub fn language_name(slug: &str) -> Option<&'static str> {
+    let mut current: Option<&'static str> = None;
+    for line in LANGUAGE_LEDGER.lines() {
+        let trimmed = line.trim_start();
+        let (key, value) = trimmed.split_once(' ').unwrap_or((trimmed, ""));
+        match key {
+            "language" => current = Some(unquote(value)),
+            "name" if current == Some(slug) => return Some(unquote(value)),
+            _ => {}
+        }
+    }
+    None
+}
+
+/// Resolve a `language_*` concept slug (`language_spanish`) to its registered
+/// language (`es`) by matching the ledger's English name.
+///
+/// The concept graph names languages in words; the translation pipeline and the
+/// Wiktionary client address them by slug. This is the bridge, and it is data,
+/// not a table of four hard-coded pairs.
+#[must_use]
+pub fn language_for_concept_slug(concept_slug: &str) -> Option<Language> {
+    let name = concept_slug.strip_prefix("language_")?;
+    with_rules(|rules| {
+        rules
+            .iter()
+            .find(|rule| {
+                language_name(rule.language).is_some_and(|declared| {
+                    declared.len() == name.len()
+                        && declared
+                            .chars()
+                            .zip(name.chars())
+                            .all(|(left, right)| left.to_ascii_lowercase() == right)
+                })
+            })
+            .map(|rule| Language(rule.language))
+    })
+}
+
+/// Whether `surface` contains at least one character the registry attributes to
+/// `slug`'s script (or, for the fallback language, at least one letter of the
+/// fallback script's range).
+///
+/// Importers use this to reject a surface form filed under the wrong language
+/// without enumerating Unicode ranges per language.
+#[must_use]
+pub fn surface_matches_language(surface: &str, slug: &str) -> bool {
+    with_rules(|rules| {
+        let Some(rule) = rules.iter().find(|rule| rule.language == slug) else {
+            return false;
+        };
+        // A language sharing the fallback script (Spanish and English are both
+        // Latin) matches any character of that script, not only its accented
+        // sub-range, so its plain-ASCII surfaces are not rejected.
+        let script = rule.script;
+        rules
+            .iter()
+            .filter(|candidate| candidate.script == script)
+            .any(|candidate| {
+                surface.chars().any(|character| {
+                    let codepoint = u32::from(character);
+                    (candidate.start..=candidate.end).contains(&codepoint)
+                        && (!candidate.alphabetic_only || character.is_alphabetic())
+                })
+            })
+    })
+}
+
 /// RAII guard that restores the previous forced language when dropped.
 pub struct ForcedLanguageGuard {
     previous: Option<Language>,

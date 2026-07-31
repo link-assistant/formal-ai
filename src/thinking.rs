@@ -82,11 +82,13 @@ pub fn thinking_language_label(code: &str) -> String {
         .split(['-', '_'])
         .next()
         .unwrap_or(normalized.as_str());
+    // Issue #706: the English name of a language is a ledger fact
+    // (`data/seed/languages.lino`), so a newly registered language narrates
+    // by name without a Rust edit.
+    if let Some(name) = crate::language::language_name(primary) {
+        return name.to_owned();
+    }
     match primary {
-        "en" => "English".to_owned(),
-        "ru" => "Russian".to_owned(),
-        "hi" => "Hindi".to_owned(),
-        "zh" => "Chinese".to_owned(),
         "" | "unknown" => "an unrecognized language".to_owned(),
         other => other.to_owned(),
     }

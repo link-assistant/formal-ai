@@ -59,13 +59,7 @@ fn language_code_of(meaning: &Meaning) -> Option<&'static str> {
 /// addressed by, not a surface word. The surface *names* of each language live
 /// in the seed; only this slug → code bridge is code.
 fn language_code(slug: &str) -> Option<&'static str> {
-    match slug {
-        "language_english" => Some("en"),
-        "language_russian" => Some("ru"),
-        "language_hindi" => Some("hi"),
-        "language_chinese" => Some("zh"),
-        _ => None,
-    }
+    crate::language::language_for_concept_slug(slug).map(crate::Language::slug)
 }
 
 #[path = "../source_tests/translation/language_markers/tests.rs"]

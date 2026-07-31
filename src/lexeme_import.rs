@@ -460,21 +460,9 @@ pub fn labels_from_entity(value: &Value, qid: &str) -> Result<BTreeMap<String, S
 }
 
 fn surface_matches_language(surface: &str, language: &str) -> bool {
-    let contains = |start: u32, end: u32| {
-        surface
-            .chars()
-            .map(u32::from)
-            .any(|codepoint| (start..=end).contains(&codepoint))
-    };
-    match language {
-        "en" => surface
-            .chars()
-            .any(|character| character.is_ascii_alphabetic()),
-        "ru" => contains(0x0400, 0x052f),
-        "hi" => contains(0x0900, 0x097f),
-        "zh" => contains(0x3400, 0x9fff) || contains(0xf900, 0xfaff),
-        _ => false,
-    }
+    // Issue #706: the script a language writes in is a detection-registry fact,
+    // so a new language's surfaces are validated without a Unicode range here.
+    crate::language::surface_matches_language(surface, language)
 }
 
 /// Fetch, trim, and cache `qid` from the live Wikidata `Special:EntityData`
