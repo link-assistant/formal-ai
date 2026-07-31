@@ -1,0 +1,91 @@
+{
+  "entities": {
+    "Q7747": {
+      "type": "item",
+      "id": "Q7747",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Vladimir Putin"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Владимир Владимирович Путин"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "व्लादिमीर पुतिन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "弗拉基米尔·普京"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "2nd and 4th President of Russia (2000–2008, 2012–present), 7th and 11th Prime Minister of Russia (1999–2000, 2008–2012)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "президент России (2000—2008; 2012 по н. в.)"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "रूस के राष्ट्रपति (1999-2008, 2012-वर्तमान)"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "俄羅斯總統"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Владимир Путин"
+          },
+          {
+            "language": "ru",
+            "value": "Путин Владимир Владимирович"
+          },
+          {
+            "language": "ru",
+            "value": "Путин, Владимир Владимирович"
+          },
+          {
+            "language": "ru",
+            "value": "В. В. Путин"
+          },
+          {
+            "language": "ru",
+            "value": "Путин В. В."
+          },
+          {
+            "language": "ru",
+            "value": "Путин"
+          },
+          {
+            "language": "ru",
+            "value": "ВВП"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "普京"
+          },
+          {
+            "language": "zh",
+            "value": "普丁"
+          },
+          {
+            "language": "zh",
+            "value": "弗拉基米尔·弗拉基米罗维奇·普京"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}
