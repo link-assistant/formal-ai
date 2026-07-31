@@ -1,0 +1,123 @@
+computer_use_learned_schemas
+  source data/seed/computer-use-tasks.lino
+  operation computer_use_count_lines
+    step shell.run:count_lines
+    constant confirmed true
+    constant input "input/notes.txt"
+    constant operation "count_lines"
+    constant output "reports/line-count.txt"
+    support count_lines
+    verification fs.read
+  operation computer_use_extract_field
+    step dom.extract
+    constant pointer "/orders/0/id"
+    constant save_as "reports/first-order.txt"
+    constant source "cache/orders.json"
+    support first_open_order
+    verification fs.read
+  operation computer_use_fetch
+    step http.fetch
+    slot save_as
+    slot url
+    support first_open_order
+    support page_title
+  operation computer_use_filter_rows
+    step shell.run:filter_csv
+    constant column "status"
+    constant confirmed true
+    constant equals "active"
+    constant input "input/customers.csv"
+    constant operation "filter_csv"
+    constant output "reports/active.csv"
+    support active_customers
+    verification fs.read
+  operation computer_use_list_directory
+    step fs.list
+    constant path "docs"
+    support list_and_pack
+  operation computer_use_move_file
+    step fs.move
+    constant confirmed true
+    constant from "inbox/note.txt"
+    constant to "processed/note.txt"
+    support move_note
+    verification fs.list
+    verification fs.read
+  operation computer_use_pack_archive
+    step archive.pack
+    constant confirmed true
+    slot archive
+    slot paths
+    support list_and_pack
+    support archive_round_trip
+    support inventory_bundle
+  operation computer_use_process_status
+    step process.status
+    constant save_as "reports/process.json"
+    support process_report
+    verification fs.read
+  operation computer_use_query_selector
+    step dom.query
+    slot save_as
+    slot selector
+    slot source
+    support page_title
+    support submit_form
+    verification fs.read
+  operation computer_use_submit_form
+    step http.post
+    constant body "token=fixture-token"
+    constant confirmed true
+    constant save_as "reports/submission.json"
+    constant url "fixture://submit"
+    support submit_form
+    verification fs.read
+  operation computer_use_unique_values
+    step shell.run:unique_csv
+    constant column "category"
+    constant confirmed true
+    constant input "cache/inventory.csv"
+    constant operation "unique_csv"
+    constant output "reports/categories.txt"
+    support inventory_bundle
+  operation computer_use_unpack_archive
+    step archive.unpack
+    constant archive "out/round-trip.fai"
+    constant confirmed true
+    constant destination "restored"
+    support archive_round_trip
+    verification fs.list
+  resource computer_use_resource_customers
+    materialize fs.write {"confirmed":true,"content":"name,status\nAda,active\nLin,inactive\nMei,active\n","path":"input/customers.csv"}
+    parameter column "status"
+    parameter equals "active"
+    support active_customers
+  resource computer_use_resource_documents
+    materialize fs.write {"confirmed":true,"content":"alpha\n","path":"docs/a.txt"}
+    materialize fs.write {"confirmed":true,"content":"beta\n","path":"docs/b.txt"}
+    support list_and_pack
+    alternative archive_round_trip
+  resource computer_use_resource_form
+    materialize http.fetch {"save_as":"cache/form.html","url":"fixture://form.html"}
+    parameter body "token=fixture-token"
+    parameter selector "#token"
+    support submit_form
+  resource computer_use_resource_inbox_note
+    materialize fs.write {"confirmed":true,"content":"processed\n","path":"inbox/note.txt"}
+    support move_note
+  resource computer_use_resource_inventory
+    materialize http.fetch {"save_as":"cache/inventory.csv","url":"fixture://inventory.csv"}
+    parameter column "category"
+    support inventory_bundle
+  resource computer_use_resource_notes
+    materialize fs.write {"confirmed":true,"content":"alpha\nbeta\ngamma\n","path":"input/notes.txt"}
+    support count_lines
+  resource computer_use_resource_orders
+    materialize http.fetch {"save_as":"cache/orders.json","url":"fixture://orders.json"}
+    parameter pointer "/orders/0/id"
+    support first_open_order
+  resource computer_use_resource_status_page
+    materialize http.fetch {"save_as":"cache/status.html","url":"fixture://status.html"}
+    parameter selector "title"
+    support page_title
+  unexplained inventory_bundle:process.status

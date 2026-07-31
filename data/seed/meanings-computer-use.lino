@@ -471,6 +471,8 @@ meanings
         text "странице статуса"
       surface
         text "страница статуса"
+      surface
+        text "страницы статуса"
     lexeme hi
       surface
         text "स्थिति पृष्ठ"

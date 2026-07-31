@@ -45,6 +45,10 @@ const PATH_FIELDS: [&str; 10] = [
     "to",
 ];
 
+/// Argument fields that describe the resource rather than the operation. Their
+/// values come from the resource binding learned by [`super::induction`].
+const RESOURCE_FIELDS: [&str; 4] = ["selector", "pointer", "column", "equals"];
+
 /// What the synthesizer produced for a request, including why.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Synthesis {
@@ -180,18 +184,26 @@ fn realise(
             && (constants.contains_key(key) || varying.contains(key))
     };
     let mut arguments = Map::new();
-    for (key, value) in constants {
-        if !PATH_FIELDS.contains(&key.as_str()) && uses(key) {
-            arguments.insert(key.clone(), value.clone());
+    // Selector, pointer, column, and comparison value describe the *resource*,
+    // not the operation, so they are always taken from the resource binding and
+    // never inherited from the example that taught the operation — the CSV
+    // column that made inventory categories unique is not the column that makes
+    // customers unique. When the operation needs one and the corpus never
+    // evidenced it for this resource, there is no honest plan to give.
+    for key in RESOURCE_FIELDS {
+        if uses(key) {
+            let Some(value) = parameters.get(key) else {
+                return None;
+            };
+            arguments.insert(key.to_owned(), value.clone());
         }
     }
-    // Selector, pointer, column, and comparison value are properties of the
-    // resource, learned from the corpus rather than written here.
-    for key in ["selector", "pointer", "column", "equals"] {
-        if !arguments.contains_key(key) && uses(key) {
-            if let Some(value) = parameters.get(key) {
-                arguments.insert(key.to_owned(), value.clone());
-            }
+    for (key, value) in constants {
+        if !PATH_FIELDS.contains(&key.as_str())
+            && !RESOURCE_FIELDS.contains(&key.as_str())
+            && uses(key)
+        {
+            arguments.insert(key.clone(), value.clone());
         }
     }
 
@@ -238,8 +250,11 @@ fn realise(
         ComputerUsePrimitive::ArchiveUnpack => {
             arguments.insert("archive".to_owned(), json!(input.path));
             arguments.insert("destination".to_owned(), json!("restored"));
+            // The archive's internal entry paths are not known before it is
+            // unpacked, so verification observes the destination directory
+            // itself rather than guessing a path inside it.
             Artifact {
-                path: format!("restored/{}", parent_of(&input.path)),
+                path: "restored".to_owned(),
                 directory: true,
             }
         }
