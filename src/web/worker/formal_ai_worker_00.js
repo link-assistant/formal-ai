@@ -193,18 +193,10 @@ let AGENT_INFO = {};
 // the seed registry at init() time. Issue #706: every field a language needs
 // lives here as data, so registering a new language never edits worker code.
 let LANGUAGE_RULES = [
-  { language: "ru", script: "Cyrillic", start: 0x0400, end: 0x04ff, markers: [] },
-  { language: "hi", script: "Devanagari", start: 0x0900, end: 0x097f, markers: [] },
-  { language: "zh", script: "Han", start: 0x4e00, end: 0x9fff, markers: [] },
-  {
-    language: "en",
-    script: "Latin",
-    start: 0x0041,
-    end: 0x007a,
-    markers: [],
-    fallback: true,
-    alphabeticOnly: true,
-  },
+  { language: "ru", script: "Cyrillic", start: 0x0400, end: 0x04ff },
+  { language: "hi", script: "Devanagari", start: 0x0900, end: 0x097f },
+  { language: "zh", script: "Han", start: 0x4e00, end: 0x9fff },
+  { language: "en", script: "Latin", start: 0x0041, end: 0x007a, fallback: true, alphabeticOnly: true },
 ];
 let PROMPT_PATTERNS = [];
 
@@ -693,61 +685,40 @@ function assistantNameAnswer(language, preferences) {
 // Mirrors `src/web_engine_core.rs::parse_opener_registry`. Issue #706 moved the
 // pools out of this file into `data/seed/unknown-openers.lino`, so registering a
 // language's openers is a data edit shared by the Rust core, the WASM worker and
-// this worker. The first entry of each pool equals the opener already embedded
-// in the seed text, so the "with-variations" answer is a strict superset of the
-// seed. Different prompts get different openers; the same prompt always picks
-// the same one (FNV-1a hash, mirrored from `stableBehaviorRuleId`).
-//
-// There is no bootstrap copy: the text is empty until `init()` hydrates it from
-// `seed/unknown-openers.lino` through `seed_loader.js`. Before that the pools
-// are empty, and the unknown answer is the seed answer alone \u2014 an opener is
-// only ever added when its data has actually been loaded.
+// this worker. There is no bootstrap copy: until `init()` hydrates the text the
+// pools are empty and the unknown answer is the seed answer alone, so an opener
+// is only ever added once its data has actually been loaded. The first opener of
+// a pool equals the one embedded in the seed text, so the varied answer stays a
+// strict superset of the seed; the same prompt always picks the same opener
+// (FNV-1a hash, mirrored from `stableBehaviorRuleId`).
 let UNKNOWN_OPENERS_LINO = "";
 let cachedUnknownOpenerRegistry = null;
 
-function unquoteSeedValue(value) {
-  const text = String(value || "");
-  if (text.length >= 2 && text.startsWith('"') && text.endsWith('"')) {
-    return text.slice(1, -1);
-  }
-  return text;
+function linoChildValues(node, name) {
+  return node.children.filter((child) => child.name === name).map((child) => child.value);
 }
 
 function unknownOpenerRegistry() {
   if (cachedUnknownOpenerRegistry) return cachedUnknownOpenerRegistry;
-  const registry = { pools: [], fallbackLanguage: "en", sentenceSeparators: [] };
-  for (const line of String(UNKNOWN_OPENERS_LINO || "").split("\n")) {
-    const trimmed = line.trim();
-    if (!trimmed) continue;
-    const space = trimmed.indexOf(" ");
-    const key = space === -1 ? trimmed : trimmed.slice(0, space);
-    const value = space === -1 ? "" : trimmed.slice(space + 1);
-    const pool = registry.pools[registry.pools.length - 1];
-    if (key === "pool") {
-      registry.pools.push({ language: "", openers: [] });
-    } else if (key === "fallback_language") {
-      registry.fallbackLanguage = unquoteSeedValue(value);
-    } else if (key === "sentence_separator") {
-      registry.sentenceSeparators.push(unquoteSeedValue(value));
-    } else if (key === "language" && pool) {
-      pool.language = unquoteSeedValue(value);
-    } else if (key === "opener" && pool) {
-      pool.openers.push(unquoteSeedValue(value));
-    }
-  }
-  registry.pools = registry.pools.filter((pool) => pool.openers.length > 0);
-  cachedUnknownOpenerRegistry = registry;
-  return registry;
+  const root = parseLinoTree(String(UNKNOWN_OPENERS_LINO || "")).children[0] || { children: [] };
+  cachedUnknownOpenerRegistry = {
+    fallbackLanguage: linoChildValues(root, "fallback_language")[0] || "en",
+    sentenceSeparators: linoChildValues(root, "sentence_separator"),
+    pools: root.children.filter((child) => child.name === "pool")
+      .map((pool) => ({
+        language: linoChildValues(pool, "language")[0] || "",
+        openers: linoChildValues(pool, "opener"),
+      }))
+      .filter((pool) => pool.openers.length > 0),
+  };
+  return cachedUnknownOpenerRegistry;
 }
 
 function unknownOpenersFor(language) {
-  const registry = unknownOpenerRegistry();
-  const match = registry.pools.find((pool) => pool.language === language);
-  if (match) return match.openers;
-  const fallback = registry.pools.find(
-    (pool) => pool.language === registry.fallbackLanguage,
-  );
-  return fallback ? fallback.openers : [];
+  const { pools, fallbackLanguage } = unknownOpenerRegistry();
+  const match = pools.find((pool) => pool.language === language) ||
+    pools.find((pool) => pool.language === fallbackLanguage);
+  return match ? match.openers : [];
 }
 
 function selectUnknownOpener(prompt, language) {
@@ -888,127 +859,35 @@ function detectLanguage(prompt) {
   return detected;
 }
 
-// Registry-driven detection, a line-for-line mirror of `detect_with` in
-// `src/language.rs`. It runs when the WASM worker is unavailable, so the
-// JS-only path must reach the same verdict for the same registry.
-function fallbackRule() {
-  return LANGUAGE_RULES.find((rule) => rule.fallback) || null;
-}
-
-function scriptOf(rule) {
-  return (rule && rule.script) || "";
-}
-
-function defaultLanguageForScript(script) {
-  const preferred =
-    LANGUAGE_RULES.find((rule) => scriptOf(rule) === script && rule.fallback) ||
-    LANGUAGE_RULES.find((rule) => scriptOf(rule) === script);
-  if (preferred) return preferred.language;
-  const back = fallbackRule();
-  return back ? back.language : "en";
-}
-
-function countScripts(text) {
+// Registry-driven fallback detection, reached only when the Rust→WASM worker is
+// unavailable (a `file://` demo). `detect_with` in `src/language.rs` stays the
+// authority and owns the full tie-breaking ladder; issue #658 (R380) keeps this
+// mirror thin, so it is the reduced form: the dominant script other than the
+// fallback's decides, and a language sharing the fallback script (Spanish on
+// Latin) votes through its markers only when no rival script is present. Issue
+// #706: every field read here comes from `data/seed/language-detection.lino`,
+// so registering a language never edits this file.
+function detectLanguageFromRules(text) {
+  const back = LANGUAGE_RULES.find((rule) => rule.fallback) || {};
   const counts = new Map();
   let other = 0;
-  let first = null;
   for (const character of text) {
     const code = character.codePointAt(0);
-    const rule = LANGUAGE_RULES.find(
-      (candidate) =>
-        code >= candidate.start &&
-        code <= candidate.end &&
-        (!candidate.alphabeticOnly || /\p{L}/u.test(character)),
-    );
-    if (rule) {
-      const script = scriptOf(rule);
-      counts.set(script, (counts.get(script) || 0) + 1);
-      if (first === null) first = script;
-    } else if (/\p{L}/u.test(character)) {
-      other += 1;
-      if (first === null) first = "";
-    }
+    const rule = LANGUAGE_RULES.find((candidate) => code >= candidate.start &&
+      code <= candidate.end && (!candidate.alphabeticOnly || /\p{L}/u.test(character)));
+    if (rule) counts.set(rule.script, (counts.get(rule.script) || 0) + 1);
+    else if (/\p{L}/u.test(character)) other += 1;
   }
-  return { counts, other, first };
-}
-
-function countOf(counts, script) {
-  return counts.get(script) || 0;
-}
-
-function maxExcluding(counts, script) {
-  let max = 0;
-  for (const [name, count] of counts) {
-    if (name !== script && count > max) max = count;
-  }
-  return max;
-}
-
-function markerLanguage(text, counts, fallbackScript) {
+  const at = (rule) => counts.get(rule && rule.script) || 0;
+  const rival = LANGUAGE_RULES
+    .filter((rule) => !rule.fallback && rule.script !== back.script && at(rule) > 0)
+    .sort((left, right) => at(right) - at(left))[0];
+  if (other > at(back) && (!rival || other >= at(rival))) return "unknown";
+  if (rival) return rival.language;
   const normalized = text.toLowerCase();
-  let best = null;
-  for (const rule of LANGUAGE_RULES) {
-    const markers = Array.isArray(rule.markers) ? rule.markers : [];
-    if (markers.length === 0) continue;
-    const script = scriptOf(rule);
-    const count = countOf(counts, script);
-    if (count === 0) continue;
-    if (!markers.some((marker) => normalized.includes(String(marker).toLowerCase()))) {
-      continue;
-    }
-    // Markers are weaker evidence than a script: they can appear inside a
-    // foreign proper name. A marker rule only votes when no rival script — one
-    // other than its own and other than the fallback script every language
-    // borrows identifiers from — is present. Mirrors `marker_language` in
-    // src/language.rs.
-    const contested = LANGUAGE_RULES.some(
-      (other) =>
-        scriptOf(other) !== script &&
-        scriptOf(other) !== fallbackScript &&
-        countOf(counts, scriptOf(other)) > 0,
-    );
-    if (contested) continue;
-    if (best === null || count > best.count) best = { count, language: rule.language };
-  }
-  return best ? best.language : null;
-}
-
-function detectLanguageFromRules(text) {
-  const back = fallbackRule();
-  const fallback = back ? back.language : "en";
-  const fallbackScript = scriptOf(back);
-  const { counts, other, first } = countScripts(text);
-
-  let total = other;
-  for (const count of counts.values()) total += count;
-  if (total === 0) return fallback;
-
-  const fallbackCount = countOf(counts, fallbackScript);
-  if (other > fallbackCount && other >= maxExcluding(counts, fallbackScript)) {
-    return "unknown";
-  }
-
-  if (fallbackCount > 0) {
-    const byMarker = markerLanguage(text, counts, fallbackScript);
-    if (byMarker) return byMarker;
-    if (first && first !== fallbackScript) {
-      let rival = 0;
-      for (const [name, count] of counts) {
-        if (name !== fallbackScript && name !== first && count > rival) rival = count;
-      }
-      if (countOf(counts, first) >= rival) return defaultLanguageForScript(first);
-    }
-  }
-
-  for (const rule of LANGUAGE_RULES) {
-    if (rule.fallback) continue;
-    const script = scriptOf(rule);
-    const count = countOf(counts, script);
-    if (count > 0 && count >= maxExcluding(counts, script)) {
-      return defaultLanguageForScript(script);
-    }
-  }
-  return fallback;
+  const byMarker = LANGUAGE_RULES.find((rule) => !rule.fallback && at(rule) > 0 &&
+    (rule.markers || []).some((marker) => normalized.includes(String(marker).toLowerCase())));
+  return byMarker ? byMarker.language : back.language || "en";
 }
 
 // Issue #324: the user can choose which language drives responses. The default

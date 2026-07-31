@@ -41,9 +41,15 @@ const TARGET_TOTAL_LINES: usize = 3_000;
 /// seed-driven `who_is` / `definition_merge` generality and the named
 /// skill-gap failure for underivable `write_program` requests likewise have to
 /// be mirrored in the browser worker, adding a net 94 lines and raising the
-/// ratchet from 26_817 to 26_911.
+/// ratchet from 26_817 to 26_911. Issue #706's any-language protocol makes the
+/// browser mirror read every per-language field from seed data — the detection
+/// registry hydrated from `language-detection.lino`, the unknown-opener pools
+/// from `unknown-openers.lino`, and the response-language check derived from
+/// the registry instead of a hardcoded slug list — so that registering a
+/// language stays a data-only edit in the worker too, adding a net 41 lines and
+/// raising the ratchet from 26_911 to 26_952.
 #[cfg(not(test))]
-const CEILING_TOTAL_LINES: usize = 26_911;
+const CEILING_TOTAL_LINES: usize = 26_952;
 
 const WORKER_DIR: &str = "src/web/worker";
 
