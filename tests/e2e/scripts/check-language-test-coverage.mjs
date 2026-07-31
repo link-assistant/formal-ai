@@ -1,7 +1,7 @@
 // Diff-aware CI guard for supported-language test coverage.
 //
 // When a PR changes language-facing code, it must also add or update tests
-// that cover every supported language from data/seed/agent-info.lino. This
+// that cover every registered language from data/seed/languages.lino. This
 // keeps fixes from landing with only one-language regressions, such as a
 // Russian-only translation test that leaves English, Hindi, and Chinese
 // behavior unpinned.
@@ -10,7 +10,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { parseSupportedLanguagesFromAgentInfo } from './lino-seed-parser.mjs';
+import { parseRegisteredLanguages } from './lino-seed-parser.mjs';
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, '../../..');
@@ -56,8 +56,7 @@ function readRepoFile(relativePath) {
 }
 
 function parseSupportedLanguages() {
-  const agentInfo = readRepoFile('data/seed/agent-info.lino');
-  return parseSupportedLanguagesFromAgentInfo(agentInfo);
+  return parseRegisteredLanguages(readRepoFile('data/seed/languages.lino'));
 }
 
 function runGit(args) {
@@ -133,6 +132,7 @@ function lineCoversLanguage(line, language) {
     new RegExp(String.raw`\blanguage_(?:from|to):${language}\b`, 'i'),
     new RegExp(String.raw`\btranslate_${language}_to_[a-z]{2}\b`, 'i'),
     new RegExp(String.raw`\btranslate_[a-z]{2}_to_${language}\b`, 'i'),
+    new RegExp(String.raw`\blanguage\s+${language}\b`, 'i'),
   ];
 
   if (structuredPatterns.some((pattern) => pattern.test(line))) return true;
@@ -159,6 +159,13 @@ if (languageFacingChanges.length === 0) {
 const testFiles = files.filter(isChangedTestFile);
 const addedLines = addedTestLines(baseRef, testFiles);
 const coveredLanguages = new Set();
+const hasRegistryDrivenTest = addedLines.some((line) =>
+  /\b(?:registered_languages|parseRegisteredLanguages)\b/u.test(line),
+);
+
+if (hasRegistryDrivenTest) {
+  for (const language of supportedLanguages) coveredLanguages.add(language);
+}
 
 for (const line of addedLines) {
   for (const language of supportedLanguages) {

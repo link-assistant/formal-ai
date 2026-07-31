@@ -16,6 +16,8 @@ pub const INTERFACE_CAPABILITIES_LINO: &str =
     include_str!("../../data/seed/interface-capabilities.lino");
 pub const MULTILINGUAL_RESPONSES_LINO: &str =
     include_str!("../../data/seed/multilingual-responses.lino");
+pub const MULTILINGUAL_RESPONSES_LANGUAGE_PROTOCOL_LINO: &str =
+    include_str!("../../data/seed/multilingual-responses-language-protocol.lino");
 pub const MULTILINGUAL_RESPONSES_ENTITIES_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-entities.lino");
 pub const MULTILINGUAL_RESPONSES_SYNTHESIS_LINO: &str =
@@ -45,6 +47,7 @@ pub const PERSONAS_LINO: &str = include_str!("../../data/seed/personas.lino");
 pub const SUMMARY_TOPICS_LINO: &str = include_str!("../../data/seed/summary-topics.lino");
 pub const COREFERENCE_LINO: &str = include_str!("../../data/seed/coreference.lino");
 pub const TOOLS_LINO: &str = include_str!("../../data/seed/tools.lino");
+pub const LANGUAGES_LINO: &str = include_str!("../../data/seed/languages.lino");
 pub const COMPUTER_USE_TASKS_LINO: &str = include_str!("../../data/seed/computer-use-tasks.lino");
 pub const LANGUAGE_DETECTION_LINO: &str = include_str!("../../data/seed/language-detection.lino");
 pub const PROMPT_PATTERNS_LINO: &str = include_str!("../../data/seed/prompt-patterns.lino");
@@ -174,6 +177,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             MULTILINGUAL_RESPONSES_LINO,
         ),
         (
+            "data/seed/multilingual-responses-language-protocol.lino",
+            MULTILINGUAL_RESPONSES_LANGUAGE_PROTOCOL_LINO,
+        ),
+        (
             "data/seed/multilingual-responses-entities.lino",
             MULTILINGUAL_RESPONSES_ENTITIES_LINO,
         ),
@@ -223,6 +230,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/summary-topics.lino", SUMMARY_TOPICS_LINO),
         ("data/seed/coreference.lino", COREFERENCE_LINO),
         ("data/seed/tools.lino", TOOLS_LINO),
+        ("data/seed/languages.lino", LANGUAGES_LINO),
         ("data/seed/computer-use-tasks.lino", COMPUTER_USE_TASKS_LINO),
         ("data/seed/language-detection.lino", LANGUAGE_DETECTION_LINO),
         ("data/seed/prompt-patterns.lino", PROMPT_PATTERNS_LINO),
@@ -421,6 +429,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
 /// them, so an intent may live in whichever file keeps the sizes balanced.
 pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_LINO,
+    MULTILINGUAL_RESPONSES_LANGUAGE_PROTOCOL_LINO,
     MULTILINGUAL_RESPONSES_ENTITIES_LINO,
     MULTILINGUAL_RESPONSES_SYNTHESIS_LINO,
     MULTILINGUAL_RESPONSES_ORCHESTRATION_LINO,

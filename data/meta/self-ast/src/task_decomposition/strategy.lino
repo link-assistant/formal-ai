@@ -2,9 +2,9 @@ self_ast_census
   target src/task_decomposition/strategy.rs
   language rust
   fidelity signature
-  byte_len 9194
-  line_count 251
-  content_id source_module_126bb2553a930089
+  byte_len 9146
+  line_count 250
+  content_id source_module_e4fe69dc6b78e655
   symbol_count 20
   symbols
     const STRATEGIES_LINO 11 12
@@ -25,5 +25,5 @@ self_ast_census
     function concrete_target 145 167
     function parse_strategies 169 206
     function parse_contract 208 228
-    function localized_stage_text 230 235
-    function is_repository_work_item 237 251
+    function localized_stage_text 230 234
+    function is_repository_work_item 236 250

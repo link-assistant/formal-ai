@@ -105,7 +105,5 @@ fn render_statement(statement: &StatementVerification, language: &str) -> String
 }
 
 fn localized_template(intent: &str, language: &str) -> String {
-    seed::response_for(intent, language)
-        .or_else(|| seed::response_for(intent, "en"))
-        .unwrap_or_else(|| String::from(SUMMARY_PLACEHOLDER))
+    seed::localized_response(intent, language).unwrap_or_else(|| String::from(SUMMARY_PLACEHOLDER))
 }

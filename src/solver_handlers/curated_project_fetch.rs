@@ -3,7 +3,7 @@
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
-use crate::seed::{response_for, ProjectRecord};
+use crate::seed::{localized_response, ProjectRecord};
 use crate::summarization::{describe_project, SummarizationConfig, SummarizationMode};
 
 use super::{finalize_simple, web_requests::registry_static};
@@ -22,8 +22,7 @@ pub(super) fn try_curated_http_fetch(
         .with_mode(SummarizationMode::Standard)
         .with_language(language);
     let summary = describe_project(project, &config);
-    let body = response_for("http_fetch_curated_project", language)
-        .or_else(|| response_for("http_fetch_curated_project", "en"))?
+    let body = localized_response("http_fetch_curated_project", language)?
         .replace(&["{", "url", "}"].concat(), url)
         .replace(&["{", "summary", "}"].concat(), &summary);
     Some(finalize_simple(

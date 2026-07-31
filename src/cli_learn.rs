@@ -4,17 +4,11 @@ use std::path::PathBuf;
 
 use clap::Subcommand;
 use formal_ai::learning_cycle::{
-    run_learning_cycle, LearningCycleRun, GOOGLE_TRENDS_FRONTIER, GOOGLE_TRENDS_FRONTIER_RECORD,
+    recorded_frontier, recorded_frontiers, run_learning_cycle, LearningCycleRun,
+    GOOGLE_TRENDS_FRONTIER,
 };
 use formal_ai::promotion::render_promotion_proposals;
 use formal_ai::{parse_frontier_record, FrontierItem};
-
-/// Which recorded learning frontier `formal-ai learn cycle` replays.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, clap::ValueEnum)]
-pub enum LearnFrontier {
-    /// The Google Trends frontier recorded by issues #498/#499.
-    GoogleTrends,
-}
 
 /// Auto-learning commands.
 #[derive(Debug, Subcommand)]
@@ -24,9 +18,12 @@ pub enum LearnAction {
     /// issue-#656 shape. Proposal-only and offline: no seed file is written and
     /// no network call is made, so the run is deterministic and reproducible.
     Cycle {
-        /// The recorded frontier to replay.
-        #[arg(long, value_enum, default_value_t = LearnFrontier::GoogleTrends)]
-        frontier: LearnFrontier,
+        /// The slug of the recorded frontier to replay. Resolved through
+        /// `learning_cycle::recorded_frontiers()`, so registering a new
+        /// frontier record makes it selectable here without a code change to
+        /// the argument parser.
+        #[arg(long, default_value_t = String::from(GOOGLE_TRENDS_FRONTIER))]
+        frontier: String,
 
         /// Read frontier items from this `learning_frontier` document instead of
         /// the committed record.
@@ -49,8 +46,8 @@ pub enum LearnAction {
 /// Arguments for `formal-ai learn cycle` (issue #701, E59).
 #[derive(Debug)]
 pub struct LearnCycleArgs {
-    /// The recorded frontier to run the cycle over.
-    pub frontier: LearnFrontier,
+    /// The slug of the recorded frontier to run the cycle over.
+    pub frontier: String,
     /// Read frontier items from this file instead of the committed record.
     pub from: Option<PathBuf>,
     /// Explicit acknowledgement that the run only proposes. Always true today.
@@ -106,18 +103,26 @@ pub fn run_learn_cycle(args: &LearnCycleArgs) -> Result<(), Box<dyn Error>> {
 }
 
 fn load_frontier(args: &LearnCycleArgs) -> Result<(String, Vec<FrontierItem>), Box<dyn Error>> {
-    match &args.from {
-        Some(path) => {
-            let document = fs::read_to_string(path)?;
-            Ok((String::from("custom"), parse_frontier_record(&document)))
-        }
-        None => match args.frontier {
-            LearnFrontier::GoogleTrends => Ok((
-                String::from(GOOGLE_TRENDS_FRONTIER),
-                parse_frontier_record(GOOGLE_TRENDS_FRONTIER_RECORD),
-            )),
-        },
+    if let Some(path) = &args.from {
+        let document = fs::read_to_string(path)?;
+        return Ok((String::from("custom"), parse_frontier_record(&document)));
     }
+    let Some(frontier) = recorded_frontier(&args.frontier) else {
+        return Err(format!(
+            "unknown frontier '{}'. Recorded frontiers: {}",
+            args.frontier,
+            recorded_frontiers()
+                .iter()
+                .map(|frontier| format!("{} ({})", frontier.slug, frontier.summary))
+                .collect::<Vec<_>>()
+                .join(", ")
+        )
+        .into());
+    };
+    Ok((
+        String::from(frontier.slug),
+        parse_frontier_record(frontier.document),
+    ))
 }
 
 /// Summarise the run on stderr so the stdout document stays machine-readable.

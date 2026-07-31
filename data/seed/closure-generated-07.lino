@@ -1,4 +1,19 @@
 meanings
+  tool_process_status
+    defined-by tool
+    lexeme en
+      surface
+        text "tool process status"
+  tool_read_local_file
+    defined-by tool
+    lexeme en
+      surface
+        text "tool read local file"
+  tool_result_completed
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result completed"
   tool_result_empty_generic
     defined-by intent
     lexeme en

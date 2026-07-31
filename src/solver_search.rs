@@ -433,9 +433,8 @@ fn build_answer(
     // interface"), localized to the prompt's language with an English fallback,
     // and its `{...}` placeholders are filled with this run's values.
     let language = detect_language(prompt);
-    let template = seed::response_for("budget_search_solution", language.slug())
-        .or_else(|| seed::response_for("budget_search_solution", "en"))
-        .unwrap_or_default();
+    let template =
+        seed::localized_response("budget_search_solution", language.slug()).unwrap_or_default();
     // The `{...}` tokens are seed template placeholders, not Rust format args;
     // clippy's nursery lint mistakes `{budget}` for a captured binding because a
     // local `budget` is in scope, so it is silenced for this literal substitution.

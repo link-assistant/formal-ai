@@ -22,6 +22,7 @@ use alloc::vec::Vec;
 use core::convert::TryFrom;
 
 pub use super::arithmetic::evaluate_fallback_formatted;
+#[allow(unused_imports)]
 pub use super::language::{detect as detect_language, Language};
 
 /// Normalize an arbitrary prompt to a lowercase, single-space-delimited stream.
@@ -252,43 +253,113 @@ pub fn stable_id(prefix: &str, text: &str) -> String {
     format!("{prefix}_{hash:016x}")
 }
 
-const UNKNOWN_OPENERS_EN: &[&str] = &[
-    "I don't know how to answer that yet.",
-    "I didn't understand you.",
-    "I'm not sure how to respond to that yet.",
-    "I haven't learned to answer that yet.",
-    "That one is new to me.",
-];
-const UNKNOWN_OPENERS_RU: &[&str] = &[
-    "Я пока не знаю, как ответить на это.",
-    "Я тебя не понял.",
-    "Я не уверен, как на это ответить.",
-    "Я ещё не научился отвечать на это.",
-    "Это для меня новое.",
-];
-const UNKNOWN_OPENERS_HI: &[&str] = &[
-    "मुझे अभी इसका उत्तर देना नहीं आता।",
-    "मैं समझ नहीं पाया।",
-    "मुझे यकीन नहीं है कि कैसे उत्तर दूँ।",
-    "मैंने अभी तक यह उत्तर देना नहीं सीखा।",
-    "यह मेरे लिए नया है।",
-];
-const UNKNOWN_OPENERS_ZH: &[&str] = &[
-    "我还不知道如何回答这个问题。",
-    "我不太明白你说的意思。",
-    "我不确定该如何回答。",
-    "我还没有学会回答这个问题。",
-    "这对我来说是新的。",
-];
+/// The opener pools, embedded so the browser worker (`no_std` + `alloc`, no
+/// filesystem) varies its unknown answers from exactly the same data as the
+/// native build. Issue #706: a language's openers are a seed edit, so this
+/// module holds no per-language branch.
+const UNKNOWN_OPENERS: &str = include_str!("../data/seed/unknown-openers.lino");
 
-#[must_use]
-pub fn unknown_openers_for(language: &str) -> &'static [&'static str] {
-    match language {
-        "ru" => UNKNOWN_OPENERS_RU,
-        "hi" => UNKNOWN_OPENERS_HI,
-        "zh" => UNKNOWN_OPENERS_ZH,
-        _ => UNKNOWN_OPENERS_EN,
+/// Strip the surrounding quotes of a seed value, if any.
+fn unquote_seed_value(value: &'static str) -> &'static str {
+    value
+        .strip_prefix('"')
+        .and_then(|rest| rest.strip_suffix('"'))
+        .unwrap_or(value)
+}
+
+/// One `pool` record: a language slug and its openers, in declaration order.
+struct OpenerPool {
+    language: &'static str,
+    openers: Vec<&'static str>,
+}
+
+/// The parsed opener registry: the pools plus the fallback language a slug
+/// without its own pool borrows from.
+struct OpenerRegistry {
+    pools: Vec<OpenerPool>,
+    fallback_language: &'static str,
+    sentence_separators: Vec<&'static str>,
+}
+
+fn parse_opener_registry() -> OpenerRegistry {
+    let mut registry = OpenerRegistry {
+        pools: Vec::new(),
+        fallback_language: "en",
+        sentence_separators: Vec::new(),
+    };
+    for line in UNKNOWN_OPENERS.lines() {
+        let trimmed = line.trim_start();
+        if trimmed.is_empty() {
+            continue;
+        }
+        let (key, value) = trimmed.split_once(' ').unwrap_or((trimmed, ""));
+        match key {
+            "pool" => registry.pools.push(OpenerPool {
+                language: "",
+                openers: Vec::new(),
+            }),
+            "fallback_language" => registry.fallback_language = unquote_seed_value(value),
+            "sentence_separator" => registry.sentence_separators.push(unquote_seed_value(value)),
+            "language" => {
+                if let Some(pool) = registry.pools.last_mut() {
+                    pool.language = unquote_seed_value(value);
+                }
+            }
+            "opener" => {
+                if let Some(pool) = registry.pools.last_mut() {
+                    pool.openers.push(unquote_seed_value(value));
+                }
+            }
+            _ => {}
+        }
     }
+    registry.pools.retain(|pool| !pool.openers.is_empty());
+    registry
+}
+
+// Parsed once per process natively. The WASM worker resets its bump allocator
+// at the start of every exported call, so a cached allocation there would
+// dangle; it reparses inside the caller's epoch.
+#[cfg(not(target_arch = "wasm32"))]
+fn with_opener_registry<R>(action: impl FnOnce(&OpenerRegistry) -> R) -> R {
+    use std::sync::OnceLock;
+    static REGISTRY: OnceLock<OpenerRegistry> = OnceLock::new();
+    action(REGISTRY.get_or_init(parse_opener_registry))
+}
+
+#[cfg(target_arch = "wasm32")]
+fn with_opener_registry<R>(action: impl FnOnce(&OpenerRegistry) -> R) -> R {
+    action(&parse_opener_registry())
+}
+
+/// The opener pool for `language`, or the fallback language's pool when the
+/// seed declares none for it.
+///
+/// Returns an owned vector rather than a slice because the pools are parsed
+/// from seed data, not from per-language constants.
+#[must_use]
+pub fn unknown_openers_for(language: &str) -> Vec<&'static str> {
+    with_opener_registry(|registry| {
+        registry
+            .pools
+            .iter()
+            .find(|pool| pool.language == language)
+            .or_else(|| {
+                registry
+                    .pools
+                    .iter()
+                    .find(|pool| pool.language == registry.fallback_language)
+            })
+            .map(|pool| pool.openers.clone())
+            .unwrap_or_default()
+    })
+}
+
+/// The sentence terminators the unknown-answer body is split on when the seed
+/// opener has drifted from every pool entry.
+#[must_use]
+pub fn unknown_opener_sentence_separators() -> Vec<&'static str> {
+    with_opener_registry(|registry| registry.sentence_separators.clone())
 }
 
 /// Pick the deterministic unknown-answer opener for a prompt/language pair.

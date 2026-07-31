@@ -69,8 +69,7 @@ pub fn try_world_state(
         "world_state_remaining"
     };
     let language = detect_language(prompt);
-    let template = seed::response_for(intent, language.slug())
-        .or_else(|| seed::response_for(intent, "en"))
+    let template = seed::localized_response(intent, language.slug())
         .unwrap_or_else(|| String::from("{remaining}"));
     let listed = remaining
         .iter()

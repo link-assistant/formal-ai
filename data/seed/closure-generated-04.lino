@@ -1,4 +1,9 @@
 meanings
+  response_agent_suggestion_active_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion active ru"
   response_agent_suggestion_active_zh
     defined-by response_template
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "response github repository traffic zh"
-  response_greeting_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response greeting en"

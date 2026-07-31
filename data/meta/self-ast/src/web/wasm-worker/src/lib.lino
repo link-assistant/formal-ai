@@ -2,9 +2,9 @@ self_ast_census
   target src/web/wasm-worker/src/lib.rs
   language rust
   fidelity signature
-  byte_len 25817
-  line_count 824
-  content_id source_module_7363f19002e94734
+  byte_len 25772
+  line_count 820
+  content_id source_module_aefb23640266694d
   symbol_count 65
   symbols
     module language 15 15
@@ -49,26 +49,26 @@ self_ast_census
     function web_search_request_evidence 283 306
     function web_search_fuse 312 327
     function engine_normalize_prompt 343 356
-    function engine_detect_language 361 378
-    function engine_evaluate_arithmetic 385 405
-    function engine_assess_arithmetic_claim 411 426
-    function engine_fact_check_dialogue 432 456
-    struct FactCheckTemplates 458 464
-    struct DialogueStatement 466 473
-    function build_dialogue_fact_check 475 514
-    function looks_declarative 516 527
-    function assess_dialogue_statement 529 564
-    function render_dialogue_statement 566 584
-    function fill_template 586 592
-    function serialize_dialogue_answer 594 652
-    function decode_uri_component 654 672
-    function hex_value 674 681
-    function serialize_arithmetic_assessment 683 705
-    function push_json_string 707 727
-    const HEX 708 708
-    function engine_stable_id 732 748
-    function engine_select_unknown_opener 753 768
-    function engine_match_intent_route 772 784
-    function web_search_registry_dump 788 806
-    function write_output 808 819
-    function panic 822 824
+    function engine_detect_language 361 374
+    function engine_evaluate_arithmetic 381 401
+    function engine_assess_arithmetic_claim 407 422
+    function engine_fact_check_dialogue 428 452
+    struct FactCheckTemplates 454 460
+    struct DialogueStatement 462 469
+    function build_dialogue_fact_check 471 510
+    function looks_declarative 512 523
+    function assess_dialogue_statement 525 560
+    function render_dialogue_statement 562 580
+    function fill_template 582 588
+    function serialize_dialogue_answer 590 648
+    function decode_uri_component 650 668
+    function hex_value 670 677
+    function serialize_arithmetic_assessment 679 701
+    function push_json_string 703 723
+    const HEX 704 704
+    function engine_stable_id 728 744
+    function engine_select_unknown_opener 749 764
+    function engine_match_intent_route 768 780
+    function web_search_registry_dump 784 802
+    function write_output 804 815
+    function panic 818 820

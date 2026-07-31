@@ -1259,8 +1259,15 @@ async function loadSeed() {
           .filter((rule) => rule && rule.language && rule.start && rule.end)
           .map((rule) => ({
             language: rule.language,
+            // Issue #706: carry the script, markers and fallback flags so the
+            // JS detector stays a mirror of `src/language.rs` for every
+            // language the seed registry declares.
+            script: rule.script || "",
             start: Number(rule.start),
             end: Number(rule.end),
+            markers: Array.isArray(rule.markers) ? rule.markers : [],
+            fallback: rule.fallback === true,
+            alphabeticOnly: rule.alphabeticOnly === true,
             sourceHost: rule.sourceHost || "",
           }));
       }

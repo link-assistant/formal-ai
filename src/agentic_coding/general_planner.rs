@@ -356,8 +356,7 @@ fn shell_quote(value: &str) -> String {
 }
 
 fn command_plan_text(intent: &str, language: &str, target: &str) -> String {
-    seed::response_for(intent, language)
-        .or_else(|| seed::response_for(intent, "en"))
+    seed::localized_response(intent, language)
         .unwrap_or_else(|| intent.to_owned())
         .replace(TARGET_PLACEHOLDER, target)
 }

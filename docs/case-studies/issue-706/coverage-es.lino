@@ -1,0 +1,23 @@
+coverage_report
+  language es
+  generated_by scripts/language-protocol.mjs
+  code_changes 0
+  suites_total 6
+  suites_passing 6
+  suite_coverage_permille 1000
+  meaning_coverage partial
+  fallback_policy explicit_gap
+  suite greetings
+    status pass
+  suite identity
+    status pass
+  suite concept_lookup
+    status pass
+  suite math_wrappers
+    status pass
+  suite operation_vocabulary
+    status pass
+  suite translation_round_trip
+    status pass
+  uncovered_meanings
+    event language_gap

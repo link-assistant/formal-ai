@@ -228,8 +228,7 @@ fn parse_contract() -> Option<TaskDecompositionContract> {
 }
 
 fn localized_stage_text(intent: &str, language: &str, task: &str) -> String {
-    seed::response_for(intent, language)
-        .or_else(|| seed::response_for(intent, "en"))
+    seed::localized_response(intent, language)
         .unwrap_or_default()
         .replace(TASK_PLACEHOLDER, task)
 }

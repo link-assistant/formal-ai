@@ -100,7 +100,7 @@ use crate::engine::{
 };
 use crate::event_log::{build_evidence_links, EventLog};
 use crate::language::detect as detect_language;
-use crate::seed::response_for;
+use crate::seed::{localized_response, response_for};
 use crate::solver_helpers::{
     build_sorting_algorithm_answer, detect_algorithm_language, detect_program_languages,
     extract_backticked, extract_concept_from_query, extract_javascript_program,
@@ -830,9 +830,7 @@ pub fn try_learn_from_source(
     log.append("learning_capability", source.capability.clone());
 
     let language = detect_language(prompt);
-    let intro = response_for("learn_from_source", language.slug())
-        .or_else(|| response_for("learn_from_source", "en"))
-        .unwrap_or_default();
+    let intro = localized_response("learn_from_source", language.slug()).unwrap_or_default();
     let body = if intro.is_empty() {
         summary
     } else {

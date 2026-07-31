@@ -57,6 +57,55 @@ pub const GOOGLE_TRENDS_FRONTIER: &str = "google-trends";
 pub const GOOGLE_TRENDS_FRONTIER_RECORD: &str =
     include_str!("../data/meta/learning-frontier-google-trends.lino");
 
+/// The frontier slug of the language learning frontier (issue #706).
+pub const LANGUAGE_GAP_FRONTIER: &str = "language-gap";
+
+/// The committed record of the language frontier, produced by
+/// `cargo run --example issue_706_language_frontier`.
+pub const LANGUAGE_GAP_FRONTIER_RECORD: &str =
+    include_str!("../data/meta/learning-frontier-language-gap.lino");
+
+/// One recorded frontier the CLI can replay.
+///
+/// Issue #706: `formal-ai learn cycle --frontier <slug>` resolves its argument
+/// through this registry instead of a `match` over an enum of one, so a new
+/// recorded frontier is one entry here and needs no change to the cycle, the
+/// argument parser, or the reporting.
+pub struct RecordedFrontier {
+    /// The slug the CLI accepts.
+    pub slug: &'static str,
+    /// The embedded frontier document.
+    pub document: &'static str,
+    /// What the frontier records, for `--help`-style listings.
+    pub summary: &'static str,
+}
+
+/// Every frontier `formal-ai learn cycle` can replay, in registration order.
+#[must_use]
+pub fn recorded_frontiers() -> Vec<RecordedFrontier> {
+    vec![
+        RecordedFrontier {
+            slug: GOOGLE_TRENDS_FRONTIER,
+            document: GOOGLE_TRENDS_FRONTIER_RECORD,
+            summary: "trending prompts the engine could not route (issues #498/#499/#701)",
+        },
+        RecordedFrontier {
+            slug: LANGUAGE_GAP_FRONTIER,
+            document: LANGUAGE_GAP_FRONTIER_RECORD,
+            summary: "prompts a registered language supplied that the engine cannot answer in \
+                      that language (issue #706)",
+        },
+    ]
+}
+
+/// Resolve a frontier slug to its recorded document.
+#[must_use]
+pub fn recorded_frontier(slug: &str) -> Option<RecordedFrontier> {
+    recorded_frontiers()
+        .into_iter()
+        .find(|frontier| frontier.slug == slug)
+}
+
 /// The seed file learned request openers are promoted into.
 pub const LEARNED_REQUEST_OPENERS_SEED_FILE: &str = "data/seed/learned-request-openers.lino";
 
@@ -313,6 +362,15 @@ pub fn run_learning_cycle(frontier: &str, items: &[FrontierItem]) -> LearningCyc
         blocked,
         proposals,
     }
+}
+
+/// Run the cycle over the recorded language frontier (issue #706).
+#[must_use]
+pub fn language_gap_learning_cycle() -> LearningCycleRun {
+    run_learning_cycle(
+        LANGUAGE_GAP_FRONTIER,
+        &parse_frontier_record(LANGUAGE_GAP_FRONTIER_RECORD),
+    )
 }
 
 /// Run the cycle over the recorded Google Trends frontier.

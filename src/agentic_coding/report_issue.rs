@@ -182,9 +182,7 @@ fn ask_or_render(
 }
 
 fn localized(intent: &str, language: &str) -> String {
-    seed::response_for(intent, language)
-        .or_else(|| seed::response_for(intent, "en"))
-        .unwrap_or_default()
+    seed::localized_response(intent, language).unwrap_or_default()
 }
 
 fn localized_options(intent: &str, language: &str) -> Vec<(String, String)> {

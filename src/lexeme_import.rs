@@ -3,9 +3,9 @@
 //! Generalises the one-off `scripts/ground-meanings.rs` into a reusable,
 //! deterministic pipeline that turns a list of Wikidata concepts into grounded
 //! [`Meaning`](crate::seed::Meaning) blocks for the seed. Each concept is a
-//! `<slug> <Qid>` pair; the importer reads the concept's four project-language
-//! labels (en/ru/hi/zh) from the committed Wikidata entity cache and emits a
-//! `meanings` block whose surfaces denote the meaning and carry their
+//! `<slug> <Qid>` pair; the importer reads every full-support language registered
+//! in `data/seed/languages.lino` from the committed Wikidata entity cache and
+//! emits a `meanings` block whose surfaces denote the meaning and carry their
 //! `part_of_speech`/`grammatical_number` facets.
 //!
 //! Two invariants make this safe to ship:
@@ -34,11 +34,25 @@ use serde_json::Value;
 use crate::event_log::EventLog;
 use crate::json_lino::json_cache_file;
 use crate::knowledge::cache_capacity;
-use crate::seed::{parse_lexicon_text, response_for};
+use crate::seed::{localized_response, parse_lexicon_text, LANGUAGES_LINO};
 use crate::translation::http::HttpClient;
 
-/// The four project languages, in canonical emission order.
-pub const IMPORT_LANGUAGES: [&str; 4] = ["en", "ru", "hi", "zh"];
+/// Full-support project languages, derived from the registry in ledger order.
+#[must_use]
+pub fn import_languages() -> Vec<&'static str> {
+    let mut current = None;
+    let mut languages = Vec::new();
+    for line in LANGUAGES_LINO.lines() {
+        if let Some(language) = line.strip_prefix("  language ") {
+            current = Some(language);
+        } else if line == "    status full" {
+            if let Some(language) = current.take() {
+                languages.push(language);
+            }
+        }
+    }
+    languages
+}
 
 /// The part of speech every imported common noun is tagged with.
 pub const PART_OF_SPEECH: &str = "noun";
@@ -68,9 +82,7 @@ pub fn diagnostic(intent: &str, values: &[(&str, &str)]) -> String {
 /// requested locale has no grounded record.
 #[must_use]
 pub fn diagnostic_for_language(intent: &str, language: &str, values: &[(&str, &str)]) -> String {
-    let mut rendered = response_for(intent, language)
-        .or_else(|| response_for(intent, "en"))
-        .unwrap_or_else(|| intent.to_owned());
+    let mut rendered = localized_response(intent, language).unwrap_or_else(|| intent.to_owned());
     for (name, value) in values {
         rendered = rendered.replace(&format!("{{{name}}}"), value);
     }
@@ -98,7 +110,7 @@ pub struct Concept {
 pub struct GroundedLexeme {
     pub slug: String,
     pub qid: String,
-    /// Language code → single-token surface, one entry per [`IMPORT_LANGUAGES`].
+    /// Language code → single-token surface, one entry per [`import_languages`].
     pub labels: BTreeMap<String, String>,
     /// Language code → the exact cache record field that supplied the surface.
     /// Item labels are not misrepresented as Wikidata Lexeme (`L…`) records.
@@ -304,8 +316,14 @@ pub fn run(
     report.coverage = ImportCoverage {
         requested_concepts: config.concepts.len(),
         accepted_concepts: report.accepted.len(),
-        expected_surfaces: config.concepts.len().saturating_mul(IMPORT_LANGUAGES.len()),
-        emitted_surfaces: report.accepted.len().saturating_mul(IMPORT_LANGUAGES.len()),
+        expected_surfaces: config
+            .concepts
+            .len()
+            .saturating_mul(import_languages().len()),
+        emitted_surfaces: report
+            .accepted
+            .len()
+            .saturating_mul(import_languages().len()),
     };
     report
 }
@@ -322,7 +340,7 @@ fn reject(report: &mut ImportReport, events: &mut EventLog, concept: &Concept, r
     });
 }
 
-/// Resolve the four labels for `concept`, reading the committed cache or (when
+/// Resolve the registered labels for `concept`, reading the committed cache or (when
 /// online and within budget) fetching and populating it.
 fn resolve_surfaces(
     config: &ImportConfig,
@@ -391,7 +409,7 @@ pub fn surfaces_from_entity(value: &Value, qid: &str) -> Result<SurfaceMaps, Str
         .ok_or_else(|| diagnostic("lexeme_import_no_labels_in_cache", &[("qid", qid)]))?;
     let mut out = BTreeMap::new();
     let mut sources = BTreeMap::new();
-    for language in IMPORT_LANGUAGES {
+    for language in import_languages() {
         let label = labels
             .get(language)
             .and_then(|label| label.get("value"))
@@ -441,21 +459,9 @@ pub fn labels_from_entity(value: &Value, qid: &str) -> Result<BTreeMap<String, S
 }
 
 fn surface_matches_language(surface: &str, language: &str) -> bool {
-    let contains = |start: u32, end: u32| {
-        surface
-            .chars()
-            .map(u32::from)
-            .any(|codepoint| (start..=end).contains(&codepoint))
-    };
-    match language {
-        "en" => surface
-            .chars()
-            .any(|character| character.is_ascii_alphabetic()),
-        "ru" => contains(0x0400, 0x052f),
-        "hi" => contains(0x0900, 0x097f),
-        "zh" => contains(0x3400, 0x9fff) || contains(0xf900, 0xfaff),
-        _ => false,
-    }
+    // Issue #706: the script a language writes in is a detection-registry fact,
+    // so a new language's surfaces are validated without a Unicode range here.
+    crate::language::surface_matches_language(surface, language)
 }
 
 /// Fetch, trim, and cache `qid` from the live Wikidata `Special:EntityData`
@@ -558,7 +564,7 @@ enum Ordered {
 fn keep_languages(section: Option<&Value>) -> Option<Ordered> {
     let object = section?.as_object()?;
     let mut kept = Vec::new();
-    for language in IMPORT_LANGUAGES {
+    for language in import_languages() {
         if let Some(entry) = object.get(language) {
             kept.push((language.to_string(), value_to_ordered(entry)));
         }
@@ -569,7 +575,7 @@ fn keep_languages(section: Option<&Value>) -> Option<Ordered> {
 fn keep_language_arrays(section: Option<&Value>) -> Option<Ordered> {
     let object = section?.as_object()?;
     let mut kept = Vec::new();
-    for language in IMPORT_LANGUAGES {
+    for language in import_languages() {
         if let Some(Value::Array(items)) = object.get(language) {
             if !items.is_empty() {
                 kept.push((
@@ -697,7 +703,7 @@ pub fn validate(lexeme: &GroundedLexeme) -> Result<(), String> {
             &[("slug", &lexeme.slug)],
         ));
     }
-    for language in IMPORT_LANGUAGES {
+    for language in import_languages() {
         let surface = lexeme
             .labels
             .get(language)
@@ -756,7 +762,7 @@ pub fn validate(lexeme: &GroundedLexeme) -> Result<(), String> {
             &[("slug", &lexeme.slug), ("defined_by", DEFINED_BY)],
         ));
     }
-    for language in IMPORT_LANGUAGES {
+    for language in import_languages() {
         let expected = &lexeme.labels[language];
         let lexeme_block = meaning
             .lexemes
@@ -826,7 +832,7 @@ pub fn render_block(lexeme: &GroundedLexeme) -> String {
     let _ = writeln!(block, "  {}", lexeme.slug);
     let _ = writeln!(block, "    grounded-in {}", lexeme.qid);
     let _ = writeln!(block, "    defined-by {DEFINED_BY}");
-    for language in IMPORT_LANGUAGES {
+    for language in import_languages() {
         let surface = &lexeme.labels[language];
         let _ = writeln!(block, "    lexeme {language}");
         let _ = writeln!(block, "      surface");

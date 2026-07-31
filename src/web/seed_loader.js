@@ -22,6 +22,7 @@
     "seed/agent-info.lino",
     "seed/interface-capabilities.lino",
     "seed/multilingual-responses.lino",
+    "seed/multilingual-responses-language-protocol.lino",
     "seed/multilingual-responses-entities.lino",
     "seed/multilingual-responses-synthesis.lino",
     "seed/multilingual-responses-orchestration.lino",
@@ -37,7 +38,9 @@
     "seed/summary-topics.lino",
     "seed/coreference.lino",
     "seed/tools.lino",
+    "seed/languages.lino",
     "seed/language-detection.lino",
+    "seed/unknown-openers.lino",
     "seed/prompt-patterns.lino",
     "seed/intent-routing.lino",
     "seed/handler-precedence.lino",
@@ -732,13 +735,34 @@
         id: entry.id,
         language: findChildValue(entry, "language"),
         label: findChildValue(entry, "label"),
+        // Issue #706: `script`, `markers`, `fallback` and `alphabetic-only`
+        // let a language be added by editing seed data alone — the worker
+        // reads them instead of hardcoding the language list.
+        script: findChildValue(entry, "script"),
         start: parseCodepoint(findChildValue(entry, "start")),
         end: parseCodepoint(findChildValue(entry, "end")),
+        markers: parseQuotedList(findChildValue(entry, "markers")),
+        fallback: findChildValue(entry, "fallback") === "yes",
+        alphabeticOnly: findChildValue(entry, "alphabetic-only") === "yes",
         note: findChildValue(entry, "note"),
         sourceHost: findChildValue(entry, "source-host"),
       });
     }
     return rules;
+  }
+
+  // Parse a `("a" "b" "c")` seed list into an array of strings. Mirrors
+  // `parse_quoted_list` in `src/language.rs`.
+  function parseQuotedList(value) {
+    var text = String(value || "");
+    var items = [];
+    var match = /"([^"]*)"/g;
+    var found = match.exec(text);
+    while (found) {
+      if (found[1]) items.push(found[1]);
+      found = match.exec(text);
+    }
+    return items;
   }
 
   function parseCodepoint(value) {

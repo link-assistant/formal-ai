@@ -127,14 +127,14 @@ fn task_ladder_ratchet_preserves_real_formal_ai_authorship_evidence() {
         "docs/case-studies/issue-842/self-hosting-census-refresh/agent-stream-self-ast.jsonl",
     ))
     .expect("final-source Agent CLI self-AST stream");
-    assert!(refresh_stream.contains("ses_052984123ffenzPVkmsVADtAHL"));
+    assert!(refresh_stream.contains("ses_0480c4ae7ffeFVmrstvS6LGqm2"));
     assert!(refresh_stream.contains("formal-ai"));
 
     let self_heal_stream = fs::read_to_string(root.join(
         "docs/case-studies/issue-842/self-hosting-census-refresh/agent-stream-self-heal.jsonl",
     ))
     .expect("final-source Agent CLI self-healing stream");
-    assert!(self_heal_stream.contains("ses_04a21ae9bffeIi4q9gKIUZsCJg"));
+    assert!(self_heal_stream.contains("ses_048082b3affe30zFgZI0WRMYm3"));
     assert!(self_heal_stream.contains("formal-ai"));
     assert_eq!(
         fs::read(root.join("data/meta/self-healing-case.lino")).expect("canonical repair case"),

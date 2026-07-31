@@ -91,8 +91,8 @@ synthesis observation to the source surface that a reviewed repair would
 change.
 
 After the final Clippy correction changed the owned source, session
-`ses_052984123ffenzPVkmsVADtAHL` reran that self-AST axis through the real Agent
-CLI. A separate session, `ses_04a21ae9bffeIi4q9gKIUZsCJg`, reran the
+`ses_0480c4ae7ffeFVmrstvS6LGqm2` reran that self-AST axis through the real Agent
+CLI. A separate session, `ses_048082b3affe30zFgZI0WRMYm3`, reran the
 self-healing axis whose repair-case source map also depends on the planner.
 `self-hosting-census-refresh/` retains both final-source streams, Formal AI
 traces, focused artifacts, and the census renderer summary. The historical

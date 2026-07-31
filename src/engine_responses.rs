@@ -46,9 +46,7 @@ pub const UNKNOWN_EXAMPLES: &[&str] = &["Any prompt without a matching symbolic 
 /// a meaning, never hardcoded natural language (R379).
 fn cached_response(cell: &'static OnceLock<String>, intent: &str, language: &str) -> &'static str {
     cell.get_or_init(|| {
-        seed::response_for(intent, language)
-            .or_else(|| seed::response_for(intent, "en"))
-            .unwrap_or_else(|| intent.to_string())
+        seed::localized_response(intent, language).unwrap_or_else(|| intent.to_string())
     })
     .as_str()
 }
@@ -196,21 +194,6 @@ pub fn hindi_identity_answer() -> &'static str {
 pub fn chinese_identity_answer() -> &'static str {
     static CELL: OnceLock<String> = OnceLock::new();
     cached_response(&CELL, "identity", "zh")
-}
-
-pub fn russian_unknown_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "unknown", "ru")
-}
-
-pub fn hindi_unknown_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "unknown", "hi")
-}
-
-pub fn chinese_unknown_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "unknown", "zh")
 }
 
 pub const fn unknown_language_fallback_answer() -> &'static str {

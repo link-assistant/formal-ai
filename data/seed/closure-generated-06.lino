@@ -1,4 +1,9 @@
 meanings
+  response_statement_audit_selector_required_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response statement audit selector required en"
   response_statement_audit_strength_range_en
     defined-by response_template
     lexeme en
@@ -819,6 +824,11 @@ meanings
     lexeme en
       surface
         text "rule russian"
+  rule_spanish
+    defined-by rule
+    lexeme en
+      surface
+        text "rule spanish"
   run_agent
     defined-by name
     lexeme en
@@ -839,6 +849,11 @@ meanings
     lexeme en
       surface
         text "screenshot"
+  script_and_markers
+    defined-by concept
+    lexeme en
+      surface
+        text "script and markers"
   sdk
     defined-by word_surface
     lexeme en
@@ -1379,18 +1394,3 @@ meanings
     lexeme en
       surface
         text "tool intent routing"
-  tool_process_status
-    defined-by tool
-    lexeme en
-      surface
-        text "tool process status"
-  tool_read_local_file
-    defined-by tool
-    lexeme en
-      surface
-        text "tool read local file"
-  tool_result_completed
-    defined-by intent
-    lexeme en
-      surface
-        text "tool result completed"

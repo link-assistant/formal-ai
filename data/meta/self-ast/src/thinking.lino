@@ -2,19 +2,19 @@ self_ast_census
   target src/thinking.rs
   language rust
   fidelity signature
-  byte_len 18287
-  line_count 455
-  content_id source_module_aaeda81235e68b4a
+  byte_len 18421
+  line_count 457
+  content_id source_module_ecb2d81c327fb91d
   symbol_count 11
   symbols
     struct ThinkingStep 20 38
     function new 42 65
     function with_parent 71 74
-    function thinking_language_label 79 93
-    function humanize_meta_identifier 99 115
-    function thinking_narrative 136 199
-    function render_thinking_steps 208 226
-    function indefinite_article 231 236
-    function strip_agent_substep_prefix 240 249
-    function truncate_thinking_detail 251 266
-    function naturalize_thinking_step 275 455
+    function thinking_language_label 79 95
+    function humanize_meta_identifier 101 117
+    function thinking_narrative 138 201
+    function render_thinking_steps 210 228
+    function indefinite_article 233 238
+    function strip_agent_substep_prefix 242 251
+    function truncate_thinking_detail 253 268
+    function naturalize_thinking_step 277 457

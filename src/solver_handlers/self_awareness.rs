@@ -514,9 +514,7 @@ fn has_char_in_range(text: &str, start: char, end: char) -> bool {
 }
 
 fn identity_body(language: &str) -> String {
-    seed::response_for("identity", language)
-        .or_else(|| seed::response_for("identity", "en"))
-        .unwrap_or_else(|| identity_answer().to_owned())
+    seed::localized_response("identity", language).unwrap_or_else(|| identity_answer().to_owned())
 }
 
 fn is_known_fact_query(normalized: &str) -> bool {

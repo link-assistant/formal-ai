@@ -1,4 +1,9 @@
 meanings
+  pattern_assistant_free_time_phrase_khali_samay_men_kya_karte_ho_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase khali samay men kya karte ho hi"
   pattern_assistant_free_time_phrase_ni_kongxian_shijian_zuo_shenme_zh
     defined-by prompt_pattern
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "response agent suggestion active hi"
-  response_agent_suggestion_active_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent suggestion active ru"

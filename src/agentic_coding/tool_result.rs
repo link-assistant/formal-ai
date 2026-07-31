@@ -438,8 +438,7 @@ fn fill(
     const PAYLOAD_PLACEHOLDER: &str = "{payload}";
     const ERROR_PLACEHOLDER: &str = "{error}";
 
-    crate::seed::response_for(intent, language)
-        .or_else(|| crate::seed::response_for(intent, "en"))
+    crate::seed::localized_response(intent, language)
         .unwrap_or_default()
         .replace(TOOL_PLACEHOLDER, tool)
         .replace(FORMAT_PLACEHOLDER, format)

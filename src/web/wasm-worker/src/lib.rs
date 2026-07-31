@@ -28,7 +28,7 @@ mod web_search_core;
 use web_engine_core::{
     assess_arithmetic_claim, detect_language, evaluate_arithmetic_expression,
     matches_intent_route_payload, normalize_prompt, select_unknown_opener, stable_id,
-    ArithmeticClaimAssessment, ArithmeticClaimOutcome, Language,
+    ArithmeticClaimAssessment, ArithmeticClaimOutcome,
 };
 use web_search_core::{
     build_request_evidence, default_search_plan_ids, parse_rrf_input, reciprocal_rank_fusion,
@@ -367,13 +367,9 @@ pub extern "C" fn engine_detect_language(input_length: usize) -> usize {
         )
     };
     let text = core::str::from_utf8(bytes).unwrap_or("");
-    let slug: &'static str = match detect_language(text) {
-        Language::English => "en",
-        Language::Russian => "ru",
-        Language::Hindi => "hi",
-        Language::Chinese => "zh",
-        Language::Unknown => "unknown",
-    };
+    // Issue #706: the slug is the language's identity in the registry, so the
+    // bridge forwards it instead of re-listing the languages in Rust.
+    let slug: &'static str = detect_language(text).slug();
     write_output(slug.as_bytes())
 }
 

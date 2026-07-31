@@ -1,0 +1,18 @@
+language_candidate ar
+  name Arabic
+  detection
+    start 0x0600
+    end 0x06FF
+    confidence_permille 980
+  labels
+    apple تفاحة
+    greeting_hello مرحبا
+  response greeting "مرحبًا! كيف يمكنني مساعدتك؟"
+  response identity "أنا formal-ai، نظام ذكاء اصطناعي رمزي حتمي."
+  operation uppercase "أحرف كبيرة"
+  suite greetings pass
+  suite identity pass
+  suite concept_lookup pass
+  suite math_wrappers gap
+  suite operation_vocabulary pass
+  suite translation_round_trip pass

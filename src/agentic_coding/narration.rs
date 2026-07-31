@@ -64,7 +64,7 @@ const fn capability_intent(capability: Capability) -> &'static str {
 /// Look up `intent` in the requested language, falling back to English so a
 /// missing translation still yields a sentence rather than silence.
 fn localized(intent: &str, language: &str) -> Option<String> {
-    crate::seed::response_for(intent, language).or_else(|| crate::seed::response_for(intent, "en"))
+    crate::seed::localized_response(intent, language)
 }
 
 fn tool_action_target(arguments: &str) -> String {

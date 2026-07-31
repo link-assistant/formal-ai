@@ -430,8 +430,7 @@ fn plan_general_change_step(
     if plan.mode == GeneralPlanMode::RepositoryWorkItem {
         let response_language = crate::language::detect(&plan.goal).slug();
         let mut answer =
-            crate::seed::response_for("general_plan_repository_complete", response_language)
-                .or_else(|| crate::seed::response_for("general_plan_repository_complete", "en"))
+            crate::seed::localized_response("general_plan_repository_complete", response_language)
                 .unwrap_or_default();
         answer = answer.replace("{target}", &plan.target);
         answer = answer.replace("{plan_path}", PLAN_PATH);

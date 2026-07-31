@@ -1,4 +1,9 @@
 meanings
+  file_handle
+    defined-by concept
+    lexeme en
+      surface
+        text "file handle"
   files
     defined-by word_surface
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern assistant free time phrase how do you spend your free time en"
-  pattern_assistant_free_time_phrase_khali_samay_men_kya_karte_ho_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase khali samay men kya karte ho hi"

@@ -189,10 +189,14 @@ let ENTITY_NAMES_LINO = "";
 let cachedKnownEntityNames = null;
 let MEANINGS_LINO = "";
 let AGENT_INFO = {};
+// Bootstrap copy of `data/seed/language-detection.lino`, replaced verbatim by
+// the seed registry at init() time. Issue #706: every field a language needs
+// lives here as data, so registering a new language never edits worker code.
 let LANGUAGE_RULES = [
-  { language: "ru", start: 0x0400, end: 0x04ff },
-  { language: "hi", start: 0x0900, end: 0x097f },
-  { language: "zh", start: 0x4e00, end: 0x9fff },
+  { language: "ru", script: "Cyrillic", start: 0x0400, end: 0x04ff },
+  { language: "hi", script: "Devanagari", start: 0x0900, end: 0x097f },
+  { language: "zh", script: "Han", start: 0x4e00, end: 0x9fff },
+  { language: "en", script: "Latin", start: 0x0041, end: 0x007a, fallback: true, alphabeticOnly: true },
 ];
 let PROMPT_PATTERNS = [];
 
@@ -224,6 +228,11 @@ function hydrateLinoSeedText(raw) {
   OPERATION_VOCABULARY_LINO = seedRawText(raw, "operation-vocabulary.lino");
   MARKET_PRICE_REFERENCES_LINO = seedRawText(raw, "market-price-references.lino");
   ENTITY_NAMES_LINO = seedRawText(raw, "entity-names.lino");
+  const unknownOpeners = seedRawText(raw, "unknown-openers.lino");
+  if (unknownOpeners) {
+    UNKNOWN_OPENERS_LINO = unknownOpeners;
+    cachedUnknownOpenerRegistry = null;
+  }
   cachedKnownEntityNames = null;
   MEANINGS_LINO = seedRawTexts(
     raw,
@@ -673,50 +682,50 @@ function assistantNameAnswer(language, preferences) {
   return `My name is ${name}. I'm formal AI.`;
 }
 
-// Mirrors `src/engine.rs::UNKNOWN_OPENERS_*`. The first entry of each pool
-// equals the opener already embedded in the seed text so the "with-variations"
-// answer is a strict superset of the seed. Different prompts get different
-// openers; the same prompt always picks the same one (FNV-1a hash, mirrored
-// from `stableBehaviorRuleId`).
-const UNKNOWN_OPENERS_BY_LANGUAGE = {
-  en: [
-    "I don't know how to answer that yet.",
-    "I didn't understand you.",
-    "I'm not sure how to respond to that yet.",
-    "I haven't learned to answer that yet.",
-    "That one is new to me.",
-  ],
-  ru: [
-    "Я пока не знаю, как ответить на это.",
-    "Я тебя не понял.",
-    "Я не уверен, как на это ответить.",
-    "Я ещё не научился отвечать на это.",
-    "Это для меня новое.",
-  ],
-  hi: [
-    "मुझे अभी इसका उत्तर देना नहीं आता।",
-    "मैं समझ नहीं पाया।",
-    "मुझे यकीन नहीं है कि कैसे उत्तर दूँ।",
-    "मैंने अभी तक यह उत्तर देना नहीं सीखा।",
-    "यह मेरे लिए नया है।",
-  ],
-  zh: [
-    "我还不知道如何回答这个问题。",
-    "我不太明白你说的意思。",
-    "我不确定该如何回答。",
-    "我还没有学会回答这个问题。",
-    "这对我来说是新的。",
-  ],
-};
+// Mirrors `src/web_engine_core.rs::parse_opener_registry`. Issue #706 moved the
+// pools out of this file into `data/seed/unknown-openers.lino`, so registering a
+// language's openers is a data edit shared by the Rust core, the WASM worker and
+// this worker. There is no bootstrap copy: until `init()` hydrates the text the
+// pools are empty and the unknown answer is the seed answer alone, so an opener
+// is only ever added once its data has actually been loaded. The first opener of
+// a pool equals the one embedded in the seed text, so the varied answer stays a
+// strict superset of the seed; the same prompt always picks the same opener
+// (FNV-1a hash, mirrored from `stableBehaviorRuleId`).
+let UNKNOWN_OPENERS_LINO = "";
+let cachedUnknownOpenerRegistry = null;
+
+function linoChildValues(node, name) {
+  return node.children.filter((child) => child.name === name).map((child) => child.value);
+}
+
+function unknownOpenerRegistry() {
+  if (cachedUnknownOpenerRegistry) return cachedUnknownOpenerRegistry;
+  const root = parseLinoTree(String(UNKNOWN_OPENERS_LINO || "")).children[0] || { children: [] };
+  cachedUnknownOpenerRegistry = {
+    fallbackLanguage: linoChildValues(root, "fallback_language")[0] || "en",
+    sentenceSeparators: linoChildValues(root, "sentence_separator"),
+    pools: root.children.filter((child) => child.name === "pool")
+      .map((pool) => ({
+        language: linoChildValues(pool, "language")[0] || "",
+        openers: linoChildValues(pool, "opener"),
+      }))
+      .filter((pool) => pool.openers.length > 0),
+  };
+  return cachedUnknownOpenerRegistry;
+}
 
 function unknownOpenersFor(language) {
-  return UNKNOWN_OPENERS_BY_LANGUAGE[language] || UNKNOWN_OPENERS_BY_LANGUAGE.en;
+  const { pools, fallbackLanguage } = unknownOpenerRegistry();
+  const match = pools.find((pool) => pool.language === language) ||
+    pools.find((pool) => pool.language === fallbackLanguage);
+  return match ? match.openers : [];
 }
 
 function selectUnknownOpener(prompt, language) {
   const fromWasm = wasmSelectUnknownOpener(prompt, language);
   if (fromWasm) return fromWasm;
   const pool = unknownOpenersFor(language);
+  if (pool.length === 0) return "";
   const trimmed = String(prompt || "").trim();
   if (trimmed === "") return pool[0];
   const id = stableBehaviorRuleId("unknown_opener", trimmed);
@@ -739,7 +748,7 @@ function stripLeadingUnknownOpener(text, language) {
       return trimmed.slice(known.length).trimStart();
     }
   }
-  for (const separator of [". ", "。", "। "]) {
+  for (const separator of unknownOpenerRegistry().sentenceSeparators) {
     const idx = trimmed.indexOf(separator);
     if (idx >= 0) {
       return trimmed.slice(idx + separator.length).trimStart();
@@ -751,6 +760,7 @@ function stripLeadingUnknownOpener(text, language) {
 function unknownAnswerWithVariation(prompt, language) {
   const seedText = answerFor("unknown", language);
   const opener = selectUnknownOpener(prompt, language);
+  if (!opener) return seedText;
   const body = stripLeadingUnknownOpener(seedText, language);
   if (!body) return opener;
   return `${opener} ${body}`;
@@ -844,20 +854,40 @@ function detectLanguage(prompt) {
     }
     return fromWasm;
   }
-  for (const ch of text) {
-    const code = ch.codePointAt(0);
-    for (const rule of LANGUAGE_RULES) {
-      if (
-        rule.language !== "en" &&
-        code >= rule.start &&
-        code <= rule.end
-      ) {
-        return rule.language;
-      }
-    }
+  const detected = detectLanguageFromRules(text);
+  if (detected === "unknown") return AGENT_INFO.default_language || "en";
+  return detected;
+}
+
+// Registry-driven fallback detection, reached only when the Rust→WASM worker is
+// unavailable (a `file://` demo). `detect_with` in `src/language.rs` stays the
+// authority and owns the full tie-breaking ladder; issue #658 (R380) keeps this
+// mirror thin, so it is the reduced form: the dominant script other than the
+// fallback's decides, and a language sharing the fallback script (Spanish on
+// Latin) votes through its markers only when no rival script is present. Issue
+// #706: every field read here comes from `data/seed/language-detection.lino`,
+// so registering a language never edits this file.
+function detectLanguageFromRules(text) {
+  const back = LANGUAGE_RULES.find((rule) => rule.fallback) || {};
+  const counts = new Map();
+  let other = 0;
+  for (const character of text) {
+    const code = character.codePointAt(0);
+    const rule = LANGUAGE_RULES.find((candidate) => code >= candidate.start &&
+      code <= candidate.end && (!candidate.alphabeticOnly || /\p{L}/u.test(character)));
+    if (rule) counts.set(rule.script, (counts.get(rule.script) || 0) + 1);
+    else if (/\p{L}/u.test(character)) other += 1;
   }
-  if (/[a-zA-Z]/.test(text)) return "en";
-  return AGENT_INFO.default_language || "en";
+  const at = (rule) => counts.get(rule && rule.script) || 0;
+  const rival = LANGUAGE_RULES
+    .filter((rule) => !rule.fallback && rule.script !== back.script && at(rule) > 0)
+    .sort((left, right) => at(right) - at(left))[0];
+  if (other > at(back) && (!rival || other >= at(rival))) return "unknown";
+  if (rival) return rival.language;
+  const normalized = text.toLowerCase();
+  const byMarker = LANGUAGE_RULES.find((rule) => !rule.fallback && at(rule) > 0 &&
+    (rule.markers || []).some((marker) => normalized.includes(String(marker).toLowerCase())));
+  return byMarker ? byMarker.language : back.language || "en";
 }
 
 // Issue #324: the user can choose which language drives responses. The default
@@ -868,8 +898,12 @@ function detectLanguage(prompt) {
 // the deterministic default behavior is never lost.
 const RESPONSE_LANGUAGE_MODES = ["last_message", "preferred", "ui"];
 
+// Issue #706: the set of answerable languages is the detection registry, not
+// a hardcoded list — registering a language in
+// `data/seed/language-detection.lino` makes it selectable here too.
 function isKnownResponseLanguage(slug) {
-  return slug === "en" || slug === "ru" || slug === "hi" || slug === "zh";
+  if (!slug) return false;
+  return LANGUAGE_RULES.some((rule) => rule.language === slug);
 }
 
 function responseLanguageFor(detected, preferences, userContext) {

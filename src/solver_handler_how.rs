@@ -493,7 +493,7 @@ fn render_mechanism_discovery_answer(subject: &str, language: Language) -> Strin
              then web search across {provider_summary}. If no source explains \
              the mechanism, it should ask for a source or a narrower term."
         ),
-        Language::English | Language::Unknown => format!(
+        _ => format!(
             "Mechanism discovery plan for `{subject}`.\n\n\
              I do not answer this from a memoized fact. The solver treats the \
              prompt as a question about how `{subject}` works, checks Wikipedia \
@@ -800,7 +800,7 @@ fn render_procedural_how_to_body(
                 task.task,
             )
         }
-        Language::English | Language::Unknown => {
+        _ => {
             let official_docs_gate = if is_install_procedure {
                 format!(
                     "For install tasks, the first source gate prefers the product's \

@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/narration.rs
   language rust
   fidelity full_ast
-  byte_len 4360
+  byte_len 4314
   line_count 108
-  content_id source_module_b9f0fb8457183458
+  content_id source_module_eac16d2fcedfc37f
   symbol_count 8
   symbols
     function tool_action_narration 17 42
@@ -20,30 +20,30 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 2980
-    named_node_count 609
+    total_link_count 2916
+    named_node_count 593
     distinct_node_kinds 53
     node_kinds
-      arguments 42
+      arguments 40
       array_expression 1
       array_type 2
       binary_expression 2
       block 11
-      call_expression 42
+      call_expression 40
       char_literal 1
-      closure_expression 3
-      closure_parameters 3
+      closure_expression 2
+      closure_parameters 2
       const_item 3
-      crate 3
+      crate 2
       doc_comment 17
       expression_statement 9
-      field_expression 34
-      field_identifier 34
+      field_expression 33
+      field_identifier 33
       function_item 5
       function_modifiers 1
       generic_function 2
       generic_type 2
-      identifier 140
+      identifier 137
       if_expression 4
       inner_doc_comment_marker 1
       integer_literal 2
@@ -65,10 +65,10 @@ self_ast_census
       reference_expression 5
       reference_type 12
       return_expression 2
-      scoped_identifier 35
+      scoped_identifier 33
       source_file 1
-      string_content 26
-      string_literal 26
+      string_content 25
+      string_literal 25
       super 4
       token_tree 2
       tuple_struct_pattern 6

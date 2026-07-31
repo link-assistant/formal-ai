@@ -157,7 +157,11 @@ jobs:
           - { os: windows-latest,   ebflag: "--win",   label: "windows-x64",   binext: ".exe" }
           - { os: windows-11-arm,   ebflag: "--win",   label: "windows-arm64", binext: ".exe" }
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
+    # Windows ARM64 normally takes 25-28 minutes, and runs 30573608801
+    # (attempts 1 and 2) were both cancelled at the former 30-minute cap while
+    # electron-builder was completing a valid installer. Keep the job bounded
+    # while allowing for runner and antivirus/file-lock variance.
+    timeout-minutes: 40
     permissions:
       contents: write
       id-token: write

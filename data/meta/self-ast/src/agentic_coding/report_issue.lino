@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/report_issue.rs
   language rust
   fidelity full_ast
-  byte_len 18656
-  line_count 524
-  content_id source_module_8d2065582b85992b
+  byte_len 18599
+  line_count 522
+  content_id source_module_753872faaa036a31
   symbol_count 43
   symbols
     const REPORT_BODY_COMMAND 14 14
@@ -28,38 +28,38 @@ self_ast_census
     enum ReportContents 44 48
     function plan_report_flow 52 140
     function ask_or_render 142 182
-    function localized 184 188
-    function localized_options 190 197
-    function is_report_question 199 208
-    function answer_texts 210 220
-    function parse_targets 222 240
-    function parse_contents 242 251
-    function matches_option 253 261
-    function is_report_intent 264 276
-    function report_action_governs_subject 278 322
-    function commands_for_targets 331 344
-    function command_for 346 367
-    function export_command 369 380
-    function learning_command 382 389
-    function github_command 396 428
-    function source_name 430 436
-    function dialog_id 446 451
-    function report_title 453 458
-    function title_turns 465 475
-    function report_finished 478 508
-    function formal_ai_repo 510 512
-    function config 514 518
-    function render 520 524
+    function localized 184 186
+    function localized_options 188 195
+    function is_report_question 197 206
+    function answer_texts 208 218
+    function parse_targets 220 238
+    function parse_contents 240 249
+    function matches_option 251 259
+    function is_report_intent 262 274
+    function report_action_governs_subject 276 320
+    function commands_for_targets 329 342
+    function command_for 344 365
+    function export_command 367 378
+    function learning_command 380 387
+    function github_command 394 426
+    function source_name 428 434
+    function dialog_id 444 449
+    function report_title 451 456
+    function title_turns 463 473
+    function report_finished 476 506
+    function formal_ai_repo 508 510
+    function config 512 516
+    function render 518 522
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 13826
-    named_node_count 2791
+    total_link_count 13763
+    named_node_count 2777
     distinct_node_kinds 76
     node_kinds
-      arguments 256
+      arguments 254
       array_expression 7
       array_type 13
       assignment_expression 1
@@ -69,9 +69,9 @@ self_ast_census
       binary_expression 23
       block 55
       boolean_literal 10
-      call_expression 256
-      closure_expression 39
-      closure_parameters 39
+      call_expression 254
+      closure_expression 38
+      closure_parameters 38
       const_item 17
       crate 5
       doc_comment 33
@@ -81,8 +81,8 @@ self_ast_census
       enum_variant_list 2
       escape_sequence 10
       expression_statement 51
-      field_expression 189
-      field_identifier 190
+      field_expression 188
+      field_identifier 189
       field_initializer 1
       field_initializer_list 1
       for_expression 1
@@ -90,7 +90,7 @@ self_ast_census
       function_modifiers 1
       generic_function 4
       generic_type 11
-      identifier 678
+      identifier 675
       if_expression 11
       index_expression 6
       inner_doc_comment_marker 1
@@ -114,12 +114,12 @@ self_ast_census
       reference_expression 38
       reference_type 61
       return_expression 10
-      scoped_identifier 64
+      scoped_identifier 63
       scoped_type_identifier 1
       scoped_use_list 4
       source_file 1
-      string_content 87
-      string_literal 82
+      string_content 86
+      string_literal 81
       struct_expression 1
       super 4
       token_tree 18

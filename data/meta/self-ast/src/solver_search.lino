@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_search.rs
   language rust
   fidelity signature
-  byte_len 25545
-  line_count 703
-  content_id source_module_120b1add0b9afe01
+  byte_len 25478
+  line_count 702
+  content_id source_module_b3a2ef55e7cdae3d
   symbol_count 38
   symbols
     module portfolio 26 26
@@ -34,14 +34,14 @@ self_ast_census
     function random_permutation 371 379
     function breed 383 410
     function record_generated_tests 412 421
-    function build_answer 424 467
-    function record_skill_proposal 479 513
-    function join_numbers 515 521
-    function join_ops 523 528
-    function parse_search_problem 540 591
-    const MAX_OPERANDS 595 595
-    function target_marker_positions 602 613
-    function distance_to_nearest 615 621
-    function parse_ops 632 650
-    function symbol_present 661 676
-    function extract_integers_with_positions 680 703
+    function build_answer 424 466
+    function record_skill_proposal 478 512
+    function join_numbers 514 520
+    function join_ops 522 527
+    function parse_search_problem 539 590
+    const MAX_OPERANDS 594 594
+    function target_marker_positions 601 612
+    function distance_to_nearest 614 620
+    function parse_ops 631 649
+    function symbol_present 660 675
+    function extract_integers_with_positions 679 702
