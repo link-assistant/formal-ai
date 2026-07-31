@@ -144,6 +144,7 @@ src/cli_improve.rs	promotion gate replay failed: {error}
 src/cli_learn.rs	Learning cycle over '{}': {} frontier item(s), {} validated candidate(s) of {}, {} held-out test(s), {} proposal(s), {} blocked class(es).
 src/cli_learn.rs	Note: the cycle is proposal-only whether or not --dry-run is passed; adoption stays behind the human-gated issue-#656 promotion protocol.
 src/cli_learn.rs	Proposal-only run; no seed file was written. Pipe `--proposals` into `formal-ai improve --promote --proposals <file>` to replay the canonical gates.
+src/cli_learn.rs	unknown frontier '{}'. Recorded frontiers: {}
 src/cli_memory.rs	Applied dreaming plan to {}; removed {} event(s), estimated {} byte(s) reclaimable, learned {} meta-algorithm amendment(s) and {} recurring pattern(s), preserved {} failed simulation(s) and {} dreaming trial(s).
 src/cli_memory.rs	Dreaming could not meet the requested free-space target from recomputable memory; migrate memory to larger storage or lower the target.
 src/cli_memory.rs	Imported {parsed_count} event(s) and cached {seed_count} seed file(s) into {}; total now {}.
@@ -360,6 +361,7 @@ src/json_lino.rs	invalid quoted string `{raw}`: {error}
 src/json_lino.rs	invalid scalar array `{raw}`
 src/json_lino.rs	language `{}` value is not a string
 src/knowledge.rs	Hello, World!
+src/language_frontier.rs	cannot read {}: {error}
 src/learning_adoption_ledger.rs	  adoption_pair\n
 src/learning_adoption_ledger.rs	Every item the issue-#701 learning cycle adopted, recorded as a capability delta: the intent the engine returned before adoption (read from the frozen frontier record) against the intent and recovered topic it returns now through the production solver path. A pair counts as adopted only when the prompt leaves the unknown path and the answer recovers the topic the prompt was generated from; anything else is kept here as an unadopted record rather than dropped.
 src/learning_cycle.rs	    defined-by concept\n
@@ -1366,13 +1368,3 @@ src/translation/selection.rs	Which interpretation did you mean: {} or {}?
 src/translation/selection.rs	{impulse}\n{salt}
 src/translation/wikidata.rs	SELECT DISTINCT ?lemma WHERE {{ wd:{source_lexeme_id} ontolex:sense ?source_sense . wd:{source_lexeme_id} wikibase:lexicalCategory ?category . ?source_sense wdt:P5137 ?meaning . ?lexeme ontolex:sense ?sense . ?sense wdt:P5137 ?meaning . ?lexeme wikibase:lexicalCategory ?category . ?lexeme dct:language ?language . ?language wdt:P218 \"{target_lang_iso}\" . ?lexeme wikibase:lemma ?lemma . }}
 src/unknown_opener.rs	{opener} {body}
-src/web_engine_core.rs	I didn't understand you.
-src/web_engine_core.rs	I don't know how to answer that yet.
-src/web_engine_core.rs	I haven't learned to answer that yet.
-src/web_engine_core.rs	I'm not sure how to respond to that yet.
-src/web_engine_core.rs	That one is new to me.
-src/web_engine_core.rs	Это для меня новое.
-src/web_engine_core.rs	Я ещё не научился отвечать на это.
-src/web_engine_core.rs	Я не уверен, как на это ответить.
-src/web_engine_core.rs	Я пока не знаю, как ответить на это.
-src/web_engine_core.rs	Я тебя не понял.

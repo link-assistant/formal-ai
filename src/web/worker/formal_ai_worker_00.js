@@ -698,21 +698,11 @@ function assistantNameAnswer(language, preferences) {
 // seed. Different prompts get different openers; the same prompt always picks
 // the same one (FNV-1a hash, mirrored from `stableBehaviorRuleId`).
 //
-// The literal below is only the bootstrap copy used before `init()` hydrates the
-// seed text (for example when the demo is opened from `file://`).
-let UNKNOWN_OPENERS_LINO = `unknown_openers
-  fallback_language en
-  pool
-    language en
-    opener "I don't know how to answer that yet."
-    opener "I didn't understand you."
-    opener "I'm not sure how to respond to that yet."
-    opener "I haven't learned to answer that yet."
-    opener "That one is new to me."
-  sentence_separator ". "
-  sentence_separator "\u3002"
-  sentence_separator "\u0964 "
-`;
+// There is no bootstrap copy: the text is empty until `init()` hydrates it from
+// `seed/unknown-openers.lino` through `seed_loader.js`. Before that the pools
+// are empty, and the unknown answer is the seed answer alone \u2014 an opener is
+// only ever added when its data has actually been loaded.
+let UNKNOWN_OPENERS_LINO = "";
 let cachedUnknownOpenerRegistry = null;
 
 function unquoteSeedValue(value) {
@@ -764,6 +754,7 @@ function selectUnknownOpener(prompt, language) {
   const fromWasm = wasmSelectUnknownOpener(prompt, language);
   if (fromWasm) return fromWasm;
   const pool = unknownOpenersFor(language);
+  if (pool.length === 0) return "";
   const trimmed = String(prompt || "").trim();
   if (trimmed === "") return pool[0];
   const id = stableBehaviorRuleId("unknown_opener", trimmed);
@@ -798,6 +789,7 @@ function stripLeadingUnknownOpener(text, language) {
 function unknownAnswerWithVariation(prompt, language) {
   const seedText = answerFor("unknown", language);
   const opener = selectUnknownOpener(prompt, language);
+  if (!opener) return seedText;
   const body = stripLeadingUnknownOpener(seedText, language);
   if (!body) return opener;
   return `${opener} ${body}`;
