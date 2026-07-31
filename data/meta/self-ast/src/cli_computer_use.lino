@@ -1,0 +1,11 @@
+self_ast_census
+  target src/cli_computer_use.rs
+  language rust
+  fidelity signature
+  byte_len 2084
+  line_count 63
+  content_id source_module_49bf0ce0ddc5495a
+  symbol_count 2
+  symbols
+    struct ComputerUseArgs 8 28
+    function run_computer_use 30 63

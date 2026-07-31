@@ -46,6 +46,7 @@ pub const SUMMARY_TOPICS_LINO: &str = include_str!("../../data/seed/summary-topi
 pub const COREFERENCE_LINO: &str = include_str!("../../data/seed/coreference.lino");
 pub const TOOLS_LINO: &str = include_str!("../../data/seed/tools.lino");
 pub const LANGUAGES_LINO: &str = include_str!("../../data/seed/languages.lino");
+pub const COMPUTER_USE_TASKS_LINO: &str = include_str!("../../data/seed/computer-use-tasks.lino");
 pub const LANGUAGE_DETECTION_LINO: &str = include_str!("../../data/seed/language-detection.lino");
 pub const PROMPT_PATTERNS_LINO: &str = include_str!("../../data/seed/prompt-patterns.lino");
 pub const INTENT_ROUTING_LINO: &str = include_str!("../../data/seed/intent-routing.lino");
@@ -114,6 +115,8 @@ pub const MEANINGS_TOOL_ACCESS_LINO: &str =
     include_str!("../../data/seed/meanings-tool-access.lino");
 pub const MEANINGS_FEATURE_CAPABILITY_LINO: &str =
     include_str!("../../data/seed/meanings-feature-capability.lino");
+pub const MEANINGS_COMPUTER_USE_LINO: &str =
+    include_str!("../../data/seed/meanings-computer-use.lino");
 pub const MEANINGS_FILE_WRITE_LINO: &str = include_str!("../../data/seed/meanings-file-write.lino");
 pub const MEANINGS_FILE_EDIT_LINO: &str = include_str!("../../data/seed/meanings-file-edit.lino");
 pub const MEANINGS_DECOMPOSITION_LINO: &str =
@@ -222,6 +225,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/coreference.lino", COREFERENCE_LINO),
         ("data/seed/tools.lino", TOOLS_LINO),
         ("data/seed/languages.lino", LANGUAGES_LINO),
+        ("data/seed/computer-use-tasks.lino", COMPUTER_USE_TASKS_LINO),
         ("data/seed/language-detection.lino", LANGUAGE_DETECTION_LINO),
         ("data/seed/prompt-patterns.lino", PROMPT_PATTERNS_LINO),
         ("data/seed/intent-routing.lino", INTENT_ROUTING_LINO),
@@ -331,6 +335,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         (
             "data/seed/meanings-feature-capability.lino",
             MEANINGS_FEATURE_CAPABILITY_LINO,
+        ),
+        (
+            "data/seed/meanings-computer-use.lino",
+            MEANINGS_COMPUTER_USE_LINO,
         ),
         (
             "data/seed/meanings-file-write.lino",
@@ -463,6 +471,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_DEFINITION_MERGE_LINO,
     MEANINGS_TOOL_ACCESS_LINO,
     MEANINGS_FEATURE_CAPABILITY_LINO,
+    MEANINGS_COMPUTER_USE_LINO,
     MEANINGS_FILE_WRITE_LINO,
     MEANINGS_FILE_EDIT_LINO,
     MEANINGS_DECOMPOSITION_LINO,

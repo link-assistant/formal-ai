@@ -92,6 +92,7 @@ module.exports = defineConfig({
     '**/issue-541-permissions-cold-start.spec.js',
     '**/issue-676-thinking-narrative.spec.js',
     '**/issue-687.spec.js',
+    '**/issue-707.spec.js',
     '**/issue-747.spec.js',
     '**/issue-759.spec.js',
     '**/issue-776.spec.js',

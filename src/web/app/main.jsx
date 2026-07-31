@@ -1247,10 +1247,38 @@ const DESKTOP_TOOL_OPTIONS = Object.freeze([
   "multi_edit",
   "code_exec",
   "shell",
+  "fs.read",
+  "fs.write",
+  "fs.list",
+  "fs.move",
+  "shell.run",
+  "http.fetch",
+  "http.post",
+  "dom.query",
+  "dom.extract",
+  "archive.pack",
+  "archive.unpack",
+  "process.status",
 ]);
+const DESKTOP_TOOL_I18N_KEYS = Object.freeze({
+  "fs.read": "computer_fs_read",
+  "fs.write": "computer_fs_write",
+  "fs.list": "computer_fs_list",
+  "fs.move": "computer_fs_move",
+  "shell.run": "computer_shell_run",
+  "http.fetch": "computer_http_fetch",
+  "http.post": "computer_http_post",
+  "dom.query": "computer_dom_query",
+  "dom.extract": "computer_dom_extract",
+  "archive.pack": "computer_archive_pack",
+  "archive.unpack": "computer_archive_unpack",
+  "process.status": "computer_process_status",
+});
 // Issue #511/#514: per-tool labels and descriptions live in the i18n catalog
-// (permissions.tool.<tool>.{label,description}) so the desktop permission panel
+// (permissions.tool.<key>.{label,description}) so the desktop permission panel
 // translates with the active UI language instead of shipping hardcoded English.
+// Links Notation treats dots as path separators, so dotted computer-use tool names
+// map to stable catalog keys while the native permission map keeps the exact names.
 // Issue #324: source that drives the assistant's response language.
 const RESPONSE_LANGUAGE_MODES = ["last_message", "preferred", "ui"];
 // Issue #324: languages the assistant can be pinned to via `preferredLanguage`.
@@ -6088,8 +6116,8 @@ function DesktopPermissionPanel({
   // when clicked should actually evaluate pending task for execution."
   //
   // We render that affordance as a primary CTA above the per-tool rows so the
-  // user can opt-in with a single click without scrolling through six
-  // grant/decline buttons. The button label changes when a task is queued
+  // user can opt-in with a single click without scrolling through every
+  // grant/decline button. The button label changes when a task is queued
   // ("...and run pending task") so it is honest about what will happen.
   const grantAllLabel = hasPendingTask
     ? tr("permissions.action.grantAllAndRun")
@@ -6098,7 +6126,8 @@ function DesktopPermissionPanel({
       const state = desktopToolGrantState(grants, tool);
       const granted = state === "granted";
       const declined = state === "declined";
-      return <div key={tool} className="permission-tool-row" data-testid={`${testId}-row-${tool}`}><div className="permission-tool-copy"><strong>{tr(`permissions.tool.${tool}.label`)}</strong><span>{tr(`permissions.tool.${tool}.description`)}</span></div><span className={`permission-state permission-state-${state}`} data-testid={`${testId}-state-${tool}`}>{stateLabel(state)}</span><div className="permission-actions"><button type="button" className="permission-button" data-testid={`${testId}-grant-${tool}`} aria-pressed={granted ? "true" : "false"} onClick={() => onDecision && onDecision(tool, true)}>{tr("permissions.action.grant")}</button><button type="button" className="permission-button permission-button-secondary" data-testid={`${testId}-decline-${tool}`} aria-pressed={declined ? "true" : "false"} onClick={() => onDecision && onDecision(tool, false)}>{tr("permissions.action.decline")}</button></div></div>;
+      const i18nKey = DESKTOP_TOOL_I18N_KEYS[tool] || tool;
+      return <div key={tool} className="permission-tool-row" data-testid={`${testId}-row-${tool}`}><div className="permission-tool-copy"><strong>{tr(`permissions.tool.${i18nKey}.label`)}</strong><span>{tr(`permissions.tool.${i18nKey}.description`)}</span></div><span className={`permission-state permission-state-${state}`} data-testid={`${testId}-state-${tool}`}>{stateLabel(state)}</span><div className="permission-actions"><button type="button" className="permission-button" data-testid={`${testId}-grant-${tool}`} aria-pressed={granted ? "true" : "false"} onClick={() => onDecision && onDecision(tool, true)}>{tr("permissions.action.grant")}</button><button type="button" className="permission-button permission-button-secondary" data-testid={`${testId}-decline-${tool}`} aria-pressed={declined ? "true" : "false"} onClick={() => onDecision && onDecision(tool, false)}>{tr("permissions.action.decline")}</button></div></div>;
     })}</div></section>;
 }
 

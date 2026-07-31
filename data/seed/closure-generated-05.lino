@@ -1,4 +1,179 @@
 meanings
+  response_kupi_slona_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response kupi slona ru"
+  response_kupi_slona_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response kupi slona zh"
+  response_learn_from_source_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response learn from source en"
+  response_learn_from_source_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response learn from source hi"
+  response_learn_from_source_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response learn from source ru"
+  response_learn_from_source_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response learn from source zh"
+  response_lexeme_import_block_parse_failed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import block parse failed en"
+  response_lexeme_import_block_parse_failed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import block parse failed hi"
+  response_lexeme_import_block_parse_failed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import block parse failed ru"
+  response_lexeme_import_block_parse_failed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import block parse failed zh"
+  response_lexeme_import_cache_budget_reached_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cache budget reached en"
+  response_lexeme_import_cache_budget_reached_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cache budget reached hi"
+  response_lexeme_import_cache_budget_reached_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cache budget reached ru"
+  response_lexeme_import_cache_budget_reached_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cache budget reached zh"
+  response_lexeme_import_cache_invalid_json_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cache invalid json en"
+  response_lexeme_import_cache_invalid_json_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cache invalid json hi"
+  response_lexeme_import_cache_invalid_json_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cache invalid json ru"
+  response_lexeme_import_cache_invalid_json_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cache invalid json zh"
+  response_lexeme_import_cache_miss_offline_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cache miss offline en"
+  response_lexeme_import_cache_miss_offline_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cache miss offline hi"
+  response_lexeme_import_cache_miss_offline_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cache miss offline ru"
+  response_lexeme_import_cache_miss_offline_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cache miss offline zh"
+  response_lexeme_import_cache_unreadable_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cache unreadable en"
+  response_lexeme_import_cache_unreadable_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cache unreadable hi"
+  response_lexeme_import_cache_unreadable_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cache unreadable ru"
+  response_lexeme_import_cache_unreadable_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cache unreadable zh"
+  response_lexeme_import_cannot_create_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot create en"
+  response_lexeme_import_cannot_create_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot create hi"
+  response_lexeme_import_cannot_create_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot create ru"
+  response_lexeme_import_cannot_create_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot create zh"
+  response_lexeme_import_cannot_inspect_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot inspect en"
+  response_lexeme_import_cannot_inspect_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot inspect hi"
+  response_lexeme_import_cannot_inspect_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot inspect ru"
+  response_lexeme_import_cannot_inspect_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot inspect zh"
+  response_lexeme_import_cannot_install_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot install en"
   response_lexeme_import_cannot_install_hi
     defined-by response_template
     lexeme en
@@ -1219,178 +1394,3 @@ meanings
     lexeme en
       surface
         text "response supplied file contents en"
-  response_supplied_file_contents_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response supplied file contents hi"
-  response_supplied_file_contents_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response supplied file contents ru"
-  response_supplied_file_contents_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response supplied file contents zh"
-  response_supplied_file_first_line_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response supplied file first line en"
-  response_supplied_file_first_line_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response supplied file first line hi"
-  response_supplied_file_first_line_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response supplied file first line ru"
-  response_supplied_file_first_line_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response supplied file first line zh"
-  response_task_atomicity_no_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity no en"
-  response_task_atomicity_no_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity no hi"
-  response_task_atomicity_no_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity no ru"
-  response_task_atomicity_no_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity no zh"
-  response_task_atomicity_yes_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity yes en"
-  response_task_atomicity_yes_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity yes hi"
-  response_task_atomicity_yes_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity yes ru"
-  response_task_atomicity_yes_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity yes zh"
-  response_task_decomposition_atomic_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition atomic en"
-  response_task_decomposition_atomic_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition atomic hi"
-  response_task_decomposition_atomic_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition atomic ru"
-  response_task_decomposition_atomic_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition atomic zh"
-  response_task_decomposition_depth_bound_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth bound en"
-  response_task_decomposition_depth_bound_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth bound hi"
-  response_task_decomposition_depth_bound_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth bound ru"
-  response_task_decomposition_depth_bound_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth bound zh"
-  response_task_decomposition_depth_marker_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth marker en"
-  response_task_decomposition_depth_marker_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth marker hi"
-  response_task_decomposition_depth_marker_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth marker ru"
-  response_task_decomposition_depth_marker_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth marker zh"
-  response_task_decomposition_lead_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition lead en"
-  response_task_decomposition_lead_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition lead hi"
-  response_task_decomposition_lead_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition lead ru"
-  response_task_decomposition_lead_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition lead zh"
-  response_task_first_step_lead_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task first step lead en"
-  response_task_first_step_lead_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task first step lead hi"
-  response_task_first_step_lead_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task first step lead ru"
-  response_task_first_step_lead_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task first step lead zh"

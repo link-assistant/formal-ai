@@ -1,0 +1,31 @@
+self_ast_census
+  target src/computer_use/induction.rs
+  language rust
+  fidelity signature
+  byte_len 18262
+  line_count 483
+  content_id source_module_b10792e8cdcee6c8
+  symbol_count 22
+  symbols
+    const RECORD_TYPE 42 42
+    const CORPUS_PATH 46 46
+    struct StepSignature 52 55
+    function of 59 68
+    function label 71 76
+    struct StepSchema 83 88
+    struct OperationSchema 92 97
+    struct ResourceBinding 102 110
+    struct LearnedSchemas 114 122
+    function learned 127 130
+    static CACHE 128 128
+    function partition 134 155
+    function induce 160 301
+    const FETCH_OPERATION 305 305
+    function recognized_operations 307 332
+    function recognized_resource 334 345
+    function single 347 349
+    function step_schema 351 377
+    function verification_schema 379 398
+    function same_shape 400 404
+    function resource_parameters 409 429
+    function links_notation 435 482

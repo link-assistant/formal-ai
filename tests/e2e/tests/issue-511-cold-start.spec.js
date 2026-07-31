@@ -157,7 +157,7 @@ async function proveColdStartJourney(page) {
   await bootColdStart(page);
 
   await expect(page.locator('[data-testid="desktop-tool-permission"]')).toHaveText(
-    '0/6 tools granted',
+    '0/18 tools granted',
   );
 
   await page.locator('[data-testid="mode-option-agent"]').click();

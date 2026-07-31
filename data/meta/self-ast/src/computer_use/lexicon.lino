@@ -1,0 +1,19 @@
+self_ast_census
+  target src/computer_use/lexicon.rs
+  language rust
+  fidelity signature
+  byte_len 7631
+  line_count 191
+  content_id source_module_d80d8da34da9a584
+  symbol_count 10
+  symbols
+    struct Cue 19 23
+    function normalize 35 49
+    function instruction_surface 67 85
+    function is_combining_mark 92 105
+    function operation_cues 109 118
+    function resource_cue 123 131
+    function capability_gap_cue 136 145
+    function role_cues 147 152
+    function best_evidence 154 164
+    function surface_position 169 191

@@ -161,6 +161,12 @@ pub fn tool_capability(name: &str) -> Option<Capability> {
 #[must_use]
 pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<AgenticPlan> {
     let task = latest_user_text(messages)?;
+    // Issue #707: seed-defined computer-use plans own their exact multilingual
+    // prompts before broad write/search routing. Each emitted primitive carries
+    // explicit pre/postconditions and is executed by the advertising client.
+    if let Some(plan) = crate::computer_use::plan_agentic_step(messages, tool_names) {
+        return Some(plan);
+    }
     // Resolve an unambiguous literal write before keyword recipes: arbitrary
     // filenames/payloads may legitimately contain "issue", "report", or "learning".
     if let Some(plan) = tool_for(tool_names, Capability::Write)

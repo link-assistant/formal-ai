@@ -1,0 +1,342 @@
+{
+  "issue": 707,
+  "slice": "held_out_generalization",
+  "client": "@link-assistant/agent",
+  "case_count": 12,
+  "record": {
+    "notes_count_and_pack": {
+      "session_id": "ses_04920f48effeqwFp1QCfzmceu3",
+      "tools": [
+        "formal_ai_fs_write",
+        "formal_ai_shell_run",
+        "formal_ai_archive_pack",
+        "formal_ai_fs_read"
+      ]
+    },
+    "customers_filter_and_pack": {
+      "session_id": "ses_04920b2ddffeM8OMn9h95U2YfS",
+      "tools": [
+        "formal_ai_fs_write",
+        "formal_ai_shell_run",
+        "formal_ai_archive_pack",
+        "formal_ai_fs_read"
+      ]
+    },
+    "customers_unique_values": {
+      "session_id": "ses_049207d9cffeWOcFpQAHC4KRUM",
+      "tools": [
+        "formal_ai_fs_write",
+        "formal_ai_shell_run",
+        "formal_ai_fs_read"
+      ]
+    },
+    "customers_count_lines": {
+      "session_id": "ses_04920387fffen0aJJRbI47MAGw",
+      "tools": [
+        "formal_ai_fs_write",
+        "formal_ai_shell_run",
+        "formal_ai_fs_read"
+      ]
+    },
+    "documents_list_and_pack": {
+      "session_id": "ses_049200685ffeMoWCkJ1dETE5gB",
+      "tools": [
+        "formal_ai_fs_write",
+        "formal_ai_fs_write",
+        "formal_ai_fs_list",
+        "formal_ai_archive_pack",
+        "formal_ai_fs_read"
+      ]
+    },
+    "documents_pack_and_unpack": {
+      "session_id": "ses_0491fb67affeV9oveqYwc6Ibxo",
+      "tools": [
+        "formal_ai_fs_write",
+        "formal_ai_fs_write",
+        "formal_ai_archive_pack",
+        "formal_ai_archive_unpack",
+        "formal_ai_fs_list"
+      ]
+    },
+    "inbox_note_move_and_pack": {
+      "session_id": "ses_0491f61a4ffeO4LZATeMctiRpX",
+      "tools": [
+        "formal_ai_fs_write",
+        "formal_ai_fs_move",
+        "formal_ai_archive_pack",
+        "formal_ai_fs_read"
+      ]
+    },
+    "orders_extract_identifier": {
+      "session_id": "ses_0491f0ed3ffeMdDk0qbPcKhndk",
+      "tools": [
+        "formal_ai_http_fetch",
+        "formal_ai_dom_extract",
+        "formal_ai_fs_read"
+      ]
+    },
+    "status_page_heading_and_pack": {
+      "session_id": "ses_0491ecb3dffeYiBRa5jWyQC0mp",
+      "tools": [
+        "formal_ai_http_fetch",
+        "formal_ai_dom_query",
+        "formal_ai_archive_pack",
+        "formal_ai_fs_read"
+      ]
+    },
+    "form_submission": {
+      "session_id": "ses_0491e8158ffe5rwg6C7N6OKBHI",
+      "tools": [
+        "formal_ai_http_fetch",
+        "formal_ai_http_post",
+        "formal_ai_fs_read"
+      ]
+    },
+    "inventory_unique_values": {
+      "session_id": "ses_0491e31f5ffeIuMmy6C1h4FSN8",
+      "tools": [
+        "formal_ai_http_fetch",
+        "formal_ai_shell_run",
+        "formal_ai_fs_read"
+      ]
+    },
+    "inventory_process_status": {
+      "session_id": "ses_0491dee88ffeXP8uM8AUO75x4l",
+      "tools": [
+        "formal_ai_http_fetch",
+        "formal_ai_process_status",
+        "formal_ai_fs_read"
+      ]
+    }
+  },
+  "replay": {
+    "notes_count_and_pack": {
+      "session_id": "ses_0491d9f33ffeBzdb8qm4IiILRR",
+      "tools": [
+        "formal_ai_fs_write",
+        "formal_ai_shell_run",
+        "formal_ai_archive_pack",
+        "formal_ai_fs_read"
+      ]
+    },
+    "customers_filter_and_pack": {
+      "session_id": "ses_0491d533bffeGHBQTZ5xILrcF1",
+      "tools": [
+        "formal_ai_fs_write",
+        "formal_ai_shell_run",
+        "formal_ai_archive_pack",
+        "formal_ai_fs_read"
+      ]
+    },
+    "customers_unique_values": {
+      "session_id": "ses_0491ceb38ffe9rmLoOevjVvKEu",
+      "tools": [
+        "formal_ai_fs_write",
+        "formal_ai_shell_run",
+        "formal_ai_fs_read"
+      ]
+    },
+    "customers_count_lines": {
+      "session_id": "ses_0491c90b9ffei8w2R5kY83QR7q",
+      "tools": [
+        "formal_ai_fs_write",
+        "formal_ai_shell_run",
+        "formal_ai_fs_read"
+      ]
+    },
+    "documents_list_and_pack": {
+      "session_id": "ses_0491c34efffe8smSj55sTeBXoB",
+      "tools": [
+        "formal_ai_fs_write",
+        "formal_ai_fs_write",
+        "formal_ai_fs_list",
+        "formal_ai_archive_pack",
+        "formal_ai_fs_read"
+      ]
+    },
+    "documents_pack_and_unpack": {
+      "session_id": "ses_0491beaf7ffeo7UM0OGefesBcy",
+      "tools": [
+        "formal_ai_fs_write",
+        "formal_ai_fs_write",
+        "formal_ai_archive_pack",
+        "formal_ai_archive_unpack",
+        "formal_ai_fs_list"
+      ]
+    },
+    "inbox_note_move_and_pack": {
+      "session_id": "ses_0491bacc9ffeSLgunXV4wbJ5d3",
+      "tools": [
+        "formal_ai_fs_write",
+        "formal_ai_fs_move",
+        "formal_ai_archive_pack",
+        "formal_ai_fs_read"
+      ]
+    },
+    "orders_extract_identifier": {
+      "session_id": "ses_0491b833affebgb3epe01w5O6s",
+      "tools": [
+        "formal_ai_http_fetch",
+        "formal_ai_dom_extract",
+        "formal_ai_fs_read"
+      ]
+    },
+    "status_page_heading_and_pack": {
+      "session_id": "ses_0491b6415ffe3e6bmOpcN8VapU",
+      "tools": [
+        "formal_ai_http_fetch",
+        "formal_ai_dom_query",
+        "formal_ai_archive_pack",
+        "formal_ai_fs_read"
+      ]
+    },
+    "form_submission": {
+      "session_id": "ses_0491b3f25ffeBuhuBA7xhMVJKE",
+      "tools": [
+        "formal_ai_http_fetch",
+        "formal_ai_http_post",
+        "formal_ai_fs_read"
+      ]
+    },
+    "inventory_unique_values": {
+      "session_id": "ses_0491b1a01ffetDcO0517iemLR9",
+      "tools": [
+        "formal_ai_http_fetch",
+        "formal_ai_shell_run",
+        "formal_ai_fs_read"
+      ]
+    },
+    "inventory_process_status": {
+      "session_id": "ses_0491af4d3ffeVeYHeH9gc1t246",
+      "tools": [
+        "formal_ai_http_fetch",
+        "formal_ai_process_status",
+        "formal_ai_fs_read"
+      ]
+    }
+  },
+  "record_audit": {
+    "notes_count_and_pack": {
+      "plan_id": "synthesized-computer_use_resource_notes-computer_use_count_lines-computer_use_pack_archive",
+      "steps": 4,
+      "verification_events": 12
+    },
+    "customers_filter_and_pack": {
+      "plan_id": "synthesized-computer_use_resource_customers-computer_use_filter_rows-computer_use_pack_archive",
+      "steps": 4,
+      "verification_events": 12
+    },
+    "customers_unique_values": {
+      "plan_id": "synthesized-computer_use_resource_customers-computer_use_unique_values",
+      "steps": 3,
+      "verification_events": 9
+    },
+    "customers_count_lines": {
+      "plan_id": "synthesized-computer_use_resource_customers-computer_use_count_lines",
+      "steps": 3,
+      "verification_events": 9
+    },
+    "documents_list_and_pack": {
+      "plan_id": "synthesized-computer_use_resource_documents-computer_use_list_directory-computer_use_pack_archive",
+      "steps": 5,
+      "verification_events": 15
+    },
+    "documents_pack_and_unpack": {
+      "plan_id": "synthesized-computer_use_resource_documents-computer_use_pack_archive-computer_use_unpack_archive",
+      "steps": 5,
+      "verification_events": 15
+    },
+    "inbox_note_move_and_pack": {
+      "plan_id": "synthesized-computer_use_resource_inbox_note-computer_use_move_file-computer_use_pack_archive",
+      "steps": 4,
+      "verification_events": 12
+    },
+    "orders_extract_identifier": {
+      "plan_id": "synthesized-computer_use_resource_orders-computer_use_fetch-computer_use_extract_field",
+      "steps": 3,
+      "verification_events": 9
+    },
+    "status_page_heading_and_pack": {
+      "plan_id": "synthesized-computer_use_resource_status_page-computer_use_query_selector-computer_use_pack_archive",
+      "steps": 4,
+      "verification_events": 12
+    },
+    "form_submission": {
+      "plan_id": "synthesized-computer_use_resource_form-computer_use_submit_form",
+      "steps": 3,
+      "verification_events": 9
+    },
+    "inventory_unique_values": {
+      "plan_id": "synthesized-computer_use_resource_inventory-computer_use_unique_values",
+      "steps": 3,
+      "verification_events": 9
+    },
+    "inventory_process_status": {
+      "plan_id": "synthesized-computer_use_resource_inventory-computer_use_process_status",
+      "steps": 3,
+      "verification_events": 9
+    }
+  },
+  "replay_audit": {
+    "notes_count_and_pack": {
+      "plan_id": "synthesized-computer_use_resource_notes-computer_use_count_lines-computer_use_pack_archive",
+      "steps": 4,
+      "verification_events": 12
+    },
+    "customers_filter_and_pack": {
+      "plan_id": "synthesized-computer_use_resource_customers-computer_use_filter_rows-computer_use_pack_archive",
+      "steps": 4,
+      "verification_events": 12
+    },
+    "customers_unique_values": {
+      "plan_id": "synthesized-computer_use_resource_customers-computer_use_unique_values",
+      "steps": 3,
+      "verification_events": 9
+    },
+    "customers_count_lines": {
+      "plan_id": "synthesized-computer_use_resource_customers-computer_use_count_lines",
+      "steps": 3,
+      "verification_events": 9
+    },
+    "documents_list_and_pack": {
+      "plan_id": "synthesized-computer_use_resource_documents-computer_use_list_directory-computer_use_pack_archive",
+      "steps": 5,
+      "verification_events": 15
+    },
+    "documents_pack_and_unpack": {
+      "plan_id": "synthesized-computer_use_resource_documents-computer_use_pack_archive-computer_use_unpack_archive",
+      "steps": 5,
+      "verification_events": 15
+    },
+    "inbox_note_move_and_pack": {
+      "plan_id": "synthesized-computer_use_resource_inbox_note-computer_use_move_file-computer_use_pack_archive",
+      "steps": 4,
+      "verification_events": 12
+    },
+    "orders_extract_identifier": {
+      "plan_id": "synthesized-computer_use_resource_orders-computer_use_fetch-computer_use_extract_field",
+      "steps": 3,
+      "verification_events": 9
+    },
+    "status_page_heading_and_pack": {
+      "plan_id": "synthesized-computer_use_resource_status_page-computer_use_query_selector-computer_use_pack_archive",
+      "steps": 4,
+      "verification_events": 12
+    },
+    "form_submission": {
+      "plan_id": "synthesized-computer_use_resource_form-computer_use_submit_form",
+      "steps": 3,
+      "verification_events": 9
+    },
+    "inventory_unique_values": {
+      "plan_id": "synthesized-computer_use_resource_inventory-computer_use_unique_values",
+      "steps": 3,
+      "verification_events": 9
+    },
+    "inventory_process_status": {
+      "plan_id": "synthesized-computer_use_resource_inventory-computer_use_process_status",
+      "steps": 3,
+      "verification_events": 9
+    }
+  }
+}
