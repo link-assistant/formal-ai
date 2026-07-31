@@ -2,15 +2,14 @@ self_ast_census
   target src/cli_learn.rs
   language rust
   fidelity signature
-  byte_len 5491
-  line_count 152
-  content_id source_module_bff495a0b0cc21d0
-  symbol_count 7
+  byte_len 5738
+  line_count 157
+  content_id source_module_5935df87df09a1d3
+  symbol_count 6
   symbols
-    enum LearnFrontier 14 17
-    enum LearnAction 21 47
-    struct LearnCycleArgs 51 61
-    function run_learn_action 68 82
-    function run_learn_cycle 95 106
-    function load_frontier 108 121
-    function report 124 152
+    enum LearnAction 15 44
+    struct LearnCycleArgs 48 58
+    function run_learn_action 65 79
+    function run_learn_cycle 92 103
+    function load_frontier 105 126
+    function report 129 157

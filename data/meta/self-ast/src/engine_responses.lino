@@ -2,10 +2,10 @@ self_ast_census
   target src/engine_responses.rs
   language rust
   fidelity signature
-  byte_len 7525
-  line_count 217
-  content_id source_module_f4d70811ee340264
-  symbol_count 73
+  byte_len 7077
+  line_count 202
+  content_id source_module_fbc79fbf8a37da2a
+  symbol_count 67
   symbols
     const FALLBACK_UNKNOWN_LANGUAGE_ANSWER 17 21
     const GREETING_EXAMPLES 23 23
@@ -73,10 +73,4 @@ self_ast_census
     static CELL 191 191
     function chinese_identity_answer 195 198
     static CELL 196 196
-    function russian_unknown_answer 200 203
-    static CELL 201 201
-    function hindi_unknown_answer 205 208
-    static CELL 206 206
-    function chinese_unknown_answer 210 213
-    static CELL 211 211
-    function unknown_language_fallback_answer 215 217
+    function unknown_language_fallback_answer 200 202

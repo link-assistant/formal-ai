@@ -1,0 +1,16 @@
+self_ast_census
+  target src/language_frontier.rs
+  language rust
+  fidelity signature
+  byte_len 8662
+  line_count 209
+  content_id source_module_a6b2b1670d3416d1
+  symbol_count 7
+  symbols
+    struct CandidatePrompt 43 52
+    struct LanguageCandidate 56 63
+    function parse_language_candidate 67 90
+    function load_language_candidates 99 120
+    function quote 123 125
+    function render_language_gap_frontier 134 198
+    function record_language_gap_frontier 205 209

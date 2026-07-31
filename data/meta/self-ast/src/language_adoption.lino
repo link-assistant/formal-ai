@@ -1,0 +1,23 @@
+self_ast_census
+  target src/language_adoption.rs
+  language rust
+  fidelity signature
+  byte_len 8221
+  line_count 196
+  content_id source_module_364cda8cab8ab174
+  symbol_count 14
+  symbols
+    const UNKNOWN_INTENT 32 32
+    const LANGUAGE_GAP_FRONTIER 35 35
+    struct LanguageAdoptionPair 39 56
+    function term_recovered 62 65
+    function adopted 69 73
+    function capability_delta 77 85
+    struct LanguageAdoptionLedger 90 95
+    function adopted 100 102
+    function unadopted 106 108
+    function adopted_languages 112 117
+    function adopted_classes 121 126
+    function links_notation 130 167
+    function pair_for 171 184
+    function language_adoption_ledger 188 196

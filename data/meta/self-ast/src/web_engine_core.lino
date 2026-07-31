@@ -2,10 +2,10 @@ self_ast_census
   target src/web_engine_core.rs
   language rust
   fidelity signature
-  byte_len 15922
-  line_count 447
-  content_id source_module_e34e297dd9705bb1
-  symbol_count 25
+  byte_len 18325
+  line_count 519
+  content_id source_module_58484dbbca07d240
+  symbol_count 30
   symbols
     function normalize_prompt 42 60
     function tokenize_prompt 66 72
@@ -21,14 +21,19 @@ self_ast_census
     function arithmetic_value_less_than 222 227
     function arithmetic_comparison_symbol 229 238
     function stable_id 246 254
-    const UNKNOWN_OPENERS_EN 256 262
-    const UNKNOWN_OPENERS_RU 263 269
-    const UNKNOWN_OPENERS_HI 270 276
-    const UNKNOWN_OPENERS_ZH 277 283
-    function unknown_openers_for 286 293
-    function select_unknown_opener 297 310
-    function matches_intent_route_parts 315 347
-    function matches_intent_route_payload 355 399
-    function contains_route_token 401 405
-    function normalize_route_raw_prompt 407 417
-    function is_unicode_letter_or_digit 419 447
+    const UNKNOWN_OPENERS 260 260
+    function unquote_seed_value 263 268
+    struct OpenerPool 271 274
+    struct OpenerRegistry 278 282
+    function parse_opener_registry 284 320
+    function with_opener_registry 326 330
+    static REGISTRY 328 328
+    function with_opener_registry 333 335
+    function unknown_openers_for 343 358
+    function unknown_opener_sentence_separators 363 365
+    function select_unknown_opener 369 382
+    function matches_intent_route_parts 387 419
+    function matches_intent_route_payload 427 471
+    function contains_route_token 473 477
+    function normalize_route_raw_prompt 479 489
+    function is_unicode_letter_or_digit 491 519

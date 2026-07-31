@@ -2,10 +2,10 @@ self_ast_census
   target src/language.rs
   language rust
   fidelity signature
-  byte_len 16032
-  line_count 462
-  content_id source_module_7bec073fffae4745
-  symbol_count 47
+  byte_len 19258
+  line_count 542
+  content_id source_module_b51d6ca9329e1f28
+  symbol_count 51
   symbols
     const LANGUAGE_DETECTION 22 22
     struct Language 31 31
@@ -32,25 +32,29 @@ self_ast_census
     function from_slug 140 147
     function registered_languages 151 153
     function fallback_language 157 159
-    struct ForcedLanguageGuard 162 164
-    function drop 167 169
-    struct Rule 176 190
-    function unquote 192 197
-    function parse_codepoint 199 202
-    function parse_quoted_list 205 215
-    function parse_rules 217 254
-    function with_rules 261 265
-    static RULES 263 263
-    function with_rules 268 270
-    function fallback_of 272 277
-    function fallback_script_of 279 284
-    function default_language_of 287 293
-    struct ScriptCounts 296 300
-    function of 303 308
-    function bump 310 317
-    function max_excluding 320 327
-    function total 329 331
-    function count_scripts 334 356
-    function marker_language 367 401
-    function detect 412 419
-    function detect_with 421 462
+    const LANGUAGE_LEDGER 164 164
+    function language_name 171 183
+    function language_for_concept_slug 192 208
+    function surface_matches_language 217 237
+    struct ForcedLanguageGuard 240 242
+    function drop 245 247
+    struct Rule 254 268
+    function unquote 270 275
+    function parse_codepoint 277 282
+    function parse_quoted_list 285 295
+    function parse_rules 297 334
+    function with_rules 341 345
+    static RULES 343 343
+    function with_rules 348 350
+    function fallback_of 352 357
+    function fallback_script_of 359 364
+    function default_language_of 367 373
+    struct ScriptCounts 376 380
+    function of 383 388
+    function bump 390 397
+    function max_excluding 400 407
+    function total 409 411
+    function count_scripts 414 436
+    function marker_language 447 481
+    function detect 492 499
+    function detect_with 501 542

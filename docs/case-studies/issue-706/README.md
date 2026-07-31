@@ -79,6 +79,51 @@ source-code changes. Arabic has a distinct Unicode block and passes five of six
 suites (833 permille); the missing math-wrapper suite emits `language_gap`.
 The candidate is not registered or shipped as supported data.
 
+## Auto-learning a new language's request frames
+
+Registering a language makes it *detectable*; it does not teach the engine the
+request frames that language phrases questions with. Issue #701 already built a
+general adoption cycle for exactly that problem, and that cycle never mentions
+Google Trends — it takes a frontier slug and a list of recorded prompts. So the
+language half needed a second **recorded frontier**, not new learning logic.
+
+1. The contributor adds a prompt corpus to `data/language-additions/<code>.lino`
+   (`prompt` records with `rank`, `query`, `variation`, `prompt`). Every `query`
+   must already be a committed surface in `data/seed/meanings-translation.lino`,
+   so the corpus adds request frames only — it cannot smuggle in vocabulary.
+2. `cargo run --example issue_706_language_frontier` runs the **live engine**
+   over that corpus and records only the prompts it actually fails, into
+   `data/meta/learning-frontier-language-gap.lino`. Nothing is asserted by hand;
+   a prompt that already routes never reaches the frontier. A candidate language
+   with no corpus is preserved as an explicit `frontier_gap` naming what is
+   missing — the same honesty rule as `language_gap`.
+3. `formal-ai learn cycle --frontier language-gap` replays the record through
+   the *same* cycle the trends frontier uses. `--frontier` is an open registry
+   (`learning_cycle::recorded_frontiers`), not a closed Rust enum, so a third
+   frontier is a registration, not a refactor. Over the Spanish corpus it
+   derived two frames by query deletion — `qué es …` and `cuéntame sobre …` —
+   each supported by two prompts, each validated on the held-out remainder, and
+   emitted them as human-gated promotion proposals.
+4. Adoption is a seed edit: the two frames were written into
+   `data/seed/learned-request-openers.lino`.
+5. `data/meta/language-adoption-ledger.lino` pins the capability delta. It reads
+   "before" from the frozen frontier record and produces "after" live through
+   the production solver path: 7 of 7 prompts leave the unknown path and recover
+   their term (`unknown_to_web_search`), 0 unadopted. Re-recording the frontier
+   from the same corpus now yields `learning_frontier "0"` — the loop is closed,
+   and that empty re-record is the proof rather than a claim.
+
+The committed frontier record is deliberately frozen at its pre-adoption state,
+because it is the "before" half of the ledger. `tests/unit/issue_706_any_language.rs`
+enforces every step of this, including the byte equality of the pinned ledger.
+
+## Self-hosting
+
+The protocol invariant these leaves were reviewed against was authored by Formal
+AI itself, driven by the real Agent CLI against the production-mode server; the
+raw client and server traces are in
+[`self-hosting-authorship/`](self-hosting-authorship/README.md).
+
 ## Scale path
 
 The registry, generated matrix, CI coverage guard, CI change-parity guard, and
