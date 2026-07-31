@@ -2,34 +2,37 @@ self_ast_census
   target src/client_integrations/completion.rs
   language rust
   fidelity signature
-  byte_len 15370
-  line_count 440
-  content_id source_module_be029ded53764dd6
-  symbol_count 26
+  byte_len 18754
+  line_count 520
+  content_id source_module_016fc5ba2460d1bc
+  symbol_count 29
   symbols
-    struct CapturedOutcome 18 22
-    function require_completed 24 46
-    const COMMAND_PLACEHOLDER 30 30
-    const STATUS_PLACEHOLDER 31 31
-    struct AuthoringRun 49 57
-    function for_invocation 60 72
-    function start 74 95
-    function observe_output 97 115
-    function changes 117 120
-    function can_retry 122 124
-    function completion_prompt 126 138
-    const TASK_PLACEHOLDER 127 127
-    const CLAIM_PLACEHOLDER 128 128
-    const EVIDENCE_PLACEHOLDER 129 129
-    function print_completion 140 186
-    struct CompletionInvocation 190 199
-    function run_to_completion 201 261
-    function clone_command 263 280
-    function requires_workspace_effect 282 287
-    function ignore_scratch_directory 289 327
-    function normalize_json_stream 329 354
-    function collect_token_usage 356 388
-    function collect_short_token_usage 390 400
-    function collect_object_token_usage 402 423
-    function detect_vendor_endpoint 425 440
-    const VENDOR_ENDPOINTS 426 426
+    struct CapturedOutcome 19 23
+    function require_completed 25 47
+    const COMMAND_PLACEHOLDER 31 31
+    const STATUS_PLACEHOLDER 32 32
+    struct AuthoringRun 50 65
+    function for_invocation 68 80
+    function start 82 109
+    function recovery_key 112 117
+    function plan_recovery 121 126
+    function record_recovery 129 142
+    function observe_output 144 166
+    function changes 168 171
+    function can_retry 173 175
+    function recovery_prompt 185 201
+    const TASK_PLACEHOLDER 186 186
+    const CLAIM_PLACEHOLDER 187 187
+    const EVIDENCE_PLACEHOLDER 188 188
+    const FALLBACK_INTENT 189 189
+    function print_completion 203 255
+    struct CompletionInvocation 259 268
+    function run_to_completion 270 335
+    function clone_command 337 354
+    function requires_workspace_effect 356 361
+    function ignore_scratch_directory 363 401
+    function normalize_json_stream 403 428
+    function collect_token_usage 430 462
+    function collect_short_token_usage 464 474
+    function collect_object_token_usage 476 497
+    function detect_diverted_endpoint 503 520

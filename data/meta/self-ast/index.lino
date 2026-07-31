@@ -2,11 +2,11 @@ self_ast_census_index
   language rust
   engine meta_language
   full_fidelity_prefix src/agentic_coding/
-  module_count 368
+  module_count 371
   full_ast_module_count 50
-  signature_module_count 318
-  symbol_count 7480
-  content_id self_ast_census_index_8c39713be04669d6
+  signature_module_count 321
+  symbol_count 7531
+  content_id self_ast_census_index_789bf16558f41b8c
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/associative_learning.rs full_ast 7 source_module_926e3e97b31fa30a
@@ -83,10 +83,12 @@ self_ast_census_index
     src/cli_shared_dialog.rs signature 5 source_module_db14f3ca2c903557
     src/cli_statement_audit.rs signature 5 source_module_374652e87d6c3b7b
     src/client_contract_learning.rs signature 27 source_module_b3af1922ebb1ae7e
-    src/client_integrations.rs signature 44 source_module_c86faff05410c295
-    src/client_integrations/command.rs signature 5 source_module_708767cb4cfa58dd
+    src/client_integrations.rs signature 43 source_module_0dfc79115adbaf5b
+    src/client_integrations/command.rs signature 7 source_module_d70321ad602a094c
+    src/client_integrations/completion.rs signature 29 source_module_016fc5ba2460d1bc
+    src/client_integrations/completion_learning.rs signature 16 source_module_e132df0b7322412d
     src/client_integrations/server.rs signature 9 source_module_3f888a869002c4ed
-    src/client_integrations/session_files.rs signature 16 source_module_6c03f20ac0228990
+    src/client_integrations/session_files.rs signature 17 source_module_bf73a9e540f76a0d
     src/client_integrations/url.rs signature 5 source_module_e3b7a2362cbd33cf
     src/code_editing.rs signature 3 source_module_413d0ed57919a2dc
     src/coding/blueprint.rs signature 25 source_module_781f64bb9be78111
@@ -175,11 +177,11 @@ self_ast_census_index
     src/option_network.rs signature 56 source_module_607db13d08ad03bb
     src/orchestration/analysis.rs signature 19 source_module_b43fe74ff73876a3
     src/orchestration/dispatch.rs signature 16 source_module_ba56ed42d2ed0935
-    src/orchestration/mod.rs signature 6 source_module_5efa05f048bd4ac8
+    src/orchestration/mod.rs signature 6 source_module_4a485ef10f6d09fd
     src/orchestration/permission.rs signature 4 source_module_880e1531fba723f8
     src/orchestration/replay.rs signature 7 source_module_a9e54b7677683801
     src/orchestration/runner.rs signature 41 source_module_ab2ce622fc42d20f
-    src/orchestration/workspace.rs signature 15 source_module_341cef342bd4fe7b
+    src/orchestration/workspace.rs signature 15 source_module_14d6810946814ad7
     src/probability.rs signature 54 source_module_00112242017176e8
     src/program_coreference.rs signature 1 source_module_0a7619805d84aa4a
     src/program_plan.rs signature 15 source_module_a5c5548d2a9d7437
@@ -218,13 +220,14 @@ self_ast_census_index
     src/route_method_alias.rs signature 6 source_module_d9cf44b71fcb8405
     src/rule_synthesis.rs signature 15 source_module_b0bc20b7ae8125df
     src/rule_synthesis_portfolio.rs signature 16 source_module_52d068d8796d049c
-    src/seed.rs signature 57 source_module_9a366c4bc573834b
+    src/seed.rs signature 58 source_module_475c0648c5ebbe7e
     src/seed/agentic_tool_capabilities.rs signature 2 source_module_9847f4d6bab733ff
     src/seed/brainstorm.rs signature 5 source_module_6580e5a2ac5b3691
+    src/seed/client_completion.rs signature 2 source_module_f8ccbc3460b19224
     src/seed/client_integrations.rs signature 19 source_module_9207f94472e96872
     src/seed/coreference.rs signature 6 source_module_2a031fb4770187f1
     src/seed/draft_strategies.rs signature 2 source_module_2dc41474ab87eb56
-    src/seed/embedded.rs signature 95 source_module_1eab358b81e116a0
+    src/seed/embedded.rs signature 96 source_module_9bdcdcb406d70ec8
     src/seed/entity_names.rs signature 6 source_module_ba95cc916c77b0a9
     src/seed/facts.rs signature 9 source_module_986f7657cab5c21a
     src/seed/grounding_overrides.rs signature 6 source_module_e1e4f825307e3b33
