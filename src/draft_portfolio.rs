@@ -12,8 +12,8 @@
 //! [`PortfolioLeaf`] to say which strategies it can actually run, how to draft
 //! under one strategy and seed, how to run its generated tests against a draft,
 //! and whether a draft composes with the rest of the solution. Arithmetic
-//! reachability ([`crate::solver_search`]) and rule synthesis
-//! ([`crate::rule_synthesis`]) both plug in through that trait, so the portfolio
+//! reachability (`crate::solver_search`) and rule synthesis
+//! (`crate::rule_synthesis`) both plug in through that trait, so the portfolio
 //! is a property of the meta algorithm rather than of one handler.
 //!
 //! Determinism (`VISION.md` contract): concurrency is an execution detail and

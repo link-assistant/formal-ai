@@ -2,9 +2,9 @@ self_ast_census
   target src/draft_portfolio.rs
   language rust
   fidelity signature
-  byte_len 18499
+  byte_len 18495
   line_count 477
-  content_id source_module_b55f12fd46a5b73f
+  content_id source_module_ee32d5b6d60cbb03
   symbol_count 26
   symbols
     const MAX_ATTEMPTS 39 39

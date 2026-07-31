@@ -6,7 +6,7 @@ self_ast_census_index
   full_ast_module_count 50
   signature_module_count 318
   symbol_count 7480
-  content_id self_ast_census_index_86bbd0b5cd0e70c7
+  content_id self_ast_census_index_8c39713be04669d6
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/associative_learning.rs full_ast 7 source_module_926e3e97b31fa30a
@@ -109,7 +109,7 @@ self_ast_census_index
     src/dialog_conversation.rs signature 17 source_module_8a47163fec299692
     src/dialog_log.rs signature 21 source_module_30af7dfe527c979f
     src/document_formats.rs signature 11 source_module_81b5abd825d2d9d2
-    src/draft_portfolio.rs signature 26 source_module_b55f12fd46a5b73f
+    src/draft_portfolio.rs signature 26 source_module_ee32d5b6d60cbb03
     src/dreaming.rs signature 38 source_module_48ec38a01133af7a
     src/dreaming/cues.rs signature 4 source_module_c4abdc1af84b644e
     src/dreaming/draft_failures.rs signature 5 source_module_892affb938971194
