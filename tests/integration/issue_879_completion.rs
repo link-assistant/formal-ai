@@ -18,6 +18,14 @@ fn tmpdir() -> PathBuf {
     directory
 }
 
+/// Durable learning state root for one fixture, kept out of the workspace so a
+/// test can never write into the caller's tree and never inherits real history.
+fn state_dir(directory: &Path) -> PathBuf {
+    let path = directory.join("state");
+    std::fs::create_dir_all(&path).expect("create fixture state directory");
+    path
+}
+
 fn write_no_effect_agent(bin_dir: &Path) {
     let path = bin_dir.join("agent");
     std::fs::write(
@@ -130,6 +138,7 @@ fn run_client(
         .env("PATH", path)
         .env("FORMAL_AI_ATTEMPTS", attempts)
         .env("FORMAL_AI_CAPTURE", capture)
+        .env("FORMAL_AI_STATE_DIR", state_dir(directory))
         .env(
             "FORMAL_AI_CREATE_SESSION",
             directory.join("create-native-session"),
@@ -151,7 +160,30 @@ fn json_records(output: &[u8]) -> Vec<Value> {
 fn seeded_contract_is_complete_and_bounded() {
     let contract = software_authoring_completion_contract().expect("completion contract");
     assert_eq!(contract.observable_postcondition, "workspace_effect");
-    assert_eq!(contract.max_attempts, 2);
+    assert_eq!(contract.max_attempts, 4);
+    assert_eq!(
+        contract.recovery_strategies,
+        vec![
+            "restate_postcondition".to_owned(),
+            "name_target_artifact".to_owned(),
+            "decompose_into_leaf".to_owned(),
+        ],
+        "the recovery ladder must be declared as data, one distinct strategy per retry"
+    );
+    assert_eq!(
+        contract.max_attempts,
+        contract.recovery_strategies.len() + 1,
+        "the attempt budget must be exactly the initial attempt plus one try per strategy"
+    );
+    assert_eq!(
+        contract.diverted_endpoints,
+        vec![
+            "https://api.openai.com".to_owned(),
+            "https://api.anthropic.com".to_owned(),
+            "https://generativelanguage.googleapis.com".to_owned(),
+        ],
+        "the public endpoints a local run must never reach are seed data, not Rust constants"
+    );
     assert_eq!(
         contract.incomplete_reason,
         "required_workspace_effect_missing"
@@ -201,6 +233,7 @@ fn software_authoring_cannot_succeed_without_an_artifact() {
         .env("PATH", path)
         .env("FORMAL_AI_ATTEMPTS", &attempts)
         .env("FORMAL_AI_CAPTURE", &capture)
+        .env("FORMAL_AI_STATE_DIR", state_dir(&directory))
         .output()
         .expect("run formal-ai with Agent CLI");
 
@@ -212,8 +245,8 @@ fn software_authoring_cannot_succeed_without_an_artifact() {
     );
     assert_eq!(
         std::fs::read_to_string(&attempts).expect("attempt count"),
-        "2\n",
-        "the incomplete run must receive one bounded corrective retry"
+        "4\n",
+        "the incomplete run must spend its whole bounded recovery ladder and stop there"
     );
 
     let records = json_records(&output.stdout);
@@ -221,7 +254,16 @@ fn software_authoring_cannot_succeed_without_an_artifact() {
     assert_eq!(completion["type"], "formal_ai_completion");
     assert_eq!(completion["completion_state"], "incomplete");
     assert_eq!(completion["reason"], "required_workspace_effect_missing");
-    assert_eq!(completion["attempts"], 2);
+    assert_eq!(completion["attempts"], 4);
+    assert_eq!(
+        completion["recovery"]["strategies_spent"],
+        serde_json::json!([
+            "restate_postcondition",
+            "name_target_artifact",
+            "decompose_into_leaf",
+        ]),
+        "each retry must spend a different recovery strategy, never repeat one"
+    );
     assert_eq!(completion["rawMetadata"]["formalai"]["model"], "formal-ai");
     assert_eq!(
         completion["rawMetadata"]["formalai"]["endpoint"],
@@ -234,7 +276,7 @@ fn software_authoring_cannot_succeed_without_an_artifact() {
             .iter()
             .filter(|record| record["type"] == "concatenated")
             .count(),
-        2,
+        4,
         "each attempt must preserve concatenated JSON output"
     );
     assert_eq!(
@@ -244,11 +286,21 @@ fn software_authoring_cannot_succeed_without_an_artifact() {
                 record["type"] == "formal_ai_client_output" && record["text"] == "plain text"
             })
             .count(),
-        2,
+        4,
         "each attempt must wrap plain stdout in a machine-readable record"
     );
 
     let invocation = std::fs::read_to_string(&capture).expect("captured invocation");
+    for marker in [
+        "observable postcondition",
+        "one concrete relative path",
+        "smallest leaf",
+    ] {
+        assert!(
+            invocation.contains(marker),
+            "the recovery ladder did not escalate through a distinct correction ({marker}):\n{invocation}"
+        );
+    }
     assert!(
         invocation.contains("--permission-mode") && invocation.contains("<auto>"),
         "software-authoring run did not enable the editing profile:\n{invocation}"
@@ -489,6 +541,130 @@ fn authoring_prompts_in_every_supported_language_require_workspace_effects() {
         );
         let _ = std::fs::remove_dir_all(directory);
     }
+}
+
+/// The self-learning half of the loop: a strategy that produced an artifact for
+/// one client is tried first next time, and one that never did is tried last.
+#[test]
+fn recovery_order_is_learned_from_what_actually_produced_artifacts() {
+    let directory = tmpdir();
+    let bin_dir = directory.join("bin");
+    std::fs::create_dir_all(&bin_dir).expect("bin directory");
+    let home = directory.join("home");
+    std::fs::create_dir_all(&home).expect("home");
+
+    let teaching_workspace = directory.join("teaching-workspace");
+    std::fs::create_dir_all(&teaching_workspace).expect("teaching workspace");
+    assert!(Command::new("git")
+        .args(["init", "--quiet"])
+        .current_dir(&teaching_workspace)
+        .status()
+        .expect("initialize fixture repository")
+        .success());
+    // Only the third attempt writes a file: the initial request and the first
+    // recovery strategy fail, the second recovery strategy succeeds.
+    write_effect_client(&bin_dir, "agent", 3);
+    let teaching = run_client(
+        &directory,
+        &teaching_workspace,
+        &home,
+        &bin_dir,
+        "agent",
+        "Implement Hello World in Scala",
+        &[],
+    );
+    assert!(
+        teaching.status.success(),
+        "the teaching run did not recover:\nstdout:\n{}\nstderr:\n{}",
+        String::from_utf8_lossy(&teaching.stdout),
+        String::from_utf8_lossy(&teaching.stderr)
+    );
+    let taught = json_records(&teaching.stdout)
+        .into_iter()
+        .last()
+        .expect("completion record");
+    assert_eq!(taught["completion_state"], "complete");
+    assert_eq!(
+        taught["recovery"]["strategies_spent"],
+        serde_json::json!(["restate_postcondition", "name_target_artifact"]),
+        "the teaching run must stop as soon as a strategy produces an effect"
+    );
+
+    let ledger = state_dir(&directory).join("formal-ai/completion-recovery.lino");
+    let recorded = std::fs::read_to_string(&ledger).expect("durable recovery ledger");
+    assert!(
+        recorded.contains("restate_postcondition") && recorded.contains("name_target_artifact"),
+        "the ledger did not record the (client, strategy, outcome) triples:\n{recorded}"
+    );
+    assert_eq!(
+        taught["recovery"]["ledger"],
+        Value::String(ledger.display().to_string()),
+        "the completion record must name where the learning was persisted"
+    );
+
+    // A second run of the same client, with nothing left in the workspace to
+    // find, must now start from what worked and end with what never has.
+    let learning_workspace = directory.join("learning-workspace");
+    std::fs::create_dir_all(&learning_workspace).expect("learning workspace");
+    assert!(Command::new("git")
+        .args(["init", "--quiet"])
+        .current_dir(&learning_workspace)
+        .status()
+        .expect("initialize fixture repository")
+        .success());
+    std::fs::remove_file(directory.join("agent-attempts.txt")).expect("reset attempt counter");
+    write_no_effect_agent(&bin_dir);
+    let learned_run = run_client(
+        &directory,
+        &learning_workspace,
+        &home,
+        &bin_dir,
+        "agent",
+        "Implement Hello World in Scala",
+        &[],
+    );
+    assert!(
+        !learned_run.status.success(),
+        "a run that produced nothing was still accepted"
+    );
+    let learned = json_records(&learned_run.stdout)
+        .into_iter()
+        .last()
+        .expect("completion record");
+    assert_eq!(
+        learned["recovery"]["strategies_spent"],
+        serde_json::json!([
+            "name_target_artifact",
+            "decompose_into_leaf",
+            "restate_postcondition",
+        ]),
+        "learning must promote the strategy that worked, keep untried ones next, \
+         and demote the one that never produced an effect"
+    );
+    assert_eq!(
+        learned["recovery"]["strategies_available"],
+        serde_json::json!([
+            "restate_postcondition",
+            "name_target_artifact",
+            "decompose_into_leaf",
+        ]),
+        "learning may only reorder the seeded ladder, never add or drop a strategy"
+    );
+
+    // Defect 4: the durable learning state is never written into the caller's tree.
+    for workspace in [&teaching_workspace, &learning_workspace] {
+        let status = Command::new("git")
+            .args(["status", "--porcelain=v1", "--untracked-files=all"])
+            .current_dir(workspace)
+            .output()
+            .expect("inspect fixture repository");
+        let status = String::from_utf8(status.stdout).expect("UTF-8 status");
+        assert!(
+            !status.contains("completion-recovery"),
+            "learning state leaked into the workspace:\n{status}"
+        );
+    }
+    let _ = std::fs::remove_dir_all(directory);
 }
 
 #[test]
