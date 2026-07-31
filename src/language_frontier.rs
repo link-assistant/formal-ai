@@ -3,7 +3,8 @@
 //! Issue #701 gave the engine a general adoption cycle: a recorded frontier of
 //! prompts it cannot route becomes a derived request frame, a held-out
 //! validation, and a promotion proposal. That cycle is frontier-agnostic — it
-//! takes a slug and a list of [`FrontierItem`]s and never mentions Google
+//! takes a slug and a list of [`crate::learning_cycle::FrontierItem`]s and
+//! never mentions Google
 //! Trends. This module supplies the *second* frontier: the prompts a newly
 //! registered language brings with it.
 //!
