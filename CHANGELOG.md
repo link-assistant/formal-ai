@@ -7,6 +7,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.317.0] - 2026-07-31
+
+### Added
+- Add a seed-driven N→N+1 language protocol, generated round-trip matrix,
+  partial Spanish coverage with explicit gaps, and an Arabic dry-run fixture.
+
+### Changed
+- Derive language detection entirely from `data/seed/language-detection.lino`
+  instead of a hardcoded Rust enum, so registering a language (script, Unicode
+  range, markers, fallback flag) is a data-only edit shared by the Rust core,
+  the WASM worker, and the JS worker.
+- Move the unknown-intent opener pools out of Rust and JavaScript constants
+  into `data/seed/unknown-openers.lino`, and derive the browser worker's
+  no-WASM fallbacks — script/marker detection and the known-response-language
+  check — from the hydrated registry, so a new language needs no worker edit.
+- Apply the ledger's `explicit_gap` fallback policy through
+  `seed::localized_response`: an intent with no text for a registered language
+  now surfaces the explicit "unsupported language" record instead of silently
+  answering in English.
+
+### Added
+- Record the language learning frontier: `data/language-additions/<code>.lino`
+  can now carry a prompt corpus, and `src/language_frontier.rs` runs the live
+  engine over it to record only the prompts that still fail, keeping a language
+  without a corpus as an explicit `frontier_gap`.
+- Register `--frontier` as an open registry in `formal-ai learn cycle`, so the
+  issue-#701 learning cycle replays the new `language-gap` frontier with no new
+  learning logic. Over the Spanish corpus it derives, validates on held-out
+  prompts, and proposes the `qué es …` and `cuéntame sobre …` request frames.
+- Pin the adoption evidence in `data/meta/language-adoption-ledger.lino`: 7 of 7
+  recorded Spanish prompts leave the unknown path and recover their term after
+  the proposals are adopted as seed data.
+
+### Changed
+- Move the unknown-intent opener pools into `data/seed/unknown-openers.lino`,
+  shared by the Rust core, the WASM worker, and the JS worker.
+- Derive language display names, concept slugs, and per-language script checks
+  from the seed ledger instead of Rust `match` arms.
+
 ## [0.316.1] - 2026-07-31
 
 ### Fixed
