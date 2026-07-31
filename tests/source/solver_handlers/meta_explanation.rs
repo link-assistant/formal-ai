@@ -97,8 +97,8 @@ fn compiled_procedure_from_history(log: &EventLog) -> Option<CompiledProcedure> 
 
 /// Cite the compiled steps and the source sentence spans they were read from.
 fn cited_procedure_steps(procedure: &CompiledProcedure, language: &str) -> String {
-    let template = localized_response("compiled_procedure_explanation", language)
-        .unwrap_or_default();
+    let template =
+        localized_response("compiled_procedure_explanation", language).unwrap_or_default();
     format!(
         "\n\n{}",
         template.replace("{steps}", &procedure.restate_steps())

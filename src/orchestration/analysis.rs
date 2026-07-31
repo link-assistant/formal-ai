@@ -329,14 +329,16 @@ fn correction_requests(
                 continue;
             };
             let evidence_language = language::detect(&claim.text).slug();
-            let evidence =
-                crate::seed::localized_response("orchestration_cross_agent_denial", evidence_language)
-                    .unwrap_or_else(|| "orchestration_cross_agent_denial".to_string())
-                    .replace(SOURCES_PLACEHOLDER, &claim.denied_by.join(","))
-                    .replace(
-                        PROBABILITY_PLACEHOLDER,
-                        &format!("{:.6}", claim.probability),
-                    );
+            let evidence = crate::seed::localized_response(
+                "orchestration_cross_agent_denial",
+                evidence_language,
+            )
+            .unwrap_or_else(|| "orchestration_cross_agent_denial".to_string())
+            .replace(SOURCES_PLACEHOLDER, &claim.denied_by.join(","))
+            .replace(
+                PROBABILITY_PLACEHOLDER,
+                &format!("{:.6}", claim.probability),
+            );
             requests.push(CorrectionRequest {
                 cli: cli.to_string(),
                 claim: claim.text.clone(),

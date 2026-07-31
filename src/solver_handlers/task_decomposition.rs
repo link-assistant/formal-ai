@@ -196,8 +196,7 @@ fn with_sub_tasks(lead: &str, decomposition: &Decomposition, language: &str) -> 
 /// English and then to a built-in string so a missing translation degrades to a
 /// readable answer instead of an empty one.
 fn response(language: &str, intent: &str, fallback: &str) -> String {
-    localized_response(intent, language)
-        .unwrap_or_else(|| fallback.to_owned())
+    localized_response(intent, language).unwrap_or_else(|| fallback.to_owned())
 }
 
 /// Full-sentence replies live only in the seed (R379 forbids user-facing prose
@@ -205,8 +204,7 @@ fn response(language: &str, intent: &str, fallback: &str) -> String {
 /// present and test-pinned, so a missing translation degrades to English and
 /// never to an empty answer in practice.
 fn seeded(language: &str, intent: &str) -> String {
-    localized_response(intent, language)
-        .unwrap_or_default()
+    localized_response(intent, language).unwrap_or_default()
 }
 
 /// Recover the task the prompt is asking about.

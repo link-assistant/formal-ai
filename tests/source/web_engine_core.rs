@@ -144,9 +144,7 @@ fn parse_opener_registry() -> OpenerRegistry {
                 openers: Vec::new(),
             }),
             "fallback_language" => registry.fallback_language = unquote_seed_value(value),
-            "sentence_separator" => registry
-                .sentence_separators
-                .push(unquote_seed_value(value)),
+            "sentence_separator" => registry.sentence_separators.push(unquote_seed_value(value)),
             "language" => {
                 if let Some(pool) = registry.pools.last_mut() {
                     pool.language = unquote_seed_value(value);

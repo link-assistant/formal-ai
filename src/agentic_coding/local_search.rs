@@ -702,8 +702,7 @@ fn render_type(
 }
 
 fn localized(intent: &str, language: &str) -> String {
-    seed::localized_response(intent, language)
-        .unwrap_or_default()
+    seed::localized_response(intent, language).unwrap_or_default()
 }
 
 fn shell_quote(value: &str) -> String {

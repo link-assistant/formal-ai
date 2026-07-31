@@ -201,8 +201,7 @@ pub fn resolve_who_is(
     } else {
         "who_is_unknown_entity"
     };
-    let mut body = localized_response(intent, &language)?
-        .replace(TERM_PLACEHOLDER, term);
+    let mut body = localized_response(intent, &language)?.replace(TERM_PLACEHOLDER, term);
     if let Some(corrected) = suggestion {
         log.append("entity_resolution:suggestion", corrected.clone());
         body = body.replace(CORRECTED_PLACEHOLDER, &corrected);

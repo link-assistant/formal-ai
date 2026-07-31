@@ -46,8 +46,7 @@ pub const UNKNOWN_EXAMPLES: &[&str] = &["Any prompt without a matching symbolic 
 /// a meaning, never hardcoded natural language (R379).
 fn cached_response(cell: &'static OnceLock<String>, intent: &str, language: &str) -> &'static str {
     cell.get_or_init(|| {
-        seed::localized_response(intent, language)
-            .unwrap_or_else(|| intent.to_string())
+        seed::localized_response(intent, language).unwrap_or_else(|| intent.to_string())
     })
     .as_str()
 }

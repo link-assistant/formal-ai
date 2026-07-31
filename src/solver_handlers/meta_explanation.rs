@@ -111,8 +111,7 @@ fn artifact_field(artifact: &str, field: &str) -> Option<String> {
 }
 
 fn draft_comparison_explanation(comparison: &DraftComparison, language: &str) -> String {
-    let template = localized_response("draft_comparison_explanation", language)
-        .unwrap_or_default();
+    let template = localized_response("draft_comparison_explanation", language).unwrap_or_default();
     [
         ("{winner_index}", comparison.winner_index.as_str()),
         ("{strategy}", comparison.strategy.as_str()),
@@ -163,8 +162,8 @@ fn compiled_procedure_from_history(log: &EventLog) -> Option<CompiledProcedure> 
 
 /// Cite the compiled steps and the source sentence spans they were read from.
 fn cited_procedure_steps(procedure: &CompiledProcedure, language: &str) -> String {
-    let template = localized_response("compiled_procedure_explanation", language)
-        .unwrap_or_default();
+    let template =
+        localized_response("compiled_procedure_explanation", language).unwrap_or_default();
     format!(
         "\n\n{}",
         template.replace("{steps}", &procedure.restate_steps())

@@ -44,14 +44,13 @@ pub fn try_clarification(
         return None;
     }
     let language = detect_language(prompt);
-    let body = localized_response("clarification", language.slug())
-        .unwrap_or_else(|| {
-            String::from(
-                "I'm sorry for the confusion. I am formal-ai, a deterministic symbolic AI. \
+    let body = localized_response("clarification", language.slug()).unwrap_or_else(|| {
+        String::from(
+            "I'm sorry for the confusion. I am formal-ai, a deterministic symbolic AI. \
                  I can answer greetings, identity questions, concept lookups (\"what is X?\"), \
                  arithmetic, and Hello World programs.",
-            )
-        });
+        )
+    });
     Some(finalize_simple(
         prompt,
         log,

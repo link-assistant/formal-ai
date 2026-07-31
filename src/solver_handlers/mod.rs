@@ -830,8 +830,7 @@ pub fn try_learn_from_source(
     log.append("learning_capability", source.capability.clone());
 
     let language = detect_language(prompt);
-    let intro = localized_response("learn_from_source", language.slug())
-        .unwrap_or_default();
+    let intro = localized_response("learn_from_source", language.slug()).unwrap_or_default();
     let body = if intro.is_empty() {
         summary
     } else {

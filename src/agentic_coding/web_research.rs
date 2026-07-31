@@ -93,8 +93,7 @@ pub(super) fn definition_followup_topic(messages: &[ChatMessage], task: &str) ->
 
 pub(super) fn definition_followup_clarification(task: &str) -> String {
     let language = crate::language::detect(task).slug();
-    seed::localized_response("definition_followup_clarify", language)
-        .unwrap_or_default()
+    seed::localized_response("definition_followup_clarify", language).unwrap_or_default()
 }
 
 /// A word-meaning question can carry a sentence as context while its subject is
