@@ -68,7 +68,13 @@ pub fn solve_with_standing_requirements(
     history: &[ConversationTurn],
     events: &[MemoryEvent],
 ) -> SymbolicAnswer {
-    solve_with_amendment_records(solver, prompt, history, &retained_amendments(events))
+    let answer =
+        solve_with_amendment_records(solver, prompt, history, &retained_amendments(events));
+    if answer.intent == "unknown" {
+        crate::anticipation::answer_from_prelearned_cache(prompt, events).unwrap_or(answer)
+    } else {
+        answer
+    }
 }
 
 /// The shared amendment-application core.
