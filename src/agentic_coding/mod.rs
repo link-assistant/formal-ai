@@ -23,6 +23,7 @@ mod capability_router;
 pub mod change_request;
 mod code_artifact;
 pub mod code_rewrite_learning;
+mod code_task;
 pub(crate) mod command_reroute;
 mod comparison;
 mod conversation_recall;

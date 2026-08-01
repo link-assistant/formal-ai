@@ -1,4 +1,24 @@
 meanings
+  response_statement_audit_invalid_json_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response statement audit invalid json en"
+  response_statement_audit_invalid_temperature_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response statement audit invalid temperature en"
+  response_statement_audit_nonempty_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response statement audit nonempty en"
+  response_statement_audit_selector_exclusive_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response statement audit selector exclusive en"
   response_statement_audit_selector_required_en
     defined-by response_template
     lexeme en
@@ -1089,11 +1109,21 @@ meanings
     lexeme en
       surface
         text "stdout"
+  string
+    defined-by word_surface
+    lexeme en
+      surface
+        text "string"
   strip_empty_lines
     defined-by operation
     lexeme en
       surface
         text "strip empty lines"
+  struct
+    defined-by word_surface
+    lexeme en
+      surface
+        text "struct"
   structured-document
     defined-by isolation_mode
     lexeme en
@@ -1364,33 +1394,3 @@ meanings
     lexeme en
       surface
         text "tool fs read"
-  tool_fs_write
-    defined-by tool
-    lexeme en
-      surface
-        text "tool fs write"
-  tool_http_fetch
-    defined-by tool
-    lexeme en
-      surface
-        text "tool http fetch"
-  tool_http_fetch_primitive
-    defined-by tool
-    lexeme en
-      surface
-        text "tool http fetch primitive"
-  tool_http_post_primitive
-    defined-by tool
-    lexeme en
-      surface
-        text "tool http post primitive"
-  tool_import_memory
-    defined-by tool
-    lexeme en
-      surface
-        text "tool import memory"
-  tool_intent_routing
-    defined-by tool
-    lexeme en
-      surface
-        text "tool intent routing"

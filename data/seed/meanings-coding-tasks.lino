@@ -1,0 +1,197 @@
+meanings
+  coding_constant
+    defined-by code
+    role coding_artifact_kind
+    lexeme en
+      surface
+        text constant
+    lexeme ru
+      surface
+        text константа
+      surface
+        text константу
+    lexeme hi
+      surface
+        text स्थिरांक
+    lexeme zh
+      surface
+        text 常量
+  coding_test
+    defined-by code
+    role coding_artifact_kind
+    lexeme en
+      surface
+        text test
+    lexeme ru
+      surface
+        text тест
+      surface
+        text теста
+    lexeme hi
+      surface
+        text परीक्षण
+    lexeme zh
+      surface
+        text 测试
+  coding_public_visibility
+    defined-by relation
+    role coding_visibility
+    lexeme en
+      surface
+        text public
+    lexeme ru
+      surface
+        text публичная
+      surface
+        text публичной
+      surface
+        text публичную
+    lexeme hi
+      surface
+        text सार्वजनिक
+    lexeme zh
+      surface
+        text 公共
+  coding_return
+    defined-by action
+    role coding_return_action
+    lexeme en
+      surface
+        text return
+      surface
+        text returns
+    lexeme ru
+      surface
+        text возвращает
+      surface
+        text вернуть
+    lexeme hi
+      surface
+        text लौटाता
+      surface
+        text लौटाए
+    lexeme zh
+      surface
+        text 返回
+  coding_division
+    defined-by action
+    role coding_division_action
+    lexeme en
+      surface
+        text "divided by"
+      surface
+        text divide
+    lexeme ru
+      surface
+        text делит
+      surface
+        text разделить
+    lexeme hi
+      surface
+        text विभाजित
+    lexeme zh
+      surface
+        text 除以
+  coding_artifact_name
+    defined-by relation
+    role coding_name_slot
+    lexeme en
+      surface
+        text "named …"
+      surface
+        text "with the name …"
+    lexeme ru
+      surface
+        text "с именем …"
+      surface
+        text "под названием …"
+    lexeme hi
+      surface
+        text "… नाम का"
+    lexeme zh
+      surface
+        text "名为 …"
+  coding_string_value
+    defined-by relation
+    role coding_value_slot
+    lexeme en
+      surface
+        text "with the value …"
+      surface
+        text "whose value is …"
+    lexeme ru
+      surface
+        text "со значением …"
+    lexeme hi
+      surface
+        text "जिसका मान …"
+    lexeme zh
+      surface
+        text "值为 …"
+  coding_search_string
+    defined-by code
+    role coding_search_subject_kind
+    lexeme en
+      surface
+        text string
+    lexeme ru
+      surface
+        text строка
+    lexeme hi
+      surface
+        text स्ट्रिंग
+    lexeme zh
+      surface
+        text 字符串
+  coding_search_function
+    defined-by function
+    role coding_search_subject_kind
+    lexeme en
+      surface
+        text function
+    lexeme ru
+      surface
+        text функция
+    lexeme hi
+      surface
+        text फ़ंक्शन
+    lexeme zh
+      surface
+        text 函数
+  coding_search_array
+    defined-by code
+    role coding_search_subject_kind
+    lexeme en
+      surface
+        text array
+    lexeme ru
+      surface
+        text массив
+    lexeme hi
+      surface
+        text सरणी
+    lexeme zh
+      surface
+        text 数组
+  coding_search_struct
+    defined-by code
+    role coding_search_subject_kind
+    lexeme en
+      surface
+        text struct
+    lexeme ru
+      surface
+        text структура
+    lexeme hi
+      surface
+        text स्ट्रक्ट
+    lexeme zh
+      surface
+        text 结构体
+  coding_search_issue_creation
+    defined-by code
+    role coding_search_literal_query
+    lexeme en
+      surface
+        text "GitHub issue creation command"
+        action "gh issue create"

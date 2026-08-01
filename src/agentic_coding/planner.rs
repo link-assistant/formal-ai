@@ -10,6 +10,7 @@ use super::capability_router;
 pub(super) use super::capability_router::tool_for;
 use super::change_request;
 use super::code_artifact;
+use super::code_task;
 use super::comparison;
 use super::conversation_recall;
 use super::diagram;
@@ -165,6 +166,12 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // prompts before broad write/search routing. Each emitted primitive carries
     // explicit pre/postconditions and is executed by the advertising client.
     if let Some(plan) = crate::computer_use::plan_agentic_step(messages, tool_names) {
+        return Some(plan);
+    }
+    // A source-code description is not literal file content. Lower bounded
+    // seed-backed source tasks before the broad literal-write parser so coding
+    // requests produce executable bytes and verify those exact bytes.
+    if let Some(plan) = code_task::plan_generated_source_step(&task, messages, tool_names) {
         return Some(plan);
     }
     // Resolve an unambiguous literal write before keyword recipes: arbitrary

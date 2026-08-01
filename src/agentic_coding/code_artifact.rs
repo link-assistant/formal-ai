@@ -244,7 +244,7 @@ fn latest_workspace_artifact(messages: &[ChatMessage]) -> Option<WorkspaceArtifa
         })
 }
 
-fn latest_result(messages: &[ChatMessage], capability: Capability) -> Option<String> {
+pub(super) fn latest_result(messages: &[ChatMessage], capability: Capability) -> Option<String> {
     messages
         .iter()
         .enumerate()

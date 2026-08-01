@@ -75,6 +75,22 @@ roles
     kind meaning
   code_method_noun
     kind predicate
+  coding_artifact_kind
+    kind predicate
+  coding_division_action
+    kind predicate
+  coding_name_slot
+    kind predicate
+  coding_return_action
+    kind predicate
+  coding_search_literal_query
+    kind predicate
+  coding_search_subject_kind
+    kind predicate
+  coding_value_slot
+    kind predicate
+  coding_visibility
+    kind predicate
   common_typo
     kind meaning
   comparison_difference_cue

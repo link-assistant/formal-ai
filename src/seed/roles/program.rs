@@ -229,6 +229,25 @@ pub const ROLE_PROGRAM_SYNTHESIS_SIGNAL: &str = "program_synthesis_signal";
 /// selected when its name is declared or when every `program_synthesis_signal`
 /// it is `defined_by` is evidenced in the prompt.
 pub const ROLE_PROGRAM_SYNTHESIS_TASK: &str = "program_synthesis_task";
+/// Semantic role: a source artifact kind handled by the coding-task executor
+/// in addition to the general [`ROLE_PROGRAM_KIND`] vocabulary.
+pub const ROLE_CODING_ARTIFACT_KIND: &str = "coding_artifact_kind";
+/// Semantic role: a requested source item's visibility modifier.
+pub const ROLE_CODING_VISIBILITY: &str = "coding_visibility";
+/// Semantic role: a source-generation request's return operation.
+pub const ROLE_CODING_RETURN_ACTION: &str = "coding_return_action";
+/// Semantic role: a source-generation request's division operation.
+pub const ROLE_CODING_DIVISION_ACTION: &str = "coding_division_action";
+/// Semantic role: a slot that carries the requested source identifier.
+pub const ROLE_CODING_NAME_SLOT: &str = "coding_name_slot";
+/// Semantic role: a slot that carries a requested literal value.
+pub const ROLE_CODING_VALUE_SLOT: &str = "coding_value_slot";
+/// Semantic role: a code-kind noun adjacent to the literal subject of a
+/// repository search.
+pub const ROLE_CODING_SEARCH_SUBJECT_KIND: &str = "coding_search_subject_kind";
+/// Semantic role: a repository-search phrase whose form carries its canonical
+/// query as an action.
+pub const ROLE_CODING_SEARCH_LITERAL_QUERY: &str = "coding_search_literal_query";
 /// Semantic role: a word an identifier may not be, because a programming
 /// language reserves it.
 ///
