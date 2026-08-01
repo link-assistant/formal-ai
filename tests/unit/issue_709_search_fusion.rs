@@ -28,7 +28,9 @@ impl SourceTransport for FixtureTransport {
             );
         }
         match url {
-            "https://facts.invalid/original" => Ok(b"Apple is a fruit.\n".to_vec()),
+            "https://facts.invalid/original" => {
+                Ok(b"This handbook has many entries. Apple is a fruit.\n".to_vec())
+            }
             "https://facts.invalid/report" => Ok("Яблоко это фрукт.\n".as_bytes().to_vec()),
             "https://facts.invalid/repost" => Ok(b"Apple is a fruit.\n".to_vec()),
             _ => Err(FetchError::Transport(format!("fixture_missing:{url}"))),
@@ -246,10 +248,29 @@ fn presentation_normalizes_source_url_title_quote_and_read_more() {
     assert!(rendered.contains("Original handbook"));
     assert!(rendered.contains("https://facts.invalid/original"));
     assert!(rendered.contains("> Apple is a fruit."));
+    let apple = execution
+        .answer
+        .statements
+        .iter()
+        .find(|statement| statement.text == "Apple is a fruit.")
+        .expect("ranked apple statement");
+    let original = apple
+        .sources
+        .iter()
+        .find(|source| source.url == "https://facts.invalid/original")
+        .expect("original source card");
+    assert_eq!(original.quote, "Apple is a fruit.");
     assert!(rendered.contains("[Read more](https://facts.invalid/original)"));
     assert!(rendered.contains("posterior="));
     assert!(rendered.contains("source_tier=original_first_party"));
-    assert_eq!(rendered.matches("Original handbook").count(), 1);
+    assert_eq!(
+        apple
+            .sources
+            .iter()
+            .filter(|source| source.url == "https://facts.invalid/original")
+            .count(),
+        1
+    );
 
     let mut log = EventLog::new();
     execution.record(&mut log);

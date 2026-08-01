@@ -15,7 +15,7 @@ use crate::links_format::format_lino_record;
 use crate::relative_meta_logic::{SourceTier, TruthValue};
 use crate::source_fetch::{CachedSourceClient, FetchError, SourceTransport};
 use crate::source_research::{execute_source_research, SourceResearchExecution};
-use crate::summarization::{merge_into_formal_context, SourcedStatement};
+use crate::summarization::{merge_into_formal_context, SourcedStatement, StatementSignature};
 use crate::translation::{
     formalize_prompt, FormalizationAnchorKind, FormalizationCandidate, FormalizationRole,
 };
@@ -395,7 +395,20 @@ where
         .iter()
         .map(|source| (source.url.clone(), source.clone()))
         .collect();
-    let statements = select_statements(&merged, &sources_by_url);
+    let quotes_by_statement: BTreeMap<_, _> = observations
+        .iter()
+        .map(|observation| {
+            let signature = StatementSignature::with_semantic_terms(
+                &observation.rendered_text,
+                &observation.semantic_terms,
+            );
+            (
+                (observation.source_url.clone(), signature.key()),
+                observation.original_text.clone(),
+            )
+        })
+        .collect();
+    let statements = select_statements(&merged, &sources_by_url, &quotes_by_statement);
     let merge_links = merged
         .report
         .links
@@ -506,6 +519,7 @@ fn render_candidate(candidate: &FormalizationCandidate, target_language: &str) -
 fn select_statements(
     merged: &crate::summarization::MergedContext,
     sources: &BTreeMap<String, NormalizedSearchSource>,
+    quotes_by_statement: &BTreeMap<(String, String), String>,
 ) -> Vec<FusedSearchStatement> {
     let mut selected_meanings: Vec<Vec<String>> = Vec::new();
     let mut output = Vec::new();
@@ -518,11 +532,18 @@ fn select_statements(
         if !seen {
             selected_meanings.push(meaning);
         }
+        let signature = ranked.statement.signature.key();
         let mut statement_sources: Vec<NormalizedSearchSource> = ranked
             .statement
             .sources()
             .into_iter()
-            .filter_map(|url| sources.get(url).cloned())
+            .filter_map(|url| {
+                let mut source = sources.get(url).cloned()?;
+                if let Some(quote) = quotes_by_statement.get(&(url.to_owned(), signature.clone())) {
+                    source.quote.clone_from(quote);
+                }
+                Some(source)
+            })
             .collect();
         statement_sources.sort_by(|left, right| {
             right
