@@ -264,12 +264,22 @@ fn issue_case_study_preserves_requirements_research_and_solution_artifacts() {
 }
 
 #[test]
-fn whole_solution_is_linked_and_has_a_release_fragment() {
-    let changelog = read("changelog.d/20260801_000000_issue_885.md");
+fn whole_solution_is_linked_and_has_a_release_note() {
+    let fragment_path = root().join("changelog.d/20260801_000000_issue_885.md");
+    let (label, changelog) = if fragment_path.is_file() {
+        let fragment = fs::read_to_string(&fragment_path)
+            .unwrap_or_else(|error| panic!("read {}: {error}", fragment_path.display()));
+        assert_contains_all("issue 885 changelog fragment", &fragment, &["bump: minor"]);
+        ("issue 885 changelog fragment", fragment)
+    } else {
+        let released = read("CHANGELOG.md");
+        assert_contains_all("released issue 885 changelog", &released, &["## [0.318.0]"]);
+        ("released issue 885 changelog", released)
+    };
     assert_contains_all(
-        "issue 885 changelog",
+        label,
         &changelog,
-        &["bump: minor", "relative references", "legal source-review"],
+        &["relative references", "legal source-review"],
     );
 
     let case_study = read("docs/case-studies/issue-885/README.md");
