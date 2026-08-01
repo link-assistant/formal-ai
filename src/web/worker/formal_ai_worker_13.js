@@ -450,6 +450,7 @@ function meaningLexicon() {
       if (!slug) continue;
       const roles = [];
       const definedBy = [];
+      let groundedIn = "";
       const words = [];
       const wordForms = [];
       // Per-language word groups, so a handler can partition a role's vocabulary
@@ -462,6 +463,9 @@ function meaningLexicon() {
       }
       for (const child of node.children) {
         if (child.name === "role") roles.push(child.value);
+        else if (child.name === "grounded_in" || child.name === "grounded-in") {
+          groundedIn = child.value;
+        }
         else if (child.name === "defined_by" || child.name === "defined-by") {
           definedBy.push(child.value);
         }
@@ -498,7 +502,7 @@ function meaningLexicon() {
           lexemes.push({ language: childValue(child, "language"), words: [text] });
         }
       }
-      meanings.push({ slug, roles, definedBy, words, wordForms, lexemes });
+      meanings.push({ slug, roles, definedBy, groundedIn, words, wordForms, lexemes });
     }
   }
   cachedMeaningLexicon = meanings;
