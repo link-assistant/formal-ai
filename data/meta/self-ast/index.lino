@@ -5,8 +5,8 @@ self_ast_census_index
   module_count 384
   full_ast_module_count 50
   signature_module_count 334
-  symbol_count 7840
-  content_id self_ast_census_index_bb27166c6e20b0ce
+  symbol_count 7841
+  content_id self_ast_census_index_898cd0ca60ed2260
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/associative_learning.rs full_ast 7 source_module_926e3e97b31fa30a
@@ -383,10 +383,10 @@ self_ast_census_index
     src/translation/wikidata.rs signature 13 source_module_1dbc257c5790a0b5
     src/translation/wiktionary.rs signature 25 source_module_0290c17edb50dc0b
     src/unknown_opener.rs signature 4 source_module_6b6c4a9ed0fd3e01
-    src/web/wasm-worker/src/lib.rs signature 67 source_module_c880db7ae92080fd
+    src/web/wasm-worker/src/lib.rs signature 67 source_module_183c3508314a0f37
     src/web_engine_core.rs signature 30 source_module_7d6bf190dc0f09e0
     src/web_search_core.rs signature 20 source_module_ec1f53a8d72c719d
-    src/web_search_fusion_core.rs signature 47 source_module_79c6bab324c89d8b
+    src/web_search_fusion_core.rs signature 48 source_module_25a6bc6056b56689
     src/world_model.rs signature 66 source_module_a023fbe5405aff2a
     src/world_model_atoms.rs signature 20 source_module_ac97972ce4f35578
     src/world_model_context.rs signature 21 source_module_c2cb46666cde2fc4
