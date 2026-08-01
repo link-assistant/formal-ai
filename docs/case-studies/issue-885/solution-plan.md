@@ -20,7 +20,8 @@
    contextual probability, document isolation, and demonstrative determiners.
 3. Add stable reference links and `resolved_text` to each audited statement.
 4. Compute `contextual_posterior` as the evidence posterior bounded by the
-   referenced antecedent and persist the dependency in JSON and Links Notation.
+   referenced antecedent and persist the dependency in Links Notation and the
+   learned association graph.
 5. Add separate, dated legal guides and fail-closed dataset/model matrices.
 6. Add the fact-checked philosophy and link it from the project vision.
 7. Execute one of five smallest documentation leaves through Formal AI and the

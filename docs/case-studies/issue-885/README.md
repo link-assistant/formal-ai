@@ -35,7 +35,7 @@ evidence weighting. The repair gives each statement:
 
 - a document-local link from a reference surface to the closest preceding
   compatible grammatical subject;
-- `resolved_text` for evidence and contradiction comparison;
+- `resolved_text` for evidence matching and probability assessment;
 - `references` that persist the antecedent statement id; and
 - `contextual_posterior`, capped by the antecedent's probability.
 
