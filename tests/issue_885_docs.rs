@@ -264,13 +264,25 @@ fn issue_case_study_preserves_requirements_research_and_solution_artifacts() {
 }
 
 #[test]
-fn whole_solution_is_linked_and_has_a_release_fragment() {
-    let changelog = read("changelog.d/20260801_000000_issue_885.md");
-    assert_contains_all(
-        "issue 885 changelog",
-        &changelog,
-        &["bump: minor", "relative references", "legal source-review"],
-    );
+fn whole_solution_is_linked_and_has_a_release_trace() {
+    let fragment = root().join("changelog.d/20260801_000000_issue_885.md");
+    if fragment.is_file() {
+        assert_contains_all(
+            "issue 885 changelog fragment",
+            &read("changelog.d/20260801_000000_issue_885.md"),
+            &["bump: minor", "relative references", "legal source-review"],
+        );
+    } else {
+        assert_contains_all(
+            "released issue 885 changelog entry",
+            &read("CHANGELOG.md"),
+            &[
+                "## [0.318.0] - 2026-08-01",
+                "relative references",
+                "legal source-review",
+            ],
+        );
+    }
 
     let case_study = read("docs/case-studies/issue-885/README.md");
     assert!(case_study.contains("repository-audit-summary.md"));
