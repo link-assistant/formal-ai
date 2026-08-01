@@ -1486,6 +1486,27 @@ judgement as its base case.
 | R847-7 | A real corpus task must decompose into children a human agrees are smaller and jointly sufficient. | Covered by `a_real_corpus_task_splits_into_smaller_jointly_sufficient_children`, which splits this repository's own `experiments/` code-change-detector task into its two edits. |
 | R847-8 | The spectrum must run from a GitHub issue down to a single atomic edit, with regression coverage in the specification suites in all four languages. | `the_spectrum_runs_from_issue_to_atomic_edit` pins both ends of the ladder; `tests/unit/specification/task_decomposition.rs` holds the four-language specifications and `tests/unit/issue_847_task_decomposition.rs` the reproduction cases. |
 
+## Issue #848 Executable Coding Tasks
+
+Issue [#848](https://github.com/link-assistant/formal-ai/issues/848) asks for
+an honest, broad measurement of Formal AI doing real coding work through the
+Agent CLI. The v0.303.0 baseline passed 38/130 tasks; the prepared branch
+passed 45/130 with no test authoring or targeted edit. PR
+[#897](https://github.com/link-assistant/formal-ai/pull/897) adds a semantic,
+observed execution floor and makes the ladder reject false greens. See
+`docs/case-studies/issue-848/` for the full evidence and residual boundary.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R848-1 | A complete run must measure all 130 tasks and never confuse a filtered diagnostic or unavailable server with the canonical score. | The runner records completeness and `not_measured`, writes filtered results separately, and persists every task incrementally. |
+| R848-2 | Source creation must render executable bytes from the formalized request, never echo request prose, and must observe the exact target after writing. | `src/agentic_coding/code_task.rs` lowers seed-backed function, constant, and test concepts and verifies with an exact `cat`. |
+| R848-3 | New Rust targets must compile before the ladder credits them. | The real-client harness invokes `rustc` only for requested targets that did not exist before the task. |
+| R848-4 | The full result must have nonzero `test_authoring`, `targeted_edit`, L2, and L3 outcomes. | The complete ladder result records all four above zero; deterministic regressions pin source generation and grounded edits. |
+| R848-5 | Repository search must use the named code subject rather than the full conversational prompt. | `src/agentic_coding/shell_command.rs` emits one focused query; seven independent subject shapes are covered. |
+| R848-6 | Structured collection edits must transform existing workspace bytes and verify the written result. | `src/agentic_coding/structured_edit.rs` implements read → transform → write → exact observation. |
+| R848-7 | The approach must work across supported languages and benchmark facts must track the repository version. | Coding meanings cover en/ru/hi/zh; file-derived expectations resolve the current version from `Cargo.toml` and fail closed. |
+| R848-8 | At least 20% of reviewed smallest leaves must be completed through Formal AI and the real Agent CLI. | Session `ses_04160c59fffe3FDUKteR56kfQp` authored one of four leaves (25%); exact client/server logs and replay are committed. |
+
 ## Issue #706 Any-Language Protocol
 
 Issue [#706](https://github.com/link-assistant/formal-ai/issues/706) (E64)

@@ -208,10 +208,9 @@ fn compiler_measurement_and_same_task_authorship_are_preserved() {
     assert!(runner.contains("expect_from_file"));
     assert!(runner.contains("re.MULTILINE"));
 
-    let prompts: serde_json::Value = serde_json::from_str(&read(
-        "experiments/issue_847_coding_ladder/prompts.json",
-    ))
-    .expect("coding ladder prompts are JSON");
+    let prompts: serde_json::Value =
+        serde_json::from_str(&read("experiments/issue_847_coding_ladder/prompts.json"))
+            .expect("coding ladder prompts are JSON");
     for id in ["read.read_version", "lang.zh_read"] {
         let task = prompts["tasks"]
             .as_array()
