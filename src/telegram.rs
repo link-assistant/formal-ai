@@ -434,6 +434,12 @@ pub fn telegram_html_from_markdown(markdown: &str) -> String {
             continue;
         }
 
+        if in_code_block {
+            rendered.push_str(&html_escape(line));
+            rendered.push('\n');
+            continue;
+        }
+
         if let Some(quote) = trimmed.strip_prefix('>') {
             rendered.push_str("<blockquote>");
             rendered.push_str(&telegram_inline_html(quote.trim_start()));

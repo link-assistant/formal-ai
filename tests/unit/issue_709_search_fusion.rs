@@ -448,6 +448,10 @@ fn cli_http_and_telegram_use_the_same_ranked_source_contract() {
     assert!(telegram.contains("<blockquote>Apple is a fruit.</blockquote>"));
     assert!(telegram.contains("<a href=\"https://facts.invalid/original\">Read more</a>"));
     assert!(!telegram.contains("[Read more]"));
+    assert_eq!(
+        telegram_html_from_markdown("```text\n[not a link](https://facts.invalid) **literal**\n```"),
+        "<pre><code class=\"language-text\">[not a link](https://facts.invalid) **literal**\n</code></pre>"
+    );
 
     fs::remove_dir_all(cache).expect("remove fixture cache");
 }
