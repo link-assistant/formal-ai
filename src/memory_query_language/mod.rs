@@ -439,9 +439,9 @@ impl MemoryQueryPlan {
 
     pub(crate) fn canonical(&self, max_matches: usize, max_iterations: usize) -> String {
         let mut out = String::new();
-        let _ = writeln!(out, "{}={}", "operation", self.operation.as_str());
-        let _ = writeln!(out, "{}={}", "max_matches", max_matches);
-        let _ = writeln!(out, "{}={}", "max_iterations", max_iterations);
+        let _ = writeln!(out, "operation={}", self.operation.as_str());
+        let _ = writeln!(out, "max_matches={max_matches}");
+        let _ = writeln!(out, "max_iterations={max_iterations}");
         let _ = writeln!(
             out,
             "projection={}",
