@@ -1,6 +1,6 @@
 # Legal and Compliance Policy
 
-Last reviewed: 2026-07-24
+Last reviewed: 2026-08-01
 
 This is Formal AI's conservative operating policy for contributions, data
 intake, model distillation, releases, and incident response. It is a project
@@ -16,6 +16,18 @@ weights and has no approved training or distillation sources. This means Formal
 AI is not yet a provider of a trained general-purpose AI model. The empty,
 machine-readable [`data/training/source-registry.json`](data/training/source-registry.json)
 records that state; it is not permission to start an undocumented pipeline.
+
+Focused companions apply this policy without replacing it:
+
+- [`docs/legal/formal-ai-and-language-models.md`](docs/legal/formal-ai-and-language-models.md)
+  separates the symbolic core, protocol compatibility, and optional external
+  model orchestration;
+- [`docs/legal/public-domain-output.md`](docs/legal/public-domain-output.md)
+  separates output assignment, copyrightability, service permission, and
+  third-party clearance;
+- [`docs/legal/compatible-datasets.md`](docs/legal/compatible-datasets.md) and
+  [`docs/legal/distillable-models.md`](docs/legal/distillable-models.md) are
+  dated candidate queues, not approvals.
 
 Every external item must be classified before it is added:
 
@@ -39,6 +51,9 @@ Changing a material's purpose is a new intake. A benchmark, runtime cache, or
 GitHub example cannot silently become training data.
 
 ## Public-domain dedication and contribution rights
+
+The operational checklist and current OpenAI-specific terms distinction are in
+[`docs/legal/public-domain-output.md`](docs/legal/public-domain-output.md).
 
 The repository's inbound and outbound terms are the
 [`LICENSE`](LICENSE), currently the Unlicense. To the extent applicable law
@@ -127,6 +142,14 @@ channel rather than a public issue. A takedown does not decide the underlying
 legal dispute and does not prevent compliance with a lawful preservation duty.
 
 ## Models, hosted services, and distillation
+
+The architectural boundary is documented in
+[`docs/legal/formal-ai-and-language-models.md`](docs/legal/formal-ai-and-language-models.md).
+The ten-family model matrix in
+[`docs/legal/distillable-models.md`](docs/legal/distillable-models.md) records
+first-party license signals that can begin a review; it grants no approval.
+The dataset counterpart is
+[`docs/legal/compatible-datasets.md`](docs/legal/compatible-datasets.md).
 
 ### Closed APIs
 

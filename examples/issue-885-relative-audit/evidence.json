@@ -1,0 +1,14 @@
+{
+  "captures": [
+    {
+      "statement": "The protocol is independently documented.",
+      "source_label": "primary protocol specification",
+      "source_url": "https://example.test/protocol",
+      "tier": "original_first_party",
+      "stance": "supports",
+      "strength": 1.0,
+      "captured_at": "2026-08-01T00:00:00Z",
+      "sha256": "sha256:issue-885-protocol"
+    }
+  ]
+}

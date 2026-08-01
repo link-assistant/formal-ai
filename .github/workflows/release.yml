@@ -1768,6 +1768,15 @@ jobs:
           PORT: 8884
         run: experiments/agent_cli_e2e/run_issue_661_statement_audit.sh
 
+      - name: "Run agent CLI E2E — relative and whole-document audit (issue #885)"
+        # A dependent claim resolves inside its own Markdown document, persists
+        # the antecedent and contextual probability, and is composed into the
+        # whole-workspace audit through the real external client.
+        timeout-minutes: 5
+        env:
+          PORT: 8895
+        run: experiments/agent_cli_e2e/run_issue_885_statement_audit.sh
+
       - name: "Replay Hive Mind self-coding inner loop (issue #655)"
         env:
           PORT: 8774
