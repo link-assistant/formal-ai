@@ -1,1 +1,1 @@
-Fact-check every statement in each Markdown document and the whole workspace, including relative references and dependent probabilities; preserve the result in statement-audit.lino.
+Fact-check every statement in each Markdown document and the whole workspace, including relative references and dependent probabilities. Use evidence.json as the external evidence capture file and preserve the result in statement-audit.lino.

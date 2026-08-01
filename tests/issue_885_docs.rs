@@ -198,17 +198,32 @@ fn formal_ai_and_real_agent_cli_evidence_covers_authorship_and_audit() {
         case_study.contains(agent_leaf.trim()),
         "case study must include the audited leaf authored through Formal AI and Agent CLI"
     );
+    let audit =
+        read("docs/case-studies/issue-885/agent-cli-evidence/statement-audit/statement-audit.lino");
+    assert_eq!(
+        read("docs/case-studies/issue-885/agent-cli-evidence/statement-audit/session-id.txt")
+            .trim(),
+        "ses_0424e1520ffeqs6J6L3ihnxWGu"
+    );
     assert_contains_all(
         "Agent CLI statement-audit evidence",
-        &read(
-            "docs/case-studies/issue-885/agent-cli-evidence/statement-audit/statement-audit.lino",
-        ),
+        &audit,
         &[
             "resolved_text",
             "contextual_posterior",
             "antecedent_statement_id",
             "closest_preceding_subject_same_document",
+            "evidence_provenance_",
         ],
+    );
+    let dependent = audit
+        .split("resolved_text \"The protocol is independently documented.\"")
+        .nth(1)
+        .expect("resolved dependent statement");
+    let dependent = dependent.split("\n    audited_statement_").next().unwrap();
+    assert!(
+        dependent.contains("\n      evidence\n"),
+        "the resolved statement must retain attached evidence, not merely scan evidence.json"
     );
 }
 

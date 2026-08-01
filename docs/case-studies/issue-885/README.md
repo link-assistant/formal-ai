@@ -78,9 +78,11 @@ the other four documentation leaves.
 The separate
 [`statement-audit`](agent-cli-evidence/statement-audit/) evidence set records a
 real Agent CLI session that invoked Formal AI's public command over two Markdown
-documents. Its report preserves `resolved_text`, `contextual_posterior`, the
-antecedent statement id, and the same-document resolution policy. Reproduce the
-release-gated integration with:
+documents. Session `ses_0424e1520ffeqs6J6L3ihnxWGu` explicitly selected
+`evidence.json`; its report attaches that capture to the resolved statement and
+preserves `resolved_text`, `contextual_posterior`, the antecedent statement id,
+and the same-document resolution policy. Reproduce the release-gated
+integration with:
 
 ```bash
 cargo build --release --bin formal-ai

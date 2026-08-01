@@ -10,7 +10,7 @@ PORT="${PORT:-8895}"
 OUT="${OUT:-$ROOT/docs/case-studies/issue-885/agent-cli-evidence/statement-audit}"
 FIXTURE="$ROOT/examples/issue-885-relative-audit"
 REPORT="statement-audit.lino"
-TASK="Fact-check every statement in each Markdown document and the whole workspace, including relative references and dependent probabilities; preserve the result in statement-audit.lino."
+TASK="Fact-check every statement in each Markdown document and the whole workspace, including relative references and dependent probabilities. Use evidence.json as the external evidence capture file and preserve the result in statement-audit.lino."
 
 command -v "$AGENT" >/dev/null
 [[ -x "$BIN" ]] || {
@@ -47,6 +47,12 @@ agent_config="$(printf '{"provider":{"formalai":{"name":"Formal AI","npm":"@ai-s
 
 "$ROOT/scripts/classify-agent-cli-stderr.sh" "$OUT/agent-stderr.log"
 rg '^\{' "$OUT/agent-stream.raw.log" >"$OUT/agent-stream.jsonl"
+session_id="$(rg -o '"session_id":"ses_[^"]+' "$OUT/agent-stream.raw.log" | tail -1 | cut -d'"' -f4)"
+[[ -n "$session_id" ]] || {
+  echo "Agent CLI stream did not preserve a session id" >&2
+  exit 1
+}
+printf '%s\n' "$session_id" >"$OUT/session-id.txt"
 [[ -f "$work/$REPORT" ]] || {
   echo "Agent CLI did not write $REPORT" >&2
   exit 1
@@ -55,6 +61,8 @@ rg -q 'resolved_text "The protocol is independently documented\."' "$work/$REPOR
 rg -q 'contextual_posterior' "$work/$REPORT"
 rg -q 'antecedent_statement_id' "$work/$REPORT"
 rg -q 'resolution_policy "closest_preceding_subject_same_document"' "$work/$REPORT"
+rg -q '^      evidence$' "$work/$REPORT"
+rg -q 'evidence_provenance_' "$work/$REPORT"
 
 cp "$work/$REPORT" "$OUT/$REPORT"
 rounds="$(rg -c 'POST /' "$OUT/formal-ai.log" || true)"
@@ -63,4 +71,4 @@ rounds="$(rg -c 'POST /' "$OUT/formal-ai.log" || true)"
   exit 1
 }
 printf '%s\n' "$rounds" >"$OUT/chat-round-count.txt"
-echo "issue 885 Agent CLI document audit passed over $rounds chat rounds"
+echo "issue 885 Agent CLI document audit passed over $rounds chat rounds: $session_id"
