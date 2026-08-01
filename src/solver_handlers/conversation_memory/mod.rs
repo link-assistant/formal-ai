@@ -2,8 +2,10 @@ use std::fmt::Write as _;
 
 mod link_query;
 mod memory_write;
+mod program_query;
 use link_query::try_link_substitution_query;
 use memory_write::try_memory_write;
+pub use program_query::{execute_memory_query, execute_memory_query_with_options};
 
 use super::finalize_simple;
 
@@ -12,11 +14,7 @@ use crate::engine::{normalize_prompt, SymbolicAnswer};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::link_store::memory_events_to_link_records;
-use crate::memory::{MemoryEvent, MemoryStore};
-use crate::memory_program::{
-    compile_memory_program, execute_memory_program, MemoryProgramAuthorization,
-    MemoryProgramCompileError, MemoryProgramHalt, MemoryProgramLimits,
-};
+use crate::memory::MemoryEvent;
 use crate::seed::{self, Slot, WordForm};
 use crate::solver_helpers::{
     extract_assistant_name, extract_introduced_name, last_turn, last_user_turn,
@@ -119,183 +117,6 @@ pub fn answer_memory_recall(
         current_conversation_id,
         &mut log,
     )
-}
-
-#[must_use]
-pub fn execute_memory_query(
-    prompt: &str,
-    store: &mut MemoryStore,
-    current_conversation_id: Option<&str>,
-) -> Option<MemoryQueryExecution> {
-    execute_memory_query_with_options(
-        prompt,
-        store,
-        current_conversation_id,
-        MemoryProgramLimits::default(),
-        MemoryProgramAuthorization::Write,
-    )
-}
-
-/// Execute with explicit solver-derived bounds and effect authorization.
-#[must_use]
-pub fn execute_memory_query_with_options(
-    prompt: &str,
-    store: &mut MemoryStore,
-    current_conversation_id: Option<&str>,
-    limits: MemoryProgramLimits,
-    authorization: MemoryProgramAuthorization,
-) -> Option<MemoryQueryExecution> {
-    let normalized = normalize_prompt(prompt);
-    let mut log = EventLog::new();
-    log.append("impulse", prompt.to_owned());
-    // The query language comes first: a turn that *is* a link query is asking in
-    // the meta language, and lowering it through the natural-language
-    // recognisers would answer a different question than the one asked. Reads
-    // leave the store alone, so nothing is persisted for them.
-    if let Some(answer) = try_link_substitution_query(prompt, store, &mut log) {
-        return Some(MemoryQueryExecution {
-            answer,
-            changed: false,
-        });
-    }
-    let program_compilation = compile_memory_program(prompt, limits);
-    if let Ok(program) = &program_compilation {
-        log.append("memory_program_compiled", program.links_notation());
-        let outcome = execute_memory_program(program, store, authorization);
-        log.append("memory_program_execution", outcome.links_notation());
-        if matches!(
-            outcome.halt,
-            MemoryProgramHalt::PermissionDenied { ref required } if required == "destructive"
-        ) {
-            log.append(
-                "policy:destructive_action_requires_confirmation",
-                prompt.to_owned(),
-            );
-        }
-        let changed = outcome.changed > 0;
-        let body = render_memory_program_outcome(&outcome, detect_language(prompt).slug());
-        let intent = if matches!(outcome.halt, MemoryProgramHalt::PermissionDenied { .. }) {
-            "memory_program_refused"
-        } else {
-            "memory_program"
-        };
-        return Some(MemoryQueryExecution {
-            answer: finalize_simple(
-                prompt,
-                &mut log,
-                intent,
-                "response:memory_program",
-                &body,
-                0.9,
-            ),
-            changed,
-        });
-    }
-    if let Some(answer) = try_memory_write(
-        prompt,
-        &normalized,
-        store,
-        current_conversation_id,
-        &mut log,
-    ) {
-        return Some(MemoryQueryExecution {
-            answer,
-            changed: true,
-        });
-    }
-    if let Err(MemoryProgramCompileError::ProgramGap { gap, .. }) = program_compilation {
-        log.append("program_gap", gap.clone());
-        return Some(MemoryQueryExecution {
-            answer: finalize_simple(
-                prompt,
-                &mut log,
-                "memory_program_gap",
-                "response:memory_program_gap",
-                &memory_program_response(
-                    "memory_program_compilation_gap",
-                    detect_language(prompt).slug(),
-                    &[("gap", gap.as_str())],
-                ),
-                0.4,
-            ),
-            changed: false,
-        });
-    }
-    answer_memory_recall(prompt, store.events(), current_conversation_id).map(|answer| {
-        // Issue #494: usage is counted on read access — every store event the
-        // recall actually read gets its access count bumped, and the caller
-        // persists the store so dreaming sees frequently-read data as used.
-        let accessed =
-            recalled_event_indices(&normalized, store.events(), current_conversation_id, prompt);
-        let changed = store.record_access(&accessed) > 0;
-        MemoryQueryExecution { answer, changed }
-    })
-}
-
-fn render_memory_program_outcome(
-    outcome: &crate::memory_program::MemoryProgramOutcome,
-    language: &str,
-) -> String {
-    let matched = outcome.matched.to_string();
-    let changed = outcome.changed.to_string();
-    let iterations = outcome.iterations.to_string();
-    match &outcome.halt {
-        MemoryProgramHalt::Complete | MemoryProgramHalt::Fixpoint => memory_program_response(
-            "memory_program_complete",
-            language,
-            &[
-                ("program", outcome.program_id.as_str()),
-                ("matched", matched.as_str()),
-                ("changed", changed.as_str()),
-                (
-                    "halt",
-                    if matches!(outcome.halt, MemoryProgramHalt::Fixpoint) {
-                        "fixpoint"
-                    } else {
-                        "complete"
-                    },
-                ),
-                ("iterations", iterations.as_str()),
-            ],
-        ),
-        MemoryProgramHalt::MatchLimit {
-            matched,
-            max_matches,
-        } => memory_program_response(
-            "memory_program_match_limit",
-            language,
-            &[
-                ("matched", matched.to_string().as_str()),
-                ("max_matches", max_matches.to_string().as_str()),
-            ],
-        ),
-        MemoryProgramHalt::IterationLimit { max_iterations } => memory_program_response(
-            "memory_program_iteration_limit",
-            language,
-            &[("max_iterations", max_iterations.to_string().as_str())],
-        ),
-        MemoryProgramHalt::PermissionDenied { required } if required == "destructive" => {
-            memory_program_response("memory_program_destructive_refused", language, &[])
-        }
-        MemoryProgramHalt::PermissionDenied { required } => memory_program_response(
-            "memory_program_permission_refused",
-            language,
-            &[("required", required)],
-        ),
-        MemoryProgramHalt::ProgramGap { primitive } => memory_program_response(
-            "memory_program_interpreter_gap",
-            language,
-            &[("primitive", primitive)],
-        ),
-    }
-}
-
-fn memory_program_response(intent: &str, language: &str, values: &[(&str, &str)]) -> String {
-    let mut response = seed::localized_response(intent, language).unwrap_or_default();
-    for (name, value) in values {
-        response = response.replace(&format!("{{{name}}}"), value);
-    }
-    response
 }
 
 /// Indices of the store events a recall for this prompt reads.

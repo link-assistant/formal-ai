@@ -262,13 +262,13 @@ pub fn parse_memory_program_links_notation(
     for step in &steps {
         let Some(seed_permission) = catalog().primitives.get(&step.primitive) else {
             return Err(memory_program_parse_error(format!(
-                "program_gap: unseeded memory primitive {}",
+                "program_gap:unseeded_memory_primitive:{}",
                 step.primitive
             )));
         };
         if seed_permission != &step.permission {
             return Err(memory_program_parse_error(format!(
-                "permission mismatch for primitive {}",
+                "memory_program_permission_mismatch:{}",
                 step.primitive
             )));
         }
@@ -300,7 +300,7 @@ fn parse_permission(value: &str) -> Result<MemoryProgramPermission, MemoryProgra
         "write" => Ok(MemoryProgramPermission::Write),
         "destructive" => Ok(MemoryProgramPermission::Destructive),
         _ => Err(memory_program_parse_error(format!(
-            "unknown memory-program permission {value}"
+            "memory_program_unknown_permission:{value}"
         ))),
     }
 }
@@ -344,7 +344,7 @@ pub fn compile_memory_program(
     if catalog.cues.iter().any(|cue| normalized.contains(cue)) {
         return Err(MemoryProgramCompileError::ProgramGap {
             request: request.trim().to_owned(),
-            gap: String::from("program_gap: no complete seeded memory-program family matched"),
+            gap: String::from("program_gap:no_complete_seeded_family"),
         });
     }
     Err(MemoryProgramCompileError::NotMemoryProgram)
@@ -359,7 +359,7 @@ fn compile_family(
     if limits.max_matches == 0 || limits.max_iterations == 0 {
         return Err(MemoryProgramCompileError::ProgramGap {
             request: family.id.clone(),
-            gap: String::from("program_gap: memory-program bounds must be greater than zero"),
+            gap: String::from("program_gap:bounds_must_be_nonzero"),
         });
     }
     let mut steps = Vec::with_capacity(family.steps.len());
@@ -369,7 +369,7 @@ fn compile_family(
         let Some(&permission) = catalog.primitives.get(&primitive) else {
             return Err(MemoryProgramCompileError::ProgramGap {
                 request: family.id.clone(),
-                gap: format!("program_gap: unseeded memory primitive {primitive}"),
+                gap: format!("program_gap:unseeded_memory_primitive:{primitive}"),
             });
         };
         let arguments = fields
@@ -406,10 +406,10 @@ fn canonical_program(
     bindings: &BTreeMap<String, String>,
     steps: &[MemoryProgramStep],
 ) -> String {
-    let mut out = format!(
-        "family={family}\nmax_matches={}\nmax_iterations={}\n",
-        limits.max_matches, limits.max_iterations
-    );
+    let mut out = String::new();
+    let _ = writeln!(out, "family={family}");
+    let _ = writeln!(out, "max_matches={}", limits.max_matches);
+    let _ = writeln!(out, "max_iterations={}", limits.max_iterations);
     for (name, value) in bindings {
         let _ = writeln!(out, "binding:{name}={}", normalize_binding(value));
     }

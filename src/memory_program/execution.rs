@@ -50,31 +50,35 @@ impl MemoryProgramOutcome {
         let _ = writeln!(out, "  changed {}", self.changed);
         let _ = writeln!(out, "  iterations {}", self.iterations);
         match &self.halt {
-            MemoryProgramHalt::Complete => out.push_str("  halt complete\n"),
-            MemoryProgramHalt::Fixpoint => out.push_str("  halt fixpoint\n"),
+            MemoryProgramHalt::Complete => push_trace_token(&mut out, "halt", "complete"),
+            MemoryProgramHalt::Fixpoint => push_trace_token(&mut out, "halt", "fixpoint"),
             MemoryProgramHalt::MatchLimit {
                 matched,
                 max_matches,
             } => {
-                out.push_str("  halt match_limit\n");
+                push_trace_token(&mut out, "halt", "match_limit");
                 let _ = writeln!(
                     out,
                     "  reason matched {matched} exceeds max_matches {max_matches}"
                 );
             }
             MemoryProgramHalt::IterationLimit { max_iterations } => {
-                out.push_str("  halt iteration_limit\n");
+                push_trace_token(&mut out, "halt", "iteration_limit");
                 let _ = writeln!(out, "  reason max_iterations {max_iterations} reached");
             }
             MemoryProgramHalt::PermissionDenied { required } => {
-                out.push_str("  halt permission_denied\n");
+                push_trace_token(&mut out, "halt", "permission_denied");
                 push_lino_node(&mut out, 2, "required", Some(required));
                 if required == "destructive" {
-                    out.push_str("  policy destructive_action_requires_confirmation\n");
+                    push_trace_token(
+                        &mut out,
+                        "policy",
+                        "destructive_action_requires_confirmation",
+                    );
                 }
             }
             MemoryProgramHalt::ProgramGap { primitive } => {
-                out.push_str("  halt program_gap\n");
+                push_trace_token(&mut out, "halt", "program_gap");
                 push_lino_node(&mut out, 2, "primitive", Some(primitive));
             }
         }
@@ -83,6 +87,14 @@ impl MemoryProgramOutcome {
         }
         out.trim_end().to_owned()
     }
+}
+
+fn push_trace_token(out: &mut String, name: &str, value: &str) {
+    out.push_str("  ");
+    out.push_str(name);
+    out.push(' ');
+    out.push_str(value);
+    out.push('\n');
 }
 
 struct InterpreterState {
@@ -376,7 +388,7 @@ fn create_events(
                 kind,
                 &format!("{kind}:{target}"),
                 Some(target),
-                &format!("{kind} for {target}"),
+                &format!("memory_program_result:{kind}:{target}"),
             )
         })
         .count()
@@ -483,7 +495,7 @@ fn append_retractions(store: &mut MemoryStore, selection: &[usize], reason: &str
             kind: Some(String::from("memory_retraction")),
             inputs: Some(target.clone()),
             outputs: Some(reason.to_owned()),
-            content: Some(format!("Retracted memory event {target}")),
+            content: Some(format!("memory_retraction:{target}")),
             sent_at: Some(isoformat_now()),
             evidence: vec![String::from("policy:append_only_retraction")],
             ..MemoryEvent::default()
