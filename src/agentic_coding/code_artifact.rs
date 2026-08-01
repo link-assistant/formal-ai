@@ -265,7 +265,7 @@ pub(super) fn latest_result(messages: &[ChatMessage], capability: Capability) ->
 
 /// Decode the decorated result emitted by `OpenCode`'s `read` tool. Other CLIs
 /// return raw contents, which pass through byte-for-byte.
-fn source_from_read_result(result: &str) -> String {
+pub(super) fn source_from_read_result(result: &str) -> String {
     let Some((_, after_open)) = result.split_once("<content>\n") else {
         return result.to_owned();
     };

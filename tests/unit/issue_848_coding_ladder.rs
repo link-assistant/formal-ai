@@ -224,12 +224,15 @@ fn assert_generated_source(task: &str, path: &str, expected: &str) {
     );
 }
 
+#[track_caller]
 fn only_call(plan: Option<AgenticPlan>) -> formal_ai::agentic_coding::PlannedToolCall {
-    let Some(AgenticPlan::ToolCalls(mut calls)) = plan else {
-        panic!("expected one tool call");
-    };
-    assert_eq!(calls.len(), 1);
-    calls.remove(0)
+    match plan {
+        Some(AgenticPlan::ToolCalls(mut calls)) => {
+            assert_eq!(calls.len(), 1);
+            calls.remove(0)
+        }
+        other => panic!("expected one tool call, got {other:?}"),
+    }
 }
 
 fn json_arguments(arguments: &str) -> serde_json::Value {

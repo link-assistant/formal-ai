@@ -43,6 +43,7 @@ use super::shell_command;
 use super::shell_file_fallback;
 use super::source_links;
 use super::statement_audit;
+use super::structured_edit;
 use super::tool_result;
 use super::web_research;
 use crate::protocol::ChatMessage;
@@ -172,6 +173,9 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // seed-backed source tasks before the broad literal-write parser so coding
     // requests produce executable bytes and verify those exact bytes.
     if let Some(plan) = code_task::plan_generated_source_step(&task, messages, tool_names) {
+        return Some(plan);
+    }
+    if let Some(plan) = structured_edit::plan_structured_edit_step(&task, messages, tool_names) {
         return Some(plan);
     }
     // Resolve an unambiguous literal write before keyword recipes: arbitrary
