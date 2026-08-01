@@ -239,6 +239,10 @@ multilingual_responses
     intent agentic_action_compile_program
     language zh
     text "我来为你编译这个程序。"
+  response response_agentic_action_compile_program_es
+    intent agentic_action_compile_program
+    language es
+    text "Voy a compilar este programa por ti."
   response response_agentic_action_run_program_en
     intent agentic_action_run_program
     language en
@@ -255,6 +259,10 @@ multilingual_responses
     intent agentic_action_run_program
     language zh
     text "我来为你运行编译后的程序。"
+  response response_agentic_action_run_program_es
+    intent agentic_action_run_program
+    language es
+    text "Voy a ejecutar el programa compilado por ti."
   response response_agentic_action_ask_user_en
     intent agentic_action_ask_user
     language en

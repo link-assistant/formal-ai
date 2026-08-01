@@ -1,4 +1,14 @@
 meanings
+  response_skill_gap_name_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response skill gap name hi"
+  response_skill_gap_name_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response skill gap name ru"
   response_skill_gap_name_zh
     defined-by response_template
     lexeme en
@@ -1384,13 +1394,3 @@ meanings
     lexeme en
       surface
         text "tool dom query"
-  tool_eval_js
-    defined-by tool
-    lexeme en
-      surface
-        text "tool eval js"
-  tool_export_memory
-    defined-by tool
-    lexeme en
-      surface
-        text "tool export memory"

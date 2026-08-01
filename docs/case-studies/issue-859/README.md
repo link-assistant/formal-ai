@@ -65,8 +65,9 @@ The unchanged red outputs are in [`test-logs/`](test-logs/):
   add-file patch grammar, emits the custom-input streaming events, and records
   custom calls in proxy summaries.
 - Compile and run commands are identified from the seed language catalog, so
-  the exact English sentences and their Russian, Hindi, and Chinese equivalents
-  remain data-defined while unrelated shell commands retain generic narration.
+  the exact English sentences and their Russian, Hindi, Chinese, and Spanish
+  equivalents remain data-defined while unrelated shell commands retain generic
+  narration.
 - A Codex-shaped report request must call `request_user_input` and must not call
   `web_search`.
 

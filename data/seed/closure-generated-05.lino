@@ -1,4 +1,14 @@
 meanings
+  response_general_plan_repository_evidence_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan repository evidence en"
+  response_general_plan_repository_evidence_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan repository evidence hi"
   response_general_plan_repository_evidence_ru
     defined-by response_template
     lexeme en
@@ -1384,13 +1394,3 @@ meanings
     lexeme en
       surface
         text "response skill gap name en"
-  response_skill_gap_name_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response skill gap name hi"
-  response_skill_gap_name_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response skill gap name ru"

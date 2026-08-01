@@ -1,4 +1,14 @@
 meanings
+  tool_eval_js
+    defined-by tool
+    lexeme en
+      surface
+        text "tool eval js"
+  tool_export_memory
+    defined-by tool
+    lexeme en
+      surface
+        text "tool export memory"
   tool_fact_lookup
     defined-by tool
     lexeme en
