@@ -3,6 +3,7 @@ extern crate alloc;
 pub mod agent;
 pub mod agentic_coding;
 pub mod anthropic;
+pub mod anticipation;
 pub mod arithmetic;
 pub mod associative_package;
 pub mod associative_persistence;

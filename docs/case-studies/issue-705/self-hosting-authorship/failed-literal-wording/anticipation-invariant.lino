@@ -1,0 +1,9 @@
+exactly
+anticipation_contract
+  record_type meta_invariant
+  prediction "count symbolic transitions over formalized append-only request classes"
+  expansion "derive variants from seeded meanings operations and observed parameters"
+  probe "replay every variant offline and preserve every failure on the adoption frontier"
+  prelearning "require fetch consent and retain source provenance and ttl"
+  safety "keep self-extension proposal-only and human-gated"
+  ledger "record predictions probes sources and later hits without inflating zero percent"

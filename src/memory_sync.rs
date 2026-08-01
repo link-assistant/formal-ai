@@ -271,6 +271,10 @@ impl SyncStore {
             write_count: 1,
             ..MemoryEvent::default()
         }];
+        if let Some(hit) = crate::anticipation::prediction_hit_event(&self.events, prompt, &user_id)
+        {
+            recorded.push(hit);
+        }
         let mut evidence = vec![user_id.clone()];
         for execution in tools {
             let tool_seed = format!(

@@ -132,6 +132,10 @@ pub fn run_core_dreaming_once(memory_path: &Path) -> io::Result<DreamingOutcome>
         let recipe_path = memory_path.with_extension("recipe.lino");
         crate::memory::write_locked_atomic(&recipe_path, &recipe)?;
     }
+    let anticipation = crate::anticipation::run_idle_anticipation(memory_path, &mut store)?;
+    if anticipation.recorded_events() > 0 {
+        store.save_to_file(memory_path)?;
+    }
     write_learning_cycle_record(memory_path)?;
     Ok(outcome)
 }

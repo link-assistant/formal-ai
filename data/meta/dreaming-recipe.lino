@@ -2,8 +2,8 @@ dreaming_meta_recipe
   record_type "meta_recipe"
   topic "dreaming"
   title "Dreaming: low-priority memory maintenance and meta-algorithm self-generalization"
-  summary "Machine-readable recipe for the deterministic dreaming system (issue #540). While the core server or desktop shell is truly idle, dreaming follows memory links, derives frequent-topic tasks, learns data-grounded requirements and recurring structures, replays candidate tasks against proposed amendments, retains only verified coverage, applies retained rules to later protocol answers, measures the real filesystem, and — only with persisted consent — forgets recomputable data toward a 20% reserve."
-  generalization "Extend dreaming through these thirteen data-grounded stages rather than topic-specific production branches. A new experience participates through durability, links, topic frequency, data cues, candidate replay, and structure mining; only replay-verified coverage permits a specific record to be forgotten, while retained amendments and patterns improve future tasks."
+  summary "Machine-readable recipe for the deterministic dreaming system (issues #540 and #705). While the core server or desktop shell is truly idle, dreaming follows memory links, derives frequent-topic tasks, learns data-grounded requirements and recurring structures, replays candidate tasks against proposed amendments, predicts likely next request classes, probes their lexical variants offline, prelearns consented sources, records later prediction hits, applies retained rules to later protocol answers, measures the real filesystem, and — only with persisted consent — forgets recomputable data toward a 20% reserve."
+  generalization "Extend dreaming through these seventeen data-grounded stages rather than topic-specific production branches. A new experience participates through durability, links, topic frequency, data cues, candidate replay, structure mining, symbolic request-class transitions, bounded lexical expansion, consented source capture, and an honest hit ledger; only replay-verified coverage permits a specific record to be forgotten, while retained amendments, patterns, and unexpired prelearning improve future tasks."
 step_classify_durability
   record_type "meta_step"
   order "1"
@@ -95,6 +95,34 @@ step_idle_consent_runtime
   title "Run at low priority while idle and require persisted consent to free space"
   detail "run_core_dreaming_once and the desktop scheduler yield to foreground work. Learning may be retained by default, but removal actions run only after the user's auto-free-space choice is persisted; otherwise the system reports a bigger-storage prompt."
   source_file "src/dreaming_runtime.rs"
+step_predict_request_classes
+  record_type "meta_step"
+  order "14"
+  id "predict_request_classes"
+  title "Predict likely next formal request classes from append-only transitions"
+  detail "plan_anticipation formalizes adjacent user requests as IntentClass states, counts first-order transitions from the last observed class, ranks the top three by count with a stable class-id tie break, and retains ProbabilityEvidence plus the exact source memory links. Raw prompt text is never the Markov state."
+  source_file "src/anticipation.rs"
+step_expand_and_probe_predictions
+  record_type "meta_step"
+  order "15"
+  id "expand_and_probe_predictions"
+  title "Expand predicted classes and probe every variant offline"
+  detail "expand_class derives a bounded, deterministic variant set from observed parameters, the seeded meaning lexicon, and the operation vocabulary. plan_anticipation replays every variant with an offline zero-compute UniversalSolver and copies every unknown or failed result one-for-one into the anticipation adoption frontier."
+  source_file "src/anticipation/expansion.rs"
+step_prelearn_consented_sources
+  record_type "meta_step"
+  order "16"
+  id "prelearn_consented_sources"
+  title "Prelearn unresolved classes behind explicit fetch consent"
+  detail "prelearn_predictions performs no transport call without consent. When allowed, it uses the standard source-research cache and records URL, fetched time, content digest, cache status, and TTL; apply_anticipation stores exact predicted aliases without changing seed behaviour, and answer_from_prelearned_cache recalls only unexpired captures after the ordinary solver remains unknown."
+  source_file "src/anticipation.rs"
+step_record_anticipation_outcomes
+  record_type "meta_step"
+  order "17"
+  id "record_anticipation_outcomes"
+  title "Persist the anticipation ledger and link later prediction hits"
+  detail "run_idle_anticipation writes predictions, probes, frontier proposals, and source captures to an inspectable Links Notation ledger after foreground work yields. prediction_hit_event later links an actual request to its stored predicted class; zero hits remain an honest zero-percent rate."
+  source_file "src/anticipation.rs"
 fn_plan_memory_dreaming
   record_type "meta_function"
   function "plan_memory_dreaming"
@@ -170,6 +198,41 @@ fn_run_core_dreaming_once
   function "run_core_dreaming_once"
   source_file "src/dreaming_runtime.rs"
   kind "background_runtime"
+fn_plan_anticipation
+  record_type "meta_function"
+  function "plan_anticipation"
+  source_file "src/anticipation.rs"
+  kind "symbolic_transition_planner"
+fn_expand_class
+  record_type "meta_function"
+  function "expand_class"
+  source_file "src/anticipation/expansion.rs"
+  kind "lexical_class_expansion"
+fn_prelearn_predictions
+  record_type "meta_function"
+  function "prelearn_predictions"
+  source_file "src/anticipation.rs"
+  kind "consented_source_prelearning"
+fn_apply_anticipation
+  record_type "meta_function"
+  function "apply_anticipation"
+  source_file "src/anticipation.rs"
+  kind "append_only_materialization"
+fn_answer_from_prelearned_cache
+  record_type "meta_function"
+  function "answer_from_prelearned_cache"
+  source_file "src/anticipation.rs"
+  kind "offline_recall"
+fn_prediction_hit_event
+  record_type "meta_function"
+  function "prediction_hit_event"
+  source_file "src/anticipation.rs"
+  kind "actual_request_link"
+fn_run_idle_anticipation
+  record_type "meta_function"
+  function "run_idle_anticipation"
+  source_file "src/anticipation.rs"
+  kind "idle_anticipation_runtime"
 constant_target_free_ratio
   record_type "meta_constant"
   const "target_free_ratio_percent"
@@ -190,8 +253,13 @@ test_unit_docs_requirements
   suite "docs_requirements_issue_540"
   test_file "tests/unit/docs_requirements_issue_540.rs"
   pins "Issue #540 requirements, README, ARCHITECTURE, and case-study documents stay traceable to the dreaming planner."
+test_unit_issue_705_anticipation
+  record_type "meta_test"
+  suite "issue_705_anticipation"
+  test_file "tests/unit/issue_705_anticipation.rs"
+  pins "plan_anticipation, expand_class, prelearn_predictions, apply_anticipation, answer_from_prelearned_cache, prediction_hit_event, and run_idle_anticipation: Issue #705 symbolic request-class transitions, deterministic expansion, offline probes, one-for-one adoption-frontier filing, consented provenance-and-TTL source capture, held-out offline recall, idle persistence, later prediction hits, and same-task Agent CLI evidence."
 test_unit_dreaming_meta_algorithm
   record_type "meta_test"
   suite "dreaming_meta_algorithm"
   test_file "tests/unit/specification/dreaming_meta_algorithm.rs"
-  pins "This recipe stays grounded: the live sources still define every named function and list thirteen contiguously ordered steps."
+  pins "This recipe stays grounded: the live sources still define every named function and list seventeen contiguously ordered steps."

@@ -1,0 +1,32 @@
+issue_705_smallest_leaf_1
+  parent anticipatory_dreaming
+  leaf "count and rank symbolic request-class transitions"
+  implementation "src/anticipation.rs"
+  authorship "human_with_codex"
+issue_705_smallest_leaf_2
+  parent anticipatory_dreaming
+  leaf "expand predicted classes and replay variants offline"
+  implementation "src/anticipation/expansion.rs"
+  authorship "human_with_codex"
+issue_705_smallest_leaf_3
+  parent anticipatory_dreaming
+  leaf "prelearn consented sources and recall them with provenance and ttl"
+  implementation "src/anticipation.rs"
+  authorship "human_with_codex"
+issue_705_smallest_leaf_4
+  parent anticipatory_dreaming
+  leaf "integrate idle ledgers and later prediction hits into append-only memory"
+  implementation "src/dreaming_runtime.rs src/memory_sync.rs"
+  authorship "human_with_codex"
+issue_705_smallest_leaf_5
+  parent anticipatory_dreaming
+  leaf "preserve the declarative anticipation review invariant"
+  implementation "docs/case-studies/issue-705/self-hosting-authorship/anticipation-invariant.lino"
+  authorship "formal_ai_agent_cli"
+  session "ses_04262d1beffeStZQyvlKMA8qCg"
+  evidence "docs/case-studies/issue-705/self-hosting-authorship/agent-cli.log"
+issue_705_self_authorship_measurement
+  reviewed_smallest_leaves "5"
+  formal_ai_authored_leaves "1"
+  formal_ai_authored_percent "20"
+  failed_attempts_retained "1"

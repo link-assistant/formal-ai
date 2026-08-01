@@ -538,8 +538,14 @@ are stored as structured `meta_algorithm_amendment` events and read by
 `src/dreaming_application.rs` on later protocol requests, which makes learned
 rules change future answers. Physical removal additionally requires persisted
 consent and real filesystem pressure measured by `src/storage_policy.rs`.
+Issue #705 extends the same idle boundary with a symbolic request-class Markov
+model. It expands the three highest-ranked successors from observed parameters
+and seeded lexical data, probes every member offline, forwards every gap to the
+proposal-only adoption frontier, and prelearns external sources only with fetch
+consent. An append-only ledger preserves the reason for each prediction and
+links later actual requests without inventing a non-zero hit rate.
 
-### The thirteen steps
+### The seventeen steps
 
 Each step is one `meta_step` record in the recipe; instantiate them in order to
 add any *dream about stored experience* behaviour:
@@ -566,6 +572,15 @@ add any *dream about stored experience* behaviour:
     patterns.
 13. **Run while truly idle**, yielding to foreground work and requiring a
     persisted user choice before automatic cleanup.
+14. **Predict the next formal request classes** from append-only first-order
+    transition counts with source-event and probability evidence.
+15. **Expand and probe every predicted class offline** from observed parameters,
+    meaning forms, and operation vocabulary, filing every gap on the adoption
+    frontier.
+16. **Prelearn unresolved classes behind fetch consent**, retaining source URL,
+    capture time, digest, and TTL for exact offline recall.
+17. **Persist the anticipation ledger and later hits**, so every prediction has
+    an inspectable reason and the measured hit rate may honestly remain zero.
 
 ### What the recipe records
 
@@ -584,8 +599,9 @@ cargo test --test unit specification::dreaming_meta_algorithm -- --nocapture
 ```
 
 Because this recipe is checked against the source too, the dreaming planner and
-its recipe cannot silently diverge: replay, application, storage, consent, and
-runtime stages are all pinned to the live code.
+its recipe cannot silently diverge: replay, application, storage, consent,
+prediction, prelearning, hit accounting, and runtime stages are all pinned to
+the live code.
 
 ## The links-network terminology meta-algorithm (issue #664)
 
