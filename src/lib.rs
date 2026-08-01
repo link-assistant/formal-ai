@@ -94,6 +94,7 @@ pub(crate) mod responses_stream;
 pub mod route_method_alias;
 pub(crate) mod rule_synthesis;
 pub(crate) mod rule_synthesis_portfolio;
+pub mod search_fusion;
 pub mod seed;
 pub mod selection;
 pub mod self_ast_census;
@@ -290,6 +291,11 @@ pub use relative_meta_logic::{
     ASSUMED_TRUE_PRIOR,
 };
 pub use repair_strategy::{canonical_strategies, RepairStrategy, RepairTarget};
+pub use search_fusion::{
+    execute_search_fusion, FormalizedSearchObservation, FusedSearchStatement,
+    NormalizedSearchSource, SearchFusionAnswer, SearchFusionExecution, SearchObservationOrigin,
+    SearchSourceClassification,
+};
 pub use seed::{
     agent_info, canonical_model_id, concepts as seed_concepts, environment_directory,
     environment_records, intent_routing, language_rules, merged_bundle, model_aliases,

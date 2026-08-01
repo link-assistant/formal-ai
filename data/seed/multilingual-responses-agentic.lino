@@ -47,6 +47,38 @@ multilingual_responses
     intent web_search_unavailable
     language zh
     text "`{query}` 没有可用的已捕获提供商响应。实时抓取默认关闭；请明确启用它以填充可重放的来源缓存。未执行的计划包括 DuckDuckGo、Internet Archive、Wikipedia、Wikidata、Wiktionary 和 Wikinews。"
+  response response_search_fusion_header_en
+    intent search_fusion_header
+    language en
+    text "Fused {count} statement(s) from {sources} captured source(s) for `{query}`:\n\n{statements}"
+  response response_search_fusion_header_ru
+    intent search_fusion_header
+    language ru
+    text "Объединено утверждений: {count}; захваченных источников: {sources}; запрос: `{query}`:\n\n{statements}"
+  response response_search_fusion_header_hi
+    intent search_fusion_header
+    language hi
+    text "`{query}` के लिए {sources} कैप्चर किए गए स्रोतों से {count} कथन एकीकृत किए गए:\n\n{statements}"
+  response response_search_fusion_header_zh
+    intent search_fusion_header
+    language zh
+    text "已为 `{query}` 将 {sources} 个已捕获来源融合为 {count} 条陈述：\n\n{statements}"
+  response response_search_fusion_read_more_en
+    intent search_fusion_read_more
+    language en
+    text "Read more"
+  response response_search_fusion_read_more_ru
+    intent search_fusion_read_more
+    language ru
+    text "Читать дальше"
+  response response_search_fusion_read_more_hi
+    intent search_fusion_read_more
+    language hi
+    text "और पढ़ें"
+  response response_search_fusion_read_more_zh
+    intent search_fusion_read_more
+    language zh
+    text "阅读更多"
   response response_agentic_action_list_desktop_en
     intent agentic_action_list_desktop
     language en
