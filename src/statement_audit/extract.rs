@@ -281,7 +281,7 @@ fn resolve_document_references(statements: &mut [ExtractedStatement]) {
 
 fn ends_sentence(text: &str) -> bool {
     text.trim_end()
-        .trim_end_matches(|character| matches!(character, '"' | '\'' | ')' | ']' | '*' | '_' | '`'))
+        .trim_end_matches(['"', '\'', ')', ']', '*', '_', '`'])
         .chars()
         .next_back()
         .is_some_and(|character| matches!(character, '.' | '!' | '?'))
