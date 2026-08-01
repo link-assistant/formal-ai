@@ -15,6 +15,10 @@ multilingual_responses
     intent memory_program_complete
     language zh
     text "记忆程序 {program} 匹配了 {matched} 个事件，更改了 {changed} 个，并在 {iterations} 次迭代后以 {halt} 停止。"
+  response response_memory_program_complete_es
+    intent memory_program_complete
+    language es
+    text "El programa de memoria {program} encontró {matched} eventos, cambió {changed} y se detuvo en {halt} tras {iterations} iteraciones."
   response response_memory_program_match_limit_en
     intent memory_program_match_limit
     language en
@@ -31,6 +35,10 @@ multilingual_responses
     intent memory_program_match_limit
     language zh
     text "记忆程序在未进行部分写入的情况下停止：{matched} 个匹配超过 max_matches {max_matches}。"
+  response response_memory_program_match_limit_es
+    intent memory_program_match_limit
+    language es
+    text "El programa de memoria se detuvo sin escritura parcial: {matched} coincidencias superan max_matches {max_matches}."
   response response_memory_program_iteration_limit_en
     intent memory_program_iteration_limit
     language en
@@ -47,6 +55,10 @@ multilingual_responses
     intent memory_program_iteration_limit
     language zh
     text "记忆程序在达到 max_iterations {max_iterations} 后明确停止；它没有声称已达到不动点。"
+  response response_memory_program_iteration_limit_es
+    intent memory_program_iteration_limit
+    language es
+    text "El programa de memoria se detuvo explícitamente al alcanzar max_iterations {max_iterations}; no afirmó haber llegado a un punto fijo."
   response response_memory_program_destructive_refused_en
     intent memory_program_destructive_refused
     language en
@@ -63,6 +75,10 @@ multilingual_responses
     intent memory_program_destructive_refused
     language zh
     text "破坏性记忆操作需要人工明确确认。没有擦除或撤回任何记忆事件。"
+  response response_memory_program_destructive_refused_es
+    intent memory_program_destructive_refused
+    language es
+    text "Las acciones destructivas sobre la memoria requieren confirmación humana explícita. No se borró ni retractó ningún evento de memoria."
   response response_memory_program_permission_refused_en
     intent memory_program_permission_refused
     language en
@@ -79,6 +95,10 @@ multilingual_responses
     intent memory_program_permission_refused
     language zh
     text "记忆程序需要明确的 {required} 权限；未应用任何更改。"
+  response response_memory_program_permission_refused_es
+    intent memory_program_permission_refused
+    language es
+    text "El programa de memoria requiere permiso explícito de tipo {required}; no se aplicó ningún cambio."
   response response_memory_program_interpreter_gap_en
     intent memory_program_interpreter_gap
     language en
@@ -95,6 +115,10 @@ multilingual_responses
     intent memory_program_interpreter_gap
     language zh
     text "program_gap：原语 {primitive} 没有解释器语义。"
+  response response_memory_program_interpreter_gap_es
+    intent memory_program_interpreter_gap
+    language es
+    text "program_gap: no existe semántica de intérprete para la primitiva {primitive}."
   response response_memory_program_compilation_gap_en
     intent memory_program_compilation_gap
     language en
@@ -111,3 +135,7 @@ multilingual_responses
     intent memory_program_compilation_gap
     language zh
     text "无法在不丢弃步骤的情况下编译此记忆请求。{gap}"
+  response response_memory_program_compilation_gap_es
+    intent memory_program_compilation_gap
+    language es
+    text "No pude compilar esta solicitud de memoria sin omitir un paso. {gap}"

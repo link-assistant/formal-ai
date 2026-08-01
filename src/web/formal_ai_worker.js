@@ -57,6 +57,7 @@ const FORMAL_AI_WORKER_MODULES = [
   "worker/formal_ai_worker_19.js",
   "worker/formal_ai_worker_20.js",
   "worker/formal_ai_worker_21.js",
+  "worker/formal_ai_worker_22.js",
 ];
 
 for (const modulePath of FORMAL_AI_WORKER_MODULES) {

@@ -48,8 +48,12 @@ const TARGET_TOTAL_LINES: usize = 3_000;
 /// the registry instead of a hardcoded slug list — so that registering a
 /// language stays a data-only edit in the worker too, adding a net 41 lines and
 /// raising the ratchet from 26_911 to 26_952.
+/// Issue #708's seeded memory-program compiler and bounded interpreter must
+/// execute against IndexedDB in the browser too. Its complete closed primitive
+/// set adds the reviewed worker mirror rather than leaving the website on the
+/// legacy single-substitution path, raising the ratchet to the count below.
 #[cfg(not(test))]
-const CEILING_TOTAL_LINES: usize = 26_952;
+const CEILING_TOTAL_LINES: usize = 27_635;
 
 const WORKER_DIR: &str = "src/web/worker";
 
