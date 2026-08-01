@@ -2,9 +2,9 @@ self_ast_census
   target src/telegram.rs
   language rust
   fidelity signature
-  byte_len 30111
-  line_count 844
-  content_id source_module_101225604f896c0e
+  byte_len 30255
+  line_count 850
+  content_id source_module_0c931db70bfd0f72
   symbol_count 59
   symbols
     const TEXT_ONLY_MESSAGE 10 10
@@ -43,26 +43,26 @@ self_ast_census
     function telegram_solver 403 407
     function is_version_command 409 413
     function version_reply_text 415 417
-    function telegram_html_from_markdown 420 452
-    function telegram_inline_html 457 501
-    function open_pre_code_tag 503 508
-    function language_class 510 520
-    function html_escape 522 527
-    struct TelegramPollingConfig 538 544
-    function new 548 556
-    function get_updates_url 559 575
-    function send_message_url 578 584
-    function edit_message_text_url 587 593
-    function http_timeout_seconds 596 599
-    enum TelegramPollingError 603 606
-    function fmt 609 621
-    struct GetUpdatesResponse 627 633
-    struct TelegramPollingReply 645 655
-    function to_send_message_body 660 662
-    function extract_sent_message_id 672 679
-    struct ParsedUpdatesBatch 683 686
-    function parse_get_updates_response 692 729
-    function reply_for_polling_message 731 753
-    function build_progressive_thinking_edits 766 809
-    function serialize_string_array 811 831
-    function url_encode 833 844
+    function telegram_html_from_markdown 420 458
+    function telegram_inline_html 463 507
+    function open_pre_code_tag 509 514
+    function language_class 516 526
+    function html_escape 528 533
+    struct TelegramPollingConfig 544 550
+    function new 554 562
+    function get_updates_url 565 581
+    function send_message_url 584 590
+    function edit_message_text_url 593 599
+    function http_timeout_seconds 602 605
+    enum TelegramPollingError 609 612
+    function fmt 615 627
+    struct GetUpdatesResponse 633 639
+    struct TelegramPollingReply 651 661
+    function to_send_message_body 666 668
+    function extract_sent_message_id 678 685
+    struct ParsedUpdatesBatch 689 692
+    function parse_get_updates_response 698 735
+    function reply_for_polling_message 737 759
+    function build_progressive_thinking_edits 772 815
+    function serialize_string_array 817 837
+    function url_encode 839 850
