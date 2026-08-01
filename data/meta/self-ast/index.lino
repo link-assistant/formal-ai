@@ -5,16 +5,16 @@ self_ast_census_index
   module_count 382
   full_ast_module_count 50
   signature_module_count 332
-  symbol_count 7774
-  content_id self_ast_census_index_c3297276d0677138
+  symbol_count 7783
+  content_id self_ast_census_index_68d3176127c6dd3e
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/associative_learning.rs full_ast 7 source_module_926e3e97b31fa30a
-    src/agentic_coding/capability_router.rs full_ast 10 source_module_0ccb8c3eb91ec34d
+    src/agentic_coding/capability_router.rs full_ast 11 source_module_55c1e27ca2bf2c6c
     src/agentic_coding/change_request.rs full_ast 9 source_module_61a59fbbec0b673f
     src/agentic_coding/code_artifact.rs full_ast 16 source_module_e7ae952e38a7e937
     src/agentic_coding/code_rewrite_learning.rs full_ast 7 source_module_302ed77316482eda
-    src/agentic_coding/command_reroute.rs full_ast 7 source_module_139b89dd9d8b59c2
+    src/agentic_coding/command_reroute.rs full_ast 7 source_module_aea5f42fad44ff1c
     src/agentic_coding/comparison.rs full_ast 9 source_module_1ae5970a69f80627
     src/agentic_coding/conversation_recall.rs full_ast 1 source_module_404a4a2038b3bca1
     src/agentic_coding/corpus.rs full_ast 4 source_module_c5ffda9bccd862d1
@@ -41,7 +41,7 @@ self_ast_census_index
     src/agentic_coding/local_search.rs full_ast 46 source_module_35b601ec40ec2dba
     src/agentic_coding/meaning_detail.rs full_ast 38 source_module_763b6af219dd70d8
     src/agentic_coding/mod.rs full_ast 44 source_module_3979334caa78090b
-    src/agentic_coding/narration.rs full_ast 8 source_module_eac16d2fcedfc37f
+    src/agentic_coding/narration.rs full_ast 9 source_module_256edf1475c908fe
     src/agentic_coding/planner.rs full_ast 38 source_module_6052464de6d41f81
     src/agentic_coding/procedure.rs full_ast 5 source_module_59c2c30fbf44bc52
     src/agentic_coding/progress.rs full_ast 10 source_module_c875bf0c4cba80c3
@@ -57,7 +57,7 @@ self_ast_census_index
     src/agentic_coding/shell_file_fallback.rs full_ast 6 source_module_47984ba3ee10153a
     src/agentic_coding/source_links.rs full_ast 11 source_module_6177a1573de819fc
     src/agentic_coding/statement_audit.rs full_ast 5 source_module_f81e28e434383dbf
-    src/agentic_coding/tool_result.rs full_ast 28 source_module_908a786095a5e847
+    src/agentic_coding/tool_result.rs full_ast 28 source_module_c079a9bb0120369e
     src/agentic_coding/web_research.rs full_ast 38 source_module_ca64b5f832776e25
     src/anthropic.rs signature 22 source_module_4521391b735b65a0
     src/arithmetic.rs signature 50 source_module_0c0cbf53baa417f0
@@ -161,7 +161,7 @@ self_ast_census_index
     src/learning_cycle.rs signature 35 source_module_5111044fb9a4d31d
     src/learning_ledger.rs signature 26 source_module_b3603c2c577cd078
     src/lexeme_import.rs signature 49 source_module_03ae22d5093d8a37
-    src/lib.rs signature 143 source_module_d8482fcb3eefb35f
+    src/lib.rs signature 143 source_module_e88588e50ffdd8a9
     src/link_store.rs signature 53 source_module_4163b0ff62ebee82
     src/links_format.rs signature 7 source_module_17ae7d7e69b8c450
     src/links_query.rs signature 30 source_module_434647cf5697218d
@@ -210,15 +210,15 @@ self_ast_census_index
     src/proof_engine/mod.rs signature 14 source_module_101b777fdcc94d8a
     src/proof_engine/presenter.rs signature 14 source_module_5232f4600af613b0
     src/proof_engine/types.rs signature 15 source_module_24d7dff201c3547d
-    src/protocol.rs signature 48 source_module_7f98b95dbe4240ec
+    src/protocol.rs signature 48 source_module_7ce70965e176150e
     src/protocol/content.rs signature 14 source_module_c8f01edf04d1857c
-    src/protocol/output.rs signature 13 source_module_c853f369660740b1
+    src/protocol/output.rs signature 16 source_module_6cfbc8d372025668
     src/protocol/recording.rs signature 9 source_module_d000d6bcb888efd1
     src/protocol_memory.rs signature 3 source_module_6e7dd15faed15e86
     src/protocol_policy.rs signature 17 source_module_f9a923bc8ebee566
-    src/protocol_responses.rs signature 9 source_module_9809c79efeb154e6
+    src/protocol_responses.rs signature 12 source_module_fdd0e282fc9194ef
     src/proxy.rs signature 39 source_module_04ab3b9e4a1c739e
-    src/proxy/summary.rs signature 23 source_module_6dddae79e5dd994e
+    src/proxy/summary.rs signature 23 source_module_4f83f9863247fcce
     src/question_generation.rs signature 61 source_module_7b06e63230c1c8b9
     src/rebuild_plan.rs signature 14 source_module_5c99df1ad1e5979a
     src/recipe_interpreter.rs signature 23 source_module_94db3b3b0da83e24
@@ -226,7 +226,7 @@ self_ast_census_index
     src/relative_meta_logic.rs signature 34 source_module_f361e94a4465cd56
     src/repair_strategy.rs signature 23 source_module_a081741513d3fe6c
     src/requirement_contradiction.rs signature 5 source_module_58f2d8ac83b96da9
-    src/responses_stream.rs signature 9 source_module_ca16c71d79b370b0
+    src/responses_stream.rs signature 10 source_module_7b5fae6a4de8aeaf
     src/route_method_alias.rs signature 6 source_module_d9cf44b71fcb8405
     src/rule_synthesis.rs signature 15 source_module_b0bc20b7ae8125df
     src/rule_synthesis_portfolio.rs signature 16 source_module_52d068d8796d049c
