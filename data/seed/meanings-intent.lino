@@ -994,97 +994,97 @@ meanings
       surface
         text 哪个
   set_assistant_name
-    defined-by intent
+    defined-by action
     lexeme en
       surface
         text "set assistant name intent"
   assistant_name_recall
-    defined-by intent
+    defined-by inquiry
     lexeme en
       surface
         text "assistant name recall intent"
   ambiguous_modification_clarification
-    defined-by intent
+    defined-by inquiry
     lexeme en
       surface
         text "ambiguous modification clarification intent"
   response_set_assistant_name_en
-    defined-by response_template
+    defined-by answer
     lexeme en
       surface
         text "response set assistant name en"
   response_set_assistant_name_ru
-    defined-by response_template
+    defined-by answer
     lexeme en
       surface
         text "response set assistant name ru"
   response_set_assistant_name_hi
-    defined-by response_template
+    defined-by answer
     lexeme en
       surface
         text "response set assistant name hi"
   response_set_assistant_name_zh
-    defined-by response_template
+    defined-by answer
     lexeme en
       surface
         text "response set assistant name zh"
   response_set_assistant_name_es
-    defined-by response_template
+    defined-by answer
     lexeme en
       surface
         text "response set assistant name es"
   response_assistant_name_recall_en
-    defined-by response_template
+    defined-by answer
     lexeme en
       surface
         text "response assistant name recall en"
   response_assistant_name_recall_ru
-    defined-by response_template
+    defined-by answer
     lexeme en
       surface
         text "response assistant name recall ru"
   response_assistant_name_recall_hi
-    defined-by response_template
+    defined-by answer
     lexeme en
       surface
         text "response assistant name recall hi"
   response_assistant_name_recall_zh
-    defined-by response_template
+    defined-by answer
     lexeme en
       surface
         text "response assistant name recall zh"
   response_assistant_name_recall_es
-    defined-by response_template
+    defined-by answer
     lexeme en
       surface
         text "response assistant name recall es"
   response_ambiguous_modification_clarification_en
-    defined-by response_template
+    defined-by answer
     lexeme en
       surface
         text "response ambiguous modification clarification en"
   response_ambiguous_modification_clarification_ru
-    defined-by response_template
+    defined-by answer
     lexeme en
       surface
         text "response ambiguous modification clarification ru"
   response_ambiguous_modification_clarification_hi
-    defined-by response_template
+    defined-by answer
     lexeme en
       surface
         text "response ambiguous modification clarification hi"
   response_ambiguous_modification_clarification_zh
-    defined-by response_template
+    defined-by answer
     lexeme en
       surface
         text "response ambiguous modification clarification zh"
   response_ambiguous_modification_clarification_es
-    defined-by response_template
+    defined-by answer
     lexeme en
       surface
         text "response ambiguous modification clarification es"
   response_assistant_free_time_es
-    defined-by response_template
+    defined-by answer
     lexeme en
       surface
         text "response assistant free time es"
