@@ -177,9 +177,9 @@ fn instantiate_variant(
             let before = normalize_prompt(replacement.before_slot());
             let after = normalize_prompt(replacement.after_slot());
             match replacement.slot() {
-                Slot::Prefix => format!("{before} {subject}"),
-                Slot::Suffix => format!("{subject} {after}"),
-                Slot::Circumfix => format!("{before} {subject} {after}"),
+                Slot::Prefix => [before.as_str(), subject].join(" "),
+                Slot::Suffix => [subject.as_str(), after.as_str()].join(" "),
+                Slot::Circumfix => [before.as_str(), subject, after.as_str()].join(" "),
                 Slot::Bare => replace_surface(
                     prompt,
                     &normalize_prompt(&matched.text.replace('…', subject)),

@@ -4,6 +4,7 @@
 //! vocabulary, probes offline, and preserves proposal-only consent/provenance/TTL.
 
 use std::collections::{BTreeMap, BTreeSet};
+use std::fmt::Write as _;
 use std::io;
 use std::path::{Path, PathBuf};
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -115,14 +116,17 @@ impl AnticipationPlan {
             .predictions
             .iter()
             .find(|prediction| prediction.id == prediction_id)?;
-        Some(format!(
-            "prediction={} class={} transition_evidence={} count={} probability={:.6}",
-            prediction.id,
-            prediction.class.id,
-            prediction.transition_evidence_id,
-            prediction.count,
-            prediction.probability
-        ))
+        let mut explanation = String::new();
+        let _ = write!(explanation, "prediction={}", prediction.id);
+        let _ = write!(explanation, " class={}", prediction.class.id);
+        let _ = write!(
+            explanation,
+            " transition_evidence={}",
+            prediction.transition_evidence_id
+        );
+        let _ = write!(explanation, " count={}", prediction.count);
+        let _ = write!(explanation, " probability={:.6}", prediction.probability);
+        Some(explanation)
     }
 
     #[must_use]
@@ -900,10 +904,11 @@ fn source_record(source: &PrelearnedSource, alias: Option<&str>) -> String {
 }
 
 fn source_trace(source: &PrelearnedSource) -> String {
-    format!(
-        "{} fetched_at={} sha256={} cached={}",
-        source.source_url, source.fetched_at, source.sha256, source.cached
-    )
+    let mut trace = source.source_url.clone();
+    let _ = write!(trace, " fetched_at={}", source.fetched_at);
+    let _ = write!(trace, " sha256={}", source.sha256);
+    let _ = write!(trace, " cached={}", source.cached);
+    trace
 }
 
 fn content_field(content: Option<&str>, key: &str) -> Option<String> {

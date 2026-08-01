@@ -2,9 +2,9 @@ self_ast_census
   target src/anticipation/expansion.rs
   language rust
   fidelity signature
-  byte_len 7289
+  byte_len 7327
   line_count 223
-  content_id source_module_618dbc61bd18994c
+  content_id source_module_d1d8cc8162873349
   symbol_count 9
   symbols
     function expand_class 10 36

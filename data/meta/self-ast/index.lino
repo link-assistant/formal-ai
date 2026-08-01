@@ -6,7 +6,7 @@ self_ast_census_index
   full_ast_module_count 50
   signature_module_count 335
   symbol_count 7818
-  content_id self_ast_census_index_ed8fe62f15ca1c8e
+  content_id self_ast_census_index_31bedefea3ba398e
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/associative_learning.rs full_ast 7 source_module_926e3e97b31fa30a
@@ -60,8 +60,8 @@ self_ast_census_index
     src/agentic_coding/tool_result.rs full_ast 28 source_module_908a786095a5e847
     src/agentic_coding/web_research.rs full_ast 38 source_module_ca64b5f832776e25
     src/anthropic.rs signature 22 source_module_4521391b735b65a0
-    src/anticipation.rs signature 47 source_module_62fd738ece191294
-    src/anticipation/expansion.rs signature 9 source_module_618dbc61bd18994c
+    src/anticipation.rs signature 47 source_module_61bed6c791353a1a
+    src/anticipation/expansion.rs signature 9 source_module_d1d8cc8162873349
     src/anticipation/ledger.rs signature 3 source_module_c4316873da2ac5a8
     src/arithmetic.rs signature 50 source_module_0c0cbf53baa417f0
     src/arithmetic_word_tables.rs signature 2 source_module_05d1534ee9527818
