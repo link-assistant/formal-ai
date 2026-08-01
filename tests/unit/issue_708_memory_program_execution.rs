@@ -79,13 +79,38 @@ fn compiled_program_round_trips_replace_and_when_do_shapes() {
         program
     );
 
-    let edited = notation.replacen("    new \"Y\"", "    new \"Z\"", 1);
+    let edited = notation.replace(
+        "  replace\n    old \"X\"\n    new \"Y\"",
+        "  replace\n    old \"X\"\n    new \"Z\"",
+    );
     let edited = parse_memory_program_links_notation(&edited).expect("editable program");
     assert_ne!(edited.id, program.id);
     let mut store = MemoryStore::from_events(vec![event("fact", "fact", "user", "X")]);
     let outcome = execute_memory_program(&edited, &mut store, MemoryProgramAuthorization::Write);
     assert_eq!(outcome.halt, MemoryProgramHalt::Fixpoint);
     assert_eq!(store.events()[0].content.as_deref(), Some("Z"));
+
+    let create = compile_memory_program(
+        "For every meaning without a Russian label, add a todo link.",
+        LIMITS,
+    )
+    .expect("seeded family");
+    let destructive = create
+        .links_notation()
+        .replace("    do \"create\"", "    do \"delete_with_retraction\"");
+    let destructive =
+        parse_memory_program_links_notation(&destructive).expect("editable when/do program");
+    let refused = execute_memory_program(
+        &destructive,
+        &mut MemoryStore::default(),
+        MemoryProgramAuthorization::Write,
+    );
+    assert_eq!(
+        refused.halt,
+        MemoryProgramHalt::PermissionDenied {
+            required: String::from("destructive"),
+        }
+    );
 }
 
 #[test]

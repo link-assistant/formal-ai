@@ -194,6 +194,9 @@ pub fn parse_memory_program_links_notation(
     let mut max_iterations = None;
     let mut bindings = BTreeMap::new();
     let mut steps = Vec::new();
+    let mut replacement = BTreeMap::new();
+    let mut when_primitive = None;
+    let mut do_primitive = None;
     let mut section = ParseSection::Root;
 
     for line in text.lines().skip(1) {
@@ -202,6 +205,10 @@ pub fn parse_memory_program_links_notation(
         if indent == 2 {
             if let ParseSection::Step(step) = std::mem::replace(&mut section, ParseSection::Root) {
                 steps.push(step);
+            }
+            if trimmed == "replace" {
+                section = ParseSection::Replace;
+                continue;
             }
             let Some((name, value)) = trimmed.split_once(' ') else {
                 continue;
@@ -217,6 +224,10 @@ pub fn parse_memory_program_links_notation(
                         permission: MemoryProgramPermission::Read,
                         arguments: BTreeMap::new(),
                     })
+                }
+                "when" => {
+                    when_primitive = Some(parse_lino_scalar(value));
+                    section = ParseSection::When;
                 }
                 _ => {}
             }
@@ -236,7 +247,14 @@ pub fn parse_memory_program_links_notation(
                 ParseSection::Step(step) => {
                     step.arguments.insert(name.to_owned(), value);
                 }
-                ParseSection::Root | ParseSection::Binding(_) => {}
+                ParseSection::Replace if matches!(name, "old" | "new") => {
+                    replacement.insert(name.to_owned(), value);
+                }
+                ParseSection::When if name == "do" => do_primitive = Some(value),
+                ParseSection::Root
+                | ParseSection::Binding(_)
+                | ParseSection::Replace
+                | ParseSection::When => {}
             }
         }
     }
@@ -273,6 +291,12 @@ pub fn parse_memory_program_links_notation(
             )));
         }
     }
+    apply_reviewable_shapes(
+        &mut steps,
+        &replacement,
+        when_primitive.as_deref(),
+        do_primitive.as_deref(),
+    )?;
     let canonical_program = canonical_program(&family, limits, &bindings, &steps);
     Ok(CompiledMemoryProgram {
         id: stable_id("memory_program", &canonical_program),
@@ -288,6 +312,57 @@ enum ParseSection {
     Root,
     Binding(String),
     Step(MemoryProgramStep),
+    Replace,
+    When,
+}
+
+fn apply_reviewable_shapes(
+    steps: &mut [MemoryProgramStep],
+    replacement: &BTreeMap<String, String>,
+    when_primitive: Option<&str>,
+    do_primitive: Option<&str>,
+) -> Result<(), MemoryProgramParseError> {
+    if !replacement.is_empty() {
+        let old = replacement
+            .get("old")
+            .ok_or_else(|| memory_program_parse_error("memory_program_replace_missing_old"))?;
+        let new = replacement
+            .get("new")
+            .ok_or_else(|| memory_program_parse_error("memory_program_replace_missing_new"))?;
+        let update = steps
+            .iter_mut()
+            .find(|step| step.primitive == "update")
+            .ok_or_else(|| memory_program_parse_error("memory_program_replace_missing_update"))?;
+        update.arguments.insert(String::from("old"), old.clone());
+        update.arguments.insert(String::from("new"), new.clone());
+    }
+
+    if let Some(primitive) = when_primitive {
+        let first = steps
+            .first_mut()
+            .ok_or_else(|| memory_program_parse_error("memory_program_when_missing_condition"))?;
+        first.primitive = primitive.to_owned();
+        first.permission = seeded_permission(primitive)?;
+    }
+    if let Some(primitive) = do_primitive {
+        let effect = steps
+            .iter_mut()
+            .find(|step| is_effect_primitive(&step.primitive))
+            .ok_or_else(|| memory_program_parse_error("memory_program_when_missing_effect"))?;
+        effect.primitive = primitive.to_owned();
+        effect.permission = seeded_permission(primitive)?;
+    }
+    Ok(())
+}
+
+fn seeded_permission(primitive: &str) -> Result<MemoryProgramPermission, MemoryProgramParseError> {
+    catalog().primitives.get(primitive).copied().ok_or_else(|| {
+        memory_program_parse_error(format!("program_gap:unseeded_memory_primitive:{primitive}"))
+    })
+}
+
+fn is_effect_primitive(primitive: &str) -> bool {
+    matches!(primitive, "create" | "update" | "delete_with_retraction")
 }
 
 fn parse_lino_scalar(value: &str) -> String {
