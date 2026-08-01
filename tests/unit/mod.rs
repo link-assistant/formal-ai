@@ -98,6 +98,7 @@ mod issue_704;
 mod issue_706_any_language;
 mod issue_708_memory_program;
 mod issue_708_memory_program_execution;
+mod issue_708_self_hosting;
 mod issue_712_routing_learning;
 mod issue_714_agentic_mode;
 mod issue_715_code_rewrite_learning;
