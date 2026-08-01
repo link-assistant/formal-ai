@@ -3,7 +3,22 @@ fn captured_agent_artifacts_match_their_committed_leaves() {
     let seed = include_str!("../../data/seed/memory-programs.lino");
     let authored_seed =
         include_str!("../../docs/case-studies/issue-708/self-hosting-seed/memory-programs.lino");
-    assert_eq!(authored_seed, seed);
+    // The Agent CLI authored the primitive/family catalog. A later full-suite
+    // regression exposed that a bare `fact` cue could steal fact-checking
+    // prompts, so the narrow `scope` routing guard was manually added. Compare
+    // the authored leaf after removing only that disclosed integration guard.
+    let agent_authored_catalog = seed
+        .lines()
+        .filter(|line| !line.trim_start().starts_with("scope "))
+        .collect::<Vec<_>>()
+        .join("\n");
+    assert_eq!(authored_seed.trim_end(), agent_authored_catalog);
+    assert_eq!(
+        seed.lines()
+            .filter(|line| line.trim_start().starts_with("scope "))
+            .count(),
+        15
+    );
 
     let suite = include_str!("issue_708_memory_program_execution.rs");
     let authored_suite = include_str!(

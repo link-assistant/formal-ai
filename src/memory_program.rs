@@ -390,6 +390,7 @@ fn memory_program_parse_error(message: impl Into<String>) -> MemoryProgramParseE
 struct Catalog {
     primitives: BTreeMap<String, MemoryProgramPermission>,
     cues: Vec<String>,
+    scopes: Vec<String>,
     families: Vec<Family>,
 }
 
@@ -416,7 +417,12 @@ pub fn compile_memory_program(
             return compile_family(catalog, family, bindings, limits);
         }
     }
-    if catalog.cues.iter().any(|cue| normalized.contains(cue)) {
+    let names_memory_resource = catalog.cues.iter().any(|cue| normalized.contains(cue));
+    let requests_set_operation = catalog
+        .scopes
+        .iter()
+        .any(|scope| contains_scope_cue(&normalized, scope));
+    if names_memory_resource && requests_set_operation {
         return Err(MemoryProgramCompileError::ProgramGap {
             request: request.trim().to_owned(),
             gap: String::from("program_gap:no_complete_seeded_family"),
@@ -507,6 +513,7 @@ fn parse_catalog() -> Catalog {
     let mut catalog = Catalog {
         primitives: BTreeMap::new(),
         cues: Vec::new(),
+        scopes: Vec::new(),
         families: Vec::new(),
     };
     let mut current_family: Option<Family> = None;
@@ -523,6 +530,8 @@ fn parse_catalog() -> Catalog {
                 current_primitive = Some(id.to_owned());
             } else if let Some(cue) = trimmed.strip_prefix("cue ") {
                 catalog.cues.push(normalize_surface(cue));
+            } else if let Some(scope) = trimmed.strip_prefix("scope ") {
+                catalog.scopes.push(normalize_surface(&unquote(scope)));
             } else if let Some(id) = trimmed.strip_prefix("family ") {
                 current_family = Some(Family {
                     id: id.to_owned(),
@@ -636,6 +645,28 @@ fn find_case_insensitive(text: &str, normalized_needle: &str) -> Option<usize> {
         .find(|&start| case_insensitive_prefix_len(&text[start..], normalized_needle).is_some())
 }
 
+fn contains_scope_cue(text: &str, cue: &str) -> bool {
+    text.match_indices(cue).any(|(start, matched)| {
+        let end = start + matched.len();
+        let before_is_word = text[..start]
+            .chars()
+            .next_back()
+            .is_some_and(char::is_alphanumeric);
+        let after_is_word = text[end..]
+            .chars()
+            .next()
+            .is_some_and(char::is_alphanumeric);
+        let cue_uses_han = cue.chars().any(
+            |character| matches!(character, '\u{3400}'..='\u{4dbf}' | '\u{4e00}'..='\u{9fff}'),
+        );
+        if cue_uses_han {
+            true
+        } else {
+            !before_is_word && !after_is_word
+        }
+    })
+}
+
 fn normalize_binding(text: &str) -> String {
     normalize_surface(text)
 }
@@ -661,5 +692,22 @@ mod tests {
             error,
             MemoryProgramCompileError::ProgramGap { .. }
         ));
+    }
+
+    #[test]
+    fn generic_fact_checks_are_not_misclassified_as_memory_program_gaps() {
+        for request in [
+            "fact-check this dialogue",
+            "проверь факты в диалоге",
+            "इस संवाद के तथ्यों की जाँच करें",
+            "核查此对话中的事实",
+            "verifica los hechos de este diálogo",
+        ] {
+            assert_eq!(
+                compile_memory_program(request, MemoryProgramLimits::default()),
+                Err(MemoryProgramCompileError::NotMemoryProgram),
+                "{request} must remain available to the fact-checking route",
+            );
+        }
     }
 }

@@ -15,7 +15,7 @@ function memoryProgramCatalog() {
   const raw = SEED_RAW["seed/memory-programs.lino"] || "";
   if (!raw || !self.FormalAiSeed) return null;
   const root = self.FormalAiSeed.parse(raw);
-  const catalog = { primitives: {}, cues: [], families: [] };
+  const catalog = { primitives: {}, cues: [], scopes: [], families: [] };
   for (const node of root.children || []) {
     if (node.name === "primitive") {
       const permission = (node.children || []).find(
@@ -26,6 +26,8 @@ function memoryProgramCatalog() {
       }
     } else if (node.name === "cue" && node.value) {
       catalog.cues.push(memoryProgramNormalizeSurface(node.value));
+    } else if (node.name === "scope" && node.value) {
+      catalog.scopes.push(memoryProgramNormalizeSurface(node.value));
     } else if (node.name === "family") {
       const family = { id: node.value, steps: [], templates: [] };
       for (const child of node.children || []) {
@@ -88,6 +90,21 @@ function memoryProgramMatchTemplate(template, request) {
 
 function memoryProgramNormalizeBinding(value) {
   return memoryProgramNormalizeSurface(value).toLocaleLowerCase();
+}
+
+function memoryProgramContainsScopeCue(text, cue) {
+  const cueUsesHan = /\p{Script=Han}/u.test(cue);
+  let start = text.indexOf(cue);
+  while (start >= 0) {
+    if (cueUsesHan) return true;
+    const before = start > 0 ? text[start - 1] : "";
+    const after = text[start + cue.length] || "";
+    if (!/[\p{L}\p{N}]/u.test(before) && !/[\p{L}\p{N}]/u.test(after)) {
+      return true;
+    }
+    start = text.indexOf(cue, start + cue.length);
+  }
+  return false;
 }
 
 function memoryProgramCanonical(family, limits, bindings, steps) {
@@ -153,7 +170,11 @@ function compileMemoryProgramForWorker(request, limits = MEMORY_PROGRAM_DEFAULT_
     }
   }
   const normalized = surface.toLocaleLowerCase();
-  if (catalog.cues.some((cue) => normalized.includes(cue))) {
+  const namesMemoryResource = catalog.cues.some((cue) => normalized.includes(cue));
+  const requestsSetOperation = catalog.scopes.some((scope) =>
+    memoryProgramContainsScopeCue(normalized, scope),
+  );
+  if (namesMemoryResource && requestsSetOperation) {
     return {
       status: "gap",
       gap: "program_gap:no_complete_seeded_family",

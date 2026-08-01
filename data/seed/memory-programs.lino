@@ -35,6 +35,21 @@ memory_program_catalog
   cue 事件
   cue 记忆
   cue 含义
+  scope "every"
+  scope "each"
+  scope "all"
+  scope "каждый"
+  scope "каждого"
+  scope "все"
+  scope "всех"
+  scope "हर"
+  scope "प्रत्येक"
+  scope "सभी"
+  scope "每个"
+  scope "所有"
+  scope "cada"
+  scope "todos"
+  scope "todas"
   family contributed_fact_rename
     step_1 "match contains=$old"
     step_2 "filter role=user"
