@@ -254,7 +254,7 @@ fn lowered_programs_execute_over_projected_doublets_and_drift_is_refused() {
     assert!(matches!(
         refused.halt,
         MemoryProgramHalt::ProgramGap { ref primitive }
-            if primitive.contains("does not represent the typed CRUD operation")
+            if primitive == "memory_query_link_lowering:link_effect_drift"
     ));
     assert_eq!(refused.changed, 0);
 }
