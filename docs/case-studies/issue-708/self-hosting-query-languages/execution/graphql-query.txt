@@ -1,0 +1,1 @@
+query { memoryAggregate(where: { conversationId: { eq: "issue-708-fixture" } }) { count accesses: sum(field: accessCount) } }

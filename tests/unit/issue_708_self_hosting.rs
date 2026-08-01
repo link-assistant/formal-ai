@@ -1,3 +1,24 @@
+use std::io::Write;
+use std::process::{Command, Stdio};
+
+fn rustfmt_source(source: &str) -> String {
+    let mut child = Command::new("rustfmt")
+        .args(["--edition", "2021", "--emit", "stdout"])
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .spawn()
+        .expect("rustfmt is required by the repository verification contract");
+    child
+        .stdin
+        .as_mut()
+        .expect("rustfmt stdin")
+        .write_all(source.as_bytes())
+        .expect("write Agent-authored source to rustfmt");
+    let output = child.wait_with_output().expect("wait for rustfmt");
+    assert!(output.status.success(), "rustfmt captured Agent source");
+    String::from_utf8(output.stdout).expect("rustfmt output is UTF-8")
+}
+
 #[test]
 fn captured_agent_artifacts_match_their_committed_leaves() {
     let seed = include_str!("../../data/seed/memory-programs.lino");
@@ -35,11 +56,20 @@ fn captured_agent_artifacts_match_their_committed_leaves() {
         compiler_test.strip_suffix('\n').unwrap_or(compiler_test)
     );
 
+    let query_suite = include_str!("issue_708_memory_query_languages.rs");
+    let authored_query_suite = include_str!(
+        "../../docs/case-studies/issue-708/self-hosting-query-languages/issue_708_memory_query_languages.rs"
+    );
+    assert_eq!(rustfmt_source(authored_query_suite), query_suite);
+
     for log in [
         include_str!("../../docs/case-studies/issue-708/self-hosting-authorship/agent-cli.log"),
         include_str!("../../docs/case-studies/issue-708/self-hosting-seed/agent-cli.log"),
         include_str!(
             "../../docs/case-studies/issue-708/self-hosting-execution-tests/agent-cli.log"
+        ),
+        include_str!(
+            "../../docs/case-studies/issue-708/self-hosting-query-languages/agent-cli.log"
         ),
     ] {
         assert!(log.contains("formal-ai/formal-ai"));
