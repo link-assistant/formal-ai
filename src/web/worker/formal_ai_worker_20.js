@@ -580,6 +580,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     ? options.memoryEvents
     : [];
   const syncHandlers = [
+    { name: "tryExactMemoryQuery", run: () => tryExactMemoryQuery(prompt, memoryEvents) },
     // Issue #708: compile the complete seeded memory-program family before the
     // legacy single-write recognizer. Mirrors `compile_memory_program` plus
     // `execute_memory_program`; an incomplete compilation gap is delayed until
