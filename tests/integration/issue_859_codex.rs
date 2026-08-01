@@ -8,7 +8,7 @@ const PATCH_INPUT: &str = "*** Begin Patch\n*** Add File: main.rs\n+fn main() {\
 
 #[test]
 fn codex_creates_compiles_and_runs_hello_world_with_precise_narration() {
-    let first = responses(json!([message(PROMPT)]));
+    let first = responses(&json!([message(PROMPT)]));
     assert_eq!(narration(&first), "Let me update main.rs for you.");
     let patch = call_of_type(&first, "custom_tool_call");
     assert_eq!(patch["name"], "apply_patch", "{first}");
@@ -20,7 +20,7 @@ fn codex_creates_compiles_and_runs_hello_world_with_precise_narration() {
         "{patch}"
     );
 
-    let compiled = responses(json!([
+    let compiled = responses(&json!([
         message(PROMPT),
         custom_call("patch_1", PATCH_INPUT),
         custom_output("patch_1", "Done!")
@@ -33,7 +33,7 @@ fn codex_creates_compiles_and_runs_hello_world_with_precise_narration() {
     assert_eq!(compile["name"], "exec_command", "{compiled}");
     assert_eq!(arguments(compile)["cmd"], "rustc main.rs -o main");
 
-    let ran = responses(json!([
+    let ran = responses(&json!([
         message(PROMPT),
         custom_call("patch_1", PATCH_INPUT),
         custom_output("patch_1", "Done!"),
@@ -49,7 +49,7 @@ fn codex_creates_compiles_and_runs_hello_world_with_precise_narration() {
     assert_eq!(run["name"], "exec_command", "{ran}");
     assert_eq!(arguments(run)["cmd"], "./main");
 
-    let finished = responses(json!([
+    let finished = responses(&json!([
         message(PROMPT),
         custom_call("patch_1", PATCH_INPUT),
         custom_output("patch_1", "Done!"),
@@ -79,8 +79,8 @@ fn codex_creates_compiles_and_runs_hello_world_with_precise_narration() {
 #[test]
 fn codex_report_issue_asks_for_structured_details_instead_of_searching_the_web() {
     let response = responses_for(
-        json!([message("Report issue")]),
-        codex_tools_with_question(),
+        &json!([message("Report issue")]),
+        &codex_tools_with_question(),
     );
     let call = call_of_type(&response, "function_call");
     assert_eq!(call["name"], "request_user_input", "{response}");
@@ -128,11 +128,11 @@ fn codex_streams_native_custom_patch_events() {
     );
 }
 
-fn responses(input: Value) -> Value {
-    responses_for(input, codex_tools())
+fn responses(input: &Value) -> Value {
+    responses_for(input, &codex_tools())
 }
 
-fn responses_for(input: Value, tools: Value) -> Value {
+fn responses_for(input: &Value, tools: &Value) -> Value {
     enable_http_agent_mode_for_current_process();
     let body = json!({"model": "formal-ai", "input": input, "tools": tools});
     let response = handle_api_request("POST", "/v1/responses", &body.to_string());

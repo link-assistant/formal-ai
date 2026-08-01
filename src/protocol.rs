@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use serde::{Deserialize, Serialize};
@@ -29,12 +28,13 @@ mod content;
 pub use content::{client_working_directory, latest_user_request, system_prompt_text};
 mod output;
 mod recording;
+mod responses_input;
 pub use output::*;
 pub use recording::{
     chat_exchange_to_record, chat_tool_executions, messages_exchange_to_record,
     responses_exchange_to_record,
 };
-use recording::{chat_prompt_and_history, response_prompt, value_to_prompt_text};
+use recording::{chat_prompt_and_history, response_prompt};
 
 fn resolved_request_model(model: Option<&str>) -> String {
     crate::seed::resolve_model_id(model)
@@ -393,14 +393,12 @@ impl ResponsesRequest {
     /// flat Responses shape or the nested Chat shape).
     #[must_use]
     pub fn to_chat_completion_request(&self) -> ChatCompletionRequest {
-        let mut messages = Vec::new();
+        let mut messages = responses_input::messages(&self.input);
         if let Some(instructions) = self.instructions.as_deref() {
             if !instructions.trim().is_empty() {
-                messages.push(ChatMessage::new("system", instructions.trim()));
+                messages.insert(0, ChatMessage::new("system", instructions.trim()));
             }
         }
-        let mut tool_names_by_id: HashMap<String, String> = HashMap::new();
-        append_response_input(&self.input, &mut messages, &mut tool_names_by_id);
         ChatCompletionRequest {
             model: self.model.clone(),
             messages,
@@ -417,102 +415,6 @@ impl ResponsesRequest {
 
 fn responses_input_tokens(request: &ResponsesRequest) -> u32 {
     message_input_tokens(&request.to_chat_completion_request().messages)
-}
-
-/// Append the Responses `input` (a bare string, a single item, or an array of
-/// items) to the chat `messages` being built, threading a `call_id → tool name`
-/// map so each function/custom call output can be labelled with the tool that
-/// produced it (the planner resolves capabilities by message `name` first).
-fn append_response_input(
-    input: &Value,
-    out: &mut Vec<ChatMessage>,
-    tool_names_by_id: &mut HashMap<String, String>,
-) {
-    match input {
-        Value::String(text) => {
-            if !text.trim().is_empty() {
-                out.push(ChatMessage::user(text.clone()));
-            }
-        }
-        Value::Array(items) => {
-            for item in items {
-                append_response_item(item, out, tool_names_by_id);
-            }
-        }
-        Value::Object(_) => append_response_item(input, out, tool_names_by_id),
-        _ => {}
-    }
-}
-
-/// Append a single Responses `input` item — a message, function/custom call, or
-/// matching call output — to `out` as the equivalent chat message(s).
-fn append_response_item(
-    item: &Value,
-    out: &mut Vec<ChatMessage>,
-    tool_names_by_id: &mut HashMap<String, String>,
-) {
-    let item_type = item
-        .get("type")
-        .and_then(Value::as_str)
-        .unwrap_or("message");
-    match item_type {
-        "function_call" | "custom_tool_call" => {
-            let call_id = item
-                .get("call_id")
-                .or_else(|| item.get("id"))
-                .and_then(Value::as_str)
-                .unwrap_or_default()
-                .to_owned();
-            let name = item
-                .get("name")
-                .and_then(Value::as_str)
-                .unwrap_or_default()
-                .to_owned();
-            let arguments = item
-                .get("arguments")
-                .or_else(|| item.get("input"))
-                .and_then(Value::as_str)
-                .unwrap_or("{}")
-                .to_owned();
-            if !name.is_empty() {
-                tool_names_by_id.insert(call_id.clone(), name.clone());
-            }
-            out.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
-                call_id, name, arguments,
-            )]));
-        }
-        "function_call_output" | "custom_tool_call_output" => {
-            let call_id = item
-                .get("call_id")
-                .and_then(Value::as_str)
-                .unwrap_or_default()
-                .to_owned();
-            let output = item
-                .get("output")
-                .map_or_else(String::new, value_to_prompt_text);
-            let name = tool_names_by_id.get(&call_id).cloned();
-            out.push(ChatMessage {
-                role: String::from("tool"),
-                content: MessageContent::Text(output),
-                tool_call_id: Some(call_id),
-                name,
-                ..ChatMessage::default()
-            });
-        }
-        _ => {
-            let role = item
-                .get("role")
-                .and_then(Value::as_str)
-                .unwrap_or("user")
-                .to_owned();
-            let content = item
-                .get("content")
-                .map_or_else(String::new, value_to_prompt_text);
-            if !content.trim().is_empty() {
-                out.push(ChatMessage::new(role, content));
-            }
-        }
-    }
 }
 
 #[must_use]

@@ -42,16 +42,16 @@ fn apply_patch_input(arguments: &str) -> Option<String> {
         return None;
     }
 
-    let mut patch = format!("*** Begin Patch\n*** Add File: {path}\n");
+    let mut rendered = format!("*** Begin Patch\n*** Add File: {path}\n");
     if content.is_empty() {
-        patch.push_str("+\n");
+        rendered.push_str("+\n");
     } else {
         for line in content.lines() {
-            let _ = writeln!(patch, "+{line}");
+            let _ = writeln!(rendered, "+{line}");
         }
     }
-    patch.push_str("*** End Patch\n");
-    Some(patch)
+    rendered.push_str("*** End Patch\n");
+    Some(rendered)
 }
 
 /// Project the planner's capability-shaped arguments onto the exact JSON Schema
