@@ -100,6 +100,44 @@ fn multilingual_rust_function_requests_generate_source() {
 }
 
 #[test]
+fn coding_source_templates_and_outcomes_are_seed_grounded() {
+    for intent in [
+        "coding_source_function_division",
+        "coding_source_function_return",
+        "coding_source_string_constant",
+        "coding_source_equality_test",
+    ] {
+        assert!(
+            formal_ai::seed::response_for(intent, "rust").is_some(),
+            "missing Rust template {intent}"
+        );
+    }
+    for intent in [
+        "coding_workspace_effect_observed",
+        "coding_workspace_written_unverified",
+        "coding_workspace_verification_failed",
+    ] {
+        for language in ["en", "ru", "hi", "zh"] {
+            assert!(
+                formal_ai::seed::response_for(intent, language).is_some(),
+                "missing {language} response for {intent}"
+            );
+        }
+    }
+
+    let outcome = run_agentic_task(
+        "Создай файл src/ladder_ru.rs с одной публичной функцией на Rust с именем \
+         ladder_ru, которая возвращает число 1.",
+    )
+    .expect("isolated agent workspace");
+    assert!(
+        outcome.final_answer.starts_with("Файл `src/ladder_ru.rs`"),
+        "Russian task must naturalize the seeded Russian outcome: {}",
+        outcome.final_answer
+    );
+}
+
+#[test]
 fn repository_searches_use_the_named_code_subject() {
     for (task, expected) in [
         (
