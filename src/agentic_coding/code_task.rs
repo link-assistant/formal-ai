@@ -43,15 +43,17 @@ pub(super) fn plan_generated_source_step(
 
     if let Some(observed) = latest_result(current_turn, Capability::Run) {
         if observed == artifact.content {
-            return Some(AgenticPlan::Final(format!(
-                "Created and observed `{}` through the workspace tools.",
-                artifact.path
-            )));
+            return Some(AgenticPlan::Final(render_seeded_outcome(
+                "coding_workspace_effect_observed",
+                task,
+                &artifact.path,
+            )?));
         }
-        return Some(AgenticPlan::Final(format!(
-            "Verification failed for `{}`: the observed bytes differ from the generated source.",
-            artifact.path
-        )));
+        return Some(AgenticPlan::Final(render_seeded_outcome(
+            "coding_workspace_verification_failed",
+            task,
+            &artifact.path,
+        )?));
     }
     if latest_result(current_turn, Capability::Write).is_some() {
         if let Some(run_tool) = tool_for(tool_names, Capability::Run) {
@@ -60,10 +62,11 @@ pub(super) fn plan_generated_source_step(
                 json!({"command": format!("cat {}", artifact.path)}).to_string(),
             ));
         }
-        return Some(AgenticPlan::Final(format!(
-            "Created `{}` through the workspace file tools.",
-            artifact.path
-        )));
+        return Some(AgenticPlan::Final(render_seeded_outcome(
+            "coding_workspace_written_unverified",
+            task,
+            &artifact.path,
+        )?));
     }
     Some(plan_one(
         write_tool,
@@ -103,16 +106,24 @@ fn rust_source_for_task(task: &str) -> Option<GeneratedSource> {
                 && lexicon.mentions_role(seed::ROLE_CODING_DIVISION_ACTION, &normalized)
             {
                 let divisor = numbers.last()?;
-                format!(
-                    "{}fn {name}(value: f64) -> f64 {{\n    value / {divisor}\n}}\n",
-                    if public { "pub " } else { "" }
-                )
+                render_rust_template(
+                    "coding_source_function_division",
+                    &[
+                        ("{visibility}", if public { "pub " } else { "" }),
+                        ("{name}", &name),
+                        ("{divisor}", divisor),
+                    ],
+                )?
             } else if lexicon.mentions_role(seed::ROLE_CODING_RETURN_ACTION, &normalized) {
                 let value = numbers.last()?;
-                format!(
-                    "{}fn {name}() -> i64 {{\n    {value}\n}}\n",
-                    if public { "pub " } else { "" }
-                )
+                render_rust_template(
+                    "coding_source_function_return",
+                    &[
+                        ("{visibility}", if public { "pub " } else { "" }),
+                        ("{name}", &name),
+                        ("{value}", value),
+                    ],
+                )?
             } else {
                 return None;
             }
@@ -122,18 +133,47 @@ fn rust_source_for_task(task: &str) -> Option<GeneratedSource> {
                 return None;
             }
             let value = slot_identifier(&normalized, seed::ROLE_CODING_VALUE_SLOT)?;
-            format!(
-                "{}const {name}: &str = \"{value}\";\n",
-                if public { "pub " } else { "" }
-            )
+            render_rust_template(
+                "coding_source_string_constant",
+                &[
+                    ("{visibility}", if public { "pub " } else { "" }),
+                    ("{name}", &name),
+                    ("{value}", &value),
+                ],
+            )?
         }
         RustItemKind::Test => {
             let left = numbers.first()?;
             let right = numbers.get(1)?;
-            format!("#[test]\nfn {name}() {{\n    assert_eq!({left}, {right});\n}}\n")
+            render_rust_template(
+                "coding_source_equality_test",
+                &[("{name}", &name), ("{left}", left), ("{right}", right)],
+            )?
         }
     };
     Some(GeneratedSource { path, content })
+}
+
+fn render_rust_template(intent: &str, substitutions: &[(&str, &str)]) -> Option<String> {
+    Some(render_template(
+        seed::response_for(intent, "rust")?,
+        substitutions,
+    ))
+}
+
+pub(super) fn render_seeded_outcome(intent: &str, task: &str, path: &str) -> Option<String> {
+    let language = crate::language::detect(task).slug();
+    Some(render_template(
+        seed::localized_response(intent, language)?,
+        &[("{path}", path)],
+    ))
+}
+
+fn render_template(mut template: String, substitutions: &[(&str, &str)]) -> String {
+    for (placeholder, value) in substitutions {
+        template = template.replace(placeholder, value);
+    }
+    template
 }
 
 fn rust_path(task: &str) -> Option<String> {

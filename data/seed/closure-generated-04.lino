@@ -1,4 +1,39 @@
 meanings
+  response_agent_procedure_verification_failed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verification failed zh"
+  response_agent_procedure_verified_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verified en"
+  response_agent_procedure_verified_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verified hi"
+  response_agent_procedure_verified_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verified ru"
+  response_agent_procedure_verified_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verified zh"
+  response_agent_procedure_write_unavailable_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure write unavailable en"
+  response_agent_procedure_write_unavailable_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure write unavailable hi"
   response_agent_procedure_write_unavailable_ru
     defined-by response_template
     lexeme en
@@ -669,6 +704,86 @@ meanings
     lexeme en
       surface
         text "response client integration invalid typed json setting zh"
+  response_coding_source_equality_test_rust
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding source equality test rust"
+  response_coding_source_function_division_rust
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding source function division rust"
+  response_coding_source_function_return_rust
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding source function return rust"
+  response_coding_source_string_constant_rust
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding source string constant rust"
+  response_coding_workspace_effect_observed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace effect observed en"
+  response_coding_workspace_effect_observed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace effect observed hi"
+  response_coding_workspace_effect_observed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace effect observed ru"
+  response_coding_workspace_effect_observed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace effect observed zh"
+  response_coding_workspace_verification_failed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace verification failed en"
+  response_coding_workspace_verification_failed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace verification failed hi"
+  response_coding_workspace_verification_failed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace verification failed ru"
+  response_coding_workspace_verification_failed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace verification failed zh"
+  response_coding_workspace_written_unverified_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace written unverified en"
+  response_coding_workspace_written_unverified_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace written unverified hi"
+  response_coding_workspace_written_unverified_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace written unverified ru"
+  response_coding_workspace_written_unverified_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace written unverified zh"
   response_comparison_decomposed_evidence_en
     defined-by response_template
     lexeme en
@@ -1279,118 +1394,3 @@ meanings
     lexeme en
       surface
         text "response general plan command output evidence en"
-  response_general_plan_command_output_evidence_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan command output evidence hi"
-  response_general_plan_command_output_evidence_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan command output evidence ru"
-  response_general_plan_command_output_evidence_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan command output evidence zh"
-  response_general_plan_command_verification_evidence_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan command verification evidence en"
-  response_general_plan_command_verification_evidence_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan command verification evidence hi"
-  response_general_plan_command_verification_evidence_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan command verification evidence ru"
-  response_general_plan_command_verification_evidence_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan command verification evidence zh"
-  response_general_plan_repository_action_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository action en"
-  response_general_plan_repository_action_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository action hi"
-  response_general_plan_repository_action_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository action ru"
-  response_general_plan_repository_action_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository action zh"
-  response_general_plan_repository_complete_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository complete en"
-  response_general_plan_repository_complete_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository complete hi"
-  response_general_plan_repository_complete_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository complete ru"
-  response_general_plan_repository_complete_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository complete zh"
-  response_general_plan_repository_evidence_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository evidence en"
-  response_general_plan_repository_evidence_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository evidence hi"
-  response_general_plan_repository_evidence_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository evidence ru"
-  response_general_plan_repository_evidence_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository evidence zh"
-  response_general_plan_repository_verify_action_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository verify action en"
-  response_general_plan_repository_verify_action_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository verify action hi"
-  response_general_plan_repository_verify_action_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository verify action ru"
-  response_general_plan_repository_verify_action_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository verify action zh"

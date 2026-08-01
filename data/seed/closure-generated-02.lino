@@ -1,4 +1,39 @@
 meanings
+  fact_check_arithmetic_counterexample
+    defined-by intent
+    lexeme en
+      surface
+        text "fact check arithmetic counterexample"
+  fact_check_current_dialogue
+    defined-by intent
+    lexeme en
+      surface
+        text "fact check current dialogue"
+  fact_check_no_statements
+    defined-by intent
+    lexeme en
+      surface
+        text "fact check no statements"
+  fact_check_statement
+    defined-by intent
+    lexeme en
+      surface
+        text "fact check statement"
+  fact_check_statement_counterexample
+    defined-by intent
+    lexeme en
+      surface
+        text "fact check statement counterexample"
+  fact_lookup
+    defined-by intent
+    lexeme en
+      surface
+        text "fact lookup"
+  factual
+    defined-by word_surface
+    lexeme en
+      surface
+        text "factual"
   fallback
     defined-by concept
     lexeme en
@@ -1359,38 +1394,3 @@ meanings
     lexeme en
       surface
         text "path argument"
-  path_argument_list_files
-    defined-by rule
-    lexeme en
-      surface
-        text "path argument list files"
-  path_argument_list_files_reverse_sort
-    defined-by rule
-    lexeme en
-      surface
-        text "path argument list files reverse sort"
-  pattern_assistant_free_time_phrase_aap_khali_samay_men_kya_karte_hain_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase aap khali samay men kya karte hain hi"
-  pattern_assistant_free_time_phrase_chem_ty_zanimaeshsya_v_svobodnoe_vremya_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase chem ty zanimaeshsya v svobodnoe vremya ru"
-  pattern_assistant_free_time_phrase_chem_zanimaeshsya_v_svobodnoe_vremya_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase chem zanimaeshsya v svobodnoe vremya ru"
-  pattern_assistant_free_time_phrase_chto_delaesh_kogda_svoboden_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase chto delaesh kogda svoboden ru"
-  pattern_assistant_free_time_phrase_chto_delaesh_v_svobodnoe_vremya_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase chto delaesh v svobodnoe vremya ru"

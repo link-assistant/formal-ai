@@ -1,4 +1,119 @@
 meanings
+  response_requirement_contradiction_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response requirement contradiction en"
+  response_requirement_contradiction_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response requirement contradiction hi"
+  response_requirement_contradiction_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response requirement contradiction ru"
+  response_requirement_contradiction_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response requirement contradiction zh"
+  response_shared_dialog_capture_parse_failed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response shared dialog capture parse failed en"
+  response_shared_dialog_capture_parse_failed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response shared dialog capture parse failed hi"
+  response_shared_dialog_capture_parse_failed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response shared dialog capture parse failed ru"
+  response_shared_dialog_capture_parse_failed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response shared dialog capture parse failed zh"
+  response_shared_dialog_capture_unsupported_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response shared dialog capture unsupported en"
+  response_shared_dialog_capture_unsupported_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response shared dialog capture unsupported hi"
+  response_shared_dialog_capture_unsupported_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response shared dialog capture unsupported ru"
+  response_shared_dialog_capture_unsupported_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response shared dialog capture unsupported zh"
+  response_skill_gap_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response skill gap en"
+  response_skill_gap_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response skill gap hi"
+  response_skill_gap_name_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response skill gap name en"
+  response_skill_gap_name_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response skill gap name hi"
+  response_skill_gap_name_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response skill gap name ru"
+  response_skill_gap_name_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response skill gap name zh"
+  response_skill_gap_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response skill gap ru"
+  response_skill_gap_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response skill gap zh"
+  response_statement_audit_capture_field_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response statement audit capture field en"
+  response_statement_audit_claim_predicate_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response statement audit claim predicate en"
+  response_statement_audit_claim_subject_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response statement audit claim subject en"
   response_statement_audit_invalid_json_en
     defined-by response_template
     lexeme en
@@ -1279,118 +1394,3 @@ meanings
     lexeme en
       surface
         text "task plan stage requirements"
-  task_plan_stage_verification
-    defined-by intent
-    lexeme en
-      surface
-        text "task plan stage verification"
-  test_status
-    defined-by intent
-    lexeme en
-      surface
-        text "test status"
-  thu
-    defined-by word_surface
-    lexeme en
-      surface
-        text "thu"
-  thurs
-    defined-by word_surface
-    lexeme en
-      surface
-        text "thurs"
-  time_dilation
-    defined-by topic
-    lexeme en
-      surface
-        text "time dilation"
-  title
-    defined-by word_surface
-    lexeme en
-      surface
-        text "title"
-  title_case
-    defined-by operation
-    lexeme en
-      surface
-        text "title case"
-  tool_append_memory
-    defined-by tool
-    lexeme en
-      surface
-        text "tool append memory"
-  tool_archive_pack
-    defined-by tool
-    lexeme en
-      surface
-        text "tool archive pack"
-  tool_archive_unpack
-    defined-by tool
-    lexeme en
-      surface
-        text "tool archive unpack"
-  tool_brainstorm
-    defined-by tool
-    lexeme en
-      surface
-        text "tool brainstorm"
-  tool_calculator
-    defined-by tool
-    lexeme en
-      surface
-        text "tool calculator"
-  tool_concept_lookup
-    defined-by tool
-    lexeme en
-      surface
-        text "tool concept lookup"
-  tool_conversation_recall
-    defined-by tool
-    lexeme en
-      surface
-        text "tool conversation recall"
-  tool_coreference
-    defined-by tool
-    lexeme en
-      surface
-        text "tool coreference"
-  tool_dom_extract
-    defined-by tool
-    lexeme en
-      surface
-        text "tool dom extract"
-  tool_dom_query
-    defined-by tool
-    lexeme en
-      surface
-        text "tool dom query"
-  tool_eval_js
-    defined-by tool
-    lexeme en
-      surface
-        text "tool eval js"
-  tool_export_memory
-    defined-by tool
-    lexeme en
-      surface
-        text "tool export memory"
-  tool_fact_lookup
-    defined-by tool
-    lexeme en
-      surface
-        text "tool fact lookup"
-  tool_fs_list
-    defined-by tool
-    lexeme en
-      surface
-        text "tool fs list"
-  tool_fs_move
-    defined-by tool
-    lexeme en
-      surface
-        text "tool fs move"
-  tool_fs_read
-    defined-by tool
-    lexeme en
-      surface
-        text "tool fs read"

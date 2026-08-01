@@ -624,6 +624,41 @@ meanings
     lexeme en
       surface
         text "code request"
+  coding_source_equality_test
+    defined-by intent
+    lexeme en
+      surface
+        text "coding source equality test"
+  coding_source_function_division
+    defined-by intent
+    lexeme en
+      surface
+        text "coding source function division"
+  coding_source_function_return
+    defined-by intent
+    lexeme en
+      surface
+        text "coding source function return"
+  coding_source_string_constant
+    defined-by intent
+    lexeme en
+      surface
+        text "coding source string constant"
+  coding_workspace_effect_observed
+    defined-by intent
+    lexeme en
+      surface
+        text "coding workspace effect observed"
+  coding_workspace_verification_failed
+    defined-by intent
+    lexeme en
+      surface
+        text "coding workspace verification failed"
+  coding_workspace_written_unverified
+    defined-by intent
+    lexeme en
+      surface
+        text "coding workspace written unverified"
   collapse
     defined-by concept
     lexeme en
@@ -1359,38 +1394,3 @@ meanings
     lexeme en
       surface
         text "fabricated"
-  fact_check_arithmetic_counterexample
-    defined-by intent
-    lexeme en
-      surface
-        text "fact check arithmetic counterexample"
-  fact_check_current_dialogue
-    defined-by intent
-    lexeme en
-      surface
-        text "fact check current dialogue"
-  fact_check_no_statements
-    defined-by intent
-    lexeme en
-      surface
-        text "fact check no statements"
-  fact_check_statement
-    defined-by intent
-    lexeme en
-      surface
-        text "fact check statement"
-  fact_check_statement_counterexample
-    defined-by intent
-    lexeme en
-      surface
-        text "fact check statement counterexample"
-  fact_lookup
-    defined-by intent
-    lexeme en
-      surface
-        text "fact lookup"
-  factual
-    defined-by word_surface
-    lexeme en
-      surface
-        text "factual"

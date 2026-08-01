@@ -963,3 +963,67 @@ multilingual_responses
     intent external_benchmark_swe_unavailable
     language en
     text "official SWE-bench evaluation unavailable: {reason}"
+  response response_coding_source_function_division_rust
+    intent coding_source_function_division
+    language rust
+    text "{visibility}fn {name}(value: f64) -> f64 {\n    value / {divisor}\n}\n"
+  response response_coding_source_function_return_rust
+    intent coding_source_function_return
+    language rust
+    text "{visibility}fn {name}() -> i64 {\n    {value}\n}\n"
+  response response_coding_source_string_constant_rust
+    intent coding_source_string_constant
+    language rust
+    text "{visibility}const {name}: &str = \"{value}\";\n"
+  response response_coding_source_equality_test_rust
+    intent coding_source_equality_test
+    language rust
+    text "#[test]\nfn {name}() {\n    assert_eq!({left}, {right});\n}\n"
+  response response_coding_workspace_effect_observed_en
+    intent coding_workspace_effect_observed
+    language en
+    text "Created or updated and observed `{path}` through the workspace tools."
+  response response_coding_workspace_effect_observed_ru
+    intent coding_workspace_effect_observed
+    language ru
+    text "Файл `{path}` создан или обновлён и проверен через инструменты рабочей области."
+  response response_coding_workspace_effect_observed_hi
+    intent coding_workspace_effect_observed
+    language hi
+    text "`{path}` को कार्यक्षेत्र उपकरणों के माध्यम से बनाया या बदला और सत्यापित किया गया।"
+  response response_coding_workspace_effect_observed_zh
+    intent coding_workspace_effect_observed
+    language zh
+    text "已通过工作区工具创建或更新并验证 `{path}`。"
+  response response_coding_workspace_written_unverified_en
+    intent coding_workspace_written_unverified
+    language en
+    text "Created `{path}` through the workspace file tools without read-back verification."
+  response response_coding_workspace_written_unverified_ru
+    intent coding_workspace_written_unverified
+    language ru
+    text "Файл `{path}` создан через файловые инструменты рабочей области без проверки чтением."
+  response response_coding_workspace_written_unverified_hi
+    intent coding_workspace_written_unverified
+    language hi
+    text "`{path}` को कार्यक्षेत्र फ़ाइल उपकरणों के माध्यम से बिना पुनः पढ़कर सत्यापन के बनाया गया।"
+  response response_coding_workspace_written_unverified_zh
+    intent coding_workspace_written_unverified
+    language zh
+    text "已通过工作区文件工具创建 `{path}`，但未进行回读验证。"
+  response response_coding_workspace_verification_failed_en
+    intent coding_workspace_verification_failed
+    language en
+    text "Verification failed for `{path}`: the observed bytes differ from the planned workspace effect."
+  response response_coding_workspace_verification_failed_ru
+    intent coding_workspace_verification_failed
+    language ru
+    text "Проверка `{path}` не удалась: считанные байты отличаются от запланированного изменения рабочей области."
+  response response_coding_workspace_verification_failed_hi
+    intent coding_workspace_verification_failed
+    language hi
+    text "`{path}` का सत्यापन विफल रहा: पढ़े गए बाइट नियोजित कार्यक्षेत्र परिवर्तन से अलग हैं।"
+  response response_coding_workspace_verification_failed_zh
+    intent coding_workspace_verification_failed
+    language zh
+    text "`{path}` 验证失败：读取的字节与计划的工作区更改不同。"

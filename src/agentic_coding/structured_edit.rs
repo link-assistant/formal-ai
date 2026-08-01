@@ -7,6 +7,7 @@
 use serde_json::json;
 
 use super::code_artifact::{latest_result, source_from_read_result};
+use super::code_task::render_seeded_outcome;
 use super::planner::{plan_one, tool_for, write_arguments, AgenticPlan, Capability};
 use crate::normal_markov::{quoted_segments, unwrap_transport_quotes};
 use crate::protocol::ChatMessage;
@@ -50,15 +51,17 @@ pub(super) fn plan_structured_edit_step(
     }
     if let Some(observed) = latest_result(current_turn, Capability::Run) {
         if observed == updated {
-            return Some(AgenticPlan::Final(format!(
-                "Updated and observed `{}` through the workspace tools.",
-                edit.target
-            )));
+            return Some(AgenticPlan::Final(render_seeded_outcome(
+                "coding_workspace_effect_observed",
+                task,
+                &edit.target,
+            )?));
         }
-        return Some(AgenticPlan::Final(format!(
-            "Verification failed for `{}`: the observed bytes differ from the planned edit.",
-            edit.target
-        )));
+        return Some(AgenticPlan::Final(render_seeded_outcome(
+            "coding_workspace_verification_failed",
+            task,
+            &edit.target,
+        )?));
     }
     let run_tool = tool_for(tool_names, Capability::Run)?;
     Some(plan_one(
