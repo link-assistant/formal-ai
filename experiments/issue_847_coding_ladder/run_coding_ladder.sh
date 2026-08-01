@@ -14,7 +14,8 @@
 # Environment knobs:
 #   BIN       Path to the release binary (default: target/release/formal-ai)
 #   PROMPTS   Dataset path (default: alongside this script)
-#   OUT       Results JSON (default: <scriptdir>/results.json)
+#   OUT       Results JSON (default: <scriptdir>/results.json for a full run;
+#             filtered runs use results-partial-<filter>.json)
 #   ONLY      Substring filter on task id (e.g. ONLY=L4, ONLY=L1.solve)
 #   TIMEOUT   Per-task seconds (default: 300)
 #
@@ -37,9 +38,17 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(cd "$HERE/../.." && pwd)"
 BIN="${BIN:-$ROOT/target/release/formal-ai}"
 PROMPTS="${PROMPTS:-$HERE/prompts.json}"
-OUT="${OUT:-$HERE/results.json}"
 ONLY="${ONLY:-}"
 TIMEOUT="${TIMEOUT:-300}"
+
+if [ -n "${OUT:-}" ]; then
+  OUT="$OUT"
+elif [ -n "$ONLY" ]; then
+  FILTER_SLUG="$(printf '%s' "$ONLY" | tr -c '[:alnum:]_.-' '_')"
+  OUT="$HERE/results-partial-$FILTER_SLUG.json"
+else
+  OUT="$HERE/results.json"
+fi
 
 if [ ! -x "$BIN" ]; then
   echo "formal-ai binary not found at $BIN (build with: cargo build --release)" >&2
@@ -56,12 +65,13 @@ echo "repo:    $ROOT"
 echo
 
 python3 - "$PROMPTS" "$OUT" "$ONLY" "$TIMEOUT" "$BIN" "$ROOT" <<'PY'
-import glob, json, os, re, shutil, subprocess, sys
+import glob, json, os, re, shutil, subprocess, sys, tempfile
 
 prompts_path, out_path, only, timeout_s, binary, root = sys.argv[1:7]
 timeout_s = int(timeout_s)
 data = json.load(open(prompts_path))
-tasks = [t for t in data["tasks"] if not only or only in t["id"]]
+all_tasks = data["tasks"]
+tasks = [t for t in all_tasks if not only or only in t["id"]]
 
 def reset_repo():
     """Every task starts from a clean tree so results are independent.
@@ -137,7 +147,14 @@ def summarize():
 
 def write_results():
     with open(out_path, "w") as handle:
-        json.dump({"summary": summarize(), "results": results},
+        json.dump({
+                  "measurement": {
+                      "dataset_total": len(all_tasks),
+                      "measured_total": len(tasks),
+                      "complete": not only and len(tasks) == len(all_tasks),
+                      "filter": only or None,
+                  },
+                  "summary": summarize(), "results": results},
                   handle, indent=2, ensure_ascii=False)
 for task in tasks:
     structural = ""
@@ -165,19 +182,36 @@ for task in tasks:
     # Structural sanity: a substring `verify` cannot tell real code from the
     # prompt echoed back into the file. Observed failure mode -- asked for a
     # Rust test file, the agent creates the file whose entire content is the
-    # sentence fragment "one Rust test named X asserting ...". grep for the
-    # test name then passes. Any .rs the task created must actually parse as
-    # Rust to the extent of containing a function item.
+    # sentence fragment "one Rust test named X asserting ...". Compile every
+    # requested .rs creation as a standalone library. This checks the exact
+    # bytes rather than a proxy such as the presence of an `fn` substring.
     if verified:
         for created in re.findall(r'\b((?:src|tests|scripts)/[\w./-]+\.rs)\b', task["prompt"]):
             path = os.path.join(root, created)
             if not os.path.exists(path):
                 continue
-            with open(path, "r", errors="replace") as handle:
-                body = handle.read()
-            if "fn " not in body:
+            descriptor, artifact = tempfile.mkstemp(
+                prefix="formal-ai-ladder-", suffix=".rmeta",
+            )
+            os.close(descriptor)
+            os.unlink(artifact)
+            try:
+                compiled = subprocess.run(
+                    ["rustc", "--edition=2021", "--crate-type", "lib",
+                     "--emit", "metadata", path, "-o", artifact],
+                    cwd=root, capture_output=True, text=True,
+                )
+            finally:
+                if os.path.exists(artifact):
+                    os.unlink(artifact)
+            if compiled.returncode != 0:
                 verified = False
-                structural = f"{created} has no `fn` item (prompt echoed as content?)"
+                detail = next(
+                    (line.strip() for line in compiled.stderr.splitlines()
+                     if line.strip()),
+                    "rustc rejected the generated source",
+                )
+                structural = f"{created} does not compile: {detail}"
                 break
 
     # Judge `expect_answer` against the assistant's ANSWER only. The agent CLI
@@ -257,5 +291,8 @@ for level in sorted(summarize()["by_level"]):
 if unmeasured:
     print(f"\nWARNING: {unmeasured} task(s) were NOT MEASURED -- the temporary "
           "server never started. Treat this run as incomplete.")
+if only:
+    print(f"\nPARTIAL: measured {len(tasks)}/{len(all_tasks)} tasks with "
+          f"filter {only!r}; the canonical 130-task score was not replaced.")
 print(f"\nwrote {out_path}")
 PY
