@@ -82,9 +82,9 @@ fn collection_insertion(task: &str) -> Option<CollectionInsertion> {
         .join(" ");
     let lexicon = seed::lexicon();
     if !lexicon.mentions_role(seed::ROLE_FILE_WRITE_ACTION_CUE, &normalized)
-        || !lexicon
+        || lexicon
             .first_role_match(seed::ROLE_CODING_SEARCH_SUBJECT_KIND, &normalized)
-            .is_some_and(|meaning| meaning.slug == "coding_search_array")
+            .is_none_or(|meaning| meaning.slug != "coding_search_array")
     {
         return None;
     }

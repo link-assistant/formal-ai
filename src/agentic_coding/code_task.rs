@@ -74,6 +74,8 @@ pub(super) fn plan_generated_source_step(
     ))
 }
 
+// These are seed-template placeholders, not Rust formatting arguments.
+#[allow(clippy::literal_string_with_formatting_args)]
 fn rust_source_for_task(task: &str) -> Option<GeneratedSource> {
     let normalized = task.to_lowercase();
     let lexicon = seed::lexicon();
@@ -161,6 +163,8 @@ fn render_rust_template(intent: &str, substitutions: &[(&str, &str)]) -> Option<
     ))
 }
 
+// `{path}` is replaced in seed-owned text rather than interpolated by Rust.
+#[allow(clippy::literal_string_with_formatting_args)]
 pub(super) fn render_seeded_outcome(intent: &str, task: &str, path: &str) -> Option<String> {
     let language = crate::language::detect(task).slug();
     Some(render_template(
@@ -191,7 +195,7 @@ fn rust_path(task: &str) -> Option<String> {
     .then(|| path.to_owned())
 }
 
-fn is_path_character(character: char) -> bool {
+const fn is_path_character(character: char) -> bool {
     character.is_ascii_alphanumeric() || matches!(character, '_' | '-' | '.' | '/')
 }
 
