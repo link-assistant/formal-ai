@@ -16,5 +16,5 @@ pub use extract::requirement_claim;
 pub use model::{
     AttachedEvidence, AuditConfig, AuditFinding, AuditedStatement, Claim, Contradiction,
     EvidenceCapture, EvidenceSelector, FindingKind, RepositoryAudit, RepositoryCorpus,
-    RepositoryDocument, SourceKind, SourceLocation,
+    RepositoryDocument, SourceKind, SourceLocation, StatementReference,
 };

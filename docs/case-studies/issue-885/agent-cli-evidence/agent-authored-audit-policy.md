@@ -1,0 +1,1 @@
+Repository fact checking must resolve local references before weighing evidence, cap dependent confidence by antecedent confidence, preserve the dependency as a link, and leave ambiguous claims for human review.
