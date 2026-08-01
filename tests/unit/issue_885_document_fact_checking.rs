@@ -142,3 +142,24 @@ fn a_demonstrative_determiner_is_not_mistaken_for_a_pronoun() {
     assert_eq!(statement.resolved_text, statement.text);
     assert!(statement.references.is_empty(), "{statement:#?}");
 }
+
+#[test]
+fn a_soft_wrapped_continuation_is_not_mistaken_for_a_new_reference() {
+    let result = audit(
+        "The dataset is synthetic.\nAvailability is not permission, and synthetic text inherits questions about\nits seeds and generator terms.\nHuman review is required for truth claims\nthat cannot be established from captured evidence.\n",
+        &[],
+    );
+
+    for text in [
+        "its seeds and generator terms.",
+        "that cannot be established from captured evidence.",
+    ] {
+        let statement = result
+            .statements
+            .iter()
+            .find(|statement| statement.text == text)
+            .expect("soft-wrapped continuation");
+        assert_eq!(statement.resolved_text, statement.text);
+        assert!(statement.references.is_empty(), "{statement:#?}");
+    }
+}

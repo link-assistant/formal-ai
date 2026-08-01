@@ -234,18 +234,22 @@ struct Referent {
 fn resolve_document_references(statements: &mut [ExtractedStatement]) {
     let mut document = String::new();
     let mut referent: Option<Referent> = None;
+    let mut previous_statement_complete = false;
     for statement in statements {
         if statement.location.path != document {
             document.clone_from(&statement.location.path);
             referent = None;
+            previous_statement_complete = false;
         }
         if statement.location.kind != SourceKind::Prose {
             continue;
         }
 
-        if let (Some((surface, possessive)), Some(antecedent)) =
-            (leading_reference(&statement.text), referent.as_ref())
-        {
+        let reference = leading_reference(&statement.text);
+        let resolution = previous_statement_complete
+            .then(|| reference.zip(referent.as_ref()))
+            .flatten();
+        if let Some(((surface, possessive), antecedent)) = resolution {
             let replacement = if possessive {
                 possessive_form(&antecedent.subject)
             } else {
@@ -260,13 +264,27 @@ fn resolve_document_references(statements: &mut [ExtractedStatement]) {
                 subject: antecedent.subject.clone(),
                 statement_id: statement.id.clone(),
             });
+        } else if reference.is_some() {
+            // A leading reference after an unterminated Markdown line is most
+            // likely a soft-wrapped continuation. Do not invent an antecedent,
+            // and do not let an older referent leak past the ambiguous line.
+            referent = None;
         } else if let Some(subject) = extract_subject(&statement.text) {
             referent = Some(Referent {
                 subject,
                 statement_id: statement.id.clone(),
             });
         }
+        previous_statement_complete = ends_sentence(&statement.text);
     }
+}
+
+fn ends_sentence(text: &str) -> bool {
+    text.trim_end()
+        .trim_end_matches(|character| matches!(character, '"' | '\'' | ')' | ']' | '*' | '_' | '`'))
+        .chars()
+        .next_back()
+        .is_some_and(|character| matches!(character, '.' | '!' | '?'))
 }
 
 fn leading_reference(text: &str) -> Option<(&str, bool)> {
