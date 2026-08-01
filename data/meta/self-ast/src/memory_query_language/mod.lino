@@ -2,9 +2,9 @@ self_ast_census
   target src/memory_query_language/mod.rs
   language rust
   fidelity signature
-  byte_len 22536
+  byte_len 22514
   line_count 729
-  content_id source_module_18bb1766d4263528
+  content_id source_module_e7af20e2e9e75a76
   symbol_count 49
   symbols
     module execution 30 30
