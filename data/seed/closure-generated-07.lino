@@ -1,4 +1,14 @@
 meanings
+  statement_audit_temperature_range
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit temperature range"
+  statement_audit_unknown_stance
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit unknown stance"
   statement_audit_unknown_tier
     defined-by intent
     lexeme en

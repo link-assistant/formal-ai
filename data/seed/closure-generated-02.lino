@@ -1214,6 +1214,11 @@ meanings
     lexeme en
       surface
         text "memory program permission refused"
+  memory_query_unrecognized
+    defined-by intent
+    lexeme en
+      surface
+        text "memory query unrecognized"
   memory_root_header
     defined-by field
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "orchestration correction prompt"
-  orchestration_cross_agent_denial
-    defined-by intent
-    lexeme en
-      surface
-        text "orchestration cross agent denial"

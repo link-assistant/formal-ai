@@ -1,4 +1,9 @@
 meanings
+  response_memory_program_interpreter_gap_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program interpreter gap es"
   response_memory_program_interpreter_gap_hi
     defined-by response_template
     lexeme en
@@ -89,6 +94,11 @@ meanings
     lexeme en
       surface
         text "response memory program permission refused zh"
+  response_memory_query_unrecognized_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory query unrecognized en"
   response_meta_explanation_en
     defined-by response_template
     lexeme en
@@ -1384,13 +1394,3 @@ meanings
     lexeme en
       surface
         text "statement audit strength range"
-  statement_audit_temperature_range
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit temperature range"
-  statement_audit_unknown_stance
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit unknown stance"

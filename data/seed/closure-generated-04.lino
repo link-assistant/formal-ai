@@ -1,4 +1,9 @@
 meanings
+  reserved-role
+    defined-by concept
+    lexeme en
+      surface
+        text "reserved role"
   response_agent_procedure_executed_en
     defined-by response_template
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "response general plan command output evidence en"
-  response_general_plan_command_output_evidence_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan command output evidence hi"
