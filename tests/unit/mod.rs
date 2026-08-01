@@ -97,6 +97,7 @@ mod issue_702_world_state_chat;
 mod issue_704;
 mod issue_706_any_language;
 mod issue_708_memory_program;
+mod issue_708_memory_program_contract;
 mod issue_708_memory_program_execution;
 mod issue_708_self_hosting;
 mod issue_712_routing_learning;
