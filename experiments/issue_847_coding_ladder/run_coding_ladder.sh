@@ -160,6 +160,13 @@ for task in tasks:
     structural = ""
     reset_repo()
     snapshot_branches()
+    rust_targets = re.findall(
+        r'\b((?:src|tests|scripts)/[\w./-]+\.rs)\b', task["prompt"],
+    )
+    rust_target_existed = {
+        target: os.path.exists(os.path.join(root, target))
+        for target in rust_targets
+    }
     cmd = [binary, "with", "agent", "--non-interactive", "-p", task["prompt"]]
     try:
         proc = subprocess.run(
@@ -186,9 +193,9 @@ for task in tasks:
     # requested .rs creation as a standalone library. This checks the exact
     # bytes rather than a proxy such as the presence of an `fn` substring.
     if verified:
-        for created in re.findall(r'\b((?:src|tests|scripts)/[\w./-]+\.rs)\b', task["prompt"]):
+        for created in rust_targets:
             path = os.path.join(root, created)
-            if not os.path.exists(path):
+            if rust_target_existed[created] or not os.path.exists(path):
                 continue
             descriptor, artifact = tempfile.mkstemp(
                 prefix="formal-ai-ladder-", suffix=".rmeta",

@@ -201,6 +201,7 @@ fn compiler_measurement_and_same_task_authorship_are_preserved() {
     };
     let runner = read("experiments/issue_847_coding_ladder/run_coding_ladder.sh");
     assert!(runner.contains("[\"rustc\", \"--edition=2021\""));
+    assert!(runner.contains("rust_target_existed[created]"));
     assert!(runner.contains("\"dataset_total\": len(all_tasks)"));
     assert!(runner.contains("\"complete\": not only"));
     assert!(runner.contains("results-partial-$FILTER_SLUG.json"));
