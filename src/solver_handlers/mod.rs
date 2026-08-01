@@ -47,6 +47,7 @@ pub use benchmark_prompts::{
 };
 pub use calendar::{try_calendar_create_event, try_calendar_reasoning};
 pub use compound_interest::try_compound_interest;
+pub use conversation_memory::is_exact_memory_query;
 pub use conversation_memory::{
     answer_memory_recall, execute_memory_query, execute_memory_query_with_options,
     try_conversation_memory, MemoryQueryExecution,

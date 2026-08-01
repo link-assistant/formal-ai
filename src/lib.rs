@@ -59,6 +59,7 @@ pub mod links_substitution_query;
 pub(crate) mod mcp;
 pub mod memory;
 pub mod memory_program;
+pub mod memory_query_language;
 pub mod memory_sync;
 pub mod meta_construction;
 pub(crate) mod meta_core;

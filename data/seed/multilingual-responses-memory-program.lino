@@ -1,4 +1,8 @@
 multilingual_responses
+  response response_memory_query_unrecognized_en
+    intent memory_query_unrecognized
+    language en
+    text "No natural-language, SQL, or GraphQL memory query was recognized."
   response response_memory_program_complete_en
     intent memory_program_complete
     language en

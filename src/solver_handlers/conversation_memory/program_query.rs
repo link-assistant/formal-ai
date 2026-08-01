@@ -12,6 +12,10 @@ use crate::memory_program::{
     compile_memory_program, execute_memory_program, MemoryProgramAuthorization,
     MemoryProgramCompileError, MemoryProgramHalt, MemoryProgramLimits, MemoryProgramOutcome,
 };
+use crate::memory_query_language::{
+    compile_memory_query as compile_exact_memory_query,
+    execute_memory_query as execute_exact_memory_query, QueryDialect,
+};
 use crate::seed;
 use crate::solver_handlers::finalize_simple;
 
@@ -49,6 +53,16 @@ pub fn execute_memory_query_with_options(
             answer,
             changed: false,
         });
+    }
+    if let Some(dialect) = detect_exact_memory_query(prompt) {
+        return Some(execute_exact_query(
+            prompt,
+            store,
+            limits,
+            authorization,
+            dialect,
+            &mut log,
+        ));
     }
     let program_compilation = compile_memory_program(prompt, limits);
     if let Ok(program) = &program_compilation {
@@ -119,6 +133,96 @@ pub fn execute_memory_query_with_options(
         let changed = store.record_access(&accessed) > 0;
         MemoryQueryExecution { answer, changed }
     })
+}
+
+pub fn is_exact_memory_query(prompt: &str) -> bool {
+    detect_exact_memory_query(prompt).is_some()
+}
+
+fn detect_exact_memory_query(prompt: &str) -> Option<QueryDialect> {
+    let normalized = prompt.trim().to_ascii_lowercase();
+    let sql = normalized.starts_with("select ")
+        || normalized.starts_with("insert into ")
+        || normalized.starts_with("update ")
+        || normalized.starts_with("delete from ");
+    if sql {
+        return Some(QueryDialect::SqlAnsi);
+    }
+    let graphql = normalized.contains('{')
+        && (normalized.starts_with("query")
+            || normalized.starts_with("mutation")
+            || normalized.starts_with('{'))
+        && (normalized.contains("memory")
+            || normalized.contains("creatememory")
+            || normalized.contains("updatememory")
+            || normalized.contains("deletememory"));
+    graphql.then_some(QueryDialect::GraphQl)
+}
+
+fn execute_exact_query(
+    prompt: &str,
+    store: &mut MemoryStore,
+    limits: MemoryProgramLimits,
+    authorization: MemoryProgramAuthorization,
+    dialect: QueryDialect,
+    log: &mut EventLog,
+) -> MemoryQueryExecution {
+    let query = match compile_exact_memory_query(prompt, dialect, limits) {
+        Ok(query) => query,
+        Err(error) => {
+            log.append("memory_exact_query_rejected", error.to_string());
+            let mut body = String::new();
+            crate::links_format::push_lino_node(&mut body, 0, "memory_query_error", None);
+            crate::links_format::push_lino_node(&mut body, 2, "dialect", Some(dialect.as_str()));
+            crate::links_format::push_lino_node(&mut body, 2, "message", Some(&error.to_string()));
+            return MemoryQueryExecution {
+                answer: finalize_simple(
+                    prompt,
+                    log,
+                    "memory_exact_query_rejected",
+                    "response:memory_exact_query_rejected",
+                    body.trim_end(),
+                    1.0,
+                ),
+                changed: false,
+            };
+        }
+    };
+    log.append("memory_exact_query_compiled", query.links_notation());
+    let outcome = execute_exact_memory_query(&query, store, authorization);
+    let rendered = outcome.links_notation(&query);
+    log.append("memory_exact_query_execution", rendered.clone());
+    if matches!(
+        outcome.halt,
+        MemoryProgramHalt::PermissionDenied { ref required } if required == "destructive"
+    ) {
+        log.append(
+            "policy:destructive_action_requires_confirmation",
+            prompt.to_owned(),
+        );
+    }
+    let changed = outcome.changed > 0
+        || (!outcome.matched_ids.is_empty()
+            && matches!(
+                query.plan.operation,
+                crate::memory_query_language::MemoryQueryOperation::Select
+            ));
+    let intent = if matches!(outcome.halt, MemoryProgramHalt::PermissionDenied { .. }) {
+        "memory_exact_query_refused"
+    } else {
+        "memory_exact_query"
+    };
+    MemoryQueryExecution {
+        answer: finalize_simple(
+            prompt,
+            log,
+            intent,
+            "response:memory_exact_query",
+            &rendered,
+            1.0,
+        ),
+        changed,
+    }
 }
 
 fn render_memory_program_outcome(outcome: &MemoryProgramOutcome, language: &str) -> String {

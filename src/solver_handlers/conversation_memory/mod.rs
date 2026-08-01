@@ -5,6 +5,7 @@ mod memory_write;
 mod program_query;
 use link_query::try_link_substitution_query;
 use memory_write::try_memory_write;
+pub use program_query::is_exact_memory_query;
 pub use program_query::{execute_memory_query, execute_memory_query_with_options};
 
 use super::finalize_simple;
