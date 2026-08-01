@@ -70,6 +70,16 @@ fn rust_test_request_writes_source_and_observes_it() {
 }
 
 #[test]
+fn rust_addition_test_preserves_the_requested_expression() {
+    assert_generated_source(
+        "Create a Rust test file tests/integration/ladder_probe.rs in this repository containing \
+         one Rust test named ladder_integration_probe asserting 2 plus 2 equals 4.",
+        "tests/integration/ladder_probe.rs",
+        "#[test]\nfn ladder_integration_probe() {\n    assert_eq!(2 + 2, 4);\n}\n",
+    );
+}
+
+#[test]
 fn multilingual_rust_function_requests_generate_source() {
     for (task, path, name) in [
         (
