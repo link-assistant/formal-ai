@@ -5,6 +5,10 @@ use serde_json::{Map, Value};
 
 use crate::protocol_policy::find_tool_definition;
 
+const PATCH_BEGIN: &str = "*** Begin Patch";
+const PATCH_ADD_FILE: &str = "*** Add File:";
+const PATCH_END: &str = "*** End Patch";
+
 /// Whether `tool_name` is a freeform custom tool on the Responses surface.
 #[must_use]
 pub fn is_custom_response_tool(tools: &[Value], tool_name: &str) -> bool {
@@ -42,7 +46,9 @@ fn apply_patch_input(arguments: &str) -> Option<String> {
         return None;
     }
 
-    let mut rendered = format!("*** Begin Patch\n*** Add File: {path}\n");
+    let mut rendered = String::new();
+    let _ = writeln!(rendered, "{PATCH_BEGIN}");
+    let _ = writeln!(rendered, "{PATCH_ADD_FILE} {path}");
     if content.is_empty() {
         rendered.push_str("+\n");
     } else {
@@ -50,7 +56,7 @@ fn apply_patch_input(arguments: &str) -> Option<String> {
             let _ = writeln!(rendered, "+{line}");
         }
     }
-    rendered.push_str("*** End Patch\n");
+    let _ = writeln!(rendered, "{PATCH_END}");
     Some(rendered)
 }
 
