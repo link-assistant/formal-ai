@@ -205,6 +205,26 @@ fn compiler_measurement_and_same_task_authorship_are_preserved() {
     assert!(runner.contains("\"dataset_total\": len(all_tasks)"));
     assert!(runner.contains("\"complete\": not only"));
     assert!(runner.contains("results-partial-$FILTER_SLUG.json"));
+    assert!(runner.contains("expect_from_file"));
+    assert!(runner.contains("re.MULTILINE"));
+
+    let prompts: serde_json::Value = serde_json::from_str(&read(
+        "experiments/issue_847_coding_ladder/prompts.json",
+    ))
+    .expect("coding ladder prompts are JSON");
+    for id in ["read.read_version", "lang.zh_read"] {
+        let task = prompts["tasks"]
+            .as_array()
+            .expect("task array")
+            .iter()
+            .find(|task| task["id"] == id)
+            .unwrap_or_else(|| panic!("missing task {id}"));
+        assert_eq!(task["expect_from_file"]["path"], "Cargo.toml");
+        assert!(
+            task.get("expect_answer").is_none(),
+            "{id} must not pin a release number"
+        );
+    }
 
     let invariant = read(
         "docs/case-studies/issue-848/self-hosting-authorship/coding-task-execution-invariant.lino",
