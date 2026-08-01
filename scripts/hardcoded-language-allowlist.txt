@@ -905,8 +905,6 @@ src/solver_handlers/conversation_memory/memory_write.rs	已在记忆中将\"{old
 src/solver_handlers/conversation_memory/mod.rs	Conversation summary: {summary}\n\nTitle: {title}\n\nUser turns:\n
 src/solver_handlers/conversation_memory/mod.rs	Found {} mention(s) of \"{}\" across {} conversation(s) in memory.\n
 src/solver_handlers/conversation_memory/mod.rs	Found {} mention(s) of \"{}\" in the conversation history.\n
-src/solver_handlers/conversation_memory/mod.rs	My name is {name} — that's what you named me.
-src/solver_handlers/conversation_memory/mod.rs	Nice to meet you! I'll go by {name} from now on.
 src/solver_handlers/conversation_memory/mod.rs	No mentions of \"{}\" found in memory.
 src/solver_handlers/conversation_memory/mod.rs	No mentions of \"{}\" found in the conversation history.
 src/solver_handlers/conversation_memory/mod.rs	The previous message ({role_label}) was: \"{content}\"
@@ -922,10 +920,8 @@ src/solver_handlers/conversation_memory/mod.rs	{name}{stamp}: {value}
 src/solver_handlers/conversation_memory/mod.rs	{title} ({conversation_id})
 src/solver_handlers/conversation_memory/mod.rs	В прошлом сообщении ({role_label}) было написано: \"{content}\"
 src/solver_handlers/conversation_memory/mod.rs	Вы спрашивали: \"{content}\"
-src/solver_handlers/conversation_memory/mod.rs	Меня зовут {name} — так вы меня назвали.
 src/solver_handlers/conversation_memory/mod.rs	Найдено упоминаний \"{}\" в истории разговора: {}\n
 src/solver_handlers/conversation_memory/mod.rs	Найдено упоминаний \"{}\" в памяти: {} (бесед: {}).\n
-src/solver_handlers/conversation_memory/mod.rs	Отлично, теперь меня зовут {name}. Приятно познакомиться!
 src/solver_handlers/conversation_memory/mod.rs	Прошлого сообщения пока нет.
 src/solver_handlers/conversation_memory/mod.rs	Резюме разговора: {summary}\n\nЗаголовок: {title}\n\nРеплики пользователя:\n
 src/solver_handlers/conversation_memory/mod.rs	Упоминаний \"{}\" в истории разговора не найдено.
@@ -933,17 +929,13 @@ src/solver_handlers/conversation_memory/mod.rs	Упоминаний \"{}\" в п
 src/solver_handlers/conversation_memory/mod.rs	अभी तक कोई पिछला संदेश नहीं है.
 src/solver_handlers/conversation_memory/mod.rs	आपने पूछा था: \"{content}\"
 src/solver_handlers/conversation_memory/mod.rs	पिछले संदेश ({role_label}) में लिखा था: \"{content}\"
-src/solver_handlers/conversation_memory/mod.rs	बढ़िया, अब से मेरा नाम {name} है। आपसे मिलकर अच्छा लगा!
 src/solver_handlers/conversation_memory/mod.rs	बातचीत के इतिहास में \"{}\" के उल्लेख मिले: {}\n
 src/solver_handlers/conversation_memory/mod.rs	बातचीत के इतिहास में \"{}\" नहीं मिला.
-src/solver_handlers/conversation_memory/mod.rs	मेरा नाम {name} है — यह नाम आपने मुझे दिया था.
 src/solver_handlers/conversation_memory/mod.rs	स्मृति में \"{}\" के उल्लेख मिले: {} (बातचीत: {}).\n
 src/solver_handlers/conversation_memory/mod.rs	स्मृति में \"{}\" नहीं मिला.
 src/solver_handlers/conversation_memory/mod.rs	在对话历史中找到 \"{}\" 的记录: {}\n
 src/solver_handlers/conversation_memory/mod.rs	在记忆中找到 \"{}\" 的记录: {} (对话: {})。\n
-src/solver_handlers/conversation_memory/mod.rs	好的，从现在起就叫我 {name} 吧。很高兴认识你！
 src/solver_handlers/conversation_memory/mod.rs	对话摘要:{summary}\n\n标题:{title}\n\n用户发言:\n
-src/solver_handlers/conversation_memory/mod.rs	我叫 {name}，这是你给我起的名字。
 src/solver_handlers/document_originality.rs	Recognized an originality and plagiarism check for `{target}`.
 src/solver_handlers/document_originality.rs	\"{sample}\" plagiarism originality
 src/solver_handlers/document_originality.rs	asset={} period={} source={} min={:.2} min_date={} max={:.2} max_date={}

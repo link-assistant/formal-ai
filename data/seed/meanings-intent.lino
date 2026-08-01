@@ -638,6 +638,70 @@ meanings
         text 认识一下吧
       surface
         text 让我们认识一下
+  assistant_name_assignment
+    defined-by assistant
+    role assistant_name_assignment
+    lexeme en
+      surface
+        text "your name is"
+      surface
+        text "your name shall be"
+      surface
+        text "your name will be"
+      surface
+        text "your name would be"
+      surface
+        text "your new name is"
+      surface
+        text "let your name be"
+      surface
+        text "you are named"
+      surface
+        text "you're named"
+      surface
+        text "you are called"
+      surface
+        text "you're called"
+      surface
+        text "i'll call you"
+      surface
+        text "i will call you"
+      surface
+        text "i'll name you"
+      surface
+        text "i will name you"
+      surface
+        text "i name you"
+      surface
+        text "i'll refer to you as"
+    lexeme ru
+      surface
+        text "тебя зовут"
+      surface
+        text "твоё имя"
+      surface
+        text "твое имя"
+    lexeme hi
+      surface
+        text "तुम्हारा नाम"
+      surface
+        text "आपका नाम"
+    lexeme zh
+      surface
+        text 你叫
+      surface
+        text 你的名字是
+      surface
+        text 您叫
+      surface
+        text 您的名字是
+    lexeme es
+      surface
+        text "tu nombre es"
+      surface
+        text "te llamaré"
+      surface
+        text "te voy a llamar"
   conversation_summary_directive
     defined-by inquiry
     defined-by answer
@@ -929,3 +993,98 @@ meanings
         text 如何
       surface
         text 哪个
+  set_assistant_name
+    defined-by intent
+    lexeme en
+      surface
+        text "set assistant name intent"
+  assistant_name_recall
+    defined-by intent
+    lexeme en
+      surface
+        text "assistant name recall intent"
+  ambiguous_modification_clarification
+    defined-by intent
+    lexeme en
+      surface
+        text "ambiguous modification clarification intent"
+  response_set_assistant_name_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response set assistant name en"
+  response_set_assistant_name_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response set assistant name ru"
+  response_set_assistant_name_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response set assistant name hi"
+  response_set_assistant_name_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response set assistant name zh"
+  response_set_assistant_name_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response set assistant name es"
+  response_assistant_name_recall_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant name recall en"
+  response_assistant_name_recall_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant name recall ru"
+  response_assistant_name_recall_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant name recall hi"
+  response_assistant_name_recall_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant name recall zh"
+  response_assistant_name_recall_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant name recall es"
+  response_ambiguous_modification_clarification_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response ambiguous modification clarification en"
+  response_ambiguous_modification_clarification_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response ambiguous modification clarification ru"
+  response_ambiguous_modification_clarification_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response ambiguous modification clarification hi"
+  response_ambiguous_modification_clarification_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response ambiguous modification clarification zh"
+  response_ambiguous_modification_clarification_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response ambiguous modification clarification es"
+  response_assistant_free_time_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant free time es"

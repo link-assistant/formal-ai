@@ -10,6 +10,7 @@ use super::finalize_simple;
 use crate::coding::contains_cjk;
 use crate::engine::{normalize_prompt, SymbolicAnswer};
 use crate::event_log::EventLog;
+use crate::intent_formalization::formalize_intent;
 use crate::language::detect as detect_language;
 use crate::link_store::memory_events_to_link_records;
 use crate::memory::{MemoryEvent, MemoryStore};
@@ -212,7 +213,7 @@ fn try_recall_name(prompt: &str, normalized: &str, log: &mut EventLog) -> Option
 /// static `assistant_name` answer ("…you can name me as you like") still applies.
 fn try_assistant_name(
     prompt: &str,
-    normalized: &str,
+    _normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     let language = detect_language(prompt).slug();
@@ -230,14 +231,8 @@ fn try_assistant_name(
         ));
     }
     // Otherwise, an explicit "what is your name" recalls a previously set name.
-    let asks_name = normalized.contains("what is your name")
-        || normalized.contains("what's your name")
-        || normalized.contains("what s your name")
-        || normalized.contains("whats your name")
-        || normalized.contains("tell me your name")
-        || normalized.contains("do you have a name")
-        || normalized.contains("what should i call you")
-        || normalized.contains("what do i call you");
+    let asks_name =
+        formalize_intent(prompt, language, None).route.as_deref() == Some("assistant_name");
     if !asks_name {
         return None;
     }
@@ -256,22 +251,16 @@ fn try_assistant_name(
 
 /// Warm acknowledgement of a freshly assigned assistant name.
 fn render_assistant_name_ack(name: &str, language: &str) -> String {
-    match language {
-        "ru" => format!("Отлично, теперь меня зовут {name}. Приятно познакомиться!"),
-        "zh" => format!("好的，从现在起就叫我 {name} 吧。很高兴认识你！"),
-        "hi" => format!("बढ़िया, अब से मेरा नाम {name} है। आपसे मिलकर अच्छा लगा!"),
-        _ => format!("Nice to meet you! I'll go by {name} from now on."),
-    }
+    seed::localized_response("set_assistant_name", language)
+        .unwrap_or_default()
+        .replace(concat!("{", "name", "}"), name)
 }
 
 /// Recall a previously assigned assistant name.
 fn render_assistant_name_recall(name: &str, language: &str) -> String {
-    match language {
-        "ru" => format!("Меня зовут {name} — так вы меня назвали."),
-        "zh" => format!("我叫 {name}，这是你给我起的名字。"),
-        "hi" => format!("मेरा नाम {name} है — यह नाम आपने मुझे दिया था."),
-        _ => format!("My name is {name} — that's what you named me."),
-    }
+    seed::localized_response("assistant_name_recall", language)
+        .unwrap_or_default()
+        .replace(concat!("{", "name", "}"), name)
 }
 
 fn try_recall_last_question(

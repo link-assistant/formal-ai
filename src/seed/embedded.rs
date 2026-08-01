@@ -16,6 +16,8 @@ pub const INTERFACE_CAPABILITIES_LINO: &str =
     include_str!("../../data/seed/interface-capabilities.lino");
 pub const MULTILINGUAL_RESPONSES_LINO: &str =
     include_str!("../../data/seed/multilingual-responses.lino");
+pub const MULTILINGUAL_RESPONSES_ISSUE_710_LINO: &str =
+    include_str!("../../data/seed/multilingual-responses-issue-710.lino");
 pub const MULTILINGUAL_RESPONSES_LANGUAGE_PROTOCOL_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-language-protocol.lino");
 pub const MULTILINGUAL_RESPONSES_ENTITIES_LINO: &str =
@@ -175,6 +177,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         (
             "data/seed/multilingual-responses.lino",
             MULTILINGUAL_RESPONSES_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-issue-710.lino",
+            MULTILINGUAL_RESPONSES_ISSUE_710_LINO,
         ),
         (
             "data/seed/multilingual-responses-language-protocol.lino",
@@ -429,6 +435,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
 /// them, so an intent may live in whichever file keeps the sizes balanced.
 pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_LINO,
+    MULTILINGUAL_RESPONSES_ISSUE_710_LINO,
     MULTILINGUAL_RESPONSES_LANGUAGE_PROTOCOL_LINO,
     MULTILINGUAL_RESPONSES_ENTITIES_LINO,
     MULTILINGUAL_RESPONSES_SYNTHESIS_LINO,

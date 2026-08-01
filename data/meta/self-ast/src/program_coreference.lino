@@ -2,9 +2,10 @@ self_ast_census
   target src/program_coreference.rs
   language rust
   fidelity signature
-  byte_len 1243
-  line_count 22
-  content_id source_module_0a7619805d84aa4a
-  symbol_count 1
+  byte_len 1744
+  line_count 34
+  content_id source_module_74565881912420ce
+  symbol_count 2
   symbols
-    function looks_like_bare_program_artifact_follow_up 18 22
+    function looks_like_bare_program_artifact_follow_up 20 24
+    function looks_like_ambiguous_program_modification 29 34

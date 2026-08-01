@@ -119,10 +119,27 @@ pub fn record_decomposition(
         return Vec::new();
     }
 
+    // Multiple explicit questions are independently actionable even when the
+    // whole prompt happens to match the first one. Previously that whole-prompt
+    // match (for example, `capabilities`) suppressed decomposition and silently
+    // discarded every following question. Mixed sentences keep their existing
+    // whole-prompt semantics: "Hello. Prove ..." is one proof request, and a
+    // greeting followed by an identity question remains an identity request.
+    let independent_parts = independent_actionable_segments(prompt);
+    if independent_parts.len() > 1
+        && independent_parts.iter().all(|part| {
+            part.trim_end()
+                .chars()
+                .next_back()
+                .is_some_and(|ch| matches!(ch, '?' | '？'))
+        })
+    {
+        return record_sub_impulses(log, independent_parts, true);
+    }
+
     let language = detect_language(prompt);
     let whole_intent = formalize_intent(prompt, language.slug(), None);
     if whole_intent.route.is_none() || whole_intent.kind == IntentKind::Courtesy {
-        let independent_parts = independent_actionable_segments(prompt);
         if independent_parts.len() > 1 {
             return record_sub_impulses(log, independent_parts, true);
         }
@@ -392,37 +409,20 @@ pub fn extract_introduced_name(prompt: &str) -> Option<String> {
     extract_name_after_needles(prompt, &needles)
 }
 
-/// Assistant-name-setting phrasings (issue #676). Each needle pins the *assistant*
-/// as the subject being (re)named — "your name is", "I'll call you", "you are
-/// called" — so a declarative rename like "Now your name is Ineffa" is recognised
-/// while questions ("what is your name") and user self-introductions are left alone.
-const ASSISTANT_NAME_NEEDLES: [&str; 16] = [
-    "your name is",
-    "your name shall be",
-    "your name will be",
-    "your name would be",
-    "your new name is",
-    "let your name be",
-    "you are named",
-    "you're named",
-    "you are called",
-    "you're called",
-    "i'll call you",
-    "i will call you",
-    "i'll name you",
-    "i will name you",
-    "i name you",
-    "i'll refer to you as",
-];
-
 /// Extract a name the user assigns to the *assistant* from a single prompt.
 ///
-/// Mirrors [`extract_introduced_name`] but keys off assistant-directed needles so
-/// "Now your name is Ineffa" yields `Ineffa`. Returns `None` for questions and for
-/// user self-introductions, keeping the two name paths from colliding.
+/// Mirrors [`extract_introduced_name`] but reads assistant-directed cues from the
+/// meaning lexicon, so adding another language remains a seed-data change. Returns
+/// `None` for questions and user self-introductions, keeping the paths distinct.
 #[must_use]
 pub fn extract_assistant_name(prompt: &str) -> Option<String> {
-    extract_name_after_needles(prompt, &ASSISTANT_NAME_NEEDLES)
+    if prompt.trim_end().ends_with(['?', '？']) {
+        return None;
+    }
+    let needles =
+        crate::seed::lexicon().words_for_role(crate::seed::ROLE_ASSISTANT_NAME_ASSIGNMENT);
+    let needle_refs = needles.iter().map(String::as_str).collect::<Vec<_>>();
+    extract_name_after_needles(prompt, &needle_refs)
 }
 
 /// Shared token scan: find the first non-empty word following any needle and clean
