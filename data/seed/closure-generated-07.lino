@@ -1,4 +1,19 @@
 meanings
+  task_decomposition_lead
+    defined-by intent
+    lexeme en
+      surface
+        text "task decomposition lead"
+  task_first_step_lead
+    defined-by intent
+    lexeme en
+      surface
+        text "task first step lead"
+  task_plan_stage_implementation
+    defined-by intent
+    lexeme en
+      surface
+        text "task plan stage implementation"
   task_plan_stage_regression
     defined-by intent
     lexeme en

@@ -739,6 +739,11 @@ meanings
     lexeme en
       surface
         text "response coding workspace effect observed en"
+  response_coding_workspace_effect_observed_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace effect observed es"
   response_coding_workspace_effect_observed_hi
     defined-by response_template
     lexeme en
@@ -759,6 +764,11 @@ meanings
     lexeme en
       surface
         text "response coding workspace verification failed en"
+  response_coding_workspace_verification_failed_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace verification failed es"
   response_coding_workspace_verification_failed_hi
     defined-by response_template
     lexeme en
@@ -779,6 +789,11 @@ meanings
     lexeme en
       surface
         text "response coding workspace written unverified en"
+  response_coding_workspace_written_unverified_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace written unverified es"
   response_coding_workspace_written_unverified_hi
     defined-by response_template
     lexeme en
@@ -1379,18 +1394,3 @@ meanings
     lexeme en
       surface
         text "response farewell zh"
-  response_general_plan_command_capture_action_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan command capture action en"
-  response_general_plan_command_capture_action_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan command capture action hi"
-  response_general_plan_command_capture_action_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan command capture action ru"

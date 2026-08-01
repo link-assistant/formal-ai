@@ -1,4 +1,19 @@
 meanings
+  response_orchestration_cross_agent_denial_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response orchestration cross agent denial zh"
+  response_physical_action_question_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response physical action question en"
+  response_physical_action_question_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response physical action question hi"
   response_physical_action_question_ru
     defined-by response_template
     lexeme en
@@ -1379,18 +1394,3 @@ meanings
     lexeme en
       surface
         text "task decomposition depth marker"
-  task_decomposition_lead
-    defined-by intent
-    lexeme en
-      surface
-        text "task decomposition lead"
-  task_first_step_lead
-    defined-by intent
-    lexeme en
-      surface
-        text "task first step lead"
-  task_plan_stage_implementation
-    defined-by intent
-    lexeme en
-      surface
-        text "task plan stage implementation"

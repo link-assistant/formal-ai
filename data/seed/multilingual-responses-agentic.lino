@@ -999,6 +999,10 @@ multilingual_responses
     intent coding_workspace_effect_observed
     language zh
     text "已通过工作区工具创建或更新并验证 `{path}`。"
+  response response_coding_workspace_effect_observed_es
+    intent coding_workspace_effect_observed
+    language es
+    text "Se creó o actualizó `{path}` y se comprobó mediante las herramientas del espacio de trabajo."
   response response_coding_workspace_written_unverified_en
     intent coding_workspace_written_unverified
     language en
@@ -1015,6 +1019,10 @@ multilingual_responses
     intent coding_workspace_written_unverified
     language zh
     text "已通过工作区文件工具创建 `{path}`，但未进行回读验证。"
+  response response_coding_workspace_written_unverified_es
+    intent coding_workspace_written_unverified
+    language es
+    text "Se creó `{path}` mediante las herramientas de archivos del espacio de trabajo, sin verificación de lectura."
   response response_coding_workspace_verification_failed_en
     intent coding_workspace_verification_failed
     language en
@@ -1031,3 +1039,7 @@ multilingual_responses
     intent coding_workspace_verification_failed
     language zh
     text "`{path}` 验证失败：读取的字节与计划的工作区更改不同。"
+  response response_coding_workspace_verification_failed_es
+    intent coding_workspace_verification_failed
+    language es
+    text "La verificación de `{path}` falló: los bytes observados difieren del cambio planificado en el espacio de trabajo."

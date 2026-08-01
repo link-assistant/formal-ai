@@ -111,6 +111,11 @@ fn multilingual_rust_function_requests_generate_source() {
 
 #[test]
 fn coding_source_templates_and_outcomes_are_seed_grounded() {
+    struct LanguageExpectation {
+        language: &'static str,
+        name: &'static str,
+    }
+
     for intent in [
         "coding_source_function_division",
         "coding_source_function_return",
@@ -128,10 +133,33 @@ fn coding_source_templates_and_outcomes_are_seed_grounded() {
         "coding_workspace_written_unverified",
         "coding_workspace_verification_failed",
     ] {
-        for language in ["en", "ru", "hi", "zh", "es"] {
+        for expectation in [
+            LanguageExpectation {
+                language: "en",
+                name: "English",
+            },
+            LanguageExpectation {
+                language: "ru",
+                name: "Russian",
+            },
+            LanguageExpectation {
+                language: "hi",
+                name: "Hindi",
+            },
+            LanguageExpectation {
+                language: "zh",
+                name: "Chinese",
+            },
+            LanguageExpectation {
+                language: "es",
+                name: "Spanish",
+            },
+        ] {
             assert!(
-                formal_ai::seed::response_for(intent, language).is_some(),
-                "missing {language} response for {intent}"
+                formal_ai::seed::response_for(intent, expectation.language).is_some(),
+                "missing {} ({}) response for {intent}",
+                expectation.name,
+                expectation.language,
             );
         }
     }

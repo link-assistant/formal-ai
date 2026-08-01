@@ -1,4 +1,19 @@
 meanings
+  response_general_plan_command_capture_action_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan command capture action en"
+  response_general_plan_command_capture_action_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan command capture action hi"
+  response_general_plan_command_capture_action_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan command capture action ru"
   response_general_plan_command_capture_action_zh
     defined-by response_template
     lexeme en
@@ -1379,18 +1394,3 @@ meanings
     lexeme en
       surface
         text "response orchestration cross agent denial ru"
-  response_orchestration_cross_agent_denial_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response orchestration cross agent denial zh"
-  response_physical_action_question_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response physical action question en"
-  response_physical_action_question_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response physical action question hi"
