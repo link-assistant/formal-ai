@@ -139,10 +139,10 @@ pub fn record_decomposition(
 
     let language = detect_language(prompt);
     let whole_intent = formalize_intent(prompt, language.slug(), None);
-    if whole_intent.route.is_none() || whole_intent.kind == IntentKind::Courtesy {
-        if independent_parts.len() > 1 {
-            return record_sub_impulses(log, independent_parts, true);
-        }
+    if (whole_intent.route.is_none() || whole_intent.kind == IntentKind::Courtesy)
+        && independent_parts.len() > 1
+    {
+        return record_sub_impulses(log, independent_parts, true);
     }
 
     let lower = prompt.to_lowercase();
