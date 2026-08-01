@@ -1,4 +1,9 @@
 meanings
+  path_argument
+    defined-by operation
+    lexeme en
+      surface
+        text "path argument"
   path_argument_list_files
     defined-by rule
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "response agent procedure verification failed hi"
-  response_agent_procedure_verification_failed_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure verification failed ru"

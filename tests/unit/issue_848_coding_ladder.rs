@@ -116,6 +116,7 @@ fn coding_source_templates_and_outcomes_are_seed_grounded() {
         "coding_source_function_return",
         "coding_source_string_constant",
         "coding_source_equality_test",
+        "coding_source_binary_operation_test",
     ] {
         assert!(
             formal_ai::seed::response_for(intent, "rust").is_some(),

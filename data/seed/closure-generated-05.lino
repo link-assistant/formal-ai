@@ -1,4 +1,14 @@
 meanings
+  response_general_plan_command_capture_action_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan command capture action zh"
+  response_general_plan_command_output_evidence_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan command output evidence en"
   response_general_plan_command_output_evidence_hi
     defined-by response_template
     lexeme en
@@ -1384,13 +1394,3 @@ meanings
     lexeme en
       surface
         text "response physical action question hi"
-  response_physical_action_question_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response physical action question ru"
-  response_physical_action_question_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response physical action question zh"

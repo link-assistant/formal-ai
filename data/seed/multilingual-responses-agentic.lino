@@ -979,6 +979,10 @@ multilingual_responses
     intent coding_source_equality_test
     language rust
     text "#[test]\nfn {name}() {\n    assert_eq!({left}, {right});\n}\n"
+  response response_coding_source_binary_operation_test_rust
+    intent coding_source_binary_operation_test
+    language rust
+    text "#[test]\nfn {name}() {\n    assert_eq!({left} {operator} {right}, {expected});\n}\n"
   response response_coding_workspace_effect_observed_en
     intent coding_workspace_effect_observed
     language en

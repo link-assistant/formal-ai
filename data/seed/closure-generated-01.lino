@@ -624,6 +624,11 @@ meanings
     lexeme en
       surface
         text "code request"
+  coding_source_binary_operation_test
+    defined-by intent
+    lexeme en
+      surface
+        text "coding source binary operation test"
   coding_source_equality_test
     defined-by intent
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "extract url"
-  fabricated
-    defined-by word_surface
-    lexeme en
-      surface
-        text "fabricated"

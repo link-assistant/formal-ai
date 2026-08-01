@@ -99,7 +99,8 @@ fn rust_source_for_task(task: &str) -> Option<GeneratedSource> {
         return None;
     };
     let name = requested_identifier(task, &path, kind)?;
-    let numbers = numeric_literals(task);
+    let task_without_path = task.replacen(&path, "", 1);
+    let numbers = numeric_literals(&task_without_path);
     let public = lexicon.mentions_role(seed::ROLE_CODING_VISIBILITY, &normalized);
 
     let content = match kind {
@@ -147,10 +148,32 @@ fn rust_source_for_task(task: &str) -> Option<GeneratedSource> {
         RustItemKind::Test => {
             let left = numbers.first()?;
             let right = numbers.get(1)?;
-            render_rust_template(
-                "coding_source_equality_test",
-                &[("{name}", &name), ("{left}", left), ("{right}", right)],
-            )?
+            if let (Some(expected), Some(operator)) = (
+                numbers.get(2),
+                lexicon
+                    .first_role_match(seed::ROLE_ARITHMETIC_OPERATOR_WORD, &normalized)
+                    .and_then(|meaning| {
+                        meaning
+                            .words()
+                            .find(|surface| !surface.chars().any(char::is_alphabetic))
+                    }),
+            ) {
+                render_rust_template(
+                    "coding_source_binary_operation_test",
+                    &[
+                        ("{name}", &name),
+                        ("{left}", left),
+                        ("{operator}", operator),
+                        ("{right}", right),
+                        ("{expected}", expected),
+                    ],
+                )?
+            } else {
+                render_rust_template(
+                    "coding_source_equality_test",
+                    &[("{name}", &name), ("{left}", left), ("{right}", right)],
+                )?
+            }
         }
     };
     Some(GeneratedSource { path, content })

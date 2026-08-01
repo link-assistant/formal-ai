@@ -1,4 +1,9 @@
 meanings
+  response_agent_procedure_verification_failed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verification failed ru"
   response_agent_procedure_verification_failed_zh
     defined-by response_template
     lexeme en
@@ -704,6 +709,11 @@ meanings
     lexeme en
       surface
         text "response client integration invalid typed json setting zh"
+  response_coding_source_binary_operation_test_rust
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding source binary operation test rust"
   response_coding_source_equality_test_rust
     defined-by response_template
     lexeme en
@@ -1384,13 +1394,3 @@ meanings
     lexeme en
       surface
         text "response general plan command capture action ru"
-  response_general_plan_command_capture_action_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan command capture action zh"
-  response_general_plan_command_output_evidence_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan command output evidence en"
