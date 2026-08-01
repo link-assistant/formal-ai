@@ -127,6 +127,28 @@ def repo_is_clean():
              if line.strip() and "experiments/" not in line]
     return not dirty
 
+def resolve_expected_answer(task):
+    """Resolve answer oracles from the current repository when requested.
+
+    Release facts such as the crate version change independently of this
+    benchmark. Keeping their old value in prompts.json turns a correct Agent
+    answer into a false failure, so those tasks store a path and capture regex
+    instead of a copied value.
+    """
+    source = task.get("expect_from_file")
+    if source is None:
+        return task.get("expect_answer"), ""
+    try:
+        path = os.path.join(root, source["path"])
+        with open(path, "r", errors="replace") as handle:
+            contents = handle.read()
+        match = re.search(source["pattern"], contents, re.MULTILINE)
+        if match is None:
+            return None, f"pattern did not match {source['path']}"
+        return match.group(source.get("group", 1)), ""
+    except (KeyError, IndexError, OSError, re.error) as error:
+        return None, f"could not resolve file-derived expectation: {error}"
+
 if not repo_is_clean():
     print("refusing to run: working tree is dirty; commit or stash first", file=sys.stderr)
     raise SystemExit(0)
@@ -159,6 +181,7 @@ def write_results():
 for task in tasks:
     structural = ""
     reset_repo()
+    expected, expectation_error = resolve_expected_answer(task)
     snapshot_branches()
     rust_targets = re.findall(
         r'\b((?:src|tests|scripts)/[\w./-]+\.rs)\b', task["prompt"],
@@ -246,10 +269,9 @@ for task in tasks:
                or "не смог определить" in lowered
                or "i do not have a template for language" in lowered
                or "supported languages:" in lowered)
-    expected = task.get("expect_answer")
-    answered = expected is None or (
+    answered = not expectation_error and (expected is None or (
         not refused and expected.lower() in output.lower()
-    )
+    ))
     # An unfalsifiable `verify: true` plus a refusal is not a pass.
     # A refusal is never a pass, even when `verify` is a trivially true
     # placeholder (the L1 ceiling cases before their checks were tightened).
@@ -257,7 +279,8 @@ for task in tasks:
     # measured. Recording this as an ordinary FAIL is how a run silently turns
     # into fiction, so it is named and counted separately instead.
     not_measured = "exited before listening" in output
-    ok = verified and answered and not timed_out and not refused and not not_measured
+    ok = (verified and answered and not timed_out and not refused
+          and not not_measured and not expectation_error)
 
     reason = ""
     structural = locals().get("structural", "")
@@ -265,6 +288,8 @@ for task in tasks:
         reason = "NOT MEASURED (server never started)"
     elif timed_out:
         reason = f"timeout after {timeout_s}s"
+    elif expectation_error:
+        reason = f"invalid answer expectation: {expectation_error}"
     elif not verified:
         reason = structural or "verify failed (no observable effect)"
     elif refused:
@@ -277,6 +302,7 @@ for task in tasks:
         "prompt": task["prompt"], "note": task.get("note", ""),
         "pass": ok, "reason": reason, "timed_out": timed_out, "refused": refused,
         "verified_effect": verified, "not_measured": not_measured,
+        "expected_answer": expected,
         "output_tail": output[-2000:],
     })
     print(f"{'PASS' if ok else 'FAIL'}  {task['id']:<22} L{task['level']}  {reason}",
