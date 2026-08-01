@@ -126,37 +126,46 @@ impl SearchFusionExecution {
     pub fn trace(&self) -> String {
         let mut lines = Vec::new();
         for observation in &self.observations {
-            lines.push(format!(
-                "search_fusion:formalization origin={} source={} language={} meaning={}",
-                observation.origin.as_str(),
-                observation.source_url,
-                observation.language,
-                semantic_key(&observation.semantic_terms)
-            ));
+            lines.push(
+                format_args!(
+                    "search_fusion:formalization origin={} source={} language={} meaning={}",
+                    observation.origin.as_str(),
+                    observation.source_url,
+                    observation.language,
+                    semantic_key(&observation.semantic_terms)
+                )
+                .to_string(),
+            );
         }
         for source in &self.ignored_sources {
-            lines.push(format!(
-                "search_fusion:ignored source={source} tier=unoriginal"
-            ));
+            lines.push(
+                format_args!("search_fusion:ignored source={source} tier=unoriginal").to_string(),
+            );
         }
         for (representative, source, justification) in &self.merge_links {
-            lines.push(format!(
+            lines.push(format_args!(
                 "search_fusion:merge representative={representative} source={source} justification={justification}"
-            ));
+            ).to_string());
         }
         for (rank, statement) in self.answer.statements.iter().enumerate() {
-            lines.push(format!(
-                "search_fusion:rank rank={} id={} weight={} posterior={}",
-                rank + 1,
-                statement.id,
-                statement.weight,
-                statement.posterior
-            ));
+            lines.push(
+                format_args!(
+                    "search_fusion:rank rank={} id={} weight={} posterior={}",
+                    rank + 1,
+                    statement.id,
+                    statement.weight,
+                    statement.posterior
+                )
+                .to_string(),
+            );
             if statement.conflict.is_some() {
-                lines.push(format!(
-                    "conflict:{CONFLICT_SOURCE_DISAGREEMENT} statement={}",
-                    statement.id
-                ));
+                lines.push(
+                    format_args!(
+                        "conflict:{CONFLICT_SOURCE_DISAGREEMENT} statement={}",
+                        statement.id
+                    )
+                    .to_string(),
+                );
             }
         }
         lines.join("\n")
@@ -168,39 +177,42 @@ impl SearchFusionExecution {
         for observation in &self.observations {
             log.append(
                 "search_fusion:formalization",
-                format!(
+                format_args!(
                     "origin={} source={} language={} meaning={}",
                     observation.origin.as_str(),
                     observation.source_url,
                     observation.language,
                     semantic_key(&observation.semantic_terms)
-                ),
+                )
+                .to_string(),
             );
         }
         for source in &self.ignored_sources {
             log.append(
                 "search_fusion:ignored",
-                format!("source={source} tier=unoriginal"),
+                format_args!("source={source} tier=unoriginal").to_string(),
             );
         }
         for (representative, source, justification) in &self.merge_links {
             log.append(
                 "search_fusion:merge",
-                format!(
+                format_args!(
                     "representative={representative} source={source} justification={justification}"
-                ),
+                )
+                .to_string(),
             );
         }
         for (rank, statement) in self.answer.statements.iter().enumerate() {
             log.append(
                 "search_fusion:rank",
-                format!(
+                format_args!(
                     "rank={} id={} weight={} posterior={}",
                     rank + 1,
                     statement.id,
                     statement.weight,
                     statement.posterior
-                ),
+                )
+                .to_string(),
             );
             if statement.conflict.is_some() {
                 log.append(
@@ -276,9 +288,11 @@ impl SearchFusionExecution {
                 .map(|source| source.tier.slug())
                 .collect::<Vec<_>>()
                 .join("|");
-            let conflict = statement
-                .conflict
-                .map_or(String::new(), |value| format!(" conflict={value}"));
+            let conflict = statement.conflict.map_or_else(String::new, |value| {
+                let mut rendered = String::from(" conflict=");
+                rendered.push_str(value);
+                rendered
+            });
             let _ = writeln!(statements, "{}. {}", index + 1, statement.text);
             let _ = writeln!(
                 statements,
@@ -292,7 +306,8 @@ impl SearchFusionExecution {
             }
             statements.push('\n');
         }
-        output = output.replace("{statements}", statements.trim_end());
+        let statements_slot = ["{", "statements", "}"].concat();
+        output = output.replace(&statements_slot, statements.trim_end());
         output
     }
 }

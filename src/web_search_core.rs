@@ -443,7 +443,7 @@ pub fn execute_duckduckgo_search<T: crate::source_fetch::SourceTransport>(
         .filter(|value| !value.is_empty())
     {
         if let Some(first) = rankings.first_mut() {
-            first.title = heading.to_owned();
+            heading.clone_into(&mut first.title);
         }
     }
     let fused = reciprocal_rank_fusion(&rankings, WEB_SEARCH_RRF_K);

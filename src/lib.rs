@@ -139,6 +139,7 @@ pub mod translation;
 pub(crate) mod unknown_opener;
 pub mod web_engine_core;
 pub mod web_search_core;
+pub mod web_search_fusion_core;
 pub mod world_model;
 pub mod world_model_atoms;
 pub mod world_model_context;

@@ -11,7 +11,7 @@ issue_709_reviewed_decomposition
     evidence "src/search_fusion.rs"
   leaf "project normalized provenance in browser and Telegram surfaces"
     author codex
-    evidence "src/web/worker/formal_ai_worker_22.js"
+    evidence "src/web_search_fusion_core.rs"
   leaf "pin deterministic cached multilingual and conflict acceptance fixtures"
     author codex
     evidence "tests/unit/issue_709_search_fusion.rs"

@@ -63,6 +63,10 @@ multilingual_responses
     intent search_fusion_header
     language zh
     text "已为 `{query}` 将 {sources} 个已捕获来源融合为 {count} 条陈述：\n\n{statements}"
+  response response_search_fusion_header_es
+    intent search_fusion_header
+    language es
+    text "Se fusionaron {count} afirmaciones de {sources} fuentes capturadas para `{query}`:\n\n{statements}"
   response response_search_fusion_read_more_en
     intent search_fusion_read_more
     language en
@@ -79,6 +83,10 @@ multilingual_responses
     intent search_fusion_read_more
     language zh
     text "阅读更多"
+  response response_search_fusion_read_more_es
+    intent search_fusion_read_more
+    language es
+    text "Leer más"
   response response_agentic_action_list_desktop_en
     intent agentic_action_list_desktop
     language en

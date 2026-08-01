@@ -25,6 +25,9 @@ mod web_engine_core;
 #[path = "../../../web_search_core.rs"]
 mod web_search_core;
 
+#[path = "../../../web_search_fusion_core.rs"]
+mod web_search_fusion_core;
+
 use web_engine_core::{
     assess_arithmetic_claim, detect_language, evaluate_arithmetic_expression,
     matches_intent_route_payload, normalize_prompt, select_unknown_opener, stable_id,
@@ -35,6 +38,7 @@ use web_search_core::{
     serialize_rrf_output, WEB_SEARCH_CONCURRENCY_PER_CATEGORY, WEB_SEARCH_PROVIDER_LIMIT,
     WEB_SEARCH_PROVIDER_REGISTRY, WEB_SEARCH_RRF_K,
 };
+use web_search_fusion_core::fuse_statement_search_payload;
 
 const GREETING: u32 = 1;
 const WRITE_PROGRAM: u32 = 2;
@@ -323,6 +327,23 @@ pub extern "C" fn web_search_fuse(input_length: usize) -> usize {
     let entries = parse_rrf_input(text);
     let fused = reciprocal_rank_fusion(&entries, WEB_SEARCH_RRF_K);
     let serialized = serialize_rrf_output(&fused);
+    write_output(serialized.as_bytes())
+}
+
+/// Formalize, merge, rank, and render captured search excerpts as statements.
+#[no_mangle]
+pub extern "C" fn web_search_statement_fusion(input_length: usize) -> usize {
+    reset_bump();
+    let bytes = unsafe {
+        core::slice::from_raw_parts(
+            core::ptr::addr_of!(INPUT).cast::<u8>(),
+            min(input_length, INPUT_CAPACITY),
+        )
+    };
+    let Ok(text) = core::str::from_utf8(bytes) else {
+        return 0;
+    };
+    let serialized = fuse_statement_search_payload(text);
     write_output(serialized.as_bytes())
 }
 

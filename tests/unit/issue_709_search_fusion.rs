@@ -4,6 +4,8 @@ use std::fs;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 
+use formal_ai::seed;
+use formal_ai::web_search_fusion_core::fuse_statement_search_payload;
 use formal_ai::{
     execute_search_fusion, telegram_html_from_markdown, try_web_search_with_client,
     CachedSourceClient, EventLog, FetchError, SearchSourceClassification, SourceTier,
@@ -11,6 +13,109 @@ use formal_ai::{
 };
 
 static TEMP_IDS: AtomicUsize = AtomicUsize::new(0);
+
+#[test]
+fn browser_wasm_core_deformalizes_and_preserves_exact_provenance() {
+    let payload = concat!(
+        "Q\tapple taxonomy\ten\tRead more\tvia\n",
+        "S\thttps://foreign.invalid/apple\tRussian handbook\t",
+        "Яблоко это фрукт.\toriginal_first_party\tru\tduckduckgo#1"
+    );
+    let fused: serde_json::Value = serde_json::from_str(&fuse_statement_search_payload(payload))
+        .expect("valid WASM fusion JSON");
+
+    assert_eq!(fused["statements"][0]["text"], "Apple is a fruit.");
+    assert_eq!(
+        fused["statements"][0]["sources"][0]["quote"],
+        "Яблоко это фрукт."
+    );
+    assert_eq!(
+        fused["statements"][0]["sources"][0]["tier"],
+        "original_first_party"
+    );
+    let evidence = fused["evidence"].as_array().expect("evidence array");
+    assert!(evidence.iter().any(|value| value
+        .as_str()
+        .is_some_and(|line| line.contains("wikidata:Q89"))));
+    assert!(fused["lines"]
+        .as_array()
+        .expect("Markdown lines")
+        .iter()
+        .any(|value| value
+            .as_str()
+            .is_some_and(|line| line.contains("[Read more](https://foreign.invalid/apple)"))));
+}
+
+#[test]
+fn browser_wasm_core_keeps_both_ranked_conflict_sides() {
+    let payload = concat!(
+        "Q\tparser speed\ten\tRead more\tvia\n",
+        "S\thttps://speed.invalid/official\tOfficial\tThe parser is fast.",
+        "\toriginal_first_party\ten\tduckduckgo#1\n",
+        "S\thttps://speed.invalid/lab\tLab\tThe parser is not fast.",
+        "\tindependent_corroboration\ten\tduckduckgo#2"
+    );
+    let fused: serde_json::Value = serde_json::from_str(&fuse_statement_search_payload(payload))
+        .expect("valid WASM fusion JSON");
+    let statements = fused["statements"].as_array().expect("statements array");
+
+    assert_eq!(statements.len(), 2);
+    assert!(statements
+        .iter()
+        .all(|statement| statement["conflict"] == true));
+    assert!(statements
+        .iter()
+        .any(|statement| statement["text"] == "The parser is fast."));
+    assert!(statements
+        .iter()
+        .any(|statement| statement["text"] == "The parser is not fast."));
+}
+
+#[test]
+fn localized_search_fusion_labels_cover_every_supported_language() {
+    struct LanguageCase {
+        language: &'static str,
+        header: &'static str,
+        read_more: &'static str,
+    }
+
+    let cases = [
+        LanguageCase {
+            language: "en",
+            header: "Fused",
+            read_more: "Read more",
+        },
+        LanguageCase {
+            language: "ru",
+            header: "Объединено",
+            read_more: "Читать дальше",
+        },
+        LanguageCase {
+            language: "hi",
+            header: "एकीकृत",
+            read_more: "और पढ़ें",
+        },
+        LanguageCase {
+            language: "zh",
+            header: "融合",
+            read_more: "阅读更多",
+        },
+        LanguageCase {
+            language: "es",
+            header: "fusionaron",
+            read_more: "Leer más",
+        },
+    ];
+
+    for case in cases {
+        let header = seed::localized_response("search_fusion_header", case.language)
+            .expect("localized fusion header");
+        let read_more = seed::localized_response("search_fusion_read_more", case.language)
+            .expect("localized read-more label");
+        assert!(header.contains(case.header), "{} header", case.language);
+        assert_eq!(read_more, case.read_more, "{} read more", case.language);
+    }
+}
 
 #[derive(Clone, Default)]
 struct FixtureTransport {

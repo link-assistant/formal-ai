@@ -36,9 +36,10 @@ the browser worker the equivalent data-driven cross-language operation.
 
 CLI and HTTP call this Rust operation directly. Telegram converts the same
 Markdown links, code spans, and quoted fragments to its safe HTML subset. The
-classic web worker mirrors the formalize/merge/rank projection because it runs
-without the Rust host; it consumes the same seed meaning anchors, function
-words, negation cues, and source-tier slugs.
+browser sends its captured excerpts through an 18-line transport bridge to
+`web_search_fusion_core`, compiled into the existing Rust→WASM worker. That
+core consumes the same seed meaning anchors, function words, negation cues,
+and source-tier slugs; no second JavaScript solver owns the projection.
 
 ![A Russian-only source deformalized into an English ranked statement](../../screenshots/issue-709-search-fusion.png)
 
@@ -49,10 +50,9 @@ The pre-fix reproduction is captured by the initial failing build in
 acceptance suite with:
 
 ```console
-cargo test --test unit issue_709_search_fusion
-NODE_PATH=/home/box/.nvm/versions/node/v20.20.2/lib/node_modules \
-  npx playwright test -c tests/e2e/playwright.local.config.js \
-  tests/e2e/tests/issue-709.spec.js
+cargo test --test unit issue_709
+cd tests/e2e
+npx playwright test --config=playwright.local.config.js tests/issue-709.spec.js
 ```
 
 The Rust fixture has three sources: an original English claim, independent

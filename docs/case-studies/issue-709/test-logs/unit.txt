@@ -1,15 +1,18 @@
    Compiling formal-ai v0.317.0 (/tmp/gh-issue-solver-1785569511543)
-    Finished `test` profile [unoptimized] target(s) in 1m 10s
+    Finished `test` profile [unoptimized] target(s) in 1m 08s
      Running tests/unit/mod.rs (target/debug/deps/unit-cafea3e7a6f3853a)
 
-running 8 tests
+running 11 tests
+test docs_requirements_issue_709::web_and_telegram_acceptance_evidence_is_committed ... ok
 test docs_requirements_issue_709::every_issue_709_requirement_maps_to_a_regression_test_that_exists ... ok
 test docs_requirements_issue_709::case_study_release_and_agent_authorship_evidence_are_committed ... ok
-test docs_requirements_issue_709::web_and_telegram_acceptance_evidence_is_committed ... ok
+test issue_709_search_fusion::browser_wasm_core_keeps_both_ranked_conflict_sides ... ok
+test issue_709_search_fusion::browser_wasm_core_deformalizes_and_preserves_exact_provenance ... ok
 test issue_709_search_fusion::decisive_foreign_language_fact_is_deformalized_in_the_query_language ... ok
 test issue_709_search_fusion::contradictory_sources_keep_both_sides_with_tiers_and_posteriors ... ok
 test issue_709_search_fusion::presentation_normalizes_source_url_title_quote_and_read_more ... ok
 test issue_709_search_fusion::cli_http_and_telegram_use_the_same_ranked_source_contract ... ok
+test issue_709_search_fusion::localized_search_fusion_labels_cover_every_supported_language ... ok
 test issue_709_search_fusion::cached_sources_are_formalized_merged_ranked_and_replayed_deterministically ... ok
 
-test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 2289 filtered out; finished in 0.46s
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 2289 filtered out; finished in 0.39s
