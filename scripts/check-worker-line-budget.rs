@@ -51,9 +51,10 @@ const TARGET_TOTAL_LINES: usize = 3_000;
 /// Issue #708's seeded memory-program compiler and bounded interpreter must
 /// execute against IndexedDB in the browser too. Its complete closed primitive
 /// set adds the reviewed worker mirror rather than leaving the website on the
-/// legacy single-substitution path, raising the ratchet to the count below.
+/// legacy single-substitution path, raising the ratchet to 27,635. Executable
+/// map projections add the source/collection copy links, raising it by 8 lines.
 #[cfg(not(test))]
-const CEILING_TOTAL_LINES: usize = 27_635;
+const CEILING_TOTAL_LINES: usize = 27_643;
 
 const WORKER_DIR: &str = "src/web/worker";
 

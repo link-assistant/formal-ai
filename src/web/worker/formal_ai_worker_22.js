@@ -346,7 +346,7 @@ function memoryProgramUpdate(events, selection, arguments_) {
   return changed;
 }
 
-function memoryProgramAppendDerived(events, kind, identity, target, content) {
+function memoryProgramAppendDerived(events, kind, identity, target, output, content) {
   const marker = `memory_program_result:${stableBehaviorRuleId("memory_program_result", identity)}`;
   if (events.some((event) => event?.evidence?.includes(marker))) return 0;
   events.push({
@@ -354,6 +354,7 @@ function memoryProgramAppendDerived(events, kind, identity, target, content) {
     role: "system",
     intent: "memory_program",
     inputs: target || undefined,
+    outputs: output || undefined,
     content,
     sentAt: new Date().toISOString(),
     evidence: ["memory_program", marker],
@@ -362,19 +363,33 @@ function memoryProgramAppendDerived(events, kind, identity, target, content) {
   return 1;
 }
 
-function memoryProgramCreate(events, selection, arguments_) {
+function memoryProgramCreate(events, selection, projection, arguments_) {
   const kind = arguments_.kind || "memory_program_result";
-  if (["topic_summary", "contributor_summary"].includes(kind)) {
+  if (projection.aggregate === "count") {
     const counts = {};
     for (const index of selection) {
       const event = events[index] || {};
-      const group = kind === "topic_summary"
+      const group = projection.group === "topic"
         ? event.intent || "unclassified"
-        : event.role || "unknown";
+        : projection.group === "contributor" ? event.role || "unknown" : "unknown";
       counts[group] = (counts[group] || 0) + 1;
     }
     const content = Object.keys(counts).sort().map((key) => `${key}=${counts[key]}`).join(", ");
-    return memoryProgramAppendDerived(events, kind, `${kind}:${content}`, null, content);
+    return memoryProgramAppendDerived(events, kind, `${kind}:${content}`, null, null, content);
+  }
+  if (projection.copy === "true") {
+    return selection.reduce((changed, index) => {
+      const event = events[index] || {};
+      const target = memoryProgramSourceId(event, index);
+      return changed + memoryProgramAppendDerived(
+        events,
+        "collection_member",
+        `collection_member:${arguments_.collection || ""}:${target}`,
+        target,
+        arguments_.collection,
+        String(event.content || memoryProgramEventText(event)),
+      );
+    }, 0);
   }
   const targets = selection.map((index) => memoryProgramSourceId(events[index], index));
   return targets.reduce(
@@ -383,6 +398,7 @@ function memoryProgramCreate(events, selection, arguments_) {
       kind,
       `${kind}:${target}`,
       target,
+      null,
       `memory_program_result:${kind}:${target}`,
     ),
     0,
@@ -439,6 +455,7 @@ function executeMemoryProgramForWorker(program, sourceEvents, destructiveConfirm
   );
   const bound = bounded ? program.limits.maxIterations : 1;
   let selection = [];
+  let projection = {};
   let matched = 0;
   let changed = 0;
   const matchedEventIds = new Set();
@@ -452,6 +469,7 @@ function executeMemoryProgramForWorker(program, sourceEvents, destructiveConfirm
         selection = memoryProgramActiveIndices(events).filter((index) =>
           memoryProgramEventMatches(events[index], step.arguments),
         );
+        projection = {};
         matched = Math.max(matched, selection.length);
         if (selection.length > program.limits.maxMatches) {
           return {
@@ -473,11 +491,11 @@ function executeMemoryProgramForWorker(program, sourceEvents, destructiveConfirm
       if (step.primitive === "filter") {
         selection = memoryProgramFilter(events, selection, step.arguments);
       } else if (step.primitive === "map_matches") {
-        // The map records the projection consumed by the following effect.
+        projection = { ...step.arguments };
       } else if (step.primitive === "update") {
         changed += memoryProgramUpdate(events, selection, step.arguments);
       } else if (step.primitive === "create") {
-        changed += memoryProgramCreate(events, selection, step.arguments);
+        changed += memoryProgramCreate(events, selection, projection, step.arguments);
       } else if (step.primitive === "delete_with_retraction") {
         changed += memoryProgramRetract(events, selection, step.arguments);
       } else {

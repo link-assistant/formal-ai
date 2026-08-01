@@ -99,6 +99,7 @@ fn push_trace_token(out: &mut String, name: &str, value: &str) {
 
 struct InterpreterState {
     selection: Vec<usize>,
+    projection: BTreeMap<String, String>,
     matched: usize,
     changed: usize,
     matched_event_ids: BTreeSet<String>,
@@ -135,6 +136,7 @@ pub fn execute_memory_program(
     };
     let mut state = InterpreterState {
         selection: Vec::new(),
+        projection: BTreeMap::new(),
         matched: 0,
         changed: 0,
         matched_event_ids: BTreeSet::new(),
@@ -151,6 +153,7 @@ pub fn execute_memory_program(
             }
             if step.primitive == "match" {
                 state.selection = matched_indices(store, &step.arguments);
+                state.projection.clear();
                 state.matched = state.matched.max(state.selection.len());
                 if state.selection.len() > program.limits.max_matches {
                     return outcome(
@@ -168,7 +171,7 @@ pub fn execute_memory_program(
                 remember_matches(store, &state.selection, &mut state.matched_event_ids);
                 continue;
             }
-            match execute_step(step, store, &mut state.selection) {
+            match execute_step(step, store, &mut state.selection, &mut state.projection) {
                 Some(changed) => state.changed += changed,
                 None => {
                     return outcome(
@@ -257,14 +260,18 @@ fn execute_step(
     step: &MemoryProgramStep,
     store: &mut MemoryStore,
     selection: &mut Vec<usize>,
+    projection: &mut BTreeMap<String, String>,
 ) -> Option<usize> {
     match step.primitive.as_str() {
         "filter" => {
             filter_selection(store, selection, &step.arguments);
             Some(0)
         }
-        "map_matches" => Some(0),
-        "create" => Some(create_events(store, selection, &step.arguments)),
+        "map_matches" => {
+            projection.clone_from(&step.arguments);
+            Some(0)
+        }
+        "create" => Some(create_events(store, selection, projection, &step.arguments)),
         "update" => Some(update_events(store, selection, &step.arguments)),
         "delete_with_retraction" => Some(append_retractions(
             store,
@@ -341,24 +348,24 @@ fn filter_selection(
 fn create_events(
     store: &mut MemoryStore,
     selection: &[usize],
+    projection: &BTreeMap<String, String>,
     arguments: &BTreeMap<String, String>,
 ) -> usize {
     let kind = arguments
         .get("kind")
         .map_or("memory_program_result", String::as_str);
-    if matches!(kind, "topic_summary" | "contributor_summary") {
-        let group_field = if kind == "topic_summary" {
-            "topic"
-        } else {
-            "contributor"
-        };
+    if projection
+        .get("aggregate")
+        .is_some_and(|aggregate| aggregate == "count")
+    {
+        let group_field = projection.get("group").map_or("topic", String::as_str);
         let mut counts = BTreeMap::<String, usize>::new();
         for &index in selection {
             let event = &store.events()[index];
-            let group = if group_field == "topic" {
-                event.intent.as_deref().unwrap_or("unclassified")
-            } else {
-                event.role.as_deref().unwrap_or("unknown")
+            let group = match group_field {
+                "topic" => event.intent.as_deref().unwrap_or("unclassified"),
+                "contributor" => event.role.as_deref().unwrap_or("unknown"),
+                _ => "unknown",
             };
             *counts.entry(group.to_owned()).or_default() += 1;
         }
@@ -372,8 +379,42 @@ fn create_events(
             kind,
             &format!("{kind}:{content}"),
             None,
+            None,
             &content,
         ));
+    }
+
+    if projection.get("copy").is_some_and(|copy| copy == "true") {
+        let collection = arguments.get("collection").map(String::as_str);
+        let copies = selection
+            .iter()
+            .map(|&index| {
+                let event = &store.events()[index];
+                (
+                    source_id(event, index),
+                    event
+                        .content
+                        .clone()
+                        .unwrap_or_else(|| event_text(event).to_owned()),
+                )
+            })
+            .collect::<Vec<_>>();
+        return copies
+            .into_iter()
+            .filter(|(target, content)| {
+                append_derived_event(
+                    store,
+                    "collection_member",
+                    &format!(
+                        "collection_member:{}:{target}",
+                        collection.unwrap_or_default()
+                    ),
+                    Some(target),
+                    collection,
+                    content,
+                )
+            })
+            .count();
     }
 
     let targets = selection
@@ -388,6 +429,7 @@ fn create_events(
                 kind,
                 &format!("{kind}:{target}"),
                 Some(target),
+                None,
                 &format!("memory_program_result:{kind}:{target}"),
             )
         })
@@ -399,6 +441,7 @@ fn append_derived_event(
     kind: &str,
     identity: &str,
     target: Option<&str>,
+    output: Option<&str>,
     content: &str,
 ) -> bool {
     let id = stable_id("memory_program_result", identity);
@@ -409,6 +452,7 @@ fn append_derived_event(
         id,
         kind: Some(kind.to_owned()),
         inputs: target.map(ToOwned::to_owned),
+        outputs: output.map(ToOwned::to_owned),
         content: Some(content.to_owned()),
         sent_at: Some(isoformat_now()),
         evidence: vec![String::from("memory_program")],

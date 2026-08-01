@@ -195,6 +195,34 @@ fn topic_counts_and_missing_labels_create_deduplicated_links() {
 }
 
 #[test]
+fn mapped_copy_retains_source_content_and_collection() {
+    let mut store = MemoryStore::from_events(vec![event(
+        "engine-fact",
+        "fact",
+        "user",
+        "engines need fuel",
+    )]);
+    let program = compile_memory_program(
+        "Copy every fact about engines to collection research.",
+        LIMITS,
+    )
+    .expect("seeded family");
+
+    let outcome = execute_memory_program(&program, &mut store, MemoryProgramAuthorization::Write);
+
+    assert_eq!(outcome.halt, MemoryProgramHalt::Complete);
+    assert_eq!(outcome.changed, 1);
+    let copied = store
+        .events()
+        .iter()
+        .find(|event| event.kind.as_deref() == Some("collection_member"))
+        .expect("mapped copy");
+    assert_eq!(copied.content.as_deref(), Some("engines need fuel"));
+    assert_eq!(copied.inputs.as_deref(), Some("engine-fact"));
+    assert_eq!(copied.outputs.as_deref(), Some("research"));
+}
+
+#[test]
 fn bounds_stop_honestly_before_partial_writes() {
     let limits = MemoryProgramLimits {
         max_matches: 1,

@@ -131,6 +131,16 @@ test('browser programs store summaries, refuse destructive effects, and name gap
     );
   })).toBe(true);
 
+  await sendPrompt(page, 'Copy every fact about engines to collection research.');
+  await expect.poll(async () => page.evaluate(async () => {
+    const events = await window.FormalAiMemory.listEvents();
+    return events.some(
+      (event) => event.kind === 'collection_member'
+        && event.content === 'engines need fuel'
+        && event.outputs === 'research',
+    );
+  })).toBe(true);
+
   const refused = await sendPrompt(
     page,
     'Delete every fact I contributed about engines.',
