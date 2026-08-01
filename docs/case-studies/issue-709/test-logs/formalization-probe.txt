@@ -61,4 +61,3 @@ formalization_candidate
   object_wiktionary "wiktionary:zh:一种水果"
   object_score "560"
   object_source "fallback:wiktionary-surface"
-
