@@ -21,6 +21,8 @@ roles
     kind predicate
   assistant_mechanism_inquiry
     kind meaning
+  assistant_name_assignment
+    kind meaning
   assistant_self_reference
     kind meaning
   behavior_rule_edit_directive
@@ -369,6 +371,8 @@ roles
     kind predicate
   program_modification
     kind predicate
+  program_modification_reference
+    kind meaning
   program_request
     kind predicate
   program_synthesis

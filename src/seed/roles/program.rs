@@ -11,6 +11,12 @@ pub const ROLE_PROGRAM_ARTIFACT: &str = "program_artifact";
 /// Semantic role: an operation a follow-up turn can request against the active
 /// program (sort, reverse, cancel, change, …) — additive or subtractive.
 pub const ROLE_PROGRAM_MODIFICATION: &str = "program_modification";
+/// Semantic role: a pronoun whose modification target must come from dialog
+/// history (it, that, это, इसे, 它, …).
+///
+/// A target-less modification uses this role to ask one focused clarification
+/// instead of returning `unknown`.
+pub const ROLE_PROGRAM_MODIFICATION_REFERENCE: &str = "program_modification_reference";
 /// Semantic role: a kind of program artifact a user can ask to be authored
 /// (a program, a script, code, a function). The noun side of "write a `<kind>`".
 pub const ROLE_PROGRAM_KIND: &str = "program_kind";

@@ -22,6 +22,7 @@
     "seed/agent-info.lino",
     "seed/interface-capabilities.lino",
     "seed/multilingual-responses.lino",
+    "seed/multilingual-responses-issue-710.lino",
     "seed/multilingual-responses-language-protocol.lino",
     "seed/multilingual-responses-entities.lino",
     "seed/multilingual-responses-synthesis.lino",
@@ -1120,6 +1121,78 @@
     return seed;
   }
 
+  // Shared deterministic helpers used by both the browser worker and local
+  // parity probes. Keeping them beside the seed parser avoids duplicating
+  // data-projection mechanics in the legacy worker shards.
+  function stableResponseVariant(entry, prompt) {
+    var variants = Array.isArray(entry.variants) ? entry.variants : [];
+    if (variants.length <= 1) return entry.text;
+    var bytes = new TextEncoder().encode(String(prompt || "").trim());
+    var hash = 0xcbf29ce484222325n;
+    for (var i = 0; i < bytes.length; i += 1) {
+      hash = (hash ^ BigInt(bytes[i])) * 0x100000001b3n & 0xffffffffffffffffn;
+    }
+    return variants[Number(hash % BigInt(variants.length))] || entry.text;
+  }
+
+  function assistantNameAfterCue(text, cues) {
+    var source = String(text || "").trim();
+    if (/[?？]$/.test(source)) return null;
+    var folded = source.toLocaleLowerCase();
+    for (var i = 0; i < cues.length; i += 1) {
+      var cue = String(cues[i]);
+      var index = folded.indexOf(cue.toLocaleLowerCase());
+      if (index === -1) continue;
+      var match = /^([\p{L}\p{M}][\p{L}\p{M}\p{N}'-]*)/u.exec(
+        source.slice(index + cue.length).trimStart(),
+      );
+      if (match) return match[1];
+    }
+    return null;
+  }
+
+  function independentQuestionSegments(prompt) {
+    var characters = Array.from(String(prompt || ""));
+    var segments = [];
+    var current = "";
+    for (var i = 0; i < characters.length; i += 1) {
+      var character = characters[i];
+      var next = characters[i + 1];
+      current += character;
+      var decimal = character === "." && /\d/.test(characters[i - 1] || "") && /\d/.test(next || "");
+      var period = character === "." && !decimal && (next === undefined || /\s/.test(next));
+      if (/[?!。！？；;]/u.test(character) || period) {
+        if (current.trim()) segments.push(current.trim());
+        current = "";
+      }
+    }
+    if (current.trim()) segments.push(current.trim());
+    return segments.length > 1 ? segments.slice(0, 6) : [];
+  }
+
+  async function solveIndependentQuestions(prompt, history, preferences, userContext, memory, options, solveOne) {
+    if (options && options.compoundSubsolve) return null;
+    var segments = independentQuestionSegments(prompt);
+    if (segments.length < 2) return null;
+    if (!segments.every(function (segment) { return /[?？]$/u.test(segment.trim()); })) return null;
+    var results = [];
+    for (var i = 0; i < segments.length; i += 1) {
+      var childOptions = Object.assign({}, options || {}, { compoundSubsolve: true });
+      var result = await solveOne(segments[i], history, preferences, userContext, memory, childOptions);
+      if (!result || result.intent === "unknown" || result.intent === "clarification") return null;
+      results.push(result);
+    }
+    return {
+      intent: "compound_response",
+      content: results.map(function (result) { return result.content; }).join("\n\n"),
+      confidence: Math.min.apply(null, results.map(function (result) { return Number(result.confidence) || 0.1; })),
+      evidence: ["composition:compound_response"]
+        .concat(segments.map(function (segment) { return "sub_impulse:" + segment; }))
+        .concat(results.map(function (result) { return "sub_intent:" + result.intent; })),
+      toolCalls: results.reduce(function (all, result) { return all.concat(result.toolCalls || []); }, []),
+    };
+  }
+
   global.FormalAiSeed = {
     parse: parseLino,
     loadAll: loadAll,
@@ -1140,6 +1213,10 @@
     extractTools: extractTools,
     extractIntentRouting: extractIntentRouting,
     extractEnvironmentDirectory: extractEnvironmentDirectory,
+    stableResponseVariant: stableResponseVariant,
+    assistantNameAfterCue: assistantNameAfterCue,
+    independentQuestionSegments: independentQuestionSegments,
+    solveIndependentQuestions: solveIndependentQuestions,
     DEFAULT_FILES: DEFAULT_FILES,
     isWorker: isWorker(),
   };

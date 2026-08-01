@@ -1,20 +1,4 @@
 multilingual_responses
-  response response_client_integration_invalid_typed_json_setting_en
-    intent client_integration_invalid_typed_json_setting
-    language en
-    text "invalid typed JSON setting `{rendered}`: {error}"
-  response response_client_integration_invalid_typed_json_setting_ru
-    intent client_integration_invalid_typed_json_setting
-    language ru
-    text "недопустимая типизированная настройка JSON `{rendered}`: {error}"
-  response response_client_integration_invalid_typed_json_setting_hi
-    intent client_integration_invalid_typed_json_setting
-    language hi
-    text "अमान्य टाइप की गई JSON सेटिंग `{rendered}`: {error}"
-  response response_client_integration_invalid_typed_json_setting_zh
-    intent client_integration_invalid_typed_json_setting
-    language zh
-    text "无效的带类型 JSON 设置 `{rendered}`：{error}"
   response response_agentic_report_target_question_en
     intent agentic_report_target_question
     language en
@@ -307,6 +291,13 @@ multilingual_responses
     follow_up_variant 接下来您想做什么?
     follow_up_variant 您想讨论别的事情吗?
     follow_up_variant 还有什么需要我帮忙的吗?
+  response response_assistant_free_time_es
+    intent assistant_free_time
+    language es
+    text "No tengo tiempo libre como una persona. Entre consultas permanezco inactivo; cuando el diálogo está activo, ayudo con tareas, reglas y explicaciones."
+    variant "No tengo tiempo libre como una persona. Entre consultas permanezco inactivo; cuando el diálogo está activo, ayudo con tareas, reglas y explicaciones."
+    variant "Cuando nadie me utiliza, no hago nada en segundo plano. Cuando escribes, me concentro en ayudarte con la tarea actual."
+    variant "Mi tiempo tranquilo es básicamente un estado de espera. En un diálogo activo ayudo a razonar, escribir código, revisar reglas y organizar información."
   response response_assistant_free_time_en
     intent assistant_free_time
     language en

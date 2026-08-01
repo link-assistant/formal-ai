@@ -417,7 +417,7 @@ function extractAssistantNameCommand(text, normalized) {
   for (const pattern of patterns) {
     const match = raw.match(pattern);
     if (!match) continue;
-    const value = normalizeAssistantName(match[1]);
+    const value = normalizeAssistantName(match[1].replace(/[.!?。！？]+$/u, ""));
     if (!value) continue;
     return {
       kind: "set_preference",

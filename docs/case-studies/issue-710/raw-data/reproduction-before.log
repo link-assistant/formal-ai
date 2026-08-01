@@ -1,0 +1,15 @@
+   Compiling formal-ai v0.317.0
+    Finished `test` profile [unoptimized] target(s)
+     Running tests/unit/mod.rs
+
+running 4 tests
+independent_questions_are_answered_in_source_order_in_every_language ... FAILED
+  en got intent capabilities; expected compound_response
+assistant_name_can_be_set_and_recalled_in_every_language ... FAILED
+  ru got intent unknown; expected set_assistant_name
+ambiguous_modifications_ask_exactly_one_question_in_every_language ... FAILED
+  en got intent unknown; expected ambiguous_modification_clarification
+free_time_answers_are_prompt_stable_but_not_one_canned_reply ... FAILED
+  en exposed one unique response; expected multiple deterministic variants
+
+test result: FAILED. 0 passed; 4 failed; 0 ignored; 2289 filtered out
