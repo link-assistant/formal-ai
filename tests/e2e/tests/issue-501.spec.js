@@ -71,28 +71,23 @@ test.describe('Issue #501 install how-to prompts', () => {
     await bootManualMode(page);
   });
 
-  test('routes install requests to official-docs-first procedural discovery', async ({
-    page,
-  }) => {
-    for (const testCase of CASES) {
-      await test.step(testCase.language, async () => {
-        const { assistantMessage, body } = await sendPrompt(page, testCase.prompt);
+  for (const testCase of CASES) {
+    test(`routes ${testCase.language} install requests to official-docs-first discovery`, async ({
+      page,
+    }) => {
+      const { assistantMessage, body } = await sendPrompt(page, testCase.prompt);
 
-        await expect(assistantMessage.locator('.intent')).toContainText(
-          'intent:procedural_how_to',
-        );
-        await expect(body).toContainText(testCase.task);
-        await expect(body).toContainText(testCase.officialMarker);
-        await expect(assistantMessage).toContainText(
-          'procedural_how_to:source_gate:official_documentation_first',
-        );
-        await expect(assistantMessage).toContainText(
-          'web_search:request:cursor install official documentation',
-        );
-      });
-
-      await page.reload();
-      await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
-    }
-  });
+      await expect(assistantMessage.locator('.intent')).toContainText(
+        'intent:procedural_how_to',
+      );
+      await expect(body).toContainText(testCase.task);
+      await expect(body).toContainText(testCase.officialMarker);
+      await expect(assistantMessage).toContainText(
+        'procedural_how_to:source_gate:official_documentation_first',
+      );
+      await expect(assistantMessage).toContainText(
+        'web_search:request:cursor install official documentation',
+      );
+    });
+  }
 });
