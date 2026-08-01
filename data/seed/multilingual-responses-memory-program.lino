@@ -1,0 +1,113 @@
+multilingual_responses
+  response response_memory_program_complete_en
+    intent memory_program_complete
+    language en
+    text "Memory program {program} matched {matched} event(s), changed {changed}, and stopped at {halt} after {iterations} iteration(s)."
+  response response_memory_program_complete_ru
+    intent memory_program_complete
+    language ru
+    text "Программа памяти {program} сопоставила событий: {matched}, изменила: {changed} и остановилась с результатом {halt} после итераций: {iterations}."
+  response response_memory_program_complete_hi
+    intent memory_program_complete
+    language hi
+    text "स्मृति प्रोग्राम {program} ने {matched} घटनाओं का मिलान किया, {changed} को बदला और {iterations} पुनरावृत्तियों के बाद {halt} पर रुका।"
+  response response_memory_program_complete_zh
+    intent memory_program_complete
+    language zh
+    text "记忆程序 {program} 匹配了 {matched} 个事件，更改了 {changed} 个，并在 {iterations} 次迭代后以 {halt} 停止。"
+  response response_memory_program_match_limit_en
+    intent memory_program_match_limit
+    language en
+    text "Memory program stopped without a partial write: {matched} matches exceed max_matches {max_matches}."
+  response response_memory_program_match_limit_ru
+    intent memory_program_match_limit
+    language ru
+    text "Программа памяти остановлена без частичной записи: совпадений {matched}, что превышает max_matches {max_matches}."
+  response response_memory_program_match_limit_hi
+    intent memory_program_match_limit
+    language hi
+    text "स्मृति प्रोग्राम आंशिक लेखन के बिना रुक गया: {matched} मिलान max_matches {max_matches} से अधिक हैं।"
+  response response_memory_program_match_limit_zh
+    intent memory_program_match_limit
+    language zh
+    text "记忆程序在未进行部分写入的情况下停止：{matched} 个匹配超过 max_matches {max_matches}。"
+  response response_memory_program_iteration_limit_en
+    intent memory_program_iteration_limit
+    language en
+    text "Memory program stopped honestly after reaching max_iterations {max_iterations}; it did not claim a fixpoint."
+  response response_memory_program_iteration_limit_ru
+    intent memory_program_iteration_limit
+    language ru
+    text "Программа памяти явно остановилась по достижении max_iterations {max_iterations}; достижение неподвижной точки не заявлено."
+  response response_memory_program_iteration_limit_hi
+    intent memory_program_iteration_limit
+    language hi
+    text "स्मृति प्रोग्राम max_iterations {max_iterations} पर स्पष्ट रूप से रुक गया; इसने स्थिर बिंदु मिलने का दावा नहीं किया।"
+  response response_memory_program_iteration_limit_zh
+    intent memory_program_iteration_limit
+    language zh
+    text "记忆程序在达到 max_iterations {max_iterations} 后明确停止；它没有声称已达到不动点。"
+  response response_memory_program_destructive_refused_en
+    intent memory_program_destructive_refused
+    language en
+    text "Destructive memory actions require explicit human confirmation. No memory event was erased or retracted."
+  response response_memory_program_destructive_refused_ru
+    intent memory_program_destructive_refused
+    language ru
+    text "Разрушающие действия с памятью требуют явного подтверждения человека. Ни одно событие памяти не удалено и не отозвано."
+  response response_memory_program_destructive_refused_hi
+    intent memory_program_destructive_refused
+    language hi
+    text "विनाशकारी स्मृति कार्रवाइयों के लिए स्पष्ट मानवीय पुष्टि आवश्यक है। कोई स्मृति घटना मिटाई या वापस नहीं ली गई।"
+  response response_memory_program_destructive_refused_zh
+    intent memory_program_destructive_refused
+    language zh
+    text "破坏性记忆操作需要人工明确确认。没有擦除或撤回任何记忆事件。"
+  response response_memory_program_permission_refused_en
+    intent memory_program_permission_refused
+    language en
+    text "Memory program requires explicit {required} permission; no change was applied."
+  response response_memory_program_permission_refused_ru
+    intent memory_program_permission_refused
+    language ru
+    text "Программа памяти требует явного разрешения {required}; изменения не применены."
+  response response_memory_program_permission_refused_hi
+    intent memory_program_permission_refused
+    language hi
+    text "स्मृति प्रोग्राम को स्पष्ट {required} अनुमति चाहिए; कोई परिवर्तन लागू नहीं किया गया।"
+  response response_memory_program_permission_refused_zh
+    intent memory_program_permission_refused
+    language zh
+    text "记忆程序需要明确的 {required} 权限；未应用任何更改。"
+  response response_memory_program_interpreter_gap_en
+    intent memory_program_interpreter_gap
+    language en
+    text "program_gap: no interpreter semantics exist for primitive {primitive}."
+  response response_memory_program_interpreter_gap_ru
+    intent memory_program_interpreter_gap
+    language ru
+    text "program_gap: для примитива {primitive} нет семантики интерпретатора."
+  response response_memory_program_interpreter_gap_hi
+    intent memory_program_interpreter_gap
+    language hi
+    text "program_gap: प्रिमिटिव {primitive} के लिए इंटरप्रेटर अर्थविज्ञान उपलब्ध नहीं है।"
+  response response_memory_program_interpreter_gap_zh
+    intent memory_program_interpreter_gap
+    language zh
+    text "program_gap：原语 {primitive} 没有解释器语义。"
+  response response_memory_program_compilation_gap_en
+    intent memory_program_compilation_gap
+    language en
+    text "I could not compile this memory request without dropping a step. {gap}"
+  response response_memory_program_compilation_gap_ru
+    intent memory_program_compilation_gap
+    language ru
+    text "Не удалось скомпилировать этот запрос к памяти, не потеряв шаг. {gap}"
+  response response_memory_program_compilation_gap_hi
+    intent memory_program_compilation_gap
+    language hi
+    text "किसी चरण को छोड़े बिना इस स्मृति अनुरोध को संकलित नहीं किया जा सका। {gap}"
+  response response_memory_program_compilation_gap_zh
+    intent memory_program_compilation_gap
+    language zh
+    text "无法在不丢弃步骤的情况下编译此记忆请求。{gap}"

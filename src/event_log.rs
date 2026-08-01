@@ -661,6 +661,9 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             // Issue #674: the named gap is the evidence, so it travels in the link
             // rather than being reduced to an opaque event id.
             "skill_gap" => format!("skill_gap:{}", event.payload.replace(' ', "_")),
+            "program_gap" => format!("program_gap:{}", event.payload.replace(' ', "_")),
+            "memory_program_compiled" => format!("memory_program_compiled:{}", event.id),
+            "memory_program_execution" => format!("memory_program_execution:{}", event.id),
             "skill_learning_proposal" => {
                 format!("skill_learning_proposal:{}", event.payload)
             }

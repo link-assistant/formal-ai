@@ -58,6 +58,7 @@ pub mod links_query;
 pub mod links_substitution_query;
 pub(crate) mod mcp;
 pub mod memory;
+pub mod memory_program;
 pub mod memory_sync;
 pub mod meta_construction;
 pub(crate) mod meta_core;
@@ -348,7 +349,8 @@ pub use solver::{
     ExecutionSurface, SolverConfig, UniversalSolver,
 };
 pub use solver_handlers::{
-    answer_memory_recall, execute_memory_query, try_web_search_with_client, MemoryQueryExecution,
+    answer_memory_recall, execute_memory_query, execute_memory_query_with_options,
+    try_web_search_with_client, MemoryQueryExecution,
 };
 pub use solver_helpers::humanize_url;
 pub use source_fetch::{

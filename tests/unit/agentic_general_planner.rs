@@ -201,9 +201,8 @@ fn general_task_preserves_exact_multiline_lino_payload() {
 #[test]
 fn literal_file_marker_owns_payload_that_contains_an_edit_phrase() {
     let payload = "prefix rename X to Y suffix";
-    let task = format!(
-        "Create file issue_708_memory_program.rs with exactly this content:\n{payload}"
-    );
+    let task =
+        format!("Create file issue_708_memory_program.rs with exactly this content:\n{payload}");
 
     let plan = compose_general_change_plan(&task).expect("literal file plan");
     assert_eq!(plan.content, payload);
