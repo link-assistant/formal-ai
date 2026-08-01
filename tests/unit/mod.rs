@@ -131,6 +131,7 @@ mod issue_844_statement_ranking;
 mod issue_845_fact_checking;
 mod issue_847_task_decomposition;
 mod issue_870_routing;
+mod issue_885_document_fact_checking;
 mod local_surface;
 mod memory_learning;
 mod memory_maintenance;

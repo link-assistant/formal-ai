@@ -2,10 +2,10 @@ self_ast_census
   target src/statement_audit/model.rs
   language rust
   fidelity signature
-  byte_len 7436
-  line_count 282
-  content_id source_module_d095fe3eb7e28987
-  symbol_count 24
+  byte_len 7763
+  line_count 292
+  content_id source_module_72e33e0f301bc6c2
+  symbol_count 25
   symbols
     struct RepositoryDocument 8 11
     function new 15 20
@@ -23,11 +23,12 @@ self_ast_census
     function with_capture 173 181
     function from_source_capture 186 203
     struct AttachedEvidence 208 211
-    struct AuditedStatement 215 223
-    struct Contradiction 227 233
-    enum FindingKind 236 239
-    function slug 243 248
-    struct AuditFinding 253 257
-    struct AuditConfig 260 263
-    function default 266 271
-    struct RepositoryAudit 276 282
+    struct StatementReference 215 218
+    struct AuditedStatement 222 233
+    struct Contradiction 237 243
+    enum FindingKind 246 249
+    function slug 253 258
+    struct AuditFinding 263 267
+    struct AuditConfig 270 273
+    function default 276 281
+    struct RepositoryAudit 286 292

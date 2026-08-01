@@ -90,9 +90,9 @@ census. This gives a failed ladder node an auditable map from its routing or
 synthesis observation to the source surface that a reviewed repair would
 change.
 
-After the final Clippy correction changed the owned source, session
-`ses_0480c4ae7ffeFVmrstvS6LGqm2` reran that self-AST axis through the real Agent
-CLI. A separate session, `ses_048082b3affe30zFgZI0WRMYm3`, reran the
+After the final explicit-evidence planner correction changed the owned source,
+session `ses_042218b91ffeMauWr4EdyYktPl` reran that self-AST axis through the
+real Agent CLI. A separate session, `ses_0421c21aeffeCTNh8jVBVg46Ik`, reran the
 self-healing axis whose repair-case source map also depends on the planner.
 `self-hosting-census-refresh/` retains both final-source streams, Formal AI
 traces, focused artifacts, and the census renderer summary. The historical
