@@ -228,6 +228,17 @@ fn formal_ai_and_real_agent_cli_evidence_covers_authorship_and_audit() {
 }
 
 #[test]
+fn agent_cli_evidence_script_uses_tools_available_on_the_ci_runner() {
+    let script = read("experiments/agent_cli_e2e/run_issue_885_statement_audit.sh");
+    assert!(
+        !script
+            .lines()
+            .any(|line| line.trim_start().starts_with("rg ") || line.contains("$(rg ")),
+        "the release E2E runner does not install ripgrep; use grep for evidence checks"
+    );
+}
+
+#[test]
 fn issue_case_study_preserves_requirements_research_and_solution_artifacts() {
     let case_study = read("docs/case-studies/issue-885/README.md");
     assert_contains_all(

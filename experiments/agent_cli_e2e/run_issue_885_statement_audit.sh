@@ -46,8 +46,8 @@ agent_config="$(printf '{"provider":{"formalai":{"name":"Formal AI","npm":"@ai-s
 ) >"$OUT/agent-stream.raw.log" 2>"$OUT/agent-stderr.log"
 
 "$ROOT/scripts/classify-agent-cli-stderr.sh" "$OUT/agent-stderr.log"
-rg '^\{' "$OUT/agent-stream.raw.log" >"$OUT/agent-stream.jsonl"
-session_id="$(rg -o '"session_id":"ses_[^"]+' "$OUT/agent-stream.raw.log" | tail -1 | cut -d'"' -f4)"
+grep '^{' "$OUT/agent-stream.raw.log" >"$OUT/agent-stream.jsonl"
+session_id="$(grep -Eo '"session_id":"ses_[^"]+' "$OUT/agent-stream.raw.log" | tail -1 | cut -d'"' -f4)"
 [[ -n "$session_id" ]] || {
   echo "Agent CLI stream did not preserve a session id" >&2
   exit 1
@@ -57,15 +57,15 @@ printf '%s\n' "$session_id" >"$OUT/session-id.txt"
   echo "Agent CLI did not write $REPORT" >&2
   exit 1
 }
-rg -q 'resolved_text "The protocol is independently documented\."' "$work/$REPORT"
-rg -q 'contextual_posterior' "$work/$REPORT"
-rg -q 'antecedent_statement_id' "$work/$REPORT"
-rg -q 'resolution_policy "closest_preceding_subject_same_document"' "$work/$REPORT"
-rg -q '^      evidence$' "$work/$REPORT"
-rg -q 'evidence_provenance_' "$work/$REPORT"
+grep -q 'resolved_text "The protocol is independently documented\."' "$work/$REPORT"
+grep -q 'contextual_posterior' "$work/$REPORT"
+grep -q 'antecedent_statement_id' "$work/$REPORT"
+grep -q 'resolution_policy "closest_preceding_subject_same_document"' "$work/$REPORT"
+grep -q '^      evidence$' "$work/$REPORT"
+grep -q 'evidence_provenance_' "$work/$REPORT"
 
 cp "$work/$REPORT" "$OUT/$REPORT"
-rounds="$(rg -c 'POST /' "$OUT/formal-ai.log" || true)"
+rounds="$(grep -c 'POST /' "$OUT/formal-ai.log" || true)"
 [[ "$rounds" -ge 2 ]] || {
   echo "expected at least two Agent CLI turns, got $rounds" >&2
   exit 1
