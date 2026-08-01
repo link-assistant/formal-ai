@@ -62,6 +62,10 @@ assert(compound.content.trimEnd().endsWith("4"), `compound order: ${compound.con
 assert(compound.evidence.filter((item) => item.startsWith("sub_impulse:")).length === 3,
   `compound evidence: ${JSON.stringify(compound.evidence)}`);
 
+const mixedGreeting = await solve("Привет! Кто ты?");
+assert(mixedGreeting.intent === "identity",
+  `mixed greeting and identity must keep whole-prompt routing: ${mixedGreeting.intent}`);
+
 for (const [assignment, question, name] of [
   ["Now your name is Ada.", "What is your name?", "Ada"],
   ["Теперь тебя зовут Инеффа.", "Как тебя зовут?", "Инеффа"],

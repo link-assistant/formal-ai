@@ -1174,6 +1174,7 @@
     if (options && options.compoundSubsolve) return null;
     var segments = independentQuestionSegments(prompt);
     if (segments.length < 2) return null;
+    if (!segments.every(function (segment) { return /[?？]$/u.test(segment.trim()); })) return null;
     var results = [];
     for (var i = 0; i < segments.length; i += 1) {
       var childOptions = Object.assign({}, options || {}, { compoundSubsolve: true });
