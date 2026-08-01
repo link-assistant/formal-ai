@@ -20,7 +20,9 @@ use crate::protocol_policy::{
     matches_tool_choice_none, response_tool_call_identity, tool_call_refusal_answer,
     tool_choice_function_name, tool_definition_names, tool_permission_refusal_answer,
 };
-use crate::protocol_responses::response_arguments_for_tool;
+use crate::protocol_responses::{
+    custom_response_tool_input, is_custom_response_tool, response_arguments_for_tool,
+};
 use crate::solver::UniversalSolver;
 
 mod content;
@@ -371,8 +373,9 @@ pub struct ResponsesRequest {
     pub temperature: Option<f32>,
     #[serde(default)]
     pub stream: bool,
-    /// Function tools advertised on the Responses surface (`{type:"function",
-    /// name, parameters}` — flatter than Chat Completions). Issue #468.
+    /// Function and custom tools advertised on the Responses surface. Function
+    /// declarations are flatter than their Chat Completions equivalents; custom
+    /// declarations carry their own input format. Issues #468 and #859.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub tools: Vec<Value>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -383,8 +386,8 @@ impl ResponsesRequest {
     /// Translate the Responses envelope into the shared [`ChatCompletionRequest`]
     /// so the agentic planner (issue #468) drives `/v1/responses` exactly as it
     /// drives `/v1/chat/completions`. `instructions` becomes a leading `system`
-    /// message; `input` items become chat messages, with `function_call` items
-    /// mapped to assistant `tool_calls` and `function_call_output` items to `tool`
+    /// message; `input` items become chat messages, with function/custom call
+    /// items mapped to assistant `tool_calls` and matching output items to `tool`
     /// results (so the planner can track progress); advertised `tools` /
     /// `tool_choice` pass straight through (the planner reads names from either the
     /// flat Responses shape or the nested Chat shape).
@@ -418,8 +421,8 @@ fn responses_input_tokens(request: &ResponsesRequest) -> u32 {
 
 /// Append the Responses `input` (a bare string, a single item, or an array of
 /// items) to the chat `messages` being built, threading a `call_id → tool name`
-/// map so each `function_call_output` can be labelled with the tool that produced
-/// it (the planner resolves capabilities by message `name` first).
+/// map so each function/custom call output can be labelled with the tool that
+/// produced it (the planner resolves capabilities by message `name` first).
 fn append_response_input(
     input: &Value,
     out: &mut Vec<ChatMessage>,
@@ -441,8 +444,8 @@ fn append_response_input(
     }
 }
 
-/// Append a single Responses `input` item — a message, a `function_call`, or a
-/// `function_call_output` — to `out` as the equivalent chat message(s).
+/// Append a single Responses `input` item — a message, function/custom call, or
+/// matching call output — to `out` as the equivalent chat message(s).
 fn append_response_item(
     item: &Value,
     out: &mut Vec<ChatMessage>,
@@ -453,7 +456,7 @@ fn append_response_item(
         .and_then(Value::as_str)
         .unwrap_or("message");
     match item_type {
-        "function_call" => {
+        "function_call" | "custom_tool_call" => {
             let call_id = item
                 .get("call_id")
                 .or_else(|| item.get("id"))
@@ -467,6 +470,7 @@ fn append_response_item(
                 .to_owned();
             let arguments = item
                 .get("arguments")
+                .or_else(|| item.get("input"))
                 .and_then(Value::as_str)
                 .unwrap_or("{}")
                 .to_owned();
@@ -477,7 +481,7 @@ fn append_response_item(
                 call_id, name, arguments,
             )]));
         }
-        "function_call_output" => {
+        "function_call_output" | "custom_tool_call_output" => {
             let call_id = item
                 .get("call_id")
                 .and_then(Value::as_str)
@@ -818,8 +822,8 @@ pub fn create_response_with_solver_and_memory(
 
 /// Build a Responses object from a deterministic [`AgenticPlan`] — the Responses
 /// mirror of [`chat_completion_from_plan`]. A [`AgenticPlan::ToolCalls`] plan emits
-/// `function_call` output items (the same stable `call` ids the chat surface uses);
-/// a [`AgenticPlan::Final`] plan emits a single assistant message.
+/// native function/custom call output items (using the same stable `call` ids as
+/// the chat surface); a [`AgenticPlan::Final`] plan emits an assistant message.
 fn response_from_plan(
     request: &ResponsesRequest,
     prompt: &str,
@@ -851,15 +855,13 @@ fn response_from_plan(
                 let tool = call.tool;
                 let planned_arguments = call.arguments;
                 let seed = format!("{prompt}|{index}|{tool}|{planned_arguments}");
+                let custom_tool = is_custom_response_tool(&request.tools, &tool);
                 let arguments = response_arguments_for_tool(
                     &request.tools,
                     &tool,
-                    planned_arguments,
+                    planned_arguments.clone(),
                     prompt,
                     workspace.as_deref(),
-                );
-                output_tokens = output_tokens.saturating_add(
-                    estimate_tokens(&tool).saturating_add(estimate_tokens(&arguments)),
                 );
                 if request
                     .tools
@@ -867,6 +869,9 @@ fn response_from_plan(
                     .any(|definition| is_hosted_tool_definition(definition, &tool))
                     && tool == "web_search"
                 {
+                    output_tokens = output_tokens.saturating_add(
+                        estimate_tokens(&tool).saturating_add(estimate_tokens(&arguments)),
+                    );
                     let query = serde_json::from_str::<Value>(&arguments)
                         .ok()
                         .and_then(|value| {
@@ -888,7 +893,23 @@ fn response_from_plan(
                             },
                         },
                     ));
+                } else if custom_tool {
+                    let input =
+                        custom_response_tool_input(&request.tools, &tool, planned_arguments);
+                    output_tokens = output_tokens.saturating_add(
+                        estimate_tokens(&tool).saturating_add(estimate_tokens(&input)),
+                    );
+                    items.push(ResponseOutputItem::CustomToolCall(ResponseCustomToolCall {
+                        id: stable_id("ctc", &seed),
+                        kind: custom_tool_call_kind(),
+                        call_id: stable_id("call", &seed),
+                        name: tool,
+                        input,
+                    }));
                 } else {
+                    output_tokens = output_tokens.saturating_add(
+                        estimate_tokens(&tool).saturating_add(estimate_tokens(&arguments)),
+                    );
                     let (name, namespace) = response_tool_call_identity(&request.tools, &tool);
                     items.push(ResponseOutputItem::FunctionCall(ResponseFunctionToolCall {
                         id: stable_id("fc", &seed),

@@ -131,6 +131,47 @@ fn proxy_summary_logs_responses_request_and_output_items() {
 }
 
 #[test]
+fn proxy_summary_logs_responses_custom_tool_calls() {
+    let request_body = serde_json::json!({
+        "model": "formal-ai",
+        "input": "create main.rs",
+        "tools": [{"type": "custom", "name": "apply_patch"}]
+    })
+    .to_string();
+    let response_body = serde_json::json!({
+        "model": "formal-ai",
+        "output": [{
+            "id": "ctc_1",
+            "type": "custom_tool_call",
+            "call_id": "call_1",
+            "name": "apply_patch",
+            "input": "*** Begin Patch\n*** Add File: main.rs\n+fn main() {}\n*** End Patch\n"
+        }]
+    })
+    .to_string();
+
+    let summary = summarize_proxy_exchange(
+        "POST",
+        "/v1/responses",
+        request_body.as_bytes(),
+        200,
+        "application/json",
+        response_body.as_bytes(),
+        false,
+    );
+
+    assert_eq!(summary.request_tools, vec!["apply_patch"]);
+    assert_eq!(summary.response_tool_calls[0].name, "apply_patch");
+    assert!(
+        summary.response_tool_calls[0]
+            .arguments
+            .as_str()
+            .is_some_and(|input| input.contains("*** Add File: main.rs")),
+        "{summary:?}"
+    );
+}
+
+#[test]
 fn proxy_summary_logs_gemini_tools_and_function_calls() {
     let request_body = serde_json::json!({
         "contents": [{"role": "user", "parts": [{"text": "list files"}]}],
