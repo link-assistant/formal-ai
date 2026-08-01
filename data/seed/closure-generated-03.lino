@@ -1,4 +1,124 @@
 meanings
+  orders
+    defined-by word_surface
+    lexeme en
+      surface
+        text "orders"
+  original_journalism
+    defined-by kind
+    lexeme en
+      surface
+        text "original journalism"
+  originality
+    defined-by word_surface
+    lexeme en
+      surface
+        text "originality"
+  outdent
+    defined-by concept
+    lexeme en
+      surface
+        text "outdent"
+  outdent_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "outdent lines"
+  owlbear
+    defined-by word_surface
+    lexeme en
+      surface
+        text "owlbear"
+  pack
+    defined-by word_surface
+    lexeme en
+      surface
+        text "pack"
+  package-management
+    defined-by category
+    lexeme en
+      surface
+        text "package management"
+  page_title
+    defined-by task
+    lexeme en
+      surface
+        text "page title"
+  paper
+    defined-by word_surface
+    lexeme en
+      surface
+        text "paper"
+  pascal
+    defined-by concept
+    lexeme en
+      surface
+        text "pascal"
+  pascal_case
+    defined-by operation
+    lexeme en
+      surface
+        text "pascal case"
+  passage
+    defined-by word_surface
+    lexeme en
+      surface
+        text "passage"
+  path_argument
+    defined-by operation
+    lexeme en
+      surface
+        text "path argument"
+  path_argument_list_files
+    defined-by rule
+    lexeme en
+      surface
+        text "path argument list files"
+  path_argument_list_files_reverse_sort
+    defined-by rule
+    lexeme en
+      surface
+        text "path argument list files reverse sort"
+  pattern_assistant_free_time_phrase_aap_khali_samay_men_kya_karte_hain_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase aap khali samay men kya karte hain hi"
+  pattern_assistant_free_time_phrase_chem_ty_zanimaeshsya_v_svobodnoe_vremya_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase chem ty zanimaeshsya v svobodnoe vremya ru"
+  pattern_assistant_free_time_phrase_chem_zanimaeshsya_v_svobodnoe_vremya_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase chem zanimaeshsya v svobodnoe vremya ru"
+  pattern_assistant_free_time_phrase_chto_delaesh_kogda_svoboden_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase chto delaesh kogda svoboden ru"
+  pattern_assistant_free_time_phrase_chto_delaesh_v_svobodnoe_vremya_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase chto delaesh v svobodnoe vremya ru"
+  pattern_assistant_free_time_phrase_chto_ty_delaesh_v_svobodnoe_vremya_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase chto ty delaesh v svobodnoe vremya ru"
+  pattern_assistant_free_time_phrase_fursat_men_kya_karte_ho_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase fursat men kya karte ho hi"
+  pattern_assistant_free_time_phrase_how_do_you_spend_your_free_time_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase how do you spend your free time en"
   pattern_assistant_free_time_phrase_khali_samay_men_kya_karte_ho_hi
     defined-by prompt_pattern
     lexeme en
@@ -1189,6 +1309,11 @@ meanings
     lexeme en
       surface
         text "react chat ui"
+  read
+    defined-by concept
+    lexeme en
+      surface
+        text "read"
   read_local_file
     defined-by name
     lexeme en
@@ -1244,6 +1369,11 @@ meanings
     lexeme en
       surface
         text "rendered"
+  replace_everywhere
+    defined-by concept
+    lexeme en
+      surface
+        text "replace everywhere"
   repo
     defined-by word_surface
     lexeme en
@@ -1264,133 +1394,3 @@ meanings
     lexeme en
       surface
         text "reserved role"
-  response_agent_procedure_executed_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure executed en"
-  response_agent_procedure_executed_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure executed hi"
-  response_agent_procedure_executed_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure executed ru"
-  response_agent_procedure_executed_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure executed zh"
-  response_agent_procedure_execution_failed_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure execution failed en"
-  response_agent_procedure_execution_failed_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure execution failed hi"
-  response_agent_procedure_execution_failed_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure execution failed ru"
-  response_agent_procedure_execution_failed_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure execution failed zh"
-  response_agent_procedure_readback_unavailable_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure readback unavailable en"
-  response_agent_procedure_readback_unavailable_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure readback unavailable hi"
-  response_agent_procedure_readback_unavailable_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure readback unavailable ru"
-  response_agent_procedure_readback_unavailable_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure readback unavailable zh"
-  response_agent_procedure_verification_failed_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure verification failed en"
-  response_agent_procedure_verification_failed_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure verification failed hi"
-  response_agent_procedure_verification_failed_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure verification failed ru"
-  response_agent_procedure_verification_failed_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure verification failed zh"
-  response_agent_procedure_verified_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure verified en"
-  response_agent_procedure_verified_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure verified hi"
-  response_agent_procedure_verified_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure verified ru"
-  response_agent_procedure_verified_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure verified zh"
-  response_agent_procedure_write_unavailable_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure write unavailable en"
-  response_agent_procedure_write_unavailable_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure write unavailable hi"
-  response_agent_procedure_write_unavailable_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure write unavailable ru"
-  response_agent_procedure_write_unavailable_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure write unavailable zh"
-  response_agent_suggestion_active_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent suggestion active en"
-  response_agent_suggestion_active_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent suggestion active hi"
