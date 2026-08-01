@@ -41,11 +41,11 @@ pub(super) fn validate_link_program(
             .iter()
             .all(|rule| link_substitution_effect(rule) == expected)
     {
-        return Err("lowered link substitution does not represent the typed CRUD operation");
+        return Err("link_effect_drift");
     }
     let expected_steps = limits.max_matches.saturating_mul(limits.max_iterations);
     if program.max_steps != expected_steps || expected_steps == 0 {
-        return Err("lowered link substitution does not preserve the typed execution bound");
+        return Err("link_bound_drift");
     }
     Ok(())
 }
