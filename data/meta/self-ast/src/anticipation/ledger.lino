@@ -1,0 +1,12 @@
+self_ast_census
+  target src/anticipation/ledger.rs
+  language rust
+  fidelity signature
+  byte_len 3172
+  line_count 94
+  content_id source_module_c4316873da2ac5a8
+  symbol_count 3
+  symbols
+    struct AnticipationLedger 10 14
+    function new 18 28
+    function links_notation 31 93

@@ -1,0 +1,18 @@
+self_ast_census
+  target src/anticipation/expansion.rs
+  language rust
+  fidelity signature
+  byte_len 7289
+  line_count 223
+  content_id source_module_618dbc61bd18994c
+  symbol_count 9
+  symbols
+    function expand_class 10 36
+    function expand_meanings 38 76
+    function expand_operations 78 116
+    function push_variant 118 135
+    enum TemplateSubject 137 140
+    function template_subject 142 164
+    function instantiate_variant 166 191
+    function surface_present 193 209
+    function replace_surface 211 223

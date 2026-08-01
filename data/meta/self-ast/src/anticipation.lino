@@ -1,0 +1,56 @@
+self_ast_census
+  target src/anticipation.rs
+  language rust
+  fidelity signature
+  byte_len 32440
+  line_count 929
+  content_id source_module_62fd738ece191294
+  symbol_count 47
+  symbols
+    module expansion 23 23
+    module ledger 25 25
+    const ANTICIPATION_FRONTIER 28 28
+    const ANTICIPATION_PREDICTION_KIND 29 29
+    const ANTICIPATION_SOURCE_KIND 30 30
+    const PREDICTION_HIT_KIND 31 31
+    struct IntentClass 34 40
+    struct IntentTransition 43 50
+    struct PromptVariant 53 57
+    struct PredictedClass 60 69
+    enum ProbeStatus 72 76
+    function slug 79 85
+    struct ProbeResult 89 99
+    struct AnticipationPlan 102 109
+    function why_prediction 113 126
+    function links_notation 129 199
+    struct AnticipationConfig 203 208
+    function default 211 218
+    struct Observation 222 228
+    function intent_class_for_prompt 231 234
+    function plan_anticipation 237 320
+    function offline_probe_solver 322 329
+    function classify_prompt 331 347
+    function observations 349 376
+    function transition_counts 379 440
+    function frontier_variation 442 444
+    function identifier 446 465
+    enum AnticipationConsent 468 471
+    enum PrelearningStatus 474 479
+    function slug 482 489
+    struct PrelearningAttempt 493 498
+    struct PrelearnedSource 501 515
+    struct PrelearningRun 518 521
+    function links_notation 525 542
+    function prelearn_predictions 545 650
+    struct AnticipationOutcome 653 657
+    function recorded_events 661 663
+    function apply_anticipation 666 761
+    function answer_from_prelearned_cache 764 769
+    function answer_from_prelearned_cache_at 772 804
+    function prediction_hit_event 807 843
+    function run_idle_anticipation 845 873
+    function anticipation_ledger_path 876 878
+    function source_record 880 900
+    function source_trace 902 907
+    function content_field 909 922
+    function epoch_seconds 924 929

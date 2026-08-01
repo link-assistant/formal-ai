@@ -257,7 +257,7 @@ test_unit_issue_705_anticipation
   record_type "meta_test"
   suite "issue_705_anticipation"
   test_file "tests/unit/issue_705_anticipation.rs"
-  pins "Issue #705 symbolic request-class transitions, deterministic expansion, offline probes, one-for-one adoption-frontier filing, consented provenance-and-TTL source capture, held-out offline recall, idle persistence, later prediction hits, and same-task Agent CLI evidence."
+  pins "plan_anticipation, expand_class, prelearn_predictions, apply_anticipation, answer_from_prelearned_cache, prediction_hit_event, and run_idle_anticipation: Issue #705 symbolic request-class transitions, deterministic expansion, offline probes, one-for-one adoption-frontier filing, consented provenance-and-TTL source capture, held-out offline recall, idle persistence, later prediction hits, and same-task Agent CLI evidence."
 test_unit_dreaming_meta_algorithm
   record_type "meta_test"
   suite "dreaming_meta_algorithm"
