@@ -128,7 +128,7 @@ fn coding_source_templates_and_outcomes_are_seed_grounded() {
         "coding_workspace_written_unverified",
         "coding_workspace_verification_failed",
     ] {
-        for language in ["en", "ru", "hi", "zh"] {
+        for language in ["en", "ru", "hi", "zh", "es"] {
             assert!(
                 formal_ai::seed::response_for(intent, language).is_some(),
                 "missing {language} response for {intent}"
