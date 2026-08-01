@@ -1,0 +1,64 @@
+en	Apple is a fruit	subject=wikidata:Q89 predicate=wikidata:P31 object=wikidata:Q3314483
+formalization_candidate
+  source_text "Apple is a fruit"
+  language "en"
+  score "976"
+  subject_surface "Apple"
+  subject_q "wikidata:Q89"
+  subject_score "980"
+  subject_source "label:wikidata-item"
+  predicate_surface "is a"
+  predicate_p "wikidata:P31"
+  predicate_score "970"
+  predicate_source "label:property"
+  object_surface "fruit"
+  object_q "wikidata:Q3314483"
+  object_score "980"
+  object_source "label:wikidata-item"
+
+ru	Яблоко это фрукт	subject=wikidata:Q89 predicate=wikidata:P31 object=wikidata:Q3314483
+formalization_candidate
+  source_text "Яблоко это фрукт"
+  language "ru"
+  score "976"
+  subject_surface "Яблоко"
+  subject_q "wikidata:Q89"
+  subject_score "980"
+  subject_source "label:wikidata-item"
+  predicate_surface "это"
+  predicate_p "wikidata:P31"
+  predicate_score "970"
+  predicate_source "label:property"
+  object_surface "фрукт"
+  object_q "wikidata:Q3314483"
+  object_score "980"
+  object_source "label:wikidata-item"
+
+hi	सेब एक फल है	subject=wikipedia:hi:सेब_एक_फल_है
+formalization_candidate
+  source_text "सेब एक फल है"
+  language "hi"
+  score "520"
+  subject_surface "सेब एक फल है"
+  subject_wikipedia "wikipedia:hi:सेब_एक_फल_है"
+  subject_score "520"
+  subject_source "fallback:wikipedia-surface"
+
+zh	苹果是一种水果	subject=wikidata:Q89 predicate=wikidata:P31 object=wiktionary:zh:一种水果
+formalization_candidate
+  source_text "苹果是一种水果"
+  language "zh"
+  score "836"
+  subject_surface "苹果"
+  subject_q "wikidata:Q89"
+  subject_score "980"
+  subject_source "label:wikidata-item"
+  predicate_surface "是"
+  predicate_p "wikidata:P31"
+  predicate_score "970"
+  predicate_source "label:property"
+  object_surface "一种水果"
+  object_wiktionary "wiktionary:zh:一种水果"
+  object_score "560"
+  object_source "fallback:wiktionary-surface"
+

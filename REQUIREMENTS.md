@@ -1506,3 +1506,18 @@ round-trip matrix, and CI guards all read the same records.
 | R706-7 | Per-language behaviour outside the detector must also be data: unknown-intent opener pools, display names, concept slugs, and script checks. | `data/seed/unknown-openers.lino` feeds the Rust core, the WASM worker, and the JS worker; `language::language_name`, `language_for_concept_slug`, and `surface_matches_language` read `data/seed/languages.lino` and `language-detection.lino`, replacing the `match` arms in `thinking.rs`, `concepts.rs`, `translation/language_markers.rs`, and `lexeme_import.rs`. Covered by `unknown_openers_are_seed_data_on_every_surface` and `language_metadata_comes_from_the_ledger_not_from_rust_branches`. |
 | R706-8 | A new language's request frames must be *learned* from a recorded frontier by the existing issue-#701 cycle, not hand-written. | `src/language_frontier.rs` records `data/meta/learning-frontier-language-gap.lino` by running the live engine over `data/language-additions/*.lino`; `learning_cycle::recorded_frontiers` turns `--frontier` into an open registry so `formal-ai learn cycle --frontier language-gap` replays it through the same cycle. Covered by `the_learn_cli_replays_the_language_frontier_through_the_shared_cycle`. |
 | R706-9 | Adoption must be proved as a capability delta, not claimed. | The two validated Spanish frames were adopted as seed data in `data/seed/learned-request-openers.lino`; `data/meta/language-adoption-ledger.lino` pins 7/7 before/after pairs (`unknown_to_web_search`, term recovered, 0 unadopted) and re-recording the frontier now returns `learning_frontier "0"`. Covered by `adopting_the_proposals_changed_what_the_engine_answers` and `re_recording_the_language_frontier_now_finds_nothing_to_learn`. |
+
+## Issue #709 Multi-Source Search Fusion
+
+Issue [#709](https://github.com/link-assistant/formal-ai/issues/709) composes
+exact search/page capture, multilingual formalization, #844's statement merge,
+relative source tiers, and normalized presentation into one ranked answer. See
+`docs/case-studies/issue-709/` and PR #884.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R709-1 | Formalize every captured search hit and fetched page with source provenance. | `execute_search_fusion` records a `FormalizedSearchObservation` plus event-log and learning-proposal receipts for each statement. |
+| R709-2 | Merge equivalent meanings across languages and rank them using original, independent, and unoriginal source tiers. | Complete Q/P/Q meaning links enter #844's semantic signature; reposts are traced but excluded from evidence. |
+| R709-3 | Deformalize the smallest sufficient ranked answer into the query language and show both conflict sides with posteriors. | The selection is bounded to three meanings, retains both polarities, and emits `conflict:source_disagreement`. |
+| R709-4 | Normalize URL, title, quote, and read-more fields across web, CLI/HTTP, and Telegram. | `NormalizedSearchSource`, the shared Rust Markdown renderer, Telegram HTML conversion, and the browser worker source cards are covered by unit and Playwright fixtures. |
+| R709-5 | Replay deterministically in CI while live search remains explicitly gated. | A three-source exact-capture fixture compares the live and offline render, trace, and proposal byte-for-byte; browser providers are intercepted. |
