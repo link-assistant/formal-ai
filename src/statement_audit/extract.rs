@@ -1,14 +1,25 @@
 use std::path::Path;
 
+use crate::engine::stable_id;
+
 use super::model::{Claim, RepositoryCorpus, SourceKind, SourceLocation};
 
 const REGISTRY: &str = include_str!("../../data/meta/statement-audit.lino");
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(super) struct ExtractedStatement {
+    pub id: String,
     pub text: String,
+    pub resolved_text: String,
     pub location: SourceLocation,
     pub claim: Option<Claim>,
+    pub references: Vec<ExtractedReference>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(super) struct ExtractedReference {
+    pub surface: String,
+    pub antecedent_statement_id: String,
 }
 
 #[derive(Debug, Default)]
@@ -82,6 +93,7 @@ pub(super) fn extract_corpus(corpus: &RepositoryCorpus) -> Vec<ExtractedStatemen
             extract_code_comments(&document.path, &document.content, &mut extracted);
         }
     }
+    resolve_document_references(&mut extracted);
     extracted
 }
 
@@ -191,15 +203,163 @@ fn push_statement(
     let claim = explicit_claim
         .or_else(|| requirement_claim(&text))
         .or_else(|| path_claim(&text));
+    let location = SourceLocation {
+        path: path.to_owned(),
+        line,
+        kind,
+    };
     extracted.push(ExtractedStatement {
+        id: statement_id(&location, &text),
+        resolved_text: text.clone(),
         text,
-        location: SourceLocation {
-            path: path.to_owned(),
-            line,
-            kind,
-        },
+        location,
         claim,
+        references: Vec::new(),
     });
+}
+
+fn statement_id(location: &SourceLocation, text: &str) -> String {
+    stable_id(
+        "audited_statement",
+        &format!("{}:{}:{}", location.path, location.line, text),
+    )
+}
+
+#[derive(Debug, Clone)]
+struct Referent {
+    subject: String,
+    statement_id: String,
+}
+
+fn resolve_document_references(statements: &mut [ExtractedStatement]) {
+    let mut document = String::new();
+    let mut referent: Option<Referent> = None;
+    for statement in statements {
+        if statement.location.path != document {
+            document.clone_from(&statement.location.path);
+            referent = None;
+        }
+        if statement.location.kind != SourceKind::Prose {
+            continue;
+        }
+
+        if let (Some((surface, possessive)), Some(antecedent)) =
+            (leading_reference(&statement.text), referent.as_ref())
+        {
+            let replacement = if possessive {
+                possessive_form(&antecedent.subject)
+            } else {
+                antecedent.subject.clone()
+            };
+            statement.resolved_text = format!("{replacement}{}", &statement.text[surface.len()..]);
+            statement.references.push(ExtractedReference {
+                surface: surface.to_owned(),
+                antecedent_statement_id: antecedent.statement_id.clone(),
+            });
+            referent = Some(Referent {
+                subject: antecedent.subject.clone(),
+                statement_id: statement.id.clone(),
+            });
+        } else if let Some(subject) = extract_subject(&statement.text) {
+            referent = Some(Referent {
+                subject,
+                statement_id: statement.id.clone(),
+            });
+        }
+    }
+}
+
+fn leading_reference(text: &str) -> Option<(&str, bool)> {
+    const REFERENCES: [(&str, bool, bool); 12] = [
+        ("themselves", false, false),
+        ("itself", false, false),
+        ("theirs", true, false),
+        ("their", true, false),
+        ("they", false, false),
+        ("them", false, false),
+        ("its", true, false),
+        ("it", false, false),
+        ("these", false, true),
+        ("those", false, true),
+        ("this", false, true),
+        ("that", false, true),
+    ];
+    REFERENCES
+        .iter()
+        .find_map(|(reference, possessive, demonstrative)| {
+            let surface = text.get(..reference.len())?;
+            let remainder = text.get(reference.len()..)?.trim_start();
+            (surface.eq_ignore_ascii_case(reference)
+                && text
+                    .as_bytes()
+                    .get(reference.len())
+                    .is_some_and(u8::is_ascii_whitespace)
+                && (!demonstrative || begins_with_predicate(remainder)))
+            .then_some((surface, *possessive))
+        })
+}
+
+fn begins_with_predicate(text: &str) -> bool {
+    const PREDICATES: [&str; 16] = [
+        "is ", "are ", "was ", "were ", "has ", "have ", "does ", "do ", "can ", "cannot ",
+        "must ", "may ", "might ", "will ", "should ", "would ",
+    ];
+    let lower = text.to_ascii_lowercase();
+    PREDICATES
+        .iter()
+        .any(|predicate| lower.starts_with(predicate))
+}
+
+fn possessive_form(subject: &str) -> String {
+    if subject.ends_with('s') || subject.ends_with('S') {
+        format!("{subject}'")
+    } else {
+        format!("{subject}'s")
+    }
+}
+
+fn extract_subject(text: &str) -> Option<String> {
+    const PREDICATES: [&str; 26] = [
+        " is ",
+        " are ",
+        " was ",
+        " were ",
+        " has ",
+        " have ",
+        " had ",
+        " does ",
+        " do ",
+        " did ",
+        " can ",
+        " cannot ",
+        " must ",
+        " may ",
+        " might ",
+        " will ",
+        " should ",
+        " would ",
+        " uses ",
+        " use ",
+        " contains ",
+        " includes ",
+        " exposes ",
+        " supports ",
+        " remains ",
+        " requires ",
+    ];
+    if leading_reference(text).is_some() {
+        return None;
+    }
+    let lower = text.to_ascii_lowercase();
+    let boundary = PREDICATES
+        .iter()
+        .filter_map(|predicate| lower.find(predicate))
+        .min()?;
+    let subject = text[..boundary]
+        .trim()
+        .trim_matches(|character| matches!(character, '*' | '_' | '`' | '[' | ']'));
+    let word_count = subject.split_whitespace().count();
+    (word_count > 0 && word_count <= 12).then(|| subject.to_owned())
 }
 
 fn path_claim(text: &str) -> Option<Claim> {
