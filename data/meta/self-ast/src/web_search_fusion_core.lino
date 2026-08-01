@@ -1,0 +1,56 @@
+self_ast_census
+  target src/web_search_fusion_core.rs
+  language rust
+  fidelity signature
+  byte_len 25643
+  line_count 794
+  content_id source_module_79c6bab324c89d8b
+  symbol_count 47
+  symbols
+    const WIKIDATA_MEANINGS 17 17
+    const STATEMENT_MEANINGS 18 18
+    const ENTITY_ROLE 19 19
+    const RELATION_ROLE 20 20
+    const FUNCTION_WORD_ROLE 21 21
+    const NEGATION_ROLE 22 22
+    const MAX_MEANINGS 23 23
+    struct Form 26 30
+    struct Meaning 33 37
+    struct VocabularyForm 40 43
+    struct Request 46 52
+    struct Source 55 62
+    struct SourceCard 65 72
+    struct Formalization 75 80
+    struct Node 83 93
+    function fuse_statement_search_payload 98 107
+    function parse_request 109 135
+    function field 137 139
+    function nonempty 141 147
+    function parse_anchor_meanings 149 193
+    function parse_statement_vocabulary 195 223
+    function build_nodes 225 323
+    function formalize 325 402
+    function relation_match 404 434
+    function entity_match 436 445
+    function target_form 447 458
+    function denied_predicate 460 483
+    function sentences 485 507
+    function normalized 509 524
+    function words 526 528
+    function punctuated 530 536
+    function capitalize_first 538 544
+    function canonical_tier 546 553
+    function tier_points 555 562
+    function posterior 564 570
+    function rank_nodes 572 580
+    function smallest_sufficient 582 597
+    function statement_key 599 605
+    function render_json 607 714
+    function push_json_array 716 723
+    function push_json_string 725 745
+    const HEX 735 735
+    function url_domain 747 754
+    function push_unique 756 760
+    function unquote 762 767
+    function decode_uri_component 769 785
+    function hex 787 794
