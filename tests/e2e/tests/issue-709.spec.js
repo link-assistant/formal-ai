@@ -57,6 +57,9 @@ async function mockProviders(page) {
   await page.route('**://*.wiktionary.org/w/api.php**', async (route) => {
     await route.fulfill({ status: 200, contentType: 'application/json', body: '["",[],[],[]]' });
   });
+  await page.route('**://*.wikinews.org/w/api.php**', async (route) => {
+    await route.fulfill({ status: 200, contentType: 'application/json', body: '["",[],[],[]]' });
+  });
   await page.route('**://archive.org/advancedsearch.php**', async (route) => {
     await route.fulfill({
       status: 200,
@@ -111,5 +114,28 @@ test.describe('Issue #709 - ranked provenance answers', () => {
     await expect(last).toContainText('source_tier=independent_corroboration');
     await expect(last.getByRole('link', { name: 'Read more' })).toHaveCount(2);
     await expect(last.locator('.evidence-list')).toContainText('conflict:source_disagreement');
+  });
+
+  test('bounds a full provider result set without wedging the WASM worker', async ({ page }) => {
+    const archivePattern = '**://archive.org/advancedsearch.php**';
+    await page.unroute(archivePattern);
+    await page.route(archivePattern, async (route) => {
+      const description = 'Allocator apple evidence is bounded for fusion. '.repeat(70);
+      const docs = Array.from({ length: 10 }, (_, index) => ({
+        identifier: `bounded-${index}`,
+        title: `Bounded source ${index}`,
+        description,
+      }));
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ response: { docs } }),
+      });
+    });
+
+    const last = await sendPrompt(page, 'Search the web for allocator apple');
+    await expect(last).toContainText('Bounded source 0');
+    await expect(last).toContainText('source_count=10');
+    await expect(last.getByRole('link', { name: 'Read more' })).toHaveCount(10);
   });
 });

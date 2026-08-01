@@ -2,7 +2,7 @@
 const { test, expect } = require('@playwright/test');
 
 // Issue #153 — search UX, formalization SVO view, cross-source dedupe, and
-// localized search-result templates. Each test mocks the three providers so
+// localized search-result templates. Each test mocks every provider so
 // the assertions are hermetic.
 
 const UNKNOWN_ANSWER_MARKER = 'cannot answer that from local links rules';
@@ -46,6 +46,27 @@ async function sendPrompt(page, text) {
 }
 
 async function mockAppleSearch(page) {
+  await page.route('**://archive.org/advancedsearch.php**', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ response: { docs: [] } }),
+    });
+  });
+  await page.route('**://*.wiktionary.org/w/api.php**', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(['Apple', [], [], []]),
+    });
+  });
+  await page.route('**://*.wikinews.org/w/api.php**', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(['Apple', [], [], []]),
+    });
+  });
   await page.route('**://api.duckduckgo.com/**', async (route) => {
     await route.fulfill({
       status: 200,

@@ -59,10 +59,13 @@ static mut OUTPUT: [u8; OUTPUT_CAPACITY] = [0; OUTPUT_CAPACITY];
 //
 // Issue #133 wants the symbolic core in Rust→WASM. The web_search_core module
 // uses `alloc::String` and `alloc::Vec`, so the no_std worker needs a global
-// allocator. We use a single 256 KiB heap with an `AtomicUsize` offset: every
+// allocator. We use a single 2 MiB heap with an `AtomicUsize` offset: every
 // WASM entry point calls `reset_bump()` first so the heap rolls back between
-// calls and no per-allocation deallocation logic is required.
-const BUMP_HEAP_SIZE: usize = 262_144;
+// calls and no per-allocation deallocation logic is required. Statement
+// fusion accepts up to 24 bounded source passages; allocator measurements in
+// `experiments/issue709_wasm_heap.rs` keep that provider-limit workload below
+// this capacity with headroom for percent-decoding and JSON rendering.
+const BUMP_HEAP_SIZE: usize = 2_097_152;
 
 struct BumpHeap {
     buffer: UnsafeCell<[u8; BUMP_HEAP_SIZE]>,

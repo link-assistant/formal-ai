@@ -21,6 +21,7 @@ const RELATION_ROLE: &str = "binary_relation_property";
 const FUNCTION_WORD_ROLE: &str = "statement_function_word";
 const NEGATION_ROLE: &str = "statement_negation_cue";
 const MAX_MEANINGS: usize = 3;
+const MAX_SOURCE_FRAGMENTS: usize = 8;
 
 #[derive(Clone, Debug)]
 struct Form {
@@ -48,6 +49,7 @@ struct Request {
     language: String,
     read_more: String,
     via: String,
+    other_sources: String,
     sources: Vec<Source>,
 }
 
@@ -59,6 +61,8 @@ struct Source {
     tier: String,
     language: String,
     providers: String,
+    retrieval_rank: u32,
+    alternate: bool,
 }
 
 #[derive(Clone, Debug)]
@@ -69,6 +73,8 @@ struct SourceCard {
     tier: String,
     language: String,
     providers: String,
+    retrieval_rank: u32,
+    alternate: bool,
 }
 
 #[derive(Clone, Debug)]
@@ -90,6 +96,7 @@ struct Node {
     conflict: bool,
     posterior: f64,
     weight: u32,
+    best_retrieval_rank: u32,
 }
 
 /// Fuse the row protocol used by the browser worker and return a JSON object
@@ -119,15 +126,26 @@ fn parse_request(payload: &str) -> Request {
                 request.language = nonempty(field(&fields, 2), "en");
                 request.read_more = field(&fields, 3);
                 request.via = field(&fields, 4);
+                request.other_sources = field(&fields, 5);
             }
-            Some("S") if !field(&fields, 1).is_empty() => request.sources.push(Source {
-                url: field(&fields, 1),
-                title: field(&fields, 2),
-                excerpt: field(&fields, 3),
-                tier: canonical_tier(&field(&fields, 4)).to_string(),
-                language: field(&fields, 5),
-                providers: field(&fields, 6),
-            }),
+            Some("S") if !field(&fields, 1).is_empty() => {
+                let fallback_rank = u32::try_from(request.sources.len() + 1).unwrap_or(u32::MAX);
+                let retrieval_rank = field(&fields, 7)
+                    .parse::<u32>()
+                    .ok()
+                    .filter(|rank| *rank > 0)
+                    .unwrap_or(fallback_rank);
+                request.sources.push(Source {
+                    url: field(&fields, 1),
+                    title: field(&fields, 2),
+                    excerpt: field(&fields, 3),
+                    tier: canonical_tier(&field(&fields, 4)).to_string(),
+                    language: field(&fields, 5),
+                    providers: field(&fields, 6),
+                    retrieval_rank,
+                    alternate: field(&fields, 8) == "alternate",
+                });
+            }
             _ => {}
         }
     }
@@ -243,7 +261,7 @@ fn build_nodes(
         if excerpt.starts_with(&prefix) {
             excerpt = excerpt[prefix.len()..].trim().to_string();
         }
-        for fragment in sentences(&excerpt) {
+        for fragment in sentences(&excerpt, MAX_SOURCE_FRAGMENTS) {
             let formal = formalize(&fragment, language, &request.language, anchors, vocabulary);
             evidence.push(format!(
                 "search_fusion:formalization:{}:{}:{}",
@@ -270,6 +288,8 @@ fn build_nodes(
                 tier: source.tier.clone(),
                 language: language.to_string(),
                 providers: source.providers.clone(),
+                retrieval_rank: source.retrieval_rank,
+                alternate: source.alternate,
             };
             if let Some(node) = nodes
                 .iter_mut()
@@ -283,6 +303,7 @@ fn build_nodes(
                     ));
                     node.sources.push(card);
                     node.support += tier_points;
+                    node.best_retrieval_rank = node.best_retrieval_rank.min(source.retrieval_rank);
                 }
             } else {
                 nodes.push(Node {
@@ -295,6 +316,7 @@ fn build_nodes(
                     conflict: false,
                     posterior: 1.0,
                     weight: 0,
+                    best_retrieval_rank: source.retrieval_rank,
                 });
             }
         }
@@ -316,6 +338,7 @@ fn build_nodes(
         node.sources.sort_by(|left, right| {
             tier_points(&right.tier)
                 .cmp(&tier_points(&left.tier))
+                .then_with(|| left.retrieval_rank.cmp(&right.retrieval_rank))
                 .then_with(|| left.url.cmp(&right.url))
         });
     }
@@ -482,7 +505,7 @@ fn denied_predicate(
     rendered
 }
 
-fn sentences(text: &str) -> Vec<String> {
+fn sentences(text: &str, limit: usize) -> Vec<String> {
     let mut out = Vec::new();
     let mut buffer = String::new();
     for character in text.chars() {
@@ -493,6 +516,9 @@ fn sentences(text: &str) -> Vec<String> {
         ) {
             if !buffer.trim().is_empty() {
                 out.push(buffer.trim().to_string());
+                if out.len() >= limit {
+                    return out;
+                }
             }
             buffer.clear();
         }
@@ -574,6 +600,7 @@ fn rank_nodes(nodes: &mut [Node]) {
         right
             .weight
             .cmp(&left.weight)
+            .then_with(|| left.best_retrieval_rank.cmp(&right.best_retrieval_rank))
             .then_with(|| right.sources.len().cmp(&left.sources.len()))
             .then_with(|| statement_key(left).cmp(&statement_key(right)))
     });
@@ -608,10 +635,11 @@ fn render_json(request: &Request, nodes: &[Node], evidence: &mut Vec<String>) ->
     let mut lines = Vec::new();
     for (index, node) in nodes.iter().enumerate() {
         evidence.push(format!(
-            "search_fusion:rank:{}:{}:{}",
+            "search_fusion:rank:{}:{}:{}:retrieval_rank={}",
             index + 1,
             statement_key(node),
-            node.weight
+            node.weight,
+            node.best_retrieval_rank
         ));
         if node.conflict {
             evidence.push(format!(
@@ -643,7 +671,12 @@ fn render_json(request: &Request, nodes: &[Node], evidence: &mut Vec<String>) ->
         for source in &node.sources {
             let domain = url_domain(&source.url);
             lines.push(format!(
-                "   - **[{}]({})**{}",
+                "   - {}**[{}]({})**{}",
+                if source.alternate && !request.other_sources.is_empty() {
+                    format!("_{}:_ ", request.other_sources)
+                } else {
+                    String::new()
+                },
                 source.title,
                 source.url,
                 if domain.is_empty() {

@@ -72,6 +72,36 @@ fn browser_wasm_core_keeps_both_ranked_conflict_sides() {
 }
 
 #[test]
+fn browser_wasm_core_uses_fused_rank_and_labels_alternate_provenance() {
+    let payload = concat!(
+        "Q\ttarget\ten\tRead more\tvia\tOther sources\n",
+        "S\thttps://target.invalid\tTarget\tZebra target is decisive.",
+        "\tindependent_corroboration\ten\tprovider#1\t1\tprimary\n",
+        "S\thttps://alternate.invalid\tAlternate\tAlternate context.",
+        "\tindependent_corroboration\ten\tprovider#2\t2\talternate\n",
+        "S\thttps://alpha.invalid\tAlpha\tAlpha context.",
+        "\tindependent_corroboration\ten\tprovider#3\t3\tprimary\n",
+        "S\thttps://beta.invalid\tBeta\tBeta context.",
+        "\tindependent_corroboration\ten\tprovider#4\t4\tprimary\n",
+        "S\thttps://gamma.invalid\tGamma\tGamma context.",
+        "\tindependent_corroboration\ten\tprovider#5\t5\tprimary"
+    );
+    let fused: serde_json::Value = serde_json::from_str(&fuse_statement_search_payload(payload))
+        .expect("valid WASM fusion JSON");
+    let statements = fused["statements"].as_array().expect("statements array");
+
+    assert_eq!(statements.len(), 3);
+    assert_eq!(statements[0]["text"], "Zebra target is decisive.");
+    assert!(fused["lines"]
+        .as_array()
+        .expect("Markdown lines")
+        .iter()
+        .any(|value| value
+            .as_str()
+            .is_some_and(|line| line.contains("Other sources"))));
+}
+
+#[test]
 fn localized_search_fusion_labels_cover_every_supported_language() {
     struct LanguageCase {
         language: &'static str,
