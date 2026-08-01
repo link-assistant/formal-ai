@@ -53,6 +53,7 @@ mod issue_839_report_script;
 mod issue_840_grounded_action;
 mod issue_845_fact_checking;
 mod issue_879_completion;
+mod issue_885_document_audit;
 mod logging_proxy;
 mod memory_query;
 mod multi_protocol_api;

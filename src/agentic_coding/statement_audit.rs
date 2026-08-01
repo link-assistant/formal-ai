@@ -12,6 +12,24 @@ pub const STATEMENT_AUDIT_PATH: &str = "statement-audit.lino";
 pub const STATEMENT_AUDIT_COMMAND: &str =
     "formal-ai statement-audit --root . --output statement-audit.lino";
 
+/// The replayable operation for a workspace that explicitly names the
+/// conventional external evidence capture file.
+pub const STATEMENT_AUDIT_WITH_EVIDENCE_COMMAND: &str =
+    "formal-ai statement-audit --root . --evidence evidence.json --output statement-audit.lino";
+
+/// Select the public CLI operation requested by an audit task.
+///
+/// Evidence intake remains fail closed: only an explicit reference to the
+/// fixed workspace-local `evidence.json` path opts into external captures.
+#[must_use]
+pub fn command_for(prompt: &str) -> &'static str {
+    if prompt.to_ascii_lowercase().contains("evidence.json") {
+        STATEMENT_AUDIT_WITH_EVIDENCE_COMMAND
+    } else {
+        STATEMENT_AUDIT_COMMAND
+    }
+}
+
 /// Whether a task requests the generalized repository statement audit.
 #[must_use]
 pub fn is_statement_audit_task(prompt: &str) -> bool {

@@ -4,6 +4,12 @@ Formal AI should become a symbolic assistant whose live state is an associative 
 
 The associative network is the AI. The runtime should activate, extend, query, and simplify that network as work happens.
 
+The fact-checked design theses behind “AI = data + algorithm,” “everything is a
+link,” transformation networks, controlled self-modification, recursive
+decomposition, and Markov substitution are in
+[`docs/philosophy.md`](docs/philosophy.md). That guide distinguishes metaphor,
+mathematical fact, implemented behavior, and target behavior.
+
 This places Formal AI squarely in the tradition of [symbolic artificial intelligence](https://en.wikipedia.org/wiki/Symbolic_artificial_intelligence) (GOFAI): the link network is a [semantic network](https://en.wikipedia.org/wiki/Semantic_network) in the classical sense, and intelligence is the rule-driven manipulation of human-readable symbols ([physical symbol system](https://en.wikipedia.org/wiki/Physical_symbol_system) hypothesis, Newell & Simon 1976) rather than numeric optimization of hidden weights. The audit in [`docs/case-studies/issue-451/symbolic-ai-best-practices.md`](docs/case-studies/issue-451/symbolic-ai-best-practices.md) maps each of the field's best practices onto this associative stack.
 
 ## Who This Is For And What Pain It Closes
