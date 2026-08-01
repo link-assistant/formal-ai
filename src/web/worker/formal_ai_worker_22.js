@@ -7,8 +7,7 @@ const MEMORY_PROGRAM_DEFAULT_LIMITS = {
   maxIterations: 4,
 };
 
-let cachedMemoryProgramCatalog = null;
-let cachedMemoryProgramCompilation = null;
+let cachedMemoryProgramCatalog = null, cachedMemoryProgramCompilation = null;
 
 function memoryProgramCatalog() {
   if (cachedMemoryProgramCatalog) return cachedMemoryProgramCatalog;
@@ -18,16 +17,12 @@ function memoryProgramCatalog() {
   const catalog = { primitives: {}, cues: [], scopes: [], families: [] };
   for (const node of root.children || []) {
     if (node.name === "primitive") {
-      const permission = (node.children || []).find(
-        (child) => child.name === "permission",
-      );
+      const permission = (node.children || []).find((child) => child.name === "permission");
       if (node.value && permission) {
         catalog.primitives[node.value] = permission.value;
       }
-    } else if (node.name === "cue" && node.value) {
-      catalog.cues.push(memoryProgramNormalizeSurface(node.value));
-    } else if (node.name === "scope" && node.value) {
-      catalog.scopes.push(memoryProgramNormalizeSurface(node.value));
+    } else if (["cue", "scope"].includes(node.name) && node.value) {
+      catalog[`${node.name}s`].push(memoryProgramNormalizeSurface(node.value));
     } else if (node.name === "family") {
       const family = { id: node.value, steps: [], templates: [] };
       for (const child of node.children || []) {
@@ -88,23 +83,12 @@ function memoryProgramMatchTemplate(template, request) {
   return bindings;
 }
 
-function memoryProgramNormalizeBinding(value) {
-  return memoryProgramNormalizeSurface(value).toLocaleLowerCase();
-}
+function memoryProgramNormalizeBinding(value) { return memoryProgramNormalizeSurface(value).toLocaleLowerCase(); }
 
 function memoryProgramContainsScopeCue(text, cue) {
-  const cueUsesHan = /\p{Script=Han}/u.test(cue);
-  let start = text.indexOf(cue);
-  while (start >= 0) {
-    if (cueUsesHan) return true;
-    const before = start > 0 ? text[start - 1] : "";
-    const after = text[start + cue.length] || "";
-    if (!/[\p{L}\p{N}]/u.test(before) && !/[\p{L}\p{N}]/u.test(after)) {
-      return true;
-    }
-    start = text.indexOf(cue, start + cue.length);
-  }
-  return false;
+  if (/\p{Script=Han}/u.test(cue)) return text.includes(cue);
+  const escaped = cue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`(?<![\\p{L}\\p{N}])${escaped}(?![\\p{L}\\p{N}])`, "u").test(text);
 }
 
 function memoryProgramCanonical(family, limits, bindings, steps) {
@@ -192,9 +176,7 @@ function compileMemoryProgramOnce(prompt) {
   return result;
 }
 
-function memoryProgramLinoValue(value) {
-  return JSON.stringify(String(value ?? ""));
-}
+function memoryProgramLinoValue(value) { return JSON.stringify(String(value ?? "")); }
 
 function memoryProgramLinksNotation(program) {
   const lines = [
@@ -232,13 +214,9 @@ function memoryProgramLinksNotation(program) {
   return lines.join("\n");
 }
 
-function memoryProgramSourceId(event, index) {
-  return String(event?.id ?? index + 1);
-}
+function memoryProgramSourceId(event, index) { return String(event?.id ?? index + 1); }
 
-function memoryProgramEventText(event) {
-  return String(event?.content ?? event?.outputs ?? event?.inputs ?? "");
-}
+function memoryProgramEventText(event) { return String(event?.content ?? event?.outputs ?? event?.inputs ?? ""); }
 
 function memoryProgramContains(text, pattern) {
   return String(text || "").toLocaleLowerCase().includes(

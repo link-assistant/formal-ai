@@ -659,11 +659,7 @@ fn contains_scope_cue(text: &str, cue: &str) -> bool {
         let cue_uses_han = cue.chars().any(
             |character| matches!(character, '\u{3400}'..='\u{4dbf}' | '\u{4e00}'..='\u{9fff}'),
         );
-        if cue_uses_han {
-            true
-        } else {
-            !before_is_word && !after_is_word
-        }
+        cue_uses_han || (!before_is_word && !after_is_word)
     })
 }
 

@@ -52,9 +52,11 @@ const TARGET_TOTAL_LINES: usize = 3_000;
 /// execute against IndexedDB in the browser too. Its complete closed primitive
 /// set adds the reviewed worker mirror rather than leaving the website on the
 /// legacy single-substitution path, raising the ratchet to 27,635. Executable
-/// map projections add the source/collection copy links, raising it by 8 lines.
+/// map projections add eight source/collection-copy lines (27,643). The final
+/// scoped-gap routing guard stays inside that reviewed module and lowers its
+/// net ceiling by one line through equivalent helper consolidation.
 #[cfg(not(test))]
-const CEILING_TOTAL_LINES: usize = 27_643;
+const CEILING_TOTAL_LINES: usize = 27_642;
 
 const WORKER_DIR: &str = "src/web/worker";
 
