@@ -46,3 +46,14 @@ fn captured_agent_artifacts_match_their_committed_leaves() {
         assert!(log.contains("ses_"));
     }
 }
+
+#[test]
+fn literal_payload_planner_fix_is_exercised_by_the_required_agent_cli_job() {
+    let workflow = include_str!("../../.github/workflows/release.yml");
+    let harness = include_str!("../../experiments/agent_cli_e2e/run_issue_708.sh");
+
+    assert!(workflow.contains("experiments/agent_cli_e2e/run_issue_708.sh"));
+    assert!(harness.contains("rename X to Y"));
+    assert!(harness.contains("experiments/agent_cli_e2e/run_agent_cli.sh"));
+    assert!(harness.contains("formal-ai/formal-ai"));
+}

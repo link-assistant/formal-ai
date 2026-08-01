@@ -155,6 +155,12 @@ integration. Formal AI through the real Agent CLI authored the first three
 artifacts; the implementation and browser leaf were manually integrated and
 are not claimed as tool-authored. This is three of five leaves (60%).
 
+The first exact-file request exposed a general planner bug: an edit phrase
+inside a literal payload could outrank the `with exactly this content` marker.
+The marker now owns the payload, its unit regression precedes the fix, and
+`experiments/agent_cli_e2e/run_issue_708.sh` replays that case through the real
+server and Agent CLI in the required CI job.
+
 - `ses_043a7e1faffe5cfXqj66PqBMja` authored the multilingual compiler
   regression under [`self-hosting-authorship/`](self-hosting-authorship/).
 - `ses_0434f23f9ffeYTsz2Hr7nKduHX` authored the five-language primitive and
