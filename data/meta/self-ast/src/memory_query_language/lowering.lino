@@ -1,0 +1,17 @@
+self_ast_census
+  target src/memory_query_language/lowering.rs
+  language rust
+  fidelity signature
+  byte_len 5100
+  line_count 146
+  content_id source_module_f823a5f092af0262
+  symbol_count 8
+  symbols
+    function lower_to_link_program 8 22
+    function validate_link_program 27 51
+    function read_rules 53 70
+    function create_rules 72 84
+    function update_rules 86 102
+    function delete_rules 104 116
+    function equality_patterns 118 138
+    function any_link 140 146

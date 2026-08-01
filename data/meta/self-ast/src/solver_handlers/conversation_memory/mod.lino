@@ -2,55 +2,55 @@ self_ast_census
   target src/solver_handlers/conversation_memory/mod.rs
   language rust
   fidelity signature
-  byte_len 32622
-  line_count 937
-  content_id source_module_0791812adb05b7bc
+  byte_len 32668
+  line_count 938
+  content_id source_module_1800ee5494dd242f
   symbol_count 47
   symbols
     module link_query 3 3
     module memory_write 4 4
     module program_query 5 5
-    enum RecallScope 28 31
-    function as_str 34 39
-    struct RecallQuery 43 46
-    struct RecallMatch 49 53
-    struct MemoryRecallMatch 56 63
-    enum MemoryRecallDetail 66 69
-    struct MemoryQueryExecution 73 76
-    function try_conversation_memory 78 102
-    function answer_memory_recall 105 120
-    function recalled_event_indices 123 141
-    function try_recall_name 143 162
-    function try_assistant_name 173 215
-    function render_assistant_name_ack 218 225
-    function render_assistant_name_recall 228 235
-    function try_recall_last_question 237 262
-    function previous_user_request_turn 264 277
-    function is_recall_meta_prompt 279 286
-    function render_previous_user_message 288 295
-    function try_recall_previous_message 305 333
-    function localized_role 336 347
-    function render_previous_message 349 357
-    function render_no_previous_message 359 366
-    function try_conversation_recall 368 397
-    function try_memory_recall 399 439
-    function recognize_recall_query 441 455
-    function recall_term_for_role 457 463
-    function term_from_form 465 475
-    function clean_recall_term 477 491
-    function recall_matches 493 515
-    function memory_recall_matches 517 567
-    function event_in_recall_scope 569 577
-    function memory_event_field_values 579 605
-    function push_memory_field 607 615
-    function memory_field_match 617 631
-    function memory_link_match 633 642
-    function memory_match 644 671
-    function log_fragment 674 679
-    function render_line 681 694
-    function memory_conversation_count 697 705
-    function render_recall_report 707 754
-    function render_memory_recall_report 756 825
-    function asks_for_conversation_summary 837 845
-    function summary_directive_leads 857 868
-    function try_summarize_conversation 870 937
+    enum RecallScope 29 32
+    function as_str 35 40
+    struct RecallQuery 44 47
+    struct RecallMatch 50 54
+    struct MemoryRecallMatch 57 64
+    enum MemoryRecallDetail 67 70
+    struct MemoryQueryExecution 74 77
+    function try_conversation_memory 79 103
+    function answer_memory_recall 106 121
+    function recalled_event_indices 124 142
+    function try_recall_name 144 163
+    function try_assistant_name 174 216
+    function render_assistant_name_ack 219 226
+    function render_assistant_name_recall 229 236
+    function try_recall_last_question 238 263
+    function previous_user_request_turn 265 278
+    function is_recall_meta_prompt 280 287
+    function render_previous_user_message 289 296
+    function try_recall_previous_message 306 334
+    function localized_role 337 348
+    function render_previous_message 350 358
+    function render_no_previous_message 360 367
+    function try_conversation_recall 369 398
+    function try_memory_recall 400 440
+    function recognize_recall_query 442 456
+    function recall_term_for_role 458 464
+    function term_from_form 466 476
+    function clean_recall_term 478 492
+    function recall_matches 494 516
+    function memory_recall_matches 518 568
+    function event_in_recall_scope 570 578
+    function memory_event_field_values 580 606
+    function push_memory_field 608 616
+    function memory_field_match 618 632
+    function memory_link_match 634 643
+    function memory_match 645 672
+    function log_fragment 675 680
+    function render_line 682 695
+    function memory_conversation_count 698 706
+    function render_recall_report 708 755
+    function render_memory_recall_report 757 826
+    function asks_for_conversation_summary 838 846
+    function summary_directive_leads 858 869
+    function try_summarize_conversation 871 938

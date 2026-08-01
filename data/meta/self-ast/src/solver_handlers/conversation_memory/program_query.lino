@@ -2,12 +2,15 @@ self_ast_census
   target src/solver_handlers/conversation_memory/program_query.rs
   language rust
   fidelity signature
-  byte_len 6732
-  line_count 185
-  content_id source_module_9765a17e383c2e03
-  symbol_count 4
+  byte_len 10396
+  line_count 289
+  content_id source_module_b61456e3e13e3b1a
+  symbol_count 7
   symbols
-    function execute_memory_query 19 31
-    function execute_memory_query_with_options 35 122
-    function render_memory_program_outcome 124 177
-    function memory_program_response 179 185
+    function execute_memory_query 23 35
+    function execute_memory_query_with_options 39 136
+    function is_exact_memory_query 138 140
+    function detect_exact_memory_query 142 160
+    function execute_exact_query 162 226
+    function render_memory_program_outcome 228 281
+    function memory_program_response 283 289
