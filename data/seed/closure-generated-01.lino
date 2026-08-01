@@ -164,6 +164,11 @@ meanings
     lexeme en
       surface
         text "agentic action before tool"
+  agentic_action_compile_program
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action compile program"
   agentic_action_edit
     defined-by intent
     lexeme en
@@ -214,6 +219,11 @@ meanings
     lexeme en
       surface
         text "agentic action run"
+  agentic_action_run_program
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action run program"
   agentic_action_search
     defined-by intent
     lexeme en
@@ -1384,13 +1394,3 @@ meanings
     lexeme en
       surface
         text "fallback"
-  fastapi
-    defined-by word_surface
-    lexeme en
-      surface
-        text "fastapi"
-  fibonacci
-    defined-by task
-    lexeme en
-      surface
-        text "fibonacci"

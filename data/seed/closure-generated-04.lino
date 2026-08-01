@@ -1,4 +1,14 @@
 meanings
+  response_agent_suggestion_active_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion active en"
+  response_agent_suggestion_active_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion active hi"
   response_agent_suggestion_active_ru
     defined-by response_template
     lexeme en
@@ -69,6 +79,26 @@ meanings
     lexeme en
       surface
         text "response agentic action before tool zh"
+  response_agentic_action_compile_program_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action compile program en"
+  response_agentic_action_compile_program_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action compile program hi"
+  response_agentic_action_compile_program_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action compile program ru"
+  response_agentic_action_compile_program_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action compile program zh"
   response_agentic_action_edit_en
     defined-by response_template
     lexeme en
@@ -259,6 +289,26 @@ meanings
     lexeme en
       surface
         text "response agentic action run hi"
+  response_agentic_action_run_program_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action run program en"
+  response_agentic_action_run_program_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action run program hi"
+  response_agentic_action_run_program_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action run program ru"
+  response_agentic_action_run_program_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action run program zh"
   response_agentic_action_run_ru
     defined-by response_template
     lexeme en
@@ -1344,53 +1394,3 @@ meanings
     lexeme en
       surface
         text "response general plan repository evidence hi"
-  response_general_plan_repository_evidence_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository evidence ru"
-  response_general_plan_repository_evidence_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository evidence zh"
-  response_general_plan_repository_verify_action_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository verify action en"
-  response_general_plan_repository_verify_action_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository verify action hi"
-  response_general_plan_repository_verify_action_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository verify action ru"
-  response_general_plan_repository_verify_action_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository verify action zh"
-  response_github_repository_traffic_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response github repository traffic en"
-  response_github_repository_traffic_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response github repository traffic hi"
-  response_github_repository_traffic_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response github repository traffic ru"
-  response_github_repository_traffic_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response github repository traffic zh"
