@@ -1,0 +1,27 @@
+issue_848_smallest_leaf_1
+  parent coding_task_ladder_improvement
+  leaf "reproduce and lower bounded source-generation tasks into executable workspace bytes"
+  implementation src/agentic_coding/code_task.rs
+  authorship human
+issue_848_smallest_leaf_2
+  parent coding_task_ladder_improvement
+  leaf "focus repository search on the named code subject"
+  implementation src/agentic_coding/shell_command.rs
+  authorship human
+issue_848_smallest_leaf_3
+  parent coding_task_ladder_improvement
+  leaf "compile generated Rust and distinguish complete from filtered ladder measurements"
+  implementation experiments/issue_847_coding_ladder/run_coding_ladder.sh
+  authorship human
+issue_848_smallest_leaf_4
+  parent coding_task_ladder_improvement
+  leaf "record the generalized coding-task execution contract"
+  implementation docs/case-studies/issue-848/self-hosting-authorship/coding-task-execution-invariant.lino
+  authorship formal_ai_agent_cli
+  session ses_04160c59fffe3FDUKteR56kfQp
+  evidence docs/case-studies/issue-848/self-hosting-authorship/agent-cli.log
+
+issue_848_self_authorship_measurement
+  reviewed_smallest_leaves 4
+  formal_ai_authored_leaves 1
+  formal_ai_authored_percent 25

@@ -193,6 +193,65 @@ fn collection_edit_reads_transforms_writes_and_observes_workspace_bytes() {
     assert!(answer.contains("observed"), "{answer}");
 }
 
+#[test]
+fn compiler_measurement_and_same_task_authorship_are_preserved() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
+    let read = |path: &str| {
+        std::fs::read_to_string(root.join(path)).unwrap_or_else(|error| panic!("{path}: {error}"))
+    };
+    let runner = read("experiments/issue_847_coding_ladder/run_coding_ladder.sh");
+    assert!(runner.contains("[\"rustc\", \"--edition=2021\""));
+    assert!(runner.contains("\"dataset_total\": len(all_tasks)"));
+    assert!(runner.contains("\"complete\": not only"));
+    assert!(runner.contains("results-partial-$FILTER_SLUG.json"));
+
+    let invariant = read(
+        "docs/case-studies/issue-848/self-hosting-authorship/coding-task-execution-invariant.lino",
+    );
+    assert_eq!(
+        invariant,
+        concat!(
+            "coding_task_execution_contract\n",
+            "  record_type meta_invariant\n",
+            "  source_generation \"render executable source from the formalized request, never ",
+            "echo request prose\"\n",
+            "  verification \"compile or inspect the exact bytes written to the requested ",
+            "workspace target\"\n",
+            "  scoring \"record success only after an observed_workspace_effect passes its ",
+            "task verifier\"",
+        )
+    );
+
+    let session = "ses_04160c59fffe3FDUKteR56kfQp";
+    let agent_log = read("docs/case-studies/issue-848/self-hosting-authorship/agent-cli.log");
+    assert!(agent_log.contains(session));
+    let formal_ai_log = read("docs/case-studies/issue-848/self-hosting-authorship/formal-ai.log");
+    for transition in [
+        "planned ToolCalls",
+        "tool=write",
+        "tool: \"bash\"",
+        "planned Final",
+        "coding-task-execution-invariant.lino",
+    ] {
+        assert!(
+            formal_ai_log.contains(transition),
+            "server trace is missing {transition}"
+        );
+    }
+
+    let decomposition =
+        read("docs/case-studies/issue-848/self-hosting-authorship/decomposition.lino");
+    assert_eq!(decomposition.matches("issue_848_smallest_leaf_").count(), 4);
+    assert_eq!(
+        decomposition
+            .matches("authorship formal_ai_agent_cli")
+            .count(),
+        1
+    );
+    assert!(decomposition.contains(&format!("session {session}")));
+    assert!(decomposition.contains("formal_ai_authored_percent 25"));
+}
+
 fn assert_generated_source(task: &str, path: &str, expected: &str) {
     let outcome = run_agentic_task(task).expect("isolated agent workspace");
     assert!(
