@@ -257,6 +257,18 @@ fn whole_solution_is_linked_and_has_a_release_fragment() {
             "bccbcdc8b91676a406786466706a2e17e8a8f6cb898da71dbf0b11b780ab1ff6",
             "soft-wrapped continuation",
             "triage signals",
+            "ses_042daf081ffecMWSd71J5l7B6E",
+            "7bd45aa123575af2d7a9f548e79f68c57d96018ba3c6e834114b3fbd54adf18a",
+        ],
+    );
+    assert_contains_all(
+        "whole repository Agent CLI evidence",
+        &read("docs/case-studies/issue-885/agent-cli-evidence/whole-repository.md"),
+        &[
+            "ses_042daf081ffecMWSd71J5l7B6E",
+            "formal-ai statement-audit --root .",
+            "215975",
+            "7bd45aa123575af2d7a9f548e79f68c57d96018ba3c6e834114b3fbd54adf18a",
         ],
     );
 }

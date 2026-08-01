@@ -56,3 +56,24 @@ The smaller real-Agent-CLI audit in
 supplies an exact evidence capture and proves that the public command persists
 resolved evidence, a dependency link, and contextual probability across a
 whole two-document workspace.
+
+## Real Agent CLI whole-repository execution
+
+After the documentation commit, Formal AI served the real Agent CLI from clean
+commit `901d6e7688e2d202234a83a8dab8139b5b36f59b`. The retained
+[`whole-repository.md`](agent-cli-evidence/whole-repository.md) transcript records
+the prompt, command, and result. Session
+`ses_042daf081ffecMWSd71J5l7B6E` selected and ran the public command itself:
+
+```text
+formal-ai statement-audit --root . --output statement-audit.lino
+```
+
+The Agent-reported result covered 215,975 statements, 4,660 contradiction
+candidates, 20,885 findings, and 243 skipped paths. Its 4,085,456-line graph
+had SHA-256
+`7bd45aa123575af2d7a9f548e79f68c57d96018ba3c6e834114b3fbd54adf18a`.
+The generated graph was moved outside the checkout after hashing, and `git
+status --short` remained empty. This section necessarily postdates the audited
+commit; it records that immutable commit and session rather than claiming to
+audit its own newly added prose.
