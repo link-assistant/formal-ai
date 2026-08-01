@@ -1530,9 +1530,7 @@ jobs:
         run: experiments/agent_cli_e2e/run_agent_cli.sh
 
       - name: "Run agent CLI E2E — literal payload containing an edit phrase (issue #708)"
-        # The issue-708 self-authoring request embeds `rename X to Y` inside an
-        # exact file payload. The literal marker must own those bytes rather
-        # than letting the general planner reinterpret them as an edit command.
+        # The exact payload must own its embedded `rename X to Y` bytes.
         env:
           PORT: 8808
         run: experiments/agent_cli_e2e/run_issue_708.sh
