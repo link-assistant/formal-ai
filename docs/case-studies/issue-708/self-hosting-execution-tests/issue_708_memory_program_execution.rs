@@ -79,13 +79,38 @@ fn compiled_program_round_trips_replace_and_when_do_shapes() {
         program
     );
 
-    let edited = notation.replacen("    new \"Y\"", "    new \"Z\"", 1);
+    let edited = notation.replace(
+        "  replace\n    old \"X\"\n    new \"Y\"",
+        "  replace\n    old \"X\"\n    new \"Z\"",
+    );
     let edited = parse_memory_program_links_notation(&edited).expect("editable program");
     assert_ne!(edited.id, program.id);
     let mut store = MemoryStore::from_events(vec![event("fact", "fact", "user", "X")]);
     let outcome = execute_memory_program(&edited, &mut store, MemoryProgramAuthorization::Write);
     assert_eq!(outcome.halt, MemoryProgramHalt::Fixpoint);
     assert_eq!(store.events()[0].content.as_deref(), Some("Z"));
+
+    let create = compile_memory_program(
+        "For every meaning without a Russian label, add a todo link.",
+        LIMITS,
+    )
+    .expect("seeded family");
+    let destructive = create
+        .links_notation()
+        .replace("    do \"create\"", "    do \"delete_with_retraction\"");
+    let destructive =
+        parse_memory_program_links_notation(&destructive).expect("editable when/do program");
+    let refused = execute_memory_program(
+        &destructive,
+        &mut MemoryStore::default(),
+        MemoryProgramAuthorization::Write,
+    );
+    assert_eq!(
+        refused.halt,
+        MemoryProgramHalt::PermissionDenied {
+            required: String::from("destructive"),
+        }
+    );
 }
 
 #[test]
@@ -167,6 +192,34 @@ fn topic_counts_and_missing_labels_create_deduplicated_links() {
         .collect::<Vec<_>>();
     assert_eq!(todos.len(), 1);
     assert!(todos[0].inputs.as_deref().is_some_and(|id| id == "missing"));
+}
+
+#[test]
+fn mapped_copy_retains_source_content_and_collection() {
+    let mut store = MemoryStore::from_events(vec![event(
+        "engine-fact",
+        "fact",
+        "user",
+        "engines need fuel",
+    )]);
+    let program = compile_memory_program(
+        "Copy every fact about engines to collection research.",
+        LIMITS,
+    )
+    .expect("seeded family");
+
+    let outcome = execute_memory_program(&program, &mut store, MemoryProgramAuthorization::Write);
+
+    assert_eq!(outcome.halt, MemoryProgramHalt::Complete);
+    assert_eq!(outcome.changed, 1);
+    let copied = store
+        .events()
+        .iter()
+        .find(|event| event.kind.as_deref() == Some("collection_member"))
+        .expect("mapped copy");
+    assert_eq!(copied.content.as_deref(), Some("engines need fuel"));
+    assert_eq!(copied.inputs.as_deref(), Some("engine-fact"));
+    assert_eq!(copied.outputs.as_deref(), Some("research"));
 }
 
 #[test]

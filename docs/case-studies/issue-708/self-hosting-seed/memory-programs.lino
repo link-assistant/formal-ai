@@ -46,6 +46,7 @@ memory_program_catalog
     template_ru "перечисли все факты, которые я добавил о {old}, и переименуй {old} в {new} во всех них"
     template_hi "{old} के बारे में मेरे जोड़े हर तथ्य को सूचीबद्ध करो और उन सभी में {old} का नाम {new} कर दो"
     template_zh "列出我贡献的关于 {old} 的每个事实，并在所有事实中将 {old} 重命名为 {new}"
+    template_es "enumera todos los hechos que aporté sobre {old} y cambia {old} por {new} en todos ellos"
   family topic_count_summary_week
     step_1 "match period=this_week kind=event"
     step_2 "map_matches group=topic aggregate=count"
@@ -57,6 +58,7 @@ memory_program_catalog
     template_ru "посчитай события по темам за эту неделю и сохрани сводку"
     template_hi "इस सप्ताह प्रति विषय घटनाएँ गिनो और सारांश सहेजो"
     template_zh "按主题统计本周事件并保存摘要"
+    template_es "cuenta los eventos por tema de esta semana y guarda el resumen"
   family missing_russian_label_todo
     step_1 "match kind=meaning"
     step_2 "filter missing=label_ru"
@@ -68,6 +70,7 @@ memory_program_catalog
     template_ru "для каждого значения без русской метки добавь ссылку задачи"
     template_hi "रूसी लेबल के बिना हर अर्थ के लिए कार्य लिंक जोड़ो"
     template_zh "为每个没有俄语标签的含义添加待办链接"
+    template_es "para cada significado sin etiqueta en ruso, añade un enlace de tarea"
   family list_facts_about
     step_1 "match contains=$topic"
     step_2 "filter kind=fact"
@@ -75,6 +78,7 @@ memory_program_catalog
     template_ru "перечисли все факты о {topic}"
     template_hi "{topic} के बारे में हर तथ्य सूचीबद्ध करो"
     template_zh "列出关于 {topic} 的每个事实"
+    template_es "enumera todos los hechos sobre {topic}"
   family replace_everywhere
     step_1 "match contains=$old"
     step_2 "map_matches field=content"
@@ -85,6 +89,7 @@ memory_program_catalog
     template_ru "замени {old} на {new} в каждом событии памяти"
     template_hi "हर स्मृति घटना में {old} को {new} से बदलो"
     template_zh "在每个记忆事件中将 {old} 替换为 {new}"
+    template_es "reemplaza {old} por {new} en cada evento de memoria"
   family archive_duplicate_facts
     step_1 "match kind=fact"
     step_2 "filter duplicate=true"
@@ -96,6 +101,7 @@ memory_program_catalog
     template_ru "архивируй каждый повторяющийся факт"
     template_hi "हर डुप्लिकेट तथ्य को संग्रहित करो"
     template_zh "归档每个重复事实"
+    template_es "archiva todos los hechos duplicados"
   family tag_matching_facts
     step_1 "match contains=$topic"
     step_2 "filter kind=fact"
@@ -106,6 +112,7 @@ memory_program_catalog
     template_ru "пометь каждый факт о {topic} тегом {tag}"
     template_hi "{topic} के हर तथ्य को {tag} से टैग करो"
     template_zh "用 {tag} 标记关于 {topic} 的每个事实"
+    template_es "etiqueta todos los hechos sobre {topic} con {tag}"
   family copy_matches_to_collection
     step_1 "match contains=$topic"
     step_2 "map_matches copy=true"
@@ -115,6 +122,7 @@ memory_program_catalog
     template_ru "скопируй каждый факт о {topic} в коллекцию {collection}"
     template_hi "{topic} के हर तथ्य को {collection} संग्रह में कॉपी करो"
     template_zh "将关于 {topic} 的每个事实复制到集合 {collection}"
+    template_es "copia todos los hechos sobre {topic} a la colección {collection}"
   family retract_contributed_facts
     step_1 "match contains=$topic"
     step_2 "filter role=user"
@@ -126,6 +134,7 @@ memory_program_catalog
     template_ru "удали каждый факт, который я добавил о {topic}"
     template_hi "{topic} के बारे में मेरा जोड़ा हर तथ्य हटाओ"
     template_zh "删除我贡献的关于 {topic} 的每个事实"
+    template_es "elimina todos los hechos que aporté sobre {topic}"
   family normalize_labels_fixpoint
     step_1 "match field=label"
     step_2 "map_matches field=content"
@@ -136,6 +145,7 @@ memory_program_catalog
     template_ru "нормализуй все метки, пока они не перестанут меняться"
     template_hi "हर लेबल को तब तक सामान्य करो जब तक कोई लेबल न बदले"
     template_zh "规范化每个标签直到没有标签发生变化"
+    template_es "normaliza todas las etiquetas hasta que ninguna cambie"
   family list_week_events_by_topic
     step_1 "match period=this_week"
     step_2 "filter kind=event"
@@ -144,6 +154,7 @@ memory_program_catalog
     template_ru "перечисли события этой недели по темам"
     template_hi "इस सप्ताह की घटनाएँ विषय के अनुसार सूचीबद्ध करो"
     template_zh "按主题列出本周事件"
+    template_es "enumera los eventos de esta semana por tema"
   family contributor_fact_count_summary
     step_1 "match kind=fact"
     step_2 "map_matches group=contributor aggregate=count"
@@ -153,6 +164,7 @@ memory_program_catalog
     template_ru "посчитай факты по авторам и сохрани сводку"
     template_hi "प्रति योगदानकर्ता तथ्य गिनो और सारांश सहेजो"
     template_zh "按贡献者统计事实并保存摘要"
+    template_es "cuenta los hechos por colaborador y guarda el resumen"
   family missing_english_label_todo
     step_1 "match kind=meaning"
     step_2 "filter missing=label_en"
@@ -163,6 +175,7 @@ memory_program_catalog
     template_ru "добавь ссылку задачи для каждого значения без английской метки"
     template_hi "अंग्रेज़ी लेबल के बिना हर अर्थ के लिए कार्य लिंक जोड़ो"
     template_zh "为每个没有英语标签的含义添加待办链接"
+    template_es "añade un enlace de tarea para cada significado sin etiqueta en inglés"
   family update_dated_facts
     step_1 "match sent_at=$date"
     step_2 "filter kind=fact"
@@ -173,6 +186,7 @@ memory_program_catalog
     template_ru "добавь {note} к каждому факту от {date}"
     template_hi "{date} के हर तथ्य में {note} जोड़ो"
     template_zh "将 {note} 添加到日期为 {date} 的每个事实"
+    template_es "añade {note} a todos los hechos con fecha {date}"
   family dangling_meaning_review
     step_1 "match kind=meaning"
     step_2 "filter links=none"
@@ -183,3 +197,4 @@ memory_program_catalog
     template_ru "создай ссылку проверки для каждого значения без ссылок"
     template_hi "बिना लिंक वाले हर अर्थ के लिए समीक्षा लिंक बनाओ"
     template_zh "为每个没有链接的含义创建审核链接"
+    template_es "crea un enlace de revisión para cada significado sin enlaces"
