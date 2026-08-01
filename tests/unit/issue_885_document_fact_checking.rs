@@ -1,9 +1,11 @@
 //! Document-relative statement-audit coverage for issue #885.
 
+use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
 use formal_ai::relative_meta_logic::{SourceTier, Stance};
 use formal_ai::statement_audit::{
     audit_corpus, AuditConfig, EvidenceCapture, RepositoryCorpus, RepositoryDocument,
 };
+use formal_ai::ChatMessage;
 
 fn audit(
     markdown: &str,
@@ -162,4 +164,21 @@ fn a_soft_wrapped_continuation_is_not_mistaken_for_a_new_reference() {
         assert_eq!(statement.resolved_text, statement.text);
         assert!(statement.references.is_empty(), "{statement:#?}");
     }
+}
+
+#[test]
+fn an_agent_audit_task_uses_the_named_external_evidence_file() {
+    let messages = vec![ChatMessage::user(
+        "Fact-check every repository statement. Use evidence.json as the external evidence capture file and preserve statement-audit.lino.",
+    )];
+    let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &["bash"]) else {
+        panic!("statement audit must emit a client-owned command");
+    };
+    let arguments: serde_json::Value =
+        serde_json::from_str(&calls[0].arguments).expect("valid shell arguments");
+
+    assert_eq!(
+        arguments["command"],
+        "formal-ai statement-audit --root . --evidence evidence.json --output statement-audit.lino"
+    );
 }

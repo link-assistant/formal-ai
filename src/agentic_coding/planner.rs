@@ -193,7 +193,7 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
         return Some(plan_shell_step(
             messages,
             tool_names,
-            statement_audit::STATEMENT_AUDIT_COMMAND,
+            statement_audit::command_for(&task),
         ));
     }
     // Workspace mutations are grounded in client-owned file bytes. This route
