@@ -282,6 +282,7 @@ fn case_study_and_release_trace_every_issue_848_acceptance_boundary() {
     for evidence in [
         "38/130",
         "61/130",
+        "62/130",
         "compiler-valid",
         "test_authoring",
         "targeted_edit",
