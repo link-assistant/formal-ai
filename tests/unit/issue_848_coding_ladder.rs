@@ -273,6 +273,41 @@ fn compiler_measurement_and_same_task_authorship_are_preserved() {
     assert!(decomposition.contains("formal_ai_authored_percent 25"));
 }
 
+#[test]
+fn case_study_and_release_trace_every_issue_848_acceptance_boundary() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
+    let read = |path: &str| {
+        std::fs::read_to_string(root.join(path)).unwrap_or_else(|error| panic!("{path}: {error}"))
+    };
+    let case_study = read("docs/case-studies/issue-848/README.md");
+    for evidence in [
+        "38/130",
+        "61/130",
+        "compiler-valid",
+        "test_authoring",
+        "targeted_edit",
+        "multilingual",
+        "ses_04160c59fffe3FDUKteR56kfQp",
+    ] {
+        assert!(case_study.contains(evidence), "missing {evidence}");
+    }
+
+    let traceability = read("docs/case-studies/issue-848/requirements.md");
+    for index in 1..=8 {
+        assert!(
+            traceability.contains(&format!("R848-{index}")),
+            "missing R848-{index}"
+        );
+    }
+    let global = read("REQUIREMENTS.md");
+    assert!(global.contains("## Issue #848"));
+    assert!(global.contains("R848-8"));
+
+    let fragment = read("changelog.d/20260801_848_coding_tasks.md");
+    assert!(fragment.contains("bump: minor"));
+    assert!(fragment.contains("#848"));
+}
+
 fn assert_generated_source(task: &str, path: &str, expected: &str) {
     let outcome = run_agentic_task(task).expect("isolated agent workspace");
     assert!(
