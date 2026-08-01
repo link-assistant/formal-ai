@@ -23,8 +23,24 @@ The required boundaries are now nonzero: compiler-valid source creation,
 collection edits, and multilingual execution. Two correct version answers in
 that first run were scored against the stale literal `0.30`; the benchmark now
 derives their oracle from `Cargo.toml`, and both English and Chinese filtered
-replays pass against `0.317.0`. The final complete score is recorded in the
-canonical ladder result and this case study after the final run.
+replays pass against `0.317.0`.
+
+The final complete run measured 130/130 tasks with no unavailable servers and
+passed 62/130:
+
+```text
+L1  0/16
+L2  4/12
+L3  8/28
+L4 50/74
+```
+
+Its acceptance-boundary families passed `create` 6/6, `search` 6/8,
+`test_authoring` 1/8, `targeted_edit` 2/7, and `multilingual` 7/11. The two
+corrected version reads added two passes, while a variable Hindi decomposition
+answer lost one pass relative to the first run. The canonical result therefore
+records the observed net increase of one rather than extrapolating from the
+filtered replays.
 
 ## Evidence inventory
 

@@ -116,8 +116,17 @@ editing, L2, and L3 are all nonzero. L1 and refactoring remain honest gaps.
 That run also exposed two stale benchmark expectations copied from v0.303.0:
 correct English and Chinese answers reported the current 0.317.0 version but
 were checked against `0.30`. Answer oracles can now derive a capture from a
-named repository file; both filtered replays pass. The canonical result is
-updated only by a complete run.
+named repository file; both filtered replays pass. A second complete run
+measured 130/130 with no unavailable servers and passed 62/130:
+
+  L1 0/16   L2 4/12   L3 8/28   L4 50/74
+
+  create 6/6   search 6/8   test_authoring 1/8   targeted_edit 2/7
+  multilingual 7/11   decomposition 5/6   verification 4/5
+
+The two corrected reads added two passes while a variable Hindi decomposition
+answer lost one relative to the first run. The canonical result records that
+observed net gain; it is updated only by a complete run.
 
 MEASUREMENT DEFECTS FOUND AND FIXED (read before trusting any number)
 ----------------------------------------------------------------------
