@@ -386,9 +386,9 @@ fn create_events(
 
     if projection.get("copy").is_some_and(|copy| copy == "true") {
         let collection = arguments.get("collection").map(String::as_str);
-        let copies = selection
-            .iter()
-            .map(|&index| {
+        let mut changed = 0;
+        for &index in selection {
+            let (target, content) = {
                 let event = &store.events()[index];
                 (
                     source_id(event, index),
@@ -397,43 +397,35 @@ fn create_events(
                         .clone()
                         .unwrap_or_else(|| event_text(event).to_owned()),
                 )
-            })
-            .collect::<Vec<_>>();
-        return copies
-            .into_iter()
-            .filter(|(target, content)| {
-                append_derived_event(
-                    store,
-                    "collection_member",
-                    &format!(
-                        "collection_member:{}:{target}",
-                        collection.unwrap_or_default()
-                    ),
-                    Some(target),
-                    collection,
-                    content,
-                )
-            })
-            .count();
+            };
+            changed += usize::from(append_derived_event(
+                store,
+                "collection_member",
+                &format!(
+                    "collection_member:{}:{target}",
+                    collection.unwrap_or_default()
+                ),
+                Some(&target),
+                collection,
+                &content,
+            ));
+        }
+        return changed;
     }
 
-    let targets = selection
-        .iter()
-        .map(|&index| source_id(&store.events()[index], index))
-        .collect::<Vec<_>>();
-    targets
-        .into_iter()
-        .filter(|target| {
-            append_derived_event(
-                store,
-                kind,
-                &format!("{kind}:{target}"),
-                Some(target),
-                None,
-                &format!("memory_program_result:{kind}:{target}"),
-            )
-        })
-        .count()
+    let mut changed = 0;
+    for &index in selection {
+        let target = source_id(&store.events()[index], index);
+        changed += usize::from(append_derived_event(
+            store,
+            kind,
+            &format!("{kind}:{target}"),
+            Some(&target),
+            None,
+            &format!("memory_program_result:{kind}:{target}"),
+        ));
+    }
+    changed
 }
 
 fn append_derived_event(

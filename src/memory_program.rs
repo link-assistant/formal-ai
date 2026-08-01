@@ -223,7 +223,7 @@ pub fn parse_memory_program_links_notation(
                         primitive: String::new(),
                         permission: MemoryProgramPermission::Read,
                         arguments: BTreeMap::new(),
-                    })
+                    });
                 }
                 "when" => {
                     when_primitive = Some(parse_lino_scalar(value));
@@ -341,7 +341,7 @@ fn apply_reviewable_shapes(
         let first = steps
             .first_mut()
             .ok_or_else(|| memory_program_parse_error("memory_program_when_missing_condition"))?;
-        first.primitive = primitive.to_owned();
+        primitive.clone_into(&mut first.primitive);
         first.permission = seeded_permission(primitive)?;
     }
     if let Some(primitive) = do_primitive {
@@ -349,7 +349,7 @@ fn apply_reviewable_shapes(
             .iter_mut()
             .find(|step| is_effect_primitive(&step.primitive))
             .ok_or_else(|| memory_program_parse_error("memory_program_when_missing_effect"))?;
-        effect.primitive = primitive.to_owned();
+        primitive.clone_into(&mut effect.primitive);
         effect.permission = seeded_permission(primitive)?;
     }
     Ok(())
@@ -580,8 +580,7 @@ fn match_template(template: &str, request: &str) -> Option<BTreeMap<String, Stri
         template_cursor = close + 1;
         let next_open = template[template_cursor..]
             .find('{')
-            .map(|position| template_cursor + position)
-            .unwrap_or(template.len());
+            .map_or(template.len(), |position| template_cursor + position);
         let next_literal = &template[template_cursor..next_open];
         let capture_end = if next_literal.is_empty() {
             request.len()
@@ -653,8 +652,11 @@ mod tests {
 
     #[test]
     fn a_memory_shaped_unknown_request_is_an_explicit_gap() {
-        let error = compile_memory_program("transpose every fact matrix", Default::default())
-            .expect_err("no seeded family provides matrix transposition");
+        let error = compile_memory_program(
+            "transpose every fact matrix",
+            MemoryProgramLimits::default(),
+        )
+        .expect_err("no seeded family provides matrix transposition");
         assert!(matches!(
             error,
             MemoryProgramCompileError::ProgramGap { .. }
