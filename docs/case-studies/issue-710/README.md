@@ -133,9 +133,11 @@ leaves:
 5. the verdict-definition contract artifact.
 
 Formal AI, reached through the real external Agent CLI against the local
-self-hosted release server, authored leaf 5. The driver is
-[`issue_710_agent_cli.sh`](../../../experiments/issue_710_agent_cli.sh); the
-captured session and byte-compared artifact live in
+self-hosted release server, authored leaves 4 and 5. The drivers are
+[`issue_710_agent_cli_audit_contract.sh`](../../../experiments/issue_710_agent_cli_audit_contract.sh)
+and [`issue_710_agent_cli.sh`](../../../experiments/issue_710_agent_cli.sh).
+Their captured sessions and byte-compared artifacts live in
+[`agent-cli-evidence/audit-contract/`](agent-cli-evidence/audit-contract/) and
 [`agent-cli-evidence/verdict-contract/`](agent-cli-evidence/verdict-contract/).
-That is one of five named smallest leaves (**20%**), while the other four are
+That is two of five named smallest leaves (**40%**), while the other three are
 honestly recorded as manually authored.
