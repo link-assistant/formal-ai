@@ -228,6 +228,9 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     }, formalizationContext);
   }
 
+  const compound = await FormalAiSeed.solveIndependentQuestions(prompt, history, preferences, userContext, memory, options, solve);
+  if (compound) return finalize(["composition:compound_response"], [], compound.toolCalls, compound, formalizationContext);
+
   const compoundProcedure = await tryGreetingProceduralCompound(prompt, language, preferences);
   if (compoundProcedure) {
     for (const event of compoundProcedure.trace || []) events.push(event);
@@ -420,7 +423,8 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     return finalize(events, steps, toolCalls, githubRepoInfo, formalizationContext);
   }
 
-  const capabilities = tryCapabilities(prompt, normalized, preferences, history);
+  const capabilities = !isAssistantFreeTimePrompt(normalized, prompt)
+    && tryCapabilities(prompt, normalized, preferences, history);
   if (capabilities) {
     events.push(`handler:${capabilities.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryCapabilities" });
@@ -474,17 +478,14 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
   if (isAssistantFreeTimePrompt(normalized, prompt)) {
     events.push("rule:assistant_free_time");
     steps.push({ step: "match_rule", detail: "assistant_free_time" });
-    const temperature = numericPreference(preferences.temperature, 0.7, 0, 1);
-    const randomize = preferences.greetingVariations !== false && temperature > 0;
     return finalize(events, steps, toolCalls, {
       intent: "assistant_free_time",
-      content: answerFor("assistant_free_time", language, { randomize: randomize }),
+      content: FormalAiSeed.stableResponseVariant(responseEntryFor("assistant_free_time", language), prompt),
       confidence: 1.0,
       evidence: [
         "rule:assistant_free_time",
         `language:${language}`,
-        `variation:${randomize ? "random" : "canonical"}`,
-        `temperature:${temperature.toFixed(2)}`,
+        "variation:prompt_stable",
       ],
     }, formalizationContext);
   }
@@ -531,6 +532,12 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     events.push(`handler:${calculatorRateBasis.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryCalculatorRateBasis" });
     return finalize(events, steps, toolCalls, calculatorRateBasis, formalizationContext);
+  }
+  const assistantNameMemory = tryAssistantName(prompt, normalized, history);
+  if (assistantNameMemory) {
+    events.push(`handler:${assistantNameMemory.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryAssistantName" });
+    return finalize(events, steps, toolCalls, assistantNameMemory, formalizationContext);
   }
   if (isAssistantNamePrompt(normalized, prompt)) {
     events.push("rule:assistant_name");
@@ -938,6 +945,21 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     events.push(`handler:${terminal.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryTerminalCommand" });
     return finalize(events, steps, toolCalls, terminal, formalizationContext);
+  }
+
+  if (
+    lexiconMentionsRole(ROLE_PROGRAM_MODIFICATION, normalized) &&
+    lexiconMentionsRole(ROLE_PROGRAM_MODIFICATION_REFERENCE, normalized) &&
+    !lexiconMentionsRole(ROLE_PROGRAM_ARTIFACT, normalized)
+  ) {
+    events.push("handler:ambiguous_modification_clarification");
+    steps.push({ step: "dispatch_handler", detail: "clarifyProgramModificationTarget" });
+    return finalize(events, steps, toolCalls, {
+      intent: "ambiguous_modification_clarification",
+      content: answerFor("ambiguous_modification_clarification", language),
+      confidence: 0.9,
+      evidence: ["meaning:program_modification_reference", `language:${language}`],
+    }, formalizationContext);
   }
 
   const learnedResearch = recallAssociativeResearch(prompt, memory);
