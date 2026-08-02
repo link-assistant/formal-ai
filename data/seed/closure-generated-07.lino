@@ -1,4 +1,64 @@
 meanings
+  standard
+    defined-by concept
+    lexeme en
+      surface
+        text "standard"
+  stat
+    defined-by concept
+    lexeme en
+      surface
+        text "stat"
+  statement
+    defined-by word_surface
+    lexeme en
+      surface
+        text "statement"
+  statement_audit_capture_field
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit capture field"
+  statement_audit_claim_predicate
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit claim predicate"
+  statement_audit_claim_subject
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit claim subject"
+  statement_audit_invalid_json
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit invalid json"
+  statement_audit_invalid_temperature
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit invalid temperature"
+  statement_audit_nonempty
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit nonempty"
+  statement_audit_selector_exclusive
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit selector exclusive"
+  statement_audit_selector_required
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit selector required"
+  statement_audit_strength_range
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit strength range"
   statement_audit_temperature_range
     defined-by intent
     lexeme en

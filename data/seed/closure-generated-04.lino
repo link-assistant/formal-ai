@@ -1,4 +1,14 @@
 meanings
+  repositories
+    defined-by word_surface
+    lexeme en
+      surface
+        text "repositories"
+  requirement_contradiction
+    defined-by intent
+    lexeme en
+      surface
+        text "requirement contradiction"
   reserved-role
     defined-by concept
     lexeme en
@@ -204,6 +214,31 @@ meanings
     lexeme en
       surface
         text "response agentic action before tool zh"
+  response_agentic_action_compile_program_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action compile program en"
+  response_agentic_action_compile_program_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action compile program es"
+  response_agentic_action_compile_program_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action compile program hi"
+  response_agentic_action_compile_program_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action compile program ru"
+  response_agentic_action_compile_program_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action compile program zh"
   response_agentic_action_edit_en
     defined-by response_template
     lexeme en
@@ -394,6 +429,31 @@ meanings
     lexeme en
       surface
         text "response agentic action run hi"
+  response_agentic_action_run_program_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action run program en"
+  response_agentic_action_run_program_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action run program es"
+  response_agentic_action_run_program_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action run program hi"
+  response_agentic_action_run_program_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action run program ru"
+  response_agentic_action_run_program_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action run program zh"
   response_agentic_action_run_ru
     defined-by response_template
     lexeme en
@@ -1334,63 +1394,3 @@ meanings
     lexeme en
       surface
         text "response fact check statement en"
-  response_fact_check_statement_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check statement hi"
-  response_fact_check_statement_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check statement ru"
-  response_fact_check_statement_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check statement zh"
-  response_farewell_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response farewell en"
-  response_farewell_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response farewell hi"
-  response_farewell_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response farewell ru"
-  response_farewell_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response farewell zh"
-  response_general_plan_command_capture_action_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan command capture action en"
-  response_general_plan_command_capture_action_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan command capture action hi"
-  response_general_plan_command_capture_action_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan command capture action ru"
-  response_general_plan_command_capture_action_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan command capture action zh"
-  response_general_plan_command_output_evidence_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan command output evidence en"

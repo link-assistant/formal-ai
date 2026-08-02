@@ -2,63 +2,65 @@ self_ast_census
   target src/agentic_coding/command_reroute.rs
   language rust
   fidelity full_ast
-  byte_len 5426
-  line_count 158
-  content_id source_module_139b89dd9d8b59c2
+  byte_len 5749
+  line_count 166
+  content_id source_module_aea5f42fad44ff1c
   symbol_count 7
   symbols
-    function plan_symbolic_command_reroute 25 58
-    function one_call 60 65
-    function final_answer 68 83
-    struct RecipeProgress 87 92
-    function after_latest_user 95 125
-    function tool_result_failed 128 149
-    function capability_from_call_id 151 158
+    function plan_symbolic_command_reroute 26 64
+    function one_call 66 71
+    function final_answer 74 89
+    struct RecipeProgress 93 98
+    function after_latest_user 101 133
+    function tool_result_failed 136 157
+    function tool_from_call_id 159 166
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 3897
-    named_node_count 791
-    distinct_node_kinds 70
+    total_link_count 4183
+    named_node_count 852
+    distinct_node_kinds 73
     node_kinds
-      arguments 57
+      arguments 64
       array_expression 2
       array_type 5
       assignment_expression 2
       attribute 2
       attribute_item 2
       binary_expression 6
-      block 16
+      block 18
       boolean_literal 1
       break_expression 1
-      call_expression 57
-      closure_expression 13
-      closure_parameters 13
+      call_expression 64
+      closure_expression 16
+      closure_parameters 16
       compound_assignment_expr 1
       continue_expression 1
       crate 2
       declaration_list 2
       doc_comment 12
       escape_sequence 16
-      expression_statement 16
+      expression_statement 17
       field_declaration 4
       field_declaration_list 1
-      field_expression 61
-      field_identifier 65
+      field_expression 68
+      field_identifier 72
       for_expression 2
       function_item 6
       generic_function 1
       generic_type 5
-      identifier 175
+      identifier 188
       if_expression 5
       impl_item 2
       index_expression 1
       inner_doc_comment_marker 7
       integer_literal 4
       let_condition 2
-      let_declaration 15
+      let_declaration 16
+      lifetime 3
+      lifetime_parameter 1
       line_comment 12
       macro_invocation 6
       match_arm 3
@@ -67,14 +69,14 @@ self_ast_census
       match_pattern 3
       mutable_specifier 2
       outer_doc_comment_marker 5
-      parameter 10
+      parameter 11
       parameters 6
-      primitive_type 8
+      primitive_type 10
       range_expression 1
-      reference_expression 9
-      reference_type 10
+      reference_expression 8
+      reference_type 12
       return_expression 3
-      scoped_identifier 16
+      scoped_identifier 17
       scoped_use_list 2
       self 5
       self_parameter 1
@@ -82,14 +84,15 @@ self_ast_census
       string_content 27
       string_literal 17
       struct_item 1
-      super 1
+      super 2
       token_tree 11
       try_expression 4
-      tuple_struct_pattern 4
+      tuple_struct_pattern 3
       type_arguments 6
-      type_identifier 21
+      type_identifier 20
+      type_parameters 1
       unary_expression 2
       use_as_clause 1
-      use_declaration 5
+      use_declaration 6
       use_list 2
       visibility_modifier 1

@@ -12,6 +12,7 @@ use std::fmt::Write as _;
 use crate::engine::{ExecutionRecipe, SymbolicAnswer};
 use crate::protocol::ChatMessage;
 
+use super::capability_router::is_workspace_creation_tool;
 use super::planner::{
     tool_capability, tool_for, write_arguments, AgenticPlan, Capability, PlannedToolCall,
 };
@@ -28,9 +29,14 @@ pub fn plan_symbolic_command_reroute(
     symbolic_answer: &SymbolicAnswer,
 ) -> Option<AgenticPlan> {
     let recipe = symbolic_answer.execution_recipe.as_ref()?;
-    let write_tool = tool_for(tool_names, Capability::Write)?;
+    let write_tool = tool_for(tool_names, Capability::Write).or_else(|| {
+        tool_names
+            .iter()
+            .copied()
+            .find(|name| is_workspace_creation_tool(name))
+    })?;
     let run_tool = tool_for(tool_names, Capability::Run)?;
-    let progress = RecipeProgress::after_latest_user(messages);
+    let progress = RecipeProgress::after_latest_user(messages, write_tool);
 
     if let Some(failure) = &progress.failure {
         return Some(AgenticPlan::Final(format!(
@@ -92,7 +98,7 @@ struct RecipeProgress {
 }
 
 impl RecipeProgress {
-    fn after_latest_user(messages: &[ChatMessage]) -> Self {
+    fn after_latest_user(messages: &[ChatMessage], write_tool: &str) -> Self {
         let start = messages
             .iter()
             .rposition(|message| message.role == "user")
@@ -102,18 +108,20 @@ impl RecipeProgress {
             if message.role != "tool" {
                 continue;
             }
-            let capability = message
+            let result_tool = message
                 .name
                 .as_deref()
-                .and_then(tool_capability)
-                .or_else(|| capability_from_call_id(messages, message.tool_call_id.as_deref()));
+                .or_else(|| tool_from_call_id(messages, message.tool_call_id.as_deref()));
+            let capability = result_tool.and_then(tool_capability);
             let output = message.content.plain_text();
             if tool_result_failed(&output) {
                 progress.failure = Some(output);
                 break;
             }
             match capability {
-                Some(Capability::Write) => progress.write_done = true,
+                _ if result_tool.is_some_and(|name| name.eq_ignore_ascii_case(write_tool)) => {
+                    progress.write_done = true;
+                }
                 Some(Capability::Run) => {
                     progress.commands_done += 1;
                     progress.command_outputs.push(output);
@@ -148,11 +156,11 @@ fn tool_result_failed(output: &str) -> bool {
         })
 }
 
-fn capability_from_call_id(messages: &[ChatMessage], call_id: Option<&str>) -> Option<Capability> {
+fn tool_from_call_id<'a>(messages: &'a [ChatMessage], call_id: Option<&str>) -> Option<&'a str> {
     let call_id = call_id?;
     messages
         .iter()
         .flat_map(|message| &message.tool_calls)
         .find(|call| call.id == call_id)
-        .and_then(|call| tool_capability(&call.function.name))
+        .map(|call| call.function.name.as_str())
 }

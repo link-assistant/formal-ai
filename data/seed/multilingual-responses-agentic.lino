@@ -223,6 +223,46 @@ multilingual_responses
     intent agentic_action_run
     language zh
     text "我来运行一个命令来完成这个。"
+  response response_agentic_action_compile_program_en
+    intent agentic_action_compile_program
+    language en
+    text "Let me run a compile this program for you."
+  response response_agentic_action_compile_program_ru
+    intent agentic_action_compile_program
+    language ru
+    text "Скомпилирую эту программу для вас."
+  response response_agentic_action_compile_program_hi
+    intent agentic_action_compile_program
+    language hi
+    text "मैं आपके लिए इस प्रोग्राम को कंपाइल करता हूँ।"
+  response response_agentic_action_compile_program_zh
+    intent agentic_action_compile_program
+    language zh
+    text "我来为你编译这个程序。"
+  response response_agentic_action_compile_program_es
+    intent agentic_action_compile_program
+    language es
+    text "Voy a compilar este programa por ti."
+  response response_agentic_action_run_program_en
+    intent agentic_action_run_program
+    language en
+    text "Let me run the compiled program for you."
+  response response_agentic_action_run_program_ru
+    intent agentic_action_run_program
+    language ru
+    text "Запущу скомпилированную программу для вас."
+  response response_agentic_action_run_program_hi
+    intent agentic_action_run_program
+    language hi
+    text "मैं आपके लिए कंपाइल किया हुआ प्रोग्राम चलाता हूँ।"
+  response response_agentic_action_run_program_zh
+    intent agentic_action_run_program
+    language zh
+    text "我来为你运行编译后的程序。"
+  response response_agentic_action_run_program_es
+    intent agentic_action_run_program
+    language es
+    text "Voy a ejecutar el programa compilado por ti."
   response response_agentic_action_ask_user_en
     intent agentic_action_ask_user
     language en
