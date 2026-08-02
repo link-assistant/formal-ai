@@ -47,6 +47,34 @@ fn browser_wasm_core_deformalizes_and_preserves_exact_provenance() {
 }
 
 #[test]
+fn browser_wasm_core_detects_each_statement_language_and_uses_target_grammar() {
+    let payload = concat!(
+        "Q\tapple taxonomy\thi\tऔर पढ़ें\tके माध्यम से\n",
+        "S\thttps://mixed.invalid/apple\tMixed handbook\t",
+        "Apple is a fruit. Яблоко это фрукт.\toriginal_first_party\t\tduckduckgo#1"
+    );
+    let fused: serde_json::Value = serde_json::from_str(&fuse_statement_search_payload(payload))
+        .expect("valid WASM fusion JSON");
+    let statements = fused["statements"].as_array().expect("statements array");
+
+    assert_eq!(statements.len(), 1, "both languages express one meaning");
+    assert_eq!(statements[0]["text"], "सेब फल है.");
+    assert_eq!(statements[0]["sources"][0]["language"], "en");
+    assert!(fused["evidence"]
+        .as_array()
+        .expect("evidence array")
+        .iter()
+        .filter_map(serde_json::Value::as_str)
+        .any(|line| line.contains("language=en")));
+    assert!(fused["evidence"]
+        .as_array()
+        .expect("evidence array")
+        .iter()
+        .filter_map(serde_json::Value::as_str)
+        .any(|line| line.contains("language=ru")));
+}
+
+#[test]
 fn browser_wasm_core_keeps_both_ranked_conflict_sides() {
     let payload = concat!(
         "Q\tparser speed\ten\tRead more\tvia\n",
@@ -211,6 +239,29 @@ impl SourceTransport for ForeignOnlyTransport {
     }
 }
 
+#[derive(Clone, Default)]
+struct BoundaryPolicyTransport;
+
+impl SourceTransport for BoundaryPolicyTransport {
+    fn get(&self, url: &str) -> Result<Vec<u8>, FetchError> {
+        if url.starts_with("https://api.duckduckgo.com/") {
+            return Ok(
+                r#"{"AbstractURL":"https://boundary.invalid/original","Heading":"Original","AbstractText":"Apple is a fruit. Яблоко это фрукт.","RelatedTopics":[{"FirstURL":"https://boundary.invalid/mirror","Text":"Mirror - Apple is a fruit. Яблоко это фрукт."}]}"#
+                    .as_bytes()
+                    .to_vec(),
+            );
+        }
+        match url {
+            "https://boundary.invalid/original" | "https://boundary.invalid/mirror" => Ok(
+                r#"<html><head><style>.advert { content: 'wrong'; }</style><script>window.answer = 'wrong';</script></head><body><p>Apple is a fruit.</p><p>Яблоко это фрукт.</p></body></html>"#
+                    .as_bytes()
+                    .to_vec(),
+            ),
+            _ => Err(FetchError::Transport(format!("fixture_missing:{url}"))),
+        }
+    }
+}
+
 const fn fixed_time() -> u64 {
     1_753_444_800
 }
@@ -334,6 +385,30 @@ fn decisive_foreign_language_fact_is_deformalized_in_the_query_language() {
 }
 
 #[test]
+fn native_deformalization_uses_data_driven_hindi_word_order() {
+    let cache = temp_cache("hindi-order");
+    let client = CachedSourceClient::new(&cache, ForeignOnlyTransport)
+        .with_online(true)
+        .with_clock(fixed_time);
+    let execution = execute_search_fusion(
+        &client,
+        "सेब वर्गीकरण",
+        "hi",
+        1,
+        |_| SearchSourceClassification::new(SourceTier::OriginalFirstParty, "ru"),
+    )
+    .expect("captured search fusion");
+
+    assert!(execution
+        .answer
+        .statements
+        .iter()
+        .any(|statement| statement.text == "सेब फल है."));
+
+    fs::remove_dir_all(cache).expect("remove fixture cache");
+}
+
+#[test]
 fn contradictory_sources_keep_both_sides_with_tiers_and_posteriors() {
     let cache = temp_cache("conflict");
     let client = CachedSourceClient::new(&cache, ConflictTransport)
@@ -416,6 +491,51 @@ fn presentation_normalizes_source_url_title_quote_and_read_more() {
             .count(),
         execution.observations.len()
     );
+
+    fs::remove_dir_all(cache).expect("remove fixture cache");
+}
+
+#[test]
+fn capture_policy_is_per_statement_and_demotes_exact_mirrors() {
+    let cache = temp_cache("boundary-policy");
+    let client = CachedSourceClient::new(&cache, BoundaryPolicyTransport)
+        .with_online(true)
+        .with_clock(fixed_time);
+    let execution = execute_search_fusion(&client, "apple taxonomy", "en", 2, |_| {
+        SearchSourceClassification::auto(SourceTier::IndependentCorroboration)
+    })
+    .expect("captured search fusion");
+
+    let fetched: Vec<_> = execution
+        .observations
+        .iter()
+        .filter(|observation| {
+            observation.origin == formal_ai::SearchObservationOrigin::FetchedSource
+        })
+        .collect();
+    assert!(fetched.iter().any(
+        |observation| observation.original_text == "Apple is a fruit."
+            && observation.language == "en"
+    ));
+    assert!(fetched.iter().any(
+        |observation| observation.original_text == "Яблоко это фрукт."
+            && observation.language == "ru"
+    ));
+    assert!(fetched.iter().all(|observation| {
+        !observation.original_text.contains("window.answer")
+            && !observation.original_text.contains("advert")
+    }));
+    assert_eq!(
+        execution.ignored_sources,
+        vec!["https://boundary.invalid/mirror"],
+        "an exact page capture contributes zero even when the caller did not pre-classify it"
+    );
+    assert!(execution
+        .answer
+        .sources
+        .iter()
+        .find(|source| source.url.ends_with("/mirror"))
+        .is_some_and(|source| source.tier == SourceTier::Unoriginal));
 
     fs::remove_dir_all(cache).expect("remove fixture cache");
 }

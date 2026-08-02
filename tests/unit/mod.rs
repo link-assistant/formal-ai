@@ -106,6 +106,7 @@ mod issue_708_memory_query_language_execution;
 mod issue_708_memory_query_languages;
 mod issue_708_self_hosting;
 mod issue_709_search_fusion;
+mod issue_709_search_fusion_learning;
 mod issue_712_routing_learning;
 mod issue_714_agentic_mode;
 mod issue_715_code_rewrite_learning;

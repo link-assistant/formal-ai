@@ -28,6 +28,9 @@ mod web_search_core;
 #[path = "../../../web_search_fusion_core.rs"]
 mod web_search_fusion_core;
 
+#[path = "../../../search_fusion_grammar.rs"]
+mod search_fusion_grammar;
+
 #[path = "../../../memory_query_language/mod.rs"]
 #[allow(dead_code, unused_imports)]
 mod memory_query_language;

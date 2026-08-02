@@ -325,13 +325,17 @@ where
     C: Fn(&str) -> SearchSourceClassification,
 {
     let research = execute_source_research(client, query, page_limit)?;
+    let classifications = effective_classifications(&research, &classify);
     let mut observations = Vec::new();
     let mut sources = Vec::new();
     let mut ignored_sources = Vec::new();
     let mut sourced_statements = Vec::new();
 
     for ranking in &research.search.fused {
-        let classification = classify(&ranking.url);
+        let classification = classifications
+            .get(&ranking.url)
+            .cloned()
+            .unwrap_or_else(|| classify(&ranking.url));
         let page = research
             .pages
             .iter()
@@ -368,17 +372,17 @@ where
             fragments.push((SearchObservationOrigin::FetchedSource, text));
         }
         for (origin, fragment) in fragments {
-            let fragment_language = if classification.language == "auto" {
-                crate::language::detect(&fragment).slug()
-            } else {
-                classification.language.as_str()
-            };
             for statement in crate::summarization::formalize(&fragment) {
+                let statement_language = if classification.language == "auto" {
+                    crate::language::detect(&statement.text).slug()
+                } else {
+                    classification.language.as_str()
+                };
                 let observation = formalize_observation(
                     &ranking.url,
                     origin,
                     &statement.text,
-                    fragment_language,
+                    statement_language,
                     target_language,
                 );
                 if classification.tier != SourceTier::Unoriginal {
@@ -450,6 +454,54 @@ where
     })
 }
 
+/// Apply the capture-level part of the source policy before any statement can
+/// affect rank. Exact page mirrors are unoriginal even when a caller lacks
+/// source metadata; if tiers differ, the highest-tier capture owns the bytes.
+fn effective_classifications<C>(
+    research: &SourceResearchExecution,
+    classify: &C,
+) -> BTreeMap<String, SearchSourceClassification>
+where
+    C: Fn(&str) -> SearchSourceClassification,
+{
+    let mut classifications = research
+        .search
+        .fused
+        .iter()
+        .map(|ranking| (ranking.url.clone(), classify(&ranking.url)))
+        .collect::<BTreeMap<_, _>>();
+    let mut capture_owner: BTreeMap<String, String> = BTreeMap::new();
+    for ranking in &research.search.fused {
+        let Some(page) = research
+            .pages
+            .iter()
+            .find(|page| page.ranking.url == ranking.url)
+        else {
+            continue;
+        };
+        let digest = page.capture.sha256().to_owned();
+        let Some(owner_url) = capture_owner.get(&digest).cloned() else {
+            capture_owner.insert(digest, ranking.url.clone());
+            continue;
+        };
+        let owner_weight = classifications
+            .get(&owner_url)
+            .map_or(0, |value| value.tier.weight_percent());
+        let current_weight = classifications
+            .get(&ranking.url)
+            .map_or(0, |value| value.tier.weight_percent());
+        if current_weight > owner_weight {
+            if let Some(owner) = classifications.get_mut(&owner_url) {
+                owner.tier = SourceTier::Unoriginal;
+            }
+            capture_owner.insert(digest, ranking.url.clone());
+        } else if let Some(current) = classifications.get_mut(&ranking.url) {
+            current.tier = SourceTier::Unoriginal;
+        }
+    }
+    classifications
+}
+
 fn formalize_observation(
     source_url: &str,
     origin: SearchObservationOrigin,
@@ -500,7 +552,7 @@ fn complete_semantic_terms(candidate: &FormalizationCandidate) -> Vec<String> {
 }
 
 fn render_candidate(candidate: &FormalizationCandidate, target_language: &str) -> Option<String> {
-    let mut surfaces = Vec::new();
+    let mut surfaces = BTreeMap::new();
     for role in [
         FormalizationRole::Subject,
         FormalizationRole::Predicate,
@@ -525,9 +577,13 @@ fn render_candidate(candidate: &FormalizationCandidate, target_language: &str) -
         } else {
             meaning.word_in(target_language)?
         };
-        surfaces.push(surface);
+        surfaces.insert(role.slug(), surface);
     }
-    let joined = surfaces.join(" ");
+    let joined = crate::search_fusion_grammar::role_order(target_language)
+        .iter()
+        .map(|role| surfaces.get(role).copied())
+        .collect::<Option<Vec<_>>>()?
+        .join(" ");
     Some(capitalize_first(&joined))
 }
 
@@ -598,19 +654,41 @@ fn split_title_excerpt(title: &str, excerpt: &str) -> (String, String) {
 
 fn visible_text(bytes: &[u8]) -> String {
     let input = String::from_utf8_lossy(bytes);
+    let lowercase = input.to_ascii_lowercase();
     let mut output = String::new();
-    let mut inside_tag = false;
-    for character in input.chars() {
-        match character {
-            '<' => inside_tag = true,
-            '>' => {
-                inside_tag = false;
-                output.push(' ');
+    let mut cursor = 0;
+    while let Some(relative_open) = input[cursor..].find('<') {
+        let open = cursor + relative_open;
+        output.push_str(&input[cursor..open]);
+        let Some(relative_close) = input[open..].find('>') else {
+            break;
+        };
+        let close = open + relative_close + 1;
+        let tag = lowercase[open + 1..close - 1].trim_start();
+        let hidden = ["script", "style", "template", "noscript"]
+            .iter()
+            .find(|name| {
+                tag.strip_prefix(**name).is_some_and(|rest| {
+                    rest.is_empty()
+                        || rest.starts_with(char::is_whitespace)
+                        || rest.starts_with('>')
+                })
+            });
+        if let Some(name) = hidden {
+            let closing = format!("</{name}");
+            if let Some(relative_end) = lowercase[close..].find(&closing) {
+                let closing_open = close + relative_end;
+                if let Some(relative_closing_close) = input[closing_open..].find('>') {
+                    cursor = closing_open + relative_closing_close + 1;
+                    output.push(' ');
+                    continue;
+                }
             }
-            _ if !inside_tag => output.push(character),
-            _ => {}
         }
+        output.push(' ');
+        cursor = close;
     }
+    output.push_str(&input[cursor..]);
     output.split_whitespace().collect::<Vec<_>>().join(" ")
 }
 

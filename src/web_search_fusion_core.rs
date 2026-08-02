@@ -83,6 +83,7 @@ struct Formalization {
     meaning: String,
     semantic: Vec<String>,
     rendered: String,
+    language: String,
 }
 
 #[derive(Clone, Debug)]
@@ -250,11 +251,6 @@ fn build_nodes(
     let mut trusted_urls = Vec::new();
     for source in &request.sources {
         let tier_points = tier_points(&source.tier);
-        let language = if source.language.is_empty() {
-            request.language.as_str()
-        } else {
-            source.language.as_str()
-        };
         let title = nonempty(source.title.clone(), &source.url);
         let mut excerpt = nonempty(source.excerpt.clone(), &title);
         let prefix = format!("{title} - ");
@@ -262,16 +258,23 @@ fn build_nodes(
             excerpt = excerpt[prefix.len()..].trim().to_string();
         }
         for fragment in sentences(&excerpt, MAX_SOURCE_FRAGMENTS) {
-            let formal = formalize(&fragment, language, &request.language, anchors, vocabulary);
+            let formal = formalize(
+                &fragment,
+                &source.language,
+                &request.language,
+                anchors,
+                vocabulary,
+            );
             evidence.push(format!(
-                "search_fusion:formalization:{}:{}:{}",
+                "search_fusion:formalization:{}:{}:{}:language={}",
                 source.url,
                 if formal.denied { "denied" } else { "asserted" },
                 if formal.meaning.is_empty() {
                     "empty"
                 } else {
                     &formal.meaning
-                }
+                },
+                formal.language
             ));
             if tier_points == 0 {
                 evidence.push(format!("search_fusion:ignored:{}:unoriginal", source.url));
@@ -286,7 +289,7 @@ fn build_nodes(
                 title: title.clone(),
                 quote: fragment,
                 tier: source.tier.clone(),
-                language: language.to_string(),
+                language: formal.language.clone(),
                 providers: source.providers.clone(),
                 retrieval_rank: source.retrieval_rank,
                 alternate: source.alternate,
@@ -352,6 +355,45 @@ fn formalize(
     anchors: &[Meaning],
     vocabulary: &[(String, VocabularyForm)],
 ) -> Formalization {
+    let mut languages = Vec::new();
+    if !source_language.is_empty() {
+        push_unique(&mut languages, source_language);
+    }
+    for meaning in anchors {
+        for form in &meaning.forms {
+            push_unique(&mut languages, &form.language);
+        }
+    }
+    if languages.is_empty() {
+        push_unique(&mut languages, target_language);
+    }
+    let mut fallback = None;
+    for language in languages {
+        let candidate =
+            formalize_in_language(text, &language, target_language, anchors, vocabulary);
+        if !candidate.semantic.is_empty() {
+            return candidate;
+        }
+        if fallback.is_none() {
+            fallback = Some(candidate);
+        }
+    }
+    fallback.unwrap_or_else(|| Formalization {
+        denied: false,
+        meaning: String::new(),
+        semantic: Vec::new(),
+        rendered: punctuated(text),
+        language: target_language.to_string(),
+    })
+}
+
+fn formalize_in_language(
+    text: &str,
+    source_language: &str,
+    target_language: &str,
+    anchors: &[Meaning],
+    vocabulary: &[(String, VocabularyForm)],
+) -> Formalization {
     let tokens = words(&normalized(text));
     let denied = tokens.iter().any(|token| {
         vocabulary
@@ -393,9 +435,19 @@ fn formalize(
                     } else {
                         predicate_word
                     };
-                    rendered = punctuated(&capitalize_first(
-                        &[subject_word, predicate, object_word].join(" "),
-                    ));
+                    let order = crate::search_fusion_grammar::role_order(target_language);
+                    let ordered = order
+                        .iter()
+                        .map(|role| match *role {
+                            "subject" => Some(subject_word.as_str()),
+                            "predicate" => Some(predicate.as_str()),
+                            "object" => Some(object_word.as_str()),
+                            _ => None,
+                        })
+                        .collect::<Option<Vec<_>>>();
+                    if let Some(ordered) = ordered {
+                        rendered = punctuated(&capitalize_first(&ordered.join(" ")));
+                    }
                 }
             }
             return Formalization {
@@ -403,6 +455,7 @@ fn formalize(
                 meaning: semantic.join("|"),
                 semantic,
                 rendered,
+                language: source_language.to_string(),
             };
         }
     }
@@ -421,6 +474,7 @@ fn formalize(
         meaning: terms.join(" "),
         semantic: Vec::new(),
         rendered: punctuated(text),
+        language: source_language.to_string(),
     }
 }
 
