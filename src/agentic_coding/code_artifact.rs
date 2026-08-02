@@ -263,9 +263,13 @@ pub(super) fn latest_result(messages: &[ChatMessage], capability: Capability) ->
         })
 }
 
-/// Decode the decorated result emitted by `OpenCode`'s `read` tool. Other CLIs
-/// return raw contents, which pass through byte-for-byte.
+/// Decode decorated source emitted by coding-agent read tools. `OpenCode` wraps
+/// numbered lines in `<content>` while Agent wraps pipe-numbered lines in
+/// `<file>`. Other CLIs return raw contents, which pass through byte-for-byte.
 pub(super) fn source_from_read_result(result: &str) -> String {
+    if let Some(decoded) = source_from_agent_read_result(result) {
+        return decoded;
+    }
     let Some((_, after_open)) = result.split_once("<content>\n") else {
         return result.to_owned();
     };
@@ -288,6 +292,25 @@ pub(super) fn source_from_read_result(result: &str) -> String {
         decoded.pop();
     }
     decoded
+}
+
+fn source_from_agent_read_result(result: &str) -> Option<String> {
+    let after_open = result.strip_prefix("<file>\n")?;
+    let (numbered, footer) = after_open.rsplit_once("\n\n(End of file - total ")?;
+    if !footer.ends_with("</file>") {
+        return None;
+    }
+    numbered
+        .lines()
+        .map(|line| {
+            let (number, source) = line.split_once("| ")?;
+            number
+                .chars()
+                .all(|character| character.is_ascii_digit())
+                .then_some(source)
+        })
+        .collect::<Option<Vec<_>>>()
+        .map(|lines| lines.join("\n"))
 }
 
 fn read_arguments(path: &str) -> String {

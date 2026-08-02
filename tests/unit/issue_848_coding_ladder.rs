@@ -314,6 +314,62 @@ fn identifier_refactor_is_a_grounded_verified_rewrite_not_a_file_move() {
 }
 
 #[test]
+fn identifier_refactor_accepts_agent_cli_absolute_tool_paths() {
+    const TASK: &str = "In this repository, in src/web_search_core.rs, rename the constant \
+        WEB_SEARCH_RRF_K to WEB_SEARCH_FUSION_K everywhere it appears in this file.";
+    const AFTER: &str = "pub const WEB_SEARCH_FUSION_K: f64 = 60.0;\n\
+        pub fn score(rank: f64) -> f64 { WEB_SEARCH_FUSION_K + rank }\n";
+    const AGENT_READ_RESULT: &str = concat!(
+        "<file>\n",
+        "00001| pub const WEB_SEARCH_RRF_K: f64 = 60.0;\n",
+        "00002| pub fn score(rank: f64) -> f64 { WEB_SEARCH_RRF_K + rank }\n",
+        "00003| \n\n",
+        "(End of file - total 3 lines)\n",
+        "</file>",
+    );
+    const ABSOLUTE_PATH: &str = "/tmp/agent-workspace/src/web_search_core.rs";
+    let tools = ["read", "write", "bash"];
+    let mut messages = vec![ChatMessage::user(TASK)];
+
+    let read = only_call(plan_chat_step(&messages, &tools));
+    assert_eq!(read.tool, "read");
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        "agent_read",
+        "read",
+        serde_json::json!({"filePath": ABSOLUTE_PATH}).to_string(),
+    )]));
+    messages.push(ChatMessage::tool_result(
+        "agent_read",
+        "read",
+        AGENT_READ_RESULT,
+    ));
+
+    let write = only_call(plan_chat_step(&messages, &tools));
+    assert_eq!(write.tool, "write", "the absolute read result must advance");
+    assert_eq!(
+        json_arguments(&write.arguments)["content"],
+        AFTER,
+        "the Agent read decoration must not be written into source"
+    );
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        "agent_write",
+        "write",
+        serde_json::json!({"filePath": ABSOLUTE_PATH, "content": AFTER}).to_string(),
+    )]));
+    messages.push(ChatMessage::tool_result(
+        "agent_write",
+        "write",
+        "Wrote file successfully.",
+    ));
+
+    let verify = only_call(plan_chat_step(&messages, &tools));
+    assert_eq!(
+        verify.tool, "bash",
+        "the absolute write result must advance"
+    );
+}
+
+#[test]
 fn composite_module_request_creates_source_and_registers_the_module() {
     const TASK: &str = "Create src/ladder_units.rs with a public function \
         metres_to_kilometres dividing an f64 by 1000.0, and register the module in src/lib.rs \

@@ -7,6 +7,7 @@
 //! edit, so a multi-file request cannot stop after its first observable effect.
 
 use serde_json::{json, Value};
+use std::path::Path;
 
 use super::code_artifact::source_from_read_result;
 use super::code_task::{render_rust_template, render_seeded_outcome, rust_source_for_task};
@@ -315,14 +316,26 @@ fn result_for_path(
         let Ok(value) = serde_json::from_str::<Value>(arguments) else {
             return false;
         };
-        let matches_path = ["path", "filePath", "file_path"]
-            .iter()
-            .any(|key| value.get(key).and_then(Value::as_str) == Some(path));
+        let matches_path = ["path", "filePath", "file_path"].iter().any(|key| {
+            value
+                .get(key)
+                .and_then(Value::as_str)
+                .is_some_and(|observed| workspace_path_matches(path, observed))
+        });
         matches_path
             && expected_content.is_none_or(|expected| {
                 value.get("content").and_then(Value::as_str) == Some(expected)
             })
     })
+}
+
+fn workspace_path_matches(expected: &str, observed: &str) -> bool {
+    if observed == expected {
+        return true;
+    }
+    let expected = Path::new(expected);
+    let observed = Path::new(observed);
+    expected.is_relative() && observed.is_absolute() && observed.ends_with(expected)
 }
 
 fn result_for_command(messages: &[ChatMessage], command: &str) -> Option<String> {

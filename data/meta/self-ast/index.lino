@@ -5,14 +5,14 @@ self_ast_census_index
   module_count 404
   full_ast_module_count 54
   signature_module_count 350
-  symbol_count 8321
-  content_id self_ast_census_index_f30204297fc774da
+  symbol_count 8323
+  content_id self_ast_census_index_219d326d9f9705b5
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/associative_learning.rs full_ast 7 source_module_926e3e97b31fa30a
     src/agentic_coding/capability_router.rs full_ast 11 source_module_55c1e27ca2bf2c6c
     src/agentic_coding/change_request.rs full_ast 9 source_module_61a59fbbec0b673f
-    src/agentic_coding/code_artifact.rs full_ast 16 source_module_619fa0dadfb956e5
+    src/agentic_coding/code_artifact.rs full_ast 17 source_module_309e9f516b36e9d3
     src/agentic_coding/code_rewrite_learning.rs full_ast 7 source_module_302ed77316482eda
     src/agentic_coding/code_task.rs full_ast 14 source_module_69452924e8fdc9b5
     src/agentic_coding/command_reroute.rs full_ast 7 source_module_aea5f42fad44ff1c
@@ -62,7 +62,7 @@ self_ast_census_index
     src/agentic_coding/structured_edit.rs full_ast 7 source_module_a03789fb54a6d371
     src/agentic_coding/tool_result.rs full_ast 28 source_module_c079a9bb0120369e
     src/agentic_coding/web_research.rs full_ast 38 source_module_3284f1f58c70bb0a
-    src/agentic_coding/workspace_change.rs full_ast 15 source_module_00ad21f3c7608181
+    src/agentic_coding/workspace_change.rs full_ast 16 source_module_31b66f4010aff017
     src/anthropic.rs signature 22 source_module_4521391b735b65a0
     src/arithmetic.rs signature 50 source_module_0c0cbf53baa417f0
     src/arithmetic_word_tables.rs signature 2 source_module_05d1534ee9527818
