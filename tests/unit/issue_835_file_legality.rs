@@ -266,10 +266,7 @@ fn detector_adapters_run_independently_and_preserve_failures() {
         }
 
         fn inspect(&self, _path: &Path) -> std::io::Result<Vec<DetectorObservation>> {
-            self.result
-                .as_ref()
-                .map(Clone::clone)
-                .map_err(|kind| std::io::Error::from(*kind))
+            self.result.clone().map_err(std::io::Error::from)
         }
     }
 
@@ -368,6 +365,9 @@ fn real_agent_cli_artifact_pins_the_provider_safety_leaf_byte_for_byte() {
 fn minimal_exif_tiff() -> Vec<u8> {
     const ASCII: u16 = 2;
     const LONG: u16 = 4;
+    const RATIONAL: u16 = 5;
+    const ASCII_INLINE_NORTH: u32 = u32::from_le_bytes([b'N', 0, 0, 0]);
+    const ASCII_INLINE_WEST: u32 = u32::from_le_bytes([b'W', 0, 0, 0]);
     let mut bytes = vec![b'I', b'I', 42, 0, 8, 0, 0, 0];
     push_u16(&mut bytes, 6);
     let make_pointer = push_ifd_entry(&mut bytes, 0x010f, ASCII, 10, 0);
@@ -395,9 +395,6 @@ fn minimal_exif_tiff() -> Vec<u8> {
     let captured = append_data(&mut bytes, b"2026:08:02 12:34:56\0");
     patch_u32(&mut bytes, captured_pointer, captured);
 
-    const ASCII_INLINE_NORTH: u32 = u32::from_le_bytes([b'N', 0, 0, 0]);
-    const ASCII_INLINE_WEST: u32 = u32::from_le_bytes([b'W', 0, 0, 0]);
-    const RATIONAL: u16 = 5;
     let gps_ifd = u32::try_from(bytes.len()).unwrap();
     patch_u32(&mut bytes, gps_pointer, gps_ifd);
     push_u16(&mut bytes, 4);

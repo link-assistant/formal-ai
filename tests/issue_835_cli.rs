@@ -35,7 +35,7 @@ fn file_legality_cli_accepts_provider_receipts_and_emits_safe_json() {
         .output()
         .expect("run file-legality command");
 
-    assert!(output.status.success(), "{:?}", output);
+    assert!(output.status.success(), "{output:?}");
     let rendered = String::from_utf8(output.stdout).unwrap();
     let report: FileLegalityReport = serde_json::from_str(&rendered).unwrap();
     assert_eq!(
@@ -72,7 +72,7 @@ fn whole_file_legality_task_runs_documented_sidecar_end_to_end() {
         .output()
         .expect("run documented file-legality example");
 
-    assert!(output.status.success(), "{:?}", output);
+    assert!(output.status.success(), "{output:?}");
     let report: FileLegalityReport = serde_json::from_slice(&output.stdout).unwrap();
     assert_eq!(report.assessments.len(), 6);
     assert_eq!(
