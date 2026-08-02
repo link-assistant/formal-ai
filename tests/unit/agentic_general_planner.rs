@@ -209,6 +209,33 @@ fn literal_file_marker_owns_payload_that_contains_an_edit_phrase() {
 }
 
 #[test]
+fn literal_file_marker_routes_before_edit_shaped_payload() {
+    let payload = "prefix rename X to Y suffix";
+    let tools = ["write", "read", "edit", "bash"];
+
+    for task in [
+        format!("Create file issue-708-literal-payload.txt with exactly this content:\n{payload}"),
+        format!("Создай файл issue-708-literal-payload.txt с точно таким содержанием:\n{payload}"),
+        format!("फ़ाइल issue-708-literal-payload.txt ठीक इसी सामग्री के साथ बनाओ:\n{payload}"),
+        format!("创建 文件 issue-708-literal-payload.txt 内容与以下完全相同：\n{payload}"),
+    ] {
+        let messages = vec![ChatMessage::user(&task)];
+        let AgenticPlan::ToolCalls(calls) =
+            plan_chat_step(&messages, &tools).expect("literal file plan must own the request")
+        else {
+            panic!("literal file plan must persist its plan before execution: {task}")
+        };
+        assert_eq!(calls.len(), 1);
+        assert_eq!(calls[0].tool, "write", "{task}");
+        assert!(
+            calls[0].arguments.contains(PLAN_PATH),
+            "edit-shaped payload must not route to a read of the new target: {}",
+            calls[0].arguments,
+        );
+    }
+}
+
+#[test]
 fn command_stdout_requests_run_the_command_instead_of_writing_the_reference_phrase() {
     let task = "Run 'printf learned-output' and write its exact stdout to reports/learned.txt";
     let plan = compose_general_change_plan(task).expect("command-output plan");

@@ -5,8 +5,8 @@ self_ast_census_index
   module_count 406
   full_ast_module_count 54
   signature_module_count 352
-  symbol_count 8397
-  content_id self_ast_census_index_4d0bb0f3b69831eb
+  symbol_count 8400
+  content_id self_ast_census_index_15dda690712513b9
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/associative_learning.rs full_ast 7 source_module_926e3e97b31fa30a
@@ -27,7 +27,7 @@ self_ast_census_index
     src/agentic_coding/external_benchmark_learning.rs full_ast 5 source_module_143122bfd70dcc0e
     src/agentic_coding/file_read.rs full_ast 43 source_module_7df97238be9a32aa
     src/agentic_coding/formalize.rs full_ast 23 source_module_0841b6b93be1278d
-    src/agentic_coding/general_planner.rs full_ast 35 source_module_47ac7027233a9bf7
+    src/agentic_coding/general_planner.rs full_ast 37 source_module_4099856a5fa72f0a
     src/agentic_coding/google_trends_catalog.rs full_ast 11 source_module_0269b7242306e817
     src/agentic_coding/google_trends_learning.rs full_ast 9 source_module_fd8f391bbc37c7f2
     src/agentic_coding/intent_router.rs full_ast 6 source_module_822f3a5dbf5305ca
@@ -44,7 +44,7 @@ self_ast_census_index
     src/agentic_coding/meaning_detail.rs full_ast 38 source_module_763b6af219dd70d8
     src/agentic_coding/mod.rs full_ast 47 source_module_73248e8adb166a44
     src/agentic_coding/narration.rs full_ast 9 source_module_256edf1475c908fe
-    src/agentic_coding/planner.rs full_ast 38 source_module_7d2ac7548c130a2d
+    src/agentic_coding/planner.rs full_ast 38 source_module_5abbcedf525893c0
     src/agentic_coding/procedure.rs full_ast 5 source_module_59c2c30fbf44bc52
     src/agentic_coding/progress.rs full_ast 10 source_module_c875bf0c4cba80c3
     src/agentic_coding/question_catalog.rs full_ast 24 source_module_512a32489f4c308d
@@ -276,7 +276,7 @@ self_ast_census_index
     src/seed/roles/language.rs signature 33 source_module_33fc2167ea411769
     src/seed/roles/program.rs signature 57 source_module_5bbaf8990b43efc4
     src/seed/roles/reasoning.rs signature 57 source_module_5c9b2484c8cb717c
-    src/seed/roles/tooling.rs signature 49 source_module_077bb31a0f66ec58
+    src/seed/roles/tooling.rs signature 50 source_module_8a61bb4244f7e1c0
     src/seed/shell_intents.rs signature 9 source_module_1c2e0e9e7715a676
     src/seed/summary_topics.rs signature 7 source_module_ad645d4af99bacc4
     src/seed/terminal_commands.rs signature 4 source_module_1e623ed57f4fac87

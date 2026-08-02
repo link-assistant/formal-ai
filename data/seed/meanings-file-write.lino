@@ -231,6 +231,8 @@ meanings
         text "saying …"
     lexeme ru
       surface
+        text "с точно таким содержанием …"
+      surface
         text "с текстом …"
       surface
         text "с содержанием …"
@@ -240,14 +242,33 @@ meanings
         text "содержащей …"
     lexeme hi
       surface
+        text "ठीक इसी सामग्री के साथ …"
+      surface
         text "जिसमें लिखा हो …"
       surface
         text "सामग्री के साथ …"
     lexeme zh
       surface
+        text "内容与以下完全相同 …"
+      surface
         text "内容为 …"
       surface
         text "包含 …"
+  file_write_authoritative_content
+    defined-by relation
+    role file_write_authoritative_content_lead
+    lexeme en
+      surface
+        text "with exactly this content …"
+    lexeme ru
+      surface
+        text "с точно таким содержанием …"
+    lexeme hi
+      surface
+        text "ठीक इसी सामग्री के साथ …"
+    lexeme zh
+      surface
+        text "内容与以下完全相同 …"
   file_write_command_output
     defined-by relation
     role file_write_command_output_reference
