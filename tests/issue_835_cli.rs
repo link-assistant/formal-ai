@@ -57,6 +57,49 @@ fn file_legality_cli_accepts_provider_receipts_and_emits_safe_json() {
     fs::remove_dir_all(workspace).unwrap();
 }
 
+#[test]
+fn whole_file_legality_task_runs_documented_sidecar_end_to_end() {
+    let workspace = temp_workspace();
+    fs::create_dir_all(&workspace).unwrap();
+    let file = workspace.join("candidate.pdf");
+    fs::write(&file, b"%PDF-1.7\nsynthetic example document\n").unwrap();
+    let config =
+        PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("examples/file-legality/evidence.json");
+
+    let output = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args(["file-legality", file.to_str().unwrap(), "--config"])
+        .arg(config)
+        .output()
+        .expect("run documented file-legality example");
+
+    assert!(output.status.success(), "{:?}", output);
+    let report: FileLegalityReport = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(report.assessments.len(), 6);
+    assert_eq!(
+        report
+            .assessment("DE", LegalCategory::NationalSecurity)
+            .unwrap()
+            .status,
+        AssessmentStatus::RiskSignal
+    );
+    assert_eq!(
+        report
+            .assessment("GB", LegalCategory::ForbiddenContent)
+            .unwrap()
+            .status,
+        AssessmentStatus::NoRiskSignalDetected
+    );
+    assert_eq!(
+        report
+            .assessment("GB", LegalCategory::CopyrightAndIp)
+            .unwrap()
+            .status,
+        AssessmentStatus::RiskSignal
+    );
+
+    fs::remove_dir_all(workspace).unwrap();
+}
+
 fn temp_workspace() -> PathBuf {
     let nonce = SystemTime::now()
         .duration_since(UNIX_EPOCH)

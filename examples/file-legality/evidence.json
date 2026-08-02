@@ -1,0 +1,62 @@
+{
+  "jurisdictions": ["DE", "GB"],
+  "policies": [
+    {
+      "id": "de-sensitive-site-review",
+      "version": "example-2026-08-02",
+      "jurisdiction": "DE",
+      "category": "national_security",
+      "action": "legal_review",
+      "source_uri": "https://authority.example/de/sensitive-sites",
+      "trigger_codes": ["sensitive-installation"]
+    },
+    {
+      "id": "gb-rights-review",
+      "version": "example-2026-08-02",
+      "jurisdiction": "GB",
+      "category": "copyright_and_ip",
+      "action": "rights_review",
+      "source_uri": "https://authority.example/gb/copyright",
+      "trigger_codes": []
+    }
+  ],
+  "observations": [
+    {
+      "id": "scene-example-1",
+      "category": "national_security",
+      "detected": true,
+      "confidence": 0.92,
+      "provenance": {
+        "provider": "example-scene-adapter",
+        "source_uri": "https://provider.example/observations/scene-example-1"
+      },
+      "restriction_codes": ["sensitive-installation"],
+      "jurisdictions": ["DE"]
+    },
+    {
+      "id": "symbol-example-1",
+      "category": "forbidden_content",
+      "detected": false,
+      "confidence": 0.88,
+      "provenance": {
+        "provider": "example-symbol-adapter",
+        "source_uri": "https://provider.example/observations/symbol-example-1"
+      },
+      "restriction_codes": [],
+      "jurisdictions": ["DE", "GB"]
+    },
+    {
+      "id": "rights-example-1",
+      "category": "copyright_and_ip",
+      "detected": true,
+      "confidence": 0.81,
+      "provenance": {
+        "provider": "example-reverse-search-adapter",
+        "source_uri": "https://provider.example/observations/rights-example-1"
+      },
+      "restriction_codes": [],
+      "jurisdictions": ["GB"]
+    }
+  ],
+  "authorized_hash_matches": []
+}
