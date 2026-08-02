@@ -132,7 +132,10 @@ fn confirmed_child_safety_hash_match_is_fail_closed_and_content_free() {
         report.safety_disposition,
         SafetyDisposition::RefuseAndEscalateToAuthorizedProvider
     );
-    assert!(report.file.sha256.is_none(), "matched content hash is redacted");
+    assert!(
+        report.file.sha256.is_none(),
+        "matched content hash is redacted"
+    );
     assert!(!serialized.contains("synthetic-known-illegal-payload-marker"));
     for jurisdiction in ["US", "GB"] {
         let forbidden = report
@@ -187,6 +190,8 @@ fn exif_metadata_is_extracted_with_field_level_provenance() {
         (MetadataField::CameraMake, "FormalCam"),
         (MetadataField::CameraModel, "FC-1"),
         (MetadataField::CapturedAt, "2026:08:02 12:34:56"),
+        (MetadataField::GpsLatitude, "40.500000"),
+        (MetadataField::GpsLongitude, "-74.000000"),
     ] {
         let entry = report.metadata.get(field).expect("expected Exif field");
         assert_eq!(entry.value, value);
@@ -242,12 +247,13 @@ fn minimal_exif_tiff() -> Vec<u8> {
     const ASCII: u16 = 2;
     const LONG: u16 = 4;
     let mut bytes = vec![b'I', b'I', 42, 0, 8, 0, 0, 0];
-    push_u16(&mut bytes, 5);
+    push_u16(&mut bytes, 6);
     let make_pointer = push_ifd_entry(&mut bytes, 0x010f, ASCII, 10, 0);
     let model_pointer = push_ifd_entry(&mut bytes, 0x0110, ASCII, 5, 0);
     let author_pointer = push_ifd_entry(&mut bytes, 0x013b, ASCII, 12, 0);
     let copyright_pointer = push_ifd_entry(&mut bytes, 0x8298, ASCII, 12, 0);
     let exif_pointer = push_ifd_entry(&mut bytes, 0x8769, LONG, 1, 0);
+    let gps_pointer = push_ifd_entry(&mut bytes, 0x8825, LONG, 1, 0);
     push_u32(&mut bytes, 0);
 
     let make = append_data(&mut bytes, b"FormalCam\0");
@@ -266,6 +272,22 @@ fn minimal_exif_tiff() -> Vec<u8> {
     push_u32(&mut bytes, 0);
     let captured = append_data(&mut bytes, b"2026:08:02 12:34:56\0");
     patch_u32(&mut bytes, captured_pointer, captured);
+
+    const ASCII_INLINE_NORTH: u32 = u32::from_le_bytes([b'N', 0, 0, 0]);
+    const ASCII_INLINE_WEST: u32 = u32::from_le_bytes([b'W', 0, 0, 0]);
+    const RATIONAL: u16 = 5;
+    let gps_ifd = u32::try_from(bytes.len()).unwrap();
+    patch_u32(&mut bytes, gps_pointer, gps_ifd);
+    push_u16(&mut bytes, 4);
+    push_ifd_entry(&mut bytes, 0x0001, ASCII, 2, ASCII_INLINE_NORTH);
+    let latitude_pointer = push_ifd_entry(&mut bytes, 0x0002, RATIONAL, 3, 0);
+    push_ifd_entry(&mut bytes, 0x0003, ASCII, 2, ASCII_INLINE_WEST);
+    let longitude_pointer = push_ifd_entry(&mut bytes, 0x0004, RATIONAL, 3, 0);
+    push_u32(&mut bytes, 0);
+    let latitude = append_rationals(&mut bytes, &[(40, 1), (30, 1), (0, 1)]);
+    let longitude = append_rationals(&mut bytes, &[(74, 1), (0, 1), (0, 1)]);
+    patch_u32(&mut bytes, latitude_pointer, latitude);
+    patch_u32(&mut bytes, longitude_pointer, longitude);
     bytes
 }
 
@@ -281,6 +303,15 @@ fn push_ifd_entry(bytes: &mut Vec<u8>, tag: u16, field_type: u16, count: u32, va
 fn append_data(bytes: &mut Vec<u8>, data: &[u8]) -> u32 {
     let offset = u32::try_from(bytes.len()).unwrap();
     bytes.extend_from_slice(data);
+    offset
+}
+
+fn append_rationals(bytes: &mut Vec<u8>, values: &[(u32, u32)]) -> u32 {
+    let offset = u32::try_from(bytes.len()).unwrap();
+    for (numerator, denominator) in values {
+        push_u32(bytes, *numerator);
+        push_u32(bytes, *denominator);
+    }
     offset
 }
 
