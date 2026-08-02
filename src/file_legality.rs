@@ -427,7 +427,9 @@ pub fn check_file_legality_with_providers(
                     .into_iter()
                     .filter(|observation| allowed_categories.contains(&observation.category))
                     .map(|mut observation| {
-                        observation.provenance.provider = provider.id().to_owned();
+                        provider
+                            .id()
+                            .clone_into(&mut observation.provenance.provider);
                         observation
                     })
                     .collect();
