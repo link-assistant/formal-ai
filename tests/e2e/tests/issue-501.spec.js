@@ -72,7 +72,7 @@ test.describe('Issue #501 install how-to prompts', () => {
   });
 
   for (const testCase of CASES) {
-    test(`routes ${testCase.language} install requests to official-docs-first discovery`, async ({
+    test(`routes ${testCase.language} install requests to official-docs-first procedural discovery`, async ({
       page,
     }) => {
       const { assistantMessage, body } = await sendPrompt(page, testCase.prompt);

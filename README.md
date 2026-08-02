@@ -25,7 +25,9 @@ The current implementation covers the surface area requested in issue #1:
 - Electron desktop shell that starts the local Rust HTTP API and reuses the web chat
 - VS Code extension (desktop **and** web/`vscode.dev`) that embeds the same chat in a Webview around the same HTTP/web boundary
 
-Project direction is tracked in [VISION.md](VISION.md), [GOALS.md](GOALS.md), and [NON-GOALS.md](NON-GOALS.md). Who the project is for, what pain it closes, and the concrete user journeys it supports today (plus the ones it could support next) are documented in [docs/USER-JOURNEYS.md](docs/USER-JOURNEYS.md). Implementation progress against the vision is tracked in [ROADMAP.md](ROADMAP.md). The issue #12 synthesis is in [docs/case-studies/issue-12/README.md](docs/case-studies/issue-12/README.md).
+Project direction is tracked in [VISION.md](VISION.md), [GOALS.md](GOALS.md), and [NON-GOALS.md](NON-GOALS.md). The design theses behind its linked transformation model are separated from mathematical and implementation claims in [docs/philosophy.md](docs/philosophy.md). Who the project is for, what pain it closes, and the concrete user journeys it supports today (plus the ones it could support next) are documented in [docs/USER-JOURNEYS.md](docs/USER-JOURNEYS.md). Implementation progress against the vision is tracked in [ROADMAP.md](ROADMAP.md). The issue #12 synthesis is in [docs/case-studies/issue-12/README.md](docs/case-studies/issue-12/README.md).
+
+Legal and provenance guidance starts with [LEGAL-COMPLIANCE.md](LEGAL-COMPLIANCE.md). Focused guides explain the [Formal AI/language-model boundary](docs/legal/formal-ai-and-language-models.md), [public-domain dedication of AI-assisted output](docs/legal/public-domain-output.md), [candidate datasets](docs/legal/compatible-datasets.md), and [candidate locally transformable or distillable model families](docs/legal/distillable-models.md). Those dated matrices are source-review queues, not approvals; the machine-readable training registry remains authoritative.
 
 ## Install
 
@@ -830,7 +832,9 @@ cargo run -- memory export --from memory.lino --path full.lino           # defau
 cargo run -- memory export --from memory.lino --path events.lino --events-only  # legacy demo_memory
 cargo run -- memory import --path full.lino --into memory.lino           # accepts either format
 cargo run -- memory show --path memory.lino                              # print every recorded event
-cargo run -- memory query --path memory.lino --query "Find Rust in another conversation"
+cargo run -- memory query --path memory.lino --prompt "Find Rust in another conversation"
+cargo run -- memory query --path memory.lino --prompt "SELECT id, content FROM memory WHERE kind = 'fact' LIMIT 10"
+cargo run -- memory query --path memory.lino --prompt 'query { memory(first: 10) { id content } }'
 cargo run -- memory dream --path memory.lino                             # plan low-priority cleanup
 cargo run -- memory dream --path memory.lino --storage-capacity-bytes 1000000 --free-bytes 50000
 cargo run -- memory dream --path memory.lino --apply --confirm           # persist learning; cleanup asks consent
@@ -839,6 +843,17 @@ cargo run -- memory reset --path memory.lino --backup before-reset.lino --confir
 cargo run -- bundle export --path bundle.lino --memory memory.lino
 cargo run -- bundle import --path bundle.lino --into memory.lino
 ```
+
+Exact SQL and GraphQL memory requests share one typed plan, permission model,
+and bounded link-substitution program with learned natural-language templates.
+The supported schema includes every `MemoryEvent` field and covers CRUD,
+boolean filtering, projection, grouping, sorting, pagination, count, sum,
+average, minimum, maximum, population variance, and population standard
+deviation. Reads use identity substitution (`same -> same`); deletes remain
+append-only retractions and require explicit destructive confirmation. The
+architecture, exact dialects, auto-learning gates, Agent CLI evidence, and
+meta-language audit are documented in the
+[issue #708 query-language case study](docs/case-studies/issue-708/query-languages.md).
 
 Memory normally remains append-only: deleting a conversation first records a
 `conversation_deleted` event and hides the thread. The explicit

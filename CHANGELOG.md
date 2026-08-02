@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.319.1] - 2026-08-02
+
+### Fixed
+- Support Claude Code's returning-user `/recap` request with a goal-led, under-40-word plain summary, while excluding client-injected reminder metadata from conversation history ([#858](https://github.com/link-assistant/formal-ai/issues/858)).
+
+## [0.319.0] - 2026-08-02
+
+### Added
+
+- Compile, review, edit, and execute bounded multilingual associative-memory
+  programs with explicit permissions, append-only retractions, execution traces,
+  honest program gaps, and matching native/browser behavior.
+- Query every memory field through exact SQL or GraphQL CRUD, grouping, and
+  statistics that share one typed plan, lower to bounded link substitutions,
+  run across native/browser/Agent-facing surfaces, and support human-gated
+  learning from repeated exact-backed natural-language examples.
+
+## [0.318.0] - 2026-08-01
+
+### Added
+- Context-aware statement auditing now records relative references, resolved claims, and antecedent-bounded probabilities.
+- Added source-backed Formal AI/LLM, public-domain output, dataset, model, and philosophy guides with a fail-closed legal source-review workflow.
+
 ## [0.317.0] - 2026-07-31
 
 ### Added

@@ -1,0 +1,5 @@
+?? .formal-ai/
+?? audit-policy.md
+?? dialog-logs/
+?? memory.lino
+?? memory.lino.lock

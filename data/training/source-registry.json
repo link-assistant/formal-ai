@@ -3,7 +3,7 @@
   "policy": "LEGAL-COMPLIANCE.md",
   "artifacts_root": "data/training/artifacts",
   "current_state": "no-approved-training-sources",
-  "last_audited": "2026-07-24",
+  "last_audited": "2026-08-01",
   "scope_note": "Only parameter-updating training and distillation artifacts belong here; benchmarks, runtime retrieval, and community examples are separate classifications.",
   "required_source_fields": [
     "id",

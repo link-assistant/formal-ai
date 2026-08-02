@@ -1,0 +1,45 @@
+self_ast_census
+  target src/web/wasm-worker/src/memory_query_worker.rs
+  language rust
+  fidelity signature
+  byte_len 24769
+  line_count 734
+  content_id source_module_ab012e83249a421f
+  symbol_count 36
+  symbols
+    const MAX_MATCHES 23 23
+    const MAX_ITERATIONS 24 24
+    struct BrowserMemoryRecord 27 29
+    function empty 32 36
+    function value 38 43
+    function set 45 47
+    struct BrowserQueryOutcome 50 56
+    function answer 58 73
+    function detect_dialect 75 93
+    function decode_payload 95 115
+    function decode_value 117 139
+    function execute 141 240
+    function select_rows 242 284
+    function aggregate_value 286 338
+    function project 340 348
+    function filter_matches 350 365
+    function compare 367 391
+    function like_matches 393 398
+    function wildcard_matches 400 428
+    function order_and_page 430 453
+    function compare_values 455 460
+    function numeric_value 463 469
+    function non_negative_integer 471 476
+    function integer_or_float 483 491
+    function square_root 493 502
+    function event_identity 504 509
+    function active_event_indices 511 528
+    function rejected_answer 530 541
+    function serialize_answer 543 578
+    function compiled_trace 580 609
+    function result_trace 611 640
+    function push_lino_value 642 644
+    function push_lino_key 646 653
+    function serialize_memory_operation 655 695
+    function serialize_record 697 714
+    function push_json_value 716 734

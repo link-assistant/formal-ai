@@ -342,7 +342,7 @@ Requirement-level status by area:
 | Anticipatory learning (predict next requests, pre-learn) | Not done | [#705](https://github.com/link-assistant/formal-ai/issues/705) |
 | "All languages" through the meta language (beyond en/ru/hi/zh) | Partial (4 seed languages; round-trip contract exists) | [#660](https://github.com/link-assistant/formal-ai/issues/660), [#706](https://github.com/link-assistant/formal-ai/issues/706) |
 | General computer-use without vision (files/shell/structured web plans) | Partial (bounded agent + pinned recipes only) | [#707](https://github.com/link-assistant/formal-ai/issues/707) |
-| Turing-complete NL memory queries (#529) | Partial (append + single substitution shipped) | [#708](https://github.com/link-assistant/formal-ai/issues/708) |
+| Turing-complete NL memory queries (#529) | Done for #708: the reviewed closed algebra covers 15 multilingual families, editable composition, permissions, and explicit match/fixpoint bounds; requests outside that algebra stop with the required `program_gap` | [#708](https://github.com/link-assistant/formal-ai/issues/708) |
 | Multi-source search fusion through the meta language (#505/#444/#63/#153) | Not done (routing only) | [#709](https://github.com/link-assistant/formal-ai/issues/709) |
 | Measuring units via si-units (#439) | Not done | [#700](https://github.com/link-assistant/formal-ai/issues/700) |
 | Silently-dropped chat/UX/process requirements re-verified | Not done (audit checklist compiled) | [#710](https://github.com/link-assistant/formal-ai/issues/710) |

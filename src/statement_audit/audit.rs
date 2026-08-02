@@ -12,7 +12,7 @@ use crate::world_model::{Context, Statement as WorldStatement};
 use super::extract::{extract_corpus, proposed_resolution, ExtractedStatement};
 use super::model::{
     AttachedEvidence, AuditConfig, AuditFinding, AuditedStatement, Contradiction, EvidenceCapture,
-    EvidenceSelector, FindingKind, RepositoryAudit, RepositoryCorpus,
+    EvidenceSelector, FindingKind, RepositoryAudit, RepositoryCorpus, StatementReference,
 };
 
 #[must_use]
@@ -25,6 +25,7 @@ pub fn audit_corpus(
         .into_iter()
         .map(|extracted| assess_statement(extracted, corpus, captures))
         .collect::<Vec<_>>();
+    apply_document_context(&mut statements);
     statements.sort_by(|left, right| left.location.cmp(&right.location));
 
     let contradictions = weigh_exclusive_claims(&mut statements, config.temperature);
@@ -45,13 +46,7 @@ fn assess_statement(
     corpus: &RepositoryCorpus,
     captures: &[EvidenceCapture],
 ) -> AuditedStatement {
-    let id = stable_id(
-        "audited_statement",
-        &format!(
-            "{}:{}:{}",
-            extracted.location.path, extracted.location.line, extracted.text
-        ),
-    );
+    let id = extracted.id.clone();
     let mut applicable = captures
         .iter()
         .filter(|capture| capture_matches(capture, &extracted))
@@ -101,14 +96,25 @@ fn assess_statement(
             effective_mass: relative.effective_mass(),
         })
         .collect();
-    let assessment = StatementAssessment::assess_assumed_true(&extracted.text, &relative);
+    let assessment = StatementAssessment::assess_assumed_true(&extracted.resolved_text, &relative);
+    let contextual_posterior = assessment.posterior.get();
 
     AuditedStatement {
         id,
         text: extracted.text,
+        resolved_text: extracted.resolved_text,
         location: extracted.location,
         claim: extracted.claim,
+        references: extracted
+            .references
+            .into_iter()
+            .map(|reference| StatementReference {
+                surface: reference.surface,
+                antecedent_statement_id: reference.antecedent_statement_id,
+            })
+            .collect(),
         relative_weight: probability_f32(assessment.posterior.get()),
+        contextual_posterior,
         evidence,
         assessment,
     }
@@ -116,7 +122,9 @@ fn assess_statement(
 
 fn capture_matches(capture: &EvidenceCapture, statement: &ExtractedStatement) -> bool {
     match &capture.selector {
-        EvidenceSelector::StatementText(text) => text == &statement.text,
+        EvidenceSelector::StatementText(text) => {
+            text == &statement.text || text == &statement.resolved_text
+        }
         EvidenceSelector::Claim {
             subject,
             predicate,
@@ -126,6 +134,23 @@ fn capture_matches(capture: &EvidenceCapture, statement: &ExtractedStatement) ->
                 && &claim.predicate == predicate
                 && value.as_ref().is_none_or(|value| value == &claim.value)
         }),
+    }
+}
+
+fn apply_document_context(statements: &mut [AuditedStatement]) {
+    let mut contextual = BTreeMap::new();
+    for statement in statements {
+        let antecedent_ceiling = statement
+            .references
+            .iter()
+            .filter_map(|reference| contextual.get(&reference.antecedent_statement_id))
+            .copied()
+            .reduce(f64::min);
+        if let Some(ceiling) = antecedent_ceiling {
+            statement.contextual_posterior = statement.contextual_posterior.min(ceiling);
+            statement.relative_weight = probability_f32(statement.contextual_posterior);
+        }
+        contextual.insert(statement.id.clone(), statement.contextual_posterior);
     }
 }
 
@@ -205,7 +230,7 @@ fn collect_findings(
 ) -> Vec<AuditFinding> {
     let mut findings = statements
         .iter()
-        .filter(|statement| statement.assessment.posterior.get() < 0.5)
+        .filter(|statement| statement.contextual_posterior < 0.5)
         .map(|statement| AuditFinding {
             id: stable_id("audit_finding", &format!("improbable:{}", statement.id)),
             kind: FindingKind::ImprobableClaim,
@@ -249,6 +274,9 @@ fn learn(
     let _ = context.extend_statements(worlds);
     let mut memory = AssociativeMemory::from_context(&context);
     for statement in statements {
+        for reference in &statement.references {
+            memory.associate(&statement.id, &reference.antecedent_statement_id);
+        }
         for evidence in &statement.evidence {
             let evidence_id = evidence_id(&statement.id, &evidence.capture);
             memory.persist_identified(
@@ -328,6 +356,44 @@ impl RepositoryAudit {
             push_lino_node(&mut output, 4, &statement.id, None);
             push_lino_node(&mut output, 6, "type", Some("audited_statement"));
             push_lino_node(&mut output, 6, "text", Some(&statement.text));
+            if !statement.references.is_empty() {
+                push_lino_node(
+                    &mut output,
+                    6,
+                    "resolved_text",
+                    Some(&statement.resolved_text),
+                );
+                push_lino_node(
+                    &mut output,
+                    6,
+                    "contextual_posterior",
+                    Some(&statement.contextual_posterior.to_string()),
+                );
+                push_lino_node(&mut output, 6, "references", None);
+                for reference in &statement.references {
+                    let reference_id = stable_id(
+                        "statement_reference",
+                        &format!(
+                            "{}:{}:{}",
+                            statement.id, reference.surface, reference.antecedent_statement_id
+                        ),
+                    );
+                    push_lino_node(&mut output, 8, &reference_id, None);
+                    push_lino_node(&mut output, 10, "surface", Some(&reference.surface));
+                    push_lino_node(
+                        &mut output,
+                        10,
+                        "antecedent_statement_id",
+                        Some(&reference.antecedent_statement_id),
+                    );
+                    push_lino_node(
+                        &mut output,
+                        10,
+                        "resolution_policy",
+                        Some("closest_preceding_subject_same_document"),
+                    );
+                }
+            }
             push_lino_node(
                 &mut output,
                 6,
@@ -487,6 +553,12 @@ impl RepositoryAudit {
     fn association_links(&self) -> BTreeSet<(String, String)> {
         let mut links = BTreeSet::new();
         for statement in &self.statements {
+            for reference in &statement.references {
+                links.insert((
+                    statement.id.clone(),
+                    reference.antecedent_statement_id.clone(),
+                ));
+            }
             for evidence in &statement.evidence {
                 links.insert((
                     statement.id.clone(),

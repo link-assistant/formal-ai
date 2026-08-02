@@ -838,6 +838,36 @@ meanings
         text 总结一下
       surface
         text 概括一下
+  conversation_return_recap
+    defined-by inquiry
+    defined-by conversation_reference
+    defined-by conversation_summary_directive
+    role conversation_return_recap
+    lexeme en
+      surface
+        text "the user stepped away and is coming back"
+      surface
+        text "i am back after stepping away"
+    lexeme ru
+      surface
+        text "пользователь отошёл и возвращается"
+      surface
+        text "я вернулся после перерыва"
+    lexeme hi
+      surface
+        text "उपयोगकर्ता वापस आ रहा है"
+      surface
+        text "मैं विराम के बाद वापस आया हूँ"
+    lexeme zh
+      surface
+        text 用户离开后回来了
+      surface
+        text 我离开后回来了
+    lexeme es
+      surface
+        text "el usuario se alejó y está regresando"
+      surface
+        text "he vuelto después de ausentarme"
   who_is_question
     defined-by inquiry
     role who_question_lead

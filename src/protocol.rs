@@ -32,7 +32,8 @@ pub use recording::{
     chat_exchange_to_record, chat_tool_executions, messages_exchange_to_record,
     responses_exchange_to_record,
 };
-use recording::{chat_prompt_and_history, response_prompt, value_to_prompt_text};
+pub(crate) use recording::{chat_message_to_turn, chat_prompt_and_history};
+use recording::{response_prompt, value_to_prompt_text};
 
 fn resolved_request_model(model: Option<&str>) -> String {
     crate::seed::resolve_model_id(model)

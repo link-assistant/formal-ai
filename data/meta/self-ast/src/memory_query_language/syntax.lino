@@ -1,0 +1,28 @@
+self_ast_census
+  target src/memory_query_language/syntax.rs
+  language rust
+  fidelity signature
+  byte_len 8483
+  line_count 249
+  content_id source_module_998957801ee9a72d
+  symbol_count 19
+  symbols
+    enum Token 9 15
+    function tokenize 17 90
+    function read_quoted 92 120
+    function is_word_start 122 124
+    function is_word_continue 126 128
+    struct Parser 130 133
+    function new 136 141
+    function peek 143 145
+    function next 147 151
+    function word 153 158
+    function value 160 182
+    function eat_word 184 191
+    function expect_word 193 199
+    function eat_symbol 201 205
+    function expect_symbol 207 213
+    function eat_operator 215 224
+    function is_word 226 228
+    function finish 230 237
+    function expected 239 248

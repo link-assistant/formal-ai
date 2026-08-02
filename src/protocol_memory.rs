@@ -1,7 +1,10 @@
 use crate::engine::SymbolicAnswer;
-use crate::memory::MemoryEvent;
+use crate::memory::{MemoryEvent, MemoryStore};
+use crate::memory_program::{MemoryProgramAuthorization, MemoryProgramLimits};
 use crate::solver::ConversationTurn;
-use crate::solver_handlers::answer_memory_recall;
+use crate::solver_handlers::{
+    answer_memory_recall, execute_memory_query_with_options, is_exact_memory_query,
+};
 
 const REQUEST_HISTORY_CONVERSATION_ID: &str = "request_history";
 
@@ -10,10 +13,24 @@ pub fn answer_from_memory_if_requested(
     history: &[ConversationTurn],
     memory_events: &[MemoryEvent],
 ) -> Option<SymbolicAnswer> {
+    let events = memory_events_with_request_history(memory_events, history);
+    if is_exact_memory_query(prompt) {
+        // Protocol functions receive an immutable event slice. Execute exact
+        // reads over an isolated projection and default mutations to read-only;
+        // native/browser callers with explicit authorization retain CRUD.
+        let mut store = MemoryStore::from_events(events);
+        return execute_memory_query_with_options(
+            prompt,
+            &mut store,
+            Some(REQUEST_HISTORY_CONVERSATION_ID),
+            MemoryProgramLimits::default(),
+            MemoryProgramAuthorization::ReadOnly,
+        )
+        .map(|execution| execution.answer);
+    }
     if memory_events.is_empty() {
         return None;
     }
-    let events = memory_events_with_request_history(memory_events, history);
     answer_memory_recall(prompt, &events, Some(REQUEST_HISTORY_CONVERSATION_ID))
 }
 

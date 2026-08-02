@@ -2,75 +2,78 @@ self_ast_census
   target src/web/wasm-worker/src/lib.rs
   language rust
   fidelity signature
-  byte_len 26693
-  line_count 844
-  content_id source_module_183c3508314a0f37
-  symbol_count 67
+  byte_len 27522
+  line_count 869
+  content_id source_module_0347172ef10a40ec
+  symbol_count 70
   symbols
     module language 15 15
     module arithmetic 19 19
     module web_engine_core 23 23
     module web_search_core 26 26
     module web_search_fusion_core 29 29
-    const GREETING 43 43
-    const WRITE_PROGRAM 44 44
-    const IDENTITY 45 45
-    const UNKNOWN 46 46
-    const INPUT_CAPACITY 47 47
-    const OUTPUT_CAPACITY 48 48
-    static INPUT 55 55
-    static OUTPUT 56 56
-    const BUMP_HEAP_SIZE 68 68
-    struct BumpHeap 70 72
-    static BUMP_HEAP 76 78
-    static BUMP_OFFSET 79 79
-    struct BumpAllocator 81 81
-    function alloc 84 102
-    function dealloc 104 106
-    static ALLOCATOR 110 110
-    function reset_bump 112 114
-    function input_ptr 119 121
-    function output_ptr 124 126
-    function input_capacity 129 131
-    function output_capacity 134 136
-    function classify 139 153
-    function is_exact_greeting 155 158
-    function is_identity_question 160 168
-    function contains_word 170 188
-    function trim_ascii 190 202
-    function ascii_eq 204 218
-    function is_ascii_alphanumeric 220 222
-    function to_ascii_lower 224 230
-    function min 232 238
-    function web_search_rrf_k 249 251
-    function web_search_concurrency_per_category 254 256
-    function web_search_provider_limit 259 261
-    function web_search_registry_len 264 266
-    function web_search_plan 272 283
-    function web_search_request_evidence 290 313
-    function web_search_fuse 319 334
-    function web_search_statement_fusion 338 351
-    function engine_normalize_prompt 367 380
-    function engine_detect_language 385 398
-    function engine_evaluate_arithmetic 405 425
-    function engine_assess_arithmetic_claim 431 446
-    function engine_fact_check_dialogue 452 476
-    struct FactCheckTemplates 478 484
-    struct DialogueStatement 486 493
-    function build_dialogue_fact_check 495 534
-    function looks_declarative 536 547
-    function assess_dialogue_statement 549 584
-    function render_dialogue_statement 586 604
-    function fill_template 606 612
-    function serialize_dialogue_answer 614 672
-    function decode_uri_component 674 692
-    function hex_value 694 701
-    function serialize_arithmetic_assessment 703 725
-    function push_json_string 727 747
-    const HEX 728 728
-    function engine_stable_id 752 768
-    function engine_select_unknown_opener 773 788
-    function engine_match_intent_route 792 804
-    function web_search_registry_dump 808 826
-    function write_output 828 839
-    function panic 842 844
+    module memory_query_language 33 33
+    module memory_query_worker 35 35
+    const GREETING 49 49
+    const WRITE_PROGRAM 50 50
+    const IDENTITY 51 51
+    const UNKNOWN 52 52
+    const INPUT_CAPACITY 53 53
+    const OUTPUT_CAPACITY 54 54
+    static INPUT 61 61
+    static OUTPUT 62 62
+    const BUMP_HEAP_SIZE 74 74
+    struct BumpHeap 76 78
+    static BUMP_HEAP 82 84
+    static BUMP_OFFSET 85 85
+    struct BumpAllocator 87 87
+    function alloc 90 108
+    function dealloc 110 112
+    static ALLOCATOR 116 116
+    function reset_bump 118 120
+    function input_ptr 125 127
+    function output_ptr 130 132
+    function input_capacity 135 137
+    function output_capacity 140 142
+    function classify 145 159
+    function is_exact_greeting 161 164
+    function is_identity_question 166 174
+    function contains_word 176 194
+    function trim_ascii 196 208
+    function ascii_eq 210 224
+    function is_ascii_alphanumeric 226 228
+    function to_ascii_lower 230 236
+    function min 238 244
+    function web_search_rrf_k 255 257
+    function web_search_concurrency_per_category 260 262
+    function web_search_provider_limit 265 267
+    function web_search_registry_len 270 272
+    function web_search_plan 278 289
+    function web_search_request_evidence 296 319
+    function web_search_fuse 325 340
+    function web_search_statement_fusion 344 357
+    function engine_normalize_prompt 373 386
+    function engine_detect_language 391 404
+    function engine_evaluate_arithmetic 411 431
+    function engine_assess_arithmetic_claim 437 452
+    function engine_fact_check_dialogue 458 482
+    function engine_memory_query 488 501
+    struct FactCheckTemplates 503 509
+    struct DialogueStatement 511 518
+    function build_dialogue_fact_check 520 559
+    function looks_declarative 561 572
+    function assess_dialogue_statement 574 609
+    function render_dialogue_statement 611 629
+    function fill_template 631 637
+    function serialize_dialogue_answer 639 697
+    function decode_uri_component 699 717
+    function hex_value 719 726
+    function serialize_arithmetic_assessment 728 750
+    function push_json_string 752 772
+    const HEX 753 753
+    function engine_stable_id 777 793
+    function engine_select_unknown_opener 798 813
+    function engine_match_intent_route 817 829
+    function web_search_registry_dump 833 851
+    function write_output 853 864
+    function panic 867 869

@@ -101,6 +101,14 @@ pub const ROLE_CONVERSATION_SUMMARY_PHRASE: &str = "conversation_summary_phrase"
 /// `inquiry` and `conversation_summary_directive` concepts, and matches on its
 /// own without the directive/reference conjunction.
 pub const ROLE_CONVERSATION_SUMMARY_COURTESY: &str = "conversation_summary_courtesy";
+/// Semantic role: a compact recap requested when a user returns to a dialogue.
+///
+/// A complete returning-user frame ("the user stepped away and is coming
+/// back", and its reviewed multilingual equivalents) asks for the current goal
+/// and state without requiring a separate conversation noun. Keeping this role
+/// distinct lets protocol clients request a bounded plain-text recap while the
+/// ordinary conversation-summary intent retains its detailed report format.
+pub const ROLE_CONVERSATION_RETURN_RECAP: &str = "conversation_return_recap";
 /// Semantic role: a natural-language query that searches prior dialog turns.
 ///
 /// The phrase asks for mentions of a subject in the conversation history

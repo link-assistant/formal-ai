@@ -1,0 +1,50 @@
+self_ast_census
+  target src/memory_program.rs
+  language rust
+  fidelity signature
+  byte_len 24131
+  line_count 668
+  content_id source_module_c2d225986a252f04
+  symbol_count 41
+  symbols
+    module execution 20 20
+    const MEMORY_PROGRAMS_LINO 25 25
+    struct MemoryProgramLimits 29 32
+    function from_decomposition_depth 37 43
+    function default 47 49
+    enum MemoryProgramPermission 54 58
+    function as_str 62 68
+    struct MemoryProgramStep 73 77
+    struct CompiledMemoryProgram 81 88
+    function primitive_names 92 97
+    function required_permissions 100 102
+    function canonical_program 105 107
+    function links_notation 111 148
+    enum MemoryProgramCompileError 153 156
+    function fmt 159 164
+    struct MemoryProgramParseError 171 173
+    function fmt 176 178
+    function parse_memory_program_links_notation 188 309
+    enum ParseSection 311 317
+    function apply_reviewable_shapes 319 356
+    function seeded_permission 358 362
+    function is_effect_primitive 364 366
+    function parse_lino_scalar 368 370
+    function parse_permission 372 381
+    function memory_program_parse_error 383 387
+    struct Catalog 390 395
+    struct Family 398 402
+    function compile_memory_program 405 432
+    function compile_family 434 482
+    function canonical_program 484 505
+    function catalog 507 510
+    static CATALOG 508 508
+    function parse_catalog 512 569
+    function unquote 571 577
+    function match_template 579 616
+    function normalize_surface 618 620
+    function normalize_surface_preserving_case 622 630
+    function case_insensitive_prefix_len 632 639
+    function find_case_insensitive 641 646
+    function contains_scope_cue 648 664
+    function normalize_binding 666 668

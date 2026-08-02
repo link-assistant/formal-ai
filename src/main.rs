@@ -342,7 +342,7 @@ enum MemoryAction {
         )]
         path: PathBuf,
     },
-    /// Answer a natural-language recall query against the persisted memory log.
+    /// Execute a natural-language, ANSI/common-vendor SQL, or GraphQL memory query.
     Query {
         #[arg(
             long,
@@ -351,7 +351,7 @@ enum MemoryAction {
         )]
         path: PathBuf,
 
-        /// Natural-language memory query, for example "Find Rust in another conversation".
+        /// Natural-language, SQL, or GraphQL query over the shared memory schema.
         #[arg(long)]
         prompt: String,
     },

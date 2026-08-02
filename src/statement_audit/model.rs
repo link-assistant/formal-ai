@@ -210,15 +210,25 @@ pub struct AttachedEvidence {
     pub effective_mass: f64,
 }
 
+/// A document-relative reference resolved to an earlier audited statement.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct StatementReference {
+    pub surface: String,
+    pub antecedent_statement_id: String,
+}
+
 /// One extracted and assessed repository statement.
 #[derive(Debug, Clone, PartialEq)]
 pub struct AuditedStatement {
     pub id: String,
     pub text: String,
+    pub resolved_text: String,
     pub location: SourceLocation,
     pub claim: Option<Claim>,
+    pub references: Vec<StatementReference>,
     pub evidence: Vec<AttachedEvidence>,
     pub assessment: StatementAssessment,
+    pub contextual_posterior: f64,
     pub relative_weight: f32,
 }
 

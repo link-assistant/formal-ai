@@ -117,6 +117,8 @@ roles
     kind meaning
   conversation_reference
     kind meaning
+  conversation_return_recap
+    kind meaning
   conversation_summary_courtesy
     kind meaning
   conversation_summary_directive

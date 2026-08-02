@@ -212,6 +212,8 @@ meanings
       surface
         text "with the content …"
       surface
+        text "with exactly this content …"
+      surface
         text "contents …"
       surface
         text "with the text …"
