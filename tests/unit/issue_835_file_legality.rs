@@ -116,8 +116,9 @@ fn observations_are_assessed_independently_per_category_and_jurisdiction() {
 
 #[test]
 fn confirmed_child_safety_hash_match_is_fail_closed_and_content_free() {
-    let bytes = b"synthetic-known-illegal-payload-marker";
-    let path = fixture_path("unsafe.bin", bytes);
+    let mut bytes = minimal_exif_tiff();
+    bytes.extend_from_slice(b"synthetic-known-illegal-payload-marker");
+    let path = fixture_path("unsafe.bin", &bytes);
     let mut config = FileLegalityConfig::for_jurisdictions(["US", "GB"]);
     config.add_authorized_hash_match(AuthorizedHashMatch::confirmed(
         "approved-provider",
@@ -136,7 +137,12 @@ fn confirmed_child_safety_hash_match_is_fail_closed_and_content_free() {
         report.file.sha256.is_none(),
         "matched content hash is redacted"
     );
+    assert!(
+        report.metadata.entries.is_empty(),
+        "matched content metadata is not extracted"
+    );
     assert!(!serialized.contains("synthetic-known-illegal-payload-marker"));
+    assert!(!serialized.contains("FormalCam"));
     for jurisdiction in ["US", "GB"] {
         let forbidden = report
             .assessment(jurisdiction, LegalCategory::ForbiddenContent)

@@ -367,13 +367,13 @@ pub fn check_file_legality_with(
     config: &FileLegalityConfig,
 ) -> io::Result<FileLegalityReport> {
     let path = path.as_ref();
-    let inspected = inspect_file(path)?;
     let confirmed_matches: Vec<&AuthorizedHashMatch> = config
         .authorized_hash_matches
         .iter()
         .filter(|hash_match| hash_match.confirmed)
         .collect();
     let fail_closed = !confirmed_matches.is_empty();
+    let inspected = inspect_file(path, fail_closed)?;
 
     let jurisdictions = normalized_jurisdictions(&config.jurisdictions);
     let mut assessments = Vec::with_capacity(jurisdictions.len() * LegalCategory::ALL.len());
@@ -397,7 +397,7 @@ pub fn check_file_legality_with(
             media_type: inspected.media_type,
             media_family: inspected.media_family,
             size_bytes: inspected.size_bytes,
-            sha256: (!fail_closed).then_some(inspected.sha256),
+            sha256: inspected.sha256,
         },
         metadata: inspected.metadata,
         assessments,
@@ -577,21 +577,31 @@ struct InspectedFile {
     media_type: String,
     media_family: MediaFamily,
     size_bytes: u64,
-    sha256: String,
+    sha256: Option<String>,
     metadata: ExtractedMetadata,
 }
 
-fn inspect_file(path: &Path) -> io::Result<InspectedFile> {
+fn inspect_file(path: &Path, suppress_derivatives: bool) -> io::Result<InspectedFile> {
     let mut file = File::open(path)?;
     let size_bytes = file.metadata()?.len();
     let mut signature = [0_u8; 64];
     let signature_len = file.read(&mut signature)?;
     let (media_family, media_type) = classify_file(path, &signature[..signature_len]);
 
+    if suppress_derivatives {
+        return Ok(InspectedFile {
+            media_type: media_type.to_owned(),
+            media_family,
+            size_bytes,
+            sha256: None,
+            metadata: ExtractedMetadata::default(),
+        });
+    }
+
     let mut digest = Sha256::new();
     digest.update(&signature[..signature_len]);
     io::copy(&mut file, &mut DigestWriter(&mut digest))?;
-    let sha256 = format!("{:x}", digest.finalize());
+    let sha256 = Some(format!("{:x}", digest.finalize()));
     let metadata = extract_exif(path);
 
     Ok(InspectedFile {
