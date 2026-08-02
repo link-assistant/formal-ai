@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.319.1] - 2026-08-02
+
+### Fixed
+- Support Claude Code's returning-user `/recap` request with a goal-led, under-40-word plain summary, while excluding client-injected reminder metadata from conversation history ([#858](https://github.com/link-assistant/formal-ai/issues/858)).
+
 ## [0.319.0] - 2026-08-02
 
 ### Added
