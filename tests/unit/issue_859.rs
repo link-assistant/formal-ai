@@ -1,6 +1,7 @@
 use formal_ai::agentic_coding::planner::tool_capability;
 use formal_ai::agentic_coding::{plan_symbolic_command_reroute, AgenticPlan};
 use formal_ai::protocol::ChatMessage;
+use formal_ai::seed::response_for;
 use formal_ai::solver::{SolverConfig, UniversalSolver};
 use serde_json::Value;
 
@@ -31,6 +32,58 @@ fn codex_hello_world_starts_with_apply_patch_instead_of_write_stdin() {
 
     assert_eq!(calls.len(), 1);
     assert_eq!(calls[0].tool, "apply_patch");
+}
+
+#[test]
+fn compile_and_run_narration_is_seeded_in_every_supported_language() {
+    struct NarrationCase {
+        language: &'static str,
+        compile: &'static str,
+        run: &'static str,
+    }
+
+    let cases = [
+        NarrationCase {
+            language: "en",
+            compile: "Let me run a compile this program for you.",
+            run: "Let me run the compiled program for you.",
+        },
+        NarrationCase {
+            language: "ru",
+            compile: "Скомпилирую эту программу для вас.",
+            run: "Запущу скомпилированную программу для вас.",
+        },
+        NarrationCase {
+            language: "hi",
+            compile: "मैं आपके लिए इस प्रोग्राम को कंपाइल करता हूँ।",
+            run: "मैं आपके लिए कंपाइल किया हुआ प्रोग्राम चलाता हूँ।",
+        },
+        NarrationCase {
+            language: "zh",
+            compile: "我来为你编译这个程序。",
+            run: "我来为你运行编译后的程序。",
+        },
+        NarrationCase {
+            language: "es",
+            compile: "Voy a compilar este programa por ti.",
+            run: "Voy a ejecutar el programa compilado por ti.",
+        },
+    ];
+
+    for case in cases {
+        assert_eq!(
+            response_for("agentic_action_compile_program", case.language).as_deref(),
+            Some(case.compile),
+            "{} compile narration",
+            case.language
+        );
+        assert_eq!(
+            response_for("agentic_action_run_program", case.language).as_deref(),
+            Some(case.run),
+            "{} run narration",
+            case.language
+        );
+    }
 }
 
 #[test]
