@@ -284,7 +284,10 @@ fn apply_response_value(value: &Value, summary: &mut ResponseSummary) {
             apply_response_item(item, summary);
         }
     }
-    if value.get("type").and_then(Value::as_str) == Some("function_call") {
+    if matches!(
+        value.get("type").and_then(Value::as_str),
+        Some("function_call" | "custom_tool_call")
+    ) {
         apply_response_item(value, summary);
     }
     if let Some(candidates) = value.get("candidates").and_then(Value::as_array) {
@@ -334,6 +337,14 @@ fn apply_response_item(item: &Value, summary: &mut ResponseSummary) {
                 summary.tool_calls.push(ProxyToolCallLog {
                     name: name.to_owned(),
                     arguments: arguments_from_value(item.get("arguments")),
+                });
+            }
+        }
+        Some("custom_tool_call") => {
+            if let Some(name) = item.get("name").and_then(Value::as_str) {
+                summary.tool_calls.push(ProxyToolCallLog {
+                    name: name.to_owned(),
+                    arguments: arguments_from_value(item.get("input")),
                 });
             }
         }

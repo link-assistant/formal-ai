@@ -26,6 +26,7 @@ impl ResponseObject {
             .filter_map(|item| match item {
                 ResponseOutputItem::Message(message) => Some(message),
                 ResponseOutputItem::FunctionCall(_)
+                | ResponseOutputItem::CustomToolCall(_)
                 | ResponseOutputItem::WebSearchCall(_)
                 | ResponseOutputItem::Reasoning(_) => None,
             })
@@ -41,6 +42,22 @@ impl ResponseObject {
             .filter_map(|item| match item {
                 ResponseOutputItem::FunctionCall(call) => Some(call),
                 ResponseOutputItem::Message(_)
+                | ResponseOutputItem::CustomToolCall(_)
+                | ResponseOutputItem::WebSearchCall(_)
+                | ResponseOutputItem::Reasoning(_) => None,
+            })
+            .collect()
+    }
+
+    /// The freeform custom tool calls this response is requesting, if any.
+    #[must_use]
+    pub fn custom_tool_calls(&self) -> Vec<&ResponseCustomToolCall> {
+        self.output
+            .iter()
+            .filter_map(|item| match item {
+                ResponseOutputItem::CustomToolCall(call) => Some(call),
+                ResponseOutputItem::FunctionCall(_)
+                | ResponseOutputItem::Message(_)
                 | ResponseOutputItem::WebSearchCall(_)
                 | ResponseOutputItem::Reasoning(_) => None,
             })
@@ -51,15 +68,17 @@ impl ResponseObject {
 /// One item in a Responses `output` array: an assistant message, a tool call, or
 /// a reasoning summary.
 ///
-/// A `FunctionCall` is a tool the client must execute (issue #468). Serialized
+/// Function and custom calls are tools the client must execute. Serialized
 /// untagged so each item keeps its native OpenAI shape — a message carries
-/// `type:"message"`, a call carries `type:"function_call"`, and reasoning
+/// `type:"message"`, calls carry their corresponding call type, and reasoning
 /// carries `type:"reasoning"`.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum ResponseOutputItem {
     /// A function tool call (`type:"function_call"`).
     FunctionCall(ResponseFunctionToolCall),
+    /// A freeform custom tool call (`type:"custom_tool_call"`).
+    CustomToolCall(ResponseCustomToolCall),
     /// A server-hosted web search (`type:"web_search_call"`).
     WebSearchCall(ResponseWebSearchToolCall),
     /// An assistant message (`type:"message"`).
@@ -105,8 +124,23 @@ pub struct ResponseFunctionToolCall {
     pub status: String,
 }
 
+/// A freeform custom tool call emitted on the Responses surface.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ResponseCustomToolCall {
+    pub id: String,
+    #[serde(rename = "type", default = "custom_tool_call_kind")]
+    pub kind: String,
+    pub call_id: String,
+    pub name: String,
+    pub input: String,
+}
+
 pub(super) fn function_call_kind() -> String {
     String::from("function_call")
+}
+
+pub(super) fn custom_tool_call_kind() -> String {
+    String::from("custom_tool_call")
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

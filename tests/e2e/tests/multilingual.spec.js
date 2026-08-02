@@ -2614,6 +2614,25 @@ test.describe('Issue #27: conversations sidebar', () => {
     await sendPrompt(page, 'Hello');
     await expect(messages).toHaveCount(2);
 
+    // Rendering the assistant turn and committing it to IndexedDB are separate
+    // asynchronous operations. Wait for the persistence contract itself before
+    // navigating so the reload cannot interrupt the second append.
+    await expect
+      .poll(
+        () =>
+          page.evaluate(async () => {
+            const events = await window.FormalAiMemory.listEvents();
+            return events.filter(
+              (event) =>
+                event.kind === 'message' &&
+                !event.isDemo &&
+                (event.role === 'user' || event.role === 'assistant'),
+            ).length;
+          }),
+        { timeout: 5_000 },
+      )
+      .toBe(2);
+
     await page.reload();
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
     // The transcript should be re-populated from IndexedDB; the active

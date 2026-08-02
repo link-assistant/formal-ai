@@ -164,6 +164,11 @@ meanings
     lexeme en
       surface
         text "agentic action before tool"
+  agentic_action_compile_program
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action compile program"
   agentic_action_edit
     defined-by intent
     lexeme en
@@ -214,6 +219,11 @@ meanings
     lexeme en
       surface
         text "agentic action run"
+  agentic_action_run_program
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action run program"
   agentic_action_search
     defined-by intent
     lexeme en
@@ -1384,13 +1394,3 @@ meanings
     lexeme en
       surface
         text "external benchmark swe predictions write error"
-  external_benchmark_swe_record_error
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark swe record error"
-  external_benchmark_swe_remove_report_error
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark swe remove report error"

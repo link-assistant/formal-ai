@@ -33,6 +33,9 @@ pub fn tool_action_narration(prompt: &str, calls: &[PlannedToolCall]) -> String 
                 return template.replace(SUBJECT_SLOT, found.subject.trim());
             }
         }
+        if let Some(intent) = program_command_intent(prompt, &first.arguments) {
+            return localized(intent, language).unwrap_or_default();
+        }
     }
 
     let intent = capability.map_or("agentic_action_generic", capability_intent);
@@ -65,6 +68,28 @@ const fn capability_intent(capability: Capability) -> &'static str {
 /// missing translation still yields a sentence rather than silence.
 fn localized(intent: &str, language: &str) -> Option<String> {
     crate::seed::localized_response(intent, language)
+}
+
+/// Give typed program recipe commands their own spoken action. The language
+/// catalog is the authority for which command checks/compiles a program and
+/// which command executes it, so unrelated shell calls retain generic
+/// narration and no command spelling is hardcoded here.
+fn program_command_intent(prompt: &str, arguments: &str) -> Option<&'static str> {
+    let normalized = prompt.to_lowercase();
+    crate::coding::program_task_by_alias(&normalized)?;
+    let language = crate::coding::program_language_by_alias(&normalized)?;
+    let arguments = serde_json::from_str::<Value>(arguments).ok()?;
+    let command = arguments
+        .get("command")
+        .or_else(|| arguments.get("cmd"))
+        .and_then(Value::as_str)?;
+    if language.execution.check_command == Some(command) {
+        Some("agentic_action_compile_program")
+    } else if language.execution.run_command == command {
+        Some("agentic_action_run_program")
+    } else {
+        None
+    }
 }
 
 fn tool_action_target(arguments: &str) -> String {

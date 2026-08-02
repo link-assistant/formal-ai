@@ -47,6 +47,46 @@ multilingual_responses
     intent web_search_unavailable
     language zh
     text "`{query}` 没有可用的已捕获提供商响应。实时抓取默认关闭；请明确启用它以填充可重放的来源缓存。未执行的计划包括 DuckDuckGo、Internet Archive、Wikipedia、Wikidata、Wiktionary 和 Wikinews。"
+  response response_search_fusion_header_en
+    intent search_fusion_header
+    language en
+    text "Fused {count} statement(s) from {sources} captured source(s) for `{query}`:\n\n{statements}"
+  response response_search_fusion_header_ru
+    intent search_fusion_header
+    language ru
+    text "Объединено утверждений: {count}; захваченных источников: {sources}; запрос: `{query}`:\n\n{statements}"
+  response response_search_fusion_header_hi
+    intent search_fusion_header
+    language hi
+    text "`{query}` के लिए {sources} कैप्चर किए गए स्रोतों से {count} कथन एकीकृत किए गए:\n\n{statements}"
+  response response_search_fusion_header_zh
+    intent search_fusion_header
+    language zh
+    text "已为 `{query}` 将 {sources} 个已捕获来源融合为 {count} 条陈述：\n\n{statements}"
+  response response_search_fusion_header_es
+    intent search_fusion_header
+    language es
+    text "Se fusionaron {count} afirmaciones de {sources} fuentes capturadas para `{query}`:\n\n{statements}"
+  response response_search_fusion_read_more_en
+    intent search_fusion_read_more
+    language en
+    text "Read more"
+  response response_search_fusion_read_more_ru
+    intent search_fusion_read_more
+    language ru
+    text "Читать дальше"
+  response response_search_fusion_read_more_hi
+    intent search_fusion_read_more
+    language hi
+    text "और पढ़ें"
+  response response_search_fusion_read_more_zh
+    intent search_fusion_read_more
+    language zh
+    text "阅读更多"
+  response response_search_fusion_read_more_es
+    intent search_fusion_read_more
+    language es
+    text "Leer más"
   response response_agentic_action_list_desktop_en
     intent agentic_action_list_desktop
     language en
@@ -223,6 +263,46 @@ multilingual_responses
     intent agentic_action_run
     language zh
     text "我来运行一个命令来完成这个。"
+  response response_agentic_action_compile_program_en
+    intent agentic_action_compile_program
+    language en
+    text "Let me run a compile this program for you."
+  response response_agentic_action_compile_program_ru
+    intent agentic_action_compile_program
+    language ru
+    text "Скомпилирую эту программу для вас."
+  response response_agentic_action_compile_program_hi
+    intent agentic_action_compile_program
+    language hi
+    text "मैं आपके लिए इस प्रोग्राम को कंपाइल करता हूँ।"
+  response response_agentic_action_compile_program_zh
+    intent agentic_action_compile_program
+    language zh
+    text "我来为你编译这个程序。"
+  response response_agentic_action_compile_program_es
+    intent agentic_action_compile_program
+    language es
+    text "Voy a compilar este programa por ti."
+  response response_agentic_action_run_program_en
+    intent agentic_action_run_program
+    language en
+    text "Let me run the compiled program for you."
+  response response_agentic_action_run_program_ru
+    intent agentic_action_run_program
+    language ru
+    text "Запущу скомпилированную программу для вас."
+  response response_agentic_action_run_program_hi
+    intent agentic_action_run_program
+    language hi
+    text "मैं आपके लिए कंपाइल किया हुआ प्रोग्राम चलाता हूँ।"
+  response response_agentic_action_run_program_zh
+    intent agentic_action_run_program
+    language zh
+    text "我来为你运行编译后的程序。"
+  response response_agentic_action_run_program_es
+    intent agentic_action_run_program
+    language es
+    text "Voy a ejecutar el programa compilado por ti."
   response response_agentic_action_ask_user_en
     intent agentic_action_ask_user
     language en

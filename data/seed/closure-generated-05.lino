@@ -1,4 +1,64 @@
 meanings
+  response_external_benchmark_swe_clear_logs_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe clear logs error en"
+  response_external_benchmark_swe_docker_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe docker error en"
+  response_external_benchmark_swe_encode_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe encode error en"
+  response_external_benchmark_swe_exit_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe exit error en"
+  response_external_benchmark_swe_infrastructure_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe infrastructure error en"
+  response_external_benchmark_swe_inspect_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe inspect error en"
+  response_external_benchmark_swe_missing_report_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe missing report en"
+  response_external_benchmark_swe_predictions_write_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe predictions write error en"
+  response_external_benchmark_swe_record_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe record error en"
+  response_external_benchmark_swe_remove_report_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe remove report error en"
+  response_external_benchmark_swe_report_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe report error en"
+  response_external_benchmark_swe_slice_write_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe slice write error en"
   response_external_benchmark_swe_start_error_en
     defined-by response_template
     lexeme en
@@ -1334,63 +1394,3 @@ meanings
     lexeme en
       surface
         text "response local search not found zh"
-  response_local_search_route_local_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search route local en"
-  response_local_search_route_local_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search route local hi"
-  response_local_search_route_local_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search route local ru"
-  response_local_search_route_local_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search route local zh"
-  response_local_search_scope_listing_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search scope listing en"
-  response_local_search_scope_listing_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search scope listing hi"
-  response_local_search_scope_listing_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search scope listing ru"
-  response_local_search_scope_listing_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search scope listing zh"
-  response_local_search_type_directory_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search type directory en"
-  response_local_search_type_directory_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search type directory hi"
-  response_local_search_type_directory_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search type directory ru"
-  response_local_search_type_directory_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search type directory zh"

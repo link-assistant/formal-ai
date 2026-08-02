@@ -93,6 +93,22 @@ impl StatementSignature {
         Self { polarity, terms }
     }
 
+    /// Reduce `text` to its polarity while using language-independent semantic
+    /// links for its content terms. Callers use this only after every required
+    /// slot has a grounded anchor; an empty link set deliberately falls back to
+    /// the conservative lexical signature.
+    #[must_use]
+    pub fn with_semantic_terms(text: &str, semantic_terms: &[String]) -> Self {
+        if semantic_terms.is_empty() {
+            return Self::of(text);
+        }
+        let polarity = Self::of(text).polarity;
+        let mut terms = semantic_terms.to_vec();
+        terms.sort_unstable();
+        terms.dedup();
+        Self { polarity, terms }
+    }
+
     /// The signature of this statement's denial — same terms, opposite sign.
     #[must_use]
     pub fn negated(&self) -> Self {
@@ -134,6 +150,9 @@ pub struct SourcedStatement {
     pub source: String,
     /// The source's trust tier, used by [`super::importance`] to weigh it.
     pub tier: SourceTier,
+    /// Fully grounded, role-qualified semantic links. Empty means the existing
+    /// conservative lexical signature must be used.
+    pub semantic_terms: Vec<String>,
 }
 
 impl SourcedStatement {
@@ -144,7 +163,15 @@ impl SourcedStatement {
             statement,
             source: source.into(),
             tier,
+            semantic_terms: Vec::new(),
         }
+    }
+
+    /// Attach a complete language-independent meaning key to this observation.
+    #[must_use]
+    pub fn with_semantic_terms(mut self, terms: Vec<String>) -> Self {
+        self.semantic_terms = terms;
+        self
     }
 
     /// Build an observation by formalizing a raw sentence, inferring its kind
@@ -342,7 +369,7 @@ pub fn deduplicate(observations: &[SourcedStatement]) -> DedupReport {
         if !report.sources.contains(&observation.source) {
             report.sources.push(observation.source.clone());
         }
-        let signature = StatementSignature::of(&text);
+        let signature = StatementSignature::with_semantic_terms(&text, &observation.semantic_terms);
         let id = signature.id();
         let existing = report
             .statements

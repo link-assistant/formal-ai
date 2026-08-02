@@ -1,4 +1,14 @@
 meanings
+  recall_name
+    defined-by concept
+    lexeme en
+      surface
+        text "recall name"
+  referrers
+    defined-by word_surface
+    lexeme en
+      surface
+        text "referrers"
   relative-meta-logic
     defined-by term
     lexeme en
@@ -264,6 +274,31 @@ meanings
     lexeme en
       surface
         text "response agentic action before tool zh"
+  response_agentic_action_compile_program_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action compile program en"
+  response_agentic_action_compile_program_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action compile program es"
+  response_agentic_action_compile_program_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action compile program hi"
+  response_agentic_action_compile_program_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action compile program ru"
+  response_agentic_action_compile_program_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action compile program zh"
   response_agentic_action_edit_en
     defined-by response_template
     lexeme en
@@ -454,6 +489,31 @@ meanings
     lexeme en
       surface
         text "response agentic action run hi"
+  response_agentic_action_run_program_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action run program en"
+  response_agentic_action_run_program_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action run program es"
+  response_agentic_action_run_program_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action run program hi"
+  response_agentic_action_run_program_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action run program ru"
+  response_agentic_action_run_program_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action run program zh"
   response_agentic_action_run_ru
     defined-by response_template
     lexeme en
@@ -1334,63 +1394,3 @@ meanings
     lexeme en
       surface
         text "response external benchmark ratchet reference suffix en"
-  response_external_benchmark_swe_clear_logs_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe clear logs error en"
-  response_external_benchmark_swe_docker_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe docker error en"
-  response_external_benchmark_swe_encode_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe encode error en"
-  response_external_benchmark_swe_exit_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe exit error en"
-  response_external_benchmark_swe_infrastructure_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe infrastructure error en"
-  response_external_benchmark_swe_inspect_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe inspect error en"
-  response_external_benchmark_swe_missing_report_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe missing report en"
-  response_external_benchmark_swe_predictions_write_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe predictions write error en"
-  response_external_benchmark_swe_record_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe record error en"
-  response_external_benchmark_swe_remove_report_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe remove report error en"
-  response_external_benchmark_swe_report_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe report error en"
-  response_external_benchmark_swe_slice_write_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe slice write error en"

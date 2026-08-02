@@ -8,16 +8,19 @@ use crate::protocol::ChatMessage;
 use crate::seed;
 
 /// The advertised tool name that provides `capability`. Client-executed MCP
-/// tools take precedence over protocol-native hosted tools: a hosted search is
-/// executed by the upstream model provider, while an MCP tool produces a result
-/// that the CLI can return in the next turn. Canonical aliases remain ordered by
-/// the registry, followed by the compatibility classifier for namespaced tools
-/// used by other harnesses.
+/// research tools take precedence over protocol-native hosted search/fetch
+/// tools, because an MCP result returns through the CLI. Other capabilities use
+/// canonical aliases first: a generic namespaced `_execute` helper must not
+/// outrank Codex's purpose-built `exec_command`. Compatibility classification
+/// remains the final fallback for namespaced tools used by other harnesses.
 pub(super) fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Option<&'a str> {
-    if let Some(name) = tool_names.iter().copied().find(|name| {
-        name.to_ascii_lowercase().starts_with("mcp__") && classify_tool(name) == Some(capability)
-    }) {
-        return Some(name);
+    if matches!(capability, Capability::Search | Capability::Fetch) {
+        if let Some(name) = tool_names.iter().copied().find(|name| {
+            name.to_ascii_lowercase().starts_with("mcp__")
+                && classify_tool(name) == Some(capability)
+        }) {
+            return Some(name);
+        }
     }
     let registry = seed::agentic_tool_capabilities();
     let entry = registry
@@ -98,7 +101,12 @@ pub(super) fn classify_tool(name: &str) -> Option<Capability> {
         || lower.contains("read_url")
     {
         Some(Capability::Fetch)
-    } else if lower.contains("write") || lower.contains("create_file") {
+    } else if lower == "write"
+        || lower.ends_with("__write")
+        || lower.contains("write_file")
+        || lower.contains("file_write")
+        || lower.contains("create_file")
+    {
         Some(Capability::Write)
     } else if lower.contains("edit") || lower.contains("patch") || lower.contains("replace") {
         Some(Capability::Edit)
@@ -112,6 +120,19 @@ pub(super) fn classify_tool(name: &str) -> Option<Capability> {
     } else {
         None
     }
+}
+
+/// Whether a tool can create the source file that starts an execution recipe.
+///
+/// Most clients expose a dedicated write capability. Codex instead exposes its
+/// patch grammar as an edit capability, but an add-file patch satisfies the
+/// same recipe step. Process-input tools such as `write_stdin` satisfy neither.
+pub(super) fn is_workspace_creation_tool(name: &str) -> bool {
+    if classify_tool(name) == Some(Capability::Write) {
+        return true;
+    }
+    let leaf = name.rsplit("__").next().unwrap_or(name);
+    classify_tool(name) == Some(Capability::Edit) && leaf.to_ascii_lowercase().contains("patch")
 }
 
 pub(super) fn plan_shared_capability_step(

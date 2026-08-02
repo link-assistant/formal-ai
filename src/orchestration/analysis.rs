@@ -220,14 +220,29 @@ pub fn extract_agent_result(stdout: &str) -> String {
     }
 
     // Some clients (and process supervisors around them) place diagnostics
-    // before or after a JSONL stream. Recover only complete JSON lines so those
+    // before or after JSONL events. Recover only complete JSON values so those
     // diagnostics remain in the replay record without becoming claims.
     for line in stdout.lines() {
-        if let Ok(value) = serde_json::from_str::<Value>(line.trim()) {
-            update_best_candidate(&mut best, &value);
-        }
+        update_embedded_json_candidates(&mut best, line);
     }
     best.map_or_else(|| stdout.trim().to_string(), |(_, text)| text)
+}
+
+/// Recover complete JSON values even when a process supervisor writes its own
+/// status text on the same line. Rust's test harness does this for captured
+/// `--nocapture` output (`test name ... {event} ok`), and agent wrappers may use
+/// the same shape. Starting only at JSON container delimiters keeps ordinary
+/// prose out of the candidate stream while allowing trailing supervisor text.
+fn update_embedded_json_candidates(best: &mut Option<(u8, String)>, line: &str) {
+    for (offset, _) in line
+        .char_indices()
+        .filter(|(_, character)| matches!(character, '{' | '['))
+    {
+        let mut stream = serde_json::Deserializer::from_str(&line[offset..]).into_iter::<Value>();
+        if let Some(Ok(value)) = stream.next() {
+            update_best_candidate(best, &value);
+        }
+    }
 }
 
 fn update_best_candidate(best: &mut Option<(u8, String)>, value: &Value) {

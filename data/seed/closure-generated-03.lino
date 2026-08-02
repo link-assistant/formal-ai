@@ -1,4 +1,14 @@
 meanings
+  notes
+    defined-by word_surface
+    lexeme en
+      surface
+        text "notes"
+  npm
+    defined-by token
+    lexeme en
+      surface
+        text "npm"
   npx
     defined-by token
     lexeme en
@@ -1384,13 +1394,3 @@ meanings
     lexeme en
       surface
         text "read local file"
-  recall_name
-    defined-by concept
-    lexeme en
-      surface
-        text "recall name"
-  referrers
-    defined-by word_surface
-    lexeme en
-      surface
-        text "referrers"

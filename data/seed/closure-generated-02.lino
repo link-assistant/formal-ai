@@ -1,4 +1,14 @@
 meanings
+  external_benchmark_swe_record_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe record error"
+  external_benchmark_swe_remove_report_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe remove report error"
   external_benchmark_swe_report_error
     defined-by intent
     lexeme en
@@ -1384,13 +1394,3 @@ meanings
     lexeme en
       surface
         text "normalize whitespace"
-  notes
-    defined-by word_surface
-    lexeme en
-      surface
-        text "notes"
-  npm
-    defined-by token
-    lexeme en
-      surface
-        text "npm"

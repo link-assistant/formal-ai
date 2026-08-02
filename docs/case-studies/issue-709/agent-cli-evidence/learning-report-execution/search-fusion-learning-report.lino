@@ -1,0 +1,111 @@
+search_fusion_learning_report
+  issue "709"
+  decision "awaiting_human_review"
+  promotion_gate "issue_709_held_out_zero_failures_and_named_review"
+  record_type "agent_cli_auto_learning"
+  substrate "links_network"
+  retention_formula "reads + writes + incoming_links + outgoing_links"
+  expression_count "8"
+  validation_warning_count "0"
+  multi_hop_seed "observation:fragment-language"
+  multi_hop_recall "observation:fragment-language|lesson:statement-boundary"
+  learned_expression_01
+    id "observation:fragment-language"
+    text "message
+user
+One language decision for an entire mixed-language capture assigns wrong provenance to individual statements."
+    reads "10"
+    writes "1"
+    incoming_links "1"
+    outgoing_links "0"
+    retention_score "12"
+    qualifiers "conversation_id=issue-709|kind=message|role=user"
+    validation "aligned"
+  learned_expression_02
+    id "observation:exact-mirror"
+    text "message
+user
+Caller metadata alone lets byte-identical mirrors contribute as independent corroboration."
+    reads "8"
+    writes "1"
+    incoming_links "1"
+    outgoing_links "0"
+    retention_score "10"
+    qualifiers "conversation_id=issue-709|kind=message|role=user"
+    validation "aligned"
+  learned_expression_03
+    id "observation:proposal-only"
+    text "message
+user
+A serialized execution proposal records the answer but cannot solve an unseen equivalent task after restart."
+    reads "9"
+    writes "1"
+    incoming_links "0"
+    outgoing_links "0"
+    retention_score "10"
+    qualifiers "conversation_id=issue-709|kind=message|role=user"
+    validation "aligned"
+  learned_expression_04
+    id "observation:hidden-html"
+    text "message
+user
+Tag stripping without hidden-element state can present script or style content as a source quote."
+    reads "7"
+    writes "1"
+    incoming_links "1"
+    outgoing_links "0"
+    retention_score "9"
+    qualifiers "conversation_id=issue-709|kind=message|role=user"
+    validation "aligned"
+  learned_expression_05
+    id "lesson:gated-recipe-replay"
+    text "learning_amendment
+assistant
+Infer the stable fusion stages from multiple successful executions, keep candidates inert, then require zero-failure held-out evidence and named review before durable replay.
+lesson:visible-provenance"
+    reads "0"
+    writes "6"
+    incoming_links "0"
+    outgoing_links "1"
+    retention_score "7"
+    qualifiers "conversation_id=issue-709|kind=learning_amendment|role=assistant"
+    validation "aligned"
+  learned_expression_06
+    id "lesson:statement-boundary"
+    text "learning_amendment
+assistant
+Detect language after sentence splitting and retain the original quote while deformalizing only the answer statement.
+observation:fragment-language"
+    reads "1"
+    writes "5"
+    incoming_links "0"
+    outgoing_links "1"
+    retention_score "7"
+    qualifiers "conversation_id=issue-709|kind=learning_amendment|role=assistant"
+    validation "aligned"
+  learned_expression_07
+    id "lesson:visible-provenance"
+    text "learning_amendment
+assistant
+Exclude script style template and noscript bodies before sentence formalization so normalized quotes remain human-visible evidence.
+observation:hidden-html"
+    reads "0"
+    writes "4"
+    incoming_links "1"
+    outgoing_links "1"
+    retention_score "6"
+    qualifiers "conversation_id=issue-709|kind=learning_amendment|role=assistant"
+    validation "aligned"
+  learned_expression_08
+    id "lesson:capture-policy"
+    text "learning_amendment
+assistant
+Resolve identical capture digests by highest source tier then retrieval rank and set every losing mirror to zero-weight unoriginal.
+observation:exact-mirror"
+    reads "0"
+    writes "4"
+    incoming_links "0"
+    outgoing_links "1"
+    retention_score "5"
+    qualifiers "conversation_id=issue-709|kind=learning_amendment|role=assistant"
+    validation "aligned"

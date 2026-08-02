@@ -1,0 +1,14 @@
+self_ast_census
+  target src/search_fusion_grammar.rs
+  language rust
+  fidelity signature
+  byte_len 1548
+  line_count 37
+  content_id source_module_278c1816d6576c50
+  symbol_count 5
+  symbols
+    const LANGUAGE_GRAMMAR 3 3
+    const DEFAULT_ORDER 4 4
+    function role_order 9 9
+    function policy_document 28 30
+    function parse_order 32 32

@@ -486,5 +486,7 @@ changelog.d/20260731_060000_registry_driven_language_detection.md	0.317.0
 changelog.d/20260731_090000_generalized_computer_use.md	0.316.0
 changelog.d/20260731_170000_language_auto_learning.md	0.317.0
 changelog.d/20260801_000000_issue_885.md	0.318.0
+changelog.d/20260801_081500_issue_709_search_fusion.md	0.320.0
 changelog.d/20260801_094500_bounded_memory_programs.md	0.319.0
+changelog.d/20260801_212200_codex_tool_routing.md	0.319.2
 changelog.d/20260802_010500_issue_858_claude_recap.md	0.319.1
