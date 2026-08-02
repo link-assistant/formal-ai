@@ -277,8 +277,12 @@ for task in tasks:
     # placeholder (the L1 ceiling cases before their checks were tightened).
     # The temporary server never came up, so nothing about the model was
     # measured. Recording this as an ordinary FAIL is how a run silently turns
-    # into fiction, so it is named and counted separately instead.
-    not_measured = "exited before listening" in output
+    # into fiction, so it is named and counted separately instead. Require the
+    # launcher's missing-success marker too: a task may legitimately read seed
+    # data containing the diagnostic text (L3.839.title_prefix).
+    server_started = "formal-ai: started a temporary server in agent mode" in output
+    not_measured = (not server_started
+                    and "exited before listening" in output)
     ok = (verified and answered and not timed_out and not refused
           and not not_measured and not expectation_error)
 

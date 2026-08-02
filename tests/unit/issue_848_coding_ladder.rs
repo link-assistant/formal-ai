@@ -537,6 +537,10 @@ fn compiler_measurement_and_same_task_authorship_are_preserved() {
     assert!(runner.contains("results-partial-$FILTER_SLUG.json"));
     assert!(runner.contains("expect_from_file"));
     assert!(runner.contains("re.MULTILINE"));
+    assert!(runner.contains(
+        "server_started = \"formal-ai: started a temporary server in agent mode\" in output"
+    ));
+    assert!(runner.contains("not_measured = (not server_started"));
 
     let prompts: serde_json::Value =
         serde_json::from_str(&read("experiments/issue_847_coding_ladder/prompts.json"))
