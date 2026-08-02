@@ -828,7 +828,7 @@ dependencies = [
 
 [[package]]
 name = "formal-ai"
-version = "0.320.0"
+version = "0.321.0"
 dependencies = [
  "base64 0.23.0",
  "clap",

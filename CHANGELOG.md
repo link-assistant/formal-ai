@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.321.0] - 2026-08-02
+
+### Added
+
+- Added evidence-oriented multi-jurisdiction file-legality reports, Exif/GPS
+  provenance, independent detector adapters, a fail-closed authorized hash
+  boundary, and the `formal-ai file-legality` JSON CLI.
+
 ## [0.320.0] - 2026-08-02
 
 ### Added
