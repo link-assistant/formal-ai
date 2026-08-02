@@ -2,10 +2,10 @@ self_ast_census
   target src/lib.rs
   language rust
   fidelity signature
-  byte_len 20031
-  line_count 447
-  content_id source_module_79f310f13832fe94
-  symbol_count 150
+  byte_len 20066
+  line_count 448
+  content_id source_module_c559f9e1c1167ec9
+  symbol_count 151
   symbols
     module agent 3 3
     module agentic_coding 4 4
@@ -152,8 +152,9 @@ self_ast_census
     module web_engine_core 145 145
     module web_search_core 146 146
     module web_search_fusion_core 147 147
-    module world_model 148 148
-    module world_model_atoms 149 149
-    module world_model_context 150 150
-    module world_model_cycles 151 151
-    module world_model_dialog 152 152
+    module workspace_change_learning 148 148
+    module world_model 149 149
+    module world_model_atoms 150 150
+    module world_model_context 151 151
+    module world_model_cycles 152 152
+    module world_model_dialog 153 153

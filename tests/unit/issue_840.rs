@@ -452,6 +452,47 @@ fn comparison_is_decomposed_before_open_web_research() {
 }
 
 #[test]
+fn comparison_retries_the_missing_side_after_a_failed_search_result() {
+    let mut messages = vec![ChatMessage::user("ФБС vs ФБО")];
+    let first = one_call(&messages);
+    add_result(
+        &mut messages,
+        first,
+        "left",
+        "ФБС evidence: seller warehouse",
+    );
+
+    let second = one_call(&messages);
+    add_result(
+        &mut messages,
+        second,
+        "right-timeout",
+        "Error: MCP tool timed out before returning evidence",
+    );
+
+    let retry = one_call(&messages);
+    assert_eq!(retry.tool, "websearch", "{retry:?}");
+    let arguments: serde_json::Value =
+        serde_json::from_str(&retry.arguments).expect("retry search arguments");
+    assert_eq!(arguments["query"], "фбо", "{retry:?}");
+
+    add_result(
+        &mut messages,
+        retry,
+        "right-retry",
+        "ФБО evidence: marketplace warehouse",
+    );
+    let plan = plan_chat_step(&messages, &["websearch", "webfetch"])
+        .expect("comparison synthesis after retry");
+    let AgenticPlan::Final(answer) = plan else {
+        panic!("successful retry should complete the comparison: {plan:?}");
+    };
+    assert!(answer.contains("ФБС evidence"), "{answer}");
+    assert!(answer.contains("ФБО evidence"), "{answer}");
+    assert!(!answer.contains("timed out"), "{answer}");
+}
+
+#[test]
 fn inflected_comparison_excludes_output_format_from_the_right_operand() {
     let mut messages = vec![ChatMessage::user(
         "Чем отличается ФБС от ФБО одним предложением?",

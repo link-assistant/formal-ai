@@ -1,4 +1,179 @@
 meanings
+  response_external_benchmark_provenance_write_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark provenance write error en"
+  response_external_benchmark_python_import_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark python import en"
+  response_external_benchmark_ratchet_reference_suffix_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark ratchet reference suffix en"
+  response_external_benchmark_swe_clear_logs_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe clear logs error en"
+  response_external_benchmark_swe_docker_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe docker error en"
+  response_external_benchmark_swe_encode_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe encode error en"
+  response_external_benchmark_swe_exit_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe exit error en"
+  response_external_benchmark_swe_infrastructure_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe infrastructure error en"
+  response_external_benchmark_swe_inspect_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe inspect error en"
+  response_external_benchmark_swe_missing_report_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe missing report en"
+  response_external_benchmark_swe_predictions_write_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe predictions write error en"
+  response_external_benchmark_swe_record_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe record error en"
+  response_external_benchmark_swe_remove_report_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe remove report error en"
+  response_external_benchmark_swe_report_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe report error en"
+  response_external_benchmark_swe_slice_write_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe slice write error en"
+  response_external_benchmark_swe_start_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe start error en"
+  response_external_benchmark_swe_unavailable_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe unavailable en"
+  response_external_benchmark_unavailable_observation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark unavailable observation en"
+  response_fact_check_arithmetic_counterexample_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check arithmetic counterexample en"
+  response_fact_check_arithmetic_counterexample_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check arithmetic counterexample hi"
+  response_fact_check_arithmetic_counterexample_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check arithmetic counterexample ru"
+  response_fact_check_arithmetic_counterexample_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check arithmetic counterexample zh"
+  response_fact_check_current_dialogue_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check current dialogue en"
+  response_fact_check_current_dialogue_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check current dialogue hi"
+  response_fact_check_current_dialogue_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check current dialogue ru"
+  response_fact_check_current_dialogue_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check current dialogue zh"
+  response_fact_check_no_statements_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check no statements en"
+  response_fact_check_no_statements_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check no statements hi"
+  response_fact_check_no_statements_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check no statements ru"
+  response_fact_check_no_statements_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check no statements zh"
+  response_fact_check_statement_counterexample_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement counterexample en"
+  response_fact_check_statement_counterexample_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement counterexample hi"
+  response_fact_check_statement_counterexample_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement counterexample ru"
+  response_fact_check_statement_counterexample_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement counterexample zh"
+  response_fact_check_statement_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement en"
   response_fact_check_statement_hi
     defined-by response_template
     lexeme en
@@ -1219,178 +1394,3 @@ meanings
     lexeme en
       surface
         text "response local search not found en"
-  response_local_search_not_found_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search not found hi"
-  response_local_search_not_found_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search not found ru"
-  response_local_search_not_found_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search not found zh"
-  response_local_search_route_local_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search route local en"
-  response_local_search_route_local_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search route local hi"
-  response_local_search_route_local_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search route local ru"
-  response_local_search_route_local_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search route local zh"
-  response_local_search_scope_listing_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search scope listing en"
-  response_local_search_scope_listing_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search scope listing hi"
-  response_local_search_scope_listing_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search scope listing ru"
-  response_local_search_scope_listing_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search scope listing zh"
-  response_local_search_type_directory_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search type directory en"
-  response_local_search_type_directory_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search type directory hi"
-  response_local_search_type_directory_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search type directory ru"
-  response_local_search_type_directory_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search type directory zh"
-  response_local_search_type_file_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search type file en"
-  response_local_search_type_file_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search type file hi"
-  response_local_search_type_file_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search type file ru"
-  response_local_search_type_file_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search type file zh"
-  response_mcp_instructions_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response mcp instructions en"
-  response_mcp_instructions_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response mcp instructions hi"
-  response_mcp_instructions_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response mcp instructions ru"
-  response_mcp_instructions_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response mcp instructions zh"
-  response_mcp_prompt_description_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response mcp prompt description en"
-  response_mcp_prompt_description_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response mcp prompt description hi"
-  response_mcp_prompt_description_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response mcp prompt description ru"
-  response_mcp_prompt_description_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response mcp prompt description zh"
-  response_mcp_tool_description_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response mcp tool description en"
-  response_mcp_tool_description_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response mcp tool description hi"
-  response_mcp_tool_description_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response mcp tool description ru"
-  response_mcp_tool_description_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response mcp tool description zh"
-  response_memory_program_compilation_gap_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response memory program compilation gap en"
-  response_memory_program_compilation_gap_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response memory program compilation gap es"
-  response_memory_program_compilation_gap_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response memory program compilation gap hi"
-  response_memory_program_compilation_gap_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response memory program compilation gap ru"

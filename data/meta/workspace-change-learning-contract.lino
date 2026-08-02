@@ -1,0 +1,9 @@
+workspace_change_learning_contract
+  schema_version 1
+  task_family verified_workspace_rewrite
+  minimum_independent_executions 2
+  candidate_inert true
+  promotion_gate "held-out suite passes with zero failures"
+  human_gate "named reviewer approval"
+  persistence "content-addressed Links Notation ledger"
+  replay "approved recipe executes an unseen equivalent workspace rewrite"

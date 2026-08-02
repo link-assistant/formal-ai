@@ -158,7 +158,93 @@ pub(super) fn code_search_query_for_task(prompt: &str) -> Option<String> {
         .filter(|cue| lower.contains(cue.as_str()))
         .map(|cue| (cue.chars().count(), cue))
         .max_by_key(|(length, _)| *length)?;
-    local_search_query(prompt, cue, &vocab)
+    literal_code_search_query(&lower)
+        .or_else(|| shaped_code_search_token(prompt))
+        .or_else(|| adjacent_code_search_token(prompt, &lower))
+        .or_else(|| local_search_query(prompt, cue, &vocab))
+}
+
+fn literal_code_search_query(normalized: &str) -> Option<String> {
+    seed::lexicon()
+        .role_word_forms(seed::ROLE_CODING_SEARCH_LITERAL_QUERY)
+        .into_iter()
+        .find(|form| normalized.contains(&form.text.to_lowercase()))
+        .and_then(|form| (!form.action.is_empty()).then(|| form.action.clone()))
+}
+
+fn shaped_code_search_token(prompt: &str) -> Option<String> {
+    search_tokens(prompt)
+        .filter_map(|token| {
+            let interior_uppercase = token
+                .chars()
+                .skip(1)
+                .any(|character| character.is_ascii_uppercase());
+            let score = usize::from(token.contains('.')) * 4
+                + usize::from(token.contains('_')) * 4
+                + usize::from(interior_uppercase) * 3;
+            (score > 0 && !token.contains('/')).then_some((score, token.len(), token))
+        })
+        .max_by_key(|(score, length, _)| (*score, *length))
+        .map(|(_, _, token)| token.to_owned())
+}
+
+fn adjacent_code_search_token(prompt: &str, normalized: &str) -> Option<String> {
+    let tokens = search_tokens_with_offsets(prompt).collect::<Vec<_>>();
+    seed::lexicon()
+        .role_word_forms(seed::ROLE_CODING_SEARCH_SUBJECT_KIND)
+        .into_iter()
+        .filter_map(|form| {
+            let surface = form.text.to_lowercase();
+            let start = normalized.find(&surface)?;
+            let end = start.checked_add(surface.len())?;
+            tokens
+                .iter()
+                .filter(|(_, token_start, token_end)| *token_end <= start || *token_start >= end)
+                .filter_map(|(token, token_start, token_end)| {
+                    let distance = if *token_end <= start {
+                        start - *token_end
+                    } else {
+                        *token_start - end
+                    };
+                    valid_search_identifier(token).then_some((distance, *token_start, *token))
+                })
+                .min_by_key(|(distance, offset, _)| (*distance, *offset))
+        })
+        .min_by_key(|(distance, offset, _)| (*distance, *offset))
+        .map(|(_, _, token)| token.to_owned())
+}
+
+fn search_tokens(text: &str) -> impl Iterator<Item = &str> {
+    text.split(|character: char| {
+        !character.is_ascii_alphanumeric() && !matches!(character, '_' | '.' | ':')
+    })
+    .map(|token| token.trim_matches('.'))
+    .filter(|token| !token.is_empty())
+}
+
+fn search_tokens_with_offsets(text: &str) -> impl Iterator<Item = (&str, usize, usize)> {
+    text.split_inclusive(|character: char| !character.is_ascii_alphanumeric() && character != '_')
+        .scan(0, |offset, chunk| {
+            let start = *offset;
+            *offset += chunk.len();
+            let token = chunk.trim_end_matches(|character: char| {
+                !character.is_ascii_alphanumeric() && character != '_'
+            });
+            Some((token, start, start + token.len()))
+        })
+        .filter(|(token, _, _)| !token.is_empty())
+}
+
+fn valid_search_identifier(token: &str) -> bool {
+    let mut characters = token.chars();
+    characters
+        .next()
+        .is_some_and(|first| first.is_ascii_alphabetic() || first == '_')
+        && characters.all(|character| character.is_ascii_alphanumeric() || character == '_')
+        && !seed::lexicon()
+            .words_for_role(seed::ROLE_CODING_SEARCH_SUBJECT_KIND)
+            .iter()
+            .any(|surface| surface.eq_ignore_ascii_case(token))
 }
 
 /// Resolve a semantic *intent* to its concrete command, backed by the seed
