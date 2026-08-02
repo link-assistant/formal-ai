@@ -1,8 +1,64 @@
+use std::fmt::Write as _;
 use std::path::Path;
 
 use serde_json::{Map, Value};
 
 use crate::protocol_policy::find_tool_definition;
+
+const PATCH_BEGIN: &str = "*** Begin Patch";
+const PATCH_ADD_FILE: &str = "*** Add File:";
+const PATCH_END: &str = "*** End Patch";
+
+/// Whether `tool_name` is a freeform custom tool on the Responses surface.
+#[must_use]
+pub fn is_custom_response_tool(tools: &[Value], tool_name: &str) -> bool {
+    find_tool_definition(tools, tool_name)
+        .and_then(|definition| definition.get("type"))
+        .and_then(Value::as_str)
+        == Some("custom")
+}
+
+/// Lower semantic planner arguments into the freeform input expected by a
+/// Responses custom tool. Patch tools use Codex's native patch grammar; other
+/// custom tools receive the planner's original freeform bytes unchanged.
+#[must_use]
+pub fn custom_response_tool_input(tools: &[Value], tool_name: &str, arguments: String) -> String {
+    let Some(definition) = find_tool_definition(tools, tool_name) else {
+        return arguments;
+    };
+    if definition.get("type").and_then(Value::as_str) != Some("custom") {
+        return arguments;
+    }
+    let leaf = tool_name.rsplit("__").next().unwrap_or(tool_name);
+    if !leaf.to_ascii_lowercase().contains("patch") {
+        return arguments;
+    }
+    apply_patch_input(&arguments).unwrap_or(arguments)
+}
+
+fn apply_patch_input(arguments: &str) -> Option<String> {
+    let arguments = serde_json::from_str::<Value>(arguments).ok()?;
+    let path = ["path", "filePath", "file_path"]
+        .iter()
+        .find_map(|name| arguments.get(*name).and_then(Value::as_str))?;
+    let content = arguments.get("content").and_then(Value::as_str)?;
+    if path.is_empty() || path.contains(['\r', '\n']) {
+        return None;
+    }
+
+    let mut rendered = String::new();
+    let _ = writeln!(rendered, "{PATCH_BEGIN}");
+    let _ = writeln!(rendered, "{PATCH_ADD_FILE} {path}");
+    if content.is_empty() {
+        rendered.push_str("+\n");
+    } else {
+        for line in content.lines() {
+            let _ = writeln!(rendered, "+{line}");
+        }
+    }
+    let _ = writeln!(rendered, "{PATCH_END}");
+    Some(rendered)
+}
 
 /// Project the planner's capability-shaped arguments onto the exact JSON Schema
 /// advertised by the selected client tool.

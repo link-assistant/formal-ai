@@ -1,4 +1,14 @@
 meanings
+  fabricated
+    defined-by word_surface
+    lexeme en
+      surface
+        text "fabricated"
+  fact_check_arithmetic_counterexample
+    defined-by intent
+    lexeme en
+      surface
+        text "fact check arithmetic counterexample"
   fact_check_current_dialogue
     defined-by intent
     lexeme en
@@ -1384,13 +1394,3 @@ meanings
     lexeme en
       surface
         text "open textbook"
-  openai
-    defined-by word_surface
-    lexeme en
-      surface
-        text "openai"
-  orchestration_correction_prompt
-    defined-by intent
-    lexeme en
-      surface
-        text "orchestration correction prompt"

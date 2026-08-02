@@ -1,4 +1,64 @@
 meanings
+  response_fact_check_statement_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement hi"
+  response_fact_check_statement_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement ru"
+  response_fact_check_statement_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement zh"
+  response_farewell_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response farewell en"
+  response_farewell_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response farewell hi"
+  response_farewell_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response farewell ru"
+  response_farewell_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response farewell zh"
+  response_general_plan_command_capture_action_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan command capture action en"
+  response_general_plan_command_capture_action_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan command capture action hi"
+  response_general_plan_command_capture_action_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan command capture action ru"
+  response_general_plan_command_capture_action_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan command capture action zh"
+  response_general_plan_command_output_evidence_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan command output evidence en"
   response_general_plan_command_output_evidence_hi
     defined-by response_template
     lexeme en
@@ -1334,63 +1394,3 @@ meanings
     lexeme en
       surface
         text "response memory program compilation gap ru"
-  response_memory_program_compilation_gap_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response memory program compilation gap zh"
-  response_memory_program_complete_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response memory program complete en"
-  response_memory_program_complete_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response memory program complete es"
-  response_memory_program_complete_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response memory program complete hi"
-  response_memory_program_complete_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response memory program complete ru"
-  response_memory_program_complete_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response memory program complete zh"
-  response_memory_program_destructive_refused_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response memory program destructive refused en"
-  response_memory_program_destructive_refused_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response memory program destructive refused es"
-  response_memory_program_destructive_refused_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response memory program destructive refused hi"
-  response_memory_program_destructive_refused_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response memory program destructive refused ru"
-  response_memory_program_destructive_refused_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response memory program destructive refused zh"
-  response_memory_program_interpreter_gap_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response memory program interpreter gap en"

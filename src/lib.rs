@@ -276,10 +276,10 @@ pub use protocol::{
     create_chat_completion, create_chat_completion_with_solver,
     create_chat_completion_with_solver_and_memory, create_response, create_response_with_solver,
     create_response_with_solver_and_memory, ChatChoice, ChatCompletion, ChatCompletionRequest,
-    ChatMessage, FunctionCall, MessageContent, MessageContentPart, ResponseFunctionToolCall,
-    ResponseObject, ResponseOutputContent, ResponseOutputItem, ResponseOutputMessage,
-    ResponseUsage, ResponseWebSearchAction, ResponseWebSearchToolCall, ResponsesRequest,
-    TokenUsage, ToolCall,
+    ChatMessage, FunctionCall, MessageContent, MessageContentPart, ResponseCustomToolCall,
+    ResponseFunctionToolCall, ResponseObject, ResponseOutputContent, ResponseOutputItem,
+    ResponseOutputMessage, ResponseUsage, ResponseWebSearchAction, ResponseWebSearchToolCall,
+    ResponsesRequest, TokenUsage, ToolCall,
 };
 pub use proxy::{
     run_proxy, summarize_proxy_exchange, ProxyConfig, ProxyExchangeLog, ProxyToolCallLog,

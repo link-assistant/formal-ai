@@ -434,6 +434,14 @@ fn synthesis_extracts_the_final_answer_without_promoting_agent_diagnostics() {
         "Final supported answer."
     );
     assert_eq!(
+        extract_agent_result(concat!(
+            "test external_agent_fixture_process ... ",
+            "{\"type\":\"message\",\"role\":\"assistant\",\"content\":",
+            "[{\"type\":\"text\",\"text\":\"Embedded answer.\"}]} ok\n",
+        )),
+        "Embedded answer."
+    );
+    assert_eq!(
         extract_agent_result("Plain agent answer.\n"),
         "Plain agent answer."
     );
@@ -458,6 +466,16 @@ fn public_cli_synthesizes_translates_and_proposes_learned_adapter_updates() {
         "{\"type\":\"message\",\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"Rust обеспечивает безопасность памяти.\"}]}",
     ))
     .unwrap();
+    let extracted_translation = extract_agent_result(&translator.stdout);
+    assert_eq!(
+        extracted_translation, "Rust обеспечивает безопасность памяти.",
+        "the recorded translator session must preserve its assistant payload"
+    );
+    assert_eq!(
+        formal_ai::detect_language(&extracted_translation).slug(),
+        "ru",
+        "the translator payload must pass the same language gate as the CLI"
+    );
     let first_path = first_workspace.path().join("first.json");
     let second_path = second_workspace.path().join("second.json");
     let translator_path = translator_workspace.path().join("translator.json");

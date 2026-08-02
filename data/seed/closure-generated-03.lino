@@ -1,4 +1,14 @@
 meanings
+  openai
+    defined-by word_surface
+    lexeme en
+      surface
+        text "openai"
+  orchestration_correction_prompt
+    defined-by intent
+    lexeme en
+      surface
+        text "orchestration correction prompt"
   orchestration_cross_agent_denial
     defined-by intent
     lexeme en
@@ -1384,13 +1394,3 @@ meanings
     lexeme en
       surface
         text "repo"
-  repositories
-    defined-by word_surface
-    lexeme en
-      surface
-        text "repositories"
-  requirement_contradiction
-    defined-by intent
-    lexeme en
-      surface
-        text "requirement contradiction"

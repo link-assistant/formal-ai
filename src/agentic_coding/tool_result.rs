@@ -94,18 +94,9 @@ pub(super) fn has_latest_turn_result(messages: &[ChatMessage]) -> bool {
 }
 
 fn is_write_run_recipe(messages: &[ChatMessage], tool_names: &[&str]) -> bool {
-    let is_write = |name: &str| {
-        let lower = name.to_ascii_lowercase();
-        lower.contains("write") || lower.contains("create_file")
-    };
-    let is_run = |name: &str| {
-        let lower = name.to_ascii_lowercase();
-        lower.contains("run")
-            || lower.contains("bash")
-            || lower.contains("command")
-            || lower.contains("exec")
-            || lower.contains("shell")
-    };
+    let is_write = super::capability_router::is_workspace_creation_tool;
+    let is_run =
+        |name: &str| super::planner::tool_capability(name) == Some(super::planner::Capability::Run);
     tool_names.iter().copied().any(is_write)
         && tool_names.iter().copied().any(is_run)
         && messages

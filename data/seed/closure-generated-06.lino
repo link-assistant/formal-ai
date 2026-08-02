@@ -1,4 +1,64 @@
 meanings
+  response_memory_program_compilation_gap_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program compilation gap zh"
+  response_memory_program_complete_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program complete en"
+  response_memory_program_complete_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program complete es"
+  response_memory_program_complete_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program complete hi"
+  response_memory_program_complete_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program complete ru"
+  response_memory_program_complete_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program complete zh"
+  response_memory_program_destructive_refused_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program destructive refused en"
+  response_memory_program_destructive_refused_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program destructive refused es"
+  response_memory_program_destructive_refused_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program destructive refused hi"
+  response_memory_program_destructive_refused_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program destructive refused ru"
+  response_memory_program_destructive_refused_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program destructive refused zh"
+  response_memory_program_interpreter_gap_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program interpreter gap en"
   response_memory_program_interpreter_gap_es
     defined-by response_template
     lexeme en
