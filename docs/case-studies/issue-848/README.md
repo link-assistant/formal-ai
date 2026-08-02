@@ -25,8 +25,8 @@ that first run were scored against the stale literal `0.30`; the benchmark now
 derives their oracle from `Cargo.toml`, and both English and Chinese filtered
 replays pass against `0.317.0`.
 
-The final complete run measured 130/130 tasks with no unavailable servers and
-passed 62/130:
+The second complete pre-learning run measured 130/130 tasks with no unavailable
+servers and passed 62/130:
 
 ```text
 L1  0/16
@@ -41,6 +41,25 @@ corrected version reads added two passes, while a variable Hindi decomposition
 answer lost one pass relative to the first run. The canonical result therefore
 records the observed net increase of one rather than extrapolating from the
 filtered replays.
+
+The final v0.320.0 issue run measured all 130 tasks and passed 65/130:
+
+```text
+L1  0/16
+L2  5/12
+L3 10/28
+L4 50/74
+```
+
+Its family boundaries include `create` 6/6, `test_authoring` 1/8,
+`targeted_edit` 3/7, `multilingual` 8/11, `refactor` 1/3, and `multifile` 2/4.
+The new grounded rename and module-registration cases both pass in the complete
+run and in filtered real-Agent replays, with observed effects and no refusal or
+timeout. One full-run result was initially labelled `NOT MEASURED` even though
+its server started and its edit verified: the task read seed data containing the
+literal startup-error message. The harness now also requires absence of the
+launcher success marker, and the corrected replay passes, leaving a complete,
+internally consistent canonical result.
 
 ## Evidence inventory
 
@@ -103,12 +122,15 @@ through `cat`. No task is credited from narration alone.
 
 `agentic_coding::workspace_change` now routes grounded identifier rewrites
 before broad shell actions. It reads the named target, applies a bounded Normal
-Markov substitution through the shared workspace-rewrite executor, writes the
-full transformed bytes, and finishes only after an exact observation. Composite
-Rust module requests use an ordered transaction: render and observe the module,
-then read, update, and observe the registration target. The meanings, roles,
-and module-registration template are seed data, including English, Russian,
-Hindi, and Chinese surfaces.
+Markov substitution through the shared workspace-rewrite executor, then uses a
+compact native edit for a unique occurrence or one validated replace-all command
+for a repeated identifier. It finishes only after observing the exact expected
+SHA-256 digest, avoiding a second full-file payload through Agent. Composite Rust
+module requests use an ordered transaction: render and observe the module, then
+read the registration target, apply a compact unique suffix edit, and verify its
+digest. Write-only clients retain the full-write/exact-read fallback. The
+meanings, roles, and module-registration template are seed data, including
+English, Russian, Hindi, and Chinese surfaces.
 
 The reusable procedure path is proposal-only. `workspace_change_learning`
 separates task identity from execution identity, accepts only exact successful
@@ -151,7 +173,8 @@ The runner starts every task from a clean repository, drives the installed
 Agent CLI against Formal AI's temporary agent-mode server, verifies the
 observable effect, reverts the task, reclaims client scratch space, and records
 the result after every task. A server startup failure is `NOT MEASURED`, never
-an ordinary failure.
+an ordinary failure; diagnostic text read from a task file cannot impersonate a
+startup failure once the launcher has emitted its success marker.
 
 ## Same-task self-application
 

@@ -128,6 +128,25 @@ The two corrected reads added two passes while a variable Hindi decomposition
 answer lost one relative to the first run. The canonical result records that
 observed net gain; it is updated only by a complete run.
 
+FINAL ISSUE #848 MEASUREMENT @ v0.320.0, agent CLI 0.25.5, Linux, 2026-08-02
+-------------------------------------------------------------------------------
+The complete post-learning run measured all 130 tasks and passed 65/130:
+
+  L1 0/16   L2 5/12   L3 10/28   L4 50/74
+
+  create 6/6   search 5/8   test_authoring 1/8   targeted_edit 3/7
+  multilingual 8/11   decomposition 5/6   verification 4/5
+  refactor 1/3   multifile 2/4
+
+The grounded identifier rewrite and ordered module-registration transaction add
+the first refactor pass and another L2/multifile pass. Both also pass focused
+real-Agent replays with an observed workspace effect and no refusal or timeout.
+The full run initially printed 64/130 with one `NOT MEASURED`, but that task had
+actually started its server and completed its verified edit: it read a seed file
+containing the literal startup-error text that the harness searched globally.
+The corrected startup predicate plus a focused replay classify that same full-run
+evidence correctly, producing the internally consistent 65/130 canonical result.
+
 MEASUREMENT DEFECTS FOUND AND FIXED (read before trusting any number)
 ----------------------------------------------------------------------
 The first run of this harness reported 5/13 with L1 at 2/2. "Solve the issue
@@ -183,6 +202,12 @@ A ninth defect pinned the crate-version answer to `0.30`, so correct answers
 became failures after releases. These expectations now name `Cargo.toml` and a
 capture regex. Resolution errors fail closed and the resolved answer is stored
 with each result.
+
+A tenth defect classified any output containing `exited before listening` as an
+unavailable server. `L3.839.title_prefix` legitimately read the seed template
+containing that phrase after its server had started, so a verified edit was
+reported as `NOT MEASURED`. The runner now requires both the diagnostic phrase
+and absence of the launcher's `started a temporary server` success marker.
 
 Generalisable lesson, and the same one behind #839 and #842: assert on the
 OBSERVED EFFECT, never on narration. "I created the file" with no file is a
