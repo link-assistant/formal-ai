@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/workspace_change.rs
   language rust
   fidelity full_ast
-  byte_len 17867
+  byte_len 17869
   line_count 540
-  content_id source_module_d2fc97e0a365e870
+  content_id source_module_459ae62e4690a7e8
   symbol_count 24
   symbols
     struct GroundedRewrite 27 31
@@ -36,13 +36,13 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 14562
-    named_node_count 2898
+    total_link_count 14578
+    named_node_count 2901
     distinct_node_kinds 75
     node_kinds
       abstract_type 2
-      arguments 272
-      array_expression 5
+      arguments 273
+      array_expression 6
       array_type 13
       attribute 3
       attribute_item 3
@@ -50,7 +50,7 @@ self_ast_census
       block 79
       boolean_literal 6
       break_expression 1
-      call_expression 272
+      call_expression 273
       char_literal 16
       closure_expression 29
       closure_parameters 29
@@ -62,8 +62,8 @@ self_ast_census
       expression_statement 72
       field_declaration 7
       field_declaration_list 2
-      field_expression 187
-      field_identifier 198
+      field_expression 188
+      field_identifier 199
       field_initializer 4
       field_initializer_list 2
       for_expression 2
@@ -79,7 +79,7 @@ self_ast_census
       let_condition 6
       let_declaration 58
       line_comment 9
-      macro_invocation 13
+      macro_invocation 12
       match_arm 3
       match_block 1
       match_expression 1
@@ -102,7 +102,7 @@ self_ast_census
       struct_expression 2
       struct_item 2
       super 6
-      token_tree 24
+      token_tree 23
       try_expression 28
       tuple_expression 4
       tuple_pattern 8

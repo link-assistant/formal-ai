@@ -496,7 +496,7 @@ fn plan_digest_verification(
     target: &str,
     expected: &str,
 ) -> Option<AgenticPlan> {
-    let command = format!("sha256sum -- {target}");
+    let command = ["sha256sum -- ", target].concat();
     let Some(observed) = result_for_command(current_turn, &command) else {
         let tool = tool_for(tool_names, Capability::Run)?;
         return Some(plan_one(tool, json!({"command": command}).to_string()));
