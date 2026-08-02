@@ -5,6 +5,7 @@
 
 use formal_ai::agentic_coding::{plan_chat_step, run_agentic_task, AgenticPlan};
 use formal_ai::protocol::{ChatMessage, ToolCall};
+use sha2::{Digest, Sha256};
 
 const CREATE_RUST_FUNCTION: &str = "Create a new file src/si_units.rs in this repository \
     containing a single public Rust function millimetres_to_metres that takes an f64 and \
@@ -328,7 +329,7 @@ fn identifier_refactor_accepts_agent_cli_absolute_tool_paths() {
         "</file>",
     );
     const ABSOLUTE_PATH: &str = "/tmp/agent-workspace/src/web_search_core.rs";
-    let tools = ["read", "write", "bash"];
+    let tools = ["read", "edit", "write", "bash"];
     let mut messages = vec![ChatMessage::user(TASK)];
 
     let read = only_call(plan_chat_step(&messages, &tools));
@@ -344,29 +345,51 @@ fn identifier_refactor_accepts_agent_cli_absolute_tool_paths() {
         AGENT_READ_RESULT,
     ));
 
-    let write = only_call(plan_chat_step(&messages, &tools));
-    assert_eq!(write.tool, "write", "the absolute read result must advance");
+    let edit = only_call(plan_chat_step(&messages, &tools));
     assert_eq!(
-        json_arguments(&write.arguments)["content"],
-        AFTER,
-        "the Agent read decoration must not be written into source"
+        edit.tool, "edit",
+        "a large grounded rewrite must use Agent's compact edit tool"
+    );
+    let edit_arguments = json_arguments(&edit.arguments);
+    assert_eq!(
+        edit_arguments["oldString"], "WEB_SEARCH_RRF_K",
+        "the edit must use the grounded source identifier"
+    );
+    assert_eq!(
+        edit_arguments["newString"], "WEB_SEARCH_FUSION_K",
+        "the edit must keep the tool call independent of source-file size"
     );
     messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
-        "agent_write",
-        "write",
-        serde_json::json!({"filePath": ABSOLUTE_PATH, "content": AFTER}).to_string(),
+        "agent_edit",
+        "edit",
+        serde_json::json!({
+            "filePath": ABSOLUTE_PATH,
+            "oldString": "WEB_SEARCH_RRF_K",
+            "newString": "WEB_SEARCH_FUSION_K",
+        })
+        .to_string(),
     )]));
-    messages.push(ChatMessage::tool_result(
-        "agent_write",
-        "write",
-        "Wrote file successfully.",
-    ));
+    messages.push(ChatMessage::tool_result("agent_edit", "edit", ""));
 
     let verify = only_call(plan_chat_step(&messages, &tools));
+    assert_eq!(verify.tool, "bash", "the absolute edit result must advance");
     assert_eq!(
-        verify.tool, "bash",
-        "the absolute write result must advance"
+        json_arguments(&verify.arguments)["command"],
+        "sha256sum -- src/web_search_core.rs",
+        "verification must not return the whole large source through Agent"
     );
+    let digest = format!("{:x}", Sha256::digest(AFTER.as_bytes()));
+    push_result(
+        &mut messages,
+        "agent_verify",
+        &verify,
+        &format!("{digest}  src/web_search_core.rs\n"),
+    );
+
+    let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &tools) else {
+        panic!("the compact Agent rewrite must finish");
+    };
+    assert!(answer.contains("observed"), "{answer}");
 }
 
 #[test]
@@ -421,6 +444,92 @@ fn composite_module_request_creates_source_and_registers_the_module() {
 
     let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &tools) else {
         panic!("a fully observed composite change must finish");
+    };
+    assert!(answer.contains("observed"), "{answer}");
+}
+
+#[test]
+fn composite_module_uses_a_compact_agent_registration_edit() {
+    const TASK: &str = "Create src/ladder_units.rs with a public function \
+        metres_to_kilometres dividing an f64 by 1000.0, and register the module in src/lib.rs \
+        so it is part of the crate.";
+    const MODULE: &str = concat!(
+        "pub fn metres_to_kilometres(value: f64) -> f64 {\n",
+        "    value / 1000.0\n",
+        "}\n",
+    );
+    const LIB_AFTER: &str = "pub mod language;\npub mod seed;\npub mod ladder_units;\n";
+    const AGENT_LIB_READ: &str = concat!(
+        "<file>\n",
+        "00001| pub mod language;\n",
+        "00002| pub mod seed;\n",
+        "00003| \n\n",
+        "(End of file - total 3 lines)\n",
+        "</file>",
+    );
+    let tools = ["read", "edit", "write", "bash"];
+    let mut messages = vec![ChatMessage::user(TASK)];
+
+    let create = only_call(plan_chat_step(&messages, &tools));
+    assert_eq!(create.tool, "write");
+    push_result(&mut messages, "agent_create_module", &create, "");
+
+    let verify_module = only_call(plan_chat_step(&messages, &tools));
+    assert_eq!(verify_module.tool, "bash");
+    push_result(&mut messages, "agent_verify_module", &verify_module, MODULE);
+
+    let read_lib = only_call(plan_chat_step(&messages, &tools));
+    assert_eq!(read_lib.tool, "read");
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        "agent_read_lib",
+        "read",
+        serde_json::json!({"filePath": "/tmp/agent-workspace/src/lib.rs"}).to_string(),
+    )]));
+    messages.push(ChatMessage::tool_result(
+        "agent_read_lib",
+        "read",
+        AGENT_LIB_READ,
+    ));
+
+    let edit_lib = only_call(plan_chat_step(&messages, &tools));
+    assert_eq!(
+        edit_lib.tool, "edit",
+        "module registration must not echo all of src/lib.rs through write"
+    );
+    let arguments = json_arguments(&edit_lib.arguments);
+    assert_eq!(arguments["oldString"], "pub mod seed;\n");
+    assert_eq!(
+        arguments["newString"],
+        "pub mod seed;\npub mod ladder_units;\n"
+    );
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        "agent_edit_lib",
+        "edit",
+        serde_json::json!({
+            "filePath": "/tmp/agent-workspace/src/lib.rs",
+            "oldString": "pub mod seed;\n",
+            "newString": "pub mod seed;\npub mod ladder_units;\n",
+        })
+        .to_string(),
+    )]));
+    messages.push(ChatMessage::tool_result("agent_edit_lib", "edit", ""));
+
+    let verify_lib = only_call(plan_chat_step(&messages, &tools));
+    assert_eq!(verify_lib.tool, "bash");
+    assert_eq!(
+        json_arguments(&verify_lib.arguments)["command"],
+        "sha256sum -- src/lib.rs"
+    );
+    let digest = format!("{:x}", Sha256::digest(LIB_AFTER.as_bytes()));
+    push_result(
+        &mut messages,
+        "agent_verify_lib",
+        &verify_lib,
+        &format!("{digest}  src/lib.rs\n"),
+    );
+
+    let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &tools) else {
+        panic!("the compact Agent composite must finish");
     };
     assert!(answer.contains("observed"), "{answer}");
 }

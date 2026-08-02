@@ -1,17 +1,20 @@
 //! Grounded, verified workspace transformations learned from coding-task runs.
 //!
 //! The planner never edits request prose. It compiles a bounded transformation,
-//! reads the client-owned bytes, executes the transformation in memory, writes
-//! the complete result, and accepts success only after an exact read-back. The
-//! same state machine composes source creation with a second module-registration
-//! edit, so a multi-file request cannot stop after its first observable effect.
+//! reads the client-owned bytes, executes the transformation in memory, applies
+//! a compact edit when the client supports one, and accepts success only after
+//! an exact content-digest observation. The same state machine composes source
+//! creation with a second module-registration edit, so a multi-file request
+//! cannot stop after its first observable effect.
 
 use serde_json::{json, Value};
+use sha2::{Digest, Sha256};
 use std::path::Path;
 
 use super::code_artifact::source_from_read_result;
 use super::code_task::{render_rust_template, render_seeded_outcome, rust_source_for_task};
 use super::general_planner::compose_edit_request;
+use super::intent_router::edit_arguments;
 use super::planner::{
     plan_one, tool_capability, tool_for, write_arguments, AgenticPlan, Capability,
 };
@@ -73,6 +76,23 @@ fn plan_rewrite_step(
         )?));
     };
     let updated = execution.output;
+
+    if let Some(tool) = tool_for(tool_names, Capability::Edit) {
+        if result_for_edit(
+            current_turn,
+            &rewrite.target,
+            &rewrite.pattern,
+            &rewrite.replacement,
+        )
+        .is_none()
+        {
+            return Some(plan_one(
+                tool,
+                edit_arguments(&rewrite.target, &rewrite.pattern, &rewrite.replacement),
+            ));
+        }
+        return plan_digest_verification(task, current_turn, tool_names, &rewrite.target, &updated);
+    }
 
     if result_for_path(
         current_turn,
@@ -156,6 +176,24 @@ fn plan_composite_step(
             task,
             &change.registration_path,
         )?));
+    }
+
+    if let Some((old, new)) = compact_registration_edit(&current, &change.registration) {
+        if let Some(tool) = tool_for(tool_names, Capability::Edit) {
+            if result_for_edit(current_turn, &change.registration_path, &old, &new).is_none() {
+                return Some(plan_one(
+                    tool,
+                    edit_arguments(&change.registration_path, &old, &new),
+                ));
+            }
+            return plan_digest_verification(
+                task,
+                current_turn,
+                tool_names,
+                &change.registration_path,
+                &updated,
+            );
+        }
     }
 
     if result_for_path(
@@ -262,6 +300,32 @@ fn insert_registration(source: &str, registration: &str) -> String {
     updated
 }
 
+fn compact_registration_edit(source: &str, registration: &str) -> Option<(String, String)> {
+    const MAX_SUFFIX_BYTES: usize = 4096;
+    let mut starts = source
+        .match_indices('\n')
+        .map(|(index, _)| index + 1)
+        .filter(|start| *start < source.len())
+        .collect::<Vec<_>>();
+    starts.insert(0, 0);
+    for start in starts.into_iter().rev() {
+        let suffix = &source[start..];
+        if suffix.len() > MAX_SUFFIX_BYTES {
+            break;
+        }
+        if source.match_indices(suffix).count() != 1 {
+            continue;
+        }
+        let mut replacement = suffix.to_owned();
+        if !replacement.ends_with('\n') {
+            replacement.push('\n');
+        }
+        replacement.push_str(registration);
+        return Some((suffix.to_owned(), replacement));
+    }
+    None
+}
+
 fn identifier_tokens(text: &str) -> impl DoubleEndedIterator<Item = &str> {
     text.split(|character: char| !character.is_ascii_alphanumeric() && character != '_')
         .filter(|token| valid_identifier(token))
@@ -329,6 +393,34 @@ fn result_for_path(
     })
 }
 
+fn result_for_edit(messages: &[ChatMessage], path: &str, old: &str, new: &str) -> Option<String> {
+    matching_result(messages, |name, arguments| {
+        if tool_capability(name) != Some(Capability::Edit) {
+            return false;
+        }
+        let Ok(value) = serde_json::from_str::<Value>(arguments) else {
+            return false;
+        };
+        argument_matches_path(&value, path)
+            && argument_matches(&value, &["oldString", "old_string", "old_str", "old"], old)
+            && argument_matches(&value, &["newString", "new_string", "new_str", "new"], new)
+    })
+}
+
+fn argument_matches_path(value: &Value, expected: &str) -> bool {
+    ["path", "filePath", "file_path"].iter().any(|key| {
+        value
+            .get(key)
+            .and_then(Value::as_str)
+            .is_some_and(|observed| workspace_path_matches(expected, observed))
+    })
+}
+
+fn argument_matches(value: &Value, keys: &[&str], expected: &str) -> bool {
+    keys.iter()
+        .any(|key| value.get(key).and_then(Value::as_str) == Some(expected))
+}
+
 fn workspace_path_matches(expected: &str, observed: &str) -> bool {
     if observed == expected {
         return true;
@@ -354,6 +446,29 @@ fn result_for_command(messages: &[ChatMessage], command: &str) -> Option<String>
             .as_deref()
             == Some(command)
     })
+}
+
+fn plan_digest_verification(
+    task: &str,
+    current_turn: &[ChatMessage],
+    tool_names: &[&str],
+    target: &str,
+    expected: &str,
+) -> Option<AgenticPlan> {
+    let command = format!("sha256sum -- {target}");
+    let Some(observed) = result_for_command(current_turn, &command) else {
+        let tool = tool_for(tool_names, Capability::Run)?;
+        return Some(plan_one(tool, json!({"command": command}).to_string()));
+    };
+    let digest = format!("{:x}", Sha256::digest(expected.as_bytes()));
+    let intent = if observed.split_whitespace().next() == Some(digest.as_str()) {
+        "coding_workspace_effect_observed"
+    } else {
+        "coding_workspace_verification_failed"
+    };
+    Some(AgenticPlan::Final(render_seeded_outcome(
+        intent, task, target,
+    )?))
 }
 
 fn matching_result(
