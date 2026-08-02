@@ -1,0 +1,70 @@
+self_ast_census
+  target src/file_legality.rs
+  language rust
+  fidelity signature
+  byte_len 27568
+  line_count 874
+  content_id source_module_01932ab2a7a92af5
+  symbol_count 61
+  symbols
+    enum LegalCategory 18 22
+    const ALL 25 25
+    enum LegalVerdict 34 36
+    enum MediaFamily 40 46
+    enum AssessmentStatus 50 55
+    enum RequiredAction 59 65
+    enum SafetyDisposition 69 72
+    enum ReportLimitation 76 80
+    enum ProviderRunStatus 84 88
+    enum MetadataField 92 100
+    struct MetadataProvenance 103 106
+    struct MetadataEntry 109 113
+    struct ExtractedMetadata 116 118
+    function get 122 124
+    struct EvidenceProvenance 128 131
+    struct DetectorObservation 134 144
+    function risk 147 155
+    function no_match 157 165
+    function new 167 187
+    function with_restriction_code 190 193
+    function for_jurisdiction 196 200
+    function for_jurisdictions 203 215
+    struct JurisdictionPolicy 219 228
+    function new 231 248
+    function with_trigger_code 251 254
+    struct AuthorizedHashMatch 258 263
+    function confirmed 266 277
+    struct FileLegalityConfig 281 290
+    trait LegalityEvidenceProvider 297 301
+    function id 298 298
+    function categories 299 299
+    function inspect 300 300
+    struct ProviderRun 304 311
+    function for_jurisdictions 314 327
+    function add_policy 329 331
+    function add_observation 333 335
+    function add_authorized_hash_match 337 339
+    struct FileIdentity 343 350
+    struct CategoryAssessment 353 361
+    struct FileLegalityReport 364 375
+    function assessment 379 388
+    function check_file_legality 391 393
+    function check_file_legality_with_providers 395 460
+    function check_file_legality_with 462 517
+    function assess_category 519 622
+    function policy_applies 624 630
+    function default_review_action 632 639
+    function action_priority 641 649
+    function normalized_jurisdictions 651 661
+    function canonical_jurisdiction 663 672
+    function io_error_kind 674 697
+    struct InspectedFile 699 705
+    function inspect_file 707 737
+    struct DigestWriter 739 739
+    function write 742 745
+    function flush 747 749
+    function classify_file 752 792
+    function extract_exif 794 835
+    function exif_value 837 847
+    function gps_coordinate 849 863
+    function gps_entry 865 874
