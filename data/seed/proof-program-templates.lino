@@ -1,0 +1,9 @@
+proof_program_templates
+  description "Presentation templates for projecting a language-neutral integer-interval proof into its canonical statement or an executable program. Placeholders are populated from the formal proof; adding another programming-language projection is a data change shared by native and browser interfaces."
+  statement '{variable} {lower_operator} {lower_value} and {variable} {upper_operator} {upper_value} is {result} over integers'
+  language "rust"
+    satisfiable 'fn main() {\n    let {variable}: i64 = {witness};\n    assert!({variable} {lower_operator} {lower_value} && {variable} {upper_operator} {upper_value}, "proof obligation failed");\n    println!("{}", {variable});\n}'
+    unsatisfiable 'fn main() {\n    let first: i128 = {first};\n    let last: i128 = {last};\n    assert!(first > last, "proof obligation failed");\n    println!("unsatisfiable");\n}'
+  language "python"
+    satisfiable '{variable} = {witness}\nassert {variable} {lower_operator} {lower_value} and {variable} {upper_operator} {upper_value}, "proof obligation failed"\nprint({variable})'
+    unsatisfiable 'first = {first}\nlast = {last}\nassert first > last, "proof obligation failed"\nprint("unsatisfiable")'

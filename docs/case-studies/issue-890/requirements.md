@@ -13,8 +13,9 @@
 ## Reviewed Leaf Accounting
 
 The smallest independently reviewed leaves are: (1) semantic proof IR,
-(2) native routing and renderers, (3) browser parity, (4) requirement and E2E
-regressions, and (5) the proof-translation invariant documentation artifact.
-The real Formal AI/Agent CLI session authored leaf 5 without a manual byte
-correction. That is one of five leaves, meeting the repository's 20% floor
-without attributing the manually implemented program logic to the agent.
+(2) native routing and data-defined projections, (3) browser parity, (4)
+requirement and E2E regressions, and (5) the proof-translation invariant
+documentation artifact. The real Formal AI/Agent CLI session authored leaf 5
+without a manual byte correction. That is one of five leaves, meeting the
+repository's 20% floor without attributing the manually implemented program
+logic to the agent.

@@ -180,6 +180,7 @@ let TOOLS = [];
 let SEED_RAW = {};
 let NUMERIC_LIST_OPERATIONS_LINO = "";
 let CODING_IDIOMS_LINO = "";
+let PROOF_PROGRAM_TEMPLATES_LINO = "";
 let TERMINAL_COMMANDS_LINO = "";
 let SHELL_INTENTS_LINO = "";
 let PROGRAM_PLAN_RULES_LINO = "";
@@ -222,6 +223,7 @@ function seedRawTexts(raw, predicate) {
 function hydrateLinoSeedText(raw) {
   NUMERIC_LIST_OPERATIONS_LINO = seedRawText(raw, "numeric-list-operations.lino");
   CODING_IDIOMS_LINO = seedRawText(raw, "coding-idioms.lino");
+  PROOF_PROGRAM_TEMPLATES_LINO = seedRawText(raw, "proof-program-templates.lino");
   TERMINAL_COMMANDS_LINO = seedRawText(raw, "terminal-commands.lino");
   SHELL_INTENTS_LINO = seedRawText(raw, "shell-intents.lino");
   PROGRAM_PLAN_RULES_LINO = seedRawText(raw, "program-plan-rules.lino");
@@ -241,6 +243,7 @@ function hydrateLinoSeedText(raw) {
 
   cachedNumericListOntology = null;
   cachedCodingIdioms = null;
+  cachedProofProgramTemplates = undefined;
   cachedTerminalCommandVocabulary = null;
   cachedShellIntentVocabulary = null;
   cachedOperationVocabulary = null;

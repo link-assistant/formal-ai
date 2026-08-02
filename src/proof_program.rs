@@ -5,6 +5,8 @@
 //! A proof is constructed once from semantic bounds and can then be rendered by
 //! the general code-translation pipeline into any supported target syntax.
 
+use crate::seed::proof_program_templates;
+
 /// One numeric endpoint in an interval proof.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct ProofBound {
@@ -92,15 +94,7 @@ impl IntegerIntervalProof {
         } else {
             "unsatisfiable"
         };
-        format!(
-            "{} {} {} and {} {} {} is {result} over integers",
-            self.variable,
-            self.lower.lower_operator(),
-            self.lower.value,
-            self.variable,
-            self.upper.upper_operator(),
-            self.upper.value
-        )
+        self.render_template(&proof_program_templates().statement, result)
     }
 
     fn slug(&self) -> String {
@@ -119,52 +113,29 @@ impl IntegerIntervalProof {
         )
     }
 
-    fn predicate(&self) -> String {
-        format!(
-            "{} {} {} && {} {} {}",
-            self.variable,
-            self.lower.lower_operator(),
-            self.lower.value,
-            self.variable,
-            self.upper.upper_operator(),
-            self.upper.value
-        )
-    }
-
-    fn render_rust(&self) -> String {
-        if let Some(witness) = self.witness {
-            return format!(
-                "fn main() {{\n    let {variable}: i64 = {witness};\n    \
-                 assert!({predicate}, \"proof obligation failed\");\n    \
-                 println!(\"{{{variable}}}\");\n}}",
-                variable = self.variable,
-                predicate = self.predicate()
-            );
-        }
+    fn render_template(&self, template: &str, result: &str) -> String {
         let first = self.lower.first_integer();
         let last = self.upper.last_integer();
-        format!(
-            "fn main() {{\n    let first: i128 = {first};\n    let last: i128 = {last};\n    \
-             assert!(first > last, \"proof obligation failed\");\n    \
-             println!(\"unsatisfiable\");\n}}"
-        )
-    }
-
-    fn render_python(&self) -> String {
-        let predicate = self.predicate().replace("&&", "and");
-        if let Some(witness) = self.witness {
-            return format!(
-                "{variable} = {witness}\nassert {predicate}, \"proof obligation failed\"\n\
-                 print({variable})",
-                variable = self.variable
-            );
+        let bindings = [
+            ("variable", self.variable.clone()),
+            ("lower_operator", self.lower.lower_operator().to_owned()),
+            ("lower_value", self.lower.value.to_string()),
+            ("upper_operator", self.upper.upper_operator().to_owned()),
+            ("upper_value", self.upper.value.to_string()),
+            (
+                "witness",
+                self.witness
+                    .map_or_else(String::new, |value| value.to_string()),
+            ),
+            ("first", first.to_string()),
+            ("last", last.to_string()),
+            ("result", result.to_owned()),
+        ];
+        let mut rendered = template.to_owned();
+        for (name, value) in bindings {
+            rendered = rendered.replace(&format!("{{{name}}}"), &value);
         }
-        let first = self.lower.first_integer();
-        let last = self.upper.last_integer();
-        format!(
-            "first = {first}\nlast = {last}\nassert first > last, \
-             \"proof obligation failed\"\nprint(\"unsatisfiable\")"
-        )
+        rendered
     }
 }
 
@@ -252,10 +223,15 @@ impl FormalProof {
     /// Project this proof into an executable target-language program.
     #[must_use]
     pub fn render_program(&self, target: &str) -> Option<String> {
-        match (self, target) {
-            (Self::IntegerInterval(proof), "rust") => Some(proof.render_rust()),
-            (Self::IntegerInterval(proof), "python") => Some(proof.render_python()),
-            _ => None,
-        }
+        let language = proof_program_templates().language(target)?;
+        let proof = match self {
+            Self::IntegerInterval(proof) => proof,
+        };
+        let (template, result) = if proof.witness.is_some() {
+            (&language.satisfiable, "satisfiable")
+        } else {
+            (&language.unsatisfiable, "unsatisfiable")
+        };
+        Some(proof.render_template(template, result))
     }
 }

@@ -12,7 +12,8 @@ requested programming language.
 
 Extend `CodeMeaning` with the proof value. Formalize the canonical proof
 statement before the existing function recognizers, then render the meaning by
-target slug. Rust and Python renderers each emit a complete program that:
+target slug. Rust and Python presentation templates live in
+`data/seed/proof-program-templates.lino` and each emit a complete program that:
 
 1. assigns the proof witness;
 2. asserts both semantic bounds; and
@@ -28,10 +29,11 @@ assert identical output.
 Place proof extraction before the command-word gate, because Hindi and Chinese
 may put the translation command after the quoted proof. Resolve target aliases
 with script-aware boundaries so a Latin alias beside Han characters works
-without making substrings such as `trust` match Rust. Mirror the proof
-formalizer and renderers in the browser worker, then exercise English, Russian,
-Hindi, and Chinese requests against the live language registry and the local
-Playwright demo.
+without making substrings such as `trust` match Rust. Load the same proof
+presentation templates in the browser worker and mirror only the proof
+formalizer and slot expansion, then exercise English, Russian, Hindi, and
+Chinese requests against the live language registry and the local Playwright
+demo.
 
 ## R890-6 and R890-7: Traceability And Self-Hosting
 

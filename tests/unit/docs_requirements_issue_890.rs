@@ -30,7 +30,8 @@ fn issue_890_case_study_and_release_metadata_are_traceable() {
         &[
             "Issue #890 extends that meta-language path",
             "src/proof_program.rs",
-            "one proof formalizer plus one renderer per target",
+            "data/seed/proof-program-templates.lino",
+            "one proof formalizer plus one data-defined projection per target",
             "formal_ai_worker_24.js",
         ],
     );
@@ -56,6 +57,7 @@ fn issue_890_case_study_and_release_metadata_are_traceable() {
             "## 4. Implemented Design",
             "## 5. Verification",
             "translate_proof_to_rust",
+            "data/seed/proof-program-templates.lino",
             "ses_03b44e557ffeSQeAuCYzxfc3BR",
         ],
     );

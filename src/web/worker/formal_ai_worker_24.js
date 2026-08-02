@@ -68,42 +68,44 @@ function formalProofSlug(proof) {
   ].join(":");
 }
 
+let cachedProofProgramTemplates;
+function proofProgramTemplates() {
+  if (cachedProofProgramTemplates === undefined) {
+    const tree = parseLinoTree(PROOF_PROGRAM_TEMPLATES_LINO);
+    cachedProofProgramTemplates =
+      tree.children.find((child) => child.name === "proof_program_templates") || null;
+  }
+  return cachedProofProgramTemplates;
+}
+
+function expandProofProgramTemplate(template, proof) {
+  const bindings = {
+    variable: proof.variable,
+    lower_operator: proof.lowerOperator,
+    lower_value: String(proof.lower),
+    upper_operator: proof.upperOperator,
+    upper_value: String(proof.upper),
+    witness: proof.witness === null ? "" : String(proof.witness),
+    first: String(proof.first),
+    last: String(proof.last),
+  };
+  let rendered = template;
+  for (const [name, value] of Object.entries(bindings)) {
+    rendered = rendered.split(`{${name}}`).join(value);
+  }
+  return rendered;
+}
+
 function renderFormalProofProgram(proof, target) {
-  if (target === "rust") {
-    if (proof.witness !== null) {
-      return [
-        "fn main() {",
-        `    let ${proof.variable}: i64 = ${proof.witness};`,
-        `    assert!(${proof.variable} ${proof.lowerOperator} ${proof.lower} && ${proof.variable} ${proof.upperOperator} ${proof.upper}, "proof obligation failed");`,
-        `    println!("{${proof.variable}}");`,
-        "}",
-      ].join("\n");
-    }
-    return [
-      "fn main() {",
-      `    let first: i128 = ${proof.first};`,
-      `    let last: i128 = ${proof.last};`,
-      '    assert!(first > last, "proof obligation failed");',
-      '    println!("unsatisfiable");',
-      "}",
-    ].join("\n");
-  }
-  if (target === "python") {
-    if (proof.witness !== null) {
-      return [
-        `${proof.variable} = ${proof.witness}`,
-        `assert ${proof.variable} ${proof.lowerOperator} ${proof.lower} and ${proof.variable} ${proof.upperOperator} ${proof.upper}, "proof obligation failed"`,
-        `print(${proof.variable})`,
-      ].join("\n");
-    }
-    return [
-      `first = ${proof.first}`,
-      `last = ${proof.last}`,
-      'assert first > last, "proof obligation failed"',
-      'print("unsatisfiable")',
-    ].join("\n");
-  }
-  return null;
+  const catalog = proofProgramTemplates();
+  if (!catalog) return null;
+  const language = catalog.children.find(
+    (child) => child.name === "language" && child.value === target,
+  );
+  if (!language) return null;
+  const state = proof.witness === null ? "unsatisfiable" : "satisfiable";
+  const template = childValue(language, state);
+  return template ? expandProofProgramTemplate(template, proof) : null;
 }
 
 function extractBacktickedFormalProof(prompt) {

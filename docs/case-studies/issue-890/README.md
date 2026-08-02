@@ -51,14 +51,17 @@ decision statement for the linear-proof engine.
 
 `CodeMeaning::FormalProof` then makes proof translation use the same general
 pipeline as other code: formalize one source meaning, render any supported
-target. Rust and Python renderers emit complete programs that assert the bounds
-before printing `2`; neither renderer reparses localized prose. Target
-recognition uses the programming catalog, and script-aware alias matching lets
-Chinese text adjoin `Rust` without weakening ASCII substring boundaries.
+target. The Rust and Python projections in
+`data/seed/proof-program-templates.lino` emit complete programs that assert the
+bounds before printing `2`; the renderer only binds semantic proof fields and
+never reparses localized prose. Target recognition uses the programming
+catalog, and script-aware alias matching lets Chinese text adjoin `Rust`
+without weakening ASCII substring boundaries.
 
-The browser worker mirrors the proof formalizer, slug, renderers, and routing.
-This is a behavioral feature rather than a visual UI change, so the evidence is
-the Playwright interaction test rather than before/after screenshots.
+The browser worker mirrors the proof formalizer, slug, slot expansion, and
+routing while loading the same presentation seed. This is a behavioral feature
+rather than a visual UI change, so the evidence is the Playwright interaction
+test rather than before/after screenshots.
 
 ## 5. Verification
 
