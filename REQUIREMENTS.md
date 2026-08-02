@@ -1062,14 +1062,14 @@ Issue [#531](https://github.com/link-assistant/formal-ai/issues/531) asks for a
 research-first plan for pattern inference across sequences, text, and 2D images,
 starting from associative deduplication and the upstream
 `linksplatform/Data.Doublets.Sequences` converters. PR
-[#642](https://github.com/link-assistant/formal-ai/pull/642) preserves the first
-research pass under `docs/case-studies/issue-531` and keeps implementation
-requirements staged until maintainers choose the next coding slice.
+[#642](https://github.com/link-assistant/formal-ai/pull/642) preserves the
+research record and implements the sequence, pattern, and algorithm-learning
+runtime, including the August 2026 review follow-up.
 
 | ID | Requirement | Status |
 | --- | --- | --- |
 | R396 | Preserve issue #531, PR #642, comments, review comments, upstream repository metadata, and selected sequence-converter source evidence under `docs/case-studies/issue-531`. | Implemented by `docs/case-studies/issue-531/raw-data/`, including GitHub JSON snapshots, Data.Doublets.Sequences metadata, checked commit data, converter file inventories, and selected C#/C++ source excerpts. |
-| R397 | Decompose issue #531 into explicit requirements and proposed solutions before runtime implementation. | Implemented by `docs/case-studies/issue-531/requirements.md`, which records `R531-01` through `R531-16`. |
+| R397 | Decompose issue #531 into explicit requirements and proposed solutions before runtime implementation. | Implemented by `docs/case-studies/issue-531/requirements.md`, which records `R531-01` through `R531-25`. |
 | R398 | Inventory current Formal AI integration points for link-native sequence and pattern inference. | Implemented by `docs/case-studies/issue-531/architecture-inventory.md`, covering `link_store`, `substitution`, `solver`, `meta_core`, existing text deduplication, and dependency boundaries. |
 | R399 | Research `linksplatform/Data.Doublets.Sequences` converters and dependencies before reimplementing sequence support in Rust. | Implemented by the saved upstream excerpts and summarized in `docs/case-studies/issue-531/README.md`, including `BalancedVariantConverter`, `OptimalVariantConverter`, `CompressingConverter`, `LinkFrequenciesCache`, `SequenceIndex`, and `StringToUnicodeSequenceConverter`. |
 | R400 | Document the known C# vs C++ `CompressingConverter` max-frequency discrepancy so it is verified before porting. | Implemented in `docs/case-studies/issue-531/{README.md,architecture-inventory.md,solution-plan.md}` and backed by raw C# and C++ converter excerpts. |
@@ -1080,6 +1080,15 @@ requirements staged until maintainers choose the next coding slice.
 | R405 | Integrate pattern inference through a solver method with default-off diagnostics and auditable evidence. | Implemented by the `pattern_inference` method (`src/solver_handlers/pattern_inference.rs`), wired through `src/solver_dispatch.rs` and ranked ahead of the concept lookup for data-carrying prompts via `src/intent_formalization.rs`. It emits `pattern_inference:*` event-log entries surfaced only in diagnostic/trace views. Covered by `tests/unit/issue_531_pattern_inference.rs`. |
 | R406 | Define benchmark directions for text, symbolic sequences, event streams, ARC-style grids, and requirements-solution fact checking. | Planned in `docs/case-studies/issue-531/solution-plan.md` Phase 7. |
 | R407 | Protect the research contract with automated traceability coverage in PR #642. | Implemented by `tests/unit/docs_requirements_issue_531.rs`, wired through `tests/unit/mod.rs`. |
+| R531-17 | Address the latest review in this PR: discover algorithms from logs/events/steps/guides, apply the result to auto-learning, deepen the analysis, and replay the same task through Formal AI via Agent CLI. | The request is preserved in `raw-data/pr-642-latest-feedback.md`; R531-18 through R531-25 implement its independently testable parts. |
+| R531-18 | Normalize logs, events, portable memory, compiled guides, and Agent-CLI sessions into one ordered representation. | Implemented by `ExecutionTrace`, `TraceStep`, `src/algorithm_discovery/adapters.rs`, and `agentic_coding::algorithm_learning::trace_from_driver_outcome`; adapter coverage lives in `tests/unit/issue_531_algorithm_discovery.rs`. |
+| R531-19 | Discover reusable routines through link-native sequence matching, including episodes repeated inside one log. | `src/algorithm_discovery.rs` interns operations as link addresses, proves lossless compression, and mines maximal non-overlapping episodes without crossing unique trace boundaries. |
+| R531-20 | Generalize demonstrations into constants, parameters, and reused cross-step data flow rather than memorizing literal values. | Support-value vectors determine constant vs parameter arguments; equal varying vectors reuse the same parameter, then execute through a generic `AlgorithmHost` only after promotion. |
+| R531-21 | Use held-out observations as a real rejection boundary and retain value, operation, and missing-step counterexamples. | Two occurrences form support; later exact or same-entry traces become held-out tests. Both validated and failed candidates serialize their evidence and are covered by dedicated regressions. |
+| R531-22 | Keep discovery and self-learning safe: proposals must not execute or promote themselves. | Artifacts have schema/evidence integrity IDs, conformance has `side_effects "false"`, and execution requires validated evidence, a green named gate, named human approval, and an explicit host. |
+| R531-23 | Apply the learner to default idle auto-learning and preserve auditable artifacts. | `src/dreaming.rs`, `dreaming_runtime.rs`, and `cli_memory.rs` discover, retain, persist, and report `algorithm_learning_candidate` events without implicit promotion. |
+| R531-24 | Expose the same portable workflow through the library, public CLI, in-repo Agent loop, and real external Agent CLI. | Implemented by `formal-ai learn algorithms`, `formal-ai algorithm conformance`, `src/agentic_coding/algorithm_learning.rs`, binary/whole-task tests, and mandatory `experiments/agent_cli_e2e/run_issue_531.sh` CI coverage over the versioned benchmark. |
+| R531-25 | Deepen and fact-check the design against sequence compression, process mining/conformance, trace-model inference, abstraction-library learning, and project policy; document implemented behavior and limits. | `online-research.md`, `architecture-inventory.md`, and `solution-plan.md` record source-linked decisions, while the README distinguishes contiguous routines from unsupported branch/concurrency/recursion synthesis. |
 
 ## Issue #540 Dreaming Memory Maintenance
 

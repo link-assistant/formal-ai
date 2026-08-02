@@ -1,7 +1,9 @@
 # Issue 531 Solution Plan
 
 This plan separates the broad issue into staged work that can be reviewed and
-tested independently.
+tested independently. Phases 0-7 describe the original research and pattern
+implementation. Phases 8-10 record the implemented August 2026 review
+follow-up from pattern recognition to safe algorithm learning.
 
 ## Phase 0: Research Contract
 
@@ -121,17 +123,90 @@ small structured input and records auditable evidence in the meta-core.
 
 ## Phase 7: Benchmarks
 
-Use small, deterministic fixtures before broad benchmarks:
+Delivered with small, deterministic fixtures before broad benchmarks:
 
 - text repeated phrase examples;
 - symbolic sequences with nested repetition;
-- event streams from existing link records;
+- event streams from portable memory and existing link records;
 - ARC-AGI inspired grid examples;
 - requirements-to-solution fact-checking examples where repeated missing
   obligations should be detected.
 
-Acceptance gate: benchmark fixtures are versioned, deterministic, and report
-both solved cases and rejected candidates.
+Acceptance gate: the existing 1D/2D fixtures plus
+`data/benchmarks/issue-531-algorithm-traces.lino` are versioned and
+deterministic. Discovery tests report both held-out-validated cases and rejected
+constant/operation/missing-step counterexamples. The runnable examples are
+compiled by `cargo check --examples --all-features`.
+
+## Phase 8: Trace-To-Algorithm Generalization
+
+Delivered:
+
+- normalize runtime events, portable memory conversations, compiled guides,
+  and Agent transcripts into one `ExecutionTrace` model;
+- intern operations as link addresses and preserve unique trace boundaries;
+- find maximal non-overlapping repeated episodes, including loop bodies inside
+  a single long trace;
+- bound exhaustive mining to 4,096 observed steps and 32 steps per candidate,
+  failing closed without learning from a partial prefix;
+- infer invariant constants, varying parameters, and reused parameters that
+  preserve cross-step data flow;
+- reserve two occurrences for support and use later exact or same-entry traces
+  only as held-out tests;
+- preserve failed value and structural candidates instead of discarding the
+  evidence.
+
+Acceptance gate: `tests/unit/issue_531_algorithm_discovery.rs` proves the
+link-native compression, parameterization, loop case, constant drift, changed
+operation, missing step, and source-adapter contracts.
+
+## Phase 9: Safe Auto-Learning And Execution Boundary
+
+Delivered:
+
+- content-address candidate schemas and their complete evidence independently;
+- parse and integrity-check portable discovery artifacts;
+- materialize bindings through side-effect-free conformance;
+- retain validated proposals in default-on dreaming as
+  `algorithm_learning_candidate` events;
+- require a green named automated gate plus named human approval before an
+  `ApprovedAlgorithm` can call an explicit host;
+- keep failed proposals, artifact tampering, missing bindings, failed gates,
+  declined approval, and unnamed reviewers fail-closed.
+
+Acceptance gate: artifact, promotion, generic-host, dreaming, and public CLI
+tests pass; no discovery or conformance path can reach the host.
+
+## Phase 10: Formal AI And Real Agent CLI Replay
+
+Delivered:
+
+- add `formal-ai learn algorithms` and `formal-ai algorithm conformance`;
+- teach the general Agent planner to recognize actual embedded `demo_memory`
+  observations instead of one English request phrase;
+- make the planned session write observations, invoke learning, read and parse
+  the artifact back, and invoke conformance over the same candidate;
+- replay the whole task through the deterministic in-repo Agent driver;
+- add `experiments/agent_cli_e2e/run_issue_531.sh` to the mandatory CI job so
+  the real `@link-assistant/agent` client drives `formal-ai serve`, executes the
+  public binary commands, and leaves the validated artifact in its workspace.
+
+Acceptance gate: the in-repo whole-task test and real-client script both reach
+`conformance_passed`, show `side_effects "false"`, and leave the candidate
+human-gated.
+
+## Further Model Classes, Not Hidden Deferrals
+
+The implemented learner exhaustively searches its bounded model class:
+contiguous sequential routines up to 32 steps, including repeated loop bodies,
+from runs of at most 4,096 observed steps, with string constants and shared
+parameters. Larger inputs fail closed with no partial proposal. Branch
+predicates, concurrent partial orders, recursion, temporal constraints,
+semantic postconditions, and new host operations need different typed
+observations and counterexamples. They are not silently approximated or claimed
+by this PR because frequency alone cannot establish their semantics or safety.
+The adapters and candidate/gate boundary are reusable when such evidence types
+are introduced.
 
 ## Risks
 
@@ -145,3 +220,8 @@ both solved cases and rejected candidates.
   mandatory for every converter and deduplication step.
 - 2D grids need relative-coordinate semantics; flattening alone will miss
   spatial invariants.
+- A common first operation can join otherwise different routines. Treating
+  same-entry traces as held-out counterexamples is intentionally conservative:
+  ambiguity blocks promotion instead of selecting a convenient cluster.
+- Artifact text is untrusted input. Both schema and evidence identities must be
+  recomputed before conformance or promotion eligibility is considered.
