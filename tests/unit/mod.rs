@@ -145,6 +145,7 @@ mod issue_858;
 mod issue_859;
 mod issue_870_routing;
 mod issue_885_document_fact_checking;
+mod issue_890;
 mod local_surface;
 mod memory_learning;
 mod memory_maintenance;
