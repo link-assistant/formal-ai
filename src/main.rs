@@ -11,6 +11,7 @@ mod cli_benchmark;
 mod cli_clients;
 mod cli_computer_use;
 mod cli_context;
+mod cli_file_legality;
 mod cli_import;
 mod cli_improve;
 mod cli_learn;
@@ -26,6 +27,7 @@ use cli_benchmark::{run_benchmark, BenchmarkAction};
 use cli_clients::{run_clients, ClientsAction, ClientsFormat};
 use cli_computer_use::{run_computer_use, ComputerUseArgs};
 use cli_context::{run_context, ContextArgs};
+use cli_file_legality::{run_file_legality, FileLegalityArgs};
 use cli_import::{run_import, ImportAction};
 use cli_improve::{run_improve, ImproveArgs};
 use cli_learn::{run_learn_action, LearnAction};
@@ -189,6 +191,8 @@ enum Command {
     },
     /// Weigh statement-bearing repository text against captured provenance.
     StatementAudit(StatementAuditArgs),
+    /// Assess file risk signals by legal category and jurisdiction.
+    FileLegality(FileLegalityArgs),
     /// Run or permanently configure external CLIs against a local Formal AI server.
     With(WithFormalAiArgs),
     /// Execute and inspect persisted natural-language procedure artifacts.
@@ -607,6 +611,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::GithubLogs { action } => run_github_logs(action)?,
         Command::Benchmark { action } => run_benchmark(action)?,
         Command::StatementAudit(args) => run_statement_audit(&args)?,
+        Command::FileLegality(args) => run_file_legality(&args)?,
         Command::With(args) => run_with_formal_ai(&args)?,
         Command::Procedure(args) => run_procedure(args)?,
         Command::Algorithm(args) => run_algorithm(args)?,
