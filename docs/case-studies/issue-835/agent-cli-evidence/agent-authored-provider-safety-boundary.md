@@ -1,0 +1,1 @@
+Confirmed child-safety hash matches must come from an authorized provider receipt, suppress local derivatives, stop ordinary detector execution, and escalate through the provider's reporting channel.
