@@ -2,11 +2,11 @@ self_ast_census_index
   language rust
   engine meta_language
   full_fidelity_prefix src/agentic_coding/
-  module_count 400
+  module_count 402
   full_ast_module_count 51
-  signature_module_count 349
-  symbol_count 8223
-  content_id self_ast_census_index_edbf5c81c0a1030c
+  signature_module_count 351
+  symbol_count 8289
+  content_id self_ast_census_index_842553525d4615bf
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/associative_learning.rs full_ast 7 source_module_926e3e97b31fa30a
@@ -75,6 +75,7 @@ self_ast_census_index
     src/cli_clients.rs signature 8 source_module_325716f5dfd4b3cc
     src/cli_computer_use.rs signature 2 source_module_49bf0ce0ddc5495a
     src/cli_context.rs signature 30 source_module_e612e83017271e23
+    src/cli_file_legality.rs signature 3 source_module_100599721935d782
     src/cli_import.rs signature 2 source_module_a03f4f2a6132bf13
     src/cli_improve.rs signature 5 source_module_9c508efbe830879e
     src/cli_learn.rs signature 6 source_module_5935df87df09a1d3
@@ -144,6 +145,7 @@ self_ast_census_index
     src/external_benchmarks/ratchet.rs signature 5 source_module_cc2d4bbd74682fad
     src/external_benchmarks/vocabulary.rs signature 2 source_module_75ca460ff8e87bc2
     src/fact_checking.rs signature 33 source_module_4f1b8b6430d36281
+    src/file_legality.rs signature 61 source_module_01932ab2a7a92af5
     src/formal_system.rs signature 6 source_module_b9bd52ba9fcf9820
     src/fuzzy.rs signature 2 source_module_5143524b0b1c425e
     src/gemini.rs signature 18 source_module_3a72b7d5cd915cac
@@ -162,14 +164,14 @@ self_ast_census_index
     src/learning_cycle.rs signature 35 source_module_5111044fb9a4d31d
     src/learning_ledger.rs signature 26 source_module_b3603c2c577cd078
     src/lexeme_import.rs signature 49 source_module_03ae22d5093d8a37
-    src/lib.rs signature 149 source_module_c27a297ea0498922
+    src/lib.rs signature 150 source_module_79f310f13832fe94
     src/link_store.rs signature 53 source_module_4163b0ff62ebee82
     src/links_format.rs signature 7 source_module_17ae7d7e69b8c450
     src/links_query.rs signature 30 source_module_434647cf5697218d
     src/links_substitution_query/links.rs signature 34 source_module_b93fba6da2b6abdb
     src/links_substitution_query/mod.rs signature 18 source_module_c280ddedbe0be41b
     src/links_substitution_query/text.rs signature 10 source_module_54590acf88bfa6d5
-    src/main.rs signature 39 source_module_ffe06464bb2f98b9
+    src/main.rs signature 40 source_module_ad67671c3caccac5
     src/mcp.rs signature 14 source_module_ef53f007e3562f02
     src/memory.rs signature 38 source_module_0295dd993338b603
     src/memory/bundle.rs signature 12 source_module_aa109e11a210ec80

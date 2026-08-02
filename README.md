@@ -1027,6 +1027,27 @@ in [`data/training/`](data/training/README.md); benchmark fixtures and runtime
 retrieval data are separate classifications and cannot silently become
 training data.
 
+### File legal-risk assessment
+
+`formal-ai file-legality` inspects image, document, audio, video, or other files
+and returns separate national-security, forbidden-content, and copyright/IP
+signals for each requested jurisdiction. The report includes Exif/GPS field
+provenance, versioned policy/evidence links, detector confidence, and required
+review actions. It never returns a universal legal verdict.
+
+```bash
+formal-ai file-legality ./candidate.jpg \
+  --config examples/file-legality/evidence.json \
+  --pretty
+```
+
+Detector and policy data are explicit caller inputs; provider adapters can be
+registered through the Rust API and fail independently. Confirmed child-safety
+matches are accepted only as authorized-provider receipts: they suppress local
+hash/metadata derivatives, skip ordinary detectors, and require provider
+escalation. See the [issue #835 case study](docs/case-studies/issue-835/) and
+the [synthetic sidecar example](examples/file-legality/).
+
 ## Development
 
 ```bash
