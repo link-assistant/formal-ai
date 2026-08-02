@@ -5,8 +5,8 @@ self_ast_census_index
   module_count 395
   full_ast_module_count 52
   signature_module_count 343
-  symbol_count 8100
-  content_id self_ast_census_index_9902bf3a2b342f85
+  symbol_count 8101
+  content_id self_ast_census_index_29cc5b082e5617ea
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/associative_learning.rs full_ast 7 source_module_926e3e97b31fa30a
@@ -16,7 +16,7 @@ self_ast_census_index
     src/agentic_coding/code_rewrite_learning.rs full_ast 7 source_module_302ed77316482eda
     src/agentic_coding/code_task.rs full_ast 14 source_module_98ef833f3961f4a0
     src/agentic_coding/command_reroute.rs full_ast 7 source_module_139b89dd9d8b59c2
-    src/agentic_coding/comparison.rs full_ast 9 source_module_1ae5970a69f80627
+    src/agentic_coding/comparison.rs full_ast 10 source_module_d68fe39a7cb9791f
     src/agentic_coding/conversation_recall.rs full_ast 1 source_module_404a4a2038b3bca1
     src/agentic_coding/corpus.rs full_ast 4 source_module_c5ffda9bccd862d1
     src/agentic_coding/diagram.rs full_ast 11 source_module_aba808e67764ead3
