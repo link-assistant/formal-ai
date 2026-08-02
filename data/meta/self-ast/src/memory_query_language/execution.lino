@@ -1,0 +1,32 @@
+self_ast_census
+  target src/memory_query_language/execution.rs
+  language rust
+  fidelity signature
+  byte_len 19733
+  line_count 561
+  content_id source_module_6920a36491a30f94
+  symbol_count 23
+  symbols
+    struct MemoryQueryOutcome 16 21
+    function execute_memory_query 24 82
+    function denied_permission 84 104
+    function execute_select 106 134
+    function execute_insert 136 156
+    function execute_update 158 187
+    function execute_delete 189 222
+    function active_event_indices 224 241
+    function aggregate_rows 243 282
+    function aggregate_value 284 333
+    function project_event 335 343
+    function filter_matches 345 360
+    function compare 362 391
+    function like_matches 393 398
+    function wildcard_matches 400 428
+    function event_field_value 430 465
+    function set_event_field 467 497
+    function non_negative_integer 499 504
+    function numeric_value 507 513
+    function integer_or_float 520 526
+    function order_rows 528 546
+    function compare_values 548 553
+    function event_identity 555 561

@@ -1,4 +1,49 @@
 meanings
+  fabricated
+    defined-by word_surface
+    lexeme en
+      surface
+        text "fabricated"
+  fact_check_arithmetic_counterexample
+    defined-by intent
+    lexeme en
+      surface
+        text "fact check arithmetic counterexample"
+  fact_check_current_dialogue
+    defined-by intent
+    lexeme en
+      surface
+        text "fact check current dialogue"
+  fact_check_no_statements
+    defined-by intent
+    lexeme en
+      surface
+        text "fact check no statements"
+  fact_check_statement
+    defined-by intent
+    lexeme en
+      surface
+        text "fact check statement"
+  fact_check_statement_counterexample
+    defined-by intent
+    lexeme en
+      surface
+        text "fact check statement counterexample"
+  fact_lookup
+    defined-by intent
+    lexeme en
+      surface
+        text "fact lookup"
+  factual
+    defined-by word_surface
+    lexeme en
+      surface
+        text "factual"
+  fallback
+    defined-by concept
+    lexeme en
+      surface
+        text "fallback"
   fastapi
     defined-by word_surface
     lexeme en
@@ -704,6 +749,11 @@ meanings
     lexeme en
       surface
         text "kupi slona"
+  label
+    defined-by concept
+    lexeme en
+      surface
+        text "label"
   language-detection
     defined-by category
     lexeme en
@@ -969,6 +1019,11 @@ meanings
     lexeme en
       surface
         text "list and pack"
+  list_facts_about
+    defined-by concept
+    lexeme en
+      surface
+        text "list facts about"
   list_files
     defined-by task
     lexeme en
@@ -989,6 +1044,11 @@ meanings
     lexeme en
       surface
         text "list files reverse sort"
+  list_week_events_by_topic
+    defined-by concept
+    lexeme en
+      surface
+        text "list week events by topic"
   local
     defined-by concept
     lexeme en
@@ -1079,11 +1139,21 @@ meanings
     lexeme en
       surface
         text "manuscript"
+  map_matches
+    defined-by concept
+    lexeme en
+      surface
+        text "map matches"
   marie_curie
     defined-by concept
     lexeme en
       surface
         text "marie curie"
+  match
+    defined-by concept
+    lexeme en
+      surface
+        text "match"
   material
     defined-by concept
     lexeme en
@@ -1119,6 +1189,46 @@ meanings
     lexeme en
       surface
         text "memory export filename"
+  memory_program_compilation_gap
+    defined-by intent
+    lexeme en
+      surface
+        text "memory program compilation gap"
+  memory_program_complete
+    defined-by intent
+    lexeme en
+      surface
+        text "memory program complete"
+  memory_program_destructive_refused
+    defined-by intent
+    lexeme en
+      surface
+        text "memory program destructive refused"
+  memory_program_interpreter_gap
+    defined-by intent
+    lexeme en
+      surface
+        text "memory program interpreter gap"
+  memory_program_iteration_limit
+    defined-by intent
+    lexeme en
+      surface
+        text "memory program iteration limit"
+  memory_program_match_limit
+    defined-by intent
+    lexeme en
+      surface
+        text "memory program match limit"
+  memory_program_permission_refused
+    defined-by intent
+    lexeme en
+      surface
+        text "memory program permission refused"
+  memory_query_unrecognized
+    defined-by intent
+    lexeme en
+      surface
+        text "memory query unrecognized"
   memory_root_header
     defined-by field
     lexeme en
@@ -1144,6 +1254,16 @@ meanings
     lexeme en
       surface
         text "misinformation"
+  missing_english_label_todo
+    defined-by concept
+    lexeme en
+      surface
+        text "missing english label todo"
+  missing_russian_label_todo
+    defined-by concept
+    lexeme en
+      surface
+        text "missing russian label todo"
   mkdir
     defined-by concept
     lexeme en
@@ -1209,6 +1329,11 @@ meanings
     lexeme en
       surface
         text "normalize"
+  normalize_labels_fixpoint
+    defined-by concept
+    lexeme en
+      surface
+        text "normalize labels fixpoint"
   normalize_whitespace
     defined-by operation
     lexeme en
@@ -1269,128 +1394,3 @@ meanings
     lexeme en
       surface
         text "open textbook"
-  openai
-    defined-by word_surface
-    lexeme en
-      surface
-        text "openai"
-  orchestration_correction_prompt
-    defined-by intent
-    lexeme en
-      surface
-        text "orchestration correction prompt"
-  orchestration_cross_agent_denial
-    defined-by intent
-    lexeme en
-      surface
-        text "orchestration cross agent denial"
-  orders
-    defined-by word_surface
-    lexeme en
-      surface
-        text "orders"
-  original_journalism
-    defined-by kind
-    lexeme en
-      surface
-        text "original journalism"
-  originality
-    defined-by word_surface
-    lexeme en
-      surface
-        text "originality"
-  outdent
-    defined-by concept
-    lexeme en
-      surface
-        text "outdent"
-  outdent_lines
-    defined-by operation
-    lexeme en
-      surface
-        text "outdent lines"
-  owlbear
-    defined-by word_surface
-    lexeme en
-      surface
-        text "owlbear"
-  pack
-    defined-by word_surface
-    lexeme en
-      surface
-        text "pack"
-  package-management
-    defined-by category
-    lexeme en
-      surface
-        text "package management"
-  page_title
-    defined-by task
-    lexeme en
-      surface
-        text "page title"
-  paper
-    defined-by word_surface
-    lexeme en
-      surface
-        text "paper"
-  pascal
-    defined-by concept
-    lexeme en
-      surface
-        text "pascal"
-  pascal_case
-    defined-by operation
-    lexeme en
-      surface
-        text "pascal case"
-  passage
-    defined-by word_surface
-    lexeme en
-      surface
-        text "passage"
-  path_argument
-    defined-by operation
-    lexeme en
-      surface
-        text "path argument"
-  path_argument_list_files
-    defined-by rule
-    lexeme en
-      surface
-        text "path argument list files"
-  path_argument_list_files_reverse_sort
-    defined-by rule
-    lexeme en
-      surface
-        text "path argument list files reverse sort"
-  pattern_assistant_free_time_phrase_aap_khali_samay_men_kya_karte_hain_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase aap khali samay men kya karte hain hi"
-  pattern_assistant_free_time_phrase_chem_ty_zanimaeshsya_v_svobodnoe_vremya_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase chem ty zanimaeshsya v svobodnoe vremya ru"
-  pattern_assistant_free_time_phrase_chem_zanimaeshsya_v_svobodnoe_vremya_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase chem zanimaeshsya v svobodnoe vremya ru"
-  pattern_assistant_free_time_phrase_chto_delaesh_kogda_svoboden_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase chto delaesh kogda svoboden ru"
-  pattern_assistant_free_time_phrase_chto_delaesh_v_svobodnoe_vremya_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase chto delaesh v svobodnoe vremya ru"
-  pattern_assistant_free_time_phrase_chto_ty_delaesh_v_svobodnoe_vremya_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase chto ty delaesh v svobodnoe vremya ru"

@@ -1,0 +1,29 @@
+self_ast_census
+  target src/memory_query_language/sql.rs
+  language rust
+  fidelity signature
+  byte_len 11430
+  line_count 349
+  content_id source_module_099d6dd781773c8a
+  symbol_count 20
+  symbols
+    function parse_sql 15 30
+    function parse_select 32 45
+    function parse_select_item 47 82
+    function parse_select_clauses 84 112
+    function parse_insert 114 136
+    function parse_update 138 158
+    function parse_delete 160 170
+    function parse_returning 172 184
+    function parse_or_expression 186 196
+    function parse_and_expression 198 208
+    function parse_not_expression 210 222
+    function parse_comparison 224 261
+    function parse_field_list 263 269
+    function parse_value_list 271 277
+    function parse_order_list 279 295
+    function parse_usize 297 306
+    function optional_alias 308 313
+    function parse_aggregate_function 315 328
+    function default_alias 330 335
+    function expect_memory_table 337 349

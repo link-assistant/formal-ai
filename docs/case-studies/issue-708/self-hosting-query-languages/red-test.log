@@ -1,0 +1,16 @@
+   Compiling formal-ai v0.317.0 (/tmp/gh-issue-solver-1785608259817)
+error[E0432]: unresolved import `formal_ai::memory_query_language`
+ --> tests/unit/issue_708_memory_query_languages.rs:4:16
+  |
+4 | use formal_ai::memory_query_language::{
+  |                ^^^^^^^^^^^^^^^^^^^^^ could not find `memory_query_language` in `formal_ai`
+
+error[E0433]: cannot find `memory_query_language` in `formal_ai`
+  --> tests/unit/issue_708_memory_query_languages.rs:18:17
+   |
+18 | ) -> formal_ai::memory_query_language::CompiledMemoryQuery {
+   |                 ^^^^^^^^^^^^^^^^^^^^^ could not find `memory_query_language` in `formal_ai`
+
+Some errors have detailed explanations: E0432, E0433.
+For more information about an error, try `rustc --explain E0432`.
+error: could not compile `formal-ai` (test "unit") due to 2 previous errors

@@ -2,13 +2,13 @@ self_ast_census
   target src/cli_memory.rs
   language rust
   fidelity signature
-  byte_len 11976
-  line_count 289
-  content_id source_module_d10c6067fc63e984
+  byte_len 12075
+  line_count 292
+  content_id source_module_902d9c8bcd24619c
   symbol_count 5
   symbols
-    function run_memory 13 237
-    function ask_to_enable_auto_free_space 239 250
-    function load_memory_or_empty 252 258
-    function require_destructive_confirmation 260 268
-    function write_full_memory_backup 270 289
+    function run_memory 13 240
+    function ask_to_enable_auto_free_space 242 253
+    function load_memory_or_empty 255 261
+    function require_destructive_confirmation 263 271
+    function write_full_memory_backup 273 292

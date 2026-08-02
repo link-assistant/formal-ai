@@ -300,27 +300,15 @@ async function fetchWebSearch(url, options) {
 const WEB_SEARCH_TEXT_ENCODER = new TextEncoder();
 const WEB_SEARCH_TEXT_DECODER = new TextDecoder();
 
-function webSearchRrfK() {
-  if (wasm && typeof wasm.web_search_rrf_k === "function") {
-    return wasm.web_search_rrf_k() >>> 0;
-  }
-  return WEB_SEARCH_RRF_K_FALLBACK;
+function wasmU32Call(exportName, fallback) {
+  return wasm && typeof wasm[exportName] === "function"
+    ? wasm[exportName]() >>> 0
+    : fallback;
 }
 
-function webSearchConcurrency() {
-  if (wasm && typeof wasm.web_search_concurrency_per_category === "function") {
-    return wasm.web_search_concurrency_per_category() >>> 0;
-  }
-  return WEB_SEARCH_CONCURRENCY_FALLBACK;
-}
-
-function webSearchProviderLimit() {
-  if (wasm && typeof wasm.web_search_provider_limit === "function") {
-    return wasm.web_search_provider_limit() >>> 0;
-  }
-  return WEB_SEARCH_PROVIDER_LIMIT_FALLBACK;
-}
-
+function webSearchRrfK() { return wasmU32Call("web_search_rrf_k", WEB_SEARCH_RRF_K_FALLBACK); }
+function webSearchConcurrency() { return wasmU32Call("web_search_concurrency_per_category", WEB_SEARCH_CONCURRENCY_FALLBACK); }
+function webSearchProviderLimit() { return wasmU32Call("web_search_provider_limit", WEB_SEARCH_PROVIDER_LIMIT_FALLBACK); }
 function wasmWriteInput(text) {
   if (!wasm || typeof wasm.input_ptr !== "function") return -1;
   const bytes = WEB_SEARCH_TEXT_ENCODER.encode(text);
@@ -345,19 +333,12 @@ function wasmTextCall(exportName, payload) {
   return wasmReadOutput(wasm[exportName](length) >>> 0);
 }
 
-// Engine-core bridges (R194 follow-up). Each function returns a value when
-// the WASM core is available, or `null` so the caller can fall back to the
-// pure-JS branch. Keeping a JS fallback covers offline mode and old browsers
-// where `WebAssembly.instantiate` is unavailable, but the canonical answer
-// always comes from Rust when the worker booted successfully.
+// Bridges return null without WASM; a booted worker takes its answer from Rust.
 function wasmNormalizePrompt(text) { return wasmTextCall("engine_normalize_prompt", String(text || "")); }
-
 function wasmDetectLanguage(text) { return wasmTextCall(
   "engine_detect_language", String(text || "")) || null; }
 
-// Returns `{ ok: true, value }` on success, `{ ok: false, error }` on parse
-// or runtime failure (division by zero, overflow). `null` means the WASM core
-// is unavailable — the caller should fall back to the JS parser.
+// Returns `{ ok, value/error }`, or null so the caller can use its JS fallback.
 function wasmEvaluateArithmetic(expression) {
   const text = wasmTextCall("engine_evaluate_arithmetic", String(expression || ""));
   if (!text) return null;
@@ -367,11 +348,29 @@ function wasmEvaluateArithmetic(expression) {
   return { ok: true, value: text };
 }
 
-function wasmFactCheckDialogue(payload) {
-  const text = wasmTextCall("engine_fact_check_dialogue", payload);
+function wasmJsonCall(exportName, payload) {
+  const text = wasmTextCall(exportName, payload);
   if (!text) return null;
   try { return JSON.parse(text); }
   catch (_error) { return null; }
+}
+function wasmFactCheckDialogue(payload) { return wasmJsonCall("engine_fact_check_dialogue", payload); }
+
+// Issue #708: transport events to the shared Rust/WASM query engine.
+const WASM_MEMORY_QUERY_FIELDS = "id kind role intent tool inputs outputs content sentAt demoLabel conversationId conversationTitle evidence accessCount writeCount".split(" ");
+
+function wasmMemoryQueryValue(value) {
+  if (value === null || value === undefined) return "n";
+  if (Array.isArray(value)) return `l${value.map((item) => encodeURIComponent(String(item))).join(",")}`;
+  if (typeof value === "boolean") return value ? "b1" : "b0";
+  if (typeof value === "number") return `${Number.isInteger(value) ? "i" : "f"}${value}`;
+  return `s${encodeURIComponent(String(value))}`;
+}
+function tryExactMemoryQuery(prompt, memoryEvents) {
+  const lines = [`q\t${encodeURIComponent(String(prompt || ""))}`];
+  for (const event of Array.isArray(memoryEvents) ? memoryEvents : []) lines.push(
+    `e\t${WASM_MEMORY_QUERY_FIELDS.map((field) => wasmMemoryQueryValue(event && event[field])).join("\t")}`);
+  return wasmJsonCall("engine_memory_query", lines.join("\n"));
 }
 
 function wasmStableId(prefix, value) {

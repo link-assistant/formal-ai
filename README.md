@@ -832,7 +832,9 @@ cargo run -- memory export --from memory.lino --path full.lino           # defau
 cargo run -- memory export --from memory.lino --path events.lino --events-only  # legacy demo_memory
 cargo run -- memory import --path full.lino --into memory.lino           # accepts either format
 cargo run -- memory show --path memory.lino                              # print every recorded event
-cargo run -- memory query --path memory.lino --query "Find Rust in another conversation"
+cargo run -- memory query --path memory.lino --prompt "Find Rust in another conversation"
+cargo run -- memory query --path memory.lino --prompt "SELECT id, content FROM memory WHERE kind = 'fact' LIMIT 10"
+cargo run -- memory query --path memory.lino --prompt 'query { memory(first: 10) { id content } }'
 cargo run -- memory dream --path memory.lino                             # plan low-priority cleanup
 cargo run -- memory dream --path memory.lino --storage-capacity-bytes 1000000 --free-bytes 50000
 cargo run -- memory dream --path memory.lino --apply --confirm           # persist learning; cleanup asks consent
@@ -841,6 +843,17 @@ cargo run -- memory reset --path memory.lino --backup before-reset.lino --confir
 cargo run -- bundle export --path bundle.lino --memory memory.lino
 cargo run -- bundle import --path bundle.lino --into memory.lino
 ```
+
+Exact SQL and GraphQL memory requests share one typed plan, permission model,
+and bounded link-substitution program with learned natural-language templates.
+The supported schema includes every `MemoryEvent` field and covers CRUD,
+boolean filtering, projection, grouping, sorting, pagination, count, sum,
+average, minimum, maximum, population variance, and population standard
+deviation. Reads use identity substitution (`same -> same`); deletes remain
+append-only retractions and require explicit destructive confirmation. The
+architecture, exact dialects, auto-learning gates, Agent CLI evidence, and
+meta-language audit are documented in the
+[issue #708 query-language case study](docs/case-studies/issue-708/query-languages.md).
 
 Memory normally remains append-only: deleting a conversation first records a
 `conversation_deleted` event and hides the thread. The explicit

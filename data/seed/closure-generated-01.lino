@@ -319,6 +319,11 @@ meanings
     lexeme en
       surface
         text "archive"
+  archive_duplicate_facts
+    defined-by concept
+    lexeme en
+      surface
+        text "archive duplicate facts"
   archive_round_trip
     defined-by task
     lexeme en
@@ -414,6 +419,11 @@ meanings
     lexeme en
       surface
         text "bootstrap icons"
+  bounded_iterate_to_fixpoint
+    defined-by concept
+    lexeme en
+      surface
+        text "bounded iterate to fixpoint"
   brainstorm_names
     defined-by intent
     lexeme en
@@ -814,6 +824,16 @@ meanings
     lexeme en
       surface
         text "context signal processing"
+  contributed_fact_rename
+    defined-by concept
+    lexeme en
+      surface
+        text "contributed fact rename"
+  contributor_fact_count_summary
+    defined-by concept
+    lexeme en
+      surface
+        text "contributor fact count summary"
   conversation-history
     defined-by isolation_mode
     lexeme en
@@ -844,6 +864,11 @@ meanings
     lexeme en
       surface
         text "copy"
+  copy_matches_to_collection
+    defined-by concept
+    lexeme en
+      surface
+        text "copy matches to collection"
   coreference_program_artifact
     defined-by intent
     lexeme en
@@ -939,6 +964,11 @@ meanings
     lexeme en
       surface
         text "customers"
+  dangling_meaning_review
+    defined-by concept
+    lexeme en
+      surface
+        text "dangling meaning review"
   data-format
     defined-by category
     lexeme en
@@ -984,6 +1014,11 @@ meanings
     lexeme en
       surface
         text "delete"
+  delete_with_retraction
+    defined-by concept
+    lexeme en
+      surface
+        text "delete with retraction"
   demo_memory
     defined-by value
     lexeme en
@@ -999,6 +1034,11 @@ meanings
     lexeme en
       surface
         text "desktop to cli"
+  destructive
+    defined-by concept
+    lexeme en
+      surface
+        text "destructive"
   detailed
     defined-by concept
     lexeme en
@@ -1159,6 +1199,11 @@ meanings
     lexeme en
       surface
         text "eval js"
+  events
+    defined-by concept
+    lexeme en
+      surface
+        text "events"
   exact_title
     defined-by coverage_group
     lexeme en
@@ -1349,48 +1394,3 @@ meanings
     lexeme en
       surface
         text "extract url"
-  fabricated
-    defined-by word_surface
-    lexeme en
-      surface
-        text "fabricated"
-  fact_check_arithmetic_counterexample
-    defined-by intent
-    lexeme en
-      surface
-        text "fact check arithmetic counterexample"
-  fact_check_current_dialogue
-    defined-by intent
-    lexeme en
-      surface
-        text "fact check current dialogue"
-  fact_check_no_statements
-    defined-by intent
-    lexeme en
-      surface
-        text "fact check no statements"
-  fact_check_statement
-    defined-by intent
-    lexeme en
-      surface
-        text "fact check statement"
-  fact_check_statement_counterexample
-    defined-by intent
-    lexeme en
-      surface
-        text "fact check statement counterexample"
-  fact_lookup
-    defined-by intent
-    lexeme en
-      surface
-        text "fact lookup"
-  factual
-    defined-by word_surface
-    lexeme en
-      surface
-        text "factual"
-  fallback
-    defined-by concept
-    lexeme en
-      surface
-        text "fallback"
