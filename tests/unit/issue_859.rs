@@ -115,8 +115,8 @@ fn changelog_bytes_match_the_agent_cli_write_call() {
         .and_then(Value::as_str)
         .expect("Agent write call for the changelog");
 
-    assert_eq!(
-        include_str!("../../changelog.d/20260801_212200_codex_tool_routing.md"),
-        authored
+    assert!(
+        include_str!("../../CHANGELOG.md").contains(authored),
+        "the released changelog must preserve the exact Agent-authored entry"
     );
 }
