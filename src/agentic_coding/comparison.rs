@@ -2,7 +2,7 @@
 
 use serde_json::json;
 
-use super::planner::{plan_one, tool_for, AgenticPlan, Capability, Progress};
+use super::planner::{plan_one, tool_for, AgenticPlan, Capability};
 use crate::protocol::ChatMessage;
 use crate::seed;
 
@@ -16,13 +16,13 @@ pub(super) fn plan_comparison_step(
     tool_names: &[&str],
 ) -> Option<AgenticPlan> {
     let (left, right) = comparison_sides(task)?;
-    let progress = Progress::scan(messages);
+    let evidence = comparison_evidence(messages);
     let search = tool_for(tool_names, Capability::Search);
-    match progress.count(Capability::Search) {
+    match evidence.len() {
         0 => search.map(|tool| plan_one(tool, json!({ "query": left }).to_string())),
         1 => search.map(|tool| plan_one(tool, json!({ "query": right }).to_string())),
         _ => Some(AgenticPlan::Final(comparison_answer(
-            messages, task, &left, &right,
+            task, &left, &right, &evidence,
         ))),
     }
 }
@@ -109,20 +109,27 @@ fn remove_bounded_surface(text: &mut String, surface: &str) {
     }
 }
 
-fn comparison_answer(messages: &[ChatMessage], task: &str, left: &str, right: &str) -> String {
+fn comparison_evidence(messages: &[ChatMessage]) -> Vec<String> {
     let current_turn = messages
         .iter()
         .rposition(|message| message.role.eq_ignore_ascii_case("user"))
         .map_or(0, |index| index + 1);
-    let evidence = messages
+    messages
         .iter()
+        .enumerate()
         .skip(current_turn)
-        .filter(|message| message.role.eq_ignore_ascii_case("tool"))
-        .filter_map(|message| {
+        .filter(|(_, message)| message.role.eq_ignore_ascii_case("tool"))
+        .filter(|(index, _)| {
+            super::progress::result_capability(messages, *index) == Some(Capability::Search)
+        })
+        .filter_map(|(_, message)| {
             super::tool_result::normalized_payload(&message.content.plain_text())
                 .filter(|text| !text.trim().is_empty())
         })
-        .collect::<Vec<_>>();
+        .collect()
+}
+
+fn comparison_answer(task: &str, left: &str, right: &str, evidence: &[String]) -> String {
     let language = crate::language::detect(task).slug();
     let intent = if evidence.is_empty() {
         "comparison_decomposed_no_evidence"
