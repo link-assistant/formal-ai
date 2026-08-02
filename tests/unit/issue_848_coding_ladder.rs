@@ -345,34 +345,23 @@ fn identifier_refactor_accepts_agent_cli_absolute_tool_paths() {
         AGENT_READ_RESULT,
     ));
 
-    let edit = only_call(plan_chat_step(&messages, &tools));
+    let rewrite = only_call(plan_chat_step(&messages, &tools));
     assert_eq!(
-        edit.tool, "edit",
-        "a large grounded rewrite must use Agent's compact edit tool"
-    );
-    let edit_arguments = json_arguments(&edit.arguments);
-    assert_eq!(
-        edit_arguments["oldString"], "WEB_SEARCH_RRF_K",
-        "the edit must use the grounded source identifier"
+        rewrite.tool, "bash",
+        "a repeated identifier needs one bounded replace-all operation"
     );
     assert_eq!(
-        edit_arguments["newString"], "WEB_SEARCH_FUSION_K",
-        "the edit must keep the tool call independent of source-file size"
+        json_arguments(&rewrite.arguments)["command"],
+        "sed -i 's/WEB_SEARCH_RRF_K/WEB_SEARCH_FUSION_K/g' -- src/web_search_core.rs",
+        "the operation must be derived only from validated identifiers and path"
     );
-    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
-        "agent_edit",
-        "edit",
-        serde_json::json!({
-            "filePath": ABSOLUTE_PATH,
-            "oldString": "WEB_SEARCH_RRF_K",
-            "newString": "WEB_SEARCH_FUSION_K",
-        })
-        .to_string(),
-    )]));
-    messages.push(ChatMessage::tool_result("agent_edit", "edit", ""));
+    push_result(&mut messages, "agent_rewrite", &rewrite, "");
 
     let verify = only_call(plan_chat_step(&messages, &tools));
-    assert_eq!(verify.tool, "bash", "the absolute edit result must advance");
+    assert_eq!(
+        verify.tool, "bash",
+        "the bounded rewrite result must advance"
+    );
     assert_eq!(
         json_arguments(&verify.arguments)["command"],
         "sha256sum -- src/web_search_core.rs",

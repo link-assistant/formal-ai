@@ -2,114 +2,116 @@ self_ast_census
   target src/agentic_coding/workspace_change.rs
   language rust
   fidelity full_ast
-  byte_len 16407
-  line_count 499
-  content_id source_module_d74bd60539526622
-  symbol_count 22
+  byte_len 17867
+  line_count 540
+  content_id source_module_d2fc97e0a365e870
+  symbol_count 24
   symbols
     struct GroundedRewrite 27 31
     struct CompositeModuleChange 34 39
     function plan_workspace_change_step 41 57
-    function plan_rewrite_step 59 123
-    function plan_composite_step 125 233
-    function grounded_rewrite 235 261
-    function composite_module_change 265 286
-    function insert_registration 288 301
-    function compact_registration_edit 303 327
-    const MAX_SUFFIX_BYTES 304 304
-    function identifier_tokens 329 332
-    function valid_identifier 334 344
-    function rust_paths 346 368
-    function result_for_path 370 394
-    function result_for_edit 396 408
-    function argument_matches_path 410 417
-    function argument_matches 419 422
-    function workspace_path_matches 424 431
-    function result_for_command 433 449
-    function plan_digest_verification 451 472
-    function matching_result 474 495
-    function read_arguments 497 499
+    function plan_rewrite_step 59 147
+    function plan_composite_step 149 257
+    function grounded_rewrite 259 285
+    function composite_module_change 289 310
+    function insert_registration 312 325
+    function compact_registration_edit 327 351
+    const MAX_SUFFIX_BYTES 328 328
+    function repeated_identifier_rewrite_command 353 361
+    function shell_safe_identifier 363 368
+    function identifier_tokens 370 373
+    function valid_identifier 375 385
+    function rust_paths 387 409
+    function result_for_path 411 435
+    function result_for_edit 437 449
+    function argument_matches_path 451 458
+    function argument_matches 460 463
+    function workspace_path_matches 465 472
+    function result_for_command 474 490
+    function plan_digest_verification 492 513
+    function matching_result 515 536
+    function read_arguments 538 540
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 13593
-    named_node_count 2705
+    total_link_count 14562
+    named_node_count 2898
     distinct_node_kinds 75
     node_kinds
       abstract_type 2
-      arguments 253
+      arguments 272
       array_expression 5
       array_type 13
       attribute 3
       attribute_item 3
-      binary_expression 45
-      block 71
+      binary_expression 50
+      block 79
       boolean_literal 6
       break_expression 1
-      call_expression 253
-      char_literal 15
-      closure_expression 28
-      closure_parameters 28
+      call_expression 272
+      char_literal 16
+      closure_expression 29
+      closure_parameters 29
       const_item 1
       continue_expression 1
       crate 4
       doc_comment 8
-      else_clause 3
-      expression_statement 64
+      else_clause 4
+      expression_statement 72
       field_declaration 7
       field_declaration_list 2
-      field_expression 174
-      field_identifier 185
+      field_expression 187
+      field_identifier 198
       field_initializer 4
       field_initializer_list 2
       for_expression 2
-      function_item 19
+      function_item 21
       function_type 1
       generic_function 4
-      generic_type 15
-      identifier 727
-      if_expression 28
+      generic_type 16
+      identifier 781
+      if_expression 34
       index_expression 5
       inner_doc_comment_marker 8
-      integer_literal 8
-      let_condition 4
-      let_declaration 57
+      integer_literal 9
+      let_condition 6
+      let_declaration 58
       line_comment 9
-      macro_invocation 11
+      macro_invocation 13
       match_arm 3
       match_block 1
       match_expression 1
       match_pattern 3
       mutable_specifier 5
-      parameter 46
-      parameters 20
-      primitive_type 41
+      parameter 48
+      parameters 22
+      primitive_type 43
       range_expression 5
-      reference_expression 69
-      reference_type 51
-      return_expression 29
-      scoped_identifier 58
+      reference_expression 75
+      reference_type 53
+      return_expression 32
+      scoped_identifier 60
       scoped_use_list 5
       shorthand_field_initializer 3
       slice_pattern 1
       source_file 1
-      string_content 44
-      string_literal 44
+      string_content 46
+      string_literal 46
       struct_expression 2
       struct_item 2
       super 6
-      token_tree 21
+      token_tree 24
       try_expression 28
       tuple_expression 4
       tuple_pattern 8
-      tuple_struct_pattern 13
+      tuple_struct_pattern 15
       tuple_type 1
-      type_arguments 19
+      type_arguments 20
       type_binding 1
-      type_identifier 60
-      unary_expression 13
+      type_identifier 63
+      unary_expression 16
       use_declaration 12
       use_list 5
       visibility_modifier 1

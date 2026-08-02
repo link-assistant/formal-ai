@@ -2,10 +2,10 @@
 //!
 //! The planner never edits request prose. It compiles a bounded transformation,
 //! reads the client-owned bytes, executes the transformation in memory, applies
-//! a compact edit when the client supports one, and accepts success only after
-//! an exact content-digest observation. The same state machine composes source
-//! creation with a second module-registration edit, so a multi-file request
-//! cannot stop after its first observable effect.
+//! a compact edit or bounded replace-all operation, and accepts success only
+//! after an exact content-digest observation. The same state machine composes
+//! source creation with a second module-registration edit, so a multi-file
+//! request cannot stop after its first observable effect.
 
 use serde_json::{json, Value};
 use sha2::{Digest, Sha256};
@@ -77,21 +77,45 @@ fn plan_rewrite_step(
     };
     let updated = execution.output;
 
-    if let Some(tool) = tool_for(tool_names, Capability::Edit) {
-        if result_for_edit(
-            current_turn,
-            &rewrite.target,
-            &rewrite.pattern,
-            &rewrite.replacement,
-        )
-        .is_none()
-        {
-            return Some(plan_one(
-                tool,
-                edit_arguments(&rewrite.target, &rewrite.pattern, &rewrite.replacement),
-            ));
+    let occurrences = source.match_indices(&rewrite.pattern).count();
+    if occurrences == 1 {
+        if let Some(tool) = tool_for(tool_names, Capability::Edit) {
+            if result_for_edit(
+                current_turn,
+                &rewrite.target,
+                &rewrite.pattern,
+                &rewrite.replacement,
+            )
+            .is_none()
+            {
+                return Some(plan_one(
+                    tool,
+                    edit_arguments(&rewrite.target, &rewrite.pattern, &rewrite.replacement),
+                ));
+            }
+            return plan_digest_verification(
+                task,
+                current_turn,
+                tool_names,
+                &rewrite.target,
+                &updated,
+            );
         }
-        return plan_digest_verification(task, current_turn, tool_names, &rewrite.target, &updated);
+    } else if tool_for(tool_names, Capability::Edit).is_some() {
+        if let Some(command) = repeated_identifier_rewrite_command(rewrite) {
+            if let Some(tool) = tool_for(tool_names, Capability::Run) {
+                if result_for_command(current_turn, &command).is_none() {
+                    return Some(plan_one(tool, json!({"command": command}).to_string()));
+                }
+                return plan_digest_verification(
+                    task,
+                    current_turn,
+                    tool_names,
+                    &rewrite.target,
+                    &updated,
+                );
+            }
+        }
     }
 
     if result_for_path(
@@ -324,6 +348,23 @@ fn compact_registration_edit(source: &str, registration: &str) -> Option<(String
         return Some((suffix.to_owned(), replacement));
     }
     None
+}
+
+fn repeated_identifier_rewrite_command(rewrite: &GroundedRewrite) -> Option<String> {
+    if !shell_safe_identifier(&rewrite.pattern) || !shell_safe_identifier(&rewrite.replacement) {
+        return None;
+    }
+    Some(format!(
+        "sed -i 's/{}/{}/g' -- {}",
+        rewrite.pattern, rewrite.replacement, rewrite.target,
+    ))
+}
+
+fn shell_safe_identifier(identifier: &str) -> bool {
+    !identifier.is_empty()
+        && identifier
+            .chars()
+            .all(|character| character.is_ascii_alphanumeric() || character == '_')
 }
 
 fn identifier_tokens(text: &str) -> impl DoubleEndedIterator<Item = &str> {
