@@ -1,0 +1,10 @@
+{
+  "captured_at": "2026-08-02T01:04:39.016Z",
+  "client": "Claude Code 2.1.220",
+  "surface": "Anthropic Messages API via resumed /recap session",
+  "result": "Create and verify a Rust hello-world program in main.rs. Here is a minimal Rust hello world program: Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).",
+  "word_count": 29,
+  "sentence_count": 2,
+  "metadata_leaked": false,
+  "goal_led": true
+}

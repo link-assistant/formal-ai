@@ -2,9 +2,9 @@ self_ast_census
   target src/protocol/recording.rs
   language rust
   fidelity signature
-  byte_len 5666
+  byte_len 5652
   line_count 167
-  content_id source_module_d000d6bcb888efd1
+  content_id source_module_d363aceee7b57b11
   symbol_count 9
   symbols
     function chat_tool_executions 14 51

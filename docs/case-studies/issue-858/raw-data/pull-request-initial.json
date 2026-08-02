@@ -1,0 +1,13 @@
+{
+  "number": 899,
+  "title": "[WIP] Support for Recap in Claude Code is missing",
+  "state": "OPEN",
+  "isDraft": true,
+  "author": "konard",
+  "baseRefName": "main",
+  "headRefName": "issue-858-1681d21e7d4c",
+  "createdAt": "2026-08-02T00:24:42Z",
+  "updatedAt": "2026-08-02T00:24:43Z",
+  "url": "https://github.com/link-assistant/formal-ai/pull/899",
+  "body": "AI-powered solution draft; Fixes #858; work in progress."
+}

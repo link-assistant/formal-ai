@@ -6,6 +6,7 @@
 //! module, with a role-aware bias so user turns dominate the output when the
 //! caller asks for a short summary or a chat title.
 
+use super::markdown::strip_markdown_noise;
 use super::{
     deformalize, formalize, summarize, to_topic, Statement, SummarizationConfig, SummarizationMode,
 };
@@ -82,6 +83,103 @@ pub fn summarize_dialog(turns: &[DialogTurn], config: &SummarizationConfig) -> S
     }
     let summarized = summarize(&statements, config);
     deformalize(&summarized)
+}
+
+/// Summarize the current dialog task and status as bounded plain prose.
+///
+/// The most recent user turn is the current task. The most recent assistant
+/// turn after it is the current status. Each contributes at most one sentence,
+/// Markdown noise is removed, and the combined result is capped to the caller's
+/// word and sentence budgets. This is intended for compact protocol recaps;
+/// [`summarize_dialog`] remains the configurable general-purpose pipeline.
+#[must_use]
+pub fn summarize_dialog_plain(
+    turns: &[DialogTurn],
+    max_words: usize,
+    max_sentences: usize,
+) -> String {
+    if max_words == 0 || max_sentences == 0 {
+        return String::new();
+    }
+    let Some(user_index) = turns
+        .iter()
+        .rposition(|turn| turn.role.eq_ignore_ascii_case("user"))
+    else {
+        return String::new();
+    };
+    let mut sentences = Vec::with_capacity(max_sentences.min(2));
+    if let Some(goal) = plain_first_sentence(&turns[user_index].text) {
+        sentences.push(goal);
+    }
+    if max_sentences > 1 {
+        let status = turns[user_index + 1..]
+            .iter()
+            .rev()
+            .find(|turn| turn.role.eq_ignore_ascii_case("assistant"))
+            .and_then(|turn| plain_first_sentence(&turn.text));
+        if let Some(status) = status.filter(|status| {
+            sentences
+                .first()
+                .is_none_or(|goal| !goal.eq_ignore_ascii_case(status))
+        }) {
+            sentences.push(status);
+        }
+    }
+    bound_plain_words(&sentences.join(" "), max_words)
+}
+
+fn plain_first_sentence(text: &str) -> Option<String> {
+    let cleaned = strip_markdown_noise(text);
+    let without_markers: String = cleaned
+        .chars()
+        .filter(|character| !matches!(character, '#' | '`' | '*'))
+        .collect();
+    let mut plain = without_markers
+        .split_whitespace()
+        .collect::<Vec<_>>()
+        .join(" ");
+    for separator in [" — ", " – "] {
+        if let Some(index) = plain.find(separator) {
+            plain.truncate(index);
+        }
+    }
+    let mut boundary = None;
+    let mut characters = plain.char_indices().peekable();
+    while let Some((index, character)) = characters.next() {
+        let next_is_boundary = characters
+            .peek()
+            .is_none_or(|(_, next)| next.is_whitespace());
+        if matches!(character, '。' | '！' | '？')
+            || (matches!(character, '.' | '!' | '?') && next_is_boundary)
+        {
+            boundary = Some(index + character.len_utf8());
+            break;
+        }
+    }
+    if let Some(boundary) = boundary {
+        plain.truncate(boundary);
+    }
+    let plain = plain.trim().to_owned();
+    if plain.is_empty() {
+        None
+    } else if plain.ends_with(['.', '!', '?', '。', '！', '？']) {
+        Some(plain)
+    } else {
+        Some(format!("{plain}."))
+    }
+}
+
+fn bound_plain_words(text: &str, max_words: usize) -> String {
+    let words: Vec<&str> = text.split_whitespace().collect();
+    if words.len() <= max_words {
+        return text.to_owned();
+    }
+    let mut bounded = words[..max_words].join(" ");
+    while bounded.ends_with(['.', ',', ';', ':', '!', '?', '。', '！', '？']) {
+        bounded.pop();
+    }
+    bounded.push('.');
+    bounded
 }
 
 /// Generate a 1–5 word chat title from a dialog.
