@@ -1,4 +1,139 @@
 meanings
+  relative-meta-logic
+    defined-by term
+    lexeme en
+      surface
+        text "relative meta logic"
+  relocate
+    defined-by word_surface
+    lexeme en
+      surface
+        text "relocate"
+  remix
+    defined-by concept
+    lexeme en
+      surface
+        text "remix"
+  remix-icon
+    defined-by concept
+    lexeme en
+      surface
+        text "remix icon"
+  remove_punctuation
+    defined-by operation
+    lexeme en
+      surface
+        text "remove punctuation"
+  remove_text
+    defined-by operation
+    lexeme en
+      surface
+        text "remove text"
+  render
+    defined-by word_surface
+    lexeme en
+      surface
+        text "render"
+  rendered
+    defined-by word_surface
+    lexeme en
+      surface
+        text "rendered"
+  replace_everywhere
+    defined-by concept
+    lexeme en
+      surface
+        text "replace everywhere"
+  repo
+    defined-by word_surface
+    lexeme en
+      surface
+        text "repo"
+  repositories
+    defined-by word_surface
+    lexeme en
+      surface
+        text "repositories"
+  requirement_contradiction
+    defined-by intent
+    lexeme en
+      surface
+        text "requirement contradiction"
+  reserved-role
+    defined-by concept
+    lexeme en
+      surface
+        text "reserved role"
+  response_agent_procedure_executed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure executed en"
+  response_agent_procedure_executed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure executed hi"
+  response_agent_procedure_executed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure executed ru"
+  response_agent_procedure_executed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure executed zh"
+  response_agent_procedure_execution_failed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure execution failed en"
+  response_agent_procedure_execution_failed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure execution failed hi"
+  response_agent_procedure_execution_failed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure execution failed ru"
+  response_agent_procedure_execution_failed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure execution failed zh"
+  response_agent_procedure_readback_unavailable_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure readback unavailable en"
+  response_agent_procedure_readback_unavailable_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure readback unavailable hi"
+  response_agent_procedure_readback_unavailable_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure readback unavailable ru"
+  response_agent_procedure_readback_unavailable_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure readback unavailable zh"
+  response_agent_procedure_verification_failed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verification failed en"
+  response_agent_procedure_verification_failed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verification failed hi"
   response_agent_procedure_verification_failed_ru
     defined-by response_template
     lexeme en
@@ -1259,138 +1394,3 @@ meanings
     lexeme en
       surface
         text "response external benchmark swe slice write error en"
-  response_external_benchmark_swe_start_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe start error en"
-  response_external_benchmark_swe_unavailable_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe unavailable en"
-  response_external_benchmark_unavailable_observation_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark unavailable observation en"
-  response_fact_check_arithmetic_counterexample_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check arithmetic counterexample en"
-  response_fact_check_arithmetic_counterexample_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check arithmetic counterexample hi"
-  response_fact_check_arithmetic_counterexample_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check arithmetic counterexample ru"
-  response_fact_check_arithmetic_counterexample_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check arithmetic counterexample zh"
-  response_fact_check_current_dialogue_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check current dialogue en"
-  response_fact_check_current_dialogue_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check current dialogue hi"
-  response_fact_check_current_dialogue_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check current dialogue ru"
-  response_fact_check_current_dialogue_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check current dialogue zh"
-  response_fact_check_no_statements_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check no statements en"
-  response_fact_check_no_statements_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check no statements hi"
-  response_fact_check_no_statements_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check no statements ru"
-  response_fact_check_no_statements_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check no statements zh"
-  response_fact_check_statement_counterexample_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check statement counterexample en"
-  response_fact_check_statement_counterexample_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check statement counterexample hi"
-  response_fact_check_statement_counterexample_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check statement counterexample ru"
-  response_fact_check_statement_counterexample_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check statement counterexample zh"
-  response_fact_check_statement_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check statement en"
-  response_fact_check_statement_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check statement hi"
-  response_fact_check_statement_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check statement ru"
-  response_fact_check_statement_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check statement zh"
-  response_farewell_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response farewell en"
-  response_farewell_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response farewell hi"
-  response_farewell_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response farewell ru"
-  response_farewell_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response farewell zh"

@@ -1,4 +1,129 @@
 meanings
+  npx
+    defined-by token
+    lexeme en
+      surface
+        text "npx"
+  number_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "number lines"
+  official-docs
+    defined-by source_kind
+    lexeme en
+      surface
+        text "official docs"
+  official-repository
+    defined-by source_kind
+    lexeme en
+      surface
+        text "official repository"
+  olleh
+    defined-by concept
+    lexeme en
+      surface
+        text "olleh"
+  one-paragraph
+    defined-by concept
+    lexeme en
+      surface
+        text "one paragraph"
+  one_paragraph
+    defined-by concept
+    lexeme en
+      surface
+        text "one paragraph"
+  one_path
+    defined-by concept
+    lexeme en
+      surface
+        text "one path"
+  open_textbook
+    defined-by kind
+    lexeme en
+      surface
+        text "open textbook"
+  openai
+    defined-by word_surface
+    lexeme en
+      surface
+        text "openai"
+  orchestration_correction_prompt
+    defined-by intent
+    lexeme en
+      surface
+        text "orchestration correction prompt"
+  orchestration_cross_agent_denial
+    defined-by intent
+    lexeme en
+      surface
+        text "orchestration cross agent denial"
+  orders
+    defined-by word_surface
+    lexeme en
+      surface
+        text "orders"
+  original_journalism
+    defined-by kind
+    lexeme en
+      surface
+        text "original journalism"
+  originality
+    defined-by word_surface
+    lexeme en
+      surface
+        text "originality"
+  outdent
+    defined-by concept
+    lexeme en
+      surface
+        text "outdent"
+  outdent_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "outdent lines"
+  owlbear
+    defined-by word_surface
+    lexeme en
+      surface
+        text "owlbear"
+  pack
+    defined-by word_surface
+    lexeme en
+      surface
+        text "pack"
+  package-management
+    defined-by category
+    lexeme en
+      surface
+        text "package management"
+  page_title
+    defined-by task
+    lexeme en
+      surface
+        text "page title"
+  paper
+    defined-by word_surface
+    lexeme en
+      surface
+        text "paper"
+  pascal
+    defined-by concept
+    lexeme en
+      surface
+        text "pascal"
+  pascal_case
+    defined-by operation
+    lexeme en
+      surface
+        text "pascal case"
+  passage
+    defined-by word_surface
+    lexeme en
+      surface
+        text "passage"
   path_argument
     defined-by operation
     lexeme en
@@ -1249,6 +1374,11 @@ meanings
     lexeme en
       surface
         text "react chat ui"
+  read
+    defined-by concept
+    lexeme en
+      surface
+        text "read"
   read_local_file
     defined-by name
     lexeme en
@@ -1264,133 +1394,3 @@ meanings
     lexeme en
       surface
         text "referrers"
-  relative-meta-logic
-    defined-by term
-    lexeme en
-      surface
-        text "relative meta logic"
-  relocate
-    defined-by word_surface
-    lexeme en
-      surface
-        text "relocate"
-  remix
-    defined-by concept
-    lexeme en
-      surface
-        text "remix"
-  remix-icon
-    defined-by concept
-    lexeme en
-      surface
-        text "remix icon"
-  remove_punctuation
-    defined-by operation
-    lexeme en
-      surface
-        text "remove punctuation"
-  remove_text
-    defined-by operation
-    lexeme en
-      surface
-        text "remove text"
-  render
-    defined-by word_surface
-    lexeme en
-      surface
-        text "render"
-  rendered
-    defined-by word_surface
-    lexeme en
-      surface
-        text "rendered"
-  repo
-    defined-by word_surface
-    lexeme en
-      surface
-        text "repo"
-  repositories
-    defined-by word_surface
-    lexeme en
-      surface
-        text "repositories"
-  requirement_contradiction
-    defined-by intent
-    lexeme en
-      surface
-        text "requirement contradiction"
-  reserved-role
-    defined-by concept
-    lexeme en
-      surface
-        text "reserved role"
-  response_agent_procedure_executed_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure executed en"
-  response_agent_procedure_executed_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure executed hi"
-  response_agent_procedure_executed_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure executed ru"
-  response_agent_procedure_executed_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure executed zh"
-  response_agent_procedure_execution_failed_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure execution failed en"
-  response_agent_procedure_execution_failed_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure execution failed hi"
-  response_agent_procedure_execution_failed_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure execution failed ru"
-  response_agent_procedure_execution_failed_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure execution failed zh"
-  response_agent_procedure_readback_unavailable_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure readback unavailable en"
-  response_agent_procedure_readback_unavailable_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure readback unavailable hi"
-  response_agent_procedure_readback_unavailable_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure readback unavailable ru"
-  response_agent_procedure_readback_unavailable_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure readback unavailable zh"
-  response_agent_procedure_verification_failed_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure verification failed en"
-  response_agent_procedure_verification_failed_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent procedure verification failed hi"

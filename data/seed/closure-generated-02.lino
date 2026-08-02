@@ -1,4 +1,49 @@
 meanings
+  external_benchmark_swe_report_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe report error"
+  external_benchmark_swe_slice_write_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe slice write error"
+  external_benchmark_swe_start_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe start error"
+  external_benchmark_swe_unavailable
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe unavailable"
+  external_benchmark_unavailable_observation
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark unavailable observation"
+  external_trusted
+    defined-by concept
+    lexeme en
+      surface
+        text "external trusted"
+  extract_email
+    defined-by operation
+    lexeme en
+      surface
+        text "extract email"
+  extract_number
+    defined-by operation
+    lexeme en
+      surface
+        text "extract number"
+  extract_url
+    defined-by operation
+    lexeme en
+      surface
+        text "extract url"
   fabricated
     defined-by word_surface
     lexeme en
@@ -749,6 +794,11 @@ meanings
     lexeme en
       surface
         text "kupi slona"
+  label
+    defined-by concept
+    lexeme en
+      surface
+        text "label"
   language-detection
     defined-by category
     lexeme en
@@ -1014,6 +1064,11 @@ meanings
     lexeme en
       surface
         text "list and pack"
+  list_facts_about
+    defined-by concept
+    lexeme en
+      surface
+        text "list facts about"
   list_files
     defined-by task
     lexeme en
@@ -1034,6 +1089,11 @@ meanings
     lexeme en
       surface
         text "list files reverse sort"
+  list_week_events_by_topic
+    defined-by concept
+    lexeme en
+      surface
+        text "list week events by topic"
   local
     defined-by concept
     lexeme en
@@ -1124,11 +1184,21 @@ meanings
     lexeme en
       surface
         text "manuscript"
+  map_matches
+    defined-by concept
+    lexeme en
+      surface
+        text "map matches"
   marie_curie
     defined-by concept
     lexeme en
       surface
         text "marie curie"
+  match
+    defined-by concept
+    lexeme en
+      surface
+        text "match"
   material
     defined-by concept
     lexeme en
@@ -1164,6 +1234,46 @@ meanings
     lexeme en
       surface
         text "memory export filename"
+  memory_program_compilation_gap
+    defined-by intent
+    lexeme en
+      surface
+        text "memory program compilation gap"
+  memory_program_complete
+    defined-by intent
+    lexeme en
+      surface
+        text "memory program complete"
+  memory_program_destructive_refused
+    defined-by intent
+    lexeme en
+      surface
+        text "memory program destructive refused"
+  memory_program_interpreter_gap
+    defined-by intent
+    lexeme en
+      surface
+        text "memory program interpreter gap"
+  memory_program_iteration_limit
+    defined-by intent
+    lexeme en
+      surface
+        text "memory program iteration limit"
+  memory_program_match_limit
+    defined-by intent
+    lexeme en
+      surface
+        text "memory program match limit"
+  memory_program_permission_refused
+    defined-by intent
+    lexeme en
+      surface
+        text "memory program permission refused"
+  memory_query_unrecognized
+    defined-by intent
+    lexeme en
+      surface
+        text "memory query unrecognized"
   memory_root_header
     defined-by field
     lexeme en
@@ -1189,6 +1299,16 @@ meanings
     lexeme en
       surface
         text "misinformation"
+  missing_english_label_todo
+    defined-by concept
+    lexeme en
+      surface
+        text "missing english label todo"
+  missing_russian_label_todo
+    defined-by concept
+    lexeme en
+      surface
+        text "missing russian label todo"
   mkdir
     defined-by concept
     lexeme en
@@ -1254,6 +1374,11 @@ meanings
     lexeme en
       surface
         text "normalize"
+  normalize_labels_fixpoint
+    defined-by concept
+    lexeme en
+      surface
+        text "normalize labels fixpoint"
   normalize_whitespace
     defined-by operation
     lexeme en
@@ -1269,128 +1394,3 @@ meanings
     lexeme en
       surface
         text "npm"
-  npx
-    defined-by token
-    lexeme en
-      surface
-        text "npx"
-  number_lines
-    defined-by operation
-    lexeme en
-      surface
-        text "number lines"
-  official-docs
-    defined-by source_kind
-    lexeme en
-      surface
-        text "official docs"
-  official-repository
-    defined-by source_kind
-    lexeme en
-      surface
-        text "official repository"
-  olleh
-    defined-by concept
-    lexeme en
-      surface
-        text "olleh"
-  one-paragraph
-    defined-by concept
-    lexeme en
-      surface
-        text "one paragraph"
-  one_paragraph
-    defined-by concept
-    lexeme en
-      surface
-        text "one paragraph"
-  one_path
-    defined-by concept
-    lexeme en
-      surface
-        text "one path"
-  open_textbook
-    defined-by kind
-    lexeme en
-      surface
-        text "open textbook"
-  openai
-    defined-by word_surface
-    lexeme en
-      surface
-        text "openai"
-  orchestration_correction_prompt
-    defined-by intent
-    lexeme en
-      surface
-        text "orchestration correction prompt"
-  orchestration_cross_agent_denial
-    defined-by intent
-    lexeme en
-      surface
-        text "orchestration cross agent denial"
-  orders
-    defined-by word_surface
-    lexeme en
-      surface
-        text "orders"
-  original_journalism
-    defined-by kind
-    lexeme en
-      surface
-        text "original journalism"
-  originality
-    defined-by word_surface
-    lexeme en
-      surface
-        text "originality"
-  outdent
-    defined-by concept
-    lexeme en
-      surface
-        text "outdent"
-  outdent_lines
-    defined-by operation
-    lexeme en
-      surface
-        text "outdent lines"
-  owlbear
-    defined-by word_surface
-    lexeme en
-      surface
-        text "owlbear"
-  pack
-    defined-by word_surface
-    lexeme en
-      surface
-        text "pack"
-  package-management
-    defined-by category
-    lexeme en
-      surface
-        text "package management"
-  page_title
-    defined-by task
-    lexeme en
-      surface
-        text "page title"
-  paper
-    defined-by word_surface
-    lexeme en
-      surface
-        text "paper"
-  pascal
-    defined-by concept
-    lexeme en
-      surface
-        text "pascal"
-  pascal_case
-    defined-by operation
-    lexeme en
-      surface
-        text "pascal case"
-  passage
-    defined-by word_surface
-    lexeme en
-      surface
-        text "passage"

@@ -309,6 +309,11 @@ meanings
     lexeme en
       surface
         text "archive"
+  archive_duplicate_facts
+    defined-by concept
+    lexeme en
+      surface
+        text "archive duplicate facts"
   archive_round_trip
     defined-by task
     lexeme en
@@ -409,6 +414,11 @@ meanings
     lexeme en
       surface
         text "bootstrap icons"
+  bounded_iterate_to_fixpoint
+    defined-by concept
+    lexeme en
+      surface
+        text "bounded iterate to fixpoint"
   brainstorm_names
     defined-by intent
     lexeme en
@@ -854,6 +864,16 @@ meanings
     lexeme en
       surface
         text "context signal processing"
+  contributed_fact_rename
+    defined-by concept
+    lexeme en
+      surface
+        text "contributed fact rename"
+  contributor_fact_count_summary
+    defined-by concept
+    lexeme en
+      surface
+        text "contributor fact count summary"
   conversation-history
     defined-by isolation_mode
     lexeme en
@@ -884,6 +904,11 @@ meanings
     lexeme en
       surface
         text "copy"
+  copy_matches_to_collection
+    defined-by concept
+    lexeme en
+      surface
+        text "copy matches to collection"
   coreference_program_artifact
     defined-by intent
     lexeme en
@@ -979,6 +1004,11 @@ meanings
     lexeme en
       surface
         text "customers"
+  dangling_meaning_review
+    defined-by concept
+    lexeme en
+      surface
+        text "dangling meaning review"
   data-format
     defined-by category
     lexeme en
@@ -1024,6 +1054,11 @@ meanings
     lexeme en
       surface
         text "delete"
+  delete_with_retraction
+    defined-by concept
+    lexeme en
+      surface
+        text "delete with retraction"
   demo_memory
     defined-by value
     lexeme en
@@ -1039,6 +1074,11 @@ meanings
     lexeme en
       surface
         text "desktop to cli"
+  destructive
+    defined-by concept
+    lexeme en
+      surface
+        text "destructive"
   detailed
     defined-by concept
     lexeme en
@@ -1204,6 +1244,11 @@ meanings
     lexeme en
       surface
         text "eval js"
+  events
+    defined-by concept
+    lexeme en
+      surface
+        text "events"
   exact_title
     defined-by coverage_group
     lexeme en
@@ -1349,48 +1394,3 @@ meanings
     lexeme en
       surface
         text "external benchmark swe remove report error"
-  external_benchmark_swe_report_error
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark swe report error"
-  external_benchmark_swe_slice_write_error
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark swe slice write error"
-  external_benchmark_swe_start_error
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark swe start error"
-  external_benchmark_swe_unavailable
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark swe unavailable"
-  external_benchmark_unavailable_observation
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark unavailable observation"
-  external_trusted
-    defined-by concept
-    lexeme en
-      surface
-        text "external trusted"
-  extract_email
-    defined-by operation
-    lexeme en
-      surface
-        text "extract email"
-  extract_number
-    defined-by operation
-    lexeme en
-      surface
-        text "extract number"
-  extract_url
-    defined-by operation
-    lexeme en
-      surface
-        text "extract url"

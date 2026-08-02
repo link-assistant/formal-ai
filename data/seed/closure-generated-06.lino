@@ -1,4 +1,319 @@
 meanings
+  response_local_search_type_file_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search type file en"
+  response_local_search_type_file_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search type file hi"
+  response_local_search_type_file_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search type file ru"
+  response_local_search_type_file_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search type file zh"
+  response_mcp_instructions_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp instructions en"
+  response_mcp_instructions_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp instructions hi"
+  response_mcp_instructions_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp instructions ru"
+  response_mcp_instructions_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp instructions zh"
+  response_mcp_prompt_description_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp prompt description en"
+  response_mcp_prompt_description_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp prompt description hi"
+  response_mcp_prompt_description_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp prompt description ru"
+  response_mcp_prompt_description_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp prompt description zh"
+  response_mcp_tool_description_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp tool description en"
+  response_mcp_tool_description_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp tool description hi"
+  response_mcp_tool_description_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp tool description ru"
+  response_mcp_tool_description_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp tool description zh"
+  response_memory_program_compilation_gap_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program compilation gap en"
+  response_memory_program_compilation_gap_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program compilation gap es"
+  response_memory_program_compilation_gap_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program compilation gap hi"
+  response_memory_program_compilation_gap_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program compilation gap ru"
+  response_memory_program_compilation_gap_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program compilation gap zh"
+  response_memory_program_complete_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program complete en"
+  response_memory_program_complete_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program complete es"
+  response_memory_program_complete_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program complete hi"
+  response_memory_program_complete_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program complete ru"
+  response_memory_program_complete_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program complete zh"
+  response_memory_program_destructive_refused_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program destructive refused en"
+  response_memory_program_destructive_refused_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program destructive refused es"
+  response_memory_program_destructive_refused_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program destructive refused hi"
+  response_memory_program_destructive_refused_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program destructive refused ru"
+  response_memory_program_destructive_refused_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program destructive refused zh"
+  response_memory_program_interpreter_gap_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program interpreter gap en"
+  response_memory_program_interpreter_gap_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program interpreter gap es"
+  response_memory_program_interpreter_gap_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program interpreter gap hi"
+  response_memory_program_interpreter_gap_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program interpreter gap ru"
+  response_memory_program_interpreter_gap_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program interpreter gap zh"
+  response_memory_program_iteration_limit_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program iteration limit en"
+  response_memory_program_iteration_limit_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program iteration limit es"
+  response_memory_program_iteration_limit_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program iteration limit hi"
+  response_memory_program_iteration_limit_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program iteration limit ru"
+  response_memory_program_iteration_limit_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program iteration limit zh"
+  response_memory_program_match_limit_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program match limit en"
+  response_memory_program_match_limit_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program match limit es"
+  response_memory_program_match_limit_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program match limit hi"
+  response_memory_program_match_limit_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program match limit ru"
+  response_memory_program_match_limit_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program match limit zh"
+  response_memory_program_permission_refused_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program permission refused en"
+  response_memory_program_permission_refused_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program permission refused es"
+  response_memory_program_permission_refused_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program permission refused hi"
+  response_memory_program_permission_refused_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program permission refused ru"
+  response_memory_program_permission_refused_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program permission refused zh"
+  response_memory_query_unrecognized_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory query unrecognized en"
+  response_meta_explanation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response meta explanation en"
+  response_meta_explanation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response meta explanation hi"
+  response_meta_explanation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response meta explanation ru"
+  response_meta_explanation_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response meta explanation zh"
+  response_orchestration_correction_prompt_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response orchestration correction prompt en"
+  response_orchestration_correction_prompt_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response orchestration correction prompt hi"
+  response_orchestration_correction_prompt_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response orchestration correction prompt ru"
+  response_orchestration_correction_prompt_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response orchestration correction prompt zh"
+  response_orchestration_cross_agent_denial_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response orchestration cross agent denial en"
+  response_orchestration_cross_agent_denial_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response orchestration cross agent denial hi"
+  response_orchestration_cross_agent_denial_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response orchestration cross agent denial ru"
   response_orchestration_cross_agent_denial_zh
     defined-by response_template
     lexeme en
@@ -904,6 +1219,11 @@ meanings
     lexeme en
       surface
         text "restore"
+  retract_contributed_facts
+    defined-by concept
+    lexeme en
+      surface
+        text "retract contributed facts"
   reverse_lines
     defined-by operation
     lexeme en
@@ -1059,6 +1379,11 @@ meanings
     lexeme en
       surface
         text "sentence case"
+  sequential_compose
+    defined-by concept
+    lexeme en
+      surface
+        text "sequential compose"
   shared_dialog_capture_parse_failed
     defined-by intent
     lexeme en
@@ -1069,328 +1394,3 @@ meanings
     lexeme en
       surface
         text "shared dialog capture unsupported"
-  shell-helpers
-    defined-by category
-    lexeme en
-      surface
-        text "shell helpers"
-  short
-    defined-by word_surface
-    lexeme en
-      surface
-        text "short"
-  short_rule_list
-    defined-by coverage_group
-    lexeme en
-      surface
-        text "short rule list"
-  should
-    defined-by concept
-    lexeme en
-      surface
-        text "should"
-  signal-processing
-    defined-by category
-    lexeme en
-      surface
-        text "signal processing"
-  skill_gap
-    defined-by intent
-    lexeme en
-      surface
-        text "skill gap"
-  skill_gap_name
-    defined-by intent
-    lexeme en
-      surface
-        text "skill gap name"
-  slang-dictionary
-    defined-by source_kind
-    lexeme en
-      surface
-        text "slang dictionary"
-  snake
-    defined-by concept
-    lexeme en
-      surface
-        text "snake"
-  snake_case
-    defined-by phrase
-    lexeme en
-      surface
-        text "snake case"
-  software-design
-    defined-by category
-    lexeme en
-      surface
-        text "software design"
-  software_docs
-    defined-by kind
-    lexeme en
-      surface
-        text "software docs"
-  software_project_implementation
-    defined-by concept
-    lexeme en
-      surface
-        text "software project implementation"
-  software_project_plan
-    defined-by concept
-    lexeme en
-      surface
-        text "software project plan"
-  solution
-    defined-by word_surface
-    lexeme en
-      surface
-        text "solution"
-  sort_lines
-    defined-by operation
-    lexeme en
-      surface
-        text "sort lines"
-  sort_words
-    defined-by operation
-    lexeme en
-      surface
-        text "sort words"
-  sqrt
-    defined-by word_surface
-    lexeme en
-      surface
-        text "sqrt"
-  ssh
-    defined-by token
-    lexeme en
-      surface
-        text "ssh"
-  stackexchange
-    defined-by source
-    lexeme en
-      surface
-        text "stackexchange"
-  standard
-    defined-by concept
-    lexeme en
-      surface
-        text "standard"
-  stat
-    defined-by concept
-    lexeme en
-      surface
-        text "stat"
-  statement
-    defined-by word_surface
-    lexeme en
-      surface
-        text "statement"
-  statement_audit_capture_field
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit capture field"
-  statement_audit_claim_predicate
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit claim predicate"
-  statement_audit_claim_subject
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit claim subject"
-  statement_audit_invalid_json
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit invalid json"
-  statement_audit_invalid_temperature
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit invalid temperature"
-  statement_audit_nonempty
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit nonempty"
-  statement_audit_selector_exclusive
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit selector exclusive"
-  statement_audit_selector_required
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit selector required"
-  statement_audit_strength_range
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit strength range"
-  statement_audit_temperature_range
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit temperature range"
-  statement_audit_unknown_stance
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit unknown stance"
-  statement_audit_unknown_tier
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit unknown tier"
-  stdout
-    defined-by word_surface
-    lexeme en
-      surface
-        text "stdout"
-  string
-    defined-by word_surface
-    lexeme en
-      surface
-        text "string"
-  strip_empty_lines
-    defined-by operation
-    lexeme en
-      surface
-        text "strip empty lines"
-  struct
-    defined-by word_surface
-    lexeme en
-      surface
-        text "struct"
-  structured-document
-    defined-by isolation_mode
-    lexeme en
-      surface
-        text "structured document"
-  structured-knowledge
-    defined-by category
-    lexeme en
-      surface
-        text "structured knowledge"
-  structured_knowledge
-    defined-by kind
-    lexeme en
-      surface
-        text "structured knowledge"
-  submission
-    defined-by word_surface
-    lexeme en
-      surface
-        text "submission"
-  submit
-    defined-by word_surface
-    lexeme en
-      surface
-        text "submit"
-  submit_form
-    defined-by task
-    lexeme en
-      surface
-        text "submit form"
-  substitute
-    defined-by word_surface
-    lexeme en
-      surface
-        text "substitute"
-  sudo
-    defined-by token
-    lexeme en
-      surface
-        text "sudo"
-  sum_to_ten
-    defined-by task
-    lexeme en
-      surface
-        text "sum to ten"
-  summarization_disputed_statement
-    defined-by intent
-    lexeme en
-      surface
-        text "summarization disputed statement"
-  summarization_evidence_denied
-    defined-by intent
-    lexeme en
-      surface
-        text "summarization evidence denied"
-  summarization_evidence_summary
-    defined-by intent
-    lexeme en
-      surface
-        text "summarization evidence summary"
-  summarize_conversation
-    defined-by name
-    lexeme en
-      surface
-        text "summarize conversation"
-  supplied_file_contents
-    defined-by intent
-    lexeme en
-      surface
-        text "supplied file contents"
-  supplied_file_first_line
-    defined-by intent
-    lexeme en
-      surface
-        text "supplied file first line"
-  supported_languages
-    defined-by field
-    lexeme en
-      surface
-        text "supported languages"
-  symbolic-ai
-    defined-by category
-    lexeme en
-      surface
-        text "symbolic ai"
-  tabler
-    defined-by concept
-    lexeme en
-      surface
-        text "tabler"
-  tabler-icons
-    defined-by concept
-    lexeme en
-      surface
-        text "tabler icons"
-  tail
-    defined-by token
-    lexeme en
-      surface
-        text "tail"
-  tar
-    defined-by token
-    lexeme en
-      surface
-        text "tar"
-  task_atomicity_no
-    defined-by intent
-    lexeme en
-      surface
-        text "task atomicity no"
-  task_atomicity_yes
-    defined-by intent
-    lexeme en
-      surface
-        text "task atomicity yes"
-  task_decomposition_atomic
-    defined-by intent
-    lexeme en
-      surface
-        text "task decomposition atomic"
-  task_decomposition_depth_bound
-    defined-by intent
-    lexeme en
-      surface
-        text "task decomposition depth bound"
-  task_decomposition_depth_marker
-    defined-by intent
-    lexeme en
-      surface
-        text "task decomposition depth marker"

@@ -1,4 +1,139 @@
 meanings
+  response_external_benchmark_swe_start_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe start error en"
+  response_external_benchmark_swe_unavailable_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe unavailable en"
+  response_external_benchmark_unavailable_observation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark unavailable observation en"
+  response_fact_check_arithmetic_counterexample_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check arithmetic counterexample en"
+  response_fact_check_arithmetic_counterexample_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check arithmetic counterexample hi"
+  response_fact_check_arithmetic_counterexample_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check arithmetic counterexample ru"
+  response_fact_check_arithmetic_counterexample_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check arithmetic counterexample zh"
+  response_fact_check_current_dialogue_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check current dialogue en"
+  response_fact_check_current_dialogue_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check current dialogue hi"
+  response_fact_check_current_dialogue_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check current dialogue ru"
+  response_fact_check_current_dialogue_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check current dialogue zh"
+  response_fact_check_no_statements_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check no statements en"
+  response_fact_check_no_statements_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check no statements hi"
+  response_fact_check_no_statements_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check no statements ru"
+  response_fact_check_no_statements_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check no statements zh"
+  response_fact_check_statement_counterexample_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement counterexample en"
+  response_fact_check_statement_counterexample_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement counterexample hi"
+  response_fact_check_statement_counterexample_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement counterexample ru"
+  response_fact_check_statement_counterexample_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement counterexample zh"
+  response_fact_check_statement_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement en"
+  response_fact_check_statement_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement hi"
+  response_fact_check_statement_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement ru"
+  response_fact_check_statement_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement zh"
+  response_farewell_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response farewell en"
+  response_farewell_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response farewell hi"
+  response_farewell_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response farewell ru"
+  response_farewell_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response farewell zh"
   response_general_plan_command_capture_action_en
     defined-by response_template
     lexeme en
@@ -1259,138 +1394,3 @@ meanings
     lexeme en
       surface
         text "response local search type directory zh"
-  response_local_search_type_file_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search type file en"
-  response_local_search_type_file_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search type file hi"
-  response_local_search_type_file_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search type file ru"
-  response_local_search_type_file_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search type file zh"
-  response_mcp_instructions_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response mcp instructions en"
-  response_mcp_instructions_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response mcp instructions hi"
-  response_mcp_instructions_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response mcp instructions ru"
-  response_mcp_instructions_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response mcp instructions zh"
-  response_mcp_prompt_description_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response mcp prompt description en"
-  response_mcp_prompt_description_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response mcp prompt description hi"
-  response_mcp_prompt_description_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response mcp prompt description ru"
-  response_mcp_prompt_description_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response mcp prompt description zh"
-  response_mcp_tool_description_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response mcp tool description en"
-  response_mcp_tool_description_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response mcp tool description hi"
-  response_mcp_tool_description_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response mcp tool description ru"
-  response_mcp_tool_description_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response mcp tool description zh"
-  response_meta_explanation_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response meta explanation en"
-  response_meta_explanation_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response meta explanation hi"
-  response_meta_explanation_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response meta explanation ru"
-  response_meta_explanation_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response meta explanation zh"
-  response_orchestration_correction_prompt_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response orchestration correction prompt en"
-  response_orchestration_correction_prompt_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response orchestration correction prompt hi"
-  response_orchestration_correction_prompt_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response orchestration correction prompt ru"
-  response_orchestration_correction_prompt_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response orchestration correction prompt zh"
-  response_orchestration_cross_agent_denial_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response orchestration cross agent denial en"
-  response_orchestration_cross_agent_denial_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response orchestration cross agent denial hi"
-  response_orchestration_cross_agent_denial_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response orchestration cross agent denial ru"

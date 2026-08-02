@@ -1,0 +1,36 @@
+self_ast_census
+  target src/memory_query_language/graphql.rs
+  language rust
+  fidelity signature
+  byte_len 15940
+  line_count 449
+  content_id source_module_c5c0e86cf2128395
+  symbol_count 27
+  symbols
+    enum GraphValue 16 21
+    struct Selection 24 29
+    function parse_graphql 31 55
+    function consume_operation_header 57 75
+    function parse_selection 77 106
+    function parse_named_values 108 122
+    function parse_graph_value 124 156
+    function parse_memory_read 158 170
+    function parse_memory_aggregate 172 199
+    function parse_create 201 207
+    function parse_update 209 223
+    function parse_delete 225 232
+    function apply_common_arguments 234 255
+    function graph_filter 257 303
+    function graph_operator 305 321
+    function graph_order 323 345
+    function graph_assignments 347 354
+    function selection_projection 356 362
+    function graph_fields 364 369
+    function graph_field 371 373
+    function graph_scalar 375 386
+    function graph_text 388 393
+    function graph_usize 395 403
+    function aggregate_function 405 420
+    function required_object 422 435
+    function find_argument 437 445
+    function graph_optional_text 447 449
