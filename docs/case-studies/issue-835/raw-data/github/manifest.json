@@ -1,7 +1,7 @@
 {
   "repo": "link-assistant/formal-ai",
   "generated_by": "formal-ai github-logs collect",
-  "generated_at_unix_seconds": 1785679702,
+  "generated_at_unix_seconds": 1785684330,
   "captures": [
     {
       "kind": "repo",
@@ -50,7 +50,7 @@
         "--json",
         "number,title,state,createdAt,updatedAt,url,author,headRefName,baseRefName,isDraft"
       ],
-      "bytes": 4093
+      "bytes": 4054
     },
     {
       "kind": "recent_runs",
@@ -68,7 +68,7 @@
         "--json",
         "databaseId,workflowName,status,conclusion,createdAt,updatedAt,headSha,headBranch,event,url"
       ],
-      "bytes": 735
+      "bytes": 1804
     },
     {
       "kind": "issue",
@@ -109,7 +109,7 @@
         "--json",
         "number,title,body,author,state,isDraft,headRefName,baseRefName,commits,comments,reviews,reviewDecision,mergeStateStatus,createdAt,updatedAt,url"
       ],
-      "bytes": 1434
+      "bytes": 6843
     },
     {
       "kind": "pull_conversation_comments",
@@ -155,7 +155,7 @@
         "--repo",
         "link-assistant/formal-ai"
       ],
-      "bytes": 552
+      "bytes": 411768
     }
   ]
 }
