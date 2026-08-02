@@ -327,4 +327,3 @@
 {"type":"log","level":"info","timestamp":"2026-08-02T14:17:01.069Z","service":"state","key":"/tmp/formal-ai-issue-835.LEyBFs","message":"state disposal completed"}
 
 {"type":"log","level":"info","timestamp":"2026-08-02T14:17:01.070Z","service":"default","hasError":false,"uptimeSeconds":6,"message":"Agent exiting"}
-
