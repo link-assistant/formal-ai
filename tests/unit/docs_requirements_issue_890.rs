@@ -31,7 +31,7 @@ fn issue_890_case_study_and_release_metadata_are_traceable() {
             "Issue #890 extends that meta-language path",
             "src/proof_program.rs",
             "one proof formalizer plus one renderer per target",
-            "formal_ai_worker_05.js",
+            "formal_ai_worker_24.js",
         ],
     );
     assert_contains_all(

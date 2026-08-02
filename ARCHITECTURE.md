@@ -956,7 +956,7 @@ program. Each program checks the witness at runtime before printing it. This
 keeps the architecture at one proof formalizer plus one renderer per target,
 never one implementation per natural-language/programming-language pair. The
 browser mirror follows the same boundary in
-`src/web/worker/formal_ai_worker_05.js`, while worker 13 supplies the
+`src/web/worker/formal_ai_worker_24.js`, while worker 13 supplies the
 script-aware target-language alias match used by Chinese requests.
 
 The Rust pipeline is the canonical implementation. The browser worker
