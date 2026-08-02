@@ -106,7 +106,7 @@ fn global_requirements_and_release_metadata_record_issue_858() {
         .filter_map(|path| fs::read_to_string(path).ok())
         .any(|fragment| fragment.contains("#858") && fragment.contains("bump: patch"));
     assert!(
-        unreleased_entry || read("CHANGELOG.md").contains("issue #858"),
+        unreleased_entry || read("CHANGELOG.md").contains("[#858]"),
         "issue #858 needs an unreleased patch fragment or released changelog entry"
     );
 }
