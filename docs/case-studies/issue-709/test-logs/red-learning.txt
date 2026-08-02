@@ -1,0 +1,18 @@
+   Compiling formal-ai v0.319.1 (/tmp/gh-issue-solver-1785646809000)
+error[E0432]: unresolved imports `formal_ai::execute_search_fusion_with_recipe`, `formal_ai::SearchFusionLearningApproval`, `formal_ai::SearchFusionLearningFrontier`, `formal_ai::SearchFusionLearningGate`, `formal_ai::SearchFusionRecipeLedger`, `formal_ai::SEARCH_FUSION_TASK_FAMILY`
+  --> tests/unit/issue_709_search_fusion_learning.rs:8:28
+   |
+ 8 |     execute_search_fusion, execute_search_fusion_with_recipe, CachedSourceClient, FetchError,
+   |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ no `execute_search_fusion_with_recipe` in the root
+ 9 |     SearchFusionLearningApproval, SearchFusionLearningFrontier, SearchFusionLearningGate,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^ no `SearchFusionLearningGate` in the root
+   |     |                             |
+   |     |                             no `SearchFusionLearningFrontier` in the root
+   |     no `SearchFusionLearningApproval` in the root
+10 |     SearchFusionRecipeLedger, SearchSourceClassification, SourceTier, SourceTransport,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^ no `SearchFusionRecipeLedger` in the root
+11 |     SEARCH_FUSION_TASK_FAMILY,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^ no `SEARCH_FUSION_TASK_FAMILY` in the root
+
+For more information about this error, try `rustc --explain E0432`.
+error: could not compile `formal-ai` (test "unit") due to 1 previous error

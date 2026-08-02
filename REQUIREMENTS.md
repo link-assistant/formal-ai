@@ -1544,3 +1544,18 @@ and matching native/browser interpreters.
 | R708-7 | At least 15 families must include selective contributed-fact rename, weekly topic summary, and missing-Russian-label todos. | The seed contains exactly 15 reviewed families across reads, writes, mapping, filtering, retraction, and fixpoint normalization. Covered by the 15-family compiler regression and the native execution suite. |
 | R708-8 | Mapping must affect execution, and the same compile/execute/persist/refuse/gap semantics must work in native and browser memory. | Both interpreters carry `map_matches` state into aggregation and source-preserving collection copies; browser events are atomically persisted to IndexedDB. Covered by `mapped_copy_retains_source_content_and_collection` and `tests/e2e/tests/issue-708.spec.js`. |
 | R708-9 | The solution must document the link-cli operation census, natural-language triple-store querying, bounded Datalog relationship, and self-application evidence. | `docs/case-studies/issue-708/README.md` records the source-pinned census and conservative boundedness decision; `issue_708_self_hosting` byte-checks three Agent-CLI-authored leaves, satisfying the repository's 20% self-hosting gate. |
+
+## Issue #709 Multi-Source Search Fusion
+
+Issue [#709](https://github.com/link-assistant/formal-ai/issues/709) composes
+exact search/page capture, multilingual formalization, #844's statement merge,
+relative source tiers, and normalized presentation into one ranked answer. See
+`docs/case-studies/issue-709/` and PR #884.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R709-1 | Formalize every captured search hit and fetched page with source provenance. | `execute_search_fusion` records a `FormalizedSearchObservation` plus event-log and learning-proposal receipts for each statement. |
+| R709-2 | Merge equivalent meanings across languages and rank them using original, independent, and unoriginal source tiers. | Complete Q/P/Q meaning links enter #844's semantic signature; reposts are traced but excluded from evidence. |
+| R709-3 | Deformalize the smallest sufficient ranked answer into the query language and show both conflict sides with posteriors. | The selection is bounded to three meanings, retains both polarities, and emits `conflict:source_disagreement`. |
+| R709-4 | Normalize URL, title, quote, and read-more fields across web, CLI/HTTP, and Telegram. | `NormalizedSearchSource`, the shared Rust Markdown renderer, Telegram HTML conversion, and the browser worker source cards are covered by unit and Playwright fixtures. |
+| R709-5 | Replay deterministically in CI while live search remains explicitly gated. | A three-source exact-capture fixture compares the live and offline render, trace, and proposal byte-for-byte; browser providers are intercepted. |

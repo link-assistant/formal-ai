@@ -3,9 +3,12 @@
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
+use crate::relative_meta_logic::SourceTier;
+use crate::search_fusion::{
+    execute_search_fusion, SearchFusionExecution, SearchSourceClassification,
+};
 use crate::seed;
 use crate::source_fetch::{CachedSourceClient, CurlSourceTransport, SourceTransport};
-use crate::source_research::{execute_source_research, SourceResearchExecution};
 
 use super::{WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K};
 use crate::solver_handlers::finalize_simple;
@@ -25,15 +28,13 @@ pub fn try_web_search_with_client<T: SourceTransport>(
     let request = extract_web_search_request(prompt, normalized)?;
     log.append("web_search:request", request.query.clone());
     log.append("web_search:query_kind", request.kind.as_str());
-    match execute_source_research(client, &request.query, 0) {
+    let language = detect_language(prompt).slug();
+    match execute_search_fusion(client, &request.query, language, 3, |_| {
+        SearchSourceClassification::auto(SourceTier::IndependentCorroboration)
+    }) {
         Ok(execution) => {
             execution.record(log);
-            Some(answer_executed_web_search(
-                prompt,
-                &request.query,
-                &execution,
-                log,
-            ))
+            Some(answer_executed_web_search(prompt, &execution, log))
         }
         Err(error) => {
             if matches!(error, crate::source_fetch::FetchError::OfflineCacheMiss(_)) {
@@ -47,7 +48,6 @@ pub fn try_web_search_with_client<T: SourceTransport>(
                 "web_search:fusion_planned",
                 format!("rrf:k={WEB_SEARCH_RRF_K}"),
             );
-            let language = detect_language(prompt).slug();
             let body = seed::localized_response("web_search_unavailable", language)
                 .unwrap_or_else(|| String::from("web_search_unavailable"))
                 .replace("{query}", &request.query);
@@ -79,33 +79,9 @@ pub fn try_web_search_with_offline(
 
 fn answer_executed_web_search(
     prompt: &str,
-    query: &str,
-    execution: &SourceResearchExecution,
+    execution: &SearchFusionExecution,
     log: &mut EventLog,
 ) -> SymbolicAnswer {
-    let results = execution
-        .search
-        .fused
-        .iter()
-        .enumerate()
-        .map(|(index, result)| {
-            let title = if result.title.trim().is_empty() {
-                result.url.as_str()
-            } else {
-                result.title.as_str()
-            };
-            format!("{}. [{title}]({})", index + 1, result.url)
-        })
-        .collect::<Vec<_>>()
-        .join("\n");
-    let language = detect_language(prompt).slug();
-    let body = seed::localized_response("web_search_live_results", language)
-        .unwrap_or_else(|| String::from("{query}\n\n{results}"))
-        .replace(concat!("{", "query", "}"), query)
-        .replace(
-            concat!("{", "count", "}"),
-            &execution.search.fused.len().to_string(),
-        )
-        .replace(concat!("{", "results", "}"), &results);
+    let body = execution.render_markdown();
     finalize_simple(prompt, log, "web_search", "response:web_search", &body, 0.8)
 }

@@ -723,6 +723,8 @@ async function searchDuckDuckGo(query, language, limit) {
       title: data.Heading || query,
       url: data.AbstractURL,
       excerpt: stripHtml(data.AbstractText),
+      sourceTier: data.SourceTier || "",
+      sourceLanguage: data.SourceLanguage || language || "",
     });
   }
   const topics = Array.isArray(data.RelatedTopics) ? data.RelatedTopics : [];
@@ -733,6 +735,8 @@ async function searchDuckDuckGo(query, language, limit) {
         title: topic.Text.split(" - ")[0] || topic.Text,
         url: topic.FirstURL,
         excerpt: stripHtml(topic.Text),
+        sourceTier: topic.SourceTier || "",
+        sourceLanguage: topic.SourceLanguage || language || "",
       });
     } else if (Array.isArray(topic.Topics)) {
       for (const inner of topic.Topics) {
@@ -741,6 +745,8 @@ async function searchDuckDuckGo(query, language, limit) {
             title: inner.Text.split(" - ")[0] || inner.Text,
             url: inner.FirstURL,
             excerpt: stripHtml(inner.Text),
+            sourceTier: inner.SourceTier || "",
+            sourceLanguage: inner.SourceLanguage || language || "",
           });
         }
       }

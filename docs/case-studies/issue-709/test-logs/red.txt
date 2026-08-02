@@ -1,0 +1,9 @@
+   Compiling formal-ai v0.317.0 (/tmp/gh-issue-solver-1785569511543)
+error[E0432]: unresolved imports `formal_ai::execute_search_fusion`, `formal_ai::SearchSourceClassification`
+ --> tests/unit/issue_709_search_fusion.rs:8:5
+  |
+8 |     execute_search_fusion, CachedSourceClient, EventLog, FetchError, SearchSourceClassification,
+  |     ^^^^^^^^^^^^^^^^^^^^^ no `execute_search_fusion` in the root     ^^^^^^^^^^^^^^^^^^^^^^^^^^ no `SearchSourceClassification` in the root
+
+For more information about this error, try `rustc --explain E0432`.
+error: could not compile `formal-ai` (test "unit") due to 1 previous error

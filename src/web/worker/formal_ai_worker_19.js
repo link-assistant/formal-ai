@@ -21,6 +21,8 @@ function reciprocalRankFusion(perProviderResults, k) {
           url: item.url, title: item.title || item.url,
           excerpt: item.excerpt || "", score,
           providers: [{ id: provider.id, rank }],
+          sourceTier: item.sourceTier || "",
+          sourceLanguage: item.sourceLanguage || provider.language || "",
         });
       }
     });
@@ -81,6 +83,8 @@ function dedupeFusedEntries(fused, metaByUrl, evidence) {
       wiktionaryKey: (meta && meta.wiktionaryKey) || "", wiktionaryLanguage: (meta && meta.wiktionaryLanguage) || "",
       wikinewsKey: (meta && meta.wikinewsKey) || "", wikinewsLanguage: (meta && meta.wikinewsLanguage) || "",
       sourceKind: (meta && meta.sourceKind) || "",
+      sourceTier: entry.sourceTier || (meta && meta.sourceTier) || "",
+      sourceLanguage: entry.sourceLanguage || (meta && meta.sourceLanguage) || "",
       virtualId: (meta && meta.virtualId) || (meta && meta.qid) ||
         (meta && meta.wikipediaKey ? `WP:${meta.wikipediaKey}` : ""),
       alternateUrls: [], keys: keys.slice(), originalRank: index,
@@ -100,6 +104,8 @@ function dedupeFusedEntries(fused, metaByUrl, evidence) {
     head.alternateUrls.push({
       url: enriched.url, title: enriched.title,
       providers: enriched.providers, sourceKind: enriched.sourceKind,
+      excerpt: enriched.excerpt, sourceTier: enriched.sourceTier,
+      sourceLanguage: enriched.sourceLanguage,
     });
     for (const p of enriched.providers) if (!alreadyHasProvider(head, p)) head.providers.push(p);
     for (const key of keys) if (!groupsByKey.has(key)) groupsByKey.set(key, head);
@@ -371,41 +377,11 @@ async function runWebSearchQuery(query, language, queryKind, preferences = {}) {
     };
   }
 
-  // Issue #180: every fused result is rendered Google-style — a single line
-  // with title + bare domain, an indented quote (a fragment containing the
-  // original query when possible, truncated near ~220 chars), a "Read more"
-  // link, and finally a faint "Другие источники:" line listing alternates
-  // (provider label + url) without per-source excerpts.
-  const lines = [texts.header(query, top.length, rrfK), ""];
-  top.forEach((entry, index) => {
-    const domain = extractDomain(entry.url);
-    const titlePiece = `**[${entry.title || entry.url}](${entry.url})**`;
-    const domainPiece = domain ? `  \`${domain}\`` : "";
-    const idTag = entry.virtualId ? `  \`${entry.virtualId}\`` : "";
-    lines.push(`${index + 1}. ${titlePiece}${domainPiece}${idTag}`);
-    const quote = extractQuoteAroundQuery(entry.excerpt, query, 220);
-    if (quote) {
-      lines.push(`   > ${quote}`);
-    }
-    const sourceTags = entry.providers
-      .map((p) => `${p.id}#${p.rank}`)
-      .join(", ");
-    lines.push(`   [${texts.readMore}](${entry.url}) — _${texts.via} ${sourceTags}_`);
-    if (Array.isArray(entry.alternateUrls) && entry.alternateUrls.length > 0) {
-      const others = entry.alternateUrls
-        .map((alt) => {
-          const labelProvider = pickPrimaryProviderId(alt.providers, alt.sourceKind);
-          const label = providerDisplayLabel(labelProvider, language);
-          return `[${label}](${alt.url})`;
-        })
-        .filter(Boolean);
-      if (others.length > 0) {
-        lines.push(`   _${texts.otherSources}: ${others.join(", ")}_`);
-      }
-    }
-    lines.push("");
-  });
-  while (lines.length > 0 && lines[lines.length - 1] === "") lines.pop();
+  const statementFusion = fuseBrowserSearchStatements(
+    top, query, language, texts, evidence, rrfK,
+  );
+  const lines = statementFusion.lines;
+  diagnostics.statements = statementFusion.statements;
 
   // Resolve the formalization tuple now that we know the top-ranked entity.
   // Prefer a real Wikidata Q-id; fall back to the WP virtual id, then to the

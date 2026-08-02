@@ -1,0 +1,19 @@
+   Compiling formal-ai v0.319.1 (/tmp/gh-issue-solver-1785646809000)
+    Finished `test` profile [unoptimized] target(s) in 1m 13s
+     Running tests/unit/mod.rs (target/debug/deps/unit-a0c98f2b6ec183cf)
+
+running 1 test
+
+thread 'issue_709_search_fusion_learning::one_execution_cannot_be_counted_twice_under_different_task_ids' (17424) panicked at tests/unit/issue_709_search_fusion_learning.rs:99:10:
+renaming one execution must not make its evidence independent: Some(SearchFusionRecipeCandidate { id: "search_fusion_recipe_candidate_6dc8f6497af3d316", task_family: "captured_search_statement_fusion", stages: ["capture", "formalize_each_statement", "semantic_merge", "source_tier_rank", "smallest_conflict_complete_select", "deformalize_preserving_quote", "normalized_provenance_render"], evidence_count: 2 })
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test issue_709_search_fusion_learning::one_execution_cannot_be_counted_twice_under_different_task_ids ... FAILED
+
+failures:
+
+failures:
+    issue_709_search_fusion_learning::one_execution_cannot_be_counted_twice_under_different_task_ids
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 2355 filtered out; finished in 0.28s
+
+error: test failed, to rerun pass `--test unit`

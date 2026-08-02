@@ -151,6 +151,36 @@ fn trailers_are_recognized_even_when_separated_by_blank_lines() {
     fs::remove_dir_all(repo).expect("fixture directory must be removed");
 }
 
+/// Issue #709's six bounded Agent CLI sessions were committed as independent
+/// evidence bundles. CI run 30739370394 showed that a trailer naming such a
+/// bundle only reads the Git tree listing, so the strict metric cannot see the
+/// session id in its nested transcript. A committed evidence path may be a
+/// single file or a directory bundle; both must remain content-addressed to the
+/// commit being measured.
+#[test]
+fn a_committed_evidence_directory_resolves_its_nested_transcripts() {
+    let repo = fixture_repo();
+    fs::create_dir_all(repo.join("docs/evidence/session"))
+        .expect("evidence directory must be created");
+    fs::write(
+        repo.join("docs/evidence/session/agent-cli.log"),
+        "formal-ai session bundled-session\n",
+    )
+    .expect("session transcript must be written");
+    fs::write(repo.join("formal-ai-code.txt"), "generated\n").expect("code must be written");
+    commit(
+        &repo,
+        "formal ai change\n\nFormal-AI-Session: bundled-session\nFormal-AI-Evidence: \
+         docs/evidence/session",
+    );
+
+    let measurement = metric_script::measure(&repo, "v1.0.0", "HEAD")
+        .expect("a committed evidence bundle must resolve nested transcript content");
+    assert_eq!(measurement.self_authored_commits, 1);
+
+    fs::remove_dir_all(repo).expect("fixture directory must be removed");
+}
+
 /// Issue #810: `Auto Release` (run 29737218421) died with "no committed
 /// Formal-AI-Evidence in 10e65ae2 records session issue-804-claude-20260720".
 /// The pull-request evidence gate only landed in 39fdef91, *after* that commit

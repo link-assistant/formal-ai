@@ -1,0 +1,6 @@
+search_fusion_provenance
+  record_type meta_invariant
+  formalization "derive answer statements only from captured source observations"
+  merge "join complete meaning links while retaining every source receipt"
+  conflict "show both ranked sides with tiers and posteriors"
+  presentation "render title url quote and read more in the query language"

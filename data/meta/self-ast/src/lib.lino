@@ -2,10 +2,10 @@ self_ast_census
   target src/lib.rs
   language rust
   fidelity signature
-  byte_len 19344
-  line_count 432
-  content_id source_module_181ba2ed804f3ec6
-  symbol_count 145
+  byte_len 20008
+  line_count 446
+  content_id source_module_c27a297ea0498922
+  symbol_count 149
   symbols
     module agent 3 3
     module agentic_coding 4 4
@@ -103,52 +103,56 @@ self_ast_census
     module route_method_alias 96 96
     module rule_synthesis 97 97
     module rule_synthesis_portfolio 98 98
-    module seed 99 99
-    module selection 100 100
-    module self_ast_census 101 101
-    module self_explanation 102 102
-    module self_healing 103 103
-    module self_improvement 104 104
-    module self_source_links 105 105
-    module server 106 106
-    module shared_dialog 107 107
-    module shared_memory 108 108
-    module skill_compiler 109 109
-    module skill_ledger 110 110
-    module skill_procedure 111 111
-    module solution_evidence 112 112
-    module solver 113 113
-    module solver_diagnostics 114 114
-    module solver_dispatch 115 115
-    module solver_formalization 116 116
-    module solver_handler_docs 117 117
-    module solver_handler_how 118 118
-    module solver_handler_oracle 119 119
-    module solver_handler_units 120 120
-    module solver_handlers 121 121
-    module solver_handlers_policy 122 122
-    module solver_helpers 123 123
-    module solver_search 124 124
-    module solver_synthesis 125 125
-    module solver_terminal 126 126
-    module solver_unknown_reasoning 127 127
-    module source_fetch 128 128
-    module source_research 129 129
-    module statement_audit 130 130
-    module statement_verification 131 131
-    module storage_policy 132 132
-    module substitution 133 133
-    module summarization 134 134
-    module task_decomposition 135 135
-    module telegram 136 136
-    module telegram_runtime 137 137
-    module thinking 138 138
-    module translation 139 139
-    module unknown_opener 140 140
-    module web_engine_core 141 141
-    module web_search_core 142 142
-    module world_model 143 143
-    module world_model_atoms 144 144
-    module world_model_context 145 145
-    module world_model_cycles 146 146
-    module world_model_dialog 147 147
+    module search_fusion 99 99
+    module search_fusion_grammar 100 100
+    module search_fusion_learning 101 101
+    module seed 102 102
+    module selection 103 103
+    module self_ast_census 104 104
+    module self_explanation 105 105
+    module self_healing 106 106
+    module self_improvement 107 107
+    module self_source_links 108 108
+    module server 109 109
+    module shared_dialog 110 110
+    module shared_memory 111 111
+    module skill_compiler 112 112
+    module skill_ledger 113 113
+    module skill_procedure 114 114
+    module solution_evidence 115 115
+    module solver 116 116
+    module solver_diagnostics 117 117
+    module solver_dispatch 118 118
+    module solver_formalization 119 119
+    module solver_handler_docs 120 120
+    module solver_handler_how 121 121
+    module solver_handler_oracle 122 122
+    module solver_handler_units 123 123
+    module solver_handlers 124 124
+    module solver_handlers_policy 125 125
+    module solver_helpers 126 126
+    module solver_search 127 127
+    module solver_synthesis 128 128
+    module solver_terminal 129 129
+    module solver_unknown_reasoning 130 130
+    module source_fetch 131 131
+    module source_research 132 132
+    module statement_audit 133 133
+    module statement_verification 134 134
+    module storage_policy 135 135
+    module substitution 136 136
+    module summarization 137 137
+    module task_decomposition 138 138
+    module telegram 139 139
+    module telegram_runtime 140 140
+    module thinking 141 141
+    module translation 142 142
+    module unknown_opener 143 143
+    module web_engine_core 144 144
+    module web_search_core 145 145
+    module web_search_fusion_core 146 146
+    module world_model 147 147
+    module world_model_atoms 148 148
+    module world_model_context 149 149
+    module world_model_cycles 150 150
+    module world_model_dialog 151 151

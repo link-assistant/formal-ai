@@ -25,6 +25,12 @@ mod web_engine_core;
 #[path = "../../../web_search_core.rs"]
 mod web_search_core;
 
+#[path = "../../../web_search_fusion_core.rs"]
+mod web_search_fusion_core;
+
+#[path = "../../../search_fusion_grammar.rs"]
+mod search_fusion_grammar;
+
 #[path = "../../../memory_query_language/mod.rs"]
 #[allow(dead_code, unused_imports)]
 mod memory_query_language;
@@ -41,6 +47,7 @@ use web_search_core::{
     serialize_rrf_output, WEB_SEARCH_CONCURRENCY_PER_CATEGORY, WEB_SEARCH_PROVIDER_LIMIT,
     WEB_SEARCH_PROVIDER_REGISTRY, WEB_SEARCH_RRF_K,
 };
+use web_search_fusion_core::fuse_statement_search_payload;
 
 const GREETING: u32 = 1;
 const WRITE_PROGRAM: u32 = 2;
@@ -61,10 +68,13 @@ static mut OUTPUT: [u8; OUTPUT_CAPACITY] = [0; OUTPUT_CAPACITY];
 //
 // Issue #133 wants the symbolic core in Rust→WASM. The web_search_core module
 // uses `alloc::String` and `alloc::Vec`, so the no_std worker needs a global
-// allocator. We use a single 256 KiB heap with an `AtomicUsize` offset: every
+// allocator. We use a single 2 MiB heap with an `AtomicUsize` offset: every
 // WASM entry point calls `reset_bump()` first so the heap rolls back between
-// calls and no per-allocation deallocation logic is required.
-const BUMP_HEAP_SIZE: usize = 262_144;
+// calls and no per-allocation deallocation logic is required. Statement
+// fusion accepts up to 24 bounded source passages; allocator measurements in
+// `experiments/issue709_wasm_heap.rs` keep that provider-limit workload below
+// this capacity with headroom for percent-decoding and JSON rendering.
+const BUMP_HEAP_SIZE: usize = 2_097_152;
 
 struct BumpHeap {
     buffer: UnsafeCell<[u8; BUMP_HEAP_SIZE]>,
@@ -329,6 +339,23 @@ pub extern "C" fn web_search_fuse(input_length: usize) -> usize {
     let entries = parse_rrf_input(text);
     let fused = reciprocal_rank_fusion(&entries, WEB_SEARCH_RRF_K);
     let serialized = serialize_rrf_output(&fused);
+    write_output(serialized.as_bytes())
+}
+
+/// Formalize, merge, rank, and render captured search excerpts as statements.
+#[no_mangle]
+pub extern "C" fn web_search_statement_fusion(input_length: usize) -> usize {
+    reset_bump();
+    let bytes = unsafe {
+        core::slice::from_raw_parts(
+            core::ptr::addr_of!(INPUT).cast::<u8>(),
+            min(input_length, INPUT_CAPACITY),
+        )
+    };
+    let Ok(text) = core::str::from_utf8(bytes) else {
+        return 0;
+    };
+    let serialized = fuse_statement_search_payload(text);
     write_output(serialized.as_bytes())
 }
 

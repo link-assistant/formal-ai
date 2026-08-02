@@ -6,10 +6,11 @@
 //! - `Formal-AI-Session: <session-id>`
 //! - `Formal-AI-Evidence: <repo-relative-path>`
 //!
-//! The evidence must exist in that commit and contain both `formal-ai` and the
-//! recorded session id. Changed lines are additions plus deletions reported by
-//! `git show --numstat`; merge commits, binary files and captured artifacts
-//! (see [`is_non_authored_path`]) do not contribute.
+//! The evidence must exist in that commit. A file, or a file inside a named
+//! directory bundle, must contain both `formal-ai` and the recorded session id.
+//! Changed lines are additions plus deletions reported by `git show --numstat`;
+//! merge commits, binary files and captured artifacts (see
+//! [`is_non_authored_path`]) do not contribute.
 
 #![allow(dead_code)]
 
@@ -227,14 +228,16 @@ fn commit_has_formal_ai_evidence(repo: &Path, commit: &str) -> Result<bool, Stri
     let mut evidence = Vec::with_capacity(evidence_paths.len());
     for path in evidence_paths {
         validate_evidence_path(&path)?;
-        let object = format!("{commit}:{path}");
-        let content = git(repo, &["show", &object])?;
-        if !content.to_ascii_lowercase().contains("formal-ai") {
+        let identifying_files = evidence_files(repo, commit, &path)?
+            .into_iter()
+            .filter(|(_, content)| content.to_ascii_lowercase().contains("formal-ai"))
+            .collect::<Vec<_>>();
+        if identifying_files.is_empty() {
             return Err(format!(
                 "evidence {path} in commit {commit} does not identify formal-ai"
             ));
         }
-        evidence.push((path, content));
+        evidence.extend(identifying_files);
     }
 
     for session in sessions {
@@ -248,6 +251,42 @@ fn commit_has_formal_ai_evidence(repo: &Path, commit: &str) -> Result<bool, Stri
         }
     }
     Ok(true)
+}
+
+/// Resolve a committed evidence file or every file below a committed evidence
+/// directory. `git show <commit>:<directory>` only prints the tree entries, so
+/// it cannot validate the session ids inside an Agent CLI evidence bundle.
+fn evidence_files(repo: &Path, commit: &str, path: &str) -> Result<Vec<(String, String)>, String> {
+    let object = format!("{commit}:{path}");
+    match git(repo, &["cat-file", "-t", &object])?.trim() {
+        "blob" => Ok(vec![(path.to_owned(), git(repo, &["show", &object])?)]),
+        "tree" => {
+            let listing = git(repo, &["ls-tree", "-r", "--name-only", commit, "--", path])?;
+            let files = listing
+                .lines()
+                .filter(|file| !file.is_empty())
+                .map(|file| {
+                    let nested_object = format!("{commit}:{file}");
+                    let kind = git(repo, &["cat-file", "-t", &nested_object])?;
+                    if kind.trim() != "blob" {
+                        return Err(format!(
+                            "evidence directory {path} in commit {commit} contains non-file {file}"
+                        ));
+                    }
+                    Ok((file.to_owned(), git(repo, &["show", &nested_object])?))
+                })
+                .collect::<Result<Vec<_>, String>>()?;
+            if files.is_empty() {
+                return Err(format!(
+                    "evidence directory {path} in commit {commit} contains no files"
+                ));
+            }
+            Ok(files)
+        }
+        kind => Err(format!(
+            "evidence {path} in commit {commit} must be a file or directory, found {kind}"
+        )),
+    }
 }
 
 /// Collects `key: value` trailers from a commit message.

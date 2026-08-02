@@ -96,6 +96,9 @@ pub(crate) mod responses_stream;
 pub mod route_method_alias;
 pub(crate) mod rule_synthesis;
 pub(crate) mod rule_synthesis_portfolio;
+pub mod search_fusion;
+pub mod search_fusion_grammar;
+pub mod search_fusion_learning;
 pub mod seed;
 pub mod selection;
 pub mod self_ast_census;
@@ -140,6 +143,7 @@ pub mod translation;
 pub(crate) mod unknown_opener;
 pub mod web_engine_core;
 pub mod web_search_core;
+pub mod web_search_fusion_core;
 pub mod world_model;
 pub mod world_model_atoms;
 pub mod world_model_context;
@@ -292,6 +296,16 @@ pub use relative_meta_logic::{
     ASSUMED_TRUE_PRIOR,
 };
 pub use repair_strategy::{canonical_strategies, RepairStrategy, RepairTarget};
+pub use search_fusion::{
+    execute_search_fusion, FormalizedSearchObservation, FusedSearchStatement,
+    NormalizedSearchSource, SearchFusionAnswer, SearchFusionExecution, SearchObservationOrigin,
+    SearchSourceClassification,
+};
+pub use search_fusion_learning::{
+    execute_search_fusion_with_recipe, SearchFusionLearningApproval, SearchFusionLearningError,
+    SearchFusionLearningFrontier, SearchFusionLearningGate, SearchFusionLearningObservation,
+    SearchFusionRecipeCandidate, SearchFusionRecipeLedger, SEARCH_FUSION_TASK_FAMILY,
+};
 pub use seed::{
     agent_info, canonical_model_id, concepts as seed_concepts, environment_directory,
     environment_records, intent_routing, language_rules, merged_bundle, model_aliases,

@@ -1,0 +1,1977 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.308Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.310Z",
+  "service": "default",
+  "version": "0.25.4",
+  "command": "/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Continue Formal AI issue #709: learn to repeat captured-source fusion without allowing unreviewed behavior changes. As the bounded learning-contract leaf, create search-fusion-learning-contract.lino containing\nsearch_fusion_learning_contract\n  schema_version 1\n  task_family captured_search_statement_fusion\n  minimum_independent_executions 2\n  candidate_inert true\n  promotion_gate \"held-out suite passes with zero failures\"\n  human_gate \"named reviewer approval\"\n  persistence \"content-addressed Links Notation ledger\"\n  replay \"approved recipe executes unseen equivalent research tasks\" --disable-stdin --no-summarize-session --compaction-model same --model formal-ai/formal-ai",
+  "workingDirectory": "/tmp/tmp.nmKQZBTcPY",
+  "scriptPath": "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.311Z",
+  "service": "default",
+  "directory": "/tmp/tmp.nmKQZBTcPY",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.311Z",
+  "service": "project",
+  "directory": "/tmp/tmp.nmKQZBTcPY",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.359Z",
+  "service": "storage",
+  "index": 0,
+  "message": "running migration"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.363Z",
+  "service": "storage",
+  "index": 1,
+  "message": "running migration"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.368Z",
+  "service": "default",
+  "processArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Continue Formal AI issue #709: learn to repeat captured-source fusion without allowing unreviewed behavior changes. As the bounded learning-contract leaf, create search-fusion-learning-contract.lino containing\nsearch_fusion_learning_contract\n  schema_version 1\n  task_family captured_search_statement_fusion\n  minimum_independent_executions 2\n  candidate_inert true\n  promotion_gate \"held-out suite passes with zero failures\"\n  human_gate \"named reviewer approval\"\n  persistence \"content-addressed Links Notation ledger\"\n  replay \"approved recipe executes unseen equivalent research tasks\"",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-model",
+    "same",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Continue Formal AI issue #709: learn to repeat captured-source fusion without allowing unreviewed behavior changes. As the bounded learning-contract leaf, create search-fusion-learning-contract.lino containing\nsearch_fusion_learning_contract\n  schema_version 1\n  task_family captured_search_statement_fusion\n  minimum_independent_executions 2\n  candidate_inert true\n  promotion_gate \"held-out suite passes with zero failures\"\n  human_gate \"named reviewer approval\"\n  persistence \"content-addressed Links Notation ledger\"\n  replay \"approved recipe executes unseen equivalent research tasks\"",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-model",
+    "same",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.368Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.372Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.383Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.384Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.388Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.397Z",
+  "service": "config",
+  "path": "/tmp/tmp.nmKQZBTcPY/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.445Z",
+  "service": "models.dev",
+  "path": "/home/box/.cache/link-assistant-agent/models.json",
+  "message": "no cache found, awaiting refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.445Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.694Z",
+  "service": "models.dev",
+  "path": "/home/box/.cache/link-assistant-agent/models.json",
+  "message": "cache unavailable, using bundled data"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.810Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.831Z",
+  "service": "claude-oauth",
+  "path": "/home/box/.claude/.credentials.json",
+  "message": "credentials file not found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.832Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.832Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.832Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.832Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.832Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.832Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 460,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.834Z",
+  "service": "provider",
+  "modelID": "big-pickle",
+  "providerID": "opencode",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.834Z",
+  "service": "provider",
+  "modelID": "minimax-m2.5-free",
+  "providerID": "kilo",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.835Z",
+  "service": "default",
+  "models": [
+    "opencode/big-pickle",
+    "kilo/minimax-m2.5-free",
+    "same"
+  ],
+  "source": "default",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.871Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.871Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.889Z",
+  "service": "session",
+  "id": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "version": "0.25.4",
+  "projectID": "global",
+  "directory": "/tmp/tmp.nmKQZBTcPY",
+  "title": "New session - 2026-08-02T05:27:36.889Z",
+  "time": {
+    "created": 1785648456889,
+    "updated": 1785648456889
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.893Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.894Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.894Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 23,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.896Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.898Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_03f0edb46ffesIq1tz5G0zcTuV/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.898Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_03f0edb46ffesIq1tz5G0zcTuV/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.918Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 20,
+  "method": "POST",
+  "path": "/session/ses_03f0edb46ffesIq1tz5G0zcTuV/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.931Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.942Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.945Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.951Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.987Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.987Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.988Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.990Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.991Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.991Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.991Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 1,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.992Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.992Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.992Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.992Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.992Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.992Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.992Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:36.992Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:37.964Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:37.995Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:37.997Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:38.042Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:38.063Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:38.095Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:38.096Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:38.096Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:38.096Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:38.677Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1785648458677,
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "part": {
+    "id": "prt_fc0f12ba9001a95YVW0rS7rg90",
+    "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+    "messageID": "msg_fc0f128fa001edHstvkJ00qSQo",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:38.680Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:38.684Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785648458684,
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "part": {
+    "id": "prt_fc0f12bb8001w7Zm5Cm3K67Abc",
+    "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+    "messageID": "msg_fc0f128fa001edHstvkJ00qSQo",
+    "type": "tool",
+    "callID": "call_a5da9f33b5b166c9",
+    "tool": "write",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:38.685Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1785648458685,
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "part": {
+    "id": "prt_fc0f12bb5001SlXyaHdNdRQQpe",
+    "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+    "messageID": "msg_fc0f128fa001edHstvkJ00qSQo",
+    "type": "text",
+    "text": "Let me update .formal-ai/general-change-plan.lino for you.",
+    "time": {
+      "start": 1785648458685,
+      "end": 1785648458685
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:38.688Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785648458688,
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "part": {
+    "id": "prt_fc0f12bb8001w7Zm5Cm3K67Abc",
+    "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+    "messageID": "msg_fc0f128fa001edHstvkJ00qSQo",
+    "type": "tool",
+    "callID": "call_a5da9f33b5b166c9",
+    "tool": "write",
+    "state": {
+      "status": "running",
+      "input": {
+        "content": "general_change_plan\n  id \"general_change_plan_03ebc5e1987e22eb\"\n  execution_mode \"literal_file\"\n  goal \"Continue Formal AI issue #709: learn to repeat captured-source fusion without allowing unreviewed behavior changes. As the bounded learning-contract leaf, create search-fusion-learning-contract.lino containing\\nsearch_fusion_learning_contract\\n  schema_version 1\\n  task_family captured_search_statement_fusion\\n  minimum_independent_executions 2\\n  candidate_inert true\\n  promotion_gate \\\"held-out suite passes with zero failures\\\"\\n  human_gate \\\"named reviewer approval\\\"\\n  persistence \\\"content-addressed Links Notation ledger\\\"\\n  replay \\\"approved recipe executes unseen equivalent research tasks\\\"\"\n  target \"search-fusion-learning-contract.lino\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_935500d95e176ebf\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to search-fusion-learning-contract.lino\"\n    expected_evidence \"workspace file search-fusion-learning-contract.lino\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"search_fusion_learning_contract\\n  schema_version 1\\n  task_family captured_search_statement_fusion\\n  minimum_independent_executions 2\\n  candidate_inert true\\n  promotion_gate \\\"held-out suite passes with zero failures\\\"\\n  human_gate \\\"named reviewer approval\\\"\\n  persistence \\\"content-addressed Links Notation ledger\\\"\\n  replay \\\"approved recipe executes unseen equivalent research tasks\\\"\"\n    command \"cat search-fusion-learning-contract.lino\"\n  verification_command \"cat search-fusion-learning-contract.lino\"\n",
+        "filePath": "/tmp/tmp.nmKQZBTcPY/.formal-ai/general-change-plan.lino"
+      },
+      "time": {
+        "start": 1785648458686
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:38.706Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785648458706,
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "part": {
+    "id": "prt_fc0f12bb8001w7Zm5Cm3K67Abc",
+    "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+    "messageID": "msg_fc0f128fa001edHstvkJ00qSQo",
+    "type": "tool",
+    "callID": "call_a5da9f33b5b166c9",
+    "tool": "write",
+    "state": {
+      "status": "completed",
+      "input": {
+        "content": "general_change_plan\n  id \"general_change_plan_03ebc5e1987e22eb\"\n  execution_mode \"literal_file\"\n  goal \"Continue Formal AI issue #709: learn to repeat captured-source fusion without allowing unreviewed behavior changes. As the bounded learning-contract leaf, create search-fusion-learning-contract.lino containing\\nsearch_fusion_learning_contract\\n  schema_version 1\\n  task_family captured_search_statement_fusion\\n  minimum_independent_executions 2\\n  candidate_inert true\\n  promotion_gate \\\"held-out suite passes with zero failures\\\"\\n  human_gate \\\"named reviewer approval\\\"\\n  persistence \\\"content-addressed Links Notation ledger\\\"\\n  replay \\\"approved recipe executes unseen equivalent research tasks\\\"\"\n  target \"search-fusion-learning-contract.lino\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_935500d95e176ebf\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to search-fusion-learning-contract.lino\"\n    expected_evidence \"workspace file search-fusion-learning-contract.lino\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"search_fusion_learning_contract\\n  schema_version 1\\n  task_family captured_search_statement_fusion\\n  minimum_independent_executions 2\\n  candidate_inert true\\n  promotion_gate \\\"held-out suite passes with zero failures\\\"\\n  human_gate \\\"named reviewer approval\\\"\\n  persistence \\\"content-addressed Links Notation ledger\\\"\\n  replay \\\"approved recipe executes unseen equivalent research tasks\\\"\"\n    command \"cat search-fusion-learning-contract.lino\"\n  verification_command \"cat search-fusion-learning-contract.lino\"\n",
+        "filePath": "/tmp/tmp.nmKQZBTcPY/.formal-ai/general-change-plan.lino"
+      },
+      "output": "",
+      "title": "tmp/tmp.nmKQZBTcPY/.formal-ai/general-change-plan.lino",
+      "metadata": {
+        "diagnostics": {},
+        "filepath": "/tmp/tmp.nmKQZBTcPY/.formal-ai/general-change-plan.lino",
+        "exists": false
+      },
+      "time": {
+        "start": 1785648458686,
+        "end": 1785648458702
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:38.715Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1785648458715,
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "part": {
+    "id": "prt_fc0f12bd7001aLVVY3mEimmzdQ",
+    "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+    "messageID": "msg_fc0f128fa001edHstvkJ00qSQo",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 9032,
+      "output": 1999,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 11031,
+      "headroom": 27825,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:38.715Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:38.716Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:38.730Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:38.730Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:38.736Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:38.736Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:38.737Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:38.737Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:38.745Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:38.745Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:38.747Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:38.747Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 11031,
+  "providerTokens": 11031,
+  "estimatedInputTokens": 131,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 9032,
+    "cacheRead": 0,
+    "output": 1999
+  },
+  "overflow": false,
+  "headroom": 40777,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:38.748Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:38.749Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:38.765Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:38.772Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.058Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1785648459058,
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "part": {
+    "id": "prt_fc0f12d2e001PibdtkkhaeH52o",
+    "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+    "messageID": "msg_fc0f12bfc001kX1b0Y7C9E7XE3",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.059Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.061Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785648459061,
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "part": {
+    "id": "prt_fc0f12d34001u60J31bUlqY7bQ",
+    "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+    "messageID": "msg_fc0f12bfc001kX1b0Y7C9E7XE3",
+    "type": "tool",
+    "callID": "call_c16d86c44bc2780a",
+    "tool": "write",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.062Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1785648459062,
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "part": {
+    "id": "prt_fc0f12d33001X2UK7dsEsYZ3pd",
+    "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+    "messageID": "msg_fc0f12bfc001kX1b0Y7C9E7XE3",
+    "type": "text",
+    "text": "Let me update search-fusion-learning-contract.lino for you.",
+    "time": {
+      "start": 1785648459061,
+      "end": 1785648459061
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.063Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785648459063,
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "part": {
+    "id": "prt_fc0f12d34001u60J31bUlqY7bQ",
+    "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+    "messageID": "msg_fc0f12bfc001kX1b0Y7C9E7XE3",
+    "type": "tool",
+    "callID": "call_c16d86c44bc2780a",
+    "tool": "write",
+    "state": {
+      "status": "running",
+      "input": {
+        "content": "search_fusion_learning_contract\n  schema_version 1\n  task_family captured_search_statement_fusion\n  minimum_independent_executions 2\n  candidate_inert true\n  promotion_gate \"held-out suite passes with zero failures\"\n  human_gate \"named reviewer approval\"\n  persistence \"content-addressed Links Notation ledger\"\n  replay \"approved recipe executes unseen equivalent research tasks\"",
+        "filePath": "/tmp/tmp.nmKQZBTcPY/search-fusion-learning-contract.lino"
+      },
+      "time": {
+        "start": 1785648459062
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.068Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785648459068,
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "part": {
+    "id": "prt_fc0f12d34001u60J31bUlqY7bQ",
+    "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+    "messageID": "msg_fc0f12bfc001kX1b0Y7C9E7XE3",
+    "type": "tool",
+    "callID": "call_c16d86c44bc2780a",
+    "tool": "write",
+    "state": {
+      "status": "completed",
+      "input": {
+        "content": "search_fusion_learning_contract\n  schema_version 1\n  task_family captured_search_statement_fusion\n  minimum_independent_executions 2\n  candidate_inert true\n  promotion_gate \"held-out suite passes with zero failures\"\n  human_gate \"named reviewer approval\"\n  persistence \"content-addressed Links Notation ledger\"\n  replay \"approved recipe executes unseen equivalent research tasks\"",
+        "filePath": "/tmp/tmp.nmKQZBTcPY/search-fusion-learning-contract.lino"
+      },
+      "output": "",
+      "title": "tmp/tmp.nmKQZBTcPY/search-fusion-learning-contract.lino",
+      "metadata": {
+        "diagnostics": {},
+        "filepath": "/tmp/tmp.nmKQZBTcPY/search-fusion-learning-contract.lino",
+        "exists": false
+      },
+      "time": {
+        "start": 1785648459062,
+        "end": 1785648459067
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.069Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1785648459069,
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "part": {
+    "id": "prt_fc0f12d3c001AG5yFAaO91Bqz3",
+    "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+    "messageID": "msg_fc0f12bfc001kX1b0Y7C9E7XE3",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 9090,
+      "output": 543,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 9633,
+      "headroom": 29223,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.069Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.070Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.073Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.073Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.090Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.090Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.091Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.091Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.096Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.096Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.097Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.097Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 9633,
+  "providerTokens": 9633,
+  "estimatedInputTokens": 144,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 9090,
+    "cacheRead": 0,
+    "output": 543
+  },
+  "overflow": false,
+  "headroom": 42175,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.098Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.098Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.108Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.112Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.431Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1785648459432,
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "part": {
+    "id": "prt_fc0f12e99001jtKe4fAmpQ02kj",
+    "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+    "messageID": "msg_fc0f12d59001Dm3TDoRDHzQjWD",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.433Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.433Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785648459434,
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "part": {
+    "id": "prt_fc0f12ea9001b5i0VUs3cQK6XF",
+    "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+    "messageID": "msg_fc0f12d59001Dm3TDoRDHzQjWD",
+    "type": "tool",
+    "callID": "call_a498070469b09bd2",
+    "tool": "bash",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.434Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1785648459434,
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "part": {
+    "id": "prt_fc0f12ea8001dKJ4DueSjzwnim",
+    "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+    "messageID": "msg_fc0f12d59001Dm3TDoRDHzQjWD",
+    "type": "text",
+    "text": "Let me run a quick command to get that for you.",
+    "time": {
+      "start": 1785648459434,
+      "end": 1785648459434
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.434Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785648459434,
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "part": {
+    "id": "prt_fc0f12ea9001b5i0VUs3cQK6XF",
+    "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+    "messageID": "msg_fc0f12d59001Dm3TDoRDHzQjWD",
+    "type": "tool",
+    "callID": "call_a498070469b09bd2",
+    "tool": "bash",
+    "state": {
+      "status": "running",
+      "input": {
+        "command": "cat search-fusion-learning-contract.lino"
+      },
+      "time": {
+        "start": 1785648459434
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.438Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785648459438,
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "part": {
+    "id": "prt_fc0f12ea9001b5i0VUs3cQK6XF",
+    "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+    "messageID": "msg_fc0f12d59001Dm3TDoRDHzQjWD",
+    "type": "tool",
+    "callID": "call_a498070469b09bd2",
+    "tool": "bash",
+    "state": {
+      "status": "completed",
+      "input": {
+        "command": "cat search-fusion-learning-contract.lino"
+      },
+      "output": "search_fusion_learning_contract\n  schema_version 1\n  task_family captured_search_statement_fusion\n  minimum_independent_executions 2\n  candidate_inert true\n  promotion_gate \"held-out suite passes with zero failures\"\n  human_gate \"named reviewer approval\"\n  persistence \"content-addressed Links Notation ledger\"\n  replay \"approved recipe executes unseen equivalent research tasks\"",
+      "title": "cat search-fusion-learning-contract.lino",
+      "metadata": {
+        "output": "search_fusion_learning_contract\n  schema_version 1\n  task_family captured_search_statement_fusion\n  minimum_independent_executions 2\n  candidate_inert true\n  promotion_gate \"held-out suite passes with zero failures\"\n  human_gate \"named reviewer approval\"\n  persistence \"content-addressed Links Notation ledger\"\n  replay \"approved recipe executes unseen equivalent research tasks\"",
+        "exit": 0
+      },
+      "time": {
+        "start": 1785648459434,
+        "end": 1785648459438
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.440Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1785648459440,
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "part": {
+    "id": "prt_fc0f12eaf001aTitBNJvZYX32N",
+    "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+    "messageID": "msg_fc0f12d59001Dm3TDoRDHzQjWD",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 9149,
+      "output": 105,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 9254,
+      "headroom": 29602,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.441Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.441Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.445Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.445Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.477Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.477Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.479Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.479Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.483Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.483Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.485Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.485Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 9254,
+  "providerTokens": 9254,
+  "estimatedInputTokens": 234,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 9149,
+    "cacheRead": 0,
+    "output": 105
+  },
+  "overflow": false,
+  "headroom": 42554,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.486Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.486Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.499Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.504Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.776Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1785648459776,
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "part": {
+    "id": "prt_fc0f12ffe001VrN08L4TfAnr62",
+    "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+    "messageID": "msg_fc0f12edd001LNEsB5JEFOxJHN",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.778Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.778Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1785648459778,
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "part": {
+    "id": "prt_fc0f130010019BUy2wj6jlTxAi",
+    "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+    "messageID": "msg_fc0f12edd001LNEsB5JEFOxJHN",
+    "type": "text",
+    "text": "Completed the general change request for search-fusion-learning-contract.lino and verified it with `cat search-fusion-learning-contract.lino`.\n\nPlan event (.formal-ai/general-change-plan.lino):\n\ngeneral_change_plan\n  id \"general_change_plan_03ebc5e1987e22eb\"\n  execution_mode \"literal_file\"\n  goal \"Continue Formal AI issue #709: learn to repeat captured-source fusion without allowing unreviewed behavior changes. As the bounded learning-contract leaf, create search-fusion-learning-contract.lino containing\\nsearch_fusion_learning_contract\\n  schema_version 1\\n  task_family captured_search_statement_fusion\\n  minimum_independent_executions 2\\n  candidate_inert true\\n  promotion_gate \\\"held-out suite passes with zero failures\\\"\\n  human_gate \\\"named reviewer approval\\\"\\n  persistence \\\"content-addressed Links Notation ledger\\\"\\n  replay \\\"approved recipe executes unseen equivalent research tasks\\\"\"\n  target \"search-fusion-learning-contract.lino\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_935500d95e176ebf\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to search-fusion-learning-contract.lino\"\n    expected_evidence \"workspace file search-fusion-learning-contract.lino\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"search_fusion_learning_contract\\n  schema_version 1\\n  task_family captured_search_statement_fusion\\n  minimum_independent_executions 2\\n  candidate_inert true\\n  promotion_gate \\\"held-out suite passes with zero failures\\\"\\n  human_gate \\\"named reviewer approval\\\"\\n  persistence \\\"content-addressed Links Notation ledger\\\"\\n  replay \\\"approved recipe executes unseen equivalent research tasks\\\"\"\n    command \"cat search-fusion-learning-contract.lino\"\n  verification_command \"cat search-fusion-learning-contract.lino\"",
+    "time": {
+      "start": 1785648459778,
+      "end": 1785648459778
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.779Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1785648459779,
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "part": {
+    "id": "prt_fc0f13003001v4lYUeigPQk9Ni",
+    "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+    "messageID": "msg_fc0f12edd001LNEsB5JEFOxJHN",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 9575,
+      "output": 1949,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 11524,
+      "headroom": 27332,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.779Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.780Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.783Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.783Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.791Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.791Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.791Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.792Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.794Z",
+  "service": "session.prompt",
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.795Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.811Z",
+  "service": "session.prompt",
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.811Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.811Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1785648459811,
+  "sessionID": "ses_03f0edb46ffesIq1tz5G0zcTuV"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.812Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.812Z",
+  "service": "default",
+  "directory": "/tmp/tmp.nmKQZBTcPY",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.812Z",
+  "service": "state",
+  "key": "/tmp/tmp.nmKQZBTcPY",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.817Z",
+  "service": "state",
+  "key": "/tmp/tmp.nmKQZBTcPY",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:27:39.818Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 5,
+  "message": "Agent exiting"
+}

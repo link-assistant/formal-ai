@@ -427,7 +427,7 @@ pub fn execute_duckduckgo_search<T: crate::source_fetch::SourceTransport>(
         }
     }
     rows.truncate(10);
-    let rankings = rows
+    let mut rankings = rows
         .into_iter()
         .enumerate()
         .map(|(index, (url, text))| ProviderRanking {
@@ -438,6 +438,14 @@ pub fn execute_duckduckgo_search<T: crate::source_fetch::SourceTransport>(
             excerpt: text,
         })
         .collect::<Vec<_>>();
+    if let Some(heading) = document["Heading"]
+        .as_str()
+        .filter(|value| !value.is_empty())
+    {
+        if let Some(first) = rankings.first_mut() {
+            heading.clone_into(&mut first.title);
+        }
+    }
     let fused = reciprocal_rank_fusion(&rankings, WEB_SEARCH_RRF_K);
     Ok(SearchExecution {
         captures: vec![capture],

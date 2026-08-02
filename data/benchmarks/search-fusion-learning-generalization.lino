@@ -1,0 +1,12 @@
+search_fusion_learning_generalization
+  training apple_taxonomy
+    task_family captured_search_statement_fusion
+    query "apple taxonomy"
+  training parser_speed
+    task_family captured_search_statement_fusion
+    query "parser speed"
+  held_out tomato_taxonomy
+    task_family captured_search_statement_fusion
+    query "tomato taxonomy"
+    expected_stages 7
+    expected_policy "formalize merge rank preserve provenance"

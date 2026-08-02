@@ -121,12 +121,13 @@ Formal-AI-Session: <session-id>
 Formal-AI-Evidence: <repo-relative committed evidence path>
 ```
 
-The evidence file must exist in that commit and contain both `formal-ai` and
-the exact session id. Add one pair per session when multiple sessions authored
-a commit. Do not add these trailers to a human-authored or manually corrected
-commit; an honest 0% release is valid. The metric counts additions plus
-deletions from non-merge commits and ignores binary files. Reproduce it with
-`rust-script scripts/self-hosting-metric.rs --since <previous-tag>`.
+The evidence path must exist in that commit. It may name one evidence file or a
+directory bundle; one file at or below the path must contain both `formal-ai`
+and the exact session id. Add one pair per session when multiple sessions
+authored a commit. Do not add these trailers to a human-authored or manually
+corrected commit; an honest 0% release is valid. The metric counts additions
+plus deletions from non-merge commits and ignores binary files. Reproduce it
+with `rust-script scripts/self-hosting-metric.rs --since <previous-tag>`.
 
 ## Contribution rights and external material
 
