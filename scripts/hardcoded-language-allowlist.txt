@@ -889,6 +889,9 @@ src/solver_handlers/compound_interest.rs	Rate detail: {detail}
 src/solver_handlers/compound_interest.rs	Source amount: {} {}
 src/solver_handlers/compound_interest.rs	Step 1: periodic rate = r/n = {}/{} = {}
 src/solver_handlers/compound_interest.rs	Step 2: number of periods = n*t = {}*{} = {}
+src/solver_handlers/conversation_memory/conversation_summary.rs	Conversation summary: {summary}\n\nTitle: {title}\n\nUser turns:\n
+src/solver_handlers/conversation_memory/conversation_summary.rs	Резюме разговора: {summary}\n\nЗаголовок: {title}\n\nРеплики пользователя:\n
+src/solver_handlers/conversation_memory/conversation_summary.rs	对话摘要:{summary}\n\n标题:{title}\n\n用户发言:\n
 src/solver_handlers/conversation_memory/link_query.rs	This query would {attempted} links, which memory cannot apply: the doublet view is a one-way projection of memory events, so an edited link has no way back to the event it came from. Reads are supported here -- ((($i: $s $t)) (($i: $s $t))) matches every link. To change memory, write to it in natural language, which appends an event the projection is then derived from.
 src/solver_handlers/conversation_memory/link_query.rs	matched {} of {total} links
 src/solver_handlers/conversation_memory/memory_write.rs	Recorded memory: {statement}
@@ -901,7 +904,6 @@ src/solver_handlers/conversation_memory/memory_write.rs	Запомнил: {state
 src/solver_handlers/conversation_memory/memory_write.rs	स्मृति में \"{old_value}\" को \"{new_value}\" से बदला ({applied})।
 src/solver_handlers/conversation_memory/memory_write.rs	स्मृति में सहेजा गया: {statement}
 src/solver_handlers/conversation_memory/memory_write.rs	已在记忆中将\"{old_value}\"替换为\"{new_value}\"(更新 {applied} 处)。
-src/solver_handlers/conversation_memory/mod.rs	Conversation summary: {summary}\n\nTitle: {title}\n\nUser turns:\n
 src/solver_handlers/conversation_memory/mod.rs	Found {} mention(s) of \"{}\" across {} conversation(s) in memory.\n
 src/solver_handlers/conversation_memory/mod.rs	Found {} mention(s) of \"{}\" in the conversation history.\n
 src/solver_handlers/conversation_memory/mod.rs	My name is {name} — that's what you named me.
@@ -926,7 +928,6 @@ src/solver_handlers/conversation_memory/mod.rs	Найдено упоминани
 src/solver_handlers/conversation_memory/mod.rs	Найдено упоминаний \"{}\" в памяти: {} (бесед: {}).\n
 src/solver_handlers/conversation_memory/mod.rs	Отлично, теперь меня зовут {name}. Приятно познакомиться!
 src/solver_handlers/conversation_memory/mod.rs	Прошлого сообщения пока нет.
-src/solver_handlers/conversation_memory/mod.rs	Резюме разговора: {summary}\n\nЗаголовок: {title}\n\nРеплики пользователя:\n
 src/solver_handlers/conversation_memory/mod.rs	Упоминаний \"{}\" в истории разговора не найдено.
 src/solver_handlers/conversation_memory/mod.rs	Упоминаний \"{}\" в памяти не найдено.
 src/solver_handlers/conversation_memory/mod.rs	अभी तक कोई पिछला संदेश नहीं है.
@@ -941,7 +942,6 @@ src/solver_handlers/conversation_memory/mod.rs	स्मृति में \"{}
 src/solver_handlers/conversation_memory/mod.rs	在对话历史中找到 \"{}\" 的记录: {}\n
 src/solver_handlers/conversation_memory/mod.rs	在记忆中找到 \"{}\" 的记录: {} (对话: {})。\n
 src/solver_handlers/conversation_memory/mod.rs	好的，从现在起就叫我 {name} 吧。很高兴认识你！
-src/solver_handlers/conversation_memory/mod.rs	对话摘要:{summary}\n\n标题:{title}\n\n用户发言:\n
 src/solver_handlers/conversation_memory/mod.rs	我叫 {name}，这是你给我起的名字。
 src/solver_handlers/document_originality.rs	Recognized an originality and plagiarism check for `{target}`.
 src/solver_handlers/document_originality.rs	\"{sample}\" plagiarism originality

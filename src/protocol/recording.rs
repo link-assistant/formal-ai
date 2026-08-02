@@ -94,7 +94,7 @@ pub fn responses_exchange_to_record(
     (!prompt.trim().is_empty() && !answer.trim().is_empty()).then_some((prompt, answer))
 }
 
-pub(super) fn chat_prompt_and_history(messages: &[ChatMessage]) -> (String, Vec<ConversationTurn>) {
+pub fn chat_prompt_and_history(messages: &[ChatMessage]) -> (String, Vec<ConversationTurn>) {
     let Some(latest_user_index) = messages
         .iter()
         .rposition(|message| message.role.eq_ignore_ascii_case("user"))
@@ -112,7 +112,7 @@ pub(super) fn chat_prompt_and_history(messages: &[ChatMessage]) -> (String, Vec<
     (prompt, history)
 }
 
-pub(super) fn chat_message_to_turn(message: &ChatMessage) -> Option<ConversationTurn> {
+pub fn chat_message_to_turn(message: &ChatMessage) -> Option<ConversationTurn> {
     let content = if message.role.eq_ignore_ascii_case("user") {
         message.content.user_request_text()
     } else {

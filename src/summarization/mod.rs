@@ -680,7 +680,9 @@ pub use dedup::{
     deduplicate, Contradiction, DedupReport, MergeLink, MergedStatement, Polarity,
     SourcedStatement, StatementSignature, StatementVariant,
 };
-pub use dialog::{formalize_dialog, generate_chat_title, summarize_dialog, DialogTurn};
+pub use dialog::{
+    formalize_dialog, generate_chat_title, summarize_dialog, summarize_dialog_plain, DialogTurn,
+};
 pub use file::{
     formalize_repository_file, summarize_repository_file, EmbeddedGrammarFormalization,
     MetaLanguageFormalization, RepositoryFileFormalization,

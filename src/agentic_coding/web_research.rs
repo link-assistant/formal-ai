@@ -617,7 +617,7 @@ fn topic_from_history(messages: &[ChatMessage]) -> Option<String> {
         let context_id = format!("conversation:turn:{}", index + 1);
         let mut context = Context::new(&context_id);
         if message.role.eq_ignore_ascii_case("user") {
-            let text = message.content.plain_text();
+            let text = message.content.user_request_text();
             if !super::report_issue::is_report_intent(&text)
                 && !is_conversation_meta_request(&text, &messages[..index])
             {
@@ -657,18 +657,7 @@ fn topic_from_history(messages: &[ChatMessage]) -> Option<String> {
 fn is_conversation_meta_request(prompt: &str, preceding: &[ChatMessage]) -> bool {
     let history = preceding
         .iter()
-        .filter_map(|message| {
-            let text = message.content.plain_text();
-            if text.trim().is_empty() {
-                None
-            } else if message.role.eq_ignore_ascii_case("user") {
-                Some(crate::ConversationTurn::user(text))
-            } else if message.role.eq_ignore_ascii_case("assistant") {
-                Some(crate::ConversationTurn::assistant(text))
-            } else {
-                None
-            }
-        })
+        .filter_map(crate::protocol::chat_message_to_turn)
         .collect::<Vec<_>>();
     crate::solve_with_history(prompt, &history).intent == "summarize_conversation"
 }

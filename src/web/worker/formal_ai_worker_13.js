@@ -323,6 +323,9 @@ const ROLE_CONVERSATION_SUMMARY_DIRECTIVE = "conversation_summary_directive";
 const ROLE_CONVERSATION_REFERENCE = "conversation_reference";
 const ROLE_CONVERSATION_SUMMARY_PHRASE = "conversation_summary_phrase";
 const ROLE_CONVERSATION_SUMMARY_COURTESY = "conversation_summary_courtesy";
+// Issue #858 returning-user recap role; its multilingual surfaces likewise
+// live in data/seed/meanings-intent.lino.
+const ROLE_CONVERSATION_RETURN_RECAP = "conversation_return_recap";
 // Issue #529 previous-message recall role — mirrors
 // ROLE_CONVERSATION_RECALL_PREVIOUS_MESSAGE in src/seed/roles/intent.rs. Its
 // bare surface phrases ("what was written in the previous message", "что было
