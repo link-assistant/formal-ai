@@ -25,6 +25,12 @@ mod web_engine_core;
 #[path = "../../../web_search_core.rs"]
 mod web_search_core;
 
+#[path = "../../../memory_query_language/mod.rs"]
+#[allow(dead_code, unused_imports)]
+mod memory_query_language;
+
+mod memory_query_worker;
+
 use web_engine_core::{
     assess_arithmetic_claim, detect_language, evaluate_arithmetic_expression,
     matches_intent_route_payload, normalize_prompt, select_unknown_opener, stable_id,
@@ -448,6 +454,25 @@ pub extern "C" fn engine_fact_check_dialogue(input_length: usize) -> usize {
         no_statements: &decoded[4],
     };
     let answer = build_dialogue_fact_check(&decoded[5..], templates);
+    write_output(answer.as_bytes())
+}
+
+/// Parse and execute an exact SQL/GraphQL memory query in the shared Rust
+/// query core. The line-oriented input is URI-encoded by the browser bridge;
+/// the output is either an answer JSON object or empty for a non-query prompt.
+#[no_mangle]
+pub extern "C" fn engine_memory_query(input_length: usize) -> usize {
+    reset_bump();
+    let bytes = unsafe {
+        core::slice::from_raw_parts(
+            core::ptr::addr_of!(INPUT).cast::<u8>(),
+            min(input_length, INPUT_CAPACITY),
+        )
+    };
+    let Ok(payload) = core::str::from_utf8(bytes) else {
+        return 0;
+    };
+    let answer = memory_query_worker::answer(payload);
     write_output(answer.as_bytes())
 }
 

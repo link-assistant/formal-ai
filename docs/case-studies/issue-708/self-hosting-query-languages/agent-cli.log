@@ -1,0 +1,2009 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.080Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.084Z",
+  "service": "default",
+  "version": "0.25.4",
+  "command": "/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Create a Rust regression test file named issue_708_memory_query_languages.rs with exactly this content:\nuse formal_ai::links_substitution_query::link_substitution_effect;\nuse formal_ai::memory::{MemoryEvent, MemoryStore};\nuse formal_ai::memory_program::{MemoryProgramAuthorization, MemoryProgramLimits};\nuse formal_ai::memory_query_language::{\n    compile_memory_query, execute_memory_query, AggregateFunction, MemoryField,\n    MemoryQueryCompiler, MemoryQueryValue, QueryDialect,\n};\nuse formal_ai::substitution::CrudEvent;\n\nconst LIMITS: MemoryProgramLimits = MemoryProgramLimits {\n    max_matches: 64,\n    max_iterations: 8,\n};\n\nfn compile(source: &str, dialect: QueryDialect) -> formal_ai::memory_query_language::CompiledMemoryQuery {\n    compile_memory_query(source, dialect, LIMITS).unwrap_or_else(|error| panic!(\"{source}: {error}\"))\n}\n\n#[test]\nfn exact_sql_and_graphql_reads_share_one_plan_and_identity_substitution() {\n    let sql = compile(\n        \"SELECT id, kind, role, intent, tool, inputs, outputs, content, sentAt, demoLabel, conversationId, conversationTitle, evidence, accessCount, writeCount FROM memory WHERE kind = 'fact' AND role = 'user' ORDER BY accessCount DESC LIMIT 5\",\n        QueryDialect::SqlAnsi,\n    );\n    let graphql = compile(\n        \"query { memory(where: { kind: { eq: \\\"fact\\\" }, role: { eq: \\\"user\\\" } }, orderBy: { accessCount: DESC }, first: 5) { id kind role intent tool inputs outputs content sentAt demoLabel conversationId conversationTitle evidence accessCount writeCount } }\",\n        QueryDialect::GraphQl,\n    );\n\n    assert_eq!(sql.canonical_semantics(), graphql.canonical_semantics());\n    assert_eq!(sql.plan.projection, MemoryField::ALL);\n    for parsed in [&sql, &graphql] {\n        assert_eq!(parsed.parser.engine, \"meta_language\");\n        assert!(parsed.parser.full_match);\n        assert!(parsed.parser.text_preserved);\n        assert!(parsed\n            .link_program\n            .rules\n            .iter()\n            .any(|rule| link_substitution_effect(rule) == CrudEvent::Read));\n        assert!(parsed.links_notation().contains(\"effect read\"));\n    }\n}\n\n#[test]\nfn sql_crud_lowers_to_the_four_link_cli_substitution_shapes() {\n    let cases = [\n        (\n            \"SELECT content FROM memory WHERE id = 'm1'\",\n            CrudEvent::Read,\n        ),\n        (\n            \"INSERT INTO memory (id, kind, content) VALUES ('m2', 'fact', 'created')\",\n            CrudEvent::Create,\n        ),\n        (\n            \"UPDATE memory SET content = 'updated' WHERE id = 'm1'\",\n            CrudEvent::Update,\n        ),\n        (\"DELETE FROM memory WHERE id = 'm1'\", CrudEvent::Delete),\n    ];\n\n    for (source, expected) in cases {\n        let query = compile(source, QueryDialect::SqlAnsi);\n        assert!(\n            query\n                .link_program\n                .rules\n                .iter()\n                .any(|rule| link_substitution_effect(rule) == expected),\n            \"{source} did not lower to {expected:?}: {}\",\n            query.links_notation(),\n        );\n    }\n}\n\n#[test]\nfn aggregations_and_statistics_execute_over_the_shared_memory_schema() {\n    let query = compile(\n        \"SELECT kind, COUNT(*) AS count, SUM(accessCount) AS accesses, AVG(writeCount) AS averageWrites, MIN(accessCount) AS minimumAccesses, MAX(accessCount) AS maximumAccesses, VAR_POP(accessCount) AS accessVariance, STDDEV_POP(accessCount) AS accessDeviation FROM memory GROUP BY kind ORDER BY kind ASC\",\n        QueryDialect::SqlAnsi,\n    );\n    assert_eq!(\n        query\n            .plan\n            .aggregates\n            .iter()\n            .map(|aggregate| aggregate.function)\n            .collect::<Vec<_>>(),\n        [\n            AggregateFunction::Count,\n            AggregateFunction::Sum,\n            AggregateFunction::Average,\n            AggregateFunction::Minimum,\n            AggregateFunction::Maximum,\n            AggregateFunction::PopulationVariance,\n            AggregateFunction::PopulationStandardDeviation,\n        ]\n    );\n\n    let mut store = MemoryStore::from_events(vec![\n        MemoryEvent {\n            id: String::from(\"a\"),\n            kind: Some(String::from(\"fact\")),\n            access_count: 1,\n            write_count: 1,\n            ..MemoryEvent::default()\n        },\n        MemoryEvent {\n            id: String::from(\"b\"),\n            kind: Some(String::from(\"fact\")),\n            access_count: 3,\n            write_count: 3,\n            ..MemoryEvent::default()\n        },\n    ]);\n    let outcome = execute_memory_query(\n        &query,\n        &mut store,\n        MemoryProgramAuthorization::ReadOnly,\n    );\n    assert_eq!(outcome.rows.len(), 1);\n    assert_eq!(outcome.rows[0].get(\"count\"), Some(&MemoryQueryValue::Integer(2)));\n    assert_eq!(outcome.rows[0].get(\"accesses\"), Some(&MemoryQueryValue::Integer(4)));\n    assert_eq!(\n        outcome.rows[0].get(\"averageWrites\"),\n        Some(&MemoryQueryValue::Float(2.0))\n    );\n    assert_eq!(\n        outcome.rows[0].get(\"accessVariance\"),\n        Some(&MemoryQueryValue::Float(1.0))\n    );\n    assert_eq!(\n        outcome.rows[0].get(\"accessDeviation\"),\n        Some(&MemoryQueryValue::Float(1.0))\n    );\n}\n\n#[test]\nfn a_learned_natural_language_template_reuses_the_exact_sql_plan() {\n    let mut compiler = MemoryQueryCompiler::new();\n    compiler\n        .learn_natural_language_template(\n            \"Show {field} for {kind} memories.\",\n            \"SELECT {field} FROM memory WHERE kind = '{kind}'\",\n            QueryDialect::SqlAnsi,\n        )\n        .expect(\"safe placeholders should be learnable\");\n\n    let learned = compiler\n        .compile(\n            \"Show content for fact memories.\",\n            QueryDialect::NaturalLanguage,\n            LIMITS,\n        )\n        .expect(\"the learned surface should compile\");\n    let exact = compile(\n        \"SELECT content FROM memory WHERE kind = 'fact'\",\n        QueryDialect::SqlAnsi,\n    );\n\n    assert_eq!(learned.canonical_semantics(), exact.canonical_semantics());\n    assert!(compiler\n        .learning_links_notation()\n        .contains(\"natural_language_template\"));\n    assert!(learned.links_notation().contains(\"learned_from\"));\n} --disable-stdin --no-summarize-session --compaction-model same --model formal-ai/formal-ai",
+  "workingDirectory": "/tmp/tmp.IFdAJd5jvm",
+  "scriptPath": "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.085Z",
+  "service": "default",
+  "directory": "/tmp/tmp.IFdAJd5jvm",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.086Z",
+  "service": "project",
+  "directory": "/tmp/tmp.IFdAJd5jvm",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.136Z",
+  "service": "storage",
+  "index": 0,
+  "message": "running migration"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.139Z",
+  "service": "storage",
+  "index": 1,
+  "message": "running migration"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.146Z",
+  "service": "default",
+  "processArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Create a Rust regression test file named issue_708_memory_query_languages.rs with exactly this content:\nuse formal_ai::links_substitution_query::link_substitution_effect;\nuse formal_ai::memory::{MemoryEvent, MemoryStore};\nuse formal_ai::memory_program::{MemoryProgramAuthorization, MemoryProgramLimits};\nuse formal_ai::memory_query_language::{\n    compile_memory_query, execute_memory_query, AggregateFunction, MemoryField,\n    MemoryQueryCompiler, MemoryQueryValue, QueryDialect,\n};\nuse formal_ai::substitution::CrudEvent;\n\nconst LIMITS: MemoryProgramLimits = MemoryProgramLimits {\n    max_matches: 64,\n    max_iterations: 8,\n};\n\nfn compile(source: &str, dialect: QueryDialect) -> formal_ai::memory_query_language::CompiledMemoryQuery {\n    compile_memory_query(source, dialect, LIMITS).unwrap_or_else(|error| panic!(\"{source}: {error}\"))\n}\n\n#[test]\nfn exact_sql_and_graphql_reads_share_one_plan_and_identity_substitution() {\n    let sql = compile(\n        \"SELECT id, kind, role, intent, tool, inputs, outputs, content, sentAt, demoLabel, conversationId, conversationTitle, evidence, accessCount, writeCount FROM memory WHERE kind = 'fact' AND role = 'user' ORDER BY accessCount DESC LIMIT 5\",\n        QueryDialect::SqlAnsi,\n    );\n    let graphql = compile(\n        \"query { memory(where: { kind: { eq: \\\"fact\\\" }, role: { eq: \\\"user\\\" } }, orderBy: { accessCount: DESC }, first: 5) { id kind role intent tool inputs outputs content sentAt demoLabel conversationId conversationTitle evidence accessCount writeCount } }\",\n        QueryDialect::GraphQl,\n    );\n\n    assert_eq!(sql.canonical_semantics(), graphql.canonical_semantics());\n    assert_eq!(sql.plan.projection, MemoryField::ALL);\n    for parsed in [&sql, &graphql] {\n        assert_eq!(parsed.parser.engine, \"meta_language\");\n        assert!(parsed.parser.full_match);\n        assert!(parsed.parser.text_preserved);\n        assert!(parsed\n            .link_program\n            .rules\n            .iter()\n            .any(|rule| link_substitution_effect(rule) == CrudEvent::Read));\n        assert!(parsed.links_notation().contains(\"effect read\"));\n    }\n}\n\n#[test]\nfn sql_crud_lowers_to_the_four_link_cli_substitution_shapes() {\n    let cases = [\n        (\n            \"SELECT content FROM memory WHERE id = 'm1'\",\n            CrudEvent::Read,\n        ),\n        (\n            \"INSERT INTO memory (id, kind, content) VALUES ('m2', 'fact', 'created')\",\n            CrudEvent::Create,\n        ),\n        (\n            \"UPDATE memory SET content = 'updated' WHERE id = 'm1'\",\n            CrudEvent::Update,\n        ),\n        (\"DELETE FROM memory WHERE id = 'm1'\", CrudEvent::Delete),\n    ];\n\n    for (source, expected) in cases {\n        let query = compile(source, QueryDialect::SqlAnsi);\n        assert!(\n            query\n                .link_program\n                .rules\n                .iter()\n                .any(|rule| link_substitution_effect(rule) == expected),\n            \"{source} did not lower to {expected:?}: {}\",\n            query.links_notation(),\n        );\n    }\n}\n\n#[test]\nfn aggregations_and_statistics_execute_over_the_shared_memory_schema() {\n    let query = compile(\n        \"SELECT kind, COUNT(*) AS count, SUM(accessCount) AS accesses, AVG(writeCount) AS averageWrites, MIN(accessCount) AS minimumAccesses, MAX(accessCount) AS maximumAccesses, VAR_POP(accessCount) AS accessVariance, STDDEV_POP(accessCount) AS accessDeviation FROM memory GROUP BY kind ORDER BY kind ASC\",\n        QueryDialect::SqlAnsi,\n    );\n    assert_eq!(\n        query\n            .plan\n            .aggregates\n            .iter()\n            .map(|aggregate| aggregate.function)\n            .collect::<Vec<_>>(),\n        [\n            AggregateFunction::Count,\n            AggregateFunction::Sum,\n            AggregateFunction::Average,\n            AggregateFunction::Minimum,\n            AggregateFunction::Maximum,\n            AggregateFunction::PopulationVariance,\n            AggregateFunction::PopulationStandardDeviation,\n        ]\n    );\n\n    let mut store = MemoryStore::from_events(vec![\n        MemoryEvent {\n            id: String::from(\"a\"),\n            kind: Some(String::from(\"fact\")),\n            access_count: 1,\n            write_count: 1,\n            ..MemoryEvent::default()\n        },\n        MemoryEvent {\n            id: String::from(\"b\"),\n            kind: Some(String::from(\"fact\")),\n            access_count: 3,\n            write_count: 3,\n            ..MemoryEvent::default()\n        },\n    ]);\n    let outcome = execute_memory_query(\n        &query,\n        &mut store,\n        MemoryProgramAuthorization::ReadOnly,\n    );\n    assert_eq!(outcome.rows.len(), 1);\n    assert_eq!(outcome.rows[0].get(\"count\"), Some(&MemoryQueryValue::Integer(2)));\n    assert_eq!(outcome.rows[0].get(\"accesses\"), Some(&MemoryQueryValue::Integer(4)));\n    assert_eq!(\n        outcome.rows[0].get(\"averageWrites\"),\n        Some(&MemoryQueryValue::Float(2.0))\n    );\n    assert_eq!(\n        outcome.rows[0].get(\"accessVariance\"),\n        Some(&MemoryQueryValue::Float(1.0))\n    );\n    assert_eq!(\n        outcome.rows[0].get(\"accessDeviation\"),\n        Some(&MemoryQueryValue::Float(1.0))\n    );\n}\n\n#[test]\nfn a_learned_natural_language_template_reuses_the_exact_sql_plan() {\n    let mut compiler = MemoryQueryCompiler::new();\n    compiler\n        .learn_natural_language_template(\n            \"Show {field} for {kind} memories.\",\n            \"SELECT {field} FROM memory WHERE kind = '{kind}'\",\n            QueryDialect::SqlAnsi,\n        )\n        .expect(\"safe placeholders should be learnable\");\n\n    let learned = compiler\n        .compile(\n            \"Show content for fact memories.\",\n            QueryDialect::NaturalLanguage,\n            LIMITS,\n        )\n        .expect(\"the learned surface should compile\");\n    let exact = compile(\n        \"SELECT content FROM memory WHERE kind = 'fact'\",\n        QueryDialect::SqlAnsi,\n    );\n\n    assert_eq!(learned.canonical_semantics(), exact.canonical_semantics());\n    assert!(compiler\n        .learning_links_notation()\n        .contains(\"natural_language_template\"));\n    assert!(learned.links_notation().contains(\"learned_from\"));\n}",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-model",
+    "same",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Create a Rust regression test file named issue_708_memory_query_languages.rs with exactly this content:\nuse formal_ai::links_substitution_query::link_substitution_effect;\nuse formal_ai::memory::{MemoryEvent, MemoryStore};\nuse formal_ai::memory_program::{MemoryProgramAuthorization, MemoryProgramLimits};\nuse formal_ai::memory_query_language::{\n    compile_memory_query, execute_memory_query, AggregateFunction, MemoryField,\n    MemoryQueryCompiler, MemoryQueryValue, QueryDialect,\n};\nuse formal_ai::substitution::CrudEvent;\n\nconst LIMITS: MemoryProgramLimits = MemoryProgramLimits {\n    max_matches: 64,\n    max_iterations: 8,\n};\n\nfn compile(source: &str, dialect: QueryDialect) -> formal_ai::memory_query_language::CompiledMemoryQuery {\n    compile_memory_query(source, dialect, LIMITS).unwrap_or_else(|error| panic!(\"{source}: {error}\"))\n}\n\n#[test]\nfn exact_sql_and_graphql_reads_share_one_plan_and_identity_substitution() {\n    let sql = compile(\n        \"SELECT id, kind, role, intent, tool, inputs, outputs, content, sentAt, demoLabel, conversationId, conversationTitle, evidence, accessCount, writeCount FROM memory WHERE kind = 'fact' AND role = 'user' ORDER BY accessCount DESC LIMIT 5\",\n        QueryDialect::SqlAnsi,\n    );\n    let graphql = compile(\n        \"query { memory(where: { kind: { eq: \\\"fact\\\" }, role: { eq: \\\"user\\\" } }, orderBy: { accessCount: DESC }, first: 5) { id kind role intent tool inputs outputs content sentAt demoLabel conversationId conversationTitle evidence accessCount writeCount } }\",\n        QueryDialect::GraphQl,\n    );\n\n    assert_eq!(sql.canonical_semantics(), graphql.canonical_semantics());\n    assert_eq!(sql.plan.projection, MemoryField::ALL);\n    for parsed in [&sql, &graphql] {\n        assert_eq!(parsed.parser.engine, \"meta_language\");\n        assert!(parsed.parser.full_match);\n        assert!(parsed.parser.text_preserved);\n        assert!(parsed\n            .link_program\n            .rules\n            .iter()\n            .any(|rule| link_substitution_effect(rule) == CrudEvent::Read));\n        assert!(parsed.links_notation().contains(\"effect read\"));\n    }\n}\n\n#[test]\nfn sql_crud_lowers_to_the_four_link_cli_substitution_shapes() {\n    let cases = [\n        (\n            \"SELECT content FROM memory WHERE id = 'm1'\",\n            CrudEvent::Read,\n        ),\n        (\n            \"INSERT INTO memory (id, kind, content) VALUES ('m2', 'fact', 'created')\",\n            CrudEvent::Create,\n        ),\n        (\n            \"UPDATE memory SET content = 'updated' WHERE id = 'm1'\",\n            CrudEvent::Update,\n        ),\n        (\"DELETE FROM memory WHERE id = 'm1'\", CrudEvent::Delete),\n    ];\n\n    for (source, expected) in cases {\n        let query = compile(source, QueryDialect::SqlAnsi);\n        assert!(\n            query\n                .link_program\n                .rules\n                .iter()\n                .any(|rule| link_substitution_effect(rule) == expected),\n            \"{source} did not lower to {expected:?}: {}\",\n            query.links_notation(),\n        );\n    }\n}\n\n#[test]\nfn aggregations_and_statistics_execute_over_the_shared_memory_schema() {\n    let query = compile(\n        \"SELECT kind, COUNT(*) AS count, SUM(accessCount) AS accesses, AVG(writeCount) AS averageWrites, MIN(accessCount) AS minimumAccesses, MAX(accessCount) AS maximumAccesses, VAR_POP(accessCount) AS accessVariance, STDDEV_POP(accessCount) AS accessDeviation FROM memory GROUP BY kind ORDER BY kind ASC\",\n        QueryDialect::SqlAnsi,\n    );\n    assert_eq!(\n        query\n            .plan\n            .aggregates\n            .iter()\n            .map(|aggregate| aggregate.function)\n            .collect::<Vec<_>>(),\n        [\n            AggregateFunction::Count,\n            AggregateFunction::Sum,\n            AggregateFunction::Average,\n            AggregateFunction::Minimum,\n            AggregateFunction::Maximum,\n            AggregateFunction::PopulationVariance,\n            AggregateFunction::PopulationStandardDeviation,\n        ]\n    );\n\n    let mut store = MemoryStore::from_events(vec![\n        MemoryEvent {\n            id: String::from(\"a\"),\n            kind: Some(String::from(\"fact\")),\n            access_count: 1,\n            write_count: 1,\n            ..MemoryEvent::default()\n        },\n        MemoryEvent {\n            id: String::from(\"b\"),\n            kind: Some(String::from(\"fact\")),\n            access_count: 3,\n            write_count: 3,\n            ..MemoryEvent::default()\n        },\n    ]);\n    let outcome = execute_memory_query(\n        &query,\n        &mut store,\n        MemoryProgramAuthorization::ReadOnly,\n    );\n    assert_eq!(outcome.rows.len(), 1);\n    assert_eq!(outcome.rows[0].get(\"count\"), Some(&MemoryQueryValue::Integer(2)));\n    assert_eq!(outcome.rows[0].get(\"accesses\"), Some(&MemoryQueryValue::Integer(4)));\n    assert_eq!(\n        outcome.rows[0].get(\"averageWrites\"),\n        Some(&MemoryQueryValue::Float(2.0))\n    );\n    assert_eq!(\n        outcome.rows[0].get(\"accessVariance\"),\n        Some(&MemoryQueryValue::Float(1.0))\n    );\n    assert_eq!(\n        outcome.rows[0].get(\"accessDeviation\"),\n        Some(&MemoryQueryValue::Float(1.0))\n    );\n}\n\n#[test]\nfn a_learned_natural_language_template_reuses_the_exact_sql_plan() {\n    let mut compiler = MemoryQueryCompiler::new();\n    compiler\n        .learn_natural_language_template(\n            \"Show {field} for {kind} memories.\",\n            \"SELECT {field} FROM memory WHERE kind = '{kind}'\",\n            QueryDialect::SqlAnsi,\n        )\n        .expect(\"safe placeholders should be learnable\");\n\n    let learned = compiler\n        .compile(\n            \"Show content for fact memories.\",\n            QueryDialect::NaturalLanguage,\n            LIMITS,\n        )\n        .expect(\"the learned surface should compile\");\n    let exact = compile(\n        \"SELECT content FROM memory WHERE kind = 'fact'\",\n        QueryDialect::SqlAnsi,\n    );\n\n    assert_eq!(learned.canonical_semantics(), exact.canonical_semantics());\n    assert!(compiler\n        .learning_links_notation()\n        .contains(\"natural_language_template\"));\n    assert!(learned.links_notation().contains(\"learned_from\"));\n}",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-model",
+    "same",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.146Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.150Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.156Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.156Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.158Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.190Z",
+  "service": "config",
+  "path": "/tmp/tmp.IFdAJd5jvm/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.234Z",
+  "service": "models.dev",
+  "path": "/home/box/.cache/link-assistant-agent/models.json",
+  "message": "no cache found, awaiting refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.237Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.393Z",
+  "service": "models.dev",
+  "path": "/home/box/.cache/link-assistant-agent/models.json",
+  "message": "cache unavailable, using bundled data"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.513Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.631Z",
+  "service": "claude-oauth",
+  "path": "/home/box/.claude/.credentials.json",
+  "message": "credentials file not found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.632Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.633Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.633Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.653Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.653Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.653Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 503,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.655Z",
+  "service": "provider",
+  "modelID": "big-pickle",
+  "providerID": "opencode",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.655Z",
+  "service": "provider",
+  "modelID": "minimax-m2.5-free",
+  "providerID": "kilo",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.656Z",
+  "service": "default",
+  "models": [
+    "opencode/big-pickle",
+    "kilo/minimax-m2.5-free",
+    "same"
+  ],
+  "source": "default",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.754Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.754Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.758Z",
+  "service": "session",
+  "id": "ses_041576852ffe163oFMQA9N8bIr",
+  "version": "0.25.4",
+  "projectID": "global",
+  "directory": "/tmp/tmp.IFdAJd5jvm",
+  "title": "New session - 2026-08-01T18:49:07.758Z",
+  "time": {
+    "created": 1785610147758,
+    "updated": 1785610147758
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.768Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.768Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.769Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 15,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.774Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.783Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_041576852ffe163oFMQA9N8bIr/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.783Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_041576852ffe163oFMQA9N8bIr/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.800Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 17,
+  "method": "POST",
+  "path": "/session/ses_041576852ffe163oFMQA9N8bIr/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.820Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.830Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.832Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.836Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.852Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.853Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.856Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.860Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.862Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.862Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.863Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 3,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.863Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.863Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.864Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.864Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.864Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.864Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.864Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:07.864Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:08.869Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:08.889Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:08.890Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:08.934Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:08.962Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:08.990Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:08.991Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:08.992Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:08.995Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.186Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1785610149186,
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "part": {
+    "id": "prt_fbea89d32001CTUPByj9vXnZzQ",
+    "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+    "messageID": "msg_fbea89c15001iL13V1gdiPXKa7",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.189Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.192Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785610149192,
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "part": {
+    "id": "prt_fbea89d45001S2VnecqQBm4LjR",
+    "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+    "messageID": "msg_fbea89c15001iL13V1gdiPXKa7",
+    "type": "tool",
+    "callID": "call_f5abd253c5a35156",
+    "tool": "write",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.193Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1785610149193,
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "part": {
+    "id": "prt_fbea89d43001z3tzF3TwQfjNj3",
+    "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+    "messageID": "msg_fbea89c15001iL13V1gdiPXKa7",
+    "type": "text",
+    "text": "Let me update .formal-ai/general-change-plan.lino for you.",
+    "time": {
+      "start": 1785610149192,
+      "end": 1785610149192
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.196Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785610149196,
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "part": {
+    "id": "prt_fbea89d45001S2VnecqQBm4LjR",
+    "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+    "messageID": "msg_fbea89c15001iL13V1gdiPXKa7",
+    "type": "tool",
+    "callID": "call_f5abd253c5a35156",
+    "tool": "write",
+    "state": {
+      "status": "running",
+      "input": {
+        "content": "general_change_plan\n  id \"general_change_plan_3cb238351c8ad157\"\n  execution_mode \"literal_file\"\n  goal \"Create a Rust regression test file named issue_708_memory_query_languages.rs with exactly this content:\\nuse formal_ai::links_substitution_query::link_substitution_effect;\\nuse formal_ai::memory::{MemoryEvent, MemoryStore};\\nuse formal_ai::memory_program::{MemoryProgramAuthorization, MemoryProgramLimits};\\nuse formal_ai::memory_query_language::{\\n    compile_memory_query, execute_memory_query, AggregateFunction, MemoryField,\\n    MemoryQueryCompiler, MemoryQueryValue, QueryDialect,\\n};\\nuse formal_ai::substitution::CrudEvent;\\n\\nconst LIMITS: MemoryProgramLimits = MemoryProgramLimits {\\n    max_matches: 64,\\n    max_iterations: 8,\\n};\\n\\nfn compile(source: &str, dialect: QueryDialect) -> formal_ai::memory_query_language::CompiledMemoryQuery {\\n    compile_memory_query(source, dialect, LIMITS).unwrap_or_else(|error| panic!(\\\"{source}: {error}\\\"))\\n}\\n\\n#[test]\\nfn exact_sql_and_graphql_reads_share_one_plan_and_identity_substitution() {\\n    let sql = compile(\\n        \\\"SELECT id, kind, role, intent, tool, inputs, outputs, content, sentAt, demoLabel, conversationId, conversationTitle, evidence, accessCount, writeCount FROM memory WHERE kind = 'fact' AND role = 'user' ORDER BY accessCount DESC LIMIT 5\\\",\\n        QueryDialect::SqlAnsi,\\n    );\\n    let graphql = compile(\\n        \\\"query { memory(where: { kind: { eq: \\\\\\\"fact\\\\\\\" }, role: { eq: \\\\\\\"user\\\\\\\" } }, orderBy: { accessCount: DESC }, first: 5) { id kind role intent tool inputs outputs content sentAt demoLabel conversationId conversationTitle evidence accessCount writeCount } }\\\",\\n        QueryDialect::GraphQl,\\n    );\\n\\n    assert_eq!(sql.canonical_semantics(), graphql.canonical_semantics());\\n    assert_eq!(sql.plan.projection, MemoryField::ALL);\\n    for parsed in [&sql, &graphql] {\\n        assert_eq!(parsed.parser.engine, \\\"meta_language\\\");\\n        assert!(parsed.parser.full_match);\\n        assert!(parsed.parser.text_preserved);\\n        assert!(parsed\\n            .link_program\\n            .rules\\n            .iter()\\n            .any(|rule| link_substitution_effect(rule) == CrudEvent::Read));\\n        assert!(parsed.links_notation().contains(\\\"effect read\\\"));\\n    }\\n}\\n\\n#[test]\\nfn sql_crud_lowers_to_the_four_link_cli_substitution_shapes() {\\n    let cases = [\\n        (\\n            \\\"SELECT content FROM memory WHERE id = 'm1'\\\",\\n            CrudEvent::Read,\\n        ),\\n        (\\n            \\\"INSERT INTO memory (id, kind, content) VALUES ('m2', 'fact', 'created')\\\",\\n            CrudEvent::Create,\\n        ),\\n        (\\n            \\\"UPDATE memory SET content = 'updated' WHERE id = 'm1'\\\",\\n            CrudEvent::Update,\\n        ),\\n        (\\\"DELETE FROM memory WHERE id = 'm1'\\\", CrudEvent::Delete),\\n    ];\\n\\n    for (source, expected) in cases {\\n        let query = compile(source, QueryDialect::SqlAnsi);\\n        assert!(\\n            query\\n                .link_program\\n                .rules\\n                .iter()\\n                .any(|rule| link_substitution_effect(rule) == expected),\\n            \\\"{source} did not lower to {expected:?}: {}\\\",\\n            query.links_notation(),\\n        );\\n    }\\n}\\n\\n#[test]\\nfn aggregations_and_statistics_execute_over_the_shared_memory_schema() {\\n    let query = compile(\\n        \\\"SELECT kind, COUNT(*) AS count, SUM(accessCount) AS accesses, AVG(writeCount) AS averageWrites, MIN(accessCount) AS minimumAccesses, MAX(accessCount) AS maximumAccesses, VAR_POP(accessCount) AS accessVariance, STDDEV_POP(accessCount) AS accessDeviation FROM memory GROUP BY kind ORDER BY kind ASC\\\",\\n        QueryDialect::SqlAnsi,\\n    );\\n    assert_eq!(\\n        query\\n            .plan\\n            .aggregates\\n            .iter()\\n            .map(|aggregate| aggregate.function)\\n            .collect::<Vec<_>>(),\\n        [\\n            AggregateFunction::Count,\\n            AggregateFunction::Sum,\\n            AggregateFunction::Average,\\n            AggregateFunction::Minimum,\\n            AggregateFunction::Maximum,\\n            AggregateFunction::PopulationVariance,\\n            AggregateFunction::PopulationStandardDeviation,\\n        ]\\n    );\\n\\n    let mut store = MemoryStore::from_events(vec![\\n        MemoryEvent {\\n            id: String::from(\\\"a\\\"),\\n            kind: Some(String::from(\\\"fact\\\")),\\n            access_count: 1,\\n            write_count: 1,\\n            ..MemoryEvent::default()\\n        },\\n        MemoryEvent {\\n            id: String::from(\\\"b\\\"),\\n            kind: Some(String::from(\\\"fact\\\")),\\n            access_count: 3,\\n            write_count: 3,\\n            ..MemoryEvent::default()\\n        },\\n    ]);\\n    let outcome = execute_memory_query(\\n        &query,\\n        &mut store,\\n        MemoryProgramAuthorization::ReadOnly,\\n    );\\n    assert_eq!(outcome.rows.len(), 1);\\n    assert_eq!(outcome.rows[0].get(\\\"count\\\"), Some(&MemoryQueryValue::Integer(2)));\\n    assert_eq!(outcome.rows[0].get(\\\"accesses\\\"), Some(&MemoryQueryValue::Integer(4)));\\n    assert_eq!(\\n        outcome.rows[0].get(\\\"averageWrites\\\"),\\n        Some(&MemoryQueryValue::Float(2.0))\\n    );\\n    assert_eq!(\\n        outcome.rows[0].get(\\\"accessVariance\\\"),\\n        Some(&MemoryQueryValue::Float(1.0))\\n    );\\n    assert_eq!(\\n        outcome.rows[0].get(\\\"accessDeviation\\\"),\\n        Some(&MemoryQueryValue::Float(1.0))\\n    );\\n}\\n\\n#[test]\\nfn a_learned_natural_language_template_reuses_the_exact_sql_plan() {\\n    let mut compiler = MemoryQueryCompiler::new();\\n    compiler\\n        .learn_natural_language_template(\\n            \\\"Show {field} for {kind} memories.\\\",\\n            \\\"SELECT {field} FROM memory WHERE kind = '{kind}'\\\",\\n            QueryDialect::SqlAnsi,\\n        )\\n        .expect(\\\"safe placeholders should be learnable\\\");\\n\\n    let learned = compiler\\n        .compile(\\n            \\\"Show content for fact memories.\\\",\\n            QueryDialect::NaturalLanguage,\\n            LIMITS,\\n        )\\n        .expect(\\\"the learned surface should compile\\\");\\n    let exact = compile(\\n        \\\"SELECT content FROM memory WHERE kind = 'fact'\\\",\\n        QueryDialect::SqlAnsi,\\n    );\\n\\n    assert_eq!(learned.canonical_semantics(), exact.canonical_semantics());\\n    assert!(compiler\\n        .learning_links_notation()\\n        .contains(\\\"natural_language_template\\\"));\\n    assert!(learned.links_notation().contains(\\\"learned_from\\\"));\\n}\"\n  target \"issue_708_memory_query_languages.rs\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_08e7a519e4b5e02b\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to issue_708_memory_query_languages.rs\"\n    expected_evidence \"workspace file issue_708_memory_query_languages.rs\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"use formal_ai::links_substitution_query::link_substitution_effect;\\nuse formal_ai::memory::{MemoryEvent, MemoryStore};\\nuse formal_ai::memory_program::{MemoryProgramAuthorization, MemoryProgramLimits};\\nuse formal_ai::memory_query_language::{\\n    compile_memory_query, execute_memory_query, AggregateFunction, MemoryField,\\n    MemoryQueryCompiler, MemoryQueryValue, QueryDialect,\\n};\\nuse formal_ai::substitution::CrudEvent;\\n\\nconst LIMITS: MemoryProgramLimits = MemoryProgramLimits {\\n    max_matches: 64,\\n    max_iterations: 8,\\n};\\n\\nfn compile(source: &str, dialect: QueryDialect) -> formal_ai::memory_query_language::CompiledMemoryQuery {\\n    compile_memory_query(source, dialect, LIMITS).unwrap_or_else(|error| panic!(\\\"{source}: {error}\\\"))\\n}\\n\\n#[test]\\nfn exact_sql_and_graphql_reads_share_one_plan_and_identity_substitution() {\\n    let sql = compile(\\n        \\\"SELECT id, kind, role, intent, tool, inputs, outputs, content, sentAt, demoLabel, conversationId, conversationTitle, evidence, accessCount, writeCount FROM memory WHERE kind = 'fact' AND role = 'user' ORDER BY accessCount DESC LIMIT 5\\\",\\n        QueryDialect::SqlAnsi,\\n    );\\n    let graphql = compile(\\n        \\\"query { memory(where: { kind: { eq: \\\\\\\"fact\\\\\\\" }, role: { eq: \\\\\\\"user\\\\\\\" } }, orderBy: { accessCount: DESC }, first: 5) { id kind role intent tool inputs outputs content sentAt demoLabel conversationId conversationTitle evidence accessCount writeCount } }\\\",\\n        QueryDialect::GraphQl,\\n    );\\n\\n    assert_eq!(sql.canonical_semantics(), graphql.canonical_semantics());\\n    assert_eq!(sql.plan.projection, MemoryField::ALL);\\n    for parsed in [&sql, &graphql] {\\n        assert_eq!(parsed.parser.engine, \\\"meta_language\\\");\\n        assert!(parsed.parser.full_match);\\n        assert!(parsed.parser.text_preserved);\\n        assert!(parsed\\n            .link_program\\n            .rules\\n            .iter()\\n            .any(|rule| link_substitution_effect(rule) == CrudEvent::Read));\\n        assert!(parsed.links_notation().contains(\\\"effect read\\\"));\\n    }\\n}\\n\\n#[test]\\nfn sql_crud_lowers_to_the_four_link_cli_substitution_shapes() {\\n    let cases = [\\n        (\\n            \\\"SELECT content FROM memory WHERE id = 'm1'\\\",\\n            CrudEvent::Read,\\n        ),\\n        (\\n            \\\"INSERT INTO memory (id, kind, content) VALUES ('m2', 'fact', 'created')\\\",\\n            CrudEvent::Create,\\n        ),\\n        (\\n            \\\"UPDATE memory SET content = 'updated' WHERE id = 'm1'\\\",\\n            CrudEvent::Update,\\n        ),\\n        (\\\"DELETE FROM memory WHERE id = 'm1'\\\", CrudEvent::Delete),\\n    ];\\n\\n    for (source, expected) in cases {\\n        let query = compile(source, QueryDialect::SqlAnsi);\\n        assert!(\\n            query\\n                .link_program\\n                .rules\\n                .iter()\\n                .any(|rule| link_substitution_effect(rule) == expected),\\n            \\\"{source} did not lower to {expected:?}: {}\\\",\\n            query.links_notation(),\\n        );\\n    }\\n}\\n\\n#[test]\\nfn aggregations_and_statistics_execute_over_the_shared_memory_schema() {\\n    let query = compile(\\n        \\\"SELECT kind, COUNT(*) AS count, SUM(accessCount) AS accesses, AVG(writeCount) AS averageWrites, MIN(accessCount) AS minimumAccesses, MAX(accessCount) AS maximumAccesses, VAR_POP(accessCount) AS accessVariance, STDDEV_POP(accessCount) AS accessDeviation FROM memory GROUP BY kind ORDER BY kind ASC\\\",\\n        QueryDialect::SqlAnsi,\\n    );\\n    assert_eq!(\\n        query\\n            .plan\\n            .aggregates\\n            .iter()\\n            .map(|aggregate| aggregate.function)\\n            .collect::<Vec<_>>(),\\n        [\\n            AggregateFunction::Count,\\n            AggregateFunction::Sum,\\n            AggregateFunction::Average,\\n            AggregateFunction::Minimum,\\n            AggregateFunction::Maximum,\\n            AggregateFunction::PopulationVariance,\\n            AggregateFunction::PopulationStandardDeviation,\\n        ]\\n    );\\n\\n    let mut store = MemoryStore::from_events(vec![\\n        MemoryEvent {\\n            id: String::from(\\\"a\\\"),\\n            kind: Some(String::from(\\\"fact\\\")),\\n            access_count: 1,\\n            write_count: 1,\\n            ..MemoryEvent::default()\\n        },\\n        MemoryEvent {\\n            id: String::from(\\\"b\\\"),\\n            kind: Some(String::from(\\\"fact\\\")),\\n            access_count: 3,\\n            write_count: 3,\\n            ..MemoryEvent::default()\\n        },\\n    ]);\\n    let outcome = execute_memory_query(\\n        &query,\\n        &mut store,\\n        MemoryProgramAuthorization::ReadOnly,\\n    );\\n    assert_eq!(outcome.rows.len(), 1);\\n    assert_eq!(outcome.rows[0].get(\\\"count\\\"), Some(&MemoryQueryValue::Integer(2)));\\n    assert_eq!(outcome.rows[0].get(\\\"accesses\\\"), Some(&MemoryQueryValue::Integer(4)));\\n    assert_eq!(\\n        outcome.rows[0].get(\\\"averageWrites\\\"),\\n        Some(&MemoryQueryValue::Float(2.0))\\n    );\\n    assert_eq!(\\n        outcome.rows[0].get(\\\"accessVariance\\\"),\\n        Some(&MemoryQueryValue::Float(1.0))\\n    );\\n    assert_eq!(\\n        outcome.rows[0].get(\\\"accessDeviation\\\"),\\n        Some(&MemoryQueryValue::Float(1.0))\\n    );\\n}\\n\\n#[test]\\nfn a_learned_natural_language_template_reuses_the_exact_sql_plan() {\\n    let mut compiler = MemoryQueryCompiler::new();\\n    compiler\\n        .learn_natural_language_template(\\n            \\\"Show {field} for {kind} memories.\\\",\\n            \\\"SELECT {field} FROM memory WHERE kind = '{kind}'\\\",\\n            QueryDialect::SqlAnsi,\\n        )\\n        .expect(\\\"safe placeholders should be learnable\\\");\\n\\n    let learned = compiler\\n        .compile(\\n            \\\"Show content for fact memories.\\\",\\n            QueryDialect::NaturalLanguage,\\n            LIMITS,\\n        )\\n        .expect(\\\"the learned surface should compile\\\");\\n    let exact = compile(\\n        \\\"SELECT content FROM memory WHERE kind = 'fact'\\\",\\n        QueryDialect::SqlAnsi,\\n    );\\n\\n    assert_eq!(learned.canonical_semantics(), exact.canonical_semantics());\\n    assert!(compiler\\n        .learning_links_notation()\\n        .contains(\\\"natural_language_template\\\"));\\n    assert!(learned.links_notation().contains(\\\"learned_from\\\"));\\n}\"\n    command \"cat issue_708_memory_query_languages.rs\"\n  verification_command \"cat issue_708_memory_query_languages.rs\"\n",
+        "filePath": "/tmp/tmp.IFdAJd5jvm/.formal-ai/general-change-plan.lino"
+      },
+      "time": {
+        "start": 1785610149193
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.227Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785610149227,
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "part": {
+    "id": "prt_fbea89d45001S2VnecqQBm4LjR",
+    "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+    "messageID": "msg_fbea89c15001iL13V1gdiPXKa7",
+    "type": "tool",
+    "callID": "call_f5abd253c5a35156",
+    "tool": "write",
+    "state": {
+      "status": "completed",
+      "input": {
+        "content": "general_change_plan\n  id \"general_change_plan_3cb238351c8ad157\"\n  execution_mode \"literal_file\"\n  goal \"Create a Rust regression test file named issue_708_memory_query_languages.rs with exactly this content:\\nuse formal_ai::links_substitution_query::link_substitution_effect;\\nuse formal_ai::memory::{MemoryEvent, MemoryStore};\\nuse formal_ai::memory_program::{MemoryProgramAuthorization, MemoryProgramLimits};\\nuse formal_ai::memory_query_language::{\\n    compile_memory_query, execute_memory_query, AggregateFunction, MemoryField,\\n    MemoryQueryCompiler, MemoryQueryValue, QueryDialect,\\n};\\nuse formal_ai::substitution::CrudEvent;\\n\\nconst LIMITS: MemoryProgramLimits = MemoryProgramLimits {\\n    max_matches: 64,\\n    max_iterations: 8,\\n};\\n\\nfn compile(source: &str, dialect: QueryDialect) -> formal_ai::memory_query_language::CompiledMemoryQuery {\\n    compile_memory_query(source, dialect, LIMITS).unwrap_or_else(|error| panic!(\\\"{source}: {error}\\\"))\\n}\\n\\n#[test]\\nfn exact_sql_and_graphql_reads_share_one_plan_and_identity_substitution() {\\n    let sql = compile(\\n        \\\"SELECT id, kind, role, intent, tool, inputs, outputs, content, sentAt, demoLabel, conversationId, conversationTitle, evidence, accessCount, writeCount FROM memory WHERE kind = 'fact' AND role = 'user' ORDER BY accessCount DESC LIMIT 5\\\",\\n        QueryDialect::SqlAnsi,\\n    );\\n    let graphql = compile(\\n        \\\"query { memory(where: { kind: { eq: \\\\\\\"fact\\\\\\\" }, role: { eq: \\\\\\\"user\\\\\\\" } }, orderBy: { accessCount: DESC }, first: 5) { id kind role intent tool inputs outputs content sentAt demoLabel conversationId conversationTitle evidence accessCount writeCount } }\\\",\\n        QueryDialect::GraphQl,\\n    );\\n\\n    assert_eq!(sql.canonical_semantics(), graphql.canonical_semantics());\\n    assert_eq!(sql.plan.projection, MemoryField::ALL);\\n    for parsed in [&sql, &graphql] {\\n        assert_eq!(parsed.parser.engine, \\\"meta_language\\\");\\n        assert!(parsed.parser.full_match);\\n        assert!(parsed.parser.text_preserved);\\n        assert!(parsed\\n            .link_program\\n            .rules\\n            .iter()\\n            .any(|rule| link_substitution_effect(rule) == CrudEvent::Read));\\n        assert!(parsed.links_notation().contains(\\\"effect read\\\"));\\n    }\\n}\\n\\n#[test]\\nfn sql_crud_lowers_to_the_four_link_cli_substitution_shapes() {\\n    let cases = [\\n        (\\n            \\\"SELECT content FROM memory WHERE id = 'm1'\\\",\\n            CrudEvent::Read,\\n        ),\\n        (\\n            \\\"INSERT INTO memory (id, kind, content) VALUES ('m2', 'fact', 'created')\\\",\\n            CrudEvent::Create,\\n        ),\\n        (\\n            \\\"UPDATE memory SET content = 'updated' WHERE id = 'm1'\\\",\\n            CrudEvent::Update,\\n        ),\\n        (\\\"DELETE FROM memory WHERE id = 'm1'\\\", CrudEvent::Delete),\\n    ];\\n\\n    for (source, expected) in cases {\\n        let query = compile(source, QueryDialect::SqlAnsi);\\n        assert!(\\n            query\\n                .link_program\\n                .rules\\n                .iter()\\n                .any(|rule| link_substitution_effect(rule) == expected),\\n            \\\"{source} did not lower to {expected:?}: {}\\\",\\n            query.links_notation(),\\n        );\\n    }\\n}\\n\\n#[test]\\nfn aggregations_and_statistics_execute_over_the_shared_memory_schema() {\\n    let query = compile(\\n        \\\"SELECT kind, COUNT(*) AS count, SUM(accessCount) AS accesses, AVG(writeCount) AS averageWrites, MIN(accessCount) AS minimumAccesses, MAX(accessCount) AS maximumAccesses, VAR_POP(accessCount) AS accessVariance, STDDEV_POP(accessCount) AS accessDeviation FROM memory GROUP BY kind ORDER BY kind ASC\\\",\\n        QueryDialect::SqlAnsi,\\n    );\\n    assert_eq!(\\n        query\\n            .plan\\n            .aggregates\\n            .iter()\\n            .map(|aggregate| aggregate.function)\\n            .collect::<Vec<_>>(),\\n        [\\n            AggregateFunction::Count,\\n            AggregateFunction::Sum,\\n            AggregateFunction::Average,\\n            AggregateFunction::Minimum,\\n            AggregateFunction::Maximum,\\n            AggregateFunction::PopulationVariance,\\n            AggregateFunction::PopulationStandardDeviation,\\n        ]\\n    );\\n\\n    let mut store = MemoryStore::from_events(vec![\\n        MemoryEvent {\\n            id: String::from(\\\"a\\\"),\\n            kind: Some(String::from(\\\"fact\\\")),\\n            access_count: 1,\\n            write_count: 1,\\n            ..MemoryEvent::default()\\n        },\\n        MemoryEvent {\\n            id: String::from(\\\"b\\\"),\\n            kind: Some(String::from(\\\"fact\\\")),\\n            access_count: 3,\\n            write_count: 3,\\n            ..MemoryEvent::default()\\n        },\\n    ]);\\n    let outcome = execute_memory_query(\\n        &query,\\n        &mut store,\\n        MemoryProgramAuthorization::ReadOnly,\\n    );\\n    assert_eq!(outcome.rows.len(), 1);\\n    assert_eq!(outcome.rows[0].get(\\\"count\\\"), Some(&MemoryQueryValue::Integer(2)));\\n    assert_eq!(outcome.rows[0].get(\\\"accesses\\\"), Some(&MemoryQueryValue::Integer(4)));\\n    assert_eq!(\\n        outcome.rows[0].get(\\\"averageWrites\\\"),\\n        Some(&MemoryQueryValue::Float(2.0))\\n    );\\n    assert_eq!(\\n        outcome.rows[0].get(\\\"accessVariance\\\"),\\n        Some(&MemoryQueryValue::Float(1.0))\\n    );\\n    assert_eq!(\\n        outcome.rows[0].get(\\\"accessDeviation\\\"),\\n        Some(&MemoryQueryValue::Float(1.0))\\n    );\\n}\\n\\n#[test]\\nfn a_learned_natural_language_template_reuses_the_exact_sql_plan() {\\n    let mut compiler = MemoryQueryCompiler::new();\\n    compiler\\n        .learn_natural_language_template(\\n            \\\"Show {field} for {kind} memories.\\\",\\n            \\\"SELECT {field} FROM memory WHERE kind = '{kind}'\\\",\\n            QueryDialect::SqlAnsi,\\n        )\\n        .expect(\\\"safe placeholders should be learnable\\\");\\n\\n    let learned = compiler\\n        .compile(\\n            \\\"Show content for fact memories.\\\",\\n            QueryDialect::NaturalLanguage,\\n            LIMITS,\\n        )\\n        .expect(\\\"the learned surface should compile\\\");\\n    let exact = compile(\\n        \\\"SELECT content FROM memory WHERE kind = 'fact'\\\",\\n        QueryDialect::SqlAnsi,\\n    );\\n\\n    assert_eq!(learned.canonical_semantics(), exact.canonical_semantics());\\n    assert!(compiler\\n        .learning_links_notation()\\n        .contains(\\\"natural_language_template\\\"));\\n    assert!(learned.links_notation().contains(\\\"learned_from\\\"));\\n}\"\n  target \"issue_708_memory_query_languages.rs\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_08e7a519e4b5e02b\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to issue_708_memory_query_languages.rs\"\n    expected_evidence \"workspace file issue_708_memory_query_languages.rs\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"use formal_ai::links_substitution_query::link_substitution_effect;\\nuse formal_ai::memory::{MemoryEvent, MemoryStore};\\nuse formal_ai::memory_program::{MemoryProgramAuthorization, MemoryProgramLimits};\\nuse formal_ai::memory_query_language::{\\n    compile_memory_query, execute_memory_query, AggregateFunction, MemoryField,\\n    MemoryQueryCompiler, MemoryQueryValue, QueryDialect,\\n};\\nuse formal_ai::substitution::CrudEvent;\\n\\nconst LIMITS: MemoryProgramLimits = MemoryProgramLimits {\\n    max_matches: 64,\\n    max_iterations: 8,\\n};\\n\\nfn compile(source: &str, dialect: QueryDialect) -> formal_ai::memory_query_language::CompiledMemoryQuery {\\n    compile_memory_query(source, dialect, LIMITS).unwrap_or_else(|error| panic!(\\\"{source}: {error}\\\"))\\n}\\n\\n#[test]\\nfn exact_sql_and_graphql_reads_share_one_plan_and_identity_substitution() {\\n    let sql = compile(\\n        \\\"SELECT id, kind, role, intent, tool, inputs, outputs, content, sentAt, demoLabel, conversationId, conversationTitle, evidence, accessCount, writeCount FROM memory WHERE kind = 'fact' AND role = 'user' ORDER BY accessCount DESC LIMIT 5\\\",\\n        QueryDialect::SqlAnsi,\\n    );\\n    let graphql = compile(\\n        \\\"query { memory(where: { kind: { eq: \\\\\\\"fact\\\\\\\" }, role: { eq: \\\\\\\"user\\\\\\\" } }, orderBy: { accessCount: DESC }, first: 5) { id kind role intent tool inputs outputs content sentAt demoLabel conversationId conversationTitle evidence accessCount writeCount } }\\\",\\n        QueryDialect::GraphQl,\\n    );\\n\\n    assert_eq!(sql.canonical_semantics(), graphql.canonical_semantics());\\n    assert_eq!(sql.plan.projection, MemoryField::ALL);\\n    for parsed in [&sql, &graphql] {\\n        assert_eq!(parsed.parser.engine, \\\"meta_language\\\");\\n        assert!(parsed.parser.full_match);\\n        assert!(parsed.parser.text_preserved);\\n        assert!(parsed\\n            .link_program\\n            .rules\\n            .iter()\\n            .any(|rule| link_substitution_effect(rule) == CrudEvent::Read));\\n        assert!(parsed.links_notation().contains(\\\"effect read\\\"));\\n    }\\n}\\n\\n#[test]\\nfn sql_crud_lowers_to_the_four_link_cli_substitution_shapes() {\\n    let cases = [\\n        (\\n            \\\"SELECT content FROM memory WHERE id = 'm1'\\\",\\n            CrudEvent::Read,\\n        ),\\n        (\\n            \\\"INSERT INTO memory (id, kind, content) VALUES ('m2', 'fact', 'created')\\\",\\n            CrudEvent::Create,\\n        ),\\n        (\\n            \\\"UPDATE memory SET content = 'updated' WHERE id = 'm1'\\\",\\n            CrudEvent::Update,\\n        ),\\n        (\\\"DELETE FROM memory WHERE id = 'm1'\\\", CrudEvent::Delete),\\n    ];\\n\\n    for (source, expected) in cases {\\n        let query = compile(source, QueryDialect::SqlAnsi);\\n        assert!(\\n            query\\n                .link_program\\n                .rules\\n                .iter()\\n                .any(|rule| link_substitution_effect(rule) == expected),\\n            \\\"{source} did not lower to {expected:?}: {}\\\",\\n            query.links_notation(),\\n        );\\n    }\\n}\\n\\n#[test]\\nfn aggregations_and_statistics_execute_over_the_shared_memory_schema() {\\n    let query = compile(\\n        \\\"SELECT kind, COUNT(*) AS count, SUM(accessCount) AS accesses, AVG(writeCount) AS averageWrites, MIN(accessCount) AS minimumAccesses, MAX(accessCount) AS maximumAccesses, VAR_POP(accessCount) AS accessVariance, STDDEV_POP(accessCount) AS accessDeviation FROM memory GROUP BY kind ORDER BY kind ASC\\\",\\n        QueryDialect::SqlAnsi,\\n    );\\n    assert_eq!(\\n        query\\n            .plan\\n            .aggregates\\n            .iter()\\n            .map(|aggregate| aggregate.function)\\n            .collect::<Vec<_>>(),\\n        [\\n            AggregateFunction::Count,\\n            AggregateFunction::Sum,\\n            AggregateFunction::Average,\\n            AggregateFunction::Minimum,\\n            AggregateFunction::Maximum,\\n            AggregateFunction::PopulationVariance,\\n            AggregateFunction::PopulationStandardDeviation,\\n        ]\\n    );\\n\\n    let mut store = MemoryStore::from_events(vec![\\n        MemoryEvent {\\n            id: String::from(\\\"a\\\"),\\n            kind: Some(String::from(\\\"fact\\\")),\\n            access_count: 1,\\n            write_count: 1,\\n            ..MemoryEvent::default()\\n        },\\n        MemoryEvent {\\n            id: String::from(\\\"b\\\"),\\n            kind: Some(String::from(\\\"fact\\\")),\\n            access_count: 3,\\n            write_count: 3,\\n            ..MemoryEvent::default()\\n        },\\n    ]);\\n    let outcome = execute_memory_query(\\n        &query,\\n        &mut store,\\n        MemoryProgramAuthorization::ReadOnly,\\n    );\\n    assert_eq!(outcome.rows.len(), 1);\\n    assert_eq!(outcome.rows[0].get(\\\"count\\\"), Some(&MemoryQueryValue::Integer(2)));\\n    assert_eq!(outcome.rows[0].get(\\\"accesses\\\"), Some(&MemoryQueryValue::Integer(4)));\\n    assert_eq!(\\n        outcome.rows[0].get(\\\"averageWrites\\\"),\\n        Some(&MemoryQueryValue::Float(2.0))\\n    );\\n    assert_eq!(\\n        outcome.rows[0].get(\\\"accessVariance\\\"),\\n        Some(&MemoryQueryValue::Float(1.0))\\n    );\\n    assert_eq!(\\n        outcome.rows[0].get(\\\"accessDeviation\\\"),\\n        Some(&MemoryQueryValue::Float(1.0))\\n    );\\n}\\n\\n#[test]\\nfn a_learned_natural_language_template_reuses_the_exact_sql_plan() {\\n    let mut compiler = MemoryQueryCompiler::new();\\n    compiler\\n        .learn_natural_language_template(\\n            \\\"Show {field} for {kind} memories.\\\",\\n            \\\"SELECT {field} FROM memory WHERE kind = '{kind}'\\\",\\n            QueryDialect::SqlAnsi,\\n        )\\n        .expect(\\\"safe placeholders should be learnable\\\");\\n\\n    let learned = compiler\\n        .compile(\\n            \\\"Show content for fact memories.\\\",\\n            QueryDialect::NaturalLanguage,\\n            LIMITS,\\n        )\\n        .expect(\\\"the learned surface should compile\\\");\\n    let exact = compile(\\n        \\\"SELECT content FROM memory WHERE kind = 'fact'\\\",\\n        QueryDialect::SqlAnsi,\\n    );\\n\\n    assert_eq!(learned.canonical_semantics(), exact.canonical_semantics());\\n    assert!(compiler\\n        .learning_links_notation()\\n        .contains(\\\"natural_language_template\\\"));\\n    assert!(learned.links_notation().contains(\\\"learned_from\\\"));\\n}\"\n    command \"cat issue_708_memory_query_languages.rs\"\n  verification_command \"cat issue_708_memory_query_languages.rs\"\n",
+        "filePath": "/tmp/tmp.IFdAJd5jvm/.formal-ai/general-change-plan.lino"
+      },
+      "output": "",
+      "title": "tmp/tmp.IFdAJd5jvm/.formal-ai/general-change-plan.lino",
+      "metadata": {
+        "diagnostics": {},
+        "filepath": "/tmp/tmp.IFdAJd5jvm/.formal-ai/general-change-plan.lino",
+        "exists": false
+      },
+      "time": {
+        "start": 1785610149193,
+        "end": 1785610149223
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.236Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1785610149236,
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "part": {
+    "id": "prt_fbea89d6f0013LSjEycpw8JsqX",
+    "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+    "messageID": "msg_fbea89c15001iL13V1gdiPXKa7",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 14596,
+      "output": 14196,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 28792,
+      "headroom": 10064,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.236Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.237Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.267Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.267Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.271Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.272Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.272Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.272Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.293Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.293Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.302Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.302Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 28792,
+  "providerTokens": 28792,
+  "estimatedInputTokens": 1390,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 14596,
+    "cacheRead": 0,
+    "output": 14196
+  },
+  "overflow": false,
+  "headroom": 23016,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.303Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.303Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.314Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.319Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.425Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1785610149425,
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "part": {
+    "id": "prt_fbea89e2d001QmL877vVx6XbhI",
+    "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+    "messageID": "msg_fbea89db7001Ys1yyjNMYvIfWk",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.427Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.428Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785610149428,
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "part": {
+    "id": "prt_fbea89e33001YBhKr5hZLa7cV4",
+    "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+    "messageID": "msg_fbea89db7001Ys1yyjNMYvIfWk",
+    "type": "tool",
+    "callID": "call_03e303e16ff2f275",
+    "tool": "write",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.428Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1785610149428,
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "part": {
+    "id": "prt_fbea89e32001cwqC0XcCODTaFw",
+    "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+    "messageID": "msg_fbea89db7001Ys1yyjNMYvIfWk",
+    "type": "text",
+    "text": "Let me update issue_708_memory_query_languages.rs for you.",
+    "time": {
+      "start": 1785610149428,
+      "end": 1785610149428
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.429Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785610149429,
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "part": {
+    "id": "prt_fbea89e33001YBhKr5hZLa7cV4",
+    "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+    "messageID": "msg_fbea89db7001Ys1yyjNMYvIfWk",
+    "type": "tool",
+    "callID": "call_03e303e16ff2f275",
+    "tool": "write",
+    "state": {
+      "status": "running",
+      "input": {
+        "content": "use formal_ai::links_substitution_query::link_substitution_effect;\nuse formal_ai::memory::{MemoryEvent, MemoryStore};\nuse formal_ai::memory_program::{MemoryProgramAuthorization, MemoryProgramLimits};\nuse formal_ai::memory_query_language::{\n    compile_memory_query, execute_memory_query, AggregateFunction, MemoryField,\n    MemoryQueryCompiler, MemoryQueryValue, QueryDialect,\n};\nuse formal_ai::substitution::CrudEvent;\n\nconst LIMITS: MemoryProgramLimits = MemoryProgramLimits {\n    max_matches: 64,\n    max_iterations: 8,\n};\n\nfn compile(source: &str, dialect: QueryDialect) -> formal_ai::memory_query_language::CompiledMemoryQuery {\n    compile_memory_query(source, dialect, LIMITS).unwrap_or_else(|error| panic!(\"{source}: {error}\"))\n}\n\n#[test]\nfn exact_sql_and_graphql_reads_share_one_plan_and_identity_substitution() {\n    let sql = compile(\n        \"SELECT id, kind, role, intent, tool, inputs, outputs, content, sentAt, demoLabel, conversationId, conversationTitle, evidence, accessCount, writeCount FROM memory WHERE kind = 'fact' AND role = 'user' ORDER BY accessCount DESC LIMIT 5\",\n        QueryDialect::SqlAnsi,\n    );\n    let graphql = compile(\n        \"query { memory(where: { kind: { eq: \\\"fact\\\" }, role: { eq: \\\"user\\\" } }, orderBy: { accessCount: DESC }, first: 5) { id kind role intent tool inputs outputs content sentAt demoLabel conversationId conversationTitle evidence accessCount writeCount } }\",\n        QueryDialect::GraphQl,\n    );\n\n    assert_eq!(sql.canonical_semantics(), graphql.canonical_semantics());\n    assert_eq!(sql.plan.projection, MemoryField::ALL);\n    for parsed in [&sql, &graphql] {\n        assert_eq!(parsed.parser.engine, \"meta_language\");\n        assert!(parsed.parser.full_match);\n        assert!(parsed.parser.text_preserved);\n        assert!(parsed\n            .link_program\n            .rules\n            .iter()\n            .any(|rule| link_substitution_effect(rule) == CrudEvent::Read));\n        assert!(parsed.links_notation().contains(\"effect read\"));\n    }\n}\n\n#[test]\nfn sql_crud_lowers_to_the_four_link_cli_substitution_shapes() {\n    let cases = [\n        (\n            \"SELECT content FROM memory WHERE id = 'm1'\",\n            CrudEvent::Read,\n        ),\n        (\n            \"INSERT INTO memory (id, kind, content) VALUES ('m2', 'fact', 'created')\",\n            CrudEvent::Create,\n        ),\n        (\n            \"UPDATE memory SET content = 'updated' WHERE id = 'm1'\",\n            CrudEvent::Update,\n        ),\n        (\"DELETE FROM memory WHERE id = 'm1'\", CrudEvent::Delete),\n    ];\n\n    for (source, expected) in cases {\n        let query = compile(source, QueryDialect::SqlAnsi);\n        assert!(\n            query\n                .link_program\n                .rules\n                .iter()\n                .any(|rule| link_substitution_effect(rule) == expected),\n            \"{source} did not lower to {expected:?}: {}\",\n            query.links_notation(),\n        );\n    }\n}\n\n#[test]\nfn aggregations_and_statistics_execute_over_the_shared_memory_schema() {\n    let query = compile(\n        \"SELECT kind, COUNT(*) AS count, SUM(accessCount) AS accesses, AVG(writeCount) AS averageWrites, MIN(accessCount) AS minimumAccesses, MAX(accessCount) AS maximumAccesses, VAR_POP(accessCount) AS accessVariance, STDDEV_POP(accessCount) AS accessDeviation FROM memory GROUP BY kind ORDER BY kind ASC\",\n        QueryDialect::SqlAnsi,\n    );\n    assert_eq!(\n        query\n            .plan\n            .aggregates\n            .iter()\n            .map(|aggregate| aggregate.function)\n            .collect::<Vec<_>>(),\n        [\n            AggregateFunction::Count,\n            AggregateFunction::Sum,\n            AggregateFunction::Average,\n            AggregateFunction::Minimum,\n            AggregateFunction::Maximum,\n            AggregateFunction::PopulationVariance,\n            AggregateFunction::PopulationStandardDeviation,\n        ]\n    );\n\n    let mut store = MemoryStore::from_events(vec![\n        MemoryEvent {\n            id: String::from(\"a\"),\n            kind: Some(String::from(\"fact\")),\n            access_count: 1,\n            write_count: 1,\n            ..MemoryEvent::default()\n        },\n        MemoryEvent {\n            id: String::from(\"b\"),\n            kind: Some(String::from(\"fact\")),\n            access_count: 3,\n            write_count: 3,\n            ..MemoryEvent::default()\n        },\n    ]);\n    let outcome = execute_memory_query(\n        &query,\n        &mut store,\n        MemoryProgramAuthorization::ReadOnly,\n    );\n    assert_eq!(outcome.rows.len(), 1);\n    assert_eq!(outcome.rows[0].get(\"count\"), Some(&MemoryQueryValue::Integer(2)));\n    assert_eq!(outcome.rows[0].get(\"accesses\"), Some(&MemoryQueryValue::Integer(4)));\n    assert_eq!(\n        outcome.rows[0].get(\"averageWrites\"),\n        Some(&MemoryQueryValue::Float(2.0))\n    );\n    assert_eq!(\n        outcome.rows[0].get(\"accessVariance\"),\n        Some(&MemoryQueryValue::Float(1.0))\n    );\n    assert_eq!(\n        outcome.rows[0].get(\"accessDeviation\"),\n        Some(&MemoryQueryValue::Float(1.0))\n    );\n}\n\n#[test]\nfn a_learned_natural_language_template_reuses_the_exact_sql_plan() {\n    let mut compiler = MemoryQueryCompiler::new();\n    compiler\n        .learn_natural_language_template(\n            \"Show {field} for {kind} memories.\",\n            \"SELECT {field} FROM memory WHERE kind = '{kind}'\",\n            QueryDialect::SqlAnsi,\n        )\n        .expect(\"safe placeholders should be learnable\");\n\n    let learned = compiler\n        .compile(\n            \"Show content for fact memories.\",\n            QueryDialect::NaturalLanguage,\n            LIMITS,\n        )\n        .expect(\"the learned surface should compile\");\n    let exact = compile(\n        \"SELECT content FROM memory WHERE kind = 'fact'\",\n        QueryDialect::SqlAnsi,\n    );\n\n    assert_eq!(learned.canonical_semantics(), exact.canonical_semantics());\n    assert!(compiler\n        .learning_links_notation()\n        .contains(\"natural_language_template\"));\n    assert!(learned.links_notation().contains(\"learned_from\"));\n}",
+        "filePath": "/tmp/tmp.IFdAJd5jvm/issue_708_memory_query_languages.rs"
+      },
+      "time": {
+        "start": 1785610149429
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.431Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785610149431,
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "part": {
+    "id": "prt_fbea89e33001YBhKr5hZLa7cV4",
+    "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+    "messageID": "msg_fbea89db7001Ys1yyjNMYvIfWk",
+    "type": "tool",
+    "callID": "call_03e303e16ff2f275",
+    "tool": "write",
+    "state": {
+      "status": "completed",
+      "input": {
+        "content": "use formal_ai::links_substitution_query::link_substitution_effect;\nuse formal_ai::memory::{MemoryEvent, MemoryStore};\nuse formal_ai::memory_program::{MemoryProgramAuthorization, MemoryProgramLimits};\nuse formal_ai::memory_query_language::{\n    compile_memory_query, execute_memory_query, AggregateFunction, MemoryField,\n    MemoryQueryCompiler, MemoryQueryValue, QueryDialect,\n};\nuse formal_ai::substitution::CrudEvent;\n\nconst LIMITS: MemoryProgramLimits = MemoryProgramLimits {\n    max_matches: 64,\n    max_iterations: 8,\n};\n\nfn compile(source: &str, dialect: QueryDialect) -> formal_ai::memory_query_language::CompiledMemoryQuery {\n    compile_memory_query(source, dialect, LIMITS).unwrap_or_else(|error| panic!(\"{source}: {error}\"))\n}\n\n#[test]\nfn exact_sql_and_graphql_reads_share_one_plan_and_identity_substitution() {\n    let sql = compile(\n        \"SELECT id, kind, role, intent, tool, inputs, outputs, content, sentAt, demoLabel, conversationId, conversationTitle, evidence, accessCount, writeCount FROM memory WHERE kind = 'fact' AND role = 'user' ORDER BY accessCount DESC LIMIT 5\",\n        QueryDialect::SqlAnsi,\n    );\n    let graphql = compile(\n        \"query { memory(where: { kind: { eq: \\\"fact\\\" }, role: { eq: \\\"user\\\" } }, orderBy: { accessCount: DESC }, first: 5) { id kind role intent tool inputs outputs content sentAt demoLabel conversationId conversationTitle evidence accessCount writeCount } }\",\n        QueryDialect::GraphQl,\n    );\n\n    assert_eq!(sql.canonical_semantics(), graphql.canonical_semantics());\n    assert_eq!(sql.plan.projection, MemoryField::ALL);\n    for parsed in [&sql, &graphql] {\n        assert_eq!(parsed.parser.engine, \"meta_language\");\n        assert!(parsed.parser.full_match);\n        assert!(parsed.parser.text_preserved);\n        assert!(parsed\n            .link_program\n            .rules\n            .iter()\n            .any(|rule| link_substitution_effect(rule) == CrudEvent::Read));\n        assert!(parsed.links_notation().contains(\"effect read\"));\n    }\n}\n\n#[test]\nfn sql_crud_lowers_to_the_four_link_cli_substitution_shapes() {\n    let cases = [\n        (\n            \"SELECT content FROM memory WHERE id = 'm1'\",\n            CrudEvent::Read,\n        ),\n        (\n            \"INSERT INTO memory (id, kind, content) VALUES ('m2', 'fact', 'created')\",\n            CrudEvent::Create,\n        ),\n        (\n            \"UPDATE memory SET content = 'updated' WHERE id = 'm1'\",\n            CrudEvent::Update,\n        ),\n        (\"DELETE FROM memory WHERE id = 'm1'\", CrudEvent::Delete),\n    ];\n\n    for (source, expected) in cases {\n        let query = compile(source, QueryDialect::SqlAnsi);\n        assert!(\n            query\n                .link_program\n                .rules\n                .iter()\n                .any(|rule| link_substitution_effect(rule) == expected),\n            \"{source} did not lower to {expected:?}: {}\",\n            query.links_notation(),\n        );\n    }\n}\n\n#[test]\nfn aggregations_and_statistics_execute_over_the_shared_memory_schema() {\n    let query = compile(\n        \"SELECT kind, COUNT(*) AS count, SUM(accessCount) AS accesses, AVG(writeCount) AS averageWrites, MIN(accessCount) AS minimumAccesses, MAX(accessCount) AS maximumAccesses, VAR_POP(accessCount) AS accessVariance, STDDEV_POP(accessCount) AS accessDeviation FROM memory GROUP BY kind ORDER BY kind ASC\",\n        QueryDialect::SqlAnsi,\n    );\n    assert_eq!(\n        query\n            .plan\n            .aggregates\n            .iter()\n            .map(|aggregate| aggregate.function)\n            .collect::<Vec<_>>(),\n        [\n            AggregateFunction::Count,\n            AggregateFunction::Sum,\n            AggregateFunction::Average,\n            AggregateFunction::Minimum,\n            AggregateFunction::Maximum,\n            AggregateFunction::PopulationVariance,\n            AggregateFunction::PopulationStandardDeviation,\n        ]\n    );\n\n    let mut store = MemoryStore::from_events(vec![\n        MemoryEvent {\n            id: String::from(\"a\"),\n            kind: Some(String::from(\"fact\")),\n            access_count: 1,\n            write_count: 1,\n            ..MemoryEvent::default()\n        },\n        MemoryEvent {\n            id: String::from(\"b\"),\n            kind: Some(String::from(\"fact\")),\n            access_count: 3,\n            write_count: 3,\n            ..MemoryEvent::default()\n        },\n    ]);\n    let outcome = execute_memory_query(\n        &query,\n        &mut store,\n        MemoryProgramAuthorization::ReadOnly,\n    );\n    assert_eq!(outcome.rows.len(), 1);\n    assert_eq!(outcome.rows[0].get(\"count\"), Some(&MemoryQueryValue::Integer(2)));\n    assert_eq!(outcome.rows[0].get(\"accesses\"), Some(&MemoryQueryValue::Integer(4)));\n    assert_eq!(\n        outcome.rows[0].get(\"averageWrites\"),\n        Some(&MemoryQueryValue::Float(2.0))\n    );\n    assert_eq!(\n        outcome.rows[0].get(\"accessVariance\"),\n        Some(&MemoryQueryValue::Float(1.0))\n    );\n    assert_eq!(\n        outcome.rows[0].get(\"accessDeviation\"),\n        Some(&MemoryQueryValue::Float(1.0))\n    );\n}\n\n#[test]\nfn a_learned_natural_language_template_reuses_the_exact_sql_plan() {\n    let mut compiler = MemoryQueryCompiler::new();\n    compiler\n        .learn_natural_language_template(\n            \"Show {field} for {kind} memories.\",\n            \"SELECT {field} FROM memory WHERE kind = '{kind}'\",\n            QueryDialect::SqlAnsi,\n        )\n        .expect(\"safe placeholders should be learnable\");\n\n    let learned = compiler\n        .compile(\n            \"Show content for fact memories.\",\n            QueryDialect::NaturalLanguage,\n            LIMITS,\n        )\n        .expect(\"the learned surface should compile\");\n    let exact = compile(\n        \"SELECT content FROM memory WHERE kind = 'fact'\",\n        QueryDialect::SqlAnsi,\n    );\n\n    assert_eq!(learned.canonical_semantics(), exact.canonical_semantics());\n    assert!(compiler\n        .learning_links_notation()\n        .contains(\"natural_language_template\"));\n    assert!(learned.links_notation().contains(\"learned_from\"));\n}",
+        "filePath": "/tmp/tmp.IFdAJd5jvm/issue_708_memory_query_languages.rs"
+      },
+      "output": "",
+      "title": "tmp/tmp.IFdAJd5jvm/issue_708_memory_query_languages.rs",
+      "metadata": {
+        "diagnostics": {},
+        "filepath": "/tmp/tmp.IFdAJd5jvm/issue_708_memory_query_languages.rs",
+        "exists": false
+      },
+      "time": {
+        "start": 1785610149429,
+        "end": 1785610149431
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.433Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1785610149433,
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "part": {
+    "id": "prt_fbea89e38001w1r1WHjv5l1KRP",
+    "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+    "messageID": "msg_fbea89db7001Ys1yyjNMYvIfWk",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 14654,
+      "output": 6425,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 21079,
+      "headroom": 17777,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.433Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.433Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.435Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.435Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.439Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.439Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.440Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.440Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.441Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.441Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.443Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.443Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 21079,
+  "providerTokens": 21079,
+  "estimatedInputTokens": 1403,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 14654,
+    "cacheRead": 0,
+    "output": 6425
+  },
+  "overflow": false,
+  "headroom": 30729,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.443Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.443Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.449Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.452Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.632Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1785610149633,
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "part": {
+    "id": "prt_fbea89eec0010w3KOxoX9F2lX2",
+    "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+    "messageID": "msg_fbea89e43001X6RTi38Z3jTiZi",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.634Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.635Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785610149635,
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "part": {
+    "id": "prt_fbea89f02001BuiKJom5X2p7PP",
+    "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+    "messageID": "msg_fbea89e43001X6RTi38Z3jTiZi",
+    "type": "tool",
+    "callID": "call_62baaf6a7128e81c",
+    "tool": "bash",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.635Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1785610149635,
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "part": {
+    "id": "prt_fbea89f01001lSqCDrJpaRUhjx",
+    "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+    "messageID": "msg_fbea89e43001X6RTi38Z3jTiZi",
+    "type": "text",
+    "text": "Let me run a quick command to get that for you.",
+    "time": {
+      "start": 1785610149635,
+      "end": 1785610149635
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.636Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785610149636,
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "part": {
+    "id": "prt_fbea89f02001BuiKJom5X2p7PP",
+    "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+    "messageID": "msg_fbea89e43001X6RTi38Z3jTiZi",
+    "type": "tool",
+    "callID": "call_62baaf6a7128e81c",
+    "tool": "bash",
+    "state": {
+      "status": "running",
+      "input": {
+        "command": "cat issue_708_memory_query_languages.rs"
+      },
+      "time": {
+        "start": 1785610149636
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.649Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785610149649,
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "part": {
+    "id": "prt_fbea89f02001BuiKJom5X2p7PP",
+    "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+    "messageID": "msg_fbea89e43001X6RTi38Z3jTiZi",
+    "type": "tool",
+    "callID": "call_62baaf6a7128e81c",
+    "tool": "bash",
+    "state": {
+      "status": "running",
+      "input": {
+        "command": "cat issue_708_memory_query_languages.rs"
+      },
+      "metadata": {
+        "output": "use formal_ai::links_substitution_query::link_substitution_effect;\nuse formal_ai::memory::{MemoryEvent, MemoryStore};\nuse formal_ai::memory_program::{MemoryProgramAuthorization, MemoryProgramLimits};\nuse formal_ai::memory_query_language::{\n    compile_memory_query, execute_memory_query, AggregateFunction, MemoryField,\n    MemoryQueryCompiler, MemoryQueryValue, QueryDialect,\n};\nuse formal_ai::substitution::CrudEvent;\n\nconst LIMITS: MemoryProgramLimits = MemoryProgramLimits {\n    max_matches: 64,\n    max_iterations: 8,\n};\n\nfn compile(source: &str, dialect: QueryDialect) -> formal_ai::memory_query_language::CompiledMemoryQuery {\n    compile_memory_query(source, dialect, LIMITS).unwrap_or_else(|error| panic!(\"{source}: {error}\"))\n}\n\n#[test]\nfn exact_sql_and_graphql_reads_share_one_plan_and_identity_substitution() {\n    let sql = compile(\n        \"SELECT id, kind, role, intent, tool, inputs, outputs, content, sentAt, demoLabel, conversationId, conversationTitle, evidence, accessCount, writeCount FROM memory WHERE kind = 'fact' AND role = 'user' ORDER BY accessCount DESC LIMIT 5\",\n        QueryDialect::SqlAnsi,\n    );\n    let graphql = compile(\n        \"query { memory(where: { kind: { eq: \\\"fact\\\" }, role: { eq: \\\"user\\\" } }, orderBy: { accessCount: DESC }, first: 5) { id kind role intent tool inputs outputs content sentAt demoLabel conversationId conversationTitle evidence accessCount writeCount } }\",\n        QueryDialect::GraphQl,\n    );\n\n    assert_eq!(sql.canonical_semantics(), graphql.canonical_semantics());\n    assert_eq!(sql.plan.projection, MemoryField::ALL);\n    for parsed in [&sql, &graphql] {\n        assert_eq!(parsed.parser.engine, \"meta_language\");\n        assert!(parsed.parser.full_match);\n        assert!(parsed.parser.text_preserved);\n        assert!(parsed\n            .link_program\n            .rules\n            .iter()\n            .any(|rule| link_substitution_effect(rule) == CrudEvent::Read));\n        assert!(parsed.links_notation().contains(\"effect read\"));\n    }\n}\n\n#[test]\nfn sql_crud_lowers_to_the_four_link_cli_substitution_shapes() {\n    let cases = [\n        (\n            \"SELECT content FROM memory WHERE id = 'm1'\",\n            CrudEvent::Read,\n        ),\n        (\n            \"INSERT INTO memory (id, kind, content) VALUES ('m2', 'fact', 'created')\",\n            CrudEvent::Create,\n        ),\n        (\n            \"UPDATE memory SET content = 'updated' WHERE id = 'm1'\",\n            CrudEvent::Update,\n        ),\n        (\"DELETE FROM memory WHERE id = 'm1'\", CrudEvent::Delete),\n    ];\n\n    for (source, expected) in cases {\n        let query = compile(source, QueryDialect::SqlAnsi);\n        assert!(\n            query\n                .link_program\n                .rules\n                .iter()\n                .any(|rule| link_substitution_effect(rule) == expected),\n            \"{source} did not lower to {expected:?}: {}\",\n            query.links_notation(),\n        );\n    }\n}\n\n#[test]\nfn aggregations_and_statistics_execute_over_the_shared_memory_schema() {\n    let query = compile(\n        \"SELECT kind, COUNT(*) AS count, SUM(accessCount) AS accesses, AVG(writeCount) AS averageWrites, MIN(accessCount) AS minimumAccesses, MAX(accessCount) AS maximumAccesses, VAR_POP(accessCount) AS accessVariance, STDDEV_POP(accessCount) AS accessDeviation FROM memory GROUP BY kind ORDER BY kind ASC\",\n        QueryDialect::SqlAnsi,\n    );\n    assert_eq!(\n        query\n            .plan\n            .aggregates\n            .iter()\n            .map(|aggregate| aggregate.function)\n            .collect::<Vec<_>>(),\n        [\n            AggregateFunction::Count,\n            AggregateFunction::Sum,\n            AggregateFunction::Average,\n            AggregateFunction::Minimum,\n            AggregateFunction::Maximum,\n            AggregateFunction::PopulationVariance,\n            AggregateFunction::PopulationStandardDeviation,\n        ]\n    );\n\n    let mut store = MemoryStore::from_events(vec![\n        MemoryEvent {\n            id: String::from(\"a\"),\n            kind: Some(String::from(\"fact\")),\n            access_count: 1,\n            write_count: 1,\n            ..MemoryEvent::default()\n        },\n        MemoryEvent {\n            id: String::from(\"b\"),\n            kind: Some(String::from(\"fact\")),\n            access_count: 3,\n            write_count: 3,\n            ..MemoryEvent::default()\n        },\n    ]);\n    let outcome = execute_memory_query(\n        &query,\n        &mut store,\n        MemoryProgramAuthorization::ReadOnly,\n    );\n    assert_eq!(outcome.rows.len(), 1);\n    assert_eq!(outcome.rows[0].get(\"count\"), Some(&MemoryQueryValue::Integer(2)));\n    assert_eq!(outcome.rows[0].get(\"accesses\"), Some(&MemoryQueryValue::Integer(4)));\n    assert_eq!(\n        outcome.rows[0].get(\"averageWrites\"),\n        Some(&MemoryQueryValue::Float(2.0))\n    );\n    assert_eq!(\n        outcome.rows[0].get(\"accessVariance\"),\n        Some(&MemoryQueryValue::Float(1.0))\n    );\n    assert_eq!(\n        outcome.rows[0].get(\"accessDeviation\"),\n        Some(&MemoryQueryValue::Float(1.0))\n    );\n}\n\n#[test]\nfn a_learned_natural_language_template_reuses_the_exact_sql_plan() {\n    let mut compiler = MemoryQueryCompiler::new();\n    compiler\n        .learn_natural_language_template(\n            \"Show {field} for {kind} memories.\",\n            \"SELECT {field} FROM memory WHERE kind = '{kind}'\",\n            QueryDialect::SqlAnsi,\n        )\n        .expect(\"safe placeholders should be learnable\");\n\n    let learned = compiler\n        .compile(\n            \"Show content for fact memories.\",\n            QueryDialect::NaturalLanguage,\n            LIMITS,\n        )\n        .expect(\"the learned surface should compile\");\n    let exact = compile(\n        \"SELECT content FROM memory WHERE kind = 'fact'\",\n        QueryDialect::SqlAnsi,\n    );\n\n    assert_eq!(learned.canonical_semantics(), exact.canonical_semantics());\n    assert!(compiler\n        .learning_links_notation()\n        .contains(\"natural_language_template\"));\n    assert!(learned.links_notation().contains(\"learned_from\"));\n}"
+      },
+      "time": {
+        "start": 1785610149648
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.668Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785610149668,
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "part": {
+    "id": "prt_fbea89f02001BuiKJom5X2p7PP",
+    "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+    "messageID": "msg_fbea89e43001X6RTi38Z3jTiZi",
+    "type": "tool",
+    "callID": "call_62baaf6a7128e81c",
+    "tool": "bash",
+    "state": {
+      "status": "completed",
+      "input": {
+        "command": "cat issue_708_memory_query_languages.rs"
+      },
+      "output": "use formal_ai::links_substitution_query::link_substitution_effect;\nuse formal_ai::memory::{MemoryEvent, MemoryStore};\nuse formal_ai::memory_program::{MemoryProgramAuthorization, MemoryProgramLimits};\nuse formal_ai::memory_query_language::{\n    compile_memory_query, execute_memory_query, AggregateFunction, MemoryField,\n    MemoryQueryCompiler, MemoryQueryValue, QueryDialect,\n};\nuse formal_ai::substitution::CrudEvent;\n\nconst LIMITS: MemoryProgramLimits = MemoryProgramLimits {\n    max_matches: 64,\n    max_iterations: 8,\n};\n\nfn compile(source: &str, dialect: QueryDialect) -> formal_ai::memory_query_language::CompiledMemoryQuery {\n    compile_memory_query(source, dialect, LIMITS).unwrap_or_else(|error| panic!(\"{source}: {error}\"))\n}\n\n#[test]\nfn exact_sql_and_graphql_reads_share_one_plan_and_identity_substitution() {\n    let sql = compile(\n        \"SELECT id, kind, role, intent, tool, inputs, outputs, content, sentAt, demoLabel, conversationId, conversationTitle, evidence, accessCount, writeCount FROM memory WHERE kind = 'fact' AND role = 'user' ORDER BY accessCount DESC LIMIT 5\",\n        QueryDialect::SqlAnsi,\n    );\n    let graphql = compile(\n        \"query { memory(where: { kind: { eq: \\\"fact\\\" }, role: { eq: \\\"user\\\" } }, orderBy: { accessCount: DESC }, first: 5) { id kind role intent tool inputs outputs content sentAt demoLabel conversationId conversationTitle evidence accessCount writeCount } }\",\n        QueryDialect::GraphQl,\n    );\n\n    assert_eq!(sql.canonical_semantics(), graphql.canonical_semantics());\n    assert_eq!(sql.plan.projection, MemoryField::ALL);\n    for parsed in [&sql, &graphql] {\n        assert_eq!(parsed.parser.engine, \"meta_language\");\n        assert!(parsed.parser.full_match);\n        assert!(parsed.parser.text_preserved);\n        assert!(parsed\n            .link_program\n            .rules\n            .iter()\n            .any(|rule| link_substitution_effect(rule) == CrudEvent::Read));\n        assert!(parsed.links_notation().contains(\"effect read\"));\n    }\n}\n\n#[test]\nfn sql_crud_lowers_to_the_four_link_cli_substitution_shapes() {\n    let cases = [\n        (\n            \"SELECT content FROM memory WHERE id = 'm1'\",\n            CrudEvent::Read,\n        ),\n        (\n            \"INSERT INTO memory (id, kind, content) VALUES ('m2', 'fact', 'created')\",\n            CrudEvent::Create,\n        ),\n        (\n            \"UPDATE memory SET content = 'updated' WHERE id = 'm1'\",\n            CrudEvent::Update,\n        ),\n        (\"DELETE FROM memory WHERE id = 'm1'\", CrudEvent::Delete),\n    ];\n\n    for (source, expected) in cases {\n        let query = compile(source, QueryDialect::SqlAnsi);\n        assert!(\n            query\n                .link_program\n                .rules\n                .iter()\n                .any(|rule| link_substitution_effect(rule) == expected),\n            \"{source} did not lower to {expected:?}: {}\",\n            query.links_notation(),\n        );\n    }\n}\n\n#[test]\nfn aggregations_and_statistics_execute_over_the_shared_memory_schema() {\n    let query = compile(\n        \"SELECT kind, COUNT(*) AS count, SUM(accessCount) AS accesses, AVG(writeCount) AS averageWrites, MIN(accessCount) AS minimumAccesses, MAX(accessCount) AS maximumAccesses, VAR_POP(accessCount) AS accessVariance, STDDEV_POP(accessCount) AS accessDeviation FROM memory GROUP BY kind ORDER BY kind ASC\",\n        QueryDialect::SqlAnsi,\n    );\n    assert_eq!(\n        query\n            .plan\n            .aggregates\n            .iter()\n            .map(|aggregate| aggregate.function)\n            .collect::<Vec<_>>(),\n        [\n            AggregateFunction::Count,\n            AggregateFunction::Sum,\n            AggregateFunction::Average,\n            AggregateFunction::Minimum,\n            AggregateFunction::Maximum,\n            AggregateFunction::PopulationVariance,\n            AggregateFunction::PopulationStandardDeviation,\n        ]\n    );\n\n    let mut store = MemoryStore::from_events(vec![\n        MemoryEvent {\n            id: String::from(\"a\"),\n            kind: Some(String::from(\"fact\")),\n            access_count: 1,\n            write_count: 1,\n            ..MemoryEvent::default()\n        },\n        MemoryEvent {\n            id: String::from(\"b\"),\n            kind: Some(String::from(\"fact\")),\n            access_count: 3,\n            write_count: 3,\n            ..MemoryEvent::default()\n        },\n    ]);\n    let outcome = execute_memory_query(\n        &query,\n        &mut store,\n        MemoryProgramAuthorization::ReadOnly,\n    );\n    assert_eq!(outcome.rows.len(), 1);\n    assert_eq!(outcome.rows[0].get(\"count\"), Some(&MemoryQueryValue::Integer(2)));\n    assert_eq!(outcome.rows[0].get(\"accesses\"), Some(&MemoryQueryValue::Integer(4)));\n    assert_eq!(\n        outcome.rows[0].get(\"averageWrites\"),\n        Some(&MemoryQueryValue::Float(2.0))\n    );\n    assert_eq!(\n        outcome.rows[0].get(\"accessVariance\"),\n        Some(&MemoryQueryValue::Float(1.0))\n    );\n    assert_eq!(\n        outcome.rows[0].get(\"accessDeviation\"),\n        Some(&MemoryQueryValue::Float(1.0))\n    );\n}\n\n#[test]\nfn a_learned_natural_language_template_reuses_the_exact_sql_plan() {\n    let mut compiler = MemoryQueryCompiler::new();\n    compiler\n        .learn_natural_language_template(\n            \"Show {field} for {kind} memories.\",\n            \"SELECT {field} FROM memory WHERE kind = '{kind}'\",\n            QueryDialect::SqlAnsi,\n        )\n        .expect(\"safe placeholders should be learnable\");\n\n    let learned = compiler\n        .compile(\n            \"Show content for fact memories.\",\n            QueryDialect::NaturalLanguage,\n            LIMITS,\n        )\n        .expect(\"the learned surface should compile\");\n    let exact = compile(\n        \"SELECT content FROM memory WHERE kind = 'fact'\",\n        QueryDialect::SqlAnsi,\n    );\n\n    assert_eq!(learned.canonical_semantics(), exact.canonical_semantics());\n    assert!(compiler\n        .learning_links_notation()\n        .contains(\"natural_language_template\"));\n    assert!(learned.links_notation().contains(\"learned_from\"));\n}",
+      "title": "cat issue_708_memory_query_languages.rs",
+      "metadata": {
+        "output": "use formal_ai::links_substitution_query::link_substitution_effect;\nuse formal_ai::memory::{MemoryEvent, MemoryStore};\nuse formal_ai::memory_program::{MemoryProgramAuthorization, MemoryProgramLimits};\nuse formal_ai::memory_query_language::{\n    compile_memory_query, execute_memory_query, AggregateFunction, MemoryField,\n    MemoryQueryCompiler, MemoryQueryValue, QueryDialect,\n};\nuse formal_ai::substitution::CrudEvent;\n\nconst LIMITS: MemoryProgramLimits = MemoryProgramLimits {\n    max_matches: 64,\n    max_iterations: 8,\n};\n\nfn compile(source: &str, dialect: QueryDialect) -> formal_ai::memory_query_language::CompiledMemoryQuery {\n    compile_memory_query(source, dialect, LIMITS).unwrap_or_else(|error| panic!(\"{source}: {error}\"))\n}\n\n#[test]\nfn exact_sql_and_graphql_reads_share_one_plan_and_identity_substitution() {\n    let sql = compile(\n        \"SELECT id, kind, role, intent, tool, inputs, outputs, content, sentAt, demoLabel, conversationId, conversationTitle, evidence, accessCount, writeCount FROM memory WHERE kind = 'fact' AND role = 'user' ORDER BY accessCount DESC LIMIT 5\",\n        QueryDialect::SqlAnsi,\n    );\n    let graphql = compile(\n        \"query { memory(where: { kind: { eq: \\\"fact\\\" }, role: { eq: \\\"user\\\" } }, orderBy: { accessCount: DESC }, first: 5) { id kind role intent tool inputs outputs content sentAt demoLabel conversationId conversationTitle evidence accessCount writeCount } }\",\n        QueryDialect::GraphQl,\n    );\n\n    assert_eq!(sql.canonical_semantics(), graphql.canonical_semantics());\n    assert_eq!(sql.plan.projection, MemoryField::ALL);\n    for parsed in [&sql, &graphql] {\n        assert_eq!(parsed.parser.engine, \"meta_language\");\n        assert!(parsed.parser.full_match);\n        assert!(parsed.parser.text_preserved);\n        assert!(parsed\n            .link_program\n            .rules\n            .iter()\n            .any(|rule| link_substitution_effect(rule) == CrudEvent::Read));\n        assert!(parsed.links_notation().contains(\"effect read\"));\n    }\n}\n\n#[test]\nfn sql_crud_lowers_to_the_four_link_cli_substitution_shapes() {\n    let cases = [\n        (\n            \"SELECT content FROM memory WHERE id = 'm1'\",\n            CrudEvent::Read,\n        ),\n        (\n            \"INSERT INTO memory (id, kind, content) VALUES ('m2', 'fact', 'created')\",\n            CrudEvent::Create,\n        ),\n        (\n            \"UPDATE memory SET content = 'updated' WHERE id = 'm1'\",\n            CrudEvent::Update,\n        ),\n        (\"DELETE FROM memory WHERE id = 'm1'\", CrudEvent::Delete),\n    ];\n\n    for (source, expected) in cases {\n        let query = compile(source, QueryDialect::SqlAnsi);\n        assert!(\n            query\n                .link_program\n                .rules\n                .iter()\n                .any(|rule| link_substitution_effect(rule) == expected),\n            \"{source} did not lower to {expected:?}: {}\",\n            query.links_notation(),\n        );\n    }\n}\n\n#[test]\nfn aggregations_and_statistics_execute_over_the_shared_memory_schema() {\n    let query = compile(\n        \"SELECT kind, COUNT(*) AS count, SUM(accessCount) AS accesses, AVG(writeCount) AS averageWrites, MIN(accessCount) AS minimumAccesses, MAX(accessCount) AS maximumAccesses, VAR_POP(accessCount) AS accessVariance, STDDEV_POP(accessCount) AS accessDeviation FROM memory GROUP BY kind ORDER BY kind ASC\",\n        QueryDialect::SqlAnsi,\n    );\n    assert_eq!(\n        query\n            .plan\n            .aggregates\n            .iter()\n            .map(|aggregate| aggregate.function)\n            .collect::<Vec<_>>(),\n        [\n            AggregateFunction::Count,\n            AggregateFunction::Sum,\n            AggregateFunction::Average,\n            AggregateFunction::Minimum,\n            AggregateFunction::Maximum,\n            AggregateFunction::PopulationVariance,\n            AggregateFunction::PopulationStandardDeviation,\n        ]\n    );\n\n    let mut store = MemoryStore::from_events(vec![\n        MemoryEvent {\n            id: String::from(\"a\"),\n            kind: Some(String::from(\"fact\")),\n            access_count: 1,\n            write_count: 1,\n            ..MemoryEvent::default()\n        },\n        MemoryEvent {\n            id: String::from(\"b\"),\n            kind: Some(String::from(\"fact\")),\n            access_count: 3,\n            write_count: 3,\n            ..MemoryEvent::default()\n        },\n    ]);\n    let outcome = execute_memory_query(\n        &query,\n        &mut store,\n        MemoryProgramAuthorization::ReadOnly,\n    );\n    assert_eq!(outcome.rows.len(), 1);\n    assert_eq!(outcome.rows[0].get(\"count\"), Some(&MemoryQueryValue::Integer(2)));\n    assert_eq!(outcome.rows[0].get(\"accesses\"), Some(&MemoryQueryValue::Integer(4)));\n    assert_eq!(\n        outcome.rows[0].get(\"averageWrites\"),\n        Some(&MemoryQueryValue::Float(2.0))\n    );\n    assert_eq!(\n        outcome.rows[0].get(\"accessVariance\"),\n        Some(&MemoryQueryValue::Float(1.0))\n    );\n    assert_eq!(\n        outcome.rows[0].get(\"accessDeviation\"),\n        Some(&MemoryQueryValue::Float(1.0))\n    );\n}\n\n#[test]\nfn a_learned_natural_language_template_reuses_the_exact_sql_plan() {\n    let mut compiler = MemoryQueryCompiler::new();\n    compiler\n        .learn_natural_language_template(\n            \"Show {field} for {kind} memories.\",\n            \"SELECT {field} FROM memory WHERE kind = '{kind}'\",\n            QueryDialect::SqlAnsi,\n        )\n        .expect(\"safe placeholders should be learnable\");\n\n    let learned = compiler\n        .compile(\n            \"Show content for fact memories.\",\n            QueryDialect::NaturalLanguage,\n            LIMITS,\n        )\n        .expect(\"the learned surface should compile\");\n    let exact = compile(\n        \"SELECT content FROM memory WHERE kind = 'fact'\",\n        QueryDialect::SqlAnsi,\n    );\n\n    assert_eq!(learned.canonical_semantics(), exact.canonical_semantics());\n    assert!(compiler\n        .learning_links_notation()\n        .contains(\"natural_language_template\"));\n    assert!(learned.links_notation().contains(\"learned_from\"));\n}",
+        "exit": 0
+      },
+      "time": {
+        "start": 1785610149636,
+        "end": 1785610149667
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.671Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1785610149671,
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "part": {
+    "id": "prt_fbea89f26001wZLzhK4dfp5Xm4",
+    "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+    "messageID": "msg_fbea89e43001X6RTi38Z3jTiZi",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 14712,
+      "output": 104,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 14816,
+      "headroom": 24040,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.672Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.673Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.687Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.688Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.715Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.715Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.716Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.716Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.723Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.728Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.736Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.736Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 14816,
+  "providerTokens": 14816,
+  "estimatedInputTokens": 2771,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 14712,
+    "cacheRead": 0,
+    "output": 104
+  },
+  "overflow": false,
+  "headroom": 36992,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.737Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.737Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.775Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.789Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.924Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1785610149924,
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "part": {
+    "id": "prt_fbea8a01b001vA0nkAOVqFdKeB",
+    "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+    "messageID": "msg_fbea89f68001aoYFROdmcIheAC",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.925Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.926Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1785610149926,
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "part": {
+    "id": "prt_fbea8a024001DaWmof3SYuhy2C",
+    "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+    "messageID": "msg_fbea89f68001aoYFROdmcIheAC",
+    "type": "text",
+    "text": "Completed the general change request for issue_708_memory_query_languages.rs and verified it with `cat issue_708_memory_query_languages.rs`.\n\nPlan event (.formal-ai/general-change-plan.lino):\n\ngeneral_change_plan\n  id \"general_change_plan_3cb238351c8ad157\"\n  execution_mode \"literal_file\"\n  goal \"Create a Rust regression test file named issue_708_memory_query_languages.rs with exactly this content:\\nuse formal_ai::links_substitution_query::link_substitution_effect;\\nuse formal_ai::memory::{MemoryEvent, MemoryStore};\\nuse formal_ai::memory_program::{MemoryProgramAuthorization, MemoryProgramLimits};\\nuse formal_ai::memory_query_language::{\\n    compile_memory_query, execute_memory_query, AggregateFunction, MemoryField,\\n    MemoryQueryCompiler, MemoryQueryValue, QueryDialect,\\n};\\nuse formal_ai::substitution::CrudEvent;\\n\\nconst LIMITS: MemoryProgramLimits = MemoryProgramLimits {\\n    max_matches: 64,\\n    max_iterations: 8,\\n};\\n\\nfn compile(source: &str, dialect: QueryDialect) -> formal_ai::memory_query_language::CompiledMemoryQuery {\\n    compile_memory_query(source, dialect, LIMITS).unwrap_or_else(|error| panic!(\\\"{source}: {error}\\\"))\\n}\\n\\n#[test]\\nfn exact_sql_and_graphql_reads_share_one_plan_and_identity_substitution() {\\n    let sql = compile(\\n        \\\"SELECT id, kind, role, intent, tool, inputs, outputs, content, sentAt, demoLabel, conversationId, conversationTitle, evidence, accessCount, writeCount FROM memory WHERE kind = 'fact' AND role = 'user' ORDER BY accessCount DESC LIMIT 5\\\",\\n        QueryDialect::SqlAnsi,\\n    );\\n    let graphql = compile(\\n        \\\"query { memory(where: { kind: { eq: \\\\\\\"fact\\\\\\\" }, role: { eq: \\\\\\\"user\\\\\\\" } }, orderBy: { accessCount: DESC }, first: 5) { id kind role intent tool inputs outputs content sentAt demoLabel conversationId conversationTitle evidence accessCount writeCount } }\\\",\\n        QueryDialect::GraphQl,\\n    );\\n\\n    assert_eq!(sql.canonical_semantics(), graphql.canonical_semantics());\\n    assert_eq!(sql.plan.projection, MemoryField::ALL);\\n    for parsed in [&sql, &graphql] {\\n        assert_eq!(parsed.parser.engine, \\\"meta_language\\\");\\n        assert!(parsed.parser.full_match);\\n        assert!(parsed.parser.text_preserved);\\n        assert!(parsed\\n            .link_program\\n            .rules\\n            .iter()\\n            .any(|rule| link_substitution_effect(rule) == CrudEvent::Read));\\n        assert!(parsed.links_notation().contains(\\\"effect read\\\"));\\n    }\\n}\\n\\n#[test]\\nfn sql_crud_lowers_to_the_four_link_cli_substitution_shapes() {\\n    let cases = [\\n        (\\n            \\\"SELECT content FROM memory WHERE id = 'm1'\\\",\\n            CrudEvent::Read,\\n        ),\\n        (\\n            \\\"INSERT INTO memory (id, kind, content) VALUES ('m2', 'fact', 'created')\\\",\\n            CrudEvent::Create,\\n        ),\\n        (\\n            \\\"UPDATE memory SET content = 'updated' WHERE id = 'm1'\\\",\\n            CrudEvent::Update,\\n        ),\\n        (\\\"DELETE FROM memory WHERE id = 'm1'\\\", CrudEvent::Delete),\\n    ];\\n\\n    for (source, expected) in cases {\\n        let query = compile(source, QueryDialect::SqlAnsi);\\n        assert!(\\n            query\\n                .link_program\\n                .rules\\n                .iter()\\n                .any(|rule| link_substitution_effect(rule) == expected),\\n            \\\"{source} did not lower to {expected:?}: {}\\\",\\n            query.links_notation(),\\n        );\\n    }\\n}\\n\\n#[test]\\nfn aggregations_and_statistics_execute_over_the_shared_memory_schema() {\\n    let query = compile(\\n        \\\"SELECT kind, COUNT(*) AS count, SUM(accessCount) AS accesses, AVG(writeCount) AS averageWrites, MIN(accessCount) AS minimumAccesses, MAX(accessCount) AS maximumAccesses, VAR_POP(accessCount) AS accessVariance, STDDEV_POP(accessCount) AS accessDeviation FROM memory GROUP BY kind ORDER BY kind ASC\\\",\\n        QueryDialect::SqlAnsi,\\n    );\\n    assert_eq!(\\n        query\\n            .plan\\n            .aggregates\\n            .iter()\\n            .map(|aggregate| aggregate.function)\\n            .collect::<Vec<_>>(),\\n        [\\n            AggregateFunction::Count,\\n            AggregateFunction::Sum,\\n            AggregateFunction::Average,\\n            AggregateFunction::Minimum,\\n            AggregateFunction::Maximum,\\n            AggregateFunction::PopulationVariance,\\n            AggregateFunction::PopulationStandardDeviation,\\n        ]\\n    );\\n\\n    let mut store = MemoryStore::from_events(vec![\\n        MemoryEvent {\\n            id: String::from(\\\"a\\\"),\\n            kind: Some(String::from(\\\"fact\\\")),\\n            access_count: 1,\\n            write_count: 1,\\n            ..MemoryEvent::default()\\n        },\\n        MemoryEvent {\\n            id: String::from(\\\"b\\\"),\\n            kind: Some(String::from(\\\"fact\\\")),\\n            access_count: 3,\\n            write_count: 3,\\n            ..MemoryEvent::default()\\n        },\\n    ]);\\n    let outcome = execute_memory_query(\\n        &query,\\n        &mut store,\\n        MemoryProgramAuthorization::ReadOnly,\\n    );\\n    assert_eq!(outcome.rows.len(), 1);\\n    assert_eq!(outcome.rows[0].get(\\\"count\\\"), Some(&MemoryQueryValue::Integer(2)));\\n    assert_eq!(outcome.rows[0].get(\\\"accesses\\\"), Some(&MemoryQueryValue::Integer(4)));\\n    assert_eq!(\\n        outcome.rows[0].get(\\\"averageWrites\\\"),\\n        Some(&MemoryQueryValue::Float(2.0))\\n    );\\n    assert_eq!(\\n        outcome.rows[0].get(\\\"accessVariance\\\"),\\n        Some(&MemoryQueryValue::Float(1.0))\\n    );\\n    assert_eq!(\\n        outcome.rows[0].get(\\\"accessDeviation\\\"),\\n        Some(&MemoryQueryValue::Float(1.0))\\n    );\\n}\\n\\n#[test]\\nfn a_learned_natural_language_template_reuses_the_exact_sql_plan() {\\n    let mut compiler = MemoryQueryCompiler::new();\\n    compiler\\n        .learn_natural_language_template(\\n            \\\"Show {field} for {kind} memories.\\\",\\n            \\\"SELECT {field} FROM memory WHERE kind = '{kind}'\\\",\\n            QueryDialect::SqlAnsi,\\n        )\\n        .expect(\\\"safe placeholders should be learnable\\\");\\n\\n    let learned = compiler\\n        .compile(\\n            \\\"Show content for fact memories.\\\",\\n            QueryDialect::NaturalLanguage,\\n            LIMITS,\\n        )\\n        .expect(\\\"the learned surface should compile\\\");\\n    let exact = compile(\\n        \\\"SELECT content FROM memory WHERE kind = 'fact'\\\",\\n        QueryDialect::SqlAnsi,\\n    );\\n\\n    assert_eq!(learned.canonical_semantics(), exact.canonical_semantics());\\n    assert!(compiler\\n        .learning_links_notation()\\n        .contains(\\\"natural_language_template\\\"));\\n    assert!(learned.links_notation().contains(\\\"learned_from\\\"));\\n}\"\n  target \"issue_708_memory_query_languages.rs\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_08e7a519e4b5e02b\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to issue_708_memory_query_languages.rs\"\n    expected_evidence \"workspace file issue_708_memory_query_languages.rs\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"use formal_ai::links_substitution_query::link_substitution_effect;\\nuse formal_ai::memory::{MemoryEvent, MemoryStore};\\nuse formal_ai::memory_program::{MemoryProgramAuthorization, MemoryProgramLimits};\\nuse formal_ai::memory_query_language::{\\n    compile_memory_query, execute_memory_query, AggregateFunction, MemoryField,\\n    MemoryQueryCompiler, MemoryQueryValue, QueryDialect,\\n};\\nuse formal_ai::substitution::CrudEvent;\\n\\nconst LIMITS: MemoryProgramLimits = MemoryProgramLimits {\\n    max_matches: 64,\\n    max_iterations: 8,\\n};\\n\\nfn compile(source: &str, dialect: QueryDialect) -> formal_ai::memory_query_language::CompiledMemoryQuery {\\n    compile_memory_query(source, dialect, LIMITS).unwrap_or_else(|error| panic!(\\\"{source}: {error}\\\"))\\n}\\n\\n#[test]\\nfn exact_sql_and_graphql_reads_share_one_plan_and_identity_substitution() {\\n    let sql = compile(\\n        \\\"SELECT id, kind, role, intent, tool, inputs, outputs, content, sentAt, demoLabel, conversationId, conversationTitle, evidence, accessCount, writeCount FROM memory WHERE kind = 'fact' AND role = 'user' ORDER BY accessCount DESC LIMIT 5\\\",\\n        QueryDialect::SqlAnsi,\\n    );\\n    let graphql = compile(\\n        \\\"query { memory(where: { kind: { eq: \\\\\\\"fact\\\\\\\" }, role: { eq: \\\\\\\"user\\\\\\\" } }, orderBy: { accessCount: DESC }, first: 5) { id kind role intent tool inputs outputs content sentAt demoLabel conversationId conversationTitle evidence accessCount writeCount } }\\\",\\n        QueryDialect::GraphQl,\\n    );\\n\\n    assert_eq!(sql.canonical_semantics(), graphql.canonical_semantics());\\n    assert_eq!(sql.plan.projection, MemoryField::ALL);\\n    for parsed in [&sql, &graphql] {\\n        assert_eq!(parsed.parser.engine, \\\"meta_language\\\");\\n        assert!(parsed.parser.full_match);\\n        assert!(parsed.parser.text_preserved);\\n        assert!(parsed\\n            .link_program\\n            .rules\\n            .iter()\\n            .any(|rule| link_substitution_effect(rule) == CrudEvent::Read));\\n        assert!(parsed.links_notation().contains(\\\"effect read\\\"));\\n    }\\n}\\n\\n#[test]\\nfn sql_crud_lowers_to_the_four_link_cli_substitution_shapes() {\\n    let cases = [\\n        (\\n            \\\"SELECT content FROM memory WHERE id = 'm1'\\\",\\n            CrudEvent::Read,\\n        ),\\n        (\\n            \\\"INSERT INTO memory (id, kind, content) VALUES ('m2', 'fact', 'created')\\\",\\n            CrudEvent::Create,\\n        ),\\n        (\\n            \\\"UPDATE memory SET content = 'updated' WHERE id = 'm1'\\\",\\n            CrudEvent::Update,\\n        ),\\n        (\\\"DELETE FROM memory WHERE id = 'm1'\\\", CrudEvent::Delete),\\n    ];\\n\\n    for (source, expected) in cases {\\n        let query = compile(source, QueryDialect::SqlAnsi);\\n        assert!(\\n            query\\n                .link_program\\n                .rules\\n                .iter()\\n                .any(|rule| link_substitution_effect(rule) == expected),\\n            \\\"{source} did not lower to {expected:?}: {}\\\",\\n            query.links_notation(),\\n        );\\n    }\\n}\\n\\n#[test]\\nfn aggregations_and_statistics_execute_over_the_shared_memory_schema() {\\n    let query = compile(\\n        \\\"SELECT kind, COUNT(*) AS count, SUM(accessCount) AS accesses, AVG(writeCount) AS averageWrites, MIN(accessCount) AS minimumAccesses, MAX(accessCount) AS maximumAccesses, VAR_POP(accessCount) AS accessVariance, STDDEV_POP(accessCount) AS accessDeviation FROM memory GROUP BY kind ORDER BY kind ASC\\\",\\n        QueryDialect::SqlAnsi,\\n    );\\n    assert_eq!(\\n        query\\n            .plan\\n            .aggregates\\n            .iter()\\n            .map(|aggregate| aggregate.function)\\n            .collect::<Vec<_>>(),\\n        [\\n            AggregateFunction::Count,\\n            AggregateFunction::Sum,\\n            AggregateFunction::Average,\\n            AggregateFunction::Minimum,\\n            AggregateFunction::Maximum,\\n            AggregateFunction::PopulationVariance,\\n            AggregateFunction::PopulationStandardDeviation,\\n        ]\\n    );\\n\\n    let mut store = MemoryStore::from_events(vec![\\n        MemoryEvent {\\n            id: String::from(\\\"a\\\"),\\n            kind: Some(String::from(\\\"fact\\\")),\\n            access_count: 1,\\n            write_count: 1,\\n            ..MemoryEvent::default()\\n        },\\n        MemoryEvent {\\n            id: String::from(\\\"b\\\"),\\n            kind: Some(String::from(\\\"fact\\\")),\\n            access_count: 3,\\n            write_count: 3,\\n            ..MemoryEvent::default()\\n        },\\n    ]);\\n    let outcome = execute_memory_query(\\n        &query,\\n        &mut store,\\n        MemoryProgramAuthorization::ReadOnly,\\n    );\\n    assert_eq!(outcome.rows.len(), 1);\\n    assert_eq!(outcome.rows[0].get(\\\"count\\\"), Some(&MemoryQueryValue::Integer(2)));\\n    assert_eq!(outcome.rows[0].get(\\\"accesses\\\"), Some(&MemoryQueryValue::Integer(4)));\\n    assert_eq!(\\n        outcome.rows[0].get(\\\"averageWrites\\\"),\\n        Some(&MemoryQueryValue::Float(2.0))\\n    );\\n    assert_eq!(\\n        outcome.rows[0].get(\\\"accessVariance\\\"),\\n        Some(&MemoryQueryValue::Float(1.0))\\n    );\\n    assert_eq!(\\n        outcome.rows[0].get(\\\"accessDeviation\\\"),\\n        Some(&MemoryQueryValue::Float(1.0))\\n    );\\n}\\n\\n#[test]\\nfn a_learned_natural_language_template_reuses_the_exact_sql_plan() {\\n    let mut compiler = MemoryQueryCompiler::new();\\n    compiler\\n        .learn_natural_language_template(\\n            \\\"Show {field} for {kind} memories.\\\",\\n            \\\"SELECT {field} FROM memory WHERE kind = '{kind}'\\\",\\n            QueryDialect::SqlAnsi,\\n        )\\n        .expect(\\\"safe placeholders should be learnable\\\");\\n\\n    let learned = compiler\\n        .compile(\\n            \\\"Show content for fact memories.\\\",\\n            QueryDialect::NaturalLanguage,\\n            LIMITS,\\n        )\\n        .expect(\\\"the learned surface should compile\\\");\\n    let exact = compile(\\n        \\\"SELECT content FROM memory WHERE kind = 'fact'\\\",\\n        QueryDialect::SqlAnsi,\\n    );\\n\\n    assert_eq!(learned.canonical_semantics(), exact.canonical_semantics());\\n    assert!(compiler\\n        .learning_links_notation()\\n        .contains(\\\"natural_language_template\\\"));\\n    assert!(learned.links_notation().contains(\\\"learned_from\\\"));\\n}\"\n    command \"cat issue_708_memory_query_languages.rs\"\n  verification_command \"cat issue_708_memory_query_languages.rs\"",
+    "time": {
+      "start": 1785610149925,
+      "end": 1785610149925
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.928Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1785610149928,
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "part": {
+    "id": "prt_fbea8a027001kGRe3A1aPcOg8A",
+    "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+    "messageID": "msg_fbea89f68001aoYFROdmcIheAC",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 20808,
+      "output": 13604,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 34412,
+      "headroom": 4444,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.928Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.929Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.933Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.933Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.940Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.940Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.940Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.941Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.946Z",
+  "service": "session.prompt",
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.949Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.954Z",
+  "service": "session.prompt",
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.955Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.955Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1785610149955,
+  "sessionID": "ses_041576852ffe163oFMQA9N8bIr"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.955Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.955Z",
+  "service": "default",
+  "directory": "/tmp/tmp.IFdAJd5jvm",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.956Z",
+  "service": "state",
+  "key": "/tmp/tmp.IFdAJd5jvm",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.958Z",
+  "service": "state",
+  "key": "/tmp/tmp.IFdAJd5jvm",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T18:49:09.960Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 6,
+  "message": "Agent exiting"
+}

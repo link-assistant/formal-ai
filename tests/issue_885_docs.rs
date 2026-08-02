@@ -264,12 +264,30 @@ fn issue_case_study_preserves_requirements_research_and_solution_artifacts() {
 }
 
 #[test]
-fn whole_solution_is_linked_and_has_a_release_fragment() {
-    let changelog = read("changelog.d/20260801_000000_issue_885.md");
+fn whole_solution_is_linked_and_has_release_notes() {
+    let fragment_path = root().join("changelog.d/20260801_000000_issue_885.md");
+    let (release_label, release_notes) = if fragment_path.exists() {
+        let fragment = read("changelog.d/20260801_000000_issue_885.md");
+        assert!(
+            fragment.contains("bump: minor"),
+            "issue 885 release fragment must request a minor bump"
+        );
+        ("issue 885 release fragment", fragment)
+    } else {
+        let changelog = read("CHANGELOG.md");
+        let release = changelog
+            .split_once("## [0.318.0]")
+            .expect("released issue 885 notes must remain under v0.318.0")
+            .1
+            .split("\n## [")
+            .next()
+            .expect("v0.318.0 release section");
+        ("issue 885 v0.318.0 release notes", release.to_owned())
+    };
     assert_contains_all(
-        "issue 885 changelog",
-        &changelog,
-        &["bump: minor", "relative references", "legal source-review"],
+        release_label,
+        &release_notes,
+        &["relative references", "legal source-review"],
     );
 
     let case_study = read("docs/case-studies/issue-885/README.md");

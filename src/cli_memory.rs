@@ -6,8 +6,8 @@ use crate::{read_input, MemoryAction};
 use formal_ai::{
     agent_info, apply_dreaming_plan, auto_free_space_choice, execute_memory_query,
     export_memory_full, measure_storage, persist_auto_free_space_choice, plan_memory_dreaming,
-    render_dreaming_plan, seed_files, suggest_memory_migrations, AutoFreeSpaceChoice, BundleInfo,
-    DreamingConfig, MemoryStore,
+    render_dreaming_plan, response_for, seed_files, suggest_memory_migrations, AutoFreeSpaceChoice,
+    BundleInfo, DreamingConfig, MemoryStore,
 };
 
 pub fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
@@ -102,7 +102,10 @@ pub fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
                     }
                     println!("{}", execution.answer.answer);
                 }
-                None => println!("No natural-language memory query recognized."),
+                None => println!(
+                    "{}",
+                    response_for("memory_query_unrecognized", "en").unwrap_or_default()
+                ),
             }
         }
         MemoryAction::Dream {

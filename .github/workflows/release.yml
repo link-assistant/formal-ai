@@ -1528,7 +1528,8 @@ jobs:
           EXPECT_TEXT: general planner e2e passed
           MIN_POSTS: 4
         run: experiments/agent_cli_e2e/run_agent_cli.sh
-
+      - name: "Run agent CLI E2E — literal payload containing an edit phrase (issue #708)"
+        run: PORT=8808 experiments/agent_cli_e2e/run_issue_708.sh
       - name: "Run agent CLI E2E — file-creation routes to write not read (issue #681)"
         # The exact reproduction from issue #681: a "create a file … with the
         # content …" request used to emit a `read` on the not-yet-existing target
@@ -1543,7 +1544,6 @@ jobs:
           EXPECT_TEXT: hello world
           MIN_POSTS: 4
         run: experiments/agent_cli_e2e/run_agent_cli.sh
-
       - name: "Run agent CLI E2E — existing issue reference does not file a duplicate (issue #730)"
         # Use wording different from the captured case-study run. Mentioning an
         # existing issue beside a file request must drive the complete write plan,

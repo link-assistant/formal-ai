@@ -199,6 +199,16 @@ fn general_task_preserves_exact_multiline_lino_payload() {
 }
 
 #[test]
+fn literal_file_marker_owns_payload_that_contains_an_edit_phrase() {
+    let payload = "prefix rename X to Y suffix";
+    let task =
+        format!("Create file issue_708_memory_program.rs with exactly this content:\n{payload}");
+
+    let plan = compose_general_change_plan(&task).expect("literal file plan");
+    assert_eq!(plan.content, payload);
+}
+
+#[test]
 fn command_stdout_requests_run_the_command_instead_of_writing_the_reference_phrase() {
     let task = "Run 'printf learned-output' and write its exact stdout to reports/learned.txt";
     let plan = compose_general_change_plan(task).expect("command-output plan");

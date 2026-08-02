@@ -1,4 +1,139 @@
 meanings
+  response_general_plan_command_output_evidence_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan command output evidence hi"
+  response_general_plan_command_output_evidence_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan command output evidence ru"
+  response_general_plan_command_output_evidence_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan command output evidence zh"
+  response_general_plan_command_verification_evidence_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan command verification evidence en"
+  response_general_plan_command_verification_evidence_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan command verification evidence hi"
+  response_general_plan_command_verification_evidence_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan command verification evidence ru"
+  response_general_plan_command_verification_evidence_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan command verification evidence zh"
+  response_general_plan_repository_action_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan repository action en"
+  response_general_plan_repository_action_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan repository action hi"
+  response_general_plan_repository_action_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan repository action ru"
+  response_general_plan_repository_action_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan repository action zh"
+  response_general_plan_repository_complete_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan repository complete en"
+  response_general_plan_repository_complete_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan repository complete hi"
+  response_general_plan_repository_complete_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan repository complete ru"
+  response_general_plan_repository_complete_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan repository complete zh"
+  response_general_plan_repository_evidence_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan repository evidence en"
+  response_general_plan_repository_evidence_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan repository evidence hi"
+  response_general_plan_repository_evidence_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan repository evidence ru"
+  response_general_plan_repository_evidence_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan repository evidence zh"
+  response_general_plan_repository_verify_action_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan repository verify action en"
+  response_general_plan_repository_verify_action_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan repository verify action hi"
+  response_general_plan_repository_verify_action_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan repository verify action ru"
+  response_general_plan_repository_verify_action_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan repository verify action zh"
+  response_github_repository_traffic_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response github repository traffic en"
+  response_github_repository_traffic_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response github repository traffic hi"
+  response_github_repository_traffic_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response github repository traffic ru"
+  response_github_repository_traffic_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response github repository traffic zh"
   response_greeting_en
     defined-by response_template
     lexeme en
@@ -1179,218 +1314,83 @@ meanings
     lexeme en
       surface
         text "response mcp tool description zh"
-  response_meta_explanation_en
+  response_memory_program_compilation_gap_en
     defined-by response_template
     lexeme en
       surface
-        text "response meta explanation en"
-  response_meta_explanation_hi
+        text "response memory program compilation gap en"
+  response_memory_program_compilation_gap_es
     defined-by response_template
     lexeme en
       surface
-        text "response meta explanation hi"
-  response_meta_explanation_ru
+        text "response memory program compilation gap es"
+  response_memory_program_compilation_gap_hi
     defined-by response_template
     lexeme en
       surface
-        text "response meta explanation ru"
-  response_meta_explanation_zh
+        text "response memory program compilation gap hi"
+  response_memory_program_compilation_gap_ru
     defined-by response_template
     lexeme en
       surface
-        text "response meta explanation zh"
-  response_orchestration_correction_prompt_en
+        text "response memory program compilation gap ru"
+  response_memory_program_compilation_gap_zh
     defined-by response_template
     lexeme en
       surface
-        text "response orchestration correction prompt en"
-  response_orchestration_correction_prompt_hi
+        text "response memory program compilation gap zh"
+  response_memory_program_complete_en
     defined-by response_template
     lexeme en
       surface
-        text "response orchestration correction prompt hi"
-  response_orchestration_correction_prompt_ru
+        text "response memory program complete en"
+  response_memory_program_complete_es
     defined-by response_template
     lexeme en
       surface
-        text "response orchestration correction prompt ru"
-  response_orchestration_correction_prompt_zh
+        text "response memory program complete es"
+  response_memory_program_complete_hi
     defined-by response_template
     lexeme en
       surface
-        text "response orchestration correction prompt zh"
-  response_orchestration_cross_agent_denial_en
+        text "response memory program complete hi"
+  response_memory_program_complete_ru
     defined-by response_template
     lexeme en
       surface
-        text "response orchestration cross agent denial en"
-  response_orchestration_cross_agent_denial_hi
+        text "response memory program complete ru"
+  response_memory_program_complete_zh
     defined-by response_template
     lexeme en
       surface
-        text "response orchestration cross agent denial hi"
-  response_orchestration_cross_agent_denial_ru
+        text "response memory program complete zh"
+  response_memory_program_destructive_refused_en
     defined-by response_template
     lexeme en
       surface
-        text "response orchestration cross agent denial ru"
-  response_orchestration_cross_agent_denial_zh
+        text "response memory program destructive refused en"
+  response_memory_program_destructive_refused_es
     defined-by response_template
     lexeme en
       surface
-        text "response orchestration cross agent denial zh"
-  response_physical_action_question_en
+        text "response memory program destructive refused es"
+  response_memory_program_destructive_refused_hi
     defined-by response_template
     lexeme en
       surface
-        text "response physical action question en"
-  response_physical_action_question_hi
+        text "response memory program destructive refused hi"
+  response_memory_program_destructive_refused_ru
     defined-by response_template
     lexeme en
       surface
-        text "response physical action question hi"
-  response_physical_action_question_ru
+        text "response memory program destructive refused ru"
+  response_memory_program_destructive_refused_zh
     defined-by response_template
     lexeme en
       surface
-        text "response physical action question ru"
-  response_physical_action_question_zh
+        text "response memory program destructive refused zh"
+  response_memory_program_interpreter_gap_en
     defined-by response_template
     lexeme en
       surface
-        text "response physical action question zh"
-  response_requirement_contradiction_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response requirement contradiction en"
-  response_requirement_contradiction_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response requirement contradiction hi"
-  response_requirement_contradiction_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response requirement contradiction ru"
-  response_requirement_contradiction_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response requirement contradiction zh"
-  response_shared_dialog_capture_parse_failed_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response shared dialog capture parse failed en"
-  response_shared_dialog_capture_parse_failed_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response shared dialog capture parse failed hi"
-  response_shared_dialog_capture_parse_failed_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response shared dialog capture parse failed ru"
-  response_shared_dialog_capture_parse_failed_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response shared dialog capture parse failed zh"
-  response_shared_dialog_capture_unsupported_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response shared dialog capture unsupported en"
-  response_shared_dialog_capture_unsupported_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response shared dialog capture unsupported hi"
-  response_shared_dialog_capture_unsupported_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response shared dialog capture unsupported ru"
-  response_shared_dialog_capture_unsupported_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response shared dialog capture unsupported zh"
-  response_skill_gap_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response skill gap en"
-  response_skill_gap_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response skill gap hi"
-  response_skill_gap_name_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response skill gap name en"
-  response_skill_gap_name_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response skill gap name hi"
-  response_skill_gap_name_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response skill gap name ru"
-  response_skill_gap_name_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response skill gap name zh"
-  response_skill_gap_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response skill gap ru"
-  response_skill_gap_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response skill gap zh"
-  response_statement_audit_capture_field_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response statement audit capture field en"
-  response_statement_audit_claim_predicate_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response statement audit claim predicate en"
-  response_statement_audit_claim_subject_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response statement audit claim subject en"
-  response_statement_audit_invalid_json_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response statement audit invalid json en"
-  response_statement_audit_invalid_temperature_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response statement audit invalid temperature en"
-  response_statement_audit_nonempty_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response statement audit nonempty en"
-  response_statement_audit_selector_exclusive_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response statement audit selector exclusive en"
+        text "response memory program interpreter gap en"

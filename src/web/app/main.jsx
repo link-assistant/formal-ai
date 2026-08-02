@@ -7863,11 +7863,14 @@ function App() {
     // rewrites. The actual read+write transform is applied back to IndexedDB
     // when the answer returns (see handleMemoryOperation).
     let memory = [];
+    let memoryEvents = [];
     if (typeof window !== "undefined" && window.FormalAiMemory) {
       try {
+        memoryEvents = await window.FormalAiMemory.listEvents();
         memory = await window.FormalAiMemory.collectSearchableValues();
       } catch (_error) {
         memory = [];
+        memoryEvents = [];
       }
     }
     const prefs = {
@@ -7934,6 +7937,7 @@ function App() {
             prefs,
             userContext: userContextRef.current,
             memory,
+            memoryEvents,
           });
         });
       });
@@ -7950,6 +7954,7 @@ function App() {
           prefs,
           userContext: userContextRef.current,
           memory,
+          memoryEvents,
         });
       });
     }
@@ -8265,6 +8270,15 @@ function App() {
         conversationTitle,
         isDemo: demoFlag,
       });
+      refreshConversations();
+      return;
+    }
+    if (operation.action === "program") {
+      try {
+        await window.FormalAiMemory.applyProgramOperation(operation);
+      } catch (_error) {
+        return;
+      }
       refreshConversations();
     }
   }, [ensureConversation, refreshConversations]);

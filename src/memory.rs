@@ -191,6 +191,15 @@ impl MemoryStore {
         &self.events
     }
 
+    /// Mutable event access for the bounded memory-program interpreter.
+    ///
+    /// The interpreter is the only general mutation path: callers receive
+    /// compiled, permission-tagged primitives rather than direct access to the
+    /// vector, preserving the append-only retraction policy for deletes.
+    pub(crate) fn events_mut(&mut self) -> &mut [MemoryEvent] {
+        &mut self.events
+    }
+
     /// Count one read access on each event at `indices` (issue #494: usage is
     /// counted on access, not inferred from citations alone). Out-of-range
     /// indices are ignored. Returns how many events were actually counted.

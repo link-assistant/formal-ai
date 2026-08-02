@@ -16,6 +16,8 @@ pub const INTERFACE_CAPABILITIES_LINO: &str =
     include_str!("../../data/seed/interface-capabilities.lino");
 pub const MULTILINGUAL_RESPONSES_LINO: &str =
     include_str!("../../data/seed/multilingual-responses.lino");
+pub const MULTILINGUAL_RESPONSES_MEMORY_PROGRAM_LINO: &str =
+    include_str!("../../data/seed/multilingual-responses-memory-program.lino");
 pub const MULTILINGUAL_RESPONSES_LANGUAGE_PROTOCOL_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-language-protocol.lino");
 pub const MULTILINGUAL_RESPONSES_ENTITIES_LINO: &str =
@@ -110,6 +112,7 @@ pub const MEANINGS_SKILL_COMPILER_LINO: &str =
     include_str!("../../data/seed/meanings-skill-compiler.lino");
 pub const MEANINGS_SKILL_PROCEDURE_LINO: &str =
     include_str!("../../data/seed/meanings-skill-procedure.lino");
+pub const MEMORY_PROGRAMS_LINO: &str = include_str!("../../data/seed/memory-programs.lino");
 pub const MEANINGS_FINANCE_LINO: &str = include_str!("../../data/seed/meanings-finance.lino");
 pub const MEANINGS_DEFINITION_MERGE_LINO: &str =
     include_str!("../../data/seed/meanings-definition-merge.lino");
@@ -175,6 +178,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         (
             "data/seed/multilingual-responses.lino",
             MULTILINGUAL_RESPONSES_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-memory-program.lino",
+            MULTILINGUAL_RESPONSES_MEMORY_PROGRAM_LINO,
         ),
         (
             "data/seed/multilingual-responses-language-protocol.lino",
@@ -329,6 +336,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             "data/seed/meanings-skill-procedure.lino",
             MEANINGS_SKILL_PROCEDURE_LINO,
         ),
+        ("data/seed/memory-programs.lino", MEMORY_PROGRAMS_LINO),
         ("data/seed/meanings-finance.lino", MEANINGS_FINANCE_LINO),
         (
             "data/seed/meanings-definition-merge.lino",
@@ -429,6 +437,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
 /// them, so an intent may live in whichever file keeps the sizes balanced.
 pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_LINO,
+    MULTILINGUAL_RESPONSES_MEMORY_PROGRAM_LINO,
     MULTILINGUAL_RESPONSES_LANGUAGE_PROTOCOL_LINO,
     MULTILINGUAL_RESPONSES_ENTITIES_LINO,
     MULTILINGUAL_RESPONSES_SYNTHESIS_LINO,

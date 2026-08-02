@@ -1,4 +1,334 @@
 meanings
+  statement_audit_temperature_range
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit temperature range"
+  statement_audit_unknown_stance
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit unknown stance"
+  statement_audit_unknown_tier
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit unknown tier"
+  stdout
+    defined-by word_surface
+    lexeme en
+      surface
+        text "stdout"
+  strip_empty_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "strip empty lines"
+  structured-document
+    defined-by isolation_mode
+    lexeme en
+      surface
+        text "structured document"
+  structured-knowledge
+    defined-by category
+    lexeme en
+      surface
+        text "structured knowledge"
+  structured_knowledge
+    defined-by kind
+    lexeme en
+      surface
+        text "structured knowledge"
+  submission
+    defined-by word_surface
+    lexeme en
+      surface
+        text "submission"
+  submit
+    defined-by word_surface
+    lexeme en
+      surface
+        text "submit"
+  submit_form
+    defined-by task
+    lexeme en
+      surface
+        text "submit form"
+  substitute
+    defined-by word_surface
+    lexeme en
+      surface
+        text "substitute"
+  sudo
+    defined-by token
+    lexeme en
+      surface
+        text "sudo"
+  sum_to_ten
+    defined-by task
+    lexeme en
+      surface
+        text "sum to ten"
+  summarization_disputed_statement
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization disputed statement"
+  summarization_evidence_denied
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization evidence denied"
+  summarization_evidence_summary
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization evidence summary"
+  summarize_conversation
+    defined-by name
+    lexeme en
+      surface
+        text "summarize conversation"
+  supplied_file_contents
+    defined-by intent
+    lexeme en
+      surface
+        text "supplied file contents"
+  supplied_file_first_line
+    defined-by intent
+    lexeme en
+      surface
+        text "supplied file first line"
+  supported_languages
+    defined-by field
+    lexeme en
+      surface
+        text "supported languages"
+  symbolic-ai
+    defined-by category
+    lexeme en
+      surface
+        text "symbolic ai"
+  tabler
+    defined-by concept
+    lexeme en
+      surface
+        text "tabler"
+  tabler-icons
+    defined-by concept
+    lexeme en
+      surface
+        text "tabler icons"
+  tag_matching_facts
+    defined-by concept
+    lexeme en
+      surface
+        text "tag matching facts"
+  tail
+    defined-by token
+    lexeme en
+      surface
+        text "tail"
+  tar
+    defined-by token
+    lexeme en
+      surface
+        text "tar"
+  task_atomicity_no
+    defined-by intent
+    lexeme en
+      surface
+        text "task atomicity no"
+  task_atomicity_yes
+    defined-by intent
+    lexeme en
+      surface
+        text "task atomicity yes"
+  task_decomposition_atomic
+    defined-by intent
+    lexeme en
+      surface
+        text "task decomposition atomic"
+  task_decomposition_depth_bound
+    defined-by intent
+    lexeme en
+      surface
+        text "task decomposition depth bound"
+  task_decomposition_depth_marker
+    defined-by intent
+    lexeme en
+      surface
+        text "task decomposition depth marker"
+  task_decomposition_lead
+    defined-by intent
+    lexeme en
+      surface
+        text "task decomposition lead"
+  task_first_step_lead
+    defined-by intent
+    lexeme en
+      surface
+        text "task first step lead"
+  task_plan_stage_implementation
+    defined-by intent
+    lexeme en
+      surface
+        text "task plan stage implementation"
+  task_plan_stage_regression
+    defined-by intent
+    lexeme en
+      surface
+        text "task plan stage regression"
+  task_plan_stage_requirements
+    defined-by intent
+    lexeme en
+      surface
+        text "task plan stage requirements"
+  task_plan_stage_verification
+    defined-by intent
+    lexeme en
+      surface
+        text "task plan stage verification"
+  test_status
+    defined-by intent
+    lexeme en
+      surface
+        text "test status"
+  thu
+    defined-by word_surface
+    lexeme en
+      surface
+        text "thu"
+  thurs
+    defined-by word_surface
+    lexeme en
+      surface
+        text "thurs"
+  time_dilation
+    defined-by topic
+    lexeme en
+      surface
+        text "time dilation"
+  title
+    defined-by word_surface
+    lexeme en
+      surface
+        text "title"
+  title_case
+    defined-by operation
+    lexeme en
+      surface
+        text "title case"
+  tool_append_memory
+    defined-by tool
+    lexeme en
+      surface
+        text "tool append memory"
+  tool_archive_pack
+    defined-by tool
+    lexeme en
+      surface
+        text "tool archive pack"
+  tool_archive_unpack
+    defined-by tool
+    lexeme en
+      surface
+        text "tool archive unpack"
+  tool_brainstorm
+    defined-by tool
+    lexeme en
+      surface
+        text "tool brainstorm"
+  tool_calculator
+    defined-by tool
+    lexeme en
+      surface
+        text "tool calculator"
+  tool_concept_lookup
+    defined-by tool
+    lexeme en
+      surface
+        text "tool concept lookup"
+  tool_conversation_recall
+    defined-by tool
+    lexeme en
+      surface
+        text "tool conversation recall"
+  tool_coreference
+    defined-by tool
+    lexeme en
+      surface
+        text "tool coreference"
+  tool_dom_extract
+    defined-by tool
+    lexeme en
+      surface
+        text "tool dom extract"
+  tool_dom_query
+    defined-by tool
+    lexeme en
+      surface
+        text "tool dom query"
+  tool_eval_js
+    defined-by tool
+    lexeme en
+      surface
+        text "tool eval js"
+  tool_export_memory
+    defined-by tool
+    lexeme en
+      surface
+        text "tool export memory"
+  tool_fact_lookup
+    defined-by tool
+    lexeme en
+      surface
+        text "tool fact lookup"
+  tool_fs_list
+    defined-by tool
+    lexeme en
+      surface
+        text "tool fs list"
+  tool_fs_move
+    defined-by tool
+    lexeme en
+      surface
+        text "tool fs move"
+  tool_fs_read
+    defined-by tool
+    lexeme en
+      surface
+        text "tool fs read"
+  tool_fs_write
+    defined-by tool
+    lexeme en
+      surface
+        text "tool fs write"
+  tool_http_fetch
+    defined-by tool
+    lexeme en
+      surface
+        text "tool http fetch"
+  tool_http_fetch_primitive
+    defined-by tool
+    lexeme en
+      surface
+        text "tool http fetch primitive"
+  tool_http_post_primitive
+    defined-by tool
+    lexeme en
+      surface
+        text "tool http post primitive"
+  tool_import_memory
+    defined-by tool
+    lexeme en
+      surface
+        text "tool import memory"
+  tool_intent_routing
+    defined-by tool
+    lexeme en
+      surface
+        text "tool intent routing"
   tool_process_status
     defined-by tool
     lexeme en
@@ -79,6 +409,11 @@ meanings
     lexeme en
       surface
         text "tool write program"
+  topic_count_summary_week
+    defined-by concept
+    lexeme en
+      surface
+        text "topic count summary week"
   total
     defined-by word_surface
     lexeme en
@@ -189,6 +524,11 @@ meanings
     lexeme en
       surface
         text "unzip"
+  update_dated_facts
+    defined-by concept
+    lexeme en
+      surface
+        text "update dated facts"
   usd
     defined-by word_surface
     lexeme en

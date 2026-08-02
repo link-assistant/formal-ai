@@ -1,0 +1,1951 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.079Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.081Z",
+  "service": "default",
+  "version": "0.25.4",
+  "command": "/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Create a Rust regression test file named issue_708_memory_program.rs with exactly this content:\nuse formal_ai::memory_program::{compile_memory_program, MemoryProgramLimits};\n\n#[test]\nfn equivalent_multilingual_requests_compile_to_the_same_program_links() {\n    let requests = [\n        \"List every fact I contributed about X and rename X to Y in all of them.\",\n        \"Перечисли все факты, которые я добавил о X, и переименуй X в Y во всех них.\",\n        \"X के बारे में मेरे जोड़े हर तथ्य को सूचीबद्ध करो और उन सभी में X का नाम Y कर दो।\",\n        \"列出我贡献的关于 X 的每个事实，并在所有事实中将 X 重命名为 Y。\",\n    ];\n    let limits = MemoryProgramLimits {\n        max_matches: 32,\n        max_iterations: 4,\n    };\n    let programs = requests\n        .iter()\n        .map(|request| compile_memory_program(request, limits).expect(\"request should compile\"))\n        .collect::<Vec<_>>();\n\n    for program in &programs[1..] {\n        assert_eq!(program.id, programs[0].id);\n        assert_eq!(program.links_notation(), programs[0].links_notation());\n    }\n    assert_eq!(\n        programs[0].primitive_names(),\n        [\n            \"match\",\n            \"filter\",\n            \"map_matches\",\n            \"update\",\n            \"sequential_compose\",\n            \"bounded_iterate_to_fixpoint\",\n        ]\n    );\n    assert!(programs[0].links_notation().contains(\"max_matches 32\"));\n    assert!(programs[0].links_notation().contains(\"max_iterations 4\"));\n} --disable-stdin --no-summarize-session --compaction-model same --model formal-ai/formal-ai",
+  "workingDirectory": "/tmp/tmp.dYT9eZpaDm",
+  "scriptPath": "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.082Z",
+  "service": "default",
+  "directory": "/tmp/tmp.dYT9eZpaDm",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.082Z",
+  "service": "project",
+  "directory": "/tmp/tmp.dYT9eZpaDm",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.146Z",
+  "service": "default",
+  "processArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Create a Rust regression test file named issue_708_memory_program.rs with exactly this content:\nuse formal_ai::memory_program::{compile_memory_program, MemoryProgramLimits};\n\n#[test]\nfn equivalent_multilingual_requests_compile_to_the_same_program_links() {\n    let requests = [\n        \"List every fact I contributed about X and rename X to Y in all of them.\",\n        \"Перечисли все факты, которые я добавил о X, и переименуй X в Y во всех них.\",\n        \"X के बारे में मेरे जोड़े हर तथ्य को सूचीबद्ध करो और उन सभी में X का नाम Y कर दो।\",\n        \"列出我贡献的关于 X 的每个事实，并在所有事实中将 X 重命名为 Y。\",\n    ];\n    let limits = MemoryProgramLimits {\n        max_matches: 32,\n        max_iterations: 4,\n    };\n    let programs = requests\n        .iter()\n        .map(|request| compile_memory_program(request, limits).expect(\"request should compile\"))\n        .collect::<Vec<_>>();\n\n    for program in &programs[1..] {\n        assert_eq!(program.id, programs[0].id);\n        assert_eq!(program.links_notation(), programs[0].links_notation());\n    }\n    assert_eq!(\n        programs[0].primitive_names(),\n        [\n            \"match\",\n            \"filter\",\n            \"map_matches\",\n            \"update\",\n            \"sequential_compose\",\n            \"bounded_iterate_to_fixpoint\",\n        ]\n    );\n    assert!(programs[0].links_notation().contains(\"max_matches 32\"));\n    assert!(programs[0].links_notation().contains(\"max_iterations 4\"));\n}",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-model",
+    "same",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Create a Rust regression test file named issue_708_memory_program.rs with exactly this content:\nuse formal_ai::memory_program::{compile_memory_program, MemoryProgramLimits};\n\n#[test]\nfn equivalent_multilingual_requests_compile_to_the_same_program_links() {\n    let requests = [\n        \"List every fact I contributed about X and rename X to Y in all of them.\",\n        \"Перечисли все факты, которые я добавил о X, и переименуй X в Y во всех них.\",\n        \"X के बारे में मेरे जोड़े हर तथ्य को सूचीबद्ध करो और उन सभी में X का नाम Y कर दो।\",\n        \"列出我贡献的关于 X 的每个事实，并在所有事实中将 X 重命名为 Y。\",\n    ];\n    let limits = MemoryProgramLimits {\n        max_matches: 32,\n        max_iterations: 4,\n    };\n    let programs = requests\n        .iter()\n        .map(|request| compile_memory_program(request, limits).expect(\"request should compile\"))\n        .collect::<Vec<_>>();\n\n    for program in &programs[1..] {\n        assert_eq!(program.id, programs[0].id);\n        assert_eq!(program.links_notation(), programs[0].links_notation());\n    }\n    assert_eq!(\n        programs[0].primitive_names(),\n        [\n            \"match\",\n            \"filter\",\n            \"map_matches\",\n            \"update\",\n            \"sequential_compose\",\n            \"bounded_iterate_to_fixpoint\",\n        ]\n    );\n    assert!(programs[0].links_notation().contains(\"max_matches 32\"));\n    assert!(programs[0].links_notation().contains(\"max_iterations 4\"));\n}",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-model",
+    "same",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.146Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.149Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.153Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.153Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.158Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.161Z",
+  "service": "config",
+  "path": "/tmp/tmp.dYT9eZpaDm/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.195Z",
+  "service": "models.dev",
+  "path": "/home/box/.cache/link-assistant-agent/models.json",
+  "age": 923712,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.196Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.258Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.271Z",
+  "service": "claude-oauth",
+  "path": "/home/box/.claude/.credentials.json",
+  "message": "credentials file not found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.272Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.272Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.272Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.272Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.272Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.272Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 123,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.273Z",
+  "service": "provider",
+  "modelID": "big-pickle",
+  "providerID": "opencode",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.273Z",
+  "service": "provider",
+  "modelID": "minimax-m2.5-free",
+  "providerID": "kilo",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.274Z",
+  "service": "default",
+  "models": [
+    "opencode/big-pickle",
+    "kilo/minimax-m2.5-free",
+    "same"
+  ],
+  "source": "default",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.297Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.297Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.302Z",
+  "service": "session",
+  "id": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "version": "0.25.4",
+  "projectID": "global",
+  "directory": "/tmp/tmp.dYT9eZpaDm",
+  "title": "New session - 2026-08-01T08:01:59.301Z",
+  "time": {
+    "created": 1785571319301,
+    "updated": 1785571319301
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.302Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.303Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.303Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 6,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.304Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.306Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_043a7e1faffe5cfXqj66PqBMja/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.311Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_043a7e1faffe5cfXqj66PqBMja/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.326Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 14,
+  "method": "POST",
+  "path": "/session/ses_043a7e1faffe5cfXqj66PqBMja/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.347Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.354Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.356Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.360Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.364Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.364Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.365Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.367Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.368Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.368Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.368Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 1,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.369Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.369Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.369Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.369Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.369Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.369Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.369Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:01:59.369Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.343Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.367Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.369Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.413Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.437Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.474Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.475Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.477Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.477Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.627Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1785571320627,
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "part": {
+    "id": "prt_fbc582322001X2JxbMFEB31BEZ",
+    "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+    "messageID": "msg_fbc58222a001Q6pFyNdYhGbsun",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.630Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.634Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785571320634,
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "part": {
+    "id": "prt_fbc582337001OcWiLVllBymGpE",
+    "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+    "messageID": "msg_fbc58222a001Q6pFyNdYhGbsun",
+    "type": "tool",
+    "callID": "call_7108c0358138692d",
+    "tool": "write",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.635Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1785571320635,
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "part": {
+    "id": "prt_fbc582333001jCBQ51KKLMjbgL",
+    "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+    "messageID": "msg_fbc58222a001Q6pFyNdYhGbsun",
+    "type": "text",
+    "text": "Let me update .formal-ai/general-change-plan.lino for you.",
+    "time": {
+      "start": 1785571320634,
+      "end": 1785571320634
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.637Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785571320637,
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "part": {
+    "id": "prt_fbc582337001OcWiLVllBymGpE",
+    "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+    "messageID": "msg_fbc58222a001Q6pFyNdYhGbsun",
+    "type": "tool",
+    "callID": "call_7108c0358138692d",
+    "tool": "write",
+    "state": {
+      "status": "running",
+      "input": {
+        "content": "general_change_plan\n  id \"general_change_plan_d29947aad7b20d54\"\n  execution_mode \"literal_file\"\n  goal \"Create a Rust regression test file named issue_708_memory_program.rs with exactly this content:\\nuse formal_ai::memory_program::{compile_memory_program, MemoryProgramLimits};\\n\\n#[test]\\nfn equivalent_multilingual_requests_compile_to_the_same_program_links() {\\n    let requests = [\\n        \\\"List every fact I contributed about X and rename X to Y in all of them.\\\",\\n        \\\"Перечисли все факты, которые я добавил о X, и переименуй X в Y во всех них.\\\",\\n        \\\"X के बारे में मेरे जोड़े हर तथ्य को सूचीबद्ध करो और उन सभी में X का नाम Y कर दो।\\\",\\n        \\\"列出我贡献的关于 X 的每个事实，并在所有事实中将 X 重命名为 Y。\\\",\\n    ];\\n    let limits = MemoryProgramLimits {\\n        max_matches: 32,\\n        max_iterations: 4,\\n    };\\n    let programs = requests\\n        .iter()\\n        .map(|request| compile_memory_program(request, limits).expect(\\\"request should compile\\\"))\\n        .collect::<Vec<_>>();\\n\\n    for program in &programs[1..] {\\n        assert_eq!(program.id, programs[0].id);\\n        assert_eq!(program.links_notation(), programs[0].links_notation());\\n    }\\n    assert_eq!(\\n        programs[0].primitive_names(),\\n        [\\n            \\\"match\\\",\\n            \\\"filter\\\",\\n            \\\"map_matches\\\",\\n            \\\"update\\\",\\n            \\\"sequential_compose\\\",\\n            \\\"bounded_iterate_to_fixpoint\\\",\\n        ]\\n    );\\n    assert!(programs[0].links_notation().contains(\\\"max_matches 32\\\"));\\n    assert!(programs[0].links_notation().contains(\\\"max_iterations 4\\\"));\\n}\"\n  target \"issue_708_memory_program.rs\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_5093a94b1c3f84cd\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to issue_708_memory_program.rs\"\n    expected_evidence \"workspace file issue_708_memory_program.rs\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"use formal_ai::memory_program::{compile_memory_program, MemoryProgramLimits};\\n\\n#[test]\\nfn equivalent_multilingual_requests_compile_to_the_same_program_links() {\\n    let requests = [\\n        \\\"List every fact I contributed about X and rename X to Y in all of them.\\\",\\n        \\\"Перечисли все факты, которые я добавил о X, и переименуй X в Y во всех них.\\\",\\n        \\\"X के बारे में मेरे जोड़े हर तथ्य को सूचीबद्ध करो और उन सभी में X का नाम Y कर दो।\\\",\\n        \\\"列出我贡献的关于 X 的每个事实，并在所有事实中将 X 重命名为 Y。\\\",\\n    ];\\n    let limits = MemoryProgramLimits {\\n        max_matches: 32,\\n        max_iterations: 4,\\n    };\\n    let programs = requests\\n        .iter()\\n        .map(|request| compile_memory_program(request, limits).expect(\\\"request should compile\\\"))\\n        .collect::<Vec<_>>();\\n\\n    for program in &programs[1..] {\\n        assert_eq!(program.id, programs[0].id);\\n        assert_eq!(program.links_notation(), programs[0].links_notation());\\n    }\\n    assert_eq!(\\n        programs[0].primitive_names(),\\n        [\\n            \\\"match\\\",\\n            \\\"filter\\\",\\n            \\\"map_matches\\\",\\n            \\\"update\\\",\\n            \\\"sequential_compose\\\",\\n            \\\"bounded_iterate_to_fixpoint\\\",\\n        ]\\n    );\\n    assert!(programs[0].links_notation().contains(\\\"max_matches 32\\\"));\\n    assert!(programs[0].links_notation().contains(\\\"max_iterations 4\\\"));\\n}\"\n    command \"cat issue_708_memory_program.rs\"\n  verification_command \"cat issue_708_memory_program.rs\"\n",
+        "filePath": "/tmp/tmp.dYT9eZpaDm/.formal-ai/general-change-plan.lino"
+      },
+      "time": {
+        "start": 1785571320635
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.648Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785571320648,
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "part": {
+    "id": "prt_fbc582337001OcWiLVllBymGpE",
+    "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+    "messageID": "msg_fbc58222a001Q6pFyNdYhGbsun",
+    "type": "tool",
+    "callID": "call_7108c0358138692d",
+    "tool": "write",
+    "state": {
+      "status": "completed",
+      "input": {
+        "content": "general_change_plan\n  id \"general_change_plan_d29947aad7b20d54\"\n  execution_mode \"literal_file\"\n  goal \"Create a Rust regression test file named issue_708_memory_program.rs with exactly this content:\\nuse formal_ai::memory_program::{compile_memory_program, MemoryProgramLimits};\\n\\n#[test]\\nfn equivalent_multilingual_requests_compile_to_the_same_program_links() {\\n    let requests = [\\n        \\\"List every fact I contributed about X and rename X to Y in all of them.\\\",\\n        \\\"Перечисли все факты, которые я добавил о X, и переименуй X в Y во всех них.\\\",\\n        \\\"X के बारे में मेरे जोड़े हर तथ्य को सूचीबद्ध करो और उन सभी में X का नाम Y कर दो।\\\",\\n        \\\"列出我贡献的关于 X 的每个事实，并在所有事实中将 X 重命名为 Y。\\\",\\n    ];\\n    let limits = MemoryProgramLimits {\\n        max_matches: 32,\\n        max_iterations: 4,\\n    };\\n    let programs = requests\\n        .iter()\\n        .map(|request| compile_memory_program(request, limits).expect(\\\"request should compile\\\"))\\n        .collect::<Vec<_>>();\\n\\n    for program in &programs[1..] {\\n        assert_eq!(program.id, programs[0].id);\\n        assert_eq!(program.links_notation(), programs[0].links_notation());\\n    }\\n    assert_eq!(\\n        programs[0].primitive_names(),\\n        [\\n            \\\"match\\\",\\n            \\\"filter\\\",\\n            \\\"map_matches\\\",\\n            \\\"update\\\",\\n            \\\"sequential_compose\\\",\\n            \\\"bounded_iterate_to_fixpoint\\\",\\n        ]\\n    );\\n    assert!(programs[0].links_notation().contains(\\\"max_matches 32\\\"));\\n    assert!(programs[0].links_notation().contains(\\\"max_iterations 4\\\"));\\n}\"\n  target \"issue_708_memory_program.rs\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_5093a94b1c3f84cd\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to issue_708_memory_program.rs\"\n    expected_evidence \"workspace file issue_708_memory_program.rs\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"use formal_ai::memory_program::{compile_memory_program, MemoryProgramLimits};\\n\\n#[test]\\nfn equivalent_multilingual_requests_compile_to_the_same_program_links() {\\n    let requests = [\\n        \\\"List every fact I contributed about X and rename X to Y in all of them.\\\",\\n        \\\"Перечисли все факты, которые я добавил о X, и переименуй X в Y во всех них.\\\",\\n        \\\"X के बारे में मेरे जोड़े हर तथ्य को सूचीबद्ध करो और उन सभी में X का नाम Y कर दो।\\\",\\n        \\\"列出我贡献的关于 X 的每个事实，并在所有事实中将 X 重命名为 Y。\\\",\\n    ];\\n    let limits = MemoryProgramLimits {\\n        max_matches: 32,\\n        max_iterations: 4,\\n    };\\n    let programs = requests\\n        .iter()\\n        .map(|request| compile_memory_program(request, limits).expect(\\\"request should compile\\\"))\\n        .collect::<Vec<_>>();\\n\\n    for program in &programs[1..] {\\n        assert_eq!(program.id, programs[0].id);\\n        assert_eq!(program.links_notation(), programs[0].links_notation());\\n    }\\n    assert_eq!(\\n        programs[0].primitive_names(),\\n        [\\n            \\\"match\\\",\\n            \\\"filter\\\",\\n            \\\"map_matches\\\",\\n            \\\"update\\\",\\n            \\\"sequential_compose\\\",\\n            \\\"bounded_iterate_to_fixpoint\\\",\\n        ]\\n    );\\n    assert!(programs[0].links_notation().contains(\\\"max_matches 32\\\"));\\n    assert!(programs[0].links_notation().contains(\\\"max_iterations 4\\\"));\\n}\"\n    command \"cat issue_708_memory_program.rs\"\n  verification_command \"cat issue_708_memory_program.rs\"\n",
+        "filePath": "/tmp/tmp.dYT9eZpaDm/.formal-ai/general-change-plan.lino"
+      },
+      "output": "",
+      "title": "tmp/tmp.dYT9eZpaDm/.formal-ai/general-change-plan.lino",
+      "metadata": {
+        "diagnostics": {},
+        "filepath": "/tmp/tmp.dYT9eZpaDm/.formal-ai/general-change-plan.lino",
+        "exists": false
+      },
+      "time": {
+        "start": 1785571320635,
+        "end": 1785571320646
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.657Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1785571320657,
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "part": {
+    "id": "prt_fbc58234d001QFegLbdUJEGoxm",
+    "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+    "messageID": "msg_fbc58222a001Q6pFyNdYhGbsun",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 9867,
+      "output": 3958,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 13825,
+      "headroom": 25031,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.658Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.659Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.683Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.683Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.686Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.686Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.686Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.687Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.697Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.698Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.701Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.701Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 13825,
+  "providerTokens": 13825,
+  "estimatedInputTokens": 365,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 9867,
+    "cacheRead": 0,
+    "output": 3958
+  },
+  "overflow": false,
+  "headroom": 37983,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.703Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.703Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.724Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.732Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.841Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1785571320841,
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "part": {
+    "id": "prt_fbc5823f8001HKV5R8wm8m9gtF",
+    "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+    "messageID": "msg_fbc58237e001YNOdpf6YiITBWV",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.843Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.844Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785571320844,
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "part": {
+    "id": "prt_fbc58240b001gTGiHbkKgtyqjZ",
+    "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+    "messageID": "msg_fbc58237e001YNOdpf6YiITBWV",
+    "type": "tool",
+    "callID": "call_3d88ae4a89c28237",
+    "tool": "write",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.845Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1785571320845,
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "part": {
+    "id": "prt_fbc58240a001nt9I2kiUuxNip7",
+    "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+    "messageID": "msg_fbc58237e001YNOdpf6YiITBWV",
+    "type": "text",
+    "text": "Let me update issue_708_memory_program.rs for you.",
+    "time": {
+      "start": 1785571320844,
+      "end": 1785571320844
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.846Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785571320846,
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "part": {
+    "id": "prt_fbc58240b001gTGiHbkKgtyqjZ",
+    "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+    "messageID": "msg_fbc58237e001YNOdpf6YiITBWV",
+    "type": "tool",
+    "callID": "call_3d88ae4a89c28237",
+    "tool": "write",
+    "state": {
+      "status": "running",
+      "input": {
+        "content": "use formal_ai::memory_program::{compile_memory_program, MemoryProgramLimits};\n\n#[test]\nfn equivalent_multilingual_requests_compile_to_the_same_program_links() {\n    let requests = [\n        \"List every fact I contributed about X and rename X to Y in all of them.\",\n        \"Перечисли все факты, которые я добавил о X, и переименуй X в Y во всех них.\",\n        \"X के बारे में मेरे जोड़े हर तथ्य को सूचीबद्ध करो और उन सभी में X का नाम Y कर दो।\",\n        \"列出我贡献的关于 X 的每个事实，并在所有事实中将 X 重命名为 Y。\",\n    ];\n    let limits = MemoryProgramLimits {\n        max_matches: 32,\n        max_iterations: 4,\n    };\n    let programs = requests\n        .iter()\n        .map(|request| compile_memory_program(request, limits).expect(\"request should compile\"))\n        .collect::<Vec<_>>();\n\n    for program in &programs[1..] {\n        assert_eq!(program.id, programs[0].id);\n        assert_eq!(program.links_notation(), programs[0].links_notation());\n    }\n    assert_eq!(\n        programs[0].primitive_names(),\n        [\n            \"match\",\n            \"filter\",\n            \"map_matches\",\n            \"update\",\n            \"sequential_compose\",\n            \"bounded_iterate_to_fixpoint\",\n        ]\n    );\n    assert!(programs[0].links_notation().contains(\"max_matches 32\"));\n    assert!(programs[0].links_notation().contains(\"max_iterations 4\"));\n}",
+        "filePath": "/tmp/tmp.dYT9eZpaDm/issue_708_memory_program.rs"
+      },
+      "time": {
+        "start": 1785571320845
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.848Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785571320848,
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "part": {
+    "id": "prt_fbc58240b001gTGiHbkKgtyqjZ",
+    "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+    "messageID": "msg_fbc58237e001YNOdpf6YiITBWV",
+    "type": "tool",
+    "callID": "call_3d88ae4a89c28237",
+    "tool": "write",
+    "state": {
+      "status": "completed",
+      "input": {
+        "content": "use formal_ai::memory_program::{compile_memory_program, MemoryProgramLimits};\n\n#[test]\nfn equivalent_multilingual_requests_compile_to_the_same_program_links() {\n    let requests = [\n        \"List every fact I contributed about X and rename X to Y in all of them.\",\n        \"Перечисли все факты, которые я добавил о X, и переименуй X в Y во всех них.\",\n        \"X के बारे में मेरे जोड़े हर तथ्य को सूचीबद्ध करो और उन सभी में X का नाम Y कर दो।\",\n        \"列出我贡献的关于 X 的每个事实，并在所有事实中将 X 重命名为 Y。\",\n    ];\n    let limits = MemoryProgramLimits {\n        max_matches: 32,\n        max_iterations: 4,\n    };\n    let programs = requests\n        .iter()\n        .map(|request| compile_memory_program(request, limits).expect(\"request should compile\"))\n        .collect::<Vec<_>>();\n\n    for program in &programs[1..] {\n        assert_eq!(program.id, programs[0].id);\n        assert_eq!(program.links_notation(), programs[0].links_notation());\n    }\n    assert_eq!(\n        programs[0].primitive_names(),\n        [\n            \"match\",\n            \"filter\",\n            \"map_matches\",\n            \"update\",\n            \"sequential_compose\",\n            \"bounded_iterate_to_fixpoint\",\n        ]\n    );\n    assert!(programs[0].links_notation().contains(\"max_matches 32\"));\n    assert!(programs[0].links_notation().contains(\"max_iterations 4\"));\n}",
+        "filePath": "/tmp/tmp.dYT9eZpaDm/issue_708_memory_program.rs"
+      },
+      "output": "",
+      "title": "tmp/tmp.dYT9eZpaDm/issue_708_memory_program.rs",
+      "metadata": {
+        "diagnostics": {},
+        "filepath": "/tmp/tmp.dYT9eZpaDm/issue_708_memory_program.rs",
+        "exists": false
+      },
+      "time": {
+        "start": 1785571320845,
+        "end": 1785571320848
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.850Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1785571320850,
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "part": {
+    "id": "prt_fbc582411001DTZCHfND2w7QHn",
+    "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+    "messageID": "msg_fbc58237e001YNOdpf6YiITBWV",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 9925,
+      "output": 1520,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 11445,
+      "headroom": 27411,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.850Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.851Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.857Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.857Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.895Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.896Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.898Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.898Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.908Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.908Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.909Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.909Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 11445,
+  "providerTokens": 11445,
+  "estimatedInputTokens": 377,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 9925,
+    "cacheRead": 0,
+    "output": 1520
+  },
+  "overflow": false,
+  "headroom": 40363,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.910Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.910Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.919Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:00.926Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.039Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1785571321039,
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "part": {
+    "id": "prt_fbc5824b2001JmKCqvpJZ7GF6B",
+    "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+    "messageID": "msg_fbc58244d001QCmNIk54zrj3sV",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.040Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.041Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785571321041,
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "part": {
+    "id": "prt_fbc5824d0001yhvlFQ9z3kXOuh",
+    "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+    "messageID": "msg_fbc58244d001QCmNIk54zrj3sV",
+    "type": "tool",
+    "callID": "call_9c7ff4ef40ff6af7",
+    "tool": "bash",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.041Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1785571321041,
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "part": {
+    "id": "prt_fbc5824cf001tESRxA3yEn3BrE",
+    "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+    "messageID": "msg_fbc58244d001QCmNIk54zrj3sV",
+    "type": "text",
+    "text": "Let me run a quick command to get that for you.",
+    "time": {
+      "start": 1785571321041,
+      "end": 1785571321041
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.042Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785571321042,
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "part": {
+    "id": "prt_fbc5824d0001yhvlFQ9z3kXOuh",
+    "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+    "messageID": "msg_fbc58244d001QCmNIk54zrj3sV",
+    "type": "tool",
+    "callID": "call_9c7ff4ef40ff6af7",
+    "tool": "bash",
+    "state": {
+      "status": "running",
+      "input": {
+        "command": "cat issue_708_memory_program.rs"
+      },
+      "time": {
+        "start": 1785571321042
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.047Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785571321047,
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "part": {
+    "id": "prt_fbc5824d0001yhvlFQ9z3kXOuh",
+    "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+    "messageID": "msg_fbc58244d001QCmNIk54zrj3sV",
+    "type": "tool",
+    "callID": "call_9c7ff4ef40ff6af7",
+    "tool": "bash",
+    "state": {
+      "status": "completed",
+      "input": {
+        "command": "cat issue_708_memory_program.rs"
+      },
+      "output": "use formal_ai::memory_program::{compile_memory_program, MemoryProgramLimits};\n\n#[test]\nfn equivalent_multilingual_requests_compile_to_the_same_program_links() {\n    let requests = [\n        \"List every fact I contributed about X and rename X to Y in all of them.\",\n        \"Перечисли все факты, которые я добавил о X, и переименуй X в Y во всех них.\",\n        \"X के बारे में मेरे जोड़े हर तथ्य को सूचीबद्ध करो और उन सभी में X का नाम Y कर दो।\",\n        \"列出我贡献的关于 X 的每个事实，并在所有事实中将 X 重命名为 Y。\",\n    ];\n    let limits = MemoryProgramLimits {\n        max_matches: 32,\n        max_iterations: 4,\n    };\n    let programs = requests\n        .iter()\n        .map(|request| compile_memory_program(request, limits).expect(\"request should compile\"))\n        .collect::<Vec<_>>();\n\n    for program in &programs[1..] {\n        assert_eq!(program.id, programs[0].id);\n        assert_eq!(program.links_notation(), programs[0].links_notation());\n    }\n    assert_eq!(\n        programs[0].primitive_names(),\n        [\n            \"match\",\n            \"filter\",\n            \"map_matches\",\n            \"update\",\n            \"sequential_compose\",\n            \"bounded_iterate_to_fixpoint\",\n        ]\n    );\n    assert!(programs[0].links_notation().contains(\"max_matches 32\"));\n    assert!(programs[0].links_notation().contains(\"max_iterations 4\"));\n}",
+      "title": "cat issue_708_memory_program.rs",
+      "metadata": {
+        "output": "use formal_ai::memory_program::{compile_memory_program, MemoryProgramLimits};\n\n#[test]\nfn equivalent_multilingual_requests_compile_to_the_same_program_links() {\n    let requests = [\n        \"List every fact I contributed about X and rename X to Y in all of them.\",\n        \"Перечисли все факты, которые я добавил о X, и переименуй X в Y во всех них.\",\n        \"X के बारे में मेरे जोड़े हर तथ्य को सूचीबद्ध करो और उन सभी में X का नाम Y कर दो।\",\n        \"列出我贡献的关于 X 的每个事实，并在所有事实中将 X 重命名为 Y。\",\n    ];\n    let limits = MemoryProgramLimits {\n        max_matches: 32,\n        max_iterations: 4,\n    };\n    let programs = requests\n        .iter()\n        .map(|request| compile_memory_program(request, limits).expect(\"request should compile\"))\n        .collect::<Vec<_>>();\n\n    for program in &programs[1..] {\n        assert_eq!(program.id, programs[0].id);\n        assert_eq!(program.links_notation(), programs[0].links_notation());\n    }\n    assert_eq!(\n        programs[0].primitive_names(),\n        [\n            \"match\",\n            \"filter\",\n            \"map_matches\",\n            \"update\",\n            \"sequential_compose\",\n            \"bounded_iterate_to_fixpoint\",\n        ]\n    );\n    assert!(programs[0].links_notation().contains(\"max_matches 32\"));\n    assert!(programs[0].links_notation().contains(\"max_iterations 4\"));\n}",
+        "exit": 0
+      },
+      "time": {
+        "start": 1785571321042,
+        "end": 1785571321046
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.049Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1785571321049,
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "part": {
+    "id": "prt_fbc5824d80011vNwqqVE8FdL3G",
+    "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+    "messageID": "msg_fbc58244d001QCmNIk54zrj3sV",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 9975,
+      "output": 96,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 10071,
+      "headroom": 28785,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.050Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.050Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.053Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.054Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.077Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.077Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.078Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.079Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.086Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.086Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.088Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.088Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 10071,
+  "providerTokens": 10071,
+  "estimatedInputTokens": 721,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 9975,
+    "cacheRead": 0,
+    "output": 96
+  },
+  "overflow": false,
+  "headroom": 41737,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.089Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.089Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.108Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.113Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.206Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1785571321206,
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "part": {
+    "id": "prt_fbc582574001LYviXBjPXXbEsQ",
+    "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+    "messageID": "msg_fbc582500001aYs5davAcVUYGb",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.207Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.208Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1785571321208,
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "part": {
+    "id": "prt_fbc582576001RdLNMslttQKTR2",
+    "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+    "messageID": "msg_fbc582500001aYs5davAcVUYGb",
+    "type": "text",
+    "text": "Completed the general change request for issue_708_memory_program.rs and verified it with `cat issue_708_memory_program.rs`.\n\nPlan event (.formal-ai/general-change-plan.lino):\n\ngeneral_change_plan\n  id \"general_change_plan_d29947aad7b20d54\"\n  execution_mode \"literal_file\"\n  goal \"Create a Rust regression test file named issue_708_memory_program.rs with exactly this content:\\nuse formal_ai::memory_program::{compile_memory_program, MemoryProgramLimits};\\n\\n#[test]\\nfn equivalent_multilingual_requests_compile_to_the_same_program_links() {\\n    let requests = [\\n        \\\"List every fact I contributed about X and rename X to Y in all of them.\\\",\\n        \\\"Перечисли все факты, которые я добавил о X, и переименуй X в Y во всех них.\\\",\\n        \\\"X के बारे में मेरे जोड़े हर तथ्य को सूचीबद्ध करो और उन सभी में X का नाम Y कर दो।\\\",\\n        \\\"列出我贡献的关于 X 的每个事实，并在所有事实中将 X 重命名为 Y。\\\",\\n    ];\\n    let limits = MemoryProgramLimits {\\n        max_matches: 32,\\n        max_iterations: 4,\\n    };\\n    let programs = requests\\n        .iter()\\n        .map(|request| compile_memory_program(request, limits).expect(\\\"request should compile\\\"))\\n        .collect::<Vec<_>>();\\n\\n    for program in &programs[1..] {\\n        assert_eq!(program.id, programs[0].id);\\n        assert_eq!(program.links_notation(), programs[0].links_notation());\\n    }\\n    assert_eq!(\\n        programs[0].primitive_names(),\\n        [\\n            \\\"match\\\",\\n            \\\"filter\\\",\\n            \\\"map_matches\\\",\\n            \\\"update\\\",\\n            \\\"sequential_compose\\\",\\n            \\\"bounded_iterate_to_fixpoint\\\",\\n        ]\\n    );\\n    assert!(programs[0].links_notation().contains(\\\"max_matches 32\\\"));\\n    assert!(programs[0].links_notation().contains(\\\"max_iterations 4\\\"));\\n}\"\n  target \"issue_708_memory_program.rs\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_5093a94b1c3f84cd\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to issue_708_memory_program.rs\"\n    expected_evidence \"workspace file issue_708_memory_program.rs\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"use formal_ai::memory_program::{compile_memory_program, MemoryProgramLimits};\\n\\n#[test]\\nfn equivalent_multilingual_requests_compile_to_the_same_program_links() {\\n    let requests = [\\n        \\\"List every fact I contributed about X and rename X to Y in all of them.\\\",\\n        \\\"Перечисли все факты, которые я добавил о X, и переименуй X в Y во всех них.\\\",\\n        \\\"X के बारे में मेरे जोड़े हर तथ्य को सूचीबद्ध करो और उन सभी में X का नाम Y कर दो।\\\",\\n        \\\"列出我贡献的关于 X 的每个事实，并在所有事实中将 X 重命名为 Y。\\\",\\n    ];\\n    let limits = MemoryProgramLimits {\\n        max_matches: 32,\\n        max_iterations: 4,\\n    };\\n    let programs = requests\\n        .iter()\\n        .map(|request| compile_memory_program(request, limits).expect(\\\"request should compile\\\"))\\n        .collect::<Vec<_>>();\\n\\n    for program in &programs[1..] {\\n        assert_eq!(program.id, programs[0].id);\\n        assert_eq!(program.links_notation(), programs[0].links_notation());\\n    }\\n    assert_eq!(\\n        programs[0].primitive_names(),\\n        [\\n            \\\"match\\\",\\n            \\\"filter\\\",\\n            \\\"map_matches\\\",\\n            \\\"update\\\",\\n            \\\"sequential_compose\\\",\\n            \\\"bounded_iterate_to_fixpoint\\\",\\n        ]\\n    );\\n    assert!(programs[0].links_notation().contains(\\\"max_matches 32\\\"));\\n    assert!(programs[0].links_notation().contains(\\\"max_iterations 4\\\"));\\n}\"\n    command \"cat issue_708_memory_program.rs\"\n  verification_command \"cat issue_708_memory_program.rs\"",
+    "time": {
+      "start": 1785571321208,
+      "end": 1785571321208
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.209Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1785571321209,
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "part": {
+    "id": "prt_fbc582578001F8q1j7YtOhhOJ9",
+    "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+    "messageID": "msg_fbc582500001aYs5davAcVUYGb",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 11350,
+      "output": 3762,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 15112,
+      "headroom": 23744,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.210Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.210Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.216Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.217Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.238Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.238Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.238Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.238Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.239Z",
+  "service": "session.prompt",
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.240Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.252Z",
+  "service": "session.prompt",
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.252Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.253Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1785571321253,
+  "sessionID": "ses_043a7e1faffe5cfXqj66PqBMja"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.253Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.253Z",
+  "service": "default",
+  "directory": "/tmp/tmp.dYT9eZpaDm",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.254Z",
+  "service": "state",
+  "key": "/tmp/tmp.dYT9eZpaDm",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.256Z",
+  "service": "state",
+  "key": "/tmp/tmp.dYT9eZpaDm",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-01T08:02:01.256Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 4,
+  "message": "Agent exiting"
+}
