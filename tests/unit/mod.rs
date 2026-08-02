@@ -40,6 +40,7 @@ mod docs_requirements_issue_712;
 mod docs_requirements_issue_834;
 mod docs_requirements_issue_844;
 mod docs_requirements_issue_858;
+mod docs_requirements_issue_890;
 mod dreaming_runtime;
 mod formal_ai;
 mod github_logs;

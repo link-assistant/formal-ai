@@ -4,9 +4,12 @@
 use std::collections::BTreeSet;
 use std::fs;
 use std::process::Command;
+use std::sync::atomic::{AtomicUsize, Ordering};
 
 use formal_ai::proof_program::FormalProof;
 use formal_ai::{FormalAiEngine, SymbolicAnswer};
+
+static NEXT_ARTIFACT: AtomicUsize = AtomicUsize::new(0);
 
 fn answer(prompt: &str) -> SymbolicAnswer {
     FormalAiEngine.answer(prompt)
@@ -36,7 +39,7 @@ fn meaning_link(response: &SymbolicAnswer) -> &str {
 }
 
 fn execute_rust(program: &str) -> String {
-    let stem = format!("formal-ai-issue-890-{}", std::process::id());
+    let stem = artifact_stem();
     let source = std::env::temp_dir().join(format!("{stem}.rs"));
     let binary = std::env::temp_dir().join(stem);
     fs::write(&source, program).expect("write generated Rust proof");
@@ -61,8 +64,7 @@ fn execute_rust(program: &str) -> String {
 }
 
 fn execute_python(program: &str) -> String {
-    let source =
-        std::env::temp_dir().join(format!("formal-ai-issue-890-{}.py", std::process::id()));
+    let source = std::env::temp_dir().join(format!("{}.py", artifact_stem()));
     fs::write(&source, program).expect("write generated Python proof");
     let executed = Command::new("python3")
         .arg(&source)
@@ -75,6 +77,24 @@ fn execute_python(program: &str) -> String {
         String::from_utf8_lossy(&executed.stderr)
     );
     String::from_utf8(executed.stdout).expect("Python output is UTF-8")
+}
+
+fn artifact_stem() -> String {
+    format!(
+        "formal-ai-issue-890-{}-{}",
+        std::process::id(),
+        NEXT_ARTIFACT.fetch_add(1, Ordering::Relaxed)
+    )
+}
+
+fn translate_solved_interval() -> (SymbolicAnswer, SymbolicAnswer) {
+    let solved = answer("Я загадал число больше 1 но меньше 3. что это за число?");
+    assert_eq!(solved.intent, "number_constraint_reasoning");
+    let statement = inline_proof_statement(&solved.answer);
+    (
+        answer(&format!("Translate `{statement}` to Rust")),
+        answer(&format!("Translate `{statement}` to Python")),
+    )
 }
 
 #[test]
@@ -92,14 +112,8 @@ fn proof_meaning_is_independent_from_its_programming_language_presentations() {
 }
 
 #[test]
-fn solved_interval_proof_translates_to_two_executable_programs() {
-    let solved = answer("Я загадал число больше 1 но меньше 3. что это за число?");
-    assert_eq!(solved.intent, "number_constraint_reasoning");
-    let statement = inline_proof_statement(&solved.answer);
-
-    let rust = answer(&format!("Translate `{statement}` to Rust"));
-    let python = answer(&format!("Translate `{statement}` to Python"));
-
+fn same_solved_proof_uses_general_translation_path_for_two_targets() {
+    let (rust, python) = translate_solved_interval();
     assert_eq!(rust.intent, "translate_proof_to_rust", "{}", rust.answer);
     assert_eq!(
         python.intent, "translate_proof_to_python",
@@ -111,6 +125,26 @@ fn solved_interval_proof_translates_to_two_executable_programs() {
         meaning_link(&python),
         "surface languages must share one language-neutral proof meaning"
     );
+    assert!(rust.answer.contains("fn main()"));
+    assert!(python.answer.contains("assert x > 1 and x < 3"));
+}
+
+#[test]
+fn generated_proof_programs_compile_and_execute() {
+    let proof =
+        FormalProof::integer_interval("x", 1, false, 3, false).expect("valid interval proof");
+    let rust = proof.render_program("rust").expect("Rust proof renderer");
+    let python = proof
+        .render_program("python")
+        .expect("Python proof renderer");
+    assert_eq!(execute_rust(&rust), "2\n");
+    assert_eq!(execute_python(&python), "2\n");
+}
+
+#[test]
+fn whole_issue_890_workflow_solves_translates_and_executes() {
+    let (rust, python) = translate_solved_interval();
+    assert_eq!(meaning_link(&rust), meaning_link(&python));
     assert_eq!(execute_rust(fenced_program(&rust.answer, "rust")), "2\n");
     assert_eq!(
         execute_python(fenced_program(&python.answer, "python")),
