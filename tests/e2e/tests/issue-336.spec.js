@@ -92,45 +92,28 @@ test.describe('Issue #336 — compound interest with EUR conversion', () => {
     await expect(message).not.toContainText('unparseable');
   });
 
-  test('agent mode works across supported UI languages', async ({ browser, baseURL }) => {
-    const cases = [
-      { language: 'en' },
-      { language: 'ru' },
-      { language: 'hi' },
-      { language: 'zh' },
-    ];
-
-    for (const { language } of cases) {
-      const context = await browser.newContext();
-      await context.addInitScript((value) => {
+  for (const language of ['en', 'ru', 'hi', 'zh']) {
+    test(`agent mode works with the ${language} UI`, async ({ page }) => {
+      await page.evaluate((value) => {
         window.localStorage.clear();
         window.localStorage.setItem('formal-ai.preferences.v1', value);
       }, preferences(language));
-      const languagePage = await context.newPage();
-      try {
-        await languagePage.goto(baseURL || './');
-        await expect(languagePage.locator('.app'), language).toBeVisible({
-          timeout: 15_000,
-        });
-        await expect(languagePage.locator('.status'), language).toContainText(
-          'wasm worker',
-        );
+      await page.reload();
+      await expect(page.locator('.app'), language).toBeVisible({ timeout: 15_000 });
+      await expect(page.locator('.status'), language).toContainText('wasm worker');
 
-        await languagePage.locator('[data-testid="mode-option-agent"]').click();
-        const message = await sendPrompt(languagePage, FULL_PROMPT);
+      await page.locator('[data-testid="mode-option-agent"]').click();
+      const message = await sendPrompt(page, FULL_PROMPT);
 
-        await expect(message, language).toContainText('Agent plan (2 steps)');
-        await expect(message, language).toContainText('Final amount: 1489.85 USD');
-        await expect(message, language).toContainText('Source amount: 1489.85 USD');
-        await expect(message, language).toContainText('Conversion: USD -> EUR');
-        await expect(message, language).not.toContainText("I didn't understand you");
-        await expect(message, language).not.toContainText(
-          "I'm not sure how to respond",
-        );
-        await expect(message, language).not.toContainText('unparseable');
-      } finally {
-        await context.close();
-      }
-    }
-  });
+      await expect(message, language).toContainText('Agent plan (2 steps)');
+      await expect(message, language).toContainText('Final amount: 1489.85 USD');
+      await expect(message, language).toContainText('Source amount: 1489.85 USD');
+      await expect(message, language).toContainText('Conversion: USD -> EUR');
+      await expect(message, language).not.toContainText("I didn't understand you");
+      await expect(message, language).not.toContainText(
+        "I'm not sure how to respond",
+      );
+      await expect(message, language).not.toContainText('unparseable');
+    });
+  }
 });

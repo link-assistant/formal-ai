@@ -1,4 +1,139 @@
 meanings
+  reserved-role
+    defined-by concept
+    lexeme en
+      surface
+        text "reserved role"
+  response_agent_procedure_executed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure executed en"
+  response_agent_procedure_executed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure executed hi"
+  response_agent_procedure_executed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure executed ru"
+  response_agent_procedure_executed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure executed zh"
+  response_agent_procedure_execution_failed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure execution failed en"
+  response_agent_procedure_execution_failed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure execution failed hi"
+  response_agent_procedure_execution_failed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure execution failed ru"
+  response_agent_procedure_execution_failed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure execution failed zh"
+  response_agent_procedure_readback_unavailable_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure readback unavailable en"
+  response_agent_procedure_readback_unavailable_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure readback unavailable hi"
+  response_agent_procedure_readback_unavailable_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure readback unavailable ru"
+  response_agent_procedure_readback_unavailable_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure readback unavailable zh"
+  response_agent_procedure_verification_failed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verification failed en"
+  response_agent_procedure_verification_failed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verification failed hi"
+  response_agent_procedure_verification_failed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verification failed ru"
+  response_agent_procedure_verification_failed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verification failed zh"
+  response_agent_procedure_verified_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verified en"
+  response_agent_procedure_verified_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verified hi"
+  response_agent_procedure_verified_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verified ru"
+  response_agent_procedure_verified_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verified zh"
+  response_agent_procedure_write_unavailable_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure write unavailable en"
+  response_agent_procedure_write_unavailable_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure write unavailable hi"
+  response_agent_procedure_write_unavailable_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure write unavailable ru"
+  response_agent_procedure_write_unavailable_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure write unavailable zh"
+  response_agent_suggestion_active_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion active en"
+  response_agent_suggestion_active_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion active hi"
   response_agent_suggestion_active_ru
     defined-by response_template
     lexeme en
@@ -1259,138 +1394,3 @@ meanings
     lexeme en
       surface
         text "response general plan command output evidence en"
-  response_general_plan_command_output_evidence_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan command output evidence hi"
-  response_general_plan_command_output_evidence_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan command output evidence ru"
-  response_general_plan_command_output_evidence_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan command output evidence zh"
-  response_general_plan_command_verification_evidence_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan command verification evidence en"
-  response_general_plan_command_verification_evidence_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan command verification evidence hi"
-  response_general_plan_command_verification_evidence_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan command verification evidence ru"
-  response_general_plan_command_verification_evidence_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan command verification evidence zh"
-  response_general_plan_repository_action_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository action en"
-  response_general_plan_repository_action_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository action hi"
-  response_general_plan_repository_action_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository action ru"
-  response_general_plan_repository_action_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository action zh"
-  response_general_plan_repository_complete_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository complete en"
-  response_general_plan_repository_complete_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository complete hi"
-  response_general_plan_repository_complete_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository complete ru"
-  response_general_plan_repository_complete_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository complete zh"
-  response_general_plan_repository_evidence_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository evidence en"
-  response_general_plan_repository_evidence_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository evidence hi"
-  response_general_plan_repository_evidence_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository evidence ru"
-  response_general_plan_repository_evidence_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository evidence zh"
-  response_general_plan_repository_verify_action_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository verify action en"
-  response_general_plan_repository_verify_action_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository verify action hi"
-  response_general_plan_repository_verify_action_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository verify action ru"
-  response_general_plan_repository_verify_action_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository verify action zh"
-  response_github_repository_traffic_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response github repository traffic en"
-  response_github_repository_traffic_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response github repository traffic hi"
-  response_github_repository_traffic_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response github repository traffic ru"
-  response_github_repository_traffic_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response github repository traffic zh"

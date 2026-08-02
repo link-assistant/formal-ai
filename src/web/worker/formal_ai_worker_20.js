@@ -576,13 +576,29 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     }
     return writeProgramResult;
   };
+  const memoryEvents = Array.isArray(options.memoryEvents)
+    ? options.memoryEvents
+    : [];
   const syncHandlers = [
+    { name: "tryExactMemoryQuery", run: () => tryExactMemoryQuery(prompt, memoryEvents) },
+    // Issue #708: compile the complete seeded memory-program family before the
+    // legacy single-write recognizer. Mirrors `compile_memory_program` plus
+    // `execute_memory_program`; an incomplete compilation gap is delayed until
+    // after that legacy recognizer, matching the native query precedence.
+    {
+      name: "tryMemoryProgram",
+      run: () => tryMemoryProgram(prompt, memoryEvents, language),
+    },
     // Issue #529: a natural-language memory write (append/substitution) is a
     // specific, scope-gated request, so it runs ahead of the historical recall
     // and generic handlers. It needs the persistent-memory snapshot the app
     // passes in to count substitution occurrences. Mirrors try_memory_write
     // running inside the conversation-memory path in the Rust runtime.
     { name: "tryMemoryWrite", run: () => tryMemoryWrite(prompt, normalized, memory) },
+    {
+      name: "tryMemoryProgramGap",
+      run: () => tryMemoryProgramGap(prompt, language),
+    },
     { name: "tryCurrentDialogueFactChecking", run: () => tryCurrentDialogueFactChecking(prompt, normalized, language, history) },
     { name: "tryLinkNativeSynthesis", run: () => tryLinkNativeSynthesis(prompt, normalized) },
     { name: "tryHistorical", run: () => tryHistorical(prompt, history) },
@@ -1374,8 +1390,9 @@ self.onmessage = async (event) => {
   // value so a natural-language substitution can report how many occurrences it
   // rewrites; the worker stays pure and the app applies the write.
   const memory = Array.isArray(data.memory) ? data.memory : [];
+  const memoryEvents = Array.isArray(data.memoryEvents) ? data.memoryEvents : [];
   const answer = attachUserContext(
-    await solve(prompt, history, prefs, userContext, memory),
+    await solve(prompt, history, prefs, userContext, memory, { memoryEvents }),
     userContext,
   );
   postMessage({

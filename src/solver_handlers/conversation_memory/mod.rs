@@ -2,8 +2,11 @@ use std::fmt::Write as _;
 
 mod link_query;
 mod memory_write;
+mod program_query;
 use link_query::try_link_substitution_query;
 use memory_write::try_memory_write;
+pub use program_query::is_exact_memory_query;
+pub use program_query::{execute_memory_query, execute_memory_query_with_options};
 
 use super::finalize_simple;
 
@@ -12,7 +15,7 @@ use crate::engine::{normalize_prompt, SymbolicAnswer};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::link_store::memory_events_to_link_records;
-use crate::memory::{MemoryEvent, MemoryStore};
+use crate::memory::MemoryEvent;
 use crate::seed::{self, Slot, WordForm};
 use crate::solver_helpers::{
     extract_assistant_name, extract_introduced_name, last_turn, last_user_turn,
@@ -115,48 +118,6 @@ pub fn answer_memory_recall(
         current_conversation_id,
         &mut log,
     )
-}
-
-#[must_use]
-pub fn execute_memory_query(
-    prompt: &str,
-    store: &mut MemoryStore,
-    current_conversation_id: Option<&str>,
-) -> Option<MemoryQueryExecution> {
-    let normalized = normalize_prompt(prompt);
-    let mut log = EventLog::new();
-    log.append("impulse", prompt.to_owned());
-    // The query language comes first: a turn that *is* a link query is asking in
-    // the meta language, and lowering it through the natural-language
-    // recognisers would answer a different question than the one asked. Reads
-    // leave the store alone, so nothing is persisted for them.
-    if let Some(answer) = try_link_substitution_query(prompt, store, &mut log) {
-        return Some(MemoryQueryExecution {
-            answer,
-            changed: false,
-        });
-    }
-    if let Some(answer) = try_memory_write(
-        prompt,
-        &normalized,
-        store,
-        current_conversation_id,
-        &mut log,
-    ) {
-        return Some(MemoryQueryExecution {
-            answer,
-            changed: true,
-        });
-    }
-    answer_memory_recall(prompt, store.events(), current_conversation_id).map(|answer| {
-        // Issue #494: usage is counted on read access — every store event the
-        // recall actually read gets its access count bumped, and the caller
-        // persists the store so dreaming sees frequently-read data as used.
-        let accessed =
-            recalled_event_indices(&normalized, store.events(), current_conversation_id, prompt);
-        let changed = store.record_access(&accessed) > 0;
-        MemoryQueryExecution { answer, changed }
-    })
 }
 
 /// Indices of the store events a recall for this prompt reads.

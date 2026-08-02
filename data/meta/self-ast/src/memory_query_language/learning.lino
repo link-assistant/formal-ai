@@ -1,0 +1,29 @@
+self_ast_census
+  target src/memory_query_language/learning.rs
+  language rust
+  fidelity signature
+  byte_len 16145
+  line_count 431
+  content_id source_module_b4129c8308fc73b6
+  symbol_count 20
+  symbols
+    struct LearnedTemplate 8 15
+    struct MemoryQueryLearningObservation 19 23
+    function new 27 37
+    struct MemoryQueryLearningCandidate 42 48
+    struct MemoryQueryLearningGate 52 56
+    struct MemoryQueryLearningApproval 60 63
+    struct MemoryQueryCompiler 72 74
+    function new 78 82
+    function learn_natural_language_template 89 119
+    function infer_candidate 123 172
+    function promote_candidate 176 214
+    function compile 216 240
+    function learning_links_notation 243 261
+    function infer_single_span_template 264 302
+    function validate_inferred_pair 304 336
+    function placeholder_names 338 361
+    function match_template 363 400
+    function instantiate_exact_query 402 419
+    function case_insensitive_prefix_len 421 425
+    function find_case_insensitive 427 431

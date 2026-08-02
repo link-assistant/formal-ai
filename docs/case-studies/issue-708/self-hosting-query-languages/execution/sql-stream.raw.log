@@ -1,0 +1,163 @@
+{"type":"config","level":"info","timestamp":"2026-08-01T22:50:05.799Z","service":"default","source":"lino-arguments (CLI args > env vars > .lenv > defaults)","config":{"verbose":false,"dryRun":false,"generateTitle":false,"outputResponseModel":true,"summarizeSession":true,"retryOnRateLimits":true,"compactJson":true,"configContent":"{\"provider\":{\"formalai\":{\"name\":\"Formal AI\",\"npm\":\"@ai-sdk/openai-compatible\",\"options\":{\"baseURL\":\"http://127.0.0.1:8719/api/openai/v1\",\"apiKey\":\"local\"},\"models\":{\"formal-ai\":{\"name\":\"Formal AI\"}}}},\"model\":\"formalai/formal-ai\"}","disableAutoupdate":false,"disablePrune":false,"enableExperimentalModels":false,"disableAutocompact":false,"experimental":false,"experimentalWatcher":false,"retryTimeout":604800,"maxRetryDelay":1200,"minRetryInterval":30,"streamChunkTimeoutMs":120000,"streamStepTimeoutMs":600000,"mcpDefaultToolCallTimeout":120000,"mcpMaxToolCallTimeout":600000,"verifyImagesAtReadTool":true,"readOnly":false,"permissionMode":"auto"},"message":"Agent configuration resolved"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:05.833Z","service":"default","version":"0.25.4","command":"/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js --model formalai/formal-ai --permission-mode auto --output-format stream-json --compact-json --disable-stdin --prompt SELECT id, content, accessCount FROM memory WHERE conversationId = 'issue-708-fixture' ORDER BY accessCount DESC LIMIT 1","workingDirectory":"/tmp/tmp.qmn0nkJdlh","scriptPath":"/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js","message":"Agent started"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:05.843Z","service":"default","directory":"/tmp/tmp.qmn0nkJdlh","message":"creating instance"}
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:05.843Z","service":"project","directory":"/tmp/tmp.qmn0nkJdlh","message":"fromDirectory"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:06.032Z","service":"project","status":"started","message":"git.rev-parse"}
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:06.061Z","service":"project","status":"completed","duration":28,"message":"git.rev-parse"}
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:06.121Z","service":"default","processArgv":["/home/box/.bun/bin/bun","/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js","--model","formalai/formal-ai","--permission-mode","auto","--output-format","stream-json","--compact-json","--disable-stdin","--prompt","SELECT id, content, accessCount FROM memory WHERE conversationId = 'issue-708-fixture' ORDER BY accessCount DESC LIMIT 1"],"bunArgv":["/home/box/.bun/bin/bun","/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js","--model","formalai/formal-ai","--permission-mode","auto","--output-format","stream-json","--compact-json","--disable-stdin","--prompt","SELECT id, content, accessCount FROM memory WHERE conversationId = 'issue-708-fixture' ORDER BY accessCount DESC LIMIT 1"],"cliModelArg":"formalai/formal-ai","yargsModel":"formalai/formal-ai","message":"model resolution: argv sources"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:06.121Z","service":"default","rawModel":"formalai/formal-ai","providerID":"formalai","modelID":"formal-ai","message":"using explicit provider/model"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:06.126Z","service":"provider","status":"started","message":"state"}
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:06.195Z","service":"config","path":"/home/box/.config/link-assistant-agent/config.json","message":"loading"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:06.205Z","service":"config","path":"/home/box/.config/link-assistant-agent/opencode.json","message":"loading"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:06.253Z","service":"config","path":"/home/box/.config/link-assistant-agent/opencode.jsonc","message":"loading"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:06.446Z","service":"models.dev","path":"/home/box/.cache/link-assistant-agent/models.json","age":10910049,"threshold":3600000,"message":"cache is stale, awaiting refresh"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:06.448Z","service":"models.dev","file":{},"message":"refreshing"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.305Z","service":"models.dev","path":"/home/box/.cache/link-assistant-agent/models.json","message":"cache unavailable, using bundled data"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.477Z","service":"provider","message":"init"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.492Z","service":"claude-oauth","path":"/home/box/.claude/.credentials.json","message":"credentials file not found"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.493Z","service":"provider","providerID":"formal-ai","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.493Z","service":"provider","providerID":"formalai","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.493Z","service":"provider","providerID":"@link-assistant","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.493Z","service":"provider","providerID":"opencode","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.493Z","service":"provider","providerID":"kilo","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.493Z","service":"provider","status":"completed","duration":1367,"message":"state"}
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.498Z","service":"provider","modelID":"big-pickle","providerID":"opencode","message":"resolved short model name (single match)"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.499Z","service":"provider","modelID":"minimax-m2.5-free","providerID":"kilo","message":"resolved short model name (single match)"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.499Z","service":"default","models":["opencode/big-pickle","kilo/minimax-m2.5-free","same"],"source":"default","message":"compaction models cascade configured"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.563Z","service":"server","method":"POST","path":"/session","message":"request"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.564Z","service":"server","status":"started","method":"POST","path":"/session","message":"request"}
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.569Z","service":"session","id":"ses_0407ac4afffefVB6Wywtt6xRj1","version":"0.25.4","projectID":"global","directory":"/tmp/tmp.qmn0nkJdlh","title":"New session - 2026-08-01T22:50:07.569Z","time":{"created":1785624607569,"updated":1785624607569},"message":"created"}
+
+{"type":"session.created","level":"info","timestamp":"2026-08-01T22:50:07.573Z","service":"bus","message":"publishing"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-08-01T22:50:07.574Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.579Z","service":"server","status":"completed","duration":16,"method":"POST","path":"/session","message":"request"}
+{"type":"*","level":"info","timestamp":"2026-08-01T22:50:07.583Z","service":"bus","message":"subscribing"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.584Z","service":"server","method":"POST","path":"/session/ses_0407ac4afffefVB6Wywtt6xRj1/message","message":"request"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.584Z","service":"server","status":"started","method":"POST","path":"/session/ses_0407ac4afffefVB6Wywtt6xRj1/message","message":"request"}
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.614Z","service":"server","status":"completed","duration":30,"method":"POST","path":"/session/ses_0407ac4afffefVB6Wywtt6xRj1/message","message":"request"}
+{"type":"message.updated","level":"info","timestamp":"2026-08-01T22:50:07.649Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-08-01T22:50:07.656Z","service":"bus","message":"publishing"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-08-01T22:50:07.662Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.668Z","service":"session.prompt","step":0,"sessionID":"ses_0407ac4afffefVB6Wywtt6xRj1","message":"loop"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.674Z","service":"session.prompt","hint":"Enable with --generate-title flag or AGENT_GENERATE_TITLE=true","message":"title generation disabled"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.674Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","sessionID":"ses_0407ac4afffefVB6Wywtt6xRj1","step":1,"message":"resolving model"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.676Z","service":"provider","providerID":"formalai","modelID":"formal-ai","message":"getModel"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.678Z","service":"provider","status":"started","providerID":"formalai","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.679Z","service":"provider","providerID":"formalai","pkg":"@ai-sdk/openai-compatible","globalVerboseFetchInstalled":true,"verboseAtCreation":false,"message":"provider SDK fetch chain configured"}
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.679Z","service":"provider","providerID":"formalai","pkg":"@ai-sdk/openai-compatible","message":"using bundled provider (no installation needed)"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.681Z","service":"provider","status":"completed","duration":3,"providerID":"formalai","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.682Z","service":"provider","providerID":"formalai","modelID":"formal-ai","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.682Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","resolvedModelID":"formal-ai","message":"model resolved successfully"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.683Z","service":"provider","providerID":"opencode","modelID":"big-pickle","message":"getModel"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.683Z","service":"provider","status":"started","providerID":"opencode","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.683Z","service":"provider","providerID":"opencode","pkg":"@ai-sdk/openai-compatible","globalVerboseFetchInstalled":true,"verboseAtCreation":false,"message":"provider SDK fetch chain configured"}
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.683Z","service":"provider","providerID":"opencode","pkg":"@ai-sdk/openai-compatible","message":"using bundled provider (no installation needed)"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.683Z","service":"provider","status":"completed","duration":0,"providerID":"opencode","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:07.683Z","service":"provider","providerID":"opencode","modelID":"big-pickle","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:10.460Z","service":"token","message":"loaded gpt-tokenizer (o200k_base)"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-08-01T22:50:10.523Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:10.525Z","service":"system-prompt","prompt":"anthropic","model":"formal-ai","message":"system prompt: anthropic (default for unknown model formal-ai)"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:10.988Z","service":"session.processor","message":"process"}
+
+{"type":"session.status","level":"info","timestamp":"2026-08-01T22:50:11.122Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-08-01T22:50:11.369Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:11.369Z","service":"session.summary","providerID":"opencode","modelID":"big-pickle","hint":"Using compaction model to reduce rate-limit pressure on main model","mainModelID":"formal-ai","message":"loading model for summarization"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-08-01T22:50:11.486Z","service":"bus","message":"publishing"}
+
+{"type":"session.diff","level":"info","timestamp":"2026-08-01T22:50:11.521Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-08-01T22:50:13.918Z","service":"bus","message":"publishing"}
+
+{"type":"init","timestamp":"2026-08-01T22:50:13.921Z","session_id":"ses_0407ac4afffefVB6Wywtt6xRj1"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-08-01T22:50:13.934Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-08-01T22:50:13.935Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-08-01T22:50:13.946Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-08-01T22:50:13.962Z","service":"bus","message":"publishing"}
+
+{"type":"message","timestamp":"2026-08-01T22:50:13.962Z","session_id":"ses_0407ac4afffefVB6Wywtt6xRj1","role":"assistant","content":[{"type":"text","text":"memory_query_result\n  query \"memory_query_23a14207df9f94e5\"\n  dialect \"sql_ansi\"\n  matched 2\n  changed 0\n  halt \"complete\"\n  matched_id \"issue-708-alpha\"\n  matched_id \"issue-708-beta\"\n  row\n    accessCount \"integer:3\"\n    content 'text:\"Exact memory queries share one associative execution plan.\"'\n    id 'text:\"issue-708-alpha\"'"}]}
+{"type":"message.part.updated","level":"info","timestamp":"2026-08-01T22:50:13.993Z","service":"bus","message":"publishing"}
+
+{"type":"result","timestamp":"2026-08-01T22:50:13.993Z","session_id":"ses_0407ac4afffefVB6Wywtt6xRj1","status":"success","duration_ms":6410}
+{"type":"message.updated","level":"info","timestamp":"2026-08-01T22:50:13.995Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-08-01T22:50:13.998Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-08-01T22:50:14.014Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:14.015Z","service":"session.prompt","step":1,"sessionID":"ses_0407ac4afffefVB6Wywtt6xRj1","message":"loop"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-08-01T22:50:14.121Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:14.122Z","service":"session.summary","providerID":"opencode","modelID":"big-pickle","hint":"Using compaction model to reduce rate-limit pressure on main model","mainModelID":"formal-ai","message":"loading model for summarization"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-08-01T22:50:14.136Z","service":"bus","message":"publishing"}
+
+{"type":"session.diff","level":"info","timestamp":"2026-08-01T22:50:14.137Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:14.248Z","service":"session.prompt","sessionID":"ses_0407ac4afffefVB6Wywtt6xRj1","message":"exiting loop"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:14.249Z","service":"session.compaction","message":"pruning"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:14.345Z","service":"session.prompt","sessionID":"ses_0407ac4afffefVB6Wywtt6xRj1","message":"cancel"}
+
+{"type":"session.status","level":"info","timestamp":"2026-08-01T22:50:14.351Z","service":"bus","message":"publishing"}
+
+{"type":"session.idle","level":"info","timestamp":"2026-08-01T22:50:14.351Z","service":"bus","message":"publishing"}
+
+{"type":"idle","timestamp":"2026-08-01T22:50:14.351Z","session_id":"ses_0407ac4afffefVB6Wywtt6xRj1"}
+{"type":"*","level":"info","timestamp":"2026-08-01T22:50:14.361Z","service":"bus","message":"unsubscribing"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:14.361Z","service":"default","directory":"/tmp/tmp.qmn0nkJdlh","message":"disposing instance"}
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:14.362Z","service":"state","key":"/tmp/tmp.qmn0nkJdlh","message":"waiting for state disposal to complete"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:14.375Z","service":"state","key":"/tmp/tmp.qmn0nkJdlh","message":"state disposal completed"}
+
+{"type":"log","level":"info","timestamp":"2026-08-01T22:50:14.376Z","service":"default","hasError":false,"uptimeSeconds":18,"message":"Agent exiting"}
