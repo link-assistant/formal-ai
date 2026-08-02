@@ -1,0 +1,1413 @@
+Auto Release	UNKNOWN STEP	﻿2026-07-16T09:05:42.2503741Z Current runner version: '2.335.1'
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.2529205Z ##[group]Runner Image Provisioner
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.2530108Z Hosted Compute Agent
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.2530773Z Version: 20260624.560
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.2531493Z Commit: 925d229a51159bc391ae97e54a2dd1fe20af789d
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.2532597Z Build Date: 2026-06-24T18:26:47Z
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.2533414Z Worker ID: {d694dd01-6a08-4edc-bfe5-b05b18e00c60}
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.2534188Z Azure Region: northcentralus
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.2534866Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.2536374Z ##[group]Operating System
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.2537022Z Ubuntu
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.2537549Z 24.04.4
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.2538168Z LTS
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.2538758Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.2539459Z ##[group]Runner Image
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.2540112Z Image: ubuntu-24.04
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.2540694Z Version: 20260705.232.1
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.2542441Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260705.232/images/ubuntu/Ubuntu2404-Readme.md
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.2544098Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260705.232
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.2545098Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.2546414Z ##[group]GITHUB_TOKEN Permissions
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.2548384Z Contents: write
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.2548990Z Metadata: read
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.2549698Z Packages: write
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.2550335Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.2552672Z Secret source: Actions
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.2553506Z Prepare workflow directory
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.3351251Z Prepare all required actions
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.3408830Z Getting action download info
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.5996843Z Download action repository 'actions/checkout@v6' (SHA:df4cb1c069e1874edd31b4311f1884172cec0e10)
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.6931478Z Download action repository 'dtolnay/rust-toolchain@stable' (SHA:4be7066ada62dd38de10e7b70166bc74ed198c30)
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:42.8307600Z Download action repository 'docker/login-action@v4' (SHA:af1e73f918a031802d376d3c8bbc3fe56130a9b0)
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:43.2054004Z Download action repository 'docker/setup-buildx-action@v4' (SHA:bb05f3f5519dd87d3ba754cc423b652a5edd6d2c)
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:43.5483223Z Download action repository 'docker/metadata-action@v6' (SHA:dc802804100637a589fabce1cb79ff13a1411302)
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.0184353Z Download action repository 'docker/build-push-action@v7' (SHA:53b7df96c91f9c12dcc8a07bcb9ccacbed38856a)
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.7779006Z Complete job name: Auto Release
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.8775777Z ##[group]Run actions/checkout@v6
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.8777094Z with:
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.8777917Z   fetch-depth: 0
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.8786669Z   token: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.8787587Z   repository: link-assistant/formal-ai
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.8788669Z   ssh-strict: true
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.8789524Z   ssh-user: git
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.8790405Z   persist-credentials: true
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.8791353Z   clean: true
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.8792423Z   sparse-checkout-cone-mode: true
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.8793474Z   fetch-tags: false
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.8794389Z   show-progress: true
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.8795279Z   lfs: false
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.8796094Z   submodules: false
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.8796986Z   set-safe-directory: true
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.8798196Z env:
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.8798983Z   GIT_CONFIG_COUNT: 1
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.8799932Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.8800991Z   GIT_CONFIG_VALUE_0: main
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.8801936Z   CARGO_NET_RETRY: 10
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.8803084Z   CARGO_HTTP_MULTIPLEXING: false
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.8804102Z   CARGO_TERM_COLOR: always
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.8805082Z   RUSTFLAGS: -Dwarnings
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.8806283Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.8807400Z   CARGO_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.8808378Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.8809534Z   DOCKERHUB_IMAGE: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.8810400Z   DOCKERHUB_USERNAME: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.8811495Z   DOCKERHUB_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.8812494Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.9838136Z Syncing repository: link-assistant/formal-ai
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.9842323Z ##[group]Getting Git version info
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.9844208Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.9846595Z [command]/usr/bin/git version
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.9897533Z git version 2.54.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.9921814Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.9938375Z Temporarily overriding HOME='/home/runner/work/_temp/df74b589-463d-4333-b1ad-a72c55ea95e7' before making global git config changes
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.9941586Z Adding repository directory to the temporary git global config as a safe directory
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.9944724Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.9993308Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:44.9998948Z ##[group]Determining repository object format
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:45.0001679Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:45.0004493Z ##[group]Initializing the repository
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:45.0006870Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:45.0084373Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:45.0097141Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:45.0142326Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:45.0144512Z ##[group]Disabling automatic garbage collection
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:45.0146582Z [command]/usr/bin/git config --local gc.auto 0
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:45.0184959Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:45.0187041Z ##[group]Setting up auth
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:45.0188801Z Removing SSH command configuration
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:45.0201118Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:45.0233541Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:45.0566555Z Removing HTTP extra header
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:45.0573121Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:45.0621745Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:45.0904590Z Removing includeIf entries pointing to credentials config files
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:45.0910836Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:45.0949709Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:45.1207594Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-0aed4c72-73f7-4886-b1e6-1266c5f3789b.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:45.1259822Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-0aed4c72-73f7-4886-b1e6-1266c5f3789b.config
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:45.1301211Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-0aed4c72-73f7-4886-b1e6-1266c5f3789b.config
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:45.1343132Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-0aed4c72-73f7-4886-b1e6-1266c5f3789b.config
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:45.1379894Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-0aed4c72-73f7-4886-b1e6-1266c5f3789b.config
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:45.1412496Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:45.1414632Z ##[group]Fetching the repository
+Auto Release	UNKNOWN STEP	2026-07-16T09:05:45.1423696Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3636491Z From https://github.com/link-assistant/formal-ai
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3637929Z  * [new branch]        gh-pages               -> origin/gh-pages
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3638872Z  * [new branch]        issue-1-040a21d753ca   -> origin/issue-1-040a21d753ca
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3639508Z  * [new branch]        issue-1-70671eb0ba20   -> origin/issue-1-70671eb0ba20
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3640151Z  * [new branch]        issue-10-528ad8299bfa  -> origin/issue-10-528ad8299bfa
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3640782Z  * [new branch]        issue-103-89b7776b0010 -> origin/issue-103-89b7776b0010
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3641381Z  * [new branch]        issue-105-43de79808581 -> origin/issue-105-43de79808581
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3642234Z  * [new branch]        issue-107-c995aabb2aac -> origin/issue-107-c995aabb2aac
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3643155Z  * [new branch]        issue-108-e4fa776bf7e7 -> origin/issue-108-e4fa776bf7e7
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3643995Z  * [new branch]        issue-110-2af174f3ddb8 -> origin/issue-110-2af174f3ddb8
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3644928Z  * [new branch]        issue-112-248769046c3f -> origin/issue-112-248769046c3f
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3645688Z  * [new branch]        issue-115-f9977aca33fe -> origin/issue-115-f9977aca33fe
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3646356Z  * [new branch]        issue-117-65eb42b6b7fe -> origin/issue-117-65eb42b6b7fe
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3647152Z  * [new branch]        issue-12-8475693e3ce5  -> origin/issue-12-8475693e3ce5
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3648160Z  * [new branch]        issue-121-2ec52977d59a -> origin/issue-121-2ec52977d59a
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3649122Z  * [new branch]        issue-123-448321a27278 -> origin/issue-123-448321a27278
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3649765Z  * [new branch]        issue-125-1ca670a84080 -> origin/issue-125-1ca670a84080
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3650363Z  * [new branch]        issue-125-ee624abc83ec -> origin/issue-125-ee624abc83ec
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3650953Z  * [new branch]        issue-127-02b97a60aa65 -> origin/issue-127-02b97a60aa65
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3651556Z  * [new branch]        issue-127-1af8cef2ecfb -> origin/issue-127-1af8cef2ecfb
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3652331Z  * [new branch]        issue-129-9c664282dfea -> origin/issue-129-9c664282dfea
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3652921Z  * [new branch]        issue-133-3a851f322caa -> origin/issue-133-3a851f322caa
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3653506Z  * [new branch]        issue-135-e32feaf9ccfd -> origin/issue-135-e32feaf9ccfd
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3654407Z  * [new branch]        issue-136-977a3d386e2a -> origin/issue-136-977a3d386e2a
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3655024Z  * [new branch]        issue-14-cea6df691135  -> origin/issue-14-cea6df691135
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3655623Z  * [new branch]        issue-140-f298777c7c24 -> origin/issue-140-f298777c7c24
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3656272Z  * [new branch]        issue-144-c99ce65d1915 -> origin/issue-144-c99ce65d1915
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3656891Z  * [new branch]        issue-145-45527c76ca24 -> origin/issue-145-45527c76ca24
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3657484Z  * [new branch]        issue-146-3f926558fe76 -> origin/issue-146-3f926558fe76
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3658421Z  * [new branch]        issue-149-47706e450c61 -> origin/issue-149-47706e450c61
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3659243Z  * [new branch]        issue-152-3916072d4278 -> origin/issue-152-3916072d4278
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3659831Z  * [new branch]        issue-153-9ae03e768324 -> origin/issue-153-9ae03e768324
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3660421Z  * [new branch]        issue-156-70f6dbdff452 -> origin/issue-156-70f6dbdff452
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3661114Z  * [new branch]        issue-157-172082bc75f4 -> origin/issue-157-172082bc75f4
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3661705Z  * [new branch]        issue-159-b2a5bc9f5a56 -> origin/issue-159-b2a5bc9f5a56
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3663135Z  * [new branch]        issue-16-f76f85f72657  -> origin/issue-16-f76f85f72657
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3663854Z  * [new branch]        issue-160-53f4d46ed2df -> origin/issue-160-53f4d46ed2df
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3664589Z  * [new branch]        issue-161-b6fba3b370ea -> origin/issue-161-b6fba3b370ea
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3665825Z  * [new branch]        issue-162-3046a51f4c24 -> origin/issue-162-3046a51f4c24
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3666552Z  * [new branch]        issue-163-d536717f895a -> origin/issue-163-d536717f895a
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3667286Z  * [new branch]        issue-164-9a34163b931c -> origin/issue-164-9a34163b931c
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3668012Z  * [new branch]        issue-165-ae9e3865656f -> origin/issue-165-ae9e3865656f
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3668746Z  * [new branch]        issue-168-74facaae132a -> origin/issue-168-74facaae132a
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3669469Z  * [new branch]        issue-169-40f964916dd2 -> origin/issue-169-40f964916dd2
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3670183Z  * [new branch]        issue-172-6f05b8d7064b -> origin/issue-172-6f05b8d7064b
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3670758Z  * [new branch]        issue-18-65b2eb796b44  -> origin/issue-18-65b2eb796b44
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3671265Z  * [new branch]        issue-180-d9c09fe7795a -> origin/issue-180-d9c09fe7795a
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3671720Z  * [new branch]        issue-182-7747bbca426b -> origin/issue-182-7747bbca426b
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3672504Z  * [new branch]        issue-183-3f4b24d7b276 -> origin/issue-183-3f4b24d7b276
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3672953Z  * [new branch]        issue-184-8c29f506aef9 -> origin/issue-184-8c29f506aef9
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3673401Z  * [new branch]        issue-185-5e92ccc6162c -> origin/issue-185-5e92ccc6162c
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3673848Z  * [new branch]        issue-187-79bc77f3d485 -> origin/issue-187-79bc77f3d485
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3674286Z  * [new branch]        issue-190-8c706a31ad6a -> origin/issue-190-8c706a31ad6a
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3674717Z  * [new branch]        issue-192-12a50e1d9874 -> origin/issue-192-12a50e1d9874
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3675162Z  * [new branch]        issue-193-64742fb93b00 -> origin/issue-193-64742fb93b00
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3675631Z  * [new branch]        issue-195-bed514694604 -> origin/issue-195-bed514694604
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3676114Z  * [new branch]        issue-196-baa4327fc44a -> origin/issue-196-baa4327fc44a
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3676594Z  * [new branch]        issue-20-4275e3280a5a  -> origin/issue-20-4275e3280a5a
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3677096Z  * [new branch]        issue-205-904afe68fe09 -> origin/issue-205-904afe68fe09
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3677564Z  * [new branch]        issue-207-40aa862c0b6e -> origin/issue-207-40aa862c0b6e
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3678024Z  * [new branch]        issue-209-490a73a6457c -> origin/issue-209-490a73a6457c
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3678646Z  * [new branch]        issue-21-0c5ffd5a0979  -> origin/issue-21-0c5ffd5a0979
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3679130Z  * [new branch]        issue-210-4d285057dbda -> origin/issue-210-4d285057dbda
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3679607Z  * [new branch]        issue-212-982e59cd9627 -> origin/issue-212-982e59cd9627
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3680068Z  * [new branch]        issue-213-ccac1dba5ff0 -> origin/issue-213-ccac1dba5ff0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3680605Z  * [new branch]        issue-218-71bece6bcc84 -> origin/issue-218-71bece6bcc84
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3681106Z  * [new branch]        issue-221-77aad836fb28 -> origin/issue-221-77aad836fb28
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3681594Z  * [new branch]        issue-223-2a1e41a20542 -> origin/issue-223-2a1e41a20542
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3682250Z  * [new branch]        issue-224-cf105bcf1a6e -> origin/issue-224-cf105bcf1a6e
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3682995Z  * [new branch]        issue-226-d5af2957ea35 -> origin/issue-226-d5af2957ea35
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3683672Z  * [new branch]        issue-228-f1e6cdaa38f0 -> origin/issue-228-f1e6cdaa38f0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3684145Z  * [new branch]        issue-230-a9436b51254d -> origin/issue-230-a9436b51254d
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3684604Z  * [new branch]        issue-232-b9341e555308 -> origin/issue-232-b9341e555308
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3685083Z  * [new branch]        issue-24-7fe6ff27055d  -> origin/issue-24-7fe6ff27055d
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3685549Z  * [new branch]        issue-24-9083bf15af21  -> origin/issue-24-9083bf15af21
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3686011Z  * [new branch]        issue-242-589b8e1d2946 -> origin/issue-242-589b8e1d2946
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3686638Z  * [new branch]        issue-244-75334b422fcf -> origin/issue-244-75334b422fcf
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3687107Z  * [new branch]        issue-246-61ab4f8b4f3e -> origin/issue-246-61ab4f8b4f3e
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3687570Z  * [new branch]        issue-247-810952870ab9 -> origin/issue-247-810952870ab9
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3688035Z  * [new branch]        issue-248-ea3e948d0229 -> origin/issue-248-ea3e948d0229
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3688519Z  * [new branch]        issue-249-6136f9213c76 -> origin/issue-249-6136f9213c76
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3688987Z  * [new branch]        issue-250-be761bc3dbee -> origin/issue-250-be761bc3dbee
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3689447Z  * [new branch]        issue-251-7d593ac4bba8 -> origin/issue-251-7d593ac4bba8
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3689900Z  * [new branch]        issue-252-b1f65d416f4a -> origin/issue-252-b1f65d416f4a
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3690363Z  * [new branch]        issue-253-59df91a538ab -> origin/issue-253-59df91a538ab
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3690841Z  * [new branch]        issue-254-7e0bf261bbbe -> origin/issue-254-7e0bf261bbbe
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3691321Z  * [new branch]        issue-255-4873634aa505 -> origin/issue-255-4873634aa505
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3691779Z  * [new branch]        issue-256-585dd1cf5c16 -> origin/issue-256-585dd1cf5c16
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3692402Z  * [new branch]        issue-257-a276337dd027 -> origin/issue-257-a276337dd027
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3692874Z  * [new branch]        issue-258-d31b6cd36328 -> origin/issue-258-d31b6cd36328
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3693345Z  * [new branch]        issue-259-8addd79af1e5 -> origin/issue-259-8addd79af1e5
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3693806Z  * [new branch]        issue-262-ffbf4f8b62fc -> origin/issue-262-ffbf4f8b62fc
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3694283Z  * [new branch]        issue-27-2a30a20dbe1d  -> origin/issue-27-2a30a20dbe1d
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3694751Z  * [new branch]        issue-272-faddf6c692f2 -> origin/issue-272-faddf6c692f2
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3695218Z  * [new branch]        issue-278-f318cd644af7 -> origin/issue-278-f318cd644af7
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3695703Z  * [new branch]        issue-279-5ba4c6826050 -> origin/issue-279-5ba4c6826050
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3696164Z  * [new branch]        issue-280-a5568cffb278 -> origin/issue-280-a5568cffb278
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3696628Z  * [new branch]        issue-281-adb3f644d22f -> origin/issue-281-adb3f644d22f
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3697236Z  * [new branch]        issue-282-87c4ef549aa1 -> origin/issue-282-87c4ef549aa1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3697718Z  * [new branch]        issue-283-61f53327e75b -> origin/issue-283-61f53327e75b
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3698191Z  * [new branch]        issue-284-ca54d46aaebc -> origin/issue-284-ca54d46aaebc
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3698663Z  * [new branch]        issue-286-61cbbdcba27e -> origin/issue-286-61cbbdcba27e
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3699129Z  * [new branch]        issue-288-6acac66b9387 -> origin/issue-288-6acac66b9387
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3699603Z  * [new branch]        issue-29-13a9db91b72a  -> origin/issue-29-13a9db91b72a
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3700086Z  * [new branch]        issue-292-da9aaf96e0f3 -> origin/issue-292-da9aaf96e0f3
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3700558Z  * [new branch]        issue-298-2417e4679aef -> origin/issue-298-2417e4679aef
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3701024Z  * [new branch]        issue-299-30d5d978e553 -> origin/issue-299-30d5d978e553
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3701506Z  * [new branch]        issue-30-267957d5e55e  -> origin/issue-30-267957d5e55e
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3702119Z  * [new branch]        issue-300-873cc5bb18f5 -> origin/issue-300-873cc5bb18f5
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3702657Z  * [new branch]        issue-301-ef74e93466aa -> origin/issue-301-ef74e93466aa
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3703131Z  * [new branch]        issue-302-e7083056c95e -> origin/issue-302-e7083056c95e
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3703592Z  * [new branch]        issue-303-2e2d9313f8e1 -> origin/issue-303-2e2d9313f8e1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3704047Z  * [new branch]        issue-304-23e843eb0d56 -> origin/issue-304-23e843eb0d56
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3704505Z  * [new branch]        issue-31-5ef83b6717f8  -> origin/issue-31-5ef83b6717f8
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3705115Z  * [new branch]        issue-312-d1d44d5118bd -> origin/issue-312-d1d44d5118bd
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3705576Z  * [new branch]        issue-313-ece61791ba00 -> origin/issue-313-ece61791ba00
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3706031Z  * [new branch]        issue-314-ed19d11ac015 -> origin/issue-314-ed19d11ac015
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3706498Z  * [new branch]        issue-315-2ed7e2a5be22 -> origin/issue-315-2ed7e2a5be22
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3706965Z  * [new branch]        issue-316-df2ecc9c1366 -> origin/issue-316-df2ecc9c1366
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3707435Z  * [new branch]        issue-317-a2983c165b4d -> origin/issue-317-a2983c165b4d
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3707892Z  * [new branch]        issue-324-cf8043055ef7 -> origin/issue-324-cf8043055ef7
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3708348Z  * [new branch]        issue-326-502fcf4d3a9f -> origin/issue-326-502fcf4d3a9f
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3708825Z  * [new branch]        issue-327-ca9bee51ff14 -> origin/issue-327-ca9bee51ff14
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3709308Z  * [new branch]        issue-330-64d71bce5b77 -> origin/issue-330-64d71bce5b77
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3709774Z  * [new branch]        issue-332-f94cd78ff46b -> origin/issue-332-f94cd78ff46b
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3710223Z  * [new branch]        issue-333-d89656a09a4c -> origin/issue-333-d89656a09a4c
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3710676Z  * [new branch]        issue-334-229eab37b96b -> origin/issue-334-229eab37b96b
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3711137Z  * [new branch]        issue-335-3a1d301bdab8 -> origin/issue-335-3a1d301bdab8
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3711594Z  * [new branch]        issue-336-d38364ae9aa3 -> origin/issue-336-d38364ae9aa3
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3712222Z  * [new branch]        issue-337-af94e05dd18c -> origin/issue-337-af94e05dd18c
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3712698Z  * [new branch]        issue-338-f2a015abaa68 -> origin/issue-338-f2a015abaa68
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3713152Z  * [new branch]        issue-339-5582ebca4a27 -> origin/issue-339-5582ebca4a27
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3713605Z  * [new branch]        issue-340-dbe3f3891f1b -> origin/issue-340-dbe3f3891f1b
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3714071Z  * [new branch]        issue-341-7e64bf1210ad -> origin/issue-341-7e64bf1210ad
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3714522Z  * [new branch]        issue-342-95cece15bf3e -> origin/issue-342-95cece15bf3e
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3714984Z  * [new branch]        issue-343-5a84780aaa50 -> origin/issue-343-5a84780aaa50
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3715580Z  * [new branch]        issue-347-4cd6329090e8 -> origin/issue-347-4cd6329090e8
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3716038Z  * [new branch]        issue-349-4243100887a0 -> origin/issue-349-4243100887a0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3716495Z  * [new branch]        issue-35-9545df8b8566  -> origin/issue-35-9545df8b8566
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3716950Z  * [new branch]        issue-353-dfccdb39bce4 -> origin/issue-353-dfccdb39bce4
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3717408Z  * [new branch]        issue-355-344578359227 -> origin/issue-355-344578359227
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3717862Z  * [new branch]        issue-356-5b81630408a3 -> origin/issue-356-5b81630408a3
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3718321Z  * [new branch]        issue-357-d87d54ecc72c -> origin/issue-357-d87d54ecc72c
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3718769Z  * [new branch]        issue-358-4e868b49d9a1 -> origin/issue-358-4e868b49d9a1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3719222Z  * [new branch]        issue-359-5b5fb0777ee6 -> origin/issue-359-5b5fb0777ee6
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3719671Z  * [new branch]        issue-360-38fd6ba803ec -> origin/issue-360-38fd6ba803ec
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3720129Z  * [new branch]        issue-361-434488134615 -> origin/issue-361-434488134615
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3720585Z  * [new branch]        issue-362-7993455d57fb -> origin/issue-362-7993455d57fb
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3721033Z  * [new branch]        issue-363-9f47b54135b1 -> origin/issue-363-9f47b54135b1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3721479Z  * [new branch]        issue-364-55959348860a -> origin/issue-364-55959348860a
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3721931Z  * [new branch]        issue-365-e5527612acd6 -> origin/issue-365-e5527612acd6
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3722628Z  * [new branch]        issue-368-485e22098964 -> origin/issue-368-485e22098964
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3723227Z  * [new branch]        issue-37-43a07241273c  -> origin/issue-37-43a07241273c
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3723686Z  * [new branch]        issue-386-0f7c7e8a730c -> origin/issue-386-0f7c7e8a730c
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3724147Z  * [new branch]        issue-388-874e3e436c91 -> origin/issue-388-874e3e436c91
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3724609Z  * [new branch]        issue-39-4fae946b6130  -> origin/issue-39-4fae946b6130
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3725075Z  * [new branch]        issue-39-953cf7f12db2  -> origin/issue-39-953cf7f12db2
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3725520Z  * [new branch]        issue-390-77cb1ef33735 -> origin/issue-390-77cb1ef33735
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3725967Z  * [new branch]        issue-392-773e82f8f031 -> origin/issue-392-773e82f8f031
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3726412Z  * [new branch]        issue-394-ffc1c872e3ab -> origin/issue-394-ffc1c872e3ab
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3726876Z  * [new branch]        issue-395-3c3ab62d4f7c -> origin/issue-395-3c3ab62d4f7c
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3727338Z  * [new branch]        issue-398-b349f91c312f -> origin/issue-398-b349f91c312f
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3727799Z  * [new branch]        issue-4-1e8c9b0d59e2   -> origin/issue-4-1e8c9b0d59e2
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3728249Z  * [new branch]        issue-40-6687579f7e2e  -> origin/issue-40-6687579f7e2e
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3728700Z  * [new branch]        issue-400-a85a0ce9c93a -> origin/issue-400-a85a0ce9c93a
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3729156Z  * [new branch]        issue-402-3f2cf0c98030 -> origin/issue-402-3f2cf0c98030
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3729684Z  * [new branch]        issue-403-f628f7845685 -> origin/issue-403-f628f7845685
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3760816Z  * [new branch]        issue-404-070ec3986707 -> origin/issue-404-070ec3986707
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3761572Z  * [new branch]        issue-406-6b5da8d41f69 -> origin/issue-406-6b5da8d41f69
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3762448Z  * [new branch]        issue-407-b35aacab285c -> origin/issue-407-b35aacab285c
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3763141Z  * [new branch]        issue-408-336291b4b4ef -> origin/issue-408-336291b4b4ef
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3763871Z  * [new branch]        issue-409-e4c182d83efd -> origin/issue-409-e4c182d83efd
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3764566Z  * [new branch]        issue-41-a76143723c45  -> origin/issue-41-a76143723c45
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3765312Z  * [new branch]        issue-410-e318f1ae5275 -> origin/issue-410-e318f1ae5275
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3766334Z  * [new branch]        issue-411-1e4094a180fd -> origin/issue-411-1e4094a180fd
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3767099Z  * [new branch]        issue-412-1f5f93827186 -> origin/issue-412-1f5f93827186
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3767876Z  * [new branch]        issue-42-591c9157cbbf  -> origin/issue-42-591c9157cbbf
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3768640Z  * [new branch]        issue-423-85026fdc955a -> origin/issue-423-85026fdc955a
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3769396Z  * [new branch]        issue-425-ff7d3c7e0567 -> origin/issue-425-ff7d3c7e0567
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3770162Z  * [new branch]        issue-426-b91222c50d0a -> origin/issue-426-b91222c50d0a
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3770959Z  * [new branch]        issue-427-f23ead64bdf7 -> origin/issue-427-f23ead64bdf7
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3771752Z  * [new branch]        issue-428-7778bb0172a9 -> origin/issue-428-7778bb0172a9
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3772711Z  * [new branch]        issue-43-8dcfd820555c  -> origin/issue-43-8dcfd820555c
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3773482Z  * [new branch]        issue-433-6671aae1da9e -> origin/issue-433-6671aae1da9e
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3774250Z  * [new branch]        issue-436-e9e553c5e92f -> origin/issue-436-e9e553c5e92f
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3775038Z  * [new branch]        issue-438-9da4a07cbf9a -> origin/issue-438-9da4a07cbf9a
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3775749Z  * [new branch]        issue-439-416e69e14603 -> origin/issue-439-416e69e14603
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3776528Z  * [new branch]        issue-44-932b1a8ae8ee  -> origin/issue-44-932b1a8ae8ee
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3777375Z  * [new branch]        issue-440-23eab54bc87e -> origin/issue-440-23eab54bc87e
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3777843Z  * [new branch]        issue-441-c2ce86f18d5d -> origin/issue-441-c2ce86f18d5d
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3778560Z  * [new branch]        issue-442-8434c56ac949 -> origin/issue-442-8434c56ac949
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3779022Z  * [new branch]        issue-444-647f06dbb5f1 -> origin/issue-444-647f06dbb5f1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3779468Z  * [new branch]        issue-445-a0710028427b -> origin/issue-445-a0710028427b
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3779949Z  * [new branch]        issue-446-710c1b9886ed -> origin/issue-446-710c1b9886ed
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3780439Z  * [new branch]        issue-447-2d79997f934e -> origin/issue-447-2d79997f934e
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3780900Z  * [new branch]        issue-449-2895c0132690 -> origin/issue-449-2895c0132690
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3781354Z  * [new branch]        issue-451-b816faff56ec -> origin/issue-451-b816faff56ec
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3781810Z  * [new branch]        issue-454-6c17bf95f9df -> origin/issue-454-6c17bf95f9df
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3782511Z  * [new branch]        issue-456-c244f4ec8908 -> origin/issue-456-c244f4ec8908
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3782979Z  * [new branch]        issue-457-84121c7f4721 -> origin/issue-457-84121c7f4721
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3783438Z  * [new branch]        issue-458-1fb70f7869d0 -> origin/issue-458-1fb70f7869d0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3783902Z  * [new branch]        issue-459-bf5fa6e29c78 -> origin/issue-459-bf5fa6e29c78
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3784359Z  * [new branch]        issue-460-150e2353fa44 -> origin/issue-460-150e2353fa44
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3784811Z  * [new branch]        issue-461-f8a1ead1bd9b -> origin/issue-461-f8a1ead1bd9b
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3785269Z  * [new branch]        issue-462-81111843e5e4 -> origin/issue-462-81111843e5e4
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3785729Z  * [new branch]        issue-464-006f0aa809a9 -> origin/issue-464-006f0aa809a9
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3786203Z  * [new branch]        issue-465-7f26da0327bb -> origin/issue-465-7f26da0327bb
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3786677Z  * [new branch]        issue-466-1d0e1e61a36c -> origin/issue-466-1d0e1e61a36c
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3787134Z  * [new branch]        issue-467-6f9c4b38431a -> origin/issue-467-6f9c4b38431a
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3787587Z  * [new branch]        issue-468-87c52b65bec9 -> origin/issue-468-87c52b65bec9
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3788038Z  * [new branch]        issue-476-d3746a602770 -> origin/issue-476-d3746a602770
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3788479Z  * [new branch]        issue-477-9f87005e360d -> origin/issue-477-9f87005e360d
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3789072Z  * [new branch]        issue-478-44b0ac622612 -> origin/issue-478-44b0ac622612
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3789547Z  * [new branch]        issue-479-33639d61f4f0 -> origin/issue-479-33639d61f4f0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3790007Z  * [new branch]        issue-479-51f54bbe54b1 -> origin/issue-479-51f54bbe54b1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3790452Z  * [new branch]        issue-479-845c9fad1bb5 -> origin/issue-479-845c9fad1bb5
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3790894Z  * [new branch]        issue-479-8f9cd81c8ee9 -> origin/issue-479-8f9cd81c8ee9
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3791342Z  * [new branch]        issue-479-ff9c709d56dc -> origin/issue-479-ff9c709d56dc
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3791797Z  * [new branch]        issue-481-0f9ca0b86ab0 -> origin/issue-481-0f9ca0b86ab0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3792407Z  * [new branch]        issue-482-aaf2da83253d -> origin/issue-482-aaf2da83253d
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3792855Z  * [new branch]        issue-483-69f2ba125406 -> origin/issue-483-69f2ba125406
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3793303Z  * [new branch]        issue-484-0a1576cb2a86 -> origin/issue-484-0a1576cb2a86
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3793757Z  * [new branch]        issue-485-c011da8f97d7 -> origin/issue-485-c011da8f97d7
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3794196Z  * [new branch]        issue-488-54ea7213044c -> origin/issue-488-54ea7213044c
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3794649Z  * [new branch]        issue-49-15e56694c4fd  -> origin/issue-49-15e56694c4fd
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3795095Z  * [new branch]        issue-492-c714d50efef8 -> origin/issue-492-c714d50efef8
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3795535Z  * [new branch]        issue-493-481b78023692 -> origin/issue-493-481b78023692
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3795975Z  * [new branch]        issue-495-825beb6d3550 -> origin/issue-495-825beb6d3550
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3796715Z  * [new branch]        issue-496-d6b85662687d -> origin/issue-496-d6b85662687d
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3797189Z  * [new branch]        issue-497-bd6afe9528a4 -> origin/issue-497-bd6afe9528a4
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3797763Z  * [new branch]        issue-498-9381dddf8c21 -> origin/issue-498-9381dddf8c21
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3798277Z  * [new branch]        issue-499-110e4e5b9539 -> origin/issue-499-110e4e5b9539
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3798758Z  * [new branch]        issue-50-a94d4d7b427c  -> origin/issue-50-a94d4d7b427c
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3799294Z  * [new branch]        issue-500-1fd944a3e208 -> origin/issue-500-1fd944a3e208
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3799739Z  * [new branch]        issue-501-72e3bf7e95f3 -> origin/issue-501-72e3bf7e95f3
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3800284Z  * [new branch]        issue-505-f2954093e4d6 -> origin/issue-505-f2954093e4d6
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3800828Z  * [new branch]        issue-506-466d5888efb3 -> origin/issue-506-466d5888efb3
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3801293Z  * [new branch]        issue-507-0006123832de -> origin/issue-507-0006123832de
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3801830Z  * [new branch]        issue-508-6b6c258f1332 -> origin/issue-508-6b6c258f1332
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3802491Z  * [new branch]        issue-509-f7cd5519acb3 -> origin/issue-509-f7cd5519acb3
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3803017Z  * [new branch]        issue-51-8693c8c9e174  -> origin/issue-51-8693c8c9e174
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3803499Z  * [new branch]        issue-511-26d6b8408464 -> origin/issue-511-26d6b8408464
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3804039Z  * [new branch]        issue-513-f50eb0ca85ce -> origin/issue-513-f50eb0ca85ce
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3804508Z  * [new branch]        issue-514-693376bc3c68 -> origin/issue-514-693376bc3c68
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3805075Z  * [new branch]        issue-515-cfebef79ba2a -> origin/issue-515-cfebef79ba2a
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3805634Z  * [new branch]        issue-516-059bd7ea181f -> origin/issue-516-059bd7ea181f
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3806087Z  * [new branch]        issue-517-310d75ed5ddb -> origin/issue-517-310d75ed5ddb
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3806652Z  * [new branch]        issue-518-cbe8ae975e3b -> origin/issue-518-cbe8ae975e3b
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3807206Z  * [new branch]        issue-519-2d4beea1f158 -> origin/issue-519-2d4beea1f158
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3807674Z  * [new branch]        issue-52-3fef487eb097  -> origin/issue-52-3fef487eb097
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3808379Z  * [new branch]        issue-520-e98d0ad41eb8 -> origin/issue-520-e98d0ad41eb8
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3808928Z  * [new branch]        issue-521-86a4d9eefeef -> origin/issue-521-86a4d9eefeef
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3809430Z  * [new branch]        issue-523-d811f560cba2 -> origin/issue-523-d811f560cba2
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3809973Z  * [new branch]        issue-526-215ae32f521b -> origin/issue-526-215ae32f521b
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3810524Z  * [new branch]        issue-527-6a3eb41de78a -> origin/issue-527-6a3eb41de78a
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3811014Z  * [new branch]        issue-529-c279ceb4e86e -> origin/issue-529-c279ceb4e86e
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3811542Z  * [new branch]        issue-53-78dd4669e4c6  -> origin/issue-53-78dd4669e4c6
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3812225Z  * [new branch]        issue-531-ebee6863aca0 -> origin/issue-531-ebee6863aca0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3812780Z  * [new branch]        issue-535-a15a7ecef5a1 -> origin/issue-535-a15a7ecef5a1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3813240Z  * [new branch]        issue-538-eca4a11c39c6 -> origin/issue-538-eca4a11c39c6
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3813789Z  * [new branch]        issue-540-daaf4da2188a -> origin/issue-540-daaf4da2188a
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3814296Z  * [new branch]        issue-541-bf330e9c749a -> origin/issue-541-bf330e9c749a
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3814798Z  * [new branch]        issue-546-00172aaf4098 -> origin/issue-546-00172aaf4098
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3815337Z  * [new branch]        issue-548-60f357ad6440 -> origin/issue-548-60f357ad6440
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3815789Z  * [new branch]        issue-55-b16700e01313  -> origin/issue-55-b16700e01313
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3816341Z  * [new branch]        issue-550-c636b0e4075d -> origin/issue-550-c636b0e4075d
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3817041Z  * [new branch]        issue-552-5268f4c1c9c2 -> origin/issue-552-5268f4c1c9c2
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3817549Z  * [new branch]        issue-554-4e0842bbccb4 -> origin/issue-554-4e0842bbccb4
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3818050Z  * [new branch]        issue-556-4846496df8be -> origin/issue-556-4846496df8be
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3818600Z  * [new branch]        issue-557-798448f62fb9 -> origin/issue-557-798448f62fb9
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3819071Z  * [new branch]        issue-558-39b8470b93dc -> origin/issue-558-39b8470b93dc
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3819614Z  * [new branch]        issue-559-0655630e8231 -> origin/issue-559-0655630e8231
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3820156Z  * [new branch]        issue-561-4a4fbf7162b8 -> origin/issue-561-4a4fbf7162b8
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3820607Z  * [new branch]        issue-563-80759f540d10 -> origin/issue-563-80759f540d10
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3821151Z  * [new branch]        issue-571-5e98873b3165 -> origin/issue-571-5e98873b3165
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3821699Z  * [new branch]        issue-595-01565ac9ae02 -> origin/issue-595-01565ac9ae02
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3822358Z  * [new branch]        issue-6-d8cf53772b56   -> origin/issue-6-d8cf53772b56
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3822823Z  * [new branch]        issue-600-742e96b0e805 -> origin/issue-600-742e96b0e805
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3823384Z  * [new branch]        issue-602-dd2ad19de0f3 -> origin/issue-602-dd2ad19de0f3
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3823938Z  * [new branch]        issue-603-0e0bca520555 -> origin/issue-603-0e0bca520555
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3824399Z  * [new branch]        issue-604-a47624b9477a -> origin/issue-604-a47624b9477a
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3824957Z  * [new branch]        issue-605-8bc8ebb665cd -> origin/issue-605-8bc8ebb665cd
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3825506Z  * [new branch]        issue-606-3b82a4ca654b -> origin/issue-606-3b82a4ca654b
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3825963Z  * [new branch]        issue-607-5c67ebb8d9bf -> origin/issue-607-5c67ebb8d9bf
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3826506Z  * [new branch]        issue-608-0df7a5925506 -> origin/issue-608-0df7a5925506
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3827046Z  * [new branch]        issue-620-eafd151b1f76 -> origin/issue-620-eafd151b1f76
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3827516Z  * [new branch]        issue-621-2a32af255191 -> origin/issue-621-2a32af255191
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3828050Z  * [new branch]        issue-622-049b4f5eff46 -> origin/issue-622-049b4f5eff46
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3828704Z  * [new branch]        issue-624-6b843e3acdbf -> origin/issue-624-6b843e3acdbf
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3829186Z  * [new branch]        issue-625-199d35c218b5 -> origin/issue-625-199d35c218b5
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3829736Z  * [new branch]        issue-626-364a4b2f02e5 -> origin/issue-626-364a4b2f02e5
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3830249Z  * [new branch]        issue-627-661b580408c8 -> origin/issue-627-661b580408c8
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3830733Z  * [new branch]        issue-628-4d8a43226d55 -> origin/issue-628-4d8a43226d55
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3831282Z  * [new branch]        issue-63-7561bb160d49  -> origin/issue-63-7561bb160d49
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3831776Z  * [new branch]        issue-64-0f1b4b7009f5  -> origin/issue-64-0f1b4b7009f5
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3832425Z  * [new branch]        issue-647-ee229e289e45 -> origin/issue-647-ee229e289e45
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3832972Z  * [new branch]        issue-649-cb862fc80246 -> origin/issue-649-cb862fc80246
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3833482Z  * [new branch]        issue-65-91402602272c  -> origin/issue-65-91402602272c
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3833970Z  * [new branch]        issue-650-412272077860 -> origin/issue-650-412272077860
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3834512Z  * [new branch]        issue-651-0f33c6af0d5a -> origin/issue-651-0f33c6af0d5a
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3834960Z  * [new branch]        issue-654-6d834f50dc21 -> origin/issue-654-6d834f50dc21
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3835504Z  * [new branch]        issue-655-352ae09c0c14 -> origin/issue-655-352ae09c0c14
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3836046Z  * [new branch]        issue-656-f2a77c2178d8 -> origin/issue-656-f2a77c2178d8
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3836496Z  * [new branch]        issue-658-b474876a31a4 -> origin/issue-658-b474876a31a4
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3837176Z  * [new branch]        issue-659-f6ffbfad15c4 -> origin/issue-659-f6ffbfad15c4
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3837685Z  * [new branch]        issue-66-6832a673e048  -> origin/issue-66-6832a673e048
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3838185Z  * [new branch]        issue-660-c0695bd24b0d -> origin/issue-660-c0695bd24b0d
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3838644Z  * [new branch]        issue-661-029d6e8fce05 -> origin/issue-661-029d6e8fce05
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3839151Z  * [new branch]        issue-662-d33e013f75e2 -> origin/issue-662-d33e013f75e2
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3839622Z  * [new branch]        issue-663-321cc5865928 -> origin/issue-663-321cc5865928
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3840061Z  * [new branch]        issue-664-a0a4184c732c -> origin/issue-664-a0a4184c732c
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3840512Z  * [new branch]        issue-67-5020a69c37b6  -> origin/issue-67-5020a69c37b6
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3840956Z  * [new branch]        issue-676-ea3feeb860dc -> origin/issue-676-ea3feeb860dc
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3841506Z  * [new branch]        issue-68-c3ada29b16ee  -> origin/issue-68-c3ada29b16ee
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3841952Z  * [new branch]        issue-680-795d4fb2b64f -> origin/issue-680-795d4fb2b64f
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3842546Z  * [new branch]        issue-681-5dc4419f2eb7 -> origin/issue-681-5dc4419f2eb7
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3842992Z  * [new branch]        issue-682-6b8246dfc2bf -> origin/issue-682-6b8246dfc2bf
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3843443Z  * [new branch]        issue-686-d704881f337a -> origin/issue-686-d704881f337a
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3843885Z  * [new branch]        issue-687-b57bfef2a27f -> origin/issue-687-b57bfef2a27f
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3844328Z  * [new branch]        issue-69-8073bcee0480  -> origin/issue-69-8073bcee0480
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3844766Z  * [new branch]        issue-70-44b958c4d15c  -> origin/issue-70-44b958c4d15c
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3845301Z  * [new branch]        issue-71-81912fcbf3c6  -> origin/issue-71-81912fcbf3c6
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3845742Z  * [new branch]        issue-711-a0180801b064 -> origin/issue-711-a0180801b064
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3846199Z  * [new branch]        issue-712-338fdd94476a -> origin/issue-712-338fdd94476a
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3846654Z  * [new branch]        issue-713-7e77916527a4 -> origin/issue-713-7e77916527a4
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3847098Z  * [new branch]        issue-714-079bdbfda541 -> origin/issue-714-079bdbfda541
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3847702Z  * [new branch]        issue-715-4cb768529491 -> origin/issue-715-4cb768529491
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3848149Z  * [new branch]        issue-716-c3806a7105d9 -> origin/issue-716-c3806a7105d9
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3848596Z  * [new branch]        issue-717-bccddb8af16e -> origin/issue-717-bccddb8af16e
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3849048Z  * [new branch]        issue-72-3c64c0a31037  -> origin/issue-72-3c64c0a31037
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3849494Z  * [new branch]        issue-73-1b287b1b431e  -> origin/issue-73-1b287b1b431e
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3849931Z  * [new branch]        issue-730-c75b04874099 -> origin/issue-730-c75b04874099
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3850396Z  * [new branch]        issue-78-0dcc7757ac84  -> origin/issue-78-0dcc7757ac84
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3850843Z  * [new branch]        issue-79-602c5f160cb3  -> origin/issue-79-602c5f160cb3
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3851295Z  * [new branch]        issue-8-2ef42ad47e3f   -> origin/issue-8-2ef42ad47e3f
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3851752Z  * [new branch]        issue-80-290e44192310  -> origin/issue-80-290e44192310
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3852421Z  * [new branch]        issue-81-38c12ca65065  -> origin/issue-81-38c12ca65065
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3852879Z  * [new branch]        issue-82-1a6565cb42da  -> origin/issue-82-1a6565cb42da
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3853319Z  * [new branch]        issue-84-692b1f9623db  -> origin/issue-84-692b1f9623db
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3853758Z  * [new branch]        issue-84-a409f6cdf36b  -> origin/issue-84-a409f6cdf36b
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3854193Z  * [new branch]        issue-93-5c859a5dabc0  -> origin/issue-93-5c859a5dabc0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3854630Z  * [new branch]        issue-94-ff296a0bd279  -> origin/issue-94-ff296a0bd279
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3855245Z  * [new branch]        issue-96-93a44dd34f1d  -> origin/issue-96-93a44dd34f1d
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3855671Z  * [new branch]        main                   -> origin/main
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3856034Z  * [new tag]           v0.100.0               -> v0.100.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3856371Z  * [new tag]           v0.101.0               -> v0.101.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3856699Z  * [new tag]           v0.102.0               -> v0.102.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3857021Z  * [new tag]           v0.103.0               -> v0.103.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3857362Z  * [new tag]           v0.104.0               -> v0.104.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3857683Z  * [new tag]           v0.105.0               -> v0.105.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3857999Z  * [new tag]           v0.106.0               -> v0.106.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3858332Z  * [new tag]           v0.107.0               -> v0.107.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3858661Z  * [new tag]           v0.108.0               -> v0.108.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3859000Z  * [new tag]           v0.109.0               -> v0.109.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3859335Z  * [new tag]           v0.110.0               -> v0.110.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3859653Z  * [new tag]           v0.111.0               -> v0.111.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3859970Z  * [new tag]           v0.112.0               -> v0.112.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3860275Z  * [new tag]           v0.113.0               -> v0.113.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3860592Z  * [new tag]           v0.114.0               -> v0.114.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3860909Z  * [new tag]           v0.115.0               -> v0.115.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3861224Z  * [new tag]           v0.116.0               -> v0.116.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3861547Z  * [new tag]           v0.117.0               -> v0.117.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3861878Z  * [new tag]           v0.118.0               -> v0.118.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3862379Z  * [new tag]           v0.119.0               -> v0.119.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3862709Z  * [new tag]           v0.12.0                -> v0.12.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3863046Z  * [new tag]           v0.120.0               -> v0.120.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3863369Z  * [new tag]           v0.121.0               -> v0.121.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3863702Z  * [new tag]           v0.122.0               -> v0.122.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3864038Z  * [new tag]           v0.123.0               -> v0.123.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3864358Z  * [new tag]           v0.124.0               -> v0.124.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3864813Z  * [new tag]           v0.125.0               -> v0.125.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3865138Z  * [new tag]           v0.126.0               -> v0.126.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3865450Z  * [new tag]           v0.127.0               -> v0.127.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3865883Z  * [new tag]           v0.128.0               -> v0.128.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3866199Z  * [new tag]           v0.129.0               -> v0.129.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3866528Z  * [new tag]           v0.13.0                -> v0.13.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3866840Z  * [new tag]           v0.130.0               -> v0.130.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3867161Z  * [new tag]           v0.131.0               -> v0.131.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3867473Z  * [new tag]           v0.132.0               -> v0.132.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3867884Z  * [new tag]           v0.133.0               -> v0.133.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3868202Z  * [new tag]           v0.134.0               -> v0.134.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3868521Z  * [new tag]           v0.135.0               -> v0.135.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3868833Z  * [new tag]           v0.136.0               -> v0.136.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3869149Z  * [new tag]           v0.137.0               -> v0.137.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3869470Z  * [new tag]           v0.138.0               -> v0.138.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3869794Z  * [new tag]           v0.139.0               -> v0.139.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3870114Z  * [new tag]           v0.14.0                -> v0.14.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3870439Z  * [new tag]           v0.140.0               -> v0.140.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3870758Z  * [new tag]           v0.141.0               -> v0.141.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3871232Z  * [new tag]           v0.142.0               -> v0.142.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3871560Z  * [new tag]           v0.143.0               -> v0.143.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3871877Z  * [new tag]           v0.144.0               -> v0.144.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3872371Z  * [new tag]           v0.145.0               -> v0.145.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3872696Z  * [new tag]           v0.146.0               -> v0.146.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3873013Z  * [new tag]           v0.147.0               -> v0.147.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3873327Z  * [new tag]           v0.148.0               -> v0.148.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3873637Z  * [new tag]           v0.149.0               -> v0.149.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3873958Z  * [new tag]           v0.15.0                -> v0.15.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3874287Z  * [new tag]           v0.150.0               -> v0.150.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3874612Z  * [new tag]           v0.151.0               -> v0.151.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3874930Z  * [new tag]           v0.152.0               -> v0.152.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3875252Z  * [new tag]           v0.153.0               -> v0.153.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3875563Z  * [new tag]           v0.154.0               -> v0.154.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3875880Z  * [new tag]           v0.155.0               -> v0.155.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3876194Z  * [new tag]           v0.156.0               -> v0.156.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3876510Z  * [new tag]           v0.157.0               -> v0.157.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3876860Z  * [new tag]           v0.158.0               -> v0.158.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3877172Z  * [new tag]           v0.159.0               -> v0.159.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3877499Z  * [new tag]           v0.16.0                -> v0.16.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3877824Z  * [new tag]           v0.160.0               -> v0.160.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3878139Z  * [new tag]           v0.161.0               -> v0.161.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3878451Z  * [new tag]           v0.162.0               -> v0.162.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3878775Z  * [new tag]           v0.163.0               -> v0.163.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3879101Z  * [new tag]           v0.164.0               -> v0.164.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3879420Z  * [new tag]           v0.165.0               -> v0.165.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3879749Z  * [new tag]           v0.166.0               -> v0.166.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3880067Z  * [new tag]           v0.167.0               -> v0.167.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3880515Z  * [new tag]           v0.168.0               -> v0.168.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3880849Z  * [new tag]           v0.169.0               -> v0.169.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3881172Z  * [new tag]           v0.17.0                -> v0.17.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3881488Z  * [new tag]           v0.170.0               -> v0.170.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3881805Z  * [new tag]           v0.171.0               -> v0.171.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3882348Z  * [new tag]           v0.172.0               -> v0.172.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3882682Z  * [new tag]           v0.173.0               -> v0.173.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3883013Z  * [new tag]           v0.174.0               -> v0.174.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3883328Z  * [new tag]           v0.175.0               -> v0.175.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3883659Z  * [new tag]           v0.176.0               -> v0.176.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3883973Z  * [new tag]           v0.177.0               -> v0.177.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3884288Z  * [new tag]           v0.178.0               -> v0.178.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3884607Z  * [new tag]           v0.179.0               -> v0.179.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3884926Z  * [new tag]           v0.18.0                -> v0.18.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3885246Z  * [new tag]           v0.180.0               -> v0.180.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3885557Z  * [new tag]           v0.181.0               -> v0.181.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3885877Z  * [new tag]           v0.182.0               -> v0.182.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3886208Z  * [new tag]           v0.183.0               -> v0.183.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3886531Z  * [new tag]           v0.184.0               -> v0.184.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3886988Z  * [new tag]           v0.185.0               -> v0.185.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3887333Z  * [new tag]           v0.186.0               -> v0.186.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3887668Z  * [new tag]           v0.187.0               -> v0.187.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3887990Z  * [new tag]           v0.188.0               -> v0.188.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3888324Z  * [new tag]           v0.189.0               -> v0.189.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3888645Z  * [new tag]           v0.19.0                -> v0.19.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3888969Z  * [new tag]           v0.190.0               -> v0.190.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3889290Z  * [new tag]           v0.191.0               -> v0.191.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3889610Z  * [new tag]           v0.192.0               -> v0.192.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3889925Z  * [new tag]           v0.193.0               -> v0.193.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3890240Z  * [new tag]           v0.194.0               -> v0.194.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3890565Z  * [new tag]           v0.195.0               -> v0.195.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3890889Z  * [new tag]           v0.196.0               -> v0.196.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3891235Z  * [new tag]           v0.197.0               -> v0.197.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3891549Z  * [new tag]           v0.198.0               -> v0.198.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3891975Z  * [new tag]           v0.199.0               -> v0.199.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3892451Z  * [new tag]           v0.20.0                -> v0.20.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3892784Z  * [new tag]           v0.200.0               -> v0.200.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3893093Z  * [new tag]           v0.201.0               -> v0.201.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3893410Z  * [new tag]           v0.202.0               -> v0.202.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3893734Z  * [new tag]           v0.203.0               -> v0.203.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3894057Z  * [new tag]           v0.204.0               -> v0.204.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3894382Z  * [new tag]           v0.205.0               -> v0.205.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3894708Z  * [new tag]           v0.206.0               -> v0.206.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3895035Z  * [new tag]           v0.207.0               -> v0.207.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3895390Z  * [new tag]           v0.208.0               -> v0.208.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3895723Z  * [new tag]           v0.209.0               -> v0.209.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3896051Z  * [new tag]           v0.21.0                -> v0.21.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3896509Z  * [new tag]           v0.210.0               -> v0.210.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3896834Z  * [new tag]           v0.211.0               -> v0.211.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3897148Z  * [new tag]           v0.212.0               -> v0.212.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3897471Z  * [new tag]           v0.213.0               -> v0.213.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3897787Z  * [new tag]           v0.214.0               -> v0.214.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3898103Z  * [new tag]           v0.215.0               -> v0.215.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3898418Z  * [new tag]           v0.216.0               -> v0.216.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3898734Z  * [new tag]           v0.217.0               -> v0.217.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3899055Z  * [new tag]           v0.218.0               -> v0.218.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3899369Z  * [new tag]           v0.219.0               -> v0.219.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3899695Z  * [new tag]           v0.22.0                -> v0.22.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3900016Z  * [new tag]           v0.220.0               -> v0.220.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3900334Z  * [new tag]           v0.221.0               -> v0.221.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3900654Z  * [new tag]           v0.222.0               -> v0.222.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3900972Z  * [new tag]           v0.223.0               -> v0.223.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3901299Z  * [new tag]           v0.224.0               -> v0.224.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3901615Z  * [new tag]           v0.225.0               -> v0.225.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3901942Z  * [new tag]           v0.226.0               -> v0.226.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3902424Z  * [new tag]           v0.227.0               -> v0.227.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3902871Z  * [new tag]           v0.228.0               -> v0.228.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3903199Z  * [new tag]           v0.229.0               -> v0.229.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3903532Z  * [new tag]           v0.23.0                -> v0.23.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3903854Z  * [new tag]           v0.230.0               -> v0.230.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3904176Z  * [new tag]           v0.231.0               -> v0.231.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3904496Z  * [new tag]           v0.232.0               -> v0.232.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3904828Z  * [new tag]           v0.233.0               -> v0.233.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3905140Z  * [new tag]           v0.234.0               -> v0.234.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3905453Z  * [new tag]           v0.235.0               -> v0.235.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3905766Z  * [new tag]           v0.236.0               -> v0.236.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3906088Z  * [new tag]           v0.237.0               -> v0.237.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3906403Z  * [new tag]           v0.238.0               -> v0.238.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3906730Z  * [new tag]           v0.239.0               -> v0.239.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3907048Z  * [new tag]           v0.24.0                -> v0.24.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3907363Z  * [new tag]           v0.240.0               -> v0.240.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3907677Z  * [new tag]           v0.241.0               -> v0.241.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3907996Z  * [new tag]           v0.242.0               -> v0.242.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3908312Z  * [new tag]           v0.243.0               -> v0.243.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3908629Z  * [new tag]           v0.244.0               -> v0.244.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3908948Z  * [new tag]           v0.245.0               -> v0.245.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3909264Z  * [new tag]           v0.246.0               -> v0.246.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3909582Z  * [new tag]           v0.247.0               -> v0.247.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3909898Z  * [new tag]           v0.248.0               -> v0.248.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3910212Z  * [new tag]           v0.249.0               -> v0.249.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3910536Z  * [new tag]           v0.25.0                -> v0.25.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3910850Z  * [new tag]           v0.250.0               -> v0.250.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3911173Z  * [new tag]           v0.251.0               -> v0.251.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3911489Z  * [new tag]           v0.252.0               -> v0.252.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3911973Z  * [new tag]           v0.253.0               -> v0.253.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3912452Z  * [new tag]           v0.254.0               -> v0.254.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3912766Z  * [new tag]           v0.255.0               -> v0.255.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3913075Z  * [new tag]           v0.256.0               -> v0.256.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3913392Z  * [new tag]           v0.257.0               -> v0.257.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3913704Z  * [new tag]           v0.258.0               -> v0.258.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3914009Z  * [new tag]           v0.259.0               -> v0.259.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3914331Z  * [new tag]           v0.26.0                -> v0.26.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3914642Z  * [new tag]           v0.260.0               -> v0.260.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3914962Z  * [new tag]           v0.261.0               -> v0.261.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3915269Z  * [new tag]           v0.262.0               -> v0.262.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3915583Z  * [new tag]           v0.263.0               -> v0.263.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3915901Z  * [new tag]           v0.264.0               -> v0.264.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3916212Z  * [new tag]           v0.265.0               -> v0.265.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3916532Z  * [new tag]           v0.266.0               -> v0.266.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3916847Z  * [new tag]           v0.267.0               -> v0.267.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3917161Z  * [new tag]           v0.268.0               -> v0.268.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3917473Z  * [new tag]           v0.269.0               -> v0.269.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3917788Z  * [new tag]           v0.27.0                -> v0.27.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3918236Z  * [new tag]           v0.270.0               -> v0.270.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3918551Z  * [new tag]           v0.271.0               -> v0.271.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3918870Z  * [new tag]           v0.272.0               -> v0.272.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3919184Z  * [new tag]           v0.273.0               -> v0.273.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3919503Z  * [new tag]           v0.274.0               -> v0.274.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3919828Z  * [new tag]           v0.275.0               -> v0.275.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3920154Z  * [new tag]           v0.276.0               -> v0.276.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3920468Z  * [new tag]           v0.277.0               -> v0.277.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3920781Z  * [new tag]           v0.278.0               -> v0.278.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3921095Z  * [new tag]           v0.279.0               -> v0.279.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3921412Z  * [new tag]           v0.28.0                -> v0.28.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3921727Z  * [new tag]           v0.280.0               -> v0.280.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3922222Z  * [new tag]           v0.281.0               -> v0.281.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3922561Z  * [new tag]           v0.282.0               -> v0.282.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3922881Z  * [new tag]           v0.283.0               -> v0.283.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3923194Z  * [new tag]           v0.284.0               -> v0.284.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3923515Z  * [new tag]           v0.285.0               -> v0.285.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3923827Z  * [new tag]           v0.286.0               -> v0.286.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3924136Z  * [new tag]           v0.287.0               -> v0.287.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3924452Z  * [new tag]           v0.288.0               -> v0.288.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3924770Z  * [new tag]           v0.289.0               -> v0.289.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3925085Z  * [new tag]           v0.29.0                -> v0.29.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3925405Z  * [new tag]           v0.290.0               -> v0.290.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3925733Z  * [new tag]           v0.291.0               -> v0.291.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3926059Z  * [new tag]           v0.292.0               -> v0.292.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3926376Z  * [new tag]           v0.293.0               -> v0.293.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3926687Z  * [new tag]           v0.294.0               -> v0.294.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3927005Z  * [new tag]           v0.295.0               -> v0.295.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3927458Z  * [new tag]           v0.295.1               -> v0.295.1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3927779Z  * [new tag]           v0.295.2               -> v0.295.2
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3928107Z  * [new tag]           v0.30.0                -> v0.30.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3928428Z  * [new tag]           v0.31.0                -> v0.31.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3928743Z  * [new tag]           v0.32.0                -> v0.32.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3929060Z  * [new tag]           v0.33.0                -> v0.33.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3929382Z  * [new tag]           v0.34.0                -> v0.34.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3929701Z  * [new tag]           v0.35.0                -> v0.35.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3930019Z  * [new tag]           v0.36.0                -> v0.36.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3930331Z  * [new tag]           v0.36.1                -> v0.36.1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3930640Z  * [new tag]           v0.37.0                -> v0.37.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3930951Z  * [new tag]           v0.38.0                -> v0.38.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3931271Z  * [new tag]           v0.39.0                -> v0.39.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3931586Z  * [new tag]           v0.40.0                -> v0.40.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3931896Z  * [new tag]           v0.41.0                -> v0.41.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3932396Z  * [new tag]           v0.42.0                -> v0.42.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3932730Z  * [new tag]           v0.43.0                -> v0.43.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3933044Z  * [new tag]           v0.44.0                -> v0.44.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3933357Z  * [new tag]           v0.45.0                -> v0.45.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3933800Z  * [new tag]           v0.46.0                -> v0.46.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3934114Z  * [new tag]           v0.47.0                -> v0.47.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3934422Z  * [new tag]           v0.48.0                -> v0.48.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3934735Z  * [new tag]           v0.49.0                -> v0.49.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3935049Z  * [new tag]           v0.50.0                -> v0.50.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3935368Z  * [new tag]           v0.51.0                -> v0.51.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3935685Z  * [new tag]           v0.52.0                -> v0.52.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3935998Z  * [new tag]           v0.53.0                -> v0.53.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3936317Z  * [new tag]           v0.54.0                -> v0.54.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3936629Z  * [new tag]           v0.55.0                -> v0.55.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3936940Z  * [new tag]           v0.56.0                -> v0.56.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3937252Z  * [new tag]           v0.57.0                -> v0.57.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3937566Z  * [new tag]           v0.58.0                -> v0.58.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3937891Z  * [new tag]           v0.59.0                -> v0.59.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3938208Z  * [new tag]           v0.60.0                -> v0.60.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3938525Z  * [new tag]           v0.61.0                -> v0.61.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3938837Z  * [new tag]           v0.62.0                -> v0.62.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3939153Z  * [new tag]           v0.63.0                -> v0.63.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3939465Z  * [new tag]           v0.64.0                -> v0.64.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3939780Z  * [new tag]           v0.65.0                -> v0.65.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3940089Z  * [new tag]           v0.66.0                -> v0.66.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3940411Z  * [new tag]           v0.67.0                -> v0.67.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3940719Z  * [new tag]           v0.68.0                -> v0.68.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3941029Z  * [new tag]           v0.69.0                -> v0.69.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3941346Z  * [new tag]           v0.70.0                -> v0.70.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3941656Z  * [new tag]           v0.71.0                -> v0.71.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3941968Z  * [new tag]           v0.72.0                -> v0.72.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3942473Z  * [new tag]           v0.73.0                -> v0.73.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3942798Z  * [new tag]           v0.74.0                -> v0.74.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3943256Z  * [new tag]           v0.75.0                -> v0.75.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3943622Z  * [new tag]           v0.76.0                -> v0.76.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3944044Z  * [new tag]           v0.77.0                -> v0.77.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3944359Z  * [new tag]           v0.78.0                -> v0.78.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3944788Z  * [new tag]           v0.79.0                -> v0.79.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3945100Z  * [new tag]           v0.80.0                -> v0.80.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3945421Z  * [new tag]           v0.81.0                -> v0.81.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3945741Z  * [new tag]           v0.82.0                -> v0.82.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3946063Z  * [new tag]           v0.83.0                -> v0.83.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3946378Z  * [new tag]           v0.84.0                -> v0.84.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3946690Z  * [new tag]           v0.85.0                -> v0.85.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3947000Z  * [new tag]           v0.86.0                -> v0.86.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3947320Z  * [new tag]           v0.87.0                -> v0.87.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3947642Z  * [new tag]           v0.88.0                -> v0.88.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3947953Z  * [new tag]           v0.89.0                -> v0.89.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3948259Z  * [new tag]           v0.90.0                -> v0.90.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3948570Z  * [new tag]           v0.91.0                -> v0.91.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3948884Z  * [new tag]           v0.92.0                -> v0.92.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3949194Z  * [new tag]           v0.93.0                -> v0.93.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3949664Z  * [new tag]           v0.94.0                -> v0.94.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3949988Z  * [new tag]           v0.95.0                -> v0.95.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3950299Z  * [new tag]           v0.96.0                -> v0.96.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3950608Z  * [new tag]           v0.97.0                -> v0.97.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3950922Z  * [new tag]           v0.98.0                -> v0.98.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.3951239Z  * [new tag]           v0.99.0                -> v0.99.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.4385908Z [command]/usr/bin/git branch --list --remote origin/main
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.4423346Z   origin/main
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.4431602Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.4461265Z 9052d2caca20f74e2dc06fe294eb5a4b0c50e271
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.4473856Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules origin +6b1910a3aabc74f7d66b2f45a9d5ea006bf56daa:refs/remotes/origin/main
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.4603198Z From https://github.com/link-assistant/formal-ai
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.4604143Z  + 9052d2ca...6b1910a3 6b1910a3aabc74f7d66b2f45a9d5ea006bf56daa -> origin/main  (forced update)
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.4635080Z [command]/usr/bin/git branch --list --remote origin/main
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.4670388Z   origin/main
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.4679932Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.4705899Z 6b1910a3aabc74f7d66b2f45a9d5ea006bf56daa
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.4710973Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.4711641Z ##[group]Determining the checkout info
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.4713356Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.4717719Z [command]/usr/bin/git sparse-checkout disable
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.4768231Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.4804022Z ##[group]Checking out the ref
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:02.4808101Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.4951145Z Updating files:  88% (5398/6117)
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.5024893Z Updating files:  89% (5445/6117)
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.5300343Z Updating files:  90% (5506/6117)
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.5366076Z Updating files:  91% (5567/6117)
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.5403506Z Updating files:  92% (5628/6117)
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.5448161Z Updating files:  93% (5689/6117)
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.5496564Z Updating files:  94% (5750/6117)
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.5552869Z Updating files:  95% (5812/6117)
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.5601605Z Updating files:  96% (5873/6117)
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.5647145Z Updating files:  97% (5934/6117)
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.5695498Z Updating files:  98% (5995/6117)
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.5742481Z Updating files:  99% (6056/6117)
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.5742927Z Updating files: 100% (6117/6117)
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.5743343Z Updating files: 100% (6117/6117), done.
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.5815919Z Reset branch 'main'
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.5819657Z branch 'main' set up to track 'origin/main'.
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.5887117Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.5942741Z [command]/usr/bin/git log -1 --format=%H
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.5976414Z 6b1910a3aabc74f7d66b2f45a9d5ea006bf56daa
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6290059Z ##[group]Run dtolnay/rust-toolchain@stable
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6290364Z with:
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6290565Z   toolchain: stable
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6290776Z env:
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6290965Z   GIT_CONFIG_COUNT: 1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6291201Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6291475Z   GIT_CONFIG_VALUE_0: main
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6291713Z   CARGO_NET_RETRY: 10
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6291940Z   CARGO_HTTP_MULTIPLEXING: false
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6292380Z   CARGO_TERM_COLOR: always
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6292626Z   RUSTFLAGS: -Dwarnings
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6293120Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6293426Z   CARGO_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6293677Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6293987Z   DOCKERHUB_IMAGE: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6294207Z   DOCKERHUB_USERNAME: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6294511Z   DOCKERHUB_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6294928Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6406269Z ##[group]Run : parse toolchain version
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6406660Z ^[[36;1m: parse toolchain version^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6406965Z ^[[36;1mif [[ -z $toolchain ]]; then^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6407522Z ^[[36;1m  # GitHub does not enforce `required: true` inputs itself. https://github.com/actions/runner/issues/1070^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6408097Z ^[[36;1m  echo "'toolchain' is a required input" >&2^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6408404Z ^[[36;1m  exit 1^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6408750Z ^[[36;1melif [[ $toolchain =~ ^stable' '[0-9]+' '(year|month|week|day)s?' 'ago$ ]]; then^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6409160Z ^[[36;1m  if [[ Linux == macOS ]]; then^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6409698Z ^[[36;1m    echo "toolchain=1.$((($(date -v-$(sed 's/stable \([0-9]*\) \(.\).*/\1\2/' <<< $toolchain) +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6410196Z ^[[36;1m  else^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6410605Z ^[[36;1m    echo "toolchain=1.$((($(date --date "${toolchain#stable }" +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6411066Z ^[[36;1m  fi^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6411373Z ^[[36;1melif [[ $toolchain =~ ^stable' 'minus' '[0-9]+' 'releases?$ ]]; then^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6411902Z ^[[36;1m  echo "toolchain=1.$((($(date +%s)/60/60/24-16569)/7/6-${toolchain//[^0-9]/}))" >> $GITHUB_OUTPUT^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6412541Z ^[[36;1melif [[ $toolchain =~ ^1\.[0-9]+$ ]]; then^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6413072Z ^[[36;1m  echo "toolchain=1.$((i=${toolchain#1.}, c=($(date +%s)/60/60/24-16569)/7/6, i+9*i*(10*i<=c)+90*i*(100*i<=c)))" >> $GITHUB_OUTPUT^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6413563Z ^[[36;1melse^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6413829Z ^[[36;1m  echo "toolchain=$toolchain" >> $GITHUB_OUTPUT^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6414135Z ^[[36;1mfi^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6552936Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6553303Z env:
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6553515Z   GIT_CONFIG_COUNT: 1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6553764Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6554063Z   GIT_CONFIG_VALUE_0: main
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6554307Z   CARGO_NET_RETRY: 10
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6554538Z   CARGO_HTTP_MULTIPLEXING: false
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6554797Z   CARGO_TERM_COLOR: always
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6555028Z   RUSTFLAGS: -Dwarnings
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6555463Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6555760Z   CARGO_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6556009Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6556307Z   DOCKERHUB_IMAGE: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6556532Z   DOCKERHUB_USERNAME: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6556824Z   DOCKERHUB_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6557051Z   toolchain: stable
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6557261Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6701561Z ##[group]Run : construct rustup command line
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6701926Z ^[[36;1m: construct rustup command line^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6702692Z ^[[36;1mecho "targets=$(for t in ${targets//,/ }; do echo -n ' --target' $t; done)" >> $GITHUB_OUTPUT^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6703618Z ^[[36;1mecho "components=$(for c in ${components//,/ }; do echo -n ' --component' $c; done)" >> $GITHUB_OUTPUT^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6704117Z ^[[36;1mecho "downgrade=" >> $GITHUB_OUTPUT^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6737832Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6738188Z env:
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6738409Z   GIT_CONFIG_COUNT: 1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6738659Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6738944Z   GIT_CONFIG_VALUE_0: main
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6739181Z   CARGO_NET_RETRY: 10
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6739421Z   CARGO_HTTP_MULTIPLEXING: false
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6739677Z   CARGO_TERM_COLOR: always
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6739904Z   RUSTFLAGS: -Dwarnings
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6740326Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6740629Z   CARGO_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6740881Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6741189Z   DOCKERHUB_IMAGE: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6741412Z   DOCKERHUB_USERNAME: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6741745Z   DOCKERHUB_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6742381Z   targets: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6742582Z   components: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6742797Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6829902Z ##[group]Run : set $CARGO_HOME
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6830181Z ^[[36;1m: set $CARGO_HOME^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6830509Z ^[[36;1mecho CARGO_HOME=${CARGO_HOME:-"$HOME/.cargo"} >> $GITHUB_ENV^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6861383Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6861730Z env:
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6861937Z   GIT_CONFIG_COUNT: 1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6862335Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6862612Z   GIT_CONFIG_VALUE_0: main
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6862846Z   CARGO_NET_RETRY: 10
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6863089Z   CARGO_HTTP_MULTIPLEXING: false
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6863350Z   CARGO_TERM_COLOR: always
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6863584Z   RUSTFLAGS: -Dwarnings
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6863969Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6864267Z   CARGO_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6864520Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6864838Z   DOCKERHUB_IMAGE: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6865074Z   DOCKERHUB_USERNAME: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6865369Z   DOCKERHUB_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6865590Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6949193Z ##[group]Run : install rustup if needed
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6949520Z ^[[36;1m: install rustup if needed^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6949832Z ^[[36;1mif ! command -v rustup &>/dev/null; then^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6950605Z ^[[36;1m  curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://sh.rustup.rs | sh -s -- --default-toolchain none -y^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6951327Z ^[[36;1m  echo "$CARGO_HOME/bin" >> $GITHUB_PATH^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6951623Z ^[[36;1mfi^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6982606Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6982949Z env:
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6983151Z   GIT_CONFIG_COUNT: 1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6983398Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6983702Z   GIT_CONFIG_VALUE_0: main
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6983945Z   CARGO_NET_RETRY: 10
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6984181Z   CARGO_HTTP_MULTIPLEXING: false
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6984446Z   CARGO_TERM_COLOR: always
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6984676Z   RUSTFLAGS: -Dwarnings
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6985061Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6985367Z   CARGO_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6985615Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6985913Z   DOCKERHUB_IMAGE: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6986139Z   DOCKERHUB_USERNAME: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6986460Z   DOCKERHUB_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6986691Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.6986944Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.7069155Z ##[group]Run rustup toolchain install stable --profile minimal --no-self-update
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.7069728Z ^[[36;1mrustup toolchain install stable --profile minimal --no-self-update^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.7100462Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.7100822Z env:
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.7101032Z   GIT_CONFIG_COUNT: 1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.7101453Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.7101740Z   GIT_CONFIG_VALUE_0: main
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.7101980Z   CARGO_NET_RETRY: 10
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.7102513Z   CARGO_HTTP_MULTIPLEXING: false
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.7102780Z   CARGO_TERM_COLOR: always
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.7103015Z   RUSTFLAGS: -Dwarnings
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.7103398Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.7103695Z   CARGO_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.7103948Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.7104250Z   DOCKERHUB_IMAGE: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.7104467Z   DOCKERHUB_USERNAME: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.7104756Z   DOCKERHUB_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.7104999Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.7105263Z   RUSTUP_PERMIT_COPY_RENAME: 1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.7105513Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:03.9189052Z info: syncing channel updates for stable-x86_64-unknown-linux-gnu
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:04.2301336Z info: latest update on 2026-07-09 for version 1.97.0 (2d8144b78 2026-07-07)
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:04.2492481Z info: removing previous version of component clippy
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:04.2573951Z info: removing previous version of component rustfmt
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:04.2582648Z info: removing previous version of component cargo
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:04.2734450Z info: removing previous version of component rust-std
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:04.2779683Z info: removing previous version of component rustc
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:04.2874220Z info: downloading 5 components
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.0815948Z 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.0907238Z   stable-x86_64-unknown-linux-gnu updated - rustc 1.97.0 (2d8144b78 2026-07-07) (from rustc 1.96.1 (31fca3adb 2026-06-26))
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.0908057Z 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1025380Z ##[group]Run rustup default stable
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1025708Z ^[[36;1mrustup default stable^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1060462Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1060836Z env:
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1061043Z   GIT_CONFIG_COUNT: 1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1061304Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1061597Z   GIT_CONFIG_VALUE_0: main
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1061844Z   CARGO_NET_RETRY: 10
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1062275Z   CARGO_HTTP_MULTIPLEXING: false
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1062557Z   CARGO_TERM_COLOR: always
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1062793Z   RUSTFLAGS: -Dwarnings
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1063388Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1063694Z   CARGO_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1063948Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1064249Z   DOCKERHUB_IMAGE: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1064471Z   DOCKERHUB_USERNAME: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1064770Z   DOCKERHUB_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1065003Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1065265Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1176444Z info: using existing install for stable-x86_64-unknown-linux-gnu
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1180738Z info: default toolchain set to stable-x86_64-unknown-linux-gnu
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1181182Z 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1251835Z   stable-x86_64-unknown-linux-gnu unchanged - rustc 1.97.0 (2d8144b78 2026-07-07)
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1252513Z 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1287458Z ##[group]Run : create cachekey
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1287780Z ^[[36;1m: create cachekey^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1288304Z ^[[36;1mDATE=$(rustc +stable --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1288999Z ^[[36;1mHASH=$(rustc +stable --version --verbose | sed -ne 's/^commit-hash: //p')^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1289517Z ^[[36;1mecho "cachekey=$(echo $DATE$HASH | head -c12)" >> $GITHUB_OUTPUT^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1323703Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1324045Z env:
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1324249Z   GIT_CONFIG_COUNT: 1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1324504Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1324785Z   GIT_CONFIG_VALUE_0: main
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1325019Z   CARGO_NET_RETRY: 10
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1325272Z   CARGO_HTTP_MULTIPLEXING: false
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1325733Z   CARGO_TERM_COLOR: always
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1325979Z   RUSTFLAGS: -Dwarnings
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1326361Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1326664Z   CARGO_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1326914Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1327215Z   DOCKERHUB_IMAGE: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1327434Z   DOCKERHUB_USERNAME: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1327723Z   DOCKERHUB_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1327960Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1328225Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1716072Z ##[group]Run : disable incremental compilation
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1716473Z ^[[36;1m: disable incremental compilation^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1716830Z ^[[36;1mif [ -z "${CARGO_INCREMENTAL+set}" ]; then^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1717192Z ^[[36;1m  echo CARGO_INCREMENTAL=0 >> $GITHUB_ENV^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1717485Z ^[[36;1mfi^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1758840Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1759395Z env:
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1759598Z   GIT_CONFIG_COUNT: 1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1759840Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1760105Z   GIT_CONFIG_VALUE_0: main
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1760335Z   CARGO_NET_RETRY: 10
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1760558Z   CARGO_HTTP_MULTIPLEXING: false
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1760808Z   CARGO_TERM_COLOR: always
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1761035Z   RUSTFLAGS: -Dwarnings
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1761450Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1761773Z   CARGO_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1762249Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1762565Z   DOCKERHUB_IMAGE: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1762784Z   DOCKERHUB_USERNAME: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1763079Z   DOCKERHUB_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1763324Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1763587Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1837618Z ##[group]Run : enable colors in Cargo output
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1837969Z ^[[36;1m: enable colors in Cargo output^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1838316Z ^[[36;1mif [ -z "${CARGO_TERM_COLOR+set}" ]; then^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1838670Z ^[[36;1m  echo CARGO_TERM_COLOR=always >> $GITHUB_ENV^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1838994Z ^[[36;1mfi^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1869607Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1869948Z env:
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1870148Z   GIT_CONFIG_COUNT: 1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1870396Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1870679Z   GIT_CONFIG_VALUE_0: main
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1870917Z   CARGO_NET_RETRY: 10
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1871143Z   CARGO_HTTP_MULTIPLEXING: false
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1871399Z   CARGO_TERM_COLOR: always
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1871625Z   RUSTFLAGS: -Dwarnings
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1871978Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1872495Z   CARGO_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1872749Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1873049Z   DOCKERHUB_IMAGE: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1873264Z   DOCKERHUB_USERNAME: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1873570Z   DOCKERHUB_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1873809Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1874062Z   CARGO_INCREMENTAL: 0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1874276Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1945708Z ##[group]Run : enable Cargo sparse registry
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1946063Z ^[[36;1m: enable Cargo sparse registry^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1946444Z ^[[36;1m# implemented in 1.66, stabilized in 1.68, made default in 1.70^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1947161Z ^[[36;1mif [ -z "${CARGO_REGISTRIES_CRATES_IO_PROTOCOL+set}" -o -f "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol ]; then^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1947874Z ^[[36;1m  if rustc +stable --version --verbose | grep -q '^release: 1\.6[89]\.'; then^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1948445Z ^[[36;1m    touch "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1948992Z ^[[36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse >> $GITHUB_ENV^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1949504Z ^[[36;1m  elif rustc +stable --version --verbose | grep -q '^release: 1\.6[67]\.'; then^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1950252Z ^[[36;1m    touch "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1950783Z ^[[36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=git >> $GITHUB_ENV^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1951133Z ^[[36;1m  fi^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1951340Z ^[[36;1mfi^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1982149Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1982531Z env:
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1982736Z   GIT_CONFIG_COUNT: 1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1982984Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1983268Z   GIT_CONFIG_VALUE_0: main
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1983504Z   CARGO_NET_RETRY: 10
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1983738Z   CARGO_HTTP_MULTIPLEXING: false
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1983993Z   CARGO_TERM_COLOR: always
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1984223Z   RUSTFLAGS: -Dwarnings
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1984585Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1985046Z   CARGO_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1985305Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1985626Z   DOCKERHUB_IMAGE: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1985850Z   DOCKERHUB_USERNAME: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1986156Z   DOCKERHUB_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1986402Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1986661Z   CARGO_INCREMENTAL: 0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.1986876Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2327282Z ##[group]Run : work around spurious network errors in curl 8.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2327748Z ^[[36;1m: work around spurious network errors in curl 8.0^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2328319Z ^[[36;1m# https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2328984Z ^[[36;1mif rustc +stable --version --verbose | grep -q '^release: 1\.7[01]\.'; then^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2329446Z ^[[36;1m  echo CARGO_HTTP_MULTIPLEXING=false >> $GITHUB_ENV^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2329766Z ^[[36;1mfi^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2363877Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2364246Z env:
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2364466Z   GIT_CONFIG_COUNT: 1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2364723Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2365004Z   GIT_CONFIG_VALUE_0: main
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2365239Z   CARGO_NET_RETRY: 10
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2365479Z   CARGO_HTTP_MULTIPLEXING: false
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2365740Z   CARGO_TERM_COLOR: always
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2365972Z   RUSTFLAGS: -Dwarnings
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2366357Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2366656Z   CARGO_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2366903Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2367199Z   DOCKERHUB_IMAGE: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2367419Z   DOCKERHUB_USERNAME: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2367702Z   DOCKERHUB_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2367935Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2368194Z   CARGO_INCREMENTAL: 0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2368428Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2577237Z ##[group]Run rustc +stable --version --verbose
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2577655Z ^[[36;1mrustc +stable --version --verbose^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2610484Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2610830Z env:
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2611047Z   GIT_CONFIG_COUNT: 1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2611293Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2611579Z   GIT_CONFIG_VALUE_0: main
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2611817Z   CARGO_NET_RETRY: 10
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2612242Z   CARGO_HTTP_MULTIPLEXING: false
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2612620Z   CARGO_TERM_COLOR: always
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2612855Z   RUSTFLAGS: -Dwarnings
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2613252Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2613553Z   CARGO_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2613803Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2614102Z   DOCKERHUB_IMAGE: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2614321Z   DOCKERHUB_USERNAME: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2614608Z   DOCKERHUB_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2614848Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2615117Z   CARGO_INCREMENTAL: 0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2615341Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2791134Z rustc 1.97.0 (2d8144b78 2026-07-07)
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2791798Z binary: rustc
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2792503Z commit-hash: 2d8144b7880597b6e6d3dfd63a9a9efae3f533d3
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2793057Z commit-date: 2026-07-07
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2793318Z host: x86_64-unknown-linux-gnu
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2793690Z release: 1.97.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2793913Z LLVM version: 22.1.6
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2862351Z ##[group]Run bash scripts/install-rust-script.sh
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2862783Z ^[[36;1mbash scripts/install-rust-script.sh^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2897266Z shell: /usr/bin/bash -e {0}
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2897529Z env:
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2897727Z   GIT_CONFIG_COUNT: 1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2897974Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2898258Z   GIT_CONFIG_VALUE_0: main
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2898488Z   CARGO_NET_RETRY: 10
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2898733Z   CARGO_HTTP_MULTIPLEXING: false
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2899178Z   CARGO_TERM_COLOR: always
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2899408Z   RUSTFLAGS: -Dwarnings
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2899787Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2900078Z   CARGO_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2900324Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2900644Z   DOCKERHUB_IMAGE: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2900860Z   DOCKERHUB_USERNAME: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2901149Z   DOCKERHUB_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2901437Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2901696Z   CARGO_INCREMENTAL: 0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2901911Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.2989340Z Installing rust-script (attempt 1/3)
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.3237183Z ^[[1m^[[92m    Updating^[[0m crates.io index
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.5605570Z ^[[1m^[[92m Downloading^[[0m crates ...
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.6018266Z ^[[1m^[[92m  Downloaded^[[0m rust-script v0.36.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.6193155Z ^[[1m^[[92m  Installing^[[0m rust-script v0.36.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:13.6210415Z ^[[1m^[[92m    Updating^[[0m crates.io index
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.4840471Z ^[[1m^[[92m    Updating^[[0m crates.io index
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.5628377Z ^[[1m^[[92m Downloading^[[0m crates ...
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.5763364Z ^[[1m^[[92m  Downloaded^[[0m aho-corasick v1.1.3
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.5819989Z ^[[1m^[[92m  Downloaded^[[0m anstream v0.6.20
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.5841248Z ^[[1m^[[92m  Downloaded^[[0m bitflags v2.9.1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.5886569Z ^[[1m^[[92m  Downloaded^[[0m clap v4.5.45
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.5982838Z ^[[1m^[[92m  Downloaded^[[0m colorchoice v1.0.4
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.5993527Z ^[[1m^[[92m  Downloaded^[[0m digest v0.10.7
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.6012833Z ^[[1m^[[92m  Downloaded^[[0m env_filter v0.1.3
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.6027047Z ^[[1m^[[92m  Downloaded^[[0m errno v0.3.13
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.6045297Z ^[[1m^[[92m  Downloaded^[[0m getopts v0.2.23
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.6063587Z ^[[1m^[[92m  Downloaded^[[0m indexmap v2.10.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.6110108Z ^[[1m^[[92m  Downloaded^[[0m memchr v2.7.5
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.6171850Z ^[[1m^[[92m  Downloaded^[[0m libc v0.2.175
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.6458230Z ^[[1m^[[92m  Downloaded^[[0m pulldown-cmark v0.13.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.6516100Z ^[[1m^[[92m  Downloaded^[[0m regex-automata v0.4.9
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.6678904Z ^[[1m^[[92m  Downloaded^[[0m serde v1.0.219
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.6710655Z ^[[1m^[[92m  Downloaded^[[0m shell-words v1.1.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.6720111Z ^[[1m^[[92m  Downloaded^[[0m toml v0.9.5
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.6763105Z ^[[1m^[[92m  Downloaded^[[0m toml_writer v1.0.2
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.6776735Z ^[[1m^[[92m  Downloaded^[[0m unicode-width v0.2.1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.6848097Z ^[[1m^[[92m  Downloaded^[[0m winnow v0.7.12
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.6948525Z ^[[1m^[[92m  Downloaded^[[0m anstyle-query v1.1.4
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.6960776Z ^[[1m^[[92m  Downloaded^[[0m crypto-common v0.1.6
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.6969830Z ^[[1m^[[92m  Downloaded^[[0m clap_builder v4.5.44
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.7036642Z ^[[1m^[[92m  Downloaded^[[0m env_logger v0.11.8
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.7063376Z ^[[1m^[[92m  Downloaded^[[0m generic-array v0.14.7
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.7077917Z ^[[1m^[[92m  Downloaded^[[0m is_terminal_polyfill v1.70.1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.7087296Z ^[[1m^[[92m  Downloaded^[[0m log v0.4.27
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.7111774Z ^[[1m^[[92m  Downloaded^[[0m pulldown-cmark-escape v0.11.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.7120705Z ^[[1m^[[92m  Downloaded^[[0m strsim v0.11.1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.7134315Z ^[[1m^[[92m  Downloaded^[[0m rustix v1.0.8
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.7419014Z ^[[1m^[[92m  Downloaded^[[0m toml_parser v1.0.2
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.7442159Z ^[[1m^[[92m  Downloaded^[[0m utf8parse v0.2.2
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.7452551Z ^[[1m^[[92m  Downloaded^[[0m anstyle-parse v0.2.7
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.7468383Z ^[[1m^[[92m  Downloaded^[[0m dirs-sys v0.5.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.7479628Z ^[[1m^[[92m  Downloaded^[[0m clap_lex v0.7.5
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.7490650Z ^[[1m^[[92m  Downloaded^[[0m getrandom v0.3.3
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.7526190Z ^[[1m^[[92m  Downloaded^[[0m regex v1.11.1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.7669767Z ^[[1m^[[92m  Downloaded^[[0m linux-raw-sys v0.9.4
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.8180041Z ^[[1m^[[92m  Downloaded^[[0m sha1 v0.10.6
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.8197248Z ^[[1m^[[92m  Downloaded^[[0m typenum v1.18.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.8231160Z ^[[1m^[[92m  Downloaded^[[0m anstyle v1.0.11
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.8246570Z ^[[1m^[[92m  Downloaded^[[0m cpufeatures v0.2.17
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.8260537Z ^[[1m^[[92m  Downloaded^[[0m fastrand v2.3.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.8273461Z ^[[1m^[[92m  Downloaded^[[0m once_cell v1.21.3
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.8299573Z ^[[1m^[[92m  Downloaded^[[0m serde_spanned v1.0.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.8311092Z ^[[1m^[[92m  Downloaded^[[0m unicase v2.8.1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.8325424Z ^[[1m^[[92m  Downloaded^[[0m cfg-if v1.0.1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.8338373Z ^[[1m^[[92m  Downloaded^[[0m hashbrown v0.15.5
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.8389297Z ^[[1m^[[92m  Downloaded^[[0m regex-syntax v0.8.5
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.8460579Z ^[[1m^[[92m  Downloaded^[[0m version_check v0.9.5
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.8473565Z ^[[1m^[[92m  Downloaded^[[0m equivalent v1.0.2
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.8483683Z ^[[1m^[[92m  Downloaded^[[0m tempfile v3.20.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.8512940Z ^[[1m^[[92m  Downloaded^[[0m dirs v6.0.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.8526179Z ^[[1m^[[92m  Downloaded^[[0m toml_datetime v0.7.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.8538653Z ^[[1m^[[92m  Downloaded^[[0m option-ext v0.2.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.8546973Z ^[[1m^[[92m  Downloaded^[[0m block-buffer v0.10.4
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.8557760Z ^[[1m^[[92m  Downloaded^[[0m jiff v0.2.15
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.8931814Z ^[[1m^[[92m   Compiling^[[0m typenum v1.18.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.8934839Z ^[[1m^[[92m   Compiling^[[0m version_check v0.9.5
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.8935279Z ^[[1m^[[92m   Compiling^[[0m memchr v2.7.5
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:14.8935658Z ^[[1m^[[92m   Compiling^[[0m libc v0.2.175
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:15.0706688Z ^[[1m^[[92m   Compiling^[[0m generic-array v0.14.7
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:15.2493644Z ^[[1m^[[92m   Compiling^[[0m serde v1.0.219
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:15.2494647Z ^[[1m^[[92m   Compiling^[[0m utf8parse v0.2.2
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:15.2913455Z ^[[1m^[[92m   Compiling^[[0m aho-corasick v1.1.3
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:15.4033413Z ^[[1m^[[92m   Compiling^[[0m anstyle-parse v0.2.7
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:15.6867875Z ^[[1m^[[92m   Compiling^[[0m is_terminal_polyfill v1.70.1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:15.7243879Z ^[[1m^[[92m   Compiling^[[0m colorchoice v1.0.4
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:15.7633379Z ^[[1m^[[92m   Compiling^[[0m anstyle v1.0.11
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:15.9363781Z ^[[1m^[[92m   Compiling^[[0m regex-syntax v0.8.5
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:16.1013716Z ^[[1m^[[92m   Compiling^[[0m anstyle-query v1.1.4
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:16.1419035Z ^[[1m^[[92m   Compiling^[[0m anstream v0.6.20
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:16.4294657Z ^[[1m^[[92m   Compiling^[[0m cfg-if v1.0.1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:16.4553945Z ^[[1m^[[92m   Compiling^[[0m rustix v1.0.8
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:16.6163439Z ^[[1m^[[92m   Compiling^[[0m bitflags v2.9.1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:16.8293462Z ^[[1m^[[92m   Compiling^[[0m getrandom v0.3.3
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:16.9977159Z ^[[1m^[[92m   Compiling^[[0m crypto-common v0.1.6
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:17.0553792Z ^[[1m^[[92m   Compiling^[[0m block-buffer v0.10.4
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:17.1383717Z ^[[1m^[[92m   Compiling^[[0m unicode-width v0.2.1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:17.3234670Z ^[[1m^[[92m   Compiling^[[0m pulldown-cmark v0.13.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:17.4002201Z ^[[1m^[[92m   Compiling^[[0m option-ext v0.2.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:17.4366502Z ^[[1m^[[92m   Compiling^[[0m linux-raw-sys v0.9.4
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:17.7273874Z ^[[1m^[[92m   Compiling^[[0m clap_lex v0.7.5
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:17.9193775Z ^[[1m^[[92m   Compiling^[[0m regex-automata v0.4.9
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:18.3680316Z ^[[1m^[[92m   Compiling^[[0m winnow v0.7.12
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:19.0723690Z ^[[1m^[[92m   Compiling^[[0m strsim v0.11.1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:19.5323572Z ^[[1m^[[92m   Compiling^[[0m log v0.4.27
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:19.7113955Z ^[[1m^[[92m   Compiling^[[0m clap_builder v4.5.44
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:19.9760874Z ^[[1m^[[92m   Compiling^[[0m toml_datetime v0.7.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:20.1777520Z ^[[1m^[[92m   Compiling^[[0m toml_parser v1.0.2
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:20.2553873Z ^[[1m^[[92m   Compiling^[[0m serde_spanned v1.0.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:20.3304030Z ^[[1m^[[92m   Compiling^[[0m regex v1.11.1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:21.0880798Z ^[[1m^[[92m   Compiling^[[0m env_filter v0.1.3
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:21.5823926Z ^[[1m^[[92m   Compiling^[[0m dirs-sys v0.5.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:21.8494378Z ^[[1m^[[92m   Compiling^[[0m getopts v0.2.23
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:22.4364026Z ^[[1m^[[92m   Compiling^[[0m digest v0.10.7
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:22.6891528Z ^[[1m^[[92m   Compiling^[[0m unicase v2.8.1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:22.8443606Z ^[[1m^[[92m   Compiling^[[0m toml_writer v1.0.2
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:23.0033578Z ^[[1m^[[92m   Compiling^[[0m cpufeatures v0.2.17
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:23.0293557Z ^[[1m^[[92m   Compiling^[[0m once_cell v1.21.3
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:23.1233658Z ^[[1m^[[92m   Compiling^[[0m fastrand v2.3.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:23.1913720Z ^[[1m^[[92m   Compiling^[[0m pulldown-cmark-escape v0.11.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:23.2571344Z ^[[1m^[[92m   Compiling^[[0m jiff v0.2.15
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:23.2958489Z ^[[1m^[[92m   Compiling^[[0m tempfile v3.20.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:24.2103839Z ^[[1m^[[92m   Compiling^[[0m sha1 v0.10.6
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:24.4203674Z ^[[1m^[[92m   Compiling^[[0m toml v0.9.5
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:25.5903669Z ^[[1m^[[92m   Compiling^[[0m clap v4.5.45
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:25.6279136Z ^[[1m^[[92m   Compiling^[[0m dirs v6.0.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:25.7073671Z ^[[1m^[[92m   Compiling^[[0m shell-words v1.1.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:26.7094025Z ^[[1m^[[92m   Compiling^[[0m env_logger v0.11.8
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:27.7730615Z ^[[1m^[[92m   Compiling^[[0m rust-script v0.36.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.1333345Z ^[[1m^[[92m    Finished^[[0m `release` profile [optimized] target(s) in 34.82s
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.1394877Z ^[[1m^[[92m  Installing^[[0m /home/runner/.cargo/bin/rust-script
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.1399833Z ^[[1m^[[92m   Installed^[[0m package `rust-script v0.36.0` (executable `rust-script`)
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.1752901Z rust-script 0.36.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.1815350Z ##[group]Run rust-script scripts/git-config.rs
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.1815729Z ^[[36;1mrust-script scripts/git-config.rs^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.1850342Z shell: /usr/bin/bash -e {0}
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.1850602Z env:
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.1850816Z   GIT_CONFIG_COUNT: 1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.1851066Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.1851344Z   GIT_CONFIG_VALUE_0: main
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.1851585Z   CARGO_NET_RETRY: 10
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.1851818Z   CARGO_HTTP_MULTIPLEXING: false
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.1852247Z   CARGO_TERM_COLOR: always
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.1852486Z   RUSTFLAGS: -Dwarnings
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.1852901Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.1853208Z   CARGO_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.1853458Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.1853761Z   DOCKERHUB_IMAGE: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.1853973Z   DOCKERHUB_USERNAME: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.1854260Z   DOCKERHUB_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.1854523Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.1854786Z   CARGO_INCREMENTAL: 0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.1855003Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.4333218Z Configuring git user: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.4365265Z Git configuration complete
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.4397199Z ##[group]Run rust-script scripts/get-bump-type.rs
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.4397613Z ^[[36;1mrust-script scripts/get-bump-type.rs^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.4431506Z shell: /usr/bin/bash -e {0}
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.4431772Z env:
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.4431970Z   GIT_CONFIG_COUNT: 1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.4432502Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.4432805Z   GIT_CONFIG_VALUE_0: main
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.4433038Z   CARGO_NET_RETRY: 10
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.4433281Z   CARGO_HTTP_MULTIPLEXING: false
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.4433544Z   CARGO_TERM_COLOR: always
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.4433785Z   RUSTFLAGS: -Dwarnings
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.4434256Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.4434562Z   CARGO_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.4434813Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.4435113Z   DOCKERHUB_IMAGE: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.4435329Z   DOCKERHUB_USERNAME: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.4435699Z   DOCKERHUB_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.4435967Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.4436237Z   CARGO_INCREMENTAL: 0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:48.4436462Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:56.8830952Z Detected single-language repository (Cargo.toml in root)
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:56.8836292Z Fragment 20260716_073000_issue_730_ci_audit.md: bump=patch
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:56.8836707Z 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:56.8836920Z Determined bump type: patch (from 1 fragment(s))
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:56.8837730Z Output: bump_type=patch
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:56.8838083Z Output: fragment_count=1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:56.8838448Z Output: has_fragments=true
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:56.8878517Z ##[group]Run rust-script scripts/check-release-needed.rs
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:56.8878957Z ^[[36;1mrust-script scripts/check-release-needed.rs^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:56.8913561Z shell: /usr/bin/bash -e {0}
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:56.8913818Z env:
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:56.8914018Z   GIT_CONFIG_COUNT: 1
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:56.8914266Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:56.8914544Z   GIT_CONFIG_VALUE_0: main
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:56.8914775Z   CARGO_NET_RETRY: 10
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:56.8915015Z   CARGO_HTTP_MULTIPLEXING: false
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:56.8915271Z   CARGO_TERM_COLOR: always
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:56.8915496Z   RUSTFLAGS: -Dwarnings
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:56.8915858Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:56.8916144Z   CARGO_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:56.8916388Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:56.8916706Z   DOCKERHUB_IMAGE: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:56.8916918Z   DOCKERHUB_USERNAME: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:56.8917204Z   DOCKERHUB_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:56.8917470Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:56.8917730Z   CARGO_INCREMENTAL: 0
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:56.8917952Z   HAS_FRAGMENTS: true
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:56.8920628Z   GITHUB_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:06:56.8920862Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:29.3547372Z Detected single-language repository (Cargo.toml in root)
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:29.5489757Z Max published version on crates.io: 0.295.2
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:29.5490158Z Output: max_published_version=0.295.2
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:29.5490489Z Found changelog fragments, proceeding with release
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:29.5490814Z Output: should_release=true
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:29.5491065Z Output: skip_bump=false
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:29.5527133Z ##[group]Run rust-script scripts/version-and-commit.rs \
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:29.5527567Z ^[[36;1mrust-script scripts/version-and-commit.rs \^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:29.5527900Z ^[[36;1m  --bump-type "patch"^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:29.5562578Z shell: /usr/bin/bash -e {0}
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:29.5562840Z env:
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:29.5563042Z   GIT_CONFIG_COUNT: 1
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:29.5563289Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:29.5563565Z   GIT_CONFIG_VALUE_0: main
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:29.5563795Z   CARGO_NET_RETRY: 10
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:29.5564021Z   CARGO_HTTP_MULTIPLEXING: false
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:29.5564273Z   CARGO_TERM_COLOR: always
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:29.5564506Z   RUSTFLAGS: -Dwarnings
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:29.5564864Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:29.5565154Z   CARGO_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:29.5565402Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:29.5565699Z   DOCKERHUB_IMAGE: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:29.5565917Z   DOCKERHUB_USERNAME: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:29.5566237Z   DOCKERHUB_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:29.5566474Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:29.5566727Z   CARGO_INCREMENTAL: 0
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:29.5566942Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.1541448Z Detected single-language repository (Cargo.toml in root)
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.2829315Z Max published version on crates.io: 0.295.2
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.2830304Z Initial bump (patch) from 0.295.2: 0.295.3
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.3946389Z Final release version: 0.295.3
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.3948655Z Updated ./Cargo.toml to version 0.295.3
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.3952587Z Updated ./Cargo.lock to version 0.295.3
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.3967380Z Removed changelog fragment ./changelog.d/20260716_073000_issue_730_ci_audit.md
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.3968031Z Collected 1 changelog fragment(s)
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9325106Z Local branch is behind remote, rebasing...
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9471459Z Error rebasing onto origin/main: Command failed: error: cannot rebase: Your index contains uncommitted changes.
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9472526Z error: Please commit or stash them.
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9472853Z 
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9504729Z ##[error]Process completed with exit code 1.
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9605023Z ##[group]Run sha="$(git rev-parse HEAD)"
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9605526Z ^[[36;1msha="$(git rev-parse HEAD)"^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9605979Z ^[[36;1mversion="$(sed -n 's/^version[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' Cargo.toml | head -n 1)"^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9606429Z ^[[36;1mif [ -z "$version" ]; then^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9606836Z ^[[36;1m  echo "::error file=Cargo.toml::Could not read formal-ai version from Cargo.toml"^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9607249Z ^[[36;1m  exit 1^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9607448Z ^[[36;1mfi^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9607677Z ^[[36;1mecho "sha=${sha}" >> "$GITHUB_OUTPUT"^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9608003Z ^[[36;1mecho "version=${version}" >> "$GITHUB_OUTPUT"^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9608387Z ^[[36;1mecho "Pages deploy ref: ${sha} (formal-ai ${version})"^[[0m
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9642708Z shell: /usr/bin/bash -e {0}
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9642976Z env:
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9643179Z   GIT_CONFIG_COUNT: 1
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9643462Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9643743Z   GIT_CONFIG_VALUE_0: main
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9643980Z   CARGO_NET_RETRY: 10
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9644207Z   CARGO_HTTP_MULTIPLEXING: false
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9644460Z   CARGO_TERM_COLOR: always
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9644696Z   RUSTFLAGS: -Dwarnings
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9645053Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9645348Z   CARGO_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9645597Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9645894Z   DOCKERHUB_IMAGE: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9646110Z   DOCKERHUB_USERNAME: 
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9646399Z   DOCKERHUB_TOKEN: ***
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9646634Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9646890Z   CARGO_INCREMENTAL: 0
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9647109Z ##[endgroup]
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9741293Z Pages deploy ref: 6b1910a3aabc74f7d66b2f45a9d5ea006bf56daa (formal-ai 0.295.3)
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:33.9853950Z Post job cleanup.
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.0724803Z [command]/usr/bin/git version
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.0771734Z git version 2.54.0
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.0816811Z Temporarily overriding HOME='/home/runner/work/_temp/b04d5fc2-b480-4040-85b4-406db83754e3' before making global git config changes
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.0818055Z Adding repository directory to the temporary git global config as a safe directory
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.0823337Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.0858213Z Removing SSH command configuration
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.0865771Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.0903664Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.1204574Z Removing HTTP extra header
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.1210460Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.1261672Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.1537070Z Removing includeIf entries pointing to credentials config files
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.1547121Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.1588577Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.1589384Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.1590048Z includeif.gitdir:/github/workspace/.git.path
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.1590590Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.1593594Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.1625703Z /home/runner/work/_temp/git-credentials-0aed4c72-73f7-4886-b1e6-1266c5f3789b.config
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.1649195Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-0aed4c72-73f7-4886-b1e6-1266c5f3789b.config
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.1690509Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.1723513Z /home/runner/work/_temp/git-credentials-0aed4c72-73f7-4886-b1e6-1266c5f3789b.config
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.1744972Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-0aed4c72-73f7-4886-b1e6-1266c5f3789b.config
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.1782879Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.1811001Z /github/runner_temp/git-credentials-0aed4c72-73f7-4886-b1e6-1266c5f3789b.config
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.1821710Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-0aed4c72-73f7-4886-b1e6-1266c5f3789b.config
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.1866682Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.1898905Z /github/runner_temp/git-credentials-0aed4c72-73f7-4886-b1e6-1266c5f3789b.config
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.1913338Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-0aed4c72-73f7-4886-b1e6-1266c5f3789b.config
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.1957914Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.2226619Z Removing credentials config '/home/runner/work/_temp/git-credentials-0aed4c72-73f7-4886-b1e6-1266c5f3789b.config'
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.2421462Z Evaluate and set job outputs
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.2428081Z Set output 'pages_sha'
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.2430159Z Set output 'pages_version'
+Auto Release	UNKNOWN STEP	2026-07-16T09:07:34.2431548Z Cleaning up orphan processes

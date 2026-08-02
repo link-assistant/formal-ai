@@ -1,0 +1,91 @@
+{
+  "entities": {
+    "Q45190": {
+      "type": "item",
+      "id": "Q45190",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "cement"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "цемент"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सीमेंट"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "水泥"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "hydraulic binder used in the composition of mortar and concrete"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "строительный материал"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सीमेंट बंधक सामाग्री है,जो पानी से अभिक्रिया कर गिट्टी रेत को आपस मे बांध कर ठोस बनाती है।"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "建筑材料"
+        }
+      },
+      "aliases": {
+        "hi": [
+          {
+            "language": "hi",
+            "value": "सिमेंट"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "紅毛土"
+          },
+          {
+            "language": "zh",
+            "value": "英泥"
+          },
+          {
+            "language": "zh",
+            "value": "熟料"
+          },
+          {
+            "language": "zh",
+            "value": "水門汀"
+          },
+          {
+            "language": "zh",
+            "value": "洋灰"
+          },
+          {
+            "language": "zh",
+            "value": "士敏土"
+          },
+          {
+            "language": "zh",
+            "value": "塞門德土"
+          },
+          {
+            "language": "zh",
+            "value": "紅毛塗"
+          },
+          {
+            "language": "zh",
+            "value": "紅文塗"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

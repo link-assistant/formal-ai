@@ -1,0 +1,1166 @@
+    Updating crates.io index
+ Downloading crates ...
+  Downloaded allocator-api2 v0.2.21
+  Downloaded http-body-util v0.1.3
+  Downloaded form_urlencoded v1.2.2
+  Downloaded allocator-api2 v0.4.0
+  Downloaded futures-core v0.3.32
+  Downloaded heck v0.5.0
+  Downloaded leak_slice v0.2.0
+  Downloaded lru-slab v0.1.2
+  Downloaded munge_macro v0.4.7
+  Downloaded hyper-rustls v0.27.9
+  Downloaded cpufeatures v0.2.17
+  Downloaded radium v0.7.0
+  Downloaded openssl-probe v0.2.1
+  Downloaded rand_chacha v0.3.1
+  Downloaded ppv-lite86 v0.2.21
+  Downloaded rend v0.5.3
+  Downloaded percent-encoding v2.3.2
+  Downloaded rand_chacha v0.9.0
+  Downloaded rustc-hash v2.1.2
+  Downloaded fastrand v2.4.1
+  Downloaded lock_api v0.4.14
+  Downloaded strum v0.28.0
+  Downloaded strum v0.27.2
+  Downloaded tinyvec_macros v0.1.1
+  Downloaded seahash v4.1.0
+  Downloaded tower-service v0.3.3
+  Downloaded tinystr v0.8.3
+  Downloaded thread-priority v1.2.0
+  Downloaded toml_writer v1.1.1+spec-1.1.0
+  Downloaded tree-sitter-language v0.1.7
+  Downloaded tap v1.0.1
+  Downloaded try-lock v0.2.5
+  Downloaded toml_parser v1.1.2+spec-1.1.0
+  Downloaded tinyvec v1.11.0
+  Downloaded wasm-bindgen-shared v0.2.121
+  Downloaded tree-sitter-toml-ng v0.7.0
+  Downloaded zerofrom-derive v0.1.7
+  Downloaded serde v1.0.228
+  Downloaded writeable v0.6.3
+  Downloaded zerovec-derive v0.11.3
+  Downloaded rand_core v0.9.5
+  Downloaded zeroize v1.8.2
+  Downloaded strum_macros v0.28.0
+  Downloaded toml_datetime v1.1.1+spec-1.1.0
+  Downloaded yoke-derive v0.8.2
+  Downloaded wasm-bindgen-macro-support v0.2.121
+  Downloaded url v2.5.8
+  Downloaded getrandom v0.3.4
+  Downloaded tower v0.5.3
+  Downloaded tree-sitter-yaml v0.7.2
+  Downloaded tower-http v0.6.11
+  Downloaded zmij v1.0.21
+  Downloaded tree-sitter-python v0.25.0
+  Downloaded unicode-ident v1.0.22
+  Downloaded winnow v1.0.3
+  Downloaded socket2 v0.6.4
+  Downloaded unicode-bidi v0.3.18
+  Downloaded unsafe-libyaml v0.2.11
+  Downloaded syn v2.0.117
+  Downloaded rustls-webpki v0.103.13
+  Downloaded zerocopy v0.8.48
+  Downloaded lingua-bengali-language-model v1.3.0
+  Downloaded zerotrie v0.2.4
+  Downloaded rkyv v0.7.46
+  Downloaded whatlang v0.18.0
+  Downloaded unicode-segmentation v1.13.3
+  Downloaded rkyv v0.8.16
+  Downloaded unicode-normalization v0.1.25
+  Downloaded zerovec v0.11.6
+  Downloaded rust_decimal v1.42.0
+  Downloaded tree-sitter-r v1.2.0
+  Downloaded tree-sitter-java v0.23.5
+  Downloaded chrono v0.4.44
+  Downloaded syn v1.0.109
+  Downloaded bitvec v1.0.1
+  Downloaded tree-sitter-php v0.24.2
+  Downloaded aws-lc-rs v1.17.0
+  Downloaded clap_builder v4.6.0
+  Downloaded regex-syntax v0.8.10
+  Downloaded web-sys v0.3.98
+  Downloaded rustls v0.23.40
+  Downloaded rayon v1.12.0
+  Downloaded futures-util v0.3.32
+  Downloaded rustix v1.1.4
+  Downloaded libc v0.2.186
+  Downloaded tree-sitter-vb-dotnet v0.1.0
+  Downloaded console_error_panic_hook v0.1.7
+  Downloaded tree-sitter-typescript v0.23.2
+  Downloaded tree-sitter-ruby v0.23.1
+  Downloaded tree-sitter-javascript v0.25.0
+  Downloaded tree-sitter-sequel v0.3.11
+  Downloaded tokio v1.52.3
+  Downloaded regex-automata v0.4.14
+  Downloaded tracing v0.1.44
+  Downloaded hashbrown v0.17.1
+  Downloaded tree-sitter-cpp v0.23.4
+  Downloaded hashbrown v0.15.5
+  Downloaded regex v1.12.3
+  Downloaded hashbrown v0.14.5
+  Downloaded typenum v1.20.1
+  Downloaded tree-sitter-swift v0.7.3
+  Downloaded tree-sitter-go v0.25.0
+  Downloaded tree-sitter-rust v0.24.2
+  Downloaded aho-corasick v1.1.4
+  Downloaded http v1.4.2
+  Downloaded hashbrown v0.12.3
+  Downloaded bumpalo v3.20.2
+  Downloaded tar v0.4.46
+  Downloaded csv v1.4.0
+  Downloaded lingua-hindi-language-model v1.3.0
+  Downloaded tree-sitter-pascal v0.10.2
+  Downloaded tree-sitter-c v0.24.2
+  Downloaded flate2 v1.1.9
+  Downloaded daachorse v2.1.1
+  Downloaded bytes v1.11.1
+  Downloaded base64 v0.22.1
+  Downloaded darling_core v0.20.11
+  Downloaded borsh v1.6.1
+  Downloaded ucd-trie v0.1.7
+  Downloaded tree-sitter v0.25.10
+  Downloaded tree-sitter-kotlin-ng v1.1.0
+  Downloaded rayon-core v1.13.0
+  Downloaded tree-sitter-scala v0.25.1
+  Downloaded tree-sitter-c-sharp v0.23.5
+  Downloaded quinn-proto v0.11.14
+  Downloaded platform-trees v0.3.4
+  Downloaded meta-language v0.45.0
+  Downloaded tree-sitter-graphql v0.1.0
+  Downloaded ryu v1.0.23
+  Downloaded rustls-platform-verifier v0.7.0
+  Downloaded encoding_rs v0.8.35
+  Downloaded clap v4.6.1
+  Downloaded tokio-rustls v0.26.4
+  Downloaded reqwest v0.13.4
+  Downloaded tree-sitter-ini v1.4.0
+  Downloaded tree-sitter-html v0.23.2
+  Downloaded smallvec v1.15.1
+  Downloaded serde_json v1.0.149
+  Downloaded icu_properties_data v2.2.0
+  Downloaded futures-channel v0.3.32
+  Downloaded darling v0.20.11
+  Downloaded fst v0.4.7
+  Downloaded ring v0.17.14
+  Downloaded rustls-pki-types v1.14.1
+  Downloaded lingua-chinese-language-model v1.3.0
+  Downloaded itertools v0.14.0
+  Downloaded idna v1.1.0
+  Downloaded ts-parser-perl v1.1.2
+  Downloaded getrandom v0.4.2
+  Downloaded getrandom v0.2.17
+  Downloaded bitflags v2.11.1
+  Downloaded wasm-bindgen-macro v0.2.121
+  Downloaded wasm-bindgen-futures v0.4.71
+  Downloaded wasm-bindgen v0.2.121
+  Downloaded uuid v1.23.1
+  Downloaded tree-sitter-xml v0.7.0
+  Downloaded synstructure v0.13.2
+  Downloaded yoke v0.8.3
+  Downloaded wyz v0.5.1
+  Downloaded nom v8.0.0
+  Downloaded anyhow v1.0.102
+  Downloaded untrusted v0.9.0
+  Downloaded unicode-blocks v0.1.9
+  Downloaded lingua-portuguese-language-model v1.3.0
+  Downloaded tracing-core v0.1.36
+  Downloaded toml_edit v0.25.11+spec-1.1.0
+  Downloaded rand_core v0.6.4
+  Downloaded js-sys v0.3.98
+  Downloaded httparse v1.10.1
+  Downloaded tree-sitter-proto v0.4.0
+  Downloaded tree-sitter-lua v0.2.0
+  Downloaded lingua-spanish-language-model v1.3.0
+  Downloaded tree-sitter-json v0.24.8
+  Downloaded tree-sitter-css v0.25.0
+  Downloaded rustversion v1.0.22
+  Downloaded lingua-french-language-model v1.3.0
+  Downloaded rustls-native-certs v0.8.4
+  Downloaded pest v2.8.6
+  Downloaded fs_extra v1.3.0
+  Downloaded indexmap v2.14.0
+  Downloaded lingua-english-language-model v1.3.0
+  Downloaded counter v0.7.1
+  Downloaded zerofrom v0.1.8
+  Downloaded xattr v1.6.1
+  Downloaded rand v0.9.4
+  Downloaded rand v0.8.6
+  Downloaded foldhash v0.1.5
+  Downloaded mio v1.2.1
+  Downloaded memchr v2.8.0
+  Downloaded borsh-derive v1.6.1
+  Downloaded want v0.3.1
+  Downloaded version_check v0.9.5
+  Downloaded utf8parse v0.2.2
+  Downloaded utf8_iter v1.0.4
+  Downloaded rand v0.10.1
+  Downloaded doublets v0.4.0
+  Downloaded derive_builder v0.20.2
+  Downloaded crossbeam-utils v0.8.21
+  Downloaded crc32fast v1.5.0
+  Downloaded linux-raw-sys v0.12.1
+  Downloaded clap_derive v4.6.1
+  Downloaded tempfile v3.27.0
+  Downloaded serde_derive v1.0.228
+  Downloaded num-bigint v0.4.6
+  Downloaded hyper-util v0.1.20
+  Downloaded quinn v0.11.9
+  Downloaded crossbeam-epoch v0.9.18
+  Downloaded lindera-dictionary v3.0.7
+  Downloaded lindera v3.0.7
+  Downloaded thiserror-impl v2.0.18
+  Downloaded icu_locale_core v2.2.0
+  Downloaded icu_collections v2.2.0
+  Downloaded hyper v1.10.1
+  Downloaded tokio-macros v2.7.0
+  Downloaded serde_yaml_ng v0.10.0
+  Downloaded lingua-russian-language-model v1.3.0
+  Downloaded lingua v1.8.0
+  Downloaded serde_core v1.0.228
+  Downloaded rkyv_derive v0.8.16
+  Downloaded rkyv_derive v0.7.46
+  Downloaded rand_core v0.10.1
+  Downloaded platform-mem v0.3.0
+  Downloaded pest_meta v2.8.6
+  Downloaded miniz_oxide v0.8.9
+  Downloaded icu_normalizer_data v2.2.0
+  Downloaded lingua-urdu-language-model v1.3.0
+  Downloaded subtle v2.6.1
+  Downloaded stable_deref_trait v1.2.1
+  Downloaded thiserror-impl v1.0.69
+  Downloaded thiserror v2.0.18
+  Downloaded thiserror v1.0.69
+  Downloaded scopeguard v1.2.0
+  Downloaded tower-layer v0.3.3
+  Downloaded strum_macros v0.27.2
+  Downloaded streaming-iterator v0.1.9
+  Downloaded icu_normalizer v2.2.0
+  Downloaded cc v1.2.62
+  Downloaded platform-data v2.0.0
+  Downloaded icu_properties v2.2.0
+  Downloaded ctor v0.4.3
+  Downloaded anstream v1.0.0
+  Downloaded sync_wrapper v1.0.2
+  Downloaded simdutf8 v0.1.5
+  Downloaded shlex v1.3.0
+  Downloaded proc-macro2 v1.0.106
+  Downloaded log v0.4.29
+  Downloaded kanaria v0.2.0
+  Downloaded glob v0.3.3
+  Downloaded find-msvc-tools v0.1.9
+  Downloaded filetime v0.2.29
+  Downloaded encoding_rs_io v0.1.7
+  Downloaded either v1.16.0
+  Downloaded digest v0.10.7
+  Downloaded derive_builder_core v0.20.2
+  Downloaded dashmap v6.2.1
+  Downloaded cmake v0.1.58
+  Downloaded anstyle v1.0.14
+  Downloaded strsim v0.11.1
+  Downloaded slab v0.4.12
+  Downloaded simd-adler32 v0.3.9
+  Downloaded sha2 v0.10.9
+  Downloaded serde-wasm-bindgen v0.6.5
+  Downloaded pest_generator v2.8.6
+  Downloaded once_cell v1.21.4
+  Downloaded num-traits v0.2.19
+  Downloaded icu_provider v2.2.0
+  Downloaded displaydoc v0.2.6
+  Downloaded crossbeam-deque v0.8.6
+  Downloaded quinn-udp v0.5.14
+  Downloaded pest_derive v2.8.6
+  Downloaded parking_lot_core v0.9.12
+  Downloaded memmap2 v0.9.10
+  Downloaded litemap v0.8.2
+  Downloaded hashlink v0.10.0
+  Downloaded csv-core v0.1.13
+  Downloaded bytecheck v0.6.12
+  Downloaded bitflags v1.3.2
+  Downloaded autocfg v1.5.0
+  Downloaded arrayvec v0.7.6
+  Downloaded anstyle-parse v1.0.0
+  Downloaded iana-time-zone v0.1.65
+  Downloaded pin-project-lite v0.2.17
+  Downloaded md5 v0.8.0
+  Downloaded ipnet v2.12.0
+  Downloaded num-integer v0.1.46
+  Downloaded lino-objects-codec v0.2.1
+  Downloaded rend v0.4.2
+  Downloaded quote v1.0.45
+  Downloaded platform-num v0.8.0
+  Downloaded links-notation v0.13.0
+  Downloaded lindera-jieba v3.0.7
+  Downloaded num-rational v0.4.2
+  Downloaded jobserver v0.1.34
+  Downloaded rancor v0.1.1
+  Downloaded ptr_meta_derive v0.3.1
+  Downloaded ptr_meta v0.3.1
+  Downloaded ptr_meta v0.1.4
+  Downloaded proc-macro-crate v3.5.0
+  Downloaded num_cpus v1.17.0
+  Downloaded lino-arguments v0.3.0
+  Downloaded errno v0.3.14
+  Downloaded dotenvy v0.15.7
+  Downloaded byteorder v1.5.0
+  Downloaded munge v0.4.7
+  Downloaded fs2 v0.4.3
+  Downloaded ctor-proc-macro v0.0.6
+  Downloaded bytecheck v0.8.2
+  Downloaded ptr_meta_derive v0.1.4
+  Downloaded potential_utf v0.1.5
+  Downloaded lino-env v0.1.0
+  Downloaded is_terminal_polyfill v1.70.2
+  Downloaded colorchoice v1.0.5
+  Downloaded beef v0.5.2
+  Downloaded maplit v1.0.2
+  Downloaded include_dir v0.7.4
+  Downloaded ident_case v1.0.1
+  Downloaded lingua-arabic-language-model v1.3.0
+  Downloaded lazy_static v1.5.0
+  Downloaded include_dir_macros v0.7.4
+  Downloaded idna_adapter v1.2.2
+  Downloaded json5_nodes v2.0.2
+  Downloaded itoa v1.0.18
+  Downloaded http-body v1.0.1
+  Downloaded futures-task v0.3.32
+  Downloaded dtor-proc-macro v0.0.5
+  Downloaded atomic-waker v1.1.2
+  Downloaded anstyle-query v1.1.5
+  Downloaded generic-array v0.14.7
+  Downloaded funty v2.0.0
+  Downloaded fnv v1.0.7
+  Downloaded equivalent v1.0.2
+  Downloaded block-buffer v0.10.4
+  Downloaded ahash v0.7.8
+  Downloaded adler2 v2.0.1
+  Downloaded dunce v1.0.5
+  Downloaded dtor v0.0.6
+  Downloaded derive_builder_macro v0.20.2
+  Downloaded darling_macro v0.20.11
+  Downloaded crypto-common v0.1.7
+  Downloaded clap_lex v1.1.0
+  Downloaded cfg_aliases v0.2.1
+  Downloaded cfg-if v1.0.4
+  Downloaded bytecheck_derive v0.8.2
+  Downloaded bytecheck_derive v0.6.12
+  Downloaded link-calculator v0.19.0
+  Downloaded aws-lc-sys v0.41.0
+   Compiling libc v0.2.186
+   Compiling unicode-ident v1.0.22
+   Compiling proc-macro2 v1.0.106
+   Compiling quote v1.0.45
+   Compiling find-msvc-tools v0.1.9
+   Compiling shlex v1.3.0
+   Compiling tree-sitter-language v0.1.7
+   Compiling serde_core v1.0.228
+    Checking cfg-if v1.0.4
+   Compiling stable_deref_trait v1.2.1
+   Compiling memchr v2.8.0
+   Compiling itoa v1.0.18
+   Compiling icu_properties_data v2.2.0
+   Compiling icu_normalizer_data v2.2.0
+   Compiling serde v1.0.228
+   Compiling fs_extra v1.3.0
+   Compiling dunce v1.0.5
+   Compiling bytes v1.11.1
+   Compiling pin-project-lite v0.2.17
+   Compiling futures-core v0.3.32
+   Compiling autocfg v1.5.0
+   Compiling jobserver v0.1.34
+   Compiling syn v2.0.117
+   Compiling zmij v1.0.21
+   Compiling cc v1.2.62
+    Checking once_cell v1.21.4
+   Compiling writeable v0.6.3
+   Compiling num-traits v0.2.19
+   Compiling heck v0.5.0
+   Compiling litemap v0.8.2
+   Compiling aws-lc-rs v1.17.0
+   Compiling zeroize v1.8.2
+   Compiling smallvec v1.15.1
+   Compiling cmake v0.1.58
+   Compiling socket2 v0.6.4
+   Compiling mio v1.2.1
+   Compiling ident_case v1.0.1
+   Compiling utf8_iter v1.0.4
+   Compiling strsim v0.11.1
+   Compiling fnv v1.0.7
+   Compiling rustls-pki-types v1.14.1
+   Compiling aws-lc-sys v0.41.0
+   Compiling include_dir_macros v0.7.4
+   Compiling http v1.4.2
+   Compiling wasm-bindgen-shared v0.2.121
+   Compiling thiserror v2.0.18
+    Checking include_dir v0.7.4
+   Compiling http-body v1.0.1
+   Compiling slab v0.4.12
+   Compiling rustls v0.23.40
+   Compiling futures-task v0.3.32
+   Compiling hashbrown v0.17.1
+   Compiling httparse v1.10.1
+   Compiling rustversion v1.0.22
+   Compiling percent-encoding v2.3.2
+   Compiling synstructure v0.13.2
+   Compiling darling_core v0.20.11
+   Compiling untrusted v0.9.0
+   Compiling futures-util v0.3.32
+   Compiling try-lock v0.2.5
+   Compiling tower-service v0.3.3
+   Compiling subtle v2.6.1
+   Compiling bitflags v2.11.1
+   Compiling equivalent v1.0.2
+   Compiling serde_json v1.0.149
+   Compiling indexmap v2.14.0
+   Compiling zerofrom-derive v0.1.7
+   Compiling yoke-derive v0.8.2
+   Compiling zerovec-derive v0.11.3
+   Compiling displaydoc v0.2.6
+   Compiling serde_derive v1.0.228
+   Compiling zerofrom v0.1.8
+   Compiling yoke v0.8.3
+   Compiling ptr_meta_derive v0.3.1
+   Compiling tokio-macros v2.7.0
+   Compiling bytecheck_derive v0.8.2
+   Compiling zerotrie v0.2.4
+   Compiling zerovec v0.11.6
+   Compiling darling_macro v0.20.11
+   Compiling tokio v1.52.3
+   Compiling thiserror-impl v2.0.18
+   Compiling tinystr v0.8.3
+   Compiling icu_locale_core v2.2.0
+   Compiling potential_utf v0.1.5
+   Compiling icu_collections v2.2.0
+   Compiling darling v0.20.11
+   Compiling munge_macro v0.4.7
+   Compiling icu_provider v2.2.0
+   Compiling derive_builder_core v0.20.2
+   Compiling ptr_meta v0.3.1
+   Compiling want v0.3.1
+   Compiling icu_properties v2.2.0
+   Compiling icu_normalizer v2.2.0
+   Compiling tracing-core v0.1.36
+   Compiling futures-channel v0.3.32
+   Compiling atomic-waker v1.1.2
+   Compiling anyhow v1.0.102
+   Compiling idna_adapter v1.2.2
+   Compiling rustix v1.1.4
+   Compiling idna v1.1.0
+   Compiling tracing v0.1.44
+   Compiling derive_builder_macro v0.20.2
+   Compiling rancor v0.1.1
+   Compiling strum_macros v0.28.0
+   Compiling rkyv_derive v0.8.16
+   Compiling form_urlencoded v1.2.2
+   Compiling sync_wrapper v1.0.2
+    Checking aho-corasick v1.1.4
+   Compiling crossbeam-utils v0.8.21
+   Compiling linux-raw-sys v0.12.1
+   Compiling hyper v1.10.1
+   Compiling base64 v0.22.1
+   Compiling openssl-probe v0.2.1
+   Compiling bumpalo v3.20.2
+   Compiling tower-layer v0.3.3
+   Compiling ipnet v2.12.0
+    Checking regex-syntax v0.8.10
+   Compiling crc32fast v1.5.0
+   Compiling simdutf8 v0.1.5
+   Compiling bytecheck v0.8.2
+   Compiling hyper-util v0.1.20
+   Compiling tower v0.5.3
+   Compiling wasm-bindgen-macro-support v0.2.121
+   Compiling rustls-native-certs v0.8.4
+   Compiling url v2.5.8
+    Checking regex-automata v0.4.14
+   Compiling wasm-bindgen v0.2.121
+   Compiling simd-adler32 v0.3.9
+   Compiling log v0.4.29
+   Compiling adler2 v2.0.1
+    Checking regex v1.12.3
+   Compiling miniz_oxide v0.8.9
+   Compiling xattr v1.6.1
+   Compiling tower-http v0.6.11
+   Compiling rend v0.5.3
+   Compiling wasm-bindgen-macro v0.2.121
+   Compiling munge v0.4.7
+   Compiling filetime v0.2.29
+   Compiling encoding_rs v0.8.35
+   Compiling http-body-util v0.1.3
+   Compiling csv-core v0.1.13
+   Compiling ryu v1.0.23
+   Compiling rand_core v0.10.1
+   Compiling rand v0.10.1
+   Compiling csv v1.4.0
+   Compiling tar v0.4.46
+   Compiling encoding_rs_io v0.1.7
+   Compiling flate2 v1.1.9
+   Compiling strum v0.28.0
+   Compiling derive_builder v0.20.2
+    Checking memmap2 v0.9.10
+   Compiling num_cpus v1.17.0
+   Compiling rkyv v0.8.16
+   Compiling ucd-trie v0.1.7
+   Compiling md5 v0.8.0
+    Checking utf8parse v0.2.2
+   Compiling byteorder v1.5.0
+   Compiling glob v0.3.3
+   Compiling daachorse v2.1.1
+   Compiling pest v2.8.6
+    Checking anstyle-parse v1.0.0
+    Checking crossbeam-epoch v0.9.18
+    Checking foldhash v0.1.5
+    Checking colorchoice v1.0.5
+   Compiling getrandom v0.4.2
+    Checking allocator-api2 v0.2.21
+    Checking is_terminal_polyfill v1.70.2
+    Checking anstyle-query v1.1.5
+   Compiling parking_lot_core v0.9.12
+    Checking anstyle v1.0.14
+    Checking fastrand v2.4.1
+   Compiling rayon-core v1.13.0
+    Checking anstream v1.0.0
+    Checking hashbrown v0.15.5
+    Checking js-sys v0.3.98
+    Checking crossbeam-deque v0.8.6
+   Compiling pest_meta v2.8.6
+    Checking tinyvec_macros v0.1.1
+    Checking scopeguard v1.2.0
+   Compiling fst v0.4.7
+    Checking clap_lex v1.1.0
+   Compiling thiserror v1.0.69
+    Checking either v1.16.0
+    Checking clap_builder v4.6.0
+   Compiling pest_generator v2.8.6
+    Checking lock_api v0.4.14
+    Checking tinyvec v1.11.0
+   Compiling tree-sitter v0.25.10
+   Compiling clap_derive v4.6.1
+   Compiling thiserror-impl v1.0.69
+    Checking num-integer v0.1.46
+    Checking platform-num v0.8.0
+   Compiling tree-sitter-xml v0.7.0
+   Compiling tree-sitter-sequel v0.3.11
+    Checking lindera-dictionary v3.0.7
+   Compiling tree-sitter-c-sharp v0.23.5
+   Compiling tree-sitter-php v0.24.2
+   Compiling tree-sitter-cpp v0.23.4
+   Compiling tree-sitter-kotlin-ng v1.1.0
+   Compiling tree-sitter-go v0.25.0
+   Compiling tree-sitter-pascal v0.10.2
+   Compiling tree-sitter-toml-ng v0.7.0
+   Compiling tree-sitter-css v0.25.0
+   Compiling tree-sitter-scala v0.25.1
+   Compiling tree-sitter-swift v0.7.3
+   Compiling tree-sitter-javascript v0.25.0
+   Compiling tree-sitter-python v0.25.0
+   Compiling tree-sitter-yaml v0.7.2
+   Compiling tree-sitter-c v0.24.2
+   Compiling tree-sitter-typescript v0.23.2
+   Compiling tree-sitter-vb-dotnet v0.1.0
+   Compiling tree-sitter-proto v0.4.0
+   Compiling tree-sitter-java v0.23.5
+   Compiling tree-sitter-rust v0.24.2
+   Compiling tree-sitter-json v0.24.8
+   Compiling tree-sitter-ini v1.4.0
+   Compiling tree-sitter-graphql v0.1.0
+   Compiling tree-sitter-r v1.2.0
+   Compiling tree-sitter-lua v0.2.0
+   Compiling tree-sitter-html v0.23.2
+   Compiling ts-parser-perl v1.1.2
+   Compiling tree-sitter-ruby v0.23.1
+    Checking nom v8.0.0
+    Checking bitflags v1.3.2
+    Checking hashbrown v0.14.5
+    Checking unsafe-libyaml v0.2.11
+   Compiling dtor-proc-macro v0.0.5
+   Compiling rust_decimal v1.42.0
+    Checking serde_yaml_ng v0.10.0
+    Checking dtor v0.0.6
+    Checking dashmap v6.2.1
+    Checking kanaria v0.2.0
+    Checking links-notation v0.13.0
+    Checking clap v4.6.1
+    Checking num-bigint v0.4.6
+    Checking rayon v1.12.0
+    Checking tempfile v3.27.0
+    Checking unicode-normalization v0.1.25
+   Compiling pest_derive v2.8.6
+    Checking itertools v0.14.0
+    Checking hashlink v0.10.0
+   Compiling strum_macros v0.27.2
+    Checking lingua-urdu-language-model v1.3.0
+    Checking lingua-arabic-language-model v1.3.0
+    Checking lingua-portuguese-language-model v1.3.0
+    Checking lingua-hindi-language-model v1.3.0
+    Checking lingua-french-language-model v1.3.0
+    Checking lingua-english-language-model v1.3.0
+    Checking lingua-russian-language-model v1.3.0
+    Checking lingua-bengali-language-model v1.3.0
+    Checking lingua-chinese-language-model v1.3.0
+    Checking lingua-spanish-language-model v1.3.0
+    Checking counter v0.7.1
+    Checking allocator-api2 v0.4.0
+    Checking iana-time-zone v0.1.65
+    Checking streaming-iterator v0.1.9
+    Checking arrayvec v0.7.6
+    Checking winnow v1.0.3
+    Checking beef v0.5.2
+    Checking maplit v1.0.2
+    Checking unicode-segmentation v1.13.3
+   Compiling ctor-proc-macro v0.0.6
+    Checking strum v0.27.2
+    Checking unicode-blocks v0.1.9
+    Checking platform-data v2.0.0
+    Checking ctor v0.4.3
+    Checking platform-mem v0.3.0
+    Checking chrono v0.4.44
+    Checking json5_nodes v2.0.2
+    Checking num-rational v0.4.2
+    Checking lingua v1.8.0
+    Checking toml_parser v1.1.2+spec-1.1.0
+    Checking web-sys v0.3.98
+    Checking serde-wasm-bindgen v0.6.5
+    Checking wasm-bindgen-futures v0.4.71
+    Checking platform-trees v0.3.4
+    Checking whatlang v0.18.0
+    Checking console_error_panic_hook v0.1.7
+   Compiling formal-ai v0.295.2 (/tmp/gh-issue-solver-1784181977861)
+    Checking unicode-bidi v0.3.18
+    Checking toml_datetime v1.1.1+spec-1.1.0
+    Checking leak_slice v0.2.0
+    Checking lazy_static v1.5.0
+    Checking tap v1.0.1
+    Checking dotenvy v0.15.7
+    Checking lino-env v0.1.0
+    Checking toml_writer v1.1.1+spec-1.1.0
+    Checking lino-arguments v0.3.0
+    Checking doublets v0.4.0
+    Checking thread-priority v1.2.0
+    Checking toml_edit v0.25.11+spec-1.1.0
+    Checking lino-objects-codec v0.2.1
+    Checking fs2 v0.4.3
+    Checking link-calculator v0.19.0
+   Compiling rustls-webpki v0.103.13
+   Compiling tokio-rustls v0.26.4
+   Compiling rustls-platform-verifier v0.7.0
+   Compiling hyper-rustls v0.27.9
+   Compiling reqwest v0.13.4
+   Compiling lindera-jieba v3.0.7
+    Checking lindera v3.0.7
+    Checking meta-language v0.45.0
+ Documenting formal-ai v0.295.2 (/tmp/gh-issue-solver-1784181977861)
+error: public documentation for `agentic_coding` links to private item `lexicon`
+  --> src/agentic_coding/mod.rs:18:55
+   |
+18 | //! extraction is grounded in a closed lexicon (see [`lexicon`]) and the planner is
+   |                                                       ^^^^^^^ this item is private
+   |
+   = note: this link will resolve properly if you pass `--document-private-items`
+   = note: `-D rustdoc::private-intra-doc-links` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(rustdoc::private_intra_doc_links)]`
+
+error: unresolved link to `comes`
+ --> src/agentic_coding/diagram.rs:6:58
+  |
+6 | //! *"what exactly happens when the input to the system [comes] from different
+  |                                                          ^^^^^ no item named `comes` in scope
+  |
+  = help: to escape `[` and `]` characters, add '\' before them like `\[` or `\]`
+  = note: `-D rustdoc::broken-intra-doc-links` implied by `-D warnings`
+  = help: to override `-D warnings` add `#[allow(rustdoc::broken_intra_doc_links)]`
+
+error: public documentation for `diagram` links to private item `RECIPES`
+ --> src/agentic_coding/diagram.rs:9:8
+  |
+9 | //! ([`RECIPES`]) rather than hand-drawn, so they cannot drift from what the code
+  |        ^^^^^^^ this item is private
+  |
+  = note: this link will resolve properly if you pass `--document-private-items`
+
+error: public documentation for `hit_turn_cap` links to private item `MAX_TURNS`
+  --> src/agentic_coding/driver.rs:62:39
+   |
+62 |     /// Whether the loop stopped at [`MAX_TURNS`] rather than a final answer.
+   |                                       ^^^^^^^^^ this item is private
+   |
+   = note: this link will resolve properly if you pass `--document-private-items`
+
+error: public documentation for `formalize` links to private item `format_lino_record`
+  --> src/agentic_coding/formalize.rs:11:54
+   |
+11 | //! `id\n  key "value"` Links Notation produced by [`format_lino_record`].
+   |                                                      ^^^^^^^^^^^^^^^^^^ this item is private
+   |
+   = note: this link will resolve properly if you pass `--document-private-items`
+
+error: public documentation for `formalize` links to private item `super::lexicon`
+  --> src/agentic_coding/formalize.rs:19:9
+   |
+19 | //!   [`super::lexicon`]) — recognised subject/predicate/object triples become
+   |         ^^^^^^^^^^^^^^ this item is private
+   |
+   = note: this link will resolve properly if you pass `--document-private-items`
+
+error: public documentation for `meaning_detail` links to private item `derive_source`
+  --> src/agentic_coding/meaning_detail.rs:21:30
+   |
+21 | //! ([`concept_lexemes`] → [`derive_source`]). Add a concept by adding its inputs to
+   |                              ^^^^^^^^^^^^^ this item is private
+   |
+   = note: this link will resolve properly if you pass `--document-private-items`
+
+error: public documentation for `source_bundle` links to private item `lexeme_core`
+   --> src/agentic_coding/meaning_detail.rs:617:35
+    |
+617 | /// trimmed to the lexeme core ([`lexeme_core`]). This is genuine Wikidata data — the
+    |                                   ^^^^^^^^^^^ this item is private
+    |
+    = note: this link will resolve properly if you pass `--document-private-items`
+
+error: public documentation for `source_bundle` links to private item `parse_entities`
+   --> src/agentic_coding/meaning_detail.rs:618:19
+    |
+618 | /// same fields [`parse_entities`] reads back — not a bespoke fixture, so the loop
+    |                   ^^^^^^^^^^^^^^ this item is private
+    |
+    = note: this link will resolve properly if you pass `--document-private-items`
+
+error: unresolved link to `answer_for`
+  --> src/agentic_coding/question_catalog.rs:22:50
+   |
+22 | //! questions are a reviewable *recall table* ([`answer_for`]), so a question the system
+   |                                                  ^^^^^^^^^^ no item named `answer_for` in scope
+   |
+   = help: to escape `[` and `]` characters, add '\' before them like `\[` or `\]`
+
+error: public documentation for `candidates` links to private item `CATALOG_CANDIDATE_COUNT`
+  --> src/agentic_coding/question_catalog.rs:80:21
+   |
+80 |     /// The first [`CATALOG_CANDIDATE_COUNT`] candidates, smallest-first, each classified.
+   |                     ^^^^^^^^^^^^^^^^^^^^^^^ this item is private
+   |
+   = note: this link will resolve properly if you pass `--document-private-items`
+
+error: public documentation for `answered` links to private item `CATALOG_ANSWER_COUNT`
+  --> src/agentic_coding/question_catalog.rs:82:21
+   |
+82 |     /// The first [`CATALOG_ANSWER_COUNT`] grammatical-and-meaningful questions, answered.
+   |                     ^^^^^^^^^^^^^^^^^^^^ this item is private
+   |
+   = note: this link will resolve properly if you pass `--document-private-items`
+
+error: public documentation for `self_ast` links to private item `crate::coding::cst`
+  --> src/agentic_coding/self_ast.rs:11:50
+   |
+11 | //! the same `LinkNetwork::parse` path used by [`crate::coding::cst`] — and emits
+   |                                                  ^^^^^^^^^^^^^^^^^^ this item is private
+   |
+   = note: this link will resolve properly if you pass `--document-private-items`
+
+error: unresolved link to `d`
+ --> src/agentic_coding/source_graph.rs:7:17
+  |
+7 | //! *"translate[d] … to links / meta language (that must be present in our data),
+  |                 ^ no item named `d` in scope
+  |
+  = help: to escape `[` and `]` characters, add '\' before them like `\[` or `\]`
+
+error: public documentation for `attachment_context` links to private item `crate::solver_handlers`
+ --> src/attachment_context.rs:7:39
+  |
+7 | //! solver's [`document_originality`](crate::solver_handlers) handler can
+  |                                       ^^^^^^^^^^^^^^^^^^^^^^ this item is private
+  |
+  = note: this link will resolve properly if you pass `--document-private-items`
+
+error: unresolved link to `s`
+   --> src/change_request.rs:107:54
+    |
+107 |     /// `approval` is granted (*"and the user accept[s]"*), returning the merged
+    |                                                      ^ no item named `s` in scope
+    |
+    = help: to escape `[` and `]` characters, add '\' before them like `\[` or `\]`
+
+error: unresolved link to `the`
+  --> src/dreaming.rs:18:37
+   |
+18 | //! [a generalization] is working, [the] specific algorithm can be forgotten",
+   |                                     ^^^ no item named `the` in scope
+   |
+   = help: to escape `[` and `]` characters, add '\' before them like `\[` or `\]`
+
+error: public documentation for `json_lino` links to private item `crate::seed::parser::parse_lino`
+  --> src/json_lino.rs:27:20
+   |
+27 | //! [`parse_lino`](crate::seed::parser::parse_lino), which decodes quotes
+   |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ this item is private
+   |
+   = note: this link will resolve properly if you pass `--document-private-items`
+
+error: public documentation for `knowledge` links to private item `ORACLE_SNAPSHOTS`
+  --> src/knowledge.rs:10:8
+   |
+10 | //! ([`ORACLE_SNAPSHOTS`]) so it compiles into both the native binary and the
+   |        ^^^^^^^^^^^^^^^^ this item is private
+   |
+   = note: this link will resolve properly if you pass `--document-private-items`
+
+error: public documentation for `knowledge` links to private item `crate::coding`
+  --> src/knowledge.rs:25:47
+   |
+25 | //!    attribution, generalising the static [`crate::coding`] catalogue beyond
+   |                                               ^^^^^^^^^^^^^ this item is private
+   |
+   = note: this link will resolve properly if you pass `--document-private-items`
+
+error: unresolved link to `s`
+  --> src/learning_ledger.rs:18:19
+   |
+18 | //!   user accept[s]"*.
+   |                   ^ no item named `s` in scope
+   |
+   = help: to escape `[` and `]` characters, add '\' before them like `\[` or `\]`
+
+error: public documentation for `meta_frame` links to private item `crate::links_format::format_lino_record`
+  --> src/meta_frame.rs:11:28
+   |
+11 | //! [`format_lino_record`](crate::links_format::format_lino_record) (R311). It is
+   |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ this item is private
+   |
+   = note: this link will resolve properly if you pass `--document-private-items`
+
+error: public documentation for `Specialized` links to private item `SPECIALIZED_HANDLERS`
+  --> src/method_registry.rs:37:36
+   |
+37 |     /// A handler in the ordered [`SPECIALIZED_HANDLERS`] table.
+   |                                    ^^^^^^^^^^^^^^^^^^^^ this item is private
+   |
+   = note: this link will resolve properly if you pass `--document-private-items`
+
+error: public documentation for `recipe_interpreter` links to private item `crate::meta_core::record_meta_core`
+ --> src/recipe_interpreter.rs:7:7
+  |
+7 | //! [`crate::meta_core::record_meta_core`]. This module closes that gap: it parses
+  |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ this item is private
+  |
+  = note: this link will resolve properly if you pass `--document-private-items`
+
+error: public documentation for `recipe_interpreter` links to private item `crate::meta_core::record_meta_core`
+  --> src/recipe_interpreter.rs:23:42
+   |
+23 | //! byte-for-byte identical to the one [`crate::meta_core::record_meta_core`]
+   |                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ this item is private
+   |
+   = note: this link will resolve properly if you pass `--document-private-items`
+
+error: public documentation for `execute` links to private item `crate::meta_core::record_meta_core`
+   --> src/recipe_interpreter.rs:113:21
+    |
+113 |     /// mirroring [`crate::meta_core::record_meta_core`] — including its external
+    |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ this item is private
+    |
+    = note: this link will resolve properly if you pass `--document-private-items`
+
+error: public documentation for `reproduces_pipeline` links to private item `crate::meta_core::record_meta_core`
+   --> src/recipe_interpreter.rs:172:11
+    |
+172 |     /// [`crate::meta_core::record_meta_core`] over the same inputs and modes and
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ this item is private
+    |
+    = note: this link will resolve properly if you pass `--document-private-items`
+
+error: public documentation for `mentions_role` links to private item `crate::coding::contains_cjk`
+   --> src/seed/meanings.rs:449:43
+    |
+449 |     /// whitespace token or phrase (see [`crate::coding::contains_cjk`]).
+    |                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^ this item is private
+    |
+    = note: this link will resolve properly if you pass `--document-private-items`
+
+error: unresolved link to `mentions_role`
+   --> src/seed/meanings.rs:480:56
+    |
+480 |     /// This is the deliberately *looser* sibling of [`mentions_role`]. Many
+    |                                                        ^^^^^^^^^^^^^ no item named `mentions_role` in scope
+    |
+    = help: to escape `[` and `]` characters, add '\' before them like `\[` or `\]`
+
+error: unresolved link to `mentions_role`
+   --> src/seed/meanings.rs:483:59
+    |
+483 |     /// substring. Those stems are not whole tokens, so [`mentions_role`]'s
+    |                                                           ^^^^^^^^^^^^^ no item named `mentions_role` in scope
+    |
+    = help: to escape `[` and `]` characters, add '\' before them like `\[` or `\]`
+
+error: unresolved link to `crate::translation::language_markers`
+   --> src/seed/meanings.rs:563:16
+    |
+563 |     /// (see [`crate::translation::language_markers`]); the words stay in the seed.
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ no item named `language_markers` in module `translation`
+
+error: public documentation for `ontology_root` links to private item `ROLE_ONTOLOGY_ROOT`
+   --> src/seed/meanings.rs:665:11
+    |
+665 |     /// [`ROLE_ONTOLOGY_ROOT`] (the `link` meaning), or `None` if absent.
+    |           ^^^^^^^^^^^^^^^^^^ this item is private
+    |
+    = note: this link will resolve properly if you pass `--document-private-items`
+
+error: public documentation for `ontology_type_root` links to private item `ROLE_ONTOLOGY_TYPE`
+   --> src/seed/meanings.rs:703:11
+    |
+703 |     /// [`ROLE_ONTOLOGY_TYPE`] (the `type` meaning), or `None` if absent.
+    |           ^^^^^^^^^^^^^^^^^^ this item is private
+    |
+    = note: this link will resolve properly if you pass `--document-private-items`
+
+error: public documentation for `ontology_categories` links to private item `ROLE_ONTOLOGY_CATEGORY`
+   --> src/seed/meanings.rs:716:11
+    |
+716 |     /// [`ROLE_ONTOLOGY_CATEGORY`] (entity, concept, relation, action, property).
+    |           ^^^^^^^^^^^^^^^^^^^^^^ this item is private
+    |
+    = note: this link will resolve properly if you pass `--document-private-items`
+
+error: unresolved link to `ROLE_WEB_SEARCH_SIGNAL`
+   --> src/seed/roles/reasoning.rs:190:51
+    |
+190 | /// The same internet-naming surfaces that fill [`ROLE_WEB_SEARCH_SIGNAL`] and
+    |                                                   ^^^^^^^^^^^^^^^^^^^^^^ no item named `ROLE_WEB_SEARCH_SIGNAL` in scope
+    |
+    = help: to escape `[` and `]` characters, add '\' before them like `\[` or `\]`
+
+error: unresolved link to `ROLE_WEB_SEARCH_SOURCE_ONLY`
+   --> src/seed/roles/reasoning.rs:191:7
+    |
+191 | /// [`ROLE_WEB_SEARCH_SOURCE_ONLY`] (" web ", " internet ", " online ",
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^ no item named `ROLE_WEB_SEARCH_SOURCE_ONLY` in scope
+    |
+    = help: to escape `[` and `]` characters, add '\' before them like `\[` or `\]`
+
+error: public documentation for `match_directive` links to private item `crate::solver_handlers::try_learn_from_source`
+   --> src/seed.rs:725:45
+    |
+725 |     /// truth shared by the chat handler ([`crate::solver_handlers::try_learn_from_source`])
+    |                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ this item is private
+    |
+    = note: this link will resolve properly if you pass `--document-private-items`
+
+error: public documentation for `canonical_failure_trace` links to private item `crate::rule_synthesis`
+   --> src/self_healing.rs:240:7
+    |
+240 | /// [`crate::rule_synthesis`] emits.
+    |       ^^^^^^^^^^^^^^^^^^^^^ this item is private
+    |
+    = note: this link will resolve properly if you pass `--document-private-items`
+
+error: public documentation for `BlueprintComposition` links to private item `crate::coding::blueprint`
+  --> src/solver.rs:96:45
+   |
+96 | /// How the composite-program [`blueprint`](crate::coding::blueprint) synthesizer
+   |                                             ^^^^^^^^^^^^^^^^^^^^^^^^ this item is private
+   |
+   = note: this link will resolve properly if you pass `--document-private-items`
+
+error: public documentation for `from_env` links to private item `crate::solver_helpers::config_from_env`
+   --> src/solver.rs:268:37
+    |
+268 |     /// The parsing body lives in [`crate::solver_helpers::config_from_env`] to keep
+    |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ this item is private
+    |
+    = note: this link will resolve properly if you pass `--document-private-items`
+
+error: public documentation for `extract_statements` links to private item `MIN_STATEMENT_WORDS`
+   --> src/statement_verification.rs:226:54
+    |
+226 | /// whitespace and dropping fragments shorter than [`MIN_STATEMENT_WORDS`].
+    |                                                      ^^^^^^^^^^^^^^^^^^^ this item is private
+    |
+    = note: this link will resolve properly if you pass `--document-private-items`
+
+error: public documentation for `summary` links to private item `super::resource`
+  --> src/summarization/file.rs:66:11
+   |
+66 |     /// [`super::resource`] can compose file summaries into folder summaries.
+   |           ^^^^^^^^^^^^^^^ this item is private
+   |
+   = note: this link will resolve properly if you pass `--document-private-items`
+
+error: unresolved link to `MeaningId`
+  --> src/translation/mod.rs:13:42
+   |
+13 | //!    collapses to a language-neutral [`MeaningId`].
+   |                                          ^^^^^^^^^ no item named `MeaningId` in scope
+   |
+   = help: to escape `[` and `]` characters, add '\' before them like `\[` or `\]`
+
+error: unresolved link to `MeaningId`
+  --> src/translation/mod.rs:15:40
+   |
+15 | //! 2. **Deformalize** — render that [`MeaningId`] back into the target
+   |                                        ^^^^^^^^^ no item named `MeaningId` in scope
+   |
+   = help: to escape `[` and `]` characters, add '\' before them like `\[` or `\]`
+
+error: unresolved link to `MeaningId`
+  --> src/translation/mod.rs:37:23
+   |
+37 | //! - [`meaning`] — [`MeaningId`], the semantic meta-language identity.
+   |                       ^^^^^^^^^ no item named `MeaningId` in scope
+   |
+   = help: to escape `[` and `]` characters, add '\' before them like `\[` or `\]`
+
+error: public documentation for `parse_seed_bundle` links to private item `seed_index`
+   --> src/translation/cache.rs:436:7
+    |
+436 | /// [`seed_index`] (which concatenates them) if you want the assembled body.
+    |       ^^^^^^^^^^ this item is private
+    |
+    = note: this link will resolve properly if you pass `--document-private-items`
+
+error: public documentation for `parse_seed_chunks` links to private item `seed_index`
+   --> src/translation/cache.rs:460:15
+    |
+460 | /// Used by [`seed_index`] so split-body records (multiple records with
+    |               ^^^^^^^^^^ this item is private
+    |
+    = note: this link will resolve properly if you pass `--document-private-items`
+
+error: public documentation for `prompt` links to private item `crate::solver_helpers`
+ --> src/translation/prompt.rs:5:43
+  |
+5 | //! Quoted-fragment extraction lives in [`crate::solver_helpers`]; this
+  |                                           ^^^^^^^^^^^^^^^^^^^^^ this item is private
+  |
+  = note: this link will resolve properly if you pass `--document-private-items`
+
+error: unresolved link to `EventLog`
+   --> src/web_search_core.rs:349:60
+    |
+349 | /// the offline solver records the same prefixes through [`EventLog`].
+    |                                                            ^^^^^^^^ no item named `EventLog` in scope
+    |
+    = help: to escape `[` and `]` characters, add '\' before them like `\[` or `\]`
+
+error: public documentation for `recalculate` links to private item `MAX_RECALCULATION_PASSES_PER_STATEMENT`
+   --> src/world_model.rs:289:38
+    |
+289 |     /// changes (converged) or the [`MAX_RECALCULATION_PASSES_PER_STATEMENT`]
+    |                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ this item is private
+    |
+    = note: this link will resolve properly if you pass `--document-private-items`
+
+error: redundant explicit link target
+ --> src/agentic_coding/self_heal.rs:8:34
+  |
+8 | //! proposal-only [`RepairCase`](crate::self_healing::RepairCase). This module makes
+  |                    ------------  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ explicit target is redundant
+  |                    |
+  |                    because label contains path that resolves to same destination
+  |
+  = note: when a link's destination is not specified,
+          the label is used to resolve intra-doc links
+  = note: `-D rustdoc::redundant-explicit-links` implied by `-D warnings`
+  = help: to override `-D warnings` add `#[allow(rustdoc::redundant_explicit_links)]`
+help: remove explicit link target
+  |
+8 - //! proposal-only [`RepairCase`](crate::self_healing::RepairCase). This module makes
+8 + //! proposal-only [`RepairCase`]. This module makes
+  |
+
+error: redundant explicit link target
+ --> src/meta_frame.rs:4:29
+  |
+4 | //! [`IntentFormalization`](crate::intent_formalization::IntentFormalization)
+  |      ---------------------  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ explicit target is redundant
+  |      |
+  |      because label contains path that resolves to same destination
+  |
+  = note: when a link's destination is not specified,
+          the label is used to resolve intra-doc links
+help: remove explicit link target
+  |
+4 - //! [`IntentFormalization`](crate::intent_formalization::IntentFormalization)
+4 + //! [`IntentFormalization`]
+  |
+
+error: redundant explicit link target
+  --> src/meta_frame.rs:11:28
+   |
+11 | //! [`format_lino_record`](crate::links_format::format_lino_record) (R311). It is
+   |      --------------------  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ explicit target is redundant
+   |      |
+   |      because label contains path that resolves to same destination
+   |
+   = note: when a link's destination is not specified,
+           the label is used to resolve intra-doc links
+help: remove explicit link target
+   |
+11 - //! [`format_lino_record`](crate::links_format::format_lino_record) (R311). It is
+11 + //! [`format_lino_record`] (R311). It is
+   |
+
+error: unclosed HTML tag `persona`
+  --> src/seed/personas.rs:20:34
+   |
+20 | //! "Roleplay frame recorded for <persona>" preface uniform regardless of
+   |                                  ^^^^^^^^^
+   |
+   = note: `-D rustdoc::invalid-html-tags` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(rustdoc::invalid_html_tags)]`
+
+error: unclosed HTML tag `word`
+   --> src/seed/roles/intent.rs:191:70
+    |
+191 | /// such as "how order X" recover as procedures while arbitrary "how <word>"
+    |                                                                      ^^^^^^
+
+error: unclosed HTML tag `kind`
+  --> src/seed/roles/program.rs:15:72
+   |
+15 | /// (a program, a script, code, a function). The noun side of "write a <kind>".
+   |                                                                        ^^^^^^
+
+error: unclosed HTML tag `kind`
+  --> src/seed/roles/program.rs:18:69
+   |
+18 | /// create, show, generate, make, build). The verb side of "write a <kind>".
+   |                                                                     ^^^^^^
+
+error: unclosed HTML tag `artifact`
+   --> src/seed/roles/program.rs:139:38
+    |
+139 | /// … — the verb side of "build me a <artifact>". Distinct from
+    |                                      ^^^^^^^^^^
+
+error: unclosed HTML tag `program`
+   --> src/seed/roles/program.rs:140:58
+    |
+140 | /// `program_request`, which gates the narrower "write a <program>" synthesis
+    |                                                          ^^^^^^^^^
+
+error: unclosed HTML tag `subject`
+ --> src/solver_handlers/document_request.rs:3:56
+  |
+3 | //! Open-ended "make me a PDF / document / report with <subject>" prompts ask the
+  |                                                        ^^^^^^^^^
+
+error: redundant explicit link target
+  --> src/statement_verification.rs:12:29
+   |
+12 | //! [`StatementAssessment`](crate::relative_meta_logic::StatementAssessment) plus
+   |      ---------------------  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ explicit target is redundant
+   |      |
+   |      because label contains path that resolves to same destination
+   |
+   = note: when a link's destination is not specified,
+           the label is used to resolve intra-doc links
+help: remove explicit link target
+   |
+12 - //! [`StatementAssessment`](crate::relative_meta_logic::StatementAssessment) plus
+12 + //! [`StatementAssessment`] plus
+   |
+
+error: could not document `formal-ai`
+warning: build failed, waiting for other jobs to finish...

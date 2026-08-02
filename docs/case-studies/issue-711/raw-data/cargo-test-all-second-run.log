@@ -1,0 +1,127 @@
+   Compiling formal-ai v0.289.0 (/tmp/gh-issue-solver-1784064801495)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2m 32s
+     Running unittests src/lib.rs (target/debug/deps/formal_ai-21e58504f4f22eba)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/formal_ai-53886f1820ceac7b)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/with-formal-ai.rs (target/debug/deps/with_formal_ai-d57cc42e8b9ea875)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/integration/mod.rs (target/debug/deps/integration-d5434a9a5df16209)
+
+running 88 tests
+test formal_ai_cli::cli_bundle_export_includes_seed_and_memory ... ok
+test formal_ai_cli::cli_environments_command_lists_every_supported_surface ... ok
+test formal_ai_cli::cli_github_logs_plan_prints_reproducible_capture_commands ... ok
+test formal_ai_cli::cli_bundle_import_recovers_memory_into_local_log ... ok
+test formal_ai_cli::cli_memory_export_import_show_round_trips_events ... ok
+test formal_ai_cli::cli_memory_purge_deleted_requires_confirmation_and_can_backup ... ok
+test formal_ai_cli::cli_memory_export_to_stdout_returns_links_notation ... ok
+test formal_ai_cli::cli_chat_definition_fusion_env_var_merges_plain_definition_prompt ... ok
+test formal_ai_cli::cli_memory_reset_requires_confirmation_and_can_backup ... ok
+test formal_ai_cli::cli_memory_query_answers_natural_language_recall_from_persisted_memory ... ok
+test formal_ai_cli::cli_version_flag_prints_crate_version ... ok
+test formal_ai_cli::cli_shared_dialog_convert_chatgpt_share_writes_demo_memory ... ok
+test formal_ai_cli::cli_chat_command_prints_text_response ... ok
+test formal_ai_cli::cli_chat_command_can_emit_chat_completion_json ... ok
+test formal_ai_cli::cli_chat_definition_fusion_option_merges_plain_definition_prompt ... ok
+test formal_ai_cli::cli_serve_exposes_agentic_tool_protocols_over_loopback ... ok
+test issue_349_reverse_sort::issue_349_reverse_sort_follow_up_must_not_be_unknown ... ok
+test issue_349_reverse_sort::issue_349_diagnostic_mode_emits_full_turn_5_reasoning_chain ... ok
+test issue_386_cancel_sort::issue_386_diagnostic_mode_emits_full_cancel_reasoning_chain ... ok
+test issue_349_reverse_sort::issue_360_diagnostic_mode_marks_program_traces_for_supported_languages ... ok
+test issue_386_cancel_sort::issue_386_cancel_sort_follow_up_must_not_be_unknown ... ok
+test issue_395_sort_numbers::issue_395_handler_defers_without_language_or_numbers ... ok
+test issue_395_sort_numbers::issue_395_russian_javascript_prompt_is_not_unknown ... ok
+test issue_386_cancel_sort::issue_386_cancel_sort_is_undone_in_every_supported_language ... ok
+test issue_412_followup_sort::issue_412_bare_followup_inherits_language_and_is_not_unknown ... ok
+test issue_395_sort_numbers::issue_395_multilingual_sort_verbs_are_recognized ... ok
+test issue_395_sort_numbers::issue_395_python_descending_uses_reverse_sort ... ok
+test issue_412_followup_sort::issue_412_bare_prompt_without_context_does_not_fabricate_language ... ok
+test issue_395_sort_numbers::issue_395_english_javascript_computes_sorted_result ... ok
+test issue_412_oracle_languages::catalogued_languages_still_use_the_verified_catalog ... ok
+test issue_412_oracle_languages::kotlin_hello_world_resolves_from_the_oracle ... ok
+test issue_412_followup_sort::issue_412_english_followup_inherits_language ... ok
+test issue_412_oracle_languages::swift_and_php_hello_world_resolve_from_the_oracle ... ok
+test issue_412_followup_sort::issue_412_reduction_followup_inherits_code_request ... ok
+test issue_412_followup_sort::issue_412_chinese_followup_inherits_language ... ok
+test issue_427_invert_sort::issue_427_chinese_invert_sort_followup_inherits_language_and_list ... ok
+test issue_427_invert_sort::issue_427_hindi_invert_sort_followup_inherits_language_and_list ... ok
+test issue_427_invert_sort::issue_427_invert_sort_without_context_does_not_fabricate ... ok
+test issue_395_sort_numbers::issue_395_string_list_sort_uses_cst_validated_code_path ... ok
+test issue_427_invert_sort::issue_427_invert_sort_followup_is_not_unknown ... ok
+test issue_457_self_source_metrics::issue_457_language_coverage_markers_cover_supported_surfaces ... ok
+test issue_427_invert_sort::issue_427_english_invert_sort_followup_inherits_language_and_list ... ok
+test issue_412_followup_sort::issue_412_hindi_followup_inherits_language ... ok
+test issue_461_php_followup::russian_capabilities_follow_up_can_request_php_hello_world ... ok
+test issue_558_change_request::agent_mode_routes_change_request_to_a_reviewable_write ... ok
+test issue_558_repair_strategy::agent_mode_routes_repair_strategy_to_a_write ... ok
+test issue_558_rebuild_plan::agent_mode_routes_rebuild_to_a_write ... ok
+test issue_457_self_source_metrics::issue_457_rust_self_source_metrics_request_returns_blueprint_program ... ok
+test issue_558_self_explanation::agent_mode_routes_explain_request_to_a_grounded_write ... ok
+test issue_458_crypto_portfolio::issue_458_crypto_portfolio_tracker_returns_python_blueprint ... ok
+test issue_680_intent_routing::chat_completions_routes_edit_intent_to_tool_call ... ok
+test issue_624_agent_mode::agent_mode_routes_natural_language_directory_listing_to_bash_tool_call ... ok
+test issue_680_intent_routing::chat_completions_routes_shell_intent_to_tool_call ... ok
+test issue_680_intent_routing::chat_completions_routes_web_fetch_intent_to_tool_call ... ok
+test issue_680_intent_routing::chat_completions_routes_web_search_intent_to_tool_call ... ok
+test issue_680_intent_routing::chat_completions_routes_write_intent_to_tool_call ... ok
+test issue_680_intent_routing::gemini_routes_edit_intent_to_function_call ... ok
+test issue_680_intent_routing::gemini_routes_web_fetch_intent_to_function_call ... ok
+test issue_680_intent_routing::gemini_routes_shell_intent_to_function_call ... ok
+test issue_680_intent_routing::responses_routes_edit_intent_to_function_call ... ok
+test issue_680_intent_routing::responses_routes_web_search_intent_to_function_call ... ok
+test logging_proxy::proxy_forwards_gemini_generate_content_and_logs_function_call ... ok
+test logging_proxy::proxy_forwards_responses_and_logs_function_call ... ok
+test logging_proxy::proxy_forwards_gemini_stream_generate_content_and_logs_function_call ... ok
+test memory_query::cli_memory_query_can_append_natural_language_memory ... ok
+test logging_proxy::proxy_forwards_streaming_chat_and_logs_tool_call ... ok
+test memory_query::cli_memory_query_records_substitution_style_memory_write ... ok
+test openai_chat_streaming::cli_serve_streams_chat_completion_chunks_over_loopback_http ... ok
+test openai_responses_streaming::cli_serve_streams_responses_events_over_legacy_loopback_http_route ... ok
+test with_formal_ai::standalone_with_formal_ai_binary_uses_same_wrapper ... ok
+test with_formal_ai::with_formal_ai_agent_ephemeral_injects_inline_config_and_model_flag ... ok
+test with_formal_ai::with_formal_ai_all_seeded_tools_leave_persistent_configs_unchanged ... ok
+test multi_protocol_api::cli_serve_exposes_namespaced_protocols_over_loopback_http ... ok
+test with_formal_ai::with_formal_ai_codex_ephemeral_uses_seeded_responses_provider_config ... ok
+test with_formal_ai::with_formal_ai_gemini_ephemeral_sets_native_protocol_environment ... ok
+test with_formal_ai::with_formal_ai_auto_starts_agent_mode_server_and_tears_it_down ... ok
+test with_formal_ai::with_formal_ai_gemini_protocol_vertex_sets_vertex_base_url ... ok
+test with_formal_ai::with_formal_ai_globally_alias_is_accepted ... ok
+test with_formal_ai::with_formal_ai_no_start_server_runs_without_a_listener ... ok
+test with_formal_ai::with_formal_ai_opencode_ephemeral_writes_temp_config_and_model_flag ... ok
+test with_formal_ai::with_formal_ai_reuses_an_existing_loopback_listener ... ok
+test with_formal_ai::with_formal_ai_global_configures_idempotently_and_undo_restores_backups ... ok
+test with_formal_ai::with_formal_ai_summarize_restores_agent_default ... ok
+test with_formal_ai::with_formal_ai_selects_uniform_interactive_and_non_interactive_modes ... ok
+test issue_458_crypto_portfolio::issue_458_crypto_portfolio_tracker_covers_supported_languages ... ok
+test issue_558_self_healing::agent_mode_routes_self_healing_request_to_a_repair_case_write ... FAILED
+test issue_558_learning_ledger::agent_mode_routes_ledger_request_to_a_promotion_write ... ok
+test issue_558_source_graph::agent_mode_routes_source_graph_request_to_a_projection_write ... ok
+
+failures:
+
+---- issue_558_self_healing::agent_mode_routes_self_healing_request_to_a_repair_case_write stdout ----
+
+thread 'issue_558_self_healing::agent_mode_routes_self_healing_request_to_a_repair_case_write' (45814) panicked at tests/integration/http_server.rs:138:14:
+POST should complete: Os { code: 11, kind: WouldBlock, message: "Resource temporarily unavailable" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    issue_558_self_healing::agent_mode_routes_self_healing_request_to_a_repair_case_write
+
+test result: FAILED. 87 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 67.83s
+
+error: test failed, to rerun pass `--test integration`

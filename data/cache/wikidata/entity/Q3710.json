@@ -1,0 +1,77 @@
+{
+  "entities": {
+    "Q3710": {
+      "type": "item",
+      "id": "Q3710",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "foot"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "фут"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "फुट"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "英尺"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "unit of length"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "единица измерения длины в английской системе мер"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "長度單位"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "ft"
+          },
+          {
+            "language": "en",
+            "value": "feet"
+          },
+          {
+            "language": "en",
+            "value": "′"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "английский фут"
+          },
+          {
+            "language": "ru",
+            "value": "русский фут"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "英呎"
+          },
+          {
+            "language": "zh",
+            "value": "呎"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,5 @@
+language_protocol_contract
+  record_type meta_invariant
+  registry "derive language coordination from one seed ledger"
+  partial "answer only covered meanings and emit language_gap otherwise"
+  scaling "generate same-language and every directed language pair from the ledger"

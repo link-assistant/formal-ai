@@ -1,0 +1,217 @@
+repository_statement_audit
+  summary
+    statement_count "11"
+    contradiction_count "0"
+    finding_count "0"
+    skipped_path_count "0"
+  statements
+    audited_statement_138d7badd7e192db
+      type "audited_statement"
+      text "The protocol is externally standardized."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "README.md"
+        line "3"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "2"
+    audited_statement_9defc46b45245efa
+      type "audited_statement"
+      text "It is independently documented."
+      resolved_text "The protocol is independently documented."
+      contextual_posterior "0.6"
+      references
+        statement_reference_ab1b219838607283
+          surface "It"
+          antecedent_statement_id "audited_statement_138d7badd7e192db"
+          resolution_policy "closest_preceding_subject_same_document"
+      posterior "1"
+      relative_weight "0.6"
+      source_location
+        path "README.md"
+        line "4"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "3"
+      evidence
+        evidence_provenance_288ef60feef69c35
+          source_label "primary protocol specification"
+          source_url "https://example.test/protocol"
+          source_tier "original_first_party"
+          stance "supports"
+          asserted_strength "1"
+          effective_mass "1"
+          captured_at "2026-08-01T00:00:00Z"
+          sha256 "sha256:issue-885-protocol"
+    audited_statement_db7464178bde8614
+      type "audited_statement"
+      text "It cannot inherit a subject from README.md."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "SECOND.md"
+        line "3"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_791dc9246b421acb
+      type "audited_statement"
+      text '"statement": "The protocol is independently documented."'
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "evidence.json"
+        line "4"
+        kind "structured"
+      claim
+        subject "evidence.json"
+        predicate "statement"
+        value "The protocol is independently documented"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_9540905fc75432e2
+      type "audited_statement"
+      text '"source_label": "primary protocol specification"'
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "evidence.json"
+        line "5"
+        kind "structured"
+      claim
+        subject "evidence.json"
+        predicate "source_label"
+        value "primary protocol specification"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_7f99c33cc62de2cf
+      type "audited_statement"
+      text '"source_url": "https://example.test/protocol"'
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "evidence.json"
+        line "6"
+        kind "structured"
+      claim
+        subject "evidence.json"
+        predicate "source_url"
+        value "https://example.test/protocol"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_b213aeb319a41a2a
+      type "audited_statement"
+      text '"tier": "original_first_party"'
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "evidence.json"
+        line "7"
+        kind "structured"
+      claim
+        subject "evidence.json"
+        predicate "tier"
+        value "original_first_party"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_e34a41b777af543a
+      type "audited_statement"
+      text '"stance": "supports"'
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "evidence.json"
+        line "8"
+        kind "structured"
+      claim
+        subject "evidence.json"
+        predicate "stance"
+        value "supports"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_9c3f3f33de955421
+      type "audited_statement"
+      text '"strength": 1.0'
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "evidence.json"
+        line "9"
+        kind "structured"
+      claim
+        subject "evidence.json"
+        predicate "strength"
+        value "1.0"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_e1b6350cc4b20c62
+      type "audited_statement"
+      text '"captured_at": "2026-08-01T00:00:00Z"'
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "evidence.json"
+        line "10"
+        kind "structured"
+      claim
+        subject "evidence.json"
+        predicate "captured_at"
+        value "2026-08-01T00:00:00Z"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_f501567c9aabe4c2
+      type "audited_statement"
+      text '"sha256": "sha256:issue-885-protocol"'
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "evidence.json"
+        line "11"
+        kind "structured"
+      claim
+        subject "evidence.json"
+        predicate "sha256"
+        value "sha256:issue-885-protocol"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+  contradictions
+  findings
+  associations
+    audit_association_5512261c940c29f4
+      from "audited_statement_9defc46b45245efa"
+      to "audited_statement_138d7badd7e192db"
+    audit_association_39590daf5bd93b08
+      from "audited_statement_9defc46b45245efa"
+      to "evidence_provenance_288ef60feef69c35"
+  skipped_paths

@@ -1,0 +1,74 @@
+[2m[WebServer] [22m[0m[2m[35m$[0m [2m[1mbun build ./src/web/vendor-entry.js --outfile ./src/web/vendor.bundle.js --target browser --format iife --production --minify && bun build ./src/web/ocr-entry.js --outfile ./src/web/ocr.bundle.js --target browser --format iife --production --minify && bun build ./src/web/app/main.jsx --outfile ./src/web/app.js --target browser --format iife --production --minify[0m
+[2m[WebServer] [22m(node:79507) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+  ✘  1 [chromium] › tests/issue-776.spec.js:55:3 › Issue #776 source-first translation › composer waits for the browser worker before accepting a prompt (15.8s)
+  ✘  2 [chromium] › tests/issue-776.spec.js:55:3 › Issue #776 source-first translation › composer waits for the browser worker before accepting a prompt (retry #1) (15.3s)
+
+
+  1) [chromium] › tests/issue-776.spec.js:55:3 › Issue #776 source-first translation › composer waits for the browser worker before accepting a prompt 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeDisabled[2m([22m[2m)[22m failed
+
+    Locator:  locator('[data-testid="chat-composer-input"]')
+    Expected: disabled
+    Received: enabled
+    Timeout:  10000ms
+
+    Call log:
+    [2m  - Expect "toBeDisabled" with timeout 10000ms[22m
+    [2m  - waiting for locator('[data-testid="chat-composer-input"]')[22m
+    [2m    23 × locator resolved to <textarea rows="1" inputmode="text" autocorrect="off" spellcheck="true" autocomplete="off" enterkeyhint="send" autocapitalize="sentences" placeholder="Message formal-ai" data-testid="chat-composer-input"></textarea>[22m
+    [2m       - unexpected value "enabled"[22m
+
+
+      72 |     const input = page.locator('[data-testid="chat-composer-input"]');
+      73 |     try {
+    > 74 |       await expect(input).toBeDisabled();
+         |                           ^
+      75 |     } finally {
+      76 |       releaseWasm();
+      77 |     }
+        at /tmp/gh-issue-solver-1784437815860/tests/e2e/tests/issue-776.spec.js:74:27
+
+    Error Context: test-results/issue-776-Issue-776-source-6d97a-r-before-accepting-a-prompt-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeDisabled[2m([22m[2m)[22m failed
+
+    Locator:  locator('[data-testid="chat-composer-input"]')
+    Expected: disabled
+    Received: enabled
+    Timeout:  10000ms
+
+    Call log:
+    [2m  - Expect "toBeDisabled" with timeout 10000ms[22m
+    [2m  - waiting for locator('[data-testid="chat-composer-input"]')[22m
+    [2m    23 × locator resolved to <textarea rows="1" inputmode="text" autocorrect="off" spellcheck="true" autocomplete="off" enterkeyhint="send" autocapitalize="sentences" placeholder="Message formal-ai" data-testid="chat-composer-input"></textarea>[22m
+    [2m       - unexpected value "enabled"[22m
+
+
+      72 |     const input = page.locator('[data-testid="chat-composer-input"]');
+      73 |     try {
+    > 74 |       await expect(input).toBeDisabled();
+         |                           ^
+      75 |     } finally {
+      76 |       releaseWasm();
+      77 |     }
+        at /tmp/gh-issue-solver-1784437815860/tests/e2e/tests/issue-776.spec.js:74:27
+
+    Error Context: test-results/issue-776-Issue-776-source-6d97a-r-before-accepting-a-prompt-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/issue-776-Issue-776-source-6d97a-r-before-accepting-a-prompt-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/issue-776-Issue-776-source-6d97a-r-before-accepting-a-prompt-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/issue-776.spec.js:55:3 › Issue #776 source-first translation › composer waits for the browser worker before accepting a prompt 

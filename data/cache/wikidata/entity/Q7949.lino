@@ -1,0 +1,18 @@
+Q7949
+  aliases
+    en (verity "scientific truth")
+    ru ("правда")
+    zh ("真理理论")
+  descriptions
+    en "what is in accord with fact or reality"
+    hi satya
+    ru "утверждение, соответствующее действительности, фактам или тому, что является или считается верным"
+    zh "符合事實或現實的東西"
+  id Q7949
+  labels
+    en truth
+    hi "हक़ीक़ा"
+    ru "истина"
+    zh "真理"
+  type item
+success 1

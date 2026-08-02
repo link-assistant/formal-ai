@@ -1,0 +1,1396 @@
+meanings
+  remix
+    defined-by concept
+    lexeme en
+      surface
+        text "remix"
+  remix-icon
+    defined-by concept
+    lexeme en
+      surface
+        text "remix icon"
+  remove_punctuation
+    defined-by operation
+    lexeme en
+      surface
+        text "remove punctuation"
+  remove_text
+    defined-by operation
+    lexeme en
+      surface
+        text "remove text"
+  render
+    defined-by word_surface
+    lexeme en
+      surface
+        text "render"
+  rendered
+    defined-by word_surface
+    lexeme en
+      surface
+        text "rendered"
+  repetition
+    defined-by term
+    lexeme en
+      surface
+        text "repetition"
+  replace_everywhere
+    defined-by concept
+    lexeme en
+      surface
+        text "replace everywhere"
+  repo
+    defined-by word_surface
+    lexeme en
+      surface
+        text "repo"
+  repositories
+    defined-by word_surface
+    lexeme en
+      surface
+        text "repositories"
+  requirement_contradiction
+    defined-by intent
+    lexeme en
+      surface
+        text "requirement contradiction"
+  reserved-role
+    defined-by concept
+    lexeme en
+      surface
+        text "reserved role"
+  response_agent_procedure_executed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure executed en"
+  response_agent_procedure_executed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure executed hi"
+  response_agent_procedure_executed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure executed ru"
+  response_agent_procedure_executed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure executed zh"
+  response_agent_procedure_execution_failed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure execution failed en"
+  response_agent_procedure_execution_failed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure execution failed hi"
+  response_agent_procedure_execution_failed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure execution failed ru"
+  response_agent_procedure_execution_failed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure execution failed zh"
+  response_agent_procedure_readback_unavailable_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure readback unavailable en"
+  response_agent_procedure_readback_unavailable_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure readback unavailable hi"
+  response_agent_procedure_readback_unavailable_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure readback unavailable ru"
+  response_agent_procedure_readback_unavailable_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure readback unavailable zh"
+  response_agent_procedure_verification_failed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verification failed en"
+  response_agent_procedure_verification_failed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verification failed hi"
+  response_agent_procedure_verification_failed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verification failed ru"
+  response_agent_procedure_verification_failed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verification failed zh"
+  response_agent_procedure_verified_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verified en"
+  response_agent_procedure_verified_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verified hi"
+  response_agent_procedure_verified_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verified ru"
+  response_agent_procedure_verified_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verified zh"
+  response_agent_procedure_write_unavailable_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure write unavailable en"
+  response_agent_procedure_write_unavailable_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure write unavailable hi"
+  response_agent_procedure_write_unavailable_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure write unavailable ru"
+  response_agent_procedure_write_unavailable_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure write unavailable zh"
+  response_agent_suggestion_active_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion active en"
+  response_agent_suggestion_active_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion active hi"
+  response_agent_suggestion_active_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion active ru"
+  response_agent_suggestion_active_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion active zh"
+  response_agent_suggestion_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion en"
+  response_agent_suggestion_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion hi"
+  response_agent_suggestion_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion ru"
+  response_agent_suggestion_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion zh"
+  response_agentic_action_ask_user_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action ask user en"
+  response_agentic_action_ask_user_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action ask user hi"
+  response_agentic_action_ask_user_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action ask user ru"
+  response_agentic_action_ask_user_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action ask user zh"
+  response_agentic_action_before_tool_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action before tool en"
+  response_agentic_action_before_tool_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action before tool hi"
+  response_agentic_action_before_tool_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action before tool ru"
+  response_agentic_action_before_tool_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action before tool zh"
+  response_agentic_action_compile_program_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action compile program en"
+  response_agentic_action_compile_program_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action compile program es"
+  response_agentic_action_compile_program_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action compile program hi"
+  response_agentic_action_compile_program_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action compile program ru"
+  response_agentic_action_compile_program_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action compile program zh"
+  response_agentic_action_edit_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action edit en"
+  response_agentic_action_edit_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action edit hi"
+  response_agentic_action_edit_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action edit ru"
+  response_agentic_action_edit_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action edit zh"
+  response_agentic_action_find_current_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action find current en"
+  response_agentic_action_find_current_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action find current hi"
+  response_agentic_action_find_current_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action find current ru"
+  response_agentic_action_find_current_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action find current zh"
+  response_agentic_action_find_desktop_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action find desktop en"
+  response_agentic_action_find_desktop_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action find desktop hi"
+  response_agentic_action_find_desktop_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action find desktop ru"
+  response_agentic_action_find_desktop_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action find desktop zh"
+  response_agentic_action_find_home_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action find home en"
+  response_agentic_action_find_home_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action find home hi"
+  response_agentic_action_find_home_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action find home ru"
+  response_agentic_action_find_home_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action find home zh"
+  response_agentic_action_generic_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action generic en"
+  response_agentic_action_generic_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action generic hi"
+  response_agentic_action_generic_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action generic ru"
+  response_agentic_action_generic_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action generic zh"
+  response_agentic_action_list_current_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list current en"
+  response_agentic_action_list_current_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list current hi"
+  response_agentic_action_list_current_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list current ru"
+  response_agentic_action_list_current_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list current zh"
+  response_agentic_action_list_desktop_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list desktop en"
+  response_agentic_action_list_desktop_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list desktop hi"
+  response_agentic_action_list_desktop_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list desktop ru"
+  response_agentic_action_list_desktop_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list desktop zh"
+  response_agentic_action_list_home_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list home en"
+  response_agentic_action_list_home_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list home hi"
+  response_agentic_action_list_home_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list home ru"
+  response_agentic_action_list_home_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list home zh"
+  response_agentic_action_read_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action read en"
+  response_agentic_action_read_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action read hi"
+  response_agentic_action_read_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action read ru"
+  response_agentic_action_read_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action read zh"
+  response_agentic_action_run_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action run en"
+  response_agentic_action_run_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action run hi"
+  response_agentic_action_run_program_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action run program en"
+  response_agentic_action_run_program_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action run program es"
+  response_agentic_action_run_program_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action run program hi"
+  response_agentic_action_run_program_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action run program ru"
+  response_agentic_action_run_program_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action run program zh"
+  response_agentic_action_run_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action run ru"
+  response_agentic_action_run_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action run zh"
+  response_agentic_action_search_code_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action search code en"
+  response_agentic_action_search_code_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action search code hi"
+  response_agentic_action_search_code_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action search code ru"
+  response_agentic_action_search_code_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action search code zh"
+  response_agentic_action_search_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action search en"
+  response_agentic_action_search_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action search hi"
+  response_agentic_action_search_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action search ru"
+  response_agentic_action_search_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action search zh"
+  response_agentic_report_contents_options_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report contents options en"
+  response_agentic_report_contents_options_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report contents options hi"
+  response_agentic_report_contents_options_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report contents options ru"
+  response_agentic_report_contents_options_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report contents options zh"
+  response_agentic_report_contents_question_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report contents question en"
+  response_agentic_report_contents_question_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report contents question hi"
+  response_agentic_report_contents_question_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report contents question ru"
+  response_agentic_report_contents_question_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report contents question zh"
+  response_agentic_report_exported_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report exported en"
+  response_agentic_report_exported_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report exported hi"
+  response_agentic_report_exported_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report exported ru"
+  response_agentic_report_exported_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report exported zh"
+  response_agentic_report_target_options_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report target options en"
+  response_agentic_report_target_options_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report target options hi"
+  response_agentic_report_target_options_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report target options ru"
+  response_agentic_report_target_options_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report target options zh"
+  response_agentic_report_target_question_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report target question en"
+  response_agentic_report_target_question_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report target question hi"
+  response_agentic_report_target_question_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report target question ru"
+  response_agentic_report_target_question_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report target question zh"
+  response_assistant_free_time_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant free time en"
+  response_assistant_free_time_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant free time hi"
+  response_assistant_free_time_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant free time ru"
+  response_assistant_free_time_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant free time zh"
+  response_assistant_name_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant name en"
+  response_assistant_name_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant name hi"
+  response_assistant_name_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant name ru"
+  response_assistant_name_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant name zh"
+  response_budget_search_solution_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response budget search solution en"
+  response_budget_search_solution_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response budget search solution hi"
+  response_budget_search_solution_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response budget search solution ru"
+  response_budget_search_solution_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response budget search solution zh"
+  response_capabilities_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response capabilities en"
+  response_capabilities_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response capabilities hi"
+  response_capabilities_more_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response capabilities more en"
+  response_capabilities_more_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response capabilities more hi"
+  response_capabilities_more_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response capabilities more ru"
+  response_capabilities_more_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response capabilities more zh"
+  response_capabilities_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response capabilities ru"
+  response_capabilities_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response capabilities zh"
+  response_clarification_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response clarification en"
+  response_clarification_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response clarification hi"
+  response_clarification_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response clarification ru"
+  response_clarification_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response clarification zh"
+  response_client_contract_missing_evidence_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract missing evidence error en"
+  response_client_contract_missing_evidence_error_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract missing evidence error hi"
+  response_client_contract_missing_evidence_error_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract missing evidence error ru"
+  response_client_contract_missing_evidence_error_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract missing evidence error zh"
+  response_client_contract_parse_observation_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse observation error en"
+  response_client_contract_parse_observation_error_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse observation error hi"
+  response_client_contract_parse_observation_error_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse observation error ru"
+  response_client_contract_parse_observation_error_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse observation error zh"
+  response_client_contract_parse_transcript_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse transcript error en"
+  response_client_contract_parse_transcript_error_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse transcript error hi"
+  response_client_contract_parse_transcript_error_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse transcript error ru"
+  response_client_contract_parse_transcript_error_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse transcript error zh"
+  response_client_contract_read_observations_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read observations error en"
+  response_client_contract_read_observations_error_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read observations error hi"
+  response_client_contract_read_observations_error_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read observations error ru"
+  response_client_contract_read_observations_error_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read observations error zh"
+  response_client_contract_read_transcript_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read transcript error en"
+  response_client_contract_read_transcript_error_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read transcript error hi"
+  response_client_contract_read_transcript_error_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read transcript error ru"
+  response_client_contract_read_transcript_error_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read transcript error zh"
+  response_client_integration_invalid_typed_json_setting_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client integration invalid typed json setting en"
+  response_client_integration_invalid_typed_json_setting_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client integration invalid typed json setting hi"
+  response_client_integration_invalid_typed_json_setting_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client integration invalid typed json setting ru"
+  response_client_integration_invalid_typed_json_setting_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client integration invalid typed json setting zh"
+  response_comparison_decomposed_evidence_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response comparison decomposed evidence en"
+  response_comparison_decomposed_evidence_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response comparison decomposed evidence hi"
+  response_comparison_decomposed_evidence_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response comparison decomposed evidence ru"
+  response_comparison_decomposed_evidence_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response comparison decomposed evidence zh"
+  response_comparison_decomposed_no_evidence_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response comparison decomposed no evidence en"
+  response_comparison_decomposed_no_evidence_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response comparison decomposed no evidence hi"
+  response_comparison_decomposed_no_evidence_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response comparison decomposed no evidence ru"
+  response_comparison_decomposed_no_evidence_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response comparison decomposed no evidence zh"
+  response_compiled_procedure_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response compiled procedure en"
+  response_compiled_procedure_explanation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response compiled procedure explanation en"
+  response_compiled_procedure_explanation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response compiled procedure explanation hi"
+  response_compiled_procedure_explanation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response compiled procedure explanation ru"
+  response_compiled_procedure_explanation_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response compiled procedure explanation zh"
+  response_compiled_procedure_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response compiled procedure hi"
+  response_compiled_procedure_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response compiled procedure ru"
+  response_compiled_procedure_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response compiled procedure zh"
+  response_completion_recovery_decompose_into_leaf_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery decompose into leaf en"
+  response_completion_recovery_decompose_into_leaf_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery decompose into leaf hi"
+  response_completion_recovery_decompose_into_leaf_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery decompose into leaf ru"
+  response_completion_recovery_decompose_into_leaf_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery decompose into leaf zh"
+  response_completion_recovery_name_target_artifact_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery name target artifact en"
+  response_completion_recovery_name_target_artifact_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery name target artifact hi"
+  response_completion_recovery_name_target_artifact_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery name target artifact ru"
+  response_completion_recovery_name_target_artifact_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery name target artifact zh"
+  response_completion_recovery_restate_postcondition_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery restate postcondition en"
+  response_completion_recovery_restate_postcondition_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery restate postcondition hi"
+  response_completion_recovery_restate_postcondition_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery restate postcondition ru"
+  response_completion_recovery_restate_postcondition_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery restate postcondition zh"
+  response_concept_lookup_in_context_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context en"
+  response_concept_lookup_in_context_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context hi"
+  response_concept_lookup_in_context_no_alias_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context no alias en"
+  response_concept_lookup_in_context_no_alias_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context no alias hi"
+  response_concept_lookup_in_context_no_alias_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context no alias ru"
+  response_concept_lookup_in_context_no_alias_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context no alias zh"
+  response_concept_lookup_in_context_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context ru"
+  response_concept_lookup_in_context_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context zh"
+  response_courtesy_response_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response courtesy response en"
+  response_courtesy_response_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response courtesy response hi"
+  response_courtesy_response_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response courtesy response ru"
+  response_courtesy_response_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response courtesy response zh"
+  response_definition_followup_clarify_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response definition followup clarify en"
+  response_definition_followup_clarify_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response definition followup clarify hi"
+  response_definition_followup_clarify_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response definition followup clarify ru"
+  response_definition_followup_clarify_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response definition followup clarify zh"
+  response_definition_merge_header_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response definition merge header en"
+  response_definition_merge_header_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response definition merge header hi"
+  response_definition_merge_header_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response definition merge header ru"
+  response_definition_merge_header_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response definition merge header zh"
+  response_definition_merge_sources_label_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response definition merge sources label en"
+  response_definition_merge_sources_label_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response definition merge sources label hi"
+  response_definition_merge_sources_label_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response definition merge sources label ru"
+  response_definition_merge_sources_label_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response definition merge sources label zh"
+  response_document_originality_check_sample_missing_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response document originality check sample missing en"
+  response_document_originality_check_sample_missing_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response document originality check sample missing hi"
+  response_document_originality_check_sample_missing_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response document originality check sample missing ru"
+  response_document_originality_check_sample_missing_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response document originality check sample missing zh"
+  response_document_originality_check_sample_present_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response document originality check sample present en"
+  response_document_originality_check_sample_present_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response document originality check sample present hi"
+  response_document_originality_check_sample_present_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response document originality check sample present ru"
+  response_document_originality_check_sample_present_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response document originality check sample present zh"
+  response_draft_comparison_explanation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response draft comparison explanation en"
+  response_draft_comparison_explanation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response draft comparison explanation hi"
+  response_draft_comparison_explanation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response draft comparison explanation ru"
+  response_draft_comparison_explanation_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response draft comparison explanation zh"
+  response_external_benchmark_baseline_read_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark baseline read error en"
+  response_external_benchmark_failure_observation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark failure observation en"
+  response_external_benchmark_learning_event_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark learning event en"
+  response_external_benchmark_learning_lesson_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark learning lesson en"
+  response_external_benchmark_learning_task_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark learning task en"
+  response_external_benchmark_not_swe_case_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark not swe case en"
+  response_external_benchmark_parquet_decode_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark parquet decode error en"
+  response_external_benchmark_parquet_module_unavailable_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark parquet module unavailable en"
+  response_external_benchmark_parquet_start_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark parquet start error en"
+  response_external_benchmark_parquet_utf8_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark parquet utf8 error en"
+  response_external_benchmark_provenance_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark provenance en"
+  response_external_benchmark_provenance_write_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark provenance write error en"
+  response_external_benchmark_python_import_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark python import en"
+  response_external_benchmark_ratchet_reference_suffix_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark ratchet reference suffix en"
+  response_external_benchmark_swe_clear_logs_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe clear logs error en"
+  response_external_benchmark_swe_docker_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe docker error en"
+  response_external_benchmark_swe_encode_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe encode error en"
+  response_external_benchmark_swe_exit_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe exit error en"
+  response_external_benchmark_swe_infrastructure_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe infrastructure error en"
+  response_external_benchmark_swe_inspect_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe inspect error en"
+  response_external_benchmark_swe_missing_report_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe missing report en"
+  response_external_benchmark_swe_predictions_write_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe predictions write error en"
+  response_external_benchmark_swe_record_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe record error en"
+  response_external_benchmark_swe_remove_report_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe remove report error en"
+  response_external_benchmark_swe_report_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe report error en"
+  response_external_benchmark_swe_slice_write_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe slice write error en"
+  response_external_benchmark_swe_start_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe start error en"
+  response_external_benchmark_swe_unavailable_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe unavailable en"
+  response_external_benchmark_unavailable_observation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark unavailable observation en"
+  response_fact_check_arithmetic_counterexample_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check arithmetic counterexample en"
+  response_fact_check_arithmetic_counterexample_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check arithmetic counterexample hi"
+  response_fact_check_arithmetic_counterexample_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check arithmetic counterexample ru"
+  response_fact_check_arithmetic_counterexample_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check arithmetic counterexample zh"
+  response_fact_check_current_dialogue_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check current dialogue en"
+  response_fact_check_current_dialogue_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check current dialogue hi"
+  response_fact_check_current_dialogue_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check current dialogue ru"
+  response_fact_check_current_dialogue_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check current dialogue zh"

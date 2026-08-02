@@ -20,7 +20,7 @@ pub struct SharedDialogConvertOptions {
     #[arg(long, default_value = "-")]
     output: PathBuf,
 
-    /// Input parser. `auto` detects `ChatGPT` share HTML before falling back to markdown.
+    /// Input parser. `auto` detects `ChatGPT` HTML and normalized web-capture JSON before markdown.
     #[arg(long, value_enum, default_value = "auto")]
     format: SharedDialogCliFormat,
 
@@ -48,6 +48,8 @@ enum SharedDialogCliFormat {
     ChatgptShareHtml,
     #[value(alias = "markdown")]
     MarkdownTranscript,
+    #[value(alias = "web-capture", alias = "capture-json")]
+    WebCaptureJson,
 }
 
 pub fn run_shared_dialog(action: SharedDialogAction) -> Result<(), Box<dyn Error>> {
@@ -82,6 +84,7 @@ impl From<SharedDialogCliFormat> for SharedDialogFormat {
             SharedDialogCliFormat::Auto => Self::Auto,
             SharedDialogCliFormat::ChatgptShareHtml => Self::ChatGptShareHtml,
             SharedDialogCliFormat::MarkdownTranscript => Self::MarkdownTranscript,
+            SharedDialogCliFormat::WebCaptureJson => Self::WebCaptureJson,
         }
     }
 }

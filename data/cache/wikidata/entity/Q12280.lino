@@ -1,0 +1,17 @@
+Q12280
+  aliases
+    en ("bridge (structure)" "bridge (engineering)" bridges)
+    zh ("橋" "橋梁" "桥梁")
+  descriptions
+    en "structure that spans and provides a passage over a road, railway, river, or some other obstacle"
+    hi "एक प्रकार का ढाँचा जो नदी, पहाड़, या घाटी को वाहन या पैदल पार करने के लिये बनाया जाता है"
+    ru "дорожное сооружение"
+    zh "跨越物理障碍的建筑结构"
+  id Q12280
+  labels
+    en bridge
+    hi "सेतु"
+    ru "мост"
+    zh "桥"
+  type item
+success 1

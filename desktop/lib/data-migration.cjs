@@ -35,7 +35,13 @@ const nodePath = require("node:path");
 
 // Bump when the on-disk data layout changes in a way that needs a transform.
 // A stamp whose version is >= this is considered already-migrated.
-const DATA_VERSION = 1;
+//
+// Version 2 (issue #672, F2) widens the migrated set beyond the three canonical
+// subtrees to the directories that carry *authentication* state. Version 1 only
+// moved conversations and preferences, so a user upgrading from a legacy
+// profile kept their history but was silently logged out of every OAuth-style
+// session — the exact "partial profile transfer" F2 reported.
+const DATA_VERSION = 2;
 
 // The stable, productName-independent directory name. Once pinned, the userData
 // path is `<appData>/formal-ai` on every OS and never moves with rebrands.
@@ -44,13 +50,68 @@ const PINNED_APP_NAME = "formal-ai";
 // The stamp file written into the pinned directory after a migration check.
 const VERSION_STAMP_FILE = "formal-ai-data-version.json";
 
-// Chromium storage subtrees that hold the user's actual data:
-//   - IndexedDB        → the "formal-ai-demo" conversation/event store
-//   - Local Storage    → "formal-ai.preferences.v1" (theme, demo mode, etc.)
-//   - Session Storage  → transient per-tab state (harmless, copied for parity)
-// Caches, cookies, GPUCache and lock/singleton files are intentionally excluded:
-// they are volatile and copying them across profiles can corrupt a fresh start.
-const STORAGE_SUBTREES = ["IndexedDB", "Local Storage", "Session Storage"];
+// Chromium storage entries that hold the user's actual data, grouped by the
+// DATA_VERSION that introduced them. Grouping (rather than one flat list) is
+// what makes a version bump *useful*: a profile already stamped at v1 has its
+// conversations, so re-running the whole set would copy nothing; the upgrade
+// path below copies only the entries a newer version added.
+//
+//   v1 — conversations and preferences:
+//     - IndexedDB        → the "formal-ai-demo" conversation/event store
+//     - Local Storage    → "formal-ai.preferences.v1" (theme, demo mode, etc.)
+//     - Session Storage  → transient per-tab state (harmless, copied for parity)
+//
+//   v2 — authentication and offline state (issue #672, F2):
+//     - Cookies          → the SQLite file behind every logged-in session. This
+//                          is a FILE, not a directory; `fs.cpSync` and
+//                          `existsSync` handle both, so it needs no special case.
+//     - Service Worker   → registrations + their scripts; without them an
+//                          installed PWA-style surface re-registers from scratch.
+//     - WebStorage       → Chromium's newer bucketed storage root.
+//     - WebSocketStorage → the name F2 asked for. Chromium has used both this
+//                          and "WebStorage" across versions; listing both is
+//                          free (a missing source entry is skipped) and means
+//                          the migration works on either layout.
+const STORAGE_SUBTREES_BY_VERSION = Object.freeze({
+  1: ["IndexedDB", "Local Storage", "Session Storage"],
+  2: ["Cookies", "Service Worker", "WebStorage", "WebSocketStorage"],
+});
+
+// Deliberately NOT migrated, and this is a reconciliation of F2's original
+// sketch rather than an omission (see docs/case-studies/issue-672/README.md).
+// F2 listed `Cache` and `Code Cache` alongside the auth subtrees, but those two
+// are pure derived caches: Chromium regenerates them on demand, they are the
+// largest directories in a profile, and carrying a cache built by a *different*
+// Chromium build into a fresh profile is the documented way to produce
+// hard-to-diagnose corruption. Copying them cannot fix the reported symptom
+// (being logged out), so the risk buys nothing. GPUCache and the lock/singleton
+// files are excluded for the same reason.
+const EXCLUDED_SUBTREES = Object.freeze([
+  "Cache",
+  "Code Cache",
+  "GPUCache",
+  "SingletonLock",
+]);
+
+// The full set, in version order, for a first-ever migration.
+const STORAGE_SUBTREES = Object.freeze(
+  Object.keys(STORAGE_SUBTREES_BY_VERSION)
+    .map((version) => Number(version))
+    .sort((a, b) => a - b)
+    .flatMap((version) => STORAGE_SUBTREES_BY_VERSION[version]),
+);
+
+// The entries a profile stamped at `fromVersion` is still missing. Used by the
+// v1 → v2 top-up so an existing installation gains its auth state without
+// re-copying (or risking) anything it already has.
+function subtreesAddedAfter(fromVersion) {
+  const base = Number.isFinite(fromVersion) ? fromVersion : 0;
+  return Object.keys(STORAGE_SUBTREES_BY_VERSION)
+    .map((version) => Number(version))
+    .filter((version) => version > base)
+    .sort((a, b) => a - b)
+    .flatMap((version) => STORAGE_SUBTREES_BY_VERSION[version]);
+}
 
 // Known historical profile directory names to migrate FROM, in priority order.
 // We also prepend whatever name Electron would have used before we pinned it, so
@@ -225,38 +286,49 @@ function createDataMigration(options = {}) {
     }
   }
 
+  // Copy `subtrees` from the legacy profile, honouring the per-entry
+  // "destination wins" guard. Shared by the first-run migration, the version
+  // top-up and the user-triggered replay so all three can never drift apart.
+  function copyFrom(source, pinnedDir, subtrees) {
+    const copied = [];
+    for (const subtree of subtrees) {
+      if (copySubtree(source, pinnedDir, subtree)) {
+        copied.push(subtree);
+      }
+    }
+    return copied;
+  }
+
   // The main entry point. Safe to call once per startup, after pinAppName() and
   // after the app is ready (so getPath resolves), but before any window/session
   // is created. Returns a summary describing what (if anything) happened.
-  function migrate() {
+  //
+  // `options.force` (issue #672, F2) ignores the version stamp and retries every
+  // entry. It backs the user-visible "replay migration" affordance: a user who
+  // sees the notice and believes data is still missing can ask for another pass
+  // without editing files by hand. It stays safe because the per-entry guard is
+  // unchanged — a replay can only ever fill gaps, never overwrite.
+  function migrate(options = {}) {
+    const force = Boolean(options && options.force);
     const pinnedDir = app.getPath("userData");
     ensureDir(pinnedDir);
     const stampPath = path.join(pinnedDir, VERSION_STAMP_FILE);
 
     const existingStamp = readStamp(stampPath);
-    if (
-      existingStamp &&
-      Number.isFinite(existingStamp.version) &&
-      existingStamp.version >= DATA_VERSION
-    ) {
+    const stampedVersion =
+      existingStamp && Number.isFinite(existingStamp.version)
+        ? existingStamp.version
+        : null;
+
+    if (!force && stampedVersion !== null && stampedVersion >= DATA_VERSION) {
       log("data-migration: already current, nothing to do");
       return {
         migrated: false,
         reason: "already-current",
-        version: existingStamp.version,
-        pinnedDir,
-      };
-    }
-
-    // Never overwrite a pinned profile that already holds data (e.g. a prior
-    // pinned build, or a fresh install that already wrote conversations). Just
-    // stamp it so we do not probe legacy directories on every launch.
-    if (hasStorage(pinnedDir)) {
-      writeStamp(stampPath, { migratedFrom: null, copied: [] });
-      log("data-migration: pinned profile already populated; stamped only");
-      return {
-        migrated: false,
-        reason: "pinned-already-populated",
+        version: stampedVersion,
+        dataVersion: DATA_VERSION,
+        copied: [],
+        migratedFrom: existingStamp.migratedFrom || null,
         pinnedDir,
       };
     }
@@ -266,26 +338,79 @@ function createDataMigration(options = {}) {
     const source = appDataDir
       ? findLegacySource(appDataDir, pinnedDir)
       : null;
+
+    // A profile stamped at an OLDER version is an upgrade, not a fresh install:
+    // it legitimately already holds storage, so the "already populated" guard
+    // below must not short-circuit it. Copy exactly the entries the newer
+    // version added (v1 → v2: the auth state) and re-stamp.
+    if (!force && stampedVersion !== null && stampedVersion < DATA_VERSION) {
+      const pending = subtreesAddedAfter(stampedVersion);
+      const copied = source ? copyFrom(source, pinnedDir, pending) : [];
+      const migratedFrom = source
+        ? path.basename(source)
+        : existingStamp.migratedFrom || null;
+      writeStamp(stampPath, { migratedFrom, copied });
+      log(
+        `data-migration: upgraded v${stampedVersion} → v${DATA_VERSION}, copied ${copied.length} entry(ies)`,
+      );
+      return {
+        migrated: copied.length > 0,
+        reason: "upgraded",
+        fromVersion: stampedVersion,
+        version: DATA_VERSION,
+        dataVersion: DATA_VERSION,
+        migratedFrom: source || null,
+        copied,
+        pinnedDir,
+      };
+    }
+
+    // Never overwrite a pinned profile that already holds data (e.g. a prior
+    // pinned build, or a fresh install that already wrote conversations). Just
+    // stamp it so we do not probe legacy directories on every launch.
+    if (!force && hasStorage(pinnedDir)) {
+      writeStamp(stampPath, { migratedFrom: null, copied: [] });
+      log("data-migration: pinned profile already populated; stamped only");
+      return {
+        migrated: false,
+        reason: "pinned-already-populated",
+        version: DATA_VERSION,
+        dataVersion: DATA_VERSION,
+        copied: [],
+        migratedFrom: null,
+        pinnedDir,
+      };
+    }
+
     if (!source) {
       writeStamp(stampPath, { migratedFrom: null, copied: [] });
       log("data-migration: no legacy profile found; stamped empty profile");
-      return { migrated: false, reason: "no-legacy-data", pinnedDir };
+      return {
+        migrated: false,
+        reason: "no-legacy-data",
+        version: DATA_VERSION,
+        dataVersion: DATA_VERSION,
+        copied: [],
+        migratedFrom: null,
+        pinnedDir,
+      };
     }
 
-    const copied = [];
-    for (const subtree of STORAGE_SUBTREES) {
-      if (copySubtree(source, pinnedDir, subtree)) {
-        copied.push(subtree);
-      }
-    }
+    const copied = copyFrom(source, pinnedDir, STORAGE_SUBTREES);
     const migratedFrom = path.basename(source);
     writeStamp(stampPath, { migratedFrom, copied });
     log(
-      `data-migration: migrated ${copied.length} subtree(s) from "${migratedFrom}"`,
+      `data-migration: migrated ${copied.length} entry(ies) from "${migratedFrom}"`,
     );
     return {
       migrated: copied.length > 0,
-      reason: copied.length > 0 ? "copied-legacy" : "legacy-empty",
+      reason: force
+        ? "replayed"
+        : copied.length > 0
+          ? "copied-legacy"
+          : "legacy-empty",
+      version: DATA_VERSION,
+      dataVersion: DATA_VERSION,
       migratedFrom: source,
       copied,
       pinnedDir,
@@ -306,5 +431,8 @@ module.exports = {
   PINNED_APP_NAME,
   VERSION_STAMP_FILE,
   STORAGE_SUBTREES,
+  STORAGE_SUBTREES_BY_VERSION,
+  EXCLUDED_SUBTREES,
+  subtreesAddedAfter,
   KNOWN_LEGACY_NAMES,
 };

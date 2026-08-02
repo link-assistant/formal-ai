@@ -1,0 +1,112 @@
+[2026-07-20T03:46:23Z INFO  rust_script] Arguments: Args { script: Some("scripts/check-crate-package-size.rs"), script_args: [], expr: false, loop_: false, count: false, base_path: None, pkg_path: None, gen_pkg_only: false, cargo_output: false, clear_cache: false, debug: false, dep: [], extern_: [], force: false, unstable_features: [], build_kind: Normal, toolchain_version: None, wrapper: None }
+[2026-07-20T03:46:23Z INFO  rust_script] input: File("check-crate-package-size", "/tmp/gh-issue-solver-1784506151226/scripts/check-crate-package-size.rs", "#!/usr/bin/env rust-script\n//! Check the generated crates.io package archive against the crates.io limit.\n//!\n//! Usage: rust-script scripts/check-crate-package-size.rs\n//!\n//! ```cargo\n//! [dependencies]\n//! regex = \"1\"\n//! ```\n\n#[cfg(not(test))]\nuse std::fs;\nuse std::path::{Path, PathBuf};\n#[cfg(not(test))]\nuse std::process::{exit, Command};\n\n#[path = \"rust-paths.rs\"]\nmod rust_paths;\n\nconst CRATES_IO_MAX_PACKAGE_BYTES: u64 = 10 * 1024 * 1024;\nconst PACKAGE_WARN_BYTES: u64 = 8 * 1024 * 1024;\nconst MIB_BYTES: u64 = 1024 * 1024;\n\n#[derive(Debug, PartialEq, Eq)]\nenum PackageSizeStatus {\n    WithinLimit,\n    Warning,\n    TooLarge,\n}\n\nconst fn classify_package_size(bytes: u64) -> PackageSizeStatus {\n    if bytes > CRATES_IO_MAX_PACKAGE_BYTES {\n        PackageSizeStatus::TooLarge\n    } else if bytes > PACKAGE_WARN_BYTES {\n        PackageSizeStatus::Warning\n    } else {\n        PackageSizeStatus::WithinLimit\n    }\n}\n\nfn format_bytes(bytes: u64) -> String {\n    let hundredths = bytes.saturating_mul(100) / MIB_BYTES;\n    let whole = hundredths / 100;\n    let fractional = hundredths % 100;\n\n    format!(\"{whole}.{fractional:02} MiB ({bytes} bytes)\")\n}\n\nfn crate_archive_name(name: &str, version: &str) -> String {\n    format!(\"{name}-{version}.crate\")\n}\n\nfn crate_archive_path(rust_root: &str, name: &str, version: &str) -> PathBuf {\n    let base = if rust_root == \".\" {\n        PathBuf::from(\".\")\n    } else {\n        Path::new(rust_root).to_path_buf()\n    };\n\n    base.join(\"target\")\n        .join(\"package\")\n        .join(crate_archive_name(name, version))\n}\n\n#[cfg(not(test))]\nfn print_command_output(output: &std::process::Output) {\n    let stdout = String::from_utf8_lossy(&output.stdout);\n    let stderr = String::from_utf8_lossy(&output.stderr);\n\n    if !stdout.trim().is_empty() {\n        println!(\"{stdout}\");\n    }\n\n    if !stderr.trim().is_empty() {\n        eprintln!(\"{stderr}\");\n    }\n}\n\n#[cfg(not(test))]\nfn main() {\n    let rust_root = match rust_paths::get_rust_root(None, true) {\n        Ok(root) => root,\n        Err(error) => {\n            eprintln!(\"Error: {error}\");\n            exit(1);\n        }\n    };\n    let cargo_toml = rust_paths::get_cargo_toml_path(&rust_root);\n    let package_manifest = match rust_paths::get_package_manifest_path(&cargo_toml) {\n        Ok(path) => path,\n        Err(error) => {\n            eprintln!(\"Error: {error}\");\n            exit(1);\n        }\n    };\n    let package_info = match rust_paths::read_package_info(&package_manifest) {\n        Ok(info) => info,\n        Err(error) => {\n            eprintln!(\"Error: {error}\");\n            exit(1);\n        }\n    };\n\n    println!(\n        \"Checking crates.io package size for {}@{}\",\n        package_info.name, package_info.version\n    );\n    println!(\n        \"crates.io package size limit: {}\",\n        format_bytes(CRATES_IO_MAX_PACKAGE_BYTES)\n    );\n\n    let mut command = Command::new(\"cargo\");\n    command\n        .arg(\"package\")\n        .arg(\"--allow-dirty\")\n        .arg(\"--no-verify\")\n        .arg(\"-p\")\n        .arg(&package_info.name);\n\n    if rust_paths::needs_cd(&rust_root) {\n        command.current_dir(&rust_root);\n    }\n\n    let output = match command.output() {\n        Ok(output) => output,\n        Err(error) => {\n            eprintln!(\"Error: failed to run cargo package: {error}\");\n            exit(1);\n        }\n    };\n    print_command_output(&output);\n\n    if !output.status.success() {\n        eprintln!(\"Error: cargo package failed with status {}\", output.status);\n        exit(1);\n    }\n\n    let archive_path = crate_archive_path(&rust_root, &package_info.name, &package_info.version);\n    let archive_size = match fs::metadata(&archive_path) {\n        Ok(metadata) => metadata.len(),\n        Err(error) => {\n            eprintln!(\n                \"Error: could not inspect generated crate archive {}: {error}\",\n                archive_path.display()\n            );\n            exit(1);\n        }\n    };\n\n    let formatted_size = format_bytes(archive_size);\n    match classify_package_size(archive_size) {\n        PackageSizeStatus::WithinLimit => {\n            println!(\n                \"Crate archive {} is within the crates.io limit: {}\",\n                archive_path.display(),\n                formatted_size\n            );\n        }\n        PackageSizeStatus::Warning => {\n            println!(\n                \"::warning file={}::Crate archive is approaching the crates.io limit: {} of {}\",\n                package_manifest.display(),\n                formatted_size,\n                format_bytes(CRATES_IO_MAX_PACKAGE_BYTES)\n            );\n        }\n        PackageSizeStatus::TooLarge => {\n            eprintln!(\n                \"::error file={}::Crate archive exceeds the crates.io limit: {} of {}\",\n                package_manifest.display(),\n                formatted_size,\n                format_bytes(CRATES_IO_MAX_PACKAGE_BYTES)\n            );\n            eprintln!(\n                \"Reduce package contents with Cargo.toml include/exclude patterns before publishing.\"\n            );\n            exit(1);\n        }\n    }\n}\n\n#[cfg(test)]\nmod tests {\n    use super::{\n        classify_package_size, crate_archive_name, crate_archive_path, format_bytes,\n        PackageSizeStatus, CRATES_IO_MAX_PACKAGE_BYTES, PACKAGE_WARN_BYTES,\n    };\n\n    #[test]\n    fn classifies_package_sizes_against_crates_io_limit() {\n        assert_eq!(\n            classify_package_size(PACKAGE_WARN_BYTES - 1),\n            PackageSizeStatus::WithinLimit\n        );\n        assert_eq!(\n            classify_package_size(PACKAGE_WARN_BYTES + 1),\n            PackageSizeStatus::Warning\n        );\n        assert_eq!(\n            classify_package_size(CRATES_IO_MAX_PACKAGE_BYTES + 1),\n            PackageSizeStatus::TooLarge\n        );\n    }\n\n    #[test]\n    fn formats_bytes_with_raw_count_for_ci_logs() {\n        assert_eq!(format_bytes(10 * 1024 * 1024), \"10.00 MiB (10485760 bytes)\");\n    }\n\n    #[test]\n    fn derives_crate_archive_path_from_package_metadata() {\n        assert_eq!(\n            crate_archive_name(\"formal-ai\", \"0.61.0\"),\n            \"formal-ai-0.61.0.crate\"\n        );\n        assert_eq!(\n            crate_archive_path(\".\", \"formal-ai\", \"0.61.0\"),\n            std::path::PathBuf::from(\"./target/package/formal-ai-0.61.0.crate\")\n        );\n        assert_eq!(\n            crate_archive_path(\"rust\", \"formal-ai\", \"0.61.0\"),\n            std::path::PathBuf::from(\"rust/target/package/formal-ai-0.61.0.crate\")\n        );\n    }\n}\n", "/tmp/gh-issue-solver-1784506151226/scripts")
+[2026-07-20T03:46:23Z INFO  rust_script] prelude_items: []
+[2026-07-20T03:46:23Z INFO  rust_script] id: "ba722a7df68a2ce948286f4d"
+[2026-07-20T03:46:23Z INFO  rust_script] pkg_path: "/home/box/.cache/rust-script/projects/ba722a7df68a2ce948286f4d"
+[2026-07-20T03:46:23Z INFO  rust_script] using_cache: true
+[2026-07-20T03:46:23Z INFO  rust_script::manifest] part_mani: {"dependencies": Table({"regex": String("1")})}
+[2026-07-20T03:46:23Z INFO  rust_script::manifest] source: None
+[2026-07-20T03:46:23Z INFO  rust_script::manifest] manifest: [[bin]]
+    name = "check-crate-package-size_ba722a7df68a2ce948286f4d"
+    path = "/tmp/gh-issue-solver-1784506151226/scripts/check-crate-package-size.rs"
+    
+    [dependencies]
+    regex = "1"
+    
+    [package]
+    authors = ["Anonymous"]
+    edition = "2021"
+    name = "check-crate-package-size_ba722a7df68a2ce948286f4d"
+    version = "0.1.0"
+    
+    [profile.release]
+    strip = true
+    
+[2026-07-20T03:46:23Z INFO  rust_script] action: InputAction { cargo_output: false, force_compile: false, execute: true, pkg_path: "/home/box/.cache/rust-script/projects/ba722a7df68a2ce948286f4d", script_path: "/tmp/gh-issue-solver-1784506151226/scripts/check-crate-package-size.rs", using_cache: true, toolchain_version: None, debug: false, manifest: "[[bin]]\nname = \"check-crate-package-size_ba722a7df68a2ce948286f4d\"\npath = \"/tmp/gh-issue-solver-1784506151226/scripts/check-crate-package-size.rs\"\n\n[dependencies]\nregex = \"1\"\n\n[package]\nauthors = [\"Anonymous\"]\nedition = \"2021\"\nname = \"check-crate-package-size_ba722a7df68a2ce948286f4d\"\nversion = \"0.1.0\"\n\n[profile.release]\nstrip = true\n", script: None, build_kind: Normal, bin_name: "check-crate-package-size_ba722a7df68a2ce948286f4d", original_script_path: Some("scripts/check-crate-package-size.rs") }
+[2026-07-20T03:46:23Z INFO  rust_script] creating pkg dir...
+[2026-07-20T03:46:23Z INFO  rust_script] generating Cargo package...
+[2026-07-20T03:46:23Z DEBUG rust_script] overwrite_file("/home/box/.cache/rust-script/projects/ba722a7df68a2ce948286f4d/Cargo.toml", _)
+[2026-07-20T03:46:23Z DEBUG rust_script] .. files differ
+[2026-07-20T03:46:23Z INFO  rust_script] disarming pkg dir cleanup...
+[2026-07-20T03:46:23Z DEBUG rust_script] No old binary found
+Detected single-language repository (Cargo.toml in root)
+Checking crates.io package size for formal-ai@0.300.0
+crates.io package size limit: 10.00 MiB (10485760 bytes)
+   Packaging formal-ai v0.300.0 (/tmp/gh-issue-solver-1784506151226)
+warning: ignoring example `backfill_wikidata_lino` as `examples/backfill_wikidata_lino.rs` is not included in the published package
+warning: ignoring example `basic_usage` as `examples/basic_usage.rs` is not included in the published package
+warning: ignoring example `classify_repair` as `examples/classify_repair.rs` is not included in the published package
+warning: ignoring example `debug_extract` as `examples/debug_extract.rs` is not included in the published package
+warning: ignoring example `dump_google_trends_catalog` as `examples/dump_google_trends_catalog.rs` is not included in the published package
+warning: ignoring example `dump_google_trends_learning` as `examples/dump_google_trends_learning.rs` is not included in the published package
+warning: ignoring example `dump_learning_ledger` as `examples/dump_learning_ledger.rs` is not included in the published package
+warning: ignoring example `dump_question_catalog` as `examples/dump_question_catalog.rs` is not included in the published package
+warning: ignoring example `dump_rebuild_plan` as `examples/dump_rebuild_plan.rs` is not included in the published package
+warning: ignoring example `dump_repair_strategies` as `examples/dump_repair_strategies.rs` is not included in the published package
+warning: ignoring example `dump_self_ast` as `examples/dump_self_ast.rs` is not included in the published package
+warning: ignoring example `dump_self_ast_agent_cli_session` as `examples/dump_self_ast_agent_cli_session.rs` is not included in the published package
+warning: ignoring example `dump_self_healing_case` as `examples/dump_self_healing_case.rs` is not included in the published package
+warning: ignoring example `dump_source_links` as `examples/dump_source_links.rs` is not included in the published package
+warning: ignoring example `explain_formal_ai` as `examples/explain_formal_ai.rs` is not included in the published package
+warning: ignoring example `issue_340_emit_variants` as `examples/issue_340_emit_variants.rs` is not included in the published package
+warning: ignoring example `issue_386_diagnostic_trace` as `examples/issue_386_diagnostic_trace.rs` is not included in the published package
+warning: ignoring example `issue_386_gen_arith_table` as `examples/issue_386_gen_arith_table.rs` is not included in the published package
+warning: ignoring example `issue_386_print_calc_roles` as `examples/issue_386_print_calc_roles.rs` is not included in the published package
+warning: ignoring example `issue_412_oracle_smoke` as `examples/issue_412_oracle_smoke.rs` is not included in the published package
+warning: ignoring example `issue_449_interpretable_learning` as `examples/issue_449_interpretable_learning.rs` is not included in the published package
+warning: ignoring example `issue_468_agentic_loop` as `examples/issue_468_agentic_loop.rs` is not included in the published package
+warning: ignoring example `issue_468_formalize_text` as `examples/issue_468_formalize_text.rs` is not included in the published package
+warning: ignoring example `issue_488_telegram_thinking` as `examples/issue_488_telegram_thinking.rs` is not included in the published package
+warning: ignoring example `issue_493_dump_market_refs` as `examples/issue_493_dump_market_refs.rs` is not included in the published package
+warning: ignoring example `issue_498_parse_google_trends_rss` as `examples/issue_498_parse_google_trends_rss.rs` is not included in the published package
+warning: ignoring example `issue_499_dump_agent_cli_session` as `examples/issue_499_dump_agent_cli_session.rs` is not included in the published package
+warning: ignoring example `issue_499_repro` as `examples/issue_499_repro.rs` is not included in the published package
+warning: ignoring example `issue_535_statement_verification` as `examples/issue_535_statement_verification.rs` is not included in the published package
+warning: ignoring example `issue_540_dump_dreaming_audit` as `examples/issue_540_dump_dreaming_audit.rs` is not included in the published package
+warning: ignoring example `issue_559_meta_core` as `examples/issue_559_meta_core.rs` is not included in the published package
+warning: ignoring example `issue_563_folder_summary` as `examples/issue_563_folder_summary.rs` is not included in the published package
+warning: ignoring example `issue_686_dump_associative_learning` as `examples/issue_686_dump_associative_learning.rs` is not included in the published package
+warning: ignoring example `issue_771_report_format` as `examples/issue_771_report_format.rs` is not included in the published package
+warning: ignoring example `numeric_list_execution` as `examples/numeric_list_execution.rs` is not included in the published package
+warning: ignoring example `numeric_list_matrix` as `examples/numeric_list_matrix.rs` is not included in the published package
+warning: ignoring example `print_thinking_steps` as `examples/print_thinking_steps.rs` is not included in the published package
+warning: ignoring example `project_source_links` as `examples/project_source_links.rs` is not included in the published package
+warning: ignoring example `question_generation_languages` as `examples/question_generation_languages.rs` is not included in the published package
+warning: ignoring example `rebuild_and_reattach` as `examples/rebuild_and_reattach.rs` is not included in the published package
+warning: ignoring example `refresh_translation_cache` as `examples/refresh_translation_cache.rs` is not included in the published package
+warning: ignoring example `regenerate_planner_fixtures` as `examples/regenerate_planner_fixtures.rs` is not included in the published package
+warning: ignoring example `repro_issue_218` as `examples/repro_issue_218.rs` is not included in the published package
+warning: ignoring example `repro_issue_312` as `examples/repro_issue_312.rs` is not included in the published package
+warning: ignoring example `repro_issue_334` as `examples/repro_issue_334.rs` is not included in the published package
+warning: ignoring example `repro_issue_340` as `examples/repro_issue_340.rs` is not included in the published package
+warning: ignoring example `repro_issue_341` as `examples/repro_issue_341.rs` is not included in the published package
+warning: ignoring example `repro_issue_349` as `examples/repro_issue_349.rs` is not included in the published package
+warning: ignoring example `repro_issue_386` as `examples/repro_issue_386.rs` is not included in the published package
+warning: ignoring example `repro_issue_395` as `examples/repro_issue_395.rs` is not included in the published package
+warning: ignoring example `repro_issue_411` as `examples/repro_issue_411.rs` is not included in the published package
+warning: ignoring example `repro_issue_412` as `examples/repro_issue_412.rs` is not included in the published package
+warning: ignoring example `repro_issue_529` as `examples/repro_issue_529.rs` is not included in the published package
+warning: ignoring example `request_change` as `examples/request_change.rs` is not included in the published package
+warning: ignoring example `try_arithmetic` as `examples/try_arithmetic.rs` is not included in the published package
+warning: ignoring example `universal_solver_tour` as `examples/universal_solver_tour.rs` is not included in the published package
+warning: ignoring example `verify_cache_roundtrip` as `examples/verify_cache_roundtrip.rs` is not included in the published package
+warning: ignoring example `wikidata_json_to_lino` as `examples/wikidata_json_to_lino.rs` is not included in the published package
+warning: ignoring test `integration` as `tests/integration/mod.rs` is not included in the published package
+warning: ignoring test `issue_660_cli` as `tests/issue_660_cli.rs` is not included in the published package
+warning: ignoring test `issue_712` as `tests/issue_712.rs` is not included in the published package
+warning: ignoring test `issue_715` as `tests/issue_715.rs` is not included in the published package
+warning: ignoring test `issue_715_notation` as `tests/issue_715_notation.rs` is not included in the published package
+warning: ignoring test `issue_715_rewrite_variations` as `tests/issue_715_rewrite_variations.rs` is not included in the published package
+warning: ignoring test `issue_752` as `tests/issue_752.rs` is not included in the published package
+warning: ignoring test `issue_756` as `tests/issue_756.rs` is not included in the published package
+warning: ignoring test `issue_757_session_files` as `tests/issue_757_session_files.rs` is not included in the published package
+warning: ignoring test `issue_760` as `tests/issue_760.rs` is not included in the published package
+warning: ignoring test `issue_761_docs` as `tests/issue_761_docs.rs` is not included in the published package
+warning: ignoring test `issue_762` as `tests/issue_762.rs` is not included in the published package
+warning: ignoring test `issue_763` as `tests/issue_763.rs` is not included in the published package
+warning: ignoring test `source` as `tests/source/mod.rs` is not included in the published package
+warning: ignoring test `unit` as `tests/unit/mod.rs` is not included in the published package
+    Updating crates.io index
+    Packaged 3016 files, 14.0MiB (4.2MiB compressed)
+
+Crate archive ./target/package/formal-ai-0.300.0.crate is within the crates.io limit: 4.19 MiB (4403529 bytes)

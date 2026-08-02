@@ -371,6 +371,7 @@ function renderTranslationGap(surface, source, target) {
 
 async function tryTranslation(prompt, normalized) {
   const targetHint = detectTranslationTargetLanguage(normalized);
+  const unquotedSurface = extractUnquotedTranslationSurface(prompt);
   // Issue #386: recognise a translation command by *meaning*, not by hardcoded
   // verbs. The command stems live once in the embedded translate meaning; this
   // code knows the concept and the head-initial/head-final typology. Clause-
@@ -386,14 +387,16 @@ async function tryTranslation(prompt, normalized) {
     wordsForRoleInLanguages(ROLE_TRANSLATION_ACTION, ["hi", "zh"]).some((stem) =>
       normalized.includes(stem),
     );
-  const isTranslationRequest = headInitialCommand || headFinalCommand;
+  const sourceFirstCommand = Boolean(targetHint) && Boolean(unquotedSurface) &&
+    wordsForRoleInLanguages(ROLE_TRANSLATION_ACTION, ["en", "ru", "hi", "zh"])
+      .some((stem) => normalized.includes(stem));
+  const isTranslationRequest = headInitialCommand || headFinalCommand || sourceFirstCommand;
   if (!isTranslationRequest) return null;
 
   // Issue #216: fall back to an unquoted surface (`translate apple to
   // russian`) when no quoted fragment is present so the offline registry
   // can still resolve a meaning token.
-  const surface =
-    extractQuotedPhrase(prompt) || extractUnquotedTranslationSurface(prompt) || "";
+  const surface = extractQuotedPhrase(prompt) || unquotedSurface || "";
   const surfaceMeaning = surface || prompt;
   const source = detectTranslationSourceLanguage(normalized) || inferTranslationSource(prompt);
   const target = targetHint || "en";
@@ -684,6 +687,72 @@ function tryRecallName(history) {
     }
   }
   return null;
+}
+
+// Issue #676: assistant-name-setting phrasings. Each pins the *assistant* as the
+// subject being (re)named, mirroring ASSISTANT_NAME_NEEDLES /
+// extract_assistant_name in src/solver_helpers.rs, so a declarative rename like
+// "Now your name is Ineffa" is recognised while questions and user
+// self-introductions are left alone.
+const ASSISTANT_NAME_PATTERNS = [
+  /\byour name is\s+([A-Za-z][A-Za-z0-9'-]*)/i,
+  /\byour name (?:shall|will|would) be\s+([A-Za-z][A-Za-z0-9'-]*)/i,
+  /\byour new name is\s+([A-Za-z][A-Za-z0-9'-]*)/i,
+  /\blet your name be\s+([A-Za-z][A-Za-z0-9'-]*)/i,
+  /\byou(?:'re| are) (?:named|called)\s+([A-Za-z][A-Za-z0-9'-]*)/i,
+  /\bi(?:'ll| will)?\s*(?:call|name) you\s+([A-Za-z][A-Za-z0-9'-]*)/i,
+  /\bi(?:'ll| will) refer to you as\s+([A-Za-z][A-Za-z0-9'-]*)/i,
+];
+
+function extractAssistantName(text) {
+  for (const pattern of ASSISTANT_NAME_PATTERNS) {
+    const match = pattern.exec(String(text || ""));
+    if (match) return match[1];
+  }
+  return null;
+}
+
+function recallAssistantName(history) {
+  if (!Array.isArray(history)) return null;
+  for (let i = history.length - 1; i >= 0; i -= 1) {
+    const turn = history[i];
+    if (turn && turn.role === "user") {
+      const name = extractAssistantName(String(turn.content || ""));
+      if (name) return name;
+    }
+  }
+  return null;
+}
+
+// Set or recall the *assistant's* name from dialog-local memory (issue #676),
+// mirroring try_assistant_name in src/solver_handlers/conversation_memory/mod.rs.
+function tryAssistantName(prompt, normalized, history) {
+  const setName = extractAssistantName(prompt);
+  if (setName) {
+    return {
+      intent: "set_assistant_name",
+      content: `Nice to meet you! I'll go by ${setName} from now on.`,
+      confidence: 0.9,
+      evidence: [`set_assistant_name:${setName}`],
+    };
+  }
+  const asksName =
+    normalized.includes("what is your name") ||
+    normalized.includes("what s your name") ||
+    normalized.includes("whats your name") ||
+    normalized.includes("tell me your name") ||
+    normalized.includes("do you have a name") ||
+    normalized.includes("what should i call you") ||
+    normalized.includes("what do i call you");
+  if (!asksName) return null;
+  const recalled = recallAssistantName(history);
+  if (!recalled) return null;
+  return {
+    intent: "assistant_name",
+    content: `My name is ${recalled} — that's what you named me.`,
+    confidence: 0.9,
+    evidence: [`assistant_name:${recalled}`, "prior_turn:user"],
+  };
 }
 
 function isRecallMetaPrompt(prompt) {

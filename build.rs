@@ -59,7 +59,7 @@ fn main() {
 /// to the links/meta language and *"present in the seed data"*. `include_str!`
 /// cannot iterate a directory, so this script writes a generated slice of
 /// `(repo_relative_path, source_text)` pairs into `OUT_DIR`; the whole-repository
-/// projection ([`crate::self_source_graph`]) includes it via
+/// projection ([`crate::self_source_links`]) includes it via
 /// `include!(concat!(env!("OUT_DIR"), "/owned_source_files.rs"))` so every module's
 /// source ships in the binary and the projection works with no filesystem access —
 /// exactly as it must when the loop runs from an agent CLI's sandbox workdir.

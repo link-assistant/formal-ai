@@ -20,7 +20,16 @@
 
   var DEFAULT_FILES = [
     "seed/agent-info.lino",
+    "seed/interface-capabilities.lino",
     "seed/multilingual-responses.lino",
+    "seed/multilingual-responses-memory-program.lino",
+    "seed/multilingual-responses-language-protocol.lino",
+    "seed/multilingual-responses-entities.lino",
+    "seed/multilingual-responses-synthesis.lino",
+    "seed/multilingual-responses-orchestration.lino",
+    "seed/multilingual-responses-agentic.lino",
+    "seed/multilingual-responses-decomposition.lino",
+    "seed/multilingual-responses-procedure.lino",
     "seed/concepts.lino",
     "seed/concept-contexts.lino",
     "seed/facts.lino",
@@ -30,30 +39,42 @@
     "seed/summary-topics.lino",
     "seed/coreference.lino",
     "seed/tools.lino",
+    "seed/languages.lino",
     "seed/language-detection.lino",
+    "seed/unknown-openers.lino",
     "seed/prompt-patterns.lino",
     "seed/intent-routing.lino",
+    "seed/handler-precedence.lino",
     "seed/operation-vocabulary.lino",
     "seed/numeric-list-operations.lino",
     "seed/coding-idioms.lino",
     "seed/terminal-commands.lino",
+    "seed/shell-intents.lino",
     "seed/program-plan-rules.lino",
     "seed/market-price-references.lino",
+    "seed/entity-names.lino",
     "seed/meanings.lino",
     "seed/meanings-behavior-rules.lino",
     "seed/meanings-calculator.lino",
     "seed/meanings-calendar.lino",
     "seed/meanings-coding-catalog.lino",
     "seed/meanings-conversation.lino",
+    "seed/memory-programs.lino",
+    "seed/meanings-decomposition.lino",
+    "seed/meanings-number-constraints.lino",
     "seed/meanings-definition-merge.lino",
     "seed/meanings-docs.lino",
     "seed/meanings-facts.lino",
     "seed/meanings-feature-capability.lino",
+    "seed/meanings-file-write.lino",
+    "seed/meanings-file-edit.lino",
+    "seed/meanings-agent-actions.lino",
     "seed/meanings-finance.lino",
     "seed/meanings-how.lino",
     "seed/meanings-intent.lino",
     "seed/meanings-lexical-meta.lino",
     "seed/meanings-links-root.lino",
+    "seed/meanings-local-search.lino",
     "seed/meanings-meta.lino",
     "seed/meanings-ontology.lino",
     "seed/meanings-playwright.lino",
@@ -63,7 +84,9 @@
     "seed/meanings-research-table.lino",
     "seed/meanings-semantic-meta.lino",
     "seed/meanings-skill-compiler.lino",
+    "seed/meanings-skill-procedure.lino",
     "seed/meanings-software-project.lino",
+    "seed/meanings-statement-merge.lino",
     "seed/meanings-summary.lino",
     "seed/meanings-tool-access.lino",
     "seed/meanings-translation.lino",
@@ -74,6 +97,7 @@
     "seed/meanings-web-search-query.lino",
     "seed/meanings-web-search.lino",
     "seed/meanings-wikidata.lino",
+    "seed/learned-request-openers.lino",
     "seed/greetings.lino",
     "seed/identity.lino",
     "seed/hello-world-programs.lino",
@@ -310,6 +334,36 @@
   function findChildValueAlias(node, primary, fallback) {
     var value = findChildValue(node, primary);
     return value || findChildValue(node, fallback);
+  }
+
+  function extractInterfaceCapabilities(root) {
+    if (!root) return [];
+    var section = root.name === "interface_capabilities"
+      ? root
+      : findChildren(root, "interface_capabilities")[0];
+    if (!section) return [];
+    return findChildren(section, "capability").map(function (capability) {
+      return {
+        key: capability.id,
+        kind: findChildValue(capability, "kind"),
+        label: findChildValue(capability, "label"),
+        intent: findChildValue(capability, "intent"),
+        scale: Number(findChildValue(capability, "scale") || 1),
+        phrases: findChildren(capability, "phrase").map(function (phrase) {
+          return phrase.id;
+        }).filter(Boolean),
+        options: findChildren(capability, "option").map(function (option) {
+          return {
+            value: option.id,
+            aliases: findChildren(option, "alias").map(function (alias) {
+              return alias.id;
+            }).filter(Boolean),
+          };
+        }),
+      };
+    }).filter(function (capability) {
+      return capability.key && capability.kind && capability.phrases.length > 0;
+    });
   }
 
   function extractMultilingualResponses(node) {
@@ -683,12 +737,34 @@
         id: entry.id,
         language: findChildValue(entry, "language"),
         label: findChildValue(entry, "label"),
+        // Issue #706: `script`, `markers`, `fallback` and `alphabetic-only`
+        // let a language be added by editing seed data alone — the worker
+        // reads them instead of hardcoding the language list.
+        script: findChildValue(entry, "script"),
         start: parseCodepoint(findChildValue(entry, "start")),
         end: parseCodepoint(findChildValue(entry, "end")),
+        markers: parseQuotedList(findChildValue(entry, "markers")),
+        fallback: findChildValue(entry, "fallback") === "yes",
+        alphabeticOnly: findChildValue(entry, "alphabetic-only") === "yes",
         note: findChildValue(entry, "note"),
+        sourceHost: findChildValue(entry, "source-host"),
       });
     }
     return rules;
+  }
+
+  // Parse a `("a" "b" "c")` seed list into an array of strings. Mirrors
+  // `parse_quoted_list` in `src/language.rs`.
+  function parseQuotedList(value) {
+    var text = String(value || "");
+    var items = [];
+    var match = /"([^"]*)"/g;
+    var found = match.exec(text);
+    while (found) {
+      if (found[1]) items.push(found[1]);
+      found = match.exec(text);
+    }
+    return items;
   }
 
   function parseCodepoint(value) {
@@ -994,6 +1070,7 @@
       coreferenceSeeds: { pronouns: [], antecedents: [] },
       tools: [],
       agentInfo: {},
+      interfaceCapabilities: [],
       languageRules: [],
       promptPatterns: [],
       intentRouting: { intents: [], articlePrefixes: [], tracePrefixes: [] },
@@ -1030,6 +1107,8 @@
         seed.tools = seed.tools.concat(extractTools(root));
       } else if (item.file.indexOf("agent-info") !== -1) {
         Object.assign(seed.agentInfo, extractAgentInfo(root));
+      } else if (item.file.indexOf("interface-capabilities") !== -1) {
+        seed.interfaceCapabilities = extractInterfaceCapabilities(root);
       } else if (item.file.indexOf("language-detection") !== -1) {
         seed.languageRules = seed.languageRules.concat(extractLanguageRules(root));
       } else if (item.file.indexOf("prompt-patterns") !== -1) {
@@ -1050,6 +1129,7 @@
     parseBundle: parseBundle,
     extractMultilingualResponses: extractMultilingualResponses,
     extractAgentInfo: extractAgentInfo,
+    extractInterfaceCapabilities: extractInterfaceCapabilities,
     extractLanguageRules: extractLanguageRules,
     extractPromptPatterns: extractPromptPatterns,
     extractConcepts: extractConcepts,

@@ -1,0 +1,5 @@
+install-node-dependencies: installing in 'vscode' (npm 10.9.8)
+
+up to date in 9s
+install-node-dependencies: npm install succeeded; classifying 0 stderr line(s)
+install-node-dependencies: all stderr lines classified as reviewed upstream deprecations

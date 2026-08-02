@@ -1,0 +1,89 @@
+{
+  "entities": {
+    "Q80174": {
+      "type": "item",
+      "id": "Q80174",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Pan"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "шимпанзе"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "चिम्पान्ज़ी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "黑猩猩屬"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "genus of mammals, includes 2 species: robust chimpanzee and bonobo"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "род из семейства гоминид отряда приматов"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "猩猩科的一属哺乳动物"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "chimpanzee genus"
+          },
+          {
+            "language": "en",
+            "value": "chimp"
+          },
+          {
+            "language": "en",
+            "value": "chimpanzees"
+          },
+          {
+            "language": "en",
+            "value": "chimps"
+          },
+          {
+            "language": "en",
+            "value": "panin"
+          },
+          {
+            "language": "en",
+            "value": "panins"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "pan"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "चिम्पांजी"
+          },
+          {
+            "language": "hi",
+            "value": "चिम्पांज़ी"
+          },
+          {
+            "language": "hi",
+            "value": "चिम्पैंजी"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

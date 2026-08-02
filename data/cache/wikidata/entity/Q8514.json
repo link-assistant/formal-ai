@@ -1,0 +1,57 @@
+{
+  "entities": {
+    "Q8514": {
+      "type": "item",
+      "id": "Q8514",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "desert"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "пустыня"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मरुस्थल"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "荒漠"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "barren area of land where little precipitation occurs"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "природная зона с равнинной поверхностью, отличающаяся редкой или отсутствующей флорой и специфической фауной"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "धरती पर स्थित अल्प वर्षा वाले बंजर स्थान"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "貧瘠的土地，幾乎沒有降水"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "desert regions"
+          },
+          {
+            "language": "en",
+            "value": "🏜️"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

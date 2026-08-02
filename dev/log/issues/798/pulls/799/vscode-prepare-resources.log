@@ -1,0 +1,7 @@
+
+> formal-ai-vscode@0.299.0 prepare-resources
+> node scripts/prepare-resources.mjs
+
+Extension version already in sync with Cargo.toml: 0.299.0
+Prepared VS Code web resources: /tmp/gh-issue-solver-1784475913185/vscode/dist-web
+Vendored desktop modules: tool-router.cjs, memory-sync.cjs, web-tools.cjs, shared-memory.cjs -> /tmp/gh-issue-solver-1784475913185/vscode/src/lib/vendor

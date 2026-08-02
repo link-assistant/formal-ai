@@ -1,0 +1,15 @@
+Q321767
+  aliases
+    en (Pocket)
+    zh ("橐袋仔" "簏袋仔" "袋仔" "橐仔" "懷" "通懷仔" "通櫃仔")
+  descriptions
+    en "small compartment in clothing where minor objects can be carried inside"
+    ru "сопутствующее хранилище, часть предмета одежды"
+  id Q321767
+  labels
+    en pocket
+    hi "जेब"
+    ru "карман"
+    zh "口袋"
+  type item
+success 1

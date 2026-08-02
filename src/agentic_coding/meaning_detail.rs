@@ -18,7 +18,7 @@
 //! surfaces the meaning already carried. Everything the issue asks for — which
 //! surface is singular, which is plural, and the previously missing plural form —
 //! is *derived* from those real Wikidata forms by a single general algorithm
-//! ([`concept_lexemes`] → [`derive_source`]). Add a concept by adding its inputs to
+//! ([`concept_lexemes`] → `derive_source`). Add a concept by adding its inputs to
 //! [`CONCEPTS`]; there are no per-concept code branches and no per-concept answer
 //! strings.
 //!
@@ -614,8 +614,8 @@ fn lexeme_core(entity: &Value) -> Value {
 /// The real Wikidata JSON the corpus serves for a concept's `web_fetch`.
 ///
 /// It merges the concept's source lexemes into one `{"entities": …}` document,
-/// trimmed to the lexeme core ([`lexeme_core`]). This is genuine Wikidata data — the
-/// same fields [`parse_entities`] reads back — not a bespoke fixture, so the loop
+/// trimmed to the lexeme core (`lexeme_core`). This is genuine Wikidata data — the
+/// same fields `parse_entities` reads back — not a bespoke fixture, so the loop
 /// fetches real lexemes and derives the enrichment from them.
 #[must_use]
 pub fn source_bundle(concept: &Concept) -> String {

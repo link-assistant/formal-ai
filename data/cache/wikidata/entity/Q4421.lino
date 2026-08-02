@@ -1,0 +1,18 @@
+Q4421
+  aliases
+    en (wood woods forests)
+    hi ("जंगल")
+    ru ("лесок")
+  descriptions
+    en "trees populated area (>10%), larger than 5,000 m², and not used for agricultural or urban purposes"
+    hi "जंगल"
+    ru "большая группа плотно растущих деревьев, занимающая значительное пространство"
+    zh "高密度树木的区域"
+  id Q4421
+  labels
+    en forest
+    hi "वन"
+    ru "лес"
+    zh "森林"
+  type item
+success 1

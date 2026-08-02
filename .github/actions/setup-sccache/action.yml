@@ -1,0 +1,21 @@
+name: Setup sccache
+description: Install sccache and export the environment used by later Rust steps.
+
+runs:
+  using: composite
+  steps:
+    - name: Install sccache
+      uses: mozilla-actions/sccache-action@v0.0.10
+      with:
+        # v0.17.0 expands Rust response files before spawning rustc and can
+        # exceed the Windows command-line limit (mozilla/sccache#2397).
+        version: v0.16.0
+
+    - name: Enable sccache for Rust
+      shell: bash
+      env:
+        SCCACHE_GHA_ENABLED: "true"
+        RUSTC_WRAPPER: sccache
+      run: |
+        echo "SCCACHE_GHA_ENABLED=$SCCACHE_GHA_ENABLED" >> "$GITHUB_ENV"
+        echo "RUSTC_WRAPPER=$RUSTC_WRAPPER" >> "$GITHUB_ENV"

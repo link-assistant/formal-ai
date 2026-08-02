@@ -1,0 +1,37 @@
+   Compiling serde_core v1.0.228
+   Compiling syn v2.0.117
+    Checking memchr v2.8.0
+    Checking once_cell v1.21.4
+    Checking bitflags v2.11.1
+   Compiling formal-ai v0.300.0 (/tmp/gh-issue-solver-1784506151226)
+    Checking thread-priority v1.2.0
+    Checking aho-corasick v1.1.4
+    Checking nom v8.0.0
+    Checking regex-automata v0.4.14
+    Checking serde_json v1.0.149
+    Checking regex v1.12.3
+   Compiling wasm-bindgen-macro-support v0.2.121
+    Checking links-notation v0.13.0
+    Checking lino-objects-codec v0.2.1
+   Compiling serde_derive v1.0.228
+   Compiling thiserror-impl v1.0.69
+   Compiling clap_derive v4.6.1
+    Checking thiserror v1.0.69
+   Compiling wasm-bindgen-macro v0.2.121
+    Checking clap v4.6.1
+    Checking wasm-bindgen v0.2.121
+    Checking serde v1.0.228
+    Checking js-sys v0.3.98
+    Checking console_error_panic_hook v0.1.7
+    Checking num-bigint v0.4.6
+    Checking chrono v0.4.44
+    Checking rust_decimal v1.42.0
+    Checking lino-arguments v0.3.0
+    Checking num-rational v0.4.2
+    Checking web-sys v0.3.98
+    Checking wasm-bindgen-futures v0.4.71
+    Checking serde-wasm-bindgen v0.6.5
+    Checking link-calculator v0.19.0
+ Documenting formal-ai v0.300.0 (/tmp/gh-issue-solver-1784506151226)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 45.22s
+   Generated /tmp/gh-issue-solver-1784506151226/target/doc/formal_ai/index.html

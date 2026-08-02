@@ -1,0 +1,47 @@
+self_ast_census
+  target src/associative_persistence.rs
+  language rust
+  fidelity signature
+  byte_len 26312
+  line_count 650
+  content_id source_module_f3088323046aedae
+  symbol_count 38
+  symbols
+    struct RetentionWeights 53 62
+    function uniform 67 74
+    function default 78 80
+    struct PersistedExpression 93 108
+    struct ScoredExpression 115 120
+    struct AssociativeMemory 132 137
+    function new 142 144
+    function persist 152 157
+    function persist_identified 162 179
+    function note_read 182 190
+    function note_write 193 201
+    function associate 208 214
+    function contains 218 220
+    function get 224 226
+    function expressions 230 232
+    function len 236 238
+    function is_empty 242 244
+    function reads 248 250
+    function writes 254 256
+    function out_degree 260 266
+    function in_degree 270 276
+    function degree 280 291
+    function link_usage 298 300
+    function recall_related 309 344
+    function retention_score 350 352
+    function retention_score_with 359 378
+    function retention_score_map 389 411
+    function retention_ranking 417 422
+    function retention_scores 426 440
+    function eviction_order 445 449
+    function forget 453 465
+    function evict_least_used 470 476
+    function retain_most_used 482 488
+    function links_notation 497 520
+    function from_context 530 541
+    function from_memory_events 554 624
+    function add_qualifier 627 631
+    function event_expression_text 633 650

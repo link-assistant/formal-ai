@@ -1,0 +1,13 @@
+self_ast_census
+  target src/unknown_opener.rs
+  language rust
+  fidelity signature
+  byte_len 3089
+  line_count 68
+  content_id source_module_6b6c4a9ed0fd3e01
+  symbol_count 4
+  symbols
+    function unknown_answer_with_variation 21 28
+    function strip_leading_opener 30 47
+    function unknown_answer_variation_for 53 55
+    function language_aware_unknown_answer 58 68

@@ -1,0 +1,45 @@
+Create file issue-751-test-correction.patch containing exactly the following unified diff:
+
+diff --git a/tests/integration/issue_751_token_usage.rs b/tests/integration/issue_751_token_usage.rs
+--- a/tests/integration/issue_751_token_usage.rs
++++ b/tests/integration/issue_751_token_usage.rs
+@@ -34,7 +34,7 @@ fn all_protocols_count_unicode_scalars_and_all_visible_input_messages() {
+     );
+     assert_eq!(chat["choices"][0]["message"]["content"], RUSSIAN_ANSWER);
+-    assert_usage(&chat["usage"], "prompt_tokens", "completion_tokens", 9, 30);
++    assert_usage(&chat["usage"], "prompt_tokens", "completion_tokens", "total_tokens", 9, 30);
+@@ -50,7 +50,7 @@ fn all_protocols_count_unicode_scalars_and_all_visible_input_messages() {
+     );
+     assert_eq!(responses["output"][0]["content"][0]["text"], RUSSIAN_ANSWER);
+-    assert_usage(&responses["usage"], "input_tokens", "output_tokens", 9, 30);
++    assert_usage(&responses["usage"], "input_tokens", "output_tokens", "total_tokens", 9, 30);
+@@ -75,6 +75,7 @@ fn all_protocols_count_unicode_scalars_and_all_visible_input_messages() {
+         &gemini["usageMetadata"],
+         "promptTokenCount",
+         "candidatesTokenCount",
++        "totalTokenCount",
+         6,
+         30,
+@@ -145,8 +146,8 @@ fn responses_use_real_timestamps_and_omit_fake_cache_and_cost_metadata() {
+     let models = get_json("/v1/models");
+     assert!(models["data"][0].get("created").is_none());
+
+-    for payload in [&chat, &responses] {
+-        let serialized = payload.to_string().to_ascii_lowercase();
++    for usage in [&chat["usage"], &responses["usage"]] {
++        let serialized = usage.to_string().to_ascii_lowercase();
+         assert!(!serialized.contains("cache"), "{serialized}");
+         assert!(!serialized.contains("cost"), "{serialized}");
+@@ -158,10 +159,11 @@ fn assert_usage(
+     usage: &Value,
+     input_key: &str,
+     output_key: &str,
++    total_key: &str,
+     expected_input: u64,
+     expected_output: u64,
+ ) {
+     assert_eq!(usage[input_key], expected_input);
+     assert_eq!(usage[output_key], expected_output);
+-    assert_eq!(usage["total_tokens"], expected_input + expected_output);
++    assert_eq!(usage[total_key], expected_input + expected_output);
+ }

@@ -1,0 +1,83 @@
+{
+  "entities": {
+    "Q897": {
+      "type": "item",
+      "id": "Q897",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "gold"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "золото"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सोना"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "金"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "chemical element with symbol Au and atomic number 79; a dense, malleable, and corrosion-resistant precious metal widely used as currency, in jewelry, electronics, and as a financial reserve asset"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "благородный металл, химический элемент с атомным номером 79"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "रासायनिक तत्व, जिसका परमाणु (एटॉमिक) अंक उन्यसी है"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "原子序數為79的化學元素"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "element 79"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "аурум"
+          },
+          {
+            "language": "ru",
+            "value": "злато"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "स्वर्ण"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "黄金"
+          },
+          {
+            "language": "zh",
+            "value": "黃金"
+          },
+          {
+            "language": "zh",
+            "value": "金子"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

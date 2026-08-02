@@ -1,0 +1,16 @@
+Q527
+  aliases
+    en ("celestial dome" "celestial vault" firmament)
+    ru ("небеса")
+  descriptions
+    en "region of the atmosphere and outer space visible from the surface of the Earth"
+    ru "пространство над поверхностью астрономического объекта"
+    zh "天体表面的观测者看到的大气层或太空的部分"
+  id Q527
+  labels
+    en sky
+    hi "आकाश"
+    ru "небо"
+    zh "天空"
+  type item
+success 1

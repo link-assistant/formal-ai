@@ -1,0 +1,59 @@
+{
+  "entities": {
+    "Q13276": {
+      "type": "item",
+      "id": "Q13276",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "cake"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "пирожное"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "केक"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "蛋糕"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "baked dessert"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "десерт из муки, масла и сахара"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "пирожные"
+          },
+          {
+            "language": "ru",
+            "value": "пироженое"
+          },
+          {
+            "language": "ru",
+            "value": "торт"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "卵清糕"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

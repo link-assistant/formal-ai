@@ -3,6 +3,13 @@
 //! Seed files are indentation trees. Historical files used `name "value"`;
 //! issue #398 migrates data to unquoted links with `#` comments and explicit
 //! codepoint metadata for text that is not yet formalized as a lexeme id.
+//!
+//! Quoting follows Links Notation: a delimiter inside a value is *doubled*. The
+//! backslash escapes below are a historical dialect the corpus still carries,
+//! and are read alongside it.
+
+use std::iter::Peekable;
+use std::str::Chars;
 
 #[derive(Debug, Default, Clone)]
 pub struct LinoNode {
@@ -135,6 +142,18 @@ fn parse_colon_definition(content: &str) -> Option<(&str, &str)> {
 }
 
 pub fn find_closing_quote(rest: &str) -> Option<usize> {
+    find_closing_delimiter(rest, b'"')
+}
+
+/// Find the quote that closes a value opened with `quote`.
+///
+/// Links Notation escapes a delimiter by *doubling* it, so a doubled quote is
+/// part of the value rather than its end. `strip_comment` already reads it that
+/// way; this did not, so a value carrying the delimiter had no closing quote on
+/// its own line, failed to decode, and fell back to raw text — quotes and
+/// doubling still in it. The corpus writes that form (`the subject''s name` in
+/// `data/cache/wikidata/property/P138.lino`), so the two had to agree.
+fn find_closing_delimiter(rest: &str, quote: u8) -> Option<usize> {
     let bytes = rest.as_bytes();
     let mut i = 0;
     while i < bytes.len() {
@@ -142,53 +161,55 @@ pub fn find_closing_quote(rest: &str) -> Option<usize> {
             i += 2;
             continue;
         }
-        if bytes[i] == b'"' {
+        if bytes[i] == quote {
+            if bytes.get(i + 1) == Some(&quote) {
+                i += 2;
+                continue;
+            }
             return Some(i);
         }
         i += 1;
     }
     None
 }
-
-fn find_closing_single_quote(rest: &str) -> Option<usize> {
-    let bytes = rest.as_bytes();
-    let mut i = 0;
-    while i < bytes.len() {
-        if bytes[i] == b'\\' {
-            i += 2;
-            continue;
-        }
-        if bytes[i] == b'\'' {
-            return Some(i);
-        }
-        i += 1;
+/// Collapse a delimiter the writer doubled, per Links Notation.
+///
+/// Returns `true` when `c` opened a doubled pair and the pair was consumed.
+fn take_doubled(out: &mut String, c: char, quote: char, iter: &mut Peekable<Chars<'_>>) -> bool {
+    if c != quote || iter.peek() != Some(&quote) {
+        return false;
     }
-    None
+    iter.next();
+    out.push(quote);
+    true
 }
 
-fn find_closing_backtick(rest: &str) -> Option<usize> {
-    let bytes = rest.as_bytes();
-    let mut i = 0;
-    while i < bytes.len() {
-        if bytes[i] == b'\\' {
-            i += 2;
-            continue;
-        }
-        if bytes[i] == b'`' {
-            return Some(i);
-        }
-        i += 1;
-    }
-    None
-}
-
+/// Decode a double-quoted value, reading both escapes this repository writes:
+/// Links Notation's own doubled delimiter, and the backslash dialect
+/// [`crate::links_format::sanitize_lino_value`] emits for this line-based reader.
+///
+/// The `t` and `r` arms exist because that writer emits `\t` and `\r`. Without
+/// them a tab was written and then read back as the two characters `\` and `t`,
+/// which is silent corruption of exactly the content issue #715 is about: a
+/// Makefile recipe line is *required* to begin with a tab, and Go is
+/// conventionally tab-indented, so a substitution rule derived from such a
+/// fragment round-tripped into one that no longer matched the code it came from.
+///
+/// The catch-all is load-bearing and stays: it passes an unknown escape through
+/// with its backslash, which is what lets a value carrying prose or LaTeX
+/// (`\ldots`) survive a reader that has no arm for it.
 pub fn unescape_value(raw: &str) -> String {
     let mut out = String::with_capacity(raw.len());
-    let mut iter = raw.chars();
+    let mut iter = raw.chars().peekable();
     while let Some(c) = iter.next() {
+        if take_doubled(&mut out, c, '"', &mut iter) {
+            continue;
+        }
         if c == '\\' {
             match iter.next() {
                 Some('n') => out.push('\n'),
+                Some('t') => out.push('\t'),
+                Some('r') => out.push('\r'),
                 Some('"') => out.push('"'),
                 Some('\\') | None => out.push('\\'),
                 Some(other) => {
@@ -207,9 +228,14 @@ fn unescape_single_value(raw: &str) -> String {
     let mut out = String::with_capacity(raw.len());
     let mut iter = raw.chars().peekable();
     while let Some(c) = iter.next() {
+        if take_doubled(&mut out, c, '\'', &mut iter) {
+            continue;
+        }
         if c == '\\' {
             match iter.next() {
                 Some('n') => out.push('\n'),
+                Some('t') => out.push('\t'),
+                Some('r') => out.push('\r'),
                 Some('\\') | None => out.push('\\'),
                 Some('x') if iter.peek() == Some(&'2') => {
                     iter.next();
@@ -267,13 +293,13 @@ fn decode_quoted_reference(raw: &str) -> Option<String> {
         }
     }
     if let Some(rest) = raw.strip_prefix('\'') {
-        let close = find_closing_single_quote(rest)?;
+        let close = find_closing_delimiter(rest, b'\'')?;
         if rest[close + 1..].trim().is_empty() {
             return Some(unescape_single_value(&rest[..close]));
         }
     }
     if let Some(rest) = raw.strip_prefix('`') {
-        let close = find_closing_backtick(rest)?;
+        let close = find_closing_delimiter(rest, b'`')?;
         if rest[close + 1..].trim().is_empty() {
             return Some(unescape_value(&rest[..close]));
         }

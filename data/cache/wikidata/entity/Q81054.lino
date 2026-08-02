@@ -1,0 +1,15 @@
+Q81054
+  aliases
+    ru ("шторм" "ураган" "сильный шторм")
+    zh ("風暴")
+  descriptions
+    en "any disturbed state of an astronomical body's atmosphere"
+    ru "очень сильный ветер"
+  id Q81054
+  labels
+    en storm
+    hi "तूफ़ान"
+    ru "буря"
+    zh "风暴"
+  type item
+success 1

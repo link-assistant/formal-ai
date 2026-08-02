@@ -1,0 +1,10 @@
+   Compiling formal-ai v0.300.0 (/tmp/gh-issue-solver-1784506151226)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 17.95s
+     Running tests/unit/mod.rs (target/debug/deps/unit-83490c651f7fe834)
+
+running 2 tests
+test dialog_log::full_exchanges_from_one_dialog_append_to_one_file ... ok
+test dialog_log::expanded_histories_share_the_first_user_prompt_id ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 1937 filtered out; finished in 0.01s
+

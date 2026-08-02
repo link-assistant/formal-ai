@@ -21,7 +21,7 @@
 //! Links Notation so the solver's reasoning can be inspected independently from
 //! the printed code.
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write as _;
 use std::sync::OnceLock;
 
@@ -36,9 +36,6 @@ use super::{ListValue, Operation, ParsedListItem};
 /// cycle in the seed data and must fail composition instead of spinning.
 const MAX_EXPANSION_DEPTH: usize = 8;
 
-/// Safety cap on the `extends` inheritance chain length.
-const MAX_INHERITANCE_DEPTH: usize = 4;
-
 /// Parsed root of the coding-idioms knowledge base, loaded once per process.
 fn idiom_catalog() -> Option<&'static LinoNode> {
     static TREE: OnceLock<LinoNode> = OnceLock::new();
@@ -52,7 +49,8 @@ fn idiom_catalog() -> Option<&'static LinoNode> {
 fn language_chain(catalog: &'static LinoNode, slug: &str) -> Vec<&'static LinoNode> {
     let mut chain = Vec::new();
     let mut current = slug.to_owned();
-    while chain.len() < MAX_INHERITANCE_DEPTH {
+    let mut seen = BTreeSet::new();
+    while seen.insert(current.clone()) {
         let Some(node) = catalog
             .children
             .iter()

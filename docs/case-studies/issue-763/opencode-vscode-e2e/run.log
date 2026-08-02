@@ -1,0 +1,4 @@
+(node:28778) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `code --trace-deprecation ...` to show where the warning was created)
+formal-ai proxy listening on http://127.0.0.1:8873 -> http://127.0.0.1:8872, logging to /tmp/gh-issue-solver-1784428248658/docs/case-studies/issue-763/opencode-vscode-e2e/proxy.jsonl
+issue #763 real-extension E2E passed; evidence: /tmp/gh-issue-solver-1784428248658/docs/case-studies/issue-763/opencode-vscode-e2e

@@ -1,0 +1,177 @@
+{
+  "entities": {
+    "Q7560": {
+      "type": "item",
+      "id": "Q7560",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "mother"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "мать"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "माता"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "母親"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "female parent"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "женщина-родитель по отношению к своему ребёнку"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "女性親屬"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "mum"
+          },
+          {
+            "language": "en",
+            "value": "mom"
+          },
+          {
+            "language": "en",
+            "value": "mommy"
+          },
+          {
+            "language": "en",
+            "value": "mummy"
+          },
+          {
+            "language": "en",
+            "value": "mothers"
+          },
+          {
+            "language": "en",
+            "value": "Mother"
+          },
+          {
+            "language": "en",
+            "value": "ma"
+          },
+          {
+            "language": "en",
+            "value": "mama"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "мама"
+          },
+          {
+            "language": "ru",
+            "value": "мам"
+          },
+          {
+            "language": "ru",
+            "value": "мамочка"
+          },
+          {
+            "language": "ru",
+            "value": "мамуля"
+          },
+          {
+            "language": "ru",
+            "value": "мамка"
+          },
+          {
+            "language": "ru",
+            "value": "мамаша"
+          },
+          {
+            "language": "ru",
+            "value": "матушка"
+          },
+          {
+            "language": "ru",
+            "value": "маменька"
+          },
+          {
+            "language": "ru",
+            "value": "ма"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "媽媽"
+          },
+          {
+            "language": "zh",
+            "value": "母亲"
+          },
+          {
+            "language": "zh",
+            "value": "妈妈"
+          },
+          {
+            "language": "zh",
+            "value": "娘"
+          },
+          {
+            "language": "zh",
+            "value": "母"
+          },
+          {
+            "language": "zh",
+            "value": "妈"
+          },
+          {
+            "language": "zh",
+            "value": "妈咪"
+          },
+          {
+            "language": "zh",
+            "value": "媽咪"
+          },
+          {
+            "language": "zh",
+            "value": "老妈"
+          },
+          {
+            "language": "zh",
+            "value": "老母"
+          },
+          {
+            "language": "zh",
+            "value": "老娘"
+          },
+          {
+            "language": "zh",
+            "value": "老媽"
+          },
+          {
+            "language": "zh",
+            "value": "娘亲"
+          },
+          {
+            "language": "zh",
+            "value": "娘親"
+          },
+          {
+            "language": "zh",
+            "value": "媽"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

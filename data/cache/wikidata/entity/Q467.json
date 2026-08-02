@@ -1,0 +1,97 @@
+{
+  "entities": {
+    "Q467": {
+      "type": "item",
+      "id": "Q467",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "woman"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "женщина"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "महिला"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "成年女性"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "female adult human"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "взрослый человек женского пола"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मानव का मादा स्वरूप"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "成年雌性人類"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "women"
+          },
+          {
+            "language": "en",
+            "value": "lady"
+          },
+          {
+            "language": "en",
+            "value": "adult woman"
+          },
+          {
+            "language": "en",
+            "value": "female adult human"
+          },
+          {
+            "language": "en",
+            "value": "adult human female"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "औरत"
+          },
+          {
+            "language": "hi",
+            "value": "स्त्री"
+          },
+          {
+            "language": "hi",
+            "value": "नारी"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "女性"
+          },
+          {
+            "language": "zh",
+            "value": "女"
+          },
+          {
+            "language": "zh",
+            "value": "女子"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

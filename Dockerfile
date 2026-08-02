@@ -9,6 +9,7 @@ FROM konard/box-dind:2.1.1
 LABEL org.opencontainers.image.source="https://github.com/link-assistant/formal-ai"
 
 ENV HOME=/home/box \
+    FORMAL_AI_MEMORY_PATH=/root/.formal-ai/memory.lino \
     FORMAL_AI_IMAGE_VARIANT=dind \
     FORMAL_AI_START_ISOLATION=docker \
     FORMAL_AI_START_RUNNER="$ --isolated docker --auto-remove-docker-container --" \
@@ -35,7 +36,7 @@ RUN chmod 0755 /usr/local/bin/formal-ai /usr/local/bin/verify-formal-ai-dind && 
     formal-ai --version
 
 EXPOSE 8080
-VOLUME ["/var/lib/docker"]
+VOLUME ["/var/lib/docker", "/root/.formal-ai"]
 SHELL ["/bin/bash", "-c"]
 ENTRYPOINT ["/usr/local/bin/dind-entrypoint.sh"]
 CMD ["formal-ai", "telegram", "--mode", "polling"]

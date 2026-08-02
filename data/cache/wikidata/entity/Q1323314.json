@@ -1,0 +1,51 @@
+{
+  "entities": {
+    "Q1323314": {
+      "type": "item",
+      "id": "Q1323314",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "bag"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "сумка"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "थैला"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "袋"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "simple tool used to hold and carry things inside it, made of some flexible material such as paper, fabric, or leather; closed on all sides except the top and easy to handle"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "мягкая упаковка для переноски предметов в руках или на плече"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "sack"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "ноша"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

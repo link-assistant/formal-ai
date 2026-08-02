@@ -1,0 +1,16 @@
+Q217164
+  aliases
+    ru ("Пол (настил)")
+    zh ("塗跤")
+  descriptions
+    en "walking surface of a room"
+    hi "कमरे में चलने के लिए उपयोग होने वाला अंग"
+    ru "внутренняя поверхность помещения, по которой ходят"
+  id Q217164
+  labels
+    en floor
+    hi "फर्श"
+    ru "пол"
+    zh "地板"
+  type item
+success 1

@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "Q7886": {
+      "type": "item",
+      "id": "Q7886",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "lung"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "лёгкие"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "फुप्फुस"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "肺"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "essential respiration organ in many air-breathing animals"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "орган дыхания у некоторых животных, газообмена между кровью и воздухом"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "器官"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "lungs"
+          },
+          {
+            "language": "en",
+            "value": "borders of the lung"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "лёгкое"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "人體肺部"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

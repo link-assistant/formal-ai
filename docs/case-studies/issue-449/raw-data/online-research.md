@@ -34,7 +34,7 @@ situation exceeds the state-similarity threshold `SS`.
 
 1. **State transformer** — pre-processes raw input into interpretable
    objects/events/properties (for Breakout: ball and paddle positions, etc.).
-2. **State learning layer** — an **in-memory graph database** storing the
+2. **State learning layer** — an **in-memory link database** storing the
    transition graph (states, transitions, utility, count).
 3. **Decision-making layer** — selects the next state/action by the
    utility / counted-utility policy with the similarity fallback.

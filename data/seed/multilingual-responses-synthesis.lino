@@ -1,0 +1,33 @@
+multilingual_responses
+  response response_write_program_skill_gap_name_en
+    intent write_program_skill_gap_name
+    language en
+    text "no synthesis route reaches task ""{task}"" in language ""{language}"""
+  response response_write_program_skill_gap_name_ru
+    intent write_program_skill_gap_name
+    language ru
+    text "ни один маршрут синтеза не покрывает задачу «{task}» на языке «{language}»"
+  response response_write_program_skill_gap_name_hi
+    intent write_program_skill_gap_name
+    language hi
+    text "«{task}» कार्य को «{language}» भाषा में बनाने वाला कोई synthesis route नहीं है"
+  response response_write_program_skill_gap_name_zh
+    intent write_program_skill_gap_name
+    language zh
+    text "没有合成路线能用「{language}」完成任务「{task}」"
+  response response_write_program_skill_gap_en
+    intent write_program_skill_gap
+    language en
+    text "I cannot write this program: {gap}.\n\nI decomposed the request and tried every synthesis route I have, in order — {routes} — and none of them derives it.\n\nNothing was guessed: I do not return a program I cannot derive, and I do not recite the templates I happen to hold. Teach me the missing idiom for `{language}`, or restate the task in steps I can already compile."
+  response response_write_program_skill_gap_ru
+    intent write_program_skill_gap
+    language ru
+    text "Я не могу написать эту программу: {gap}.\n\nЯ разложил запрос на части и по порядку попробовал все имеющиеся маршруты синтеза — {routes} — ни один из них её не выводит.\n\nНичего не угадано: я не возвращаю программу, которую не могу вывести, и не перечисляю имеющиеся шаблоны. Научите меня недостающей идиоме для `{language}` или переформулируйте задачу шагами, которые я уже компилирую."
+  response response_write_program_skill_gap_hi
+    intent write_program_skill_gap
+    language hi
+    text "मैं यह program नहीं लिख सकता: {gap}.\n\nमैंने request को decompose किया और अपने सारे synthesis routes क्रम से आज़माए — {routes} — इनमें से कोई भी इसे derive नहीं करता.\n\nकुछ भी अनुमान से नहीं दिया गया: जो program मैं derive नहीं कर सकता उसे नहीं लौटाता, और अपने पास मौजूद templates गिनाता भी नहीं. `{language}` के लिए छूटी हुई idiom सिखाइए, या task को उन steps में कहिए जिन्हें मैं पहले से compile करता हूँ."
+  response response_write_program_skill_gap_zh
+    intent write_program_skill_gap
+    language zh
+    text "我无法编写这个程序：{gap}。\n\n我已把请求分解，并按顺序尝试了全部合成路线——{routes}——没有一条能推导出它。\n\n没有任何猜测：推导不出来的程序我不会返回，也不会罗列我手头的模板。请教我 `{language}` 缺失的写法，或者用我已经能编译的步骤重述该任务。"

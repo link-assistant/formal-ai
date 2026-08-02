@@ -1,0 +1,18 @@
+Q677
+  aliases
+    en ("element 26")
+    ru ("феррум")
+    zh ("铁")
+  descriptions
+    en "chemical element with symbol Fe and atomic number 26"
+    hi "रासायनिक तत्व"
+    ru "химический элемент с порядковым номером 26, металл и материал, имеющий в основе этот металл"
+    zh "原子序數為26的化學元素"
+  id Q677
+  labels
+    en iron
+    hi "लोहा"
+    ru "железо"
+    zh "鐵"
+  type item
+success 1

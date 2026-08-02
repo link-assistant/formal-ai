@@ -1,0 +1,59 @@
+{
+  "entities": {
+    "Q1072": {
+      "type": "item",
+      "id": "Q1072",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "heart"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "сердце"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "हृदय"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "心脏"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "inner organ for the circulation of blood"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "орган, обеспечивающий ток крови по кровеносным сосудам"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "रक्त परिसंचरण तंत्र में रक्त के संचलन के लिए अंग"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "较高等动物循环系统中一个主要器官"
+        }
+      },
+      "aliases": {
+        "hi": [
+          {
+            "language": "hi",
+            "value": "दिल"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "心臟"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

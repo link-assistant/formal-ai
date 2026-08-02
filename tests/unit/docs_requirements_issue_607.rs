@@ -49,8 +49,15 @@ fn issue_607_shell_planner_and_serve_opt_in_are_traceable() {
             "shell",
             "run_command",
             "\"command\": command",
-            "The `{command}` command completed",
+            "tool_result::render",
         ],
+    );
+
+    let responses = read(root.join("data/seed/multilingual-responses.lino"));
+    assert_contains_all(
+        "data/seed/multilingual-responses.lino",
+        &responses,
+        &["The `{tool}` command completed"],
     );
 
     let server = read(root.join("src/server.rs"));

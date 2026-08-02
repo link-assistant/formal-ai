@@ -1,0 +1,18 @@
+Q467
+  aliases
+    en (women lady "adult woman" "female adult human" "adult human female")
+    hi ("औरत" "स्त्री" "नारी")
+    zh ("女性" "女" "女子")
+  descriptions
+    en "female adult human"
+    hi "मानव का मादा स्वरूप"
+    ru "взрослый человек женского пола"
+    zh "成年雌性人類"
+  id Q467
+  labels
+    en woman
+    hi "महिला"
+    ru "женщина"
+    zh "成年女性"
+  type item
+success 1

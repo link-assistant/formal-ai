@@ -1,0 +1,17 @@
+   Compiling formal-ai v0.298.1 (/tmp/gh-issue-solver-1784407862278)
+error[E0432]: unresolved imports `formal_ai::export_links_notation`, `formal_ai::resolve_memory_path_from`
+ --> tests/issue_756.rs:5:17
+  |
+5 | ...mal_ai::{export_links_notation, resolve_memory_path_from, MemoryEvent,...
+  |             ^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^ no `resolve_memory_path_from` in the root
+  |             |
+  |             no `export_links_notation` in the root
+  |
+help: a similar name exists in the module
+  |
+5 | use formal_ai::{export_memory_links_notation, resolve_memory_path_from, MemoryEvent, SyncStore};
+  |                        +++++++
+
+For more information about this error, try `rustc --explain E0432`.
+error: could not compile `formal-ai` (test "issue_756") due to 1 previous error
+warning: build failed, waiting for other jobs to finish...

@@ -1,0 +1,73 @@
+{
+  "entities": {
+    "Q198": {
+      "type": "item",
+      "id": "Q198",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "war"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "война"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "संग्राम"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "戰爭"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "organized and prolonged violent conflict between different nations, states, or different groups within a nation or state"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "вооружённая борьба между государствами или народами, либо между классами внутри государства"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "तीव्र सशस्त्र संघर्ष"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "國與國之間有組織的長期衝突"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "military conflict"
+          },
+          {
+            "language": "en",
+            "value": "wars"
+          },
+          {
+            "language": "en",
+            "value": "hostilities"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "военный конфликт"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "战争"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

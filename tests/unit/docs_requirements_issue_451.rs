@@ -37,7 +37,7 @@ fn issue_451_symbolic_ai_reference_documents_are_present_and_traceable() {
             "Domain background (symbolic AI)",
             symbolic_ai_url,
             "https://en.wikipedia.org/wiki/Neuro-symbolic_AI",
-            "R1 ... R305",
+            "R1 \u{2026} R444",
         ],
     );
 

@@ -1,0 +1,13 @@
+Acer Aspire 3 A325-45 specifications: the supplied adapter is rated 24 W.
+
+Source: https://acer.example.test/a325-45/specifications
+
+Acer Aspire 3 A325-45 power input: 12 V DC, 2 A, center-positive 3.5 x 1.35 mm barrel connector.
+
+Source: https://parts.example.test/acer-a325-45/connector
+
+Candidate adapter listing: 12 V, 2 A, 24 W, center-positive 3.5 x 1.35 mm plug; compatible with Acer Aspire 3 A325-45.
+
+Source: https://shop.example.test/compatible-a325-45-adapter
+formal-ai: session files for debugging:
+  claude: /tmp/formal-ai-claude-home-config-47994-1784511791514500971/projects/-tmp-gh-issue-solver-1784506151226/b00bc961-c969-434e-be1f-637d8dc073e8.jsonl   (resume: claude --resume b00bc961-c969-434e-be1f-637d8dc073e8)

@@ -1,0 +1,23 @@
+   Compiling formal-ai v0.302.0 (/tmp/gh-issue-solver-1784790843774)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 19.06s
+     Running tests/unit/mod.rs (target/debug/deps/unit-6857834c12417275)
+
+running 1 test
+
+thread 'issue_819_followup::local_find_without_matches_explains_the_result_to_a_beginner' (38567) panicked at tests/unit/issue_819_followup.rs:44:9:
+The `find "${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}" -type d \( -iname '*willow*archive*' \) -print -quit` command completed. Output:
+
+```text
+(Bash completed with no output)
+```
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test issue_819_followup::local_find_without_matches_explains_the_result_to_a_beginner ... FAILED
+
+failures:
+
+failures:
+    issue_819_followup::local_find_without_matches_explains_the_result_to_a_beginner
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 1985 filtered out; finished in 16.85s
+
+error: test failed, to rerun pass `--test unit`

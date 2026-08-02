@@ -1,0 +1,10 @@
+task: execute printf 'issue-749-driver=passed\n'
+turns: 2 (tool calls: 1)
+  [1] run_command {"command":"printf 'issue-749-driver=passed\\n'"}
+      -> issue-749-driver=passed
+
+The `printf 'issue-749-driver=passed\n'` command completed. Output:
+
+```text
+issue-749-driver=passed
+```

@@ -24,7 +24,7 @@
 use crate::coding::guidance as coding_guidance;
 use crate::engine::{
     answer_links_notation, language_aware_answer_for, language_aware_intent_for, normalize_prompt,
-    response_link_for_intent, stable_id, SelectedRule, SymbolicAnswer,
+    response_link_for_intent, ExecutionRecipe, SelectedRule, SymbolicAnswer,
 };
 use crate::event_log::{build_evidence_links, EventLog};
 use crate::intent_formalization::{
@@ -33,7 +33,8 @@ use crate::intent_formalization::{
 };
 use crate::language::{detect as detect_language, Language};
 use crate::probability::{ProbabilityDecisionPolicy, ProbabilityStore};
-use crate::rule_synthesis::try_construct_unknown_rule;
+use crate::rule_synthesis::{try_construct_unknown_rule, try_recall_approved_rule};
+use crate::rule_synthesis_portfolio::try_portfolio_rule;
 use crate::seed;
 use crate::solver_diagnostics::append_diagnostic_trace;
 use crate::solver_formalization::{record_formalization, record_formalization_selection};
@@ -93,7 +94,7 @@ impl ExecutionSurface {
     }
 }
 
-/// How the composite-program [`blueprint`](crate::coding::blueprint) synthesizer
+/// How the composite-program `blueprint` synthesizer
 /// turns its annotated recipe template into the program shown to the user.
 ///
 /// Issue #340 asked the engine to "try all directions" of program synthesis and
@@ -185,11 +186,11 @@ pub struct SolverConfig {
     /// only and reproduces the pre-knob trace exactly; `Up`/`Both` additionally
     /// trace the upward construction pass. Trace-only either way (R13).
     pub recursion_mode: crate::meta_construction::RecursionMode,
-    /// Whether the meta core records the legacy-vs-registry method-selection
-    /// comparison (issue #559, R339): `Legacy` (default) records nothing and the
-    /// hardcoded authority alone selects; `Registry` records the registry-driven
-    /// choice per leaf; `Compare` records the full comparison plus divergence and
-    /// contradiction counts. Trace-only in every mode (R13).
+    /// Whether the meta core records the method-selection trace (issue #559,
+    /// R339): `Off` (default) records nothing; `Record` names the method the
+    /// registry resolves for every atomic leaf, or marks the leaf unresolved.
+    /// The registry is the sole dispatch authority (R344), so there is no
+    /// legacy baseline to compare against. Trace-only in either mode (R13).
     pub selection_mode: crate::selection::SelectionMode,
     /// Whether the meta core records the skill-accumulation ledger (issue #559,
     /// R342): `Off` (default) records nothing; `Accumulate` distills each satisfied
@@ -197,6 +198,13 @@ pub struct SolverConfig {
     /// item. Proposal-only — no skill is auto-promoted without review — and
     /// trace-only either way (R13/C3).
     pub skill_mode: crate::skill_ledger::SkillMode,
+    /// Whether the dialogue's symbolic world model is maintained and traced
+    /// (issue #702): `Off` (default) leaves the solver exactly as it was — no
+    /// current/target contexts are built and the state-query handler declines;
+    /// `Track` rebuilds the model from the conversation, records it as a trace
+    /// artifact, and answers "what is left to reach my goal?" from the
+    /// current->target difference. Trace-only in either mode (R13).
+    pub world_model_mode: crate::world_model_dialog::WorldModelMode,
     /// Whether agent mode is opted in. Off by default.
     pub agent_mode: bool,
     /// Whether diagnostic links are echoed inside the user-facing reply.
@@ -234,6 +242,20 @@ pub struct SolverConfig {
     /// a solve whose config already carries a forced language never fires the
     /// follow-up again.
     pub forced_response_language: Option<&'static str>,
+    /// Compute budget for the step-7 random/evolutionary search stage (issue
+    /// #662), counted in candidate evaluations. When reuse and rule reasoning
+    /// produce no candidate for a recognized search problem, the solver spends
+    /// up to this many evaluations combining known parts against the generated
+    /// tests before falling back to the honest unknown-reasoning reply. `0`
+    /// disables the search entirely; the default is intentionally small. The
+    /// stream is seeded from the impulse content hash, so the stage stays
+    /// deterministic for a given config per the `VISION.md` contract.
+    pub compute_budget: u32,
+    /// Maximum number of independent candidate drafts evaluated for one
+    /// synthesis leaf (issue #704). `1` preserves the historical single-path
+    /// behavior. Values above one enable the deterministic parallel portfolio;
+    /// each draft is seeded from the impulse plus its ordered draft index.
+    pub draft_count: u8,
 }
 
 impl Default for SolverConfig {
@@ -248,6 +270,7 @@ impl Default for SolverConfig {
             recursion_mode: crate::meta_construction::RecursionMode::default(),
             selection_mode: crate::selection::SelectionMode::default(),
             skill_mode: crate::skill_ledger::SkillMode::default(),
+            world_model_mode: crate::world_model_dialog::WorldModelMode::default(),
             agent_mode: false,
             diagnostic_mode: false,
             offline: false,
@@ -258,6 +281,8 @@ impl Default for SolverConfig {
             blueprint_composition: BlueprintComposition::default(),
             probability_policy: ProbabilityDecisionPolicy::default(),
             forced_response_language: None,
+            compute_budget: 512,
+            draft_count: 1,
         }
     }
 }
@@ -265,7 +290,7 @@ impl Default for SolverConfig {
 impl SolverConfig {
     /// Build a [`SolverConfig`] using the documented environment overrides.
     ///
-    /// The parsing body lives in [`crate::solver_helpers::config_from_env`] to keep
+    /// The parsing body lives in `crate::solver_helpers::config_from_env` to keep
     /// this module under the 1000-line cap enforced by `scripts/check-file-size.rs`.
     #[must_use]
     pub fn from_env() -> Self {
@@ -465,6 +490,22 @@ impl UniversalSolver {
         record_intent_formalization(&mut log, &intent_entry);
         let intent_formalization = intent_entry.formalization;
 
+        // Issue #661 (R384): before any contextual handler runs (a language
+        // directive would otherwise be replayed by the response-language
+        // follow-up), check whether this newly formalized requirement
+        // contradicts a retained one. A clash — same subject, opposite polarity
+        // — is surfaced as a warning naming both statements, their weights, and
+        // a resolution that reuses the append-only retraction protocol.
+        if let Some(answer) = crate::requirement_contradiction::detect_and_report(
+            prompt,
+            language,
+            history,
+            self.config.temperature,
+            &mut log,
+        ) {
+            return answer;
+        }
+
         // Issue #559: record the general recursive meta core — problem frame
         // (R330), recursive work-unit decomposition (R332), need-satisfaction
         // ledger (R333), method registry (R331), and the end-to-end solution
@@ -488,7 +529,20 @@ impl UniversalSolver {
             self.solve_sub_impulses(&mut log, &sub_impulses, probability_store, intent_cache);
 
         let selected_rule = select_rule_for_intent(&intent_formalization);
-        let rule = try_construct_unknown_rule(selected_rule, prompt, history, &mut log);
+        // Issue #704: with a portfolio configured, the ledger recall and the
+        // vocabulary derivation stop being an ordered fallback chain and become
+        // independent drafts that are tested against the same fixture and
+        // compared. At the default `draft_count` of 1 this is a no-op and the
+        // sequential path below runs exactly as before.
+        let drafted_rule = try_portfolio_rule(
+            selected_rule,
+            prompt,
+            history,
+            &mut log,
+            self.config.draft_count,
+        );
+        let recalled_rule = try_recall_approved_rule(drafted_rule, prompt, history, &mut log);
+        let rule = try_construct_unknown_rule(recalled_rule, prompt, history, &mut log);
         let rule =
             if let Some(rewrite) = rewrite_bare_program_coreference_rule(&rule, prompt, history) {
                 log.append("write_program_coreference_rewrite", rewrite.trace);
@@ -558,6 +612,14 @@ impl UniversalSolver {
             ) {
                 return answer;
             }
+            // Issue #699 batch 3: every synthesis route missed. Name the gap in
+            // the evidence trail — the same `skill_gap` event the procedure
+            // compiler emits — so the miss is actionable instead of being
+            // rendered as a recitation of the templates we happen to hold.
+            log.append(
+                "skill_gap",
+                crate::program_skill_gap::gap_name(task.as_deref(), language.as_deref()),
+            );
         }
 
         if let Some(answer) = try_synthesize_from_sub_results(
@@ -588,7 +650,7 @@ impl UniversalSolver {
             }
         }
 
-        if let Some(answer) = Self::handle_policy(prompt, &mut log, language) {
+        if let Some(answer) = self.handle_policy(prompt, &mut log, language) {
             return answer;
         }
 
@@ -611,6 +673,16 @@ impl UniversalSolver {
             // request returns an agent_suggestion intent in both engines.
             if let Some(answer) =
                 crate::solver_terminal::try_terminal_command(prompt, language, &mut log)
+            {
+                return answer;
+            }
+            // Issue #662: no reusable part or rule matched. Combine reasoning,
+            // random search, and evolutionary search within the configured
+            // compute budget (GOALS.md Universal Solver Goals) before giving up.
+            // On budget exhaustion the `search:` evidence stays on the log and
+            // the honest unknown-reasoning reply below takes over.
+            if let Some(answer) =
+                crate::solver_search::try_budget_search(prompt, &mut log, self.config)
             {
                 return answer;
             }
@@ -673,6 +745,27 @@ impl UniversalSolver {
         let answer =
             append_diagnostic_trace(self.config.diagnostic_mode, base_answer, &links_notation);
 
+        let execution_recipe = match &rule {
+            SelectedRule::WriteProgram(spec) => Some(Box::new(ExecutionRecipe {
+                language: spec.language.code_fence.to_owned(),
+                source: crate::code_editing::apply_inline_hello_world_source_replacement(
+                    prompt,
+                    spec.template.code,
+                    *spec,
+                ),
+                path: spec.language.save_as.to_owned(),
+                commands: spec
+                    .language
+                    .execution
+                    .check_command
+                    .into_iter()
+                    .chain(std::iter::once(spec.language.execution.run_command))
+                    .map(str::to_owned)
+                    .collect(),
+            })),
+            _ => None,
+        };
+
         SymbolicAnswer {
             intent,
             answer,
@@ -680,10 +773,12 @@ impl UniversalSolver {
             evidence_links,
             thinking_steps,
             links_notation,
+            execution_recipe,
         }
     }
 
     fn handle_policy(
+        &self,
         prompt: &str,
         log: &mut EventLog,
         language: Language,
@@ -783,8 +878,15 @@ impl UniversalSolver {
         }
 
         if is_agent_request(&normalized) {
-            if let Some(answer) = try_agent_workspace_task(prompt, &normalized, log) {
-                return Some(answer);
+            // The HTTP surface is embedded in an agentic CLI harness. Executing
+            // here would mutate the server's private temporary workspace while
+            // the caller sees no tool call and cannot audit or approve it. API
+            // requests therefore stay declarative; `protocol` routes concrete
+            // actions through the tools advertised by the client.
+            if self.config.execution_surface != ExecutionSurface::HttpServer {
+                if let Some(answer) = try_agent_workspace_task(prompt, &normalized, log) {
+                    return Some(answer);
+                }
             }
             log.append("agent_mode:opted_in", prompt.to_owned());
             log.append("agent_mode:active", prompt.to_owned());
@@ -823,14 +925,10 @@ impl UniversalSolver {
             return;
         }
         log.append("search:external", prompt.to_owned());
-        let source_id = stable_id("source", prompt);
-        let fetched_at = "1970-01-01T00:00:00Z";
-        let sha256 = stable_id("sha256", prompt);
         log.append(
-            "source:http",
-            format!("https://example.org/{source_id} fetched_at={fetched_at} sha256={sha256}"),
+            "policy:no_fetch_capability",
+            "external search requested but no retrieval was executed".to_owned(),
         );
-        log.append("cache_hit", source_id);
     }
 }
 

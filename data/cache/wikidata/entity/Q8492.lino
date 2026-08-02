@@ -1,0 +1,17 @@
+Q8492
+  aliases
+    en ("fruit and vegetable juice" "juice drink" "fruit and vegetable juices" "fruit juice" "vegetable juice" "plant juice")
+    ru ("сок (напиток)" "соки из фруктов и овощей (ОКПД и КПЕС 2002 15.32.1, 15.32.10; ОКПД2 и КПЕС 2008 10.32.1)" 15.32.1 15.32.10 10.32.1 "сок из фруктов или овощей" "соки из фруктов и овощей")
+  descriptions
+    en "naturally occurring liquid present in fruits, vegetables and plants"
+    hi "लिक्विद दाथ इस नछेरेली केन्तनद इन फ्रुत अन्द वेगेतब्लेस"
+    ru "напиток из фруктов, овощей и трав"
+    zh "挤压水果和蔬菜产生的可饮用液体"
+  id Q8492
+  labels
+    en juice
+    hi "रस"
+    ru "сок"
+    zh "蔬果汁"
+  type item
+success 1

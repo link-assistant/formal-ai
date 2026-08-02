@@ -1,0 +1,99 @@
+{
+  "entities": {
+    "Q125191": {
+      "type": "item",
+      "id": "Q125191",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "photograph"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "фотография"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "फ़ोटोग्राफ़"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "相片"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "image created by light falling on a light-sensitive surface"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "изображение, полученное в результате фотографического процесса"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "攝影得出的影像"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "photo"
+          },
+          {
+            "language": "en",
+            "value": "photographs"
+          },
+          {
+            "language": "en",
+            "value": "photos"
+          },
+          {
+            "language": "en",
+            "value": "picture"
+          },
+          {
+            "language": "en",
+            "value": "pictures"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "фотоснимок"
+          },
+          {
+            "language": "ru",
+            "value": "фото"
+          },
+          {
+            "language": "ru",
+            "value": "фотка"
+          },
+          {
+            "language": "ru",
+            "value": "фотограмма"
+          },
+          {
+            "language": "ru",
+            "value": "снимок"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "फ़ोटो"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "照片"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,36 @@
+self_ast_census
+  target src/skill_compiler/structured.rs
+  language rust
+  fidelity signature
+  byte_len 17294
+  line_count 508
+  content_id source_module_299be5957fb64720
+  symbol_count 27
+  symbols
+    struct StructuredSkillSpec 12 22
+    struct StructuredInput 25 28
+    struct StructuredExpectedTest 31 34
+    struct StructuredPermission 37 40
+    struct ReplayPair 43 46
+    function primary_replay 49 56
+    function parse_structured_skill 59 152
+    function parse_input_line 154 171
+    function parse_expected_test_line 173 195
+    function parse_target_line 197 206
+    function parse_permission_line 208 230
+    function line_after_label 232 246
+    function required_code_span 248 256
+    function required_labeled_text 258 274
+    function trim_code_or_text 276 283
+    function supported_input_type 285 300
+    function looks_like_structured_skill_line 302 316
+    function unsupported_instruction_reason 328 336
+    function inferred_permissioned_capability 348 360
+    function tool_capability 362 368
+    function capability_is_granted 370 374
+    function deduplicate_permissions 376 379
+    function structured_canonical 381 408
+    function handler_signature 410 420
+    function handler_stub_source 422 470
+    function rust_type_for 472 480
+    function sanitize_identifier 482 508

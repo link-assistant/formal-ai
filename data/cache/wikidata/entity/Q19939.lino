@@ -1,0 +1,19 @@
+Q19939
+  aliases
+    en ("Panthera tigris" tigress tigers "P. tigris")
+    hi ("पैंथेरा टाइगरिस")
+    ru ("Panthera tigris")
+    zh ("老虎")
+  descriptions
+    en "species of big cat"
+    hi "बिल्ली परिवार की सबसे बड़ी प्रजाति"
+    ru "вид хищных млекопитающих семейства кошачьих"
+    zh "猫科豹属哺乳动物"
+  id Q19939
+  labels
+    en tiger
+    hi "बाघ"
+    ru "тигр"
+    zh "虎"
+  type item
+success 1

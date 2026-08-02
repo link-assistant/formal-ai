@@ -1,0 +1,92 @@
+[2m[WebServer] [22m[0m[2m[35m$[0m [2m[1mbun build ./src/web/vendor-entry.js --outfile ./src/web/vendor.bundle.js --target browser --format iife --production --minify && bun build ./src/web/ocr-entry.js --outfile ./src/web/ocr.bundle.js --target browser --format iife --production --minify && bun build ./src/web/app/main.jsx --outfile ./src/web/app.js --target browser --format iife --production --minify[0m
+[2m[WebServer] [22m(node:21063) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+  ✘  1 [chromium] › tests/issue-776.spec.js:32:3 › Issue #776 source-first translation › reported prompt translates through the browser worker (13.0s)
+  ✘  2 [chromium] › tests/issue-776.spec.js:32:3 › Issue #776 source-first translation › reported prompt translates through the browser worker (retry #1) (15.7s)
+  ✓  3 [chromium] › tests/issue-776.spec.js:43:3 › Issue #776 source-first translation › one proposition is renderable in en, ru, hi, and zh (4.1s)
+
+
+  1) [chromium] › tests/issue-776.spec.js:32:3 › Issue #776 source-first translation › reported prompt translates through the browser worker
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoContainText[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator: locator('[data-testid="chat-message"]').last().locator('.markdown-body')
+    Timeout: 10000ms
+    [32m- Expected substring  - 1[39m
+    [31m+ Received string     + 2[39m
+
+    [32m- any formal system is either incomplete or inconsistent[39m
+    [31m+ Done. Theme is now auto.[39m
+    [31m+[39m
+
+    Call log:
+    [2m  - Expect "toContainText" with timeout 10000ms[22m
+    [2m  - waiting for locator('[data-testid="chat-message"]').last().locator('.markdown-body')[22m
+    [2m    7 × locator resolved to <div aria-hidden="true" class="markdown-body is-revealing" data-testid="message-markdown-body">…</div>[22m
+    [2m      - unexpected value "Done. Theme is now auto.[22m
+    [2m"[22m
+    [2m    16 × locator resolved to <div class="markdown-body is-revealed" data-testid="message-markdown-body">…</div>[22m
+    [2m       - unexpected value "Done. Theme is now auto.[22m
+    [2m"[22m
+
+
+      35 |       'любая формальная система либо неполна, либо противоречива - translate to english',
+      36 |     );
+    > 37 |     await expect(reply).toContainText(
+         |                         ^
+      38 |       'any formal system is either incomplete or inconsistent',
+      39 |     );
+      40 |     await expect(reply).not.toContainText('translation gap');
+        at /tmp/gh-issue-solver-1784437815860/tests/e2e/tests/issue-776.spec.js:37:25
+
+    Error Context: test-results/issue-776-Issue-776-source-f135e--through-the-browser-worker-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoContainText[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator: locator('[data-testid="chat-message"]').last().locator('.markdown-body')
+    Timeout: 10000ms
+    [32m- Expected substring  - 1[39m
+    [31m+ Received string     + 2[39m
+
+    [32m- any formal system is either incomplete or inconsistent[39m
+    [31m+ Done. Theme is now auto.[39m
+    [31m+[39m
+
+    Call log:
+    [2m  - Expect "toContainText" with timeout 10000ms[22m
+    [2m  - waiting for locator('[data-testid="chat-message"]').last().locator('.markdown-body')[22m
+    [2m    7 × locator resolved to <div aria-hidden="true" class="markdown-body is-revealing" data-testid="message-markdown-body">…</div>[22m
+    [2m      - unexpected value "Done. Theme is now auto.[22m
+    [2m"[22m
+    [2m    14 × locator resolved to <div class="markdown-body is-revealed" data-testid="message-markdown-body">…</div>[22m
+    [2m       - unexpected value "Done. Theme is now auto.[22m
+    [2m"[22m
+
+
+      35 |       'любая формальная система либо неполна, либо противоречива - translate to english',
+      36 |     );
+    > 37 |     await expect(reply).toContainText(
+         |                         ^
+      38 |       'any formal system is either incomplete or inconsistent',
+      39 |     );
+      40 |     await expect(reply).not.toContainText('translation gap');
+        at /tmp/gh-issue-solver-1784437815860/tests/e2e/tests/issue-776.spec.js:37:25
+
+    Error Context: test-results/issue-776-Issue-776-source-f135e--through-the-browser-worker-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/issue-776-Issue-776-source-f135e--through-the-browser-worker-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/issue-776-Issue-776-source-f135e--through-the-browser-worker-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/issue-776.spec.js:32:3 › Issue #776 source-first translation › reported prompt translates through the browser worker
+  1 passed (50.3s)

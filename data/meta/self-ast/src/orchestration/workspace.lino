@@ -1,0 +1,24 @@
+self_ast_census
+  target src/orchestration/workspace.rs
+  language rust
+  fidelity signature
+  byte_len 8338
+  line_count 277
+  content_id source_module_14d6810946814ad7
+  symbol_count 15
+  symbols
+    enum WorkspaceChangeKind 11 15
+    struct WorkspaceChange 18 24
+    struct Snapshot 27 29
+    struct FileState 32 35
+    function snapshot 37 71
+    function changes 73 104
+    function copy_workspace 106 143
+    function apply_changes 145 170
+    function validate_changes 172 194
+    function validate_change_shape 196 215
+    function require_hash 217 242
+    function ignored 244 253
+    function relative_path 255 258
+    function safe_relative 260 273
+    function sha256 275 277

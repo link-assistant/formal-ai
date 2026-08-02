@@ -1,0 +1,15 @@
+Q5283
+  aliases
+    zh ("鑽石" "金刚石" "金鋼石")
+  descriptions
+    en "allotrope of carbon often used as a gemstone and an abrasive"
+    ru "минерал, кубическая аллотропная форма углерода"
+    zh "矿物和珠宝"
+  id Q5283
+  labels
+    en diamond
+    hi "हीरा"
+    ru "алмаз"
+    zh "钻石"
+  type item
+success 1

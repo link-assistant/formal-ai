@@ -1,0 +1,12 @@
+   Compiling formal-ai v0.289.0 (/tmp/gh-issue-solver-1784076793622)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 15.87s
+     Running tests/issue_715.rs (target/debug/deps/issue_715-31dd5adae2836050)
+
+running 5 tests
+test contextual_code_change_reads_then_writes_the_active_file ... ok
+test explicit_old_new_change_can_rewrite_an_arbitrary_code_fragment ... ok
+test contextual_change_is_language_independent_across_ten_phrasings_each ... ok
+test code_generation_writes_a_real_workspace_file_for_every_catalog_language ... ok
+test contextual_change_rewrites_workspace_source_for_every_catalog_language ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s

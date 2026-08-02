@@ -1,0 +1,67 @@
+{
+  "entities": {
+    "Q7925": {
+      "type": "item",
+      "id": "Q7925",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "rain"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "дождь"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "वर्षा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "雨"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "liquid water in the form of droplets that have condensed from atmospheric water vapor and then precipitated"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "атмосферные осадки, выпадающие из облаков в виде капель жидкости"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "प्राकृतिक घटना"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "自然降水現象"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "rainfall"
+          },
+          {
+            "language": "en",
+            "value": "🌧"
+          },
+          {
+            "language": "en",
+            "value": "⛆"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "下雨"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

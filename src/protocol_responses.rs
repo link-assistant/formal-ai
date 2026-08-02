@@ -1,47 +1,139 @@
-use serde_json::Value;
+use std::fmt::Write as _;
+use std::path::Path;
 
-use crate::agentic_coding::planner::{tool_capability, Capability};
-use crate::protocol_policy::tool_definition_name;
+use serde_json::{Map, Value};
 
-pub fn response_arguments_for_tool(tools: &[Value], tool_name: &str, arguments: String) -> String {
-    if !responses_tool_prefers_cmd_argument(tools, tool_name) {
-        return arguments;
-    }
+use crate::protocol_policy::find_tool_definition;
 
-    let Ok(mut value) = serde_json::from_str::<Value>(&arguments) else {
-        return arguments;
-    };
-    let Some(object) = value.as_object_mut() else {
-        return arguments;
-    };
-    if object.contains_key("cmd") {
-        return value.to_string();
-    }
-    let Some(command) = object.remove("command") else {
-        return arguments;
-    };
-    object.insert(String::from("cmd"), command);
-    value.to_string()
+const PATCH_BEGIN: &str = "*** Begin Patch";
+const PATCH_ADD_FILE: &str = "*** Add File:";
+const PATCH_END: &str = "*** End Patch";
+
+/// Whether `tool_name` is a freeform custom tool on the Responses surface.
+#[must_use]
+pub fn is_custom_response_tool(tools: &[Value], tool_name: &str) -> bool {
+    find_tool_definition(tools, tool_name)
+        .and_then(|definition| definition.get("type"))
+        .and_then(Value::as_str)
+        == Some("custom")
 }
 
-fn responses_tool_prefers_cmd_argument(tools: &[Value], tool_name: &str) -> bool {
-    if tool_capability(tool_name) != Some(Capability::Run) {
-        return false;
+/// Lower semantic planner arguments into the freeform input expected by a
+/// Responses custom tool. Patch tools use Codex's native patch grammar; other
+/// custom tools receive the planner's original freeform bytes unchanged.
+#[must_use]
+pub fn custom_response_tool_input(tools: &[Value], tool_name: &str, arguments: String) -> String {
+    let Some(definition) = find_tool_definition(tools, tool_name) else {
+        return arguments;
+    };
+    if definition.get("type").and_then(Value::as_str) != Some("custom") {
+        return arguments;
     }
-    tools.iter().any(|tool| {
-        tool_definition_name(tool).as_deref() == Some(tool_name) && tool_schema_prefers_cmd(tool)
-    })
+    let leaf = tool_name.rsplit("__").next().unwrap_or(tool_name);
+    if !leaf.to_ascii_lowercase().contains("patch") {
+        return arguments;
+    }
+    apply_patch_input(&arguments).unwrap_or(arguments)
 }
 
-fn tool_schema_prefers_cmd(tool: &Value) -> bool {
-    let Some(schema) = tool_parameters_schema(tool) else {
-        return false;
-    };
-    if !schema_has_property(schema, "cmd") {
-        return false;
+fn apply_patch_input(arguments: &str) -> Option<String> {
+    let arguments = serde_json::from_str::<Value>(arguments).ok()?;
+    let path = ["path", "filePath", "file_path"]
+        .iter()
+        .find_map(|name| arguments.get(*name).and_then(Value::as_str))?;
+    let content = arguments.get("content").and_then(Value::as_str)?;
+    if path.is_empty() || path.contains(['\r', '\n']) {
+        return None;
     }
-    schema_required_contains(schema, "cmd")
-        || (!schema_has_property(schema, "command") && !schema_required_contains(schema, "command"))
+
+    let mut rendered = String::new();
+    let _ = writeln!(rendered, "{PATCH_BEGIN}");
+    let _ = writeln!(rendered, "{PATCH_ADD_FILE} {path}");
+    if content.is_empty() {
+        rendered.push_str("+\n");
+    } else {
+        for line in content.lines() {
+            let _ = writeln!(rendered, "+{line}");
+        }
+    }
+    let _ = writeln!(rendered, "{PATCH_END}");
+    Some(rendered)
+}
+
+/// Project the planner's capability-shaped arguments onto the exact JSON Schema
+/// advertised by the selected client tool.
+///
+/// Agentic clients use different names for the same values (`command`/`cmd`,
+/// `query`/`pattern`, and several path/edit variants). Planner code deliberately
+/// carries those semantic aliases; this boundary removes undeclared aliases and
+/// fills every required schema field before a call crosses the protocol.
+///
+/// `workspace` is the directory the client said it is running in, when it said
+/// so; a path the client requires to be absolute is resolved against it rather
+/// than against the server's own directory.
+pub fn response_arguments_for_tool(
+    tools: &[Value],
+    tool_name: &str,
+    arguments: String,
+    user_prompt: &str,
+    workspace: Option<&str>,
+) -> String {
+    let Some(definition) = find_tool_definition(tools, tool_name) else {
+        return arguments;
+    };
+    let Some(schema) = tool_parameters_schema(definition) else {
+        return arguments;
+    };
+    let Some(properties) = schema.get("properties").and_then(Value::as_object) else {
+        return arguments;
+    };
+    // An empty/unspecified object schema is intentionally permissive. Preserve
+    // the planner shape for older clients that advertise no property metadata.
+    if properties.is_empty() {
+        return arguments;
+    }
+    let Ok(source) = serde_json::from_str::<Value>(&arguments) else {
+        return arguments;
+    };
+    let Some(source) = source.as_object() else {
+        return arguments;
+    };
+
+    let required = schema
+        .get("required")
+        .and_then(Value::as_array)
+        .map(Vec::as_slice)
+        .unwrap_or_default();
+    let mut projected = Map::new();
+    for (name, property_schema) in properties {
+        let value = source
+            .get(name)
+            .cloned()
+            .or_else(|| semantic_alias(name, source, user_prompt))
+            .or_else(|| {
+                required
+                    .iter()
+                    .any(|entry| entry.as_str() == Some(name))
+                    .then(|| schema_default(property_schema, name, user_prompt))
+            });
+        if let Some(value) = value {
+            let mut value = constrain_to_schema(value, property_schema, name, user_prompt);
+            if let Some(path) = value
+                .as_str()
+                .filter(|_| demands_absolute_path(definition, name, property_schema))
+            {
+                value = Value::String(absolute_path(path, workspace));
+            }
+            projected.insert(name.clone(), value);
+        }
+    }
+    let projected = Value::Object(projected).to_string();
+    if std::env::var("FORMAL_AI_TRACE_REQUESTS").as_deref() == Ok("1") && projected != arguments {
+        eprintln!(
+            "[trace] tool_schema_projection: tool={tool_name} planned={arguments} emitted={projected}"
+        );
+    }
+    projected
 }
 
 fn tool_parameters_schema(tool: &Value) -> Option<&Value> {
@@ -61,20 +153,185 @@ fn tool_parameters_schema(tool: &Value) -> Option<&Value> {
         })
 }
 
-fn schema_has_property(schema: &Value, property: &str) -> bool {
-    schema
-        .get("properties")
-        .and_then(Value::as_object)
-        .is_some_and(|properties| properties.contains_key(property))
+fn semantic_alias(name: &str, source: &Map<String, Value>, user_prompt: &str) -> Option<Value> {
+    let aliases: &[&str] = match name {
+        "path" | "filePath" | "file_path" | "absolute_path" => {
+            &["path", "filePath", "file_path", "absolute_path"]
+        }
+        "command" | "cmd" => &["command", "cmd"],
+        "query" | "pattern" => &["query", "pattern"],
+        "paths" | "file_paths" | "files" => &["paths", "file_paths", "files"],
+        "old" | "oldString" | "old_string" | "old_str" => {
+            &["old", "oldString", "old_string", "old_str"]
+        }
+        "new" | "newString" | "new_string" | "new_str" => {
+            &["new", "newString", "new_string", "new_str"]
+        }
+        "prompt" | "instruction" => return Some(Value::String(user_prompt.to_owned())),
+        _ => return None,
+    };
+    aliases.iter().find_map(|alias| source.get(*alias).cloned())
 }
 
-fn schema_required_contains(schema: &Value, property: &str) -> bool {
-    schema
-        .get("required")
+/// Whether the client's own schema says this argument has to be an absolute
+/// path (issue #671).
+///
+/// The planner names files the way the request did, which is usually relative.
+/// Several real clients reject that outright — the agentic matrix caught
+/// `agent` answering `Error: File not found: /alpha.txt` and `qwen` answering
+/// `File path must be absolute, but was relative: alpha.txt`. The requirement is
+/// advertised, so it is read rather than hardcoded per client: `gemini` names
+/// the property `absolute_path`, `qwen` and `opencode` say so in the property
+/// description, and `agent` says so in the tool description ("The filePath
+/// parameter must be an absolute path, not a relative path"). A client that
+/// accepts relative paths advertises nothing and keeps the request's own
+/// spelling, because the absolute form is only correct while the server shares
+/// the client's working directory.
+fn demands_absolute_path(definition: &Value, name: &str, property_schema: &Value) -> bool {
+    const PATH_PROPERTIES: &[&str] = &[
+        "path",
+        "filePath",
+        "file_path",
+        "absolute_path",
+        "dir_path",
+        "directory",
+        "notebook_path",
+    ];
+    if !PATH_PROPERTIES.contains(&name) {
+        return false;
+    }
+    if name == "absolute_path" {
+        return true;
+    }
+    let says_absolute = |value: Option<&Value>| {
+        value
+            .and_then(Value::as_str)
+            .is_some_and(|text| text.to_lowercase().contains("absolute"))
+    };
+    says_absolute(property_schema.get("description")) || says_absolute(tool_description(definition))
+}
+
+/// The client-authored prose for a tool, under either the flat or the
+/// `function`-wrapped shape.
+fn tool_description(definition: &Value) -> Option<&Value> {
+    definition.get("description").or_else(|| {
+        definition
+            .get("function")
+            .and_then(|function| function.get("description"))
+    })
+}
+
+/// Resolve a relative path against the client's directory, falling back to the
+/// server's own.
+///
+/// The fallback is the shared-directory case the agentic matrix runs, where both
+/// processes start in the same workspace. When the client declares a different
+/// directory — the issue-#715 E2E runs the CLI in a temporary workspace while
+/// the server stays in the repository — resolving against the server's directory
+/// writes the file somewhere the client never looks.
+fn absolute_path(path: &str, workspace: Option<&str>) -> String {
+    let path = Path::new(path);
+    if path.is_absolute() {
+        return path.to_string_lossy().into_owned();
+    }
+    if let Some(workspace) = workspace.map(Path::new).filter(|root| root.is_absolute()) {
+        return workspace.join(path).to_string_lossy().into_owned();
+    }
+    std::path::absolute(path)
+        .unwrap_or_else(|_| path.to_path_buf())
+        .to_string_lossy()
+        .into_owned()
+}
+
+fn schema_default(schema: &Value, name: &str, user_prompt: &str) -> Value {
+    if let Some(default) = schema.get("default") {
+        return default.clone();
+    }
+    if let Some(first) = schema
+        .get("enum")
         .and_then(Value::as_array)
-        .is_some_and(|required| {
-            required
-                .iter()
-                .any(|entry| entry.as_str() == Some(property))
-        })
+        .and_then(|e| e.first())
+    {
+        return first.clone();
+    }
+    match schema.get("type").and_then(Value::as_str) {
+        Some("boolean") => Value::Bool(name == "login"),
+        Some("array") => Value::Array(Vec::new()),
+        Some("object") => Value::Object(Map::new()),
+        Some("integer" | "number") => Value::from(0),
+        Some("null") => Value::Null,
+        _ if matches!(name, "prompt" | "instruction") => Value::String(user_prompt.to_owned()),
+        _ => Value::String(String::new()),
+    }
+}
+
+fn constrain_to_schema(value: Value, schema: &Value, name: &str, user_prompt: &str) -> Value {
+    if let Some(allowed) = schema.get("enum").and_then(Value::as_array) {
+        if !allowed.contains(&value) {
+            return allowed.first().cloned().unwrap_or(value);
+        }
+    }
+    match schema.get("type").and_then(Value::as_str) {
+        Some("object") => {
+            let Some(source) = value.as_object() else {
+                return schema_default(schema, name, user_prompt);
+            };
+            let Some(properties) = schema.get("properties").and_then(Value::as_object) else {
+                return value;
+            };
+            let required = schema
+                .get("required")
+                .and_then(Value::as_array)
+                .map(Vec::as_slice)
+                .unwrap_or_default();
+            let mut projected = Map::new();
+            for (child_name, child_schema) in properties {
+                let child = source.get(child_name).cloned().or_else(|| {
+                    required
+                        .iter()
+                        .any(|entry| entry.as_str() == Some(child_name))
+                        .then(|| schema_default(child_schema, child_name, user_prompt))
+                });
+                if let Some(child) = child {
+                    projected.insert(
+                        child_name.clone(),
+                        constrain_to_schema(child, child_schema, child_name, user_prompt),
+                    );
+                }
+            }
+            Value::Object(projected)
+        }
+        Some("array") => {
+            let Some(values) = value.as_array() else {
+                return schema_default(schema, name, user_prompt);
+            };
+            let mut values = values.clone();
+            if let Some(item_schema) = schema.get("items") {
+                values = values
+                    .into_iter()
+                    .map(|item| constrain_to_schema(item, item_schema, name, user_prompt))
+                    .collect();
+                let minimum = schema
+                    .get("minItems")
+                    .and_then(Value::as_u64)
+                    .and_then(|minimum| usize::try_from(minimum).ok())
+                    // Client-provided schemas must not be able to force an
+                    // unbounded allocation while defaults are projected.
+                    .unwrap_or(0)
+                    .min(64);
+                while values.len() < minimum {
+                    values.push(schema_default(item_schema, name, user_prompt));
+                }
+            }
+            Value::Array(values)
+        }
+        Some("string") if !value.is_string() => schema_default(schema, name, user_prompt),
+        Some("boolean") if !value.is_boolean() => schema_default(schema, name, user_prompt),
+        Some("integer") if !value.is_i64() && !value.is_u64() => {
+            schema_default(schema, name, user_prompt)
+        }
+        Some("number") if !value.is_number() => schema_default(schema, name, user_prompt),
+        Some("null") if !value.is_null() => Value::Null,
+        _ => value,
+    }
 }

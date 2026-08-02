@@ -1,0 +1,32 @@
+issue_840_smallest_leaf_1
+  parent grounded_action_recipe
+  leaf "model local action, scope, and kind meanings"
+  implementation data/seed/meanings-local-search.lino
+  authorship human
+issue_840_smallest_leaf_2
+  parent grounded_action_recipe
+  leaf "advance local search only from observed results"
+  implementation src/agentic_coding/local_search.rs
+  authorship human
+issue_840_smallest_leaf_3
+  parent grounded_action_recipe
+  leaf "bind a definition follow-up to its antecedent"
+  implementation src/agentic_coding/web_research.rs
+  authorship human
+issue_840_smallest_leaf_4
+  parent grounded_action_recipe
+  leaf "research both comparison sides independently"
+  implementation src/agentic_coding/comparison.rs
+  authorship human
+issue_840_smallest_leaf_5
+  parent grounded_action_recipe
+  leaf "record the empty-observation widening invariant"
+  implementation data/meta/grounded-action-authored-invariant.lino
+  authorship formal_ai_agent_cli
+  session ses_069af4151ffep7T8HoP6ObsuBY
+  evidence docs/case-studies/issue-840/self-hosting/agent-stream.jsonl
+
+issue_840_self_authorship_measurement
+  reviewed_smallest_leaves 5
+  formal_ai_authored_leaves 1
+  formal_ai_authored_percent 20

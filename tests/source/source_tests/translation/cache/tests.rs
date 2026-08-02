@@ -151,6 +151,20 @@ fn wikidata_search_url_keyed_by_search_term() {
 }
 
 #[test]
+fn long_unicode_cache_segment_truncates_on_a_character_boundary() {
+    let value = "любая формальная система либо неполна, либо противоречива";
+    let segment = sanitize_segment(value);
+
+    assert!(segment.ends_with(&cache_key(value)[..8]));
+    assert!(segment.is_char_boundary(segment.len()));
+    assert!(
+        segment.len() <= 105,
+        "got {} bytes: {segment}",
+        segment.len()
+    );
+}
+
+#[test]
 fn wikidata_sparql_url_lands_in_sparql_bucket() {
     let location = cache_location(
         "https://query.wikidata.org/sparql?format=json&query=SELECT%20%3Flemma%20WHERE%20%7B%20%7D",

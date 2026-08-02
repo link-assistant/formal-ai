@@ -16,7 +16,7 @@ fn answer_with_config(prompt: &str, config: SolverConfig) -> SymbolicAnswer {
 }
 
 // ---------------------------------------------------------------------------
-// Active expectations: the implementation does not yet hit external sources.
+// Local and offline paths must never imply that an external fetch occurred.
 // ---------------------------------------------------------------------------
 
 #[test]
@@ -32,7 +32,7 @@ fn implementation_does_not_advertise_external_fetches_for_local_prompts() {
 }
 
 // ---------------------------------------------------------------------------
-// full-scope expectations.
+// Source policy and provenance expectations.
 // ---------------------------------------------------------------------------
 
 #[test]
@@ -48,15 +48,14 @@ fn external_lookups_record_source_url() {
 }
 
 #[test]
-fn source_links_carry_fetched_at_timestamp() {
+fn unfetched_sources_do_not_carry_fabricated_timestamps() {
     let response = answer("Define associative memory");
-    let has_fetched_at = response
-        .evidence_links
-        .iter()
-        .any(|link| link.contains("fetched_at="));
     assert!(
-        has_fetched_at,
-        "source links must include a fetched_at timestamp for TTL tracking"
+        response
+            .evidence_links
+            .iter()
+            .all(|link| !link.contains("1970-01-01T00:00:00Z")),
+        "an unfetched source must not receive a synthetic epoch timestamp"
     );
 }
 
@@ -93,14 +92,14 @@ fn repeated_lookups_hit_the_cache() {
 }
 
 #[test]
-fn cached_sources_include_content_hash() {
+fn unfetched_sources_do_not_include_prompt_hashes() {
     let response = answer("Define associative memory");
     assert!(
         response
             .evidence_links
             .iter()
-            .any(|link| link.contains("sha256=")),
-        "cached source records must include a sha256 fingerprint"
+            .all(|link| !link.contains("example.org")),
+        "prompt-derived source URLs and hashes must never be emitted"
     );
 }
 

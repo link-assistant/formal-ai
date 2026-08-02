@@ -9,6 +9,10 @@ const {
   DATA_VERSION,
   PINNED_APP_NAME,
   VERSION_STAMP_FILE,
+  STORAGE_SUBTREES,
+  STORAGE_SUBTREES_BY_VERSION,
+  EXCLUDED_SUBTREES,
+  subtreesAddedAfter,
 } = require("../lib/data-migration.cjs");
 
 // A minimal in-memory filesystem: `dirs` is the set of directory paths and
@@ -234,6 +238,185 @@ test("idempotent: a profile already stamped at the current version is left untou
   assert.equal(result.reason, "already-current");
   // No copy happened — the legacy IndexedDB was not pulled into the pinned dir.
   assert.ok(!files.has(path.join(pinnedDir, "IndexedDB", "marker")));
+});
+
+// ---------------------------------------------------------------------------
+// Issue #672 (F1..F5 follow-ups), item F2: "Migration replay UI for partial
+// profile transfers". v1 carried only the three canonical storage subtrees, so
+// a user whose session was OAuth-shaped (auth state in Chromium's Cookies /
+// Service Worker stores) landed in the pinned profile logged out, with no way
+// to ask for another pass. v2 widens the copied set and adds a replay entry
+// point; the tests below pin both halves of that contract.
+// ---------------------------------------------------------------------------
+
+test("v2 copies the authentication state Chromium keeps outside the canonical subtrees", () => {
+  const { fs, files, seedProfile } = makeFakeFs();
+  const legacyDir = path.join(APP_DATA, "formal-ai Desktop");
+  seedProfile(legacyDir, [
+    "IndexedDB",
+    "Local Storage",
+    "Session Storage",
+    "Cookies",
+    "Service Worker",
+    "WebStorage",
+    "WebSocketStorage",
+  ]);
+
+  const app = makeFakeApp({ name: "formal-ai Desktop", appData: APP_DATA });
+  const migration = createDataMigration({ app, fs, now: () => 0 });
+  migration.pinAppName();
+  const result = migration.migrate();
+
+  const pinnedDir = path.join(APP_DATA, PINNED_APP_NAME);
+  assert.equal(result.migrated, true);
+  // Exactly the v1 + v2 sets, in version order — no more, no less.
+  assert.deepEqual(result.copied, [...STORAGE_SUBTREES]);
+  // The user stays logged in because the cookie jar came along.
+  assert.equal(
+    files.get(path.join(pinnedDir, "Cookies", "marker")),
+    "formal-ai Desktop:Cookies",
+  );
+  assert.equal(
+    files.get(path.join(pinnedDir, "Service Worker", "marker")),
+    "formal-ai Desktop:Service Worker",
+  );
+});
+
+test("derived caches are deliberately excluded from the copied set", () => {
+  const { fs, files, seedProfile } = makeFakeFs();
+  const legacyDir = path.join(APP_DATA, "formal-ai Desktop");
+  seedProfile(legacyDir, ["IndexedDB", ...EXCLUDED_SUBTREES]);
+
+  const app = makeFakeApp({ name: "formal-ai Desktop", appData: APP_DATA });
+  const migration = createDataMigration({ app, fs, now: () => 0 });
+  migration.pinAppName();
+  const result = migration.migrate();
+
+  const pinnedDir = path.join(APP_DATA, PINNED_APP_NAME);
+  for (const excluded of EXCLUDED_SUBTREES) {
+    assert.ok(
+      !STORAGE_SUBTREES.includes(excluded),
+      `${excluded} must not be in the copied set`,
+    );
+    assert.ok(
+      !files.has(path.join(pinnedDir, excluded, "marker")),
+      `${excluded} must not be copied — it is derived, and a stale copy is worse than a rebuild`,
+    );
+  }
+  assert.deepEqual(result.copied, ["IndexedDB"]);
+});
+
+test("v1 → v2 top-up: an already-migrated profile still receives the newly covered subtrees", () => {
+  const { fs, files, seedProfile } = makeFakeFs();
+  const legacyDir = path.join(APP_DATA, "formal-ai Desktop");
+  const pinnedDir = path.join(APP_DATA, PINNED_APP_NAME);
+  seedProfile(legacyDir, [
+    "IndexedDB",
+    "Local Storage",
+    "Session Storage",
+    "Cookies",
+    "Service Worker",
+  ]);
+  // The state a v1 build left behind: the canonical subtrees copied and stamped.
+  seedProfile(pinnedDir, ["IndexedDB", "Local Storage", "Session Storage"]);
+  fs.writeFileSync(
+    path.join(pinnedDir, VERSION_STAMP_FILE),
+    JSON.stringify({
+      name: PINNED_APP_NAME,
+      version: 1,
+      migratedFrom: "formal-ai Desktop",
+    }),
+  );
+
+  const app = makeFakeApp({ name: "formal-ai Desktop", appData: APP_DATA });
+  const migration = createDataMigration({ app, fs, now: () => 0 });
+  migration.pinAppName();
+  const result = migration.migrate();
+
+  // Without the version-aware branch this profile would hit the
+  // "pinned-already-populated" guard (it legitimately HAS IndexedDB) and the
+  // auth state would never arrive.
+  assert.equal(result.reason, "upgraded");
+  assert.equal(result.fromVersion, 1);
+  assert.equal(result.migrated, true);
+  // Only the v2 additions are touched, and only those the legacy profile
+  // actually has (this fixture has no Web[Socket]Storage — Chromium only
+  // creates those under some layouts).
+  assert.deepEqual(result.copied, ["Cookies", "Service Worker"]);
+  for (const subtree of result.copied) {
+    assert.ok(
+      subtreesAddedAfter(1).includes(subtree),
+      `${subtree} must be a v2 addition, not a v1 re-copy`,
+    );
+  }
+  assert.equal(
+    files.get(path.join(pinnedDir, "Cookies", "marker")),
+    "formal-ai Desktop:Cookies",
+  );
+  // The v1 data the user has been using since is untouched.
+  assert.equal(
+    files.get(path.join(pinnedDir, "IndexedDB", "marker")),
+    `${PINNED_APP_NAME}:IndexedDB`,
+  );
+  const stamp = JSON.parse(files.get(path.join(pinnedDir, VERSION_STAMP_FILE)));
+  assert.equal(stamp.version, DATA_VERSION);
+});
+
+test("subtreesAddedAfter reports only the entries a later version introduced", () => {
+  assert.deepEqual(subtreesAddedAfter(0), [...STORAGE_SUBTREES]);
+  assert.deepEqual(subtreesAddedAfter(1), [...STORAGE_SUBTREES_BY_VERSION[2]]);
+  assert.deepEqual(subtreesAddedAfter(DATA_VERSION), []);
+});
+
+test("replay: force re-runs the copy for a stamped profile and fills only the gaps", () => {
+  const { fs, files, seedProfile } = makeFakeFs();
+  const legacyDir = path.join(APP_DATA, "formal-ai Desktop");
+  const pinnedDir = path.join(APP_DATA, PINNED_APP_NAME);
+  seedProfile(legacyDir, ["IndexedDB", "Local Storage", "Cookies"]);
+  seedProfile(pinnedDir, ["IndexedDB"]);
+  // Current-version stamp: the normal path would return "already-current".
+  fs.writeFileSync(
+    path.join(pinnedDir, VERSION_STAMP_FILE),
+    JSON.stringify({ name: PINNED_APP_NAME, version: DATA_VERSION }),
+  );
+
+  const app = makeFakeApp({ name: "formal-ai Desktop", appData: APP_DATA });
+  const migration = createDataMigration({ app, fs, now: () => 0 });
+  migration.pinAppName();
+
+  assert.equal(migration.migrate().reason, "already-current");
+
+  const replay = migration.migrate({ force: true });
+  assert.equal(replay.reason, "replayed");
+  assert.deepEqual(replay.copied, ["Local Storage", "Cookies"]);
+  // The gap is filled...
+  assert.equal(
+    files.get(path.join(pinnedDir, "Cookies", "marker")),
+    "formal-ai Desktop:Cookies",
+  );
+  // ...and the data the user already has is never clobbered by the replay.
+  assert.equal(
+    files.get(path.join(pinnedDir, "IndexedDB", "marker")),
+    `${PINNED_APP_NAME}:IndexedDB`,
+  );
+});
+
+test("replay is safe when there is nothing left to copy", () => {
+  const { fs, seedProfile } = makeFakeFs();
+  const legacyDir = path.join(APP_DATA, "formal-ai Desktop");
+  const pinnedDir = path.join(APP_DATA, PINNED_APP_NAME);
+  seedProfile(legacyDir, ["IndexedDB"]);
+  seedProfile(pinnedDir, ["IndexedDB"]);
+
+  const app = makeFakeApp({ name: "formal-ai Desktop", appData: APP_DATA });
+  const migration = createDataMigration({ app, fs, now: () => 0 });
+  migration.pinAppName();
+
+  const replay = migration.migrate({ force: true });
+  assert.equal(replay.reason, "replayed");
+  assert.deepEqual(replay.copied, []);
+  assert.equal(replay.migrated, false);
+  assert.equal(replay.dataVersion, DATA_VERSION);
 });
 
 test("migrates from a non-standard pre-pin name captured via app.getName()", () => {

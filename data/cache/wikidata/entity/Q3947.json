@@ -1,0 +1,143 @@
+{
+  "entities": {
+    "Q3947": {
+      "type": "item",
+      "id": "Q3947",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "house"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "дом"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "घर"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "住宅"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "building usually intended for living in"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "сооружение, предназначенное для жилья"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "用于居住的建筑物"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "accommodation"
+          },
+          {
+            "language": "en",
+            "value": "living house"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "жилой дом"
+          },
+          {
+            "language": "ru",
+            "value": "жилище"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "मकान"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "房屋"
+          },
+          {
+            "language": "zh",
+            "value": "房子"
+          },
+          {
+            "language": "zh",
+            "value": "徛家"
+          },
+          {
+            "language": "zh",
+            "value": "屋仔"
+          },
+          {
+            "language": "zh",
+            "value": "屋"
+          },
+          {
+            "language": "zh",
+            "value": "厝"
+          },
+          {
+            "language": "zh",
+            "value": "民宅"
+          },
+          {
+            "language": "zh",
+            "value": "民家"
+          },
+          {
+            "language": "zh",
+            "value": "邸"
+          },
+          {
+            "language": "zh",
+            "value": "宅"
+          },
+          {
+            "language": "zh",
+            "value": "茨"
+          },
+          {
+            "language": "zh",
+            "value": "厝宅"
+          },
+          {
+            "language": "zh",
+            "value": "宅第"
+          },
+          {
+            "language": "zh",
+            "value": "住房"
+          },
+          {
+            "language": "zh",
+            "value": "宅邸"
+          },
+          {
+            "language": "zh",
+            "value": "屋舍"
+          },
+          {
+            "language": "zh",
+            "value": "府邸"
+          },
+          {
+            "language": "zh",
+            "value": "家屋"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

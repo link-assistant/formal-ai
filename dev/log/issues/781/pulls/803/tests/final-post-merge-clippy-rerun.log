@@ -1,0 +1,17 @@
+   Compiling formal-ai v0.300.0 (/tmp/gh-issue-solver-1784506151226)
+error: item in documentation is missing backticks
+   --> tests/unit/issue_781.rs:119:18
+    |
+119 | /// The reported OpenCode session showed only a bare tool label and then stayed
+    |                  ^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.96.0/index.html#doc_markdown
+    = note: `-D clippy::doc-markdown` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::doc_markdown)]`
+help: try
+    |
+119 - /// The reported OpenCode session showed only a bare tool label and then stayed
+119 + /// The reported `OpenCode` session showed only a bare tool label and then stayed
+    |
+
+error: could not compile `formal-ai` (test "unit") due to 1 previous error

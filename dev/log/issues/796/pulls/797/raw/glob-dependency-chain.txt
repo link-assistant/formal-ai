@@ -1,0 +1,2 @@
+vscode/package-lock.json node_modules/archiver-utils/node_modules/glob 10.5.0
+desktop/package-lock.json node_modules/glob 10.5.0

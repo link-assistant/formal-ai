@@ -1,0 +1,24 @@
+self_ast_census
+  target src/computer_use/synthesis.rs
+  language rust
+  fidelity signature
+  byte_len 13275
+  line_count 352
+  content_id source_module_8bf5ad5d87cae1ec
+  symbol_count 15
+  symbols
+    const PATH_FIELDS 37 37
+    const RESOURCE_FIELDS 52 52
+    struct Synthesis 56 63
+    struct Artifact 68 71
+    function capability_gap_for_request 75 79
+    function synthesize 84 86
+    function synthesize_with 91 150
+    function last_artifact 153 165
+    function realise 169 290
+    function accepted_fields 297 302
+    function verification_step 306 313
+    function step 315 331
+    function finalize 333 342
+    function parent_of 344 347
+    function basename_of 349 352

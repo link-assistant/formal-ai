@@ -1,0 +1,73 @@
+{
+  "entities": {
+    "Q4421": {
+      "type": "item",
+      "id": "Q4421",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "forest"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "лес"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "वन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "森林"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "trees populated area (>10%), larger than 5,000 m², and not used for agricultural or urban purposes"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "большая группа плотно растущих деревьев, занимающая значительное пространство"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जंगल"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "高密度树木的区域"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "wood"
+          },
+          {
+            "language": "en",
+            "value": "woods"
+          },
+          {
+            "language": "en",
+            "value": "forests"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "лесок"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "जंगल"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -43,18 +43,21 @@ use parser::{
 pub use brainstorm::{brainstorm_seeds, BrainstormCategory, BrainstormSeeds};
 pub use coreference::{coreference_seeds, Antecedent, CoreferenceSeeds, Pronoun};
 pub use embedded::{
-    seed_files, AGENT_INFO_LINO, BRAINSTORM_SEEDS_LINO, CODING_IDIOMS_LINO, CONCEPTS_LINO,
-    CONCEPT_CONTEXTS_LINO, COREFERENCE_LINO, DEMO_DIALOGS_LINO, ENVIRONMENTS_LINO, FACTS_LINO,
-    GREETINGS_LINO, HELLO_WORLD_PROGRAMS_LINO, IDENTITY_LINO, INTENT_ROUTING_LINO,
-    LANGUAGE_DETECTION_LINO, MEANINGS_CALENDAR_LINO, MEANINGS_FACTS_LINO, MEANINGS_LINKS_ROOT_LINO,
-    MEANINGS_LINO, MEANINGS_SEMANTIC_META_LINO, MEANINGS_SOFTWARE_PROJECT_LINO,
-    MEANINGS_UNITS_LINO, MEANING_FILES, MODEL_ALIASES_LINO, MULTILINGUAL_RESPONSES_LINO,
-    NUMERIC_LIST_OPERATIONS_LINO, OPERATION_VOCABULARY_LINO, PERSONAS_LINO,
-    PROGRAM_CST_GRAMMARS_LINO, PROGRAM_PLAN_RULES_LINO, PROJECTS_LINO, PROMPT_PATTERNS_LINO,
-    SELF_IMPROVEMENT_LOOP_LINO, SUMMARY_TOPICS_LINO, TOOLS_LINO,
+    seed_files, AGENT_INFO_LINO, BRAINSTORM_SEEDS_LINO, CODING_IDIOMS_LINO,
+    COMPUTER_USE_TASKS_LINO, CONCEPTS_LINO, CONCEPT_CONTEXTS_LINO, COREFERENCE_LINO,
+    DEMO_DIALOGS_LINO, ENVIRONMENTS_LINO, FACTS_LINO, GREETINGS_LINO, HELLO_WORLD_PROGRAMS_LINO,
+    IDENTITY_LINO, INTENT_ROUTING_LINO, LANGUAGE_DETECTION_LINO, MEANINGS_CALENDAR_LINO,
+    MEANINGS_FACTS_LINO, MEANINGS_LINKS_ROOT_LINO, MEANINGS_LINO, MEANINGS_SEMANTIC_META_LINO,
+    MEANINGS_SOFTWARE_PROJECT_LINO, MEANINGS_UNITS_LINO, MEANING_FILES, MODEL_ALIASES_LINO,
+    MULTILINGUAL_RESPONSES_LINO, NUMERIC_LIST_OPERATIONS_LINO, OPERATION_VOCABULARY_LINO,
+    PERSONAS_LINO, PROGRAM_CST_GRAMMARS_LINO, PROGRAM_PLAN_RULES_LINO, PROJECTS_LINO,
+    PROMPT_PATTERNS_LINO, RESPONSE_FILES, SELF_IMPROVEMENT_LOOP_LINO, SUMMARY_TOPICS_LINO,
+    TOOLS_LINO,
 };
 pub use facts::{facts, FactRecord, LocalizedFact};
-pub use meanings::{lexicon, Lexeme, Lexicon, Meaning, SemanticFacet, Slot, WordForm};
+pub use meanings::{
+    lexicon, parse_lexicon_text, Lexeme, Lexicon, Meaning, SemanticFacet, Slot, WordForm,
+};
 pub use operation_vocabulary::{
     operation_vocabulary, OperationLanguageForms, OperationTrigger, OperationVocabulary,
 };
@@ -108,26 +111,28 @@ pub use roles::{
     ROLE_RULE_COUNT_REQUEST, ROLE_RULE_COUNT_SCOPE, ROLE_RULE_LISTING_PHRASE,
     ROLE_RULE_LISTING_REQUEST, ROLE_RULE_LISTING_SCOPE, ROLE_RULE_LISTING_SUBJECT,
     ROLE_SCRIPT_AUTHORING_VERB, ROLE_SCRIPT_OR_CODE_ARTIFACT, ROLE_SELF_FACT_QUERY,
-    ROLE_SELF_INTRODUCTION_REQUEST, ROLE_SHELL_CAPABILITY_CUE, ROLE_SKILL_TEACHING_RESPONSE_VERB,
-    ROLE_SKILL_TEACHING_TRIGGER_LEAD, ROLE_SKILL_WHEN_THEN_PAIR, ROLE_SOFTWARE_APPROVAL_TRIGGER,
-    ROLE_SOFTWARE_ARTIFACT_KIND, ROLE_SOFTWARE_AUTHORING_ACTION, ROLE_SOFTWARE_BASH_COMMAND,
-    ROLE_SOFTWARE_DELIVERY_MODE, ROLE_SOFTWARE_FEATURE, ROLE_SOFTWARE_FOLLOWUP_DEMONSTRATION,
-    ROLE_SOFTWARE_FOLLOWUP_EXECUTION, ROLE_SOFTWARE_FOLLOWUP_VERIFICATION,
-    ROLE_SOFTWARE_IMPLEMENTATION_LANGUAGE, ROLE_SOFTWARE_REQUIREMENT_CATEGORY,
-    ROLE_SOFTWARE_STEP_GRANULARITY, ROLE_SUMMARY_CLASSIFICATION_CUE,
-    ROLE_TERM_INFORMATION_REQUEST_OPENER, ROLE_TIME_DURATION_CUE, ROLE_TOOL_ARGUMENT_MARKER,
-    ROLE_TOOL_INVOCATION_CUE, ROLE_TOPIC_SCAN_STOP_WORD, ROLE_TRANSLATION_ACTION,
-    ROLE_TRANSLATION_INTO_MARKER, ROLE_TRANSLATION_OBJECT_MARKER, ROLE_TRANSLATION_PROPERTY,
-    ROLE_TRANSLATION_SOURCE_MARKER, ROLE_TRANSLATION_TARGET_DIRECTION,
-    ROLE_TRANSLATION_TARGET_MARKER, ROLE_TRANSLATION_UNQUOTED_FRAME, ROLE_URL_NAVIGATE,
-    ROLE_VULGAR_CONTENT_MARKER, ROLE_WEB_MEDIUM, ROLE_WEB_SEARCH_ACTION,
-    ROLE_WEB_SEARCH_EXPLICIT_PREFIX, ROLE_WEB_SEARCH_HISTORY_SIGNAL,
-    ROLE_WEB_SEARCH_IMPERATIVE_LEAD, ROLE_WEB_SEARCH_NEWS_RECENCY, ROLE_WEB_SEARCH_NEWS_SUBJECT,
-    ROLE_WEB_SEARCH_QUERY_LEADING_NOISE, ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE,
-    ROLE_WEB_SEARCH_RECORDS_SUBJECT, ROLE_WEB_SEARCH_SIGNAL, ROLE_WEB_SEARCH_SOURCE_ONLY,
-    ROLE_WEB_SEARCH_STRONG_ACTION, ROLE_WEB_SEARCH_TOOL_NAME, ROLE_WEB_SEARCH_TOPIC_MARKER,
-    ROLE_WHO_QUESTION_LEAD, ROLE_WHO_QUESTION_TAIL, ROLE_WIKIDATA_ENTITY_ANCHOR,
-    ROLE_YEAR_UNIT_CUE,
+    ROLE_SELF_INTRODUCTION_REQUEST, ROLE_SHELL_CAPABILITY_CUE,
+    ROLE_SKILL_PROCEDURE_CLAUSE_SEPARATOR, ROLE_SKILL_PROCEDURE_STEP_OBJECT,
+    ROLE_SKILL_PROCEDURE_STEP_VERB, ROLE_SKILL_PROCEDURE_TRIGGER_LEAD,
+    ROLE_SKILL_TEACHING_RESPONSE_VERB, ROLE_SKILL_TEACHING_TRIGGER_LEAD, ROLE_SKILL_WHEN_THEN_PAIR,
+    ROLE_SOFTWARE_APPROVAL_TRIGGER, ROLE_SOFTWARE_ARTIFACT_KIND, ROLE_SOFTWARE_AUTHORING_ACTION,
+    ROLE_SOFTWARE_BASH_COMMAND, ROLE_SOFTWARE_DELIVERY_MODE, ROLE_SOFTWARE_FEATURE,
+    ROLE_SOFTWARE_FOLLOWUP_DEMONSTRATION, ROLE_SOFTWARE_FOLLOWUP_EXECUTION,
+    ROLE_SOFTWARE_FOLLOWUP_VERIFICATION, ROLE_SOFTWARE_IMPLEMENTATION_LANGUAGE,
+    ROLE_SOFTWARE_REQUIREMENT_CATEGORY, ROLE_SOFTWARE_STEP_GRANULARITY,
+    ROLE_SUMMARY_CLASSIFICATION_CUE, ROLE_TERM_INFORMATION_REQUEST_OPENER, ROLE_TIME_DURATION_CUE,
+    ROLE_TOOL_ARGUMENT_MARKER, ROLE_TOOL_INVOCATION_CUE, ROLE_TOPIC_SCAN_STOP_WORD,
+    ROLE_TRANSLATION_ACTION, ROLE_TRANSLATION_INTO_MARKER, ROLE_TRANSLATION_LANGUAGE,
+    ROLE_TRANSLATION_OBJECT_MARKER, ROLE_TRANSLATION_PROPERTY, ROLE_TRANSLATION_SOURCE_MARKER,
+    ROLE_TRANSLATION_TARGET_DIRECTION, ROLE_TRANSLATION_TARGET_MARKER,
+    ROLE_TRANSLATION_UNQUOTED_FRAME, ROLE_URL_NAVIGATE, ROLE_VULGAR_CONTENT_MARKER,
+    ROLE_WEB_MEDIUM, ROLE_WEB_SEARCH_ACTION, ROLE_WEB_SEARCH_EXPLICIT_PREFIX,
+    ROLE_WEB_SEARCH_HISTORY_SIGNAL, ROLE_WEB_SEARCH_IMPERATIVE_LEAD, ROLE_WEB_SEARCH_NEWS_RECENCY,
+    ROLE_WEB_SEARCH_NEWS_SUBJECT, ROLE_WEB_SEARCH_QUERY_LEADING_NOISE,
+    ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE, ROLE_WEB_SEARCH_RECORDS_SUBJECT, ROLE_WEB_SEARCH_SIGNAL,
+    ROLE_WEB_SEARCH_SOURCE_ONLY, ROLE_WEB_SEARCH_STRONG_ACTION, ROLE_WEB_SEARCH_TOOL_NAME,
+    ROLE_WEB_SEARCH_TOPIC_MARKER, ROLE_WHO_QUESTION_LEAD, ROLE_WHO_QUESTION_TAIL,
+    ROLE_WIKIDATA_ENTITY_ANCHOR, ROLE_YEAR_UNIT_CUE,
 };
 pub use summary_topics::{summary_topic_seeds, SummaryTopic, SummaryTopicSeeds};
 
@@ -275,22 +280,24 @@ pub struct ResponseRecord {
 /// Parse `multilingual-responses.lino` into structured records.
 #[must_use]
 pub fn multilingual_responses() -> Vec<ResponseRecord> {
-    let tree = parse_lino(MULTILINGUAL_RESPONSES_LINO);
     let mut out = Vec::new();
-    if let Some(root) = tree.children.first() {
-        for entry in root.children.iter().filter(|c| c.name == "response") {
-            let intent = entry.find_child_value("intent").to_string();
-            let language = entry.find_child_value("language").to_string();
-            let text = entry.find_child_value("text").to_string();
-            if intent.is_empty() || language.is_empty() {
-                continue;
+    for source in RESPONSE_FILES {
+        let tree = parse_lino(source);
+        if let Some(root) = tree.children.first() {
+            for entry in root.children.iter().filter(|c| c.name == "response") {
+                let intent = entry.find_child_value("intent").to_string();
+                let language = entry.find_child_value("language").to_string();
+                let text = entry.find_child_value("text").to_string();
+                if intent.is_empty() || language.is_empty() {
+                    continue;
+                }
+                out.push(ResponseRecord {
+                    id: entry.id.clone(),
+                    intent,
+                    language,
+                    text,
+                });
             }
-            out.push(ResponseRecord {
-                id: entry.id.clone(),
-                intent,
-                language,
-                text,
-            });
         }
     }
     out
@@ -306,6 +313,29 @@ pub fn response_for(intent: &str, language: &str) -> Option<String> {
         }
     }
     None
+}
+
+/// Look up a localized response, applying the registry's `explicit_gap`
+/// fallback policy (`data/seed/languages.lino`).
+///
+/// Issue #706: a language that the detection registry knows but a given intent
+/// has no localized text for is a *gap*, not an English prompt. Handlers that
+/// used to write `response_for(intent, language).or_else(|| response_for(intent,
+/// "en"))` silently answered a Spanish speaker in English; going through this
+/// helper instead prefers the seed's `language unknown` variant — the record
+/// that says out loud that the language is unsupported — before falling back to
+/// English as a last resort.
+#[must_use]
+pub fn localized_response(intent: &str, language: &str) -> Option<String> {
+    if let Some(text) = response_for(intent, language) {
+        return Some(text);
+    }
+    if crate::language::from_slug(language).is_some() {
+        if let Some(text) = response_for(intent, "unknown") {
+            return Some(text);
+        }
+    }
+    response_for(intent, "en")
 }
 
 /// Generic key/value config from `agent-info.lino`.

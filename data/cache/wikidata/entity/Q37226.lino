@@ -1,0 +1,19 @@
+Q37226
+  aliases
+    en (schoolmaster schoolmistress educator professor)
+    hi ("शिक्षिका")
+    ru ("учительница" "педагог" "преподаватель")
+    zh ("教職員" "教師" "教工" "老师")
+  descriptions
+    en "person who helps others to acquire knowledge, competences or values"
+    hi "वह व्यक्ति जो दूसरों को ज्ञान, योग्यता या मूल्य प्राप्त करने में मदद करता है"
+    ru "человек, обучающий других людей"
+    zh "教育學生、傳授知識與技藝的人"
+  id Q37226
+  labels
+    en teacher
+    hi "शिक्षक"
+    ru "учитель"
+    zh "教师"
+  type item
+success 1

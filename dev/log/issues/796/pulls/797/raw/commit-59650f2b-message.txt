@@ -1,0 +1,7 @@
+59650f2b45ebebf29ed67d33c9a19c1e82e7c003
+test: reproduce Unicode scalar usage accounting
+
+Formal-AI-Session: ses_089c27072ffeuapUqeaNfO3roA
+
+Formal-AI-Evidence: docs/case-studies/issue-751/red-test-agent-run/agent-cli.log
+

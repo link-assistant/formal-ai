@@ -1,0 +1,19 @@
+Q8355
+  aliases
+    en (fiddle)
+    hi ("बेला")
+    ru ("кеманча")
+    zh ("梵婀玲")
+  descriptions
+    en "bowed string instrument"
+    hi "एक तरह का वाद्ययंत्र |"
+    ru "смычковый струнный музыкальный инструмент высокого регистра"
+    zh "乐器"
+  id Q8355
+  labels
+    en violin
+    hi "वायलिन"
+    ru "скрипка"
+    zh "小提琴"
+  type item
+success 1

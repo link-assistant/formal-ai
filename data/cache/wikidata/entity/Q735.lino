@@ -1,0 +1,17 @@
+Q735
+  aliases
+    en (Art)
+    zh ("艺术")
+  descriptions
+    en "general concept that creates expressive work for its beauty or emotional power (use Q838948 for the resulting work, use Q2018526 for the group of creative disciplines)"
+    hi "भावनाओं और सौंदर्य के माध्यम से भौतिक मूल्य की चीजें बनाने की प्रक्रिया"
+    ru "образное осмысление действительности"
+    zh "一个总体概念，指为了其美感或情感力量而创作的表达性作品（使用Q838948表示由此产生的作品，使用Q2018526表示创意学科的集合"
+  id Q735
+  labels
+    en art
+    hi "कला"
+    ru "искусство"
+    zh "藝術"
+  type item
+success 1

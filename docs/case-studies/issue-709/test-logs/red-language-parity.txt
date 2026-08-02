@@ -1,0 +1,43 @@
+   Compiling formal-ai v0.319.1 (/tmp/gh-issue-solver-1785646809000)
+    Finished `test` profile [unoptimized] target(s) in 1m 12s
+     Running tests/unit/mod.rs (target/debug/deps/unit-a0c98f2b6ec183cf)
+
+running 18 tests
+
+thread 'issue_709_search_fusion::browser_wasm_core_detects_each_statement_language_and_uses_target_grammar' (16340) panicked at tests/unit/issue_709_search_fusion.rs:60:5:
+assertion `left == right` failed: both languages express one meaning
+  left: 2
+ right: 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test issue_709_search_fusion::browser_wasm_core_detects_each_statement_language_and_uses_target_grammar ... FAILED
+test issue_709_search_fusion::browser_wasm_core_deformalizes_and_preserves_exact_provenance ... ok
+test issue_709_search_fusion::browser_wasm_core_uses_fused_rank_and_labels_alternate_provenance ... ok
+test issue_709_search_fusion::browser_wasm_core_keeps_both_ranked_conflict_sides ... ok
+test issue_709_search_fusion::decisive_foreign_language_fact_is_deformalized_in_the_query_language ... ok
+test issue_709_search_fusion::capture_policy_is_per_statement_and_demotes_exact_mirrors ... ok
+
+thread 'issue_709_search_fusion::native_deformalization_uses_data_driven_hindi_word_order' (16352) panicked at tests/unit/issue_709_search_fusion.rs:398:5:
+assertion failed: execution.answer.statements.iter().any(|statement|
+        statement.text == "सेब फल है.")
+test issue_709_search_fusion::native_deformalization_uses_data_driven_hindi_word_order ... FAILED
+test issue_709_search_fusion_learning::agent_authored_policy_and_contract_are_runtime_inputs ... ok
+test issue_709_search_fusion::contradictory_sources_keep_both_sides_with_tiers_and_posteriors ... ok
+test issue_709_search_fusion_learning::associative_report_is_derived_from_agent_authored_observations ... ok
+test issue_709_search_fusion_learning::candidate_is_inert_until_both_green_gate_and_named_review ... ok
+test issue_709_search_fusion_learning::approved_recipe_round_trips_and_executes_a_held_out_task ... ok
+test issue_709_search_fusion_learning::execution_frontier_infers_only_after_two_independent_successes ... ok
+test issue_709_search_fusion::presentation_normalizes_source_url_title_quote_and_read_more ... ok
+test issue_709_search_fusion::localized_search_fusion_labels_cover_every_supported_language ... ok
+test issue_709_search_fusion::cli_http_and_telegram_use_the_same_ranked_source_contract ... ok
+test issue_709_search_fusion::cached_sources_are_formalized_merged_ranked_and_replayed_deterministically ... ok
+test issue_709_search_fusion_learning::formal_ai_executes_the_issue_709_learning_report_recipe ... ok
+
+failures:
+
+failures:
+    issue_709_search_fusion::browser_wasm_core_detects_each_statement_language_and_uses_target_grammar
+    issue_709_search_fusion::native_deformalization_uses_data_driven_hindi_word_order
+
+test result: FAILED. 16 passed; 2 failed; 0 ignored; 0 measured; 2337 filtered out; finished in 0.94s
+
+error: test failed, to rerun pass `--test unit`

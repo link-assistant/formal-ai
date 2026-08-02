@@ -1,0 +1,61 @@
+{
+  "entities": {
+    "Q10884": {
+      "type": "item",
+      "id": "Q10884",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "tree"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "дерево"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "वृक्ष"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "树"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "perennial woody plant"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "жизненная форма деревянистых растений с единственной, отчётливо выраженной главной осью — стволом"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पेड़"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "植物分類"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "arbor"
+          },
+          {
+            "language": "en",
+            "value": "trees"
+          },
+          {
+            "language": "en",
+            "value": "Trees"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

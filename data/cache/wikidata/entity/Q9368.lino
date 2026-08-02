@@ -1,0 +1,16 @@
+Q9368
+  aliases
+    en (hepar)
+  descriptions
+    en "vertebrate organ involved in metabolism"
+    hi "चयापचय में शामिल कशेरुक अंग"
+    ru "непарный орган брюшной полости позвоночных животных, участвующий в метаболизме и ряде других внутренних процессов"
+    zh "器官"
+  id Q9368
+  labels
+    en liver
+    hi "यकृत"
+    ru "печень"
+    zh "肝臟"
+  type item
+success 1

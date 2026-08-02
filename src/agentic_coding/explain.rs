@@ -12,9 +12,9 @@
 //! `Gemini`, `Agent CLI`) — or the in-repo driver — asks Formal AI how it works, and
 //! the deterministic planner walks a write → verify → final recipe that emits the
 //! grounded explanation as Links Notation, exactly like the self-healing, ledger,
-//! source-graph, self-AST, and diagram recipes emit their self-inspection documents.
+//! source-links, self-AST, and diagram recipes emit their self-inspection documents.
 //!
-//! Like [`super::source_graph`], the emitted document depends on the whole source
+//! Like [`super::source_links`], the emitted document depends on the whole source
 //! tree (each source citation's `content_id` and the manifest id change with every
 //! edit), so it is asserted *live* in the issue-#558 tests and never pinned
 //! byte-for-byte in a committed `data/meta/*.lino`. Every source citation is verified
@@ -44,7 +44,7 @@ fn cached_explanation() -> &'static SystemExplanation {
 /// A *differently worded* request for the self-explanation recipe.
 ///
 /// The router recognises the intent from the words, not a hardcoded string.
-/// Deliberately avoids the source-graph keywords ("recompile", whole-source-to-links
+/// Deliberately avoids the source-links keywords ("recompile", whole-source-to-links
 /// "and back") and the ledger keywords so the self-inspection recipes never collide.
 pub const EXPLAIN_TASK: &str =
     "Explain how Formal AI itself works, and ground the answer in its own source \
@@ -68,6 +68,16 @@ const EXPLAIN_KEYWORDS: [&str; 5] = [
 #[must_use]
 pub fn is_explain_task(prompt: &str) -> bool {
     let lower = prompt.to_lowercase();
+    // Agent CLIs commonly wrap an issue or pull-request transcript around the
+    // actual coding task. A recipe keyword inside that embedded material is
+    // evidence, not the intent of the whole turn. Route the compound work item
+    // through the general planner, which can inspect and edit the repository.
+    let repository_work_item = lower.contains("github.com/")
+        && (lower.contains("/issues/") || lower.contains("/pull/"))
+        && lower.lines().count() > 3;
+    if repository_work_item {
+        return false;
+    }
     // A dedicated keyword routes here directly.
     if EXPLAIN_KEYWORDS
         .iter()

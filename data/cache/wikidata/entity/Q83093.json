@@ -1,0 +1,97 @@
+{
+  "entities": {
+    "Q83093": {
+      "type": "item",
+      "id": "Q83093",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "mushroom"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "гриб"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "कुकुरमुत्ता"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "蕈類"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "spore-bearing fruiting body of a fungus"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "плодовое тело грибов-макромицетов"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "एक प्रकार का कवक।"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "真菌"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "toadstool"
+          },
+          {
+            "language": "en",
+            "value": "shroom"
+          },
+          {
+            "language": "en",
+            "value": "mushrooms"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "कुकुरमुत्तों"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "菇類"
+          },
+          {
+            "language": "zh",
+            "value": "蘑"
+          },
+          {
+            "language": "zh",
+            "value": "蘑菇"
+          },
+          {
+            "language": "zh",
+            "value": "菇"
+          },
+          {
+            "language": "zh",
+            "value": "食用菌"
+          },
+          {
+            "language": "zh",
+            "value": "蕈"
+          },
+          {
+            "language": "zh",
+            "value": "蕈类"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

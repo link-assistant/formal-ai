@@ -1,0 +1,10 @@
+link-assistant/hive-mind:docs/case-studies/issue-1329/README.md: | **Training Data Cutoff**      | January 2026                             |
+link-assistant/hive-mind:docs/case-studies/issue-1225/README.md: - **Knowledge cutoff**: When the model's training data ends (e.g., "2025-05")
+link-assistant/hive-mind:docs/case-studies/issue-1221/README.md: | **Training Data Cutoff**      | Aug 2025                 | Aug 2025                   |
+link-assistant/hive-mind:docs/case-studies/issue-1114/README.md: - Build framework-specific training data
+link-assistant/hive-mind:docs/case-studies/issue-599-opencode-command-failures/README.md: 9. **Improve agent training** - Use this case as training data
+link-assistant/meta-expression:docs/case-studies/issue-126/ONLINE-RESEARCH.md: a model + training data and would undercut the project's transparent,
+link-assistant/formal-ai:docs/case-studies/issue-451/raw-data/online-research.md: 4. `Neural : Symbolic → Neural` (symbolic system generates neural training data)
+link-assistant/formal-ai:docs/case-studies/issue-451/symbolic-ai-best-practices.md: formal guarantees. The stack needs **no training data** (it is rule- and
+link-assistant/meta-expression:docs/case-studies/issue-5/data/human-language-readme.md: 5. **AI Training Dataset**: Provide structured knowledge for next-generation neural networks
+link-assistant/meta-expression:docs/case-studies/issue-1/data/repositories/human-language-readme.md: 5. **AI Training Dataset**: Provide structured knowledge for next-generation neural networks

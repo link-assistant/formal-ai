@@ -1,0 +1,10 @@
+diff --git a/data/seed/issue-656-agent-learned.lino b/data/seed/issue-656-agent-learned.lino
+new file mode 100644
+index 0000000..61d7a9e
+--- /dev/null
++++ b/data/seed/issue-656-agent-learned.lino
+@@ -0,0 +1,3 @@
++learned_rules
++  id "issue_656_agent_learning"
++  rule "unseen_verified_modifier"
+\ No newline at end of file

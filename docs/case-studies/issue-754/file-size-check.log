@@ -1,0 +1,156 @@
+
+Checking configured file line limits for Rust, Links Notation, and worker JavaScript files...
+
+::warning file=dev/log/issues/680/pulls/683/code/agentic_coding/planner.rs::Rust file has 921 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: dev/log/issues/680/pulls/683/code/agentic_coding/planner.rs has 921 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=dev/log/issues/680/pulls/683/code/solver_handlers/web_requests.rs::Rust file has 952 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: dev/log/issues/680/pulls/683/code/solver_handlers/web_requests.rs has 952 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=dev/log/issues/681/pulls/684/code/agentic_coding/planner.rs::Rust file has 921 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: dev/log/issues/681/pulls/684/code/agentic_coding/planner.rs has 921 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=src/server.rs::Rust file has 988 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: src/server.rs has 988 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=src/client_integrations.rs::Rust file has 969 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: src/client_integrations.rs has 969 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=src/seed.rs::Rust file has 911 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: src/seed.rs has 911 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=src/protocol.rs::Rust file has 932 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: src/protocol.rs has 932 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=src/intent_formalization.rs::Rust file has 959 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: src/intent_formalization.rs has 959 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=src/agentic_coding/planner.rs::Rust file has 1000 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: src/agentic_coding/planner.rs has 1000 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=src/proxy.rs::Rust file has 950 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: src/proxy.rs has 950 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=src/solver_handlers/web_search_intent.rs::Rust file has 965 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: src/solver_handlers/web_search_intent.rs has 965 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=src/solver_handlers/calendar.rs::Rust file has 981 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: src/solver_handlers/calendar.rs has 981 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=src/solver_handlers/software_project.rs::Rust file has 915 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: src/solver_handlers/software_project.rs has 915 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=src/solver_handlers/web_requests.rs::Rust file has 999 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: src/solver_handlers/web_requests.rs has 999 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=src/solver_handlers/mod.rs::Rust file has 929 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: src/solver_handlers/mod.rs has 929 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=src/solver_handlers/installation_conversion.rs::Rust file has 996 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: src/solver_handlers/installation_conversion.rs has 996 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=src/solver_handlers/conversation_memory/mod.rs::Rust file has 977 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: src/solver_handlers/conversation_memory/mod.rs has 977 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=src/solver_handlers/behavior_rules.rs::Rust file has 946 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: src/solver_handlers/behavior_rules.rs has 946 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=src/lexeme_import.rs::Rust file has 979 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: src/lexeme_import.rs has 979 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=src/calculation.rs::Rust file has 914 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: src/calculation.rs has 914 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=src/coding/catalog/templates_core.rs::Rust file has 961 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: src/coding/catalog/templates_core.rs has 961 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=src/web/i18n-catalog.lino::Links Notation file has 1480 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.
+WARNING: src/web/i18n-catalog.lino has 1480 lines (approaching Links Notation limit of 1500, warning threshold: 1400)
+::warning file=src/web/worker/formal_ai_worker_19.js::Worker JavaScript file has 1418 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.
+WARNING: src/web/worker/formal_ai_worker_19.js has 1418 lines (approaching Worker JavaScript limit of 1500, warning threshold: 1400)
+::warning file=src/web/worker/formal_ai_worker_05.js::Worker JavaScript file has 1494 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.
+WARNING: src/web/worker/formal_ai_worker_05.js has 1494 lines (approaching Worker JavaScript limit of 1500, warning threshold: 1400)
+::warning file=src/dreaming.rs::Rust file has 903 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: src/dreaming.rs has 903 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=src/engine.rs::Rust file has 921 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: src/engine.rs has 921 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=tests/integration/with_formal_ai.rs::Rust file has 999 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: tests/integration/with_formal_ai.rs has 999 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=tests/unit/formal_ai.rs::Rust file has 998 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: tests/unit/formal_ai.rs has 998 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=tests/unit/ci-cd/release_publishing.rs::Rust file has 955 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: tests/unit/ci-cd/release_publishing.rs has 955 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=tests/unit/memory_maintenance.rs::Rust file has 953 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: tests/unit/memory_maintenance.rs has 953 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=tests/unit/docs_requirements.rs::Rust file has 953 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: tests/unit/docs_requirements.rs has 953 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=tests/unit/web_requests.rs::Rust file has 992 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: tests/unit/web_requests.rs has 992 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=tests/unit/specification/prompt_variations.rs::Rust file has 965 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: tests/unit/specification/prompt_variations.rs has 965 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=tests/unit/specification/chat_surface.rs::Rust file has 995 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: tests/unit/specification/chat_surface.rs has 995 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=tests/unit/specification/reasoning_paths.rs::Rust file has 945 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: tests/unit/specification/reasoning_paths.rs has 945 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=tests/unit/specification/multilingual.rs::Rust file has 998 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: tests/unit/specification/multilingual.rs has 998 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=tests/unit/specification/translation_via_links.rs::Rust file has 947 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: tests/unit/specification/translation_via_links.rs has 947 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=tests/unit/specification/openai_compatibility.rs::Rust file has 994 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: tests/unit/specification/openai_compatibility.rs has 994 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=tests/unit/data_files.rs::Rust file has 960 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: tests/unit/data_files.rs has 960 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=tests/source/solver.rs::Rust file has 1000 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: tests/source/solver.rs has 1000 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=tests/source/intent_formalization.rs::Rust file has 989 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: tests/source/intent_formalization.rs has 989 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=tests/source/seed/meanings.rs::Rust file has 947 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: tests/source/seed/meanings.rs has 947 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=tests/source/solver_handlers/calendar.rs::Rust file has 981 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: tests/source/solver_handlers/calendar.rs has 981 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=tests/source/solver_handlers/software_project.rs::Rust file has 915 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: tests/source/solver_handlers/software_project.rs has 915 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=tests/source/solver_handlers/mod.rs::Rust file has 990 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: tests/source/solver_handlers/mod.rs has 990 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=tests/source/solver_handlers/installation_conversion.rs::Rust file has 999 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: tests/source/solver_handlers/installation_conversion.rs has 999 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=tests/source/solver_handlers/behavior_rules.rs::Rust file has 946 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: tests/source/solver_handlers/behavior_rules.rs has 946 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=tests/source/calculation.rs::Rust file has 923 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: tests/source/calculation.rs has 923 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=tests/source/coding/catalog/templates_core.rs::Rust file has 961 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: tests/source/coding/catalog/templates_core.rs has 961 lines (approaching Rust limit of 1000, warning threshold: 900)
+
+The following files are approaching their configured line limits:
+  dev/log/issues/680/pulls/683/code/agentic_coding/planner.rs
+  dev/log/issues/680/pulls/683/code/solver_handlers/web_requests.rs
+  dev/log/issues/681/pulls/684/code/agentic_coding/planner.rs
+  src/server.rs
+  src/client_integrations.rs
+  src/seed.rs
+  src/protocol.rs
+  src/intent_formalization.rs
+  src/agentic_coding/planner.rs
+  src/proxy.rs
+  src/solver_handlers/web_search_intent.rs
+  src/solver_handlers/calendar.rs
+  src/solver_handlers/software_project.rs
+  src/solver_handlers/web_requests.rs
+  src/solver_handlers/mod.rs
+  src/solver_handlers/installation_conversion.rs
+  src/solver_handlers/conversation_memory/mod.rs
+  src/solver_handlers/behavior_rules.rs
+  src/lexeme_import.rs
+  src/calculation.rs
+  src/coding/catalog/templates_core.rs
+  src/web/i18n-catalog.lino
+  src/web/worker/formal_ai_worker_19.js
+  src/web/worker/formal_ai_worker_05.js
+  src/dreaming.rs
+  src/engine.rs
+  tests/integration/with_formal_ai.rs
+  tests/unit/formal_ai.rs
+  tests/unit/ci-cd/release_publishing.rs
+  tests/unit/memory_maintenance.rs
+  tests/unit/docs_requirements.rs
+  tests/unit/web_requests.rs
+  tests/unit/specification/prompt_variations.rs
+  tests/unit/specification/chat_surface.rs
+  tests/unit/specification/reasoning_paths.rs
+  tests/unit/specification/multilingual.rs
+  tests/unit/specification/translation_via_links.rs
+  tests/unit/specification/openai_compatibility.rs
+  tests/unit/data_files.rs
+  tests/source/solver.rs
+  tests/source/intent_formalization.rs
+  tests/source/seed/meanings.rs
+  tests/source/solver_handlers/calendar.rs
+  tests/source/solver_handlers/software_project.rs
+  tests/source/solver_handlers/mod.rs
+  tests/source/solver_handlers/installation_conversion.rs
+  tests/source/solver_handlers/behavior_rules.rs
+  tests/source/calculation.rs
+  tests/source/coding/catalog/templates_core.rs
+
+Consider extracting code to prevent concurrent PR merge limit violations.
+
+All checked files are within their line limits

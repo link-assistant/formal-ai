@@ -1,0 +1,109 @@
+self_ast_census
+  target src/agentic_coding/question_catalog.rs
+  language rust
+  fidelity full_ast
+  byte_len 14682
+  line_count 309
+  content_id source_module_512a32489f4c308d
+  symbol_count 24
+  symbols
+    const QUESTION_CATALOG_PATH 38 38
+    const CATALOG_CANDIDATE_COUNT 42 42
+    const CATALOG_ANSWER_COUNT 45 45
+    struct CatalogCandidate 49 60
+    struct CatalogAnswer 64 73
+    struct QuestionCatalog 77 84
+    function answer_for 93 98
+    function cached_catalog 108 111
+    static CATALOG 109 109
+    function build_catalog 113 156
+    const QUESTION_CATALOG_TASK 164 174
+    const QUESTION_CATALOG_KEYWORDS 174 174
+    function is_question_catalog_task 184 195
+    function render_document 205 229
+    function catalog 234 236
+    function final_answer 241 258
+    function field 262 264
+    function escape_value 268 270
+    function collapse_whitespace 272 274
+    function round_confidence 278 280
+    function normalise_question 282 284
+    function grammar_slug 286 292
+    function logical_meaning_slug 294 300
+    function class_slug 302 309
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 6380
+    named_node_count 1326
+    distinct_node_kinds 67
+    node_kinds
+      arguments 60
+      array_expression 1
+      array_type 1
+      attribute 8
+      attribute_item 8
+      binary_expression 7
+      block 17
+      call_expression 60
+      char_literal 1
+      closure_expression 4
+      closure_parameters 4
+      const_item 5
+      crate 1
+      declaration_list 1
+      doc_comment 86
+      escape_sequence 37
+      expression_statement 16
+      field_declaration 12
+      field_declaration_list 3
+      field_expression 60
+      field_identifier 81
+      field_initializer 9
+      field_initializer_list 3
+      float_literal 2
+      for_expression 2
+      function_item 15
+      function_modifiers 3
+      generic_function 1
+      generic_type 5
+      identifier 242
+      impl_item 1
+      inner_doc_comment_marker 26
+      integer_literal 3
+      let_declaration 16
+      lifetime 7
+      line_comment 99
+      macro_invocation 8
+      match_arm 10
+      match_block 3
+      match_expression 3
+      match_pattern 10
+      mutable_specifier 9
+      outer_doc_comment_marker 60
+      parameter 13
+      parameters 15
+      parenthesized_expression 3
+      primitive_type 25
+      reference_expression 15
+      reference_type 20
+      scoped_identifier 20
+      scoped_use_list 1
+      self 2
+      self_parameter 1
+      shorthand_field_initializer 3
+      source_file 1
+      static_item 1
+      string_content 63
+      string_literal 43
+      struct_expression 3
+      struct_item 3
+      token_tree 18
+      type_arguments 6
+      type_identifier 33
+      use_as_clause 1
+      use_declaration 3
+      use_list 1
+      visibility_modifier 22

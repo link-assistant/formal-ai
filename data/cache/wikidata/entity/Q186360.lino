@@ -1,0 +1,16 @@
+Q186360
+  aliases
+    en (nurses nosileytis)
+    ru ("медбрат" "сестра милосердия" "медицинская сестра" "медицинский брат")
+    zh ("護士" "護理師" "护士" "护师")
+  descriptions
+    en "type of health care provider"
+    zh "提供醫療專業的人"
+  id Q186360
+  labels
+    en nurse
+    hi "नर्स"
+    ru "медсестра"
+    zh "護理人員"
+  type item
+success 1

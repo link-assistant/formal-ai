@@ -22,7 +22,7 @@
 //! - `source_cache`: external source access caching with provenance and TTL.
 //! - `agent_isolation`: chat vs agent autonomy and isolated execution.
 //! - `translation_via_links`: links notation as the language of meaning.
-//! - `network_visualization`: optional link-graph view alongside chat.
+//! - `network_visualization`: optional links network view alongside chat.
 //! - `desktop_surface`: packaged desktop shell around the shared HTTP/web
 //!   boundary.
 //! - `vscode_surface`: dual-host VS Code extension (Node + Web Worker) embedding
@@ -32,9 +32,11 @@
 
 mod agent_isolation;
 mod agentic_meta_algorithm;
+mod arbitrary_skill_compilation;
 mod associative_packages;
 mod behavior_rules;
 mod benchmarks;
+mod budget_search_meta_algorithm;
 mod calculator_delegation;
 mod capabilities;
 mod chat_surface;
@@ -43,13 +45,18 @@ mod code_generation_blueprint;
 mod code_generation_coreference;
 mod code_generation_program_modifiers;
 mod coding_modification_benchmarks;
+mod computer_use_meta_algorithm;
 mod conversation_history;
 mod cue_lexicon;
 mod definition_fusion;
 mod desktop_surface;
 mod document_verification_meta_algorithm;
+mod dreaming_meta_algorithm;
+mod external_benchmarks;
+mod forced_language_seam;
 mod formalization;
 mod github_repository_traffic;
+mod grounded_action_meta_algorithm;
 mod intent_formalization;
 mod issue_146;
 mod issue_402;
@@ -59,7 +66,9 @@ mod issue_462;
 mod issue_465;
 mod issue_467;
 mod issue_595;
+mod issue_682;
 mod links_network;
+mod links_network_terminology_meta_algorithm;
 mod market_price_verification_meta_algorithm;
 mod memory_query;
 mod meta_algorithm;
@@ -71,6 +80,7 @@ mod method_registry;
 mod multilingual;
 mod natural_language_access;
 mod natural_language_skill_compilation;
+mod nemotron_training_samples;
 mod network_visualization;
 mod openai_compatibility;
 mod probabilistic_reasoning;
@@ -86,7 +96,9 @@ mod recursive_core_recipe;
 mod response_language_followup;
 mod response_language_meta_algorithm;
 mod route_method_alias;
+mod routing_precedence;
 mod selection;
+mod self_hosting_metric;
 mod self_improvement;
 mod shared_dialog_replay;
 mod skill_ledger;
@@ -95,6 +107,7 @@ mod source_cache;
 mod substitution_rules;
 mod summarization_pipeline;
 mod synthesis;
+mod task_decomposition;
 mod telegram_surface;
 mod text_manipulation;
 mod text_manipulation_benchmarks;
@@ -104,3 +117,4 @@ mod transparent_state;
 mod unit_incompatibility;
 mod unknown_reasoning;
 mod vscode_surface;
+mod world_state_benchmarks;

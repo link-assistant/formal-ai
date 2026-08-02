@@ -1,0 +1,14 @@
+Q99895
+  aliases
+    ru ("Подушка")
+  descriptions
+    en "cushion for the head"
+    ru "постельная принадлежность"
+  id Q99895
+  labels
+    en pillow
+    hi "तकिया"
+    ru "подушка"
+    zh "枕頭"
+  type item
+success 1

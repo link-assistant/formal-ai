@@ -1,0 +1,10 @@
+   Compiling formal-ai v0.298.1 (/tmp/gh-issue-solver-1784428248658)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 18.33s
+     Running tests/issue_763.rs (target/debug/deps/issue_763-9bb885df5d1a3083)
+
+running 3 tests
+test unix::docs_and_matrix_cover_the_whole_extension_flow ... ok
+test unix::global_setup_uses_shared_opencode_config_and_undo_restores_it ... ok
+test unix::aliases_launch_vscode_with_isolated_opencode_provider ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s

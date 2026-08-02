@@ -312,6 +312,23 @@ impl Meaning {
 /// returned by [`Lexicon::arithmetic_normalization_tables`] share this shape.
 pub type WordValueTable = Vec<(String, String)>;
 
+/// One arithmetic operator grounded in the seed: its language-neutral `symbol`
+/// value surface (`+`, `-`, `*`, `/`, `%`) paired with its `spelled` surfaces
+/// across every language.
+///
+/// [`Lexicon::arithmetic_operators`] materialises these in declaration order so
+/// a recogniser can build its operator toolbox from the data — division and
+/// modulo appear the moment the seed lists them, and no per-language operator
+/// table lives in Rust (issue #386).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ArithmeticOperator {
+    /// The single non-alphanumeric value surface — the notation symbol.
+    pub symbol: char,
+    /// Every spelled surface (words carrying an alphabetic character) across all
+    /// languages, in declaration order.
+    pub spelled: Vec<String>,
+}
+
 /// The parsed set of meanings.
 #[derive(Debug, Clone, Default)]
 pub struct Lexicon {
@@ -446,7 +463,7 @@ impl Lexicon {
     /// Mirrors the CJK-substring vs. whitespace-token contract used across the
     /// solver: CJK scripts have no inter-word spaces, so a CJK surface word is
     /// matched as a substring, while space-delimited scripts match a whole
-    /// whitespace token or phrase (see [`crate::coding::contains_cjk`]).
+    /// whitespace token or phrase (see `crate::coding::contains_cjk`).
     #[must_use]
     pub fn mentions_role(&self, role: &str, normalized: &str) -> bool {
         self.meanings_with_role(role)
@@ -477,10 +494,10 @@ impl Lexicon {
     /// Does `normalized` contain any surface word of any meaning in `role` as a
     /// raw substring (`str::contains`), ignoring whitespace-token boundaries?
     ///
-    /// This is the deliberately *looser* sibling of [`mentions_role`]. Many
+    /// This is the deliberately *looser* sibling of [`Self::mentions_role`]. Many
     /// legacy recognisers matched an inflectable stem — `правил` to catch
     /// `правила`/`правило`/`правил`, `расчёт` to catch `при расчёте` — by raw
-    /// substring. Those stems are not whole tokens, so [`mentions_role`]'s
+    /// substring. Those stems are not whole tokens, so [`Self::mentions_role`]'s
     /// token-bounded contract would miss them. A meaning whose surface forms are
     /// such stems (recorded as [`Slot::Bare`] words) is queried through this
     /// method instead, preserving the original byte-faithful substring match
@@ -552,6 +569,36 @@ impl Lexicon {
         (tokens, phrases)
     }
 
+    /// Every arithmetic operator grounded in the seed, in declaration order.
+    ///
+    /// Each [`ArithmeticOperator`] pairs an operator meaning's symbol value
+    /// surface with its spelled surfaces across every language. A meaning that
+    /// carries [`ROLE_ARITHMETIC_OPERATOR_WORD`](super::roles::ROLE_ARITHMETIC_OPERATOR_WORD)
+    /// but lists no single-character symbol is skipped. Declaration order is
+    /// preserved so a caller that indexes the list with a seeded pseudo-random
+    /// stream (the budget-driven search stage) stays deterministic across runs.
+    #[must_use]
+    pub fn arithmetic_operators(&self) -> Vec<ArithmeticOperator> {
+        let mut operators = Vec::new();
+        for meaning in self.meanings_with_role(super::roles::ROLE_ARITHMETIC_OPERATOR_WORD) {
+            let mut symbol = None;
+            let mut spelled = Vec::new();
+            for word in meaning.words() {
+                let mut chars = word.chars();
+                match (chars.next(), chars.next()) {
+                    // A one-character surface with no alphanumeric content is the
+                    // notation symbol; everything else is a spelled surface.
+                    (Some(only), None) if !only.is_alphanumeric() => symbol = Some(only),
+                    _ => spelled.push(word.to_string()),
+                }
+            }
+            if let Some(symbol) = symbol {
+                operators.push(ArithmeticOperator { symbol, spelled });
+            }
+        }
+        operators
+    }
+
     /// Distinct surface words contributed by every meaning carrying `role`,
     /// limited to the given `languages`, in declaration order.
     ///
@@ -560,7 +607,7 @@ impl Lexicon {
     /// stems (matched clause-initially) versus the head-final Hindi/Chinese stems
     /// (matched anywhere, gated by a target marker) — while keeping every surface
     /// word in the data. Language codes are the legitimate code-resident bridge
-    /// (see [`crate::translation::language_markers`]); the words stay in the seed.
+    /// (see `crate::translation::language_markers`); the words stay in the seed.
     #[must_use]
     pub fn words_for_role_in_languages(&self, role: &str, languages: &[&str]) -> Vec<String> {
         let mut out: Vec<String> = Vec::new();
@@ -662,7 +709,7 @@ impl Lexicon {
     }
 
     /// The single meaning that roots the merged ontology — the one carrying
-    /// [`ROLE_ONTOLOGY_ROOT`] (the `link` meaning), or `None` if absent.
+    /// `ROLE_ONTOLOGY_ROOT` (the `link` meaning), or `None` if absent.
     #[must_use]
     pub fn ontology_root(&self) -> Option<&Meaning> {
         self.meanings
@@ -700,7 +747,7 @@ impl Lexicon {
     }
 
     /// The type-system sub-root of the ontology — the meaning carrying
-    /// [`ROLE_ONTOLOGY_TYPE`] (the `type` meaning), or `None` if absent.
+    /// `ROLE_ONTOLOGY_TYPE` (the `type` meaning), or `None` if absent.
     ///
     /// A distinguished node directly under the [`ontology_root`](Self::ontology_root):
     /// the broadest classifications descend from it, so a reasoner can ask "what
@@ -713,7 +760,7 @@ impl Lexicon {
     }
 
     /// The top-level ontological categories — every meaning carrying
-    /// [`ROLE_ONTOLOGY_CATEGORY`] (entity, concept, relation, action, property).
+    /// `ROLE_ONTOLOGY_CATEGORY` (entity, concept, relation, action, property).
     ///
     /// These are the genera each domain cluster roots in, so generic reasoning
     /// can classify any meaning into a small, fixed set of categories rather
@@ -749,4 +796,15 @@ fn surface_present(normalized: &str, expected: &str) -> bool {
 pub fn lexicon() -> &'static Lexicon {
     static CACHE: OnceLock<Lexicon> = OnceLock::new();
     CACHE.get_or_init(|| parse_lexicon(&MEANING_FILES.join("\n")))
+}
+
+/// Parse an in-memory meaning-lexicon document into a [`Lexicon`].
+///
+/// The bulk lexeme importer (issue #660) uses this to validate a generated
+/// batch: it renders each `meaning` block, parses it back through the real
+/// loader, and confirms the surfaces denote their meaning and carry their
+/// facets before the batch is written to the seed.
+#[must_use]
+pub fn parse_lexicon_text(text: &str) -> Lexicon {
+    parse_lexicon(text)
 }

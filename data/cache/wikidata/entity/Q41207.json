@@ -1,0 +1,77 @@
+{
+  "entities": {
+    "Q41207": {
+      "type": "item",
+      "id": "Q41207",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "coin"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "монета"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सिक्का"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "硬幣"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "piece of hard material produced in large quantities to facilitate trade"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "кусок твёрдого материала, используемый при обмене и торговле"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "用於貿易、大量生產的硬質金屬"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "coins"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "монеты"
+          },
+          {
+            "language": "ru",
+            "value": "монета, деньги"
+          },
+          {
+            "language": "ru",
+            "value": "полноценная монета"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "錢幣"
+          },
+          {
+            "language": "zh",
+            "value": "硬币"
+          },
+          {
+            "language": "zh",
+            "value": "銅板"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

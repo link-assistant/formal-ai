@@ -1,0 +1,13 @@
+Q7873
+  descriptions
+    en "organic fluid which transports nutrients throughout the organism"
+    ru "жидкая и подвижная соединительная ткань"
+    zh "生物體內的一種結締組織"
+  id Q7873
+  labels
+    en blood
+    hi "रक्त"
+    ru "кровь"
+    zh "血液"
+  type item
+success 1

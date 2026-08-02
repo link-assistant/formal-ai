@@ -71,6 +71,12 @@ function contentText(event = {}) {
       return messageText;
     }
   }
+  if (event.part && typeof event.part === "object") {
+    const partText = nestedString(event.part, ["text", "content", "delta"]);
+    if (partText) {
+      return partText;
+    }
+  }
   if (Array.isArray(event.content)) {
     return event.content
       .map((part) => stringValue(part) || nestedString(part, ["text", "content"]))
@@ -399,13 +405,10 @@ function agentEventsToChatAnswer(events = [], options = {}) {
       continue;
     }
 
-    const text = contentText(entry);
-    if (text) {
-      textParts.push(text);
-      pushStep(steps, "agent_text", text.replace(/\s+/g, " ").slice(0, 160));
-    } else {
-      pushStep(steps, "agent_event", type || "event", "low");
-    }
+    // Lifecycle/config/log events may have a generic `message` field, but that
+    // is diagnostics rather than assistant output. Preserve the event in the
+    // trace without leaking it into the final chat answer.
+    pushStep(steps, "agent_event", type || "event", "low");
   }
 
   const text = textParts.join("").trim();

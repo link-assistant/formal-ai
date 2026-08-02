@@ -1,0 +1,169 @@
+{
+  "entities": {
+    "Q7565": {
+      "type": "item",
+      "id": "Q7565",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "father"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "отец"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पिता"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "父親"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "male parent"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "мужчина-родитель и/или вырастивший ребёнка"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "亲属"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "dad"
+          },
+          {
+            "language": "en",
+            "value": "daddy"
+          },
+          {
+            "language": "en",
+            "value": "papa"
+          },
+          {
+            "language": "en",
+            "value": "fathers"
+          },
+          {
+            "language": "en",
+            "value": "pop"
+          },
+          {
+            "language": "en",
+            "value": "pa"
+          },
+          {
+            "language": "en",
+            "value": "Ahnentafel 2"
+          },
+          {
+            "language": "en",
+            "value": "old man"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "папа"
+          },
+          {
+            "language": "ru",
+            "value": "батя"
+          },
+          {
+            "language": "ru",
+            "value": "папочка"
+          },
+          {
+            "language": "ru",
+            "value": "папуля"
+          },
+          {
+            "language": "ru",
+            "value": "тятя"
+          },
+          {
+            "language": "ru",
+            "value": "батько"
+          },
+          {
+            "language": "ru",
+            "value": "батюшка"
+          },
+          {
+            "language": "ru",
+            "value": "отче"
+          },
+          {
+            "language": "ru",
+            "value": "папаша"
+          },
+          {
+            "language": "ru",
+            "value": "папка"
+          },
+          {
+            "language": "ru",
+            "value": "пап"
+          },
+          {
+            "language": "ru",
+            "value": "па"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "爸爸"
+          },
+          {
+            "language": "zh",
+            "value": "阿爸"
+          },
+          {
+            "language": "zh",
+            "value": "父"
+          },
+          {
+            "language": "zh",
+            "value": "爹"
+          },
+          {
+            "language": "zh",
+            "value": "父亲"
+          },
+          {
+            "language": "zh",
+            "value": "爸"
+          },
+          {
+            "language": "zh",
+            "value": "老爸"
+          },
+          {
+            "language": "zh",
+            "value": "爹爹"
+          },
+          {
+            "language": "zh",
+            "value": "老爹"
+          },
+          {
+            "language": "zh",
+            "value": "爹地"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

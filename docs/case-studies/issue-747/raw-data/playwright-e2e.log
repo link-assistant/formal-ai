@@ -1,0 +1,19 @@
+
+> formal-ai-e2e@1.0.0 test:local
+> playwright test --config=playwright.local.config.js tests/issue-747.spec.js tests/issue-541-permissions.spec.js
+
+[2m[WebServer] [22m[0m[2m[35m$[0m [2m[1mbun build ./src/web/vendor-entry.js --outfile ./src/web/vendor.bundle.js --target browser --format iife --production --minify && bun build ./src/web/ocr-entry.js --outfile ./src/web/ocr.bundle.js --target browser --format iife --production --minify && bun build ./src/web/app/main.jsx --outfile ./src/web/app.js --target browser --format iife --production --minify[0m
+[2m[WebServer] [22m(node:11510) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 7 tests using 2 workers
+
+  ✓  1 [chromium] › tests/issue-541-permissions.spec.js:155:3 › Issue #541 (R9): grant-all CTA evaluates the pending task › panel CTA without a pending task offers Grant + mode flip (9.3s)
+  ✓  2 [chromium] › tests/issue-747.spec.js:4:1 › desktop web search works with agent permission off and no local API (13.8s)
+  ✓  3 [chromium] › tests/issue-541-permissions.spec.js:190:3 › Issue #541 (R9): grant-all CTA evaluates the pending task › panel CTA with a pending shell task runs that task on click (6.0s)
+  ✓  4 [chromium] › tests/issue-541-permissions.spec.js:267:5 › Issue #541 (R9): grant-all CTA renders in every supported language › renders the localized CTA for english (language: "en") (2.7s)
+  ✓  5 [chromium] › tests/issue-541-permissions.spec.js:267:5 › Issue #541 (R9): grant-all CTA renders in every supported language › renders the localized CTA for russian (language: "ru") (3.4s)
+  ✓  6 [chromium] › tests/issue-541-permissions.spec.js:267:5 › Issue #541 (R9): grant-all CTA renders in every supported language › renders the localized CTA for chinese (language: "zh") (6.2s)
+  ✓  7 [chromium] › tests/issue-541-permissions.spec.js:267:5 › Issue #541 (R9): grant-all CTA renders in every supported language › renders the localized CTA for hindi (language: "hi") (4.1s)
+
+  7 passed (51.0s)

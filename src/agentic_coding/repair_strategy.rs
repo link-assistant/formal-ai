@@ -18,7 +18,7 @@
 //! target class) as Links Notation, exactly like the self-healing, ledger, and diagram
 //! recipes emit their documents.
 //!
-//! Unlike the source-graph, explain, and change-request recipes, the emitted document
+//! Unlike the source-links, explain, and change-request recipes, the emitted document
 //! depends only on the three self-contained canonical failure traces (never on the
 //! whole source tree), so it is committed byte-for-byte as
 //! `data/meta/repair-strategies.lino` and asserted against a fresh render in the

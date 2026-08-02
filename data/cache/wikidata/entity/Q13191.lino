@@ -1,0 +1,18 @@
+Q13191
+  aliases
+    en ("orange fruit" "citrus orange")
+    hi ("नारंगी")
+    zh ("橙子")
+  descriptions
+    en "citrus fruit of the orange tree"
+    hi "एक प्रकार फल"
+    ru "круглый цитрусовый фрукт оранжевого цвета"
+    zh "水果"
+  id Q13191
+  labels
+    en orange
+    hi "संतरा"
+    ru "апельсин"
+    zh "橙"
+  type item
+success 1

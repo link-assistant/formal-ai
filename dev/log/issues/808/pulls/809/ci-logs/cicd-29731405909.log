@@ -1,0 +1,26 @@
+Secrets Scan	Check for secrets	﻿2026-07-20T09:27:36.8085279Z ##[group]Run bash scripts/check-secrets.sh
+Secrets Scan	Check for secrets	2026-07-20T09:27:36.8085717Z ^[[36;1mbash scripts/check-secrets.sh^[[0m
+Secrets Scan	Check for secrets	2026-07-20T09:27:36.8264374Z shell: /usr/bin/bash -e {0}
+Secrets Scan	Check for secrets	2026-07-20T09:27:36.8264659Z env:
+Secrets Scan	Check for secrets	2026-07-20T09:27:36.8264872Z   GIT_CONFIG_COUNT: 1
+Secrets Scan	Check for secrets	2026-07-20T09:27:36.8265374Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Secrets Scan	Check for secrets	2026-07-20T09:27:36.8265657Z   GIT_CONFIG_VALUE_0: main
+Secrets Scan	Check for secrets	2026-07-20T09:27:36.8265885Z   CARGO_NET_RETRY: 10
+Secrets Scan	Check for secrets	2026-07-20T09:27:36.8266117Z   CARGO_HTTP_MULTIPLEXING: false
+Secrets Scan	Check for secrets	2026-07-20T09:27:36.8266374Z   CARGO_TERM_COLOR: always
+Secrets Scan	Check for secrets	2026-07-20T09:27:36.8266601Z   RUSTFLAGS: -Dwarnings
+Secrets Scan	Check for secrets	2026-07-20T09:27:36.8267084Z   CARGO_REGISTRY_TOKEN: ***
+Secrets Scan	Check for secrets	2026-07-20T09:27:36.8267624Z   CARGO_TOKEN: ***
+Secrets Scan	Check for secrets	2026-07-20T09:27:36.8267871Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+Secrets Scan	Check for secrets	2026-07-20T09:27:36.8268178Z   DOCKERHUB_IMAGE: 
+Secrets Scan	Check for secrets	2026-07-20T09:27:36.8268389Z   BASE_REF: main
+Secrets Scan	Check for secrets	2026-07-20T09:27:36.8268610Z ##[endgroup]
+Secrets Scan	Check for secrets	2026-07-20T09:27:36.8472714Z Scanning files changed in 29ecccf264e51477bdf35de51df14db2bb6f71d5..HEAD
+Secrets Scan	Check for secrets	2026-07-20T09:27:36.8509433Z Scanning 22 file(s) for secrets...
+Secrets Scan	Check for secrets	2026-07-20T09:27:41.2647574Z 
+Secrets Scan	Check for secrets	2026-07-20T09:27:41.2649469Z /home/runner/work/formal-ai/formal-ai/dev/log/issues/808/pulls/809/sessions/a7583710-f266-4c39-b5cf-8583e137ffd4/claude-a7583710-f266-4c39-b5cf-8583e137ffd4.jsonl
+Secrets Scan	Check for secrets	2026-07-20T09:27:41.2676545Z ##[error]  573:304  error  [GITHUB_TOKEN] found GitHub Token(*****************************): ****************************************  @secretlint/secretlint-rule-preset-recommend > @secretlint/secretlint-rule-github
+Secrets Scan	Check for secrets	2026-07-20T09:27:41.2683951Z 
+Secrets Scan	Check for secrets	2026-07-20T09:27:41.2684507Z ✖ 1 problem (1 error, 0 warnings, 0 infos)
+Secrets Scan	Check for secrets	2026-07-20T09:27:41.2684777Z 
+Secrets Scan	Check for secrets	2026-07-20T09:27:41.3227617Z ##[error]Process completed with exit code 123.

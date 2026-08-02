@@ -12,6 +12,15 @@
 pub const AGENT_INFO_LINO: &str = include_str!("../../../data/seed/agent-info.lino");
 pub const MULTILINGUAL_RESPONSES_LINO: &str =
     include_str!("../../../data/seed/multilingual-responses.lino");
+pub const MULTILINGUAL_RESPONSES_AGENTIC_LINO: &str =
+    include_str!("../../../data/seed/multilingual-responses-agentic.lino");
+pub const MULTILINGUAL_RESPONSES_PROCEDURE_LINO: &str =
+    include_str!("../../../data/seed/multilingual-responses-procedure.lino");
+pub const RESPONSE_FILES: &[&str] = &[
+    MULTILINGUAL_RESPONSES_LINO,
+    MULTILINGUAL_RESPONSES_AGENTIC_LINO,
+    MULTILINGUAL_RESPONSES_PROCEDURE_LINO,
+];
 pub const CONCEPTS_LINO: &str = include_str!("../../../data/seed/concepts.lino");
 pub const CONCEPT_CONTEXTS_LINO: &str = include_str!("../../../data/seed/concept-contexts.lino");
 pub const FACTS_LINO: &str = include_str!("../../../data/seed/facts.lino");
@@ -21,6 +30,8 @@ pub const PERSONAS_LINO: &str = include_str!("../../../data/seed/personas.lino")
 pub const SUMMARY_TOPICS_LINO: &str = include_str!("../../../data/seed/summary-topics.lino");
 pub const COREFERENCE_LINO: &str = include_str!("../../../data/seed/coreference.lino");
 pub const TOOLS_LINO: &str = include_str!("../../../data/seed/tools.lino");
+pub const COMPUTER_USE_TASKS_LINO: &str =
+    include_str!("../../../data/seed/computer-use-tasks.lino");
 pub const LANGUAGE_DETECTION_LINO: &str =
     include_str!("../../../data/seed/language-detection.lino");
 pub const PROMPT_PATTERNS_LINO: &str = include_str!("../../../data/seed/prompt-patterns.lino");
@@ -72,6 +83,8 @@ pub const MEANINGS_POLICY_LINO: &str = include_str!("../../../data/seed/meanings
 pub const MEANINGS_DOCS_LINO: &str = include_str!("../../../data/seed/meanings-docs.lino");
 pub const MEANINGS_SKILL_COMPILER_LINO: &str =
     include_str!("../../../data/seed/meanings-skill-compiler.lino");
+pub const MEANINGS_SKILL_PROCEDURE_LINO: &str =
+    include_str!("../../../data/seed/meanings-skill-procedure.lino");
 pub const MEANINGS_FINANCE_LINO: &str = include_str!("../../../data/seed/meanings-finance.lino");
 pub const MEANINGS_DEFINITION_MERGE_LINO: &str =
     include_str!("../../../data/seed/meanings-definition-merge.lino");
@@ -110,6 +123,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             "data/seed/multilingual-responses.lino",
             MULTILINGUAL_RESPONSES_LINO,
         ),
+        (
+            "data/seed/multilingual-responses-agentic.lino",
+            MULTILINGUAL_RESPONSES_AGENTIC_LINO,
+        ),
         ("data/seed/concepts.lino", CONCEPTS_LINO),
         ("data/seed/concept-contexts.lino", CONCEPT_CONTEXTS_LINO),
         ("data/seed/facts.lino", FACTS_LINO),
@@ -119,6 +136,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/summary-topics.lino", SUMMARY_TOPICS_LINO),
         ("data/seed/coreference.lino", COREFERENCE_LINO),
         ("data/seed/tools.lino", TOOLS_LINO),
+        ("data/seed/computer-use-tasks.lino", COMPUTER_USE_TASKS_LINO),
         ("data/seed/language-detection.lino", LANGUAGE_DETECTION_LINO),
         ("data/seed/prompt-patterns.lino", PROMPT_PATTERNS_LINO),
         ("data/seed/intent-routing.lino", INTENT_ROUTING_LINO),
@@ -203,6 +221,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             "data/seed/meanings-skill-compiler.lino",
             MEANINGS_SKILL_COMPILER_LINO,
         ),
+        (
+            "data/seed/meanings-skill-procedure.lino",
+            MEANINGS_SKILL_PROCEDURE_LINO,
+        ),
         ("data/seed/meanings-finance.lino", MEANINGS_FINANCE_LINO),
         (
             "data/seed/meanings-definition-merge.lino",
@@ -281,6 +303,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_POLICY_LINO,
     MEANINGS_DOCS_LINO,
     MEANINGS_SKILL_COMPILER_LINO,
+    MEANINGS_SKILL_PROCEDURE_LINO,
     MEANINGS_FINANCE_LINO,
     MEANINGS_DEFINITION_MERGE_LINO,
     MEANINGS_TOOL_ACCESS_LINO,

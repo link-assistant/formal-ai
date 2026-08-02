@@ -260,16 +260,12 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
     const oracleAnswer = language ? codingOracleAnswer(oracleTask, language) : null;
     if (oracleAnswer) return oracleAnswer;
     return {
-      intent: "write_program_unsupported",
-      content: i18n.unsupported(
-        language || "missing",
-        task || "missing",
-        Object.keys(WRITE_PROGRAM_LANGUAGES).join(", "),
-        Object.keys(WRITE_PROGRAM_TASKS).join(", "),
-      ),
+      intent: "write_program_skill_gap",
+      content: programSkillGapAnswer(task, language, responseLanguage),
       confidence: 0.4,
       evidence: [
-        "response:write_program:unsupported",
+        "response:write_program:skill_gap",
+        `skill_gap:${programSkillGapName(task, language, "en")}`,
         `program_parameter:language:${language || "missing"}`,
         `program_parameter:task:${task || "missing"}`,
       ],
@@ -329,15 +325,74 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
   };
 }
 
+function recapPlainSentence(text) {
+  let plain = String(text || "")
+    .replace(/```[\s\S]*?```|~~~[\s\S]*?~~~/gu, " ")
+    .replace(/^\s*(?:#{1,6}|[-+>*])\s*/gmu, " ")
+    .replace(/[#`*]/gu, "")
+    .replace(/\s+/gu, " ")
+    .trim()
+    .split(/\s+[—–]\s+/u)[0];
+  const sentence = plain.match(/^.*?(?:[.!?](?=\s|$)|[。！？])/u);
+  if (sentence) plain = sentence[0];
+  if (plain && !/[.!?。！？]$/u.test(plain)) plain += ".";
+  return plain;
+}
+
+function tryRecapConversation(history) {
+  if (!Array.isArray(history)) return null;
+  let userIndex = -1;
+  for (let index = history.length - 1; index >= 0; index -= 1) {
+    if (history[index]?.role === "user" && history[index]?.content) {
+      userIndex = index;
+      break;
+    }
+  }
+  if (userIndex < 0) return null;
+  const sentences = [recapPlainSentence(history[userIndex].content)].filter(Boolean);
+  for (let index = history.length - 1; index > userIndex; index -= 1) {
+    if (history[index]?.role !== "assistant" || !history[index]?.content) continue;
+    const status = recapPlainSentence(history[index].content);
+    if (status && status.toLowerCase() !== sentences[0]?.toLowerCase())
+      sentences.push(status);
+    break;
+  }
+  const words = sentences.slice(0, 2).join(" ").split(/\s+/u).filter(Boolean);
+  let content = words.slice(0, 39).join(" ");
+  if (words.length > 39) content = `${content.replace(/[.,;:!?。！？]+$/u, "")}.`;
+  if (!content) return null;
+  return {
+    intent: "summarize_conversation",
+    content,
+    confidence: 0.9,
+    evidence: [
+      "summarize_conversation",
+      "summarization:format:plain",
+      "max_words:39",
+      "max_sentences:2",
+    ],
+  };
+}
+
 function tryHistorical(prompt, history) {
   const normalized = normalizePrompt(prompt);
   // Issue #386: a conversation-summary request is recognised by composing
   // meaning roles (see isSummarizePrompt) across every supported language, so
-  // we test it before the empty-normalized bail-out below.
+  // we test it before the empty-normalized bail-out below. Issue #858 selects
+  // the returning-user recap's bounded plain format before the detailed report.
+  if (isReturnRecapPrompt(normalized)) {
+    return tryRecapConversation(history);
+  }
   if (isSummarizePrompt(normalized)) {
     return trySummarizeConversation(history);
   }
   if (!normalized) return null;
+  // Issue #676: set/recall the assistant's own name from dialog-local history so
+  // "Now your name is Ineffa" is acknowledged and later recalled, instead of
+  // falling through to the unknown opener. Mirrors try_assistant_name in the
+  // Rust conversation-memory handler and runs before the user-name recall below.
+  const assistantName = tryAssistantName(prompt, normalized, history);
+  if (assistantName) return assistantName;
   if (normalized === "what is my name" || normalized === "what s my name") {
     const hit = tryRecallName(history);
     if (hit) return hit;
@@ -686,11 +741,19 @@ function tryResearchResultFollowup(prompt, normalized, history = []) {
 function isSummarizePrompt(normalized) {
   const cleaned = normalizePrompt(normalized);
   return (
+    isReturnRecapPrompt(cleaned) ||
     lexiconMentionsRole(ROLE_CONVERSATION_SUMMARY_PHRASE, cleaned) ||
     lexiconMentionsRole(ROLE_CONVERSATION_SUMMARY_COURTESY, cleaned) ||
     (lexiconMentionsRole(ROLE_CONVERSATION_SUMMARY_DIRECTIVE, cleaned) &&
       lexiconMentionsRole(ROLE_CONVERSATION_REFERENCE, cleaned)) ||
     summaryDirectiveLeads(cleaned)
+  );
+}
+
+function isReturnRecapPrompt(normalized) {
+  return lexiconMentionsRole(
+    ROLE_CONVERSATION_RETURN_RECAP,
+    normalizePrompt(normalized),
   );
 }
 
@@ -730,6 +793,17 @@ function looksLikeHostname(value) {
   );
 }
 
+// Mirror probable_local_file_name in src/solver_handlers/web_search_intent.rs.
+// A schemeless attachment/path such as report.txt is a local object, not an
+// HTTPS host. Explicit http(s) URLs still take the authoritative branch below.
+function probableLocalFileName(candidate) {
+  const extension = String(candidate || "").split(".").pop().toLowerCase();
+  return [
+    "txt", "md", "json", "yaml", "yml", "toml", "rs", "py", "js", "ts",
+    "tsx", "jsx", "css", "html", "xml", "csv", "lino", "log", "sh",
+  ].includes(extension);
+}
+
 function normalizeUrlCandidate(candidate) {
   const text = String(candidate || "").trim();
   if (!text || /\s/.test(text) || text.includes("@")) return null;
@@ -739,7 +813,10 @@ function normalizeUrlCandidate(candidate) {
     url = text;
   } else {
     const hostCandidate = text.split(/[/?#]/, 1)[0] || "";
-    if (lower.startsWith("www.") || looksLikeHostname(hostCandidate)) {
+    if (
+      !probableLocalFileName(hostCandidate) &&
+      (lower.startsWith("www.") || looksLikeHostname(hostCandidate))
+    ) {
       url = `https://${text}`;
     }
   }
@@ -1051,6 +1128,7 @@ function webSearchMarkers() {
     explicitCircumfixes: circumfixLiterals(ROLE_WEB_SEARCH_EXPLICIT_PREFIX),
     actionMarkers: bareLiterals(ROLE_WEB_SEARCH_ACTION),
     strongActionMarkers: bareLiterals(ROLE_WEB_SEARCH_STRONG_ACTION),
+    strongImperativeLeadMarkers: prefixLiterals(ROLE_WEB_SEARCH_STRONG_ACTION),
     signalMarkers: bareLiterals(ROLE_WEB_SEARCH_SIGNAL),
     topicAfterMarkers: prefixLiterals(ROLE_WEB_SEARCH_TOPIC_MARKER),
     topicBeforeMarkers: suffixLiterals(ROLE_WEB_SEARCH_TOPIC_MARKER),
@@ -1058,6 +1136,14 @@ function webSearchMarkers() {
     leadingNoise: prefixLiterals(ROLE_WEB_SEARCH_QUERY_LEADING_NOISE),
     trailingNoise: suffixLiterals(ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE),
     sourceOnly: sourceLiterals(ROLE_WEB_SEARCH_SOURCE_ONLY),
+    sourceMarkers: bareLiterals(ROLE_WEB_SEARCH_SOURCE_ONLY),
+    sourceMediumMarkers: bareLiterals(ROLE_WEB_MEDIUM),
+    informationMarkers: bareLiterals(ROLE_WEB_SEARCH_SIGNAL).filter(
+      (marker) =>
+        !bareLiterals(ROLE_WEB_SEARCH_SOURCE_ONLY).some(
+          (source) => source.trim() === marker.trim(),
+        ),
+    ),
     newsSubjectMarkers: bareLiterals(ROLE_WEB_SEARCH_NEWS_SUBJECT),
     newsRecencyMarkers: bareLiterals(ROLE_WEB_SEARCH_NEWS_RECENCY),
     recordsSubjectMarkers: bareLiterals(ROLE_WEB_SEARCH_RECORDS_SUBJECT),
@@ -1065,6 +1151,8 @@ function webSearchMarkers() {
     followupVerbs: bareLiterals(ROLE_FOLLOWUP_INSTRUCTION_VERB),
     continuationMarkers: bareLiterals(ROLE_CLAUSE_CONTINUATION_MARKER),
     termInformationPrefixes: prefixLiterals(ROLE_TERM_INFORMATION_REQUEST_OPENER),
+    termInformationSuffixes: suffixLiterals(ROLE_TERM_INFORMATION_REQUEST_OPENER),
+    termInformationCircumfixes: circumfixLiterals(ROLE_TERM_INFORMATION_REQUEST_OPENER),
     researchQuestionPrefixes: prefixLiterals(ROLE_RESEARCH_QUESTION_OPENER),
     researchModifiers: bareLiterals(ROLE_RESEARCH_SUPERLATIVE_MODIFIER),
     researchEvidenceDomains: bareLiterals(ROLE_RESEARCH_EVIDENCE_DOMAIN),

@@ -278,42 +278,37 @@ async function tryUrlNavigate(prompt) {
   };
 }
 
-// Reciprocal Rank Fusion constant — Cormack et al. 2009 use k = 60 and we
-// match that so combined ranks stay comparable across the CLI, server, and
-// browser surfaces (issue #133).
-//
-// The authoritative value lives in `web_search_core::WEB_SEARCH_RRF_K` and is
-// fetched from the WASM worker once it boots; the JS constants below are
-// pre-WASM fallbacks used during init() and on browsers where the worker
-// could not instantiate. The Rust→WASM port is the source of truth (R194).
+// WASM owns these web-search constants; fallbacks cover JS-only browsers.
 const WEB_SEARCH_RRF_K_FALLBACK = 60;
 const WEB_SEARCH_CONCURRENCY_FALLBACK = 5;
 const WEB_SEARCH_PROVIDER_LIMIT_FALLBACK = 10;
+const WEB_SEARCH_FETCH_TIMEOUT_MS = 2000;
+
+async function fetchWebSearch(url, options) {
+  if (typeof AbortController !== "function") return fetch(url, options || { mode: "cors" });
+  const controller = new AbortController();
+  let timedOut = false;
+  const timer = setTimeout(() => { timedOut = true; controller.abort(); }, WEB_SEARCH_FETCH_TIMEOUT_MS);
+  try {
+    return await fetch(url, Object.assign({}, options || { mode: "cors" }, { signal: controller.signal }));
+  } catch (error) {
+    if (timedOut) throw new Error(`timeout after ${WEB_SEARCH_FETCH_TIMEOUT_MS}ms`);
+    throw error;
+  } finally { clearTimeout(timer); }
+}
 
 const WEB_SEARCH_TEXT_ENCODER = new TextEncoder();
 const WEB_SEARCH_TEXT_DECODER = new TextDecoder();
 
-function webSearchRrfK() {
-  if (wasm && typeof wasm.web_search_rrf_k === "function") {
-    return wasm.web_search_rrf_k() >>> 0;
-  }
-  return WEB_SEARCH_RRF_K_FALLBACK;
+function wasmU32Call(exportName, fallback) {
+  return wasm && typeof wasm[exportName] === "function"
+    ? wasm[exportName]() >>> 0
+    : fallback;
 }
 
-function webSearchConcurrency() {
-  if (wasm && typeof wasm.web_search_concurrency_per_category === "function") {
-    return wasm.web_search_concurrency_per_category() >>> 0;
-  }
-  return WEB_SEARCH_CONCURRENCY_FALLBACK;
-}
-
-function webSearchProviderLimit() {
-  if (wasm && typeof wasm.web_search_provider_limit === "function") {
-    return wasm.web_search_provider_limit() >>> 0;
-  }
-  return WEB_SEARCH_PROVIDER_LIMIT_FALLBACK;
-}
-
+function webSearchRrfK() { return wasmU32Call("web_search_rrf_k", WEB_SEARCH_RRF_K_FALLBACK); }
+function webSearchConcurrency() { return wasmU32Call("web_search_concurrency_per_category", WEB_SEARCH_CONCURRENCY_FALLBACK); }
+function webSearchProviderLimit() { return wasmU32Call("web_search_provider_limit", WEB_SEARCH_PROVIDER_LIMIT_FALLBACK); }
 function wasmWriteInput(text) {
   if (!wasm || typeof wasm.input_ptr !== "function") return -1;
   const bytes = WEB_SEARCH_TEXT_ENCODER.encode(text);
@@ -331,61 +326,60 @@ function wasmReadOutput(length) {
   return WEB_SEARCH_TEXT_DECODER.decode(view);
 }
 
-// Engine-core bridges (R194 follow-up). Each function returns a value when
-// the WASM core is available, or `null` so the caller can fall back to the
-// pure-JS branch. Keeping a JS fallback covers offline mode and old browsers
-// where `WebAssembly.instantiate` is unavailable, but the canonical answer
-// always comes from Rust when the worker booted successfully.
-function wasmNormalizePrompt(text) {
-  if (!wasm || typeof wasm.engine_normalize_prompt !== "function") return null;
-  const length = wasmWriteInput(String(text || ""));
+function wasmTextCall(exportName, payload) {
+  if (!wasm || typeof wasm[exportName] !== "function") return null;
+  const length = wasmWriteInput(payload);
   if (length < 0) return null;
-  const written = wasm.engine_normalize_prompt(length) >>> 0;
-  return wasmReadOutput(written);
+  return wasmReadOutput(wasm[exportName](length) >>> 0);
 }
 
-function wasmDetectLanguage(text) {
-  if (!wasm || typeof wasm.engine_detect_language !== "function") return null;
-  const length = wasmWriteInput(String(text || ""));
-  if (length < 0) return null;
-  const written = wasm.engine_detect_language(length) >>> 0;
-  const slug = wasmReadOutput(written);
-  return slug || null;
-}
+// Bridges return null without WASM; a booted worker takes its answer from Rust.
+function wasmNormalizePrompt(text) { return wasmTextCall("engine_normalize_prompt", String(text || "")); }
+function wasmDetectLanguage(text) { return wasmTextCall(
+  "engine_detect_language", String(text || "")) || null; }
 
-// Returns `{ ok: true, value }` on success, `{ ok: false, error }` on parse
-// or runtime failure (division by zero, overflow). `null` means the WASM core
-// is unavailable — the caller should fall back to the JS parser.
+// Returns `{ ok, value/error }`, or null so the caller can use its JS fallback.
 function wasmEvaluateArithmetic(expression) {
-  if (!wasm || typeof wasm.engine_evaluate_arithmetic !== "function") return null;
-  const length = wasmWriteInput(String(expression || ""));
-  if (length < 0) return null;
-  const written = wasm.engine_evaluate_arithmetic(length) >>> 0;
-  if (written === 0) return null;
-  const text = wasmReadOutput(written);
+  const text = wasmTextCall("engine_evaluate_arithmetic", String(expression || ""));
+  if (!text) return null;
   if (text.startsWith("ERR:")) {
     return { ok: false, error: text.slice(4) };
   }
   return { ok: true, value: text };
 }
 
-function wasmStableId(prefix, value) {
-  if (!wasm || typeof wasm.engine_stable_id !== "function") return null;
-  const payload = `${String(prefix || "")}\n${String(value || "")}`;
-  const length = wasmWriteInput(payload);
-  if (length < 0) return null;
-  const written = wasm.engine_stable_id(length) >>> 0;
-  return wasmReadOutput(written) || null;
+function wasmJsonCall(exportName, payload) {
+  const text = wasmTextCall(exportName, payload);
+  if (!text) return null;
+  try { return JSON.parse(text); }
+  catch (_error) { return null; }
+}
+function wasmFactCheckDialogue(payload) { return wasmJsonCall("engine_fact_check_dialogue", payload); }
+
+// Issue #708: transport events to the shared Rust/WASM query engine.
+const WASM_MEMORY_QUERY_FIELDS = "id kind role intent tool inputs outputs content sentAt demoLabel conversationId conversationTitle evidence accessCount writeCount".split(" ");
+
+function wasmMemoryQueryValue(value) {
+  if (value === null || value === undefined) return "n";
+  if (Array.isArray(value)) return `l${value.map((item) => encodeURIComponent(String(item))).join(",")}`;
+  if (typeof value === "boolean") return value ? "b1" : "b0";
+  if (typeof value === "number") return `${Number.isInteger(value) ? "i" : "f"}${value}`;
+  return `s${encodeURIComponent(String(value))}`;
+}
+function tryExactMemoryQuery(prompt, memoryEvents) {
+  const lines = [`q\t${encodeURIComponent(String(prompt || ""))}`];
+  for (const event of Array.isArray(memoryEvents) ? memoryEvents : []) lines.push(
+    `e\t${WASM_MEMORY_QUERY_FIELDS.map((field) => wasmMemoryQueryValue(event && event[field])).join("\t")}`);
+  return wasmJsonCall("engine_memory_query", lines.join("\n"));
 }
 
-function wasmSelectUnknownOpener(prompt, language) {
-  if (!wasm || typeof wasm.engine_select_unknown_opener !== "function") return null;
-  const payload = `${String(language || "")}\n${String(prompt || "")}`;
-  const length = wasmWriteInput(payload);
-  if (length < 0) return null;
-  const written = wasm.engine_select_unknown_opener(length) >>> 0;
-  return wasmReadOutput(written) || null;
+function wasmStableId(prefix, value) {
+  return wasmTextCall("engine_stable_id", `${String(prefix || "")}\n${String(value || "")}`) || null;
 }
+
+function wasmSelectUnknownOpener(prompt, language) { return wasmTextCall(
+  "engine_select_unknown_opener",
+  `${String(language || "")}\n${String(prompt || "")}`) || null; }
 
 function serializeIntentRouteForWasm(normalized, rawPrompt, route) {
   const lines = [String(normalized || ""), String(rawPrompt || "")];
@@ -419,13 +413,8 @@ function wasmMatchIntentRoute(normalized, rawPrompt, route) {
 // otherwise returns null so the caller can fall back to the JS list. The
 // Rust side owns the canonical evidence shape (issue #133 R194).
 function wasmWebSearchRequestEvidence(query, language) {
-  if (!wasm || typeof wasm.web_search_request_evidence !== "function") return null;
   const payload = `${String(query || "")}\n${String(language || "")}`;
-  const length = wasmWriteInput(payload);
-  if (length < 0) return null;
-  const written = wasm.web_search_request_evidence(length) >>> 0;
-  if (written === 0) return null;
-  const text = wasmReadOutput(written);
+  const text = wasmTextCall("web_search_request_evidence", payload);
   return text ? text.split("\n") : null;
 }
 
@@ -544,7 +533,7 @@ async function fetchProviderJson(providerId, url, options) {
   }
   const startedAt = Date.now();
   try {
-    const response = await fetch(url, options || { mode: "cors" });
+    const response = await fetchWebSearch(url, options);
     const status = response ? response.status : 0;
     const statusText = response ? response.statusText : "";
     if (!response || !response.ok) {
@@ -685,47 +674,16 @@ function extractQuoteAroundQuery(text, query, maxChars) {
 }
 
 const PROVIDER_DISPLAY_LABELS = {
-  duckduckgo: "DuckDuckGo",
-  "internet-archive": "Internet Archive",
-  wikipedia: "Википедия",
-  wikidata: "Викидата",
-  wiktionary: "Викисловарь",
-  wikinews: "Викиновости",
+  duckduckgo: "DuckDuckGo", "internet-archive": "Internet Archive", wikipedia: "Википедия",
+  wikidata: "Викидата", wiktionary: "Викисловарь", wikinews: "Викиновости",
+  stackexchange: "Stack Exchange", wikihow: "wikiHow", wikifunctions: "Wikifunctions", "rosetta-code": "Rosetta Code",
 };
 
 const PROVIDER_DISPLAY_LABELS_BY_LANG = {
-  en: {
-    duckduckgo: "DuckDuckGo",
-    "internet-archive": "Internet Archive",
-    wikipedia: "Wikipedia",
-    wikidata: "Wikidata",
-    wiktionary: "Wiktionary",
-    wikinews: "Wikinews",
-  },
-  ru: {
-    duckduckgo: "DuckDuckGo",
-    "internet-archive": "Архив Интернета",
-    wikipedia: "Википедия",
-    wikidata: "Викидата",
-    wiktionary: "Викисловарь",
-    wikinews: "Викиновости",
-  },
-  zh: {
-    duckduckgo: "DuckDuckGo",
-    "internet-archive": "互联网档案馆",
-    wikipedia: "维基百科",
-    wikidata: "维基数据",
-    wiktionary: "维基词典",
-    wikinews: "维基新闻",
-  },
-  hi: {
-    duckduckgo: "DuckDuckGo",
-    "internet-archive": "इंटरनेट आर्काइव",
-    wikipedia: "विकिपीडिया",
-    wikidata: "विकिडेटा",
-    wiktionary: "विक्षनरी",
-    wikinews: "Wikinews",
-  },
+  en: { duckduckgo: "DuckDuckGo", "internet-archive": "Internet Archive", wikipedia: "Wikipedia", wikidata: "Wikidata", wiktionary: "Wiktionary", wikinews: "Wikinews" },
+  ru: { duckduckgo: "DuckDuckGo", "internet-archive": "Архив Интернета", wikipedia: "Википедия", wikidata: "Викидата", wiktionary: "Викисловарь", wikinews: "Викиновости" },
+  zh: { duckduckgo: "DuckDuckGo", "internet-archive": "互联网档案馆", wikipedia: "维基百科", wikidata: "维基数据", wiktionary: "维基词典", wikinews: "维基新闻" },
+  hi: { duckduckgo: "DuckDuckGo", "internet-archive": "इंटरनेट आर्काइव", wikipedia: "विकिपीडिया", wikidata: "विकिडेटा", wiktionary: "विक्षनरी", wikinews: "Wikinews" },
 };
 
 function providerDisplayLabel(providerId, language) {
@@ -735,9 +693,7 @@ function providerDisplayLabel(providerId, language) {
 }
 
 async function searchDuckDuckGo(query, language, limit) {
-  // DuckDuckGo Instant Answer — CORS-readable, no key. Returns the abstract
-  // and a flat list of related-topic links. We treat the abstract link plus
-  // the related topics as the ranked result list (issue #133).
+  // DuckDuckGo Instant Answer is CORS-readable and requires no key.
   //
   // Issue #153: the previous signature was (query, limit) but the dispatcher
   // calls every provider as (query, language, providerLimit). That meant
@@ -767,6 +723,8 @@ async function searchDuckDuckGo(query, language, limit) {
       title: data.Heading || query,
       url: data.AbstractURL,
       excerpt: stripHtml(data.AbstractText),
+      sourceTier: data.SourceTier || "",
+      sourceLanguage: data.SourceLanguage || language || "",
     });
   }
   const topics = Array.isArray(data.RelatedTopics) ? data.RelatedTopics : [];
@@ -777,6 +735,8 @@ async function searchDuckDuckGo(query, language, limit) {
         title: topic.Text.split(" - ")[0] || topic.Text,
         url: topic.FirstURL,
         excerpt: stripHtml(topic.Text),
+        sourceTier: topic.SourceTier || "",
+        sourceLanguage: topic.SourceLanguage || language || "",
       });
     } else if (Array.isArray(topic.Topics)) {
       for (const inner of topic.Topics) {
@@ -785,6 +745,8 @@ async function searchDuckDuckGo(query, language, limit) {
             title: inner.Text.split(" - ")[0] || inner.Text,
             url: inner.FirstURL,
             excerpt: stripHtml(inner.Text),
+            sourceTier: inner.SourceTier || "",
+            sourceLanguage: inner.SourceLanguage || language || "",
           });
         }
       }
@@ -1035,11 +997,52 @@ async function searchWikinews(query, language, limit) {
   return { ok: true, results: collected.slice(0, cap), finalUrl: lastFinalUrl };
 }
 
-// Issue #180: The priority order requested in the issue is
-// DuckDuckGo → Internet Archive → Wikipedia → Wikidata → Wiktionary → Wikinews → rest.
-// We also keep the corresponding light-weight probe URL so the per-session
-// availability check at the top of `tryWebSearch` can pre-flight every
-// provider once instead of failing the first user query.
+function researchProviderResult(outcome, results) {
+  const found = results.length > 0;
+  return { ok: found, results, finalUrl: outcome.finalUrl, error: found ? "" : (outcome.error || "no_results") };
+}
+
+async function searchMediaWikiOpenSearch(providerId, apiBase, pageBase, query, limit) {
+  const cap = typeof limit === "number" && Number.isFinite(limit) && limit > 0 ? Math.floor(limit) : 5;
+  const url = `${apiBase}?action=opensearch&search=${encodeURIComponent(query)}&limit=${cap}&format=json&origin=*`;
+  const outcome = await fetchProviderJson(providerId, url);
+  if (!outcome.ok || !Array.isArray(outcome.data) || !Array.isArray(outcome.data[1]))
+    return researchProviderResult(outcome, []);
+  const titles = outcome.data[1];
+  const descriptions = Array.isArray(outcome.data[2]) ? outcome.data[2] : [];
+  const urls = Array.isArray(outcome.data[3]) ? outcome.data[3] : [];
+  const results = titles.slice(0, cap).map((title, index) => ({
+    title: title || query, sourceKind: providerId,
+    url: urls[index] || `${pageBase}${encodeURIComponent(String(title || query).replace(/\s+/g, "_"))}`,
+    excerpt: stripHtml(descriptions[index] || title || query) }));
+  return researchProviderResult(outcome, results);
+}
+
+async function searchStackExchange(query, _language, limit) {
+  const cap = typeof limit === "number" && Number.isFinite(limit) && limit > 0 ? Math.floor(limit) : 5;
+  const url = "https://api.stackexchange.com/2.3/search/advanced" +
+    `?order=desc&sort=relevance&q=${encodeURIComponent(query)}&site=stackoverflow&filter=withbody&pagesize=${cap}`;
+  const outcome = await fetchProviderJson("stackexchange", url);
+  if (!outcome.ok || !outcome.data || !Array.isArray(outcome.data.items))
+    return researchProviderResult(outcome, []);
+  const results = outcome.data.items.slice(0, cap).map((item) => ({
+    title: stripHtml(item.title || query), sourceKind: "stackexchange",
+    url: item.link || `https://stackoverflow.com/search?q=${encodeURIComponent(query)}`,
+    excerpt: stripHtml(item.body || item.title || query) }));
+  return researchProviderResult(outcome, results);
+}
+
+const UNKNOWN_INTENT_RESEARCH_PROVIDERS = [
+  ["stackexchange", "Stack Exchange / Stack Overflow", "externalServiceStackExchange", searchStackExchange],
+  ["wikihow", "wikiHow", "externalServiceWikihow", "https://www.wikihow.com/api.php", "https://www.wikihow.com/"],
+  ["wikifunctions", "Wikifunctions", "externalServiceMediawikiFamily", "https://www.wikifunctions.org/w/api.php", "https://www.wikifunctions.org/wiki/"], ["rosetta-code", "Rosetta Code", "externalServiceMediawikiFamily", "https://rosettacode.org/w/api.php", "https://rosettacode.org/wiki/"],
+].map(([id, label, settingsKey, api, pages], index) => ({
+  id, label, settingsKey, priority: index + 7,
+  run: typeof api === "function" ? api : (query, _language, limit) =>
+    searchMediaWikiOpenSearch(id, api, pages, query, limit)
+}));
+
+// Declared priority is DDG → IA → Wikipedia → Wikidata → Wiktionary → Wikinews.
 const WEB_SEARCH_PROVIDERS = [
   {
     id: "duckduckgo",
@@ -1094,16 +1097,13 @@ const WEB_SEARCH_PROVIDERS = [
   },
 ];
 
-const WEB_SEARCH_PROVIDER_PRIORITY = WEB_SEARCH_PROVIDERS.reduce((acc, provider, index) => {
-  acc[provider.id] = typeof provider.priority === "number" ? provider.priority : index + 1;
-  return acc;
-}, Object.create(null));
+const WEB_SEARCH_PROVIDER_PRIORITY = WEB_SEARCH_PROVIDERS
+  .concat(UNKNOWN_INTENT_RESEARCH_PROVIDERS)
+  .reduce((acc, provider, index) => {
+    acc[provider.id] = typeof provider.priority === "number" ? provider.priority : index + 1;
+    return acc;
+  }, Object.create(null));
 
-// Issue #180: pre-probe every provider exactly once per browser session. The
-// result lives in `WEB_SEARCH_AVAILABLE` / `WEB_SEARCH_DISABLED` for the rest
-// of the worker's lifetime so subsequent queries skip CORS-blocked endpoints
-// without re-burning a socket. We return a shared promise so concurrent
-// callers cooperate on the same probe batch.
 function ensureWebSearchProviderProbes() {
   if (WEB_SEARCH_PROBE_PROMISE) return WEB_SEARCH_PROBE_PROMISE;
   if (typeof fetch !== "function") {
@@ -1115,7 +1115,7 @@ function ensureWebSearchProviderProbes() {
       if (!provider.probeUrl) return null;
       const startedAt = Date.now();
       try {
-        const response = await fetch(provider.probeUrl, { mode: "cors" });
+        const response = await fetchWebSearch(provider.probeUrl, { mode: "cors" });
         const status = response ? response.status : 0;
         if (response && response.ok) {
           webSearchMarkAvailable(provider.id, { probedAt: startedAt, status });

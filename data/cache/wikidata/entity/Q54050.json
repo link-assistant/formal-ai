@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "Q54050": {
+      "type": "item",
+      "id": "Q54050",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "hill"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "холм"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पहाड़ी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "丘"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "landform that extends above the surrounding terrain in lower mountain ranges, smaller than a mountain"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "форма рельефа в виде небольшой возвышенности, высотой ниже, чем гора"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "微許隆起的地方"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "hills"
+          },
+          {
+            "language": "en",
+            "value": "elevation"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "холмы"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "山丘"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

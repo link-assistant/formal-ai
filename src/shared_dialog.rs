@@ -7,12 +7,15 @@ use std::fmt;
 use serde_json::{Map, Value};
 
 use crate::memory::{export_links_notation, MemoryEvent};
+use crate::seed;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SharedDialogFormat {
     Auto,
     ChatGptShareHtml,
     MarkdownTranscript,
+    /// Normalized JSON emitted by `web-capture shared-dialog`.
+    WebCaptureJson,
 }
 
 #[derive(Debug, Default, Clone, PartialEq, Eq)]
@@ -78,6 +81,7 @@ pub fn parse_shared_dialog(
         SharedDialogFormat::Auto => unreachable!("auto format is resolved before parsing"),
         SharedDialogFormat::ChatGptShareHtml => parse_chatgpt_share_html(input, metadata),
         SharedDialogFormat::MarkdownTranscript => parse_markdown_transcript(input, metadata),
+        SharedDialogFormat::WebCaptureJson => parse_web_capture_json(input, metadata),
     }
 }
 
@@ -128,7 +132,113 @@ fn detect_format(input: &str) -> Result<SharedDialogFormat, SharedDialogError> {
             "static Google AI Mode capture did not include a replayable transcript; use browser-backed web-capture support",
         )));
     }
+    if input.trim_start().starts_with('{')
+        && input.contains("\"provider\"")
+        && input.contains("\"turns\"")
+        && input.contains("\"diagnostics\"")
+    {
+        return Ok(SharedDialogFormat::WebCaptureJson);
+    }
     Ok(SharedDialogFormat::MarkdownTranscript)
+}
+
+fn parse_web_capture_json(
+    input: &str,
+    metadata: &SharedDialogMetadata,
+) -> Result<SharedDialog, SharedDialogError> {
+    let capture: Value = serde_json::from_str(input).map_err(|error| {
+        SharedDialogError::Parse(capture_diagnostic(
+            "shared_dialog_capture_parse_failed",
+            &[("error", &error.to_string())],
+        ))
+    })?;
+    let object = capture.as_object().ok_or_else(|| {
+        SharedDialogError::Parse(String::from(
+            "web-capture shared-dialog JSON root was not an object",
+        ))
+    })?;
+    if object.get("status").and_then(Value::as_str) != Some("ok") {
+        let provider = object
+            .get("provider")
+            .and_then(Value::as_str)
+            .unwrap_or("unknown");
+        let diagnostics = object.get("diagnostics").and_then(Value::as_object);
+        let reason = diagnostics
+            .and_then(|value| value.get("unsupportedReason"))
+            .and_then(Value::as_str)
+            .unwrap_or("unsupported_capture");
+        let message = diagnostics
+            .and_then(|value| value.get("message"))
+            .and_then(Value::as_str)
+            .unwrap_or("the capture did not contain replayable transcript data");
+        return Err(SharedDialogError::UnsupportedFormat(capture_diagnostic(
+            "shared_dialog_capture_unsupported",
+            &[
+                ("provider", provider),
+                ("reason", reason),
+                ("message", message),
+            ],
+        )));
+    }
+
+    let mut turns = Vec::new();
+    for item in object
+        .get("turns")
+        .and_then(Value::as_array)
+        .into_iter()
+        .flatten()
+    {
+        let Some(role) = item.get("role").and_then(Value::as_str) else {
+            continue;
+        };
+        if role != "user" && role != "assistant" {
+            continue;
+        }
+        let content = item
+            .get("content")
+            .and_then(Value::as_str)
+            .unwrap_or_default()
+            .trim();
+        if content.is_empty() {
+            continue;
+        }
+        turns.push(SharedDialogTurn {
+            id: item
+                .get("id")
+                .and_then(Value::as_str)
+                .unwrap_or_default()
+                .to_owned(),
+            role: role.to_owned(),
+            content: content.to_owned(),
+        });
+    }
+    if turns.is_empty() {
+        return Err(SharedDialogError::EmptyDialog);
+    }
+
+    Ok(SharedDialog {
+        title: metadata.conversation_title.clone().or_else(|| {
+            object
+                .get("title")
+                .and_then(Value::as_str)
+                .map(str::to_owned)
+        }),
+        conversation_id: metadata.conversation_id.clone().or_else(|| {
+            object
+                .get("conversationId")
+                .and_then(Value::as_str)
+                .map(str::to_owned)
+        }),
+        turns,
+    })
+}
+
+fn capture_diagnostic(intent: &str, values: &[(&str, &str)]) -> String {
+    let mut rendered = seed::response_for(intent, "en").unwrap_or_else(|| intent.to_owned());
+    for (name, value) in values {
+        rendered = rendered.replace(&format!("{{{name}}}"), value);
+    }
+    rendered
 }
 
 fn parse_chatgpt_share_html(

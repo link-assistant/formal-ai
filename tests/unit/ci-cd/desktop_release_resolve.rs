@@ -91,15 +91,27 @@ case "$sub" in
 esac
 exit 0
 "#;
+    // Write to a staging name and rename into place. These tests run in
+    // parallel with the rest of the unit suite, and every `Command` spawn in
+    // another test thread forks this process: a fork that lands between our
+    // `write` and its `close` inherits the still-open write descriptor, and
+    // `execve` on an inode that any process holds open for writing fails with
+    // ETXTBSY ("Text file busy"). The resolve script swallows a failed `gh`
+    // (`|| true`), so such a spawn silently degrades to "no assets exist" and
+    // flips `should_build` -- exactly the nondeterministic failure seen in run
+    // 29742025207. `rename` publishes the name only after the descriptor is
+    // closed, so the executable `gh` path is never the file being written.
     let gh = dir.join("gh");
-    fs::write(&gh, mock).expect("write mock gh");
+    let staging = dir.join("gh.staging");
+    fs::write(&staging, mock).expect("write mock gh");
     #[cfg(unix)]
     {
         use std::os::unix::fs::PermissionsExt;
-        let mut perms = fs::metadata(&gh).unwrap().permissions();
+        let mut perms = fs::metadata(&staging).unwrap().permissions();
         perms.set_mode(0o755);
-        fs::set_permissions(&gh, perms).expect("chmod mock gh");
+        fs::set_permissions(&staging, perms).expect("chmod mock gh");
     }
+    fs::rename(&staging, &gh).expect("publish mock gh");
 }
 
 fn unique_tmp(label: &str) -> PathBuf {
@@ -313,7 +325,48 @@ fn workflow_run_skips_when_release_has_all_required_assets() {
     assert_eq!(result.tag, "v0.201.0");
     assert_eq!(
         result.should_build, "false",
-        "a release that already has all required desktop assets must not rebuild on workflow_run"
+        "a release that already has all required desktop assets must not rebuild on workflow_run\nstdout:\n{}\nstderr:\n{}",
+        result.stdout, result.stderr
+    );
+}
+
+#[test]
+fn workflow_run_asset_membership_is_stable_under_pipefail() {
+    // `grep -q` exits as soon as it finds a match. Piping a sufficiently large
+    // shell `printf` into that probe under `set -o pipefail` makes the producer
+    // receive SIGPIPE, which used to turn a successful match into a missing
+    // asset. A loaded CI runner reproduced the same race with the normal
+    // 17-name list, so force the pipe to fill here and keep the regression
+    // deterministic.
+    if !bash_available() {
+        eprintln!("skipping: /bin/bash not available");
+        return;
+    }
+    let padding = (0..3_000)
+        .map(|index| format!("formal-ai-desktop-padding-{index:04}"))
+        .collect::<Vec<_>>()
+        .join("\n");
+    let assets = format!("{}\n{padding}", expected_asset_names("0.201.0"));
+    let result = run_resolve(
+        "pipefail-membership",
+        &[
+            ("EVENT", "workflow_run"),
+            ("WORKFLOW_RUN_HEAD_SHA", "0abd3f45parenthead"),
+        ],
+        &GhMock {
+            tags_jq_output: "",
+            latest_tag: "v0.201.0",
+            parent_sha: "0abd3f45parenthead",
+            release_exists: true,
+            asset_names: &assets,
+        },
+    );
+
+    assert!(result.ok, "resolve script failed: {}", result.stderr);
+    assert_eq!(
+        result.should_build, "false",
+        "membership checks must not mistake grep's early exit for a missing asset\nstdout:\n{}\nstderr:\n{}",
+        result.stdout, result.stderr
     );
 }
 

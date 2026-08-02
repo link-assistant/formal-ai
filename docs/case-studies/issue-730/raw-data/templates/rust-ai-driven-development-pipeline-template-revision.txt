@@ -1,0 +1,3 @@
+commit=bd217bf40c8ce3bd9974b855b6cae84caa006a11
+committed=2026-07-03T17:18:45+00:00
+subject=chore: release v0.19.7

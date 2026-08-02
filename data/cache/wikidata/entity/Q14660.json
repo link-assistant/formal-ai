@@ -1,0 +1,55 @@
+{
+  "entities": {
+    "Q14660": {
+      "type": "item",
+      "id": "Q14660",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "flag"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "флаг"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "ध्वज"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "旗幟"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "distinctive image used as a symbol, traditionally embodied as a piece of fabric"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "полотнище правильной геометрической формы, имеющее какую-либо специальную расцветку"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "印有獨特設計的布料"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "flags"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "旌旗"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

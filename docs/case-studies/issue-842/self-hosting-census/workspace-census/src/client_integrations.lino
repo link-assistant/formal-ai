@@ -1,0 +1,51 @@
+self_ast_census
+  target src/client_integrations.rs
+  language rust
+  fidelity signature
+  byte_len 30984
+  line_count 914
+  content_id source_module_e1b224659d98b13c
+  symbol_count 42
+  symbols
+    module command 18 18
+    module server 19 19
+    module session_files 20 20
+    module url 21 21
+    const DEFAULT_BASE_URL 30 30
+    const EMPTY_BACKUP_SENTINEL 31 31
+    const RENDERED_PLACEHOLDER 32 32
+    const ERROR_PLACEHOLDER 33 33
+    enum ClientProtocol 36 41
+    function as_str 44 51
+    struct WithFormalAiArgs 57 122
+    struct RenderContext 125 139
+    function run_with_formal_ai 141 182
+    function select_integrations 184 196
+    function find_integration 198 218
+    function render_context 220 289
+    function run_ephemeral 291 413
+    function temp_scoped_path 415 429
+    function build_invocation_args 431 511
+    function contains_model_arg 513 516
+    function write_global_config 518 555
+    function undo_global_config 557 593
+    function restore_backup 595 611
+    function ensure_backup 613 626
+    function render_toml_settings 628 646
+    function set_toml_string 648 664
+    function table_at_path_mut 666 677
+    function merge_json_config 679 692
+    function render_json_settings 694 702
+    function json_settings_value 704 713
+    function set_json_setting 715 752
+    function invalid_typed_json_setting_error 754 759
+    function merge_json_value 761 775
+    function merge_shell_env_config 777 797
+    function remove_managed_block 799 819
+    function shell_double_quote 821 824
+    function render_template 826 846
+    function codex_model_catalog 848 882
+    function global_config_path 884 893
+    function backup_path 895 899
+    function write_file 901 907
+    function ensure_trailing_newline 909 914

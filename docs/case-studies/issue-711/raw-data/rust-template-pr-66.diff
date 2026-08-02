@@ -1,0 +1,219 @@
+diff --git a/.gitkeep b/.gitkeep
+index a81614e..66dd1cc 100644
+--- a/.gitkeep
++++ b/.gitkeep
+@@ -1 +1,2 @@
+-# .gitkeep file auto-generated at 2026-05-12T22:59:34.075Z for PR creation at branch issue-50-f6272907aac6 for issue https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/50
+\ No newline at end of file
++# .gitkeep file auto-generated at 2026-05-12T22:59:34.075Z for PR creation at branch issue-50-f6272907aac6 for issue https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/50
++# Updated: 2026-06-08T14:37:24.907Z
+\ No newline at end of file
+diff --git a/changelog.d/20260608_144317_remove_consumed_changelog_fragments.md b/changelog.d/20260608_144317_remove_consumed_changelog_fragments.md
+new file mode 100644
+index 0000000..079dee0
+--- /dev/null
++++ b/changelog.d/20260608_144317_remove_consumed_changelog_fragments.md
+@@ -0,0 +1,6 @@
++---
++bump: patch
++---
++
++### Fixed
++- Removed consumed changelog fragments from automated release commits so stale fragments do not trigger repeated releases.
+diff --git a/scripts/version-and-commit.rs b/scripts/version-and-commit.rs
+index 456afa7..7e9062c 100644
+--- a/scripts/version-and-commit.rs
++++ b/scripts/version-and-commit.rs
+@@ -31,7 +31,7 @@ use serde::Deserialize;
+ use std::env;
+ use std::fs;
+ use std::io::Write;
+-use std::path::Path;
++use std::path::{Path, PathBuf};
+ #[cfg(not(test))]
+ use std::process::exit;
+ use std::process::Command;
+@@ -347,8 +347,26 @@ fn strip_frontmatter(content: &str) -> String {
+     }
+ }
+ 
++fn remove_changelog_fragments(files: &[PathBuf]) {
++    for file in files {
++        fs::remove_file(file)
++            .unwrap_or_else(|e| panic!("Failed to remove {}: {}", file.display(), e));
++        println!("Removed {}", file.display());
++    }
++}
++
+ #[cfg(not(test))]
+ fn collect_changelog(changelog_dir: &str, changelog_file: &str, version: &str) {
++    let date_str = Utc::now().format("%Y-%m-%d").to_string();
++    collect_changelog_with_date(changelog_dir, changelog_file, version, &date_str);
++}
++
++fn collect_changelog_with_date(
++    changelog_dir: &str,
++    changelog_file: &str,
++    version: &str,
++    date_str: &str,
++) {
+     let dir_path = Path::new(changelog_dir);
+     if !dir_path.exists() {
+         return;
+@@ -383,7 +401,6 @@ fn collect_changelog(changelog_dir: &str, changelog_file: &str, version: &str) {
+         return;
+     }
+ 
+-    let date_str = Utc::now().format("%Y-%m-%d").to_string();
+     let new_entry = format!(
+         "\n## [{}] - {}\n\n{}\n",
+         version,
+@@ -391,36 +408,38 @@ fn collect_changelog(changelog_dir: &str, changelog_file: &str, version: &str) {
+         fragments.join("\n\n")
+     );
+ 
+-    if Path::new(changelog_file).exists() {
+-        let mut content = fs::read_to_string(changelog_file).unwrap_or_default();
+-        let lines: Vec<&str> = content.lines().collect();
+-        let mut insert_index = None;
++    if !Path::new(changelog_file).exists() {
++        return;
++    }
+ 
+-        for (i, line) in lines.iter().enumerate() {
+-            if line.starts_with("## [") {
+-                insert_index = Some(i);
+-                break;
+-            }
+-        }
++    let mut content = fs::read_to_string(changelog_file).unwrap_or_default();
++    let lines: Vec<&str> = content.lines().collect();
++    let mut insert_index = None;
+ 
+-        if let Some(idx) = insert_index {
+-            let mut new_lines: Vec<String> = lines[..idx].iter().map(|s| s.to_string()).collect();
+-            new_lines.push(new_entry.clone());
+-            new_lines.extend(lines[idx..].iter().map(|s| s.to_string()));
+-            content = new_lines.join("\n");
+-        } else {
+-            content.push_str(&new_entry);
++    for (i, line) in lines.iter().enumerate() {
++        if line.starts_with("## [") {
++            insert_index = Some(i);
++            break;
+         }
++    }
+ 
+-        fs::write(changelog_file, content).expect("Failed to write changelog");
++    if let Some(idx) = insert_index {
++        let mut new_lines: Vec<String> = lines[..idx].iter().map(|s| s.to_string()).collect();
++        new_lines.push(new_entry.clone());
++        new_lines.extend(lines[idx..].iter().map(|s| s.to_string()));
++        content = new_lines.join("\n");
++    } else {
++        content.push_str(&new_entry);
+     }
+ 
++    fs::write(changelog_file, content).expect("Failed to write changelog");
++    remove_changelog_fragments(&files);
+     println!("Collected {} changelog fragment(s)", files.len());
+ }
+ 
+ #[cfg(test)]
+ mod tests {
+-    use super::update_cargo_lock;
++    use super::{collect_changelog_with_date, update_cargo_lock};
+     use std::fs;
+     use std::path::PathBuf;
+     use std::time::{SystemTime, UNIX_EPOCH};
+@@ -503,6 +522,64 @@ version = "1.12.3"
+         assert!(!update_cargo_lock(&cargo_lock, "example-sum-package-name", "0.14.0").unwrap());
+         assert_eq!(fs::read_to_string(&cargo_lock).unwrap(), content);
+     }
++
++    #[test]
++    fn changelog_collection_removes_consumed_fragments_and_keeps_readme() {
++        let repo = temp_dir("changelog-cleanup");
++        let changelog_dir = repo.join("changelog.d");
++        fs::create_dir_all(&changelog_dir).unwrap();
++
++        let first_fragment = changelog_dir.join("20260608_fix_release_loop.md");
++        let second_fragment = changelog_dir.join("20260608_note_release_loop.md");
++        fs::write(
++            &first_fragment,
++            r#"---
++bump: patch
++---
++
++### Fixed
++- Prevent already-collected changelog fragments from triggering another release.
++"#,
++        )
++        .unwrap();
++        fs::write(
++            &second_fragment,
++            r#"### Changed
++- Keep release commits from leaving stale changelog fragments behind.
++"#,
++        )
++        .unwrap();
++        fs::write(changelog_dir.join("README.md"), "Fragment instructions\n").unwrap();
++
++        let changelog = repo.join("CHANGELOG.md");
++        fs::write(
++            &changelog,
++            r#"# Changelog
++
++## [0.1.0] - 2026-01-01
++
++### Added
++- Initial release
++"#,
++        )
++        .unwrap();
++
++        collect_changelog_with_date(
++            changelog_dir.to_str().unwrap(),
++            changelog.to_str().unwrap(),
++            "0.2.0",
++            "2026-06-08",
++        );
++
++        let updated = fs::read_to_string(&changelog).unwrap();
++        assert!(updated.contains("## [0.2.0] - 2026-06-08"));
++        assert!(updated.contains("Prevent already-collected changelog fragments"));
++        assert!(updated.contains("Keep release commits from leaving stale changelog fragments"));
++        assert!(!updated.contains("bump: patch"));
++        assert!(!first_fragment.exists());
++        assert!(!second_fragment.exists());
++        assert!(changelog_dir.join("README.md").exists());
++    }
+ }
+ 
+ #[cfg(not(test))]
+@@ -627,14 +704,23 @@ fn main() {
+     // Collect changelog fragments
+     collect_changelog(&changelog_dir, &changelog_file, &new_version);
+ 
+-    // Stage Cargo.toml, Cargo.lock if changed, and CHANGELOG.md
++    // Stage Cargo.toml, Cargo.lock if changed, CHANGELOG.md, and consumed changelog fragments.
+     let package_manifest_str = package_manifest.to_string_lossy().to_string();
+     let cargo_lock_str = cargo_lock_path.to_string_lossy().to_string();
+     let mut add_args = vec!["add", &package_manifest_str, &changelog_file];
+     if lock_updated {
+         add_args.push(&cargo_lock_str);
+     }
+-    let _ = exec("git", &add_args);
++    if let Err(e) = exec("git", &add_args) {
++        eprintln!("Error staging release files: {}", e);
++        exit(1);
++    }
++    if Path::new(&changelog_dir).exists() {
++        if let Err(e) = exec("git", &["add", "-A", &changelog_dir]) {
++            eprintln!("Error staging changelog fragments: {}", e);
++            exit(1);
++        }
++    }
+ 
+     // Check if there are changes to commit
+     if exec_check("git", &["diff", "--cached", "--quiet"]) {

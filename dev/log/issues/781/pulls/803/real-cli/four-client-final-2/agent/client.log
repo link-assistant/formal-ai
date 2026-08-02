@@ -1,0 +1,2429 @@
+== Agent CLI attempt 1 ==
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.609Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": true,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.610Z",
+  "service": "default",
+  "version": "0.25.0",
+  "command": "/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js --prompt Найди мне зарядку для ноутбука Acer Aspire 3 A325-45 на amazon.in --disable-stdin --model formal-ai/formal-ai --no-summarize-session --read-only",
+  "workingDirectory": "/tmp/tmp.F5CtbHURz2",
+  "scriptPath": "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.611Z",
+  "service": "default",
+  "directory": "/tmp/tmp.F5CtbHURz2",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.612Z",
+  "service": "project",
+  "directory": "/tmp/tmp.F5CtbHURz2",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.673Z",
+  "service": "default",
+  "processArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "--prompt",
+    "Найди мне зарядку для ноутбука Acer Aspire 3 A325-45 на amazon.in",
+    "--disable-stdin",
+    "--model",
+    "formal-ai/formal-ai",
+    "--no-summarize-session",
+    "--read-only"
+  ],
+  "bunArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "--prompt",
+    "Найди мне зарядку для ноутбука Acer Aspire 3 A325-45 на amazon.in",
+    "--disable-stdin",
+    "--model",
+    "formal-ai/formal-ai",
+    "--no-summarize-session",
+    "--read-only"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.673Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.681Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.684Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.690Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.699Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.708Z",
+  "service": "config",
+  "path": "/tmp/tmp.F5CtbHURz2/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.746Z",
+  "service": "models.dev",
+  "path": "/home/box/.cache/link-assistant-agent/models.json",
+  "age": 55826,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.747Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.809Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.827Z",
+  "service": "claude-oauth",
+  "path": "/home/box/.claude/.credentials.json",
+  "message": "credentials file not found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.827Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.828Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.828Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.828Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.828Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.828Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 147,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.830Z",
+  "service": "provider",
+  "modelID": "big-pickle",
+  "providerID": "opencode",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.830Z",
+  "service": "provider",
+  "modelID": "minimax-m2.5-free",
+  "providerID": "kilo",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.830Z",
+  "service": "default",
+  "models": [
+    "opencode/big-pickle",
+    "kilo/minimax-m2.5-free",
+    "same"
+  ],
+  "source": "default",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.856Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.856Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.861Z",
+  "service": "session",
+  "id": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "version": "agent-cli-1.0.0",
+  "projectID": "global",
+  "directory": "/tmp/tmp.F5CtbHURz2",
+  "title": "New session - 2026-07-20T01:48:53.860Z",
+  "time": {
+    "created": 1784512133860,
+    "updated": 1784512133860
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.861Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.862Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.862Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 6,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.869Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.872Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_082c9c51bffei9XT5leu5vBgE5/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.873Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_082c9c51bffei9XT5leu5vBgE5/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.889Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 17,
+  "method": "POST",
+  "path": "/session/ses_082c9c51bffei9XT5leu5vBgE5/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.917Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.933Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.944Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.950Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.969Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.969Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.980Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.986Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.987Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.987Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.987Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 1,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.989Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.989Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.989Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.990Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.990Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.990Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.990Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:53.992Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:54.874Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:54.892Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "local",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:54.954Z",
+  "service": "mcp",
+  "key": "issue781",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:55.159Z",
+  "service": "mcp",
+  "key": "issue781",
+  "toolCount": 2,
+  "message": "create() successfully created client"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:55.179Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:55.202Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:55.243Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:55.243Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:55.243Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:55.244Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+TimeoutNaNWarning: NaN is not a number.
+Timeout duration was set to 1.
+      at <anonymous> (/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/util/timeout.ts:9:17)
+      at new Promise (1:11)
+      at withTimeout (/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/util/timeout.ts:8:5)
+      at <anonymous> (/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/session/prompt.ts:1201:26)
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:56.700Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784512136700,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "part": {
+    "id": "prt_f7d3645e7001o2wJLS9A5MwE7y",
+    "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+    "messageID": "msg_f7d363ee5001ml1k789wPbIaxy",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:56.703Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:56.707Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784512136707,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "part": {
+    "id": "prt_f7d3645ff001eQfgLV7TwM0lma",
+    "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+    "messageID": "msg_f7d363ee5001ml1k789wPbIaxy",
+    "type": "tool",
+    "callID": "call_8f3396d7e05cac54",
+    "tool": "issue781_websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:56.711Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784512136711,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "part": {
+    "id": "prt_f7d3645ff001eQfgLV7TwM0lma",
+    "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+    "messageID": "msg_f7d363ee5001ml1k789wPbIaxy",
+    "type": "tool",
+    "callID": "call_8f3396d7e05cac54",
+    "tool": "issue781_websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "мне зарядку для ноутбука acer aspire 3 a325 45 на amazon in"
+      },
+      "time": {
+        "start": 1784512136707
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:56.730Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1784512136731,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "part": {
+    "id": "prt_f7d3645fd0016gASn2Ft2jV0In",
+    "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+    "messageID": "msg_f7d363ee5001ml1k789wPbIaxy",
+    "type": "text",
+    "text": "Я использую issue781_websearch для «мне зарядку для ноутбука acer aspire 3 a325 45 на amazon in», чтобы проверить следующий шаг перед продолжением.",
+    "time": {
+      "start": 1784512136727,
+      "end": 1784512136727
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:56.745Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784512136745,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "part": {
+    "id": "prt_f7d3645ff001eQfgLV7TwM0lma",
+    "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+    "messageID": "msg_f7d363ee5001ml1k789wPbIaxy",
+    "type": "tool",
+    "callID": "call_8f3396d7e05cac54",
+    "tool": "issue781_websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "мне зарядку для ноутбука acer aspire 3 a325 45 на amazon in"
+      },
+      "output": "Acer specifications https://acer.example.test/a325-45/specifications\nConnector reference https://parts.example.test/acer-a325-45/connector\nCandidate listing https://shop.example.test/compatible-a325-45-adapter",
+      "title": "",
+      "metadata": {},
+      "time": {
+        "start": 1784512136707,
+        "end": 1784512136738
+      },
+      "attachments": []
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-20T01:48:56.751Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 10332,
+    "output": 236,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 10332,
+  "sseCompletionTokens": 236,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:56.756Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784512136756,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "part": {
+    "id": "prt_f7d36462f001D4SSQXXM1Cqn7q",
+    "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+    "messageID": "msg_f7d363ee5001ml1k789wPbIaxy",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 10332,
+      "output": 236,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 10568,
+      "headroom": 28288,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:56.756Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:56.757Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:56.790Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:56.790Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:56.793Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:56.793Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:56.794Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:56.794Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:56.797Z",
+  "service": "session.prompt",
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "finishReason": "unknown",
+  "zeroTokens": false,
+  "hint": "Provider returned undefined finishReason but made tool calls",
+  "message": "continuing loop despite unknown finish reason - tool calls detected"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:56.797Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:56.797Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:56.806Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:56.807Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 10568,
+  "providerTokens": 10568,
+  "estimatedInputTokens": 103,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 10332,
+    "cacheRead": 0,
+    "output": 236
+  },
+  "overflow": false,
+  "headroom": 41240,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:56.807Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:56.888Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:56.918Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:58.098Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784512138098,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "part": {
+    "id": "prt_f7d364b6b001RCq4VhpM0ZnK19",
+    "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+    "messageID": "msg_f7d364667001VddurN4S5WfM2U",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:58.099Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:58.107Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784512138107,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "part": {
+    "id": "prt_f7d364b730015bR5i390KhINFV",
+    "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+    "messageID": "msg_f7d364667001VddurN4S5WfM2U",
+    "type": "tool",
+    "callID": "call_e3e1a425e0044b2a",
+    "tool": "issue781_webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:58.108Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784512138108,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "part": {
+    "id": "prt_f7d364b730015bR5i390KhINFV",
+    "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+    "messageID": "msg_f7d364667001VddurN4S5WfM2U",
+    "type": "tool",
+    "callID": "call_e3e1a425e0044b2a",
+    "tool": "issue781_webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "url": "https://acer.example.test/a325-45/specifications"
+      },
+      "time": {
+        "start": 1784512138108
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:58.119Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1784512138119,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "part": {
+    "id": "prt_f7d364b72001jYCG5EW6LMbbcp",
+    "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+    "messageID": "msg_f7d364667001VddurN4S5WfM2U",
+    "type": "text",
+    "text": "Я использую issue781_webfetch для «https://acer.example.test/a325-45/specifications», чтобы проверить следующий шаг перед продолжением.",
+    "time": {
+      "start": 1784512138118,
+      "end": 1784512138118
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:58.120Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784512138121,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "part": {
+    "id": "prt_f7d364b730015bR5i390KhINFV",
+    "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+    "messageID": "msg_f7d364667001VddurN4S5WfM2U",
+    "type": "tool",
+    "callID": "call_e3e1a425e0044b2a",
+    "tool": "issue781_webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "url": "https://acer.example.test/a325-45/specifications"
+      },
+      "output": "Acer Aspire 3 A325-45 specifications: the supplied adapter is rated 24 W.",
+      "title": "",
+      "metadata": {},
+      "time": {
+        "start": 1784512138108,
+        "end": 1784512138120
+      },
+      "attachments": []
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-20T01:48:58.121Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 10688,
+    "output": 210,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 10688,
+  "sseCompletionTokens": 210,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:58.122Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784512138122,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "part": {
+    "id": "prt_f7d364b890011bdbFVW2P6Vsos",
+    "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+    "messageID": "msg_f7d364667001VddurN4S5WfM2U",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 10688,
+      "output": 210,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 10898,
+      "headroom": 27958,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:58.123Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:58.123Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:58.138Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:58.138Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:58.154Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:58.155Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:58.156Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:58.156Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:58.194Z",
+  "service": "session.prompt",
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "finishReason": "unknown",
+  "zeroTokens": false,
+  "hint": "Provider returned undefined finishReason but made tool calls",
+  "message": "continuing loop despite unknown finish reason - tool calls detected"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:58.194Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:58.195Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:58.204Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:58.205Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 10898,
+  "providerTokens": 10898,
+  "estimatedInputTokens": 151,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 10688,
+    "cacheRead": 0,
+    "output": 210
+  },
+  "overflow": false,
+  "headroom": 40910,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:58.205Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:58.295Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:58.309Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:59.643Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784512139643,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "part": {
+    "id": "prt_f7d365130001iFuskW6JqZrSBi",
+    "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+    "messageID": "msg_f7d364bdd0016j27QsUuXBdzi0",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:59.644Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:59.645Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784512139645,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "part": {
+    "id": "prt_f7d36517c001daMITNWaMQ6NY9",
+    "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+    "messageID": "msg_f7d364bdd0016j27QsUuXBdzi0",
+    "type": "tool",
+    "callID": "call_531243dfb3bbb776",
+    "tool": "issue781_webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:59.646Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784512139646,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "part": {
+    "id": "prt_f7d36517c001daMITNWaMQ6NY9",
+    "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+    "messageID": "msg_f7d364bdd0016j27QsUuXBdzi0",
+    "type": "tool",
+    "callID": "call_531243dfb3bbb776",
+    "tool": "issue781_webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "url": "https://parts.example.test/acer-a325-45/connector"
+      },
+      "time": {
+        "start": 1784512139645
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:59.704Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1784512139705,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "part": {
+    "id": "prt_f7d36517b0016ZosyI3vsfUW47",
+    "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+    "messageID": "msg_f7d364bdd0016j27QsUuXBdzi0",
+    "type": "text",
+    "text": "Я использую issue781_webfetch для «https://parts.example.test/acer-a325-45/connector», чтобы проверить следующий шаг перед продолжением.",
+    "time": {
+      "start": 1784512139653,
+      "end": 1784512139653
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:59.709Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784512139709,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "part": {
+    "id": "prt_f7d36517c001daMITNWaMQ6NY9",
+    "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+    "messageID": "msg_f7d364bdd0016j27QsUuXBdzi0",
+    "type": "tool",
+    "callID": "call_531243dfb3bbb776",
+    "tool": "issue781_webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "url": "https://parts.example.test/acer-a325-45/connector"
+      },
+      "output": "Acer Aspire 3 A325-45 power input: 12 V DC, 2 A, center-positive 3.5 x 1.35 mm barrel connector.",
+      "title": "",
+      "metadata": {},
+      "time": {
+        "start": 1784512139645,
+        "end": 1784512139708
+      },
+      "attachments": []
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-20T01:48:59.710Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 10896,
+    "output": 212,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 10896,
+  "sseCompletionTokens": 212,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:59.711Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784512139711,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "part": {
+    "id": "prt_f7d3651be0014O0HWn0513s7r0",
+    "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+    "messageID": "msg_f7d364bdd0016j27QsUuXBdzi0",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 10896,
+      "output": 212,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 11108,
+      "headroom": 27748,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:59.711Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:59.712Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:59.732Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:59.732Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:59.805Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:59.805Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:59.805Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:59.806Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:59.869Z",
+  "service": "session.prompt",
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "finishReason": "unknown",
+  "zeroTokens": false,
+  "hint": "Provider returned undefined finishReason but made tool calls",
+  "message": "continuing loop despite unknown finish reason - tool calls detected"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:59.870Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:59.870Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:59.871Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:59.871Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 11108,
+  "providerTokens": 11108,
+  "estimatedInputTokens": 217,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 10896,
+    "cacheRead": 0,
+    "output": 212
+  },
+  "overflow": false,
+  "headroom": 40700,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:59.872Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:59.891Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-20T01:48:59.896Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:01.511Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784512141511,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "part": {
+    "id": "prt_f7d3658b3001QNpRyX9DuVy1zD",
+    "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+    "messageID": "msg_f7d36525f001nx8MFneQu7TZir",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:01.517Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:01.522Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784512141522,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "part": {
+    "id": "prt_f7d3658cf001RB0UGfaOyu9C1n",
+    "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+    "messageID": "msg_f7d36525f001nx8MFneQu7TZir",
+    "type": "tool",
+    "callID": "call_998c0599d679684d",
+    "tool": "issue781_webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:01.523Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784512141525,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "part": {
+    "id": "prt_f7d3658cf001RB0UGfaOyu9C1n",
+    "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+    "messageID": "msg_f7d36525f001nx8MFneQu7TZir",
+    "type": "tool",
+    "callID": "call_998c0599d679684d",
+    "tool": "issue781_webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "url": "https://shop.example.test/compatible-a325-45-adapter"
+      },
+      "time": {
+        "start": 1784512141522
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:01.530Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1784512141530,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "part": {
+    "id": "prt_f7d3658c70012jTSzPX2HlUzie",
+    "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+    "messageID": "msg_f7d36525f001nx8MFneQu7TZir",
+    "type": "text",
+    "text": "Я использую issue781_webfetch для «https://shop.example.test/compatible-a325-45-adapter», чтобы проверить следующий шаг перед продолжением.",
+    "time": {
+      "start": 1784512141530,
+      "end": 1784512141530
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:01.534Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784512141534,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "part": {
+    "id": "prt_f7d3658cf001RB0UGfaOyu9C1n",
+    "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+    "messageID": "msg_f7d36525f001nx8MFneQu7TZir",
+    "type": "tool",
+    "callID": "call_998c0599d679684d",
+    "tool": "issue781_webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "url": "https://shop.example.test/compatible-a325-45-adapter"
+      },
+      "output": "Candidate adapter listing: 12 V, 2 A, 24 W, center-positive 3.5 x 1.35 mm plug; compatible with Acer Aspire 3 A325-45.",
+      "title": "",
+      "metadata": {},
+      "time": {
+        "start": 1784512141522,
+        "end": 1784512141534
+      },
+      "attachments": []
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-20T01:49:01.535Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 11128,
+    "output": 218,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 11128,
+  "sseCompletionTokens": 218,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:01.535Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784512141535,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "part": {
+    "id": "prt_f7d3658df001jJAXQDw5XpcSe3",
+    "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+    "messageID": "msg_f7d36525f001nx8MFneQu7TZir",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 11128,
+      "output": 218,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 11346,
+      "headroom": 27510,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:01.536Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:01.541Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:01.587Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:01.588Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:01.667Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:01.668Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:01.679Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:01.684Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:01.735Z",
+  "service": "session.prompt",
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "finishReason": "unknown",
+  "zeroTokens": false,
+  "hint": "Provider returned undefined finishReason but made tool calls",
+  "message": "continuing loop despite unknown finish reason - tool calls detected"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:01.736Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:01.736Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:01.743Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:01.743Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 11346,
+  "providerTokens": 11346,
+  "estimatedInputTokens": 289,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 11128,
+    "cacheRead": 0,
+    "output": 218
+  },
+  "overflow": false,
+  "headroom": 40462,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:01.748Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:01.769Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:01.813Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:03.327Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784512143327,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "part": {
+    "id": "prt_f7d365fdc001iGRn1eKffsVUnx",
+    "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+    "messageID": "msg_f7d3659af001apUKAmYwg6kGGE",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:03.329Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:03.330Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1784512143330,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "part": {
+    "id": "prt_f7d365fdf001Yio2myTED6GbNx",
+    "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+    "messageID": "msg_f7d3659af001apUKAmYwg6kGGE",
+    "type": "text",
+    "text": "Acer Aspire 3 A325-45 specifications: the supplied adapter is rated 24 W.\n\nSource: https://acer.example.test/a325-45/specifications\n\nAcer Aspire 3 A325-45 power input: 12 V DC, 2 A, center-positive 3.5 x 1.35 mm barrel connector.\n\nSource: https://parts.example.test/acer-a325-45/connector\n\nCandidate adapter listing: 12 V, 2 A, 24 W, center-positive 3.5 x 1.35 mm plug; compatible with Acer Aspire 3 A325-45.\n\nSource: https://shop.example.test/compatible-a325-45-adapter",
+    "time": {
+      "start": 1784512143330,
+      "end": 1784512143330
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-20T01:49:03.331Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 11385,
+    "output": 470,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 11385,
+  "sseCompletionTokens": 470,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:03.332Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784512143332,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "part": {
+    "id": "prt_f7d365fe3001WitxJBT5ZyISVF",
+    "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+    "messageID": "msg_f7d3659af001apUKAmYwg6kGGE",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 11385,
+      "output": 470,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 11855,
+      "headroom": 27001,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:03.332Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:03.332Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:03.355Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:03.355Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:03.497Z",
+  "service": "session.prompt",
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:03.498Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:03.501Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:03.501Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:03.503Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:03.503Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:03.685Z",
+  "service": "session.prompt",
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:03.687Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:03.687Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1784512143687,
+  "sessionID": "ses_082c9c51bffei9XT5leu5vBgE5"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:03.688Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:03.688Z",
+  "service": "default",
+  "directory": "/tmp/tmp.F5CtbHURz2",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:03.689Z",
+  "service": "state",
+  "key": "/tmp/tmp.F5CtbHURz2",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:03.726Z",
+  "service": "state",
+  "key": "/tmp/tmp.F5CtbHURz2",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:49:03.726Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 11,
+  "message": "Agent exiting"
+}
+

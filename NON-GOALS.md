@@ -4,7 +4,7 @@ These boundaries keep the project aligned with the symbolic, link-native directi
 
 ## Runtime Non-Goals
 
-- GPU-required neural inference is not a project target.
+- GPU-required neural inference is not a project target. The only sanctioned exception is the experimental, strictly opt-in small-model formalization fallback of issue [#483](https://github.com/link-assistant/formal-ai/issues/483): off by default, never loaded unless requested, downloaded on demand, limited to choosing among symbolically generated options that unit tests confirm — LLMs are never in control, never at the steering wheel.
 - A memoized answer cache is not a substitute for reasoning from source data and traceable steps.
 - Hidden autonomous actions are not acceptable in chat mode.
 - Unbounded reasoning loops are not acceptable; long-running agent work must expose actions and logs.

@@ -1,0 +1,101 @@
+{
+  "entities": {
+    "Q870": {
+      "type": "item",
+      "id": "Q870",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "train"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "поезд"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "रेलगाड़ी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "铁路列车"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "form of rail transport consisting of a series of connected vehicles"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "состав сцепленных железнодорожных вагонов, приводимых в движение локомотивом или моторным вагоном"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "रेल परिवहन का एक रूप जिसमें जुड़े हुए वाहनों की एक श्रृंखला शामिल होती है"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "沿著固定軌道移動以運送乘客或貨物的一種或多種自行式車輛"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "railway train"
+          },
+          {
+            "language": "en",
+            "value": "railroad train"
+          },
+          {
+            "language": "en",
+            "value": "railtrain"
+          },
+          {
+            "language": "en",
+            "value": "rail train"
+          },
+          {
+            "language": "en",
+            "value": "rail-train"
+          },
+          {
+            "language": "en",
+            "value": "🚆"
+          },
+          {
+            "language": "en",
+            "value": "trains"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "ट्रेन"
+          },
+          {
+            "language": "hi",
+            "value": "लौह पथ गामिनी"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "列車"
+          },
+          {
+            "language": "zh",
+            "value": "火車"
+          },
+          {
+            "language": "zh",
+            "value": "鐵路列車"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

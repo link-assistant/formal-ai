@@ -171,7 +171,7 @@ test.describe('Issue #541 (R9): grant-all CTA evaluates the pending task', () =>
 
     // Every desktop tool now reports Granted, and the mode toggle stays on
     // Agent. The bridge received the grants too.
-    for (const tool of ['shell', 'http_fetch', 'url_navigate', 'eval_js', 'read_local_file', 'code_exec']) {
+    for (const tool of ['shell', 'write_file', 'edit_file', 'multi_edit', 'eval_js', 'code_exec']) {
       await expect(
         page.locator(
           `[data-testid="desktop-permission-panel-sidebar-state-${tool}"]`,

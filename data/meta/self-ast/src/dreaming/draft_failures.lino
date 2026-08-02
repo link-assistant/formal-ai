@@ -1,0 +1,14 @@
+self_ast_census
+  target src/dreaming/draft_failures.rs
+  language rust
+  fidelity signature
+  byte_len 5601
+  line_count 134
+  content_id source_module_892affb938971194
+  symbol_count 5
+  symbols
+    struct DraftFailureLesson 29 46
+    function field 49 56
+    function is_draft_failure 59 64
+    function draft_failure_lessons 73 124
+    function conclusion 126 134

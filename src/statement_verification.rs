@@ -9,17 +9,18 @@
 //! This module turns a raw text sample into a deterministic, inspectable plan:
 //! it splits the sample into statements across scripts, builds a grounding
 //! web-search query for each, and produces an assumed-true
-//! [`StatementAssessment`](crate::relative_meta_logic::StatementAssessment) plus
-//! the trusted-source tier policy that governs how live evidence would move each
-//! statement. The solver runs offline and deterministically, so no network call
-//! is made here; instead the plan records exactly what would be checked and how
-//! the resulting evidence would be weighed, which the handler replays into the
-//! append-only event log.
+//! [`StatementAssessment`] plus the trusted-source tier policy that governs how
+//! captured evidence moves each statement. Planning remains pure. Execution is
+//! explicit through [`StatementVerificationPlan::execute`] or the provider-backed
+//! [`crate::source_research::execute_statement_research`]; both bind every
+//! classification to the exact captured bytes used to derive it.
 
 use crate::relative_meta_logic::{
     RelativeEvidence, SourceTier, Stance, StatementAssessment, TruthValue, ASSUMED_TRUE_PRIOR,
 };
 use crate::seed::market_price_assets;
+use crate::source_fetch::{CachedSourceClient, FetchError, SourceCapture, SourceTransport};
+use crate::statement_audit::EvidenceCapture;
 
 /// Sentence terminators across the scripts the solver recognises: ASCII stops,
 /// CJK full stop / exclamation / question, the Devanagari danda and double
@@ -197,6 +198,44 @@ pub struct StatementVerificationPlan {
     pub statements: Vec<StatementPlan>,
 }
 
+/// Executed verification state: the assessed plan and every exact capture that
+/// was examined, plus the subset the caller classified as evidence.
+#[derive(Debug, Clone, PartialEq)]
+pub struct StatementVerificationExecution {
+    pub plan: StatementVerificationPlan,
+    pub captures: Vec<SourceCapture>,
+    pub classified: Vec<CapturedStatementEvidence>,
+}
+
+/// A caller classification tied to the exact bytes it was derived from.
+#[derive(Debug, Clone, PartialEq)]
+pub struct CapturedStatementEvidence {
+    pub statement: String,
+    pub capture: SourceCapture,
+    pub evidence: RelativeEvidence,
+}
+
+impl StatementVerificationExecution {
+    /// Convert classified source captures into replayable statement-audit input
+    /// without allowing timestamp, URL, or content hash to drift.
+    #[must_use]
+    pub fn audit_evidence(&self) -> Vec<EvidenceCapture> {
+        self.classified
+            .iter()
+            .map(|item| {
+                EvidenceCapture::from_source_capture(
+                    &item.statement,
+                    &item.evidence.source_label,
+                    &item.capture,
+                    item.evidence.tier,
+                    item.evidence.stance,
+                    item.evidence.strength.get(),
+                )
+            })
+            .collect()
+    }
+}
+
 impl StatementVerificationPlan {
     /// Extract statements from `sample` and plan grounding for each, with no
     /// evidence collected yet (the deterministic offline path).
@@ -220,10 +259,54 @@ impl StatementVerificationPlan {
     pub const fn len(&self) -> usize {
         self.statements.len()
     }
+
+    /// Execute the plan against URLs selected by the caller's search provider.
+    ///
+    /// A successful retrieval is not evidence by itself. The caller must
+    /// classify the exact captured bytes, and may return `None` when the source
+    /// is irrelevant or cannot be classified. Failed retrieval aborts instead
+    /// of being treated as evidence.
+    pub fn execute<T, F, C>(
+        sample: &str,
+        client: &CachedSourceClient<T>,
+        source_urls: F,
+        classify: C,
+    ) -> Result<StatementVerificationExecution, FetchError>
+    where
+        T: SourceTransport,
+        F: Fn(&str) -> Vec<String>,
+        C: Fn(&str, &SourceCapture) -> Option<RelativeEvidence>,
+    {
+        let mut captures = Vec::new();
+        let mut classified = Vec::new();
+        let mut statements = Vec::new();
+        for statement in extract_statements(sample) {
+            let query = grounding_query(&statement);
+            let mut evidence = Vec::new();
+            for url in source_urls(&query) {
+                let capture = client.fetch(&url)?;
+                if let Some(item) = classify(&statement, &capture) {
+                    evidence.push(item.clone());
+                    classified.push(CapturedStatementEvidence {
+                        statement: statement.clone(),
+                        capture: capture.clone(),
+                        evidence: item,
+                    });
+                }
+                captures.push(capture);
+            }
+            statements.push(StatementPlan::new(statement, &evidence));
+        }
+        Ok(StatementVerificationExecution {
+            plan: Self { statements },
+            captures,
+            classified,
+        })
+    }
 }
 
 /// Split `sample` into checkable statements across scripts, trimming
-/// whitespace and dropping fragments shorter than [`MIN_STATEMENT_WORDS`].
+/// whitespace and dropping fragments shorter than `MIN_STATEMENT_WORDS`.
 #[must_use]
 pub fn extract_statements(sample: &str) -> Vec<String> {
     let mut statements = Vec::new();

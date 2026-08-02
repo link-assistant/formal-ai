@@ -15,6 +15,13 @@ import { ChakraProvider, chakra } from "@chakra-ui/react";
 // Chakra semantic tokens with the global reset/body styling disabled, so
 // styles.css stays authoritative while the UI migrates to Chakra primitives.
 import { system as chakraSystem } from "./theme.js";
+import { enhanceWithDesktopReadOnlyTool } from "./desktop-read-only-tools.js";
+
+// Issue #839: the six-section issue-report document is no longer written here.
+// `src/issue_report.rs` owns the format for every surface and
+// `./issue-report.js` mirrors it for the browser (the wasm worker cannot link
+// the Rust core), so this file only assembles the facts and the labels.
+import { renderReportBody } from "./issue-report.js";
 
 const {
   createElement: h,
@@ -239,6 +246,16 @@ function matchesAnyPattern(value, patterns) {
   return patterns.some((pattern) => pattern.test(value));
 }
 
+function containsThemeObject(normalized) {
+  return matchesAnyPattern(normalized, [
+    /(?:^|[^\p{L}\p{N}])theme(?:$|[^\p{L}\p{N}])/u,
+    /(?:^|[^\p{L}\p{N}])dark mode(?:$|[^\p{L}\p{N}])/u,
+    /(?:^|[^\p{L}\p{N}])light mode(?:$|[^\p{L}\p{N}])/u,
+    /(?:^|[^\p{L}\p{N}])тема(?:$|[^\p{L}\p{N}])/u,
+    /主题/u,
+  ]);
+}
+
 const COMMAND_ON_TERMS = [
   "turn on",
   "enable",
@@ -432,9 +449,47 @@ function interfaceCommandResponse(command, reportIssueUrl) {
   return `Done. ${command.label} is now ${commandValueLabel(command)}.`;
 }
 
-function recognizeInterfaceCommand(text) {
+function recognizeSeedInterfaceCommand(text, capabilities) {
+  const normalized = normalizeMemoryPrompt(text);
+  if (!normalized || !Array.isArray(capabilities)) return null;
+  for (const capability of capabilities) {
+    const phrases = (capability.phrases || []).map(normalizeMemoryPrompt);
+    if (!includesAnyText(normalized, phrases)) continue;
+    let value = null;
+    if (capability.kind === "enum") {
+      const option = (capability.options || []).find((candidate) =>
+        (candidate.aliases || [])
+          .map(normalizeMemoryPrompt)
+          .some((alias) => normalized.includes(alias)),
+      );
+      if (option) value = option.value;
+    } else if (capability.kind === "number") {
+      const match = normalized.match(/(\d+(?:[.,]\d+)?)/);
+      if (match) {
+        const number = Number(match[1].replace(",", "."));
+        if (Number.isFinite(number)) value = number * Number(capability.scale || 1);
+      }
+    } else if (capability.kind === "boolean") {
+      value = detectToggleCommand(normalized, phrases);
+    }
+    if (value === null) continue;
+    return {
+      kind: "set_preference",
+      key: capability.key,
+      value,
+      intent: capability.intent,
+      label: capability.label,
+    };
+  }
+  return null;
+}
+
+function recognizeInterfaceCommand(text, capabilities = []) {
   const normalized = normalizeMemoryPrompt(text);
   if (!normalized) return null;
+
+  const seedCommand = recognizeSeedInterfaceCommand(text, capabilities);
+  if (seedCommand) return seedCommand;
 
   const reportPhrases = [
     "report issue",
@@ -603,7 +658,10 @@ function recognizeInterfaceCommand(text) {
     };
   }
 
-  if (includesAnyText(normalized, ["theme", "dark mode", "light mode", "тема", "режим", "主题"])) {
+  // Match the preference object as a complete word. In particular, `тема`
+  // must not match inside Russian words such as `система`; otherwise ordinary
+  // prose can be intercepted before it reaches the solver (issue #776).
+  if (containsThemeObject(normalized)) {
     if (includesAnyText(normalized, ["dark", "темн", "тёмн", "深色", "dark mode"])) {
       return { kind: "set_preference", key: "theme", value: "dark", intent: "configure_theme", label: "Theme" };
     }
@@ -1183,16 +1241,44 @@ const MODE_TITLE_KEYS = {
 // per-tool grant map to the native router instead of the old all-or-nothing
 // grant. Keep this list in sync with desktop/lib/tool-router.cjs.
 const DESKTOP_TOOL_OPTIONS = Object.freeze([
-  "http_fetch",
-  "url_navigate",
   "eval_js",
-  "read_local_file",
+  "write_file",
+  "edit_file",
+  "multi_edit",
   "code_exec",
   "shell",
+  "fs.read",
+  "fs.write",
+  "fs.list",
+  "fs.move",
+  "shell.run",
+  "http.fetch",
+  "http.post",
+  "dom.query",
+  "dom.extract",
+  "archive.pack",
+  "archive.unpack",
+  "process.status",
 ]);
+const DESKTOP_TOOL_I18N_KEYS = Object.freeze({
+  "fs.read": "computer_fs_read",
+  "fs.write": "computer_fs_write",
+  "fs.list": "computer_fs_list",
+  "fs.move": "computer_fs_move",
+  "shell.run": "computer_shell_run",
+  "http.fetch": "computer_http_fetch",
+  "http.post": "computer_http_post",
+  "dom.query": "computer_dom_query",
+  "dom.extract": "computer_dom_extract",
+  "archive.pack": "computer_archive_pack",
+  "archive.unpack": "computer_archive_unpack",
+  "process.status": "computer_process_status",
+});
 // Issue #511/#514: per-tool labels and descriptions live in the i18n catalog
-// (permissions.tool.<tool>.{label,description}) so the desktop permission panel
+// (permissions.tool.<key>.{label,description}) so the desktop permission panel
 // translates with the active UI language instead of shipping hardcoded English.
+// Links Notation treats dots as path separators, so dotted computer-use tool names
+// map to stable catalog keys while the native permission map keeps the exact names.
 // Issue #324: source that drives the assistant's response language.
 const RESPONSE_LANGUAGE_MODES = ["last_message", "preferred", "ui"];
 // Issue #324: languages the assistant can be pinned to via `preferredLanguage`.
@@ -2168,14 +2254,17 @@ function formatThemeField(context) {
   return preference;
 }
 
-function appendUserContextBlock(lines, context) {
+// Issue #839: returns the User Context section as data (`{label, value}`), not
+// as rendered Markdown — the shared builder in `./issue-report.js` decides how
+// a field looks so the web and the CLI cannot drift.
+function userContextFields(context) {
   const safe = context && typeof context === "object" ? context : {};
   const entries = [];
   const push = (label, value) => {
     if (value === undefined || value === null) return;
     const text = String(value).trim();
     if (!text) return;
-    entries.push(`- **${label}**: ${text}`);
+    entries.push({ label, value: text });
   };
 
   push("UI languages", formatUiLanguagesField(safe.uiLanguage, safe.browserLanguages));
@@ -2212,11 +2301,7 @@ function appendUserContextBlock(lines, context) {
   // Issue #386: the inference-only location ("time zone / locale only") is the
   // default, so it is omitted. An explicit preference is reported above.
 
-  if (entries.length === 0) return;
-  lines.push("## User Context");
-  lines.push("");
-  for (const entry of entries) lines.push(entry);
-  lines.push("");
+  return entries;
 }
 
 function randomItem(items) {
@@ -2934,10 +3019,59 @@ function thinkingStepKey(entry) {
   return String(entry?.step || "").replace(/^agent_\d+_/i, "");
 }
 
-function filterThinkingEntriesForDetail(entries, detailLevel) {
+// Issue #672 (F4): the reasoning hierarchy the solver emits is a proposal, not
+// a verdict — a power user watching the same kind of trace all day knows which
+// steps deserve to be phases and which are noise. Their edits are recorded as
+// an append-only event log and the effective hierarchy is a *projection* of
+// that log over the solver's own `level` field. Nothing rewrites the message:
+// the entries the worker produced stay byte-identical, which is what keeps a
+// re-render, a history reload, or a diagnostics export honest.
+const STEP_LEVELS = Object.freeze(["high", "detailed"]);
+
+function normalizeStepLevel(value) {
+  const level = String(value || "").trim();
+  return STEP_LEVELS.includes(level) ? level : "";
+}
+
+/**
+ * Append one hierarchy edit. A `level` of "" is the reset event — recorded
+ * rather than removing the earlier entry, so the log stays a history.
+ */
+function appendStepLevelEvent(events, step, level) {
+  const key = thinkingStepKey({ step });
+  if (!key) return Array.isArray(events) ? events : [];
+  return [
+    ...(Array.isArray(events) ? events : []),
+    { step: key, level: normalizeStepLevel(level) },
+  ];
+}
+
+/** Fold the log down to the level currently in force per step: last write wins. */
+function projectStepLevels(events) {
+  const levels = new Map();
+  for (const event of Array.isArray(events) ? events : []) {
+    const key = thinkingStepKey(event);
+    if (!key) continue;
+    const level = normalizeStepLevel(event.level);
+    if (level) levels.set(key, level);
+    else levels.delete(key);
+  }
+  return levels;
+}
+
+function filterThinkingEntriesForDetail(
+  entries,
+  detailLevel,
+  stepLevelOverrides,
+) {
   const safeEntries = Array.isArray(entries) ? entries.filter(Boolean) : [];
   if (safeEntries.length <= 1) return safeEntries;
+  const overrides =
+    stepLevelOverrides instanceof Map ? stepLevelOverrides : new Map();
   const level = normalizeThinkingDetailLevel(detailLevel);
+  // "detailed" shows everything and "brief" shows only the conclusion, so in
+  // both the hierarchy is not consulted and an override cannot change what the
+  // user sees. Only the middle, hierarchy-driven granularity projects the log.
   if (level === "detailed") return safeEntries;
   if (level === "brief") return safeEntries.slice(-1);
 
@@ -2953,7 +3087,9 @@ function filterThinkingEntriesForDetail(entries, detailLevel) {
   );
   if (hasLevels) {
     const filtered = safeEntries.filter(
-      (entry, index) => index === lastIndex || entry?.level === "high",
+      (entry, index) =>
+        index === lastIndex ||
+        (overrides.get(thinkingStepKey(entry)) || entry?.level) === "high",
     );
     return filtered.length > 0 ? filtered : safeEntries.slice(-1);
   }
@@ -2973,10 +3109,14 @@ function filterThinkingEntriesForDetail(entries, detailLevel) {
     "memory",
     "agent_plan",
   ]);
-  const filtered = safeEntries.filter(
-    (entry, index) =>
-      index === lastIndex || standardSteps.has(thinkingStepKey(entry)),
-  );
+  const filtered = safeEntries.filter((entry, index) => {
+    if (index === lastIndex) return true;
+    const key = thinkingStepKey(entry);
+    // A user edit outranks the legacy allowlist in both directions: it can
+    // promote a step the allowlist never knew about and demote one it names.
+    if (overrides.has(key)) return overrides.get(key) === "high";
+    return standardSteps.has(key);
+  });
   return filtered.length > 0 ? filtered : safeEntries.slice(-1);
 }
 
@@ -2999,9 +3139,14 @@ function buildThinkingPreviewSteps(
   source,
   t,
   detailLevel,
+  stepLevelOverrides,
 ) {
   if (Array.isArray(structuredSteps) && structuredSteps.length > 0) {
-    return filterThinkingEntriesForDetail(structuredSteps, detailLevel)
+    return filterThinkingEntriesForDetail(
+      structuredSteps,
+      detailLevel,
+      stepLevelOverrides,
+    )
       .map((entry) => naturalizeThinkingStep(entry, t))
       .filter(Boolean);
   }
@@ -3019,7 +3164,12 @@ function buildThinkingPreviewSteps(
   );
 }
 
-function buildMessageThinkingPreviewSteps(message, t, detailLevel) {
+function buildMessageThinkingPreviewSteps(
+  message,
+  t,
+  detailLevel,
+  stepLevelOverrides,
+) {
   if (message?.role !== "assistant") return [];
   const diagnosticsSteps = Array.isArray(message.diagnosticsSteps)
     ? message.diagnosticsSteps
@@ -3031,6 +3181,7 @@ function buildMessageThinkingPreviewSteps(message, t, detailLevel) {
       message.thinkingPreviewSource || message.intent || "local",
       t,
       detailLevel,
+      stepLevelOverrides,
     );
   }
   return filterThinkingSummariesForDetail(
@@ -4694,6 +4845,91 @@ function vscodeInstallStateLabel(result, t) {
   return key ? tr(key) : tr("vscodeInstall.error");
 }
 
+// Issue #672 (F2): the shape the desktop bridge reports for the profile
+// migration. Normalising here means the notice never has to guard against a
+// missing field, and an older desktop build that answers with a partial object
+// degrades to "we know nothing" rather than rendering `undefined` at the user.
+function normalizeDataMigration(result, options = {}) {
+  if (!result || typeof result !== "object") return null;
+  const copied = Array.isArray(result.copied)
+    ? result.copied.filter((item) => typeof item === "string" && item)
+    : [];
+  return {
+    known: Boolean(result.known),
+    migrated: Boolean(result.migrated),
+    reason: typeof result.reason === "string" ? result.reason : "unknown",
+    copied,
+    migratedFrom:
+      typeof result.migratedFrom === "string" && result.migratedFrom
+        ? result.migratedFrom.split(/[\\/]/).filter(Boolean).pop()
+        : null,
+    error: typeof result.error === "string" && result.error ? result.error : null,
+    replayed: Boolean(options.replayed),
+  };
+}
+
+// The notice is worth the user's attention only when something actually
+// happened (data moved, or a transfer failed) — or right after they asked for a
+// replay, where "nothing left to copy" IS the answer they wanted.
+function shouldShowDataMigrationNotice(migration) {
+  if (!migration || !migration.known) return false;
+  if (migration.replayed) return true;
+  if (migration.reason === "failed") return true;
+  return migration.migrated && migration.copied.length > 0;
+}
+
+function DataMigrationNotice({ migration, busy, onReplay, onDismiss, t }) {
+  if (!shouldShowDataMigrationNotice(migration)) return null;
+  const failed = migration.reason === "failed";
+  let body;
+  if (failed) {
+    body = t("dataMigration.failed", { error: migration.error || "" });
+  } else if (migration.copied.length === 0) {
+    body = t("dataMigration.nothing");
+  } else if (migration.migratedFrom) {
+    body = t("dataMigration.body", { source: migration.migratedFrom });
+  } else {
+    body = t("dataMigration.bodyUnknown");
+  }
+  return (
+    <div
+      className={`data-migration-notice${failed ? " is-failed" : ""}`}
+      data-testid="data-migration-notice"
+      data-reason={migration.reason}
+      role="status"
+    >
+      <div className="data-migration-copy">
+        <strong>{t("dataMigration.title")}</strong>
+        <span data-testid="data-migration-body">{body}</span>
+        {migration.copied.length > 0 ? (
+          <span className="data-migration-items" data-testid="data-migration-items">
+            {t("dataMigration.copied", { items: migration.copied.join(", ") })}
+          </span>
+        ) : null}
+      </div>
+      <div className="data-migration-actions">
+        <button
+          type="button"
+          className="data-migration-replay"
+          data-testid="data-migration-replay"
+          disabled={busy}
+          onClick={onReplay}
+        >
+          {busy ? t("dataMigration.replaying") : t("dataMigration.replay")}
+        </button>
+        <button
+          type="button"
+          className="data-migration-dismiss"
+          data-testid="data-migration-dismiss"
+          onClick={onDismiss}
+        >
+          {t("dataMigration.dismiss")}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function normalizeDesktopStatus(status) {
   if (!status || typeof status !== "object") {
     return null;
@@ -4711,8 +4947,24 @@ function normalizeDesktopStatus(status) {
           model: String(status.agentProvider.model || "formal-ai"),
         }
       : null;
+  const engineSelectionAvailable = Array.isArray(status.engines) && status.engines.length > 0;
+  const engines = engineSelectionAvailable
+    ? status.engines
+        .filter((engine) => engine && engine.available !== false && engine.id)
+        .map((engine) => ({
+          id: String(engine.id),
+          label: String(engine.label || engine.id),
+          type: String(engine.type || (engine.id === "out-of-box" ? "native" : "passthrough")),
+          available: true,
+        }))
+    : [{ id: "out-of-box", label: "Out of the box", type: "native", available: true }];
+  const requestedEngine = String(status.activeEngine || "out-of-box");
+  const activeEngine = engines.some((engine) => engine.id === requestedEngine)
+    ? requestedEngine
+    : "out-of-box";
   return {
     shell: String(status.shell || "Electron"),
+    platform: String(status.platform || ""),
     mode: String(status.mode || (apiBase ? "server" : "in-process")),
     apiBase,
     staticBase: String(status.staticBase || ""),
@@ -4725,6 +4977,9 @@ function normalizeDesktopStatus(status) {
     apiReady: status.apiReady !== false && Boolean(apiBase),
     apiError: String(status.apiError || ""),
     agentProvider,
+    engines,
+    activeEngine,
+    engineSelectionAvailable,
     updater: normalizeDesktopUpdaterStatus(status.updater, appVersion),
   };
 }
@@ -4760,7 +5015,21 @@ function desktopStatusLabel(status, agentMode) {
       ? "API unavailable"
       : "in-process";
   const agent = agentMode ? "agent opted in" : "agent permission off";
-  return `${desktopSurfaceLabel(status)} - ${api} - ${agent}`;
+  const engine = status.engineSelectionAvailable
+    ? ` - ${String(status.activeEngine || "out-of-box")}`
+    : "";
+  return `${desktopSurfaceLabel(status)}${engine} - ${api} - ${agent}`;
+}
+
+function desktopAgentEventLabel(payload) {
+  const event = payload && payload.event && typeof payload.event === "object"
+    ? payload.event
+    : payload;
+  if (!event || typeof event !== "object") return String(event || "");
+  return String(
+    event.content || event.text || event.part && event.part.text || event.message || event.summary ||
+    event.type || "agent event",
+  );
 }
 
 function desktopMessages(history, text) {
@@ -4808,7 +5077,11 @@ async function requestDesktopToolCall(bridge, tool, input = {}) {
       reason: "desktop tool router is unavailable",
     };
   }
-  if (typeof bridge.ensureAgentServer === "function") {
+  const readOnly = [
+    "web_search", "web_fetch", "read_file", "read_local_file", "grep", "glob",
+    "list_directory", "read_many_files",
+  ].includes(tool);
+  if (!readOnly && typeof bridge.ensureAgentServer === "function") {
     await bridge.ensureAgentServer();
   }
   return bridge.invokeTool({ tool: String(tool || ""), input: input || {} });
@@ -4850,6 +5123,14 @@ function terminalCommandFromAnswer(answer) {
     }
   }
   return "";
+}
+
+function desktopShellCommand(command, status) {
+  const value = String(command || "").trim();
+  if (value === "ps" && status && status.platform === "win32") {
+    return "tasklist";
+  }
+  return value;
 }
 
 function shellOutputMarkdown(body, t) {
@@ -5107,59 +5388,18 @@ function createDemoTurns() {
   return turns;
 }
 
-function appendCodeBlock(lines, value) {
-  const text = String(value ?? "");
-  const fence = text.includes("```") ? "````" : "```";
-  lines.push(fence);
-  lines.push(text);
-  lines.push(fence);
-}
-
-// Issue #78: render the entire dialog as a single fenced block with `U:` /
-// `A:` line prefixes, instead of one Markdown subsection per message. Keeps
-// the prefilled GitHub issue body short enough to fit the `?body=` query
-// string (which truncates around 8 KB) and easier for a maintainer to scan.
-function pickDialogFence(messages) {
-  let fence = "```";
-  while (messages.some((message) => String(message.content ?? "").includes(fence))) {
-    fence += "`";
-  }
-  return fence;
-}
-
-function appendDialogBlock(lines, messages, effectiveFocus, options = {}) {
-  if (messages.length === 0) {
-    lines.push("No messages have been sent yet.");
-    return;
-  }
-
-  lines.push("Legend: `U` = user, `A` = agent.");
-  lines.push("");
-  const fence = pickDialogFence(messages);
-  lines.push(fence);
-  const earlierOmitted = Math.max(0, Number(options.earlierOmitted) || 0);
-  if (earlierOmitted > 0) {
-    lines.push(`... omitted ${earlierOmitted} earlier ${earlierOmitted === 1 ? "message" : "messages"} ...`);
-  }
-  messages.forEach((message) => {
-    const prefix = message.role === "user" ? "U" : "A";
-    const annotations = [];
-    if (message.intent === "unknown") {
-      annotations.push(`intent: ${message.intent}`);
-    }
-    if (effectiveFocus && effectiveFocus.id === message.id) {
-      if (message.intent && message.intent !== "unknown") {
-        annotations.push(`intent: ${message.intent}`);
-      }
-      annotations.push("reported");
-    }
-    const head = annotations.length > 0 ? `${prefix} (${annotations.join(", ")})` : prefix;
-    const content = String(message.content ?? "");
-    const [first, ...rest] = content.split("\n");
-    lines.push(`${head}: ${first}`);
-    rest.forEach((row) => lines.push(`   ${row}`));
-  });
-  lines.push(fence);
+// Issue #78 renders the whole dialog as one fenced block with `U:` / `A:` line
+// prefixes rather than a Markdown subsection per message, which is what keeps
+// the prefilled `?body=` query string under GitHub's cap. Issue #839 moved that
+// rendering into the shared builder; what stays here is the mapping from a
+// browser message to a turn, including which turn the user asked about.
+function reportTurns(messages, effectiveFocus) {
+  return messages.map((message) => ({
+    role: message.role,
+    content: String(message.content ?? ""),
+    intent: message.intent ?? "",
+    reported: Boolean(effectiveFocus && effectiveFocus.id === message.id),
+  }));
 }
 
 // Issue #140: GitHub caps the prefilled-issue URL at 8192 characters, so for
@@ -5239,8 +5479,10 @@ function appendLimitedTraceItems(lines, items, formatter) {
   });
 }
 
-function appendReasoningTraceBlock(lines, focusMessage) {
-  if (!focusMessage || focusMessage.role !== "assistant") return;
+// Issue #839: the trace is returned as the lines that go inside the fence; the
+// shared builder owns the heading and the fence itself.
+function reasoningTraceLines(focusMessage) {
+  if (!focusMessage || focusMessage.role !== "assistant") return [];
 
   const trace = [];
   if (focusMessage.intent) {
@@ -5290,15 +5532,9 @@ function appendReasoningTraceBlock(lines, focusMessage) {
     });
   }
 
-  if (trace.length === 0) return;
+  if (trace.length === 0) return [];
 
-  lines.push("");
-  lines.push("## Reasoning Trace");
-  lines.push("");
-  lines.push("Focused assistant turn:");
-  lines.push("");
-  appendCodeBlock(lines, truncateMessageContent(trace.join("\n"), REPORT_TRACE_MAX_CHARS));
-  lines.push("");
+  return truncateMessageContent(trace.join("\n"), REPORT_TRACE_MAX_CHARS).split("\n");
 }
 
 function buildIssueUrl(title, body, labels) {
@@ -5471,63 +5707,76 @@ function formatVersionWithWorker(version, workerState) {
   return `${version} (${short})`;
 }
 
-function createIssueReportBody({
-  messages,
-  focusMessage,
-  workerState,
-  demoMode,
-  demoStatus,
-  diagnosticsMode,
-  userContext,
-  earlierOmitted = 0,
-}) {
-  const effectiveFocus = focusMessage ?? lastUnknownAssistantMessage(messages);
-  // Issue #386: fold the worker into the version (`0.174.0 (wasm)`) and drop
-  // settings that sit at their default. Manual mode is the interactive default,
-  // so Mode/Status are only worth reporting while a demo is playing, and
-  // Diagnostics is only reported when it has been turned on.
-  const lines = [
-    "## Environment",
-    "",
-    `- **Version**: ${formatVersionWithWorker(APP_VERSION, workerState)}`,
-    `- **URL**: ${window.location.href}`,
+// Issue #839: every phrase the report document contains comes from
+// `data/seed/agent-info.lino`, the same file the CLI reads, so the two surfaces
+// cannot say different things. The seed reaches the browser through
+// `seed.agentInfo`; the values below are its shipped English text, used while
+// the seed is still loading.
+const REPORT_LABEL_DEFAULTS = {
+  issue_report_dialog_legend: "Legend: `U` = user, `A` = agent, `T` = tool result.",
+  issue_report_no_messages: "No messages have been sent yet.",
+  issue_report_omitted_messages: "... omitted {count} earlier messages ...",
+  issue_report_omitted_message: "... omitted {count} earlier message ...",
+  issue_report_trace_heading: "Focused assistant turn:",
+  issue_report_description_placeholder:
+    "<!-- Please describe what looked wrong or incomplete. -->",
+  issue_report_memory_note:
+    "Click **Export memory** to save `formal-ai-memory.lino`, redact it, and attach it (as a `.zip` if needed). See the [upload-memory guide](https://github.com/link-assistant/formal-ai/blob/main/docs/upload-memory.md).",
+};
+
+function reportLabels(agentInfo) {
+  const seeded = agentInfo && typeof agentInfo === "object" ? agentInfo : {};
+  const label = (key) => String(seeded[key] || REPORT_LABEL_DEFAULTS[key]);
+  return {
+    legend: label("issue_report_dialog_legend"),
+    no_messages: label("issue_report_no_messages"),
+    omitted_earlier: label("issue_report_omitted_messages"),
+    omitted_earlier_one: label("issue_report_omitted_message"),
+    trace_heading: label("issue_report_trace_heading"),
+    description_placeholder: label("issue_report_description_placeholder"),
+    memory_note: label("issue_report_memory_note"),
+  };
+}
+
+// Issue #386: fold the worker into the version (`0.174.0 (wasm)`) and drop
+// settings that sit at their default. Manual mode is the interactive default,
+// so Mode/Status are only worth reporting while a demo is playing, and
+// Diagnostics is only reported when it has been turned on.
+function environmentFields({ workerState, demoMode, demoStatus, diagnosticsMode }) {
+  const fields = [
+    { label: "Version", value: formatVersionWithWorker(APP_VERSION, workerState) },
+    { label: "URL", value: window.location.href },
   ];
   if (demoMode) {
-    lines.push("- **Mode**: demo");
-    lines.push(`- **Status**: ${demoStatus}`);
+    fields.push({ label: "Mode", value: "demo" });
+    fields.push({ label: "Status", value: demoStatus });
   }
   if (diagnosticsMode) {
-    lines.push("- **Diagnostics**: on");
+    fields.push({ label: "Diagnostics", value: "on" });
   }
-  lines.push(`- **Timestamp**: ${new Date().toISOString()}`);
-  lines.push("");
+  fields.push({ label: "Timestamp", value: new Date().toISOString() });
+  return fields;
+}
 
-  appendUserContextBlock(lines, userContext);
-  lines.push("## Reproduction of dialog");
-  lines.push("");
-
-  appendDialogBlock(lines, messages, effectiveFocus, { earlierOmitted });
-
-  // Issue #386: the reasoning trace is only meaningful next to the full dialog.
-  // When earlier turns had to be dropped to fit GitHub's URL cap the dialog is
-  // no longer complete, so the trace is omitted to avoid misleading context.
-  if (earlierOmitted === 0) {
-    appendReasoningTraceBlock(lines, effectiveFocus);
-  }
-
-  lines.push("");
-  lines.push("## Description");
-  lines.push("");
-  lines.push("<!-- Please describe what looked wrong or incomplete. -->");
-  lines.push("");
-  lines.push("## Attach full memory (optional)");
-  lines.push("");
-  lines.push(
-    "Click **Export memory** to save `formal-ai-memory.lino`, redact it, and attach it (as a `.zip` if needed). See the [upload-memory guide](https://github.com/link-assistant/formal-ai/blob/main/docs/upload-memory.md).",
-  );
-  lines.push("");
-
-  return lines.join("\n");
+// Issue #839: this function now only gathers facts. `renderReportBody` — the
+// browser mirror of `src/issue_report.rs` — turns them into the document, so
+// the web report and the agentic report are the same six sections by
+// construction rather than by review.
+function createIssueReportBody(context) {
+  const { messages, focusMessage, userContext, agentInfo, earlierOmitted = 0 } = context;
+  const effectiveFocus = focusMessage ?? lastUnknownAssistantMessage(messages);
+  return renderReportBody({
+    labels: reportLabels(agentInfo),
+    environment: environmentFields(context),
+    user_context: userContextFields(userContext),
+    turns: reportTurns(messages, effectiveFocus),
+    earlier_omitted: earlierOmitted,
+    // Issue #386: the reasoning trace is only meaningful next to the full
+    // dialog. When earlier turns had to be dropped to fit GitHub's URL cap the
+    // dialog is no longer complete, so the shared builder drops the trace too.
+    reasoning_trace: reasoningTraceLines(effectiveFocus),
+    attachments: [],
+  });
 }
 
 function createIssueUrl(context) {
@@ -5652,9 +5901,19 @@ function usePrefersReducedMotion() {
 // shown at once). The first ~72% of the budget unveils the steps; the body is
 // held back until the full budget elapses, satisfying R6's "only when we
 // scrolled to the last thinking step can we show the message itself".
+//
+// Issue #672 (F3): the budget is a global preference, but the right value for
+// it is per-message — a user who is happy to watch the reasoning fill in for
+// most answers still wants THIS one now. `skip()` is that one-shot override:
+// it ends the staged reveal for this message immediately (clearing the pending
+// timers) without touching the preference, so the next message animates as
+// before. It is deliberately additive to the reduced-motion path rather than a
+// replacement for it — an OS-level reduced-motion preference must keep
+// suppressing the animation without the user having to click anything.
 function useMessageReveal(stepCount, budgetMs) {
   const reducedMotion = usePrefersReducedMotion();
-  const active = budgetMs > 0 && stepCount > 0 && !reducedMotion;
+  const [skipped, setSkipped] = useState(false);
+  const active = budgetMs > 0 && stepCount > 0 && !reducedMotion && !skipped;
   // The staged reveal plays exactly once — when the freshly produced message
   // first appears. Once it has played out (or if it never applied) we latch
   // "done" so that a later change in step count — e.g. the user toggling the
@@ -5695,7 +5954,16 @@ function useMessageReveal(stepCount, budgetMs) {
     );
     return () => timers.forEach((timer) => clearTimeout(timer));
   }, [active, stepCount, budgetMs]);
-  return { active, revealedSteps, bodyShown };
+  // Issue #672 (F3). Latching `doneRef` matters as much as flipping `skipped`:
+  // without it a later step-count change (the reasoning-detail setting, say)
+  // would take the "not done yet" path and restart the animation the user just
+  // asked to end. Flipping `active` to false tears down the pending timers
+  // through the effect's own cleanup, so nothing is left to fire.
+  const skip = useCallback(() => {
+    doneRef.current = true;
+    setSkipped(true);
+  }, []);
+  return { active, revealedSteps, bodyShown, skip };
 }
 
 function usePendingThinkingPhases(isActive, t) {
@@ -5735,7 +6003,73 @@ function PendingAssistantBubble({ t }) {
   return <article className="message assistant pending"><div className="avatar" aria-hidden="true">{"FA"}</div><div className="message-body"><ThinkingPreview steps={pendingPhases} t={t} isPending={true} /></div></article>;
 }
 
-function ThinkingPreview({ steps, t, isPending = false }) {
+// Issue #676 (R8): map the resolved intent to a per-intent narrative catalog
+// key, mirroring the Rust `thinking_narrative`. Grouped so related routes share
+// one human headline (all lookups read the same, all web tools read the same).
+const THINKING_NARRATIVE_KEYS = {
+  greeting: "narrativeGreeting",
+  wellbeing: "narrativeWellbeing",
+  assistant_free_time: "narrativeAssistantFreeTime",
+  farewell: "narrativeFarewell",
+  gratitude: "narrativeGratitude",
+  thanks: "narrativeGratitude",
+  courtesy_response: "narrativeGratitude",
+  courtesy: "narrativeGratitude",
+  identity: "narrativeIdentity",
+  assistant_name: "narrativeIdentity",
+  set_assistant_name: "narrativeIdentity",
+  recall_name: "narrativeIdentity",
+  naming: "narrativeIdentity",
+  assistant_naming: "narrativeIdentity",
+  self_facts: "narrativeIdentity",
+  who_is_question: "narrativeIdentity",
+  calculation: "narrativeCalculation",
+  arithmetic: "narrativeCalculation",
+  calculation_error: "narrativeCalculation",
+  object_counting: "narrativeCalculation",
+  fact_lookup: "narrativeLookup",
+  fact_query: "narrativeLookup",
+  concept_lookup: "narrativeLookup",
+  concept_lookup_in_context: "narrativeLookup",
+  known_facts: "narrativeLookup",
+  wikipedia_lookup: "narrativeLookup",
+  wikipedia_article_question: "narrativeLookup",
+  definition_merge: "narrativeLookup",
+  translation: "narrativeTranslation",
+  web_search: "narrativeWeb",
+  http_fetch: "narrativeWeb",
+  url_navigate: "narrativeWeb",
+  write_program: "narrativeCode",
+  software_project_plan: "narrativeCode",
+  software_project_implementation: "narrativeCode",
+  algorithm: "narrativeCode",
+  test_status: "narrativeTests",
+  self_healing: "narrativeSelfHealing",
+  self_heal: "narrativeSelfHealing",
+  meta_explanation: "narrativeMetaExplanation",
+  learn_from_source: "narrativeLearn",
+  clarification: "narrativeClarification",
+  unknown: "narrativeUnknown",
+  fallback: "narrativeUnknown",
+  no_match: "narrativeUnknown",
+};
+
+// Issue #676 (R8): produce the single human, first-person headline that leads a
+// thinking trace ("You asked how I'm doing, so I told you and offered to
+// help."). Unknown routes still get a human sentence via the generic template.
+// Returns "" only when there is no intent to summarize (e.g. the pending
+// placeholder), so callers can skip the headline entirely.
+function thinkingNarrative(intent, t) {
+  const route = String(intent || "").trim().toLowerCase();
+  if (!route) return "";
+  const key = THINKING_NARRATIVE_KEYS[route];
+  if (key) return t(`message.thinkingStep.${key}`);
+  return t("message.thinkingStep.narrativeGeneric", {
+    task: humanizeThinkingIdentifier(route),
+  });
+}
+
+function ThinkingPreview({ steps, t, isPending = false, narrative = "" }) {
   const [expanded, setExpanded] = useState(false);
   const safeSteps = Array.isArray(steps)
     ? steps.map((step) => String(step || "").trim()).filter(Boolean)
@@ -5756,7 +6090,7 @@ function ThinkingPreview({ steps, t, isPending = false }) {
       // Issue #488: show a subtle "live" affordance while pending so the user
       // understands the trace is updating in real time (the dot pulses via
       // CSS; the visible label stays unchanged for screen readers).
-      isPending ? <span className="thinking-preview-live-dot" aria-hidden="true" data-testid="thinking-preview-live-dot" /> : null}{t("message.thinking")}</strong><button type="button" className="thinking-preview-toggle" data-testid="thinking-preview-toggle" aria-expanded={expanded ? "true" : "false"} onClick={() => setExpanded(value => !value)}>{expanded ? t("message.thinkingCollapse") : t("message.thinkingExpand")}</button></div>{expanded ? <ol className="thinking-preview-list" data-testid="thinking-expanded-list">{safeSteps.map((step, index) => <li key={`${index}-${step}`}>{step}</li>)}</ol> : <div className="thinking-preview-collapsed" data-testid="thinking-collapsed">{previous ? <p key={`prev-${animationKey}`} className="thinking-preview-previous" data-testid="thinking-preview-previous" aria-label={t("message.thinkingPrevious")}>{previous}</p> : null}<p key={`curr-${animationKey}`} className="thinking-preview-current" data-testid="thinking-preview-current" aria-label={t("message.thinkingCurrent")}>{current}</p></div>}</section>;
+      isPending ? <span className="thinking-preview-live-dot" aria-hidden="true" data-testid="thinking-preview-live-dot" /> : null}{t("message.thinking")}</strong><button type="button" className="thinking-preview-toggle" data-testid="thinking-preview-toggle" aria-expanded={expanded ? "true" : "false"} onClick={() => setExpanded(value => !value)}>{expanded ? t("message.thinkingCollapse") : t("message.thinkingExpand")}</button></div>{narrative ? <p className="thinking-preview-narrative" data-testid="thinking-narrative">{narrative}</p> : null}{expanded ? <ol className="thinking-preview-list" data-testid="thinking-expanded-list">{safeSteps.map((step, index) => <li key={`${index}-${step}`}>{step}</li>)}</ol> : <div className="thinking-preview-collapsed" data-testid="thinking-collapsed">{previous ? <p key={`prev-${animationKey}`} className="thinking-preview-previous" data-testid="thinking-preview-previous" aria-label={t("message.thinkingPrevious")}>{previous}</p> : null}<p key={`curr-${animationKey}`} className="thinking-preview-current" data-testid="thinking-preview-current" aria-label={t("message.thinkingCurrent")}>{current}</p></div>}</section>;
 }
 
 function DesktopPermissionPanel({
@@ -5782,8 +6116,8 @@ function DesktopPermissionPanel({
   // when clicked should actually evaluate pending task for execution."
   //
   // We render that affordance as a primary CTA above the per-tool rows so the
-  // user can opt-in with a single click without scrolling through six
-  // grant/decline buttons. The button label changes when a task is queued
+  // user can opt-in with a single click without scrolling through every
+  // grant/decline button. The button label changes when a task is queued
   // ("...and run pending task") so it is honest about what will happen.
   const grantAllLabel = hasPendingTask
     ? tr("permissions.action.grantAllAndRun")
@@ -5792,7 +6126,8 @@ function DesktopPermissionPanel({
       const state = desktopToolGrantState(grants, tool);
       const granted = state === "granted";
       const declined = state === "declined";
-      return <div key={tool} className="permission-tool-row" data-testid={`${testId}-row-${tool}`}><div className="permission-tool-copy"><strong>{tr(`permissions.tool.${tool}.label`)}</strong><span>{tr(`permissions.tool.${tool}.description`)}</span></div><span className={`permission-state permission-state-${state}`} data-testid={`${testId}-state-${tool}`}>{stateLabel(state)}</span><div className="permission-actions"><button type="button" className="permission-button" data-testid={`${testId}-grant-${tool}`} aria-pressed={granted ? "true" : "false"} onClick={() => onDecision && onDecision(tool, true)}>{tr("permissions.action.grant")}</button><button type="button" className="permission-button permission-button-secondary" data-testid={`${testId}-decline-${tool}`} aria-pressed={declined ? "true" : "false"} onClick={() => onDecision && onDecision(tool, false)}>{tr("permissions.action.decline")}</button></div></div>;
+      const i18nKey = DESKTOP_TOOL_I18N_KEYS[tool] || tool;
+      return <div key={tool} className="permission-tool-row" data-testid={`${testId}-row-${tool}`}><div className="permission-tool-copy"><strong>{tr(`permissions.tool.${i18nKey}.label`)}</strong><span>{tr(`permissions.tool.${i18nKey}.description`)}</span></div><span className={`permission-state permission-state-${state}`} data-testid={`${testId}-state-${tool}`}>{stateLabel(state)}</span><div className="permission-actions"><button type="button" className="permission-button" data-testid={`${testId}-grant-${tool}`} aria-pressed={granted ? "true" : "false"} onClick={() => onDecision && onDecision(tool, true)}>{tr("permissions.action.grant")}</button><button type="button" className="permission-button permission-button-secondary" data-testid={`${testId}-decline-${tool}`} aria-pressed={declined ? "true" : "false"} onClick={() => onDecision && onDecision(tool, false)}>{tr("permissions.action.decline")}</button></div></div>;
     })}</div></section>;
 }
 
@@ -5816,10 +6151,37 @@ function CommandApprovalPanel({ approval, status, onApprove, onDeny, t }) {
   return <section className="command-approval-panel" data-testid="command-approval" data-status={currentStatus}><div className="command-approval-copy"><strong>{tr("permissions.command.title")}</strong><code>{command}</code><span className={`command-approval-status command-approval-status-${currentStatus}`}>{statusLabel}</span></div><div className="command-approval-actions"><button type="button" className="permission-button" data-testid="command-approve" disabled={!pending} onClick={() => pending && onApprove && onApprove(approval)}>{tr("permissions.command.approve")}</button><button type="button" className="permission-button permission-button-secondary" data-testid="command-deny" disabled={!pending} onClick={() => pending && onDeny && onDeny(approval)}>{tr("permissions.command.deny")}</button></div></section>;
 }
 
+// Issue #672 (F4): the hierarchy editor for a single reasoning step. It is a
+// right-click menu because it is a power-user affordance on a Diagnostics-mode
+// surface: putting two buttons on every step would clutter the trace for the
+// far larger group of users who only read it.
+function StepHierarchyMenu({ menu, currentLevel, overridden, onSelect, t }) {
+  const close = menu?.onClose;
+  useEffect(() => {
+    if (!menu) return undefined;
+    const dismiss = () => close && close();
+    const onKey = (event) => {
+      if (event.key === "Escape") dismiss();
+    };
+    // `pointerdown` rather than `click`: the menu must not survive the press
+    // that starts an interaction somewhere else on the page.
+    window.addEventListener("pointerdown", dismiss);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("pointerdown", dismiss);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [menu, close]);
+  if (!menu) return null;
+  return <div className="step-hierarchy-menu" data-testid="step-hierarchy-menu" data-step={menu.step} role="menu" aria-label={t("message.stepLevel.title")} style={{ top: `${menu.y}px`, left: `${menu.x}px` }} onPointerDown={event => event.stopPropagation()}><button type="button" role="menuitem" data-testid="step-hierarchy-bump" disabled={currentLevel === "high"} onClick={() => onSelect(menu.step, "high")}>{t("message.stepLevel.bump")}</button><button type="button" role="menuitem" data-testid="step-hierarchy-demote" disabled={currentLevel === "detailed"} onClick={() => onSelect(menu.step, "detailed")}>{t("message.stepLevel.demote")}</button>{overridden ? <button type="button" role="menuitem" data-testid="step-hierarchy-reset" onClick={() => onSelect(menu.step, "")}>{t("message.stepLevel.reset")}</button> : null}</div>;
+}
+
 function Message({
   message,
   diagnosticsMode,
   reportIssueUrl,
+  stepLevelOverrides,
+  onEditStepLevel,
   thinkingDetailLevel,
   minMessageAnimationMs = 0,
   renderPermissionPanel,
@@ -5830,10 +6192,38 @@ function Message({
 }) {
   const evidence = diagnosticsMode ? (message.evidence ?? []) : [];
   const thinkingSteps = diagnosticsMode ? (message.thinkingSteps ?? []) : [];
+  const overrides =
+    stepLevelOverrides instanceof Map ? stepLevelOverrides : new Map();
   const thinkingPreviewSteps = buildMessageThinkingPreviewSteps(
     message,
     t,
     thinkingDetailLevel,
+    overrides,
+  );
+  // Issue #672 (F4): `{ step, x, y }` while the right-click menu is open.
+  const [stepMenu, setStepMenu] = useState(null);
+  const closeStepMenu = useCallback(() => setStepMenu(null), []);
+  const handleStepContextMenu = useCallback(
+    (event, step) => {
+      if (typeof onEditStepLevel !== "function") return;
+      const key = thinkingStepKey({ step });
+      if (!key) return;
+      event.preventDefault();
+      setStepMenu({
+        step: key,
+        x: event.clientX,
+        y: event.clientY,
+        onClose: closeStepMenu,
+      });
+    },
+    [onEditStepLevel, closeStepMenu],
+  );
+  const handleStepLevelSelect = useCallback(
+    (step, level) => {
+      setStepMenu(null);
+      if (typeof onEditStepLevel === "function") onEditStepLevel(step, level);
+    },
+    [onEditStepLevel],
   );
   const diagnosticsSteps = diagnosticsMode
     ? (message.diagnosticsSteps ?? [])
@@ -5913,15 +6303,19 @@ function Message({
     }
   }, [message.content]);
 
-  return <article className={`message ${message.role}`} data-testid="chat-message" data-demo-label={message.demoLabel || null}><div className="avatar" aria-hidden="true">{message.role === "user" ? "Y" : "FA"}</div><div className="message-body"><div className="message-meta"><strong>{message.role === "user" ? t("message.author.user") : message.author}</strong><time>{message.sentAt}</time>{diagnosticsMode && message.intent ? <span className="intent">{`intent:${message.intent}`}</span> : null}<button type="button" className={`message-copy-button${markdownCopied ? " is-copied" : ""}`} data-testid="copy-markdown-button" data-copied={markdownCopied ? "true" : null} onClick={handleCopyMarkdown} aria-label={t("message.copyMarkdownTitle")} title={t("message.copyMarkdownTitle")}><span className="copy-button-label">{markdownCopied ? t("message.copyMarkdownDone") : t("message.copyMarkdown")}</span></button></div>{
+  return <article className={`message ${message.role}`} data-testid="chat-message" data-demo-label={message.demoLabel || null} data-skip-animation={reveal.active && !reveal.bodyShown ? "available" : null}><div className="avatar" aria-hidden="true">{message.role === "user" ? "Y" : "FA"}</div><div className="message-body"><div className="message-meta"><strong>{message.role === "user" ? t("message.author.user") : message.author}</strong><time>{message.sentAt}</time>{diagnosticsMode && message.intent ? <span className="intent">{`intent:${message.intent}`}</span> : null}<button type="button" className={`message-copy-button${markdownCopied ? " is-copied" : ""}`} data-testid="copy-markdown-button" data-copied={markdownCopied ? "true" : null} onClick={handleCopyMarkdown} aria-label={t("message.copyMarkdownTitle")} title={t("message.copyMarkdownTitle")}><span className="copy-button-label">{markdownCopied ? t("message.copyMarkdownDone") : t("message.copyMarkdown")}</span></button></div>{
     // Issue #488: render thinking ABOVE the answer body. Reasoning logically
     // precedes the answer (and during streaming it is the only visible part of
     // the message), so it belongs at the top of the message body, not below it.
     // Issue #541 (R6): during the staged reveal only the steps unveiled so far
     // are shown, so the trace visibly fills in before the answer appears.
-    revealedThinkingSteps.length ? <ThinkingPreview steps={revealedThinkingSteps} t={t} /> : null}<div ref={markdownRef} className={`markdown-body${bodyRevealClass}`} aria-hidden={reveal.active && !reveal.bodyShown ? "true" : null} data-testid="message-markdown-body" dangerouslySetInnerHTML={markdownContent} />{message.permissionPanel && typeof renderPermissionPanel === "function" ? <div className="message-permission-panel">{renderPermissionPanel("desktop-permission-panel-message")}</div> : null}{message.commandApproval ? <CommandApprovalPanel approval={message.commandApproval} status={commandApprovals && commandApprovals[message.commandApproval.id] && commandApprovals[message.commandApproval.id].status} onApprove={onApproveCommand} onDeny={onDenyCommand} t={t} /> : null}{message.iframeUrl ? <div className={`fetch-iframe-container${iframeFullscreen ? " is-fullscreen" : ""}`} data-testid="fetch-iframe-container"><div className="fetch-iframe-header"><span className="fetch-iframe-url">{message.iframeUrl}</span><div className="fetch-iframe-actions"><a href={message.iframeUrl} target="_blank" rel="noopener noreferrer" className="fetch-iframe-open fetch-iframe-control" aria-label={t("fetch.openInNewTab")} title={t("fetch.openInNewTab")}>{"↗"}</a><button type="button" className="fetch-iframe-toggle fetch-iframe-control" onClick={() => setIframeFullscreen(prev => !prev)} aria-label={iframeFullscreen ? t("fetch.minimize") : t("fetch.fullscreen")} aria-pressed={iframeFullscreen ? "true" : "false"} title={iframeFullscreen ? t("fetch.minimize") : t("fetch.fullscreen")}>{iframeFullscreen ? "⤡" : "⛶"}</button></div></div><iframe className="fetch-iframe" src={message.iframeUrl} title={t("fetch.frameTitle", {
+    revealedThinkingSteps.length ? <ThinkingPreview steps={revealedThinkingSteps} t={t} narrative={thinkingNarrative(message.intent, t)} /> : null}{
+    // Issue #672 (F3): a one-shot per-message override of the global animation
+    // budget. Only offered while the reveal is actually withholding the answer,
+    // so it never lingers as dead chrome on a settled message.
+    reveal.active && !reveal.bodyShown ? <button type="button" className="skip-animation" data-testid="message-skip-animation" onClick={reveal.skip} title={t("message.skipAnimation")}>{t("message.skipAnimation")}</button> : null}<div ref={markdownRef} className={`markdown-body${bodyRevealClass}`} aria-hidden={reveal.active && !reveal.bodyShown ? "true" : null} data-testid="message-markdown-body" dangerouslySetInnerHTML={markdownContent} />{message.permissionPanel && typeof renderPermissionPanel === "function" ? <div className="message-permission-panel">{renderPermissionPanel("desktop-permission-panel-message")}</div> : null}{message.commandApproval ? <CommandApprovalPanel approval={message.commandApproval} status={commandApprovals && commandApprovals[message.commandApproval.id] && commandApprovals[message.commandApproval.id].status} onApprove={onApproveCommand} onDeny={onDenyCommand} t={t} /> : null}{message.iframeUrl ? <div className={`fetch-iframe-container${iframeFullscreen ? " is-fullscreen" : ""}`} data-testid="fetch-iframe-container"><div className="fetch-iframe-header"><span className="fetch-iframe-url">{message.iframeUrl}</span><div className="fetch-iframe-actions"><a href={message.iframeUrl} target="_blank" rel="noopener noreferrer" className="fetch-iframe-open fetch-iframe-control" aria-label={t("fetch.openInNewTab")} title={t("fetch.openInNewTab")}>{"↗"}</a><button type="button" className="fetch-iframe-toggle fetch-iframe-control" onClick={() => setIframeFullscreen(prev => !prev)} aria-label={iframeFullscreen ? t("fetch.minimize") : t("fetch.fullscreen")} aria-pressed={iframeFullscreen ? "true" : "false"} title={iframeFullscreen ? t("fetch.minimize") : t("fetch.fullscreen")}>{iframeFullscreen ? "⤡" : "⛶"}</button></div></div><iframe className="fetch-iframe" src={message.iframeUrl} title={t("fetch.frameTitle", {
         url: message.iframeUrl
-      })} sandbox="allow-scripts allow-same-origin allow-forms allow-popups" loading="lazy" data-testid="fetch-iframe" /></div> : null}{evidence.length ? <div className="evidence-list">{evidence.map(item => <span key={item}>{item}</span>)}</div> : null}{thinkingSteps.length ? <div className="thinking-steps"><strong>{t("message.thinking")}</strong><ol>{thinkingSteps.map(item => <li key={item}>{item}</li>)}</ol></div> : null}{diagnosticsSteps.length ? <div className="diagnostics-steps" data-testid="diagnostics-steps"><strong>{t("message.diagnosticsSteps")}</strong><ol className="diagnostics-step-list">{diagnosticsSteps.map((entry, index) => <li key={`${entry.step}-${index}`} className="diagnostics-step"><details className="diagnostics-detail" data-testid="diagnostics-step" data-step={entry.step}><summary><span className="diagnostics-step-name">{entry.formalization ? t("message.formalization") : entry.step}</span><span className="diagnostics-step-summary">{entry.formalization ? truncateDiagnosticDetail(entry.formalization.tuple) : truncateDiagnosticDetail(entry.detail)}</span></summary><div className="diagnostics-detail-body">{entry.formalization ? <FormalizationView formalization={entry.formalization} t={t} /> : <pre className="diagnostics-payload">{formatDiagnosticPayload(entry.detail)}</pre>}</div></details></li>)}</ol></div> : null}{diagnosticsToolCalls.length ? <div className="diagnostics-tools" data-testid="diagnostics-tools"><strong>{t("message.diagnosticsTools")}</strong><ol className="diagnostics-tool-list">{diagnosticsToolCalls.map((call, index) => <li key={`${call.tool || "tool"}-${index}`} className="diagnostics-tool"><details className="diagnostics-detail" data-testid="diagnostics-tool"><summary><span className="diagnostics-tool-name">{call.tool || "(tool)"}</span><span className="diagnostics-tool-summary">{summarizeToolCall(call)}</span></summary><div className="diagnostics-detail-body"><div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolInputs")}</span><pre className="diagnostics-payload">{formatDiagnosticPayload(call.inputs)}</pre></div><div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolOutputs")}</span><pre className="diagnostics-payload">{formatDiagnosticPayload(call.outputs)}</pre></div>{Array.isArray(call.steps) && call.steps.length > 0 ? <div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolReasoning")}</span><ol className="diagnostics-tool-reasoning">{call.steps.map((s, j) => <li key={`${call.tool}-step-${j}`}>{`${s.step}: ${s.detail}`}</li>)}</ol></div> : null}</div></details></li>)}</ol></div> : null}{diagnosticsPayload ? <DiagnosticsHttpPanel providers={diagnosticsProviders} exchanges={diagnosticsHttp} t={t} /> : null}{reportIssueUrl ? <div className="message-actions"><a href={reportIssueUrl} target="_blank" rel="noopener noreferrer">{reportLabel}</a></div> : null}</div></article>;
+      })} sandbox="allow-scripts allow-same-origin allow-forms allow-popups" loading="lazy" data-testid="fetch-iframe" /></div> : null}{evidence.length ? <div className="evidence-list">{evidence.map(item => <span key={item}>{item}</span>)}</div> : null}{thinkingSteps.length ? <div className="thinking-steps"><strong>{t("message.thinking")}</strong><ol>{thinkingSteps.map(item => <li key={item}>{item}</li>)}</ol></div> : null}{diagnosticsSteps.length ? <div className="diagnostics-steps" data-testid="diagnostics-steps"><strong>{t("message.diagnosticsSteps")}</strong><ol className="diagnostics-step-list">{diagnosticsSteps.map((entry, index) => <li key={`${entry.step}-${index}`} className="diagnostics-step"><details className="diagnostics-detail" data-testid="diagnostics-step" data-step={entry.step} data-level={overrides.get(thinkingStepKey(entry)) || entry.level || null} data-solver-level={entry.level || null} data-level-override={overrides.get(thinkingStepKey(entry)) || null} onContextMenu={event => handleStepContextMenu(event, entry.step)}><summary title={t("message.stepLevel.hint")}><span className="diagnostics-step-name">{entry.formalization ? t("message.formalization") : entry.step}</span><span className="diagnostics-step-summary">{entry.formalization ? truncateDiagnosticDetail(entry.formalization.tuple) : truncateDiagnosticDetail(entry.detail)}</span></summary><div className="diagnostics-detail-body">{entry.formalization ? <FormalizationView formalization={entry.formalization} t={t} /> : <pre className="diagnostics-payload">{formatDiagnosticPayload(entry.detail)}</pre>}</div></details></li>)}</ol><StepHierarchyMenu menu={stepMenu} currentLevel={stepMenu ? overrides.get(stepMenu.step) || (diagnosticsSteps.find(entry => thinkingStepKey(entry) === stepMenu.step) || {}).level || "" : ""} overridden={stepMenu ? overrides.has(stepMenu.step) : false} onSelect={handleStepLevelSelect} t={t} /></div> : null}{diagnosticsToolCalls.length ? <div className="diagnostics-tools" data-testid="diagnostics-tools"><strong>{t("message.diagnosticsTools")}</strong><ol className="diagnostics-tool-list">{diagnosticsToolCalls.map((call, index) => <li key={`${call.tool || "tool"}-${index}`} className="diagnostics-tool"><details className="diagnostics-detail" data-testid="diagnostics-tool"><summary><span className="diagnostics-tool-name">{call.tool || "(tool)"}</span><span className="diagnostics-tool-summary">{summarizeToolCall(call)}</span></summary><div className="diagnostics-detail-body"><div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolInputs")}</span><pre className="diagnostics-payload">{formatDiagnosticPayload(call.inputs)}</pre></div><div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolOutputs")}</span><pre className="diagnostics-payload">{formatDiagnosticPayload(call.outputs)}</pre></div>{Array.isArray(call.steps) && call.steps.length > 0 ? <div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolReasoning")}</span><ol className="diagnostics-tool-reasoning">{call.steps.map((s, j) => <li key={`${call.tool}-step-${j}`}>{`${s.step}: ${s.detail}`}</li>)}</ol></div> : null}</div></details></li>)}</ol></div> : null}{diagnosticsPayload ? <DiagnosticsHttpPanel providers={diagnosticsProviders} exchanges={diagnosticsHttp} t={t} /> : null}{reportIssueUrl ? <div className="message-actions"><a href={reportIssueUrl} target="_blank" rel="noopener noreferrer">{reportLabel}</a></div> : null}</div></article>;
 }
 
 // Issue #27: a VS Code-style collapsible sidebar section. When `collapsed` is
@@ -5998,7 +6392,8 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [prompt, setPrompt] = useState("");
   const [pending, setPending] = useState(false);
-  const [workerState, setWorkerState] = useState("wasm worker");
+  const [workerState, setWorkerState] = useState("loading worker");
+  const [workerReady, setWorkerReady] = useState(false);
   const [memoryStatus, setMemoryStatus] = useState("");
   const [composerMenuOpen, setComposerMenuOpen] = useState(false);
   const [attachments, setAttachments] = useState([]);
@@ -6007,6 +6402,7 @@ function App() {
     tools: [],
     concepts: [],
     responses: {},
+    interfaceCapabilities: [],
   });
   const initialPreferences = useRef(loadPreferences());
   const [uiLanguagePreference, setUiLanguagePreference] = useState(
@@ -6040,6 +6436,21 @@ function App() {
   const [minMessageAnimationMs, setMinMessageAnimationMs] = useState(
     normalizeAnimationBudgetMs(initialPreferences.current.minMessageAnimationMs),
   );
+  // Issue #672 (F4): hierarchy edits are stored as the append-only log itself,
+  // not as the resulting map. Keeping the events means an edit is a fact that
+  // happened ("the user demoted `calculator_eval` at this point"), and the map
+  // the UI reads is a projection recomputed from them — the same shape as the
+  // links/events model the rest of the system uses. It is deliberately
+  // renderer-local and session-scoped: this is a viewing preference about one
+  // person's trace, not something to write back into the message record.
+  const [stepLevelEvents, setStepLevelEvents] = useState([]);
+  const stepLevelOverrides = useMemo(
+    () => projectStepLevels(stepLevelEvents),
+    [stepLevelEvents],
+  );
+  const editStepLevel = useCallback((step, level) => {
+    setStepLevelEvents((events) => appendStepLevelEvent(events, step, level));
+  }, []);
   const [contextPanelWidth, setContextPanelWidth] = useState(
     normalizeContextPanelWidth(initialPreferences.current.contextPanelWidth),
   );
@@ -6157,6 +6568,15 @@ function App() {
     normalizeAssistantName(initialPreferences.current.assistantName),
   );
   const [desktopStatus, setDesktopStatus] = useState(null);
+  // Issue #672 (F2): the outcome of the desktop profile migration, so the user
+  // can see that their data was carried forward — and ask for another pass if
+  // something looks missing. `dataMigrationBusy` disables the replay button
+  // while a pass is in flight; `dataMigrationDismissed` hides the notice for the
+  // rest of the session once the user has acknowledged it.
+  const [dataMigration, setDataMigration] = useState(null);
+  const [dataMigrationBusy, setDataMigrationBusy] = useState(false);
+  const [dataMigrationDismissed, setDataMigrationDismissed] = useState(false);
+  const [desktopAgentStream, setDesktopAgentStream] = useState([]);
   // Issue #438 (follow-up): one-click start/stop of the prepared Docker
   // containers (Telegram bot + OpenAI-compatible server). `serviceStatus` holds
   // the latest snapshot from the desktop bridge; `serviceBusy` names the service
@@ -6409,6 +6829,52 @@ function App() {
     };
   }, []);
 
+  // Issue #672 (F2): read the startup migration result once. Web builds have no
+  // bridge and older desktop builds have no channel, so both are treated the
+  // same way — no notice at all.
+  useEffect(() => {
+    const bridge = desktopBridge();
+    if (!bridge || typeof bridge.dataMigrationStatus !== "function") {
+      return undefined;
+    }
+    let cancelled = false;
+    Promise.resolve()
+      .then(() => bridge.dataMigrationStatus())
+      .then((result) => {
+        if (!cancelled) setDataMigration(normalizeDataMigration(result));
+      })
+      .catch(() => {
+        // A migration we cannot report on is not worth interrupting boot for.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const handleReplayDataMigration = useCallback(() => {
+    const bridge = desktopBridge();
+    if (!bridge || typeof bridge.replayDataMigration !== "function") return;
+    setDataMigrationBusy(true);
+    Promise.resolve()
+      .then(() => bridge.replayDataMigration())
+      .then((result) => {
+        setDataMigration(normalizeDataMigration(result, { replayed: true }));
+      })
+      .catch((error) => {
+        setDataMigration(
+          normalizeDataMigration(
+            {
+              known: true,
+              reason: "failed",
+              error: error && error.message ? error.message : String(error),
+            },
+            { replayed: true },
+          ),
+        );
+      })
+      .finally(() => setDataMigrationBusy(false));
+  }, []);
+
   useEffect(() => {
     const bridge = desktopBridge();
     if (!bridge || typeof bridge.onUpdateStatus !== "function") {
@@ -6416,6 +6882,15 @@ function App() {
     }
     const unsubscribe = bridge.onUpdateStatus((status) => {
       setDesktopStatus((current) => mergeDesktopUpdateStatus(current, status));
+    });
+    return typeof unsubscribe === "function" ? unsubscribe : undefined;
+  }, []);
+
+  useEffect(() => {
+    const bridge = desktopBridge();
+    if (!bridge || typeof bridge.onAgentEvent !== "function") return undefined;
+    const unsubscribe = bridge.onAgentEvent((payload) => {
+      setDesktopAgentStream((current) => [...current.slice(-19), payload]);
     });
     return typeof unsubscribe === "function" ? unsubscribe : undefined;
   }, []);
@@ -6664,7 +7139,7 @@ function App() {
   }, [userContext]);
 
   useEffect(() => {
-    if (typeof window === "undefined" || !window.FormalAiSeed) return;
+    if (!workerReady || typeof window === "undefined" || !window.FormalAiSeed) return;
     let cancelled = false;
     window.FormalAiSeed.loadAll().then((loaded) => {
       if (cancelled) return;
@@ -6673,7 +7148,7 @@ function App() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [workerReady]);
 
   // Issue #27: on mount, hydrate the conversation list from the append-only
   // event log and restore the active thread's messages. Operates purely as a
@@ -7211,6 +7686,7 @@ function App() {
     worker.onmessage = (event) => {
       if (event.data.kind === "ready") {
         setWorkerState(event.data.mode);
+        setWorkerReady(true);
         return;
       }
 
@@ -7387,11 +7863,14 @@ function App() {
     // rewrites. The actual read+write transform is applied back to IndexedDB
     // when the answer returns (see handleMemoryOperation).
     let memory = [];
+    let memoryEvents = [];
     if (typeof window !== "undefined" && window.FormalAiMemory) {
       try {
+        memoryEvents = await window.FormalAiMemory.listEvents();
         memory = await window.FormalAiMemory.collectSearchableValues();
       } catch (_error) {
         memory = [];
+        memoryEvents = [];
       }
     }
     const prefs = {
@@ -7422,8 +7901,29 @@ function App() {
       assistantName: normalizeAssistantName(assistantNameRef.current),
     };
     const currentDesktopStatus = desktopStatusRef.current;
-    if (currentDesktopStatus && currentDesktopStatus.apiReady && currentDesktopStatus.apiBase) {
-      return requestDesktopAnswer(text, history, currentDesktopStatus, prefs).catch(() => {
+    let answerPromise;
+    if (currentDesktopStatus && currentDesktopStatus.activeEngine !== "out-of-box") {
+      const bridge = desktopBridge();
+      const requestId = `agent-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+      setDesktopAgentStream([]);
+      answerPromise = requestDesktopAgentProvider(bridge, {
+        requestId,
+        sessionKey: currentConversationRef.current || "new-conversation",
+        mode: modeRef.current,
+        prompt: text,
+        systemPrompt: desktopMessages(history, "")
+          .filter((entry) => entry.content.trim())
+          .map((entry) => `${entry.role}: ${entry.content}`).join("\n"),
+        grants: desktopToolRouterGrants(modeRef.current, desktopToolGrantsRef.current),
+      }).then((result) => chatAnswerFromAgentProviderResult(result) || {
+        intent: "agent_cli_error",
+        content: String(result && result.reason || "The selected desktop engine did not return an answer."),
+        evidence: [`desktop_engine:${currentDesktopStatus.activeEngine}`],
+        steps: [],
+        toolCalls: [],
+      });
+    } else if (currentDesktopStatus && currentDesktopStatus.apiReady && currentDesktopStatus.apiBase) {
+      answerPromise = requestDesktopAnswer(text, history, currentDesktopStatus, prefs).catch(() => {
         if (!worker) {
           return localFallbackAnswer(text, history, prefs);
         }
@@ -7437,26 +7937,32 @@ function App() {
             prefs,
             userContext: userContextRef.current,
             memory,
+            memoryEvents,
           });
         });
       });
-    }
-    if (!worker) {
-      return Promise.resolve(localFallbackAnswer(text, history, prefs));
-    }
-
-    return new Promise((resolve) => {
-      const requestId = `request-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-      pendingResponses.current.set(requestId, resolve);
-      worker.postMessage({
-        prompt: text,
-        requestId,
-        history,
-        prefs,
-        userContext: userContextRef.current,
-        memory,
+    } else if (!worker) {
+      answerPromise = Promise.resolve(localFallbackAnswer(text, history, prefs));
+    } else {
+      answerPromise = new Promise((resolve) => {
+        const requestId = `request-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+        pendingResponses.current.set(requestId, resolve);
+        worker.postMessage({
+          prompt: text,
+          requestId,
+          history,
+          prefs,
+          userContext: userContextRef.current,
+          memory,
+          memoryEvents,
+        });
       });
-    });
+    }
+    const answer = await answerPromise;
+    const bridge = desktopBridge();
+    return enhanceWithDesktopReadOnlyTool(answer, (tool, input) =>
+      requestDesktopToolCall(bridge, tool, input),
+    );
   }, []);
 
   // Issue #27: assign every appended event to the current conversation, lazily
@@ -7722,12 +8228,17 @@ function App() {
     const sentAt = new Date().toISOString();
     const demoFlag = isDemo ? true : undefined;
     if (operation.action === "append" && operation.statement) {
+      const learnedAssociation = operation.kind === "associative_research";
       await recordMemoryEvent({
-        kind: "message",
-        role: "user",
-        intent: "memory_write",
+        kind: learnedAssociation ? "associative_research" : "message",
+        role: learnedAssociation ? "system" : "user",
+        intent: learnedAssociation ? "associative_research" : "memory_write",
         content: operation.statement,
-        evidence: ["memory_write:natural_language"],
+        evidence: [
+          learnedAssociation
+            ? "memory_write:associative_research"
+            : "memory_write:natural_language",
+        ],
         sentAt,
         conversationId,
         conversationTitle,
@@ -7759,6 +8270,15 @@ function App() {
         conversationTitle,
         isDemo: demoFlag,
       });
+      refreshConversations();
+      return;
+    }
+    if (operation.action === "program") {
+      try {
+        await window.FormalAiMemory.applyProgramOperation(operation);
+      } catch (_error) {
+        return;
+      }
       refreshConversations();
     }
   }, [ensureConversation, refreshConversations]);
@@ -7860,7 +8380,7 @@ function App() {
 
   const requestTerminalCommandExecution = useCallback(
     async (command, answer) => {
-      const safeCommand = String(command || "").trim();
+      const safeCommand = desktopShellCommand(command, desktopStatusRef.current);
       if (!safeCommand) {
         appendAssistantMessage(answer);
         return;
@@ -8089,6 +8609,17 @@ function App() {
             ),
           );
           break;
+        case "followUpProbability":
+          setFollowUpProbability(
+            normalizeSliderPreference(
+              command.value,
+              PREFERENCE_DEFAULTS.followUpProbability,
+            ),
+          );
+          break;
+        case "toolbarIconPack":
+          setToolbarIconPack(normalizeToolbarIconPack(command.value));
+          break;
         case "location":
           setLocationPreference(String(command.value || "").slice(0, 80));
           break;
@@ -8246,7 +8777,9 @@ function App() {
       return;
     }
 
-    const interfaceCommand = hasAttachments ? null : recognizeInterfaceCommand(displayText);
+    const interfaceCommand = hasAttachments
+      ? null
+      : recognizeInterfaceCommand(displayText, seed.interfaceCapabilities);
     if (interfaceCommand) {
       const valueLabel = commandValueLabel(interfaceCommand);
       if (interfaceCommand.kind !== "report_issue") {
@@ -8500,6 +9033,9 @@ function App() {
     demoStatus,
     diagnosticsMode,
     userContext,
+    // Issue #839: the report document's own phrases come from the seed, so the
+    // web and the CLI file issues that read identically.
+    agentInfo: seed && seed.agentInfo ? seed.agentInfo : {},
   };
   const currentReportUrl = createIssueUrl(reportContext);
 
@@ -8582,6 +9118,19 @@ function App() {
   );
   const renderDesktopPermissionPanel = (testId) =>
     <DesktopPermissionPanel grants={desktopToolGrants} mode={mode} onDecision={setDesktopToolGrant} onGrantAll={grantAllAndRunPending} hasPendingTask={hasPendingAgentTask} testId={testId} t={t} />;
+  const handleDesktopEngineChange = async (event) => {
+    const bridge = desktopBridge();
+    if (!bridge || typeof bridge.setEngine !== "function") return;
+    try {
+      setDesktopStatus(normalizeDesktopStatus(await bridge.setEngine(event.target.value)));
+      setDesktopAgentStream([]);
+    } catch (error) {
+      setDesktopStatus((current) => normalizeDesktopStatus({
+        ...(current || {}),
+        apiError: error && error.message ? error.message : String(error),
+      }));
+    }
+  };
 
   return <main className={["app", `ui-skin-${uiSkin}`, `chat-style-${chatStyle}`, `composer-style-${composerStyle}`, `toolbar-icon-pack-${toolbarIconPack}`, desktopStatus ? "desktop-shell" : ""].filter(Boolean).join(" ")}><chakra.header className="topbar">
       <ToolbarButton className="mobile-menu-toggle topbar-menu-toggle" testId="mobile-menu-toggle" ariaLabel={mobileMenuOpen ? t("buttons.closeMenu") : t("buttons.openMenu")} title={mobileMenuOpen ? t("titles.menuClose") : t("titles.menuOpen")} onClick={() => setMobileMenuOpen(value => !value)} extraProps={{
@@ -8640,9 +9189,9 @@ function App() {
         "aria-pressed": demoMode
       }} />
       </chakra.div>
-    </chakra.header>{mobileMenuOpen ? <div className="mobile-menu-backdrop" data-testid="mobile-menu-backdrop" onClick={() => setMobileMenuOpen(false)} /> : null}<section className={`workspace${sidebarCollapsed ? " sidebar-collapsed" : ""}`} style={{
+    </chakra.header>{dataMigrationDismissed ? null : <DataMigrationNotice migration={dataMigration} busy={dataMigrationBusy} onReplay={handleReplayDataMigration} onDismiss={() => setDataMigrationDismissed(true)} t={t} />}{mobileMenuOpen ? <div className="mobile-menu-backdrop" data-testid="mobile-menu-backdrop" onClick={() => setMobileMenuOpen(false)} /> : null}<section className={`workspace${sidebarCollapsed ? " sidebar-collapsed" : ""}`} style={{
     "--context-panel-width": `${contextPanelWidth}px`
-  }}><aside className={`context-panel${mobileMenuOpen ? " is-mobile-open" : ""}${sidebarCollapsed ? " is-desktop-collapsed" : ""}`} data-testid="context-panel" aria-hidden={sidebarCollapsed && !mobileMenuOpen ? "true" : "false"} onClickCapture={handleSidebarSectionClickCapture}><div className="drawer-brand" data-testid="drawer-brand"><div className="drawer-brand-main"><span className="mark">{"FA"}</span><div className="drawer-brand-copy"><strong>{"formal-ai"}</strong><span className="brand-version">{appVersionLabel}</span></div></div><button type="button" className="drawer-close" data-testid="drawer-close" aria-label={t("buttons.closeMenu")} title={t("titles.menuClose")} onClick={() => setMobileMenuOpen(false)}><MenuGlyph open={true} /></button></div><SidebarSection title={t("sidebar.menu")} testId="drawer-menu-actions" collapsed={sidebarMenuCollapsed} onToggle={() => setSidebarMenuCollapsed(value => !value)} className="drawer-menu-section" bodyClassName="drawer-menu-body" children={<div className="drawer-action-list"><a className="drawer-action" data-testid="drawer-source-code" href={SOURCE_CODE_URL} target="_blank" rel="noopener noreferrer"><ToolbarIcon action="sourceCode" pack={toolbarIconPack} /><span>{t("buttons.sourceCode")}</span></a><a className="drawer-action" data-testid="drawer-report-issue" href={currentReportUrl} target="_blank" rel="noopener noreferrer"><ToolbarIcon action="reportIssue" pack={toolbarIconPack} /><span>{t("buttons.reportIssue")}</span></a><button type="button" className="drawer-action" data-testid="drawer-memory-export" onClick={handleExportMemory}><ToolbarIcon action="exportMemory" pack={toolbarIconPack} /><span>{t("buttons.exportMemory")}</span></button><button type="button" className="drawer-action" data-testid="drawer-memory-import" onClick={triggerImportMemory}><ToolbarIcon action="importMemory" pack={toolbarIconPack} /><span>{t("buttons.importMemory")}</span></button><button type="button" className="drawer-action" data-testid="drawer-memory-reset" onClick={handleResetMemory}><ToolbarIcon action="resetMemory" pack={toolbarIconPack} /><span>{t("buttons.resetMemory")}</span></button><button type="button" className="drawer-action" aria-pressed={diagnosticsMode} onClick={() => setDiagnosticsMode(value => !value)}><ToolbarIcon action="diagnostics" pack={toolbarIconPack} /><span>{diagnosticsMode ? t("buttons.diagnosticsOn") : t("buttons.diagnostics")}</span></button><div className="drawer-action drawer-mode-radio" data-testid="drawer-mode-radio" role="radiogroup" aria-label={t("titles.modeGroup")}>{MODE_OPTIONS.map(option => <button key={option} type="button" className={`mode-option mode-option-${option}${mode === option ? " is-active" : ""}`} data-testid={`drawer-mode-option-${option}`} data-mode={option} role="radio" aria-checked={mode === option} title={modeTitle(option)} onClick={() => setMode(option)}><ToolbarIcon action={option === "chat" ? "chat" : "agent"} pack={toolbarIconPack} /><span>{modeLabel(option)}</span></button>)}</div><button type="button" className="drawer-action" aria-pressed={demoMode} onClick={() => setDemoMode(value => !value)}><ToolbarIcon action="demo" pack={toolbarIconPack} /><span>{demoMode ? t("buttons.demoOn") : t("buttons.demo")}</span></button></div>} />{desktopStatus ? <SidebarSection title={desktopSurfaceLabel(desktopStatus)} testId="sidebar-desktop" collapsed={sidebarDesktopCollapsed} onToggle={() => setSidebarDesktopCollapsed(value => !value)} className="desktop-shell-section" children={<dl className="desktop-shell-panel" data-testid="desktop-shell-panel"><div><dt>{"Shell"}</dt><dd>{desktopStatus.shell}</dd></div><div><dt>{t("updates.currentVersion")}</dt><dd data-testid="desktop-app-version">{appVersionLabel}</dd></div><div><dt>{"API"}</dt><dd data-testid="desktop-api-base">{compactUrl(desktopStatus.apiBase)}</dd></div><div><dt>{"Network"}</dt><dd><a href={desktopStatus.graphUrl || "#"} target="_blank" rel="noopener noreferrer" data-testid="desktop-network-link">{compactUrl(desktopStatus.graphUrl)}</a></dd></div><div><dt>{"Memory"}</dt><dd data-testid="desktop-memory-bundle">{desktopStatus.memory}</dd></div><div><dt>{"Agent"}</dt><dd data-testid="desktop-agent-permission">{desktopAgentPermission}</dd></div><div><dt>{"Tool calls"}</dt><dd data-testid="desktop-tool-permission">{desktopToolPermission}</dd></div><div className="desktop-permission-row"><dt>{t("permissions.panel.rowLabel")}</dt><dd>{renderDesktopPermissionPanel("desktop-permission-panel-sidebar")}</dd></div>{updater ? <div className="desktop-update-row"><dt>{t("updates.title")}</dt><dd><div className="desktop-update-panel" data-testid="desktop-update-panel" data-state={updater.state}><span className="desktop-update-state" data-testid="desktop-update-state" role={updater.updateAvailable || updater.downloaded ? "status" : undefined}>{desktopUpdaterStateLabel(updater, t)}</span>{updater.state === "downloading" ? <progress className="desktop-update-progress" data-testid="desktop-update-progress" max="100" value={String(Math.round(updater.progressPercent || 0))} aria-label={t("updates.progress", {
+  }}><aside className={`context-panel${mobileMenuOpen ? " is-mobile-open" : ""}${sidebarCollapsed ? " is-desktop-collapsed" : ""}`} data-testid="context-panel" aria-hidden={sidebarCollapsed && !mobileMenuOpen ? "true" : "false"} onClickCapture={handleSidebarSectionClickCapture}><div className="drawer-brand" data-testid="drawer-brand"><div className="drawer-brand-main"><span className="mark">{"FA"}</span><div className="drawer-brand-copy"><strong>{"formal-ai"}</strong><span className="brand-version">{appVersionLabel}</span></div></div><button type="button" className="drawer-close" data-testid="drawer-close" aria-label={t("buttons.closeMenu")} title={t("titles.menuClose")} onClick={() => setMobileMenuOpen(false)}><MenuGlyph open={true} /></button></div><SidebarSection title={t("sidebar.menu")} testId="drawer-menu-actions" collapsed={sidebarMenuCollapsed} onToggle={() => setSidebarMenuCollapsed(value => !value)} className="drawer-menu-section" bodyClassName="drawer-menu-body" children={<div className="drawer-action-list"><a className="drawer-action" data-testid="drawer-source-code" href={SOURCE_CODE_URL} target="_blank" rel="noopener noreferrer"><ToolbarIcon action="sourceCode" pack={toolbarIconPack} /><span>{t("buttons.sourceCode")}</span></a><a className="drawer-action" data-testid="drawer-report-issue" href={currentReportUrl} target="_blank" rel="noopener noreferrer"><ToolbarIcon action="reportIssue" pack={toolbarIconPack} /><span>{t("buttons.reportIssue")}</span></a><button type="button" className="drawer-action" data-testid="drawer-memory-export" onClick={handleExportMemory}><ToolbarIcon action="exportMemory" pack={toolbarIconPack} /><span>{t("buttons.exportMemory")}</span></button><button type="button" className="drawer-action" data-testid="drawer-memory-import" onClick={triggerImportMemory}><ToolbarIcon action="importMemory" pack={toolbarIconPack} /><span>{t("buttons.importMemory")}</span></button><button type="button" className="drawer-action" data-testid="drawer-memory-reset" onClick={handleResetMemory}><ToolbarIcon action="resetMemory" pack={toolbarIconPack} /><span>{t("buttons.resetMemory")}</span></button><button type="button" className="drawer-action" aria-pressed={diagnosticsMode} onClick={() => setDiagnosticsMode(value => !value)}><ToolbarIcon action="diagnostics" pack={toolbarIconPack} /><span>{diagnosticsMode ? t("buttons.diagnosticsOn") : t("buttons.diagnostics")}</span></button><div className="drawer-action drawer-mode-radio" data-testid="drawer-mode-radio" role="radiogroup" aria-label={t("titles.modeGroup")}>{MODE_OPTIONS.map(option => <button key={option} type="button" className={`mode-option mode-option-${option}${mode === option ? " is-active" : ""}`} data-testid={`drawer-mode-option-${option}`} data-mode={option} role="radio" aria-checked={mode === option} title={modeTitle(option)} onClick={() => setMode(option)}><ToolbarIcon action={option === "chat" ? "chat" : "agent"} pack={toolbarIconPack} /><span>{modeLabel(option)}</span></button>)}</div><button type="button" className="drawer-action" aria-pressed={demoMode} onClick={() => setDemoMode(value => !value)}><ToolbarIcon action="demo" pack={toolbarIconPack} /><span>{demoMode ? t("buttons.demoOn") : t("buttons.demo")}</span></button></div>} />{desktopStatus ? <SidebarSection title={desktopSurfaceLabel(desktopStatus)} testId="sidebar-desktop" collapsed={sidebarDesktopCollapsed} onToggle={() => setSidebarDesktopCollapsed(value => !value)} className="desktop-shell-section" children={<dl className="desktop-shell-panel" data-testid="desktop-shell-panel">{desktopStatus.engineSelectionAvailable ? <div className="desktop-engine-row"><dt>{"Engine"}</dt><dd><select data-testid="desktop-engine-selector" aria-label="Desktop engine" value={desktopStatus.activeEngine} onChange={handleDesktopEngineChange}>{desktopStatus.engines.map(engine => <option key={engine.id} value={engine.id}>{engine.label}</option>)}</select></dd></div> : null}<div><dt>{"Shell"}</dt><dd>{desktopStatus.shell}</dd></div><div><dt>{t("updates.currentVersion")}</dt><dd data-testid="desktop-app-version">{appVersionLabel}</dd></div><div><dt>{"API"}</dt><dd data-testid="desktop-api-base">{compactUrl(desktopStatus.apiBase)}</dd></div><div><dt>{"Network"}</dt><dd><a href={desktopStatus.graphUrl || "#"} target="_blank" rel="noopener noreferrer" data-testid="desktop-network-link">{compactUrl(desktopStatus.graphUrl)}</a></dd></div><div><dt>{"Memory"}</dt><dd data-testid="desktop-memory-bundle">{desktopStatus.memory}</dd></div><div><dt>{"Agent"}</dt><dd data-testid="desktop-agent-permission">{desktopAgentPermission}</dd></div><div><dt>{"Tool calls"}</dt><dd data-testid="desktop-tool-permission">{desktopToolPermission}</dd></div><div className="desktop-permission-row"><dt>{t("permissions.panel.rowLabel")}</dt><dd>{renderDesktopPermissionPanel("desktop-permission-panel-sidebar")}</dd></div>{updater ? <div className="desktop-update-row"><dt>{t("updates.title")}</dt><dd><div className="desktop-update-panel" data-testid="desktop-update-panel" data-state={updater.state}><span className="desktop-update-state" data-testid="desktop-update-state" role={updater.updateAvailable || updater.downloaded ? "status" : undefined}>{desktopUpdaterStateLabel(updater, t)}</span>{updater.state === "downloading" ? <progress className="desktop-update-progress" data-testid="desktop-update-progress" max="100" value={String(Math.round(updater.progressPercent || 0))} aria-label={t("updates.progress", {
                 percent: Math.round(updater.progressPercent || 0)
               })} /> : null}<div className="desktop-update-actions"><button type="button" data-testid="desktop-update-check" disabled={!canCheckForUpdates} onClick={handleCheckForUpdates}>{updateBusy === "check" || updater && updater.state === "checking" ? t("updates.checking") : t("updates.check")}</button><button type="button" className="desktop-update-install" data-testid="desktop-update-install" disabled={!canInstallUpdate} onClick={handleInstallUpdate}>{updateBusy === "install" || updater && updater.state === "installing" ? t("updates.updating") : t("updates.update")}</button></div></div></dd></div> : null}<div className="desktop-vscode-row" data-testid="desktop-vscode-install-row"><dt>{t("vscodeInstall.title")}</dt><dd><div className="desktop-vscode-panel" data-testid="desktop-vscode-install-panel"><p className="desktop-vscode-summary">{t("vscodeInstall.summary")}</p><div className="desktop-vscode-actions"><button type="button" className="desktop-vscode-install" data-testid="desktop-vscode-install" disabled={vscodeInstallBusy} onClick={handleInstallVsCodeExtension}>{vscodeInstallBusy ? t("vscodeInstall.installing") : t("vscodeInstall.install")}</button></div>{vscodeInstallResult ? <p className={`desktop-vscode-status${vscodeInstallResult.ok ? " is-ok" : " is-error"}`} data-testid="desktop-vscode-install-status" role="status">{vscodeInstallStateLabel(vscodeInstallResult, t)}{vscodeInstallResult.ok || !vscodeInstallResult.reason ? "" : ` — ${vscodeInstallResult.reason}`}</p> : null}</div></dd></div></dl>} /> : null}{serviceStatus ? <SidebarSection title={t("services.title")} testId="sidebar-services" collapsed={sidebarServicesCollapsed} onToggle={() => setSidebarServicesCollapsed(value => !value)} className="desktop-services-section" children={<div className="desktop-services-panel" data-testid="desktop-services-panel">{serviceStatus.dockerAvailable === false ? <p className="desktop-services-note" data-testid="desktop-services-docker-missing">{t("services.dockerMissing")}</p> : null}{(Array.isArray(serviceStatus.services) ? serviceStatus.services : []).map(service => {
         const running = Boolean(service.running);
@@ -8688,15 +9237,15 @@ function App() {
         }} title={entry.label}>{entry.text}</button>)}</div>} />{seed.tools && seed.tools.length > 0 ? <SidebarSection title={t("sidebar.tools")} testId="sidebar-tools" collapsed={sidebarToolsCollapsed} onToggle={() => setSidebarToolsCollapsed(value => !value)} children={<div className="tool-registry" data-testid="tool-registry"><ul className="tool-list">{seed.tools.map(tool => {
             const displayTool = localizeTool(tool, uiLanguage);
             return <li key={tool.id} className={`tool tool-mode-${tool.mode || "thinking"}`} data-testid="tool-entry" data-tool-id={tool.id} data-tool-mode={tool.mode || "thinking"}><div className="tool-head"><strong>{displayTool.name || tool.id}</strong><span className="tool-mode">{tool.mode === "agent" ? t("toolMode.agent") : t("toolMode.thinking")}</span></div>{displayTool.description ? <p className="tool-desc">{displayTool.description}</p> : null}</li>;
-          })}</ul></div>} /> : null}{diagnosticsMode ? <SidebarSection title={t("sidebar.trace")} testId="sidebar-trace" collapsed={sidebarTraceCollapsed} onToggle={() => setSidebarTraceCollapsed(value => !value)} children={<dl className="trace-list"><div><dt>{t("trace.model")}</dt><dd>{"formal-ai"}</dd></div><div><dt>{t("trace.mode")}</dt><dd>{demoStatus}</dd></div><div><dt>{t("trace.intent")}</dt><dd>{lastAssistant?.intent ?? "none"}</dd></div><div><dt>{t("trace.data")}</dt><dd>{"data/source-index.lino"}</dd></div><div><dt>{t("trace.seedFiles")}</dt><dd>{Object.keys(seed.raw || {}).join(", ") || "(loading)"}</dd></div><div><dt>{t("trace.toolsLoaded")}</dt><dd>{String((seed.tools || []).length)}</dd></div><div><dt>{t("trace.conceptsLoaded")}</dt><dd>{String((seed.concepts || []).length)}</dd></div></dl>} /> : null}</aside><div className="context-resizer" data-testid="context-resizer" role="separator" aria-orientation="vertical" aria-label={t("titles.resizeSidebar")} aria-valuemin={CONTEXT_PANEL_MIN_WIDTH} aria-valuemax={contextPanelMaxWidth()} aria-valuenow={contextPanelWidth} tabIndex={0} title={t("titles.resizeSidebar")} onPointerDown={handleContextResizePointerDown} onKeyDown={handleContextResizeKeyDown} /><section className="chat-panel"><section className="messages" aria-live="polite" data-testid="message-list">{messages.map(message => <Message key={message.id} message={message} diagnosticsMode={diagnosticsMode} thinkingDetailLevel={thinkingDetailLevel} minMessageAnimationMs={minMessageAnimationMs} renderPermissionPanel={renderDesktopPermissionPanel} commandApprovals={commandApprovals} onApproveCommand={approveDesktopCommand} onDenyCommand={denyDesktopCommand} t={t} reportIssueUrl={shouldOfferMessageReport(message) ? createIssueUrl({
+          })}</ul></div>} /> : null}{diagnosticsMode ? <SidebarSection title={t("sidebar.trace")} testId="sidebar-trace" collapsed={sidebarTraceCollapsed} onToggle={() => setSidebarTraceCollapsed(value => !value)} children={<dl className="trace-list"><div><dt>{t("trace.model")}</dt><dd>{"formal-ai"}</dd></div><div><dt>{t("trace.mode")}</dt><dd>{demoStatus}</dd></div><div><dt>{t("trace.intent")}</dt><dd>{lastAssistant?.intent ?? "none"}</dd></div><div><dt>{t("trace.data")}</dt><dd>{"data/source-index.lino"}</dd></div><div><dt>{t("trace.seedFiles")}</dt><dd>{Object.keys(seed.raw || {}).join(", ") || "(loading)"}</dd></div><div><dt>{t("trace.toolsLoaded")}</dt><dd>{String((seed.tools || []).length)}</dd></div><div><dt>{t("trace.conceptsLoaded")}</dt><dd>{String((seed.concepts || []).length)}</dd></div></dl>} /> : null}</aside><div className="context-resizer" data-testid="context-resizer" role="separator" aria-orientation="vertical" aria-label={t("titles.resizeSidebar")} aria-valuemin={CONTEXT_PANEL_MIN_WIDTH} aria-valuemax={contextPanelMaxWidth()} aria-valuenow={contextPanelWidth} tabIndex={0} title={t("titles.resizeSidebar")} onPointerDown={handleContextResizePointerDown} onKeyDown={handleContextResizeKeyDown} /><section className="chat-panel"><section className="messages" aria-live="polite" data-testid="message-list">{messages.map(message => <Message key={message.id} message={message} diagnosticsMode={diagnosticsMode} thinkingDetailLevel={thinkingDetailLevel} stepLevelOverrides={stepLevelOverrides} onEditStepLevel={editStepLevel} minMessageAnimationMs={minMessageAnimationMs} renderPermissionPanel={renderDesktopPermissionPanel} commandApprovals={commandApprovals} onApproveCommand={approveDesktopCommand} onDenyCommand={denyDesktopCommand} t={t} reportIssueUrl={shouldOfferMessageReport(message) ? createIssueUrl({
           ...reportContext,
           focusMessage: message
-        }) : null} />)}{pending ? <PendingAssistantBubble t={t} /> : null}<div ref={transcriptEndRef} /></section><form className="composer" onSubmit={event => {
+        }) : null} />)}{pending && desktopAgentStream.length > 0 ? <div className="desktop-agent-stream" data-testid="desktop-agent-stream" role="status"><strong>{`${desktopStatus && desktopStatus.activeEngine || "agent"}:`}</strong><span>{desktopAgentEventLabel(desktopAgentStream[desktopAgentStream.length - 1])}</span></div> : null}{pending ? <PendingAssistantBubble t={t} /> : null}<div ref={transcriptEndRef} /></section><form className="composer" onSubmit={event => {
         event.preventDefault();
         send();
       }}><input ref={attachmentInputRef} type="file" multiple={true} style={{
           display: "none"
-        }} data-testid="composer-attachment-input" onChange={handleAttachFiles} />{demoMode ? <p className="composer-demo-hint" data-testid="composer-demo-hint">{t("composer.demoHint.before")}<ToolbarIcon action="demo" pack={toolbarIconPack} className="composer-demo-hint-icon" />{t("composer.demoHint.after")}</p> : null}{composerMenuOpen ? <div className="composer-menu" data-testid="composer-menu"><button type="button" className="composer-menu-item" onClick={triggerAttachFiles}>{t("buttons.attachFiles")}</button><button type="button" className="composer-menu-item" onClick={handleExportMemory}>{t("buttons.exportMemory")}</button><button type="button" className="composer-menu-item" onClick={triggerImportMemory}>{t("buttons.importMemory")}</button><a className="composer-menu-item" href={currentReportUrl} target="_blank" rel="noopener noreferrer">{t("buttons.reportIssue")}</a></div> : null}<div className="composer-grid"><button type="button" className="composer-action-button" data-testid="composer-menu-toggle" aria-expanded={composerMenuOpen} aria-label={t("buttons.composerMenu")} title={t("titles.composerMenu")} onClick={() => setComposerMenuOpen(value => !value)}>{composerActionIcon}</button><textarea ref={composerInputRef} value={prompt} rows={1} placeholder={agentMode ? t("composer.placeholder.agent") : t("composer.placeholder.chat")} autoComplete="off" autoCorrect="off" autoCapitalize="sentences" enterKeyHint="send" inputMode="text" spellCheck={true} onChange={event => setPrompt(event.target.value)} onKeyDown={handleKeyDown} disabled={demoMode} data-testid="chat-composer-input" /><button className="send-button" type="submit" disabled={pending || demoMode || !prompt.trim() && attachments.length === 0} data-testid="chat-composer-submit">{pending ? <span className="send-spinner" aria-hidden="true" data-testid="send-spinner" /> : <span className="send-icon" aria-hidden="true">{"↑"}</span>}<span className="send-label">{pending ? t("composer.sending") : t("composer.send")}</span></button></div>{attachmentStatus ? <p className="composer-attachment-status" data-testid="composer-attachment-status">{attachmentStatus}</p> : null}</form></section></section></main>;
+        }} data-testid="composer-attachment-input" onChange={handleAttachFiles} />{demoMode ? <p className="composer-demo-hint" data-testid="composer-demo-hint">{t("composer.demoHint.before")}<ToolbarIcon action="demo" pack={toolbarIconPack} className="composer-demo-hint-icon" />{t("composer.demoHint.after")}</p> : null}{composerMenuOpen ? <div className="composer-menu" data-testid="composer-menu"><button type="button" className="composer-menu-item" onClick={triggerAttachFiles}>{t("buttons.attachFiles")}</button><button type="button" className="composer-menu-item" onClick={handleExportMemory}>{t("buttons.exportMemory")}</button><button type="button" className="composer-menu-item" onClick={triggerImportMemory}>{t("buttons.importMemory")}</button><a className="composer-menu-item" href={currentReportUrl} target="_blank" rel="noopener noreferrer">{t("buttons.reportIssue")}</a></div> : null}<div className="composer-grid"><button type="button" className="composer-action-button" data-testid="composer-menu-toggle" aria-expanded={composerMenuOpen} aria-label={t("buttons.composerMenu")} title={t("titles.composerMenu")} onClick={() => setComposerMenuOpen(value => !value)}>{composerActionIcon}</button><textarea ref={composerInputRef} value={prompt} rows={1} placeholder={agentMode ? t("composer.placeholder.agent") : t("composer.placeholder.chat")} autoComplete="off" autoCorrect="off" autoCapitalize="sentences" enterKeyHint="send" inputMode="text" spellCheck={true} onChange={event => setPrompt(event.target.value)} onKeyDown={handleKeyDown} disabled={demoMode || !workerReady} data-testid="chat-composer-input" /><button className="send-button" type="submit" disabled={pending || demoMode || !workerReady || !prompt.trim() && attachments.length === 0} data-testid="chat-composer-submit">{pending ? <span className="send-spinner" aria-hidden="true" data-testid="send-spinner" /> : <span className="send-icon" aria-hidden="true">{"↑"}</span>}<span className="send-label">{pending ? t("composer.sending") : t("composer.send")}</span></button></div>{attachmentStatus ? <p className="composer-attachment-status" data-testid="composer-attachment-status">{attachmentStatus}</p> : null}</form></section></section></main>;
 }
 
 function wait(milliseconds) {

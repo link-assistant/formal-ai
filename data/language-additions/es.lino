@@ -1,0 +1,55 @@
+language_candidate es
+  name Spanish
+  status registered
+  summary "The fifth language, already registered in 'data/seed/languages.lino'. This candidate file keeps the prompt corpus a non-Rust contributor supplies alongside a language: the prompts 'formal-ai learn cycle --frontier language-gap' replays to derive that language's request frames. Every query below is a surface already committed in 'data/seed/meanings-translation.lino', so the corpus adds request frames only — no new vocabulary is smuggled in with it."
+  detection
+    start 0x00C0
+    end 0x00FF
+    confidence_permille 1000
+  labels
+    apple manzana
+    greeting_hello hola
+  response greeting "¡Hola! ¿Cómo puedo ayudarte?"
+  response identity "Soy formal-ai, una IA simbólica y determinista."
+  operation uppercase "convertir a mayúsculas"
+  suite greetings pass
+  suite identity pass
+  suite concept_lookup pass
+  suite math_wrappers pass
+  suite operation_vocabulary pass
+  suite translation_round_trip pass
+  prompt
+    rank "1"
+    query "manzana"
+    variation "concept_lookup"
+    prompt "¿Qué es manzana?"
+  prompt
+    rank "2"
+    query "agua"
+    variation "concept_lookup"
+    prompt "¿Qué es agua?"
+  prompt
+    rank "3"
+    query "pan"
+    variation "concept_lookup"
+    prompt "¿Qué es pan?"
+  prompt
+    rank "4"
+    query "gracias"
+    variation "concept_lookup"
+    prompt "¿Qué es gracias?"
+  prompt
+    rank "1"
+    query "manzana"
+    variation "tell_me_about"
+    prompt "Cuéntame sobre manzana."
+  prompt
+    rank "2"
+    query "agua"
+    variation "tell_me_about"
+    prompt "Cuéntame sobre agua."
+  prompt
+    rank "3"
+    query "pan"
+    variation "tell_me_about"
+    prompt "Cuéntame sobre pan."

@@ -1,0 +1,75 @@
+{
+  "entities": {
+    "Q23397": {
+      "type": "item",
+      "id": "Q23397",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "lake"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "озеро"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "झील"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "湖泊"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "body of relatively still water, localized in a basin"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "естественный водоём"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "हिराकुद"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "水体类型"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "lakes"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "озёра"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "सरोवर"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "湖"
+          },
+          {
+            "language": "zh",
+            "value": "潭"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

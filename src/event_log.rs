@@ -418,6 +418,9 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "language_from" => format!("language_from:{}", event.payload),
             "language_to" => format!("language_to:{}", event.payload),
             "definition_merge:language" => format!("definition_merge:language:{}", event.payload),
+            "definition_merge:source_declared" => {
+                format!("definition_merge:source_declared:{}", event.payload)
+            }
             "meaning" => format!("meaning:{}", event.payload),
             "translation_gap" => format!("translation_gap:{}", event.payload),
             "wikidata" => format!("wikidata:{}", event.payload),
@@ -441,6 +444,17 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "formalization:raw" => format!("formalization:raw:{}", event.payload),
             "formalization_unresolved" => {
                 format!("formalization_unresolved:{}", event.payload)
+            }
+            // Issue #661 (R384): each accepted interpretation's posterior weight,
+            // surfaced verbatim (`formalization:<i> weight=<p> <summary>`) so a
+            // consumer can read every formalized statement as a weighted claim and
+            // verify the weights sum to 1 across candidates. Trace-only.
+            "statement_weight" => format!("statement_weight:{}", event.payload),
+            // Issue #661 (R384): a detected clash between a new formalized
+            // requirement and a retained one. The id keys back to the event whose
+            // payload names both statements, the shared subject, and their weights.
+            "requirement_contradiction" => {
+                format!("requirement_contradiction:{}", event.id)
             }
             "intent_formalization" => format!("intent_formalization:{}", event.id),
             "intent_formalization_cache" => {
@@ -478,8 +492,14 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "web_search:request" => format!("web_search:request:{}", event.payload),
             "web_search:query_kind" => format!("web_search:query_kind:{}", event.payload),
             "web_search:provider" => format!("web_search:provider:{}", event.payload),
+            "web_search:provider_planned" => {
+                format!("web_search:provider_planned:{}", event.payload)
+            }
             "web_search:language" => format!("web_search:language:{}", event.payload),
             "web_search:combined" => format!("web_search:combined:{}", event.payload),
+            "web_search:fusion_planned" => {
+                format!("web_search:fusion_planned:{}", event.payload)
+            }
             "web_search:rank" => format!("web_search:rank:{}", event.payload),
             "web_search:fused" => format!("web_search:fused:{}", event.payload),
             "web_search:disabled" => format!("web_search:disabled:{}", event.payload),
@@ -630,6 +650,26 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "source:http" => format!("source:http:{}", event.payload.replace(' ', ":")),
             "source_refresh" => format!("source_refresh:{}", event.payload),
             "skill_compile:package" => format!("skill_compile:package:{}", event.payload),
+            "skill_compile:procedure" => format!("skill_compile:procedure:{}", event.payload),
+            "skill_compile:procedure_artifact" => {
+                format!("skill_compile:procedure_artifact:{}", event.id)
+            }
+            "skill_compile:procedure_step" => format!(
+                "skill_compile:procedure_step:{}",
+                event.payload.replace(' ', ":")
+            ),
+            // Issue #674: the named gap is the evidence, so it travels in the link
+            // rather than being reduced to an opaque event id.
+            "skill_gap" => format!("skill_gap:{}", event.payload.replace(' ', "_")),
+            "program_gap" => format!("program_gap:{}", event.payload.replace(' ', "_")),
+            "memory_program_compiled" => format!("memory_program_compiled:{}", event.id),
+            "memory_program_execution" => format!("memory_program_execution:{}", event.id),
+            "skill_learning_proposal" => {
+                format!("skill_learning_proposal:{}", event.payload)
+            }
+            "skill_learning_proposal:artifact" => {
+                format!("skill_learning_proposal:artifact:{}", event.id)
+            }
             "compiled_skill:package" => format!("compiled_skill:package:{}", event.id),
             "compiled_skill:replay" => format!("compiled_skill:replay:{}", event.payload),
             "conflict:source_disagreement" => {

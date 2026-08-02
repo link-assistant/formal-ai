@@ -67,10 +67,8 @@ test.describe('Issue #338 - relational apple-box arithmetic', () => {
     await expect(page.locator('.status')).toContainText('wasm worker');
   });
 
-  test('reduces box relations to a total apple count across UI languages', async ({
-    page,
-  }) => {
-    for (const { language, name } of supportedUiLanguages) {
+  for (const { language, name } of supportedUiLanguages) {
+    test(`reduces box relations to a total apple count in ${name}`, async ({ page }) => {
       const preferences = preferencesForUiLanguage(language);
       await page.evaluate(
         ({ nextPreferences }) => {
@@ -103,6 +101,6 @@ test.describe('Issue #338 - relational apple-box arithmetic', () => {
       await expect(message, language).toContainText('there are 55 apples in total');
       await expect(message, language).not.toContainText('cannot answer');
       await expect(message, language).not.toContainText("I don't know how to answer");
-    }
-  });
+    });
+  }
 });

@@ -1,0 +1,27 @@
+self_ast_census
+  target src/gemini.rs
+  language rust
+  fidelity signature
+  byte_len 11519
+  line_count 328
+  content_id source_module_3a72b7d5cd915cac
+  symbol_count 18
+  symbols
+    struct GeminiGenerateContentRequest 24 33
+    struct GeminiGenerationConfig 36 39
+    struct GeminiContent 42 47
+    struct GeminiPart 51 58
+    function to_chat_completion_request 62 148
+    function text 152 159
+    function gemini_role_to_chat_role 162 169
+    function gemini_tools_to_openai 171 189
+    function hosted_gemini_tool 191 196
+    function gemini_function_declaration_to_openai 198 209
+    function create_gemini_generate_content_response_with_solver_and_memory 212 222
+    function gemini_response_sse 225 227
+    function gemini_model_list 230 234
+    function gemini_model_metadata 237 249
+    function vertex_model_list 252 256
+    function vertex_model_metadata 258 276
+    function advertised_context_capacity 278 281
+    function gemini_response_from_chat_completion 283 328

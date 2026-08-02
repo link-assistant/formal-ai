@@ -1,0 +1,85 @@
+{
+  "entities": {
+    "Q49757": {
+      "type": "item",
+      "id": "Q49757",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "poet"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "поэт"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "कवि"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "诗人"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "person who writes poetry"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "человек, пишущий стихи"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जो व्यक्ति कविता लिखता है"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "編寫詩詞的人"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "poetess"
+          },
+          {
+            "language": "en",
+            "value": "bard"
+          },
+          {
+            "language": "en",
+            "value": "poetry writer"
+          },
+          {
+            "language": "en",
+            "value": "poetry author"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "поэтесса"
+          },
+          {
+            "language": "ru",
+            "value": "стихотворец"
+          },
+          {
+            "language": "ru",
+            "value": "поэты"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "詩人"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

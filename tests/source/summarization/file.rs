@@ -10,7 +10,7 @@ use std::path::Path;
 
 use meta_language::{LinkNetwork, LinkType, NetworkProjection, ParseConfiguration};
 
-use crate::links_format::sanitize_lino_value;
+use crate::links_format::flatten_lino_value;
 
 use super::{
     deformalize, formalize, formalize_markdown, summarize, Statement, StatementKind,
@@ -733,7 +733,7 @@ fn push_meta_language(out: &mut String, indent: usize, meta: &MetaLanguageFormal
 
 fn push_field(out: &mut String, indent: usize, name: &str, value: &str) {
     write_indent(out, indent);
-    let _ = writeln!(out, "{name} {}", sanitize_lino_value(value));
+    let _ = writeln!(out, "{name} {}", flatten_lino_value(value));
 }
 
 fn write_indent(out: &mut String, indent: usize) {

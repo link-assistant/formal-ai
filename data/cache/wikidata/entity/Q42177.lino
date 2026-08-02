@@ -1,0 +1,17 @@
+Q42177
+  aliases
+    en (beds)
+    hi ("पलङ्ग" "बिस्तर" "शय्या")
+    zh ("床笫" "床具" "牀")
+  descriptions
+    en "piece of furniture used as a place to sleep or relax"
+    hi "एक प्रकार का फ़र्नीचर जिसे शयन एवं लेटने हेतु प्रयोग किया जाता है"
+    ru "мебельное изделие используемое человеком для сна"
+  id Q42177
+  labels
+    en bed
+    hi "पलंग"
+    ru "кровать"
+    zh "床"
+  type item
+success 1

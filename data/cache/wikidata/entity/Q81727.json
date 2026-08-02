@@ -1,0 +1,63 @@
+{
+  "entities": {
+    "Q81727": {
+      "type": "item",
+      "id": "Q81727",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "cup"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "чашка"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "गिलास"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "杯"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "vessel for liquids"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "сосуд для жидкостей"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "可盛液体，顶部非闭合的容器"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "glass"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "杯子"
+          },
+          {
+            "language": "zh",
+            "value": "水杯"
+          },
+          {
+            "language": "zh",
+            "value": "浅杯"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

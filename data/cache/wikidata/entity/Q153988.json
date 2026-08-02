@@ -1,0 +1,49 @@
+{
+  "entities": {
+    "Q153988": {
+      "type": "item",
+      "id": "Q153988",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "bowl"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "миска"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "कटोरा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "碗"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "circular, open-top container frequently used as tableware"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "глубокая посуда в виде маленького таза или глубокого блюда"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "榶"
+          },
+          {
+            "language": "zh",
+            "value": "碗公"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,61 @@
+{
+  "entities": {
+    "Q76768": {
+      "type": "item",
+      "id": "Q76768",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "shirt"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "рубашка"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "क़मीज़"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "襯衫"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "fabric garment worn on the upper part of the body"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "вид одежды, относящийся к верхнему нательному белью"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "शरीर के ऊपरी भाग पर पहना जाने वाला कपड़ा"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Qamis"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "рубаха"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "शर्ट"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -75,6 +75,7 @@ function statusFromConfig(raw, options = {}) {
   const serverEnabled = cfg.serverEnabled && serverCapable;
   return {
     shell,
+    platform: String(options.platform || ""),
     mode: serverEnabled ? "server" : "in-process",
     apiBase: "",
     staticBase: "",
@@ -97,7 +98,10 @@ function statusFromConfig(raw, options = {}) {
 }
 
 // Promote a status to "server ready": mirror `desktop/main.cjs` (lines 283-290)
-// by deriving the chat/graph/trace URLs from the now-known `apiBase`.
+// by deriving the chat and links-network/trace URLs from the now-known
+// `apiBase`. The links-network URLs intentionally target the deprecated
+// `/v1/graph` alias so this client keeps exercising the backward-compatible
+// route (issue #664); `/v1/network` is the canonical successor.
 function withApiReady(status, apiBase) {
   const base = String(apiBase || "").replace(/\/+$/, "");
   return {
@@ -126,11 +130,12 @@ function withApiError(status, error) {
 
 // Environment for the spawned `formal-ai serve` process (mirrors
 // `desktop/main.cjs` `scrubbedEnvironment`).
-function serverEnv(raw) {
+function serverEnv(raw, options = {}) {
   const cfg = readConfig(raw);
   return {
     FORMAL_AI_HOST: cfg.host,
     FORMAL_AI_PORT: String(cfg.port),
+    FORMAL_AI_MEMORY_PATH: String(options.memoryPath || "").trim(),
   };
 }
 

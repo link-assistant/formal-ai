@@ -1,0 +1,49 @@
+{
+  "entities": {
+    "Q160464": {
+      "type": "item",
+      "id": "Q160464",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "button"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "пуговица"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "बटन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "鈕扣"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "small fastener used in clothing"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "предмет одежды"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "纽扣"
+          },
+          {
+            "language": "zh",
+            "value": "扣子"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

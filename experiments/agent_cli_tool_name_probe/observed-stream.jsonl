@@ -1,0 +1,228 @@
+{"type":"config","level":"info","timestamp":"2026-07-16T22:41:54.764Z","service":"default","source":"lino-arguments (CLI args > env vars > .lenv > defaults)","config":{"verbose":false,"dryRun":false,"generateTitle":false,"outputResponseModel":true,"summarizeSession":true,"retryOnRateLimits":true,"compactJson":true,"configContent":"{\"provider\":{\"formalai\":{\"name\":\"Mock\",\"npm\":\"@ai-sdk/openai-compatible\",\"options\":{\"baseURL\":\"http://127.0.0.1:8934/api/openai/v1\",\"apiKey\":\"local\"},\"models\":{\"formal-ai\":{\"name\":\"Mock\"}}}},\"model\":\"formalai/formal-ai\"}","disableAutoupdate":false,"disablePrune":false,"enableExperimentalModels":false,"disableAutocompact":false,"experimental":false,"experimentalWatcher":false,"retryTimeout":604800,"maxRetryDelay":1200,"minRetryInterval":30,"streamChunkTimeoutMs":120000,"streamStepTimeoutMs":600000,"mcpDefaultToolCallTimeout":120000,"mcpMaxToolCallTimeout":600000,"verifyImagesAtReadTool":true,"readOnly":false,"permissionMode":"auto"},"message":"Agent configuration resolved"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:54.785Z","service":"default","version":"0.25.0","command":"/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js --model formalai/formal-ai --permission-mode auto --output-format stream-json --compact-json --disable-stdin --prompt Write hi to a file called hi.txt","workingDirectory":"/tmp/tmp.0lio0TYF9F","scriptPath":"/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js","message":"Agent started"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:54.785Z","service":"default","directory":"/tmp/tmp.0lio0TYF9F","message":"creating instance"}
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:54.789Z","service":"project","directory":"/tmp/tmp.0lio0TYF9F","message":"fromDirectory"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:54.799Z","service":"project","status":"started","message":"git.rev-parse"}
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:54.825Z","service":"project","status":"completed","duration":26,"message":"git.rev-parse"}
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:54.849Z","service":"default","processArgv":["/home/box/.bun/bin/bun","/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js","--model","formalai/formal-ai","--permission-mode","auto","--output-format","stream-json","--compact-json","--disable-stdin","--prompt","Write hi to a file called hi.txt"],"bunArgv":["/home/box/.bun/bin/bun","/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js","--model","formalai/formal-ai","--permission-mode","auto","--output-format","stream-json","--compact-json","--disable-stdin","--prompt","Write hi to a file called hi.txt"],"cliModelArg":"formalai/formal-ai","yargsModel":"formalai/formal-ai","message":"model resolution: argv sources"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:54.850Z","service":"default","rawModel":"formalai/formal-ai","providerID":"formalai","modelID":"formal-ai","message":"using explicit provider/model"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:54.874Z","service":"provider","status":"started","message":"state"}
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:54.891Z","service":"config","path":"/home/box/.config/link-assistant-agent/config.json","message":"loading"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:54.898Z","service":"config","path":"/home/box/.config/link-assistant-agent/opencode.json","message":"loading"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:54.916Z","service":"config","path":"/home/box/.config/link-assistant-agent/opencode.jsonc","message":"loading"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:55.008Z","service":"models.dev","path":"/home/box/.cache/link-assistant-agent/models.json","age":133096,"message":"cache is fresh, triggering background refresh"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:55.009Z","service":"models.dev","file":{},"message":"refreshing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:55.521Z","service":"provider","message":"init"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:55.813Z","service":"claude-oauth","subscriptionType":"max","scopes":["user:file_upload","user:inference","user:mcp_servers","user:profile","user:sessions:claude_code"],"message":"loaded oauth credentials"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:55.813Z","service":"provider","source":"credentials file (max)","message":"using claude oauth credentials"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:55.826Z","service":"provider","providerID":"formal-ai","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:55.827Z","service":"provider","providerID":"formalai","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:55.827Z","service":"provider","providerID":"@link-assistant","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:55.827Z","service":"provider","providerID":"opencode","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:55.827Z","service":"provider","providerID":"kilo","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:55.827Z","service":"provider","providerID":"claude-oauth","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:55.827Z","service":"provider","status":"completed","duration":953,"message":"state"}
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:55.841Z","service":"provider","modelID":"big-pickle","providerID":"opencode","message":"resolved short model name (single match)"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:55.842Z","service":"provider","modelID":"minimax-m2.5-free","providerID":"kilo","message":"resolved short model name (single match)"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:55.842Z","service":"default","models":["opencode/big-pickle","kilo/minimax-m2.5-free","same"],"source":"default","message":"compaction models cascade configured"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:56.045Z","service":"server","method":"POST","path":"/session","message":"request"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:56.056Z","service":"server","status":"started","method":"POST","path":"/session","message":"request"}
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:56.082Z","service":"session","id":"ses_092e8048effeVAga04TVSQEduP","version":"agent-cli-1.0.0","projectID":"global","directory":"/tmp/tmp.0lio0TYF9F","title":"New session - 2026-07-16T22:41:56.082Z","time":{"created":1784241716082,"updated":1784241716082},"message":"created"}
+
+{"type":"session.created","level":"info","timestamp":"2026-07-16T22:41:56.083Z","service":"bus","message":"publishing"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-07-16T22:41:56.094Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:56.095Z","service":"server","status":"completed","duration":39,"method":"POST","path":"/session","message":"request"}
+{"type":"*","level":"info","timestamp":"2026-07-16T22:41:56.122Z","service":"bus","message":"subscribing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:56.152Z","service":"server","method":"POST","path":"/session/ses_092e8048effeVAga04TVSQEduP/message","message":"request"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:56.152Z","service":"server","status":"started","method":"POST","path":"/session/ses_092e8048effeVAga04TVSQEduP/message","message":"request"}
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:56.209Z","service":"server","status":"completed","duration":57,"method":"POST","path":"/session/ses_092e8048effeVAga04TVSQEduP/message","message":"request"}
+{"type":"message.updated","level":"info","timestamp":"2026-07-16T22:41:56.261Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-16T22:41:56.290Z","service":"bus","message":"publishing"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-07-16T22:41:56.329Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:56.348Z","service":"session.prompt","step":0,"sessionID":"ses_092e8048effeVAga04TVSQEduP","message":"loop"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:56.413Z","service":"session.prompt","hint":"Enable with --generate-title flag or AGENT_GENERATE_TITLE=true","message":"title generation disabled"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:56.416Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","sessionID":"ses_092e8048effeVAga04TVSQEduP","step":1,"message":"resolving model"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:56.442Z","service":"provider","providerID":"formalai","modelID":"formal-ai","message":"getModel"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:56.450Z","service":"provider","status":"started","providerID":"formalai","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:56.450Z","service":"provider","providerID":"formalai","pkg":"@ai-sdk/openai-compatible","globalVerboseFetchInstalled":true,"verboseAtCreation":false,"message":"provider SDK fetch chain configured"}
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:56.450Z","service":"provider","providerID":"formalai","pkg":"@ai-sdk/openai-compatible","message":"using bundled provider (no installation needed)"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:56.451Z","service":"provider","status":"completed","duration":1,"providerID":"formalai","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:56.460Z","service":"provider","providerID":"formalai","modelID":"formal-ai","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:56.461Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","resolvedModelID":"formal-ai","message":"model resolved successfully"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:56.461Z","service":"provider","providerID":"opencode","modelID":"big-pickle","message":"getModel"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:56.461Z","service":"provider","status":"started","providerID":"opencode","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:56.471Z","service":"provider","providerID":"opencode","pkg":"@ai-sdk/openai-compatible","globalVerboseFetchInstalled":true,"verboseAtCreation":false,"message":"provider SDK fetch chain configured"}
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:56.471Z","service":"provider","providerID":"opencode","pkg":"@ai-sdk/openai-compatible","message":"using bundled provider (no installation needed)"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:56.471Z","service":"provider","status":"completed","duration":10,"providerID":"opencode","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:56.472Z","service":"provider","providerID":"opencode","modelID":"big-pickle","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:59.703Z","service":"token","message":"loaded gpt-tokenizer (o200k_base)"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-16T22:41:59.714Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:41:59.902Z","service":"session.processor","message":"process"}
+
+{"type":"session.status","level":"info","timestamp":"2026-07-16T22:41:59.957Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-16T22:42:00.053Z","service":"bus","message":"publishing"}
+
+{"type":"init","timestamp":"2026-07-16T22:42:00.053Z","session_id":"ses_092e8048effeVAga04TVSQEduP"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-16T22:42:00.057Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-07-16T22:42:00.057Z","session_id":"ses_092e8048effeVAga04TVSQEduP","name":"unknown","input":{},"tool_use_id":"prt_f6d180af6001X5cxvxiqMY2iIR"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-16T22:42:00.059Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-07-16T22:42:00.059Z","session_id":"ses_092e8048effeVAga04TVSQEduP","name":"unknown","input":{},"tool_use_id":"prt_f6d180af6001X5cxvxiqMY2iIR"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-16T22:42:00.118Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-07-16T22:42:00.118Z","session_id":"ses_092e8048effeVAga04TVSQEduP","name":"unknown","input":{},"tool_use_id":"prt_f6d180af6001X5cxvxiqMY2iIR"}
+{"type":"log","level":"error","timestamp":"2026-07-16T22:42:00.125Z","service":"session.processor","error":{},"message":"process"}
+{"type":"log","level":"warn","timestamp":"2026-07-16T22:42:00.127Z","service":"session.processor","errorMessage":"undefined is not an object (evaluating 'usage.inputTokens.total')","providerID":"formalai","issue":"https://github.com/link-assistant/agent/issues/264","message":"provider returned invalid usage data; retrying as provider API error"}
+{"type":"log","level":"info","timestamp":"2026-07-16T22:42:00.128Z","service":"session.retry","attempt":1,"backoffDelayMs":2000,"maxCapMs":30000,"message":"no response headers, using exponential backoff with conservative cap"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:42:00.128Z","service":"session.processor","errorType":"APIError","attempt":1,"delay":2001,"elapsedRetryTime":0,"maxRetryTime":604800000,"message":"retrying"}
+
+{"type":"session.status","level":"info","timestamp":"2026-07-16T22:42:00.135Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-16T22:42:00.161Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:42:00.162Z","service":"session.summary","providerID":"opencode","modelID":"big-pickle","hint":"Using compaction model to reduce rate-limit pressure on main model","mainModelID":"formal-ai","message":"loading model for summarization"}
+
+AI SDK Warning System: To turn off warning logging, set the AI_SDK_LOG_WARNINGS global to false.
+{"type":"session.updated","level":"info","timestamp":"2026-07-16T22:42:00.261Z","service":"bus","message":"publishing"}
+
+{"type":"session.diff","level":"info","timestamp":"2026-07-16T22:42:00.264Z","service":"bus","message":"publishing"}
+
+{"type":"session.status","level":"info","timestamp":"2026-07-16T22:42:02.165Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-16T22:42:02.423Z","service":"bus","message":"publishing"}
+
+{"type":"init","timestamp":"2026-07-16T22:42:02.424Z","session_id":"ses_092e8048effeVAga04TVSQEduP"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-16T22:42:02.426Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-16T22:42:02.427Z","service":"bus","message":"publishing"}
+
+{"type":"message","timestamp":"2026-07-16T22:42:02.427Z","session_id":"ses_092e8048effeVAga04TVSQEduP","role":"assistant","content":[{"type":"text","text":"done"}]}
+{"type":"log","level":"error","timestamp":"2026-07-16T22:42:02.427Z","service":"session.processor","error":{},"message":"process"}
+{"type":"log","level":"warn","timestamp":"2026-07-16T22:42:02.428Z","service":"session.processor","errorMessage":"undefined is not an object (evaluating 'usage.inputTokens.total')","providerID":"formalai","issue":"https://github.com/link-assistant/agent/issues/264","message":"provider returned invalid usage data; retrying as provider API error"}
+{"type":"log","level":"info","timestamp":"2026-07-16T22:42:02.428Z","service":"session.retry","attempt":2,"backoffDelayMs":4000,"maxCapMs":30000,"message":"no response headers, using exponential backoff with conservative cap"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:42:02.428Z","service":"session.processor","errorType":"APIError","attempt":2,"delay":4006,"elapsedRetryTime":2301,"maxRetryTime":604800000,"message":"retrying"}
+
+{"type":"session.status","level":"info","timestamp":"2026-07-16T22:42:02.428Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:42:04.654Z","service":"session.summary","title":"Writing hi to hi.txt","message":"title"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-16T22:42:04.663Z","service":"bus","message":"publishing"}
+
+{"type":"session.status","level":"info","timestamp":"2026-07-16T22:42:06.443Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-16T22:42:06.518Z","service":"bus","message":"publishing"}
+
+{"type":"init","timestamp":"2026-07-16T22:42:06.518Z","session_id":"ses_092e8048effeVAga04TVSQEduP"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-16T22:42:06.533Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-16T22:42:06.533Z","service":"bus","message":"publishing"}
+
+{"type":"message","timestamp":"2026-07-16T22:42:06.533Z","session_id":"ses_092e8048effeVAga04TVSQEduP","role":"assistant","content":[{"type":"text","text":"done"}]}
+{"type":"log","level":"error","timestamp":"2026-07-16T22:42:06.534Z","service":"session.processor","error":{},"message":"process"}
+{"type":"log","level":"warn","timestamp":"2026-07-16T22:42:06.534Z","service":"session.processor","errorMessage":"undefined is not an object (evaluating 'usage.inputTokens.total')","providerID":"formalai","issue":"https://github.com/link-assistant/agent/issues/264","message":"provider returned invalid usage data; retrying as provider API error"}
+{"type":"log","level":"info","timestamp":"2026-07-16T22:42:06.548Z","service":"session.retry","attempt":3,"backoffDelayMs":8000,"maxCapMs":30000,"message":"no response headers, using exponential backoff with conservative cap"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:42:06.548Z","service":"session.processor","errorType":"APIError","attempt":3,"delay":8337,"elapsedRetryTime":6421,"maxRetryTime":604800000,"message":"retrying"}
+
+{"type":"session.status","level":"info","timestamp":"2026-07-16T22:42:06.548Z","service":"bus","message":"publishing"}
+
+{"type":"session.status","level":"info","timestamp":"2026-07-16T22:42:15.167Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-16T22:42:15.248Z","service":"bus","message":"publishing"}
+
+{"type":"init","timestamp":"2026-07-16T22:42:15.248Z","session_id":"ses_092e8048effeVAga04TVSQEduP"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-16T22:42:15.253Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-16T22:42:15.256Z","service":"bus","message":"publishing"}
+
+{"type":"message","timestamp":"2026-07-16T22:42:15.256Z","session_id":"ses_092e8048effeVAga04TVSQEduP","role":"assistant","content":[{"type":"text","text":"done"}]}
+{"type":"log","level":"error","timestamp":"2026-07-16T22:42:15.257Z","service":"session.processor","error":{},"message":"process"}
+{"type":"log","level":"warn","timestamp":"2026-07-16T22:42:15.257Z","service":"session.processor","errorMessage":"undefined is not an object (evaluating 'usage.inputTokens.total')","providerID":"formalai","issue":"https://github.com/link-assistant/agent/issues/264","message":"provider returned invalid usage data; retrying as provider API error"}
+{"type":"log","level":"info","timestamp":"2026-07-16T22:42:15.257Z","service":"session.retry","attempt":4,"backoffDelayMs":16000,"maxCapMs":30000,"message":"no response headers, using exponential backoff with conservative cap"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:42:15.257Z","service":"session.processor","errorType":"APIError","attempt":4,"delay":16181,"elapsedRetryTime":15130,"maxRetryTime":604800000,"message":"retrying"}
+
+{"type":"session.status","level":"info","timestamp":"2026-07-16T22:42:15.257Z","service":"bus","message":"publishing"}
+
+{"type":"session.status","level":"info","timestamp":"2026-07-16T22:42:31.445Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-16T22:42:31.482Z","service":"bus","message":"publishing"}
+
+{"type":"init","timestamp":"2026-07-16T22:42:31.483Z","session_id":"ses_092e8048effeVAga04TVSQEduP"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-16T22:42:31.488Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-16T22:42:31.489Z","service":"bus","message":"publishing"}
+
+{"type":"message","timestamp":"2026-07-16T22:42:31.489Z","session_id":"ses_092e8048effeVAga04TVSQEduP","role":"assistant","content":[{"type":"text","text":"done"}]}
+{"type":"log","level":"error","timestamp":"2026-07-16T22:42:31.489Z","service":"session.processor","error":{},"message":"process"}
+{"type":"log","level":"warn","timestamp":"2026-07-16T22:42:31.490Z","service":"session.processor","errorMessage":"undefined is not an object (evaluating 'usage.inputTokens.total')","providerID":"formalai","issue":"https://github.com/link-assistant/agent/issues/264","message":"provider returned invalid usage data; retrying as provider API error"}
+{"type":"log","level":"info","timestamp":"2026-07-16T22:42:31.490Z","service":"session.retry","attempt":5,"backoffDelayMs":30000,"maxCapMs":30000,"message":"no response headers, using exponential backoff with conservative cap"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:42:31.496Z","service":"session.processor","errorType":"APIError","attempt":5,"delay":31849,"elapsedRetryTime":31363,"maxRetryTime":604800000,"message":"retrying"}
+
+{"type":"session.status","level":"info","timestamp":"2026-07-16T22:42:31.496Z","service":"bus","message":"publishing"}
+
+{"type":"session.status","level":"info","timestamp":"2026-07-16T22:43:03.592Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-16T22:43:03.688Z","service":"bus","message":"publishing"}
+
+{"type":"init","timestamp":"2026-07-16T22:43:03.688Z","session_id":"ses_092e8048effeVAga04TVSQEduP"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-16T22:43:03.697Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-16T22:43:03.702Z","service":"bus","message":"publishing"}
+
+{"type":"message","timestamp":"2026-07-16T22:43:03.702Z","session_id":"ses_092e8048effeVAga04TVSQEduP","role":"assistant","content":[{"type":"text","text":"done"}]}
+{"type":"log","level":"error","timestamp":"2026-07-16T22:43:03.705Z","service":"session.processor","error":{},"message":"process"}
+{"type":"log","level":"warn","timestamp":"2026-07-16T22:43:03.705Z","service":"session.processor","errorMessage":"undefined is not an object (evaluating 'usage.inputTokens.total')","providerID":"formalai","issue":"https://github.com/link-assistant/agent/issues/264","message":"provider returned invalid usage data; retrying as provider API error"}
+{"type":"log","level":"info","timestamp":"2026-07-16T22:43:03.706Z","service":"session.retry","attempt":6,"backoffDelayMs":30000,"maxCapMs":30000,"message":"no response headers, using exponential backoff with conservative cap"}
+
+{"type":"log","level":"info","timestamp":"2026-07-16T22:43:03.706Z","service":"session.processor","errorType":"APIError","attempt":6,"delay":30480,"elapsedRetryTime":63579,"maxRetryTime":604800000,"message":"retrying"}
+
+{"type":"session.status","level":"info","timestamp":"2026-07-16T22:43:03.706Z","service":"bus","message":"publishing"}
+

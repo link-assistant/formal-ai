@@ -1,0 +1,16 @@
+Q132041
+  aliases
+    en (keys)
+    ru ("замковый ключ" "замочный ключ")
+    zh ("私钥" "鎖匙" "密钥" "钥" "公钥" "房門鑰匙" "房门钥匙")
+  descriptions
+    en "instrument that is used to operate a lock"
+    ru "средство для открывания и закрывания замка"
+  id Q132041
+  labels
+    en key
+    hi "चाबी"
+    ru "ключ"
+    zh "鑰匙"
+  type item
+success 1

@@ -1,0 +1,19 @@
+   Compiling formal-ai v0.295.1 (/tmp/formal-ai-716-red)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 43.16s
+     Running unittests src/lib.rs (/tmp/gh-issue-solver-1784156145581/target/debug/deps/formal_ai-dab23d244ea2d22f)
+
+running 1 test
+
+thread 'agentic_coding::command_reroute::issue_716_red_test::presentation_changes_must_not_disable_execution' (23352) panicked at src/agentic_coding/command_reroute.rs:271:9:
+rendered labels are not executable intent
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test agentic_coding::command_reroute::issue_716_red_test::presentation_changes_must_not_disable_execution ... FAILED
+
+failures:
+
+failures:
+    agentic_coding::command_reroute::issue_716_red_test::presentation_changes_must_not_disable_execution
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.25s
+
+error: test failed, to rerun pass `--lib`

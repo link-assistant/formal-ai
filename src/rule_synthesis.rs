@@ -17,15 +17,15 @@ use crate::program_coreference::looks_like_bare_program_artifact_follow_up;
 use crate::program_plan::ProgramPlan;
 use crate::solver::ConversationTurn;
 
-struct UnknownRuleConstruction {
-    rule: SelectedRule,
-    coreference_trace: String,
-    recovery_trace: String,
-    operation_hits: String,
-    request: String,
-    candidate: String,
-    verification: String,
-    plan: String,
+pub struct UnknownRuleConstruction {
+    pub rule: SelectedRule,
+    pub coreference_trace: String,
+    pub recovery_trace: String,
+    pub operation_hits: String,
+    pub request: String,
+    pub candidate: String,
+    pub verification: String,
+    pub plan: String,
 }
 
 pub fn try_construct_unknown_rule(
@@ -66,8 +66,41 @@ pub fn try_construct_unknown_rule(
     construction.rule
 }
 
+/// Resolve an unknown program follow-up from a previously approved lesson.
+///
+/// This is deliberately before fresh synthesis in the solver. The ledger
+/// supplies the approved modifier, while the active conversation supplies the
+/// current base task and language, so recall generalises across compatible
+/// program artifacts instead of replaying a stale answer string.
+pub fn try_recall_approved_rule(
+    rule: SelectedRule,
+    follow_up: &str,
+    history: &[ConversationTurn],
+    log: &mut EventLog,
+) -> SelectedRule {
+    if !matches!(rule, SelectedRule::Unknown) {
+        return rule;
+    }
+    let Some(lesson) = crate::learning_ledger::approved_lesson_for(follow_up) else {
+        return rule;
+    };
+    let Some(context) = active_program_context(history) else {
+        return rule;
+    };
+    let plan = crate::program_plan::lower(&context.task, std::slice::from_ref(&lesson.modifier));
+    let Some(spec) = program_spec(&plan.resolved_task, &context.language) else {
+        return rule;
+    };
+    log.append("learning_ledger_recall.lesson", lesson.lesson_id);
+    log.append("learning_ledger_recall.rule", lesson.rule_id);
+    log.append("learning_ledger_recall.modifier", lesson.modifier);
+    log.append("learning_ledger_recall.approved_by", lesson.reviewer);
+    log.append("write_program_plan", plan.links_notation());
+    SelectedRule::WriteProgram(spec)
+}
+
 #[must_use]
-fn construct_rule_from_unknown(
+pub fn construct_rule_from_unknown(
     follow_up: &str,
     history: &[ConversationTurn],
 ) -> Option<UnknownRuleConstruction> {

@@ -1,0 +1,15 @@
+Q446
+  aliases
+    en (wheels)
+  descriptions
+    en "circular item that rotates about an axial bearing; one of the six simple machines"
+    ru "движитель, круглый, свободно вращающийся или закреплённый на оси диск, позволяющий поставленному на него телу катиться, а не скользить"
+    zh "一种重要的机械装置"
+  id Q446
+  labels
+    en wheel
+    hi "चक्र"
+    ru "колесо"
+    zh "輪"
+  type item
+success 1

@@ -1,0 +1,6 @@
+multi_source_summary_honesty
+  record_type meta_invariant
+  capture "derive evidence only from exact captured bytes"
+  merge "deduplicate statements into one named context with reversible provenance"
+  verification "run disproof-first fact checking before presentation"
+  learning "render deterministic human-gated proposals from captures merge and audit"

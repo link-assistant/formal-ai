@@ -1,0 +1,23 @@
+{
+  "driver": "formal-ai in-repo agentic CLI",
+  "final_answer": "The `printf 'issue-749-driver=passed\\n'` command completed. Output:\n\n```text\nissue-749-driver=passed\n```",
+  "hit_turn_cap": false,
+  "server": "formal-ai OpenAI-compatible chat completions",
+  "steps": [
+    {
+      "arguments": {
+        "command": "printf 'issue-749-driver=passed\\n'"
+      },
+      "result": "issue-749-driver=passed\n",
+      "tool": "run_command"
+    }
+  ],
+  "task": "execute printf 'issue-749-driver=passed\\n'",
+  "tools_advertised": [
+    "web_search",
+    "web_fetch",
+    "write_file",
+    "run_command"
+  ],
+  "turns": 2
+}

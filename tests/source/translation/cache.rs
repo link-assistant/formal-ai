@@ -261,7 +261,11 @@ fn sanitize_segment(value: &str) -> String {
     if out.len() > 96 {
         // Avoid blowing past common filesystem name limits when a SPARQL
         // search returns a freakishly long title.
-        out.truncate(96);
+        let mut boundary = 96;
+        while !out.is_char_boundary(boundary) {
+            boundary -= 1;
+        }
+        out.truncate(boundary);
         out.push('~');
         out.push_str(&cache_key(value)[..8]);
     }

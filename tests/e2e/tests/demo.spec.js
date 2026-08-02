@@ -201,7 +201,9 @@ test.describe('formal-ai demo UI', () => {
     expect(body).not.toContain('## Reproduction Steps');
     // Issue #78: the dialog is now a single fenced code block with `U:` /
     // `A:` line prefixes instead of one Markdown subsection per message.
-    expect(body).toContain('Legend: `U` = user, `A` = agent.');
+    // Issue #839: the legend is the seeded one every surface shares, so it also
+    // names the `T` prefix the CLI uses for tool results.
+    expect(body).toContain('Legend: `U` = user, `A` = agent, `T` = tool result.');
     expect(body).toContain('U: Hello');
     expect(body).toContain('A: Hi');
     expect(body).not.toContain('reported');
@@ -869,19 +871,62 @@ test.describe('Issue #94: theme, localization, and report context', () => {
     await disableGreetingVariations(page);
     await page.goto('./');
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
-    await switchToManualMode(page);
+    const demoToggle = page.locator('.mode-toggle');
+    await expect(demoToggle).toContainText(/Demo on|Demo off|Демо/);
+    await demoToggle.click();
+    await expect(page.locator('[data-testid="demo-status"]')).toHaveText('Manual mode');
 
-    const input = page.locator('[data-testid="chat-composer-input"]');
+    // The behavior under test is report serialization, not solver throughput.
+    // Seed the append-only memory directly so parallel CI workers do not have
+    // to compete over 12 full WASM inference cycles just to build fixture data.
+    const seededEventCount = await page.evaluate(async () => {
+      const conversationId = 'report-url-long-dialog';
+      const longUnknownAnswer = [
+        'Я не могу ответить на это из локальных правил Links Notation.',
+        'Добавьте отсутствующее правило, чтобы этот диалог получил проверяемый ответ.',
+      ].join(' ').repeat(6);
+      const events = [];
+      for (let index = 0; index < 12; index += 1) {
+        const sentAt = new Date(Date.UTC(2026, 0, 1, 0, 0, index * 2));
+        events.push({
+          kind: 'message',
+          role: 'user',
+          content: `ва ва ${index + 1}`,
+          sentAt: sentAt.toISOString(),
+          conversationId,
+          conversationTitle: 'Long report URL fixture',
+        });
+        events.push({
+          kind: 'message',
+          role: 'assistant',
+          intent: 'unknown',
+          content: longUnknownAnswer,
+          sentAt: new Date(sentAt.getTime() + 1_000).toISOString(),
+          conversationId,
+          conversationTitle: 'Long report URL fixture',
+        });
+      }
+
+      await window.FormalAiMemory.clearEvents();
+      await window.FormalAiMemory.importEvents(events);
+      const preferences = window.FormalAiPreferences.load({});
+      window.FormalAiPreferences.save({
+        ...preferences,
+        currentConversationId: conversationId,
+        demoMode: false,
+      });
+      return (await window.FormalAiMemory.listEvents()).length;
+    });
+    expect(seededEventCount).toBe(24);
+    await page.reload();
+    const seededConversation = page.locator(
+      '.conversation-entry-button[data-conversation-id="report-url-long-dialog"]',
+    );
+    await expect(seededConversation).toContainText('24 msg', { timeout: 15_000 });
+    await seededConversation.click();
+
     const messages = page.locator('[data-testid="chat-message"]');
-
-    for (let i = 0; i < 12; i += 1) {
-      const baseline = await messages.count();
-      // Keep this as a multi-token unknown prompt so issue #500's bare-term
-      // web-search fallback does not turn the report-link fixture into search.
-      await input.fill('ва ва');
-      await page.locator('[data-testid="chat-composer-submit"]').click();
-      await expect(messages).toHaveCount(baseline + 2, { timeout: 15_000 });
-    }
+    await expect(messages).toHaveCount(24, { timeout: 15_000 });
 
     const reportLink = messages.last().locator('.message-actions a');
     await expect(reportLink).toHaveText(/Report missing rule|Report issue/);

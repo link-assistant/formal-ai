@@ -1,0 +1,29 @@
+promotion_run
+  id "promotion_run_ac401d8d5e0e52ac"
+  considered "1"
+  promoted "1"
+  rejected "0"
+  proposal
+    id "promotion_1685db5e0ccd1433"
+    source "agent_cli_observation:issue_656_unseen_modifier"
+    decision "promoted"
+    seed_file "data/seed/issue-656-agent-learned.lino"
+    summary "Promote an observed, verified modifier without a hardcoded proposal case."
+    gate
+      suite "issue_362_multilingual_coding_modification"
+      status "cleared"
+      evidence "benchmark:issue_362_multilingual_coding_modification:cleared:4/4@floor4@rate10000@promotion_gate_output_283963e5c430b24e"
+    gate
+      suite "issue_304_industry_permissive_slice"
+      status "cleared"
+      evidence "benchmark:issue_304_industry_permissive_slice:cleared:10/10@floor10@rate0@promotion_gate_output_57bd1fed13db6d1c"
+    gate
+      suite "formal_ai_unit_specifications"
+      status "cleared"
+      evidence "benchmark:formal_ai_unit_specifications:cleared:10/10@floor1@rate10000@promotion_gate_output_ac32e9ab152407f2"
+  branch_plan
+    branch "promotion/promotion_run_ac401d8d5e0e52ac"
+    command "git checkout -b promotion/promotion_run_ac401d8d5e0e52ac"
+    command "git add data/seed/issue-656-agent-learned.lino"
+    command "git commit -m \"promote 1 self-improvement proposal(s) (run promotion_run_ac401d8d5e0e52ac)\""
+    command "gh pr create --draft --fill  # human review remains the outer gate"

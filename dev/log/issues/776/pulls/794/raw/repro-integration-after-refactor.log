@@ -1,0 +1,13 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory
+   Compiling formal-ai v0.298.2 (/tmp/gh-issue-solver-1784437815860)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 54.48s
+     Running tests/integration/mod.rs (target/debug/deps/integration-71a2892d5b51bc0f)
+
+running 2 tests
+test issue_776_translation::proposition_survives_every_supported_language_round_trip ... ok
+test issue_776_translation::reported_source_first_prompt_translates_to_english ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 150 filtered out; finished in 0.70s

@@ -82,9 +82,12 @@ pub fn try_how_to_procedure(
         log.append("web_search:request", fallback_query.clone());
     }
     for provider in WEB_SEARCH_PROVIDERS {
-        log.append("web_search:provider", (*provider).to_owned());
+        log.append("web_search:provider_planned", (*provider).to_owned());
     }
-    log.append("web_search:combined", format!("rrf:k={WEB_SEARCH_RRF_K}"));
+    log.append(
+        "web_search:fusion_planned",
+        format!("rrf:k={WEB_SEARCH_RRF_K}"),
+    );
     log.append(
         "procedural_how_to:stage",
         "recursive_fetch_check".to_owned(),
@@ -450,9 +453,12 @@ fn record_mechanism_query(log: &mut EventLog, subject: &str) {
     }
     log.append("web_search:request", format!("how {subject} works"));
     for provider in WEB_SEARCH_PROVIDERS {
-        log.append("web_search:provider", (*provider).to_owned());
+        log.append("web_search:provider_planned", (*provider).to_owned());
     }
-    log.append("web_search:combined", format!("rrf:k={WEB_SEARCH_RRF_K}"));
+    log.append(
+        "web_search:fusion_planned",
+        format!("rrf:k={WEB_SEARCH_RRF_K}"),
+    );
     log.append(
         "mechanism_query:source_gate",
         "source_backed_mechanism_only".to_owned(),
@@ -487,7 +493,7 @@ fn render_mechanism_discovery_answer(subject: &str, language: Language) -> Strin
              then web search across {provider_summary}. If no source explains \
              the mechanism, it should ask for a source or a narrower term."
         ),
-        Language::English | Language::Unknown => format!(
+        _ => format!(
             "Mechanism discovery plan for `{subject}`.\n\n\
              I do not answer this from a memoized fact. The solver treats the \
              prompt as a question about how `{subject}` works, checks Wikipedia \
@@ -794,7 +800,7 @@ fn render_procedural_how_to_body(
                 task.task,
             )
         }
-        Language::English | Language::Unknown => {
+        _ => {
             let official_docs_gate = if is_install_procedure {
                 format!(
                     "For install tasks, the first source gate prefers the product's \

@@ -1,0 +1,18 @@
+Q22676
+  aliases
+    en (shoes "pair of shoes" footwear "foot gear")
+    hi ("जूता")
+    ru ("лёгкая обувь" "туфля")
+    zh ("鞋底" "鞋子" "屨" "履")
+  descriptions
+    en footwear
+    ru "вид обуви"
+    zh "保護人腳的一種物品"
+  id Q22676
+  labels
+    en shoe
+    hi "शू"
+    ru "туфли"
+    zh "鞋"
+  type item
+success 1

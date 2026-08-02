@@ -1,0 +1,19 @@
+{
+  "captured_at": "2026-07-30T20:35:43Z",
+  "issue": {
+    "number": 707,
+    "title": "E65: General computer-use without vision — files, shell, structured web as verified algorithmic plans",
+    "url": "https://github.com/link-assistant/formal-ai/issues/707",
+    "created_at": "2026-07-14T11:00:14Z",
+    "comments_reviewed": 0
+  },
+  "pull_request": {
+    "number": 882,
+    "url": "https://github.com/link-assistant/formal-ai/pull/882",
+    "base": "main",
+    "head": "issue-707-b408820084a2",
+    "inline_comments_reviewed": 0,
+    "conversation_comments_reviewed": 0,
+    "reviews_reviewed": 0
+  }
+}

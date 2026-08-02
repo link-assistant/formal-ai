@@ -1,0 +1,1 @@
+exactly alpha on its first line. Then use a second tool call to edit that same file and append beta on its second line. Finally read the file with a third tool call and report its exact contents.

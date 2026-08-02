@@ -6,11 +6,11 @@ use std::fs;
 use super::workflow_fixtures::*;
 
 #[test]
-fn demo_deploy_waits_for_release_ref_before_pages_upload() {
+fn pages_deploy_waits_for_release_ref_before_pages_upload() {
     let workflow = release_workflow();
     let auto_release = job_block(&workflow, "auto-release");
     let manual_release = job_block(&workflow, "manual-release");
-    let deploy_demo = job_block(&workflow, "deploy-demo");
+    let deploy_demo = job_block(&workflow, "deploy-pages");
 
     assert!(auto_release.contains("outputs:\n      pages_sha:"));
     assert!(auto_release.contains("Resolve Pages deploy ref"));
@@ -43,7 +43,8 @@ fn rust_script_install_steps_use_retry_wrapper() {
         workflow
             .matches("run: bash scripts/install-rust-script.sh")
             .count(),
-        8,
+        // +1 for the evidence-check job added for issue #808.
+        9,
         "each rust-script install step should use the retry wrapper"
     );
     assert!(install_script.contains("RUST_SCRIPT_INSTALL_ATTEMPTS"));
@@ -52,9 +53,9 @@ fn rust_script_install_steps_use_retry_wrapper() {
 }
 
 #[test]
-fn demo_deploy_uses_github_pages_workflow_artifact() {
+fn pages_deploy_uses_github_pages_workflow_artifact() {
     let workflow = release_workflow();
-    let deploy_demo = job_block(&workflow, "deploy-demo");
+    let deploy_demo = job_block(&workflow, "deploy-pages");
 
     assert!(deploy_demo.contains("pages: write"));
     assert!(deploy_demo.contains("id-token: write"));
@@ -73,18 +74,18 @@ fn demo_deploy_uses_github_pages_workflow_artifact() {
 #[test]
 fn pages_e2e_uses_deployment_output_url() {
     let workflow = release_workflow();
-    let deploy_demo = job_block(&workflow, "deploy-demo");
+    let deploy_demo = job_block(&workflow, "deploy-pages");
     let pages_e2e = job_block(&workflow, "test-e2e-pages");
 
     assert!(deploy_demo.contains("page_url: ${{ steps.deployment.outputs.page_url }}"));
-    assert!(pages_e2e.contains("needs.deploy-demo.outputs.page_url"));
+    assert!(pages_e2e.contains("needs.deploy-pages.outputs.page_url"));
     assert!(!pages_e2e.contains("PAGES_URL=https://link-assistant.github.io/formal-ai"));
 }
 
 #[test]
 fn pages_deploy_is_pinned_and_live_e2e_waits_for_matching_deployment() {
     let workflow = release_workflow();
-    let deploy_demo = job_block(&workflow, "deploy-demo");
+    let deploy_demo = job_block(&workflow, "deploy-pages");
     let pages_e2e = job_block(&workflow, "test-e2e-pages");
 
     assert!(
@@ -106,13 +107,14 @@ fn pages_deploy_is_pinned_and_live_e2e_waits_for_matching_deployment() {
         "live Pages e2e should poll for the deployed commit before Playwright starts"
     );
     assert!(
-        pages_e2e.contains("needs.deploy-demo.outputs.page_url"),
+        pages_e2e.contains("needs.deploy-pages.outputs.page_url"),
         "live Pages e2e should probe the resolved Pages URL"
     );
     assert!(
-        pages_e2e
-            .contains("PAGES_DEPLOY_SHA: ${{ needs.deploy-demo.outputs.pages_sha || github.sha }}"),
-        "live Pages e2e should wait for the same selected SHA that deploy-demo stamped"
+        pages_e2e.contains(
+            "PAGES_DEPLOY_SHA: ${{ needs.deploy-pages.outputs.pages_sha || github.sha }}"
+        ),
+        "live Pages e2e should wait for the same selected SHA that deploy-pages stamped"
     );
     assert!(
         !pages_e2e.contains("run: sleep 30"),
@@ -260,14 +262,19 @@ fn test_job_skips_non_code_changes() {
         "test job should run when the CI workflow itself changed"
     );
     assert!(
-        test.contains("github.event_name == 'push'")
+        !test.contains("github.event_name == 'push'")
             && test.contains("github.event_name == 'workflow_dispatch'"),
-        "test job should still always run on push and manual dispatch"
+        "issue #846 requires pushes to obey detect-changes while manual \
+         dispatch remains unconditional"
     );
     assert!(
-        test.contains("always() && !cancelled()"),
-        "test job needs always() so the skipped detect-changes dependency does \
-         not cascade on workflow_dispatch"
+        // Issue #808 / CI-CD-BEST-PRACTICES.md section 10: `always()` also runs
+        // the job when the *run* is cancelled, which is not what this gate wants.
+        // `!cancelled()` is enough to stop a skipped `detect-changes` from
+        // cascading -- any status-check function disables the auto-skip.
+        test.contains("!cancelled()") && !test.contains("always()"),
+        "test job needs !cancelled() so the skipped detect-changes dependency \
+         does not cascade on workflow_dispatch"
     );
 }
 
@@ -292,16 +299,237 @@ fn change_gated_jobs_never_depend_on_a_skipped_changelog() {
     }
 }
 
+/// Issue #812: both release jobs gated on `[lint, test, build]` alone, so a red
+/// `Secrets Scan` or E2E suite on `main` did not stop the crate, the Docker
+/// image and the GitHub Release from publishing.
+#[test]
+fn releases_do_not_publish_past_a_failing_secrets_scan_or_e2e_suite() {
+    let workflow = release_workflow();
+
+    for job_name in ["auto-release", "manual-release"] {
+        let job = job_block(&workflow, job_name);
+        let effective: String = job
+            .lines()
+            .filter(|line| !line.trim_start().starts_with('#'))
+            .collect::<Vec<_>>()
+            .join("\n");
+
+        for gate in ["secrets-scan", "test-e2e-local", "test-agent-cli-e2e"] {
+            // The acceptable results must be enumerated, not excluded. A job
+            // killed by its own `timeout-minutes` reports as 'cancelled', which
+            // a `!= 'failure'` guard would wave through -- run 29767811026 is
+            // the observed instance of exactly that result value.
+            assert!(
+                effective.contains(&format!(
+                    "(needs.{gate}.result == 'success' || needs.{gate}.result == 'skipped')"
+                )),
+                "{job_name} must gate on {gate} being success-or-skipped, so a \
+                 timed-out (cancelled) job cannot release (issue #812)"
+            );
+            assert!(
+                !effective.contains(&format!("needs.{gate}.result != 'failure'")),
+                "{job_name} must not use `!= 'failure'` for {gate}: a timeout \
+                 reports as 'cancelled' and would pass that check (issue #812)"
+            );
+            assert!(
+                effective.contains(gate),
+                "{job_name} must declare {gate} in needs: (issue #812)"
+            );
+        }
+    }
+}
+
+/// Issue #812: run 29767811026 reported `Test (ubuntu-latest)` as failed with
+/// every test passing -- the suite finished 1.1 s before `timeout-minutes: 15`
+/// killed the job. The budget must exceed the measured cost, and the step must
+/// say so out loud before the margin is eaten again.
+#[test]
+fn test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten() {
+    let workflow = release_workflow();
+    let test_job = job_block(&workflow, "test");
+
+    assert!(
+        test_job.contains("timeout-minutes: 25"),
+        "the test job budget must cover the ~14min measured cost (issue #812)"
+    );
+    assert!(
+        test_job.contains("TEST_BUDGET_SECONDS: 1500"),
+        "the warning threshold must be derived from the declared budget, and \
+         1500s is `timeout-minutes: 25` (issue #812)"
+    );
+    assert!(
+        test_job.contains("::warning title=Test suite is approaching its timeout"),
+        "creeping back toward the cap must be visible in the run summary rather \
+         than resurfacing as a mystery cancellation (issue #812)"
+    );
+}
+
+/// Run 30087447926 exhausted `/` twice while the test job rebuilt the package
+/// on top of its restored, target-heavy cache. The first attempt killed the
+/// runner worker; the second could not create a rustc temp directory and made
+/// the linker crash with SIGBUS.
+#[test]
+fn test_job_reclaims_runner_disk_before_restoring_the_target_cache() {
+    let workflow = release_workflow();
+    let test_job = job_block(&workflow, "test");
+    let cleanup_name = "- name: Free up runner disk space";
+    let cache_name = "- name: Restore cargo registry cache";
+
+    assert!(
+        test_job.contains(cleanup_name),
+        "the test job must reclaim disposable hosted-runner SDKs before a \
+         target-heavy build can exhaust the root filesystem"
+    );
+
+    let cleanup = workflow_step_block(test_job, "Free up runner disk space");
+    assert!(
+        cleanup.contains("run: bash scripts/free-runner-disk.sh"),
+        "the test job must use the repository's established, observable disk cleanup"
+    );
+    assert!(
+        test_job.find(cleanup_name) < test_job.find(cache_name),
+        "runner cleanup must happen before restoring the multi-gigabyte target cache"
+    );
+}
+
+/// Issue #812: nothing validated the pipeline definitions themselves, and
+/// `cargo clippy` ran without `-D warnings` while every lint in `[lints.clippy]`
+/// is set to `warn` -- so clippy printed findings and exited 0.
+#[test]
+fn lint_job_gates_on_workflow_shell_and_clippy_findings() {
+    let workflow = release_workflow();
+    let lint = job_block(&workflow, "lint");
+
+    assert!(
+        lint.contains("cargo clippy --lib --bins --tests --all-features -- -D warnings"),
+        "clippy must lint executable test targets and fail the job on findings"
+    );
+    assert!(
+        lint.contains("cargo check --examples --all-features"),
+        "examples must be compile-checked without linking every standalone binary (issue #534)"
+    );
+    assert!(
+        lint.contains("actionlint"),
+        "workflow definitions must be linted (issue #812)"
+    );
+    assert!(
+        lint.contains("shellcheck --severity=warning"),
+        "standalone shell scripts must be linted (issue #812)"
+    );
+}
+
+/// The real Agent CLI ships a network-backed `websearch` tool. A temporary
+/// outage of that provider used to abort both meaning-detail scenarios before
+/// Formal AI could observe the search result, making this repository's gate
+/// depend on an unrelated hosted service. Keep the complete research recipe,
+/// but execute its search and fetch through the repository-owned MCP fixture.
+#[test]
+fn meaning_detail_e2e_uses_the_local_research_fixture() {
+    let workflow = release_workflow();
+    let agent_e2e = job_block(&workflow, "test-agent-cli-e2e");
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let harness = fs::read_to_string(format!(
+        "{manifest_dir}/experiments/agent_cli_e2e/run_agent_cli.sh"
+    ))
+    .expect("Agent CLI E2E harness");
+    let fixture = fs::read_to_string(format!(
+        "{manifest_dir}/experiments/agent_cli_e2e/mock-meaning-mcp.mjs"
+    ))
+    .expect("meaning research MCP fixture");
+
+    for step_name in [
+        "Run agent CLI E2E — tomato meaning (search → fetch → write → verify)",
+        "Run agent CLI E2E — potato meaning (different wording, same recipe)",
+    ] {
+        let step = workflow_step_block(agent_e2e, step_name);
+        assert!(
+            step.contains("RESEARCH_MCP_FIXTURE: experiments/agent_cli_e2e/mock-meaning-mcp.mjs"),
+            "{step_name} must not depend on Agent's hosted websearch provider"
+        );
+    }
+    assert!(harness.contains("config.tools = { websearch: false, webfetch: false }"));
+    assert!(harness.contains("command: [\"node\", process.argv[2]]"));
+    for lexeme in ["L170542.json", "L3784.json"] {
+        assert!(
+            fixture.contains(&format!("sourcePath(\"{lexeme}\")")),
+            "fixture must serve the committed {lexeme} evidence"
+        );
+    }
+}
+
+/// Agent can otherwise launch its hosted `opencode/big-pickle` summarizer
+/// between tool turns. If that unrelated provider is unavailable, the client
+/// exits before returning the tool result to Formal AI.
+#[test]
+fn agent_cli_e2e_disables_hosted_session_summarization() {
+    let workflow = release_workflow();
+    let agent_e2e = job_block(&workflow, "test-agent-cli-e2e");
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let harness = fs::read_to_string(format!(
+        "{manifest_dir}/experiments/agent_cli_e2e/run_agent_cli.sh"
+    ))
+    .expect("Agent CLI E2E harness");
+
+    assert!(harness.contains(
+        "--no-summarize-session \\\n    --compaction-model same \\\n    --model \"formal-ai/formal-ai\""
+    ));
+    assert!(agent_e2e.contains("LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: \"false\""));
+
+    for script in ["run_issue_687.sh", "run_issue_771.sh", "run_issue_781.sh"] {
+        let research_harness =
+            fs::read_to_string(format!("{manifest_dir}/experiments/agent_cli_e2e/{script}"))
+                .expect("research E2E harness should be readable");
+
+        assert!(
+            research_harness.contains("mock-research-mcp.mjs")
+                && research_harness.contains("\"websearch\": false")
+                && research_harness.contains("\"webfetch\": false"),
+            "{script} must disable Agent's hosted research tools"
+        );
+    }
+}
+
+#[test]
+fn agent_cli_e2e_does_not_call_an_unrelated_summary_provider() {
+    // Run 29911330673 completed the self-AST recipe and wrote its validated
+    // artifact, then the external Agent CLI tried to summarize the session
+    // through `opencode/big-pickle`. That unrelated provider was unavailable,
+    // turning a successful formal-ai round-trip into exit code 1. Keep the
+    // harness focused on the provider under test and preserve its strict
+    // zero-exit assertion by disabling the optional post-run summary.
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let harness = fs::read_to_string(format!(
+        "{manifest_dir}/experiments/agent_cli_e2e/run_agent_cli.sh"
+    ))
+    .unwrap();
+
+    assert_eq!(
+        harness.matches("\n    --no-summarize-session \\\n").count(),
+        1,
+        "Agent CLI E2E must pass --no-summarize-session to the Agent invocation"
+    );
+}
+
 #[test]
 fn release_workflow_jobs_have_explicit_timeouts() {
     let workflow = release_workflow();
     let expected_timeouts = [
         ("detect-changes", 5),
         ("changelog", 10),
+        // Issue #808: pull-request gates for the trailer invariant, the Docker
+        // image and committed credentials.
+        ("evidence-check", 10),
+        ("docker-build", 60),
+        ("secrets-scan", 10),
         ("version-check", 5),
-        ("lint", 10),
-        ("test", 10),
-        ("coverage", 15),
+        // Issue #812: raised from 10; the job grew from ~3.3 to ~7.8 minutes.
+        ("lint", 15),
+        // Issue #812: raised from 15 after run 29767811026 was killed 1.1 s
+        // after the suite passed. See
+        // `test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten`.
+        ("test", 25),
+        // Issue #812: raised from 15; measured worst case on main was 14.1 min.
+        ("coverage", 25),
         ("build", 10),
         ("auto-release", 30),
         ("manual-release", 30),
@@ -312,9 +540,9 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // asserts the CLI writes the enriched meaning file. The extra headroom
         // over test-e2e-local absorbs a cold cargo build of the release binary.
         ("test-agent-cli-e2e", 20),
-        // deploy-demo also runs `cargo doc` for the /docs/api reference (issue
+        // deploy-pages also runs `cargo doc` for the /docs/api reference (issue
         // #479), which compiles the dependency tree on a cold cargo cache.
-        ("deploy-demo", 20),
+        ("deploy-pages", 20),
         ("test-e2e-pages", 15),
     ];
 
@@ -471,30 +699,30 @@ fn issue_479_landing_surfaces_source_code_as_a_big_button() {
 }
 
 /// Issue #479: the docs hub links to a Rust API reference at `/docs/api/`. The
-/// deploy-demo job generates it with `cargo doc` and copies it into the Pages
+/// deploy-pages job generates it with `cargo doc` and copies it into the Pages
 /// artifact — and the copy must run *after* stamping (rustdoc HTML carries no
 /// version placeholders, so copying post-stamp keeps the large generated tree
 /// out of the placeholder scan).
 #[test]
-fn deploy_demo_generates_api_docs_and_copies_them_after_stamping() {
+fn pages_deploy_generates_api_docs_and_copies_them_after_stamping() {
     let workflow = release_workflow();
-    let deploy = job_block(&workflow, "deploy-demo");
+    let deploy = job_block(&workflow, "deploy-pages");
 
     assert!(
         deploy.contains("cargo doc --no-deps --lib"),
-        "deploy-demo should build the Rust API docs with cargo doc"
+        "deploy-pages should build the Rust API docs with cargo doc"
     );
     assert!(
         deploy.contains("cp -R target/doc/. src/web/docs/api/"),
-        "deploy-demo should copy the generated docs into src/web/docs/api/"
+        "deploy-pages should copy the generated docs into src/web/docs/api/"
     );
 
     let stamp_pos = deploy
         .find("Stamp GitHub Pages artifact")
-        .expect("deploy-demo should stamp the Pages artifact");
+        .expect("deploy-pages should stamp the Pages artifact");
     let copy_pos = deploy
         .find("Copy Rust API docs into the Pages artifact")
-        .expect("deploy-demo should copy the API docs");
+        .expect("deploy-pages should copy the API docs");
     assert!(
         stamp_pos < copy_pos,
         "the API-docs copy must run after the stamp step so rustdoc HTML is not scanned for placeholders"
@@ -505,6 +733,48 @@ fn deploy_demo_generates_api_docs_and_copies_them_after_stamping() {
     assert!(
         deploy.contains("url=formal_ai/index.html"),
         "a redirect should point /docs/api/ at the crate root"
+    );
+}
+
+#[test]
+fn desktop_release_does_not_archive_cargo_dependencies_after_packaging() {
+    let workflow = desktop_release_workflow();
+    let build = job_block(&workflow, "build");
+    let install_sccache = workflow_step_block(build, "Cache Rust compiler outputs");
+    let enable_sccache = workflow_step_block(build, "Enable Rust compiler cache");
+
+    assert!(
+        !build.contains("uses: actions/cache@"),
+        "desktop builds must not register a post-job Cargo dependency archive: \
+         a cold Windows x64 build already completed and uploaded every artifact, \
+         then timed out compressing this redundant cache"
+    );
+    assert!(
+        build.contains("mozilla-actions/sccache-action@"),
+        "desktop builds should retain the compiler-output cache"
+    );
+    for step in [install_sccache, enable_sccache] {
+        assert!(
+            step.contains("if: runner.os != 'Windows'"),
+            "desktop builds must bypass sccache on Windows: wrapping rustc makes \
+             web-sys's generated feature-check command exceed CreateProcess's \
+             command-line limit (os error 206)"
+        );
+    }
+    assert!(
+        install_sccache.contains("version: v0.16.0"),
+        "desktop builds must pin the last known-good sccache version: v0.17.0 \
+         expands Rust response files and exceeds the Windows command-line limit"
+    );
+
+    let shared_setup = fs::read_to_string(format!(
+        "{}/.github/actions/setup-sccache/action.yml",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .expect("read shared sccache setup action");
+    assert!(
+        shared_setup.contains("version: v0.16.0"),
+        "the shared setup action must pin sccache instead of silently tracking its latest release"
     );
 }
 

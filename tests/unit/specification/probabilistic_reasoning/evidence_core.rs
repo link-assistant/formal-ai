@@ -242,18 +242,10 @@ fn probability_margin_feeds_clarify_vs_guess_policy() {
 
 #[test]
 fn offline_mode_uses_cached_probability_sources_and_skips_live_only_sources() {
-    let cached_source = ProbabilitySourceProvenance {
-        source_url: String::from("https://example.org/cached-evidence"),
-        fetched_at: String::from("2026-05-26T00:00:00Z"),
-        sha256: String::from("sha256:cached"),
-        cached: true,
-    };
-    let live_only_source = ProbabilitySourceProvenance {
-        source_url: String::from("https://example.org/live-evidence"),
-        fetched_at: String::from("2026-05-26T00:00:00Z"),
-        sha256: String::from("sha256:live"),
-        cached: false,
-    };
+    let cached_source =
+        captured_probability_source("https://fixture.invalid/cached-evidence", true);
+    let live_only_source =
+        captured_probability_source("https://fixture.invalid/live-evidence", false);
 
     let mut store = ProbabilityStore::new();
     store.record(

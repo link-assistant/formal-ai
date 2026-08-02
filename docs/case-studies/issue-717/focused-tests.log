@@ -1,0 +1,53 @@
+   Compiling formal-ai v0.289.0 (/tmp/gh-issue-solver-1784088123474)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 16.78s
+     Running tests/unit/mod.rs (target/debug/deps/unit-0d5c182732133188)
+
+running 6 tests
+test ci_cd::issue_717::checksum_attestations_use_the_lf_safe_current_action ... ok
+test ci_cd::issue_717::vscode_packaging_copies_the_repository_license ... ok
+test ci_cd::issue_717::artifact_download_and_expected_adhoc_signing_are_warning_free ... ok
+test ci_cd::issue_717::file_size_warning_scope_uses_the_event_diff_base ... ok
+test ci_cd::issue_717::coverage_upload_uses_a_node_24_compatible_action ... ok
+test ci_cd::issue_717::workflows_suppress_git_default_branch_hints_at_the_source ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 1571 filtered out; finished in 0.00s
+
+   Compiling formal-ai v0.289.0 (/tmp/gh-issue-solver-1784088123474)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 15.07s
+     Running tests/unit/mod.rs (target/debug/deps/unit-0d5c182732133188)
+
+running 10 tests
+test ci_cd::check_file_size::tests::check_directory_rejects_embedded_worker_lino_data ... ok
+test ci_cd::check_file_size::tests::check_directory_enforces_lino_limit ... ok
+test ci_cd::check_file_size::tests::classifies_warning_band_without_blocking ... ok
+test ci_cd::check_file_size::tests::warning_annotation_uses_github_actions_format ... ok
+test ci_cd::check_file_size::tests::classifies_hard_limit_violations ... ok
+test ci_cd::check_file_size::tests::warning_annotations_are_limited_to_changed_files ... ok
+test ci_cd::check_file_size::tests::check_directory_skips_generated_wikidata_cache ... ok
+test ci_cd::check_file_size::tests::check_directory_enforces_split_worker_js_limit ... ok
+test ci_cd::check_file_size::tests::check_directory_does_not_apply_worker_limit_to_legacy_js ... ok
+test ci_cd::check_file_size::tests::check_directory_reports_warning_and_violation_separately ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 1567 filtered out; finished in 0.02s
+
+   Compiling formal-ai v0.289.0 (/tmp/gh-issue-solver-1784088123474)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 17.36s
+     Running tests/unit/mod.rs (target/debug/deps/unit-0d5c182732133188)
+
+running 13 tests
+test issue_680_intent_routing::edit_second_step_reports_completion_not_a_repeated_call ... ok
+test issue_680_intent_routing::read_intent_is_not_stolen_by_the_write_router ... ok
+test issue_680_intent_routing::edit_intent_routes_to_edit_tool_in_any_phrasing ... ok
+test issue_680_intent_routing::shell_intent_without_run_tool_does_not_emit_run_call ... ok
+test issue_680_intent_routing::web_fetch_intent_routes_to_fetch_tool_in_any_phrasing ... ok
+test issue_680_intent_routing::shell_intent_routes_to_run_tool_in_any_phrasing ... ok
+test issue_680_intent_routing::web_search_is_deterministic ... ok
+test issue_680_intent_routing::write_intent_without_write_tool_does_not_emit_write_call ... ok
+test issue_680_intent_routing::web_intent_without_matching_tool_falls_through_to_prose ... ok
+test issue_680_intent_routing::write_intent_is_not_stolen_by_the_edit_router ... ok
+test issue_680_intent_routing::edit_intent_without_edit_tool_does_not_emit_edit_call ... ok
+test issue_680_intent_routing::web_search_intent_routes_to_search_tool_in_any_phrasing ... ok
+test issue_680_intent_routing::write_intent_routes_to_write_tool_in_any_phrasing ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 1564 filtered out; finished in 0.33s
+

@@ -1,0 +1,19 @@
+   Compiling formal-ai v0.301.0 (/tmp/gh-issue-solver-1784701857721)
+warning: function `meta_language_label_for_format` is never used
+   --> src/summarization/file.rs:429:4
+    |
+429 | fn meta_language_label_for_format(format: &str) -> Option<&'static str> {
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `formal-ai` (lib) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 12.07s
+     Running tests/integration/mod.rs (target/debug/deps/integration-849c47f0d6741291)
+
+running 3 tests
+test issue_822_context::verbose_is_global_default_and_silent_is_available ... ok
+test issue_822_context::general_json_converter_defaults_to_links_notation ... ok
+test issue_822_context::opencode_export_is_complete_native_read_only_and_deterministic ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 166 filtered out; finished in 1.58s

@@ -1,0 +1,19 @@
+   Compiling formal-ai v0.300.0 (/tmp/gh-issue-solver-1784506151226)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 46.64s
+     Running tests/integration/mod.rs (target/debug/deps/integration-1ed0922169c81daf)
+
+running 1 test
+
+thread 'issue_746_hosted_tools::responses_prefers_client_executed_tools_inside_an_mcp_namespace' (37639) panicked at tests/integration/issue_746_hosted_tools.rs:19:28:
+expected a real function_call, got {"created_at":1784510488,"evidence_links":[],"id":"resp_8f5f70107b21e1b5","model":"formal-ai","object":"response","output":[{"content":[{"text":"Я использую web_search для «мне совместимую зарядку для acer aspire 3 a325 45», чтобы проверить следующий шаг перед продолжением.","type":"output_text"}],"id":"msg_76ac4ca32cc8b925","role":"assistant","type":"message"},{"action":{"queries":["мне совместимую зарядку для acer aspire 3 a325 45"],"query":"мне совместимую зарядку для acer aspire 3 a325 45","type":"search"},"id":"ws_c46827865785ca4e","status":"completed","type":"web_search_call"}],"status":"completed","usage":{"input_tokens":56,"output_tokens":200,"total_tokens":256}}
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test issue_746_hosted_tools::responses_prefers_client_executed_tools_inside_an_mcp_namespace ... FAILED
+
+failures:
+
+failures:
+    issue_746_hosted_tools::responses_prefers_client_executed_tools_inside_an_mcp_namespace
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 162 filtered out; finished in 1.13s
+
+error: test failed, to rerun pass `--test integration`

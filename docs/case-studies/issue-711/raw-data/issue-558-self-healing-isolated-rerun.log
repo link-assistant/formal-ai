@@ -1,0 +1,9 @@
+   Compiling formal-ai v0.289.0 (/tmp/gh-issue-solver-1784064801495)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 28.47s
+     Running tests/integration/mod.rs (target/debug/deps/integration-d5434a9a5df16209)
+
+running 1 test
+test issue_558_self_healing::agent_mode_routes_self_healing_request_to_a_repair_case_write ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 87 filtered out; finished in 49.55s
+

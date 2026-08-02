@@ -1,0 +1,153 @@
+[2026-07-15T05:00:52Z INFO  rust_script] Arguments: Args { script: Some("scripts/detect-code-changes.rs"), script_args: [], expr: false, loop_: false, count: false, base_path: None, pkg_path: None, gen_pkg_only: false, cargo_output: false, clear_cache: false, debug: false, dep: [], extern_: [], force: false, unstable_features: [], build_kind: Normal, toolchain_version: None, wrapper: None }
+[2026-07-15T05:00:52Z INFO  rust_script] input: File("detect-code-changes", "/tmp/gh-issue-solver-1784088123474/scripts/detect-code-changes.rs", "#!/usr/bin/env rust-script\n//! Detect code changes for CI/CD pipeline\n//!\n//! This script detects what types of files have changed in the triggering event\n//! and outputs the results for use in GitHub Actions workflow conditions.\n//!\n//! Key behavior:\n//! - For PRs: detects GitHub Actions' synthetic merge commit and uses\n//!   HEAD^..HEAD^2 to cover the complete pull request.\n//! - For pushes: compares the event's `before` SHA against HEAD, covering every\n//!   commit in a multi-commit push.\n//! - Excludes certain folders and file types from \"code changes\" detection\n//!\n//! Excluded from code changes (don't require changelog fragments):\n//! - Markdown files (*.md) in any folder\n//! - changelog.d/ folder (changelog fragments)\n//! - docs/ folder (documentation)\n//! - experiments/ folder (experimental scripts)\n//! - examples/ folder (example scripts)\n//!\n//! Usage: rust-script scripts/detect-code-changes.rs\n//!\n//! Environment variables (set by GitHub Actions):\n//!   - GITHUB_EVENT_NAME: 'pull_request' or 'push'\n//!   - GITHUB_EVENT_BEFORE: pre-push SHA from the event payload\n//!\n//! Outputs (written to GITHUB_OUTPUT):\n//!   - rs-changed: 'true' if any .rs files changed\n//!   - toml-changed: 'true' if any .toml files changed\n//!   - mjs-changed: 'true' if any .mjs files changed\n//!   - docs-changed: 'true' if any .md files changed\n//!   - workflow-changed: 'true' if any .github/workflows/ files changed\n//!   - any-code-changed: 'true' if any code files changed (excludes docs, changelog.d, experiments, examples)\n//!\n//! ```cargo\n//! [dependencies]\n//! regex = \"1\"\n//! ```\n\nuse regex::Regex;\nuse std::env;\nuse std::fs;\nuse std::io::Write;\nuse std::process::Command;\n\nfn exec(command: &str, args: &[&str]) -> String {\n    match Command::new(command).args(args).output() {\n        Ok(output) => {\n            if output.status.success() {\n                String::from_utf8_lossy(&output.stdout).trim().to_string()\n            } else {\n                eprintln!(\"Error executing {} {:?}\", command, args);\n                eprintln!(\"{}\", String::from_utf8_lossy(&output.stderr));\n                String::new()\n            }\n        }\n        Err(e) => {\n            eprintln!(\"Failed to execute {} {:?}: {}\", command, args, e);\n            String::new()\n        }\n    }\n}\n\nfn set_output(name: &str, value: &str) {\n    if let Ok(output_file) = env::var(\"GITHUB_OUTPUT\") {\n        if let Ok(mut file) = fs::OpenOptions::new()\n            .create(true)\n            .append(true)\n            .open(&output_file)\n        {\n            let _ = writeln!(file, \"{}={}\", name, value);\n        }\n    }\n    println!(\"{}={}\", name, value);\n}\n\nfn is_merge_commit() -> bool {\n    let output = exec(\"git\", &[\"cat-file\", \"-p\", \"HEAD\"]);\n    output\n        .lines()\n        .filter(|line| line.starts_with(\"parent \"))\n        .count()\n        > 1\n}\n\nfn usable_before_sha(before: Option<&str>) -> Option<&str> {\n    before.filter(|sha| !sha.is_empty() && !sha.chars().all(|character| character == '0'))\n}\n\nfn comparison_for_event(\n    event_name: &str,\n    merge_commit: bool,\n    before: Option<&str>,\n) -> (String, String, &'static str) {\n    if event_name == \"pull_request\" && merge_commit {\n        return (\n            \"HEAD^\".to_string(),\n            \"HEAD^2\".to_string(),\n            \"complete pull request diff\",\n        );\n    }\n    if event_name == \"push\" {\n        if let Some(before) = usable_before_sha(before) {\n            return (before.to_string(), \"HEAD\".to_string(), \"complete push diff\");\n        }\n    }\n    (\n        \"HEAD^\".to_string(),\n        \"HEAD\".to_string(),\n        \"previous commit diff\",\n    )\n}\n\nfn get_changed_files() -> Vec<String> {\n    // GitHub Actions checks out a synthetic merge commit for pull_request\n    // events: HEAD is the merge commit, HEAD^ is the base branch, HEAD^2\n    // is the actual PR head. Comparing the two parents covers every commit in\n    // the PR, so a docs-only final commit cannot hide earlier code changes.\n    let event_name = env::var(\"GITHUB_EVENT_NAME\").unwrap_or_default();\n    let event_before = env::var(\"GITHUB_EVENT_BEFORE\").ok();\n    let merge_commit = is_merge_commit();\n    let (base, head, description) =\n        comparison_for_event(&event_name, merge_commit, event_before.as_deref());\n    if event_name == \"pull_request\" && merge_commit {\n        println!(\"Merge commit detected (pull_request event)\");\n    }\n    println!(\"Comparing {base} to {head} ({description})\");\n    let output = exec(\"git\", &[\"diff\", \"--name-only\", &base, &head]);\n\n    if output.is_empty() && exec(\"git\", &[\"rev-parse\", \"--verify\", &base]).is_empty() {\n        println!(\"{base} is not available, listing all files in HEAD\");\n        let output = exec(\"git\", &[\"ls-tree\", \"--name-only\", \"-r\", \"HEAD\"]);\n        return output\n            .lines()\n            .filter(|s| !s.is_empty())\n            .map(String::from)\n            .collect();\n    }\n\n    output\n        .lines()\n        .filter(|s| !s.is_empty())\n        .map(String::from)\n        .collect()\n}\n\nfn is_excluded_from_code_changes(file_path: &str) -> bool {\n    // Exclude markdown files in any folder\n    if file_path.ends_with(\".md\") {\n        return true;\n    }\n\n    // Exclude specific folders from code changes\n    let excluded_folders = [\"changelog.d/\", \"docs/\", \"experiments/\", \"examples/\"];\n\n    for folder in &excluded_folders {\n        if file_path.starts_with(folder) {\n            return true;\n        }\n    }\n\n    false\n}\n\nfn main() {\n    println!(\"Detecting file changes for CI/CD...\\n\");\n\n    let changed_files = get_changed_files();\n\n    println!(\"Changed files:\");\n    if changed_files.is_empty() {\n        println!(\"  (none)\");\n    } else {\n        for file in &changed_files {\n            println!(\"  {}\", file);\n        }\n    }\n    println!();\n\n    // Detect .rs file changes (Rust source)\n    let rs_changed = changed_files.iter().any(|f| f.ends_with(\".rs\"));\n    set_output(\"rs-changed\", if rs_changed { \"true\" } else { \"false\" });\n\n    // Detect .toml file changes (Cargo.toml, Cargo.lock, etc.)\n    let toml_changed = changed_files.iter().any(|f| f.ends_with(\".toml\"));\n    set_output(\"toml-changed\", if toml_changed { \"true\" } else { \"false\" });\n\n    // Detect .mjs file changes (scripts)\n    let mjs_changed = changed_files.iter().any(|f| f.ends_with(\".mjs\"));\n    set_output(\"mjs-changed\", if mjs_changed { \"true\" } else { \"false\" });\n\n    // Detect documentation changes (any .md file)\n    let docs_changed = changed_files.iter().any(|f| f.ends_with(\".md\"));\n    set_output(\"docs-changed\", if docs_changed { \"true\" } else { \"false\" });\n\n    // Detect workflow changes\n    let workflow_changed = changed_files\n        .iter()\n        .any(|f| f.starts_with(\".github/workflows/\"));\n    set_output(\n        \"workflow-changed\",\n        if workflow_changed { \"true\" } else { \"false\" },\n    );\n\n    // Detect code changes (excluding docs, changelog.d, experiments, examples folders, and markdown files)\n    let code_changed_files: Vec<&String> = changed_files\n        .iter()\n        .filter(|f| !is_excluded_from_code_changes(f))\n        .collect();\n\n    println!(\"\\nFiles considered as code changes:\");\n    if code_changed_files.is_empty() {\n        println!(\"  (none)\");\n    } else {\n        for file in &code_changed_files {\n            println!(\"  {}\", file);\n        }\n    }\n    println!();\n\n    // Check if any code files changed (.rs, .toml, .mjs, .cjs, .js, .lino, .yml,\n    // .yaml, or workflow files). .cjs covers the Electron desktop and VS Code\n    // extension host sources (extension.*.cjs, lib/*.cjs) so changes there still\n    // trigger lint/test. .lino covers seed lexicons and language resources such\n    // as src/web/i18n-catalog.lino: the language-change-parity guard watches\n    // those files, so editing one must run lint/test that enforces the guard.\n    let code_pattern =\n        Regex::new(r\"\\.(rs|toml|mjs|cjs|js|lino|yml|yaml)$|\\.github/workflows/\").unwrap();\n    let code_changed = code_changed_files.iter().any(|f| code_pattern.is_match(f));\n    set_output(\n        \"any-code-changed\",\n        if code_changed { \"true\" } else { \"false\" },\n    );\n\n    println!(\"\\nChange detection completed.\");\n}\n\n#[cfg(test)]\nmod tests {\n    use super::comparison_for_event;\n\n    #[test]\n    fn pull_requests_compare_the_complete_base_to_head_range() {\n        assert_eq!(\n            comparison_for_event(\"pull_request\", true, None),\n            (\n                \"HEAD^\".to_string(),\n                \"HEAD^2\".to_string(),\n                \"complete pull request diff\"\n            )\n        );\n    }\n\n    #[test]\n    fn pushes_compare_every_commit_in_the_event() {\n        assert_eq!(\n            comparison_for_event(\"push\", true, Some(\"before-sha\")),\n            (\n                \"before-sha\".to_string(),\n                \"HEAD\".to_string(),\n                \"complete push diff\"\n            ),\n            \"a pushed merge commit must not be mistaken for GitHub's synthetic PR merge\"\n        );\n    }\n\n    #[test]\n    fn missing_push_before_sha_falls_back_to_the_previous_commit() {\n        assert_eq!(\n            comparison_for_event(\"push\", false, Some(\"000000\")),\n            (\n                \"HEAD^\".to_string(),\n                \"HEAD\".to_string(),\n                \"previous commit diff\"\n            )\n        );\n    }\n}\n", "/tmp/gh-issue-solver-1784088123474/scripts")
+[2026-07-15T05:00:52Z INFO  rust_script] prelude_items: []
+[2026-07-15T05:00:52Z INFO  rust_script] id: "1bed82c12f501fd7d74ed420"
+[2026-07-15T05:00:52Z INFO  rust_script] pkg_path: "/home/box/.cache/rust-script/projects/1bed82c12f501fd7d74ed420"
+[2026-07-15T05:00:52Z INFO  rust_script] using_cache: true
+[2026-07-15T05:00:52Z INFO  rust_script::manifest] part_mani: {"dependencies": Table({"regex": String("1")})}
+[2026-07-15T05:00:52Z INFO  rust_script::manifest] source: None
+[2026-07-15T05:00:52Z INFO  rust_script::manifest] manifest: [[bin]]
+    name = "detect-code-changes_1bed82c12f501fd7d74ed420"
+    path = "/tmp/gh-issue-solver-1784088123474/scripts/detect-code-changes.rs"
+    
+    [dependencies]
+    regex = "1"
+    
+    [package]
+    authors = ["Anonymous"]
+    edition = "2021"
+    name = "detect-code-changes_1bed82c12f501fd7d74ed420"
+    version = "0.1.0"
+    
+    [profile.release]
+    strip = true
+    
+[2026-07-15T05:00:52Z INFO  rust_script] action: InputAction { cargo_output: false, force_compile: false, execute: true, pkg_path: "/home/box/.cache/rust-script/projects/1bed82c12f501fd7d74ed420", script_path: "/tmp/gh-issue-solver-1784088123474/scripts/detect-code-changes.rs", using_cache: true, toolchain_version: None, debug: false, manifest: "[[bin]]\nname = \"detect-code-changes_1bed82c12f501fd7d74ed420\"\npath = \"/tmp/gh-issue-solver-1784088123474/scripts/detect-code-changes.rs\"\n\n[dependencies]\nregex = \"1\"\n\n[package]\nauthors = [\"Anonymous\"]\nedition = \"2021\"\nname = \"detect-code-changes_1bed82c12f501fd7d74ed420\"\nversion = \"0.1.0\"\n\n[profile.release]\nstrip = true\n", script: None, build_kind: Normal, bin_name: "detect-code-changes_1bed82c12f501fd7d74ed420", original_script_path: Some("scripts/detect-code-changes.rs") }
+[2026-07-15T05:00:52Z INFO  rust_script] creating pkg dir...
+[2026-07-15T05:00:52Z INFO  rust_script] generating Cargo package...
+[2026-07-15T05:00:52Z DEBUG rust_script] overwrite_file("/home/box/.cache/rust-script/projects/1bed82c12f501fd7d74ed420/Cargo.toml", _)
+[2026-07-15T05:00:52Z DEBUG rust_script] .. files differ
+[2026-07-15T05:00:52Z INFO  rust_script] disarming pkg dir cleanup...
+[2026-07-15T05:00:52Z DEBUG rust_script] No old binary found
+Detecting file changes for CI/CD...
+
+Comparing 0b29af6ec538f1f8ab20087e4e9528aa808e3f89 to HEAD (complete push diff)
+Changed files:
+  .github/workflows/desktop-release.yml
+  .github/workflows/release.yml
+  changelog.d/20260715_060000_issue_717_ci_audit.md
+  docs/case-studies/issue-717/README.md
+  docs/case-studies/issue-717/agent-cli-attest-rerun.log
+  docs/case-studies/issue-717/agent-cli-attest-success.log
+  docs/case-studies/issue-717/agent-cli-attest.log
+  docs/case-studies/issue-717/agent-cli-codecov.log
+  docs/case-studies/issue-717/agent-cli-download.log
+  docs/case-studies/issue-717/agent-cli-live-run.log
+  docs/case-studies/issue-717/agent-cli-signing_notice.log
+  docs/case-studies/issue-717/agent-read-before-edit-integration-test.log
+  docs/case-studies/issue-717/agent-read-before-edit-test.log
+  docs/case-studies/issue-717/bun-install.log
+  docs/case-studies/issue-717/cargo-fmt-rerun.log
+  docs/case-studies/issue-717/cargo-test-all-features-rerun.log
+  docs/case-studies/issue-717/cargo-test-all-features.log
+  docs/case-studies/issue-717/clippy-rerun.log
+  docs/case-studies/issue-717/clippy.log
+  docs/case-studies/issue-717/desktop-npm-install.log
+  docs/case-studies/issue-717/desktop-tests.log
+  docs/case-studies/issue-717/e2e-npm-ci.log
+  docs/case-studies/issue-717/e2e-static-checks.log
+  docs/case-studies/issue-717/file-size-check.log
+  docs/case-studies/issue-717/file-size-policy-rerun.log
+  docs/case-studies/issue-717/focused-tests.log
+  docs/case-studies/issue-717/formal-ai-rebuild.log
+  docs/case-studies/issue-717/formal-ai-server.log
+  docs/case-studies/issue-717/raw-data/actions-attest-issue-440-comments.json
+  docs/case-studies/issue-717/raw-data/actions-attest-issue-440.json
+  docs/case-studies/issue-717/raw-data/actions-attest-latest-release.json
+  docs/case-studies/issue-717/raw-data/actions-attest-pr-443.json
+  docs/case-studies/issue-717/raw-data/actions-attest-subject.ts
+  docs/case-studies/issue-717/raw-data/codecov-latest-release.json
+  docs/case-studies/issue-717/raw-data/csharp-ai-driven-development-pipeline-template-file-tree.txt
+  docs/case-studies/issue-717/raw-data/desktop-release-runs.json
+  docs/case-studies/issue-717/raw-data/download-artifact-latest-release.json
+  docs/case-studies/issue-717/raw-data/formal-ai-ci-file-inventory.txt
+  docs/case-studies/issue-717/raw-data/issue-comments.json
+  docs/case-studies/issue-717/raw-data/issue.json
+  docs/case-studies/issue-717/raw-data/js-ai-driven-development-pipeline-template-file-tree.txt
+  docs/case-studies/issue-717/raw-data/main-release-runs.json
+  docs/case-studies/issue-717/raw-data/python-ai-driven-development-pipeline-template-file-tree.txt
+  docs/case-studies/issue-717/raw-data/recent-branch-runs.json
+  docs/case-studies/issue-717/raw-data/regression-before-fix.log
+  docs/case-studies/issue-717/raw-data/related-pr-122.json
+  docs/case-studies/issue-717/raw-data/related-pr-26.json
+  docs/case-studies/issue-717/raw-data/related-pr-391.json
+  docs/case-studies/issue-717/raw-data/related-pr-443.json
+  docs/case-studies/issue-717/raw-data/related-pr-480.json
+  docs/case-studies/issue-717/raw-data/related-pr-487.json
+  docs/case-studies/issue-717/raw-data/related-pr-5.json
+  docs/case-studies/issue-717/raw-data/related-pr-510.json
+  docs/case-studies/issue-717/raw-data/related-pr-524.json
+  docs/case-studies/issue-717/raw-data/related-pr-562.json
+  docs/case-studies/issue-717/raw-data/related-pr-583.json
+  docs/case-studies/issue-717/raw-data/related-pr-86.json
+  docs/case-studies/issue-717/raw-data/release-runs.json
+  docs/case-studies/issue-717/raw-data/rust-ai-driven-development-pipeline-template-file-tree.txt
+  docs/case-studies/issue-717/raw-data/rust-template-release.diff
+  docs/case-studies/issue-717/raw-data/templates/csharp-ai-driven-development-pipeline-template/latest-release-run.json
+  docs/case-studies/issue-717/raw-data/templates/csharp-ai-driven-development-pipeline-template/latest-release-run.log
+  docs/case-studies/issue-717/raw-data/templates/csharp-ai-driven-development-pipeline-template/latest-release-run.stderr
+  docs/case-studies/issue-717/raw-data/templates/csharp-ai-driven-development-pipeline-template/recent-runs.json
+  docs/case-studies/issue-717/raw-data/templates/js-ai-driven-development-pipeline-template/latest-release-run.json
+  docs/case-studies/issue-717/raw-data/templates/js-ai-driven-development-pipeline-template/latest-release-run.log
+  docs/case-studies/issue-717/raw-data/templates/js-ai-driven-development-pipeline-template/latest-release-run.stderr
+  docs/case-studies/issue-717/raw-data/templates/js-ai-driven-development-pipeline-template/recent-runs.json
+  docs/case-studies/issue-717/raw-data/templates/python-ai-driven-development-pipeline-template/latest-release-run.json
+  docs/case-studies/issue-717/raw-data/templates/python-ai-driven-development-pipeline-template/latest-release-run.log
+  docs/case-studies/issue-717/raw-data/templates/python-ai-driven-development-pipeline-template/latest-release-run.stderr
+  docs/case-studies/issue-717/raw-data/templates/python-ai-driven-development-pipeline-template/recent-runs.json
+  docs/case-studies/issue-717/raw-data/templates/rust-ai-driven-development-pipeline-template/latest-release-run.json
+  docs/case-studies/issue-717/raw-data/templates/rust-ai-driven-development-pipeline-template/latest-release-run.log
+  docs/case-studies/issue-717/raw-data/templates/rust-ai-driven-development-pipeline-template/latest-release-run.stderr
+  docs/case-studies/issue-717/raw-data/templates/rust-ai-driven-development-pipeline-template/recent-runs.json
+  docs/case-studies/issue-717/raw-data/upstream-csharp-report.md
+  docs/case-studies/issue-717/raw-data/upstream-js-report.md
+  docs/case-studies/issue-717/raw-data/upstream-python-report.md
+  docs/case-studies/issue-717/raw-data/upstream-rust-report.md
+  docs/case-studies/issue-717/rust-script-install.log
+  docs/case-studies/issue-717/terminal-vocabulary-check.log
+  docs/case-studies/issue-717/vscode-npm-install.log
+  docs/case-studies/issue-717/vscode-package.log
+  docs/case-studies/issue-717/vscode-tests.log
+  docs/case-studies/issue-717/web-build.log
+  docs/case-studies/issue-717/web-bundle-diff.log
+  docs/case-studies/issue-717/workflow-yaml-parse.log
+  scripts/check-file-size.rs
+  src/agentic_coding/intent_router.rs
+  tests/integration/issue_680_intent_routing.rs
+  tests/unit/ci-cd/issue_717.rs
+  tests/unit/ci-cd/mod.rs
+  tests/unit/issue_680_intent_routing.rs
+  vscode/.gitignore
+  vscode/scripts/prepare-resources.mjs
+
+rs-changed=true
+toml-changed=false
+mjs-changed=true
+docs-changed=true
+workflow-changed=true
+
+Files considered as code changes:
+  .github/workflows/desktop-release.yml
+  .github/workflows/release.yml
+  scripts/check-file-size.rs
+  src/agentic_coding/intent_router.rs
+  tests/integration/issue_680_intent_routing.rs
+  tests/unit/ci-cd/issue_717.rs
+  tests/unit/ci-cd/mod.rs
+  tests/unit/issue_680_intent_routing.rs
+  vscode/.gitignore
+  vscode/scripts/prepare-resources.mjs
+
+any-code-changed=true
+
+Change detection completed.

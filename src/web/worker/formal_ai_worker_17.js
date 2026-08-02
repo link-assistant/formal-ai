@@ -85,12 +85,24 @@ function queryBeforeNormalizedMarker(normalized, marker) {
 
 function extractSemanticWebSearchQuery(prompt, normalized) {
   const markers = webSearchMarkers();
-  const hasAction = containsAnySearchMarker(normalized, markers.actionMarkers);
-  if (!hasAction) return "";
-  const hasStrongAction = containsAnySearchMarker(
+  const imperativeCandidate = imperativeLeadCandidate(
     normalized,
-    markers.strongActionMarkers,
+    markers.imperativeLeadMarkers,
+    markers,
   );
+  const hasImperativeLead = Boolean(imperativeCandidate);
+  const hasAction =
+    hasImperativeLead || containsAnySearchMarker(normalized, markers.actionMarkers);
+  if (!hasAction) return "";
+  const hasStrongAction =
+    Boolean(
+      imperativeLeadCandidate(
+        normalized,
+        markers.strongImperativeLeadMarkers,
+        markers,
+      ),
+    ) ||
+    containsAnySearchMarker(normalized, markers.strongActionMarkers);
   if (!hasStrongAction && !containsAnySearchMarker(normalized, markers.signalMarkers)) {
     return "";
   }
@@ -106,13 +118,71 @@ function extractSemanticWebSearchQuery(prompt, normalized) {
       queryBeforeNormalizedMarker(normalized, marker);
     if (query) return query;
   }
-  for (const marker of markers.imperativeLeadMarkers) {
-    const query =
-      queryAfterRawMarker(prompt, marker) ||
-      queryAfterNormalizedMarker(normalized, marker);
+  return validSearchQuery(imperativeCandidate);
+}
+
+// A typed search action may open the prompt, follow a seeded question opener,
+// or follow a named external source. Arbitrary mid-sentence verbs remain prose.
+function imperativeLeadCandidate(normalized, leads, markers) {
+  const text = String(normalized || "");
+  for (const lead of leads) {
+    if (text.startsWith(lead)) return text.slice(lead.length);
+    const index = text.indexOf(lead);
+    if (index === -1) continue;
+    const introducer = text.slice(0, index);
+    const questionLed = startsWithAny(text, markers.researchQuestionPrefixes);
+    const sourceLed = containsAnySearchMarker(introducer, markers.sourceMarkers);
+    if (questionLed || sourceLed) return text.slice(index + lead.length);
+  }
+  return "";
+}
+
+function questionIsInterrogative(prompt, normalized) {
+  return (
+    startsWithAny(normalized, webSearchMarkers().researchQuestionPrefixes) ||
+    /[?？]\s*$/u.test(String(prompt || ""))
+  );
+}
+
+function extractTopicSubject(normalized) {
+  const markers = webSearchMarkers();
+  for (const marker of markers.topicAfterMarkers) {
+    const query = queryAfterNormalizedMarker(normalized, marker);
+    if (query) return query;
+  }
+  for (const marker of markers.topicBeforeMarkers) {
+    const query = queryBeforeNormalizedMarker(normalized, marker);
     if (query) return query;
   }
   return "";
+}
+
+// Semantic frame shared with the Rust handler: interrogative + named external
+// source + topic connective. It covers unseen source-grounded wording without a
+// sentence template.
+function extractSourceGroundedQuestion(prompt, normalized) {
+  const markers = webSearchMarkers();
+  if (
+    !questionIsInterrogative(prompt, normalized) ||
+    !containsAnySearchMarker(normalized, markers.sourceMediumMarkers)
+  ) {
+    return "";
+  }
+  return extractTopicSubject(normalized);
+}
+
+// Semantic frame shared with the Rust handler: named external source + recency
+// + topic connective.
+function extractCurrentSourceInformationRequest(normalized) {
+  const markers = webSearchMarkers();
+  if (
+    !containsAnySearchMarker(normalized, markers.sourceMediumMarkers) ||
+    !containsAnySearchMarker(normalized, markers.newsRecencyMarkers) ||
+    !containsAnySearchMarker(normalized, markers.informationMarkers)
+  ) {
+    return "";
+  }
+  return extractTopicSubject(normalized);
 }
 
 function extractExplicitWebSearchQuery(prompt) {
@@ -209,13 +279,23 @@ function extractTermInformationRequest(prompt, normalized) {
     return "";
   }
   const text = String(normalized || "");
-  for (const prefix of webSearchMarkers().termInformationPrefixes) {
-    if (text.startsWith(prefix)) {
-      const candidate = text.slice(prefix.length);
-      if (termInformationQueryIsLocalContext(candidate)) return "";
-      const query = validSearchQuery(candidate);
-      if (query) return query;
-    }
+  const markers = webSearchMarkers();
+  // Word order belongs to the language, not to the intent: prefix openers
+  // ("tell me about …"), verb-final closers ("… के बारे में बताओ") and wrapping
+  // frames ("给出 … 背景") all name the same request (issue #701).
+  const candidates = [
+    ...markers.termInformationPrefixes.map((p) => (text.startsWith(p) ? text.slice(p.length) : "")),
+    ...markers.termInformationSuffixes.map((s) =>
+      s && text.endsWith(s) ? text.slice(0, text.length - s.length) : ""),
+    ...markers.termInformationCircumfixes.map(({ before, after }) =>
+      after && text.startsWith(before) && text.endsWith(after)
+        ? text.slice(before.length, text.length - after.length)
+        : ""),
+  ];
+  for (const candidate of candidates.filter(Boolean)) {
+    if (termInformationQueryIsLocalContext(candidate)) return "";
+    const query = validSearchQuery(candidate);
+    if (query) return query;
   }
   return "";
 }
@@ -281,13 +361,13 @@ function extractEnumerationResearchRequest(prompt, normalized) {
 
 function extractWebSearchRequest(prompt, normalized) {
   if (
+    (["local_path_scope_desktop", "local_path_scope_home", "local_path_scope_current"].some((role) => lexiconMentionsRole(role, normalized)) &&
+      ["local_path_search_action", "local_path_list_action", "local_path_contents_request", "local_path_type_request", "local_path_route_question"].some((role) => lexiconMentionsRole(role, normalized) || roleWordForms(role).some((form) => surfacePresent(normalized, normalizePrompt(form.before || form.after))))) ||
     normalized.startsWith("search conversations ") ||
     normalized.startsWith("search my conversations ") ||
     normalized.startsWith("search my chats ") ||
     isPersonalFactFilterRequest(normalized)
-  ) {
-    return "";
-  }
+  ) return "";
   const explicitQuery =
     extractExplicitWebSearchQuery(prompt) || extractExplicitWebSearchQuery(normalized);
   if (explicitQuery) {
@@ -296,6 +376,14 @@ function extractWebSearchRequest(prompt, normalized) {
   const semanticQuery = extractSemanticWebSearchQuery(prompt, normalized);
   if (semanticQuery) {
     return { query: semanticQuery, kind: "semantic_action" };
+  }
+  const sourceQuestion = extractSourceGroundedQuestion(prompt, normalized);
+  if (sourceQuestion) {
+    return { query: sourceQuestion, kind: "implicit_research_question" };
+  }
+  const currentSourceQuery = extractCurrentSourceInformationRequest(normalized);
+  if (currentSourceQuery) {
+    return { query: currentSourceQuery, kind: "implicit_research_question" };
   }
   const latestNewsQuery = extractLatestNewsSearchRequest(normalized);
   if (latestNewsQuery) {

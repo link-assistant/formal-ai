@@ -1,0 +1,71 @@
+{
+  "entities": {
+    "Q525": {
+      "type": "item",
+      "id": "Q525",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Sun"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Солнце"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सूरज"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "太阳"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "star at the centre of the Solar System"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "звезда Солнечной системы"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सौर मंडल के केंद्र में तारा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "位于太阳系中心的恒星"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "the Sun"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Гелиос"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "सूर्य"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "日"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

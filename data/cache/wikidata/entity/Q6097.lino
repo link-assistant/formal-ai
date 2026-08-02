@@ -1,0 +1,15 @@
+Q6097
+  aliases
+    zh ("茶水")
+  descriptions
+    en "brewed drink made from tea leaves"
+    ru "напиток, получаемый варкой, завариванием и/или настаиванием листа чайного куста"
+    zh "一種飲品"
+  id Q6097
+  labels
+    en tea
+    hi "चाय"
+    ru "чай"
+    zh "茶"
+  type item
+success 1

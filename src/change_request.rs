@@ -10,7 +10,7 @@
 //! This module composes that flow deterministically. A raw request plus the owned
 //! module it targets becomes a [`ChangeRequest`]: a normalised *requirement*, a
 //! proposed *test* name, and an ordered *patch plan* whose target module is grounded
-//! against the owned manifest ([`crate::self_source_graph::owned_manifest`]), so a
+//! against the owned manifest ([`crate::self_source_links::owned_manifest`]), so a
 //! request can never target source the repository does not ship. The whole thing
 //! serialises to Links Notation — the reviewable pull request a human reads.
 //!
@@ -28,7 +28,7 @@ use std::fmt::Write as _;
 use crate::engine::stable_id;
 use crate::learning_ledger::HumanApproval;
 use crate::self_improvement::BenchmarkGateReport;
-use crate::self_source_graph::owned_manifest;
+use crate::self_source_links::owned_manifest;
 
 /// A natural-language request to change Formal AI itself, turned into a structured,
 /// reviewable, human-gated proposal.
@@ -104,7 +104,7 @@ impl ChangeRequest {
     /// Review the request against the same repair-loop gate as the learning ledger.
     ///
     /// Succeeds only when the benchmark gate is green (*"when tests … accept"*) *and*
-    /// `approval` is granted (*"and the user accept[s]"*), returning the merged
+    /// `approval` is granted (*"and the user accept\[s\]"*), returning the merged
     /// [`AcceptedChange`]. Otherwise returns the [`ChangeRejected`] reason, so no user
     /// request is ever applied without both the tests and the human accepting.
     ///

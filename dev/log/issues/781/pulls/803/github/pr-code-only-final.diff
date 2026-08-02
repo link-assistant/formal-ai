@@ -1,0 +1,2980 @@
+diff --git a/.gitattributes b/.gitattributes
+index ca268f1e..d9abdfc2 100644
+--- a/.gitattributes
++++ b/.gitattributes
+@@ -6,3 +6,4 @@ docs/case-studies/issue-730/**/*.jsonl whitespace=-blank-at-eof
+ docs/case-studies/issue-730/**/*.log whitespace=-blank-at-eol,-blank-at-eof
+ docs/case-studies/issue-742/raw-data/*.html whitespace=-blank-at-eol,-blank-at-eof
+ experiments/issue_746*.patch whitespace=-blank-at-eol
++dev/log/issues/781/pulls/803/** whitespace=-blank-at-eol,-blank-at-eof
+diff --git a/.github/workflows/release.yml b/.github/workflows/release.yml
+index 2e6b576a..7f9c0a8a 100644
+--- a/.github/workflows/release.yml
++++ b/.github/workflows/release.yml
+@@ -1154,12 +1154,12 @@ jobs:
+           bun add -g @link-assistant/agent
+           echo "$HOME/.bun/bin" >> $GITHUB_PATH
+ 
+-      - name: Install opencode CLI
+-        # A second, independently-implemented harness. The issue-715 learning E2E
+-        # drives both and diffs the artifacts, which only tests harness parity if
+-        # both are really here — so this install is not optional, and the script
+-        # fails rather than skipping when a CLI is missing.
+-        run: bun add -g opencode-ai
++      - name: Install external agent CLIs
++        # OpenCode provides the second issue-715 learning harness. Issue #781
++        # additionally proves the same research loop through Claude Code's
++        # Anthropic transport and Codex's Responses transport, so all clients
++        # are mandatory and their E2E scripts fail rather than skip if missing.
++        run: bun add -g opencode-ai @anthropic-ai/claude-code @openai/codex
+ 
+       - name: Build formal-ai (release)
+         # The E2E script runs against target/release/formal-ai — that's the
+@@ -1338,11 +1338,11 @@ jobs:
+           PORT: 8781
+         run: experiments/agent_cli_e2e/run_issue_771.sh
+ 
+-      - name: "Run agent CLI E2E — compatibility research triangulates sources (issue #781)"
+-        # A real marketplace compatibility question must not stop after the
+-        # first result. The server trace proves one search fans out to at least
+-        # three fetches and the real Agent CLI executes each one. Deterministic
+-        # coverage checks the following synthesis round and its citations.
++      - name: "Run four-client E2E — narrated compatibility research (issue #781)"
++        # The exact reported marketplace question drives Agent, OpenCode,
++        # Claude Code, and Codex through their native transports. Each trace
++        # must show a narrated search, three separately narrated fetch turns,
++        # and a cited synthesis. Per-dialog JSONL preserves every exchange.
+         env:
+           PORT: 8783
+         run: experiments/agent_cli_e2e/run_issue_781.sh
+diff --git a/README.md b/README.md
+index f04d1116..a2000812 100644
+--- a/README.md
++++ b/README.md
+@@ -362,6 +362,14 @@ artifacts written inside an isolated temporary client home are preserved so the
+ reported path remains available for debugging. If `FORMAL_AI_PROXY_LOG` names an
+ existing proxy log, that path is included in the same final block.
+ 
++Set `FORMAL_AI_DIALOG_LOG_DIR` on the server to write full request/response
++JSONL records into one file per dialog. This recorder is off by default because
++the bodies can contain private prompts and tool output. Send
++`X-Formal-AI-Dialog-ID` for exact grouping, or let the server derive the group
++from the first user prompt. See
++[`docs/configuration/output-sessions.md`](docs/configuration/output-sessions.md)
++for capture and optional `gh-upload-log` upload instructions.
++
+ ```text
+ formal-ai: session files for debugging:
+   codex: /tmp/formal-ai-codex-home-.../.codex/sessions/2026/07/18/rollout-...jsonl   (resume: codex resume ...)
+diff --git a/changelog.d/20260720_120000_issue_781_research_progress.md b/changelog.d/20260720_120000_issue_781_research_progress.md
+new file mode 100644
+index 00000000..45265b27
+--- /dev/null
++++ b/changelog.d/20260720_120000_issue_781_research_progress.md
+@@ -0,0 +1,12 @@
++---
++bump: minor
++---
++
++### Added
++- Opt-in, default-off per-dialog JSONL request/response recording through `FORMAL_AI_DIALOG_LOG_DIR`, allowing exact agentic sessions to be reconstructed without enabling body logging globally (issues #781 and #800).
++- A reusable native-client research harness covering Agent, OpenCode, Claude Code, and Codex against the same deterministic MCP evidence source.
++
++### Fixed
++- Narrate each web-research action before executing it, fetch sources in separate turns, and synthesize only successfully fetched evidence with its exact URL.
++- Prefer executable open-world research tools over local grep or hosted-only tools, including MCP children advertised through Responses namespaces.
++- Preserve MCP namespace identity for client dispatch and normalize recognized Codex tool-result envelopes only for planning while retaining their exact raw transport content.
+diff --git a/data/meta/agentic-coding-recipe.lino b/data/meta/agentic-coding-recipe.lino
+index eed2f290..5d49fb21 100644
+--- a/data/meta/agentic-coding-recipe.lino
++++ b/data/meta/agentic-coding-recipe.lino
+@@ -134,7 +134,7 @@ fn_is_formalization_task
+ fn_looks_like_error
+   record_type "meta_function"
+   function "looks_like_error"
+-  source_file "src/agentic_coding/progress.rs"
++  source_file "src/agentic_coding/tool_result.rs"
+   kind "error_detector"
+ fn_final_answer
+   record_type "meta_function"
+diff --git a/data/meta/self-ast.lino b/data/meta/self-ast.lino
+index 233032a3..41926f27 100644
+--- a/data/meta/self-ast.lino
++++ b/data/meta/self-ast.lino
+@@ -7,8 +7,8 @@ self_ast
+   projection abstract_syntax
+   text_preserved true
+   clean true
+-  total_link_count 18952
+-  named_node_count 3798
++  total_link_count 19006
++  named_node_count 3804
+   distinct_node_kinds 71
+   node_kinds
+     arguments 244
+@@ -48,7 +48,7 @@ self_ast
+     let_condition 31
+     let_declaration 50
+     lifetime 3
+-    line_comment 219
++    line_comment 225
+     macro_invocation 26
+     match_arm 26
+     match_block 2
+diff --git a/data/meta/self-healing-case.lino b/data/meta/self-healing-case.lino
+index a2f32009..cc9bba29 100644
+--- a/data/meta/self-healing-case.lino
++++ b/data/meta/self-healing-case.lino
+@@ -5,8 +5,8 @@ repair_case
+   human_gated "true"
+   source_round_trip
+     module_path "src/agentic_coding/planner.rs"
+-    total_link_count "18952"
+-    named_node_count "3798"
++    total_link_count "19006"
++    named_node_count "3804"
+     faithful "true"
+   failure_trace
+     unknown_trace
+diff --git a/data/seed/closure-generated-01.lino b/data/seed/closure-generated-01.lino
+index fb52efc8..519e243a 100644
+--- a/data/seed/closure-generated-01.lino
++++ b/data/seed/closure-generated-01.lino
+@@ -109,6 +109,11 @@ meanings
+     lexeme en
+       surface
+         text "agent suggestion active"
++  agentic_action_before_tool
++    defined-by intent
++    lexeme en
++      surface
++        text "agentic action before tool"
+   ai-orchestration
+     defined-by category
+     lexeme en
+@@ -1389,8 +1394,3 @@ meanings
+     lexeme en
+       surface
+         text "lexeme import fetch invalid json"
+-  lexeme_import_grounding_lost
+-    defined-by intent
+-    lexeme en
+-      surface
+-        text "lexeme import grounding lost"
+diff --git a/data/seed/closure-generated-02.lino b/data/seed/closure-generated-02.lino
+index 3628856e..ee6e0f25 100644
+--- a/data/seed/closure-generated-02.lino
++++ b/data/seed/closure-generated-02.lino
+@@ -1,4 +1,9 @@
+ meanings
++  lexeme_import_grounding_lost
++    defined-by intent
++    lexeme en
++      surface
++        text "lexeme import grounding lost"
+   lexeme_import_invalid_provenance
+     defined-by intent
+     lexeme en
+@@ -1389,8 +1394,3 @@ meanings
+     lexeme en
+       surface
+         text "pattern wellbeing phrase sab kaisa chal raha hai hi"
+-  pattern_wellbeing_phrase_tum_kaise_ho_hi
+-    defined-by prompt_pattern
+-    lexeme en
+-      surface
+-        text "pattern wellbeing phrase tum kaise ho hi"
+diff --git a/data/seed/closure-generated-03.lino b/data/seed/closure-generated-03.lino
+index ab196a46..589b4bda 100644
+--- a/data/seed/closure-generated-03.lino
++++ b/data/seed/closure-generated-03.lino
+@@ -1,4 +1,9 @@
+ meanings
++  pattern_wellbeing_phrase_tum_kaise_ho_hi
++    defined-by prompt_pattern
++    lexeme en
++      surface
++        text "pattern wellbeing phrase tum kaise ho hi"
+   pattern_wellbeing_phrase_zdravstvuyte_kak_vashi_dela
+     defined-by prompt_pattern
+     lexeme en
+@@ -319,6 +324,26 @@ meanings
+     lexeme en
+       surface
+         text "response agent suggestion zh"
++  response_agentic_action_before_tool_en
++    defined-by response_template
++    lexeme en
++      surface
++        text "response agentic action before tool en"
++  response_agentic_action_before_tool_hi
++    defined-by response_template
++    lexeme en
++      surface
++        text "response agentic action before tool hi"
++  response_agentic_action_before_tool_ru
++    defined-by response_template
++    lexeme en
++      surface
++        text "response agentic action before tool ru"
++  response_agentic_action_before_tool_zh
++    defined-by response_template
++    lexeme en
++      surface
++        text "response agentic action before tool zh"
+   response_assistant_free_time_en
+     defined-by response_template
+     lexeme en
+@@ -1369,28 +1394,3 @@ meanings
+     lexeme en
+       surface
+         text "response lexeme import reparse failed hi"
+-  response_lexeme_import_reparse_failed_ru
+-    defined-by response_template
+-    lexeme en
+-      surface
+-        text "response lexeme import reparse failed ru"
+-  response_lexeme_import_reparse_failed_zh
+-    defined-by response_template
+-    lexeme en
+-      surface
+-        text "response lexeme import reparse failed zh"
+-  response_lexeme_import_surface_changed_en
+-    defined-by response_template
+-    lexeme en
+-      surface
+-        text "response lexeme import surface changed en"
+-  response_lexeme_import_surface_changed_hi
+-    defined-by response_template
+-    lexeme en
+-      surface
+-        text "response lexeme import surface changed hi"
+-  response_lexeme_import_surface_changed_ru
+-    defined-by response_template
+-    lexeme en
+-      surface
+-        text "response lexeme import surface changed ru"
+diff --git a/data/seed/closure-generated-04.lino b/data/seed/closure-generated-04.lino
+index edc9e596..47e7d202 100644
+--- a/data/seed/closure-generated-04.lino
++++ b/data/seed/closure-generated-04.lino
+@@ -1,4 +1,29 @@
+ meanings
++  response_lexeme_import_reparse_failed_ru
++    defined-by response_template
++    lexeme en
++      surface
++        text "response lexeme import reparse failed ru"
++  response_lexeme_import_reparse_failed_zh
++    defined-by response_template
++    lexeme en
++      surface
++        text "response lexeme import reparse failed zh"
++  response_lexeme_import_surface_changed_en
++    defined-by response_template
++    lexeme en
++      surface
++        text "response lexeme import surface changed en"
++  response_lexeme_import_surface_changed_hi
++    defined-by response_template
++    lexeme en
++      surface
++        text "response lexeme import surface changed hi"
++  response_lexeme_import_surface_changed_ru
++    defined-by response_template
++    lexeme en
++      surface
++        text "response lexeme import surface changed ru"
+   response_lexeme_import_surface_changed_zh
+     defined-by response_template
+     lexeme en
+diff --git a/data/seed/multilingual-responses.lino b/data/seed/multilingual-responses.lino
+index 5f512756..09821c19 100644
+--- a/data/seed/multilingual-responses.lino
++++ b/data/seed/multilingual-responses.lino
+@@ -1381,3 +1381,19 @@ multilingual_responses
+     intent budget_search_solution
+     language zh
+     text "通过预算驱动的搜索找到：{expression} = {target}。\n没有可复用的部分或规则匹配，因此求解器将给定的数字与允许的运算组合起来，并以生成的相等性测试作为适应度函数对每个候选进行评分。\n搜索预算：{budget} 次候选评估；在 {evaluations} 次评估后找到了满足条件的组合。\n搜索路径：{trace_id}"
++  response response_agentic_action_before_tool_en
++    intent agentic_action_before_tool
++    language en
++    text "I'll use {tool} on {target} so I can verify the next step before continuing."
++  response response_agentic_action_before_tool_ru
++    intent agentic_action_before_tool
++    language ru
++    text "Я использую {tool} для «{target}», чтобы проверить следующий шаг перед продолжением."
++  response response_agentic_action_before_tool_hi
++    intent agentic_action_before_tool
++    language hi
++    text "अगला कदम जारी रखने से पहले उसकी पुष्टि करने के लिए मैं {target} पर {tool} का उपयोग करूँगा।"
++  response response_agentic_action_before_tool_zh
++    intent agentic_action_before_tool
++    language zh
++    text "我会对 {target} 使用 {tool}，以便在继续之前验证下一步。"
+diff --git a/docs/case-studies/issue-538/agent-cli-session-self-ast.json b/docs/case-studies/issue-538/agent-cli-session-self-ast.json
+index 5b157c4c..9fadf141 100644
+--- a/docs/case-studies/issue-538/agent-cli-session-self-ast.json
++++ b/docs/case-studies/issue-538/agent-cli-session-self-ast.json
+@@ -1,12 +1,12 @@
+ {
+   "driver": "formal-ai in-repo agentic CLI",
+-  "final_answer": "Stored the CST/AST of our Rust meta algorithm (src/agentic_coding/planner.rs) in our data, parsed through the meta-language links network (the sole CST/AST engine here) and recorded as an abstract-syntax node census — a real step toward the system reasoning about itself.\n\nGenerated document (self-ast.lino):\n\nself_ast\n  target src/agentic_coding/planner.rs\n  language rust\n  engine meta_language\n  component meta-language\n  grammar_label rust\n  projection abstract_syntax\n  text_preserved true\n  clean true\n  total_link_count 18952\n  named_node_count 3798\n  distinct_node_kinds 71\n  node_kinds\n    arguments 244\n    array_expression 1\n    array_type 40\n    attribute 6\n    attribute_item 6\n    binary_expression 3\n    block 91\n    call_expression 244\n    closure_expression 9\n    closure_parameters 9\n    const_item 4\n    crate 1\n    declaration_list 1\n    doc_comment 137\n    else_clause 1\n    enum_item 2\n    enum_variant 15\n    enum_variant_list 2\n    escape_sequence 9\n    expression_statement 109\n    field_declaration 6\n    field_declaration_list 2\n    field_expression 66\n    field_identifier 98\n    field_initializer 26\n    field_initializer_list 13\n    function_item 29\n    function_modifiers 2\n    generic_type 5\n    identifier 1067\n    if_expression 61\n    impl_item 1\n    inner_doc_comment_marker 5\n    integer_literal 3\n    let_condition 31\n    let_declaration 50\n    lifetime 3\n    line_comment 219\n    macro_invocation 26\n    match_arm 26\n    match_block 2\n    match_expression 2\n    match_pattern 26\n    ordered_field_declaration_list 2\n    outer_doc_comment_marker 132\n    parameter 52\n    parameters 29\n    primitive_type 36\n    reference_expression 62\n    reference_type 76\n    return_expression 47\n    scoped_identifier 183\n    scoped_use_list 3\n    self 4\n    self_parameter 2\n    shorthand_field_initializer 26\n    source_file 1\n    string_content 76\n    string_literal 72\n    struct_expression 13\n    struct_item 2\n    super 42\n    token_tree 48\n    try_expression 1\n    tuple_struct_pattern 31\n    type_arguments 5\n    type_identifier 80\n    unary_expression 12\n    use_declaration 31\n    use_list 3\n    visibility_modifier 24",
++  "final_answer": "Stored the CST/AST of our Rust meta algorithm (src/agentic_coding/planner.rs) in our data, parsed through the meta-language links network (the sole CST/AST engine here) and recorded as an abstract-syntax node census — a real step toward the system reasoning about itself.\n\nGenerated document (self-ast.lino):\n\nself_ast\n  target src/agentic_coding/planner.rs\n  language rust\n  engine meta_language\n  component meta-language\n  grammar_label rust\n  projection abstract_syntax\n  text_preserved true\n  clean true\n  total_link_count 19006\n  named_node_count 3804\n  distinct_node_kinds 71\n  node_kinds\n    arguments 244\n    array_expression 1\n    array_type 40\n    attribute 6\n    attribute_item 6\n    binary_expression 3\n    block 91\n    call_expression 244\n    closure_expression 9\n    closure_parameters 9\n    const_item 4\n    crate 1\n    declaration_list 1\n    doc_comment 137\n    else_clause 1\n    enum_item 2\n    enum_variant 15\n    enum_variant_list 2\n    escape_sequence 9\n    expression_statement 109\n    field_declaration 6\n    field_declaration_list 2\n    field_expression 66\n    field_identifier 98\n    field_initializer 26\n    field_initializer_list 13\n    function_item 29\n    function_modifiers 2\n    generic_type 5\n    identifier 1067\n    if_expression 61\n    impl_item 1\n    inner_doc_comment_marker 5\n    integer_literal 3\n    let_condition 31\n    let_declaration 50\n    lifetime 3\n    line_comment 225\n    macro_invocation 26\n    match_arm 26\n    match_block 2\n    match_expression 2\n    match_pattern 26\n    ordered_field_declaration_list 2\n    outer_doc_comment_marker 132\n    parameter 52\n    parameters 29\n    primitive_type 36\n    reference_expression 62\n    reference_type 76\n    return_expression 47\n    scoped_identifier 183\n    scoped_use_list 3\n    self 4\n    self_parameter 2\n    shorthand_field_initializer 26\n    source_file 1\n    string_content 76\n    string_literal 72\n    struct_expression 13\n    struct_item 2\n    super 42\n    token_tree 48\n    try_expression 1\n    tuple_struct_pattern 31\n    type_arguments 5\n    type_identifier 80\n    unary_expression 12\n    use_declaration 31\n    use_list 3\n    visibility_modifier 24",
+   "hit_turn_cap": false,
+   "server": "formal-ai OpenAI-compatible chat completions",
+   "steps": [
+     {
+       "arguments": {
+-        "content": "self_ast\n  target src/agentic_coding/planner.rs\n  language rust\n  engine meta_language\n  component meta-language\n  grammar_label rust\n  projection abstract_syntax\n  text_preserved true\n  clean true\n  total_link_count 18952\n  named_node_count 3798\n  distinct_node_kinds 71\n  node_kinds\n    arguments 244\n    array_expression 1\n    array_type 40\n    attribute 6\n    attribute_item 6\n    binary_expression 3\n    block 91\n    call_expression 244\n    closure_expression 9\n    closure_parameters 9\n    const_item 4\n    crate 1\n    declaration_list 1\n    doc_comment 137\n    else_clause 1\n    enum_item 2\n    enum_variant 15\n    enum_variant_list 2\n    escape_sequence 9\n    expression_statement 109\n    field_declaration 6\n    field_declaration_list 2\n    field_expression 66\n    field_identifier 98\n    field_initializer 26\n    field_initializer_list 13\n    function_item 29\n    function_modifiers 2\n    generic_type 5\n    identifier 1067\n    if_expression 61\n    impl_item 1\n    inner_doc_comment_marker 5\n    integer_literal 3\n    let_condition 31\n    let_declaration 50\n    lifetime 3\n    line_comment 219\n    macro_invocation 26\n    match_arm 26\n    match_block 2\n    match_expression 2\n    match_pattern 26\n    ordered_field_declaration_list 2\n    outer_doc_comment_marker 132\n    parameter 52\n    parameters 29\n    primitive_type 36\n    reference_expression 62\n    reference_type 76\n    return_expression 47\n    scoped_identifier 183\n    scoped_use_list 3\n    self 4\n    self_parameter 2\n    shorthand_field_initializer 26\n    source_file 1\n    string_content 76\n    string_literal 72\n    struct_expression 13\n    struct_item 2\n    super 42\n    token_tree 48\n    try_expression 1\n    tuple_struct_pattern 31\n    type_arguments 5\n    type_identifier 80\n    unary_expression 12\n    use_declaration 31\n    use_list 3\n    visibility_modifier 24\n",
++        "content": "self_ast\n  target src/agentic_coding/planner.rs\n  language rust\n  engine meta_language\n  component meta-language\n  grammar_label rust\n  projection abstract_syntax\n  text_preserved true\n  clean true\n  total_link_count 19006\n  named_node_count 3804\n  distinct_node_kinds 71\n  node_kinds\n    arguments 244\n    array_expression 1\n    array_type 40\n    attribute 6\n    attribute_item 6\n    binary_expression 3\n    block 91\n    call_expression 244\n    closure_expression 9\n    closure_parameters 9\n    const_item 4\n    crate 1\n    declaration_list 1\n    doc_comment 137\n    else_clause 1\n    enum_item 2\n    enum_variant 15\n    enum_variant_list 2\n    escape_sequence 9\n    expression_statement 109\n    field_declaration 6\n    field_declaration_list 2\n    field_expression 66\n    field_identifier 98\n    field_initializer 26\n    field_initializer_list 13\n    function_item 29\n    function_modifiers 2\n    generic_type 5\n    identifier 1067\n    if_expression 61\n    impl_item 1\n    inner_doc_comment_marker 5\n    integer_literal 3\n    let_condition 31\n    let_declaration 50\n    lifetime 3\n    line_comment 225\n    macro_invocation 26\n    match_arm 26\n    match_block 2\n    match_expression 2\n    match_pattern 26\n    ordered_field_declaration_list 2\n    outer_doc_comment_marker 132\n    parameter 52\n    parameters 29\n    primitive_type 36\n    reference_expression 62\n    reference_type 76\n    return_expression 47\n    scoped_identifier 183\n    scoped_use_list 3\n    self 4\n    self_parameter 2\n    shorthand_field_initializer 26\n    source_file 1\n    string_content 76\n    string_literal 72\n    struct_expression 13\n    struct_item 2\n    super 42\n    token_tree 48\n    try_expression 1\n    tuple_struct_pattern 31\n    type_arguments 5\n    type_identifier 80\n    unary_expression 12\n    use_declaration 31\n    use_list 3\n    visibility_modifier 24\n",
+         "filePath": "self-ast.lino",
+         "file_path": "self-ast.lino",
+         "path": "self-ast.lino"
+@@ -18,7 +18,7 @@
+       "arguments": {
+         "command": "cat self-ast.lino"
+       },
+-      "result": "self_ast\n  target src/agentic_coding/planner.rs\n  language rust\n  engine meta_language\n  component meta-language\n  grammar_label rust\n  projection abstract_syntax\n  text_preserved true\n  clean true\n  total_link_count 18952\n  named_node_count 3798\n  distinct_node_kinds 71\n  node_kinds\n    arguments 244\n    array_expression 1\n    array_type 40\n    attribute 6\n    attribute_item 6\n    binary_expression 3\n    block 91\n    call_expression 244\n    closure_expression 9\n    closure_parameters 9\n    const_item 4\n    crate 1\n    declaration_list 1\n    doc_comment 137\n    else_clause 1\n    enum_item 2\n    enum_variant 15\n    enum_variant_list 2\n    escape_sequence 9\n    expression_statement 109\n    field_declaration 6\n    field_declaration_list 2\n    field_expression 66\n    field_identifier 98\n    field_initializer 26\n    field_initializer_list 13\n    function_item 29\n    function_modifiers 2\n    generic_type 5\n    identifier 1067\n    if_expression 61\n    impl_item 1\n    inner_doc_comment_marker 5\n    integer_literal 3\n    let_condition 31\n    let_declaration 50\n    lifetime 3\n    line_comment 219\n    macro_invocation 26\n    match_arm 26\n    match_block 2\n    match_expression 2\n    match_pattern 26\n    ordered_field_declaration_list 2\n    outer_doc_comment_marker 132\n    parameter 52\n    parameters 29\n    primitive_type 36\n    reference_expression 62\n    reference_type 76\n    return_expression 47\n    scoped_identifier 183\n    scoped_use_list 3\n    self 4\n    self_parameter 2\n    shorthand_field_initializer 26\n    source_file 1\n    string_content 76\n    string_literal 72\n    struct_expression 13\n    struct_item 2\n    super 42\n    token_tree 48\n    try_expression 1\n    tuple_struct_pattern 31\n    type_arguments 5\n    type_identifier 80\n    unary_expression 12\n    use_declaration 31\n    use_list 3\n    visibility_modifier 24\n",
++      "result": "self_ast\n  target src/agentic_coding/planner.rs\n  language rust\n  engine meta_language\n  component meta-language\n  grammar_label rust\n  projection abstract_syntax\n  text_preserved true\n  clean true\n  total_link_count 19006\n  named_node_count 3804\n  distinct_node_kinds 71\n  node_kinds\n    arguments 244\n    array_expression 1\n    array_type 40\n    attribute 6\n    attribute_item 6\n    binary_expression 3\n    block 91\n    call_expression 244\n    closure_expression 9\n    closure_parameters 9\n    const_item 4\n    crate 1\n    declaration_list 1\n    doc_comment 137\n    else_clause 1\n    enum_item 2\n    enum_variant 15\n    enum_variant_list 2\n    escape_sequence 9\n    expression_statement 109\n    field_declaration 6\n    field_declaration_list 2\n    field_expression 66\n    field_identifier 98\n    field_initializer 26\n    field_initializer_list 13\n    function_item 29\n    function_modifiers 2\n    generic_type 5\n    identifier 1067\n    if_expression 61\n    impl_item 1\n    inner_doc_comment_marker 5\n    integer_literal 3\n    let_condition 31\n    let_declaration 50\n    lifetime 3\n    line_comment 225\n    macro_invocation 26\n    match_arm 26\n    match_block 2\n    match_expression 2\n    match_pattern 26\n    ordered_field_declaration_list 2\n    outer_doc_comment_marker 132\n    parameter 52\n    parameters 29\n    primitive_type 36\n    reference_expression 62\n    reference_type 76\n    return_expression 47\n    scoped_identifier 183\n    scoped_use_list 3\n    self 4\n    self_parameter 2\n    shorthand_field_initializer 26\n    source_file 1\n    string_content 76\n    string_literal 72\n    struct_expression 13\n    struct_item 2\n    super 42\n    token_tree 48\n    try_expression 1\n    tuple_struct_pattern 31\n    type_arguments 5\n    type_identifier 80\n    unary_expression 12\n    use_declaration 31\n    use_list 3\n    visibility_modifier 24\n",
+       "tool": "run_command"
+     }
+   ],
+diff --git a/docs/case-studies/issue-781/README.md b/docs/case-studies/issue-781/README.md
+index 298a865c..3f673fcf 100644
+--- a/docs/case-studies/issue-781/README.md
++++ b/docs/case-studies/issue-781/README.md
+@@ -4,12 +4,28 @@ Issue [#781](https://github.com/link-assistant/formal-ai/issues/781) asks Formal
+ 
+ ## Outcome
+ 
+-The implementation fixes two reusable boundaries:
++The implementation now covers four reusable boundaries:
+ 
+-1. Agentic web research now captures up to three distinct search results in one bounded round, keeps every successful fetch associated with the URL that produced it, and emits a separately cited extract for each source. The previous planner selected and fetched only one URL.
+-2. `formal-ai shared-dialog convert` now accepts the normalized JSON contract emitted by `web-capture shared-dialog`. This connects the browser-backed provider adapter to Formal AI's existing `demo_memory` Links Notation export without copying provider scraping logic into Rust.
++1. Agentic web research keeps every successful fetch associated with its URL,
++   reasons over up to three independent sources, and can deepen toward one
++   evidence gap. The original planner selected and retained only one source.
++2. Research is externally observable: every search or fetch is its own turn with
++   a localized, useful explanation before the tool call, followed by a final
++   cited synthesis. Chat Completions, Responses, Anthropic Messages, and Gemini
++   preserve the same ordering in their native envelopes.
++3. Client-executable research tools are discovered inside Responses namespaces
++   and returned as the exact `(namespace, name)` pair required by Codex. Known
++   client wrappers are normalized for planning while raw transport remains
++   available for exact audit logs.
++4. `formal-ai shared-dialog convert` accepts the normalized JSON contract emitted
++   by `web-capture shared-dialog`, connecting browser-backed ChatGPT/Google
++   adapters to the existing `demo_memory` Links Notation export.
+ 
+-The supplied ChatGPT page was captured and converted successfully: both direct HTML parsing and normalized adapter JSON produce the same 35-event, 48,281-byte Links Notation file. The supplied Google page still exposes no transcript to a real Chromium capture; its upstream `google_ai_mode / no_transcript_in_captured_dom` diagnostic is preserved. All three Amazon pages attempted—including the strongest new candidate found by project-native search—return Amazon's automated-access page. The study therefore distinguishes indexed specifications from live listing evidence and does not invent polarity or current availability.
++The supplied ChatGPT page was captured and converted successfully: direct HTML
++and normalized adapter JSON produce the same 35-event, 48,281-byte Links file.
++Google still exposes no transcript to real Chromium capture, and all three Amazon
++pages returned automated-access content. The study therefore distinguishes
++indexed leads from live evidence and does not invent polarity or availability.
+ 
+ ## Reproduction and proof
+ 
+@@ -21,7 +37,16 @@ left: 1
+ right: 3
+ ```
+ 
+-The regression in `tests/unit/issue_781.rs` replays search results for an official specification, independent connector evidence, and a candidate listing. It requires three `webfetch` calls and an answer that retains all three facts and URLs. The real Agent CLI E2E drives the Russian compatibility question over the release server and proves that the client executes all three live fetches.
++The regressions in `tests/unit/issue_781.rs` replay an official specification,
++independent connector evidence, and a candidate listing. They require a narrated
++search, three separately narrated fetch turns, and an answer retaining all facts
++and URLs. `experiments/agent_cli_e2e/run_issue_781.sh` drives the exact Russian
++prompt through Agent, OpenCode, Claude, and Codex. The final preserved run records
++one search, three fetches, and a synthesis in every client.
++
++Set `FORMAL_AI_DIALOG_LOG_DIR` to record exact request/response exchanges in one
++JSONL file per dialog. This is deliberately off by default because prompts and
++tool results can contain private data.
+ 
+ Adapter parity was checked with:
+ 
+@@ -33,4 +58,7 @@ formal-ai shared-dialog convert --input raw-data/chatgpt-web-capture.json \
+ cmp raw-data/chatgpt-direct.demo-memory.lino raw-data/chatgpt-adapter.demo-memory.lino
+ ```
+ 
+-See [requirements.md](requirements.md), [investigation.md](investigation.md), [recommendation.md](recommendation.md), and [raw-data/README.md](raw-data/README.md).
++See [requirements.md](requirements.md), [investigation.md](investigation.md),
++[recommendation.md](recommendation.md), and [raw-data/README.md](raw-data/README.md).
++The complete PR #803 evidence bundle, including all four client/server/dialog
++logs and upstream reports, is under `dev/log/issues/781/pulls/803/`.
+diff --git a/docs/case-studies/issue-781/investigation.md b/docs/case-studies/issue-781/investigation.md
+index 848660dd..8d24eff5 100644
+--- a/docs/case-studies/issue-781/investigation.md
++++ b/docs/case-studies/issue-781/investigation.md
+@@ -12,6 +12,18 @@
+ - 2026-07-19 08:13 UTC: the final optimized-binary Agent CLI replay passed
+   its evidence boundary: one live search, three planned fetches, and all three
+   fetches executed by the client (nine lifecycle events in its event stream).
++- 2026-07-19 18:26–18:36 UTC: issue #781 was reopened with screenshots showing
++  OpenCode waiting after Grep and later ending with a no-content error. Review
++  required one narrated action per turn, final synthesis, exact per-dialog logs,
++  and E2E proof in Agent, OpenCode, Claude, and Codex.
++- 2026-07-20 00:31–01:37 UTC: red/green tests isolated silent/batched actions,
++  open-world-to-grep misrouting, Responses namespace discovery/dispatch, missing
++  MCP safety annotations, and Codex result-envelope pollution.
++- 2026-07-20 01:49 UTC: the reusable deterministic harness passed all four
++  native clients. Each completed one search, three separate fetches, and a final
++  cited synthesis; exact client, server, and dialog JSONL logs are preserved.
++- 2026-07-20 01:56 UTC: the Codex namespace reproduction, workaround, and fix
++  suggestions were posted to OpenAI Codex issue #14242.
+ 
+ ## Code trace and root causes
+ 
+@@ -21,19 +33,52 @@
+ 
+ `Progress` also retained only the latest successful fetch body. Even if a caller supplied several fetch results, earlier evidence and the URL-to-body relationship were lost.
+ 
+-The fix is deliberately bounded rather than a crawler:
++The evidence model is deliberately bounded rather than a crawler:
+ 
+ 1. extract and de-duplicate search-result URLs;
+ 2. place the first government/education source first when one exists, preserving search order otherwise;
+ 3. retain at most three URLs;
+-4. emit all fetch calls in one agentic tool round;
++4. emit one fetch per agentic turn with user-visible narration;
+ 5. recover each fetch URL from its tool-call arguments and pair it with that result;
+ 6. extract query-relevant text independently and cite its exact URL.
+ 
+-The release-server Agent CLI replay exposed an additional external transport constraint: Agent CLI 0.25.0 executed all three parallel fetches but recorded an `unknown` finish reason and exited before requesting the final answer (its diagnostics link upstream issue #249). Retrying reproduced the same behavior three times; a one-fetch-per-round experiment reproduced it too, proving this was not caused by parallel fan-out. The real E2E therefore asserts live search and execution of all three fetches, while the deterministic whole-task test asserts the following synthesis round and its three citations. Both failure experiments are retained rather than hidden.
++The release-server Agent replay exposed an external transport constraint: Agent
++CLI 0.25.0 can record an `unknown` finish reason and exit before requesting the
++final answer (upstream issue #249). Both parallel and one-fetch controls showed
++the boundary, so batching was not its sole cause. The final CI harness retries
++Agent with a fresh session at most three times but still requires the complete
++synthesis; partial runs remain preserved as evidence.
+ 
+ No Acer, charger, Amazon, voltage, language, or marketplace vocabulary was added to planner code.
+ 
++### The reopened UX failure crossed protocol boundaries
++
++The exact Russian prompt initially routed to grep when the client advertised a
++local search tool. Research responses could then contain calls without assistant
++text and batch several fetches, leaving the user without useful progress. The
++shared planner now prefers research for open-world finds, emits exactly one
++action per turn, and derives concise localized narration from the tool and its
++query/URL.
++
++Each protocol preserves that ordering natively: Chat assistant content precedes
++`tool_calls`; Responses output contains a message item before the function call;
++Anthropic emits a text block before `tool_use`; Gemini emits a text part before
++`functionCall`. This is user-facing action rationale, not hidden chain of thought.
++
++Codex exposed two more boundaries. Its MCP functions arrive beneath a Responses
++namespace, while its router requires a call to round-trip as separate namespace
++and child name. Formal AI now recursively exposes namespace children to the
++planner and rehydrates the selected identity in output. Known Codex MCP wrappers
++are normalized only for planning; raw tool content is retained unchanged.
++
++### Exact dialog observability was missing
++
++Request traces could prove that an endpoint was called but could not reconstruct
++the exact request, response, and action sequence reported in issue #800. With
++`FORMAL_AI_DIALOG_LOG_DIR`, the common server boundary now appends timestamped,
++sequenced request/response exchanges to a stable per-dialog JSONL file. The
++feature is off by default and documented as potentially sensitive.
++
+ ### Capture and conversion were disconnected
+ 
+ Formal AI issue #552 added direct ChatGPT HTML and compact Markdown parsing, but intentionally deferred browser/provider capture to `link-assistant/web-capture#141`. That upstream issue is now implemented in `@link-assistant/web-capture`: it provides `shared-dialog`, tries static HTTP then browser rendering, and emits normalized JSON plus structured unsupported diagnostics.
+@@ -58,7 +103,20 @@ This is preferable to duplicating selectors and anti-bot behavior in Rust. `link
+ - `serde_json` decodes normalized adapter JSON and tool-call arguments.
+ - Existing Formal AI `MemoryEvent`/Links Notation export remains the sole replay representation.
+ - Recent PR #766 established permission-free read-only browser search/fetch; PR #793 established query-relevant fetched-page extraction. This change composes those capabilities instead of replacing them.
++- OpenAI, Anthropic, and Gemini protocol documentation all support ordered text
++  and tool-action structures or compositional multi-turn function calling.
++- MCP tool annotations describe read-only/open-world behavior. They explain the
++  non-interactive Codex approval behavior but remain untrusted hints, not a
++  security guarantee.
++- OpenAI Codex #14242 now contains this investigation's deterministic custom
++  Responses-provider namespace reproduction and workaround.
+ 
+ ## Remaining external limitations
+ 
+ Provider authentication/anti-bot restrictions cannot be solved honestly inside Formal AI. A future Google capture can begin working without a Rust change when web-capture returns `status: ok` turns. Amazon availability must be checked by a human browser or an authorized Amazon API; the captured block explicitly directs automated users to Amazon's API support.
++
++The four-client release test uses `.example.test` MCP fixture pages to make
++protocol regressions deterministic. Native network runs remain in the evidence
++bundle and are not conflated with current product verification. A separate
++wall-clock SLA is not asserted because client/network latency is external, but
++per-turn timestamps now make any future ten-second gap measurable.
+diff --git a/docs/case-studies/issue-781/requirements.md b/docs/case-studies/issue-781/requirements.md
+index 96afcc5f..03042b98 100644
+--- a/docs/case-studies/issue-781/requirements.md
++++ b/docs/case-studies/issue-781/requirements.md
+@@ -22,3 +22,15 @@
+ | R18 | Generalize beyond chargers to any product under any constraints. | Nothing in `src/option_network.rs` names a product domain; `the_same_engine_sources_a_subject_that_shares_no_vocabulary_with_the_issue` drives the same engine with a darkroom enlarger lens mount. |
+ | R19 | Fill the network from what research actually fetches, not from hand-written fixtures. | `option_evidence::candidate_from_page` takes its search keys from the constraints’ units, so no prose is matched; `every_purchase_option_is_assembled_from_pages_and_listed_cheapest_first` builds the full option set from page text alone. |
+ | R20 | Read specifications regardless of the language around them. | `a_specification_is_read_the_same_whatever_language_surrounds_the_number` reads the identical values from Russian and English pages; `a_localised_unit_symbol_yields_no_reading_instead_of_a_wrong_one` pins that a localised symbol abstains rather than guesses. |
++| R21 | Split research into small actions and explain every step before calling a tool. | One search/fetch is planned per turn; Chat, Responses, Anthropic, and Gemini tests assert localized narration precedes the native call and names the query or URL. |
++| R22 | Finish the narrated actions with one cited summary. | `compatibility_research_fetches_and_cites_independent_sources` walks search plus three separate fetch turns into a final response containing all source URLs. |
++| R23 | Do not leave the user with a long silent thinking message. | Separate narrated action turns provide observable feedback; per-dialog timestamps make any future wall-clock gap diagnosable without pretending to control third-party network latency. |
++| R24 | Record exact server actions per dialog. | `FORMAL_AI_DIALOG_LOG_DIR` writes sequenced exact request/response JSONL at the common server boundary and is tested in `tests/unit/dialog_log.rs`. |
++| R25 | Keep full-body logging off by default. | No dialog file is created without the environment variable; configuration docs warn that bodies may contain private data. |
++| R26 | Prove the exact task through Agent, OpenCode, Claude, and Codex. | `experiments/agent_cli_e2e/run_issue_781.sh` runs the exact Russian prompt in all four native clients and asserts one search, three fetches, at least five turns, final synthesis, and citations. |
++| R27 | Support client MCP tools grouped in Responses namespaces. | Namespace children are flattened only for shared planning, then returned as the exact `(namespace, name)` pair; issue-746 integration and issue-781 unit tests cover discovery and dispatch. |
++| R28 | Preserve exact raw tool output while reasoning over clean domain content. | `normalized_payload` unwraps recognized Codex envelopes; `raw_tool_result_is_retained_exactly_for_durable_recording` pins the audit boundary. |
++| R29 | Prefer a web-research tool over local grep for an open-world marketplace request. | The exact reported prompt with the full Agent tool set routes to `websearch`; local-code find behavior remains covered separately. |
++| R30 | Apply the same general algorithm across protocol clients. | Intent, capability, progress, research, and result logic are shared; protocol adapters only translate envelopes. Four surface tests and native E2E prevent drift. |
++| R31 | Report related upstream defects with a reproducer and workaround. | OpenAI Codex #14242 comment 5018114084 documents the namespace red/green envelopes, provider workaround, read-only annotation, and suggested diagnostics/capability fix. |
++| R32 | Preserve all evidence for PR #803 in the requested development-log path. | `dev/log/issues/781/pulls/803/` contains raw GitHub/CI/client/server/dialog records, red/green logs, analysis, research, and an inventory. |
+diff --git a/docs/configuration/output-sessions.md b/docs/configuration/output-sessions.md
+index bf501834..c55126b1 100644
+--- a/docs/configuration/output-sessions.md
++++ b/docs/configuration/output-sessions.md
+@@ -33,3 +33,20 @@ The displayed path is authoritative for an isolated one-shot run; do not copy a
+ hardcoded home from this table. For server-side debugging enable
+ `FORMAL_AI_TRACE_REQUESTS=1`, redirect server stderr/stdout to a log, and match
+ its request timeline to the client transcript or `FORMAL_AI_PROXY_LOG`.
++
++For a complete request/response record grouped by dialog, set
++`FORMAL_AI_DIALOG_LOG_DIR` to a directory before starting the server. This is
++off by default because it records full prompt, source, tool-result, and response
++bodies. Each dialog is appended to its own JSONL file. Clients may send
++`X-Formal-AI-Dialog-ID` to select an exact grouping key; without it, the server
++derives a stable key from the first user prompt in the conversation.
++
++```bash
++FORMAL_AI_DIALOG_LOG_DIR=./dialog-logs formal-ai serve
++gh-upload-log ./dialog-logs/dialog_*.jsonl --private \
++  --description "Formal AI dialog reproduction"
++```
++
++Review and redact sensitive values before uploading. `gh-upload-log` is an
++optional external uploader; recording never installs it or sends logs off the
++machine automatically.
+diff --git a/experiments/agent_cli_e2e/mock-research-mcp.mjs b/experiments/agent_cli_e2e/mock-research-mcp.mjs
+new file mode 100644
+index 00000000..20bbb7a8
+--- /dev/null
++++ b/experiments/agent_cli_e2e/mock-research-mcp.mjs
+@@ -0,0 +1,142 @@
++#!/usr/bin/env node
++
++// Deterministic, read-only web research fixture for issue #781 CLI E2E tests.
++// All four external clients execute these tools themselves, giving CI stable
++// evidence while preserving each client's real protocol and tool-call loop.
++// Separate captured runs retain Agent/OpenCode's network-backed evidence.
++
++import readline from "node:readline";
++
++const sources = new Map([
++  [
++    "https://acer.example.test/a325-45/specifications",
++    "Acer Aspire 3 A325-45 specifications: the supplied adapter is rated 24 W.",
++  ],
++  [
++    "https://parts.example.test/acer-a325-45/connector",
++    "Acer Aspire 3 A325-45 power input: 12 V DC, 2 A, center-positive 3.5 x 1.35 mm barrel connector.",
++  ],
++  [
++    "https://shop.example.test/compatible-a325-45-adapter",
++    "Candidate adapter listing: 12 V, 2 A, 24 W, center-positive 3.5 x 1.35 mm plug; compatible with Acer Aspire 3 A325-45.",
++  ],
++]);
++
++function result(id, value) {
++  process.stdout.write(`${JSON.stringify({ jsonrpc: "2.0", id, result: value })}\n`);
++}
++
++function error(id, code, message) {
++  process.stdout.write(
++    `${JSON.stringify({ jsonrpc: "2.0", id, error: { code, message } })}\n`,
++  );
++}
++
++function textResult(text) {
++  return { content: [{ type: "text", text }], isError: false };
++}
++
++function handle(message) {
++  const { id, method, params = {} } = message;
++  if (method === "initialize") {
++    result(id, {
++      protocolVersion: params.protocolVersion || "2025-06-18",
++      capabilities: { tools: {} },
++      serverInfo: { name: "issue-781-research-fixture", version: "1.0.0" },
++    });
++    return;
++  }
++  if (method === "notifications/initialized" || method === "notifications/cancelled") {
++    return;
++  }
++  if (method === "ping") {
++    result(id, {});
++    return;
++  }
++  if (method === "tools/list") {
++    result(id, {
++      tools: [
++        {
++          name: "websearch",
++          description: "Search deterministic web evidence for the issue #781 charger task",
++          inputSchema: {
++            type: "object",
++            properties: { query: { type: "string" } },
++            required: ["query"],
++            additionalProperties: false,
++          },
++          annotations: {
++            title: "Search issue 781 fixture",
++            readOnlyHint: true,
++            destructiveHint: false,
++            idempotentHint: true,
++            openWorldHint: true,
++          },
++        },
++        {
++          name: "webfetch",
++          description: "Fetch one deterministic issue #781 evidence page",
++          inputSchema: {
++            type: "object",
++            properties: { url: { type: "string" } },
++            required: ["url"],
++            additionalProperties: false,
++          },
++          annotations: {
++            title: "Fetch issue 781 fixture page",
++            readOnlyHint: true,
++            destructiveHint: false,
++            idempotentHint: true,
++            openWorldHint: true,
++          },
++        },
++      ],
++    });
++    return;
++  }
++  if (method === "tools/call") {
++    const name = params.name;
++    const args = params.arguments || {};
++    process.stderr.write(`[issue-781-mcp] ${name} ${JSON.stringify(args)}\n`);
++    if (name === "websearch") {
++      result(
++        id,
++        textResult(
++          [
++            "Acer specifications https://acer.example.test/a325-45/specifications",
++            "Connector reference https://parts.example.test/acer-a325-45/connector",
++            "Candidate listing https://shop.example.test/compatible-a325-45-adapter",
++          ].join("\n"),
++        ),
++      );
++      return;
++    }
++    if (name === "webfetch") {
++      const body = sources.get(args.url);
++      if (body) {
++        result(id, textResult(body));
++      } else {
++        result(id, {
++          content: [{ type: "text", text: `Error: fixture URL not found: ${args.url}` }],
++          isError: true,
++        });
++      }
++      return;
++    }
++    error(id, -32601, `Unknown tool: ${name}`);
++    return;
++  }
++  if (id !== undefined) {
++    error(id, -32601, `Unknown method: ${method}`);
++  }
++}
++
++const input = readline.createInterface({ input: process.stdin, crlfDelay: Infinity });
++input.on("line", (line) => {
++  if (!line.trim()) return;
++  try {
++    handle(JSON.parse(line));
++  } catch (exception) {
++    process.stderr.write(`[issue-781-mcp] invalid request: ${exception.message}\n`);
++  }
++});
+diff --git a/experiments/agent_cli_e2e/run_issue_781.sh b/experiments/agent_cli_e2e/run_issue_781.sh
+index 1255f0da..aecaf6cd 100755
+--- a/experiments/agent_cli_e2e/run_issue_781.sh
++++ b/experiments/agent_cli_e2e/run_issue_781.sh
+@@ -1,8 +1,7 @@
+ #!/usr/bin/env bash
+-# Real Agent CLI ↔ Formal AI proof for issue #781. A compatibility question must
+-# fan one search result set out to several independent fetches. Final synthesis
+-# is covered deterministically because Agent CLI 0.25.0 exits after executing a
+-# tool response whose finish reason it recovers as `unknown` (upstream #249).
++# Real multi-client research proof for issue #781. Each external CLI must drive
++# Formal AI through its native protocol, observe one action at a time, execute
++# one search plus three fetches, and receive the cited synthesis.
+ 
+ set -uo pipefail
+ 
+@@ -10,13 +9,40 @@ ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+ BIN="${BIN:-$ROOT/target/release/formal-ai}"
+ PORT="${PORT:-8783}"
+ AGENT="${AGENT:-agent}"
++OPENCODE="${OPENCODE:-opencode}"
++CLIENTS="${CLIENTS:-agent opencode claude codex}"
+ ARTIFACT_DIR="${ARTIFACT_DIR:-}"
+-LOG="/tmp/formal-ai-serve-$PORT.log"
+-AGENT_LOG="/tmp/agent-out-$PORT.log"
++PROMPT="Найди мне зарядку для ноутбука Acer Aspire 3 A325-45 на amazon.in"
+ WORKDIR="$(mktemp -d)"
++CURRENT_SERVER_PID=""
+ 
+-cd "$WORKDIR"
+-cat > opencode.json <<EOF
++cleanup() {
++  if [ -n "$CURRENT_SERVER_PID" ]; then
++    kill "$CURRENT_SERVER_PID" 2>/dev/null || true
++  fi
++  rm -rf -- "$WORKDIR"
++}
++trap cleanup EXIT
++
++fail() {
++  local message="$1"
++  local client_log="${2:-}"
++  local server_log="${3:-}"
++  echo "!! $message" >&2
++  if [ -n "$client_log" ]; then
++    echo "== client log ==" >&2
++    tail -120 "$client_log" >&2 2>/dev/null
++  fi
++  if [ -n "$server_log" ]; then
++    echo "== Formal AI log ==" >&2
++    tail -180 "$server_log" >&2 2>/dev/null
++  fi
++  exit 1
++}
++
++write_opencode_config() {
++  local config_port="$1"
++  cat > "$WORKDIR/opencode.json" <<EOF
+ {
+   "\$schema": "https://opencode.ai/config.json",
+   "provider": {
+@@ -24,73 +50,145 @@ cat > opencode.json <<EOF
+       "npm": "@ai-sdk/openai-compatible",
+       "name": "Formal AI",
+       "options": {
+-        "baseURL": "http://127.0.0.1:$PORT/v1",
++        "baseURL": "http://127.0.0.1:$config_port/v1",
+         "apiKey": "local"
+       },
+       "models": {
+         "formal-ai": { "name": "Formal AI Symbolic Production" }
+       }
+     }
++  },
++  "mcp": {
++    "issue781": {
++      "type": "local",
++      "command": ["node", "$ROOT/experiments/agent_cli_e2e/mock-research-mcp.mjs"],
++      "enabled": true
++    }
++  },
++  "tools": {
++    "websearch": false,
++    "webfetch": false
++  }
++}
++EOF
++}
++
++cat > "$WORKDIR/claude-mcp.json" <<EOF
++{
++  "mcpServers": {
++    "issue781": {
++      "command": "node",
++      "args": ["$ROOT/experiments/agent_cli_e2e/mock-research-mcp.mjs"]
++    }
+   }
+ }
+ EOF
+ 
+-FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
+-  "$BIN" serve --host 127.0.0.1 --port "$PORT" > "$LOG" 2>&1 &
+-SRV=$!
+-trap 'kill $SRV 2>/dev/null; rm -rf "$WORKDIR"' EXIT
++run_client() {
++  local client="$1"
++  local client_port="$2"
++  local client_dir="$WORKDIR/$client"
++  local client_log="$client_dir/client.log"
++  local server_log="$client_dir/formal-ai.log"
++  local dialog_dir="$client_dir/dialogs"
++  mkdir -p "$dialog_dir"
+ 
+-fail() {
+-  echo "!! $*" >&2
+-  echo "== Agent CLI log ==" >&2
+-  tail -120 "$AGENT_LOG" >&2 2>/dev/null
+-  echo "== Formal AI log ==" >&2
+-  tail -180 "$LOG" >&2 2>/dev/null
+-  exit 1
++  FORMAL_AI_AGENT_MODE=1 \
++    FORMAL_AI_TRACE_REQUESTS=1 \
++    FORMAL_AI_DIALOG_LOG_DIR="$dialog_dir" \
++    "$BIN" serve --host 127.0.0.1 --port "$client_port" > "$server_log" 2>&1 &
++  CURRENT_SERVER_PID=$!
++
++  curl -fsS --retry 30 --retry-delay 1 --retry-connrefused \
++    "http://127.0.0.1:$client_port/health" >/dev/null 2>&1 \
++    || fail "server never came up on port $client_port" "$client_log" "$server_log"
++
++  if [ "$client" = agent ] || [ "$client" = opencode ]; then
++    write_opencode_config "$client_port"
++  fi
++
++  case "$client" in
++    agent)
++      : > "$client_log"
++      for attempt in 1 2 3; do
++        echo "== Agent CLI attempt $attempt ==" >> "$client_log"
++        (
++          cd "$WORKDIR"
++          "$AGENT" \
++            --prompt "$PROMPT" \
++            --disable-stdin \
++            --model formal-ai/formal-ai \
++            --no-summarize-session \
++            --read-only
++        ) >> "$client_log" 2>&1 || true
++        if grep -q 'agentic_outcome: planned Final' "$server_log"; then
++          break
++        fi
++      done
++      ;;
++    opencode)
++      (
++        cd "$WORKDIR"
++        "$OPENCODE" run --model formal-ai/formal-ai "$PROMPT"
++      ) > "$client_log" 2>&1 \
++        || fail "OpenCode research turn failed" "$client_log" "$server_log"
++      ;;
++    claude)
++      "$BIN" with --port "$client_port" --no-start-server --non-interactive claude -- \
++        --mcp-config "$WORKDIR/claude-mcp.json" \
++        --strict-mcp-config \
++        --allowedTools "mcp__issue781__websearch,mcp__issue781__webfetch" \
++        -- "$PROMPT" > "$client_log" 2>&1 \
++        || fail "Claude research turn failed" "$client_log" "$server_log"
++      ;;
++    codex)
++      "$BIN" with --port "$client_port" --no-start-server --non-interactive codex -- \
++        --json \
++        -c 'mcp_servers.issue781.command="node"' \
++        -c "mcp_servers.issue781.args=[\"$ROOT/experiments/agent_cli_e2e/mock-research-mcp.mjs\"]" \
++        "$PROMPT" > "$client_log" 2>&1 \
++        || fail "Codex research turn failed" "$client_log" "$server_log"
++      ;;
++    *)
++      fail "unknown issue #781 E2E client: $client" "$client_log" "$server_log"
++      ;;
++  esac
++
++  local searches
++  local fetches
++  local posts
++  searches="$(grep -c 'agentic_outcome: planned ToolCalls.*websearch' "$server_log" | tr -d ' ')"
++  fetches="$(grep -c 'agentic_outcome: planned ToolCalls.*webfetch' "$server_log" | tr -d ' ')"
++  posts="$(grep -c '^\[trace\] POST ' "$server_log" | tr -d ' ')"
++
++  if [ -n "$ARTIFACT_DIR" ]; then
++    mkdir -p "$ARTIFACT_DIR/$client"
++    cp "$server_log" "$ARTIFACT_DIR/$client/formal-ai.log"
++    cp "$client_log" "$ARTIFACT_DIR/$client/client.log"
++    cp -R "$dialog_dir" "$ARTIFACT_DIR/$client/dialogs"
++  fi
++
++  [ "$searches" -ge 1 ] \
++    || fail "$client never reached websearch" "$client_log" "$server_log"
++  [ "$fetches" -ge 3 ] \
++    || fail "$client planned only $fetches web fetches" "$client_log" "$server_log"
++  [ "$posts" -ge 5 ] \
++    || fail "$client returned only $posts model turns" "$client_log" "$server_log"
++  grep -q 'agentic_outcome: planned Final' "$server_log" \
++    || fail "$client never received the final synthesis" "$client_log" "$server_log"
++  grep -q 'Source:' "$server_log" \
++    || fail "$client final synthesis did not cite sources" "$client_log" "$server_log"
++
++  echo "== issue #781 $client E2E OK: $searches search, $fetches fetches, $posts model turns =="
++  tail -20 "$client_log"
++
++  kill "$CURRENT_SERVER_PID" 2>/dev/null || true
++  wait "$CURRENT_SERVER_PID" 2>/dev/null || true
++  CURRENT_SERVER_PID=""
+ }
+ 
+-curl -sS --retry 30 --retry-delay 1 --retry-connrefused --max-time 40 \
+-  "http://127.0.0.1:$PORT/health" >/dev/null 2>&1 \
+-  || fail "server never came up on port $PORT"
+-
+-timeout 180 "$AGENT" \
+-  --prompt "Подбери совместимое зарядное устройство для Acer Aspire 3 A325-45 в Amazon India и проверь характеристики по независимым веб-источникам?" \
+-  --disable-stdin \
+-  --model formal-ai/formal-ai \
+-  --no-summarize-session \
+-  --read-only > "$AGENT_LOG" 2>&1 \
+-  || fail "Agent CLI research turn failed"
+-
+-searches="$(grep -o 'tool: "websearch"' "$LOG" | wc -l | tr -d ' ')"
+-fetches="$(grep -o 'tool: "webfetch"' "$LOG" | wc -l | tr -d ' ')"
+-executed_fetches="$(grep -c '"tool": "webfetch"' "$AGENT_LOG" | tr -d ' ')"
+-
+-[ "$searches" -ge 1 ] || fail "the question never reached websearch"
+-[ "$fetches" -ge 3 ] || fail "expected at least three webfetch plans, got $fetches"
+-[ "$executed_fetches" -ge 3 ] \
+-  || fail "expected the Agent CLI to execute three webfetches, got $executed_fetches events"
+-
+-# The research loop now deepens across rounds, so it can plan a second search
+-# and further fetches. Its bounding invariant is that a source already read is
+-# never read again — but that deliberately is *not* asserted here, and the
+-# reason is worth recording so nobody adds the check back.
+-#
+-# The planner is stateless: it re-derives the whole plan from the transcript on
+-# every turn, so each traced request repeats all of the previous turns' tool
+-# calls. A URL therefore appears in these logs once per remaining turn plus once
+-# per execution, and a repeated URL in the trace is indistinguishable from a
+-# replayed history. Any count-based no-repeat check over this output reports
+-# convergence failures that did not happen.
+-#
+-# The invariant is real and is covered where it can actually be observed: the
+-# planner-level regression `a_source_already_read_is_not_read_again` in
+-# tests/unit/issue_781.rs asserts it against the planner directly.
+-
+-if [ -n "$ARTIFACT_DIR" ]; then
+-  mkdir -p "$ARTIFACT_DIR"
+-  cp "$LOG" "$ARTIFACT_DIR/formal-ai.log"
+-  cp "$AGENT_LOG" "$ARTIFACT_DIR/agent-cli.log"
+-fi
+-
+-echo "== issue #781 E2E OK: $searches search, $fetches planned fetches, $executed_fetches execution events =="
+-tail -40 "$AGENT_LOG"
++client_index=0
++for client in $CLIENTS; do
++  run_client "$client" "$((PORT + client_index))"
++  client_index=$((client_index + 1))
++done
+diff --git a/experiments/issue-781-log-timeline.rb b/experiments/issue-781-log-timeline.rb
+new file mode 100644
+index 00000000..c4359153
+--- /dev/null
++++ b/experiments/issue-781-log-timeline.rb
+@@ -0,0 +1,55 @@
++#!/usr/bin/env ruby
++# frozen_string_literal: true
++
++# Extract the user-visible assistant narration and tool actions from a verbose
++# Claude Code / solve.mjs JSON log. The raw issue-781 comparison log is more
++# than 67,000 lines; this produces a small, reviewable event timeline without
++# discarding timestamps or tool arguments.
++
++require "json"
++
++abort "usage: #{$PROGRAM_NAME} LOG" unless ARGV.length == 1
++
++events = []
++buffer = nil
++
++File.foreach(ARGV.fetch(0)) do |line|
++  match = line.match(/^\[([^\]]+)\] \[INFO\] ?(.*)$/m)
++  next unless match
++
++  timestamp = match[1]
++  payload = match[2]
++  if buffer.nil?
++    next unless payload == "{\n" || payload == "{"
++
++    buffer = +payload
++  else
++    buffer << payload
++  end
++
++  next unless payload.strip == "}"
++
++  begin
++    object = JSON.parse(buffer)
++  rescue JSON::ParserError
++    next
++  end
++  buffer = nil
++
++  next unless object["type"] == "assistant"
++
++  object.dig("message", "content").to_a.each do |content|
++    case content["type"]
++    when "text"
++      text = content["text"].to_s.gsub(/\s+/, " ").strip
++      events << [timestamp, "narration", text] unless text.empty?
++    when "tool_use"
++      arguments = JSON.generate(content["input"] || {})
++      events << [timestamp, "tool", "#{content["name"]} #{arguments}"]
++    end
++  end
++end
++
++events.each_with_index do |(timestamp, kind, detail), index|
++  puts format("%04d\t%s\t%s\t%s", index + 1, timestamp, kind, detail)
++end
+diff --git a/src/agentic_coding/capability_router.rs b/src/agentic_coding/capability_router.rs
+index 383e715b..f283685c 100644
+--- a/src/agentic_coding/capability_router.rs
++++ b/src/agentic_coding/capability_router.rs
+@@ -7,19 +7,37 @@ use super::planner::{plan_one, AgenticPlan, Capability};
+ use crate::protocol::ChatMessage;
+ use crate::seed;
+ 
+-/// The first advertised tool name that provides `capability`, in canonical
+-/// alias order rather than the client's alphabetical tool order.
++/// The advertised tool name that provides `capability`. Client-executed MCP
++/// tools take precedence over protocol-native hosted tools: a hosted search is
++/// executed by the upstream model provider, while an MCP tool produces a result
++/// that the CLI can return in the next turn. Canonical aliases remain ordered by
++/// the registry, followed by the compatibility classifier for namespaced tools
++/// used by other harnesses.
+ pub(super) fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Option<&'a str> {
++    if let Some(name) = tool_names.iter().copied().find(|name| {
++        name.to_ascii_lowercase().starts_with("mcp__") && classify_tool(name) == Some(capability)
++    }) {
++        return Some(name);
++    }
+     let registry = seed::agentic_tool_capabilities();
+     let entry = registry
+         .iter()
+         .find(|entry| entry.id == capability.registry_id())?;
+-    entry.aliases.iter().find_map(|alias| {
+-        tool_names
+-            .iter()
+-            .copied()
+-            .find(|name| alias.eq_ignore_ascii_case(name))
+-    })
++    entry
++        .aliases
++        .iter()
++        .find_map(|alias| {
++            tool_names
++                .iter()
++                .copied()
++                .find(|name| alias.eq_ignore_ascii_case(name))
++        })
++        .or_else(|| {
++            tool_names
++                .iter()
++                .copied()
++                .find(|name| classify_tool(name) == Some(capability))
++        })
+ }
+ 
+ fn tool_matches_capability(name: &str, capability: Capability) -> bool {
+diff --git a/src/agentic_coding/mod.rs b/src/agentic_coding/mod.rs
+index 46ce4955..172b17df 100644
+--- a/src/agentic_coding/mod.rs
++++ b/src/agentic_coding/mod.rs
+@@ -41,6 +41,7 @@ pub mod learning_report;
+ pub mod ledger;
+ pub(crate) mod lexicon;
+ pub mod meaning_detail;
++pub(crate) mod narration;
+ pub mod planner;
+ mod progress;
+ pub mod question_catalog;
+diff --git a/src/agentic_coding/narration.rs b/src/agentic_coding/narration.rs
+new file mode 100644
+index 00000000..894b5429
+--- /dev/null
++++ b/src/agentic_coding/narration.rs
+@@ -0,0 +1,72 @@
++//! User-visible explanations emitted immediately before agentic tool calls.
++
++use serde_json::Value;
++
++use super::planner::PlannedToolCall;
++
++/// Render a concise, localized explanation for an imminent agentic action.
++///
++/// Natural language stays in the seed catalog. The planner only selects the
++/// concrete tool and target, keeping this useful for every advertised CLI tool
++/// rather than a fixed list of product-specific names.
++pub fn tool_action_narration(prompt: &str, calls: &[PlannedToolCall]) -> String {
++    const TOOL_SLOT: &str = concat!("{", "tool", "}");
++    const TARGET_SLOT: &str = concat!("{", "target", "}");
++
++    let language = crate::language::detect(prompt).slug();
++    let template = crate::seed::response_for("agentic_action_before_tool", language)
++        .or_else(|| crate::seed::response_for("agentic_action_before_tool", "en"))
++        .unwrap_or_default();
++    let tool = calls
++        .iter()
++        .map(|call| call.tool.as_str())
++        .collect::<Vec<_>>()
++        .join(", ");
++    let target = calls
++        .first()
++        .map(|call| tool_action_target(&call.arguments))
++        .unwrap_or_default();
++    template
++        .replace(TOOL_SLOT, &tool)
++        .replace(TARGET_SLOT, &target)
++}
++
++fn tool_action_target(arguments: &str) -> String {
++    const TARGET_FIELDS: &[&str] = &[
++        "url",
++        "query",
++        "path",
++        "file_path",
++        "filePath",
++        "command",
++        "prompt",
++        "pattern",
++        "target",
++        "title",
++        "name",
++    ];
++
++    fn first_text(value: &Value) -> Option<&str> {
++        match value {
++            Value::String(text) if !text.trim().is_empty() => Some(text),
++            Value::Array(values) => values.iter().find_map(first_text),
++            Value::Object(values) => TARGET_FIELDS
++                .iter()
++                .find_map(|field| values.get(*field).and_then(first_text))
++                .or_else(|| values.values().find_map(first_text)),
++            _ => None,
++        }
++    }
++
++    let parsed = serde_json::from_str::<Value>(arguments).ok();
++    let target = parsed
++        .as_ref()
++        .and_then(first_text)
++        .unwrap_or(arguments)
++        .trim();
++    let mut shortened = target.chars().take(160).collect::<String>();
++    if target.chars().count() > 160 {
++        shortened.push('…');
++    }
++    shortened
++}
+diff --git a/src/agentic_coding/planner.rs b/src/agentic_coding/planner.rs
+index a1d63924..33e68a24 100644
+--- a/src/agentic_coding/planner.rs
++++ b/src/agentic_coding/planner.rs
+@@ -287,16 +287,6 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
+     {
+         return Some(plan);
+     }
+-    if !tool_result::has_latest_turn_result(messages) {
+-        if let Some(query) = shell_command::code_search_query_for_task(&task) {
+-            if let Some(tool) = tool_for(tool_names, Capability::Grep) {
+-                return Some(plan_one(
+-                    tool,
+-                    json!({ "query": query, "pattern": query }).to_string(),
+-                ));
+-            }
+-        }
+-    }
+     if let Some(command) = shell_command::shell_command_for_task(&task) {
+         return Some(plan_shell_step(messages, tool_names, &command));
+     }
+@@ -326,6 +316,22 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
+     if let Some(plan) = intent_router::plan_web_search_step(&task, messages, tool_names) {
+         return Some(plan);
+     }
++    // A generic localized "find" cue can describe either an open-web lookup or
++    // a workspace grep. The research routers above get first refusal whenever
++    // the client exposes their tools; explicit local/repository searches were
++    // already claimed by the capability router. This fallback therefore keeps
++    // grep available to grep-only clients without letting an alphabetically
++    // earlier local tool steal a web-research request.
++    if !tool_result::has_latest_turn_result(messages) {
++        if let Some(query) = shell_command::code_search_query_for_task(&task) {
++            if let Some(tool) = tool_for(tool_names, Capability::Grep) {
++                return Some(plan_one(
++                    tool,
++                    json!({ "query": query, "pattern": query }).to_string(),
++                ));
++            }
++        }
++    }
+     if let Some(answer) = tool_result::latest_turn_answer(messages, tool_names, &task) {
+         return Some(AgenticPlan::Final(answer));
+     }
+diff --git a/src/agentic_coding/progress.rs b/src/agentic_coding/progress.rs
+index d08d27d2..ed0a2900 100644
+--- a/src/agentic_coding/progress.rs
++++ b/src/agentic_coding/progress.rs
+@@ -14,6 +14,7 @@ pub struct Progress {
+     completed: Vec<Capability>,
+     pub(super) fetched_text: Option<String>,
+     pub(super) fetched_pages: Vec<(String, String)>,
++    pub(super) attempted_fetches: Vec<String>,
+     pub(super) search_output: Option<String>,
+     pub(super) run_output: Option<String>,
+     pub(super) fetch_result: Option<String>,
+@@ -25,6 +26,7 @@ impl Progress {
+         let mut completed = Vec::new();
+         let mut fetched_text = None;
+         let mut fetched_pages = Vec::new();
++        let mut attempted_fetches = Vec::new();
+         let mut search_output = None;
+         let mut run_output = None;
+         let mut fetch_result = None;
+@@ -42,19 +44,25 @@ impl Progress {
+                 continue;
+             };
+             if capability == Capability::Fetch {
+-                let text = message.content.plain_text();
+-                fetch_result = Some(text.clone());
+-                if !looks_like_error(&text) && !text.trim().is_empty() {
+-                    if let Some(url) = result_tool_call(messages, index).and_then(fetch_call_url) {
++                let payload = super::tool_result::normalized_payload(&message.content.plain_text());
++                fetch_result = Some(payload.clone().unwrap_or_default());
++                let fetch_url = result_tool_call(messages, index).and_then(fetch_call_url);
++                if let Some(url) = fetch_url.as_ref() {
++                    if !attempted_fetches.contains(url) {
++                        attempted_fetches.push(url.clone());
++                    }
++                }
++                if let Some(text) = payload.filter(|text| !text.trim().is_empty()) {
++                    if let Some(url) = fetch_url {
+                         fetched_pages.push((url, text.clone()));
+                     }
+                     fetched_text = Some(text);
+                 }
+             }
+             if capability == Capability::Search {
+-                let text = message.content.plain_text();
+-                search_result = Some(text.clone());
+-                if !looks_like_error(&text) && !text.trim().is_empty() {
++                let payload = super::tool_result::normalized_payload(&message.content.plain_text());
++                search_result = Some(payload.clone().unwrap_or_default());
++                if let Some(text) = payload.filter(|text| !text.trim().is_empty()) {
+                     search_output = Some(text);
+                 }
+             }
+@@ -67,6 +75,7 @@ impl Progress {
+             completed,
+             fetched_text,
+             fetched_pages,
++            attempted_fetches,
+             search_output,
+             run_output,
+             fetch_result,
+@@ -135,11 +144,3 @@ fn fetch_call_url(call: &crate::protocol::ToolCall) -> Option<String> {
+         .filter(|url| !url.trim().is_empty())
+         .map(str::to_owned)
+ }
+-
+-/// Whether a tool result looks like an error the planner should not trust.
+-fn looks_like_error(text: &str) -> bool {
+-    let lower = text.to_lowercase();
+-    ["error", "failed", "not found", "404"]
+-        .iter()
+-        .any(|needle| lower.contains(needle))
+-}
+diff --git a/src/agentic_coding/tool_result.rs b/src/agentic_coding/tool_result.rs
+index cbd0c1e9..8851fafd 100644
+--- a/src/agentic_coding/tool_result.rs
++++ b/src/agentic_coding/tool_result.rs
+@@ -14,6 +14,21 @@ struct NormalizedResult {
+     format: &'static str,
+ }
+ 
++/// Remove client transport wrappers while preserving the tool's actual text.
++/// Agentic planners consume this form; durable protocol recording still keeps
++/// the original result byte-for-byte.
++pub(super) fn normalized_payload(raw: &str) -> Option<String> {
++    let result = normalize(raw);
++    (result.error.is_none() && !looks_like_error(&result.payload)).then_some(result.payload)
++}
++
++fn looks_like_error(text: &str) -> bool {
++    let lower = text.to_lowercase();
++    ["error", "failed", "not found", "404"]
++        .iter()
++        .any(|needle| lower.contains(needle))
++}
++
+ pub(super) fn render(label: &str, raw: &str, prompt: &str) -> String {
+     let result = normalize(raw);
+     let language = response_language(prompt);
+@@ -195,6 +210,13 @@ fn normalize(raw: &str) -> NormalizedResult {
+ fn from_payload(payload: &str, error: Option<String>) -> NormalizedResult {
+     let trimmed = payload.trim().to_owned();
+     if let Ok(json) = serde_json::from_str::<Value>(&trimmed) {
++        if let Some(text) = mcp_text_content(&json) {
++            return NormalizedResult {
++                payload: text,
++                error,
++                format: "text",
++            };
++        }
+         return NormalizedResult {
+             payload: pretty_json(&json),
+             error,
+@@ -216,14 +238,45 @@ fn from_payload(payload: &str, error: Option<String>) -> NormalizedResult {
+     }
+ }
+ 
++fn mcp_text_content(value: &Value) -> Option<String> {
++    let content = value
++        .as_object()
++        .and_then(|object| object.get("content"))
++        .unwrap_or(value)
++        .as_array()?;
++    if content.is_empty() {
++        return None;
++    }
++    let text = content
++        .iter()
++        .map(|item| {
++            let object = item.as_object()?;
++            (object.get("type").and_then(Value::as_str) == Some("text"))
++                .then(|| object.get("text").and_then(Value::as_str))
++                .flatten()
++        })
++        .collect::<Option<Vec<_>>>()?;
++    Some(text.join("\n"))
++}
++
+ fn strip_transport_envelope(text: &str) -> String {
+     let inner = text
+         .split_once("<untrusted_context>")
+         .and_then(|(_, rest)| rest.split_once("</untrusted_context>"))
+         .map_or(text, |(inside, _)| inside);
+-    inner
+-        .lines()
++    let lines = inner.lines().collect::<Vec<_>>();
++    let output = lines.iter().position(|line| {
++        let trimmed = line.trim();
++        trimmed == "Output:" || trimmed.starts_with("Output: ")
++    });
++    lines
++        .iter()
++        .enumerate()
+         .filter_map(|line| {
++            let (index, line) = line;
++            if output.is_some_and(|output| index < output) {
++                return None;
++            }
+             let trimmed = line.trim();
+             if trimmed.starts_with("Process Group PGID:") {
+                 None
+@@ -231,7 +284,7 @@ fn strip_transport_envelope(text: &str) -> String {
+                 let output = output.trim();
+                 (!matches!(output, "(empty)" | "(no output)")).then_some(output)
+             } else {
+-                Some(line)
++                Some(*line)
+             }
+         })
+         .collect::<Vec<_>>()
+diff --git a/src/agentic_coding/web_research.rs b/src/agentic_coding/web_research.rs
+index 6c8bebb2..d98e414d 100644
+--- a/src/agentic_coding/web_research.rs
++++ b/src/agentic_coding/web_research.rs
+@@ -7,9 +7,7 @@
+ 
+ use serde_json::json;
+ 
+-use super::planner::{
+-    fetch_arguments, plan_one, tool_for, AgenticPlan, Capability, PlannedToolCall, Progress,
+-};
++use super::planner::{fetch_arguments, plan_one, tool_for, AgenticPlan, Capability, Progress};
+ use crate::engine::FormalAiEngine;
+ use crate::protocol::ChatMessage;
+ use crate::seed::{self, Slot};
+@@ -85,6 +83,11 @@ pub(super) fn plan_web_research_step(
+             plan_fetches(tool_names, &progress)
+                 .unwrap_or_else(|| AgenticPlan::Final(final_answer(query, &progress))),
+         ),
++        Some(Capability::Fetch) => Some(
++            plan_fetches(tool_names, &progress)
++                .or_else(|| plan_deeper_round(tool_names, &progress, query))
++                .unwrap_or_else(|| AgenticPlan::Final(final_answer(query, &progress))),
++        ),
+         Some(_) => Some(
+             plan_deeper_round(tool_names, &progress, query)
+                 .unwrap_or_else(|| AgenticPlan::Final(final_answer(query, &progress))),
+@@ -102,19 +105,14 @@ fn plan_fetches(tool_names: &[&str], progress: &Progress) -> Option<AgenticPlan>
+     let tool = tool_for(tool_names, Capability::Fetch)?;
+     let output = progress.search_output.as_deref()?;
+     let already: std::collections::BTreeSet<&str> = progress
+-        .fetched_pages
++        .attempted_fetches
+         .iter()
+-        .map(|(url, _)| url.as_str())
++        .map(String::as_str)
+         .collect();
+-    let calls = research_urls(output)
++    research_urls(output)
+         .into_iter()
+-        .filter(|url| !already.contains(url.as_str()))
+-        .map(|url| PlannedToolCall {
+-            tool: tool.to_owned(),
+-            arguments: fetch_arguments(&url),
+-        })
+-        .collect::<Vec<_>>();
+-    (!calls.is_empty()).then_some(AgenticPlan::ToolCalls(calls))
++        .find(|url| !already.contains(url.as_str()))
++        .map(|url| plan_one(tool, fetch_arguments(&url)))
+ }
+ 
+ /// Search again for the part of the question the evidence has not covered.
+diff --git a/src/anthropic.rs b/src/anthropic.rs
+index 964503f7..ab46f150 100644
+--- a/src/anthropic.rs
++++ b/src/anthropic.rs
+@@ -373,6 +373,9 @@ fn anthropic_message_from_chat_completion(
+     let requests_tools = choice.is_some_and(|choice| choice.finish_reason == "tool_calls");
+ 
+     let (mut content, stop_reason, seed) = if requests_tools {
++        let narration = choice
++            .map(|choice| choice.message.content.plain_text())
++            .unwrap_or_default();
+         let calls = choice
+             .map(|choice| choice.message.tool_calls.clone())
+             .unwrap_or_default();
+@@ -381,7 +384,11 @@ fn anthropic_message_from_chat_completion(
+             .map(|call| format!("{}({})", call.function.name, call.function.arguments))
+             .collect::<Vec<_>>()
+             .join("|");
+-        let blocks = calls.into_iter().map(tool_call_to_block).collect();
++        let mut blocks = Vec::with_capacity(calls.len().saturating_add(1));
++        if !narration.trim().is_empty() {
++            blocks.push(AnthropicContentBlock::text(narration));
++        }
++        blocks.extend(calls.into_iter().map(tool_call_to_block));
+         (blocks, String::from("tool_use"), seed)
+     } else {
+         let text = choice
+diff --git a/src/dialog_log.rs b/src/dialog_log.rs
+new file mode 100644
+index 00000000..e3840b43
+--- /dev/null
++++ b/src/dialog_log.rs
+@@ -0,0 +1,180 @@
++//! Opt-in, per-dialog HTTP exchange logs for agentic CLI diagnosis (issue #781).
++//!
++//! The server already had a stderr request dump, but a request alone cannot
++//! explain whether an empty CLI turn originated in the planner, a protocol
++//! adapter, or the client. This module records the complete authenticated
++//! request and response together as JSONL. It is disabled unless
++//! `FORMAL_AI_DIALOG_LOG_DIR` is set because bodies can contain private prompts,
++//! source text, and tool results.
++
++use std::fs::{self, OpenOptions};
++use std::io::{self, Write};
++use std::path::{Path, PathBuf};
++use std::sync::atomic::{AtomicU64, Ordering};
++use std::sync::{Mutex, OnceLock};
++use std::time::{SystemTime, UNIX_EPOCH};
++
++use serde::{Deserialize, Serialize};
++use serde_json::Value;
++
++use crate::engine::stable_id;
++use crate::proxy::{summarize_proxy_exchange, ProxyExchangeLog};
++use crate::server::ApiHttpResponse;
++
++static REQUEST_SEQUENCE: AtomicU64 = AtomicU64::new(1);
++static LOG_WRITE_LOCK: OnceLock<Mutex<()>> = OnceLock::new();
++
++/// Dump an inbound request to stderr when `FORMAL_AI_TRACE_REQUESTS=1`.
++pub(crate) fn trace_request_if_enabled(method: &str, path: &str, body: &str) {
++    if std::env::var("FORMAL_AI_TRACE_REQUESTS").as_deref() == Ok("1") {
++        eprintln!("[trace] {method} {path} ({} byte body)\n{body}", body.len());
++    }
++}
++
++/// One complete server exchange, stored as one JSONL record.
++#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
++pub struct DialogExchangeLog {
++    pub timestamp_unix_ms: u128,
++    pub dialog_id: String,
++    pub request_id: String,
++    #[serde(flatten)]
++    pub exchange: ProxyExchangeLog,
++}
++
++/// Record an exchange when `FORMAL_AI_DIALOG_LOG_DIR` is configured.
++///
++/// Logging is best-effort: a filesystem problem is reported to stderr and never
++/// prevents the protocol response from reaching the client.
++pub(crate) fn record_api_exchange_if_enabled(
++    method: &str,
++    path: &str,
++    headers: &[(&str, &str)],
++    request_body: &str,
++    response: &ApiHttpResponse,
++    authorized: bool,
++) {
++    if !authorized {
++        return;
++    }
++    let Some(directory) = std::env::var_os("FORMAL_AI_DIALOG_LOG_DIR")
++        .filter(|value| !value.is_empty())
++        .map(PathBuf::from)
++    else {
++        return;
++    };
++    match write_dialog_exchange(
++        &directory,
++        method,
++        path,
++        headers,
++        request_body,
++        response.status_code,
++        response.content_type,
++        &response.body,
++    ) {
++        Ok(path) => eprintln!("[dialog-log] appended exchange to {}", path.display()),
++        Err(error) => eprintln!("[dialog-log] failed to record exchange: {error}"),
++    }
++}
++
++/// Append one complete exchange and return its per-dialog log path.
++///
++/// This explicit-directory form is public so an embedding application can use
++/// the same recorder without mutating process-wide environment variables.
++#[allow(clippy::too_many_arguments)]
++pub fn write_dialog_exchange(
++    directory: &Path,
++    method: &str,
++    path: &str,
++    headers: &[(&str, &str)],
++    request_body: &str,
++    status: u16,
++    response_content_type: &str,
++    response_body: &str,
++) -> io::Result<PathBuf> {
++    let timestamp_unix_ms = SystemTime::now()
++        .duration_since(UNIX_EPOCH)
++        .map_or(0, |duration| duration.as_millis());
++    let dialog_id = dialog_id(headers, request_body, path);
++    let sequence = REQUEST_SEQUENCE.fetch_add(1, Ordering::Relaxed);
++    let request_id = stable_id(
++        "request",
++        &format!("{timestamp_unix_ms}|{sequence}|{dialog_id}|{path}"),
++    );
++    let exchange = summarize_proxy_exchange(
++        method,
++        path,
++        request_body.as_bytes(),
++        status,
++        response_content_type,
++        response_body.as_bytes(),
++        true,
++    );
++    let record = DialogExchangeLog {
++        timestamp_unix_ms,
++        dialog_id: dialog_id.clone(),
++        request_id,
++        exchange,
++    };
++
++    fs::create_dir_all(directory)?;
++    let path = directory.join(format!("{dialog_id}.jsonl"));
++    let _guard = LOG_WRITE_LOCK
++        .get_or_init(|| Mutex::new(()))
++        .lock()
++        .unwrap_or_else(std::sync::PoisonError::into_inner);
++    let mut file = OpenOptions::new().create(true).append(true).open(&path)?;
++    serde_json::to_writer(&mut file, &record).map_err(io::Error::other)?;
++    file.write_all(b"\n")?;
++    file.flush()?;
++    Ok(path)
++}
++
++fn dialog_id(headers: &[(&str, &str)], request_body: &str, path: &str) -> String {
++    let explicit = headers.iter().find_map(|(name, value)| {
++        name.eq_ignore_ascii_case("x-formal-ai-dialog-id")
++            .then(|| value.trim())
++            .filter(|value| !value.is_empty())
++    });
++    let basis = explicit
++        .map(str::to_owned)
++        .or_else(|| first_user_prompt(request_body))
++        .unwrap_or_else(|| path.to_owned());
++    stable_id("dialog", &basis)
++}
++
++fn first_user_prompt(body: &str) -> Option<String> {
++    fn text(value: &Value) -> Option<String> {
++        match value {
++            Value::String(value) if !value.trim().is_empty() => Some(value.trim().to_owned()),
++            Value::Array(values) => values.iter().find_map(text),
++            Value::Object(values) => ["text", "content", "input"]
++                .iter()
++                .find_map(|key| values.get(*key).and_then(text)),
++            _ => None,
++        }
++    }
++
++    fn user_content(value: &Value) -> Option<String> {
++        match value {
++            Value::Array(values) => values.iter().find_map(user_content),
++            Value::Object(values) => {
++                let is_user = values
++                    .get("role")
++                    .and_then(Value::as_str)
++                    .is_some_and(|role| role.eq_ignore_ascii_case("user"));
++                if is_user {
++                    return values
++                        .get("content")
++                        .or_else(|| values.get("parts"))
++                        .and_then(text);
++                }
++                values.values().find_map(user_content)
++            }
++            _ => None,
++        }
++    }
++
++    let value = serde_json::from_str::<Value>(body).ok()?;
++    user_content(&value).or_else(|| value.get("input").and_then(text))
++}
+diff --git a/src/gemini.rs b/src/gemini.rs
+index 9a2a157a..ff33e433 100644
+--- a/src/gemini.rs
++++ b/src/gemini.rs
+@@ -291,21 +291,22 @@ fn gemini_response_from_chat_completion(completion: &ChatCompletion) -> Value {
+                 vec![json!({ "text": text })]
+             }
+         } else {
+-            choice
+-                .message
+-                .tool_calls
+-                .iter()
+-                .map(|call| {
+-                    json!({
+-                        "functionCall": {
+-                            "id": call.id,
+-                            "name": call.function.name,
+-                            "args": serde_json::from_str::<Value>(&call.function.arguments)
+-                                .unwrap_or_else(|_| json!({}))
+-                        }
+-                    })
++            let mut parts = Vec::with_capacity(choice.message.tool_calls.len().saturating_add(1));
++            let narration = choice.message.content.plain_text();
++            if !narration.trim().is_empty() {
++                parts.push(json!({ "text": narration }));
++            }
++            parts.extend(choice.message.tool_calls.iter().map(|call| {
++                json!({
++                    "functionCall": {
++                        "id": call.id,
++                        "name": call.function.name,
++                        "args": serde_json::from_str::<Value>(&call.function.arguments)
++                            .unwrap_or_else(|_| json!({}))
++                    }
+                 })
+-                .collect()
++            }));
++            parts
+         }
+     });
+     json!({
+diff --git a/src/lib.rs b/src/lib.rs
+index 65b264bc..c142d137 100644
+--- a/src/lib.rs
++++ b/src/lib.rs
+@@ -17,6 +17,7 @@ pub(crate) mod coding;
+ pub(crate) mod concepts;
+ pub mod context_capacity;
+ pub mod cue_lexicon;
++pub mod dialog_log;
+ pub mod document_formats;
+ pub mod dreaming;
+ pub mod dreaming_application;
+diff --git a/src/protocol.rs b/src/protocol.rs
+index 5dbe7c63..c2c90228 100644
+--- a/src/protocol.rs
++++ b/src/protocol.rs
+@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
+ use serde_json::Value;
+ 
+ use crate::agentic_coding::command_reroute::plan_symbolic_command_reroute;
++use crate::agentic_coding::narration::tool_action_narration;
+ use crate::agentic_coding::planner::{plan_chat_step, AgenticPlan};
+ use crate::dreaming_application::{
+     amended_answer, apply_retained_amendments, solve_with_standing_requirements,
+@@ -16,8 +17,8 @@ use crate::memory::MemoryEvent;
+ use crate::protocol_memory::answer_from_memory_if_requested;
+ use crate::protocol_policy::{
+     agentic_tool_permission_denial, is_hosted_tool_definition, is_tool_choice_request,
+-    matches_tool_choice_none, tool_call_refusal_answer, tool_choice_function_name,
+-    tool_definition_name, tool_permission_refusal_answer,
++    matches_tool_choice_none, response_tool_call_identity, tool_call_refusal_answer,
++    tool_choice_function_name, tool_definition_names, tool_permission_refusal_answer,
+ };
+ use crate::protocol_responses::response_arguments_for_tool;
+ use crate::solver::UniversalSolver;
+@@ -124,14 +125,14 @@ impl ChatCompletionRequest {
+             .as_ref()
+             .is_some_and(matches_tool_choice_none)
+         {
+-            names.extend(self.tools.iter().filter_map(tool_definition_name));
++            names.extend(self.tools.iter().flat_map(tool_definition_names));
+         }
+         if !self
+             .function_call
+             .as_ref()
+             .is_some_and(matches_tool_choice_none)
+         {
+-            names.extend(self.functions.iter().filter_map(tool_definition_name));
++            names.extend(self.functions.iter().flat_map(tool_definition_names));
+         }
+         names.sort();
+         names.dedup();
+@@ -199,6 +200,24 @@ impl ChatMessage {
+         }
+     }
+ 
++    /// An `assistant` message that explains an action before requesting it.
++    ///
++    /// Tool-capable protocol surfaces preserve both fields, so agentic clients
++    /// can show the user what is about to happen while they execute the
++    /// machine-readable call (issue #781).
++    #[must_use]
++    pub fn assistant_tool_calls_with_content(
++        content: impl Into<String>,
++        tool_calls: Vec<ToolCall>,
++    ) -> Self {
++        Self {
++            role: String::from("assistant"),
++            content: MessageContent::Text(content.into()),
++            tool_calls,
++            ..Self::default()
++        }
++    }
++
+     /// A `tool` message carrying the `result` for the call `tool_call_id` made
+     /// against the tool `name`.
+     #[must_use]
+@@ -631,6 +650,7 @@ fn chat_completion_from_plan(
+ 
+     let (message, finish_reason, completion_tokens) = match plan {
+         AgenticPlan::ToolCalls(calls) => {
++            let narration = tool_action_narration(prompt, &calls);
+             let tool_calls: Vec<_> = calls
+                 .into_iter()
+                 .enumerate()
+@@ -645,15 +665,17 @@ fn chat_completion_from_plan(
+                     ToolCall::function(stable_id("call", &seed), call.tool, arguments)
+                 })
+                 .collect();
+-            let completion_tokens = tool_calls
+-                .iter()
+-                .map(|call| {
+-                    estimate_tokens(&call.function.name)
+-                        .saturating_add(estimate_tokens(&call.function.arguments))
+-                })
+-                .sum();
++            let completion_tokens = estimate_tokens(&narration).saturating_add(
++                tool_calls
++                    .iter()
++                    .map(|call| {
++                        estimate_tokens(&call.function.name)
++                            .saturating_add(estimate_tokens(&call.function.arguments))
++                    })
++                    .sum(),
++            );
+             (
+-                ChatMessage::assistant_tool_calls(tool_calls),
++                ChatMessage::assistant_tool_calls_with_content(narration, tool_calls),
+                 String::from("tool_calls"),
+                 completion_tokens,
+             )
+@@ -787,8 +809,19 @@ fn response_from_plan(
+ 
+     let (output, output_tokens) = match plan {
+         AgenticPlan::ToolCalls(calls) => {
+-            let mut items = Vec::with_capacity(calls.len());
+-            let mut output_tokens = 0u32;
++            let narration = tool_action_narration(prompt, &calls);
++            let mut items = Vec::with_capacity(calls.len().saturating_add(1));
++            let mut output_tokens = estimate_tokens(&narration);
++            items.push(ResponseOutputItem::Message(ResponseOutputMessage {
++                id: stable_id("msg", &narration),
++                kind: String::from("message"),
++                role: String::from("assistant"),
++                content: vec![ResponseOutputContent {
++                    kind: String::from("output_text"),
++                    text: narration,
++                }],
++                thinking_steps: Vec::new(),
++            }));
+             for (index, call) in calls.into_iter().enumerate() {
+                 let tool = call.tool;
+                 let planned_arguments = call.arguments;
+@@ -826,11 +859,13 @@ fn response_from_plan(
+                         },
+                     ));
+                 } else {
++                    let (name, namespace) = response_tool_call_identity(&request.tools, &tool);
+                     items.push(ResponseOutputItem::FunctionCall(ResponseFunctionToolCall {
+                         id: stable_id("fc", &seed),
+                         kind: function_call_kind(),
+                         call_id: stable_id("call", &seed),
+-                        name: tool,
++                        name,
++                        namespace,
+                         arguments,
+                         status: String::from("completed"),
+                     }));
+diff --git a/src/protocol/output.rs b/src/protocol/output.rs
+index 4a800267..ad087c42 100644
+--- a/src/protocol/output.rs
++++ b/src/protocol/output.rs
+@@ -99,6 +99,8 @@ pub struct ResponseFunctionToolCall {
+     pub kind: String,
+     pub call_id: String,
+     pub name: String,
++    #[serde(default, skip_serializing_if = "Option::is_none")]
++    pub namespace: Option<String>,
+     pub arguments: String,
+     pub status: String,
+ }
+diff --git a/src/protocol_policy.rs b/src/protocol_policy.rs
+index 9fcec2a5..b3f6f477 100644
+--- a/src/protocol_policy.rs
++++ b/src/protocol_policy.rs
+@@ -109,6 +109,126 @@ pub fn tool_definition_name(value: &Value) -> Option<String> {
+     }
+ }
+ 
++/// Executable names advertised by one tool definition.
++///
++/// The Responses API can group MCP functions beneath a `namespace` definition.
++/// Codex addresses those children as `<namespace>__<function>`, so the planner
++/// must see the qualified child names rather than the non-executable namespace
++/// container.
++pub fn tool_definition_names(value: &Value) -> Vec<String> {
++    let mut names = Vec::new();
++    append_qualified_tool_definition_names(value, None, &mut names);
++    names
++}
++
++/// Find the concrete definition (and therefore schema) for an executable tool
++/// name, including a child inside a Responses API namespace.
++pub fn find_tool_definition<'a>(definitions: &'a [Value], tool_name: &str) -> Option<&'a Value> {
++    definitions
++        .iter()
++        .find_map(|definition| find_qualified_tool_definition(definition, None, tool_name))
++}
++
++/// Convert the planner's qualified identity back to the Responses wire shape.
++/// Namespace-aware clients route MCP calls by the `(namespace, name)` pair; a
++/// flat qualified name is treated as an unrelated built-in function.
++pub fn response_tool_call_identity(
++    definitions: &[Value],
++    tool_name: &str,
++) -> (String, Option<String>) {
++    definitions
++        .iter()
++        .find_map(|definition| namespace_tool_call_identity(definition, None, tool_name))
++        .unwrap_or_else(|| (tool_name.to_owned(), None))
++}
++
++fn append_qualified_tool_definition_names(
++    value: &Value,
++    prefix: Option<&str>,
++    names: &mut Vec<String>,
++) {
++    let Some(object) = value.as_object() else {
++        return;
++    };
++    if object.get("type").and_then(Value::as_str) == Some("namespace") {
++        let Some(namespace) = object.get("name").and_then(Value::as_str) else {
++            return;
++        };
++        let qualified_namespace = qualify_tool_name(prefix, namespace);
++        if let Some(children) = object.get("tools").and_then(Value::as_array) {
++            for child in children {
++                append_qualified_tool_definition_names(child, Some(&qualified_namespace), names);
++            }
++        }
++        return;
++    }
++    if let Some(name) = tool_definition_name(value) {
++        names.push(qualify_tool_name(prefix, &name));
++    }
++}
++
++fn find_qualified_tool_definition<'a>(
++    value: &'a Value,
++    prefix: Option<&str>,
++    tool_name: &str,
++) -> Option<&'a Value> {
++    let object = value.as_object()?;
++    if object.get("type").and_then(Value::as_str) == Some("namespace") {
++        let namespace = object.get("name").and_then(Value::as_str)?;
++        let qualified_namespace = qualify_tool_name(prefix, namespace);
++        return object
++            .get("tools")
++            .and_then(Value::as_array)?
++            .iter()
++            .find_map(|child| {
++                find_qualified_tool_definition(child, Some(&qualified_namespace), tool_name)
++            });
++    }
++    let name = tool_definition_name(value)?;
++    (qualify_tool_name(prefix, &name) == tool_name).then_some(value)
++}
++
++fn namespace_tool_call_identity(
++    value: &Value,
++    prefix: Option<&str>,
++    tool_name: &str,
++) -> Option<(String, Option<String>)> {
++    let object = value.as_object()?;
++    if object.get("type").and_then(Value::as_str) != Some("namespace") {
++        return None;
++    }
++    let namespace = object.get("name").and_then(Value::as_str)?;
++    let qualified_namespace = qualify_tool_name(prefix, namespace);
++    for child in object.get("tools").and_then(Value::as_array)? {
++        if let Some(identity) =
++            namespace_tool_call_identity(child, Some(&qualified_namespace), tool_name)
++        {
++            return Some(identity);
++        }
++        let Some(child_name) = tool_definition_name(child) else {
++            continue;
++        };
++        if qualify_tool_name(Some(&qualified_namespace), &child_name) == tool_name {
++            return Some((child_name, Some(qualified_namespace)));
++        }
++    }
++    None
++}
++
++fn qualify_tool_name(prefix: Option<&str>, name: &str) -> String {
++    prefix.map_or_else(
++        || name.to_owned(),
++        |prefix| {
++            let separator = if prefix.ends_with("__") { "" } else { "__" };
++            if name.starts_with(&format!("{prefix}{separator}")) {
++                name.to_owned()
++            } else {
++                format!("{prefix}{separator}{name}")
++            }
++        },
++    )
++}
++
+ /// Canonical capability name for OpenAI/Anthropic hosted tools whose wire
+ /// definition carries only `type`. Function tools are deliberately excluded:
+ /// their executable name must still come from `function.name` or top-level
+diff --git a/src/protocol_responses.rs b/src/protocol_responses.rs
+index 33a0a528..f75c01b4 100644
+--- a/src/protocol_responses.rs
++++ b/src/protocol_responses.rs
+@@ -2,7 +2,7 @@ use std::path::Path;
+ 
+ use serde_json::{Map, Value};
+ 
+-use crate::protocol_policy::tool_definition_name;
++use crate::protocol_policy::find_tool_definition;
+ 
+ /// Project the planner's capability-shaped arguments onto the exact JSON Schema
+ /// advertised by the selected client tool.
+@@ -17,11 +17,8 @@ pub fn response_arguments_for_tool(
+     arguments: String,
+     user_prompt: &str,
+ ) -> String {
+-    let Some(schema) = tools.iter().find_map(|tool| {
+-        (tool_definition_name(tool).as_deref() == Some(tool_name))
+-            .then(|| tool_parameters_schema(tool))
+-            .flatten()
+-    }) else {
++    let Some(schema) = find_tool_definition(tools, tool_name).and_then(tool_parameters_schema)
++    else {
+         return arguments;
+     };
+     let Some(properties) = schema.get("properties").and_then(Value::as_object) else {
+diff --git a/src/proxy.rs b/src/proxy.rs
+index 87cea7b6..2044bcf4 100644
+--- a/src/proxy.rs
++++ b/src/proxy.rs
+@@ -9,6 +9,8 @@ use std::thread;
+ use serde::{Deserialize, Serialize};
+ use serde_json::Value;
+ 
++use crate::protocol_policy::tool_definition_names;
++
+ /// Runtime configuration for `formal-ai proxy`.
+ #[derive(Debug, Clone, PartialEq, Eq)]
+ pub struct ProxyConfig {
+@@ -658,14 +660,7 @@ fn collect_request_tool_names(value: &Value) -> Vec<String> {
+ }
+ 
+ fn append_tool_definition_names(value: &Value, names: &mut Vec<String>) {
+-    if let Some(name) = value
+-        .get("function")
+-        .and_then(|function| function.get("name"))
+-        .or_else(|| value.get("name"))
+-        .and_then(Value::as_str)
+-    {
+-        names.push(name.to_owned());
+-    }
++    names.extend(tool_definition_names(value));
+     if let Some(declarations) = value.get("functionDeclarations").and_then(Value::as_array) {
+         for declaration in declarations {
+             if let Some(name) = declaration.get("name").and_then(Value::as_str) {
+diff --git a/src/server.rs b/src/server.rs
+index 9a970e0b..18950ac3 100644
+--- a/src/server.rs
++++ b/src/server.rs
+@@ -130,18 +130,6 @@ fn record_exchange_best_effort(
+     }
+ }
+ 
+-/// Dump every inbound request to stderr when `FORMAL_AI_TRACE_REQUESTS=1`.
+-///
+-/// Off by default so production output stays quiet; flip the env var on when
+-/// debugging what an external agent CLI actually sends over the OpenAI-compatible
+-/// surface (which tools it advertises, whether the task reaches the planner).
+-fn trace_request(method: &str, path: &str, body: &str) {
+-    if std::env::var("FORMAL_AI_TRACE_REQUESTS").as_deref() != Ok("1") {
+-        return;
+-    }
+-    eprintln!("[trace] {method} {path} ({} byte body)\n{body}", body.len());
+-}
+-
+ #[must_use]
+ pub fn handle_api_request_with_auth(
+     method: &str,
+@@ -149,6 +137,22 @@ pub fn handle_api_request_with_auth(
+     headers: &[(&str, &str)],
+     body: &str,
+     auth: &ApiAuthConfig,
++) -> ApiHttpResponse {
++    let normalized_path = path.split('?').next().unwrap_or(path);
++    let authorized = !requires_bearer_auth(method, normalized_path) || auth.allows(headers);
++    let response = dispatch_api_request_with_auth(method, path, headers, body, auth);
++    crate::dialog_log::record_api_exchange_if_enabled(
++        method, path, headers, body, &response, authorized,
++    );
++    response
++}
++
++fn dispatch_api_request_with_auth(
++    method: &str,
++    path: &str,
++    headers: &[(&str, &str)],
++    body: &str,
++    auth: &ApiAuthConfig,
+ ) -> ApiHttpResponse {
+     let _foreground_activity = crate::dreaming_runtime::ForegroundActivity::begin();
+     let normalized_path = path.split('?').next().unwrap_or(path);
+@@ -161,7 +165,7 @@ pub fn handle_api_request_with_auth(
+         return error_response(401, "missing or invalid bearer token");
+     }
+ 
+-    trace_request(method, normalized_path, body);
++    crate::dialog_log::trace_request_if_enabled(method, normalized_path, body);
+ 
+     if let Some(response) = handle_dynamic_protocol_route(method, normalized_path, body) {
+         return response;
+diff --git a/tests/integration/issue_716_agentic_execution.rs b/tests/integration/issue_716_agentic_execution.rs
+index 7a8064f9..f4a88134 100644
+--- a/tests/integration/issue_716_agentic_execution.rs
++++ b/tests/integration/issue_716_agentic_execution.rs
+@@ -70,8 +70,13 @@ fn responses_routes_program_creation_to_the_advertised_cli_write_tool() {
+     let response = handle_api_request("POST", "/v1/responses", &body.to_string());
+     assert_eq!(response.status_code, 200);
+     let response: Value = serde_json::from_str(&response.body).unwrap();
+-    assert_eq!(response["output"][0]["type"], "function_call");
+-    assert_eq!(response["output"][0]["name"], "write_file");
++    let call = response["output"]
++        .as_array()
++        .unwrap()
++        .iter()
++        .find(|item| item["type"] == "function_call")
++        .expect("Responses output should contain a function_call item");
++    assert_eq!(call["name"], "write_file");
+ }
+ 
+ #[test]
+diff --git a/tests/integration/issue_744_qwen_tool_schema.rs b/tests/integration/issue_744_qwen_tool_schema.rs
+index c887de63..86e90a57 100644
+--- a/tests/integration/issue_744_qwen_tool_schema.rs
++++ b/tests/integration/issue_744_qwen_tool_schema.rs
+@@ -176,8 +176,13 @@ fn codex_responses_shell_uses_advertised_cmd_key() {
+     let response = handle_api_request("POST", "/v1/responses", &body.to_string());
+     assert_eq!(response.status_code, 200, "{}", response.body);
+     let response: Value = serde_json::from_str(&response.body).unwrap();
+-    let arguments: Value =
+-        serde_json::from_str(response["output"][0]["arguments"].as_str().unwrap()).unwrap();
++    let call = response["output"]
++        .as_array()
++        .unwrap()
++        .iter()
++        .find(|item| item["type"] == "function_call")
++        .expect("Responses output should contain a function_call item");
++    let arguments: Value = serde_json::from_str(call["arguments"].as_str().unwrap()).unwrap();
+     assert_eq!(arguments, json!({"cmd": "pwd"}));
+ }
+ 
+diff --git a/tests/integration/issue_746_hosted_tools.rs b/tests/integration/issue_746_hosted_tools.rs
+index 9dcd586c..3a49693a 100644
+--- a/tests/integration/issue_746_hosted_tools.rs
++++ b/tests/integration/issue_746_hosted_tools.rs
+@@ -70,6 +70,61 @@ fn responses_preview_alias_maps_to_the_web_search_capability() {
+     assert_eq!(hosted_web_search_call(&response)["type"], "web_search_call");
+ }
+ 
++#[test]
++fn responses_prefers_client_executed_tools_inside_an_mcp_namespace() {
++    let response = post(
++        "/v1/responses",
++        &json!({
++            "model": "formal-ai",
++            "input": "Найди мне совместимую зарядку для Acer Aspire 3 A325-45?",
++            "tools": [
++                {
++                    "type": "namespace",
++                    "name": "mcp__issue781",
++                    "description": "Deterministic research tools",
++                    "tools": [
++                        {
++                            "type": "function",
++                            "name": "websearch",
++                            "parameters": {
++                                "type": "object",
++                                "properties": {"query": {"type": "string"}},
++                                "required": ["query"]
++                            }
++                        },
++                        {
++                            "type": "function",
++                            "name": "webfetch",
++                            "parameters": {
++                                "type": "object",
++                                "properties": {"url": {"type": "string"}},
++                                "required": ["url"]
++                            }
++                        }
++                    ]
++                },
++                {"type": "web_search"}
++            ]
++        }),
++    );
++
++    let call = responses_call(&response);
++    assert_eq!(call["name"], "websearch", "{response}");
++    assert_eq!(call["namespace"], "mcp__issue781", "{response}");
++    assert!(
++        call["arguments"]
++            .as_str()
++            .is_some_and(|arguments| arguments.contains("query")),
++        "the nested MCP schema must be applied: {call}"
++    );
++    assert!(
++        response["output"]
++            .as_array()
++            .is_some_and(|items| items.first().is_some_and(|item| item["type"] == "message")),
++        "the explanation must precede the MCP call: {response}"
++    );
++}
++
+ #[test]
+ fn responses_stream_uses_native_web_search_lifecycle_events() {
+     enable_http_agent_mode_for_current_process();
+diff --git a/tests/integration/issue_749_shell_routing.rs b/tests/integration/issue_749_shell_routing.rs
+index aeaa58a4..a8bccdc2 100644
+--- a/tests/integration/issue_749_shell_routing.rs
++++ b/tests/integration/issue_749_shell_routing.rs
+@@ -83,7 +83,13 @@ fn responses_shell_arguments(prompt: &str) -> Value {
+     let response = handle_api_request("POST", "/v1/responses", &body.to_string());
+     assert_eq!(response.status_code, 200, "{}", response.body);
+     let response: Value = serde_json::from_str(&response.body).unwrap();
+-    serde_json::from_str(response["output"][0]["arguments"].as_str().unwrap()).unwrap()
++    let call = response["output"]
++        .as_array()
++        .unwrap()
++        .iter()
++        .find(|item| item["type"] == "function_call")
++        .expect("Responses output should contain a function_call item");
++    serde_json::from_str(call["arguments"].as_str().unwrap()).unwrap()
+ }
+ 
+ fn chat_shell_arguments(prompt: &str) -> Value {
+diff --git a/tests/unit/agentic_coding.rs b/tests/unit/agentic_coding.rs
+index 2f83b735..22ded8aa 100644
+--- a/tests/unit/agentic_coding.rs
++++ b/tests/unit/agentic_coding.rs
+@@ -235,7 +235,7 @@ fn issue_607_server_emits_tool_calls_for_shell_request_in_agent_mode() {
+         assert_eq!(call.function.name, tool);
+         let arguments: serde_json::Value = serde_json::from_str(&call.function.arguments).unwrap();
+         assert_eq!(arguments["command"], "ls");
+-        assert!(choice.message.content.plain_text().is_empty());
++        assert!(!choice.message.content.plain_text().is_empty());
+     }
+ }
+ 
+@@ -362,7 +362,7 @@ fn issue_624_server_emits_tool_calls_for_natural_language_directory_listing() {
+         assert_eq!(call.function.name, "bash", "{prompt}");
+         let arguments: serde_json::Value = serde_json::from_str(&call.function.arguments).unwrap();
+         assert_eq!(arguments["command"], "ls", "{prompt}");
+-        assert!(choice.message.content.plain_text().is_empty(), "{prompt}");
++        assert!(!choice.message.content.plain_text().is_empty(), "{prompt}");
+     }
+ }
+ 
+@@ -598,8 +598,8 @@ fn server_emits_tool_calls_for_a_formalization_task_in_agent_mode() {
+     let call = &choice.message.tool_calls[0];
+     assert_eq!(call.function.name, "web_search");
+     assert!(call.function.arguments.contains(SEARCH_QUERY));
+-    // The assistant turn requesting tool calls carries no textual content.
+-    assert!(choice.message.content.plain_text().is_empty());
++    // The assistant explains the action before the client starts the tool.
++    assert!(!choice.message.content.plain_text().is_empty());
+ }
+ 
+ #[test]
+diff --git a/tests/unit/agentic_surfaces.rs b/tests/unit/agentic_surfaces.rs
+index f249e125..46222d10 100644
+--- a/tests/unit/agentic_surfaces.rs
++++ b/tests/unit/agentic_surfaces.rs
+@@ -27,6 +27,16 @@ fn agent_solver() -> UniversalSolver {
+     })
+ }
+ 
++fn anthropic_tool_use(content: &[AnthropicContentBlock]) -> (&str, &serde_json::Value) {
++    content
++        .iter()
++        .find_map(|block| match block {
++            AnthropicContentBlock::ToolUse { name, input, .. } => Some((name.as_str(), input)),
++            _ => None,
++        })
++        .expect("assistant response should contain a tool_use block")
++}
++
+ // --- Anthropic Messages surface (`/v1/messages`, what `claude` speaks) -------
+ 
+ #[test]
+@@ -52,22 +62,16 @@ fn anthropic_messages_emits_tool_use_block_in_agent_mode() {
+     let message = create_anthropic_message_with_solver(&request, &agent_solver());
+ 
+     assert_eq!(message.stop_reason, "tool_use");
+-    assert_eq!(message.content.len(), 1);
+-    match &message.content[0] {
+-        AnthropicContentBlock::ToolUse { name, input, .. } => {
+-            assert_eq!(name, "web_search");
+-            assert!(
+-                input.to_string().contains(SEARCH_QUERY),
+-                "tool_use input should carry the canonical search query"
+-            );
+-        }
+-        AnthropicContentBlock::Text { text } => {
+-            panic!("expected a tool_use block, got text: {text}")
+-        }
+-        AnthropicContentBlock::Thinking { .. } => {
+-            panic!("thinking not requested, so no thinking block should be emitted")
+-        }
+-    }
++    assert!(matches!(
++        message.content.first(),
++        Some(AnthropicContentBlock::Text { text }) if !text.trim().is_empty()
++    ));
++    let (name, input) = anthropic_tool_use(&message.content);
++    assert_eq!(name, "web_search");
++    assert!(
++        input.to_string().contains(SEARCH_QUERY),
++        "tool_use input should carry the canonical search query"
++    );
+ }
+ 
+ #[test]
+@@ -103,21 +107,12 @@ fn anthropic_tool_result_block_advances_the_loop() {
+     let message = create_anthropic_message_with_solver(&request, &agent_solver());
+ 
+     assert_eq!(message.stop_reason, "tool_use");
+-    match &message.content[0] {
+-        AnthropicContentBlock::ToolUse { name, input, .. } => {
+-            assert_eq!(name, "web_fetch", "search done ⇒ planner advances to fetch");
+-            assert!(
+-                input.to_string().contains(CANONICAL_SOURCE_URL),
+-                "fetch input should target the canonical source url"
+-            );
+-        }
+-        AnthropicContentBlock::Text { text } => {
+-            panic!("expected a web_fetch tool_use block, got text: {text}")
+-        }
+-        AnthropicContentBlock::Thinking { .. } => {
+-            panic!("thinking not requested, so no thinking block should be emitted")
+-        }
+-    }
++    let (name, input) = anthropic_tool_use(&message.content);
++    assert_eq!(name, "web_fetch", "search done ⇒ planner advances to fetch");
++    assert!(
++        input.to_string().contains(CANONICAL_SOURCE_URL),
++        "fetch input should target the canonical source url"
++    );
+ }
+ 
+ #[test]
+@@ -281,7 +276,7 @@ fn anthropic_extended_thinking_streams_thinking_then_signature_delta() {
+ fn responses_emits_function_call_in_agent_mode() {
+     // A formalization task with a permitted tool advertised makes the Responses
+     // surface answer with a `function_call` output item (the flat Responses tool
+-    // shape), not an assistant message.
++    // shape), preceded by a user-visible explanation message.
+     let request: ResponsesRequest = serde_json::from_value(serde_json::json!({
+         "model": "formal-ai",
+         "input": "Formalize «Сказка о рыбаке и рыбке» into a Links Notation knowledge base.",
+@@ -303,10 +298,13 @@ fn responses_emits_function_call_in_agent_mode() {
+         calls[0].arguments.contains(SEARCH_QUERY),
+         "function_call arguments should carry the canonical search query"
+     );
+-    assert!(
+-        response.output_messages().is_empty(),
+-        "a tool-calling turn carries no assistant message"
+-    );
++    assert!(response
++        .output_messages()
++        .first()
++        .is_some_and(|message| message
++            .content
++            .iter()
++            .any(|part| !part.text.trim().is_empty())));
+ }
+ 
+ #[test]
+diff --git a/tests/unit/dialog_log.rs b/tests/unit/dialog_log.rs
+new file mode 100644
+index 00000000..3a7e0b86
+--- /dev/null
++++ b/tests/unit/dialog_log.rs
+@@ -0,0 +1,91 @@
++use std::fs;
++use std::path::PathBuf;
++use std::time::{SystemTime, UNIX_EPOCH};
++
++use formal_ai::dialog_log::{write_dialog_exchange, DialogExchangeLog};
++
++fn isolated_directory(test_name: &str) -> PathBuf {
++    let nonce = SystemTime::now()
++        .duration_since(UNIX_EPOCH)
++        .expect("system clock after Unix epoch")
++        .as_nanos();
++    std::env::temp_dir().join(format!(
++        "formal-ai-dialog-log-{}-{test_name}-{nonce}",
++        std::process::id()
++    ))
++}
++
++#[test]
++fn full_exchanges_from_one_dialog_append_to_one_file() {
++    let directory = isolated_directory("full-exchanges");
++    let header = [("X-Formal-AI-Dialog-ID", "issue-781-reproduction")];
++    let request =
++        r#"{"model":"formal-ai","messages":[{"role":"user","content":"Find a charger"}]}"#;
++    let response = r#"{"choices":[{"message":{"content":"I will search","tool_calls":[]}}]}"#;
++
++    let first = write_dialog_exchange(
++        &directory,
++        "POST",
++        "/v1/chat/completions",
++        &header,
++        request,
++        200,
++        "application/json",
++        response,
++    )
++    .expect("first dialog log row");
++    let second = write_dialog_exchange(
++        &directory,
++        "POST",
++        "/v1/chat/completions",
++        &header,
++        request,
++        200,
++        "application/json",
++        response,
++    )
++    .expect("second dialog log row");
++
++    assert_eq!(first, second);
++    let rows = fs::read_to_string(&first).expect("dialog log file");
++    assert_eq!(rows.lines().count(), 2);
++    for row in rows.lines() {
++        let record: DialogExchangeLog = serde_json::from_str(row).expect("valid dialog JSONL row");
++        assert_eq!(record.exchange.request_body.as_deref(), Some(request));
++        assert_eq!(record.exchange.response_body.as_deref(), Some(response));
++    }
++    fs::remove_dir_all(directory).expect("remove isolated test directory");
++}
++
++#[test]
++fn expanded_histories_share_the_first_user_prompt_id() {
++    let directory = isolated_directory("expanded-history");
++    let first_request = r#"{"messages":[{"role":"user","content":"Find a charger"}]}"#;
++    let next_request = r#"{"messages":[{"role":"user","content":"Find a charger"},{"role":"assistant","content":"Searching"},{"role":"tool","content":"result"}]}"#;
++
++    let first = write_dialog_exchange(
++        &directory,
++        "POST",
++        "/v1/chat/completions",
++        &[],
++        first_request,
++        200,
++        "application/json",
++        "{}",
++    )
++    .expect("first dialog log row");
++    let next = write_dialog_exchange(
++        &directory,
++        "POST",
++        "/v1/chat/completions",
++        &[],
++        next_request,
++        200,
++        "application/json",
++        "{}",
++    )
++    .expect("expanded-history dialog log row");
++
++    assert_eq!(first, next);
++    fs::remove_dir_all(directory).expect("remove isolated test directory");
++}
+diff --git a/tests/unit/issue_687.rs b/tests/unit/issue_687.rs
+index 9d7ad1a2..6be5c02a 100644
+--- a/tests/unit/issue_687.rs
++++ b/tests/unit/issue_687.rs
+@@ -116,6 +116,18 @@ mod factual_question {
+         assert_eq!(arguments(&fetch)["url"], "https://www.usa.gov/election-day");
+         answer_tool_call(&mut messages, &fetch, "Election Day is November 3, 2026.");
+ 
++        let comparison = tool_calls(&messages).remove(0);
++        assert_eq!(comparison.tool, "webfetch");
++        assert_eq!(
++            arguments(&comparison)["url"],
++            "https://example.com/elections"
++        );
++        answer_tool_call(
++            &mut messages,
++            &comparison,
++            "An unofficial comparison page repeats November 3, 2026.",
++        );
++
+         let answer = final_answer(&messages);
+         assert!(answer.contains("November 3, 2026"), "{answer}");
+         assert!(
+diff --git a/tests/unit/issue_781.rs b/tests/unit/issue_781.rs
+index ce4d7b9c..4a276672 100644
+--- a/tests/unit/issue_781.rs
++++ b/tests/unit/issue_781.rs
+@@ -4,10 +4,32 @@
+ //! listing. This replays that general search → multi-fetch → cited answer path.
+ 
+ use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan, PlannedToolCall};
+-use formal_ai::protocol::{ChatMessage, ToolCall};
++use formal_ai::protocol::{ChatCompletionRequest, ChatMessage, ToolCall};
++use formal_ai::{
++    create_anthropic_message_with_solver, create_chat_completion_with_solver,
++    create_response_with_solver, AnthropicContentBlock, AnthropicMessagesRequest,
++    ResponseOutputItem, ResponsesRequest, SolverConfig, UniversalSolver,
++};
+ 
+ const TOOLS: [&str; 2] = ["websearch", "webfetch"];
+ 
++const AGENT_CLI_TOOLS: [&str; 14] = [
++    "bash",
++    "batch",
++    "codesearch",
++    "edit",
++    "glob",
++    "grep",
++    "list",
++    "read",
++    "task",
++    "todoread",
++    "todowrite",
++    "webfetch",
++    "websearch",
++    "write",
++];
++
+ fn tool_calls(messages: &[ChatMessage]) -> Vec<PlannedToolCall> {
+     match plan_chat_step(messages, &TOOLS).expect("research task should be recognized") {
+         AgenticPlan::ToolCalls(calls) => calls,
+@@ -15,6 +37,43 @@ fn tool_calls(messages: &[ChatMessage]) -> Vec<PlannedToolCall> {
+     }
+ }
+ 
++#[test]
++fn reported_prompt_uses_web_search_with_the_agent_cli_tool_set() {
++    let messages = vec![ChatMessage::user(
++        "Найди мне совместимую зарядку для Acer Aspire 3 A325-45?",
++    )];
++    match plan_chat_step(&messages, &AGENT_CLI_TOOLS).expect("reported task should route") {
++        AgenticPlan::ToolCalls(calls) => {
++            assert_eq!(calls.len(), 1);
++            assert_eq!(calls[0].tool, "websearch", "{calls:?}");
++        }
++        AgenticPlan::Final(answer) => panic!("expected web search, got {answer:?}"),
++    }
++}
++
++#[test]
++fn reported_prompt_uses_namespaced_mcp_research_tools() {
++    let tools = [
++        "mcp__issue781__websearch",
++        "mcp__issue781__webfetch",
++        "web_search",
++    ];
++    let messages = vec![ChatMessage::user(
++        "Найди мне совместимую зарядку для Acer Aspire 3 A325-45?",
++    )];
++
++    match plan_chat_step(&messages, &tools).expect("reported task should route") {
++        AgenticPlan::ToolCalls(calls) => {
++            assert_eq!(calls.len(), 1);
++            assert_eq!(
++                calls[0].tool, "mcp__issue781__websearch",
++                "a client-executed namespaced tool must precede the hosted fallback: {calls:?}"
++            );
++        }
++        AgenticPlan::Final(answer) => panic!("expected MCP web search, got {answer:?}"),
++    }
++}
++
+ fn final_answer(messages: &[ChatMessage]) -> String {
+     match plan_chat_step(messages, &TOOLS).expect("research task should be recognized") {
+         AgenticPlan::Final(answer) => answer,
+@@ -50,6 +109,330 @@ fn answer_tool_calls(messages: &mut Vec<ChatMessage>, calls: &[PlannedToolCall],
+     }
+ }
+ 
++fn agent_solver() -> UniversalSolver {
++    UniversalSolver::new(SolverConfig {
++        agent_mode: true,
++        ..SolverConfig::default()
++    })
++}
++
++/// The reported `OpenCode` session showed only a bare tool label and then stayed
++/// blank while the tool ran. A tool-calling assistant turn must carry a concise
++/// user-visible explanation as well as the machine-readable call.
++#[test]
++fn chat_completion_explains_the_action_before_requesting_a_tool() {
++    let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
++        "model": "formal-ai",
++        "messages": [{
++            "role": "user",
++            "content": "Найди совместимую зарядку для Acer Aspire A325-45?"
++        }],
++        "tools": [{
++            "type": "function",
++            "function": {
++                "name": "websearch",
++                "description": "Search the web",
++                "parameters": {"type": "object"}
++            }
++        }]
++    }))
++    .unwrap();
++
++    let completion = create_chat_completion_with_solver(&request, &agent_solver());
++    let choice = &completion.choices[0];
++
++    assert_eq!(choice.finish_reason, "tool_calls");
++    assert_eq!(choice.message.tool_calls.len(), 1);
++    assert!(
++        !choice.message.content.plain_text().trim().is_empty(),
++        "the user needs to see what will happen and why before the tool runs"
++    );
++}
++
++#[test]
++fn chat_completion_localizes_tool_narration_in_hindi_and_chinese() {
++    for (prompt, expected_narration) in [
++        ("सेब के बारे में इंटरनेट पर खोजो", "अगला कदम जारी रखने से पहले"),
++        ("查找苹果网上信息", "我会对"),
++    ] {
++        let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
++            "model": "formal-ai",
++            "messages": [{"role": "user", "content": prompt}],
++            "tools": [{
++                "type": "function",
++                "function": {
++                    "name": "websearch",
++                    "description": "Search the web",
++                    "parameters": {"type": "object"}
++                }
++            }]
++        }))
++        .unwrap();
++
++        let completion = create_chat_completion_with_solver(&request, &agent_solver());
++        let choice = &completion.choices[0];
++        let narration = choice.message.content.plain_text();
++
++        assert_eq!(choice.finish_reason, "tool_calls", "{prompt}");
++        assert_eq!(choice.message.tool_calls.len(), 1, "{prompt}");
++        assert!(narration.contains(expected_narration), "{narration}");
++    }
++}
++
++#[test]
++fn fetch_narration_names_the_url_instead_of_the_format_argument() {
++    let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
++        "model": "formal-ai",
++        "messages": [
++            {"role": "user", "content": "Find current evidence for this laptop charger?"},
++            {
++                "role": "assistant",
++                "tool_calls": [{
++                    "id": "search_1",
++                    "type": "function",
++                    "function": {"name": "websearch", "arguments": "{\"query\":\"charger\"}"}
++                }]
++            },
++            {
++                "role": "tool",
++                "tool_call_id": "search_1",
++                "name": "websearch",
++                "content": "Result https://example.test/charger"
++            }
++        ],
++        "tools": [
++            {
++                "type": "function",
++                "function": {
++                    "name": "websearch",
++                    "description": "Search the web",
++                    "parameters": {"type": "object"}
++                }
++            },
++            {
++                "type": "function",
++                "function": {
++                    "name": "webfetch",
++                    "description": "Fetch a URL",
++                    "parameters": {
++                        "type": "object",
++                        "properties": {
++                            "format": {"type": "string"},
++                            "url": {"type": "string"}
++                        }
++                    }
++                }
++            }
++        ]
++    }))
++    .unwrap();
++
++    let completion = create_chat_completion_with_solver(&request, &agent_solver());
++    let narration = completion.choices[0].message.content.plain_text();
++    assert!(
++        narration.contains("https://example.test/charger"),
++        "{narration}"
++    );
++}
++
++#[test]
++fn anthropic_messages_explains_the_action_before_tool_use() {
++    let request: AnthropicMessagesRequest = serde_json::from_value(serde_json::json!({
++        "model": "formal-ai",
++        "max_tokens": 1024,
++        "messages": [{
++            "role": "user",
++            "content": "Find current evidence for this laptop charger?"
++        }],
++        "tools": [{
++            "name": "websearch",
++            "description": "Search the web",
++            "input_schema": {"type": "object"}
++        }]
++    }))
++    .unwrap();
++
++    let message = create_anthropic_message_with_solver(&request, &agent_solver());
++
++    assert_eq!(message.stop_reason, "tool_use");
++    assert!(matches!(
++        message.content.first(),
++        Some(AnthropicContentBlock::Text { text }) if !text.trim().is_empty()
++    ));
++    assert!(message
++        .content
++        .iter()
++        .any(|block| matches!(block, AnthropicContentBlock::ToolUse { .. })));
++}
++
++#[test]
++fn responses_explains_the_action_before_the_function_call() {
++    let request: ResponsesRequest = serde_json::from_value(serde_json::json!({
++        "model": "formal-ai",
++        "input": "Find current evidence for this laptop charger?",
++        "tools": [{
++            "type": "function",
++            "name": "websearch",
++            "parameters": {"type": "object"}
++        }]
++    }))
++    .unwrap();
++
++    let response = create_response_with_solver(&request, &agent_solver());
++
++    assert!(matches!(
++        response.output.first(),
++        Some(ResponseOutputItem::Message(message))
++            if message.content.iter().any(|part| !part.text.trim().is_empty())
++    ));
++    assert!(response
++        .output
++        .iter()
++        .any(|item| matches!(item, ResponseOutputItem::FunctionCall(_))));
++}
++
++#[test]
++fn gemini_explains_the_action_before_the_function_call() {
++    let request: formal_ai::gemini::GeminiGenerateContentRequest =
++        serde_json::from_value(serde_json::json!({
++            "contents": [{
++                "role": "user",
++                "parts": [{"text": "Find current evidence for this laptop charger?"}]
++            }],
++            "tools": [{
++                "functionDeclarations": [{
++                    "name": "websearch",
++                    "description": "Search the web",
++                    "parameters": {"type": "object"}
++                }]
++            }]
++        }))
++        .unwrap();
++
++    let response =
++        formal_ai::gemini::create_gemini_generate_content_response_with_solver_and_memory(
++            &request,
++            "formal-ai",
++            &agent_solver(),
++            &[],
++        );
++    let parts = response["candidates"][0]["content"]["parts"]
++        .as_array()
++        .expect("Gemini response parts");
++
++    assert!(
++        parts
++            .first()
++            .and_then(|part| part.get("text"))
++            .and_then(serde_json::Value::as_str)
++            .is_some_and(|text| !text.trim().is_empty()),
++        "Gemini must emit text before functionCall"
++    );
++    assert!(parts.iter().any(|part| part.get("functionCall").is_some()));
++}
++
++/// Source reads are dependent research steps, not an atomic batch. Emitting one
++/// fetch at a time lets every result (including a timeout or 403) be observed,
++/// explained, and used to re-plan before the next request.
++#[test]
++fn independent_sources_are_fetched_in_separate_agent_turns() {
++    let mut messages = vec![ChatMessage::user(
++        "Find the voltage and connector required by this laptop?",
++    )];
++    let search = tool_calls(&messages);
++    answer_tool_calls(
++        &mut messages,
++        &search,
++        &[concat!(
++            "Specifications https://example.test/specs ",
++            "Connector https://example.test/connector ",
++            "Candidate https://example.test/listing"
++        )],
++    );
++
++    let first = tool_calls(&messages);
++    assert_eq!(first.len(), 1, "each agent turn must expose one action");
++    assert_eq!(arguments(&first[0])["url"], "https://example.test/specs");
++    answer_tool_calls(&mut messages, &first, &["The charger supplies 45 W."]);
++
++    let second = tool_calls(&messages);
++    assert_eq!(
++        second.len(),
++        1,
++        "the first result must be observed before replanning"
++    );
++    assert_eq!(
++        arguments(&second[0])["url"],
++        "https://example.test/connector"
++    );
++    answer_tool_calls(
++        &mut messages,
++        &second,
++        &["The connector is a center-positive barrel plug."],
++    );
++
++    let third = tool_calls(&messages);
++    assert_eq!(third.len(), 1);
++    assert_eq!(arguments(&third[0])["url"], "https://example.test/listing");
++}
++
++#[test]
++fn codex_mcp_transport_envelope_yields_clean_research_urls() {
++    let mut messages = vec![ChatMessage::user(
++        "Find the voltage and connector required by this laptop?",
++    )];
++    let search = tool_calls(&messages);
++    answer_tool_calls(
++        &mut messages,
++        &search,
++        &[concat!(
++            "Wall time: 0.0324 seconds\n",
++            "Output:\n",
++            r#"[{"type":"text","text":"Acer specifications https://acer.example.test/a325-45/specifications\nConnector reference https://parts.example.test/acer-a325-45/connector\nCandidate listing https://shop.example.test/compatible-a325-45-adapter"}]"#
++        )],
++    );
++
++    let first = tool_calls(&messages);
++    assert_eq!(
++        arguments(&first[0])["url"],
++        "https://acer.example.test/a325-45/specifications",
++        "client transport metadata and JSON escaping are not part of a URL"
++    );
++}
++
++#[test]
++fn a_failed_source_is_not_retried_or_used_as_evidence() {
++    let mut messages = vec![ChatMessage::user(
++        "Find the voltage and connector required by this laptop?",
++    )];
++    let search = tool_calls(&messages);
++    answer_tool_calls(
++        &mut messages,
++        &search,
++        &["Blocked https://example.test/blocked Working https://example.test/working"],
++    );
++
++    let blocked = tool_calls(&messages);
++    assert_eq!(
++        arguments(&blocked[0])["url"],
++        "https://example.test/blocked"
++    );
++    answer_tool_calls(&mut messages, &blocked, &["Error: HTTP 403 Forbidden"]);
++
++    let working = tool_calls(&messages);
++    assert_eq!(working.len(), 1);
++    assert_eq!(
++        arguments(&working[0])["url"],
++        "https://example.test/working",
++        "the failed source must be observed once, then research must re-plan"
++    );
++    answer_tool_calls(&mut messages, &working, &["The adapter supplies 19.5 V."]);
++
++    let answer = final_answer(&messages);
++    assert!(answer.contains("19.5 V"), "{answer}");
++    assert!(!answer.contains("HTTP 403"), "{answer}");
++}
++
+ #[test]
+ fn compatibility_research_fetches_and_cites_independent_sources() {
+     let mut messages = vec![ChatMessage::user(
+@@ -68,34 +451,30 @@ fn compatibility_research_fetches_and_cites_independent_sources() {
+         )],
+     );
+ 
+-    let fetches = tool_calls(&messages);
+-    assert_eq!(
+-        fetches.len(),
+-        3,
+-        "research must capture multiple independent sources before recommending a compatible item"
+-    );
+-    assert!(fetches.iter().all(|call| call.tool == "webfetch"));
+-    assert_eq!(
+-        fetches
+-            .iter()
+-            .map(|call| arguments(call)["url"].as_str().unwrap().to_owned())
+-            .collect::<Vec<_>>(),
+-        [
++    for (expected_url, result) in [
++        (
+             "https://store.acer.com/a325-45",
+-            "https://example.test/a325-45-adapter",
+-            "https://www.amazon.in/example/dp/TEST781",
+-        ]
+-    );
+-
+-    answer_tool_calls(
+-        &mut messages,
+-        &fetches,
+-        &[
+             "The laptop is supplied with a 24 W adapter.",
++        ),
++        (
++            "https://example.test/a325-45-adapter",
+             "The model uses 12 V, 2 A and a 3.5 x 1.35 mm center-positive plug.",
++        ),
++        (
++            "https://www.amazon.in/example/dp/TEST781",
+             "The candidate listing states 12 V, 2 A and a 3.5 x 1.35 mm plug.",
+-        ],
+-    );
++        ),
++    ] {
++        let fetch = tool_calls(&messages);
++        assert_eq!(
++            fetch.len(),
++            1,
++            "research must expose each independent source as its own step"
++        );
++        assert_eq!(fetch[0].tool, "webfetch");
++        assert_eq!(arguments(&fetch[0])["url"], expected_url);
++        answer_tool_calls(&mut messages, &fetch, &[result]);
++    }
+ 
+     let answer = final_answer(&messages);
+     for expected in [
+@@ -198,16 +577,15 @@ fn research_does_not_repeat_a_search_that_refines_nothing() {
+         &search,
+         &["Result https://example.test/one https://example.test/two https://example.test/three"],
+     );
+-    let fetches = tool_calls(&messages);
+-    answer_tool_calls(
+-        &mut messages,
+-        &fetches,
+-        &[
+-            "Unrelated English prose.",
+-            "More unrelated English prose.",
+-            "Still unrelated English prose.",
+-        ],
+-    );
++    for result in [
++        "Unrelated English prose.",
++        "More unrelated English prose.",
++        "Still unrelated English prose.",
++    ] {
++        let fetch = tool_calls(&messages);
++        assert_eq!(fetch.len(), 1);
++        answer_tool_calls(&mut messages, &fetch, &[result]);
++    }
+ 
+     // A final answer, not a fourth search: an unrefinable question is answered
+     // from what was actually found.
+diff --git a/tests/unit/mod.rs b/tests/unit/mod.rs
+index 27224632..982ab66a 100644
+--- a/tests/unit/mod.rs
++++ b/tests/unit/mod.rs
+@@ -6,6 +6,7 @@ mod budget_search;
+ mod bulk_lexeme_import;
+ mod courtesy_response;
+ mod data_files;
++mod dialog_log;
+ mod docker_runtime;
+ mod docs_requirements;
+ mod docs_requirements_issue_451;

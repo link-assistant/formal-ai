@@ -1,0 +1,16 @@
+Q22731
+  aliases
+    en (rock)
+    zh ("石塊" "石头")
+  descriptions
+    en "rock; building material"
+    ru "строительный материал"
+    zh "石材"
+  id Q22731
+  labels
+    en stone
+    hi "पत्थर"
+    ru "камень"
+    zh "石頭"
+  type item
+success 1

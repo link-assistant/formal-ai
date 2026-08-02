@@ -1,0 +1,29 @@
+self_ast_census
+  target src/orchestration/analysis.rs
+  language rust
+  fidelity signature
+  byte_len 14912
+  line_count 429
+  content_id source_module_607052972ba5f094
+  symbol_count 20
+  symbols
+    const SOURCES_PLACEHOLDER 14 14
+    const PROBABILITY_PLACEHOLDER 15 15
+    struct AgentSynthesisSource 18 23
+    struct AgentSynthesisClaim 26 35
+    struct AgentSynthesisContradiction 38 42
+    struct VerifiedTranslation 45 49
+    struct AgentSynthesisReport 52 65
+    enum AgentSynthesisError 68 73
+    function fmt 76 90
+    function synthesize_sessions 101 197
+    function extract_agent_result 205 229
+    function update_embedded_json_candidates 236 246
+    function update_best_candidate 248 257
+    function result_candidate 259 293
+    function text_at 295 302
+    function content_text 304 322
+    function correction_requests 324 366
+    function apply_verified_translation 370 391
+    function observe_orchestration_session 396 422
+    function target_slug 424 429

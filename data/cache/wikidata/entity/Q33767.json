@@ -1,0 +1,77 @@
+{
+  "entities": {
+    "Q33767": {
+      "type": "item",
+      "id": "Q33767",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "hand"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "кисть"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "हाथ"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "手"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "extremity at the end of an arm or forelimb"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "дистальная часть верхней конечности"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "手臂或前肢末端的四肢"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "manus"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "трехгранная кость"
+          },
+          {
+            "language": "ru",
+            "value": "кисть руки"
+          },
+          {
+            "language": "ru",
+            "value": "рука"
+          },
+          {
+            "language": "ru",
+            "value": "трёхгранная кость"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "雙手"
+          },
+          {
+            "language": "zh",
+            "value": "手部"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

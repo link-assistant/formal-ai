@@ -1,0 +1,85 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Maintenance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&amp;display=swap" as="style" onload="this.onload = null;this.rel = 'stylesheet'">
+<style>
+    .container{ max-width:992px; width:100%; margin: 0px auto; padding:20px; display: flex; flex-direction: row-reverse; align-items:center; font-family:"Poppins",sans-serif; justify-content: space-between; flex-wrap: wrap; height:100vh; }
+    .left-sec{ font-size: 16px;color: #666666;font-weight: 400;line-height: 30px;margin-top: 20px;margin-bottom: 0; }
+    .left-sec a{ color:#ffb100;}
+    @media screen and (max-width: 1024px) {
+        .container{ justify-content: center; text-align:center; height:auto; align-self: center; flex-direction: row; }
+    }
+</style>
+<script>(function() {
+  const baseUrl = 'https://www.ubuy.co.it/en/product/G0LHJD2DU-tonton-12v-2a-6ft-power-supply-adapter-24w-2000ma-charger-with-8-interchangeable-tips-5-5x2-5-6-3x3-0-5-5x1-7-4-8x1-7-3-5x1-35-6-4x4-4';
+  function absolutifyUrl(url) {
+    if (!url) return url;
+    if (url.startsWith('http') || url.startsWith('data:') || url.startsWith('blob:')) return url;
+    try { return new URL(url, baseUrl).href; } catch { return url; }
+  }
+  function fixElementUrls(el) {
+    if (el.tagName === 'A' || el.tagName === 'LINK') {
+      el.href = absolutifyUrl(el.getAttribute('href'));
+    }
+    if (el.tagName === 'IMG' || el.tagName === 'SCRIPT' || el.tagName === 'IFRAME' || el.tagName === 'SOURCE') {
+      el.src = absolutifyUrl(el.getAttribute('src'));
+    }
+    if (el.hasAttribute('style')) {
+      // The escapes in the regex are intentional for matching CSS url() syntax
+      // eslint-disable-next-line no-useless-escape
+      const urlPattern = /url(["']?([^'")]+)["']?)/g;
+      el.setAttribute(
+        'style',
+        el.getAttribute('style').replace(urlPattern, (m, capturedUrl) => {
+          const absoluteUrl = absolutifyUrl(capturedUrl);
+          return "url('" + absoluteUrl + "')";
+        })
+      );
+    }
+  }
+  function fixAllUrls(root) {
+    root.querySelectorAll('*').forEach(fixElementUrls);
+    // The escapes in the regex are intentional for matching CSS url() syntax
+    // eslint-disable-next-line no-useless-escape
+    const urlPattern = /url(["']?([^'")]+)["']?)/g;
+    root.querySelectorAll('style').forEach(function (styleTag) {
+      styleTag.textContent = styleTag.textContent.replace(
+        urlPattern,
+        (m, capturedUrl) => {
+          const absoluteUrl = absolutifyUrl(capturedUrl);
+          return "url('" + absoluteUrl + "')";
+        }
+      );
+    });
+  }
+  fixAllUrls(document);
+  const observer = new MutationObserver(function(mutations) {
+    for (const mutation of mutations) {
+      mutation.addedNodes.forEach(function(node) {
+        if (node.nodeType === 1) {
+          fixElementUrls(node);
+          fixAllUrls(node);
+        }
+      });
+    }
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+})();</script>
+</head>
+
+<body>
+<div class="container">
+    <div class="right-sec">
+        <img src="https://d2ati23fc66y9j.cloudfront.net/2024/ubuy/error-page/bad-bot.png.webp" alt="Error">
+    </div>
+    <div class="left-sec">
+        <img class="ubuy-error-logo" src="https://d2ati23fc66y9j.cloudfront.net/2024/ubuy/error-page/ubuy-logo.svg" alt="Ubuy Logo">
+        <p class="para_one">The content you requested is not accessible at this time.</p>
+        <p class="para_two"><a href="https://ubuy.com/" title="Visit our website">Visit our website</a></p>
+    </div>
+</div>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1d7c49008b9dc89',t:'MTc4NDQ0MzU3Mw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><iframe height="1" width="1" style="position: absolute; top: 0px; left: 0px; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; visibility: hidden;"></iframe>
+</body></html>

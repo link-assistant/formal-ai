@@ -1,0 +1,142 @@
+[WebServer] $ bun build ./src/web/vendor-entry.js --outfile ./src/web/vendor.bundle.js --target browser --format iife --production --minify && bun build ./src/web/ocr-entry.js --outfile ./src/web/ocr.bundle.js --target browser --format iife --production --minify && bun build ./src/web/app/main.jsx --outfile ./src/web/app.js --target browser --format iife --production --minify
+
+Running 6 tests using 1 worker
+
+  ✘  1 [chromium] › tests/issue-672-animation-override.spec.js:72:3 › Issue #672 (F3): per-message animation budget override › the override shows the withheld answer immediately (7.2s)
+  ✘  2 [chromium] › tests/issue-672-animation-override.spec.js:72:3 › Issue #672 (F3): per-message animation budget override › the override shows the withheld answer immediately (retry #1) (7.3s)
+  ✓  3 [chromium] › tests/issue-672-animation-override.spec.js:96:3 › Issue #672 (F3): per-message animation budget override › the affordance disappears once the answer is shown (11.3s)
+  ✓  4 [chromium] › tests/issue-672-animation-override.spec.js:107:3 › Issue #672 (F3): per-message animation budget override › the override is one-shot: it does not change the preference (15.9s)
+  ✘  5 [chromium] › tests/issue-672-animation-override.spec.js:132:3 › Issue #672 (F3): per-message animation budget override › skipping one message leaves the others alone (22.9s)
+  ✘  6 [chromium] › tests/issue-672-animation-override.spec.js:132:3 › Issue #672 (F3): per-message animation budget override › skipping one message leaves the others alone (retry #1) (26.3s)
+  ✓  7 [chromium] › tests/issue-672-animation-override.spec.js:151:3 › Issue #672 (F3): per-message animation budget override › reduced motion still suppresses the animation without any click (5.3s)
+  ✓  8 [chromium] › tests/issue-672-animation-override.spec.js:165:3 › Issue #672 (F3): per-message animation budget override › a zero budget keeps the immediate path, with no affordance (4.3s)
+
+
+  1) [chromium] › tests/issue-672-animation-override.spec.js:72:3 › Issue #672 (F3): per-message animation budget override › the override shows the withheld answer immediately 
+
+    Error: expect(locator).not.toHaveClass(expected) failed
+
+    Locator: locator('[data-testid="chat-message"]').last().locator('[data-testid="message-markdown-body"]')
+    Expected pattern: not /is-revealing/
+    Received string: "markdown-body is-revealing"
+    Timeout: 2000ms
+
+    Call log:
+      - Expect "not toHaveClass" with timeout 2000ms
+      - waiting for locator('[data-testid="chat-message"]').last().locator('[data-testid="message-markdown-body"]')
+        16 × locator resolved to <div aria-hidden="true" class="markdown-body is-revealing" data-testid="message-markdown-body">…</div>
+           - unexpected value "markdown-body is-revealing"
+
+
+      89 |     // 2 s ceiling is a third of the budget and would fail if the click were a
+      90 |     // no-op and we were merely waiting the animation out.
+    > 91 |     await expect(body).not.toHaveClass(/is-revealing/, { timeout: 2_000 });
+         |                            ^
+      92 |     await expect(body).toBeVisible();
+      93 |     await expect(body).not.toHaveText('');
+      94 |   });
+        at /tmp/gh-issue-solver-1784528371195/tests/e2e/tests/issue-672-animation-override.spec.js:91:28
+
+    Error Context: test-results/issue-672-animation-overri-9b470-withheld-answer-immediately-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: expect(locator).not.toHaveClass(expected) failed
+
+    Locator: locator('[data-testid="chat-message"]').last().locator('[data-testid="message-markdown-body"]')
+    Expected pattern: not /is-revealing/
+    Received string: "markdown-body is-revealing"
+    Timeout: 2000ms
+
+    Call log:
+      - Expect "not toHaveClass" with timeout 2000ms
+      - waiting for locator('[data-testid="chat-message"]').last().locator('[data-testid="message-markdown-body"]')
+        15 × locator resolved to <div aria-hidden="true" class="markdown-body is-revealing" data-testid="message-markdown-body">…</div>
+           - unexpected value "markdown-body is-revealing"
+
+
+      89 |     // 2 s ceiling is a third of the budget and would fail if the click were a
+      90 |     // no-op and we were merely waiting the animation out.
+    > 91 |     await expect(body).not.toHaveClass(/is-revealing/, { timeout: 2_000 });
+         |                            ^
+      92 |     await expect(body).toBeVisible();
+      93 |     await expect(body).not.toHaveText('');
+      94 |   });
+        at /tmp/gh-issue-solver-1784528371195/tests/e2e/tests/issue-672-animation-override.spec.js:91:28
+
+    Error Context: test-results/issue-672-animation-overri-9b470-withheld-answer-immediately-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/issue-672-animation-overri-9b470-withheld-answer-immediately-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/issue-672-animation-overri-9b470-withheld-answer-immediately-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › tests/issue-672-animation-override.spec.js:132:3 › Issue #672 (F3): per-message animation budget override › skipping one message leaves the others alone 
+
+    Error: expect(locator).toHaveClass(expected) failed
+
+    Locator: locator('[data-testid="chat-message"]').nth(1).locator('[data-testid="message-markdown-body"]')
+    Expected pattern: /is-revealing/
+    Received string:  "markdown-body is-revealed"
+    Timeout: 10000ms
+
+    Call log:
+      - Expect "toHaveClass" with timeout 10000ms
+      - waiting for locator('[data-testid="chat-message"]').nth(1).locator('[data-testid="message-markdown-body"]')
+        23 × locator resolved to <div class="markdown-body is-revealed" data-testid="message-markdown-body">…</div>
+           - unexpected value "markdown-body is-revealed"
+
+
+      146 |     await expect(
+      147 |       first.locator('[data-testid="message-markdown-body"]'),
+    > 148 |     ).toHaveClass(/is-revealing/);
+          |       ^
+      149 |   });
+      150 |
+      151 |   test('reduced motion still suppresses the animation without any click', async ({
+        at /tmp/gh-issue-solver-1784528371195/tests/e2e/tests/issue-672-animation-override.spec.js:148:7
+
+    Error Context: test-results/issue-672-animation-overri-105a3-age-leaves-the-others-alone-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: expect(locator).toHaveClass(expected) failed
+
+    Locator: locator('[data-testid="chat-message"]').nth(1).locator('[data-testid="message-markdown-body"]')
+    Expected pattern: /is-revealing/
+    Received string:  "markdown-body is-revealed"
+    Timeout: 10000ms
+
+    Call log:
+      - Expect "toHaveClass" with timeout 10000ms
+      - waiting for locator('[data-testid="chat-message"]').nth(1).locator('[data-testid="message-markdown-body"]')
+        23 × locator resolved to <div class="markdown-body is-revealed" data-testid="message-markdown-body">…</div>
+           - unexpected value "markdown-body is-revealed"
+
+
+      146 |     await expect(
+      147 |       first.locator('[data-testid="message-markdown-body"]'),
+    > 148 |     ).toHaveClass(/is-revealing/);
+          |       ^
+      149 |   });
+      150 |
+      151 |   test('reduced motion still suppresses the animation without any click', async ({
+        at /tmp/gh-issue-solver-1784528371195/tests/e2e/tests/issue-672-animation-override.spec.js:148:7
+
+    Error Context: test-results/issue-672-animation-overri-105a3-age-leaves-the-others-alone-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/issue-672-animation-overri-105a3-age-leaves-the-others-alone-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/issue-672-animation-overri-105a3-age-leaves-the-others-alone-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [chromium] › tests/issue-672-animation-override.spec.js:72:3 › Issue #672 (F3): per-message animation budget override › the override shows the withheld answer immediately 
+    [chromium] › tests/issue-672-animation-override.spec.js:132:3 › Issue #672 (F3): per-message animation budget override › skipping one message leaves the others alone 
+  4 passed (2.0m)

@@ -4,7 +4,7 @@
 //! algorithm encoded as Links Notation. The earlier phases used it as a *checked
 //! description* — grounded against the source, read by the self-improvement loop —
 //! but the algorithm still only ever *ran* as hand-written control flow in
-//! [`crate::meta_core::record_meta_core`]. This module closes that gap: it parses
+//! `crate::meta_core::record_meta_core`. This module closes that gap: it parses
 //! the recipe into an ordered program and **executes it**, driving the live
 //! recorder primitives in the order the data prescribes.
 //!
@@ -20,7 +20,7 @@
 //! skipped rather than failing.
 //!
 //! The point is **parity**: the event log produced by executing the recipe is
-//! byte-for-byte identical to the one [`crate::meta_core::record_meta_core`]
+//! byte-for-byte identical to the one `crate::meta_core::record_meta_core`
 //! produces for the same input and modes. That is the concrete proof that the
 //! algorithm-as-data and the algorithm-as-code are the same algorithm — the
 //! foundation for eventually driving the pipeline *from* the recipe rather than
@@ -110,7 +110,7 @@ impl RecipeProgram {
     /// Execute the program against a fresh event log for one formalized prompt.
     ///
     /// Walks the steps in declared order and invokes each bound recorder primitive,
-    /// mirroring [`crate::meta_core::record_meta_core`] — including its external
+    /// mirroring `crate::meta_core::record_meta_core` — including its external
     /// gate on the white-box reasoning stage (only run when the recursion mode emits
     /// the downward direction). Returns the [`ExecutionTrace`] (the produced log and
     /// the executed / skipped step ids), or an error if the data is inconsistent
@@ -169,7 +169,7 @@ impl RecipeProgram {
     /// Whether executing the recipe reproduces the live pipeline exactly.
     ///
     /// Runs both the data-driven interpreter and the hand-written
-    /// [`crate::meta_core::record_meta_core`] over the same inputs and modes and
+    /// `crate::meta_core::record_meta_core` over the same inputs and modes and
     /// compares their event logs event-for-event. True means the algorithm-as-data
     /// and the algorithm-as-code produce the identical trace — the parity that makes
     /// the recipe a faithful executable description of the pipeline.

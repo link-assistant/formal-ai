@@ -1,0 +1,30 @@
+   Compiling formal-ai v0.298.1 (/tmp/gh-issue-solver-1784437815860)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 27.16s
+     Running tests/integration/mod.rs (target/debug/deps/integration-af9fb3831f49414c)
+
+running 2 tests
+
+thread 'issue_776_translation::proposition_survives_every_supported_language_round_trip' (13797) panicked at tests/integration/issue_776_translation.rs:45:13:
+assertion `left == right` failed
+  left: None
+ right: Some("любая формальная система либо неполна, либо противоречива")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test issue_776_translation::proposition_survives_every_supported_language_round_trip ... FAILED
+
+thread 'issue_776_translation::reported_source_first_prompt_translates_to_english' (13798) panicked at tests/integration/issue_776_translation.rs:17:5:
+assertion `left == right` failed: Я не смог определить `любая формальная система либо неполна, либо противоречива - translate to english` по локальной памяти Links Notation, кэшу публичных знаний или доступным источникам. Я записал неудачные попытки сбора данных в диагностическую трассировку.
+
+Если после этих проверок всё ещё нужен общий seed-факт или правило связей в формате Links Notation, сообщите о недостающем правиле с диагностической трассировкой. Для этого диалога можно экспортировать память или обучить правило: `Покажи правила поведения`, `Покажи правило unknown`, `Когда я скажу ... ответь ...`.
+  left: "unknown"
+ right: "translate_ru_to_en"
+test issue_776_translation::reported_source_first_prompt_translates_to_english ... FAILED
+
+failures:
+
+failures:
+    issue_776_translation::proposition_survives_every_supported_language_round_trip
+    issue_776_translation::reported_source_first_prompt_translates_to_english
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 150 filtered out; finished in 0.56s
+
+error: test failed, to rerun pass `--test integration`

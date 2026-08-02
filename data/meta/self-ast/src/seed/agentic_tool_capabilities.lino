@@ -1,0 +1,11 @@
+self_ast_census
+  target src/seed/agentic_tool_capabilities.rs
+  language rust
+  fidelity signature
+  byte_len 1201
+  line_count 39
+  content_id source_module_9847f4d6bab733ff
+  symbol_count 2
+  symbols
+    struct AgenticToolCapability 7 11
+    function agentic_tool_capabilities 14 39

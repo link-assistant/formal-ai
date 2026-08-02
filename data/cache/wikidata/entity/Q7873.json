@@ -1,0 +1,41 @@
+{
+  "entities": {
+    "Q7873": {
+      "type": "item",
+      "id": "Q7873",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "blood"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "кровь"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "रक्त"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "血液"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "organic fluid which transports nutrients throughout the organism"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "жидкая и подвижная соединительная ткань"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "生物體內的一種結締組織"
+        }
+      }
+    }
+  },
+  "success": 1
+}

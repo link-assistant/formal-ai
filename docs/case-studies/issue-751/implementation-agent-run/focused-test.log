@@ -1,0 +1,11 @@
+   Compiling formal-ai v0.298.0 (/tmp/gh-issue-solver-1784394250823)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 20.57s
+     Running tests/integration/mod.rs (target/debug/deps/integration-e222f131d1059db3)
+
+running 4 tests
+test issue_751_token_usage::token_count_is_one_per_unicode_scalar_for_every_language ... ok
+test issue_751_token_usage::responses_use_real_timestamps_and_omit_fake_cache_and_cost_metadata ... ok
+test issue_751_token_usage::streaming_client_surfaces_preserve_exact_usage ... ok
+test issue_751_token_usage::all_protocols_count_unicode_scalars_and_all_visible_input_messages ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 132 filtered out; finished in 1.59s

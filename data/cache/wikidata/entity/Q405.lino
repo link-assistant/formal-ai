@@ -1,0 +1,19 @@
+Q405
+  aliases
+    en ("The Moon" "☾" Luna "☽" "Earth I" "Sol IIIa" moon Lua)
+    hi ("चांद" "शशि" "सोम")
+    ru ("Месяц")
+    zh ("月亮" "太陰" "月" "地卫一" "玄兔" "嬋娟")
+  descriptions
+    en "Earth's only natural satellite"
+    hi "पृथ्वी का एकमात्र प्राकृतिक उपग्रह"
+    ru "естественный спутник Земли"
+    zh "地球唯一的天然衛星"
+  id Q405
+  labels
+    en Moon
+    hi "चन्द्रमा"
+    ru "Луна"
+    zh "月球"
+  type item
+success 1

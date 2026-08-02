@@ -1,0 +1,9 @@
+
+> formal-ai-e2e@1.0.0 check:language-test-coverage
+> node scripts/check-language-test-coverage.mjs
+
+Language test coverage check failed.
+Language-facing changes were detected in: data/seed/closure-generated-01.lino, data/seed/closure-generated-02.lino, data/seed/closure-generated-03.lino, data/seed/closure-generated-04.lino, data/seed/multilingual-responses.lino
+Changed test files: tests/integration/issue_746_hosted_tools.rs, tests/unit/agentic_coding.rs, tests/unit/agentic_surfaces.rs, tests/unit/issue_781.rs
+Covered languages in added test lines: ru, en
+Add or update tests for every supported language: en, ru, hi, zh. Missing: hi, zh.

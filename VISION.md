@@ -4,6 +4,12 @@ Formal AI should become a symbolic assistant whose live state is an associative 
 
 The associative network is the AI. The runtime should activate, extend, query, and simplify that network as work happens.
 
+The fact-checked design theses behind “AI = data + algorithm,” “everything is a
+link,” transformation networks, controlled self-modification, recursive
+decomposition, and Markov substitution are in
+[`docs/philosophy.md`](docs/philosophy.md). That guide distinguishes metaphor,
+mathematical fact, implemented behavior, and target behavior.
+
 This places Formal AI squarely in the tradition of [symbolic artificial intelligence](https://en.wikipedia.org/wiki/Symbolic_artificial_intelligence) (GOFAI): the link network is a [semantic network](https://en.wikipedia.org/wiki/Semantic_network) in the classical sense, and intelligence is the rule-driven manipulation of human-readable symbols ([physical symbol system](https://en.wikipedia.org/wiki/Physical_symbol_system) hypothesis, Newell & Simon 1976) rather than numeric optimization of hidden weights. The audit in [`docs/case-studies/issue-451/symbolic-ai-best-practices.md`](docs/case-studies/issue-451/symbolic-ai-best-practices.md) maps each of the field's best practices onto this associative stack.
 
 ## Who This Is For And What Pain It Closes
@@ -74,10 +80,12 @@ The assistant should use a universal problem-solving loop:
 3. Search local links first, then external sources if local data is insufficient.
 4. Convert findings into link-native meanings with source metadata.
 5. Split the problem into smaller tasks until each task is executable or answerable.
-6. Generate candidate solutions, tests, and traces.
-7. Execute or validate candidates where the environment allows it.
-8. Record results, failures, and learned procedures.
-9. Return the smallest sufficient answer plus links to the relevant trace.
+6. Draft experiments together with tests and traces.
+7. Select a passing draft, execute it where permitted, and compose its result.
+8. On failure, shrink to smaller tasks; at an unsupported leaf, extend the tool,
+   retry the leaf, then climb back up and retest the whole task.
+9. Record results, failures, and learned procedures.
+10. Return the smallest sufficient answer plus links to the relevant trace.
 
 This loop can be implemented first as ordinary Rust logic, then increasingly represented as link substitutions, triggers, and reusable associative packages.
 
@@ -91,9 +99,9 @@ The reasoning loop above is the outer skeleton. The inner mechanics should be a 
 4. **History lookup**: check whether the same or a similar requirement has been solved before; if so, reuse the prior solution and record a `cache_hit` link.
 5. **Decomposition**: when the requirement is composite (multiple clauses, "and", "with tests", "with benchmarks"), split it into sub-impulses and recursively formalize each one until every sub-requirement is small enough to be solved directly.
 6. **TDD-style test generation**: derive at least one executable check or assertion that any candidate solution must pass.
-7. **Solution synthesis**: build candidate solutions by (a) reusing known parts, (b) reasoning from rules, (c) random or evolutionary search where the structure allows, picking the strategy by compute budget.
-8. **Combination**: combine the partial solutions back into a full solution that addresses the original requirement.
-9. **Verification**: run the candidate against the generated tests; on failure, surface the failure as a `trace:execution_failure` link instead of silently retrying.
+7. **Draft experiments and selection**: build testable drafts by (a) reusing known parts, (b) reasoning from rules, and (c) random or evolutionary search where structure and compute budget allow; select only a test-passing draft and record why it won.
+8. **Composition**: combine selected partial solutions back into a full solution that addresses the original requirement.
+9. **Verification and recursive recovery**: run the composed solution against the whole-task test. On failure, record `trace:execution_failure`, descend to smaller tasks, and retry upward after their tests pass. At an elementary task with no method, extend the general tool and retry that leaf. Bounds on depth and retries keep this executable loop finite.
 10. **Simplification**: apply transformation rules that preserve meaning to shorten the answer and the reasoning trace. Pick the smallest sufficient form.
 11. **Documentation and presentation**: produce the user-facing reply, the Links Notation trace, and the visible evidence links. If the user asks for execution, run the code in the appropriate isolation level.
 
@@ -164,6 +172,8 @@ The same symbolic core should be available through:
 - GitHub Pages chat demo backed by a Rust WebAssembly worker.
 - Telegram private and public chat surfaces.
 - Desktop and embedded agent modes share the same library boundary; the desktop wrapper is tracked by issue [#280](https://github.com/link-assistant/formal-ai/issues/280).
+- VS Code extension (desktop and web/`vscode.dev`) embedding the same chat; Marketplace publication is tracked by issue [#666](https://github.com/link-assistant/formal-ai/issues/666).
+- OpenAI-compatible backend for agentic CLIs (codex, opencode, gemini, qwen, claude, agent), and — the mirror direction — an orchestrator that drives those same CLIs as permissioned tools (issue [#703](https://github.com/link-assistant/formal-ai/issues/703)).
 
 Code-generation tasks should be a first focus area. The assistant should generate algorithms in popular languages, compile or run generated code when the environment supports it, report execution limits honestly, and preserve logs for failed reasoning or failed execution. Browser-only mode can start with JavaScript evaluation and later experiment with WebVM.
 
@@ -235,6 +245,53 @@ ratchet, reasoning-first report behavior, and the white-box self-improvement
 loop. The final epic #365 records that the original Russian dialog now produces
 a `write_program` answer with reverse-sorted output instead of `unknown`, and
 that the behavior is covered across runtime and benchmark surfaces.
+
+Since then the meta-algorithm layer has grown four self-directed capabilities,
+each delivered as a grounded recipe pinned to the live source
+(see [`docs/meta-algorithm.md`](docs/meta-algorithm.md)): the recursive meta
+core with a live method registry and proposal-only self-improvement (issue
+[#559](https://github.com/link-assistant/formal-ai/issues/559)), background
+**dreaming** that learns topics and requirements from memory and generalizes
+them into meta-algorithm amendments (issue
+[#540](https://github.com/link-assistant/formal-ai/issues/540)), the human-gated
+**self-healing** repair loop over the system's own source (issue
+[#558](https://github.com/link-assistant/formal-ai/issues/558)), and the
+**agentic-coding** mode that lets external agent CLIs drive the same
+deterministic loop through the OpenAI-compatible server (issues
+[#468](https://github.com/link-assistant/formal-ai/issues/468),
+[#680](https://github.com/link-assistant/formal-ai/issues/680)). The symbolic
+**world models** design — current-state and target-state contexts as links
+networks, their difference, merge/split, and action-consequence prediction — is
+specified in [`docs/case-studies/issue-649`](docs/case-studies/issue-649/README.md)
+with implementation tracked by issue
+[#702](https://github.com/link-assistant/formal-ai/issues/702).
+
+The self-evolution frontier is explicit and benchmark-gated: proposals must
+pass tests and benchmark ratchets before a reviewed promotion materializes them
+as seed edits (issues [#656](https://github.com/link-assistant/formal-ai/issues/656),
+[#701](https://github.com/link-assistant/formal-ai/issues/701)); the share of
+each release authored by Formal AI itself is measured honestly from 0% upward
+(issue [#657](https://github.com/link-assistant/formal-ai/issues/657)); the
+solver should try multiple candidate drafts in parallel and record why the
+winner won (issue [#704](https://github.com/link-assistant/formal-ai/issues/704),
+following the drafts→selection→composition shape of
+[konard/problem-solving](https://github.com/konard/problem-solving)); and the
+meta-algorithm should predict the user's likely next requests per topic and
+pre-learn them while idle (issue
+[#705](https://github.com/link-assistant/formal-ai/issues/705)). Language
+breadth grows by data alone through the meta language (issue
+[#706](https://github.com/link-assistant/formal-ai/issues/706)), and computer-use
+tasks are handled as verified algorithmic plans over files, shell, and
+structured web — no vision required at this stage (issue
+[#707](https://github.com/link-assistant/formal-ai/issues/707)).
+
+The executable recursive controller and the first live learning back-edge now
+exist: failed branches descend through an explicit task tree and retry upward;
+verified unknown-path events exported by the conversation API enter the normal
+rule learner; and an exact repeated failure consults a human-approved ledger
+lesson before deriving a new rule. This is a bounded first slice, not a claim
+that the entire external-CLI orchestrator or autonomous self-coding loop is
+complete.
 
 Issue [#408](https://github.com/link-assistant/formal-ai/issues/408) extends
 the same deterministic path to user-requested text and code edits: follow-up

@@ -1,0 +1,57 @@
+{
+  "entities": {
+    "Q5283": {
+      "type": "item",
+      "id": "Q5283",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "diamond"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "алмаз"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "हीरा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "钻石"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "allotrope of carbon often used as a gemstone and an abrasive"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "минерал, кубическая аллотропная форма углерода"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "矿物和珠宝"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "鑽石"
+          },
+          {
+            "language": "zh",
+            "value": "金刚石"
+          },
+          {
+            "language": "zh",
+            "value": "金鋼石"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

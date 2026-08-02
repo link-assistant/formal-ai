@@ -528,7 +528,7 @@ struct Localization {
 }
 
 impl Localization {
-    const fn for_language(language: Language) -> Self {
+    fn for_language(language: Language) -> Self {
         let result_label = match language {
             Language::Russian => "Результат:",
             Language::Hindi => "परिणाम:",

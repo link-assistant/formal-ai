@@ -1,0 +1,57 @@
+{
+  "entities": {
+    "Q2160801": {
+      "type": "item",
+      "id": "Q2160801",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "skirt"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "юбка"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "स्कर्ट"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "裙"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "type of clothing worn from the waist downwards"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "предмет одежды"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "कमर पर पहने जाने वाला कपड़ा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "服飾"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "裙子"
+          },
+          {
+            "language": "zh",
+            "value": "半裙"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

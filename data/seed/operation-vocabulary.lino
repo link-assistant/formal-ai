@@ -13,6 +13,9 @@ operation_vocabulary
       phrase अपरकेस
     language zh
       phrase 大写
+    language es
+      phrase mayúsculas
+      phrase "convertir a mayúsculas"
   operation lowercase
     language en
       phrase lowercase

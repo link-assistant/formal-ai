@@ -66,6 +66,7 @@ test.describe('Issue #353: VS Code extension bridge', () => {
     await expect(page.locator('[data-testid="desktop-shell-status"]')).toContainText(
       'VS Code - API local - agent permission off',
     );
+    await expect(page.locator('[data-testid="desktop-engine-selector"]')).toHaveCount(0);
     await expect(page.locator('[data-testid="sidebar-desktop"]')).toBeVisible();
     // The panel reports the raw shell string from the extension host.
     await expect(page.locator('[data-testid="desktop-shell-panel"]')).toContainText('VS Code');
@@ -79,14 +80,14 @@ test.describe('Issue #353: VS Code extension bridge', () => {
     );
     await expect(page.locator('[data-testid="desktop-agent-permission"]')).toHaveText('Off');
     await expect(page.locator('[data-testid="desktop-tool-permission"]')).toHaveText(
-      '0/6 tools granted',
+      '0/18 tools granted',
     );
 
     // The mode radio is the explicit opt-in for the permission-gated tool router.
     await page.locator('[data-testid="mode-option-agent"]').click();
     await expect(page.locator('[data-testid="desktop-agent-permission"]')).toHaveText('Opted in');
     await expect(page.locator('[data-testid="desktop-tool-permission"]')).toHaveText(
-      '0/6 tools granted',
+      '0/18 tools granted',
     );
   });
 
@@ -108,6 +109,7 @@ test.describe('Issue #353: VS Code extension bridge', () => {
     await expect(page.locator('[data-testid="desktop-shell-status"]')).toContainText(
       'VS Code - in-process - agent permission off',
     );
+    await expect(page.locator('[data-testid="desktop-engine-selector"]')).toHaveCount(0);
     await expect(page.locator('[data-testid="sidebar-desktop"]')).toBeVisible();
     // The panel still shows the precise host: "VS Code Web".
     await expect(page.locator('[data-testid="desktop-shell-panel"]')).toContainText('VS Code Web');
@@ -115,7 +117,7 @@ test.describe('Issue #353: VS Code extension bridge', () => {
       'formal_ai_bundle',
     );
     await expect(page.locator('[data-testid="desktop-tool-permission"]')).toHaveText(
-      '0/6 tools granted',
+      '0/18 tools granted',
     );
   });
 
@@ -153,7 +155,7 @@ test.describe('Issue #353: VS Code extension bridge', () => {
       // so assert against the active language's translation rather than English.
       const expectedToolCount = await page.evaluate(async (lang) => {
         await window.FormalAiI18n.ready;
-        return window.FormalAiI18n.t('permissions.toolCount', lang, { granted: 0, total: 6 });
+        return window.FormalAiI18n.t('permissions.toolCount', lang, { granted: 0, total: 18 });
       }, language);
       await expect(page.locator('[data-testid="desktop-tool-permission"]')).toHaveText(
         expectedToolCount,

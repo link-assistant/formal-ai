@@ -1,0 +1,16 @@
+   Compiling formal-ai v0.295.2 (/tmp/gh-issue-solver-1784181977861)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 31.44s
+     Running tests/unit/mod.rs (target/debug/deps/unit-c0dcdeba608db3ef)
+
+running 8 tests
+test issue_687::report_issue::bare_russian_report_files_the_issue ... ok
+test issue_687::report_issue::conversation_text_is_shell_escaped_in_the_command ... ok
+test issue_687::report_issue::bare_report_after_conversation_files_the_issue ... ok
+test issue_687::report_issue::report_request_emits_gh_issue_create ... ok
+test issue_687::report_issue::report_then_confirms_with_created_url ... ok
+test issue_687::report_issue::every_supported_language_routes_report_intent_from_seed_data ... ok
+test issue_687::report_issue::unrelated_report_shaped_prompt_is_not_an_issue_filing ... ok
+test issue_687::report_issue::coding_request_that_mentions_an_existing_issue_and_output_files_is_not_a_report ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 1643 filtered out; finished in 2.41s
+

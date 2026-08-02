@@ -1,0 +1,124 @@
+# Timeline, requirements, and root-cause analysis
+
+## Timeline (UTC)
+
+1. 2026-07-18 19:47:37 — issue 776 was filed automatically from an agentic session after the Russian source-first prompt fell through to `unknown`.
+2. 2026-07-18 19:47:50–19:47:53 — GitHub applied the `bug` label and Bug issue type.
+3. 2026-07-18 19:49:29 — the reporter clarified that request syntax must be widened, translation must use source → meta language → target, and translation quality should use reasoned internet knowledge.
+4. 2026-07-19 05:10:44 — the prepared branch received its `.gitkeep` bootstrap commit.
+5. 2026-07-19 05:10:53 — draft PR 794 was created with a placeholder description.
+6. 2026-07-19 05:10:56–05:12:13 — Actions run 29674453764 completed. Detect Changes and Version Modification Check passed; substantive jobs were skipped because no relevant files had changed.
+7. 2026-07-19 — local CLI reproduction returned the exact `unknown` response recorded in the issue.
+8. 2026-07-19 — the first browser regression reached a separate main-thread defect: `система` was misread as a theme command and returned `Done. Theme is now auto.` before the worker ran.
+9. 2026-07-19 06:39:58 — run 29676805792 started for SHA `483497be`; its version check rejected a manual crate-version edit. The edit was reverted and the repository's changelog-fragment release trigger retained.
+10. 2026-07-19 06:44:00 — run 29676916779 started for corrected SHA `ab2fd90a`; version and changelog checks passed. Lint exposed a 20-line worker-budget overage, and the agent-CLI suite independently reported that issue 687's report request did not execute its fake `gh` command.
+11. 2026-07-19 — the seed-driven browser fallback was compacted without changing behavior. The worker ratchet passes at exactly 26,809 lines; the issue's two Rust integration and two Chromium regressions pass locally.
+12. 2026-07-19 — issue 687's Agent CLI failure reproduced locally. OpenCode compacted its session before the second turn because the custom test model supplied no context-window metadata, replacing the report request with synthetic continuation messages. Declaring the documented model limits made the unchanged four-turn E2E pass in nine chat rounds.
+13. 2026-07-19 07:19:09 — Actions run 29677905727 started at current SHA
+    `fe092bd3`. Issue 776's browser cases passed, but the local-web job ended
+    with two search failures and two search flakes after 8.8 minutes.
+14. 2026-07-19 — the complete run log and Playwright artifact were downloaded.
+    All four error contexts showed a submitted user message with no assistant
+    message before the assertion deadline; seed diagnostics were sometimes
+    still in the loading state.
+15. 2026-07-19 — a WASM-request gate reproduced that the composer was enabled
+    before worker initialization completed and that the main thread started a
+    second 67-file seed load on the same cold-start critical path.
+16. 2026-07-19 — after explicit worker readiness and deferred main-thread seed
+    hydration, stress testing exposed two independent web-search defects:
+    provider requests had no deadline, and no-results answers discarded their
+    query before the desktop fallback consumed the tool call.
+17. 2026-07-19 — bounded search fetches, query preservation, and a hermetic
+    no-network desktop regression produced 65/65 focused stress passes and a
+    complete local-web result of 385 passed, 1 skipped.
+
+## Complete requirements
+
+| ID | Requirement | Evidence/acceptance |
+|---|---|---|
+| R776-1 | Recognize the reported source-first command, where the source precedes `translate to <target>`. | Exact CLI, Rust integration, and browser E2E cases return translation rather than `unknown`. |
+| R776-2 | Widen request recognition generally, not by matching the reported sentence in routing code. | Word-order frames live in the multilingual meaning seed; Rust and JS project `Slot::Suffix`/`suffix` forms from the role. |
+| R776-3 | Extract only the source, excluding dash, command, and target. | Focused parser regression asserts the exact extracted Russian proposition. |
+| R776-4 | Formalize source language → one language-neutral meaning → target language. No direct language-pair implementation. | A single compositional meaning owns en/ru/hi/zh surfaces; every directed pair and reverse leg has the same meaning id. |
+| R776-5 | Translate the reported proposition idiomatically and preserve its claim and source formatting. | Expected English is `any formal system is either incomplete or inconsistent` because the source is lowercase and has no terminal punctuation. |
+| R776-6 | Use researched domain knowledge without silently changing the user's sentence. | Research distinguishes literal translation from the stricter Gödel theorem qualifiers; the translated surface preserves the input and is classified as a compositional concept. |
+| R776-7 | Keep native Rust and browser-worker behavior in parity. | Mirrored routing, suffix extraction, punctuation cleanup, semantic lookup, integration test, and Playwright test. |
+| R776-8 | Cover every supported language and round-trip quality. | en, ru, hi, and zh proposition surfaces are tested across all 12 directed cross-language pairs and reverse legs. |
+| R776-9 | Preserve diagnostics and avoid fabricated output for unknown phrases. | Existing opt-in `FORMAL_AI_TRANSLATION_DEBUG=1` remains default-off; existing explicit gap behavior remains unchanged. |
+| R776-10 | Ensure ordinary translated prose is not intercepted as an interface preference command. | The exact browser prompt reaches the worker; the existing `Switch to dark theme` behavior remains covered. |
+
+## Root causes
+
+### RC1 — position-specific routing
+
+`try_translation` in Rust and `tryTranslation` in the worker treated English and Russian as obligatorily clause-initial. They used `starts_with`/`startsWith` for translation-action forms. The issue's English action is postpositive, so the handler returned `None` before target detection, source inference, or translation could run.
+
+### RC2 — position-specific source extraction
+
+The unquoted extractor projected only circumfix frames such as `translate … to `. It had no strategy for seed `Slot::Suffix` forms, so it could not recover a source located before the command. The same omission existed in the JavaScript worker.
+
+### RC3 — the proposition had no shared semantic node
+
+Even after routing, Wiktionary/Wikidata's lexical pipeline cannot reliably translate an arbitrary seven-word proposition as a whole. The fallback only composes Russian words when every token is seeded, and naïve token substitution would not supply English copular syntax. The phrase therefore needed one proposition meaning with language-specific renderers, which is precisely the existing meta-language architecture used for fixed compositional phrases.
+
+### RC4 — a second parser would have remained stale
+
+`translation::formalization::parse_translation_object` separately assumed clause-initial English/Russian. Reusing the structural unquoted extractor there prevents response routing and meta-formalization from disagreeing.
+
+### RC5 — long Unicode cache keys could panic
+
+The multilingual round-trip regression exposed a latent cache defect: `sanitize_segment` truncated a UTF-8 `String` at byte 96 without first moving to a character boundary. A long Cyrillic/Devanagari/Han query could therefore panic before returning a translation gap. Truncation now moves backward to the nearest valid boundary, with a direct Unicode regression.
+
+### RC6 — substring-based theme recognition intercepted Russian prose
+
+The web app recognizes interface commands before dispatching a prompt to the worker. Its theme check used unrestricted substring matches: `тема` matched inside `система`, while `систем` then selected the `auto` value. The exact issue prompt therefore returned a theme confirmation in the browser even after the translation engine was corrected. Theme-object recognition now requires Unicode word boundaries (with a separate CJK form), retaining explicit commands such as `Switch to dark theme` without treating embedded morphemes as commands.
+
+### RC7 — CI worker-mirror ratchet
+
+The functional JavaScript fallback initially added 20 physical lines, but issue 658's CI ratchet prohibits any net growth under `src/web/worker/*.js` while solver logic migrates to WASM. This was a presentation/duplication-budget failure rather than a semantic failure. The same role-driven extraction was expressed within the existing 26,809-line ceiling and reverified with syntax, focused browser, and worker-budget checks.
+
+### CI-only blocker — incomplete custom-model metadata
+
+The unrelated issue 687 Agent CLI experiment configured a custom OpenCode model with a name but no token limits. With the current client and its large tool schema, OpenCode treated the model as having a 60,000-token context and compacted after the research turn. The next server request contained OpenCode's synthetic `What did we do so far?` summary and `Continue if you have next steps` prompt, so the historical report instruction was not the active turn and the fake `gh` command correctly remained unused. OpenCode's documented `limit.context` and `limit.output` fields now describe the test server's model, preventing premature compaction. This is a harness configuration defect, not an issue-776 translation defect or an upstream OpenCode defect.
+
+### RC8 — false-ready composer and duplicate cold-start seed work
+
+The app initialized its status as `wasm worker` and enabled the composer before
+the worker's `init()` had loaded WASM and 67 seed files. At the same time, an
+independent main-thread effect called `FormalAiSeed.loadAll()`, duplicating that
+seed work on the startup critical path. Under CI contention, prompts could be
+queued behind initialization long enough to exhaust the assertion deadline.
+The app now starts in `loading worker`, enables input only after the worker's
+ready message, and defers the non-worker seed hydration until then.
+
+### RC9 — external search operations had no deadline
+
+The expanded six-provider search path probed and queried providers with raw
+`fetch` calls. Tests mock the result providers relevant to each assertion, but
+unmocked providers remained dependent on runner DNS, CORS, and network latency.
+A stalled request occupied a concurrency slot indefinitely and could delay the
+assistant response. Search-only fetches now use `AbortController` with a
+two-second deadline; the default remains automatic and emits the existing
+provider diagnostics on failure.
+
+### RC10 — no-results search discarded the desktop fallback query
+
+`runWebSearchQuery` returned `query` on successful fused results but omitted it
+from both no-results and all-providers-disabled answers. The next worker layer
+therefore emitted a `web_search` tool call with `inputs.query === ""`.
+`enhanceWithDesktopReadOnlyTool` correctly refuses an empty native request, so
+the desktop bridge was never called when browser networking was unavailable.
+Both early returns now preserve the normalized query. The issue-747 regression
+explicitly blocks every external browser request and proves all four languages
+still invoke the desktop bridge with the expected query.
+
+## Solution and alternatives
+
+The selected issue solution adds source-first forms to the seed role, derives suffix extraction from slot metadata in both engines, gates action-anywhere routing on a recognized target plus successful structural extraction, reuses that extractor in formalization, adds one multilingual proposition meaning, and prevents the browser command layer from matching the Russian theme term inside ordinary words. The CI stabilization additionally makes worker readiness observable, removes duplicate seed work from the cold-start path, bounds provider networking, and preserves search queries through no-results answers.
+
+Rejected alternatives:
+
+- Searching for `translate` anywhere without a structural match would create false positives for prose about translation.
+- Hardcoding the Russian sentence in Rust/JavaScript would violate the seed-driven language boundary and duplicate pair-specific behavior.
+- Word-for-word Russian composition cannot generate the required English copula or robustly preserve the proposition's semantic unit.
+- Adding a general parser dependency for this one new slot order is unnecessary because `WordForm::Slot` already models suffix frames.

@@ -1,0 +1,41 @@
+{
+  "entities": {
+    "Q11469": {
+      "type": "item",
+      "id": "Q11469",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "glass"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "стекло"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "कांच"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "玻璃"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "amorphous solid that exhibits a glass transition when heated towards the liquid state"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "вещество и материал"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "可作为建筑材料的材质"
+        }
+      }
+    }
+  },
+  "success": 1
+}

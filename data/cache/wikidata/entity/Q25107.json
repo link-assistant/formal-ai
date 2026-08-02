@@ -1,0 +1,69 @@
+{
+  "entities": {
+    "Q25107": {
+      "type": "item",
+      "id": "Q25107",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "power"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "власть"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "शक्ति"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "權力"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "ability to influence the behavior of others"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "способность влиять на поведение людей"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "अगर कोई किसी से अपनी मर्ज़ी के आधार पर कुछ ऐसे काम करवा सकता है जो वह अन्यथा नहीं करता"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "影響他人行為的能力"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "power (social and political)"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "начальство"
+          },
+          {
+            "language": "ru",
+            "value": "правление"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "权力"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

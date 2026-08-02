@@ -1,0 +1,17 @@
+Q35872
+  aliases
+    en (boats)
+    hi ("नौका")
+    zh ("小船")
+  descriptions
+    en "smaller watercraft"
+    ru "небольшое водное транспортное средство"
+    zh "較小的船隻"
+  id Q35872
+  labels
+    en boat
+    hi "नाव"
+    ru "лодка"
+    zh "艇"
+  type item
+success 1

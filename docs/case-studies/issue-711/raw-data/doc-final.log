@@ -1,0 +1,8 @@
+   Compiling formal-ai v0.289.0 (/tmp/gh-issue-solver-1784064801495)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.77s
+   Doc-tests formal_ai
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

@@ -6,8 +6,9 @@
 //! are relevant.
 
 use std::collections::BTreeMap;
-use std::fmt::Write as _;
 use std::sync::OnceLock;
+
+use lino_objects_codec::format::escape_reference;
 
 use crate::engine::{
     normalize_prompt, program_language_by_alias, program_spec, stable_id, SelectedRule,
@@ -15,6 +16,7 @@ use crate::engine::{
 };
 use crate::event_log::EventLog;
 use crate::link_store::{LinkStore, LinkStoreError};
+use crate::links_format::format_lino_record;
 use crate::memory::MemoryEvent;
 use crate::method_registry::MethodRegistry;
 use crate::probability::ProbabilityStore;
@@ -22,6 +24,9 @@ use crate::seed;
 use crate::solver::{ConversationTurn, UniversalSolver};
 use crate::translation::{FormalizationAnchorKind, FormalizationCandidate, FormalizationRole};
 use crate::{concepts, cue_lexicon};
+
+mod requirements;
+pub use requirements::{ordered_requirement_spans, OrderedRequirementSpan};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum IntentKind {
@@ -62,53 +67,57 @@ pub struct IntentFormalization {
 }
 
 impl IntentFormalization {
+    /// Render this record as Links Notation.
+    ///
+    /// `source_text` is the user's own prompt, so a value carrying a quote is
+    /// ordinary rather than exotic. This used to hand-roll a C-style backslash
+    /// escape, which Links Notation does not define: notation escapes a quote by
+    /// *doubling* it, so a backslash left the quote visible to the reader, which
+    /// ended the value early and silently dropped the field — and once a value
+    /// has ended early, a quoted code fragment's `(` is an unclosed group rather
+    /// than text, so the whole document failed to parse. Delegating to
+    /// `format_lino_record`, which the rest of the codebase already publishes
+    /// records through, keeps the notation's definition and this encoder from
+    /// drifting apart again.
     #[must_use]
     pub fn to_links_notation(&self) -> String {
-        let mut out = format!(
-            "intent_formalization \"{}\"\n",
-            escape_lino_value(&self.impulse_id)
-        );
-        let _ = writeln!(
-            out,
-            "  impulse_id \"{}\"",
-            escape_lino_value(&self.impulse_id)
-        );
-        let _ = writeln!(
-            out,
-            "  source_text \"{}\"",
-            escape_lino_value(&self.source_text)
-        );
-        let _ = writeln!(
-            out,
-            "  normalized_text \"{}\"",
-            escape_lino_value(&self.normalized_text)
-        );
-        let _ = writeln!(out, "  language \"{}\"", escape_lino_value(&self.language));
-        let _ = writeln!(out, "  kind \"{}\"", self.kind.slug());
+        let mut pairs = vec![
+            ("impulse_id", self.impulse_id.clone()),
+            ("source_text", self.source_text.clone()),
+            ("normalized_text", self.normalized_text.clone()),
+            ("language", self.language.clone()),
+            ("kind", self.kind.slug().to_owned()),
+        ];
         if let Some(route) = &self.route {
-            let _ = writeln!(out, "  route \"{}\"", escape_lino_value(route));
+            pairs.push(("route", route.clone()));
         }
         if let Some(response_link) = &self.response_link {
-            let _ = writeln!(
-                out,
-                "  response_link \"{}\"",
-                escape_lino_value(response_link)
-            );
+            pairs.push(("response_link", response_link.clone()));
         }
         for (name, value) in &self.parameters {
-            let _ = writeln!(
-                out,
-                "  parameter \"{}={}\"",
-                escape_lino_value(name),
-                escape_lino_value(value)
-            );
+            // `name=value` is one reference, so it is escaped once as a whole.
+            // Escaping the halves separately would put delimiters *inside* the
+            // reference and end it at the `=`.
+            pairs.push(("parameter", format!("{name}={value}")));
         }
         for known in &self.knowns {
-            let _ = writeln!(out, "  known \"{}\"", escape_lino_value(known));
+            pairs.push(("known", known.clone()));
         }
         for relevant in &self.relevants {
-            let _ = writeln!(out, "  relevant \"{}\"", escape_lino_value(relevant));
+            pairs.push(("relevant", relevant.clone()));
         }
+
+        // The header names the impulse the record is about, so it is a two-token
+        // link rather than a bare id; `format_lino_record` writes the id line
+        // verbatim, so that token is escaped here.
+        let mut out = format_lino_record(
+            &format!(
+                "intent_formalization {}",
+                escape_reference(&self.impulse_id)
+            ),
+            &pairs,
+        );
+        out.push('\n');
         out
     }
 
@@ -302,6 +311,7 @@ pub(crate) fn record_intent_formalization(
 pub(crate) fn select_rule_for_intent(intent: &IntentFormalization) -> SelectedRule {
     match intent.route.as_deref() {
         Some("greeting") => SelectedRule::Greeting,
+        Some("wellbeing") => SelectedRule::Wellbeing,
         Some("farewell") => SelectedRule::Farewell,
         Some("test_status") => SelectedRule::TestStatus,
         Some("courtesy_response") => SelectedRule::CourtesyResponse,
@@ -721,6 +731,14 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
                 || looks_like_latest_news_search(normalized)
                 || looks_like_records_information_search(normalized),
         ),
+        // Issue #847: a question *about* a task — split it, is it atomic, what
+        // is the first step — must reach decomposition rather than the how-to
+        // or text-manipulation readings of the same verbs, so it is promoted
+        // ahead of both.
+        (
+            "handler:task_decomposition",
+            crate::solver_handlers::looks_like_task_decomposition(normalized),
+        ),
         (
             "handler:procedural_how_to",
             cue_lexicon::matches("procedural_how_to", normalized)
@@ -729,6 +747,17 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
         (
             "handler:proof_request",
             cue_lexicon::matches("proof_request", normalized),
+        ),
+        (
+            "handler:fact_checking",
+            crate::seed::lexicon().mentions_role_raw(
+                crate::seed::ROLE_FACT_CHECK_CURRENT_DIALOGUE_QUERY,
+                normalized,
+            ),
+        ),
+        (
+            "handler:world_state",
+            cue_lexicon::matches(crate::world_model_atoms::QUERY_CUES, normalized),
         ),
         (
             "handler:write_script",
@@ -896,7 +925,7 @@ fn infer_kind(
     candidate: Option<&FormalizationCandidate>,
 ) -> IntentKind {
     match route {
-        Some("greeting" | "farewell" | "courtesy_response") => IntentKind::Courtesy,
+        Some("greeting" | "wellbeing" | "farewell" | "courtesy_response") => IntentKind::Courtesy,
         Some("assistant_name" | "identity") => IntentKind::Question,
         Some(
             "translation"
@@ -959,13 +988,4 @@ fn push_unique(values: &mut Vec<String>, value: String) {
     if !values.contains(&value) {
         values.push(value);
     }
-}
-
-fn escape_lino_value(value: &str) -> String {
-    value
-        .replace('\\', "\\\\")
-        .replace('"', "\\\"")
-        .replace('\n', "\\n")
-        .replace('\r', "\\r")
-        .replace('\t', "\\t")
 }

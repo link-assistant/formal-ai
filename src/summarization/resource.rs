@@ -32,7 +32,7 @@
 
 use std::fmt::Write as _;
 
-use crate::links_format::sanitize_lino_value;
+use crate::links_format::flatten_lino_value;
 
 use super::file::{formalize_repository_file, RepositoryFileFormalization};
 use super::{SummarizationConfig, SummarizationMode};
@@ -151,10 +151,11 @@ impl RepositoryDirectoryFormalization {
     pub fn summary(&self, config: &SummarizationConfig) -> String {
         let mut parts = vec![self.identity_sentence()];
 
-        if config.mode == SummarizationMode::Topic {
-            // Topic mode is a label, not a body: the identity sentence already
-            // carries the path and aggregate counts.
-            return parts.remove(0);
+        if config.mode.is_label_only() {
+            // A label rung is a name, not a body: the identity sentence already
+            // carries the path and aggregate counts, and `Identifier` shortens
+            // that same label one rung further.
+            return super::label_for_mode(config.mode, &parts.remove(0));
         }
 
         let child_config = config.clone().with_mode(config.mode.one_step_shorter());
@@ -331,7 +332,7 @@ pub fn summarize_repository_resource(
 /// children, so this stays small enough to keep summaries readable.
 const fn child_summary_cap(mode: SummarizationMode) -> usize {
     match mode {
-        SummarizationMode::Topic => 0,
+        SummarizationMode::Identifier | SummarizationMode::Topic => 0,
         SummarizationMode::Short => 2,
         SummarizationMode::Standard => 4,
         SummarizationMode::Full | SummarizationMode::Expand => usize::MAX,
@@ -350,5 +351,5 @@ fn push_field(out: &mut String, indent: usize, name: &str, value: &str) {
     for _ in 0..indent {
         out.push_str("  ");
     }
-    let _ = writeln!(out, "{name} {}", sanitize_lino_value(value));
+    let _ = writeln!(out, "{name} {}", flatten_lino_value(value));
 }

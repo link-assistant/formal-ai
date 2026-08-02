@@ -1,0 +1,1 @@
+disk_cleanup_policy: preserve_source; prune_recomputable_build_artifacts; cache_compiler_outputs_not_target_tree

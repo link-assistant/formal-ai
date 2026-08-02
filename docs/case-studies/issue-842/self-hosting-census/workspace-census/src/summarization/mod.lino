@@ -1,0 +1,44 @@
+self_ast_census
+  target src/summarization/mod.rs
+  language rust
+  fidelity signature
+  byte_len 23845
+  line_count 616
+  content_id source_module_4beb55fffbd47c28
+  symbol_count 35
+  symbols
+    const DEFAULT_MAX_STATEMENTS 57 57
+    enum StatementKind 63 83
+    function parse 90 102
+    function from_slug 110 121
+    function is_essential 126 131
+    function is_boilerplate 136 138
+    struct Statement 143 147
+    function new 152 158
+    function from_seed 163 169
+    enum SummarizationMode 174 189
+    function target_percent 197 205
+    function one_step_shorter 211 217
+    struct SummarizationConfig 224 240
+    function default 243 252
+    function with_mode 258 261
+    function with_language 265 268
+    function with_max_statements 272 275
+    function effective_max_statements 281 300
+    function formalize 312 327
+    function period_belongs_to_token 335 359
+    function push_sentence 361 375
+    function classify_sentence 388 408
+    function weight_for_kind 410 422
+    function summarize 430 468
+    function deformalize 474 490
+    function ends_with_terminal_punct 492 496
+    function to_topic 504 514
+    function clamp_words 516 523
+    function apply_compound_words 528 549
+    function apply_semantic_primes 558 584
+    function describe_project 592 600
+    module dialog 602 602
+    module file 603 603
+    module markdown 604 604
+    module resource 605 605

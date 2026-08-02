@@ -1,0 +1,15 @@
+   Compiling formal-ai v0.299.0 (/tmp/gh-issue-solver-1784475913185)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 32.77s
+     Running tests/unit/mod.rs (target/debug/deps/unit-4eed4ab380bdc0fb)
+
+running 7 tests
+test ci_cd::issue_798::both_release_paths_smoke_test_the_registry_artifact ... ok
+test ci_cd::issue_798::platform_specific_shared_memory_state_is_platform_gated ... ok
+test ci_cd::issue_798::desktop_release_rejects_rust_warnings_on_every_platform ... ok
+test ci_cd::issue_798::pull_request_ci_runs_the_macos_signing_regression ... ok
+test ci_cd::issue_798::wasm_only_partial_modules_document_their_intentional_dead_code ... ok
+test ci_cd::issue_798::pull_request_ci_rejects_an_unsynchronized_cargo_lock ... ok
+test ci_cd::issue_798::direct_wasm_rustc_build_rejects_warnings ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 1847 filtered out; finished in 0.01s
+

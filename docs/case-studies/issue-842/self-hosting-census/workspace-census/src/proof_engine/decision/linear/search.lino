@@ -1,0 +1,11 @@
+self_ast_census
+  target src/proof_engine/decision/linear/search.rs
+  language rust
+  fidelity signature
+  byte_len 2070
+  line_count 75
+  content_id source_module_e2bc0de84e71906d
+  symbol_count 2
+  symbols
+    function find_assignment 7 48
+    function find_assignment_rec 50 75

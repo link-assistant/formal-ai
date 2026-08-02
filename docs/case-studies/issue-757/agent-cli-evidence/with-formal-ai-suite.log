@@ -1,0 +1,23 @@
+   Compiling formal-ai v0.298.1 (/tmp/gh-issue-solver-1784408223896)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 17.72s
+     Running tests/integration/mod.rs (target/debug/deps/integration-af9fb3831f49414c)
+
+running 16 tests
+test with_formal_ai::with_formal_ai_agent_ephemeral_injects_inline_config_and_model_flag ... ok
+test with_formal_ai::model_metadata::codex_ephemeral_uses_seeded_responses_provider_and_model_catalog ... ok
+test with_formal_ai::with_formal_ai_auto_starts_agent_mode_server_and_tears_it_down ... ok
+test with_formal_ai::with_formal_ai_gemini_ephemeral_sets_native_protocol_environment ... ok
+test with_formal_ai::standalone_with_formal_ai_binary_uses_same_wrapper ... ok
+test with_formal_ai::with_formal_ai_globally_alias_is_accepted ... ok
+test with_formal_ai::with_formal_ai_gemini_protocol_vertex_sets_vertex_base_url ... ok
+test with_formal_ai::with_formal_ai_no_start_server_runs_without_a_listener ... ok
+test with_formal_ai::with_formal_ai_opencode_ephemeral_writes_temp_config_and_model_flag ... ok
+test with_formal_ai::with_formal_ai_reuses_an_existing_loopback_listener ... ok
+test with_formal_ai::with_formal_ai_summarize_restores_agent_default ... ok
+test with_formal_ai::with_formal_ai_value_taking_interactive_flags_have_prompt_values ... ok
+test with_formal_ai::with_formal_ai_global_configures_idempotently_and_undo_restores_backups ... ok
+test with_formal_ai::with_formal_ai_all_seeded_tools_leave_persistent_configs_unchanged ... ok
+test with_formal_ai::with_formal_ai_selects_uniform_interactive_and_non_interactive_modes ... ok
+test with_formal_ai::with_formal_ai_default_interactive_mode_launches_every_tool_in_a_pty ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 120 filtered out; finished in 2.89s

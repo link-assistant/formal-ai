@@ -1,0 +1,63 @@
+{
+  "entities": {
+    "Q18545": {
+      "type": "item",
+      "id": "Q18545",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "ball"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "мяч"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "गेंद"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "球"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "round object used in sports or for playing"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "шарообразный предмет для подвижной игры"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "गोल वस्तु"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "balls"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "мячик"
+          },
+          {
+            "language": "ru",
+            "value": "шарик"
+          },
+          {
+            "language": "ru",
+            "value": "шар"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,62 @@
+self_ast_census
+  target src/link_store.rs
+  language rust
+  fidelity signature
+  byte_len 19351
+  line_count 571
+  content_id source_module_4163b0ff62ebee82
+  symbol_count 53
+  symbols
+    struct DoubletLink 23 27
+    struct LinkRecord 31 37
+    enum LinkStoreBackend 41 45
+    enum LinkStoreError 49 52
+    function fmt 55 62
+    trait LinkStore 68 83
+    function backend 70 70
+    function append_memory_event 73 73
+    function import_memory_links_notation 76 76
+    function export_memory_links_notation 79 79
+    function records 82 82
+    function selected_link_store_backend 87 95
+    type DefaultNativeLinkStore 98 98
+    type DefaultNativeLinkStore 101 101
+    function default_native_link_store 107 117
+    function validate_memory_links_notation 121 141
+    function memory_events_to_link_records 145 151
+    function memory_event_to_link_record 155 225
+    function backend 228 230
+    function append_memory_event 232 237
+    function import_memory_links_notation 239 247
+    function export_memory_links_notation 249 251
+    function records 253 255
+    function try_import_links_notation 260 262
+    function try_replace_from_links_notation 265 274
+    function link_records 278 280
+    type NativeDoubletsStore 285 286
+    struct DoubletsLinkStore 290 295
+    function new 300 309
+    function from_links_notation 312 316
+    function events 320 322
+    function len 326 328
+    function is_empty 332 334
+    function native_link_count 338 341
+    function insert_record 343 349
+    function append_native_doublet 351 359
+    function node_id 361 372
+    function backend 377 379
+    function append_memory_event 381 388
+    function import_memory_links_notation 390 398
+    function export_memory_links_notation 400 402
+    function records 404 406
+    function format_backend_error 410 412
+    function ensure_event_id 414 420
+    function validate_demo_memory_document 422 438
+    function validate_event_line 440 447
+    function validate_field_line 449 464
+    function validate_strict_quoted 466 493
+    function event_source_id 495 501
+    function canonical_memory_event 503 539
+    function push_canonical 541 547
+    function push_optional_field 549 563
+    function push_doublet 565 571

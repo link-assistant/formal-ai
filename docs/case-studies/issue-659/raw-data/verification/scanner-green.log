@@ -1,0 +1,19 @@
+   Compiling check-hardcoded-language_11757e8d504a4e7483126c4d v0.1.0 (/home/box/.cache/rust-script/projects/11757e8d504a4e7483126c4d)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.82s
+     Running unittests /tmp/gh-issue-solver-1784371666002/scripts/check-hardcoded-language.rs (/home/box/.cache/rust-script/binaries/debug/deps/check_hardcoded_language_11757e8d504a4e7483126c4d-db85a184fe5ba000)
+
+running 12 tests
+test tests::comments_are_not_scanned ... ok
+test tests::context_phrases_exclude_code_and_internal_values ... ok
+test tests::detects_sentence_prose ... ok
+test tests::allowlisted_string_passes ... ok
+test tests::continuation_lines_are_collapsed ... ok
+test tests::detects_multi_word_phrases_in_user_facing_positions ... ok
+test tests::allowlist_round_trips ... ok
+test tests::fixture_string_is_a_new_violation ... ok
+test tests::ignores_non_prose_literals ... ok
+test tests::raw_strings_are_scanned ... ok
+test tests::stale_allowlist_row_fails ... ok
+test tests::trailing_spaces_are_visible_and_diff_safe ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s

@@ -17,6 +17,7 @@
 
 use std::fmt::Write as _;
 
+#[cfg(feature = "meta-language")]
 use meta_language::{LinkNetwork, LinkType, NetworkProjection, ParseConfiguration};
 
 use crate::seed::parser::{parse_lino, LinoNode};
@@ -37,6 +38,7 @@ pub struct CstGrammar {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum CstEvidence {
     /// Parsed and verified through the meta-language links network.
+    #[cfg_attr(not(feature = "meta-language"), allow(dead_code))]
     MetaLanguage {
         meta_language_label: String,
         syntax_link_count: usize,
@@ -125,8 +127,13 @@ fn grammar_from_node(node: &LinoNode) -> CstGrammar {
 
 pub fn parse_program_cst(language_slug: &str, source: &str) -> Option<ProgramCst> {
     let grammar = grammar_metadata(language_slug)?;
+    #[cfg(not(feature = "meta-language"))]
+    let _ = source;
     match grammar.engine.as_str() {
+        #[cfg(feature = "meta-language")]
         META_LANGUAGE_ENGINE => Some(parse_with_meta_language(&grammar, source)),
+        #[cfg(not(feature = "meta-language"))]
+        META_LANGUAGE_ENGINE => None,
         _ => None,
     }
 }
@@ -140,6 +147,7 @@ pub fn validated_program_cst(language_slug: &str, source: &str) -> Option<Progra
 /// resulting CST evidence. A real grammar parse populates `LinkType::Syntax`
 /// links; the lossless text fallback does not, so `syntax_link_count` doubles as
 /// a guard that meta-language really understood the language.
+#[cfg(feature = "meta-language")]
 fn parse_with_meta_language(grammar: &CstGrammar, source: &str) -> ProgramCst {
     let label = if grammar.meta_language_label.is_empty() {
         grammar.language_slug.as_str()

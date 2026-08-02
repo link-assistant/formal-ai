@@ -1,0 +1,15 @@
+Q552299
+  aliases
+    en (chains ch "Gunter's chain" "surveyor's chain")
+  descriptions
+    en "unit of length"
+    hi "लंबाई की इकाई"
+    zh "英制長度單位"
+  id Q552299
+  labels
+    en chain
+    hi "जंजीर"
+    ru "чейн"
+    zh "鏈"
+  type item
+success 1

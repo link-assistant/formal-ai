@@ -1,0 +1,11 @@
+   Compiling formal-ai v0.289.0 (/tmp/gh-issue-solver-1784088123474)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 17.82s
+     Running tests/unit/mod.rs (target/debug/deps/unit-0d5c182732133188)
+
+running 3 tests
+test ci_cd::detect_code_changes::tests::pull_requests_compare_the_complete_base_to_head_range ... ok
+test ci_cd::detect_code_changes::tests::missing_push_before_sha_falls_back_to_the_previous_commit ... ok
+test ci_cd::detect_code_changes::tests::pushes_compare_every_commit_in_the_event ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 1578 filtered out; finished in 0.00s
+

@@ -67,6 +67,18 @@ log() { echo "[desktop-release-resolve] $*"; }
 
 emit_outputs() {
   log "result: tag='${tag}' should_build='${should_build}' resolution='${resolution}'"
+  # Issue #812: a healing build checks out the *tag*, so it packages that tag's
+  # code -- not `main`. Run 29752745259 failed macOS signing on v0.300.0, which
+  # predates the four packaging fixes already merged, and the red run read as
+  # "desktop packaging is broken" when it meant "the last tag is old". Say so in
+  # the run summary rather than leaving it to be re-diagnosed each time.
+  if [ "$should_build" = "true" ] && [ -n "$tag" ]; then
+    head_sha="$(gh api "repos/${REPO}/commits/HEAD" --jq .sha 2>/dev/null || echo "")"
+    tag_sha="$(gh api "repos/${REPO}/commits/${tag}" --jq .sha 2>/dev/null || echo "")"
+    if [ -n "$head_sha" ] && [ -n "$tag_sha" ] && [ "$head_sha" != "$tag_sha" ]; then
+      echo "::notice title=Healing build of an existing tag::Packaging ${tag}, which is not the tip of the default branch. This run builds that tag's code; fixes merged after it are not included, so a failure here does not necessarily mean current code is broken."
+    fi
+  fi
   if [ -n "${GITHUB_OUTPUT:-}" ]; then
     {
       echo "tag=$tag"
@@ -215,12 +227,23 @@ release_version="$(release_version_from_tag "$tag" || true)"
 if [ -z "$release_version" ]; then
   log "Could not parse semver from ${tag}; leaving build enabled rather than risking a silent skip."
 else
-  existing_names="$(gh release view "$tag" --repo "$REPO" --json assets \
-    --jq '.assets[].name | select(startswith("formal-ai-desktop-") or . == "latest.yml" or . == "latest-mac.yml" or . == "latest-linux.yml")' 2>/dev/null || true)"
+  # Keep the query's exit status: a failed `gh` and a release with genuinely no
+  # assets both yield an empty list, but only one of them is a problem worth
+  # naming in the log. Either way the fail-safe direction is the same (build),
+  # so the status only drives diagnostics, never the decision.
+  if existing_names="$(gh release view "$tag" --repo "$REPO" --json assets \
+    --jq '.assets[].name | select(startswith("formal-ai-desktop-") or . == "latest.yml" or . == "latest-mac.yml" or . == "latest-linux.yml")' 2>/dev/null)"; then
+    :
+  else
+    log "warning: could not list assets for ${tag} (gh exited non-zero); treating them as absent and building."
+    existing_names=""
+  fi
   existing_count="$(printf '%s\n' "$existing_names" | sed '/^$/d' | wc -l | tr -d ' ')"
   missing=()
   while IFS= read -r expected; do
-    if ! printf '%s\n' "$existing_names" | grep -Fxq "$expected"; then
+    # Feed grep directly: with pipefail, `printf | grep -q` can report failure
+    # after a successful early match when printf receives SIGPIPE.
+    if ! grep -Fxq "$expected" <<<"$existing_names"; then
       missing+=("$expected")
     fi
   done < <(expected_desktop_assets "$release_version")

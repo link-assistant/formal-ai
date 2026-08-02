@@ -1,0 +1,16 @@
+Q9788
+  aliases
+    hi ("वर्ण विभाग")
+    ru ("буквы" "литера" "монограф")
+  descriptions
+    en "grapheme in an alphabetic system of writing"
+    hi "हिन्दी भाषा में प्रयुक्त सबसे छोटी इकाई"
+    ru "отдельный символ какого-либо алфавита, графема, монограф"
+  id Q9788
+  labels
+    en letter
+    hi "अक्षर"
+    ru "буква"
+    zh "字母"
+  type item
+success 1

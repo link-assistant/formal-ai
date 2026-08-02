@@ -1,0 +1,16 @@
+[dreaming] background dreaming is enabled but FORMAL_AI_MEMORY_PATH is not set; there is no persistent memory log to maintain, so the dreaming worker will not start. Set FORMAL_AI_MEMORY_PATH=<path/to/memory.lino> to activate it.
+formal-ai server listening on http://127.0.0.1:18874
+[trace] POST /mcp (180 byte body)
+{"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{"elicitation":{"form":{}}},"clientInfo":{"name":"Cursor","version":"1.0.0"}},"jsonrpc":"2.0","id":0}
+[trace] POST /mcp (54 byte body)
+{"method":"notifications/initialized","jsonrpc":"2.0"}
+[trace] POST /mcp (180 byte body)
+{"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{"elicitation":{"form":{}}},"clientInfo":{"name":"Cursor","version":"1.0.0"}},"jsonrpc":"2.0","id":0}
+[trace] POST /mcp (54 byte body)
+{"method":"notifications/initialized","jsonrpc":"2.0"}
+[trace] POST /mcp (58 byte body)
+{"method":"tools/list","params":{},"jsonrpc":"2.0","id":1}
+[trace] POST /mcp (180 byte body)
+{"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{"elicitation":{"form":{}}},"clientInfo":{"name":"Cursor","version":"1.0.0"}},"jsonrpc":"2.0","id":0}
+[trace] POST /mcp (54 byte body)
+{"method":"notifications/initialized","jsonrpc":"2.0"}

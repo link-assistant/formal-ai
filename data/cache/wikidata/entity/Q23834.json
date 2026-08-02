@@ -1,0 +1,41 @@
+{
+  "entities": {
+    "Q23834": {
+      "type": "item",
+      "id": "Q23834",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "comb"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "расчёска"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "कंघा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "梳篦"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "toothed device used for styling, cleaning and managing hair and scalp"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "предмет быта для расчёсывания волос"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "बाल कंघी करने का साधन |"
+        }
+      }
+    }
+  },
+  "success": 1
+}

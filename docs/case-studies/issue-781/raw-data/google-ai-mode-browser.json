@@ -1,0 +1,18 @@
+{
+  "provider": "google_ai_mode",
+  "sourceUrl": "https://share.google/aimode/073jaDD5wQmw3Zn0g",
+  "captureMethod": "browser",
+  "capturedAt": "2026-07-19T06:31:33.548Z",
+  "status": "unsupported",
+  "conversationId": null,
+  "title": null,
+  "turns": [],
+  "diagnostics": {
+    "status": "unsupported",
+    "unsupportedReason": "no_transcript_in_captured_dom",
+    "message": "The captured DOM did not contain replayable transcript data.",
+    "warnings": [
+      "static_http_unsupported: provider_challenge_interstitial"
+    ]
+  }
+}

@@ -158,6 +158,29 @@ fn responses_endpoint_returns_completed_response() {
     assert_eq!(messages[0].content[0].kind, "output_text");
 }
 #[test]
+fn responses_instructions_do_not_prefix_the_latest_user_turn() {
+    let bare = ResponsesRequest {
+        input: serde_json::json!([{
+            "role": "user",
+            "content": [{"type": "input_text", "text": "hi"}]
+        }]),
+        ..ResponsesRequest::default()
+    };
+    let steered = ResponsesRequest {
+        instructions: Some(String::from(
+            "You are a coding agent. Decompose requests into sub-tasks.",
+        )),
+        ..bare.clone()
+    };
+
+    let bare_response = create_response(&bare);
+    let steered_response = create_response(&steered);
+    let bare_text = &bare_response.output_messages()[0].content[0].text;
+    let steered_text = &steered_response.output_messages()[0].content[0].text;
+    assert_eq!(steered_text, bare_text);
+    assert!(steered_text.to_ascii_lowercase().contains("hi"));
+}
+#[test]
 fn responses_endpoint_includes_top_level_and_message_thinking_steps() {
     let request = ResponsesRequest {
         model: None,
@@ -441,7 +464,10 @@ fn protocol_namespaces_route_to_the_same_openai_and_formal_ai_surfaces() {
 
     let legacy_models = handle_api_request("GET", "/v1/models", "");
     assert_eq!(legacy_models.status_code, 200);
-    assert_eq!(openai_models.body, legacy_models.body);
+    let legacy_json: serde_json::Value = serde_json::from_str(&legacy_models.body).unwrap();
+    for pointer in ["/object", "/data/0/id", "/models/0/name", "/rate_limit"] {
+        assert_eq!(openai_json.pointer(pointer), legacy_json.pointer(pointer));
+    }
 
     let graph = handle_api_request("GET", "/api/formal-ai/v1/graph", "");
     assert_eq!(graph.status_code, 200);

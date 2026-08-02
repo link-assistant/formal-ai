@@ -1,0 +1,1993 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:06.768Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": true,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:06.775Z",
+  "service": "default",
+  "version": "0.25.0",
+  "command": "/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Create file issue-748-red-test.patch containing\ndiff --git a/tests/integration/with_formal_ai.rs b/tests/integration/with_formal_ai.rs\n--- a/tests/integration/with_formal_ai.rs\n+++ b/tests/integration/with_formal_ai.rs\n@@ -207,6 +207,10 @@ fn with_formal_ai_codex_ephemeral_uses_seeded_responses_provider_config() {\n     assert!(captured.contains(\"model_provider=\\\"formalai\\\"\"));\n     assert!(captured.contains(\"model=\\\"formal-ai\\\"\"));\n     assert!(captured.contains(\"wire_api=\\\"responses\\\"\"));\n+    assert!(\n+        captured.contains(\"model_catalog_json=\\\"\"),\n+        \"Codex must receive a model catalog path: {captured}\"\n+    );\n     assert!(captured.contains(\"base_url=\\\"http://127.0.0.1:18080/api/openai/v1\\\"\"));\n     assert!(captured.contains(\"FORMAL_AI_API_KEY=formal-ai\")); --disable-stdin --model formal-ai/formal-ai",
+  "workingDirectory": "/tmp/tmp.5JbWflLuV2",
+  "scriptPath": "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:06.777Z",
+  "service": "default",
+  "directory": "/tmp/tmp.5JbWflLuV2",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:06.793Z",
+  "service": "project",
+  "directory": "/tmp/tmp.5JbWflLuV2",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.115Z",
+  "service": "storage",
+  "index": 0,
+  "message": "running migration"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.123Z",
+  "service": "storage",
+  "index": 1,
+  "message": "running migration"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.144Z",
+  "service": "default",
+  "processArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Create file issue-748-red-test.patch containing\ndiff --git a/tests/integration/with_formal_ai.rs b/tests/integration/with_formal_ai.rs\n--- a/tests/integration/with_formal_ai.rs\n+++ b/tests/integration/with_formal_ai.rs\n@@ -207,6 +207,10 @@ fn with_formal_ai_codex_ephemeral_uses_seeded_responses_provider_config() {\n     assert!(captured.contains(\"model_provider=\\\"formalai\\\"\"));\n     assert!(captured.contains(\"model=\\\"formal-ai\\\"\"));\n     assert!(captured.contains(\"wire_api=\\\"responses\\\"\"));\n+    assert!(\n+        captured.contains(\"model_catalog_json=\\\"\"),\n+        \"Codex must receive a model catalog path: {captured}\"\n+    );\n     assert!(captured.contains(\"base_url=\\\"http://127.0.0.1:18080/api/openai/v1\\\"\"));\n     assert!(captured.contains(\"FORMAL_AI_API_KEY=formal-ai\"));",
+    "--disable-stdin",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Create file issue-748-red-test.patch containing\ndiff --git a/tests/integration/with_formal_ai.rs b/tests/integration/with_formal_ai.rs\n--- a/tests/integration/with_formal_ai.rs\n+++ b/tests/integration/with_formal_ai.rs\n@@ -207,6 +207,10 @@ fn with_formal_ai_codex_ephemeral_uses_seeded_responses_provider_config() {\n     assert!(captured.contains(\"model_provider=\\\"formalai\\\"\"));\n     assert!(captured.contains(\"model=\\\"formal-ai\\\"\"));\n     assert!(captured.contains(\"wire_api=\\\"responses\\\"\"));\n+    assert!(\n+        captured.contains(\"model_catalog_json=\\\"\"),\n+        \"Codex must receive a model catalog path: {captured}\"\n+    );\n     assert!(captured.contains(\"base_url=\\\"http://127.0.0.1:18080/api/openai/v1\\\"\"));\n     assert!(captured.contains(\"FORMAL_AI_API_KEY=formal-ai\"));",
+    "--disable-stdin",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.145Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.153Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.156Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.164Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.165Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.185Z",
+  "service": "config",
+  "path": "/tmp/tmp.5JbWflLuV2/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.276Z",
+  "service": "models.dev",
+  "path": "/home/box/.cache/link-assistant-agent/models.json",
+  "message": "no cache found, awaiting refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.277Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.513Z",
+  "service": "models.dev",
+  "path": "/home/box/.cache/link-assistant-agent/models.json",
+  "message": "cache unavailable, using bundled data"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.743Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.759Z",
+  "service": "claude-oauth",
+  "path": "/home/box/.claude/.credentials.json",
+  "message": "credentials file not found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.760Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.760Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.760Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.761Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.761Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.761Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 608,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.767Z",
+  "service": "provider",
+  "modelID": "big-pickle",
+  "providerID": "opencode",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.767Z",
+  "service": "provider",
+  "modelID": "minimax-m2.5-free",
+  "providerID": "kilo",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.768Z",
+  "service": "default",
+  "models": [
+    "opencode/big-pickle",
+    "kilo/minimax-m2.5-free",
+    "same"
+  ],
+  "source": "default",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.799Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.799Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.803Z",
+  "service": "session",
+  "id": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "version": "agent-cli-1.0.0",
+  "projectID": "global",
+  "directory": "/tmp/tmp.5JbWflLuV2",
+  "title": "New session - 2026-07-18T10:47:07.802Z",
+  "time": {
+    "created": 1784371627802,
+    "updated": 1784371627802
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.804Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.804Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.805Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 6,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.809Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.810Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_08b29b8e5ffeNSL1zi4wAlXwQ9/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.810Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_08b29b8e5ffeNSL1zi4wAlXwQ9/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.830Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 20,
+  "method": "POST",
+  "path": "/session/ses_08b29b8e5ffeNSL1zi4wAlXwQ9/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.841Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.847Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.849Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.856Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.862Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.862Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.864Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.866Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.867Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.867Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.868Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 2,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.873Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.874Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.874Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.874Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.874Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.874Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.875Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 1,
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:07.876Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:10.576Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:10.610Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:11.231Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:11.263Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:11.624Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:11.625Z",
+  "service": "session.summary",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "hint": "Using compaction model to reduce rate-limit pressure on main model",
+  "mainModelID": "formal-ai",
+  "message": "loading model for summarization"
+}
+
+AI SDK Warning System: To turn off warning logging, set the AI_SDK_LOG_WARNINGS global to false.
+AI SDK Warning (opencode.chat / big-pickle): The feature "specificationVersion" is used in a compatibility mode. Using v2 specification compatibility mode. Some features may not be available.
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:11.662Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:11.956Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:11.957Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784371631957,
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "part": {
+    "id": "prt_f74d65646001dWVxcNyv159QxU",
+    "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+    "messageID": "msg_f74d6520c001q1a00dYMwwgb7x",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:11.960Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784371631960,
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "part": {
+    "id": "prt_f74d65755001SpxrsHgNH0YB5H",
+    "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+    "messageID": "msg_f74d6520c001q1a00dYMwwgb7x",
+    "type": "tool",
+    "callID": "call_126b8370d1a48773",
+    "tool": "write",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:11.963Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784371631963,
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "part": {
+    "id": "prt_f74d65755001SpxrsHgNH0YB5H",
+    "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+    "messageID": "msg_f74d6520c001q1a00dYMwwgb7x",
+    "type": "tool",
+    "callID": "call_126b8370d1a48773",
+    "tool": "write",
+    "state": {
+      "status": "running",
+      "input": {
+        "content": "general_change_plan\n  id \"general_change_plan_b2a3a9db9dc29377\"\n  goal \"Create file issue-748-red-test.patch containing\\ndiff --git a/tests/integration/with_formal_ai.rs b/tests/integration/with_formal_ai.rs\\n--- a/tests/integration/with_formal_ai.rs\\n+++ b/tests/integration/with_formal_ai.rs\\n@@ -207,6 +207,10 @@ fn with_formal_ai_codex_ephemeral_uses_seeded_responses_provider_config() {\\n     assert!(captured.contains(\\\"model_provider=\\\\\\\"formalai\\\\\\\"\\\"));\\n     assert!(captured.contains(\\\"model=\\\\\\\"formal-ai\\\\\\\"\\\"));\\n     assert!(captured.contains(\\\"wire_api=\\\\\\\"responses\\\\\\\"\\\"));\\n+    assert!(\\n+        captured.contains(\\\"model_catalog_json=\\\\\\\"\\\"),\\n+        \\\"Codex must receive a model catalog path: {captured}\\\"\\n+    );\\n     assert!(captured.contains(\\\"base_url=\\\\\\\"http://127.0.0.1:18080/api/openai/v1\\\\\\\"\\\"));\\n     assert!(captured.contains(\\\"FORMAL_AI_API_KEY=formal-ai\\\"));\"\n  target \"issue-748-red-test.patch\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_0036828fa4fbca81\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to issue-748-red-test.patch\"\n    expected_evidence \"workspace file issue-748-red-test.patch\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"diff --git a/tests/integration/with_formal_ai.rs b/tests/integration/with_formal_ai.rs\\n--- a/tests/integration/with_formal_ai.rs\\n+++ b/tests/integration/with_formal_ai.rs\\n@@ -207,6 +207,10 @@ fn with_formal_ai_codex_ephemeral_uses_seeded_responses_provider_config() {\\n     assert!(captured.contains(\\\"model_provider=\\\\\\\"formalai\\\\\\\"\\\"));\\n     assert!(captured.contains(\\\"model=\\\\\\\"formal-ai\\\\\\\"\\\"));\\n     assert!(captured.contains(\\\"wire_api=\\\\\\\"responses\\\\\\\"\\\"));\\n+    assert!(\\n+        captured.contains(\\\"model_catalog_json=\\\\\\\"\\\"),\\n+        \\\"Codex must receive a model catalog path: {captured}\\\"\\n+    );\\n     assert!(captured.contains(\\\"base_url=\\\\\\\"http://127.0.0.1:18080/api/openai/v1\\\\\\\"\\\"));\\n     assert!(captured.contains(\\\"FORMAL_AI_API_KEY=formal-ai\\\"));\"\n    command \"cat issue-748-red-test.patch\"\n  verification_command \"cat issue-748-red-test.patch\"\n",
+        "filePath": ".formal-ai/general-change-plan.lino"
+      },
+      "time": {
+        "start": 1784371631960
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.041Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784371632041,
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "part": {
+    "id": "prt_f74d65755001SpxrsHgNH0YB5H",
+    "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+    "messageID": "msg_f74d6520c001q1a00dYMwwgb7x",
+    "type": "tool",
+    "callID": "call_126b8370d1a48773",
+    "tool": "write",
+    "state": {
+      "status": "completed",
+      "input": {
+        "content": "general_change_plan\n  id \"general_change_plan_b2a3a9db9dc29377\"\n  goal \"Create file issue-748-red-test.patch containing\\ndiff --git a/tests/integration/with_formal_ai.rs b/tests/integration/with_formal_ai.rs\\n--- a/tests/integration/with_formal_ai.rs\\n+++ b/tests/integration/with_formal_ai.rs\\n@@ -207,6 +207,10 @@ fn with_formal_ai_codex_ephemeral_uses_seeded_responses_provider_config() {\\n     assert!(captured.contains(\\\"model_provider=\\\\\\\"formalai\\\\\\\"\\\"));\\n     assert!(captured.contains(\\\"model=\\\\\\\"formal-ai\\\\\\\"\\\"));\\n     assert!(captured.contains(\\\"wire_api=\\\\\\\"responses\\\\\\\"\\\"));\\n+    assert!(\\n+        captured.contains(\\\"model_catalog_json=\\\\\\\"\\\"),\\n+        \\\"Codex must receive a model catalog path: {captured}\\\"\\n+    );\\n     assert!(captured.contains(\\\"base_url=\\\\\\\"http://127.0.0.1:18080/api/openai/v1\\\\\\\"\\\"));\\n     assert!(captured.contains(\\\"FORMAL_AI_API_KEY=formal-ai\\\"));\"\n  target \"issue-748-red-test.patch\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_0036828fa4fbca81\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to issue-748-red-test.patch\"\n    expected_evidence \"workspace file issue-748-red-test.patch\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"diff --git a/tests/integration/with_formal_ai.rs b/tests/integration/with_formal_ai.rs\\n--- a/tests/integration/with_formal_ai.rs\\n+++ b/tests/integration/with_formal_ai.rs\\n@@ -207,6 +207,10 @@ fn with_formal_ai_codex_ephemeral_uses_seeded_responses_provider_config() {\\n     assert!(captured.contains(\\\"model_provider=\\\\\\\"formalai\\\\\\\"\\\"));\\n     assert!(captured.contains(\\\"model=\\\\\\\"formal-ai\\\\\\\"\\\"));\\n     assert!(captured.contains(\\\"wire_api=\\\\\\\"responses\\\\\\\"\\\"));\\n+    assert!(\\n+        captured.contains(\\\"model_catalog_json=\\\\\\\"\\\"),\\n+        \\\"Codex must receive a model catalog path: {captured}\\\"\\n+    );\\n     assert!(captured.contains(\\\"base_url=\\\\\\\"http://127.0.0.1:18080/api/openai/v1\\\\\\\"\\\"));\\n     assert!(captured.contains(\\\"FORMAL_AI_API_KEY=formal-ai\\\"));\"\n    command \"cat issue-748-red-test.patch\"\n  verification_command \"cat issue-748-red-test.patch\"\n",
+        "filePath": ".formal-ai/general-change-plan.lino"
+      },
+      "output": "",
+      "title": "tmp/tmp.5JbWflLuV2/.formal-ai/general-change-plan.lino",
+      "metadata": {
+        "diagnostics": {},
+        "filepath": "/tmp/tmp.5JbWflLuV2/.formal-ai/general-change-plan.lino",
+        "exists": false
+      },
+      "time": {
+        "start": 1784371631960,
+        "end": 1784371632029
+      }
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-18T10:47:12.134Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 39,
+    "output": 114,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 39,
+  "sseCompletionTokens": 114,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.151Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784371632151,
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "part": {
+    "id": "prt_f74d65809001h8epPxOAlnwJy9",
+    "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+    "messageID": "msg_f74d6520c001q1a00dYMwwgb7x",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 39,
+      "output": 114,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 153,
+      "headroom": 38703,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.151Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.188Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.224Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.224Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.229Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.229Z",
+  "service": "session.summary",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "hint": "Using compaction model to reduce rate-limit pressure on main model",
+  "mainModelID": "formal-ai",
+  "message": "loading model for summarization"
+}
+
+AI SDK Warning (opencode.chat / big-pickle): The feature "specificationVersion" is used in a compatibility mode. Using v2 specification compatibility mode. Some features may not be available.
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.241Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.241Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.251Z",
+  "service": "session.prompt",
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "finishReason": "unknown",
+  "zeroTokens": false,
+  "hint": "Provider returned undefined finishReason but made tool calls",
+  "message": "continuing loop despite unknown finish reason - tool calls detected"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.251Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.251Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.253Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.253Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 153,
+  "providerTokens": 153,
+  "estimatedInputTokens": 205,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 39,
+    "cacheRead": 0,
+    "output": 114
+  },
+  "overflow": false,
+  "headroom": 51655,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.254Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.299Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.308Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.341Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784371632342,
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "part": {
+    "id": "prt_f74d658d2001PizOTchs6LK3vo",
+    "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+    "messageID": "msg_f74d6587d00157Z7Dp7jkfVbTe",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.342Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784371632343,
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "part": {
+    "id": "prt_f74d658d6001Q2UY4eRnZXwq43",
+    "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+    "messageID": "msg_f74d6587d00157Z7Dp7jkfVbTe",
+    "type": "tool",
+    "callID": "call_53cf3094f32b78f7",
+    "tool": "write",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.344Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784371632345,
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "part": {
+    "id": "prt_f74d658d6001Q2UY4eRnZXwq43",
+    "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+    "messageID": "msg_f74d6587d00157Z7Dp7jkfVbTe",
+    "type": "tool",
+    "callID": "call_53cf3094f32b78f7",
+    "tool": "write",
+    "state": {
+      "status": "running",
+      "input": {
+        "content": "diff --git a/tests/integration/with_formal_ai.rs b/tests/integration/with_formal_ai.rs\n--- a/tests/integration/with_formal_ai.rs\n+++ b/tests/integration/with_formal_ai.rs\n@@ -207,6 +207,10 @@ fn with_formal_ai_codex_ephemeral_uses_seeded_responses_provider_config() {\n     assert!(captured.contains(\"model_provider=\\\"formalai\\\"\"));\n     assert!(captured.contains(\"model=\\\"formal-ai\\\"\"));\n     assert!(captured.contains(\"wire_api=\\\"responses\\\"\"));\n+    assert!(\n+        captured.contains(\"model_catalog_json=\\\"\"),\n+        \"Codex must receive a model catalog path: {captured}\"\n+    );\n     assert!(captured.contains(\"base_url=\\\"http://127.0.0.1:18080/api/openai/v1\\\"\"));\n     assert!(captured.contains(\"FORMAL_AI_API_KEY=formal-ai\"));",
+        "filePath": "issue-748-red-test.patch"
+      },
+      "time": {
+        "start": 1784371632343
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.420Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784371632420,
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "part": {
+    "id": "prt_f74d658d6001Q2UY4eRnZXwq43",
+    "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+    "messageID": "msg_f74d6587d00157Z7Dp7jkfVbTe",
+    "type": "tool",
+    "callID": "call_53cf3094f32b78f7",
+    "tool": "write",
+    "state": {
+      "status": "completed",
+      "input": {
+        "content": "diff --git a/tests/integration/with_formal_ai.rs b/tests/integration/with_formal_ai.rs\n--- a/tests/integration/with_formal_ai.rs\n+++ b/tests/integration/with_formal_ai.rs\n@@ -207,6 +207,10 @@ fn with_formal_ai_codex_ephemeral_uses_seeded_responses_provider_config() {\n     assert!(captured.contains(\"model_provider=\\\"formalai\\\"\"));\n     assert!(captured.contains(\"model=\\\"formal-ai\\\"\"));\n     assert!(captured.contains(\"wire_api=\\\"responses\\\"\"));\n+    assert!(\n+        captured.contains(\"model_catalog_json=\\\"\"),\n+        \"Codex must receive a model catalog path: {captured}\"\n+    );\n     assert!(captured.contains(\"base_url=\\\"http://127.0.0.1:18080/api/openai/v1\\\"\"));\n     assert!(captured.contains(\"FORMAL_AI_API_KEY=formal-ai\"));",
+        "filePath": "issue-748-red-test.patch"
+      },
+      "output": "",
+      "title": "tmp/tmp.5JbWflLuV2/issue-748-red-test.patch",
+      "metadata": {
+        "diagnostics": {},
+        "filepath": "/tmp/tmp.5JbWflLuV2/issue-748-red-test.patch",
+        "exists": false
+      },
+      "time": {
+        "start": 1784371632343,
+        "end": 1784371632419
+      }
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-18T10:47:12.421Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 39,
+    "output": 29,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 39,
+  "sseCompletionTokens": 29,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.423Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784371632423,
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "part": {
+    "id": "prt_f74d65925001eWj7FxVTDGj5Dd",
+    "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+    "messageID": "msg_f74d6587d00157Z7Dp7jkfVbTe",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 39,
+      "output": 29,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 68,
+      "headroom": 38788,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.424Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.425Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.436Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.443Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.512Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.516Z",
+  "service": "session.summary",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "hint": "Using compaction model to reduce rate-limit pressure on main model",
+  "mainModelID": "formal-ai",
+  "message": "loading model for summarization"
+}
+
+AI SDK Warning (opencode.chat / big-pickle): The feature "specificationVersion" is used in a compatibility mode. Using v2 specification compatibility mode. Some features may not be available.
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.519Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.519Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.524Z",
+  "service": "session.prompt",
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "finishReason": "unknown",
+  "zeroTokens": false,
+  "hint": "Provider returned undefined finishReason but made tool calls",
+  "message": "continuing loop despite unknown finish reason - tool calls detected"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.525Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.525Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.525Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.526Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 68,
+  "providerTokens": 68,
+  "estimatedInputTokens": 205,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 39,
+    "cacheRead": 0,
+    "output": 29
+  },
+  "overflow": false,
+  "headroom": 51740,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.529Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.551Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:12.967Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.024Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784371633025,
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "part": {
+    "id": "prt_f74d65b5c001CDWYByDe6kWC1d",
+    "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+    "messageID": "msg_f74d6598e001kxI7oJMeESGqpw",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.027Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784371633027,
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "part": {
+    "id": "prt_f74d65b81001j8nBcLgy0wjruJ",
+    "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+    "messageID": "msg_f74d6598e001kxI7oJMeESGqpw",
+    "type": "tool",
+    "callID": "call_fbdd64a61195d763",
+    "tool": "bash",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.027Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784371633027,
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "part": {
+    "id": "prt_f74d65b81001j8nBcLgy0wjruJ",
+    "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+    "messageID": "msg_f74d6598e001kxI7oJMeESGqpw",
+    "type": "tool",
+    "callID": "call_fbdd64a61195d763",
+    "tool": "bash",
+    "state": {
+      "status": "running",
+      "input": {
+        "command": "cat issue-748-red-test.patch"
+      },
+      "time": {
+        "start": 1784371633027
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.037Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784371633037,
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "part": {
+    "id": "prt_f74d65b81001j8nBcLgy0wjruJ",
+    "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+    "messageID": "msg_f74d6598e001kxI7oJMeESGqpw",
+    "type": "tool",
+    "callID": "call_fbdd64a61195d763",
+    "tool": "bash",
+    "state": {
+      "status": "completed",
+      "input": {
+        "command": "cat issue-748-red-test.patch"
+      },
+      "output": "diff --git a/tests/integration/with_formal_ai.rs b/tests/integration/with_formal_ai.rs\n--- a/tests/integration/with_formal_ai.rs\n+++ b/tests/integration/with_formal_ai.rs\n@@ -207,6 +207,10 @@ fn with_formal_ai_codex_ephemeral_uses_seeded_responses_provider_config() {\n     assert!(captured.contains(\"model_provider=\\\"formalai\\\"\"));\n     assert!(captured.contains(\"model=\\\"formal-ai\\\"\"));\n     assert!(captured.contains(\"wire_api=\\\"responses\\\"\"));\n+    assert!(\n+        captured.contains(\"model_catalog_json=\\\"\"),\n+        \"Codex must receive a model catalog path: {captured}\"\n+    );\n     assert!(captured.contains(\"base_url=\\\"http://127.0.0.1:18080/api/openai/v1\\\"\"));\n     assert!(captured.contains(\"FORMAL_AI_API_KEY=formal-ai\"));",
+      "title": "cat issue-748-red-test.patch",
+      "metadata": {
+        "output": "diff --git a/tests/integration/with_formal_ai.rs b/tests/integration/with_formal_ai.rs\n--- a/tests/integration/with_formal_ai.rs\n+++ b/tests/integration/with_formal_ai.rs\n@@ -207,6 +207,10 @@ fn with_formal_ai_codex_ephemeral_uses_seeded_responses_provider_config() {\n     assert!(captured.contains(\"model_provider=\\\"formalai\\\"\"));\n     assert!(captured.contains(\"model=\\\"formal-ai\\\"\"));\n     assert!(captured.contains(\"wire_api=\\\"responses\\\"\"));\n+    assert!(\n+        captured.contains(\"model_catalog_json=\\\"\"),\n+        \"Codex must receive a model catalog path: {captured}\"\n+    );\n     assert!(captured.contains(\"base_url=\\\"http://127.0.0.1:18080/api/openai/v1\\\"\"));\n     assert!(captured.contains(\"FORMAL_AI_API_KEY=formal-ai\"));",
+        "exit": 0
+      },
+      "time": {
+        "start": 1784371633027,
+        "end": 1784371633035
+      }
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-18T10:47:13.038Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 39,
+    "output": 3,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 39,
+  "sseCompletionTokens": 3,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.109Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784371633109,
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "part": {
+    "id": "prt_f74d65b8f001uoFai4JOtrUwcy",
+    "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+    "messageID": "msg_f74d6598e001kxI7oJMeESGqpw",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 39,
+      "output": 3,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 42,
+      "headroom": 38814,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.110Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.111Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.128Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.129Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.184Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.184Z",
+  "service": "session.summary",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "hint": "Using compaction model to reduce rate-limit pressure on main model",
+  "mainModelID": "formal-ai",
+  "message": "loading model for summarization"
+}
+
+AI SDK Warning (opencode.chat / big-pickle): The feature "specificationVersion" is used in a compatibility mode. Using v2 specification compatibility mode. Some features may not be available.
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.188Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.189Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.189Z",
+  "service": "session.prompt",
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "finishReason": "unknown",
+  "zeroTokens": false,
+  "hint": "Provider returned undefined finishReason but made tool calls",
+  "message": "continuing loop despite unknown finish reason - tool calls detected"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.189Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.189Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.191Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.192Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 42,
+  "providerTokens": 42,
+  "estimatedInputTokens": 400,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 39,
+    "cacheRead": 0,
+    "output": 3
+  },
+  "overflow": false,
+  "headroom": 51766,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.196Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.224Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.229Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.257Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784371633257,
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "part": {
+    "id": "prt_f74d65c65001Y9gsYmEenWkng1",
+    "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+    "messageID": "msg_f74d65c280013Zg021p906O56w",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.259Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.260Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1784371633260,
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "part": {
+    "id": "prt_f74d65c69001gNjrO3Fv6OOfuz",
+    "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+    "messageID": "msg_f74d65c280013Zg021p906O56w",
+    "type": "text",
+    "text": "Completed the general change request for issue-748-red-test.patch and verified it with `cat issue-748-red-test.patch`.\n\nPlan event (.formal-ai/general-change-plan.lino):\n\ngeneral_change_plan\n  id \"general_change_plan_b2a3a9db9dc29377\"\n  goal \"Create file issue-748-red-test.patch containing\\ndiff --git a/tests/integration/with_formal_ai.rs b/tests/integration/with_formal_ai.rs\\n--- a/tests/integration/with_formal_ai.rs\\n+++ b/tests/integration/with_formal_ai.rs\\n@@ -207,6 +207,10 @@ fn with_formal_ai_codex_ephemeral_uses_seeded_responses_provider_config() {\\n     assert!(captured.contains(\\\"model_provider=\\\\\\\"formalai\\\\\\\"\\\"));\\n     assert!(captured.contains(\\\"model=\\\\\\\"formal-ai\\\\\\\"\\\"));\\n     assert!(captured.contains(\\\"wire_api=\\\\\\\"responses\\\\\\\"\\\"));\\n+    assert!(\\n+        captured.contains(\\\"model_catalog_json=\\\\\\\"\\\"),\\n+        \\\"Codex must receive a model catalog path: {captured}\\\"\\n+    );\\n     assert!(captured.contains(\\\"base_url=\\\\\\\"http://127.0.0.1:18080/api/openai/v1\\\\\\\"\\\"));\\n     assert!(captured.contains(\\\"FORMAL_AI_API_KEY=formal-ai\\\"));\"\n  target \"issue-748-red-test.patch\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_0036828fa4fbca81\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to issue-748-red-test.patch\"\n    expected_evidence \"workspace file issue-748-red-test.patch\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"diff --git a/tests/integration/with_formal_ai.rs b/tests/integration/with_formal_ai.rs\\n--- a/tests/integration/with_formal_ai.rs\\n+++ b/tests/integration/with_formal_ai.rs\\n@@ -207,6 +207,10 @@ fn with_formal_ai_codex_ephemeral_uses_seeded_responses_provider_config() {\\n     assert!(captured.contains(\\\"model_provider=\\\\\\\"formalai\\\\\\\"\\\"));\\n     assert!(captured.contains(\\\"model=\\\\\\\"formal-ai\\\\\\\"\\\"));\\n     assert!(captured.contains(\\\"wire_api=\\\\\\\"responses\\\\\\\"\\\"));\\n+    assert!(\\n+        captured.contains(\\\"model_catalog_json=\\\\\\\"\\\"),\\n+        \\\"Codex must receive a model catalog path: {captured}\\\"\\n+    );\\n     assert!(captured.contains(\\\"base_url=\\\\\\\"http://127.0.0.1:18080/api/openai/v1\\\\\\\"\\\"));\\n     assert!(captured.contains(\\\"FORMAL_AI_API_KEY=formal-ai\\\"));\"\n    command \"cat issue-748-red-test.patch\"\n  verification_command \"cat issue-748-red-test.patch\"",
+    "time": {
+      "start": 1784371633260,
+      "end": 1784371633260
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-18T10:47:13.261Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 39,
+    "output": 129,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 39,
+  "sseCompletionTokens": 129,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.262Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784371633262,
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "part": {
+    "id": "prt_f74d65c6d001d0knaNSOLq37si",
+    "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+    "messageID": "msg_f74d65c280013Zg021p906O56w",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 39,
+      "output": 129,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 168,
+      "headroom": 38688,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.263Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.267Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.280Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.280Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.311Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.311Z",
+  "service": "session.summary",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "hint": "Using compaction model to reduce rate-limit pressure on main model",
+  "mainModelID": "formal-ai",
+  "message": "loading model for summarization"
+}
+
+AI SDK Warning (opencode.chat / big-pickle): The feature "specificationVersion" is used in a compatibility mode. Using v2 specification compatibility mode. Some features may not be available.
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.316Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.316Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.651Z",
+  "service": "session.prompt",
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.652Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.657Z",
+  "service": "session.prompt",
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.657Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.657Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1784371633657,
+  "sessionID": "ses_08b29b8e5ffeNSL1zi4wAlXwQ9"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.657Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.658Z",
+  "service": "default",
+  "directory": "/tmp/tmp.5JbWflLuV2",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.658Z",
+  "service": "state",
+  "key": "/tmp/tmp.5JbWflLuV2",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.660Z",
+  "service": "state",
+  "key": "/tmp/tmp.5JbWflLuV2",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T10:47:13.660Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 9,
+  "message": "Agent exiting"
+}

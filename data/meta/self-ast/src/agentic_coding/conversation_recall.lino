@@ -1,0 +1,55 @@
+self_ast_census
+  target src/agentic_coding/conversation_recall.rs
+  language rust
+  fidelity full_ast
+  byte_len 993
+  line_count 20
+  content_id source_module_b8b0c1356cc73fd2
+  symbol_count 1
+  symbols
+    function recall_answer_for 13 20
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 505
+    named_node_count 98
+    distinct_node_kinds 36
+    node_kinds
+      arguments 5
+      array_type 1
+      binary_expression 1
+      block 2
+      call_expression 5
+      crate 2
+      doc_comment 8
+      expression_statement 2
+      field_expression 5
+      field_identifier 5
+      function_item 1
+      generic_type 1
+      identifier 18
+      if_expression 1
+      inner_doc_comment_marker 7
+      let_declaration 2
+      line_comment 8
+      outer_doc_comment_marker 1
+      parameter 1
+      parameters 1
+      parenthesized_expression 1
+      reference_expression 2
+      reference_type 1
+      return_expression 1
+      scoped_identifier 2
+      scoped_use_list 1
+      source_file 1
+      string_content 1
+      string_literal 1
+      super 1
+      tuple_pattern 1
+      type_arguments 1
+      type_identifier 3
+      use_declaration 2
+      use_list 1
+      visibility_modifier 1

@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 2,
+  "collectedAt": "2026-07-19T13:15:43.251Z",
+  "issueNumber": 796,
+  "prNumber": "797",
+  "branchName": "issue-796-9da6718935fa",
+  "tool": "claude",
+  "sessionId": "b7b0a7df-eaec-4996-8eac-65c1201e46d2",
+  "rawCommand": "/home/box/.nvm/versions/node/v20.20.2/bin/node /home/box/.bun/install/global/node_modules/@link-assistant/hive-mind/src/solve.mjs https://github.com/link-assistant/formal-ai/issues/796 --development-log --deep-analysis --auto-merge --language en",
+  "developmentLogDirectory": "./dev/log/issues/796/pulls/797",
+  "caseStudyDirectory": "./docs/case-studies/issue-796",
+  "artifacts": {
+    "solveLog": "./dev/log/issues/796/pulls/797/sessions/b7b0a7df-eaec-4996-8eac-65c1201e46d2/solve.log",
+    "sessionFiles": [
+      "./dev/log/issues/796/pulls/797/sessions/b7b0a7df-eaec-4996-8eac-65c1201e46d2/claude-b7b0a7df-eaec-4996-8eac-65c1201e46d2.log",
+      "./dev/log/issues/796/pulls/797/sessions/b7b0a7df-eaec-4996-8eac-65c1201e46d2/claude-b7b0a7df-eaec-4996-8eac-65c1201e46d2.jsonl"
+    ]
+  }
+}

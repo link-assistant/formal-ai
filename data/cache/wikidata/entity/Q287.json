@@ -1,0 +1,51 @@
+{
+  "entities": {
+    "Q287": {
+      "type": "item",
+      "id": "Q287",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "wood"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "древесина"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "लकड़ी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "木材"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "fibrous material from trees or other plants"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "внутренняя часть дерева"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "wooden"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "дерево (материал)"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

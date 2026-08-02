@@ -1,0 +1,173 @@
+{
+  "entities": {
+    "Q41607": {
+      "type": "item",
+      "id": "Q41607",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "umbrella"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "зонт"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "छाता"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "傘"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "canopy designed to protect against inclement weather, particularly rain and sun"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "приспособление от дождя и солнца"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मौसम से बचने का उपकरण"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "brolly"
+          },
+          {
+            "language": "en",
+            "value": "parapluie"
+          },
+          {
+            "language": "en",
+            "value": "rainshade"
+          },
+          {
+            "language": "en",
+            "value": "gamp"
+          },
+          {
+            "language": "en",
+            "value": "bumbershoot"
+          },
+          {
+            "language": "en",
+            "value": "umbrolly"
+          },
+          {
+            "language": "en",
+            "value": "en-tout-cas"
+          },
+          {
+            "language": "en",
+            "value": "shields"
+          },
+          {
+            "language": "en",
+            "value": "shield"
+          },
+          {
+            "language": "en",
+            "value": "umbrollies"
+          },
+          {
+            "language": "en",
+            "value": "bumbershoots"
+          },
+          {
+            "language": "en",
+            "value": "gamps"
+          },
+          {
+            "language": "en",
+            "value": "rainshades"
+          },
+          {
+            "language": "en",
+            "value": "parapluies"
+          },
+          {
+            "language": "en",
+            "value": "brollies"
+          },
+          {
+            "language": "en",
+            "value": "umbrellas"
+          },
+          {
+            "language": "en",
+            "value": "brella"
+          },
+          {
+            "language": "en",
+            "value": "brellas"
+          },
+          {
+            "language": "en",
+            "value": "chatta"
+          },
+          {
+            "language": "en",
+            "value": "chattas"
+          },
+          {
+            "language": "en",
+            "value": "chattah"
+          },
+          {
+            "language": "en",
+            "value": "chattahs"
+          },
+          {
+            "language": "en",
+            "value": "parasol"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "зонтик"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "晴雨伞"
+          },
+          {
+            "language": "zh",
+            "value": "繖"
+          },
+          {
+            "language": "zh",
+            "value": "太阳伞"
+          },
+          {
+            "language": "zh",
+            "value": "陽傘"
+          },
+          {
+            "language": "zh",
+            "value": "雨傘"
+          },
+          {
+            "language": "zh",
+            "value": "洋傘"
+          },
+          {
+            "language": "zh",
+            "value": "雨伞"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,21 @@
+== issue #781 agent E2E OK: 1 search, 3 fetches, 5 model turns ==
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:47:06.510Z",
+  "service": "state",
+  "key": "/tmp/tmp.QA1vF3TeJR",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:47:06.511Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 14,
+  "message": "Agent exiting"
+}
+

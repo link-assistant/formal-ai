@@ -1,0 +1,17 @@
+Q9635
+  aliases
+    en ("oral cavity" "oral tissue")
+    ru ("уста")
+    zh ("嘴（泰國電視劇）")
+  descriptions
+    en "body cavity and the parts surrounding it"
+    ru "телесное отверстие у животных, через которое принимается пища и, во многих случаях, осуществляется дыхание"
+    zh "五官之一"
+  id Q9635
+  labels
+    en mouth
+    hi "मुँह"
+    ru "рот"
+    zh "口腔"
+  type item
+success 1

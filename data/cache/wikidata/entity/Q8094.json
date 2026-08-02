@@ -1,0 +1,49 @@
+{
+  "entities": {
+    "Q8094": {
+      "type": "item",
+      "id": "Q8094",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "wind"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "ветер"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पवन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "風"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "flow of gases or air on a large scale"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "направленный, сильный поток воздушных масс у поверхности планеты"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "गतिशील वायु"
+        }
+      },
+      "aliases": {
+        "hi": [
+          {
+            "language": "hi",
+            "value": "हवा"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

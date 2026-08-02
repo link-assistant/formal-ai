@@ -1,0 +1,23 @@
+   Compiling formal-ai v0.298.1 (/tmp/gh-issue-solver-1784400087693)
+   Compiling meta-language v0.45.0
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 28s
+     Running tests/issue_752.rs (target/debug/deps/issue_752-2408ed0b7aeaa56e)
+
+running 1 test
+test models_report_real_disk_context_and_memory_usage ... FAILED
+
+failures:
+
+---- models_report_real_disk_context_and_memory_usage stdout ----
+
+thread 'models_report_real_disk_context_and_memory_usage' (20497) panicked at tests/issue_752.rs:40:57:
+disk_free_bytes
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    models_report_real_disk_context_and_memory_usage
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `--test issue_752`

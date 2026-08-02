@@ -1,8 +1,0 @@
----
-bump: minor
----
-
-### Added
-- Issue #558 auto-learning (R558-02): `src/repair_strategy.rs` is the *general* front of the failure-to-repair loop. The self-healing slice repairs a single canonical failure by synthesising a solver method; this generalises it. `RepairStrategy::classify` reads an arbitrary `UnknownTrace` — the same trace the self-healing loop reasons about — and, purely deterministically from the trace's own prompt and event signals, maps it onto exactly one of the three targets issue #558 names (`RepairTarget::SolverMethod` / `DataRecord` / `Test`), so the loop is *total* — every failure is classified. For each it composes the grounded repair plan (rationale, proposed change scoped to the target class, and the automated verification that must be green before human promotion). It stays proposal-only and human-gated; neural inference stays a NON-GOAL — the classification and plan are deterministic functions of the trace, and the "change" is a plan a human or Agent CLI executes, never generated code applied automatically.
-- Tenth agentic recipe (`src/agentic_coding/repair_strategy.rs`): the general classifier is reachable through the agentic interface, emitting the three canonical strategies (one per target class) as `repair-strategies.lino`. Unlike the source-graph, explain, and change-request recipes it commits a byte-pinned artifact (`data/meta/repair-strategies.lino`), because the document depends only on self-contained canonical traces, not the whole source tree — asserted byte-for-byte against a fresh render like the self-healing repair case.
-- `classify_repair` example prints the grounded, human-gated repair strategy the classifier composes for each of the three failure classes.

@@ -290,6 +290,36 @@ is data-driven and configurable through the seed.
   [`VISION.md`](../VISION.md#current-direction) and
   [`ROADMAP.md`](../ROADMAP.md).
 
+### F2 — Wei compiles a natural-language skill
+
+- **Persona & pain:** Wei wants to write a skill in plain language and have the
+  agent execute or compile it.
+- **Journey today:** Wei states the procedure in plain language — *"when I paste
+  a link, fetch its title, translate it to Russian, save both, and reply with
+  the translation"* — and the shared intent formalizer decomposes it into
+  source-grounded requirements. `src/skill_procedure.rs` lowers those
+  requirements into an ordered typed `.lino` artifact whose operations come
+  from seeded and human-approved vocabulary. The stored artifact is parsed,
+  integrity-checked, and walked step by step through a permissioned host; it
+  re-states the exact source spans and compiles identically from Russian, Hindi,
+  and Chinese. A step outside the vocabulary compiles nothing, records a named
+  review-only learning proposal, and can enter the durable ledger only after
+  successful seeded paraphrases infer one consistent typed candidate in all
+  four languages, green regression tests pass, and a human explicitly approves
+  it. Formal AI's Agent path writes and reads back the same artifact, executes
+  it through the public `formal-ai procedure conformance` command, verifies the
+  execution record, and only then returns success through the external Agent
+  CLI.
+- **Why it matters:** *Computation Model* describes five rule shapes ranked from
+  most reviewable to most flexible, with natural-language skills at the flexible
+  end.
+- **Status:** Supported today for freely phrased procedures through
+  [#674](https://github.com/link-assistant/formal-ai/issues/674)
+  (`cargo test arbitrary_skill_compilation`). Stored `.lino` procedures are
+  walked by the generic interpreter; generating a bespoke Rust/JS handler is
+  intentionally unnecessary for these typed operations. See
+  *Computation Model* in [`VISION.md`](../VISION.md#computation-model).
+
 ---
 
 ## Potential Future Journeys
@@ -310,23 +340,9 @@ vision text that motivates it; build status stays in
 - **Why it matters:** *Visual network on demand* is a stated operating
   principle; the graph complements chat without replacing it (a declared
   non-goal of replacing chat as the primary interface).
-- **Status:** Potential future. See *Operating Principles* and the *visual
-  graph* non-goal.
-
-### F2 — Wei compiles a natural-language skill
-
-- **Persona & pain:** Wei wants to write a skill in plain language and have the
-  agent execute or compile it.
-- **Future journey:** Wei stores a `.lino` skill describing a procedure; the
-  runtime either walks it step by step or compiles it on demand into one of the
-  supported rule shapes (pure-data rule, compiled Rust/JS handler, or
-  dynamically compiled code stored as data).
-- **Why it matters:** *Computation Model* describes five rule shapes ranked from
-  most reviewable to most flexible, with natural-language skills at the flexible
-  end.
-- **Status:** Potential future / partially scaffolded (skill-compiler seed and
-  design exist). See *Computation Model* in
-  [`VISION.md`](../VISION.md#computation-model).
+- **Status:** Potential future; the interactive step-by-step debugging view is
+  tracked by [#667](https://github.com/link-assistant/formal-ai/issues/667). See
+  *Operating Principles* and the *visual graph* non-goal.
 
 ### F3 — Olúwa syncs memory to the cloud and across devices
 
@@ -336,8 +352,9 @@ vision text that motivates it; build status stays in
   persistent storage (cloud sync) so her memory is available on every device.
 - **Why it matters:** *Growable Memory* names "future cloud sync" as an
   additional persistent storage target beyond disk and IndexedDB.
-- **Status:** Potential future. See *Growable Memory And Public Knowledge As
-  Cache*.
+- **Status:** Potential future; tracked by
+  [#669](https://github.com/link-assistant/formal-ai/issues/669). See *Growable
+  Memory And Public Knowledge As Cache*.
 
 ### F4 — Priya tackles a problem that needs search
 
@@ -349,8 +366,11 @@ vision text that motivates it; build status stays in
 - **Why it matters:** *Solution synthesis* and the *Universal Solver Goals*
   describe budget-driven search while preserving reproducibility.
 - **Status:** Potential future / partially built (deterministic synthesis path
-  exists; broader search is staged). See *Reasoning Model* and
-  [`ROADMAP.md`](../ROADMAP.md).
+  exists; broader search is staged); budget-driven search is tracked by
+  [#662](https://github.com/link-assistant/formal-ai/issues/662) and parallel
+  candidate portfolios by
+  [#704](https://github.com/link-assistant/formal-ai/issues/704). See
+  *Reasoning Model* and [`ROADMAP.md`](../ROADMAP.md).
 
 ### F5 — Lin runs heavier code in the browser
 
@@ -361,7 +381,9 @@ vision text that motivates it; build status stays in
 - **Why it matters:** *Product Shape* notes browser mode can start with
   JavaScript evaluation and later experiment with WebVM, and browser mode must
   not claim host-level execution (a non-goal).
-- **Status:** Potential future. See *Product Shape*.
+- **Status:** Potential future; the time-boxed experiment is tracked by
+  [#670](https://github.com/link-assistant/formal-ai/issues/670). See *Product
+  Shape*.
 
 ### F6 — Wei shares an associative package
 
@@ -373,7 +395,9 @@ vision text that motivates it; build status stays in
   modes.
 - **Why it matters:** *Computation Model* cites Deep.Foundation as a reference
   for associative packages, handlers, and permissions stored inside memory.
-- **Status:** Potential future. See *Computation Model*.
+- **Status:** Potential future; tracked by
+  [#668](https://github.com/link-assistant/formal-ai/issues/668). See
+  *Computation Model*.
 
 ---
 
@@ -396,7 +420,7 @@ today, ○ = potential future on that surface.
 | J10 Bounded agent task | ● | ● | ● | ○ | ● | ○ |
 | J11 Edit the previous answer | ● | ● | ● | ● | ● | ● |
 | F1 Visual graph | ○ | — | — | ○ | — | ○ |
-| F2 Compiled skills | ○ | ○ | ○ | ○ | ○ | ○ |
+| F2 Compiled skills | ● | ● | ● | ● | ● | ● |
 | F3 Cloud memory sync | ○ | ○ | ○ | ○ | ○ | ○ |
 | F4 Search-based solving | ○ | ○ | ○ | ○ | ○ | ○ |
 | F5 WebVM execution | — | — | — | ○ | — | ○ |

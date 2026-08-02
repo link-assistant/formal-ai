@@ -1,0 +1,17 @@
+Q34396
+  aliases
+    en (soaps)
+    ru ("мыла")
+    zh ("香皂" "皂" "番梘" "精皂花" "沐浴露" "茶箍" "雪文" "芳雪文" "油胰")
+  descriptions
+    en "salt of fatty acids, used for washing and cleaning"
+    ru "моющее средство на основе солей жирных кислот"
+    zh "脂肪酸（長鏈羧酸）的鹽，用於洗滌和清潔"
+  id Q34396
+  labels
+    en soap
+    hi "साबुन"
+    ru "мыло"
+    zh "肥皂"
+  type item
+success 1

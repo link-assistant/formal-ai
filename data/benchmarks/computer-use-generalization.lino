@@ -1,0 +1,103 @@
+computer_use_generalization_suite
+  record_type "computer_use_generalization_suite"
+  id "issue_707_generalization"
+  title "Issue 707 held-out computer-use generalization slice"
+  license Unlicense
+  source self_authored_for_issue_707
+  provenance "Self-authored held-out requests; no third-party benchmark text is redistributed."
+  purpose "Every prompt here is absent from data/seed/computer-use-tasks.lino, so a plan can only be produced by the schemas auto-learned from that corpus, never by recalling a recorded plan."
+  runner "cargo test --test issue_707_generalization"
+  minimum_cases "12"
+  languages_per_case "4"
+  ratchet_policy "CI asserts every case synthesizes in all four languages, the four locales agree on one plan identity, and every synthesized step passes its precondition, effect, and postcondition verification. Raise minimum_cases only after new cases pass locally and in CI."
+  case notes_count_and_pack
+    resource computer_use_resource_notes
+    operation computer_use_count_lines
+    operation computer_use_pack_archive
+    prompt en "Count the lines in the notes and archive the result"
+    prompt ru "Посчитай строки в заметках и заархивируй результат"
+    prompt hi "नोट्स की गिनती करो और archive करो"
+    prompt zh "统计笔记的行数并打包结果"
+  case customers_filter_and_pack
+    resource computer_use_resource_customers
+    operation computer_use_filter_rows
+    operation computer_use_pack_archive
+    prompt en "Filter the customers and pack the result into an archive"
+    prompt ru "Отфильтруй клиентов и упакуй результат"
+    prompt hi "ग्राहकों को फ़िल्टर करो और pack करो"
+    prompt zh "筛选客户并打包结果"
+  case customers_unique_values
+    resource computer_use_resource_customers
+    operation computer_use_unique_values
+    prompt en "Show the distinct values in the customers file"
+    prompt ru "Покажи уникальные значения у клиентов"
+    prompt hi "ग्राहकों के अद्वितीय मान दिखाओ"
+    prompt zh "去重客户文件"
+  case customers_count_lines
+    resource computer_use_resource_customers
+    operation computer_use_count_lines
+    prompt en "Count the customers"
+    prompt ru "Подсчитай клиентов"
+    prompt hi "ग्राहकों की गिनती करो"
+    prompt zh "统计客户文件的行数"
+  case documents_list_and_pack
+    resource computer_use_resource_documents
+    operation computer_use_list_directory
+    operation computer_use_pack_archive
+    prompt en "Enumerate the documents and bundle them"
+    prompt ru "Перечисли документы и упакуй их"
+    prompt hi "दस्तावेज़ सूचीबद्ध करो और pack करो"
+    prompt zh "列出文档并归档"
+  case documents_pack_and_unpack
+    resource computer_use_resource_documents
+    operation computer_use_pack_archive
+    operation computer_use_unpack_archive
+    prompt en "Pack the documents and then unpack them"
+    prompt ru "Упакуй документы и потом распакуй"
+    prompt hi "दस्तावेज़ pack करो फिर unpack करो"
+    prompt zh "打包文档然后解包"
+  case inbox_note_move_and_pack
+    resource computer_use_resource_inbox_note
+    operation computer_use_move_file
+    operation computer_use_pack_archive
+    prompt en "Move the inbox note and archive it"
+    prompt ru "Перемести заметку из входящих и заархивируй"
+    prompt hi "इनबॉक्स नोट को move करके archive करो"
+    prompt zh "移动收件箱笔记并归档"
+  case orders_extract_identifier
+    resource computer_use_resource_orders
+    operation computer_use_fetch
+    operation computer_use_extract_field
+    prompt en "Retrieve the orders and extract the first order id"
+    prompt ru "Загрузи заказы и извлеки идентификатор"
+    prompt hi "ऑर्डर डाउनलोड करो और आईडी निकालो"
+    prompt zh "下载订单并提取编号"
+  case status_page_heading_and_pack
+    resource computer_use_resource_status_page
+    operation computer_use_query_selector
+    operation computer_use_pack_archive
+    prompt en "Save the status page heading and archive it"
+    prompt ru "Сохрани заголовок страницы статуса и упакуй"
+    prompt hi "स्थिति पृष्ठ का शीर्षक सहेजकर archive करो"
+    prompt zh "保存状态页面标题并打包"
+  case form_submission
+    resource computer_use_resource_form
+    operation computer_use_submit_form
+    prompt en "Send the fixture form"
+    prompt ru "Отправь форму"
+    prompt hi "फ़ॉर्म जमा करो"
+    prompt zh "提交表单"
+  case inventory_unique_values
+    resource computer_use_resource_inventory
+    operation computer_use_unique_values
+    prompt en "Show the distinct inventory categories"
+    prompt ru "Покажи уникальные значения инвентаря"
+    prompt hi "inventory के अद्वितीय मान दिखाओ"
+    prompt zh "库存去重"
+  case inventory_process_status
+    resource computer_use_resource_inventory
+    operation computer_use_process_status
+    prompt en "Report the process status for the inventory"
+    prompt ru "Сообщи статус процесса для инвентаря"
+    prompt hi "inventory के लिए process status दो"
+    prompt zh "报告库存的进程状态"

@@ -1,0 +1,93 @@
+{
+  "entities": {
+    "Q34396": {
+      "type": "item",
+      "id": "Q34396",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "soap"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "мыло"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "साबुन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "肥皂"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "salt of fatty acids, used for washing and cleaning"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "моющее средство на основе солей жирных кислот"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "脂肪酸（長鏈羧酸）的鹽，用於洗滌和清潔"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "soaps"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "мыла"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "香皂"
+          },
+          {
+            "language": "zh",
+            "value": "皂"
+          },
+          {
+            "language": "zh",
+            "value": "番梘"
+          },
+          {
+            "language": "zh",
+            "value": "精皂花"
+          },
+          {
+            "language": "zh",
+            "value": "沐浴露"
+          },
+          {
+            "language": "zh",
+            "value": "茶箍"
+          },
+          {
+            "language": "zh",
+            "value": "雪文"
+          },
+          {
+            "language": "zh",
+            "value": "芳雪文"
+          },
+          {
+            "language": "zh",
+            "value": "油胰"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,18 @@
+Q163446
+  aliases
+    hi ("ग़लीचा")
+    ru ("ковер" "ковры")
+    zh ("地氈")
+  descriptions
+    en "textile floor covering"
+    hi "वस्त्र-आधारित फ़र्श आवरण"
+    ru "тканое изделие для покрытия полов"
+    zh "纺织地面覆盖物"
+  id Q163446
+  labels
+    en carpet
+    hi "क़ालीन"
+    ru "ковёр"
+    zh "地毯"
+  type item
+success 1

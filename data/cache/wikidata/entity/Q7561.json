@@ -1,0 +1,59 @@
+{
+  "entities": {
+    "Q7561": {
+      "type": "item",
+      "id": "Q7561",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "snow"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "снег"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "हिम"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "雪"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "precipitation in the form of ice crystal flakes"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "атмосферные осадки в виде многочисленных мелких кристаллов льда"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "從雲中降落的結晶狀固體冰"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "snowfall"
+          },
+          {
+            "language": "en",
+            "value": "snowfalls"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "снегопад"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

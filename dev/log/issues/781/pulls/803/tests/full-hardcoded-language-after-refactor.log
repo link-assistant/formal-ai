@@ -1,0 +1,7 @@
+
+Checking src/ for hardcoded user-facing natural language (R379)...
+
+Detected prose literals: 1317 | allowlisted: 1317
+
+No new hardcoded natural language; allowlist is in sync (1317 entries).
+

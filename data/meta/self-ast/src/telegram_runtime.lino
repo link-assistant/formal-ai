@@ -1,0 +1,28 @@
+self_ast_census
+  target src/telegram_runtime.rs
+  language rust
+  fidelity signature
+  byte_len 11108
+  line_count 311
+  content_id source_module_25a895fab176ea65
+  symbol_count 19
+  symbols
+    enum TelegramPollingRuntimeError 18 21
+    function fmt 24 29
+    function from 35 37
+    trait TelegramTransport 42 70
+    function get_updates 44 44
+    function send_message 46 50
+    function edit_message_text 56 62
+    function sleep_between_edits 67 69
+    struct CurlTelegramTransport 73 75
+    function new 79 83
+    function run_curl 85 105
+    function get_updates 109 120
+    function send_message 122 143
+    function edit_message_text 145 154
+    function run_telegram_polling 158 165
+    function run_telegram_polling_with_transport 169 223
+    function run_telegram_webhook_server 226 228
+    function send_reply 230 298
+    function sleep_with_cancellation 300 311

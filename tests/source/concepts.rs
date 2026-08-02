@@ -117,13 +117,7 @@ fn meaning_defined_language_code(meaning: &seed::Meaning) -> Option<&'static str
 }
 
 fn language_code(slug: &str) -> Option<&'static str> {
-    match slug {
-        "language_english" => Some("en"),
-        "language_russian" => Some("ru"),
-        "language_hindi" => Some("hi"),
-        "language_chinese" => Some("zh"),
-        _ => None,
-    }
+    crate::language::language_for_concept_slug(slug).map(crate::Language::slug)
 }
 
 /// Outcome of parsing a "what is X" style prompt.

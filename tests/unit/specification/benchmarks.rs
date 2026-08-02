@@ -130,6 +130,40 @@ fn issue_317_held_out_benchmark_variants_pass_by_derivation() {
 }
 
 #[test]
+fn issue_704_portfolio_rescues_the_industry_search_case() {
+    let _solver_guard = benchmark_solver_lock();
+    let suite = load_suite();
+    let case = suite
+        .cases
+        .iter()
+        .find(|case| case.id == "arithmetic_reachability_portfolio_reach_26")
+        .expect("issue-704 industry case");
+    let solver = UniversalSolver::new(SolverConfig {
+        offline: true,
+        execution_surface: ExecutionSurface::RustLibrary,
+        temperature: 0.0,
+        compute_budget: 256,
+        draft_count: 3,
+        ..SolverConfig::default()
+    });
+
+    let response = solver.solve(&case.prompt);
+
+    assert!(response.answer.contains("= 26"), "{}", response.answer);
+    assert_eq!(response.links_notation.matches(" draft:result ").count(), 3);
+    assert_eq!(
+        response
+            .links_notation
+            .matches(" draft_comparison ")
+            .count(),
+        1
+    );
+    assert!(response.links_notation.contains(r#"draft_index "0""#));
+    assert!(response.links_notation.contains(r#"status "failed""#));
+    assert!(response.links_notation.contains(r#"winner_index "2""#));
+}
+
+#[test]
 fn issue_314_numeric_benchmark_cases_compute_with_trace() {
     let _solver_guard = benchmark_solver_lock();
     let suite = load_suite();
@@ -731,6 +765,7 @@ fn assert_case_passes_by_derivation(case: &BenchmarkCase, links_notation: &str) 
         "gsm8k" => "composition:remainder",
         "math" => "composition:substitution",
         "bigbench_object_counting" => "composition:count",
+        "arithmetic_reachability_search" => "search:solution",
         source => panic!("missing derivation marker rule for benchmark source {source}"),
     };
     assert!(

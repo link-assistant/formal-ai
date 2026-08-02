@@ -41,3 +41,14 @@ fn russian_translation_prompt_uses_multilingual_label_table() {
         "wikidata:Q89"
     );
 }
+
+#[test]
+fn source_first_translation_formalizes_only_the_source_proposition() {
+    assert_eq!(
+        parse_translation_object(
+            "любая формальная система либо неполна, либо противоречива - translate to english",
+        )
+        .as_deref(),
+        Some("любая формальная система либо неполна, либо противоречива"),
+    );
+}

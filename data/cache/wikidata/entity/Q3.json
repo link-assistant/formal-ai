@@ -1,0 +1,99 @@
+{
+  "entities": {
+    "Q3": {
+      "type": "item",
+      "id": "Q3",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "life"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "жизнь"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जीवन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "生命"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "matter capable of extracting energy from the environment for replication"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "совокупность биохимических процессов, позволяющих организмам использовать энергию из окружающей среды для развития и размножения"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जन्म से मृत्यु के बीच की स्थिति"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "能够从环境中提取能量用于保存和复制自我的物体"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "biota"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "биота"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "प्राण"
+          },
+          {
+            "language": "hi",
+            "value": "जान"
+          },
+          {
+            "language": "hi",
+            "value": "जीव"
+          },
+          {
+            "language": "hi",
+            "value": "ज़िन्दगी"
+          },
+          {
+            "language": "hi",
+            "value": "जिंदगी"
+          },
+          {
+            "language": "hi",
+            "value": "जिन्दगी"
+          },
+          {
+            "language": "hi",
+            "value": "जीवनकाल"
+          },
+          {
+            "language": "hi",
+            "value": "ज़िंदगी"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "性命"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

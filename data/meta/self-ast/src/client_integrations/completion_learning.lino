@@ -1,0 +1,25 @@
+self_ast_census
+  target src/client_integrations/completion_learning.rs
+  language rust
+  fidelity signature
+  byte_len 8442
+  line_count 225
+  content_id source_module_e132df0b7322412d
+  symbol_count 16
+  symbols
+    const LEDGER_FILE 36 36
+    const STATE_NAMESPACE 38 38
+    const STATE_DIR_ENV 40 40
+    struct RecoveryKey 44 47
+    struct RecoveryOutcome 52 56
+    struct Tally 60 63
+    function state_directory 69 87
+    struct RecoveryLedger 91 94
+    function load 98 117
+    function tally 119 128
+    function rank 132 146
+    function score 151 165
+    function record 168 179
+    function location 182 184
+    function render 188 199
+    function parse_outcomes 202 225

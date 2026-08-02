@@ -1,0 +1,57 @@
+{
+  "entities": {
+    "Q15173": {
+      "type": "item",
+      "id": "Q15173",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "lip"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "губы"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "होंठ"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "唇"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "visible body part at the mouth"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "кожно-мышечные складки, окружающие вход в полость рта"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "lips"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "губа"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "唇结节"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

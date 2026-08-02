@@ -1,6 +1,6 @@
 //! Document-generation request handler (issue #425).
 //!
-//! Open-ended "make me a PDF / document / report with <subject>" prompts ask the
+//! Open-ended "make me a PDF / document / report with `<subject>`" prompts ask the
 //! deterministic solver to research arbitrary data and render a binary file —
 //! two capabilities a symbolic engine does not have. Rather than fall through to
 //! the unknown opener, this handler recognizes the request as a *document task*
@@ -18,6 +18,7 @@ use crate::document_formats::{
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
+use crate::normal_markov::quoted_segments;
 use crate::solver_handlers::finalize_simple;
 use crate::solver_helpers::is_agent_request;
 
@@ -316,44 +317,6 @@ fn text_after_colon(text: &str) -> Option<String> {
     text.find(':')
         .or_else(|| text.find('：'))
         .map(|index| text[index + 1..].trim().to_owned())
-}
-
-fn quoted_segments(text: &str) -> Vec<String> {
-    let mut segments = Vec::new();
-    let mut cursor = 0usize;
-    while cursor < text.len() {
-        let Some((relative_start, open, close)) =
-            text[cursor..]
-                .char_indices()
-                .find_map(|(index, character)| {
-                    quote_close_for(character).map(|close| (index, character, close))
-                })
-        else {
-            break;
-        };
-        let content_start = cursor + relative_start + open.len_utf8();
-        let Some(relative_end) = text[content_start..].find(close) else {
-            break;
-        };
-        let content_end = content_start + relative_end;
-        segments.push(text[content_start..content_end].to_owned());
-        cursor = content_end + close.len_utf8();
-    }
-    segments
-}
-
-const fn quote_close_for(open: char) -> Option<char> {
-    match open {
-        '\'' => Some('\''),
-        '"' => Some('"'),
-        '`' => Some('`'),
-        '«' => Some('»'),
-        '“' => Some('”'),
-        '‘' => Some('’'),
-        '「' => Some('」'),
-        '『' => Some('』'),
-        _ => None,
-    }
 }
 
 fn non_empty(value: String) -> Option<String> {

@@ -1,0 +1,75 @@
+{
+  "entities": {
+    "Q321767": {
+      "type": "item",
+      "id": "Q321767",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "pocket"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "карман"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जेब"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "口袋"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "small compartment in clothing where minor objects can be carried inside"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "сопутствующее хранилище, часть предмета одежды"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Pocket"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "橐袋仔"
+          },
+          {
+            "language": "zh",
+            "value": "簏袋仔"
+          },
+          {
+            "language": "zh",
+            "value": "袋仔"
+          },
+          {
+            "language": "zh",
+            "value": "橐仔"
+          },
+          {
+            "language": "zh",
+            "value": "懷"
+          },
+          {
+            "language": "zh",
+            "value": "通懷仔"
+          },
+          {
+            "language": "zh",
+            "value": "通櫃仔"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

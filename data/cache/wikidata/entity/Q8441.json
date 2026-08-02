@@ -1,0 +1,99 @@
+{
+  "entities": {
+    "Q8441": {
+      "type": "item",
+      "id": "Q8441",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "man"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "мужчина"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पुरुष"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "成年男性"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "male adult human"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "взрослый человек мужского пола"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "成年雄性人類"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "M."
+          },
+          {
+            "language": "en",
+            "value": "men"
+          },
+          {
+            "language": "en",
+            "value": "gentleman"
+          },
+          {
+            "language": "en",
+            "value": "adult man"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "дядя"
+          },
+          {
+            "language": "ru",
+            "value": "отец"
+          },
+          {
+            "language": "ru",
+            "value": "мужик"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "आदमी"
+          },
+          {
+            "language": "hi",
+            "value": "मर्द"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "男性"
+          },
+          {
+            "language": "zh",
+            "value": "男"
+          },
+          {
+            "language": "zh",
+            "value": "男人"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,14 @@
+Q553
+  aliases
+    en (teeth)
+  descriptions
+    en "hard, calcified structure found in the jaws (or mouths) of many vertebrates and used to break down food"
+    ru "костное образование в ротовой полости большинства позвоночных"
+  id Q553
+  labels
+    en tooth
+    hi "दाँत"
+    ru "зуб"
+    zh "牙齿"
+  type item
+success 1

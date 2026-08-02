@@ -1,0 +1,6 @@
+Grok CLI 0.0.34 failed during its own startup before contacting Formal AI:
+
+TypeError: ansiStyles.color.ansi is not a function
+    at slice-ansi/index.js:13:35
+
+with-formal-ai: grok exited with status 1

@@ -1,0 +1,1 @@
+SELECT id, content, accessCount FROM memory WHERE conversationId = 'issue-708-fixture' ORDER BY accessCount DESC LIMIT 1

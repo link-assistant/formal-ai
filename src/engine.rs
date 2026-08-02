@@ -21,23 +21,24 @@ use crate::engine_assistant_name::{
     russian_assistant_name_answer, ASSISTANT_NAME_EXAMPLES,
 };
 pub(crate) use crate::engine_responses::{
-    assistant_free_time_answer, chinese_unknown_answer, farewell_answer, greeting_answer,
-    hindi_unknown_answer, identity_answer, russian_unknown_answer, unknown_answer,
-    unknown_language_fallback_answer,
+    assistant_free_time_answer, farewell_answer, greeting_answer, identity_answer, unknown_answer,
+    unknown_language_fallback_answer, wellbeing_answer,
 };
 use crate::engine_responses::{
     chinese_assistant_free_time_answer, chinese_courtesy_response_answer, chinese_farewell_answer,
     chinese_greeting_answer, chinese_identity_answer, chinese_test_status_answer,
-    courtesy_response_answer, hindi_assistant_free_time_answer, hindi_courtesy_response_answer,
-    hindi_farewell_answer, hindi_greeting_answer, hindi_identity_answer, hindi_test_status_answer,
+    chinese_wellbeing_answer, courtesy_response_answer, hindi_assistant_free_time_answer,
+    hindi_courtesy_response_answer, hindi_farewell_answer, hindi_greeting_answer,
+    hindi_identity_answer, hindi_test_status_answer, hindi_wellbeing_answer,
     russian_assistant_free_time_answer, russian_courtesy_response_answer, russian_farewell_answer,
     russian_greeting_answer, russian_identity_answer, russian_test_status_answer,
-    test_status_answer, ASSISTANT_FREE_TIME_EXAMPLES, COURTESY_RESPONSE_EXAMPLES,
-    GREETING_EXAMPLES, IDENTITY_EXAMPLES, TEST_STATUS_EXAMPLES, UNKNOWN_EXAMPLES,
+    russian_wellbeing_answer, test_status_answer, ASSISTANT_FREE_TIME_EXAMPLES,
+    COURTESY_RESPONSE_EXAMPLES, GREETING_EXAMPLES, IDENTITY_EXAMPLES, TEST_STATUS_EXAMPLES,
+    UNKNOWN_EXAMPLES,
 };
 use crate::event_log::EventLog;
 use crate::language::Language;
-use crate::links_format::{format_lino_record, sanitize_lino_value};
+use crate::links_format::{flatten_lino_value, format_lino_record};
 use crate::seed;
 
 pub const DEFAULT_MODEL: &str = "formal-ai";
@@ -46,7 +47,7 @@ pub const DEFAULT_MODEL: &str = "formal-ai";
 // re-exported so `crate::engine::{...}` / `formal_ai::{...}` paths stay unchanged.
 pub use crate::thinking::{
     humanize_meta_identifier, naturalize_thinking_step, render_thinking_steps,
-    thinking_language_label, ThinkingStep,
+    thinking_language_label, thinking_narrative, ThinkingStep,
 };
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -58,6 +59,17 @@ pub struct SymbolicAnswer {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub thinking_steps: Vec<ThinkingStep>,
     pub links_notation: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub execution_recipe: Option<Box<ExecutionRecipe>>,
+}
+
+/// A code artifact whose side effects belong to the requesting agentic client.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ExecutionRecipe {
+    pub language: String,
+    pub source: String,
+    pub path: String,
+    pub commands: Vec<String>,
 }
 
 #[derive(Debug, Default, Clone, Copy)]
@@ -260,7 +272,7 @@ fn format_doublet_reduction_record() -> String {
 
 #[must_use]
 pub fn estimate_tokens(text: &str) -> u32 {
-    u32::try_from(text.split_whitespace().count()).unwrap_or(u32::MAX)
+    u32::try_from(text.chars().count()).unwrap_or(u32::MAX)
 }
 
 /// A single node in the network-visualization graph.
@@ -493,6 +505,7 @@ pub fn stable_id(prefix: &str, text: &str) -> String {
 
 pub(crate) enum SelectedRule {
     Greeting,
+    Wellbeing,
     Farewell,
     TestStatus,
     CourtesyResponse,
@@ -511,6 +524,7 @@ impl SelectedRule {
     pub(crate) fn intent(&self) -> String {
         match self {
             Self::Greeting => String::from("greeting"),
+            Self::Wellbeing => String::from("wellbeing"),
             Self::Farewell => String::from("farewell"),
             Self::TestStatus => String::from("test_status"),
             Self::CourtesyResponse => String::from("courtesy_response"),
@@ -518,7 +532,7 @@ impl SelectedRule {
             Self::Identity => String::from("identity"),
             Self::AssistantName => String::from("assistant_name"),
             Self::WriteProgram(_) => String::from(WRITE_PROGRAM_INTENT),
-            Self::UnsupportedWriteProgram { .. } => String::from("write_program_unsupported"),
+            Self::UnsupportedWriteProgram { .. } => String::from("write_program_skill_gap"),
             Self::Unknown => String::from("unknown"),
         }
     }
@@ -526,6 +540,7 @@ impl SelectedRule {
     pub(crate) fn response_link(&self) -> String {
         match self {
             Self::Greeting => String::from("response:greeting"),
+            Self::Wellbeing => String::from("response:wellbeing"),
             Self::Farewell => String::from("response:farewell"),
             Self::TestStatus => String::from("response:test_status"),
             Self::CourtesyResponse => String::from("response:courtesy_response"),
@@ -534,7 +549,7 @@ impl SelectedRule {
             Self::AssistantName => String::from("response:assistant_name"),
             Self::WriteProgram(spec) => spec.response_link(),
             Self::UnsupportedWriteProgram { .. } => {
-                String::from("response:write_program:unsupported")
+                String::from("response:write_program:skill_gap")
             }
             Self::Unknown => String::from("response:unknown"),
         }
@@ -543,6 +558,7 @@ impl SelectedRule {
     pub(crate) fn answer(&self) -> String {
         match self {
             Self::Greeting => String::from(greeting_answer()),
+            Self::Wellbeing => String::from(wellbeing_answer()),
             Self::Farewell => String::from(farewell_answer()),
             Self::TestStatus => String::from(test_status_answer()),
             Self::CourtesyResponse => String::from(courtesy_response_answer()),
@@ -550,7 +566,7 @@ impl SelectedRule {
             Self::Identity => String::from(identity_answer()),
             Self::AssistantName => String::from(assistant_name_answer()),
             Self::WriteProgram(spec) => write_program_answer(*spec, Language::English, false),
-            Self::UnsupportedWriteProgram { task, language } => unsupported_write_program_answer(
+            Self::UnsupportedWriteProgram { task, language } => crate::program_skill_gap::render(
                 task.as_deref(),
                 language.as_deref(),
                 Language::English,
@@ -574,6 +590,9 @@ pub(crate) fn language_aware_answer_for(
         (SelectedRule::Greeting, Language::Russian) => String::from(russian_greeting_answer()),
         (SelectedRule::Greeting, Language::Hindi) => String::from(hindi_greeting_answer()),
         (SelectedRule::Greeting, Language::Chinese) => String::from(chinese_greeting_answer()),
+        (SelectedRule::Wellbeing, Language::Russian) => String::from(russian_wellbeing_answer()),
+        (SelectedRule::Wellbeing, Language::Hindi) => String::from(hindi_wellbeing_answer()),
+        (SelectedRule::Wellbeing, Language::Chinese) => String::from(chinese_wellbeing_answer()),
         (SelectedRule::Farewell, Language::Russian) => String::from(russian_farewell_answer()),
         (SelectedRule::Farewell, Language::Hindi) => String::from(hindi_farewell_answer()),
         (SelectedRule::Farewell, Language::Chinese) => String::from(chinese_farewell_answer()),
@@ -622,7 +641,7 @@ pub(crate) fn language_aware_answer_for(
             },
             language,
         ) => {
-            unsupported_write_program_answer(task.as_deref(), program_language.as_deref(), language)
+            crate::program_skill_gap::render(task.as_deref(), program_language.as_deref(), language)
         }
         (SelectedRule::Unknown, _) => {
             crate::unknown_opener::language_aware_unknown_answer(prompt, language)
@@ -691,7 +710,7 @@ pub(crate) fn answer_links_notation(
             format!(
                 "step_{index} {} {}",
                 event.kind,
-                sanitize_lino_value(&event.payload)
+                flatten_lino_value(&event.payload)
             )
         })
         .collect::<Vec<_>>()
@@ -703,10 +722,10 @@ pub(crate) fn answer_links_notation(
             format!(
                 "step_{} {} {} {} {}",
                 step.order,
-                sanitize_lino_value(&step.step),
-                sanitize_lino_value(&step.level),
-                sanitize_lino_value(&step.source_event),
-                sanitize_lino_value(&step.detail)
+                flatten_lino_value(&step.step),
+                flatten_lino_value(&step.level),
+                flatten_lino_value(&step.source_event),
+                flatten_lino_value(&step.detail)
             )
         })
         .collect::<Vec<_>>()
@@ -802,38 +821,6 @@ fn write_program_intro(language_name: &str, task_label: &str, language: Language
     }
 }
 
-fn unsupported_write_program_answer(
-    task: Option<&str>,
-    language: Option<&str>,
-    response_language: Language,
-) -> String {
-    let task = task.unwrap_or("missing");
-    let language = language.unwrap_or("missing");
-    let languages = supported_program_languages();
-    let tasks = supported_program_tasks();
-    match response_language {
-        Language::Russian => format!(
-            "Я могу выполнить `write_program(language, task)`, но у меня нет шаблона для \
-             языка `{language}` и задачи `{task}`. Поддерживаемые языки: {languages}. \
-             Поддерживаемые задачи: {tasks}."
-        ),
-        Language::Hindi => format!(
-            "मैं `write_program(language, task)` रूट कर सकता हूँ, लेकिन भाषा `{language}` और \
-             कार्य `{task}` के लिए मेरे पास कोई टेम्पलेट नहीं है। समर्थित भाषाएँ: {languages}. \
-             समर्थित कार्य: {tasks}."
-        ),
-        Language::Chinese => format!(
-            "我可以路由 `write_program(language, task)`，但我没有语言 `{language}` 和任务 \
-             `{task}` 的模板。支持的语言：{languages}。支持的任务：{tasks}。"
-        ),
-        _ => format!(
-            "I can route `write_program(language, task)`, but I do not have a template for \
-             language `{language}` and task `{task}`. Supported languages: {languages}. \
-             Supported tasks: {tasks}."
-        ),
-    }
-}
-
 fn execution_report(execution: &ProgramExecution, output: &str, language: Language) -> String {
     let command_lines = execution_command_lines(execution);
     let verified = matches!(execution.status, ExecutionStatus::Verified);
@@ -863,7 +850,7 @@ fn execution_report(execution: &ProgramExecution, output: &str, language: Langua
     )
 }
 
-const fn execution_status_phrase(status: ExecutionStatus, language: Language) -> &'static str {
+fn execution_status_phrase(status: ExecutionStatus, language: Language) -> &'static str {
     match (status, language) {
         (ExecutionStatus::Verified, Language::Russian) => "скомпилировано и запущено",
         (ExecutionStatus::Verified, Language::Hindi) => "संकलित और चलाया गया",
@@ -875,7 +862,7 @@ const fn execution_status_phrase(status: ExecutionStatus, language: Language) ->
     }
 }
 
-const fn execution_output_label(verified: bool, language: Language) -> &'static str {
+fn execution_output_label(verified: bool, language: Language) -> &'static str {
     match (verified, language) {
         (true, Language::Russian) => "Вывод",
         (false, Language::Russian) => "Ожидаемый вывод после проверки",

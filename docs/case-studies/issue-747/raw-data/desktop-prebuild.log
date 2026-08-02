@@ -1,0 +1,8 @@
+
+> formal-ai-desktop@0.212.0 prebuild
+> node scripts/prepare-resources.mjs
+
+Synced desktop version 0.212.0 -> 0.297.1 (from Cargo.toml)
+Prepared desktop browser runtime: /tmp/gh-issue-solver-1784320659012/desktop/browser-runtime
+No formal-ai binary found; packaged app will fall back to formal-ai on PATH.
+Prepared desktop web resources: /tmp/gh-issue-solver-1784320659012/desktop/dist-web

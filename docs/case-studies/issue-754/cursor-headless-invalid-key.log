@@ -1,0 +1,4 @@
+[33m⚠ Warning: The provided API key is invalid.[0m
+The API key was loaded from the CURSOR_API_KEY environment variable.
+Please check you have the right key, create a new one, or authenticate without it.
+Error: "cursor-agent exited with status 1"

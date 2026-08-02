@@ -1,0 +1,41 @@
+   Compiling formal-ai v0.300.0 (/tmp/gh-issue-solver-1784506151226)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 43.79s
+     Running tests/unit/mod.rs (target/debug/deps/unit-83490c651f7fe834)
+
+running 33 tests
+test agentic_coding::arbitrary_text_still_produces_a_valid_knowledge_base ... ok
+test agentic_coding::canonical_synopsis_covers_all_nine_primitives ... ok
+test agentic_coding::annotations_use_real_character_offsets ... ok
+test agentic_coding::corpus_search_reports_no_results_for_an_unrelated_query ... ok
+test agentic_coding::corpus_fetch_returns_the_canonical_synopsis_for_the_known_url ... ok
+test agentic_coding::every_output_record_is_links_notation_not_a_rust_struct ... ok
+test agentic_coding::corpus_search_surfaces_the_canonical_source ... ok
+test agentic_coding::corpus_fetch_reports_a_404_for_an_unknown_url ... ok
+test agentic_coding::explicit_doc_id_overrides_the_default ... ok
+test agentic_coding::grounded_svo_extraction_is_faithful ... ok
+test agentic_coding::formalization_is_deterministic ... ok
+test agentic_coding::issue_607_planner_maps_shell_tools_to_ls_command ... ok
+test agentic_coding::issue_607_server_summarizes_shell_tool_result_after_ls_runs ... ok
+test agentic_coding::issue_607_driver_executes_ls_inside_the_sandbox_workspace ... ok
+test agentic_coding::issue_607_server_emits_tool_calls_for_shell_request_in_agent_mode ... ok
+test agentic_coding::driver_fetches_the_canonical_source_and_writes_the_knowledge_base ... ok
+test agentic_coding::issue_624_planner_maps_natural_language_directory_listing_to_ls ... ok
+test agentic_coding::driver_runs_the_full_search_fetch_write_run_loop_to_a_final_answer ... ok
+test agentic_coding::issue_624_server_emits_tool_calls_for_natural_language_directory_listing ... ok
+test agentic_coding::planner_completes_directly_when_no_tools_are_advertised ... ok
+test agentic_coding::planner_classifies_results_by_tool_call_id_when_name_is_absent ... ok
+test agentic_coding::issue_676_planner_ignores_shell_tokens_without_run_context ... ok
+test agentic_coding::planner_ignores_non_formalization_tasks ... ok
+test agentic_coding::issue_676_planner_maps_natural_language_file_listing_to_ls ... ok
+test agentic_coding::planner_falls_back_to_the_synopsis_when_fetch_errors ... ok
+test agentic_coding::planner_formalizes_the_fetched_text_when_fetch_succeeds ... ok
+test agentic_coding::driver_is_deterministic ... ok
+test agentic_coding::unmatched_object_falls_back_to_an_honest_literal ... ok
+test agentic_coding::issue_676_planner_maps_execute_pwd_to_pwd_command ... ok
+test agentic_coding::server_returns_final_knowledge_base_once_the_recipe_is_exhausted ... ok
+test agentic_coding::planner_skips_capabilities_no_advertised_tool_provides ... ok
+test agentic_coding::server_emits_tool_calls_for_a_formalization_task_in_agent_mode ... ok
+test agentic_coding::planner_walks_the_full_search_fetch_write_run_recipe ... ok
+
+test result: ok. 33 passed; 0 failed; 0 ignored; 0 measured; 1876 filtered out; finished in 7.96s
+

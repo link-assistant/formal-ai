@@ -27,6 +27,7 @@ use crate::agent::{AgentCommandResult, AgentError, AgentWorkspace, AgentWorkspac
 use crate::protocol::{
     create_chat_completion_with_solver, ChatCompletionRequest, ChatMessage, ToolCall,
 };
+use crate::skill_procedure::CompiledProcedure;
 use crate::solver::{SolverConfig, UniversalSolver};
 
 /// The tool set the driver advertises — the four capabilities the planner's recipe
@@ -59,7 +60,7 @@ pub struct DriverOutcome {
     pub final_answer: String,
     /// How many server round-trips the loop took.
     pub turns: usize,
-    /// Whether the loop stopped at [`MAX_TURNS`] rather than a final answer.
+    /// Whether the loop stopped at `MAX_TURNS` rather than a final answer.
     pub hit_turn_cap: bool,
 }
 
@@ -226,6 +227,9 @@ fn execute_tool_call(call: &ToolCall, workspace: &mut AgentWorkspace) -> String 
         }
         "run_command" => {
             let command = arg_str(&arguments, "command");
+            if let Some(result) = execute_procedure_conformance(command, workspace) {
+                return result;
+            }
             workspace.run_command(command);
             workspace.last_command_result().map_or_else(
                 || format!("run_command produced no result for {command:?}"),
@@ -234,6 +238,34 @@ fn execute_tool_call(call: &ToolCall, workspace: &mut AgentWorkspace) -> String 
         }
         other => format!("error: unsupported tool {other}"),
     }
+}
+
+/// Mirror the public `formal-ai procedure conformance` command inside the
+/// in-repo sandbox. External Agent CLI runs the binary; this deterministic
+/// driver invokes the same library path without allowing arbitrary executables.
+fn execute_procedure_conformance(command: &str, workspace: &AgentWorkspace) -> Option<String> {
+    let parts = command.split_whitespace().collect::<Vec<_>>();
+    if parts.get(..3) != Some(&["formal-ai", "procedure", "conformance"]) {
+        return None;
+    }
+    let artifact = option_value(&parts, "--artifact")?;
+    let trigger = option_value(&parts, "--trigger")?;
+    if artifact != super::procedure::COMPILED_PROCEDURE_PATH {
+        return Some(format!("procedure_artifact_unsupported:{artifact:?}"));
+    }
+    let document = match std::fs::read_to_string(workspace.root().join(artifact)) {
+        Ok(document) => document,
+        Err(error) => return Some(format!("procedure_artifact_read_failed:{artifact}:{error}")),
+    };
+    match CompiledProcedure::from_artifact_links_notation(&document) {
+        Ok(procedure) => Some(procedure.conformance_links_notation(trigger)),
+        Err(error) => Some(format!("procedure_artifact_invalid:{error}")),
+    }
+}
+
+fn option_value<'a>(parts: &'a [&str], option: &str) -> Option<&'a str> {
+    let index = parts.iter().position(|part| *part == option)?;
+    parts.get(index + 1).copied()
 }
 
 /// OpenAI-shaped function tool definitions for the advertised tool `names`.

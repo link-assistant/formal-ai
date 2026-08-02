@@ -1,0 +1,16 @@
+Q3031
+  aliases
+    en (lass lassie "👧")
+    zh ("幼女")
+  descriptions
+    en "young female human"
+    ru "ребёнок женского пола"
+    zh "年幼雌性人類"
+  id Q3031
+  labels
+    en girl
+    hi "लड़की"
+    ru "девочка"
+    zh "女孩"
+  type item
+success 1

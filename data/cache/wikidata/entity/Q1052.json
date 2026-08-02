@@ -1,0 +1,53 @@
+{
+  "entities": {
+    "Q1052": {
+      "type": "item",
+      "id": "Q1052",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "rainbow"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "радуга"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "इन्द्रधनुष"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "彩虹"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "meteorological phenomenon caused by reflection, refraction and dispersion of light in water droplets"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "атмосферное оптическое и метеорологическое явление"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "光学现象"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "北部省城际客运"
+          },
+          {
+            "language": "zh",
+            "value": "诺尔省城际客运"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

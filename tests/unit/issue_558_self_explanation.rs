@@ -160,13 +160,23 @@ fn recognises_the_explain_task_without_colliding_with_the_sibling_recipes() {
         formal_ai::agentic_coding::self_heal::SELF_HEAL_TASK
     ));
     assert!(!is_explain_task(
-        formal_ai::agentic_coding::source_graph::SOURCE_GRAPH_TASK
+        formal_ai::agentic_coding::source_links::SOURCE_LINKS_TASK
     ));
     assert!(!is_explain_task(formal_ai::agentic_coding::LEDGER_TASK));
+    assert!(
+        !is_explain_task(
+            "You are an AI issue solver.\n\
+             Issue to solve: https://github.com/link-assistant/formal-ai/issues/698\n\
+             Continue the prepared pull request and implement the requested benchmark harness.\n\
+             A review comment asks to deepen the full vision of Formal AI and documents how Formal AI works.\n\
+             Read the issue, reproduce the bug, change the code, run tests, and update the pull request."
+        ),
+        "an embedded phrase in a repository work item must not hijack the whole task"
+    );
     // The explain task itself must not trip the sibling routers.
     assert!(!formal_ai::agentic_coding::is_self_heal_task(EXPLAIN_TASK));
     assert!(!formal_ai::agentic_coding::is_self_ast_task(EXPLAIN_TASK));
-    assert!(!formal_ai::agentic_coding::is_source_graph_task(
+    assert!(!formal_ai::agentic_coding::is_source_links_task(
         EXPLAIN_TASK
     ));
     assert!(!formal_ai::agentic_coding::is_ledger_task(EXPLAIN_TASK));

@@ -1,0 +1,61 @@
+{
+  "entities": {
+    "Q35872": {
+      "type": "item",
+      "id": "Q35872",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "boat"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "лодка"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "नाव"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "艇"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "smaller watercraft"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "небольшое водное транспортное средство"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "較小的船隻"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "boats"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "नौका"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "小船"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,7 @@
+[package]
+name = "jieba-repro"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+lindera-jieba = { version = "4.0.0", default-features = false, features = ["embed-jieba"] }

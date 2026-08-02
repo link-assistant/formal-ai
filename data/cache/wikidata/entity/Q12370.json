@@ -1,0 +1,55 @@
+{
+  "entities": {
+    "Q12370": {
+      "type": "item",
+      "id": "Q12370",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "salt"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "соль"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "लवण"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "盐"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "ionic compound composed of cations and anions"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "химическое соединение из катиона и аниона"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "化合物的種類"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "salts"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "соли"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

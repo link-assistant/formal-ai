@@ -1,0 +1,17 @@
+Q11446
+  aliases
+    en (vessel "marine vessel" "water vessel" ships Ships)
+    ru ("судно")
+    zh ("輪船")
+  descriptions
+    en "large buoyant watercraft"
+    ru "большое судно"
+    zh "浮于水面上的大型结构，不同于Q1229765"
+  id Q11446
+  labels
+    en ship
+    hi "जलयान"
+    ru "корабль"
+    zh "船"
+  type item
+success 1

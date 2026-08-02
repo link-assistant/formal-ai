@@ -1,0 +1,75 @@
+{
+  "entities": {
+    "Q12280": {
+      "type": "item",
+      "id": "Q12280",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "bridge"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "мост"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सेतु"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "桥"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "structure that spans and provides a passage over a road, railway, river, or some other obstacle"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "дорожное сооружение"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "एक प्रकार का ढाँचा जो नदी, पहाड़, या घाटी को वाहन या पैदल पार करने के लिये बनाया जाता है"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "跨越物理障碍的建筑结构"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "bridge (structure)"
+          },
+          {
+            "language": "en",
+            "value": "bridge (engineering)"
+          },
+          {
+            "language": "en",
+            "value": "bridges"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "橋"
+          },
+          {
+            "language": "zh",
+            "value": "橋梁"
+          },
+          {
+            "language": "zh",
+            "value": "桥梁"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

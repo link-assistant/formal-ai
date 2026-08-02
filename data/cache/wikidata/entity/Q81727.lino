@@ -1,0 +1,16 @@
+Q81727
+  aliases
+    en (glass)
+    zh ("杯子" "水杯" "浅杯")
+  descriptions
+    en "vessel for liquids"
+    ru "сосуд для жидкостей"
+    zh "可盛液体，顶部非闭合的容器"
+  id Q81727
+  labels
+    en cup
+    hi "गिलास"
+    ru "чашка"
+    zh "杯"
+  type item
+success 1

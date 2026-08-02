@@ -220,6 +220,23 @@ tools_registry
     localized hi
       name write_program
       note "language और task parameters से seeded programs दिखाता है।"
+  tool tool_run_agent
+    name run_agent
+    note "Run one seed-registered external agent CLI only after an explicit workspace-scoped grant; capture process output, file effects, verification results, and chained provenance without implicit retries."
+    mode agent
+    inputs ("cli" "task" "workspace" "model" "base_url" "timeout" "allowlisted_commands")
+    outputs ("status" "stdout" "stderr" "workspace_changes" "verification" "events" "provenance")
+    isolation isolated-workspace
+    sources ("data/seed/client-integrations.lino" "rust:orchestration")
+    localized ru
+      name run_agent
+      note "Запускает один зарегистрированный внешний агентский CLI только после явного разрешения для рабочей области; сохраняет вывод процесса, изменения файлов, проверку и связанную цепочку происхождения без неявных повторов."
+    localized zh
+      name run_agent
+      note "仅在获得绑定到工作区的明确授权后运行一个 seed 注册的外部代理 CLI；记录进程输出、文件影响、验证结果和链式来源，且不隐式重试。"
+    localized hi
+      name run_agent
+      note "केवल workspace से बंधी स्पष्ट अनुमति के बाद seed-registered external agent CLI चलाता है; बिना implicit retry के process output, file effects, verification और chained provenance दर्ज करता है।"
   tool tool_intent_routing
     name intent_routing
     note "Route normalized prompts through seeded multilingual keywords, phrases, tokens, and combos."
@@ -322,3 +339,207 @@ tools_registry
     localized hi
       name roleplay
       note "deterministic symbolic behavior रखते हुए grounded persona templates से जवाब देता है।"
+  tool tool_fs_read
+    name fs.read
+    note "Read bytes from a path confined to the isolated agent workspace."
+    mode agent
+    inputs ("path" "plan_id" "step_id" "precondition" "postcondition")
+    outputs ("content" "bytes" "sha256")
+    isolation isolated-workspace
+    permission "tool:computer:fs.read"
+    localized ru
+      name fs.read
+      note "Читает байты по пути только внутри изолированной рабочей области агента."
+    localized hi
+      name fs.read
+      note "केवल isolated agent workspace के अंदर के path से bytes पढ़ता है।"
+    localized zh
+      name fs.read
+      note "只读取隔离代理工作区内路径中的字节。"
+  tool tool_fs_write
+    name fs.write
+    note "Write bytes to a path confined to the isolated agent workspace after explicit confirmation."
+    mode agent
+    inputs ("path" "content" "confirmed" "plan_id" "step_id" "precondition" "postcondition")
+    outputs ("path" "bytes" "sha256")
+    isolation isolated-workspace
+    permission "tool:computer:fs.write"
+    localized ru
+      name fs.write
+      note "После явного подтверждения записывает байты только внутри изолированной рабочей области агента."
+    localized hi
+      name fs.write
+      note "स्पष्ट confirmation के बाद केवल isolated agent workspace में bytes लिखता है।"
+    localized zh
+      name fs.write
+      note "经明确确认后，仅向隔离代理工作区写入字节。"
+  tool tool_fs_list
+    name fs.list
+    note "List a directory deterministically inside the isolated agent workspace."
+    mode agent
+    inputs ("path" "plan_id" "step_id" "precondition" "postcondition")
+    outputs entries
+    isolation isolated-workspace
+    permission "tool:computer:fs.list"
+    localized ru
+      name fs.list
+      note "Детерминированно перечисляет каталог внутри изолированной рабочей области агента."
+    localized hi
+      name fs.list
+      note "isolated agent workspace की directory को deterministic क्रम में सूचीबद्ध करता है।"
+    localized zh
+      name fs.list
+      note "以确定顺序列出隔离代理工作区中的目录。"
+  tool tool_fs_move
+    name fs.move
+    note "Move a path within the isolated agent workspace after explicit destructive-action confirmation."
+    mode agent
+    inputs ("from" "to" "confirmed" "plan_id" "step_id" "precondition" "postcondition")
+    outputs ("from" "to" "moved")
+    isolation isolated-workspace
+    permission "tool:computer:fs.move"
+    localized ru
+      name fs.move
+      note "После явного подтверждения перемещает путь только внутри изолированной рабочей области агента."
+    localized hi
+      name fs.move
+      note "स्पष्ट confirmation के बाद path को केवल isolated agent workspace में move करता है।"
+    localized zh
+      name fs.move
+      note "经明确确认后，仅在隔离代理工作区内移动路径。"
+  tool tool_shell_run
+    name shell.run
+    note "Run one structured allowlisted operation in the isolated workspace; arbitrary shell syntax is rejected."
+    mode agent
+    inputs ("operation" "input" "output" "column" "equals" "confirmed" "plan_id" "step_id" "precondition" "postcondition")
+    outputs ("stdout" "output" "sha256")
+    isolation isolated-workspace-allowlist
+    permission "tool:computer:shell.run"
+    localized ru
+      name shell.run
+      note "Выполняет одну структурированную разрешённую операцию в изоляции; произвольный shell-синтаксис отклоняется."
+    localized hi
+      name shell.run
+      note "isolated workspace में एक structured allowlisted operation चलाता है; arbitrary shell syntax अस्वीकार होती है।"
+    localized zh
+      name shell.run
+      note "在隔离工作区运行一个结构化白名单操作；拒绝任意 shell 语法。"
+  tool tool_http_fetch_primitive
+    name http.fetch
+    note "Fetch a structured GET response and persist cache provenance; deterministic benchmarks use recorded fixture URLs."
+    mode agent
+    inputs ("url" "save_as" "plan_id" "step_id" "precondition" "postcondition")
+    outputs ("status" "body" "headers" "sha256" "cache_path" "provenance")
+    isolation permissioned-network
+    permission "tool:computer:http.fetch"
+    localized ru
+      name http.fetch
+      note "Получает структурированный GET-ответ и сохраняет происхождение кэша; benchmark использует записанные fixture URL."
+    localized hi
+      name http.fetch
+      note "structured GET response लाता और cache provenance रखता है; benchmark recorded fixture URL उपयोग करता है।"
+    localized zh
+      name http.fetch
+      note "获取结构化 GET 响应并保存缓存来源；基准使用已记录的 fixture URL。"
+  tool tool_http_post_primitive
+    name http.post
+    note "Submit a structured POST request after explicit confirmation and persist response provenance."
+    mode agent
+    inputs ("url" "body" "save_as" "confirmed" "plan_id" "step_id" "precondition" "postcondition")
+    outputs ("status" "body" "sha256" "cache_path" "provenance")
+    isolation permissioned-network
+    permission "tool:computer:http.post"
+    localized ru
+      name http.post
+      note "После явного подтверждения отправляет структурированный POST и сохраняет происхождение ответа."
+    localized hi
+      name http.post
+      note "स्पष्ट confirmation के बाद structured POST भेजता और response provenance रखता है।"
+    localized zh
+      name http.post
+      note "经明确确认后提交结构化 POST 请求并保存响应来源。"
+  tool tool_dom_query
+    name dom.query
+    note "Query recorded HTML with a deterministic tag or id selector without rendering."
+    mode agent
+    inputs ("source" "selector" "save_as" "plan_id" "step_id" "precondition" "postcondition")
+    outputs ("matches" "text" "sha256")
+    isolation structured-document
+    permission "tool:computer:dom.query"
+    localized ru
+      name dom.query
+      note "Запрашивает записанный HTML детерминированным селектором тега или id без рендеринга."
+    localized hi
+      name dom.query
+      note "बिना rendering recorded HTML को deterministic tag या id selector से query करता है।"
+    localized zh
+      name dom.query
+      note "无需渲染，使用确定性的标签或 id 选择器查询已记录 HTML。"
+  tool tool_dom_extract
+    name dom.extract
+    note "Extract a value from recorded JSON by JSON Pointer without rendering."
+    mode agent
+    inputs ("source" "pointer" "save_as" "plan_id" "step_id" "precondition" "postcondition")
+    outputs ("value" "sha256")
+    isolation structured-document
+    permission "tool:computer:dom.extract"
+    localized ru
+      name dom.extract
+      note "Извлекает значение из записанного JSON по JSON Pointer без рендеринга."
+    localized hi
+      name dom.extract
+      note "बिना rendering recorded JSON से JSON Pointer द्वारा value निकालता है।"
+    localized zh
+      name dom.extract
+      note "无需渲染，通过 JSON Pointer 从已记录 JSON 中提取值。"
+  tool tool_archive_pack
+    name archive.pack
+    note "Pack workspace files into a deterministic archive after explicit confirmation."
+    mode agent
+    inputs ("paths" "archive" "confirmed" "plan_id" "step_id" "precondition" "postcondition")
+    outputs ("archive" "entries" "sha256")
+    isolation isolated-workspace
+    permission "tool:computer:archive.pack"
+    localized ru
+      name archive.pack
+      note "После явного подтверждения упаковывает файлы рабочей области в детерминированный архив."
+    localized hi
+      name archive.pack
+      note "स्पष्ट confirmation के बाद workspace files को deterministic archive में pack करता है।"
+    localized zh
+      name archive.pack
+      note "经明确确认后，将工作区文件打包为确定性归档。"
+  tool tool_archive_unpack
+    name archive.unpack
+    note "Unpack a deterministic archive into a confined workspace directory after explicit confirmation."
+    mode agent
+    inputs ("archive" "destination" "confirmed" "plan_id" "step_id" "precondition" "postcondition")
+    outputs ("destination" "entries")
+    isolation isolated-workspace
+    permission "tool:computer:archive.unpack"
+    localized ru
+      name archive.unpack
+      note "После явного подтверждения распаковывает архив в ограниченный каталог рабочей области."
+    localized hi
+      name archive.unpack
+      note "स्पष्ट confirmation के बाद archive को confined workspace directory में unpack करता है।"
+    localized zh
+      name archive.unpack
+      note "经明确确认后，将确定性归档解包到受限工作区目录。"
+  tool tool_process_status
+    name process.status
+    note "Report structured status for the current isolated plan process without exposing host process details."
+    mode agent
+    inputs ("save_as" "plan_id" "step_id" "precondition" "postcondition")
+    outputs ("state" "scope" "sha256")
+    isolation isolated-process-view
+    permission "tool:computer:process.status"
+    localized ru
+      name process.status
+      note "Сообщает структурированный статус текущего изолированного плана без раскрытия процессов хоста."
+    localized hi
+      name process.status
+      note "host process details दिखाए बिना current isolated plan का structured status देता है।"
+    localized zh
+      name process.status
+      note "报告当前隔离计划的结构化状态，不暴露主机进程详情。"

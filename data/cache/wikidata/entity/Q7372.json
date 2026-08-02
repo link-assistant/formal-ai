@@ -1,0 +1,97 @@
+{
+  "entities": {
+    "Q7372": {
+      "type": "item",
+      "id": "Q7372",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "shark"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "акулы"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "हाँगर"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "鲨总目"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "clade of predatory cartilaginous fish (Chondrichthyes)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "надотряд рыб"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मछलियों का सपरोर्डर"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "软骨鱼纲中鲨总目鱼类的统称"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "sharks"
+          },
+          {
+            "language": "en",
+            "value": "Selachimorpha"
+          },
+          {
+            "language": "en",
+            "value": "Selachii"
+          },
+          {
+            "language": "en",
+            "value": "Selachian"
+          },
+          {
+            "language": "en",
+            "value": "Selachians"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Selachimorpha"
+          },
+          {
+            "language": "ru",
+            "value": "акула"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "鲨"
+          },
+          {
+            "language": "zh",
+            "value": "鲛"
+          },
+          {
+            "language": "zh",
+            "value": "鲨超目"
+          },
+          {
+            "language": "zh",
+            "value": "鲨鱼"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

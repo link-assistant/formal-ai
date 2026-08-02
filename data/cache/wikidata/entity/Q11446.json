@@ -1,0 +1,77 @@
+{
+  "entities": {
+    "Q11446": {
+      "type": "item",
+      "id": "Q11446",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "ship"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "корабль"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जलयान"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "船"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "large buoyant watercraft"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "большое судно"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "浮于水面上的大型结构，不同于Q1229765"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "vessel"
+          },
+          {
+            "language": "en",
+            "value": "marine vessel"
+          },
+          {
+            "language": "en",
+            "value": "water vessel"
+          },
+          {
+            "language": "en",
+            "value": "ships"
+          },
+          {
+            "language": "en",
+            "value": "Ships"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "судно"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "輪船"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

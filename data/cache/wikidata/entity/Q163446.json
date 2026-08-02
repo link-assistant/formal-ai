@@ -1,0 +1,69 @@
+{
+  "entities": {
+    "Q163446": {
+      "type": "item",
+      "id": "Q163446",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "carpet"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "ковёр"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "क़ालीन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "地毯"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "textile floor covering"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "тканое изделие для покрытия полов"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "वस्त्र-आधारित फ़र्श आवरण"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "纺织地面覆盖物"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "ковер"
+          },
+          {
+            "language": "ru",
+            "value": "ковры"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "ग़लीचा"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "地氈"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

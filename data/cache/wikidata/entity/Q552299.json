@@ -1,0 +1,61 @@
+{
+  "entities": {
+    "Q552299": {
+      "type": "item",
+      "id": "Q552299",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "chain"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "чейн"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जंजीर"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "鏈"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "unit of length"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "लंबाई की इकाई"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "英制長度單位"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "chains"
+          },
+          {
+            "language": "en",
+            "value": "ch"
+          },
+          {
+            "language": "en",
+            "value": "Gunter's chain"
+          },
+          {
+            "language": "en",
+            "value": "surveyor's chain"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

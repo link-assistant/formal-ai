@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 2,
+  "collectedAt": "2026-07-19T07:18:51.111Z",
+  "issueNumber": 776,
+  "prNumber": "794",
+  "branchName": "issue-776-d6f207d7c577",
+  "tool": "codex",
+  "sessionId": "019f78c9-110d-76a1-bb82-c8dd1ad4bfe4",
+  "rawCommand": "/home/box/.nvm/versions/node/v20.20.2/bin/node /home/box/.bun/bin/solve https://github.com/link-assistant/formal-ai/issues/776 --think medium --development-log --deep-analysis --auto-merge --tool codex --attach-logs --verbose --no-tool-check --disable-report-issue --language en",
+  "developmentLogDirectory": "./dev/log/issues/776/pulls/794",
+  "caseStudyDirectory": "./docs/case-studies/issue-776",
+  "artifacts": {
+    "solveLog": "./dev/log/issues/776/pulls/794/sessions/019f78c9-110d-76a1-bb82-c8dd1ad4bfe4/solve.log",
+    "sessionFiles": [
+      "./dev/log/issues/776/pulls/794/sessions/019f78c9-110d-76a1-bb82-c8dd1ad4bfe4/codex-019f78c9-110d-76a1-bb82-c8dd1ad4bfe4.jsonl"
+    ]
+  }
+}

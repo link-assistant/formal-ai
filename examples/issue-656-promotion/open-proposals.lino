@@ -1,0 +1,12 @@
+promotion_proposals
+  proposal
+    source "agent_cli_observation:issue_656_unseen_modifier"
+    summary "Promote an observed, verified modifier without a hardcoded proposal case."
+    seed_file "data/seed/issue-656-agent-learned.lino"
+    seed_lino "learned_rules\n  id \"issue_656_agent_learning\"\n  rule \"unseen_verified_modifier\""
+    gate
+      suite "issue_362_multilingual_coding_modification"
+    gate
+      suite "issue_304_industry_permissive_slice"
+    gate
+      suite "formal_ai_unit_specifications"

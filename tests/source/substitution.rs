@@ -14,6 +14,7 @@ use lino_objects_codec::format::parse_indented;
 
 use crate::engine::{stable_id, KNOWLEDGE_SCHEMA_VERSION};
 use crate::link_store::{DoubletLink, LinkRecord};
+use crate::links_format::push_lino_node;
 use crate::seed::parser::{parse_lino, LinoNode};
 
 const DEFAULT_MAX_APPLICATIONS: usize = 64;
@@ -261,7 +262,7 @@ impl SubstitutionRuleSet {
     }
 }
 
-/// In-memory graph that applies substitution rules over concrete links.
+/// In-memory links network that applies substitution rules over concrete links.
 #[derive(Debug, Default, Clone, PartialEq, Eq)]
 pub struct SubstitutionGraph {
     links: BTreeSet<SubstitutionLink>,
@@ -528,7 +529,7 @@ impl SubstitutionTraceReport {
     }
 
     #[must_use]
-    pub fn applied_count(&self) -> usize {
+    pub const fn applied_count(&self) -> usize {
         self.traces.len()
     }
 
@@ -777,26 +778,6 @@ fn trace_link_record(trace: &SubstitutionTrace) -> LinkRecord {
         source_id: trace.rule_id.clone(),
         links,
     }
-}
-
-fn push_lino_node(out: &mut String, indent: usize, name: &str, value: Option<&str>) {
-    for _ in 0..indent {
-        out.push(' ');
-    }
-    out.push_str(name);
-    if let Some(value) = value {
-        out.push_str(" \"");
-        out.push_str(&escape_lino_value(value));
-        out.push('"');
-    }
-    out.push('\n');
-}
-
-fn escape_lino_value(value: &str) -> String {
-    value
-        .replace('\\', "\\\\")
-        .replace('"', "\\\"")
-        .replace('\n', "\\n")
 }
 
 fn push_field(links: &mut Vec<DoubletLink>, record_id: &str, key: &str, value: &str) {

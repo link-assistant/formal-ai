@@ -1,22 +1,26 @@
 use std::fmt::Write as _;
 
+mod conversation_summary;
+mod link_query;
 mod memory_write;
+mod program_query;
+use conversation_summary::try_summarize_conversation;
+use link_query::try_link_substitution_query;
 use memory_write::try_memory_write;
+pub use program_query::is_exact_memory_query;
+pub use program_query::{execute_memory_query, execute_memory_query_with_options};
 
 use super::finalize_simple;
 
-use crate::coding::contains_cjk;
 use crate::engine::{normalize_prompt, SymbolicAnswer};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::link_store::memory_events_to_link_records;
-use crate::memory::{MemoryEvent, MemoryStore};
+use crate::memory::MemoryEvent;
 use crate::seed::{self, Slot, WordForm};
 use crate::solver_helpers::{
-    extract_introduced_name, last_turn, last_user_turn, recall_name_from_history,
-};
-use crate::summarization::{
-    generate_chat_title, summarize_dialog, DialogTurn, SummarizationConfig, SummarizationMode,
+    extract_assistant_name, extract_introduced_name, last_turn, last_user_turn,
+    recall_assistant_name_from_history, recall_name_from_history,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -75,6 +79,9 @@ pub fn try_conversation_memory(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
+    if let Some(answer) = try_assistant_name(prompt, normalized, log) {
+        return Some(answer);
+    }
     if let Some(answer) = try_recall_name(prompt, normalized, log) {
         return Some(answer);
     }
@@ -111,33 +118,25 @@ pub fn answer_memory_recall(
     )
 }
 
-#[must_use]
-pub fn execute_memory_query(
-    prompt: &str,
-    store: &mut MemoryStore,
+/// Indices of the store events a recall for this prompt reads.
+fn recalled_event_indices(
+    normalized: &str,
+    events: &[MemoryEvent],
     current_conversation_id: Option<&str>,
-) -> Option<MemoryQueryExecution> {
-    let normalized = normalize_prompt(prompt);
-    let mut log = EventLog::new();
-    log.append("impulse", prompt.to_owned());
-    if let Some(answer) = try_memory_write(
-        prompt,
-        &normalized,
-        store,
-        current_conversation_id,
-        &mut log,
-    ) {
-        return Some(MemoryQueryExecution {
-            answer,
-            changed: true,
-        });
-    }
-    answer_memory_recall(prompt, store.events(), current_conversation_id).map(|answer| {
-        MemoryQueryExecution {
-            answer,
-            changed: false,
-        }
-    })
+    prompt: &str,
+) -> Vec<usize> {
+    let Some(query) = recognize_recall_query(normalized) else {
+        return Vec::new();
+    };
+    let mut indices: Vec<usize> =
+        memory_recall_matches(events, &query, current_conversation_id, prompt)
+            .iter()
+            // `event_index` is 1-based for display; the store slice is 0-based.
+            .map(|matched| matched.event_index.saturating_sub(1))
+            .collect();
+    indices.sort_unstable();
+    indices.dedup();
+    indices
 }
 
 fn try_recall_name(prompt: &str, normalized: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
@@ -159,6 +158,79 @@ fn try_recall_name(prompt: &str, normalized: &str, log: &mut EventLog) -> Option
         &body,
         0.9,
     ))
+}
+
+/// Set or recall the *assistant's* name from dialog-local memory (issue #676).
+///
+/// The assistant advertises "you can name me as you like", but nothing acted on a
+/// follow-up such as "Now your name is Ineffa", so it fell through to the unknown
+/// fallback. This handler closes that loop, statelessly, in the same spirit as
+/// [`try_recall_name`]: when the current turn assigns a name it acknowledges it, and
+/// when a later turn asks "what is your name" it replays the most recent assigned
+/// name from the conversation history. With no name ever set it returns `None` so the
+/// static `assistant_name` answer ("…you can name me as you like") still applies.
+fn try_assistant_name(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    let language = detect_language(prompt).slug();
+    // A rename in the current turn takes priority — acknowledge it.
+    if let Some(name) = extract_assistant_name(prompt) {
+        log.append("filter:assistant", format!("name={name}"));
+        let body = render_assistant_name_ack(&name, language);
+        return Some(finalize_simple(
+            prompt,
+            log,
+            "set_assistant_name",
+            "response:set_assistant_name",
+            &body,
+            0.9,
+        ));
+    }
+    // Otherwise, an explicit "what is your name" recalls a previously set name.
+    let asks_name = normalized.contains("what is your name")
+        || normalized.contains("what's your name")
+        || normalized.contains("what s your name")
+        || normalized.contains("whats your name")
+        || normalized.contains("tell me your name")
+        || normalized.contains("do you have a name")
+        || normalized.contains("what should i call you")
+        || normalized.contains("what do i call you");
+    if !asks_name {
+        return None;
+    }
+    let name = recall_assistant_name_from_history(log, prompt)?;
+    log.append("filter:assistant", format!("name={name}"));
+    let body = render_assistant_name_recall(&name, language);
+    Some(finalize_simple(
+        prompt,
+        log,
+        "assistant_name",
+        "response:assistant_name",
+        &body,
+        0.9,
+    ))
+}
+
+/// Warm acknowledgement of a freshly assigned assistant name.
+fn render_assistant_name_ack(name: &str, language: &str) -> String {
+    match language {
+        "ru" => format!("Отлично, теперь меня зовут {name}. Приятно познакомиться!"),
+        "zh" => format!("好的，从现在起就叫我 {name} 吧。很高兴认识你！"),
+        "hi" => format!("बढ़िया, अब से मेरा नाम {name} है। आपसे मिलकर अच्छा लगा!"),
+        _ => format!("Nice to meet you! I'll go by {name} from now on."),
+    }
+}
+
+/// Recall a previously assigned assistant name.
+fn render_assistant_name_recall(name: &str, language: &str) -> String {
+    match language {
+        "ru" => format!("Меня зовут {name} — так вы меня назвали."),
+        "zh" => format!("我叫 {name}，这是你给我起的名字。"),
+        "hi" => format!("मेरा नाम {name} है — यह नाम आपने मुझे दिया था."),
+        _ => format!("My name is {name} — that's what you named me."),
+    }
 }
 
 fn try_recall_last_question(
@@ -749,107 +821,4 @@ fn render_memory_recall_report(
         }
     }
     body.trim_end().to_owned()
-}
-
-/// Recognise a request to summarize the running conversation by composing
-/// meaning roles rather than matching raw per-language phrases (issue #386).
-///
-/// The universal algorithm is identical for every language: the prompt either
-/// (a) carries a complete standalone conversation-summary phrasing, (b) carries
-/// an objectless courtesy frame asking for a summary, (c) names a summary
-/// directive *together with* a conversation reference, or (d) leads with a bare
-/// summary directive (`summarize`, `резюме`, `总结`, …). The prompt is
-/// re-normalised first so the boundary-aware matcher sees punctuation collapsed
-/// to spaces. Mirror of `asksForConversationSummary` in the browser worker.
-fn asks_for_conversation_summary(normalized: &str) -> bool {
-    let cleaned = normalize_prompt(normalized);
-    let lexicon = seed::lexicon();
-    lexicon.mentions_role(seed::ROLE_CONVERSATION_SUMMARY_PHRASE, &cleaned)
-        || lexicon.mentions_role(seed::ROLE_CONVERSATION_SUMMARY_COURTESY, &cleaned)
-        || (lexicon.mentions_role(seed::ROLE_CONVERSATION_SUMMARY_DIRECTIVE, &cleaned)
-            && lexicon.mentions_role(seed::ROLE_CONVERSATION_REFERENCE, &cleaned))
-        || summary_directive_leads(&cleaned)
-}
-
-/// A bare summary directive standing alone is itself a request to summarize the
-/// running conversation ("summarize", "резюме", "总结", …).
-///
-/// For whitespace-delimited scripts the directive must be the *whole* prompt, so
-/// "summarize the article" is left for other handlers (a conversation object is
-/// required via the directive∧reference arm instead). For CJK (no word spaces) a
-/// leading substring suffices — mirroring the worker's historical `^总结` anchor
-/// — which also keeps compounds like "工作总结" (a *work* summary) from being
-/// mis-claimed. Surface words come from the `conversation_summary_directive`
-/// role in the seed lexicon.
-fn summary_directive_leads(cleaned: &str) -> bool {
-    seed::lexicon()
-        .words_for_role(seed::ROLE_CONVERSATION_SUMMARY_DIRECTIVE)
-        .iter()
-        .any(|word| {
-            if contains_cjk(word) {
-                cleaned.starts_with(word.as_str())
-            } else {
-                cleaned == word.as_str()
-            }
-        })
-}
-
-fn try_summarize_conversation(
-    prompt: &str,
-    normalized: &str,
-    log: &mut EventLog,
-) -> Option<SymbolicAnswer> {
-    if !asks_for_conversation_summary(normalized) {
-        return None;
-    }
-    let turns: Vec<DialogTurn> = log
-        .events()
-        .iter()
-        .filter_map(|event| match event.kind {
-            "prior_turn:user" => Some(DialogTurn::user(event.payload.clone())),
-            "prior_turn:assistant" => Some(DialogTurn::assistant(event.payload.clone())),
-            _ => None,
-        })
-        .collect();
-    let user_turn_count = turns.iter().filter(|t| t.role == "user").count();
-    if user_turn_count == 0 {
-        return None;
-    }
-    let language = detect_language(prompt).slug();
-    // Standard mode keeps roughly 50% of the highest-weighted statements; with
-    // the dialog bias (user +20, assistant -10) the user's questions dominate
-    // the output while still keeping room for any assistant prose worth
-    // remembering.
-    let config = SummarizationConfig::default()
-        .with_mode(SummarizationMode::Standard)
-        .with_language(language);
-    let summary = summarize_dialog(&turns, &config);
-    let title = generate_chat_title(&turns, language);
-    let user_turns: Vec<&str> = turns
-        .iter()
-        .filter(|t| t.role == "user")
-        .map(|t| t.text.as_str())
-        .collect();
-    let mut body = match language {
-        "ru" => {
-            format!("Резюме разговора: {summary}\n\nЗаголовок: {title}\n\nРеплики пользователя:\n")
-        }
-        "zh" => format!("对话摘要:{summary}\n\n标题:{title}\n\n用户发言:\n"),
-        _ => format!("Conversation summary: {summary}\n\nTitle: {title}\n\nUser turns:\n"),
-    };
-    for (index, turn) in user_turns.iter().enumerate() {
-        writeln!(body, "  {}. {turn}", index + 1).expect("string write is infallible");
-    }
-    log.append("filter:user", "conversation_summary".to_owned());
-    log.append("summarization:mode", "standard".to_owned());
-    log.append("summarization:language", language.to_owned());
-    log.append("chat_title", title);
-    Some(finalize_simple(
-        prompt,
-        log,
-        "summarize_conversation",
-        "response:summarize_conversation",
-        body.trim_end(),
-        0.9,
-    ))
 }

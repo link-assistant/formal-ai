@@ -117,7 +117,7 @@ fn the_canonical_set_covers_all_three_classes() {
 fn committed_repair_strategies_document_is_generated_by_the_recipe() {
     // The committed artifact is *generated* from the classifier — never hand written —
     // so it can never drift, and it is byte-for-byte what the Agent CLI writes. Unlike
-    // the source-graph/change-request documents it depends only on self-contained
+    // the source-links/change-request documents it depends only on self-contained
     // canonical traces, so it is safe to pin.
     let committed = include_str!("../../data/meta/repair-strategies.lino");
     assert_eq!(
@@ -162,7 +162,7 @@ fn recognises_the_repair_task_without_colliding_with_the_sibling_recipes() {
     assert!(!formal_ai::agentic_coding::is_self_ast_task(
         REPAIR_STRATEGY_TASK
     ));
-    assert!(!formal_ai::agentic_coding::is_source_graph_task(
+    assert!(!formal_ai::agentic_coding::is_source_links_task(
         REPAIR_STRATEGY_TASK
     ));
     assert!(!formal_ai::agentic_coding::is_ledger_task(

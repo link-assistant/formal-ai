@@ -1,0 +1,47 @@
+self_ast_census
+  target src/concepts.rs
+  language rust
+  fidelity signature
+  byte_len 19098
+  line_count 556
+  content_id source_module_02e62ce334566ff2
+  symbol_count 38
+  symbols
+    function concepts 24 27
+    static CELL 25 25
+    function concept_contexts 29 32
+    static CELL 30 30
+    function resolve_context_label 38 46
+    function concept_prefixes 48 60
+    static CELL 49 49
+    function concept_suffixes 62 74
+    static CELL 63 63
+    function concept_context_delimiters 76 88
+    static CELL 77 77
+    function concept_response_language_markers 90 110
+    static CELL 91 91
+    function meaning_defined_language_code 112 117
+    function language_code 119 127
+    struct ConceptQuery 136 140
+    function extract_concept_query 149 192
+    function strip_leading_request 194 213
+    const REQUEST_PREFIXES 195 195
+    const QUESTION_STARTS 196 196
+    function strip_inverted_who_is 215 225
+    function strip_meaning_question_body 227 262
+    function clean_meaning_candidate 264 280
+    function finalize_concept_query_with_response_language 282 315
+    function strip_concept_idiom_suffix 317 322
+    function strip_trailing_response_language_marker 324 333
+    function strip_trailing_marker 335 349
+    function is_response_language_marker_boundary 351 355
+    function is_cjk 357 369
+    function split_term_and_context 374 385
+    function strip_suffix_pattern 387 394
+    struct ConceptLookup 403 407
+    function lookup_concept_query 421 435
+    function rank_for_pair 437 481
+    function record_matches_query_term 483 496
+    function record_matches_term 498 515
+    function record_has_context 517 540
+    function normalize_concept_term 542 556

@@ -1,0 +1,41 @@
+{
+  "entities": {
+    "Q7860": {
+      "type": "item",
+      "id": "Q7860",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "nature"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "природа"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "प्रकृति"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "自然"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "natural, physical, or material world and its phenomena"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "материальный мир Вселенной, объект изучения естественных наук"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "物質世界的所有事物與現象"
+        }
+      }
+    }
+  },
+  "success": 1
+}

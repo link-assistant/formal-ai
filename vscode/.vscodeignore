@@ -1,5 +1,6 @@
 # Files excluded from the packaged .vsix (dev/test artifacts only).
 .vscode/**
+node_modules/**
 scripts/**
 **/*.test.mjs
 **/*.map

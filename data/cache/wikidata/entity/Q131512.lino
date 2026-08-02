@@ -1,0 +1,19 @@
+Q131512
+  aliases
+    en (agriculturist grower raiser cultivator agriculturer)
+    hi ("कृषक")
+    ru ("фермерка" "фермерша")
+    zh ("農民" "农民" "農人" "農")
+  descriptions
+    en "person engaged in agriculture, raising living organisms for food or raw materials"
+    hi "खेती करने वाले लोग"
+    ru "человек, занимающийся сельским хозяйством"
+    zh "职业"
+  id Q131512
+  labels
+    en farmer
+    hi "किसान"
+    ru "фермер"
+    zh "農夫"
+  type item
+success 1

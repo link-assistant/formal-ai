@@ -23,6 +23,7 @@
 //! in `data/seed/meanings-*.lino` and the seeded Wiktionary/Wikidata cache, so
 //! widening the covered vocabulary is a pure seed edit.
 
+use formal_ai::seed::{lexicon, LANGUAGES_LINO};
 use formal_ai::translation::translate_via_default_pipeline;
 
 #[derive(Clone, Copy)]
@@ -31,24 +32,19 @@ struct SurfaceCase {
     surface: &'static str,
 }
 
-const APPLE_SURFACES: &[SurfaceCase] = &[
-    SurfaceCase {
-        language: "en",
-        surface: "apple",
-    },
-    SurfaceCase {
-        language: "ru",
-        surface: "яблоко",
-    },
-    SurfaceCase {
-        language: "hi",
-        surface: "सेब",
-    },
-    SurfaceCase {
-        language: "zh",
-        surface: "苹果",
-    },
-];
+fn apple_surfaces() -> Vec<SurfaceCase> {
+    let apple = lexicon().meaning("apple").expect("seeded apple meaning");
+    LANGUAGES_LINO
+        .lines()
+        .filter_map(|line| line.strip_prefix("  language "))
+        .map(|language| SurfaceCase {
+            language,
+            surface: apple
+                .word_in(language)
+                .unwrap_or_else(|| panic!("apple needs a {language} surface")),
+        })
+        .collect()
+}
 
 /// Assert the full #526 round-trip for one surface across one language pair:
 /// `source --A→B--> target --B→A--> source`, preserving meaning and surface.
@@ -126,7 +122,7 @@ fn english_chinese_vocabulary_survives_round_trip() {
 
 #[test]
 fn supported_language_surfaces_survive_meta_language_round_trip() {
-    for case in APPLE_SURFACES {
+    for case in apple_surfaces() {
         let round_trip = translate_via_default_pipeline(case.surface, case.language, case.language)
             .unwrap_or_else(|error| {
                 panic!(
@@ -158,8 +154,9 @@ fn supported_language_surfaces_survive_meta_language_round_trip() {
 
 #[test]
 fn every_supported_language_pair_round_trips_via_meta_language() {
-    for source in APPLE_SURFACES {
-        for target in APPLE_SURFACES {
+    let surfaces = apple_surfaces();
+    for source in &surfaces {
+        for target in &surfaces {
             if source.language == target.language {
                 continue;
             }
@@ -230,7 +227,11 @@ fn one_meaning_backs_every_language_surface() {
     // does not. This is the property that lets synonyms across languages
     // collapse to a single node before a surface is chosen.
     let mut shared_meaning: Option<String> = None;
-    for target in ["ru", "hi", "zh"] {
+    for target in apple_surfaces()
+        .into_iter()
+        .map(|case| case.language)
+        .filter(|language| *language != "en")
+    {
         let forward = translate_via_default_pipeline("apple", "en", target)
             .unwrap_or_else(|error| panic!("apple en->{target} should translate, got {error:?}"));
         let meaning = forward.meaning.slug();

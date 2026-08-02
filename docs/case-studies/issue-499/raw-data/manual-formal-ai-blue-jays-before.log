@@ -1,0 +1,6 @@
+   Compiling formal-ai v0.274.0 (/tmp/gh-issue-solver-1783542327422)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 8.68s
+     Running `target/debug/formal-ai chat --prompt 'What is blue jays?'`
+I could not determine `blue jays` from local Links Notation memory, cached public knowledge, or the source cache, and cannot infer a verified answer. I recorded the failed gather attempts in the trace.
+
+If reasoning still cannot resolve this and a shared Links Notation seed fact or links rule is needed, use Report issue with the trace. To keep a dialog-local rule durable, export memory or teach it with `When I say ... answer ...`; inspect routes with `List behavior rules` and `Show behavior rule unknown`.

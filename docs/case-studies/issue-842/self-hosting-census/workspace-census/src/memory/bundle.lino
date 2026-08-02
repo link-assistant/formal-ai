@@ -1,0 +1,21 @@
+self_ast_census
+  target src/memory/bundle.rs
+  language rust
+  fidelity signature
+  byte_len 17259
+  line_count 455
+  content_id source_module_aa109e11a210ec80
+  symbol_count 12
+  symbols
+    function export_bundle 23 63
+    function extract_memory_from_bundle 71 108
+    struct BundleInfo 117 124
+    struct ParsedBundle 133 139
+    function seed_cache_events 150 162
+    function export_full_memory 172 234
+    function push_optional_info 236 246
+    function import_full_memory 255 264
+    function parse_bundle_document 267 375
+    function extract_agent_info 377 384
+    function parse_agent_info 386 409
+    function suggest_migrations 420 455

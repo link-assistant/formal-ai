@@ -177,6 +177,11 @@ pub fn run_telegram_polling_with_transport<T: TelegramTransport>(
         config.api_base, config.timeout_seconds, config.limit
     );
 
+    // The polling loop is a long-lived runtime just like `serve()`: start the
+    // idle-time dreaming worker so a Telegram-only deployment also keeps
+    // learning from its memory log (issue #540 §6).
+    crate::dreaming_runtime::start_core_dreaming();
+
     let mut offset = initial_offset;
 
     while !cancellation.load(Ordering::Relaxed) {
@@ -203,8 +208,13 @@ pub fn run_telegram_polling_with_transport<T: TelegramTransport>(
             offset = Some(next_offset);
         }
 
-        for reply in &batch.replies {
-            send_reply(config, transport, reply);
+        if !batch.replies.is_empty() {
+            // Replying to live users is foreground work: hold the activity
+            // guard so the dreaming worker yields for the idle threshold.
+            let _foreground_activity = crate::dreaming_runtime::ForegroundActivity::begin();
+            for reply in &batch.replies {
+                send_reply(config, transport, reply);
+            }
         }
     }
 

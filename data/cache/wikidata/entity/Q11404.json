@@ -1,0 +1,61 @@
+{
+  "entities": {
+    "Q11404": {
+      "type": "item",
+      "id": "Q11404",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "drum"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "барабан"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "ड्रम"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "鼓"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "type of musical instrument of the percussion family"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "семейство ударных музыкальных инструментов"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "打击乐器或通讯工具"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "caisse"
+          },
+          {
+            "language": "en",
+            "value": "cassa"
+          },
+          {
+            "language": "en",
+            "value": "tamburo"
+          },
+          {
+            "language": "en",
+            "value": "wankara"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

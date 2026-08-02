@@ -1,0 +1,14 @@
+self_ast_census
+  target src/cli_shared_dialog.rs
+  language rust
+  fidelity signature
+  byte_len 2905
+  line_count 90
+  content_id source_module_db14f3ca2c903557
+  symbol_count 5
+  symbols
+    enum SharedDialogAction 9 11
+    struct SharedDialogConvertOptions 14 42
+    enum SharedDialogCliFormat 45 53
+    function run_shared_dialog 55 79
+    function from 82 89

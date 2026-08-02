@@ -1,0 +1,15 @@
+Q195
+  aliases
+    zh ("朱古力" "支龜力")
+  descriptions
+    en "nutritionally dense or sweet food product from the seed of Theobroma cacao - cocoa bean"
+    ru "кондитерские продукты, изготавливаемые с использованием плодов какао"
+    zh "以可可豆为主要原料的食品"
+  id Q195
+  labels
+    en chocolate
+    hi "चॉकलेट"
+    ru "шоколад"
+    zh "巧克力"
+  type item
+success 1

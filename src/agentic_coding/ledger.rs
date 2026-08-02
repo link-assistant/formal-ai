@@ -9,7 +9,7 @@
 //! an external agent CLI (`Codex`, `OpenCode`, `Gemini`, `Agent CLI`) — or the
 //! in-repo driver — asks Formal AI to record its approved learning ledger, and the
 //! deterministic planner walks a write → verify → final recipe that emits the ledger
-//! as Links Notation, exactly like the self-healing, self-AST, source-graph, and
+//! as Links Notation, exactly like the self-healing, self-AST, source-links, and
 //! diagram recipes emit their self-inspection documents.
 //!
 //! Promotion into the ledger already required *both* a green benchmark gate and an

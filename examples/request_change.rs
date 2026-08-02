@@ -7,7 +7,7 @@
 //! applied; the change merges only through the same human-gated loop the self-healing
 //! slices use — a green benchmark gate *and* an explicit human approval.
 //!
-//! Like the whole-repository source-graph projection, the document depends on the
+//! Like the whole-repository source-links projection, the document depends on the
 //! whole source tree (the target module's manifest content id changes with every
 //! edit), so it is a *workspace-only* artifact — asserted live in the tests, never
 //! committed byte-for-byte. Usage: `cargo run --example request_change`. The one-line

@@ -101,6 +101,9 @@ fn issue_362_multilingual_multi_turn_coding_modification_ratchet() {
     assert_pass_count_floor_is_recorded(&suite);
 
     let report = run_coding_modification_suite(&suite);
+    // Promotion replay consumes this stable report rather than trusting counts
+    // supplied by a proposal document.
+    println!("{}", render_report(&report));
     assert_eq!(report.passed + report.failed, suite.cases.len());
     assert!(
         report.passed >= report.minimum_pass_count,

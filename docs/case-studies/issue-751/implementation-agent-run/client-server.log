@@ -1,0 +1,2 @@
+[dreaming] background dreaming is enabled but FORMAL_AI_MEMORY_PATH is not set; there is no persistent memory log to maintain, so the dreaming worker will not start. Set FORMAL_AI_MEMORY_PATH=<path/to/memory.lino> to activate it.
+formal-ai server listening on http://127.0.0.1:18082

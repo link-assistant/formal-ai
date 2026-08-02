@@ -1,0 +1,19 @@
+Q140
+  aliases
+    en ("African lion" "the lion" "Asiatic lion")
+    hi ("पेंथेरा लियो")
+    ru ("азиатский лев" "большая кошка" "царь зверей" "африканский лев")
+    zh ("狮子" "剛果獅")
+  descriptions
+    en "species of big cat"
+    hi "पेन्थेरा वंश की चार बड़ी बिल्लियों में से एक है और फेलिडे परिवार का सदस्य"
+    ru "вид хищных млекопитающих семейства кошачьих"
+    zh "产自非洲和亚洲的大型猫科动物"
+  id Q140
+  labels
+    en lion
+    hi "सिंह"
+    ru "лев"
+    zh "獅"
+  type item
+success 1

@@ -18,6 +18,7 @@ use crate::engine::{
 };
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
+use crate::links_format::format_lino_value;
 use crate::seed;
 use crate::skill_compiler::{compile_natural_language_skill, CompiledSkillPackage};
 
@@ -28,6 +29,7 @@ use super::behavior_rule_matching::{
     is_behavior_rules_brief_followup, is_behavior_rules_count_query, is_behavior_rules_list,
 };
 use super::finalize_simple;
+use super::procedure_rules::try_compiled_procedure;
 use super::self_awareness::{try_self_awareness, SelfAwarenessRuntime};
 
 #[derive(Debug, Clone)]
@@ -66,6 +68,12 @@ pub fn try_behavior_rules_with_runtime(
             &body,
             1.0,
         ));
+    }
+
+    // Issue #674: freely phrased multi-step procedures compile after the typed
+    // trigger/response shape declines, so neither compiler shadows the other.
+    if let Some(answer) = try_compiled_procedure(prompt, log, &language) {
+        return Some(answer);
     }
 
     if is_behavior_rules_count_query(normalized, log) {
@@ -798,24 +806,24 @@ fn render_behavior_rule_detail(rule: &BehaviorRuleRecord, language: &str) -> Str
             "{}\n\n",
             "```links\n",
             "{}\n",
-            "  topic \"{}\"\n",
-            "  intent \"{}\"\n",
-            "  matches \"{}\"\n",
-            "  response \"{}\"\n",
-            "  source \"{}\"\n",
-            "  when_then \"{}\"\n",
+            "  topic {}\n",
+            "  intent {}\n",
+            "  matches {}\n",
+            "  response {}\n",
+            "  source {}\n",
+            "  when_then {}\n",
             "```\n\n",
             "{}"
         ),
         label,
         when_then,
         rule.id,
-        escape_lino_value(rule.topic),
-        escape_lino_value(&rule.intent),
-        escape_lino_value(&matches),
-        escape_lino_value(&response),
-        escape_lino_value(&rule.source),
-        escape_lino_value(&when_then),
+        format_lino_value(rule.topic),
+        format_lino_value(&rule.intent),
+        format_lino_value(&matches),
+        format_lino_value(&response),
+        format_lino_value(&rule.source),
+        format_lino_value(&when_then),
         change_hint,
     )
 }
@@ -859,11 +867,11 @@ fn render_runtime_rule_update(rule: &CompiledSkillPackage, language: &str) -> St
             "```links\n",
             "{}\n",
             "  type \"compiled_skill_package\"\n",
-            "  legacy_behavior_rule_id \"{}\"\n",
-            "  match_prompt \"{}\"\n",
-            "  answer \"{}\"\n",
-            "  when_then \"{}\"\n",
-            "  compiled_handler \"{}\"\n",
+            "  legacy_behavior_rule_id {}\n",
+            "  match_prompt {}\n",
+            "  answer {}\n",
+            "  when_then {}\n",
+            "  compiled_handler {}\n",
             "  replay_mode \"exact_normalized_prompt\"\n",
             "  source \"user_message\"\n",
             "```\n\n",
@@ -872,11 +880,11 @@ fn render_runtime_rule_update(rule: &CompiledSkillPackage, language: &str) -> St
         title,
         when_then,
         rule.id,
-        rule.legacy_behavior_rule_id,
-        escape_lino_value(&rule.trigger),
-        escape_lino_value(&rule.response),
-        escape_lino_value(&when_then),
-        rule.handler_id,
+        format_lino_value(&rule.legacy_behavior_rule_id),
+        format_lino_value(&rule.trigger),
+        format_lino_value(&rule.response),
+        format_lino_value(&when_then),
+        format_lino_value(&rule.handler_id),
         send_hint,
     )
 }
@@ -942,11 +950,4 @@ fn runtime_rule_for_prompt(
         .filter(|event| event.kind == "prior_turn:user")
         .filter_map(|event| compile_natural_language_skill(&event.payload).ok())
         .find_map(|package| package.replay(prompt).map(|replay| (package, replay)))
-}
-
-fn escape_lino_value(value: &str) -> String {
-    value
-        .replace('\\', "\\\\")
-        .replace('"', "\\\"")
-        .replace('\n', "\\n")
 }

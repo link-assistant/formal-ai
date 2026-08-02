@@ -1,0 +1,55 @@
+{
+  "entities": {
+    "Q39397": {
+      "type": "item",
+      "id": "Q39397",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "axe"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "топор"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "कुल्हाड़ी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "斧"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "weapon or tool consisting of a shaft, with a head attached at a parallel angle that is used primarily for chopping, splitting, or shaping materials"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "рубящее военное или бытовое орудие"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "ax"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "斧頭"
+          },
+          {
+            "language": "zh",
+            "value": "斧鉞"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 2,
+  "collectedAt": "2026-07-13T17:56:01.245Z",
+  "issueNumber": "655",
+  "prNumber": 679,
+  "branchName": "issue-655-352ae09c0c14",
+  "tool": "claude",
+  "sessionId": "b6bada22-c936-467f-9a7d-521dce3f4f2f",
+  "rawCommand": "/home/box/.nvm/versions/node/v20.20.2/bin/node /home/box/.bun/bin/solve https://github.com/link-assistant/formal-ai/pull/679 --development-log --tool claude --attach-logs --verbose --no-tool-check --disable-report-issue --language en",
+  "developmentLogDirectory": "./dev/log/issues/655/pulls/679",
+  "caseStudyDirectory": "./docs/case-studies/issue-655",
+  "artifacts": {
+    "solveLog": "./dev/log/issues/655/pulls/679/sessions/b6bada22-c936-467f-9a7d-521dce3f4f2f/solve.log",
+    "sessionFiles": [
+      "./dev/log/issues/655/pulls/679/sessions/b6bada22-c936-467f-9a7d-521dce3f4f2f/claude-b6bada22-c936-467f-9a7d-521dce3f4f2f.log",
+      "./dev/log/issues/655/pulls/679/sessions/b6bada22-c936-467f-9a7d-521dce3f4f2f/claude-b6bada22-c936-467f-9a7d-521dce3f4f2f.jsonl"
+    ]
+  }
+}

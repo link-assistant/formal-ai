@@ -1,0 +1,223 @@
+#[test]
+fn desktop_registry_has_cross_platform_launch_metadata() {
+    let integrations = formal_ai::seed::client_integrations();
+    let desktop = integrations
+        .iter()
+        .find(|integration| integration.id == "opencode-desktop")
+        .expect("OpenCode Desktop integration");
+    assert_eq!(desktop.command_env, "FORMAL_AI_OPENCODE_DESKTOP_BIN");
+    assert_eq!(desktop.command, "opencode-desktop");
+    assert!(desktop
+        .platform_commands
+        .iter()
+        .any(|candidate| candidate.key == "linux"
+            && candidate.value == "/opt/OpenCode/ai.opencode.desktop"));
+    assert!(desktop
+        .platform_commands
+        .iter()
+        .any(|candidate| candidate.key == "macos"
+            && candidate.value == "/Applications/OpenCode.app/Contents/MacOS/OpenCode"));
+    assert!(desktop
+        .platform_commands
+        .iter()
+        .any(|candidate| candidate.key == "windows"
+            && candidate.value == "{local_app_data}/Programs/OpenCode/OpenCode.exe"));
+}
+
+#[cfg(unix)]
+mod unix {
+    use serde_json::Value;
+    use std::os::unix::fs::PermissionsExt;
+    use std::path::{Path, PathBuf};
+    use std::process::{Command, Output};
+    use std::sync::atomic::{AtomicU64, Ordering};
+
+    static SEQ: AtomicU64 = AtomicU64::new(0);
+
+    fn sandbox() -> PathBuf {
+        let seq = SEQ.fetch_add(1, Ordering::Relaxed);
+        let path = std::env::temp_dir().join(format!(
+            "formal-ai-opencode-desktop-{}-{seq}",
+            std::process::id()
+        ));
+        std::fs::create_dir_all(&path).expect("sandbox");
+        path
+    }
+
+    fn fake_desktop(root: &Path) -> PathBuf {
+        let executable = root.join("fake-opencode-desktop");
+        std::fs::write(
+            &executable,
+            r#"#!/bin/sh
+{
+  printf 'arg_count=%s\n' "$#"
+  printf 'FORMAL_AI_API_KEY=%s\n' "${FORMAL_AI_API_KEY-}"
+  printf 'OPENCODE_CONFIG=%s\n' "${OPENCODE_CONFIG-}"
+  printf 'OPENCODE_CONFIG_DIR=%s\n' "${OPENCODE_CONFIG_DIR-}"
+  printf '%s\n' '---CONFIG---'
+  if [ -n "${OPENCODE_CONFIG-}" ] && [ -f "$OPENCODE_CONFIG" ]; then
+    cat "$OPENCODE_CONFIG"
+  fi
+} > "$FORMAL_AI_CAPTURE"
+"#,
+        )
+        .expect("fake desktop");
+        let mut permissions = std::fs::metadata(&executable)
+            .expect("metadata")
+            .permissions();
+        permissions.set_mode(0o755);
+        std::fs::set_permissions(&executable, permissions).expect("chmod");
+        executable
+    }
+
+    fn run(home: &Path, capture: &Path, desktop: &Path, args: &[&str]) -> Output {
+        Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+            .args(args)
+            .env("HOME", home)
+            .env("FORMAL_AI_CAPTURE", capture)
+            .env("FORMAL_AI_OPENCODE_DESKTOP_BIN", desktop)
+            .env_remove("FORMAL_AI_API_KEY")
+            .env_remove("OPENCODE_CONFIG")
+            .env_remove("OPENCODE_CONFIG_DIR")
+            .output()
+            .expect("formal-ai with")
+    }
+
+    #[test]
+    fn desktop_launch_uses_an_isolated_shared_provider_config() {
+        let root = sandbox();
+        let home = root.join("home");
+        let capture = root.join("capture.txt");
+        std::fs::create_dir_all(&home).expect("home");
+        let desktop = fake_desktop(&root);
+
+        let output = run(
+            &home,
+            &capture,
+            &desktop,
+            &[
+                "with",
+                "--no-start-server",
+                "--base-url",
+                "http://127.0.0.1:18080",
+                "opencode-desktop",
+            ],
+        );
+        assert!(
+            output.status.success(),
+            "{}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+
+        let captured = std::fs::read_to_string(&capture).expect("capture");
+        assert!(captured.contains("arg_count=0"), "{captured}");
+        assert!(
+            captured.contains("FORMAL_AI_API_KEY=formal-ai-local"),
+            "{captured}"
+        );
+        let config_path = captured
+            .lines()
+            .find_map(|line| line.strip_prefix("OPENCODE_CONFIG="))
+            .expect("OPENCODE_CONFIG");
+        let config_dir = captured
+            .lines()
+            .find_map(|line| line.strip_prefix("OPENCODE_CONFIG_DIR="))
+            .expect("OPENCODE_CONFIG_DIR");
+        assert!(!config_path.is_empty(), "{captured}");
+        assert!(!config_dir.is_empty(), "{captured}");
+        assert!(Path::new(config_path).starts_with(config_dir), "{captured}");
+
+        let json: Value = serde_json::from_str(
+            captured
+                .split_once("---CONFIG---\n")
+                .expect("config marker")
+                .1,
+        )
+        .expect("provider JSON");
+        assert_eq!(json["model"], "formalai/formal-ai");
+        assert_eq!(
+            json["provider"]["formalai"]["npm"],
+            "@ai-sdk/openai-compatible"
+        );
+        assert_eq!(
+            json["provider"]["formalai"]["options"]["baseURL"],
+            "http://127.0.0.1:18080/api/openai/v1"
+        );
+        assert_eq!(
+            json["provider"]["formalai"]["options"]["apiKey"],
+            "{env:FORMAL_AI_API_KEY}"
+        );
+        assert_eq!(
+            json["provider"]["formalai"]["models"]["formal-ai"]["name"],
+            "formal-ai"
+        );
+        assert!(!home.join(".config/opencode/opencode.json").exists());
+        std::fs::remove_dir_all(root).expect("cleanup");
+    }
+
+    #[test]
+    fn permanent_desktop_setup_participates_in_all_and_undoes_exactly() {
+        let root = sandbox();
+        let home = root.join("home");
+        let capture = root.join("capture.txt");
+        let config = home.join(".config/opencode/opencode.json");
+        std::fs::create_dir_all(config.parent().expect("parent")).expect("config dir");
+        let original = "{\"theme\":\"dark\"}\n";
+        std::fs::write(&config, original).expect("original");
+        let desktop = fake_desktop(&root);
+
+        let configured = run(
+            &home,
+            &capture,
+            &desktop,
+            &["with", "--global", "opencode-desktop"],
+        );
+        assert!(
+            configured.status.success(),
+            "{}",
+            String::from_utf8_lossy(&configured.stderr)
+        );
+        let json: Value =
+            serde_json::from_str(&std::fs::read_to_string(&config).expect("configured JSON"))
+                .expect("configured object");
+        assert_eq!(json["theme"], "dark");
+        assert_eq!(json["model"], "formalai/formal-ai");
+        assert_eq!(
+            json["provider"]["formalai"]["options"]["apiKey"],
+            "{env:FORMAL_AI_API_KEY}"
+        );
+        assert_eq!(
+            std::fs::read_to_string(config.with_extension("json.formal-ai.bak")).expect("backup"),
+            original
+        );
+
+        let all = run(&home, &capture, &desktop, &["with", "--global", "--all"]);
+        assert!(
+            all.status.success(),
+            "{}",
+            String::from_utf8_lossy(&all.stderr)
+        );
+        assert!(
+            String::from_utf8_lossy(&all.stdout).contains("opencode-desktop already configured"),
+            "{}",
+            String::from_utf8_lossy(&all.stdout)
+        );
+
+        let undone = run(
+            &home,
+            &capture,
+            &desktop,
+            &["with", "--undo", "opencode-desktop"],
+        );
+        assert!(
+            undone.status.success(),
+            "{}",
+            String::from_utf8_lossy(&undone.stderr)
+        );
+        assert_eq!(
+            std::fs::read_to_string(&config).expect("restored"),
+            original
+        );
+        std::fs::remove_dir_all(root).expect("cleanup");
+    }
+}

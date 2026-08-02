@@ -1,0 +1,27 @@
+Auto Release	Collect changelog and bump version	﻿2026-07-20T07:23:56.2648377Z ##[group]Run rust-script scripts/version-and-commit.rs \
+Auto Release	Collect changelog and bump version	2026-07-20T07:23:56.2648814Z ^[[36;1mrust-script scripts/version-and-commit.rs \^[[0m
+Auto Release	Collect changelog and bump version	2026-07-20T07:23:56.2649164Z ^[[36;1m  --bump-type "minor"^[[0m
+Auto Release	Collect changelog and bump version	2026-07-20T07:23:56.2712159Z shell: /usr/bin/bash -e {0}
+Auto Release	Collect changelog and bump version	2026-07-20T07:23:56.2712423Z env:
+Auto Release	Collect changelog and bump version	2026-07-20T07:23:56.2712626Z   GIT_CONFIG_COUNT: 1
+Auto Release	Collect changelog and bump version	2026-07-20T07:23:56.2712867Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Auto Release	Collect changelog and bump version	2026-07-20T07:23:56.2713148Z   GIT_CONFIG_VALUE_0: main
+Auto Release	Collect changelog and bump version	2026-07-20T07:23:56.2713388Z   CARGO_NET_RETRY: 10
+Auto Release	Collect changelog and bump version	2026-07-20T07:23:56.2713614Z   CARGO_HTTP_MULTIPLEXING: false
+Auto Release	Collect changelog and bump version	2026-07-20T07:23:56.2713869Z   CARGO_TERM_COLOR: always
+Auto Release	Collect changelog and bump version	2026-07-20T07:23:56.2714108Z   RUSTFLAGS: -Dwarnings
+Auto Release	Collect changelog and bump version	2026-07-20T07:23:56.2714474Z   CARGO_REGISTRY_TOKEN: ***
+Auto Release	Collect changelog and bump version	2026-07-20T07:23:56.2714779Z   CARGO_TOKEN: ***
+Auto Release	Collect changelog and bump version	2026-07-20T07:23:56.2715293Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+Auto Release	Collect changelog and bump version	2026-07-20T07:23:56.2715611Z   DOCKERHUB_IMAGE: 
+Auto Release	Collect changelog and bump version	2026-07-20T07:23:56.2715833Z   DOCKERHUB_USERNAME: 
+Auto Release	Collect changelog and bump version	2026-07-20T07:23:56.2716130Z   DOCKERHUB_TOKEN: ***
+Auto Release	Collect changelog and bump version	2026-07-20T07:23:56.2716412Z   CARGO_HOME: /home/runner/.cargo
+Auto Release	Collect changelog and bump version	2026-07-20T07:23:56.2716677Z   CARGO_INCREMENTAL: 0
+Auto Release	Collect changelog and bump version	2026-07-20T07:23:56.2716906Z ##[endgroup]
+Auto Release	Collect changelog and bump version	2026-07-20T07:24:00.2474312Z Detected single-language repository (Cargo.toml in root)
+Auto Release	Collect changelog and bump version	2026-07-20T07:24:00.5922864Z Max published version on crates.io: 0.300.0
+Auto Release	Collect changelog and bump version	2026-07-20T07:24:00.5923484Z Initial bump (minor) from 0.300.0: 0.301.0
+Auto Release	Collect changelog and bump version	2026-07-20T07:24:00.6517067Z Final release version: 0.301.0
+Auto Release	Collect changelog and bump version	2026-07-20T07:24:01.7272472Z Error recording self-hosting release metric: no committed Formal-AI-Evidence in 10e65ae2a22f206589ecba9974c95151e0124bc3 records session issue-804-claude-20260720
+Auto Release	Collect changelog and bump version	2026-07-20T07:24:01.7289507Z ##[error]Process completed with exit code 1.

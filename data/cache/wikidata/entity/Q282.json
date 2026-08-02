@@ -1,0 +1,49 @@
+{
+  "entities": {
+    "Q282": {
+      "type": "item",
+      "id": "Q282",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "wine"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "вино"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "शराब"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "葡萄酒"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "alcoholic drink typically made from grapes through the fermentation process"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "алкогольный напиток"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "以葡萄為原材料釀造的酒"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "vino"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

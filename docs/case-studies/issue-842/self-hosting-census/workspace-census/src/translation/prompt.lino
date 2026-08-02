@@ -1,0 +1,25 @@
+self_ast_census
+  target src/translation/prompt.rs
+  language rust
+  fidelity signature
+  byte_len 12051
+  line_count 280
+  content_id source_module_a3aa2e0a9b83b9f7
+  symbol_count 16
+  symbols
+    function extract_unquoted_translation_surface 48 56
+    function is_source_first_translation_request 61 72
+    function extract_suffix_surface 77 86
+    function extract_circumfix_surface 92 99
+    function extract_between_prefix_and_marker 101 112
+    function extract_hindi_unquoted_surface 117 138
+    function extract_chinese_unquoted_surface 144 169
+    function first_marker 172 174
+    function clean_unquoted_surface 176 192
+    struct TranslationMarkers 198 218
+    function markers 221 237
+    static CACHE 222 222
+    function suffix_frames 239 246
+    function circumfix_frames 250 257
+    function script_forms 262 269
+    function bare_script_forms 273 280

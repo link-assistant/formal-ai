@@ -1,0 +1,57 @@
+{
+  "entities": {
+    "Q14674": {
+      "type": "item",
+      "id": "Q14674",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "pencil"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "карандаш"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पेंसिल"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "鉛筆"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "writing implement"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "инструмент в виде стержня, изготавливаемого из пишущего материала, применяемый для письма, рисования, черчения"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "लिख ने का परिकर"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "書寫工具"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Pencils"
+          },
+          {
+            "language": "en",
+            "value": "Writing Pencils"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

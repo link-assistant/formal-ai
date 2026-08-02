@@ -6,20 +6,43 @@ use std::sync::Arc;
 use clap::{Args as ClapArgs, Subcommand, ValueEnum};
 use lino_arguments::Parser;
 
+mod cli_benchmark;
+mod cli_clients;
+mod cli_computer_use;
+mod cli_context;
+mod cli_import;
+mod cli_improve;
+mod cli_learn;
+mod cli_memory;
+mod cli_orchestration;
+mod cli_procedure;
+mod cli_report;
 mod cli_shared_dialog;
+mod cli_statement_audit;
 
+use cli_benchmark::{run_benchmark, BenchmarkAction};
+use cli_clients::{run_clients, ClientsAction, ClientsFormat};
+use cli_computer_use::{run_computer_use, ComputerUseArgs};
+use cli_context::{run_context, ContextArgs};
+use cli_import::{run_import, ImportAction};
+use cli_improve::{run_improve, ImproveArgs};
+use cli_learn::{run_learn_action, LearnAction};
+use cli_memory::{load_memory_or_empty, run_memory};
+use cli_orchestration::{run_external_action, AgentArgs};
+use cli_procedure::{run_procedure, ProcedureArgs};
+use cli_report::{run_report, ReportArgs};
 use cli_shared_dialog::{run_shared_dialog, SharedDialogAction};
+use cli_statement_audit::{run_statement_audit, StatementAuditArgs};
 use formal_ai::agentic_coding::run_agentic_task;
 use formal_ai::{
     agent_info, collect_github_logs, create_chat_completion_with_solver,
     create_response_with_solver, enable_http_agent_mode_for_current_process, environment_records,
-    execute_memory_query, export_memory_bundle, export_memory_full, import_memory_full,
-    knowledge_links_notation, merged_bundle, naturalize_thinking_step, parse_bundle,
-    render_github_log_plan, run_proxy, run_telegram_polling, run_telegram_webhook_server,
-    run_with_formal_ai, seed_files, suggest_memory_migrations, BundleInfo, ChatCompletionRequest,
-    ChatMessage, ExecutionSurface, GithubLogCollectorConfig, MemoryStore, ProxyConfig,
-    ResponsesRequest, SolverConfig, SymbolicAnswer, TelegramPollingConfig, UniversalSolver,
-    WithFormalAiArgs, DEFAULT_MODEL,
+    export_memory_bundle, import_memory_full, knowledge_links_notation, merged_bundle,
+    naturalize_thinking_step, parse_bundle, render_github_log_plan, run_proxy,
+    run_telegram_polling, run_telegram_webhook_server, run_with_formal_ai, seed_files,
+    suggest_memory_migrations, ChatCompletionRequest, ChatMessage, ExecutionSurface,
+    GithubLogCollectorConfig, MemoryStore, ProxyConfig, ResponsesRequest, SolverConfig,
+    SymbolicAnswer, TelegramPollingConfig, UniversalSolver, WithFormalAiArgs, DEFAULT_MODEL,
 };
 
 /// The default task the `agent` subcommand drives: the canonical issue-#468
@@ -35,6 +58,14 @@ const DEFAULT_AGENT_TASK: &str = "Formalize «Сказка о рыбаке и р
     about = "Formal symbolic AI implementation"
 )]
 struct Args {
+    /// Print and persist complete diagnostics (enabled by default).
+    #[arg(long, global = true, default_value_t = true)]
+    verbose: bool,
+
+    /// Disable verbose output and automatic complete dialog logging.
+    #[arg(long, global = true, env = "FORMAL_AI_SILENT", default_value_t = false)]
+    silent: bool,
+
     #[command(subcommand)]
     command: Option<Command>,
 }
@@ -58,8 +89,23 @@ enum Command {
         /// their parent. The same trace the web UI and API surfaces expose.
         #[arg(long, default_value_t = false)]
         thinking: bool,
+
+        /// Compute budget for the step-7 random/evolutionary search stage
+        /// (issue #662), counted in candidate evaluations. Overrides
+        /// `FORMAL_AI_COMPUTE_BUDGET`. `0` disables the search.
+        #[arg(long, env = "FORMAL_AI_COMPUTE_BUDGET")]
+        compute_budget: Option<u32>,
+
+        /// Independent candidate drafts to evaluate for each eligible synthesis
+        /// leaf (issue #704). Overrides `FORMAL_AI_DRAFT_COUNT`.
+        #[arg(long, env = "FORMAL_AI_DRAFT_COUNT")]
+        draft_count: Option<u8>,
     },
     Dataset,
+    /// Export complete conversations or convert arbitrary JSON to Links Notation.
+    Context(ContextArgs),
+    /// Build the issue-report document every Formal AI surface files (#839).
+    Report(ReportArgs),
     Serve {
         #[arg(long, env = "FORMAL_AI_HOST", default_value = "127.0.0.1")]
         host: String,
@@ -109,34 +155,52 @@ enum Command {
     /// every interface the agent supports and how to migrate memory between
     /// them.
     Environments,
+    /// Print the seed-baked registry of external agentic CLI clients that
+    /// `formal-ai with` can drive, including each client's protocols, endpoints,
+    /// headless invocation, and persistent-config location. `--format json`
+    /// makes the registry machine-readable so the multi-CLI end-to-end matrix
+    /// (issue #671) derives its legs from the same data the wrapper uses.
+    Clients {
+        #[arg(long, value_enum, default_value_t = ClientsFormat::Text)]
+        format: ClientsFormat,
+        #[command(subcommand)]
+        action: Option<ClientsAction>,
+    },
+    /// Import lexical semantics in bulk from external sources (issue #660,
+    /// R378). Generalises `scripts/ground-meanings.rs` into a deterministic,
+    /// validate-then-write pipeline.
+    Import {
+        #[command(subcommand)]
+        action: ImportAction,
+    },
     /// Plan or collect GitHub issue, PR, review, and Actions run evidence
     /// into a case-study directory.
     GithubLogs {
         #[command(subcommand)]
         action: GithubLogsAction,
     },
+    /// Run real upstream benchmark suites (issue #698) and record honest
+    /// `passed/total` scores in `data/benchmarks/external-results.lino`.
+    Benchmark {
+        #[command(subcommand)]
+        action: BenchmarkAction,
+    },
+    /// Weigh statement-bearing repository text against captured provenance.
+    StatementAudit(StatementAuditArgs),
     /// Run or permanently configure external CLIs against a local Formal AI server.
     With(WithFormalAiArgs),
+    /// Execute and inspect persisted natural-language procedure artifacts.
+    Procedure(ProcedureArgs),
+    /// Execute a seeded natural-language computer-use plan inside a fresh,
+    /// isolated workspace and emit its per-step verification record.
+    ComputerUse(ComputerUseArgs),
     /// Drive the full agentic-coding loop offline (issue #468). The in-repo
     /// driver plays the role of an external agentic CLI against our
     /// OpenAI-compatible server: it advertises tools, executes every emitted
     /// tool call (web search/fetch against an offline corpus, file writes and
     /// commands in a sandboxed workspace), feeds results back, and loops until
     /// the server returns the finished Links Notation knowledge base.
-    Agent {
-        /// The task to solve. Defaults to the canonical issue-#468 task.
-        #[arg(long, default_value = DEFAULT_AGENT_TASK)]
-        task: String,
-
-        /// Print the full tool-call transcript before the final answer.
-        #[arg(long, default_value_t = false)]
-        transcript: bool,
-
-        /// Write the full, replayable Agent-CLI session as JSON to this path (the
-        /// task, every executed tool call, and the final answer).
-        #[arg(long, value_name = "PATH")]
-        session_json: Option<PathBuf>,
-    },
+    Agent(AgentArgs),
     /// Run the Telegram bot client (long polling by default; webhook server is opt-in).
     Telegram {
         #[arg(
@@ -179,6 +243,52 @@ enum Command {
         #[arg(long, env = "FORMAL_AI_PORT", default_value_t = 8080)]
         port: u16,
     },
+    /// Benchmark-gated promotion of self-improvement proposals (issue #656, E37).
+    ///
+    /// Collects open promotion proposals, replays their benchmark ratchets, and
+    /// prints the promotion plan. `--promote` runs the protocol; without
+    /// `--apply` it is a dry run that touches no files. `--apply` materializes the
+    /// accepted seed edits into `--seed-root` and requires `--confirm`; it never
+    /// pushes — the branch/PR step is emitted as a plan for human review.
+    Improve {
+        /// Run the promotion protocol. Without it, prints usage guidance only.
+        #[arg(long, default_value_t = false)]
+        promote: bool,
+
+        /// `promotion_proposals` Links Notation document containing the actual
+        /// open proposals. Required with `--promote`; synthetic demonstration
+        /// proposals are never a production default.
+        #[arg(long, value_name = "PATH")]
+        proposals: Option<PathBuf>,
+
+        /// Workspace root the accepted seed edits are materialized into on
+        /// `--apply`. Defaults to the current directory.
+        #[arg(long, value_name = "PATH", default_value = ".")]
+        seed_root: PathBuf,
+
+        /// Optional memory file the promotion event chain is appended to on
+        /// `--apply`.
+        #[arg(long, value_name = "PATH")]
+        memory: Option<PathBuf>,
+
+        /// Materialize the accepted seed edits. Requires `--confirm`.
+        #[arg(long, default_value_t = false)]
+        apply: bool,
+
+        /// Optional full-memory backup written before applying to `--memory`.
+        #[arg(long)]
+        backup: Option<PathBuf>,
+
+        /// Required acknowledgement when `--apply` is used.
+        #[arg(long, default_value_t = false)]
+        confirm: bool,
+    },
+    /// Run the auto-learning adoption cycle over a recorded learning frontier
+    /// (issue #701, E59).
+    Learn {
+        #[command(subcommand)]
+        action: LearnAction,
+    },
 }
 
 #[derive(Debug, Subcommand)]
@@ -189,17 +299,17 @@ enum MemoryAction {
     /// legacy events-only `demo_memory` shape. `--path -` streams to stdout.
     Export {
         /// Destination file. Use `-` to write to stdout. Defaults to
-        /// `formal-ai-memory.lino` in the current directory.
+        /// the shared per-user memory file.
         #[arg(
             long,
             env = "FORMAL_AI_MEMORY_PATH",
-            default_value = "formal-ai-memory.lino"
+            default_value_os_t = formal_ai::shared_memory_path()
         )]
         path: PathBuf,
 
         /// Source file to read the log from. Defaults to `--path` when
         /// `--path` is a real file, and to `FORMAL_AI_MEMORY_PATH` /
-        /// `formal-ai-memory.lino` when `--path -` is used.
+        /// the shared per-user memory file when `--path -` is used.
         #[arg(long)]
         from: Option<PathBuf>,
 
@@ -219,7 +329,7 @@ enum MemoryAction {
         #[arg(
             long,
             env = "FORMAL_AI_MEMORY_PATH",
-            default_value = "formal-ai-memory.lino"
+            default_value_os_t = formal_ai::shared_memory_path()
         )]
         into: PathBuf,
     },
@@ -228,22 +338,67 @@ enum MemoryAction {
         #[arg(
             long,
             env = "FORMAL_AI_MEMORY_PATH",
-            default_value = "formal-ai-memory.lino"
+            default_value_os_t = formal_ai::shared_memory_path()
         )]
         path: PathBuf,
     },
-    /// Answer a natural-language recall query against the persisted memory log.
+    /// Execute a natural-language, ANSI/common-vendor SQL, or GraphQL memory query.
     Query {
         #[arg(
             long,
             env = "FORMAL_AI_MEMORY_PATH",
-            default_value = "formal-ai-memory.lino"
+            default_value_os_t = formal_ai::shared_memory_path()
         )]
         path: PathBuf,
 
-        /// Natural-language memory query, for example "Find Rust in another conversation".
+        /// Natural-language, SQL, or GraphQL query over the shared memory schema.
         #[arg(long)]
         prompt: String,
+    },
+    /// Plan low-priority memory dreaming: recomputable duplicate cleanup,
+    /// cache/intermediate eviction under storage pressure, and deleted-thread
+    /// purge candidates. Prints the plan by default; `--apply --confirm` is
+    /// required before the memory file is changed.
+    Dream {
+        #[arg(
+            long,
+            env = "FORMAL_AI_MEMORY_PATH",
+            default_value_os_t = formal_ai::shared_memory_path()
+        )]
+        path: PathBuf,
+
+        /// Total capacity, in bytes, of the storage area that holds memory.
+        #[arg(long)]
+        storage_capacity_bytes: Option<u64>,
+
+        /// Current free bytes in the storage area.
+        #[arg(long)]
+        free_bytes: Option<u64>,
+
+        /// Bytes expected for the next write/fetch before the free-space target
+        /// is evaluated.
+        #[arg(long, default_value_t = 0)]
+        incoming_bytes: u64,
+
+        /// Desired free-space ratio after the next write. Defaults to 20%.
+        #[arg(long, default_value_t = 20)]
+        target_free_ratio_percent: u8,
+
+        /// Turn off the default background dreaming planner for this run.
+        #[arg(long, default_value_t = false)]
+        disable_daydreaming: bool,
+
+        /// Apply the selected plan actions to the memory file.
+        #[arg(long, default_value_t = false)]
+        apply: bool,
+
+        /// Optional full-memory backup written before deletion.
+        #[arg(long)]
+        backup: Option<PathBuf>,
+
+        /// Required acknowledgement when `--apply` is used.
+        #[arg(long, default_value_t = false)]
+        confirm: bool,
     },
     /// Permanently remove every event attached to conversations that were
     /// already soft-deleted in the browser conversation list. Irreversible:
@@ -252,7 +407,7 @@ enum MemoryAction {
         #[arg(
             long,
             env = "FORMAL_AI_MEMORY_PATH",
-            default_value = "formal-ai-memory.lino"
+            default_value_os_t = formal_ai::shared_memory_path()
         )]
         path: PathBuf,
 
@@ -271,7 +426,7 @@ enum MemoryAction {
         #[arg(
             long,
             env = "FORMAL_AI_MEMORY_PATH",
-            default_value = "formal-ai-memory.lino"
+            default_value_os_t = formal_ai::shared_memory_path()
         )]
         path: PathBuf,
 
@@ -306,7 +461,7 @@ enum BundleAction {
         #[arg(
             long,
             env = "FORMAL_AI_MEMORY_PATH",
-            default_value = "formal-ai-memory.lino"
+            default_value_os_t = formal_ai::shared_memory_path()
         )]
         into: PathBuf,
     },
@@ -409,11 +564,15 @@ impl std::fmt::Display for TelegramMode {
 fn main() -> Result<(), Box<dyn Error>> {
     lino_arguments::init();
     let args = Args::parse();
+    let verbose = args.verbose && !args.silent;
+    formal_ai::dialog_log::configure_verbose(verbose);
     let command = args.command.unwrap_or_else(|| Command::Chat {
         prompt: String::from("Hi"),
         format: OutputFormat::Text,
         definition_fusion: None,
         thinking: false,
+        compute_budget: None,
+        draft_count: None,
     });
 
     match command {
@@ -422,19 +581,42 @@ fn main() -> Result<(), Box<dyn Error>> {
             format,
             definition_fusion,
             thinking,
-        } => run_chat(&prompt, format, definition_fusion, thinking)?,
+            compute_budget,
+            draft_count,
+        } => run_chat(
+            &prompt,
+            format,
+            definition_fusion,
+            thinking || verbose,
+            compute_budget,
+            draft_count,
+        )?,
         Command::Dataset => println!("{}", knowledge_links_notation()),
+        Command::Context(args) => run_context(args)?,
+        Command::Report(args) => run_report(args)?,
         Command::Memory { action } => run_memory(action)?,
         Command::SharedDialog { action } => run_shared_dialog(action)?,
         Command::Bundle { action } => run_bundle(action)?,
         Command::Environments => run_environments(),
+        Command::Clients { format, action } => run_clients(format, action)?,
+        Command::Import { action } => run_import(action)?,
         Command::GithubLogs { action } => run_github_logs(action)?,
+        Command::Benchmark { action } => run_benchmark(action)?,
+        Command::StatementAudit(args) => run_statement_audit(&args)?,
         Command::With(args) => run_with_formal_ai(&args)?,
-        Command::Agent {
-            task,
-            transcript,
-            session_json,
-        } => run_agent(&task, transcript, session_json.as_deref())?,
+        Command::Procedure(args) => run_procedure(args)?,
+        Command::ComputerUse(args) => run_computer_use(args)?,
+        Command::Agent(args) => {
+            if let Some(action) = args.action {
+                run_external_action(action)?;
+            } else {
+                run_agent(
+                    &args.task,
+                    args.transcript || verbose,
+                    args.session_json.as_deref(),
+                )?;
+            }
+        }
         Command::Serve {
             host,
             port,
@@ -454,7 +636,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             listen,
             upstream,
             log_path: log,
-            log_bodies: body,
+            log_bodies: body || verbose,
         })?,
         Command::Telegram {
             mode,
@@ -475,6 +657,24 @@ fn main() -> Result<(), Box<dyn Error>> {
             host,
             port,
         })?,
+        Command::Improve {
+            promote,
+            proposals,
+            seed_root,
+            memory,
+            apply,
+            backup,
+            confirm,
+        } => run_improve(&ImproveArgs {
+            promote,
+            proposals,
+            seed_root,
+            memory,
+            apply,
+            backup,
+            confirm,
+        })?,
+        Command::Learn { action } => run_learn_action(action)?,
     }
 
     Ok(())
@@ -556,11 +756,21 @@ struct TelegramRunArgs {
     port: u16,
 }
 
-fn solver_for_chat(definition_fusion: Option<DefinitionFusionMode>) -> UniversalSolver {
+fn solver_for_chat(
+    definition_fusion: Option<DefinitionFusionMode>,
+    compute_budget: Option<u32>,
+    draft_count: Option<u8>,
+) -> UniversalSolver {
     let mut config = SolverConfig::from_env();
     config.execution_surface = ExecutionSurface::Cli;
     if let Some(mode) = definition_fusion {
         config.definition_fusion_by_default = matches!(mode, DefinitionFusionMode::Auto);
+    }
+    if let Some(budget) = compute_budget {
+        config.compute_budget = budget;
+    }
+    if let Some(count) = draft_count {
+        config.draft_count = count.max(1);
     }
     UniversalSolver::new(config)
 }
@@ -597,8 +807,10 @@ fn run_chat(
     format: OutputFormat,
     definition_fusion: Option<DefinitionFusionMode>,
     thinking: bool,
+    compute_budget: Option<u32>,
+    draft_count: Option<u8>,
 ) -> Result<(), Box<dyn Error>> {
-    let solver = solver_for_chat(definition_fusion);
+    let solver = solver_for_chat(definition_fusion, compute_budget, draft_count);
     match format {
         OutputFormat::Text => {
             let response = solver.solve(prompt);
@@ -645,136 +857,6 @@ fn run_chat(
     Ok(())
 }
 
-fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
-    match action {
-        MemoryAction::Export {
-            path,
-            from,
-            events_only,
-        } => {
-            let source = match from {
-                Some(explicit) => explicit,
-                None if path.as_os_str() == "-" => std::env::var_os("FORMAL_AI_MEMORY_PATH")
-                    .map_or_else(|| PathBuf::from("formal-ai-memory.lino"), PathBuf::from),
-                None => path.clone(),
-            };
-            let store = load_memory_or_empty(&source)?;
-            let (text, summary) = if events_only {
-                let text = store.export_links_notation();
-                let summary = format!("Wrote {} events (events-only)", store.len());
-                (text, summary)
-            } else {
-                let seed = seed_files();
-                let info = BundleInfo {
-                    version: agent_info().get("version").cloned(),
-                    ..BundleInfo::default()
-                };
-                let text = export_memory_full(&seed, store.events(), &[], &info);
-                let summary = format!(
-                    "Wrote full memory: {} event(s) + {} seed file(s)",
-                    store.len(),
-                    seed.len(),
-                );
-                (text, summary)
-            };
-            if path.as_os_str() == "-" {
-                print!("{text}");
-            } else {
-                std::fs::write(&path, text)?;
-                eprintln!("{summary} to {}", path.display());
-            }
-        }
-        MemoryAction::Import { path, into } => {
-            let inbound = read_input(&path)?;
-            let parsed = import_memory_full(&inbound);
-            let parsed_count = parsed.events.len();
-            let mut store = load_memory_or_empty(&into)?;
-            store.import(&parsed.events);
-            store.save_to_file(&into)?;
-            eprintln!(
-                "Imported {parsed_count} event(s) into {}; total now {}.",
-                into.display(),
-                store.len()
-            );
-            let suggestions = suggest_memory_migrations(&parsed, &agent_info());
-            for message in suggestions {
-                eprintln!("Migration: {message}");
-            }
-        }
-        MemoryAction::Show { path } => {
-            let store = load_memory_or_empty(&path)?;
-            if store.is_empty() {
-                println!("(no events recorded at {})", path.display());
-                return Ok(());
-            }
-            for (index, event) in store.events().iter().enumerate() {
-                let role = event.role.as_deref().unwrap_or("?");
-                let intent = event.intent.as_deref().unwrap_or("");
-                let content = event.content.as_deref().unwrap_or("");
-                let stamp = event.sent_at.as_deref().unwrap_or("");
-                println!("{index:>3}. [{role}] {intent:<12} {stamp}  {content}");
-            }
-        }
-        MemoryAction::Query { path, prompt } => {
-            let mut store = load_memory_or_empty(&path)?;
-            match execute_memory_query(&prompt, &mut store, None) {
-                Some(execution) => {
-                    if execution.changed {
-                        store.save_to_file(&path)?;
-                    }
-                    println!("{}", execution.answer.answer);
-                }
-                None => println!("No natural-language memory query recognized."),
-            }
-        }
-        MemoryAction::PurgeDeleted {
-            path,
-            backup,
-            confirm,
-        } => {
-            require_destructive_confirmation(confirm, "purge deleted conversations from memory")?;
-            let mut store = load_memory_or_empty(&path)?;
-            if let Some(backup_path) = backup.as_deref() {
-                write_full_memory_backup(backup_path, &store)?;
-            } else {
-                eprintln!(
-                    "Warning: no --backup path was provided; run `formal-ai memory export --from {} --path backup.lino` first if you need a copy.",
-                    path.display()
-                );
-            }
-            let removed = store.purge_deleted_conversations();
-            store.save_to_file(&path)?;
-            eprintln!(
-                "Permanently deleted {removed} event(s) from deleted conversation(s) in {}.",
-                path.display()
-            );
-        }
-        MemoryAction::Reset {
-            path,
-            backup,
-            confirm,
-        } => {
-            require_destructive_confirmation(confirm, "reset memory")?;
-            let mut store = load_memory_or_empty(&path)?;
-            if let Some(backup_path) = backup.as_deref() {
-                write_full_memory_backup(backup_path, &store)?;
-            } else {
-                eprintln!(
-                    "Warning: no --backup path was provided; run `formal-ai memory export --from {} --path backup.lino` first if you need a copy.",
-                    path.display()
-                );
-            }
-            let removed = store.reset();
-            store.save_to_file(&path)?;
-            eprintln!(
-                "Reset memory at {}; permanently deleted {removed} event(s).",
-                path.display()
-            );
-        }
-    }
-    Ok(())
-}
-
 fn run_bundle(action: BundleAction) -> Result<(), Box<dyn Error>> {
     match action {
         BundleAction::Export { path, memory } => {
@@ -812,6 +894,18 @@ fn run_bundle(action: BundleAction) -> Result<(), Box<dyn Error>> {
             let parsed_seed = parse_bundle(&text);
             let mut store = load_memory_or_empty(&into)?;
             store.import(&parsed.events);
+            // Seed files become recomputable `seed_cache` events so seed data
+            // participates in usage/eviction accounting (issue #494).
+            let known: std::collections::BTreeSet<String> = store
+                .events()
+                .iter()
+                .map(|event| event.id.clone())
+                .collect();
+            let fresh_seed: Vec<_> = formal_ai::seed_cache_events(&parsed.seed_files)
+                .into_iter()
+                .filter(|event| !known.contains(&event.id))
+                .collect();
+            store.import(&fresh_seed);
             store.save_to_file(&into)?;
             eprintln!(
                 "Imported {} event(s) and saw {} seed file(s); memory now has {} event(s) at {}.",
@@ -850,47 +944,6 @@ fn run_environments() {
         }
         println!();
     }
-}
-
-fn load_memory_or_empty(path: &std::path::Path) -> Result<MemoryStore, Box<dyn Error>> {
-    if path.as_os_str() == "-" {
-        return Ok(MemoryStore::new());
-    }
-    Ok(MemoryStore::load_from_file(path)?)
-}
-
-fn require_destructive_confirmation(confirm: bool, action: &str) -> Result<(), Box<dyn Error>> {
-    if confirm {
-        return Ok(());
-    }
-    Err(format!(
-        "Refusing to {action} because this operation is irreversible. Export memory first or pass --backup, then rerun with --confirm."
-    )
-    .into())
-}
-
-fn write_full_memory_backup(
-    path: &std::path::Path,
-    store: &MemoryStore,
-) -> Result<(), Box<dyn Error>> {
-    let seed = seed_files();
-    let info = BundleInfo {
-        version: agent_info().get("version").cloned(),
-        ..BundleInfo::default()
-    };
-    let text = export_memory_full(&seed, store.events(), &[], &info);
-    if let Some(parent) = path.parent() {
-        if !parent.as_os_str().is_empty() {
-            std::fs::create_dir_all(parent)?;
-        }
-    }
-    std::fs::write(path, text)?;
-    eprintln!(
-        "Wrote full-memory backup with {} event(s) to {}.",
-        store.len(),
-        path.display()
-    );
-    Ok(())
 }
 
 pub(crate) fn read_input(path: &std::path::Path) -> Result<String, Box<dyn Error>> {

@@ -1,0 +1,19 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 63024534..2945682c 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -7,7 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
+ 
+ <!-- changelog-insert-here -->
+ 
+-
+ ## [0.295.2] - 2026-07-16
+ 
+ ### Fixed
+@@ -5363,4 +5362,4 @@ fetch fallback evidence instead of returning the unknown fallback.
+ - GitHub Actions CI/CD pipeline
+ - Changelog fragment system (similar to Changesets/Scriv)
+ - Release automation (GitHub releases)
+-- Template structure for AI-driven Rust development
+\ No newline at end of file
++- Template structure for AI-driven Rust development

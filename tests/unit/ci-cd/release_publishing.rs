@@ -46,7 +46,7 @@ fn github_pages_artifact_advertises_crate_version_from_cargo_toml() {
     let stamp_script =
         fs::read_to_string(format!("{manifest_dir}/scripts/stamp-pages-artifact.sh")).unwrap();
     let workflow = release_workflow();
-    let deploy_demo = job_block(&workflow, "deploy-demo");
+    let deploy_demo = job_block(&workflow, "deploy-pages");
 
     assert!(
         index_html.contains("__FORMAL_AI_VERSION__"),
@@ -78,13 +78,13 @@ fn github_pages_artifact_advertises_crate_version_from_cargo_toml() {
     );
     assert!(
         deploy_demo.contains("Read formal-ai version from Cargo.toml"),
-        "deploy-demo should detect the crate version before stamping the artifact"
+        "deploy-pages should detect the crate version before stamping the artifact"
     );
     assert!(
         deploy_demo.contains(
             "scripts/stamp-pages-artifact.sh src/web \"${{ steps.pages_ref.outputs.sha }}\" \"${{ steps.pages_ref.outputs.sha }}\" \"${{ steps.formal_ai_version.outputs.version }}\""
         ),
-        "deploy-demo should forward the selected deployment SHA and resolved crate version to the stamp script"
+        "deploy-pages should forward the selected deployment SHA and resolved crate version to the stamp script"
     );
 
     let wait_script = fs::read_to_string(format!(
@@ -360,6 +360,44 @@ fn build_job_checks_generated_crate_archive_size() {
 }
 
 #[test]
+fn lint_job_guards_the_wasm_worker_migration() {
+    // Issue #658 (E39 / R380): the JavaScript worker logic is being absorbed
+    // into the Rust→WASM worker. Three guards keep that migration honest and
+    // must run in the lint job: the worker JS line-budget ratchet, a rebuild of
+    // the shipped `.wasm` from source (which caught a latent no_std break), and
+    // its size budget.
+    let workflow = release_workflow();
+    let lint = job_block(&workflow, "lint");
+
+    assert!(
+        lint.contains("targets: wasm32-unknown-unknown"),
+        "lint job should install the wasm32 target so the worker can be rebuilt"
+    );
+
+    let line_budget = lint
+        .find("rust-script scripts/check-worker-line-budget.rs")
+        .expect("lint job should ratchet the worker JS line budget");
+    let build_wasm = lint
+        .find("sh src/web/wasm-worker/build.sh")
+        .expect("lint job should rebuild the Rust→WASM worker from source");
+    let wasm_size = lint
+        .find("rust-script scripts/check-wasm-worker-size.rs")
+        .expect("lint job should check the shipped .wasm size budget");
+    let install_rust_script = lint
+        .find("- name: Install rust-script")
+        .expect("lint job should install rust-script before running script guards");
+
+    assert!(
+        install_rust_script < line_budget,
+        "lint job should install rust-script before the worker line-budget guard"
+    );
+    assert!(
+        build_wasm < wasm_size,
+        "lint job should rebuild the .wasm before checking its size budget"
+    );
+}
+
+#[test]
 fn release_workflow_publishes_prebuilt_ghcr_image_after_crate_is_visible_and_optional_docker_hub_mirror(
 ) {
     let workflow = release_workflow();
@@ -384,7 +422,9 @@ fn release_workflow_publishes_prebuilt_ghcr_image_after_crate_is_visible_and_opt
     );
     assert_eq!(
         workflow.matches("docker/build-push-action@v7").count(),
-        4,
+        // Four publishing builds, plus the issue #808 pull-request `docker-build`
+        // job, which builds the same image with `push: false`.
+        5,
         "auto and manual release jobs should publish GHCR images and optionally Docker Hub mirrors"
     );
     assert!(
@@ -695,7 +735,7 @@ fn desktop_release_workflow_signs_and_smoke_tests_macos_artifacts() {
         "APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}",
         "APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}",
         "DEBUG: electron-builder,electron-notarize*",
-        "npx --no-install electron-builder ${{ matrix.ebflag }} --publish never",
+        "bash scripts/package-macos-with-retry.sh ${{ matrix.ebflag }} --publish never",
     ] {
         assert!(
             signed.contains(required),
@@ -709,6 +749,7 @@ fn desktop_release_workflow_signs_and_smoke_tests_macos_artifacts() {
         "CSC_IDENTITY_AUTO_DISCOVERY: \"false\"",
         "MACOS_ADHOC_SIGN: \"1\"",
         "DEBUG: electron-builder,electron-osx-sign*",
+        "bash scripts/package-macos-with-retry.sh ${{ matrix.ebflag }} --publish never",
         "-c.mac.notarize=false",
         // Issue #479: electron-builder 26 only reaches the custom `mac.sign`
         // hook when an identity resolves. With no Apple certificate the sole

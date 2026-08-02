@@ -1,0 +1,72 @@
+self_ast_census
+  target src/agentic_coding/procedure.rs
+  language rust
+  fidelity full_ast
+  byte_len 4231
+  line_count 130
+  content_id source_module_59c2c30fbf44bc52
+  symbol_count 5
+  symbols
+    const COMPILED_PROCEDURE_PATH 20 20
+    const EXECUTION_PLACEHOLDER 21 21
+    function compile_task 24 26
+    function plan_step 28 114
+    function render_response 116 130
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 2983
+    named_node_count 585
+    distinct_node_kinds 49
+    node_kinds
+      arguments 54
+      array_expression 1
+      array_type 2
+      attribute 1
+      attribute_item 1
+      binary_expression 3
+      block 10
+      call_expression 54
+      char_literal 1
+      closure_expression 5
+      closure_parameters 5
+      const_item 2
+      crate 4
+      doc_comment 5
+      expression_statement 16
+      field_expression 38
+      field_identifier 38
+      function_item 3
+      generic_type 1
+      identifier 147
+      if_expression 7
+      inner_doc_comment_marker 5
+      integer_literal 2
+      let_condition 2
+      let_declaration 10
+      line_comment 5
+      macro_invocation 3
+      mutable_specifier 1
+      parameter 8
+      parameters 3
+      primitive_type 7
+      reference_expression 10
+      reference_type 11
+      return_expression 7
+      scoped_identifier 23
+      scoped_use_list 2
+      source_file 1
+      string_content 23
+      string_literal 27
+      super 4
+      token_tree 5
+      tuple_struct_pattern 2
+      type_arguments 1
+      type_identifier 7
+      unary_expression 4
+      use_as_clause 1
+      use_declaration 8
+      use_list 2
+      visibility_modifier 3

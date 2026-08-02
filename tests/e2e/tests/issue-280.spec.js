@@ -31,6 +31,10 @@ test.describe('Issue #280: desktop shell bridge', () => {
           graphUrl: 'http://127.0.0.1:18080/v1/graph',
           traceUrl: 'http://127.0.0.1:18080/v1/graph?trace=answer_greeting_hi',
           memory: 'formal_ai_bundle',
+          activeEngine: 'out-of-box',
+          engines: [
+            { id: 'out-of-box', label: 'Out of the box', type: 'native', available: true },
+          ],
           agentModeDefault: false,
           toolCallPolicy: 'explicit-permission',
           apiReady: true,
@@ -43,7 +47,7 @@ test.describe('Issue #280: desktop shell bridge', () => {
 
   test('desktop status, network, memory, and permission surfaces are visible', async ({ page }) => {
     await expect(page.locator('[data-testid="desktop-shell-status"]')).toContainText(
-      'Desktop - API local - agent permission off',
+      'Desktop - out-of-box - API local - agent permission off',
     );
     await expect(page.locator('[data-testid="sidebar-desktop"]')).toBeVisible();
     await expect(page.locator('[data-testid="desktop-api-base"]')).toHaveText(
@@ -60,7 +64,7 @@ test.describe('Issue #280: desktop shell bridge', () => {
       'Off',
     );
     await expect(page.locator('[data-testid="desktop-tool-permission"]')).toHaveText(
-      '0/6 tools granted',
+      '0/18 tools granted',
     );
 
     await page.locator('[data-testid="mode-option-agent"]').click();
@@ -68,7 +72,7 @@ test.describe('Issue #280: desktop shell bridge', () => {
       'Opted in',
     );
     await expect(page.locator('[data-testid="desktop-tool-permission"]')).toHaveText(
-      '0/6 tools granted',
+      '0/18 tools granted',
     );
   });
 
@@ -89,13 +93,13 @@ test.describe('Issue #280: desktop shell bridge', () => {
         language,
       );
       await expect(page.locator('[data-testid="desktop-shell-status"]')).toContainText(
-        'Desktop - API local - agent permission off',
+        'Desktop - out-of-box - API local - agent permission off',
       );
       // Issue #511/#514: the tool-count label now comes from the i18n catalog,
       // so assert against the active language's translation rather than English.
       const expectedToolCount = await page.evaluate(async (lang) => {
         await window.FormalAiI18n.ready;
-        return window.FormalAiI18n.t('permissions.toolCount', lang, { granted: 0, total: 6 });
+        return window.FormalAiI18n.t('permissions.toolCount', lang, { granted: 0, total: 18 });
       }, language);
       await expect(page.locator('[data-testid="desktop-tool-permission"]')).toHaveText(
         expectedToolCount,

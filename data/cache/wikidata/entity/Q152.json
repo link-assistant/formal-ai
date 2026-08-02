@@ -1,0 +1,87 @@
+{
+  "entities": {
+    "Q152": {
+      "type": "item",
+      "id": "Q152",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "fish"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "рыбы"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मछली"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "魚"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "vertebrate animal that lives in water and (typically) has gills"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "парафилетическая группа водных позвоночных животных"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "कशेरुका जानवर जो पानी में रहता है और (आमतौर पर) में गिल होती है"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "水生變溫脊椎動物，種類極多，卵生或卵胎生，絕大部分用鰓呼吸"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Рыбы"
+          },
+          {
+            "language": "en",
+            "value": "рыбы"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Pisces"
+          },
+          {
+            "language": "ru",
+            "value": "рыба"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "मीन"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "魚類"
+          },
+          {
+            "language": "zh",
+            "value": "魚綱"
+          },
+          {
+            "language": "zh",
+            "value": "魚兒"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

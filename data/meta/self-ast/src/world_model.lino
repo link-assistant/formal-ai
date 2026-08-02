@@ -1,0 +1,75 @@
+self_ast_census
+  target src/world_model.rs
+  language rust
+  fidelity signature
+  byte_len 39180
+  line_count 1000
+  content_id source_module_a023fbe5405aff2a
+  symbol_count 66
+  symbols
+    const MAX_RECALCULATION_PASSES_PER_STATEMENT 65 65
+    struct Dependency 75 80
+    function supports 85 90
+    function contradicts 94 99
+    struct Statement 110 123
+    function new 129 142
+    function with_evidence 146 149
+    function with_dependency 153 156
+    function with_prior 160 163
+    struct Action 172 179
+    function new 184 190
+    function adding 194 197
+    function removing 201 204
+    function id 208 217
+    struct Context 227 236
+    function new 241 249
+    function with_formal_system 253 260
+    function formal_system 264 266
+    function assert_link 269 271
+    function retract_link 274 276
+    function holds 280 282
+    function links 286 288
+    function statements 292 294
+    function statement 298 300
+    function add_statement 305 310
+    function extend_statements 318 326
+    function apply_fact_check_evidence 330 359
+    function recalculate 374 450
+    function collapse_cycle 455 466
+    function assess_with_dependencies 471 492
+    function sync_statement_links 496 514
+    function apply_action 520 528
+    function predict 538 551
+    function difference 561 585
+    function merge_from 593 601
+    function split_off 610 628
+    function links_notation 633 635
+    function state_links 638 644
+    function statement_changes_against 647 663
+    function is_statement_layer_link 675 679
+    function is_derived_statement_link 683 689
+    struct RecalculationReport 693 702
+    struct RecalculatedLink 706 719
+    struct StatementChange 723 732
+    struct LinkConflict 737 742
+    struct ContextDiff 746 753
+    function is_empty 759 761
+    function links_notation 765 782
+    struct Prediction 788 801
+    function is_noop 807 809
+    enum ContextAccessEventKind 814 823
+    struct ContextAccessEvent 827 836
+    enum GeneralMemoryPermission 840 845
+    enum GeneralMemoryCommitError 849 851
+    function fmt 854 860
+    struct WorldModel 874 883
+    function new 888 895
+    function difference 901 903
+    function predict 908 910
+    function target_reached 915 917
+    function general 922 924
+    function commit_current_to_general 929 942
+    function context_access_events 946 948
+    function general_context_for_audit 951 963
+    function record_general_memory_permission 965 985
+    function push_context_access_event 987 999

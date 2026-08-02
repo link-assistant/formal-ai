@@ -1,0 +1,67 @@
+{
+  "entities": {
+    "Q7369": {
+      "type": "item",
+      "id": "Q7369",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "dolphin"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "дельфин"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सूंस"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "海豚"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "marine mammal, closely related to whales and porpoises"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "несистематическая группа водных млекопитающих инфраотряда китообразных"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "智商較高的小型鯨類動物"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "🐬"
+          },
+          {
+            "language": "en",
+            "value": "Dolphin"
+          },
+          {
+            "language": "en",
+            "value": "dolphins"
+          },
+          {
+            "language": "en",
+            "value": "dolphin calf"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "дельфины"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

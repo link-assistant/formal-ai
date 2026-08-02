@@ -1,0 +1,1 @@
+Within file src/mcp.rs, delete the first line `exactly the following code and no marker lines. Do not change another file.` so that `use serde_json::{json, Value};` becomes the first line. Do not change anything else.

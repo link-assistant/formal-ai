@@ -1,0 +1,135 @@
+self_hosting_learning_report
+  issue "657"
+  decision "awaiting_human_review"
+  promotion_gate "metric_fixture_exact_share_and_honest_ledger_ratchet_pass"
+  record_type "agent_cli_auto_learning"
+  substrate "links_network"
+  retention_formula "reads + writes + incoming_links + outgoing_links"
+  expression_count "10"
+  validation_warning_count "0"
+  multi_hop_seed "observation:unmarked-sessions"
+  multi_hop_recall "observation:unmarked-sessions|lesson:honest-baseline"
+  learned_expression_01
+    id "observation:unmarked-sessions"
+    text "message
+user
+45277 changed lines across 16 commits were authored without recorded session evidence, so no honest rule can attribute them either way."
+    reads "9"
+    writes "1"
+    incoming_links "1"
+    outgoing_links "0"
+    retention_score "11"
+    qualifiers "conversation_id=issue-657|kind=message|role=user"
+    validation "aligned"
+  learned_expression_02
+    id "observation:zero-baseline"
+    text "message
+user
+The v0.296.0 release measured 0.00% self-authored: no commit in the window carried the paired session and evidence trailers attribution reads."
+    reads "9"
+    writes "1"
+    incoming_links "0"
+    outgoing_links "0"
+    retention_score "10"
+    qualifiers "conversation_id=issue-657|kind=message|role=user"
+    validation "aligned"
+  learned_expression_03
+    id "observation:half-marked-commit"
+    text "message
+user
+A commit carrying only one of the two trailers is an attribution error rather than a silent zero, because the missing half cannot be distinguished from a human commit."
+    reads "7"
+    writes "1"
+    incoming_links "0"
+    outgoing_links "0"
+    retention_score "8"
+    qualifiers "conversation_id=issue-657|kind=message|role=user"
+    validation "aligned"
+  learned_expression_04
+    id "observation:single-release-noise"
+    text "message
+user
+One release's share swings on window size alone, so a per-release floor would ratchet on noise instead of on authorship."
+    reads "5"
+    writes "1"
+    incoming_links "2"
+    outgoing_links "0"
+    retention_score "8"
+    qualifiers "conversation_id=issue-657|kind=message|role=user"
+    validation "aligned"
+  learned_expression_05
+    id "observation:uncommitted-evidence"
+    text "message
+user
+Evidence named by a trailer but absent from the commit's own tree would let a release claim a session that nothing in the repository records."
+    reads "6"
+    writes "1"
+    incoming_links "1"
+    outgoing_links "0"
+    retention_score "8"
+    qualifiers "conversation_id=issue-657|kind=message|role=user"
+    validation "aligned"
+  learned_expression_06
+    id "lesson:honest-baseline"
+    text "learning_amendment
+assistant
+Start the ledger at the share the evidence actually supports and never retroactively claim unmarked sessions; 0.00% is a truthful first row and the only one that keeps the ratchet meaningful.
+observation:unmarked-sessions"
+    reads "1"
+    writes "4"
+    incoming_links "0"
+    outgoing_links "1"
+    retention_score "6"
+    qualifiers "conversation_id=issue-657|kind=learning_amendment|role=assistant"
+    validation "aligned"
+  learned_expression_07
+    id "lesson:trailer-provenance"
+    text "learning_amendment
+assistant
+Carry attribution in the commit itself as paired Formal-AI-Session and Formal-AI-Evidence trailers, and resolve the evidence against that commit's tree, so the metric is recomputable from committed data alone.
+observation:uncommitted-evidence"
+    reads "0"
+    writes "5"
+    incoming_links "0"
+    outgoing_links "1"
+    retention_score "6"
+    qualifiers "conversation_id=issue-657|kind=learning_amendment|role=assistant"
+    validation "aligned"
+  learned_expression_08
+    id "observation:commit-count-weighting"
+    text "message
+user
+Counting commits rather than changed lines would let one trailer-marked typo fix outweigh a large unmarked refactor."
+    reads "4"
+    writes "1"
+    incoming_links "0"
+    outgoing_links "0"
+    retention_score "5"
+    qualifiers "conversation_id=issue-657|kind=message|role=user"
+    validation "aligned"
+  learned_expression_09
+    id "lesson:changed-line-weighting"
+    text "learning_amendment
+assistant
+Measure in added plus deleted lines and weight the trailing window by changed lines, so the ratchet tracks authorship volume rather than commit granularity.
+observation:single-release-noise"
+    reads "0"
+    writes "3"
+    incoming_links "0"
+    outgoing_links "1"
+    retention_score "4"
+    qualifiers "conversation_id=issue-657|kind=learning_amendment|role=assistant"
+    validation "aligned"
+  learned_expression_10
+    id "lesson:monotonic-window"
+    text "learning_amendment
+assistant
+Gate on a non-decreasing trailing three-release share rather than a per-release floor, so a narrow release cannot fail the ratchet and a wide one cannot hide a regression.
+observation:single-release-noise"
+    reads "0"
+    writes "2"
+    incoming_links "0"
+    outgoing_links "1"
+    retention_score "3"
+    qualifiers "conversation_id=issue-657|kind=learning_amendment|role=assistant"
+    validation "aligned"

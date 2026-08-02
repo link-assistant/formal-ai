@@ -1,0 +1,1 @@
+I can run `printf 'ISSUE749_QWEN_TWO_WORDS\n'` when the client advertises a shell tool such as `bash`, `shell`, or `run_command`.

@@ -1,0 +1,269 @@
+
+> vscode:test
+> npm --prefix vscode run test
+
+
+> formal-ai-vscode@0.154.0 test
+> node --test scripts/config.test.mjs scripts/bridge.test.mjs scripts/webview-html.test.mjs scripts/chat-view.test.mjs scripts/server-process.test.mjs && node scripts/smoke.mjs
+
+TAP version 13
+# Subtest: getStatus returns the host-provided status
+ok 1 - getStatus returns the host-provided status
+  ---
+  duration_ms: 7.299192
+  ...
+# Subtest: setToolGrants delegates to the tool router
+ok 2 - setToolGrants delegates to the tool router
+  ---
+  duration_ms: 2.408475
+  ...
+# Subtest: invokeTool is refused when the server is not enabled (nothing executes)
+ok 3 - invokeTool is refused when the server is not enabled (nothing executes)
+  ---
+  duration_ms: 3.285422
+  ...
+# Subtest: invokeTool routes to the tool router when the server is enabled
+ok 4 - invokeTool routes to the tool router when the server is enabled
+  ---
+  duration_ms: 0.684567
+  ...
+# Subtest: invokeTool reports unavailable when no router is configured
+ok 5 - invokeTool reports unavailable when no router is configured
+  ---
+  duration_ms: 0.356987
+  ...
+# Subtest: serverEnabled may be a live predicate
+ok 6 - serverEnabled may be a live predicate
+  ---
+  duration_ms: 0.730263
+  ...
+# Subtest: syncMemory is unavailable without the server
+ok 7 - syncMemory is unavailable without the server
+  ---
+  duration_ms: 1.419269
+  ...
+# Subtest: syncMemory pushes then pulls when the server is ready
+ok 8 - syncMemory pushes then pulls when the server is ready
+  ---
+  duration_ms: 0.654792
+  ...
+# Subtest: openExternal accepts http(s) urls only
+ok 9 - openExternal accepts http(s) urls only
+  ---
+  duration_ms: 11.645312
+  ...
+# Subtest: dispatch routes by method name and rejects unknown methods
+ok 10 - dispatch routes by method name and rejects unknown methods
+  ---
+  duration_ms: 1.791553
+  ...
+# Subtest: makeNonce returns a fresh 32-char hex string
+ok 11 - makeNonce returns a fresh 32-char hex string
+  ---
+  duration_ms: 20.000284
+  ...
+# Subtest: resourceRootCandidates prefers the packaged dist-web over the dev layout
+ok 12 - resourceRootCandidates prefers the packaged dist-web over the dev layout
+  ---
+  duration_ms: 0.81951
+  ...
+# Subtest: resolveResourceRoots picks the packaged layout when dist-web/index.html exists
+ok 13 - resolveResourceRoots picks the packaged layout when dist-web/index.html exists
+  ---
+  duration_ms: 0.615419
+  ...
+# Subtest: resolveResourceRoots falls back to the dev layout when only src/web exists
+ok 14 - resolveResourceRoots falls back to the dev layout when only src/web exists
+  ---
+  duration_ms: 2.075804
+  ...
+# Subtest: resolveResourceRoots defaults to the dev layout when nothing is found
+ok 15 - resolveResourceRoots defaults to the dev layout when nothing is found
+  ---
+  duration_ms: 0.440251
+  ...
+# Subtest: readIndexHtml decodes the bytes as UTF-8
+ok 16 - readIndexHtml decodes the bytes as UTF-8
+  ---
+  duration_ms: 0.645413
+  ...
+# Subtest: renderChatWebview wires options + sandboxed HTML with the shim and rebased base href
+ok 17 - renderChatWebview wires options + sandboxed HTML with the shim and rebased base href
+  ---
+  duration_ms: 2.404848
+  ...
+# Subtest: the provider renders, registers its subscription, and reports the view to the host
+ok 18 - the provider renders, registers its subscription, and reports the view to the host
+  ---
+  duration_ms: 1.536277
+  ...
+# Subtest: the RPC pump dispatches requests through the bridge and answers with the result
+ok 19 - the RPC pump dispatches requests through the bridge and answers with the result
+  ---
+  duration_ms: 5.833867
+  ...
+# Subtest: the RPC pump reports bridge errors back over the channel
+ok 20 - the RPC pump reports bridge errors back over the channel
+  ---
+  duration_ms: 1.316937
+  ...
+# Subtest: the RPC pump ignores messages that are not bridge requests
+ok 21 - the RPC pump ignores messages that are not bridge requests
+  ---
+  duration_ms: 1.179972
+  ...
+# Subtest: readConfig fills defaults from an empty settings object
+ok 22 - readConfig fills defaults from an empty settings object
+  ---
+  duration_ms: 2.903178
+  ...
+# Subtest: readConfig reads a VS Code WorkspaceConfiguration via get()
+ok 23 - readConfig reads a VS Code WorkspaceConfiguration via get()
+  ---
+  duration_ms: 0.759417
+  ...
+# Subtest: readConfig also accepts nested plain objects
+ok 24 - readConfig also accepts nested plain objects
+  ---
+  duration_ms: 2.801418
+  ...
+# Subtest: readConfig clamps an invalid port back to the default
+ok 25 - readConfig clamps an invalid port back to the default
+  ---
+  duration_ms: 0.443318
+  ...
+# Subtest: statusFromConfig defaults to the in-process surface
+ok 26 - statusFromConfig defaults to the in-process surface
+  ---
+  duration_ms: 0.442105
+  ...
+# Subtest: statusFromConfig keeps the web host in-process even when the server is enabled
+ok 27 - statusFromConfig keeps the web host in-process even when the server is enabled
+  ---
+  duration_ms: 2.434894
+  ...
+# Subtest: statusFromConfig marks server mode on a capable host when enabled
+ok 28 - statusFromConfig marks server mode on a capable host when enabled
+  ---
+  duration_ms: 0.595912
+  ...
+# Subtest: statusFromConfig reflects the agent default-on setting
+ok 29 - statusFromConfig reflects the agent default-on setting
+  ---
+  duration_ms: 0.356907
+  ...
+# Subtest: withApiReady derives the chat/graph/trace URLs from apiBase
+ok 30 - withApiReady derives the chat/graph/trace URLs from apiBase
+  ---
+  duration_ms: 0.735202
+  ...
+# Subtest: withApiError falls back to in-process and records the message
+ok 31 - withApiError falls back to in-process and records the message
+  ---
+  duration_ms: 3.778693
+  ...
+# Subtest: serverEnv maps host/port to the formal-ai serve environment
+ok 32 - serverEnv maps host/port to the formal-ai serve environment
+  ---
+  duration_ms: 0.431354
+  ...
+# Subtest: apiCandidates falls back to formal-ai on PATH with no repo and no override
+ok 33 - apiCandidates falls back to formal-ai on PATH with no repo and no override
+  ---
+  duration_ms: 6.722575
+  ...
+# Subtest: apiCandidates adds a cargo-run candidate when a Cargo.toml is present
+ok 34 - apiCandidates adds a cargo-run candidate when a Cargo.toml is present
+  ---
+  duration_ms: 0.628091
+  ...
+# Subtest: apiCandidates puts an explicit binary override first
+ok 35 - apiCandidates puts an explicit binary override first
+  ---
+  duration_ms: 0.38524
+  ...
+# Subtest: apiCandidates also honours FORMAL_AI_DESKTOP_BINARY
+ok 36 - apiCandidates also honours FORMAL_AI_DESKTOP_BINARY
+  ---
+  duration_ms: 0.295171
+  ...
+# Subtest: apiCandidates threads a custom host and port into every candidate
+ok 37 - apiCandidates threads a custom host and port into every candidate
+  ---
+  duration_ms: 0.62666
+  ...
+# Subtest: requestHealth resolves true on a 200 /health and false otherwise
+ok 38 - requestHealth resolves true on a 200 /health and false otherwise
+  ---
+  duration_ms: 87.09615
+  ...
+# Subtest: requestHealth resolves false when the server answers non-200
+ok 39 - requestHealth resolves false when the server answers non-200
+  ---
+  duration_ms: 8.007704
+  ...
+# Subtest: waitForApi throws once the timeout window has elapsed
+ok 40 - waitForApi throws once the timeout window has elapsed
+  ---
+  duration_ms: 1.358565
+  ...
+# Subtest: buildWebviewHtml substitutes both version placeholders
+ok 41 - buildWebviewHtml substitutes both version placeholders
+  ---
+  duration_ms: 7.270287
+  ...
+# Subtest: buildWebviewHtml injects a <base> pointing at the resource root
+ok 42 - buildWebviewHtml injects a <base> pointing at the resource root
+  ---
+  duration_ms: 14.213405
+  ...
+# Subtest: buildWebviewHtml injects a strict CSP carrying the nonce and resource origin
+ok 43 - buildWebviewHtml injects a strict CSP carrying the nonce and resource origin
+  ---
+  duration_ms: 0.493922
+  ...
+# Subtest: buildWebviewHtml stamps the nonce on every script tag
+ok 44 - buildWebviewHtml stamps the nonce on every script tag
+  ---
+  duration_ms: 6.041726
+  ...
+# Subtest: buildWebviewHtml injects the FormalAiDesktop bridge shim at the top of body
+ok 45 - buildWebviewHtml injects the FormalAiDesktop bridge shim at the top of body
+  ---
+  duration_ms: 0.516745
+  ...
+# Subtest: the shim overrides Worker to bridge the same-origin constraint
+ok 46 - the shim overrides Worker to bridge the same-origin constraint
+  ---
+  duration_ms: 0.306381
+  ...
+# Subtest: the shim carries the asset and seed bases plus the initial status
+ok 47 - the shim carries the asset and seed bases plus the initial status
+  ---
+  duration_ms: 11.881112
+  ...
+# Subtest: buildContentSecurityPolicy adds the local apiBase to connect-src in server mode
+ok 48 - buildContentSecurityPolicy adds the local apiBase to connect-src in server mode
+  ---
+  duration_ms: 6.081229
+  ...
+# Subtest: buildWebviewHtml threads apiBase from status into the CSP
+ok 49 - buildWebviewHtml threads apiBase from status into the CSP
+  ---
+  duration_ms: 0.968758
+  ...
+# Subtest: safeJson cannot break out of the script tag
+ok 50 - safeJson cannot break out of the script tag
+  ---
+  duration_ms: 0.673347
+  ...
+1..50
+# tests 50
+# suites 0
+# pass 50
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1175.661344
+formal-ai vscode smoke checks passed

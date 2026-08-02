@@ -1,0 +1,16 @@
+Q18545
+  aliases
+    en (balls)
+    ru ("мячик" "шарик" "шар")
+  descriptions
+    en "round object used in sports or for playing"
+    hi "गोल वस्तु"
+    ru "шарообразный предмет для подвижной игры"
+  id Q18545
+  labels
+    en ball
+    hi "गेंद"
+    ru "мяч"
+    zh "球"
+  type item
+success 1

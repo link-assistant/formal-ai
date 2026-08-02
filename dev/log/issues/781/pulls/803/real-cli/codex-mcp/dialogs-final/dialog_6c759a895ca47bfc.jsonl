@@ -1,0 +1,1 @@
+{"timestamp_unix_ms":1784511259364,"dialog_id":"dialog_6c759a895ca47bfc","request_id":"request_06fce87d6e98cac1","method":"GET","path":"/health","request_model":null,"request_tools":[],"status":200,"response_model":"formal-ai","response_tool_calls":[],"response_content_preview":"","request_body":"","response_body":"{\n  \"model\": \"formal-ai\",\n  \"status\": \"ok\"\n}"}

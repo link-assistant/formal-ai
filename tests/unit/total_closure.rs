@@ -164,6 +164,8 @@ fn external_trusted_services_are_registered_with_settings_toggles() {
     let services = [
         ("wikihow", "externalServiceWikihow"),
         ("stackexchange", "externalServiceStackExchange"),
+        ("wikifunctions", "externalServiceMediawikiFamily"),
+        ("rosetta_code", "externalServiceMediawikiFamily"),
         ("wikibooks", "externalServiceMediawikiFamily"),
         ("wikiversity", "externalServiceMediawikiFamily"),
         ("wikivoyage", "externalServiceMediawikiFamily"),

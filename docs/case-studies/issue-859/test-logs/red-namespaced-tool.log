@@ -1,0 +1,27 @@
+   Compiling formal-ai v0.318.0 (/tmp/gh-issue-solver-1785615454177)
+    Finished `test` profile [unoptimized] target(s) in 1m 41s
+     Running tests/integration/mod.rs (target/debug/deps/integration-9cb890b1523a0764)
+
+running 1 test
+[trace] POST /v1/responses (1001 byte body)
+{"input":[{"content":"Give me hello world program in Rust","role":"user","type":"message"}],"model":"formal-ai","tools":[{"description":"Inspect a connected document session.","name":"mcp__codex_apps__codex_document_control","tools":[{"name":"_execute_d_7437ad2e4ffa","parameters":{"properties":{"args":{"type":"object"},"executor_session_id":{"type":"string"},"idempotency_key":{"type":"string"},"tool_name":{"type":"string"}},"required":["executor_session_id","tool_name","args","idempotency_key"],"type":"object"},"type":"function"}],"type":"namespace"},{"name":"exec_command","parameters":{"additionalProperties":false,"properties":{"cmd":{"type":"string"}},"required":["cmd"],"type":"object"},"type":"function"},{"name":"write_stdin","parameters":{"additionalProperties":false,"properties":{"session_id":{"type":"number"}},"required":["session_id"],"type":"object"},"type":"function"},{"format":{"definition":"start: /.+/","syntax":"lark","type":"grammar"},"name":"apply_patch","type":"custom"}]}
+[dialog-log] appended exchange to /home/box/.formal-ai/dialog-logs/dialog_58ff0015c7a2ad1d.jsonl
+[trace] POST /v1/responses (1261 byte body)
+{"input":[{"content":"Give me hello world program in Rust","role":"user","type":"message"},{"call_id":"patch_1","input":"*** Begin Patch\n*** Add File: main.rs\n+fn main() {\n+    println!(\"Hello, world!\");\n+}\n*** End Patch\n","name":"apply_patch","type":"custom_tool_call"},{"call_id":"patch_1","output":"Done!","type":"custom_tool_call_output"}],"model":"formal-ai","tools":[{"description":"Inspect a connected document session.","name":"mcp__codex_apps__codex_document_control","tools":[{"name":"_execute_d_7437ad2e4ffa","parameters":{"properties":{"args":{"type":"object"},"executor_session_id":{"type":"string"},"idempotency_key":{"type":"string"},"tool_name":{"type":"string"}},"required":["executor_session_id","tool_name","args","idempotency_key"],"type":"object"},"type":"function"}],"type":"namespace"},{"name":"exec_command","parameters":{"additionalProperties":false,"properties":{"cmd":{"type":"string"}},"required":["cmd"],"type":"object"},"type":"function"},{"name":"write_stdin","parameters":{"additionalProperties":false,"properties":{"session_id":{"type":"number"}},"required":["session_id"],"type":"object"},"type":"function"},{"format":{"definition":"start: /.+/","syntax":"lark","type":"grammar"},"name":"apply_patch","type":"custom"}]}
+[dialog-log] appended exchange to /home/box/.formal-ai/dialog-logs/dialog_58ff0015c7a2ad1d.jsonl
+
+thread 'issue_859_codex::codex_creates_compiles_and_runs_hello_world_with_precise_narration' (26743) panicked at tests/integration/issue_859_codex.rs:33:5:
+assertion `left == right` failed: {"created_at":1785618803,"evidence_links":[],"id":"resp_58ff0015c7a2ad1d","model":"formal-ai","object":"response","output":[{"content":[{"text":"Let me run a compile this program for you.","type":"output_text"}],"id":"msg_b27c34023d262081","role":"assistant","type":"message"},{"arguments":"{\"args\":{},\"executor_session_id\":\"\",\"idempotency_key\":\"\",\"tool_name\":\"\"}","call_id":"call_4a1d0375278ece6f","id":"fc_4a1d0375278ece6f","name":"_execute_d_7437ad2e4ffa","namespace":"mcp__codex_apps__codex_document_control","status":"completed","type":"function_call"}],"status":"completed","usage":{"input_tokens":40,"output_tokens":178,"total_tokens":218}}
+  left: String("_execute_d_7437ad2e4ffa")
+ right: "exec_command"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test issue_859_codex::codex_creates_compiles_and_runs_hello_world_with_precise_narration ... FAILED
+
+failures:
+
+failures:
+    issue_859_codex::codex_creates_compiles_and_runs_hello_world_with_precise_narration
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 299 filtered out; finished in 2.99s
+
+error: test failed, to rerun pass `--test integration`

@@ -1,0 +1,17 @@
+Q1093742
+  aliases
+    ru ("лимон (плод)" "цитрон")
+    zh ("檸檬果")
+  descriptions
+    en "fruit (for Citrus ×limon use Q500)"
+    hi "एक प्रकार का फल"
+    ru "плод лимонного дерева"
+    zh "檸檬果，即檸檬樹的果實（有關該植物植株請至Q500）"
+  id Q1093742
+  labels
+    en lemon
+    hi "नींबू"
+    ru "лимон"
+    zh "檸檬"
+  type item
+success 1

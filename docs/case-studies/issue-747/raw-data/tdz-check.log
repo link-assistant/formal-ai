@@ -1,0 +1,1 @@
+check-web-tdz: OK — scanned 243 component(s) in src/web/app.js, no hook dependency references a useCallback/useMemo const declared later.

@@ -180,7 +180,7 @@ fn recognises_the_catalog_task_without_colliding_with_the_sibling_recipes() {
     assert!(!formal_ai::agentic_coding::is_self_heal_task(
         QUESTION_CATALOG_TASK
     ));
-    assert!(!formal_ai::agentic_coding::is_source_graph_task(
+    assert!(!formal_ai::agentic_coding::is_source_links_task(
         QUESTION_CATALOG_TASK
     ));
     assert!(!formal_ai::agentic_coding::is_change_request_task(

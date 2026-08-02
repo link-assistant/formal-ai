@@ -2,15 +2,13 @@
 //! elaboration, ill-formed input, and shell-refusal policy. Extracted from
 //! `solver_handlers/mod.rs` to keep individual files under 1000 lines.
 
-use crate::concepts::extract_concept_query;
 use crate::engine::{normalize_prompt, SymbolicAnswer};
 use crate::event_log::EventLog;
-use crate::fuzzy::typo_distance;
 use crate::language::detect as detect_language;
 use crate::proof_engine::{
     attempt_proof_with_config, render_outcome_with_config, ProofOutcome, ProofRenderConfig,
 };
-use crate::seed::{self, response_for, Slot, WordForm};
+use crate::seed::{self, localized_response, Slot, WordForm};
 use crate::solver_handlers::finalize_simple;
 
 /// The literal lead-in (text before the `…` slot) of every prefix-slot form of
@@ -22,18 +20,6 @@ fn prefix_literals(role: &str) -> Vec<&'static str> {
         .into_iter()
         .filter(|form| form.slot() == Slot::Prefix)
         .map(WordForm::before_slot)
-        .collect()
-}
-
-/// The literal tail (text after the `…` slot) of every suffix-slot form of a
-/// role, in lexicon declaration order. Used for languages whose question marker
-/// trails the topic (Hindi `… कौन है`, Chinese `…是谁`).
-fn suffix_literals(role: &str) -> Vec<&'static str> {
-    seed::lexicon()
-        .role_word_forms(role)
-        .into_iter()
-        .filter(|form| form.slot() == Slot::Suffix)
-        .map(WordForm::after_slot)
         .collect()
 }
 
@@ -58,15 +44,13 @@ pub fn try_clarification(
         return None;
     }
     let language = detect_language(prompt);
-    let body = response_for("clarification", language.slug())
-        .or_else(|| response_for("clarification", "en"))
-        .unwrap_or_else(|| {
-            String::from(
-                "I'm sorry for the confusion. I am formal-ai, a deterministic symbolic AI. \
+    let body = localized_response("clarification", language.slug()).unwrap_or_else(|| {
+        String::from(
+            "I'm sorry for the confusion. I am formal-ai, a deterministic symbolic AI. \
                  I can answer greetings, identity questions, concept lookups (\"what is X?\"), \
                  arithmetic, and Hello World programs.",
-            )
-        });
+        )
+    });
     Some(finalize_simple(
         prompt,
         log,
@@ -196,8 +180,7 @@ fn prior_history_mentions_web_search(log: &EventLog) -> bool {
 }
 
 fn localized_seed_response(intent: &str, language: &str) -> String {
-    response_for(intent, language)
-        .or_else(|| response_for(intent, "en"))
+    localized_response(intent, language)
         .unwrap_or_else(|| format!("Missing localized response seed: {intent}/{language}"))
 }
 
@@ -504,106 +487,4 @@ fn pipeline_footer(language: &str) -> String {
              proof plan → verification in relative-meta-logic → deformalize → finalize.",
         ),
     }
-}
-
-/// Detects "who is X" / "who was X" prompts (and multilingual equivalents)
-/// that were not claimed by the concept-lookup handler because the entity is
-/// not in the knowledge base.  Returns a deterministic response that
-/// (a) acknowledges the question form, (b) reports the knowledge-base miss,
-/// and (c) offers a typo correction when the queried term is close to a known
-/// concept term.
-pub fn try_who_is_question(
-    prompt: &str,
-    normalized: &str,
-    log: &mut EventLog,
-) -> Option<SymbolicAnswer> {
-    // "who is …" detection reasons over the `who_question` meaning: a
-    // language whose marker leads the name occupies the `who_question_lead`
-    // prefix slot (English `who is …`, Russian `кто такой …`), while one whose
-    // marker trails it occupies the `who_question_tail` suffix slot (Hindi
-    // `… कौन है`, Chinese `…是谁`). No question word is baked into this file.
-    let is_who_question = prefix_literals(seed::ROLE_WHO_QUESTION_LEAD)
-        .iter()
-        .any(|&lead| normalized.starts_with(lead))
-        || suffix_literals(seed::ROLE_WHO_QUESTION_TAIL)
-            .iter()
-            .any(|&tail| normalized.ends_with(tail));
-    if !is_who_question {
-        return None;
-    }
-    let query = extract_concept_query(prompt)?;
-    let term = &query.term;
-    log.append("concept_lookup:miss", term.clone());
-    let body = suggest_correction(term).map_or_else(
-        || {
-            format!(
-                "I don't have a Links Notation fact for \"{term}\" yet. \
-                 Add a fact or rule in Links Notation and run the request again."
-            )
-        },
-        |corrected| {
-            format!(
-                "I don't have a Links Notation fact for \"{term}\" yet. \
-                 Did you mean \"{corrected}\"? \
-                 Add a fact or rule in Links Notation and run the request again."
-            )
-        },
-    );
-    Some(finalize_simple(
-        prompt,
-        log,
-        "who_is_question",
-        "response:who_is_question",
-        &body,
-        0.5,
-    ))
-}
-
-/// Return a suggested correction for `term` when one token in `term` is
-/// within edit-distance 1 of a known variant.  Returns `None` when no close
-/// match is found.
-fn suggest_correction(term: &str) -> Option<String> {
-    let candidates: &[(&str, &[&str])] = &[
-        ("Elon Musk", &["elon musk", "elon mask", "elon muск"]),
-        (
-            "Donald Trump",
-            &["donald trump", "donald tramp", "donald tromp"],
-        ),
-        ("Joe Biden", &["joe biden", "joe bidan", "joe bidon"]),
-        (
-            "Barack Obama",
-            &["barack obama", "barak obama", "barrack obama"],
-        ),
-        (
-            "Vladimir Putin",
-            &["vladimir putin", "vladimir puting", "vladmir putin"],
-        ),
-        (
-            "Albert Einstein",
-            &["albert einstein", "albert einstien", "albert enstien"],
-        ),
-        (
-            "Isaac Newton",
-            &["isaac newton", "isaak newton", "issac newton"],
-        ),
-        (
-            "Nikola Tesla",
-            &["nikola tesla", "nicolas tesla", "nikolai tesla"],
-        ),
-    ];
-    let lower = term.to_lowercase();
-    for (canonical, variants) in candidates {
-        if variants.iter().any(|v| *v == lower) {
-            return Some((*canonical).to_owned());
-        }
-    }
-    for (canonical, variants) in candidates {
-        let canonical_lower = canonical.to_lowercase();
-        let is_close = variants.iter().any(|v| typo_distance(&lower, v) == 1)
-            || typo_distance(&lower, &canonical_lower) == 1;
-        if is_close {
-            return Some((*canonical).to_owned());
-        }
-    }
-    None
 }

@@ -1,0 +1,83 @@
+{
+  "entities": {
+    "Q32489": {
+      "type": "item",
+      "id": "Q32489",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "knife"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "нож"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "चाकू"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "小刀"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "tool with a cutting edge or blade"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "колющий, рубящий или режущий инструмент"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "बहु उपयोगी A."
+        },
+        "zh": {
+          "language": "zh",
+          "value": "工具、武器"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "knives"
+          },
+          {
+            "language": "en",
+            "value": "knife blade"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "ножик"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "चक्कू"
+          },
+          {
+            "language": "hi",
+            "value": "छुरी"
+          },
+          {
+            "language": "hi",
+            "value": "छुरा"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "刀劍"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

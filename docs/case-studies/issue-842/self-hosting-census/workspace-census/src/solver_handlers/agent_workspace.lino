@@ -1,0 +1,12 @@
+self_ast_census
+  target src/solver_handlers/agent_workspace.rs
+  language rust
+  fidelity signature
+  byte_len 4401
+  line_count 128
+  content_id source_module_60aa34e36fc834be
+  symbol_count 3
+  symbols
+    function try_agent_workspace_task 11 76
+    function render_agent_run 78 114
+    function action_summary 116 128

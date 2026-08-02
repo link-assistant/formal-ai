@@ -1,0 +1,63 @@
+{
+  "entities": {
+    "Q10987": {
+      "type": "item",
+      "id": "Q10987",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "honey"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "мёд"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मधु"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "蜂蜜"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "sweet food made by bees mostly using nectar from flowers"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "пищевой продукт; частично переваренный в зобе медоносной пчелы нектар"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मधुमक्खियों द्वारा बनाया गया एक स्वास्थ्यवर्धक आहार"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "蜜蜂采花蜜所制成的带甜味食物"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Mel"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "мед"
+          },
+          {
+            "language": "ru",
+            "value": "пчелиный мёд"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

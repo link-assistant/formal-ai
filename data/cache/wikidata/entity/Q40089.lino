@@ -1,0 +1,16 @@
+Q40089
+  aliases
+    en (bricks)
+    zh ("砖" "板砖" "砖头" "磚塊" "甓")
+  descriptions
+    en "block or a single unit of a ceramic material used in masonry construction"
+    ru "прямоугольный брусок из обожжённой или реже необожжённой глины с различными добавками, который используется для строительных работ"
+    zh "建筑材料"
+  id Q40089
+  labels
+    en brick
+    hi "ईंट"
+    ru "кирпич"
+    zh "磚"
+  type item
+success 1

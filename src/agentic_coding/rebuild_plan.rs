@@ -11,9 +11,9 @@
 //! rebuild and reattach the improved worker to the UI, and the deterministic planner
 //! walks a write → verify → final recipe that emits the ordered, reversible
 //! rebuild-and-reattach pipeline as Links Notation, exactly like the change-request,
-//! source-graph, explain, and repair-strategy recipes emit their documents.
+//! source-links, explain, and repair-strategy recipes emit their documents.
 //!
-//! Like [`super::source_graph`], [`super::explain`], and [`super::change_request`], the
+//! Like [`super::source_links`], [`super::explain`], and [`super::change_request`], the
 //! emitted document depends on the whole source tree (the reattached artifacts'
 //! content ids change with every edit), so it is asserted *live* in the issue-#558 tests
 //! and never pinned byte-for-byte in a committed `data/meta/*.lino`. The reattached
@@ -46,7 +46,7 @@ fn cached_rebuild_plan() -> &'static RebuildPlan {
 /// A *differently worded* request for the rebuild-and-reattach recipe.
 ///
 /// The router recognises the intent from the words, not a hardcoded string.
-/// Deliberately avoids the source-graph keyword "recompile" (and its "entire"/"whole"/
+/// Deliberately avoids the source-links keyword "recompile" (and its "entire"/"whole"/
 /// "all" fallback), the change-request "capability"/"feature"/"support" fallback, the
 /// self-healing "heal"/"learn a" fallback, and the ledger/explain/repair-strategy
 /// keywords, so the recipes never collide: this recipe keys on *reattaching* the rebuilt
@@ -60,7 +60,7 @@ pub const REBUILD_TASK: &str =
 /// Keywords that mark a user turn as the rebuild-and-reattach recipe.
 ///
 /// Deliberately narrow: every keyword pins the "reattach the rebuilt worker to the UI"
-/// intent, and none overlaps the other recipes' keywords (in particular the source-graph
+/// intent, and none overlaps the other recipes' keywords (in particular the source-links
 /// recipe owns "recompile", which is absent here — this recipe keys on "reattach").
 const REBUILD_KEYWORDS: [&str; 6] = [
     "reattach",

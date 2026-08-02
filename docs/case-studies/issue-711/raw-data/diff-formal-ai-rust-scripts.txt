@@ -1,0 +1,38 @@
+Only in scripts: audit-total-closure.py
+Only in scripts: build-views.py
+Only in /tmp/issue-711-templates/rust/scripts: check-cargo-lock.rs
+Only in scripts: check-crate-package-size.rs
+Only in /tmp/issue-711-templates/rust/scripts: check-crate-size.rs
+Files scripts/check-file-size.rs and /tmp/issue-711-templates/rust/scripts/check-file-size.rs differ
+Files scripts/check-release-needed.rs and /tmp/issue-711-templates/rust/scripts/check-release-needed.rs differ
+Only in scripts: clean-seed-readability.rs
+Only in scripts: close-total.py
+Files scripts/create-github-release.rs and /tmp/issue-711-templates/rust/scripts/create-github-release.rs differ
+Only in scripts: decode-github-issue-url.rs
+Only in scripts: desktop-release-resolve.sh
+Files scripts/detect-code-changes.rs and /tmp/issue-711-templates/rust/scripts/detect-code-changes.rs differ
+Only in scripts: download-datasets.rs
+Only in scripts: generate-role-registry.py
+Only in scripts: ground-lexemes.py
+Only in scripts: ground-meanings.rs
+Only in scripts: ground-wiktionary.py
+Only in scripts: ground-wordnet.py
+Only in scripts: install-rust-script.sh
+Only in scripts: install.ps1
+Only in scripts: install.sh
+Only in scripts: migrate-empty-facet-fields.rs
+Only in scripts: migrate-empty-redefinition-fields.rs
+Only in scripts: migrate-meaning-seed.rs
+Only in scripts: migrate-pipe-lists.rs
+Only in scripts: mine-hive-mind-dataset.rs
+Files scripts/publish-crate.rs and /tmp/issue-711-templates/rust/scripts/publish-crate.rs differ
+Only in /tmp/issue-711-templates/rust/scripts: release-naming.rs
+Only in scripts: reproduce-issue-538.sh
+Only in scripts: sample-nemotron-training-data.py
+Only in /tmp/issue-711-templates/rust/scripts: smoke-test-published-crate.rs
+Only in scripts: stamp-pages-artifact.sh
+Only in scripts: sync-seed.sh
+Only in scripts: verify-docker-runtime.sh
+Files scripts/version-and-commit.rs and /tmp/issue-711-templates/rust/scripts/version-and-commit.rs differ
+Only in scripts: wait-for-pages-deployment.sh
+Only in scripts: wikidata-json-to-lino.rs

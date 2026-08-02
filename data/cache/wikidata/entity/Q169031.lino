@@ -1,0 +1,16 @@
+Q169031
+  aliases
+    en (gloves)
+    ru ("перчатки")
+  descriptions
+    en "covering worn on the hand"
+    ru "вид одежды для кистей рук с отделениями для каждого пальца"
+    zh "人类服饰"
+  id Q169031
+  labels
+    en glove
+    hi "दस्ताने"
+    ru "перчатка"
+    zh "手套"
+  type item
+success 1

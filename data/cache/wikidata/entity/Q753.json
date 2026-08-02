@@ -1,0 +1,103 @@
+{
+  "entities": {
+    "Q753": {
+      "type": "item",
+      "id": "Q753",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "copper"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "медь"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "ताम्र"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "銅"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "chemical element with symbol Cu and atomic number 29"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "химический элемент с порядковым номером 29, металл"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "एक धातु"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "原子序數為29的化學元素"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Cu"
+          },
+          {
+            "language": "en",
+            "value": "element 29"
+          },
+          {
+            "language": "en",
+            "value": "29Cu"
+          },
+          {
+            "language": "en",
+            "value": "Tatum-T"
+          },
+          {
+            "language": "en",
+            "value": "Paragard T 380A"
+          },
+          {
+            "language": "en",
+            "value": "CU-7"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Cu"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "Cu"
+          },
+          {
+            "language": "hi",
+            "value": "तांबा"
+          },
+          {
+            "language": "hi",
+            "value": "कॉपर"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "Cu"
+          },
+          {
+            "language": "zh",
+            "value": "铜"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

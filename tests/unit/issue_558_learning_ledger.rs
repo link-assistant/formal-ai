@@ -232,12 +232,12 @@ fn recognises_the_ledger_task_without_colliding_with_the_sibling_recipes() {
         formal_ai::agentic_coding::self_heal::SELF_HEAL_TASK
     ));
     assert!(!is_ledger_task(
-        formal_ai::agentic_coding::source_graph::SOURCE_GRAPH_TASK
+        formal_ai::agentic_coding::source_links::SOURCE_LINKS_TASK
     ));
     // The ledger task itself must not trip the sibling routers.
     assert!(!formal_ai::agentic_coding::is_self_heal_task(LEDGER_TASK));
     assert!(!formal_ai::agentic_coding::is_self_ast_task(LEDGER_TASK));
-    assert!(!formal_ai::agentic_coding::is_source_graph_task(
+    assert!(!formal_ai::agentic_coding::is_source_links_task(
         LEDGER_TASK
     ));
 }

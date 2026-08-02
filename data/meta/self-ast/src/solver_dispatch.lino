@@ -1,0 +1,23 @@
+self_ast_census
+  target src/solver_dispatch.rs
+  language rust
+  fidelity signature
+  byte_len 18120
+  line_count 398
+  content_id source_module_a145c3258ee24bf7
+  symbol_count 14
+  symbols
+    type SpecializedHandler 45 45
+    function handle_arithmetic 47 53
+    function handle_javascript_execution 55 61
+    function handle_concept_lookup 63 69
+    function response_language_followup_noop 71 77
+    struct ContextualRuntime 80 87
+    function new 91 101
+    enum ContextualOutcome 105 113
+    const CONTEXTUAL_HANDLER_NAMES 131 143
+    const PRELUDE_METHOD_NAMES 151 157
+    function try_contextual_override 159 225
+    const HANDLER_FUNCTIONS 240 342
+    function specialized_handlers 353 389
+    function handler_for_method 394 398

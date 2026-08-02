@@ -21,8 +21,7 @@ use crate::engine_assistant_name::{
     russian_assistant_name_answer, ASSISTANT_NAME_EXAMPLES,
 };
 pub(crate) use crate::engine_responses::{
-    assistant_free_time_answer, chinese_unknown_answer, farewell_answer, greeting_answer,
-    hindi_unknown_answer, identity_answer, russian_unknown_answer, unknown_answer,
+    assistant_free_time_answer, farewell_answer, greeting_answer, identity_answer, unknown_answer,
     unknown_language_fallback_answer,
 };
 use crate::engine_responses::{
@@ -37,7 +36,7 @@ use crate::engine_responses::{
 };
 use crate::event_log::EventLog;
 use crate::language::Language;
-use crate::links_format::{format_lino_record, sanitize_lino_value};
+use crate::links_format::{flatten_lino_value, format_lino_record};
 use crate::seed;
 
 pub const DEFAULT_MODEL: &str = "formal-ai";
@@ -259,7 +258,7 @@ fn format_doublet_reduction_record() -> String {
 
 #[must_use]
 pub fn estimate_tokens(text: &str) -> u32 {
-    u32::try_from(text.split_whitespace().count()).unwrap_or(u32::MAX)
+    u32::try_from(text.chars().count()).unwrap_or(u32::MAX)
 }
 
 /// A single node in the network-visualization graph.
@@ -690,7 +689,7 @@ pub(crate) fn answer_links_notation(
             format!(
                 "step_{index} {} {}",
                 event.kind,
-                sanitize_lino_value(&event.payload)
+                flatten_lino_value(&event.payload)
             )
         })
         .collect::<Vec<_>>()
@@ -702,10 +701,10 @@ pub(crate) fn answer_links_notation(
             format!(
                 "step_{} {} {} {} {}",
                 step.order,
-                sanitize_lino_value(&step.step),
-                sanitize_lino_value(&step.level),
-                sanitize_lino_value(&step.source_event),
-                sanitize_lino_value(&step.detail)
+                flatten_lino_value(&step.step),
+                flatten_lino_value(&step.level),
+                flatten_lino_value(&step.source_event),
+                flatten_lino_value(&step.detail)
             )
         })
         .collect::<Vec<_>>()
@@ -862,7 +861,7 @@ fn execution_report(execution: &ProgramExecution, output: &str, language: Langua
     )
 }
 
-const fn execution_status_phrase(status: ExecutionStatus, language: Language) -> &'static str {
+fn execution_status_phrase(status: ExecutionStatus, language: Language) -> &'static str {
     match (status, language) {
         (ExecutionStatus::Verified, Language::Russian) => "скомпилировано и запущено",
         (ExecutionStatus::Verified, Language::Hindi) => "संकलित और चलाया गया",
@@ -874,7 +873,7 @@ const fn execution_status_phrase(status: ExecutionStatus, language: Language) ->
     }
 }
 
-const fn execution_output_label(verified: bool, language: Language) -> &'static str {
+fn execution_output_label(verified: bool, language: Language) -> &'static str {
     match (verified, language) {
         (true, Language::Russian) => "Вывод",
         (false, Language::Russian) => "Ожидаемый вывод после проверки",

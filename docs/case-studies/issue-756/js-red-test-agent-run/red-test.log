@@ -1,0 +1,41 @@
+TAP version 13
+# node:internal/modules/cjs/loader:1207
+#   const err = new Error(message);
+#               ^
+# Error: Cannot find module '../lib/shared-memory.cjs'
+# Require stack:
+# - /tmp/gh-issue-solver-1784407862278/desktop/scripts/issue-756.test.mjs
+#     at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+#     at Module._load (node:internal/modules/cjs/loader:1038:27)
+#     at Module.require (node:internal/modules/cjs/loader:1289:19)
+#     at require (node:internal/modules/helpers:182:18)
+#     at file:///tmp/gh-issue-solver-1784407862278/desktop/scripts/issue-756.test.mjs:6:37
+#     at ModuleJob.run (node:internal/modules/esm/module_job:325:25)
+#     at async ModuleLoader.import (node:internal/modules/esm/loader:606:24)
+#     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {
+#   code: 'MODULE_NOT_FOUND',
+#   requireStack: [
+#     '/tmp/gh-issue-solver-1784407862278/desktop/scripts/issue-756.test.mjs'
+#   ]
+# }
+# Node.js v20.20.2
+# Subtest: /tmp/gh-issue-solver-1784407862278/desktop/scripts/issue-756.test.mjs
+not ok 1 - /tmp/gh-issue-solver-1784407862278/desktop/scripts/issue-756.test.mjs
+  ---
+  duration_ms: 306.102393
+  location: '/tmp/gh-issue-solver-1784407862278/desktop/scripts/issue-756.test.mjs:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 331.321645

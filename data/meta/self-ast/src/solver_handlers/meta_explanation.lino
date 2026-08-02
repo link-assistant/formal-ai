@@ -1,0 +1,24 @@
+self_ast_census
+  target src/solver_handlers/meta_explanation.rs
+  language rust
+  fidelity signature
+  byte_len 14590
+  line_count 324
+  content_id source_module_7f6ea9e5c001495e
+  symbol_count 15
+  symbols
+    function try_meta_explanation 12 18
+    function try_meta_explanation_with_runtime 20 74
+    struct DraftComparison 76 82
+    function draft_comparison_from_history 84 103
+    function artifact_field 105 111
+    function draft_comparison_explanation 113 126
+    function why_explanation_body 128 149
+    function compiled_procedure_from_history 155 161
+    function cited_procedure_steps 164 171
+    function is_why_question 184 213
+    function is_how_you_work 224 238
+    function is_architecture_question 249 253
+    function meta_language 255 267
+    function meta_has_char_in_range 269 271
+    function architecture_explanation_body 273 324

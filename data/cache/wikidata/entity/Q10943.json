@@ -1,0 +1,81 @@
+{
+  "entities": {
+    "Q10943": {
+      "type": "item",
+      "id": "Q10943",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "cheese"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "сыр"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "चीज़"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "奶酪"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "yellow or white, creamy or solid food made from the pressed curds of milk"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "пищевой продукт, получаемый из молока"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "दुग्ध आधारित खाद्य उत्पाद"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "半凝固或凝固的乳制品"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "cheeses"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "पनीर"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "乳酪"
+          },
+          {
+            "language": "zh",
+            "value": "芝士"
+          },
+          {
+            "language": "zh",
+            "value": "起司"
+          },
+          {
+            "language": "zh",
+            "value": "起士"
+          },
+          {
+            "language": "zh",
+            "value": "乾酪"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

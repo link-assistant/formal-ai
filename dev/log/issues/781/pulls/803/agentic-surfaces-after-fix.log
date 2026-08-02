@@ -1,0 +1,21 @@
+   Compiling formal-ai v0.300.0 (/tmp/gh-issue-solver-1784506151226)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 29.44s
+     Running tests/unit/mod.rs (target/debug/deps/unit-83490c651f7fe834)
+
+running 13 tests
+test agentic_surfaces::anthropic_messages_refuses_tools_without_agent_mode ... ok
+test agentic_surfaces::anthropic_extended_thinking_streams_thinking_then_signature_delta ... ok
+test agentic_surfaces::responses_emits_function_call_in_agent_mode ... ok
+test agentic_surfaces::anthropic_extended_thinking_leads_with_concrete_thinking_block ... ok
+test agentic_surfaces::responses_refuses_tools_without_agent_mode ... ok
+test agentic_surfaces::anthropic_messages_emits_tool_use_block_in_agent_mode ... ok
+test agentic_surfaces::anthropic_tool_result_block_advances_the_loop ... ok
+test agentic_surfaces::anthropic_tool_use_streams_as_input_json_delta ... ok
+test agentic_surfaces::responses_function_call_output_advances_the_loop ... ok
+test agentic_surfaces::responses_shell_call_uses_cmd_when_the_advertised_schema_requires_cmd ... ok
+test agentic_surfaces::responses_returns_final_message_once_recipe_is_exhausted ... ok
+test agentic_surfaces::responses_shell_call_keeps_command_when_the_advertised_schema_uses_command ... ok
+test agentic_surfaces::responses_non_agentic_task_with_tools_falls_through_to_symbolic ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 1896 filtered out; finished in 1.50s
+

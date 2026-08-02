@@ -3,7 +3,7 @@
 //! Issue #558 ("Auto learning") asks that a user be able to *"ask how Formal AI
 //! itself works"* and receive an answer *"grounded in its source and data"* rather
 //! than in prose docs alone (`R558-08`). The other issue-#558 modules already turn
-//! the system's own internals into auditable data: [`crate::self_source_graph`]
+//! the system's own internals into auditable data: [`crate::self_source_links`]
 //! content-addresses every owned source file, [`crate::self_healing`] captures a
 //! failure as a `RepairCase`, and [`crate::learning_ledger`] records an approved
 //! lesson. This module composes those into a single *explanation* that answers "how
@@ -11,14 +11,14 @@
 //!
 //! The grounding is enforced, not decorative: every [`CitationKind::Source`]
 //! citation resolves its `content_id` from the compile-time owned manifest
-//! ([`crate::self_source_graph::owned_manifest`]) and *panics* if the cited path is
+//! ([`crate::self_source_links::owned_manifest`]) and *panics* if the cited path is
 //! not an owned source file. It is therefore impossible to construct a
 //! [`SystemExplanation`] that cites a source file the repository does not actually
 //! ship — a fabricated citation fails to build the value. Data and test citations
 //! are path references into the repository (`data/meta/*.lino`, `tests/**`) whose
 //! on-disk existence is checked by the issue-#558 tests.
 //!
-//! Like [`crate::self_source_graph`], the rendered explanation depends on the whole
+//! Like [`crate::self_source_links`], the rendered explanation depends on the whole
 //! source tree (its per-source `content_id`s and the manifest id change with every
 //! edit), so it is a *workspace-only* artifact: never pinned byte-for-byte in a
 //! committed `data/meta/*.lino`, only asserted live in tests. Neural inference stays
@@ -28,7 +28,7 @@
 use std::fmt::Write as _;
 
 use crate::engine::stable_id;
-use crate::self_source_graph::{owned_file_count, owned_manifest, owned_manifest_content_id};
+use crate::self_source_links::{owned_file_count, owned_manifest, owned_manifest_content_id};
 
 /// Which layer of the repository a [`Citation`] points at.
 ///
@@ -179,9 +179,9 @@ impl SystemExplanation {
                  source to links and back byte-for-byte, so the system's own code is present in its \
                  data as links.",
                 vec![
-                    Citation::source("src/self_source_graph.rs"),
+                    Citation::source("src/self_source_links.rs"),
                     Citation::source("src/agentic_coding/self_ast.rs"),
-                    Citation::test("tests/unit/issue_558_source_graph.rs"),
+                    Citation::test("tests/unit/issue_558_source_links.rs"),
                 ],
             ),
             ExplanationSection::new(

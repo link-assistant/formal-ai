@@ -1,0 +1,61 @@
+{
+  "entities": {
+    "Q9430": {
+      "type": "item",
+      "id": "Q9430",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "ocean"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "океан"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "महासागर"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "海洋"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "very large body of saline water"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "крупнейший водный объект, составляющий часть Мирового океана"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "नमकीन पानी का बड़ा शरीर"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "地球上巨大的鹽水體"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "sea"
+          },
+          {
+            "language": "en",
+            "value": "oceans"
+          },
+          {
+            "language": "en",
+            "value": "oceanic"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

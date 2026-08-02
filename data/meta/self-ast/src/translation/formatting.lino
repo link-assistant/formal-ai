@@ -1,0 +1,12 @@
+self_ast_census
+  target src/translation/formatting.rs
+  language rust
+  fidelity signature
+  byte_len 2996
+  line_count 78
+  content_id source_module_cf7c401e1071c942
+  symbol_count 3
+  symbols
+    const TERMINAL_PUNCTUATION 13 13
+    function match_source_formatting 22 62
+    function splice_first_letter 64 78

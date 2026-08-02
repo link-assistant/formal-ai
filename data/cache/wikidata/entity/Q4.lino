@@ -1,0 +1,19 @@
+Q4
+  aliases
+    en ("bereft of life" perish oblivion mortis fallen "meeting the Reaper" deaths succumbs "final rest" dies fatal "passes away" cessation deceased morbidity "has died" "has succumbed" "has passed away" "has kicked the bucket" "went to the afterlife" mortem "passing away" exit decease)
+    hi ("मौत" "मरण")
+    ru ("умер" "гибель" "умереть" "уход из жизни" "кончина" "уйти из жизни" "ушёл из жизни" "ушла из жизни" "умерла" "скончался" "скончалась" "скончаться" "помер" "померла" "помереть" "преставление")
+    zh ("死" "逝世" "过世" "离世" "往生" "辞世" "卒" "殁" "逝" "亡" "崩" "驾崩" "薨" "与世长辞" "身亡" "亡故" "遇难" "仙逝" "大行" "龙驭上宾" "宾天" "毙命" "毙" "作古" "别世" "归西" "殉" "长辞" "驾鹤西去" "撒手尘寰" "一命呜呼")
+  descriptions
+    en "permanent cessation of vital functions"
+    hi "जीव के जीवन की स्थायी समाप्ति"
+    ru "полное прекращение жизнедеятельности организма"
+    zh "生物停止生命活動"
+  id Q4
+  labels
+    en death
+    hi "मृत्यु"
+    ru "смерть"
+    zh "死亡"
+  type item
+success 1

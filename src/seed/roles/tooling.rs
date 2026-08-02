@@ -91,6 +91,121 @@ pub const ROLE_LOCAL_SHELL_REQUEST_CUE: &str = "local_shell_request_cue";
 /// self-description. Carried by `tool_argument_marker`; read by the Rust
 /// natural-language-tool handler.
 pub const ROLE_TOOL_ARGUMENT_MARKER: &str = "tool_argument_marker";
+/// Semantic role: plain-text payloads that report a failed tool operation.
+///
+/// Some client-owned tools return a successful transport envelope whose text
+/// is only a provider denial, quota response, or other failure notice. These
+/// multilingual forms live in `data/seed/meanings-tool-access.lino`; result
+/// consumers query the role after normalizing the payload so failed operations
+/// cannot be mistaken for grounded evidence.
+pub const ROLE_TOOL_RESULT_FAILURE_SIGNAL: &str = "tool_result_failure_signal";
+/// Semantic role: a natural-language request to create a repository issue.
+///
+/// Surface templates live in `data/seed/meanings-agent-actions.lino`; the
+/// agentic action router matches their open slot structurally, so adding a
+/// language or phrasing is a data edit shared by every runtime.
+pub const ROLE_AGENT_ACTION_REPORT_VERB: &str = "agent_action_report_verb";
+/// Semantic role: the issue/bug/repository object of a report action.
+pub const ROLE_AGENT_ACTION_REPORT_SUBJECT: &str = "agent_action_report_subject";
+/// Semantic role: an action asking to read an explicitly named local file.
+///
+/// Multilingual surfaces live in `data/seed/meanings-file-write.lino` alongside
+/// the other general file-operation roles. The file-read router combines this
+/// language signal with a local-path object, keeping broad verbs such as
+/// "display" and "load" object-typed instead of treating them as web actions.
+pub const ROLE_FILE_READ_ACTION_CUE: &str = "file_read_action_cue";
+/// Semantic role: a verb that commands the in-place modification of an existing
+/// file (issue #680).
+///
+/// A file-edit action word ("change", "replace", "edit", "modify",
+/// "substitute", plus translations), carried by `file_edit_action` in
+/// `data/seed/meanings-file-edit.lino`. Read as whole tokens through
+/// [`crate::seed::Lexicon::role_word_forms`] by the deterministic edit-intent
+/// recogniser ([`crate::agentic_coding::general_planner::compose_edit_request`]):
+/// it evidences a file-*edit* intent (distinct from a create-file write)
+/// independently of any pinned phrasing, so a request in any supported language
+/// routes to the advertised edit tool instead of a prose description. The
+/// create-file verbs ("create", "write", …) are deliberately absent so a write
+/// is never misrouted as an edit.
+pub const ROLE_FILE_EDIT_ACTION_CUE: &str = "file_edit_action_cue";
+/// Semantic role: a word that introduces the replacement (new) text of a file
+/// edit (issue #680).
+///
+/// A directional lead such as "to" ("change X to Y"), "with" ("replace X with
+/// Y"), "into", or "by" (plus translations), carried by `file_edit_new_lead` in
+/// `data/seed/meanings-file-edit.lino`. The edit-intent recogniser reads these
+/// through [`crate::seed::Lexicon::role_word_forms`]: the span between the
+/// action cue and the first new-lead after it is the *old* text, and the span
+/// after the new-lead is the *new* text, so "replace foo with bar" recovers
+/// `foo` → `bar` from the wording alone.
+pub const ROLE_FILE_EDIT_NEW_LEAD_CUE: &str = "file_edit_new_lead_cue";
+/// Semantic role: a word that introduces or names the file an edit applies to
+/// (issue #680).
+///
+/// A positional or naming introducer ("in", "within", "inside", "of", "file",
+/// plus translations), carried by `file_edit_target` in
+/// `data/seed/meanings-file-edit.lino`. The edit-intent recogniser accepts a
+/// file-looking token as the edit target only when it directly follows one of
+/// these cues, so an incidental dotted token is not treated as a path. The
+/// create-file destination "to" is deliberately absent here so "add hello to
+/// config.txt" stays a *write*, not an edit.
+pub const ROLE_FILE_EDIT_TARGET_CUE: &str = "file_edit_target_cue";
+/// Semantic role: a verb that commands the creation or modification of a file
+/// (issue #680).
+///
+/// A write action word ("create", "write", "save", "make", "generate",
+/// "append", plus translations), carried by `file_write_action` in
+/// `data/seed/meanings-file-write.lino`. Read as whole tokens through
+/// [`crate::seed::Lexicon::role_word_forms`] by the deterministic general change
+/// planner ([`crate::agentic_coding::general_planner`]): it evidences a
+/// file-write *intent* independently of any pinned phrasing, so a request in any
+/// supported language routes to the advertised write tool instead of a prose
+/// description.
+pub const ROLE_FILE_WRITE_ACTION_CUE: &str = "file_write_action_cue";
+/// Semantic role: a marker phrase that introduces the literal content of a file
+/// to be written (issue #680).
+///
+/// A multi-word lead such as "containing", "with content", "with the following",
+/// or "that says" (plus translations), carried as [`crate::seed::Slot::Prefix`]
+/// forms by `file_write_content` in `data/seed/meanings-file-write.lino`. The
+/// general change planner reads the literal before the slot through
+/// [`crate::seed::Lexicon::role_word_forms`] and takes the text after it as the
+/// payload. The bare words "content", "text", and "with" are deliberately absent
+/// so a *read* request ("show me the contents of …") is never mistaken for a
+/// write.
+pub const ROLE_FILE_WRITE_CONTENT_LEAD: &str = "file_write_content_lead";
+/// Semantic role: a reference to bytes produced by an explicitly requested
+/// command rather than literal prose to write.
+///
+/// Forms such as "stdout" and "command output" (plus translations) are carried
+/// by `file_write_command_output` in
+/// `data/seed/meanings-file-write.lino`. The general change planner combines
+/// this role with a seed-defined run verb, a quoted command, and a safe target
+/// path. That structural frame lowers "run COMMAND and write its output to
+/// FILE" to a shell redirect instead of writing the words "its output".
+pub const ROLE_FILE_WRITE_COMMAND_OUTPUT_REFERENCE: &str = "file_write_command_output_reference";
+/// Semantic role: a word that introduces or names the target file of a write
+/// (issue #680).
+///
+/// A naming or positional introducer ("file", "called", "named", "at", "as",
+/// "in", "inside", plus translations), carried by `file_write_target` in
+/// `data/seed/meanings-file-write.lino`. The general change planner accepts a
+/// file-looking token as the write target only when it directly follows one of
+/// these cues (or a [`ROLE_FILE_WRITE_DESTINATION_CUE`]), so an incidental dotted
+/// token is not treated as a path.
+pub const ROLE_FILE_WRITE_TARGET_CUE: &str = "file_write_target_cue";
+/// Semantic role: a directional word that routes written content into a file
+/// (issue #680).
+///
+/// A destination preposition ("to", "into", "onto", plus translations), carried
+/// by `file_write_destination` in `data/seed/meanings-file-write.lino`. The
+/// general change planner reads these through
+/// [`crate::seed::Lexicon::role_word_forms`] to recognise the
+/// "write CONTENT to FILE" shape, where the content precedes the file: only a
+/// destination cue (not a positional [`ROLE_FILE_WRITE_TARGET_CUE`]) licenses
+/// taking the span before the file as the payload, which keeps
+/// "make sense of the file X" out of the write path.
+pub const ROLE_FILE_WRITE_DESTINATION_CUE: &str = "file_write_destination_cue";
 /// Semantic role: a surface alias naming a runtime feature capability.
 ///
 /// Carried by the sixteen `feature_capability_*` meanings (for `web_search`,
@@ -151,6 +266,17 @@ pub const ROLE_GITHUB_REPOSITORY_TRAFFIC_QUESTION: &str = "github_repository_tra
 /// for self-description. Read by the Rust feature-capability handler and its JS
 /// worker mirror.
 pub const ROLE_FEATURE_ACTION_ARITHMETIC: &str = "feature_action_arithmetic";
+
+/// A follow-up asks for the complete retained tool result rather than its summary.
+pub const ROLE_TOOL_RESULT_DETAIL_REQUEST: &str = "tool_result_detail_request";
+/// A follow-up asks for a URL retained in a prior tool result.
+pub const ROLE_TOOL_RESULT_URL_REQUEST: &str = "tool_result_url_request";
+/// A follow-up asks for a numbered line retained in a prior tool result.
+pub const ROLE_TOOL_RESULT_LINE_REQUEST: &str = "tool_result_line_request";
+/// A follow-up refers to the first retained item.
+pub const ROLE_TOOL_RESULT_FIRST_REFERENCE: &str = "tool_result_first_reference";
+/// A follow-up refers to the second retained item.
+pub const ROLE_TOOL_RESULT_SECOND_REFERENCE: &str = "tool_result_second_reference";
 /// Semantic role: an action frame asking the assistant to perform a planning task.
 ///
 /// Carried by the `feature_action_planning` meaning. When a capability question
@@ -245,6 +371,30 @@ pub const ROLE_RESEARCH_CRITERION: &str = "research_criterion";
 /// additionally requires at most twelve whitespace words. Read only by the Rust
 /// summarization classifier (there is no JS worker mirror of that pipeline).
 pub const ROLE_SUMMARY_CLASSIFICATION_CUE: &str = "summary_classification_cue";
+/// Semantic role: a word that carries no content in a statement signature.
+///
+/// Articles, prepositions, copulas and coordinators — the words that differ
+/// between two phrasings of the same fact. Carried by `statement_function_word`
+/// in `data/seed/meanings-statement-merge.lino`, with surfaces for en/ru/hi/zh.
+/// The statement-level deduplicator of issue #844 reads them through
+/// [`crate::seed::Lexicon::words_for_role`] and drops matching *whole tokens*
+/// (never substrings, so "a" cannot hollow out "parser") before hashing a
+/// statement into its merge signature. Quantifiers are deliberately absent from
+/// the data: dropping "all"/"some" would merge "all tests pass" with "some tests
+/// pass". Read only by the Rust summarization deduplicator.
+pub const ROLE_STATEMENT_FUNCTION_WORD: &str = "statement_function_word";
+/// Semantic role: a word that flips the polarity of a statement.
+///
+/// Syntactic negation only ("not", "never", "without", "не", "नहीं", "不", …),
+/// carried by `statement_negation_cue` in
+/// `data/seed/meanings-statement-merge.lino`. The deduplicator removes matching
+/// whole tokens from a statement's terms and records the removal as
+/// `Polarity::Denied`, so "the parser is fast" and "the parser is not fast"
+/// reach the *same* signature with opposite signs and are reported as a
+/// contradiction rather than merged. Semantic near-misses ("fails", "false")
+/// stay out of the data: those belong to a statement's content, not its sign.
+/// Read only by the Rust summarization deduplicator.
+pub const ROLE_STATEMENT_NEGATION_CUE: &str = "statement_negation_cue";
 /// Semantic role: a surface that names one coding-catalog target language.
 ///
 /// Carried by the ten `program_language_<slug>` leaf meanings (rust, python,

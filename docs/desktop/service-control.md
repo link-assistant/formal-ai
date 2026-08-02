@@ -120,12 +120,16 @@ The desktop app and the docs deliberately use the same arguments, so plain
 # Telegram bot
 docker run -d --name formal-ai-telegram --restart unless-stopped --privileged \
   -e TELEGRAM_BOT_TOKEN=123:abc \
+  -e FORMAL_AI_MEMORY_PATH=/root/.formal-ai/memory.lino \
+  -v "$HOME/.formal-ai:/root/.formal-ai" \
   -v formal-ai-telegram-docker:/var/lib/docker \
   ghcr.io/link-assistant/formal-ai:latest
 
 # OpenAI-compatible server on 127.0.0.1:8080
 docker run -d --name formal-ai-server --restart unless-stopped --privileged \
   -p 127.0.0.1:8080:8080 \
+  -e FORMAL_AI_MEMORY_PATH=/root/.formal-ai/memory.lino \
+  -v "$HOME/.formal-ai:/root/.formal-ai" \
   -v formal-ai-server-docker:/var/lib/docker \
   ghcr.io/link-assistant/formal-ai:latest \
   formal-ai serve --host 0.0.0.0 --port 8080
@@ -134,6 +138,8 @@ docker run -d --name formal-ai-server --restart unless-stopped --privileged \
 docker pull ghcr.io/link-assistant/formal-ai:latest
 docker rm -f formal-ai-agent 2>/dev/null || true
 docker run -d --name formal-ai-agent --restart unless-stopped --privileged \
+  -e FORMAL_AI_MEMORY_PATH=/root/.formal-ai/memory.lino \
+  -v "$HOME/.formal-ai:/root/.formal-ai" \
   -v formal-ai-agent-docker:/var/lib/docker \
   ghcr.io/link-assistant/formal-ai:latest \
   sleep infinity
@@ -150,6 +156,7 @@ docker exec formal-ai-agent sh -lc \
 | `TELEGRAM_BOT_TOKEN` | — (required) | Telegram bot | bot token from [@BotFather](https://core.telegram.org/bots#botfather) |
 | `FORMAL_AI_DOCKER_IMAGE` | `ghcr.io/link-assistant/formal-ai:latest` | all containers | override the image (local build or Docker Hub mirror) |
 | `FORMAL_AI_SERVER_PORT` | `8080` | server | published loopback port for the OpenAI API |
+| `FORMAL_AI_MEMORY_PATH` | `/root/.formal-ai/memory.lino` in containers | all containers | shared persistent Links-Notation memory file |
 | `FORMAL_AI_TELEGRAM_ALLOWED_UPDATES` | `message,edited_message` | Telegram bot | Telegram update types to poll |
 
 The server binds `0.0.0.0` *inside* the container but is published only to
@@ -171,6 +178,10 @@ point coding CLIs (`codex`, `claude`, `opencode`, `agent`) at it.
 - **Per-service volume.** Two DinD daemons cannot share one `/var/lib/docker`, so
   the bot, server, and Agent environment each get their own named volume and can
   run together.
+- **One host memory directory.** All three services bind the host's
+  `~/.formal-ai` to `/root/.formal-ai`. This is intentionally shared: Telegram,
+  API, Agent CLI, desktop, VS Code, and host CLI all read and append the same
+  `memory.lino`. Set `FORMAL_AI_MEMORY_PATH` for a non-default host file.
 - **Loopback-only server.** Publishing on `127.0.0.1` keeps the unauthenticated
   local API off the network by default.
 - **No host agent subscriptions.** The desktop provider is guarded against direct

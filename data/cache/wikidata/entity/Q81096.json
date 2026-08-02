@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "Q81096": {
+      "type": "item",
+      "id": "Q81096",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "engineer"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "инженер"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "अभियन्ता"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "工程师"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "professional practitioner of engineering"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "специалист, осуществляющий инженерную деятельность"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "инженерка"
+          },
+          {
+            "language": "ru",
+            "value": "женщина-инженер"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "अभियंता"
+          },
+          {
+            "language": "hi",
+            "value": "इंजीनियर"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "工程師"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

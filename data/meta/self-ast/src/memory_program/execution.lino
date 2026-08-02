@@ -1,0 +1,39 @@
+self_ast_census
+  target src/memory_program/execution.rs
+  language rust
+  fidelity signature
+  byte_len 21959
+  line_count 673
+  content_id source_module_dc92b150c60bce1d
+  symbol_count 30
+  symbols
+    enum MemoryProgramAuthorization 15 19
+    enum MemoryProgramHalt 23 30
+    struct MemoryProgramOutcome 34 41
+    function links_notation 45 89
+    function push_trace_token 92 98
+    struct InterpreterState 100 106
+    function execute_memory_program 110 221
+    function denied_permission 223 239
+    function outcome 241 257
+    function execute_step 259 285
+    function active_indices 287 304
+    function matched_indices 306 311
+    function event_matches 313 327
+    function filter_selection 329 346
+    function create_events 348 429
+    function append_derived_event 431 454
+    function update_events 456 511
+    function append_retractions 513 542
+    function remember_matches 544 548
+    function source_id 550 556
+    function event_text 558 565
+    function event_field 567 574
+    function label_marker 576 578
+    function event_contains_marker 580 591
+    function contains_case_insensitive 593 595
+    function replace_case_insensitive 597 612
+    function replace_ascii_case_insensitive 614 630
+    function duplicate_contents 632 643
+    function is_in_current_utc_week 645 656
+    function parse_iso_date 658 673

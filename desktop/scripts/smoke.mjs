@@ -57,6 +57,8 @@ requireIncludes("main.cjs", read("main.cjs"), [
   "formalAiDesktop:installUpdate",
   "formalAiDesktop:updateStatus",
   "createAutoUpdateController",
+  "createDreamingScheduler",
+  "dreamingScheduler.start",
   "autoUpdater",
   "formal-ai",
   // R3/R4: the local server is opt-in (in-process is the default).
@@ -65,8 +67,11 @@ requireIncludes("main.cjs", read("main.cjs"), [
   "formalAiDesktop:invokeTool",
   "formalAiDesktop:setToolGrants",
   "formalAiDesktop:runAgentProvider",
+  "formalAiDesktop:setEngine",
+  "formalAiDesktop:agentEvent",
   "createToolRouter",
   "createAgentProvider",
+  "createEngineManager",
   "dockerIsAvailable",
   // R5c (D1): local-database sync.
   "formalAiDesktop:syncMemory",
@@ -92,6 +97,8 @@ requireIncludes("preload.cjs", read("preload.cjs"), [
   "invokeTool",
   "setToolGrants",
   "runAgentProvider",
+  "setEngine",
+  "onAgentEvent",
   "syncMemory",
   "serviceStatus",
   "startService",
@@ -116,6 +123,19 @@ requireIncludes("lib/memory-sync.cjs", read("lib/memory-sync.cjs"), [
   "createMemorySync",
   "/v1/memory/since",
   "/v1/memory/import",
+]);
+requireIncludes("lib/engine-manager.cjs", read("lib/engine-manager.cjs"), [
+  "out-of-box",
+  "detectAvailableEngines",
+  "selectDefaultEngine",
+  "setActiveEngine",
+]);
+requireIncludes("lib/agent-provider.cjs", read("lib/agent-provider.cjs"), [
+  'import("agent-commander")',
+  "commanderControllerOptions",
+  'isolation: "none"',
+  "/api/openai/v1",
+  "/api/anthropic",
 ]);
 // Issue #438 (follow-up): the service-control module manages both prepared
 // containers (Telegram bot + OpenAI-compatible server) behind one runner.
@@ -154,6 +174,16 @@ requireIncludes("lib/local-server.cjs", read("lib/local-server.cjs"), [
   "/v1/graph",
   "agentProvider",
   "local-openai-compatible",
+]);
+// Issue #540: desktop dreaming is a plan-only, low-priority background task
+// that reuses the formal-ai CLI instead of blocking the renderer.
+requireIncludes("lib/dreaming.cjs", read("lib/dreaming.cjs"), [
+  "createDreamingScheduler",
+  "memoryDreamCandidates",
+  "memory",
+  "dream",
+  "nice",
+  "FORMAL_AI_DESKTOP_DREAMING",
 ]);
 // Issue #516: the desktop agent execution seam is default-in-process and can be
 // switched to the agent-commander provider without spawning host agent CLIs.

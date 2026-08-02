@@ -299,6 +299,7 @@ const ROLE_CLARIFICATION_REQUEST = "clarification_request";
 const ROLE_CAPABILITY_QUERY = "capability_query";
 const ROLE_CAPABILITY_QUERY_MORE = "capability_query_more";
 const ROLE_SELF_FACT_QUERY = "self_fact_query";
+const ROLE_FACT_CHECK_CURRENT_DIALOGUE_QUERY = "fact_check_current_dialogue_query";
 const ROLE_SELF_INTRODUCTION_REQUEST = "self_introduction_request";
 // Issue #386 known-facts inventory roles — mirror the ROLE_KNOWLEDGE_INVENTORY_*
 // / ROLE_KNOWLEDGE_POSSESSION consts in src/seed/roles.rs. Their surface words
@@ -322,6 +323,9 @@ const ROLE_CONVERSATION_SUMMARY_DIRECTIVE = "conversation_summary_directive";
 const ROLE_CONVERSATION_REFERENCE = "conversation_reference";
 const ROLE_CONVERSATION_SUMMARY_PHRASE = "conversation_summary_phrase";
 const ROLE_CONVERSATION_SUMMARY_COURTESY = "conversation_summary_courtesy";
+// Issue #858 returning-user recap role; its multilingual surfaces likewise
+// live in data/seed/meanings-intent.lino.
+const ROLE_CONVERSATION_RETURN_RECAP = "conversation_return_recap";
 // Issue #529 previous-message recall role — mirrors
 // ROLE_CONVERSATION_RECALL_PREVIOUS_MESSAGE in src/seed/roles/intent.rs. Its
 // bare surface phrases ("what was written in the previous message", "что было

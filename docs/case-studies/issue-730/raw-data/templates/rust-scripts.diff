@@ -1,0 +1,2676 @@
+Only in scripts: audit-total-closure.py
+Only in scripts: build-views.py
+Only in /tmp/formal-ai-issue-730-templates/rust-ai-driven-development-pipeline-template/scripts: check-cargo-lock.rs
+Only in scripts: check-crate-package-size.rs
+Only in /tmp/formal-ai-issue-730-templates/rust-ai-driven-development-pipeline-template/scripts: check-crate-size.rs
+diff -ru '--exclude=.git' scripts/check-file-size.rs /tmp/formal-ai-issue-730-templates/rust-ai-driven-development-pipeline-template/scripts/check-file-size.rs
+--- scripts/check-file-size.rs	2026-07-16 06:06:52.948600863 +0000
++++ /tmp/formal-ai-issue-730-templates/rust-ai-driven-development-pipeline-template/scripts/check-file-size.rs	2026-07-16 06:12:19.676344620 +0000
+@@ -12,97 +12,46 @@
+ use std::fs;
+ use std::path::Path;
+ #[cfg(not(test))]
+-use std::process::{exit, Command};
++use std::process::exit;
+ use walkdir::WalkDir;
+ 
+-const FILE_LIMITS: &[FileLimit] = &[
+-    FileLimit {
+-        extension: "rs",
+-        max_lines: 1_000,
+-        warn_lines: 900,
+-        label: "Rust",
+-    },
+-    FileLimit {
+-        extension: "lino",
+-        max_lines: 1_500,
+-        warn_lines: 1_400,
+-        label: "Links Notation",
+-    },
+-];
+-const WORKER_JS_LIMIT: FileLimit = FileLimit {
+-    extension: "js",
+-    max_lines: 1_500,
+-    warn_lines: 1_400,
+-    label: "Worker JavaScript",
+-};
++const MAX_LINES: usize = 1000;
++const WARN_LINES: usize = 900;
++const FILE_EXTENSIONS: &[&str] = &[".rs"];
+ const EXCLUDE_PATTERNS: &[&str] = &["target", ".git", "node_modules"];
+-const EXCLUDE_PATH_FRAGMENTS: &[&str] = &["data/cache/wikidata/"];
+-
+-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+-struct FileLimit {
+-    extension: &'static str,
+-    max_lines: usize,
+-    warn_lines: usize,
+-    label: &'static str,
+-}
+-
+-fn normalized_path(path: &Path) -> String {
+-    path.to_string_lossy()
+-        .replace(std::path::MAIN_SEPARATOR, "/")
+-}
+ 
+ fn should_exclude(path: &Path) -> bool {
+-    let path_str = normalized_path(path);
+-
++    let path_str = path.to_string_lossy();
+     EXCLUDE_PATTERNS
+         .iter()
+         .any(|pattern| path_str.contains(pattern))
+-        || EXCLUDE_PATH_FRAGMENTS
+-            .iter()
+-            .any(|fragment| path_str.contains(fragment))
+-}
+-
+-fn is_worker_js_path(path: &Path) -> bool {
+-    let path_str = normalized_path(path);
+-    let has_js_extension = path
+-        .extension()
+-        .and_then(|extension| extension.to_str())
+-        .is_some_and(|extension| extension.eq_ignore_ascii_case("js"));
+-    path_str.ends_with("src/web/formal_ai_worker.js")
+-        || (path_str.contains("/src/web/worker/") && has_js_extension)
+ }
+ 
+-fn file_limit(path: &Path) -> Option<&'static FileLimit> {
+-    if is_worker_js_path(path) {
+-        return Some(&WORKER_JS_LIMIT);
+-    }
+-
+-    let ext = path.extension().and_then(|ext| ext.to_str())?;
++fn has_valid_extension(path: &Path) -> bool {
++    let Some(ext) = path.extension().and_then(|ext| ext.to_str()) else {
++        return false;
++    };
+ 
+-    FILE_LIMITS.iter().find(|limit| limit.extension == ext)
++    FILE_EXTENSIONS
++        .iter()
++        .any(|valid_ext| valid_ext.strip_prefix('.') == Some(ext))
+ }
+ 
+-#[derive(Debug, Clone, PartialEq, Eq)]
+-struct Finding {
+-    file: String,
+-    lines: usize,
+-    max_lines: usize,
+-    warn_lines: usize,
+-    label: &'static str,
++fn count_lines(path: &Path) -> Result<usize, std::io::Error> {
++    let content = fs::read_to_string(path)?;
++    Ok(content.lines().count())
+ }
+ 
+ #[derive(Debug, PartialEq, Eq)]
+-struct EmbeddedDataFinding {
++struct Finding {
+     file: String,
+-    line: usize,
+-    message: String,
++    lines: usize,
+ }
+ 
+ #[derive(Debug, PartialEq, Eq)]
+ struct CheckResult {
+     warnings: Vec<Finding>,
+     violations: Vec<Finding>,
+-    embedded_data_violations: Vec<EmbeddedDataFinding>,
+ }
+ 
+ #[derive(Debug, PartialEq, Eq)]
+@@ -112,10 +61,10 @@
+     Violation,
+ }
+ 
+-const fn classify_line_count(line_count: usize, limit: &FileLimit) -> LineStatus {
+-    if line_count > limit.max_lines {
++const fn classify_line_count(line_count: usize) -> LineStatus {
++    if line_count > MAX_LINES {
+         LineStatus::Violation
+-    } else if line_count > limit.warn_lines {
++    } else if line_count > WARN_LINES {
+         LineStatus::Warning
+     } else {
+         LineStatus::WithinLimit
+@@ -132,22 +81,10 @@
+     relative.replace(std::path::MAIN_SEPARATOR, "/")
+ }
+ 
+-fn is_embedded_lino_data_line(line: &str) -> bool {
+-    let trimmed = line.trim_start();
+-    let declares_lino = (trimmed.starts_with("const ")
+-        || trimmed.starts_with("let ")
+-        || trimmed.starts_with("var "))
+-        && trimmed.contains("_LINO")
+-        && trimmed.contains('=');
+-
+-    declares_lino && (trimmed.contains("= [") || trimmed.contains("= `"))
+-}
+-
+ fn check_directory(cwd: &Path) -> CheckResult {
+     let mut result = CheckResult {
+         warnings: Vec::new(),
+         violations: Vec::new(),
+-        embedded_data_violations: Vec::new(),
+     };
+ 
+     for entry in WalkDir::new(cwd)
+@@ -161,43 +98,21 @@
+             continue;
+         }
+ 
+-        let limit = file_limit(path);
+-        let check_worker_data = is_worker_js_path(path);
+-
+-        if limit.is_none() && !check_worker_data {
++        if !has_valid_extension(path) {
+             continue;
+         }
+ 
+-        match fs::read_to_string(path) {
+-            Ok(content) => {
+-                if let Some(limit) = limit {
+-                    let line_count = content.lines().count();
+-
+-                    let finding = Finding {
+-                        file: relative_path(path, cwd),
+-                        lines: line_count,
+-                        max_lines: limit.max_lines,
+-                        warn_lines: limit.warn_lines,
+-                        label: limit.label,
+-                    };
+-
+-                    match classify_line_count(line_count, limit) {
+-                        LineStatus::Violation => result.violations.push(finding),
+-                        LineStatus::Warning => result.warnings.push(finding),
+-                        LineStatus::WithinLimit => {}
+-                    }
+-                }
+-
+-                if check_worker_data {
+-                    for (index, line) in content.lines().enumerate() {
+-                        if is_embedded_lino_data_line(line) {
+-                            result.embedded_data_violations.push(EmbeddedDataFinding {
+-                                file: relative_path(path, cwd),
+-                                line: index + 1,
+-                                message: "Worker JavaScript must load Links Notation data from data/seed via seed_loader.js, not embed _LINO arrays or template literals.".to_string(),
+-                            });
+-                        }
+-                    }
++        match count_lines(path) {
++            Ok(line_count) => {
++                let finding = Finding {
++                    file: relative_path(path, cwd),
++                    lines: line_count,
++                };
++
++                match classify_line_count(line_count) {
++                    LineStatus::Violation => result.violations.push(finding),
++                    LineStatus::Warning => result.warnings.push(finding),
++                    LineStatus::WithinLimit => {}
+                 }
+             }
+             Err(error) => {
+@@ -227,8 +142,8 @@
+ 
+ fn warning_annotation(finding: &Finding) -> String {
+     let message = format!(
+-        "{} file has {} lines (approaching limit of {}). Consider extracting content to keep at or below {} lines and prevent review and merge conflicts.",
+-        finding.label, finding.lines, finding.max_lines, finding.warn_lines
++        "File has {} lines (approaching limit of {MAX_LINES}). Consider extracting code to keep at or below {WARN_LINES} lines and prevent concurrent PR merge limit violations.",
++        finding.lines
+     );
+ 
+     format!(
+@@ -238,45 +153,6 @@
+     )
+ }
+ 
+-fn warnings_for_changed_paths<'a>(
+-    warnings: &'a [Finding],
+-    changed_paths: &[String],
+-) -> Vec<&'a Finding> {
+-    warnings
+-        .iter()
+-        .filter(|finding| changed_paths.contains(&finding.file))
+-        .collect()
+-}
+-
+-#[cfg(not(test))]
+-fn changed_paths_since(base: &str) -> Option<Vec<String>> {
+-    if base.is_empty() || base.chars().all(|character| character == '0') {
+-        return None;
+-    }
+-
+-    let output = Command::new("git")
+-        .args([
+-            "diff",
+-            "--name-only",
+-            "--diff-filter=ACMR",
+-            base,
+-            "HEAD",
+-            "--",
+-        ])
+-        .output()
+-        .ok()?;
+-    if !output.status.success() {
+-        return None;
+-    }
+-
+-    Some(
+-        String::from_utf8_lossy(&output.stdout)
+-            .lines()
+-            .map(str::to_string)
+-            .collect(),
+-    )
+-}
+-
+ #[cfg(not(test))]
+ fn print_warnings(warnings: &[Finding]) {
+     if warnings.is_empty() {
+@@ -287,13 +163,15 @@
+         let annotation = warning_annotation(warning);
+         println!("{annotation}");
+         println!(
+-            "WARNING: {} has {} lines (approaching {} limit of {}, warning threshold: {})",
+-            warning.file, warning.lines, warning.label, warning.max_lines, warning.warn_lines
++            "WARNING: {} has {} lines (approaching limit of {MAX_LINES}, warning threshold: {WARN_LINES})",
++            warning.file, warning.lines
+         );
+     }
+ 
+     println!();
+-    println!("The following files are approaching their configured line limits:");
++    println!(
++        "The following files are approaching the {MAX_LINES} line limit (>{WARN_LINES} lines):"
++    );
+     for warning in warnings {
+         println!("  {}", warning.file);
+     }
+@@ -309,52 +187,29 @@
+     println!("Found files exceeding the line limit:\n");
+     for violation in violations {
+         println!(
+-            "  {}: {} lines (exceeds {} limit of {})",
+-            violation.file, violation.lines, violation.label, violation.max_lines
+-        );
+-    }
+-    println!("\nPlease refactor or split these files to stay under their limits\n");
+-}
+-
+-#[cfg(not(test))]
+-fn print_embedded_data_violations(violations: &[EmbeddedDataFinding]) {
+-    if violations.is_empty() {
+-        return;
+-    }
+-
+-    println!("Found embedded Links Notation data in worker JavaScript:\n");
+-    for violation in violations {
+-        println!(
+-            "  {}:{}: {}",
+-            violation.file, violation.line, violation.message
++            "  {}: {} lines (exceeds {MAX_LINES})",
++            violation.file, violation.lines
+         );
+     }
+-    println!("\nMove worker seed data to data/seed and load it through seed_loader.js\n");
++    println!("\nPlease refactor these files to be under {MAX_LINES} lines\n");
+ }
+ 
+ #[cfg(not(test))]
+ fn main() {
+     println!(
+-        "\nChecking configured file line limits for Rust, Links Notation, and worker JavaScript files...\n"
++        "\nChecking Rust files for maximum {MAX_LINES} lines (warning above {WARN_LINES})...\n"
+     );
+ 
+     let cwd = std::env::current_dir().expect("Failed to get current directory");
+     let result = check_directory(&cwd);
+-    let warning_base = std::env::var("FILE_SIZE_WARNING_BASE").unwrap_or_default();
+-    if let Some(changed_paths) = changed_paths_since(&warning_base) {
+-        let warnings = warnings_for_changed_paths(&result.warnings, &changed_paths);
+-        let warnings: Vec<Finding> = warnings.into_iter().cloned().collect();
+-        print_warnings(&warnings);
+-    } else {
+-        print_warnings(&result.warnings);
+-    }
+ 
+-    if result.violations.is_empty() && result.embedded_data_violations.is_empty() {
+-        println!("All checked files are within their line limits\n");
++    print_warnings(&result.warnings);
++
++    if result.violations.is_empty() {
++        println!("All files are within the line limit\n");
+         exit(0);
+     } else {
+         print_violations(&result.violations);
+-        print_embedded_data_violations(&result.embedded_data_violations);
+         exit(1);
+     }
+ }
+@@ -377,18 +232,6 @@
+     }
+ 
+     fn write_rust_file_with_lines(path: &Path, line_count: usize) {
+-        write_file_with_lines(path, line_count);
+-    }
+-
+-    fn write_lino_file_with_lines(path: &Path, line_count: usize) {
+-        write_file_with_lines(path, line_count);
+-    }
+-
+-    fn write_js_file_with_lines(path: &Path, line_count: usize) {
+-        write_file_with_lines(path, line_count);
+-    }
+-
+-    fn write_file_with_lines(path: &Path, line_count: usize) {
+         let mut content = String::new();
+         for line in 1..=line_count {
+             writeln!(&mut content, "// line {line}").unwrap();
+@@ -398,28 +241,14 @@
+ 
+     #[test]
+     fn classifies_warning_band_without_blocking() {
+-        let rust_limit = &FILE_LIMITS[0];
+-        assert_eq!(
+-            classify_line_count(rust_limit.warn_lines, rust_limit),
+-            LineStatus::WithinLimit
+-        );
+-        assert_eq!(
+-            classify_line_count(rust_limit.warn_lines + 1, rust_limit),
+-            LineStatus::Warning
+-        );
+-        assert_eq!(
+-            classify_line_count(rust_limit.max_lines, rust_limit),
+-            LineStatus::Warning
+-        );
++        assert_eq!(classify_line_count(WARN_LINES), LineStatus::WithinLimit);
++        assert_eq!(classify_line_count(WARN_LINES + 1), LineStatus::Warning);
++        assert_eq!(classify_line_count(MAX_LINES), LineStatus::Warning);
+     }
+ 
+     #[test]
+     fn classifies_hard_limit_violations() {
+-        let rust_limit = &FILE_LIMITS[0];
+-        assert_eq!(
+-            classify_line_count(rust_limit.max_lines + 1, rust_limit),
+-            LineStatus::Violation
+-        );
++        assert_eq!(classify_line_count(MAX_LINES + 1), LineStatus::Violation);
+     }
+ 
+     #[test]
+@@ -427,10 +256,9 @@
+         let repo = temp_dir("thresholds");
+         let src_dir = repo.join("src");
+         fs::create_dir_all(&src_dir).unwrap();
+-        let rust_limit = FILE_LIMITS[0];
+-        write_rust_file_with_lines(&src_dir.join("near_limit.rs"), rust_limit.warn_lines + 1);
+-        write_rust_file_with_lines(&src_dir.join("over_limit.rs"), rust_limit.max_lines + 1);
+-        write_rust_file_with_lines(&src_dir.join("small.rs"), rust_limit.warn_lines);
++        write_rust_file_with_lines(&src_dir.join("near_limit.rs"), WARN_LINES + 1);
++        write_rust_file_with_lines(&src_dir.join("over_limit.rs"), MAX_LINES + 1);
++        write_rust_file_with_lines(&src_dir.join("small.rs"), WARN_LINES);
+ 
+         let result = check_directory(&repo);
+ 
+@@ -438,160 +266,28 @@
+             result.warnings,
+             vec![Finding {
+                 file: "src/near_limit.rs".to_string(),
+-                lines: rust_limit.warn_lines + 1,
+-                max_lines: rust_limit.max_lines,
+-                warn_lines: rust_limit.warn_lines,
+-                label: rust_limit.label,
++                lines: WARN_LINES + 1,
+             }]
+         );
+         assert_eq!(
+             result.violations,
+             vec![Finding {
+                 file: "src/over_limit.rs".to_string(),
+-                lines: rust_limit.max_lines + 1,
+-                max_lines: rust_limit.max_lines,
+-                warn_lines: rust_limit.warn_lines,
+-                label: rust_limit.label,
+-            }]
+-        );
+-    }
+-
+-    #[test]
+-    fn warning_annotations_are_limited_to_changed_files() {
+-        let warnings = vec![
+-            Finding {
+-                file: "src/unchanged.rs".to_string(),
+-                lines: 910,
+-                max_lines: 1_000,
+-                warn_lines: 900,
+-                label: "Rust",
+-            },
+-            Finding {
+-                file: "src/changed.rs".to_string(),
+-                lines: 920,
+-                max_lines: 1_000,
+-                warn_lines: 900,
+-                label: "Rust",
+-            },
+-        ];
+-
+-        assert_eq!(
+-            warnings_for_changed_paths(&warnings, &["src/changed.rs".to_string()]),
+-            vec![&warnings[1]]
+-        );
+-    }
+-
+-    #[test]
+-    fn check_directory_enforces_lino_limit() {
+-        let repo = temp_dir("lino-thresholds");
+-        let data_dir = repo.join("data");
+-        fs::create_dir_all(&data_dir).unwrap();
+-        let lino_limit = FILE_LIMITS[1];
+-        write_lino_file_with_lines(&data_dir.join("oversized.lino"), lino_limit.max_lines + 1);
+-
+-        let result = check_directory(&repo);
+-
+-        assert_eq!(
+-            result.violations,
+-            vec![Finding {
+-                file: "data/oversized.lino".to_string(),
+-                lines: lino_limit.max_lines + 1,
+-                max_lines: lino_limit.max_lines,
+-                warn_lines: lino_limit.warn_lines,
+-                label: lino_limit.label,
+-            }]
+-        );
+-    }
+-
+-    #[test]
+-    fn check_directory_enforces_split_worker_js_limit() {
+-        let repo = temp_dir("worker-js-thresholds");
+-        let worker_dir = repo.join("src/web/worker");
+-        fs::create_dir_all(&worker_dir).unwrap();
+-        write_js_file_with_lines(
+-            &worker_dir.join("formal_ai_worker_00.js"),
+-            WORKER_JS_LIMIT.max_lines + 1,
+-        );
+-
+-        let result = check_directory(&repo);
+-
+-        assert_eq!(
+-            result.violations,
+-            vec![Finding {
+-                file: "src/web/worker/formal_ai_worker_00.js".to_string(),
+-                lines: WORKER_JS_LIMIT.max_lines + 1,
+-                max_lines: WORKER_JS_LIMIT.max_lines,
+-                warn_lines: WORKER_JS_LIMIT.warn_lines,
+-                label: WORKER_JS_LIMIT.label,
++                lines: MAX_LINES + 1,
+             }]
+         );
+     }
+ 
+     #[test]
+-    fn check_directory_does_not_apply_worker_limit_to_legacy_js() {
+-        let repo = temp_dir("legacy-js-thresholds");
+-        let app_dir = repo.join("src/web/app");
+-        fs::create_dir_all(&app_dir).unwrap();
+-        write_js_file_with_lines(&app_dir.join("main.js"), WORKER_JS_LIMIT.max_lines + 1);
+-
+-        let result = check_directory(&repo);
+-
+-        assert_eq!(result.violations, Vec::new());
+-        assert_eq!(result.warnings, Vec::new());
+-    }
+-
+-    #[test]
+-    fn check_directory_rejects_embedded_worker_lino_data() {
+-        let repo = temp_dir("embedded-worker-lino");
+-        let worker_dir = repo.join("src/web/worker");
+-        fs::create_dir_all(&worker_dir).unwrap();
+-        fs::write(
+-            worker_dir.join("formal_ai_worker_00.js"),
+-            "const MEANINGS_LINO = [\n  \"meaning fact\",\n].join(\"\\n\");\n",
+-        )
+-        .unwrap();
+-
+-        let result = check_directory(&repo);
+-
+-        assert_eq!(
+-            result.embedded_data_violations,
+-            vec![EmbeddedDataFinding {
+-                file: "src/web/worker/formal_ai_worker_00.js".to_string(),
+-                line: 1,
+-                message: "Worker JavaScript must load Links Notation data from data/seed via seed_loader.js, not embed _LINO arrays or template literals.".to_string(),
+-            }]
+-        );
+-    }
+-
+-    #[test]
+-    fn check_directory_skips_generated_wikidata_cache() {
+-        let repo = temp_dir("wikidata-cache");
+-        let cache_dir = repo.join("data/cache/wikidata");
+-        fs::create_dir_all(&cache_dir).unwrap();
+-        let lino_limit = FILE_LIMITS[1];
+-        write_lino_file_with_lines(&cache_dir.join("Q1860.lino"), lino_limit.max_lines + 1);
+-
+-        let result = check_directory(&repo);
+-
+-        assert_eq!(result.violations, Vec::new());
+-        assert_eq!(result.warnings, Vec::new());
+-        assert_eq!(result.embedded_data_violations, Vec::new());
+-    }
+-
+-    #[test]
+     fn warning_annotation_uses_github_actions_format() {
+-        let rust_limit = FILE_LIMITS[0];
+         let finding = Finding {
+             file: "src/near_limit.rs".to_string(),
+-            lines: rust_limit.warn_lines + 1,
+-            max_lines: rust_limit.max_lines,
+-            warn_lines: rust_limit.warn_lines,
+-            label: rust_limit.label,
++            lines: WARN_LINES + 1,
+         };
+ 
+         assert_eq!(
+             warning_annotation(&finding),
+-            "::warning file=src/near_limit.rs::Rust file has 901 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts."
++            "::warning file=src/near_limit.rs::File has 901 lines (approaching limit of 1000). Consider extracting code to keep at or below 900 lines and prevent concurrent PR merge limit violations."
+         );
+     }
+ }
+diff -ru '--exclude=.git' scripts/check-release-needed.rs /tmp/formal-ai-issue-730-templates/rust-ai-driven-development-pipeline-template/scripts/check-release-needed.rs
+--- scripts/check-release-needed.rs	2026-07-16 06:06:52.948600863 +0000
++++ /tmp/formal-ai-issue-730-templates/rust-ai-driven-development-pipeline-template/scripts/check-release-needed.rs	2026-07-16 06:12:19.676344620 +0000
+@@ -48,6 +48,8 @@
+ 
+ #[path = "rust-paths.rs"]
+ mod rust_paths;
++#[path = "release-naming.rs"]
++mod release_naming;
+ 
+ fn get_arg(name: &str) -> Option<String> {
+     let args: Vec<String> = env::args().collect();
+@@ -312,7 +314,8 @@
+ 
+     if !has_fragments {
+         let crate_published = check_version_on_crates_io(&crate_name, &current_version);
+-        let tag_prefix = get_arg("tag-prefix").unwrap_or_else(|| "v".to_string());
++        let tag_prefix = get_arg("tag-prefix")
++            .unwrap_or_else(|| release_naming::tag_prefix_for_rust_root(&rust_root).to_string());
+         let dockerhub_image = docker_hub_image_to_check();
+         let dockerhub_required = dockerhub_image.is_some();
+         let dockerhub_published = dockerhub_image
+Only in scripts: classify-agent-cli-stderr.sh
+Only in scripts: clean-seed-readability.rs
+Only in scripts: close-total.py
+diff -ru '--exclude=.git' scripts/create-github-release.rs /tmp/formal-ai-issue-730-templates/rust-ai-driven-development-pipeline-template/scripts/create-github-release.rs
+--- scripts/create-github-release.rs	2026-07-16 06:06:52.949600853 +0000
++++ /tmp/formal-ai-issue-730-templates/rust-ai-driven-development-pipeline-template/scripts/create-github-release.rs	2026-07-16 06:12:19.677344610 +0000
+@@ -1,10 +1,10 @@
+ #!/usr/bin/env rust-script
+ //! Create GitHub Release from CHANGELOG.md
+ //!
+-//! Automatically includes stable crates.io and docs.rs artifact badges in
+-//! release notes when the crate name can be detected from Cargo.toml.
++//! Automatically includes crates.io and docs.rs badges in release notes
++//! when the crate name can be detected from Cargo.toml.
+ //!
+-//! Usage: rust-script scripts/create-github-release.rs --release-version <version> --repository <repository> [--tag-prefix <prefix>] [--language <name>] [--release-label <label>] [--ghcr-url <url>] [--docker-hub-url <url>]
++//! Usage: rust-script scripts/create-github-release.rs --release-version <version> --repository <repository> [--tag-prefix <prefix>] [--language <name>] [--release-label <label>] [--docker-hub-url <url>]
+ //!
+ //! ```cargo
+ //! [dependencies]
+@@ -13,8 +13,8 @@
+ //! serde_json = "1"
+ //! ```
+ 
++#[cfg(not(test))]
+ use regex::Regex;
+-use serde::Deserialize;
+ #[cfg(not(test))]
+ use serde::Serialize;
+ #[cfg(not(test))]
+@@ -29,43 +29,37 @@
+ use std::process::{exit, Command, Stdio};
+ 
+ #[cfg(not(test))]
+-const USAGE: &str = "Usage: rust-script scripts/create-github-release.rs --release-version <version> --repository <repository> [--tag-prefix <prefix>] [--language <name>] [--release-label <label>] [--ghcr-url <url>] [--docker-hub-url <url>]";
+-
++#[path = "release-naming.rs"]
++mod release_naming;
++#[cfg(test)]
++use super::release_naming;
+ #[cfg(not(test))]
+-fn get_rust_root() -> String {
+-    if let Some(root) = get_arg("rust-root") {
+-        return root;
+-    }
++#[path = "rust-paths.rs"]
++mod rust_paths;
+ 
+-    if Path::new("./Cargo.toml").exists() {
+-        return ".".to_string();
+-    }
++#[cfg(not(test))]
++const USAGE: &str = "Usage: rust-script scripts/create-github-release.rs --release-version <version> --repository <repository> [--tag-prefix <prefix>] [--language <name>] [--release-label <label>] [--docker-hub-url <url>]";
+ 
+-    if Path::new("./rust/Cargo.toml").exists() {
+-        return "rust".to_string();
+-    }
++const GITHUB_RELEASE_BODY_MAX_CHARS: usize = 125_000;
+ 
+-    ".".to_string()
+-}
++use release_naming::{
++    build_crates_io_badge, build_docs_rs_badge, build_release_name, build_release_tag,
++};
++#[cfg(not(test))]
++use release_naming::{
++    is_multi_language_rust_root, normalize_release_version, tag_prefix_for_rust_root,
++};
+ 
+ #[cfg(not(test))]
+-fn get_cargo_toml_path(rust_root: &str) -> String {
++fn get_changelog_path(rust_root: &str) -> String {
+     if rust_root == "." {
+-        "./Cargo.toml".to_string()
++        "./CHANGELOG.md".to_string()
+     } else {
+-        format!("{rust_root}/Cargo.toml")
++        format!("{rust_root}/CHANGELOG.md")
+     }
+ }
+ 
+ #[cfg(not(test))]
+-fn get_crate_name_from_toml(cargo_toml_path: &str) -> Option<String> {
+-    let content = fs::read_to_string(cargo_toml_path).ok()?;
+-    let re = Regex::new(r#"(?m)^name\s*=\s*"([^"]+)""#).ok()?;
+-    re.captures(&content)
+-        .map(|captures| captures.get(1).unwrap().as_str().to_string())
+-}
+-
+-#[cfg(not(test))]
+ fn get_arg(name: &str) -> Option<String> {
+     let args: Vec<String> = env::args().collect();
+     let flag = format!("--{name}");
+@@ -78,58 +72,6 @@
+     env::var(&env_name).ok().filter(|value| !value.is_empty())
+ }
+ 
+-fn normalize_release_version(release_version: &str) -> String {
+-    let trimmed = release_version.trim();
+-    let semver_re =
+-        Regex::new(r"(?i)(?:^|[-_])v?(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?)$")
+-            .expect("release version regex should compile");
+-
+-    semver_re.captures(trimmed).map_or_else(
+-        || {
+-            trimmed
+-                .strip_prefix('v')
+-                .or_else(|| trimmed.strip_prefix('V'))
+-                .unwrap_or(trimmed)
+-                .to_string()
+-        },
+-        |captures| {
+-            captures
+-                .get(1)
+-                .expect("release version regex should capture the semver")
+-                .as_str()
+-                .to_string()
+-        },
+-    )
+-}
+-
+-fn build_release_tag(tag_prefix: &str, release_version: &str) -> String {
+-    let normalized_semver = normalize_release_version(release_version);
+-    format!("{tag_prefix}{normalized_semver}")
+-}
+-
+-fn build_release_name(
+-    language: &str,
+-    release_version: &str,
+-    release_label: Option<&str>,
+-) -> String {
+-    let trimmed_language = language.trim();
+-    let language = if trimmed_language.is_empty() {
+-        "Rust"
+-    } else {
+-        trimmed_language
+-    };
+-    let normalized_semver = normalize_release_version(release_version);
+-    let name = format!("[{language}] {normalized_semver}");
+-
+-    match release_label
+-        .map(str::trim)
+-        .filter(|label| !label.is_empty())
+-    {
+-        Some(label) => format!("{name} ({label})"),
+-        None => name,
+-    }
+-}
+-
+ fn badge_escape(value: &str) -> String {
+     value
+         .replace('-', "--")
+@@ -163,181 +105,8 @@
+     )
+ }
+ 
+-fn ghcr_image_tag_from_url(url: &str, version: &str) -> String {
+-    let trimmed_url = url.trim_end_matches('/');
+-    if let Some(image) = trimmed_url.strip_prefix("https://ghcr.io/") {
+-        return format!("{image}:{version}");
+-    }
+-
+-    if let Some(path) = trimmed_url.strip_prefix("https://github.com/") {
+-        let parts = path.split('/').collect::<Vec<_>>();
+-        if let Some(idx) = parts
+-            .windows(2)
+-            .position(|window| window == ["pkgs", "container"])
+-        {
+-            if let (Some(owner), Some(package)) = (parts.first(), parts.get(idx + 2)) {
+-                return format!("ghcr.io/{owner}/{package}:{version}");
+-            }
+-        }
+-    }
+-
+-    format!("{trimmed_url}:{version}")
+-}
+-
+-fn ghcr_badge(url: &str, version: &str) -> String {
+-    let trimmed_url = url.trim_end_matches('/');
+-    let image_tag = ghcr_image_tag_from_url(trimmed_url, version);
+-    let tag_url = if trimmed_url.contains("/pkgs/container/") {
+-        format!("{}?tag={}", trimmed_url, docker_hub_tag_query(version))
+-    } else {
+-        trimmed_url.to_string()
+-    };
+-
+-    format!(
+-        "[![GHCR](https://img.shields.io/badge/ghcr-{}-24292F?logo=github)]({})",
+-        badge_escape(&image_tag),
+-        tag_url
+-    )
+-}
+-
+-fn crate_release_badges(crate_name: &str, version: &str) -> String {
+-    let escaped_version = badge_escape(version);
+-    format!(
+-        "[![Crates.io](https://img.shields.io/badge/crates.io-{escaped_version}-orange?logo=rust)](https://crates.io/crates/{crate_name}/{version}) [![Docs.rs](https://img.shields.io/badge/docs.rs-{escaped_version}-blue)](https://docs.rs/{crate_name}/{version})"
+-    )
+-}
+-
+-const GITHUB_RELEASE_BODY_MAX_BYTES: usize = 120_000;
+-
+-fn truncate_at_char_boundary(value: &str, max_bytes: usize) -> &str {
+-    if value.len() <= max_bytes {
+-        return value;
+-    }
+-
+-    let mut end = 0;
+-    for (idx, ch) in value.char_indices() {
+-        let next = idx + ch.len_utf8();
+-        if next > max_bytes {
+-            break;
+-        }
+-        end = next;
+-    }
+-    &value[..end]
+-}
+-
+-fn limit_release_body(body: String, full_changelog_url: &str) -> String {
+-    if body.len() <= GITHUB_RELEASE_BODY_MAX_BYTES {
+-        return body;
+-    }
+-
+-    let notice = format!(
+-        "\n\n---\n\nRelease notes were shortened to fit GitHub Releases API validation. See the full changelog: {full_changelog_url}\n"
+-    );
+-    if notice.len() >= GITHUB_RELEASE_BODY_MAX_BYTES {
+-        return truncate_at_char_boundary(&notice, GITHUB_RELEASE_BODY_MAX_BYTES).to_string();
+-    }
+-
+-    let max_body_bytes = GITHUB_RELEASE_BODY_MAX_BYTES - notice.len();
+-    let shortened = truncate_at_char_boundary(&body, max_body_bytes).trim_end();
+-    format!("{shortened}{notice}")
+-}
+-
+-#[derive(Debug, Deserialize)]
+-struct GitHubApiError {
+-    errors: Option<Vec<GitHubValidationError>>,
+-}
+-
+-#[derive(Debug, Deserialize)]
+-struct GitHubValidationError {
+-    resource: Option<String>,
+-    code: Option<String>,
+-    field: Option<String>,
+-}
+-
+-fn first_json_object(input: &str) -> Option<&str> {
+-    let start = input.find('{')?;
+-    let mut depth = 0usize;
+-    let mut in_string = false;
+-    let mut escaped = false;
+-
+-    for (idx, ch) in input[start..].char_indices() {
+-        if in_string {
+-            if escaped {
+-                escaped = false;
+-            } else if ch == '\\' {
+-                escaped = true;
+-            } else if ch == '"' {
+-                in_string = false;
+-            }
+-            continue;
+-        }
+-
+-        match ch {
+-            '"' => in_string = true,
+-            '{' => depth += 1,
+-            '}' => {
+-                depth = depth.saturating_sub(1);
+-                if depth == 0 {
+-                    return Some(&input[start..start + idx + ch.len_utf8()]);
+-                }
+-            }
+-            _ => {}
+-        }
+-    }
+-
+-    None
+-}
+-
+-fn validation_error_is_duplicate_release(error: &GitHubApiError) -> bool {
+-    error.errors.as_ref().is_some_and(|errors| {
+-        errors.iter().any(|entry| {
+-            entry
+-                .resource
+-                .as_deref()
+-                .is_some_and(|value| value.eq_ignore_ascii_case("Release"))
+-                && entry
+-                    .code
+-                    .as_deref()
+-                    .is_some_and(|value| value.eq_ignore_ascii_case("already_exists"))
+-                && entry
+-                    .field
+-                    .as_deref()
+-                    .is_some_and(|value| value.eq_ignore_ascii_case("tag_name"))
+-        })
+-    })
+-}
+-
+-fn line_reports_duplicate_release(line: &str) -> bool {
+-    let lowered = line.trim().to_ascii_lowercase();
+-    lowered == "already_exists"
+-        || lowered.contains("release already exists")
+-        || lowered.contains("github release already exists")
+-        || lowered.contains("release with this tag already exists")
+-        || lowered.contains("release with the same tag_name already exists")
+-}
+-
+-fn is_duplicate_release_error(output: &str) -> bool {
+-    if output.lines().any(line_reports_duplicate_release) {
+-        return true;
+-    }
+-
+-    let lowered = output.to_ascii_lowercase();
+-
+-    if let Some(json) = first_json_object(output) {
+-        if let Ok(error) = serde_json::from_str::<GitHubApiError>(json) {
+-            return validation_error_is_duplicate_release(&error);
+-        }
+-    }
+-
+-    lowered.contains("\"resource\":\"release\"")
+-        && lowered.contains("\"code\":\"already_exists\"")
+-        && lowered.contains("\"field\":\"tag_name\"")
+-}
+-
+ #[cfg(not(test))]
+-fn get_changelog_for_version(version: &str) -> String {
+-    let changelog_path = "CHANGELOG.md";
+-
++fn get_changelog_for_version(changelog_path: &str, version: &str) -> String {
+     if !Path::new(changelog_path).exists() {
+         return format!("Release v{version}");
+     }
+@@ -387,17 +156,106 @@
+ fn build_release_payload(
+     tag_prefix: &str,
+     release_version: &str,
++    crate_name: &str,
+     language: &str,
++    multi_language: bool,
+     release_label: Option<&str>,
+     body: String,
+ ) -> ReleasePayload {
+     ReleasePayload {
+         tag_name: build_release_tag(tag_prefix, release_version),
+-        name: build_release_name(language, release_version, release_label),
++        name: build_release_name(
++            crate_name,
++            language,
++            release_version,
++            multi_language,
++            release_label,
++        ),
+         body,
+     }
+ }
+ 
++fn build_crate_artifact_badges(crate_name: &str, release_version: &str) -> String {
++    format!(
++        "{} {}",
++        build_crates_io_badge(crate_name, release_version),
++        build_docs_rs_badge(crate_name, release_version)
++    )
++}
++
++fn is_existing_release_error(combined: &str) -> bool {
++    let Some(error) = parse_first_json_object(combined) else {
++        return false;
++    };
++    let Some(errors) = error.get("errors").and_then(serde_json::Value::as_array) else {
++        return false;
++    };
++
++    !errors.is_empty()
++        && errors.iter().all(|error| {
++            error.get("resource").and_then(serde_json::Value::as_str) == Some("Release")
++                && error.get("code").and_then(serde_json::Value::as_str) == Some("already_exists")
++                && error.get("field").and_then(serde_json::Value::as_str) == Some("tag_name")
++        })
++}
++
++fn parse_first_json_object(output: &str) -> Option<serde_json::Value> {
++    output.match_indices('{').find_map(|(start, _)| {
++        let mut values =
++            serde_json::Deserializer::from_str(&output[start..]).into_iter::<serde_json::Value>();
++        let value = values.next()?.ok()?;
++
++        matches!(value, serde_json::Value::Object(_)).then_some(value)
++    })
++}
++
++fn normalize_changelog_blob_path(changelog_path: &str) -> String {
++    changelog_path
++        .replace('\\', "/")
++        .trim_start_matches("./")
++        .trim_start_matches('/')
++        .to_string()
++}
++
++fn full_changelog_url(repository: &str, tag: &str, changelog_path: &str) -> String {
++    format!(
++        "https://github.com/{repository}/blob/{tag}/{}",
++        normalize_changelog_blob_path(changelog_path)
++    )
++}
++
++fn cap_release_notes(
++    release_notes: String,
++    repository: &str,
++    tag: &str,
++    changelog_path: &str,
++) -> String {
++    if release_notes.chars().count() <= GITHUB_RELEASE_BODY_MAX_CHARS {
++        return release_notes;
++    }
++
++    let footer = format!(
++        "\n\nRelease notes truncated. See the [full changelog]({}).",
++        full_changelog_url(repository, tag, changelog_path)
++    );
++    let marker = "\n\n...";
++    let reserved_chars = footer.chars().count() + marker.chars().count();
++
++    if reserved_chars >= GITHUB_RELEASE_BODY_MAX_CHARS {
++        return release_notes
++            .chars()
++            .take(GITHUB_RELEASE_BODY_MAX_CHARS)
++            .collect();
++    }
++
++    let keep_chars = GITHUB_RELEASE_BODY_MAX_CHARS - reserved_chars;
++    let mut truncated = release_notes.chars().take(keep_chars).collect::<String>();
++    let trimmed_len = truncated.trim_end().len();
++    truncated.truncate(trimmed_len);
++
++    format!("{truncated}{marker}{footer}")
++}
++
+ #[cfg(not(test))]
+ fn main() {
+     let version = match get_arg("release-version") {
+@@ -418,34 +276,51 @@
+         }
+     };
+ 
+-    let tag_prefix = get_arg("tag-prefix").unwrap_or_else(|| "v".to_string());
++    let rust_root = match rust_paths::get_rust_root(None, true) {
++        Ok(root) => root,
++        Err(e) => {
++            eprintln!("Error: {e}");
++            exit(1);
++        }
++    };
++    let cargo_toml = rust_paths::get_cargo_toml_path(&rust_root);
++    let package_manifest = match rust_paths::get_package_manifest_path(&cargo_toml) {
++        Ok(path) => path,
++        Err(e) => {
++            eprintln!("Error: {e}");
++            exit(1);
++        }
++    };
++    let package_info = match rust_paths::read_package_info(&package_manifest) {
++        Ok(info) => info,
++        Err(e) => {
++            eprintln!("Error: {e}");
++            exit(1);
++        }
++    };
++    let tag_prefix =
++        get_arg("tag-prefix").unwrap_or_else(|| tag_prefix_for_rust_root(&rust_root).to_string());
+     let language = get_arg("language").unwrap_or_else(|| "Rust".to_string());
+     let release_label = get_arg("release-label");
+     let crates_io_url = get_arg("crates-io-url");
+-    let ghcr_url = get_arg("ghcr-url");
+     let docker_hub_url = get_arg("docker-hub-url");
+     let normalized_version = normalize_release_version(&version);
++    let multi_language = is_multi_language_rust_root(&rust_root);
+ 
+-    let rust_root = get_rust_root();
+-    let cargo_toml = get_cargo_toml_path(&rust_root);
+-
+-    if let Some(ref crate_name) = get_crate_name_from_toml(&cargo_toml) {
+-        if crate_name == "example-sum-package-name" {
+-            println!(
+-                "Skipping GitHub release: package name is the template default 'example-sum-package-name'"
+-            );
+-            println!("Rename the package in Cargo.toml before creating releases");
+-            return;
+-        }
++    if package_info.name == "example-sum-package-name" {
++        println!(
++            "Skipping GitHub release: package name is the template default 'example-sum-package-name'"
++        );
++        println!("Rename the package in Cargo.toml before creating releases");
++        return;
+     }
+ 
+-    let mut release_notes = get_changelog_for_version(&normalized_version);
++    let changelog_path = get_changelog_path(&rust_root);
++    let mut release_notes = get_changelog_for_version(&changelog_path, &normalized_version);
+     let mut badges = Vec::new();
+-    if let Some(crate_name) = get_crate_name_from_toml(&cargo_toml) {
+-        badges.push(crate_release_badges(&crate_name, &normalized_version));
+-    }
+-    if let Some(url) = ghcr_url {
+-        badges.push(ghcr_badge(&url, &normalized_version));
++    if !package_info.name.trim().is_empty() {
++        let crate_name = &package_info.name;
++        badges.push(build_crate_artifact_badges(crate_name, &normalized_version));
+     }
+     if let Some(url) = docker_hub_url {
+         badges.push(docker_hub_badge(&url, &normalized_version));
+@@ -458,22 +333,15 @@
+         release_notes = format!("{url}\n\n{release_notes}");
+     }
+ 
+-    let tag = build_release_tag(&tag_prefix, &normalized_version);
+-    let full_changelog_url = format!("https://github.com/{repository}/blob/{tag}/CHANGELOG.md");
+-    let release_notes_bytes = release_notes.len();
+-    release_notes = limit_release_body(release_notes, &full_changelog_url);
+-    if release_notes.len() != release_notes_bytes {
+-        println!(
+-            "Shortened GitHub release notes from {} to {} bytes",
+-            release_notes_bytes,
+-            release_notes.len()
+-        );
+-    }
++    let release_tag = build_release_tag(&tag_prefix, &normalized_version);
++    release_notes = cap_release_notes(release_notes, &repository, &release_tag, &changelog_path);
+ 
+     let payload = build_release_payload(
+         &tag_prefix,
+         &normalized_version,
++        &package_info.name,
+         &language,
++        multi_language,
+         release_label.as_deref(),
+         release_notes,
+     );
+@@ -513,10 +381,15 @@
+         let stderr = String::from_utf8_lossy(&output.stderr);
+         let stdout = String::from_utf8_lossy(&output.stdout);
+         let combined = format!("{stderr}{stdout}");
+-        if is_duplicate_release_error(&combined) {
++        if is_existing_release_error(&combined) {
+             println!("Release {tag} already exists, skipping");
+         } else {
+-            eprintln!("Error creating release: {combined}");
++            let details = combined.trim();
++            if details.is_empty() {
++                eprintln!("Error creating release: gh api exited unsuccessfully");
++            } else {
++                eprintln!("Error creating release:\n{details}");
++            }
+             exit(1);
+         }
+     }
+@@ -527,50 +400,87 @@
+     use super::*;
+ 
+     #[test]
+-    fn release_title_uses_language_and_bare_semver() {
++    fn release_title_uses_layout_and_bare_semver() {
+         assert_eq!(
+-            build_release_name("Rust", "rust-v0.2.1", None),
++            build_release_name("web-search", "Rust", "rust_v0.2.1", true, None),
+             "[Rust] 0.2.1"
+         );
+         assert_eq!(
+-            build_release_name("JavaScript", "js_v1.2.3", None),
++            build_release_name("web-search-js", "JavaScript", "js_v1.2.3", true, None),
+             "[JavaScript] 1.2.3"
+         );
++        assert_eq!(
++            build_release_name("web-search", "Rust", "rust_v0.2.1", false, None),
++            "web-search 0.2.1"
++        );
+     }
+ 
+     #[test]
+     fn release_title_defaults_empty_language_to_rust() {
+-        assert_eq!(build_release_name(" ", "0.2.1", None), "[Rust] 0.2.1");
++        assert_eq!(
++            build_release_name("web-search", " ", "0.2.1", true, None),
++            "[Rust] 0.2.1"
++        );
+     }
+ 
+     #[test]
+     fn release_label_remains_optional_suffix() {
+         assert_eq!(
+-            build_release_name("Rust", "0.2.1", Some("stable")),
++            build_release_name("web-search", "Rust", "0.2.1", true, Some("stable")),
+             "[Rust] 0.2.1 (stable)"
+         );
+         assert_eq!(
+-            build_release_name("Rust", "0.2.1", Some(" ")),
++            build_release_name("web-search", "Rust", "0.2.1", true, Some(" ")),
+             "[Rust] 0.2.1"
+         );
++        assert_eq!(
++            build_release_name("web-search", "Rust", "0.2.1", false, Some("stable")),
++            "web-search 0.2.1 (stable)"
++        );
+     }
+ 
+     #[test]
+     fn release_tag_uses_prefix_with_normalized_semver() {
+         assert_eq!(build_release_tag("rust-v", "0.2.1"), "rust-v0.2.1");
+         assert_eq!(build_release_tag("rust_v", "rust-v0.2.1"), "rust_v0.2.1");
++        assert_eq!(build_release_tag("rust_v", "rust_v0.2.1"), "rust_v0.2.1");
+         assert_eq!(build_release_tag("v", "v0.2.1"), "v0.2.1");
+     }
+ 
+     #[test]
++    fn crates_io_badge_links_to_bare_version_page() {
++        let badge = build_crates_io_badge("web-search", "rust_v0.2.1");
++
++        assert!(badge.contains("https://crates.io/crates/web-search/0.2.1"));
++        assert!(!badge.contains("rust_v0.2.1"));
++    }
++
++    #[test]
++    fn release_note_artifact_badges_use_static_docs_rs_version_badge() {
++        let badges = build_crate_artifact_badges("web-search", "rust_v0.2.1");
++
++        assert!(badges.contains("https://img.shields.io/badge/docs.rs-0.2.1-blue"));
++        assert!(badges.contains("https://docs.rs/web-search/0.2.1"));
++        assert!(!badges.contains("https://docs.rs/web-search/badge.svg"));
++        assert!(!badges.contains("rust_v0.2.1"));
++    }
++
++    #[test]
+     fn release_payload_keeps_tag_prefix_out_of_release_name() {
+-        let payload =
+-            build_release_payload("rust-v", "0.2.1", "Rust", None, "release notes".to_string());
++        let payload = build_release_payload(
++            "rust_v",
++            "0.2.1",
++            "web-search",
++            "Rust",
++            true,
++            None,
++            "release notes".to_string(),
++        );
+ 
+         assert_eq!(
+             payload,
+             ReleasePayload {
+-                tag_name: "rust-v0.2.1".to_string(),
++                tag_name: "rust_v0.2.1".to_string(),
+                 name: "[Rust] 0.2.1".to_string(),
+                 body: "release notes".to_string(),
+             }
+@@ -594,93 +504,36 @@
+     }
+ 
+     #[test]
+-    fn ghcr_badge_links_to_exact_package_tag() {
+-        let badge = ghcr_badge(
+-            "https://github.com/link-assistant/formal-ai/pkgs/container/formal-ai",
+-            "1.2.3",
+-        );
+-
+-        assert!(badge.contains("ghcr-ghcr.io%2Flink--assistant%2Fformal--ai%3A1.2.3"));
+-        assert!(badge.contains(
+-            "https://github.com/link-assistant/formal-ai/pkgs/container/formal-ai?tag=1.2.3"
+-        ));
+-    }
+-
+-    #[test]
+-    fn crate_release_badges_use_static_artifact_links_not_live_status() {
+-        let badges = crate_release_badges("formal-ai", "1.2.3");
+-
+-        assert!(
+-            !badges.contains("img.shields.io/crates/v/"),
+-            "release notes should not use the live crates.io status badge endpoint because it can render invalid before the registry/index is fully consistent: {badges}"
+-        );
+-        assert!(
+-            !badges.contains("/badge.svg"),
+-            "release notes should not use the live docs.rs build status badge because a failed or pending docs build leaks into historical release notes: {badges}"
+-        );
+-        assert!(
+-            badges.contains("https://crates.io/crates/formal-ai/1.2.3"),
+-            "release notes should still link to the exact crates.io artifact version: {badges}"
+-        );
+-        assert!(
+-            badges.contains("https://docs.rs/formal-ai/1.2.3"),
+-            "release notes should still link to the exact docs.rs artifact version: {badges}"
+-        );
+-    }
+-
+-    #[test]
+-    fn release_body_under_limit_is_unchanged() {
+-        let body = "short release notes".to_string();
+-
+-        assert_eq!(
+-            limit_release_body(
+-                body.clone(),
+-                "https://github.com/owner/repo/blob/v1.2.3/CHANGELOG.md"
+-            ),
+-            body
+-        );
+-    }
+-
+-    #[test]
+-    fn oversized_release_body_is_shortened_with_full_changelog_link() {
+-        let mut body = "Release heading\n\n".to_string();
+-        body.push_str(&"a".repeat(GITHUB_RELEASE_BODY_MAX_BYTES + 50_000));
+-
+-        let shortened = limit_release_body(
+-            body,
+-            "https://github.com/owner/repo/blob/v1.2.3/CHANGELOG.md",
+-        );
++    fn duplicate_release_validation_is_idempotent() {
++        let output = r#"gh: Validation Failed (HTTP 422)
++{"message":"Validation Failed","errors":[{"resource":"Release","code":"already_exists","field":"tag_name"}]}"#;
+ 
+-        assert!(
+-            shortened.len() <= GITHUB_RELEASE_BODY_MAX_BYTES,
+-            "release body should fit under the configured API guard"
+-        );
+-        assert!(shortened.starts_with("Release heading"));
+-        assert!(shortened.contains("Release notes were shortened"));
+-        assert!(shortened.contains("https://github.com/owner/repo/blob/v1.2.3/CHANGELOG.md"));
++        assert!(is_existing_release_error(output));
+     }
+ 
+     #[test]
+-    fn duplicate_release_validation_is_idempotent() {
+-        let output = r#"{"message":"Validation Failed","errors":[{"resource":"Release","code":"already_exists","field":"tag_name"}],"documentation_url":"https://docs.github.com/rest/releases/releases#create-a-release","status":"422"}
+-gh: Validation Failed (HTTP 422)"#;
++    fn generic_validation_failure_is_not_existing_release() {
++        let output = r#"gh: Validation Failed (HTTP 422)
++{"message":"Validation Failed","errors":[{"resource":"Release","code":"custom","field":"body"}]}"#;
+ 
+-        assert!(is_duplicate_release_error(output));
++        assert!(!is_existing_release_error(output));
+     }
+ 
+     #[test]
+-    fn generic_validation_failure_is_not_duplicate_release() {
+-        let output = r#"{"message":"Validation Failed","errors":[{"resource":"Release","code":"custom","field":"body"}],"documentation_url":"https://docs.github.com/rest/releases/releases#create-a-release","status":"422"}
+-gh: Validation Failed (HTTP 422)"#;
++    fn mixed_validation_failure_is_not_existing_release() {
++        let output = r#"gh: Validation Failed (HTTP 422)
++{"message":"Validation Failed","errors":[{"resource":"Release","code":"already_exists","field":"tag_name"},{"resource":"Release","code":"custom","field":"body"}]}"#;
+ 
+-        assert!(!is_duplicate_release_error(output));
++        assert!(!is_existing_release_error(output));
+     }
+ 
+     #[test]
+-    fn validation_failure_that_mentions_release_notes_is_not_duplicate_release() {
+-        let output = r#"{"message":"Validation Failed","errors":[{"resource":"Release","code":"custom","field":"body"}]}
+-release notes already exists in generated changelog text"#;
++    fn oversized_release_notes_are_capped_with_full_changelog_link() {
++        let release_notes = "a".repeat(GITHUB_RELEASE_BODY_MAX_CHARS + 100);
++        let capped = cap_release_notes(release_notes, "owner/repo", "v1.2.3", "./CHANGELOG.md");
+ 
+-        assert!(!is_duplicate_release_error(output));
++        assert!(capped.chars().count() <= GITHUB_RELEASE_BODY_MAX_CHARS);
++        assert!(capped.contains("Release notes truncated"));
++        assert!(capped.contains("https://github.com/owner/repo/blob/v1.2.3/CHANGELOG.md"));
+     }
+ }
+Only in scripts: decode-github-issue-url.rs
+Only in scripts: desktop-release-resolve.sh
+diff -ru '--exclude=.git' scripts/detect-code-changes.rs /tmp/formal-ai-issue-730-templates/rust-ai-driven-development-pipeline-template/scripts/detect-code-changes.rs
+--- scripts/detect-code-changes.rs	2026-07-16 06:06:52.949600853 +0000
++++ /tmp/formal-ai-issue-730-templates/rust-ai-driven-development-pipeline-template/scripts/detect-code-changes.rs	2026-07-16 06:12:19.677344610 +0000
+@@ -1,14 +1,16 @@
+ #!/usr/bin/env rust-script
+ //! Detect code changes for CI/CD pipeline
+ //!
+-//! This script detects what types of files have changed in the triggering event
++//! This script detects what types of files have changed in the latest commit
+ //! and outputs the results for use in GitHub Actions workflow conditions.
+ //!
+ //! Key behavior:
+ //! - For PRs: detects GitHub Actions' synthetic merge commit and uses
+-//!   HEAD^..HEAD^2 to cover the complete pull request.
+-//! - For pushes: compares the event's `before` SHA against HEAD, covering every
+-//!   commit in a multi-commit push.
++//!   HEAD^2^..HEAD^2 to get the per-commit diff of the actual PR head,
++//!   so a commit touching only non-code files correctly skips CI jobs
++//!   even when earlier commits in the same PR touched code files.
++//! - For pushes: compares HEAD against its first parent, including real merge
++//!   commits pushed to main
+ //! - Excludes certain folders and file types from "code changes" detection
+ //!
+ //! Excluded from code changes (don't require changelog fragments):
+@@ -21,10 +23,9 @@
+ //! Usage: rust-script scripts/detect-code-changes.rs
+ //!
+ //! Environment variables (set by GitHub Actions):
+-//!   - `GITHUB_EVENT_NAME`: `pull_request` or `push`
+-//!   - `GITHUB_EVENT_BEFORE`: pre-push SHA from the event payload
++//!   - GITHUB_EVENT_NAME: 'pull_request' or 'push'
+ //!
+-//! Outputs (written to `GITHUB_OUTPUT`):
++//! Outputs (written to GITHUB_OUTPUT):
+ //!   - rs-changed: 'true' if any .rs files changed
+ //!   - toml-changed: 'true' if any .toml files changed
+ //!   - mjs-changed: 'true' if any .mjs files changed
+@@ -44,19 +45,25 @@
+ use std::path::Path;
+ use std::process::Command;
+ 
+-fn exec(command: &str, args: &[&str]) -> String {
+-    match Command::new(command).args(args).output() {
++fn exec_in(command: &str, args: &[&str], current_dir: Option<&Path>) -> String {
++    let mut process = Command::new(command);
++    process.args(args);
++    if let Some(current_dir) = current_dir {
++        process.current_dir(current_dir);
++    }
++
++    match process.output() {
+         Ok(output) => {
+             if output.status.success() {
+                 String::from_utf8_lossy(&output.stdout).trim().to_string()
+             } else {
+-                eprintln!("Error executing {command} {args:?}");
++                eprintln!("Error executing {} {:?}", command, args);
+                 eprintln!("{}", String::from_utf8_lossy(&output.stderr));
+                 String::new()
+             }
+         }
+         Err(e) => {
+-            eprintln!("Failed to execute {command} {args:?}: {e}");
++            eprintln!("Failed to execute {} {:?}: {}", command, args, e);
+             String::new()
+         }
+     }
+@@ -69,14 +76,14 @@
+             .append(true)
+             .open(&output_file)
+         {
+-            let _ = writeln!(file, "{name}={value}");
++            let _ = writeln!(file, "{}={}", name, value);
+         }
+     }
+-    println!("{name}={value}");
++    println!("{}={}", name, value);
+ }
+ 
+-fn is_merge_commit() -> bool {
+-    let output = exec("git", &["cat-file", "-p", "HEAD"]);
++fn is_merge_commit_in_repo(repo_path: &Path) -> bool {
++    let output = exec_in("git", &["cat-file", "-p", "HEAD"], Some(repo_path));
+     output
+         .lines()
+         .filter(|line| line.starts_with("parent "))
+@@ -84,53 +91,63 @@
+         > 1
+ }
+ 
+-fn usable_before_sha(before: Option<&str>) -> Option<&str> {
+-    before.filter(|sha| !sha.is_empty() && !sha.chars().all(|character| character == '0'))
+-}
+-
+-fn comparison_for_event(
+-    event_name: &str,
+-    merge_commit: bool,
+-    before: Option<&str>,
+-) -> (String, String, &'static str) {
+-    if event_name == "pull_request" && merge_commit {
+-        return (
+-            "HEAD^".to_string(),
+-            "HEAD^2".to_string(),
+-            "complete pull request diff",
+-        );
+-    }
+-    if event_name == "push" {
+-        if let Some(before) = usable_before_sha(before) {
+-            return (before.to_string(), "HEAD".to_string(), "complete push diff");
+-        }
+-    }
+-    (
+-        "HEAD^".to_string(),
+-        "HEAD".to_string(),
+-        "previous commit diff",
+-    )
++fn get_changed_files() -> Vec<String> {
++    let event_name = env::var("GITHUB_EVENT_NAME").unwrap_or_default();
++    get_changed_files_in_repo(Path::new("."), &event_name)
+ }
+ 
+-fn get_changed_files() -> Vec<String> {
++fn get_changed_files_in_repo(repo_path: &Path, event_name: &str) -> Vec<String> {
+     // GitHub Actions checks out a synthetic merge commit for pull_request
+     // events: HEAD is the merge commit, HEAD^ is the base branch, HEAD^2
+-    // is the actual PR head. Comparing the two parents covers every commit in
+-    // the PR, so a docs-only final commit cannot hide earlier code changes.
+-    let event_name = env::var("GITHUB_EVENT_NAME").unwrap_or_default();
+-    let event_before = env::var("GITHUB_EVENT_BEFORE").ok();
+-    let merge_commit = is_merge_commit();
+-    let (base, head, description) =
+-        comparison_for_event(&event_name, merge_commit, event_before.as_deref());
+-    if event_name == "pull_request" && merge_commit {
++    // is the actual PR head. To get the per-commit diff (what the latest
++    // push actually changed), we compare HEAD^2^ to HEAD^2.
++    // For push events, including real merge commits pushed to main, compare
++    // HEAD's first parent to HEAD so the full merge diff is detected.
++    if event_name == "pull_request" && is_merge_commit_in_repo(repo_path) {
+         println!("Merge commit detected (pull_request event)");
++        println!("Comparing HEAD^2^ to HEAD^2 (per-commit diff of PR head)");
++        let output = exec_in(
++            "git",
++            &["diff", "--name-only", "HEAD^2^", "HEAD^2"],
++            Some(repo_path),
++        );
++        if !output.is_empty() {
++            return output
++                .lines()
++                .filter(|s| !s.is_empty())
++                .map(String::from)
++                .collect();
++        }
++        // Fallback: first commit in PR, compare base to PR head
++        println!("HEAD^2^ not available (first commit in PR), comparing HEAD^ to HEAD^2");
++        let output = exec_in(
++            "git",
++            &["diff", "--name-only", "HEAD^", "HEAD^2"],
++            Some(repo_path),
++        );
++        if !output.is_empty() {
++            return output
++                .lines()
++                .filter(|s| !s.is_empty())
++                .map(String::from)
++                .collect();
++        }
+     }
+-    println!("Comparing {base} to {head} ({description})");
+-    let output = exec("git", &["diff", "--name-only", &base, &head]);
+ 
+-    if output.is_empty() && exec("git", &["rev-parse", "--verify", &base]).is_empty() {
+-        println!("{base} is not available, listing all files in HEAD");
+-        let output = exec("git", &["ls-tree", "--name-only", "-r", "HEAD"]);
++    println!("Comparing HEAD^1 to HEAD");
++    let output = exec_in(
++        "git",
++        &["diff", "--name-only", "HEAD^1", "HEAD"],
++        Some(repo_path),
++    );
++
++    if output.is_empty() {
++        println!("HEAD^1 not available, listing all files in HEAD");
++        let output = exec_in(
++            "git",
++            &["ls-tree", "--name-only", "-r", "HEAD"],
++            Some(repo_path),
++        );
+         return output
+             .lines()
+             .filter(|s| !s.is_empty())
+@@ -147,7 +164,7 @@
+ 
+ fn is_excluded_from_code_changes(file_path: &str) -> bool {
+     // Exclude markdown files in any folder
+-    if has_extension(file_path, "md") {
++    if file_path.ends_with(".md") {
+         return true;
+     }
+ 
+@@ -163,10 +180,12 @@
+     false
+ }
+ 
+-fn has_extension(file_path: &str, expected: &str) -> bool {
+-    Path::new(file_path)
+-        .extension()
+-        .is_some_and(|extension| extension.eq_ignore_ascii_case(expected))
++fn is_manifest_or_lockfile_change(file_path: &str) -> bool {
++    file_path.ends_with(".toml") || file_path.ends_with("Cargo.lock")
++}
++
++fn code_change_pattern() -> Regex {
++    Regex::new(r"(\.(rs|toml|mjs|js|yml|yaml)$|(^|/)Cargo\.lock$|^\.github/workflows/)").unwrap()
+ }
+ 
+ fn main() {
+@@ -179,25 +198,27 @@
+         println!("  (none)");
+     } else {
+         for file in &changed_files {
+-            println!("  {file}");
++            println!("  {}", file);
+         }
+     }
+     println!();
+ 
+     // Detect .rs file changes (Rust source)
+-    let rs_changed = changed_files.iter().any(|f| has_extension(f, "rs"));
++    let rs_changed = changed_files.iter().any(|f| f.ends_with(".rs"));
+     set_output("rs-changed", if rs_changed { "true" } else { "false" });
+ 
+-    // Detect .toml file changes (Cargo.toml, Cargo.lock, etc.)
+-    let toml_changed = changed_files.iter().any(|f| has_extension(f, "toml"));
++    // Detect manifest/lockfile changes (Cargo.toml, Cargo.lock, etc.)
++    let toml_changed = changed_files
++        .iter()
++        .any(|f| is_manifest_or_lockfile_change(f));
+     set_output("toml-changed", if toml_changed { "true" } else { "false" });
+ 
+     // Detect .mjs file changes (scripts)
+-    let mjs_changed = changed_files.iter().any(|f| has_extension(f, "mjs"));
++    let mjs_changed = changed_files.iter().any(|f| f.ends_with(".mjs"));
+     set_output("mjs-changed", if mjs_changed { "true" } else { "false" });
+ 
+     // Detect documentation changes (any .md file)
+-    let docs_changed = changed_files.iter().any(|f| has_extension(f, "md"));
++    let docs_changed = changed_files.iter().any(|f| f.ends_with(".md"));
+     set_output("docs-changed", if docs_changed { "true" } else { "false" });
+ 
+     // Detect workflow changes
+@@ -220,19 +241,13 @@
+         println!("  (none)");
+     } else {
+         for file in &code_changed_files {
+-            println!("  {file}");
++            println!("  {}", file);
+         }
+     }
+     println!();
+ 
+-    // Check if any code files changed (.rs, .toml, .mjs, .cjs, .js, .lino, .yml,
+-    // .yaml, or workflow files). .cjs covers the Electron desktop and VS Code
+-    // extension host sources (extension.*.cjs, lib/*.cjs) so changes there still
+-    // trigger lint/test. .lino covers seed lexicons and language resources such
+-    // as src/web/i18n-catalog.lino: the language-change-parity guard watches
+-    // those files, so editing one must run lint/test that enforces the guard.
+-    let code_pattern =
+-        Regex::new(r"\.(rs|toml|mjs|cjs|js|lino|yml|yaml)$|\.github/workflows/").unwrap();
++    // Check if any code files changed (.rs, .toml, Cargo.lock, .mjs, .yml, .yaml, or workflow files)
++    let code_pattern = code_change_pattern();
+     let code_changed = code_changed_files.iter().any(|f| code_pattern.is_match(f));
+     set_output(
+         "any-code-changed",
+@@ -244,42 +259,116 @@
+ 
+ #[cfg(test)]
+ mod tests {
+-    use super::comparison_for_event;
++    use super::*;
++    use std::path::PathBuf;
++    use std::time::{SystemTime, UNIX_EPOCH};
++
++    fn temp_dir(name: &str) -> PathBuf {
++        let nanos = SystemTime::now()
++            .duration_since(UNIX_EPOCH)
++            .unwrap()
++            .as_nanos();
++        let path = env::temp_dir().join(format!("detect-code-changes-{name}-{nanos}"));
++        fs::create_dir_all(&path).unwrap();
++        path
++    }
++
++    fn run_git(repo_path: &Path, args: &[&str]) {
++        let output = Command::new("git")
++            .args(args)
++            .current_dir(repo_path)
++            .output()
++            .unwrap_or_else(|error| panic!("failed to run git {args:?}: {error}"));
++        assert!(
++            output.status.success(),
++            "git {args:?} failed\nstdout:\n{}\nstderr:\n{}",
++            String::from_utf8_lossy(&output.stdout),
++            String::from_utf8_lossy(&output.stderr)
++        );
++    }
+ 
+-    #[test]
+-    fn pull_requests_compare_the_complete_base_to_head_range() {
+-        assert_eq!(
+-            comparison_for_event("pull_request", true, None),
+-            (
+-                "HEAD^".to_string(),
+-                "HEAD^2".to_string(),
+-                "complete pull request diff"
+-            )
++    fn create_merge_repo() -> PathBuf {
++        let parent = temp_dir("merge-repo");
++        run_git(&parent, &["init", "-b", "main", "repo"]);
++
++        let repo = parent.join("repo");
++        run_git(&repo, &["config", "user.email", "test@example.com"]);
++        run_git(&repo, &["config", "user.name", "Test User"]);
++
++        fs::create_dir_all(repo.join("src")).unwrap();
++        fs::write(repo.join("src/lib.rs"), "pub fn value() -> i32 { 1 }\n").unwrap();
++        fs::write(repo.join("Cargo.toml"), "[package]\nname = \"example\"\n").unwrap();
++        run_git(&repo, &["add", "."]);
++        run_git(&repo, &["commit", "-m", "Initial commit"]);
++
++        run_git(&repo, &["checkout", "-b", "feature"]);
++
++        fs::write(repo.join("src/lib.rs"), "pub fn value() -> i32 { 2 }\n").unwrap();
++        run_git(&repo, &["add", "src/lib.rs"]);
++        run_git(&repo, &["commit", "-m", "Change Rust source"]);
++
++        fs::create_dir_all(repo.join("docs")).unwrap();
++        fs::write(repo.join("docs/notes.md"), "# Notes\n").unwrap();
++        run_git(&repo, &["add", "docs/notes.md"]);
++        run_git(&repo, &["commit", "-m", "Add docs notes"]);
++
++        run_git(&repo, &["checkout", "main"]);
++        run_git(
++            &repo,
++            &["merge", "--no-ff", "feature", "-m", "Merge feature"],
+         );
++
++        repo
+     }
+ 
+     #[test]
+-    fn pushes_compare_every_commit_in_the_event() {
+-        assert_eq!(
+-            comparison_for_event("push", true, Some("before-sha")),
+-            (
+-                "before-sha".to_string(),
+-                "HEAD".to_string(),
+-                "complete push diff"
+-            ),
+-            "a pushed merge commit must not be mistaken for GitHub's synthetic PR merge"
++    fn cargo_lock_changes_count_as_manifest_and_code_changes() {
++        let code_pattern = code_change_pattern();
++
++        for path in ["Cargo.lock", "rust/Cargo.lock"] {
++            assert!(is_manifest_or_lockfile_change(path));
++            assert!(code_pattern.is_match(path));
++            assert!(!is_excluded_from_code_changes(path));
++        }
++    }
++
++    #[test]
++    fn push_merge_commit_detects_full_first_parent_merge_diff() {
++        let repo = create_merge_repo();
++
++        let changed_files = get_changed_files_in_repo(&repo, "push");
++
++        assert!(
++            changed_files.iter().any(|file| file == "src/lib.rs"),
++            "push merge diff should include the earlier Rust source commit: {changed_files:?}"
++        );
++        assert!(
++            changed_files.iter().any(|file| file == "docs/notes.md"),
++            "push merge diff should include the final docs commit: {changed_files:?}"
++        );
++        assert!(changed_files.iter().any(|file| file.ends_with(".rs")));
++
++        let code_pattern = code_change_pattern();
++        let code_changed = changed_files
++            .iter()
++            .filter(|file| !is_excluded_from_code_changes(file))
++            .any(|file| code_pattern.is_match(file));
++        assert!(
++            code_changed,
++            "real merge pushes that introduce Rust source changes should set any-code-changed"
+         );
+     }
+ 
+     #[test]
+-    fn missing_push_before_sha_falls_back_to_the_previous_commit() {
++    fn pull_request_synthetic_merge_uses_latest_pr_head_commit_diff() {
++        let repo = create_merge_repo();
++
++        let changed_files = get_changed_files_in_repo(&repo, "pull_request");
++
+         assert_eq!(
+-            comparison_for_event("push", false, Some("000000")),
+-            (
+-                "HEAD^".to_string(),
+-                "HEAD".to_string(),
+-                "previous commit diff"
+-            )
++            changed_files,
++            vec!["docs/notes.md"],
++            "pull_request synthetic merge detection should keep the per-commit PR head diff"
+         );
+     }
+ }
+Only in scripts: download-datasets.rs
+Only in scripts: generate-role-registry.py
+Only in scripts: ground-lexemes.py
+Only in scripts: ground-meanings.rs
+Only in scripts: ground-wiktionary.py
+Only in scripts: ground-wordnet.py
+Only in scripts: install-rust-script.sh
+Only in scripts: install.ps1
+Only in scripts: install.sh
+Only in scripts: migrate-empty-facet-fields.rs
+Only in scripts: migrate-empty-redefinition-fields.rs
+Only in scripts: migrate-meaning-seed.rs
+Only in scripts: migrate-pipe-lists.rs
+Only in scripts: mine-hive-mind-dataset.rs
+diff -ru '--exclude=.git' scripts/publish-crate.rs /tmp/formal-ai-issue-730-templates/rust-ai-driven-development-pipeline-template/scripts/publish-crate.rs
+--- scripts/publish-crate.rs	2026-07-16 06:06:52.952600823 +0000
++++ /tmp/formal-ai-issue-730-templates/rust-ai-driven-development-pipeline-template/scripts/publish-crate.rs	2026-07-16 06:12:19.677344610 +0000
+@@ -15,8 +15,16 @@
+ //!   - CARGO_TOKEN: Alternative token name for backwards compatibility
+ //!
+ //! Outputs (written to GITHUB_OUTPUT):
+-//!   - publish_result: 'success', 'already_exists', 'auth_failed',
+-//!     'rate_limited', 'skipped', or 'failed'
++//!   - publish_result: one of
++//!       'success'        - the crate version was published to crates.io
++//!       'already_exists' - the version is already on crates.io (version-bump bug)
++//!       'auth_failed'    - missing or invalid crates.io authentication token
++//!       'rate_limited'   - crates.io returned HTTP 429 (too many versions in 24h);
++//!                          deferred, automatically-recoverable outcome — the
++//!                          script exits 0 and the same version is retried on the
++//!                          next push to 'main' once the throttle window clears
++//!       'skipped'        - publish skipped (e.g. template default package name)
++//!       'failed'         - publish failed for an unrecognised reason
+ //!
+ //! ```cargo
+ //! [dependencies]
+@@ -31,6 +39,34 @@
+ #[path = "rust-paths.rs"]
+ mod rust_paths;
+ 
++fn get_arg(name: &str) -> Option<String> {
++    let args: Vec<String> = env::args().collect();
++    let flag = format!("--{}", name);
++
++    if let Some(idx) = args.iter().position(|a| a == &flag) {
++        return args.get(idx + 1).cloned();
++    }
++
++    None
++}
++
++fn needs_cd(rust_root: &str) -> bool {
++    rust_root != "."
++}
++
++fn set_output(key: &str, value: &str) {
++    if let Ok(output_file) = env::var("GITHUB_OUTPUT") {
++        if let Ok(mut file) = fs::OpenOptions::new().create(true).append(true).open(&output_file) {
++            let _ = writeln!(file, "{}={}", key, value);
++        }
++    }
++    println!("Output: {}={}", key, value);
++}
++
++/// Classification of a failed `cargo publish` attempt.
++///
++/// Every failure branch funnels through this single enum so the `publish_result`
++/// output value and the catch-all behaviour cannot drift apart over time.
+ #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+ enum FailureKind {
+     AlreadyExists,
+@@ -49,11 +85,25 @@
+         }
+     }
+ 
++    /// Whether this failure is a *deferred*, automatically-recoverable outcome
++    /// rather than a hard error.
++    ///
++    /// A crates.io HTTP 429 throttle is transient: the same version is re-tried
++    /// on the next push to `main` once the 24-hour window clears (see
++    /// `scripts/check-release-needed.rs`). The script therefore exits
++    /// successfully for this case so a recoverable throttle does not turn the
++    /// whole release job red. Every other failure stays non-zero.
+     fn is_deferred(self) -> bool {
+         matches!(self, FailureKind::RateLimited)
+     }
+ }
+ 
++/// Classify a combined stdout/stderr blob from `cargo publish` into a
++/// [`FailureKind`].
++///
++/// Note: the rate-limit checks come before the auth checks because a crates.io
++/// 429 body never contains the auth-token markers, while the rate-limit markers
++/// are unambiguous.
+ fn classify_failure(combined: &str) -> FailureKind {
+     if combined.contains("already uploaded") || combined.contains("already exists") {
+         FailureKind::AlreadyExists
+@@ -74,30 +124,6 @@
+     }
+ }
+ 
+-fn get_arg(name: &str) -> Option<String> {
+-    let args: Vec<String> = env::args().collect();
+-    let flag = format!("--{}", name);
+-
+-    if let Some(idx) = args.iter().position(|a| a == &flag) {
+-        return args.get(idx + 1).cloned();
+-    }
+-
+-    None
+-}
+-
+-fn needs_cd(rust_root: &str) -> bool {
+-    rust_root != "."
+-}
+-
+-fn set_output(key: &str, value: &str) {
+-    if let Ok(output_file) = env::var("GITHUB_OUTPUT") {
+-        if let Ok(mut file) = fs::OpenOptions::new().create(true).append(true).open(&output_file) {
+-            let _ = writeln!(file, "{}={}", key, value);
+-        }
+-    }
+-    println!("Output: {}={}", key, value);
+-}
+-
+ fn main() {
+     let rust_root = match rust_paths::get_rust_root(None, true) {
+         Ok(root) => root,
+@@ -187,54 +213,26 @@
+                 eprintln!("=== VERSION ALREADY PUBLISHED ===");
+                 eprintln!();
+                 eprintln!("Version {} already exists on crates.io.", version);
+-                eprintln!(
+-                    "The release pipeline must always publish a version greater than what is already published."
+-                );
+-                eprintln!(
+-                    "This indicates a bug in version bumping: the pipeline should have computed a new, unpublished version."
+-                );
++                eprintln!("The release pipeline must always publish a version greater than what is already published.");
++                eprintln!("This indicates a bug in version bumping: the pipeline should have computed a new, unpublished version.");
+                 eprintln!();
+             }
+             FailureKind::RateLimited => {
+                 eprintln!();
+-                eprintln!("=== CRATES.IO RATE LIMITED ===");
++                eprintln!("=== CRATES.IO RATE LIMIT (HTTP 429) ===");
+                 eprintln!();
+-                eprintln!(
+-                    "crates.io rejected the publish of {}@{} with HTTP 429 Too Many Requests.",
+-                    name, version
+-                );
+-                eprintln!(
+-                    "This means too many versions of this crate were published in the last 24 hours."
+-                );
+-                eprintln!();
+-                eprintln!("Original error from cargo publish:");
+-                for line in combined.lines() {
+-                    let trimmed = line.trim_end();
+-                    if !trimmed.is_empty() {
+-                        eprintln!("  {}", trimmed);
+-                    }
+-                }
+-                eprintln!();
+-                eprintln!(
+-                    "This is NOT a bug in the pipeline; the publish has been deferred and will be retried automatically."
+-                );
+-                eprintln!(
+-                    "scripts/check-release-needed.rs detects that {}@{} is missing from crates.io",
+-                    name, version
+-                );
+-                eprintln!(
+-                    "and will set should_release=true, skip_bump=true on the next push to main,"
+-                );
+-                eprintln!("so the same version is re-uploaded once the throttle window has rolled over.");
+-                eprintln!();
+-                eprintln!("To unblock immediately:");
+-                eprintln!("  1. Wait until the 24-hour throttle window has rolled over.");
+-                eprintln!(
+-                    "  2. Re-run the release workflow, or push any commit to main to trigger a retry."
+-                );
++                eprintln!("crates.io rejected the publish because too many versions of this");
++                eprintln!("crate have been published in the last 24 hours.");
+                 eprintln!();
+-                eprintln!("See: https://doc.rust-lang.org/cargo/reference/publishing.html");
+-                eprintln!("See: https://crates.io/policies");
++                eprintln!("Original cargo publish error:");
++                eprintln!("{}", combined.trim());
++                eprintln!();
++                eprintln!("This is a TRANSIENT, automatically-recoverable throttle, not a pipeline bug.");
++                eprintln!("No action is required other than waiting for the 24-hour window to roll over.");
++                eprintln!("scripts/check-release-needed.rs will re-attempt the same version on the next");
++                eprintln!("push to 'main' once the throttle window has cleared.");
++                eprintln!();
++                eprintln!("See: https://doc.rust-lang.org/cargo/reference/publishing.html#publishing-a-new-version-of-an-existing-crate");
+                 eprintln!();
+             }
+             FailureKind::AuthFailed => {
+@@ -260,22 +258,37 @@
+                 eprintln!("{}", combined);
+             }
+         }
++
+         set_output("publish_result", kind.output_value());
++
++        // A rate-limit is a deferred, automatically-recoverable outcome: exit
++        // successfully so the release job does not go red over a transient
++        // crates.io throttle. Downstream release-artifact steps are gated on a
++        // successful publish (see .github/workflows/release.yml), so a deferred
++        // upload never produces partial Docker/GitHub release artifacts.
+         if kind.is_deferred() {
+             return;
+         }
++
+         exit(1);
+     }
+ }
+ 
+ #[cfg(test)]
+ mod tests {
+-    use super::{FailureKind, classify_failure};
++    use super::*;
++
++    #[test]
++    fn classifies_already_exists_response() {
++        let body = "error: crate version 0.1.0 is already uploaded";
++        assert_eq!(classify_failure(body), FailureKind::AlreadyExists);
++        assert_eq!(FailureKind::AlreadyExists.output_value(), "already_exists");
++    }
+ 
+     #[test]
+     fn classifies_rate_limit_response() {
+         let body = "\
+-error: failed to publish formal-ai v0.42.0 to registry at https://crates.io
++error: failed to publish my-crate v0.42.0 to registry at https://crates.io
+ 
+ Caused by:
+   the remote server responded with an error (status 429 Too Many Requests): \
+@@ -283,42 +296,43 @@
+ ";
+         assert_eq!(classify_failure(body), FailureKind::RateLimited);
+         assert_eq!(FailureKind::RateLimited.output_value(), "rate_limited");
+-        assert!(FailureKind::RateLimited.is_deferred());
+     }
+ 
+     #[test]
+-    fn classifies_already_uploaded_response() {
+-        let body = "error: crate version 0.42.0 already uploaded";
+-        assert_eq!(classify_failure(body), FailureKind::AlreadyExists);
+-        assert_eq!(FailureKind::AlreadyExists.output_value(), "already_exists");
+-        assert!(!FailureKind::AlreadyExists.is_deferred());
++    fn classifies_rate_limit_from_too_many_versions_marker() {
++        let body = "the remote server responded: You have published too many versions";
++        assert_eq!(classify_failure(body), FailureKind::RateLimited);
+     }
+ 
+     #[test]
+-    fn classifies_already_exists_response() {
+-        let body = "error: this crate version already exists";
+-        assert_eq!(classify_failure(body), FailureKind::AlreadyExists);
++    fn classifies_auth_failure_response() {
++        let body = "error: failed to publish: please provide a non-empty token";
++        assert_eq!(classify_failure(body), FailureKind::AuthFailed);
++        assert_eq!(FailureKind::AuthFailed.output_value(), "auth_failed");
+     }
+ 
+     #[test]
+-    fn classifies_authentication_failure() {
+-        let body = "error: please provide a non-empty token";
+-        assert_eq!(classify_failure(body), FailureKind::AuthFailed);
+-        assert_eq!(FailureKind::AuthFailed.output_value(), "auth_failed");
+-        assert!(!FailureKind::AuthFailed.is_deferred());
++    fn classifies_unknown_response() {
++        let body = "error: some brand new failure mode nobody has seen before";
++        assert_eq!(classify_failure(body), FailureKind::Unknown);
++        assert_eq!(FailureKind::Unknown.output_value(), "failed");
+     }
+ 
+     #[test]
+-    fn classifies_unauthorized_as_auth_failure() {
+-        let body = "error: unauthorized: token rejected";
+-        assert_eq!(classify_failure(body), FailureKind::AuthFailed);
++    fn rate_limit_takes_precedence_over_auth_markers() {
++        // A 429 body that also happens to mention "authentication" must still be
++        // classified as rate-limited, since the throttle is the actionable cause.
++        let body = "status 429 Too Many Requests: authentication retry later";
++        assert_eq!(classify_failure(body), FailureKind::RateLimited);
+     }
+ 
+     #[test]
+-    fn classifies_unknown_failure() {
+-        let body = "error: something else entirely went wrong";
+-        assert_eq!(classify_failure(body), FailureKind::Unknown);
+-        assert_eq!(FailureKind::Unknown.output_value(), "failed");
++    fn only_rate_limit_is_deferred() {
++        // A rate-limit is the single deferred (exit-0) outcome; every other
++        // failure must remain a hard, non-zero error.
++        assert!(FailureKind::RateLimited.is_deferred());
++        assert!(!FailureKind::AlreadyExists.is_deferred());
++        assert!(!FailureKind::AuthFailed.is_deferred());
+         assert!(!FailureKind::Unknown.is_deferred());
+     }
+ }
+Only in /tmp/formal-ai-issue-730-templates/rust-ai-driven-development-pipeline-template/scripts: release-naming.rs
+Only in scripts: reproduce-issue-538.sh
+Only in scripts: sample-nemotron-training-data.py
+Only in /tmp/formal-ai-issue-730-templates/rust-ai-driven-development-pipeline-template/scripts: smoke-test-published-crate.rs
+Only in scripts: stamp-pages-artifact.sh
+Only in scripts: sync-seed.sh
+Only in scripts: verify-docker-runtime.sh
+diff -ru '--exclude=.git' scripts/version-and-commit.rs /tmp/formal-ai-issue-730-templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs
+--- scripts/version-and-commit.rs	2026-07-16 06:06:52.953600813 +0000
++++ /tmp/formal-ai-issue-730-templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs	2026-07-16 06:12:19.678344600 +0000
+@@ -23,15 +23,21 @@
+ //! serde_json = "1"
+ //! ```
+ 
++#[cfg(not(test))]
++use chrono::Utc;
++use regex::Regex;
++#[cfg(not(test))]
++use serde::Deserialize;
+ use std::env;
+ use std::fs;
+ use std::io::Write;
+ use std::path::{Path, PathBuf};
+-use std::process::{Command, exit};
+-use regex::Regex;
+-use chrono::Utc;
+-use serde::Deserialize;
++#[cfg(not(test))]
++use std::process::exit;
++use std::process::Command;
+ 
++#[path = "release-naming.rs"]
++mod release_naming;
+ #[path = "rust-paths.rs"]
+ mod rust_paths;
+ 
+@@ -142,14 +148,6 @@
+     Ok(())
+ }
+ 
+-/// Update the workspace-package `version = "..."` entry in Cargo.lock so that
+-/// it stays in sync with Cargo.toml in the same commit. Without this, every
+-/// release leaves Cargo.lock stale and the next code PR is forced to either
+-/// merge a `version = "X.Y.Z"` conflict in Cargo.lock or ship a follow-up
+-/// "sync Cargo.lock" commit.
+-///
+-/// Returns Ok(true) if Cargo.lock was updated, Ok(false) if it does not exist
+-/// or no matching entry was found.
+ fn update_cargo_lock(
+     cargo_lock_path: &Path,
+     crate_name: &str,
+@@ -167,21 +165,16 @@
+     let content = fs::read_to_string(cargo_lock_path)
+         .map_err(|e| format!("Failed to read {}: {}", path_str, e))?;
+ 
+-    // Match the [[package]] entry for our crate:
+-    //   [[package]]
+-    //   name = "<crate_name>"
+-    //   version = "..."
+     let pattern = format!(
+         r#"(?m)(\[\[package\]\]\s*\nname\s*=\s*"{}"\s*\nversion\s*=\s*")[^"]+(")"#,
+         regex::escape(crate_name),
+     );
+-    let re = Regex::new(&pattern)
+-        .map_err(|e| format!("Failed to build Cargo.lock regex: {}", e))?;
++    let re =
++        Regex::new(&pattern).map_err(|e| format!("Failed to build Cargo.lock regex: {}", e))?;
+ 
+     if !re.is_match(&content) {
+         println!(
+-            "Warning: Could not find [[package]] entry for `{}` in {} \
+-             (lock file left untouched)",
++            "Warning: Could not find [[package]] entry for `{}` in {} (lock file left untouched)",
+             crate_name, path_str
+         );
+         return Ok(false);
+@@ -201,11 +194,13 @@
+     Ok(true)
+ }
+ 
++#[cfg(not(test))]
+ #[derive(Deserialize)]
+ struct CratesIoCrate {
+     versions: Option<Vec<CratesIoVersionEntry>>,
+ }
+ 
++#[cfg(not(test))]
+ #[derive(Deserialize)]
+ struct CratesIoVersionEntry {
+     num: String,
+@@ -229,6 +224,7 @@
+     exec_check("git", &["rev-parse", &format!("{}{}", tag_prefix, version)])
+ }
+ 
++#[cfg(not(test))]
+ fn check_version_on_crates_io(crate_name: &str, version: &str) -> bool {
+     let url = format!("https://crates.io/api/v1/crates/{}/{}", crate_name, version);
+     match ureq::get(&url)
+@@ -240,6 +236,7 @@
+     }
+ }
+ 
++#[cfg(not(test))]
+ fn get_max_published_version(crate_name: &str) -> Option<(u32, u32, u32)> {
+     let url = format!("https://crates.io/api/v1/crates/{}", crate_name);
+     match ureq::get(&url)
+@@ -253,7 +250,9 @@
+                         if let Some(versions) = data.versions {
+                             let mut max: Option<(u32, u32, u32)> = None;
+                             for v in &versions {
+-                                if v.yanked { continue; }
++                                if v.yanked {
++                                    continue;
++                                }
+                                 let base = match v.num.split('-').next() {
+                                     Some(b) => b,
+                                     None => continue,
+@@ -283,13 +282,19 @@
+     }
+ }
+ 
++#[cfg(not(test))]
+ fn ensure_version_exceeds_published(
+     version_str: &str,
+     crate_name: &str,
+     tag_prefix: &str,
+     max_published: Option<(u32, u32, u32)>,
+ ) -> String {
+-    let parts: Vec<&str> = version_str.split('-').next().unwrap_or(version_str).split('.').collect();
++    let parts: Vec<&str> = version_str
++        .split('-')
++        .next()
++        .unwrap_or(version_str)
++        .split('.')
++        .collect();
+     if parts.len() != 3 {
+         return version_str.to_string();
+     }
+@@ -314,7 +319,8 @@
+ 
+     let mut candidate = format!("{}.{}.{}", major, minor, patch);
+     let mut safety_counter = 0;
+-    while (check_tag_exists(tag_prefix, &candidate) || check_version_on_crates_io(crate_name, &candidate))
++    while (check_tag_exists(tag_prefix, &candidate)
++        || check_version_on_crates_io(crate_name, &candidate))
+         && safety_counter < 100
+     {
+         println!(
+@@ -347,10 +353,11 @@
+     for file in files {
+         fs::remove_file(file)
+             .unwrap_or_else(|e| panic!("Failed to remove {}: {}", file.display(), e));
+-        println!("Removed changelog fragment {}", file.display());
++        println!("Removed {}", file.display());
+     }
+ }
+ 
++#[cfg(not(test))]
+ fn collect_changelog(changelog_dir: &str, changelog_file: &str, version: &str) {
+     let date_str = Utc::now().format("%Y-%m-%d").to_string();
+     collect_changelog_with_date(changelog_dir, changelog_file, version, &date_str);
+@@ -396,7 +403,12 @@
+         return;
+     }
+ 
+-    let new_entry = format!("\n## [{}] - {}\n\n{}\n", version, date_str, fragments.join("\n\n"));
++    let new_entry = format!(
++        "\n## [{}] - {}\n\n{}\n",
++        version,
++        date_str,
++        fragments.join("\n\n")
++    );
+ 
+     if !Path::new(changelog_file).exists() {
+         return;
+@@ -424,15 +436,15 @@
+ 
+     fs::write(changelog_file, content).expect("Failed to write changelog");
+     remove_changelog_fragments(&files);
+-
+     println!("Collected {} changelog fragment(s)", files.len());
+ }
+ 
+ #[cfg(test)]
+ mod tests {
+-    use super::collect_changelog_with_date;
++    use super::{collect_changelog_with_date, update_cargo_lock};
+     use std::fs;
+     use std::path::PathBuf;
++    use std::process::Command;
+     use std::time::{SystemTime, UNIX_EPOCH};
+ 
+     fn temp_dir(name: &str) -> PathBuf {
+@@ -446,13 +458,82 @@
+     }
+ 
+     #[test]
+-    fn changelog_collection_consumes_fragments_once_and_keeps_readme() {
++    fn cargo_lock_update_scopes_to_named_package_entry() {
++        let repo = temp_dir("lock-update");
++        let cargo_lock = repo.join("Cargo.lock");
++        fs::write(
++            &cargo_lock,
++            r#"[[package]]
++name = "example-sum-package-name-helper"
++version = "9.9.9"
++
++[[package]]
++name = "example-sum-package-name"
++version = "0.13.0"
++dependencies = [
++ "clap",
++]
++
++[[package]]
++name = "regex"
++version = "1.12.3"
++"#,
++        )
++        .unwrap();
++
++        assert!(update_cargo_lock(&cargo_lock, "example-sum-package-name", "0.14.0").unwrap());
++
++        let updated = fs::read_to_string(&cargo_lock).unwrap();
++        assert!(updated.contains("name = \"example-sum-package-name\"\nversion = \"0.14.0\""));
++        assert!(updated.contains("name = \"example-sum-package-name-helper\"\nversion = \"9.9.9\""));
++        assert!(updated.contains("name = \"regex\"\nversion = \"1.12.3\""));
++    }
++
++    #[test]
++    fn cargo_lock_update_is_idempotent_when_version_already_matches() {
++        let repo = temp_dir("lock-idempotent");
++        let cargo_lock = repo.join("Cargo.lock");
++        let content = r#"[[package]]
++name = "example-sum-package-name"
++version = "0.14.0"
++"#;
++        fs::write(&cargo_lock, content).unwrap();
++
++        assert!(!update_cargo_lock(&cargo_lock, "example-sum-package-name", "0.14.0").unwrap());
++        assert_eq!(fs::read_to_string(&cargo_lock).unwrap(), content);
++    }
++
++    #[test]
++    fn cargo_lock_update_returns_false_when_lock_file_is_absent() {
++        let repo = temp_dir("lock-absent");
++        let cargo_lock = repo.join("Cargo.lock");
++
++        assert!(!update_cargo_lock(&cargo_lock, "example-sum-package-name", "0.14.0").unwrap());
++        assert!(!cargo_lock.exists());
++    }
++
++    #[test]
++    fn cargo_lock_update_returns_false_when_package_entry_is_absent() {
++        let repo = temp_dir("lock-entry-absent");
++        let cargo_lock = repo.join("Cargo.lock");
++        let content = r#"[[package]]
++name = "regex"
++version = "1.12.3"
++"#;
++        fs::write(&cargo_lock, content).unwrap();
++
++        assert!(!update_cargo_lock(&cargo_lock, "example-sum-package-name", "0.14.0").unwrap());
++        assert_eq!(fs::read_to_string(&cargo_lock).unwrap(), content);
++    }
++
++    #[test]
++    fn changelog_collection_removes_consumed_fragments_and_keeps_readme() {
+         let repo = temp_dir("changelog-cleanup");
+         let changelog_dir = repo.join("changelog.d");
+         fs::create_dir_all(&changelog_dir).unwrap();
+ 
+-        let first_fragment = changelog_dir.join("20260714_fix_release_loop.md");
+-        let second_fragment = changelog_dir.join("20260714_note_release_loop.md");
++        let first_fragment = changelog_dir.join("20260608_fix_release_loop.md");
++        let second_fragment = changelog_dir.join("20260608_note_release_loop.md");
+         fs::write(
+             &first_fragment,
+             r#"---
+@@ -490,28 +571,101 @@
+             changelog_dir.to_str().unwrap(),
+             changelog.to_str().unwrap(),
+             "0.2.0",
+-            "2026-07-14",
++            "2026-06-08",
+         );
+ 
+-        let after_first_release = fs::read_to_string(&changelog).unwrap();
+-        assert!(after_first_release.contains("## [0.2.0] - 2026-07-14"));
+-        assert!(after_first_release.contains("Prevent already-collected"));
+-        assert!(after_first_release.contains("Keep release commits"));
+-        assert!(!after_first_release.contains("bump: patch"));
++        let updated = fs::read_to_string(&changelog).unwrap();
++        assert!(updated.contains("## [0.2.0] - 2026-06-08"));
++        assert!(updated.contains("Prevent already-collected changelog fragments"));
++        assert!(updated.contains("Keep release commits from leaving stale changelog fragments"));
++        assert!(!updated.contains("bump: patch"));
+         assert!(!first_fragment.exists());
+         assert!(!second_fragment.exists());
+         assert!(changelog_dir.join("README.md").exists());
++    }
+ 
+-        collect_changelog_with_date(
+-            changelog_dir.to_str().unwrap(),
+-            changelog.to_str().unwrap(),
+-            "0.3.0",
+-            "2026-07-15",
++    /// Regression test for issue #67: the Rust release job failed with
++    /// "cannot rebase: Your index contains uncommitted changes." because the
++    /// script staged the version bump (`git add`) and only afterwards ran
++    /// `git rebase origin/<branch>`. `git rebase` refuses to run with a dirty
++    /// index, so the release must rebase onto the remote BEFORE staging.
++    ///
++    /// This test reproduces both orderings against a real temporary repository
++    /// and asserts the buggy order fails while the fixed order succeeds.
++    #[test]
++    fn rebase_must_run_before_staging_the_version_bump() {
++        let repo = temp_dir("rebase-order");
++        let git = |args: &[&str]| -> std::process::Output {
++            Command::new("git")
++                .args(args)
++                .current_dir(&repo)
++                .output()
++                .expect("failed to run git")
++        };
++
++        // Some CI images default to `master`; force the initial branch to main.
++        git(&["init", "-q", "."]);
++        git(&["checkout", "-q", "-b", "main"]);
++        git(&["config", "user.email", "ci@example.com"]);
++        git(&["config", "user.name", "ci"]);
++
++        // Commit A: the state the release job checks out.
++        fs::write(repo.join("Cargo.toml"), "version = \"0.1.0\"\n").unwrap();
++        git(&["add", "Cargo.toml"]);
++        git(&["commit", "-qm", "A: initial"]);
++
++        // Commit B on a parallel ref simulates origin/main advancing while the
++        // release job was running (e.g. a concurrent release pushed to main).
++        git(&["checkout", "-q", "-b", "upstream"]);
++        fs::write(repo.join("remote.txt"), "remote change\n").unwrap();
++        git(&["add", "remote.txt"]);
++        git(&["commit", "-qm", "B: remote advanced"]);
++        git(&["checkout", "-q", "main"]);
++
++        // BUGGY ORDER: stage the bump first, then rebase -> git rejects the
++        // dirty index. This is exactly what broke the release job.
++        fs::write(repo.join("Cargo.toml"), "version = \"0.1.1\"\n").unwrap();
++        git(&["add", "Cargo.toml"]);
++        let buggy = git(&["rebase", "upstream"]);
++        assert!(
++            !buggy.status.success(),
++            "rebase unexpectedly succeeded with a dirty index"
++        );
++        let buggy_err = String::from_utf8_lossy(&buggy.stderr);
++        assert!(
++            buggy_err.contains("cannot rebase") || buggy_err.contains("uncommitted changes"),
++            "unexpected rebase error: {buggy_err}"
++        );
++
++        // Reset back to a clean tree at commit A.
++        let _ = git(&["rebase", "--abort"]);
++        git(&["reset", "-q", "--hard", "HEAD"]);
++
++        // FIXED ORDER: rebase while the tree is clean, THEN stage and commit.
++        let fixed = git(&["rebase", "upstream"]);
++        assert!(
++            fixed.status.success(),
++            "rebase with a clean tree failed: {}",
++            String::from_utf8_lossy(&fixed.stderr)
+         );
+-        assert_eq!(fs::read_to_string(&changelog).unwrap(), after_first_release);
++        fs::write(repo.join("Cargo.toml"), "version = \"0.1.1\"\n").unwrap();
++        git(&["add", "Cargo.toml"]);
++        let commit = git(&["commit", "-qm", "chore: release 0.1.1"]);
++        assert!(
++            commit.status.success(),
++            "commit after clean rebase failed: {}",
++            String::from_utf8_lossy(&commit.stderr)
++        );
++
++        // The bump rides on top of the upstream commit, proving no work was lost.
++        let log = git(&["log", "--oneline"]);
++        let log_out = String::from_utf8_lossy(&log.stdout);
++        assert!(log_out.contains("release 0.1.1"));
++        assert!(log_out.contains("B: remote advanced"));
+     }
+ }
+ 
++#[cfg(not(test))]
+ fn main() {
+     let bump_type = match get_arg("bump-type") {
+         Some(bt) => bt,
+@@ -522,13 +676,13 @@
+     };
+ 
+     if !["major", "minor", "patch"].contains(&bump_type.as_str()) {
+-        eprintln!("Invalid bump type: {}. Must be major, minor, or patch.", bump_type);
++        eprintln!(
++            "Invalid bump type: {}. Must be major, minor, or patch.",
++            bump_type
++        );
+         exit(1);
+     }
+ 
+-    let description = get_arg("description");
+-    let tag_prefix = get_arg("tag-prefix").unwrap_or_else(|| "v".to_string());
+-    let release_label = get_arg("release-label");
+     let rust_root = match rust_paths::get_rust_root(None, true) {
+         Ok(root) => root,
+         Err(e) => {
+@@ -536,6 +690,10 @@
+             exit(1);
+         }
+     };
++    let description = get_arg("description");
++    let tag_prefix = get_arg("tag-prefix")
++        .unwrap_or_else(|| release_naming::tag_prefix_for_rust_root(&rust_root).to_string());
++    let release_label = get_arg("release-label");
+     let cargo_toml = rust_paths::get_cargo_toml_path(&rust_root);
+     let package_manifest = match rust_paths::get_package_manifest_path(&cargo_toml) {
+         Ok(path) => path,
+@@ -549,7 +707,40 @@
+ 
+     // Configure git
+     let _ = exec("git", &["config", "user.name", "github-actions[bot]"]);
+-    let _ = exec("git", &["config", "user.email", "github-actions[bot]@users.noreply.github.com"]);
++    let _ = exec(
++        "git",
++        &[
++            "config",
++            "user.email",
++            "github-actions[bot]@users.noreply.github.com",
++        ],
++    );
++
++    // Sync with the latest remote state BEFORE touching any files.
++    //
++    // This must happen while the working tree is clean: `git rebase` refuses to
++    // run with a dirty index ("cannot rebase: Your index contains uncommitted
++    // changes"). Rebasing after staging the version bump is what previously
++    // broke the release job. Rebasing first also means the version bump is
++    // computed from the most recent state of the branch (matches the JS
++    // version-and-commit.mjs ordering).
++    let current_branch =
++        exec("git", &["rev-parse", "--abbrev-ref", "HEAD"]).unwrap_or_else(|_| "main".to_string());
++    if let Err(e) = exec("git", &["fetch", "origin", &current_branch]) {
++        eprintln!("Warning: Could not fetch origin/{}: {}", current_branch, e);
++    } else {
++        let local = exec("git", &["rev-parse", "HEAD"]).unwrap_or_default();
++        let remote =
++            exec("git", &["rev-parse", &format!("origin/{}", current_branch)]).unwrap_or_default();
++        if !local.is_empty() && !remote.is_empty() && local != remote {
++            println!("Local branch is behind remote, rebasing...");
++            if let Err(e) = exec("git", &["rebase", &format!("origin/{}", current_branch)]) {
++                eprintln!("Error rebasing onto origin/{}: {}", current_branch, e);
++                let _ = exec("git", &["rebase", "--abort"]);
++                exit(1);
++            }
++        }
++    }
+ 
+     // Get current version
+     let content = match fs::read_to_string(&package_manifest) {
+@@ -563,7 +754,10 @@
+     let current = match Version::parse(&content) {
+         Some(v) => v,
+         None => {
+-            eprintln!("Error: Could not parse version from {}", package_manifest.display());
++            eprintln!(
++                "Error: Could not parse version from {}",
++                package_manifest.display()
++            );
+             exit(1);
+         }
+     };
+@@ -585,9 +779,13 @@
+         println!("No versions published on crates.io yet (or crate not found)");
+     }
+ 
+-    println!("Initial bump ({}) from {}.{}.{}: {}", bump_type, current.major, current.minor, current.patch, initial_bump);
++    println!(
++        "Initial bump ({}) from {}.{}.{}: {}",
++        bump_type, current.major, current.minor, current.patch, initial_bump
++    );
+ 
+-    let new_version = ensure_version_exceeds_published(&initial_bump, &crate_name, &tag_prefix, max_published);
++    let new_version =
++        ensure_version_exceeds_published(&initial_bump, &crate_name, &tag_prefix, max_published);
+ 
+     if new_version != initial_bump {
+         println!(
+@@ -604,7 +802,6 @@
+         exit(1);
+     }
+ 
+-    // Update the workspace-package entry in Cargo.lock so it stays in sync.
+     let cargo_lock_path = rust_paths::get_cargo_lock_path(&rust_root);
+     let lock_updated = match update_cargo_lock(&cargo_lock_path, &crate_name, &new_version) {
+         Ok(updated) => updated,
+@@ -617,10 +814,10 @@
+     // Collect changelog fragments
+     collect_changelog(&changelog_dir, &changelog_file, &new_version);
+ 
+-    // Stage Cargo.toml, Cargo.lock (when bumped), CHANGELOG.md, and consumed fragments.
++    // Stage Cargo.toml, Cargo.lock if changed, CHANGELOG.md, and consumed changelog fragments.
+     let package_manifest_str = package_manifest.to_string_lossy().to_string();
+     let cargo_lock_str = cargo_lock_path.to_string_lossy().to_string();
+-    let mut add_args: Vec<&str> = vec!["add", &package_manifest_str, &changelog_file];
++    let mut add_args = vec!["add", &package_manifest_str, &changelog_file];
+     if lock_updated {
+         add_args.push(&cargo_lock_str);
+     }
+@@ -630,7 +827,7 @@
+     }
+     if Path::new(&changelog_dir).exists() {
+         if let Err(e) = exec("git", &["add", "-A", &changelog_dir]) {
+-            eprintln!("Error staging consumed changelog fragments: {}", e);
++            eprintln!("Error staging changelog fragments: {}", e);
+             exit(1);
+         }
+     }
+@@ -643,28 +840,20 @@
+         return;
+     }
+ 
+-    // Fetch latest remote state before committing (supports concurrent release workflows)
+-    let current_branch = exec("git", &["rev-parse", "--abbrev-ref", "HEAD"]).unwrap_or_else(|_| "main".to_string());
+-    if let Err(e) = exec("git", &["fetch", "origin", &current_branch]) {
+-        eprintln!("Warning: Could not fetch origin/{}: {}", current_branch, e);
+-    } else {
+-        let local = exec("git", &["rev-parse", "HEAD"]).unwrap_or_default();
+-        let remote = exec("git", &["rev-parse", &format!("origin/{}", current_branch)]).unwrap_or_default();
+-        if !local.is_empty() && !remote.is_empty() && local != remote {
+-            println!("Local branch is behind remote, rebasing...");
+-            if let Err(e) = exec("git", &["rebase", &format!("origin/{}", current_branch)]) {
+-                eprintln!("Error rebasing onto origin/{}: {}", current_branch, e);
+-                let _ = exec("git", &["rebase", "--abort"]);
+-                exit(1);
+-            }
+-        }
+-    }
+-
+     // Commit changes
+-    let label_suffix = release_label.as_ref().map(|l| format!(" ({})", l)).unwrap_or_default();
++    let label_suffix = release_label
++        .as_ref()
++        .map(|l| format!(" ({})", l))
++        .unwrap_or_default();
+     let commit_msg = match &description {
+-        Some(desc) => format!("chore: release {}{}{}\n\n{}", tag_prefix, new_version, label_suffix, desc),
+-        None => format!("chore: release {}{}{}", tag_prefix, new_version, label_suffix),
++        Some(desc) => format!(
++            "chore: release {}{}{}\n\n{}",
++            tag_prefix, new_version, label_suffix, desc
++        ),
++        None => format!(
++            "chore: release {}{}{}",
++            tag_prefix, new_version, label_suffix
++        ),
+     };
+ 
+     if let Err(e) = exec("git", &["commit", "-m", &commit_msg]) {
+@@ -693,9 +882,14 @@
+             Ok(_) => break,
+             Err(e) => {
+                 if attempt < max_push_attempts {
+-                    eprintln!("Push failed (attempt {}/{}): {}", attempt, max_push_attempts, e);
++                    eprintln!(
++                        "Push failed (attempt {}/{}): {}",
++                        attempt, max_push_attempts, e
++                    );
+                     eprintln!("Pulling with rebase and retrying...");
+-                    if let Err(rebase_err) = exec("git", &["pull", "--rebase", "origin", &current_branch]) {
++                    if let Err(rebase_err) =
++                        exec("git", &["pull", "--rebase", "origin", &current_branch])
++                    {
+                         eprintln!("Error during pull --rebase: {}", rebase_err);
+                         let _ = exec("git", &["rebase", "--abort"]);
+                         exit(1);
+Only in scripts: wait-for-pages-deployment.sh
+Only in scripts: wikidata-json-to-lino.rs

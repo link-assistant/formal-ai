@@ -1,0 +1,16 @@
+Q10978
+  aliases
+    en (grapes "🍇")
+  descriptions
+    en "edible berry of a flowering plant in the family Vitaceae"
+    hi "फल"
+    ru "плоды растений рода Виноград"
+    zh "植物及其果实"
+  id Q10978
+  labels
+    en grape
+    hi "अंगूर"
+    ru "виноград"
+    zh "葡萄"
+  type item
+success 1

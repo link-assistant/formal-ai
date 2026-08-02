@@ -1,0 +1,67 @@
+{
+  "entities": {
+    "Q5090": {
+      "type": "item",
+      "id": "Q5090",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "rice"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "рис"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "चावल"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "稻"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "staple food grain of Oryza and Zizania species, for the plant see Q161426"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "пищевой продукт"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "अनाज का एक प्रकार"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "禾本目禾本科稻属植物的果实-稻谷经脱壳、碾磨粗皮后的成品，可食用"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Rice"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "稻米"
+          },
+          {
+            "language": "zh",
+            "value": "米"
+          },
+          {
+            "language": "zh",
+            "value": "大米"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

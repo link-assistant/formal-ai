@@ -1,0 +1,63 @@
+{
+  "entities": {
+    "Q1093742": {
+      "type": "item",
+      "id": "Q1093742",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "lemon"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "лимон"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "नींबू"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "檸檬"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "fruit (for Citrus ×limon use Q500)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "плод лимонного дерева"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "एक प्रकार का फल"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "檸檬果，即檸檬樹的果實（有關該植物植株請至Q500）"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "лимон (плод)"
+          },
+          {
+            "language": "ru",
+            "value": "цитрон"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "檸檬果"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

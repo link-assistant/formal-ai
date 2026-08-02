@@ -1,0 +1,20 @@
+self_ast_census
+  target src/statement_audit/audit.rs
+  language rust
+  fidelity signature
+  byte_len 20927
+  line_count 581
+  content_id source_module_7caa0c2d7ba31698
+  symbol_count 11
+  symbols
+    function audit_corpus 19 42
+    function assess_statement 44 121
+    function capture_matches 123 138
+    function apply_document_context 140 155
+    function weigh_exclusive_claims 157 220
+    function probability_f32 223 225
+    function collect_findings 227 249
+    function learn 251 310
+    function evidence_id 312 320
+    function to_links_notation 325 551
+    function association_links 553 580

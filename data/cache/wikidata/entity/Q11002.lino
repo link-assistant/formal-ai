@@ -1,0 +1,19 @@
+Q11002
+  aliases
+    en (sugars)
+    hi ("सुक्रोज")
+    ru ("91 1100")
+    zh ("食糖")
+  descriptions
+    en "short-chain, water-soluble carbohydrate"
+    hi "ग्लूकोज और फ्रक्टोज मिलकर शक्कर(सुक्रॉज) अणु तैयार होता है।"
+    ru "распространённый продовольственный товар"
+    zh "可食用的带有甜味的晶体"
+  id Q11002
+  labels
+    en sugar
+    hi "शक्कर"
+    ru "сахар"
+    zh "糖"
+  type item
+success 1

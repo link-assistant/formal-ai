@@ -1,0 +1,16 @@
+Q31029
+  aliases
+    ru ("канат" "трос")
+    zh ("繩索" "绳索" "绳子" "奪魂索")
+  descriptions
+    en "long, flexible, and strong object, usually round in shape, made of threads, strands, or filaments twisted or braided together"
+    hi "प्लाई, सूत या धागों का रैखिक संयोजन जो आपस में मुड़े हुए या गुथे हुए होते हैं"
+    ru "витое или кручёное из синтетических, стальных или смешанных прядей, похожее на верёвку изделие"
+  id Q31029
+  labels
+    en rope
+    hi "रस्सी"
+    ru "верёвка"
+    zh "繩"
+  type item
+success 1

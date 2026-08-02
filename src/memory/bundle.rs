@@ -138,6 +138,29 @@ pub struct ParsedBundle {
     pub agent_info: BTreeMap<String, String>,
 }
 
+/// Materialize imported seed files as recomputable `seed_cache` events.
+///
+/// This is the production producer for the `seed_cache` kind (issue #494 via
+/// issue #540 §4): a full-memory import copies the bundle's seed files into
+/// the event log, so seed data participates in usage counting and — being
+/// classified as a recomputable cache by the dreaming lexicon — is among the
+/// first data reclaimed under storage pressure. Ids are stable over the file
+/// name, so re-importing the same bundle never duplicates the cache.
+#[must_use]
+pub fn seed_cache_events(seed_files: &[(String, String)]) -> Vec<MemoryEvent> {
+    seed_files
+        .iter()
+        .map(|(name, contents)| MemoryEvent {
+            id: crate::engine::stable_id("seed_cache", name),
+            kind: Some(String::from("seed_cache")),
+            intent: Some(String::from("seed")),
+            tool: Some(name.clone()),
+            content: Some(contents.clone()),
+            ..MemoryEvent::default()
+        })
+        .collect()
+}
+
 /// Build the canonical full-memory `.lino` document — the same shape the
 /// browser's "Export memory" button now produces.
 ///

@@ -1,0 +1,103 @@
+{
+  "entities": {
+    "Q144": {
+      "type": "item",
+      "id": "Q144",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "dog"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "собака"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "कुत्ता"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "犬"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "domesticated species of canid"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "домашнее животное"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पालतू जानवर"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "由欧亚大陆的灰狼驯化而来的常见家畜，被广泛作为宠物或役用动物饲养"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "domestic dog"
+          },
+          {
+            "language": "en",
+            "value": "domestic dogs"
+          },
+          {
+            "language": "en",
+            "value": "dogs"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "собака обыкновенная"
+          },
+          {
+            "language": "ru",
+            "value": "пёс"
+          },
+          {
+            "language": "ru",
+            "value": "пес"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "श्वान"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "狗"
+          },
+          {
+            "language": "zh",
+            "value": "家犬"
+          },
+          {
+            "language": "zh",
+            "value": "家狗"
+          },
+          {
+            "language": "zh",
+            "value": "狗狗"
+          },
+          {
+            "language": "zh",
+            "value": "狗子"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

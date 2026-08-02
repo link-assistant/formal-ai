@@ -1,0 +1,13 @@
+[2m[WebServer] [22m[0m[2m[35m$[0m [2m[1mbun build ./src/web/vendor-entry.js --outfile ./src/web/vendor.bundle.js --target browser --format iife --production --minify && bun build ./src/web/ocr-entry.js --outfile ./src/web/ocr.bundle.js --target browser --format iife --production --minify && bun build ./src/web/app/main.jsx --outfile ./src/web/app.js --target browser --format iife --production --minify[0m
+[2m[WebServer] [22m(node:86344) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 5 tests using 2 workers
+
+  ✓  1 [chromium] › tests/issue-747.spec.js:15:1 › multilingual desktop web search works with agent permission off and no local API (6.0s)
+  ✓  2 [chromium] › tests/issue-747.spec.js:15:1 › multilingual desktop web search works with agent permission off and no local API (6.0s)
+  ✓  3 [chromium] › tests/issue-747.spec.js:15:1 › multilingual desktop web search works with agent permission off and no local API (6.8s)
+  ✓  4 [chromium] › tests/issue-747.spec.js:15:1 › multilingual desktop web search works with agent permission off and no local API (7.0s)
+  ✓  5 [chromium] › tests/issue-747.spec.js:15:1 › multilingual desktop web search works with agent permission off and no local API (4.7s)
+
+  5 passed (26.6s)

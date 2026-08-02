@@ -97,20 +97,26 @@ function uniqueSourceFragments(fragments) {
   return unique;
 }
 
-function renderDefinitionMerge(record, fragments, facts) {
+function definitionMergeLabel(intent, language) {
+  return answerFor(intent, language) || answerFor(intent, "en") || "";
+}
+
+function renderDefinitionMerge(language, record, fragments, facts) {
+  // Issue #699 batch 2: the headings live in multilingual-responses.lino, so
+  // the merge renders in the asking language and gains new languages from data.
   const english = localizedConceptFor(record, "en");
   const displayTerm = (english && english.term) || record.term;
   const anchor = record.wikidata ? ` [${record.wikidata}]` : "";
   const lines = [
-    `Merged definition of ${displayTerm}${anchor}`,
-    `Source languages: ${sourceLanguages(fragments).join(", ")}`,
-    "",
-    "Facts:",
+    definitionMergeLabel("definition_merge_header", language)
+      .replace("{term}", displayTerm)
+      .replace("{anchor}", anchor)
+      .replace("{languages}", sourceLanguages(fragments).join(", ")),
   ];
   for (const fact of facts) {
     lines.push(`- [${fact.language}] ${fact.text}`);
   }
-  lines.push("Sources:");
+  lines.push(definitionMergeLabel("definition_merge_sources_label", language));
   for (const fragment of uniqueSourceFragments(fragments)) {
     lines.push(
       `- [${fragment.language}] ${renderSourceLink(fragment.source)} (${fragment.sourceKind})`,
@@ -142,24 +148,85 @@ function tryDefinitionMerge(prompt, options) {
   evidence.push(`definition_merge:facts:${facts.length}`);
   return {
     intent: "definition_merge",
-    content: renderDefinitionMerge(record, fragments, facts),
+    content: renderDefinitionMerge(detectLanguage(prompt), record, fragments, facts),
     confidence: 0.9,
     evidence,
   };
 }
 
-// Known person name corrections for typo suggestions. Each entry maps a
-// canonical name to a list of common misspellings (all lowercase).
-const KNOWN_PERSON_VARIANTS = [
-  { canonical: "Elon Musk", variants: ["elon musk", "elon mask", "elon muск"] },
-  { canonical: "Donald Trump", variants: ["donald trump", "donald tramp", "donald tromp"] },
-  { canonical: "Joe Biden", variants: ["joe biden", "joe bidan", "joe bidon"] },
-  { canonical: "Barack Obama", variants: ["barack obama", "barak obama", "barrack obama"] },
-  { canonical: "Vladimir Putin", variants: ["vladimir putin", "vladimir puting", "vladmir putin"] },
-  { canonical: "Albert Einstein", variants: ["albert einstein", "albert einstien", "albert enstien"] },
-  { canonical: "Isaac Newton", variants: ["isaac newton", "isaak newton", "issac newton"] },
-  { canonical: "Nikola Tesla", variants: ["nikola tesla", "nicolas tesla", "nikolai tesla"] },
-];
+// Issue #699 batch 2: the fixed table of eight people and their hand-written
+// misspellings is gone. Candidate names are every correctly spelled surface the
+// worker remembers — the entity registry, concept terms and aliases including
+// localized variants, and fact labels — so an unanticipated typo of any
+// remembered name resolves without a code change and no misspelling is stored.
+// `cachedKnownEntityNames` is declared with the other seed caches in
+// formal_ai_worker_00.js so hydrating a new seed bundle can invalidate it.
+
+function looksLikeAName(candidate) {
+  const words = String(candidate || "").trim().split(/\s+/).filter(Boolean).length;
+  return words >= 1 && words <= 4 && Array.from(String(candidate)).length <= 48;
+}
+
+function knownEntityNames() {
+  if (cachedKnownEntityNames) return cachedKnownEntityNames;
+  const names = [];
+  const push = (candidate) => {
+    const trimmed = String(candidate || "").trim();
+    if (!trimmed || !looksLikeAName(trimmed)) return;
+    if (names.some((existing) => existing.toLowerCase() === trimmed.toLowerCase())) return;
+    names.push(trimmed);
+  };
+  if (ENTITY_NAMES_LINO) {
+    const root = parseLinoTree(ENTITY_NAMES_LINO);
+    const registry = root.children.find((child) => child.name === "entity_names") || root;
+    for (const entity of registry.children) {
+      if (entity.name !== "entity") continue;
+      for (const lexeme of entity.children) {
+        if (lexeme.name !== "lexeme") continue;
+        for (const surface of lexeme.children) {
+          if (surface.name !== "surface") continue;
+          const text = surface.children.find((child) => child.name === "text");
+          if (text) push(text.value);
+        }
+      }
+    }
+  }
+  for (const concept of Array.isArray(CONCEPTS) ? CONCEPTS : []) {
+    push(concept.term);
+    for (const alias of concept.aliases || []) push(alias);
+    for (const localized of concept.localized || []) {
+      push(localized.term);
+      for (const alias of localized.aliases || []) push(alias);
+    }
+  }
+  for (const fact of Array.isArray(FACTS) ? FACTS : []) {
+    push(fact.subjectLabel);
+    push(fact.valueLabel);
+    for (const localized of fact.localized || []) {
+      push(localized.subjectLabel);
+      push(localized.valueLabel);
+    }
+  }
+  cachedKnownEntityNames = names;
+  return names;
+}
+
+function normalizeEntityName(term) {
+  const out = [];
+  let pendingSpace = false;
+  for (const character of String(term || "").toLowerCase()) {
+    // `Alphabetic` rather than `L` so Devanagari vowel signs and other
+    // combining marks survive, matching Rust's `char::is_alphanumeric`.
+    if (/[\p{Alphabetic}\p{N}]/u.test(character)) {
+      if (pendingSpace && out.length > 0) out.push(" ");
+      pendingSpace = false;
+      out.push(character);
+    } else {
+      pendingSpace = true;
+    }
+  }
+  return out.join("");
+}
 
 function editDistance(a, b) {
   const left = Array.from(String(a || ""));
@@ -261,20 +328,20 @@ function stripKnownPrefix(value, prefixes) {
 }
 
 function suggestNameCorrection(term) {
-  const lower = term.toLowerCase();
-  for (const { canonical, variants } of KNOWN_PERSON_VARIANTS) {
-    if (variants.includes(lower)) return canonical;
+  // One edit per eight characters, at least one: long names tolerate the extra
+  // slips long names attract while short ones do not collapse into each other.
+  const probe = normalizeEntityName(term);
+  if (!probe) return null;
+  let best = null;
+  for (const candidate of knownEntityNames()) {
+    const normalized = normalizeEntityName(candidate);
+    if (normalized === probe) return null;
+    const budget = Math.max(1, Math.floor(Array.from(normalized).length / 8));
+    const distance = editDistance(probe, normalized);
+    if (distance > budget) continue;
+    if (!best || distance < best.distance) best = { distance, candidate };
   }
-  for (const { canonical, variants } of KNOWN_PERSON_VARIANTS) {
-    const canonicalLower = canonical.toLowerCase();
-    if (
-      variants.some((v) => editDistance(lower, v) === 1) ||
-      editDistance(lower, canonicalLower) === 1
-    ) {
-      return canonical;
-    }
-  }
-  return null;
+  return best ? best.candidate : null;
 }
 
 function isWhoIsPrompt(normalized) {
@@ -294,10 +361,13 @@ function tryWhoIsQuestion(prompt) {
   const query = extractConceptQuery(prompt);
   if (!query) return null;
   const term = query.term;
+  const language = query.responseLanguage || detectLanguage(prompt);
   const suggestion = suggestNameCorrection(term);
-  const content = suggestion
-    ? `I don't have a Links Notation fact for "${term}" yet. Did you mean "${suggestion}"? Add a fact or rule in Links Notation and run the request again.`
-    : `I don't have a Links Notation fact for "${term}" yet. Add a fact or rule in Links Notation and run the request again.`;
+  const intent = suggestion ? "who_is_unknown_entity_suggestion" : "who_is_unknown_entity";
+  const template = answerFor(intent, language) || answerFor(intent, "en");
+  if (!template) return null;
+  let content = template.replace("{term}", term);
+  if (suggestion) content = content.replace("{corrected}", suggestion);
   return {
     intent: "who_is_question",
     content,
@@ -319,6 +389,7 @@ function tryWhoIsQuestion(prompt) {
 // never as hardcoded per-language word lists in worker code.
 
 let cachedTerminalCommandVocabulary = null;
+let cachedShellIntentVocabulary = null;
 // Parse the loaded terminal-command vocabulary into pooled trigger lists.
 // Mirrors terminal_command_vocabulary() in src/seed/terminal_commands.rs;
 // phrases/verbs are pooled across every language because detection is
@@ -397,20 +468,37 @@ function detectTerminalCommand(prompt) {
   return null;
 }
 
-// The natural-language prose lives in data/seed/multilingual-responses.lino
-// under the `agent_suggestion` (Chat mode) and `agent_suggestion_active` (Agent
-// mode on) intents, with a `{command}` placeholder. This mirror only looks the
-// template up via answerFor() and fills in the detected command, so no
-// per-language wording is hardcoded in the worker. Parity with the Rust solver
-// (src/solver_terminal.rs, terminal_body) is kept by both engines reading the
-// same seed intent.
+function shellIntentVocabulary() {
+  if (cachedShellIntentVocabulary) return cachedShellIntentVocabulary;
+  const root = parseLinoTree(SHELL_INTENTS_LINO);
+  const container = root.children.find((child) => child.name === "shell_intents") || root;
+  const intents = (container.children.find((child) => child.name === "intents") || {}).children || [];
+  const pairs = [];
+  for (const intent of intents) {
+    if (intent.name !== "intent" || (childValue(intent, "argument") || "none") !== "none") continue;
+    const command = childValue(intent, "command");
+    if (!command || command.startsWith("formal-ai:")) continue;
+    for (const language of intent.children.filter((child) => child.name === "language")) {
+      for (const cue of language.children.filter((child) => child.name === "cue"))
+        pairs.push([cue.value.toLowerCase(), command]);
+    }
+  }
+  return (cachedShellIntentVocabulary = pairs);
+}
+function detectSemanticShellCommand(prompt) {
+  const lower = String(prompt || "").toLowerCase();
+  let best = null;
+  for (const [cue, command] of shellIntentVocabulary())
+    if (lower.includes(cue) && (!best || cue.length > best[0].length)) best = [cue, command];
+  return best ? best[1] : null;
+}
 function terminalCommandBody(command, language, agentModeOn) {
   const intent = agentModeOn ? "agent_suggestion_active" : "agent_suggestion";
   return answerFor(intent, language).split("{command}").join(command);
 }
 
 function tryTerminalCommand(prompt, language, preferences) {
-  const command = detectTerminalCommand(prompt);
+  const command = detectTerminalCommand(prompt) || detectSemanticShellCommand(prompt);
   if (!command) return null;
   const agentModeOn = Boolean(preferences && preferences.agentMode);
   return {

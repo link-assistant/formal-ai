@@ -1,7 +1,8 @@
 # Desktop tool-permission and Services UI translations (issue #511/#514).
 # Split out of i18n-catalog.lino to stay under the Links Notation line limit.
-# The loader (src/web/i18n.js) fetches this file and i18n-catalog.lino and
-# merges their per-locale keys; tests/e2e/scripts/check-i18n-catalog.mjs enforces parity.
+# The loader (src/web/i18n.js) fetches this file together with i18n-catalog.lino
+# and i18n-catalog-messages.lino and merges their per-locale keys;
+# tests/e2e/scripts/check-i18n-catalog.mjs enforces parity.
 
 en
   permissions
@@ -18,12 +19,57 @@ en
       read_local_file
         label "Read local file"
         description "Read a file from the allowed local workspace."
+      write_file
+        label "Write file"
+        description "Create or replace a file in the allowed workspace."
+      edit_file
+        label "Edit file"
+        description "Replace selected text in a workspace file."
+      multi_edit
+        label "Multi-edit"
+        description "Apply several text edits to a workspace file."
       code_exec
         label "Code exec"
         description "Run code inside the Docker sandbox."
       shell
         label "Shell"
         description "Run a shell command on the host machine."
+      computer_fs_read
+        label "Read file"
+        description "Read a file from the isolated computer-use workspace."
+      computer_fs_write
+        label "Write file"
+        description "Write a confirmed file in the isolated computer-use workspace."
+      computer_fs_list
+        label "List files"
+        description "List entries in the isolated computer-use workspace."
+      computer_fs_move
+        label "Move file"
+        description "Move a confirmed file inside the isolated computer-use workspace."
+      computer_shell_run
+        label "Structured command"
+        description "Run a confirmed allowlisted data operation in isolation."
+      computer_http_fetch
+        label "Structured HTTP fetch"
+        description "Fetch and cache an HTTP(S) resource with provenance."
+      computer_http_post
+        label "Structured HTTP post"
+        description "Submit a confirmed HTTP POST and cache its response with provenance."
+      computer_dom_query
+        label "DOM query"
+        description "Extract text with a selector from a cached document."
+      computer_dom_extract
+        label "Structured extract"
+        description "Extract a value with a JSON pointer from cached structured data."
+      computer_archive_pack
+        label "Pack archive"
+        description "Create a confirmed deterministic archive in the isolated workspace."
+      computer_archive_unpack
+        label "Unpack archive"
+        description "Extract a confirmed deterministic archive inside the isolated workspace."
+      computer_process_status
+        label "Process status"
+        description "Record the status of the isolated computer-use workspace."
     panel
       title "Desktop tool permissions"
       active "Agent tools active"
@@ -84,6 +130,16 @@ en
       dockerUnavailable "Docker unavailable"
       error "error"
       unknown "unknown"
+  dataMigration
+    title "Profile data moved"
+    body "Your data was carried over from an earlier app profile ({source})."
+    bodyUnknown "Your profile was checked for data left behind by an earlier version."
+    copied "Transferred: {items}"
+    nothing "Nothing was left to transfer — this profile is already complete."
+    replay "Check again"
+    replaying "Checking..."
+    dismiss "Dismiss"
+    failed "The transfer could not be completed: {error}"
   updates
     title "Updates"
     currentVersion "Version"
@@ -130,12 +186,57 @@ ru
       read_local_file
         label "Чтение локального файла"
         description "Прочитать файл из разрешённого локального рабочего пространства."
+      write_file
+        label "Запись файла"
+        description "Создать или заменить файл в разрешённом рабочем пространстве."
+      edit_file
+        label "Изменение файла"
+        description "Заменить выбранный текст в файле рабочего пространства."
+      multi_edit
+        label "Несколько изменений"
+        description "Применить несколько изменений к файлу рабочего пространства."
       code_exec
         label "Выполнение кода"
         description "Запустить код в песочнице Docker."
       shell
         label "Оболочка"
         description "Выполнить команду оболочки на хост-машине."
+      computer_fs_read
+        label "Прочитать файл"
+        description "Прочитать файл из изолированного рабочего пространства."
+      computer_fs_write
+        label "Записать файл"
+        description "Записать подтверждённый файл в изолированном рабочем пространстве."
+      computer_fs_list
+        label "Список файлов"
+        description "Показать содержимое изолированного рабочего пространства."
+      computer_fs_move
+        label "Переместить файл"
+        description "Переместить подтверждённый файл внутри изолированного рабочего пространства."
+      computer_shell_run
+        label "Структурированная команда"
+        description "Выполнить подтверждённую разрешённую операцию с данными в изоляции."
+      computer_http_fetch
+        label "Структурированный HTTP GET"
+        description "Загрузить и кэшировать HTTP(S)-ресурс с данными о происхождении."
+      computer_http_post
+        label "Структурированный HTTP POST"
+        description "Выполнить подтверждённый HTTP POST и кэшировать ответ с данными о происхождении."
+      computer_dom_query
+        label "DOM-запрос"
+        description "Извлечь текст по селектору из кэшированного документа."
+      computer_dom_extract
+        label "Извлечение данных"
+        description "Извлечь значение по JSON-указателю из кэшированных данных."
+      computer_archive_pack
+        label "Упаковать архив"
+        description "Создать подтверждённый детерминированный архив в изолированном пространстве."
+      computer_archive_unpack
+        label "Распаковать архив"
+        description "Извлечь подтверждённый детерминированный архив в изолированном пространстве."
+      computer_process_status
+        label "Состояние процесса"
+        description "Записать состояние изолированного рабочего пространства."
     panel
       title "Разрешения инструментов рабочего стола"
       active "Инструменты агента активны"
@@ -196,6 +297,16 @@ ru
       dockerUnavailable "Docker недоступен"
       error "ошибка"
       unknown "неизвестно"
+  dataMigration
+    title "Данные профиля перенесены"
+    body "Ваши данные перенесены из профиля прежней версии ({source})."
+    bodyUnknown "Профиль проверен на данные, оставшиеся от прежней версии."
+    copied "Перенесено: {items}"
+    nothing "Переносить нечего — профиль уже полный."
+    replay "Проверить ещё раз"
+    replaying "Проверка..."
+    dismiss "Скрыть"
+    failed "Не удалось завершить перенос: {error}"
   updates
     title "Обновления"
     currentVersion "Версия"
@@ -242,12 +353,57 @@ zh
       read_local_file
         label "读取本地文件"
         description "从允许的本地工作区读取文件。"
+      write_file
+        label "写入文件"
+        description "在允许的工作区中创建或替换文件。"
+      edit_file
+        label "编辑文件"
+        description "替换工作区文件中的选定文本。"
+      multi_edit
+        label "多项编辑"
+        description "对工作区文件应用多项文本编辑。"
       code_exec
         label "执行代码"
         description "在 Docker 沙箱中运行代码。"
       shell
         label "Shell"
         description "在主机上运行 shell 命令。"
+      computer_fs_read
+        label "读取文件"
+        description "从隔离的计算机操作工作区读取文件。"
+      computer_fs_write
+        label "写入文件"
+        description "在隔离的计算机操作工作区中写入已确认的文件。"
+      computer_fs_list
+        label "列出文件"
+        description "列出隔离的计算机操作工作区中的条目。"
+      computer_fs_move
+        label "移动文件"
+        description "在隔离的计算机操作工作区内移动已确认的文件。"
+      computer_shell_run
+        label "结构化命令"
+        description "在隔离环境中运行已确认的许可数据操作。"
+      computer_http_fetch
+        label "结构化 HTTP 获取"
+        description "获取并缓存带来源信息的 HTTP(S) 资源。"
+      computer_http_post
+        label "结构化 HTTP 提交"
+        description "执行已确认的 HTTP POST，并缓存带来源信息的响应。"
+      computer_dom_query
+        label "DOM 查询"
+        description "使用选择器从缓存文档中提取文本。"
+      computer_dom_extract
+        label "结构化提取"
+        description "使用 JSON 指针从缓存的结构化数据中提取值。"
+      computer_archive_pack
+        label "打包归档"
+        description "在隔离工作区中创建已确认的确定性归档。"
+      computer_archive_unpack
+        label "解包归档"
+        description "在隔离工作区中提取已确认的确定性归档。"
+      computer_process_status
+        label "进程状态"
+        description "记录隔离的计算机操作工作区状态。"
     panel
       title "桌面工具权限"
       active "代理工具已激活"
@@ -308,6 +464,16 @@ zh
       dockerUnavailable "Docker 不可用"
       error "错误"
       unknown "未知"
+  dataMigration
+    title "配置文件数据已迁移"
+    body "您的数据已从早期版本的配置文件（{source}）迁移过来。"
+    bodyUnknown "已检查配置文件中早期版本遗留的数据。"
+    copied "已迁移：{items}"
+    nothing "没有需要迁移的内容——此配置文件已完整。"
+    replay "再次检查"
+    replaying "检查中..."
+    dismiss "关闭"
+    failed "迁移未能完成：{error}"
   updates
     title "更新"
     currentVersion "版本"
@@ -354,12 +520,57 @@ hi
       read_local_file
         label "लोकल फ़ाइल पढ़ें"
         description "अनुमत लोकल वर्कस्पेस से एक फ़ाइल पढ़ें।"
+      write_file
+        label "फ़ाइल लिखें"
+        description "अनुमत वर्कस्पेस में फ़ाइल बनाएँ या बदलें।"
+      edit_file
+        label "फ़ाइल संपादित करें"
+        description "वर्कस्पेस फ़ाइल में चुना हुआ पाठ बदलें।"
+      multi_edit
+        label "बहु-संपादन"
+        description "वर्कस्पेस फ़ाइल में कई पाठ संपादन लागू करें।"
       code_exec
         label "कोड चलाएँ"
         description "Docker सैंडबॉक्स में कोड चलाएँ।"
       shell
         label "शेल"
         description "होस्ट मशीन पर एक शेल कमांड चलाएँ।"
+      computer_fs_read
+        label "फ़ाइल पढ़ें"
+        description "अलग कंप्यूटर-उपयोग वर्कस्पेस से फ़ाइल पढ़ें।"
+      computer_fs_write
+        label "फ़ाइल लिखें"
+        description "अलग वर्कस्पेस में पुष्टि की गई फ़ाइल लिखें।"
+      computer_fs_list
+        label "फ़ाइलें सूचीबद्ध करें"
+        description "अलग कंप्यूटर-उपयोग वर्कस्पेस की प्रविष्टियाँ दिखाएँ।"
+      computer_fs_move
+        label "फ़ाइल ले जाएँ"
+        description "अलग वर्कस्पेस में पुष्टि की गई फ़ाइल ले जाएँ।"
+      computer_shell_run
+        label "संरचित कमांड"
+        description "अलगाव में पुष्टि किया हुआ अनुमत डेटा ऑपरेशन चलाएँ।"
+      computer_http_fetch
+        label "संरचित HTTP फ़ेच"
+        description "स्रोत विवरण के साथ HTTP(S) संसाधन फ़ेच और कैश करें।"
+      computer_http_post
+        label "संरचित HTTP पोस्ट"
+        description "पुष्टि किया HTTP POST भेजें और स्रोत विवरण के साथ उत्तर कैश करें।"
+      computer_dom_query
+        label "DOM क्वेरी"
+        description "कैश किए दस्तावेज़ से चयनकर्ता द्वारा पाठ निकालें।"
+      computer_dom_extract
+        label "संरचित निष्कर्षण"
+        description "कैश किए डेटा से JSON पॉइंटर द्वारा मान निकालें।"
+      computer_archive_pack
+        label "आर्काइव पैक करें"
+        description "अलग वर्कस्पेस में पुष्टि किया नियतात्मक आर्काइव बनाएँ।"
+      computer_archive_unpack
+        label "आर्काइव अनपैक करें"
+        description "अलग वर्कस्पेस में पुष्टि किया नियतात्मक आर्काइव निकालें।"
+      computer_process_status
+        label "प्रोसेस स्थिति"
+        description "अलग कंप्यूटर-उपयोग वर्कस्पेस की स्थिति दर्ज करें।"
     panel
       title "डेस्कटॉप टूल अनुमतियाँ"
       active "एजेंट टूल सक्रिय"
@@ -420,6 +631,16 @@ hi
       dockerUnavailable "Docker उपलब्ध नहीं"
       error "त्रुटि"
       unknown "अज्ञात"
+  dataMigration
+    title "प्रोफ़ाइल डेटा स्थानांतरित हुआ"
+    body "आपका डेटा पहले के ऐप प्रोफ़ाइल ({source}) से लाया गया है।"
+    bodyUnknown "पुराने संस्करण से छूटे डेटा के लिए प्रोफ़ाइल की जाँच की गई।"
+    copied "स्थानांतरित: {items}"
+    nothing "स्थानांतरित करने को कुछ नहीं बचा — यह प्रोफ़ाइल पहले से पूर्ण है।"
+    replay "फिर से जाँचें"
+    replaying "जाँच हो रही है..."
+    dismiss "बंद करें"
+    failed "स्थानांतरण पूरा नहीं हो सका: {error}"
   updates
     title "अपडेट"
     currentVersion "संस्करण"

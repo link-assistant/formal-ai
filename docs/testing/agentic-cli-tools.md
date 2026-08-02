@@ -8,6 +8,16 @@ from observable evidence.
 This runbook documents the workflow that surfaced #624, #626, and #627, and it
 feeds the CI e2e suite proposed in #625.
 
+**Scope — what CI actually runs today.** The release workflow keeps the focused
+Agent CLI check, and
+[`agentic-cli-matrix.yml`](../../.github/workflows/agentic-cli-matrix.yml)
+drives every seeded third-party client through the recording proxy. Its matrix
+is generated from `formal-ai clients --format json` plus the version lock, so
+adding a client or changing its verification contract changes CI without a
+second client-id switch. Successful prompt legs also emit observations for the
+human-gated contract learner described below. The manual commands remain useful
+for reproducing a single leg or collecting visual GUI evidence.
+
 ## Setup
 
 Build the server and wrapper binaries:
@@ -21,7 +31,7 @@ Install the client CLIs the same way users receive them. For CI, replace
 test result:
 
 ```bash
-bun add --global @openai/codex@latest opencode-ai@latest @google/gemini-cli@latest @link-assistant/agent@latest
+bun add --global @openai/codex@latest opencode-ai@latest @google/gemini-cli@latest @link-assistant/agent@latest t3@latest
 ```
 
 Start Formal AI in agent mode on loopback:
@@ -88,6 +98,71 @@ with-formal-ai --base-url http://127.0.0.1:8090 opencode run "list the files in 
 
 Expected protocol path: OpenAI `chat/completions`.
 
+### OpenCode VS Code extension
+
+The official `sst-dev.opencode` extension is a separate surface from the
+OpenCode CLI/TUI and desktop app. Its extension command creates a VS Code
+terminal and runs `opencode --port <port>`, so it consumes OpenCode's standard
+provider config and the extension host's environment. Install the extension
+and CLI, then start a fresh, isolated window through the wrapper:
+
+```bash
+code --install-extension sst-dev.opencode
+with-formal-ai --base-url http://127.0.0.1:8090 opencode-vscode
+```
+
+Run **Open opencode** in that window and ask, using different wording from the
+CLI row, to list the workspace files. The extension terminal must show model
+`formalai/formal-ai`; the logging proxy must record a Chat Completions request
+and at least one tool call/result round trip. Record `OPENCODE_CALLER=vscode`,
+the extension version, request path, tool name, and result in the #671 matrix.
+Use `opencode-code` as an equivalent wrapper alias. For persistent setup, use
+`with-formal-ai --global opencode-vscode`; it manages the same
+`~/.config/opencode/opencode.json` file as the CLI target and `--undo` restores
+the backup.
+
+The automated Linux harness installs the real Marketplace extension into an
+isolated VS Code profile, invokes its command through a development-only test
+driver, verifies the created terminal and caller environment, and exports the
+exact provider config inherited by the extension host. It then replays that
+config through OpenCode's non-interactive runner and asserts the proxy's
+tool-call/result evidence. The replay avoids depending on TUI keystroke timing
+while exercising the same OpenCode provider configuration:
+
+```bash
+experiments/opencode_vscode_e2e/run.sh
+```
+
+Expected protocol path: OpenAI `chat/completions`.
+
+### OpenCode Desktop
+
+Treat the packaged desktop application as a separate client, not as an alias
+for the OpenCode CLI. Launch it through the wrapper:
+
+```bash
+with-formal-ai --base-url http://127.0.0.1:8090 opencode-desktop
+```
+
+The test must use an official packaged executable or an extracted AppImage.
+Set `FORMAL_AI_OPENCODE_DESKTOP_BIN` when the package is not installed in its
+normal platform location. In the renderer, verify the selected model reads
+`formal-ai`, submit a prompt that requires file Write and Shell calls, and
+expand the changed-file row in the session. Preserve all of the following:
+
+- the desktop version and package URL;
+- the injected `OPENCODE_CONFIG` JSON and environment names;
+- a rendered transcript showing the tool calls and `formal-ai` model badge;
+- an expanded diff from the same session;
+- the resulting workspace file and server/desktop log.
+
+The issue #762 reference run used OpenCode Desktop v1.18.3 on Linux. It produced
+two Write calls, one Shell call, and a two-file rendered diff. The preserved
+[tool-call screenshot](../../experiments/issue-762-desktop-e2e/tool-calls.png),
+[expanded diff](../../experiments/issue-762-desktop-e2e/final-diff.png), and
+[case-study index](../case-studies/issue-762/README.md) are the baseline entry
+for the multi-client matrix tracked by #671.
+
 ### Agent CLI
 
 The wrapper injects an OpenCode-shaped provider JSON through
@@ -137,6 +212,29 @@ FORMAL_AI_API_KEY="sk-local-demo" codex exec \
 
 Expected protocol path: OpenAI `responses`.
 
+### T3 Code
+
+T3 Code hosts Codex and Claude sessions in its local web interface. The wrapper
+isolates Codex configuration from the user's normal home and launches the real
+`t3` executable:
+
+```bash
+with-formal-ai --base-url http://127.0.0.1:8090 t3code
+```
+
+The aliases `t3code` and `t3` are equivalent. In the opened UI, create a Codex
+thread and ask it to read `alpha.txt`; the final answer must contain
+`ALPHA_MARKER_11111`. Provider settings should show provider `formalai`, model
+`formal-ai`, base URL `http://127.0.0.1:8090/api/openai/v1`, and a non-empty API
+key. For a Claude thread, launch `with-formal-ai --protocol anthropic ...` and
+verify the configured Anthropic base URL is
+`http://127.0.0.1:8090/api/anthropic`. Use `--non-interactive` when validating
+startup without opening a browser; it maps to T3 Code's `--no-browser`.
+
+Expected protocol paths: OpenAI `responses` for Codex sessions and Anthropic
+`messages` for Claude sessions. Record both the T3 Code session output and the
+proxy JSONL row for the multi-CLI matrix tracked by #671.
+
 ### Gemini CLI
 
 Gemini CLI uses the native Gemini routes. Isolate it from cached OAuth state in
@@ -185,6 +283,7 @@ Cover all protocol paths because bugs can hide in one surface while another
 passes:
 
 - OpenAI `chat/completions`: `opencode` and `agent`.
+- OpenAI `chat/completions`: `opencode-desktop` through the embedded sidecar.
 - OpenAI `responses`: `codex`.
 - Gemini `streamGenerateContent`: `gemini`.
 
@@ -241,19 +340,198 @@ summary, the final CLI output, and a minimal server-side `curl` repro that sends
 the same `messages` or `input` plus `tools` directly to the server. The `curl`
 repro lets maintainers separate a server routing bug from a CLI integration bug.
 
-## CI Shape
+## CI Shape (implemented)
 
-The CI e2e suite should follow this sequence:
+[`.github/workflows/agentic-cli-matrix.yml`](../../.github/workflows/agentic-cli-matrix.yml)
+runs this sequence as one job per client on every pull request that touches
+server, protocol, seed or matrix code (#625 / #671):
 
-1. Build `formal-ai` and `with-formal-ai`.
-2. Install pinned CLI versions.
-3. Create the fixture workspace and marker files.
-4. Start `formal-ai serve --agent-mode --host 127.0.0.1 --port 8080`.
-5. Start `formal-ai proxy --listen 127.0.0.1:8090 --upstream http://127.0.0.1:8080 --log proxy.jsonl`.
-6. Run the phrasing matrix for each CLI and protocol path.
-7. Assert on both `proxy.jsonl` and stripped CLI output.
-8. Fail on regressions in provenance, offered tools, returned tool calls, schema,
-   or final marker content.
+1. Build `formal-ai` once and derive a JSON matrix plan from the seed registry.
+2. Share that binary and plan with every generated leg.
+3. Install the client's pinned version from
+   [`experiments/agentic_cli_matrix/clients.lock`](../../experiments/agentic_cli_matrix/clients.lock).
+   The GUI rows (OpenCode Desktop's AppImage, the VS Code extension host,
+   Cursor) install under Xvfb.
+4. Create the fixture workspace and marker files.
+5. Start `formal-ai serve --agent-mode --host 127.0.0.1 --port <leg port>`.
+6. Start `formal-ai proxy --listen 127.0.0.1:<leg port + 1> --upstream http://127.0.0.1:<leg port> --log proxy.jsonl --body`.
+7. Run the contract-selected case sequence for that client.
+8. Assert on both `proxy.jsonl` and stripped client output.
+9. Fail on regressions in provenance, offered tools, returned tool calls, schema,
+   round count, or final marker content.
+10. Aggregate successful headless and interactive observations and render a
+    deterministic review artifact with `formal-ai clients learn`.
+
+Every recorded `proxy.jsonl` is uploaded as a build artifact — on green legs as
+well as red ones — so `claude`, `grok` and `aider`, the integrations PR #648
+shipped without ever running, each have a replayable session on record.
+
+### Matrix rows
+
+Every client `formal-ai clients` knows about has a row. The
+`agentic_cli_matrix_covers_every_seeded_client` test in
+[`tests/unit/issue_671_matrix_coverage.rs`](../../tests/unit/issue_671_matrix_coverage.rs)
+fails the build if a client is added to `data/seed/client-integrations.lino`
+without one, so coverage cannot be "inferred from the shared adapters" again.
+
+| Client | Pinned as | Leg shape |
+| --- | --- | --- |
+| `codex` | `@openai/codex` | `cli` — headless + PTY |
+| `t3code` | `t3` (`npm-native`, needs Node ≥ 22) | `server` — launch + configuration proof |
+| `opencode` | `opencode-ai` | `cli` — headless + PTY |
+| `opencode-vscode` | VS Code tarball + `sst-dev.opencode` extension | `gui` — launch under Xvfb |
+| `opencode-desktop` | AppImage (see [issue-762 case study](../case-studies/issue-762/README.md)) | `gui` — launch under Xvfb |
+| `agent` | `@link-assistant/agent` | `cli` — headless + PTY (reference leg) |
+| `cursor` | vendor install script | `mcp` — JSON-RPC tool-server leg |
+| `gemini` | `@google/gemini-cli` | `cli` — headless + PTY |
+| `claude` | `@anthropic-ai/claude-code` | `cli` — headless + PTY |
+| `qwen` | `@qwen-code/qwen-code` | `cli` — headless + PTY |
+| `grok` | `@vibe-kit/grok-cli` | `cli` — headless + PTY |
+| `aider` | `aider-chat` | `cli` — headless + PTY |
+
+The leg shape and its client-specific behavior are not hardcoded in the
+harness. `run_leg.sh` reads the `verification` object from
+`formal-ai clients --format json`: surface, file-delivery mode, headless flags,
+interactive environment and onboarding keys, required/forbidden tools, launch
+arguments/readiness checks, extension package, sandbox needs and the expected
+vendor-auth boundary. There are four surfaces, and every client gets exactly
+one:
+
+- **`cli`** — prompt in, answer out. The full case list below runs against it.
+- **`server`** (`t3code`) — the client is a web app that serves a UI rather than
+  printing an answer, so the leg starts it and proves the configuration reached
+  it.
+- **`gui`** (`opencode-vscode`, `opencode-desktop`) — same, for a windowed
+  client under Xvfb.
+- **`mcp`** (`cursor`) — we are not the model at all: the wrapper writes
+  `.cursor/mcp.json` and Cursor's *own* model calls us as a tool. The leg drives
+  the `/mcp` JSON-RPC surface directly — `initialize`, `tools/list`,
+  `tools/call` and an unknown-tool refusal — and asserts that the CLI still
+  demands its own vendor credentials, so the day Cursor runs a turn without them
+  the leg fails and has to grow the full case list.
+
+A launch leg cannot assert on a model exchange: a GUI sends nothing until a
+human types. What it asserts instead is that the wrapper's configuration reached
+the *running application* — `matrix_assert_launch_configured` walks the launched
+process tree and requires the base URL either in a process's environment or in
+the config file that environment names. The first version of this assertion
+("something reached the proxy") was satisfied by the harness's own `/health`
+probe, i.e. it could never fail, which is worse than no assertion at all.
+
+### Cases and the defect each one guards
+
+| Case | Guards |
+| --- | --- |
+| `greeting` | #650 defect 1 — `/responses` dropped `instructions`. |
+| `read-file` | #671 — the real Codex CLI re-planned one `exec_command` 281 times; the leg bounds the model rounds. |
+| `summarize` | #650 defect 3 — summarization requests answered as fresh tasks. |
+| `interactive` | #650 defect 2 and #713 — an empty interactive message wedged the TUI, and two launch-blocking interactive-only bugs survived 160 `--non-interactive` runs. |
+| `globally` | #650 defect 4 — the `--globally` alias was rejected. |
+| `constraints` | The upstream limitations below, plus #746's hosted `web_search` advertisement. |
+| `launch` | #713 — a client that starts and is *not* pointed at our server is a launch blocker no headless run can see. |
+| `mcp` | The tool-server surface (`src/mcp.rs`): the handshake identifies us, `formal_ai_chat` is advertised, a call reaches the real solver, and an unknown tool name is refused with `-32601` rather than silently answered. |
+
+### Upstream constraints, asserted rather than skipped
+
+Each of these is a live assertion in `run_leg.sh`. When an upstream release
+lifts the constraint the assertion fails, which is the signal to delete it and
+add real coverage — the opposite of a skip, which would stay silent forever.
+
+- **Gemini headless `-p` advertises no `functionDeclarations`** — *lifted
+  upstream, and the matrix is how we found out.* Recorded in the #620 discussion
+  and never filed upstream as its own issue. Under the pinned
+  `@google/gemini-cli@0.51.0` the headless run advertises `read_file`, `glob`,
+  `grep_search` and others, and the `gemini` leg's `read-file` case now proves a
+  real headless tool call round-trips. The assertion was inverted rather than
+  deleted: a release that takes the tools away again would silently downgrade
+  every headless gemini case to prose-only coverage, so the leg now fails if
+  `read_file` stops being advertised. This is exactly the loud failure the
+  assert-don't-skip rule exists to produce.
+- **Codex, Gemini and Qwen have no headless approval handshake** (#511, PR
+  #512). Those legs assert no approval prompt appears; one showing up means the
+  tool loop silently changed shape.
+- **The real Codex TUI advertises web search as a hosted `{"type":"web_search"}`
+  tool** (#746) — something a hand-written `curl` never does, which is why the
+  matrix drives real CLIs instead of the API surface.
+
+### Running it locally, and replaying it offline
+
+```bash
+experiments/agentic_cli_matrix/run_matrix.sh              # every locked client
+MATRIX_RECORD=1 experiments/agentic_cli_matrix/run_matrix.sh claude grok aider
+experiments/agentic_cli_matrix/replay.sh                  # offline, jq only
+```
+
+`run_matrix.sh` is the CI matrix serialised onto one machine; each leg's base
+port is `8900 + <position in clients.lock> * 60`, the same formula emitted by
+`plan_matrix.sh` for CI, and a unit test asserts the plan has no overlaps.
+`replay.sh` re-asserts the
+transcript-level invariants of every transcript under `recorded/` with no CLI,
+no server, no network and no credentials, which is what makes the never-run
+integrations actually replayable rather than merely archived. See
+[`experiments/agentic_cli_matrix/README.md`](../../experiments/agentic_cli_matrix/README.md)
+for `MATRIX_ARGS_<CLIENT>`, `MATRIX_ISOLATED_NPM` and the Python pin `aider`
+needs.
+
+### Learning reusable verification contracts
+
+Every successful prompt leg normalizes its `read-file` and independently worded
+interactive run with:
+
+```bash
+formal-ai clients observe \
+  --transcript proxy.jsonl \
+  --client <client> \
+  --capability read_file \
+  --task-wording "<the exact prompt>" \
+  --expected-marker ALPHA_MARKER_11111
+```
+
+`formal-ai clients learn observations.jsonl [...]` groups observations by
+client and capability. A behavior is reusable only after at least two distinct
+normalized task wordings agree. The learner compares delivery mode with the
+seeded contract and intersects invoked tool names across every observation; it
+never edits the seed. Any proposed `file_delivery` or
+`required_response_tool` amendment is emitted with stable evidence links and
+`decision "awaiting_human_review"`.
+
+The CI `learn` job aggregates every real-client artifact and publishes
+`client-contract-learning.lino`. The committed
+[issue #671 Agent CLI case study](../case-studies/issue-671/README.md) contains
+the deterministic 16-observation baseline and proves that Formal AI can plan
+and execute the same learning command through the real Agent CLI.
+
+### What driving the real CLIs found
+
+Every one of these passed a hand-written request against the same server, and
+each is now covered by a unit or integration test as well as by the leg that
+found it:
+
+- **A read request destroyed the file it was asked to read.** `opencode`, `qwen`
+  and `agent` sent `read the file alpha.txt and print its contents`; the general
+  planner's marker-led branch accepted a positional target cue plus a trailing
+  content lead with no write verb and planned `write(alpha.txt, "\"")`. The
+  branch now requires a write action cue when the content marker precedes the
+  file clause, and rejects a payload with no alphanumeric character at all.
+- **Relative tool paths.** The planner names a file the way the request spelt
+  it; `agent` answered `Error: File not found: /alpha.txt` and `qwen` answered
+  `File path must be absolute, but was relative: alpha.txt`. Both advertise the
+  requirement, so it is read from the request — property name `absolute_path`,
+  or the word "absolute" in the property or tool description — instead of being
+  hardcoded per client. A client that accepts relative paths keeps the request's
+  own spelling, because absolutising is only correct while the server shares the
+  client's working directory.
+- **Gemini's hardcoded utility model.** The Gemini CLI issues next-speaker and
+  web-search-fallback calls against a hardcoded `gemini-*` flash model; the
+  server answered `400 unsupported model`. It now answers those as itself rather
+  than echoing back a provenance it does not have.
+- **Model provenance for path-carried model ids.** Gemini names the model in the
+  URL (`/v1beta/models/formal-ai:streamGenerateContent`), not in the body, so
+  every recorded exchange looked provenance-less. `formal-ai proxy` now recovers
+  it from the path.
+- **Claude Code's reachability probe.** Each session opens with a `HEAD` on the
+  base URL, which returned 404 while the `POST` worked — a transcript that read
+  exactly like a misconfigured base URL.
 
 This is the bridge from manual investigation to the first-class e2e coverage
 tracked by #625.

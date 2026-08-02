@@ -1,0 +1,16 @@
+Q12370
+  aliases
+    en (salts)
+    ru ("соли")
+  descriptions
+    en "ionic compound composed of cations and anions"
+    ru "химическое соединение из катиона и аниона"
+    zh "化合物的種類"
+  id Q12370
+  labels
+    en salt
+    hi "लवण"
+    ru "соль"
+    zh "盐"
+  type item
+success 1

@@ -1,0 +1,69 @@
+{
+  "entities": {
+    "Q7949": {
+      "type": "item",
+      "id": "Q7949",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "truth"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "истина"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "हक़ीक़ा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "真理"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "what is in accord with fact or reality"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "утверждение, соответствующее действительности, фактам или тому, что является или считается верным"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "satya"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "符合事實或現實的東西"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "verity"
+          },
+          {
+            "language": "en",
+            "value": "scientific truth"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "правда"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "真理理论"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

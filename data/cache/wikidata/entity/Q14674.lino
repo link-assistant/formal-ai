@@ -1,0 +1,16 @@
+Q14674
+  aliases
+    en (Pencils "Writing Pencils")
+  descriptions
+    en "writing implement"
+    hi "लिख ने का परिकर"
+    ru "инструмент в виде стержня, изготавливаемого из пишущего материала, применяемый для письма, рисования, черчения"
+    zh "書寫工具"
+  id Q14674
+  labels
+    en pencil
+    hi "पेंसिल"
+    ru "карандаш"
+    zh "鉛筆"
+  type item
+success 1

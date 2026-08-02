@@ -1,0 +1,85 @@
+tool_routing_learning_report
+  issue "712"
+  decision "awaiting_human_review"
+  promotion_gate "reported_matrix_and_unseen_paraphrases_pass"
+  record_type "agent_cli_auto_learning"
+  substrate "links_network"
+  retention_formula "reads + writes + incoming_links + outgoing_links"
+  expression_count "6"
+  validation_warning_count "0"
+  multi_hop_seed "observation:edit"
+  multi_hop_recall "observation:edit"
+  learned_expression_01
+    id "observation:edit"
+    text "message
+user
+Replacement requests failed when a seeded edit action directly preceded the file target."
+    reads "7"
+    writes "1"
+    incoming_links "0"
+    outgoing_links "0"
+    retention_score "8"
+    qualifiers "conversation_id=issue-712|kind=message|role=user"
+    validation "aligned"
+  learned_expression_02
+    id "lesson:argument-shape"
+    text "learning_amendment
+assistant
+Route tool intent from seed-defined action roles plus typed argument shape, independent of sentence template.
+observation:write"
+    reads "0"
+    writes "4"
+    incoming_links "1"
+    outgoing_links "1"
+    retention_score "6"
+    qualifiers "conversation_id=issue-712|kind=learning_amendment|role=assistant"
+    validation "aligned"
+  learned_expression_03
+    id "observation:fetch"
+    text "message
+user
+URL-bearing navigation requests failed to select the advertised fetch capability."
+    reads "5"
+    writes "1"
+    incoming_links "0"
+    outgoing_links "0"
+    retention_score "6"
+    qualifiers "conversation_id=issue-712|kind=message|role=user"
+    validation "aligned"
+  learned_expression_04
+    id "observation:search"
+    text "message
+user
+Source-grounded and current-information requests failed to select web search."
+    reads "3"
+    writes "1"
+    incoming_links "0"
+    outgoing_links "0"
+    retention_score "4"
+    qualifiers "conversation_id=issue-712|kind=message|role=user"
+    validation "aligned"
+  learned_expression_05
+    id "observation:write"
+    text "message
+user
+A declarative target plus content request was claimed by file read instead of write."
+    reads "2"
+    writes "1"
+    incoming_links "1"
+    outgoing_links "0"
+    retention_score "4"
+    qualifiers "conversation_id=issue-712|kind=message|role=user"
+    validation "aligned"
+  learned_expression_06
+    id "lesson:single-parser"
+    text "learning_amendment
+assistant
+Use the same structural parser for intent classification and executable argument composition.
+lesson:argument-shape"
+    reads "0"
+    writes "2"
+    incoming_links "0"
+    outgoing_links "1"
+    retention_score "3"
+    qualifiers "conversation_id=issue-712|kind=learning_amendment|role=assistant"
+    validation "aligned"

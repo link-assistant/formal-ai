@@ -1,0 +1,5 @@
+task_decomposition_contract
+  record_type meta_invariant
+  atomic "require an observable completion contract and no pending children"
+  execution "run the exact inspected content-addressed tree"
+  learning "activate a strategy only after green regression evidence and human review"

@@ -1,0 +1,9 @@
+   Compiling formal-ai v0.295.2 (/tmp/gh-issue-solver-1784181977861)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 36.12s
+     Running tests/integration/mod.rs (target/debug/deps/integration-fb17c3b88311b07a)
+
+running 1 test
+test issue_712_intent_routing::all_reported_capability_classes_route_in_one_matrix ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 103 filtered out; finished in 2.48s
+

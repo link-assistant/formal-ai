@@ -1,0 +1,16 @@
+Q9394
+  aliases
+    en (bunny bun "bunny rabbit" coney bunnies rabbits)
+    zh ("兔子")
+  descriptions
+    en "mammals of the family Leporidae"
+    ru "общее название нескольких родов млекопитающих из семейства зайцевых"
+    zh "兔科哺乳動物的通用名稱"
+  id Q9394
+  labels
+    en rabbit
+    hi "खरगोश"
+    ru "кролик"
+    zh "穴兔類"
+  type item
+success 1

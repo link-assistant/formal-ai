@@ -1,0 +1,17 @@
+Q48282
+  aliases
+    en (pupil students)
+    ru ("студентка" "студенты" "студиозус" "студенчество" "обучающийся" "студент" "учащаяся" "ученица" "учащийся")
+    zh ("學生")
+  descriptions
+    en "learner, or someone who attends an educational institution"
+    ru "учащийся высшего, среднего или начального учебного заведения"
+    zh "學習者或參加教育機構的人"
+  id Q48282
+  labels
+    en student
+    hi "विद्यार्थी"
+    ru "ученик"
+    zh "学生"
+  type item
+success 1

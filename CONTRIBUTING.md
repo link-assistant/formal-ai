@@ -1,4 +1,4 @@
-# Contributing to rust-ai-driven-development-pipeline-template
+# Contributing to formal-ai
 
 Thank you for your interest in contributing! This document provides guidelines and instructions for contributing to this project.
 
@@ -11,6 +11,15 @@ AI through its own [Agent CLI](https://github.com/link-assistant/agent)** (the
 in-repo agentic driver in `src/agentic_coding/`, running against the
 OpenAI-compatible `formal-ai serve` server), and we get *every* requirement done
 in the same pull request.
+
+This section is the development policy and target workflow, not a claim that
+the repository is already autonomously self-coded. When an existing tool gap
+forces a manual tool extension, record that boundary plainly, retry a smallest
+leaf through Formal AI, and measure only genuinely session-authored lines. A
+reviewed task decomposition must name its smallest leaves; the acceptance floor
+is at least one real Formal-AI/Agent-CLI-authored leaf out of every five (20%),
+with a captured session and paired commit trailers. Raise that measured share
+over time; never relabel manual work as self-authored.
 
 Concretely, every change must follow these rules:
 
@@ -76,13 +85,88 @@ guide defines the fixture markers, logging proxy assertions, phrasing matrices,
 and CI shape needed to prove that a result came from Formal AI and that the
 client actually executed the expected tools.
 
+### Spawn a reference assistant when you need a natural-language target
+
+When a change is about *how Formal AI talks* to the user — narration before a
+tool runs, an error explanation, the wording of a question — it helps to see how
+a strong conversational assistant would phrase the same step. Spinning up a free
+model in `claude`, `codex`, or `opencode` on the *identical* prompt and reading
+its reply gives a concrete, natural target to match, and is a recommended way to
+calibrate tone before writing the seed catalog text and its tests. Treat those
+transcripts as reference examples only: the phrasing you ship still lives in the
+`.lino` seed data (never hardcoded in the solver), and every user-visible string
+must be asserted by a test. Issue #819's narration rewrite was tuned this way —
+the desirable "Let me look on your Desktop for …" shape came from comparing
+Formal AI's output against `claude` and `codex` on the reported request.
+
+### Replaying the self-coding loop
+
+```bash
+cargo build --release --bin formal-ai
+examples/self-coding/run.sh
+cargo test self_coding_session_replays
+```
+
+For a real GitHub issue, run `examples/self-coding/run.sh --live ISSUE_URL`.
+This invokes `solve ISSUE_URL --tool agent --model formal-ai`: Hive Mind drives
+the Agent CLI, which drives the local Formal AI server.
+
+### Recording self-authorship
+
+The release metric counts a commit as Formal AI-authored only when its commit
+message records both trailers below:
+
+```text
+Formal-AI-Session: <session-id>
+Formal-AI-Evidence: <repo-relative committed evidence path>
+```
+
+The evidence path must exist in that commit. It may name one evidence file or a
+directory bundle; one file at or below the path must contain both `formal-ai`
+and the exact session id. Add one pair per session when multiple sessions
+authored a commit. Do not add these trailers to a human-authored or manually
+corrected commit; an honest 0% release is valid. The metric counts additions
+plus deletions from non-merge commits and ignores binary files. Reproduce it
+with `rust-script scripts/self-hosting-metric.rs --since <previous-tag>`.
+
+## Contribution rights and external material
+
+By intentionally submitting a contribution to this repository, you represent
+that you have the authority to submit it and offer your copyrightable
+contribution under the repository's [Unlicense](LICENSE), including its
+public-domain dedication and permissive fallback terms. If you do not own the
+rights or cannot make that offer, do not submit the material.
+
+Third-party material remains subject to its own license and terms. Identify the
+source, exact revision, license, required notices, and any naming or use
+conditions in the pull request and repository provenance record. Public access,
+zero price, AI generation, or appearance in an issue does not remove those
+conditions. Follow [LEGAL-COMPLIANCE.md](LEGAL-COMPLIANCE.md) and complete
+[`docs/legal/source-review.md`](docs/legal/source-review.md) before using any
+external material for training or distillation.
+
+Never paste or attach any of the following to issues, pull requests,
+discussions, logs, fixtures, or commits:
+
+- leaked material or proprietary source code;
+- a paid or access-controlled dataset without redistribution permission;
+- a large verbatim copyrighted work or bulk model output;
+- credentials, private keys, confidential information, or trade secrets; or
+- real personal data.
+
+For debugging or critique, use the smallest lawful excerpt, link to the
+authorized source, record provenance, and redact unrelated content. Maintainers
+may remove, redact, or quarantine suspect material and its downstream copies
+while a rights, privacy, safety, or Terms-of-Service concern is investigated.
+Removal from a public thread is not approval to retain another copy.
+
 ## Development Setup
 
 1. **Fork and clone the repository**
 
    ```bash
-   git clone https://github.com/YOUR-USERNAME/rust-ai-driven-development-pipeline-template.git
-   cd rust-ai-driven-development-pipeline-template
+   git clone https://github.com/YOUR-USERNAME/formal-ai.git
+   cd formal-ai
    ```
 
 2. **Install Rust**
@@ -133,14 +217,18 @@ client actually executed the expected tools.
    # Format code
    cargo fmt
 
-   # Run Clippy lints
-   cargo clippy --all-targets --all-features
+   # Lint executable test targets; compile-check examples without linking 100+ binaries
+   cargo clippy --lib --bins --tests --all-features
+   cargo check --examples --all-features
 
    # Check file sizes (requires rust-script)
    rust-script scripts/check-file-size.rs
 
+   # Check for hardcoded natural language in src/ (R379, requires rust-script)
+   rust-script scripts/check-hardcoded-language.rs
+
    # Run all checks together
-   cargo fmt --check && cargo clippy --all-targets --all-features && rust-script scripts/check-file-size.rs
+   cargo fmt --check && cargo clippy --lib --bins --tests --all-features && cargo check --examples --all-features && rust-script scripts/check-file-size.rs && rust-script scripts/check-hardcoded-language.rs
    ```
 
 4. **Run tests**
@@ -205,7 +293,7 @@ client actually executed the expected tools.
 This project uses:
 
 - **rustfmt** for code formatting
-- **Clippy** for linting with pedantic and nursery lints enabled
+- **Clippy** for linting, with `all`/`pedantic`/`nursery` enabled in `Cargo.toml`'s `[lints.clippy]` (a few noisy lints are explicitly allowed there)
 - **cargo test** for testing
 
 ### Code Standards
@@ -214,7 +302,7 @@ This project uses:
 - Use documentation comments (`///`) for all public APIs
 - Write tests for all new functionality
 - Keep functions focused and reasonably sized
-- Keep files under 1000 lines
+- Keep Rust files under 1000 lines (`.lino` files and the browser worker JavaScript are capped at 1500); all limits are enforced by `rust-script scripts/check-file-size.rs`
 - Use meaningful variable and function names
 
 ### Documentation Format
@@ -471,22 +559,51 @@ Fragments are automatically collected into CHANGELOG.md during the release proce
 ```
 .
 ├── .github/workflows/    # GitHub Actions CI/CD
+├── analysis/             # Ad-hoc analysis notes
 ├── changelog.d/          # Changelog fragments
 │   ├── README.md         # Fragment instructions
 │   └── *.md              # Individual changelog fragments
+├── data/                 # Canonical knowledge surface (Links Notation)
+│   ├── seed/             # Seed data every interface reads (see "Data is the interface")
+│   ├── meta/             # Grounded meta-algorithm recipes and lexicons
+│   ├── benchmarks/       # Benchmark suites and license provenance
+│   ├── cache/            # Precached external sources (Wikidata, …)
+│   └── parity/           # Cross-runtime parity fixtures
+├── desktop/              # Electron desktop shell
+├── docs/                 # Case studies, design notes, diagrams, guides
 ├── examples/             # Usage examples
-├── scripts/              # Rust scripts (via rust-script)
+├── experiments/          # Verification harnesses and one-off experiments
+├── scripts/              # Rust scripts (via rust-script) and installers
 ├── src/
 │   ├── lib.rs            # Library entry point
-│   └── main.rs           # Binary entry point
-├── tests/                # Integration tests
+│   ├── main.rs           # Binary entry point
+│   ├── solver.rs         # UniversalSolver — the 11-step loop
+│   ├── solver_handlers/  # Handler family invoked through the method registry
+│   ├── agentic_coding/   # Agentic-CLI planner, recipes, and driver
+│   ├── proof_engine/     # Decision procedures
+│   ├── summarization/    # Formalize → summarize → deformalize pipeline
+│   ├── translation/      # Formalization and translation through meanings
+│   ├── seed/             # Seed loading, lexicon, and role constants
+│   └── web/              # Browser demo: UI, worker/, and wasm-worker/
+├── tests/                # Unit, integration, source-mirror, and e2e tests
+├── vscode/               # VS Code extension (desktop and web)
 ├── .gitignore            # Git ignore patterns
 ├── .pre-commit-config.yaml  # Pre-commit hooks
+├── ARCHITECTURE.md       # How the implemented pipeline is wired
+├── build.rs              # Build script
 ├── Cargo.toml            # Project configuration
 ├── CHANGELOG.md          # Project changelog
+├── compose.yaml          # Docker Compose profiles
 ├── CONTRIBUTING.md       # This file
+├── Dockerfile            # Docker-in-Docker Telegram runtime
+├── GOALS.md              # What counts as success
 ├── LICENSE               # Unlicense (public domain)
-└── README.md             # Project README
+├── NON-GOALS.md          # What we explicitly do not build
+├── package.json          # Web/desktop/VS Code tooling scripts
+├── README.md             # Project README
+├── REQUIREMENTS.md       # Issue-by-issue requirement matrix
+├── ROADMAP.md            # Requirement-level implementation status
+└── VISION.md             # Values and long-term direction
 ```
 
 ## Release Process

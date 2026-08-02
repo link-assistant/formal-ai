@@ -1,0 +1,18 @@
+Q5113
+  aliases
+    en ("avian species" birds)
+    hi ("चिड़ियां" "पक्षियों" "पंछी")
+    ru ("птица")
+    zh ("鸟类动物" "鸟纲动物" "鳥綱動物" "鳥類動物" "羽虫" "禽鳥" "活禽鳥" "活禽" "禽类" "雀仔" "鸟类" "鳥" "鸟纲" "鳥類")
+  descriptions
+    en "class of vertebrates characterized by wings, a feather-covered body and a beak"
+    ru "класс позвоночных животных"
+    zh "一類體溫恆定、前肢演化為翅膀的卵生脊椎動物"
+  id Q5113
+  labels
+    en bird
+    hi "पक्षी"
+    ru "птицы"
+    zh "鳥綱"
+  type item
+success 1

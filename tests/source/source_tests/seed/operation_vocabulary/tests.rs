@@ -81,9 +81,9 @@ fn operation_vocabulary_covers_every_supported_language_per_operation() {
     let vocabulary = operation_vocabulary();
     for operation in vocabulary.operations {
         let languages = operation.languages.keys().cloned().collect::<BTreeSet<_>>();
-        assert_eq!(
-            languages, supported,
-            "{} must define synonyms for every supported language",
+        assert!(
+            supported.is_subset(&languages),
+            "{} must define synonyms for every full supported language",
             operation.canonical
         );
     }

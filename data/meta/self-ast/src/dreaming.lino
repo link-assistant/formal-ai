@@ -1,0 +1,47 @@
+self_ast_census
+  target src/dreaming.rs
+  language rust
+  fidelity signature
+  byte_len 35064
+  line_count 928
+  content_id source_module_48ec38a01133af7a
+  symbol_count 38
+  symbols
+    module cues 31 31
+    module draft_failures 32 32
+    module learning 33 33
+    module lexicon 34 34
+    module support 35 35
+    struct DreamingConfig 38 49
+    function default 52 60
+    enum DreamingDurability 64 76
+    function is_reclaimable 80 85
+    function pressure_priority 87 94
+    enum DreamingActionKind 98 105
+    struct TopicFrequency 110 118
+    struct LearnedRequirement 123 128
+    struct MetaAlgorithmAmendment 137 143
+    struct DreamingCandidateTask 147 154
+    struct DreamingPattern 159 164
+    struct DreamingSynthesizedTask 173 178
+    struct DreamingAction 181 188
+    struct DreamingEventObservation 191 202
+    struct DreamingPlan 205 234
+    function event_usage 238 243
+    function topic_interactions 247 252
+    function amendment_for 256 260
+    struct DreamingOutcome 264 277
+    function plan_memory_dreaming 280 514
+    function apply_dreaming_plan 517 601
+    function candidate_failure_event 607 624
+    function synthesized_trial_event 627 644
+    function pattern_event 646 663
+    function amendment_event 666 685
+    function render_dreaming_plan 688 800
+    function compose_recipe_with_amendments 810 827
+    function push_action_once 829 838
+    function deleted_conversation_ids 840 847
+    function deleted_event_indices 849 864
+    function classify_event 866 901
+    function duplicate_key 903 920
+    function usage_counts 922 928

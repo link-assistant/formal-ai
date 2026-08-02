@@ -1,0 +1,58 @@
+self_ast_census
+  target src/solver_handlers/software_project.rs
+  language rust
+  fidelity signature
+  byte_len 34156
+  line_count 915
+  content_id source_module_3cbe66bc76240243
+  symbol_count 49
+  symbols
+    struct ArtifactMatch 21 24
+    struct SoftwareProjectMeaning 27 38
+    struct SoftwareSubtask 41 45
+    enum DeliveryMode 48 53
+    function label 56 63
+    function from_slug 68 75
+    enum ApprovalState 79 82
+    function label 85 90
+    function from_prompt 94 123
+    function canonical_key 125 143
+    function meaning_id 145 147
+    function delivery_mode_label 151 153
+    function domain_label 155 161
+    function meaning_lino 163 218
+    function try_software_project_request 221 259
+    function prior_software_project_meaning 261 269
+    function record_meaning 271 325
+    function artifact_label 336 360
+    function artifact_surface_table 367 378
+    function action_surface_table 385 394
+    function match_action 398 408
+    function match_artifact 412 422
+    function scan_match 429 441
+    function is_start_boundary 443 451
+    function is_end_boundary 453 461
+    function is_word_character 471 473
+    function is_cjk_character 477 484
+    function extract_target 486 501
+    function extract_after_marker 503 524
+    function capitalize_short_target 526 536
+    function requirement_marker_words 542 549
+    function extract_requirements 551 572
+    function derive_subtasks 574 587
+    function requirement_category_label 594 606
+    function classify_requirement 613 630
+    function subtask_title 632 646
+    function detect_delivery_mode 654 659
+    function detect_implementation_language 664 669
+    function implementation_language_from_slug 674 681
+    function approval_gates 683 706
+    function push_unique 708 712
+    function sentence_case 714 721
+    function is_game_unit_tracker 727 731
+    function is_approval_prompt 739 748
+    function reasoning_steps 750 783
+    function plan_steps 785 828
+    function render_plan_response 830 871
+    function render_implementation_response 873 906
+    function lino_string 908 915

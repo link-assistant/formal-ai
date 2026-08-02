@@ -1,0 +1,33 @@
+self_ast_census
+  target src/calculation_word_problem.rs
+  language rust
+  fidelity signature
+  byte_len 21548
+  line_count 615
+  content_id source_module_9a1e1bed263ecfe9
+  symbol_count 24
+  symbols
+    struct WordProblemNormalization 16 20
+    enum BoxRule 23 27
+    struct MotionSpeed 30 33
+    function fibonacci_value 37 48
+    function parse_ordinal 52 78
+    function bare_word 81 85
+    function resolve_fibonacci_references 89 121
+    function split_sentences 126 146
+    function sentence_words 148 154
+    function parse_int_token 156 184
+    function canonical_box_id 186 191
+    function parse_declared_box_count 193 204
+    function parse_box_rule 206 247
+    function resolve_box_value 249 296
+    function normalize_box_total_problem 298 366
+    function parse_decimal_token 368 378
+    function unit_token 380 384
+    function is_speed_unit 386 388
+    function is_distance_unit 390 395
+    function format_quantity 397 405
+    function clean_origin_token 407 415
+    function extract_origin_before_speed 417 461
+    function normalize_train_meeting_problem 463 549
+    function normalize_word_problem_detailed 556 615

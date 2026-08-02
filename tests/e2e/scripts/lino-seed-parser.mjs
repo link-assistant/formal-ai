@@ -192,3 +192,13 @@ export function parseSupportedLanguagesFromAgentInfo(text) {
 
   throw new Error('data/seed/agent-info.lino is missing supported_languages');
 }
+
+// Issue #706: the language ledger is the N→N+1 contract. CI reads registered
+// languages from this file instead of maintaining a second four-language list.
+export function parseRegisteredLanguages(text) {
+  return text
+    .split(/\r?\n/)
+    .map((line) => line.match(/^  language ([a-z]{2,3}(?:-[A-Za-z0-9]+)*)$/u))
+    .filter(Boolean)
+    .map((match) => match[1]);
+}

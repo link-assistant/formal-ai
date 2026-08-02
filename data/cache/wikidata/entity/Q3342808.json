@@ -1,0 +1,75 @@
+{
+  "entities": {
+    "Q3342808": {
+      "type": "item",
+      "id": "Q3342808",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "coconut"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "кокос"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "नारियल"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "椰子"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "fruit of the coconut palm used as food and raw material"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "орех кокосовой пальмы"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "एक प्रकार का फल"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "椰子树的果实"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "cocoanut"
+          },
+          {
+            "language": "en",
+            "value": "coconuts"
+          },
+          {
+            "language": "en",
+            "value": "coconut fruit"
+          },
+          {
+            "language": "en",
+            "value": "coco nut"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "кокосовый орех"
+          },
+          {
+            "language": "ru",
+            "value": "кокос (орех)"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

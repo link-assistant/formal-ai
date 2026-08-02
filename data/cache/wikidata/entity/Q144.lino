@@ -1,0 +1,19 @@
+Q144
+  aliases
+    en ("domestic dog" "domestic dogs" dogs)
+    hi ("श्वान")
+    ru ("собака обыкновенная" "пёс" "пес")
+    zh ("狗" "家犬" "家狗" "狗狗" "狗子")
+  descriptions
+    en "domesticated species of canid"
+    hi "पालतू जानवर"
+    ru "домашнее животное"
+    zh "由欧亚大陆的灰狼驯化而来的常见家畜，被广泛作为宠物或役用动物饲养"
+  id Q144
+  labels
+    en dog
+    hi "कुत्ता"
+    ru "собака"
+    zh "犬"
+  type item
+success 1

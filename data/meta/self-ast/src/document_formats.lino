@@ -1,0 +1,20 @@
+self_ast_census
+  target src/document_formats.rs
+  language rust
+  fidelity signature
+  byte_len 7211
+  line_count 211
+  content_id source_module_81b5abd825d2d9d2
+  symbol_count 11
+  symbols
+    const DOCUMENT_FORMAT_ENGINE 17 17
+    struct DocumentFormatCapabilities 21 28
+    struct DocumentConversion 32 46
+    function supported_document_formats 50 59
+    function cross_format_document_concepts 63 72
+    function canonical_document_format_label 76 86
+    function document_format_capabilities 90 122
+    function document_profile_is_recognized 130 146
+    function document_package_is_recognized 154 167
+    function convert_document_format 171 198
+    function package_bytes_for_target 201 211

@@ -68,6 +68,30 @@ meanings
         text "fetch this url"
       surface
         text "fetch the page"
+      surface
+        text "retrieve …"
+      surface
+        text "download …"
+      surface
+        text "download the page at …"
+      surface
+        text "download from …"
+      surface
+        text "read …"
+      surface
+        text "summarize …"
+      surface
+        text "check …"
+      surface
+        text "grab …"
+      surface
+        text "pull the page …"
+      surface
+        text "tell me about …"
+      surface
+        text "what does …"
+      surface
+        text "what is on …"
     lexeme ru
       surface
         text "сделай запрос …"
@@ -113,16 +137,80 @@ meanings
         text "http запрос к"
       surface
         text "http запрос на"
+      surface
+        text "скачай …"
+      surface
+        text "скачай страницу …"
+      surface
+        text "прочитай …"
+      surface
+        text "проверь …"
+      surface
+        text "возьми …"
+      surface
+        text "извлеки …"
+      surface
+        text "подведи итог …"
+      surface
+        text "расскажи о …"
+      surface
+        text "что на …"
     lexeme hi
       surface
         text "अनुरोध भेजें"
       surface
         text "अनुरोध करें"
+      surface
+        text "डाउनलोड करें"
+      surface
+        text "लाएँ …"
+      surface
+        text "प्राप्त करें …"
+      surface
+        text "डाउनलोड करें …"
+      surface
+        text "लोड करें …"
+      surface
+        text "पढ़ें …"
+      surface
+        text "दिखाएँ …"
+      surface
+        text "जाँचें …"
+      surface
+        text "सारांश दें …"
+      surface
+        text "पृष्ठ लें …"
+      surface
+        text "इसके बारे में बताएँ …"
+      surface
+        text "क्या लिखा है …"
+      surface
+        text "क्या है …"
     lexeme zh
       surface
         text 发送请求
       surface
         text 获取
+      surface
+        text 下载
+      surface
+        text 加载…
+      surface
+        text 读取…
+      surface
+        text 显示…
+      surface
+        text 检查…
+      surface
+        text 抓取…
+      surface
+        text 拉取页面…
+      surface
+        text 总结…
+      surface
+        text 告诉我关于…
+      surface
+        text 上面有什么…
   url_navigate
     defined-by inquiry
     defined-by action
@@ -267,6 +355,12 @@ meanings
         text खोलें
       surface
         text देखें
+      surface
+        text "खोलें …"
+      surface
+        text "देखें …"
+      surface
+        text "वेबसाइट पर जाएँ …"
     lexeme zh
       surface
         text 打开
@@ -276,3 +370,11 @@ meanings
         text 前往
       surface
         text 查看
+      surface
+        text 打开…
+      surface
+        text 访问…
+      surface
+        text 前往…
+      surface
+        text 查看…

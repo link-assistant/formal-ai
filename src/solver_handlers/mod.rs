@@ -10,18 +10,19 @@ mod calendar;
 mod calendar_ics;
 mod compound_interest;
 mod conversation_memory;
-mod definition_merge;
+mod curated_project_fetch;
 mod document_originality;
 mod document_request;
+mod fact_checking;
 mod feature_capability;
 mod github_repository_traffic;
 mod installation_conversion;
 mod meta_explanation;
 mod natural_language_tools;
-mod number_riddle;
 mod numeric_list;
 mod pattern_inference;
 mod playwright_script;
+mod procedure_rules;
 mod program_blueprint;
 mod program_synthesis;
 mod research_table;
@@ -31,11 +32,13 @@ mod shell_command_transform;
 mod software_project;
 mod software_project_code;
 mod software_project_followup;
+mod task_decomposition;
 mod text_edit_ops;
 mod text_manipulation;
 mod user_intent;
 mod web_requests;
 mod web_search_intent;
+mod world_state;
 
 pub use agent_workspace::try_agent_workspace_task;
 pub use behavior_rules::try_behavior_rules_with_runtime;
@@ -45,18 +48,19 @@ pub use benchmark_prompts::{
 };
 pub use calendar::{try_calendar_create_event, try_calendar_reasoning};
 pub use compound_interest::try_compound_interest;
+pub use conversation_memory::is_exact_memory_query;
 pub use conversation_memory::{
-    answer_memory_recall, execute_memory_query, try_conversation_memory, MemoryQueryExecution,
+    answer_memory_recall, execute_memory_query, execute_memory_query_with_options,
+    try_conversation_memory, MemoryQueryExecution,
 };
-pub use definition_merge::{try_definition_merge, try_definition_merge_by_default};
 pub use document_originality::try_document_originality_check;
 pub use document_request::try_document_request;
+pub use fact_checking::try_fact_checking;
 pub use feature_capability::{try_feature_capability, CapabilityRuntime};
 pub use github_repository_traffic::try_github_repository_traffic;
 pub use installation_conversion::try_installation_conversion;
 pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
 pub use natural_language_tools::try_natural_language_tool_request;
-pub use number_riddle::try_number_riddle;
 pub use numeric_list::{try_numeric_list, try_numeric_list_with_history};
 pub use pattern_inference::{
     looks_like_pattern_inference, try_pattern_inference,
@@ -73,17 +77,22 @@ pub use shell_command_transform::{
 };
 pub use software_project::try_software_project_request;
 pub use software_project_followup::try_software_project_followup;
+pub use task_decomposition::{looks_like_task_decomposition, try_task_decomposition_with_depth};
 pub use text_manipulation::{try_text_manipulation, try_text_manipulation_with_history};
 pub use user_intent::{
     try_capabilities, try_clarification, try_ill_formed, try_opinion_question, try_proof_request,
     try_proof_request_with_config, try_punctuation_only_prompt, try_shell_refusal,
-    try_who_is_question,
 };
 pub use web_requests::{
-    try_explicit_repository_lookup, try_http_fetch, try_project_lookup,
-    try_project_lookup_with_response_language, try_url_navigate, try_web_search,
+    detect_web_search_query, try_explicit_repository_lookup, try_http_fetch,
+    try_http_fetch_with_offline, try_project_lookup, try_project_lookup_with_response_language,
+    try_url_navigate, try_web_search, try_web_search_with_client, try_web_search_with_offline,
 };
-pub use {web_requests::answer_web_search_query, web_search_intent::WebSearchQueryKind};
+pub use world_state::try_world_state;
+pub use {
+    web_requests::agentic_fetch_url_for, web_requests::answer_web_search_query,
+    web_search_intent::web_search_query_for, web_search_intent::WebSearchQueryKind,
+};
 
 use crate::calculation::{
     calculation_expression_candidates, evaluate_calculation, interpretation_statements,
@@ -98,7 +107,7 @@ use crate::engine::{
 };
 use crate::event_log::{build_evidence_links, EventLog};
 use crate::language::detect as detect_language;
-use crate::seed::response_for;
+use crate::seed::{localized_response, response_for};
 use crate::solver_helpers::{
     build_sorting_algorithm_answer, detect_algorithm_language, detect_program_languages,
     extract_backticked, extract_concept_from_query, extract_javascript_program,
@@ -349,7 +358,7 @@ fn render_concept_plain(language: &str, record: &ConceptRecord) -> String {
 /// Issue #21: render a URL as a readable IRI while keeping the canonical
 /// percent-encoded form as the link target. Returns the bare URL when the
 /// humanized and encoded forms match (no link wrapping needed).
-fn render_source_link(source: &str) -> String {
+pub fn render_source_link(source: &str) -> String {
     let human = humanize_url(source);
     if human == source {
         source.to_owned()
@@ -514,6 +523,7 @@ pub fn try_translation(
     }
 
     let target = detect_target_language(normalized);
+    let unquoted_surface = extract_unquoted_translation_surface(prompt);
     // Issue #386: recognise a translation command by *meaning*, not by hardcoded
     // verbs. The translation-action stems live once in
     // data/seed/meanings-translation.lino; this code knows the concept and the
@@ -531,6 +541,11 @@ pub fn try_translation(
             .words_for_role_in_languages(crate::seed::ROLE_TRANSLATION_ACTION, &["hi", "zh"])
             .iter()
             .any(|stem| normalized.contains(stem.as_str()));
+    let source_first_command = crate::translation::prompt::is_source_first_translation_request(
+        normalized,
+        target.is_some(),
+        unquoted_surface.is_some(),
+    );
     // Issue #386: the define-in-Links-Notation request is recognised by *meaning*
     // too, not by literal verbs and format strings. The imperative verb lives once
     // as the `definition_command` meaning and the target-format phrases as
@@ -551,7 +566,8 @@ pub fn try_translation(
                 .any(|marker| normalized.contains(format!(" {marker}").as_str()))
     };
     let define_in_links = is_define_in_links();
-    let is_translation_request = head_initial_command || head_final_command || define_in_links;
+    let is_translation_request =
+        head_initial_command || head_final_command || source_first_command || define_in_links;
     if !is_translation_request {
         return None;
     }
@@ -593,7 +609,7 @@ pub fn try_translation(
     // verb and the target preposition so the Wiktionary pipeline still
     // receives a non-empty surface. See issue #216.
     let surface = extract_quoted_phrase(prompt)
-        .or_else(|| extract_unquoted_translation_surface(prompt))
+        .or(unquoted_surface)
         .unwrap_or_default();
     let source_slug = source.unwrap_or("en");
     let target_slug = target.unwrap_or("en");
@@ -798,6 +814,71 @@ pub fn try_source_refresh(
     ))
 }
 
+/// Issue #499: recognize a "learn from this data source" directive and route it
+/// into the matching auto-learning capability instead of falling to `unknown`.
+///
+/// The user is teaching the engine where to find data it can reason and learn
+/// from — e.g. "Обратясь сюда ты узнаешь актуальные темы &lt;Google Trends URL&gt;".
+/// The request is detected from the seed-declared learnable-source registry
+/// ([`crate::seed::learning_sources`]): a match needs both a language-agnostic
+/// learning-directive cue and a reference to a known source (its host or one of
+/// its native-language keywords). Production code branches only on the source's
+/// declared `capability` slug, never on a specific URL or phrase, so a new
+/// learnable source is a seed edit rather than a code change (CONTRIBUTING rule 7).
+pub fn try_learn_from_source(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    let registry = crate::seed::learning_sources();
+    let source = registry.match_directive(normalized)?;
+    let summary = learning_source_summary(&source.capability)?;
+    log.append("learning_source", source.id.clone());
+    log.append("learning_capability", source.capability.clone());
+
+    let language = detect_language(prompt);
+    let intro = localized_response("learn_from_source", language.slug()).unwrap_or_default();
+    let body = if intro.is_empty() {
+        summary
+    } else {
+        format!("{intro}\n\n{summary}")
+    };
+    Some(finalize_simple(
+        prompt,
+        log,
+        "learn_from_source",
+        "response:learn_from_source",
+        &body,
+        1.0,
+    ))
+}
+
+/// Render the deterministic learning summary for a source `capability`.
+///
+/// Returns `None` for a capability with no wired learning loop so the handler
+/// declines rather than inventing an answer; a new capability is registered here
+/// alongside the loop that ingests it.
+fn learning_source_summary(capability: &str) -> Option<String> {
+    match capability {
+        "google_trends_learning" => {
+            let report = crate::google_trends_learning::trending_learning_report();
+            Some(format!(
+                "I recognized Google Trends as a data source I can learn from. I collected \
+                 {total} trending prompts across every supported language, already answer \
+                 {handled} of them from local links rules, and routed the remaining {frontier} \
+                 to the human-gated self-improvement loop. That loop proposed {proposals} rules \
+                 and adopted {adopted}: nothing changes without human review.",
+                total = report.total_prompts,
+                handled = report.handled_by_engine,
+                frontier = report.frontier_count(),
+                proposals = report.run.proposals.len(),
+                adopted = report.adopted_count(),
+            ))
+        }
+        _ => None,
+    }
+}
+
 pub fn try_source_conflict(
     prompt: &str,
     normalized: &str,
@@ -855,6 +936,7 @@ pub fn finalize_simple(
     SymbolicAnswer {
         intent: intent.to_owned(),
         answer: body.to_owned(),
+        execution_recipe: None,
         confidence,
         evidence_links,
         thinking_steps,

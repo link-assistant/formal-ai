@@ -1,0 +1,103 @@
+{
+  "entities": {
+    "Q7186": {
+      "type": "item",
+      "id": "Q7186",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Marie Curie"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Мария Склодовская-Кюри"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मेरी क्युरी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "玛丽·居里"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "Polish-French physicist and chemist (1867–1934)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "французско-польский физик и химик (1867—1934)"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पोलिश-फ्रांसीसी भौतिक विज्ञानी और केमिस्ट"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "波蘭裔法國物理學家、化學家"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Marie Sklodowska-Curie"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Склодовская-Кюри, Мария"
+          },
+          {
+            "language": "ru",
+            "value": "Кюри, Мария"
+          },
+          {
+            "language": "ru",
+            "value": "Мари Кюри"
+          },
+          {
+            "language": "ru",
+            "value": "Мария Кюри"
+          },
+          {
+            "language": "ru",
+            "value": "Кюри-Склодовская, Мария"
+          },
+          {
+            "language": "ru",
+            "value": "Склодовская"
+          },
+          {
+            "language": "ru",
+            "value": "Мария Саломея Склодовская"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "मारिया सलोमीया स्कोलोडोव्स्का"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "居里夫人"
+          },
+          {
+            "language": "zh",
+            "value": "居禮夫人"
+          },
+          {
+            "language": "zh",
+            "value": "瑪麗·居禮"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,53 @@
+{
+  "entities": {
+    "Q195": {
+      "type": "item",
+      "id": "Q195",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "chocolate"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "шоколад"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "चॉकलेट"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "巧克力"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "nutritionally dense or sweet food product from the seed of Theobroma cacao - cocoa bean"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "кондитерские продукты, изготавливаемые с использованием плодов какао"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "以可可豆为主要原料的食品"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "朱古力"
+          },
+          {
+            "language": "zh",
+            "value": "支龜力"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

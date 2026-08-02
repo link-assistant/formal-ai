@@ -1,0 +1,89 @@
+{
+  "entities": {
+    "Q780": {
+      "type": "item",
+      "id": "Q780",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "chicken"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "курица"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मुर्गी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "鸡"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "domesticated bird (specifically a red junglefowl) kept by humans primarily as a food source"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "вид домашней птицы"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "家禽"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Gallus gallus domesticus"
+          },
+          {
+            "language": "en",
+            "value": "chickens"
+          },
+          {
+            "language": "en",
+            "value": "vistas"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "кура"
+          },
+          {
+            "language": "ru",
+            "value": "петух"
+          },
+          {
+            "language": "ru",
+            "value": "цыплёнок"
+          },
+          {
+            "language": "ru",
+            "value": "куры"
+          },
+          {
+            "language": "ru",
+            "value": "Gallus gallus domesticus"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "雞"
+          },
+          {
+            "language": "zh",
+            "value": "家鸡"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

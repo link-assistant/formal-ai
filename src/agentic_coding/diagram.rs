@@ -3,10 +3,10 @@
 //!
 //! The maintainer asked, among the issue's broader axes, for a *"generated mermaid
 //! diagram split into parts"* giving a high-level visual overview, and a diagram of
-//! *"what exactly happens when the input to the system [comes] from different
+//! *"what exactly happens when the input to the system \[comes\] from different
 //! places"*. This module is the smallest real, tested slice of that axis: the
 //! diagrams are **generated from the planner's own recipe definitions**
-//! ([`RECIPES`]) rather than hand-drawn, so they cannot drift from what the code
+//! (`RECIPES`) rather than hand-drawn, so they cannot drift from what the code
 //! actually does, and the *same* in-repo Agent CLI that enriched the tomato and
 //! potato meanings writes them.
 //!
@@ -42,9 +42,18 @@ struct Recipe {
     steps: &'static [RecipeStep],
 }
 
-/// The recipes the planner can walk, mirroring `planner::plan_chat_step`. Adding a
-/// recipe here changes the generated diagrams, so the document stays a faithful
-/// picture of the planner's actual behaviour.
+/// The recipes documented by the generated diagrams — the issue #468/#538 slice
+/// of `planner::plan_chat_step`. Adding a recipe here changes the generated
+/// diagrams.
+///
+/// This table is a **subset** of what the planner routes: `plan_chat_step` also
+/// dispatches self-heal (#558), dreaming-audit (#540), source-graph, ledger,
+/// explain, change-request, repair-strategy, rebuild, Google-Trends
+/// learning/catalog (#498/#499), question-catalog, and the general capability
+/// router (#680), none of which are drawn here. The `otherwise` edge in Part 1
+/// stands for all of them. Nothing pins this table to the planner's full router
+/// set, so extending the diagrams to the remaining recipes is tracked work —
+/// see issue #667 (step-through debugging view) and the E56-E68 batch.
 const RECIPES: &[Recipe] = &[
     Recipe {
         key: "formalize",
@@ -234,7 +243,11 @@ pub fn render_document() -> String {
         "A high-level, split-into-parts visual overview of how Formal AI drives its own agentic\n\
          CLI to complete a task. Part 1 shows how a request is routed to a recipe; each later part\n\
          details what happens for input handled by that recipe — the deterministic\n\
-         `search -> fetch -> write -> verify -> final` state machine in `src/agentic_coding/`.\n"
+         `search -> fetch -> write -> verify -> final` state machine in `src/agentic_coding/`.\n\n\
+         Scope: these diagrams cover the issue #468/#538 recipe slice. The planner also routes\n\
+         self-heal, dreaming-audit, source-graph, ledger, explain, change-request, repair-strategy,\n\
+         rebuild, Google-Trends learning/catalog, question-catalog, and the general capability\n\
+         router — the `otherwise` edge in Part 1 stands for all of them.\n"
     );
     render_overview(&mut out);
     for (offset, recipe) in RECIPES.iter().enumerate() {

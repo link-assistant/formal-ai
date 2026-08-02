@@ -1,0 +1,39 @@
+self_ast_census
+  target src/web_engine_core.rs
+  language rust
+  fidelity signature
+  byte_len 18291
+  line_count 517
+  content_id source_module_7d6bf190dc0f09e0
+  symbol_count 30
+  symbols
+    function normalize_prompt 42 60
+    function tokenize_prompt 66 72
+    function evaluate_arithmetic_expression 82 84
+    enum ArithmeticClaimOutcome 89 97
+    struct ArithmeticClaimAssessment 101 108
+    enum ArithmeticComparison 111 118
+    function assess_arithmetic_claim 126 174
+    function split_arithmetic_comparison 176 196
+    const COMPARISONS 177 188
+    function normalize_arithmetic_claim_side 198 210
+    function arithmetic_values_equal 212 220
+    function arithmetic_value_less_than 222 227
+    function arithmetic_comparison_symbol 229 238
+    function stable_id 246 254
+    const UNKNOWN_OPENERS 260 260
+    function unquote_seed_value 263 268
+    struct OpenerPool 271 274
+    struct OpenerRegistry 278 282
+    function parse_opener_registry 284 318
+    function with_opener_registry 324 328
+    static REGISTRY 326 326
+    function with_opener_registry 331 333
+    function unknown_openers_for 341 356
+    function unknown_opener_sentence_separators 361 363
+    function select_unknown_opener 367 380
+    function matches_intent_route_parts 385 417
+    function matches_intent_route_payload 425 469
+    function contains_route_token 471 475
+    function normalize_route_raw_prompt 477 487
+    function is_unicode_letter_or_digit 489 517

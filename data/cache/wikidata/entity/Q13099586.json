@@ -1,0 +1,59 @@
+{
+  "entities": {
+    "Q13099586": {
+      "type": "item",
+      "id": "Q13099586",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "pear"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "груша"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "नाशपाती"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "梨"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "fruit"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "плод растения груша"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "फल"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "水果"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "pears"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "груша (плод)"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

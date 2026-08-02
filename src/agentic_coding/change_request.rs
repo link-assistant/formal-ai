@@ -11,10 +11,10 @@
 //! `OpenCode`, `Gemini`, `Agent CLI`) — or the in-repo driver — asks Formal AI to
 //! change itself, and the deterministic planner walks a write → verify → final recipe
 //! that emits the reviewable pull request as Links Notation, exactly like the
-//! self-healing, ledger, source-graph, self-AST, explain, and diagram recipes emit
+//! self-healing, ledger, source-links, self-AST, explain, and diagram recipes emit
 //! their documents.
 //!
-//! Like [`super::source_graph`] and [`super::explain`], the emitted document depends
+//! Like [`super::source_links`] and [`super::explain`], the emitted document depends
 //! on the whole source tree (the target module's manifest content id changes with
 //! every edit), so it is asserted *live* in the issue-#558 tests and never pinned
 //! byte-for-byte in a committed `data/meta/*.lino`. The target module is verified
@@ -46,7 +46,7 @@ fn cached_change_request() -> &'static ChangeRequest {
 /// The router recognises the intent from the words, not a hardcoded string.
 /// Deliberately avoids the self-healing keywords ("repair loop", "auto learning"), the
 /// ledger keywords ("promote", "ledger"), the explain keywords ("how … works"), and
-/// the source-graph keywords ("recompile", whole-source-to-links) so the recipes never
+/// the source-links keywords ("recompile", whole-source-to-links) so the recipes never
 /// collide: this recipe is the *user-initiated change* to Formal AI itself.
 pub const CHANGE_TASK: &str =
     "I want to change Formal AI itself: please add a new capability to the system, and \

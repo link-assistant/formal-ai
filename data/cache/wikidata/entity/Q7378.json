@@ -1,0 +1,53 @@
+{
+  "entities": {
+    "Q7378": {
+      "type": "item",
+      "id": "Q7378",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "elephant"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "слон"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "हाथी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "象"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "large terrestrial mammals from Africa and Asia"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "млекопитающее из отряда хоботных"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सस्तन प्राणी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "非洲和亚洲的一种大型陆地哺乳动物"
+        }
+      },
+      "aliases": {
+        "hi": [
+          {
+            "language": "hi",
+            "value": "करि"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

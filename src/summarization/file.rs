@@ -8,9 +8,10 @@
 use std::fmt::Write as _;
 use std::path::Path;
 
+#[cfg(feature = "meta-language")]
 use meta_language::{LinkNetwork, LinkType, NetworkProjection, ParseConfiguration};
 
-use crate::links_format::sanitize_lino_value;
+use crate::links_format::flatten_lino_value;
 
 use super::{
     deformalize, formalize, formalize_markdown, summarize, Statement, StatementKind,
@@ -63,7 +64,7 @@ impl RepositoryFileFormalization {
     /// stages for the retained content statements, so the file boundary stays a
     /// thin adapter over the meta-algorithm pipeline rather than a parallel
     /// formatter. Exposed so the recursive resource summarizer in
-    /// [`super::resource`] can compose file summaries into folder summaries.
+    /// `super::resource` can compose file summaries into folder summaries.
     #[must_use]
     pub fn summary(&self, config: &SummarizationConfig) -> String {
         render_repository_file_summary(self, config)
@@ -115,8 +116,11 @@ impl RepositoryFileFormalization {
 #[must_use]
 pub fn formalize_repository_file(path: &str, content: &str) -> RepositoryFileFormalization {
     let format = detect_repository_file_format(path);
+    #[cfg(feature = "meta-language")]
     let meta_language = meta_language_label_for_format(format)
         .map(|label| parse_with_meta_language(label, content));
+    #[cfg(not(feature = "meta-language"))]
+    let meta_language = None;
     let embedded_grammars = if format == "markdown" {
         formalize_markdown_embedded_grammars(content)
     } else {
@@ -282,8 +286,11 @@ fn formalize_fenced_block(block: &FencedBlock) -> EmbeddedGrammarFormalization {
     } else {
         Vec::new()
     };
+    #[cfg(feature = "meta-language")]
     let meta_language = meta_language_label_for_format(&language)
         .map(|label| parse_with_meta_language(label, &block.source));
+    #[cfg(not(feature = "meta-language"))]
+    let meta_language = None;
     EmbeddedGrammarFormalization {
         language,
         line_count: line_count(&block.source),
@@ -346,6 +353,7 @@ fn fence_language(trimmed_line: &str) -> String {
     }
 }
 
+#[cfg(feature = "meta-language")]
 fn parse_with_meta_language(label: &str, source: &str) -> MetaLanguageFormalization {
     let network = LinkNetwork::parse(source, label, ParseConfiguration::default());
     let verification = network.verify_full_match(None);
@@ -733,7 +741,7 @@ fn push_meta_language(out: &mut String, indent: usize, meta: &MetaLanguageFormal
 
 fn push_field(out: &mut String, indent: usize, name: &str, value: &str) {
     write_indent(out, indent);
-    let _ = writeln!(out, "{name} {}", sanitize_lino_value(value));
+    let _ = writeln!(out, "{name} {}", flatten_lino_value(value));
 }
 
 fn write_indent(out: &mut String, indent: usize) {

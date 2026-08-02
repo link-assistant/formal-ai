@@ -8,7 +8,7 @@
 //! ([the deterministic planner](super::planner)) through the **sole CST/AST engine
 //! in this repo** — the link-foundation
 //! [meta-language](https://github.com/link-foundation/meta-language) links network,
-//! the same `LinkNetwork::parse` path used by [`crate::coding::cst`] — and emits
+//! the same `LinkNetwork::parse` path used by `crate::coding::cst` — and emits
 //! the resulting abstract-syntax node census as Links Notation.
 //!
 //! Nothing here is hardcoded to one answer: [`render_ast_document`] is a pure
@@ -20,9 +20,11 @@
 //! artifact. Neural inference stays a NON-GOAL: the census is a deterministic
 //! function of the real tree-sitter parse.
 
+#[cfg(feature = "meta-language")]
 use std::collections::BTreeMap;
 use std::fmt::Write as _;
 
+#[cfg(feature = "meta-language")]
 use meta_language::{LinkNetwork, LinkType, NetworkProjection, ParseConfiguration};
 
 /// The meta-language grammar label for Rust (matches
@@ -108,6 +110,7 @@ pub struct AstCensus {
 /// target, so the recipe truly stores "the CST/AST of our Rust logic," one module
 /// at a time. The census is a deterministic function of the parse.
 #[must_use]
+#[cfg(feature = "meta-language")]
 pub fn ast_census(source: &str) -> AstCensus {
     let network = LinkNetwork::parse(source, RUST_GRAMMAR_LABEL, ParseConfiguration::default());
 
@@ -137,6 +140,19 @@ pub fn ast_census(source: &str) -> AstCensus {
         text_preserved: network.reconstruct_text() == source,
         clean: network.verify_full_match(None).is_clean(),
         node_kinds,
+    }
+}
+
+/// Return an unavailable census when the optional parsing engine is disabled.
+#[must_use]
+#[cfg(not(feature = "meta-language"))]
+pub const fn ast_census(_source: &str) -> AstCensus {
+    AstCensus {
+        total_link_count: 0,
+        named_node_count: 0,
+        text_preserved: false,
+        clean: false,
+        node_kinds: Vec::new(),
     }
 }
 
@@ -180,9 +196,17 @@ pub fn render_ast_document(target_path: &str, source: &str) -> String {
 /// lossless representation of the parse, the reconstruction is byte-for-byte the
 /// original for any well-formed input — which [`round_trips`] verifies.
 #[must_use]
+#[cfg(feature = "meta-language")]
 pub fn reconstruct_source(source: &str) -> String {
     let network = LinkNetwork::parse(source, RUST_GRAMMAR_LABEL, ParseConfiguration::default());
     network.reconstruct_text()
+}
+
+/// Preserve the input when the optional parsing engine is disabled.
+#[must_use]
+#[cfg(not(feature = "meta-language"))]
+pub fn reconstruct_source(source: &str) -> String {
+    source.to_owned()
 }
 
 /// Whether `source` survives a full source → links → source round-trip unchanged.

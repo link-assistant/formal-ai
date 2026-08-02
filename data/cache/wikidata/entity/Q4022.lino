@@ -1,0 +1,18 @@
+Q4022
+  aliases
+    en (rivers)
+    ru ("речка")
+    zh ("江" "河" "川" "江河" "河川" "河道")
+  descriptions
+    en "larger natural watercourse"
+    hi "प्राकृतिक जलस्रोत"
+    ru "природный водный поток"
+    zh "自然的水道"
+  id Q4022
+  labels
+    en river
+    hi "नदी"
+    ru "река"
+    zh "河流"
+  type item
+success 1

@@ -40,10 +40,11 @@ fn shabbat_shalom_greeting_is_recognized_as_greeting() {
 }
 
 // Issue #152: "how are you?" small talk used to fall through to the unknown
-// fallback. The follow-up review made this a supported-language invariant,
-// not a Russian-only route.
+// fallback. The follow-up review made this a supported-language invariant.
+// Issue #676: it now routes to a dedicated `wellbeing` intent so the reply is
+// distinct from a bare "Hello" greeting, still across every supported language.
 #[test]
-fn how_are_you_prompt_is_recognized_as_greeting_in_supported_languages() {
+fn how_are_you_prompt_is_recognized_as_wellbeing_in_supported_languages() {
     let cases = [
         ("How are you?", "language:en"),
         ("Как твои дела?", "language:ru"),
@@ -55,16 +56,16 @@ fn how_are_you_prompt_is_recognized_as_greeting_in_supported_languages() {
         let response = FormalAiEngine.answer(prompt);
 
         assert_eq!(
-            response.intent, "greeting",
-            "small-talk prompt {prompt:?} should be recognized as greeting, got intent {:?}",
+            response.intent, "wellbeing",
+            "small-talk prompt {prompt:?} should be recognized as wellbeing, got intent {:?}",
             response.intent
         );
         assert!(
             response
                 .evidence_links
                 .iter()
-                .any(|link| link == "response:greeting"),
-            "response should cite response:greeting for {prompt:?}, got {:?}",
+                .any(|link| link == "response:wellbeing"),
+            "response should cite response:wellbeing for {prompt:?}, got {:?}",
             response.evidence_links
         );
         assert!(

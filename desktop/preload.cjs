@@ -4,6 +4,7 @@ const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("FormalAiDesktop", {
   getStatus: () => ipcRenderer.invoke("formalAiDesktop:getStatus"),
+  setEngine: (engine) => ipcRenderer.invoke("formalAiDesktop:setEngine", engine),
   openExternal: (url) => ipcRenderer.invoke("formalAiDesktop:openExternal", url),
   checkForUpdates: () => ipcRenderer.invoke("formalAiDesktop:checkForUpdates"),
   installUpdate: () => ipcRenderer.invoke("formalAiDesktop:installUpdate"),
@@ -29,6 +30,16 @@ contextBridge.exposeInMainWorld("FormalAiDesktop", {
   // Issue #516: swappable agent execution provider (in-process by default,
   // agent-commander when explicitly selected).
   runAgentProvider: (request) => ipcRenderer.invoke("formalAiDesktop:runAgentProvider", request),
+  onAgentEvent: (callback) => {
+    if (typeof callback !== "function") return () => {};
+    const listener = (_event, payload) => callback(payload);
+    ipcRenderer.on("formalAiDesktop:agentEvent", listener);
+    return () => ipcRenderer.removeListener("formalAiDesktop:agentEvent", listener);
+  },
+  // Issue #672 (F2): surface the startup profile migration to the user and let
+  // them ask for another (non-destructive) pass if something looks missing.
+  dataMigrationStatus: () => ipcRenderer.invoke("formalAiDesktop:dataMigrationStatus"),
+  replayDataMigration: () => ipcRenderer.invoke("formalAiDesktop:replayDataMigration"),
   // R5c: reconcile browser (IndexedDB) memory with the native store.
   syncMemory: (payload) => ipcRenderer.invoke("formalAiDesktop:syncMemory", payload),
   // Issue #438 (follow-up): one-click start/stop of the prepared Telegram bot and

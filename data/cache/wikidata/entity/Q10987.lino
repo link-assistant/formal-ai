@@ -1,0 +1,17 @@
+Q10987
+  aliases
+    en (Mel)
+    ru ("мед" "пчелиный мёд")
+  descriptions
+    en "sweet food made by bees mostly using nectar from flowers"
+    hi "मधुमक्खियों द्वारा बनाया गया एक स्वास्थ्यवर्धक आहार"
+    ru "пищевой продукт; частично переваренный в зобе медоносной пчелы нектар"
+    zh "蜜蜂采花蜜所制成的带甜味食物"
+  id Q10987
+  labels
+    en honey
+    hi "मधु"
+    ru "мёд"
+    zh "蜂蜜"
+  type item
+success 1

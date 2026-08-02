@@ -1,0 +1,17 @@
+Q101401
+  aliases
+    en (bells)
+    ru ("Колокола" "Колокол")
+    zh ("钟")
+  descriptions
+    en "percussion musical instrument"
+    ru "инструмент, источник звука, имеющий куполообразную форму и, обычно, язык, ударяющийся изнутри о стенки."
+    zh "中空的敲擊樂器"
+  id Q101401
+  labels
+    en bell
+    hi "घंटी"
+    ru "колокол"
+    zh "鐘"
+  type item
+success 1

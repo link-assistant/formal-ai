@@ -1,0 +1,16 @@
+Q80228
+  aliases
+    en (flask)
+    zh ("瓶子")
+  descriptions
+    en "closable cylindrical container for transport and storage of liquids and gases"
+    hi "तरल पदार्थ के कंटेनर"
+    ru "контейнер для жидкостей"
+  id Q80228
+  labels
+    en bottle
+    hi "बोतल"
+    ru "бутылка"
+    zh "瓶"
+  type item
+success 1

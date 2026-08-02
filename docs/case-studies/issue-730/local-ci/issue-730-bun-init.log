@@ -1,0 +1,20 @@
+ + .gitignore
+ + CLAUDE.md
+ + index.ts
+ + tsconfig.json (for editor autocomplete)
+ + README.md
+
+To get started, run:
+
+    bun run index.ts
+
+bun install v1.3.14 (0d9b296a)
+Resolving dependencies
+Resolved, downloaded and extracted [17]
+Saved lockfile
+
++ @types/bun@1.3.14
++ typescript@5.9.3 (v7.0.2 available)
+
+5 packages installed [4.23s]
+

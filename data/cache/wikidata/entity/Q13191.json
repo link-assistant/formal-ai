@@ -1,0 +1,69 @@
+{
+  "entities": {
+    "Q13191": {
+      "type": "item",
+      "id": "Q13191",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "orange"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "апельсин"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "संतरा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "橙"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "citrus fruit of the orange tree"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "круглый цитрусовый фрукт оранжевого цвета"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "एक प्रकार फल"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "水果"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "orange fruit"
+          },
+          {
+            "language": "en",
+            "value": "citrus orange"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "नारंगी"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "橙子"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

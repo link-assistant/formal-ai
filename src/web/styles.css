@@ -505,6 +505,70 @@ button {
   white-space: nowrap;
 }
 
+/* Issue #672 (F2): the desktop profile-migration notice. Every colour here is a
+ * theme token rather than a literal — that is the direct lesson of issue #541
+ * (R1), where hardcoded light hexes with no dark counterpart left widgets
+ * rendering in the wrong palette. */
+.data-migration-notice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--fa-border-subtle);
+  background: var(--fa-surface-raised);
+  color: var(--fa-text-body);
+  font-size: 13px;
+}
+
+.data-migration-notice.is-failed {
+  color: var(--fa-error-text);
+}
+
+.data-migration-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.data-migration-copy strong {
+  color: var(--fa-text-strong);
+}
+
+.data-migration-items {
+  color: var(--fa-text-muted);
+  font-size: 12px;
+}
+
+.data-migration-actions {
+  display: flex;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.data-migration-actions button {
+  border: 1px solid var(--fa-border-control);
+  border-radius: 8px;
+  padding: 5px 12px;
+  background: var(--fa-surface-card);
+  color: var(--fa-text-body);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.data-migration-actions button:hover:not(:disabled) {
+  border-color: var(--fa-control-hover-border);
+  background: var(--fa-control-hover-bg);
+}
+
+.data-migration-actions button:disabled {
+  cursor: progress;
+  opacity: 0.6;
+}
+
 .mode-toggle,
 .diagnostics-toggle,
 .mode-option,
@@ -1354,6 +1418,16 @@ body.is-resizing-context {
   font-weight: 700;
 }
 
+.desktop-engine-row select {
+  width: 100%;
+  border: 1px solid #b8c5cc;
+  border-radius: 7px;
+  padding: 7px 9px;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+}
+
 /* Issue #438 (follow-up): one-click start/stop panel for the prepared Docker
    containers (Telegram bot + OpenAI-compatible server). */
 .desktop-services-panel {
@@ -1535,6 +1609,23 @@ body.is-resizing-context {
   gap: 14px;
   overflow: auto;
   padding: 24px clamp(14px, 4vw, 48px);
+}
+
+.desktop-agent-stream {
+  display: flex;
+  gap: 8px;
+  width: min(820px, 100%);
+  border-left: 3px solid #2d6cdf;
+  border-radius: 6px;
+  padding: 9px 12px;
+  background: #eef4ff;
+  color: #29445f;
+  font-size: 13px;
+}
+
+.desktop-agent-stream span {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .message {
@@ -2136,6 +2227,16 @@ body.is-resizing-context {
   text-transform: uppercase;
 }
 
+/* Issue #676 (R8): the human, first-person headline that leads the trace. It
+   sits above the collapsed/expanded steps and reads as a sentence, so it is
+   styled a touch larger and darker than the robotic step detail beneath it. */
+.thinking-preview-narrative {
+  margin: 0 0 6px;
+  color: #2b3a45;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
 .thinking-preview-toggle {
   flex: 0 0 auto;
   border: 1px solid #cbd6db;
@@ -2290,6 +2391,28 @@ body.is-resizing-context {
   }
 }
 
+/* Issue #672 (F3): the per-message escape hatch from that paced reveal. It is
+   deliberately quiet — a small text control under the reasoning trace rather
+   than a prominent button — because it exists for the impatient minority and
+   should not compete with the answer it is about to show. It only renders
+   while the reveal is withholding the body, so it never lingers. */
+.skip-animation {
+  align-self: flex-start;
+  margin: 2px 0 6px;
+  padding: 2px 8px;
+  border: 1px solid var(--fa-border-subtle);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--fa-text-muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.skip-animation:hover {
+  border-color: var(--fa-control-hover-border);
+  color: var(--fa-text-body);
+}
+
 /* Issue #488: pulsing dot next to the "Thinking" title while the assistant
    is mid-response, so the live trace is visibly live. */
 .thinking-preview-live-dot {
@@ -2429,6 +2552,54 @@ body.is-resizing-context {
   border-top: 1px solid #dce4e7;
   padding: 10px;
   background: #ffffff;
+}
+
+/* Issue #672 (F4): a step whose level the user edited is marked, so the trace
+ * never silently disagrees with what the solver actually reported. */
+.diagnostics-detail[data-level-override] {
+  border-color: var(--fa-control-hover-border);
+}
+
+/* The marker rides the step name rather than the summary row: the row wraps
+   (the detail text takes a line of its own), so a row-level ::after would land
+   under the step instead of beside it. */
+.diagnostics-detail[data-level-override]
+  > summary
+  .diagnostics-step-name::after {
+  content: " •";
+  color: var(--fa-accent-link);
+}
+
+/* Positioned at the pointer, hence `fixed` + inline coordinates. */
+.step-hierarchy-menu {
+  position: fixed;
+  z-index: 40;
+  display: grid;
+  min-width: 180px;
+  overflow: hidden;
+  border: 1px solid var(--fa-border-control);
+  border-radius: 8px;
+  background: var(--fa-surface-card);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.step-hierarchy-menu button {
+  border: 0;
+  padding: 8px 12px;
+  background: transparent;
+  color: var(--fa-text-body);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.step-hierarchy-menu button:hover:not(:disabled) {
+  background: var(--fa-control-hover-bg);
+}
+
+.step-hierarchy-menu button:disabled {
+  color: var(--fa-text-muted);
+  cursor: default;
 }
 
 .diagnostics-tool-section {
@@ -3693,6 +3864,10 @@ textarea:disabled {
   color: #d8d0c4;
 }
 
+:root[data-theme="dark"] .thinking-preview-narrative {
+  color: #e4ddd0;
+}
+
 :root[data-theme="dark"] .thinking-preview-toggle {
   border-color: #4a524e;
   background: #202322;
@@ -4157,6 +4332,10 @@ textarea:disabled {
   :root:not([data-theme="light"]) .thinking-preview-title,
   :root:not([data-theme="light"]) .thinking-preview-current {
     color: #d8d0c4;
+  }
+
+  :root:not([data-theme="light"]) .thinking-preview-narrative {
+    color: #e4ddd0;
   }
 
   :root:not([data-theme="light"]) .thinking-preview-toggle {

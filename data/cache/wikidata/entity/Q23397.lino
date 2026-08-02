@@ -1,0 +1,19 @@
+Q23397
+  aliases
+    en (lakes)
+    hi ("सरोवर")
+    ru ("озёра")
+    zh ("湖" "潭")
+  descriptions
+    en "body of relatively still water, localized in a basin"
+    hi "हिराकुद"
+    ru "естественный водоём"
+    zh "水体类型"
+  id Q23397
+  labels
+    en lake
+    hi "झील"
+    ru "озеро"
+    zh "湖泊"
+  type item
+success 1

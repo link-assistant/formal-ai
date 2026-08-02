@@ -30,7 +30,7 @@ fn issue_408_text_edit_benchmark_scope_documents_are_traceable() {
         "ROADMAP.md",
         &roadmap,
         &[
-            "Issue #408 Text And Code Editing - current PR",
+            "Issue #408 Text And Code Editing - merged (PR #416)",
             "repository-local 10% floor of 3 checks",
             "1,440 of 1,440",
         ],

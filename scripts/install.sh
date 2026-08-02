@@ -27,6 +27,13 @@
 #
 # The script is wrapped in main() and only invoked on the final line so a
 # truncated download (the classic curl|sh hazard) never executes a partial body.
+#
+# Issue #812 asked why this is the only script in the repository without
+# `pipefail`: because it is the only one that runs under `#!/usr/bin/env sh`.
+# `pipefail` is a bash/ksh extension, not POSIX, and `set -o pipefail` aborts
+# dash -- the `/bin/sh` on Debian and Ubuntu -- which is exactly the shell a
+# `curl … | sh` install lands in. Portability wins here; every pipeline below
+# is written so its exit status comes from the rightmost command deliberately.
 set -eu
 
 REPO="link-assistant/formal-ai"

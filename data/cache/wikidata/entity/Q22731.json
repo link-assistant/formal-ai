@@ -1,0 +1,59 @@
+{
+  "entities": {
+    "Q22731": {
+      "type": "item",
+      "id": "Q22731",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "stone"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "камень"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पत्थर"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "石頭"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "rock; building material"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "строительный материал"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "石材"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "rock"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "石塊"
+          },
+          {
+            "language": "zh",
+            "value": "石头"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,18 @@
+Q21546392
+  aliases
+    en ("head of garlic" "bulb of garlic")
+    ru ("головка чеснока")
+    zh ("蒜")
+  descriptions
+    en "culinary ingredient (for the species use Q23400)"
+    hi "पाक सामग्री"
+    ru "как пищевой продукт"
+    zh "烹饪佐料"
+  id Q21546392
+  labels
+    en garlic
+    hi "लहसुन"
+    ru "чеснок"
+    zh "大蒜"
+  type item
+success 1

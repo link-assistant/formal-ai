@@ -1,0 +1,43 @@
+google_trends_prompts
+  record_type "google_trends_prompt_catalog"
+  description "Multilingual request templates that turn a Google Trends topic into Formal AI test prompts (issue #498). Each prompt_template carries a language, a stable variation key, and a text pattern whose {query} placeholder is replaced with the trending search term at catalog-build time. Natural language lives here, not in Rust, per the no-hardcoded-language convention (#386): adding a language or a new request variation is a data-only change — google_trends_catalog picks it up with no code edit. Languages are emitted in supported_languages() order; within a language, templates are emitted in the order listed below."
+google_trend_prompt_template
+  record_type "google_trend_prompt_template"
+  language "en"
+  variation "tell_me_about"
+  text "Tell me about {query}?"
+google_trend_prompt_template
+  record_type "google_trend_prompt_template"
+  language "en"
+  variation "trends_context"
+  text "Give Google Trends context for {query}?"
+google_trend_prompt_template
+  record_type "google_trend_prompt_template"
+  language "ru"
+  variation "tell_me_about"
+  text "Расскажи о {query}?"
+google_trend_prompt_template
+  record_type "google_trend_prompt_template"
+  language "ru"
+  variation "trends_context"
+  text "Дай контекст Google Trends для {query}?"
+google_trend_prompt_template
+  record_type "google_trend_prompt_template"
+  language "hi"
+  variation "tell_me_about"
+  text "{query} के बारे में बताओ?"
+google_trend_prompt_template
+  record_type "google_trend_prompt_template"
+  language "hi"
+  variation "trends_context"
+  text "{query} के लिए Google Trends संदर्भ दो?"
+google_trend_prompt_template
+  record_type "google_trend_prompt_template"
+  language "zh"
+  variation "tell_me_about"
+  text "介绍一下 {query}?"
+google_trend_prompt_template
+  record_type "google_trend_prompt_template"
+  language "zh"
+  variation "trends_context"
+  text "给出 {query} 的 Google Trends 背景?"

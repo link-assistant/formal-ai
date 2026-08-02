@@ -1,0 +1,76 @@
+   Compiling formal-ai v0.289.0 (/tmp/gh-issue-solver-1784072640053)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 28s
+     Running unittests src/lib.rs (target/debug/deps/formal_ai-21e58504f4f22eba)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/formal_ai-53886f1820ceac7b)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/with-formal-ai.rs (target/debug/deps/with_formal_ai-d57cc42e8b9ea875)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/integration/mod.rs (target/debug/deps/integration-d5434a9a5df16209)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 88 filtered out; finished in 0.00s
+
+     Running tests/source/mod.rs (target/debug/deps/source-53ad1a3866ca37e2)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 475 filtered out; finished in 0.00s
+
+     Running tests/unit/mod.rs (target/debug/deps/unit-0d5c182732133188)
+
+running 5 tests
+test issue_714_agentic_mode::screenshot_search_prompt_routes_to_opencode_websearch_alias ... FAILED
+test issue_714_agentic_mode::report_action_does_not_become_a_web_search_without_shell_access ... FAILED
+test issue_714_agentic_mode::report_action_finishes_with_the_issue_url_after_gh_returns ... FAILED
+test issue_714_agentic_mode::report_action_calls_gh_through_the_advertised_shell_tool ... FAILED
+test issue_714_agentic_mode::ordinary_report_writing_is_not_mistaken_for_issue_reporting ... ok
+
+failures:
+
+---- issue_714_agentic_mode::screenshot_search_prompt_routes_to_opencode_websearch_alias stdout ----
+
+thread 'issue_714_agentic_mode::screenshot_search_prompt_routes_to_opencode_websearch_alias' (13827) panicked at tests/unit/issue_714_agentic_mode.rs:85:13:
+assertion `left == right` failed
+  left: String("elon musk")
+ right: "Elon Musk"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- issue_714_agentic_mode::report_action_does_not_become_a_web_search_without_shell_access stdout ----
+
+thread 'issue_714_agentic_mode::report_action_does_not_become_a_web_search_without_shell_access' (13825) panicked at tests/unit/issue_714_agentic_mode.rs:61:18:
+expected a shell-access explanation, got None
+
+---- issue_714_agentic_mode::report_action_finishes_with_the_issue_url_after_gh_returns stdout ----
+
+thread 'issue_714_agentic_mode::report_action_finishes_with_the_issue_url_after_gh_returns' (13826) panicked at tests/unit/issue_714_agentic_mode.rs:50:18:
+expected completion after gh returned, got None
+
+---- issue_714_agentic_mode::report_action_calls_gh_through_the_advertised_shell_tool stdout ----
+
+thread 'issue_714_agentic_mode::report_action_calls_gh_through_the_advertised_shell_tool' (13824) panicked at tests/unit/issue_714_agentic_mode.rs:16:9:
+report action did not emit a tool call: None
+
+
+failures:
+    issue_714_agentic_mode::report_action_calls_gh_through_the_advertised_shell_tool
+    issue_714_agentic_mode::report_action_does_not_become_a_web_search_without_shell_access
+    issue_714_agentic_mode::report_action_finishes_with_the_issue_url_after_gh_returns
+    issue_714_agentic_mode::screenshot_search_prompt_routes_to_opencode_websearch_alias
+
+test result: FAILED. 1 passed; 4 failed; 0 ignored; 0 measured; 1570 filtered out; finished in 0.27s
+
+error: test failed, to rerun pass `--test unit`

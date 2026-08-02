@@ -1,0 +1,21 @@
+   Compiling formal-ai v0.300.0 (/tmp/gh-issue-solver-1784506151226)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 41.97s
+     Running tests/unit/mod.rs (target/debug/deps/unit-83490c651f7fe834)
+
+running 1 test
+
+thread 'issue_781::codex_mcp_transport_envelope_yields_clean_research_urls' (42875) panicked at tests/unit/issue_781.rs:366:5:
+assertion `left == right` failed: client transport metadata and JSON escaping are not part of a URL
+  left: String("https://acer.example.test/a325-45/specifications\\nConnector")
+ right: "https://acer.example.test/a325-45/specifications"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test issue_781::codex_mcp_transport_envelope_yields_clean_research_urls ... FAILED
+
+failures:
+
+failures:
+    issue_781::codex_mcp_transport_envelope_yields_clean_research_urls
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 1912 filtered out; finished in 2.38s
+
+error: test failed, to rerun pass `--test unit`

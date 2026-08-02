@@ -1,0 +1,85 @@
+{
+  "entities": {
+    "Q186360": {
+      "type": "item",
+      "id": "Q186360",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "nurse"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "медсестра"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "नर्स"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "護理人員"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "type of health care provider"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "提供醫療專業的人"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "nurses"
+          },
+          {
+            "language": "en",
+            "value": "nosileytis"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "медбрат"
+          },
+          {
+            "language": "ru",
+            "value": "сестра милосердия"
+          },
+          {
+            "language": "ru",
+            "value": "медицинская сестра"
+          },
+          {
+            "language": "ru",
+            "value": "медицинский брат"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "護士"
+          },
+          {
+            "language": "zh",
+            "value": "護理師"
+          },
+          {
+            "language": "zh",
+            "value": "护士"
+          },
+          {
+            "language": "zh",
+            "value": "护师"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

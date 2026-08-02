@@ -1,0 +1,1968 @@
+Only in .github/workflows: desktop-release.yml
+Only in /tmp/formal-ai-issue-730-templates/csharp-ai-driven-development-pipeline-template/.github/workflows: docs.yml
+diff -ru '--exclude=.git' .github/workflows/release.yml /tmp/formal-ai-issue-730-templates/csharp-ai-driven-development-pipeline-template/.github/workflows/release.yml
+--- .github/workflows/release.yml	2026-07-16 06:06:50.877621368 +0000
++++ /tmp/formal-ai-issue-730-templates/csharp-ai-driven-development-pipeline-template/.github/workflows/release.yml	2026-07-16 06:12:21.422327127 +0000
+@@ -9,13 +9,13 @@
+   workflow_dispatch:
+     inputs:
+       release_mode:
+-        description: 'Manual release mode'
++        description: 'Release mode'
+         required: true
+         type: choice
+         default: 'instant'
+         options:
+           - instant
+-          - changelog-pr
++          - changeset-pr
+       bump_type:
+         description: 'Version bump type'
+         required: true
+@@ -31,28 +31,15 @@
+ 
+ concurrency:
+   group: ${{ github.workflow }}-${{ github.ref }}
+-  # Cancel superseded runs on PR branches to save CI minutes, but never cancel a
+-  # run on main: that branch drives the release pipeline (crates.io publish, tag
+-  # creation, desktop builds, Pages deploy), and cancelling it mid-flight can
+-  # leave a release half-published. desktop-release.yml uses cancel-in-progress:
+-  # false for the same reason (issue #479).
+   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+ 
+ env:
+   GIT_CONFIG_COUNT: '1'
+   GIT_CONFIG_KEY_0: init.defaultBranch
+   GIT_CONFIG_VALUE_0: main
+-  CARGO_NET_RETRY: '10'
+-  CARGO_HTTP_MULTIPLEXING: 'false'
+-  CARGO_TERM_COLOR: always
+-  RUSTFLAGS: -Dwarnings
+-  # Support both CARGO_REGISTRY_TOKEN (cargo's native env var) and CARGO_TOKEN (for backwards compatibility)
+-  CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
+-  CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}
+-  # Default prepared Docker image published by releases for single-line bot startup.
+-  GHCR_IMAGE: ghcr.io/${{ github.repository }}
+-  # Optional: set repository variable DOCKERHUB_IMAGE to namespace/image to publish Docker Hub releases.
+-  DOCKERHUB_IMAGE: ${{ vars.DOCKERHUB_IMAGE }}
++  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
++  DOTNET_CLI_TELEMETRY_OPTOUT: true
++  DOTNET_NOLOGO: true
+ 
+ jobs:
+   # === DETECT CHANGES - determines which jobs should run ===
+@@ -62,8 +49,11 @@
+     timeout-minutes: 5
+     if: github.event_name != 'workflow_dispatch'
+     outputs:
+-      rs-changed: ${{ steps.changes.outputs.rs-changed }}
+-      toml-changed: ${{ steps.changes.outputs.toml-changed }}
++      cs-changed: ${{ steps.changes.outputs.cs-changed }}
++      csproj-changed: ${{ steps.changes.outputs.csproj-changed }}
++      sln-changed: ${{ steps.changes.outputs.sln-changed }}
++      props-changed: ${{ steps.changes.outputs.props-changed }}
++      mjs-changed: ${{ steps.changes.outputs.mjs-changed }}
+       docs-changed: ${{ steps.changes.outputs.docs-changed }}
+       workflow-changed: ${{ steps.changes.outputs.workflow-changed }}
+       any-code-changed: ${{ steps.changes.outputs.any-code-changed }}
+@@ -72,23 +62,43 @@
+         with:
+           fetch-depth: 0
+ 
+-      - name: Setup Rust
+-        uses: dtolnay/rust-toolchain@stable
++      - name: Detect C# layout
++        id: csharp_layout
++        shell: bash
++        run: |
++          set -euo pipefail
++          if compgen -G "*.csproj" > /dev/null || compgen -G "*.sln" > /dev/null || find src -maxdepth 5 -name "*.csproj" -print -quit 2>/dev/null | grep -q .; then
++            CSHARP_ROOT="."
++            MULTI_LANGUAGE="false"
++          elif find csharp -maxdepth 6 -name "*.csproj" -print -quit 2>/dev/null | grep -q .; then
++            CSHARP_ROOT="csharp"
++            MULTI_LANGUAGE="true"
++          else
++            echo "::error::Could not find a C# project at the repository root or under csharp/"
++            exit 1
++          fi
++          echo "root=$CSHARP_ROOT" >> "$GITHUB_OUTPUT"
++          echo "multi-language=$MULTI_LANGUAGE" >> "$GITHUB_OUTPUT"
++          echo "Detected C# layout: root=$CSHARP_ROOT, multi-language=$MULTI_LANGUAGE"
+ 
+-      - name: Install rust-script
+-        run: bash scripts/install-rust-script.sh
++      - name: Setup Bun
++        uses: oven-sh/setup-bun@v2
++        with:
++          bun-version: latest
+ 
+       - name: Detect changes
+         id: changes
+         env:
+           GITHUB_EVENT_NAME: ${{ github.event_name }}
+-          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
+-        run: rust-script scripts/detect-code-changes.rs
+-
+-  # === CHANGELOG CHECK - only runs on PRs with code changes ===
+-  # Docs-only PRs (./docs folder, markdown files) don't require changelog fragments
+-  changelog:
+-    name: Changelog Fragment Check
++          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
++          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
++          CSHARP_ROOT: ${{ steps.csharp_layout.outputs.root }}
++        run: bun run "${{ steps.csharp_layout.outputs.root }}/scripts/detect-code-changes.mjs"
++
++  # === CHANGESET CHECK - only runs on PRs with code changes ===
++  # Docs-only PRs (./docs folder, markdown files) don't require changesets
++  changeset-check:
++    name: Changeset Validation
+     runs-on: ubuntu-latest
+     timeout-minutes: 10
+     needs: [detect-changes]
+@@ -98,365 +108,255 @@
+         with:
+           fetch-depth: 0
+ 
+-      - name: Setup Rust
+-        uses: dtolnay/rust-toolchain@stable
+-
+-      - name: Install rust-script
+-        run: bash scripts/install-rust-script.sh
+-
+-      - name: Check for changelog fragments
+-        env:
+-          GITHUB_BASE_REF: ${{ github.base_ref }}
+-        run: rust-script scripts/check-changelog-fragment.rs
++      - name: Detect C# layout
++        id: csharp_layout
++        shell: bash
++        run: |
++          set -euo pipefail
++          if compgen -G "*.csproj" > /dev/null || compgen -G "*.sln" > /dev/null || find src -maxdepth 5 -name "*.csproj" -print -quit 2>/dev/null | grep -q .; then
++            CSHARP_ROOT="."
++            MULTI_LANGUAGE="false"
++          elif find csharp -maxdepth 6 -name "*.csproj" -print -quit 2>/dev/null | grep -q .; then
++            CSHARP_ROOT="csharp"
++            MULTI_LANGUAGE="true"
++          else
++            echo "::error::Could not find a C# project at the repository root or under csharp/"
++            exit 1
++          fi
++          echo "root=$CSHARP_ROOT" >> "$GITHUB_OUTPUT"
++          echo "multi-language=$MULTI_LANGUAGE" >> "$GITHUB_OUTPUT"
++          echo "Detected C# layout: root=$CSHARP_ROOT, multi-language=$MULTI_LANGUAGE"
+ 
+-  # === VERSION CHECK - prevents manual version modification in PRs ===
+-  # This ensures versions are only modified by the automated release pipeline
+-  version-check:
+-    name: Version Modification Check
+-    runs-on: ubuntu-latest
+-    timeout-minutes: 5
+-    if: github.event_name == 'pull_request'
+-    steps:
+-      - uses: actions/checkout@v6
++      - name: Setup Bun
++        uses: oven-sh/setup-bun@v2
+         with:
+-          fetch-depth: 0
+-
+-      - name: Setup Rust
+-        uses: dtolnay/rust-toolchain@stable
+-
+-      - name: Install rust-script
+-        run: bash scripts/install-rust-script.sh
++          bun-version: latest
+ 
+-      - name: Check for manual version changes
++      - name: Validate changeset
+         env:
+-          GITHUB_EVENT_NAME: ${{ github.event_name }}
+-          GITHUB_HEAD_REF: ${{ github.head_ref }}
+           GITHUB_BASE_REF: ${{ github.base_ref }}
+-        run: rust-script scripts/check-version-modification.rs
++          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
++          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
++          CSHARP_ROOT: ${{ steps.csharp_layout.outputs.root }}
++        run: |
++          # Skip changeset check for automated release PRs
++          if [[ "${{ github.head_ref }}" == "changeset-release/"* ]] || [[ "${{ github.head_ref }}" == "changeset-manual-release-"* ]]; then
++            echo "Skipping changeset check for automated release PR"
++            exit 0
++          fi
++
++          # Run changeset validation script
++          bun run "${{ steps.csharp_layout.outputs.root }}/scripts/validate-changeset.mjs"
+ 
+   # === LINT AND FORMAT CHECK ===
+-  # Lint runs independently of changelog check - it's a fast check that should always run
+-  # See: https://github.com/link-assistant/hive-mind/pull/1024 for why this dependency was removed
++  # Lint runs independently of changeset-check - it's a fast check that should always run
++  # See: https://github.com/link-foundation/js-ai-driven-development-pipeline-template/pull/18 for why this dependency was removed
+   lint:
+     name: Lint and Format Check
+     runs-on: ubuntu-latest
+-    timeout-minutes: 10
++    timeout-minutes: 20
+     needs: [detect-changes]
+-    # Note: always() is required because detect-changes is skipped on workflow_dispatch,
+-    # and without always(), this job would also be skipped even though its condition includes workflow_dispatch.
+-    # See: https://github.com/actions/runner/issues/491
++    # detect-changes is intentionally skipped for workflow_dispatch. Without a
++    # status-check function, GitHub adds an implicit success() on detect-changes
++    # and skips lint (and everything that needs it, including instant-release).
++    # always() && !cancelled() lets the OR conditions decide instead.
+     if: |
+       always() && !cancelled() && (
+         github.event_name == 'push' ||
+         github.event_name == 'workflow_dispatch' ||
+-        needs.detect-changes.outputs.any-code-changed == 'true' ||
+-        needs.detect-changes.outputs.rs-changed == 'true' ||
+-        needs.detect-changes.outputs.toml-changed == 'true' ||
++        needs.detect-changes.outputs.cs-changed == 'true' ||
++        needs.detect-changes.outputs.csproj-changed == 'true' ||
++        needs.detect-changes.outputs.sln-changed == 'true' ||
++        needs.detect-changes.outputs.props-changed == 'true' ||
++        needs.detect-changes.outputs.mjs-changed == 'true' ||
+         needs.detect-changes.outputs.docs-changed == 'true' ||
+         needs.detect-changes.outputs.workflow-changed == 'true'
+       )
+     steps:
+       - uses: actions/checkout@v6
+-        with:
+-          fetch-depth: 0
+ 
+-      - name: Setup Rust
+-        uses: dtolnay/rust-toolchain@stable
++      - name: Detect C# layout
++        id: csharp_layout
++        shell: bash
++        run: |
++          set -euo pipefail
++          if compgen -G "*.csproj" > /dev/null || compgen -G "*.sln" > /dev/null || find src -maxdepth 5 -name "*.csproj" -print -quit 2>/dev/null | grep -q .; then
++            CSHARP_ROOT="."
++            MULTI_LANGUAGE="false"
++          elif find csharp -maxdepth 6 -name "*.csproj" -print -quit 2>/dev/null | grep -q .; then
++            CSHARP_ROOT="csharp"
++            MULTI_LANGUAGE="true"
++          else
++            echo "::error::Could not find a C# project at the repository root or under csharp/"
++            exit 1
++          fi
++          echo "root=$CSHARP_ROOT" >> "$GITHUB_OUTPUT"
++          echo "multi-language=$MULTI_LANGUAGE" >> "$GITHUB_OUTPUT"
++          echo "Detected C# layout: root=$CSHARP_ROOT, multi-language=$MULTI_LANGUAGE"
++
++      - name: Setup .NET
++        uses: actions/setup-dotnet@v4
+         with:
+-          components: rustfmt, clippy
++          dotnet-version: '8.0.x'
+ 
+       - name: Setup Bun
+         uses: oven-sh/setup-bun@v2
+         with:
+-          bun-version-file: .bun-version
+-
+-      - name: Install rust-script
+-        run: bash scripts/install-rust-script.sh
++          bun-version: latest
+ 
+-      - name: Cache cargo registry
+-        uses: actions/cache@v5
+-        with:
+-          path: |
+-            ~/.cargo/registry
+-            ~/.cargo/git
+-            target
+-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+-          restore-keys: |
+-            ${{ runner.os }}-cargo-
++      - name: Restore dependencies
++        working-directory: ${{ steps.csharp_layout.outputs.root }}
++        run: dotnet restore
+ 
+       - name: Check formatting
+-        run: cargo fmt --all -- --check
+-
+-      - name: Run Clippy
+-        run: cargo clippy --all-targets --all-features
++        working-directory: ${{ steps.csharp_layout.outputs.root }}
++        run: dotnet format --verify-no-changes --verbosity diagnostic
+ 
+-      - name: Check semantic grounding
+-        run: cargo test --test unit semantic_grounding -- --nocapture
++      - name: Build with warnings as errors
++        working-directory: ${{ steps.csharp_layout.outputs.root }}
++        run: dotnet build --no-restore --configuration Release /warnaserror
++
++      - name: Run script tests
++        working-directory: ${{ steps.csharp_layout.outputs.root }}
++        run: bun test scripts/*.test.mjs
+ 
+       - name: Check file size limit
+-        env:
+-          FILE_SIZE_WARNING_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+-        run: rust-script scripts/check-file-size.rs
+-
+-      - name: Test release changelog collection
+-        run: rust-script --test scripts/version-and-commit.rs
+-
+-      - name: Check reconstructed changelog
+-        run: node experiments/issue_711_rebuild_changelog.mjs --check
+-
+-      - name: Install web bundle dependencies
+-        run: bun install --frozen-lockfile
+-
+-      - name: Build web vendor bundle
+-        run: bun run build:web
+-
+-      - name: Check web bundles are current
+-        run: git diff --exit-code -- src/web/vendor.bundle.js src/web/ocr.bundle.js src/web/app.js
+-
+-      - name: Setup Node
+-        uses: actions/setup-node@v6
+-        with:
+-          node-version: 22
+-          cache: npm
+-          cache-dependency-path: tests/e2e/package-lock.json
+-
+-      - name: Install web test dependencies
+-        run: npm ci --prefix tests/e2e
+-
+-      - name: Check i18n catalog coverage
+-        run: npm run --prefix tests/e2e check:i18n
++        working-directory: ${{ steps.csharp_layout.outputs.root }}
++        run: bun run scripts/check-file-size.mjs
+ 
+-      - name: Check language change parity
+-        env:
+-          GITHUB_BASE_REF: ${{ github.base_ref }}
+-        run: npm run --prefix tests/e2e check:language-parity
+-
+-      - name: Check language test coverage
+-        env:
+-          GITHUB_BASE_REF: ${{ github.base_ref }}
+-        run: npm run --prefix tests/e2e check:language-test-coverage
+-
+-      - name: Check multilingual intent coverage
+-        run: npm run --prefix tests/e2e check:intent-coverage
+-
+-      - name: Check web app for hook TDZ ordering bugs
+-        run: npm run --prefix tests/e2e check:web-tdz
+-
+-      # Issue #511/#514: fail the build if src/web/app.js renders hardcoded
+-      # user-facing prose instead of routing it through the i18n catalog (t()).
+-      # This stops the per-tool permission / Services regression class from
+-      # silently re-appearing.
+-      - name: Check web app for hardcoded user-facing strings
+-        run: npm run --prefix tests/e2e check:web-hardcoded-ui
+-
+-      # The terminal-command trigger vocabulary lives in
+-      # data/seed/terminal-commands.lino; the JS worker loads the generated
+-      # src/web/seed deployment mirror through seed_loader.js. This fails on
+-      # worker wiring regressions or stale present mirrors, so the worker can
+-      # never silently re-hardcode trigger phrases that have moved into seed data.
+-      - name: Check terminal vocabulary worker seed wiring
+-        run: node experiments/issue-513-sync-worker-terminal.mjs --check
+-
+-      # The VS Code extension host libraries (config/bridge/webview-html/
+-      # chat-view/server-process) and the manifest are pure JS exercised by
+-      # node's built-in test runner plus a static smoke check. They read only
+-      # committed source (never the git-ignored dist-web/vendor mirrors), so no
+-      # `npm ci` or prepare-resources step is required here.
+-      - name: Run VS Code extension node tests
+-        run: npm run vscode:test
+-
+-  # === TEST ===
+-  # Test runs independently of the changelog check and gates on the change
+-  # detector so it never burns runner time on non-code changes (issue #442).
+-  #
+-  # Previously this job ran whenever `changelog` was skipped. But `changelog`
+-  # is skipped precisely when there are NO code changes (docs-only / .gitkeep /
+-  # changelog-fragment-only commits), so `needs.changelog.result == 'skipped'`
+-  # turned "no code changed" into "run the full test suite" — the exact
+-  # opposite of what we want. Gate on the detect-changes outputs instead, the
+-  # same way `lint` and `coverage` already do.
++  # === TEST ON MULTIPLE OS ===
+   test:
+     name: Test (${{ matrix.os }})
+     runs-on: ${{ matrix.os }}
+-    timeout-minutes: 15
++    timeout-minutes: 30
+     needs: [detect-changes]
+-    # Note: always() is required because detect-changes is skipped on
+-    # workflow_dispatch; without it the skipped dependency would cascade and
+-    # skip this job despite the workflow_dispatch condition below.
+-    # See: https://github.com/actions/runner/issues/491
++    env:
++      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
++    # Run tests only for events or file changes that affect runtime behavior.
+     if: |
+       always() && !cancelled() && (
+         github.event_name == 'push' ||
+         github.event_name == 'workflow_dispatch' ||
+         needs.detect-changes.outputs.any-code-changed == 'true' ||
+-        needs.detect-changes.outputs.rs-changed == 'true' ||
+-        needs.detect-changes.outputs.toml-changed == 'true' ||
++        needs.detect-changes.outputs.cs-changed == 'true' ||
++        needs.detect-changes.outputs.csproj-changed == 'true' ||
+         needs.detect-changes.outputs.workflow-changed == 'true'
+       )
+     strategy:
+       fail-fast: false
+       matrix:
+-        # Windows and macOS execution is dropped for now to speed up iteration;
+-        # the tests themselves are kept and still run on Linux.
+-        os: [ubuntu-latest]
++        os: [ubuntu-latest, macos-latest, windows-latest]
+     steps:
+       - uses: actions/checkout@v6
+ 
+-      - name: Setup Rust
+-        uses: dtolnay/rust-toolchain@stable
+-
+-      # Restore the cargo cache here, but leave cache writes to the lint/build
+-      # jobs. This test job runs close to its timeout after the full suite, and
+-      # saving a target-heavy cache in post-job cleanup can cancel an otherwise
+-      # successful run.
+-      - name: Restore cargo registry cache
+-        uses: actions/cache/restore@v5
+-        with:
+-          path: |
+-            ~/.cargo/registry
+-            ~/.cargo/git
+-            target
+-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+-          restore-keys: |
+-            ${{ runner.os }}-cargo-
+-
+-      - name: Check LiNo data integrity
+-        run: cargo test --test unit data_files -- --nocapture
++      - name: Detect C# layout
++        id: csharp_layout
++        shell: bash
++        run: |
++          set -euo pipefail
++          if compgen -G "*.csproj" > /dev/null || compgen -G "*.sln" > /dev/null || find src -maxdepth 5 -name "*.csproj" -print -quit 2>/dev/null | grep -q .; then
++            CSHARP_ROOT="."
++            MULTI_LANGUAGE="false"
++          elif find csharp -maxdepth 6 -name "*.csproj" -print -quit 2>/dev/null | grep -q .; then
++            CSHARP_ROOT="csharp"
++            MULTI_LANGUAGE="true"
++          else
++            echo "::error::Could not find a C# project at the repository root or under csharp/"
++            exit 1
++          fi
++          echo "root=$CSHARP_ROOT" >> "$GITHUB_OUTPUT"
++          echo "multi-language=$MULTI_LANGUAGE" >> "$GITHUB_OUTPUT"
++          echo "Detected C# layout: root=$CSHARP_ROOT, multi-language=$MULTI_LANGUAGE"
++
++      - name: Setup .NET
++        uses: actions/setup-dotnet@v4
++        with:
++          dotnet-version: '8.0.x'
++
++      - name: Restore dependencies
++        working-directory: ${{ steps.csharp_layout.outputs.root }}
++        run: dotnet restore
++
++      - name: Build
++        working-directory: ${{ steps.csharp_layout.outputs.root }}
++        run: dotnet build --no-restore --configuration Release
+ 
+       - name: Run tests
+-        run: cargo test --all-features --verbose
++        working-directory: ${{ steps.csharp_layout.outputs.root }}
++        run: dotnet test --no-build --configuration Release --verbosity normal --collect:"XPlat Code Coverage"
+ 
+-      - name: Run doc tests
+-        run: cargo test --doc --verbose
++      - name: Skip Codecov upload when token is unavailable
++        if: matrix.os == 'ubuntu-latest' && env.CODECOV_TOKEN == ''
++        run: echo "::notice::CODECOV_TOKEN is not configured; skipping Codecov upload."
++
++      - name: Upload coverage to Codecov
++        if: matrix.os == 'ubuntu-latest' && env.CODECOV_TOKEN != ''
++        uses: codecov/codecov-action@v4
++        with:
++          token: ${{ env.CODECOV_TOKEN }}
++          fail_ci_if_error: true
+ 
+-  # === CODE COVERAGE ===
+-  # Generate and upload code coverage using cargo-llvm-cov
+-  coverage:
+-    name: Code Coverage
++  # === BUILD PACKAGE ===
++  # Only runs if lint and test pass
++  build:
++    name: Build Package
+     runs-on: ubuntu-latest
+-    timeout-minutes: 15
+-    needs: [detect-changes]
+-    if: |
+-      always() && !cancelled() && (
+-        github.event_name == 'push' ||
+-        github.event_name == 'workflow_dispatch' ||
+-        needs.detect-changes.outputs.rs-changed == 'true' ||
+-        needs.detect-changes.outputs.toml-changed == 'true'
+-      )
++    timeout-minutes: 20
++    needs: [lint, test]
++    if: always() && needs.lint.result == 'success' && needs.test.result == 'success'
+     steps:
+       - uses: actions/checkout@v6
+ 
+-      - name: Setup Rust
+-        uses: dtolnay/rust-toolchain@stable
+-        with:
+-          components: llvm-tools-preview
+-
+-      - name: Cache cargo registry
+-        uses: actions/cache@v5
+-        with:
+-          path: |
+-            ~/.cargo/registry
+-            ~/.cargo/git
+-            target
+-          key: ${{ runner.os }}-cargo-coverage-${{ hashFiles('**/Cargo.lock') }}
+-          restore-keys: |
+-            ${{ runner.os }}-cargo-coverage-
+-
+-      - name: Install cargo-llvm-cov
+-        uses: taiki-e/install-action@cargo-llvm-cov
+-
+-      - name: Generate code coverage
+-        run: cargo llvm-cov --all-features --lcov --output-path lcov.info
+-
+-      - name: Retain LCOV report
+-        uses: actions/upload-artifact@v7
+-        with:
+-          name: rust-lcov
+-          path: lcov.info
+-          if-no-files-found: error
+-
+-      - name: Detect Codecov configuration
+-        id: codecov-config
+-        env:
+-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
++      - name: Detect C# layout
++        id: csharp_layout
++        shell: bash
+         run: |
+-          if [[ -n "$CODECOV_TOKEN" ]]; then
+-            echo "configured=true" >> "$GITHUB_OUTPUT"
++          set -euo pipefail
++          if compgen -G "*.csproj" > /dev/null || compgen -G "*.sln" > /dev/null || find src -maxdepth 5 -name "*.csproj" -print -quit 2>/dev/null | grep -q .; then
++            CSHARP_ROOT="."
++            MULTI_LANGUAGE="false"
++          elif find csharp -maxdepth 6 -name "*.csproj" -print -quit 2>/dev/null | grep -q .; then
++            CSHARP_ROOT="csharp"
++            MULTI_LANGUAGE="true"
+           else
+-            echo "configured=false" >> "$GITHUB_OUTPUT"
++            echo "::error::Could not find a C# project at the repository root or under csharp/"
++            exit 1
+           fi
++          echo "root=$CSHARP_ROOT" >> "$GITHUB_OUTPUT"
++          echo "multi-language=$MULTI_LANGUAGE" >> "$GITHUB_OUTPUT"
++          echo "Detected C# layout: root=$CSHARP_ROOT, multi-language=$MULTI_LANGUAGE"
+ 
+-      - name: Upload coverage to Codecov when configured
+-        if: steps.codecov-config.outputs.configured == 'true'
+-        uses: codecov/codecov-action@v7
++      - name: Setup .NET
++        uses: actions/setup-dotnet@v4
+         with:
+-          token: ${{ secrets.CODECOV_TOKEN }}
+-          files: lcov.info
+-          disable_search: true
+-          plugins: noop
+-          fail_ci_if_error: true
+-
+-      - name: Report optional Codecov integration status
+-        if: steps.codecov-config.outputs.configured != 'true'
+-        run: echo "::notice title=Codecov upload not configured::The LCOV report is retained as the rust-lcov workflow artifact; configure CODECOV_TOKEN to enable fail-closed remote upload."
++          dotnet-version: '8.0.x'
+ 
+-  # === BUILD ===
+-  # Build package - only runs if lint and test pass
+-  build:
+-    name: Build Package
+-    runs-on: ubuntu-latest
+-    timeout-minutes: 10
+-    needs: [lint, test]
+-    if: always() && !cancelled() && needs.lint.result == 'success' && needs.test.result == 'success'
+-    steps:
+-      - uses: actions/checkout@v6
++      - name: Restore dependencies
++        working-directory: ${{ steps.csharp_layout.outputs.root }}
++        run: dotnet restore
+ 
+-      - name: Setup Rust
+-        uses: dtolnay/rust-toolchain@stable
++      - name: Build Release
++        working-directory: ${{ steps.csharp_layout.outputs.root }}
++        run: dotnet build --no-restore --configuration Release
+ 
+-      - name: Install rust-script
+-        run: bash scripts/install-rust-script.sh
++      - name: Pack NuGet package
++        working-directory: ${{ steps.csharp_layout.outputs.root }}
++        run: dotnet pack --no-build --configuration Release --output ./artifacts
+ 
+-      - name: Cache cargo registry
+-        uses: actions/cache@v5
++      - name: Upload artifacts
++        uses: actions/upload-artifact@v7
+         with:
+-          path: |
+-            ~/.cargo/registry
+-            ~/.cargo/git
+-            target
+-          key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
+-          restore-keys: |
+-            ${{ runner.os }}-cargo-build-
+-
+-      - name: Build release
+-        run: cargo build --release --verbose
+-
+-      - name: Check package
+-        run: cargo package --list --allow-dirty
+-
+-      - name: Check crate package size
+-        run: rust-script scripts/check-crate-package-size.rs
+-
+-  # === AUTO RELEASE ===
+-  # Automatic release on push to main using changelog fragments
+-  # This job automatically bumps version based on fragments in changelog.d/
+-  auto-release:
+-    name: Auto Release
++          name: nuget-package
++          path: ${{ steps.csharp_layout.outputs.root }}/artifacts/*.nupkg
++
++  # === AUTOMATIC RELEASE ===
++  # Runs on push to main using changesets
++  release:
++    name: Release
+     needs: [lint, test, build]
+-    # Note: always() ensures consistent behavior with other jobs that depend on jobs using always().
+-    if: |
+-      always() && !cancelled() &&
+-      github.event_name == 'push' &&
+-      github.ref == 'refs/heads/main' &&
+-      needs.build.result == 'success'
++    if: always() && github.ref == 'refs/heads/main' && github.event_name == 'push' && needs.lint.result == 'success' && needs.test.result == 'success' && needs.build.result == 'success'
+     runs-on: ubuntu-latest
+     timeout-minutes: 30
+-    outputs:
+-      pages_sha: ${{ steps.release_pages_ref.outputs.sha }}
+-      pages_version: ${{ steps.release_pages_ref.outputs.version }}
+-    env:
+-      DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME }}
+-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+     permissions:
+       contents: write
+       packages: write
+@@ -464,230 +364,227 @@
+       - uses: actions/checkout@v6
+         with:
+           fetch-depth: 0
+-          token: ${{ secrets.GITHUB_TOKEN }}
+ 
+-      - name: Setup Rust
+-        uses: dtolnay/rust-toolchain@stable
+-
+-      - name: Install rust-script
+-        run: bash scripts/install-rust-script.sh
++      - name: Detect C# layout
++        id: csharp_layout
++        shell: bash
++        run: |
++          set -euo pipefail
++          if compgen -G "*.csproj" > /dev/null || compgen -G "*.sln" > /dev/null || find src -maxdepth 5 -name "*.csproj" -print -quit 2>/dev/null | grep -q .; then
++            CSHARP_ROOT="."
++            MULTI_LANGUAGE="false"
++          elif find csharp -maxdepth 6 -name "*.csproj" -print -quit 2>/dev/null | grep -q .; then
++            CSHARP_ROOT="csharp"
++            MULTI_LANGUAGE="true"
++          else
++            echo "::error::Could not find a C# project at the repository root or under csharp/"
++            exit 1
++          fi
++          echo "root=$CSHARP_ROOT" >> "$GITHUB_OUTPUT"
++          echo "multi-language=$MULTI_LANGUAGE" >> "$GITHUB_OUTPUT"
++          echo "Detected C# layout: root=$CSHARP_ROOT, multi-language=$MULTI_LANGUAGE"
+ 
+-      - name: Configure git
+-        run: rust-script scripts/git-config.rs
++      - name: Setup .NET
++        uses: actions/setup-dotnet@v4
++        with:
++          dotnet-version: '8.0.x'
+ 
+-      - name: Determine bump type from changelog fragments
+-        id: bump_type
+-        run: rust-script scripts/get-bump-type.rs
++      - name: Setup Bun
++        uses: oven-sh/setup-bun@v2
++        with:
++          bun-version: latest
+ 
+-      - name: Check if version already released or no fragments
+-        id: check
++      - name: Check for changesets
++        id: check_changesets
++        run: |
++          # Count changeset files (excluding README.md and config.json)
++          CHANGESET_DIR="${{ steps.csharp_layout.outputs.root }}/.changeset"
++          CHANGESET_COUNT=$(find "$CHANGESET_DIR" -name "*.md" ! -name "README.md" 2>/dev/null | wc -l)
++          echo "Found $CHANGESET_COUNT changeset file(s)"
++          echo "has_changesets=$([[ $CHANGESET_COUNT -gt 0 ]] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
++          echo "changeset_count=$CHANGESET_COUNT" >> $GITHUB_OUTPUT
++
++      - name: Check if release is needed
++        # Self-healing gate: even when a changeset is absent, resume publishing
++        # if the csproj <Version> is missing on NuGet or its GitHub release does
++        # not exist. See issue #11 and the JS template's check-release-needed.mjs
++        # for the same pattern.
++        id: check_release
+         env:
+-          HAS_FRAGMENTS: ${{ steps.bump_type.outputs.has_fragments }}
+-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+-        run: rust-script scripts/check-release-needed.rs
+-
+-      - name: Collect changelog and bump version
+-        id: version
+-        if: steps.check.outputs.should_release == 'true' && steps.check.outputs.skip_bump != 'true'
++          HAS_CHANGESETS: ${{ steps.check_changesets.outputs.has_changesets }}
++          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
++          GITHUB_REPOSITORY: ${{ github.repository }}
++          CSHARP_ROOT: ${{ steps.csharp_layout.outputs.root }}
+         run: |
+-          rust-script scripts/version-and-commit.rs \
+-            --bump-type "${{ steps.bump_type.outputs.bump_type }}"
++          bun run "${{ steps.csharp_layout.outputs.root }}/scripts/check-release-needed.mjs" \
++            --csharp-root "${{ steps.csharp_layout.outputs.root }}"
+ 
+-      - name: Get current version
+-        id: current_version
+-        if: steps.check.outputs.should_release == 'true'
+-        run: rust-script scripts/get-version.rs
+-
+-      - name: Build release
+-        if: steps.check.outputs.should_release == 'true'
+-        run: cargo build --release
+-
+-      - name: Publish to Crates.io
+-        if: steps.check.outputs.should_release == 'true' && steps.check.outputs.crate_published != 'true'
+-        id: publish-crate
+-        env:
+-          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
+-          CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}
+-        run: rust-script scripts/publish-crate.rs
+-
+-      - name: Wait for Crate availability on Crates.io
+-        if: |
+-          steps.check.outputs.should_release == 'true' && (
+-            steps.check.outputs.crate_published == 'true' ||
+-            steps.publish-crate.outputs.publish_result == 'success'
+-          )
+-        run: rust-script scripts/wait-for-crate.rs --release-version "${{ steps.current_version.outputs.version }}"
+-
+-      - name: Log in to GitHub Container Registry
+-        if: |
+-          steps.check.outputs.should_release == 'true' && (
+-            steps.check.outputs.crate_published == 'true' ||
+-            steps.publish-crate.outputs.publish_result == 'success'
+-          )
+-        uses: docker/login-action@v4
+-        with:
+-          registry: ghcr.io
+-          username: ${{ github.actor }}
+-          password: ${{ secrets.GITHUB_TOKEN }}
+-
+-      - name: Set up Docker Buildx
+-        if: |
+-          steps.check.outputs.should_release == 'true' && (
+-            steps.check.outputs.crate_published == 'true' ||
+-            steps.publish-crate.outputs.publish_result == 'success'
+-          )
+-        uses: docker/setup-buildx-action@v4
+-
+-      - name: Extract GHCR Docker metadata
+-        if: |
+-          steps.check.outputs.should_release == 'true' && (
+-            steps.check.outputs.crate_published == 'true' ||
+-            steps.publish-crate.outputs.publish_result == 'success'
+-          )
+-        id: ghcr-meta
+-        uses: docker/metadata-action@v6
+-        with:
+-          images: ${{ env.GHCR_IMAGE }}
+-          tags: |
+-            type=raw,value=latest
+-            type=raw,value=${{ steps.current_version.outputs.version }}
+-          labels: |
+-            org.opencontainers.image.version=${{ steps.current_version.outputs.version }}
+-
+-      - name: Publish Docker image to GHCR
+-        if: |
+-          steps.check.outputs.should_release == 'true' && (
+-            steps.check.outputs.crate_published == 'true' ||
+-            steps.publish-crate.outputs.publish_result == 'success'
+-          )
+-        uses: docker/build-push-action@v7
+-        with:
+-          context: .
+-          push: true
+-          tags: ${{ steps.ghcr-meta.outputs.tags }}
+-          labels: ${{ steps.ghcr-meta.outputs.labels }}
+-
+-      - name: Configure Docker Hub publishing
+-        if: |
+-          steps.check.outputs.should_release == 'true' && (
+-            steps.check.outputs.crate_published == 'true' ||
+-            steps.publish-crate.outputs.publish_result == 'success'
+-          )
+-        id: dockerhub
+-        run: |
+-          disable_dockerhub() {
+-            echo "enabled=false" >> "$GITHUB_OUTPUT"
+-            echo "$1"
+-          }
++      - name: Merge multiple changesets
++        if: steps.check_changesets.outputs.has_changesets == 'true' && steps.check_changesets.outputs.changeset_count > 1
++        working-directory: ${{ steps.csharp_layout.outputs.root }}
++        run: |
++          echo "Multiple changesets detected, merging..."
++          bun run scripts/merge-changesets.mjs
+ 
+-          if [ -z "$DOCKERHUB_IMAGE" ]; then
+-            disable_dockerhub "Docker Hub publishing disabled: DOCKERHUB_IMAGE repository variable is not set"
+-            exit 0
++      - name: Version and commit
++        if: steps.check_changesets.outputs.has_changesets == 'true'
++        id: version
++        run: |
++          bun run "${{ steps.csharp_layout.outputs.root }}/scripts/version-and-commit.mjs" \
++            --mode changeset \
++            --csharp-root "${{ steps.csharp_layout.outputs.root }}"
++
++      - name: Resolve release version
++        # Picks the version that downstream steps should publish. Prefers the
++        # one just committed; falls back to the csproj <Version> reported by
++        # check-release-needed for self-healing re-runs.
++        id: release_version
++        if: >-
++          steps.version.outputs.version_committed == 'true' ||
++          steps.version.outputs.already_released == 'true' ||
++          (steps.check_release.outputs.should_release == 'true' &&
++           steps.check_release.outputs.skip_bump == 'true')
++        run: |
++          if [ -n "${{ steps.version.outputs.new_version }}" ]; then
++            VERSION="${{ steps.version.outputs.new_version }}"
++          else
++            VERSION="${{ steps.check_release.outputs.current_version }}"
+           fi
++          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
++          echo "Releasing version: $VERSION"
+ 
+-          if [ ! -f Dockerfile ]; then
+-            disable_dockerhub "Docker Hub publishing disabled: Dockerfile was not found at repository root"
++      - name: Build release package
++        if: >-
++          steps.version.outputs.version_committed == 'true' ||
++          steps.version.outputs.already_released == 'true' ||
++          (steps.check_release.outputs.should_release == 'true' &&
++           steps.check_release.outputs.skip_bump == 'true')
++        working-directory: ${{ steps.csharp_layout.outputs.root }}
++        run: |
++          dotnet restore
++          dotnet build --configuration Release
++          dotnet pack --no-build --configuration Release --output ./artifacts
++
++      - name: Resolve NuGet package id
++        id: package
++        if: >-
++          steps.version.outputs.version_committed == 'true' ||
++          steps.version.outputs.already_released == 'true' ||
++          (steps.check_release.outputs.should_release == 'true' &&
++           steps.check_release.outputs.skip_bump == 'true')
++        working-directory: ${{ steps.csharp_layout.outputs.root }}
++        run: |
++          PACKAGE_ID=$(dotnet msbuild src/MyPackage/MyPackage.csproj -getProperty:PackageId | tail -n 1 | tr -d '\r')
++          if [ -z "$PACKAGE_ID" ]; then
++            PACKAGE_ID=$(dotnet msbuild src/MyPackage/MyPackage.csproj -getProperty:AssemblyName | tail -n 1 | tr -d '\r')
++          fi
++          if [ -z "$PACKAGE_ID" ]; then
++            PACKAGE_ID="MyPackage"
++          fi
++          echo "id=$PACKAGE_ID" >> "$GITHUB_OUTPUT"
++
++      - name: Validate NuGet API key
++        # Upfront validation surfaces an expired/invalid NUGET_API_KEY before
++        # we attempt a push that would otherwise return HTTP 403 mid-flight.
++        if: >-
++          steps.version.outputs.version_committed == 'true' ||
++          steps.version.outputs.already_released == 'true' ||
++          (steps.check_release.outputs.should_release == 'true' &&
++           steps.check_release.outputs.skip_bump == 'true')
++        env:
++          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
++        run: |
++          if [ -z "$NUGET_API_KEY" ]; then
++            echo "::warning::NUGET_API_KEY is not configured — NuGet publish will be skipped."
+             exit 0
+           fi
++          echo "NUGET_API_KEY length: ${#NUGET_API_KEY}"
+ 
+-          if [ -z "$DOCKERHUB_USERNAME" ] || [ -z "$DOCKERHUB_TOKEN" ]; then
+-            echo "::error::Docker Hub publishing requires DOCKERHUB_USERNAME and DOCKERHUB_TOKEN"
+-            echo "Set DOCKERHUB_USERNAME as a repository variable or secret, and DOCKERHUB_TOKEN as a secret."
+-            exit 1
++      - name: Publish to NuGet
++        id: nuget_publish
++        if: >-
++          steps.version.outputs.version_committed == 'true' ||
++          steps.version.outputs.already_released == 'true' ||
++          (steps.check_release.outputs.should_release == 'true' &&
++           steps.check_release.outputs.skip_bump == 'true')
++        env:
++          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
++        working-directory: ${{ steps.csharp_layout.outputs.root }}
++        run: |
++          if [ -n "$NUGET_API_KEY" ]; then
++            dotnet nuget push ./artifacts/*.nupkg --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json --skip-duplicate
++            echo "published=true" >> "$GITHUB_OUTPUT"
++          else
++            echo "NUGET_API_KEY not set, skipping NuGet publish"
++            echo "published=false" >> "$GITHUB_OUTPUT"
+           fi
+ 
+-          echo "enabled=true" >> "$GITHUB_OUTPUT"
+-          echo "docker_hub_url=https://hub.docker.com/r/${DOCKERHUB_IMAGE}" >> "$GITHUB_OUTPUT"
+-
+-      - name: Log in to Docker Hub
+-        if: steps.dockerhub.outputs.enabled == 'true'
+-        uses: docker/login-action@v4
+-        with:
+-          username: ${{ env.DOCKERHUB_USERNAME }}
+-          password: ${{ env.DOCKERHUB_TOKEN }}
+-
+-      - name: Extract Docker metadata
+-        if: steps.dockerhub.outputs.enabled == 'true'
+-        id: docker-meta
+-        uses: docker/metadata-action@v6
+-        with:
+-          images: ${{ env.DOCKERHUB_IMAGE }}
+-          tags: |
+-            type=raw,value=latest
+-            type=raw,value=${{ steps.current_version.outputs.version }}
+-          labels: |
+-            org.opencontainers.image.version=${{ steps.current_version.outputs.version }}
+-
+-      - name: Publish Docker image to Docker Hub
+-        if: steps.dockerhub.outputs.enabled == 'true'
+-        uses: docker/build-push-action@v7
+-        with:
+-          context: .
+-          push: true
+-          tags: ${{ steps.docker-meta.outputs.tags }}
+-          labels: ${{ steps.docker-meta.outputs.labels }}
++      - name: Wait for NuGet indexing
++        # NuGet's flat-container API can take up to 15 minutes to reflect a
++        # newly pushed package (see issue #13). Poll it via the tested helper
++        # before creating the GitHub release so users can `dotnet add package`
++        # the version mentioned in the release notes.
++        if: >-
++          steps.nuget_publish.outputs.published == 'true' && (
++          steps.version.outputs.version_committed == 'true' ||
++          steps.version.outputs.already_released == 'true' ||
++          (steps.check_release.outputs.should_release == 'true' &&
++           steps.check_release.outputs.skip_bump == 'true'))
++        run: |
++          bun run "${{ steps.csharp_layout.outputs.root }}/scripts/wait-for-nuget.mjs" \
++            --package-id "${{ steps.package.outputs.id }}" \
++            --release-version "${{ steps.release_version.outputs.version }}"
++
++      - name: Smoke-test published NuGet package
++        # Indexing proves the version exists; this installs it in a clean
++        # throwaway project and runs the advertised library entry point before
++        # release notes are published. The helper captures command output
++        # before previewing it, avoiding SIGPIPE-prone live-output pagination.
++        if: >-
++          steps.nuget_publish.outputs.published == 'true' && (
++          steps.version.outputs.version_committed == 'true' ||
++          steps.version.outputs.already_released == 'true' ||
++          (steps.check_release.outputs.should_release == 'true' &&
++           steps.check_release.outputs.skip_bump == 'true'))
++        run: |
++          bun run scripts/smoke-test-nuget-package.mjs \
++            --package-id "${{ steps.package.outputs.id }}" \
++            --release-version "${{ steps.release_version.outputs.version }}"
+ 
+       - name: Create GitHub Release
+-        if: |
+-          steps.check.outputs.should_release == 'true' && (
+-            steps.check.outputs.crate_published == 'true' ||
+-            steps.publish-crate.outputs.publish_result == 'success'
+-          )
++        if: >-
++          steps.version.outputs.version_committed == 'true' ||
++          steps.version.outputs.already_released == 'true' ||
++          (steps.check_release.outputs.should_release == 'true' &&
++           steps.check_release.outputs.skip_bump == 'true')
+         env:
+           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+-          GHCR_URL: https://github.com/${{ github.repository }}/pkgs/container/formal-ai
+-          DOCKER_HUB_URL: ${{ steps.dockerhub.outputs.docker_hub_url }}
+         run: |
+-          # Use new_version from version-and-commit when available (tag-checked), else fall back to Cargo.toml version
+-          RELEASE_VERSION="${{ steps.version.outputs.new_version }}"
+-          if [ -z "$RELEASE_VERSION" ]; then
+-            RELEASE_VERSION="${{ steps.current_version.outputs.version }}"
+-          fi
+-
+-          release_args=(
+-            --release-version "$RELEASE_VERSION"
+-            --repository "${{ github.repository }}"
+-          )
+-          release_args+=(--ghcr-url "$GHCR_URL")
+-          if [ -n "$DOCKER_HUB_URL" ]; then
+-            release_args+=(--docker-hub-url "$DOCKER_HUB_URL")
+-          fi
+-          rust-script scripts/create-github-release.rs "${release_args[@]}"
+-
+-      - name: Resolve Pages deploy ref
+-        id: release_pages_ref
+-        if: always()
+-        run: |
+-          sha="$(git rev-parse HEAD)"
+-          version="$(sed -n 's/^version[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' Cargo.toml | head -n 1)"
+-          if [ -z "$version" ]; then
+-            echo "::error file=Cargo.toml::Could not read formal-ai version from Cargo.toml"
+-            exit 1
+-          fi
+-          echo "sha=${sha}" >> "$GITHUB_OUTPUT"
+-          echo "version=${version}" >> "$GITHUB_OUTPUT"
+-          echo "Pages deploy ref: ${sha} (formal-ai ${version})"
++          bun run "${{ steps.csharp_layout.outputs.root }}/scripts/create-github-release.mjs" \
++            --release-version "${{ steps.release_version.outputs.version }}" \
++            --repository "${{ github.repository }}" \
++            --csharp-root "${{ steps.csharp_layout.outputs.root }}" \
++            --language "C#" \
++            --package-id "${{ steps.package.outputs.id }}" \
++            --assets-glob "./artifacts/*.nupkg"
+ 
+   # === MANUAL INSTANT RELEASE ===
+-  # Manual release via workflow_dispatch - only after CI passes
+-  manual-release:
++  # Triggered via workflow_dispatch with instant mode
++  instant-release:
+     name: Instant Release
+     needs: [lint, test, build]
+-    # Note: always() is required to evaluate the condition when dependencies use always().
+-    # The build job ensures lint and test passed before this job runs.
++    # Mirror the automatic release job: a status-check function plus explicit
++    # needs.*.result checks so the dispatch run is evaluated even though
++    # detect-changes (an upstream skip) propagated through the needs graph.
+     if: |
+       always() && !cancelled() &&
+       github.event_name == 'workflow_dispatch' &&
+       github.event.inputs.release_mode == 'instant' &&
++      needs.lint.result == 'success' &&
++      needs.test.result == 'success' &&
+       needs.build.result == 'success'
+     runs-on: ubuntu-latest
+     timeout-minutes: 30
+-    outputs:
+-      pages_sha: ${{ steps.release_pages_ref.outputs.sha }}
+-      pages_version: ${{ steps.release_pages_ref.outputs.version }}
+-    env:
+-      DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME }}
+-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+     permissions:
+       contents: write
+       packages: write
+@@ -697,186 +594,148 @@
+           fetch-depth: 0
+           token: ${{ secrets.GITHUB_TOKEN }}
+ 
+-      - name: Setup Rust
+-        uses: dtolnay/rust-toolchain@stable
+-
+-      - name: Install rust-script
+-        run: bash scripts/install-rust-script.sh
++      - name: Detect C# layout
++        id: csharp_layout
++        shell: bash
++        run: |
++          set -euo pipefail
++          if compgen -G "*.csproj" > /dev/null || compgen -G "*.sln" > /dev/null || find src -maxdepth 5 -name "*.csproj" -print -quit 2>/dev/null | grep -q .; then
++            CSHARP_ROOT="."
++            MULTI_LANGUAGE="false"
++          elif find csharp -maxdepth 6 -name "*.csproj" -print -quit 2>/dev/null | grep -q .; then
++            CSHARP_ROOT="csharp"
++            MULTI_LANGUAGE="true"
++          else
++            echo "::error::Could not find a C# project at the repository root or under csharp/"
++            exit 1
++          fi
++          echo "root=$CSHARP_ROOT" >> "$GITHUB_OUTPUT"
++          echo "multi-language=$MULTI_LANGUAGE" >> "$GITHUB_OUTPUT"
++          echo "Detected C# layout: root=$CSHARP_ROOT, multi-language=$MULTI_LANGUAGE"
+ 
+-      - name: Configure git
+-        run: rust-script scripts/git-config.rs
++      - name: Setup .NET
++        uses: actions/setup-dotnet@v4
++        with:
++          dotnet-version: '8.0.x'
+ 
+-      - name: Collect changelog fragments
+-        run: rust-script scripts/collect-changelog.rs
++      - name: Setup Bun
++        uses: oven-sh/setup-bun@v2
++        with:
++          bun-version: latest
+ 
+       - name: Version and commit
+         id: version
++        run: |
++          bun run "${{ steps.csharp_layout.outputs.root }}/scripts/version-and-commit.mjs" \
++            --mode instant \
++            --bump-type "${{ github.event.inputs.bump_type }}" \
++            --description "${{ github.event.inputs.description }}" \
++            --csharp-root "${{ steps.csharp_layout.outputs.root }}"
++
++      - name: Build package
++        if: >-
++          steps.version.outputs.version_committed == 'true' ||
++          steps.version.outputs.already_released == 'true'
++        working-directory: ${{ steps.csharp_layout.outputs.root }}
++        run: |
++          dotnet restore
++          dotnet build --configuration Release
++          dotnet pack --no-build --configuration Release --output ./artifacts
++
++      - name: Resolve NuGet package id
++        if: >-
++          steps.version.outputs.version_committed == 'true' ||
++          steps.version.outputs.already_released == 'true'
++        id: package
++        working-directory: ${{ steps.csharp_layout.outputs.root }}
++        run: |
++          PACKAGE_ID=$(dotnet msbuild src/MyPackage/MyPackage.csproj -getProperty:PackageId | tail -n 1 | tr -d '\r')
++          if [ -z "$PACKAGE_ID" ]; then
++            PACKAGE_ID=$(dotnet msbuild src/MyPackage/MyPackage.csproj -getProperty:AssemblyName | tail -n 1 | tr -d '\r')
++          fi
++          if [ -z "$PACKAGE_ID" ]; then
++            PACKAGE_ID="MyPackage"
++          fi
++          echo "id=$PACKAGE_ID" >> "$GITHUB_OUTPUT"
++
++      - name: Validate NuGet API key
++        if: >-
++          steps.version.outputs.version_committed == 'true' ||
++          steps.version.outputs.already_released == 'true'
+         env:
+-          BUMP_TYPE: ${{ github.event.inputs.bump_type }}
+-          DESCRIPTION: ${{ github.event.inputs.description }}
+-        run: rust-script scripts/version-and-commit.rs --bump-type "${{ github.event.inputs.bump_type }}" --description "${{ github.event.inputs.description }}"
+-
+-      - name: Build release
+-        if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
+-        run: cargo build --release
+-
+-      - name: Publish to Crates.io
+-        if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
+-        id: publish-crate
+-        env:
+-          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
+-          CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}
+-        run: rust-script scripts/publish-crate.rs
+-
+-      - name: Wait for Crate availability on Crates.io
+-        if: |
+-          (steps.version.outputs.version_committed == 'true' ||
+-            steps.version.outputs.already_released == 'true') &&
+-          steps.publish-crate.outputs.publish_result == 'success'
+-        run: rust-script scripts/wait-for-crate.rs --release-version "${{ steps.version.outputs.new_version }}"
+-
+-      - name: Log in to GitHub Container Registry
+-        if: |
+-          (steps.version.outputs.version_committed == 'true' ||
+-            steps.version.outputs.already_released == 'true') &&
+-          steps.publish-crate.outputs.publish_result == 'success'
+-        uses: docker/login-action@v4
+-        with:
+-          registry: ghcr.io
+-          username: ${{ github.actor }}
+-          password: ${{ secrets.GITHUB_TOKEN }}
+-
+-      - name: Set up Docker Buildx
+-        if: |
+-          (steps.version.outputs.version_committed == 'true' ||
+-            steps.version.outputs.already_released == 'true') &&
+-          steps.publish-crate.outputs.publish_result == 'success'
+-        uses: docker/setup-buildx-action@v4
+-
+-      - name: Extract GHCR Docker metadata
+-        if: |
+-          (steps.version.outputs.version_committed == 'true' ||
+-            steps.version.outputs.already_released == 'true') &&
+-          steps.publish-crate.outputs.publish_result == 'success'
+-        id: ghcr-meta
+-        uses: docker/metadata-action@v6
+-        with:
+-          images: ${{ env.GHCR_IMAGE }}
+-          tags: |
+-            type=raw,value=latest
+-            type=raw,value=${{ steps.version.outputs.new_version }}
+-          labels: |
+-            org.opencontainers.image.version=${{ steps.version.outputs.new_version }}
+-
+-      - name: Publish Docker image to GHCR
+-        if: |
+-          (steps.version.outputs.version_committed == 'true' ||
+-            steps.version.outputs.already_released == 'true') &&
+-          steps.publish-crate.outputs.publish_result == 'success'
+-        uses: docker/build-push-action@v7
+-        with:
+-          context: .
+-          push: true
+-          tags: ${{ steps.ghcr-meta.outputs.tags }}
+-          labels: ${{ steps.ghcr-meta.outputs.labels }}
+-
+-      - name: Configure Docker Hub publishing
+-        if: |
+-          (steps.version.outputs.version_committed == 'true' ||
+-            steps.version.outputs.already_released == 'true') &&
+-          steps.publish-crate.outputs.publish_result == 'success'
+-        id: dockerhub
+-        run: |
+-          disable_dockerhub() {
+-            echo "enabled=false" >> "$GITHUB_OUTPUT"
+-            echo "$1"
+-          }
+-
+-          if [ -z "$DOCKERHUB_IMAGE" ]; then
+-            disable_dockerhub "Docker Hub publishing disabled: DOCKERHUB_IMAGE repository variable is not set"
+-            exit 0
+-          fi
+-
+-          if [ ! -f Dockerfile ]; then
+-            disable_dockerhub "Docker Hub publishing disabled: Dockerfile was not found at repository root"
++          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
++        run: |
++          if [ -z "$NUGET_API_KEY" ]; then
++            echo "::warning::NUGET_API_KEY is not configured — NuGet publish will be skipped."
+             exit 0
+           fi
++          echo "NUGET_API_KEY length: ${#NUGET_API_KEY}"
+ 
+-          if [ -z "$DOCKERHUB_USERNAME" ] || [ -z "$DOCKERHUB_TOKEN" ]; then
+-            echo "::error::Docker Hub publishing requires DOCKERHUB_USERNAME and DOCKERHUB_TOKEN"
+-            echo "Set DOCKERHUB_USERNAME as a repository variable or secret, and DOCKERHUB_TOKEN as a secret."
+-            exit 1
++      - name: Publish to NuGet
++        id: nuget_publish
++        if: >-
++          steps.version.outputs.version_committed == 'true' ||
++          steps.version.outputs.already_released == 'true'
++        env:
++          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
++        working-directory: ${{ steps.csharp_layout.outputs.root }}
++        run: |
++          if [ -n "$NUGET_API_KEY" ]; then
++            dotnet nuget push ./artifacts/*.nupkg --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json --skip-duplicate
++            echo "published=true" >> "$GITHUB_OUTPUT"
++          else
++            echo "NUGET_API_KEY not set, skipping NuGet publish"
++            echo "published=false" >> "$GITHUB_OUTPUT"
+           fi
+ 
+-          echo "enabled=true" >> "$GITHUB_OUTPUT"
+-          echo "docker_hub_url=https://hub.docker.com/r/${DOCKERHUB_IMAGE}" >> "$GITHUB_OUTPUT"
+-
+-      - name: Log in to Docker Hub
+-        if: steps.dockerhub.outputs.enabled == 'true'
+-        uses: docker/login-action@v4
+-        with:
+-          username: ${{ env.DOCKERHUB_USERNAME }}
+-          password: ${{ env.DOCKERHUB_TOKEN }}
++      - name: Wait for NuGet indexing
++        # NuGet's flat-container API can take up to 15 minutes to reflect a
++        # newly pushed package (see issue #13). Poll it via the tested helper
++        # before creating the GitHub release so users can `dotnet add package`
++        # the version mentioned in the release notes.
++        if: >-
++          steps.nuget_publish.outputs.published == 'true' && (
++          steps.version.outputs.version_committed == 'true' ||
++          steps.version.outputs.already_released == 'true')
++        run: |
++          bun run "${{ steps.csharp_layout.outputs.root }}/scripts/wait-for-nuget.mjs" \
++            --package-id "${{ steps.package.outputs.id }}" \
++            --release-version "${{ steps.version.outputs.new_version }}"
+ 
+-      - name: Extract Docker metadata
+-        if: steps.dockerhub.outputs.enabled == 'true'
+-        id: docker-meta
+-        uses: docker/metadata-action@v6
+-        with:
+-          images: ${{ env.DOCKERHUB_IMAGE }}
+-          tags: |
+-            type=raw,value=latest
+-            type=raw,value=${{ steps.version.outputs.new_version }}
+-          labels: |
+-            org.opencontainers.image.version=${{ steps.version.outputs.new_version }}
+-
+-      - name: Publish Docker image to Docker Hub
+-        if: steps.dockerhub.outputs.enabled == 'true'
+-        uses: docker/build-push-action@v7
+-        with:
+-          context: .
+-          push: true
+-          tags: ${{ steps.docker-meta.outputs.tags }}
+-          labels: ${{ steps.docker-meta.outputs.labels }}
++      - name: Smoke-test published NuGet package
++        # Indexing proves the version exists; this installs it in a clean
++        # throwaway project and runs the advertised library entry point before
++        # release notes are published. The helper captures command output
++        # before previewing it, avoiding SIGPIPE-prone live-output pagination.
++        if: >-
++          steps.nuget_publish.outputs.published == 'true' && (
++          steps.version.outputs.version_committed == 'true' ||
++          steps.version.outputs.already_released == 'true')
++        run: |
++          bun run scripts/smoke-test-nuget-package.mjs \
++            --package-id "${{ steps.package.outputs.id }}" \
++            --release-version "${{ steps.version.outputs.new_version }}"
+ 
+       - name: Create GitHub Release
+-        if: |
+-          (steps.version.outputs.version_committed == 'true' ||
+-            steps.version.outputs.already_released == 'true') &&
+-          steps.publish-crate.outputs.publish_result == 'success'
++        if: >-
++          steps.version.outputs.version_committed == 'true' ||
++          steps.version.outputs.already_released == 'true'
+         env:
+           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+-          GHCR_URL: https://github.com/${{ github.repository }}/pkgs/container/formal-ai
+-          DOCKER_HUB_URL: ${{ steps.dockerhub.outputs.docker_hub_url }}
+         run: |
+-          release_args=(
+-            --release-version "${{ steps.version.outputs.new_version }}"
+-            --repository "${{ github.repository }}"
+-          )
+-          release_args+=(--ghcr-url "$GHCR_URL")
+-          if [ -n "$DOCKER_HUB_URL" ]; then
+-            release_args+=(--docker-hub-url "$DOCKER_HUB_URL")
+-          fi
+-          rust-script scripts/create-github-release.rs "${release_args[@]}"
+-
+-      - name: Resolve Pages deploy ref
+-        id: release_pages_ref
+-        if: always()
+-        run: |
+-          sha="$(git rev-parse HEAD)"
+-          version="$(sed -n 's/^version[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' Cargo.toml | head -n 1)"
+-          if [ -z "$version" ]; then
+-            echo "::error file=Cargo.toml::Could not read formal-ai version from Cargo.toml"
+-            exit 1
+-          fi
+-          echo "sha=${sha}" >> "$GITHUB_OUTPUT"
+-          echo "version=${version}" >> "$GITHUB_OUTPUT"
+-          echo "Pages deploy ref: ${sha} (formal-ai ${version})"
+-
+-  # === MANUAL CHANGELOG PR ===
+-  changelog-pr:
+-    name: Create Changelog PR
+-    if: github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'changelog-pr'
++          bun run "${{ steps.csharp_layout.outputs.root }}/scripts/create-github-release.mjs" \
++            --release-version "${{ steps.version.outputs.new_version }}" \
++            --repository "${{ github.repository }}" \
++            --csharp-root "${{ steps.csharp_layout.outputs.root }}" \
++            --language "C#" \
++            --package-id "${{ steps.package.outputs.id }}" \
++            --assets-glob "./artifacts/*.nupkg"
++
++  # === MANUAL CHANGESET PR ===
++  # Creates a pull request with the changeset for review
++  changeset-pr:
++    name: Create Changeset PR
++    if: github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'changeset-pr'
+     runs-on: ubuntu-latest
+     timeout-minutes: 10
+     permissions:
+@@ -887,24 +746,53 @@
+         with:
+           fetch-depth: 0
+ 
+-      - name: Setup Rust
+-        uses: dtolnay/rust-toolchain@stable
++      - name: Detect C# layout
++        id: csharp_layout
++        shell: bash
++        run: |
++          set -euo pipefail
++          if compgen -G "*.csproj" > /dev/null || compgen -G "*.sln" > /dev/null || find src -maxdepth 5 -name "*.csproj" -print -quit 2>/dev/null | grep -q .; then
++            CSHARP_ROOT="."
++            MULTI_LANGUAGE="false"
++          elif find csharp -maxdepth 6 -name "*.csproj" -print -quit 2>/dev/null | grep -q .; then
++            CSHARP_ROOT="csharp"
++            MULTI_LANGUAGE="true"
++          else
++            echo "::error::Could not find a C# project at the repository root or under csharp/"
++            exit 1
++          fi
++          echo "root=$CSHARP_ROOT" >> "$GITHUB_OUTPUT"
++          echo "multi-language=$MULTI_LANGUAGE" >> "$GITHUB_OUTPUT"
++          echo "Detected C# layout: root=$CSHARP_ROOT, multi-language=$MULTI_LANGUAGE"
+ 
+-      - name: Install rust-script
+-        run: bash scripts/install-rust-script.sh
++      - name: Setup Bun
++        uses: oven-sh/setup-bun@v2
++        with:
++          bun-version: latest
+ 
+-      - name: Create changelog fragment
+-        env:
+-          BUMP_TYPE: ${{ github.event.inputs.bump_type }}
+-          DESCRIPTION: ${{ github.event.inputs.description }}
+-        run: rust-script scripts/create-changelog-fragment.rs --bump-type "${{ github.event.inputs.bump_type }}" --description "${{ github.event.inputs.description }}"
++      - name: Create changeset file
++        run: |
++          CHANGESET_ID=$(date +%s)
++          CHANGESET_DIR="${{ steps.csharp_layout.outputs.root }}/.changeset"
++          mkdir -p "$CHANGESET_DIR"
++          CHANGESET_FILE="$CHANGESET_DIR/manual-release-${CHANGESET_ID}.md"
++
++          cat > "$CHANGESET_FILE" << 'EOF'
++          ---
++          'MyPackage': ${{ github.event.inputs.bump_type }}
++          ---
++
++          ${{ github.event.inputs.description || 'Manual release' }}
++          EOF
++
++          echo "Created changeset: $CHANGESET_FILE"
+ 
+       - name: Create Pull Request
+         uses: peter-evans/create-pull-request@v8
+         with:
+           token: ${{ secrets.GITHUB_TOKEN }}
+-          commit-message: 'chore: add changelog for manual ${{ github.event.inputs.bump_type }} release'
+-          branch: changelog-manual-release-${{ github.run_id }}
++          commit-message: 'chore: add changeset for manual ${{ github.event.inputs.bump_type }} release'
++          branch: changeset-manual-release-${{ github.run_id }}
+           delete-branch: true
+           title: 'chore: manual ${{ github.event.inputs.bump_type }} release'
+           body: |
+@@ -918,501 +806,6 @@
+             - **Triggered by:** @${{ github.actor }}
+ 
+             ### Next Steps
+-            1. Review the changelog fragment in this PR
++            1. Review the changeset in this PR
+             2. Merge this PR to main
+-            3. The automated release workflow will publish to crates.io and create a GitHub release
+-
+-  # === E2E TESTS (LOCAL) ===
+-  # Serve src/web with a local HTTP server and run Playwright tests against it.
+-  # Runs on every PR so regressions are caught before merge.
+-  test-e2e-local:
+-    name: E2E Tests (local demo)
+-    runs-on: ubuntu-latest
+-    timeout-minutes: 15
+-    needs: [detect-changes]
+-    if: |
+-      always() && !cancelled() && (
+-        github.event_name == 'push' ||
+-        github.event_name == 'workflow_dispatch' ||
+-        needs.detect-changes.outputs.any-code-changed == 'true'
+-      )
+-    steps:
+-      - uses: actions/checkout@v6
+-
+-      - name: Setup Bun
+-        uses: oven-sh/setup-bun@v2
+-        with:
+-          bun-version-file: .bun-version
+-
+-      - name: Setup Node.js
+-        uses: actions/setup-node@v6
+-        with:
+-          node-version: '24.x'
+-          cache: npm
+-          cache-dependency-path: tests/e2e/package-lock.json
+-
+-      - name: Install web bundle dependencies
+-        run: bun install --frozen-lockfile
+-
+-      - name: Build web vendor bundle
+-        run: bun run build:web
+-
+-      - name: Install Playwright and dependencies
+-        run: |
+-          cd tests/e2e
+-          npm ci
+-
+-      - name: Install Playwright browsers
+-        run: |
+-          cd tests/e2e
+-          npx playwright install --with-deps chromium
+-
+-      - name: Sync data/seed into src/web/seed (deployment mirror)
+-        run: scripts/sync-seed.sh
+-
+-      - name: Run local e2e tests
+-        run: |
+-          cd tests/e2e
+-          npx playwright test --config=playwright.local.config.js
+-
+-      - name: Upload Playwright report on failure
+-        if: failure()
+-        uses: actions/upload-artifact@v7
+-        with:
+-          name: playwright-report-local
+-          path: tests/e2e/playwright-report/
+-          retention-days: 7
+-
+-      # The issue-347 spec regenerates the /download preview images and full-page
+-      # captures on every run (proving the screenshots can be produced in CI).
+-      # Publish them as an artifact so reviewers can compare against the committed
+-      # baselines without running the suite locally.
+-      - name: Upload generated /download screenshots
+-        if: always()
+-        uses: actions/upload-artifact@v7
+-        with:
+-          name: download-page-screenshots
+-          path: |
+-            docs/screenshots/issue-347/
+-            src/web/download/assets/app-preview*.png
+-          retention-days: 14
+-
+-  # === E2E: Agent CLI ↔ formal-ai OpenAI-compatible server ===
+-  # Boot `formal-ai serve`, drive it with the real `@link-assistant/agent` CLI
+-  # (talking over its OpenAI-compatible endpoint) and prove the CLI writes the
+-  # requested Links Notation file end-to-end. This is the maintainer's
+-  # requirement for issue #538: no hardcoded meaning answers, no deferral —
+-  # the real toolchain must produce the enriched meaning on every commit.
+-  test-agent-cli-e2e:
+-    name: E2E Tests (agent CLI ↔ formal-ai)
+-    runs-on: ubuntu-latest
+-    timeout-minutes: 20
+-    needs: [detect-changes]
+-    if: |
+-      always() && !cancelled() && (
+-        github.event_name == 'push' ||
+-        github.event_name == 'workflow_dispatch' ||
+-        needs.detect-changes.outputs.any-code-changed == 'true' ||
+-        needs.detect-changes.outputs.rs-changed == 'true' ||
+-        needs.detect-changes.outputs.toml-changed == 'true' ||
+-        needs.detect-changes.outputs.workflow-changed == 'true'
+-      )
+-    steps:
+-      - uses: actions/checkout@v6
+-
+-      - name: Setup Rust
+-        uses: dtolnay/rust-toolchain@stable
+-
+-      - name: Cache cargo registry
+-        uses: actions/cache@v5
+-        with:
+-          path: |
+-            ~/.cargo/registry
+-            ~/.cargo/git
+-            target
+-          key: ${{ runner.os }}-cargo-agentcli-e2e-${{ hashFiles('**/Cargo.lock') }}
+-          restore-keys: |
+-            ${{ runner.os }}-cargo-agentcli-e2e-
+-            ${{ runner.os }}-cargo-
+-
+-      - name: Setup Bun
+-        uses: oven-sh/setup-bun@v2
+-        with:
+-          bun-version-file: .bun-version
+-
+-      - name: Install @link-assistant/agent CLI
+-        # The E2E script talks to formal-ai through the same CLI users install
+-        # locally. `bun add -g` puts the `agent` binary on PATH under
+-        # ~/.bun/bin — the script's default AGENT="agent" picks it up.
+-        run: |
+-          bun add -g @link-assistant/agent
+-          echo "$HOME/.bun/bin" >> $GITHUB_PATH
+-
+-      - name: Build formal-ai (release)
+-        # The E2E script runs against target/release/formal-ai — that's the
+-        # binary users invoke as `formal-ai serve`. Release mode also matches
+-        # the local-dev instructions in the case study.
+-        run: cargo build --release --bin formal-ai
+-
+-      # Each recipe axis of issue #538 is driven live through the real Agent CLI
+-      # against the real formal-ai server — no in-repo simulation. Every step
+-      # boots the server, drives the CLI with a *differently worded* request, and
+-      # asserts the CLI exits 0, wrote the expected file, the file carries the
+-      # requirement's canary string, and the loop walked ≥MIN_POSTS chat rounds.
+-      # Running all three (two meaning concepts + one non-lexeme diagram axis)
+-      # proves the recipe generalises live, not just for the tomato answer.
+-      - name: Run agent CLI E2E — tomato meaning (search → fetch → write → verify)
+-        # Distinct port per step to avoid collisions if a runner is shared.
+-        # Canary: the Russian plural `томаты`, previously missing from `томат`.
+-        env:
+-          PORT: 8768
+-          EXPECT_FILE: meanings-tomato-detail.lino
+-          EXPECT_TEXT: томаты
+-        run: experiments/agent_cli_e2e/run_agent_cli.sh
+-
+-      - name: Run agent CLI E2E — potato meaning (different wording, same recipe)
+-        # A differently-worded request routed to a different concept proves the
+-        # recipe is general, not pattern-matched to the tomato phrasing.
+-        env:
+-          PORT: 8769
+-          TASK: "Please make the potato word and meaning richer — record the singular/plural of each surface, add the missing plural form potatoes, and keep it grounded in Wikidata."
+-          EXPECT_FILE: meanings-potato-detail.lino
+-          EXPECT_TEXT: potatoes
+-        run: experiments/agent_cli_e2e/run_agent_cli.sh
+-
+-      - name: Run agent CLI E2E — generated diagrams (non-lexeme axis, no web step)
+-        # A no-web recipe (write → verify → final = 3 rounds) driven by the same
+-        # CLI, proving the loop generalises beyond the meaning-detail axis.
+-        env:
+-          PORT: 8770
+-          TASK: "Generate the mermaid diagrams of our agentic recipes, split into parts, as a visual overview of how Formal AI drives its own tools."
+-          EXPECT_FILE: agentic-recipes.md
+-          EXPECT_TEXT: flowchart
+-          MIN_POSTS: 3
+-        run: experiments/agent_cli_e2e/run_agent_cli.sh
+-
+-      - name: Run agent CLI E2E — self-inspection CST/AST census (no web step)
+-        # A self-referential no-web recipe (write → verify → final = 3 rounds): the
+-        # server parses a real module of its own meta algorithm through the
+-        # meta-language links network and writes the abstract-syntax node census,
+-        # proving the loop can reason about itself over the live Agent CLI.
+-        env:
+-          PORT: 8771
+-          TASK: "Store the CST/AST of our Rust meta algorithm in our data so the system can reason about itself: parse the planner module and record its abstract-syntax node census in Links Notation."
+-          EXPECT_FILE: self-ast.lino
+-          EXPECT_TEXT: named_node_count
+-          MIN_POSTS: 3
+-        run: experiments/agent_cli_e2e/run_agent_cli.sh
+-
+-      - name: Run agent CLI E2E — learn-from-source directive (issue #499, no web step)
+-        # The user directive from issue #499 — "here you can learn the trending
+-        # topics from Google Trends" — is itself the task. It routes through the
+-        # seed learning_sources registry into the same write → verify → final
+-        # learning recipe, proving one teaching directive drives the Agent CLI,
+-        # not just a chat reply. Canary: the human-gated marker in the report.
+-        env:
+-          PORT: 8772
+-          TASK: "Here you can learn the trending topics from Google Trends: https://trends.google.com/trending/rss?geo=US"
+-          EXPECT_FILE: google-trends-learning.lino
+-          EXPECT_TEXT: human_gated
+-          MIN_POSTS: 3
+-        run: experiments/agent_cli_e2e/run_agent_cli.sh
+-
+-      - name: Run agent CLI E2E — general unpinned change plan (issue #654)
+-        # No `*_TASK` constant names this request. The fallback planner derives the
+-        # target, literal payload, evidence, and verification command from the
+-        # formalized requirement, writes its plan event first, then executes it.
+-        env:
+-          PORT: 8773
+-          TASK: "Create file artifacts/general-agent-plan.txt containing general planner e2e passed"
+-          EXPECT_FILE: artifacts/general-agent-plan.txt
+-          EXPECT_TEXT: general planner e2e passed
+-          MIN_POSTS: 4
+-        run: experiments/agent_cli_e2e/run_agent_cli.sh
+-
+-      - name: Run agent CLI E2E — file-creation routes to write not read (issue #681)
+-        # The exact reproduction from issue #681: a "create a file … with the
+-        # content …" request used to emit a `read` on the not-yet-existing target
+-        # and finish with "File not found", writing nothing. Driven live through
+-        # the real CLI, the request must now walk the write/create plan (write plan
+-        # → write target → verify → final = 4 posts) and leave hello.txt on disk
+-        # carrying its content — never a read of the file it was asked to create.
+-        env:
+-          PORT: 8775
+-          TASK: "Create a file named hello.txt with the content hello world"
+-          EXPECT_FILE: hello.txt
+-          EXPECT_TEXT: hello world
+-          MIN_POSTS: 4
+-        run: experiments/agent_cli_e2e/run_agent_cli.sh
+-
+-      - name: Run agent CLI E2E — generated programs use harness commands (issue #716)
+-        # The exact screenshot reproduction must create the source in the real
+-        # Agent CLI workspace, then ask that harness to compile and run it. The
+-        # request trace preserves both shell calls so a prose-only response or
+-        # server-private execution cannot satisfy this check.
+-        env:
+-          PORT: 8776
+-          TASK: "Give me hello world program in Rust"
+-          EXPECT_FILE: main.rs
+-          EXPECT_TEXT: "Hello, world!"
+-          MIN_POSTS: 4
+-          EXPECT_SERVER_TEXTS: |-
+-            rustc main.rs -o main
+-            ./main
+-        run: experiments/agent_cli_e2e/run_agent_cli.sh
+-
+-      - name: Run agent CLI E2E — auto-learn client execution architecture (issue #716)
+-        # Replay the same investigation through Formal AI's associative-memory
+-        # adapter and real Agent CLI tools. The report remains review-gated; its
+-        # evidence links make the architectural promotion auditable.
+-        env:
+-          PORT: 8777
+-          TASK: "Use Formal AI auto-learning to inspect the persisted issue 716 client-execution failures as an associative links network, rank the observations and architectural amendments, keep promotion human-review gated, and write client-execution-learning-report.lino."
+-          EXPECT_FILE: client-execution-learning-report.lino
+-          EXPECT_TEXT: "lesson:typed-execution-artifact"
+-          MIN_POSTS: 3
+-        run: experiments/agent_cli_e2e/run_agent_cli.sh
+-
+-      - name: Run agent CLI E2E — declarative new-file phrasing (issue #712)
+-        # The exact declarative shape from issue #712 previously fell through to
+-        # the read router. The live CLI must execute the complete write plan and
+-        # leave the requested file behind, proving this is more than a response-
+-        # serialization fix.
+-        env:
+-          PORT: 8776
+-          TASK: "new file: notes.txt, contents: hello"
+-          EXPECT_FILE: notes.txt
+-          EXPECT_TEXT: hello
+-          MIN_POSTS: 4
+-        run: experiments/agent_cli_e2e/run_agent_cli.sh
+-
+-      - name: Run agent CLI E2E — report action executes gh (issue #714)
+-        timeout-minutes: 3
+-        env:
+-          PORT: 8780
+-        run: experiments/issue_714_agentic_mode/run_report_e2e.sh
+-
+-      - name: Run agent CLI E2E — research, report, recall, and learn (issue #687)
+-        # Continue four natural-language turns in one real Agent CLI session.
+-        # A PATH-local fake gh proves shell execution without mutating GitHub.
+-        env:
+-          PORT: 8776
+-        run: experiments/agent_cli_e2e/run_issue_687.sh
+-
+-      - name: Replay Hive Mind self-coding inner loop (issue #655)
+-        env:
+-          PORT: 8774
+-        run: |
+-          examples/self-coding/run.sh
+-          cargo test self_coding_session_replays
+-
+-      - name: Upload E2E logs on failure
+-        if: failure()
+-        uses: actions/upload-artifact@v7
+-        with:
+-          name: agent-cli-e2e-logs
+-          path: |
+-            /tmp/formal-ai-serve-*.log
+-            /tmp/agent-out-*.log
+-          retention-days: 7
+-
+-  # === DEPLOY DEMO ===
+-  # Deploy the React chat demo from src/web/ to GitHub Pages after a successful build.
+-  deploy-demo:
+-    name: Deploy Demo to GitHub Pages
+-    needs: [build, auto-release, manual-release]
+-    outputs:
+-      page_url: ${{ steps.deployment.outputs.page_url }}
+-      pages_sha: ${{ steps.pages_ref.outputs.sha }}
+-    if: |
+-      always() && !cancelled() &&
+-      needs.build.result == 'success' && (
+-        (github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.auto-release.result == 'success') ||
+-        (github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant' && needs.manual-release.result == 'success')
+-      )
+-    runs-on: ubuntu-latest
+-    # 20 min (was 15): this job now also runs `cargo doc` for the /docs/api
+-    # reference, which compiles the dependency tree on a cold cargo cache.
+-    timeout-minutes: 20
+-    permissions:
+-      contents: read
+-      pages: write
+-      id-token: write
+-    environment:
+-      name: github-pages
+-      url: ${{ steps.deployment.outputs.page_url }}
+-    steps:
+-      - name: Select Pages deployment ref
+-        id: pages_ref
+-        env:
+-          PAGES_DEPLOY_SHA: ${{ needs.auto-release.outputs.pages_sha || needs.manual-release.outputs.pages_sha || github.sha }}
+-        run: |
+-          if [ -z "$PAGES_DEPLOY_SHA" ]; then
+-            echo "::error::Could not resolve Pages deployment SHA"
+-            exit 1
+-          fi
+-          echo "sha=${PAGES_DEPLOY_SHA}" >> "$GITHUB_OUTPUT"
+-          echo "Pages deployment SHA: ${PAGES_DEPLOY_SHA}"
+-
+-      - uses: actions/checkout@v6
+-        with:
+-          ref: ${{ steps.pages_ref.outputs.sha }}
+-
+-      - name: Configure GitHub Pages
+-        uses: actions/configure-pages@v6
+-
+-      - name: Setup Bun
+-        uses: oven-sh/setup-bun@v2
+-        with:
+-          bun-version-file: .bun-version
+-
+-      - name: Install web bundle dependencies
+-        run: bun install --frozen-lockfile
+-
+-      - name: Build web vendor bundle
+-        run: bun run build:web
+-
+-      # === API DOCS (/docs/api) ===
+-      # The documentation hub (/docs/) links to a Rust API reference at
+-      # /docs/api/. Generate it with `cargo doc` here and copy it into the Pages
+-      # artifact below so it deploys alongside the rest of the site (issue #479).
+-      - name: Setup Rust
+-        uses: dtolnay/rust-toolchain@stable
+-
+-      # Reclaim runner disk before the heavy doc build. The hosted ubuntu image
+-      # ships with ~14 GB free on `/`; pre-installed SDKs we never touch (dotnet,
+-      # Android, GHC, CodeQL) eat most of it. Removing them gives `cargo doc`
+-      # plus the web bundle, the docs copy and the Pages artifact tar enough
+-      # headroom and prevents the "No space left on device" runner crash that
+-      # failed this job in issue #523.
+-      - name: Free up runner disk space
+-        run: |
+-          echo "Disk usage before cleanup:"
+-          df -h /
+-          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL || true
+-          sudo docker image prune --all --force >/dev/null 2>&1 || true
+-          echo "Disk usage after cleanup:"
+-          df -h /
+-
+-      # IMPORTANT (issue #523): cache only the downloaded crate sources, NOT the
+-      # `target/` directory. The other Rust jobs (notably `lint`, which runs
+-      # `cargo clippy --all-targets --all-features`) share the same cache key and
+-      # populate `target/` with a multi-gigabyte debug tree. Restoring that here
+-      # on top of the web bundle and then running `cargo doc` exhausted the
+-      # runner disk. `cargo doc --no-deps --lib` rebuilds its own (much smaller)
+-      # `target/` from the cached registry, so we keep the registry/git cache for
+-      # download speed but never restore the bloated build artifacts.
+-      - name: Cache cargo registry
+-        uses: actions/cache@v5
+-        with:
+-          path: |
+-            ~/.cargo/registry
+-            ~/.cargo/git
+-          key: ${{ runner.os }}-cargo-docs-${{ hashFiles('**/Cargo.lock') }}
+-          restore-keys: |
+-            ${{ runner.os }}-cargo-docs-
+-
+-      - name: Generate Rust API docs (cargo doc)
+-        run: |
+-          # Document just the library (lib name: formal_ai). --no-deps keeps the
+-          # output small and fast; RUSTDOCFLAGS is unset so doc-link warnings do
+-          # not fail the deploy.
+-          cargo doc --no-deps --lib
+-          # rustdoc emits the crate docs under target/doc/formal_ai/; add a root
+-          # redirect so /docs/api/ lands on the crate root instead of 404ing.
+-          cat > target/doc/index.html <<'HTML'
+-          <!doctype html>
+-          <html lang="en">
+-            <head>
+-              <meta charset="utf-8" />
+-              <meta http-equiv="refresh" content="0; url=formal_ai/index.html" />
+-              <link rel="canonical" href="formal_ai/index.html" />
+-              <title>formal-ai API reference</title>
+-            </head>
+-            <body>
+-              <p>Redirecting to the <a href="formal_ai/index.html">formal-ai API reference</a>&hellip;</p>
+-            </body>
+-          </html>
+-          HTML
+-
+-      - name: Sync data/seed into src/web/seed (deployment mirror)
+-        run: scripts/sync-seed.sh
+-
+-      - name: Read formal-ai version from Cargo.toml
+-        id: formal_ai_version
+-        run: |
+-          version="$(sed -n 's/^version[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' Cargo.toml | head -n 1)"
+-          if [ -z "$version" ]; then
+-            echo "::error file=Cargo.toml::Could not read formal-ai version from Cargo.toml"
+-            exit 1
+-          fi
+-          echo "version=${version}" >> "$GITHUB_OUTPUT"
+-          echo "Detected formal-ai version: ${version}"
+-
+-      - name: Stamp GitHub Pages artifact
+-        run: scripts/stamp-pages-artifact.sh src/web "${{ steps.pages_ref.outputs.sha }}" "${{ steps.pages_ref.outputs.sha }}" "${{ steps.formal_ai_version.outputs.version }}"
+-
+-      - name: Copy Rust API docs into the Pages artifact (/docs/api)
+-        run: |
+-          # Copy after stamping: rustdoc's HTML carries no version placeholders,
+-          # and copying post-stamp keeps stamp-pages-artifact.sh from scanning
+-          # the (large) generated tree.
+-          mkdir -p src/web/docs/api
+-          cp -R target/doc/. src/web/docs/api/
+-
+-      - name: Upload GitHub Pages artifact
+-        uses: actions/upload-pages-artifact@v5
+-        with:
+-          path: src/web
+-
+-      - name: Deploy Pages artifact
+-        id: deployment
+-        uses: actions/deploy-pages@v5
+-
+-  # === E2E TESTS (GITHUB PAGES) ===
+-  # Run Playwright tests against the live GitHub Pages URL after deployment.
+-  test-e2e-pages:
+-    name: E2E Tests (GitHub Pages)
+-    needs: [deploy-demo]
+-    if: |
+-      !cancelled() &&
+-      needs.deploy-demo.result == 'success'
+-    runs-on: ubuntu-latest
+-    timeout-minutes: 15
+-    steps:
+-      - uses: actions/checkout@v6
+-
+-      - name: Setup Node.js
+-        uses: actions/setup-node@v6
+-        with:
+-          node-version: '24.x'
+-          cache: npm
+-          cache-dependency-path: tests/e2e/package-lock.json
+-
+-      - name: Install Playwright and dependencies
+-        run: |
+-          cd tests/e2e
+-          npm ci
+-
+-      - name: Install Playwright browsers
+-        run: |
+-          cd tests/e2e
+-          npx playwright install --with-deps chromium
+-
+-      - name: Wait for GitHub Pages deployment
+-        env:
+-          PAGES_DEPLOY_SHA: ${{ needs.deploy-demo.outputs.pages_sha || github.sha }}
+-        run: scripts/wait-for-pages-deployment.sh "${{ needs.deploy-demo.outputs.page_url }}" "$PAGES_DEPLOY_SHA"
+-
+-      - name: Run GitHub Pages e2e tests
+-        run: |
+-          cd tests/e2e
+-          PAGES_URL="${{ needs.deploy-demo.outputs.page_url }}" npx playwright test --config=playwright.pages.config.js
+-
+-      - name: Upload Playwright report on failure
+-        if: failure()
+-        uses: actions/upload-artifact@v7
+-        with:
+-          name: playwright-report-pages
+-          path: tests/e2e/playwright-report/
+-          retention-days: 7
++            3. The automated release workflow will version, publish, and create a GitHub release

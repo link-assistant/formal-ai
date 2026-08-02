@@ -1,0 +1,19 @@
+Q169
+  aliases
+    en (mangoes "Mangifera indica")
+    hi ("मेंगीफेरा इंडिका")
+    ru ("Mangifera indica")
+    zh ("杧果" "黄皮大金芒" "红玉文芒")
+  descriptions
+    en "fruit of the mango tree"
+    hi "एक प्रकार का रसीला फल"
+    ru "фрукт вида Mangifera Indica"
+    zh "水果"
+  id Q169
+  labels
+    en mango
+    hi "आम"
+    ru "манго"
+    zh "芒果"
+  type item
+success 1

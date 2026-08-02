@@ -1,0 +1,39 @@
+
+# error kind
+ExecutionFailed
+
+# pre-build errors
+command failed: exit status: 101
+
+
+
+# rustc version
+rustc 1.99.0-nightly (d0babd8b6 2026-07-15)
+
+# docs.rs version
+docsrs 0.0.0 (964c90a45859fd8f9076e3cbe58470a5a4f4d4f7 2026-07-01 )
+
+# build log
+[INFO] running `Command { std: "docker" "exec" "-e" "SOURCE_DIR=/opt/rustwide/workdir" "-e" "CARGO_HOME=/opt/rustwide/cargo-home" "-e" "RUSTUP_HOME=/opt/rustwide/rustup-home" "-e" "CARGO_TARGET_DIR=/opt/rustwide/target" "-e" "DOCS_RS=1" "-w" "/opt/rustwide/workdir" "--user" "1001:1001" "042a79025342d924dbff5aba4c4e28f63abaf1c59591931c2daa7a01e411f1d6" "/opt/rustwide/cargo-home/bin/cargo" "+nightly" "rustdoc" "--lib" "-Zrustdoc-map" "--config" "build.rustdocflags=[\"--cfg\", \"docsrs\", \"-Z\", \"unstable-options\", \"--emit=invocation-specific\", \"--resource-suffix\", \"-20260715-1.99.0-nightly-d0babd8b6\", \"--static-root-path\", \"/-/rustdoc.static/\", \"--cap-lints\", \"warn\", \"--extern-html-root-takes-precedence\"]" "--offline" "-Zunstable-options" "--config=doc.extern-map.registries.crates-io=\"https://docs.rs/{pkg_name}/{version}/x86_64-unknown-linux-gnu\"" "-Zrustdoc-scrape-examples" "-j6" "--target" "x86_64-unknown-linux-gnu", kill_on_drop: false }`
+[INFO] [stderr] warning: target filter specified, but no targets matched; this is a no-op
+[INFO] [stderr]    Compiling lindera-jieba v3.0.7
+[INFO] [stderr] error: failed to run custom build command for `lindera-jieba v3.0.7`
+[INFO] [stderr] 
+[INFO] [stderr] Caused by:
+[INFO] [stderr]   process didn't exit successfully: `/opt/rustwide/target/debug/build/lindera-jieba-03ecda30d228024a/build-script-build` (exit status: 1)
+[INFO] [stderr]   --- stdout
+[INFO] [stderr]   cargo:rerun-if-changed=build.rs
+[INFO] [stderr]   cargo:rerun-if-changed=Cargo.toml
+[INFO] [stderr]   cargo:rerun-if-env-changed=LINDERA_DICTIONARIES_PATH
+[INFO] [stderr]   cargo:rerun-if-env-changed=LINDERA_CACHE
+[INFO] [stderr]   cargo:rerun-if-env-changed=DOCS_RS
+[INFO] [stderr]   cargo::rustc-env=LINDERA_WORKDIR=/opt/rustwide/target/x86_64-unknown-linux-gnu/debug/build/lindera-jieba-0ac3496c3bdff1db/out
+[INFO] [stderr] 
+[INFO] [stderr]   --- stderr
+[INFO] [stderr]   Error: LinderaError { kind: Io, source: Failed to create dummy input directory: "/opt/rustwide/target/x86_64-unknown-linux-gnu/debug/build/lindera-jieba-0ac3496c3bdff1db/out/mecab-jieba-0.1.1"
+[INFO] [stderr] 
+[INFO] [stderr]   Caused by:
+[INFO] [stderr]       File exists (os error 17) }
+[INFO] [stderr] warning: build failed, waiting for other jobs to finish...
+[INFO] running `Command { std: "docker" "inspect" "042a79025342d924dbff5aba4c4e28f63abaf1c59591931c2daa7a01e411f1d6", kill_on_drop: false }`
+

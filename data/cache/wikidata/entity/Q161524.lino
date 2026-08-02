@@ -1,0 +1,16 @@
+Q161524
+  aliases
+    en ("art mask" "cultural mask" "costume mask" "🎭")
+    zh ("面罩" "假面" "面谱")
+  descriptions
+    en "any full or partial face covering, whether ceremonial, protective, decorative, or used as disguise"
+    ru "накладка на лицо, который надевается для сокрытия личности или для защиты"
+    zh "任何全部或部分面部遮盖物，无论是礼仪性的、保护性的、装饰性的还是用作伪装的"
+  id Q161524
+  labels
+    en mask
+    hi "मुखौटा"
+    ru "маска"
+    zh "面具"
+  type item
+success 1

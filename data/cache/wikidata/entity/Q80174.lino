@@ -1,0 +1,17 @@
+Q80174
+  aliases
+    en ("chimpanzee genus" chimp chimpanzees chimps panin panins)
+    hi ("चिम्पांजी" "चिम्पांज़ी" "चिम्पैंजी")
+    ru (pan)
+  descriptions
+    en "genus of mammals, includes 2 species: robust chimpanzee and bonobo"
+    ru "род из семейства гоминид отряда приматов"
+    zh "猩猩科的一属哺乳动物"
+  id Q80174
+  labels
+    en Pan
+    hi "चिम्पान्ज़ी"
+    ru "шимпанзе"
+    zh "黑猩猩屬"
+  type item
+success 1

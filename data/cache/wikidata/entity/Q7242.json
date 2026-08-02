@@ -1,0 +1,53 @@
+{
+  "entities": {
+    "Q7242": {
+      "type": "item",
+      "id": "Q7242",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "beauty"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "красота"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सुन्दरता"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "美"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "aesthetic concept"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "категория объекта, который вызывает у наблюдателя эстетическое наслаждение"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "美学的最基本概念范畴之一"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "убранство"
+          },
+          {
+            "language": "ru",
+            "value": "нарядность"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

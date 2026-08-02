@@ -1,0 +1,8 @@
+   Compiling formal-ai v0.298.2 (/tmp/gh-issue-solver-1784437815860)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 13.78s
+     Running tests/source/mod.rs (target/debug/deps/source-5fab51603da0b480)
+
+running 1 test
+test translation::cache::tests::long_unicode_cache_segment_truncates_on_a_character_boundary ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 480 filtered out; finished in 0.00s

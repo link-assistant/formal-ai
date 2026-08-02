@@ -1,0 +1,24 @@
+   Compiling formal-ai v0.295.2 (/tmp/gh-issue-solver-1784181977861)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 24.84s
+     Running tests/unit/mod.rs (target/debug/deps/unit-c0dcdeba608db3ef)
+
+running 1 test
+test ci_cd::issue_717::attestations_digest_artifacts_without_parsing_cross_platform_checksum_text ... FAILED
+
+failures:
+
+---- ci_cd::issue_717::attestations_digest_artifacts_without_parsing_cross_platform_checksum_text stdout ----
+
+thread 'ci_cd::issue_717::attestations_digest_artifacts_without_parsing_cross_platform_checksum_text' (28331) panicked at tests/unit/ci-cd/issue_717.rs:22:5:
+assertion `left == right` failed
+  left: 0
+ right: 2
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    ci_cd::issue_717::attestations_digest_artifacts_without_parsing_cross_platform_checksum_text
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 1647 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--test unit`

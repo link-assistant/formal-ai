@@ -1,0 +1,34 @@
+unknown_openers
+  summary "The deterministic opener pools the unknown-intent fallback varies over (issue #144), moved out of Rust and JavaScript constants into seed data by issue #706. A pool belongs to the language slug registered in 'language-detection.lino'; the first opener of a pool must equal the opener already embedded in that language's 'unknown' response in 'multilingual-responses.lino', so the varied answer stays a strict superset of the seed text. Adding a language's openers is a data edit shared by the Rust core, the no_std WASM worker, and the JS worker."
+  fallback_language en
+  pool
+    language en
+    opener "I don't know how to answer that yet."
+    opener "I didn't understand you."
+    opener "I'm not sure how to respond to that yet."
+    opener "I haven't learned to answer that yet."
+    opener "That one is new to me."
+  pool
+    language ru
+    opener "Я пока не знаю, как ответить на это."
+    opener "Я тебя не понял."
+    opener "Я не уверен, как на это ответить."
+    opener "Я ещё не научился отвечать на это."
+    opener "Это для меня новое."
+  pool
+    language hi
+    opener "मुझे अभी इसका उत्तर देना नहीं आता।"
+    opener "मैं समझ नहीं पाया।"
+    opener "मुझे यकीन नहीं है कि कैसे उत्तर दूँ।"
+    opener "मैंने अभी तक यह उत्तर देना नहीं सीखा।"
+    opener "यह मेरे लिए नया है।"
+  pool
+    language zh
+    opener "我还不知道如何回答这个问题。"
+    opener "我不太明白你说的意思。"
+    opener "我不确定该如何回答。"
+    opener "我还没有学会回答这个问题。"
+    opener "这对我来说是新的。"
+  sentence_separator ". "
+  sentence_separator "。"
+  sentence_separator "। "

@@ -49,6 +49,26 @@ pub fn record_formalization_selection(log: &mut EventLog, selection: &Formalizat
         );
     }
 
+    // Issue #661 (R384): expose each interpretation's posterior as an explicit,
+    // inspectable `statement_weight` link so every formalized message is
+    // inspectable as a probability-weighted statement. The weights are the same
+    // softmax posteriors already carried by the `candidate` events above, but
+    // surfaced as their own link kind whose values sum to 1 across candidates.
+    // Trace-only by design: the weights live in the evidence links, never in the
+    // plain reply (see `curate_thinking_event`, which drops this kind).
+    for (index, candidate) in selection.candidates.iter().enumerate() {
+        let weight = selection.probabilities.get(index).copied().unwrap_or(0.0);
+        log.append(
+            "statement_weight",
+            [
+                format!("formalization:{index}"),
+                format!("weight={weight:.6}"),
+                candidate.compact_summary(),
+            ]
+            .join(" "),
+        );
+    }
+
     match &selection.decision {
         FormalizationDecision::NoCandidate => {
             log.append("policy:temperature_selection", "no_candidate".to_owned());

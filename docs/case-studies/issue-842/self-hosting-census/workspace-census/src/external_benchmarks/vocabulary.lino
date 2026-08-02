@@ -1,0 +1,11 @@
+self_ast_census
+  target src/external_benchmarks/vocabulary.rs
+  language rust
+  fidelity signature
+  byte_len 766
+  line_count 23
+  content_id source_module_75ca460ff8e87bc2
+  symbol_count 2
+  symbols
+    function text 11 13
+    function render 17 23

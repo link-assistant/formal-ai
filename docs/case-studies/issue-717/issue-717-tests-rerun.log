@@ -1,0 +1,15 @@
+   Compiling formal-ai v0.289.0 (/tmp/gh-issue-solver-1784088123474)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 19.64s
+     Running tests/unit/mod.rs (target/debug/deps/unit-0d5c182732133188)
+
+running 7 tests
+test ci_cd::issue_717::artifact_download_and_expected_adhoc_signing_are_warning_free ... ok
+test ci_cd::issue_717::vscode_packaging_copies_the_repository_license ... ok
+test ci_cd::issue_717::checksum_attestations_use_the_lf_safe_current_action ... ok
+test ci_cd::issue_717::file_size_warning_scope_uses_the_event_diff_base ... ok
+test ci_cd::issue_717::coverage_upload_uses_a_node_24_compatible_action ... ok
+test ci_cd::issue_717::change_detection_covers_the_complete_pull_request ... ok
+test ci_cd::issue_717::workflows_suppress_git_default_branch_hints_at_the_source ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 1574 filtered out; finished in 0.01s
+

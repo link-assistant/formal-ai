@@ -1,0 +1,53 @@
+{
+  "entities": {
+    "Q9368": {
+      "type": "item",
+      "id": "Q9368",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "liver"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "печень"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "यकृत"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "肝臟"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "vertebrate organ involved in metabolism"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "непарный орган брюшной полости позвоночных животных, участвующий в метаболизме и ряде других внутренних процессов"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "चयापचय में शामिल कशेरुक अंग"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "器官"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "hepar"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

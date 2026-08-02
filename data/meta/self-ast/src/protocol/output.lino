@@ -1,0 +1,25 @@
+self_ast_census
+  target src/protocol/output.rs
+  language rust
+  fidelity signature
+  byte_len 6268
+  line_count 184
+  content_id source_module_6cfbc8d372025668
+  symbol_count 16
+  symbols
+    struct ResponseObject 6 18
+    function output_messages 23 34
+    function function_calls 39 50
+    function custom_tool_calls 54 65
+    enum ResponseOutputItem 77 88
+    struct ResponseWebSearchToolCall 94 100
+    struct ResponseWebSearchAction 103 108
+    struct ResponseFunctionToolCall 115 125
+    struct ResponseCustomToolCall 129 136
+    function function_call_kind 138 140
+    function custom_tool_call_kind 142 144
+    struct ResponseOutputMessage 147 155
+    struct ResponseOutputContent 158 162
+    struct ResponseReasoningItem 165 170
+    struct ResponseReasoningSummaryText 173 177
+    struct ResponseUsage 180 184

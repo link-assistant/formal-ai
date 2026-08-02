@@ -1,0 +1,12 @@
+self_ast_census
+  target src/network_endpoint.rs
+  language rust
+  fidelity signature
+  byte_len 3129
+  line_count 78
+  content_id source_module_de934b153e58a89a
+  symbol_count 3
+  symbols
+    function handle_network_request 16 45
+    function handle_links_query_request 49 57
+    function parse_links_query_body 62 78

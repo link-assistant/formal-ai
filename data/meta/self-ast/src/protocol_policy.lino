@@ -1,0 +1,26 @@
+self_ast_census
+  target src/protocol_policy.rs
+  language rust
+  fidelity signature
+  byte_len 10788
+  line_count 272
+  content_id source_module_f9a923bc8ebee566
+  symbol_count 17
+  symbols
+    function tool_call_refusal_answer 6 21
+    function tool_permission_refusal_answer 23 41
+    function policy_thinking_steps 43 51
+    function agentic_tool_permission_denial 68 85
+    function is_tool_choice_request 87 89
+    function tool_choice_function_name 91 102
+    function tool_definition_name 104 115
+    function tool_definition_names 123 127
+    function find_tool_definition 131 135
+    function response_tool_call_identity 140 148
+    function append_qualified_tool_definition_names 150 173
+    function find_qualified_tool_definition 175 194
+    function namespace_tool_call_identity 196 221
+    function qualify_tool_name 223 235
+    function hosted_tool_type_name 241 250
+    function is_hosted_tool_definition 255 260
+    function matches_tool_choice_none 262 272

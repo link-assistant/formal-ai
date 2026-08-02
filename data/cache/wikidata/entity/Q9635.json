@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "Q9635": {
+      "type": "item",
+      "id": "Q9635",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "mouth"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "рот"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मुँह"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "口腔"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "body cavity and the parts surrounding it"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "телесное отверстие у животных, через которое принимается пища и, во многих случаях, осуществляется дыхание"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "五官之一"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "oral cavity"
+          },
+          {
+            "language": "en",
+            "value": "oral tissue"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "уста"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "嘴（泰國電視劇）"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -8,6 +8,11 @@ CLI to complete a task. Part 1 shows how a request is routed to a recipe; each l
 details what happens for input handled by that recipe — the deterministic
 `search -> fetch -> write -> verify -> final` state machine in `src/agentic_coding/`.
 
+Scope: these diagrams cover the issue #468/#538 recipe slice. The planner also routes
+self-heal, dreaming-audit, source-graph, ledger, explain, change-request, repair-strategy,
+rebuild, Google-Trends learning/catalog, question-catalog, and the general capability
+router — the `otherwise` edge in Part 1 stands for all of them.
+
 ## Part 1 — Overview: how a task is routed
 
 ```mermaid

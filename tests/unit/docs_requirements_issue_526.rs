@@ -52,7 +52,7 @@ fn issue_526_translation_quality_documents_are_traceable() {
         "ROADMAP.md",
         &roadmap,
         &[
-            "Issue #526 Translation Quality - current PR",
+            "Issue #526 Translation Quality - merged (PR #635)",
             "translation_round_trip",
             "Rust <-> JavaScript code-meaning round-trip coverage",
             "docs/case-studies/issue-526/",

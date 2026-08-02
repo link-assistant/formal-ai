@@ -1,0 +1,25 @@
+[2m[WebServer] [22m[0m[2m[35m$[0m [2m[1mbun build ./src/web/vendor-entry.js --outfile ./src/web/vendor.bundle.js --target browser --format iife --production --minify && bun build ./src/web/ocr-entry.js --outfile ./src/web/ocr.bundle.js --target browser --format iife --production --minify && bun build ./src/web/app/main.jsx --outfile ./src/web/app.js --target browser --format iife --production --minify[0m
+[2m[WebServer] [22m(node:80711) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 20 tests using 2 workers
+
+  ✓   1 [chromium] › tests/issue-282.spec.js:65:5 › Issue #282 Rust/WASM worker parity › English unknown prompts use the native Rust stable-id opener (9.9s)
+  ✘   2 [chromium] › tests/issue-153.spec.js:475:3 › Issue #153 — search UX, formalization, and dedupe › multilingual information-search phrasings route to web search (26.5s)
+  ✘   3 [chromium] › tests/issue-747.spec.js:15:1 › multilingual desktop web search works with agent permission off and no local API (23.2s)
+  ✓   4 [chromium] › tests/issue-153.spec.js:475:3 › Issue #153 — search UX, formalization, and dedupe › multilingual information-search phrasings route to web search (retry #1) (13.8s)
+  ✓   6 [chromium] › tests/multilingual.spec.js:1180:3 › multilingual chat surface › explicit web search fuses DuckDuckGo, Wikipedia, and Wikidata results (5.2s)
+  ✘   5 [chromium] › tests/issue-747.spec.js:15:1 › multilingual desktop web search works with agent permission off and no local API (retry #1) (25.5s)
+  ✓   7 [chromium] › tests/issue-153.spec.js:475:3 › Issue #153 — search UX, formalization, and dedupe › multilingual information-search phrasings route to web search (17.0s)
+  ✓   8 [chromium] › tests/issue-282.spec.js:65:5 › Issue #282 Rust/WASM worker parity › English unknown prompts use the native Rust stable-id opener (7.5s)
+  ✘   9 [chromium] › tests/issue-747.spec.js:15:1 › multilingual desktop web search works with agent permission off and no local API (23.4s)
+  ✘  10 [chromium] › tests/multilingual.spec.js:1180:3 › multilingual chat surface › explicit web search fuses DuckDuckGo, Wikipedia, and Wikidata results (23.2s)
+  ✓  12 [chromium] › tests/multilingual.spec.js:1180:3 › multilingual chat surface › explicit web search fuses DuckDuckGo, Wikipedia, and Wikidata results (retry #1) (17.7s)
+  ✘  11 [chromium] › tests/issue-747.spec.js:15:1 › multilingual desktop web search works with agent permission off and no local API (retry #1) (23.8s)
+  ✓  14 [chromium] › tests/issue-282.spec.js:65:5 › Issue #282 Rust/WASM worker parity › English unknown prompts use the native Rust stable-id opener (6.3s)
+  ✓  13 [chromium] › tests/issue-153.spec.js:475:3 › Issue #153 — search UX, formalization, and dedupe › multilingual information-search phrasings route to web search (14.8s)
+  ✘  15 [chromium] › tests/issue-747.spec.js:15:1 › multilingual desktop web search works with agent permission off and no local API (24.3s)
+  ✘  16 [chromium] › tests/multilingual.spec.js:1180:3 › multilingual chat surface › explicit web search fuses DuckDuckGo, Wikipedia, and Wikidata results (23.4s)
+  ✘  17 [chromium] › tests/issue-747.spec.js:15:1 › multilingual desktop web search works with agent permission off and no local API (retry #1) (24.6s)
+  ✘  18 [chromium] › tests/multilingual.spec.js:1180:3 › multilingual chat surface › explicit web search fuses DuckDuckGo, Wikipedia, and Wikidata results (retry #1) (29.3s)
+  ✓  19 [chromium] › tests/issue-153.spec.js:475:3 › Issue #153 — search UX, formalization, and dedupe › multilingual information-search phrasings route to web search (15.8s)

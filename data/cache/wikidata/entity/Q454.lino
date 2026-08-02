@@ -1,0 +1,16 @@
+Q454
+  aliases
+    hi ("शांति")
+  descriptions
+    en "state of harmony characterized by lack of violent conflict and freedom from fear of violence"
+    hi "सद्भाव की स्थिति, जिसमें हिंसक संघर्ष की कमी और हिंसा के भय से मुक्ति शामिल है"
+    ru "эпоха в истории, обозначенная отсутствием открытых военных конфликтов"
+    zh "沒有暴力衝突或不畏懼暴力的狀態"
+  id Q454
+  labels
+    en peace
+    hi "शान्ति"
+    ru "мир"
+    zh "和平"
+  type item
+success 1

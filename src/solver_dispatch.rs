@@ -5,8 +5,11 @@
 //! registry: the registry chooses method names, then this module supplies the
 //! Rust function for names implemented as regular solver handlers.
 
+use crate::definition_merge::merge_definitions;
 use crate::engine::SymbolicAnswer;
+use crate::entity_resolution::resolve_who_is;
 use crate::event_log::EventLog;
+use crate::number_constraints::solve_number_constraints;
 use crate::proof_engine::ProofRenderConfig;
 use crate::solver::{ConversationTurn, SolverConfig};
 use crate::solver_handler_docs::try_docs_method_explanation;
@@ -18,19 +21,20 @@ use crate::solver_handlers::{
     try_algorithm, try_arithmetic, try_brainstorming_request, try_calendar_create_event,
     try_calendar_reasoning, try_capabilities, try_clarification, try_compound_interest,
     try_concept_lookup, try_conversation_memory, try_conversation_topic_request,
-    try_coreference_request, try_definition_merge, try_document_originality_check,
-    try_document_request, try_execution_failure, try_fact_lookup, try_github_repository_traffic,
-    try_http_fetch, try_ill_formed, try_installation_conversion, try_javascript_execution,
-    try_meta_explanation, try_meta_explanation_with_runtime, try_network_query, try_number_riddle,
-    try_numeric_list, try_numeric_list_with_history, try_opinion_question, try_pattern_inference,
+    try_coreference_request, try_document_originality_check, try_document_request,
+    try_execution_failure, try_fact_checking, try_fact_lookup, try_github_repository_traffic,
+    try_http_fetch, try_http_fetch_with_offline, try_ill_formed, try_installation_conversion,
+    try_javascript_execution, try_learn_from_source, try_meta_explanation,
+    try_meta_explanation_with_runtime, try_network_query, try_numeric_list,
+    try_numeric_list_with_history, try_opinion_question, try_pattern_inference,
     try_program_synthesis, try_proof_request, try_proof_request_with_config,
     try_punctuation_only_prompt, try_research_comparison_table, try_research_result_followup,
     try_response_language_followup, try_roleplay_request, try_shell_command_transform,
     try_shell_command_transform_with_history, try_shell_refusal, try_software_project_followup,
     try_software_project_request, try_source_conflict, try_source_refresh,
-    try_summarization_request, try_text_manipulation, try_text_manipulation_with_history,
-    try_translation, try_url_navigate, try_web_search, try_who_is_question, try_write_script,
-    SelfAwarenessRuntime,
+    try_summarization_request, try_task_decomposition_with_depth, try_text_manipulation,
+    try_text_manipulation_with_history, try_translation, try_url_navigate, try_web_search,
+    try_web_search_with_offline, try_world_state, try_write_script, SelfAwarenessRuntime,
 };
 use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 
@@ -125,12 +129,17 @@ pub enum ContextualOutcome {
 /// directions against this source). The method registry (issue #559, R331) reads
 /// this constant so the catalogue-as-data is grounded in the live code.
 pub const CONTEXTUAL_HANDLER_NAMES: &[&str] = &[
+    "http_fetch",
     "proof_request",
     "meta_explanation",
     "numeric_list",
     "shell_command_transform",
     "text_manipulation",
+    "task_decomposition",
     "response_language_followup",
+    "fact_checking",
+    "world_state",
+    "web_search",
 ];
 
 /// Method names that run before the regular handler table.
@@ -156,6 +165,30 @@ pub fn try_contextual_override(
     log: &mut EventLog,
 ) -> ContextualOutcome {
     let answer = match name {
+        "http_fetch" => try_http_fetch_with_offline(
+            prompt,
+            normalized,
+            log,
+            runtime.solver_config.offline
+                || !std::env::var("FORMAL_AI_LIVE_FETCH").is_ok_and(|value| {
+                    matches!(
+                        value.trim().to_ascii_lowercase().as_str(),
+                        "1" | "true" | "yes" | "on"
+                    )
+                }),
+        ),
+        "web_search" => try_web_search_with_offline(
+            prompt,
+            normalized,
+            log,
+            runtime.solver_config.offline
+                || !std::env::var("FORMAL_AI_LIVE_FETCH").is_ok_and(|value| {
+                    matches!(
+                        value.trim().to_ascii_lowercase().as_str(),
+                        "1" | "true" | "yes" | "on"
+                    )
+                }),
+        ),
         "proof_request" => {
             try_proof_request_with_config(prompt, normalized, log, runtime.proof_render_config)
         }
@@ -170,27 +203,54 @@ pub fn try_contextual_override(
             try_shell_command_transform_with_history(prompt, normalized, log, history)
         }
         "text_manipulation" => try_text_manipulation_with_history(prompt, normalized, log, history),
+        // Issue #847: the recursion has to stop at the configured
+        // `max_decomposition_depth` and say so, which means the handler needs
+        // the live solver config rather than the shipped default.
+        "task_decomposition" => try_task_decomposition_with_depth(
+            prompt,
+            normalized,
+            log,
+            runtime.solver_config.max_decomposition_depth,
+        ),
         "response_language_followup" => {
             try_response_language_followup(prompt, normalized, log, history, runtime.solver_config)
         }
+        "fact_checking" => {
+            try_fact_checking(prompt, normalized, log, history, runtime.solver_config)
+        }
+        "world_state" => try_world_state(prompt, normalized, log, history, runtime.solver_config),
         _ => return ContextualOutcome::NotHandled,
     };
     answer.map_or(ContextualOutcome::Skip, ContextualOutcome::Answer)
 }
 
-/// Ordered dispatch table for the universal solver's specialized handlers.
+/// The specialized-handler function registry: handler name → executable Rust
+/// function.
 ///
-/// Order matters: the first handler that returns `Some` wins, and several
-/// downstream tests rely on the resolution order (for example, conversation
-/// memory must trigger before the concept lookup when both could match).
-/// New handlers should be slotted into the position that preserves intent
-/// precedence rather than appended unconditionally.
-pub const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
+/// This is the *code* half of the dispatch table — the function pointers, which
+/// cannot live in seed data. The *order* in which handlers are tried (the
+/// behaviour) lives in `data/seed/handler-precedence.lino` and is applied by
+/// [`specialized_handlers`]; issue #663 retired the precedence remnant that used
+/// to be baked into this constant's declaration order into that seed file.
+///
+/// The declaration order here is kept aligned with the shipped seed purely for
+/// reviewability — it is not the dispatch authority. [`specialized_handlers`]
+/// asserts the two are an exact permutation, so this registry and the seed can
+/// never silently drift.
+const HANDLER_FUNCTIONS: &[(&str, SpecializedHandler)] = &[
     ("http_fetch", try_http_fetch),
     ("url_navigate", try_url_navigate),
     ("github_repository_traffic", try_github_repository_traffic),
     ("document_originality_check", try_document_originality_check),
     ("web_search", try_web_search),
+    // Issue #499: a "learn from this data source" directive (a user pointing the
+    // engine at Google Trends or another declared source it can learn from) must
+    // route into the matching auto-learning capability instead of the unknown
+    // opener. It sits after the URL/search handlers — which decline a directive
+    // that carries no fetch/open/search cue — and above the general lookups. The
+    // match is self-gated on the seed-declared learnable-source registry, so an
+    // unrelated prompt is untouched.
+    ("learn_from_source", try_learn_from_source),
     ("research_comparison_table", try_research_comparison_table),
     ("research_result_followup", try_research_result_followup),
     ("docs_method_explanation", try_docs_method_explanation),
@@ -238,7 +298,7 @@ pub const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     // executing the command. This is more specific than generic script writing
     // or terminal-command refusal.
     ("shell_command_transform", try_shell_command_transform),
-    ("number_constraint_reasoning", try_number_riddle),
+    ("number_constraint_reasoning", solve_number_constraints),
     // Issue #531: a concrete "find the pattern in 1 2 1 2" / "what comes next"
     // request over an explicit sequence or grid runs the link-native
     // pattern-inference substrate. It is data-gated (needs a run of atoms) so a
@@ -248,9 +308,9 @@ pub const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("pattern_inference", try_pattern_inference),
     ("arithmetic", handle_arithmetic),
     ("javascript_execution", handle_javascript_execution),
-    ("definition_merge", try_definition_merge),
+    ("definition_merge", merge_definitions),
     ("concept_lookup", handle_concept_lookup),
-    ("who_is", try_who_is_question),
+    ("who_is", resolve_who_is),
     ("how_it_works", try_how_it_works),
     ("meta_explanation", try_meta_explanation),
     ("network_query", try_network_query),
@@ -288,11 +348,58 @@ pub const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("incompatible_units", try_incompatible_units),
 ];
 
+/// The ordered specialized-handler table, with precedence read from
+/// `data/seed/handler-precedence.lino` (issue #663).
+///
+/// The seed supplies the *order* (behaviour); [`HANDLER_FUNCTIONS`] supplies the
+/// executable *functions* (code). This joins them and validates that the seed is
+/// an exact permutation of the registered handlers — every handler present once
+/// and only once — panicking otherwise so a seed edit can never silently drop or
+/// duplicate a handler.
+#[must_use]
+pub fn specialized_handlers() -> Vec<(&'static str, SpecializedHandler)> {
+    let precedence = crate::seed::handler_precedence();
+    assert_eq!(
+        precedence.len(),
+        HANDLER_FUNCTIONS.len(),
+        "handler-precedence.lino lists {} handlers but {} are registered in \
+         HANDLER_FUNCTIONS; the seed must be an exact permutation of the registry",
+        precedence.len(),
+        HANDLER_FUNCTIONS.len(),
+    );
+    let mut seen = std::collections::BTreeSet::new();
+    let ordered: Vec<(&'static str, SpecializedHandler)> = precedence
+        .iter()
+        .map(|name| {
+            assert!(
+                seen.insert(name.clone()),
+                "handler-precedence.lino lists handler `{name}` more than once"
+            );
+            let entry = HANDLER_FUNCTIONS
+                .iter()
+                .find(|(candidate, _)| candidate == name)
+                .unwrap_or_else(|| {
+                    panic!(
+                        "handler-precedence.lino names handler `{name}`, which is not \
+                         registered in HANDLER_FUNCTIONS"
+                    )
+                });
+            *entry
+        })
+        .collect();
+    debug_assert_eq!(
+        seen.len(),
+        HANDLER_FUNCTIONS.len(),
+        "every registered handler must appear in handler-precedence.lino exactly once"
+    );
+    ordered
+}
+
 /// Return the executable handler for a registry method name implemented by the
 /// regular solver-handler table.
 #[must_use]
 pub fn handler_for_method(name: &str) -> Option<SpecializedHandler> {
-    SPECIALIZED_HANDLERS
+    HANDLER_FUNCTIONS
         .iter()
         .find_map(|(candidate, handler)| (*candidate == name).then_some(*handler))
 }

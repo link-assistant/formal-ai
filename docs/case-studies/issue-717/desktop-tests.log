@@ -1,0 +1,525 @@
+
+> formal-ai-desktop@0.212.0 test
+> node --test scripts/tool-router.test.mjs scripts/memory-sync.test.mjs scripts/service-control.test.mjs scripts/local-server.test.mjs scripts/agent-provider.test.mjs scripts/docker-detect.test.mjs scripts/data-migration.test.mjs scripts/auto-update.test.mjs scripts/vscode-install.test.mjs scripts/dreaming.test.mjs && node scripts/smoke.mjs
+
+TAP version 13
+# Subtest: agent NDJSON events map onto the existing chat answer contract
+ok 1 - agent NDJSON events map onto the existing chat answer contract
+  ---
+  duration_ms: 4.313877
+  ...
+# Subtest: the default desktop agent provider is the hermetic in-process provider
+ok 2 - the default desktop agent provider is the hermetic in-process provider
+  ---
+  duration_ms: 0.539426
+  ...
+# Subtest: in-process provider executes a granted read-only shell command through the local gate
+ok 3 - in-process provider executes a granted read-only shell command through the local gate
+  ---
+  duration_ms: 1.378171
+  ...
+# Subtest: in-process provider drives the existing formal-ai agentic loop for tasks
+ok 4 - in-process provider drives the existing formal-ai agentic loop for tasks
+  ---
+  duration_ms: 2.580051
+  ...
+# Subtest: commander provider defaults to the org-owned agent backend through agent-commander
+ok 5 - commander provider defaults to the org-owned agent backend through agent-commander
+  ---
+  duration_ms: 2.21972
+  ...
+# Subtest: commander provider maps non-read-only agent mode to approve-each
+ok 6 - commander provider maps non-read-only agent mode to approve-each
+  ---
+  duration_ms: 0.705797
+  ...
+# Subtest: commander provider maps read-only mode for all backends to read-only
+ok 7 - commander provider maps read-only mode for all backends to read-only
+  ---
+  duration_ms: 0.531942
+  ...
+# Subtest: commander provider maps desktop grants to coarse execution flags
+ok 8 - commander provider maps desktop grants to coarse execution flags
+  ---
+  duration_ms: 0.42913
+  ...
+# Subtest: read-only shell command detection covers the first terminal journey
+ok 9 - read-only shell command detection covers the first terminal journey
+  ---
+  duration_ms: 0.482721
+  ...
+# Subtest: desktop code does not spawn host agent, claude, or codex binaries directly
+ok 10 - desktop code does not spawn host agent, claude, or codex binaries directly
+  ---
+  duration_ms: 21.882765
+  ...
+# Subtest: auto-update controller exposes packaged app version and disables autoDownload
+ok 11 - auto-update controller exposes packaged app version and disables autoDownload
+  ---
+  duration_ms: 3.535805
+  ...
+# Subtest: checkForUpdates records an available update for the renderer notification
+ok 12 - checkForUpdates records an available update for the renderer notification
+  ---
+  duration_ms: 1.604944
+  ...
+# Subtest: installUpdate downloads the available release and calls quitAndInstall
+ok 13 - installUpdate downloads the available release and calls quitAndInstall
+  ---
+  duration_ms: 1.236096
+  ...
+# Subtest: auto-update is disabled for unpackaged development runs
+ok 14 - auto-update is disabled for unpackaged development runs
+  ---
+  duration_ms: 5.177498
+  ...
+# Subtest: pinAppName pins the app name to the stable productName-independent value
+ok 15 - pinAppName pins the app name to the stable productName-independent value
+  ---
+  duration_ms: 3.710511
+  ...
+# Subtest: legacy candidates include the pre-pin default name plus known historical names
+ok 16 - legacy candidates include the pre-pin default name plus known historical names
+  ---
+  duration_ms: 1.864478
+  ...
+# Subtest: fresh install with no legacy profile copies nothing and stamps the version
+ok 17 - fresh install with no legacy profile copies nothing and stamps the version
+  ---
+  duration_ms: 1.275499
+  ...
+# Subtest: upgrading user: legacy conversations are copied into the pinned profile and the legacy copy is preserved
+ok 18 - upgrading user: legacy conversations are copied into the pinned profile and the legacy copy is preserved
+  ---
+  duration_ms: 1.177246
+  ...
+# Subtest: never overwrites a pinned profile that already holds data
+ok 19 - never overwrites a pinned profile that already holds data
+  ---
+  duration_ms: 0.48265
+  ...
+# Subtest: per-subtree guard: only the missing subtrees are copied, present ones are left intact
+ok 20 - per-subtree guard: only the missing subtrees are copied, present ones are left intact
+  ---
+  duration_ms: 0.931568
+  ...
+# Subtest: idempotent: a profile already stamped at the current version is left untouched
+ok 21 - idempotent: a profile already stamped at the current version is left untouched
+  ---
+  duration_ms: 0.498239
+  ...
+# Subtest: migrates from a non-standard pre-pin name captured via app.getName()
+ok 22 - migrates from a non-standard pre-pin name captured via app.getName()
+  ---
+  duration_ms: 1.041484
+  ...
+# Subtest: candidateDockerPaths puts absolute install locations before the bare PATH fallback (unix)
+ok 23 - candidateDockerPaths puts absolute install locations before the bare PATH fallback (unix)
+  ---
+  duration_ms: 2.302144
+  ...
+# Subtest: candidateDockerPaths uses Docker Desktop's Windows install path
+ok 24 - candidateDockerPaths uses Docker Desktop's Windows install path
+  ---
+  duration_ms: 0.363858
+  ...
+# Subtest: FORMAL_AI_DOCKER_BIN override is probed first
+ok 25 - FORMAL_AI_DOCKER_BIN override is probed first
+  ---
+  duration_ms: 0.261147
+  ...
+# Subtest: detects an installed+running Docker even when PATH does not contain docker (GUI launch)
+ok 26 - detects an installed+running Docker even when PATH does not contain docker (GUI launch)
+  ---
+  duration_ms: 3.106314
+  ...
+# Subtest: reports unavailable when the CLI exists but the daemon is down
+ok 27 - reports unavailable when the CLI exists but the daemon is down
+  ---
+  duration_ms: 0.387102
+  ...
+# Subtest: re-probes after the failure TTL so a later-started daemon becomes available
+ok 28 - re-probes after the failure TTL so a later-started daemon becomes available
+  ---
+  duration_ms: 0.413109
+  ...
+# Subtest: caches a positive result within the ok TTL (does not spawn on every call)
+ok 29 - caches a positive result within the ok TTL (does not spawn on every call)
+  ---
+  duration_ms: 0.316291
+  ...
+# Subtest: falls back to the bare PATH lookup when no absolute install location exists
+ok 30 - falls back to the bare PATH lookup when no absolute install location exists
+  ---
+  duration_ms: 0.427567
+  ...
+# Subtest: invalidate() forces a fresh binary resolution and probe
+ok 31 - invalidate() forces a fresh binary resolution and probe
+  ---
+  duration_ms: 0.50888
+  ...
+# Subtest: desktop dreaming is enabled by default and accepts explicit opt-out
+ok 32 - desktop dreaming is enabled by default and accepts explicit opt-out
+  ---
+  duration_ms: 2.470778
+  ...
+# Subtest: memory dream candidates reuse desktop binary resolution and stay plan-only by default
+ok 33 - memory dream candidates reuse desktop binary resolution and stay plan-only by default
+  ---
+  duration_ms: 2.074108
+  ...
+# Subtest: low priority wrapping uses nice on Unix-like platforms
+ok 34 - low priority wrapping uses nice on Unix-like platforms
+  ---
+  duration_ms: 0.403864
+  ...
+# Subtest: runDreamingOnce captures successful plan output
+ok 35 - runDreamingOnce captures successful plan output
+  ---
+  duration_ms: 2.097623
+  ...
+# Subtest: scheduler yields while foreground work is active
+ok 36 - scheduler yields while foreground work is active
+  ---
+  duration_ms: 0.810782
+  ...
+# Subtest: a running dreaming child yields when foreground work arrives
+ok 37 - a running dreaming child yields when foreground work arrives
+  ---
+  duration_ms: 0.731684
+  ...
+# Subtest: a spawned dreaming child is dropped to PRIORITY_LOW (issue \#540 §6)
+ok 38 - a spawned dreaming child is dropped to PRIORITY_LOW (issue \#540 §6)
+  ---
+  duration_ms: 0.996318
+  ...
+# Subtest: storage pressure asks consent, applies it, and surfaces migration
+ok 39 - storage pressure asks consent, applies it, and surfaces migration
+  ---
+  duration_ms: 0.97535
+  ...
+# Subtest: auto-apply keeps an explicitly configured backup path
+ok 40 - auto-apply keeps an explicitly configured backup path
+  ---
+  duration_ms: 1.106374
+  ...
+# Subtest: declined automatic cleanup is persisted without applying removals
+ok 41 - declined automatic cleanup is persisted without applying removals
+  ---
+  duration_ms: 0.757021
+  ...
+# Subtest: scheduler starts with an unrefed low-priority timer
+ok 42 - scheduler starts with an unrefed low-priority timer
+  ---
+  duration_ms: 0.582507
+  ...
+# Subtest: ensure starts the local OpenAI-compatible server and exposes provider apiBase
+ok 43 - ensure starts the local OpenAI-compatible server and exposes provider apiBase
+  ---
+  duration_ms: 5.815157
+  ...
+# Subtest: ensure reuses an already healthy server instead of starting twice
+ok 44 - ensure reuses an already healthy server instead of starting twice
+  ---
+  duration_ms: 0.568019
+  ...
+# Subtest: ensure restarts when the remembered server is no longer healthy
+ok 45 - ensure restarts when the remembered server is no longer healthy
+  ---
+  duration_ms: 0.508328
+  ...
+# Subtest: concurrent ensure calls share one start operation
+ok 46 - concurrent ensure calls share one start operation
+  ---
+  duration_ms: 11.7144
+  ...
+# Subtest: ensure records startup failures without losing the reserved apiBase
+ok 47 - ensure records startup failures without losing the reserved apiBase
+  ---
+  duration_ms: 0.828164
+  ...
+# Subtest: server opt-in accepts truthy values only
+ok 48 - server opt-in accepts truthy values only
+  ---
+  duration_ms: 0.337109
+  ...
+# Subtest: child server environment is loopback-only and scrubs API bearer tokens
+ok 49 - child server environment is loopback-only and scrubs API bearer tokens
+  ---
+  duration_ms: 0.445731
+  ...
+# Subtest: eventIdsFromLino reads ids in order from a demo_memory document
+ok 50 - eventIdsFromLino reads ids in order from a demo_memory document
+  ---
+  duration_ms: 3.230425
+  ...
+# Subtest: memoryUrl joins base and path without doubling slashes
+ok 51 - memoryUrl joins base and path without doubling slashes
+  ---
+  duration_ms: 0.438868
+  ...
+# Subtest: pullSince requests the delta endpoint with the watermark
+ok 52 - pullSince requests the delta endpoint with the watermark
+  ---
+  duration_ms: 0.47202
+  ...
+# Subtest: push posts Links-Notation text to the import endpoint
+ok 53 - push posts Links-Notation text to the import endpoint
+  ---
+  duration_ms: 0.504822
+  ...
+# Subtest: createMemorySync advances the watermark as it pulls deltas
+ok 54 - createMemorySync advances the watermark as it pulls deltas
+  ---
+  duration_ms: 2.950614
+  ...
+# Subtest: pull surfaces a non-OK HTTP response as an error
+ok 55 - pull surfaces a non-OK HTTP response as an error
+  ---
+  duration_ms: 1.13685
+  ...
+# Subtest: resolveImage falls back to the GHCR default and honors the override
+ok 56 - resolveImage falls back to the GHCR default and honors the override
+  ---
+  duration_ms: 2.4396
+  ...
+# Subtest: resolveServerPort defaults to 8080 and accepts a valid override
+ok 57 - resolveServerPort defaults to 8080 and accepts a valid override
+  ---
+  duration_ms: 0.404243
+  ...
+# Subtest: serviceKeys exposes telegram, server, and agent environment services
+ok 58 - serviceKeys exposes telegram, server, and agent environment services
+  ---
+  duration_ms: 1.204957
+  ...
+# Subtest: telegram run args keep the default command and inject the token
+ok 59 - telegram run args keep the default command and inject the token
+  ---
+  duration_ms: 0.540989
+  ...
+# Subtest: server run args publish a loopback port and override the command to serve
+ok 60 - server run args publish a loopback port and override the command to serve
+  ---
+  duration_ms: 0.522233
+  ...
+# Subtest: agent environment run args keep an idle ready container with its own Docker volume
+ok 61 - agent environment run args keep an idle ready container with its own Docker volume
+  ---
+  duration_ms: 0.457363
+  ...
+# Subtest: describeService advertises a loopback URL for the server only
+ok 62 - describeService advertises a loopback URL for the server only
+  ---
+  duration_ms: 0.348961
+  ...
+# Subtest: statusAll reports running, stopped, and absent containers
+ok 63 - statusAll reports running, stopped, and absent containers
+  ---
+  duration_ms: 1.139095
+  ...
+# Subtest: status reports docker-unavailable without shelling out
+ok 64 - status reports docker-unavailable without shelling out
+  ---
+  duration_ms: 0.49394
+  ...
+# Subtest: start refuses the telegram bot when the token is missing
+ok 65 - start refuses the telegram bot when the token is missing
+  ---
+  duration_ms: 0.830349
+  ...
+# Subtest: start reaps a stale container then runs the telegram bot with the token
+ok 66 - start reaps a stale container then runs the telegram bot with the token
+  ---
+  duration_ms: 0.569613
+  ...
+# Subtest: start is idempotent when the container is already running
+ok 67 - start is idempotent when the container is already running
+  ---
+  duration_ms: 0.434241
+  ...
+# Subtest: start surfaces a docker run failure as an error with the reason
+ok 68 - start surfaces a docker run failure as an error with the reason
+  ---
+  duration_ms: 0.565084
+  ...
+# Subtest: installAgentEnvironment pulls, recreates, and health-checks the agent container
+ok 69 - installAgentEnvironment pulls, recreates, and health-checks the agent container
+  ---
+  duration_ms: 0.965541
+  ...
+# Subtest: installAgentEnvironment accepts an already-built local image when pull fails
+ok 70 - installAgentEnvironment accepts an already-built local image when pull fails
+  ---
+  duration_ms: 2.070371
+  ...
+# Subtest: installAgentEnvironment surfaces a health-check failure
+ok 71 - installAgentEnvironment surfaces a health-check failure
+  ---
+  duration_ms: 0.642158
+  ...
+# Subtest: stop stops and removes the container
+ok 72 - stop stops and removes the container
+  ---
+  duration_ms: 0.509059
+  ...
+# Subtest: stop treats an already-absent container as success
+ok 73 - stop treats an already-absent container as success
+  ---
+  duration_ms: 0.560406
+  ...
+# Subtest: createServiceControl rejects a missing runDocker dependency
+ok 74 - createServiceControl rejects a missing runDocker dependency
+  ---
+  duration_ms: 0.834157
+  ...
+# Subtest: unknown service keys raise a clear error
+ok 75 - unknown service keys raise a clear error
+  ---
+  duration_ms: 0.822725
+  ...
+# Subtest: default-deny: an ungranted tool call is refused and nothing executes
+ok 76 - default-deny: an ungranted tool call is refused and nothing executes
+  ---
+  duration_ms: 5.829343
+  ...
+# Subtest: default-deny: empty grants refuse every supported tool before side effects
+ok 77 - default-deny: empty grants refuse every supported tool before side effects
+  ---
+  duration_ms: 2.403604
+  ...
+# Subtest: with permission granted, http_fetch is served by the local process
+ok 78 - with permission granted, http_fetch is served by the local process
+  ---
+  duration_ms: 1.039058
+  ...
+# Subtest: an `all` grant opts every tool in at once
+ok 79 - an `all` grant opts every tool in at once
+  ---
+  duration_ms: 0.331829
+  ...
+# Subtest: a partial grant map only permits the named tool
+ok 80 - a partial grant map only permits the named tool
+  ---
+  duration_ms: 0.523266
+  ...
+# Subtest: with permission granted, shell runs on the host by default
+ok 81 - with permission granted, shell runs on the host by default
+  ---
+  duration_ms: 1.416101
+  ...
+# Subtest: with permission granted, code_exec runs inside the box-dind container with logs captured
+ok 82 - with permission granted, code_exec runs inside the box-dind container with logs captured
+  ---
+  duration_ms: 0.671814
+  ...
+# Subtest: shell can still opt into Docker isolation
+ok 83 - shell can still opt into Docker isolation
+  ---
+  duration_ms: 0.453245
+  ...
+# Subtest: code_exec gracefully refuses when Docker is unavailable (never runs unsandboxed)
+ok 84 - code_exec gracefully refuses when Docker is unavailable (never runs unsandboxed)
+  ---
+  duration_ms: 0.957726
+  ...
+# Subtest: read_local_file is confined to the allowed root
+ok 85 - read_local_file is confined to the allowed root
+  ---
+  duration_ms: 0.996087
+  ...
+# Subtest: read_local_file rejects a sibling directory that shares the root prefix
+ok 86 - read_local_file rejects a sibling directory that shares the root prefix
+  ---
+  duration_ms: 0.441754
+  ...
+# Subtest: unknown tools are rejected without executing
+ok 87 - unknown tools are rejected without executing
+  ---
+  duration_ms: 0.317241
+  ...
+# Subtest: VSIX_ASSET_PATTERN matches the packaged extension filename only
+ok 88 - VSIX_ASSET_PATTERN matches the packaged extension filename only
+  ---
+  duration_ms: 4.457054
+  ...
+# Subtest: LATEST_RELEASE_API targets the canonical repo
+ok 89 - LATEST_RELEASE_API targets the canonical repo
+  ---
+  duration_ms: 0.285692
+  ...
+# Subtest: resolveCliCandidates honors the override first, then the known editors
+ok 90 - resolveCliCandidates honors the override first, then the known editors
+  ---
+  duration_ms: 1.431659
+  ...
+# Subtest: selectVsixAsset picks the .vsix and ignores checksum/other assets
+ok 91 - selectVsixAsset picks the .vsix and ignores checksum/other assets
+  ---
+  duration_ms: 0.749558
+  ...
+# Subtest: selectVsixAsset returns null when no extension is published
+ok 92 - selectVsixAsset returns null when no extension is published
+  ---
+  duration_ms: 0.335576
+  ...
+# Subtest: the factory requires its side-effecting dependencies
+ok 93 - the factory requires its side-effecting dependencies
+  ---
+  duration_ms: 0.993854
+  ...
+# Subtest: detectCli returns the first editor that answers --version
+ok 94 - detectCli returns the first editor that answers --version
+  ---
+  duration_ms: 1.43693
+  ...
+# Subtest: detectCli returns null when no VS Code CLI is present
+ok 95 - detectCli returns null when no VS Code CLI is present
+  ---
+  duration_ms: 1.328738
+  ...
+# Subtest: install: detect → resolve → download → install-extension happy path
+ok 96 - install: detect → resolve → download → install-extension happy path
+  ---
+  duration_ms: 1.478558
+  ...
+# Subtest: install: no VS Code CLI yields an actionable no-vscode-cli state
+ok 97 - install: no VS Code CLI yields an actionable no-vscode-cli state
+  ---
+  duration_ms: 0.883689
+  ...
+# Subtest: install: a release without a .vsix yields no-release-asset
+ok 98 - install: a release without a .vsix yields no-release-asset
+  ---
+  duration_ms: 0.523686
+  ...
+# Subtest: install: a failed release lookup is reported, not thrown
+ok 99 - install: a failed release lookup is reported, not thrown
+  ---
+  duration_ms: 0.454367
+  ...
+# Subtest: install: a download error surfaces as download-failed
+ok 100 - install: a download error surfaces as download-failed
+  ---
+  duration_ms: 1.03507
+  ...
+# Subtest: install: a non-zero code --install-extension is reported as install-failed
+ok 101 - install: a non-zero code --install-extension is reported as install-failed
+  ---
+  duration_ms: 3.149644
+  ...
+# Subtest: install: a bundled vsixPath skips the network entirely
+ok 102 - install: a bundled vsixPath skips the network entirely
+  ---
+  duration_ms: 0.878218
+  ...
+1..102
+# tests 102
+# suites 0
+# pass 102
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 661.239937
+formal-ai desktop smoke checks passed

@@ -19,6 +19,14 @@ datasets out of the repository.
 | GSM8K | MIT | `3101c7d5072418e28b9008a6636bde82a006892c` | 1 | 1 | 2 |
 | MATH | MIT | `e839825f9ec5c6cfa585c654a59610969ec13993` | 1 | 1 | 2 |
 | BIG-bench object_counting | Apache-2.0 | `092b196c1f8f14a54bbc62f24759d43bde46dd3b` | 1 | 1 | 2 |
+| Arithmetic reachability search (self-authored) | CC-BY-4.0 | `issue-662` | 0 | 1 | 2 |
+
+Issue #662 adds a self-authored, search-only slice ("Arithmetic reachability
+search"). Its two cases have no reusable part or single rule that derives the
+answer, so they pass only through the step-7 budget-driven random/evolutionary
+search that combines the given numbers with the allowed operators to reach the
+target. Because the prompts are self-authored rather than imported, the source
+carries no upstream dataset; it is released under CC-BY-4.0.
 
 ## License Texts
 
@@ -30,10 +38,11 @@ The upstream license files are canonical:
 - MATH MIT license: <https://raw.githubusercontent.com/hendrycks/math/985bdc1696e88e8643f081a0ff4719da39f2ae2a/LICENSE>
 - BIG-bench Apache-2.0 license: <https://raw.githubusercontent.com/google/BIG-bench/092b196c1f8f14a54bbc62f24759d43bde46dd3b/LICENSE>
 
-Only five upstream task prompts, five self-authored held-out variants, and
+Only five upstream task prompts, six self-authored held-out variants (including
+the issue #662 search-only source), two self-authored search-only prompts, and
 their expected deterministic checks are vendored here. Canonical solutions and
 full external datasets are intentionally not copied into the repository. The
-benchmark suite records `minimum_pass_count "10"` so CI fails if the current
+benchmark suite records `minimum_pass_count "12"` so CI fails if the current
 derived pass count drops below the recorded floor.
 
 ## Issue #362 Coding-Modification Sources
@@ -54,3 +63,79 @@ The issue #362 deterministic ratchet vendors only four self-authored
 multilingual prompts and deterministic trace checks. The network benchmark
 downloads the external parquet files into `target/formal-ai-benchmarks`, which
 is a build artifact cache rather than checked-in source.
+
+## Issue #819 Local-Path Discovery
+
+The local-path discovery suite contains only self-authored multilingual prompts
+and deterministic routing expectations. It imports no upstream dataset or
+third-party payload, so no additional upstream license applies.
+
+## Issue #482 Nemotron Training-Data Samples
+
+| Source | License | Upstream revision | Sampled rows | Download mode |
+| --- | --- | --- | --- | --- |
+| Nemotron Pretraining Legal v1 | CC-BY-4.0 | HF `3d91d58a5c0c46fe9944300ec46719f97a385b13` | 10 | Hugging Face datasets-server `rows`, `length=1` |
+
+Canonical source:
+<https://huggingface.co/datasets/nvidia/Nemotron-Pretraining-Legal-v1>.
+
+The issue #482 suite vendors only compact metadata, SHA-256 digests, and short
+excerpt previews for ten deterministic random rows. The sampler records row
+offsets and provenance URLs in
+`docs/case-studies/issue-482/raw-data/nemotron-random-samples.json` and never
+downloads upstream parquet files or full splits.
+
+## Issue #698 External (Upstream) Benchmark Harness
+
+The issue #698 harness runs the *unmodified upstream* case set at run time. It
+vendors nothing: every payload is fetched into `target/formal-ai-benchmarks`
+(a build artifact) and only the honest `passed/total` score is committed, to
+`data/benchmarks/external-results.lino`. Only permissively licensed suites are
+fetched; the harness refuses to substitute a repository-local proxy for a suite
+it may not or cannot fetch.
+
+| Suite id | Source | License | Upstream revision | Download mode |
+| --- | --- | --- | --- | --- |
+| `humaneval` | [openai/human-eval](https://github.com/openai/human-eval) | MIT | `6d43fb980f9fee3c892a914eda09951f772ad10d` | gzipped JSONL over HTTPS |
+| `mbpp` | [google-research/mbpp](https://github.com/google-research/google-research/tree/master/mbpp) | Apache-2.0 | `1fa17414f56c3703d5adb3818338b6e35e0fd550` | JSONL over HTTPS |
+| `gsm8k` | [openai/grade-school-math](https://github.com/openai/grade-school-math) | MIT | `3101c7d5072418e28b9008a6636bde82a006892c` | JSONL over HTTPS |
+| `math` | [openai/prm800k](https://github.com/openai/prm800k) 500-problem split | MIT | `7ecc794703b2877f63226f2477a49b34f9b25163` | JSONL over HTTPS (Git LFS media endpoint) |
+| `object_counting` | [google/BIG-bench](https://github.com/google/BIG-bench/tree/main/bigbench/benchmark_tasks/object_counting) | Apache-2.0 | `092b196c1f8f14a54bbc62f24759d43bde46dd3b` | BIG-bench `task.json` over HTTPS |
+| `coedit` | [grammarly/coedit](https://huggingface.co/datasets/grammarly/coedit) | Apache-2.0 | HF `e9a255c33ef910bc33a9d2b522653fa87521583e` | pinned validation JSONL |
+| `swebench_lite` | [princeton-nlp/SWE-bench_Lite](https://huggingface.co/datasets/princeton-nlp/SWE-bench_Lite) dev split | MIT | HF `6ec7bb89b9342f664a54a6e0a6ea6501d3437cc2`; evaluator `f7bbbb2ccdf479001d6467c9e34af59e44a840f9` | pinned parquet; official container evaluator |
+| `editeval` | [facebookresearch/EditEval](https://github.com/facebookresearch/EditEval) | CC0-1.0 (harness code only) | `013cd20aa73be0016041201454b3fcd7c2250fb4` | **not fetched** — recorded as `benchmark_unavailable` |
+
+License texts:
+
+- HumanEval MIT: <https://raw.githubusercontent.com/openai/human-eval/6d43fb980f9fee3c892a914eda09951f772ad10d/LICENSE>
+- MBPP Apache-2.0: <https://raw.githubusercontent.com/google-research/google-research/1fa17414f56c3703d5adb3818338b6e35e0fd550/LICENSE>
+- GSM8K MIT: <https://raw.githubusercontent.com/openai/grade-school-math/3101c7d5072418e28b9008a6636bde82a006892c/LICENSE>
+- MATH / prm800k MIT: <https://raw.githubusercontent.com/openai/prm800k/7ecc794703b2877f63226f2477a49b34f9b25163/LICENSE>
+- BIG-bench Apache-2.0: <https://raw.githubusercontent.com/google/BIG-bench/092b196c1f8f14a54bbc62f24759d43bde46dd3b/LICENSE>
+- CoEdIT Apache-2.0: <https://huggingface.co/datasets/grammarly/coedit/blob/e9a255c33ef910bc33a9d2b522653fa87521583e/README.md>
+- SWE-bench MIT: <https://raw.githubusercontent.com/SWE-bench/SWE-bench/f7bbbb2ccdf479001d6467c9e34af59e44a840f9/LICENSE>
+- EditEval CC0-1.0 (harness code only): <https://raw.githubusercontent.com/facebookresearch/EditEval/013cd20aa73be0016041201454b3fcd7c2250fb4/LICENSE>
+
+**Why EditEval is not fetched.** The upstream repository ships an evaluation
+harness with no task payload (`configs/dataset_paths.json` points at per-corpus
+download directories), and its constituent corpora fail the permissive-only
+policy: ASSET is CC BY-NC 4.0 and JFLEG is CC BY-NC-SA 4.0. The harness records
+this as an explicit `benchmark_unavailable` entry with the reason. The
+Apache-2.0 CoEdIT suite independently covers the instructed-text-editing task
+family; its score is not attributed to EditEval.
+
+## Issue #702 World-State Tracking Slice
+
+| Source | License | Upstream revision | Vendored payload |
+| --- | --- | --- | --- |
+| bAbI tasks (1 single supporting fact, 2 two supporting facts, 6 yes/no state change) | CC-BY-3.0 | `8a6f3dbf1a7b1a5bd9c9a5b8dbd8b1b31e6dbdc6` | None — task *shape* only |
+| Everyday goal-directed assistant dialogues | CC-BY-4.0 | `issue-702` (this repository) | Self-authored |
+
+Canonical sources: <https://github.com/facebookarchive/bAbI-tasks> and
+<https://research.facebook.com/downloads/babi/>.
+
+`world-state-tracking-suite.lino` contains **no upstream text**. All sixteen
+dialogues are self-authored in the style of the upstream tasks (the local-profile
+convention issue #408 established), in English, Russian, Hindi and Chinese, so
+the CC-BY attributions above cover the reproduced task design rather than any
+redistributed data.

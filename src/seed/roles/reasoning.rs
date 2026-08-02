@@ -98,6 +98,24 @@ pub const ROLE_CALCULATION_RESULT_QUERY_CUE: &str = "calculation_result_query_cu
 /// to `link-calculator`; the cue alone never marks a prompt as arithmetic. Read
 /// by the Rust solver and the JS worker.
 pub const ROLE_TIME_DURATION_CUE: &str = "time_duration_cue";
+/// Semantic role: a number or integer constrained by lower and upper bounds.
+pub const ROLE_NUMBER_CONSTRAINT_ENTITY: &str = "number_constraint_entity";
+/// Semantic role: a request to identify the constrained value.
+pub const ROLE_NUMBER_CONSTRAINT_QUERY: &str = "number_constraint_query";
+/// Semantic role: a cue that the constrained value was chosen but not named.
+pub const ROLE_NUMBER_CONSTRAINT_HIDDEN: &str = "number_constraint_hidden";
+/// Semantic role: either kind of lower-bound relation.
+pub const ROLE_NUMBER_CONSTRAINT_LOWER: &str = "number_constraint_lower";
+/// Semantic role: either kind of upper-bound relation.
+pub const ROLE_NUMBER_CONSTRAINT_UPPER: &str = "number_constraint_upper";
+/// Semantic role: a strict lower-bound relation.
+pub const ROLE_NUMBER_CONSTRAINT_LOWER_STRICT: &str = "number_constraint_lower_strict";
+/// Semantic role: an inclusive lower-bound relation.
+pub const ROLE_NUMBER_CONSTRAINT_LOWER_INCLUSIVE: &str = "number_constraint_lower_inclusive";
+/// Semantic role: a strict upper-bound relation.
+pub const ROLE_NUMBER_CONSTRAINT_UPPER_STRICT: &str = "number_constraint_upper_strict";
+/// Semantic role: an inclusive upper-bound relation.
+pub const ROLE_NUMBER_CONSTRAINT_UPPER_INCLUSIVE: &str = "number_constraint_upper_inclusive";
 /// Semantic role: a politeness or courtesy marker that softens a request.
 ///
 /// A please/for-me style tail ("please", "for me", "пожалуйста", "कृपया", "请")
@@ -187,8 +205,8 @@ pub const ROLE_ARCHITECTURE_CONCEPT: &str = "architecture_concept";
 pub const ROLE_EXPLANATION_REQUEST_LEAD: &str = "explanation_request_lead";
 /// Semantic role: a noun naming the internet as the medium to search.
 ///
-/// The same internet-naming surfaces that fill [`ROLE_WEB_SEARCH_SIGNAL`] and
-/// [`ROLE_WEB_SEARCH_SOURCE_ONLY`] (" web ", " internet ", " online ",
+/// The same internet-naming surfaces that fill `ROLE_WEB_SEARCH_SIGNAL` and
+/// `ROLE_WEB_SEARCH_SOURCE_ONLY` (" web ", " internet ", " online ",
 /// " интернете ", "इंटरनेट", "网上", …), shared here so the documentation handler
 /// can confirm that a prompt paired with an imperative search verb explicitly
 /// asks to search the web — and screen such a prompt out of its method-question
@@ -253,6 +271,38 @@ pub const ROLE_BEHAVIOR_RULE_EDIT_DIRECTIVE: &str = "behavior_rule_edit_directiv
 /// `skill_when_then`; read by the Rust skill compiler and the JS worker so neither
 /// names a keyword pair in code.
 pub const ROLE_SKILL_WHEN_THEN_PAIR: &str = "skill_when_then_pair";
+/// Semantic role: the opening of a freely-phrased multi-step procedure (issue #674).
+///
+/// The lead a user says before describing a procedure they want compiled into a
+/// skill ("when i ", "whenever i ", "когда я ", "जब मैं ", "当我"). Matched as a raw
+/// substring after the prompt is lower-cased; its presence is one of the two guards
+/// (the other being at least one recognised step) the procedure compiler requires
+/// before it treats a prompt as a program at all. Carried by `skill_procedure_trigger`;
+/// read by the Rust arbitrary-procedure compiler.
+pub const ROLE_SKILL_PROCEDURE_TRIGGER_LEAD: &str = "skill_procedure_trigger_lead";
+/// Semantic role: the word that ends one procedure clause and starts the next.
+///
+/// A conjunction or sequencing adverb ("and", "then", "и", "затем", "और", "然后").
+/// The compiler splits a procedure sentence on punctuation and on these surfaces, so
+/// widening the set of accepted connectives is a pure data edit. Carried by
+/// `skill_procedure_separator`; read by the Rust arbitrary-procedure compiler.
+pub const ROLE_SKILL_PROCEDURE_CLAUSE_SEPARATOR: &str = "skill_procedure_clause_separator";
+/// Semantic role: the verb naming what one compiled procedure step *does*.
+///
+/// Every meaning carrying this role is one entry of the step vocabulary, and the
+/// meaning's own slug (`skill_procedure_fetch`, `skill_procedure_translate`, …) *is*
+/// the canonical step kind the compiler emits and the executing host dispatches on.
+/// A new step kind is therefore a new meaning in
+/// `data/seed/meanings-skill-procedure.lino` plus a host capability — never a new
+/// match arm in the compiler. Read by the Rust arbitrary-procedure compiler.
+pub const ROLE_SKILL_PROCEDURE_STEP_VERB: &str = "skill_procedure_step_verb";
+/// Semantic role: the noun naming what one compiled procedure step operates *on*.
+///
+/// The object of a step ("title", "translation", "both", "заголовок", "перевод",
+/// "оба", …). The matched meaning's slug becomes the step's canonical argument, which
+/// is why the same procedure phrased in English and in Russian canonicalises — and so
+/// content-addresses — identically. Read by the Rust arbitrary-procedure compiler.
+pub const ROLE_SKILL_PROCEDURE_STEP_OBJECT: &str = "skill_procedure_step_object";
 /// Semantic role: a marker that a structured-skill step is non-deterministic.
 ///
 /// A word flagging a step as non-deterministic or otherwise unreviewable ("random",
@@ -420,3 +470,31 @@ pub const ROLE_CALCULATION_DOMAIN_TERM: &str = "calculation_domain_term";
 /// `logarithm`, `natural_logarithm`); read by the Rust calculation router and the
 /// JS worker.
 pub const ROLE_MATH_FUNCTION_NAME: &str = "math_function_name";
+/// Semantic role: the "combine the numbers" framing of a reachability search.
+///
+/// The word that signals a prompt is about combining given *numbers* — "number"
+/// (en), the Cyrillic stem "числ" (числа / чисел / числами), Devanagari "संख्या",
+/// and CJK "数字". Matched as a raw substring so every inflected form is caught.
+/// `crate::solver_search` requires it *together with* [`ROLE_REACHABILITY_SEARCH_CUE`]
+/// to recognise a budget-driven reachability search, so a plain calculation never
+/// reaches that path. Carried by `reachability_operand_framing`; read by the Rust
+/// solver's budget-search stage.
+pub const ROLE_REACHABILITY_OPERAND_FRAMING: &str = "reachability_operand_framing";
+/// Semantic role: the search verb of a reachability problem.
+///
+/// "find" / "combine" / "reach" / "make" / "express" / "arrange" and their
+/// translations, recorded as bare stems and matched as raw substrings so inflected
+/// forms (найдите, संयोजित) still hit. Read together with
+/// [`ROLE_REACHABILITY_OPERAND_FRAMING`] to gate the budget-search stage.
+/// Carried by `reachability_search_action`; read by the Rust solver's budget-search
+/// stage.
+pub const ROLE_REACHABILITY_SEARCH_CUE: &str = "reachability_search_cue";
+/// Semantic role: the target-value marker of a reachability problem.
+///
+/// "equals" / "equal to" / "results in" and their translations ("равно", "बराबर",
+/// "等于", …), recorded as surfaces and matched as raw substrings. The byte
+/// position nearest such a marker anchors which integer in the prompt is the
+/// *target* the search must reach, so the operand-then-target and
+/// target-then-marker orders both resolve without a language branch. Carried by
+/// `reachability_target_marker`; read by the Rust solver's budget-search stage.
+pub const ROLE_REACHABILITY_TARGET_MARKER: &str = "reachability_target_marker";

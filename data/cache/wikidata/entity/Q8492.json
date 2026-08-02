@@ -1,0 +1,103 @@
+{
+  "entities": {
+    "Q8492": {
+      "type": "item",
+      "id": "Q8492",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "juice"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "сок"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "रस"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "蔬果汁"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "naturally occurring liquid present in fruits, vegetables and plants"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "напиток из фруктов, овощей и трав"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "लिक्विद दाथ इस नछेरेली केन्तनद इन फ्रुत अन्द वेगेतब्लेस"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "挤压水果和蔬菜产生的可饮用液体"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "fruit and vegetable juice"
+          },
+          {
+            "language": "en",
+            "value": "juice drink"
+          },
+          {
+            "language": "en",
+            "value": "fruit and vegetable juices"
+          },
+          {
+            "language": "en",
+            "value": "fruit juice"
+          },
+          {
+            "language": "en",
+            "value": "vegetable juice"
+          },
+          {
+            "language": "en",
+            "value": "plant juice"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "сок (напиток)"
+          },
+          {
+            "language": "ru",
+            "value": "соки из фруктов и овощей (ОКПД и КПЕС 2002 15.32.1, 15.32.10; ОКПД2 и КПЕС 2008 10.32.1)"
+          },
+          {
+            "language": "ru",
+            "value": "15.32.1"
+          },
+          {
+            "language": "ru",
+            "value": "15.32.10"
+          },
+          {
+            "language": "ru",
+            "value": "10.32.1"
+          },
+          {
+            "language": "ru",
+            "value": "сок из фруктов или овощей"
+          },
+          {
+            "language": "ru",
+            "value": "соки из фруктов и овощей"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

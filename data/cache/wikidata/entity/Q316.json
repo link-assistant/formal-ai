@@ -1,0 +1,119 @@
+{
+  "entities": {
+    "Q316": {
+      "type": "item",
+      "id": "Q316",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "love"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "любовь"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "प्यार"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "愛"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "strong, positive emotion based on affection"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "совокупность факторов во взаимоотношениях с человеком"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "स्नेह पर आधारित एक प्रबल, सकारात्मक भावना"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "基於感情的強烈、積極的情感"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "affection"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "чувства"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "प्रेम"
+          },
+          {
+            "language": "hi",
+            "value": "मोहब्बत"
+          },
+          {
+            "language": "hi",
+            "value": "आसक्ति"
+          },
+          {
+            "language": "hi",
+            "value": "स्नेह"
+          },
+          {
+            "language": "hi",
+            "value": "इश्क़"
+          },
+          {
+            "language": "hi",
+            "value": "चाहत"
+          },
+          {
+            "language": "hi",
+            "value": "प्रीति"
+          },
+          {
+            "language": "hi",
+            "value": "इश्क"
+          },
+          {
+            "language": "hi",
+            "value": "प्रणय"
+          },
+          {
+            "language": "hi",
+            "value": "जहान"
+          },
+          {
+            "language": "hi",
+            "value": "जान"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "喜歡"
+          },
+          {
+            "language": "zh",
+            "value": "爱情"
+          },
+          {
+            "language": "zh",
+            "value": "愛情"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

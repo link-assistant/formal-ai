@@ -1,0 +1,18 @@
+   Compiling formal-ai v0.300.0 (/tmp/gh-issue-solver-1784506151226)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 18.29s
+     Running tests/integration/mod.rs (target/debug/deps/integration-1ed0922169c81daf)
+
+running 10 tests
+test issue_746_hosted_tools::gemini_url_context_routes_as_web_fetch ... ok
+test issue_746_hosted_tools::responses_preview_alias_maps_to_the_web_search_capability ... ok
+test issue_746_hosted_tools::responses_prefers_client_executed_tools_inside_an_mcp_namespace ... ok
+test issue_746_hosted_tools::anthropic_server_web_search_type_routes_to_tool_use ... ok
+test issue_746_hosted_tools::gemini_function_declarations_and_hosted_google_search_both_route ... ok
+test issue_746_hosted_tools::responses_stream_uses_native_web_search_lifecycle_events ... ok
+test issue_746_hosted_tools::qwen_discovers_a_deferred_web_tool_instead_of_searching_local_files ... ok
+test issue_746_hosted_tools::responses_type_only_web_search_routes_instead_of_wildcard_refusal ... ok
+test issue_746_hosted_tools::whole_task_routes_web_search_across_all_advertisement_protocols ... ok
+test issue_746_hosted_tools::every_specified_hosted_type_reaches_its_capability_through_the_public_api ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 153 filtered out; finished in 2.23s
+

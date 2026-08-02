@@ -1,0 +1,61 @@
+{
+  "entities": {
+    "Q5638": {
+      "type": "item",
+      "id": "Q5638",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "bus"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "автобус"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "बस"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "巴士"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "large road vehicle for transporting people"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "вид автотранспорта"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सड़क पर चलने वाला यातायात वाहन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "用於載運多名乘客的車輛"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "omnibus"
+          },
+          {
+            "language": "en",
+            "value": "multibus"
+          },
+          {
+            "language": "en",
+            "value": "autobus"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

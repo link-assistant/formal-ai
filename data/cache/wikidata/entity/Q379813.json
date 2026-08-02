@@ -1,0 +1,67 @@
+{
+  "entities": {
+    "Q379813": {
+      "type": "item",
+      "id": "Q379813",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "bean"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "бобы"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सेम"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "豆类"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "seed of several plants in the legume family"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "имя для больших семян растений"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "植物"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "pulse"
+          },
+          {
+            "language": "en",
+            "value": "beans"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "豆子"
+          },
+          {
+            "language": "zh",
+            "value": "豆"
+          },
+          {
+            "language": "zh",
+            "value": "豆類"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

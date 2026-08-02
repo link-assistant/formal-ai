@@ -1,0 +1,326 @@
+{"type":"config","level":"info","timestamp":"2026-07-18T20:39:15.071Z","service":"default","source":"lino-arguments (CLI args > env vars > .lenv > defaults)","config":{"verbose":false,"dryRun":false,"generateTitle":false,"outputResponseModel":true,"summarizeSession":false,"retryOnRateLimits":true,"compactJson":true,"configContent":"{\"provider\":{\"formalai\":{\"name\":\"Formal AI\",\"npm\":\"@ai-sdk/openai-compatible\",\"options\":{\"baseURL\":\"http://127.0.0.1:8874/api/openai/v1\",\"apiKey\":\"local\"},\"models\":{\"formal-ai\":{\"name\":\"Formal AI\"}}}},\"model\":\"formalai/formal-ai\"}","disableAutoupdate":false,"disablePrune":false,"enableExperimentalModels":false,"disableAutocompact":false,"experimental":false,"experimentalWatcher":false,"retryTimeout":604800,"maxRetryDelay":1200,"minRetryInterval":30,"streamChunkTimeoutMs":120000,"streamStepTimeoutMs":600000,"mcpDefaultToolCallTimeout":120000,"mcpMaxToolCallTimeout":600000,"verifyImagesAtReadTool":true,"readOnly":false,"permissionMode":"auto"},"message":"Agent configuration resolved"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.073Z","service":"default","version":"0.25.0","command":"/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js --model formalai/formal-ai --permission-mode auto --no-summarize-session --compaction-model same --output-format stream-json --compact-json --disable-stdin --prompt Create file tests/integration/issue_754_cursor.rs containing\nuse std::os::unix::fs::PermissionsExt;\nuse std::path::PathBuf;\nuse std::process::Command;\nuse std::sync::atomic::{AtomicU64, Ordering};\n\nuse formal_ai::seed::client_integrations;\nuse formal_ai::handle_api_request;\n\nstatic SEQUENCE: AtomicU64 = AtomicU64::new(0);\n\nfn temp_dir() -> PathBuf {\n    let path = std::env::temp_dir().join(format!(\n        \"formal-ai-issue-754-{}-{}\",\n        std::process::id(),\n        SEQUENCE.fetch_add(1, Ordering::SeqCst)\n    ));\n    std::fs::create_dir_all(&path).expect(\"create temp directory\");\n    path\n}\n\nfn write_fake_cursor(bin_dir: &std::path::Path) {\n    let path = bin_dir.join(\"cursor-agent\");\n    std::fs::write(\n        &path,\n        r#\"#!/bin/sh\nprintf '%s\\n' \"$@\" > \"$FORMAL_AI_CAPTURE.args\"\ncp \"$HOME/.cursor/mcp.json\" \"$FORMAL_AI_CAPTURE.mcp.json\"\n\"#,\n    )\n    .expect(\"write fake cursor-agent\");\n    let mut permissions = std::fs::metadata(&path).expect(\"metadata\").permissions();\n    permissions.set_mode(0o755);\n    std::fs::set_permissions(path, permissions).expect(\"make fake cursor executable\");\n}\n\n#[test]\nfn cursor_is_seeded_as_cursor_agent_with_mcp_configuration() {\n    let cursor = client_integrations()\n        .into_iter()\n        .find(|integration| integration.id == \"cursor\")\n        .expect(\"cursor integration\");\n    assert_eq!(cursor.command, \"cursor-agent\");\n    assert_eq!(cursor.invocation.non_interactive_args, [\"-p\"]);\n    assert_eq!(cursor.invocation.temp_home_env, \"HOME\");\n    assert_eq!(cursor.invocation.temp_home_config_path, \".cursor/mcp.json\");\n    assert!(cursor\n        .invocation\n        .temp_home_json_settings\n        .iter()\n        .any(|(path, value)| path == \"mcpServers.formal-ai.url\" && value == \"{base_url}/mcp\"));\n}\n\n#[test]\nfn mcp_endpoint_supports_initialize_list_and_formal_ai_chat() {\n    let initialize = handle_api_request(\n        \"POST\",\n        \"/mcp\",\n        r#\"{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2025-06-18\",\"capabilities\":{},\"clientInfo\":{\"name\":\"test\",\"version\":\"1\"}}}\"#,\n    );\n    assert_eq!(initialize.status_code, 200);\n    let initialized: serde_json::Value = serde_json::from_str(&initialize.body).expect(\"initialize JSON\");\n    assert_eq!(initialized[\"result\"][\"serverInfo\"][\"name\"], \"formal-ai\");\n\n    let listed = handle_api_request(\n        \"POST\",\n        \"/mcp\",\n        r#\"{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/list\",\"params\":{}}\"#,\n    );\n    let listed: serde_json::Value = serde_json::from_str(&listed.body).expect(\"tools JSON\");\n    assert_eq!(listed[\"result\"][\"tools\"][0][\"name\"], \"formal_ai_chat\");\n\n    let called = handle_api_request(\n        \"POST\",\n        \"/mcp\",\n        r#\"{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"tools/call\",\"params\":{\"name\":\"formal_ai_chat\",\"arguments\":{\"prompt\":\"hi\"}}}\"#,\n    );\n    assert_eq!(called.status_code, 200);\n    let called: serde_json::Value = serde_json::from_str(&called.body).expect(\"call JSON\");\n    assert_eq!(called[\"result\"][\"content\"][0][\"type\"], \"text\");\n    assert!(called[\"result\"][\"content\"][0][\"text\"]\n        .as_str()\n        .is_some_and(|text| !text.is_empty()));\n}\n\n#[test]\nfn formal_ai_with_cursor_runs_headless_through_launch_scoped_mcp_config() {\n    let dir = temp_dir();\n    let home = dir.join(\"home\");\n    let bin = dir.join(\"bin\");\n    std::fs::create_dir_all(&home).expect(\"home\");\n    std::fs::create_dir_all(&bin).expect(\"bin\");\n    write_fake_cursor(&bin);\n    let capture = dir.join(\"capture\");\n    let path = format!(\"{}:{}\", bin.display(), std::env::var(\"PATH\").unwrap_or_default());\n\n    let output = Command::new(env!(\"CARGO_BIN_EXE_formal-ai\"))\n        .args([\n            \"with\",\n            \"--no-start-server\",\n            \"--base-url\",\n            \"http://127.0.0.1:18090\",\n            \"cursor\",\n            \"hi\",\n        ])\n        .env(\"HOME\", &home)\n        .env(\"PATH\", path)\n        .env(\"FORMAL_AI_CAPTURE\", &capture)\n        .output()\n        .expect(\"run cursor wrapper\");\n    assert!(output.status.success(), \"{}\", String::from_utf8_lossy(&output.stderr));\n    assert_eq!(\n        std::fs::read_to_string(format!(\"{}.args\", capture.display())).expect(\"captured args\"),\n        \"-p\\nhi\\n\"\n    );\n    let config = std::fs::read_to_string(format!(\"{}.mcp.json\", capture.display()))\n        .expect(\"captured MCP config\");\n    let config: serde_json::Value = serde_json::from_str(&config).expect(\"MCP config JSON\");\n    assert_eq!(\n        config[\"mcpServers\"][\"formal-ai\"][\"url\"],\n        \"http://127.0.0.1:18090/mcp\"\n    );\n    assert_eq!(config[\"mcpServers\"][\"formal-ai\"][\"type\"], \"http\");\n    assert!(!home.join(\".cursor/mcp.json\").exists());\n    let _ = std::fs::remove_dir_all(dir);\n}","workingDirectory":"/tmp/gh-issue-solver-1784406101753","scriptPath":"/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js","message":"Agent started"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.074Z","service":"default","directory":"/tmp/gh-issue-solver-1784406101753","message":"creating instance"}
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.075Z","service":"project","directory":"/tmp/gh-issue-solver-1784406101753","message":"fromDirectory"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.203Z","service":"project","status":"started","message":"git.rev-parse"}
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.205Z","service":"project","status":"completed","duration":2,"message":"git.rev-parse"}
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.237Z","service":"default","processArgv":["/home/box/.bun/bin/bun","/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js","--model","formalai/formal-ai","--permission-mode","auto","--no-summarize-session","--compaction-model","same","--output-format","stream-json","--compact-json","--disable-stdin","--prompt","Create file tests/integration/issue_754_cursor.rs containing\nuse std::os::unix::fs::PermissionsExt;\nuse std::path::PathBuf;\nuse std::process::Command;\nuse std::sync::atomic::{AtomicU64, Ordering};\n\nuse formal_ai::seed::client_integrations;\nuse formal_ai::handle_api_request;\n\nstatic SEQUENCE: AtomicU64 = AtomicU64::new(0);\n\nfn temp_dir() -> PathBuf {\n    let path = std::env::temp_dir().join(format!(\n        \"formal-ai-issue-754-{}-{}\",\n        std::process::id(),\n        SEQUENCE.fetch_add(1, Ordering::SeqCst)\n    ));\n    std::fs::create_dir_all(&path).expect(\"create temp directory\");\n    path\n}\n\nfn write_fake_cursor(bin_dir: &std::path::Path) {\n    let path = bin_dir.join(\"cursor-agent\");\n    std::fs::write(\n        &path,\n        r#\"#!/bin/sh\nprintf '%s\\n' \"$@\" > \"$FORMAL_AI_CAPTURE.args\"\ncp \"$HOME/.cursor/mcp.json\" \"$FORMAL_AI_CAPTURE.mcp.json\"\n\"#,\n    )\n    .expect(\"write fake cursor-agent\");\n    let mut permissions = std::fs::metadata(&path).expect(\"metadata\").permissions();\n    permissions.set_mode(0o755);\n    std::fs::set_permissions(path, permissions).expect(\"make fake cursor executable\");\n}\n\n#[test]\nfn cursor_is_seeded_as_cursor_agent_with_mcp_configuration() {\n    let cursor = client_integrations()\n        .into_iter()\n        .find(|integration| integration.id == \"cursor\")\n        .expect(\"cursor integration\");\n    assert_eq!(cursor.command, \"cursor-agent\");\n    assert_eq!(cursor.invocation.non_interactive_args, [\"-p\"]);\n    assert_eq!(cursor.invocation.temp_home_env, \"HOME\");\n    assert_eq!(cursor.invocation.temp_home_config_path, \".cursor/mcp.json\");\n    assert!(cursor\n        .invocation\n        .temp_home_json_settings\n        .iter()\n        .any(|(path, value)| path == \"mcpServers.formal-ai.url\" && value == \"{base_url}/mcp\"));\n}\n\n#[test]\nfn mcp_endpoint_supports_initialize_list_and_formal_ai_chat() {\n    let initialize = handle_api_request(\n        \"POST\",\n        \"/mcp\",\n        r#\"{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2025-06-18\",\"capabilities\":{},\"clientInfo\":{\"name\":\"test\",\"version\":\"1\"}}}\"#,\n    );\n    assert_eq!(initialize.status_code, 200);\n    let initialized: serde_json::Value = serde_json::from_str(&initialize.body).expect(\"initialize JSON\");\n    assert_eq!(initialized[\"result\"][\"serverInfo\"][\"name\"], \"formal-ai\");\n\n    let listed = handle_api_request(\n        \"POST\",\n        \"/mcp\",\n        r#\"{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/list\",\"params\":{}}\"#,\n    );\n    let listed: serde_json::Value = serde_json::from_str(&listed.body).expect(\"tools JSON\");\n    assert_eq!(listed[\"result\"][\"tools\"][0][\"name\"], \"formal_ai_chat\");\n\n    let called = handle_api_request(\n        \"POST\",\n        \"/mcp\",\n        r#\"{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"tools/call\",\"params\":{\"name\":\"formal_ai_chat\",\"arguments\":{\"prompt\":\"hi\"}}}\"#,\n    );\n    assert_eq!(called.status_code, 200);\n    let called: serde_json::Value = serde_json::from_str(&called.body).expect(\"call JSON\");\n    assert_eq!(called[\"result\"][\"content\"][0][\"type\"], \"text\");\n    assert!(called[\"result\"][\"content\"][0][\"text\"]\n        .as_str()\n        .is_some_and(|text| !text.is_empty()));\n}\n\n#[test]\nfn formal_ai_with_cursor_runs_headless_through_launch_scoped_mcp_config() {\n    let dir = temp_dir();\n    let home = dir.join(\"home\");\n    let bin = dir.join(\"bin\");\n    std::fs::create_dir_all(&home).expect(\"home\");\n    std::fs::create_dir_all(&bin).expect(\"bin\");\n    write_fake_cursor(&bin);\n    let capture = dir.join(\"capture\");\n    let path = format!(\"{}:{}\", bin.display(), std::env::var(\"PATH\").unwrap_or_default());\n\n    let output = Command::new(env!(\"CARGO_BIN_EXE_formal-ai\"))\n        .args([\n            \"with\",\n            \"--no-start-server\",\n            \"--base-url\",\n            \"http://127.0.0.1:18090\",\n            \"cursor\",\n            \"hi\",\n        ])\n        .env(\"HOME\", &home)\n        .env(\"PATH\", path)\n        .env(\"FORMAL_AI_CAPTURE\", &capture)\n        .output()\n        .expect(\"run cursor wrapper\");\n    assert!(output.status.success(), \"{}\", String::from_utf8_lossy(&output.stderr));\n    assert_eq!(\n        std::fs::read_to_string(format!(\"{}.args\", capture.display())).expect(\"captured args\"),\n        \"-p\\nhi\\n\"\n    );\n    let config = std::fs::read_to_string(format!(\"{}.mcp.json\", capture.display()))\n        .expect(\"captured MCP config\");\n    let config: serde_json::Value = serde_json::from_str(&config).expect(\"MCP config JSON\");\n    assert_eq!(\n        config[\"mcpServers\"][\"formal-ai\"][\"url\"],\n        \"http://127.0.0.1:18090/mcp\"\n    );\n    assert_eq!(config[\"mcpServers\"][\"formal-ai\"][\"type\"], \"http\");\n    assert!(!home.join(\".cursor/mcp.json\").exists());\n    let _ = std::fs::remove_dir_all(dir);\n}"],"bunArgv":["/home/box/.bun/bin/bun","/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js","--model","formalai/formal-ai","--permission-mode","auto","--no-summarize-session","--compaction-model","same","--output-format","stream-json","--compact-json","--disable-stdin","--prompt","Create file tests/integration/issue_754_cursor.rs containing\nuse std::os::unix::fs::PermissionsExt;\nuse std::path::PathBuf;\nuse std::process::Command;\nuse std::sync::atomic::{AtomicU64, Ordering};\n\nuse formal_ai::seed::client_integrations;\nuse formal_ai::handle_api_request;\n\nstatic SEQUENCE: AtomicU64 = AtomicU64::new(0);\n\nfn temp_dir() -> PathBuf {\n    let path = std::env::temp_dir().join(format!(\n        \"formal-ai-issue-754-{}-{}\",\n        std::process::id(),\n        SEQUENCE.fetch_add(1, Ordering::SeqCst)\n    ));\n    std::fs::create_dir_all(&path).expect(\"create temp directory\");\n    path\n}\n\nfn write_fake_cursor(bin_dir: &std::path::Path) {\n    let path = bin_dir.join(\"cursor-agent\");\n    std::fs::write(\n        &path,\n        r#\"#!/bin/sh\nprintf '%s\\n' \"$@\" > \"$FORMAL_AI_CAPTURE.args\"\ncp \"$HOME/.cursor/mcp.json\" \"$FORMAL_AI_CAPTURE.mcp.json\"\n\"#,\n    )\n    .expect(\"write fake cursor-agent\");\n    let mut permissions = std::fs::metadata(&path).expect(\"metadata\").permissions();\n    permissions.set_mode(0o755);\n    std::fs::set_permissions(path, permissions).expect(\"make fake cursor executable\");\n}\n\n#[test]\nfn cursor_is_seeded_as_cursor_agent_with_mcp_configuration() {\n    let cursor = client_integrations()\n        .into_iter()\n        .find(|integration| integration.id == \"cursor\")\n        .expect(\"cursor integration\");\n    assert_eq!(cursor.command, \"cursor-agent\");\n    assert_eq!(cursor.invocation.non_interactive_args, [\"-p\"]);\n    assert_eq!(cursor.invocation.temp_home_env, \"HOME\");\n    assert_eq!(cursor.invocation.temp_home_config_path, \".cursor/mcp.json\");\n    assert!(cursor\n        .invocation\n        .temp_home_json_settings\n        .iter()\n        .any(|(path, value)| path == \"mcpServers.formal-ai.url\" && value == \"{base_url}/mcp\"));\n}\n\n#[test]\nfn mcp_endpoint_supports_initialize_list_and_formal_ai_chat() {\n    let initialize = handle_api_request(\n        \"POST\",\n        \"/mcp\",\n        r#\"{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2025-06-18\",\"capabilities\":{},\"clientInfo\":{\"name\":\"test\",\"version\":\"1\"}}}\"#,\n    );\n    assert_eq!(initialize.status_code, 200);\n    let initialized: serde_json::Value = serde_json::from_str(&initialize.body).expect(\"initialize JSON\");\n    assert_eq!(initialized[\"result\"][\"serverInfo\"][\"name\"], \"formal-ai\");\n\n    let listed = handle_api_request(\n        \"POST\",\n        \"/mcp\",\n        r#\"{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/list\",\"params\":{}}\"#,\n    );\n    let listed: serde_json::Value = serde_json::from_str(&listed.body).expect(\"tools JSON\");\n    assert_eq!(listed[\"result\"][\"tools\"][0][\"name\"], \"formal_ai_chat\");\n\n    let called = handle_api_request(\n        \"POST\",\n        \"/mcp\",\n        r#\"{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"tools/call\",\"params\":{\"name\":\"formal_ai_chat\",\"arguments\":{\"prompt\":\"hi\"}}}\"#,\n    );\n    assert_eq!(called.status_code, 200);\n    let called: serde_json::Value = serde_json::from_str(&called.body).expect(\"call JSON\");\n    assert_eq!(called[\"result\"][\"content\"][0][\"type\"], \"text\");\n    assert!(called[\"result\"][\"content\"][0][\"text\"]\n        .as_str()\n        .is_some_and(|text| !text.is_empty()));\n}\n\n#[test]\nfn formal_ai_with_cursor_runs_headless_through_launch_scoped_mcp_config() {\n    let dir = temp_dir();\n    let home = dir.join(\"home\");\n    let bin = dir.join(\"bin\");\n    std::fs::create_dir_all(&home).expect(\"home\");\n    std::fs::create_dir_all(&bin).expect(\"bin\");\n    write_fake_cursor(&bin);\n    let capture = dir.join(\"capture\");\n    let path = format!(\"{}:{}\", bin.display(), std::env::var(\"PATH\").unwrap_or_default());\n\n    let output = Command::new(env!(\"CARGO_BIN_EXE_formal-ai\"))\n        .args([\n            \"with\",\n            \"--no-start-server\",\n            \"--base-url\",\n            \"http://127.0.0.1:18090\",\n            \"cursor\",\n            \"hi\",\n        ])\n        .env(\"HOME\", &home)\n        .env(\"PATH\", path)\n        .env(\"FORMAL_AI_CAPTURE\", &capture)\n        .output()\n        .expect(\"run cursor wrapper\");\n    assert!(output.status.success(), \"{}\", String::from_utf8_lossy(&output.stderr));\n    assert_eq!(\n        std::fs::read_to_string(format!(\"{}.args\", capture.display())).expect(\"captured args\"),\n        \"-p\\nhi\\n\"\n    );\n    let config = std::fs::read_to_string(format!(\"{}.mcp.json\", capture.display()))\n        .expect(\"captured MCP config\");\n    let config: serde_json::Value = serde_json::from_str(&config).expect(\"MCP config JSON\");\n    assert_eq!(\n        config[\"mcpServers\"][\"formal-ai\"][\"url\"],\n        \"http://127.0.0.1:18090/mcp\"\n    );\n    assert_eq!(config[\"mcpServers\"][\"formal-ai\"][\"type\"], \"http\");\n    assert!(!home.join(\".cursor/mcp.json\").exists());\n    let _ = std::fs::remove_dir_all(dir);\n}"],"cliModelArg":"formalai/formal-ai","yargsModel":"formalai/formal-ai","message":"model resolution: argv sources"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.238Z","service":"default","rawModel":"formalai/formal-ai","providerID":"formalai","modelID":"formal-ai","message":"using explicit provider/model"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.242Z","service":"provider","status":"started","message":"state"}
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.249Z","service":"config","path":"/home/box/.config/link-assistant-agent/config.json","message":"loading"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.251Z","service":"config","path":"/home/box/.config/link-assistant-agent/opencode.json","message":"loading"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.251Z","service":"config","path":"/home/box/.config/link-assistant-agent/opencode.jsonc","message":"loading"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.277Z","service":"models.dev","path":"/home/box/.cache/link-assistant-agent/models.json","age":17096,"message":"cache is fresh, triggering background refresh"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.277Z","service":"models.dev","file":{},"message":"refreshing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.360Z","service":"provider","message":"init"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.483Z","service":"claude-oauth","path":"/home/box/.claude/.credentials.json","message":"credentials file not found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.484Z","service":"provider","providerID":"formal-ai","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.484Z","service":"provider","providerID":"formalai","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.484Z","service":"provider","providerID":"@link-assistant","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.484Z","service":"provider","providerID":"opencode","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.484Z","service":"provider","providerID":"kilo","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.484Z","service":"provider","status":"completed","duration":242,"message":"state"}
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.497Z","service":"provider","modelID":"big-pickle","providerID":"opencode","message":"resolved short model name (single match)"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.498Z","service":"provider","modelID":"minimax-m2.5-free","providerID":"kilo","message":"resolved short model name (single match)"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.498Z","service":"default","models":["opencode/big-pickle","kilo/minimax-m2.5-free","same"],"source":"default","message":"compaction models cascade configured"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.607Z","service":"server","method":"POST","path":"/session","message":"request"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.607Z","service":"server","status":"started","method":"POST","path":"/session","message":"request"}
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.611Z","service":"session","id":"ses_0890b9c65ffeFPl7Mlh05JibiQ","version":"agent-cli-1.0.0","projectID":"2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b","directory":"/tmp/gh-issue-solver-1784406101753","title":"New session - 2026-07-18T20:39:15.611Z","time":{"created":1784407155611,"updated":1784407155611},"message":"created"}
+
+{"type":"session.created","level":"info","timestamp":"2026-07-18T20:39:15.612Z","service":"bus","message":"publishing"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-07-18T20:39:15.612Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.613Z","service":"server","status":"completed","duration":6,"method":"POST","path":"/session","message":"request"}
+{"type":"*","level":"info","timestamp":"2026-07-18T20:39:15.613Z","service":"bus","message":"subscribing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.614Z","service":"server","method":"POST","path":"/session/ses_0890b9c65ffeFPl7Mlh05JibiQ/message","message":"request"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.615Z","service":"server","status":"started","method":"POST","path":"/session/ses_0890b9c65ffeFPl7Mlh05JibiQ/message","message":"request"}
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.643Z","service":"server","status":"completed","duration":28,"method":"POST","path":"/session/ses_0890b9c65ffeFPl7Mlh05JibiQ/message","message":"request"}
+{"type":"message.updated","level":"info","timestamp":"2026-07-18T20:39:15.655Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T20:39:15.663Z","service":"bus","message":"publishing"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-07-18T20:39:15.665Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.672Z","service":"session.prompt","step":0,"sessionID":"ses_0890b9c65ffeFPl7Mlh05JibiQ","message":"loop"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.747Z","service":"session.prompt","hint":"Enable with --generate-title flag or AGENT_GENERATE_TITLE=true","message":"title generation disabled"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.753Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","sessionID":"ses_0890b9c65ffeFPl7Mlh05JibiQ","step":1,"message":"resolving model"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.760Z","service":"provider","providerID":"formalai","modelID":"formal-ai","message":"getModel"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.763Z","service":"provider","status":"started","providerID":"formalai","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.764Z","service":"provider","providerID":"formalai","pkg":"@ai-sdk/openai-compatible","globalVerboseFetchInstalled":true,"verboseAtCreation":false,"message":"provider SDK fetch chain configured"}
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.764Z","service":"provider","providerID":"formalai","pkg":"@ai-sdk/openai-compatible","message":"using bundled provider (no installation needed)"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.764Z","service":"provider","status":"completed","duration":1,"providerID":"formalai","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.774Z","service":"provider","providerID":"formalai","modelID":"formal-ai","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.775Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","resolvedModelID":"formal-ai","message":"model resolved successfully"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.775Z","service":"provider","providerID":"opencode","modelID":"big-pickle","message":"getModel"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.775Z","service":"provider","status":"started","providerID":"opencode","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.775Z","service":"provider","providerID":"opencode","pkg":"@ai-sdk/openai-compatible","globalVerboseFetchInstalled":true,"verboseAtCreation":false,"message":"provider SDK fetch chain configured"}
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.775Z","service":"provider","providerID":"opencode","pkg":"@ai-sdk/openai-compatible","message":"using bundled provider (no installation needed)"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.775Z","service":"provider","status":"completed","duration":0,"providerID":"opencode","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:15.776Z","service":"provider","providerID":"opencode","modelID":"big-pickle","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:16.828Z","service":"token","message":"loaded gpt-tokenizer (o200k_base)"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-18T20:39:16.852Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:16.854Z","service":"ripgrep","cwd":"/tmp/gh-issue-solver-1784406101753","limit":200,"message":"tree"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:17.489Z","service":"session.processor","message":"process"}
+
+{"type":"session.status","level":"info","timestamp":"2026-07-18T20:39:17.528Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-18T20:39:17.576Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:17.576Z","service":"session.summary","hint":"Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true","message":"session summarization disabled"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-07-18T20:39:17.580Z","service":"bus","message":"publishing"}
+
+{"type":"session.diff","level":"info","timestamp":"2026-07-18T20:39:17.581Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:17.735Z","service":"snapshot","message":"initialized"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:37.235Z","service":"snapshot","hash":"66a5f76674a3781b377dcb3f90bacd3c81d557c5\n","cwd":"/tmp/gh-issue-solver-1784406101753","git":"/home/box/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T20:39:37.242Z","service":"bus","message":"publishing"}
+
+{"type":"init","timestamp":"2026-07-18T20:39:37.243Z","session_id":"ses_0890b9c65ffeFPl7Mlh05JibiQ"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T20:39:37.253Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-07-18T20:39:37.253Z","session_id":"ses_0890b9c65ffeFPl7Mlh05JibiQ","name":"unknown","input":{},"tool_use_id":"prt_f76f4b81d0017sRIiLPgnhvTGz"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T20:39:37.261Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-07-18T20:39:37.262Z","session_id":"ses_0890b9c65ffeFPl7Mlh05JibiQ","name":"unknown","input":{},"tool_use_id":"prt_f76f4b81d0017sRIiLPgnhvTGz"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T20:39:37.287Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-07-18T20:39:37.287Z","session_id":"ses_0890b9c65ffeFPl7Mlh05JibiQ","name":"unknown","input":{},"tool_use_id":"prt_f76f4b81d0017sRIiLPgnhvTGz"}
+{"type":"log","level":"warn","timestamp":"2026-07-18T20:39:37.303Z","service":"session.processor","providerID":"formalai","requestedModelID":"formal-ai","recoveredTokens":{"input":19270,"output":12032,"reasoning":0,"cache":{"write":0,"read":0}},"recoveredCost":0,"ssePromptTokens":19270,"sseCompletionTokens":12032,"issue":"https://github.com/link-assistant/agent/issues/249","message":"recovered usage from raw SSE stream — AI SDK dropped token data"}
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:37.427Z","service":"snapshot","hash":"8207b1eef0c701be2752495ac36ab8f1f4487093\n","cwd":"/tmp/gh-issue-solver-1784406101753","git":"/home/box/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T20:39:37.439Z","service":"bus","message":"publishing"}
+
+{"type":"result","timestamp":"2026-07-18T20:39:37.439Z","session_id":"ses_0890b9c65ffeFPl7Mlh05JibiQ","status":"success","duration_ms":21826}
+{"type":"message.updated","level":"info","timestamp":"2026-07-18T20:39:37.440Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T20:39:37.609Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-18T20:39:37.610Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-18T20:39:37.620Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:37.620Z","service":"session.prompt","step":1,"sessionID":"ses_0890b9c65ffeFPl7Mlh05JibiQ","message":"loop"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:37.652Z","service":"session.prompt","sessionID":"ses_0890b9c65ffeFPl7Mlh05JibiQ","finishReason":"unknown","zeroTokens":false,"hint":"Provider returned undefined finishReason but made tool calls","message":"continuing loop despite unknown finish reason - tool calls detected"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:37.653Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","sessionID":"ses_0890b9c65ffeFPl7Mlh05JibiQ","step":2,"message":"resolving model"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:37.653Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","resolvedModelID":"formal-ai","message":"model resolved successfully"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:37.661Z","service":"session.compaction","baseModelContextLimit":60000,"compactionModelContextLimit":200000,"message":"compaction model has larger context — using full base model context"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:37.661Z","service":"session.compaction","modelID":"formal-ai","contextLimit":60000,"outputLimit":8192,"usableContextWindow":51808,"safeLimit":51808,"safetyMarginRatio":1,"compactionModelID":"big-pickle","compactionModelContextLimit":200000,"currentTokens":31302,"providerTokens":31302,"estimatedInputTokens":1237,"usingEstimate":false,"tokensBreakdown":{"input":19270,"cacheRead":0,"output":12032},"overflow":false,"headroom":20506,"message":"overflow check"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-18T20:39:37.662Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:37.663Z","service":"ripgrep","cwd":"/tmp/gh-issue-solver-1784406101753","limit":200,"message":"tree"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-18T20:39:37.738Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:37.738Z","service":"session.summary","hint":"Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true","message":"session summarization disabled"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-07-18T20:39:37.766Z","service":"bus","message":"publishing"}
+
+{"type":"session.diff","level":"info","timestamp":"2026-07-18T20:39:37.768Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:37.903Z","service":"session.processor","message":"process"}
+
+{"type":"session.status","level":"info","timestamp":"2026-07-18T20:39:37.914Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:38.045Z","service":"snapshot","hash":"b2e9d2ebe62a8a38e64fcdae8af41d326a88cbc0\n","cwd":"/tmp/gh-issue-solver-1784406101753","git":"/home/box/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T20:39:38.046Z","service":"bus","message":"publishing"}
+
+{"type":"init","timestamp":"2026-07-18T20:39:38.046Z","session_id":"ses_0890b9c65ffeFPl7Mlh05JibiQ"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T20:39:38.047Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-07-18T20:39:38.047Z","session_id":"ses_0890b9c65ffeFPl7Mlh05JibiQ","name":"unknown","input":{},"tool_use_id":"prt_f76f4bb3f001FoHQFIb8xcrzUi"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T20:39:38.048Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-07-18T20:39:38.048Z","session_id":"ses_0890b9c65ffeFPl7Mlh05JibiQ","name":"unknown","input":{},"tool_use_id":"prt_f76f4bb3f001FoHQFIb8xcrzUi"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T20:39:38.051Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-07-18T20:39:38.051Z","session_id":"ses_0890b9c65ffeFPl7Mlh05JibiQ","name":"unknown","input":{},"tool_use_id":"prt_f76f4bb3f001FoHQFIb8xcrzUi"}
+{"type":"log","level":"warn","timestamp":"2026-07-18T20:39:38.052Z","service":"session.processor","providerID":"formalai","requestedModelID":"formal-ai","recoveredTokens":{"input":19260,"output":5060,"reasoning":0,"cache":{"write":0,"read":0}},"recoveredCost":0,"ssePromptTokens":19260,"sseCompletionTokens":5060,"issue":"https://github.com/link-assistant/agent/issues/249","message":"recovered usage from raw SSE stream — AI SDK dropped token data"}
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:38.151Z","service":"snapshot","hash":"4ddc196415feab2dec2799684ac665179f0c56f8\n","cwd":"/tmp/gh-issue-solver-1784406101753","git":"/home/box/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T20:39:38.152Z","service":"bus","message":"publishing"}
+
+{"type":"result","timestamp":"2026-07-18T20:39:38.152Z","session_id":"ses_0890b9c65ffeFPl7Mlh05JibiQ","status":"success","duration_ms":22539}
+{"type":"message.updated","level":"info","timestamp":"2026-07-18T20:39:38.152Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T20:39:38.245Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-18T20:39:38.247Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-18T20:39:38.249Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:38.249Z","service":"session.prompt","step":2,"sessionID":"ses_0890b9c65ffeFPl7Mlh05JibiQ","message":"loop"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:38.304Z","service":"session.prompt","sessionID":"ses_0890b9c65ffeFPl7Mlh05JibiQ","finishReason":"unknown","zeroTokens":false,"hint":"Provider returned undefined finishReason but made tool calls","message":"continuing loop despite unknown finish reason - tool calls detected"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:38.304Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","sessionID":"ses_0890b9c65ffeFPl7Mlh05JibiQ","step":3,"message":"resolving model"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:38.304Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","resolvedModelID":"formal-ai","message":"model resolved successfully"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:38.307Z","service":"session.compaction","baseModelContextLimit":60000,"compactionModelContextLimit":200000,"message":"compaction model has larger context — using full base model context"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:38.307Z","service":"session.compaction","modelID":"formal-ai","contextLimit":60000,"outputLimit":8192,"usableContextWindow":51808,"safeLimit":51808,"safetyMarginRatio":1,"compactionModelID":"big-pickle","compactionModelContextLimit":200000,"currentTokens":24320,"providerTokens":24320,"estimatedInputTokens":1237,"usingEstimate":false,"tokensBreakdown":{"input":19260,"cacheRead":0,"output":5060},"overflow":false,"headroom":27488,"message":"overflow check"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-18T20:39:38.308Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:38.308Z","service":"ripgrep","cwd":"/tmp/gh-issue-solver-1784406101753","limit":200,"message":"tree"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-18T20:39:38.415Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:38.416Z","service":"session.summary","hint":"Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true","message":"session summarization disabled"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-07-18T20:39:38.420Z","service":"bus","message":"publishing"}
+
+{"type":"session.diff","level":"info","timestamp":"2026-07-18T20:39:38.421Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:38.426Z","service":"session.processor","message":"process"}
+
+{"type":"session.status","level":"info","timestamp":"2026-07-18T20:39:38.430Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:38.563Z","service":"snapshot","hash":"f7e20c39eaf0f9b1efb9727ba2e77e3b0b7681ef\n","cwd":"/tmp/gh-issue-solver-1784406101753","git":"/home/box/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T20:39:38.565Z","service":"bus","message":"publishing"}
+
+{"type":"init","timestamp":"2026-07-18T20:39:38.565Z","session_id":"ses_0890b9c65ffeFPl7Mlh05JibiQ"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T20:39:38.566Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-07-18T20:39:38.566Z","session_id":"ses_0890b9c65ffeFPl7Mlh05JibiQ","name":"unknown","input":{},"tool_use_id":"prt_f76f4bd45001Fga3yXz8KVA7gi"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T20:39:38.568Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-07-18T20:39:38.568Z","session_id":"ses_0890b9c65ffeFPl7Mlh05JibiQ","name":"unknown","input":{},"tool_use_id":"prt_f76f4bd45001Fga3yXz8KVA7gi"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T20:39:38.573Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-07-18T20:39:38.573Z","session_id":"ses_0890b9c65ffeFPl7Mlh05JibiQ","name":"unknown","input":{},"tool_use_id":"prt_f76f4bd45001Fga3yXz8KVA7gi"}
+{"type":"log","level":"warn","timestamp":"2026-07-18T20:39:38.574Z","service":"session.processor","providerID":"formalai","requestedModelID":"formal-ai","recoveredTokens":{"input":19260,"output":59,"reasoning":0,"cache":{"write":0,"read":0}},"recoveredCost":0,"ssePromptTokens":19260,"sseCompletionTokens":59,"issue":"https://github.com/link-assistant/agent/issues/249","message":"recovered usage from raw SSE stream — AI SDK dropped token data"}
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:38.681Z","service":"snapshot","hash":"953265ab23a295142afc8050d2918a4d8fa91bec\n","cwd":"/tmp/gh-issue-solver-1784406101753","git":"/home/box/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T20:39:38.685Z","service":"bus","message":"publishing"}
+
+{"type":"result","timestamp":"2026-07-18T20:39:38.685Z","session_id":"ses_0890b9c65ffeFPl7Mlh05JibiQ","status":"success","duration_ms":23072}
+{"type":"message.updated","level":"info","timestamp":"2026-07-18T20:39:38.686Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T20:39:38.814Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-18T20:39:38.817Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-18T20:39:38.822Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:38.822Z","service":"session.prompt","step":3,"sessionID":"ses_0890b9c65ffeFPl7Mlh05JibiQ","message":"loop"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:38.864Z","service":"session.prompt","sessionID":"ses_0890b9c65ffeFPl7Mlh05JibiQ","finishReason":"unknown","zeroTokens":false,"hint":"Provider returned undefined finishReason but made tool calls","message":"continuing loop despite unknown finish reason - tool calls detected"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:38.864Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","sessionID":"ses_0890b9c65ffeFPl7Mlh05JibiQ","step":4,"message":"resolving model"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:38.864Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","resolvedModelID":"formal-ai","message":"model resolved successfully"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:38.868Z","service":"session.compaction","baseModelContextLimit":60000,"compactionModelContextLimit":200000,"message":"compaction model has larger context — using full base model context"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:38.869Z","service":"session.compaction","modelID":"formal-ai","contextLimit":60000,"outputLimit":8192,"usableContextWindow":51808,"safeLimit":51808,"safetyMarginRatio":1,"compactionModelID":"big-pickle","compactionModelContextLimit":200000,"currentTokens":19319,"providerTokens":19319,"estimatedInputTokens":2461,"usingEstimate":false,"tokensBreakdown":{"input":19260,"cacheRead":0,"output":59},"overflow":false,"headroom":32489,"message":"overflow check"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-18T20:39:38.870Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:38.870Z","service":"ripgrep","cwd":"/tmp/gh-issue-solver-1784406101753","limit":200,"message":"tree"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-07-18T20:39:38.978Z","service":"bus","message":"publishing"}
+
+{"type":"session.diff","level":"info","timestamp":"2026-07-18T20:39:38.979Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-18T20:39:38.981Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:38.982Z","service":"session.summary","hint":"Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true","message":"session summarization disabled"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:39.007Z","service":"session.processor","message":"process"}
+
+{"type":"session.status","level":"info","timestamp":"2026-07-18T20:39:39.011Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:39.156Z","service":"snapshot","hash":"622ad93adce691b967dd68dd7465f4c5c0fb8ba9\n","cwd":"/tmp/gh-issue-solver-1784406101753","git":"/home/box/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T20:39:39.157Z","service":"bus","message":"publishing"}
+
+{"type":"init","timestamp":"2026-07-18T20:39:39.158Z","session_id":"ses_0890b9c65ffeFPl7Mlh05JibiQ"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T20:39:39.169Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T20:39:39.170Z","service":"bus","message":"publishing"}
+
+{"type":"message","timestamp":"2026-07-18T20:39:39.170Z","session_id":"ses_0890b9c65ffeFPl7Mlh05JibiQ","role":"assistant","content":[{"type":"text","text":"Completed the general change request for tests/integration/issue_754_cursor.rs and verified it with `cat tests/integration/issue_754_cursor.rs`.\n\nPlan event (.formal-ai/general-change-plan.lino):\n\ngeneral_change_plan\n  id \"general_change_plan_a07ad2d70d3838ab\"\n  goal \"Create file tests/integration/issue_754_cursor.rs containing\\nuse std::os::unix::fs::PermissionsExt;\\nuse std::path::PathBuf;\\nuse std::process::Command;\\nuse std::sync::atomic::{AtomicU64, Ordering};\\n\\nuse formal_ai::seed::client_integrations;\\nuse formal_ai::handle_api_request;\\n\\nstatic SEQUENCE: AtomicU64 = AtomicU64::new(0);\\n\\nfn temp_dir() -> PathBuf {\\n    let path = std::env::temp_dir().join(format!(\\n        \\\"formal-ai-issue-754-{}-{}\\\",\\n        std::process::id(),\\n        SEQUENCE.fetch_add(1, Ordering::SeqCst)\\n    ));\\n    std::fs::create_dir_all(&path).expect(\\\"create temp directory\\\");\\n    path\\n}\\n\\nfn write_fake_cursor(bin_dir: &std::path::Path) {\\n    let path = bin_dir.join(\\\"cursor-agent\\\");\\n    std::fs::write(\\n        &path,\\n        r#\\\"#!/bin/sh\\nprintf '%s\\\\n' \\\"$@\\\" > \\\"$FORMAL_AI_CAPTURE.args\\\"\\ncp \\\"$HOME/.cursor/mcp.json\\\" \\\"$FORMAL_AI_CAPTURE.mcp.json\\\"\\n\\\"#,\\n    )\\n    .expect(\\\"write fake cursor-agent\\\");\\n    let mut permissions = std::fs::metadata(&path).expect(\\\"metadata\\\").permissions();\\n    permissions.set_mode(0o755);\\n    std::fs::set_permissions(path, permissions).expect(\\\"make fake cursor executable\\\");\\n}\\n\\n#[test]\\nfn cursor_is_seeded_as_cursor_agent_with_mcp_configuration() {\\n    let cursor = client_integrations()\\n        .into_iter()\\n        .find(|integration| integration.id == \\\"cursor\\\")\\n        .expect(\\\"cursor integration\\\");\\n    assert_eq!(cursor.command, \\\"cursor-agent\\\");\\n    assert_eq!(cursor.invocation.non_interactive_args, [\\\"-p\\\"]);\\n    assert_eq!(cursor.invocation.temp_home_env, \\\"HOME\\\");\\n    assert_eq!(cursor.invocation.temp_home_config_path, \\\".cursor/mcp.json\\\");\\n    assert!(cursor\\n        .invocation\\n        .temp_home_json_settings\\n        .iter()\\n        .any(|(path, value)| path == \\\"mcpServers.formal-ai.url\\\" && value == \\\"{base_url}/mcp\\\"));\\n}\\n\\n#[test]\\nfn mcp_endpoint_supports_initialize_list_and_formal_ai_chat() {\\n    let initialize = handle_api_request(\\n        \\\"POST\\\",\\n        \\\"/mcp\\\",\\n        r#\\\"{\\\"jsonrpc\\\":\\\"2.0\\\",\\\"id\\\":1,\\\"method\\\":\\\"initialize\\\",\\\"params\\\":{\\\"protocolVersion\\\":\\\"2025-06-18\\\",\\\"capabilities\\\":{},\\\"clientInfo\\\":{\\\"name\\\":\\\"test\\\",\\\"version\\\":\\\"1\\\"}}}\\\"#,\\n    );\\n    assert_eq!(initialize.status_code, 200);\\n    let initialized: serde_json::Value = serde_json::from_str(&initialize.body).expect(\\\"initialize JSON\\\");\\n    assert_eq!(initialized[\\\"result\\\"][\\\"serverInfo\\\"][\\\"name\\\"], \\\"formal-ai\\\");\\n\\n    let listed = handle_api_request(\\n        \\\"POST\\\",\\n        \\\"/mcp\\\",\\n        r#\\\"{\\\"jsonrpc\\\":\\\"2.0\\\",\\\"id\\\":2,\\\"method\\\":\\\"tools/list\\\",\\\"params\\\":{}}\\\"#,\\n    );\\n    let listed: serde_json::Value = serde_json::from_str(&listed.body).expect(\\\"tools JSON\\\");\\n    assert_eq!(listed[\\\"result\\\"][\\\"tools\\\"][0][\\\"name\\\"], \\\"formal_ai_chat\\\");\\n\\n    let called = handle_api_request(\\n        \\\"POST\\\",\\n        \\\"/mcp\\\",\\n        r#\\\"{\\\"jsonrpc\\\":\\\"2.0\\\",\\\"id\\\":3,\\\"method\\\":\\\"tools/call\\\",\\\"params\\\":{\\\"name\\\":\\\"formal_ai_chat\\\",\\\"arguments\\\":{\\\"prompt\\\":\\\"hi\\\"}}}\\\"#,\\n    );\\n    assert_eq!(called.status_code, 200);\\n    let called: serde_json::Value = serde_json::from_str(&called.body).expect(\\\"call JSON\\\");\\n    assert_eq!(called[\\\"result\\\"][\\\"content\\\"][0][\\\"type\\\"], \\\"text\\\");\\n    assert!(called[\\\"result\\\"][\\\"content\\\"][0][\\\"text\\\"]\\n        .as_str()\\n        .is_some_and(|text| !text.is_empty()));\\n}\\n\\n#[test]\\nfn formal_ai_with_cursor_runs_headless_through_launch_scoped_mcp_config() {\\n    let dir = temp_dir();\\n    let home = dir.join(\\\"home\\\");\\n    let bin = dir.join(\\\"bin\\\");\\n    std::fs::create_dir_all(&home).expect(\\\"home\\\");\\n    std::fs::create_dir_all(&bin).expect(\\\"bin\\\");\\n    write_fake_cursor(&bin);\\n    let capture = dir.join(\\\"capture\\\");\\n    let path = format!(\\\"{}:{}\\\", bin.display(), std::env::var(\\\"PATH\\\").unwrap_or_default());\\n\\n    let output = Command::new(env!(\\\"CARGO_BIN_EXE_formal-ai\\\"))\\n        .args([\\n            \\\"with\\\",\\n            \\\"--no-start-server\\\",\\n            \\\"--base-url\\\",\\n            \\\"http://127.0.0.1:18090\\\",\\n            \\\"cursor\\\",\\n            \\\"hi\\\",\\n        ])\\n        .env(\\\"HOME\\\", &home)\\n        .env(\\\"PATH\\\", path)\\n        .env(\\\"FORMAL_AI_CAPTURE\\\", &capture)\\n        .output()\\n        .expect(\\\"run cursor wrapper\\\");\\n    assert!(output.status.success(), \\\"{}\\\", String::from_utf8_lossy(&output.stderr));\\n    assert_eq!(\\n        std::fs::read_to_string(format!(\\\"{}.args\\\", capture.display())).expect(\\\"captured args\\\"),\\n        \\\"-p\\\\nhi\\\\n\\\"\\n    );\\n    let config = std::fs::read_to_string(format!(\\\"{}.mcp.json\\\", capture.display()))\\n        .expect(\\\"captured MCP config\\\");\\n    let config: serde_json::Value = serde_json::from_str(&config).expect(\\\"MCP config JSON\\\");\\n    assert_eq!(\\n        config[\\\"mcpServers\\\"][\\\"formal-ai\\\"][\\\"url\\\"],\\n        \\\"http://127.0.0.1:18090/mcp\\\"\\n    );\\n    assert_eq!(config[\\\"mcpServers\\\"][\\\"formal-ai\\\"][\\\"type\\\"], \\\"http\\\");\\n    assert!(!home.join(\\\".cursor/mcp.json\\\").exists());\\n    let _ = std::fs::remove_dir_all(dir);\\n}\"\n  target \"tests/integration/issue_754_cursor.rs\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_ca5d9ed452d35954\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to tests/integration/issue_754_cursor.rs\"\n    expected_evidence \"workspace file tests/integration/issue_754_cursor.rs\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"use std::os::unix::fs::PermissionsExt;\\nuse std::path::PathBuf;\\nuse std::process::Command;\\nuse std::sync::atomic::{AtomicU64, Ordering};\\n\\nuse formal_ai::seed::client_integrations;\\nuse formal_ai::handle_api_request;\\n\\nstatic SEQUENCE: AtomicU64 = AtomicU64::new(0);\\n\\nfn temp_dir() -> PathBuf {\\n    let path = std::env::temp_dir().join(format!(\\n        \\\"formal-ai-issue-754-{}-{}\\\",\\n        std::process::id(),\\n        SEQUENCE.fetch_add(1, Ordering::SeqCst)\\n    ));\\n    std::fs::create_dir_all(&path).expect(\\\"create temp directory\\\");\\n    path\\n}\\n\\nfn write_fake_cursor(bin_dir: &std::path::Path) {\\n    let path = bin_dir.join(\\\"cursor-agent\\\");\\n    std::fs::write(\\n        &path,\\n        r#\\\"#!/bin/sh\\nprintf '%s\\\\n' \\\"$@\\\" > \\\"$FORMAL_AI_CAPTURE.args\\\"\\ncp \\\"$HOME/.cursor/mcp.json\\\" \\\"$FORMAL_AI_CAPTURE.mcp.json\\\"\\n\\\"#,\\n    )\\n    .expect(\\\"write fake cursor-agent\\\");\\n    let mut permissions = std::fs::metadata(&path).expect(\\\"metadata\\\").permissions();\\n    permissions.set_mode(0o755);\\n    std::fs::set_permissions(path, permissions).expect(\\\"make fake cursor executable\\\");\\n}\\n\\n#[test]\\nfn cursor_is_seeded_as_cursor_agent_with_mcp_configuration() {\\n    let cursor = client_integrations()\\n        .into_iter()\\n        .find(|integration| integration.id == \\\"cursor\\\")\\n        .expect(\\\"cursor integration\\\");\\n    assert_eq!(cursor.command, \\\"cursor-agent\\\");\\n    assert_eq!(cursor.invocation.non_interactive_args, [\\\"-p\\\"]);\\n    assert_eq!(cursor.invocation.temp_home_env, \\\"HOME\\\");\\n    assert_eq!(cursor.invocation.temp_home_config_path, \\\".cursor/mcp.json\\\");\\n    assert!(cursor\\n        .invocation\\n        .temp_home_json_settings\\n        .iter()\\n        .any(|(path, value)| path == \\\"mcpServers.formal-ai.url\\\" && value == \\\"{base_url}/mcp\\\"));\\n}\\n\\n#[test]\\nfn mcp_endpoint_supports_initialize_list_and_formal_ai_chat() {\\n    let initialize = handle_api_request(\\n        \\\"POST\\\",\\n        \\\"/mcp\\\",\\n        r#\\\"{\\\"jsonrpc\\\":\\\"2.0\\\",\\\"id\\\":1,\\\"method\\\":\\\"initialize\\\",\\\"params\\\":{\\\"protocolVersion\\\":\\\"2025-06-18\\\",\\\"capabilities\\\":{},\\\"clientInfo\\\":{\\\"name\\\":\\\"test\\\",\\\"version\\\":\\\"1\\\"}}}\\\"#,\\n    );\\n    assert_eq!(initialize.status_code, 200);\\n    let initialized: serde_json::Value = serde_json::from_str(&initialize.body).expect(\\\"initialize JSON\\\");\\n    assert_eq!(initialized[\\\"result\\\"][\\\"serverInfo\\\"][\\\"name\\\"], \\\"formal-ai\\\");\\n\\n    let listed = handle_api_request(\\n        \\\"POST\\\",\\n        \\\"/mcp\\\",\\n        r#\\\"{\\\"jsonrpc\\\":\\\"2.0\\\",\\\"id\\\":2,\\\"method\\\":\\\"tools/list\\\",\\\"params\\\":{}}\\\"#,\\n    );\\n    let listed: serde_json::Value = serde_json::from_str(&listed.body).expect(\\\"tools JSON\\\");\\n    assert_eq!(listed[\\\"result\\\"][\\\"tools\\\"][0][\\\"name\\\"], \\\"formal_ai_chat\\\");\\n\\n    let called = handle_api_request(\\n        \\\"POST\\\",\\n        \\\"/mcp\\\",\\n        r#\\\"{\\\"jsonrpc\\\":\\\"2.0\\\",\\\"id\\\":3,\\\"method\\\":\\\"tools/call\\\",\\\"params\\\":{\\\"name\\\":\\\"formal_ai_chat\\\",\\\"arguments\\\":{\\\"prompt\\\":\\\"hi\\\"}}}\\\"#,\\n    );\\n    assert_eq!(called.status_code, 200);\\n    let called: serde_json::Value = serde_json::from_str(&called.body).expect(\\\"call JSON\\\");\\n    assert_eq!(called[\\\"result\\\"][\\\"content\\\"][0][\\\"type\\\"], \\\"text\\\");\\n    assert!(called[\\\"result\\\"][\\\"content\\\"][0][\\\"text\\\"]\\n        .as_str()\\n        .is_some_and(|text| !text.is_empty()));\\n}\\n\\n#[test]\\nfn formal_ai_with_cursor_runs_headless_through_launch_scoped_mcp_config() {\\n    let dir = temp_dir();\\n    let home = dir.join(\\\"home\\\");\\n    let bin = dir.join(\\\"bin\\\");\\n    std::fs::create_dir_all(&home).expect(\\\"home\\\");\\n    std::fs::create_dir_all(&bin).expect(\\\"bin\\\");\\n    write_fake_cursor(&bin);\\n    let capture = dir.join(\\\"capture\\\");\\n    let path = format!(\\\"{}:{}\\\", bin.display(), std::env::var(\\\"PATH\\\").unwrap_or_default());\\n\\n    let output = Command::new(env!(\\\"CARGO_BIN_EXE_formal-ai\\\"))\\n        .args([\\n            \\\"with\\\",\\n            \\\"--no-start-server\\\",\\n            \\\"--base-url\\\",\\n            \\\"http://127.0.0.1:18090\\\",\\n            \\\"cursor\\\",\\n            \\\"hi\\\",\\n        ])\\n        .env(\\\"HOME\\\", &home)\\n        .env(\\\"PATH\\\", path)\\n        .env(\\\"FORMAL_AI_CAPTURE\\\", &capture)\\n        .output()\\n        .expect(\\\"run cursor wrapper\\\");\\n    assert!(output.status.success(), \\\"{}\\\", String::from_utf8_lossy(&output.stderr));\\n    assert_eq!(\\n        std::fs::read_to_string(format!(\\\"{}.args\\\", capture.display())).expect(\\\"captured args\\\"),\\n        \\\"-p\\\\nhi\\\\n\\\"\\n    );\\n    let config = std::fs::read_to_string(format!(\\\"{}.mcp.json\\\", capture.display()))\\n        .expect(\\\"captured MCP config\\\");\\n    let config: serde_json::Value = serde_json::from_str(&config).expect(\\\"MCP config JSON\\\");\\n    assert_eq!(\\n        config[\\\"mcpServers\\\"][\\\"formal-ai\\\"][\\\"url\\\"],\\n        \\\"http://127.0.0.1:18090/mcp\\\"\\n    );\\n    assert_eq!(config[\\\"mcpServers\\\"][\\\"formal-ai\\\"][\\\"type\\\"], \\\"http\\\");\\n    assert!(!home.join(\\\".cursor/mcp.json\\\").exists());\\n    let _ = std::fs::remove_dir_all(dir);\\n}\"\n    command \"cat tests/integration/issue_754_cursor.rs\"\n  verification_command \"cat tests/integration/issue_754_cursor.rs\""}]}
+{"type":"log","level":"warn","timestamp":"2026-07-18T20:39:39.172Z","service":"session.processor","providerID":"formalai","requestedModelID":"formal-ai","recoveredTokens":{"input":23901,"output":10965,"reasoning":0,"cache":{"write":0,"read":0}},"recoveredCost":0,"ssePromptTokens":23901,"sseCompletionTokens":10965,"issue":"https://github.com/link-assistant/agent/issues/249","message":"recovered usage from raw SSE stream — AI SDK dropped token data"}
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:39.257Z","service":"snapshot","hash":"6664f0c7b2ea11c30834c915065be028d3d6be4f\n","cwd":"/tmp/gh-issue-solver-1784406101753","git":"/home/box/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T20:39:39.258Z","service":"bus","message":"publishing"}
+
+{"type":"result","timestamp":"2026-07-18T20:39:39.258Z","session_id":"ses_0890b9c65ffeFPl7Mlh05JibiQ","status":"success","duration_ms":23645}
+{"type":"message.updated","level":"info","timestamp":"2026-07-18T20:39:39.258Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T20:39:39.352Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-18T20:39:39.352Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-18T20:39:39.356Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:39.356Z","service":"session.prompt","step":4,"sessionID":"ses_0890b9c65ffeFPl7Mlh05JibiQ","message":"loop"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:39.403Z","service":"session.prompt","sessionID":"ses_0890b9c65ffeFPl7Mlh05JibiQ","message":"exiting loop"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:39.404Z","service":"session.compaction","message":"pruning"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:39.456Z","service":"session.prompt","sessionID":"ses_0890b9c65ffeFPl7Mlh05JibiQ","message":"cancel"}
+
+{"type":"session.status","level":"info","timestamp":"2026-07-18T20:39:39.456Z","service":"bus","message":"publishing"}
+
+{"type":"session.idle","level":"info","timestamp":"2026-07-18T20:39:39.456Z","service":"bus","message":"publishing"}
+
+{"type":"idle","timestamp":"2026-07-18T20:39:39.456Z","session_id":"ses_0890b9c65ffeFPl7Mlh05JibiQ"}
+{"type":"*","level":"info","timestamp":"2026-07-18T20:39:39.457Z","service":"bus","message":"unsubscribing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:39.457Z","service":"default","directory":"/tmp/gh-issue-solver-1784406101753","message":"disposing instance"}
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:39.458Z","service":"state","key":"/tmp/gh-issue-solver-1784406101753","message":"waiting for state disposal to complete"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:39.460Z","service":"state","key":"/tmp/gh-issue-solver-1784406101753","message":"state disposal completed"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T20:39:39.461Z","service":"default","hasError":false,"uptimeSeconds":27,"message":"Agent exiting"}

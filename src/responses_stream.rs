@@ -1,8 +1,8 @@
 use serde_json::{json, Value};
 
 use crate::protocol::{
-    ResponseFunctionToolCall, ResponseObject, ResponseOutputItem, ResponseOutputMessage,
-    ResponseReasoningItem,
+    ResponseCustomToolCall, ResponseFunctionToolCall, ResponseObject, ResponseOutputItem,
+    ResponseOutputMessage, ResponseReasoningItem,
 };
 use crate::server::ApiHttpResponse;
 
@@ -54,6 +54,7 @@ pub fn responses_sse_response(response: &ResponseObject) -> ApiHttpResponse {
         status_code: 200,
         content_type: "text/event-stream",
         body,
+        deprecated: false,
     }
 }
 
@@ -80,6 +81,23 @@ fn push_response_output_item_events(
         }
         ResponseOutputItem::FunctionCall(call) => {
             push_response_function_call_events(body, sequence_number, output_index, call);
+        }
+        ResponseOutputItem::CustomToolCall(call) => {
+            push_response_custom_tool_call_events(body, sequence_number, output_index, call);
+        }
+        ResponseOutputItem::WebSearchCall(call) => {
+            for state in ["in_progress", "searching", "completed"] {
+                push_response_stream_event(
+                    body,
+                    &format!("response.web_search_call.{state}"),
+                    &json!({
+                        "type": format!("response.web_search_call.{state}"),
+                        "sequence_number": next_response_sequence(sequence_number),
+                        "item_id": &call.id,
+                        "output_index": output_index,
+                    }),
+                );
+            }
         }
         ResponseOutputItem::Reasoning(reasoning) => {
             push_response_reasoning_events(body, sequence_number, output_index, reasoning);
@@ -186,6 +204,36 @@ fn push_response_function_call_events(
     );
 }
 
+fn push_response_custom_tool_call_events(
+    body: &mut String,
+    sequence_number: &mut u64,
+    output_index: usize,
+    call: &ResponseCustomToolCall,
+) {
+    push_response_stream_event(
+        body,
+        "response.custom_tool_call_input.delta",
+        &json!({
+            "type": "response.custom_tool_call_input.delta",
+            "sequence_number": next_response_sequence(sequence_number),
+            "item_id": &call.id,
+            "output_index": output_index,
+            "delta": &call.input,
+        }),
+    );
+    push_response_stream_event(
+        body,
+        "response.custom_tool_call_input.done",
+        &json!({
+            "type": "response.custom_tool_call_input.done",
+            "sequence_number": next_response_sequence(sequence_number),
+            "item_id": &call.id,
+            "output_index": output_index,
+            "input": &call.input,
+        }),
+    );
+}
+
 fn push_response_reasoning_events(
     body: &mut String,
     sequence_number: &mut u64,
@@ -253,6 +301,8 @@ fn response_output_item_started(item: &ResponseOutputItem) -> Value {
             "content": [],
         }),
         ResponseOutputItem::FunctionCall(call) => json!(call),
+        ResponseOutputItem::CustomToolCall(call) => json!(call),
+        ResponseOutputItem::WebSearchCall(call) => json!(call),
         ResponseOutputItem::Reasoning(reasoning) => json!({
             "id": &reasoning.id,
             "type": &reasoning.kind,

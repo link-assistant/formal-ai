@@ -1,0 +1,4 @@
+[formal-ai translation] translate: start surface="любая формальная система либо неполна, либо противоречива" ru->en
+[formal-ai translation] translate: page_title="любая формальная система либо неполна, либо противоречива"
+[formal-ai translation] translate: seed compositional hit
+"any formal system is either incomplete or inconsistent"

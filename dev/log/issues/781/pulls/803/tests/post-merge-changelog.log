@@ -1,0 +1,242 @@
+[2026-07-20T02:21:04Z INFO  rust_script] Arguments: Args { script: Some("scripts/check-changelog-fragment.rs"), script_args: [], expr: false, loop_: false, count: false, base_path: None, pkg_path: None, gen_pkg_only: false, cargo_output: false, clear_cache: false, debug: false, dep: [], extern_: [], force: false, unstable_features: [], build_kind: Normal, toolchain_version: None, wrapper: None }
+[2026-07-20T02:21:04Z INFO  rust_script] input: File("check-changelog-fragment", "/tmp/gh-issue-solver-1784506151226/scripts/check-changelog-fragment.rs", "#!/usr/bin/env rust-script\n//! Check if a changelog fragment was added in the current PR\n//!\n//! This script validates that a changelog fragment is added in the PR diff,\n//! not just checking if any fragments exist in the directory. This prevents\n//! the check from incorrectly passing when there are leftover fragments\n//! from previous PRs that haven't been released yet.\n//!\n//! Usage: rust-script scripts/check-changelog-fragment.rs\n//!\n//! Environment variables (set by GitHub Actions):\n//!   - GITHUB_BASE_REF: Base branch name for PR (e.g., \"main\")\n//!\n//! Exit codes:\n//!   - 0: Check passed (fragment added or no source changes)\n//!   - 1: Check failed (source changes without changelog fragment)\n//!\n//! ```cargo\n//! [dependencies]\n//! regex = \"1\"\n//! ```\n\nuse std::env;\nuse std::path::Path;\nuse std::process::{Command, exit};\nuse regex::Regex;\n\nfn exec(command: &str, args: &[&str]) -> String {\n    match Command::new(command).args(args).output() {\n        Ok(output) => {\n            if output.status.success() {\n                String::from_utf8_lossy(&output.stdout).trim().to_string()\n            } else {\n                eprintln!(\"Error executing {} {:?}\", command, args);\n                eprintln!(\"{}\", String::from_utf8_lossy(&output.stderr));\n                String::new()\n            }\n        }\n        Err(e) => {\n            eprintln!(\"Failed to execute {} {:?}: {}\", command, args, e);\n            String::new()\n        }\n    }\n}\n\nfn get_rust_root() -> String {\n    if let Ok(root) = env::var(\"RUST_ROOT\") {\n        if !root.is_empty() {\n            return root;\n        }\n    }\n\n    if Path::new(\"./Cargo.toml\").exists() {\n        return \".\".to_string();\n    }\n\n    if Path::new(\"./rust/Cargo.toml\").exists() {\n        return \"rust\".to_string();\n    }\n\n    \".\".to_string()\n}\n\nfn get_changed_files() -> Vec<String> {\n    let base_ref = env::var(\"GITHUB_BASE_REF\").unwrap_or_else(|_| \"main\".to_string());\n    eprintln!(\"Comparing against origin/{}...HEAD\", base_ref);\n\n    let output = exec(\n        \"git\",\n        &[\"diff\", \"--name-only\", &format!(\"origin/{}...HEAD\", base_ref)],\n    );\n\n    if output.is_empty() {\n        return Vec::new();\n    }\n\n    output.lines().filter(|s| !s.is_empty()).map(String::from).collect()\n}\n\nfn is_source_file(file_path: &str, rust_root: &str) -> bool {\n    let prefix = if rust_root == \".\" { String::new() } else { format!(\"{}/\", rust_root) };\n\n    let source_patterns = [\n        Regex::new(&format!(r\"^{}src/\", regex::escape(&prefix))).unwrap(),\n        Regex::new(&format!(r\"^{}tests/\", regex::escape(&prefix))).unwrap(),\n        Regex::new(&format!(r\"^{}?scripts/\", regex::escape(&prefix))).unwrap(),\n        Regex::new(&format!(r\"^{}Cargo\\.toml$\", regex::escape(&prefix))).unwrap(),\n    ];\n\n    source_patterns.iter().any(|pattern| pattern.is_match(file_path))\n}\n\nfn is_changelog_fragment(file_path: &str, rust_root: &str) -> bool {\n    let changelog_dir = if rust_root == \".\" { \"changelog.d/\".to_string() } else { format!(\"{}/changelog.d/\", rust_root) };\n\n    (file_path.starts_with(&changelog_dir) || file_path.starts_with(\"changelog.d/\"))\n        && file_path.ends_with(\".md\")\n        && !file_path.ends_with(\"README.md\")\n}\n\nfn main() {\n    println!(\"Checking for changelog fragment in PR diff...\\n\");\n\n    let rust_root = get_rust_root();\n    if rust_root != \".\" {\n        println!(\"Detected multi-language repository (Rust root: {})\", rust_root);\n    }\n\n    let changed_files = get_changed_files();\n\n    if changed_files.is_empty() {\n        println!(\"No changed files found\");\n        exit(0);\n    }\n\n    println!(\"Changed files:\");\n    for file in &changed_files {\n        println!(\"  {}\", file);\n    }\n    println!();\n\n    // Count source files changed\n    let source_changes: Vec<&String> = changed_files.iter().filter(|f| is_source_file(f, &rust_root)).collect();\n    let source_changed_count = source_changes.len();\n\n    println!(\"Source files changed: {}\", source_changed_count);\n    if source_changed_count > 0 {\n        for file in &source_changes {\n            println!(\"  {}\", file);\n        }\n    }\n    println!();\n\n    // Count changelog fragments added in this PR\n    let fragments_added: Vec<&String> = changed_files\n        .iter()\n        .filter(|f| is_changelog_fragment(f, &rust_root))\n        .collect();\n    let fragment_added_count = fragments_added.len();\n\n    println!(\"Changelog fragments added: {}\", fragment_added_count);\n    if fragment_added_count > 0 {\n        for file in &fragments_added {\n            println!(\"  {}\", file);\n        }\n    }\n    println!();\n\n    // Check if source files changed but no fragment was added\n    if source_changed_count > 0 && fragment_added_count == 0 {\n        eprintln!(\"::error::No changelog fragment found in this PR. Please add a changelog entry in changelog.d/\");\n        eprintln!();\n        eprintln!(\"To create a changelog fragment:\");\n        eprintln!(\"  Create a new .md file in changelog.d/ with your changes\");\n        eprintln!();\n        eprintln!(\"See changelog.d/README.md for more information.\");\n        exit(1);\n    }\n\n    println!(\n        \"Changelog check passed (source files changed: {}, fragments added: {})\",\n        source_changed_count, fragment_added_count\n    );\n}\n", "/tmp/gh-issue-solver-1784506151226/scripts")
+[2026-07-20T02:21:04Z INFO  rust_script] prelude_items: []
+[2026-07-20T02:21:04Z INFO  rust_script] id: "43c5d0dcf93f14e5ca1bd752"
+[2026-07-20T02:21:04Z INFO  rust_script] pkg_path: "/home/box/.cache/rust-script/projects/43c5d0dcf93f14e5ca1bd752"
+[2026-07-20T02:21:04Z INFO  rust_script] using_cache: true
+[2026-07-20T02:21:04Z INFO  rust_script::manifest] part_mani: {"dependencies": Table({"regex": String("1")})}
+[2026-07-20T02:21:04Z INFO  rust_script::manifest] source: None
+[2026-07-20T02:21:04Z INFO  rust_script::manifest] manifest: [[bin]]
+    name = "check-changelog-fragment_43c5d0dcf93f14e5ca1bd752"
+    path = "/tmp/gh-issue-solver-1784506151226/scripts/check-changelog-fragment.rs"
+    
+    [dependencies]
+    regex = "1"
+    
+    [package]
+    authors = ["Anonymous"]
+    edition = "2021"
+    name = "check-changelog-fragment_43c5d0dcf93f14e5ca1bd752"
+    version = "0.1.0"
+    
+    [profile.release]
+    strip = true
+    
+[2026-07-20T02:21:04Z INFO  rust_script] action: InputAction { cargo_output: false, force_compile: false, execute: true, pkg_path: "/home/box/.cache/rust-script/projects/43c5d0dcf93f14e5ca1bd752", script_path: "/tmp/gh-issue-solver-1784506151226/scripts/check-changelog-fragment.rs", using_cache: true, toolchain_version: None, debug: false, manifest: "[[bin]]\nname = \"check-changelog-fragment_43c5d0dcf93f14e5ca1bd752\"\npath = \"/tmp/gh-issue-solver-1784506151226/scripts/check-changelog-fragment.rs\"\n\n[dependencies]\nregex = \"1\"\n\n[package]\nauthors = [\"Anonymous\"]\nedition = \"2021\"\nname = \"check-changelog-fragment_43c5d0dcf93f14e5ca1bd752\"\nversion = \"0.1.0\"\n\n[profile.release]\nstrip = true\n", script: None, build_kind: Normal, bin_name: "check-changelog-fragment_43c5d0dcf93f14e5ca1bd752", original_script_path: Some("scripts/check-changelog-fragment.rs") }
+[2026-07-20T02:21:04Z INFO  rust_script] creating pkg dir...
+[2026-07-20T02:21:04Z INFO  rust_script] generating Cargo package...
+[2026-07-20T02:21:04Z DEBUG rust_script] overwrite_file("/home/box/.cache/rust-script/projects/43c5d0dcf93f14e5ca1bd752/Cargo.toml", _)
+[2026-07-20T02:21:04Z DEBUG rust_script] Equal content
+[2026-07-20T02:21:04Z INFO  rust_script] disarming pkg dir cleanup...
+[2026-07-20T02:21:04Z DEBUG rust_script] Keeping old binary
+Checking for changelog fragment in PR diff...
+
+Comparing against origin/main...HEAD
+Changed files:
+  .gitattributes
+  .github/workflows/release.yml
+  README.md
+  changelog.d/20260720_120000_issue_781_research_progress.md
+  data/seed/closure-generated-01.lino
+  data/seed/closure-generated-02.lino
+  data/seed/closure-generated-03.lino
+  data/seed/closure-generated-04.lino
+  data/seed/multilingual-responses.lino
+  dev/log/issues/781/pulls/803/README.md
+  dev/log/issues/781/pulls/803/analysis/requirements.md
+  dev/log/issues/781/pulls/803/analysis/root-causes.md
+  dev/log/issues/781/pulls/803/analysis/solution-plans.md
+  dev/log/issues/781/pulls/803/analysis/timeline.md
+  dev/log/issues/781/pulls/803/file-inventory.tsv
+  dev/log/issues/781/pulls/803/github/branch-ci-runs.json
+  dev/log/issues/781/pulls/803/github/issue-comment-5016917806-error.png
+  dev/log/issues/781/pulls/803/github/issue-comment-5016917806-stuck.png
+  dev/log/issues/781/pulls/803/github/issue-comments.json
+  dev/log/issues/781/pulls/803/github/issue-events.json
+  dev/log/issues/781/pulls/803/github/issue-timeline.json
+  dev/log/issues/781/pulls/803/github/issue-view.json
+  dev/log/issues/781/pulls/803/github/issue-view.txt
+  dev/log/issues/781/pulls/803/github/issue.json
+  dev/log/issues/781/pulls/803/github/issue.json.failed
+  dev/log/issues/781/pulls/803/github/issue.json.stderr
+  dev/log/issues/781/pulls/803/github/main-branch-compare.json
+  dev/log/issues/781/pulls/803/github/main-ci-runs.json
+  dev/log/issues/781/pulls/803/github/pr-checks.json
+  dev/log/issues/781/pulls/803/github/pr-commits.json
+  dev/log/issues/781/pulls/803/github/pr-commits.json.failed
+  dev/log/issues/781/pulls/803/github/pr-commits.json.stderr
+  dev/log/issues/781/pulls/803/github/pr-conversation-comments.json
+  dev/log/issues/781/pulls/803/github/pr-files.json
+  dev/log/issues/781/pulls/803/github/pr-review-comments.json
+  dev/log/issues/781/pulls/803/github/pr-review-comments.json.failed
+  dev/log/issues/781/pulls/803/github/pr-review-comments.json.stderr
+  dev/log/issues/781/pulls/803/github/pr-review-threads.json
+  dev/log/issues/781/pulls/803/github/pr-reviews.json
+  dev/log/issues/781/pulls/803/github/pr-timeline.json
+  dev/log/issues/781/pulls/803/github/pr-view.json
+  dev/log/issues/781/pulls/803/github/pr.diff
+  dev/log/issues/781/pulls/803/github/pr.json
+  dev/log/issues/781/pulls/803/github/related-issue-800-comments.json
+  dev/log/issues/781/pulls/803/github/related-issue-800-events.json
+  dev/log/issues/781/pulls/803/github/related-issue-800-timeline.json
+  dev/log/issues/781/pulls/803/github/related-issue-800-view.json
+  dev/log/issues/781/pulls/803/github/related-issue-800.json
+  dev/log/issues/781/pulls/803/github/related-issue-800.json.failed
+  dev/log/issues/781/pulls/803/github/related-issue-800.json.stderr
+  dev/log/issues/781/pulls/803/github/related-issue-search.json
+  dev/log/issues/781/pulls/803/github/related-pr-795-ci-runs.json
+  dev/log/issues/781/pulls/803/github/related-pr-795-commits.json
+  dev/log/issues/781/pulls/803/github/related-pr-795-commits.json.failed
+  dev/log/issues/781/pulls/803/github/related-pr-795-commits.json.stderr
+  dev/log/issues/781/pulls/803/github/related-pr-795-conversation-comments.json
+  dev/log/issues/781/pulls/803/github/related-pr-795-files.json
+  dev/log/issues/781/pulls/803/github/related-pr-795-review-comments.json
+  dev/log/issues/781/pulls/803/github/related-pr-795-review-comments.json.failed
+  dev/log/issues/781/pulls/803/github/related-pr-795-review-comments.json.stderr
+  dev/log/issues/781/pulls/803/github/related-pr-795-review-threads.json
+  dev/log/issues/781/pulls/803/github/related-pr-795-reviews.json
+  dev/log/issues/781/pulls/803/github/related-pr-795-timeline.json
+  dev/log/issues/781/pulls/803/github/related-pr-795-view.json
+  dev/log/issues/781/pulls/803/github/related-pr-795.diff
+  dev/log/issues/781/pulls/803/github/related-pr-795.json
+  dev/log/issues/781/pulls/803/github/related-pr-search.json
+  dev/log/issues/781/pulls/803/github/reported-modern-ai-timeline-regenerated.tsv
+  dev/log/issues/781/pulls/803/github/reported-modern-ai-timeline.tsv
+  dev/log/issues/781/pulls/803/github/run-29709092598.json
+  dev/log/issues/781/pulls/803/github/workflows.json
+  dev/log/issues/781/pulls/803/real-cli/agent-after-routing-fix/dialogs/dialog_6c759a895ca47bfc.jsonl
+  dev/log/issues/781/pulls/803/real-cli/agent-after-routing-fix/dialogs/dialog_8f5f70107b21e1b5.jsonl
+  dev/log/issues/781/pulls/803/real-cli/agent-after-routing-fix/exit-status.txt
+  dev/log/issues/781/pulls/803/real-cli/agent-reported-prompt/dialogs/dialog_6c759a895ca47bfc.jsonl
+  dev/log/issues/781/pulls/803/real-cli/agent-reported-prompt/dialogs/dialog_8f5f70107b21e1b5.jsonl
+  dev/log/issues/781/pulls/803/real-cli/agent-reported-prompt/exit-status.txt
+  dev/log/issues/781/pulls/803/real-cli/agent/dialogs/dialog_6c759a895ca47bfc.jsonl
+  dev/log/issues/781/pulls/803/real-cli/agent/dialogs/dialog_813709ca61d82c38.jsonl
+  dev/log/issues/781/pulls/803/real-cli/agent/exit-status.txt
+  dev/log/issues/781/pulls/803/real-cli/claude-allowed-web/dialogs/dialog_0352f485dc309581.jsonl
+  dev/log/issues/781/pulls/803/real-cli/claude-allowed-web/dialogs/dialog_6c759a895ca47bfc.jsonl
+  dev/log/issues/781/pulls/803/real-cli/claude-allowed-web/dialogs/dialog_9f8c6c209c78d1dc.jsonl
+  dev/log/issues/781/pulls/803/real-cli/claude-allowed-web/dialogs/dialog_d811e9fd6f025703.jsonl
+  dev/log/issues/781/pulls/803/real-cli/claude-allowed-web/exit-status-rerun.txt
+  dev/log/issues/781/pulls/803/real-cli/claude-allowed-web/exit-status.txt
+  dev/log/issues/781/pulls/803/real-cli/claude-mcp/dialogs/dialog_0352f485dc309581.jsonl
+  dev/log/issues/781/pulls/803/real-cli/claude-mcp/dialogs/dialog_6c759a895ca47bfc.jsonl
+  dev/log/issues/781/pulls/803/real-cli/claude-mcp/dialogs/dialog_9f8c6c209c78d1dc.jsonl
+  dev/log/issues/781/pulls/803/real-cli/claude-mcp/exit-status.txt
+  dev/log/issues/781/pulls/803/real-cli/claude/dialogs/dialog_0352f485dc309581.jsonl
+  dev/log/issues/781/pulls/803/real-cli/claude/dialogs/dialog_6c759a895ca47bfc.jsonl
+  dev/log/issues/781/pulls/803/real-cli/claude/dialogs/dialog_9f8c6c209c78d1dc.jsonl
+  dev/log/issues/781/pulls/803/real-cli/claude/exit-status.txt
+  dev/log/issues/781/pulls/803/real-cli/codex-mcp/dialogs-after-dispatch-fix/dialog_6c759a895ca47bfc.jsonl
+  dev/log/issues/781/pulls/803/real-cli/codex-mcp/dialogs-after-dispatch-fix/dialog_6e49014bed1c0684.jsonl
+  dev/log/issues/781/pulls/803/real-cli/codex-mcp/dialogs-after-namespace-fix/dialog_6c759a895ca47bfc.jsonl
+  dev/log/issues/781/pulls/803/real-cli/codex-mcp/dialogs-after-namespace-fix/dialog_6e49014bed1c0684.jsonl
+  dev/log/issues/781/pulls/803/real-cli/codex-mcp/dialogs-after-readonly-annotations/dialog_6c759a895ca47bfc.jsonl
+  dev/log/issues/781/pulls/803/real-cli/codex-mcp/dialogs-after-readonly-annotations/dialog_6e49014bed1c0684.jsonl
+  dev/log/issues/781/pulls/803/real-cli/codex-mcp/dialogs-final/dialog_6c759a895ca47bfc.jsonl
+  dev/log/issues/781/pulls/803/real-cli/codex-mcp/dialogs-final/dialog_6e49014bed1c0684.jsonl
+  dev/log/issues/781/pulls/803/real-cli/codex-mcp/dialogs/dialog_6c759a895ca47bfc.jsonl
+  dev/log/issues/781/pulls/803/real-cli/codex-mcp/dialogs/dialog_6e49014bed1c0684.jsonl
+  dev/log/issues/781/pulls/803/real-cli/codex-mcp/exit-status-rerun.txt
+  dev/log/issues/781/pulls/803/real-cli/codex-mcp/exit-status.txt
+  dev/log/issues/781/pulls/803/real-cli/codex/dialogs/dialog_6c759a895ca47bfc.jsonl
+  dev/log/issues/781/pulls/803/real-cli/codex/dialogs/dialog_6e49014bed1c0684.jsonl
+  dev/log/issues/781/pulls/803/real-cli/codex/exit-status.txt
+  dev/log/issues/781/pulls/803/real-cli/four-client-final-2/agent/dialogs/dialog_2f8cbf756db5cf80.jsonl
+  dev/log/issues/781/pulls/803/real-cli/four-client-final-2/agent/dialogs/dialog_6c759a895ca47bfc.jsonl
+  dev/log/issues/781/pulls/803/real-cli/four-client-final-2/claude/dialogs/dialog_0352f485dc309581.jsonl
+  dev/log/issues/781/pulls/803/real-cli/four-client-final-2/claude/dialogs/dialog_6c759a895ca47bfc.jsonl
+  dev/log/issues/781/pulls/803/real-cli/four-client-final-2/claude/dialogs/dialog_9f8c6c209c78d1dc.jsonl
+  dev/log/issues/781/pulls/803/real-cli/four-client-final-2/codex/dialogs/dialog_6c759a895ca47bfc.jsonl
+  dev/log/issues/781/pulls/803/real-cli/four-client-final-2/codex/dialogs/dialog_6e49014bed1c0684.jsonl
+  dev/log/issues/781/pulls/803/real-cli/four-client-final-2/opencode/dialogs/dialog_0ef82fb1d0ae6186.jsonl
+  dev/log/issues/781/pulls/803/real-cli/four-client-final-2/opencode/dialogs/dialog_54fc52d0a621a4e3.jsonl
+  dev/log/issues/781/pulls/803/real-cli/four-client-final-2/opencode/dialogs/dialog_6c759a895ca47bfc.jsonl
+  dev/log/issues/781/pulls/803/real-cli/four-client-final/agent/dialogs/dialog_2f8cbf756db5cf80.jsonl
+  dev/log/issues/781/pulls/803/real-cli/four-client-final/agent/dialogs/dialog_6c759a895ca47bfc.jsonl
+  dev/log/issues/781/pulls/803/real-cli/four-client-run/agent/dialogs/dialog_2f8cbf756db5cf80.jsonl
+  dev/log/issues/781/pulls/803/real-cli/four-client-run/agent/dialogs/dialog_6c759a895ca47bfc.jsonl
+  dev/log/issues/781/pulls/803/real-cli/four-client-run/claude/dialogs/dialog_0352f485dc309581.jsonl
+  dev/log/issues/781/pulls/803/real-cli/four-client-run/claude/dialogs/dialog_6c759a895ca47bfc.jsonl
+  dev/log/issues/781/pulls/803/real-cli/four-client-run/claude/dialogs/dialog_9f8c6c209c78d1dc.jsonl
+  dev/log/issues/781/pulls/803/real-cli/four-client-run/codex/dialogs/dialog_6c759a895ca47bfc.jsonl
+  dev/log/issues/781/pulls/803/real-cli/four-client-run/codex/dialogs/dialog_6e49014bed1c0684.jsonl
+  dev/log/issues/781/pulls/803/real-cli/four-client-run/opencode/dialogs/dialog_0ef82fb1d0ae6186.jsonl
+  dev/log/issues/781/pulls/803/real-cli/four-client-run/opencode/dialogs/dialog_54fc52d0a621a4e3.jsonl
+  dev/log/issues/781/pulls/803/real-cli/four-client-run/opencode/dialogs/dialog_6c759a895ca47bfc.jsonl
+  dev/log/issues/781/pulls/803/real-cli/opencode/dialogs/dialog_127e5ec8b866e455.jsonl
+  dev/log/issues/781/pulls/803/real-cli/opencode/dialogs/dialog_54fc52d0a621a4e3.jsonl
+  dev/log/issues/781/pulls/803/real-cli/opencode/dialogs/dialog_6c759a895ca47bfc.jsonl
+  dev/log/issues/781/pulls/803/real-cli/opencode/exit-status.txt
+  dev/log/issues/781/pulls/803/research/online-research.md
+  dev/log/issues/781/pulls/803/research/upstream/agent-issue-249-comments.json
+  dev/log/issues/781/pulls/803/research/upstream/agent-issue-249-comments.stderr
+  dev/log/issues/781/pulls/803/research/upstream/agent-issue-249-summary.json
+  dev/log/issues/781/pulls/803/research/upstream/agent-issue-249.json
+  dev/log/issues/781/pulls/803/research/upstream/agent-issue-249.stderr
+  dev/log/issues/781/pulls/803/research/upstream/codex-14242-after-comment.json
+  dev/log/issues/781/pulls/803/research/upstream/codex-14242-before-comment.json
+  dev/log/issues/781/pulls/803/research/upstream/codex-14242-comment-url.txt
+  dev/log/issues/781/pulls/803/research/upstream/codex-14242-comment.md
+  dev/log/issues/781/pulls/803/research/upstream/codex-14242-comments-before-comment.json
+  dev/log/issues/781/pulls/803/research/upstream/gh-upload-log-readme.md
+  dev/log/issues/781/pulls/803/research/upstream/gh-upload-log-readme.stderr
+  dev/log/issues/781/pulls/803/research/upstream/gh-upload-log-repo.json
+  dev/log/issues/781/pulls/803/research/upstream/gh-upload-log-repo.stderr
+  docs/case-studies/issue-781/README.md
+  docs/case-studies/issue-781/investigation.md
+  docs/case-studies/issue-781/raw-data/README.md
+  docs/case-studies/issue-781/requirements.md
+  docs/configuration/output-sessions.md
+  experiments/agent_cli_e2e/mock-research-mcp.mjs
+  experiments/agent_cli_e2e/run_issue_781.sh
+  experiments/issue-781-log-timeline.rb
+  src/agentic_coding/capability_router.rs
+  src/agentic_coding/mod.rs
+  src/agentic_coding/narration.rs
+  src/agentic_coding/planner.rs
+  src/agentic_coding/progress.rs
+  src/agentic_coding/tool_result.rs
+  src/agentic_coding/web_research.rs
+  src/anthropic.rs
+  src/dialog_log.rs
+  src/gemini.rs
+  src/lib.rs
+  src/protocol.rs
+  src/protocol/output.rs
+  src/protocol_policy.rs
+  src/protocol_responses.rs
+  src/proxy.rs
+  src/server.rs
+  tests/integration/issue_746_hosted_tools.rs
+  tests/unit/agentic_coding.rs
+  tests/unit/agentic_surfaces.rs
+  tests/unit/issue_781.rs
+
+Source files changed: 21
+  src/agentic_coding/capability_router.rs
+  src/agentic_coding/mod.rs
+  src/agentic_coding/narration.rs
+  src/agentic_coding/planner.rs
+  src/agentic_coding/progress.rs
+  src/agentic_coding/tool_result.rs
+  src/agentic_coding/web_research.rs
+  src/anthropic.rs
+  src/dialog_log.rs
+  src/gemini.rs
+  src/lib.rs
+  src/protocol.rs
+  src/protocol/output.rs
+  src/protocol_policy.rs
+  src/protocol_responses.rs
+  src/proxy.rs
+  src/server.rs
+  tests/integration/issue_746_hosted_tools.rs
+  tests/unit/agentic_coding.rs
+  tests/unit/agentic_surfaces.rs
+  tests/unit/issue_781.rs
+
+Changelog fragments added: 1
+  changelog.d/20260720_120000_issue_781_research_progress.md
+
+Changelog check passed (source files changed: 21, fragments added: 1)

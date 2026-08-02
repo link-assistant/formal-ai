@@ -1,0 +1,6 @@
+The `ls` command completed. Output:
+
+```text
+alpha.txt
+beta.json
+```

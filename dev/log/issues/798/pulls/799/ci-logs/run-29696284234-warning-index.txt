@@ -1,0 +1,1 @@
+9504:Code Coverage	Install cargo-llvm-cov	2026-07-19T17:12:08.2237389Z ^[[36;1m  printf '::error::install-action: %s\n' "$*"^[[0m

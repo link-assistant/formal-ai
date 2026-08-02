@@ -1,0 +1,83 @@
+{
+  "entities": {
+    "Q19939": {
+      "type": "item",
+      "id": "Q19939",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "tiger"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "тигр"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "बाघ"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "虎"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "species of big cat"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "вид хищных млекопитающих семейства кошачьих"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "बिल्ली परिवार की सबसे बड़ी प्रजाति"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "猫科豹属哺乳动物"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Panthera tigris"
+          },
+          {
+            "language": "en",
+            "value": "tigress"
+          },
+          {
+            "language": "en",
+            "value": "tigers"
+          },
+          {
+            "language": "en",
+            "value": "P. tigris"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Panthera tigris"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "पैंथेरा टाइगरिस"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "老虎"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

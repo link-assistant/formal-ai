@@ -1,0 +1,55 @@
+{
+  "entities": {
+    "Q80228": {
+      "type": "item",
+      "id": "Q80228",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "bottle"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "бутылка"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "बोतल"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "瓶"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "closable cylindrical container for transport and storage of liquids and gases"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "контейнер для жидкостей"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "तरल पदार्थ के कंटेनर"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "flask"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "瓶子"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

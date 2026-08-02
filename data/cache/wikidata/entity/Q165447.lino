@@ -1,0 +1,17 @@
+Q165447
+  aliases
+    en (Pens)
+    hi ("कलम" "पेन")
+    zh ("笔")
+  descriptions
+    en "writing and drawing implement using liquid or paste ink"
+    hi "लिख ने का परिकर"
+    ru "письменная принадлежность"
+  id Q165447
+  labels
+    en pen
+    hi "लेखनी"
+    ru "ручка"
+    zh "硬筆"
+  type item
+success 1

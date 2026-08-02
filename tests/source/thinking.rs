@@ -82,11 +82,10 @@ pub fn thinking_language_label(code: &str) -> String {
         .split(['-', '_'])
         .next()
         .unwrap_or(normalized.as_str());
+    if let Some(name) = crate::language::language_name(primary) {
+        return name.to_owned();
+    }
     match primary {
-        "en" => "English".to_owned(),
-        "ru" => "Russian".to_owned(),
-        "hi" => "Hindi".to_owned(),
-        "zh" => "Chinese".to_owned(),
         "" | "unknown" => "an unrecognized language".to_owned(),
         other => other.to_owned(),
     }

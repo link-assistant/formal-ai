@@ -1,0 +1,18 @@
+Q8441
+  aliases
+    en (M. men gentleman "adult man")
+    hi ("आदमी" "मर्द")
+    ru ("дядя" "отец" "мужик")
+    zh ("男性" "男" "男人")
+  descriptions
+    en "male adult human"
+    ru "взрослый человек мужского пола"
+    zh "成年雄性人類"
+  id Q8441
+  labels
+    en man
+    hi "पुरुष"
+    ru "мужчина"
+    zh "成年男性"
+  type item
+success 1

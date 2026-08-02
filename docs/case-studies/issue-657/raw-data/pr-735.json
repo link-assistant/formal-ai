@@ -1,0 +1,14 @@
+{
+  "number": 735,
+  "title": "[WIP] E38: Self-hosting metric: measure the share of each release authored by Formal AI",
+  "state": "OPEN",
+  "isDraft": true,
+  "author": "konard",
+  "createdAt": "2026-07-16T12:32:18Z",
+  "updatedAt": "2026-07-16T12:32:19Z",
+  "url": "https://github.com/link-assistant/formal-ai/pull/735",
+  "headRefName": "issue-657-22efa39a883b",
+  "baseRefName": "main",
+  "initialHead": "79209618a4de29a7965ac1e4c9ddd7e86c9390c3",
+  "initialBody": "AI-powered solution draft; implementation details pending; fixes #657."
+}

@@ -1,0 +1,16 @@
+Q2160801
+  aliases
+    zh ("裙子" "半裙")
+  descriptions
+    en "type of clothing worn from the waist downwards"
+    hi "कमर पर पहने जाने वाला कपड़ा"
+    ru "предмет одежды"
+    zh "服飾"
+  id Q2160801
+  labels
+    en skirt
+    hi "स्कर्ट"
+    ru "юбка"
+    zh "裙"
+  type item
+success 1

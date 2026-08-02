@@ -1,6 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { spawnSync } from "node:child_process";
+import { build } from "esbuild";
 
 // Package-time resource preparation for the VS Code extension (`vsce package`).
 //
@@ -26,13 +28,21 @@ const repoRoot = path.resolve(vscodeDir, "..");
 const sourceWeb = path.join(repoRoot, "src", "web");
 const sourceSeed = path.join(repoRoot, "data", "seed");
 const sourceLib = path.join(repoRoot, "desktop", "lib");
+const sourceLicense = path.join(repoRoot, "LICENSE");
+const outputLicense = path.join(vscodeDir, "LICENSE");
 const outputWeb = path.join(vscodeDir, "dist-web");
 const outputSeed = path.join(outputWeb, "seed");
 const outputVendor = path.join(vscodeDir, "src", "lib", "vendor");
+const outputBrowser = path.join(vscodeDir, "browser-runtime");
 
 // Reused desktop modules copied verbatim into the package so the Node host can
 // `require` them without reaching outside the extension.
-const VENDOR_MODULES = ["tool-router.cjs", "memory-sync.cjs"];
+const VENDOR_MODULES = [
+  "tool-router.cjs",
+  "memory-sync.cjs",
+  "web-tools.cjs",
+  "shared-memory.cjs",
+];
 
 // Keep the extension version in lockstep with the Rust crate so the Marketplace
 // listing always matches Cargo.toml, the single source of truth for the
@@ -66,13 +76,54 @@ function copyDirectory(from, to) {
 }
 
 syncExtensionVersion();
+fs.copyFileSync(sourceLicense, outputLicense);
 
 copyDirectory(sourceWeb, outputWeb);
 copyDirectory(sourceSeed, outputSeed);
 
+// VS Code users must not need a separately installed Chrome. Bundle the same
+// Playwright Chromium runtime as the Electron distribution and leave a
+// relative executable manifest for the extension host.
+const playwrightCli = path.join(vscodeDir, "node_modules", "playwright", "cli.js");
+if (fs.existsSync(playwrightCli)) {
+  const install = spawnSync(process.execPath, [playwrightCli, "install", "chromium"], {
+    cwd: vscodeDir,
+    stdio: "inherit",
+  });
+  if (install.status !== 0) {
+    throw new Error("Could not install the Chromium runtime required by VS Code web capture");
+  }
+  const { chromium } = await import("playwright");
+  const executable = chromium.executablePath();
+  const browserSource = path.dirname(path.dirname(executable));
+  copyDirectory(browserSource, outputBrowser);
+  fs.writeFileSync(
+    path.join(outputBrowser, "executable-path.txt"),
+    `${path.relative(browserSource, executable)}\n`,
+  );
+}
+
 fs.mkdirSync(outputVendor, { recursive: true });
 for (const moduleName of VENDOR_MODULES) {
-  fs.copyFileSync(path.join(sourceLib, moduleName), path.join(outputVendor, moduleName));
+  const source = path.join(sourceLib, moduleName);
+  const destination = path.join(outputVendor, moduleName);
+  if (moduleName === "web-tools.cjs") {
+    // This adapter is the only reused module with npm dependencies. Bundle its
+    // dependency graph so the VSIX does not need to ship thousands of files
+    // from node_modules (and so vsce's unbundled-extension warning is useful).
+    await build({
+      entryPoints: [source],
+      outfile: destination,
+      bundle: true,
+      platform: "node",
+      format: "cjs",
+      target: "node22",
+      nodePaths: [path.join(vscodeDir, "node_modules")],
+      logLevel: "warning",
+    });
+  } else {
+    fs.copyFileSync(source, destination);
+  }
 }
 
 console.log(`Prepared VS Code web resources: ${outputWeb}`);

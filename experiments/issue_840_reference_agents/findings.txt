@@ -1,0 +1,86 @@
+Reference-agent behavior on the #838 task — measured 2026-07-24/25
+=================================================================
+
+TASK
+----
+"Find hive-mind-control center folder on my desktop"
+
+Sandbox reproducing the real layout from #819/#838:
+  Desktop/Archive/hive-control-center                     <- ground truth (a DIRECTORY)
+  Desktop/Archive/hive-mind-bot.2025-12-26.private-key.pem <- decoy (a FILE, matches "hive-mind")
+
+Note the trap: the user's words ("hive-mind-control center") match the DECOY
+more closely than they match the ANSWER ("hive-control-center"). An agent that
+pattern-matches without reasoning returns a private key file.
+
+RESULTS
+-------
+  Agent                      Commands                                          Found  Widened on empty
+  -------------------------- ------------------------------------------------- -----  ----------------
+  claude (Opus)              ls -la ./Desktop  ->  ls -la ./Desktop/Archive     YES    n/a (never dead-ended)
+  codex                      narrow find (empty) -> find | rg -i 'hive|mind|…'  YES    YES
+  laguna-s-2.1-free          literal glob (0) -> ls -> widened glob -> ls -> ls YES    YES
+  nemotron-3-ultra-free      ls -la ./Desktop  ->  ls -la ./Desktop/Archive     YES    n/a
+  mimo-v2.5-free             read Desktop -> read Archive -> read target        YES    n/a
+  ling-3.0-flash-free        3 finds chained with ';' then plain find -type d   YES    partial
+  north-mini-code-free       pwd, ls -la ./Desktop  (stopped at depth 1)        NO     NO
+  deepseek-v4-flash-free     Glob — blocked by sandbox permission prompt        INCONCLUSIVE
+  ---------------------------------------------------------------------------------------------------
+  Formal AI 0.302.2 (#838)   one find, 5 -iname globs, -print -quit             NO     NO
+                             -> returned the .pem decoy for a "folder" request
+
+BEST REFERENCE RUN: laguna-s-2.1-free (a FREE model)
+----------------------------------------------------
+  1. Glob "**/hive-mind-control center/**"   -> 0 matches   (tries the literal request first)
+  2. ls ./Desktop                            -> Archive
+  3. Glob "**/*hive*"                        -> 1 match     (BROADENS after the empty result)
+  4. ls -la ./Desktop/Archive                -> sees the folder AND the .pem decoy together
+  5. ls -la ./Desktop/Archive/hive-control-center  -> confirms it is a directory
+
+  "Found it. The folder is named `hive-control-center` (not "hive-mind-control
+   center") and is located at ./Desktop/Archive/hive-control-center."
+  "The folder ./Desktop/Archive/hive-control-center exists but is empty."
+
+  This single run satisfies every clause of the #840 standard: simple steps one
+  at a time; widen on empty; near match named rather than silently substituted;
+  folder-vs-file discrimination; honest residual state ("exists but is empty").
+
+  It was initially mis-recorded as "rate limited" because it was still retrying
+  when first checked — its provider 429'd repeatedly across ~7 minutes. Any
+  automated harness must treat quota exhaustion as INCONCLUSIVE and wait it out,
+  or it will discard the best available reference.
+
+CLAUDE'S ANSWER (the discrepancy-naming standard)
+-------------------------------------------------
+  "There's no folder named exactly `hive-mind-control center`, but there is a
+   close match: ./Desktop/Archive/hive-control-center … Note the name
+   difference: the folder is hive-CONTROL-center, not hive-MIND-control-center.
+   If you expected a distinct hive-mind-control-center folder, it isn't on this
+   desktop. Want me to search wider?"
+
+CODEX'S RECOVERY (the widen-on-empty standard)
+----------------------------------------------
+  After its narrow multi-pattern find returned nothing:
+  "No direct name match appeared. I'm broadening the search to folders
+   containing any of the key terms, so alternate spellings or nesting won't
+   hide it."   -> second command found it.
+
+WHAT THIS PROVES
+----------------
+Six of seven agents that actually ran found the folder, including four free
+models. Two of them (claude, laguna) additionally named the name discrepancy.
+Formal AI failed the same task with a single over-built command.
+
+This is a PROCEDURE gap, not a model-capability gap. The winning procedure is
+uniformly: look, then narrow — never guess a clever pattern up front. The
+cheapest models beat us with two `ls` calls.
+
+EXTRACTED STANDARD (encoded as #840 section 3)
+----------------------------------------------
+  1. Prefer `ls` of the named location; recurse one level at a time.
+  2. One simple command per step — never chain with ';' (contrast ling).
+  3. On an empty result, BROADEN and retry before reporting absence (codex, laguna).
+  4. Fuzzy-match and NAME the discrepancy (claude, laguna).
+  5. Never `-print -quit`: it hides better matches.
+  6. Distinguish file vs folder when the user asked for a folder.
+  7. Absence claims must state the scope actually searched.

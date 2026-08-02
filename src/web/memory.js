@@ -49,6 +49,8 @@
     "sentAt",
     "demoLabel",
     "evidence",
+    "accessCount",
+    "writeCount",
     // Issue #27: conversation grouping. Events keep their global ordering in
     // the append-only log; conversationId/conversationTitle just attribute each
     // event to a specific chat thread so the UI can filter on read.
@@ -289,6 +291,8 @@
       role: String(event.role || ""),
       content: String(event.content || ""),
       sentAt: String(event.sentAt || new Date().toISOString()),
+      accessCount: Math.max(0, Number(event.accessCount) || 0),
+      writeCount: Math.max(1, Number(event.writeCount) || 1),
     };
     if (event.kind) record.kind = String(event.kind);
     if (event.intent) record.intent = String(event.intent);
@@ -373,6 +377,8 @@
           role: String(raw.role || ""),
           content: String(raw.content || ""),
           sentAt: String(raw.sentAt || new Date().toISOString()),
+          accessCount: Math.max(0, Number(raw.accessCount) || 0),
+          writeCount: Math.max(1, Number(raw.writeCount) || 1),
         };
         if (raw.kind) record.kind = String(raw.kind);
         if (raw.intent) record.intent = String(raw.intent);
@@ -506,6 +512,7 @@
           }
         }
         if (changed) {
+          value.writeCount = Math.max(1, Number(value.writeCount) || 1) + 1;
           var update = cursor.update(value);
           update.onsuccess = function () {
             cursor.continue();
@@ -520,6 +527,82 @@
       request.onerror = function () {
         setResult(replaced);
       };
+    }).then(function (value) {
+      return typeof value === "number" ? value : 0;
+    });
+  }
+
+  // Issue #708: atomically persist the browser worker's bounded program diff.
+  // Existing rows are patched by IndexedDB key and derived/retraction rows are
+  // appended in the same transaction; the worker never receives database
+  // authority and the append-only deletion policy remains visible in the log.
+  function applyProgramOperation(operation) {
+    var updates = Array.isArray(operation && operation.updates)
+      ? operation.updates
+      : [];
+    var appends = Array.isArray(operation && operation.appends)
+      ? operation.appends
+      : [];
+    if (updates.length === 0 && appends.length === 0) return Promise.resolve(0);
+    return withStore("readwrite", function (store, setResult) {
+      var updateById = {};
+      updates.forEach(function (update) {
+        if (!update || update.id === undefined || !update.fields) return;
+        updateById[String(update.id)] = update.fields;
+      });
+      var changed = 0;
+      var cursorRequest = store.openCursor();
+      cursorRequest.onsuccess = function () {
+        var cursor = cursorRequest.result;
+        if (!cursor) {
+          appendNext(0);
+          return;
+        }
+        var fields = updateById[String(cursor.primaryKey)];
+        if (!fields) {
+          cursor.continue();
+          return;
+        }
+        var value = cursor.value || {};
+        Object.keys(fields).forEach(function (name) {
+          if (fields[name] === undefined) delete value[name];
+          else value[name] = fields[name];
+        });
+        var updateRequest = cursor.update(value);
+        updateRequest.onsuccess = function () {
+          changed += 1;
+          cursor.continue();
+        };
+        updateRequest.onerror = function () { cursor.continue(); };
+      };
+      cursorRequest.onerror = function () { appendNext(0); };
+
+      function appendNext(index) {
+        if (index >= appends.length) {
+          setResult(changed);
+          return;
+        }
+        var raw = appends[index] || {};
+        var record = {
+          role: String(raw.role || "system"),
+          content: String(raw.content || ""),
+          sentAt: String(raw.sentAt || new Date().toISOString()),
+          accessCount: Math.max(0, Number(raw.accessCount) || 0),
+          writeCount: Math.max(1, Number(raw.writeCount) || 1),
+        };
+        for (var field of ["kind", "intent", "inputs", "outputs"]) {
+          if (raw[field] !== undefined && raw[field] !== null) {
+            record[field] = String(raw[field]);
+          }
+        }
+        if (Array.isArray(raw.evidence)) record.evidence = raw.evidence.slice();
+        var addRequest = store.add(record);
+        addRequest.onsuccess = function () {
+          changed += 1;
+          appendNext(index + 1);
+        };
+        addRequest.onerror = function () { appendNext(index + 1); };
+      }
     }).then(function (value) {
       return typeof value === "number" ? value : 0;
     });
@@ -912,6 +995,7 @@
     listEvents: listEvents,
     collectSearchableValues: collectSearchableValues,
     applySubstitution: applySubstitution,
+    applyProgramOperation: applyProgramOperation,
     listDoubletRecords: listDoubletRecords,
     importEvents: importEvents,
     deleteEventsByConversationId: deleteEventsByConversationId,

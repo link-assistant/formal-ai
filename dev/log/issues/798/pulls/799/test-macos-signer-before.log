@@ -1,0 +1,47 @@
+TAP version 13
+# Subtest: bundled browser runtime is excluded from Electron child signing
+not ok 1 - bundled browser runtime is excluded from Electron child signing
+  ---
+  duration_ms: 3.029631
+  location: '/tmp/gh-issue-solver-1784475913185/desktop/scripts/adhoc-sign-mac.test.cjs:18:1'
+  failureType: 'testCodeFailure'
+  error: 'adhocSignMac.isBundledBrowserRuntime is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (/tmp/gh-issue-solver-1784475913185/desktop/scripts/adhoc-sign-mac.test.cjs:22:29)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:526:18)
+    node:internal/test_runner/harness:255:12
+    node:internal/process/task_queues:140:7
+    AsyncResource.runInAsyncScope (node:async_hooks:206:9)
+    AsyncResource.runMicrotask (node:internal/process/task_queues:137:8)
+  ...
+# Subtest: browser exclusion composes with electron-builder ignore rules
+not ok 2 - browser exclusion composes with electron-builder ignore rules
+  ---
+  duration_ms: 0.529768
+  location: '/tmp/gh-issue-solver-1784475913185/desktop/scripts/adhoc-sign-mac.test.cjs:48:1'
+  failureType: 'testCodeFailure'
+  error: 'adhocSignMac.signingIgnoreRules is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (/tmp/gh-issue-solver-1784475913185/desktop/scripts/adhoc-sign-mac.test.cjs:51:31)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:526:18)
+    Test.postRun (node:internal/test_runner/test:889:19)
+    Test.run (node:internal/test_runner/test:835:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 253.03498

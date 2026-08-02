@@ -1,0 +1,93 @@
+{
+  "entities": {
+    "Q45199": {
+      "type": "item",
+      "id": "Q45199",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "sailor"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "моряк"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "नाविक"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "海員"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "person who navigates water-borne vessels or assists in doing so"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "职业"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "seaman"
+          },
+          {
+            "language": "en",
+            "value": "mariner"
+          },
+          {
+            "language": "en",
+            "value": "seafarer"
+          },
+          {
+            "language": "en",
+            "value": "merchant sailor"
+          },
+          {
+            "language": "en",
+            "value": "merchant seaman"
+          },
+          {
+            "language": "en",
+            "value": "merchant mariner"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "торговый моряк"
+          },
+          {
+            "language": "ru",
+            "value": "моряк торгового флота"
+          },
+          {
+            "language": "ru",
+            "value": "морячка"
+          },
+          {
+            "language": "ru",
+            "value": "торговая морячка"
+          },
+          {
+            "language": "ru",
+            "value": "морячка торгового флота"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "船員"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

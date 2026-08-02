@@ -1,0 +1,5 @@
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{"type":"result","timestamp":"2026-07-16T07:10:54.219Z","session_id":"ses_0963c732dffeGPA51qkRWwm3rs","status":"error","output":"Error: oldString not found in content"}
+

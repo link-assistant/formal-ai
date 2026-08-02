@@ -1,0 +1,18 @@
+general_change_plan
+  id "general_change_plan_01e784e6cd4319c4"
+  goal "Create file self-coding-result.txt containing self-coding=passed"
+  target "self-coding-result.txt"
+  step 1
+    capability "Write"
+    action "append the composed plan to .formal-ai/general-change-plan.lino"
+    expected_evidence "written plan event impulse_e391764cdb7162ce"
+  step 2
+    capability "Write"
+    action "write the requested content to self-coding-result.txt"
+    expected_evidence "workspace file self-coding-result.txt"
+  step 3
+    capability "Run"
+    action "run the request-derived verification command"
+    expected_evidence "self-coding=passed"
+    command "cat self-coding-result.txt"
+  verification_command "cat self-coding-result.txt"

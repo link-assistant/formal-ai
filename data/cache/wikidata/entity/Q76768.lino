@@ -1,0 +1,17 @@
+Q76768
+  aliases
+    en (Qamis)
+    hi ("शर्ट")
+    ru ("рубаха")
+  descriptions
+    en "fabric garment worn on the upper part of the body"
+    hi "शरीर के ऊपरी भाग पर पहना जाने वाला कपड़ा"
+    ru "вид одежды, относящийся к верхнему нательному белью"
+  id Q76768
+  labels
+    en shirt
+    hi "क़मीज़"
+    ru "рубашка"
+    zh "襯衫"
+  type item
+success 1

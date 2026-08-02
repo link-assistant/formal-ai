@@ -1,0 +1,8 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.42s
+     Running unittests /tmp/gh-issue-solver-1784064801495/scripts/version-and-commit.rs (/home/box/.cache/rust-script/binaries/debug/deps/version_and_commit_617c1113648c5539b41b1158-261198a45ac510a6)
+
+running 1 test
+test tests::changelog_collection_consumes_fragments_once_and_keeps_readme ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+

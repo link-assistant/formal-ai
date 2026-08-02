@@ -184,6 +184,59 @@ fn memory_import_then_since_round_trips_through_store() {
     let _ = std::fs::remove_dir_all(&dir);
 }
 
+#[test]
+fn chat_completions_route_records_live_exchange_into_configured_memory() {
+    // Issue #540 §1: a POSTed chat must land in the persistent memory log so
+    // background dreaming has organic data to learn from — proven end-to-end
+    // through the HTTP handler against a temp FORMAL_AI_MEMORY_PATH.
+    let _guard = memory_env_lock();
+    let dir = std::env::temp_dir().join(format!(
+        "formal-ai-local-surface-chat-record-{}",
+        std::process::id()
+    ));
+    let _ = std::fs::remove_dir_all(&dir);
+    std::fs::create_dir_all(&dir).expect("temp dir");
+    let path = dir.join("memory.lino");
+
+    let previous = std::env::var_os("FORMAL_AI_MEMORY_PATH");
+    std::env::set_var("FORMAL_AI_MEMORY_PATH", &path);
+    let body = serde_json::json!({
+        "model": "formal-ai",
+        "messages": [{"role": "user", "content": "Hi"}]
+    })
+    .to_string();
+    let response = handle_api_request("POST", "/v1/chat/completions", &body);
+    match previous {
+        Some(value) => std::env::set_var("FORMAL_AI_MEMORY_PATH", value),
+        None => std::env::remove_var("FORMAL_AI_MEMORY_PATH"),
+    }
+
+    assert_eq!(response.status_code, 200);
+    let recorded = SyncStore::open_at(&path);
+    let user_event = recorded
+        .events()
+        .iter()
+        .find(|event| event.role.as_deref() == Some("user"))
+        .expect("POSTed user prompt must be recorded");
+    assert_eq!(user_event.content.as_deref(), Some("Hi"));
+    let task_event = recorded
+        .events()
+        .iter()
+        .find(|event| event.kind.as_deref() == Some("task"))
+        .expect("solved exchange must be recorded as a task event");
+    assert_eq!(task_event.inputs.as_deref(), Some("Hi"));
+    assert_eq!(
+        task_event.outputs.as_deref(),
+        Some("Hi, how may I help you?")
+    );
+    assert!(
+        task_event.evidence.contains(&user_event.id),
+        "task must cite the recorded user prompt"
+    );
+
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
 fn sample_event(id: &str, content: &str) -> formal_ai::MemoryEvent {
     formal_ai::MemoryEvent {
         id: id.to_owned(),

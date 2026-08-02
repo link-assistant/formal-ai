@@ -1,0 +1,16 @@
+Q168658
+  aliases
+    en (puppet poppet)
+    ru ("игра в куклы" "куклы")
+    zh ("娃娃" "布偶" "洋娃娃" "人偶")
+  descriptions
+    en "model of a character or a human being, often used as a toy for children or an artistic hobby for adults"
+    ru "предмет в виде человека или животного"
+  id Q168658
+  labels
+    en doll
+    hi "गुड़िया"
+    ru "кукла"
+    zh "玩偶"
+  type item
+success 1

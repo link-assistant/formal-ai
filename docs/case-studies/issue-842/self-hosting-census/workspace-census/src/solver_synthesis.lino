@@ -1,0 +1,40 @@
+self_ast_census
+  target src/solver_synthesis.rs
+  language rust
+  fidelity signature
+  byte_len 25240
+  line_count 824
+  content_id source_module_84f465acd66f6084
+  symbol_count 31
+  symbols
+    struct SolvedSubImpulse 23 30
+    struct ComposedCandidate 33 41
+    function record_solved_sub_impulse 43 64
+    function solve_sub_impulses 67 94
+    function try_synthesize_from_sub_results 97 161
+    function compose_algebra_substitution 163 207
+    function compose_remainder_sale 209 246
+    function compose_object_count 248 301
+    function compose_compound_response 303 336
+    struct ObjectCategory 339 343
+    const OBJECT_CATEGORIES 345 375
+    function extract_count_category 457 482
+    function find_object_category 484 492
+    function partition_counted_items_by_category 494 511
+    function item_matches_category 513 522
+    function candidate 524 547
+    function finalize_composed_candidate 549 577
+    function extract_variable_assignments 579 596
+    function trailing_identifier 598 614
+    function leading_number 616 637
+    function extract_requested_expression 639 653
+    function clean_expression 655 666
+    function expression_mentions_variable 668 672
+    function substitute_variables 674 723
+    function last_non_whitespace 725 730
+    function extract_quantities 732 746
+    function number_word_value 748 773
+    function clean_counted_item 775 786
+    function normalize_count_phrase 788 797
+    function singularize_count_token 799 809
+    function truncate_for_trace 811 824

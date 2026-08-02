@@ -1,0 +1,35 @@
+   Compiling formal-ai v0.318.0 (/tmp/gh-issue-solver-1785615454177)
+    Finished `test` profile [unoptimized] target(s) in 1m 18s
+     Running tests/integration/mod.rs (target/debug/deps/integration-9cb890b1523a0764)
+
+running 2 tests
+test issue_859_codex::codex_report_issue_asks_for_structured_details_instead_of_searching_the_web ... FAILED
+test issue_859_codex::codex_creates_compiles_and_runs_hello_world_with_precise_narration ... FAILED
+
+failures:
+
+---- issue_859_codex::codex_report_issue_asks_for_structured_details_instead_of_searching_the_web stdout ----
+[trace] POST /v1/responses (773 byte body)
+{"input":[{"content":"Report issue","role":"user","type":"message"}],"model":"formal-ai","tools":[{"name":"exec_command","parameters":{"additionalProperties":false,"properties":{"cmd":{"type":"string"}},"required":["cmd"],"type":"object"},"type":"function"},{"name":"write_stdin","parameters":{"additionalProperties":false,"properties":{"session_id":{"type":"number"}},"required":["session_id"],"type":"object"},"type":"function"},{"format":{"definition":"start: /.+/","syntax":"lark","type":"grammar"},"name":"apply_patch","type":"custom"},{"name":"request_user_input","parameters":{"additionalProperties":false,"properties":{"questions":{"items":{"additionalProperties":true,"type":"object"},"type":"array"}},"required":["questions"],"type":"object"},"type":"function"}]}
+[dialog-log] appended exchange to /home/box/.formal-ai/dialog-logs/dialog_0c794ed27fcae834.jsonl
+
+thread 'issue_859_codex::codex_report_issue_asks_for_structured_details_instead_of_searching_the_web' (15771) panicked at tests/integration/issue_859_codex.rs:82:5:
+{"questions":[{"header":"Report","id":"report_target","multiple":true,"options":[{"description":"Export the complete agentic harness log.","label":"Harness log"},{"description":"Export the matching Formal AI server log.","label":"Server log"},{"description":"File an issue with complete context.","label":"GitHub issue"},{"description":"Store the report so this instance can learn.","label":"Report to Formal AI"}],"question":"What would you like to report? Select one or more."}]}
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- issue_859_codex::codex_creates_compiles_and_runs_hello_world_with_precise_narration stdout ----
+[trace] POST /v1/responses (565 byte body)
+{"input":[{"content":"Give me hello world program in Rust","role":"user","type":"message"}],"model":"formal-ai","tools":[{"name":"exec_command","parameters":{"additionalProperties":false,"properties":{"cmd":{"type":"string"}},"required":["cmd"],"type":"object"},"type":"function"},{"name":"write_stdin","parameters":{"additionalProperties":false,"properties":{"session_id":{"type":"number"}},"required":["session_id"],"type":"object"},"type":"function"},{"format":{"definition":"start: /.+/","syntax":"lark","type":"grammar"},"name":"apply_patch","type":"custom"}]}
+[dialog-log] appended exchange to /home/box/.formal-ai/dialog-logs/dialog_58ff0015c7a2ad1d.jsonl
+
+thread 'issue_859_codex::codex_creates_compiles_and_runs_hello_world_with_precise_narration' (15770) panicked at tests/integration/issue_859_codex.rs:198:28:
+missing custom_tool_call: {"created_at":1785616588,"evidence_links":[],"id":"resp_58ff0015c7a2ad1d","model":"formal-ai","object":"response","output":[{"content":[{"text":"Let me update main.rs for you.","type":"output_text"}],"id":"msg_a2c151d6e0e3e4ff","role":"assistant","type":"message"},{"arguments":"{\"session_id\":0}","call_id":"call_7fcea9ff811a4ed7","id":"fc_7fcea9ff811a4ed7","name":"write_stdin","status":"completed","type":"function_call"}],"status":"completed","usage":{"input_tokens":35,"output_tokens":57,"total_tokens":92}}
+
+
+failures:
+    issue_859_codex::codex_creates_compiles_and_runs_hello_world_with_precise_narration
+    issue_859_codex::codex_report_issue_asks_for_structured_details_instead_of_searching_the_web
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 297 filtered out; finished in 0.93s
+
+error: test failed, to rerun pass `--test integration`

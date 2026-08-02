@@ -193,14 +193,14 @@ fn recognises_the_rebuild_task_without_colliding_with_the_sibling_recipes() {
         formal_ai::agentic_coding::REPAIR_STRATEGY_TASK
     ));
     assert!(!is_rebuild_task(
-        formal_ai::agentic_coding::source_graph::SOURCE_GRAPH_TASK
+        formal_ai::agentic_coding::source_links::SOURCE_LINKS_TASK
     ));
     // The rebuild task itself must not trip the sibling routers — in particular the
-    // source-graph recipe, which owns "recompile" (absent here — this recipe keys on
+    // source-links recipe, which owns "recompile" (absent here — this recipe keys on
     // "reattach").
     assert!(!formal_ai::agentic_coding::is_self_heal_task(REBUILD_TASK));
     assert!(!formal_ai::agentic_coding::is_self_ast_task(REBUILD_TASK));
-    assert!(!formal_ai::agentic_coding::is_source_graph_task(
+    assert!(!formal_ai::agentic_coding::is_source_links_task(
         REBUILD_TASK
     ));
     assert!(!formal_ai::agentic_coding::is_ledger_task(REBUILD_TASK));

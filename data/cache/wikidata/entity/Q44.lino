@@ -1,0 +1,17 @@
+Q44
+  aliases
+    en (brew)
+    zh ("麥仔酒")
+  descriptions
+    en "alcoholic beverage obtained by fermenting starchy materials and not distilled"
+    hi "शराब"
+    ru "алкогольный напиток"
+    zh "酒精饮料"
+  id Q44
+  labels
+    en beer
+    hi "बियर"
+    ru "пиво"
+    zh "啤酒"
+  type item
+success 1

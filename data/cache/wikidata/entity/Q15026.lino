@@ -1,0 +1,17 @@
+Q15026
+  aliases
+    en (seat)
+    zh ("座椅" "椅子")
+  descriptions
+    en "piece of furniture for sitting on"
+    hi "बैठने के लिए फर्नीचर का टुकड़ा"
+    ru "мебельное изделие для сидения одного человека"
+    zh "椅子"
+  id Q15026
+  labels
+    en chair
+    hi "कुर्सी"
+    ru "стул"
+    zh "椅"
+  type item
+success 1

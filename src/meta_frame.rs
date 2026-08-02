@@ -1,14 +1,14 @@
 //! Issue #559 Phase 1A: an explicit, link-serializable problem frame.
 //!
 //! The universal solver already formalizes every prompt into an
-//! [`IntentFormalization`](crate::intent_formalization::IntentFormalization)
+//! [`IntentFormalization`]
 //! meaning record (root requirement R157). Issue #559 generalizes the solver
 //! away from one prompt → one handler intent toward one prompt → a frame of
 //! *every* detected need. This module makes that frame first-class and
 //! link-native, without changing routing or answers: a [`ProblemFrame`] wraps
 //! the formalization, enumerates each [`Need`] found in the prompt (R7), and is
 //! serialized to Links Notation via
-//! [`format_lino_record`](crate::links_format::format_lino_record) (R311). It is
+//! `format_lino_record` (R311). It is
 //! emitted as a solver loop event so the meaning record is observable, but the
 //! existing dispatch still decides the answer. Later phases build the recursive
 //! `WorkUnit` trace, the need-satisfaction ledger, and the method registry on
@@ -21,8 +21,11 @@
 
 use crate::engine::stable_id;
 use crate::event_log::EventLog;
-use crate::intent_formalization::{formalize_intent, IntentFormalization, IntentKind};
+use crate::intent_formalization::{
+    formalize_intent, ordered_requirement_spans, IntentFormalization, IntentKind,
+};
 use crate::links_format::format_lino_record;
+use crate::seed::{self, ROLE_SKILL_PROCEDURE_CLAUSE_SEPARATOR};
 use crate::translation::formalize_prompt;
 
 /// Formalize a single span the same way the solver formalizes a whole prompt:
@@ -503,12 +506,15 @@ fn split_sentences(text: &str) -> Vec<String> {
 /// decomposition so the frame agrees with `record_decomposition`.
 #[must_use]
 fn split_clauses(sentence: &str) -> Vec<String> {
-    sentence
-        .split([',', ';'])
-        .flat_map(|chunk| chunk.split(" and "))
-        .flat_map(|chunk| chunk.split(" with "))
-        .map(|chunk| chunk.trim().to_owned())
-        .filter(|chunk| !chunk.is_empty())
+    let surfaces = seed::lexicon()
+        .meanings_with_role(ROLE_SKILL_PROCEDURE_CLAUSE_SEPARATOR)
+        .flat_map(|meaning| &meaning.lexemes)
+        .flat_map(|lexeme| &lexeme.words)
+        .map(|word| word.text.as_str())
+        .collect::<Vec<_>>();
+    ordered_requirement_spans(sentence, &surfaces)
+        .into_iter()
+        .map(|requirement| requirement.source_text)
         .collect()
 }
 

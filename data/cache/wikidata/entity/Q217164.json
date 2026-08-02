@@ -1,0 +1,55 @@
+{
+  "entities": {
+    "Q217164": {
+      "type": "item",
+      "id": "Q217164",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "floor"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "пол"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "फर्श"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "地板"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "walking surface of a room"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "внутренняя поверхность помещения, по которой ходят"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "कमरे में चलने के लिए उपयोग होने वाला अंग"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Пол (настил)"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "塗跤"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

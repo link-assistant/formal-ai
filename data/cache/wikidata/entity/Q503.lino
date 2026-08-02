@@ -1,0 +1,18 @@
+Q503
+  aliases
+    en (bananas "banana fruit")
+    ru ("Músa" Musa)
+    zh ("蕉")
+  descriptions
+    en "elongated, edible fruit produced by several kinds of large herbaceous flowering plants in the genus Musa"
+    hi "फल"
+    ru "плод многолетних травянистых растений рода Банан (Musa)"
+    zh "蕉果是从蕉树长出来的"
+  id Q503
+  labels
+    en banana
+    hi "केला"
+    ru "банан"
+    zh "香蕉"
+  type item
+success 1

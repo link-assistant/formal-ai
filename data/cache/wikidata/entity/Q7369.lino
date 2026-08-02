@@ -1,0 +1,16 @@
+Q7369
+  aliases
+    en ("🐬" Dolphin dolphins "dolphin calf")
+    ru ("дельфины")
+  descriptions
+    en "marine mammal, closely related to whales and porpoises"
+    ru "несистематическая группа водных млекопитающих инфраотряда китообразных"
+    zh "智商較高的小型鯨類動物"
+  id Q7369
+  labels
+    en dolphin
+    hi "सूंस"
+    ru "дельфин"
+    zh "海豚"
+  type item
+success 1

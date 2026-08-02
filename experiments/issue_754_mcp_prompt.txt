@@ -1,0 +1,128 @@
+Create file src/mcp.rs containing exactly the following code and no marker lines. Do not change another file.
+use serde_json::{json, Value};
+
+use crate::server::ApiHttpResponse;
+use crate::solver::UniversalSolver;
+
+const PROTOCOL_VERSION: &str = "2025-06-18";
+
+pub(crate) fn handle_mcp_request(body: &str, solver: &UniversalSolver) -> ApiHttpResponse {
+    let request = match serde_json::from_str::<Value>(body) {
+        Ok(request) => request,
+        Err(_) => return json_rpc_error(Value::Null, -32700, "Parse error"),
+    };
+    let id = request.get("id").cloned().unwrap_or(Value::Null);
+    if request.get("jsonrpc").and_then(Value::as_str) != Some("2.0") {
+        return json_rpc_error(id, -32600, "Invalid Request");
+    }
+    let Some(method) = request.get("method").and_then(Value::as_str) else {
+        return json_rpc_error(id, -32600, "Invalid Request");
+    };
+
+    match method {
+        "initialize" => {
+            let protocol_version = request
+                .pointer("/params/protocolVersion")
+                .and_then(Value::as_str)
+                .unwrap_or(PROTOCOL_VERSION);
+            json_rpc_result(
+                id,
+                json!({
+                    "protocolVersion": protocol_version,
+                    "capabilities": { "tools": {} },
+                    "serverInfo": {
+                        "name": "formal-ai",
+                        "version": env!("CARGO_PKG_VERSION")
+                    },
+                    "instructions": "Call formal_ai_chat for every user request and return its answer to the user."
+                }),
+            )
+        }
+        "notifications/initialized" | "ping" => json_rpc_result(id, json!({})),
+        "tools/list" => json_rpc_result(
+            id,
+            json!({
+                "tools": [{
+                    "name": "formal_ai_chat",
+                    "description": "Ask the local Formal AI reasoning server to answer the user's request.",
+                    "inputSchema": {
+                        "type": "object",
+                        "properties": {
+                            "prompt": {
+                                "type": "string",
+                                "description": "The complete user request to answer."
+                            }
+                        },
+                        "required": ["prompt"],
+                        "additionalProperties": false
+                    }
+                }]
+            }),
+        ),
+        "tools/call" => call_tool(&request, id, solver),
+        _ => json_rpc_error(id, -32601, "Method not found"),
+    }
+}
+
+fn call_tool(request: &Value, id: Value, solver: &UniversalSolver) -> ApiHttpResponse {
+    if request.pointer("/params/name").and_then(Value::as_str) != Some("formal_ai_chat") {
+        return json_rpc_error(id, -32601, "Tool not found");
+    }
+    let Some(prompt) = request
+        .pointer("/params/arguments/prompt")
+        .and_then(Value::as_str)
+    else {
+        return json_rpc_error(id, -32602, "prompt must be a string");
+    };
+    let answer = solver.solve(prompt);
+    json_rpc_result(
+        id,
+        json!({
+            "content": [{ "type": "text", "text": answer.answer }],
+            "isError": false
+        }),
+    )
+}
+
+fn json_rpc_result(id: Value, result: Value) -> ApiHttpResponse {
+    json_response(json!({ "jsonrpc": "2.0", "id": id, "result": result }))
+}
+
+fn json_rpc_error(id: Value, code: i64, message: &str) -> ApiHttpResponse {
+    json_response(json!({
+        "jsonrpc": "2.0",
+        "id": id,
+        "error": { "code": code, "message": message }
+    }))
+}
+
+fn json_response(value: Value) -> ApiHttpResponse {
+    ApiHttpResponse {
+        status_code: 200,
+        content_type: "application/json",
+        body: value.to_string(),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn malformed_json_is_a_parse_error() {
+        let response = handle_mcp_request("{", &UniversalSolver::default());
+        let body: Value = serde_json::from_str(&response.body).expect("JSON response");
+        assert_eq!(body["error"]["code"], -32700);
+    }
+
+    #[test]
+    fn unknown_method_is_a_method_error() {
+        let response = handle_mcp_request(
+            r#"{"jsonrpc":"2.0","id":7,"method":"unknown"}"#,
+            &UniversalSolver::default(),
+        );
+        let body: Value = serde_json::from_str(&response.body).expect("JSON response");
+        assert_eq!(body["id"], 7);
+        assert_eq!(body["error"]["code"], -32601);
+    }
+}

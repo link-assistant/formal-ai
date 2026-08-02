@@ -1,0 +1,81 @@
+{
+  "entities": {
+    "Q1138737": {
+      "type": "item",
+      "id": "Q1138737",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "lamp"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "лампа"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "चिराग़"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "灯"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "part of a light fixture that produces the light"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "искусственный источник света"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "照明用具"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "lamps"
+          },
+          {
+            "language": "en",
+            "value": "light source"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "दिया"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "燈飾"
+          },
+          {
+            "language": "zh",
+            "value": "燈"
+          },
+          {
+            "language": "zh",
+            "value": "格栅灯"
+          },
+          {
+            "language": "zh",
+            "value": "灯具"
+          },
+          {
+            "language": "zh",
+            "value": "燈具"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

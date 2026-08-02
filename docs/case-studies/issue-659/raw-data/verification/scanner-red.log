@@ -1,0 +1,33 @@
+   Compiling check-hardcoded-language_11757e8d504a4e7483126c4d v0.1.0 (/home/box/.cache/rust-script/projects/11757e8d504a4e7483126c4d)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.77s
+     Running unittests /tmp/gh-issue-solver-1784371666002/scripts/check-hardcoded-language.rs (/home/box/.cache/rust-script/binaries/debug/deps/check_hardcoded_language_11757e8d504a4e7483126c4d-db85a184fe5ba000)
+
+running 10 tests
+test tests::allowlist_round_trips ... ok
+test tests::comments_are_not_scanned ... ok
+test tests::continuation_lines_are_collapsed ... ok
+test tests::ignores_non_prose_literals ... ok
+test tests::raw_strings_are_scanned ... ok
+test tests::allowlisted_string_passes ... ok
+test tests::stale_allowlist_row_fails ... ok
+test tests::detects_multi_word_phrases_in_user_facing_positions ... FAILED
+test tests::detects_sentence_prose ... ok
+test tests::fixture_string_is_a_new_violation ... ok
+
+failures:
+
+---- tests::detects_multi_word_phrases_in_user_facing_positions stdout ----
+
+thread 'tests::detects_multi_word_phrases_in_user_facing_positions' (5795) panicked at /tmp/gh-issue-solver-1784371666002/scripts/check-hardcoded-language.rs:603:9:
+assertion `left == right` failed
+  left: []
+ right: ["Try again", "Please wait", "Need details"]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    tests::detects_multi_word_phrases_in_user_facing_positions
+
+test result: FAILED. 9 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--bin check-hardcoded-language_11757e8d504a4e7483126c4d`

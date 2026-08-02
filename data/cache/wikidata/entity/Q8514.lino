@@ -1,0 +1,16 @@
+Q8514
+  aliases
+    en ("desert regions" "🏜️")
+  descriptions
+    en "barren area of land where little precipitation occurs"
+    hi "धरती पर स्थित अल्प वर्षा वाले बंजर स्थान"
+    ru "природная зона с равнинной поверхностью, отличающаяся редкой или отсутствующей флорой и специфической фауной"
+    zh "貧瘠的土地，幾乎沒有降水"
+  id Q8514
+  labels
+    en desert
+    hi "मरुस्थल"
+    ru "пустыня"
+    zh "荒漠"
+  type item
+success 1

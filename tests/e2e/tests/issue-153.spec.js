@@ -2,7 +2,7 @@
 const { test, expect } = require('@playwright/test');
 
 // Issue #153 — search UX, formalization SVO view, cross-source dedupe, and
-// localized search-result templates. Each test mocks the three providers so
+// localized search-result templates. Each test mocks every provider so
 // the assertions are hermetic.
 
 const UNKNOWN_ANSWER_MARKER = 'cannot answer that from local links rules';
@@ -12,7 +12,7 @@ async function disableGreetingVariations(page) {
     try {
       window.localStorage.setItem(
         'formal-ai.preferences.v1',
-        'demo_preferences\n  greetingVariations "off"',
+        'demo_preferences\n  greetingVariations "off"\n  demoMode "off"',
       );
     } catch (_error) {
       // ignore — localStorage may be unavailable in some sandboxes.
@@ -22,15 +22,12 @@ async function disableGreetingVariations(page) {
 
 async function switchToManualMode(page) {
   const demoToggle = page.locator('.mode-toggle');
-  // Wait for i18n hydration to finish before reading the label — on a slow
-  // CI worker the catalog is still resolving when the locator first appears,
-  // and we briefly see `buttons.demoOn` instead of the translated text.
-  await expect(demoToggle).toContainText(/Demo on|Demo off|Демо/, {
+  const composer = page.locator('[data-testid="chat-composer-input"]');
+  await expect(demoToggle).toHaveAttribute('aria-pressed', 'false', {
     timeout: 10_000,
   });
-  await demoToggle.click();
-  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
-    timeout: 5_000,
+  await expect(composer).toBeEnabled({
+    timeout: 10_000,
   });
 }
 
@@ -46,6 +43,27 @@ async function sendPrompt(page, text) {
 }
 
 async function mockAppleSearch(page) {
+  await page.route('**://archive.org/advancedsearch.php**', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ response: { docs: [] } }),
+    });
+  });
+  await page.route('**://*.wiktionary.org/w/api.php**', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(['Apple', [], [], []]),
+    });
+  });
+  await page.route('**://*.wikinews.org/w/api.php**', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(['Apple', [], [], []]),
+    });
+  });
   await page.route('**://api.duckduckgo.com/**', async (route) => {
     await route.fulfill({
       status: 200,

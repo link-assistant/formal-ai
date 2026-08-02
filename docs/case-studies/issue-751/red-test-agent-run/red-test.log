@@ -1,0 +1,55 @@
+ Downloading crates ...
+  Downloaded same-file v1.0.6
+  Downloaded walkdir v2.5.0
+   Compiling formal-ai v0.298.0 (/tmp/gh-issue-solver-1784394250823)
+   Compiling same-file v1.0.6
+   Compiling walkdir v2.5.0
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 08s
+     Running tests/integration/mod.rs (target/debug/deps/integration-e222f131d1059db3)
+
+running 4 tests
+
+thread 'issue_751_token_usage::token_count_is_one_per_unicode_scalar_for_every_language' (12701) panicked at tests/integration/issue_751_token_usage.rs:19:9:
+assertion `left == right` failed: hi
+  left: 1
+ right: 2
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test issue_751_token_usage::token_count_is_one_per_unicode_scalar_for_every_language ... FAILED
+
+thread 'issue_751_token_usage::all_protocols_count_unicode_scalars_and_all_visible_input_messages' (12698) panicked at tests/integration/issue_751_token_usage.rs:157:5:
+assertion `left == right` failed
+  left: Number(1)
+ right: 9
+test issue_751_token_usage::all_protocols_count_unicode_scalars_and_all_visible_input_messages ... FAILED
+
+thread 'issue_751_token_usage::streaming_client_surfaces_preserve_exact_usage' (12700) panicked at tests/integration/issue_751_token_usage.rs:92:5:
+data: {"choices":[{"delta":{"role":"assistant"},"finish_reason":null,"index":0}],"created":0,"id":"chatcmpl_8c0ef3aed579cbff","model":"formal-ai","object":"chat.completion.chunk"}
+
+data: {"choices":[{"delta":{"reasoning":"You said hello, so I greeted you back.\nRead the request: \"Привет\".\nDetect the request language: Russian.\nFormalize the request as a greeting task.\nRoute to the greeting handler.\nVerify the result against the rules.\nCompose the answer: \"Здравствуйте! Чем могу помочь?\".","reasoning_content":"You said hello, so I greeted you back.\nRead the request: \"Привет\".\nDetect the request language: Russian.\nFormalize the request as a greeting task.\nRoute to the greeting handler.\nVerify the result against the rules.\nCompose the answer: \"Здравствуйте! Чем могу помочь?\"."},"finish_reason":null,"index":0}],"created":0,"id":"chatcmpl_8c0ef3aed579cbff","model":"formal-ai","object":"chat.completion.chunk"}
+
+data: {"choices":[{"delta":{"content":"Здравствуйте! Чем могу помочь?"},"finish_reason":null,"index":0}],"created":0,"id":"chatcmpl_8c0ef3aed579cbff","model":"formal-ai","object":"chat.completion.chunk"}
+
+data: {"choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":0,"id":"chatcmpl_8c0ef3aed579cbff","model":"formal-ai","object":"chat.completion.chunk"}
+
+data: {"choices":[],"created":0,"id":"chatcmpl_8c0ef3aed579cbff","model":"formal-ai","object":"chat.completion.chunk","usage":{"completion_tokens":4,"prompt_tokens":1,"total_tokens":5}}
+
+data: [DONE]
+
+
+test issue_751_token_usage::streaming_client_surfaces_preserve_exact_usage ... FAILED
+
+thread 'issue_751_token_usage::responses_use_real_timestamps_and_omit_fake_cache_and_cost_metadata' (12699) panicked at tests/integration/issue_751_token_usage.rs:130:5:
+assertion failed: chat["created"].as_u64().is_some_and(|timestamp| timestamp > 0)
+test issue_751_token_usage::responses_use_real_timestamps_and_omit_fake_cache_and_cost_metadata ... FAILED
+
+failures:
+
+failures:
+    issue_751_token_usage::all_protocols_count_unicode_scalars_and_all_visible_input_messages
+    issue_751_token_usage::responses_use_real_timestamps_and_omit_fake_cache_and_cost_metadata
+    issue_751_token_usage::streaming_client_surfaces_preserve_exact_usage
+    issue_751_token_usage::token_count_is_one_per_unicode_scalar_for_every_language
+
+test result: FAILED. 0 passed; 4 failed; 0 ignored; 0 measured; 132 filtered out; finished in 1.12s
+
+error: test failed, to rerun pass `--test integration`

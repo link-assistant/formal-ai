@@ -4,10 +4,23 @@ import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
 const {
+  apiCandidates,
   createLocalServerManager,
   scrubbedEnvironment,
   serverModeRequested,
 } = require("../lib/local-server.cjs");
+
+test("passthrough server candidates opt into agent protocol handling", () => {
+  const candidates = apiCandidates(19090, {
+    agentMode: true,
+    repoRoot: "/workspace",
+    resourcesPath: "",
+    existsSync: () => false,
+    env: { FORMAL_AI_DESKTOP_BINARY: "/bin/formal-ai" },
+  });
+
+  assert.ok(candidates[0].args.includes("--agent-mode"));
+});
 
 function makeManager(options = {}) {
   const starts = [];

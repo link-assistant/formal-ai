@@ -1,0 +1,105 @@
+{
+  "entities": {
+    "Q506": {
+      "type": "item",
+      "id": "Q506",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "flower"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "цветок"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पुष्प"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "花"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "sexual reproductive structure found on flowering plants"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "орган семенного размножения цветковых растений"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पुष्पीय पौधों पर पाई जाने वाली लैंगिक प्रजनन संरचना"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "被子植物的生殖器官"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "bloom"
+          },
+          {
+            "language": "en",
+            "value": "flowers"
+          },
+          {
+            "language": "en",
+            "value": "blossom"
+          },
+          {
+            "language": "en",
+            "value": "solitary infloresence"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "цветы"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "फूल का खिलना"
+          },
+          {
+            "language": "hi",
+            "value": "फूल"
+          },
+          {
+            "language": "hi",
+            "value": "सुमन"
+          },
+          {
+            "language": "hi",
+            "value": "कुसुम"
+          },
+          {
+            "language": "hi",
+            "value": "मंजरी"
+          },
+          {
+            "language": "hi",
+            "value": "मन्जरी"
+          },
+          {
+            "language": "hi",
+            "value": "प्रसून"
+          },
+          {
+            "language": "hi",
+            "value": "फुल्ल"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,15 @@
+Q287
+  aliases
+    en (wooden)
+    ru ("дерево (материал)")
+  descriptions
+    en "fibrous material from trees or other plants"
+    ru "внутренняя часть дерева"
+  id Q287
+  labels
+    en wood
+    hi "लकड़ी"
+    ru "древесина"
+    zh "木材"
+  type item
+success 1

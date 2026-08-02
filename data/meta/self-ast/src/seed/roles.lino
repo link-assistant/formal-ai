@@ -1,0 +1,16 @@
+self_ast_census
+  target src/seed/roles.rs
+  language rust
+  fidelity signature
+  byte_len 994
+  line_count 28
+  content_id source_module_f1f5a114744b0a27
+  symbol_count 7
+  symbols
+    module computer_use 14 14
+    module decomposition 15 15
+    module intent 16 16
+    module language 17 17
+    module program 18 18
+    module reasoning 19 19
+    module tooling 20 20

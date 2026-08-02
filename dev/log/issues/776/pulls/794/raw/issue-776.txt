@@ -1,0 +1,11 @@
+author:	konard
+association:	member
+edited:	false
+status:	none
+--
+We need widen support for ways to request the translation. We need to make sure we use generalization, meaning we translate source language to meta language and from meta language to target language. Meaning we should use actual reasoning though internet's knowledge to do the translation right.
+
+
+
+
+--

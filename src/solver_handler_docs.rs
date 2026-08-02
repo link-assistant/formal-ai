@@ -176,7 +176,7 @@ fn render_pandas_dataframe_join_answer(language: Language) -> String {
              Source: [pandas.DataFrame.join]({PANDAS_DATAFRAME_JOIN_DOCS_URL}) \
              (official pandas docs)."
         ),
-        Language::English | Language::Unknown => format!(
+        _ => format!(
             "pandas `DataFrame.join` joins columns from the `other` DataFrame or \
              named Series into the caller and returns a new DataFrame.\n\n\
              Scoped to this method: by default, it performs a left join using the \

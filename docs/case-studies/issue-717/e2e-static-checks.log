@@ -1,0 +1,30 @@
+
+> formal-ai-e2e@1.0.0 check:i18n
+> node scripts/check-i18n-catalog.mjs
+
+i18n catalog check passed for 4 locales and 409 keys
+
+> formal-ai-e2e@1.0.0 check:language-parity
+> node scripts/check-language-change-parity.mjs
+
+Language change parity OK against origin/main for required locales en, ru, hi, zh.
+
+> formal-ai-e2e@1.0.0 check:language-test-coverage
+> node scripts/check-language-test-coverage.mjs
+
+Language test coverage OK: no language-facing changes against origin/main.
+
+> formal-ai-e2e@1.0.0 check:intent-coverage
+> node scripts/check-multilingual-intent-coverage.mjs
+
+Multilingual intent coverage OK for en, ru, hi, zh (16 localized response intents, 12 localized concept records, 5 concept context records, 19 localized tools, 16 feature capabilities, 14 translation meanings).
+
+> formal-ai-e2e@1.0.0 check:web-tdz
+> node scripts/check-web-tdz.mjs
+
+check-web-tdz: OK — scanned 242 component(s) in src/web/app.js, no hook dependency references a useCallback/useMemo const declared later.
+
+> formal-ai-e2e@1.0.0 check:web-hardcoded-ui
+> node scripts/check-web-hardcoded-ui-strings.mjs
+
+check-web-hardcoded-ui-strings: OK — no hardcoded user-facing strings in h() children of the front-end (src/web/app/main.jsx, allowlist: 1 legacy labels).

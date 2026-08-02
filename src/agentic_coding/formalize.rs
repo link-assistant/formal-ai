@@ -8,7 +8,7 @@
 //! emits a knowledge base in which **all nine protocol primitives are links**:
 //! concept, entity, predicate, assertion, procedure, context, temporal, modal,
 //! annotation. No record is a bespoke Rust struct in the output — every record is
-//! `id\n  key "value"` Links Notation produced by [`format_lino_record`].
+//! `id\n  key "value"` Links Notation produced by `format_lino_record`.
 //!
 //! Extraction is deliberately shallow and honest (open-domain information
 //! extraction needs neural inference, which is a documented NON-GOAL):
@@ -16,7 +16,7 @@
 //! * **Annotations** are produced for *every* sentence of *any* input, with real
 //!   character offsets — fully general, never guessed.
 //! * **Assertions** use a closed-class lexicon stored as data (see
-//!   [`super::lexicon`]) — recognised subject/predicate/object triples become
+//!   `super::lexicon`) — recognised subject/predicate/object triples become
 //!   structured assertion links; unrecognised sentences become natural-language
 //!   assertion links that still carry the raw span. The recogniser does not
 //!   hallucinate relations it cannot ground.

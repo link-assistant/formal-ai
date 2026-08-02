@@ -1,0 +1,67 @@
+diff --git a/src/agentic_coding/planner.rs b/src/agentic_coding/planner.rs
+index f2c3bbb0..8836de86 100644
+--- a/src/agentic_coding/planner.rs
++++ b/src/agentic_coding/planner.rs
+@@ -232,0 +233,8 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
++    if let Some(query) = shell_command::code_search_query_for_task(&task) {
++        if let Some(tool) = code_search_tool_for(tool_names) {
++            return Some(plan_one(
++                tool,
++                json!({ "query": query, "pattern": query }).to_string(),
++            ));
++        }
++    }
+@@ -853,0 +862,8 @@ pub(super) fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Op
++/// Prefer a client's dedicated source-search capability over shell lowering.
++fn code_search_tool_for<'a>(tool_names: &[&'a str]) -> Option<&'a str> {
++    tool_names.iter().copied().find(|name| {
++        let lower = name.to_ascii_lowercase();
++        lower.contains("grep") || (lower.contains("code") && lower.contains("search"))
++    })
++}
++
+diff --git a/src/agentic_coding/shell_command.rs b/src/agentic_coding/shell_command.rs
+index 4b6ee4e7..a2e9678b 100644
+--- a/src/agentic_coding/shell_command.rs
++++ b/src/agentic_coding/shell_command.rs
+@@ -39,0 +40,18 @@ pub(super) fn shell_command_for_task(prompt: &str) -> Option<String> {
++/// Recover the literal subject of a seed-backed source-code search request.
++///
++/// A client may advertise a dedicated grep/code-search tool instead of a shell.
++/// The planner uses this semantic query before falling back to the `rg` lowering
++/// returned by [`shell_command_for_task`].
++pub(super) fn code_search_query_for_task(prompt: &str) -> Option<String> {
++    let lower = prompt.to_lowercase();
++    let vocab = seed::shell_intent_vocabulary();
++    let cue = vocab
++        .intents
++        .iter()
++        .filter(|intent| intent.command == "rg")
++        .flat_map(|intent| intent.cues.iter())
++        .filter(|cue| lower.contains(cue.as_str()))
++        .max_by_key(|cue| cue.chars().count())?;
++    remainder_argument(prompt, &lower, cue)
++}
++
+diff --git a/tests/issue_745.rs b/tests/issue_745.rs
+index c2a43f4f..ee80cfc8 100644
+--- a/tests/issue_745.rs
++++ b/tests/issue_745.rs
+@@ -7 +6,0 @@ fn call(prompt: &str) -> (String, serde_json::Value) {
+-    let messages = vec![ChatMessage::user(prompt)];
+@@ -15 +14,6 @@ fn call(prompt: &str) -> (String, serde_json::Value) {
+-    match plan_chat_step(&messages, &tools) {
++    call_with_tools(prompt, &tools)
++}
++
++fn call_with_tools(prompt: &str, tools: &[&str]) -> (String, serde_json::Value) {
++    let messages = vec![ChatMessage::user(prompt)];
++    match plan_chat_step(&messages, tools) {
+@@ -27,0 +32,7 @@ fn call(prompt: &str) -> (String, serde_json::Value) {
++#[test]
++fn code_search_prefers_an_advertised_grep_capability_over_shell_lowering() {
++    let (tool, arguments) = call_with_tools("search the code for RouteIntent", &["grep_search"]);
++    assert_eq!(tool, "grep_search");
++    assert_eq!(arguments["pattern"], "RouteIntent");
++}
++

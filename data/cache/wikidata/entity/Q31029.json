@@ -1,0 +1,71 @@
+{
+  "entities": {
+    "Q31029": {
+      "type": "item",
+      "id": "Q31029",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "rope"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "верёвка"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "रस्सी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "繩"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "long, flexible, and strong object, usually round in shape, made of threads, strands, or filaments twisted or braided together"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "витое или кручёное из синтетических, стальных или смешанных прядей, похожее на верёвку изделие"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "प्लाई, सूत या धागों का रैखिक संयोजन जो आपस में मुड़े हुए या गुथे हुए होते हैं"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "канат"
+          },
+          {
+            "language": "ru",
+            "value": "трос"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "繩索"
+          },
+          {
+            "language": "zh",
+            "value": "绳索"
+          },
+          {
+            "language": "zh",
+            "value": "绳子"
+          },
+          {
+            "language": "zh",
+            "value": "奪魂索"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

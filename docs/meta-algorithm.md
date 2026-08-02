@@ -11,6 +11,26 @@ a "how to X" request and its elaboration follow-up ("can you give me specific
 instructions?"). Its recipe lives at
 [`data/meta/procedural-howto-recipe.lino`](../data/meta/procedural-howto-recipe.lino).
 
+Nine recipes are grounded today. The **recursive core** (issue #559) is the
+general algorithm every prompt walks; the other eight encode a topic handler, a
+self-directed loop, or a codebase-hygiene procedure on top of it:
+
+| Recipe | Issue | What it reproduces |
+| --- | --- | --- |
+| [`recursive-core-recipe.lino`](../data/meta/recursive-core-recipe.lino) | #559 | The general meta algorithm itself — 12 steps, 25 pinned functions |
+| [`procedural-howto-recipe.lino`](../data/meta/procedural-howto-recipe.lino) | #444 | A chat intent handler for "how to X" |
+| [`agentic-coding-recipe.lino`](../data/meta/agentic-coding-recipe.lino) | #468 | The deterministic agentic-CLI loop |
+| [`response-language-followup-recipe.lino`](../data/meta/response-language-followup-recipe.lino) | #556 | Re-answering the previous turn in a new language |
+| [`document-verification-recipe.lino`](../data/meta/document-verification-recipe.lino) | #535 | Verifying an attached document's claims |
+| [`market-price-verification-recipe.lino`](../data/meta/market-price-verification-recipe.lino) | #493 | Fact-checking numeric market-price claims |
+| [`dreaming-recipe.lino`](../data/meta/dreaming-recipe.lino) | #540 | Idle memory maintenance and self-generalization |
+| [`budget-search-recipe.lino`](../data/meta/budget-search-recipe.lino) | #662 | Budget-driven search recognition and gated skill proposals |
+| [`links-network-terminology-recipe.lino`](../data/meta/links-network-terminology-recipe.lino) | #664 | Keeping every public surface a links network, not a graph |
+
+The other `data/meta/*.lino` files are catalogues, lexicons, and ledgers
+(cue sets, route/method aliases, repair cases, the self-AST census, …) that the
+recipes and handlers read — they are data, not recipes.
+
 ## Why a recipe, not just code
 
 The recipe names every part the handler is made of — seed roles, handler
@@ -63,10 +83,10 @@ instantiate every step in order:
 | Recipe record | Count | Grounded against |
 | --- | --- | --- |
 | `meta_step` | 8 | ordering 1..8 is contiguous |
-| `meta_role` | 9 | `pub const ROLE_* = "<role>"` in `src/seed/roles/intent.rs` **and** `role <role>` in `data/seed/meanings-how.lino` |
-| `meta_function` | 7 | `fn <name>` in `src/solver_handler_how.rs` |
-| `meta_stage` | 5 | each stage literal emitted in the handler; ordering 1..5 contiguous |
-| `meta_parity` | 3 | `fn <rust>` in Rust **and** `function <js>` in the worker |
+| `meta_role` | 11 | `pub const ROLE_* = "<role>"` in `src/seed/roles/intent.rs` **and** `role <role>` in `data/seed/meanings-how.lino` |
+| `meta_function` | 8 | `fn <name>` in `src/solver_handler_how.rs` |
+| `meta_stage` | 6 | each stage literal emitted in the handler; ordering 1..6 contiguous |
+| `meta_parity` | 4 | `fn <rust>` in Rust **and** `function <js>` in the worker |
 | `meta_external_service` | 1 | `source` + `settings_key` in `data/seed/sources-registry.lino` |
 | `meta_benchmark` | 1 | suite in fixture **and** ratchet test in `procedural_howto_benchmarks.rs` |
 
@@ -90,6 +110,72 @@ cargo test --test unit specification::meta_algorithm -- --nocapture
 Because the recipe is checked against the source, the handler and its recipe can
 never silently diverge — which is exactly what lets us treat the source as a
 reproducible artifact of the meta-algorithm.
+
+## The recursive core meta-algorithm (issue #559)
+
+The recipes on this page each reproduce *one* handler or loop. The **recursive
+core** is the algorithm they all run inside: the ordered procedure that turns
+any message into a solved, link-native knowledge base. It is the one recipe
+that describes the meta algorithm itself, which is why R335 requires it to be
+grounded data rather than prose. It lives at
+[`data/meta/recursive-core-recipe.lino`](../data/meta/recursive-core-recipe.lino)
+and is grounded by
+[`tests/unit/specification/recursive_core_recipe.rs`](../tests/unit/specification/recursive_core_recipe.rs).
+
+Two properties make it different from the topic recipes. First, it is
+**executable as data**: `src/recipe_interpreter.rs` parses the `records`
+annotation on every trace-recorded step into an ordered program and runs the
+recorder primitives in the order the data declares, and the proof obligation is
+parity — executing the recipe must reproduce, event for event, the log that
+`meta_core::record_meta_core` produces for the same input across every mode
+combination (R343). Second, it is **self-improving in proposal-only form**:
+`src/meta_self_improvement.rs` reads this recipe against the live pipeline,
+detects drift between the algorithm-as-data and the algorithm-as-code, and
+proposes the additions and stale-citation removals that reconcile them —
+gated `off` by default, never writing the recipe back, so adoption stays a
+human review step (R340).
+
+### The twelve steps
+
+Each step is one `meta_step` record in the recipe:
+
+1. **Formalize the impulse to one meaning record.**
+2. **Make the meaning a first-class problem frame** that enumerates every need.
+3. **Decompose the frame as a recursive, bounded work-unit tree** (downward
+   pass), stopping at `max_decomposition_depth`.
+4. **Account for every need in a satisfaction ledger**, so a need with no
+   method is recorded as blocked rather than silently dropped.
+5. **Catalogue the resolving methods as link data** — the method registry
+   derived from the live dispatch code.
+6. **Attach white-box recursive reasoning to every step**, in both directions.
+7. **Construct the answer back up the tree** (upward pass), composing each
+   parent from its solved children.
+8. **Resolve each atomic leaf through registry-backed method dispatch** — the
+   registry is the sole authority (R344).
+9. **Record every step as evidence in the append-only log.**
+10. **Record the method the registry selects for each leaf**, or mark it
+    unresolved.
+11. **Project the answer from the event log.**
+12. **Accumulate reusable skills and a curriculum from the outcome** —
+    proposal-only, nothing auto-promoted (R342).
+
+### What the recipe records
+
+| Recipe record | Count | Grounded against |
+| --- | --- | --- |
+| `meta_step` | 12 | ordering 1..12 is contiguous; each trace-recorded step names the recorder primitive it drives |
+| `meta_function` | 25 | `fn <name>` in the named source file (`src/meta_frame.rs`, `src/method_registry.rs`, `src/meta_reasoning.rs`, `src/meta_construction.rs`, `src/solution_evidence.rs`, `src/selection.rs`, `src/skill_ledger.rs`, `src/recipe_interpreter.rs`, …) |
+
+### Running it
+
+```sh
+# Verify the recursive-core recipe still matches the live source:
+cargo test --test unit specification::recursive_core_recipe -- --nocapture
+```
+
+Because this recipe is checked against the source too — and can be executed to
+reproduce the pipeline's own event log — the meta core and its recipe cannot
+silently diverge.
 
 ## The agentic-coding meta-algorithm (issue #468)
 
@@ -423,3 +509,316 @@ Because this recipe is checked against the source too, the market-price fact
 check and its recipe can never silently diverge — catching false numeric claims
 is itself a reproducible, data-driven artifact of the meta-algorithm that scales
 to the whole class of assets, periods, and languages by editing seed data alone.
+
+## The dreaming meta-algorithm (issue #540)
+
+The same grounded-recipe discipline records a sixth meta-algorithm, this time
+turned **inward**: the low-priority **dreaming** planner that maintains memory
+and lets Formal AI *change its own meta-algorithm* from stored experience. Issue
+#540 asked that, while idle and never blocking the UI, the assistant restructure
+deduplication by recalculated frequency of use, keep roughly a 20% free-space
+reserve (issue #494) by forgetting only recomputable/refetchable data, and —
+crucially — *learn more about the topics the user interacts with*, remember the
+requirements the user has stated so he never has to repeat himself, and
+**generalize** them so "when we solve similar tasks to previous tasks … new
+user's requirements are baked in", after which "if we don't have enough space we
+can forget specifics about test runs, but our general meta algorithm must keep
+changes that allow it to solve all other tasks." Its recipe lives at
+[`data/meta/dreaming-recipe.lino`](../data/meta/dreaming-recipe.lino) and is
+grounded by
+[`tests/unit/specification/dreaming_meta_algorithm.rs`](../tests/unit/specification/dreaming_meta_algorithm.rs).
+
+The planner starts as one pure function, `plan_memory_dreaming`, in
+[`src/dreaming.rs`](../src/dreaming.rs): it only reads memory and proposes work,
+so planning is safe in the background. Learning follows memory links:
+multilingual cue data lifts requirements, candidate tasks are replayed against
+proposed amendments, and recurring structures are mined directly from repeated
+task records. Only exact normalized replay grants coverage. Applied amendments
+are stored as structured `meta_algorithm_amendment` events and read by
+`src/dreaming_application.rs` on later protocol requests, which makes learned
+rules change future answers. Physical removal additionally requires persisted
+consent and real filesystem pressure measured by `src/storage_policy.rs`.
+
+### The thirteen steps
+
+Each step is one `meta_step` record in the recipe; instantiate them in order to
+add any *dream about stored experience* behaviour:
+
+1. **Classify every event by durability** into one `DreamingDurability`, so
+   recomputability is known and raw experience and learning are protected.
+2. **Recalculate how often each event is actually used**, driving deduplication
+   and eviction by recalculated frequency of use.
+3. **Restructure recomputable duplicates** around the most-reused copy.
+4. **Recalculate which topics the user interacts with most** into ranked
+   `TopicFrequency` records.
+5. **Recover durable requirements from multilingual cue data** into
+   `LearnedRequirement` records.
+6. **Propose a meta-algorithm amendment** for each learned requirement.
+7. **Derive and replay candidate tasks**, granting coverage only on a matching
+   recorded output.
+8. **Mine recurring task structures** independently of requirement cue words.
+9. **Apply retained amendments to later similar tasks** through both
+   OpenAI-compatible protocol surfaces.
+10. **Measure real storage and actual incoming bytes** on the memory filesystem.
+11. **Reclaim toward the 20% reserve** only from recomputable links.
+12. **Forget replay-verified specifics** with
+    `DreamingActionKind::ForgetCoveredSpecific`, retaining amendments and
+    patterns.
+13. **Run while truly idle**, yielding to foreground work and requiring a
+    persisted user choice before automatic cleanup.
+
+### What the recipe records
+
+| Recipe record | Grounded against |
+| --- | --- |
+| `meta_step` | ordering is contiguous from 1; each has a `detail` and an existing `source_file` |
+| `meta_function` | `fn <name>` in the named source file |
+| `meta_constant` | the token present in the named source file, with a stated purpose |
+| `meta_test` | the pinning test file exists and describes what it pins |
+
+### Running it
+
+```sh
+# Verify the dreaming recipe still matches the live source:
+cargo test --test unit specification::dreaming_meta_algorithm -- --nocapture
+```
+
+Because this recipe is checked against the source too, the dreaming planner and
+its recipe cannot silently diverge: replay, application, storage, consent, and
+runtime stages are all pinned to the live code.
+
+## The links-network terminology meta-algorithm (issue #664)
+
+The same grounded-recipe discipline records a seventh meta-algorithm, this one
+turned on the system's **own vocabulary**: the deterministic **associative
+terminology cleanup** that keeps the product's public surface a *links network*
+rather than a "graph". The vision is emphatic that "the associative network is
+the AI" ([`VISION.md`](../VISION.md)), so the system's own naming must match — a
+public route called `/v1/graph` or a module called `source_graph` contradicts
+the thing the project *is*. Issue #664 (E45, under the #651 requirement audit)
+found the architecture already complies but the naming did not. Its recipe lives
+at [`data/meta/links-network-terminology-recipe.lino`](../data/meta/links-network-terminology-recipe.lino)
+and is grounded by
+[`tests/unit/specification/links_network_terminology_meta_algorithm.rs`](../tests/unit/specification/links_network_terminology_meta_algorithm.rs).
+
+The key move is that the cleanup is **structural, not word-blocking**: only
+versioned public API route prefixes (`/v1/`, `/api/formal-ai/v1/`) and Rust
+`mod` declarations / `src/**/*.rs` file names are terminology-governed. Internal
+graph-theory identifiers (`substitution_graph`, `GraphNode`, `graphql`,
+`ideographic`) and prose are never touched, because a graph is the correct word
+for an internal graph-theory concept — it is only the *product's public links
+network* that must not be mislabelled. Backward compatibility is preserved
+without endorsing the old vocabulary: `/v1/graph` keeps serving a byte-identical
+payload but advertises its deprecation over the wire. A repository-hygiene lint
+then makes the cleanup permanent by failing the build on any *new* graph-named
+public route or module, so the terminology can never silently regress.
+
+### The eight steps
+
+Each step is one `meta_step` record in the recipe; instantiate them in order to
+keep any public surface a links network:
+
+1. **Add the canonical `network` route** — `handle_network_request` in
+   `src/network_endpoint.rs` serves the links-network projection under
+   `/v1/network`, kept in a dedicated links-network module.
+2. **Keep the old route as a deprecated alias** — `into_deprecated_alias` flags
+   `/v1/graph` with a `deprecation` header and a successor `link` to the
+   canonical route, byte-identical payload otherwise.
+3. **Rename `self_source_graph` → `self_source_links`** in `src/`, updating the
+   `pub mod`/re-exports in `src/lib.rs`.
+4. **Rename `source_graph` → `source_links`** in `src/agentic_coding/`, updating
+   `src/agentic_coding/mod.rs`.
+5. **Sweep UI strings to "links network view"** across web, desktop, and VS Code,
+   preserving the seeded user-facing `graph` concept (issue #161) as a synonym.
+6. **Add the hygiene lint** — `scripts/check-associative-terminology.rs` blocks
+   *new* graph-named public routes and modules, allowlisting the deprecated
+   alias, the Wikidata `knowledge_graph` engine, and external citation hosts.
+7. **Update the docs** — `ARCHITECTURE.md`/`README.md`/`REQUIREMENTS.md` speak
+   links-network terminology; internal graph-theory prose is preserved.
+8. **Wire the lint into CI** — the Lint job in `.github/workflows/release.yml`
+   runs the scan and the ci-cd unit suite registers its embedded fixture tests.
+
+### What the recipe records
+
+| Recipe record | Grounded against |
+| --- | --- |
+| `meta_step` | ordering 1..8 is contiguous; each `seed_file` exists |
+| `meta_function` | `fn <name>` in the named source file (endpoint, alias, lint, projection) |
+| `meta_rename` | the `to_file` exists, the `from_file` is gone, and the new `mod` is declared |
+| `meta_allowlist` | the exempt token (`/v1/graph`, `knowledge_graph`, `codecov.io`) is present in the lint |
+| `meta_ci` | the workflow runs the lint and the ci-cd suite registers its tests |
+| `meta_test` | the alias integration, lint, and links-network spec files exist and describe what they pin |
+
+### Running it
+
+```sh
+# Verify the links-network terminology recipe still matches the live source:
+cargo test --test unit specification::links_network_terminology_meta_algorithm -- --nocapture
+```
+
+Because this recipe is checked against the source too, the associative
+terminology cleanup and its lint can never silently diverge — keeping the
+product a links network is itself a reproducible artifact of the meta-algorithm.
+
+## The promotion meta-algorithm (issue #656)
+
+Every self-improvement loop above stops at *proposing* — the meta self-improvement
+loop proposes recipe deltas, white-box learning proposes seed rules, dreaming
+proposes amendments — and none of them writes `data/seed/`. Issue #656 (E37) adds
+the missing, deterministic step that closes the loop safely: a **promotion**
+protocol that materializes a proposal into seed data **only** after it clears its
+benchmark ratchets, and even then only as a `.lino` seed edit written onto a
+branch — never a direct push. Draft pull requests and human review stay the outer
+gate. This section is grounded by
+[`src/promotion.rs`](../src/promotion.rs) and pinned by
+[`tests/unit/issue_656_promotion.rs`](../tests/unit/issue_656_promotion.rs) and
+[`tests/integration/issue_656_improve.rs`](../tests/integration/issue_656_improve.rs).
+
+The protocol runs through `formal-ai improve --promote`:
+
+1. **Collect actual open proposals** — from the required `--proposals`
+   `promotion_proposals` Links Notation document. The document declares source,
+   summary, and desired seed edit; it cannot supply commands, floors, or observed
+   counts. Adoptable learned rules bridge into candidates through
+   `promotions_from_learning_run`. Demonstration data is confined to tests and
+   examples, never the CLI default.
+2. **Replay one canonical gate batch** — `src/promotion/gates.rs` executes the
+   coding-modification suite (issue #362), industry suite (issue #304), and unit
+   specifications from an internal allow-list. Manifest floors and pass-rate
+   policy are authoritative. Exit failure blocks every proposal; successful
+   output without parseable pass/fail evidence fails closed. A digest binds each
+   event to the command, status, stdout, and stderr.
+3. **Decide** — a proposal that clears every ratchet is `Promoted`; any failing
+   ratchet makes it `Rejected`.
+4. **Record the decision as an append-only event chain** — `promotion_proposal`,
+   one `promotion_evidence` per ratchet, `promotion_decision`, then either
+   `promotion_applied` (the materialized seed edit) or `promotion_rejection`.
+   These custom-kind events round-trip through the bundle export/import path.
+5. **Materialize through Formal AI's Agent path** — `--apply` requires
+   `--confirm`, a clean Git worktree, and creates `promotion/<run-id>` locally.
+   Accepted edits targeting the same file are coalesced. Formal AI executes the
+   literal task through `run_agentic_task`; only an Agent-authored `write_file`
+   call whose path and content match byte-for-byte is copied into `--seed-root`.
+   The deterministic Agent session id is recorded. Rejected proposals are
+   **never** applied; their
+   `promotion_rejection` record keeps the un-applied change together with the
+   failing benchmark evidence, mirroring the R425 `dreaming_candidate_failure`
+   durability pattern.
+6. **Stop on the local review branch** — the run yields a `PromotionBranchPlan`
+   for committing and opening a draft pull request, but never pushes. After an
+   authorized push, GitHub required checks run against the actual branch SHA and
+   human review remains the final outer gate; local replay does not claim to
+   predict that future CI result.
+
+### What the protocol records
+
+| Event kind | What it captures |
+| --- | --- |
+| `promotion_proposal` | the proposal link and which seed file it edits |
+| `promotion_evidence` | which ratchet ran, at what floor, cleared or blocked |
+| `promotion_decision` | `promoted` or `rejected`, with all evidence links |
+| `promotion_applied` | the materialized seed edit (promoted proposals only) |
+| `promotion_rejection` | the change kept but **not** applied (rejected only) |
+
+### Running it
+
+```sh
+# Dry run: replay the gates and print the plan without touching any files.
+formal-ai improve --promote --proposals ./open-promotions.lino
+
+# Materialize the accepted seed edits into a workspace (never a push):
+formal-ai improve --promote --proposals ./open-promotions.lino \
+  --apply --confirm --seed-root ./clean-git-worktree
+
+# Verify the promotion protocol end to end:
+cargo test promotion_protocol
+```
+
+Because proposal input cannot choose its runner, floor, rate, or result, a
+proposal cannot promote itself by fabricating evidence. The seed edit is written
+only when fresh canonical output clears every policy and the Formal AI Agent
+authors the exact requested bytes on a local review branch.
+
+## The budget-driven search meta-algorithm (issue #662)
+
+Every handler above reaches an answer by *recognising* a request and *reusing* a
+catalogued method. Issue #662 (journey F4) covers the case where neither applies:
+`GOALS.md` asks that, "when no reusable part exists, combine reasoning, random
+search, and evolutionary search according to the available compute budget instead
+of giving up". This is the **budget-driven search** synthesis stage. Deterministic
+reuse and rule reasoning run first in step 7 of the loop; only when they produce no
+candidate does [`src/solver_search.rs`](../src/solver_search.rs)`::try_budget_search`
+activate. It recognises an arithmetic-reachability problem ("combine the numbers …
+to reach TARGET"), derives its operator toolbox from the seed, and evolves candidate
+compositions against the generated equality tests as the fitness function. This
+section is grounded by
+[`data/meta/budget-search-recipe.lino`](../data/meta/budget-search-recipe.lino) and
+pinned by
+[`tests/unit/specification/budget_search_meta_algorithm.rs`](../tests/unit/specification/budget_search_meta_algorithm.rs)
+and [`tests/unit/budget_search.rs`](../tests/unit/budget_search.rs).
+
+### The nine steps
+
+1. **Recognise by role** — `parse_search_problem` gates on the seed roles
+   `reachability_operand_framing` and `reachability_search_cue`, read from
+   [`data/seed/meanings-search.lino`](../data/seed/meanings-search.lino) by meaning,
+   never a hardcoded per-language phrase table (issue #386). A plain calculation
+   never reaches this path.
+2. **Anchor the target** — `target_marker_positions` reads the
+   `reachability_target_marker` surfaces from the seed and takes the integer nearest
+   a marker as the target; the rest are operands. Both `equals 26` and `26 के बराबर`
+   orders work without naming a keyword in Rust.
+3. **Derive the operators** — `parse_ops` builds the toolbox from
+   `seed::Lexicon::arithmetic_operators` (every `arithmetic_operator_word` meaning in
+   [`data/seed/meanings-calculator.lino`](../data/seed/meanings-calculator.lino)), so
+   division and modulo joined the set the moment the seed listed them; no operator
+   table lives in code.
+4. **Generate the fitness tests** — `record_generated_tests` emits the equality
+   constraints (each number once, only the allowed operators, evaluates to the
+   target) that `score` optimises against.
+5. **Seed determinism** — `seed_from_prompt` hashes the impulse (FNV-1a) into the
+   `splitmix64` `Prng`, so the same prompt yields the same search path and answer
+   across runs and solver instances.
+6. **Random search** — half the compute budget samples random compositions, keeping
+   the best as the seed population.
+7. **Evolutionary search** — the remaining budget crosses over and mutates the kept
+   population (`breed`, `insert_population`) until a composition reaches fitness 0 or
+   the budget is exhausted.
+8. **Propose a gated skill** — on success, `record_skill_proposal` records the
+   composition as a `candidate_skill` in status `proposed`, `promotable false`
+   (proposal-only auto-learning, R21/R340). The `search:skill:promotable` count is
+   always `0`: nothing is auto-promoted without review (C3/R13).
+9. **Decline with evidence** — on exhaustion or budget `0`, the stage records
+   `search:exhausted` and returns, leaving its `search:` evidence attached so the
+   honest unknown-reasoning reply takes over and "why did you answer that?" still
+   explains the attempted search path.
+
+### What the recipe records
+
+| Record kind | What it captures |
+| --- | --- |
+| `meta_step` | the nine ordered steps and the source each was produced from |
+| `meta_role` | the three reachability trigger roles plus the operator-vocabulary role |
+| `meta_grounding` | the external Wikidata entity each meaning is grounded in (with its checked-in cache) |
+| `meta_function` | the recognise/derive/generate/search/propose functions and their source files |
+| `meta_integration` | the step-7 call site plus the `--compute-budget` flag and `FORMAL_AI_COMPUTE_BUDGET` variable |
+| `meta_test` | the unit suite and this grounding spec that pin the behaviour |
+
+### Running it
+
+```sh
+# Solve a reachability puzzle via budget-driven search (default budget 512):
+formal-ai chat "Using the numbers 3, 5, and 7 with the operations + and *, find an expression that equals 26."
+
+# Raise or lower the compute budget (0 disables the search):
+FORMAL_AI_COMPUTE_BUDGET=256 formal-ai chat "…"
+formal-ai chat --compute-budget 256 "…"
+
+# Verify the budget-search recipe still matches the live source:
+cargo test budget_search
+```
+
+Because recognition is by meaning and the operator toolbox is seed data, the whole
+reach-a-target class widens without touching Rust: add the trigger surfaces and the
+operator meanings to the seed, and the same recogniser, deterministic search,
+fitness scoring, and proposal-only auto-learning apply unchanged.

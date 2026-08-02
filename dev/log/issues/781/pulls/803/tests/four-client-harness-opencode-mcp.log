@@ -1,0 +1,21 @@
+== issue #781 opencode E2E OK: 1 search, 3 fetches, 6 model turns ==
+[0m
+Я использую issue781_websearch для «мне зарядку для ноутбука acer aspire 3 a325 45 на amazon in», чтобы проверить следующий шаг перед продолжением.
+[0m⚙ [0missue781_websearch {"query":"мне зарядку для ноутбука acer aspire 3 a325 45 на amazon in"}
+Я использую issue781_webfetch для «https://acer.example.test/a325-45/specifications», чтобы проверить следующий шаг перед продолжением.
+[0m⚙ [0missue781_webfetch {"url":"https://acer.example.test/a325-45/specifications"}
+Я использую issue781_webfetch для «https://parts.example.test/acer-a325-45/connector», чтобы проверить следующий шаг перед продолжением.
+[0m⚙ [0missue781_webfetch {"url":"https://parts.example.test/acer-a325-45/connector"}
+Я использую issue781_webfetch для «https://shop.example.test/compatible-a325-45-adapter», чтобы проверить следующий шаг перед продолжением.
+[0m⚙ [0missue781_webfetch {"url":"https://shop.example.test/compatible-a325-45-adapter"}
+Acer Aspire 3 A325-45 specifications: the supplied adapter is rated 24 W.
+
+Source: https://acer.example.test/a325-45/specifications
+
+Acer Aspire 3 A325-45 power input: 12 V DC, 2 A, center-positive 3.5 x 1.35 mm barrel connector.
+
+Source: https://parts.example.test/acer-a325-45/connector
+
+Candidate adapter listing: 12 V, 2 A, 24 W, center-positive 3.5 x 1.35 mm plug; compatible with Acer Aspire 3 A325-45.
+
+Source: https://shop.example.test/compatible-a325-45-adapter

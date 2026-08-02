@@ -1,0 +1,181 @@
+diff --git a/tests/integration/mod.rs b/tests/integration/mod.rs
+index d3e289b6..7d7899c1 100644
+--- a/tests/integration/mod.rs
++++ b/tests/integration/mod.rs
+@@ -21,6 +21,7 @@ mod issue_712_intent_routing;
+ mod issue_714_agentic_mode;
+ mod issue_716_agentic_execution;
+ mod issue_744_qwen_tool_schema;
++mod issue_746_hosted_tools;
+ mod logging_proxy;
+ mod memory_query;
+ mod multi_protocol_api;
+diff --git a/tests/integration/issue_746_hosted_tools.rs b/tests/integration/issue_746_hosted_tools.rs
+new file mode 100644
+index 00000000..cbe9964b
+--- /dev/null
++++ b/tests/integration/issue_746_hosted_tools.rs
+@@ -0,0 +1,166 @@
++//! Issue #746: hosted and protocol-native tool advertisements reach the shared router.
++
++use formal_ai::protocol_policy::tool_definition_name;
++use formal_ai::server::{enable_http_agent_mode_for_current_process, handle_api_request};
++use serde_json::{json, Value};
++
++fn post(path: &str, body: Value) -> Value {
++    enable_http_agent_mode_for_current_process();
++    let response = handle_api_request("POST", path, &body.to_string());
++    assert_eq!(response.status_code, 200, "{}", response.body);
++    serde_json::from_str(&response.body).expect("valid JSON response")
++}
++
++fn responses_call(response: &Value) -> &Value {
++    response["output"]
++        .as_array()
++        .expect("Responses output array")
++        .iter()
++        .find(|item| item["type"] == "function_call")
++        .unwrap_or_else(|| panic!("expected a real function_call, got {response}"))
++}
++
++fn gemini_call(response: &Value) -> &Value {
++    response["candidates"][0]["content"]["parts"]
++        .as_array()
++        .expect("Gemini parts array")
++        .iter()
++        .find_map(|part| part.get("functionCall"))
++        .unwrap_or_else(|| panic!("expected a real functionCall, got {response}"))
++}
++
++#[test]
++fn responses_type_only_web_search_routes_instead_of_wildcard_refusal() {
++    let response = post(
++        "/v1/responses",
++        json!({
++            "model": "formal-ai",
++            "input": "Search online for Elon Musk",
++            "tools": [{"type": "web_search"}],
++            "tool_choice": "auto"
++        }),
++    );
++    let call = responses_call(&response);
++    assert_eq!(call["name"], "web_search");
++    assert!(call["arguments"].as_str().is_some_and(|args| args.contains("elon musk")));
++}
++
++#[test]
++fn responses_preview_alias_maps_to_the_web_search_capability() {
++    let response = post(
++        "/v1/responses",
++        json!({
++            "model": "formal-ai",
++            "input": "Найди в интернете Rust ownership",
++            "tools": [{"type": "web_search_preview"}]
++        }),
++    );
++    assert_eq!(responses_call(&response)["name"], "web_search");
++}
++
++#[test]
++fn anthropic_server_web_search_type_routes_to_tool_use() {
++    let response = post(
++        "/api/anthropic/v1/messages",
++        json!({
++            "model": "formal-ai",
++            "max_tokens": 1024,
++            "messages": [{"role": "user", "content": "वेब पर Rust ownership खोजें"}],
++            "tools": [{
++                "type": "web_search_20250305",
++                "name": "web_search",
++                "input_schema": {"type": "object", "properties": {"query": {"type": "string"}}}
++            }]
++        }),
++    );
++    assert_eq!(response["stop_reason"], "tool_use");
++    let call = response["content"]
++        .as_array()
++        .unwrap()
++        .iter()
++        .find(|block| block["type"] == "tool_use")
++        .expect("Anthropic tool_use block");
++    assert_eq!(call["name"], "web_search");
++}
++
++#[test]
++fn gemini_function_declarations_and_hosted_google_search_both_route() {
++    let declarations = post(
++        "/api/gemini/v1beta/models/formal-ai:generateContent",
++        json!({
++            "contents": [{"role": "user", "parts": [{"text": "搜索网络 Rust ownership"}]}],
++            "tools": [{"functionDeclarations": [{
++                "name": "google_web_search",
++                "parameters": {"type": "object", "properties": {"query": {"type": "string"}}
++            }]}]
++        }),
++    );
++    assert_eq!(gemini_call(&declarations)["name"], "google_web_search");
++
++    for hosted in [json!({"google_search": {}}), json!({"googleSearch": {}})] {
++        let response = post(
++            "/api/gemini/v1beta/models/formal-ai:generateContent",
++            json!({
++                "contents": [{"role": "user", "parts": [{"text": "Search online for Rust ownership"}]}],
++                "tools": [hosted]
++            }),
++        );
++        assert_eq!(gemini_call(&response)["name"], "web_search");
++    }
++}
++
++#[test]
++fn gemini_url_context_routes_as_web_fetch() {
++    let response = post(
++        "/api/gemini/v1beta/models/formal-ai:generateContent",
++        json!({
++            "contents": [{"role": "user", "parts": [{"text": "Summarize https://example.com"}]}],
++            "tools": [{"url_context": {}}]
++        }),
++    );
++    assert_eq!(gemini_call(&response)["name"], "web_fetch");
++}
++
++#[test]
++fn every_specified_hosted_type_has_a_stable_capability_name() {
++    for (definition, expected) in [
++        (json!({"type": "web_search"}), "web_search"),
++        (json!({"type": "web_search_preview"}), "web_search"),
++        (json!({"type": "file_search"}), "file_search"),
++        (json!({"type": "computer_use_preview"}), "computer_use"),
++        (json!({"type": "code_interpreter"}), "code_interpreter"),
++    ] {
++        assert_eq!(tool_definition_name(&definition).as_deref(), Some(expected));
++    }
++}
++
++#[test]
++fn whole_task_routes_web_search_across_all_advertisement_protocols() {
++    let openai = post(
++        "/v1/responses",
++        json!({"input": "Search the web for Rust", "tools": [{"type": "web_search"}]}),
++    );
++    assert_eq!(responses_call(&openai)["name"], "web_search");
++
++    let anthropic = post(
++        "/api/anthropic/v1/messages",
++        json!({
++            "max_tokens": 256,
++            "messages": [{"role": "user", "content": "Search the web for Rust"}],
++            "tools": [{"type": "web_search_20250305", "name": "web_search", "input_schema": {"type": "object"}}]
++        }),
++    );
++    assert_eq!(anthropic["stop_reason"], "tool_use");
++
++    let gemini = post(
++        "/api/gemini/v1beta/models/formal-ai:generateContent",
++        json!({
++            "contents": [{"role": "user", "parts": [{"text": "Search the web for Rust"}]}],
++            "tools": [{"googleSearch": {}}]
++        }),
++    );
++    assert_eq!(gemini_call(&gemini)["name"], "web_search");
++}

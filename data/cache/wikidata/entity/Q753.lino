@@ -1,0 +1,19 @@
+Q753
+  aliases
+    en (Cu "element 29" 29Cu Tatum-T "Paragard T 380A" CU-7)
+    hi (Cu "तांबा" "कॉपर")
+    ru (Cu)
+    zh (Cu "铜")
+  descriptions
+    en "chemical element with symbol Cu and atomic number 29"
+    hi "एक धातु"
+    ru "химический элемент с порядковым номером 29, металл"
+    zh "原子序數為29的化學元素"
+  id Q753
+  labels
+    en copper
+    hi "ताम्र"
+    ru "медь"
+    zh "銅"
+  type item
+success 1

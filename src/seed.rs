@@ -21,12 +21,17 @@
 //! shallow trees of `name "value"` lines with two-space indentation. The
 //! schema for each category is documented in the corresponding `.lino` file.
 
+mod agentic_tool_capabilities;
 mod brainstorm;
+mod client_completion;
 mod client_integrations;
 mod coreference;
+mod draft_strategies;
 mod embedded;
+mod entity_names;
 mod facts;
 mod grounding_overrides;
+mod handler_precedence;
 mod market_price_references;
 mod meanings;
 mod model_aliases;
@@ -35,6 +40,7 @@ pub(crate) mod parser;
 mod personas;
 mod projects;
 mod roles;
+mod shell_intents;
 mod summary_topics;
 mod terminal_commands;
 
@@ -45,30 +51,45 @@ use parser::{
     LinoNode,
 };
 
+pub use agentic_tool_capabilities::{agentic_tool_capabilities, AgenticToolCapability};
 pub use brainstorm::{brainstorm_seeds, BrainstormCategory, BrainstormSeeds};
+pub use client_completion::{software_authoring_completion_contract, ClientCompletionContract};
 pub use client_integrations::{
     client_integrations, ClientIntegration, ClientIntegrationGlobalConfig,
-    ClientIntegrationInvocation, ConfigFormat, ModelArgPosition, TemplateEnv,
+    ClientIntegrationInvocation, ClientVerification, ConfigFormat, ModeArgPosition,
+    ModelArgPosition, TemplateEnv,
 };
 pub use coreference::{coreference_seeds, Antecedent, CoreferenceSeeds, Pronoun};
+pub use draft_strategies::{draft_strategies, draft_strategies_from};
 pub use embedded::{
-    seed_files, AGENT_INFO_LINO, BRAINSTORM_SEEDS_LINO, CLIENT_INTEGRATIONS_LINO,
-    CODING_IDIOMS_LINO, CONCEPTS_LINO, CONCEPT_CONTEXTS_LINO, COREFERENCE_LINO, DEMO_DIALOGS_LINO,
-    ENVIRONMENTS_LINO, FACTS_LINO, GREETINGS_LINO, HELLO_WORLD_PROGRAMS_LINO, IDENTITY_LINO,
-    INTENT_ROUTING_LINO, LANGUAGE_DETECTION_LINO, MARKET_PRICE_REFERENCES_LINO,
-    MEANINGS_CALENDAR_LINO, MEANINGS_FACTS_LINO, MEANINGS_LINKS_ROOT_LINO, MEANINGS_LINO,
+    seed_files, AGENTIC_TOOL_CAPABILITIES_LINO, AGENT_INFO_LINO, BRAINSTORM_SEEDS_LINO,
+    CLIENT_COMPLETION_CONTRACTS_LINO, CLIENT_INTEGRATIONS_LINO, CODING_IDIOMS_LINO,
+    COMPUTER_USE_TASKS_LINO, CONCEPTS_LINO, CONCEPT_CONTEXTS_LINO, COREFERENCE_LINO,
+    DEMO_DIALOGS_LINO, DRAFT_STRATEGIES_LINO, ENTITY_NAMES_LINO, ENVIRONMENTS_LINO, FACTS_LINO,
+    GREETINGS_LINO, HANDLER_PRECEDENCE_LINO, HELLO_WORLD_PROGRAMS_LINO, IDENTITY_LINO,
+    INTENT_ROUTING_LINO, LANGUAGES_LINO, LANGUAGE_DETECTION_LINO, LEARNING_SOURCES_LINO,
+    MARKET_PRICE_REFERENCES_LINO, MEANINGS_CALENDAR_LINO, MEANINGS_FACTS_LINO,
+    MEANINGS_LINKS_ROOT_LINO, MEANINGS_LINO, MEANINGS_NUMBER_CONSTRAINTS_LINO,
     MEANINGS_SEMANTIC_META_LINO, MEANINGS_SOFTWARE_PROJECT_LINO, MEANINGS_UNITS_LINO,
-    MEANING_FILES, MODEL_ALIASES_LINO, MULTILINGUAL_RESPONSES_LINO, NUMERIC_LIST_OPERATIONS_LINO,
-    OPERATION_VOCABULARY_LINO, PERSONAS_LINO, PROGRAM_CST_GRAMMARS_LINO, PROGRAM_PLAN_RULES_LINO,
-    PROJECTS_LINO, PROMPT_PATTERNS_LINO, SELF_IMPROVEMENT_LOOP_LINO, SUMMARY_TOPICS_LINO,
-    TERMINAL_COMMANDS_LINO, TOOLS_LINO,
+    MEANING_FILES, MODEL_ALIASES_LINO, MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,
+    MULTILINGUAL_RESPONSES_ENTITIES_LINO, MULTILINGUAL_RESPONSES_LANGUAGE_PROTOCOL_LINO,
+    MULTILINGUAL_RESPONSES_LINO, MULTILINGUAL_RESPONSES_MEMORY_PROGRAM_LINO,
+    MULTILINGUAL_RESPONSES_PROCEDURE_LINO, NUMERIC_LIST_OPERATIONS_LINO, OPERATION_VOCABULARY_LINO,
+    PERSONAS_LINO, PROGRAM_CST_GRAMMARS_LINO, PROGRAM_PLAN_RULES_LINO, PROJECTS_LINO,
+    PROMPT_PATTERNS_LINO, RESPONSE_FILES, SELF_IMPROVEMENT_LOOP_LINO, SHELL_INTENTS_LINO,
+    SUMMARY_TOPICS_LINO, TERMINAL_COMMANDS_LINO, TOOLS_LINO,
 };
+pub use entity_names::{entity_names, EntityName};
 pub use facts::{facts, FactRecord, LocalizedFact};
 pub use grounding_overrides::{
     cache_contains, override_facts, override_reason, parse_record, resolve, OverrideFact,
 };
+pub use handler_precedence::{handler_precedence, handler_precedence_from};
 pub use market_price_references::{market_price_assets, MarketPriceAsset, MarketPricePeriod};
-pub use meanings::{lexicon, Lexeme, Lexicon, Meaning, SemanticFacet, Slot, WordForm};
+pub use meanings::{
+    lexicon, parse_lexicon_text, ArithmeticOperator, Lexeme, Lexicon, Meaning, SemanticFacet, Slot,
+    WordForm,
+};
 pub use model_aliases::{
     canonical_model_id, model_aliases, resolve_model_id, try_resolve_model_id, ModelAliasRegistry,
 };
@@ -79,81 +100,13 @@ pub use personas::{persona_seeds, Persona, PersonaSeeds, PersonaTopic};
 pub use projects::{
     projects_registry, LocalizedProject, ProjectRecord, ProjectStatement, ProjectsRegistry,
 };
-pub use roles::{
-    ROLE_ANSWER_RATIONALE_LEAD, ROLE_ARCHITECTURE_CONCEPT, ROLE_ARITHMETIC_OPERATOR_WORD,
-    ROLE_ASSISTANT_MECHANISM_INQUIRY, ROLE_ASSISTANT_SELF_REFERENCE,
-    ROLE_BEHAVIOR_RULE_EDIT_DIRECTIVE, ROLE_BINARY_RELATION_PROPERTY,
-    ROLE_CALCULATION_BASIS_REFERENCE, ROLE_CALCULATION_DOMAIN_TERM, ROLE_CALCULATION_REQUEST_CUE,
-    ROLE_CALCULATION_RESULT_QUERY_CUE, ROLE_CALCULATOR_TOOL_NAME, ROLE_CALENDAR_DAY_REFERENCE,
-    ROLE_CALENDAR_DIRECTION_NEXT, ROLE_CALENDAR_DIRECTION_PREVIOUS, ROLE_CALENDAR_EVENT,
-    ROLE_CALENDAR_QUESTION, ROLE_CALENDAR_RELATIVE_DATE, ROLE_CALENDAR_SCHEDULE_ACTION,
-    ROLE_CALENDAR_TIME, ROLE_CALENDAR_TIMEZONE_ALIAS, ROLE_CALENDAR_TODAY, ROLE_CALENDAR_WEEKDAY,
-    ROLE_CAPABILITY_QUERY, ROLE_CAPABILITY_QUERY_MORE, ROLE_CARDINAL_NUMBER_WORD,
-    ROLE_CAUSAL_INTERROGATIVE, ROLE_CIRCULAR_JOKE_PHRASE, ROLE_CLARIFICATION_REQUEST,
-    ROLE_CLAUSE_CONTINUATION_MARKER, ROLE_CODE_METHOD_NOUN, ROLE_COMMON_TYPO,
-    ROLE_COMPARISON_DIFFERENCE_CUE, ROLE_COMPARISON_TABLE_NOUN, ROLE_COMPARISON_TABLE_TRIGGER,
-    ROLE_COMPOSITIONAL_GENITIVE_HEAD, ROLE_COMPOSITIONAL_LEMMA, ROLE_COMPOSITIONAL_PHRASE,
-    ROLE_COMPOUNDING_ACTION_CUE, ROLE_COMPOUNDING_FREQUENCY_CUE, ROLE_COMPREHENSION_FAILURE_MARKER,
-    ROLE_CONVERSATION_RECALL_OTHER_QUERY, ROLE_CONVERSATION_RECALL_PREVIOUS_MESSAGE,
-    ROLE_CONVERSATION_RECALL_PREVIOUS_USER_MESSAGE, ROLE_CONVERSATION_RECALL_QUERY,
-    ROLE_CONVERSATION_REFERENCE, ROLE_CONVERSATION_SUMMARY_COURTESY,
-    ROLE_CONVERSATION_SUMMARY_DIRECTIVE, ROLE_CONVERSATION_SUMMARY_PHRASE,
-    ROLE_CONVERSATION_TOPIC_OPENER, ROLE_CONVERSION_ACTION_CUE, ROLE_CURRENCY_EUR_REFERENCE,
-    ROLE_CURRENCY_RUB_REFERENCE, ROLE_CURRENCY_USD_REFERENCE, ROLE_DEFINITION_ARTIFACT_REQUEST,
-    ROLE_DEFINITION_COMMAND, ROLE_DEFINITION_MERGE_ACTION, ROLE_DEFINITION_MERGE_MARKER,
-    ROLE_DEFINITION_MERGE_TAIL_BOUNDARY, ROLE_DETAIL_MODIFIER,
-    ROLE_DOCUMENT_ORIGINALITY_CHECK_ACTION, ROLE_DOCUMENT_ORIGINALITY_DOCUMENT,
-    ROLE_DOCUMENT_ORIGINALITY_SUBJECT, ROLE_ENUMERATION_CONSTRAINT,
-    ROLE_ENUMERATION_REQUEST_OPENER, ROLE_EXCHANGE_RATE_REFERENCE, ROLE_EXPLANATION_REQUEST_LEAD,
-    ROLE_FACT_RELATION, ROLE_FEATURE_ACTION_ARITHMETIC, ROLE_FEATURE_ACTION_PLANNING,
-    ROLE_FEATURE_CAPABILITY_ALIAS, ROLE_FEATURE_CAPABILITY_QUESTION, ROLE_FINAL_AMOUNT_REFERENCE,
-    ROLE_FOLLOWUP_INSTRUCTION_VERB, ROLE_GAME_TRACKER_DOMAIN, ROLE_GAME_TRACKER_MECHANIC,
-    ROLE_GITHUB_REPOSITORY_PLATFORM, ROLE_GITHUB_REPOSITORY_TRAFFIC_QUESTION,
-    ROLE_GITHUB_REPOSITORY_TRAFFIC_SIGNAL, ROLE_HELLO_WORLD_REFERENCE, ROLE_HTTP_FETCH,
-    ROLE_IMPLEMENTATION_LANGUAGE_NOUN, ROLE_IMPLEMENTATION_LANGUAGE_PREPOSITION, ROLE_INTEREST_CUE,
-    ROLE_INTERROGATIVE_OPENER, ROLE_INVESTMENT_CUE, ROLE_KNOWLEDGE_INVENTORY_INTERROGATIVE,
-    ROLE_KNOWLEDGE_INVENTORY_NOUN, ROLE_KNOWLEDGE_INVENTORY_PHRASE, ROLE_KNOWLEDGE_POSSESSION,
-    ROLE_LINKS_NOTATION_FORMAT, ROLE_LIVE_RATE_FRESHNESS_CUE, ROLE_LOCAL_SHELL_REQUEST_CUE,
-    ROLE_MATH_FUNCTION_NAME, ROLE_MEASUREMENT_UNIT, ROLE_MECHANISM_INQUIRY,
-    ROLE_MECHANISM_PREDICATE, ROLE_MEMORY_APPEND_DIRECTIVE, ROLE_MEMORY_SCOPE,
-    ROLE_MEMORY_SUBSTITUTION_CONNECTOR, ROLE_MEMORY_SUBSTITUTION_DIRECTIVE,
-    ROLE_NETWORK_CAPABILITY_CUE, ROLE_NONDETERMINISTIC_MARKER, ROLE_NON_REFERENTIAL_SUBJECT,
-    ROLE_OPERATING_PRINCIPLE, ROLE_OUTPUT_DISPLAY_REQUEST, ROLE_PHYSICAL_ACTION_TRIGGER,
-    ROLE_PHYSICAL_DIMENSION, ROLE_PLAYWRIGHT_SCRIPT_CUE, ROLE_PLAYWRIGHT_TOOL_NAME,
-    ROLE_POLITENESS_CUE, ROLE_PRIOR_ANSWER_REFERENCE, ROLE_PROCEDURAL_ACTION_VERB,
-    ROLE_PROCEDURAL_ELABORATION, ROLE_PROCEDURAL_REQUEST, ROLE_PROCEDURAL_REQUEST_ELIDED_LEAD,
-    ROLE_PROCEDURAL_TASK_MODIFIER, ROLE_PROGRAM_ARTIFACT, ROLE_PROGRAM_GENUS, ROLE_PROGRAM_KIND,
-    ROLE_PROGRAM_LANGUAGE_ALIAS, ROLE_PROGRAM_MODIFICATION, ROLE_PROGRAM_REQUEST,
-    ROLE_PROGRAM_SYNTHESIS_ACTION, ROLE_PROGRAM_SYNTHESIS_DOMAIN, ROLE_PROGRAM_SYNTHESIS_SIGNAL,
-    ROLE_PROGRAM_SYNTHESIS_SUBJECT, ROLE_PROGRAM_SYNTHESIS_TASK, ROLE_PROGRAM_TASK_ALIAS,
-    ROLE_PROOF_CLAIM_SCAFFOLD, ROLE_PROOF_CONCEPT_DETERMINISM, ROLE_PROOF_CONCEPT_GODEL,
-    ROLE_PROOF_DIRECTIVE, ROLE_PROOF_MARKER, ROLE_PROOF_REQUEST_LEAD, ROLE_QUANTITY_CONVERSION_CUE,
-    ROLE_REPOSITORY_REFERENCE, ROLE_RESEARCH_CRITERION, ROLE_RESEARCH_EVALUATION_DOMAIN,
-    ROLE_RESEARCH_EVIDENCE_DOMAIN, ROLE_RESEARCH_PROMPT_SIGNAL, ROLE_RESEARCH_QUESTION_OPENER,
-    ROLE_RESEARCH_SUPERLATIVE_MODIFIER, ROLE_RESPONSE_LANGUAGE_MARKER, ROLE_RULE_BRIEF_REQUEST,
-    ROLE_RULE_COUNT_REQUEST, ROLE_RULE_COUNT_SCOPE, ROLE_RULE_LISTING_PHRASE,
-    ROLE_RULE_LISTING_REQUEST, ROLE_RULE_LISTING_SCOPE, ROLE_RULE_LISTING_SUBJECT,
-    ROLE_SCRIPT_AUTHORING_VERB, ROLE_SCRIPT_OR_CODE_ARTIFACT, ROLE_SELF_FACT_QUERY,
-    ROLE_SELF_INTRODUCTION_REQUEST, ROLE_SHELL_CAPABILITY_CUE, ROLE_SKILL_TEACHING_RESPONSE_VERB,
-    ROLE_SKILL_TEACHING_TRIGGER_LEAD, ROLE_SKILL_WHEN_THEN_PAIR, ROLE_SOFTWARE_APPROVAL_TRIGGER,
-    ROLE_SOFTWARE_ARTIFACT_KIND, ROLE_SOFTWARE_AUTHORING_ACTION, ROLE_SOFTWARE_BASH_COMMAND,
-    ROLE_SOFTWARE_DELIVERY_MODE, ROLE_SOFTWARE_FEATURE, ROLE_SOFTWARE_FOLLOWUP_DEMONSTRATION,
-    ROLE_SOFTWARE_FOLLOWUP_EXECUTION, ROLE_SOFTWARE_FOLLOWUP_VERIFICATION,
-    ROLE_SOFTWARE_IMPLEMENTATION_LANGUAGE, ROLE_SOFTWARE_REQUIREMENT_CATEGORY,
-    ROLE_SOFTWARE_STEP_GRANULARITY, ROLE_SUMMARY_CLASSIFICATION_CUE,
-    ROLE_TERM_INFORMATION_REQUEST_OPENER, ROLE_TIME_DURATION_CUE, ROLE_TOOL_ARGUMENT_MARKER,
-    ROLE_TOOL_INVOCATION_CUE, ROLE_TOPIC_SCAN_STOP_WORD, ROLE_TRANSLATION_ACTION,
-    ROLE_TRANSLATION_INTO_MARKER, ROLE_TRANSLATION_OBJECT_MARKER, ROLE_TRANSLATION_PROPERTY,
-    ROLE_TRANSLATION_SOURCE_MARKER, ROLE_TRANSLATION_TARGET_DIRECTION,
-    ROLE_TRANSLATION_TARGET_MARKER, ROLE_TRANSLATION_UNQUOTED_FRAME, ROLE_URL_NAVIGATE,
-    ROLE_VULGAR_CONTENT_MARKER, ROLE_WEB_MEDIUM, ROLE_WEB_SEARCH_ACTION,
-    ROLE_WEB_SEARCH_EXPLICIT_PREFIX, ROLE_WEB_SEARCH_HISTORY_SIGNAL,
-    ROLE_WEB_SEARCH_IMPERATIVE_LEAD, ROLE_WEB_SEARCH_NEWS_RECENCY, ROLE_WEB_SEARCH_NEWS_SUBJECT,
-    ROLE_WEB_SEARCH_PUBLIC_EVENT_SUBJECT, ROLE_WEB_SEARCH_QUERY_LEADING_NOISE,
-    ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE, ROLE_WEB_SEARCH_RECORDS_SUBJECT, ROLE_WEB_SEARCH_SIGNAL,
-    ROLE_WEB_SEARCH_SOURCE_ONLY, ROLE_WEB_SEARCH_STRONG_ACTION, ROLE_WEB_SEARCH_TOOL_NAME,
-    ROLE_WEB_SEARCH_TOPIC_MARKER, ROLE_WHO_QUESTION_LEAD, ROLE_WHO_QUESTION_TAIL,
-    ROLE_WIKIDATA_ENTITY_ANCHOR, ROLE_YEAR_UNIT_CUE,
+// `roles` re-exports its own submodules with globs; mirror that here so the
+// per-role constant list does not have to be restated (and keeps this file
+// under the 1000-line limit as new roles land).
+pub use roles::*;
+pub use shell_intents::{
+    shell_intent_vocabulary, LocalPathSearchKind, LocalPathSearchScope, ShellIntent,
+    ShellIntentArgument, ShellIntentVocabulary,
 };
 pub use summary_topics::{summary_topic_seeds, SummaryTopic, SummaryTopicSeeds};
 pub use terminal_commands::{terminal_command_vocabulary, TerminalCommandVocabulary};
@@ -302,22 +255,24 @@ pub struct ResponseRecord {
 /// Parse `multilingual-responses.lino` into structured records.
 #[must_use]
 pub fn multilingual_responses() -> Vec<ResponseRecord> {
-    let tree = parse_lino(MULTILINGUAL_RESPONSES_LINO);
     let mut out = Vec::new();
-    if let Some(root) = tree.children.first() {
-        for entry in root.children.iter().filter(|c| c.name == "response") {
-            let intent = entry.find_child_value("intent").to_string();
-            let language = entry.find_child_value("language").to_string();
-            let text = entry.find_child_value("text").to_string();
-            if intent.is_empty() || language.is_empty() {
-                continue;
+    for source in RESPONSE_FILES {
+        let tree = parse_lino(source);
+        if let Some(root) = tree.children.first() {
+            for entry in root.children.iter().filter(|c| c.name == "response") {
+                let intent = entry.find_child_value("intent").to_string();
+                let language = entry.find_child_value("language").to_string();
+                let text = entry.find_child_value("text").to_string();
+                if intent.is_empty() || language.is_empty() {
+                    continue;
+                }
+                out.push(ResponseRecord {
+                    id: entry.id.clone(),
+                    intent,
+                    language,
+                    text,
+                });
             }
-            out.push(ResponseRecord {
-                id: entry.id.clone(),
-                intent,
-                language,
-                text,
-            });
         }
     }
     out
@@ -333,6 +288,38 @@ pub fn response_for(intent: &str, language: &str) -> Option<String> {
         }
     }
     None
+}
+
+/// Look up a localized response, applying the registry's `explicit_gap`
+/// fallback policy (`data/seed/languages.lino`).
+///
+/// Issue #706: a language that the detection registry knows but a given intent
+/// has no localized text for is a *gap*, not an English prompt. Handlers that
+/// used to write `response_for(intent, language).or_else(|| response_for(intent,
+/// "en"))` silently answered a Spanish speaker in English; going through this
+/// helper instead prefers the seed's `language unknown` variant — the record
+/// that says out loud that the language is unsupported — before falling back to
+/// English as a last resort.
+#[must_use]
+pub fn localized_response(intent: &str, language: &str) -> Option<String> {
+    if let Some(text) = response_for(intent, language) {
+        return Some(text);
+    }
+    if crate::language::from_slug(language).is_some() {
+        if let Some(text) = response_for(intent, "unknown") {
+            return Some(text);
+        }
+    }
+    response_for(intent, "en")
+}
+
+/// Look up a localized response whose `text` is a native reference list.
+///
+/// Scalar text is returned as a one-element vector, which keeps this helper
+/// useful for seed records that may migrate between scalar and list forms.
+#[must_use]
+pub fn response_values_for(intent: &str, language: &str) -> Option<Vec<String>> {
+    response_for(intent, language).map(|text| split_pipe_list(&text))
 }
 
 /// Generic key/value config from `agent-info.lino`.
@@ -374,6 +361,13 @@ pub struct LanguageRule {
     pub label: String,
     pub start: u32,
     pub end: u32,
+    /// URL fragment identifying a source host that publishes in this language,
+    /// e.g. `://ru.wikipedia.org/`. Empty when the language declares no host.
+    ///
+    /// Issue #699 batch 2: the definition merger used to branch on Wikipedia
+    /// hosts in Rust. Host-to-language is language identity data, so it lives
+    /// beside the script ranges that already answer the same question.
+    pub source_host: String,
 }
 
 #[must_use]
@@ -392,10 +386,23 @@ pub fn language_rules() -> Vec<LanguageRule> {
                 label: entry.find_child_value("label").to_string(),
                 start: parse_codepoint(entry.find_child_value("start")),
                 end: parse_codepoint(entry.find_child_value("end")),
+                source_host: entry.find_child_value("source-host").to_string(),
             });
         }
     }
     out
+}
+
+/// The language of a source URL, decided by the `source-host` fragments
+/// declared in `data/seed/language-detection.lino`.
+///
+/// Falls back to `en`, matching the detection rules' own default.
+#[must_use]
+pub fn language_of_source(source: &str) -> String {
+    language_rules()
+        .into_iter()
+        .find(|rule| !rule.source_host.is_empty() && source.contains(&rule.source_host))
+        .map_or_else(|| String::from("en"), |rule| rule.language)
 }
 
 /// A multilingual question pattern for routing intents.
@@ -682,6 +689,101 @@ pub fn intent_routing() -> IntentRouting {
         }
     }
     routing
+}
+
+/// One learnable data source declared by `learning-sources.lino` (issue #499).
+///
+/// The seed names each external data source the engine can *learn from* when a
+/// user points it there — a host, the natural-language keywords that name it in
+/// any supported language, and the `capability` slug that says which learning
+/// loop ingests it. Routing reads this data rather than branching on a specific
+/// URL, so a new source is a data edit, never a code change.
+#[derive(Debug, Clone, Default)]
+pub struct LearningSource {
+    pub id: String,
+    pub capability: String,
+    pub host: String,
+    pub keywords: Vec<String>,
+}
+
+/// The learnable-source registry plus the shared, language-agnostic directive
+/// cues that mark a "learn from this source" request (issue #499).
+#[derive(Debug, Clone, Default)]
+pub struct LearningSources {
+    pub sources: Vec<LearningSource>,
+    pub directive_cues: Vec<String>,
+}
+
+impl LearningSources {
+    /// Match a lowercased prompt against the registry and return the source the
+    /// user is teaching the engine to learn from, if any.
+    ///
+    /// A directive is only recognized when the prompt carries **both** a
+    /// language-agnostic learning cue (e.g. "learn from", "узнаешь",
+    /// "यहाँ से सीख", "在这里了解") **and** a reference to a declared source — its
+    /// host or one of its native-language keywords. This is the single source of
+    /// truth shared by the chat handler (`crate::solver_handlers::try_learn_from_source`)
+    /// and the Agent CLI planner
+    /// ([`crate::agentic_coding::google_trends_learning::is_google_trends_learning_task`]),
+    /// so the *same* natural-language teaching directive drives both the chat
+    /// acknowledgement and the artifact-writing recipe. Callers pass an
+    /// already-lowercased prompt so the seed's lowercased cues/keywords match
+    /// directly (issue #499).
+    #[must_use]
+    pub fn match_directive(&self, lowercased: &str) -> Option<&LearningSource> {
+        let has_cue = self
+            .directive_cues
+            .iter()
+            .any(|cue| lowercased.contains(cue.as_str()));
+        if !has_cue {
+            return None;
+        }
+        self.sources.iter().find(|source| {
+            (!source.host.is_empty() && lowercased.contains(source.host.as_str()))
+                || source
+                    .keywords
+                    .iter()
+                    .any(|keyword| lowercased.contains(keyword.as_str()))
+        })
+    }
+}
+
+/// Parse the learnable-source registry from `learning-sources.lino`.
+///
+/// The keywords and directive cues are stored lowercased in the seed so a
+/// lowercased prompt matches them directly (Rust's `to_lowercase` folds the
+/// Cyrillic, Devanagari, and Han text too).
+#[must_use]
+pub fn learning_sources() -> LearningSources {
+    let tree = parse_lino(LEARNING_SOURCES_LINO);
+    let mut registry = LearningSources::default();
+    if let Some(root) = tree.children.first() {
+        for child in &root.children {
+            match child.name.as_str() {
+                "source" => {
+                    let keywords = child
+                        .children
+                        .iter()
+                        .filter(|entry| entry.name == "keyword")
+                        .map(|entry| entry.id.clone())
+                        .collect();
+                    registry.sources.push(LearningSource {
+                        id: child.id.clone(),
+                        capability: child.find_child_value("capability").to_string(),
+                        host: child.find_child_value("host").to_string(),
+                        keywords,
+                    });
+                }
+                "directive" => {
+                    for entry in child.children.iter().filter(|entry| entry.name == "cue") {
+                        registry.directive_cues.push(entry.id.clone());
+                    }
+                }
+                _ => {}
+            }
+        }
+    }
+    registry
 }
 
 #[must_use]

@@ -1,0 +1,82 @@
+self_ast_census
+  target src/agentic_coding/narration.rs
+  language rust
+  fidelity full_ast
+  byte_len 5452
+  line_count 133
+  content_id source_module_256edf1475c908fe
+  symbol_count 9
+  symbols
+    function tool_action_narration 17 45
+    const TARGET_SLOT 18 18
+    const SUBJECT_SLOT 19 19
+    function capability_intent 53 65
+    function localized 69 71
+    function program_command_intent 77 93
+    function tool_action_target 95 133
+    const TARGET_FIELDS 96 108
+    function first_text 110 120
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 3706
+    named_node_count 762
+    distinct_node_kinds 55
+    node_kinds
+      arguments 55
+      array_expression 1
+      array_type 2
+      binary_expression 4
+      block 16
+      call_expression 55
+      char_literal 1
+      closure_expression 3
+      closure_parameters 3
+      const_item 3
+      crate 4
+      doc_comment 21
+      else_clause 2
+      expression_statement 13
+      field_expression 45
+      field_identifier 45
+      function_item 6
+      function_modifiers 1
+      generic_function 3
+      generic_type 3
+      identifier 175
+      if_expression 7
+      inner_doc_comment_marker 1
+      integer_literal 2
+      let_condition 3
+      let_declaration 13
+      lifetime 2
+      line_comment 24
+      macro_invocation 2
+      match_arm 11
+      match_block 2
+      match_expression 2
+      match_pattern 11
+      mutable_specifier 1
+      or_pattern 7
+      outer_doc_comment_marker 20
+      parameter 9
+      parameters 6
+      primitive_type 12
+      reference_expression 8
+      reference_type 15
+      return_expression 3
+      scoped_identifier 39
+      source_file 1
+      string_content 29
+      string_literal 29
+      super 4
+      token_tree 2
+      try_expression 4
+      tuple_struct_pattern 7
+      type_arguments 6
+      type_identifier 12
+      unary_expression 2
+      use_declaration 4
+      visibility_modifier 1

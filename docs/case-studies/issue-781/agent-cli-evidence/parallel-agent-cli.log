@@ -1,0 +1,4515 @@
+== Agent CLI attempt 1/3 ==
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:41.966Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": true,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:41.968Z",
+  "service": "default",
+  "version": "0.25.0",
+  "command": "/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js --prompt Подбери совместимое зарядное устройство для Acer Aspire 3 A325-45 в Amazon India и проверь характеристики по независимым веб-источникам? --disable-stdin --model formal-ai/formal-ai --no-summarize-session --read-only",
+  "workingDirectory": "/tmp/tmp.xWoG3YOuw5",
+  "scriptPath": "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:41.975Z",
+  "service": "default",
+  "directory": "/tmp/tmp.xWoG3YOuw5",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:41.978Z",
+  "service": "project",
+  "directory": "/tmp/tmp.xWoG3YOuw5",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.051Z",
+  "service": "default",
+  "processArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "--prompt",
+    "Подбери совместимое зарядное устройство для Acer Aspire 3 A325-45 в Amazon India и проверь характеристики по независимым веб-источникам?",
+    "--disable-stdin",
+    "--model",
+    "formal-ai/formal-ai",
+    "--no-summarize-session",
+    "--read-only"
+  ],
+  "bunArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "--prompt",
+    "Подбери совместимое зарядное устройство для Acer Aspire 3 A325-45 в Amazon India и проверь характеристики по независимым веб-источникам?",
+    "--disable-stdin",
+    "--model",
+    "formal-ai/formal-ai",
+    "--no-summarize-session",
+    "--read-only"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.051Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.058Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.060Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.061Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.064Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.069Z",
+  "service": "config",
+  "path": "/tmp/tmp.xWoG3YOuw5/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.127Z",
+  "service": "models.dev",
+  "path": "/home/box/.cache/link-assistant-agent/models.json",
+  "age": 84975,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.128Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.189Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.225Z",
+  "service": "claude-oauth",
+  "path": "/home/box/.claude/.credentials.json",
+  "message": "credentials file not found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.226Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.226Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.226Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.226Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.227Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.228Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 170,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.231Z",
+  "service": "provider",
+  "modelID": "big-pickle",
+  "providerID": "opencode",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.231Z",
+  "service": "provider",
+  "modelID": "minimax-m2.5-free",
+  "providerID": "kilo",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.232Z",
+  "service": "default",
+  "models": [
+    "opencode/big-pickle",
+    "kilo/minimax-m2.5-free",
+    "same"
+  ],
+  "source": "default",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.273Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.274Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.279Z",
+  "service": "session",
+  "id": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+  "version": "agent-cli-1.0.0",
+  "projectID": "global",
+  "directory": "/tmp/tmp.xWoG3YOuw5",
+  "title": "New session - 2026-07-19T06:59:42.279Z",
+  "time": {
+    "created": 1784444382279,
+    "updated": 1784444382279
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.280Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.280Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.281Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 7,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.298Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.308Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_086d393b9ffe4Nd6HOJSHHSerH/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.308Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_086d393b9ffe4Nd6HOJSHHSerH/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.328Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 19,
+  "method": "POST",
+  "path": "/session/ses_086d393b9ffe4Nd6HOJSHHSerH/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.350Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.365Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.370Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.375Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.385Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.385Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.387Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.389Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.389Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.389Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.390Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 1,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.391Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.391Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.391Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.392Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.392Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.392Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.392Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:42.393Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:43.374Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:43.396Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:43.436Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:43.456Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:43.489Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:43.490Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:43.494Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:43.495Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:43.739Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784444383739,
+  "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+  "part": {
+    "id": "prt_f792c71eb001Rb1R4LcyY3EjAk",
+    "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+    "messageID": "msg_f792c709e001pV1VjxhOQd9HbR",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:43.742Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444383742,
+  "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+  "part": {
+    "id": "prt_f792c71fb001vxmyrAw148mj60",
+    "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+    "messageID": "msg_f792c709e001pV1VjxhOQd9HbR",
+    "type": "tool",
+    "callID": "call_8fae7e7af4742300",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:43.744Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444383744,
+  "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+  "part": {
+    "id": "prt_f792c71fb001vxmyrAw148mj60",
+    "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+    "messageID": "msg_f792c709e001pV1VjxhOQd9HbR",
+    "type": "tool",
+    "callID": "call_8fae7e7af4742300",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "Подбери совместимое зарядное устройство для Acer Aspire 3 A325-45 в Amazon India и проверь характеристики по независимым веб-источникам"
+      },
+      "time": {
+        "start": 1784444383743
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:44.074Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444384074,
+  "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+  "part": {
+    "id": "prt_f792c71fb001vxmyrAw148mj60",
+    "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+    "messageID": "msg_f792c709e001pV1VjxhOQd9HbR",
+    "type": "tool",
+    "callID": "call_8fae7e7af4742300",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "Подбери совместимое зарядное устройство для Acer Aspire 3 A325-45 в Amazon India и проверь характеристики по независимым веб-источникам"
+      },
+      "output": "Title: Adapter Compatible Models | Acer India Official Store\nURL: https://store.acer.com/en-in/adapter-compatible-models\nPublished: N/A\nAuthor: N/A\nHighlights:\nAdapter Compatible Models | Acer India Official Store\n...\nPart#: 5W.92391.012\n...\nDescription: 65W Small Pin Power Adapter\n...\nCompatible Models:\n...\n| A315-21G | A315-53 | A315-53G | A515-51 | A515-51G | A515-52 |\n| --- | --- | --- | --- | --- | --- |\n| A515-52G | A515-53 | A515-53KG | A615-51G | AN515-31 | AOD270 |\n| AS4743Z | AS4752Z | AS4755 | AS4810T | AS5315 | AS5349 |\n| AS5536 | AS5542 | AS5552 | AS5553 | AS5733 | AS5738Z |\n| AS5742G | AS5745 | AS5749Z | AS5750 | AS5755 | E1-421 |\n| E1-431 | E1-470P | E1-471 | E1-522 | E1-530 | E1-531 |\n| E1-570 | E1-570G | E1-571 | E1-572 | E1-572G | E5-475G |\n...\n| E5-476 | E5-521G | E5-522G | E5-523G | E5-532G | E5-551 |\n...\n| E5-551G | E5-553G | E5-571G | E5-573G | E5-573TG | E5-574G |\n...\n| E5-575G | E5-575TG | E5-576 | E5-576G | eME642 | eME725 |\n...\n| eME732Z | F5-571G | F5-572G | F5-573G | M3-581PTG | M5-481T |\n...\n| NE46R11I | NE56 | NV49 | R3-471TG | S3-391 | TM 2424 |\n...\n| TM3012 | TM4750 | TM5344 | TM5744Z | TM6492 | TM8472 |\n...\n| TM8472G | TM8473T | TM8481T | TMP2410-G2-M | TMP2410-G2-MG | TMP2410-MG |\n...\n| TMP243-M | TMP245-M | TMP246M-M | TMP248-MG | TMP249-G2-MG | TMP249-G3-M |\n...\n| TMP249-G3-MG | TMP249-MG | TMP2510-G2-M | TMP2510-G2-MG | TMP253-M | TMP258-MG |\n...\n| TMP259-G2-MG | TMP259-MG | TMP449-G2-MG | TMP449-G3-M | TMP449-G3-MG | TM >TMP453-M |\n...\n| TMP455-M | TMP633-M | TMP643-M | TMP643-V | TMP645-M | TMP645-S |\n...\n| TMP648-G2-M | TMP648-G3-M | TMP648-M | V3-571 | V3-572G | V3-\n...\n74G |\n...\n| V3-575G | V\n...\n-431 |\n...\n-431\n...\n-471 |\n...\n-471\n...\n-472 |\n...\n-472P |\n...\n-531 |\n...\nPart#: 5\n...\n679\n...\n002\n...\nCompatible Models:\n...\n| A111-31 | A315-53 | E5-475 | ES1-421 | EX215-51 | TMP249-G2-M |\n| --- | --- | --- | --- | --- | --- |\n| A114-32 | A315-54 | E5-476 | ES1-422 | EX215-52 | TMP249-G3-M |\n| A311-31 | A315-54K | E5-523 | ES1-431 | EX2540-37 | TMP249-M |\n| A314-31 | A315-56 | E5-532 | ES1-432 | F5-571 | TMP257-M |\n| A314-32 | A514-51K | E5-553 | ES1-512 | F5-573 | TMP257-MG |\n| A314-41 | A515-43 | E5-573 | ES1-520 | NE411 | TMP258-M |\n| A315-21 | A515-51 | E5-574 | ES1-521 | NE571 | TMP259-G2-M |\n...\n| A315-31 | A515-52K | E5-575 | ES1-522 | R3-131T | TMP259-M |\n...\n| A315-32 | A515-53\n...\n| E5-576 | ES1-523 |\n...\n7-371T | TMP\n...\n| A315-33 | E5-422 | ES1-131 | ES1-531 | TMB116-M | TMP449-G2-M |\n| A3\n...\n5-41 | E5-432 | ES1-132 | ES1-533 | TMP2410-M | TMP449-M |\n| A3\n...\n2 | E5-473 | ES1-311 | ES1-571 | TMP246-M |\n...\n3-575 |\n| A3\n...\n5-51 | E5-474 | ES1-411 | ES1-572 | TMP248-M |\n...\nCompatible Models:\n...\nCompatible Models:\n...\nCompatible Models:\n...\n| --- | --- | --- | --- | --- | --- |\n| A\n...\n| TMP2\n...\n-M | TMP\n...\n8-M |\n|\n...\n15-53\n...\n| AS5\n...\n| TMP251\n...\nCompatible Models:\n...\nCompatible Models:\n...\nCompatible Models:\n...\nCompatible Models:\n...\nCompatible Models:\n...\nCompatible Models:\n...\nCompatible Models:\n...\nPart#: 5W.14791.011\n...\nDescription: 65W Small Pin Power Adapter\n...\nCompatible Models:\n...\n| A111-31 | A114-32 | A311-31 | A314-31 | A314-32 | A314-41 |\n| --- | --- | --- | --- | --- | --- |\n| A315-21 | A315-31 | A315-32 | A315-33 | A315-41 | A315-42 |\n| A315-51 | A315-53 | A315-54 | A315-54K | A315-56 | A514-51K |\n| A515-43 | A515-51 | A515-52K | A515-53K | E5-422 | E5-432 |\n| E5-473 | E5-474 | E5-475 | E5-476 | E5-523 | E5-532 |\n| E5-553 | E5-573 | E5-574 | E5-575 | E5-576 | ES1-131 |\n| ES1-132 | ES1-311 | ES1-411 | ES1-421 | ES1-422 | ES1-431 |\n...\n| ES1-432 | ES1-512 | ES1-520 | ES1-521 | ES1-522 | ES1-523 |\n...\n| ES1-531 | ES1-533 | ES1-571 | ES1-572 | EX215-51 | EX215-52 |\n...\n| EX2540-37 | F5-571 | F5-573 | NE411 | NE571 | R3-131T |\n| R7-371T | TMB116-M | TMP2410-M | TMP246-M | TMP248-M | TMP249-G2-M |\n| TMP249-G3-M | TMP249-M | TMP257-M | TMP257-MG | TMP258-M | TMP259-G2-M |\n| TMP259-M | TMP446-M | TMP449-G2-M | TMP449-M | V3-575 |\n...\nPart#: 5W.14791.012\n...\nDescription: 65W Small Pin Power Adapter\n...\n1,379\n...\nCompatible Models:\n...\n| A315-55G | A315-57G | A315-58G | A514-52G | A514-53G | A514-54G |\n| --- | --- | --- | --- | --- | --- |\n| A515-54G | A515-55G | A515-56G | AV15-51 | SF313-52 | SF313-53 |\n| SF314-42 | SF314-43 | SF314-510G | SF314-511 | SF314-52 | SF314-53G |\n| SF314-55G | SF314-57 | SF314-57G | SF314-59 | SF315-51 | SF315-51G |\n| SF514-54T | SF514-55TA | SP314-53GN | SP314-54N | SP513-54N | TMP214-52G |\n| TMP214-53 | TMP214-53G | TMP215-41-G2 | TMP215-52G | TMP215-53G | TMP414-51 |\n| TMP414-51G | TMP414RN-51 | TMP614-51 | TMP614-51-G2 | TMP614-51T-G2 | TMP614-51TG-G2 |\n| TMX314-51-MG | TMX3310-M | TMX3410-M |\n\n---\n\nTitle: 45W Adapter with Power Cord (Small Pin)\nURL: https://store.acer.com/en-us/45w-adapter-with-power-cord-small-pin\nPublished: N/A\nAuthor: N/A\nHighlights:\n45W Adapter with Power Cord (Small Pin)\n...\n# 45W Adapter with Power Cord (Small Pin)\n...\nAK.045AP.075\n...\nCheck compatibility with your laptop using the Accessory Finder.\n...\nThis 45W Adapter with Power Cord meets the specifications of the original AC Adapter that shipped with your unit. It is also lightweight and small in form factor, ideal for spare power needs on the road.\n...\n- Narrow Connector Pin\n- Includes both AC Adapter and Power Cord\n- Lightweight and small form factor\n...\n$29.99\n...\n## Technical Information\n...\n## Physical Characteristics\n...\n### Connection Type\n...\n| More Information |\n| --- |\n| AO1-131, AO1-131M, AO1-431, C730, C738T, C810, CB3-531, R5-471T, R7-371T, SF314-51, SW5-173, SW5-271, V3-331, V3-371, V3-372, V3-372T |\n| Black |\n| Barrel |\n| 45W Adapter with Power Cord |\n| DC-Output - 45W |\n| 1 year |\n...\n45W Adapter with Power Cord (Small Pin)\n...\n$29.99\n\n---\n\nTitle: KP.0450H.013 - Genuine Acer A315-22 Adapter 45W 19V 3-PIN Black Tip - 1.1X3.0X7.7 A045R072P LF Black TIER2 & IEC 62368,\nURL: https://www.acerparts.ca/product/kp-0450h-013/\nPublished: 2022-10-21T00:00:00.000Z\nAuthor: N/A\nHighlights:\nKP.0450H.013 - Genuine Acer A315-22 Adapter 45W 19V 3-PIN Black Tip - 1.1X3.0X7.7 A045R072P LF Black TIER2 & IEC 62368,\n...\n.013\n...\nRated 4.93 out of 5 based on 15 customer ratings\n...\nGenuine Acer A315-22 Adapter 45W 19V 3-PIN Black Tip – 1.1X3.0X7.7 A045R072P LF Black TIER2 & IEC 62368,\n...\nSKU: KP.0450H.013-new Categories: AC Adapters, Acer Parts GTIN: 5704174071952Brand: ACER\n...\nGenuine Acer KP.0450H.013 – A315-22 ADAPTER 45W 19V 3-PIN BLACK TIP – 1.1X3.0X7.7 A045R072P LF BLACK TIER2 & IEC 62368, . SourceITStore is the #1 recommended Acer parts distributor in North America.\n...\nCompatible Part Numbers: KP.04501.017, KP.0450H.001\n...\nProduct Families: Aspire 1, Aspire 3, Aspire 5, ENDURO N3, ENDURO Urban N3, Spin 1, Spin 3, Swift 1, Swift 3, Travelmate B3, Travelmate P2\n...\nCompatible Models: A315-23, A314-22, A515-55T, A515-56, A514-54, A515-56T, A515-44, A114-61, SP314-21N, SP314-21, A517-52, A315-35, A515-55, A115-31, A317-33, A115-32, A314-35, A114-33, A515-45, A515-46, SP114-31, A317-53, A515-54, A514-52, A315-34, A315-22, A514-52K, SF314-58, A514-53, TMP214-52, TMP215-52, TMB311RN-31, TMB311R-31, TMB311-31, TMP214-53, TMP215-53, TMB311RN-32, TMP215-41, EN314-51W, EUN314-51W, A315-58, SF114-33, TMB311-32, TMB311R-32, EUN314A-51W, A315-59, A114-61L, A514-55, A315-43, TMP215-54, TMP214-54, A315-24P, A315-57, A314-23P, A315-510P, A315-24PT, A314-36P, A3SP14-31PT, A317-55P, A317-54, EUN314LA-51W, TMB514-31, EX215-23, A115-22, TMB311RN-33, TMB311R-33\n...\nNew , New Open Box , Refurbished , Used\n...\nA114-33, A114-61, A114-61L, A115-22, A115-31, A115-32, A314-22, A314-23P, A314-35, A314-36P, A315-22, A315-23, A315-24P, A315-24PT, A315-34, A315-35, A315-43, A315-510P, A315-57, A315-58, A315-59, A317-33, A317-53, A317-54, A317-55P, A3SP14-31PT, A514-52, A514-52K, A514-53, A514-54, A514-55, A515-44, A515-45, A515-46, A515-54, A515-55, A515-55T, A515-56, A515-56T, A517-52, EN314-51W, EUN314-51W, EUN314A-51W, EUN314LA-51W, EX215-23, SF114-33, SF314-58, SP114-31, SP314-21, SP314-21N, TMB311-31, TMB311-32, TMB311R-31, TMB311R-32, TMB311R-33, TMB311RN-31, TMB311RN-32, TMB311RN-33, TMB514-31, TMP214-52, TMP214-53, TMP214-54, TMP215-41, TMP215-52, TMP215-53, TMP215-54\n...\nWeight | 1 lbs |\n...\n| --- |\n...\n| Dimensions | 16 × 12 × 3 in |\n| Condition |\n| Model |\n| Product Family |\n...\nReviews (15)\n\n---\n\nTitle: Techie 45W Laptop Charger For Acer Aspire 3 A315, A317, Aspire V3, Extensa EX215, Travelmate P259 Series (19V, 2.37A) 5.5*1.7MM Pin - Techie Store\nURL: https://techiestore.in/product/techie-45w-19v-2-37a-pin-size-5-5mm-x-1-7mm-compatible-acer-laptop-charger/\nPublished: 2025-11-01T06:51:01.000Z\nAuthor: N/A\nHighlights:\nTechie 45W Laptop Charger For Acer Aspire 3 A315, A317, Aspire V3, Extensa EX215, Travelmate P259 Series (19V, 2.37A) 5.5*1.7MM Pin - Techie Store\n...\n# Techie 45W Laptop Charger for Acer Aspire 3 A315, A317, Aspire V3, Extensa EX215, Travelmate P259 Series (19V, 2.37A) 5.5*1.7MM Pin\n...\n- Highly Compatible for Techie Compatible Acer Aspire 3 A315, A317, Aspire V3, Extensa EX215, Aspire One, Aspire ES1 and Travelmate P259 Series laptop Charger.\n- Power cord included with charger\n- Pin Size: 5.5*1.7mm\n- Power: 45W | Voltage: 19V | Current: 2.37A\n...\n## How To Choose The Right Charger?\n...\n. Make sure that the\n...\nparameters marked as Output (voltage and current) match the Output parameters\n...\nthe shape and\n...\nEngineered to withstand the test of time, every Techie charger is built using high-quality components for long-term performance. A built-in mains filter ensures stable voltage input, while an enhanced radiator efficiently dissipates heat — keeping the charger cool and consistent, even with heavy usage.\n...\nElevate your laptop charging experience with the Techie Compatible Acer Aspire 3 A315, A317, Aspire V3, Extensa EX215, Aspire One, Aspire ES1 and Travelmate P259 Series Laptop Charger! This charger is purpose-built for Acer 45W Series laptops, delivering high-performance power that keeps your device ready to conquer your day.\n...\n### Key Features:\n...\n- User-Friendly Design: Say goodbye to tangled cords and adapters with an easy-to-use 5.5*1.7MM pin connector.\n- Steady Power: 19V output and 2.37A current rating for dependable power.\n- Wide Compatibility: Seamlessly fits a range of Techie Compatible Acer Aspire 3 A315, A317, Aspire V3, Extensa EX215, Aspire One, Aspire ES1 and Travelmate P259 Series laptops.\n- 45W Output: Swift and efficient charging for work or play.\n...\nCompatible Laptop Models\n\n---\n\nTitle: 45W Power Supply for Acer Aspire A315-23 A315-24P A315-35 A317-53 A317-54 A317-55P A115-32 A314-22 A314-23P A514-55 A515-45 A517-52 A314-36P Aspire 1 3 5 Series Laptop Charger a18-045n2a 3.0 * 1.0mm - Newegg.com\nURL: https://www.newegg.com/p/16J-02RM-006B8\nPublished: N/A\nAuthor: N/A\nHighlights:\n45W Power Supply for Acer Aspire A315-23 A315-24P A315-35 A317-53 A317-54 A317-55P A115-32 A314-22 A314-23P A514-55 A515-45 A517-52 A314-36P Aspire 1 3 5 Series Laptop Charger a18-045n2a 3.0 * 1.0mm - Newegg.com\n...\n# 45W Power Supply for Acer Aspire A315-23 A315-24P A315-35 A317-53 A317-54 A317-55P A115-32 A314-22 A314-23P A514-55 A515-45 A517-52 A314-36P Aspire 1 3 5 Series Laptop Charger a18-045n2a 3.0 * 1.0mm\n...\n- Input Voltage: 100-240V,50-60Hz, Output: 19V 2.37A 45W. OEM Acer 45w laptop charger / acer replacement laptop charger. Connector Size: 3.0*1.0mm\n...\n- Connector Type : 3.0*1.0mm(refer to picture). charger for acer chicony a18-045n2a a13-045n2a delta adp-45fe f adp-45he b liteon pa-1450-26 . one adapter model may have different sizes plug, please check your laptop model and DC-IN plug size before buy it.\n...\n- Compatible with acer aspire 3 charger Acer Aspire 3 A315-24P A314-36P A314-23P Laptop charger Aspire A314-22 A314-35 A115-32 power supply\n...\n- Compatible with acer aspire 3 laptop charger Acer Aspire 3 A315-35 A315-23 A315-43 A315-35 A315-58 A315-59 A317-53 A317-54 A317-55P power cord\n...\n- Compatible with acer aspire 5 laptop charger Acer Aspire 5 A514-55 A515-45 A515-56 A517-52 Acer Extensa 15 EX215-22 EX215-54 EX215-55 charger\n...\nInput Voltage: 100-240V, 50-60Hz, Output: 19V 2.37A 45W. OEM Acer 45w laptop charger / acer replacement laptop charger. Connector Size: 3.0 * 1.0 mm Connector Type: 3.0 * 1.0 mm (refer to picture). charger for acer chicony a18-045n2a a13-045n2a delta adp-45fe f adp-45he b liteon pa-1450-26. one adapter model may have different sizes plug, please check your laptop model and DC-IN plug size before buy it. Compatible with acer aspire 3 charger Acer Aspire 3 A315-24P A314-36P A314-23P Laptop charger Aspire A314-22 A314-35 A115-32 power supply Compatible with acer aspire 3 laptop charger Acer Aspire 3 A315-35 A315-23 A315-43 A315-35 A315-58 A315-59 A317-53 A317-54 A317-55P power cord Compatible with acer aspire 5 laptop charger Acer Aspire 5 A514-55 A515-45 A515-56 A517-52 Acer Extensa 15 EX215-22 EX215-54 EX215-55 charger\n\n---\n\nTitle: Techie 45W Laptop Charger For Acer Aspire 3 A314, A315, Aspire 5 A514, A A315, Extensa 15 EX215, Travelmate P2, X514 Series (19V, 2.37A) 3.0x1.1MM Pin - Techie Store\nURL: https://techiestore.in/product/techie-45w-19v-2-37a-pin-size-3-0mm-x-1-1mm-compatible-acer-laptop-charger/\nPublished: 2023-12-24T10:24:20.000Z\nAuthor: N/A\nHighlights:\nTechie 45W Laptop Charger For Acer Aspire 3 A314, A315, Aspire 5 A514, A A315, Extensa 15 EX215, Travelmate P2, X514 Series (19V, 2.37A) 3.0x1.1MM Pin - Techie Store\n...\n# Techie 45W Laptop Charger for Acer Aspire 3 A314, A315, Aspire 5 A514, A A315, Extensa 15 EX215, Travelmate P2, X514 Series (19V, 2.37A) 3.0×1.1MM Pin\n...\nRated 5\n...\n00 out of\n...\nbased on 12\n...\n- Power: 45W | Voltage: 19V | Current: 2.37A\n- Pin Size: 3.0*1.1mm\n- Power cord included with charger\n- Highly Compatible for Acer Aspire 3 A314, Aspire 3 A315, Aspire 5 A514, Aspire A A315, Extensa 15 EX215, Travelmate P2, Spin 3 SP, Swift 1 SF114 and Travelmate X514 Series laptop Charger.\n...\n## How To Choose The Right Charger?\n...\n(voltage and\n...\nEngineered to withstand the test of time, every Techie charger is built using high-quality components for long-term performance. A built-in mains filter ensures stable voltage\n...\n, while an enhanced radiator efficiently dissipates heat — keeping the charger cool and consistent, even with heavy usage.\n...\nElevate your laptop charging experience with the Techie Compatible Acer 45W Laptop Charger! This charger is purpose-built for Acer Aspire 3 A314, Aspire 3 A315, Aspire 5 A514, Aspire A A315, Extensa 15 EX215, Travelmate P2, Spin 1 SP, Spin 3 SP, Swift 1 SF114 and Travelmate X514 Series laptops, delivering high-performance power that keeps your device ready to conquer your day.\n...\n### Key Features:\n...\n- 45W Output: Swift and efficient charging for work or play.\n- Wide Compatibility: Seamlessly fits a range of Acer Aspire 3 A314, Aspire 3 A315, Aspire 5 A514, Aspire A A315, Extensa 15 EX215, Travelmate P2, Spin 3 SP, Swift 1 SF114 and Travelmate X514 Series laptops.\n- Steady Power: 19V output and 2.37A current rating for dependable power.\n- User-Friendly Design: Say goodbye to tangled cords and adapters with an easy-to-use 3.0*1.1MM pin connector.\n...\nCompatible Adapter Part Number\n...\n- 0A001-00230000\n- 0A001-00230200\n- 0A200-00021000\n...\n- 90-N45W-01\n...\n- AD890M26\n- EXAX81XA\n...\n- KP.04501.003\n...\n- KP.04501.012\n...\n- KP.04503.001\n...\n- KP.0450H.001\n- KP.0450H.013\n...\n- W15-045N4A\n...\n- W15-045N4B\n- W15-045N4C\n...\n- KP.04501.004\n...\n- KP.04501.017\n...\n.0450H.007\n...\n.04503.011\n...\nADP-45\n...\n- A0\n...\n- KP.0\n...\n3.0\n...\nKP04503011\n...\n- KP.0450\n...\n.001\n...\n045\n...\n- ADP-45ZD\n...\n- NC.20411.01Y\n...\n- AK.045AP.060\n...\n- AK.045\n...\n070\n...\n- ADP-45\n...\n- KP.0450H.017\n...\n- KP.0450H.003\n...\n- KP.0450H.015\n...\n- KP0\n...\n501017\n...\n- KP.0450H.019\n...\n- KP.04501.006\n...\n- KP.04501.018\n...\n- KP.04501.025\n...\n- KP.04501.013\n...\n- NP.ADT0A.077\n...\n- KP.04501.027\n...\n- PA-1450-26AL\n...\n- 5.71178E+12\n...\n- 5.71251E+12\n...\nCompatible Laptop Models\n...\nAspire\n\n---\n\nTitle: ACER 45w Original Laptop Charger - 19V 2.37A Genuine AC Power Adapter (1.1mm) - Super Pc\nURL: https://superpc.in/product/acer-45w-original-laptop-charger-19v-2-37a-genuine-ac-power-adapter-1-1mm/\nPublished: 2025-03-18T09:57:45.000Z\nAuthor: N/A\nHighlights:\nACER 45w Original Laptop Charger - 19V 2.37A Genuine AC Power Adapter (1.1mm) - Super Pc\n...\nACER 45w Original Laptop Charger – 19V 2.37A Genuine AC Power Adapter (1.1mm)\n...\n# ACER 45w Original Laptop Charger – 19V 2.37A Genuine AC Power Adapter (1.1mm)\n...\n- Acer Smart AC Power Adapter\n- 100% Genuine Original Acer Product\n- Specifications : ( 19V 2.37A) 45W ( 1.1 mm ) Micro pin\n- Pin Size: 3.0mm*1.1mm (Check Photographs)\n- One Year Carry In Warranty. You need to send it back to us for replacement to our support center or direct company warranty whichever is applicable.\n- 15 Days Money Back Guarantee cover : Valid for any of the following condition like : faulty product, product compatibility issue or any other technical issue. Customer needs to send it back to us. We will check and provide solution . if not possible then 100% money will be refunded.\n- Complimentary: Three Pin Power Cord (No Warranty)\n- Supplied Model no may Vary. Specifications will be the Same.\n...\n| Reliable power. Day in. Day out. | Getting a trusted AC adapter shouldn’t be a shot in the dark. With a reliable name like Acer, this standard power adapter delivers a safe, powerful charge every time, and at an affordable price. |\n| --- | --- |\n| Standard power | This 45W power adapter delivers the power you need with an Acer standard 1.1 mm connector. |\n| Protected from the unexpected | The built-in surge-protector helps keep your laptop safe from sudden power changes. |\n| Forget broken cables | A quality cable specifically designed to alleviate stress from bending. |\n| Stress-free connector | The connector reduces cord stress and allows easy access to your other ports. |\n| Easy organization | Keep your cable neat and organized with the attached hook and loop fastener. |\n| Peace-of-mind coverage | Rest easy with standard one-year limited warranty. |\n...\n| Color | Black |\n| --- | --- |\n| Condition | New |\n| Brand | Lenovo Original |\n| Specifications | 19V 2.37A (1.1 mm ) Micro pin |\n| Warranty | One Year Carry In Warranty |\n| Pin Size | 3.0mm*1.1mm |\n| Power Cord | Three Pin Indian Cord ( No Warranty ) |\n...\n## Fit Laptop Models ( use ” ctrl+F” to find your model)\n...\n| Spin 3 SP313-51N-3555 | Aspire 5 A515-54G-50F2 | Aspire 5 A515-54 |\n| --- | --- | --- |\n| Aspire 3 A315-54 | Aspire 3 A315-42 | Aspire 5 A515-54G |\n| Aspire 5 A515-54-57EN | Aspire 3 A315-54K | Aspire 5 A515-54-N78Y |\n| Aspire 3 A315-42G | Aspire 5 A515-44 | Aspire 5 A515-43 |\n| Aspire 5 A515-54G-53GP | Spin 3 SP314-54N | Aspire 5 A515-54G-74FC |\n...\n| Aspire 5 A515-43-R19L | Aspire 3 A315-42G-R7EH | Aspire 3 A315-54-A54D |\n| Aspire 5 A515-54G-517L | Aspire 5 A515-44G | Aspire 5 A515-44-R93E |\n\n---\n\nTitle: ACER 45W 19V 2.37A Genuine Original Laptop Adapter Charger (3.0 mm) - Super Pc\nURL: https://superpc.in/product/acer-45w-19v-2-37a-genuine-original-laptop-adapter-charger-3-0-mm/\nPublished: 2024-05-21T09:52:13.000Z\nAuthor: N/A\nHighlights:\nACER 45W 19V 2.37A Genuine Original Laptop Adapter Charger (3.0 mm) - Super Pc\n...\nHome» Shop» ACER 45W 19V 2.37A Genuine Original Laptop Adapter Charger (3.0 mm)\n...\n# ACER 45W 19V 2.37A Genuine Original Laptop Adapter Charger (3.0 mm)\n...\n- Acer Smart AC Power Adapter\n- 100% Genuine Original Acer Product\n- Specifications : (19V 2.37A) 45W (3.0 mm)\n- Pin Size: 3.0 mm (Check Photographs)\n- One Year Carry In Warranty. You need to send it back to us for replacement to our support center or direct company warranty whichever is applicable.\n- 15 Days Money Back Guarantee cover : Valid for any of the following condition like : faulty product, product compatibility issue or any other technical issue. Customer needs to send it back to us. We will check and provide solution . if not possible then 100% money will be refunded.\n- Complimentary: Three Pin Power Cord (No Warranty)\n- Supplied Model no may Vary. Specifications will be the Same.\n...\nSKU: ACER45A40w17MM-1-2 Category: Laptop Adapter\n...\n| Reliable power. Day in. Day out. | Getting a trusted AC adapter shouldn’t be a shot in the dark. With a reliable name like ACER, this standard power adapter delivers a safe, powerful charge every time, and at an affordable price. |\n| --- | --- |\n| Standard power | This 40W power adapter delivers the power you need with an Toshiba standard 3.0mm connector. |\n| Protected from the unexpected | The built-in surge-protector helps keep your laptop safe from sudden power changes. |\n| Forget broken cables | A quality cable specifically designed to alleviate stress from bending. |\n| Stress-free connector | The connector reduces cord stress and allows easy access to your other ports. |\n| Easy organization | Keep your cable neat and organized with the attached hook and loop fastener. |\n| Peace-of-mind coverage | Rest easy with standard one-year limited warranty. |\n...\n| Color | Black |\n| --- | --- |\n| Condition | New |\n| Brand | ACER Original |\n| Specifications | 19V 2.37A (3.0mm) |\n| Warranty | One Year Carry In Warranty |\n| Pin Size | 3.0 mm |\n| Power Cord/Connector | Three Pin Indian Cord ( No Warranty ) |\n...\n## Compatible Part Numbers\n...\n| R 14 R5471T | R5471T51UN | R5471T52EE |\n| --- | --- | --- |\n| R5471T71W2 | R5471T50UD |\n...\n| Weight | 0.5 kg |\n| --- | --- |\n| Dimensions | 30 × 15 × 5 cm |\n| Brand | ACER |\n| Adapter Type | Original |\n| AC Power Adapter | Yes |\n| Condition | NEW |\n| Color | Black |\n| Laptops Batteries | Genuine original Adapters, Laptop Chargers |",
+      "title": "Web search: Подбери совместимое зарядное устройство для Acer Aspire 3 A325-45 в Amazon India и проверь характеристики по независимым веб-источникам",
+      "metadata": {},
+      "time": {
+        "start": 1784444383743,
+        "end": 1784444384062
+      }
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-19T06:59:44.081Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 10403,
+    "output": 156,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 10403,
+  "sseCompletionTokens": 156,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:44.086Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784444384086,
+  "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+  "part": {
+    "id": "prt_f792c7351001dtLbFNGZXwV5uF",
+    "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+    "messageID": "msg_f792c709e001pV1VjxhOQd9HbR",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 10403,
+      "output": 156,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 10559,
+      "headroom": 28297,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:44.089Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:44.090Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:44.105Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:44.105Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:44.119Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:44.119Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:44.120Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:44.120Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:44.123Z",
+  "service": "session.prompt",
+  "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+  "finishReason": "unknown",
+  "zeroTokens": false,
+  "hint": "Provider returned undefined finishReason but made tool calls",
+  "message": "continuing loop despite unknown finish reason - tool calls detected"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:44.123Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:44.123Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:44.138Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:44.139Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 10559,
+  "providerTokens": 10559,
+  "estimatedInputTokens": 7804,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 10403,
+    "cacheRead": 0,
+    "output": 156
+  },
+  "overflow": false,
+  "headroom": 41249,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:44.140Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:44.161Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:44.168Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:44.296Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784444384297,
+  "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+  "part": {
+    "id": "prt_f792c7410001JydTOQCTI65h1m",
+    "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+    "messageID": "msg_f792c738b001JMGqAgcYSnK1I2",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:44.300Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444384301,
+  "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+  "part": {
+    "id": "prt_f792c7429001JxhiwUoduXfgeE",
+    "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+    "messageID": "msg_f792c738b001JMGqAgcYSnK1I2",
+    "type": "tool",
+    "callID": "call_7ce3dd0a0d37a448",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:44.302Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444384302,
+  "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+  "part": {
+    "id": "prt_f792c7429001JxhiwUoduXfgeE",
+    "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+    "messageID": "msg_f792c738b001JMGqAgcYSnK1I2",
+    "type": "tool",
+    "callID": "call_7ce3dd0a0d37a448",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://store.acer.com/en-in/adapter-compatible-models"
+      },
+      "time": {
+        "start": 1784444384301
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:44.309Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444384309,
+  "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+  "part": {
+    "id": "prt_f792c7434001HgBZvuzcIpxr3R",
+    "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+    "messageID": "msg_f792c738b001JMGqAgcYSnK1I2",
+    "type": "tool",
+    "callID": "call_569493861627652d",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:44.314Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444384314,
+  "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+  "part": {
+    "id": "prt_f792c7434001HgBZvuzcIpxr3R",
+    "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+    "messageID": "msg_f792c738b001JMGqAgcYSnK1I2",
+    "type": "tool",
+    "callID": "call_569493861627652d",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://store.acer.com/en-us/45w-adapter-with-power-cord-small-pin"
+      },
+      "time": {
+        "start": 1784444384313
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:44.321Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444384321,
+  "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+  "part": {
+    "id": "prt_f792c7440001XT8OeJ5BL4z6Mw",
+    "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+    "messageID": "msg_f792c738b001JMGqAgcYSnK1I2",
+    "type": "tool",
+    "callID": "call_1800b0520d6e5629",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:44.322Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444384322,
+  "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+  "part": {
+    "id": "prt_f792c7440001XT8OeJ5BL4z6Mw",
+    "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+    "messageID": "msg_f792c738b001JMGqAgcYSnK1I2",
+    "type": "tool",
+    "callID": "call_1800b0520d6e5629",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://www.acerparts.ca/product/kp-0450h-013/"
+      },
+      "time": {
+        "start": 1784444384321
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T06:59:44.348Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444384348,
+  "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+  "part": {
+    "id": "prt_f792c7440001XT8OeJ5BL4z6Mw",
+    "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+    "messageID": "msg_f792c738b001JMGqAgcYSnK1I2",
+    "type": "tool",
+    "callID": "call_1800b0520d6e5629",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://www.acerparts.ca/product/kp-0450h-013/"
+      },
+      "error": "Error: Request failed with status code: 403",
+      "time": {
+        "start": 1784444384321,
+        "end": 1784444384346
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1784444384348,
+  "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+  "error": "Error: Request failed with status code: 403"
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:14.288Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444414288,
+  "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+  "part": {
+    "id": "prt_f792c7429001JxhiwUoduXfgeE",
+    "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+    "messageID": "msg_f792c738b001JMGqAgcYSnK1I2",
+    "type": "tool",
+    "callID": "call_7ce3dd0a0d37a448",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://store.acer.com/en-in/adapter-compatible-models"
+      },
+      "error": "AbortError: The operation was aborted.",
+      "time": {
+        "start": 1784444384301,
+        "end": 1784444414286
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1784444414288,
+  "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+  "error": "AbortError: The operation was aborted."
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:14.300Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444414300,
+  "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+  "part": {
+    "id": "prt_f792c7434001HgBZvuzcIpxr3R",
+    "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+    "messageID": "msg_f792c738b001JMGqAgcYSnK1I2",
+    "type": "tool",
+    "callID": "call_569493861627652d",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://store.acer.com/en-us/45w-adapter-with-power-cord-small-pin"
+      },
+      "error": "AbortError: The operation was aborted.",
+      "time": {
+        "start": 1784444384313,
+        "end": 1784444414299
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1784444414300,
+  "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+  "error": "AbortError: The operation was aborted."
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-19T07:00:14.302Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 32031,
+    "output": 268,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 32031,
+  "sseCompletionTokens": 268,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:14.307Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784444414307,
+  "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+  "part": {
+    "id": "prt_f792ce9610011TJuH3Ex4iygKz",
+    "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+    "messageID": "msg_f792c738b001JMGqAgcYSnK1I2",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 32031,
+      "output": 268,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 32299,
+      "headroom": 6557,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:14.309Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:14.309Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:14.355Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:14.355Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:14.381Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:14.381Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:14.386Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:14.387Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:14.392Z",
+  "service": "session.prompt",
+  "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:14.394Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:14.415Z",
+  "service": "session.prompt",
+  "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:14.415Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:14.415Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1784444414416,
+  "sessionID": "ses_086d393b9ffe4Nd6HOJSHHSerH"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:14.417Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:14.417Z",
+  "service": "default",
+  "directory": "/tmp/tmp.xWoG3YOuw5",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:14.417Z",
+  "service": "state",
+  "key": "/tmp/tmp.xWoG3YOuw5",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:14.419Z",
+  "service": "state",
+  "key": "/tmp/tmp.xWoG3YOuw5",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:14.420Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 34,
+  "message": "Agent exiting"
+}
+
+== attempt 1 stopped after tool execution; retrying ==
+== Agent CLI attempt 2/3 ==
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.196Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": true,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.201Z",
+  "service": "default",
+  "version": "0.25.0",
+  "command": "/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js --prompt Подбери совместимое зарядное устройство для Acer Aspire 3 A325-45 в Amazon India и проверь характеристики по независимым веб-источникам? --disable-stdin --model formal-ai/formal-ai --no-summarize-session --read-only",
+  "workingDirectory": "/tmp/tmp.xWoG3YOuw5",
+  "scriptPath": "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.202Z",
+  "service": "default",
+  "directory": "/tmp/tmp.xWoG3YOuw5",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.203Z",
+  "service": "project",
+  "directory": "/tmp/tmp.xWoG3YOuw5",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.317Z",
+  "service": "default",
+  "processArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "--prompt",
+    "Подбери совместимое зарядное устройство для Acer Aspire 3 A325-45 в Amazon India и проверь характеристики по независимым веб-источникам?",
+    "--disable-stdin",
+    "--model",
+    "formal-ai/formal-ai",
+    "--no-summarize-session",
+    "--read-only"
+  ],
+  "bunArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "--prompt",
+    "Подбери совместимое зарядное устройство для Acer Aspire 3 A325-45 в Amazon India и проверь характеристики по независимым веб-источникам?",
+    "--disable-stdin",
+    "--model",
+    "formal-ai/formal-ai",
+    "--no-summarize-session",
+    "--read-only"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.317Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.325Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.328Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.328Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.328Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.339Z",
+  "service": "config",
+  "path": "/tmp/tmp.xWoG3YOuw5/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.407Z",
+  "service": "models.dev",
+  "path": "/home/box/.cache/link-assistant-agent/models.json",
+  "age": 35109,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.408Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.501Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.536Z",
+  "service": "claude-oauth",
+  "path": "/home/box/.claude/.credentials.json",
+  "message": "credentials file not found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.537Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.537Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.537Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.537Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.537Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.538Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 213,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.539Z",
+  "service": "provider",
+  "modelID": "big-pickle",
+  "providerID": "opencode",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.539Z",
+  "service": "provider",
+  "modelID": "minimax-m2.5-free",
+  "providerID": "kilo",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.540Z",
+  "service": "default",
+  "models": [
+    "opencode/big-pickle",
+    "kilo/minimax-m2.5-free",
+    "same"
+  ],
+  "source": "default",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.790Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.791Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.794Z",
+  "service": "session",
+  "id": "ses_086d308fdffeN9q7rmx38A53jx",
+  "version": "agent-cli-1.0.0",
+  "projectID": "global",
+  "directory": "/tmp/tmp.xWoG3YOuw5",
+  "title": "New session - 2026-07-19T07:00:17.794Z",
+  "time": {
+    "created": 1784444417794,
+    "updated": 1784444417794
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.795Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.795Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.797Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 6,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.806Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.807Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_086d308fdffeN9q7rmx38A53jx/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.808Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_086d308fdffeN9q7rmx38A53jx/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.821Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 13,
+  "method": "POST",
+  "path": "/session/ses_086d308fdffeN9q7rmx38A53jx/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.844Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.891Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.893Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.898Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.923Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.924Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.926Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.927Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.928Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.928Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.928Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 1,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.929Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.929Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.930Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.930Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.930Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.930Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.930Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:17.931Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:18.951Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.044Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.105Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.156Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.199Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.200Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.200Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.201Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.356Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784444419356,
+  "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+  "part": {
+    "id": "prt_f792cfd11001FuSPsEryWH5TXg",
+    "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+    "messageID": "msg_f792cfbb70014Jv0nuX8olsG2F",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.359Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444419359,
+  "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+  "part": {
+    "id": "prt_f792cfd1c001xEJb09YSWcyJ6C",
+    "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+    "messageID": "msg_f792cfbb70014Jv0nuX8olsG2F",
+    "type": "tool",
+    "callID": "call_8fae7e7af4742300",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.361Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444419361,
+  "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+  "part": {
+    "id": "prt_f792cfd1c001xEJb09YSWcyJ6C",
+    "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+    "messageID": "msg_f792cfbb70014Jv0nuX8olsG2F",
+    "type": "tool",
+    "callID": "call_8fae7e7af4742300",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "Подбери совместимое зарядное устройство для Acer Aspire 3 A325-45 в Amazon India и проверь характеристики по независимым веб-источникам"
+      },
+      "time": {
+        "start": 1784444419359
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.605Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444419605,
+  "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+  "part": {
+    "id": "prt_f792cfd1c001xEJb09YSWcyJ6C",
+    "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+    "messageID": "msg_f792cfbb70014Jv0nuX8olsG2F",
+    "type": "tool",
+    "callID": "call_8fae7e7af4742300",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "Подбери совместимое зарядное устройство для Acer Aspire 3 A325-45 в Amazon India и проверь характеристики по независимым веб-источникам"
+      },
+      "output": "Title: Adapter Compatible Models | Acer India Official Store\nURL: https://store.acer.com/en-in/adapter-compatible-models\nPublished: N/A\nAuthor: N/A\nHighlights:\nAdapter Compatible Models | Acer India Official Store\n...\nPart#: 5W.92391.012\n...\nDescription: 65W Small Pin Power Adapter\n...\nCompatible Models:\n...\n| A315-21G | A315-53 | A315-53G | A515-51 | A515-51G | A515-52 |\n| --- | --- | --- | --- | --- | --- |\n| A515-52G | A515-53 | A515-53KG | A615-51G | AN515-31 | AOD270 |\n| AS4743Z | AS4752Z | AS4755 | AS4810T | AS5315 | AS5349 |\n| AS5536 | AS5542 | AS5552 | AS5553 | AS5733 | AS5738Z |\n| AS5742G | AS5745 | AS5749Z | AS5750 | AS5755 | E1-421 |\n| E1-431 | E1-470P | E1-471 | E1-522 | E1-530 | E1-531 |\n| E1-570 | E1-570G | E1-571 | E1-572 | E1-572G | E5-475G |\n...\n| E5-476 | E5-521G | E5-522G | E5-523G | E5-532G | E5-551 |\n...\n| E5-551G | E5-553G | E5-571G | E5-573G | E5-573TG | E5-574G |\n...\n| E5-575G | E5-575TG | E5-576 | E5-576G | eME642 | eME725 |\n...\n| eME732Z | F5-571G | F5-572G | F5-573G | M3-581PTG | M5-481T |\n...\n| NE46R11I | NE56 | NV49 | R3-471TG | S3-391 | TM 2424 |\n...\n| TM3012 | TM4750 | TM5344 | TM5744Z | TM6492 | TM8472 |\n...\n| TM8472G | TM8473T | TM8481T | TMP2410-G2-M | TMP2410-G2-MG | TMP2410-MG |\n...\n| TMP243-M | TMP245-M | TMP246M-M | TMP248-MG | TMP249-G2-MG | TMP249-G3-M |\n...\n| TMP249-G3-MG | TMP249-MG | TMP2510-G2-M | TMP2510-G2-MG | TMP253-M | TMP258-MG |\n...\n| TMP259-G2-MG | TMP259-MG | TMP449-G2-MG | TMP449-G3-M | TMP449-G3-MG | TM >TMP453-M |\n...\n| TMP455-M | TMP633-M | TMP643-M | TMP643-V | TMP645-M | TMP645-S |\n...\n| TMP648-G2-M | TMP648-G3-M | TMP648-M | V3-571 | V3-572G | V3-\n...\n74G |\n...\n| V3-575G | V\n...\n-431 |\n...\n-431\n...\n-471 |\n...\n-471\n...\n-472 |\n...\n-472P |\n...\n-531 |\n...\nPart#: 5\n...\n679\n...\n002\n...\nCompatible Models:\n...\n| A111-31 | A315-53 | E5-475 | ES1-421 | EX215-51 | TMP249-G2-M |\n| --- | --- | --- | --- | --- | --- |\n| A114-32 | A315-54 | E5-476 | ES1-422 | EX215-52 | TMP249-G3-M |\n| A311-31 | A315-54K | E5-523 | ES1-431 | EX2540-37 | TMP249-M |\n| A314-31 | A315-56 | E5-532 | ES1-432 | F5-571 | TMP257-M |\n| A314-32 | A514-51K | E5-553 | ES1-512 | F5-573 | TMP257-MG |\n| A314-41 | A515-43 | E5-573 | ES1-520 | NE411 | TMP258-M |\n| A315-21 | A515-51 | E5-574 | ES1-521 | NE571 | TMP259-G2-M |\n...\n| A315-31 | A515-52K | E5-575 | ES1-522 | R3-131T | TMP259-M |\n...\n| A315-32 | A515-53\n...\n| E5-576 | ES1-523 |\n...\n7-371T | TMP\n...\n| A315-33 | E5-422 | ES1-131 | ES1-531 | TMB116-M | TMP449-G2-M |\n| A3\n...\n5-41 | E5-432 | ES1-132 | ES1-533 | TMP2410-M | TMP449-M |\n| A3\n...\n2 | E5-473 | ES1-311 | ES1-571 | TMP246-M |\n...\n3-575 |\n| A3\n...\n5-51 | E5-474 | ES1-411 | ES1-572 | TMP248-M |\n...\nCompatible Models:\n...\nCompatible Models:\n...\nCompatible Models:\n...\n| --- | --- | --- | --- | --- | --- |\n| A\n...\n| TMP2\n...\n-M | TMP\n...\n8-M |\n|\n...\n15-53\n...\n| AS5\n...\n| TMP251\n...\nCompatible Models:\n...\nCompatible Models:\n...\nCompatible Models:\n...\nCompatible Models:\n...\nCompatible Models:\n...\nCompatible Models:\n...\nCompatible Models:\n...\nPart#: 5W.14791.011\n...\nDescription: 65W Small Pin Power Adapter\n...\nCompatible Models:\n...\n| A111-31 | A114-32 | A311-31 | A314-31 | A314-32 | A314-41 |\n| --- | --- | --- | --- | --- | --- |\n| A315-21 | A315-31 | A315-32 | A315-33 | A315-41 | A315-42 |\n| A315-51 | A315-53 | A315-54 | A315-54K | A315-56 | A514-51K |\n| A515-43 | A515-51 | A515-52K | A515-53K | E5-422 | E5-432 |\n| E5-473 | E5-474 | E5-475 | E5-476 | E5-523 | E5-532 |\n| E5-553 | E5-573 | E5-574 | E5-575 | E5-576 | ES1-131 |\n| ES1-132 | ES1-311 | ES1-411 | ES1-421 | ES1-422 | ES1-431 |\n...\n| ES1-432 | ES1-512 | ES1-520 | ES1-521 | ES1-522 | ES1-523 |\n...\n| ES1-531 | ES1-533 | ES1-571 | ES1-572 | EX215-51 | EX215-52 |\n...\n| EX2540-37 | F5-571 | F5-573 | NE411 | NE571 | R3-131T |\n| R7-371T | TMB116-M | TMP2410-M | TMP246-M | TMP248-M | TMP249-G2-M |\n| TMP249-G3-M | TMP249-M | TMP257-M | TMP257-MG | TMP258-M | TMP259-G2-M |\n| TMP259-M | TMP446-M | TMP449-G2-M | TMP449-M | V3-575 |\n...\nPart#: 5W.14791.012\n...\nDescription: 65W Small Pin Power Adapter\n...\n1,379\n...\nCompatible Models:\n...\n| A315-55G | A315-57G | A315-58G | A514-52G | A514-53G | A514-54G |\n| --- | --- | --- | --- | --- | --- |\n| A515-54G | A515-55G | A515-56G | AV15-51 | SF313-52 | SF313-53 |\n| SF314-42 | SF314-43 | SF314-510G | SF314-511 | SF314-52 | SF314-53G |\n| SF314-55G | SF314-57 | SF314-57G | SF314-59 | SF315-51 | SF315-51G |\n| SF514-54T | SF514-55TA | SP314-53GN | SP314-54N | SP513-54N | TMP214-52G |\n| TMP214-53 | TMP214-53G | TMP215-41-G2 | TMP215-52G | TMP215-53G | TMP414-51 |\n| TMP414-51G | TMP414RN-51 | TMP614-51 | TMP614-51-G2 | TMP614-51T-G2 | TMP614-51TG-G2 |\n| TMX314-51-MG | TMX3310-M | TMX3410-M |\n\n---\n\nTitle: 45W Adapter with Power Cord (Small Pin)\nURL: https://store.acer.com/en-us/45w-adapter-with-power-cord-small-pin\nPublished: N/A\nAuthor: N/A\nHighlights:\n45W Adapter with Power Cord (Small Pin)\n...\n# 45W Adapter with Power Cord (Small Pin)\n...\nAK.045AP.075\n...\nCheck compatibility with your laptop using the Accessory Finder.\n...\nThis 45W Adapter with Power Cord meets the specifications of the original AC Adapter that shipped with your unit. It is also lightweight and small in form factor, ideal for spare power needs on the road.\n...\n- Narrow Connector Pin\n- Includes both AC Adapter and Power Cord\n- Lightweight and small form factor\n...\n$29.99\n...\n## Technical Information\n...\n## Physical Characteristics\n...\n### Connection Type\n...\n| More Information |\n| --- |\n| AO1-131, AO1-131M, AO1-431, C730, C738T, C810, CB3-531, R5-471T, R7-371T, SF314-51, SW5-173, SW5-271, V3-331, V3-371, V3-372, V3-372T |\n| Black |\n| Barrel |\n| 45W Adapter with Power Cord |\n| DC-Output - 45W |\n| 1 year |\n...\n45W Adapter with Power Cord (Small Pin)\n...\n$29.99\n\n---\n\nTitle: KP.0450H.013 - Genuine Acer A315-22 Adapter 45W 19V 3-PIN Black Tip - 1.1X3.0X7.7 A045R072P LF Black TIER2 & IEC 62368,\nURL: https://www.acerparts.ca/product/kp-0450h-013/\nPublished: 2022-10-21T00:00:00.000Z\nAuthor: N/A\nHighlights:\nKP.0450H.013 - Genuine Acer A315-22 Adapter 45W 19V 3-PIN Black Tip - 1.1X3.0X7.7 A045R072P LF Black TIER2 & IEC 62368,\n...\n.013\n...\nRated 4.93 out of 5 based on 15 customer ratings\n...\nGenuine Acer A315-22 Adapter 45W 19V 3-PIN Black Tip – 1.1X3.0X7.7 A045R072P LF Black TIER2 & IEC 62368,\n...\nSKU: KP.0450H.013-new Categories: AC Adapters, Acer Parts GTIN: 5704174071952Brand: ACER\n...\nGenuine Acer KP.0450H.013 – A315-22 ADAPTER 45W 19V 3-PIN BLACK TIP – 1.1X3.0X7.7 A045R072P LF BLACK TIER2 & IEC 62368, . SourceITStore is the #1 recommended Acer parts distributor in North America.\n...\nCompatible Part Numbers: KP.04501.017, KP.0450H.001\n...\nProduct Families: Aspire 1, Aspire 3, Aspire 5, ENDURO N3, ENDURO Urban N3, Spin 1, Spin 3, Swift 1, Swift 3, Travelmate B3, Travelmate P2\n...\nCompatible Models: A315-23, A314-22, A515-55T, A515-56, A514-54, A515-56T, A515-44, A114-61, SP314-21N, SP314-21, A517-52, A315-35, A515-55, A115-31, A317-33, A115-32, A314-35, A114-33, A515-45, A515-46, SP114-31, A317-53, A515-54, A514-52, A315-34, A315-22, A514-52K, SF314-58, A514-53, TMP214-52, TMP215-52, TMB311RN-31, TMB311R-31, TMB311-31, TMP214-53, TMP215-53, TMB311RN-32, TMP215-41, EN314-51W, EUN314-51W, A315-58, SF114-33, TMB311-32, TMB311R-32, EUN314A-51W, A315-59, A114-61L, A514-55, A315-43, TMP215-54, TMP214-54, A315-24P, A315-57, A314-23P, A315-510P, A315-24PT, A314-36P, A3SP14-31PT, A317-55P, A317-54, EUN314LA-51W, TMB514-31, EX215-23, A115-22, TMB311RN-33, TMB311R-33\n...\nNew , New Open Box , Refurbished , Used\n...\nA114-33, A114-61, A114-61L, A115-22, A115-31, A115-32, A314-22, A314-23P, A314-35, A314-36P, A315-22, A315-23, A315-24P, A315-24PT, A315-34, A315-35, A315-43, A315-510P, A315-57, A315-58, A315-59, A317-33, A317-53, A317-54, A317-55P, A3SP14-31PT, A514-52, A514-52K, A514-53, A514-54, A514-55, A515-44, A515-45, A515-46, A515-54, A515-55, A515-55T, A515-56, A515-56T, A517-52, EN314-51W, EUN314-51W, EUN314A-51W, EUN314LA-51W, EX215-23, SF114-33, SF314-58, SP114-31, SP314-21, SP314-21N, TMB311-31, TMB311-32, TMB311R-31, TMB311R-32, TMB311R-33, TMB311RN-31, TMB311RN-32, TMB311RN-33, TMB514-31, TMP214-52, TMP214-53, TMP214-54, TMP215-41, TMP215-52, TMP215-53, TMP215-54\n...\nWeight | 1 lbs |\n...\n| --- |\n...\n| Dimensions | 16 × 12 × 3 in |\n| Condition |\n| Model |\n| Product Family |\n...\nReviews (15)\n\n---\n\nTitle: Techie 45W Laptop Charger For Acer Aspire 3 A315, A317, Aspire V3, Extensa EX215, Travelmate P259 Series (19V, 2.37A) 5.5*1.7MM Pin - Techie Store\nURL: https://techiestore.in/product/techie-45w-19v-2-37a-pin-size-5-5mm-x-1-7mm-compatible-acer-laptop-charger/\nPublished: 2025-11-01T06:51:01.000Z\nAuthor: N/A\nHighlights:\nTechie 45W Laptop Charger For Acer Aspire 3 A315, A317, Aspire V3, Extensa EX215, Travelmate P259 Series (19V, 2.37A) 5.5*1.7MM Pin - Techie Store\n...\n# Techie 45W Laptop Charger for Acer Aspire 3 A315, A317, Aspire V3, Extensa EX215, Travelmate P259 Series (19V, 2.37A) 5.5*1.7MM Pin\n...\n- Highly Compatible for Techie Compatible Acer Aspire 3 A315, A317, Aspire V3, Extensa EX215, Aspire One, Aspire ES1 and Travelmate P259 Series laptop Charger.\n- Power cord included with charger\n- Pin Size: 5.5*1.7mm\n- Power: 45W | Voltage: 19V | Current: 2.37A\n...\n## How To Choose The Right Charger?\n...\n. Make sure that the\n...\nparameters marked as Output (voltage and current) match the Output parameters\n...\nthe shape and\n...\nEngineered to withstand the test of time, every Techie charger is built using high-quality components for long-term performance. A built-in mains filter ensures stable voltage input, while an enhanced radiator efficiently dissipates heat — keeping the charger cool and consistent, even with heavy usage.\n...\nElevate your laptop charging experience with the Techie Compatible Acer Aspire 3 A315, A317, Aspire V3, Extensa EX215, Aspire One, Aspire ES1 and Travelmate P259 Series Laptop Charger! This charger is purpose-built for Acer 45W Series laptops, delivering high-performance power that keeps your device ready to conquer your day.\n...\n### Key Features:\n...\n- User-Friendly Design: Say goodbye to tangled cords and adapters with an easy-to-use 5.5*1.7MM pin connector.\n- Steady Power: 19V output and 2.37A current rating for dependable power.\n- Wide Compatibility: Seamlessly fits a range of Techie Compatible Acer Aspire 3 A315, A317, Aspire V3, Extensa EX215, Aspire One, Aspire ES1 and Travelmate P259 Series laptops.\n- 45W Output: Swift and efficient charging for work or play.\n...\nCompatible Laptop Models\n\n---\n\nTitle: 45W Power Supply for Acer Aspire A315-23 A315-24P A315-35 A317-53 A317-54 A317-55P A115-32 A314-22 A314-23P A514-55 A515-45 A517-52 A314-36P Aspire 1 3 5 Series Laptop Charger a18-045n2a 3.0 * 1.0mm - Newegg.com\nURL: https://www.newegg.com/p/16J-02RM-006B8\nPublished: N/A\nAuthor: N/A\nHighlights:\n45W Power Supply for Acer Aspire A315-23 A315-24P A315-35 A317-53 A317-54 A317-55P A115-32 A314-22 A314-23P A514-55 A515-45 A517-52 A314-36P Aspire 1 3 5 Series Laptop Charger a18-045n2a 3.0 * 1.0mm - Newegg.com\n...\n# 45W Power Supply for Acer Aspire A315-23 A315-24P A315-35 A317-53 A317-54 A317-55P A115-32 A314-22 A314-23P A514-55 A515-45 A517-52 A314-36P Aspire 1 3 5 Series Laptop Charger a18-045n2a 3.0 * 1.0mm\n...\n- Input Voltage: 100-240V,50-60Hz, Output: 19V 2.37A 45W. OEM Acer 45w laptop charger / acer replacement laptop charger. Connector Size: 3.0*1.0mm\n...\n- Connector Type : 3.0*1.0mm(refer to picture). charger for acer chicony a18-045n2a a13-045n2a delta adp-45fe f adp-45he b liteon pa-1450-26 . one adapter model may have different sizes plug, please check your laptop model and DC-IN plug size before buy it.\n...\n- Compatible with acer aspire 3 charger Acer Aspire 3 A315-24P A314-36P A314-23P Laptop charger Aspire A314-22 A314-35 A115-32 power supply\n...\n- Compatible with acer aspire 3 laptop charger Acer Aspire 3 A315-35 A315-23 A315-43 A315-35 A315-58 A315-59 A317-53 A317-54 A317-55P power cord\n...\n- Compatible with acer aspire 5 laptop charger Acer Aspire 5 A514-55 A515-45 A515-56 A517-52 Acer Extensa 15 EX215-22 EX215-54 EX215-55 charger\n...\nInput Voltage: 100-240V, 50-60Hz, Output: 19V 2.37A 45W. OEM Acer 45w laptop charger / acer replacement laptop charger. Connector Size: 3.0 * 1.0 mm Connector Type: 3.0 * 1.0 mm (refer to picture). charger for acer chicony a18-045n2a a13-045n2a delta adp-45fe f adp-45he b liteon pa-1450-26. one adapter model may have different sizes plug, please check your laptop model and DC-IN plug size before buy it. Compatible with acer aspire 3 charger Acer Aspire 3 A315-24P A314-36P A314-23P Laptop charger Aspire A314-22 A314-35 A115-32 power supply Compatible with acer aspire 3 laptop charger Acer Aspire 3 A315-35 A315-23 A315-43 A315-35 A315-58 A315-59 A317-53 A317-54 A317-55P power cord Compatible with acer aspire 5 laptop charger Acer Aspire 5 A514-55 A515-45 A515-56 A517-52 Acer Extensa 15 EX215-22 EX215-54 EX215-55 charger\n\n---\n\nTitle: Techie 45W Laptop Charger For Acer Aspire 3 A314, A315, Aspire 5 A514, A A315, Extensa 15 EX215, Travelmate P2, X514 Series (19V, 2.37A) 3.0x1.1MM Pin - Techie Store\nURL: https://techiestore.in/product/techie-45w-19v-2-37a-pin-size-3-0mm-x-1-1mm-compatible-acer-laptop-charger/\nPublished: 2023-12-24T10:24:20.000Z\nAuthor: N/A\nHighlights:\nTechie 45W Laptop Charger For Acer Aspire 3 A314, A315, Aspire 5 A514, A A315, Extensa 15 EX215, Travelmate P2, X514 Series (19V, 2.37A) 3.0x1.1MM Pin - Techie Store\n...\n# Techie 45W Laptop Charger for Acer Aspire 3 A314, A315, Aspire 5 A514, A A315, Extensa 15 EX215, Travelmate P2, X514 Series (19V, 2.37A) 3.0×1.1MM Pin\n...\nRated 5\n...\n00 out of\n...\nbased on 12\n...\n- Power: 45W | Voltage: 19V | Current: 2.37A\n- Pin Size: 3.0*1.1mm\n- Power cord included with charger\n- Highly Compatible for Acer Aspire 3 A314, Aspire 3 A315, Aspire 5 A514, Aspire A A315, Extensa 15 EX215, Travelmate P2, Spin 3 SP, Swift 1 SF114 and Travelmate X514 Series laptop Charger.\n...\n## How To Choose The Right Charger?\n...\n(voltage and\n...\nEngineered to withstand the test of time, every Techie charger is built using high-quality components for long-term performance. A built-in mains filter ensures stable voltage\n...\n, while an enhanced radiator efficiently dissipates heat — keeping the charger cool and consistent, even with heavy usage.\n...\nElevate your laptop charging experience with the Techie Compatible Acer 45W Laptop Charger! This charger is purpose-built for Acer Aspire 3 A314, Aspire 3 A315, Aspire 5 A514, Aspire A A315, Extensa 15 EX215, Travelmate P2, Spin 1 SP, Spin 3 SP, Swift 1 SF114 and Travelmate X514 Series laptops, delivering high-performance power that keeps your device ready to conquer your day.\n...\n### Key Features:\n...\n- 45W Output: Swift and efficient charging for work or play.\n- Wide Compatibility: Seamlessly fits a range of Acer Aspire 3 A314, Aspire 3 A315, Aspire 5 A514, Aspire A A315, Extensa 15 EX215, Travelmate P2, Spin 3 SP, Swift 1 SF114 and Travelmate X514 Series laptops.\n- Steady Power: 19V output and 2.37A current rating for dependable power.\n- User-Friendly Design: Say goodbye to tangled cords and adapters with an easy-to-use 3.0*1.1MM pin connector.\n...\nCompatible Adapter Part Number\n...\n- 0A001-00230000\n- 0A001-00230200\n- 0A200-00021000\n...\n- 90-N45W-01\n...\n- AD890M26\n- EXAX81XA\n...\n- KP.04501.003\n...\n- KP.04501.012\n...\n- KP.04503.001\n...\n- KP.0450H.001\n- KP.0450H.013\n...\n- W15-045N4A\n...\n- W15-045N4B\n- W15-045N4C\n...\n- KP.04501.004\n...\n- KP.04501.017\n...\n.0450H.007\n...\n.04503.011\n...\nADP-45\n...\n- A0\n...\n- KP.0\n...\n3.0\n...\nKP04503011\n...\n- KP.0450\n...\n.001\n...\n045\n...\n- ADP-45ZD\n...\n- NC.20411.01Y\n...\n- AK.045AP.060\n...\n- AK.045\n...\n070\n...\n- ADP-45\n...\n- KP.0450H.017\n...\n- KP.0450H.003\n...\n- KP.0450H.015\n...\n- KP0\n...\n501017\n...\n- KP.0450H.019\n...\n- KP.04501.006\n...\n- KP.04501.018\n...\n- KP.04501.025\n...\n- KP.04501.013\n...\n- NP.ADT0A.077\n...\n- KP.04501.027\n...\n- PA-1450-26AL\n...\n- 5.71178E+12\n...\n- 5.71251E+12\n...\nCompatible Laptop Models\n...\nAspire\n\n---\n\nTitle: ACER 45w Original Laptop Charger - 19V 2.37A Genuine AC Power Adapter (1.1mm) - Super Pc\nURL: https://superpc.in/product/acer-45w-original-laptop-charger-19v-2-37a-genuine-ac-power-adapter-1-1mm/\nPublished: 2025-03-18T09:57:45.000Z\nAuthor: N/A\nHighlights:\nACER 45w Original Laptop Charger - 19V 2.37A Genuine AC Power Adapter (1.1mm) - Super Pc\n...\nACER 45w Original Laptop Charger – 19V 2.37A Genuine AC Power Adapter (1.1mm)\n...\n# ACER 45w Original Laptop Charger – 19V 2.37A Genuine AC Power Adapter (1.1mm)\n...\n- Acer Smart AC Power Adapter\n- 100% Genuine Original Acer Product\n- Specifications : ( 19V 2.37A) 45W ( 1.1 mm ) Micro pin\n- Pin Size: 3.0mm*1.1mm (Check Photographs)\n- One Year Carry In Warranty. You need to send it back to us for replacement to our support center or direct company warranty whichever is applicable.\n- 15 Days Money Back Guarantee cover : Valid for any of the following condition like : faulty product, product compatibility issue or any other technical issue. Customer needs to send it back to us. We will check and provide solution . if not possible then 100% money will be refunded.\n- Complimentary: Three Pin Power Cord (No Warranty)\n- Supplied Model no may Vary. Specifications will be the Same.\n...\n| Reliable power. Day in. Day out. | Getting a trusted AC adapter shouldn’t be a shot in the dark. With a reliable name like Acer, this standard power adapter delivers a safe, powerful charge every time, and at an affordable price. |\n| --- | --- |\n| Standard power | This 45W power adapter delivers the power you need with an Acer standard 1.1 mm connector. |\n| Protected from the unexpected | The built-in surge-protector helps keep your laptop safe from sudden power changes. |\n| Forget broken cables | A quality cable specifically designed to alleviate stress from bending. |\n| Stress-free connector | The connector reduces cord stress and allows easy access to your other ports. |\n| Easy organization | Keep your cable neat and organized with the attached hook and loop fastener. |\n| Peace-of-mind coverage | Rest easy with standard one-year limited warranty. |\n...\n| Color | Black |\n| --- | --- |\n| Condition | New |\n| Brand | Lenovo Original |\n| Specifications | 19V 2.37A (1.1 mm ) Micro pin |\n| Warranty | One Year Carry In Warranty |\n| Pin Size | 3.0mm*1.1mm |\n| Power Cord | Three Pin Indian Cord ( No Warranty ) |\n...\n## Fit Laptop Models ( use ” ctrl+F” to find your model)\n...\n| Spin 3 SP313-51N-3555 | Aspire 5 A515-54G-50F2 | Aspire 5 A515-54 |\n| --- | --- | --- |\n| Aspire 3 A315-54 | Aspire 3 A315-42 | Aspire 5 A515-54G |\n| Aspire 5 A515-54-57EN | Aspire 3 A315-54K | Aspire 5 A515-54-N78Y |\n| Aspire 3 A315-42G | Aspire 5 A515-44 | Aspire 5 A515-43 |\n| Aspire 5 A515-54G-53GP | Spin 3 SP314-54N | Aspire 5 A515-54G-74FC |\n...\n| Aspire 5 A515-43-R19L | Aspire 3 A315-42G-R7EH | Aspire 3 A315-54-A54D |\n| Aspire 5 A515-54G-517L | Aspire 5 A515-44G | Aspire 5 A515-44-R93E |\n\n---\n\nTitle: ACER 45W 19V 2.37A Genuine Original Laptop Adapter Charger (3.0 mm) - Super Pc\nURL: https://superpc.in/product/acer-45w-19v-2-37a-genuine-original-laptop-adapter-charger-3-0-mm/\nPublished: 2024-05-21T09:52:13.000Z\nAuthor: N/A\nHighlights:\nACER 45W 19V 2.37A Genuine Original Laptop Adapter Charger (3.0 mm) - Super Pc\n...\nHome» Shop» ACER 45W 19V 2.37A Genuine Original Laptop Adapter Charger (3.0 mm)\n...\n# ACER 45W 19V 2.37A Genuine Original Laptop Adapter Charger (3.0 mm)\n...\n- Acer Smart AC Power Adapter\n- 100% Genuine Original Acer Product\n- Specifications : (19V 2.37A) 45W (3.0 mm)\n- Pin Size: 3.0 mm (Check Photographs)\n- One Year Carry In Warranty. You need to send it back to us for replacement to our support center or direct company warranty whichever is applicable.\n- 15 Days Money Back Guarantee cover : Valid for any of the following condition like : faulty product, product compatibility issue or any other technical issue. Customer needs to send it back to us. We will check and provide solution . if not possible then 100% money will be refunded.\n- Complimentary: Three Pin Power Cord (No Warranty)\n- Supplied Model no may Vary. Specifications will be the Same.\n...\nSKU: ACER45A40w17MM-1-2 Category: Laptop Adapter\n...\n| Reliable power. Day in. Day out. | Getting a trusted AC adapter shouldn’t be a shot in the dark. With a reliable name like ACER, this standard power adapter delivers a safe, powerful charge every time, and at an affordable price. |\n| --- | --- |\n| Standard power | This 40W power adapter delivers the power you need with an Toshiba standard 3.0mm connector. |\n| Protected from the unexpected | The built-in surge-protector helps keep your laptop safe from sudden power changes. |\n| Forget broken cables | A quality cable specifically designed to alleviate stress from bending. |\n| Stress-free connector | The connector reduces cord stress and allows easy access to your other ports. |\n| Easy organization | Keep your cable neat and organized with the attached hook and loop fastener. |\n| Peace-of-mind coverage | Rest easy with standard one-year limited warranty. |\n...\n| Color | Black |\n| --- | --- |\n| Condition | New |\n| Brand | ACER Original |\n| Specifications | 19V 2.37A (3.0mm) |\n| Warranty | One Year Carry In Warranty |\n| Pin Size | 3.0 mm |\n| Power Cord/Connector | Three Pin Indian Cord ( No Warranty ) |\n...\n## Compatible Part Numbers\n...\n| R 14 R5471T | R5471T51UN | R5471T52EE |\n| --- | --- | --- |\n| R5471T71W2 | R5471T50UD |\n...\n| Weight | 0.5 kg |\n| --- | --- |\n| Dimensions | 30 × 15 × 5 cm |\n| Brand | ACER |\n| Adapter Type | Original |\n| AC Power Adapter | Yes |\n| Condition | NEW |\n| Color | Black |\n| Laptops Batteries | Genuine original Adapters, Laptop Chargers |",
+      "title": "Web search: Подбери совместимое зарядное устройство для Acer Aspire 3 A325-45 в Amazon India и проверь характеристики по независимым веб-источникам",
+      "metadata": {},
+      "time": {
+        "start": 1784444419359,
+        "end": 1784444419598
+      }
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-19T07:00:19.612Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 10403,
+    "output": 156,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 10403,
+  "sseCompletionTokens": 156,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.616Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784444419616,
+  "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+  "part": {
+    "id": "prt_f792cfe1c001IPiwDkQG5ZXFen",
+    "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+    "messageID": "msg_f792cfbb70014Jv0nuX8olsG2F",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 10403,
+      "output": 156,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 10559,
+      "headroom": 28297,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.618Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.620Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.625Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.625Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.663Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.664Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.665Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.667Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.684Z",
+  "service": "session.prompt",
+  "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+  "finishReason": "unknown",
+  "zeroTokens": false,
+  "hint": "Provider returned undefined finishReason but made tool calls",
+  "message": "continuing loop despite unknown finish reason - tool calls detected"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.684Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.685Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.698Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.698Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 10559,
+  "providerTokens": 10559,
+  "estimatedInputTokens": 7804,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 10403,
+    "cacheRead": 0,
+    "output": 156
+  },
+  "overflow": false,
+  "headroom": 41249,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.699Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.723Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.738Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.858Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784444419858,
+  "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+  "part": {
+    "id": "prt_f792cff0d001ajUBr8D2NRtq6Z",
+    "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+    "messageID": "msg_f792cfe72001NLHIDyxeI3Jb7h",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.859Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444419859,
+  "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+  "part": {
+    "id": "prt_f792cff12001ifhcIGqaNH8j0U",
+    "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+    "messageID": "msg_f792cfe72001NLHIDyxeI3Jb7h",
+    "type": "tool",
+    "callID": "call_7ce3dd0a0d37a448",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.860Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444419860,
+  "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+  "part": {
+    "id": "prt_f792cff12001ifhcIGqaNH8j0U",
+    "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+    "messageID": "msg_f792cfe72001NLHIDyxeI3Jb7h",
+    "type": "tool",
+    "callID": "call_7ce3dd0a0d37a448",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://store.acer.com/en-in/adapter-compatible-models"
+      },
+      "time": {
+        "start": 1784444419859
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.867Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444419867,
+  "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+  "part": {
+    "id": "prt_f792cff1a001vLzp7uiaykRzsQ",
+    "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+    "messageID": "msg_f792cfe72001NLHIDyxeI3Jb7h",
+    "type": "tool",
+    "callID": "call_569493861627652d",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.868Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444419868,
+  "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+  "part": {
+    "id": "prt_f792cff1a001vLzp7uiaykRzsQ",
+    "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+    "messageID": "msg_f792cfe72001NLHIDyxeI3Jb7h",
+    "type": "tool",
+    "callID": "call_569493861627652d",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://store.acer.com/en-us/45w-adapter-with-power-cord-small-pin"
+      },
+      "time": {
+        "start": 1784444419867
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.938Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444419939,
+  "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+  "part": {
+    "id": "prt_f792cff61001rXA905v20mjK9v",
+    "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+    "messageID": "msg_f792cfe72001NLHIDyxeI3Jb7h",
+    "type": "tool",
+    "callID": "call_1800b0520d6e5629",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.939Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444419939,
+  "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+  "part": {
+    "id": "prt_f792cff61001rXA905v20mjK9v",
+    "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+    "messageID": "msg_f792cfe72001NLHIDyxeI3Jb7h",
+    "type": "tool",
+    "callID": "call_1800b0520d6e5629",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://www.acerparts.ca/product/kp-0450h-013/"
+      },
+      "time": {
+        "start": 1784444419939
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:19.980Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444419980,
+  "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+  "part": {
+    "id": "prt_f792cff61001rXA905v20mjK9v",
+    "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+    "messageID": "msg_f792cfe72001NLHIDyxeI3Jb7h",
+    "type": "tool",
+    "callID": "call_1800b0520d6e5629",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://www.acerparts.ca/product/kp-0450h-013/"
+      },
+      "error": "Error: Request failed with status code: 403",
+      "time": {
+        "start": 1784444419939,
+        "end": 1784444419978
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1784444419980,
+  "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+  "error": "Error: Request failed with status code: 403"
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:49.869Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444449869,
+  "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+  "part": {
+    "id": "prt_f792cff12001ifhcIGqaNH8j0U",
+    "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+    "messageID": "msg_f792cfe72001NLHIDyxeI3Jb7h",
+    "type": "tool",
+    "callID": "call_7ce3dd0a0d37a448",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://store.acer.com/en-in/adapter-compatible-models"
+      },
+      "error": "AbortError: The operation was aborted.",
+      "time": {
+        "start": 1784444419859,
+        "end": 1784444449867
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1784444449869,
+  "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+  "error": "AbortError: The operation was aborted."
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:49.874Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444449878,
+  "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+  "part": {
+    "id": "prt_f792cff1a001vLzp7uiaykRzsQ",
+    "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+    "messageID": "msg_f792cfe72001NLHIDyxeI3Jb7h",
+    "type": "tool",
+    "callID": "call_569493861627652d",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://store.acer.com/en-us/45w-adapter-with-power-cord-small-pin"
+      },
+      "error": "AbortError: The operation was aborted.",
+      "time": {
+        "start": 1784444419867,
+        "end": 1784444449872
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1784444449879,
+  "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+  "error": "AbortError: The operation was aborted."
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-19T07:00:49.883Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 32031,
+    "output": 268,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 32031,
+  "sseCompletionTokens": 268,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:49.894Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784444449894,
+  "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+  "part": {
+    "id": "prt_f792d7460001JkOItvRLapC38x",
+    "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+    "messageID": "msg_f792cfe72001NLHIDyxeI3Jb7h",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 32031,
+      "output": 268,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 32299,
+      "headroom": 6557,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:49.913Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:49.918Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:50.083Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:50.087Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:50.114Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:50.114Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:50.117Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:50.118Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:50.141Z",
+  "service": "session.prompt",
+  "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:50.144Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:50.175Z",
+  "service": "session.prompt",
+  "sessionID": "ses_086d308fdffeN9q7rmx38A53jx",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:50.175Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:50.175Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1784444450175,
+  "sessionID": "ses_086d308fdffeN9q7rmx38A53jx"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:50.176Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:50.176Z",
+  "service": "default",
+  "directory": "/tmp/tmp.xWoG3YOuw5",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:50.177Z",
+  "service": "state",
+  "key": "/tmp/tmp.xWoG3YOuw5",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:50.179Z",
+  "service": "state",
+  "key": "/tmp/tmp.xWoG3YOuw5",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:50.180Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 36,
+  "message": "Agent exiting"
+}
+
+== attempt 2 stopped after tool execution; retrying ==
+== Agent CLI attempt 3/3 ==
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.611Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": true,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.614Z",
+  "service": "default",
+  "version": "0.25.0",
+  "command": "/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js --prompt Подбери совместимое зарядное устройство для Acer Aspire 3 A325-45 в Amazon India и проверь характеристики по независимым веб-источникам? --disable-stdin --model formal-ai/formal-ai --no-summarize-session --read-only",
+  "workingDirectory": "/tmp/tmp.xWoG3YOuw5",
+  "scriptPath": "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.615Z",
+  "service": "default",
+  "directory": "/tmp/tmp.xWoG3YOuw5",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.616Z",
+  "service": "project",
+  "directory": "/tmp/tmp.xWoG3YOuw5",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.684Z",
+  "service": "default",
+  "processArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "--prompt",
+    "Подбери совместимое зарядное устройство для Acer Aspire 3 A325-45 в Amazon India и проверь характеристики по независимым веб-источникам?",
+    "--disable-stdin",
+    "--model",
+    "formal-ai/formal-ai",
+    "--no-summarize-session",
+    "--read-only"
+  ],
+  "bunArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "--prompt",
+    "Подбери совместимое зарядное устройство для Acer Aspire 3 A325-45 в Amazon India и проверь характеристики по независимым веб-источникам?",
+    "--disable-stdin",
+    "--model",
+    "formal-ai/formal-ai",
+    "--no-summarize-session",
+    "--read-only"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.684Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.687Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.690Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.698Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.699Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.703Z",
+  "service": "config",
+  "path": "/tmp/tmp.xWoG3YOuw5/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.744Z",
+  "service": "models.dev",
+  "path": "/home/box/.cache/link-assistant-agent/models.json",
+  "age": 33921,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.745Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.808Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.830Z",
+  "service": "claude-oauth",
+  "path": "/home/box/.claude/.credentials.json",
+  "message": "credentials file not found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.831Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.831Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.831Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.831Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.831Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.832Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 145,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.834Z",
+  "service": "provider",
+  "modelID": "big-pickle",
+  "providerID": "opencode",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.834Z",
+  "service": "provider",
+  "modelID": "minimax-m2.5-free",
+  "providerID": "kilo",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.835Z",
+  "service": "default",
+  "models": [
+    "opencode/big-pickle",
+    "kilo/minimax-m2.5-free",
+    "same"
+  ],
+  "source": "default",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.868Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.868Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.872Z",
+  "service": "session",
+  "id": "ses_086d283dfffe772BsNWzSfD3Nz",
+  "version": "agent-cli-1.0.0",
+  "projectID": "global",
+  "directory": "/tmp/tmp.xWoG3YOuw5",
+  "title": "New session - 2026-07-19T07:00:51.872Z",
+  "time": {
+    "created": 1784444451872,
+    "updated": 1784444451872
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.873Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.873Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.874Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 6,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.882Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.882Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_086d283dfffe772BsNWzSfD3Nz/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.882Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_086d283dfffe772BsNWzSfD3Nz/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.902Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 20,
+  "method": "POST",
+  "path": "/session/ses_086d283dfffe772BsNWzSfD3Nz/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.912Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.924Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.926Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.932Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.943Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.943Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.944Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.945Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.946Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.946Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.946Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 1,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.949Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.949Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.949Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.949Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.949Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.949Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.949Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:51.951Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.002Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.021Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.123Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.144Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.187Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.187Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.187Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.188Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.314Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784444453315,
+  "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+  "part": {
+    "id": "prt_f792d81b6001vNKmuoK2E6ggH6",
+    "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+    "messageID": "msg_f792d8098001Yqn48YCvNZgrb7",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.321Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444453321,
+  "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+  "part": {
+    "id": "prt_f792d81c3001hFCv4Bth3y5DPB",
+    "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+    "messageID": "msg_f792d8098001Yqn48YCvNZgrb7",
+    "type": "tool",
+    "callID": "call_8fae7e7af4742300",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.324Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444453324,
+  "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+  "part": {
+    "id": "prt_f792d81c3001hFCv4Bth3y5DPB",
+    "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+    "messageID": "msg_f792d8098001Yqn48YCvNZgrb7",
+    "type": "tool",
+    "callID": "call_8fae7e7af4742300",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "Подбери совместимое зарядное устройство для Acer Aspire 3 A325-45 в Amazon India и проверь характеристики по независимым веб-источникам"
+      },
+      "time": {
+        "start": 1784444453322
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.559Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444453560,
+  "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+  "part": {
+    "id": "prt_f792d81c3001hFCv4Bth3y5DPB",
+    "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+    "messageID": "msg_f792d8098001Yqn48YCvNZgrb7",
+    "type": "tool",
+    "callID": "call_8fae7e7af4742300",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "Подбери совместимое зарядное устройство для Acer Aspire 3 A325-45 в Amazon India и проверь характеристики по независимым веб-источникам"
+      },
+      "output": "Title: Adapter Compatible Models | Acer India Official Store\nURL: https://store.acer.com/en-in/adapter-compatible-models\nPublished: N/A\nAuthor: N/A\nHighlights:\nAdapter Compatible Models | Acer India Official Store\n...\nPart#: 5W.92391.012\n...\nDescription: 65W Small Pin Power Adapter\n...\nCompatible Models:\n...\n| A315-21G | A315-53 | A315-53G | A515-51 | A515-51G | A515-52 |\n| --- | --- | --- | --- | --- | --- |\n| A515-52G | A515-53 | A515-53KG | A615-51G | AN515-31 | AOD270 |\n| AS4743Z | AS4752Z | AS4755 | AS4810T | AS5315 | AS5349 |\n| AS5536 | AS5542 | AS5552 | AS5553 | AS5733 | AS5738Z |\n| AS5742G | AS5745 | AS5749Z | AS5750 | AS5755 | E1-421 |\n| E1-431 | E1-470P | E1-471 | E1-522 | E1-530 | E1-531 |\n| E1-570 | E1-570G | E1-571 | E1-572 | E1-572G | E5-475G |\n...\n| E5-476 | E5-521G | E5-522G | E5-523G | E5-532G | E5-551 |\n...\n| E5-551G | E5-553G | E5-571G | E5-573G | E5-573TG | E5-574G |\n...\n| E5-575G | E5-575TG | E5-576 | E5-576G | eME642 | eME725 |\n...\n| eME732Z | F5-571G | F5-572G | F5-573G | M3-581PTG | M5-481T |\n...\n| NE46R11I | NE56 | NV49 | R3-471TG | S3-391 | TM 2424 |\n...\n| TM3012 | TM4750 | TM5344 | TM5744Z | TM6492 | TM8472 |\n...\n| TM8472G | TM8473T | TM8481T | TMP2410-G2-M | TMP2410-G2-MG | TMP2410-MG |\n...\n| TMP243-M | TMP245-M | TMP246M-M | TMP248-MG | TMP249-G2-MG | TMP249-G3-M |\n...\n| TMP249-G3-MG | TMP249-MG | TMP2510-G2-M | TMP2510-G2-MG | TMP253-M | TMP258-MG |\n...\n| TMP259-G2-MG | TMP259-MG | TMP449-G2-MG | TMP449-G3-M | TMP449-G3-MG | TM >TMP453-M |\n...\n| TMP455-M | TMP633-M | TMP643-M | TMP643-V | TMP645-M | TMP645-S |\n...\n| TMP648-G2-M | TMP648-G3-M | TMP648-M | V3-571 | V3-572G | V3-\n...\n74G |\n...\n| V3-575G | V\n...\n-431 |\n...\n-431\n...\n-471 |\n...\n-471\n...\n-472 |\n...\n-472P |\n...\n-531 |\n...\nPart#: 5\n...\n679\n...\n002\n...\nCompatible Models:\n...\n| A111-31 | A315-53 | E5-475 | ES1-421 | EX215-51 | TMP249-G2-M |\n| --- | --- | --- | --- | --- | --- |\n| A114-32 | A315-54 | E5-476 | ES1-422 | EX215-52 | TMP249-G3-M |\n| A311-31 | A315-54K | E5-523 | ES1-431 | EX2540-37 | TMP249-M |\n| A314-31 | A315-56 | E5-532 | ES1-432 | F5-571 | TMP257-M |\n| A314-32 | A514-51K | E5-553 | ES1-512 | F5-573 | TMP257-MG |\n| A314-41 | A515-43 | E5-573 | ES1-520 | NE411 | TMP258-M |\n| A315-21 | A515-51 | E5-574 | ES1-521 | NE571 | TMP259-G2-M |\n...\n| A315-31 | A515-52K | E5-575 | ES1-522 | R3-131T | TMP259-M |\n...\n| A315-32 | A515-53\n...\n| E5-576 | ES1-523 |\n...\n7-371T | TMP\n...\n| A315-33 | E5-422 | ES1-131 | ES1-531 | TMB116-M | TMP449-G2-M |\n| A3\n...\n5-41 | E5-432 | ES1-132 | ES1-533 | TMP2410-M | TMP449-M |\n| A3\n...\n2 | E5-473 | ES1-311 | ES1-571 | TMP246-M |\n...\n3-575 |\n| A3\n...\n5-51 | E5-474 | ES1-411 | ES1-572 | TMP248-M |\n...\nCompatible Models:\n...\nCompatible Models:\n...\nCompatible Models:\n...\n| --- | --- | --- | --- | --- | --- |\n| A\n...\n| TMP2\n...\n-M | TMP\n...\n8-M |\n|\n...\n15-53\n...\n| AS5\n...\n| TMP251\n...\nCompatible Models:\n...\nCompatible Models:\n...\nCompatible Models:\n...\nCompatible Models:\n...\nCompatible Models:\n...\nCompatible Models:\n...\nCompatible Models:\n...\nPart#: 5W.14791.011\n...\nDescription: 65W Small Pin Power Adapter\n...\nCompatible Models:\n...\n| A111-31 | A114-32 | A311-31 | A314-31 | A314-32 | A314-41 |\n| --- | --- | --- | --- | --- | --- |\n| A315-21 | A315-31 | A315-32 | A315-33 | A315-41 | A315-42 |\n| A315-51 | A315-53 | A315-54 | A315-54K | A315-56 | A514-51K |\n| A515-43 | A515-51 | A515-52K | A515-53K | E5-422 | E5-432 |\n| E5-473 | E5-474 | E5-475 | E5-476 | E5-523 | E5-532 |\n| E5-553 | E5-573 | E5-574 | E5-575 | E5-576 | ES1-131 |\n| ES1-132 | ES1-311 | ES1-411 | ES1-421 | ES1-422 | ES1-431 |\n...\n| ES1-432 | ES1-512 | ES1-520 | ES1-521 | ES1-522 | ES1-523 |\n...\n| ES1-531 | ES1-533 | ES1-571 | ES1-572 | EX215-51 | EX215-52 |\n...\n| EX2540-37 | F5-571 | F5-573 | NE411 | NE571 | R3-131T |\n| R7-371T | TMB116-M | TMP2410-M | TMP246-M | TMP248-M | TMP249-G2-M |\n| TMP249-G3-M | TMP249-M | TMP257-M | TMP257-MG | TMP258-M | TMP259-G2-M |\n| TMP259-M | TMP446-M | TMP449-G2-M | TMP449-M | V3-575 |\n...\nPart#: 5W.14791.012\n...\nDescription: 65W Small Pin Power Adapter\n...\n1,379\n...\nCompatible Models:\n...\n| A315-55G | A315-57G | A315-58G | A514-52G | A514-53G | A514-54G |\n| --- | --- | --- | --- | --- | --- |\n| A515-54G | A515-55G | A515-56G | AV15-51 | SF313-52 | SF313-53 |\n| SF314-42 | SF314-43 | SF314-510G | SF314-511 | SF314-52 | SF314-53G |\n| SF314-55G | SF314-57 | SF314-57G | SF314-59 | SF315-51 | SF315-51G |\n| SF514-54T | SF514-55TA | SP314-53GN | SP314-54N | SP513-54N | TMP214-52G |\n| TMP214-53 | TMP214-53G | TMP215-41-G2 | TMP215-52G | TMP215-53G | TMP414-51 |\n| TMP414-51G | TMP414RN-51 | TMP614-51 | TMP614-51-G2 | TMP614-51T-G2 | TMP614-51TG-G2 |\n| TMX314-51-MG | TMX3310-M | TMX3410-M |\n\n---\n\nTitle: 45W Adapter with Power Cord (Small Pin)\nURL: https://store.acer.com/en-us/45w-adapter-with-power-cord-small-pin\nPublished: N/A\nAuthor: N/A\nHighlights:\n45W Adapter with Power Cord (Small Pin)\n...\n# 45W Adapter with Power Cord (Small Pin)\n...\nAK.045AP.075\n...\nCheck compatibility with your laptop using the Accessory Finder.\n...\nThis 45W Adapter with Power Cord meets the specifications of the original AC Adapter that shipped with your unit. It is also lightweight and small in form factor, ideal for spare power needs on the road.\n...\n- Narrow Connector Pin\n- Includes both AC Adapter and Power Cord\n- Lightweight and small form factor\n...\n$29.99\n...\n## Technical Information\n...\n## Physical Characteristics\n...\n### Connection Type\n...\n| More Information |\n| --- |\n| AO1-131, AO1-131M, AO1-431, C730, C738T, C810, CB3-531, R5-471T, R7-371T, SF314-51, SW5-173, SW5-271, V3-331, V3-371, V3-372, V3-372T |\n| Black |\n| Barrel |\n| 45W Adapter with Power Cord |\n| DC-Output - 45W |\n| 1 year |\n...\n45W Adapter with Power Cord (Small Pin)\n...\n$29.99\n\n---\n\nTitle: KP.0450H.013 - Genuine Acer A315-22 Adapter 45W 19V 3-PIN Black Tip - 1.1X3.0X7.7 A045R072P LF Black TIER2 & IEC 62368,\nURL: https://www.acerparts.ca/product/kp-0450h-013/\nPublished: 2022-10-21T00:00:00.000Z\nAuthor: N/A\nHighlights:\nKP.0450H.013 - Genuine Acer A315-22 Adapter 45W 19V 3-PIN Black Tip - 1.1X3.0X7.7 A045R072P LF Black TIER2 & IEC 62368,\n...\n.013\n...\nRated 4.93 out of 5 based on 15 customer ratings\n...\nGenuine Acer A315-22 Adapter 45W 19V 3-PIN Black Tip – 1.1X3.0X7.7 A045R072P LF Black TIER2 & IEC 62368,\n...\nSKU: KP.0450H.013-new Categories: AC Adapters, Acer Parts GTIN: 5704174071952Brand: ACER\n...\nGenuine Acer KP.0450H.013 – A315-22 ADAPTER 45W 19V 3-PIN BLACK TIP – 1.1X3.0X7.7 A045R072P LF BLACK TIER2 & IEC 62368, . SourceITStore is the #1 recommended Acer parts distributor in North America.\n...\nCompatible Part Numbers: KP.04501.017, KP.0450H.001\n...\nProduct Families: Aspire 1, Aspire 3, Aspire 5, ENDURO N3, ENDURO Urban N3, Spin 1, Spin 3, Swift 1, Swift 3, Travelmate B3, Travelmate P2\n...\nCompatible Models: A315-23, A314-22, A515-55T, A515-56, A514-54, A515-56T, A515-44, A114-61, SP314-21N, SP314-21, A517-52, A315-35, A515-55, A115-31, A317-33, A115-32, A314-35, A114-33, A515-45, A515-46, SP114-31, A317-53, A515-54, A514-52, A315-34, A315-22, A514-52K, SF314-58, A514-53, TMP214-52, TMP215-52, TMB311RN-31, TMB311R-31, TMB311-31, TMP214-53, TMP215-53, TMB311RN-32, TMP215-41, EN314-51W, EUN314-51W, A315-58, SF114-33, TMB311-32, TMB311R-32, EUN314A-51W, A315-59, A114-61L, A514-55, A315-43, TMP215-54, TMP214-54, A315-24P, A315-57, A314-23P, A315-510P, A315-24PT, A314-36P, A3SP14-31PT, A317-55P, A317-54, EUN314LA-51W, TMB514-31, EX215-23, A115-22, TMB311RN-33, TMB311R-33\n...\nNew , New Open Box , Refurbished , Used\n...\nA114-33, A114-61, A114-61L, A115-22, A115-31, A115-32, A314-22, A314-23P, A314-35, A314-36P, A315-22, A315-23, A315-24P, A315-24PT, A315-34, A315-35, A315-43, A315-510P, A315-57, A315-58, A315-59, A317-33, A317-53, A317-54, A317-55P, A3SP14-31PT, A514-52, A514-52K, A514-53, A514-54, A514-55, A515-44, A515-45, A515-46, A515-54, A515-55, A515-55T, A515-56, A515-56T, A517-52, EN314-51W, EUN314-51W, EUN314A-51W, EUN314LA-51W, EX215-23, SF114-33, SF314-58, SP114-31, SP314-21, SP314-21N, TMB311-31, TMB311-32, TMB311R-31, TMB311R-32, TMB311R-33, TMB311RN-31, TMB311RN-32, TMB311RN-33, TMB514-31, TMP214-52, TMP214-53, TMP214-54, TMP215-41, TMP215-52, TMP215-53, TMP215-54\n...\nWeight | 1 lbs |\n...\n| --- |\n...\n| Dimensions | 16 × 12 × 3 in |\n| Condition |\n| Model |\n| Product Family |\n...\nReviews (15)\n\n---\n\nTitle: Techie 45W Laptop Charger For Acer Aspire 3 A315, A317, Aspire V3, Extensa EX215, Travelmate P259 Series (19V, 2.37A) 5.5*1.7MM Pin - Techie Store\nURL: https://techiestore.in/product/techie-45w-19v-2-37a-pin-size-5-5mm-x-1-7mm-compatible-acer-laptop-charger/\nPublished: 2025-11-01T06:51:01.000Z\nAuthor: N/A\nHighlights:\nTechie 45W Laptop Charger For Acer Aspire 3 A315, A317, Aspire V3, Extensa EX215, Travelmate P259 Series (19V, 2.37A) 5.5*1.7MM Pin - Techie Store\n...\n# Techie 45W Laptop Charger for Acer Aspire 3 A315, A317, Aspire V3, Extensa EX215, Travelmate P259 Series (19V, 2.37A) 5.5*1.7MM Pin\n...\n- Highly Compatible for Techie Compatible Acer Aspire 3 A315, A317, Aspire V3, Extensa EX215, Aspire One, Aspire ES1 and Travelmate P259 Series laptop Charger.\n- Power cord included with charger\n- Pin Size: 5.5*1.7mm\n- Power: 45W | Voltage: 19V | Current: 2.37A\n...\n## How To Choose The Right Charger?\n...\n. Make sure that the\n...\nparameters marked as Output (voltage and current) match the Output parameters\n...\nthe shape and\n...\nEngineered to withstand the test of time, every Techie charger is built using high-quality components for long-term performance. A built-in mains filter ensures stable voltage input, while an enhanced radiator efficiently dissipates heat — keeping the charger cool and consistent, even with heavy usage.\n...\nElevate your laptop charging experience with the Techie Compatible Acer Aspire 3 A315, A317, Aspire V3, Extensa EX215, Aspire One, Aspire ES1 and Travelmate P259 Series Laptop Charger! This charger is purpose-built for Acer 45W Series laptops, delivering high-performance power that keeps your device ready to conquer your day.\n...\n### Key Features:\n...\n- User-Friendly Design: Say goodbye to tangled cords and adapters with an easy-to-use 5.5*1.7MM pin connector.\n- Steady Power: 19V output and 2.37A current rating for dependable power.\n- Wide Compatibility: Seamlessly fits a range of Techie Compatible Acer Aspire 3 A315, A317, Aspire V3, Extensa EX215, Aspire One, Aspire ES1 and Travelmate P259 Series laptops.\n- 45W Output: Swift and efficient charging for work or play.\n...\nCompatible Laptop Models\n\n---\n\nTitle: 45W Power Supply for Acer Aspire A315-23 A315-24P A315-35 A317-53 A317-54 A317-55P A115-32 A314-22 A314-23P A514-55 A515-45 A517-52 A314-36P Aspire 1 3 5 Series Laptop Charger a18-045n2a 3.0 * 1.0mm - Newegg.com\nURL: https://www.newegg.com/p/16J-02RM-006B8\nPublished: N/A\nAuthor: N/A\nHighlights:\n45W Power Supply for Acer Aspire A315-23 A315-24P A315-35 A317-53 A317-54 A317-55P A115-32 A314-22 A314-23P A514-55 A515-45 A517-52 A314-36P Aspire 1 3 5 Series Laptop Charger a18-045n2a 3.0 * 1.0mm - Newegg.com\n...\n# 45W Power Supply for Acer Aspire A315-23 A315-24P A315-35 A317-53 A317-54 A317-55P A115-32 A314-22 A314-23P A514-55 A515-45 A517-52 A314-36P Aspire 1 3 5 Series Laptop Charger a18-045n2a 3.0 * 1.0mm\n...\n- Input Voltage: 100-240V,50-60Hz, Output: 19V 2.37A 45W. OEM Acer 45w laptop charger / acer replacement laptop charger. Connector Size: 3.0*1.0mm\n...\n- Connector Type : 3.0*1.0mm(refer to picture). charger for acer chicony a18-045n2a a13-045n2a delta adp-45fe f adp-45he b liteon pa-1450-26 . one adapter model may have different sizes plug, please check your laptop model and DC-IN plug size before buy it.\n...\n- Compatible with acer aspire 3 charger Acer Aspire 3 A315-24P A314-36P A314-23P Laptop charger Aspire A314-22 A314-35 A115-32 power supply\n...\n- Compatible with acer aspire 3 laptop charger Acer Aspire 3 A315-35 A315-23 A315-43 A315-35 A315-58 A315-59 A317-53 A317-54 A317-55P power cord\n...\n- Compatible with acer aspire 5 laptop charger Acer Aspire 5 A514-55 A515-45 A515-56 A517-52 Acer Extensa 15 EX215-22 EX215-54 EX215-55 charger\n...\nInput Voltage: 100-240V, 50-60Hz, Output: 19V 2.37A 45W. OEM Acer 45w laptop charger / acer replacement laptop charger. Connector Size: 3.0 * 1.0 mm Connector Type: 3.0 * 1.0 mm (refer to picture). charger for acer chicony a18-045n2a a13-045n2a delta adp-45fe f adp-45he b liteon pa-1450-26. one adapter model may have different sizes plug, please check your laptop model and DC-IN plug size before buy it. Compatible with acer aspire 3 charger Acer Aspire 3 A315-24P A314-36P A314-23P Laptop charger Aspire A314-22 A314-35 A115-32 power supply Compatible with acer aspire 3 laptop charger Acer Aspire 3 A315-35 A315-23 A315-43 A315-35 A315-58 A315-59 A317-53 A317-54 A317-55P power cord Compatible with acer aspire 5 laptop charger Acer Aspire 5 A514-55 A515-45 A515-56 A517-52 Acer Extensa 15 EX215-22 EX215-54 EX215-55 charger\n\n---\n\nTitle: Techie 45W Laptop Charger For Acer Aspire 3 A314, A315, Aspire 5 A514, A A315, Extensa 15 EX215, Travelmate P2, X514 Series (19V, 2.37A) 3.0x1.1MM Pin - Techie Store\nURL: https://techiestore.in/product/techie-45w-19v-2-37a-pin-size-3-0mm-x-1-1mm-compatible-acer-laptop-charger/\nPublished: 2023-12-24T10:24:20.000Z\nAuthor: N/A\nHighlights:\nTechie 45W Laptop Charger For Acer Aspire 3 A314, A315, Aspire 5 A514, A A315, Extensa 15 EX215, Travelmate P2, X514 Series (19V, 2.37A) 3.0x1.1MM Pin - Techie Store\n...\n# Techie 45W Laptop Charger for Acer Aspire 3 A314, A315, Aspire 5 A514, A A315, Extensa 15 EX215, Travelmate P2, X514 Series (19V, 2.37A) 3.0×1.1MM Pin\n...\nRated 5\n...\n00 out of\n...\nbased on 12\n...\n- Power: 45W | Voltage: 19V | Current: 2.37A\n- Pin Size: 3.0*1.1mm\n- Power cord included with charger\n- Highly Compatible for Acer Aspire 3 A314, Aspire 3 A315, Aspire 5 A514, Aspire A A315, Extensa 15 EX215, Travelmate P2, Spin 3 SP, Swift 1 SF114 and Travelmate X514 Series laptop Charger.\n...\n## How To Choose The Right Charger?\n...\n(voltage and\n...\nEngineered to withstand the test of time, every Techie charger is built using high-quality components for long-term performance. A built-in mains filter ensures stable voltage\n...\n, while an enhanced radiator efficiently dissipates heat — keeping the charger cool and consistent, even with heavy usage.\n...\nElevate your laptop charging experience with the Techie Compatible Acer 45W Laptop Charger! This charger is purpose-built for Acer Aspire 3 A314, Aspire 3 A315, Aspire 5 A514, Aspire A A315, Extensa 15 EX215, Travelmate P2, Spin 1 SP, Spin 3 SP, Swift 1 SF114 and Travelmate X514 Series laptops, delivering high-performance power that keeps your device ready to conquer your day.\n...\n### Key Features:\n...\n- 45W Output: Swift and efficient charging for work or play.\n- Wide Compatibility: Seamlessly fits a range of Acer Aspire 3 A314, Aspire 3 A315, Aspire 5 A514, Aspire A A315, Extensa 15 EX215, Travelmate P2, Spin 3 SP, Swift 1 SF114 and Travelmate X514 Series laptops.\n- Steady Power: 19V output and 2.37A current rating for dependable power.\n- User-Friendly Design: Say goodbye to tangled cords and adapters with an easy-to-use 3.0*1.1MM pin connector.\n...\nCompatible Adapter Part Number\n...\n- 0A001-00230000\n- 0A001-00230200\n- 0A200-00021000\n...\n- 90-N45W-01\n...\n- AD890M26\n- EXAX81XA\n...\n- KP.04501.003\n...\n- KP.04501.012\n...\n- KP.04503.001\n...\n- KP.0450H.001\n- KP.0450H.013\n...\n- W15-045N4A\n...\n- W15-045N4B\n- W15-045N4C\n...\n- KP.04501.004\n...\n- KP.04501.017\n...\n.0450H.007\n...\n.04503.011\n...\nADP-45\n...\n- A0\n...\n- KP.0\n...\n3.0\n...\nKP04503011\n...\n- KP.0450\n...\n.001\n...\n045\n...\n- ADP-45ZD\n...\n- NC.20411.01Y\n...\n- AK.045AP.060\n...\n- AK.045\n...\n070\n...\n- ADP-45\n...\n- KP.0450H.017\n...\n- KP.0450H.003\n...\n- KP.0450H.015\n...\n- KP0\n...\n501017\n...\n- KP.0450H.019\n...\n- KP.04501.006\n...\n- KP.04501.018\n...\n- KP.04501.025\n...\n- KP.04501.013\n...\n- NP.ADT0A.077\n...\n- KP.04501.027\n...\n- PA-1450-26AL\n...\n- 5.71178E+12\n...\n- 5.71251E+12\n...\nCompatible Laptop Models\n...\nAspire\n\n---\n\nTitle: ACER 45w Original Laptop Charger - 19V 2.37A Genuine AC Power Adapter (1.1mm) - Super Pc\nURL: https://superpc.in/product/acer-45w-original-laptop-charger-19v-2-37a-genuine-ac-power-adapter-1-1mm/\nPublished: 2025-03-18T09:57:45.000Z\nAuthor: N/A\nHighlights:\nACER 45w Original Laptop Charger - 19V 2.37A Genuine AC Power Adapter (1.1mm) - Super Pc\n...\nACER 45w Original Laptop Charger – 19V 2.37A Genuine AC Power Adapter (1.1mm)\n...\n# ACER 45w Original Laptop Charger – 19V 2.37A Genuine AC Power Adapter (1.1mm)\n...\n- Acer Smart AC Power Adapter\n- 100% Genuine Original Acer Product\n- Specifications : ( 19V 2.37A) 45W ( 1.1 mm ) Micro pin\n- Pin Size: 3.0mm*1.1mm (Check Photographs)\n- One Year Carry In Warranty. You need to send it back to us for replacement to our support center or direct company warranty whichever is applicable.\n- 15 Days Money Back Guarantee cover : Valid for any of the following condition like : faulty product, product compatibility issue or any other technical issue. Customer needs to send it back to us. We will check and provide solution . if not possible then 100% money will be refunded.\n- Complimentary: Three Pin Power Cord (No Warranty)\n- Supplied Model no may Vary. Specifications will be the Same.\n...\n| Reliable power. Day in. Day out. | Getting a trusted AC adapter shouldn’t be a shot in the dark. With a reliable name like Acer, this standard power adapter delivers a safe, powerful charge every time, and at an affordable price. |\n| --- | --- |\n| Standard power | This 45W power adapter delivers the power you need with an Acer standard 1.1 mm connector. |\n| Protected from the unexpected | The built-in surge-protector helps keep your laptop safe from sudden power changes. |\n| Forget broken cables | A quality cable specifically designed to alleviate stress from bending. |\n| Stress-free connector | The connector reduces cord stress and allows easy access to your other ports. |\n| Easy organization | Keep your cable neat and organized with the attached hook and loop fastener. |\n| Peace-of-mind coverage | Rest easy with standard one-year limited warranty. |\n...\n| Color | Black |\n| --- | --- |\n| Condition | New |\n| Brand | Lenovo Original |\n| Specifications | 19V 2.37A (1.1 mm ) Micro pin |\n| Warranty | One Year Carry In Warranty |\n| Pin Size | 3.0mm*1.1mm |\n| Power Cord | Three Pin Indian Cord ( No Warranty ) |\n...\n## Fit Laptop Models ( use ” ctrl+F” to find your model)\n...\n| Spin 3 SP313-51N-3555 | Aspire 5 A515-54G-50F2 | Aspire 5 A515-54 |\n| --- | --- | --- |\n| Aspire 3 A315-54 | Aspire 3 A315-42 | Aspire 5 A515-54G |\n| Aspire 5 A515-54-57EN | Aspire 3 A315-54K | Aspire 5 A515-54-N78Y |\n| Aspire 3 A315-42G | Aspire 5 A515-44 | Aspire 5 A515-43 |\n| Aspire 5 A515-54G-53GP | Spin 3 SP314-54N | Aspire 5 A515-54G-74FC |\n...\n| Aspire 5 A515-43-R19L | Aspire 3 A315-42G-R7EH | Aspire 3 A315-54-A54D |\n| Aspire 5 A515-54G-517L | Aspire 5 A515-44G | Aspire 5 A515-44-R93E |\n\n---\n\nTitle: ACER 45W 19V 2.37A Genuine Original Laptop Adapter Charger (3.0 mm) - Super Pc\nURL: https://superpc.in/product/acer-45w-19v-2-37a-genuine-original-laptop-adapter-charger-3-0-mm/\nPublished: 2024-05-21T09:52:13.000Z\nAuthor: N/A\nHighlights:\nACER 45W 19V 2.37A Genuine Original Laptop Adapter Charger (3.0 mm) - Super Pc\n...\nHome» Shop» ACER 45W 19V 2.37A Genuine Original Laptop Adapter Charger (3.0 mm)\n...\n# ACER 45W 19V 2.37A Genuine Original Laptop Adapter Charger (3.0 mm)\n...\n- Acer Smart AC Power Adapter\n- 100% Genuine Original Acer Product\n- Specifications : (19V 2.37A) 45W (3.0 mm)\n- Pin Size: 3.0 mm (Check Photographs)\n- One Year Carry In Warranty. You need to send it back to us for replacement to our support center or direct company warranty whichever is applicable.\n- 15 Days Money Back Guarantee cover : Valid for any of the following condition like : faulty product, product compatibility issue or any other technical issue. Customer needs to send it back to us. We will check and provide solution . if not possible then 100% money will be refunded.\n- Complimentary: Three Pin Power Cord (No Warranty)\n- Supplied Model no may Vary. Specifications will be the Same.\n...\nSKU: ACER45A40w17MM-1-2 Category: Laptop Adapter\n...\n| Reliable power. Day in. Day out. | Getting a trusted AC adapter shouldn’t be a shot in the dark. With a reliable name like ACER, this standard power adapter delivers a safe, powerful charge every time, and at an affordable price. |\n| --- | --- |\n| Standard power | This 40W power adapter delivers the power you need with an Toshiba standard 3.0mm connector. |\n| Protected from the unexpected | The built-in surge-protector helps keep your laptop safe from sudden power changes. |\n| Forget broken cables | A quality cable specifically designed to alleviate stress from bending. |\n| Stress-free connector | The connector reduces cord stress and allows easy access to your other ports. |\n| Easy organization | Keep your cable neat and organized with the attached hook and loop fastener. |\n| Peace-of-mind coverage | Rest easy with standard one-year limited warranty. |\n...\n| Color | Black |\n| --- | --- |\n| Condition | New |\n| Brand | ACER Original |\n| Specifications | 19V 2.37A (3.0mm) |\n| Warranty | One Year Carry In Warranty |\n| Pin Size | 3.0 mm |\n| Power Cord/Connector | Three Pin Indian Cord ( No Warranty ) |\n...\n## Compatible Part Numbers\n...\n| R 14 R5471T | R5471T51UN | R5471T52EE |\n| --- | --- | --- |\n| R5471T71W2 | R5471T50UD |\n...\n| Weight | 0.5 kg |\n| --- | --- |\n| Dimensions | 30 × 15 × 5 cm |\n| Brand | ACER |\n| Adapter Type | Original |\n| AC Power Adapter | Yes |\n| Condition | NEW |\n| Color | Black |\n| Laptops Batteries | Genuine original Adapters, Laptop Chargers |",
+      "title": "Web search: Подбери совместимое зарядное устройство для Acer Aspire 3 A325-45 в Amazon India и проверь характеристики по независимым веб-источникам",
+      "metadata": {},
+      "time": {
+        "start": 1784444453322,
+        "end": 1784444453553
+      }
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-19T07:00:53.571Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 10403,
+    "output": 156,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 10403,
+  "sseCompletionTokens": 156,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.581Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784444453582,
+  "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+  "part": {
+    "id": "prt_f792d82c4001InSAKH4jPd07KT",
+    "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+    "messageID": "msg_f792d8098001Yqn48YCvNZgrb7",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 10403,
+      "output": 156,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 10559,
+      "headroom": 28297,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.586Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.589Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.595Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.596Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.622Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.622Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.622Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.623Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.643Z",
+  "service": "session.prompt",
+  "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+  "finishReason": "unknown",
+  "zeroTokens": false,
+  "hint": "Provider returned undefined finishReason but made tool calls",
+  "message": "continuing loop despite unknown finish reason - tool calls detected"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.643Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.643Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.657Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.660Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 10559,
+  "providerTokens": 10559,
+  "estimatedInputTokens": 7804,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 10403,
+    "cacheRead": 0,
+    "output": 156
+  },
+  "overflow": false,
+  "headroom": 41249,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.661Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.722Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.731Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.879Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784444453879,
+  "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+  "part": {
+    "id": "prt_f792d83ee001QQiwVY1lOjsiT7",
+    "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+    "messageID": "msg_f792d831d0012oZJdK1oTXOrP2",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.880Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444453881,
+  "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+  "part": {
+    "id": "prt_f792d83f7001iMRoTEsT29jdrQ",
+    "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+    "messageID": "msg_f792d831d0012oZJdK1oTXOrP2",
+    "type": "tool",
+    "callID": "call_7ce3dd0a0d37a448",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.882Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444453882,
+  "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+  "part": {
+    "id": "prt_f792d83f7001iMRoTEsT29jdrQ",
+    "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+    "messageID": "msg_f792d831d0012oZJdK1oTXOrP2",
+    "type": "tool",
+    "callID": "call_7ce3dd0a0d37a448",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://store.acer.com/en-in/adapter-compatible-models"
+      },
+      "time": {
+        "start": 1784444453881
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.903Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444453904,
+  "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+  "part": {
+    "id": "prt_f792d840200135e8ZF8pM3R2P1",
+    "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+    "messageID": "msg_f792d831d0012oZJdK1oTXOrP2",
+    "type": "tool",
+    "callID": "call_569493861627652d",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.905Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444453906,
+  "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+  "part": {
+    "id": "prt_f792d840200135e8ZF8pM3R2P1",
+    "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+    "messageID": "msg_f792d831d0012oZJdK1oTXOrP2",
+    "type": "tool",
+    "callID": "call_569493861627652d",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://store.acer.com/en-us/45w-adapter-with-power-cord-small-pin"
+      },
+      "time": {
+        "start": 1784444453904
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.936Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444453936,
+  "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+  "part": {
+    "id": "prt_f792d842f00135kHfV3WnlLyrg",
+    "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+    "messageID": "msg_f792d831d0012oZJdK1oTXOrP2",
+    "type": "tool",
+    "callID": "call_1800b0520d6e5629",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.936Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444453936,
+  "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+  "part": {
+    "id": "prt_f792d842f00135kHfV3WnlLyrg",
+    "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+    "messageID": "msg_f792d831d0012oZJdK1oTXOrP2",
+    "type": "tool",
+    "callID": "call_1800b0520d6e5629",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://www.acerparts.ca/product/kp-0450h-013/"
+      },
+      "time": {
+        "start": 1784444453936
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:00:53.974Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444453974,
+  "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+  "part": {
+    "id": "prt_f792d842f00135kHfV3WnlLyrg",
+    "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+    "messageID": "msg_f792d831d0012oZJdK1oTXOrP2",
+    "type": "tool",
+    "callID": "call_1800b0520d6e5629",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://www.acerparts.ca/product/kp-0450h-013/"
+      },
+      "error": "Error: Request failed with status code: 403",
+      "time": {
+        "start": 1784444453936,
+        "end": 1784444453971
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1784444453974,
+  "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+  "error": "Error: Request failed with status code: 403"
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:01:23.878Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444483879,
+  "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+  "part": {
+    "id": "prt_f792d83f7001iMRoTEsT29jdrQ",
+    "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+    "messageID": "msg_f792d831d0012oZJdK1oTXOrP2",
+    "type": "tool",
+    "callID": "call_7ce3dd0a0d37a448",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://store.acer.com/en-in/adapter-compatible-models"
+      },
+      "error": "AbortError: The operation was aborted.",
+      "time": {
+        "start": 1784444453881,
+        "end": 1784444483877
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1784444483879,
+  "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+  "error": "AbortError: The operation was aborted."
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:01:23.881Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784444483884,
+  "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+  "part": {
+    "id": "prt_f792d840200135e8ZF8pM3R2P1",
+    "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+    "messageID": "msg_f792d831d0012oZJdK1oTXOrP2",
+    "type": "tool",
+    "callID": "call_569493861627652d",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://store.acer.com/en-us/45w-adapter-with-power-cord-small-pin"
+      },
+      "error": "AbortError: The operation was aborted.",
+      "time": {
+        "start": 1784444453904,
+        "end": 1784444483880
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1784444483884,
+  "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+  "error": "AbortError: The operation was aborted."
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-19T07:01:23.888Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 32031,
+    "output": 268,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 32031,
+  "sseCompletionTokens": 268,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:01:23.889Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784444483889,
+  "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+  "part": {
+    "id": "prt_f792df930001Gn0gsoHwRrlKSF",
+    "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+    "messageID": "msg_f792d831d0012oZJdK1oTXOrP2",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 32031,
+      "output": 268,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 32299,
+      "headroom": 6557,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:01:23.890Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:01:23.904Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:01:23.927Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:01:23.927Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:01:23.946Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:01:23.947Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T07:01:23.949Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-19T07:01:23.949Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:01:23.964Z",
+  "service": "session.prompt",
+  "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:01:23.966Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:01:23.978Z",
+  "service": "session.prompt",
+  "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-19T07:01:23.978Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-07-19T07:01:23.979Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1784444483979,
+  "sessionID": "ses_086d283dfffe772BsNWzSfD3Nz"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-07-19T07:01:23.979Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:01:23.979Z",
+  "service": "default",
+  "directory": "/tmp/tmp.xWoG3YOuw5",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:01:23.979Z",
+  "service": "state",
+  "key": "/tmp/tmp.xWoG3YOuw5",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:01:23.981Z",
+  "service": "state",
+  "key": "/tmp/tmp.xWoG3YOuw5",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T07:01:23.981Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 34,
+  "message": "Agent exiting"
+}
+
+== attempt 3 stopped after tool execution; retrying ==

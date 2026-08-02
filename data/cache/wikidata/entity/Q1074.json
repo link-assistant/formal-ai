@@ -1,0 +1,59 @@
+{
+  "entities": {
+    "Q1074": {
+      "type": "item",
+      "id": "Q1074",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "skin"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "кожа"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "त्वचा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "皮膚"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "soft outer covering organ of vertebrates"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "плёнка-покров позвоночных для защиты от вредоносного воздействия внешней среды"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "包住脊椎動物的軟層"
+        }
+      },
+      "aliases": {
+        "hi": [
+          {
+            "language": "hi",
+            "value": "चर्म"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "皮"
+          },
+          {
+            "language": "zh",
+            "value": "皮肤"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

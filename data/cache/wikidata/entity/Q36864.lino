@@ -1,0 +1,17 @@
+Q36864
+  aliases
+    en (unguis onychium)
+    ru ("ноготь")
+    zh ("趾甲")
+  descriptions
+    en "hard projection of digit"
+    hi "शारिरिक अंग"
+    ru "роговые пластины"
+  id Q36864
+  labels
+    en nail
+    hi "नाखून"
+    ru "ногти"
+    zh "指甲"
+  type item
+success 1

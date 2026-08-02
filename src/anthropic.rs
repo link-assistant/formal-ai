@@ -31,6 +31,8 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
+use crate::context_capacity::{avg_utf8_bytes_per_char, ContextCapacity};
+
 use crate::engine::{render_thinking_steps, stable_id, ThinkingStep};
 use crate::memory::MemoryEvent;
 use crate::protocol::{
@@ -89,6 +91,9 @@ pub struct AnthropicMessage {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub stop_sequence: Option<String>,
     pub usage: AnthropicUsage,
+    /// Disk-backed context capacity advertised consistently with model discovery.
+    #[serde(default)]
+    pub context: Value,
 }
 
 /// One block of an assistant response: a `text` block or a `tool_use` block.
@@ -368,6 +373,9 @@ fn anthropic_message_from_chat_completion(
     let requests_tools = choice.is_some_and(|choice| choice.finish_reason == "tool_calls");
 
     let (mut content, stop_reason, seed) = if requests_tools {
+        let narration = choice
+            .map(|choice| choice.message.content.plain_text())
+            .unwrap_or_default();
         let calls = choice
             .map(|choice| choice.message.tool_calls.clone())
             .unwrap_or_default();
@@ -376,7 +384,11 @@ fn anthropic_message_from_chat_completion(
             .map(|call| format!("{}({})", call.function.name, call.function.arguments))
             .collect::<Vec<_>>()
             .join("|");
-        let blocks = calls.into_iter().map(tool_call_to_block).collect();
+        let mut blocks = Vec::with_capacity(calls.len().saturating_add(1));
+        if !narration.trim().is_empty() {
+            blocks.push(AnthropicContentBlock::text(narration));
+        }
+        blocks.extend(calls.into_iter().map(tool_call_to_block));
         (blocks, String::from("tool_use"), seed)
     } else {
         let text = choice
@@ -413,6 +425,8 @@ fn anthropic_message_from_chat_completion(
             input_tokens: completion.usage.prompt_tokens,
             output_tokens: completion.usage.completion_tokens,
         },
+        context: json!(ContextCapacity::current()
+            .unwrap_or_else(|_| { ContextCapacity::from_bytes(0, 0, avg_utf8_bytes_per_char()) })),
     }
 }
 
@@ -459,6 +473,7 @@ pub fn anthropic_message_sse(message: &AnthropicMessage) -> String {
             "content": [],
             "stop_reason": Value::Null,
             "stop_sequence": Value::Null,
+            "context": message.context,
             "usage": {
                 "input_tokens": message.usage.input_tokens,
                 "output_tokens": 0,

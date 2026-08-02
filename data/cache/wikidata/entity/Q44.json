@@ -1,0 +1,59 @@
+{
+  "entities": {
+    "Q44": {
+      "type": "item",
+      "id": "Q44",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "beer"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "пиво"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "बियर"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "啤酒"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "alcoholic beverage obtained by fermenting starchy materials and not distilled"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "алкогольный напиток"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "शराब"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "酒精饮料"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "brew"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "麥仔酒"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

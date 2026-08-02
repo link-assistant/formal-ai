@@ -1,0 +1,59 @@
+{
+  "entities": {
+    "Q81054": {
+      "type": "item",
+      "id": "Q81054",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "storm"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "буря"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "तूफ़ान"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "风暴"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "any disturbed state of an astronomical body's atmosphere"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "очень сильный ветер"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "шторм"
+          },
+          {
+            "language": "ru",
+            "value": "ураган"
+          },
+          {
+            "language": "ru",
+            "value": "сильный шторм"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "風暴"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -20,10 +20,9 @@ use crate::solver_dispatch::{
 };
 use crate::solver_handlers::{
     try_behavior_rules_with_runtime, try_concept_lookup_with_response_language,
-    try_definition_merge_by_default, try_explicit_repository_lookup, try_feature_capability,
-    try_natural_language_tool_request, try_pattern_inference_with_response_language,
-    try_playwright_script, try_project_lookup, try_project_lookup_with_response_language,
-    CapabilityRuntime, SelfAwarenessRuntime,
+    try_explicit_repository_lookup, try_feature_capability, try_natural_language_tool_request,
+    try_pattern_inference_with_response_language, try_playwright_script, try_project_lookup,
+    try_project_lookup_with_response_language, CapabilityRuntime, SelfAwarenessRuntime,
 };
 
 /// Execute the single registry-backed method-selection path.
@@ -60,7 +59,8 @@ pub fn try_dispatch(
             return Some(answer);
         }
         if solver.config.definition_fusion_by_default && name == "concept_lookup" {
-            if let Some(answer) = try_definition_merge_by_default(prompt, log) {
+            if let Some(answer) = crate::definition_merge::merge_definitions_by_default(prompt, log)
+            {
                 return Some(record_method_answer(
                     prompt,
                     log,
@@ -240,6 +240,7 @@ fn try_diagnostic(
     Some(SymbolicAnswer {
         intent: inner.intent,
         answer,
+        execution_recipe: inner.execution_recipe,
         confidence: inner.confidence,
         evidence_links,
         thinking_steps,

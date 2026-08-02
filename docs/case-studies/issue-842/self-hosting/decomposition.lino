@@ -1,0 +1,20 @@
+issue_842_reviewed_decomposition
+  issue "842"
+  total_smallest_leaves 5
+  formal_ai_authored_leaves 1
+  formal_ai_authored_percent 20
+  leaf issue_842_smallest_leaf_contextual_reference
+    deliverable "return the seeded clarification for an unresolved contextual pronoun"
+    authorship human_tool_extension
+  leaf issue_842_smallest_leaf_definition_example_role
+    deliverable "extract a definition-example subject from meaning-slot structure"
+    authorship human_tool_extension
+  leaf issue_842_smallest_leaf_judge_boundary
+    deliverable "judge answer claims only from assistant-authored output"
+    authorship human_tool_extension
+  leaf issue_842_smallest_leaf_ratchet_invariant
+    deliverable "persist the stable-ID preservation and extension invariant"
+    authorship formal_ai_agent_cli
+  leaf issue_842_smallest_leaf_failure_learning
+    deliverable "derive review-gated candidates only from observed failed nodes"
+    authorship human_tool_extension

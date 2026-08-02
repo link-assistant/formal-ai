@@ -508,9 +508,13 @@ meanings
     lexeme en
       surface
         text "translate … to "
+      surface
+        text "… translate to "
     lexeme ru
       surface
         text "переведи … на "
+      surface
+        text "… переведи на "
     lexeme hi
       surface
         text अनुवाद
@@ -519,6 +523,10 @@ meanings
         text 翻译
       surface
         text 翻譯
+      surface
+        text …翻译成
+      surface
+        text …翻譯成
   translation_into_marker
     defined-by translate
     defined-by translation_direction_target
@@ -572,9 +580,13 @@ meanings
     lexeme en
       surface
         text define
+      surface
+        text "give a definition of"
     lexeme ru
       surface
         text определи
+      surface
+        text "дай определение"
     lexeme hi
       surface
         text "परिभाषित करें"
@@ -639,6 +651,9 @@ meanings
     lexeme zh
       surface
         text 苹果
+    lexeme es
+      surface
+        text manzana
   greeting_hello
     grounded-in Q98815142
     defined-by entity
@@ -657,6 +672,9 @@ meanings
     lexeme zh
       surface
         text 你好
+    lexeme es
+      surface
+        text hola
   gratitude_thank_you
     grounded-in Q2728730
     defined-by entity
@@ -677,6 +695,9 @@ meanings
         text 谢谢
       surface
         text 謝謝
+    lexeme es
+      surface
+        text gracias
   affirmation_yes
     grounded-in Q6452715
     defined-by entity
@@ -693,6 +714,9 @@ meanings
     lexeme zh
       surface
         text 是
+    lexeme es
+      surface
+        text sí
   negation_no
     defined-by entity
     role compositional_lemma
@@ -879,6 +903,9 @@ meanings
     lexeme zh
       surface
         text 面包
+    lexeme es
+      surface
+        text pan
   water
     grounded-in Q283
     defined-by entity
@@ -904,6 +931,9 @@ meanings
     lexeme zh
       surface
         text 水
+    lexeme es
+      surface
+        text agua
   good
     defined-by property
     role compositional_lemma
@@ -1103,3 +1133,83 @@ meanings
     lexeme zh
       surface
         text 你好吗
+  formal_system_incomplete_or_inconsistent
+    defined-by concept
+    role compositional_phrase
+    lexeme en
+      surface
+        text "any formal system is either incomplete or inconsistent"
+    lexeme ru
+      surface
+        text "любая формальная система либо неполна, либо противоречива"
+    lexeme hi
+      surface
+        text "कोई भी औपचारिक प्रणाली या तो अपूर्ण होती है या असंगत"
+    lexeme zh
+      surface
+        text "任何形式系统要么是不完备的，要么是不一致的"
+  es
+    defined-by human_language
+    lexeme en
+      surface
+        text "Spanish language code"
+  full
+    defined-by concept
+    lexeme en
+      surface
+        text "full language protocol status"
+  partial
+    defined-by concept
+    lexeme en
+      surface
+        text "partial language protocol status"
+  explicit_gap
+    defined-by concept
+    lexeme en
+      surface
+        text "explicit language gap policy"
+  explicit_language_context
+    defined-by concept
+    lexeme en
+      surface
+        text "explicit language context detection"
+  language_gap
+    defined-by concept
+    lexeme en
+      surface
+        text "language coverage gap"
+  response_greeting_es
+    defined-by concept
+    lexeme en
+      surface
+        text "Spanish greeting response"
+  response_identity_es
+    defined-by concept
+    lexeme en
+      surface
+        text "Spanish identity response"
+  response_language_gap_en
+    defined-by concept
+    lexeme en
+      surface
+        text "English language gap response"
+  response_language_gap_ru
+    defined-by concept
+    lexeme en
+      surface
+        text "Russian language gap response"
+  response_language_gap_hi
+    defined-by concept
+    lexeme en
+      surface
+        text "Hindi language gap response"
+  response_language_gap_zh
+    defined-by concept
+    lexeme en
+      surface
+        text "Chinese language gap response"
+  response_language_gap_es
+    defined-by concept
+    lexeme en
+      surface
+        text "Spanish language gap response"

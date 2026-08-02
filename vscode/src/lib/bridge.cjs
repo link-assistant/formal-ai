@@ -70,10 +70,12 @@ function createBridge(options = {}) {
   }
 
   // Server mode is required: tool routing only makes sense once the local app
-  // is the execution surface. In-process / web mode keeps the browser sandbox.
+  // is the execution surface. Read-only capabilities can use the Node host
+  // without starting that optional server.
   async function invokeTool(request) {
     const tool = request && request.tool ? String(request.tool) : "";
-    if (!isServerEnabled()) {
+    const readOnly = Boolean(toolRouter && toolRouter.isReadOnly && toolRouter.isReadOnly(tool));
+    if (!isServerEnabled() && !readOnly) {
       return refusedTool(
         tool,
         "tool routing requires the local server (formal-ai.server.enabled)",

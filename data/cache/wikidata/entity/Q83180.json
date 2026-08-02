@@ -1,0 +1,63 @@
+{
+  "entities": {
+    "Q83180": {
+      "type": "item",
+      "id": "Q83180",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "roof"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "крыша"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "छत"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "屋顶"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "top covering of a building"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "верхнее покрытие здания"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "房屋的頂蓋"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "чердак"
+          },
+          {
+            "language": "ru",
+            "value": "покрытие"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "屋頂"
+          },
+          {
+            "language": "zh",
+            "value": "厝頂"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

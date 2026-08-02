@@ -1,0 +1,55 @@
+{
+  "entities": {
+    "Q3196": {
+      "type": "item",
+      "id": "Q3196",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "fire"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "огонь"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "अग्नि"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "火"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "rapid oxidation of a material; phenomenon that emits light and heat"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "образование пламени при горении"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "किसी पदार्थ का तीव्र ऑक्सीकरण; प्रकाश और ऊष्मा उत्सर्जित करने वाली घटना"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "fires"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "आग"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,76 @@
+self_ast_census
+  target src/engine_responses.rs
+  language rust
+  fidelity signature
+  byte_len 7064
+  line_count 201
+  content_id source_module_ee7c6bbd0d2660f4
+  symbol_count 67
+  symbols
+    const FALLBACK_UNKNOWN_LANGUAGE_ANSWER 17 21
+    const GREETING_EXAMPLES 23 23
+    const TEST_STATUS_EXAMPLES 24 25
+    const COURTESY_RESPONSE_EXAMPLES 26 26
+    const ASSISTANT_FREE_TIME_EXAMPLES 27 30
+    const IDENTITY_EXAMPLES 31 36
+    const UNKNOWN_EXAMPLES 37 37
+    function cached_response 47 52
+    function greeting_answer 54 57
+    static CELL 55 55
+    function wellbeing_answer 59 62
+    static CELL 60 60
+    function farewell_answer 64 67
+    static CELL 65 65
+    function courtesy_response_answer 69 72
+    static CELL 70 70
+    function assistant_free_time_answer 74 77
+    static CELL 75 75
+    function russian_farewell_answer 79 82
+    static CELL 80 80
+    function hindi_farewell_answer 84 87
+    static CELL 85 85
+    function chinese_farewell_answer 89 92
+    static CELL 90 90
+    function test_status_answer 94 97
+    static CELL 95 95
+    function russian_test_status_answer 99 102
+    static CELL 100 100
+    function hindi_test_status_answer 104 107
+    static CELL 105 105
+    function chinese_test_status_answer 109 112
+    static CELL 110 110
+    function russian_courtesy_response_answer 114 117
+    static CELL 115 115
+    function hindi_courtesy_response_answer 119 122
+    static CELL 120 120
+    function chinese_courtesy_response_answer 124 127
+    static CELL 125 125
+    function russian_assistant_free_time_answer 129 132
+    static CELL 130 130
+    function hindi_assistant_free_time_answer 134 137
+    static CELL 135 135
+    function chinese_assistant_free_time_answer 139 142
+    static CELL 140 140
+    function identity_answer 144 147
+    static CELL 145 145
+    function unknown_answer 149 152
+    static CELL 150 150
+    function russian_wellbeing_answer 154 157
+    static CELL 155 155
+    function hindi_wellbeing_answer 159 162
+    static CELL 160 160
+    function chinese_wellbeing_answer 164 167
+    static CELL 165 165
+    function russian_greeting_answer 169 172
+    static CELL 170 170
+    function hindi_greeting_answer 174 177
+    static CELL 175 175
+    function chinese_greeting_answer 179 182
+    static CELL 180 180
+    function russian_identity_answer 184 187
+    static CELL 185 185
+    function hindi_identity_answer 189 192
+    static CELL 190 190
+    function chinese_identity_answer 194 197
+    static CELL 195 195
+    function unknown_language_fallback_answer 199 201

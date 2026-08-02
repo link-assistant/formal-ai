@@ -1,0 +1,16 @@
+self_ast_census
+  target src/seed/summary_topics.rs
+  language rust
+  fidelity signature
+  byte_len 5669
+  line_count 152
+  content_id source_module_ad645d4af99bacc4
+  symbol_count 7
+  symbols
+    struct SummaryTopic 27 31
+    struct SummaryTopicSeeds 35 43
+    function matches_trigger 51 74
+    function pick_topic 78 85
+    function constraint_for 89 95
+    function render_fallback 99 104
+    function summary_topic_seeds 108 152

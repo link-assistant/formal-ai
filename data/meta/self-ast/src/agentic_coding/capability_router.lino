@@ -1,0 +1,91 @@
+self_ast_census
+  target src/agentic_coding/capability_router.rs
+  language rust
+  fidelity full_ast
+  byte_len 9966
+  line_count 285
+  content_id source_module_55c1e27ca2bf2c6c
+  symbol_count 11
+  symbols
+    function tool_for 16 44
+    function tool_matches_capability 46 56
+    function classify_tool 60 123
+    function is_workspace_creation_tool 130 136
+    function plan_shared_capability_step 138 167
+    function task_matches 169 179
+    function arguments_for 181 228
+    function wildcard_token 230 234
+    function file_tokens 236 249
+    function shell_fallback 251 281
+    function shell_quote 283 285
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 8341
+    named_node_count 1728
+    distinct_node_kinds 62
+    node_kinds
+      arguments 164
+      array_expression 2
+      array_type 3
+      binary_expression 40
+      block 43
+      boolean_literal 1
+      call_expression 164
+      char_literal 25
+      closure_expression 22
+      closure_parameters 22
+      crate 2
+      doc_comment 14
+      else_clause 7
+      escape_sequence 2
+      expression_statement 29
+      field_expression 120
+      field_identifier 120
+      for_expression 1
+      function_item 11
+      generic_function 1
+      generic_type 7
+      identifier 408
+      if_expression 17
+      inner_doc_comment_marker 1
+      integer_literal 1
+      let_condition 4
+      let_declaration 17
+      lifetime 3
+      lifetime_parameter 1
+      line_comment 14
+      macro_invocation 14
+      match_arm 14
+      match_block 2
+      match_expression 2
+      match_pattern 14
+      mutable_specifier 2
+      outer_doc_comment_marker 13
+      parameter 20
+      parameters 11
+      parenthesized_expression 2
+      primitive_type 20
+      reference_expression 2
+      reference_type 18
+      return_expression 8
+      scoped_identifier 70
+      scoped_use_list 1
+      source_file 1
+      string_content 79
+      string_literal 77
+      super 10
+      token_tree 31
+      try_expression 2
+      tuple_expression 1
+      tuple_pattern 1
+      tuple_struct_pattern 4
+      type_arguments 8
+      type_identifier 19
+      type_parameters 1
+      unary_expression 5
+      use_declaration 5
+      use_list 1
+      visibility_modifier 4

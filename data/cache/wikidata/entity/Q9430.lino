@@ -1,0 +1,16 @@
+Q9430
+  aliases
+    en (sea oceans oceanic)
+  descriptions
+    en "very large body of saline water"
+    hi "नमकीन पानी का बड़ा शरीर"
+    ru "крупнейший водный объект, составляющий часть Мирового океана"
+    zh "地球上巨大的鹽水體"
+  id Q9430
+  labels
+    en ocean
+    hi "महासागर"
+    ru "океан"
+    zh "海洋"
+  type item
+success 1

@@ -1,0 +1,58 @@
+   Compiling formal-ai v0.301.0 (/tmp/gh-issue-solver-1784701857721)
+warning: function `meta_language_label_for_format` is never used
+   --> src/summarization/file.rs:429:4
+    |
+429 | fn meta_language_label_for_format(format: &str) -> Option<&'static str> {
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `formal-ai` (lib) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 28.99s
+     Running tests/integration/mod.rs (target/debug/deps/integration-849c47f0d6741291)
+
+running 3 tests
+
+thread 'issue_822_context::verbose_is_global_default_and_silent_is_available' (18151) panicked at tests/integration/issue_822_context.rs:136:5:
+Formal symbolic AI implementation
+
+Usage: formal-ai [OPTIONS] [COMMAND]
+
+Commands:
+  chat
+  dataset
+  context          Export complete conversations or convert arbitrary JSON to Links Notation
+  serve
+  proxy            Run a logging reverse proxy in front of a Formal AI HTTP server
+  memory           Export or import the agent's append-only memory log as a portable `demo_memory` Links Notation file. Round-trips with the browser demo
+  shared-dialog    Convert shared chat captures or compact transcripts into `demo_memory`
+  bundle           Export or import the full self-contained `formal_ai_bundle` (seed + memory). The same file format the browser's "Download bundle" button produces
+  environments     Print the environment directory baked into the seed so users can see every interface the agent supports and how to migrate memory between them
+  import           Import lexical semantics in bulk from external sources (issue #660, R378). Generalises `scripts/ground-meanings.rs` into a deterministic, validate-then-write pipeline
+  github-logs      Plan or collect GitHub issue, PR, review, and Actions run evidence into a case-study directory
+  statement-audit  Weigh statement-bearing repository text against captured provenance
+  with             Run or permanently configure external CLIs against a local Formal AI server
+  agent            Drive the full agentic-coding loop offline (issue #468). The in-repo driver plays the role of an external agentic CLI against our OpenAI-compatible server: it advertises tools, executes every emitted tool call (web search/fetch against an offline corpus, file writes and commands in a sandboxed workspace), feeds results back, and loops until the server returns the finished Links Notation knowledge base
+  telegram         Run the Telegram bot client (long polling by default; webhook server is opt-in)
+  improve          Benchmark-gated promotion of self-improvement proposals (issue #656, E37)
+  help             Print this message or the help of the given subcommand(s)
+
+Options:
+      --verbose  Print and persist complete diagnostics (enabled by default)
+      --silent   Disable verbose output and automatic complete dialog logging [env: FORMAL_AI_SILENT=]
+  -h, --help     Print help
+  -V, --version  Print version
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test issue_822_context::verbose_is_global_default_and_silent_is_available ... FAILED
+test issue_822_context::general_json_converter_defaults_to_links_notation ... ok
+test issue_822_context::opencode_export_is_complete_native_read_only_and_deterministic ... ok
+
+failures:
+
+failures:
+    issue_822_context::verbose_is_global_default_and_silent_is_available
+
+test result: FAILED. 2 passed; 1 failed; 0 ignored; 0 measured; 166 filtered out; finished in 1.43s
+
+error: test failed, to rerun pass `--test integration`

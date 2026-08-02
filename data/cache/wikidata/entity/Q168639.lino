@@ -1,0 +1,16 @@
+Q168639
+  aliases
+    ru ("стремянка")
+    zh ("梯")
+  descriptions
+    en "vertical set of rungs or steps for climbing or descending"
+    ru "специальная, как правило, переносная лестница"
+    zh "攀登工具"
+  id Q168639
+  labels
+    en ladder
+    hi "सीढ़ी"
+    ru "лестница-стремянка"
+    zh "梯子"
+  type item
+success 1

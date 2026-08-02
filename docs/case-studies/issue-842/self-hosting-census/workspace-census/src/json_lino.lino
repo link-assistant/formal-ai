@@ -1,0 +1,58 @@
+self_ast_census
+  target src/json_lino.rs
+  language rust
+  fidelity signature
+  byte_len 25534
+  line_count 746
+  content_id source_module_c2dd76615e0c55c5
+  symbol_count 49
+  symbols
+    const ARRAY_ENTRY 35 35
+    const ENTITIES_KEY 36 36
+    function strip_empty 48 66
+    function normal_form 68 70
+    function json_to_lino 77 81
+    function write_native_document 89 95
+    function write_native_object 97 107
+    function write_native_named_value 109 131
+    function write_native_sequence 133 166
+    function singular_item_name 168 178
+    function native_scalar_token 180 188
+    function native_string_token 190 206
+    function native_bare_reference 208 213
+    function json_cache_file 221 238
+    function json_cache_projection 246 248
+    function single_entity 250 257
+    function write_document 259 269
+    function write_entity_fields 274 284
+    function write_language_strings 286 297
+    function write_language_aliases 299 323
+    function language_text 325 327
+    function write_object_entries 329 333
+    function write_named_value 335 352
+    function write_array_element 354 371
+    function write_line 373 381
+    function is_scalar 383 388
+    function scalar_token 390 398
+    function scalar_array_token 400 403
+    function string_token 408 415
+    function is_scalar_literal 417 419
+    function quoted_string 421 432
+    function is_bare_reference 434 439
+    struct RawNode 448 452
+    function lino_to_json 454 478
+    function parse_raw_tree 480 516
+    function parse_raw_line 518 531
+    function navigate_mut 533 539
+    function value_of 541 555
+    function object_of 557 563
+    function entity_value 567 578
+    function reexpand_language_strings 580 590
+    function reexpand_language_aliases 592 607
+    function language_entry 609 617
+    function is_entity_id 619 624
+    function parse_token 626 647
+    function parse_scalar_array 649 659
+    function split_scalar_tokens 661 710
+    function parse_single_quoted_string 712 742
+    function is_parenthesized 744 746

@@ -1,0 +1,129 @@
+self_ast_census
+  target src/agentic_coding/web_research.rs
+  language rust
+  fidelity full_ast
+  byte_len 28385
+  line_count 687
+  content_id source_module_552ef01edb1b88ee
+  symbol_count 38
+  symbols
+    function web_research_query_for 17 42
+    function is_definition_followup 44 49
+    function definition_followup_topic 51 92
+    function definition_followup_clarification 94 99
+    function contextual_reference_clarification 106 110
+    function seed_research_subject 116 118
+    function seed_definition_subject 120 140
+    function seed_slotted_subject 147 166
+    function seed_unresolved_question_subject 174 181
+    function seed_prefix_subject 183 196
+    const MAX_RESEARCH_ROUNDS 208 208
+    function plan_web_research_step 210 236
+    function plan_fetches 244 256
+    function plan_deeper_round 265 302
+    function uncovered_aspects 315 329
+    const MIN_ASPECT_CHARS 333 333
+    function aspects_of 335 350
+    const MAX_EXTRACT_CHARS 355 355
+    const EXTRACT_SENTENCES 359 359
+    function final_answer 361 398
+    function extract_answer 409 444
+    function structurally_complete_prose 455 471
+    function is_sentence_terminal 473 475
+    function relevance 485 491
+    function character_overlap 499 515
+    function truncate_chars 519 526
+    function seed_text 528 532
+    function render_seed_text 534 540
+    function preferred_url 546 548
+    const MAX_RESEARCH_SOURCES 554 554
+    function research_urls 556 565
+    function urls_in 567 576
+    function authoritative_host 578 594
+    function is_context_reference 596 608
+    function topic_from_history 610 657
+    function is_conversation_meta_request 659 676
+    function trim_question_punctuation 678 683
+    function latest_user_text 685 687
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 18168
+    named_node_count 3888
+    distinct_node_kinds 73
+    node_kinds
+      arguments 386
+      array_expression 3
+      array_type 9
+      assignment_expression 1
+      attribute 1
+      attribute_item 1
+      binary_expression 31
+      block 77
+      boolean_literal 1
+      break_expression 2
+      call_expression 386
+      char_literal 32
+      closure_expression 62
+      closure_parameters 62
+      const_item 5
+      crate 33
+      doc_comment 109
+      else_clause 5
+      escape_sequence 9
+      expression_statement 60
+      field_expression 305
+      field_identifier 301
+      float_literal 3
+      for_expression 2
+      function_item 33
+      function_modifiers 1
+      generic_function 4
+      generic_type 28
+      identifier 809
+      if_expression 25
+      index_expression 3
+      inner_doc_comment_marker 6
+      integer_literal 16
+      let_condition 3
+      let_declaration 60
+      line_comment 145
+      macro_invocation 12
+      match_arm 11
+      match_block 3
+      match_expression 3
+      match_pattern 11
+      mutable_specifier 12
+      or_pattern 1
+      outer_doc_comment_marker 103
+      parameter 52
+      parameters 33
+      parenthesized_expression 3
+      primitive_type 64
+      range_expression 3
+      reference_expression 51
+      reference_type 55
+      return_expression 13
+      scoped_identifier 138
+      scoped_type_identifier 3
+      scoped_use_list 3
+      self 1
+      source_file 1
+      string_content 44
+      string_literal 46
+      super 9
+      token_tree 26
+      try_expression 13
+      tuple_expression 1
+      tuple_pattern 8
+      tuple_struct_pattern 6
+      tuple_type 1
+      type_arguments 32
+      type_cast_expression 2
+      type_identifier 69
+      unary_expression 19
+      use_declaration 7
+      use_list 3
+      visibility_modifier 7

@@ -1,0 +1,15 @@
+Q11404
+  aliases
+    en (caisse cassa tamburo wankara)
+  descriptions
+    en "type of musical instrument of the percussion family"
+    ru "семейство ударных музыкальных инструментов"
+    zh "打击乐器或通讯工具"
+  id Q11404
+  labels
+    en drum
+    hi "ड्रम"
+    ru "барабан"
+    zh "鼓"
+  type item
+success 1

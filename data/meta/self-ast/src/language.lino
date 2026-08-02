@@ -1,0 +1,60 @@
+self_ast_census
+  target src/language.rs
+  language rust
+  fidelity signature
+  byte_len 19258
+  line_count 542
+  content_id source_module_b51d6ca9329e1f28
+  symbol_count 51
+  symbols
+    const LANGUAGE_DETECTION 22 22
+    struct Language 31 31
+    const English 36 36
+    const Russian 38 38
+    const Hindi 40 40
+    const Chinese 42 42
+    const Unknown 44 44
+    function slug 48 50
+    function from_static_slug 54 56
+    function fmt 60 62
+    module forced_language 76 95
+    static FORCED_LANGUAGE 81 81
+    function replace 84 86
+    function set 88 90
+    function get 92 94
+    module forced_language 98 121
+    struct Slot 102 102
+    static FORCED_LANGUAGE 108 108
+    function replace 110 112
+    function set 114 116
+    function get 118 120
+    function set_forced_language 129 132
+    function from_slug 140 147
+    function registered_languages 151 153
+    function fallback_language 157 159
+    const LANGUAGE_LEDGER 164 164
+    function language_name 171 183
+    function language_for_concept_slug 192 208
+    function surface_matches_language 217 237
+    struct ForcedLanguageGuard 240 242
+    function drop 245 247
+    struct Rule 254 268
+    function unquote 270 275
+    function parse_codepoint 277 282
+    function parse_quoted_list 285 295
+    function parse_rules 297 334
+    function with_rules 341 345
+    static RULES 343 343
+    function with_rules 348 350
+    function fallback_of 352 357
+    function fallback_script_of 359 364
+    function default_language_of 367 373
+    struct ScriptCounts 376 380
+    function of 383 388
+    function bump 390 397
+    function max_excluding 400 407
+    function total 409 411
+    function count_scripts 414 436
+    function marker_language 447 481
+    function detect 492 499
+    function detect_with 501 542

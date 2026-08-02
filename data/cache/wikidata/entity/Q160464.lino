@@ -1,0 +1,14 @@
+Q160464
+  aliases
+    zh ("纽扣" "扣子")
+  descriptions
+    en "small fastener used in clothing"
+    ru "предмет одежды"
+  id Q160464
+  labels
+    en button
+    hi "बटन"
+    ru "пуговица"
+    zh "鈕扣"
+  type item
+success 1

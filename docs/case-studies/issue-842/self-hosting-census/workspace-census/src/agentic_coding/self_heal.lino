@@ -1,0 +1,71 @@
+self_ast_census
+  target src/agentic_coding/self_heal.rs
+  language rust
+  fidelity full_ast
+  byte_len 6124
+  line_count 139
+  content_id source_module_dea3882ec18d6743
+  symbol_count 10
+  symbols
+    const SELF_HEAL_PATH 25 25
+    function cached_case 34 37
+    static CASE 35 35
+    const SELF_HEAL_TASK 44 51
+    const SELF_HEAL_KEYWORDS 51 51
+    const SELF_REPAIR_PHRASES 67 67
+    function is_self_heal_task 89 104
+    function render_document 113 115
+    function case 120 122
+    function final_answer 127 139
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 2189
+    named_node_count 460
+    distinct_node_kinds 43
+    node_kinds
+      arguments 17
+      array_expression 2
+      array_type 2
+      attribute 4
+      attribute_item 4
+      binary_expression 6
+      block 5
+      call_expression 17
+      closure_expression 2
+      closure_parameters 2
+      const_item 4
+      crate 1
+      doc_comment 51
+      escape_sequence 12
+      field_expression 14
+      field_identifier 14
+      function_item 5
+      generic_type 1
+      identifier 61
+      inner_doc_comment_marker 18
+      integer_literal 2
+      let_declaration 2
+      lifetime 1
+      line_comment 54
+      macro_invocation 2
+      outer_doc_comment_marker 33
+      parameter 2
+      parameters 5
+      parenthesized_expression 3
+      primitive_type 7
+      reference_type 7
+      scoped_identifier 4
+      scoped_use_list 1
+      source_file 1
+      static_item 1
+      string_content 39
+      string_literal 31
+      token_tree 7
+      type_arguments 1
+      type_identifier 6
+      use_declaration 2
+      use_list 1
+      visibility_modifier 6

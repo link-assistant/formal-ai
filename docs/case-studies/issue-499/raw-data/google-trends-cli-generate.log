@@ -1,0 +1,4 @@
+   Compiling formal-ai v0.274.0 (/tmp/gh-issue-solver-1783542327422)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 22.21s
+     Running `target/debug/formal-ai google-trends --input docs/case-studies/issue-499/raw-data/google-trends-us-rss.xml --output data/benchmarks/google-trends-top10-suite.lino --captured-at '2026-07-08T20:29:32Z'`
+wrote Google Trends prompt suite to data/benchmarks/google-trends-top10-suite.lino

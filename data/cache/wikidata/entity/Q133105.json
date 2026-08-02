@@ -1,0 +1,103 @@
+{
+  "entities": {
+    "Q133105": {
+      "type": "item",
+      "id": "Q133105",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "leg"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "нога"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "टाँग"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "腿"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "weight bearing and locomotive anatomical structure of animals"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "часть тела - нога, не включая тазобедренный сустав"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "lower limb"
+          },
+          {
+            "language": "en",
+            "value": "free lower limb"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "лапа"
+          },
+          {
+            "language": "ru",
+            "value": "лапка"
+          },
+          {
+            "language": "ru",
+            "value": "нижняя конечность"
+          },
+          {
+            "language": "ru",
+            "value": "конечность"
+          },
+          {
+            "language": "ru",
+            "value": "свободная часть ноги"
+          },
+          {
+            "language": "ru",
+            "value": "задняя конечность"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "पांव"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "下盤"
+          },
+          {
+            "language": "zh",
+            "value": "下肢"
+          },
+          {
+            "language": "zh",
+            "value": "髀"
+          },
+          {
+            "language": "zh",
+            "value": "腿部"
+          },
+          {
+            "language": "zh",
+            "value": "小腿"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

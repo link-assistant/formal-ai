@@ -1,0 +1,61 @@
+{
+  "entities": {
+    "Q901": {
+      "type": "item",
+      "id": "Q901",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "scientist"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "учёный"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "वैज्ञानिक"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "科學家"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "person who uses scientific methods to study in an area of interest"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "человек, профессионально использующий научный метод"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "使用科學方法做研究的人"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "natural philosopher"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "научный работник"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "科学家"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -235,7 +235,70 @@ fn issue_607_server_emits_tool_calls_for_shell_request_in_agent_mode() {
         assert_eq!(call.function.name, tool);
         let arguments: serde_json::Value = serde_json::from_str(&call.function.arguments).unwrap();
         assert_eq!(arguments["command"], "ls");
-        assert!(choice.message.content.plain_text().is_empty());
+        assert!(!choice.message.content.plain_text().is_empty());
+    }
+}
+
+#[test]
+fn issue_676_planner_maps_execute_pwd_to_pwd_command() {
+    // The flagship regression from issue #676: `execute pwd` (and every other seed
+    // shell token, not just `ls`) must reach the CLI's shell tool as the named command.
+    for (prompt, expected) in [
+        ("execute pwd", "pwd"),
+        ("Execute pwd", "pwd"),
+        ("run pwd", "pwd"),
+        ("please run pwd for me", "pwd"),
+        ("execute `pwd`", "pwd"),
+        ("run git status", "git status"),
+        ("execute cargo test", "cargo test"),
+        ("run whoami", "whoami"),
+    ] {
+        let messages = vec![ChatMessage::user(prompt)];
+        let call = expect_single_call(&messages, &["bash"]);
+        assert_eq!(call.tool, "bash", "{prompt}");
+        let arguments: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
+        assert_eq!(arguments["command"], expected, "{prompt}");
+    }
+}
+
+#[test]
+fn issue_676_planner_maps_natural_language_file_listing_to_ls() {
+    // The second reported failure: "give me a list of files in current folder" and its
+    // many phrasings must resolve to `ls`.
+    for prompt in [
+        "give me a list of files in current folder",
+        "give me a list of files in the current folder",
+        "show me the files in this directory",
+        "list all files here",
+        "can you list the files in the current directory?",
+        "what files are in the current folder?",
+    ] {
+        let messages = vec![ChatMessage::user(prompt)];
+        let call = expect_single_call(&messages, &["bash"]);
+        assert_eq!(call.tool, "bash", "{prompt}");
+        let arguments: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
+        assert_eq!(arguments["command"], "ls", "{prompt}");
+    }
+}
+
+#[test]
+fn issue_676_planner_ignores_shell_tokens_without_run_context() {
+    // A bare mention of a shell token in prose (no run verb / terminal phrase, no
+    // listing request) must not be mistaken for a command to execute.
+    for prompt in [
+        "what does pwd mean?",
+        "explain how git works",
+        "is npm a package manager?",
+    ] {
+        let messages = vec![ChatMessage::user(prompt)];
+        let tools = ["bash", "web_search", "web_fetch", "write_file"];
+        // Either the planner declines (None) or it routes elsewhere, but it must never
+        // emit a shell tool call for these.
+        if let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &tools) {
+            for call in calls {
+                assert_ne!(call.tool, "bash", "{prompt} should not run a shell command");
+            }
+        }
     }
 }
 
@@ -299,7 +362,7 @@ fn issue_624_server_emits_tool_calls_for_natural_language_directory_listing() {
         assert_eq!(call.function.name, "bash", "{prompt}");
         let arguments: serde_json::Value = serde_json::from_str(&call.function.arguments).unwrap();
         assert_eq!(arguments["command"], "ls", "{prompt}");
-        assert!(choice.message.content.plain_text().is_empty(), "{prompt}");
+        assert!(!choice.message.content.plain_text().is_empty(), "{prompt}");
     }
 }
 
@@ -362,7 +425,7 @@ fn issue_607_driver_executes_ls_inside_the_sandbox_workspace() {
     assert_eq!(step.tool, "run_command");
     let arguments: serde_json::Value = serde_json::from_str(&step.arguments).unwrap();
     assert_eq!(arguments["command"], "ls");
-    assert!(outcome.final_answer.contains("`ls`"));
+    assert_eq!(outcome.final_answer, "This folder is empty.");
 }
 
 #[test]
@@ -535,8 +598,8 @@ fn server_emits_tool_calls_for_a_formalization_task_in_agent_mode() {
     let call = &choice.message.tool_calls[0];
     assert_eq!(call.function.name, "web_search");
     assert!(call.function.arguments.contains(SEARCH_QUERY));
-    // The assistant turn requesting tool calls carries no textual content.
-    assert!(choice.message.content.plain_text().is_empty());
+    // The assistant explains the action before the client starts the tool.
+    assert!(!choice.message.content.plain_text().is_empty());
 }
 
 #[test]

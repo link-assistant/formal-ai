@@ -1,0 +1,45 @@
+{
+  "entities": {
+    "Q8072": {
+      "type": "item",
+      "id": "Q8072",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "volcano"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "вулкан"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "ज्वालामुखी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "火山"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "natural, surface vent or fissure usually in a mountainous form"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "геологическое образование"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पृथ्वी की सतह में दरार या मुख, जिससे गर्म लावा, गैस, भस्म आदि बाहर आते हैं"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "天然，表面通風或裂縫，通常呈山地形式"
+        }
+      }
+    }
+  },
+  "success": 1
+}

@@ -10,7 +10,7 @@
 
 Formal AI is a Rust implementation of a symbolic, deterministic assistant that exposes OpenAI-shaped interfaces without neural-network inference.
 
-It belongs to the tradition of [symbolic artificial intelligence](https://en.wikipedia.org/wiki/Symbolic_artificial_intelligence) (a.k.a. GOFAI): its knowledge is an inspectable [semantic network](https://en.wikipedia.org/wiki/Semantic_network) of human-readable links rather than hidden neural weights. The case study in [docs/case-studies/issue-451](docs/case-studies/issue-451/README.md) maps the field's best practices onto this associative stack.
+It belongs to the tradition of [symbolic artificial intelligence](https://en.wikipedia.org/wiki/Symbolic_artificial_intelligence) (a.k.a. GOFAI): its knowledge is an inspectable [semantic network](https://en.wikipedia.org/wiki/Semantic_network) of human-readable links rather than hidden neural weights. The [associative technology stack guide](docs/associative-tech-stack.md) links every component and distinguishes direct runtime dependencies from architecture and development tooling. The case study in [docs/case-studies/issue-451](docs/case-studies/issue-451/README.md) maps the field's best practices onto this associative stack; the design study in [docs/case-studies/issue-649](docs/case-studies/issue-649/README.md) audits how the same stack expresses symbolic **world models** — a current-state and target-state context, their difference, context merge/split, and predicting the consequences of an action, all as links networks rather than embeddings; and the study in [docs/case-studies/issue-686](docs/case-studies/issue-686/README.md) adds **usage-weighted persistence** of meta-language expressions — counting reads and writes and incoming/outgoing link degree so the most used, most changed, and most connected knowledge persists longest, all as a links network.
 
 The current implementation covers the surface area requested in issue #1:
 
@@ -25,9 +25,19 @@ The current implementation covers the surface area requested in issue #1:
 - Electron desktop shell that starts the local Rust HTTP API and reuses the web chat
 - VS Code extension (desktop **and** web/`vscode.dev`) that embeds the same chat in a Webview around the same HTTP/web boundary
 
-Project direction is tracked in [VISION.md](VISION.md), [GOALS.md](GOALS.md), and [NON-GOALS.md](NON-GOALS.md). Who the project is for, what pain it closes, and the concrete user journeys it supports today (plus the ones it could support next) are documented in [docs/USER-JOURNEYS.md](docs/USER-JOURNEYS.md). Implementation progress against the vision is tracked in [ROADMAP.md](ROADMAP.md). The issue #12 synthesis is in [docs/case-studies/issue-12/README.md](docs/case-studies/issue-12/README.md).
+Project direction is tracked in [VISION.md](VISION.md), [GOALS.md](GOALS.md), and [NON-GOALS.md](NON-GOALS.md). The design theses behind its linked transformation model are separated from mathematical and implementation claims in [docs/philosophy.md](docs/philosophy.md). Who the project is for, what pain it closes, and the concrete user journeys it supports today (plus the ones it could support next) are documented in [docs/USER-JOURNEYS.md](docs/USER-JOURNEYS.md). Implementation progress against the vision is tracked in [ROADMAP.md](ROADMAP.md). The issue #12 synthesis is in [docs/case-studies/issue-12/README.md](docs/case-studies/issue-12/README.md).
+
+Legal and provenance guidance starts with [LEGAL-COMPLIANCE.md](LEGAL-COMPLIANCE.md). Focused guides explain the [Formal AI/language-model boundary](docs/legal/formal-ai-and-language-models.md), [public-domain dedication of AI-assisted output](docs/legal/public-domain-output.md), [candidate datasets](docs/legal/compatible-datasets.md), and [candidate locally transformable or distillable model families](docs/legal/distillable-models.md). Those dated matrices are source-review queues, not approvals; the machine-readable training registry remains authoritative.
 
 ## Install
+
+For one end-to-end reference covering every client, runtime mode, tool,
+memory/API setting, transcript location, language, and user surface, start with
+the **[Configuration guide](docs/configuration/README.md)**.
+
+Complete agentic transcript capture, JSON/Links Notation export, OpenCode
+SQLite extraction, and redaction guidance are covered in
+**[Output and session debugging](docs/configuration/output-sessions.md)**.
 
 Every interface has a dedicated landing page on the
 [site](https://link-assistant.github.io/formal-ai/) with copy-paste install
@@ -137,6 +147,19 @@ curl -s http://127.0.0.1:8080/api/openai/v1/models \
   -H 'authorization: Bearer local-test-token'
 ```
 
+Model discovery reports the context window from real disk capacity instead of a
+fixed token ceiling. The server divides the free bytes on the filesystem that
+contains the shared memory store by an average UTF-8 width of 2 bytes per
+character. It reports the memory file size the same way as used context. Set
+`FORMAL_AI_AVG_UTF8_BYTES_PER_CHAR` to a positive integer to tune that estimate;
+`FORMAL_AI_MEMORY_PATH` selects the measured memory store. Without that override,
+the measured path is `~/.formal-ai/memory.lino` on Unix/macOS or
+`%APPDATA%\formal-ai\memory.lino` on Windows. OpenAI model metadata,
+generated Codex catalogs, Gemini/Vertex model metadata, and Anthropic responses
+include the same `context` object with `context_window_tokens`,
+`context_used_tokens`, `context_used_fraction`, `disk_free_bytes`,
+`memory_used_bytes`, and `avg_utf8_bytes_per_char`. Usage cost remains zero.
+
 ### Reasoning traces over the API
 
 Every symbolic answer still includes the structured `thinking_steps` trace. The
@@ -195,6 +218,11 @@ curl -s http://127.0.0.1:8080/api/openai/v1/models
 curl -s http://127.0.0.1:8080/api/gemini/v1beta/models
 ```
 
+Permission-gated file, structured shell, HTTP/DOM, archive, and process plans
+are documented in the
+[verified computer-use guide](docs/computer-use.md), including the native CLI,
+MCP endpoint, desktop boundary, replay, and the explicit no-vision limit.
+
 Primary routes live under `/api/<protocol>/...`: OpenAI at
 `/api/openai/v1`, Anthropic at `/api/anthropic/v1`, Gemini at
 `/api/gemini/v1beta`, and Vertex at `/api/vertex/v1`. Existing `/v1/models`,
@@ -218,17 +246,41 @@ The wrapper command reads client templates from
 config, and then runs the external CLI with the remaining arguments unchanged:
 
 ```bash
-formal-ai with --start-server codex "hi"
+formal-ai with codex "hi"
+formal-ai with t3code
 formal-ai with opencode run "hi"
+formal-ai with opencode-vscode
+formal-ai with opencode-desktop
 formal-ai with agent -p "hi"
+formal-ai with cursor -p "hi"
 formal-ai with gemini -p "hi"
+formal-ai with claude -p "hi"
+formal-ai with qwen -p "hi"
+formal-ai with grok -p "hi"
+formal-ai with aider --message "hi"
 # Hi, how may I help you?
 ```
 
-Use `--base-url` when the server is not on `http://127.0.0.1:8080`; the wrapper
+When the loopback port is idle, the wrapper starts a temporary
+`formal-ai serve --agent-mode`, prints a security notice, and tears it down when
+the CLI exits. It reuses an existing listener. Use `--no-start-server` to require
+an already-running server. Use `--base-url` when the server is not on
+`http://127.0.0.1:8080`; the wrapper
 adds the tool's protocol path such as `/api/openai/v1` or `/api/gemini` from
 seed data. `--protocol vertex` switches Gemini-shaped setup to
 `GOOGLE_VERTEX_BASE_URL` and `/api/vertex`.
+
+Cursor CLI uses the MCP path instead of a custom model base URL. For a one-shot
+run, the wrapper launches the `cursor-agent` binary with a temporary
+`~/.cursor/mcp.json` that registers the local `/mcp` endpoint; the server
+exposes `formal_ai_chat` and instructs Cursor to use it for each request. Both
+interactive mode and headless `-p` mode are supported.
+
+The existing explicit form remains supported:
+
+```bash
+formal-ai with --start-server codex "hi"
+```
 
 For one-shot Gemini runs, the wrapper also uses a temporary `GEMINI_CLI_HOME`
 with API-key auth selected and workspace trust enabled. That keeps cached
@@ -236,29 +288,198 @@ OAuth settings from `~/.gemini` from taking over the invocation.
 
 For one-shot Agent CLI runs, the wrapper injects the OpenCode-compatible
 provider JSON through `LINK_ASSISTANT_AGENT_CONFIG_CONTENT`, so no temporary
-config file is needed.
+config file is needed. It also passes `--no-summarize-session`; use
+`--summarize` (alias `--keep-summarization`) to retain the client's default.
+
+Every one-shot integration uses only command-line overrides, environment
+variables, inline config, or a temporary config/home directory. Persistent tool
+configuration is written only by explicit `--global` runs. Agent CLI compaction
+is pinned to the Formal AI model rather than a remote fallback.
 
 For one-shot Codex runs, the wrapper starts from
 `codex exec --skip-git-repo-check --sandbox read-only` and injects the Responses
-provider overrides through `-c` before appending your remaining arguments.
+provider overrides through `-c` before appending your remaining arguments. It
+also generates a model catalog inside the temporary Codex home and passes it as
+`model_catalog_json`, so Codex recognizes the Formal AI model's context window
+and capabilities without a missing-metadata warning.
 
+T3 Code can be launched with either `formal-ai with t3code` or the shorter
+`formal-ai with t3`. The wrapper runs the installed `t3` executable with an
+isolated `CODEX_HOME`, a generated Responses provider, the local model catalog,
+and a dummy `FORMAL_AI_API_KEY` when no key is set. The browser opens normally;
+add the wrapper flag `--non-interactive` to pass T3 Code's `--no-browser` flag:
+
+```bash
+formal-ai with --base-url http://127.0.0.1:8080 t3code
+formal-ai with --non-interactive t3
+```
+
+In T3 Code's provider settings, choose **Codex**, provider `formalai`, model
+`formal-ai`, base URL `http://127.0.0.1:8080/api/openai/v1`, and any non-empty
+API key such as `formal-ai`. For a Claude-backed session, run with
+`--protocol anthropic`; the wrapper supplies `ANTHROPIC_BASE_URL` as
+`http://127.0.0.1:8080/api/anthropic` and the same dummy token. Use
+`formal-ai with --global --protocol openai t3code` (or `anthropic`) to persist
+the corresponding provider configuration, and `--undo` to restore its backup.
+
+The official OpenCode VS Code extension (`sst-dev.opencode`) launches the
+installed OpenCode CLI in a VS Code terminal and reads the same OpenCode
+configuration. Install both prerequisites, then launch a fresh VS Code window
+with an isolated Formal AI provider and temporary local server:
+
+```bash
+code --install-extension sst-dev.opencode
+formal-ai with opencode-vscode
+```
+
+`opencode-code` is an equivalent alias. The wrapper keeps the temporary server
+alive with VS Code's `--wait` option; close the launched window to stop it. In
+that window, run **Open opencode** from the Command Palette (or press
+Ctrl+Escape / Cmd+Escape) and select `formalai/formal-ai`. Existing OpenCode
+and VS Code settings remain unchanged because the wrapper supplies an isolated
+`OPENCODE_CONFIG`. Since VS Code may reuse an already-running extension host,
+the wrapper deliberately uses `--new-window`; launch it from a shell rather
+than attaching it to an existing window.
+
+OpenCode Desktop is a separate integration from the `opencode` terminal client:
+
+```bash
+formal-ai with opencode-desktop
+```
+
+The wrapper launches the installed Electron app without adding the CLI-only
+`run` or `-m` arguments. It supplies an isolated `OPENCODE_CONFIG` containing
+provider `formalai`, model `formalai/formal-ai`, and the local
+`/api/openai/v1` endpoint, so a one-shot launch does not modify the user's
+configuration. Installed packages are discovered at `/opt/OpenCode/ai.opencode.desktop`
+on Linux, `/Applications/OpenCode.app/Contents/MacOS/OpenCode` on macOS, and
+`%LOCALAPPDATA%\Programs\OpenCode\OpenCode.exe` on Windows. Set
+`FORMAL_AI_OPENCODE_DESKTOP_BIN` to an AppImage, unpacked executable, or custom
+install path when needed.
+
+OpenCode CLI and Desktop intentionally share
+`~/.config/opencode/opencode.json` for permanent setup. Run
+`formal-ai with --global opencode-desktop` to merge the provider and create
+`opencode.json.formal-ai.bak`; run `formal-ai with --undo opencode-desktop` to
+restore that backup. The desktop target is also included in `--global --all`
+and `--undo --all`.
+
+After an interactive or one-shot wrapped CLI exits, `formal-ai with` prints the
+session artifact created by that invocation and a copy-pasteable resume command
+when the client supports one. The data-driven paths cover Codex, Gemini, Qwen,
+OpenCode, Agent CLI, Claude, and Grok. Only a new or changed artifact is printed;
+the wrapper does not guess a path when the client did not create one. Session
+artifacts written inside an isolated temporary client home are preserved so the
+reported path remains available for debugging. If `FORMAL_AI_PROXY_LOG` names an
+existing proxy log, that path is included in the same final block.
+
+Set `FORMAL_AI_DIALOG_LOG_DIR` on the server to write full request/response
+JSONL records into one file per dialog. This recorder is off by default because
+the bodies can contain private prompts and tool output. Send
+`X-Formal-AI-Dialog-ID` for exact grouping, or let the server derive the group
+from the first user prompt. See
+[`docs/configuration/output-sessions.md`](docs/configuration/output-sessions.md)
+for capture and optional `gh-upload-log` upload instructions.
+
+```text
+formal-ai: session files for debugging:
+  codex: /tmp/formal-ai-codex-home-.../.codex/sessions/2026/07/18/rollout-...jsonl   (resume: codex exec resume ...)
+  server log: /work/proxy.jsonl
+```
 For permanent setup, use the standalone wrapper or the subcommand with `-g`.
 It backs up the original file next to the edited config, merges the Formal AI
 provider without removing unrelated settings, and can restore the backup:
 
 ```bash
 with-formal-ai -g codex
+with-formal-ai -g t3code
 with-formal-ai -g opencode
+with-formal-ai -g opencode-vscode
+with-formal-ai -g opencode-desktop
 with-formal-ai -g agent
+with-formal-ai -g cursor
 with-formal-ai -g gemini
+with-formal-ai -g claude
+with-formal-ai -g qwen
+with-formal-ai -g grok
+with-formal-ai -g aider
 with-formal-ai -g --all
 with-formal-ai -g --undo codex
 ```
 
 Persistent targets are `~/.codex/config.toml`,
+`~/.codex/formal-ai-model-catalog.json`,
 `~/.config/opencode/opencode.json`,
 `~/.config/link-assistant-agent/opencode.json`, and a managed block in
-`~/.profile` for Gemini environment variables. Re-running `-g` is idempotent.
+`~/.profile` for environment-configured clients, plus `~/.cursor/mcp.json` for
+Cursor. Re-running `-g` is idempotent.
+
+### Permission-gated multi-agent orchestration
+
+`formal-ai agent run` is the explicit permission boundary for asking an
+external agent to edit a workspace. The library API is denied by default; this
+CLI command grants only the canonical directory passed with `--workspace`.
+Registered adapters cover Agent CLI, Claude Code, Codex, Gemini CLI, Qwen Code,
+and OpenCode:
+
+```bash
+formal-ai agent run \
+  --cli codex \
+  --task "add a README badge" \
+  --workspace /tmp/example-repository \
+  --session /tmp/codex-session.json
+```
+
+The default target routes the selected CLI through the loopback Formal AI
+server with model `formal-ai`. `--base-url` and `--model` override those
+values. Use `--target vendor` together with a vendor-provided `--model` to
+invoke the registered CLI directly with its existing configuration and
+credentials.
+
+Post-run checks are opt-in and executable-allowlisted. Each `--verify` value is
+a JSON argv array, so no shell parsing is involved:
+
+```bash
+formal-ai agent run \
+  --cli codex \
+  --task "add a README badge" \
+  --workspace /tmp/example-repository \
+  --allow-command cargo \
+  --verify '["cargo","test","--workspace"]'
+```
+
+Dispatch the same task to several isolated candidates with `--compare`, or
+omit it to use the bounded universal task decomposition:
+
+```bash
+formal-ai agent dispatch \
+  --cli codex,claude,opencode \
+  --compare \
+  --task "add a README badge" \
+  --workspace /tmp/example-repository
+
+formal-ai agent replay /tmp/codex-session.json
+```
+
+Comparison selects only passing candidates, then orders them by diff size,
+wall time, CLI id, and session path. The resulting sessions and
+`comparison-ledger.json` live under `.formal-ai-orchestration/`. Runs have one
+hard timeout, no implicit retry, captured stdout/stderr, file-effect hashes,
+verification results, and a hash-chained event stream.
+
+Custom CLI/TUI entrypoints and Bash-backed local models use JSON
+`--command` argv containing `{task}` plus a separate exact
+`--allow-agent-command` executable grant. Dispatch accepts several custom
+command mappings. Registered clients also record their native session id:
+`agent resume` sends a disproved claim and its evidence back into that exact
+conversation, rejecting an id switch. `agent synthesize` formalizes recorded
+answers in the meta-language, summarizes and cross-checks them, and verifies a
+separately recorded translation before claiming the requested language.
+`agent learn` feeds sessions into the proposal-only, human-gated client
+contract learner. See the
+[orchestration guide](docs/configuration/orchestration.md), the
+[agentic CLI guide](docs/configuration/agentic-clis.md), and the
+[issue 703 case study](docs/case-studies/issue-703/README.md).
 
 ### Codex CLI
 
@@ -437,6 +658,13 @@ read-only listing command. Use `--permission-mode plan` when read-only shell
 commands such as `ls` may run, and use hard `--read-only` when shell execution
 should be disabled entirely.
 
+Formal AI keeps each client tool result unchanged in the conversation transcript,
+then presents a normalized, localized answer after the client returns it. This
+means a later turn can ask for the full result, a numbered line, or a URL without
+losing the original bytes. To retain those tool calls beyond the current client
+conversation, start the server with `FORMAL_AI_MEMORY_PATH=memory.lino`; completed
+tool names, arguments, and raw outputs are then appended to the durable memory log.
+
 Example Telegram webhook update:
 
 ```bash
@@ -452,6 +680,8 @@ TELEGRAM_BOT_TOKEN=123:abc docker compose up
 
 docker run --rm --privileged \
   -e TELEGRAM_BOT_TOKEN=123:abc \
+  -e FORMAL_AI_MEMORY_PATH=/root/.formal-ai/memory.lino \
+  -v "$HOME/.formal-ai:/root/.formal-ai" \
   -v formal-ai-telegram-docker:/var/lib/docker \
   ghcr.io/link-assistant/formal-ai:latest
 
@@ -489,7 +719,9 @@ docker compose --profile all up -d                # all services
 
 All three containers (`formal-ai-telegram`, `formal-ai-server`, and
 `formal-ai-agent`) are the **exact same ones the desktop app manages with one
-click** — see
+click**. They bind the host's `~/.formal-ai` directory to `/root/.formal-ai`,
+so Telegram, API, Agent CLI, desktop, and host CLI writes converge on the same
+`memory.lino`; their inner-Docker volumes remain separate. See
 [One-click services and agent environment](docs/desktop/service-control.md) for
 the full desktop + server walkthrough.
 
@@ -511,7 +743,7 @@ The static demo lives in `src/web/index.html`. Serve it from a local web server 
 
 ### Desktop app
 
-The desktop app lives in [`desktop/`](desktop/) and follows the same boundary as the browser and HTTP server. Electron starts a loopback `formal-ai serve` process, serves `src/web/` from a local static server, and loads the existing chat UI with a preload bridge that reports the API, graph, memory, and permission status.
+The desktop app lives in [`desktop/`](desktop/) and follows the same boundary as the browser and HTTP server. Electron starts a loopback `formal-ai serve` process, serves `src/web/` from a local static server, and loads the existing chat UI with a preload bridge that reports the API, links-network, memory, and permission status.
 
 ```bash
 npm install --prefix desktop
@@ -520,7 +752,13 @@ npm run desktop:dev
 npm run desktop:smoke
 ```
 
-In desktop mode, prompt sends use `POST /v1/chat/completions` on the local Rust API, and the network link points to `GET /v1/graph`. The same **Export memory** and **Import memory** controls read and write the full `formal_ai_bundle`; no separate desktop memory format exists. Agent mode remains off by default, and the desktop sidebar shows whether agent/tool-call actions are permission-gated or explicitly opted in.
+In desktop mode, prompt sends use `POST /v1/chat/completions` on the local Rust API, and the network link points to `GET /v1/network` (the deprecated `GET /v1/graph` alias still resolves). The same **Export memory** and **Import memory** controls read and write the full `formal_ai_bundle`; no separate desktop memory format exists. Agent mode remains off by default, and the desktop sidebar shows whether agent/tool-call actions are permission-gated or explicitly opted in.
+
+Persistent memory needs no configuration. Formal AI creates
+`~/.formal-ai/memory.lino` on Unix/macOS or
+`%APPDATA%\formal-ai\memory.lino` on Windows and uses it for the CLI, local
+server, desktop shell, dreaming worker, and VS Code desktop host. Set
+`FORMAL_AI_MEMORY_PATH` only when an explicit alternate file is required.
 
 Packaging starts from the same shell:
 
@@ -593,11 +831,29 @@ still be handled by compiling with `--no-default-features` when a pure
 cargo run -- memory export --from memory.lino --path full.lino           # default: full bundle
 cargo run -- memory export --from memory.lino --path events.lino --events-only  # legacy demo_memory
 cargo run -- memory import --path full.lino --into memory.lino           # accepts either format
+cargo run -- memory show --path memory.lino                              # print every recorded event
+cargo run -- memory query --path memory.lino --prompt "Find Rust in another conversation"
+cargo run -- memory query --path memory.lino --prompt "SELECT id, content FROM memory WHERE kind = 'fact' LIMIT 10"
+cargo run -- memory query --path memory.lino --prompt 'query { memory(first: 10) { id content } }'
+cargo run -- memory dream --path memory.lino                             # plan low-priority cleanup
+cargo run -- memory dream --path memory.lino --storage-capacity-bytes 1000000 --free-bytes 50000
+cargo run -- memory dream --path memory.lino --apply --confirm           # persist learning; cleanup asks consent
 cargo run -- memory purge-deleted --path memory.lino --backup before-purge.lino --confirm
 cargo run -- memory reset --path memory.lino --backup before-reset.lino --confirm
 cargo run -- bundle export --path bundle.lino --memory memory.lino
 cargo run -- bundle import --path bundle.lino --into memory.lino
 ```
+
+Exact SQL and GraphQL memory requests share one typed plan, permission model,
+and bounded link-substitution program with learned natural-language templates.
+The supported schema includes every `MemoryEvent` field and covers CRUD,
+boolean filtering, projection, grouping, sorting, pagination, count, sum,
+average, minimum, maximum, population variance, and population standard
+deviation. Reads use identity substitution (`same -> same`); deletes remain
+append-only retractions and require explicit destructive confirmation. The
+architecture, exact dialects, auto-learning gates, Agent CLI evidence, and
+meta-language audit are documented in the
+[issue #708 query-language case study](docs/case-studies/issue-708/query-languages.md).
 
 Memory normally remains append-only: deleting a conversation first records a
 `conversation_deleted` event and hides the thread. The explicit
@@ -608,7 +864,29 @@ confirmation prompt. The CLI refuses both destructive commands unless
 `--confirm` is present, and `--backup` writes a full `formal_ai_bundle` before
 the memory file is changed.
 
+`memory dream` is the default-on background maintenance planner from issue
+#540. It follows memory links, recalculates cached/seed usage, proposes duplicate
+recomputable cleanup, and measures the real filesystem to target a 20%
+free-space reserve including the next incoming write. Dreaming also learns while
+the core server or desktop is idle: it ranks frequent topics, reads multilingual
+standing-requirement cues from data, derives candidate tasks, replays proposed
+meta-algorithm amendments, and mines recurring task structures.
+Only a passing replay may mark a specific test run as covered. Retained amendments are
+read by
+later chat and Responses requests, so similar future answers apply the learned
+rule without the user repeating it.
+
+The manual CLI remains plan-only unless `--apply --confirm` is supplied. The
+default background runtime may retain amendments and patterns, but it never
+removes links without a persisted auto-free-space choice. CLI/Electron prompts
+persist acceptance or refusal, free only enough recomputable data for the next
+operation, and recommend larger storage when the reserve cannot be met.
+
 The Rust library re-exports the same helpers — `export_memory_full`, `import_memory_full`, `suggest_memory_migrations`, `BundleInfo`, `ParsedBundle` — so embedders writing their own surface get the same defaults. The prefilled **Report issue** link records the dialog as a single compact `U:`/`A:` code block and points to [`docs/upload-memory.md`](docs/upload-memory.md) for attaching the full memory export (GitHub Gist or `.zip` workflow, plus redaction reminders) instead of repeating those instructions inline.
+
+### Reporting an issue
+
+Asking Formal AI to `report issue` — in the web app, from a coding harness, or through `formal-ai report body` — files the same six-section document from every surface: environment, user context, the whole dialog, the reasoning trace, a description placeholder, and the memory-attachment pointer. One builder produces it, so the surfaces cannot drift apart. [`docs/report-issue.md`](docs/report-issue.md) documents the document, the CLI flags, what each `--source` means, how oversize conversations are attached, and who can read the gist that carries them.
 
 ### Teaching behavior in chat
 
@@ -709,7 +987,7 @@ Seed rules currently cover:
 - behavior-rule inspection and dialog-local rule updates through `List behavior rules` (grouped by topic, each rendered as a `When X then Y` statement), `Show behavior rule unknown`, and the multilingual `When ... then ...` / `When ... do ...` / `When I say ... answer ...` grammar
 - unknown prompts, which return a larger learnable-rule fallback with exact commands for inspecting rules, teaching the current dialog, exporting memory, or reporting a missing built-in rule
 
-Hello-world answers include execution metadata. Rust, Python, JavaScript, Go, and C examples are compiled or syntax-checked and run by the issue-8 local verification harness with captured output. TypeScript is returned with an explicit warning because `tsc` is not configured in the current repository runtime.
+Hello-world answers include execution metadata. Rust, Python, JavaScript, Go, and C examples are compiled or syntax-checked and run by the issue-8 local verification harness with captured output. TypeScript is returned with an explicit warning because no `tsc` toolchain is installed in the current repository runtime.
 
 No GPU, neural network, remote model, or random sampling is used.
 
@@ -739,12 +1017,23 @@ rust-script scripts/mine-hive-mind-dataset.rs --collect
 The script wraps `formal-ai github-logs plan|collect` with the focused Hive
 Mind defaults used by `docs/case-studies/issue-115/`.
 
+## Legal and Data-Source Compliance
+
+Read [LEGAL-COMPLIANCE.md](LEGAL-COMPLIANCE.md) before adding third-party
+material, model output, personal-data-adjacent content, or a training or
+distillation pipeline. Formal AI currently has no approved neural training
+sources. Future parameter-updating artifacts must pass the fail-closed review
+in [`data/training/`](data/training/README.md); benchmark fixtures and runtime
+retrieval data are separate classifications and cannot silently become
+training data.
+
 ## Development
 
 ```bash
 cargo fmt --all -- --check
-cargo clippy --all-targets --all-features
-cargo test --all-features --verbose
+cargo clippy --lib --bins --tests --all-features
+cargo check --examples --all-features
+cargo test --lib --bins --tests --all-features --verbose
 cargo test --doc --verbose
 rust-script scripts/check-file-size.rs
 ```

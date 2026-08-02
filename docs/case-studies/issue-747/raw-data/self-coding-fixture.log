@@ -1,0 +1,3 @@
+::notice title=Known Agent CLI 0.25.0 diagnostics::Classified 9 system-message and 5 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+wrote agent session to /tmp/gh-issue-solver-1784320659012/docs/case-studies/issue-747/agent-cli-evidence/session.json
+self-coding replay passed

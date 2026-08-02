@@ -1,0 +1,12 @@
+Make exactly these two edits and no others.
+
+1. Within src/lib.rs, change the exact line `pub mod memory;` to these two lines:
+pub mod memory;
+pub(crate) mod mcp;
+
+2. Within src/server.rs, change the exact line `use crate::memory_sync::SyncStore;` to these two lines:
+use crate::memory_sync::SyncStore;
+use crate::mcp::handle_mcp_request;
+
+Then within the main request match in src/server.rs, insert this arm immediately before the existing `("POST", "/telegram/webhook")` arm:
+        ("POST", "/mcp") => handle_mcp_request(body, &http_solver()),

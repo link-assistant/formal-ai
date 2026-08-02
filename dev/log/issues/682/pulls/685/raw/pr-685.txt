@@ -1,0 +1,29 @@
+title:	[WIP] OpenAI chat-completions: explicit "content": null on assistant tool-call turns returns 400 (breaks qwen)
+state:	DRAFT
+author:	konard (Konstantin Diachenko)
+labels:	
+assignees:	konard (Konstantin Diachenko)
+reviewers:	
+projects:	
+milestone:	
+number:	685
+url:	https://github.com/link-assistant/formal-ai/pull/685
+additions:	1
+deletions:	0
+auto-merge:	disabled
+--
+## 🤖 AI-Powered Solution Draft
+
+This pull request is being automatically generated to solve issue #682.
+
+### 📋 Issue Reference
+Fixes #682
+
+### 🚧 Status
+**Work in Progress** - The AI assistant is currently analyzing and implementing the solution draft.
+
+### 📝 Implementation Details
+_Details will be added as the solution draft is developed..._
+
+---
+*This PR was created automatically by the AI issue solver*

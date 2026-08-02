@@ -1,0 +1,17 @@
+self_ast_census
+  target src/seed/roles/decomposition.rs
+  language rust
+  fidelity signature
+  byte_len 4032
+  line_count 64
+  content_id source_module_97eb04d7d2b4fb98
+  symbol_count 8
+  symbols
+    const ROLE_TASK_DECOMPOSITION_ACTION 15 15
+    const ROLE_SUBTASK_UNIT_NOUN 21 21
+    const ROLE_DECOMPOSABLE_TASK_NOUN 27 27
+    const ROLE_SUBTASK_ENUMERATION_CUE 33 33
+    const ROLE_TASK_ATOMICITY_PREDICATE 41 41
+    const ROLE_TASK_FIRST_STEP_CUE 48 48
+    const ROLE_OBSERVABLE_TASK_ACTION 55 55
+    const ROLE_UNOBSERVABLE_TASK_ACTION 64 64

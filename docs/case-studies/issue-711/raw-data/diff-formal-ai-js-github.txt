@@ -1,0 +1,5 @@
+Only in /tmp/issue-711-templates/js/.github: actions
+Only in .github/workflows: desktop-release.yml
+Only in /tmp/issue-711-templates/js/.github/workflows: example-app.yml
+Only in /tmp/issue-711-templates/js/.github/workflows: links.yml
+Files .github/workflows/release.yml and /tmp/issue-711-templates/js/.github/workflows/release.yml differ
