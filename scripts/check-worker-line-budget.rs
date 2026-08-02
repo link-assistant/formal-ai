@@ -48,8 +48,11 @@ const TARGET_TOTAL_LINES: usize = 3_000;
 /// the registry instead of a hardcoded slug list — so that registering a
 /// language stays a data-only edit in the worker too, adding a net 41 lines and
 /// raising the ratchet from 26_911 to 26_952.
+/// Issue #858 must mirror the returning-user recap route and its bounded plain
+/// formatter for Rust↔JS parity, adding a net 64 lines and raising the ratchet
+/// from 26_952 to 27_016.
 #[cfg(not(test))]
-const CEILING_TOTAL_LINES: usize = 26_952;
+const CEILING_TOTAL_LINES: usize = 27_016;
 
 const WORKER_DIR: &str = "src/web/worker";
 
