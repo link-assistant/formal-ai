@@ -5,9 +5,10 @@ use std::path::{Path, PathBuf};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use formal_ai::file_legality::{
-    check_file_legality, check_file_legality_with, AssessmentStatus, AuthorizedHashMatch,
-    DetectorObservation, FileLegalityConfig, LegalCategory, LegalVerdict, MediaFamily,
-    MetadataField, RequiredAction, SafetyDisposition,
+    check_file_legality, check_file_legality_with, check_file_legality_with_providers,
+    AssessmentStatus, AuthorizedHashMatch, DetectorObservation, FileLegalityConfig, LegalCategory,
+    LegalVerdict, LegalityEvidenceProvider, MediaFamily, MetadataField, ProviderRunStatus,
+    RequiredAction, SafetyDisposition,
 };
 
 fn fixture_path(name: &str, bytes: &[u8]) -> PathBuf {
@@ -242,6 +243,105 @@ fn composed_report_retains_versioned_policy_and_evidence_provenance() {
     assert_eq!(
         report.observations[0].provenance.source_uri,
         "https://provider.example/match/7"
+    );
+
+    remove_fixture(&path);
+}
+
+#[test]
+fn detector_adapters_run_independently_and_preserve_failures() {
+    struct StaticProvider {
+        id: &'static str,
+        categories: Vec<LegalCategory>,
+        result: Result<Vec<DetectorObservation>, std::io::ErrorKind>,
+    }
+
+    impl LegalityEvidenceProvider for StaticProvider {
+        fn id(&self) -> &str {
+            self.id
+        }
+
+        fn categories(&self) -> &[LegalCategory] {
+            &self.categories
+        }
+
+        fn inspect(&self, _path: &Path) -> std::io::Result<Vec<DetectorObservation>> {
+            self.result
+                .as_ref()
+                .map(Clone::clone)
+                .map_err(|kind| std::io::Error::from(*kind))
+        }
+    }
+
+    let path = fixture_path("adapters.jpg", &[0xff, 0xd8, 0xff, 0xd9]);
+    let scene = StaticProvider {
+        id: "scene-provider",
+        categories: vec![LegalCategory::NationalSecurity],
+        result: Ok(vec![DetectorObservation::risk(
+            "scene-adapter-1",
+            LegalCategory::NationalSecurity,
+            "untrusted-provider-name",
+            0.75,
+            "https://provider.example/scene-adapter-1",
+        )]),
+    };
+    let symbols = StaticProvider {
+        id: "symbol-provider",
+        categories: vec![LegalCategory::ForbiddenContent],
+        result: Err(std::io::ErrorKind::TimedOut),
+    };
+    let rights = StaticProvider {
+        id: "rights-provider",
+        categories: vec![LegalCategory::CopyrightAndIp],
+        result: Ok(vec![DetectorObservation::no_match(
+            "rights-adapter-1",
+            LegalCategory::CopyrightAndIp,
+            "untrusted-provider-name",
+            0.84,
+            "https://provider.example/rights-adapter-1",
+        )]),
+    };
+    let providers: [&dyn LegalityEvidenceProvider; 3] = [&scene, &symbols, &rights];
+
+    let report = check_file_legality_with_providers(
+        &path,
+        &FileLegalityConfig::for_jurisdictions(["CA"]),
+        &providers,
+    )
+    .expect("run independent providers");
+
+    assert_eq!(report.provider_runs[0].status, ProviderRunStatus::Completed);
+    assert_eq!(report.provider_runs[1].status, ProviderRunStatus::Failed);
+    assert_eq!(
+        report.provider_runs[1].error_kind.as_deref(),
+        Some("timed_out")
+    );
+    assert_eq!(report.provider_runs[2].status, ProviderRunStatus::Completed);
+    assert_eq!(
+        report
+            .assessment("CA", LegalCategory::NationalSecurity)
+            .unwrap()
+            .status,
+        AssessmentStatus::RiskSignal
+    );
+    assert_eq!(
+        report
+            .assessment("CA", LegalCategory::ForbiddenContent)
+            .unwrap()
+            .status,
+        AssessmentStatus::Unknown
+    );
+    assert_eq!(
+        report
+            .assessment("CA", LegalCategory::CopyrightAndIp)
+            .unwrap()
+            .status,
+        AssessmentStatus::NoRiskSignalDetected
+    );
+    assert_eq!(report.observations[0].provenance.provider, "scene-provider");
+    assert_eq!(
+        report.observations[1].provenance.provider,
+        "rights-provider"
     );
 
     remove_fixture(&path);

@@ -79,6 +79,14 @@ pub enum ReportLimitation {
     ProviderEvidenceNotIndependentlyVerified,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ProviderRunStatus {
+    Completed,
+    Failed,
+    SkippedFailClosed,
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum MetadataField {
@@ -281,6 +289,27 @@ pub struct FileLegalityConfig {
     pub authorized_hash_matches: Vec<AuthorizedHashMatch>,
 }
 
+/// Adapter boundary for object, symbol, rights, or other external detectors.
+///
+/// Implementations inspect the file in their own trust boundary and return
+/// evidence observations only. One adapter failure is retained in the report
+/// and does not prevent other category adapters from running.
+pub trait LegalityEvidenceProvider {
+    fn id(&self) -> &str;
+    fn categories(&self) -> &[LegalCategory];
+    fn inspect(&self, path: &Path) -> io::Result<Vec<DetectorObservation>>;
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ProviderRun {
+    pub provider: String,
+    pub categories: Vec<LegalCategory>,
+    pub status: ProviderRunStatus,
+    pub observation_ids: Vec<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub error_kind: Option<String>,
+}
+
 impl FileLegalityConfig {
     pub fn for_jurisdictions<I, S>(jurisdictions: I) -> Self
     where
@@ -339,6 +368,7 @@ pub struct FileLegalityReport {
     pub observations: Vec<DetectorObservation>,
     pub policies: Vec<JurisdictionPolicy>,
     pub authorized_hash_matches: Vec<AuthorizedHashMatch>,
+    pub provider_runs: Vec<ProviderRun>,
     pub verdict: LegalVerdict,
     pub safety_disposition: SafetyDisposition,
     pub limitations: Vec<ReportLimitation>,
@@ -360,6 +390,71 @@ impl FileLegalityReport {
 
 pub fn check_file_legality(path: impl AsRef<Path>) -> io::Result<FileLegalityReport> {
     check_file_legality_with(path, &FileLegalityConfig::default())
+}
+
+pub fn check_file_legality_with_providers(
+    path: impl AsRef<Path>,
+    config: &FileLegalityConfig,
+    providers: &[&dyn LegalityEvidenceProvider],
+) -> io::Result<FileLegalityReport> {
+    let path = path.as_ref();
+    if config
+        .authorized_hash_matches
+        .iter()
+        .any(|hash_match| hash_match.confirmed)
+    {
+        let mut report = check_file_legality_with(path, config)?;
+        report.provider_runs = providers
+            .iter()
+            .map(|provider| ProviderRun {
+                provider: provider.id().to_owned(),
+                categories: provider.categories().to_vec(),
+                status: ProviderRunStatus::SkippedFailClosed,
+                observation_ids: Vec::new(),
+                error_kind: None,
+            })
+            .collect();
+        return Ok(report);
+    }
+
+    let mut composed = config.clone();
+    let mut provider_runs = Vec::with_capacity(providers.len());
+    for provider in providers {
+        match provider.inspect(path) {
+            Ok(observations) => {
+                let allowed_categories = provider.categories();
+                let observations: Vec<DetectorObservation> = observations
+                    .into_iter()
+                    .filter(|observation| allowed_categories.contains(&observation.category))
+                    .map(|mut observation| {
+                        observation.provenance.provider = provider.id().to_owned();
+                        observation
+                    })
+                    .collect();
+                provider_runs.push(ProviderRun {
+                    provider: provider.id().to_owned(),
+                    categories: allowed_categories.to_vec(),
+                    status: ProviderRunStatus::Completed,
+                    observation_ids: observations
+                        .iter()
+                        .map(|observation| observation.id.clone())
+                        .collect(),
+                    error_kind: None,
+                });
+                composed.observations.extend(observations);
+            }
+            Err(error) => provider_runs.push(ProviderRun {
+                provider: provider.id().to_owned(),
+                categories: provider.categories().to_vec(),
+                status: ProviderRunStatus::Failed,
+                observation_ids: Vec::new(),
+                error_kind: Some(io_error_kind(error.kind()).to_owned()),
+            }),
+        }
+    }
+    let mut report = check_file_legality_with(path, &composed)?;
+    report.provider_runs = provider_runs;
+    Ok(report)
 }
 
 pub fn check_file_legality_with(
@@ -404,6 +499,7 @@ pub fn check_file_legality_with(
         observations: config.observations.clone(),
         policies: config.policies.clone(),
         authorized_hash_matches: config.authorized_hash_matches.clone(),
+        provider_runs: Vec::new(),
         verdict: LegalVerdict::NotProvided,
         safety_disposition: if fail_closed {
             SafetyDisposition::RefuseAndEscalateToAuthorizedProvider
@@ -570,6 +666,31 @@ fn canonical_jurisdiction(value: &str) -> String {
         "*".to_owned()
     } else {
         trimmed.to_ascii_uppercase()
+    }
+}
+
+const fn io_error_kind(kind: io::ErrorKind) -> &'static str {
+    match kind {
+        io::ErrorKind::NotFound => "not_found",
+        io::ErrorKind::PermissionDenied => "permission_denied",
+        io::ErrorKind::ConnectionRefused => "connection_refused",
+        io::ErrorKind::ConnectionReset => "connection_reset",
+        io::ErrorKind::ConnectionAborted => "connection_aborted",
+        io::ErrorKind::NotConnected => "not_connected",
+        io::ErrorKind::AddrInUse => "address_in_use",
+        io::ErrorKind::AddrNotAvailable => "address_not_available",
+        io::ErrorKind::BrokenPipe => "broken_pipe",
+        io::ErrorKind::AlreadyExists => "already_exists",
+        io::ErrorKind::WouldBlock => "would_block",
+        io::ErrorKind::InvalidInput => "invalid_input",
+        io::ErrorKind::InvalidData => "invalid_data",
+        io::ErrorKind::TimedOut => "timed_out",
+        io::ErrorKind::WriteZero => "write_zero",
+        io::ErrorKind::Interrupted => "interrupted",
+        io::ErrorKind::Unsupported => "unsupported",
+        io::ErrorKind::UnexpectedEof => "unexpected_eof",
+        io::ErrorKind::OutOfMemory => "out_of_memory",
+        _ => "other",
     }
 }
 
