@@ -1,0 +1,10 @@
+   Compiling formal-ai v0.320.0 (/tmp/gh-issue-solver-1785685812981)
+error[E0432]: unresolved import `formal_ai::algorithm_discovery`
+ --> tests/unit/issue_531_algorithm_discovery.rs:7:16
+  |
+7 | use formal_ai::algorithm_discovery::{
+  |                ^^^^^^^^^^^^^^^^^^^ could not find `algorithm_discovery` in `formal_ai`
+
+For more information about this error, try `rustc --explain E0432`.
+error: could not compile `formal-ai` (test "unit") due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
