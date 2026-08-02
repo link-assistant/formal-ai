@@ -55,8 +55,10 @@ const TARGET_TOTAL_LINES: usize = 3_000;
 /// map projections add eight source/collection-copy lines (27,643). The final
 /// scoped-gap routing guard stays inside that reviewed module and lowers its
 /// net ceiling by one line through equivalent helper consolidation.
+/// Issue #858 then mirrors the returning-user recap route and bounded plain
+/// formatter for Rust↔JS parity, adding a net 64 lines on the merged baseline.
 #[cfg(not(test))]
-const CEILING_TOTAL_LINES: usize = 27_642;
+const CEILING_TOTAL_LINES: usize = 27_706;
 
 const WORKER_DIR: &str = "src/web/worker";
 

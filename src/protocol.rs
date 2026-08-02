@@ -30,11 +30,12 @@ mod output;
 mod recording;
 mod responses_input;
 pub use output::*;
+use recording::response_prompt;
 pub use recording::{
     chat_exchange_to_record, chat_tool_executions, messages_exchange_to_record,
     responses_exchange_to_record,
 };
-use recording::{chat_prompt_and_history, response_prompt};
+pub(crate) use recording::{chat_message_to_turn, chat_prompt_and_history};
 
 fn resolved_request_model(model: Option<&str>) -> String {
     crate::seed::resolve_model_id(model)

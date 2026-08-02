@@ -2,15 +2,18 @@ self_ast_census
   target src/summarization/dialog.rs
   language rust
   fidelity signature
-  byte_len 3409
-  line_count 98
-  content_id source_module_ab1a647e1983251e
-  symbol_count 7
+  byte_len 6723
+  line_count 196
+  content_id source_module_c799bca7206528f1
+  symbol_count 10
   symbols
-    struct DialogTurn 17 20
-    function new 25 30
-    function user 34 36
-    function assistant 40 42
-    function formalize_dialog 51 66
-    function summarize_dialog 72 85
-    function generate_chat_title 93 98
+    struct DialogTurn 18 21
+    function new 26 31
+    function user 35 37
+    function assistant 41 43
+    function formalize_dialog 52 67
+    function summarize_dialog 73 86
+    function summarize_dialog_plain 96 129
+    function plain_first_sentence 131 170
+    function bound_plain_words 172 183
+    function generate_chat_title 191 196
