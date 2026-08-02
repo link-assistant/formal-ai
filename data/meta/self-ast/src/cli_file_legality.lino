@@ -1,0 +1,12 @@
+self_ast_census
+  target src/cli_file_legality.rs
+  language rust
+  fidelity signature
+  byte_len 1597
+  line_count 54
+  content_id source_module_100599721935d782
+  symbol_count 3
+  symbols
+    struct FileLegalityArgs 10 25
+    function run_file_legality 27 40
+    function load_config 42 54
