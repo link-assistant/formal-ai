@@ -5,6 +5,7 @@ use std::collections::BTreeSet;
 use std::fs;
 use std::process::Command;
 
+use formal_ai::proof_program::FormalProof;
 use formal_ai::{FormalAiEngine, SymbolicAnswer};
 
 fn answer(prompt: &str) -> SymbolicAnswer {
@@ -60,10 +61,8 @@ fn execute_rust(program: &str) -> String {
 }
 
 fn execute_python(program: &str) -> String {
-    let source = std::env::temp_dir().join(format!(
-        "formal-ai-issue-890-{}.py",
-        std::process::id()
-    ));
+    let source =
+        std::env::temp_dir().join(format!("formal-ai-issue-890-{}.py", std::process::id()));
     fs::write(&source, program).expect("write generated Python proof");
     let executed = Command::new("python3")
         .arg(&source)
@@ -76,6 +75,20 @@ fn execute_python(program: &str) -> String {
         String::from_utf8_lossy(&executed.stderr)
     );
     String::from_utf8(executed.stdout).expect("Python output is UTF-8")
+}
+
+#[test]
+fn proof_meaning_is_independent_from_its_programming_language_presentations() {
+    let proof =
+        FormalProof::integer_interval("x", 1, false, 3, false).expect("valid interval proof");
+    let canonical = proof.statement();
+    assert_eq!(FormalProof::from_statement(&canonical), Some(proof.clone()));
+    assert!(proof.render_program("rust").is_some());
+    assert!(proof.render_program("python").is_some());
+    assert_eq!(
+        proof.slug(),
+        FormalProof::from_statement(&canonical).unwrap().slug()
+    );
 }
 
 #[test]
@@ -121,7 +134,10 @@ fn every_registered_natural_language_can_request_proof_translation() {
     let supported = formal_ai::supported_languages()
         .into_iter()
         .collect::<BTreeSet<_>>();
-    assert_eq!(covered, supported, "fixture must grow with the language registry");
+    assert_eq!(
+        covered, supported,
+        "fixture must grow with the language registry"
+    );
 
     let mut shared_meaning = None;
     for (language, prompt) in prompts {

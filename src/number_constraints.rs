@@ -13,6 +13,7 @@ use crate::language::detect as detect_language;
 use crate::proof_engine::{
     attempt_proof_with_config, render_outcome_with_config, ProofRenderConfig,
 };
+use crate::proof_program::FormalProof;
 use crate::seed;
 use crate::solver_handlers::finalize_simple;
 
@@ -62,10 +63,21 @@ pub fn solve_number_constraints(
 
     let bounds = extract_interval_bounds(&cleaned, &lowercased)?;
     let language = detect_language(prompt).slug();
-    let statement = formal_statement(bounds);
+    let proof = FormalProof::integer_interval(
+        "x",
+        bounds.lower.value,
+        bounds.lower.inclusive,
+        bounds.upper.value,
+        bounds.upper.inclusive,
+    )?;
+    let statement = proof.statement();
+    // The existing decision procedure proves the real-valued interval. Keep
+    // that check in its established grammar while the canonical statement
+    // above records the integer domain carried by `FormalProof`.
+    let decision_statement = formal_statement(bounds);
     let outcome = attempt_proof_with_config(
         prompt,
-        &statement,
+        &decision_statement,
         language,
         false,
         false,

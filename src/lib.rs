@@ -81,6 +81,7 @@ pub mod program_plan;
 pub mod program_skill_gap;
 pub mod promotion;
 pub mod proof_engine;
+pub mod proof_program;
 pub mod protocol;
 pub(crate) mod protocol_memory;
 pub(crate) mod protocol_policy;

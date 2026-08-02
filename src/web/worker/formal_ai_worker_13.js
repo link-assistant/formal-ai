@@ -114,7 +114,7 @@ function programLanguageFromPrompt(normalized) {
   // are single tokens, matched on whitespace boundaries exactly as in Rust.
   for (const slug of Object.keys(WRITE_PROGRAM_LANGUAGES)) {
     const surfaces = wordsForMeaning(`program_language_${slug}`);
-    if (surfaces.some((alias) => tokens.includes(alias))) return slug;
+    if (surfaces.some((alias) => programAliasMatches(normalized, tokens, alias))) return slug;
   }
   const prepositionSurfaces = wordsForRoleInLanguages(
     ROLE_IMPLEMENTATION_LANGUAGE_PREPOSITION,
@@ -132,6 +132,28 @@ function programLanguageFromPrompt(normalized) {
     return tokens[index + 1];
   }
   return null;
+}
+
+function programAliasMatches(normalized, tokens, alias) {
+  const surface = String(alias || "").toLocaleLowerCase();
+  if (!surface) return false;
+  if (/\p{Script=Han}/u.test(surface)) return normalized.includes(surface);
+  if (!/^[a-z0-9]+$/u.test(surface)) return tokens.includes(surface);
+
+  // Chinese normally joins a Latin programming-language name directly to Han
+  // text (`翻译成Rust`). A Han/Latin script change is a token boundary even
+  // without whitespace, while ASCII neighbours remain strict so aliases such
+  // as `c` and `rs` cannot match inside an unrelated English word.
+  let offset = 0;
+  while (offset <= normalized.length - surface.length) {
+    const index = normalized.indexOf(surface, offset);
+    if (index === -1) return false;
+    const before = index > 0 ? normalized[index - 1] : "";
+    const after = normalized[index + surface.length] || "";
+    if (!/[a-z0-9]/iu.test(before) && !/[a-z0-9]/iu.test(after)) return true;
+    offset = index + 1;
+  }
+  return false;
 }
 
 // ---------------------------------------------------------------------------

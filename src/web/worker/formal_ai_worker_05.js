@@ -369,8 +369,110 @@ function renderTranslationGap(surface, source, target) {
   return `I could not translate "${trimmed}" from ${source} to ${target} with the available formalization data. I recorded this as a translation gap for follow-up.`;
 }
 
+// Issue #890: formalize an interval proof once, independently from both the
+// natural language of the request and the programming language used to present
+// it. This mirrors `proof_program::FormalProof` in the native engine.
+function formalizeIntegerIntervalProof(statement) {
+  const tokens = String(statement || "").trim().split(/\s+/u);
+  if (tokens.length < 9 || tokens[3] !== "and" || tokens[0] !== tokens[4]) return null;
+  if (!/^[A-Za-z]+$/u.test(tokens[0])) return null;
+  if (![">", ">="].includes(tokens[1]) || !["<", "<="].includes(tokens[5])) {
+    return null;
+  }
+  let lower;
+  let upper;
+  try {
+    lower = BigInt(tokens[2]);
+    upper = BigInt(tokens[6]);
+  } catch (_error) {
+    return null;
+  }
+  const suffix = tokens.slice(7).join(" ");
+  if (
+    suffix !== "is satisfiable" &&
+    suffix !== "is satisfiable over integers" &&
+    suffix !== "is unsatisfiable over integers"
+  ) {
+    return null;
+  }
+  const first = tokens[1] === ">=" ? lower : lower + 1n;
+  const last = tokens[5] === "<=" ? upper : upper - 1n;
+  const witness = first <= last ? first : null;
+  const expectedSatisfiable = !suffix.startsWith("is unsatisfiable");
+  if (Boolean(witness !== null) !== expectedSatisfiable) return null;
+  return {
+    variable: tokens[0],
+    lower,
+    lowerOperator: tokens[1],
+    upper,
+    upperOperator: tokens[5],
+    first,
+    last,
+    witness,
+  };
+}
+
+function formalProofSlug(proof) {
+  return [
+    "proof",
+    "integer_interval",
+    proof.variable,
+    proof.lowerOperator,
+    String(proof.lower),
+    proof.upperOperator,
+    String(proof.upper),
+    proof.witness === null ? "unsatisfiable" : "satisfiable",
+  ].join(":");
+}
+
+function renderFormalProofProgram(proof, target) {
+  if (target === "rust") {
+    if (proof.witness !== null) {
+      return [
+        "fn main() {",
+        `    let ${proof.variable}: i64 = ${proof.witness};`,
+        `    assert!(${proof.variable} ${proof.lowerOperator} ${proof.lower} && ${proof.variable} ${proof.upperOperator} ${proof.upper}, "proof obligation failed");`,
+        `    println!("{${proof.variable}}");`,
+        "}",
+      ].join("\n");
+    }
+    return [
+      "fn main() {",
+      `    let first: i64 = ${proof.first};`,
+      `    let last: i64 = ${proof.last};`,
+      '    assert!(first > last, "proof obligation failed");',
+      '    println!("unsatisfiable");',
+      "}",
+    ].join("\n");
+  }
+  if (target === "python") {
+    if (proof.witness !== null) {
+      return [
+        `${proof.variable} = ${proof.witness}`,
+        `assert ${proof.variable} ${proof.lowerOperator} ${proof.lower} and ${proof.variable} ${proof.upperOperator} ${proof.upper}, "proof obligation failed"`,
+        `print(${proof.variable})`,
+      ].join("\n");
+    }
+    return [
+      `first = ${proof.first}`,
+      `last = ${proof.last}`,
+      'assert first > last, "proof obligation failed"',
+      'print("unsatisfiable")',
+    ].join("\n");
+  }
+  return null;
+}
+
+function extractBacktickedFormalProof(prompt) {
+  const match = /`([^`\r\n]+)`/u.exec(String(prompt || ""));
+  if (!match) return { source: null, proof: null };
+  return { source: match[1], proof: formalizeIntegerIntervalProof(match[1]) };
+}
+
 async function tryTranslation(prompt, normalized) {
   const targetHint = detectTranslationTargetLanguage(normalized);
+  const formalProof = extractBacktickedFormalProof(prompt);
+  const programTarget = formalProof.proof ? programLanguageFromPrompt(normalized) : null;
   const unquotedSurface = extractUnquotedTranslationSurface(prompt);
   // Issue #386: recognise a translation command by *meaning*, not by hardcoded
   // verbs. The command stems live once in the embedded translate meaning; this
@@ -383,15 +485,33 @@ async function tryTranslation(prompt, normalized) {
     "ru",
   ]).some((stem) => normalized.startsWith(stem));
   const headFinalCommand =
-    Boolean(targetHint) &&
+    Boolean(targetHint || programTarget) &&
     wordsForRoleInLanguages(ROLE_TRANSLATION_ACTION, ["hi", "zh"]).some((stem) =>
       normalized.includes(stem),
     );
-  const sourceFirstCommand = Boolean(targetHint) && Boolean(unquotedSurface) &&
+  const sourceFirstCommand = Boolean(targetHint || programTarget) && Boolean(unquotedSurface) &&
     wordsForRoleInLanguages(ROLE_TRANSLATION_ACTION, ["en", "ru", "hi", "zh"])
       .some((stem) => normalized.includes(stem));
   const isTranslationRequest = headInitialCommand || headFinalCommand || sourceFirstCommand;
   if (!isTranslationRequest) return null;
+
+  if (formalProof.proof && programTarget) {
+    const rendered = renderFormalProofProgram(formalProof.proof, programTarget);
+    const program = rendered ||
+      `${programTarget === "python" || programTarget === "ruby" ? "#" : "//"} translation gap for \`formal proof\` from proof to ${programTarget}`;
+    const meaningId = stableBehaviorRuleId("meaning", formalProofSlug(formalProof.proof));
+    return {
+      intent: `translate_proof_to_${programTarget}`,
+      content: `Translated \`${formalProof.source}\` from proof to ${programTarget}:\n\n\`\`\`${programTarget}\n${program}\n\`\`\``,
+      confidence: 1.0,
+      evidence: [
+        "handler:translation",
+        "language_from:proof",
+        `language_to:${programTarget}`,
+        `meaning:${meaningId}`,
+      ],
+    };
+  }
 
   // Issue #216: fall back to an unquoted surface (`translate apple to
   // russian`) when no quoted fragment is present so the offline registry
