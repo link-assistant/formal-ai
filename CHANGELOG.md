@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.320.0] - 2026-08-02
+
+### Added
+- Fuse captured multi-source search results into ranked, cross-language statements with per-source provenance and explicit conflicts on web, CLI, HTTP, and Telegram (#709).
+
 ## [0.319.2] - 2026-08-02
 
 ### Fixed
