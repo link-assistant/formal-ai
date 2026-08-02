@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.319.2] - 2026-08-02
+
+### Fixed
+
+- Fixed Codex hello-world coding so custom apply_patch creates the source file, exec_command compiles and runs it with precise narration, and Report issue asks for details instead of searching the web.
+
 ## [0.319.1] - 2026-08-02
 
 ### Fixed
