@@ -1,8 +1,8 @@
 issue_709_reviewed_decomposition
   issue 709
-  reviewed_smallest_leaves 5
-  formal_ai_authored_leaves 1
-  formal_ai_authored_percent 20
+  reviewed_smallest_leaves 13
+  formal_ai_authored_leaves 7
+  formal_ai_authored_percent 54
   leaf "capture and formalize exact search observations"
     author codex
     evidence "src/search_fusion.rs"
@@ -15,8 +15,44 @@ issue_709_reviewed_decomposition
   leaf "pin deterministic cached multilingual and conflict acceptance fixtures"
     author codex
     evidence "tests/unit/issue_709_search_fusion.rs"
+  leaf "implement review-gated execution learning and durable recipe replay"
+    author codex
+    evidence "src/search_fusion_learning.rs"
+  leaf "fix statement language, exact-mirror, and visible-HTML boundaries"
+    author codex
+    evidence "src/search_fusion.rs"
   leaf "state the search-fusion provenance invariant"
     author formal_ai_agent_cli
     session "ses_043917171ffexOcBhxmOYVr3W8"
     evidence "data/meta/search-fusion-provenance-invariant.lino"
     transcript "docs/case-studies/issue-709/self-hosting-authorship/agent-cli.log"
+  leaf "declare the inert candidate and promotion contract"
+    author formal_ai_agent_cli
+    session "ses_03f0edb46ffesIq1tz5G0zcTuV"
+    evidence "data/meta/search-fusion-learning-contract.lino"
+    transcript "docs/case-studies/issue-709/agent-cli-evidence/learning-contract/agent-cli.log"
+  leaf "declare the seven-stage source fusion policy"
+    author formal_ai_agent_cli
+    session "ses_03f0ec980ffeTwKWTHsJV8L3tk"
+    evidence "data/meta/search-fusion-source-policy.lino"
+    transcript "docs/case-studies/issue-709/agent-cli-evidence/source-policy/agent-cli.log"
+  leaf "declare the held-out generalization fixture"
+    author formal_ai_agent_cli
+    session "ses_03f0eb7f9ffes4J25WB6ozqWjQ"
+    evidence "data/benchmarks/search-fusion-learning-generalization.lino"
+    transcript "docs/case-studies/issue-709/agent-cli-evidence/generalization-fixture/agent-cli.log"
+  leaf "encode the failed executions and reusable amendments as an associative network"
+    author formal_ai_agent_cli
+    session "ses_03f015388ffej7CYn8EdCRJjRm"
+    evidence "data/meta/issue-709-search-fusion-learning.lino"
+    transcript "docs/case-studies/issue-709/agent-cli-evidence/learning-report/agent-cli.log"
+  leaf "declare data-driven semantic-role order for user-language projection"
+    author formal_ai_agent_cli
+    session "ses_03efa9270ffeDsKblsJY05z2bo"
+    evidence "data/seed/search-fusion-language-grammar.lino"
+    transcript "docs/case-studies/issue-709/agent-cli-evidence/language-grammar/agent-cli.log"
+  leaf "derive the ranked gated learning report through Formal AI"
+    author formal_ai_agent_cli
+    session "ses_03eff26d2ffeDtvQk3uW203zgj"
+    evidence "docs/case-studies/issue-709/agent-cli-evidence/learning-report-execution/search-fusion-learning-report.lino"
+    transcript "docs/case-studies/issue-709/agent-cli-evidence/learning-report-execution/agent-cli.log"
