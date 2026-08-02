@@ -1,0 +1,1952 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.316Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.318Z",
+  "service": "default",
+  "version": "0.25.4",
+  "command": "/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Continue Formal AI issue #709 by retaining the implementation failures and reusable corrections in associative memory. As the bounded observation-network leaf, create issue-709-search-fusion-learning.lino containing\ndemo_memory\n  event \"observation:fragment-language\"\n    kind \"message\"\n    role \"user\"\n    content \"One language decision for an entire mixed-language capture assigns wrong provenance to individual statements.\"\n    conversationId \"issue-709\"\n    accessCount \"9\"\n    writeCount \"1\"\n  event \"observation:exact-mirror\"\n    kind \"message\"\n    role \"user\"\n    content \"Caller metadata alone lets byte-identical mirrors contribute as independent corroboration.\"\n    conversationId \"issue-709\"\n    accessCount \"8\"\n    writeCount \"1\"\n  event \"observation:hidden-html\"\n    kind \"message\"\n    role \"user\"\n    content \"Tag stripping without hidden-element state can present script or style content as a source quote.\"\n    conversationId \"issue-709\"\n    accessCount \"7\"\n    writeCount \"1\"\n  event \"observation:proposal-only\"\n    kind \"message\"\n    role \"user\"\n    content \"A serialized execution proposal records the answer but cannot solve an unseen equivalent task after restart.\"\n    conversationId \"issue-709\"\n    accessCount \"9\"\n    writeCount \"1\"\n  event \"lesson:statement-boundary\"\n    kind \"learning_amendment\"\n    role \"assistant\"\n    content \"Detect language after sentence splitting and retain the original quote while deformalizing only the answer statement.\"\n    conversationId \"issue-709\"\n    evidence \"observation:fragment-language\"\n    writeCount \"5\"\n  event \"lesson:capture-policy\"\n    kind \"learning_amendment\"\n    role \"assistant\"\n    content \"Resolve identical capture digests by highest source tier then retrieval rank and set every losing mirror to zero-weight unoriginal.\"\n    conversationId \"issue-709\"\n    evidence \"observation:exact-mirror\"\n    writeCount \"4\"\n  event \"lesson:visible-provenance\"\n    kind \"learning_amendment\"\n    role \"assistant\"\n    content \"Exclude script style template and noscript bodies before sentence formalization so normalized quotes remain human-visible evidence.\"\n    conversationId \"issue-709\"\n    evidence \"observation:hidden-html\"\n    writeCount \"4\"\n  event \"lesson:gated-recipe-replay\"\n    kind \"learning_amendment\"\n    role \"assistant\"\n    content \"Infer the stable fusion stages from multiple successful executions, keep candidates inert, then require zero-failure held-out evidence and named review before durable replay.\"\n    conversationId \"issue-709\"\n    evidence \"observation:proposal-only\"\n    evidence \"lesson:statement-boundary\"\n    evidence \"lesson:capture-policy\"\n    evidence \"lesson:visible-provenance\"\n    writeCount \"6\" --disable-stdin --no-summarize-session --compaction-model same --model formal-ai/formal-ai",
+  "workingDirectory": "/tmp/tmp.y316zdXMlC",
+  "scriptPath": "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.318Z",
+  "service": "default",
+  "directory": "/tmp/tmp.y316zdXMlC",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.319Z",
+  "service": "project",
+  "directory": "/tmp/tmp.y316zdXMlC",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.403Z",
+  "service": "default",
+  "processArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Continue Formal AI issue #709 by retaining the implementation failures and reusable corrections in associative memory. As the bounded observation-network leaf, create issue-709-search-fusion-learning.lino containing\ndemo_memory\n  event \"observation:fragment-language\"\n    kind \"message\"\n    role \"user\"\n    content \"One language decision for an entire mixed-language capture assigns wrong provenance to individual statements.\"\n    conversationId \"issue-709\"\n    accessCount \"9\"\n    writeCount \"1\"\n  event \"observation:exact-mirror\"\n    kind \"message\"\n    role \"user\"\n    content \"Caller metadata alone lets byte-identical mirrors contribute as independent corroboration.\"\n    conversationId \"issue-709\"\n    accessCount \"8\"\n    writeCount \"1\"\n  event \"observation:hidden-html\"\n    kind \"message\"\n    role \"user\"\n    content \"Tag stripping without hidden-element state can present script or style content as a source quote.\"\n    conversationId \"issue-709\"\n    accessCount \"7\"\n    writeCount \"1\"\n  event \"observation:proposal-only\"\n    kind \"message\"\n    role \"user\"\n    content \"A serialized execution proposal records the answer but cannot solve an unseen equivalent task after restart.\"\n    conversationId \"issue-709\"\n    accessCount \"9\"\n    writeCount \"1\"\n  event \"lesson:statement-boundary\"\n    kind \"learning_amendment\"\n    role \"assistant\"\n    content \"Detect language after sentence splitting and retain the original quote while deformalizing only the answer statement.\"\n    conversationId \"issue-709\"\n    evidence \"observation:fragment-language\"\n    writeCount \"5\"\n  event \"lesson:capture-policy\"\n    kind \"learning_amendment\"\n    role \"assistant\"\n    content \"Resolve identical capture digests by highest source tier then retrieval rank and set every losing mirror to zero-weight unoriginal.\"\n    conversationId \"issue-709\"\n    evidence \"observation:exact-mirror\"\n    writeCount \"4\"\n  event \"lesson:visible-provenance\"\n    kind \"learning_amendment\"\n    role \"assistant\"\n    content \"Exclude script style template and noscript bodies before sentence formalization so normalized quotes remain human-visible evidence.\"\n    conversationId \"issue-709\"\n    evidence \"observation:hidden-html\"\n    writeCount \"4\"\n  event \"lesson:gated-recipe-replay\"\n    kind \"learning_amendment\"\n    role \"assistant\"\n    content \"Infer the stable fusion stages from multiple successful executions, keep candidates inert, then require zero-failure held-out evidence and named review before durable replay.\"\n    conversationId \"issue-709\"\n    evidence \"observation:proposal-only\"\n    evidence \"lesson:statement-boundary\"\n    evidence \"lesson:capture-policy\"\n    evidence \"lesson:visible-provenance\"\n    writeCount \"6\"",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-model",
+    "same",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Continue Formal AI issue #709 by retaining the implementation failures and reusable corrections in associative memory. As the bounded observation-network leaf, create issue-709-search-fusion-learning.lino containing\ndemo_memory\n  event \"observation:fragment-language\"\n    kind \"message\"\n    role \"user\"\n    content \"One language decision for an entire mixed-language capture assigns wrong provenance to individual statements.\"\n    conversationId \"issue-709\"\n    accessCount \"9\"\n    writeCount \"1\"\n  event \"observation:exact-mirror\"\n    kind \"message\"\n    role \"user\"\n    content \"Caller metadata alone lets byte-identical mirrors contribute as independent corroboration.\"\n    conversationId \"issue-709\"\n    accessCount \"8\"\n    writeCount \"1\"\n  event \"observation:hidden-html\"\n    kind \"message\"\n    role \"user\"\n    content \"Tag stripping without hidden-element state can present script or style content as a source quote.\"\n    conversationId \"issue-709\"\n    accessCount \"7\"\n    writeCount \"1\"\n  event \"observation:proposal-only\"\n    kind \"message\"\n    role \"user\"\n    content \"A serialized execution proposal records the answer but cannot solve an unseen equivalent task after restart.\"\n    conversationId \"issue-709\"\n    accessCount \"9\"\n    writeCount \"1\"\n  event \"lesson:statement-boundary\"\n    kind \"learning_amendment\"\n    role \"assistant\"\n    content \"Detect language after sentence splitting and retain the original quote while deformalizing only the answer statement.\"\n    conversationId \"issue-709\"\n    evidence \"observation:fragment-language\"\n    writeCount \"5\"\n  event \"lesson:capture-policy\"\n    kind \"learning_amendment\"\n    role \"assistant\"\n    content \"Resolve identical capture digests by highest source tier then retrieval rank and set every losing mirror to zero-weight unoriginal.\"\n    conversationId \"issue-709\"\n    evidence \"observation:exact-mirror\"\n    writeCount \"4\"\n  event \"lesson:visible-provenance\"\n    kind \"learning_amendment\"\n    role \"assistant\"\n    content \"Exclude script style template and noscript bodies before sentence formalization so normalized quotes remain human-visible evidence.\"\n    conversationId \"issue-709\"\n    evidence \"observation:hidden-html\"\n    writeCount \"4\"\n  event \"lesson:gated-recipe-replay\"\n    kind \"learning_amendment\"\n    role \"assistant\"\n    content \"Infer the stable fusion stages from multiple successful executions, keep candidates inert, then require zero-failure held-out evidence and named review before durable replay.\"\n    conversationId \"issue-709\"\n    evidence \"observation:proposal-only\"\n    evidence \"lesson:statement-boundary\"\n    evidence \"lesson:capture-policy\"\n    evidence \"lesson:visible-provenance\"\n    writeCount \"6\"",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-model",
+    "same",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.403Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.406Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.409Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.410Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.414Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.421Z",
+  "service": "config",
+  "path": "/tmp/tmp.y316zdXMlC/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.467Z",
+  "service": "models.dev",
+  "path": "/home/box/.cache/link-assistant-agent/models.json",
+  "age": 877555,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.468Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.532Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.558Z",
+  "service": "claude-oauth",
+  "path": "/home/box/.claude/.credentials.json",
+  "message": "credentials file not found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.559Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.559Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.559Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.559Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.559Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.559Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 153,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.561Z",
+  "service": "provider",
+  "modelID": "big-pickle",
+  "providerID": "opencode",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.562Z",
+  "service": "provider",
+  "modelID": "minimax-m2.5-free",
+  "providerID": "kilo",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.562Z",
+  "service": "default",
+  "models": [
+    "opencode/big-pickle",
+    "kilo/minimax-m2.5-free",
+    "same"
+  ],
+  "source": "default",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.603Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.603Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.607Z",
+  "service": "session",
+  "id": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "version": "0.25.4",
+  "projectID": "global",
+  "directory": "/tmp/tmp.y316zdXMlC",
+  "title": "New session - 2026-08-02T05:42:23.607Z",
+  "time": {
+    "created": 1785649343607,
+    "updated": 1785649343607
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.608Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.608Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.609Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 6,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.610Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.620Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_03f015388ffej7CYn8EdCRJjRm/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.620Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_03f015388ffej7CYn8EdCRJjRm/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.642Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 22,
+  "method": "POST",
+  "path": "/session/ses_03f015388ffej7CYn8EdCRJjRm/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.662Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.667Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.669Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.674Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.683Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.683Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.686Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.687Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.688Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.688Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.688Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 1,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.689Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.689Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.689Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.689Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.689Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.689Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.689Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:23.689Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:24.669Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:24.682Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:24.684Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:24.718Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:24.737Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:24.803Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:24.803Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:24.804Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:24.804Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.423Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1785649345424,
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "part": {
+    "id": "prt_fc0feb37f001tEo5dh1lVkm94Q",
+    "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+    "messageID": "msg_fc0feb0a6001HFCW3sTtpU7TBg",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.427Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.431Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785649345431,
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "part": {
+    "id": "prt_fc0feb393001apmwyynm2kLF6O",
+    "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+    "messageID": "msg_fc0feb0a6001HFCW3sTtpU7TBg",
+    "type": "tool",
+    "callID": "call_ffaa9f2098f92174",
+    "tool": "write",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.432Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1785649345432,
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "part": {
+    "id": "prt_fc0feb390001lmaQAkO63SD3yF",
+    "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+    "messageID": "msg_fc0feb0a6001HFCW3sTtpU7TBg",
+    "type": "text",
+    "text": "Let me update .formal-ai/general-change-plan.lino for you.",
+    "time": {
+      "start": 1785649345432,
+      "end": 1785649345432
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.434Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785649345434,
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "part": {
+    "id": "prt_fc0feb393001apmwyynm2kLF6O",
+    "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+    "messageID": "msg_fc0feb0a6001HFCW3sTtpU7TBg",
+    "type": "tool",
+    "callID": "call_ffaa9f2098f92174",
+    "tool": "write",
+    "state": {
+      "status": "running",
+      "input": {
+        "content": "general_change_plan\n  id \"general_change_plan_ebefcfeed8ffcff7\"\n  execution_mode \"literal_file\"\n  goal \"Continue Formal AI issue #709 by retaining the implementation failures and reusable corrections in associative memory. As the bounded observation-network leaf, create issue-709-search-fusion-learning.lino containing\\ndemo_memory\\n  event \\\"observation:fragment-language\\\"\\n    kind \\\"message\\\"\\n    role \\\"user\\\"\\n    content \\\"One language decision for an entire mixed-language capture assigns wrong provenance to individual statements.\\\"\\n    conversationId \\\"issue-709\\\"\\n    accessCount \\\"9\\\"\\n    writeCount \\\"1\\\"\\n  event \\\"observation:exact-mirror\\\"\\n    kind \\\"message\\\"\\n    role \\\"user\\\"\\n    content \\\"Caller metadata alone lets byte-identical mirrors contribute as independent corroboration.\\\"\\n    conversationId \\\"issue-709\\\"\\n    accessCount \\\"8\\\"\\n    writeCount \\\"1\\\"\\n  event \\\"observation:hidden-html\\\"\\n    kind \\\"message\\\"\\n    role \\\"user\\\"\\n    content \\\"Tag stripping without hidden-element state can present script or style content as a source quote.\\\"\\n    conversationId \\\"issue-709\\\"\\n    accessCount \\\"7\\\"\\n    writeCount \\\"1\\\"\\n  event \\\"observation:proposal-only\\\"\\n    kind \\\"message\\\"\\n    role \\\"user\\\"\\n    content \\\"A serialized execution proposal records the answer but cannot solve an unseen equivalent task after restart.\\\"\\n    conversationId \\\"issue-709\\\"\\n    accessCount \\\"9\\\"\\n    writeCount \\\"1\\\"\\n  event \\\"lesson:statement-boundary\\\"\\n    kind \\\"learning_amendment\\\"\\n    role \\\"assistant\\\"\\n    content \\\"Detect language after sentence splitting and retain the original quote while deformalizing only the answer statement.\\\"\\n    conversationId \\\"issue-709\\\"\\n    evidence \\\"observation:fragment-language\\\"\\n    writeCount \\\"5\\\"\\n  event \\\"lesson:capture-policy\\\"\\n    kind \\\"learning_amendment\\\"\\n    role \\\"assistant\\\"\\n    content \\\"Resolve identical capture digests by highest source tier then retrieval rank and set every losing mirror to zero-weight unoriginal.\\\"\\n    conversationId \\\"issue-709\\\"\\n    evidence \\\"observation:exact-mirror\\\"\\n    writeCount \\\"4\\\"\\n  event \\\"lesson:visible-provenance\\\"\\n    kind \\\"learning_amendment\\\"\\n    role \\\"assistant\\\"\\n    content \\\"Exclude script style template and noscript bodies before sentence formalization so normalized quotes remain human-visible evidence.\\\"\\n    conversationId \\\"issue-709\\\"\\n    evidence \\\"observation:hidden-html\\\"\\n    writeCount \\\"4\\\"\\n  event \\\"lesson:gated-recipe-replay\\\"\\n    kind \\\"learning_amendment\\\"\\n    role \\\"assistant\\\"\\n    content \\\"Infer the stable fusion stages from multiple successful executions, keep candidates inert, then require zero-failure held-out evidence and named review before durable replay.\\\"\\n    conversationId \\\"issue-709\\\"\\n    evidence \\\"observation:proposal-only\\\"\\n    evidence \\\"lesson:statement-boundary\\\"\\n    evidence \\\"lesson:capture-policy\\\"\\n    evidence \\\"lesson:visible-provenance\\\"\\n    writeCount \\\"6\\\"\"\n  target \"issue-709-search-fusion-learning.lino\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_609ed13d58b21f9f\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to issue-709-search-fusion-learning.lino\"\n    expected_evidence \"workspace file issue-709-search-fusion-learning.lino\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"demo_memory\\n  event \\\"observation:fragment-language\\\"\\n    kind \\\"message\\\"\\n    role \\\"user\\\"\\n    content \\\"One language decision for an entire mixed-language capture assigns wrong provenance to individual statements.\\\"\\n    conversationId \\\"issue-709\\\"\\n    accessCount \\\"9\\\"\\n    writeCount \\\"1\\\"\\n  event \\\"observation:exact-mirror\\\"\\n    kind \\\"message\\\"\\n    role \\\"user\\\"\\n    content \\\"Caller metadata alone lets byte-identical mirrors contribute as independent corroboration.\\\"\\n    conversationId \\\"issue-709\\\"\\n    accessCount \\\"8\\\"\\n    writeCount \\\"1\\\"\\n  event \\\"observation:hidden-html\\\"\\n    kind \\\"message\\\"\\n    role \\\"user\\\"\\n    content \\\"Tag stripping without hidden-element state can present script or style content as a source quote.\\\"\\n    conversationId \\\"issue-709\\\"\\n    accessCount \\\"7\\\"\\n    writeCount \\\"1\\\"\\n  event \\\"observation:proposal-only\\\"\\n    kind \\\"message\\\"\\n    role \\\"user\\\"\\n    content \\\"A serialized execution proposal records the answer but cannot solve an unseen equivalent task after restart.\\\"\\n    conversationId \\\"issue-709\\\"\\n    accessCount \\\"9\\\"\\n    writeCount \\\"1\\\"\\n  event \\\"lesson:statement-boundary\\\"\\n    kind \\\"learning_amendment\\\"\\n    role \\\"assistant\\\"\\n    content \\\"Detect language after sentence splitting and retain the original quote while deformalizing only the answer statement.\\\"\\n    conversationId \\\"issue-709\\\"\\n    evidence \\\"observation:fragment-language\\\"\\n    writeCount \\\"5\\\"\\n  event \\\"lesson:capture-policy\\\"\\n    kind \\\"learning_amendment\\\"\\n    role \\\"assistant\\\"\\n    content \\\"Resolve identical capture digests by highest source tier then retrieval rank and set every losing mirror to zero-weight unoriginal.\\\"\\n    conversationId \\\"issue-709\\\"\\n    evidence \\\"observation:exact-mirror\\\"\\n    writeCount \\\"4\\\"\\n  event \\\"lesson:visible-provenance\\\"\\n    kind \\\"learning_amendment\\\"\\n    role \\\"assistant\\\"\\n    content \\\"Exclude script style template and noscript bodies before sentence formalization so normalized quotes remain human-visible evidence.\\\"\\n    conversationId \\\"issue-709\\\"\\n    evidence \\\"observation:hidden-html\\\"\\n    writeCount \\\"4\\\"\\n  event \\\"lesson:gated-recipe-replay\\\"\\n    kind \\\"learning_amendment\\\"\\n    role \\\"assistant\\\"\\n    content \\\"Infer the stable fusion stages from multiple successful executions, keep candidates inert, then require zero-failure held-out evidence and named review before durable replay.\\\"\\n    conversationId \\\"issue-709\\\"\\n    evidence \\\"observation:proposal-only\\\"\\n    evidence \\\"lesson:statement-boundary\\\"\\n    evidence \\\"lesson:capture-policy\\\"\\n    evidence \\\"lesson:visible-provenance\\\"\\n    writeCount \\\"6\\\"\"\n    command \"cat issue-709-search-fusion-learning.lino\"\n  verification_command \"cat issue-709-search-fusion-learning.lino\"\n",
+        "filePath": "/tmp/tmp.y316zdXMlC/.formal-ai/general-change-plan.lino"
+      },
+      "time": {
+        "start": 1785649345432
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.448Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785649345448,
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "part": {
+    "id": "prt_fc0feb393001apmwyynm2kLF6O",
+    "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+    "messageID": "msg_fc0feb0a6001HFCW3sTtpU7TBg",
+    "type": "tool",
+    "callID": "call_ffaa9f2098f92174",
+    "tool": "write",
+    "state": {
+      "status": "completed",
+      "input": {
+        "content": "general_change_plan\n  id \"general_change_plan_ebefcfeed8ffcff7\"\n  execution_mode \"literal_file\"\n  goal \"Continue Formal AI issue #709 by retaining the implementation failures and reusable corrections in associative memory. As the bounded observation-network leaf, create issue-709-search-fusion-learning.lino containing\\ndemo_memory\\n  event \\\"observation:fragment-language\\\"\\n    kind \\\"message\\\"\\n    role \\\"user\\\"\\n    content \\\"One language decision for an entire mixed-language capture assigns wrong provenance to individual statements.\\\"\\n    conversationId \\\"issue-709\\\"\\n    accessCount \\\"9\\\"\\n    writeCount \\\"1\\\"\\n  event \\\"observation:exact-mirror\\\"\\n    kind \\\"message\\\"\\n    role \\\"user\\\"\\n    content \\\"Caller metadata alone lets byte-identical mirrors contribute as independent corroboration.\\\"\\n    conversationId \\\"issue-709\\\"\\n    accessCount \\\"8\\\"\\n    writeCount \\\"1\\\"\\n  event \\\"observation:hidden-html\\\"\\n    kind \\\"message\\\"\\n    role \\\"user\\\"\\n    content \\\"Tag stripping without hidden-element state can present script or style content as a source quote.\\\"\\n    conversationId \\\"issue-709\\\"\\n    accessCount \\\"7\\\"\\n    writeCount \\\"1\\\"\\n  event \\\"observation:proposal-only\\\"\\n    kind \\\"message\\\"\\n    role \\\"user\\\"\\n    content \\\"A serialized execution proposal records the answer but cannot solve an unseen equivalent task after restart.\\\"\\n    conversationId \\\"issue-709\\\"\\n    accessCount \\\"9\\\"\\n    writeCount \\\"1\\\"\\n  event \\\"lesson:statement-boundary\\\"\\n    kind \\\"learning_amendment\\\"\\n    role \\\"assistant\\\"\\n    content \\\"Detect language after sentence splitting and retain the original quote while deformalizing only the answer statement.\\\"\\n    conversationId \\\"issue-709\\\"\\n    evidence \\\"observation:fragment-language\\\"\\n    writeCount \\\"5\\\"\\n  event \\\"lesson:capture-policy\\\"\\n    kind \\\"learning_amendment\\\"\\n    role \\\"assistant\\\"\\n    content \\\"Resolve identical capture digests by highest source tier then retrieval rank and set every losing mirror to zero-weight unoriginal.\\\"\\n    conversationId \\\"issue-709\\\"\\n    evidence \\\"observation:exact-mirror\\\"\\n    writeCount \\\"4\\\"\\n  event \\\"lesson:visible-provenance\\\"\\n    kind \\\"learning_amendment\\\"\\n    role \\\"assistant\\\"\\n    content \\\"Exclude script style template and noscript bodies before sentence formalization so normalized quotes remain human-visible evidence.\\\"\\n    conversationId \\\"issue-709\\\"\\n    evidence \\\"observation:hidden-html\\\"\\n    writeCount \\\"4\\\"\\n  event \\\"lesson:gated-recipe-replay\\\"\\n    kind \\\"learning_amendment\\\"\\n    role \\\"assistant\\\"\\n    content \\\"Infer the stable fusion stages from multiple successful executions, keep candidates inert, then require zero-failure held-out evidence and named review before durable replay.\\\"\\n    conversationId \\\"issue-709\\\"\\n    evidence \\\"observation:proposal-only\\\"\\n    evidence \\\"lesson:statement-boundary\\\"\\n    evidence \\\"lesson:capture-policy\\\"\\n    evidence \\\"lesson:visible-provenance\\\"\\n    writeCount \\\"6\\\"\"\n  target \"issue-709-search-fusion-learning.lino\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_609ed13d58b21f9f\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to issue-709-search-fusion-learning.lino\"\n    expected_evidence \"workspace file issue-709-search-fusion-learning.lino\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"demo_memory\\n  event \\\"observation:fragment-language\\\"\\n    kind \\\"message\\\"\\n    role \\\"user\\\"\\n    content \\\"One language decision for an entire mixed-language capture assigns wrong provenance to individual statements.\\\"\\n    conversationId \\\"issue-709\\\"\\n    accessCount \\\"9\\\"\\n    writeCount \\\"1\\\"\\n  event \\\"observation:exact-mirror\\\"\\n    kind \\\"message\\\"\\n    role \\\"user\\\"\\n    content \\\"Caller metadata alone lets byte-identical mirrors contribute as independent corroboration.\\\"\\n    conversationId \\\"issue-709\\\"\\n    accessCount \\\"8\\\"\\n    writeCount \\\"1\\\"\\n  event \\\"observation:hidden-html\\\"\\n    kind \\\"message\\\"\\n    role \\\"user\\\"\\n    content \\\"Tag stripping without hidden-element state can present script or style content as a source quote.\\\"\\n    conversationId \\\"issue-709\\\"\\n    accessCount \\\"7\\\"\\n    writeCount \\\"1\\\"\\n  event \\\"observation:proposal-only\\\"\\n    kind \\\"message\\\"\\n    role \\\"user\\\"\\n    content \\\"A serialized execution proposal records the answer but cannot solve an unseen equivalent task after restart.\\\"\\n    conversationId \\\"issue-709\\\"\\n    accessCount \\\"9\\\"\\n    writeCount \\\"1\\\"\\n  event \\\"lesson:statement-boundary\\\"\\n    kind \\\"learning_amendment\\\"\\n    role \\\"assistant\\\"\\n    content \\\"Detect language after sentence splitting and retain the original quote while deformalizing only the answer statement.\\\"\\n    conversationId \\\"issue-709\\\"\\n    evidence \\\"observation:fragment-language\\\"\\n    writeCount \\\"5\\\"\\n  event \\\"lesson:capture-policy\\\"\\n    kind \\\"learning_amendment\\\"\\n    role \\\"assistant\\\"\\n    content \\\"Resolve identical capture digests by highest source tier then retrieval rank and set every losing mirror to zero-weight unoriginal.\\\"\\n    conversationId \\\"issue-709\\\"\\n    evidence \\\"observation:exact-mirror\\\"\\n    writeCount \\\"4\\\"\\n  event \\\"lesson:visible-provenance\\\"\\n    kind \\\"learning_amendment\\\"\\n    role \\\"assistant\\\"\\n    content \\\"Exclude script style template and noscript bodies before sentence formalization so normalized quotes remain human-visible evidence.\\\"\\n    conversationId \\\"issue-709\\\"\\n    evidence \\\"observation:hidden-html\\\"\\n    writeCount \\\"4\\\"\\n  event \\\"lesson:gated-recipe-replay\\\"\\n    kind \\\"learning_amendment\\\"\\n    role \\\"assistant\\\"\\n    content \\\"Infer the stable fusion stages from multiple successful executions, keep candidates inert, then require zero-failure held-out evidence and named review before durable replay.\\\"\\n    conversationId \\\"issue-709\\\"\\n    evidence \\\"observation:proposal-only\\\"\\n    evidence \\\"lesson:statement-boundary\\\"\\n    evidence \\\"lesson:capture-policy\\\"\\n    evidence \\\"lesson:visible-provenance\\\"\\n    writeCount \\\"6\\\"\"\n    command \"cat issue-709-search-fusion-learning.lino\"\n  verification_command \"cat issue-709-search-fusion-learning.lino\"\n",
+        "filePath": "/tmp/tmp.y316zdXMlC/.formal-ai/general-change-plan.lino"
+      },
+      "output": "",
+      "title": "tmp/tmp.y316zdXMlC/.formal-ai/general-change-plan.lino",
+      "metadata": {
+        "diagnostics": {},
+        "filepath": "/tmp/tmp.y316zdXMlC/.formal-ai/general-change-plan.lino",
+        "exists": false
+      },
+      "time": {
+        "start": 1785649345432,
+        "end": 1785649345446
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.459Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1785649345459,
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "part": {
+    "id": "prt_fc0feb3ad001FHFszpTouZ2Mk0",
+    "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+    "messageID": "msg_fc0feb0a6001HFCW3sTtpU7TBg",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 11141,
+      "output": 7080,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 18221,
+      "headroom": 20635,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.459Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.460Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.484Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.484Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.497Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.498Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.498Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.499Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.500Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.500Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.502Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.503Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 18221,
+  "providerTokens": 18221,
+  "estimatedInputTokens": 598,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 11141,
+    "cacheRead": 0,
+    "output": 7080
+  },
+  "overflow": false,
+  "headroom": 33587,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.504Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.504Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.522Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.530Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.886Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1785649345886,
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "part": {
+    "id": "prt_fc0feb559001fuLVebcM7R6WMF",
+    "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+    "messageID": "msg_fc0feb3df0015BBveOdwiT9VbZ",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.887Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.888Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785649345888,
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "part": {
+    "id": "prt_fc0feb55f001OJuHGiNDbKb7UU",
+    "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+    "messageID": "msg_fc0feb3df0015BBveOdwiT9VbZ",
+    "type": "tool",
+    "callID": "call_49dd6bb4fbc56922",
+    "tool": "write",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.889Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1785649345889,
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "part": {
+    "id": "prt_fc0feb55e001J1owCM9oxLFPWa",
+    "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+    "messageID": "msg_fc0feb3df0015BBveOdwiT9VbZ",
+    "type": "text",
+    "text": "Let me update issue-709-search-fusion-learning.lino for you.",
+    "time": {
+      "start": 1785649345888,
+      "end": 1785649345888
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.889Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785649345889,
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "part": {
+    "id": "prt_fc0feb55f001OJuHGiNDbKb7UU",
+    "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+    "messageID": "msg_fc0feb3df0015BBveOdwiT9VbZ",
+    "type": "tool",
+    "callID": "call_49dd6bb4fbc56922",
+    "tool": "write",
+    "state": {
+      "status": "running",
+      "input": {
+        "content": "demo_memory\n  event \"observation:fragment-language\"\n    kind \"message\"\n    role \"user\"\n    content \"One language decision for an entire mixed-language capture assigns wrong provenance to individual statements.\"\n    conversationId \"issue-709\"\n    accessCount \"9\"\n    writeCount \"1\"\n  event \"observation:exact-mirror\"\n    kind \"message\"\n    role \"user\"\n    content \"Caller metadata alone lets byte-identical mirrors contribute as independent corroboration.\"\n    conversationId \"issue-709\"\n    accessCount \"8\"\n    writeCount \"1\"\n  event \"observation:hidden-html\"\n    kind \"message\"\n    role \"user\"\n    content \"Tag stripping without hidden-element state can present script or style content as a source quote.\"\n    conversationId \"issue-709\"\n    accessCount \"7\"\n    writeCount \"1\"\n  event \"observation:proposal-only\"\n    kind \"message\"\n    role \"user\"\n    content \"A serialized execution proposal records the answer but cannot solve an unseen equivalent task after restart.\"\n    conversationId \"issue-709\"\n    accessCount \"9\"\n    writeCount \"1\"\n  event \"lesson:statement-boundary\"\n    kind \"learning_amendment\"\n    role \"assistant\"\n    content \"Detect language after sentence splitting and retain the original quote while deformalizing only the answer statement.\"\n    conversationId \"issue-709\"\n    evidence \"observation:fragment-language\"\n    writeCount \"5\"\n  event \"lesson:capture-policy\"\n    kind \"learning_amendment\"\n    role \"assistant\"\n    content \"Resolve identical capture digests by highest source tier then retrieval rank and set every losing mirror to zero-weight unoriginal.\"\n    conversationId \"issue-709\"\n    evidence \"observation:exact-mirror\"\n    writeCount \"4\"\n  event \"lesson:visible-provenance\"\n    kind \"learning_amendment\"\n    role \"assistant\"\n    content \"Exclude script style template and noscript bodies before sentence formalization so normalized quotes remain human-visible evidence.\"\n    conversationId \"issue-709\"\n    evidence \"observation:hidden-html\"\n    writeCount \"4\"\n  event \"lesson:gated-recipe-replay\"\n    kind \"learning_amendment\"\n    role \"assistant\"\n    content \"Infer the stable fusion stages from multiple successful executions, keep candidates inert, then require zero-failure held-out evidence and named review before durable replay.\"\n    conversationId \"issue-709\"\n    evidence \"observation:proposal-only\"\n    evidence \"lesson:statement-boundary\"\n    evidence \"lesson:capture-policy\"\n    evidence \"lesson:visible-provenance\"\n    writeCount \"6\"",
+        "filePath": "/tmp/tmp.y316zdXMlC/issue-709-search-fusion-learning.lino"
+      },
+      "time": {
+        "start": 1785649345889
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.894Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785649345894,
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "part": {
+    "id": "prt_fc0feb55f001OJuHGiNDbKb7UU",
+    "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+    "messageID": "msg_fc0feb3df0015BBveOdwiT9VbZ",
+    "type": "tool",
+    "callID": "call_49dd6bb4fbc56922",
+    "tool": "write",
+    "state": {
+      "status": "completed",
+      "input": {
+        "content": "demo_memory\n  event \"observation:fragment-language\"\n    kind \"message\"\n    role \"user\"\n    content \"One language decision for an entire mixed-language capture assigns wrong provenance to individual statements.\"\n    conversationId \"issue-709\"\n    accessCount \"9\"\n    writeCount \"1\"\n  event \"observation:exact-mirror\"\n    kind \"message\"\n    role \"user\"\n    content \"Caller metadata alone lets byte-identical mirrors contribute as independent corroboration.\"\n    conversationId \"issue-709\"\n    accessCount \"8\"\n    writeCount \"1\"\n  event \"observation:hidden-html\"\n    kind \"message\"\n    role \"user\"\n    content \"Tag stripping without hidden-element state can present script or style content as a source quote.\"\n    conversationId \"issue-709\"\n    accessCount \"7\"\n    writeCount \"1\"\n  event \"observation:proposal-only\"\n    kind \"message\"\n    role \"user\"\n    content \"A serialized execution proposal records the answer but cannot solve an unseen equivalent task after restart.\"\n    conversationId \"issue-709\"\n    accessCount \"9\"\n    writeCount \"1\"\n  event \"lesson:statement-boundary\"\n    kind \"learning_amendment\"\n    role \"assistant\"\n    content \"Detect language after sentence splitting and retain the original quote while deformalizing only the answer statement.\"\n    conversationId \"issue-709\"\n    evidence \"observation:fragment-language\"\n    writeCount \"5\"\n  event \"lesson:capture-policy\"\n    kind \"learning_amendment\"\n    role \"assistant\"\n    content \"Resolve identical capture digests by highest source tier then retrieval rank and set every losing mirror to zero-weight unoriginal.\"\n    conversationId \"issue-709\"\n    evidence \"observation:exact-mirror\"\n    writeCount \"4\"\n  event \"lesson:visible-provenance\"\n    kind \"learning_amendment\"\n    role \"assistant\"\n    content \"Exclude script style template and noscript bodies before sentence formalization so normalized quotes remain human-visible evidence.\"\n    conversationId \"issue-709\"\n    evidence \"observation:hidden-html\"\n    writeCount \"4\"\n  event \"lesson:gated-recipe-replay\"\n    kind \"learning_amendment\"\n    role \"assistant\"\n    content \"Infer the stable fusion stages from multiple successful executions, keep candidates inert, then require zero-failure held-out evidence and named review before durable replay.\"\n    conversationId \"issue-709\"\n    evidence \"observation:proposal-only\"\n    evidence \"lesson:statement-boundary\"\n    evidence \"lesson:capture-policy\"\n    evidence \"lesson:visible-provenance\"\n    writeCount \"6\"",
+        "filePath": "/tmp/tmp.y316zdXMlC/issue-709-search-fusion-learning.lino"
+      },
+      "output": "",
+      "title": "tmp/tmp.y316zdXMlC/issue-709-search-fusion-learning.lino",
+      "metadata": {
+        "diagnostics": {},
+        "filepath": "/tmp/tmp.y316zdXMlC/issue-709-search-fusion-learning.lino",
+        "exists": false
+      },
+      "time": {
+        "start": 1785649345889,
+        "end": 1785649345893
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.895Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1785649345895,
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "part": {
+    "id": "prt_fc0feb566001a9P6fR1fW2jXUC",
+    "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+    "messageID": "msg_fc0feb3df0015BBveOdwiT9VbZ",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 11199,
+      "output": 2809,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 14008,
+      "headroom": 24848,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.895Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.896Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.898Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.898Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.901Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.902Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.902Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.902Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.905Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.905Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.906Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.906Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 14008,
+  "providerTokens": 14008,
+  "estimatedInputTokens": 613,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 11199,
+    "cacheRead": 0,
+    "output": 2809
+  },
+  "overflow": false,
+  "headroom": 37800,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.906Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.907Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.921Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:25.924Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.295Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1785649346296,
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "part": {
+    "id": "prt_fc0feb6e8001kNB7vizqU7Tf4H",
+    "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+    "messageID": "msg_fc0feb572001tDbykDmlqGZ8n7",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.297Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.298Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785649346298,
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "part": {
+    "id": "prt_fc0feb6f9001w4CYrBmIzX6Aay",
+    "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+    "messageID": "msg_fc0feb572001tDbykDmlqGZ8n7",
+    "type": "tool",
+    "callID": "call_9f8b6b70dbe65679",
+    "tool": "bash",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.298Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1785649346298,
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "part": {
+    "id": "prt_fc0feb6f8001LSV6872z8M2LHZ",
+    "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+    "messageID": "msg_fc0feb572001tDbykDmlqGZ8n7",
+    "type": "text",
+    "text": "Let me run a quick command to get that for you.",
+    "time": {
+      "start": 1785649346298,
+      "end": 1785649346298
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.299Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785649346299,
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "part": {
+    "id": "prt_fc0feb6f9001w4CYrBmIzX6Aay",
+    "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+    "messageID": "msg_fc0feb572001tDbykDmlqGZ8n7",
+    "type": "tool",
+    "callID": "call_9f8b6b70dbe65679",
+    "tool": "bash",
+    "state": {
+      "status": "running",
+      "input": {
+        "command": "cat issue-709-search-fusion-learning.lino"
+      },
+      "time": {
+        "start": 1785649346298
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.304Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785649346304,
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "part": {
+    "id": "prt_fc0feb6f9001w4CYrBmIzX6Aay",
+    "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+    "messageID": "msg_fc0feb572001tDbykDmlqGZ8n7",
+    "type": "tool",
+    "callID": "call_9f8b6b70dbe65679",
+    "tool": "bash",
+    "state": {
+      "status": "completed",
+      "input": {
+        "command": "cat issue-709-search-fusion-learning.lino"
+      },
+      "output": "demo_memory\n  event \"observation:fragment-language\"\n    kind \"message\"\n    role \"user\"\n    content \"One language decision for an entire mixed-language capture assigns wrong provenance to individual statements.\"\n    conversationId \"issue-709\"\n    accessCount \"9\"\n    writeCount \"1\"\n  event \"observation:exact-mirror\"\n    kind \"message\"\n    role \"user\"\n    content \"Caller metadata alone lets byte-identical mirrors contribute as independent corroboration.\"\n    conversationId \"issue-709\"\n    accessCount \"8\"\n    writeCount \"1\"\n  event \"observation:hidden-html\"\n    kind \"message\"\n    role \"user\"\n    content \"Tag stripping without hidden-element state can present script or style content as a source quote.\"\n    conversationId \"issue-709\"\n    accessCount \"7\"\n    writeCount \"1\"\n  event \"observation:proposal-only\"\n    kind \"message\"\n    role \"user\"\n    content \"A serialized execution proposal records the answer but cannot solve an unseen equivalent task after restart.\"\n    conversationId \"issue-709\"\n    accessCount \"9\"\n    writeCount \"1\"\n  event \"lesson:statement-boundary\"\n    kind \"learning_amendment\"\n    role \"assistant\"\n    content \"Detect language after sentence splitting and retain the original quote while deformalizing only the answer statement.\"\n    conversationId \"issue-709\"\n    evidence \"observation:fragment-language\"\n    writeCount \"5\"\n  event \"lesson:capture-policy\"\n    kind \"learning_amendment\"\n    role \"assistant\"\n    content \"Resolve identical capture digests by highest source tier then retrieval rank and set every losing mirror to zero-weight unoriginal.\"\n    conversationId \"issue-709\"\n    evidence \"observation:exact-mirror\"\n    writeCount \"4\"\n  event \"lesson:visible-provenance\"\n    kind \"learning_amendment\"\n    role \"assistant\"\n    content \"Exclude script style template and noscript bodies before sentence formalization so normalized quotes remain human-visible evidence.\"\n    conversationId \"issue-709\"\n    evidence \"observation:hidden-html\"\n    writeCount \"4\"\n  event \"lesson:gated-recipe-replay\"\n    kind \"learning_amendment\"\n    role \"assistant\"\n    content \"Infer the stable fusion stages from multiple successful executions, keep candidates inert, then require zero-failure held-out evidence and named review before durable replay.\"\n    conversationId \"issue-709\"\n    evidence \"observation:proposal-only\"\n    evidence \"lesson:statement-boundary\"\n    evidence \"lesson:capture-policy\"\n    evidence \"lesson:visible-provenance\"\n    writeCount \"6\"",
+      "title": "cat issue-709-search-fusion-learning.lino",
+      "metadata": {
+        "output": "demo_memory\n  event \"observation:fragment-language\"\n    kind \"message\"\n    role \"user\"\n    content \"One language decision for an entire mixed-language capture assigns wrong provenance to individual statements.\"\n    conversationId \"issue-709\"\n    accessCount \"9\"\n    writeCount \"1\"\n  event \"observation:exact-mirror\"\n    kind \"message\"\n    role \"user\"\n    content \"Caller metadata alone lets byte-identical mirrors contribute as independent corroboration.\"\n    conversationId \"issue-709\"\n    accessCount \"8\"\n    writeCount \"1\"\n  event \"observation:hidden-html\"\n    kind \"message\"\n    role \"user\"\n    content \"Tag stripping without hidden-element state can present script or style content as a source quote.\"\n    conversationId \"issue-709\"\n    accessCount \"7\"\n    writeCount \"1\"\n  event \"observation:proposal-only\"\n    kind \"message\"\n    role \"user\"\n    content \"A serialized execution proposal records the answer but cannot solve an unseen equivalent task after restart.\"\n    conversationId \"issue-709\"\n    accessCount \"9\"\n    writeCount \"1\"\n  event \"lesson:statement-boundary\"\n    kind \"learning_amendment\"\n    role \"assistant\"\n    content \"Detect language after sentence splitting and retain the original quote while deformalizing only the answer statement.\"\n    conversationId \"issue-709\"\n    evidence \"observation:fragment-language\"\n    writeCount \"5\"\n  event \"lesson:capture-policy\"\n    kind \"learning_amendment\"\n    role \"assistant\"\n    content \"Resolve identical capture digests by highest source tier then retrieval rank and set every losing mirror to zero-weight unoriginal.\"\n    conversationId \"issue-709\"\n    evidence \"observation:exact-mirror\"\n    writeCount \"4\"\n  event \"lesson:visible-provenance\"\n    kind \"learning_amendment\"\n    role \"assistant\"\n    content \"Exclude script style template and noscript bodies before sentence formalization so normalized quotes remain human-visible evidence.\"\n    conversationId \"issue-709\"\n    evidence \"observation:hidden-html\"\n    writeCount \"4\"\n  event \"lesson:gated-recipe-replay\"\n    kind \"learning_amendment\"\n    role \"assistant\"\n    content \"Infer the stable fusion stages from multiple successful executions, keep candidates inert, then require zero-failure held-out evidence and named review before durable replay.\"\n    conversationId \"issue-709\"\n    evidence \"observation:proposal-only\"\n    evidence \"lesson:statement-boundary\"\n    evidence \"lesson:capture-policy\"\n    evidence \"lesson:visible-provenance\"\n    writeCount \"6\"",
+        "exit": 0
+      },
+      "time": {
+        "start": 1785649346298,
+        "end": 1785649346303
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.305Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1785649346305,
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "part": {
+    "id": "prt_fc0feb7010011LJGbUuVdB92BV",
+    "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+    "messageID": "msg_fc0feb572001tDbykDmlqGZ8n7",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 11259,
+      "output": 106,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 11365,
+      "headroom": 27491,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.306Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.306Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.315Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.315Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.350Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.350Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.350Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.350Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.351Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.351Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.354Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.354Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 11365,
+  "providerTokens": 11365,
+  "estimatedInputTokens": 1171,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 11259,
+    "cacheRead": 0,
+    "output": 106
+  },
+  "overflow": false,
+  "headroom": 40443,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.355Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.355Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.372Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.380Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.737Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1785649346737,
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "part": {
+    "id": "prt_fc0feb8af001g5cTpTK8JTZinf",
+    "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+    "messageID": "msg_fc0feb732001AlssvHOnqVIgzn",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.738Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.739Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1785649346739,
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "part": {
+    "id": "prt_fc0feb8b100124DyU5sVwBdouB",
+    "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+    "messageID": "msg_fc0feb732001AlssvHOnqVIgzn",
+    "type": "text",
+    "text": "Completed the general change request for issue-709-search-fusion-learning.lino and verified it with `cat issue-709-search-fusion-learning.lino`.\n\nPlan event (.formal-ai/general-change-plan.lino):\n\ngeneral_change_plan\n  id \"general_change_plan_ebefcfeed8ffcff7\"\n  execution_mode \"literal_file\"\n  goal \"Continue Formal AI issue #709 by retaining the implementation failures and reusable corrections in associative memory. As the bounded observation-network leaf, create issue-709-search-fusion-learning.lino containing\\ndemo_memory\\n  event \\\"observation:fragment-language\\\"\\n    kind \\\"message\\\"\\n    role \\\"user\\\"\\n    content \\\"One language decision for an entire mixed-language capture assigns wrong provenance to individual statements.\\\"\\n    conversationId \\\"issue-709\\\"\\n    accessCount \\\"9\\\"\\n    writeCount \\\"1\\\"\\n  event \\\"observation:exact-mirror\\\"\\n    kind \\\"message\\\"\\n    role \\\"user\\\"\\n    content \\\"Caller metadata alone lets byte-identical mirrors contribute as independent corroboration.\\\"\\n    conversationId \\\"issue-709\\\"\\n    accessCount \\\"8\\\"\\n    writeCount \\\"1\\\"\\n  event \\\"observation:hidden-html\\\"\\n    kind \\\"message\\\"\\n    role \\\"user\\\"\\n    content \\\"Tag stripping without hidden-element state can present script or style content as a source quote.\\\"\\n    conversationId \\\"issue-709\\\"\\n    accessCount \\\"7\\\"\\n    writeCount \\\"1\\\"\\n  event \\\"observation:proposal-only\\\"\\n    kind \\\"message\\\"\\n    role \\\"user\\\"\\n    content \\\"A serialized execution proposal records the answer but cannot solve an unseen equivalent task after restart.\\\"\\n    conversationId \\\"issue-709\\\"\\n    accessCount \\\"9\\\"\\n    writeCount \\\"1\\\"\\n  event \\\"lesson:statement-boundary\\\"\\n    kind \\\"learning_amendment\\\"\\n    role \\\"assistant\\\"\\n    content \\\"Detect language after sentence splitting and retain the original quote while deformalizing only the answer statement.\\\"\\n    conversationId \\\"issue-709\\\"\\n    evidence \\\"observation:fragment-language\\\"\\n    writeCount \\\"5\\\"\\n  event \\\"lesson:capture-policy\\\"\\n    kind \\\"learning_amendment\\\"\\n    role \\\"assistant\\\"\\n    content \\\"Resolve identical capture digests by highest source tier then retrieval rank and set every losing mirror to zero-weight unoriginal.\\\"\\n    conversationId \\\"issue-709\\\"\\n    evidence \\\"observation:exact-mirror\\\"\\n    writeCount \\\"4\\\"\\n  event \\\"lesson:visible-provenance\\\"\\n    kind \\\"learning_amendment\\\"\\n    role \\\"assistant\\\"\\n    content \\\"Exclude script style template and noscript bodies before sentence formalization so normalized quotes remain human-visible evidence.\\\"\\n    conversationId \\\"issue-709\\\"\\n    evidence \\\"observation:hidden-html\\\"\\n    writeCount \\\"4\\\"\\n  event \\\"lesson:gated-recipe-replay\\\"\\n    kind \\\"learning_amendment\\\"\\n    role \\\"assistant\\\"\\n    content \\\"Infer the stable fusion stages from multiple successful executions, keep candidates inert, then require zero-failure held-out evidence and named review before durable replay.\\\"\\n    conversationId \\\"issue-709\\\"\\n    evidence \\\"observation:proposal-only\\\"\\n    evidence \\\"lesson:statement-boundary\\\"\\n    evidence \\\"lesson:capture-policy\\\"\\n    evidence \\\"lesson:visible-provenance\\\"\\n    writeCount \\\"6\\\"\"\n  target \"issue-709-search-fusion-learning.lino\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_609ed13d58b21f9f\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to issue-709-search-fusion-learning.lino\"\n    expected_evidence \"workspace file issue-709-search-fusion-learning.lino\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"demo_memory\\n  event \\\"observation:fragment-language\\\"\\n    kind \\\"message\\\"\\n    role \\\"user\\\"\\n    content \\\"One language decision for an entire mixed-language capture assigns wrong provenance to individual statements.\\\"\\n    conversationId \\\"issue-709\\\"\\n    accessCount \\\"9\\\"\\n    writeCount \\\"1\\\"\\n  event \\\"observation:exact-mirror\\\"\\n    kind \\\"message\\\"\\n    role \\\"user\\\"\\n    content \\\"Caller metadata alone lets byte-identical mirrors contribute as independent corroboration.\\\"\\n    conversationId \\\"issue-709\\\"\\n    accessCount \\\"8\\\"\\n    writeCount \\\"1\\\"\\n  event \\\"observation:hidden-html\\\"\\n    kind \\\"message\\\"\\n    role \\\"user\\\"\\n    content \\\"Tag stripping without hidden-element state can present script or style content as a source quote.\\\"\\n    conversationId \\\"issue-709\\\"\\n    accessCount \\\"7\\\"\\n    writeCount \\\"1\\\"\\n  event \\\"observation:proposal-only\\\"\\n    kind \\\"message\\\"\\n    role \\\"user\\\"\\n    content \\\"A serialized execution proposal records the answer but cannot solve an unseen equivalent task after restart.\\\"\\n    conversationId \\\"issue-709\\\"\\n    accessCount \\\"9\\\"\\n    writeCount \\\"1\\\"\\n  event \\\"lesson:statement-boundary\\\"\\n    kind \\\"learning_amendment\\\"\\n    role \\\"assistant\\\"\\n    content \\\"Detect language after sentence splitting and retain the original quote while deformalizing only the answer statement.\\\"\\n    conversationId \\\"issue-709\\\"\\n    evidence \\\"observation:fragment-language\\\"\\n    writeCount \\\"5\\\"\\n  event \\\"lesson:capture-policy\\\"\\n    kind \\\"learning_amendment\\\"\\n    role \\\"assistant\\\"\\n    content \\\"Resolve identical capture digests by highest source tier then retrieval rank and set every losing mirror to zero-weight unoriginal.\\\"\\n    conversationId \\\"issue-709\\\"\\n    evidence \\\"observation:exact-mirror\\\"\\n    writeCount \\\"4\\\"\\n  event \\\"lesson:visible-provenance\\\"\\n    kind \\\"learning_amendment\\\"\\n    role \\\"assistant\\\"\\n    content \\\"Exclude script style template and noscript bodies before sentence formalization so normalized quotes remain human-visible evidence.\\\"\\n    conversationId \\\"issue-709\\\"\\n    evidence \\\"observation:hidden-html\\\"\\n    writeCount \\\"4\\\"\\n  event \\\"lesson:gated-recipe-replay\\\"\\n    kind \\\"learning_amendment\\\"\\n    role \\\"assistant\\\"\\n    content \\\"Infer the stable fusion stages from multiple successful executions, keep candidates inert, then require zero-failure held-out evidence and named review before durable replay.\\\"\\n    conversationId \\\"issue-709\\\"\\n    evidence \\\"observation:proposal-only\\\"\\n    evidence \\\"lesson:statement-boundary\\\"\\n    evidence \\\"lesson:capture-policy\\\"\\n    evidence \\\"lesson:visible-provenance\\\"\\n    writeCount \\\"6\\\"\"\n    command \"cat issue-709-search-fusion-learning.lino\"\n  verification_command \"cat issue-709-search-fusion-learning.lino\"",
+    "time": {
+      "start": 1785649346738,
+      "end": 1785649346738
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.740Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1785649346740,
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "part": {
+    "id": "prt_fc0feb8b3001ExUakzEbcQv2N2",
+    "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+    "messageID": "msg_fc0feb732001AlssvHOnqVIgzn",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 13788,
+      "output": 6490,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 20278,
+      "headroom": 18578,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.740Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.740Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.743Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.743Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.751Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.751Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.751Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.751Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.752Z",
+  "service": "session.prompt",
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.753Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.756Z",
+  "service": "session.prompt",
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.756Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.756Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1785649346756,
+  "sessionID": "ses_03f015388ffej7CYn8EdCRJjRm"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.756Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.757Z",
+  "service": "default",
+  "directory": "/tmp/tmp.y316zdXMlC",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.757Z",
+  "service": "state",
+  "key": "/tmp/tmp.y316zdXMlC",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.759Z",
+  "service": "state",
+  "key": "/tmp/tmp.y316zdXMlC",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-02T05:42:26.759Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 6,
+  "message": "Agent exiting"
+}
+

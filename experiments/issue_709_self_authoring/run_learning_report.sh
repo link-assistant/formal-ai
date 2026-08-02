@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+# Real Formal AI -> Agent CLI authors the issue #709 associative observation network.
+
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+ARTIFACT="$ROOT/docs/case-studies/issue-709/agent-cli-evidence/learning-report"
+TASK='Continue Formal AI issue #709 by retaining the implementation failures and reusable corrections in associative memory. As the bounded observation-network leaf, create issue-709-search-fusion-learning.lino containing
+demo_memory
+  event "observation:fragment-language"
+    kind "message"
+    role "user"
+    content "One language decision for an entire mixed-language capture assigns wrong provenance to individual statements."
+    conversationId "issue-709"
+    accessCount "9"
+    writeCount "1"
+  event "observation:exact-mirror"
+    kind "message"
+    role "user"
+    content "Caller metadata alone lets byte-identical mirrors contribute as independent corroboration."
+    conversationId "issue-709"
+    accessCount "8"
+    writeCount "1"
+  event "observation:hidden-html"
+    kind "message"
+    role "user"
+    content "Tag stripping without hidden-element state can present script or style content as a source quote."
+    conversationId "issue-709"
+    accessCount "7"
+    writeCount "1"
+  event "observation:proposal-only"
+    kind "message"
+    role "user"
+    content "A serialized execution proposal records the answer but cannot solve an unseen equivalent task after restart."
+    conversationId "issue-709"
+    accessCount "9"
+    writeCount "1"
+  event "lesson:statement-boundary"
+    kind "learning_amendment"
+    role "assistant"
+    content "Detect language after sentence splitting and retain the original quote while deformalizing only the answer statement."
+    conversationId "issue-709"
+    evidence "observation:fragment-language"
+    writeCount "5"
+  event "lesson:capture-policy"
+    kind "learning_amendment"
+    role "assistant"
+    content "Resolve identical capture digests by highest source tier then retrieval rank and set every losing mirror to zero-weight unoriginal."
+    conversationId "issue-709"
+    evidence "observation:exact-mirror"
+    writeCount "4"
+  event "lesson:visible-provenance"
+    kind "learning_amendment"
+    role "assistant"
+    content "Exclude script style template and noscript bodies before sentence formalization so normalized quotes remain human-visible evidence."
+    conversationId "issue-709"
+    evidence "observation:hidden-html"
+    writeCount "4"
+  event "lesson:gated-recipe-replay"
+    kind "learning_amendment"
+    role "assistant"
+    content "Infer the stable fusion stages from multiple successful executions, keep candidates inert, then require zero-failure held-out evidence and named review before durable replay."
+    conversationId "issue-709"
+    evidence "observation:proposal-only"
+    evidence "lesson:statement-boundary"
+    evidence "lesson:capture-policy"
+    evidence "lesson:visible-provenance"
+    writeCount "6"'
+
+TASK="$TASK" EXPECT_FILE="issue-709-search-fusion-learning.lino" \
+  EXPECT_TEXT="lesson:gated-recipe-replay" MIN_POSTS=3 ATTEMPTS=3 PORT="${PORT:-8713}" \
+  BIN="${BIN:-$ROOT/target/debug/formal-ai}" ARTIFACT_DIR="$ARTIFACT" \
+  "$ROOT/experiments/agent_cli_e2e/run_agent_cli.sh"
+
+cp "$ARTIFACT/issue-709-search-fusion-learning.lino" \
+  "$ROOT/data/meta/issue-709-search-fusion-learning.lino"
+grep -m1 -o 'ses_[A-Za-z0-9]*' "$ARTIFACT/agent-cli.log"
