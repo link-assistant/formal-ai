@@ -49,9 +49,7 @@ use formal_ai::{
     SymbolicAnswer, TelegramPollingConfig, UniversalSolver, WithFormalAiArgs, DEFAULT_MODEL,
 };
 
-/// The default task the `agent` subcommand drives: the canonical issue-#468
-/// formalization. The wording carries the keywords the server's planner uses to
-/// recognise the task.
+/// The canonical issue-#468 task; its wording carries the planner's routing keywords.
 const DEFAULT_AGENT_TASK: &str = "Formalize «Сказка о рыбаке и рыбке» into a Links Notation \
                                   knowledge base covering all nine protocol primitives.";
 
@@ -202,12 +200,10 @@ enum Command {
     /// Execute a seeded natural-language computer-use plan inside a fresh,
     /// isolated workspace and emit its per-step verification record.
     ComputerUse(ComputerUseArgs),
-    /// Drive the full agentic-coding loop offline (issue #468). The in-repo
-    /// driver plays the role of an external agentic CLI against our
-    /// OpenAI-compatible server: it advertises tools, executes every emitted
-    /// tool call (web search/fetch against an offline corpus, file writes and
-    /// commands in a sandboxed workspace), feeds results back, and loops until
-    /// the server returns the finished Links Notation knowledge base.
+    /// Drive the full agentic-coding loop offline (issue #468). The in-repo driver
+    /// acts as an external CLI: it advertises tools, executes emitted calls in an
+    /// offline sandbox, feeds results back, and loops until the server returns the
+    /// finished Links Notation knowledge base.
     Agent(AgentArgs),
     /// Run the Telegram bot client (long polling by default; webhook server is opt-in).
     Telegram {

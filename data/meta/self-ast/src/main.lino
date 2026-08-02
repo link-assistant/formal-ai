@@ -2,9 +2,9 @@ self_ast_census
   target src/main.rs
   language rust
   fidelity signature
-  byte_len 35308
-  line_count 1002
-  content_id source_module_5d39c8eecb02c875
+  byte_len 35058
+  line_count 998
+  content_id source_module_d288c45f7275efa1
   symbol_count 41
   symbols
     module cli_algorithm 9 9
@@ -22,29 +22,29 @@ self_ast_census
     module cli_report 21 21
     module cli_shared_dialog 22 22
     module cli_statement_audit 23 23
-    const DEFAULT_AGENT_TASK 55 75
-    struct Args 64 75
-    enum Command 78 300
-    enum MemoryAction 303 449
-    enum BundleAction 452 476
-    enum GithubLogsAction 479 484
-    struct GithubLogsOptions 487 523
-    enum OutputFormat 526 530
-    enum DefinitionFusionMode 533 536
-    enum TelegramMode 539 542
-    function fmt 545 551
-    function fmt 555 560
-    function fmt 564 569
-    function main 572 691
-    function run_github_logs 693 714
-    function run_agent 716 740
-    function into_config 743 755
-    struct TelegramRunArgs 758 767
-    function solver_for_chat 769 786
-    function print_thinking_trace 795 813
-    function run_chat 815 868
-    function run_bundle 870 934
-    function run_environments 936 957
-    function read_input 959 967
-    function run_telegram 969 994
-    function parse_allowed_updates 996 1002
+    const DEFAULT_AGENT_TASK 53 73
+    struct Args 62 73
+    enum Command 76 296
+    enum MemoryAction 299 445
+    enum BundleAction 448 472
+    enum GithubLogsAction 475 480
+    struct GithubLogsOptions 483 519
+    enum OutputFormat 522 526
+    enum DefinitionFusionMode 529 532
+    enum TelegramMode 535 538
+    function fmt 541 547
+    function fmt 551 556
+    function fmt 560 565
+    function main 568 687
+    function run_github_logs 689 710
+    function run_agent 712 736
+    function into_config 739 751
+    struct TelegramRunArgs 754 763
+    function solver_for_chat 765 782
+    function print_thinking_trace 791 809
+    function run_chat 811 864
+    function run_bundle 866 930
+    function run_environments 932 953
+    function read_input 955 963
+    function run_telegram 965 990
+    function parse_allowed_updates 992 998
