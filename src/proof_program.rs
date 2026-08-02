@@ -34,19 +34,21 @@ impl ProofBound {
         }
     }
 
-    const fn first_integer(self) -> i64 {
+    const fn first_integer(self) -> i128 {
+        let value = self.value as i128;
         if self.inclusive {
-            self.value
+            value
         } else {
-            self.value.saturating_add(1)
+            value + 1
         }
     }
 
-    const fn last_integer(self) -> i64 {
+    const fn last_integer(self) -> i128 {
+        let value = self.value as i128;
         if self.inclusive {
-            self.value
+            value
         } else {
-            self.value.saturating_sub(1)
+            value - 1
         }
     }
 }
@@ -71,7 +73,11 @@ impl IntegerIntervalProof {
         }
         let first = lower.first_integer();
         let last = upper.last_integer();
-        let witness = (first <= last).then_some(first);
+        let witness = if first <= last {
+            i64::try_from(first).ok()
+        } else {
+            None
+        };
         Some(Self {
             variable: variable.to_owned(),
             lower,
@@ -138,7 +144,7 @@ impl IntegerIntervalProof {
         let first = self.lower.first_integer();
         let last = self.upper.last_integer();
         format!(
-            "fn main() {{\n    let first: i64 = {first};\n    let last: i64 = {last};\n    \
+            "fn main() {{\n    let first: i128 = {first};\n    let last: i128 = {last};\n    \
              assert!(first > last, \"proof obligation failed\");\n    \
              println!(\"unsatisfiable\");\n}}"
         )

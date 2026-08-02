@@ -387,6 +387,9 @@ function formalizeIntegerIntervalProof(statement) {
   } catch (_error) {
     return null;
   }
+  const i64Min = -9223372036854775808n;
+  const i64Max = 9223372036854775807n;
+  if (lower < i64Min || lower > i64Max || upper < i64Min || upper > i64Max) return null;
   const suffix = tokens.slice(7).join(" ");
   if (
     suffix !== "is satisfiable" &&
@@ -438,8 +441,8 @@ function renderFormalProofProgram(proof, target) {
     }
     return [
       "fn main() {",
-      `    let first: i64 = ${proof.first};`,
-      `    let last: i64 = ${proof.last};`,
+      `    let first: i128 = ${proof.first};`,
+      `    let last: i128 = ${proof.last};`,
       '    assert!(first > last, "proof obligation failed");',
       '    println!("unsatisfiable");',
       "}",

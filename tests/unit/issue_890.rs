@@ -139,6 +139,22 @@ fn generated_proof_programs_compile_and_execute() {
         .expect("Python proof renderer");
     assert_eq!(execute_rust(&rust), "2\n");
     assert_eq!(execute_python(&python), "2\n");
+
+    let edge = FormalProof::integer_interval("x", i64::MAX, false, i64::MAX, true)
+        .expect("represent an interval beyond the largest integer");
+    assert!(!edge.is_satisfiable());
+    assert_eq!(
+        FormalProof::from_statement(&edge.statement()),
+        Some(edge.clone())
+    );
+    assert_eq!(
+        execute_rust(&edge.render_program("rust").expect("Rust edge proof")),
+        "unsatisfiable\n"
+    );
+    assert_eq!(
+        execute_python(&edge.render_program("python").expect("Python edge proof")),
+        "unsatisfiable\n"
+    );
 }
 
 #[test]
