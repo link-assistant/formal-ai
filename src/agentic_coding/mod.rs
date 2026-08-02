@@ -18,6 +18,7 @@
 //! extraction is grounded in a closed lexicon (see `lexicon`) and the planner is
 //! a pure, deterministic function of the message history.
 
+pub mod algorithm_learning;
 pub mod associative_learning;
 mod capability_router;
 pub mod change_request;

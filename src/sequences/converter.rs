@@ -28,6 +28,7 @@ pub fn balanced_convert(store: &mut SequenceStore, sequence: &[LinkAddress]) -> 
     match sequence.len() {
         0 => NULL_LINK,
         1 => sequence[0],
+        2 => store.get_or_create(sequence[0], sequence[1]),
         _ => {
             let mut current = halve_sequence(store, sequence);
             while current.len() > 2 {

@@ -1,0 +1,21 @@
+self_ast_census
+  target src/sequences/inference.rs
+  language rust
+  fidelity signature
+  byte_len 8631
+  line_count 238
+  content_id source_module_761af0b83058acd6
+  symbol_count 12
+  symbols
+    struct SequencePatternReport 22 37
+    function has_structure 43 49
+    function summary 53 55
+    function summary_in 59 113
+    function infer_sequence_patterns 118 141
+    struct GridPatternReport 145 156
+    function has_structure 161 163
+    function summary 167 169
+    function summary_in 173 210
+    function pattern_template 213 215
+    function render_pattern 217 223
+    function infer_grid_patterns 227 238

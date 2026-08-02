@@ -1,4 +1,29 @@
 meanings
+  npm
+    defined-by token
+    lexeme en
+      surface
+        text "npm"
+  npx
+    defined-by token
+    lexeme en
+      surface
+        text "npx"
+  number_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "number lines"
+  official-docs
+    defined-by source_kind
+    lexeme en
+      surface
+        text "official docs"
+  official-repository
+    defined-by source_kind
+    lexeme en
+      surface
+        text "official repository"
   olleh
     defined-by concept
     lexeme en
@@ -839,6 +864,51 @@ meanings
     lexeme en
       surface
         text "pattern greeting phrase shabbat shalom"
+  pattern_grid_anti_diagonal
+    defined-by intent
+    lexeme en
+      surface
+        text "pattern grid anti diagonal"
+  pattern_grid_diagonal
+    defined-by intent
+    lexeme en
+      surface
+        text "pattern grid diagonal"
+  pattern_grid_horizontal
+    defined-by intent
+    lexeme en
+      surface
+        text "pattern grid horizontal"
+  pattern_grid_no_symmetry
+    defined-by intent
+    lexeme en
+      surface
+        text "pattern grid no symmetry"
+  pattern_grid_report
+    defined-by intent
+    lexeme en
+      surface
+        text "pattern grid report"
+  pattern_grid_rotation
+    defined-by intent
+    lexeme en
+      surface
+        text "pattern grid rotation"
+  pattern_grid_shape
+    defined-by intent
+    lexeme en
+      surface
+        text "pattern grid shape"
+  pattern_grid_symmetry
+    defined-by intent
+    lexeme en
+      surface
+        text "pattern grid symmetry"
+  pattern_grid_vertical
+    defined-by intent
+    lexeme en
+      surface
+        text "pattern grid vertical"
   pattern_how_do_x_work_prefix_en
     defined-by prompt_pattern
     lexeme en
@@ -894,6 +964,61 @@ meanings
     lexeme en
       surface
         text "pattern kak ustroeno x prefix ru"
+  pattern_sequence_aperiodic
+    defined-by intent
+    lexeme en
+      surface
+        text "pattern sequence aperiodic"
+  pattern_sequence_compression
+    defined-by intent
+    lexeme en
+      surface
+        text "pattern sequence compression"
+  pattern_sequence_constant
+    defined-by intent
+    lexeme en
+      surface
+        text "pattern sequence constant"
+  pattern_sequence_count
+    defined-by intent
+    lexeme en
+      surface
+        text "pattern sequence count"
+  pattern_sequence_empty
+    defined-by intent
+    lexeme en
+      surface
+        text "pattern sequence empty"
+  pattern_sequence_next
+    defined-by intent
+    lexeme en
+      surface
+        text "pattern sequence next"
+  pattern_sequence_no_compression
+    defined-by intent
+    lexeme en
+      surface
+        text "pattern sequence no compression"
+  pattern_sequence_palindrome
+    defined-by intent
+    lexeme en
+      surface
+        text "pattern sequence palindrome"
+  pattern_sequence_periodic
+    defined-by intent
+    lexeme en
+      surface
+        text "pattern sequence periodic"
+  pattern_sequence_repetition
+    defined-by intent
+    lexeme en
+      surface
+        text "pattern sequence repetition"
+  pattern_sequence_report
+    defined-by intent
+    lexeme en
+      surface
+        text "pattern sequence report"
   pattern_test_status_keyword_test_en
     defined-by prompt_pattern
     lexeme en
@@ -1269,128 +1394,3 @@ meanings
     lexeme en
       surface
         text "process report"
-  program_plan_rules
-    defined-by concept
-    lexeme en
-      surface
-        text "program plan rules"
-  programming-language
-    defined-by category
-    lexeme en
-      surface
-        text "programming language"
-  programming_task_catalog
-    defined-by kind
-    lexeme en
-      surface
-        text "programming task catalog"
-  project
-    defined-by concept
-    lexeme en
-      surface
-        text "project"
-  project-docs
-    defined-by source_kind
-    lexeme en
-      surface
-        text "project docs"
-  project_ideas
-    defined-by category
-    lexeme en
-      surface
-        text "project ideas"
-  proof-system
-    defined-by category
-    lexeme en
-      surface
-        text "proof system"
-  proposal_only
-    defined-by concept
-    lexeme en
-      surface
-        text "proposal only"
-  ps
-    defined-by concept
-    lexeme en
-      surface
-        text "ps"
-  punctuation
-    defined-by concept
-    lexeme en
-      surface
-        text "punctuation"
-  pwd
-    defined-by concept
-    lexeme en
-      surface
-        text "pwd"
-  pwsh
-    defined-by token
-    lexeme en
-      surface
-        text "pwsh"
-  pytest
-    defined-by concept
-    lexeme en
-      surface
-        text "pytest"
-  python3
-    defined-by token
-    lexeme en
-      surface
-        text "python3"
-  qa_network
-    defined-by kind
-    lexeme en
-      surface
-        text "qa network"
-  reach
-    defined-by word_surface
-    lexeme en
-      surface
-        text "reach"
-  react-chat-ui
-    defined-by name
-    lexeme en
-      surface
-        text "react chat ui"
-  read
-    defined-by concept
-    lexeme en
-      surface
-        text "read"
-  read_local_file
-    defined-by name
-    lexeme en
-      surface
-        text "read local file"
-  reasoning
-    defined-by category
-    lexeme en
-      surface
-        text "reasoning"
-  recall_name
-    defined-by concept
-    lexeme en
-      surface
-        text "recall name"
-  referrers
-    defined-by word_surface
-    lexeme en
-      surface
-        text "referrers"
-  reflection
-    defined-by term
-    lexeme en
-      surface
-        text "reflection"
-  relative-meta-logic
-    defined-by term
-    lexeme en
-      surface
-        text "relative meta logic"
-  relocate
-    defined-by word_surface
-    lexeme en
-      surface
-        text "relocate"

@@ -274,6 +274,31 @@ meanings
     lexeme en
       surface
         text "albert einstein"
+  algorithm_discovery_summary
+    defined-by intent
+    lexeme en
+      surface
+        text "algorithm discovery summary"
+  algorithm_dreaming_applied
+    defined-by intent
+    lexeme en
+      surface
+        text "algorithm dreaming applied"
+  algorithm_empty_binding_name
+    defined-by intent
+    lexeme en
+      surface
+        text "algorithm empty binding name"
+  algorithm_invalid_binding
+    defined-by intent
+    lexeme en
+      surface
+        text "algorithm invalid binding"
+  algorithm_observation_missing
+    defined-by intent
+    lexeme en
+      surface
+        text "algorithm observation missing"
   am
     defined-by concept
     lexeme en
@@ -1369,28 +1394,3 @@ meanings
     lexeme en
       surface
         text "external benchmark swe report error"
-  external_benchmark_swe_slice_write_error
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark swe slice write error"
-  external_benchmark_swe_start_error
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark swe start error"
-  external_benchmark_swe_unavailable
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark swe unavailable"
-  external_benchmark_unavailable_observation
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark unavailable observation"
-  external_trusted
-    defined-by concept
-    lexeme en
-      surface
-        text "external trusted"

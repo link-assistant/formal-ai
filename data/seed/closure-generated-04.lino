@@ -1,4 +1,129 @@
 meanings
+  program_plan_rules
+    defined-by concept
+    lexeme en
+      surface
+        text "program plan rules"
+  programming-language
+    defined-by category
+    lexeme en
+      surface
+        text "programming language"
+  programming_task_catalog
+    defined-by kind
+    lexeme en
+      surface
+        text "programming task catalog"
+  project
+    defined-by concept
+    lexeme en
+      surface
+        text "project"
+  project-docs
+    defined-by source_kind
+    lexeme en
+      surface
+        text "project docs"
+  project_ideas
+    defined-by category
+    lexeme en
+      surface
+        text "project ideas"
+  proof-system
+    defined-by category
+    lexeme en
+      surface
+        text "proof system"
+  proposal_only
+    defined-by concept
+    lexeme en
+      surface
+        text "proposal only"
+  ps
+    defined-by concept
+    lexeme en
+      surface
+        text "ps"
+  punctuation
+    defined-by concept
+    lexeme en
+      surface
+        text "punctuation"
+  pwd
+    defined-by concept
+    lexeme en
+      surface
+        text "pwd"
+  pwsh
+    defined-by token
+    lexeme en
+      surface
+        text "pwsh"
+  pytest
+    defined-by concept
+    lexeme en
+      surface
+        text "pytest"
+  python3
+    defined-by token
+    lexeme en
+      surface
+        text "python3"
+  qa_network
+    defined-by kind
+    lexeme en
+      surface
+        text "qa network"
+  reach
+    defined-by word_surface
+    lexeme en
+      surface
+        text "reach"
+  react-chat-ui
+    defined-by name
+    lexeme en
+      surface
+        text "react chat ui"
+  read
+    defined-by concept
+    lexeme en
+      surface
+        text "read"
+  read_local_file
+    defined-by name
+    lexeme en
+      surface
+        text "read local file"
+  reasoning
+    defined-by category
+    lexeme en
+      surface
+        text "reasoning"
+  recall_name
+    defined-by concept
+    lexeme en
+      surface
+        text "recall name"
+  referrers
+    defined-by word_surface
+    lexeme en
+      surface
+        text "referrers"
+  reflection
+    defined-by term
+    lexeme en
+      surface
+        text "reflection"
+  relative-meta-logic
+    defined-by term
+    lexeme en
+      surface
+        text "relative meta logic"
+  relocate
+    defined-by word_surface
+    lexeme en
+      surface
+        text "relocate"
   remix
     defined-by concept
     lexeme en
@@ -649,6 +774,31 @@ meanings
     lexeme en
       surface
         text "response agentic report target question zh"
+  response_algorithm_discovery_summary_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response algorithm discovery summary en"
+  response_algorithm_dreaming_applied_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response algorithm dreaming applied en"
+  response_algorithm_empty_binding_name_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response algorithm empty binding name en"
+  response_algorithm_invalid_binding_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response algorithm invalid binding en"
+  response_algorithm_observation_missing_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response algorithm observation missing en"
   response_assistant_free_time_en
     defined-by response_template
     lexeme en
@@ -1244,153 +1394,3 @@ meanings
     lexeme en
       surface
         text "response external benchmark parquet decode error en"
-  response_external_benchmark_parquet_module_unavailable_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark parquet module unavailable en"
-  response_external_benchmark_parquet_start_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark parquet start error en"
-  response_external_benchmark_parquet_utf8_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark parquet utf8 error en"
-  response_external_benchmark_provenance_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark provenance en"
-  response_external_benchmark_provenance_write_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark provenance write error en"
-  response_external_benchmark_python_import_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark python import en"
-  response_external_benchmark_ratchet_reference_suffix_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark ratchet reference suffix en"
-  response_external_benchmark_swe_clear_logs_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe clear logs error en"
-  response_external_benchmark_swe_docker_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe docker error en"
-  response_external_benchmark_swe_encode_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe encode error en"
-  response_external_benchmark_swe_exit_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe exit error en"
-  response_external_benchmark_swe_infrastructure_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe infrastructure error en"
-  response_external_benchmark_swe_inspect_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe inspect error en"
-  response_external_benchmark_swe_missing_report_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe missing report en"
-  response_external_benchmark_swe_predictions_write_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe predictions write error en"
-  response_external_benchmark_swe_record_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe record error en"
-  response_external_benchmark_swe_remove_report_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe remove report error en"
-  response_external_benchmark_swe_report_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe report error en"
-  response_external_benchmark_swe_slice_write_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe slice write error en"
-  response_external_benchmark_swe_start_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe start error en"
-  response_external_benchmark_swe_unavailable_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe unavailable en"
-  response_external_benchmark_unavailable_observation_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark unavailable observation en"
-  response_fact_check_arithmetic_counterexample_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check arithmetic counterexample en"
-  response_fact_check_arithmetic_counterexample_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check arithmetic counterexample hi"
-  response_fact_check_arithmetic_counterexample_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check arithmetic counterexample ru"
-  response_fact_check_arithmetic_counterexample_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check arithmetic counterexample zh"
-  response_fact_check_current_dialogue_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check current dialogue en"
-  response_fact_check_current_dialogue_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check current dialogue hi"
-  response_fact_check_current_dialogue_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check current dialogue ru"
-  response_fact_check_current_dialogue_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check current dialogue zh"

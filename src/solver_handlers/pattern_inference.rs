@@ -14,13 +14,13 @@
 //! no data, returns [`None`] here, and falls through to the concept lookup.
 
 use std::collections::HashMap;
-use std::fmt::Write as _;
 
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
+use crate::seed;
 use crate::sequences::{
-    infer_grid_patterns, infer_sequence_patterns, Grid, GridPatternReport, GridSymmetry,
-    LinkAddress, SequencePattern, SequencePatternReport, SequenceStore, SymbolTable,
+    infer_grid_patterns, infer_sequence_patterns, Grid, GridPatternReport, LinkAddress,
+    SequencePattern, SequencePatternReport, SequenceStore, SymbolTable,
 };
 use crate::solver_handlers::finalize_simple;
 
@@ -318,268 +318,42 @@ fn answer_grid(
     )
 }
 
-/// Pick the localized variant for `language`, falling back to English for any
-/// language outside the seeded set (`ru`, `hi`, `zh`).
-fn loc<'a>(language: &str, en: &'a str, ru: &'a str, hi: &'a str, zh: &'a str) -> &'a str {
-    match language {
-        "ru" => ru,
-        "hi" => hi,
-        "zh" => zh,
-        _ => en,
-    }
-}
-
-/// Render the full sequence report in `language`. English is delegated to the
-/// substrate's own `summary()` so its wording stays byte-identical; the other
-/// seeded languages are rendered from the same structured fields.
+/// Render the full sequence report from seed templates.
 fn sequence_body(
     language: &str,
     rendered: &str,
     report: &SequencePatternReport,
     next: Option<&str>,
 ) -> String {
-    if language == "en" {
-        let mut body = format!("Sequence: {rendered}\n{}", report.summary());
-        if let Some(next) = next {
-            let _ = write!(body, "\nMost likely next element: {next}.");
-        }
-        return body;
-    }
-
-    let mut lines: Vec<String> = Vec::new();
-    let label = loc(language, "Sequence", "Последовательность", "अनुक्रम", "序列");
-    let colon = if language == "zh" { "：" } else { ": " };
-    lines.push(format!("{label}{colon}{rendered}"));
-    lines.push(sequence_lines(language, report));
-    if let Some(next) = next {
-        lines.push(format!(
-            "{}{next}{}",
-            next_prefix(language),
-            sentence_end(language)
-        ));
-    }
-    lines.join("\n")
-}
-
-/// The structural body lines (count, classification, palindrome, dedup) of a
-/// sequence report in a non-English seeded language.
-fn sequence_lines(language: &str, report: &SequencePatternReport) -> String {
-    let mut lines: Vec<String> = Vec::new();
-    lines.push(count_line(language, report.length, report.distinct));
-    lines.push(classification_line(language, &report.classification));
-    if report.palindrome && report.length > 1 {
-        lines.push(
-            loc(
-                language,
-                "It reads the same forwards and backwards (palindrome).",
-                "Читается одинаково слева направо и справа налево (палиндром).",
-                "यह आगे और पीछे दोनों तरह से समान पढ़ा जाता है (पैलिंड्रोम)।",
-                "它正读和反读相同（回文）。",
-            )
-            .to_owned(),
-        );
-    }
-    if report.compression.is_compressed() {
-        lines.push(compression_line(
-            language,
-            report.compression.steps.len(),
-            report.compression.compression_ratio(),
-        ));
-    } else {
-        lines.push(
-            loc(
-                language,
-                "No repeated adjacent pairs to deduplicate.",
-                "Нет повторяющихся соседних пар для дедупликации.",
-                "डिडुप्लीकेट करने के लिए कोई दोहराई गई आसन्न जोड़ी नहीं।",
-                "没有可去重的重复相邻对。",
-            )
-            .to_owned(),
-        );
-    }
-    lines.join("\n")
-}
-
-fn count_line(language: &str, length: usize, distinct: usize) -> String {
-    match language {
-        "ru" => format!("Последовательность из {length} элемента(ов), различных: {distinct}."),
-        "hi" => format!("{length} तत्व(ों) का अनुक्रम, {distinct} विशिष्ट।"),
-        "zh" => format!("包含 {length} 个元素的序列，其中 {distinct} 个不同。"),
-        _ => format!("Sequence of {length} element(s), {distinct} distinct."),
-    }
-}
-
-fn classification_line(language: &str, classification: &SequencePattern) -> String {
-    match classification {
-        SequencePattern::Empty => loc(
-            language,
-            "The sequence is empty.",
-            "Последовательность пуста.",
-            "अनुक्रम खाली है।",
-            "序列为空。",
-        )
-        .to_owned(),
-        SequencePattern::Constant => loc(
-            language,
-            "Every element is identical (constant sequence).",
-            "Все элементы одинаковы (постоянная последовательность).",
-            "प्रत्येक तत्व समान है (स्थिर अनुक्रम)।",
-            "每个元素都相同（常量序列）。",
-        )
-        .to_owned(),
-        SequencePattern::Repetition(pattern) => {
-            let (p, r) = (pattern.period, pattern.repetitions);
-            match language {
-                "ru" => {
-                    format!("Это повторение: блок из {p} элемента(ов) повторяется {r} раз(а).")
-                }
-                "hi" => format!("यह एक पुनरावृत्ति है: {p} तत्व(ों) का खंड {r} बार दोहराया गया।"),
-                "zh" => format!("这是一个重复：{p} 个元素的块重复了 {r} 次。"),
-                _ => format!("It is a repetition: a block of {p} element(s) repeated {r} times."),
-            }
-        }
-        SequencePattern::Periodic { period } => match language {
-            "ru" => format!("Оно периодично с периодом {period}."),
-            "hi" => format!("यह {period} अवधि के साथ आवर्ती है।"),
-            "zh" => format!("它是周期性的，周期为 {period}。"),
-            _ => format!("It is periodic with period {period}."),
-        },
-        SequencePattern::Aperiodic => loc(
-            language,
-            "It has no exact repeating period.",
-            "У него нет точного повторяющегося периода.",
-            "इसका कोई सटीक दोहराव अवधि नहीं है।",
-            "它没有精确的重复周期。",
-        )
-        .to_owned(),
-    }
-}
-
-fn compression_line(language: &str, pairs: usize, ratio: f64) -> String {
-    let pct = ratio * 100.0;
-    match language {
-        "ru" => format!(
-            "Ассоциативная дедупликация заменила {pairs} повторяющихся пар(ы), сжав до {pct:.0}% исходной длины (без потерь)."
-        ),
-        "hi" => format!(
-            "साहचर्य डिडुप्लीकेशन ने {pairs} दोहराई गई जोड़ी(यों) को बदला, मूल लंबाई के {pct:.0}% तक संपीड़ित (हानिरहित)।"
-        ),
-        "zh" => format!("关联去重替换了 {pairs} 个重复对，压缩到原始长度的 {pct:.0}%（无损）。"),
-        _ => format!(
-            "Associative deduplication replaced {pairs} repeated pair(s), compressing to {pct:.0}% of the original length (lossless)."
-        ),
-    }
-}
-
-fn next_prefix(language: &str) -> &'static str {
-    loc(
+    let structure = report.summary_in(language);
+    let mut body = render_pattern_response(
+        "pattern_sequence_report",
         language,
-        "Most likely next element: ",
-        "Наиболее вероятный следующий элемент: ",
-        "सबसे संभावित अगला तत्व: ",
-        "最可能的下一个元素：",
+        &[("rendered", rendered), ("structure", &structure)],
+    );
+    if let Some(next) = next {
+        let next_line =
+            render_pattern_response("pattern_sequence_next", language, &[("next", next)]);
+        body.push('\n');
+        body.push_str(&next_line);
+    }
+    body
+}
+
+/// Render the full grid report from seed templates.
+fn grid_body(language: &str, report: &GridPatternReport) -> String {
+    let structure = report.summary_in(language);
+    render_pattern_response(
+        "pattern_grid_report",
+        language,
+        &[("structure", &structure)],
     )
 }
 
-/// The sentence-terminating punctuation for `language` (Devanagari danda,
-/// full-width Chinese stop, or an ASCII period).
-fn sentence_end(language: &str) -> &'static str {
-    match language {
-        "hi" => "।",
-        "zh" => "。",
-        _ => ".",
+fn render_pattern_response(intent: &str, language: &str, values: &[(&str, &str)]) -> String {
+    let mut rendered = seed::localized_response(intent, language).unwrap_or_default();
+    for (name, value) in values {
+        rendered = rendered.replace(&format!("{{{name}}}"), value);
     }
-}
-
-/// Render the full grid report in `language`, mirroring the English delegation
-/// used by [`sequence_body`].
-fn grid_body(language: &str, report: &GridPatternReport) -> String {
-    if language == "en" {
-        return format!("Grid pattern inference.\n{}", report.summary());
-    }
-
-    let heading = loc(
-        language,
-        "Grid pattern inference.",
-        "Инференция паттернов сетки.",
-        "ग्रिड पैटर्न अनुमान।",
-        "网格模式推断。",
-    );
-    let (rows, cols) = (report.rows, report.cols);
-    let shape = match language {
-        "ru" => format!("Сетка {rows}x{cols}."),
-        "hi" => format!("ग्रिड {rows}x{cols}।"),
-        "zh" => format!("网格 {rows}x{cols}。"),
-        _ => format!("Grid {rows}x{cols}."),
-    };
-    let symmetry = grid_symmetry_line(language, report.symmetries);
-    let structure = sequence_lines(language, &report.row_major);
-    format!("{heading}\n{shape}\n{symmetry}\n{structure}")
-}
-
-fn grid_symmetry_line(language: &str, symmetries: GridSymmetry) -> String {
-    let mut labels: Vec<&str> = Vec::new();
-    if symmetries.horizontal {
-        labels.push(loc(
-            language,
-            "left-right mirror",
-            "зеркало лево-право",
-            "बाएँ-दाएँ दर्पण",
-            "左右镜像",
-        ));
-    }
-    if symmetries.vertical {
-        labels.push(loc(
-            language,
-            "top-bottom mirror",
-            "зеркало верх-низ",
-            "ऊपर-नीचे दर्पण",
-            "上下镜像",
-        ));
-    }
-    if symmetries.rotational_180 {
-        labels.push(loc(
-            language,
-            "180-degree rotation",
-            "поворот на 180 градусов",
-            "180-डिग्री घूर्णन",
-            "180度旋转",
-        ));
-    }
-    if symmetries.diagonal {
-        labels.push(loc(
-            language,
-            "main-diagonal reflection",
-            "отражение по главной диагонали",
-            "मुख्य-विकर्ण परावर्तन",
-            "主对角线反射",
-        ));
-    }
-    if symmetries.anti_diagonal {
-        labels.push(loc(
-            language,
-            "anti-diagonal reflection",
-            "отражение по побочной диагонали",
-            "प्रति-विकर्ण परावर्तन",
-            "副对角线反射",
-        ));
-    }
-    if labels.is_empty() {
-        return loc(
-            language,
-            "No symmetry detected.",
-            "Симметрия не обнаружена.",
-            "कोई समरूपता नहीं मिली।",
-            "未检测到对称性。",
-        )
-        .to_owned();
-    }
-    let separator = if language == "zh" { "、" } else { ", " };
-    let joined = labels.join(separator);
-    match language {
-        "ru" => format!("Симметрично относительно: {joined}."),
-        "hi" => format!("इसके अंतर्गत सममित: {joined}।"),
-        "zh" => format!("对称于：{joined}。"),
-        _ => format!("Symmetric under: {joined}."),
-    }
+    rendered
 }

@@ -6,7 +6,8 @@
 //! report out, including a human-readable [`SequencePatternReport::summary`].
 
 use std::collections::BTreeSet;
-use std::fmt::Write as _;
+
+use crate::seed;
 
 use super::compression::{compress, CompressionResult};
 use super::grid_2d::{Grid, GridSymmetry, GridTransform};
@@ -50,48 +51,65 @@ impl SequencePatternReport {
     /// A short, human-readable description of the inferred structure.
     #[must_use]
     pub fn summary(&self) -> String {
-        let mut lines = Vec::new();
-        lines.push(format!(
-            "Sequence of {} element(s), {} distinct.",
-            self.length, self.distinct
-        ));
+        self.summary_in("en")
+    }
+
+    /// A localized description rendered from Links Notation seed templates.
+    #[must_use]
+    pub fn summary_in(&self, language: &str) -> String {
+        let length = self.length.to_string();
+        let distinct = self.distinct.to_string();
+        let mut lines = vec![render_pattern(
+            "pattern_sequence_count",
+            language,
+            &[("length", &length), ("distinct", &distinct)],
+        )];
         match &self.classification {
-            SequencePattern::Empty => lines.push("The sequence is empty.".to_owned()),
-            SequencePattern::Constant => {
-                lines.push("Every element is identical (constant sequence).".to_owned());
+            SequencePattern::Empty => {
+                lines.push(pattern_template("pattern_sequence_empty", language));
             }
-            SequencePattern::Repetition(pattern) => lines.push(format!(
-                "It is a repetition: a block of {} element(s) repeated {} times.",
-                pattern.period, pattern.repetitions
-            )),
+            SequencePattern::Constant => {
+                lines.push(pattern_template("pattern_sequence_constant", language));
+            }
+            SequencePattern::Repetition(pattern) => {
+                let period = pattern.period.to_string();
+                let repetitions = pattern.repetitions.to_string();
+                lines.push(render_pattern(
+                    "pattern_sequence_repetition",
+                    language,
+                    &[("period", &period), ("repetitions", &repetitions)],
+                ));
+            }
             SequencePattern::Periodic { period } => {
-                lines.push(format!("It is periodic with period {period}."));
+                let period = period.to_string();
+                lines.push(render_pattern(
+                    "pattern_sequence_periodic",
+                    language,
+                    &[("period", &period)],
+                ));
             }
             SequencePattern::Aperiodic => {
-                lines.push("It has no exact repeating period.".to_owned());
+                lines.push(pattern_template("pattern_sequence_aperiodic", language));
             }
         }
         if self.palindrome && self.length > 1 {
-            lines.push("It reads the same forwards and backwards (palindrome).".to_owned());
+            lines.push(pattern_template("pattern_sequence_palindrome", language));
         }
         if self.compression.is_compressed() {
-            let ratio = self.compression.compression_ratio();
-            lines.push(format!(
-                "Associative deduplication replaced {} repeated pair(s), compressing to {:.0}% of the original length (lossless).",
-                self.compression.steps.len(),
-                ratio * 100.0
+            let pairs = self.compression.steps.len().to_string();
+            let percent = format!("{:.0}", self.compression.compression_ratio() * 100.0);
+            lines.push(render_pattern(
+                "pattern_sequence_compression",
+                language,
+                &[("pairs", &pairs), ("percent", &percent)],
             ));
         } else {
-            lines.push("No repeated adjacent pairs to deduplicate.".to_owned());
+            lines.push(pattern_template(
+                "pattern_sequence_no_compression",
+                language,
+            ));
         }
-        let mut summary = String::new();
-        for (index, line) in lines.iter().enumerate() {
-            if index > 0 {
-                summary.push('\n');
-            }
-            summary.push_str(line);
-        }
-        summary
+        lines.join("\n")
     }
 }
 
@@ -147,31 +165,61 @@ impl GridPatternReport {
     /// A short, human-readable description of the inferred grid structure.
     #[must_use]
     pub fn summary(&self) -> String {
-        let mut summary = format!("Grid {}x{}.", self.rows, self.cols);
+        self.summary_in("en")
+    }
+
+    /// A localized description rendered from Links Notation seed templates.
+    #[must_use]
+    pub fn summary_in(&self, language: &str) -> String {
+        let rows = self.rows.to_string();
+        let cols = self.cols.to_string();
+        let mut lines = vec![render_pattern(
+            "pattern_grid_shape",
+            language,
+            &[("rows", &rows), ("cols", &cols)],
+        )];
         let mut symmetries = Vec::new();
         if self.symmetries.horizontal {
-            symmetries.push("left-right mirror");
+            symmetries.push(pattern_template("pattern_grid_horizontal", language));
         }
         if self.symmetries.vertical {
-            symmetries.push("top-bottom mirror");
+            symmetries.push(pattern_template("pattern_grid_vertical", language));
         }
         if self.symmetries.rotational_180 {
-            symmetries.push("180-degree rotation");
+            symmetries.push(pattern_template("pattern_grid_rotation", language));
         }
         if self.symmetries.diagonal {
-            symmetries.push("main-diagonal reflection");
+            symmetries.push(pattern_template("pattern_grid_diagonal", language));
         }
         if self.symmetries.anti_diagonal {
-            symmetries.push("anti-diagonal reflection");
+            symmetries.push(pattern_template("pattern_grid_anti_diagonal", language));
         }
         if symmetries.is_empty() {
-            let _ = write!(summary, "\nNo symmetry detected.");
+            lines.push(pattern_template("pattern_grid_no_symmetry", language));
         } else {
-            let _ = write!(summary, "\nSymmetric under: {}.", symmetries.join(", "));
+            let separator = if language == "zh" { "、" } else { ", " };
+            let joined = symmetries.join(separator);
+            lines.push(render_pattern(
+                "pattern_grid_symmetry",
+                language,
+                &[("symmetries", &joined)],
+            ));
         }
-        let _ = write!(summary, "\n{}", self.row_major.summary());
-        summary
+        lines.push(self.row_major.summary_in(language));
+        lines.join("\n")
     }
+}
+
+fn pattern_template(intent: &str, language: &str) -> String {
+    seed::localized_response(intent, language).unwrap_or_default()
+}
+
+fn render_pattern(intent: &str, language: &str, values: &[(&str, &str)]) -> String {
+    let mut rendered = pattern_template(intent, language);
+    for (name, value) in values {
+        rendered = rendered.replace(&format!("{{{name}}}"), value);
+    }
+    rendered
 }
 
 /// Run the full 2D pattern-inference pipeline over `grid`.

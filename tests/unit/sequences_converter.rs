@@ -20,6 +20,9 @@ fn balanced_convert_edge_cases() {
     assert_eq!(balanced_convert(&mut store, &[]), NULL_LINK);
     let a = store.create_point();
     assert_eq!(balanced_convert(&mut store, &[a]), a);
+    let b = store.create_point();
+    let pair = balanced_convert(&mut store, &[a, b]);
+    assert_eq!(store.expand(pair), [a, b]);
 }
 
 #[test]

@@ -32,6 +32,8 @@ pub const MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-decomposition.lino");
 pub const MULTILINGUAL_RESPONSES_PROCEDURE_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-procedure.lino");
+pub const MULTILINGUAL_RESPONSES_PATTERN_LINO: &str =
+    include_str!("../../data/seed/multilingual-responses-pattern.lino");
 pub const MULTILINGUAL_RESPONSES_SUMMARIZATION_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-summarization.lino");
 pub const CONCEPTS_LINO: &str = include_str!("../../data/seed/concepts.lino");
@@ -210,6 +212,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         (
             "data/seed/multilingual-responses-procedure.lino",
             MULTILINGUAL_RESPONSES_PROCEDURE_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-pattern.lino",
+            MULTILINGUAL_RESPONSES_PATTERN_LINO,
         ),
         (
             "data/seed/multilingual-responses-summarization.lino",
@@ -445,6 +451,7 @@ pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_AGENTIC_LINO,
     MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,
     MULTILINGUAL_RESPONSES_PROCEDURE_LINO,
+    MULTILINGUAL_RESPONSES_PATTERN_LINO,
     MULTILINGUAL_RESPONSES_SUMMARIZATION_LINO,
 ];
 

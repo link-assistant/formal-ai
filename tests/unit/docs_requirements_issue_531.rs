@@ -23,10 +23,21 @@ fn issue_531_pattern_inference_case_study_is_traceable() {
             "| R405 ",
             "| R406 ",
             "| R407 ",
+            "| R531-17 ",
+            "| R531-18 ",
+            "| R531-19 ",
+            "| R531-20 ",
+            "| R531-21 ",
+            "| R531-22 ",
+            "| R531-23 ",
+            "| R531-24 ",
+            "| R531-25 ",
             "docs/case-studies/issue-531",
             "Data.Doublets.Sequences",
             "associative deduplication",
             "transformed pattern matching",
+            "algorithm_learning_candidate",
+            "formal-ai learn algorithms",
         ],
     );
 
@@ -36,7 +47,7 @@ fn issue_531_pattern_inference_case_study_is_traceable() {
         &readme,
         &[
             "# Issue 531 Case Study: Pattern Inference",
-            "Status: research, proposal, and implementation pass",
+            "Status: implemented and under final verification",
             "linksplatform/Data.Doublets.Sequences",
             "BalancedVariantConverter",
             "OptimalVariantConverter",
@@ -44,6 +55,9 @@ fn issue_531_pattern_inference_case_study_is_traceable() {
             "SEQUITUR",
             "Re-Pair",
             "ARC-AGI",
+            "discovering reusable algorithms",
+            "Generalization Boundary",
+            "ApprovedAlgorithm",
         ],
     );
 
@@ -54,6 +68,8 @@ fn issue_531_pattern_inference_case_study_is_traceable() {
         &[
             "R531-01", "R531-02", "R531-03", "R531-04", "R531-05", "R531-06", "R531-07", "R531-08",
             "R531-09", "R531-10", "R531-11", "R531-12", "R531-13", "R531-14", "R531-15", "R531-16",
+            "R531-17", "R531-18", "R531-19", "R531-20", "R531-21", "R531-22", "R531-23", "R531-24",
+            "R531-25",
         ],
     );
 
@@ -62,14 +78,16 @@ fn issue_531_pattern_inference_case_study_is_traceable() {
         "docs/case-studies/issue-531/architecture-inventory.md",
         &inventory,
         &[
-            "src/link_store.rs",
-            "src/substitution.rs",
-            "src/solver.rs",
-            "src/meta_core.rs",
-            "src/solver_handlers/text_manipulation.rs",
+            "src/sequences/store.rs",
+            "src/algorithm_discovery.rs",
+            "ExecutionTrace",
+            "CompiledProcedure",
+            "DriverOutcome",
             "LinkFrequenciesCache",
             "StringToUnicodeSequenceConverter",
-            "Gaps To Close",
+            "Auto-Learning And Memory",
+            "Safety And Execution Boundary",
+            "Deliberate Boundary",
         ],
     );
 
@@ -87,8 +105,13 @@ fn issue_531_pattern_inference_case_study_is_traceable() {
             "Phase 5",
             "Phase 6",
             "Phase 7",
+            "Phase 8",
+            "Phase 9",
+            "Phase 10",
             "Acceptance gate",
             "ARC-style",
+            "Trace-To-Algorithm Generalization",
+            "Real Agent CLI Replay",
         ],
     );
 
@@ -103,6 +126,11 @@ fn issue_531_pattern_inference_case_study_is_traceable() {
             "ARC-AGI",
             "meta-theory",
             "relative-meta-logic",
+            "IEEE 1849-2023",
+            "Process Mining Manifesto",
+            "DreamCoder",
+            "LAPS",
+            "ReGAL",
         ],
     );
 
@@ -113,6 +141,7 @@ fn issue_531_pattern_inference_case_study_is_traceable() {
         "docs/case-studies/issue-531/raw-data/pr-642-conversation-comments.json",
         "docs/case-studies/issue-531/raw-data/pr-642-review-comments.json",
         "docs/case-studies/issue-531/raw-data/pr-642-reviews.json",
+        "docs/case-studies/issue-531/raw-data/pr-642-latest-feedback.md",
         "docs/case-studies/issue-531/raw-data/linksplatform-data-doublets-sequences-repo.json",
         "docs/case-studies/issue-531/raw-data/linksplatform-data-doublets-sequences-head.json",
         "docs/case-studies/issue-531/raw-data/link-foundation-meta-theory-repo.json",
@@ -128,12 +157,42 @@ fn issue_531_pattern_inference_case_study_is_traceable() {
         "docs/case-studies/issue-531/raw-data/csharp-sequence-index.cs.txt",
         "docs/case-studies/issue-531/raw-data/csharp-string-to-unicode-sequence-converter.cs.txt",
         "docs/case-studies/issue-531/raw-data/online-research.md",
+        "data/benchmarks/issue-531-algorithm-traces.lino",
+        "data/seed/multilingual-responses-pattern.lino",
+        "examples/issue_531_algorithm_discovery.rs",
+        "experiments/agent_cli_e2e/run_issue_531.sh",
+        "docs/case-studies/issue-531/agent-cli-evidence/agent-cli.log",
+        "docs/case-studies/issue-531/agent-cli-evidence/formal-ai.log",
+        "docs/case-studies/issue-531/agent-cli-evidence/discovered-algorithms.lino",
+        "docs/case-studies/issue-531/test-logs/red-algorithm-discovery.log",
+        "docs/case-studies/issue-531/test-logs/green-algorithm-discovery.log",
     ] {
         assert!(
             root.join(relative).is_file(),
             "{relative} should exist for issue #531 traceability"
         );
     }
+
+    let workflow = read(root.join(".github/workflows/release.yml"));
+    assert_contains_all(
+        "release workflow",
+        &workflow,
+        &["experiments/agent_cli_e2e/run_issue_531.sh"],
+    );
+
+    let agent_artifact = read(
+        root.join("docs/case-studies/issue-531/agent-cli-evidence/discovered-algorithms.lino"),
+    );
+    assert_contains_all(
+        "real Agent CLI artifact",
+        &agent_artifact,
+        &[
+            "mode \"proposal_only\"",
+            "human_gated \"true\"",
+            "status \"held_out_validated\"",
+            "associative_compression_lossless \"true\"",
+        ],
+    );
 }
 
 fn read(path: impl AsRef<Path>) -> String {

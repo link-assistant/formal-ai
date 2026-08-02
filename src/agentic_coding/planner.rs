@@ -6,6 +6,7 @@
 
 use serde_json::json;
 
+use super::algorithm_learning;
 use super::capability_router;
 pub(super) use super::capability_router::tool_for;
 use super::change_request;
@@ -174,6 +175,11 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
         .map(|plan| plan_general_change_step(messages, tool_names, &plan))
     {
         return Some(plan);
+    }
+    // A supplied portable event log owns the generalized trace-learning route
+    // when its structure yields independently validated repeated episodes.
+    if let Some(task) = algorithm_learning::compile_task(&task) {
+        return Some(algorithm_learning::plan_step(messages, tool_names, &task));
     }
     // A freely phrased procedure is one generalized compile → persist → verify
     // recipe on both the symbolic and Agent CLI surfaces.

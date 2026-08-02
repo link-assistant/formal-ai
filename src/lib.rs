@@ -2,6 +2,7 @@ extern crate alloc;
 
 pub mod agent;
 pub mod agentic_coding;
+pub mod algorithm_discovery;
 pub mod anthropic;
 pub mod arithmetic;
 pub mod associative_package;
@@ -311,10 +312,10 @@ pub use seed::{
     agent_info, canonical_model_id, concepts as seed_concepts, environment_directory,
     environment_records, intent_routing, language_rules, merged_bundle, model_aliases,
     multilingual_responses, operation_vocabulary, parse_bundle, projects_registry, prompt_patterns,
-    resolve_model_id, response_for, seed_files, supported_languages, try_resolve_model_id,
-    EnvironmentDirectory, EnvironmentRecord, IntentRouting, LocalizedProject, MigrationFlow,
-    ModelAliasRegistry, OperationLanguageForms, OperationTrigger, OperationVocabulary,
-    ProjectRecord, ProjectStatement, ProjectsRegistry,
+    render_response, resolve_model_id, response_for, seed_files, supported_languages,
+    try_resolve_model_id, EnvironmentDirectory, EnvironmentRecord, IntentRouting, LocalizedProject,
+    MigrationFlow, ModelAliasRegistry, OperationLanguageForms, OperationTrigger,
+    OperationVocabulary, ProjectRecord, ProjectStatement, ProjectsRegistry,
 };
 pub use self_ast_census::{
     drift_report, scan_symbols, CensusDrift, CensusFidelity, CensusResolution, ModuleCensus,

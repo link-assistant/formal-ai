@@ -58,6 +58,7 @@ mod issue_499_learn_from_source;
 mod issue_513;
 mod issue_527;
 mod issue_527_question_catalog;
+mod issue_531_algorithm_discovery;
 mod issue_531_concepts_probe;
 mod issue_531_pattern_inference;
 mod issue_535;

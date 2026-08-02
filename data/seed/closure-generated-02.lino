@@ -1,4 +1,29 @@
 meanings
+  external_benchmark_swe_slice_write_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe slice write error"
+  external_benchmark_swe_start_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe start error"
+  external_benchmark_swe_unavailable
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe unavailable"
+  external_benchmark_unavailable_observation
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark unavailable observation"
+  external_trusted
+    defined-by concept
+    lexeme en
+      surface
+        text "external trusted"
   extract_email
     defined-by operation
     lexeme en
@@ -1369,28 +1394,3 @@ meanings
     lexeme en
       surface
         text "notes"
-  npm
-    defined-by token
-    lexeme en
-      surface
-        text "npm"
-  npx
-    defined-by token
-    lexeme en
-      surface
-        text "npx"
-  number_lines
-    defined-by operation
-    lexeme en
-      surface
-        text "number lines"
-  official-docs
-    defined-by source_kind
-    lexeme en
-      surface
-        text "official docs"
-  official-repository
-    defined-by source_kind
-    lexeme en
-      surface
-        text "official repository"

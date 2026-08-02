@@ -6,6 +6,7 @@ use std::sync::Arc;
 use clap::{Args as ClapArgs, Subcommand, ValueEnum};
 use lino_arguments::Parser;
 
+mod cli_algorithm;
 mod cli_benchmark;
 mod cli_clients;
 mod cli_computer_use;
@@ -20,6 +21,7 @@ mod cli_report;
 mod cli_shared_dialog;
 mod cli_statement_audit;
 
+use cli_algorithm::{run_algorithm, AlgorithmArgs};
 use cli_benchmark::{run_benchmark, BenchmarkAction};
 use cli_clients::{run_clients, ClientsAction, ClientsFormat};
 use cli_computer_use::{run_computer_use, ComputerUseArgs};
@@ -191,6 +193,8 @@ enum Command {
     With(WithFormalAiArgs),
     /// Execute and inspect persisted natural-language procedure artifacts.
     Procedure(ProcedureArgs),
+    /// Inspect learned execution-algorithm proposals without approving them.
+    Algorithm(AlgorithmArgs),
     /// Execute a seeded natural-language computer-use plan inside a fresh,
     /// isolated workspace and emit its per-step verification record.
     ComputerUse(ComputerUseArgs),
@@ -605,6 +609,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::StatementAudit(args) => run_statement_audit(&args)?,
         Command::With(args) => run_with_formal_ai(&args)?,
         Command::Procedure(args) => run_procedure(args)?,
+        Command::Algorithm(args) => run_algorithm(args)?,
         Command::ComputerUse(args) => run_computer_use(args)?,
         Command::Agent(args) => {
             if let Some(action) = args.action {

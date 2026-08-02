@@ -121,6 +121,7 @@ pub fn run_core_dreaming_once(memory_path: &Path) -> io::Result<DreamingOutcome>
     if outcome.removed_events > 0
         || outcome.learned_amendments > 0
         || outcome.learned_patterns > 0
+        || outcome.learned_algorithm_candidates > 0
         || outcome.recorded_failures > 0
         || outcome.recorded_trials > 0
     {

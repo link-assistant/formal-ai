@@ -23,3 +23,12 @@ bump: patch
   sequence and 2D grid analysis — classification, counts, compression, next-element
   prediction, and grid symmetry labels — in the requested language instead of
   stranding it in English.
+- Discover parameterized reusable algorithms from repeated event, memory,
+  Agent-CLI, and compiled-guide traces; validate later occurrences as held-out
+  evidence; retain proposal-only candidates during idle learning; and expose
+  integrity-checked learning/conformance commands without implicit execution.
+
+### Fixed
+
+- Fixed balanced conversion of exactly two link addresses, which previously
+  indexed past the reduced one-element layer.

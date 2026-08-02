@@ -30,6 +30,7 @@
     "seed/multilingual-responses-agentic.lino",
     "seed/multilingual-responses-decomposition.lino",
     "seed/multilingual-responses-procedure.lino",
+    "seed/multilingual-responses-pattern.lino",
     "seed/concepts.lino",
     "seed/concept-contexts.lino",
     "seed/facts.lino",

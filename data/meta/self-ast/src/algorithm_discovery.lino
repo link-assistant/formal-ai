@@ -1,0 +1,50 @@
+self_ast_census
+  target src/algorithm_discovery.rs
+  language rust
+  fidelity signature
+  byte_len 35079
+  line_count 970
+  content_id source_module_ce34c381d0e5aa5a
+  symbol_count 41
+  symbols
+    module adapters 17 17
+    module execution 18 18
+    const DEFAULT_MIN_STEPS 27 27
+    const DEFAULT_SUPPORT_OCCURRENCES 28 28
+    const DEFAULT_HELD_OUT_OCCURRENCES 29 29
+    const MAX_DISCOVERY_INPUT_STEPS 33 33
+    const MAX_DISCOVERED_ALGORITHM_STEPS 37 37
+    struct TraceStep 41 44
+    function new 48 53
+    function with_arguments 56 68
+    struct ExecutionTrace 74 77
+    function new 81 86
+    enum ArgumentPattern 91 97
+    function parameter_name 101 106
+    struct AlgorithmStep 111 114
+    struct HeldOutAlgorithmTest 119 124
+    struct AlgorithmCandidate 128 137
+    function validated 141 143
+    function status 146 152
+    function links_notation 157 210
+    function promote 214 236
+    function from_links_notation 240 365
+    function conformance_links_notation 369 400
+    struct AlgorithmDiscoveryRun 405 417
+    function validated_candidates 421 426
+    function links_notation 429 505
+    struct Occurrence 509 512
+    function discover_algorithms 520 635
+    function non_overlapping_occurrences 637 649
+    function candidate_from_occurrences 651 757
+    function candidate_identity 759 776
+    function candidate_evidence_identity 778 802
+    function push_identity 804 811
+    function validate_occurrence 813 898
+    function subsumes 900 921
+    function find_node 923 931
+    function child 933 943
+    function child_value 945 955
+    function optional_child 957 959
+    function invalid_artifact 961 963
+    function structured_diagnostic 965 970

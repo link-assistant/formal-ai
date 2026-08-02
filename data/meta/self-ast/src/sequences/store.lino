@@ -1,0 +1,27 @@
+self_ast_census
+  target src/sequences/store.rs
+  language rust
+  fidelity signature
+  byte_len 9376
+  line_count 216
+  content_id source_module_7b7de92b8a7328df
+  symbol_count 18
+  symbols
+    type LinkAddress 38 38
+    const NULL_LINK 41 41
+    struct Doublet 48 53
+    function new 58 60
+    struct SequenceStore 69 76
+    function new 81 83
+    function len 87 89
+    function is_empty 93 95
+    function null 99 101
+    function create_point 107 116
+    function search 123 125
+    function get_or_create 138 148
+    function get 155 161
+    function is_valid 165 167
+    function is_point 171 176
+    function expand 186 190
+    function expand_into 192 210
+    function next_address 212 215
