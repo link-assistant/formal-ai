@@ -3,7 +3,7 @@
 use super::LearningReport;
 
 pub const SEARCH_FUSION_LEARNING_PATH: &str = "search-fusion-learning-report.lino";
-pub const SEARCH_FUSION_LEARNING_TASK: &str = "Use Formal AI auto-learning to inspect the persisted issue 709 search-fusion execution failures and corrections as an associative links network, rank the reusable amendments, keep recipe promotion human-review gated, and write search-fusion-learning-report.lino.";
+pub const SEARCH_FUSION_LEARNING_TASK: &str = SEARCH_FUSION_LEARNING_PATH;
 
 pub static REPORT: LearningReport = LearningReport {
     head: "search_fusion_learning_report",

@@ -329,6 +329,7 @@ impl SearchFusionRecipeLedger {
         gate: SearchFusionLearningGate,
         approval: SearchFusionLearningApproval,
     ) -> Result<(), SearchFusionLearningError> {
+        let SearchFusionLearningApproval { reviewer, granted } = approval;
         let policy = policy()?;
         let expected_id = stable_id(
             "search_fusion_recipe_candidate",
@@ -348,7 +349,7 @@ impl SearchFusionRecipeLedger {
         if !gate.is_green() {
             return Err(error("learning_green_gate_required"));
         }
-        if !approval.granted || approval.reviewer.trim().is_empty() {
+        if !granted || reviewer.trim().is_empty() {
             return Err(error("learning_human_approval_required"));
         }
         self.recipes.insert(
@@ -357,7 +358,7 @@ impl SearchFusionRecipeLedger {
                 candidate: candidate.clone(),
                 suite: gate.suite,
                 passed: gate.passed,
-                reviewer: approval.reviewer.trim().to_owned(),
+                reviewer: reviewer.trim().to_owned(),
             },
         );
         Ok(())
@@ -475,7 +476,12 @@ where
 }
 
 fn candidate_identity(task_family: &str, stages: &[String], evidence_count: usize) -> String {
-    format!("{task_family}\n{}\n{evidence_count}", stages.join("\n"))
+    let mut identity = String::from(task_family);
+    identity.push('\n');
+    identity.push_str(&stages.join("\n"));
+    identity.push('\n');
+    identity.push_str(&evidence_count.to_string());
+    identity
 }
 
 fn root_named<'a>(

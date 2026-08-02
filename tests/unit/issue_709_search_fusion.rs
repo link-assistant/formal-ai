@@ -253,7 +253,7 @@ impl SourceTransport for BoundaryPolicyTransport {
         }
         match url {
             "https://boundary.invalid/original" | "https://boundary.invalid/mirror" => Ok(
-                r#"<html><head><style>.advert { content: 'wrong'; }</style><script>window.answer = 'wrong';</script></head><body><p>Apple is a fruit.</p><p>Яблоко это фрукт.</p></body></html>"#
+                r"<html><head><style>.advert { content: 'wrong'; }</style><script>window.answer = 'wrong';</script></head><body><p>Apple is a fruit.</p><p>Яблоко это фрукт.</p></body></html>"
                     .as_bytes()
                     .to_vec(),
             ),

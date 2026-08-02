@@ -9,7 +9,7 @@ const DEFAULT_ORDER: [&str; 3] = ["subject", "predicate", "object"];
 pub fn role_order(language: &str) -> [&'static str; 3] {
     let mut fallback = DEFAULT_ORDER;
     let mut current_language = "";
-    for raw in LANGUAGE_GRAMMAR.lines() {
+    for raw in policy_document().lines() {
         let indent = raw.len() - raw.trim_start().len();
         let line = raw.trim();
         if indent == 2 && line.starts_with("fallback_order ") {
