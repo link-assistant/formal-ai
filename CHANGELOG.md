@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.318.0] - 2026-08-01
+
+### Added
+- Context-aware statement auditing now records relative references, resolved claims, and antecedent-bounded probabilities.
+- Added source-backed Formal AI/LLM, public-domain output, dataset, model, and philosophy guides with a fail-closed legal source-review workflow.
+
 ## [0.317.0] - 2026-07-31
 
 ### Added
