@@ -20,8 +20,29 @@ issue_848_smallest_leaf_4
   authorship formal_ai_agent_cli
   session ses_04160c59fffe3FDUKteR56kfQp
   evidence docs/case-studies/issue-848/self-hosting-authorship/agent-cli.log
+issue_848_smallest_leaf_5
+  parent coding_task_ladder_improvement
+  leaf "specify the bounded workspace-change learning contract"
+  implementation data/meta/workspace-change-learning-contract.lino
+  authorship formal_ai_agent_cli
+  session ses_03d2e0597ffeAUZhq3qAtj2I4U
+  evidence docs/case-studies/issue-848/self-hosting-workspace-learning/learning-contract/agent-cli.log
+issue_848_smallest_leaf_6
+  parent coding_task_ladder_improvement
+  leaf "specify the review-gated workspace-change execution policy"
+  implementation data/meta/workspace-change-execution-policy.lino
+  authorship formal_ai_agent_cli
+  session ses_03d2df24effeijLfzPXiUeV4pG
+  evidence docs/case-studies/issue-848/self-hosting-workspace-learning/execution-policy/agent-cli.log
+issue_848_smallest_leaf_7
+  parent coding_task_ladder_improvement
+  leaf "specify an unseen equivalent rewrite fixture"
+  implementation data/benchmarks/workspace-change-learning-generalization.lino
+  authorship formal_ai_agent_cli
+  session ses_03d2ddb1cffeQkS5gxWjpMojc6
+  evidence docs/case-studies/issue-848/self-hosting-workspace-learning/generalization-fixture/agent-cli.log
 
 issue_848_self_authorship_measurement
-  reviewed_smallest_leaves 4
-  formal_ai_authored_leaves 1
-  formal_ai_authored_percent 25
+  reviewed_smallest_leaves 7
+  formal_ai_authored_leaves 4
+  formal_ai_authored_percent 57

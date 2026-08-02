@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/mod.rs
   language rust
   fidelity full_ast
-  byte_len 5771
-  line_count 139
-  content_id source_module_59e681abb52e9ca5
-  symbol_count 46
+  byte_len 5793
+  line_count 140
+  content_id source_module_73248e8adb166a44
+  symbol_count 47
   symbols
     module associative_learning 21 21
     module capability_router 22 22
@@ -53,21 +53,22 @@ self_ast_census
     module structured_edit 64 64
     module tool_result 65 65
     module web_research 66 66
+    module workspace_change 67 67
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 2839
-    named_node_count 470
+    total_link_count 2853
+    named_node_count 472
     distinct_node_kinds 13
     node_kinds
       crate 5
       doc_comment 19
-      identifier 192
+      identifier 193
       inner_doc_comment_marker 19
       line_comment 19
-      mod_item 46
+      mod_item 47
       scoped_identifier 10
       scoped_use_list 30
       source_file 1

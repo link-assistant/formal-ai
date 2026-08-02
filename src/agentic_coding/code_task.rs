@@ -23,9 +23,9 @@ enum RustItemKind {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-struct GeneratedSource {
-    path: String,
-    content: String,
+pub(super) struct GeneratedSource {
+    pub(super) path: String,
+    pub(super) content: String,
 }
 
 pub(super) fn plan_generated_source_step(
@@ -76,7 +76,7 @@ pub(super) fn plan_generated_source_step(
 
 // These are seed-template placeholders, not Rust formatting arguments.
 #[allow(clippy::literal_string_with_formatting_args)]
-fn rust_source_for_task(task: &str) -> Option<GeneratedSource> {
+pub(super) fn rust_source_for_task(task: &str) -> Option<GeneratedSource> {
     let normalized = task.to_lowercase();
     let lexicon = seed::lexicon();
     if !lexicon.mentions_role(seed::ROLE_FILE_WRITE_ACTION_CUE, &normalized)
@@ -179,7 +179,7 @@ fn rust_source_for_task(task: &str) -> Option<GeneratedSource> {
     Some(GeneratedSource { path, content })
 }
 
-fn render_rust_template(intent: &str, substitutions: &[(&str, &str)]) -> Option<String> {
+pub(super) fn render_rust_template(intent: &str, substitutions: &[(&str, &str)]) -> Option<String> {
     Some(render_template(
         seed::response_for(intent, "rust")?,
         substitutions,

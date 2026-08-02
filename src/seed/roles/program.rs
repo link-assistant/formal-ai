@@ -238,6 +238,12 @@ pub const ROLE_CODING_VISIBILITY: &str = "coding_visibility";
 pub const ROLE_CODING_RETURN_ACTION: &str = "coding_return_action";
 /// Semantic role: a source-generation request's division operation.
 pub const ROLE_CODING_DIVISION_ACTION: &str = "coding_division_action";
+/// Semantic role: an edit action whose operands are source identifiers rather
+/// than filesystem paths.
+pub const ROLE_CODING_IDENTIFIER_RENAME_ACTION: &str = "coding_identifier_rename_action";
+/// Semantic role: an action requesting that a generated source module be
+/// registered in its crate or package entry point.
+pub const ROLE_CODING_MODULE_REGISTRATION_ACTION: &str = "coding_module_registration_action";
 /// Semantic role: a slot that carries the requested source identifier.
 pub const ROLE_CODING_NAME_SLOT: &str = "coding_name_slot";
 /// Semantic role: a slot that carries a requested literal value.

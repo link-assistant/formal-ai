@@ -1,4 +1,14 @@
 meanings
+  external_benchmark_swe_missing_report
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe missing report"
+  external_benchmark_swe_predictions_write_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe predictions write error"
   external_benchmark_swe_record_error
     defined-by intent
     lexeme en
@@ -1384,13 +1394,3 @@ meanings
     lexeme en
       surface
         text "normalize"
-  normalize_labels_fixpoint
-    defined-by concept
-    lexeme en
-      surface
-        text "normalize labels fixpoint"
-  normalize_whitespace
-    defined-by operation
-    lexeme en
-      surface
-        text "normalize whitespace"

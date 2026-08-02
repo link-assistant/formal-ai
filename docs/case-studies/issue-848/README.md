@@ -57,7 +57,10 @@ Reproducible runtime evidence consists of:
 - the generator and real-Agent runner beside that result;
 - [`self-hosting-authorship/`](self-hosting-authorship/), containing the raw
   Agent CLI transcript, Formal AI trace, exact authored invariant, and reviewed
-  four-leaf authorship accounting;
+  authorship accounting;
+- [`self-hosting-workspace-learning/`](self-hosting-workspace-learning/),
+  containing three additional real Agent CLI transcripts and traces for the
+  canonical learning contract, execution policy, and held-out fixture;
 - [`requirements.md`](requirements.md), mapping each acceptance boundary to
   implementation and executable regression evidence.
 
@@ -70,6 +73,13 @@ function name accepted that prose as code. Search had a related grounding
 problem: it passed the whole conversational sentence to the repository search
 tool instead of the named symbol or string. Collection edits had no transition
 from reading existing bytes to transforming the named array.
+
+Two deeper routing failures remained visible in the complete result. The broad
+shell meaning of “rename” captured identifier refactors and attempted to move a
+file, even when the request named a constant inside that file. A composite
+“create a module and export it” request was treated as one source artifact: it
+either refused to synthesize or repeatedly read the not-yet-created target,
+with no representation of the second workspace effect.
 
 The measurement harness amplified those defects. It originally accepted
 narration, existing branches, mixed log text, and a substring resembling Rust.
@@ -91,6 +101,24 @@ Repository search extracts the named code subject and issues one focused query.
 existing collection bytes, writes the whole result, and observes the exact file
 through `cat`. No task is credited from narration alone.
 
+`agentic_coding::workspace_change` now routes grounded identifier rewrites
+before broad shell actions. It reads the named target, applies a bounded Normal
+Markov substitution through the shared workspace-rewrite executor, writes the
+full transformed bytes, and finishes only after an exact observation. Composite
+Rust module requests use an ordered transaction: render and observe the module,
+then read, update, and observe the registration target. The meanings, roles,
+and module-registration template are seed data, including English, Russian,
+Hindi, and Chinese surfaces.
+
+The reusable procedure path is proposal-only. `workspace_change_learning`
+separates task identity from execution identity, accepts only exact successful
+observations, and forms a candidate only after two distinct tasks. Candidates
+have no execution surface. A zero-failure gate plus named human approval is
+required before a content-addressed Links Notation recipe enters the approved
+ledger; only that ledger can execute the same bounded transformation on an
+unseen equivalent task. The active identifier-refactor route and the learning
+tests call the same executor rather than maintaining a benchmark-only copy.
+
 The ladder snapshots source-file existence before each task and invokes
 `rustc` on every newly generated Rust target. Full and filtered measurements
 have separate output paths, and the canonical JSON records dataset size,
@@ -104,10 +132,13 @@ Build the release binary and run the focused deterministic tests:
 
 ```sh
 cargo test --test unit issue_848_coding_ladder -- --nocapture
+cargo test --test unit issue_848_workspace_change_learning -- --nocapture
 cargo build --release
 ONLY=create.rust experiments/issue_847_coding_ladder/run_coding_ladder.sh
 ONLY=search.find_stable_id experiments/issue_847_coding_ladder/run_coding_ladder.sh
 ONLY=edit.add_devlog experiments/issue_847_coding_ladder/run_coding_ladder.sh
+ONLY=refactor.rename_const experiments/issue_847_coding_ladder/run_coding_ladder.sh
+ONLY=multi.module_and_export experiments/issue_847_coding_ladder/run_coding_ladder.sh
 ```
 
 Run the complete real-client measurement with:
@@ -124,21 +155,27 @@ an ordinary failure.
 
 ## Same-task self-application
 
-Formal AI served its model to the real external Agent CLI for one of four
+Formal AI served its model to the real external Agent CLI for four of seven
 reviewed smallest leaves. Session `ses_04160c59fffe3FDUKteR56kfQp` authored
-the generalized coding-task execution invariant, wrote it through the client
-tool, read the exact bytes back through the shell tool, and completed normally.
-The canonical invariant is byte-for-byte identical to the Agent artifact.
+the generalized coding-task execution invariant. Sessions
+`ses_03d2e0597ffeAUZhq3qAtj2I4U`, `ses_03d2df24effeijLfzPXiUeV4pG`, and
+`ses_03d2ddb1cffeQkS5gxWjpMojc6` authored the learning contract, execution
+policy, and held-out generalization fixture. Each session wrote through the
+client tool, read the exact bytes back through the shell tool, and completed
+normally; the canonical runtime inputs match the Agent artifacts.
 
-One of four smallest leaves is therefore Formal-AI-authored: 25%. The replay
-harness is
-[`experiments/issue_848_self_authoring/run.sh`](../../../experiments/issue_848_self_authoring/run.sh).
+Four of seven smallest leaves are therefore Formal-AI-authored: 57%. The
+replay harnesses are
+[`experiments/issue_848_self_authoring/run.sh`](../../../experiments/issue_848_self_authoring/run.sh)
+and
+[`run_workspace_learning.sh`](../../../experiments/issue_848_self_authoring/run_workspace_learning.sh).
 
 ## Residual boundary
 
 This change establishes a trustworthy floor, not general autonomous software
-engineering. Whole-issue L1 tasks remain 0/16, and refactoring remains 0/3.
-Source generation intentionally covers only bounded shapes whose semantics can
-be rendered and verified without guessing. Unsupported test bodies and
-multi-file plans must continue to fail honestly until they gain data-backed
-semantics and observed completion contracts.
+engineering. Whole-issue L1 tasks remain outside the bounded executor. Source
+generation, identifier substitution, and module registration intentionally
+cover only shapes whose semantics can be rendered from data and verified
+without guessing. Unsupported refactors, test bodies, and multi-file plans must
+continue to fail honestly until they gain data-backed semantics and observed
+completion contracts; an observed procedure is not automatically approved.

@@ -1,4 +1,14 @@
 meanings
+  read
+    defined-by concept
+    lexeme en
+      surface
+        text "read"
+  read_local_file
+    defined-by name
+    lexeme en
+      surface
+        text "read local file"
   recall_name
     defined-by concept
     lexeme en
@@ -924,6 +934,11 @@ meanings
     lexeme en
       surface
         text "response coding source function return rust"
+  response_coding_source_module_registration_rust
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding source module registration rust"
   response_coding_source_string_constant_rust
     defined-by response_template
     lexeme en
@@ -1379,18 +1394,3 @@ meanings
     lexeme en
       surface
         text "response external benchmark provenance en"
-  response_external_benchmark_provenance_write_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark provenance write error en"
-  response_external_benchmark_python_import_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark python import en"
-  response_external_benchmark_ratchet_reference_suffix_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark ratchet reference suffix en"

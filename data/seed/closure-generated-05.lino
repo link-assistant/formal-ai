@@ -1,4 +1,19 @@
 meanings
+  response_external_benchmark_provenance_write_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark provenance write error en"
+  response_external_benchmark_python_import_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark python import en"
+  response_external_benchmark_ratchet_reference_suffix_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark ratchet reference suffix en"
   response_external_benchmark_swe_clear_logs_error_en
     defined-by response_template
     lexeme en
@@ -1379,18 +1394,3 @@ meanings
     lexeme en
       surface
         text "response local search not found en"
-  response_local_search_not_found_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search not found hi"
-  response_local_search_not_found_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search not found ru"
-  response_local_search_not_found_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search not found zh"

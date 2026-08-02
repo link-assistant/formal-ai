@@ -64,6 +64,7 @@ pub mod statement_audit;
 mod structured_edit;
 mod tool_result;
 mod web_research;
+mod workspace_change;
 
 pub use associative_learning::{
     is_associative_learning_task, ASSOCIATIVE_LEARNING_PATH, ASSOCIATIVE_LEARNING_TASK,

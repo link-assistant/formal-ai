@@ -271,6 +271,105 @@ fn collection_edit_reads_transforms_writes_and_observes_workspace_bytes() {
 }
 
 #[test]
+fn identifier_refactor_is_a_grounded_verified_rewrite_not_a_file_move() {
+    const TASK: &str = "In this repository, in src/web_search_core.rs, rename the constant \
+        WEB_SEARCH_RRF_K to WEB_SEARCH_FUSION_K everywhere it appears in this file.";
+    const BEFORE: &str = "pub const WEB_SEARCH_RRF_K: f64 = 60.0;\n\
+        pub fn score(rank: f64) -> f64 { WEB_SEARCH_RRF_K + rank }\n";
+    const AFTER: &str = "pub const WEB_SEARCH_FUSION_K: f64 = 60.0;\n\
+        pub fn score(rank: f64) -> f64 { WEB_SEARCH_FUSION_K + rank }\n";
+    let tools = ["read_file", "write_file", "run_command"];
+    let mut messages = vec![ChatMessage::user(TASK)];
+
+    let read = only_call(plan_chat_step(&messages, &tools));
+    assert_eq!(
+        read.tool, "read_file",
+        "a symbol rename must inspect source"
+    );
+    assert_eq!(
+        json_arguments(&read.arguments)["path"],
+        "src/web_search_core.rs"
+    );
+    push_result(&mut messages, "read_rename", &read, BEFORE);
+
+    let write = only_call(plan_chat_step(&messages, &tools));
+    assert_eq!(write.tool, "write_file");
+    let arguments = json_arguments(&write.arguments);
+    assert_eq!(arguments["path"], "src/web_search_core.rs");
+    assert_eq!(arguments["content"], AFTER);
+    push_result(&mut messages, "write_rename", &write, "updated");
+
+    let verify = only_call(plan_chat_step(&messages, &tools));
+    assert_eq!(verify.tool, "run_command");
+    assert_eq!(
+        json_arguments(&verify.arguments)["command"],
+        "cat src/web_search_core.rs"
+    );
+    push_result(&mut messages, "verify_rename", &verify, AFTER);
+
+    let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &tools) else {
+        panic!("an observed refactor must finish");
+    };
+    assert!(answer.contains("observed"), "{answer}");
+}
+
+#[test]
+fn composite_module_request_creates_source_and_registers_the_module() {
+    const TASK: &str = "Create src/ladder_units.rs with a public function \
+        metres_to_kilometres dividing an f64 by 1000.0, and register the module in src/lib.rs \
+        so it is part of the crate.";
+    const MODULE: &str = concat!(
+        "pub fn metres_to_kilometres(value: f64) -> f64 {\n",
+        "    value / 1000.0\n",
+        "}\n",
+    );
+    const LIB_BEFORE: &str = "pub mod language;\npub mod seed;\n";
+    const LIB_AFTER: &str = "pub mod language;\npub mod seed;\npub mod ladder_units;\n";
+    let tools = ["read_file", "write_file", "run_command"];
+    let mut messages = vec![ChatMessage::user(TASK)];
+
+    let create = only_call(plan_chat_step(&messages, &tools));
+    assert_eq!(create.tool, "write_file");
+    let arguments = json_arguments(&create.arguments);
+    assert_eq!(arguments["path"], "src/ladder_units.rs");
+    assert_eq!(arguments["content"], MODULE);
+    push_result(&mut messages, "write_module", &create, "created");
+
+    let verify_module = only_call(plan_chat_step(&messages, &tools));
+    assert_eq!(verify_module.tool, "run_command");
+    assert_eq!(
+        json_arguments(&verify_module.arguments)["command"],
+        "cat src/ladder_units.rs"
+    );
+    push_result(&mut messages, "verify_module", &verify_module, MODULE);
+
+    let read_lib = only_call(plan_chat_step(&messages, &tools));
+    assert_eq!(read_lib.tool, "read_file");
+    assert_eq!(json_arguments(&read_lib.arguments)["path"], "src/lib.rs");
+    push_result(&mut messages, "read_lib", &read_lib, LIB_BEFORE);
+
+    let write_lib = only_call(plan_chat_step(&messages, &tools));
+    assert_eq!(write_lib.tool, "write_file");
+    let arguments = json_arguments(&write_lib.arguments);
+    assert_eq!(arguments["path"], "src/lib.rs");
+    assert_eq!(arguments["content"], LIB_AFTER);
+    push_result(&mut messages, "write_lib", &write_lib, "updated");
+
+    let verify_lib = only_call(plan_chat_step(&messages, &tools));
+    assert_eq!(verify_lib.tool, "run_command");
+    assert_eq!(
+        json_arguments(&verify_lib.arguments)["command"],
+        "cat src/lib.rs"
+    );
+    push_result(&mut messages, "verify_lib", &verify_lib, LIB_AFTER);
+
+    let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &tools) else {
+        panic!("a fully observed composite change must finish");
+    };
+    assert!(answer.contains("observed"), "{answer}");
+}
+
+#[test]
 fn compiler_measurement_and_same_task_authorship_are_preserved() {
     let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
     let read = |path: &str| {
@@ -338,15 +437,22 @@ fn compiler_measurement_and_same_task_authorship_are_preserved() {
 
     let decomposition =
         read("docs/case-studies/issue-848/self-hosting-authorship/decomposition.lino");
-    assert_eq!(decomposition.matches("issue_848_smallest_leaf_").count(), 4);
+    assert_eq!(decomposition.matches("issue_848_smallest_leaf_").count(), 7);
     assert_eq!(
         decomposition
             .matches("authorship formal_ai_agent_cli")
             .count(),
-        1
+        4
     );
-    assert!(decomposition.contains(&format!("session {session}")));
-    assert!(decomposition.contains("formal_ai_authored_percent 25"));
+    for session in [
+        session,
+        "ses_03d2e0597ffeAUZhq3qAtj2I4U",
+        "ses_03d2df24effeijLfzPXiUeV4pG",
+        "ses_03d2ddb1cffeQkS5gxWjpMojc6",
+    ] {
+        assert!(decomposition.contains(&format!("session {session}")));
+    }
+    assert!(decomposition.contains("formal_ai_authored_percent 57"));
 }
 
 #[test]
@@ -370,7 +476,7 @@ fn case_study_and_release_trace_every_issue_848_acceptance_boundary() {
     }
 
     let traceability = read("docs/case-studies/issue-848/requirements.md");
-    for index in 1..=8 {
+    for index in 1..=10 {
         assert!(
             traceability.contains(&format!("R848-{index}")),
             "missing R848-{index}"
@@ -378,7 +484,7 @@ fn case_study_and_release_trace_every_issue_848_acceptance_boundary() {
     }
     let global = read("REQUIREMENTS.md");
     assert!(global.contains("## Issue #848"));
-    assert!(global.contains("R848-8"));
+    assert!(global.contains("R848-10"));
 
     let fragment = read("changelog.d/20260801_848_coding_tasks.md");
     assert!(fragment.contains("bump: minor"));

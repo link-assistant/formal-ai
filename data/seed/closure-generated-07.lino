@@ -1,4 +1,19 @@
 meanings
+  role-only
+    defined-by concept
+    lexeme en
+      surface
+        text "role only"
+  rosetta_code
+    defined-by source
+    lexeme en
+      surface
+        text "rosetta code"
+  rs
+    defined-by word_surface
+    lexeme en
+      surface
+        text "rs"
   rule_chinese
     defined-by rule
     lexeme en

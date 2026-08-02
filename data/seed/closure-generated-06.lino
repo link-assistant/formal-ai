@@ -1,4 +1,19 @@
 meanings
+  response_local_search_not_found_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search not found hi"
+  response_local_search_not_found_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search not found ru"
+  response_local_search_not_found_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search not found zh"
   response_local_search_route_local_en
     defined-by response_template
     lexeme en
@@ -1379,18 +1394,3 @@ meanings
     lexeme en
       surface
         text "rmdir"
-  role-only
-    defined-by concept
-    lexeme en
-      surface
-        text "role only"
-  rosetta_code
-    defined-by source
-    lexeme en
-      surface
-        text "rosetta code"
-  rs
-    defined-by word_surface
-    lexeme en
-      surface
-        text "rs"

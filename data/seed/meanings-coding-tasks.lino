@@ -81,6 +81,8 @@ meanings
         text "divided by"
       surface
         text divide
+      surface
+        text dividing
     lexeme ru
       surface
         text делит
@@ -92,6 +94,46 @@ meanings
     lexeme zh
       surface
         text 除以
+  coding_module_registration
+    defined-by action
+    role coding_module_registration_action
+    lexeme en
+      surface
+        text "register the module"
+      surface
+        text "export the module"
+      surface
+        text "add the module"
+    lexeme ru
+      surface
+        text "зарегистрируй модуль"
+      surface
+        text "добавь модуль"
+    lexeme hi
+      surface
+        text "मॉड्यूल पंजीकृत करें"
+      surface
+        text "मॉड्यूल जोड़ें"
+    lexeme zh
+      surface
+        text 注册模块
+      surface
+        text 添加模块
+  coding_identifier_rename
+    defined-by action
+    role coding_identifier_rename_action
+    lexeme en
+      surface
+        text rename
+    lexeme ru
+      surface
+        text переименуй
+    lexeme hi
+      surface
+        text "नाम बदलो"
+    lexeme zh
+      surface
+        text 重命名
   coding_artifact_name
     defined-by relation
     role coding_name_slot

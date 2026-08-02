@@ -169,6 +169,14 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if let Some(plan) = crate::computer_use::plan_agentic_step(messages, tool_names) {
         return Some(plan);
     }
+    // A learned workspace-change procedure owns grounded repository rewrites
+    // and multi-file compositions before source creation or shell routing can
+    // collapse them into one incomplete action.
+    if let Some(plan) =
+        super::workspace_change::plan_workspace_change_step(&task, messages, tool_names)
+    {
+        return Some(plan);
+    }
     // A source-code description is not literal file content. Lower bounded
     // seed-backed source tasks before the broad literal-write parser so coding
     // requests produce executable bytes and verify those exact bytes.

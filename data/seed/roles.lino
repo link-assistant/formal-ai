@@ -79,6 +79,10 @@ roles
     kind predicate
   coding_division_action
     kind predicate
+  coding_identifier_rename_action
+    kind predicate
+  coding_module_registration_action
+    kind predicate
   coding_name_slot
     kind predicate
   coding_return_action
