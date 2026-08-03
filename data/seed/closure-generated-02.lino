@@ -1,4 +1,9 @@
 meanings
+  external_benchmark_provenance_write_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark provenance write error"
   external_benchmark_python_import
     defined-by intent
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "mode"
-  move
-    defined-by word_surface
-    lexeme en
-      surface
-        text "move"

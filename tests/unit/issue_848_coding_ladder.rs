@@ -645,15 +645,18 @@ fn case_study_and_release_trace_every_issue_848_acceptance_boundary() {
     assert!(global.contains("## Issue #848"));
     assert!(global.contains("R848-10"));
 
+    // Release automation consumes changelog fragments after copying them into
+    // CHANGELOG.md. Keep the trace valid both before and after that lifecycle,
+    // matching the established issue #656/#844 requirements checks.
     let fragment_path = root.join("changelog.d/20260801_848_coding_tasks.md");
     if fragment_path.is_file() {
-        let fragment = read("changelog.d/20260801_848_coding_tasks.md");
+        let fragment = std::fs::read_to_string(fragment_path).expect("read issue #848 fragment");
         assert!(fragment.contains("bump: minor"));
         assert!(fragment.contains("#848"));
     } else {
         assert!(
-            read("CHANGELOG.md").contains("issue #848"),
-            "the released issue #848 entry must remain traceable after its fragment is consumed"
+            read("CHANGELOG.md").contains("issue #848's 130-task coding ladder"),
+            "issue #848 must have either its unreleased minor-bump fragment or its released CHANGELOG entry"
         );
         assert!(
             read("docs/case-studies/issue-711/fragment-release-map.tsv")

@@ -144,6 +144,7 @@ fn answer_unresolved_unknown(
     config: UnknownReasoningConfig,
 ) -> SymbolicAnswer {
     let body = render_unresolved_unknown(language, focus, config.questioning_rigor);
+    let body = crate::failure_reporting::append_invitation(&body, language.slug());
     finalize_simple(
         prompt,
         log,
@@ -172,6 +173,7 @@ fn answer_with_legacy_fallback(
         ),
     );
     let body = language_aware_unknown_answer(prompt, language);
+    let body = crate::failure_reporting::append_invitation(&body, language.slug());
     finalize_simple(prompt, log, "unknown", "response:unknown", &body, 0.0)
 }
 

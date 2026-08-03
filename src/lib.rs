@@ -36,6 +36,7 @@ pub mod entity_resolution;
 pub mod event_log;
 pub mod external_benchmarks;
 pub mod fact_checking;
+pub(crate) mod failure_reporting;
 pub mod file_legality;
 pub mod formal_system;
 pub(crate) mod fuzzy;
