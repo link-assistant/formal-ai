@@ -6,7 +6,7 @@ self_ast_census_index
   full_ast_module_count 55
   signature_module_count 365
   symbol_count 8618
-  content_id self_ast_census_index_4c090f84a236466b
+  content_id self_ast_census_index_5fb68e2d8a31e449
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/algorithm_learning.rs full_ast 13 source_module_0cde1901a8a78574
@@ -45,7 +45,7 @@ self_ast_census_index
     src/agentic_coding/meaning_detail.rs full_ast 38 source_module_763b6af219dd70d8
     src/agentic_coding/mod.rs full_ast 48 source_module_acdd608b8305dc00
     src/agentic_coding/narration.rs full_ast 9 source_module_256edf1475c908fe
-    src/agentic_coding/planner.rs full_ast 38 source_module_a4fe0134efe8e225
+    src/agentic_coding/planner.rs full_ast 38 source_module_243e3f143b1475e3
     src/agentic_coding/procedure.rs full_ast 5 source_module_59c2c30fbf44bc52
     src/agentic_coding/progress.rs full_ast 10 source_module_c875bf0c4cba80c3
     src/agentic_coding/question_catalog.rs full_ast 24 source_module_512a32489f4c308d
