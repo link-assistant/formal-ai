@@ -69,6 +69,7 @@ const REQUIRED_KEYS = [
   'conversation.copyMarkdownDone',
   'conversation.copyMarkdownTitle',
   'message.author.user',
+  'message.detectedFailureReport',
   'message.copyCode',
   'message.copyCodeDone',
   'message.copyCodeTitle',

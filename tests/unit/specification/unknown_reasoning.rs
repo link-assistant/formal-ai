@@ -117,17 +117,19 @@ fn seed_backed_bare_terms_still_use_public_knowledge_cache() {
 }
 
 #[test]
-fn unknown_reasoning_uses_one_minimal_question_when_unreachable() {
+fn unknown_reasoning_uses_one_diagnostic_question_plus_report_consent() {
     let response = answer("How should snorflax be calibrated for teal silence");
 
     assert_eq!(response.intent, "unknown");
     assert!(response.answer.contains("snorflax"));
     assert!(response.answer.contains("could not determine"));
-    assert!(
-        response.answer.matches('?').count() <= 1,
-        "unknown reasoning should ask at most one question: {}",
+    assert_eq!(
+        response.answer.matches('?').count(),
+        2,
+        "unknown reasoning should ask one diagnostic question and one issue-report consent question: {}",
         response.answer,
     );
+    assert!(response.answer.contains("`Report issue`"));
 }
 
 #[test]

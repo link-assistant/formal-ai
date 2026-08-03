@@ -1099,6 +1099,11 @@ meanings
     lexeme en
       surface
         text "detailed"
+  detected_failure_report_invitation
+    defined-by intent
+    lexeme en
+      surface
+        text "detected failure report invitation"
   df
     defined-by token
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "external benchmark swe infrastructure error"
-  external_benchmark_swe_inspect_error
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark swe inspect error"

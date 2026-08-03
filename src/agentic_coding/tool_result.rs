@@ -35,7 +35,23 @@ pub(super) fn render(label: &str, raw: &str, prompt: &str) -> String {
     let result = normalize(raw);
     let language = response_language(prompt);
     if let Some(error) = result.error {
-        return fill("tool_result_failed", language, label, "", "", &error);
+        let failure = fill("tool_result_failed", language, label, "", "", &error);
+        return crate::failure_reporting::append_invitation(&failure, language);
+    }
+    // Some harnesses, including Agent CLI's shell adapter, return only the
+    // process text and omit an exit-code field. Reuse the seed-backed failure
+    // lexicon already used by `normalized_payload` so those genuine failures
+    // reach the same opt-in report path without matching hardcoded prose here.
+    if looks_like_error(&result.payload) {
+        let failure = fill(
+            "tool_result_failed",
+            language,
+            label,
+            "",
+            "",
+            &result.payload,
+        );
+        return crate::failure_reporting::append_invitation(&failure, language);
     }
     if result.payload.trim().is_empty() {
         let intent = if local_search::request_for(prompt).is_some() {
@@ -168,24 +184,39 @@ fn normalize(raw: &str) -> NormalizedResult {
         .get("status_code")
         .and_then(Value::as_u64)
         .is_some_and(|status| status >= 400);
-    let failed_status = object.get("status").is_some_and(failed_status);
-    let explicitly_unsuccessful = object.get("success").and_then(Value::as_bool) == Some(false);
+    let status = ["status", "state", "outcome"]
+        .iter()
+        .find_map(|key| object.get(*key));
+    let expected_stop = status.is_some_and(expected_stop_status);
+    let failed_status = status.is_some_and(failed_status);
+    let explicitly_unsuccessful = ["ok", "success"]
+        .iter()
+        .filter_map(|key| object.get(*key))
+        .any(|value| value.as_bool() == Some(false));
     let explicit_error = ["error", "stderr", "failure"]
         .iter()
         .filter_map(|key| object.get(*key))
         .find_map(nonempty_text);
-    if nonzero_exit
-        || failed_http
-        || failed_status
-        || explicitly_unsuccessful
-        || explicit_error.is_some()
+    if !expected_stop
+        && (nonzero_exit
+            || failed_http
+            || failed_status
+            || explicitly_unsuccessful
+            || explicit_error.is_some())
     {
         let error = explicit_error
             .or_else(|| object.get("output").and_then(nonempty_text))
             .or_else(|| {
-                ["exit_code", "exitCode", "status_code", "status"]
-                    .iter()
-                    .find_map(|key| object.get(*key).map(|value| format!("{key}={value}")))
+                [
+                    "exit_code",
+                    "exitCode",
+                    "status_code",
+                    "status",
+                    "state",
+                    "outcome",
+                ]
+                .iter()
+                .find_map(|key| object.get(*key).map(|value| format!("{key}={value}")))
             })
             .unwrap_or_default();
         return from_payload("", Some(error));
@@ -320,12 +351,31 @@ fn failed_status(value: &Value) -> bool {
     let numeric = value.as_i64().or_else(|| value.as_str()?.parse().ok());
     numeric.map_or_else(
         || {
-            value
-                .as_str()
-                .is_some_and(|status| !matches!(status, "ok" | "success" | "completed" | "passed"))
+            value.as_str().is_some_and(|status| {
+                !matches!(
+                    status.to_ascii_lowercase().as_str(),
+                    "ok" | "success" | "succeeded" | "completed" | "passed"
+                ) && !expected_stop_status(value)
+            })
         },
         |status| status < 0 || (0 < status && status < 100) || status >= 400,
     )
+}
+
+fn expected_stop_status(value: &Value) -> bool {
+    value.as_str().is_some_and(|status| {
+        matches!(
+            status.to_ascii_lowercase().as_str(),
+            "refused"
+                | "denied"
+                | "cancelled"
+                | "canceled"
+                | "aborted"
+                | "pending"
+                | "awaiting_approval"
+                | "not_granted"
+        )
+    })
 }
 
 fn nonempty_text(value: &Value) -> Option<String> {
@@ -408,12 +458,7 @@ fn is_search(label: &str) -> bool {
 }
 
 fn response_language(prompt: &str) -> &'static str {
-    match crate::language::detect(prompt).slug() {
-        "ru" => "ru",
-        "hi" => "hi",
-        "zh" => "zh",
-        _ => "en",
-    }
+    crate::language::detect(prompt).slug()
 }
 
 fn fill(

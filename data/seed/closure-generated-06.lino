@@ -1,4 +1,39 @@
 meanings
+  response_local_search_mismatch_requested_directory_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search mismatch requested directory ru"
+  response_local_search_mismatch_requested_directory_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search mismatch requested directory zh"
+  response_local_search_mismatch_requested_file_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search mismatch requested file en"
+  response_local_search_mismatch_requested_file_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search mismatch requested file hi"
+  response_local_search_mismatch_requested_file_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search mismatch requested file ru"
+  response_local_search_mismatch_requested_file_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search mismatch requested file zh"
+  response_local_search_not_found_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search not found en"
   response_local_search_not_found_hi
     defined-by response_template
     lexeme en
@@ -1359,38 +1394,3 @@ meanings
     lexeme en
       surface
         text "reverse sort"
-  reverse_sort_list_files
-    defined-by rule
-    lexeme en
-      surface
-        text "reverse sort list files"
-  reverse_sort_list_files_arg
-    defined-by rule
-    lexeme en
-      surface
-        text "reverse sort list files arg"
-  reverse_string
-    defined-by task
-    lexeme en
-      surface
-        text "reverse string"
-  reverse_words
-    defined-by operation
-    lexeme en
-      surface
-        text "reverse words"
-  rg
-    defined-by concept
-    lexeme en
-      surface
-        text "rg"
-  rm
-    defined-by concept
-    lexeme en
-      surface
-        text "rm"
-  rmdir
-    defined-by concept
-    lexeme en
-      surface
-        text "rmdir"

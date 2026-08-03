@@ -1,4 +1,9 @@
 meanings
+  normalize
+    defined-by concept
+    lexeme en
+      surface
+        text "normalize"
   normalize_labels_fixpoint
     defined-by concept
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "reach"
-  react-chat-ui
-    defined-by name
-    lexeme en
-      surface
-        text "react chat ui"
