@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.324.0] - 2026-08-03
+
+### Added
+
+- Translate solved integer-interval proofs through a language-neutral meaning into executable Rust or Python programs, with requests supported in every registered natural language (#890).
+
 ## [0.323.0] - 2026-08-03
 
 ### Added
