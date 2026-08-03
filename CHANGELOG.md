@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.322.0] - 2026-08-03
+
+### Added
+- Teach Formal AI to generate and observe bounded compiler-valid Rust source,
+  focus repository searches, and ground collection edits in workspace bytes
+  for issue #848's 130-task coding ladder.
+- Add bounded identifier rewrites and ordered multi-file module changes that
+  use compact Agent edits or validated replace-all operations and advance only
+  after observing the exact requested workspace digest.
+- Add a proposal-only workspace-change learning frontier whose reusable
+  procedures require distinct verified executions, a zero-failure gate, and
+  named human approval before entering the content-addressed ledger.
+
+### Fixed
+- Make coding-ladder results reject echoed source prose, stale release oracles,
+  incomplete runs, pre-existing Rust targets, filtered-score overwrites, and
+  false startup failures caused by diagnostic text read from task files.
+- Preserve explicitly exact literal-file payloads when their bytes resemble an
+  identifier rewrite, instead of routing the new-file request as an edit.
+
 ## [0.321.0] - 2026-08-02
 
 ### Added

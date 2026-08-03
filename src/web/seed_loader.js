@@ -58,6 +58,7 @@
     "seed/meanings-calculator.lino",
     "seed/meanings-calendar.lino",
     "seed/meanings-coding-catalog.lino",
+    "seed/meanings-coding-tasks.lino",
     "seed/meanings-conversation.lino",
     "seed/memory-programs.lino",
     "seed/meanings-decomposition.lino",

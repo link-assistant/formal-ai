@@ -10,6 +10,7 @@ use super::capability_router;
 pub(super) use super::capability_router::tool_for;
 use super::change_request;
 use super::code_artifact;
+use super::code_task;
 use super::comparison;
 use super::conversation_recall;
 use super::diagram;
@@ -21,7 +22,8 @@ use super::formalize::{
     FISHERMAN_DOC_ID,
 };
 use super::general_planner::{
-    compose_general_change_plan, GeneralChangePlan, GeneralPlanMode, PLAN_PATH,
+    compose_general_change_plan, has_authoritative_literal_write, GeneralChangePlan,
+    GeneralPlanMode, PLAN_PATH,
 };
 use super::google_trends_catalog;
 use super::google_trends_learning;
@@ -42,6 +44,7 @@ use super::shell_command;
 use super::shell_file_fallback;
 use super::source_links;
 use super::statement_audit;
+use super::structured_edit;
 use super::tool_result;
 use super::web_research;
 use crate::protocol::ChatMessage;
@@ -165,6 +168,35 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // prompts before broad write/search routing. Each emitted primitive carries
     // explicit pre/postconditions and is executed by the advertising client.
     if let Some(plan) = crate::computer_use::plan_agentic_step(messages, tool_names) {
+        return Some(plan);
+    }
+    // An explicit exact-content marker makes the following bytes authoritative.
+    // Claim this narrow shape before edit/source semantics inspect the payload:
+    // literal bytes may themselves say "rename X to Y" (issue #708). Broader
+    // file-write requests remain below the semantic coding routes.
+    if has_authoritative_literal_write(&task) {
+        if let Some(plan) = tool_for(tool_names, Capability::Write)
+            .and_then(|_| compose_general_change_plan(&task))
+            .map(|plan| plan_general_change_step(messages, tool_names, &plan))
+        {
+            return Some(plan);
+        }
+    }
+    // A learned workspace-change procedure owns grounded repository rewrites
+    // and multi-file compositions before source creation or shell routing can
+    // collapse them into one incomplete action.
+    if let Some(plan) =
+        super::workspace_change::plan_workspace_change_step(&task, messages, tool_names)
+    {
+        return Some(plan);
+    }
+    // A source-code description is not literal file content. Lower bounded
+    // seed-backed source tasks before the broad literal-write parser so coding
+    // requests produce executable bytes and verify those exact bytes.
+    if let Some(plan) = code_task::plan_generated_source_step(&task, messages, tool_names) {
+        return Some(plan);
+    }
+    if let Some(plan) = structured_edit::plan_structured_edit_step(&task, messages, tool_names) {
         return Some(plan);
     }
     // Resolve an unambiguous literal write before keyword recipes: arbitrary

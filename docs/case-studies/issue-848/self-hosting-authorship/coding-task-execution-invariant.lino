@@ -1,0 +1,5 @@
+coding_task_execution_contract
+  record_type meta_invariant
+  source_generation "render executable source from the formalized request, never echo request prose"
+  verification "compile or inspect the exact bytes written to the requested workspace target"
+  scoring "record success only after an observed_workspace_effect passes its task verifier"

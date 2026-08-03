@@ -25,6 +25,7 @@ source provenance for download-on-test integration. Only permissive licenses
 | Held-out computer-use generalization | #707 | [`computer-use-generalization.lino`](../data/benchmarks/computer-use-generalization.lino) | `every_synthesized_plan_executes_with_every_step_verified` | 12 |
 | Search-fusion learning generalization | #709 | [`search-fusion-learning-generalization.lino`](../data/benchmarks/search-fusion-learning-generalization.lino) | `approved_recipe_round_trips_and_executes_a_held_out_task` | 1 |
 | Multilingual local-path discovery | #819 | [`local-path-discovery-suite.lino`](../data/benchmarks/local-path-discovery-suite.lino) | `local_path_discovery_benchmark_routes_every_case_to_find` | 56 |
+| Workspace-change learning generalization | #848 | [`workspace-change-learning-generalization.lino`](../data/benchmarks/workspace-change-learning-generalization.lino) | `only_a_green_named_review_promotes_and_replays_the_held_out_rewrite` | 1 |
 
 Related earlier work: issue **#103** introduced the competitor-derived prompt
 matrix in [`tests/unit/specification/prompt_variations.rs`](../tests/unit/specification/prompt_variations.rs)
@@ -121,6 +122,14 @@ ratchet restores the reviewed recipe from its content-addressed ledger and
 requires it to execute that unseen task with complete statement provenance,
 ranked sources, semantic merging, and query-language deformalization. No
 third-party benchmark payload is imported.
+
+### Workspace-change learning generalization — issue #848
+
+Records two self-authored training identifiers and one unseen equivalent
+identifier rewrite. The ratchet verifies that observations with distinct task
+and execution fingerprints produce only an inert candidate, then requires a
+zero-failure gate and named human approval before the content-addressed recipe
+can execute the held-out rewrite. No third-party benchmark payload is imported.
 
 ### Text/code edit profile — issue #408
 
@@ -297,6 +306,9 @@ cargo test --test unit issue_482_nemotron_training -- --nocapture
 
 # Multilingual local-path discovery (#819)
 cargo test --test unit local_path_discovery_benchmark_routes_every_case_to_find -- --nocapture
+
+# Review-gated workspace-change generalization (#848)
+cargo test --test unit only_a_green_named_review_promotes_and_replays_the_held_out_rewrite -- --nocapture
 ```
 
 ## Conventions
