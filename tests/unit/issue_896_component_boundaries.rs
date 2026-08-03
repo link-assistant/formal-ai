@@ -193,6 +193,20 @@ fn published_web_search_default_plan_remains_the_production_plan() {
 }
 
 #[test]
+fn desktop_budget_bounds_the_published_component_cold_build() {
+    let workflow = fs::read_to_string(format!(
+        "{}/.github/workflows/desktop-release.yml",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .expect("desktop release workflow");
+
+    assert!(
+        workflow.contains("timeout-minutes: ${{ matrix.label == 'macos-x64' && 50 || 40 }}"),
+        "macOS x64 needs bounded headroom for the published crates' unconditional graph"
+    );
+}
+
+#[test]
 fn same_task_agent_cli_authorship_is_preserved() {
     let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
     let read = |path: &str| {
