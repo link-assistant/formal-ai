@@ -21,6 +21,9 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 
+use crate::algorithm_discovery::{
+    discover_algorithms, traces_from_memory_events, AlgorithmCandidate,
+};
 use crate::associative_persistence::AssociativeMemory;
 use crate::memory::{MemoryEvent, MemoryStore};
 use support::{
@@ -225,6 +228,10 @@ pub struct DreamingPlan {
     pub candidate_tasks: Vec<DreamingCandidateTask>,
     /// Recurring structures mined across task inputs independently of language.
     pub patterns: Vec<DreamingPattern>,
+    /// Reusable ordered procedures discovered from tool/event histories. These
+    /// remain inert proposals until held-out validation, a green named gate,
+    /// and explicit human review promote them.
+    pub algorithm_candidates: Vec<AlgorithmCandidate>,
     /// New tasks synthesized from patterns on the most-used topics and solved
     /// through the production amendment path while dreaming.
     pub synthesized_tasks: Vec<DreamingSynthesizedTask>,
@@ -274,6 +281,9 @@ pub struct DreamingOutcome {
     /// Synthesized trials on the most-used topics materialized as
     /// `dreaming_trial` records.
     pub recorded_trials: usize,
+    /// Held-out-validated, proposal-only execution algorithms retained for
+    /// later review.
+    pub learned_algorithm_candidates: usize,
 }
 
 #[must_use]
@@ -304,6 +314,7 @@ pub fn plan_memory_dreaming(events: &[MemoryEvent], config: &DreamingConfig) -> 
             amendments: Vec::new(),
             candidate_tasks: Vec::new(),
             patterns: Vec::new(),
+            algorithm_candidates: Vec::new(),
             synthesized_tasks: Vec::new(),
             draft_failures: Vec::new(),
         };
@@ -344,6 +355,14 @@ pub fn plan_memory_dreaming(events: &[MemoryEvent], config: &DreamingConfig) -> 
     let amendments = learning.amendments;
     let candidate_tasks = learning.candidate_tasks;
     let patterns = learning.patterns;
+    // The same idle pass now learns *ordered execution procedures*, not only
+    // lexical/task shapes. Discovery is structural over link-address sequences
+    // and stores only proposals that pass occurrences withheld from inference.
+    let algorithm_candidates = discover_algorithms(&traces_from_memory_events(events))
+        .validated_candidates()
+        .into_iter()
+        .cloned()
+        .collect::<Vec<_>>();
     let synthesized_tasks = learning.synthesized_tasks;
     // A losing draft is retained learning, not waste: the portfolio's durable
     // failure records are mined in the same pass as every other memory link.
@@ -508,6 +527,7 @@ pub fn plan_memory_dreaming(events: &[MemoryEvent], config: &DreamingConfig) -> 
         amendments,
         candidate_tasks,
         patterns,
+        algorithm_candidates,
         synthesized_tasks,
         draft_failures,
     }
@@ -543,6 +563,13 @@ pub fn apply_dreaming_plan(store: &mut MemoryStore, plan: &DreamingPlan) -> Drea
         .filter(|event| !existing_ids.contains(&event.id))
         .collect::<Vec<_>>();
     let learned_patterns = new_patterns.len();
+    let new_algorithm_candidates = plan
+        .algorithm_candidates
+        .iter()
+        .map(algorithm_candidate_event)
+        .filter(|event| !existing_ids.contains(&event.id))
+        .collect::<Vec<_>>();
+    let learned_algorithm_candidates = new_algorithm_candidates.len();
     // Failed simulations are learning material, not noise: preserve each one as
     // a retained record so later dreaming rounds (and refinement) can consume it.
     let new_failures = plan
@@ -564,6 +591,7 @@ pub fn apply_dreaming_plan(store: &mut MemoryStore, plan: &DreamingPlan) -> Drea
     if selected_ids.is_empty()
         && new_amendments.is_empty()
         && new_patterns.is_empty()
+        && new_algorithm_candidates.is_empty()
         && new_failures.is_empty()
         && new_trials.is_empty()
     {
@@ -574,6 +602,7 @@ pub fn apply_dreaming_plan(store: &mut MemoryStore, plan: &DreamingPlan) -> Drea
             learned_patterns: 0,
             recorded_failures: 0,
             recorded_trials: 0,
+            learned_algorithm_candidates: 0,
         };
     }
 
@@ -587,6 +616,7 @@ pub fn apply_dreaming_plan(store: &mut MemoryStore, plan: &DreamingPlan) -> Drea
     let removed_events = initial_len - retained.len();
     retained.extend(new_amendments);
     retained.extend(new_patterns);
+    retained.extend(new_algorithm_candidates);
     retained.extend(new_failures);
     retained.extend(new_trials);
     *store = MemoryStore::from_events(retained);
@@ -597,6 +627,28 @@ pub fn apply_dreaming_plan(store: &mut MemoryStore, plan: &DreamingPlan) -> Drea
         learned_patterns,
         recorded_failures,
         recorded_trials,
+        learned_algorithm_candidates,
+    }
+}
+
+/// Retain a validated algorithm as an inspectable proposal. Applying a
+/// dreaming plan must never implicitly approve or execute it.
+fn algorithm_candidate_event(candidate: &AlgorithmCandidate) -> MemoryEvent {
+    MemoryEvent {
+        id: candidate.evidence_id.clone(),
+        kind: Some(String::from("algorithm_learning_candidate")),
+        role: Some(String::from("system")),
+        intent: Some(String::from("generalize")),
+        inputs: Some(format!("steps={}", candidate.steps.len())),
+        outputs: Some(String::from("status=proposal_only")),
+        content: Some(candidate.links_notation()),
+        evidence: candidate
+            .support_trace_ids
+            .iter()
+            .cloned()
+            .chain(candidate.held_out.iter().map(|test| test.trace_id.clone()))
+            .collect(),
+        ..MemoryEvent::default()
     }
 }
 
@@ -772,6 +824,16 @@ pub fn render_dreaming_plan(plan: &DreamingPlan) -> String {
             "  learned_pattern topic={} occurrences={} structure={}",
             pattern.topic, pattern.occurrences, pattern.structure
         ));
+    }
+    for candidate in &plan.algorithm_candidates {
+        let fields = [
+            format!("id={}", candidate.id),
+            format!("steps={}", candidate.steps.len()),
+            format!("support={}", candidate.support_trace_ids.len()),
+            format!("held_out={}", candidate.held_out.len()),
+            format!("status={}", candidate.status()),
+        ];
+        lines.push([String::from("  algorithm_candidate"), fields.join(" ")].join(" "));
     }
     for trial in &plan.synthesized_tasks {
         lines.push(format!(

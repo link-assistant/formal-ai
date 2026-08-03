@@ -14,8 +14,8 @@ use std::path::Path;
 use formal_ai::seed;
 use formal_ai::FormalAiEngine;
 
-const RECORDED_SPECIALIZED_HANDLER_FILES_MAX: usize = 37;
-const RECORDED_TRY_DISPATCH_ENTRIES_MAX: usize = 48;
+const RECORDED_SPECIALIZED_HANDLER_FILES_MAX: usize = 38;
+const RECORDED_TRY_DISPATCH_ENTRIES_MAX: usize = 49;
 
 #[test]
 fn held_out_number_constraint_paraphrases_are_data_driven() {

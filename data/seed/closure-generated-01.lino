@@ -274,11 +274,41 @@ meanings
     lexeme en
       surface
         text "albert einstein"
+  algorithm_discovery_summary
+    defined-by intent
+    lexeme en
+      surface
+        text "algorithm discovery summary"
+  algorithm_dreaming_applied
+    defined-by intent
+    lexeme en
+      surface
+        text "algorithm dreaming applied"
+  algorithm_empty_binding_name
+    defined-by intent
+    lexeme en
+      surface
+        text "algorithm empty binding name"
+  algorithm_invalid_binding
+    defined-by intent
+    lexeme en
+      surface
+        text "algorithm invalid binding"
+  algorithm_observation_missing
+    defined-by intent
+    lexeme en
+      surface
+        text "algorithm observation missing"
   am
     defined-by concept
     lexeme en
       surface
         text "am"
+  analogy
+    defined-by term
+    lexeme en
+      surface
+        text "analogy"
   analyze
     defined-by word_surface
     lexeme en
@@ -754,6 +784,11 @@ meanings
     lexeme en
       surface
         text "completion recovery restate postcondition"
+  compression
+    defined-by term
+    lexeme en
+      surface
+        text "compression"
   concept_lookup
     defined-by intent
     lexeme en
@@ -1044,6 +1079,11 @@ meanings
     lexeme en
       surface
         text "deduplicate lines"
+  deduplication
+    defined-by term
+    lexeme en
+      surface
+        text "deduplication"
   default_language
     defined-by field
     lexeme en
@@ -1354,43 +1394,3 @@ meanings
     lexeme en
       surface
         text "external benchmark provenance"
-  external_benchmark_provenance_write_error
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark provenance write error"
-  external_benchmark_python_import
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark python import"
-  external_benchmark_ratchet_reference_suffix
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark ratchet reference suffix"
-  external_benchmark_swe_clear_logs_error
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark swe clear logs error"
-  external_benchmark_swe_docker_error
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark swe docker error"
-  external_benchmark_swe_encode_error
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark swe encode error"
-  external_benchmark_swe_exit_error
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark swe exit error"
-  external_benchmark_swe_infrastructure_error
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark swe infrastructure error"

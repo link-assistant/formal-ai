@@ -1,14 +1,15 @@
 use std::error::Error;
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use clap::Subcommand;
+use formal_ai::algorithm_discovery::{discover_algorithms, traces_from_memory_events};
 use formal_ai::learning_cycle::{
     recorded_frontier, recorded_frontiers, run_learning_cycle, LearningCycleRun,
     GOOGLE_TRENDS_FRONTIER,
 };
 use formal_ai::promotion::render_promotion_proposals;
-use formal_ai::{parse_frontier_record, FrontierItem};
+use formal_ai::{parse_frontier_record, render_response, FrontierItem, MemoryStore};
 
 /// Auto-learning commands.
 #[derive(Debug, Subcommand)]
@@ -40,6 +41,18 @@ pub enum LearnAction {
         /// record, ready to pipe into `formal-ai improve --promote`.
         #[arg(long, default_value_t = false)]
         proposals: bool,
+    },
+    /// Mine repeated tool/event sequences from portable memory, infer shared
+    /// parameters, and validate candidates on held-out occurrences. The output
+    /// is proposal-only and cannot execute without promotion.
+    Algorithms {
+        /// Portable `demo_memory` or full-memory bundle containing observations.
+        #[arg(long, value_name = "PATH")]
+        from: PathBuf,
+
+        /// Write the discovery artifact to this path instead of stdout.
+        #[arg(long, value_name = "PATH")]
+        output: Option<PathBuf>,
     },
 }
 
@@ -75,7 +88,42 @@ pub fn run_learn_action(action: LearnAction) -> Result<(), Box<dyn Error>> {
             dry_run,
             proposals,
         }),
+        LearnAction::Algorithms { from, output } => {
+            run_algorithm_learning(&from, output.as_deref())
+        }
     }
+}
+
+fn run_algorithm_learning(from: &Path, output: Option<&Path>) -> Result<(), Box<dyn Error>> {
+    if !from.exists() {
+        let path = from.display().to_string();
+        let message = render_response("algorithm_observation_missing", "en", &[("path", &path)])
+            .unwrap_or_default();
+        return Err(message.into());
+    }
+    let store = MemoryStore::load_from_file(from)?;
+    let run = discover_algorithms(&traces_from_memory_events(store.events()));
+    let document = run.links_notation();
+    if let Some(path) = output {
+        formal_ai::memory::write_locked_atomic(path, &document)?;
+    } else {
+        print!("{document}");
+    }
+    let traces = run.trace_count.to_string();
+    let candidates = run.candidates.len().to_string();
+    let validated = run.validated_candidates().len().to_string();
+    let summary = render_response(
+        "algorithm_discovery_summary",
+        "en",
+        &[
+            ("traces", &traces),
+            ("candidates", &candidates),
+            ("validated", &validated),
+        ],
+    )
+    .unwrap_or_default();
+    eprintln!("{summary}");
+    Ok(())
 }
 
 /// Run one learning cycle and print its auditable record.

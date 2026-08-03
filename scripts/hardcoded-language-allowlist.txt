@@ -145,7 +145,6 @@ src/cli_learn.rs	Learning cycle over '{}': {} frontier item(s), {} validated can
 src/cli_learn.rs	Note: the cycle is proposal-only whether or not --dry-run is passed; adoption stays behind the human-gated issue-#656 promotion protocol.
 src/cli_learn.rs	Proposal-only run; no seed file was written. Pipe `--proposals` into `formal-ai improve --promote --proposals <file>` to replay the canonical gates.
 src/cli_learn.rs	unknown frontier '{}'. Recorded frontiers: {}
-src/cli_memory.rs	Applied dreaming plan to {}; removed {} event(s), estimated {} byte(s) reclaimable, learned {} meta-algorithm amendment(s) and {} recurring pattern(s), preserved {} failed simulation(s) and {} dreaming trial(s).
 src/cli_memory.rs	Dreaming could not meet the requested free-space target from recomputable memory; migrate memory to larger storage or lower the target.
 src/cli_memory.rs	Imported {parsed_count} event(s) and cached {seed_count} seed file(s) into {}; total now {}.
 src/cli_memory.rs	Permanently deleted {removed} event(s) from deleted conversation(s) in {}.

@@ -1,4 +1,159 @@
 meanings
+  pixels
+    defined-by word_surface
+    lexeme en
+      surface
+        text "pixels"
+  plagiaris
+    defined-by word_surface
+    lexeme en
+      surface
+        text "plagiaris"
+  plagiarism
+    defined-by word_surface
+    lexeme en
+      surface
+        text "plagiarism"
+  playright
+    defined-by word_surface
+    lexeme en
+      surface
+        text "playright"
+  political-adjective
+    defined-by category
+    lexeme en
+      surface
+        text "political adjective"
+  possessive_list
+    defined-by coverage_group
+    lexeme en
+      surface
+        text "possessive list"
+  post
+    defined-by word_surface
+    lexeme en
+      surface
+        text "post"
+  powershell
+    defined-by token
+    lexeme en
+      surface
+        text "powershell"
+  preferred
+    defined-by concept
+    lexeme en
+      surface
+        text "preferred"
+  prepend
+    defined-by phrase
+    lexeme en
+      surface
+        text "prepend"
+  prepend_text
+    defined-by operation
+    lexeme en
+      surface
+        text "prepend text"
+  problem
+    defined-by word_surface
+    lexeme en
+      surface
+        text "problem"
+  process
+    defined-by word_surface
+    lexeme en
+      surface
+        text "process"
+  process_report
+    defined-by task
+    lexeme en
+      surface
+        text "process report"
+  program_plan_rules
+    defined-by concept
+    lexeme en
+      surface
+        text "program plan rules"
+  programming-language
+    defined-by category
+    lexeme en
+      surface
+        text "programming language"
+  programming_task_catalog
+    defined-by kind
+    lexeme en
+      surface
+        text "programming task catalog"
+  project
+    defined-by concept
+    lexeme en
+      surface
+        text "project"
+  project-docs
+    defined-by source_kind
+    lexeme en
+      surface
+        text "project docs"
+  project_ideas
+    defined-by category
+    lexeme en
+      surface
+        text "project ideas"
+  proof-system
+    defined-by category
+    lexeme en
+      surface
+        text "proof system"
+  proposal_only
+    defined-by concept
+    lexeme en
+      surface
+        text "proposal only"
+  ps
+    defined-by concept
+    lexeme en
+      surface
+        text "ps"
+  public
+    defined-by word_surface
+    lexeme en
+      surface
+        text "public"
+  punctuation
+    defined-by concept
+    lexeme en
+      surface
+        text "punctuation"
+  pwd
+    defined-by concept
+    lexeme en
+      surface
+        text "pwd"
+  pwsh
+    defined-by token
+    lexeme en
+      surface
+        text "pwsh"
+  pytest
+    defined-by concept
+    lexeme en
+      surface
+        text "pytest"
+  python3
+    defined-by token
+    lexeme en
+      surface
+        text "python3"
+  qa_network
+    defined-by kind
+    lexeme en
+      surface
+        text "qa network"
+  reach
+    defined-by word_surface
+    lexeme en
+      surface
+        text "reach"
   react-chat-ui
     defined-by name
     lexeme en
@@ -14,6 +169,11 @@ meanings
     lexeme en
       surface
         text "read local file"
+  reasoning
+    defined-by category
+    lexeme en
+      surface
+        text "reasoning"
   recall_name
     defined-by concept
     lexeme en
@@ -24,6 +184,11 @@ meanings
     lexeme en
       surface
         text "referrers"
+  reflection
+    defined-by term
+    lexeme en
+      surface
+        text "reflection"
   relative-meta-logic
     defined-by term
     lexeme en
@@ -64,6 +229,11 @@ meanings
     lexeme en
       surface
         text "rendered"
+  repetition
+    defined-by term
+    lexeme en
+      surface
+        text "repetition"
   replace_everywhere
     defined-by concept
     lexeme en
@@ -679,6 +849,31 @@ meanings
     lexeme en
       surface
         text "response agentic report target question zh"
+  response_algorithm_discovery_summary_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response algorithm discovery summary en"
+  response_algorithm_dreaming_applied_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response algorithm dreaming applied en"
+  response_algorithm_empty_binding_name_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response algorithm empty binding name en"
+  response_algorithm_invalid_binding_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response algorithm invalid binding en"
+  response_algorithm_observation_missing_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response algorithm observation missing en"
   response_assistant_free_time_en
     defined-by response_template
     lexeme en
@@ -1199,198 +1394,3 @@ meanings
     lexeme en
       surface
         text "response concept lookup in context ru"
-  response_concept_lookup_in_context_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context zh"
-  response_courtesy_response_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response courtesy response en"
-  response_courtesy_response_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response courtesy response hi"
-  response_courtesy_response_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response courtesy response ru"
-  response_courtesy_response_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response courtesy response zh"
-  response_definition_followup_clarify_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response definition followup clarify en"
-  response_definition_followup_clarify_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response definition followup clarify hi"
-  response_definition_followup_clarify_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response definition followup clarify ru"
-  response_definition_followup_clarify_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response definition followup clarify zh"
-  response_definition_merge_header_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response definition merge header en"
-  response_definition_merge_header_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response definition merge header hi"
-  response_definition_merge_header_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response definition merge header ru"
-  response_definition_merge_header_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response definition merge header zh"
-  response_definition_merge_sources_label_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response definition merge sources label en"
-  response_definition_merge_sources_label_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response definition merge sources label hi"
-  response_definition_merge_sources_label_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response definition merge sources label ru"
-  response_definition_merge_sources_label_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response definition merge sources label zh"
-  response_detected_failure_report_invitation_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response detected failure report invitation en"
-  response_detected_failure_report_invitation_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response detected failure report invitation es"
-  response_detected_failure_report_invitation_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response detected failure report invitation hi"
-  response_detected_failure_report_invitation_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response detected failure report invitation ru"
-  response_detected_failure_report_invitation_unknown
-    defined-by response_template
-    lexeme en
-      surface
-        text "response detected failure report invitation unknown"
-  response_detected_failure_report_invitation_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response detected failure report invitation zh"
-  response_document_originality_check_sample_missing_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response document originality check sample missing en"
-  response_document_originality_check_sample_missing_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response document originality check sample missing hi"
-  response_document_originality_check_sample_missing_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response document originality check sample missing ru"
-  response_document_originality_check_sample_missing_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response document originality check sample missing zh"
-  response_document_originality_check_sample_present_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response document originality check sample present en"
-  response_document_originality_check_sample_present_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response document originality check sample present hi"
-  response_document_originality_check_sample_present_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response document originality check sample present ru"
-  response_document_originality_check_sample_present_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response document originality check sample present zh"
-  response_draft_comparison_explanation_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response draft comparison explanation en"
-  response_draft_comparison_explanation_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response draft comparison explanation hi"
-  response_draft_comparison_explanation_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response draft comparison explanation ru"
-  response_draft_comparison_explanation_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response draft comparison explanation zh"
-  response_external_benchmark_baseline_read_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark baseline read error en"
-  response_external_benchmark_failure_observation_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark failure observation en"
-  response_external_benchmark_learning_event_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark learning event en"
-  response_external_benchmark_learning_lesson_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark learning lesson en"

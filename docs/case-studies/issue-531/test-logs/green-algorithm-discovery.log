@@ -1,0 +1,13 @@
+running 10 tests
+test issue_531_algorithm_discovery::a_repeated_episode_inside_one_log_is_discovered_without_trace_boundaries ... ok
+test issue_531_algorithm_discovery::held_out_missing_or_changed_steps_reject_an_incomplete_algorithm ... ok
+test issue_531_algorithm_discovery::held_out_constant_drift_is_preserved_as_a_failed_candidate ... ok
+test issue_531_algorithm_discovery::idle_learning_proposes_algorithms_from_persisted_conversation_events ... ok
+test issue_531_algorithm_discovery::learned_algorithm_is_inert_until_green_gate_and_named_review ... ok
+test issue_531_algorithm_discovery::artifact_round_trip_and_conformance_do_not_implicitly_approve_execution ... ok
+test issue_531_algorithm_discovery::repeated_event_sequences_become_a_validated_parameterized_algorithm ... ok
+test issue_531_algorithm_discovery::public_cli_mines_and_conformance_checks_a_portable_memory_file ... ok
+test issue_531_algorithm_discovery::runtime_event_logs_and_compiled_guides_share_the_trace_model ... ok
+test issue_531_algorithm_discovery::formal_ai_agent_cli_discovers_reads_back_and_conformance_checks_the_same_task ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 2407 filtered out; finished in 0.75s

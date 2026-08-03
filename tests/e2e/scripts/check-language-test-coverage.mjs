@@ -3,8 +3,8 @@
 // When a PR changes language-facing code, it must also add or update tests
 // that cover every registered language from data/seed/languages.lino. This
 // keeps fixes from landing with only one-language regressions, such as a
-// Russian-only translation test that leaves English, Hindi, and Chinese
-// behavior unpinned.
+// single-locale translation test that leaves the rest of the registered
+// language matrix unpinned.
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -20,6 +20,7 @@ const languageNames = {
   ru: ['russian', 'русский', 'русского'],
   hi: ['hindi', 'хинди', 'हिंदी', 'हिन्दी'],
   zh: ['chinese', 'китайский', 'китайского', '中文', '汉语', '漢語'],
+  es: ['spanish', 'español', 'espanol'],
 };
 
 const scriptMarkers = {

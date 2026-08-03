@@ -26,15 +26,15 @@ use crate::solver_handlers::{
     try_http_fetch, try_http_fetch_with_offline, try_ill_formed, try_installation_conversion,
     try_javascript_execution, try_learn_from_source, try_meta_explanation,
     try_meta_explanation_with_runtime, try_network_query, try_numeric_list,
-    try_numeric_list_with_history, try_opinion_question, try_program_synthesis, try_proof_request,
-    try_proof_request_with_config, try_punctuation_only_prompt, try_research_comparison_table,
-    try_research_result_followup, try_response_language_followup, try_roleplay_request,
-    try_shell_command_transform, try_shell_command_transform_with_history, try_shell_refusal,
-    try_software_project_followup, try_software_project_request, try_source_conflict,
-    try_source_refresh, try_summarization_request, try_task_decomposition_with_depth,
-    try_text_manipulation, try_text_manipulation_with_history, try_translation, try_url_navigate,
-    try_web_search, try_web_search_with_offline, try_world_state, try_write_script,
-    SelfAwarenessRuntime,
+    try_numeric_list_with_history, try_opinion_question, try_pattern_inference,
+    try_program_synthesis, try_proof_request, try_proof_request_with_config,
+    try_punctuation_only_prompt, try_research_comparison_table, try_research_result_followup,
+    try_response_language_followup, try_roleplay_request, try_shell_command_transform,
+    try_shell_command_transform_with_history, try_shell_refusal, try_software_project_followup,
+    try_software_project_request, try_source_conflict, try_source_refresh,
+    try_summarization_request, try_task_decomposition_with_depth, try_text_manipulation,
+    try_text_manipulation_with_history, try_translation, try_url_navigate, try_web_search,
+    try_web_search_with_offline, try_world_state, try_write_script, SelfAwarenessRuntime,
 };
 use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 
@@ -299,6 +299,13 @@ const HANDLER_FUNCTIONS: &[(&str, SpecializedHandler)] = &[
     // or terminal-command refusal.
     ("shell_command_transform", try_shell_command_transform),
     ("number_constraint_reasoning", solve_number_constraints),
+    // Issue #531: a concrete "find the pattern in 1 2 1 2" / "what comes next"
+    // request over an explicit sequence or grid runs the link-native
+    // pattern-inference substrate. It is data-gated (needs a run of atoms) so a
+    // bare "what is a pattern?" still falls through to the concept lookup, and
+    // it sits before `arithmetic` so a numeric sequence is analysed structurally
+    // rather than mistaken for a calculation.
+    ("pattern_inference", try_pattern_inference),
     ("arithmetic", handle_arithmetic),
     ("javascript_execution", handle_javascript_execution),
     ("definition_merge", merge_definitions),
