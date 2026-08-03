@@ -1767,16 +1767,13 @@ jobs:
         env:
           PORT: 8884
         run: experiments/agent_cli_e2e/run_issue_661_statement_audit.sh
-
       - name: "Run agent CLI E2E — relative and whole-document audit (issue #885)"
         timeout-minutes: 5
         env:
           PORT: 8895
         run: experiments/agent_cli_e2e/run_issue_885_statement_audit.sh
-
       - name: "Run agent CLI E2E — proof translation invariant (issue #890)"
         run: PORT=8890 BIN=target/release/formal-ai OUT=/tmp/formal-ai-issue-890-evidence experiments/issue_890_agent_cli.sh
-
       - name: "Replay Hive Mind self-coding inner loop (issue #655)"
         env:
           PORT: 8774
