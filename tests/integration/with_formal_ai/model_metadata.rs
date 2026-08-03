@@ -34,14 +34,14 @@ fn codex_ephemeral_uses_seeded_responses_provider_and_model_catalog() {
     assert!(captured.contains("arg[1]=--skip-git-repo-check"));
     assert!(captured.contains("arg[2]=--sandbox"));
     assert!(captured.contains("arg[3]=read-only"));
-    assert!(captured.contains("model_provider=\"formalai\""));
-    assert!(captured.contains("model=\"formal-ai\""));
-    assert!(captured.contains("wire_api=\"responses\""));
+    assert!(captured.contains("model_provider = \"formalai\""));
+    assert!(captured.contains("model = \"formal-ai\""));
+    assert!(captured.contains("wire_api = \"responses\""));
     assert!(
-        captured.contains("model_catalog_json=\""),
+        captured.contains("model_catalog_json = \""),
         "Codex must receive a model catalog path: {captured}"
     );
-    assert!(captured.contains("base_url=\"http://127.0.0.1:18080/api/openai/v1\""));
+    assert!(captured.contains("base_url = \"http://127.0.0.1:18080/api/openai/v1\""));
     assert!(captured.contains("FORMAL_AI_API_KEY=formal-ai"));
     assert!(captured.contains("---CODEX_MODEL_CATALOG---"));
     assert!(captured.contains("\"slug\": \"formal-ai\""));

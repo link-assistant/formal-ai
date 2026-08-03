@@ -1,0 +1,92 @@
+   Compiling formal-ai v0.324.0 (/tmp/gh-issue-solver-1785752502684)
+    Finished `test` profile [unoptimized] target(s) in 55.63s
+     Running tests/issue_902.rs (target/debug/deps/issue_902-f8ac03436a848565)
+
+running 1 test
+
+thread 'unix::codex_provider_config_survives_caller_overrides' (20734) panicked at tests/issue_902.rs:103:9:
+assertion `left == right` failed: arg[0]=exec
+arg[1]=--skip-git-repo-check
+arg[2]=--sandbox
+arg[3]=read-only
+arg[4]=-c
+arg[5]=model_providers.formalai.name="formal-ai server"
+arg[6]=-c
+arg[7]=model_providers.formalai.base_url="http://127.0.0.1:18080/api/openai/v1"
+arg[8]=-c
+arg[9]=model_providers.formalai.env_key="FORMAL_AI_API_KEY"
+arg[10]=-c
+arg[11]=model_providers.formalai.wire_api="responses"
+arg[12]=-c
+arg[13]=model_catalog_json="/tmp/formal-ai-codex-home-config-20735-1785754073685408664/.codex/formal-ai-model-catalog.json"
+arg[14]=-c
+arg[15]=model_provider="formalai"
+arg[16]=-c
+arg[17]=model="formal-ai"
+arg[18]=-c
+arg[19]=model_reasoning_effort=none
+arg[20]=-c
+arg[21]=model_reasoning_summary=auto
+arg[22]=hi
+FORMAL_AI_API_KEY=formal-ai
+HOME=/tmp/formal-ai-codex-home-config-20735-1785754073685408664
+---CODEX_MODEL_CATALOG---
+{
+  "models": [
+    {
+      "apply_patch_tool_type": "freeform",
+      "availability_nux": null,
+      "base_instructions": "",
+      "context": {
+        "avg_utf8_bytes_per_char": 2,
+        "context_used_fraction": 0.0,
+        "context_used_tokens": 0,
+        "context_window_tokens": 59365947392,
+        "disk_free_bytes": 118731894784,
+        "memory_used_bytes": 0
+      },
+      "context_window": 59365947392,
+      "default_reasoning_level": "none",
+      "default_reasoning_summary": "none",
+      "default_verbosity": null,
+      "description": "Formal AI symbolic model",
+      "display_name": "formal-ai",
+      "effective_context_window_percent": 100,
+      "experimental_supported_tools": [],
+      "input_modalities": [
+        "text"
+      ],
+      "max_context_window": 59365947392,
+      "priority": 0,
+      "shell_type": "shell_command",
+      "slug": "formal-ai",
+      "support_verbosity": false,
+      "supported_in_api": true,
+      "supported_reasoning_levels": [],
+      "supports_parallel_tool_calls": true,
+      "supports_reasoning_summaries": false,
+      "supports_reasoning_summary_parameter": false,
+      "truncation_policy": {
+        "limit": 8192,
+        "mode": "tokens"
+      },
+      "upgrade": null,
+      "visibility": "list",
+      "web_search_tool_type": "text"
+    }
+  ]
+}
+
+  left: ["exec", "--skip-git-repo-check", "--sandbox", "read-only", "-c", "model_providers.formalai.name=\"formal-ai server\"", "-c", "model_providers.formalai.base_url=\"http://127.0.0.1:18080/api/openai/v1\"", "-c", "model_providers.formalai.env_key=\"FORMAL_AI_API_KEY\"", "-c", "model_providers.formalai.wire_api=\"responses\"", "-c", "model_catalog_json=\"/tmp/formal-ai-codex-home-config-20735-1785754073685408664/.codex/formal-ai-model-catalog.json\"", "-c", "model_provider=\"formalai\"", "-c", "model=\"formal-ai\"", "-c", "model_reasoning_effort=none", "-c", "model_reasoning_summary=auto", "hi"]
+ right: ["exec", "--skip-git-repo-check", "--sandbox", "read-only", "-c", "model_reasoning_effort=none", "-c", "model_reasoning_summary=auto", "hi"]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test unix::codex_provider_config_survives_caller_overrides ... FAILED
+
+failures:
+
+failures:
+    unix::codex_provider_config_survives_caller_overrides
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.28s
+
+error: test failed, to rerun pass `--test issue_902`
