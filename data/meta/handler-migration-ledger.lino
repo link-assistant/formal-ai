@@ -1,8 +1,8 @@
 handler_migration_ledger
   issue 699
   batch 3
-  specialized_handler_files_max 37
-  try_dispatch_entries_max 48
+  specialized_handler_files_max 38
+  try_dispatch_entries_max 49
   handler http_fetch
     status pending
   handler url_navigate
@@ -65,6 +65,8 @@ handler_migration_ledger
     primitive "src/number_constraints.rs"
     justification "Interval extraction, integer enumeration, and proof-engine invocation are native operations; all recognition surfaces and relation vocabulary are seed roles, while the existing response projection is preserved."
     held_out "tests/unit/issue_699_handler_migration.rs"
+  handler pattern_inference
+    status pending
   handler arithmetic
     status "justified-native"
     primitive "src/calculation.rs"

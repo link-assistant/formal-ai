@@ -1,0 +1,38 @@
+self_ast_census
+  target src/sequences/grid_2d.rs
+  language rust
+  fidelity signature
+  byte_len 12597
+  line_count 385
+  content_id source_module_5fe819ac0dd3ac21
+  symbol_count 29
+  symbols
+    struct Grid 18 22
+    enum GridTransform 27 44
+    struct GridSymmetry 53 64
+    function any 69 75
+    function new 82 84
+    function from_rows 88 96
+    function rows 100 102
+    function cols 106 108
+    function is_square 112 114
+    function get 118 120
+    function row_vectors 124 129
+    function column_vectors 133 141
+    function row_major 145 147
+    function column_major 151 153
+    function boundary 158 183
+    function main_diagonal 187 191
+    function anti_diagonal 195 199
+    function apply 203 214
+    function rotate_cw 218 230
+    function rotate_ccw 234 246
+    function rotate_180 250 257
+    function reflect_horizontal 261 273
+    function reflect_vertical 277 289
+    function transpose 293 305
+    function anti_transpose 309 321
+    function symmetries 326 334
+    function invariant_transforms 340 353
+    function dimension_compatible 357 365
+    function transform_onto 371 384

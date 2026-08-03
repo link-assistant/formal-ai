@@ -20,6 +20,7 @@ mod installation_conversion;
 mod meta_explanation;
 mod natural_language_tools;
 mod numeric_list;
+mod pattern_inference;
 mod playwright_script;
 mod procedure_rules;
 mod program_blueprint;
@@ -61,6 +62,10 @@ pub use installation_conversion::try_installation_conversion;
 pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
 pub use natural_language_tools::try_natural_language_tool_request;
 pub use numeric_list::{try_numeric_list, try_numeric_list_with_history};
+pub use pattern_inference::{
+    looks_like_pattern_inference, try_pattern_inference,
+    try_pattern_inference_with_response_language,
+};
 pub use playwright_script::try_playwright_script;
 pub use program_blueprint::try_program_blueprint;
 pub use program_synthesis::try_program_synthesis;

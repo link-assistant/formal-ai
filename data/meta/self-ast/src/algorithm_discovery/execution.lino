@@ -1,0 +1,26 @@
+self_ast_census
+  target src/algorithm_discovery/execution.rs
+  language rust
+  fidelity signature
+  byte_len 5165
+  line_count 173
+  content_id source_module_22f5b6caa8c31be8
+  symbol_count 17
+  symbols
+    struct AlgorithmGate 8 12
+    function passed 16 22
+    function failed 25 31
+    function is_green 34 36
+    struct AlgorithmApproval 41 44
+    function granted 48 53
+    function declined 56 61
+    enum AlgorithmDiscoveryError 65 73
+    function fmt 76 90
+    trait AlgorithmHost 97 104
+    function perform 98 103
+    struct ApprovedAlgorithm 107 111
+    struct AlgorithmExecution 114 119
+    function candidate 124 126
+    function gate 130 132
+    function approval 136 138
+    function execute 140 172

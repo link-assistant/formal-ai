@@ -2,13 +2,14 @@ self_ast_census_index
   language rust
   engine meta_language
   full_fidelity_prefix src/agentic_coding/
-  module_count 411
-  full_ast_module_count 54
-  signature_module_count 357
-  symbol_count 8437
-  content_id self_ast_census_index_0275d2a767892af8
+  module_count 425
+  full_ast_module_count 55
+  signature_module_count 370
+  symbol_count 8655
+  content_id self_ast_census_index_bed80476fbd3ee27
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
+    src/agentic_coding/algorithm_learning.rs full_ast 13 source_module_0cde1901a8a78574
     src/agentic_coding/associative_learning.rs full_ast 7 source_module_926e3e97b31fa30a
     src/agentic_coding/capability_router.rs full_ast 11 source_module_55c1e27ca2bf2c6c
     src/agentic_coding/change_request.rs full_ast 9 source_module_61a59fbbec0b673f
@@ -21,7 +22,7 @@ self_ast_census_index
     src/agentic_coding/corpus.rs full_ast 4 source_module_c5ffda9bccd862d1
     src/agentic_coding/diagram.rs full_ast 11 source_module_aba808e67764ead3
     src/agentic_coding/dreaming_audit.rs full_ast 17 source_module_8394e196895bd775
-    src/agentic_coding/driver.rs full_ast 16 source_module_fdf3187540f8d726
+    src/agentic_coding/driver.rs full_ast 17 source_module_d4d0d5dd72ad7c33
     src/agentic_coding/execution_learning.rs full_ast 7 source_module_628af88f6119fb0e
     src/agentic_coding/explain.rs full_ast 9 source_module_b39c3c4b919464b7
     src/agentic_coding/external_benchmark_learning.rs full_ast 5 source_module_143122bfd70dcc0e
@@ -42,9 +43,9 @@ self_ast_census_index
     src/agentic_coding/lexicon.rs full_ast 29 source_module_16601e4b778ef5d2
     src/agentic_coding/local_search.rs full_ast 46 source_module_35b601ec40ec2dba
     src/agentic_coding/meaning_detail.rs full_ast 38 source_module_763b6af219dd70d8
-    src/agentic_coding/mod.rs full_ast 47 source_module_73248e8adb166a44
+    src/agentic_coding/mod.rs full_ast 48 source_module_acdd608b8305dc00
     src/agentic_coding/narration.rs full_ast 9 source_module_256edf1475c908fe
-    src/agentic_coding/planner.rs full_ast 38 source_module_5abbcedf525893c0
+    src/agentic_coding/planner.rs full_ast 38 source_module_243e3f143b1475e3
     src/agentic_coding/procedure.rs full_ast 5 source_module_59c2c30fbf44bc52
     src/agentic_coding/progress.rs full_ast 10 source_module_c875bf0c4cba80c3
     src/agentic_coding/question_catalog.rs full_ast 24 source_module_512a32489f4c308d
@@ -63,6 +64,9 @@ self_ast_census_index
     src/agentic_coding/tool_result.rs full_ast 29 source_module_2b04e7947c63114d
     src/agentic_coding/web_research.rs full_ast 38 source_module_3284f1f58c70bb0a
     src/agentic_coding/workspace_change.rs full_ast 24 source_module_459ae62e4690a7e8
+    src/algorithm_discovery.rs signature 41 source_module_ce34c381d0e5aa5a
+    src/algorithm_discovery/adapters.rs signature 4 source_module_8b3513d5e4646c8e
+    src/algorithm_discovery/execution.rs signature 17 source_module_22f5b6caa8c31be8
     src/anthropic.rs signature 22 source_module_4521391b735b65a0
     src/arithmetic.rs signature 50 source_module_0c0cbf53baa417f0
     src/arithmetic_word_tables.rs signature 2 source_module_05d1534ee9527818
@@ -74,6 +78,7 @@ self_ast_census_index
     src/calculation_time.rs signature 4 source_module_d1f1e0b165700b3f
     src/calculation_word_problem.rs signature 24 source_module_9a1e1bed263ecfe9
     src/change_request.rs signature 20 source_module_bcf2749e602b677a
+    src/cli_algorithm.rs signature 4 source_module_65beedd25f6420bc
     src/cli_benchmark.rs signature 7 source_module_5a0e2f858402f7be
     src/cli_clients.rs signature 8 source_module_325716f5dfd4b3cc
     src/cli_computer_use.rs signature 2 source_module_49bf0ce0ddc5495a
@@ -81,8 +86,8 @@ self_ast_census_index
     src/cli_file_legality.rs signature 3 source_module_100599721935d782
     src/cli_import.rs signature 2 source_module_a03f4f2a6132bf13
     src/cli_improve.rs signature 5 source_module_9c508efbe830879e
-    src/cli_learn.rs signature 6 source_module_5935df87df09a1d3
-    src/cli_memory.rs signature 5 source_module_902d9c8bcd24619c
+    src/cli_learn.rs signature 7 source_module_1ab3707797fe02f7
+    src/cli_memory.rs signature 5 source_module_4e041a61b5bd4d9e
     src/cli_orchestration.rs signature 20 source_module_3cc7a5de6d3d9b9b
     src/cli_procedure.rs signature 3 source_module_c9c5b58779d0ecd8
     src/cli_report.rs signature 26 source_module_c317d32202610bc8
@@ -125,14 +130,14 @@ self_ast_census_index
     src/dialog_log.rs signature 21 source_module_30af7dfe527c979f
     src/document_formats.rs signature 11 source_module_81b5abd825d2d9d2
     src/draft_portfolio.rs signature 26 source_module_ee32d5b6d60cbb03
-    src/dreaming.rs signature 38 source_module_48ec38a01133af7a
+    src/dreaming.rs signature 39 source_module_0de3c052b1ffe8d9
     src/dreaming/cues.rs signature 4 source_module_c4abdc1af84b644e
     src/dreaming/draft_failures.rs signature 5 source_module_892affb938971194
     src/dreaming/learning.rs signature 20 source_module_9e323d698a659687
     src/dreaming/lexicon.rs signature 8 source_module_14f4c530d1709a72
     src/dreaming/support.rs signature 9 source_module_97a5224caa148647
     src/dreaming_application.rs signature 15 source_module_6730530bbc27a989
-    src/dreaming_runtime.rs signature 16 source_module_f00364e2e96fed0b
+    src/dreaming_runtime.rs signature 16 source_module_c732564226f90051
     src/engine.rs signature 41 source_module_8e824657585d3354
     src/engine_assistant_name.rs signature 14 source_module_583e88ddfdd53ff1
     src/engine_responses.rs signature 67 source_module_ee7c6bbd0d2660f4
@@ -156,7 +161,7 @@ self_ast_census_index
     src/github_logs.rs signature 24 source_module_c6da49890238f2b8
     src/google_trends_catalog.rs signature 33 source_module_ee49e2390496ff67
     src/google_trends_learning.rs signature 13 source_module_7fc37a57f4bfa9ac
-    src/intent_formalization.rs signature 52 source_module_a183edee5688bc7d
+    src/intent_formalization.rs signature 52 source_module_032e3bafc3db4f85
     src/intent_formalization/requirements.rs signature 7 source_module_40a972ba05dc31a1
     src/issue_report.rs signature 44 source_module_66b9d5e3975b4536
     src/json_lino.rs signature 49 source_module_c2dd76615e0c55c5
@@ -168,14 +173,14 @@ self_ast_census_index
     src/learning_cycle.rs signature 35 source_module_5111044fb9a4d31d
     src/learning_ledger.rs signature 26 source_module_b3603c2c577cd078
     src/lexeme_import.rs signature 49 source_module_03ae22d5093d8a37
-    src/lib.rs signature 153 source_module_86b09e5aba937da3
+    src/lib.rs signature 155 source_module_1922af37495e40f8
     src/link_store.rs signature 53 source_module_4163b0ff62ebee82
     src/links_format.rs signature 7 source_module_17ae7d7e69b8c450
     src/links_query.rs signature 30 source_module_434647cf5697218d
     src/links_substitution_query/links.rs signature 34 source_module_b93fba6da2b6abdb
     src/links_substitution_query/mod.rs signature 18 source_module_c280ddedbe0be41b
     src/links_substitution_query/text.rs signature 10 source_module_54590acf88bfa6d5
-    src/main.rs signature 40 source_module_ad67671c3caccac5
+    src/main.rs signature 41 source_module_d288c45f7275efa1
     src/mcp.rs signature 14 source_module_ef53f007e3562f02
     src/memory.rs signature 38 source_module_0295dd993338b603
     src/memory/bundle.rs signature 12 source_module_aa109e11a210ec80
@@ -192,7 +197,7 @@ self_ast_census_index
     src/meta_construction.rs signature 13 source_module_da0a9566309dca10
     src/meta_core.rs signature 2 source_module_e646686ca2a955c3
     src/meta_frame.rs signature 37 source_module_c6de4ce55a2c52df
-    src/meta_method_dispatch.rs signature 9 source_module_ace0de3ba6246ccc
+    src/meta_method_dispatch.rs signature 9 source_module_762c5aa5fed8f64f
     src/meta_reasoning.rs signature 9 source_module_b243496e16b9ae75
     src/meta_self_improvement.rs signature 23 source_module_fe49f604e1624bf6
     src/method_registry.rs signature 13 source_module_0d9b169193384e14
@@ -252,14 +257,14 @@ self_ast_census_index
     src/search_fusion.rs signature 29 source_module_561bb8d32e5a8095
     src/search_fusion_grammar.rs signature 5 source_module_278c1816d6576c50
     src/search_fusion_learning.rs signature 38 source_module_7dc02c8e13dfc9de
-    src/seed.rs signature 60 source_module_4afdebdda0e0bded
+    src/seed.rs signature 61 source_module_69851760d6bb5cf8
     src/seed/agentic_tool_capabilities.rs signature 2 source_module_9847f4d6bab733ff
     src/seed/brainstorm.rs signature 5 source_module_6580e5a2ac5b3691
     src/seed/client_completion.rs signature 2 source_module_f8ccbc3460b19224
     src/seed/client_integrations.rs signature 19 source_module_9207f94472e96872
     src/seed/coreference.rs signature 6 source_module_2a031fb4770187f1
     src/seed/draft_strategies.rs signature 2 source_module_2dc41474ab87eb56
-    src/seed/embedded.rs signature 104 source_module_1644c556e3187229
+    src/seed/embedded.rs signature 105 source_module_e4234f9b1c2dffad
     src/seed/entity_names.rs signature 6 source_module_ba95cc916c77b0a9
     src/seed/facts.rs signature 9 source_module_986f7657cab5c21a
     src/seed/grounding_overrides.rs signature 6 source_module_e1e4f825307e3b33
@@ -290,6 +295,14 @@ self_ast_census_index
     src/self_healing.rs signature 17 source_module_444e90593e01e8e0
     src/self_improvement.rs signature 37 source_module_e00d4bd51e35bcee
     src/self_source_links.rs signature 26 source_module_2331204f81670611
+    src/sequences/compression.rs signature 10 source_module_134fecd4a52ff24e
+    src/sequences/converter.rs signature 13 source_module_2a596e78794b8a88
+    src/sequences/grid_2d.rs signature 29 source_module_5fe819ac0dd3ac21
+    src/sequences/inference.rs signature 12 source_module_761af0b83058acd6
+    src/sequences/mod.rs signature 7 source_module_3e5f2680e1903279
+    src/sequences/patterns_1d.rs signature 12 source_module_b718a844c6dfed87
+    src/sequences/store.rs signature 18 source_module_7b7de92b8a7328df
+    src/sequences/symbols.rs signature 9 source_module_5543a57e46ec516d
     src/server.rs signature 43 source_module_38af8c77165c02c6
     src/server/conversation_reports.rs signature 4 source_module_605a703e153ee173
     src/server/transport.rs signature 8 source_module_8eeb2e2d068c530c
@@ -304,7 +317,7 @@ self_ast_census_index
     src/solution_evidence.rs signature 9 source_module_5531e73e2678ee78
     src/solver.rs signature 27 source_module_bfba0e0d3f9e3365
     src/solver_diagnostics.rs signature 1 source_module_4264d3cd74207225
-    src/solver_dispatch.rs signature 14 source_module_a145c3258ee24bf7
+    src/solver_dispatch.rs signature 14 source_module_e770fc8eeb42e501
     src/solver_formalization.rs signature 3 source_module_93c2bcdeaa1f3c66
     src/solver_handler_docs.rs signature 7 source_module_a45251c807545393
     src/solver_handler_how.rs signature 31 source_module_af5e775eeb650e4a
@@ -332,10 +345,11 @@ self_ast_census_index
     src/solver_handlers/github_repository_traffic.rs signature 9 source_module_e21549f68e790ef2
     src/solver_handlers/installation_conversion.rs signature 51 source_module_0f4a2a692ff2ee80
     src/solver_handlers/meta_explanation.rs signature 15 source_module_7f6ea9e5c001495e
-    src/solver_handlers/mod.rs signature 57 source_module_0a2d2c6a6b9fbd9a
+    src/solver_handlers/mod.rs signature 58 source_module_c7ffa883927b39c5
     src/solver_handlers/natural_language_tools.rs signature 13 source_module_3a2b80cdb2dbb833
     src/solver_handlers/numeric_list/codegen.rs signature 27 source_module_e51088fd66a1b979
     src/solver_handlers/numeric_list/mod.rs signature 39 source_module_36489201ff44caf8
+    src/solver_handlers/pattern_inference.rs signature 19 source_module_07778bd9887530bf
     src/solver_handlers/playwright_script.rs signature 7 source_module_2dcc622303980932
     src/solver_handlers/procedure_rules.rs signature 4 source_module_048a368589aa09d7
     src/solver_handlers/program_blueprint.rs signature 1 source_module_69aab15b5c0e2948

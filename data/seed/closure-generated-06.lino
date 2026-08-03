@@ -1,4 +1,199 @@
 meanings
+  response_lexeme_import_refused_batch_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import refused batch zh"
+  response_lexeme_import_reparse_failed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import reparse failed en"
+  response_lexeme_import_reparse_failed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import reparse failed hi"
+  response_lexeme_import_reparse_failed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import reparse failed ru"
+  response_lexeme_import_reparse_failed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import reparse failed zh"
+  response_lexeme_import_surface_changed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import surface changed en"
+  response_lexeme_import_surface_changed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import surface changed hi"
+  response_lexeme_import_surface_changed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import surface changed ru"
+  response_lexeme_import_surface_changed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import surface changed zh"
+  response_lexeme_import_surface_missing_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import surface missing en"
+  response_lexeme_import_surface_missing_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import surface missing hi"
+  response_lexeme_import_surface_missing_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import surface missing ru"
+  response_lexeme_import_surface_missing_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import surface missing zh"
+  response_lexeme_import_wrong_genus_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import wrong genus en"
+  response_lexeme_import_wrong_genus_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import wrong genus hi"
+  response_lexeme_import_wrong_genus_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import wrong genus ru"
+  response_lexeme_import_wrong_genus_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import wrong genus zh"
+  response_local_search_contents_listing_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search contents listing en"
+  response_local_search_contents_listing_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search contents listing hi"
+  response_local_search_contents_listing_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search contents listing ru"
+  response_local_search_contents_listing_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search contents listing zh"
+  response_local_search_found_closest_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found closest en"
+  response_local_search_found_closest_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found closest hi"
+  response_local_search_found_closest_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found closest ru"
+  response_local_search_found_closest_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found closest zh"
+  response_local_search_found_directory_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found directory en"
+  response_local_search_found_directory_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found directory hi"
+  response_local_search_found_directory_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found directory ru"
+  response_local_search_found_directory_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found directory zh"
+  response_local_search_found_file_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found file en"
+  response_local_search_found_file_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found file hi"
+  response_local_search_found_file_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found file ru"
+  response_local_search_found_file_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found file zh"
+  response_local_search_found_path_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found path en"
+  response_local_search_found_path_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found path hi"
+  response_local_search_found_path_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found path ru"
+  response_local_search_found_path_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found path zh"
+  response_local_search_mismatch_requested_directory_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search mismatch requested directory en"
+  response_local_search_mismatch_requested_directory_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search mismatch requested directory hi"
   response_local_search_mismatch_requested_directory_ru
     defined-by response_template
     lexeme en
@@ -429,6 +624,506 @@ meanings
     lexeme en
       surface
         text "response orchestration cross agent denial zh"
+  response_pattern_grid_anti_diagonal_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid anti diagonal en"
+  response_pattern_grid_anti_diagonal_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid anti diagonal es"
+  response_pattern_grid_anti_diagonal_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid anti diagonal hi"
+  response_pattern_grid_anti_diagonal_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid anti diagonal ru"
+  response_pattern_grid_anti_diagonal_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid anti diagonal zh"
+  response_pattern_grid_diagonal_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid diagonal en"
+  response_pattern_grid_diagonal_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid diagonal es"
+  response_pattern_grid_diagonal_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid diagonal hi"
+  response_pattern_grid_diagonal_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid diagonal ru"
+  response_pattern_grid_diagonal_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid diagonal zh"
+  response_pattern_grid_horizontal_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid horizontal en"
+  response_pattern_grid_horizontal_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid horizontal es"
+  response_pattern_grid_horizontal_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid horizontal hi"
+  response_pattern_grid_horizontal_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid horizontal ru"
+  response_pattern_grid_horizontal_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid horizontal zh"
+  response_pattern_grid_no_symmetry_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid no symmetry en"
+  response_pattern_grid_no_symmetry_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid no symmetry es"
+  response_pattern_grid_no_symmetry_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid no symmetry hi"
+  response_pattern_grid_no_symmetry_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid no symmetry ru"
+  response_pattern_grid_no_symmetry_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid no symmetry zh"
+  response_pattern_grid_report_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid report en"
+  response_pattern_grid_report_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid report es"
+  response_pattern_grid_report_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid report hi"
+  response_pattern_grid_report_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid report ru"
+  response_pattern_grid_report_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid report zh"
+  response_pattern_grid_rotation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid rotation en"
+  response_pattern_grid_rotation_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid rotation es"
+  response_pattern_grid_rotation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid rotation hi"
+  response_pattern_grid_rotation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid rotation ru"
+  response_pattern_grid_rotation_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid rotation zh"
+  response_pattern_grid_shape_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid shape en"
+  response_pattern_grid_shape_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid shape es"
+  response_pattern_grid_shape_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid shape hi"
+  response_pattern_grid_shape_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid shape ru"
+  response_pattern_grid_shape_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid shape zh"
+  response_pattern_grid_symmetry_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid symmetry en"
+  response_pattern_grid_symmetry_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid symmetry es"
+  response_pattern_grid_symmetry_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid symmetry hi"
+  response_pattern_grid_symmetry_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid symmetry ru"
+  response_pattern_grid_symmetry_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid symmetry zh"
+  response_pattern_grid_vertical_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid vertical en"
+  response_pattern_grid_vertical_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid vertical es"
+  response_pattern_grid_vertical_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid vertical hi"
+  response_pattern_grid_vertical_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid vertical ru"
+  response_pattern_grid_vertical_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid vertical zh"
+  response_pattern_sequence_aperiodic_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence aperiodic en"
+  response_pattern_sequence_aperiodic_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence aperiodic es"
+  response_pattern_sequence_aperiodic_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence aperiodic hi"
+  response_pattern_sequence_aperiodic_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence aperiodic ru"
+  response_pattern_sequence_aperiodic_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence aperiodic zh"
+  response_pattern_sequence_compression_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence compression en"
+  response_pattern_sequence_compression_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence compression es"
+  response_pattern_sequence_compression_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence compression hi"
+  response_pattern_sequence_compression_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence compression ru"
+  response_pattern_sequence_compression_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence compression zh"
+  response_pattern_sequence_constant_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence constant en"
+  response_pattern_sequence_constant_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence constant es"
+  response_pattern_sequence_constant_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence constant hi"
+  response_pattern_sequence_constant_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence constant ru"
+  response_pattern_sequence_constant_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence constant zh"
+  response_pattern_sequence_count_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence count en"
+  response_pattern_sequence_count_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence count es"
+  response_pattern_sequence_count_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence count hi"
+  response_pattern_sequence_count_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence count ru"
+  response_pattern_sequence_count_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence count zh"
+  response_pattern_sequence_empty_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence empty en"
+  response_pattern_sequence_empty_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence empty es"
+  response_pattern_sequence_empty_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence empty hi"
+  response_pattern_sequence_empty_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence empty ru"
+  response_pattern_sequence_empty_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence empty zh"
+  response_pattern_sequence_next_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence next en"
+  response_pattern_sequence_next_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence next es"
+  response_pattern_sequence_next_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence next hi"
+  response_pattern_sequence_next_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence next ru"
+  response_pattern_sequence_next_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence next zh"
+  response_pattern_sequence_no_compression_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence no compression en"
+  response_pattern_sequence_no_compression_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence no compression es"
+  response_pattern_sequence_no_compression_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence no compression hi"
+  response_pattern_sequence_no_compression_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence no compression ru"
+  response_pattern_sequence_no_compression_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence no compression zh"
+  response_pattern_sequence_palindrome_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence palindrome en"
+  response_pattern_sequence_palindrome_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence palindrome es"
+  response_pattern_sequence_palindrome_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence palindrome hi"
+  response_pattern_sequence_palindrome_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence palindrome ru"
+  response_pattern_sequence_palindrome_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence palindrome zh"
+  response_pattern_sequence_periodic_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence periodic en"
+  response_pattern_sequence_periodic_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence periodic es"
+  response_pattern_sequence_periodic_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence periodic hi"
+  response_pattern_sequence_periodic_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence periodic ru"
+  response_pattern_sequence_periodic_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence periodic zh"
+  response_pattern_sequence_repetition_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence repetition en"
+  response_pattern_sequence_repetition_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence repetition es"
+  response_pattern_sequence_repetition_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence repetition hi"
+  response_pattern_sequence_repetition_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence repetition ru"
+  response_pattern_sequence_repetition_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence repetition zh"
+  response_pattern_sequence_report_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence report en"
+  response_pattern_sequence_report_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence report es"
+  response_pattern_sequence_report_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence report hi"
+  response_pattern_sequence_report_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence report ru"
+  response_pattern_sequence_report_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence report zh"
   response_physical_action_question_en
     defined-by response_template
     lexeme en
@@ -699,698 +1394,3 @@ meanings
     lexeme en
       surface
         text "response summarization evidence denied zh"
-  response_summarization_evidence_summary_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response summarization evidence summary en"
-  response_summarization_evidence_summary_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response summarization evidence summary hi"
-  response_summarization_evidence_summary_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response summarization evidence summary ru"
-  response_summarization_evidence_summary_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response summarization evidence summary zh"
-  response_supplied_file_contents_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response supplied file contents en"
-  response_supplied_file_contents_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response supplied file contents hi"
-  response_supplied_file_contents_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response supplied file contents ru"
-  response_supplied_file_contents_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response supplied file contents zh"
-  response_supplied_file_first_line_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response supplied file first line en"
-  response_supplied_file_first_line_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response supplied file first line hi"
-  response_supplied_file_first_line_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response supplied file first line ru"
-  response_supplied_file_first_line_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response supplied file first line zh"
-  response_task_atomicity_no_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity no en"
-  response_task_atomicity_no_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity no hi"
-  response_task_atomicity_no_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity no ru"
-  response_task_atomicity_no_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity no zh"
-  response_task_atomicity_yes_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity yes en"
-  response_task_atomicity_yes_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity yes hi"
-  response_task_atomicity_yes_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity yes ru"
-  response_task_atomicity_yes_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity yes zh"
-  response_task_decomposition_atomic_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition atomic en"
-  response_task_decomposition_atomic_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition atomic hi"
-  response_task_decomposition_atomic_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition atomic ru"
-  response_task_decomposition_atomic_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition atomic zh"
-  response_task_decomposition_depth_bound_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth bound en"
-  response_task_decomposition_depth_bound_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth bound hi"
-  response_task_decomposition_depth_bound_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth bound ru"
-  response_task_decomposition_depth_bound_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth bound zh"
-  response_task_decomposition_depth_marker_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth marker en"
-  response_task_decomposition_depth_marker_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth marker hi"
-  response_task_decomposition_depth_marker_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth marker ru"
-  response_task_decomposition_depth_marker_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth marker zh"
-  response_task_decomposition_lead_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition lead en"
-  response_task_decomposition_lead_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition lead hi"
-  response_task_decomposition_lead_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition lead ru"
-  response_task_decomposition_lead_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition lead zh"
-  response_task_first_step_lead_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task first step lead en"
-  response_task_first_step_lead_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task first step lead hi"
-  response_task_first_step_lead_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task first step lead ru"
-  response_task_first_step_lead_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task first step lead zh"
-  response_task_plan_stage_implementation_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task plan stage implementation en"
-  response_task_plan_stage_implementation_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task plan stage implementation hi"
-  response_task_plan_stage_implementation_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task plan stage implementation ru"
-  response_task_plan_stage_implementation_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task plan stage implementation zh"
-  response_task_plan_stage_regression_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task plan stage regression en"
-  response_task_plan_stage_regression_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task plan stage regression hi"
-  response_task_plan_stage_regression_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task plan stage regression ru"
-  response_task_plan_stage_regression_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task plan stage regression zh"
-  response_task_plan_stage_requirements_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task plan stage requirements en"
-  response_task_plan_stage_requirements_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task plan stage requirements hi"
-  response_task_plan_stage_requirements_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task plan stage requirements ru"
-  response_task_plan_stage_requirements_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task plan stage requirements zh"
-  response_task_plan_stage_verification_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task plan stage verification en"
-  response_task_plan_stage_verification_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task plan stage verification hi"
-  response_task_plan_stage_verification_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task plan stage verification ru"
-  response_task_plan_stage_verification_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task plan stage verification zh"
-  response_test_status_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response test status en"
-  response_test_status_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response test status hi"
-  response_test_status_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response test status ru"
-  response_test_status_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response test status zh"
-  response_tool_result_completed_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result completed en"
-  response_tool_result_completed_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result completed hi"
-  response_tool_result_completed_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result completed ru"
-  response_tool_result_completed_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result completed zh"
-  response_tool_result_empty_generic_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty generic en"
-  response_tool_result_empty_generic_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty generic hi"
-  response_tool_result_empty_generic_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty generic ru"
-  response_tool_result_empty_generic_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty generic zh"
-  response_tool_result_empty_list_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty list en"
-  response_tool_result_empty_list_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty list hi"
-  response_tool_result_empty_list_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty list ru"
-  response_tool_result_empty_list_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty list zh"
-  response_tool_result_empty_local_path_search_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty local path search en"
-  response_tool_result_empty_local_path_search_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty local path search hi"
-  response_tool_result_empty_local_path_search_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty local path search ru"
-  response_tool_result_empty_local_path_search_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty local path search zh"
-  response_tool_result_empty_search_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty search en"
-  response_tool_result_empty_search_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty search hi"
-  response_tool_result_empty_search_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty search ru"
-  response_tool_result_empty_search_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty search zh"
-  response_tool_result_failed_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result failed en"
-  response_tool_result_failed_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result failed hi"
-  response_tool_result_failed_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result failed ru"
-  response_tool_result_failed_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result failed zh"
-  response_unknown_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown en"
-  response_unknown_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown hi"
-  response_unknown_reasoning_question_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown reasoning question en"
-  response_unknown_reasoning_question_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown reasoning question hi"
-  response_unknown_reasoning_question_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown reasoning question ru"
-  response_unknown_reasoning_question_unknown
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown reasoning question unknown"
-  response_unknown_reasoning_question_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown reasoning question zh"
-  response_unknown_reasoning_trace_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown reasoning trace en"
-  response_unknown_reasoning_trace_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown reasoning trace hi"
-  response_unknown_reasoning_trace_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown reasoning trace ru"
-  response_unknown_reasoning_trace_unknown
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown reasoning trace unknown"
-  response_unknown_reasoning_trace_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown reasoning trace zh"
-  response_unknown_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown ru"
-  response_unknown_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown zh"
-  response_web_search_live_results_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response web search live results en"
-  response_web_search_live_results_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response web search live results hi"
-  response_web_search_live_results_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response web search live results ru"
-  response_web_search_live_results_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response web search live results zh"
-  response_web_search_unavailable_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response web search unavailable en"
-  response_web_search_unavailable_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response web search unavailable hi"
-  response_web_search_unavailable_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response web search unavailable ru"
-  response_web_search_unavailable_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response web search unavailable zh"
-  response_wellbeing_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response wellbeing en"
-  response_wellbeing_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response wellbeing hi"
-  response_wellbeing_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response wellbeing ru"
-  response_wellbeing_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response wellbeing zh"
-  response_who_is_unknown_entity_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response who is unknown entity en"
-  response_who_is_unknown_entity_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response who is unknown entity hi"
-  response_who_is_unknown_entity_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response who is unknown entity ru"
-  response_who_is_unknown_entity_suggestion_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response who is unknown entity suggestion en"
-  response_who_is_unknown_entity_suggestion_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response who is unknown entity suggestion hi"
-  response_who_is_unknown_entity_suggestion_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response who is unknown entity suggestion ru"
-  response_who_is_unknown_entity_suggestion_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response who is unknown entity suggestion zh"
-  response_who_is_unknown_entity_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response who is unknown entity zh"
-  response_world_state_reached_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response world state reached en"
-  response_world_state_reached_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response world state reached hi"
-  response_world_state_reached_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response world state reached ru"
-  response_world_state_reached_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response world state reached zh"
-  response_world_state_remaining_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response world state remaining en"
-  response_world_state_remaining_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response world state remaining hi"
-  response_world_state_remaining_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response world state remaining ru"
-  response_world_state_remaining_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response world state remaining zh"
-  response_write_program_skill_gap_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response write program skill gap en"
-  response_write_program_skill_gap_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response write program skill gap hi"
-  response_write_program_skill_gap_name_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response write program skill gap name en"
-  response_write_program_skill_gap_name_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response write program skill gap name hi"
-  response_write_program_skill_gap_name_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response write program skill gap name ru"
-  response_write_program_skill_gap_name_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response write program skill gap name zh"
-  response_write_program_skill_gap_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response write program skill gap ru"
-  response_write_program_skill_gap_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response write program skill gap zh"
-  restate_postcondition
-    defined-by concept
-    lexeme en
-      surface
-        text "restate postcondition"
-  restore
-    defined-by word_surface
-    lexeme en
-      surface
-        text "restore"
-  retract_contributed_facts
-    defined-by concept
-    lexeme en
-      surface
-        text "retract contributed facts"
-  reverse_lines
-    defined-by operation
-    lexeme en
-      surface
-        text "reverse lines"
-  reverse_sort
-    defined-by operation
-    lexeme en
-      surface
-        text "reverse sort"

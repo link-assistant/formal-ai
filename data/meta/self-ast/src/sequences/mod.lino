@@ -1,0 +1,16 @@
+self_ast_census
+  target src/sequences/mod.rs
+  language rust
+  fidelity signature
+  byte_len 2209
+  line_count 45
+  content_id source_module_3e5f2680e1903279
+  symbol_count 7
+  symbols
+    module compression 27 27
+    module converter 28 28
+    module grid_2d 29 29
+    module inference 30 30
+    module patterns_1d 31 31
+    module store 32 32
+    module symbols 33 33

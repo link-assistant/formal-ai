@@ -1,0 +1,22 @@
+Q1321
+  aliases
+    en (Castilian "Spanish language" "Castilian language")
+    es (castellano "idioma español" "lengua española" "idioma castellano" "lengua castellana" "lengua de Cervantes" "idioma de Cervantes" "lengua hispana" "idioma hispano" hispanohablante hispanoparlante "lengua de Castilla" "idioma de Castilla" "castellano (idioma)" "español (idioma)" "castellano (lengua)" "español (lengua)")
+    hi ("स्पेनिश" "स्पैनिश" "कैस्टिलियाई")
+    ru ("кастильский язык")
+    zh ("西班牙语" "西语")
+  descriptions
+    en "Romance language originating in the Iberian Peninsula"
+    es "lengua romance originaria de la península ibérica"
+    hi "रोमांस भाषा"
+    ru "плюрицентрический иберо-романский язык"
+    zh "羅曼語族的語言"
+  id Q1321
+  labels
+    en Spanish
+    es "español"
+    hi "स्पेनी भाषा"
+    ru "испанский язык"
+    zh "西班牙語"
+  type item
+success 1

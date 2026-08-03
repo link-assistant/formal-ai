@@ -1,0 +1,13 @@
+self_ast_census
+  target src/algorithm_discovery/adapters.rs
+  language rust
+  fidelity signature
+  byte_len 3468
+  line_count 101
+  content_id source_module_8b3513d5e4646c8e
+  symbol_count 4
+  symbols
+    function trace_from_event_log 12 22
+    function trace_from_compiled_procedure 28 48
+    function traces_from_memory_events 53 80
+    function parse_arguments 82 101

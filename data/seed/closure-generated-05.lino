@@ -1,4 +1,199 @@
 meanings
+  response_concept_lookup_in_context_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context zh"
+  response_courtesy_response_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response courtesy response en"
+  response_courtesy_response_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response courtesy response hi"
+  response_courtesy_response_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response courtesy response ru"
+  response_courtesy_response_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response courtesy response zh"
+  response_definition_followup_clarify_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response definition followup clarify en"
+  response_definition_followup_clarify_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response definition followup clarify hi"
+  response_definition_followup_clarify_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response definition followup clarify ru"
+  response_definition_followup_clarify_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response definition followup clarify zh"
+  response_definition_merge_header_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response definition merge header en"
+  response_definition_merge_header_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response definition merge header hi"
+  response_definition_merge_header_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response definition merge header ru"
+  response_definition_merge_header_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response definition merge header zh"
+  response_definition_merge_sources_label_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response definition merge sources label en"
+  response_definition_merge_sources_label_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response definition merge sources label hi"
+  response_definition_merge_sources_label_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response definition merge sources label ru"
+  response_definition_merge_sources_label_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response definition merge sources label zh"
+  response_detected_failure_report_invitation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response detected failure report invitation en"
+  response_detected_failure_report_invitation_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response detected failure report invitation es"
+  response_detected_failure_report_invitation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response detected failure report invitation hi"
+  response_detected_failure_report_invitation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response detected failure report invitation ru"
+  response_detected_failure_report_invitation_unknown
+    defined-by response_template
+    lexeme en
+      surface
+        text "response detected failure report invitation unknown"
+  response_detected_failure_report_invitation_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response detected failure report invitation zh"
+  response_document_originality_check_sample_missing_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response document originality check sample missing en"
+  response_document_originality_check_sample_missing_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response document originality check sample missing hi"
+  response_document_originality_check_sample_missing_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response document originality check sample missing ru"
+  response_document_originality_check_sample_missing_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response document originality check sample missing zh"
+  response_document_originality_check_sample_present_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response document originality check sample present en"
+  response_document_originality_check_sample_present_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response document originality check sample present hi"
+  response_document_originality_check_sample_present_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response document originality check sample present ru"
+  response_document_originality_check_sample_present_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response document originality check sample present zh"
+  response_draft_comparison_explanation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response draft comparison explanation en"
+  response_draft_comparison_explanation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response draft comparison explanation hi"
+  response_draft_comparison_explanation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response draft comparison explanation ru"
+  response_draft_comparison_explanation_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response draft comparison explanation zh"
+  response_external_benchmark_baseline_read_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark baseline read error en"
+  response_external_benchmark_failure_observation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark failure observation en"
+  response_external_benchmark_learning_event_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark learning event en"
+  response_external_benchmark_learning_lesson_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark learning lesson en"
   response_external_benchmark_learning_task_en
     defined-by response_template
     lexeme en
@@ -1199,198 +1394,3 @@ meanings
     lexeme en
       surface
         text "response lexeme import refused batch ru"
-  response_lexeme_import_refused_batch_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import refused batch zh"
-  response_lexeme_import_reparse_failed_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import reparse failed en"
-  response_lexeme_import_reparse_failed_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import reparse failed hi"
-  response_lexeme_import_reparse_failed_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import reparse failed ru"
-  response_lexeme_import_reparse_failed_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import reparse failed zh"
-  response_lexeme_import_surface_changed_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import surface changed en"
-  response_lexeme_import_surface_changed_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import surface changed hi"
-  response_lexeme_import_surface_changed_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import surface changed ru"
-  response_lexeme_import_surface_changed_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import surface changed zh"
-  response_lexeme_import_surface_missing_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import surface missing en"
-  response_lexeme_import_surface_missing_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import surface missing hi"
-  response_lexeme_import_surface_missing_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import surface missing ru"
-  response_lexeme_import_surface_missing_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import surface missing zh"
-  response_lexeme_import_wrong_genus_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import wrong genus en"
-  response_lexeme_import_wrong_genus_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import wrong genus hi"
-  response_lexeme_import_wrong_genus_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import wrong genus ru"
-  response_lexeme_import_wrong_genus_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import wrong genus zh"
-  response_local_search_contents_listing_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search contents listing en"
-  response_local_search_contents_listing_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search contents listing hi"
-  response_local_search_contents_listing_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search contents listing ru"
-  response_local_search_contents_listing_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search contents listing zh"
-  response_local_search_found_closest_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found closest en"
-  response_local_search_found_closest_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found closest hi"
-  response_local_search_found_closest_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found closest ru"
-  response_local_search_found_closest_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found closest zh"
-  response_local_search_found_directory_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found directory en"
-  response_local_search_found_directory_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found directory hi"
-  response_local_search_found_directory_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found directory ru"
-  response_local_search_found_directory_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found directory zh"
-  response_local_search_found_file_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found file en"
-  response_local_search_found_file_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found file hi"
-  response_local_search_found_file_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found file ru"
-  response_local_search_found_file_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found file zh"
-  response_local_search_found_path_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found path en"
-  response_local_search_found_path_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found path hi"
-  response_local_search_found_path_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found path ru"
-  response_local_search_found_path_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found path zh"
-  response_local_search_mismatch_requested_directory_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search mismatch requested directory en"
-  response_local_search_mismatch_requested_directory_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search mismatch requested directory hi"

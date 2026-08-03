@@ -2,25 +2,26 @@ self_ast_census
   target src/main.rs
   language rust
   fidelity signature
-  byte_len 35072
-  line_count 997
-  content_id source_module_ad67671c3caccac5
-  symbol_count 40
+  byte_len 35058
+  line_count 998
+  content_id source_module_d288c45f7275efa1
+  symbol_count 41
   symbols
-    module cli_benchmark 9 9
-    module cli_clients 10 10
-    module cli_computer_use 11 11
-    module cli_context 12 12
-    module cli_file_legality 13 13
-    module cli_import 14 14
-    module cli_improve 15 15
-    module cli_learn 16 16
-    module cli_memory 17 17
-    module cli_orchestration 18 18
-    module cli_procedure 19 19
-    module cli_report 20 20
-    module cli_shared_dialog 21 21
-    module cli_statement_audit 22 22
+    module cli_algorithm 9 9
+    module cli_benchmark 10 10
+    module cli_clients 11 11
+    module cli_computer_use 12 12
+    module cli_context 13 13
+    module cli_file_legality 14 14
+    module cli_import 15 15
+    module cli_improve 16 16
+    module cli_learn 17 17
+    module cli_memory 18 18
+    module cli_orchestration 19 19
+    module cli_procedure 20 20
+    module cli_report 21 21
+    module cli_shared_dialog 22 22
+    module cli_statement_audit 23 23
     const DEFAULT_AGENT_TASK 53 73
     struct Args 62 73
     enum Command 76 296
@@ -34,16 +35,16 @@ self_ast_census
     function fmt 541 547
     function fmt 551 556
     function fmt 560 565
-    function main 568 686
-    function run_github_logs 688 709
-    function run_agent 711 735
-    function into_config 738 750
-    struct TelegramRunArgs 753 762
-    function solver_for_chat 764 781
-    function print_thinking_trace 790 808
-    function run_chat 810 863
-    function run_bundle 865 929
-    function run_environments 931 952
-    function read_input 954 962
-    function run_telegram 964 989
-    function parse_allowed_updates 991 997
+    function main 568 687
+    function run_github_logs 689 710
+    function run_agent 712 736
+    function into_config 739 751
+    struct TelegramRunArgs 754 763
+    function solver_for_chat 765 782
+    function print_thinking_trace 791 809
+    function run_chat 811 864
+    function run_bundle 866 930
+    function run_environments 932 953
+    function read_input 955 963
+    function run_telegram 965 990
+    function parse_allowed_updates 992 998

@@ -2,6 +2,7 @@ extern crate alloc;
 
 pub mod agent;
 pub mod agentic_coding;
+pub mod algorithm_discovery;
 pub mod anthropic;
 pub mod arithmetic;
 pub mod associative_package;
@@ -109,6 +110,7 @@ pub mod self_explanation;
 pub mod self_healing;
 pub mod self_improvement;
 pub mod self_source_links;
+pub mod sequences;
 pub mod server;
 pub mod shared_dialog;
 pub mod shared_memory;
@@ -314,10 +316,10 @@ pub use seed::{
     agent_info, canonical_model_id, concepts as seed_concepts, environment_directory,
     environment_records, intent_routing, language_rules, merged_bundle, model_aliases,
     multilingual_responses, operation_vocabulary, parse_bundle, projects_registry, prompt_patterns,
-    resolve_model_id, response_for, seed_files, supported_languages, try_resolve_model_id,
-    EnvironmentDirectory, EnvironmentRecord, IntentRouting, LocalizedProject, MigrationFlow,
-    ModelAliasRegistry, OperationLanguageForms, OperationTrigger, OperationVocabulary,
-    ProjectRecord, ProjectStatement, ProjectsRegistry,
+    render_response, resolve_model_id, response_for, seed_files, supported_languages,
+    try_resolve_model_id, EnvironmentDirectory, EnvironmentRecord, IntentRouting, LocalizedProject,
+    MigrationFlow, ModelAliasRegistry, OperationLanguageForms, OperationTrigger,
+    OperationVocabulary, ProjectRecord, ProjectStatement, ProjectsRegistry,
 };
 pub use self_ast_census::{
     drift_report, scan_symbols, CensusDrift, CensusFidelity, CensusResolution, ModuleCensus,
@@ -337,6 +339,13 @@ pub use self_improvement::{
 pub use self_source_links::{
     owned_file_count, owned_manifest, owned_manifest_content_id, owned_manifest_notation,
     owned_source_files, owned_total_bytes, SourceLinks, SourceModuleDigest, SourceModuleProjection,
+};
+pub use sequences::{
+    balanced_convert, compress, detect_palindrome, detect_period, detect_repetition,
+    infer_grid_patterns, infer_sequence_patterns, CompressionResult, CompressionStep, Doublet,
+    Grid, GridPatternReport, GridSymmetry, GridTransform, LinkAddress, LinkFrequenciesCache,
+    LinkFrequency, RepetitionPattern, SequenceIndex, SequencePattern, SequencePatternReport,
+    SequenceStore, SymbolTable,
 };
 pub use server::{
     enable_http_agent_mode_for_current_process, handle_api_request, handle_api_request_with_auth,

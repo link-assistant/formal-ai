@@ -75,10 +75,11 @@ pub use embedded::{
     MEANING_FILES, MODEL_ALIASES_LINO, MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,
     MULTILINGUAL_RESPONSES_ENTITIES_LINO, MULTILINGUAL_RESPONSES_LANGUAGE_PROTOCOL_LINO,
     MULTILINGUAL_RESPONSES_LINO, MULTILINGUAL_RESPONSES_MEMORY_PROGRAM_LINO,
-    MULTILINGUAL_RESPONSES_PROCEDURE_LINO, NUMERIC_LIST_OPERATIONS_LINO, OPERATION_VOCABULARY_LINO,
-    PERSONAS_LINO, PROGRAM_CST_GRAMMARS_LINO, PROGRAM_PLAN_RULES_LINO, PROJECTS_LINO,
-    PROMPT_PATTERNS_LINO, PROOF_PROGRAM_TEMPLATES_LINO, RESPONSE_FILES, SELF_IMPROVEMENT_LOOP_LINO,
-    SHELL_INTENTS_LINO, SUMMARY_TOPICS_LINO, TERMINAL_COMMANDS_LINO, TOOLS_LINO,
+    MULTILINGUAL_RESPONSES_PATTERN_LINO, MULTILINGUAL_RESPONSES_PROCEDURE_LINO,
+    NUMERIC_LIST_OPERATIONS_LINO, OPERATION_VOCABULARY_LINO, PERSONAS_LINO,
+    PROGRAM_CST_GRAMMARS_LINO, PROGRAM_PLAN_RULES_LINO, PROJECTS_LINO, PROMPT_PATTERNS_LINO,
+    PROOF_PROGRAM_TEMPLATES_LINO, RESPONSE_FILES, SELF_IMPROVEMENT_LOOP_LINO, SHELL_INTENTS_LINO,
+    SUMMARY_TOPICS_LINO, TERMINAL_COMMANDS_LINO, TOOLS_LINO,
 };
 pub use entity_names::{entity_names, EntityName};
 pub use facts::{facts, FactRecord, LocalizedFact};
@@ -290,6 +291,17 @@ pub fn response_for(intent: &str, language: &str) -> Option<String> {
         }
     }
     None
+}
+
+/// Look up one response and substitute its named template fields.
+#[must_use]
+pub fn render_response(intent: &str, language: &str, values: &[(&str, &str)]) -> Option<String> {
+    response_for(intent, language).map(|mut rendered| {
+        for (name, value) in values {
+            rendered = rendered.replace(&format!("{{{name}}}"), value);
+        }
+        rendered
+    })
 }
 
 /// Look up a localized response, applying the registry's `explicit_gap`

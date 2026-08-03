@@ -10,7 +10,7 @@
 //!
 //!   1. Fetches `Special:EntityData/<qid>.json` from Wikidata (via `curl`) when
 //!      the cache file is missing, trims it to the established cache convention
-//!      (`type`, `id`, `labels`/`descriptions`/`aliases` in en/ru/hi/zh only,
+//!      (`type`, `id`, `labels`/`descriptions`/`aliases` in en/ru/hi/zh/es only,
 //!      wrapped in `{entities:{<qid>:…}, success:1}`), and writes the pretty
 //!      multi-line JSON to `data/cache/wikidata/entity/<qid>.json`.
 //!   2. **Verifies** that the fetched entity's labels actually contain
@@ -145,6 +145,7 @@ const GROUNDINGS: &[(&str, &str, &str)] = &[
     ("language_russian", "Q7737", "russian"),
     ("language_hindi", "Q1568", "hindi"),
     ("language_chinese", "Q7850", "chinese"),
+    ("language_spanish", "Q1321", "spanish"),
     // concrete nouns used by the translation vocabulary
     ("apple", "Q89", "apple"),
     ("tomato", "Q23501", "tomato"),
@@ -212,7 +213,7 @@ const GROUNDINGS: &[(&str, &str, &str)] = &[
 ];
 
 /// `curl | python3` trim+verify program. Reads the full EntityData JSON on
-/// stdin, keeps only the cache-convention keys and the en/ru/hi/zh languages,
+/// stdin, keeps only the cache-convention keys and the en/ru/hi/zh/es languages,
 /// asserts the expected token appears in some label, and writes pretty JSON.
 /// Exits non-zero (without writing) when the token is absent — the wrong-Qid
 /// guard.
@@ -220,7 +221,7 @@ const TRIM_PROGRAM: &str = r#"
 import sys, json
 from collections import OrderedDict
 qid, token, out_path = sys.argv[1], sys.argv[2], sys.argv[3]
-langs = ["en", "ru", "hi", "zh"]
+langs = ["en", "ru", "hi", "zh", "es"]
 doc = json.load(sys.stdin)
 entity = doc["entities"][qid]
 labels = entity.get("labels", {})
