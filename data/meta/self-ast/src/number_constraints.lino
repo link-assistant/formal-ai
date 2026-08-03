@@ -2,9 +2,9 @@ self_ast_census
   target src/number_constraints.rs
   language rust
   fidelity signature
-  byte_len 14348
-  line_count 432
-  content_id source_module_113f684866b88e40
+  byte_len 14495
+  line_count 435
+  content_id source_module_ad8548f356d86c50
   symbol_count 28
   symbols
     struct Bound 21 24
@@ -24,14 +24,14 @@ self_ast_census
     function parse_leading_integer 225 245
     function formal_statement 247 255
     enum IntegerSolutions 257 262
-    function integer_solutions 264 285
-    function render_interval_answer 287 298
-    function render_interval_answer_ru 300 331
-    function render_interval_answer_en 333 366
-    function real_domain_line_ru 368 382
-    function real_domain_line_en 384 398
-    function has_multiple_real_solutions 400 402
-    function has_single_real_solution 404 406
-    function real_example 408 410
-    function format_half 412 421
-    function format_candidates 423 432
+    function integer_solutions 264 288
+    function render_interval_answer 290 301
+    function render_interval_answer_ru 303 334
+    function render_interval_answer_en 336 369
+    function real_domain_line_ru 371 385
+    function real_domain_line_en 387 401
+    function has_multiple_real_solutions 403 405
+    function has_single_real_solution 407 409
+    function real_example 411 413
+    function format_half 415 424
+    function format_candidates 426 435

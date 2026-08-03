@@ -6,7 +6,7 @@ self_ast_census_index
   full_ast_module_count 54
   signature_module_count 356
   symbol_count 8434
-  content_id self_ast_census_index_42be4a6cadc00860
+  content_id self_ast_census_index_84b3f5e7fa86f638
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/associative_learning.rs full_ast 7 source_module_926e3e97b31fa30a
@@ -197,7 +197,7 @@ self_ast_census_index
     src/method_registry.rs signature 13 source_module_0d9b169193384e14
     src/network_endpoint.rs signature 3 source_module_de934b153e58a89a
     src/normal_markov.rs signature 17 source_module_067ff2a2160ba9ec
-    src/number_constraints.rs signature 28 source_module_113f684866b88e40
+    src/number_constraints.rs signature 28 source_module_ad8548f356d86c50
     src/option_evidence.rs signature 7 source_module_1f2d1da71ed9537a
     src/option_network.rs signature 56 source_module_607db13d08ad03bb
     src/orchestration/analysis.rs signature 20 source_module_607052972ba5f094

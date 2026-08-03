@@ -263,18 +263,21 @@ enum IntegerSolutions {
 
 fn integer_solutions(bounds: IntervalBounds) -> IntegerSolutions {
     let start = if bounds.lower.inclusive {
-        bounds.lower.value
+        i128::from(bounds.lower.value)
     } else {
-        bounds.lower.value.saturating_add(1)
+        i128::from(bounds.lower.value) + 1
     };
     let end = if bounds.upper.inclusive {
-        bounds.upper.value
+        i128::from(bounds.upper.value)
     } else {
-        bounds.upper.value.saturating_sub(1)
+        i128::from(bounds.upper.value) - 1
     };
     if start > end {
         return IntegerSolutions::None;
     }
+    let (Ok(start), Ok(end)) = (i64::try_from(start), i64::try_from(end)) else {
+        return IntegerSolutions::None;
+    };
     if start == end {
         return IntegerSolutions::Unique(start);
     }
