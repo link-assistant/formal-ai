@@ -32,15 +32,15 @@ test.describe('Issue #890 formal proof program translation', () => {
     await switchToManualMode(page);
   });
 
-  test('all registered natural-language commands produce the same Rust proof', async ({ page }) => {
+  test('all fully supported natural-language commands produce the same Rust proof', async ({ page }) => {
     const statement = 'x > 1 and x < 3 is satisfiable';
     const prompts = [
-      `Translate \`${statement}\` to Rust`,
-      `Переведи \`${statement}\` на Раст`,
-      `\`${statement}\` का रस्ट में अनुवाद करो`,
-      `把\`${statement}\`翻译成Rust`,
+      { locale: 'en', prompt: `Translate \`${statement}\` to Rust` },
+      { locale: 'ru', prompt: `Переведи \`${statement}\` на Раст` },
+      { locale: 'hi', prompt: `\`${statement}\` का रस्ट में अनुवाद करो` },
+      { locale: 'zh', prompt: `把\`${statement}\`翻译成Rust` },
     ];
-    for (const prompt of prompts) {
+    for (const { prompt } of prompts) {
       const reply = await sendPrompt(page, prompt);
       await expect(reply).toContainText('fn main()');
       await expect(reply).toContainText('proof obligation failed');

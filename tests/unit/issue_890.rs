@@ -231,3 +231,24 @@ fn every_registered_natural_language_can_request_proof_translation() {
         }
     }
 }
+
+#[test]
+fn registered_partial_language_stays_outside_the_full_support_matrix() {
+    let language = "es";
+    assert!(formal_ai::language::registered_languages()
+        .iter()
+        .any(|registered| registered.slug() == language));
+    assert!(
+        !formal_ai::supported_languages()
+            .iter()
+            .any(|supported| supported == language),
+        "a partial locale must not silently enter the full-support matrix"
+    );
+
+    assert_eq!(
+        formal_ai::seed::response_for("language_gap", language).as_deref(),
+        Some(
+            "Este significado aún no está cubierto en español; no se sustituyó por una respuesta en inglés."
+        )
+    );
+}
