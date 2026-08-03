@@ -363,8 +363,10 @@ async function translateSurface(surface, source, target) {
 
 async function tryTranslation(prompt, normalized) {
   const targetHint = detectTranslationTargetLanguage(normalized);
-  const proofTranslation = formalProofProgramTranslation(prompt, normalized);
-  const programTarget = proofTranslation ? proofTranslation.target : null;
+  const proofMatch = /`([^`\r\n]+)`/u.exec(String(prompt || ""));
+  const programTarget = programLanguageFromPrompt(normalized);
+  const proofTranslation = proofMatch && programTarget && wasmJsonCall(
+    "engine_translate_formal_proof", [proofMatch[1], programTarget, seedRawText(SEED_RAW, "proof-program-templates.lino")].map(encodeURIComponent).join("\n"));
   const unquotedSurface = extractUnquotedTranslationSurface(prompt);
   // Issue #386: recognise a translation command by *meaning*, not by hardcoded
   // verbs. The command stems live once in the embedded translate meaning; this
@@ -387,7 +389,7 @@ async function tryTranslation(prompt, normalized) {
   const isTranslationRequest = headInitialCommand || headFinalCommand || sourceFirstCommand;
   if (!isTranslationRequest) return null;
 
-  if (proofTranslation) return proofTranslation.answer;
+  if (proofTranslation) return proofTranslation;
 
   // Issue #216: fall back to an unquoted surface (`translate apple to
   // russian`) when no quoted fragment is present so the offline registry

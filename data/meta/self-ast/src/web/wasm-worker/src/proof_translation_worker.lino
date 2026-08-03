@@ -1,0 +1,11 @@
+self_ast_census
+  target src/web/wasm-worker/src/proof_translation_worker.rs
+  language rust
+  fidelity signature
+  byte_len 2546
+  line_count 78
+  content_id source_module_ee387b7ca4038cbd
+  symbol_count 2
+  symbols
+    function answer 15 54
+    function serialize_answer 56 78

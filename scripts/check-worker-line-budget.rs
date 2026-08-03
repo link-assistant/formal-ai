@@ -57,8 +57,10 @@ const TARGET_TOTAL_LINES: usize = 3_000;
 /// net ceiling by one line through equivalent helper consolidation.
 /// Issue #858 then mirrors the returning-user recap route and bounded plain
 /// formatter for Rust↔JS parity, adding a net 64 lines on the merged baseline.
+/// Issue #890 moves the formal-proof parser and renderer into the shared
+/// Rust→WASM core, lowering the ratchet by one line after its routing adapter.
 #[cfg(not(test))]
-const CEILING_TOTAL_LINES: usize = 27_706;
+const CEILING_TOTAL_LINES: usize = 27_705;
 
 const WORKER_DIR: &str = "src/web/worker";
 

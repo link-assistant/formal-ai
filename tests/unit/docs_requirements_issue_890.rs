@@ -32,7 +32,7 @@ fn issue_890_case_study_and_release_metadata_are_traceable() {
             "src/proof_program.rs",
             "data/seed/proof-program-templates.lino",
             "one proof formalizer plus one data-defined projection per target",
-            "formal_ai_worker_24.js",
+            "proof_translation_worker.rs",
         ],
     );
     assert_contains_all(

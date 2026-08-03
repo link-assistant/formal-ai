@@ -58,10 +58,11 @@ never reparses localized prose. Target recognition uses the programming
 catalog, and script-aware alias matching lets Chinese text adjoin `Rust`
 without weakening ASCII substring boundaries.
 
-The browser worker mirrors the proof formalizer, slug, slot expansion, and
-routing while loading the same presentation seed. This is a behavioral feature
-rather than a visual UI change, so the evidence is the Playwright interaction
-test rather than before/after screenshots.
+The browser worker compiles the same proof core, slug, and slot expansion into
+Rust→WASM while loading the same presentation seed. JavaScript retains only the
+routing adapter. This is a behavioral feature rather than a visual UI change,
+so the evidence is the Playwright interaction test rather than before/after
+screenshots.
 
 ## 5. Verification
 

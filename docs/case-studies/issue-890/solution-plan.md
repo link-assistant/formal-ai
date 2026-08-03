@@ -29,9 +29,9 @@ assert identical output.
 Place proof extraction before the command-word gate, because Hindi and Chinese
 may put the translation command after the quoted proof. Resolve target aliases
 with script-aware boundaries so a Latin alias beside Han characters works
-without making substrings such as `trust` match Rust. Load the same proof
-presentation templates in the browser worker and mirror only the proof
-formalizer and slot expansion, then exercise English, Russian, Hindi, and
+without making substrings such as `trust` match Rust. Compile the same proof
+formalizer and slot expansion into the browser's Rust→WASM worker, load the same
+proof presentation templates there, then exercise English, Russian, Hindi, and
 Chinese requests against the live language registry and the local Playwright
 demo.
 

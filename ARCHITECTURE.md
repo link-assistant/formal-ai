@@ -958,9 +958,10 @@ bind proof fields into the selected target template. Each program checks the
 witness at runtime before printing it. This keeps the architecture at
 one proof formalizer plus one data-defined projection per target, never one
 implementation per natural-language/programming-language pair. The browser
-mirror follows the same boundary in `src/web/worker/formal_ai_worker_24.js`,
-while worker 13 supplies the script-aware target-language alias match used by
-Chinese requests.
+compiles the same presentation-independent core into
+`src/web/wasm-worker/src/proof_translation_worker.rs`; JavaScript only extracts
+the quoted statement and target before crossing the WASM boundary. Worker 13
+supplies the script-aware target-language alias match used by Chinese requests.
 
 The Rust pipeline is the canonical implementation. The browser worker
 (`src/web/formal_ai_worker.js`) cannot reach Wiktionary or Wikidata
