@@ -168,8 +168,11 @@ fn contains_token(normalized: &str, expected: &str) -> bool {
         return normalized.match_indices(expected).any(|(index, _)| {
             let before = normalized[..index].chars().next_back();
             let after = normalized[index + expected.len()..].chars().next();
-            before.is_none_or(|character| !character.is_ascii_alphanumeric())
-                && after.is_none_or(|character| !character.is_ascii_alphanumeric())
+            let is_alias_continuation = |character: char| {
+                character.is_ascii_alphanumeric() || matches!(character, '+' | '#')
+            };
+            before.is_none_or(|character| !is_alias_continuation(character))
+                && after.is_none_or(|character| !is_alias_continuation(character))
         });
     }
     normalized.split_whitespace().any(|token| token == expected)
