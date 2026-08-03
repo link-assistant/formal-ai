@@ -425,8 +425,10 @@ Requirement-level status by area, updated:
 | Learning the universal algorithm itself | Not done beyond inert discovery (`src/algorithm_discovery.rs`); proposal-loop learning is E75 |
 | Formal-reasoning breadth (beyond SAT + linear arithmetic) | Partial; growth with external benchmark scoring is E76 |
 
-**Open planning batch E69-E77.** Created from issue #914's gap analysis
-(case study in `docs/case-studies/issue-914/`): E69 coding-ladder ratchet
+**Open planning batch E69-E77**
+([#916](https://github.com/link-assistant/formal-ai/issues/916)-[#924](https://github.com/link-assistant/formal-ai/issues/924)).
+Created from issue #914's gap analysis (case study in
+`docs/case-studies/issue-914/`): E69 coding-ladder ratchet
 over agent-harness fixes (foundation blocker), E70 general natural-formal
 translation, E71 minimal-core boundary and seed-metadata audit, E72
 research-driven coding knowledge loop, E73 question-necessity protocol, E74

@@ -32,7 +32,8 @@ Done on this branch; no epic needed.
 Approach: the #848 coding-task ladder already measures coding honestly
 (2 of 13 rungs at baseline, zero successful write effects, verification by
 observed workspace effect). The blocker is not missing capability design
-but the open agent-harness defect cluster #902-#909: success reported on
+but the agent-harness defect cluster #902-#909 (#902 was fixed on main
+during this planning pass; #903-#909 remain open): success reported on
 exit code 1 (#905, #908), coding tasks reduced to plan files (#904),
 native CLI argument vectors built wrong (#903), lost provider blocks
 (#902), caller framing hijacking intent routing (#907), language-router

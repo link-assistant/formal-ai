@@ -10,18 +10,18 @@ linking parent issue #914.
 
 ## Opened issues
 
-Recorded after creation from this document (each opened with the
-`enhancement` label, linking parent issue #914):
+Opened on 2026-08-03 from this document, each with the `enhancement`
+label, linking parent issue #914:
 
-- E69: (recorded after creation)
-- E70: (recorded after creation)
-- E71: (recorded after creation)
-- E72: (recorded after creation)
-- E73: (recorded after creation)
-- E74: (recorded after creation)
-- E75: (recorded after creation)
-- E76: (recorded after creation)
-- E77: (recorded after creation)
+- E69: <https://github.com/link-assistant/formal-ai/issues/916>
+- E70: <https://github.com/link-assistant/formal-ai/issues/917>
+- E71: <https://github.com/link-assistant/formal-ai/issues/918>
+- E72: <https://github.com/link-assistant/formal-ai/issues/919>
+- E73: <https://github.com/link-assistant/formal-ai/issues/920>
+- E74: <https://github.com/link-assistant/formal-ai/issues/921>
+- E75: <https://github.com/link-assistant/formal-ai/issues/922>
+- E76: <https://github.com/link-assistant/formal-ai/issues/923>
+- E77: <https://github.com/link-assistant/formal-ai/issues/924>
 
 ## Design rules that bind every epic
 

@@ -81,7 +81,8 @@ registry. Issue #848 built the executable coding-task ladder
 and zero write-effect tasks succeed**, with verification by observed
 workspace effect rather than narration.
 
-Gap: the open defect cluster #902-#909 shows the agent harness losing
+Gap: the defect cluster #902-#909 (#902 fixed on main during this
+planning pass, #903-#909 still open) shows the agent harness losing
 provider blocks, reporting success on exit code 1, reducing coding tasks
 to plan files, and misrouting caller framing. These are the critical
 vision-blocking problems R914-14 requires fixing first. Owned by **E69**
