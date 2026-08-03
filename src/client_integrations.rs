@@ -1,6 +1,8 @@
 use std::error::Error;
+use std::ffi::OsString;
 use std::fmt::Write as _;
 use std::fs;
+use std::io::{IsTerminal as _, Read as _};
 use std::path::{Component, Path, PathBuf};
 use std::process::Command;
 
@@ -15,12 +17,14 @@ use crate::seed::{
 };
 use crate::DEFAULT_MODEL;
 
+mod caller_args;
 mod command;
 mod completion;
 mod completion_learning;
 mod server;
 mod session_files;
 mod url;
+use caller_args::CallerArgs;
 use command::{contains_model_arg, ensure_trailing_newline, resolve_integration_command};
 use completion::{require_completed, run_to_completion, AuthoringRun, CompletionInvocation};
 use server::maybe_start_server;
@@ -136,6 +140,112 @@ pub struct WithFormalAiArgs {
     pub tool_args: Vec<String>,
 }
 
+/// Insert the `--` separator right after the wrapped tool name.
+///
+/// Without it the argument parser keeps matching its own flags after the tool
+/// positional, so a caller flag that happens to share a name with one of ours
+/// — `--verbose` is the whole formal-ai command's global flag — is consumed by
+/// formal-ai instead of reaching the client. `command` is the full parser tree,
+/// so which flags take a value is read from the parser itself rather than
+/// restated here.
+///
+/// An argv that already contains `--` is returned untouched.
+#[must_use]
+pub fn delimit_tool_args(argv: Vec<OsString>, command: &clap::Command) -> Vec<OsString> {
+    // `Command::build` is what fills in each argument's value count; without it
+    // every flag would look like a value-less switch and the token after a
+    // `--base-url http://…` pair would be mistaken for the tool name.
+    let mut root = command.clone();
+    root.build();
+    // Ancestors stay in scope because clap propagates global arguments into
+    // subcommands only while parsing, not while building.
+    let mut scopes = vec![&root];
+    let mut wraps_tool = root.get_name() == "with-formal-ai";
+    let mut index = 1;
+    while index < argv.len() {
+        let Some(token) = argv[index].to_str() else {
+            return argv;
+        };
+        if token == "--" {
+            return argv;
+        }
+        if let Some(consumed) = flag_token_length(token, &scopes) {
+            index += consumed;
+            continue;
+        }
+        if wraps_tool {
+            let mut delimited = argv;
+            delimited.insert(index + 1, OsString::from("--"));
+            return delimited;
+        }
+        let Some(subcommand) = scopes.last().and_then(|scope| scope.find_subcommand(token)) else {
+            return argv;
+        };
+        wraps_tool = subcommand.get_name() == "with";
+        scopes.push(subcommand);
+        index += 1;
+    }
+    argv
+}
+
+/// How many argv entries `token` occupies when it is a flag, or `None` when it
+/// is a positional.
+///
+/// `scopes` is the chain from the root command to the one currently being
+/// parsed; only the innermost scope contributes its local arguments, the outer
+/// ones contribute their global arguments the way clap propagates them.
+fn flag_token_length(token: &str, scopes: &[&clap::Command]) -> Option<usize> {
+    if let Some(long) = token.strip_prefix("--") {
+        if long.is_empty() {
+            return None;
+        }
+        if long.contains('=') {
+            return Some(1);
+        }
+        let takes_value = value_args(scopes).any(|argument| {
+            argument
+                .get_long_and_visible_aliases()
+                .is_some_and(|names| names.contains(&long))
+        });
+        return Some(1 + usize::from(takes_value));
+    }
+    let shorts = token
+        .strip_prefix('-')
+        .filter(|shorts| !shorts.is_empty())?;
+    for (position, short) in shorts.char_indices() {
+        let takes_value = value_args(scopes).any(|argument| {
+            argument
+                .get_short_and_visible_aliases()
+                .is_some_and(|names| names.contains(&short))
+        });
+        if takes_value {
+            // A value attached to the cluster (`-mvalue`) keeps the flag to one
+            // entry; a detached one takes the next entry too.
+            let attached = position + short.len_utf8() < shorts.len();
+            return Some(if attached { 1 } else { 2 });
+        }
+    }
+    Some(1)
+}
+
+/// Every value-taking option visible in the innermost scope.
+fn value_args<'a>(scopes: &'a [&'a clap::Command]) -> impl Iterator<Item = &'a clap::Arg> {
+    let depth = scopes.len();
+    scopes
+        .iter()
+        .enumerate()
+        .flat_map(move |(level, scope)| {
+            scope
+                .get_arguments()
+                .filter(move |argument| level + 1 == depth || argument.is_global_set())
+        })
+        .filter(|argument| {
+            argument
+                .get_num_args()
+                .is_some_and(|count| count.takes_values())
+        })
+}
+
 #[derive(Debug, Clone)]
 struct RenderContext {
     protocol: String,
@@ -160,6 +270,9 @@ struct InvocationOptions {
     force_interactive: bool,
     force_non_interactive: bool,
     orchestration: bool,
+    /// Whether standard input is a terminal. A piped invocation is headless
+    /// even when the caller passed no prompt text.
+    stdin_is_terminal: bool,
 }
 
 pub fn run_with_formal_ai(args: &WithFormalAiArgs) -> Result<(), Box<dyn Error>> {
@@ -194,20 +307,43 @@ pub fn run_with_formal_ai(args: &WithFormalAiArgs) -> Result<(), Box<dyn Error>>
     } else {
         None
     };
+    let stdin_is_terminal = std::io::stdin().is_terminal();
+    let mut caller = CallerArgs::parse(&args.tool_args, integration, &integrations);
+    if !caller.has_text() && !stdin_is_terminal && !args.interactive {
+        // A piped prompt becomes the same structured prompt an argument would
+        // have produced, so every client renders it in its own vocabulary
+        // (`codex exec <prompt>`, `claude --print <prompt>`) instead of being
+        // handed a mode flag with nothing to say.
+        if let Some(piped) = read_piped_prompt()? {
+            caller = caller.with_prompt(&piped);
+        }
+    }
     run_ephemeral(
         integration,
-        &args.tool_args,
+        &caller,
         &context,
         InvocationOptions {
             keep_summarization: args.summarize,
             force_interactive: args.interactive,
             force_non_interactive: args.non_interactive,
             orchestration: args.orchestration,
+            stdin_is_terminal,
         },
         server.as_ref().map(|server| server.output_log.as_path()),
         args.orchestration_home.as_deref(),
         args.orchestration_resume.as_deref(),
     )
+}
+
+/// Read a prompt piped into the wrapper, or `None` when stdin carries nothing.
+fn read_piped_prompt() -> Result<Option<String>, Box<dyn Error>> {
+    let mut piped = String::new();
+    std::io::stdin().read_to_string(&mut piped)?;
+    let piped = piped.trim();
+    if piped.is_empty() {
+        return Ok(None);
+    }
+    Ok(Some(piped.to_owned()))
 }
 
 fn select_integrations<'a>(
@@ -309,7 +445,10 @@ fn render_context(
         google_auth_type,
         model_catalog_path: String::new(),
     };
-    context.model_selector = if integration.model_selector.is_empty() {
+    // An already-qualified selector (`provider/model`) is passed through: the
+    // seed template only supplies the provider a bare alias is missing.
+    context.model_selector = if integration.model_selector.is_empty() || context.model.contains('/')
+    {
         context.model.clone()
     } else {
         render_template(&integration.model_selector, &context)
@@ -319,7 +458,7 @@ fn render_context(
 
 fn run_ephemeral(
     integration: &ClientIntegration,
-    user_args: &[String],
+    caller: &CallerArgs,
     context: &RenderContext,
     mut options: InvocationOptions,
     temporary_server_log: Option<&Path>,
@@ -328,7 +467,7 @@ fn run_ephemeral(
 ) -> Result<(), Box<dyn Error>> {
     let invocation = &integration.invocation;
     let mut context = context.clone();
-    let mut authoring = AuthoringRun::for_invocation(user_args, &mut options)?;
+    let mut authoring = AuthoringRun::for_invocation(caller, &mut options)?;
     let mut temp_dirs = Vec::new();
     let mut session_home = None;
     let resolved_command = resolve_integration_command(integration);
@@ -419,7 +558,7 @@ fn run_ephemeral(
                 CompletionInvocation {
                     command: &command,
                     integration,
-                    user_args,
+                    caller,
                     context: &context,
                     options,
                     session_root: session_root.as_deref(),
@@ -433,13 +572,8 @@ fn run_ephemeral(
                 Some(outcome.completion_passed),
             )
         } else {
-            let final_args = build_invocation_args(
-                integration,
-                user_args,
-                &context,
-                options,
-                orchestration_resume,
-            );
+            let final_args =
+                build_invocation_args(integration, caller, &context, options, orchestration_resume);
             command.args(final_args);
             let status = command.status()?;
             (
@@ -498,9 +632,15 @@ fn temp_scoped_path(root: &Path, relative: &str) -> Result<PathBuf, Box<dyn Erro
     Ok(root.join(path))
 }
 
+/// Render one client invocation from the seed-declared contract plus the
+/// caller's parsed request.
+///
+/// Every attempt goes through here, so a completion retry re-renders the same
+/// option set with only the prompt substituted instead of rebuilding an argv
+/// from the correction text alone.
 fn build_invocation_args(
     integration: &ClientIntegration,
-    user_args: &[String],
+    caller: &CallerArgs,
     context: &RenderContext,
     options: InvocationOptions,
     orchestration_resume: Option<&str>,
@@ -520,27 +660,23 @@ fn build_invocation_args(
             }
         }
     }
-    let interactive =
-        options.force_interactive || (!options.force_non_interactive && user_args.is_empty());
+    // A request with no text still runs headless when stdin is a pipe: the
+    // prompt arrives on stdin, so injecting the client's interactive flags
+    // would hang a scripted invocation.
+    let interactive = options.force_interactive
+        || (!options.force_non_interactive && !caller.has_text() && options.stdin_is_terminal);
     let mode_args: &[String] =
-        if interactive && invocation.interactive_args_require_prompt && user_args.is_empty() {
+        if interactive && invocation.interactive_args_require_prompt && caller.prompt().is_none() {
             &[]
         } else if interactive {
             &invocation.interactive_args
         } else {
             &invocation.non_interactive_args
         };
-    let rendered_mode_args = if mode_args
+    let rendered_mode_args = mode_args
         .iter()
-        .any(|mode_arg| user_args.contains(mode_arg))
-    {
-        Vec::new()
-    } else {
-        mode_args
-            .iter()
-            .map(|arg| render_template(arg, context))
-            .collect::<Vec<_>>()
-    };
+        .map(|arg| render_template(arg, context))
+        .collect::<Vec<_>>();
     if invocation.mode_arg_position == Some(ModeArgPosition::BeforeInvocation) {
         args.splice(0..0, rendered_mode_args.iter().cloned());
     }
@@ -552,14 +688,14 @@ fn build_invocation_args(
                 .map(|arg| render_template(arg, context)),
         );
     }
+    let caller_options = caller.options();
     let mut effective_user_args = Vec::new();
     if options.orchestration {
-        effective_user_args.extend(
-            invocation
-                .orchestration_args
-                .iter()
-                .map(|arg| render_template(arg, context)),
-        );
+        effective_user_args.extend(overlay_args(
+            &invocation.orchestration_args,
+            caller,
+            context,
+        ));
     }
     if let Some(session_id) = orchestration_resume {
         effective_user_args.extend(
@@ -569,11 +705,14 @@ fn build_invocation_args(
                 .map(|argument| argument.replace(concat!("{", "session_id", "}"), session_id)),
         );
     }
+    effective_user_args.extend(caller_options.iter().cloned());
     if invocation.mode_arg_position != Some(ModeArgPosition::BeforeInvocation) {
         effective_user_args.extend(rendered_mode_args);
     }
-    effective_user_args.extend(user_args.iter().cloned());
-    if invocation.model_arg.is_empty() || contains_model_arg(user_args) {
+    if let Some(prompt) = caller.prompt() {
+        effective_user_args.push(prompt.to_owned());
+    }
+    if invocation.model_arg.is_empty() || contains_model_arg(&caller_options) {
         args.extend(effective_user_args);
         return args;
     }
@@ -602,6 +741,32 @@ fn build_invocation_args(
         }
     }
     args
+}
+
+/// Render a seed-declared argument overlay, dropping any flag the caller
+/// already passed so the client never receives the same option twice.
+fn overlay_args(overlay: &[String], caller: &CallerArgs, context: &RenderContext) -> Vec<String> {
+    let mut rendered = Vec::new();
+    let mut index = 0;
+    while index < overlay.len() {
+        let argument = &overlay[index];
+        let is_flag = argument.len() > 1 && argument.starts_with('-');
+        let value_count = usize::from(
+            is_flag
+                && overlay
+                    .get(index + 1)
+                    .is_some_and(|value| !value.starts_with('-')),
+        );
+        if is_flag && caller.contains_flag(argument) {
+            index += 1 + value_count;
+            continue;
+        }
+        for argument in &overlay[index..=index + value_count] {
+            rendered.push(render_template(argument, context));
+        }
+        index += 1 + value_count;
+    }
+    rendered
 }
 
 fn write_global_config(

@@ -11,6 +11,7 @@ use serde_json::{json, Map, Value};
 use crate::orchestration::workspace::{changes, snapshot, Snapshot, WorkspaceChange};
 use crate::seed::{self, ClientCompletionContract};
 
+use super::caller_args::CallerArgs;
 use super::completion_learning::{RecoveryKey, RecoveryLedger, RecoveryOutcome};
 use super::session_files::{native_session_id, newest_changed_session_file, SessionSnapshot};
 use super::{build_invocation_args, ClientIntegration, InvocationOptions, RenderContext};
@@ -66,13 +67,13 @@ pub(super) struct AuthoringRun {
 
 impl AuthoringRun {
     pub(super) fn for_invocation(
-        user_args: &[String],
+        caller: &CallerArgs,
         options: &mut InvocationOptions,
     ) -> Result<Option<Self>, Box<dyn Error>> {
         if options.force_interactive {
             return Ok(None);
         }
-        let run = Self::start(&user_args.join(" "))?;
+        let run = Self::start(&caller.task())?;
         if run.is_some() {
             options.orchestration = true;
         }
@@ -259,7 +260,7 @@ impl AuthoringRun {
 pub(super) struct CompletionInvocation<'a> {
     pub(super) command: &'a Command,
     pub(super) integration: &'a ClientIntegration,
-    pub(super) user_args: &'a [String],
+    pub(super) caller: &'a CallerArgs,
     pub(super) context: &'a RenderContext,
     pub(super) options: InvocationOptions,
     pub(super) session_root: Option<&'a Path>,
@@ -274,16 +275,15 @@ pub(super) fn run_to_completion(
     let CompletionInvocation {
         command,
         integration,
-        user_args,
+        caller,
         context,
         options,
         session_root,
         session_before,
         initial_resume,
     } = invocation;
-    let task = user_args.join(" ");
-    let initial_args =
-        build_invocation_args(integration, user_args, context, options, initial_resume);
+    let task = caller.task();
+    let initial_args = build_invocation_args(integration, caller, context, options, initial_resume);
     let mut output = clone_command(command, &initial_args).output()?;
     authoring.observe_output(&output, &context.endpoint_base_url)?;
     let mut workspace_changes = authoring.changes()?;
@@ -308,9 +308,11 @@ pub(super) fn run_to_completion(
             .and_then(|path| native_session_id(integration, path))
             .or_else(|| initial_resume.map(str::to_owned));
         let correction = AuthoringRun::recovery_prompt(&task, &strategy)?;
+        // The retry re-renders the caller's own option set with only the
+        // prompt substituted, so flags such as --mcp-config survive the ladder.
         let retry_args = build_invocation_args(
             integration,
-            &[correction],
+            &caller.with_prompt(&correction),
             context,
             options,
             resume_id.as_deref(),

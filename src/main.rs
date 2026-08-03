@@ -3,7 +3,7 @@ use std::path::PathBuf;
 use std::sync::atomic::AtomicBool;
 use std::sync::Arc;
 
-use clap::{Args as ClapArgs, Subcommand, ValueEnum};
+use clap::{Args as ClapArgs, CommandFactory, Subcommand, ValueEnum};
 use lino_arguments::Parser;
 
 mod cli_algorithm;
@@ -40,9 +40,9 @@ use cli_statement_audit::{run_statement_audit, StatementAuditArgs};
 use formal_ai::agentic_coding::run_agentic_task;
 use formal_ai::{
     agent_info, collect_github_logs, create_chat_completion_with_solver,
-    create_response_with_solver, enable_http_agent_mode_for_current_process, environment_records,
-    export_memory_bundle, import_memory_full, knowledge_links_notation, merged_bundle,
-    naturalize_thinking_step, parse_bundle, render_github_log_plan, run_proxy,
+    create_response_with_solver, delimit_tool_args, enable_http_agent_mode_for_current_process,
+    environment_records, export_memory_bundle, import_memory_full, knowledge_links_notation,
+    merged_bundle, naturalize_thinking_step, parse_bundle, render_github_log_plan, run_proxy,
     run_telegram_polling, run_telegram_webhook_server, run_with_formal_ai, seed_files,
     suggest_memory_migrations, ChatCompletionRequest, ChatMessage, ExecutionSurface,
     GithubLogCollectorConfig, MemoryStore, ProxyConfig, ResponsesRequest, SolverConfig,
@@ -567,7 +567,12 @@ impl std::fmt::Display for TelegramMode {
 
 fn main() -> Result<(), Box<dyn Error>> {
     lino_arguments::init();
-    let args = Args::parse();
+    // `formal-ai with <tool> …` hands everything after the tool name to that
+    // tool, including flags this command also defines globally.
+    let args = Args::parse_from(delimit_tool_args(
+        std::env::args_os().collect(),
+        &Args::command(),
+    ));
     let verbose = args.verbose && !args.silent;
     formal_ai::dialog_log::configure_verbose(verbose);
     let command = args.command.unwrap_or_else(|| Command::Chat {

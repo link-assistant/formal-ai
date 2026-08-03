@@ -179,7 +179,9 @@ pub use client_contract_learning::{
     learn_client_contracts, load_observations, observe_proxy_transcript, ClientContractFinding,
     ClientContractLearningReport, ClientContractObservation, ClientContractProposal, DeliveryMode,
 };
-pub use client_integrations::{run_with_formal_ai, ClientProtocol, WithFormalAiArgs};
+pub use client_integrations::{
+    delimit_tool_args, run_with_formal_ai, ClientProtocol, WithFormalAiArgs,
+};
 pub use document_formats::{
     canonical_document_format_label, convert_document_format, cross_format_document_concepts,
     document_format_capabilities, document_package_is_recognized, document_profile_is_recognized,
