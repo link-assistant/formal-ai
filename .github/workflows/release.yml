@@ -429,7 +429,7 @@ jobs:
         run: bun run build:web
 
       - name: Check web bundles are current
-        run: git diff --exit-code -- src/web/vendor.bundle.js src/web/ocr.bundle.js src/web/app.js
+        run: git diff --exit-code -- src/web/vendor.bundle.js src/web/web-search-component.bundle.js src/web/ocr.bundle.js src/web/app.js
 
       - name: Setup Node
         uses: actions/setup-node@v6
@@ -713,7 +713,7 @@ jobs:
   build:
     name: Build Package
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     needs: [lint, test]
     if: ${{ !cancelled() && needs.lint.result == 'success' && needs.test.result == 'success' }}
     steps:

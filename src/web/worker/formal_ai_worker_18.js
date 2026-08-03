@@ -171,7 +171,7 @@ async function tryFetch(prompt) {
   }
 
   try {
-    const response = await fetch(url, { method: "GET", mode: "cors" });
+    const response = await self.FormalAIWebSearchComponent.fetchUrl(url, evidence);
     const status = response.status;
     const contentType = response.headers.get("content-type") || "";
     let body = "";

@@ -397,15 +397,101 @@ pub struct SearchExecution {
     pub captures: Vec<crate::source_fetch::SourceCapture>,
     pub rankings: Vec<ProviderRanking>,
     pub fused: Vec<FusedEntry>,
+    /// Published component APIs that produced this execution.
+    pub component_boundaries: Vec<String>,
+    /// Component failures retained when a bounded compatibility path succeeds.
+    pub component_diagnostics: Vec<String>,
 }
 
-/// Execute `DuckDuckGo`'s public Instant Answer provider through the common
-/// cached fetch boundary and feed its returned URLs into RRF.
+/// Execute `DuckDuckGo` through web-capture's published normalization contract,
+/// the common cached fetch boundary, and web-search's published RRF merger.
+///
+/// The Instant Answer parser remains a bounded compatibility fallback for old
+/// caches and deployments blocked by provider HTML. It still crosses the
+/// web-search merger boundary, and the execution receipt reports the fallback.
 #[cfg(not(target_arch = "wasm32"))]
 pub fn execute_duckduckgo_search<T: crate::source_fetch::SourceTransport>(
     client: &crate::source_fetch::CachedSourceClient<T>,
     query: &str,
 ) -> Result<SearchExecution, crate::source_fetch::FetchError> {
+    let component_url = web_capture::search::build_search_url(
+        "duckduckgo",
+        query,
+        WEB_SEARCH_PROVIDER_LIMIT as usize,
+    )
+    .map_err(crate::source_fetch::FetchError::InvalidUrl)?;
+    let mut captures = Vec::new();
+    let mut component_diagnostics = Vec::new();
+    let mut component_failure = None;
+    let component_rows = match client.fetch(&component_url) {
+        Ok(capture) => {
+            let body = String::from_utf8_lossy(capture.bytes());
+            let (rows, blocked) = web_capture::search::parse_search_results(
+                "duckduckgo",
+                &body,
+                WEB_SEARCH_PROVIDER_LIMIT as usize,
+            );
+            captures.push(capture);
+            if blocked {
+                component_diagnostics.push(String::from("web-capture:search:blocked"));
+            } else if rows.is_empty() {
+                component_diagnostics.push(String::from("web-capture:search:empty"));
+            }
+            (!blocked && !rows.is_empty()).then_some(rows)
+        }
+        Err(error) => {
+            component_failure = Some(error.to_string());
+            component_diagnostics.push(String::from("web-capture:search:unavailable"));
+            None
+        }
+    };
+
+    let (rankings, capture_boundary) = if let Some(rows) = component_rows {
+        (
+            rows.into_iter()
+                .map(|row| ProviderRanking {
+                    provider_id: String::from("duckduckgo"),
+                    rank: u32::try_from(row.rank).unwrap_or(u32::MAX),
+                    url: row.url,
+                    title: row.title,
+                    excerpt: row.snippet,
+                })
+                .collect::<Vec<_>>(),
+            "web-capture:search",
+        )
+    } else {
+        let component_failure_receipt =
+            component_failure.unwrap_or_else(|| component_diagnostics.join("; "));
+        let (capture, rows) =
+            execute_duckduckgo_instant_answer(client, query).map_err(|fallback_error| {
+                crate::source_fetch::FetchError::Transport(format!(
+                    "web_search_component_failure:{component_failure_receipt};web_search_fallback_failure:{fallback_error}"
+                ))
+            })?;
+        captures.push(capture);
+        (rows, "web-capture:search:fallback")
+    };
+    let fused = fuse_with_web_search(&rankings);
+    Ok(SearchExecution {
+        captures,
+        rankings,
+        fused,
+        component_boundaries: vec![
+            capture_boundary.to_owned(),
+            String::from("web-search:merger"),
+        ],
+        component_diagnostics,
+    })
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn execute_duckduckgo_instant_answer<T: crate::source_fetch::SourceTransport>(
+    client: &crate::source_fetch::CachedSourceClient<T>,
+    query: &str,
+) -> Result<
+    (crate::source_fetch::SourceCapture, Vec<ProviderRanking>),
+    crate::source_fetch::FetchError,
+> {
     let url = format!(
         "https://api.duckduckgo.com/?q={}&format=json&no_html=1&skip_disambig=1",
         percent_encode_query(query)
@@ -446,12 +532,49 @@ pub fn execute_duckduckgo_search<T: crate::source_fetch::SourceTransport>(
             heading.clone_into(&mut first.title);
         }
     }
-    let fused = reciprocal_rank_fusion(&rankings, WEB_SEARCH_RRF_K);
-    Ok(SearchExecution {
-        captures: vec![capture],
-        rankings,
-        fused,
-    })
+    Ok((capture, rankings))
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn fuse_with_web_search(rankings: &[ProviderRanking]) -> Vec<FusedEntry> {
+    use std::collections::HashMap;
+
+    let component_rows = rankings
+        .iter()
+        .map(|ranking| web_search::SearchResult {
+            title: ranking.title.clone(),
+            url: ranking.url.clone(),
+            snippet: ranking.excerpt.clone(),
+            source: ranking.provider_id.clone(),
+            rank: usize::try_from(ranking.rank).unwrap_or(usize::MAX),
+            score: None,
+            sources: None,
+        })
+        .collect::<Vec<_>>();
+    let mut by_provider = HashMap::new();
+    by_provider.insert(String::from("duckduckgo"), component_rows);
+    let options = web_search::MergeOptions::new().with_rrf_k(f64::from(WEB_SEARCH_RRF_K));
+    web_search::merger::merge_results(&by_provider, &options)
+        .into_iter()
+        .map(|result| {
+            let original = rankings.iter().find(|ranking| ranking.url == result.url);
+            let provider_id = original.map_or_else(
+                || result.source.clone(),
+                |ranking| ranking.provider_id.clone(),
+            );
+            let provider_rank = original.map_or_else(
+                || u32::try_from(result.rank).unwrap_or(u32::MAX),
+                |ranking| ranking.rank,
+            );
+            FusedEntry {
+                url: result.url,
+                title: result.title,
+                excerpt: result.snippet,
+                score: result.score.unwrap_or_default(),
+                providers: vec![(provider_id, provider_rank)],
+            }
+        })
+        .collect()
 }
 
 #[cfg(not(target_arch = "wasm32"))]

@@ -530,7 +530,10 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         ("test", 25),
         // Issue #812: raised from 15; measured worst case on main was 14.1 min.
         ("coverage", 25),
-        ("build", 10),
+        // Issue #896: raised from 10; the published web-search/web-capture
+        // graphs moved the job from ~4-5 to 7.2 minutes, and a cold release
+        // build after a Cargo.lock change hit the former cap.
+        ("build", 15),
         ("auto-release", 30),
         ("manual-release", 30),
         ("changelog-pr", 10),

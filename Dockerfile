@@ -1,6 +1,9 @@
 FROM rust:1.96-slim AS builder
 
 WORKDIR /app
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends libssl-dev pkg-config && \
+    rm -rf /var/lib/apt/lists/*
 COPY . .
 RUN cargo build --release --locked
 
