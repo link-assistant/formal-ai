@@ -1,16 +1,9 @@
-//! Deterministic agentic planner — the server's "brain" for issue #468.
-//!
-//! This pure meta-algorithm chooses the next tool or final answer from the
-//! conversation and advertised capabilities. It supports stored task recipes and
-//! a bounded general fallback; neural sampling and hidden state remain non-goals.
+//! Deterministic agentic planner for choosing the next tool or final answer from
+//! a conversation and its advertised capabilities, without hidden neural state.
 
 use serde_json::json;
 
-use super::algorithm_learning;
-use super::capability_router;
 pub(super) use super::capability_router::tool_for;
-use super::change_request;
-use super::code_artifact;
 use super::code_task;
 use super::comparison;
 use super::conversation_recall;
@@ -48,6 +41,8 @@ use super::statement_audit;
 use super::structured_edit;
 use super::tool_result;
 use super::web_research;
+use super::{algorithm_learning, capability_router};
+use super::{change_request, code_artifact};
 use crate::protocol::ChatMessage;
 
 /// The Russian web-search query the planner issues when a search tool exists.
@@ -208,8 +203,7 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     {
         return Some(plan);
     }
-    // A supplied portable event log owns the generalized trace-learning route
-    // when its structure yields independently validated repeated episodes.
+    // Portable event logs own the independently validated trace-learning route.
     if let Some(task) = algorithm_learning::compile_task(&task) {
         return Some(algorithm_learning::plan_step(messages, tool_names, &task));
     }
