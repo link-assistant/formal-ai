@@ -67,24 +67,24 @@ config="$(
 ) >"$OUT/agent-stream.raw.log" 2>"$OUT/agent-stderr.log"
 
 "$ROOT/scripts/classify-agent-cli-stderr.sh" "$OUT/agent-stderr.log"
-rg '^\{' "$OUT/agent-stream.raw.log" >"$OUT/agent-stream.jsonl"
+grep -E '^\{' "$OUT/agent-stream.raw.log" >"$OUT/agent-stream.jsonl"
 node "$ROOT/experiments/issue_750_tool_results/extract-final.mjs" \
   "$OUT/agent-stream.jsonl" "$OUT/final-answer.txt"
 
-rg -F 'The command failed:' "$OUT/final-answer.txt"
-rg -F 'Would you like me to prepare an issue report with the diagnostic context?' \
+grep -F 'The command failed:' "$OUT/final-answer.txt"
+grep -F 'Would you like me to prepare an issue report with the diagnostic context?' \
   "$OUT/final-answer.txt"
-rg -F '`Report issue`' "$OUT/final-answer.txt"
-rg -F 'agentic_outcome: planned ToolCalls' "$OUT/formal-ai.log"
-rg -F 'arguments: "{\"command\":\"issue_864_command_that_does_not_exist\"}"' \
+grep -F '`Report issue`' "$OUT/final-answer.txt"
+grep -F 'agentic_outcome: planned ToolCalls' "$OUT/formal-ai.log"
+grep -F 'arguments: "{\"command\":\"issue_864_command_that_does_not_exist\"}"' \
   "$OUT/formal-ai.log"
-rg -F 'agentic_outcome: planned Final("The command failed:' "$OUT/formal-ai.log"
-if rg -q 'gh issue create' "$OUT/formal-ai.log" "$OUT/agent-stream.raw.log"; then
+grep -F 'agentic_outcome: planned Final("The command failed:' "$OUT/formal-ai.log"
+if grep -q 'gh issue create' "$OUT/formal-ai.log" "$OUT/agent-stream.raw.log"; then
   echo "the opt-in invitation filed an issue without user confirmation" >&2
   exit 1
 fi
 
-posts="$(rg -c 'POST /api/openai/v1/chat/completions' "$OUT/formal-ai.log")"
+posts="$(grep -c 'POST /api/openai/v1/chat/completions' "$OUT/formal-ai.log")"
 [[ "$posts" -ge 2 ]] || {
   echo "expected a tool-call round trip, got $posts chat completion(s)" >&2
   exit 1
