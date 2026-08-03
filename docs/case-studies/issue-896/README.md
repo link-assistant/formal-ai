@@ -69,8 +69,8 @@ targets moved the same way: in Desktop Release
 windows-x64 compiled for 17m39s, packaged a valid installer, and was cancelled
 at the cap while uploading its checksum fragment, with windows-arm64 finishing
 at 36m04s, so they share the 50-minute budget. The Linux and macOS ARM64
-targets stay well under 40 minutes and keep it. The same graph also moved the Linux
-`Build Package` job from roughly 4-5 minutes on `main` to 7m14s on this branch,
+targets stay well under 40 minutes and keep it. The same graph also moved the
+Linux `Build Package` job from roughly 4-5 minutes on `main` to 7m14s here,
 and a cold `cargo build --release` after a `Cargo.lock` change exceeded its
 former 10-minute cap in
 [run 30828819505](https://github.com/link-assistant/formal-ai/actions/runs/30828819505);
