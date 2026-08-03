@@ -1,0 +1,15 @@
+self_ast_census
+  target src/seed/proof_programs.rs
+  language rust
+  fidelity signature
+  byte_len 2043
+  line_count 63
+  content_id source_module_65300242a0891c98
+  symbol_count 6
+  symbols
+    struct ProofLanguageTemplates 10 14
+    struct ProofProgramTemplates 18 21
+    function language 25 27
+    function proof_program_templates 32 35
+    static TEMPLATES 33 33
+    function parse_proof_program_templates 37 63

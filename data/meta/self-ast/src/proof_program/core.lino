@@ -1,0 +1,25 @@
+self_ast_census
+  target src/proof_program/core.rs
+  language rust
+  fidelity signature
+  byte_len 6161
+  line_count 218
+  content_id source_module_456f5cd5ed2962be
+  symbol_count 16
+  symbols
+    struct ProofBound 13 16
+    function new 20 22
+    function lower_operator 24 30
+    function upper_operator 32 38
+    function first_integer 40 47
+    function last_integer 49 56
+    struct IntegerIntervalProof 61 66
+    function new 69 90
+    function slug 92 106
+    function render_template 108 129
+    enum FormalProof 135 137
+    function integer_interval 142 155
+    function from_statement 159 190
+    function slug 193 197
+    function is_satisfiable 200 204
+    function render_template 208 217

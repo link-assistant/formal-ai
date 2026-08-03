@@ -208,8 +208,9 @@ byte length, and content id match the adjacent provenance record.
 
 ### Honest current numbers
 
-Recorded `2026-07-20`, solver version `0.300.0`, slice `20` upstream cases per
-suite, offline deterministic solver (`temperature = 0.0`):
+Recorded `2026-08-03`, solver version `0.323.0`, slice `20` upstream cases per
+core suite and a separately bounded one-case SWE-bench slice, offline
+deterministic solver (`temperature = 0.0`):
 
 | Suite | License | Grading | Passed | Total |
 | --- | --- | --- | ---: | ---: |
@@ -219,20 +220,21 @@ suite, offline deterministic solver (`temperature = 0.0`):
 | MATH (`prm800k` 500-problem split) | MIT | final `\boxed{...}` vs. gold | 0 | 20 |
 | BIG-bench `object_counting` | Apache-2.0 | final number vs. target | 0 | 20 |
 | CoEdIT | Apache-2.0 | edited text vs. gold target | 0 | 20 |
-| SWE-bench Lite (dev) | MIT | `benchmark_unavailable` (legacy proxy score withdrawn; official evaluator required) | — | — |
+| SWE-bench Lite (dev) | MIT | official upstream instance tests executed | 0 | 1 |
 | EditEval | — | `benchmark_unavailable` | — | — |
 
-`2 / 20` on GSM8K and `0 / 20` on the other scored suites is the real
-measurement of the current offline solver against unmodified upstream cases.
-It is recorded exactly as measured; the ratchet makes it the floor these
-numbers may never fall below.
+`2 / 20` on GSM8K, `0 / 20` on the other scored core suites, and `0 / 1` on
+SWE-bench Lite are the real measurements of the current offline solver against
+unmodified upstream cases. They are recorded exactly as measured; the ratchet
+makes them the floor these numbers may never fall below.
 
 The original SWE-bench row was withdrawn: it compared output with the gold
 patch, which is not the SWE-bench pass criterion. Scheduled runs now use the
 pinned official harness (`f7bbbb2…`) to apply a candidate patch in the upstream
-container and execute the instance tests. An evaluator, Docker, or parquet
-decoder failure becomes `benchmark_unavailable`; it is never counted as a
-solver failure and never replaced by an exact-diff proxy.
+container and execute the instance tests; the current `0 / 1` score came through
+that evaluator. An evaluator, Docker, or parquet decoder failure becomes
+`benchmark_unavailable`; it is never counted as a solver failure and never
+replaced by an exact-diff proxy.
 
 EditEval is recorded as `benchmark_unavailable` rather than being replaced by a
 local proxy: the upstream repository ships an evaluation harness with no task
