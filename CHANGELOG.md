@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.323.0] - 2026-08-03
+
+### Added
+
+- Proactively offer an opt-in, contextual issue report when Formal AI detects failed reasoning, provider execution, or tool execution across the UI and agentic coding harnesses. Expected refusals and pending approvals remain non-failures. ([#864](https://github.com/link-assistant/formal-ai/issues/864))
+
 ## [0.322.0] - 2026-08-03
 
 ### Added
