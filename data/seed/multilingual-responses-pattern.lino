@@ -15,6 +15,10 @@ multilingual_responses
     intent pattern_sequence_report
     language zh
     text "序列：{rendered}\n{structure}"
+  response response_pattern_sequence_report_es
+    intent pattern_sequence_report
+    language es
+    text "Secuencia: {rendered}\n{structure}"
   response response_pattern_sequence_count_en
     intent pattern_sequence_count
     language en
@@ -31,6 +35,10 @@ multilingual_responses
     intent pattern_sequence_count
     language zh
     text "包含 {length} 个元素的序列，其中 {distinct} 个不同。"
+  response response_pattern_sequence_count_es
+    intent pattern_sequence_count
+    language es
+    text "Secuencia de {length} elementos, {distinct} distintos."
   response response_pattern_sequence_empty_en
     intent pattern_sequence_empty
     language en
@@ -47,6 +55,10 @@ multilingual_responses
     intent pattern_sequence_empty
     language zh
     text "序列为空。"
+  response response_pattern_sequence_empty_es
+    intent pattern_sequence_empty
+    language es
+    text "La secuencia está vacía."
   response response_pattern_sequence_constant_en
     intent pattern_sequence_constant
     language en
@@ -63,6 +75,10 @@ multilingual_responses
     intent pattern_sequence_constant
     language zh
     text "每个元素都相同（常量序列）。"
+  response response_pattern_sequence_constant_es
+    intent pattern_sequence_constant
+    language es
+    text "Todos los elementos son idénticos (secuencia constante)."
   response response_pattern_sequence_repetition_en
     intent pattern_sequence_repetition
     language en
@@ -79,6 +95,10 @@ multilingual_responses
     intent pattern_sequence_repetition
     language zh
     text "这是一个重复：{period} 个元素的块重复了 {repetitions} 次。"
+  response response_pattern_sequence_repetition_es
+    intent pattern_sequence_repetition
+    language es
+    text "Es una repetición: un bloque de {period} elementos repetido {repetitions} veces."
   response response_pattern_sequence_periodic_en
     intent pattern_sequence_periodic
     language en
@@ -95,6 +115,10 @@ multilingual_responses
     intent pattern_sequence_periodic
     language zh
     text "它是周期性的，周期为 {period}。"
+  response response_pattern_sequence_periodic_es
+    intent pattern_sequence_periodic
+    language es
+    text "Es periódica con período {period}."
   response response_pattern_sequence_aperiodic_en
     intent pattern_sequence_aperiodic
     language en
@@ -111,6 +135,10 @@ multilingual_responses
     intent pattern_sequence_aperiodic
     language zh
     text "它没有精确的重复周期。"
+  response response_pattern_sequence_aperiodic_es
+    intent pattern_sequence_aperiodic
+    language es
+    text "No tiene un período de repetición exacto."
   response response_pattern_sequence_palindrome_en
     intent pattern_sequence_palindrome
     language en
@@ -127,6 +155,10 @@ multilingual_responses
     intent pattern_sequence_palindrome
     language zh
     text "它正读和反读相同（回文）。"
+  response response_pattern_sequence_palindrome_es
+    intent pattern_sequence_palindrome
+    language es
+    text "Se lee igual hacia adelante y hacia atrás (palíndromo)."
   response response_pattern_sequence_compression_en
     intent pattern_sequence_compression
     language en
@@ -143,6 +175,10 @@ multilingual_responses
     intent pattern_sequence_compression
     language zh
     text "关联去重替换了 {pairs} 个重复对，压缩到原始长度的 {percent}%（无损）。"
+  response response_pattern_sequence_compression_es
+    intent pattern_sequence_compression
+    language es
+    text "La deduplicación asociativa reemplazó {pairs} pares repetidos, comprimiendo al {percent}% de la longitud original (sin pérdidas)."
   response response_pattern_sequence_no_compression_en
     intent pattern_sequence_no_compression
     language en
@@ -159,6 +195,10 @@ multilingual_responses
     intent pattern_sequence_no_compression
     language zh
     text "没有可去重的重复相邻对。"
+  response response_pattern_sequence_no_compression_es
+    intent pattern_sequence_no_compression
+    language es
+    text "No hay pares adyacentes repetidos para deduplicar."
   response response_pattern_sequence_next_en
     intent pattern_sequence_next
     language en
@@ -175,6 +215,10 @@ multilingual_responses
     intent pattern_sequence_next
     language zh
     text "最可能的下一个元素：{next}。"
+  response response_pattern_sequence_next_es
+    intent pattern_sequence_next
+    language es
+    text "Elemento siguiente más probable: {next}."
   response response_pattern_grid_report_en
     intent pattern_grid_report
     language en
@@ -191,6 +235,10 @@ multilingual_responses
     intent pattern_grid_report
     language zh
     text "网格模式推断。\n{structure}"
+  response response_pattern_grid_report_es
+    intent pattern_grid_report
+    language es
+    text "Inferencia de patrones de cuadrícula.\n{structure}"
   response response_pattern_grid_shape_en
     intent pattern_grid_shape
     language en
@@ -207,6 +255,10 @@ multilingual_responses
     intent pattern_grid_shape
     language zh
     text "网格 {rows}x{cols}。"
+  response response_pattern_grid_shape_es
+    intent pattern_grid_shape
+    language es
+    text "Cuadrícula {rows}x{cols}."
   response response_pattern_grid_no_symmetry_en
     intent pattern_grid_no_symmetry
     language en
@@ -223,6 +275,10 @@ multilingual_responses
     intent pattern_grid_no_symmetry
     language zh
     text "未检测到对称性。"
+  response response_pattern_grid_no_symmetry_es
+    intent pattern_grid_no_symmetry
+    language es
+    text "No se detectó ninguna simetría."
   response response_pattern_grid_symmetry_en
     intent pattern_grid_symmetry
     language en
@@ -239,6 +295,10 @@ multilingual_responses
     intent pattern_grid_symmetry
     language zh
     text "对称于：{symmetries}。"
+  response response_pattern_grid_symmetry_es
+    intent pattern_grid_symmetry
+    language es
+    text "Simétrica bajo: {symmetries}."
   response response_pattern_grid_horizontal_en
     intent pattern_grid_horizontal
     language en
@@ -255,6 +315,10 @@ multilingual_responses
     intent pattern_grid_horizontal
     language zh
     text "左右镜像"
+  response response_pattern_grid_horizontal_es
+    intent pattern_grid_horizontal
+    language es
+    text "reflejo izquierda-derecha"
   response response_pattern_grid_vertical_en
     intent pattern_grid_vertical
     language en
@@ -271,6 +335,10 @@ multilingual_responses
     intent pattern_grid_vertical
     language zh
     text "上下镜像"
+  response response_pattern_grid_vertical_es
+    intent pattern_grid_vertical
+    language es
+    text "reflejo arriba-abajo"
   response response_pattern_grid_rotation_en
     intent pattern_grid_rotation
     language en
@@ -287,6 +355,10 @@ multilingual_responses
     intent pattern_grid_rotation
     language zh
     text "180度旋转"
+  response response_pattern_grid_rotation_es
+    intent pattern_grid_rotation
+    language es
+    text "rotación de 180 grados"
   response response_pattern_grid_diagonal_en
     intent pattern_grid_diagonal
     language en
@@ -303,6 +375,10 @@ multilingual_responses
     intent pattern_grid_diagonal
     language zh
     text "主对角线反射"
+  response response_pattern_grid_diagonal_es
+    intent pattern_grid_diagonal
+    language es
+    text "reflejo en la diagonal principal"
   response response_pattern_grid_anti_diagonal_en
     intent pattern_grid_anti_diagonal
     language en
@@ -319,6 +395,10 @@ multilingual_responses
     intent pattern_grid_anti_diagonal
     language zh
     text "副对角线反射"
+  response response_pattern_grid_anti_diagonal_es
+    intent pattern_grid_anti_diagonal
+    language es
+    text "reflejo en la diagonal secundaria"
   response response_algorithm_observation_missing_en
     intent algorithm_observation_missing
     language en

@@ -68,8 +68,9 @@ fn bare_sequence_without_intent_marker_is_not_pattern_inference() {
 /// requested language, not strand it in English. The structural analysis is
 /// language-neutral, so every seeded language predicts the same next element (1);
 /// only the surrounding prose is localized. This pins one fragment per supported
-/// language so a regression in any single locale — english, russian, hindi, or
-/// chinese — fails the suite rather than slipping through as an English-only fix.
+/// language so a regression in any single locale — english, russian, hindi,
+/// chinese, or spanish — fails the suite rather than slipping through as an
+/// English-only fix.
 #[test]
 fn pattern_inference_report_localizes_into_every_seeded_language() {
     let solver = UniversalSolver::default();
@@ -84,7 +85,7 @@ fn pattern_inference_report_localizes_into_every_seeded_language() {
     ];
 
     // (follow-up request, language slug, localized next-element fragment).
-    let cases: [(&str, &str, &str); 4] = [
+    let cases: [(&str, &str, &str); 5] = [
         // english: an explicit switch back to English keeps the ASCII wording.
         ("answer in English", "en", "Most likely next element: 1"),
         // russian: Cyrillic prose with the localized prediction line.
@@ -97,6 +98,12 @@ fn pattern_inference_report_localizes_into_every_seeded_language() {
         ("हिंदी में उत्तर दें", "hi", "सबसे संभावित अगला तत्व: 1"),
         // chinese: Han prose with the localized prediction line.
         ("用中文回答", "zh", "最可能的下一个元素：1"),
+        // spanish: Latin-script prose with the localized prediction line.
+        (
+            "responde en español",
+            "es",
+            "Elemento siguiente más probable: 1",
+        ),
     ];
 
     for (follow_up, slug, fragment) in cases {
@@ -123,7 +130,7 @@ fn pattern_inference_report_localizes_into_every_seeded_language() {
 
 /// The grid report localizes too: a Chinese follow-up over a mirror-symmetric
 /// grid must render the symmetry description in chinese, proving the 2D surface
-/// is covered for russian, hindi, and chinese alongside english.
+/// is covered for russian, hindi, chinese, and spanish alongside english.
 #[test]
 fn grid_report_localizes_symmetry_description() {
     let solver = UniversalSolver::default();
@@ -137,11 +144,12 @@ fn grid_report_localizes_symmetry_description() {
         ConversationTurn::assistant(&english.answer),
     ];
 
-    // russian, hindi, and chinese each render the left-right mirror label.
-    let cases: [(&str, &str, &str); 3] = [
+    // Every non-default registered language renders the left-right mirror label.
+    let cases: [(&str, &str, &str); 4] = [
         ("ответь на русском", "ru", "зеркало лево-право"),
         ("हिंदी में उत्तर दें", "hi", "बाएँ-दाएँ दर्पण"),
         ("用中文回答", "zh", "左右镜像"),
+        ("responde en español", "es", "reflejo izquierda-derecha"),
     ];
     for (follow_up, slug, fragment) in cases {
         let response = solver.solve_with_history(follow_up, &history);

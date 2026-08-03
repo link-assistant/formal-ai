@@ -19,10 +19,10 @@ bump: patch
   `translation`, `analogy`, `invariant`, `transformation`) rooted in links and
   closed by the total-closure resolver.
 - Localized the pattern-inference report into every seeded language (en, ru, hi,
-  zh): a response-language follow-up ("answer in Russian") now re-renders the 1D
-  sequence and 2D grid analysis — classification, counts, compression, next-element
-  prediction, and grid symmetry labels — in the requested language instead of
-  stranding it in English.
+  zh, es): a response-language follow-up ("answer in Russian") now re-renders
+  the 1D sequence and 2D grid analysis — classification, counts, compression,
+  next-element prediction, and grid symmetry labels — in the requested language
+  instead of stranding it in English.
 - Discover parameterized reusable algorithms from repeated event, memory,
   Agent-CLI, and compiled-guide traces; validate later occurrences as held-out
   evidence; retain proposal-only candidates during idle learning; and expose
@@ -32,3 +32,7 @@ bump: patch
 
 - Fixed balanced conversion of exactly two link addresses, which previously
   indexed past the reduced one-element layer.
+- Fixed the language-test coverage guard so Spanish names and native-language
+  labels count as evidence for the registered `es` locale.
+- Added Spanish to the verified Wikidata grounding pipeline and checked in the
+  `Q1321` source snapshot required for offline semantic-grounding closure.
