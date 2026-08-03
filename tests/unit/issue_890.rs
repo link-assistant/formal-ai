@@ -158,6 +158,27 @@ fn generated_proof_programs_compile_and_execute() {
 }
 
 #[test]
+fn solved_interval_preserves_exclusive_bound_at_i64_max() {
+    let response = answer(
+        "I chose a number greater than 9223372036854775807 and less than or equal to \
+         9223372036854775807. What is the number?",
+    );
+    assert_eq!(response.intent, "number_constraint_reasoning");
+    assert!(
+        response.answer.contains("there is no solution"),
+        "exclusive i64::MAX must not saturate into a witness: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains(
+            "x > 9223372036854775807 and x <= 9223372036854775807 is unsatisfiable over integers"
+        ),
+        "the answer must expose the same unsatisfiable proof meaning: {}",
+        response.answer
+    );
+}
+
+#[test]
 fn whole_issue_890_workflow_solves_translates_and_executes() {
     let (rust, python) = translate_solved_interval();
     assert_eq!(meaning_link(&rust), meaning_link(&python));
