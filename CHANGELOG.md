@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.324.2] - 2026-08-03
+
+### Fixed
+
+- Keep the Codex wrapper connected to Formal AI when callers pass their own configuration overrides after the exec subcommand.
+
 ## [0.324.1] - 2026-08-03
 
 ### Added
