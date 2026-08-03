@@ -465,8 +465,7 @@ pub fn execute_duckduckgo_search<T: crate::source_fetch::SourceTransport>(
         let (capture, rows) =
             execute_duckduckgo_instant_answer(client, query).map_err(|fallback_error| {
                 crate::source_fetch::FetchError::Transport(format!(
-                    "web_search_component_failure:{};web_search_fallback_failure:{fallback_error}",
-                    component_failure_receipt
+                    "web_search_component_failure:{component_failure_receipt};web_search_fallback_failure:{fallback_error}"
                 ))
             })?;
         captures.push(capture);
