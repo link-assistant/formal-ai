@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.325.0] - 2026-08-03
+
+### Changed
+- Route native and browser research through the published `web-search` and
+  `web-capture` component contracts while retaining exact-byte cache replay,
+  cancellation, provenance, diagnostics, and bounded compatibility fallbacks.
+
 ## [0.324.3] - 2026-08-03
 
 - Add the issue #914 case study with the full requirement list (R914-1 to
