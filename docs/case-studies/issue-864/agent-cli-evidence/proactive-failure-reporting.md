@@ -1,0 +1,1 @@
+The proactive failure-report invitation must ask for consent, preserve diagnostic context, and never file automatically.

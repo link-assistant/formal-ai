@@ -646,16 +646,18 @@ fn case_study_and_release_trace_every_issue_848_acceptance_boundary() {
     assert!(global.contains("R848-10"));
 
     // Release automation consumes changelog fragments after copying them into
-    // CHANGELOG.md. Preserve the release trace on both sides of that lifecycle.
-    let fragment = root.join("changelog.d/20260801_848_coding_tasks.md");
-    if fragment.is_file() {
-        let fragment = std::fs::read_to_string(fragment).expect("read issue #848 changelog");
+    // CHANGELOG.md. Keep the trace valid both before and after that lifecycle,
+    // matching the established issue #656/#844 requirements checks.
+    let fragment_path = root.join("changelog.d/20260801_848_coding_tasks.md");
+    if fragment_path.is_file() {
+        let fragment = std::fs::read_to_string(fragment_path).expect("read issue #848 fragment");
         assert!(fragment.contains("bump: minor"));
         assert!(fragment.contains("#848"));
     } else {
-        let changelog = read("CHANGELOG.md");
-        assert!(changelog.contains("issue #848"));
-        assert!(changelog.contains("130-task coding ladder"));
+        assert!(
+            read("CHANGELOG.md").contains("issue #848's 130-task coding ladder"),
+            "issue #848 must have either its unreleased minor-bump fragment or its released CHANGELOG entry"
+        );
     }
 }
 

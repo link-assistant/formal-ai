@@ -1,4 +1,39 @@
 meanings
+  reverse_sort_list_files
+    defined-by rule
+    lexeme en
+      surface
+        text "reverse sort list files"
+  reverse_sort_list_files_arg
+    defined-by rule
+    lexeme en
+      surface
+        text "reverse sort list files arg"
+  reverse_string
+    defined-by task
+    lexeme en
+      surface
+        text "reverse string"
+  reverse_words
+    defined-by operation
+    lexeme en
+      surface
+        text "reverse words"
+  rg
+    defined-by concept
+    lexeme en
+      surface
+        text "rg"
+  rm
+    defined-by concept
+    lexeme en
+      surface
+        text "rm"
+  rmdir
+    defined-by concept
+    lexeme en
+      surface
+        text "rmdir"
   role-only
     defined-by concept
     lexeme en

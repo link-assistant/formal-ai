@@ -1,0 +1,24 @@
+{
+  "author": {
+    "id": "MDQ6VXNlcjE0MzE5MDQ=",
+    "is_bot": false,
+    "login": "konard",
+    "name": "Konstantin Diachenko"
+  },
+  "body": "At the moment issues are reported only at initiative of the user. I think now by default our Formal AI should take initiative and actively ask for issue reporting in all our UX surfaces.",
+  "comments": [],
+  "createdAt": "2026-07-25T12:48:19Z",
+  "labels": [
+    {
+      "name": "documentation"
+    },
+    {
+      "name": "enhancement"
+    }
+  ],
+  "number": 864,
+  "state": "OPEN",
+  "title": "We should ask to user for issue reporting proactively on any fail of thinking, when Formal AI itself detects it (both in UI and in agentic coding harneses)",
+  "updatedAt": "2026-08-02T19:15:56Z",
+  "url": "https://github.com/link-assistant/formal-ai/issues/864"
+}
