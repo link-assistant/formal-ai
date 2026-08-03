@@ -373,6 +373,70 @@ earlier in this file is scoped to issue #244 only. Two batches are open now:
   sub-issues of #651 with explicit blocked-by relationships recorded through
   the GitHub dependencies API.
 
+## 2026-08-03 Requirement-Status Audit (issue #914)
+
+A ninth pass on 2026-08-03, driven by issue
+[#914](https://github.com/link-assistant/formal-ai/issues/914), re-verified
+every row of the 2026-07-14 table against the issues updated since then (152
+issues, snapshot in
+`docs/case-studies/issue-914/raw-data/issues-since-2026-07-14.tsv`) and
+against the code on `main`. The headline finding is positive drift: most of
+the E37-E68 batches closed with merged PRs after the eighth pass, and four
+eighth-pass rows had gone stale — they still said "Not done" or "Partial"
+for work that had since shipped. The eighth-pass table above is kept as the
+historical record; the table below is current.
+
+Epic sweep: of E37-E68, only
+[#665](https://github.com/link-assistant/formal-ai/issues/665)-[#670](https://github.com/link-assistant/formal-ai/issues/670)
+(delivery breadth),
+[#700](https://github.com/link-assistant/formal-ai/issues/700) (si-units),
+[#705](https://github.com/link-assistant/formal-ai/issues/705) (anticipatory
+dreaming), and
+[#710](https://github.com/link-assistant/formal-ai/issues/710)
+(dropped-requirements backlog) remain open, plus the parent
+[#651](https://github.com/link-assistant/formal-ai/issues/651). All other
+epic issues (#656-#664, #671-#674, #681, #682, #686, #687, #698, #699,
+#701-#704, #706-#709) are closed by merged PRs.
+
+Requirement-level status by area, updated:
+
+| Area (standing requirement) | Status 2026-08-03 |
+| --- | --- |
+| Universal 11-step solver runs for every prompt | Done (pillar 2); the recipe is data (`data/meta/recursive-core-recipe.lino`) executed by `src/recipe_interpreter.rs` |
+| Only memory + meta algorithm; no specialized Rust handlers (#559 mandate) | Partial: #699 closed its migration batches, but about 19,600 lines across 40 files remain in `src/solver_handlers/`; the boundary audit continues as E71 |
+| Real upstream benchmarks with honest scores | Done for #698 (was stale "Not done"): `src/external_benchmarks/` and `tests/unit/specification/external_benchmarks.rs` score external corpora with results in `data/benchmarks/external-results.lino` |
+| Self-improvement that compounds | Partial: #656/#657/#701 closed (gated promotion, release self-hosting metric, generalized adoption for one class); anticipatory learning #705 remains open; making the loop routinely produce merged work is E77 |
+| Symbolic world models (#649) | Done for #686/#702 (was stale "Partial ... behaviors unimplemented"): `src/world_model.rs` implements contexts, STRIPS-style actions, justification-based recalculation, and dialogue behaviors, covered by `tests/unit/issue_649_world_model.rs` |
+| Agentic-CLI server correctness | Reopened as Partial: #671/#681/#682/#687 closed, but the #848 coding ladder (2 of 13 rungs, zero write effects) exposed the new defect cluster [#902](https://github.com/link-assistant/formal-ai/issues/902)-[#909](https://github.com/link-assistant/formal-ai/issues/909); consolidated behind the ladder ratchet as E69 |
+| Formal AI as orchestrator of external agent CLIs, Hive-Mind dispatch | Done for #703; the missing piece is the end-to-end gate in both directions (hive-mind driving Formal AI as the model, per hive-mind#2059), owned by E74 |
+| Parallel candidate portfolios + budget-driven search | Done for #662/#704 (was stale "Not done"): `src/draft_portfolio.rs` and `src/solver_search.rs` with `SolverConfig::compute_budget` |
+| Anticipatory learning | Not done — [#705](https://github.com/link-assistant/formal-ai/issues/705) |
+| "All languages" through the meta language | Partial: #660/#706 closed (any-language protocol, PR #880); four seed languages remain the fully covered set, and formal languages as first-class translation targets are owned by E70 |
+| General computer-use without vision | Done for #707 (PR #882): permission-gated verified plans; pixels remain an honestly named `capability_gap` |
+| Turing-complete NL memory queries | Done for #708 |
+| Multi-source search fusion through the meta language | Done for #709 (was stale "Not done"): `src/search_fusion.rs` and `src/web_search_fusion_core.rs` fuse providers with provenance; turning retrieval into learned coding procedures is E72 |
+| Measuring units via si-units | Not done — [#700](https://github.com/link-assistant/formal-ai/issues/700) |
+| Silently-dropped requirements re-verified | Not done — [#710](https://github.com/link-assistant/formal-ai/issues/710) |
+| Data-is-the-interface hygiene | Done for #659/#663/#664; ratchet scripts keep enforcing the burn-down |
+| Delivery breadth | Not done for PWA, npm engine, VS Code Marketplace, debugger, WebVM, cloud sync — [#665](https://github.com/link-assistant/formal-ai/issues/665)-[#670](https://github.com/link-assistant/formal-ai/issues/670); shareable packages (#658) closed |
+| Self-coding chain | Mechanics Done (#673 census, #656 gated promotion, #657 release metric); the measured self-authored share is still near its baseline, owned by E77 |
+| Coding via formal reasoning, coding first (#914) | Partial: catalog, oracle, and synthesis layers exist, but the #848 ladder passes 2 of 13 rungs with zero successful write effects; E69 is the blocker epic |
+| Question necessity (ask only requirement-level unknowns) | Partial: clarify-vs-guess, the one-question unknown path, and the #527 catalog exist; no necessity proof per question — E73 |
+| Learning the universal algorithm itself | Not done beyond inert discovery (`src/algorithm_discovery.rs`); proposal-loop learning is E75 |
+| Formal-reasoning breadth (beyond SAT + linear arithmetic) | Partial; growth with external benchmark scoring is E76 |
+
+**Open planning batch E69-E77**
+([#916](https://github.com/link-assistant/formal-ai/issues/916)-[#924](https://github.com/link-assistant/formal-ai/issues/924)).
+Created from issue #914's gap analysis (case study in
+`docs/case-studies/issue-914/`): E69 coding-ladder ratchet
+over agent-harness fixes (foundation blocker), E70 general natural-formal
+translation, E71 minimal-core boundary and seed-metadata audit, E72
+research-driven coding knowledge loop, E73 question-necessity protocol, E74
+hive-mind end-to-end integration gate, E75 method learning for the
+universal algorithm, E76 formal-reasoning coverage growth, E77
+self-development loop. Issue URLs are recorded in
+`docs/case-studies/issue-914/proposed-issues.md`.
+
 ## Verification Contract
 
 When any roadmap item changes, the PR should update the corresponding rows in

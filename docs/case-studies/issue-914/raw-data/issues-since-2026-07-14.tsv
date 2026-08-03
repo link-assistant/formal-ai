@@ -1,0 +1,152 @@
+491	open	Principle of least action
+531	closed	Patterns inference (1D - sequences, text, 2D images and so on)
+534	closed	Our repository is taking up lots of space during development
+650	closed	formal-ai with: fix codex 'hi' misroute (/responses merges instructions), uniform interactive/non-interactive mode for all tools, summarization handling, --globally alias
+656	closed	E37: Benchmark-gated promotion protocol for self-improvement proposals
+657	closed	E38: Self-hosting metric: measure the share of each release authored by Formal AI
+658	closed	E39: Absorb the remaining JS worker logic into the Rust→WASM worker (R380)
+659	closed	E40: CI lint burning down hardcoded natural-language strings (R379)
+660	closed	E41: Bulk semantics importer from external lexical sources (R378)
+661	closed	E42: Probability-weighted statement formalization with contradiction warnings (R384)
+662	closed	E43: Budget-driven random and evolutionary search in synthesis (F4)
+663	closed	E44: Retire the `SPECIALIZED_HANDLERS` precedence remnant into data-driven routing
+664	closed	E45: Associative terminology cleanup: links network, not graph
+669	open	E50: Cloud memory sync for the single-file bundle (F3)
+671	closed	E52: Multi-CLI agentic end-to-end matrix in CI (codex, opencode, gemini, qwen, claude, grok, aider)
+672	closed	E53: Land the deferred issue-541 UI follow-ups (F1–F5)
+673	closed	E54: Extend the self-AST census from one module to a workspace census
+674	closed	E55: Compile arbitrary natural-language programs beyond the supported skill subset
+680	closed	Agentic CLIs: tool calls are phrasing-gated, not intent-based — web search & web fetch never fire; write/edit/shell mostly fail (all 5 CLIs)
+681	closed	Agentic CLIs: a file-creation request emits a read tool_call on the (nonexistent) target instead of write
+682	closed	OpenAI chat-completions: explicit "content": null on assistant tool-call turns returns 400 (breaks qwen)
+686	closed	Associative knowledge networks learning (contexts, world models, formal systems
+687	closed	Asking formal AI to report the issue on GitHub does not work (as well as other simple prompts/requests)
+698	closed	E56: Real external benchmark harness — run upstream suites with honest scores and a scheduled ratchet
+699	closed	E57: Complete the issue-559 mandate — migrate all specialized handlers into data-driven meta-methods (only memory + meta algorithm)
+700	open	E58: Universal measuring-unit support via link-foundation/si-units (plus the upstream filing from issue 439)
+701	closed	E59: Close the auto-learning adoption gap — learned items must demonstrably change answers
+702	closed	E60: Implement symbolic world models — current/target contexts, diff, sync loop, merge/split, action-consequence prediction
+703	closed	E61: Formal AI as orchestrator — drive agent/claude/codex/gemini/qwen/opencode CLIs, dispatch tasks in parallel, compare results
+704	closed	E62: Parallel candidate-solution portfolios — k independent drafts, test-based selection, recorded comparison
+705	open	E63: Predict likely next user requests and pre-learn them (anticipatory dreaming)
+706	closed	E64: Any-language protocol — grow beyond en/ru/hi/zh by data-only addition with an auto-generated round-trip contract
+707	closed	E65: General computer-use without vision — files, shell, structured web as verified algorithmic plans
+708	closed	E66: Turing-complete natural-language memory queries over links (complete issue 529)
+709	closed	E67: Meta-language fusion of multi-source search results into ranked, provenance-carrying answers
+710	open	E68: Dropped-requirements regression backlog — re-verify and fix silently-closed requirements
+711	closed	CI/CD: every release republishes all 388 changelog fragments — identical release notes since v0.283.0, CHANGELOG.md at 610k lines
+712	closed	Regression: #680 tool routing still phrasing-gated and #681 write→read still reproduces on v0.289.0 (160-run matrix)
+713	closed	with-formal-ai: interactive/TUI mode passes invalid args — codex (--skip-git-repo-check) and gemini (-i) fail to launch; no TUI regression tests for any CLI
+714	closed	Agentic mode issues
+715	closed	Code changes do not work
+716	closed	All CLI commands must be routed to actual bash/shell tools of the agentic CLI harness
+717	closed	Check for all false positives, false negatives, warnings and errors in CI/CD and fix them all
+720	open	Unknown prompt: последние новости
+721	open	Unknown prompt: 我不明白
+722	open	Unknown prompt: Привет, напиши мне эссе по квантовой механике
+723	open	Issue with dialog: напиши мне код на PHP Laravel
+724	open	Unknown prompt: Скажи что то на Китайском
+730	closed	Check for all false positives, false negatives, warnings and errors in CI/CD and fix them all
+732	closed	Formal AI agentic session report
+733	closed	Formal AI agentic session report
+734	closed	Formal AI agentic session report
+736	closed	Check for all false positives, false negatives, warnings and errors in CI/CD and fix them all
+738	closed	Every release leaves fragment-release-map.tsv stale, turning main red on the next unrelated PR
+739	closed	CI/CD fails and our system is no longer demo
+742	closed	Docs CI/CD failing
+744	closed	qwen: web tool calls fail with "params must have required property 'prompt'/'pattern'" (v0.297.1)
+745	closed	Generalize intent routing: 10-20+ NL variations per intent per language, no cross-tool misroutes, no silent UNKNOWN (supersedes web_fetch phrasing; v0.297.1)
+746	closed	Critical: agentic mode never executes web tools — hosted {"type":"web_search"} ignored, server narrates browser-demo prose instead of calling tools (v0.297.1)
+747	closed	Desktop app: web search degraded to browser-demo DDG path — no Google/Bing, no web-capture/Playwright headless browser (should work out-of-the-box, even with agent permission off) (v0.297.1)
+748	closed	codex/openai protocol: "Model metadata for formal-ai not found — defaulting to fallback metadata" on every session (v0.297.1)
+749	closed	Shell exec routing: emits "command" not the advertised "cmd" key, truncates args, no PowerShell, gappy POSIX/GNU + non-English coverage (v0.297.1)
+750	closed	TUI output not user-friendly: raw JSON envelopes leak, structured output fenced as ```text not ```json, and tool-call results aren't remembered for follow-ups (v0.297.1)
+751	closed	Token usage: count every UTF-8 character as 1 token; stop showing fake 0s (created:0, Cache Reads:0) and undercounted multibyte; cost should be 0 (v0.297.1)
+752	closed	Context window / % used should be actual free disk space recalculated to UTF-8 tokens (not hardcoded 60000); report via API; cost stays $0 (v0.297.1)
+753	closed	formal-ai with grok is non-functional: sets no GROK_BASE_URL / GROK_API_KEY, so grok can't start or hits its real cloud instead of the local server (v0.297.1)
+754	closed	Add Cursor CLI (cursor-agent) as a supported 'formal-ai with' target — currently unsupported (v0.297.1)
+755	closed	File read/write broken: server shotguns {filePath,file_path,path} ignoring tool schema (claude/qwen reject it), and Write targets the plan file not the user's file (v0.297.1)
+756	closed	Memory not configured out of the box: default to a single shared ~/.formal-ai/ (Windows %APPDATA%) across CLI/desktop/VS Code, with Docker mount + desktop telegram/API in sync (v0.297.1)
+757	closed	Print the agentic harness session/transcript file path after a 'formal-ai with' run finishes (for debugging) (v0.297.1)
+758	closed	Route by CAPABILITY not tool name: of the shared tool set across 7 CLIs, only read+edit work reliably — glob/list_directory/todo/subagent never fire, grep is name-gated (misroutes grep/codesearch to web_search) (v0.297.1)
+759	closed	Desktop: one UI with out-of-box mode (default) + agent/codex/claude passthrough via agent-commander (default to agent-CLI passthrough when installed)
+760	closed	Add T3 Code (pingdotgg/t3code) as a 'formal-ai with' target (like codex/gemini/etc.), driving it against the local server with --model formal-ai
+761	closed	Docs: end-to-end configuration guide (CLIs incl. cursor/T3, out-of-box vs passthrough, tools, ~/.formal-ai memory, Docker/desktop sync, API usage/context, sessions, multi-language)
+762	closed	Support opencode's desktop app (sst/opencode packages/desktop, Tauri GUI) as a 'formal-ai with' target — distinct from the opencode CLI/TUI (like T3 Code #760)
+763	closed	Support the opencode VS Code extension (sst-dev.opencode) as a Formal AI backend/target (distinct from opencode CLI #-with and desktop #762)
+771	closed	Formal AI: В каких странах есть частные космические компании?
+775	closed	Formal AI agentic session report
+776	closed	Formal AI: любая формальная система либо неполна, либо противоречива - translate t…
+781	closed	Formal AI: Найди мне зарядку для ноутбука Acer Aspire 3 A325-45 на amazon.in
+784	closed	Formal AI agentic session report
+786	closed	Formal AI agentic session report
+789	closed	Formal AI agentic session report
+790	closed	Formal AI: Create a minimal Rust integration regression test at tests/issue_762.rs…
+791	closed	Formal AI agentic session report
+796	closed	Check for all false positives, false negatives, warnings and errors in CI/CD and fix them all
+798	closed	Check for all false positives, false negatives, warnings and errors in CI/CD and fix them all
+800	open	Formal AI: Найди мне зарядку для ноутбука Acer Aspire 3 A325-45 на amazon.in
+801	open	Formal AI: Search online for Elon Musk
+802	open	`2 4 6` game best practices
+804	closed	Check for all false positives, false negatives, warnings and errors in CI/CD and fix them all
+808	closed	Check for all false positives, false negatives, warnings and errors in CI/CD and fix them all
+810	closed	Check for all false positives, false negatives, warnings and errors in CI/CD and fix them all
+812	closed	Check for all false positives, false negatives, warnings and errors in CI/CD and fix them all
+819	closed	Formal AI: Find hive-mind-control center folder on my desktop
+821	open	Formal AI: Search for Elon Musk
+822	closed	Full-context agentic error reporting: upload entire conversation + server logs as Links Notation (API + opencode/claude/codex harnesses)
+824	open	Formal AI refuses a filesystem move it should perform: Move .../hive-control-center to ~/Code/Archive/link-assistant (expected output + full Links Notation log)
+825	open	Auto complete in all our UI where we have our own input boxes implementation
+826	open	Formal AI: `ФБС vs ФБО` + `Зарепорти баг`
+827	open	Formal AI: `Что такое фуфломицин?` + `Так что это такое то?`
+828	closed	Check for all false positives, false negatives, warnings and errors in CI/CD and fix them all
+832	closed	My requirements from https://github.com/link-assistant/formal-ai/issues/819#issuecomment-5059277610 were ignored
+834	closed	Legal & Compliance Review: does our legal guidance cover every nuance of developing Formal AI?
+835	closed	Feature: Formal AI should be able to check files for legality (multi-jurisdiction)
+836	open	Feature: warn the user when a request appears to be illegal (so they can reconsider)
+838	open	Formal AI: Find hive-mind on my desktop
+839	closed	Formal AI: `report issue` must export the full conversation (harness + server) at web-reporter quality
+840	closed	Formal AI: `Find hive-mind-control center folder on my desktop` + `Что такое фуфломицин?` + `ФБС vs ФБО` — highest-standard answers via simple verified steps
+841	closed	TUI capture for e2e tests: unrolled text snapshots + animations, via command-stream and agent-commander
+842	closed	Task ladder for #838/#827/#826: 24-node dataset, 4 levels deep — measured baseline 8/24 at v0.303.0
+843	closed	Evidence honesty: stop fabricating `source:`/`cache_hit` links and land a real, cached, deterministic fetch boundary
+844	closed	Summarization: statement-level deduplication, evidence-weighted importance, recursive source gathering with recheck, and an identifier-level rung
+845	closed	Fact-checking: recursive disproof-first verification with context-relative probabilities over all statements (dialog-scoped by default)
+846	closed	CI: `experiments/` exclusion is bypassed on direct pushes to main; `docs-changed`/`mjs-changed` ignore the folder exclusion
+847	closed	Task decomposition must itself be a working task: split-into-subtasks and is-it-atomic are both refused today
+848	closed	Coding-task ladder over our own open issues: 13 tasks, 4 levels, baseline 2/13 — no level where Formal AI can write code yet (prep for hive-mind#2059)
+858	closed	Support for Recap in Claude Code is missing
+859	closed	Hello world coding and issue reporting fails in Codex, but the same hello world functions are working in Claude Code and OpenCode
+861	open	Optional anonymous sentry issue reporting
+862	open	Formal AI: `Execute https://rosettacode.org/wiki/Copy_stdin_to_stdout in Rust`
+863	open	Formal AI: `Give me example of how to do copy stdin to stdout in Rust`
+864	closed	We should ask to user for issue reporting proactively on any fail of thinking, when Formal AI itself detects it (both in UI and in agentic coding harneses)
+865	open	Formal AI: `Hello` + `List me files here`
+866	open	Formal AI: `Execute ls command` + `Execute ls`
+867	open	Formal AI: `Execute ls command` + `report issue`
+868	open	Formal AI: `ls`
+869	open	Unknown prompt: Назначь мне встречу с Александром на 20:00 по Грузии
+870	closed	Unknown prompt: Проверь какие процессы запущены на моём компьютере
+872	open	Formal AI: `игры для малышей с открытым исходным кодом (абсолютно и полностью бесплатные) в App Store (iOS)`
+873	open	New principle: not knowing is not the end, in case of not knowing how to answer Formal AI must research the topic to study how to answer and still provide user with answer
+874	closed	Detailed documentation of associative tech stack
+879	closed	`formal-ai with <tool>` produces no work on the simplest possible task across agent, claude and codex
+885	closed	Docs update: more legal details, philosophy, codebase sync and fact checking (with auto-learning for the Formal AI itself via Agent CLI)
+889	open	Localize thinking steps on CLI, API, and Telegram surfaces
+890	closed	Translate formal proofs into requested programming languages
+891	open	Ratchet the equation corpus to at least 50 verified types
+892	open	Replace the stale Spider-Man release-order seed with current source-backed data
+893	open	Implement iterative random-file summarization validation and an 80 percent quality ratchet
+894	open	Complete CI template upstream filings from the four-template audit
+895	open	Publish coverage and enforce a non-decreasing coverage ratchet
+896	open	Adopt web-search and web-capture as real components
+901	open	Automate TRIZ principles and paradox/contradiction solutions in general
+902	open	`formal-ai with codex` loses its provider block when the caller adds any `-c` after `exec` — every request 401s against api.openai.com
+903	open	`formal-ai with <tool>` builds the native CLI's argv incorrectly: doubled provider prefix, dropped `--verbose`, injected `--interactive`, unsupported `-p` for codex, and caller flags lost on retry
+904	open	Agent mode reduces a repository coding task to writing a plan file and `cat`-ing it back, then reports success — and the plan's `goal` is the caller's system prompt
+905	open	Formal AI reports "Completed … and verified it with `cat hello.txt`" after that command exited 1 with "No such file or directory"
+906	open	Language router takes the word after "in" as the target language: "the" and "missing" become languages, and "Fix the failing CI job in Rust" returns a Wikipedia definition
+907	open	Agent mode: caller framing hijacks intent routing — "Today's date is …" makes every gemini run answer with `date`
+908	open	Step verification ignores the exit code: `py_compile` exiting 0 with no output is reported as a failure
+909	open	`formal-ai with <tool> --global` writes an incomplete headless config: gemini and qwen both refuse to start
+914	open	Plan critical issues to ensure we have ability to do coding via formal logical reasoning according to our vision to implement yet not implemented parts
