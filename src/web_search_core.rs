@@ -422,6 +422,7 @@ pub fn execute_duckduckgo_search<T: crate::source_fetch::SourceTransport>(
     .map_err(crate::source_fetch::FetchError::InvalidUrl)?;
     let mut captures = Vec::new();
     let mut component_diagnostics = Vec::new();
+    let mut component_failure = None;
     let component_rows = match client.fetch(&component_url) {
         Ok(capture) => {
             let body = String::from_utf8_lossy(capture.bytes());
@@ -439,7 +440,8 @@ pub fn execute_duckduckgo_search<T: crate::source_fetch::SourceTransport>(
             (!blocked && !rows.is_empty()).then_some(rows)
         }
         Err(error) => {
-            component_diagnostics.push(format!("web-capture:search:{error}"));
+            component_failure = Some(error.to_string());
+            component_diagnostics.push(String::from("web-capture:search:unavailable"));
             None
         }
     };
@@ -458,11 +460,13 @@ pub fn execute_duckduckgo_search<T: crate::source_fetch::SourceTransport>(
             "web-capture:search",
         )
     } else {
+        let component_failure_receipt =
+            component_failure.unwrap_or_else(|| component_diagnostics.join("; "));
         let (capture, rows) =
             execute_duckduckgo_instant_answer(client, query).map_err(|fallback_error| {
                 crate::source_fetch::FetchError::Transport(format!(
                     "web_search_component_failure:{};web_search_fallback_failure:{fallback_error}",
-                    component_diagnostics.join("; ")
+                    component_failure_receipt
                 ))
             })?;
         captures.push(capture);

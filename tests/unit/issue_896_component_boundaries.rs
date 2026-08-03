@@ -137,7 +137,7 @@ fn native_search_reports_component_failure_before_bounded_fallback() {
     let cache = temp_cache();
     let transport = FallbackFixtureTransport::default();
     let urls = Arc::clone(&transport.urls);
-    let client = CachedSourceClient::new(&cache, transport).with_online(true);
+    let client = CachedSourceClient::new(&cache, transport.clone()).with_online(true);
 
     let execution = execute_duckduckgo_search(&client, "fallback")
         .expect("Instant Answer compatibility path should remain available");
@@ -148,7 +148,23 @@ fn native_search_reports_component_failure_before_bounded_fallback() {
         ["web-capture:search:fallback", "web-search:merger"]
     );
     assert_eq!(execution.component_diagnostics.len(), 1);
-    assert!(execution.component_diagnostics[0].contains("web-capture component unavailable"));
+    assert_eq!(
+        execution.component_diagnostics,
+        ["web-capture:search:unavailable"]
+    );
+    assert_eq!(urls.lock().expect("fixture URL lock").len(), 2);
+
+    let offline = CachedSourceClient::new(&cache, transport);
+    let replay = execute_duckduckgo_search(&offline, "fallback")
+        .expect("fallback capture should replay without transport");
+    assert!(replay.captures[0].cached());
+    assert_eq!(replay.rankings, execution.rankings);
+    assert_eq!(replay.fused, execution.fused);
+    assert_eq!(replay.component_boundaries, execution.component_boundaries);
+    assert_eq!(
+        replay.component_diagnostics,
+        execution.component_diagnostics
+    );
     assert_eq!(urls.lock().expect("fixture URL lock").len(), 2);
 
     fs::remove_dir_all(cache).expect("remove fixture cache");

@@ -347,7 +347,11 @@ fn cached_sources_are_formalized_merged_ranked_and_replayed_deterministically() 
     assert_eq!(replay.render_markdown(), first.render_markdown());
     assert_eq!(replay.trace(), first.trace());
     assert_eq!(replay.learning_proposal(), proposal);
-    assert_eq!(requests.load(Ordering::SeqCst), 4);
+    assert_eq!(
+        requests.load(Ordering::SeqCst),
+        5,
+        "one component attempt, one bounded search fallback, and three pages"
+    );
 
     fs::remove_dir_all(cache).expect("remove fixture cache");
 }
