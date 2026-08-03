@@ -374,9 +374,11 @@ changelog.d/20260705_193000_issue_558_rebuild_plan.md	0.274.0
 changelog.d/20260705_235900_issue_527_question_generation.md	0.274.0
 changelog.d/20260708_201700_issue_482_nemotron_samples.md	0.283.0
 changelog.d/20260708_204000_issue_498_google_trends_catalog.md	0.275.0
+changelog.d/20260708_220020_issue_531_pattern_inference_research.md	0.324.1
 changelog.d/20260708_223000_issue_540_dreaming.md	0.277.0
 changelog.d/20260709_090000_issue_540_dreaming_generalization.md	0.277.0
 changelog.d/20260709_120000_issue_498_google_trends_learning.md	0.275.0
+changelog.d/20260709_120000_issue_531_pattern_inference_implementation.md	0.324.1
 changelog.d/20260709_130000_issue_499_learn_from_source.md	0.276.0
 changelog.d/20260711_120000_issue_540_verified_learning_tests.md	0.277.0
 changelog.d/20260712_020500_issue_647_with_defaults.md	0.278.0
