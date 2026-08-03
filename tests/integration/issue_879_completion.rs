@@ -79,6 +79,11 @@ printf '%s\n' "$attempt" > "$FORMAL_AI_ATTEMPTS"
   printf 'ANTHROPIC_BASE_URL=%s\n' "$ANTHROPIC_BASE_URL"
   printf 'GOOGLE_GEMINI_BASE_URL=%s\n' "$GOOGLE_GEMINI_BASE_URL"
   printf 'LINK_ASSISTANT_AGENT_CONFIG_CONTENT=%s\n' "$LINK_ASSISTANT_AGENT_CONFIG_CONTENT"
+  if [ -n "$HOME" ] && [ -f "$HOME/.codex/config.toml" ]; then
+    printf 'codex_config='
+    tr -d '\n' < "$HOME/.codex/config.toml"
+    printf '\n'
+  fi
   if [ -n "$OPENCODE_CONFIG" ] && [ -f "$OPENCODE_CONFIG" ]; then
     printf 'opencode_config='
     tr -d '\n' < "$OPENCODE_CONFIG"
