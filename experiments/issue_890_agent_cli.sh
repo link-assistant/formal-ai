@@ -61,7 +61,7 @@ config="$(
 ) >"$OUT/agent-stream.raw.log" 2>"$OUT/agent-stderr.log"
 
 "$ROOT/scripts/classify-agent-cli-stderr.sh" "$OUT/agent-stderr.log"
-rg '^\{' "$OUT/agent-stream.raw.log" >"$OUT/agent-stream.jsonl"
+grep '^{' "$OUT/agent-stream.raw.log" >"$OUT/agent-stream.jsonl"
 
 result="$work/proof-translation-invariant.md"
 [[ -f "$result" ]] || {
@@ -75,7 +75,7 @@ printf '%s' "$EXPECTED" | cmp -s - "$result" || {
 }
 
 cp "$result" "$OUT/proof-translation-invariant.md"
-session_id="$(rg -o '"session_id":"ses_[^"]+' "$OUT/agent-stream.raw.log" | tail -1 | cut -d'"' -f4)"
+session_id="$(grep -o '"session_id":"ses_[^"]*"' "$OUT/agent-stream.raw.log" | tail -1 | cut -d'"' -f4)"
 [[ -n "$session_id" ]] || {
   echo "Agent CLI stream did not preserve a session id" >&2
   exit 1

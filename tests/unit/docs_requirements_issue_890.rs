@@ -175,6 +175,12 @@ fn agent_cli_authorship_leaf_is_byte_exact_and_reproducible() {
             "cmp -s",
         ],
     );
+    assert!(
+        script
+            .lines()
+            .all(|line| !line.trim_start().starts_with("rg ")),
+        "issue 890 Agent CLI replay must only require tools installed by its CI job"
+    );
     assert_contains_all(
         "issue 890 Agent CLI CI gate",
         &read(root.join(".github/workflows/release.yml")),
