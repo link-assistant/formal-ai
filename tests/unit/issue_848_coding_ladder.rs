@@ -645,9 +645,17 @@ fn case_study_and_release_trace_every_issue_848_acceptance_boundary() {
     assert!(global.contains("## Issue #848"));
     assert!(global.contains("R848-10"));
 
-    let fragment = read("changelog.d/20260801_848_coding_tasks.md");
-    assert!(fragment.contains("bump: minor"));
-    assert!(fragment.contains("#848"));
+    let fragment = root.join("changelog.d/20260801_848_coding_tasks.md");
+    if fragment.is_file() {
+        let fragment = read("changelog.d/20260801_848_coding_tasks.md");
+        assert!(fragment.contains("bump: minor"));
+        assert!(fragment.contains("#848"));
+    } else {
+        assert!(
+            read("CHANGELOG.md").contains("issue #848's 130-task coding ladder"),
+            "the released changelog must retain issue #848 traceability"
+        );
+    }
 }
 
 fn assert_generated_source(task: &str, path: &str, expected: &str) {
