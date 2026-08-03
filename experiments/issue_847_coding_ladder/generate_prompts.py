@@ -50,7 +50,17 @@ ISSUES = {
 tasks = []
 
 
-def add(tid, level, seed, prompt, verify, note, expect=None, family="misc"):
+def add(
+    tid,
+    level,
+    seed,
+    prompt,
+    verify,
+    note,
+    expect=None,
+    family="misc",
+    expect_from=None,
+):
     task = {
         "id": tid,
         "level": level,
@@ -62,7 +72,16 @@ def add(tid, level, seed, prompt, verify, note, expect=None, family="misc"):
     }
     if expect is not None:
         task["expect_answer"] = expect
+    if expect_from is not None:
+        task["expect_from_file"] = expect_from
     tasks.append(task)
+
+
+VERSION_EXPECTATION = {
+    "path": "Cargo.toml",
+    "pattern": r'^version\s*=\s*"([^"]+)"',
+    "group": 1,
+}
 
 
 # --------------------------------------------------------------------------
@@ -94,7 +113,7 @@ READS = [
     ("read_intro", "data/seed/agent-info.lino",
      "tell me the value of the issue_report_body_intro field", "agentic", "839"),
     ("read_version", "Cargo.toml",
-     "tell me the version number of this crate", "0.30", None),
+     "tell me the version number of this crate", None, None),
     ("read_default_title", "data/seed/agent-info.lino",
      "tell me the value of the issue_report_default_title field", "Formal AI", "839"),
     ("read_rrf", "src/web_search_core.rs",
@@ -117,6 +136,7 @@ for name, path, ask, expect, seed in READS:
         "true",
         f"Atomic read against a real file. Anchor for edits in {path}.",
         expect=expect, family="read",
+        expect_from=VERSION_EXPECTATION if name == "read_version" else None,
     )
 
 # --------------------------------------------------------------------------
@@ -544,7 +564,8 @@ MORE_LANG = [
     ("ru_split", "ru",
      "Разбей эту задачу на подзадачи, только нумерованный список: 'Убери поддельные ссылки "
      "source: и добавь настоящую загрузку с кэшем.'", "true", "1."),
-    ("zh_read", "zh", "读取这个仓库中的 Cargo.toml 文件并告诉我版本号。", "true", "0.30"),
+    ("zh_read", "zh", "读取这个仓库中的 Cargo.toml 文件并告诉我版本号。", "true",
+     VERSION_EXPECTATION),
     ("zh_edit", "zh", "在这个仓库的 .gitignore 文件中添加一行忽略 ladder.tmp 文件。",
      "grep -q 'ladder.tmp' .gitignore", None),
     ("hi_read", "hi",
@@ -558,7 +579,9 @@ for entry in MORE_LANG:
     expect = entry[4] if len(entry) > 4 else None
     add(f"lang.{name}", 4, "706", prompt, verify,
         f"Coding intent in {lang}; must route identically (#386 convention).",
-        expect=expect, family="multilingual")
+        expect=expect if isinstance(expect, str) else None,
+        expect_from=expect if isinstance(expect, dict) else None,
+        family="multilingual")
 
 # --------------------------------------------------------------------------
 # Multi-file and dependency-ordered work: the shape most real issue fixes take.

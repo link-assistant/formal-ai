@@ -1,4 +1,179 @@
 meanings
+  response_lexeme_import_surface_changed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import surface changed ru"
+  response_lexeme_import_surface_changed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import surface changed zh"
+  response_lexeme_import_surface_missing_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import surface missing en"
+  response_lexeme_import_surface_missing_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import surface missing hi"
+  response_lexeme_import_surface_missing_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import surface missing ru"
+  response_lexeme_import_surface_missing_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import surface missing zh"
+  response_lexeme_import_wrong_genus_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import wrong genus en"
+  response_lexeme_import_wrong_genus_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import wrong genus hi"
+  response_lexeme_import_wrong_genus_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import wrong genus ru"
+  response_lexeme_import_wrong_genus_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import wrong genus zh"
+  response_local_search_contents_listing_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search contents listing en"
+  response_local_search_contents_listing_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search contents listing hi"
+  response_local_search_contents_listing_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search contents listing ru"
+  response_local_search_contents_listing_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search contents listing zh"
+  response_local_search_found_closest_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found closest en"
+  response_local_search_found_closest_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found closest hi"
+  response_local_search_found_closest_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found closest ru"
+  response_local_search_found_closest_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found closest zh"
+  response_local_search_found_directory_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found directory en"
+  response_local_search_found_directory_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found directory hi"
+  response_local_search_found_directory_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found directory ru"
+  response_local_search_found_directory_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found directory zh"
+  response_local_search_found_file_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found file en"
+  response_local_search_found_file_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found file hi"
+  response_local_search_found_file_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found file ru"
+  response_local_search_found_file_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found file zh"
+  response_local_search_found_path_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found path en"
+  response_local_search_found_path_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found path hi"
+  response_local_search_found_path_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found path ru"
+  response_local_search_found_path_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found path zh"
+  response_local_search_mismatch_requested_directory_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search mismatch requested directory en"
+  response_local_search_mismatch_requested_directory_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search mismatch requested directory hi"
+  response_local_search_mismatch_requested_directory_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search mismatch requested directory ru"
+  response_local_search_mismatch_requested_directory_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search mismatch requested directory zh"
+  response_local_search_mismatch_requested_file_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search mismatch requested file en"
   response_local_search_mismatch_requested_file_hi
     defined-by response_template
     lexeme en
@@ -1219,178 +1394,3 @@ meanings
     lexeme en
       surface
         text "response supplied file contents ru"
-  response_supplied_file_contents_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response supplied file contents zh"
-  response_supplied_file_first_line_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response supplied file first line en"
-  response_supplied_file_first_line_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response supplied file first line hi"
-  response_supplied_file_first_line_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response supplied file first line ru"
-  response_supplied_file_first_line_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response supplied file first line zh"
-  response_task_atomicity_no_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity no en"
-  response_task_atomicity_no_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity no hi"
-  response_task_atomicity_no_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity no ru"
-  response_task_atomicity_no_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity no zh"
-  response_task_atomicity_yes_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity yes en"
-  response_task_atomicity_yes_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity yes hi"
-  response_task_atomicity_yes_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity yes ru"
-  response_task_atomicity_yes_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity yes zh"
-  response_task_decomposition_atomic_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition atomic en"
-  response_task_decomposition_atomic_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition atomic hi"
-  response_task_decomposition_atomic_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition atomic ru"
-  response_task_decomposition_atomic_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition atomic zh"
-  response_task_decomposition_depth_bound_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth bound en"
-  response_task_decomposition_depth_bound_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth bound hi"
-  response_task_decomposition_depth_bound_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth bound ru"
-  response_task_decomposition_depth_bound_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth bound zh"
-  response_task_decomposition_depth_marker_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth marker en"
-  response_task_decomposition_depth_marker_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth marker hi"
-  response_task_decomposition_depth_marker_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth marker ru"
-  response_task_decomposition_depth_marker_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth marker zh"
-  response_task_decomposition_lead_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition lead en"
-  response_task_decomposition_lead_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition lead hi"
-  response_task_decomposition_lead_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition lead ru"
-  response_task_decomposition_lead_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition lead zh"
-  response_task_first_step_lead_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task first step lead en"
-  response_task_first_step_lead_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task first step lead hi"
-  response_task_first_step_lead_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task first step lead ru"
-  response_task_first_step_lead_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task first step lead zh"
-  response_task_plan_stage_implementation_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task plan stage implementation en"
-  response_task_plan_stage_implementation_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task plan stage implementation hi"

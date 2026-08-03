@@ -24,6 +24,7 @@ mod capability_router;
 pub mod change_request;
 mod code_artifact;
 pub mod code_rewrite_learning;
+mod code_task;
 pub(crate) mod command_reroute;
 mod comparison;
 mod conversation_recall;
@@ -61,8 +62,10 @@ mod shell_command;
 mod shell_file_fallback;
 pub mod source_links;
 pub mod statement_audit;
+mod structured_edit;
 mod tool_result;
 mod web_research;
+mod workspace_change;
 
 pub use associative_learning::{
     is_associative_learning_task, ASSOCIATIVE_LEARNING_PATH, ASSOCIATIVE_LEARNING_TASK,

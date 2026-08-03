@@ -1,4 +1,69 @@
 meanings
+  move_note
+    defined-by task
+    lexeme en
+      surface
+        text "move note"
+  multi-step
+    defined-by word_surface
+    lexeme en
+      surface
+        text "multi step"
+  mv
+    defined-by concept
+    lexeme en
+      surface
+        text "mv"
+  name_target_artifact
+    defined-by concept
+    lexeme en
+      surface
+        text "name target artifact"
+  named
+    defined-by word_surface
+    lexeme en
+      surface
+        text "named"
+  nikola_tesla
+    defined-by concept
+    lexeme en
+      surface
+        text "nikola tesla"
+  non-deterministic
+    defined-by word_surface
+    lexeme en
+      surface
+        text "non deterministic"
+  nondeterministic
+    defined-by word_surface
+    lexeme en
+      surface
+        text "nondeterministic"
+  normal
+    defined-by concept
+    lexeme en
+      surface
+        text "normal"
+  normalize
+    defined-by concept
+    lexeme en
+      surface
+        text "normalize"
+  normalize_labels_fixpoint
+    defined-by concept
+    lexeme en
+      surface
+        text "normalize labels fixpoint"
+  normalize_whitespace
+    defined-by operation
+    lexeme en
+      surface
+        text "normalize whitespace"
+  notes
+    defined-by word_surface
+    lexeme en
+      surface
+        text "notes"
   npm
     defined-by token
     lexeme en
@@ -1329,68 +1394,3 @@ meanings
     lexeme en
       surface
         text "pixels"
-  plagiaris
-    defined-by word_surface
-    lexeme en
-      surface
-        text "plagiaris"
-  plagiarism
-    defined-by word_surface
-    lexeme en
-      surface
-        text "plagiarism"
-  playright
-    defined-by word_surface
-    lexeme en
-      surface
-        text "playright"
-  political-adjective
-    defined-by category
-    lexeme en
-      surface
-        text "political adjective"
-  possessive_list
-    defined-by coverage_group
-    lexeme en
-      surface
-        text "possessive list"
-  post
-    defined-by word_surface
-    lexeme en
-      surface
-        text "post"
-  powershell
-    defined-by token
-    lexeme en
-      surface
-        text "powershell"
-  preferred
-    defined-by concept
-    lexeme en
-      surface
-        text "preferred"
-  prepend
-    defined-by phrase
-    lexeme en
-      surface
-        text "prepend"
-  prepend_text
-    defined-by operation
-    lexeme en
-      surface
-        text "prepend text"
-  problem
-    defined-by word_surface
-    lexeme en
-      surface
-        text "problem"
-  process
-    defined-by word_surface
-    lexeme en
-      surface
-        text "process"
-  process_report
-    defined-by task
-    lexeme en
-      surface
-        text "process report"
