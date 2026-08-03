@@ -1,4 +1,69 @@
 meanings
+  external_benchmark_swe_inspect_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe inspect error"
+  external_benchmark_swe_missing_report
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe missing report"
+  external_benchmark_swe_predictions_write_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe predictions write error"
+  external_benchmark_swe_record_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe record error"
+  external_benchmark_swe_remove_report_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe remove report error"
+  external_benchmark_swe_report_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe report error"
+  external_benchmark_swe_slice_write_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe slice write error"
+  external_benchmark_swe_start_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe start error"
+  external_benchmark_swe_unavailable
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe unavailable"
+  external_benchmark_unavailable_observation
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark unavailable observation"
+  external_trusted
+    defined-by concept
+    lexeme en
+      surface
+        text "external trusted"
+  extract_email
+    defined-by operation
+    lexeme en
+      surface
+        text "extract email"
+  extract_number
+    defined-by operation
+    lexeme en
+      surface
+        text "extract number"
   extract_url
     defined-by operation
     lexeme en
@@ -1329,68 +1394,3 @@ meanings
     lexeme en
       surface
         text "normal"
-  normalize
-    defined-by concept
-    lexeme en
-      surface
-        text "normalize"
-  normalize_labels_fixpoint
-    defined-by concept
-    lexeme en
-      surface
-        text "normalize labels fixpoint"
-  normalize_whitespace
-    defined-by operation
-    lexeme en
-      surface
-        text "normalize whitespace"
-  notes
-    defined-by word_surface
-    lexeme en
-      surface
-        text "notes"
-  npm
-    defined-by token
-    lexeme en
-      surface
-        text "npm"
-  npx
-    defined-by token
-    lexeme en
-      surface
-        text "npx"
-  number_lines
-    defined-by operation
-    lexeme en
-      surface
-        text "number lines"
-  official-docs
-    defined-by source_kind
-    lexeme en
-      surface
-        text "official docs"
-  official-repository
-    defined-by source_kind
-    lexeme en
-      surface
-        text "official repository"
-  olleh
-    defined-by concept
-    lexeme en
-      surface
-        text "olleh"
-  one-paragraph
-    defined-by concept
-    lexeme en
-      surface
-        text "one paragraph"
-  one_paragraph
-    defined-by concept
-    lexeme en
-      surface
-        text "one paragraph"
-  one_path
-    defined-by concept
-    lexeme en
-      surface
-        text "one path"

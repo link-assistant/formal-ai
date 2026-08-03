@@ -339,6 +339,11 @@ meanings
     lexeme en
       surface
         text "arrange"
+  array
+    defined-by word_surface
+    lexeme en
+      surface
+        text "array"
   article
     defined-by word_surface
     lexeme en
@@ -639,6 +644,51 @@ meanings
     lexeme en
       surface
         text "code request"
+  coding_source_binary_operation_test
+    defined-by intent
+    lexeme en
+      surface
+        text "coding source binary operation test"
+  coding_source_equality_test
+    defined-by intent
+    lexeme en
+      surface
+        text "coding source equality test"
+  coding_source_function_division
+    defined-by intent
+    lexeme en
+      surface
+        text "coding source function division"
+  coding_source_function_return
+    defined-by intent
+    lexeme en
+      surface
+        text "coding source function return"
+  coding_source_module_registration
+    defined-by intent
+    lexeme en
+      surface
+        text "coding source module registration"
+  coding_source_string_constant
+    defined-by intent
+    lexeme en
+      surface
+        text "coding source string constant"
+  coding_workspace_effect_observed
+    defined-by intent
+    lexeme en
+      surface
+        text "coding workspace effect observed"
+  coding_workspace_verification_failed
+    defined-by intent
+    lexeme en
+      surface
+        text "coding workspace verification failed"
+  coding_workspace_written_unverified
+    defined-by intent
+    lexeme en
+      surface
+        text "coding workspace written unverified"
   collapse
     defined-by concept
     lexeme en
@@ -759,6 +809,11 @@ meanings
     lexeme en
       surface
         text "configure toolbar icon pack"
+  constant
+    defined-by word_surface
+    lexeme en
+      surface
+        text "constant"
   context_bsd_operating_systems
     defined-by context
     lexeme en
@@ -1084,6 +1139,16 @@ meanings
     lexeme en
       surface
         text "distinct numbers"
+  divide
+    defined-by word_surface
+    lexeme en
+      surface
+        text "divide"
+  dividing
+    defined-by word_surface
+    lexeme en
+      surface
+        text "dividing"
   django
     defined-by word_surface
     lexeme en
@@ -1329,68 +1394,3 @@ meanings
     lexeme en
       surface
         text "external benchmark swe infrastructure error"
-  external_benchmark_swe_inspect_error
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark swe inspect error"
-  external_benchmark_swe_missing_report
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark swe missing report"
-  external_benchmark_swe_predictions_write_error
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark swe predictions write error"
-  external_benchmark_swe_record_error
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark swe record error"
-  external_benchmark_swe_remove_report_error
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark swe remove report error"
-  external_benchmark_swe_report_error
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark swe report error"
-  external_benchmark_swe_slice_write_error
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark swe slice write error"
-  external_benchmark_swe_start_error
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark swe start error"
-  external_benchmark_swe_unavailable
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark swe unavailable"
-  external_benchmark_unavailable_observation
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark unavailable observation"
-  external_trusted
-    defined-by concept
-    lexeme en
-      surface
-        text "external trusted"
-  extract_email
-    defined-by operation
-    lexeme en
-      surface
-        text "extract email"
-  extract_number
-    defined-by operation
-    lexeme en
-      surface
-        text "extract number"

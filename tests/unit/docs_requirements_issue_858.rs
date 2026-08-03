@@ -105,11 +105,9 @@ fn global_requirements_and_release_metadata_record_issue_858() {
         .filter(|path| path.extension().is_some_and(|extension| extension == "md"))
         .filter_map(|path| fs::read_to_string(path).ok())
         .any(|fragment| fragment.contains("#858") && fragment.contains("bump: patch"));
-    let released_entry = read("CHANGELOG.md");
-    let released_issue =
-        released_entry.contains("https://github.com/link-assistant/formal-ai/issues/858");
+    let released_entry = read("CHANGELOG.md").contains("/issues/858");
     assert!(
-        unreleased_entry || released_issue,
+        unreleased_entry || released_entry,
         "issue #858 needs an unreleased patch fragment or released changelog entry"
     );
 }

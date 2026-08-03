@@ -142,6 +142,8 @@ mod issue_844_statement_merge;
 mod issue_844_statement_ranking;
 mod issue_845_fact_checking;
 mod issue_847_task_decomposition;
+mod issue_848_coding_ladder;
+mod issue_848_workspace_change_learning;
 mod issue_858;
 mod issue_859;
 mod issue_864;

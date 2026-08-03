@@ -1,0 +1,12 @@
+workspace_change_execution_policy
+  schema_version 1
+  task_family verified_workspace_rewrite
+  stage read_target
+  stage compile_bounded_normal_markov
+  stage execute_against_observed_bytes
+  stage reject_no_match_or_step_limit
+  stage write_complete_result
+  stage read_back_exact_bytes
+  stage accept_only_exact_observation
+  candidate_effect inert_until_reviewed
+  failure_effect no_partial_write

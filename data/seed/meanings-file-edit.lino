@@ -25,6 +25,8 @@ meanings
         text "rewrite"
       surface
         text "refactor"
+      surface
+        text "rename"
     lexeme ru
       surface
         text замени
@@ -38,6 +40,8 @@ meanings
         text поменяй
       surface
         text исправь
+      surface
+        text переименуй
     lexeme hi
       surface
         text बदलो
@@ -45,6 +49,8 @@ meanings
         text बदलें
       surface
         text बदलिए
+      surface
+        text "नाम बदलो"
     lexeme zh
       surface
         text 替换
@@ -52,6 +58,8 @@ meanings
         text 修改
       surface
         text 更改
+      surface
+        text 重命名
   file_edit_new_lead
     defined-by relation
     role file_edit_new_lead_cue

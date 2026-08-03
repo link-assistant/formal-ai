@@ -1,4 +1,179 @@
 meanings
+  reverse_sort_list_files
+    defined-by rule
+    lexeme en
+      surface
+        text "reverse sort list files"
+  reverse_sort_list_files_arg
+    defined-by rule
+    lexeme en
+      surface
+        text "reverse sort list files arg"
+  reverse_string
+    defined-by task
+    lexeme en
+      surface
+        text "reverse string"
+  reverse_words
+    defined-by operation
+    lexeme en
+      surface
+        text "reverse words"
+  rg
+    defined-by concept
+    lexeme en
+      surface
+        text "rg"
+  rm
+    defined-by concept
+    lexeme en
+      surface
+        text "rm"
+  rmdir
+    defined-by concept
+    lexeme en
+      surface
+        text "rmdir"
+  role-only
+    defined-by concept
+    lexeme en
+      surface
+        text "role only"
+  rosetta_code
+    defined-by source
+    lexeme en
+      surface
+        text "rosetta code"
+  rs
+    defined-by word_surface
+    lexeme en
+      surface
+        text "rs"
+  rule_chinese
+    defined-by rule
+    lexeme en
+      surface
+        text "rule chinese"
+  rule_english
+    defined-by rule
+    lexeme en
+      surface
+        text "rule english"
+  rule_hindi
+    defined-by rule
+    lexeme en
+      surface
+        text "rule hindi"
+  rule_russian
+    defined-by rule
+    lexeme en
+      surface
+        text "rule russian"
+  rule_spanish
+    defined-by rule
+    lexeme en
+      surface
+        text "rule spanish"
+  run_agent
+    defined-by name
+    lexeme en
+      surface
+        text "run agent"
+  russian-colloquial-verb
+    defined-by category
+    lexeme en
+      surface
+        text "russian colloquial verb"
+  rust_library
+    defined-by environment
+    lexeme en
+      surface
+        text "rust library"
+  screenshot
+    defined-by word_surface
+    lexeme en
+      surface
+        text "screenshot"
+  script_and_markers
+    defined-by concept
+    lexeme en
+      surface
+        text "script and markers"
+  sdk
+    defined-by word_surface
+    lexeme en
+      surface
+        text "sdk"
+  search
+    defined-by word_surface
+    lexeme en
+      surface
+        text "search"
+  search_fusion_header
+    defined-by intent
+    lexeme en
+      surface
+        text "search fusion header"
+  search_fusion_read_more
+    defined-by intent
+    lexeme en
+      surface
+        text "search fusion read more"
+  search_query
+    defined-by concept
+    lexeme en
+      surface
+        text "search query"
+  sed
+    defined-by token
+    lexeme en
+      surface
+        text "sed"
+  selector
+    defined-by word_surface
+    lexeme en
+      surface
+        text "selector"
+  self_authored_for_issue_707
+    defined-by source
+    lexeme en
+      surface
+        text "self authored for issue 707"
+  self_improvement_loop
+    defined-by concept
+    lexeme en
+      surface
+        text "self improvement loop"
+  send
+    defined-by word_surface
+    lexeme en
+      surface
+        text "send"
+  sentence_case
+    defined-by operation
+    lexeme en
+      surface
+        text "sentence case"
+  sequential_compose
+    defined-by concept
+    lexeme en
+      surface
+        text "sequential compose"
+  shared_dialog_capture_parse_failed
+    defined-by intent
+    lexeme en
+      surface
+        text "shared dialog capture parse failed"
+  shared_dialog_capture_unsupported
+    defined-by intent
+    lexeme en
+      surface
+        text "shared dialog capture unsupported"
+  shell-helpers
+    defined-by category
+    lexeme en
+      surface
+        text "shell helpers"
   short
     defined-by word_surface
     lexeme en
@@ -174,11 +349,21 @@ meanings
     lexeme en
       surface
         text "stdout"
+  string
+    defined-by word_surface
+    lexeme en
+      surface
+        text "string"
   strip_empty_lines
     defined-by operation
     lexeme en
       surface
         text "strip empty lines"
+  struct
+    defined-by word_surface
+    lexeme en
+      surface
+        text "struct"
   structured-document
     defined-by isolation_mode
     lexeme en

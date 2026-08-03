@@ -18,8 +18,7 @@ uses: Hive Mind -> Agent CLI -> `formal-ai serve --agent-mode`
 
 FILES
 -----
-  prompts.json   13 tasks across 4 levels, seeded from issues #846, #843,
-                 #700, #710 plus two decomposition meta-tasks (#847).
+  prompts.json   130 tasks across 4 levels and 16 real-work families.
   generate_prompts.py   Writes prompts.json. Edit this, never prompts.json.
   run_coding_ladder.sh  Runs each task, verifies by observed effect, reverts
                  the tree between tasks, writes results.json.
@@ -34,9 +33,9 @@ USAGE
   experiments/issue_847_coding_ladder/run_coding_ladder.sh
   ONLY=846 experiments/issue_847_coding_ladder/run_coding_ladder.sh
 
-The working tree must be clean: tasks edit the real repository and are
-reverted with `git checkout -- .` between runs. Changes under experiments/
-are ignored by that guard so the harness can write its own results.
+The working tree must be clean outside experiments/: tasks edit the real
+repository and are reverted with `git checkout -- .` between runs. Changes
+under experiments/ are ignored by that guard so the harness can write results.
 
 BASELINE @ v0.304.0 (this branch), agent CLI 0.25.0, Linux, 2026-07-25
 ----------------------------------------------------------------------
@@ -66,8 +65,8 @@ mismeasured it as 7/16 before new_branch_for.sh landed; see defect six below).
 An earlier 13-task sample reported 2/13 and concluded "no level where
 Formal AI can write code". That was too small a sample and partly wrong.
 
-THE HEADLINE FINDING
---------------------
+THE PRE-FIX HEADLINE FINDING
+----------------------------
 The boundary is not LEVEL, it is ARTIFACT KIND.
 
 All 10 passing write tasks are "append a line to a prose or config file"
@@ -98,6 +97,56 @@ The second is a misroute rather than a refusal: a decomposition request is
 formalized as program generation. Both are the same class as issue #840 --
 surface-token routing rather than modeled intent.
 
+POST-FIX MEASUREMENT @ v0.317.0, agent CLI 0.25.4, Linux, 2026-08-01
+---------------------------------------------------------------------
+The first complete run after semantic source generation, focused search,
+grounded collection edits, and compiler-backed verification measured 130/130
+tasks with no unavailable servers and passed 61/130:
+
+  L1 0/16   L2 4/12   L3 8/28   L4 49/74
+
+  create 6/6   search 6/8   test_authoring 1/8   targeted_edit 2/7
+  multilingual 7/11   decomposition 5/6   verification 4/5
+
+Generated Rust functions, constants, and tests are executable bytes observed
+through workspace tools. New requested `.rs` targets are compiled with rustc;
+prompt prose containing an `fn` token cannot pass. Test authoring, targeted
+editing, L2, and L3 are all nonzero. L1 and refactoring remain honest gaps.
+
+That run also exposed two stale benchmark expectations copied from v0.303.0:
+correct English and Chinese answers reported the current 0.317.0 version but
+were checked against `0.30`. Answer oracles can now derive a capture from a
+named repository file; both filtered replays pass. A second complete run
+measured 130/130 with no unavailable servers and passed 62/130:
+
+  L1 0/16   L2 4/12   L3 8/28   L4 50/74
+
+  create 6/6   search 6/8   test_authoring 1/8   targeted_edit 2/7
+  multilingual 7/11   decomposition 5/6   verification 4/5
+
+The two corrected reads added two passes while a variable Hindi decomposition
+answer lost one relative to the first run. The canonical result records that
+observed net gain; it is updated only by a complete run.
+
+FINAL ISSUE #848 MEASUREMENT @ v0.320.0, agent CLI 0.25.5, Linux, 2026-08-02
+-------------------------------------------------------------------------------
+The complete post-learning run measured all 130 tasks and passed 65/130:
+
+  L1 0/16   L2 5/12   L3 10/28   L4 50/74
+
+  create 6/6   search 5/8   test_authoring 1/8   targeted_edit 3/7
+  multilingual 8/11   decomposition 5/6   verification 4/5
+  refactor 1/3   multifile 2/4
+
+The grounded identifier rewrite and ordered module-registration transaction add
+the first refactor pass and another L2/multifile pass. Both also pass focused
+real-Agent replays with an observed workspace effect and no refusal or timeout.
+The full run initially printed 64/130 with one `NOT MEASURED`, but that task had
+actually started its server and completed its verified edit: it read a seed file
+containing the literal startup-error text that the harness searched globally.
+The corrected startup predicate plus a focused replay classify that same full-run
+evidence correctly, producing the internally consistent 65/130 canonical result.
+
 MEASUREMENT DEFECTS FOUND AND FIXED (read before trusting any number)
 ----------------------------------------------------------------------
 The first run of this harness reported 5/13 with L1 at 2/2. "Solve the issue
@@ -121,9 +170,9 @@ whose entire content is the echoed prompt fragment --
   $ cat tests/unit/ladder_spotcheck.rs
   one Rust test named ladder_spec_probe asserting the crate version string is not empty.
 
--- and a grep for the test name passes on that. The runner now requires any
-.rs file a task was asked to create to contain an `fn` item. Ten tasks were
-reclassified pass -> fail and test_authoring went 7/8 -> 0/8.
+-- and a grep for the test name passes on that. The runner now compiles every
+new requested `.rs` file as a standalone Rust library. Ten tasks were
+reclassified pass -> fail and test_authoring went 7/8 -> 0/8 at that point.
 
 A sixth, found when the 130-task run was first repeated on Linux: L1 jumped
 from 0/16 to 7/16 with no engine change that could explain it. The verify was
@@ -143,6 +192,22 @@ be satisfied by the tree's existing state, ordinary PASSes). The runner now
 reclaims the scratch home after every task and reports a task whose server
 never started as NOT MEASURED, counted separately from a failure. A run with a
 non-zero NOT MEASURED count is incomplete, not bad news.
+
+An eighth defect compiled every requested Rust path, including a pre-existing
+rust-script that a task only edited. The standalone-library check therefore
+rejected valid edits for missing rust-script context. The runner now snapshots
+target existence and compiles only newly created `.rs` files.
+
+A ninth defect pinned the crate-version answer to `0.30`, so correct answers
+became failures after releases. These expectations now name `Cargo.toml` and a
+capture regex. Resolution errors fail closed and the resolved answer is stored
+with each result.
+
+A tenth defect classified any output containing `exited before listening` as an
+unavailable server. `L3.839.title_prefix` legitimately read the seed template
+containing that phrase after its server had started, so a verified edit was
+reported as `NOT MEASURED`. The runner now requires both the diagnostic phrase
+and absence of the launcher's `started a temporary server` success marker.
 
 Generalisable lesson, and the same one behind #839 and #842: assert on the
 OBSERVED EFFECT, never on narration. "I created the file" with no file is a
