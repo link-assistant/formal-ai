@@ -1,4 +1,74 @@
 meanings
+  read
+    defined-by concept
+    lexeme en
+      surface
+        text "read"
+  read_local_file
+    defined-by name
+    lexeme en
+      surface
+        text "read local file"
+  recall_name
+    defined-by concept
+    lexeme en
+      surface
+        text "recall name"
+  referrers
+    defined-by word_surface
+    lexeme en
+      surface
+        text "referrers"
+  relative-meta-logic
+    defined-by term
+    lexeme en
+      surface
+        text "relative meta logic"
+  relocate
+    defined-by word_surface
+    lexeme en
+      surface
+        text "relocate"
+  remix
+    defined-by concept
+    lexeme en
+      surface
+        text "remix"
+  remix-icon
+    defined-by concept
+    lexeme en
+      surface
+        text "remix icon"
+  remove_punctuation
+    defined-by operation
+    lexeme en
+      surface
+        text "remove punctuation"
+  remove_text
+    defined-by operation
+    lexeme en
+      surface
+        text "remove text"
+  render
+    defined-by word_surface
+    lexeme en
+      surface
+        text "render"
+  rendered
+    defined-by word_surface
+    lexeme en
+      surface
+        text "rendered"
+  replace_everywhere
+    defined-by concept
+    lexeme en
+      surface
+        text "replace everywhere"
+  repo
+    defined-by word_surface
+    lexeme en
+      surface
+        text "repo"
   repositories
     defined-by word_surface
     lexeme en
@@ -844,6 +914,111 @@ meanings
     lexeme en
       surface
         text "response client integration invalid typed json setting zh"
+  response_coding_source_binary_operation_test_rust
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding source binary operation test rust"
+  response_coding_source_equality_test_rust
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding source equality test rust"
+  response_coding_source_function_division_rust
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding source function division rust"
+  response_coding_source_function_return_rust
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding source function return rust"
+  response_coding_source_module_registration_rust
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding source module registration rust"
+  response_coding_source_string_constant_rust
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding source string constant rust"
+  response_coding_workspace_effect_observed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace effect observed en"
+  response_coding_workspace_effect_observed_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace effect observed es"
+  response_coding_workspace_effect_observed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace effect observed hi"
+  response_coding_workspace_effect_observed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace effect observed ru"
+  response_coding_workspace_effect_observed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace effect observed zh"
+  response_coding_workspace_verification_failed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace verification failed en"
+  response_coding_workspace_verification_failed_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace verification failed es"
+  response_coding_workspace_verification_failed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace verification failed hi"
+  response_coding_workspace_verification_failed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace verification failed ru"
+  response_coding_workspace_verification_failed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace verification failed zh"
+  response_coding_workspace_written_unverified_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace written unverified en"
+  response_coding_workspace_written_unverified_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace written unverified es"
+  response_coding_workspace_written_unverified_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace written unverified hi"
+  response_coding_workspace_written_unverified_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace written unverified ru"
+  response_coding_workspace_written_unverified_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace written unverified zh"
   response_comparison_decomposed_evidence_en
     defined-by response_template
     lexeme en
@@ -1219,178 +1394,3 @@ meanings
     lexeme en
       surface
         text "response external benchmark provenance en"
-  response_external_benchmark_provenance_write_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark provenance write error en"
-  response_external_benchmark_python_import_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark python import en"
-  response_external_benchmark_ratchet_reference_suffix_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark ratchet reference suffix en"
-  response_external_benchmark_swe_clear_logs_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe clear logs error en"
-  response_external_benchmark_swe_docker_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe docker error en"
-  response_external_benchmark_swe_encode_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe encode error en"
-  response_external_benchmark_swe_exit_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe exit error en"
-  response_external_benchmark_swe_infrastructure_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe infrastructure error en"
-  response_external_benchmark_swe_inspect_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe inspect error en"
-  response_external_benchmark_swe_missing_report_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe missing report en"
-  response_external_benchmark_swe_predictions_write_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe predictions write error en"
-  response_external_benchmark_swe_record_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe record error en"
-  response_external_benchmark_swe_remove_report_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe remove report error en"
-  response_external_benchmark_swe_report_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe report error en"
-  response_external_benchmark_swe_slice_write_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe slice write error en"
-  response_external_benchmark_swe_start_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe start error en"
-  response_external_benchmark_swe_unavailable_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark swe unavailable en"
-  response_external_benchmark_unavailable_observation_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response external benchmark unavailable observation en"
-  response_fact_check_arithmetic_counterexample_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check arithmetic counterexample en"
-  response_fact_check_arithmetic_counterexample_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check arithmetic counterexample hi"
-  response_fact_check_arithmetic_counterexample_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check arithmetic counterexample ru"
-  response_fact_check_arithmetic_counterexample_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check arithmetic counterexample zh"
-  response_fact_check_current_dialogue_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check current dialogue en"
-  response_fact_check_current_dialogue_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check current dialogue hi"
-  response_fact_check_current_dialogue_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check current dialogue ru"
-  response_fact_check_current_dialogue_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check current dialogue zh"
-  response_fact_check_no_statements_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check no statements en"
-  response_fact_check_no_statements_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check no statements hi"
-  response_fact_check_no_statements_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check no statements ru"
-  response_fact_check_no_statements_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check no statements zh"
-  response_fact_check_statement_counterexample_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check statement counterexample en"
-  response_fact_check_statement_counterexample_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check statement counterexample hi"
-  response_fact_check_statement_counterexample_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check statement counterexample ru"
-  response_fact_check_statement_counterexample_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check statement counterexample zh"
-  response_fact_check_statement_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check statement en"

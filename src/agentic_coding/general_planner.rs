@@ -377,6 +377,23 @@ pub(super) fn has_file_write_intent(lower: &str) -> bool {
     parse_write_request(lower).is_some()
 }
 
+/// Whether a request explicitly marks its recovered payload as authoritative
+/// literal bytes rather than a description of another workspace operation.
+///
+/// The marker is seed-backed and multilingual. Requiring both the narrow marker
+/// role and a successfully composed literal-file plan prevents arbitrary prose
+/// containing "exactly" from changing planner precedence.
+pub(super) fn has_authoritative_literal_write(request: &str) -> bool {
+    let normalized = request.to_lowercase();
+    first_prefix_lead_end(
+        &normalized,
+        seed::ROLE_FILE_WRITE_AUTHORITATIVE_CONTENT_LEAD,
+    )
+    .is_some()
+        && compose_general_change_plan(request)
+            .is_some_and(|plan| plan.mode == GeneralPlanMode::LiteralFile)
+}
+
 /// Recover the `(target, content)` of a write request from its wording.
 ///
 /// The recogniser is entirely seed-driven (issue #680). It locates the target
@@ -715,8 +732,12 @@ fn clean_cue_token(word: &str) -> String {
 /// lowercased request, honouring whole-word boundaries for space-delimited
 /// scripts and substring matches for CJK (which has no inter-word spaces).
 fn first_content_lead_end(lowered: &str) -> Option<(usize, usize)> {
+    first_prefix_lead_end(lowered, seed::ROLE_FILE_WRITE_CONTENT_LEAD)
+}
+
+fn first_prefix_lead_end(lowered: &str, role: &str) -> Option<(usize, usize)> {
     let markers: Vec<String> = seed::lexicon()
-        .role_word_forms(seed::ROLE_FILE_WRITE_CONTENT_LEAD)
+        .role_word_forms(role)
         .iter()
         .filter(|form| form.slot() == Slot::Prefix)
         .map(|form| form.before_slot().trim().to_lowercase())

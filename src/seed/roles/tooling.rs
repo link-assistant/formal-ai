@@ -174,6 +174,16 @@ pub const ROLE_FILE_WRITE_ACTION_CUE: &str = "file_write_action_cue";
 /// so a *read* request ("show me the contents of …") is never mistaken for a
 /// write.
 pub const ROLE_FILE_WRITE_CONTENT_LEAD: &str = "file_write_content_lead";
+/// Semantic role: an explicit promise that the following span is authoritative
+/// literal file content, even when those bytes resemble another operation.
+///
+/// Forms such as "with exactly this content" (plus translations) are separate
+/// from the broader [`ROLE_FILE_WRITE_CONTENT_LEAD`] set. The agentic planner
+/// uses this narrower role to keep an edit-shaped payload such as "rename X to
+/// Y" inside the requested new file rather than treating it as an instruction
+/// to edit that not-yet-existing file (issue #708).
+pub const ROLE_FILE_WRITE_AUTHORITATIVE_CONTENT_LEAD: &str =
+    "file_write_authoritative_content_lead";
 /// Semantic role: a reference to bytes produced by an explicitly requested
 /// command rather than literal prose to write.
 ///

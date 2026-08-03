@@ -163,7 +163,7 @@ fn read_arguments(path: &str) -> String {
 /// keeps the ones it declared and strips the rest, so the same plan drives any of
 /// them without a per-CLI special case (issue #680), mirroring
 /// [`super::planner`]'s `write_arguments`.
-fn edit_arguments(path: &str, old: &str, new: &str) -> String {
+pub(super) fn edit_arguments(path: &str, old: &str, new: &str) -> String {
     json!({
         "path": path,
         "filePath": path,

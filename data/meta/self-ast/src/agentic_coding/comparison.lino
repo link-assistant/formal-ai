@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/comparison.rs
   language rust
   fidelity full_ast
-  byte_len 5425
-  line_count 137
-  content_id source_module_1ae5970a69f80627
-  symbol_count 9
+  byte_len 5605
+  line_count 144
+  content_id source_module_d68fe39a7cb9791f
+  symbol_count 10
   symbols
     const LEFT_SLOT 9 9
     const RIGHT_SLOT 10 10
@@ -15,25 +15,26 @@ self_ast_census
     function bounded_find 62 70
     function clean_side 72 86
     function remove_bounded_surface 88 110
-    function comparison_answer 112 137
+    function comparison_evidence 112 130
+    function comparison_answer 132 144
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 5076
-    named_node_count 1023
+    total_link_count 5251
+    named_node_count 1055
     distinct_node_kinds 63
     node_kinds
-      arguments 102
-      array_type 3
+      arguments 106
+      array_type 4
       assignment_expression 2
-      binary_expression 17
-      block 21
-      call_expression 102
+      binary_expression 18
+      block 23
+      call_expression 106
       char_literal 4
-      closure_expression 15
-      closure_parameters 15
+      closure_expression 16
+      closure_parameters 16
       const_item 3
       continue_expression 1
       crate 7
@@ -41,19 +42,19 @@ self_ast_census
       else_clause 2
       escape_sequence 2
       expression_statement 18
-      field_expression 77
-      field_identifier 77
+      field_expression 79
+      field_identifier 79
       for_expression 3
-      function_item 6
-      generic_function 2
+      function_item 7
+      generic_function 1
       generic_type 5
-      identifier 256
+      identifier 261
       if_expression 5
       index_expression 9
       inner_doc_comment_marker 1
       integer_literal 7
       let_condition 2
-      let_declaration 28
+      let_declaration 27
       line_comment 3
       macro_invocation 6
       match_arm 3
@@ -61,29 +62,29 @@ self_ast_census
       match_expression 1
       match_pattern 3
       mutable_specifier 6
-      parameter 14
-      parameters 6
+      parameter 15
+      parameters 7
       parenthesized_expression 1
       primitive_type 15
       range_expression 10
-      reference_expression 14
-      reference_type 17
+      reference_expression 15
+      reference_type 18
       return_expression 2
-      scoped_identifier 31
+      scoped_identifier 32
       scoped_use_list 1
       source_file 1
       string_content 17
       string_literal 18
-      super 4
+      super 5
       token_tree 8
       try_expression 1
       tuple_expression 2
-      tuple_pattern 2
+      tuple_pattern 5
       tuple_struct_pattern 3
       tuple_type 1
-      type_arguments 7
-      type_identifier 15
-      unary_expression 9
+      type_arguments 6
+      type_identifier 16
+      unary_expression 10
       use_declaration 4
       use_list 1
       visibility_modifier 2

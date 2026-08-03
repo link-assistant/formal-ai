@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/intent_router.rs
   language rust
   fidelity full_ast
-  byte_len 7519
+  byte_len 7530
   line_count 181
-  content_id source_module_921511547e4f1fdf
+  content_id source_module_822f3a5dbf5305ca
   symbol_count 6
   symbols
     function plan_web_fetch_step 31 47
@@ -18,8 +18,8 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 4051
-    named_node_count 853
+    total_link_count 4063
+    named_node_count 855
     distinct_node_kinds 48
     node_kinds
       arguments 66
@@ -59,7 +59,7 @@ self_ast_census
       source_file 1
       string_content 23
       string_literal 23
-      super 6
+      super 7
       token_tree 8
       try_expression 6
       tuple_pattern 2
@@ -69,4 +69,4 @@ self_ast_census
       unary_expression 2
       use_declaration 5
       use_list 1
-      visibility_modifier 3
+      visibility_modifier 4

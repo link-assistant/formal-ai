@@ -218,7 +218,11 @@
       "prompt": "In this repository, read Cargo.toml and tell me the version number of this crate.",
       "verify": "true",
       "note": "Atomic read against a real file. Anchor for edits in Cargo.toml.",
-      "expect_answer": "0.30"
+      "expect_from_file": {
+        "path": "Cargo.toml",
+        "pattern": "^version\\s*=\\s*\"([^\"]+)\"",
+        "group": 1
+      }
     },
     {
       "id": "read.read_default_title",
@@ -1134,7 +1138,11 @@
       "prompt": "读取这个仓库中的 Cargo.toml 文件并告诉我版本号。",
       "verify": "true",
       "note": "Coding intent in zh; must route identically (#386 convention).",
-      "expect_answer": "0.30"
+      "expect_from_file": {
+        "path": "Cargo.toml",
+        "pattern": "^version\\s*=\\s*\"([^\"]+)\"",
+        "group": 1
+      }
     },
     {
       "id": "lang.zh_edit",

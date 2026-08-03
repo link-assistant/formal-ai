@@ -2,69 +2,69 @@ self_ast_census
   target src/agentic_coding/planner.rs
   language rust
   fidelity full_ast
-  byte_len 42563
-  line_count 967
-  content_id source_module_6052464de6d41f81
+  byte_len 44114
+  line_count 999
+  content_id source_module_5abbcedf525893c0
   symbol_count 38
   symbols
-    const SEARCH_QUERY 50 50
-    const CANONICAL_SOURCE_URL 53 54
-    const KB_PATH 57 57
-    const GENERAL_PLAN_BODY_PLACEHOLDER 59 59
-    enum AgenticPlan 63 68
-    struct PlannedToolCall 72 77
-    enum Capability 87 102
-    function permission_key 110 127
-    function registry_id 129 146
-    function tool_capability 155 157
-    function plan_chat_step 162 387
-    function plan_general_change_step 389 450
-    function plan_shell_step 453 470
-    struct DocumentRecipe 482 491
-    function plan_document_recipe 496 520
-    function plan_formalization_step 523 568
-    function plan_meaning_detail_step 577 626
-    function plan_diagram_step 633 646
-    function plan_self_ast_step 653 666
-    function plan_self_heal_step 673 686
-    function plan_source_links_step 694 707
-    function plan_ledger_step 714 727
-    function plan_explain_step 734 747
-    function plan_change_request_step 755 768
-    function plan_repair_strategy_step 776 789
-    function plan_rebuild_step 798 811
-    function plan_question_catalog_step 819 832
-    function plan_dreaming_audit_step 834 847
-    function plan_google_trends_learning_step 855 868
-    function plan_google_trends_catalog_step 870 883
-    function plan_one 885 890
-    function write_arguments 898 906
-    function fetch_arguments 915 921
-    function classify_tool 923 925
-    function latest_user_text 928 930
-    const FORMALIZATION_KEYWORDS 933 933
-    function is_formalization_task 944 949
-    function final_answer 953 967
+    const SEARCH_QUERY 53 53
+    const CANONICAL_SOURCE_URL 56 57
+    const KB_PATH 60 60
+    const GENERAL_PLAN_BODY_PLACEHOLDER 62 62
+    enum AgenticPlan 66 71
+    struct PlannedToolCall 75 80
+    enum Capability 90 105
+    function permission_key 113 130
+    function registry_id 132 149
+    function tool_capability 158 160
+    function plan_chat_step 165 419
+    function plan_general_change_step 421 482
+    function plan_shell_step 485 502
+    struct DocumentRecipe 514 523
+    function plan_document_recipe 528 552
+    function plan_formalization_step 555 600
+    function plan_meaning_detail_step 609 658
+    function plan_diagram_step 665 678
+    function plan_self_ast_step 685 698
+    function plan_self_heal_step 705 718
+    function plan_source_links_step 726 739
+    function plan_ledger_step 746 759
+    function plan_explain_step 766 779
+    function plan_change_request_step 787 800
+    function plan_repair_strategy_step 808 821
+    function plan_rebuild_step 830 843
+    function plan_question_catalog_step 851 864
+    function plan_dreaming_audit_step 866 879
+    function plan_google_trends_learning_step 887 900
+    function plan_google_trends_catalog_step 902 915
+    function plan_one 917 922
+    function write_arguments 930 938
+    function fetch_arguments 947 953
+    function classify_tool 955 957
+    function latest_user_text 960 962
+    const FORMALIZATION_KEYWORDS 965 965
+    function is_formalization_task 976 981
+    function final_answer 985 999
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 21232
-    named_node_count 4243
+    total_link_count 21954
+    named_node_count 4383
     distinct_node_kinds 74
     node_kinds
-      arguments 276
+      arguments 289
       array_expression 1
       array_type 40
       assignment_expression 3
       attribute 6
       attribute_item 6
       binary_expression 9
-      block 108
-      call_expression 276
-      closure_expression 7
-      closure_parameters 7
+      block 113
+      call_expression 289
+      closure_expression 9
+      closure_parameters 9
       const_item 5
       crate 5
       declaration_list 1
@@ -74,25 +74,25 @@ self_ast_census
       enum_variant 16
       enum_variant_list 2
       escape_sequence 9
-      expression_statement 137
+      expression_statement 146
       field_declaration 6
       field_declaration_list 2
-      field_expression 76
-      field_identifier 108
+      field_expression 78
+      field_identifier 110
       field_initializer 26
       field_initializer_list 13
       function_item 29
       function_modifiers 2
       generic_type 5
-      identifier 1211
-      if_expression 74
+      identifier 1258
+      if_expression 79
       impl_item 1
       inner_doc_comment_marker 5
       integer_literal 7
-      let_condition 40
+      let_condition 44
       let_declaration 53
       lifetime 3
-      line_comment 234
+      line_comment 244
       macro_invocation 29
       match_arm 31
       match_block 3
@@ -105,10 +105,10 @@ self_ast_census
       parameter 52
       parameters 29
       primitive_type 37
-      reference_expression 73
+      reference_expression 79
       reference_type 77
-      return_expression 58
-      scoped_identifier 217
+      return_expression 62
+      scoped_identifier 224
       scoped_use_list 3
       self 4
       self_parameter 2
@@ -118,13 +118,13 @@ self_ast_census
       string_literal 82
       struct_expression 13
       struct_item 2
-      super 46
+      super 49
       token_tree 53
       try_expression 1
-      tuple_struct_pattern 40
+      tuple_struct_pattern 44
       type_arguments 5
       type_identifier 80
       unary_expression 11
-      use_declaration 35
+      use_declaration 37
       use_list 3
       visibility_modifier 24

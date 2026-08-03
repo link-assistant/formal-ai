@@ -1,4 +1,179 @@
 meanings
+  response_local_search_not_found_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search not found hi"
+  response_local_search_not_found_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search not found ru"
+  response_local_search_not_found_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search not found zh"
+  response_local_search_route_local_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search route local en"
+  response_local_search_route_local_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search route local hi"
+  response_local_search_route_local_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search route local ru"
+  response_local_search_route_local_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search route local zh"
+  response_local_search_scope_listing_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search scope listing en"
+  response_local_search_scope_listing_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search scope listing hi"
+  response_local_search_scope_listing_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search scope listing ru"
+  response_local_search_scope_listing_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search scope listing zh"
+  response_local_search_type_directory_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search type directory en"
+  response_local_search_type_directory_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search type directory hi"
+  response_local_search_type_directory_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search type directory ru"
+  response_local_search_type_directory_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search type directory zh"
+  response_local_search_type_file_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search type file en"
+  response_local_search_type_file_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search type file hi"
+  response_local_search_type_file_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search type file ru"
+  response_local_search_type_file_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search type file zh"
+  response_mcp_instructions_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp instructions en"
+  response_mcp_instructions_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp instructions hi"
+  response_mcp_instructions_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp instructions ru"
+  response_mcp_instructions_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp instructions zh"
+  response_mcp_prompt_description_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp prompt description en"
+  response_mcp_prompt_description_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp prompt description hi"
+  response_mcp_prompt_description_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp prompt description ru"
+  response_mcp_prompt_description_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp prompt description zh"
+  response_mcp_tool_description_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp tool description en"
+  response_mcp_tool_description_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp tool description hi"
+  response_mcp_tool_description_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp tool description ru"
+  response_mcp_tool_description_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp tool description zh"
+  response_memory_program_compilation_gap_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program compilation gap en"
+  response_memory_program_compilation_gap_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program compilation gap es"
+  response_memory_program_compilation_gap_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program compilation gap hi"
+  response_memory_program_compilation_gap_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program compilation gap ru"
   response_memory_program_compilation_gap_zh
     defined-by response_template
     lexeme en
@@ -1219,238 +1394,3 @@ meanings
     lexeme en
       surface
         text "rmdir"
-  role-only
-    defined-by concept
-    lexeme en
-      surface
-        text "role only"
-  rosetta_code
-    defined-by source
-    lexeme en
-      surface
-        text "rosetta code"
-  rs
-    defined-by word_surface
-    lexeme en
-      surface
-        text "rs"
-  rule_chinese
-    defined-by rule
-    lexeme en
-      surface
-        text "rule chinese"
-  rule_english
-    defined-by rule
-    lexeme en
-      surface
-        text "rule english"
-  rule_hindi
-    defined-by rule
-    lexeme en
-      surface
-        text "rule hindi"
-  rule_russian
-    defined-by rule
-    lexeme en
-      surface
-        text "rule russian"
-  rule_spanish
-    defined-by rule
-    lexeme en
-      surface
-        text "rule spanish"
-  run_agent
-    defined-by name
-    lexeme en
-      surface
-        text "run agent"
-  russian-colloquial-verb
-    defined-by category
-    lexeme en
-      surface
-        text "russian colloquial verb"
-  rust_library
-    defined-by environment
-    lexeme en
-      surface
-        text "rust library"
-  screenshot
-    defined-by word_surface
-    lexeme en
-      surface
-        text "screenshot"
-  script_and_markers
-    defined-by concept
-    lexeme en
-      surface
-        text "script and markers"
-  sdk
-    defined-by word_surface
-    lexeme en
-      surface
-        text "sdk"
-  search
-    defined-by word_surface
-    lexeme en
-      surface
-        text "search"
-  search_fusion_header
-    defined-by intent
-    lexeme en
-      surface
-        text "search fusion header"
-  search_fusion_read_more
-    defined-by intent
-    lexeme en
-      surface
-        text "search fusion read more"
-  search_query
-    defined-by concept
-    lexeme en
-      surface
-        text "search query"
-  sed
-    defined-by token
-    lexeme en
-      surface
-        text "sed"
-  selector
-    defined-by word_surface
-    lexeme en
-      surface
-        text "selector"
-  self_authored_for_issue_707
-    defined-by source
-    lexeme en
-      surface
-        text "self authored for issue 707"
-  self_improvement_loop
-    defined-by concept
-    lexeme en
-      surface
-        text "self improvement loop"
-  send
-    defined-by word_surface
-    lexeme en
-      surface
-        text "send"
-  sentence_case
-    defined-by operation
-    lexeme en
-      surface
-        text "sentence case"
-  sequential_compose
-    defined-by concept
-    lexeme en
-      surface
-        text "sequential compose"
-  shared_dialog_capture_parse_failed
-    defined-by intent
-    lexeme en
-      surface
-        text "shared dialog capture parse failed"
-  shared_dialog_capture_unsupported
-    defined-by intent
-    lexeme en
-      surface
-        text "shared dialog capture unsupported"
-  shell-helpers
-    defined-by category
-    lexeme en
-      surface
-        text "shell helpers"
-  short
-    defined-by word_surface
-    lexeme en
-      surface
-        text "short"
-  short_rule_list
-    defined-by coverage_group
-    lexeme en
-      surface
-        text "short rule list"
-  should
-    defined-by concept
-    lexeme en
-      surface
-        text "should"
-  signal-processing
-    defined-by category
-    lexeme en
-      surface
-        text "signal processing"
-  skill_gap
-    defined-by intent
-    lexeme en
-      surface
-        text "skill gap"
-  skill_gap_name
-    defined-by intent
-    lexeme en
-      surface
-        text "skill gap name"
-  slang-dictionary
-    defined-by source_kind
-    lexeme en
-      surface
-        text "slang dictionary"
-  snake
-    defined-by concept
-    lexeme en
-      surface
-        text "snake"
-  snake_case
-    defined-by phrase
-    lexeme en
-      surface
-        text "snake case"
-  software-design
-    defined-by category
-    lexeme en
-      surface
-        text "software design"
-  software_docs
-    defined-by kind
-    lexeme en
-      surface
-        text "software docs"
-  software_project_implementation
-    defined-by concept
-    lexeme en
-      surface
-        text "software project implementation"
-  software_project_plan
-    defined-by concept
-    lexeme en
-      surface
-        text "software project plan"
-  solution
-    defined-by word_surface
-    lexeme en
-      surface
-        text "solution"
-  sort_lines
-    defined-by operation
-    lexeme en
-      surface
-        text "sort lines"
-  sort_words
-    defined-by operation
-    lexeme en
-      surface
-        text "sort words"
-  sqrt
-    defined-by word_surface
-    lexeme en
-      surface
-        text "sqrt"
-  ssh
-    defined-by token
-    lexeme en
-      surface
-        text "ssh"
-  stackexchange
-    defined-by source
-    lexeme en
-      surface
-        text "stackexchange"
