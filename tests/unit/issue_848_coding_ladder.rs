@@ -658,6 +658,12 @@ fn case_study_and_release_trace_every_issue_848_acceptance_boundary() {
             read("CHANGELOG.md").contains("issue #848's 130-task coding ladder"),
             "issue #848 must have either its unreleased minor-bump fragment or its released CHANGELOG entry"
         );
+        assert!(
+            read("docs/case-studies/issue-711/fragment-release-map.tsv")
+                .lines()
+                .any(|line| line == "changelog.d/20260801_848_coding_tasks.md\t0.322.0"),
+            "the consumed issue #848 fragment must map to its release"
+        );
     }
 }
 

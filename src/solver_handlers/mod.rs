@@ -20,6 +20,7 @@ mod installation_conversion;
 mod meta_explanation;
 mod natural_language_tools;
 mod numeric_list;
+mod pattern_inference;
 mod playwright_script;
 mod procedure_rules;
 mod program_blueprint;
@@ -61,6 +62,10 @@ pub use installation_conversion::try_installation_conversion;
 pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
 pub use natural_language_tools::try_natural_language_tool_request;
 pub use numeric_list::{try_numeric_list, try_numeric_list_with_history};
+pub use pattern_inference::{
+    looks_like_pattern_inference, try_pattern_inference,
+    try_pattern_inference_with_response_language,
+};
 pub use playwright_script::try_playwright_script;
 pub use program_blueprint::try_program_blueprint;
 pub use program_synthesis::try_program_synthesis;
@@ -518,6 +523,12 @@ pub fn try_translation(
     }
 
     let target = detect_target_language(normalized);
+    let backticked = extract_backticked(prompt);
+    let detected_program = backticked.as_deref().and_then(|code| {
+        detect_program_languages(normalized)
+            .or_else(|| infer_program_languages_from_code(code, normalized))
+    });
+    let has_program_target = detected_program.is_some();
     let unquoted_surface = extract_unquoted_translation_surface(prompt);
     // Issue #386: recognise a translation command by *meaning*, not by hardcoded
     // verbs. The translation-action stems live once in
@@ -531,14 +542,14 @@ pub fn try_translation(
         .words_for_role_in_languages(crate::seed::ROLE_TRANSLATION_ACTION, &["en", "ru"])
         .iter()
         .any(|stem| normalized.starts_with(stem.as_str()));
-    let head_final_command = target.is_some()
+    let head_final_command = (target.is_some() || has_program_target)
         && lexicon
             .words_for_role_in_languages(crate::seed::ROLE_TRANSLATION_ACTION, &["hi", "zh"])
             .iter()
             .any(|stem| normalized.contains(stem.as_str()));
     let source_first_command = crate::translation::prompt::is_source_first_translation_request(
         normalized,
-        target.is_some(),
+        target.is_some() || has_program_target,
         unquoted_surface.is_some(),
     );
     // Issue #386: the define-in-Links-Notation request is recognised by *meaning*
@@ -572,12 +583,8 @@ pub fn try_translation(
         source = Some(infer_source_from_prompt(prompt));
     }
 
-    let backticked = extract_backticked(prompt);
-
     if let Some(code) = &backticked {
-        let detected = detect_program_languages(normalized)
-            .or_else(|| infer_program_languages_from_code(code, normalized));
-        if let Some((source_lang, target_lang)) = detected {
+        if let Some((source_lang, target_lang)) = detected_program {
             let translated = translate_program(code, source_lang, target_lang);
             let body = format!(
                 "Translated `{code}` from {source_lang} to {target_lang}:\n\n```{target_lang}\n{translated}\n```"

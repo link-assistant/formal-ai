@@ -9,6 +9,7 @@
 
 use super::{extract_backticked, extract_fenced_block, extract_quoted_phrase};
 use crate::language::{detect as detect_language, Language};
+use crate::proof_program::FormalProof;
 
 pub fn detect_program_languages(normalized: &str) -> Option<(&'static str, &'static str)> {
     let langs = [
@@ -52,6 +53,10 @@ pub enum CodeMeaning {
     /// parameters. This is the currently seeded code meaning; widen coverage by
     /// adding variants here rather than by adding direct language pairs.
     BinaryAddFunction,
+    /// A formal proof produced by the reasoning system. The proof object is
+    /// language-independent and its target syntax is selected only while
+    /// rendering.
+    FormalProof(FormalProof),
     /// The fragment has not been formalized into a known code meaning. Carries
     /// the trimmed source so callers render a traceable gap instead of
     /// manufacturing an incorrect translation.
@@ -66,6 +71,7 @@ impl CodeMeaning {
     pub fn slug(&self) -> String {
         match self {
             Self::BinaryAddFunction => String::from("function:add:binary_sum"),
+            Self::FormalProof(proof) => proof.slug(),
             Self::Unformalized(source) => source
                 .chars()
                 .filter(char::is_ascii_alphanumeric)
@@ -81,11 +87,16 @@ impl CodeMeaning {
 /// [`CodeMeaning::BinaryAddFunction`], which is exactly why the round trip
 /// preserves meaning.
 pub fn formalize_code_meaning(code: &str) -> CodeMeaning {
-    if is_binary_add_function(code) {
-        CodeMeaning::BinaryAddFunction
-    } else {
-        CodeMeaning::Unformalized(code.trim().to_owned())
-    }
+    FormalProof::from_statement(code.trim()).map_or_else(
+        || {
+            if is_binary_add_function(code) {
+                CodeMeaning::BinaryAddFunction
+            } else {
+                CodeMeaning::Unformalized(code.trim().to_owned())
+            }
+        },
+        CodeMeaning::FormalProof,
+    )
 }
 
 /// Render a [`CodeMeaning`] into `target`'s surface syntax. When the meaning is
@@ -93,13 +104,17 @@ pub fn formalize_code_meaning(code: &str) -> CodeMeaning {
 /// traceable, language-appropriate translation-gap comment rather than
 /// inventing plausible-but-wrong code.
 pub fn render_code_meaning(meaning: &CodeMeaning, source: &str, target: &str) -> String {
-    if matches!(meaning, CodeMeaning::BinaryAddFunction) {
-        if let Some(rendered) = render_binary_add(target) {
-            return rendered;
-        }
+    let rendered = match meaning {
+        CodeMeaning::BinaryAddFunction => render_binary_add(target),
+        CodeMeaning::FormalProof(proof) => proof.render_program(target),
+        CodeMeaning::Unformalized(_) => None,
+    };
+    if let Some(rendered) = rendered {
+        return rendered;
     }
     let subject = match meaning {
         CodeMeaning::BinaryAddFunction => "add function",
+        CodeMeaning::FormalProof(_) => "formal proof",
         CodeMeaning::Unformalized(source_code) => source_code.as_str(),
     };
     format!(
@@ -213,7 +228,9 @@ pub fn infer_program_languages_from_code(
     normalized: &str,
 ) -> Option<(&'static str, &'static str)> {
     let trimmed = code.trim();
-    let source = if trimmed.contains("fn ") || trimmed.contains("let ") || trimmed.contains("-> ") {
+    let source = if FormalProof::from_statement(trimmed).is_some() {
+        "proof"
+    } else if trimmed.contains("fn ") || trimmed.contains("let ") || trimmed.contains("-> ") {
         "rust"
     } else if trimmed.contains("def ") || trimmed.contains("print(") {
         "python"
@@ -222,20 +239,12 @@ pub fn infer_program_languages_from_code(
     } else {
         return None;
     };
-    let langs = [
-        "python",
-        "rust",
-        "javascript",
-        "typescript",
-        "go",
-        "java",
-        "c",
-        "ruby",
-    ];
-    let target = langs
-        .iter()
-        .find(|lang| normalized.contains(&format!("to {lang}")))
-        .copied()?;
+    // A source identifier may itself be a language alias (`rust > 1`, for
+    // example). Exclude the quoted source before resolving the requested target.
+    let source_surface = crate::engine::normalize_prompt(trimmed);
+    let target_surface =
+        crate::engine::normalize_prompt(normalized).replacen(&source_surface, " ", 1);
+    let target = crate::coding::program_language_by_alias(&target_surface)?.slug;
     Some((source, target))
 }
 

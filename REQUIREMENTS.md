@@ -482,6 +482,23 @@ return through the same meta-language meaning to the original source surface.
 | R526-5 | The architecture must state that translation goes through the meta language and that direct translation bypasses are not the quality path. | Implemented in `VISION.md`, `ARCHITECTURE.md` section 10, `ROADMAP.md`, and `CONTRIBUTING.md`. |
 | R526-6 | Issue data, online research, requirements, and solution planning must be compiled under `docs/case-studies/issue-526`. | Implemented by `docs/case-studies/issue-526/{README,requirements,solution-plans}.md`, `raw-data/online-research.md`, and raw GitHub snapshots. |
 
+## Issue #890 Formal Proof Program Translation
+
+Issue [#890](https://github.com/link-assistant/formal-ai/issues/890) closes the
+gap between solving a formal constraint and presenting its proof in an
+executable programming language. The proof is a semantic value first; prose and
+program syntax are projections of that value.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R890-1 | A formal proof must be represented independently from natural-language prose and programming-language syntax. | `FormalProof::IntegerInterval` stores bounds, inclusivity, satisfiability, and a witness; `proof_meaning_is_independent_from_its_programming_language_presentations` verifies canonical statement round trips and renderer independence. |
+| R890-2 | The same solved proof must translate to at least two programming languages through the general code meta-language path. | `CodeMeaning::FormalProof` formalizes once and `render_code_meaning` projects through `data/seed/proof-program-templates.lino` to Rust or Python without a direct source-target pair; `same_solved_proof_uses_general_translation_path_for_two_targets` checks both targets share one `meaning:` link. |
+| R890-3 | Generated proof programs must compile or execute where the environment supports it. | `generated_proof_programs_compile_and_execute` compiles the Rust renderer with `rustc`, executes it, runs the Python renderer with `python3`, and requires both witnesses to print `2`. |
+| R890-4 | Every registered supported natural language must be able to request proof translation. | `every_registered_natural_language_can_request_proof_translation` covers and compares the live `supported_languages()` registry: English, Russian, Hindi, and Chinese. |
+| R890-5 | The native and browser surfaces must expose the same proof-translation behavior, with a whole-task regression. | `whole_issue_890_workflow_solves_translates_and_executes` covers the native composition; `tests/e2e/tests/issue-890.spec.js` covers Rust and Python plus all registered natural-language request forms in the browser worker. |
+| R890-6 | Issue, PR, related-work, online-research, requirement, plan, and release evidence must remain traceable in the repository. | `issue_890_case_study_and_release_metadata_are_traceable` guards `docs/case-studies/issue-890`, this matrix, architecture, roadmap, and the minor changelog fragment. |
+| R890-7 | At least one of the five reviewed implementation leaves must be authored through the real Formal AI/Agent CLI loop and reproducible byte-for-byte. | Session `ses_03b44e557ffeSQeAuCYzxfc3BR` authored the proof invariant leaf, captured under `docs/case-studies/issue-890/agent-cli-evidence`; `agent_cli_authorship_leaf_is_byte_exact_and_reproducible` guards the artifact, session, raw stream, and replay script. |
+
 ## Issue #498 Google Trends Requirements
 
 Issue [#498](https://github.com/link-assistant/formal-ai/issues/498) asks
@@ -1055,6 +1072,40 @@ implemented, human-gated slice of the loop in code.
 | R393 | When Formal AI cannot answer an input, compose the failure, the source it maps onto, a benchmark-gated candidate lesson, and a human-review outcome into one auditable, proposal-only repair case (R558-01). | Implemented by `src/self_healing.rs` (`RepairCase`, `RepairOutcome`, `canonical_case`), which reaches a human-gated `AwaitingReview` outcome and never writes source or seed data. Committed as `data/meta/self-healing-case.lino` and covered by `tests/unit/issue_558_self_healing.rs`. |
 | R394 | Verify the source-to-links representation round-trips back to source byte-for-byte for a real module (R558-05). | Implemented by `src/self_healing.rs` (`SourceRoundTrip`) over `src/agentic_coding/self_ast.rs`, confirming `source → links → source` reproduces the pinned planner module exactly (`faithful = true`), verified by `tests/unit/issue_558_self_healing.rs`. |
 | R395 | Make the self-healing loop reachable through the agentic interface (Codex, OpenCode, Gemini, Agent CLI) and prove it end to end. | Implemented by the fifth recipe `src/agentic_coding/self_heal.rs`, dispatched from `src/agentic_coding/planner.rs`; the driver write and agent-mode server routing are covered by `tests/unit/issue_558_self_healing.rs` and `tests/integration/issue_558_self_healing.rs`. |
+
+## Issue #531 Pattern Inference Research
+
+Issue [#531](https://github.com/link-assistant/formal-ai/issues/531) asks for a
+research-first plan for pattern inference across sequences, text, and 2D images,
+starting from associative deduplication and the upstream
+`linksplatform/Data.Doublets.Sequences` converters. PR
+[#642](https://github.com/link-assistant/formal-ai/pull/642) preserves the
+research record and implements the sequence, pattern, and algorithm-learning
+runtime, including the August 2026 review follow-up.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R396 | Preserve issue #531, PR #642, comments, review comments, upstream repository metadata, and selected sequence-converter source evidence under `docs/case-studies/issue-531`. | Implemented by `docs/case-studies/issue-531/raw-data/`, including GitHub JSON snapshots, Data.Doublets.Sequences metadata, checked commit data, converter file inventories, and selected C#/C++ source excerpts. |
+| R397 | Decompose issue #531 into explicit requirements and proposed solutions before runtime implementation. | Implemented by `docs/case-studies/issue-531/requirements.md`, which records `R531-01` through `R531-25`. |
+| R398 | Inventory current Formal AI integration points for link-native sequence and pattern inference. | Implemented by `docs/case-studies/issue-531/architecture-inventory.md`, covering `link_store`, `substitution`, `solver`, `meta_core`, existing text deduplication, and dependency boundaries. |
+| R399 | Research `linksplatform/Data.Doublets.Sequences` converters and dependencies before reimplementing sequence support in Rust. | Implemented by the saved upstream excerpts and summarized in `docs/case-studies/issue-531/README.md`, including `BalancedVariantConverter`, `OptimalVariantConverter`, `CompressingConverter`, `LinkFrequenciesCache`, `SequenceIndex`, and `StringToUnicodeSequenceConverter`. |
+| R400 | Document the known C# vs C++ `CompressingConverter` max-frequency discrepancy so it is verified before porting. | Implemented in `docs/case-studies/issue-531/{README.md,architecture-inventory.md,solution-plan.md}` and backed by raw C# and C++ converter excerpts. |
+| R401 | Research known algorithms and benchmark families relevant to associative deduplication, sequence pattern inference, and transformed 2D matching. | Implemented by `docs/case-studies/issue-531/raw-data/online-research.md`, covering SEQUITUR, Re-Pair, ARC-AGI, Data.Doublets.Sequences, meta-theory, and relative-meta-logic. |
+| R402 | Implement link-native sequence symbols, sequence markers, balanced/compressing converters, frequency caches, and exact expansion in Rust. | Implemented in `src/sequences/{store,symbols,converter,compression}.rs`: a doublet store with structural deduplication and lossless `expand`, unique symbol allocation, a balanced converter with a sequence index and frequency cache, and a Re-Pair-style compressor with an auditable trace. Covered by `tests/unit/sequences_{store,symbols,converter,compression}.rs`. |
+| R403 | Implement transformed pattern matching for 1D sequences/text and 2D grids, including symmetry, rotation, reflection, translation, and analogy-like comparisons. | Implemented in `src/sequences/{patterns_1d,grid_2d,inference}.rs`: 1D repetition/period/palindrome/reversal/translation classification and 2D horizontal/vertical/diagonal symmetry, rotations, reflections, and translations, unified by the inference reports. Covered by `tests/unit/sequences_{patterns_1d,grid_2d,inference}.rs`. |
+| R404 | Ground pattern-inference vocabulary in ontology/seed meanings instead of ad hoc strings. | Implemented by seed concepts in `data/seed/concepts.lino` for sequence, pattern, repetition, compression, deduplication, transformation, symmetry, rotation, reflection, translation, analogy, and invariant, all rooted in links and closed by the total-closure resolver. Covered by `tests/unit/issue_531_concepts_probe.rs`. |
+| R405 | Integrate pattern inference through a solver method with default-off diagnostics and auditable evidence. | Implemented by the `pattern_inference` method (`src/solver_handlers/pattern_inference.rs`), wired through `src/solver_dispatch.rs` and ranked ahead of the concept lookup for data-carrying prompts via `src/intent_formalization.rs`. It emits `pattern_inference:*` event-log entries surfaced only in diagnostic/trace views. Covered by `tests/unit/issue_531_pattern_inference.rs`. |
+| R406 | Define benchmark directions for text, symbolic sequences, event streams, ARC-style grids, and requirements-solution fact checking. | Planned in `docs/case-studies/issue-531/solution-plan.md` Phase 7. |
+| R407 | Protect the research contract with automated traceability coverage in PR #642. | Implemented by `tests/unit/docs_requirements_issue_531.rs`, wired through `tests/unit/mod.rs`. |
+| R531-17 | Address the latest review in this PR: discover algorithms from logs/events/steps/guides, apply the result to auto-learning, deepen the analysis, and replay the same task through Formal AI via Agent CLI. | The request is preserved in `raw-data/pr-642-latest-feedback.md`; R531-18 through R531-25 implement its independently testable parts. |
+| R531-18 | Normalize logs, events, portable memory, compiled guides, and Agent-CLI sessions into one ordered representation. | Implemented by `ExecutionTrace`, `TraceStep`, `src/algorithm_discovery/adapters.rs`, and `agentic_coding::algorithm_learning::trace_from_driver_outcome`; adapter coverage lives in `tests/unit/issue_531_algorithm_discovery.rs`. |
+| R531-19 | Discover reusable routines through link-native sequence matching, including episodes repeated inside one log. | `src/algorithm_discovery.rs` interns operations as link addresses, proves lossless compression, and mines maximal non-overlapping episodes without crossing unique trace boundaries. |
+| R531-20 | Generalize demonstrations into constants, parameters, and reused cross-step data flow rather than memorizing literal values. | Support-value vectors determine constant vs parameter arguments; equal varying vectors reuse the same parameter, then execute through a generic `AlgorithmHost` only after promotion. |
+| R531-21 | Use held-out observations as a real rejection boundary and retain value, operation, and missing-step counterexamples. | Two occurrences form support; later exact or same-entry traces become held-out tests. Both validated and failed candidates serialize their evidence and are covered by dedicated regressions. |
+| R531-22 | Keep discovery and self-learning safe: proposals must not execute or promote themselves. | Artifacts have schema/evidence integrity IDs, conformance has `side_effects "false"`, and execution requires validated evidence, a green named gate, named human approval, and an explicit host. |
+| R531-23 | Apply the learner to default idle auto-learning and preserve auditable artifacts. | `src/dreaming.rs`, `dreaming_runtime.rs`, and `cli_memory.rs` discover, retain, persist, and report `algorithm_learning_candidate` events without implicit promotion. |
+| R531-24 | Expose the same portable workflow through the library, public CLI, in-repo Agent loop, and real external Agent CLI. | Implemented by `formal-ai learn algorithms`, `formal-ai algorithm conformance`, `src/agentic_coding/algorithm_learning.rs`, binary/whole-task tests, and mandatory `experiments/agent_cli_e2e/run_issue_531.sh` CI coverage over the versioned benchmark. |
+| R531-25 | Deepen and fact-check the design against sequence compression, process mining/conformance, trace-model inference, abstraction-library learning, and project policy; document implemented behavior and limits. | `online-research.md`, `architecture-inventory.md`, and `solution-plan.md` record source-linked decisions, while the README distinguishes contiguous routines from unsupported branch/concurrency/recursion synthesis. |
 
 ## Issue #540 Dreaming Memory Maintenance
 

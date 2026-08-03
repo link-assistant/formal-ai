@@ -315,6 +315,17 @@ pub fn response_for(intent: &str, language: &str) -> Option<String> {
     None
 }
 
+/// Look up one response and substitute its named template fields.
+#[must_use]
+pub fn render_response(intent: &str, language: &str, values: &[(&str, &str)]) -> Option<String> {
+    response_for(intent, language).map(|mut rendered| {
+        for (name, value) in values {
+            rendered = rendered.replace(&format!("{{{name}}}"), value);
+        }
+        rendered
+    })
+}
+
 /// Look up a localized response, applying the registry's `explicit_gap`
 /// fallback policy (`data/seed/languages.lino`).
 ///

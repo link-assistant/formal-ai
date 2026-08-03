@@ -109,6 +109,10 @@ fn ci_contract_discovers_every_registered_language_from_the_ledger() {
         assert!(guard.contains("parseRegisteredLanguages"));
         assert!(guard.contains("data/seed/languages.lino"));
     }
+    assert!(
+        coverage_guard.contains("es: ['spanish', 'español', 'espanol']"),
+        "the coverage guard must recognize Spanish test evidence"
+    );
 }
 
 #[test]

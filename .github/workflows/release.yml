@@ -1449,13 +1449,13 @@ jobs:
         # the local-dev instructions in the case study.
         run: cargo build --release --bin formal-ai
 
-      # Each recipe axis of issue #538 is driven live through the real Agent CLI
-      # against the real formal-ai server — no in-repo simulation. Every step
-      # boots the server, drives the CLI with a *differently worded* request, and
-      # asserts the CLI exits 0, wrote the expected file, the file carries the
-      # requirement's canary string, and the loop walked ≥MIN_POSTS chat rounds.
-      # Running all three (two meaning concepts + one non-lexeme diagram axis)
-      # proves the recipe generalises live, not just for the tomato answer.
+      # Every recipe below must leave its expected artifact and canary string,
+      # and the server trace must prove the loop walked its minimum round count.
+      # Separate tasks and phrasings keep the live path generalization-tested.
+      - name: Run Agent CLI E2E — held-out algorithm discovery (issue #531)
+        timeout-minutes: 5
+        env: { PORT: 8896 }
+        run: experiments/agent_cli_e2e/run_issue_531.sh
       - name: Run agent CLI E2E — tomato meaning (search → fetch → write → verify)
         # Distinct port per step to avoid collisions if a runner is shared.
         # Canary: the Russian plural `томаты`, previously missing from `томат`.
@@ -1767,13 +1767,13 @@ jobs:
         env:
           PORT: 8884
         run: experiments/agent_cli_e2e/run_issue_661_statement_audit.sh
-
       - name: "Run agent CLI E2E — relative and whole-document audit (issue #885)"
         timeout-minutes: 5
         env:
           PORT: 8895
         run: experiments/agent_cli_e2e/run_issue_885_statement_audit.sh
-
+      - name: "Run agent CLI E2E — proof translation invariant (issue #890)"
+        run: PORT=8890 BIN=target/release/formal-ai OUT=/tmp/formal-ai-issue-890-evidence experiments/issue_890_agent_cli.sh
       - name: "Replay Hive Mind self-coding inner loop (issue #655)"
         env:
           PORT: 8774

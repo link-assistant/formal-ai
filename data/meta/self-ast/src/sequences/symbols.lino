@@ -1,0 +1,18 @@
+self_ast_census
+  target src/sequences/symbols.rs
+  language rust
+  fidelity signature
+  byte_len 3525
+  line_count 92
+  content_id source_module_5543a57e46ec516d
+  symbol_count 9
+  symbols
+    struct SymbolTable 23 27
+    function new 32 34
+    function len 38 40
+    function is_empty 44 46
+    function scalar 50 57
+    function scalar_lookup 61 63
+    function unicode 66 73
+    function marker 77 84
+    function unicode_symbols 89 91

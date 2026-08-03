@@ -32,6 +32,8 @@ pub const MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-decomposition.lino");
 pub const MULTILINGUAL_RESPONSES_PROCEDURE_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-procedure.lino");
+pub const MULTILINGUAL_RESPONSES_PATTERN_LINO: &str =
+    include_str!("../../data/seed/multilingual-responses-pattern.lino");
 pub const MULTILINGUAL_RESPONSES_SUMMARIZATION_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-summarization.lino");
 pub const CONCEPTS_LINO: &str = include_str!("../../data/seed/concepts.lino");
@@ -66,6 +68,8 @@ pub const NUMERIC_LIST_OPERATIONS_LINO: &str =
 pub const CODING_IDIOMS_LINO: &str = include_str!("../../data/seed/coding-idioms.lino");
 pub const PROGRAM_CST_GRAMMARS_LINO: &str =
     include_str!("../../data/seed/program-cst-grammars.lino");
+pub const PROOF_PROGRAM_TEMPLATES_LINO: &str =
+    include_str!("../../data/seed/proof-program-templates.lino");
 pub const MEANINGS_LINO: &str = include_str!("../../data/seed/meanings.lino");
 pub const MEANINGS_UNITS_LINO: &str = include_str!("../../data/seed/meanings-units.lino");
 pub const MEANINGS_CALENDAR_LINO: &str = include_str!("../../data/seed/meanings-calendar.lino");
@@ -214,6 +218,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             MULTILINGUAL_RESPONSES_PROCEDURE_LINO,
         ),
         (
+            "data/seed/multilingual-responses-pattern.lino",
+            MULTILINGUAL_RESPONSES_PATTERN_LINO,
+        ),
+        (
             "data/seed/multilingual-responses-summarization.lino",
             MULTILINGUAL_RESPONSES_SUMMARIZATION_LINO,
         ),
@@ -261,6 +269,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         (
             "data/seed/program-cst-grammars.lino",
             PROGRAM_CST_GRAMMARS_LINO,
+        ),
+        (
+            "data/seed/proof-program-templates.lino",
+            PROOF_PROGRAM_TEMPLATES_LINO,
         ),
         ("data/seed/meanings.lino", MEANINGS_LINO),
         ("data/seed/meanings-units.lino", MEANINGS_UNITS_LINO),
@@ -451,6 +463,7 @@ pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_AGENTIC_LINO,
     MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,
     MULTILINGUAL_RESPONSES_PROCEDURE_LINO,
+    MULTILINGUAL_RESPONSES_PATTERN_LINO,
     MULTILINGUAL_RESPONSES_SUMMARIZATION_LINO,
 ];
 

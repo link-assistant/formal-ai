@@ -20,6 +20,7 @@ source provenance for download-on-test integration. Only permissive licenses
 | Text/code edit profile | #408 | [`text-manipulation-suite.lino`](../data/benchmarks/text-manipulation-suite.lino) | `issue_408_text_code_edit_profile_passes_local_ratchet` | 1440 |
 | Procedural how-to / instruction-following | #444 | [`procedural-howto-suite.lino`](../data/benchmarks/procedural-howto-suite.lino) | `issue_444_procedural_howto_suite_routes_each_case` | 12 |
 | Nemotron training-data sample ingestion | #482 | [`nemotron-training-samples.lino`](../data/benchmarks/nemotron-training-samples.lino) | `issue_482_nemotron_training_ingestion_ratchet_passes_all_samples` | 10 |
+| Held-out algorithm discovery | #531 | [`issue-531-algorithm-traces.lino`](../data/benchmarks/issue-531-algorithm-traces.lino) | `repeated_event_sequences_become_a_validated_parameterized_algorithm` | 1 |
 | External (upstream) harness | #698 | [`external-results.lino`](../data/benchmarks/external-results.lino) | `external_benchmarks::recorded_upstream_pass_count_may_never_regress` | per suite, see below |
 | bAbI-style world-state tracking | #702 | [`world-state-tracking-suite.lino`](../data/benchmarks/world-state-tracking-suite.lino) | `issue_702_world_state_suite_tracks_each_case` | 16 |
 | Held-out computer-use generalization | #707 | [`computer-use-generalization.lino`](../data/benchmarks/computer-use-generalization.lino) | `every_synthesized_plan_executes_with_every_step_verified` | 12 |
@@ -91,6 +92,15 @@ files or full splits.
 | Source | License | Domain | Upstream |
 | --- | --- | --- | --- |
 | Nemotron Pretraining Legal v1 | CC-BY-4.0 | legal training-data ingestion | <https://huggingface.co/datasets/nvidia/Nemotron-Pretraining-Legal-v1> |
+
+### Held-out algorithm discovery — issue #531
+
+Records three self-authored event traces. Two support traces establish a
+repeated `fetch → normalize → persist` episode while the held-out trace changes
+the subject binding. The ratchet requires the link-native learner to infer the
+shared dataflow, parameterize the changing value, reproduce the held-out trace
+losslessly, and keep the resulting algorithm inert until explicit approval.
+No third-party benchmark payload is imported.
 
 ### bAbI-style world-state tracking — issue #702
 
@@ -208,8 +218,9 @@ byte length, and content id match the adjacent provenance record.
 
 ### Honest current numbers
 
-Recorded `2026-07-20`, solver version `0.300.0`, slice `20` upstream cases per
-suite, offline deterministic solver (`temperature = 0.0`):
+Recorded `2026-08-03`, solver version `0.323.0`, slice `20` upstream cases per
+core suite and a separately bounded one-case SWE-bench slice, offline
+deterministic solver (`temperature = 0.0`):
 
 | Suite | License | Grading | Passed | Total |
 | --- | --- | --- | ---: | ---: |
@@ -219,20 +230,21 @@ suite, offline deterministic solver (`temperature = 0.0`):
 | MATH (`prm800k` 500-problem split) | MIT | final `\boxed{...}` vs. gold | 0 | 20 |
 | BIG-bench `object_counting` | Apache-2.0 | final number vs. target | 0 | 20 |
 | CoEdIT | Apache-2.0 | edited text vs. gold target | 0 | 20 |
-| SWE-bench Lite (dev) | MIT | `benchmark_unavailable` (legacy proxy score withdrawn; official evaluator required) | — | — |
+| SWE-bench Lite (dev) | MIT | official upstream instance tests executed | 0 | 1 |
 | EditEval | — | `benchmark_unavailable` | — | — |
 
-`2 / 20` on GSM8K and `0 / 20` on the other scored suites is the real
-measurement of the current offline solver against unmodified upstream cases.
-It is recorded exactly as measured; the ratchet makes it the floor these
-numbers may never fall below.
+`2 / 20` on GSM8K, `0 / 20` on the other scored core suites, and `0 / 1` on
+SWE-bench Lite are the real measurements of the current offline solver against
+unmodified upstream cases. They are recorded exactly as measured; the ratchet
+makes them the floor these numbers may never fall below.
 
 The original SWE-bench row was withdrawn: it compared output with the gold
 patch, which is not the SWE-bench pass criterion. Scheduled runs now use the
 pinned official harness (`f7bbbb2…`) to apply a candidate patch in the upstream
-container and execute the instance tests. An evaluator, Docker, or parquet
-decoder failure becomes `benchmark_unavailable`; it is never counted as a
-solver failure and never replaced by an exact-diff proxy.
+container and execute the instance tests; the current `0 / 1` score came through
+that evaluator. An evaluator, Docker, or parquet decoder failure becomes
+`benchmark_unavailable`; it is never counted as a solver failure and never
+replaced by an exact-diff proxy.
 
 EditEval is recorded as `benchmark_unavailable` rather than being replaced by a
 local proxy: the upstream repository ships an evaluation harness with no task

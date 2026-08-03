@@ -6,8 +6,8 @@ use crate::{read_input, MemoryAction};
 use formal_ai::{
     agent_info, apply_dreaming_plan, auto_free_space_choice, execute_memory_query,
     export_memory_full, measure_storage, persist_auto_free_space_choice, plan_memory_dreaming,
-    render_dreaming_plan, response_for, seed_files, suggest_memory_migrations, AutoFreeSpaceChoice,
-    BundleInfo, DreamingConfig, MemoryStore,
+    render_dreaming_plan, render_response, response_for, seed_files, suggest_memory_migrations,
+    AutoFreeSpaceChoice, BundleInfo, DreamingConfig, MemoryStore,
 };
 
 pub fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
@@ -169,16 +169,30 @@ pub fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
                 }
                 let outcome = apply_dreaming_plan(&mut store, &plan);
                 store.save_to_file(&path)?;
-                eprintln!(
-                    "Applied dreaming plan to {}; removed {} event(s), estimated {} byte(s) reclaimable, learned {} meta-algorithm amendment(s) and {} recurring pattern(s), preserved {} failed simulation(s) and {} dreaming trial(s).",
-                    path.display(),
-                    outcome.removed_events,
-                    outcome.estimated_reclaimed_bytes,
-                    outcome.learned_amendments,
-                    outcome.learned_patterns,
-                    outcome.recorded_failures,
-                    outcome.recorded_trials
-                );
+                let path = path.display().to_string();
+                let removed = outcome.removed_events.to_string();
+                let bytes = outcome.estimated_reclaimed_bytes.to_string();
+                let amendments = outcome.learned_amendments.to_string();
+                let patterns = outcome.learned_patterns.to_string();
+                let algorithms = outcome.learned_algorithm_candidates.to_string();
+                let failures = outcome.recorded_failures.to_string();
+                let trials = outcome.recorded_trials.to_string();
+                let summary = render_response(
+                    "algorithm_dreaming_applied",
+                    "en",
+                    &[
+                        ("path", &path),
+                        ("removed", &removed),
+                        ("bytes", &bytes),
+                        ("amendments", &amendments),
+                        ("patterns", &patterns),
+                        ("algorithms", &algorithms),
+                        ("failures", &failures),
+                        ("trials", &trials),
+                    ],
+                )
+                .unwrap_or_default();
+                eprintln!("{summary}");
             } else if !plan.actions.is_empty() {
                 eprintln!(
                     "Plan only; rerun with `--apply --confirm` and preferably `--backup` to mutate {}.",

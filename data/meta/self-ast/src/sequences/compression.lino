@@ -1,0 +1,19 @@
+self_ast_census
+  target src/sequences/compression.rs
+  language rust
+  fidelity signature
+  byte_len 6794
+  line_count 180
+  content_id source_module_134fecd4a52ff24e
+  symbol_count 10
+  symbols
+    struct CompressionStep 30 39
+    struct CompressionResult 43 50
+    function expand 55 61
+    function is_lossless 67 69
+    function compression_ratio 75 80
+    function is_compressed 84 86
+    function compress 95 116
+    function most_frequent_pair 121 143
+    function count_non_overlapping 146 158
+    function replace_pair 162 180
