@@ -68,6 +68,11 @@ pub struct ClientIntegrationInvocation {
     pub interactive_args: Vec<String>,
     pub interactive_args_require_prompt: bool,
     pub non_interactive_args: Vec<String>,
+    /// Flags this client accepts as carriers of the prompt text. An empty list
+    /// means the client takes its prompt as a trailing positional argument.
+    /// The union over every integration is the vocabulary used to recognise a
+    /// caller-supplied prompt before it is re-rendered for the target client.
+    pub prompt_args: Vec<String>,
     pub mode_arg_position: Option<ModeArgPosition>,
     pub env: Vec<TemplateEnv>,
     pub config_content_env: String,
@@ -354,6 +359,7 @@ fn parse_invocation(node: &super::parser::LinoNode) -> ClientIntegrationInvocati
                 invocation.interactive_args_require_prompt = child.id == "true";
             }
             "non_interactive_arg" => invocation.non_interactive_args.push(child.id.clone()),
+            "prompt_arg" => invocation.prompt_args.push(child.id.clone()),
             "mode_arg_position" => {
                 invocation.mode_arg_position = ModeArgPosition::from_seed(&child.id);
             }

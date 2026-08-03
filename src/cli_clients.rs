@@ -96,7 +96,7 @@ fn client_json(integration: &ClientIntegration) -> Value {
         })
         .collect();
 
-    json!({
+    let mut record = json!({
         "id": integration.id,
         "aliases": integration.aliases,
         "label": integration.label,
@@ -154,7 +154,13 @@ fn client_json(integration: &ClientIntegration) -> Value {
             "sandbox_user_namespaces": verification.sandbox_user_namespaces,
             "vendor_auth_error": verification.vendor_auth_error,
         },
-    })
+    });
+    // Added after construction rather than inline: the literal above already
+    // sits at the json! macro's expansion depth.
+    if let Some(object) = record.as_object_mut() {
+        object.insert("prompt_args".to_string(), json!(invocation.prompt_args));
+    }
+    record
 }
 
 fn client_text(integration: &ClientIntegration) -> String {
