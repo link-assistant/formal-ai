@@ -1,4 +1,39 @@
 meanings
+  response_fact_check_no_statements_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check no statements ru"
+  response_fact_check_no_statements_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check no statements zh"
+  response_fact_check_statement_counterexample_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement counterexample en"
+  response_fact_check_statement_counterexample_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement counterexample hi"
+  response_fact_check_statement_counterexample_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement counterexample ru"
+  response_fact_check_statement_counterexample_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement counterexample zh"
+  response_fact_check_statement_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement en"
   response_fact_check_statement_hi
     defined-by response_template
     lexeme en
@@ -1359,38 +1394,3 @@ meanings
     lexeme en
       surface
         text "response mcp tool description en"
-  response_mcp_tool_description_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response mcp tool description hi"
-  response_mcp_tool_description_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response mcp tool description ru"
-  response_mcp_tool_description_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response mcp tool description zh"
-  response_memory_program_compilation_gap_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response memory program compilation gap en"
-  response_memory_program_compilation_gap_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response memory program compilation gap es"
-  response_memory_program_compilation_gap_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response memory program compilation gap hi"
-  response_memory_program_compilation_gap_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response memory program compilation gap ru"

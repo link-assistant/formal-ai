@@ -1043,3 +1043,27 @@ multilingual_responses
     intent external_benchmark_swe_unavailable
     language en
     text "official SWE-bench evaluation unavailable: {reason}"
+  response response_detected_failure_report_invitation_en
+    intent detected_failure_report_invitation
+    language en
+    text "I detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`."
+  response response_detected_failure_report_invitation_ru
+    intent detected_failure_report_invitation
+    language ru
+    text "Я обнаружил сбой при выполнении этого запроса. Хотите, чтобы я подготовил отчёт о проблеме с диагностическим контекстом? Ответьте `Report issue`."
+  response response_detected_failure_report_invitation_hi
+    intent detected_failure_report_invitation
+    language hi
+    text "इस अनुरोध पर काम करते समय मुझे एक विफलता मिली। क्या आप चाहेंगे कि मैं diagnostic context के साथ issue report तैयार करूँ? जवाब दें: `Report issue`."
+  response response_detected_failure_report_invitation_zh
+    intent detected_failure_report_invitation
+    language zh
+    text "我在处理此请求时检测到故障。需要我用诊断上下文准备问题报告吗？请回复 `Report issue`。"
+  response response_detected_failure_report_invitation_es
+    intent detected_failure_report_invitation
+    language es
+    text "Detecté un fallo mientras trabajaba en esta solicitud. ¿Quieres que prepare un informe del problema con el contexto de diagnóstico? Responde `Report issue`."
+  response response_detected_failure_report_invitation_unknown
+    intent detected_failure_report_invitation
+    language unknown
+    text "I detected an unsupported language and am falling back to English. I detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`."

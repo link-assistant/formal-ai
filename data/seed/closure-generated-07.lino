@@ -1,4 +1,99 @@
 meanings
+  short
+    defined-by word_surface
+    lexeme en
+      surface
+        text "short"
+  short_rule_list
+    defined-by coverage_group
+    lexeme en
+      surface
+        text "short rule list"
+  should
+    defined-by concept
+    lexeme en
+      surface
+        text "should"
+  signal-processing
+    defined-by category
+    lexeme en
+      surface
+        text "signal processing"
+  skill_gap
+    defined-by intent
+    lexeme en
+      surface
+        text "skill gap"
+  skill_gap_name
+    defined-by intent
+    lexeme en
+      surface
+        text "skill gap name"
+  slang-dictionary
+    defined-by source_kind
+    lexeme en
+      surface
+        text "slang dictionary"
+  snake
+    defined-by concept
+    lexeme en
+      surface
+        text "snake"
+  snake_case
+    defined-by phrase
+    lexeme en
+      surface
+        text "snake case"
+  software-design
+    defined-by category
+    lexeme en
+      surface
+        text "software design"
+  software_docs
+    defined-by kind
+    lexeme en
+      surface
+        text "software docs"
+  software_project_implementation
+    defined-by concept
+    lexeme en
+      surface
+        text "software project implementation"
+  software_project_plan
+    defined-by concept
+    lexeme en
+      surface
+        text "software project plan"
+  solution
+    defined-by word_surface
+    lexeme en
+      surface
+        text "solution"
+  sort_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "sort lines"
+  sort_words
+    defined-by operation
+    lexeme en
+      surface
+        text "sort words"
+  sqrt
+    defined-by word_surface
+    lexeme en
+      surface
+        text "sqrt"
+  ssh
+    defined-by token
+    lexeme en
+      surface
+        text "ssh"
+  stackexchange
+    defined-by source
+    lexeme en
+      surface
+        text "stackexchange"
   standard
     defined-by concept
     lexeme en

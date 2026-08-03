@@ -1,0 +1,17 @@
+running 2 tests
+
+thread 'issue_864::unresolved_reasoning_proactively_asks_to_report_on_every_rust_surface_language' panicked at tests/unit/issue_864.rs:
+language=en: I could not determine `Explain the issue-864 frobnicator ritual` from local Links Notation memory, cached public knowledge, or the source cache, and cannot infer a verified answer. I recorded the failed gather attempts in the trace.
+
+If reasoning still cannot resolve this and a shared Links Notation seed fact or links rule is needed, use Report issue with the trace. To keep a dialog-local rule durable, export memory or teach it with `When I say ... answer ...`; inspect routes with `List behavior rules` and `Show behavior rule unknown`.
+test issue_864::unresolved_reasoning_proactively_asks_to_report_on_every_rust_surface_language ... FAILED
+
+thread 'issue_864::detected_tool_failures_proactively_ask_to_report_on_agentic_harnesses' panicked at tests/unit/issue_864.rs:
+prompt=Run false: The command failed: exit status 1
+test issue_864::detected_tool_failures_proactively_ask_to_report_on_agentic_harnesses ... FAILED
+
+failures:
+    issue_864::detected_tool_failures_proactively_ask_to_report_on_agentic_harnesses
+    issue_864::unresolved_reasoning_proactively_asks_to_report_on_every_rust_surface_language
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 2370 filtered out

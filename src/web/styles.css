@@ -2797,14 +2797,16 @@ body.is-resizing-context {
 
 .message-actions {
   display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
   gap: 10px;
   margin-top: 10px;
   font-size: 13px;
-  font-weight: 700;
 }
 
 .message-actions a {
   color: #175f4f;
+  font-weight: 700;
   text-decoration: none;
 }
 

@@ -1,0 +1,12 @@
+{
+  "baseRefName": "main",
+  "body": "## 🤖 AI-Powered Solution Draft\n\nThis pull request is being automatically generated to solve issue #864.\n\n### 📋 Issue Reference\nFixes #864\n\n### 🚧 Status\n**Work in Progress** - The AI assistant is currently analyzing and implementing the solution draft.\n\n### 📝 Implementation Details\n_Details will be added as the solution draft is developed..._\n\n---\n*This PR was created automatically by the AI issue solver*",
+  "createdAt": "2026-08-02T22:13:08Z",
+  "headRefName": "issue-864-c5dca48884f5",
+  "isDraft": true,
+  "number": 910,
+  "state": "OPEN",
+  "title": "[WIP] We should ask to user for issue reporting proactively on any fail of thinking, when Formal AI itself detects it (both in UI and in agentic coding harneses)",
+  "updatedAt": "2026-08-02T22:13:09Z",
+  "url": "https://github.com/link-assistant/formal-ai/pull/910"
+}

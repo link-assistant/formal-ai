@@ -1044,6 +1044,11 @@ meanings
     lexeme en
       surface
         text "detailed"
+  detected_failure_report_invitation
+    defined-by intent
+    lexeme en
+      surface
+        text "detected failure report invitation"
   df
     defined-by token
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "extract number"
-  extract_url
-    defined-by operation
-    lexeme en
-      surface
-        text "extract url"

@@ -1,4 +1,9 @@
 meanings
+  repo
+    defined-by word_surface
+    lexeme en
+      surface
+        text "repo"
   repositories
     defined-by word_surface
     lexeme en
@@ -1104,6 +1109,36 @@ meanings
     lexeme en
       surface
         text "response definition merge sources label zh"
+  response_detected_failure_report_invitation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response detected failure report invitation en"
+  response_detected_failure_report_invitation_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response detected failure report invitation es"
+  response_detected_failure_report_invitation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response detected failure report invitation hi"
+  response_detected_failure_report_invitation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response detected failure report invitation ru"
+  response_detected_failure_report_invitation_unknown
+    defined-by response_template
+    lexeme en
+      surface
+        text "response detected failure report invitation unknown"
+  response_detected_failure_report_invitation_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response detected failure report invitation zh"
   response_document_originality_check_sample_missing_en
     defined-by response_template
     lexeme en
@@ -1359,38 +1394,3 @@ meanings
     lexeme en
       surface
         text "response fact check no statements hi"
-  response_fact_check_no_statements_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check no statements ru"
-  response_fact_check_no_statements_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check no statements zh"
-  response_fact_check_statement_counterexample_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check statement counterexample en"
-  response_fact_check_statement_counterexample_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check statement counterexample hi"
-  response_fact_check_statement_counterexample_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check statement counterexample ru"
-  response_fact_check_statement_counterexample_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check statement counterexample zh"
-  response_fact_check_statement_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response fact check statement en"
