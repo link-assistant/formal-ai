@@ -1,0 +1,9 @@
+   Compiling formal-ai v0.324.0 (/tmp/gh-issue-solver-1785752502684)
+    Finished `test` profile [unoptimized] target(s) in 49.10s
+     Running tests/issue_902.rs (target/debug/deps/issue_902-f8ac03436a848565)
+
+running 1 test
+test unix::codex_provider_config_survives_caller_overrides ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.32s
+
