@@ -946,6 +946,23 @@ enters the formalizer, any pair — including ones with no hardcoded arm, such a
 Python -> JavaScript — shares one meaning, and Rust <-> JavaScript returns to the
 same `meaning:` link.
 
+Issue #890 extends that meta-language path from simple functions to formal
+proofs. `FormalProof` (`src/proof_program.rs`) owns interval bounds, inclusive
+flags, satisfiability, and the integer witness without owning any prose or
+program syntax. The number-constraint solver emits its canonical statement;
+`formalize_code_meaning` recovers `CodeMeaning::FormalProof`, and
+`render_code_meaning` projects the same value into a complete Rust or Python
+program. The presentation templates live in
+`data/seed/proof-program-templates.lino`; native and browser renderers only
+bind proof fields into the selected target template. Each program checks the
+witness at runtime before printing it. This keeps the architecture at
+one proof formalizer plus one data-defined projection per target, never one
+implementation per natural-language/programming-language pair. The browser
+compiles the same presentation-independent core into
+`src/web/wasm-worker/src/proof_translation_worker.rs`; JavaScript only extracts
+the quoted statement and target before crossing the WASM boundary. Worker 13
+supplies the script-aware target-language alias match used by Chinese requests.
+
 The Rust pipeline is the canonical implementation. The browser worker
 (`src/web/formal_ai_worker.js`) cannot reach Wiktionary or Wikidata
 directly because of browser CORS restrictions, so it keeps a small

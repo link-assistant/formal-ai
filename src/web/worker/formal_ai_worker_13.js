@@ -108,13 +108,14 @@ const ROLE_IMPLEMENTATION_LANGUAGE_PREPOSITION =
 const ROLE_IMPLEMENTATION_LANGUAGE_NOUN = "implementation_language_noun";
 
 function programLanguageFromPrompt(normalized) {
-  const tokens = normalized.split(/\s+/).filter(Boolean);
+  const delimited = normalized.replace(/(\p{Script=Han})(?=[a-z0-9])|([a-z0-9])(?=\p{Script=Han})/giu, "$1$2 ");
+  const tokens = delimited.split(/\s+/).filter(Boolean);
   // Each language's alias surfaces live in its `program_language_<slug>` meaning,
   // not inline on WRITE_PROGRAM_LANGUAGES — read them by slug (issue #386). Names
   // are single tokens, matched on whitespace boundaries exactly as in Rust.
   for (const slug of Object.keys(WRITE_PROGRAM_LANGUAGES)) {
     const surfaces = wordsForMeaning(`program_language_${slug}`);
-    if (surfaces.some((alias) => tokens.includes(alias))) return slug;
+    if (surfaces.some((alias) => containsProgramToken(delimited, alias))) return slug;
   }
   const prepositionSurfaces = wordsForRoleInLanguages(
     ROLE_IMPLEMENTATION_LANGUAGE_PREPOSITION,

@@ -8,8 +8,14 @@
 //! backslash escapes below are a historical dialect the corpus still carries,
 //! and are read alongside it.
 
-use std::iter::Peekable;
-use std::str::Chars;
+extern crate alloc;
+
+use alloc::borrow::ToOwned;
+use alloc::string::{String, ToString};
+use alloc::vec;
+use alloc::vec::Vec;
+use core::iter::Peekable;
+use core::str::Chars;
 
 #[derive(Debug, Default, Clone)]
 pub struct LinoNode {

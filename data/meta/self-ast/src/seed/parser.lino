@@ -2,29 +2,29 @@ self_ast_census
   target src/seed/parser.rs
   language rust
   fidelity signature
-  byte_len 12872
-  line_count 398
-  content_id source_module_229616022014c750
+  byte_len 12999
+  line_count 404
+  content_id source_module_120ff69ac8001d54
   symbol_count 21
   symbols
-    struct LinoNode 15 19
-    function find_child_value 22 29
-    function parse_lino 32 61
-    function navigate_mut 63 69
-    function parse_lino_line 71 88
-    function strip_comment 90 129
-    function parse_colon_definition 131 142
-    function find_closing_quote 144 146
-    function find_closing_delimiter 156 174
-    function take_doubled 178 185
-    function unescape_value 201 225
-    function unescape_single_value 227 259
-    function decode_raw_reference 261 269
-    function decode_raw_reference_preserving_quotes 271 273
-    function decode_codepoint_reference 275 286
-    function decode_quoted_reference 288 308
-    function decode_codepoints 310 314
-    function escape_value 316 318
-    function parse_codepoint 320 329
-    function split_pipe_list 331 348
-    function split_reference_tokens 354 398
+    struct LinoNode 21 25
+    function find_child_value 28 35
+    function parse_lino 38 67
+    function navigate_mut 69 75
+    function parse_lino_line 77 94
+    function strip_comment 96 135
+    function parse_colon_definition 137 148
+    function find_closing_quote 150 152
+    function find_closing_delimiter 162 180
+    function take_doubled 184 191
+    function unescape_value 207 231
+    function unescape_single_value 233 265
+    function decode_raw_reference 267 275
+    function decode_raw_reference_preserving_quotes 277 279
+    function decode_codepoint_reference 281 292
+    function decode_quoted_reference 294 314
+    function decode_codepoints 316 320
+    function escape_value 322 324
+    function parse_codepoint 326 335
+    function split_pipe_list 337 354
+    function split_reference_tokens 360 404

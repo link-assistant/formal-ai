@@ -22,6 +22,13 @@ mod arithmetic;
 #[allow(dead_code)]
 mod web_engine_core;
 
+#[path = "../../../proof_program/core.rs"]
+mod proof_program_core;
+
+#[path = "../../../seed/parser.rs"]
+#[allow(dead_code)]
+mod seed_parser;
+
 #[path = "../../../web_search_core.rs"]
 mod web_search_core;
 
@@ -36,6 +43,7 @@ mod search_fusion_grammar;
 mod memory_query_language;
 
 mod memory_query_worker;
+mod proof_translation_worker;
 
 use web_engine_core::{
     assess_arithmetic_claim, detect_language, evaluate_arithmetic_expression,
@@ -501,6 +509,24 @@ pub extern "C" fn engine_memory_query(input_length: usize) -> usize {
     };
     let answer = memory_query_worker::answer(payload);
     write_output(answer.as_bytes())
+}
+
+/// Parse a formal proof once and project it into a seed-defined executable
+/// program. The three URI-encoded input lines are statement, target, and the
+/// proof-program template seed; `OUTPUT` is a complete worker-answer object.
+#[no_mangle]
+pub extern "C" fn engine_translate_formal_proof(input_length: usize) -> usize {
+    reset_bump();
+    let bytes = unsafe {
+        core::slice::from_raw_parts(
+            core::ptr::addr_of!(INPUT).cast::<u8>(),
+            min(input_length, INPUT_CAPACITY),
+        )
+    };
+    let Ok(payload) = core::str::from_utf8(bytes) else {
+        return 0;
+    };
+    write_output(proof_translation_worker::answer(payload).as_bytes())
 }
 
 struct FactCheckTemplates<'a> {

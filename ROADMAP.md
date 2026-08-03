@@ -315,6 +315,18 @@ the simple add-function slice to one code meaning and verifies Rust ->
 JavaScript -> Rust preserves the same `meaning:` evidence link. The case study
 and online research live in `docs/case-studies/issue-526/`.
 
+## Issue #890 Formal Proof Program Translation (PR #911)
+
+Issue [#890](https://github.com/link-assistant/formal-ai/issues/890) is covered
+by a language-neutral `FormalProof` interval representation and the existing
+`CodeMeaning` meta-language route. One proof can now render as complete Rust
+and Python programs from shared Links Notation templates, both of which assert
+and print the same witness. Native regressions compile and execute both
+programs; browser E2E coverage exercises all registered natural-language
+request forms. Research, the requirement map, the solution plan, and real
+Agent CLI evidence live under
+`docs/case-studies/issue-890/`.
+
 ## 2026-07-14 Requirement-Status Audit (issue #651)
 
 An eighth pass on 2026-07-14 audited **all 329 closed issues and all 317 merged

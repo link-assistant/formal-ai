@@ -156,6 +156,25 @@ fn contains_token(normalized: &str, expected: &str) -> bool {
     if contains_cjk(expected) {
         return normalized.contains(expected);
     }
+    // A Latin language name can directly follow or precede Han characters in
+    // an ordinary Chinese request (for example `翻译成Rust`). Han/Latin script
+    // changes are token boundaries even when there is no whitespace. Keep
+    // ASCII-to-ASCII boundaries strict so short aliases such as `rs` and `c`
+    // still cannot match inside unrelated English words.
+    if expected
+        .chars()
+        .all(|character| character.is_ascii_alphanumeric())
+    {
+        return normalized.match_indices(expected).any(|(index, _)| {
+            let before = normalized[..index].chars().next_back();
+            let after = normalized[index + expected.len()..].chars().next();
+            let is_alias_continuation = |character: char| {
+                character.is_ascii_alphanumeric() || matches!(character, '+' | '#')
+            };
+            before.is_none_or(|character| !is_alias_continuation(character))
+                && after.is_none_or(|character| !is_alias_continuation(character))
+        });
+    }
     normalized.split_whitespace().any(|token| token == expected)
 }
 

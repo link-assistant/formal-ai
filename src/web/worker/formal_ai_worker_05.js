@@ -363,14 +363,16 @@ async function translateSurface(surface, source, target) {
 
 function renderTranslationGap(surface, source, target) {
   const trimmed = String(surface || "").trim();
-  if (!trimmed) {
-    return `I could not identify a source phrase to translate from ${source} to ${target}.`;
-  }
+  if (!trimmed) return `I could not identify a source phrase to translate from ${source} to ${target}.`;
   return `I could not translate "${trimmed}" from ${source} to ${target} with the available formalization data. I recorded this as a translation gap for follow-up.`;
 }
 
 async function tryTranslation(prompt, normalized) {
   const targetHint = detectTranslationTargetLanguage(normalized);
+  const proofMatch = /`([^`\r\n]+)`/u.exec(String(prompt || ""));
+  const programTarget = programLanguageFromPrompt(proofMatch ? normalized.replace(normalizePrompt(proofMatch[1]), "") : normalized);
+  const proofTranslation = proofMatch && programTarget && wasmJsonCall(
+    "engine_translate_formal_proof", [proofMatch[1], programTarget, seedRawText(SEED_RAW, "proof-program-templates.lino")].map(encodeURIComponent).join("\n"));
   const unquotedSurface = extractUnquotedTranslationSurface(prompt);
   // Issue #386: recognise a translation command by *meaning*, not by hardcoded
   // verbs. The command stems live once in the embedded translate meaning; this
@@ -378,21 +380,17 @@ async function tryTranslation(prompt, normalized) {
   // initial English/Russian commands are matched as a prefix; head-final
   // Hindi/Chinese place the verb later, so they are matched anywhere but gated
   // by a target marker to avoid firing on an incidental verb noun.
-  const headInitialCommand = wordsForRoleInLanguages(ROLE_TRANSLATION_ACTION, [
-    "en",
-    "ru",
-  ]).some((stem) => normalized.startsWith(stem));
+  const headInitialCommand = wordsForRoleInLanguages(ROLE_TRANSLATION_ACTION, ["en", "ru"])
+    .some((stem) => normalized.startsWith(stem));
   const headFinalCommand =
-    Boolean(targetHint) &&
-    wordsForRoleInLanguages(ROLE_TRANSLATION_ACTION, ["hi", "zh"]).some((stem) =>
-      normalized.includes(stem),
-    );
-  const sourceFirstCommand = Boolean(targetHint) && Boolean(unquotedSurface) &&
+    Boolean(targetHint || programTarget) &&
+    wordsForRoleInLanguages(ROLE_TRANSLATION_ACTION, ["hi", "zh"]).some((stem) => normalized.includes(stem));
+  const sourceFirstCommand = Boolean(targetHint || programTarget) && Boolean(unquotedSurface) &&
     wordsForRoleInLanguages(ROLE_TRANSLATION_ACTION, ["en", "ru", "hi", "zh"])
       .some((stem) => normalized.includes(stem));
   const isTranslationRequest = headInitialCommand || headFinalCommand || sourceFirstCommand;
   if (!isTranslationRequest) return null;
-
+  if (proofTranslation) return proofTranslation;
   // Issue #216: fall back to an unquoted surface (`translate apple to
   // russian`) when no quoted fragment is present so the offline registry
   // can still resolve a meaning token.
