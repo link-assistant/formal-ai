@@ -239,7 +239,12 @@ pub fn infer_program_languages_from_code(
     } else {
         return None;
     };
-    let target = crate::coding::program_language_by_alias(normalized)?.slug;
+    // A source identifier may itself be a language alias (`rust > 1`, for
+    // example). Exclude the quoted source before resolving the requested target.
+    let source_surface = crate::engine::normalize_prompt(trimmed);
+    let target_surface =
+        crate::engine::normalize_prompt(normalized).replacen(&source_surface, " ", 1);
+    let target = crate::coding::program_language_by_alias(&target_surface)?.slug;
     Some((source, target))
 }
 

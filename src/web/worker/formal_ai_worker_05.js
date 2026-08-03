@@ -370,7 +370,7 @@ function renderTranslationGap(surface, source, target) {
 async function tryTranslation(prompt, normalized) {
   const targetHint = detectTranslationTargetLanguage(normalized);
   const proofMatch = /`([^`\r\n]+)`/u.exec(String(prompt || ""));
-  const programTarget = programLanguageFromPrompt(normalized);
+  const programTarget = programLanguageFromPrompt(proofMatch ? normalized.replace(normalizePrompt(proofMatch[1]), "") : normalized);
   const proofTranslation = proofMatch && programTarget && wasmJsonCall(
     "engine_translate_formal_proof", [proofMatch[1], programTarget, seedRawText(SEED_RAW, "proof-program-templates.lino")].map(encodeURIComponent).join("\n"));
   const unquotedSurface = extractUnquotedTranslationSurface(prompt);

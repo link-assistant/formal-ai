@@ -130,6 +130,22 @@ fn same_solved_proof_uses_general_translation_path_for_two_targets() {
 }
 
 #[test]
+fn proof_variable_language_alias_does_not_override_requested_target() {
+    let response = answer("Translate `rust > 1 and rust < 3 is satisfiable` to Python");
+    assert_eq!(
+        response.intent, "translate_proof_to_python",
+        "the proof variable must not be mistaken for the target language: {}",
+        response.answer
+    );
+    assert!(response.answer.contains("rust = 2"), "{}", response.answer);
+    assert!(
+        !response.answer.contains("fn main()"),
+        "{}",
+        response.answer
+    );
+}
+
+#[test]
 fn generated_proof_programs_compile_and_execute() {
     let proof =
         FormalProof::integer_interval("x", 1, false, 3, false).expect("valid interval proof");

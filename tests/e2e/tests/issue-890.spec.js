@@ -56,5 +56,13 @@ test.describe('Issue #890 formal proof program translation', () => {
     await expect(reply).toContainText('x = 2');
     await expect(reply).toContainText('assert x > 1 and x < 3');
     await expect(reply).toContainText('print(x)');
+
+    const aliasCollision = await sendPrompt(
+      page,
+      'Translate `rust > 1 and rust < 3 is satisfiable` to Python',
+    );
+    await expect(aliasCollision).toContainText('rust = 2');
+    await expect(aliasCollision).toContainText('assert rust > 1 and rust < 3');
+    await expect(aliasCollision).not.toContainText('fn main()');
   });
 });
