@@ -252,7 +252,18 @@ for (const relativePath of watchedFiles) {
     continue;
   }
 
-  const missingLocales = requiredLocales.filter(
+  // The reasoning-language registry may contain partial languages that are not
+  // published browser UI locales yet. Catalog parity applies to the union of
+  // locales actually shipped by that catalog; seed resources continue to use
+  // the full registry. A removed catalog locale remains in the union and is
+  // therefore still caught as a missing update.
+  const catalog = relativePath.startsWith('src/web/i18n-catalog');
+  const requiredForFile = catalog
+    ? requiredLocales.filter(
+      (language) => oldSignatures.has(language) || newSignatures.has(language),
+    )
+    : requiredLocales;
+  const missingLocales = requiredForFile.filter(
     (language) => !changed.includes(language),
   );
   if (missingLocales.length > 0) {

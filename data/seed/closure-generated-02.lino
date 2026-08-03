@@ -1,4 +1,9 @@
 meanings
+  external_benchmark_swe_inspect_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe inspect error"
   external_benchmark_swe_missing_report
     defined-by intent
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "normal"
-  normalize
-    defined-by concept
-    lexeme en
-      surface
-        text "normalize"

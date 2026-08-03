@@ -1,0 +1,43 @@
+name: Proactive failure report Agent CLI E2E
+
+on:
+  pull_request:
+    paths:
+      - "src/**"
+      - "data/seed/**"
+      - "experiments/agent_cli_e2e/run_issue_864.sh"
+      - ".github/workflows/proactive-failure-report-e2e.yml"
+      - "Cargo.toml"
+      - "Cargo.lock"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  agent-cli-failure-report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: ./.github/actions/setup-sccache
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+          no-cache: true
+      - name: Install the real Agent CLI
+        run: |
+          bun add -g @link-assistant/agent
+          echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
+      - name: Build formal-ai
+        run: cargo build --release --bin formal-ai
+      - name: Failed command proactively offers an issue report
+        run: experiments/agent_cli_e2e/run_issue_864.sh
+      - name: Upload failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: issue-864-agent-cli-evidence
+          path: /tmp/formal-ai-issue-864-evidence
+          retention-days: 7
