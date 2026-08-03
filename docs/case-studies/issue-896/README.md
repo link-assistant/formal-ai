@@ -64,9 +64,15 @@ made the cold macOS x64 release compile take 33m21s in Desktop Release
 [run 30788311906](https://github.com/link-assistant/formal-ai/actions/runs/30788311906),
 leaving too little of the former 40-minute job budget for DMG creation. A
 target-specific 50-minute cap provides bounded packaging headroom while all
-other desktop targets retain 40 minutes. Once the two feature-gating gaps ship,
-Formal AI can select only the adapter and merger features and remove both the
-build packages and the macOS x64 timeout exception.
+other desktop targets retain 40 minutes. The same graph also moved the Linux
+`Build Package` job from roughly 4-5 minutes on `main` to 7m14s on this branch,
+and a cold `cargo build --release` after a `Cargo.lock` change exceeded its
+former 10-minute cap in
+[run 30828819505](https://github.com/link-assistant/formal-ai/actions/runs/30828819505);
+that job now has a bounded 15-minute budget. Once the two feature-gating gaps
+ship, Formal AI can select only the adapter and merger features and remove the
+build packages, the macOS x64 timeout exception, and the `Build Package`
+headroom.
 
 ## Dependency and license review
 

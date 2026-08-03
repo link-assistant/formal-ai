@@ -207,6 +207,29 @@ fn desktop_budget_bounds_the_published_component_cold_build() {
 }
 
 #[test]
+fn build_package_budget_bounds_the_published_component_cold_build() {
+    let workflow = fs::read_to_string(format!(
+        "{}/.github/workflows/release.yml",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .expect("release workflow");
+
+    let build = workflow
+        .split("  build:\n")
+        .nth(1)
+        .expect("Build Package job")
+        .split("\n  auto-release:")
+        .next()
+        .expect("Build Package job body");
+
+    assert!(
+        build.contains("    timeout-minutes: 15\n"),
+        "the release build needs headroom for the published crates' unconditional graph \
+         on a cold cache"
+    );
+}
+
+#[test]
 fn same_task_agent_cli_authorship_is_preserved() {
     let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
     let read = |path: &str| {

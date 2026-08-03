@@ -713,7 +713,15 @@ jobs:
   build:
     name: Build Package
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # Issue #896 added the published web-search/web-capture Rust crates, whose
+    # current releases expose the server/browser dependency graphs
+    # unconditionally (upstream web-search#22 and web-capture#148). That extra
+    # graph moved this job from ~4-5 minutes on main to 7m14s on the branch, and
+    # a cold `cargo build --release` after a Cargo.lock change hit the former
+    # 10-minute cap in run 30828819505. Keep the job bounded while covering the
+    # cold-cache path until the adapter-only upstream features let us drop the
+    # heavyweight graph.
+    timeout-minutes: 15
     needs: [lint, test]
     if: ${{ !cancelled() && needs.lint.result == 'success' && needs.test.result == 'success' }}
     steps:
