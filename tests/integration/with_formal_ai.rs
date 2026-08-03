@@ -62,6 +62,10 @@ fn write_fake_cli(bin_dir: &Path, name: &str) {
   echo "OPENAI_MODEL=$OPENAI_MODEL"
   echo "GROK_API_KEY=$GROK_API_KEY"
   echo "GROK_BASE_URL=$GROK_BASE_URL"
+  if [ -f "$HOME/.codex/config.toml" ]; then
+    echo "---CODEX_CONFIG---"
+    cat "$HOME/.codex/config.toml"
+  fi
   model_catalog_path=""
   for arg in "$@"; do
     case "$arg" in
@@ -72,6 +76,9 @@ fn write_fake_cli(bin_dir: &Path, name: &str) {
         ;;
     esac
   done
+  if [ -z "$model_catalog_path" ] && [ -f "$HOME/.codex/config.toml" ]; then
+    model_catalog_path=$(sed -n 's/^model_catalog_json = "\(.*\)"$/\1/p' "$HOME/.codex/config.toml")
+  fi
   if [ -n "$model_catalog_path" ] && [ -f "$model_catalog_path" ]; then
     echo "---CODEX_MODEL_CATALOG---"
     cat "$model_catalog_path"
@@ -283,39 +290,12 @@ fn with_formal_ai_selects_uniform_interactive_and_non_interactive_modes() {
     let cases = [
         (
             "codex",
-            vec![
-                "--sandbox",
-                "read-only",
-                "-c",
-                "model_providers.formalai.name=\"formal-ai server\"",
-                "-c",
-                "model_providers.formalai.base_url=\"http://127.0.0.1:8080/api/openai/v1\"",
-                "-c",
-                "model_providers.formalai.env_key=\"FORMAL_AI_API_KEY\"",
-                "-c",
-                "model_providers.formalai.wire_api=\"responses\"",
-                "-c",
-                "model_provider=\"formalai\"",
-                "-c",
-                "model=\"formal-ai\"",
-            ],
+            vec!["--sandbox", "read-only"],
             vec![
                 "exec",
                 "--skip-git-repo-check",
                 "--sandbox",
                 "read-only",
-                "-c",
-                "model_providers.formalai.name=\"formal-ai server\"",
-                "-c",
-                "model_providers.formalai.base_url=\"http://127.0.0.1:8080/api/openai/v1\"",
-                "-c",
-                "model_providers.formalai.env_key=\"FORMAL_AI_API_KEY\"",
-                "-c",
-                "model_providers.formalai.wire_api=\"responses\"",
-                "-c",
-                "model_provider=\"formalai\"",
-                "-c",
-                "model=\"formal-ai\"",
                 "hi",
             ],
         ),

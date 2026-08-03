@@ -28,11 +28,14 @@ fn issue_606_with_formal_ai_docs_and_seed_templates_are_traceable() {
         .any(
             |(key, value)| key == "model_providers.{provider_id}.wire_api" && value == "responses"
         ));
+    assert_eq!(codex.invocation.temp_home_config_path, ".codex/config.toml");
     assert!(codex
         .invocation
-        .args
+        .temp_home_toml_settings
         .iter()
-        .any(|arg| arg.contains("wire_api")));
+        .any(
+            |(key, value)| key == "model_providers.{provider_id}.wire_api" && value == "responses"
+        ));
     assert!(codex
         .invocation
         .non_interactive_args

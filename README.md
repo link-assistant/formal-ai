@@ -506,7 +506,11 @@ codex exec --skip-git-repo-check --sandbox read-only "hi"
 ```
 
 For a one-shot invocation without editing `~/.codex/config.toml`, pass the same
-provider block through `-c`:
+provider block through `-c`. Keep every `-c` **after** the `exec` subcommand:
+Codex 0.146 discards the global override group placed before a subcommand as
+soon as any `-c` follows that subcommand, which silently falls back to the
+default OpenAI provider (see the
+[issue 902 case study](docs/case-studies/issue-902/README.md)).
 
 ```bash
 FORMAL_AI_API_KEY="sk-local-demo" codex exec \
