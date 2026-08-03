@@ -1,0 +1,219 @@
+use std::fs;
+use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::{Arc, Mutex};
+
+use formal_ai::{execute_duckduckgo_search, CachedSourceClient, FetchError, SourceTransport};
+
+static TEMP_IDS: AtomicUsize = AtomicUsize::new(0);
+
+const DUCKDUCKGO_HTML: &[u8] = br#"
+<html><body>
+  <div class="result__body">
+    <a class="result__a" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fcomponent.invalid%2Fone">Component result one</a>
+    <a class="result__snippet">First exact component capture.</a>
+  </div>
+  <div class="result__body">
+    <a class="result__a" href="https://component.invalid/two">Component result two</a>
+    <a class="result__snippet">Second exact component capture.</a>
+  </div>
+</body></html>
+"#;
+
+#[derive(Clone, Default)]
+struct ComponentFixtureTransport {
+    urls: Arc<Mutex<Vec<String>>>,
+}
+
+#[derive(Clone, Default)]
+struct FallbackFixtureTransport {
+    urls: Arc<Mutex<Vec<String>>>,
+}
+
+#[derive(Clone, Default)]
+struct FailedBothFixtureTransport;
+
+impl SourceTransport for FailedBothFixtureTransport {
+    fn get(&self, url: &str) -> Result<Vec<u8>, FetchError> {
+        let boundary = if url.starts_with("https://html.duckduckgo.com/html/") {
+            "web-capture component unavailable"
+        } else {
+            "Instant Answer fallback unavailable"
+        };
+        Err(FetchError::Transport(String::from(boundary)))
+    }
+}
+
+impl SourceTransport for FallbackFixtureTransport {
+    fn get(&self, url: &str) -> Result<Vec<u8>, FetchError> {
+        self.urls
+            .lock()
+            .expect("fixture URL lock")
+            .push(url.to_owned());
+        if url.starts_with("https://html.duckduckgo.com/html/") {
+            return Err(FetchError::Transport(String::from(
+                "web-capture component unavailable",
+            )));
+        }
+        if url.starts_with("https://api.duckduckgo.com/") {
+            return Ok(
+                br#"{"AbstractURL":"https://fallback.invalid/result","AbstractText":"Bounded fallback result","RelatedTopics":[]}"#
+                    .to_vec(),
+            );
+        }
+        Err(FetchError::Transport(format!("unexpected URL: {url}")))
+    }
+}
+
+impl SourceTransport for ComponentFixtureTransport {
+    fn get(&self, url: &str) -> Result<Vec<u8>, FetchError> {
+        self.urls
+            .lock()
+            .expect("fixture URL lock")
+            .push(url.to_owned());
+        if url == "https://html.duckduckgo.com/html/?q=formal+ai" {
+            return Ok(DUCKDUCKGO_HTML.to_vec());
+        }
+        Err(FetchError::Transport(format!("unexpected URL: {url}")))
+    }
+}
+
+const fn fixed_time() -> u64 {
+    1_753_444_800
+}
+
+fn temp_cache() -> std::path::PathBuf {
+    let path = std::env::temp_dir().join(format!(
+        "formal-ai-issue-896-{}-{}",
+        std::process::id(),
+        TEMP_IDS.fetch_add(1, Ordering::SeqCst)
+    ));
+    let _ = fs::remove_dir_all(&path);
+    path
+}
+
+#[test]
+fn native_search_executes_both_published_component_boundaries() {
+    let cache = temp_cache();
+    let transport = ComponentFixtureTransport::default();
+    let urls = Arc::clone(&transport.urls);
+    let online = CachedSourceClient::new(&cache, transport.clone())
+        .with_online(true)
+        .with_clock(fixed_time);
+
+    let live = execute_duckduckgo_search(&online, "formal ai")
+        .expect("web-capture HTML should be normalized and fused");
+    assert_eq!(
+        urls.lock().expect("fixture URL lock").as_slice(),
+        ["https://html.duckduckgo.com/html/?q=formal+ai"]
+    );
+    assert_eq!(live.captures.len(), 1);
+    assert_eq!(live.captures[0].bytes(), DUCKDUCKGO_HTML);
+    assert!(!live.captures[0].cached());
+    assert_eq!(live.rankings.len(), 2);
+    assert_eq!(live.rankings[0].title, "Component result one");
+    assert_eq!(live.fused.len(), 2);
+    assert_eq!(live.fused[0].providers, [(String::from("duckduckgo"), 1)]);
+    assert_eq!(
+        live.component_boundaries,
+        ["web-capture:search", "web-search:merger"]
+    );
+    assert!(live.component_diagnostics.is_empty());
+
+    let offline = CachedSourceClient::new(&cache, transport);
+    let replay = execute_duckduckgo_search(&offline, "formal ai")
+        .expect("component capture should replay without transport");
+    assert!(replay.captures[0].cached());
+    assert_eq!(replay.rankings, live.rankings);
+    assert_eq!(replay.fused, live.fused);
+    assert_eq!(replay.component_boundaries, live.component_boundaries);
+    assert_eq!(replay.component_diagnostics, live.component_diagnostics);
+    assert_eq!(urls.lock().expect("fixture URL lock").len(), 1);
+
+    fs::remove_dir_all(cache).expect("remove fixture cache");
+}
+
+#[test]
+fn native_search_reports_component_failure_before_bounded_fallback() {
+    let cache = temp_cache();
+    let transport = FallbackFixtureTransport::default();
+    let urls = Arc::clone(&transport.urls);
+    let client = CachedSourceClient::new(&cache, transport).with_online(true);
+
+    let execution = execute_duckduckgo_search(&client, "fallback")
+        .expect("Instant Answer compatibility path should remain available");
+    assert_eq!(execution.rankings.len(), 1);
+    assert_eq!(execution.rankings[0].title, "Bounded fallback result");
+    assert_eq!(
+        execution.component_boundaries,
+        ["web-capture:search:fallback", "web-search:merger"]
+    );
+    assert_eq!(execution.component_diagnostics.len(), 1);
+    assert!(execution.component_diagnostics[0].contains("web-capture component unavailable"));
+    assert_eq!(urls.lock().expect("fixture URL lock").len(), 2);
+
+    fs::remove_dir_all(cache).expect("remove fixture cache");
+}
+
+#[test]
+fn native_search_reports_both_component_and_fallback_failures() {
+    let cache = temp_cache();
+    let client = CachedSourceClient::new(&cache, FailedBothFixtureTransport).with_online(true);
+
+    let error = execute_duckduckgo_search(&client, "unavailable")
+        .expect_err("both unavailable paths must return an error")
+        .to_string();
+    assert!(error.contains("web-capture component unavailable"));
+    assert!(error.contains("Instant Answer fallback unavailable"));
+
+    let _ = fs::remove_dir_all(cache);
+}
+
+#[test]
+fn published_web_search_default_plan_remains_the_production_plan() {
+    assert_eq!(
+        web_search::get_default_provider_ids(),
+        formal_ai::default_search_plan_ids()
+    );
+}
+
+#[test]
+fn same_task_agent_cli_authorship_is_preserved() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
+    let read = |path: &str| {
+        fs::read_to_string(root.join(path)).unwrap_or_else(|error| panic!("{path}: {error}"))
+    };
+    let session = "ses_03b4c6698ffedcgrdsX2ni15WK";
+    let generated = read(
+        "docs/case-studies/issue-896/self-hosting-authorship/web-component-boundary-invariant.lino",
+    );
+    let canonical = read("data/meta/web-component-boundary-invariant.lino");
+    assert_eq!(generated, canonical);
+
+    let agent_log = read("docs/case-studies/issue-896/self-hosting-authorship/agent-cli.log");
+    assert!(agent_log.contains(session));
+    let formal_ai_log = read("docs/case-studies/issue-896/self-hosting-authorship/formal-ai.log");
+    for transition in [
+        "planned ToolCalls",
+        "tool=write",
+        "tool: \"bash\"",
+        "planned Final",
+        "web-component-boundary-invariant.lino",
+    ] {
+        assert!(
+            formal_ai_log.contains(transition),
+            "server trace is missing {transition}"
+        );
+    }
+
+    let decomposition =
+        read("docs/case-studies/issue-896/self-hosting-authorship/decomposition.lino");
+    assert_eq!(decomposition.matches("issue_896_smallest_leaf_").count(), 5);
+    assert_eq!(
+        decomposition
+            .matches("authorship formal_ai_agent_cli")
+            .count(),
+        1
+    );
+    assert!(decomposition.contains(&format!("session {session}")));
+    assert!(decomposition.contains("formal_ai_authored_percent 20"));
+}

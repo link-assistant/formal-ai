@@ -20,6 +20,12 @@ struct FixtureTransport {
 impl SourceTransport for FixtureTransport {
     fn get(&self, url: &str) -> Result<Vec<u8>, FetchError> {
         self.requests.fetch_add(1, Ordering::SeqCst);
+        if url.starts_with("https://html.duckduckgo.com/html/") {
+            return Ok(
+                br#"<div class="result__body"><a class="result__a" href="https://result.invalid/a">A result</a><a class="result__snippet">A result</a></div><div class="result__body"><a class="result__a" href="https://result.invalid/b">B result</a><a class="result__snippet">B result</a></div>"#
+                    .to_vec(),
+            );
+        }
         if url.starts_with("https://api.duckduckgo.com/") {
             return Ok(
                 br#"{"AbstractURL":"https://result.invalid/a","AbstractText":"A result","RelatedTopics":[{"FirstURL":"https://result.invalid/b","Text":"B result"}]}"#

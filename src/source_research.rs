@@ -52,6 +52,12 @@ impl SourceResearchExecution {
         for capture in &self.search.captures {
             capture.record(log);
         }
+        for boundary in &self.search.component_boundaries {
+            log.append("web_search:component", boundary.clone());
+        }
+        for diagnostic in &self.search.component_diagnostics {
+            log.append("web_search:component_error", diagnostic.clone());
+        }
         log.append("web_search:provider", String::from("duckduckgo"));
         for ranking in &self.search.rankings {
             log.append(
@@ -96,6 +102,12 @@ impl SourceResearchExecution {
                 ("captured_pages", self.pages.len().to_string()),
             ],
         )];
+        for boundary in &self.search.component_boundaries {
+            records.push(format_lino_record(
+                "search_component_boundary",
+                &[("component", boundary.clone())],
+            ));
+        }
         for capture in self
             .search
             .captures

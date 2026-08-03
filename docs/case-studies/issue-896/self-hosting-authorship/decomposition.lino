@@ -1,0 +1,32 @@
+issue_896_smallest_leaf_1
+  parent published_web_components
+  leaf "normalize native provider captures with web-capture and retain cache provenance"
+  implementation src/web_search_core.rs
+  authorship human
+issue_896_smallest_leaf_2
+  parent published_web_components
+  leaf "fuse native rankings with web-search and record component diagnostics"
+  implementation src/web_search_core.rs
+  authorship human
+issue_896_smallest_leaf_3
+  parent published_web_components
+  leaf "bundle the published web-search registry and merger into the browser worker"
+  implementation src/web/worker/formal_ai_worker_19.js
+  authorship human
+issue_896_smallest_leaf_4
+  parent published_web_components
+  leaf "preserve browser capture cancellation and bounded fallback around web-capture"
+  implementation src/web/worker/formal_ai_worker_18.js
+  authorship human
+issue_896_smallest_leaf_5
+  parent published_web_components
+  leaf "record the web component boundary invariant"
+  implementation data/meta/web-component-boundary-invariant.lino
+  authorship formal_ai_agent_cli
+  session ses_03b4c6698ffedcgrdsX2ni15WK
+  evidence docs/case-studies/issue-896/self-hosting-authorship/agent-cli.log
+
+issue_896_self_authorship_measurement
+  reviewed_smallest_leaves 5
+  formal_ai_authored_leaves 1
+  formal_ai_authored_percent 20
