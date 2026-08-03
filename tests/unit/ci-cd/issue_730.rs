@@ -48,8 +48,8 @@ fn desktop_build_budget_covers_the_measured_windows_arm64_path() {
         .expect("desktop build job");
 
     assert!(
-        build.contains("    timeout-minutes: ${{ matrix.label == 'macos-x64' && 50 || 40 }}\n"),
-        "the desktop matrix must keep the 40-minute Windows ARM64 budget"
+        build.contains("    timeout-minutes: ${{ (matrix.label == 'macos-x64' || startsWith(matrix.label, 'windows-')) && 50 || 40 }}\n"),
+        "the desktop matrix must keep headroom above the repeated 30-minute Windows ARM64 path"
     );
 }
 

@@ -63,8 +63,13 @@ builder-only workaround; the runtime image remains unchanged. The same graph
 made the cold macOS x64 release compile take 33m21s in Desktop Release
 [run 30788311906](https://github.com/link-assistant/formal-ai/actions/runs/30788311906),
 leaving too little of the former 40-minute job budget for DMG creation. A
-target-specific 50-minute cap provides bounded packaging headroom while all
-other desktop targets retain 40 minutes. The same graph also moved the Linux
+target-specific 50-minute cap provides bounded packaging headroom. Both Windows
+targets moved the same way: in Desktop Release
+[run 30832897812](https://github.com/link-assistant/formal-ai/actions/runs/30832897812),
+windows-x64 compiled for 17m39s, packaged a valid installer, and was cancelled
+at the cap while uploading its checksum fragment, with windows-arm64 finishing
+at 36m04s, so they share the 50-minute budget. The Linux and macOS ARM64
+targets stay well under 40 minutes and keep it. The same graph also moved the Linux
 `Build Package` job from roughly 4-5 minutes on `main` to 7m14s on this branch,
 and a cold `cargo build --release` after a `Cargo.lock` change exceeded its
 former 10-minute cap in

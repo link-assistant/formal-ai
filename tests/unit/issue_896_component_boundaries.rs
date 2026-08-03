@@ -201,8 +201,9 @@ fn desktop_budget_bounds_the_published_component_cold_build() {
     .expect("desktop release workflow");
 
     assert!(
-        workflow.contains("timeout-minutes: ${{ matrix.label == 'macos-x64' && 50 || 40 }}"),
-        "macOS x64 needs bounded headroom for the published crates' unconditional graph"
+        workflow.contains("timeout-minutes: ${{ (matrix.label == 'macos-x64' || startsWith(matrix.label, 'windows-')) && 50 || 40 }}"),
+        "macOS x64 and both Windows targets need bounded headroom for the published crates' \
+         unconditional graph"
     );
 }
 
