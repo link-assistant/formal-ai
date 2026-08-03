@@ -1,6 +1,6 @@
 // Worker module 20 of 21. Loaded by ../formal_ai_worker.js.
-function reciprocalRankFusion(perProviderResults, k) {
-  // Rust/WASM owns fusion; this compact branch keeps JS-only mode usable.
+function reciprocalRankFusion(perProviderResults, k, evidence) {
+  const componentFused = self.FormalAIWebSearchComponent.fuseResults(perProviderResults, k, evidence); if (componentFused !== null) return componentFused;
   const wasmFused = wasmReciprocalRankFusion(perProviderResults);
   if (wasmFused !== null) return wasmFused;
   // Cormack, Clarke, Buettcher 2009: score(d) = Σ 1 / (k + rank_i(d)).
@@ -233,7 +233,6 @@ async function runWebSearchQuery(query, language, queryKind, preferences = {}) {
   const concurrency = webSearchConcurrency();
   const providerLimit = webSearchProviderLimit();
   const texts = webSearchTexts(language);
-
   // Probe providers once per session and cache CORS failures.
   await ensureWebSearchProviderProbes();
 
@@ -241,7 +240,8 @@ async function runWebSearchQuery(query, language, queryKind, preferences = {}) {
   const enabledResearchProviders = isUnknownResearch ? UNKNOWN_INTENT_RESEARCH_PROVIDERS
     .filter((provider) => externalServiceEnabled(preferences, provider.settingsKey)) : [];
   const providerCatalog = isUnknownResearch
-    ? WEB_SEARCH_PROVIDERS.concat(enabledResearchProviders) : WEB_SEARCH_PROVIDERS;
+    ? self.FormalAIWebSearchComponent.orderProviders(WEB_SEARCH_PROVIDERS).concat(enabledResearchProviders)
+    : self.FormalAIWebSearchComponent.orderProviders(WEB_SEARCH_PROVIDERS);
   const optedOutResearchProviders = isUnknownResearch
     ? UNKNOWN_INTENT_RESEARCH_PROVIDERS.filter((provider) => !enabledResearchProviders.includes(provider)) : [];
 
@@ -319,7 +319,7 @@ async function runWebSearchQuery(query, language, queryKind, preferences = {}) {
     });
   }
 
-  const fused = reciprocalRankFusion(perProvider, rrfK);
+  const fused = reciprocalRankFusion(perProvider, rrfK, evidence);
   const metaByUrl = buildItemMetadataIndex(perProvider);
   const deduped = dedupeFusedEntries(fused, metaByUrl, evidence);
   const relevant = isUnknownResearch

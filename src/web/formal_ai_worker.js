@@ -34,6 +34,26 @@ try {
   // Seed loader is optional: tests that mock the worker may exclude it.
 }
 
+try {
+  importScripts(withAssetVersion("web-search-component.bundle.js"));
+} catch (_error) {
+  // Keep the bounded local implementation available when a downstream embed
+  // deliberately omits the optional browser component bundle.
+  self.FormalAIWebSearchComponent = Object.freeze({
+    package: "unavailable",
+    defaultProviderIds: [],
+    orderProviders: (providers) => providers.slice(),
+    fuseResults: (_results, _k, evidence) => {
+      evidence.push("web_search:component_error:@link-assistant/web-search:unavailable");
+      return null;
+    },
+    fetchUrl: async (url, evidence) => {
+      evidence.push("http_fetch:component_error:unavailable");
+      return fetch(url, { method: "GET", mode: "cors" });
+    },
+  });
+}
+
 const FORMAL_AI_WORKER_MODULES = [
   "worker/formal_ai_worker_00.js",
   "worker/formal_ai_worker_01.js",
