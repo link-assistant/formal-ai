@@ -1,4 +1,24 @@
 meanings
+  permissioned-network
+    defined-by isolation_mode
+    lexeme en
+      surface
+        text "permissioned network"
+  philosophy-text
+    defined-by source_kind
+    lexeme en
+      surface
+        text "philosophy text"
+  physical_action_question
+    defined-by intent
+    lexeme en
+      surface
+        text "physical action question"
+  pip
+    defined-by token
+    lexeme en
+      surface
+        text "pip"
   pixel
     defined-by word_surface
     lexeme en
@@ -1149,6 +1169,86 @@ meanings
     lexeme en
       surface
         text "response client contract read transcript error zh"
+  response_client_global_config_auth_refusal_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config auth refusal en"
+  response_client_global_config_auth_refusal_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config auth refusal hi"
+  response_client_global_config_auth_refusal_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config auth refusal ru"
+  response_client_global_config_auth_refusal_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config auth refusal zh"
+  response_client_global_config_probe_skipped_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config probe skipped en"
+  response_client_global_config_probe_skipped_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config probe skipped hi"
+  response_client_global_config_probe_skipped_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config probe skipped ru"
+  response_client_global_config_probe_skipped_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config probe skipped zh"
+  response_client_global_config_probe_started_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config probe started en"
+  response_client_global_config_probe_started_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config probe started hi"
+  response_client_global_config_probe_started_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config probe started ru"
+  response_client_global_config_probe_started_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config probe started zh"
+  response_client_global_config_requirement_missing_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config requirement missing en"
+  response_client_global_config_requirement_missing_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config requirement missing hi"
+  response_client_global_config_requirement_missing_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config requirement missing ru"
+  response_client_global_config_requirement_missing_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config requirement missing zh"
   response_client_integration_invalid_typed_json_setting_en
     defined-by response_template
     lexeme en
@@ -1294,103 +1394,3 @@ meanings
     lexeme en
       surface
         text "response comparison decomposed evidence zh"
-  response_comparison_decomposed_no_evidence_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response comparison decomposed no evidence en"
-  response_comparison_decomposed_no_evidence_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response comparison decomposed no evidence hi"
-  response_comparison_decomposed_no_evidence_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response comparison decomposed no evidence ru"
-  response_comparison_decomposed_no_evidence_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response comparison decomposed no evidence zh"
-  response_compiled_procedure_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response compiled procedure en"
-  response_compiled_procedure_explanation_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response compiled procedure explanation en"
-  response_compiled_procedure_explanation_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response compiled procedure explanation hi"
-  response_compiled_procedure_explanation_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response compiled procedure explanation ru"
-  response_compiled_procedure_explanation_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response compiled procedure explanation zh"
-  response_compiled_procedure_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response compiled procedure hi"
-  response_compiled_procedure_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response compiled procedure ru"
-  response_compiled_procedure_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response compiled procedure zh"
-  response_completion_recovery_decompose_into_leaf_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery decompose into leaf en"
-  response_completion_recovery_decompose_into_leaf_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery decompose into leaf hi"
-  response_completion_recovery_decompose_into_leaf_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery decompose into leaf ru"
-  response_completion_recovery_decompose_into_leaf_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery decompose into leaf zh"
-  response_completion_recovery_name_target_artifact_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery name target artifact en"
-  response_completion_recovery_name_target_artifact_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery name target artifact hi"
-  response_completion_recovery_name_target_artifact_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery name target artifact ru"
-  response_completion_recovery_name_target_artifact_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery name target artifact zh"

@@ -1,4 +1,104 @@
 meanings
+  response_lexeme_import_missing_provenance_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import missing provenance zh"
+  response_lexeme_import_no_clean_alias_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import no clean alias en"
+  response_lexeme_import_no_clean_alias_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import no clean alias hi"
+  response_lexeme_import_no_clean_alias_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import no clean alias ru"
+  response_lexeme_import_no_clean_alias_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import no clean alias zh"
+  response_lexeme_import_no_labels_in_cache_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import no labels in cache en"
+  response_lexeme_import_no_labels_in_cache_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import no labels in cache hi"
+  response_lexeme_import_no_labels_in_cache_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import no labels in cache ru"
+  response_lexeme_import_no_labels_in_cache_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import no labels in cache zh"
+  response_lexeme_import_number_lost_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import number lost en"
+  response_lexeme_import_number_lost_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import number lost hi"
+  response_lexeme_import_number_lost_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import number lost ru"
+  response_lexeme_import_number_lost_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import number lost zh"
+  response_lexeme_import_part_of_speech_lost_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import part of speech lost en"
+  response_lexeme_import_part_of_speech_lost_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import part of speech lost hi"
+  response_lexeme_import_part_of_speech_lost_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import part of speech lost ru"
+  response_lexeme_import_part_of_speech_lost_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import part of speech lost zh"
+  response_lexeme_import_qid_absent_from_cache_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import qid absent from cache en"
+  response_lexeme_import_qid_absent_from_cache_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import qid absent from cache hi"
+  response_lexeme_import_qid_absent_from_cache_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import qid absent from cache ru"
   response_lexeme_import_qid_absent_from_cache_zh
     defined-by response_template
     lexeme en
@@ -1294,103 +1394,3 @@ meanings
     lexeme en
       surface
         text "response shared dialog capture unsupported zh"
-  response_skill_gap_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response skill gap en"
-  response_skill_gap_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response skill gap hi"
-  response_skill_gap_name_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response skill gap name en"
-  response_skill_gap_name_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response skill gap name hi"
-  response_skill_gap_name_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response skill gap name ru"
-  response_skill_gap_name_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response skill gap name zh"
-  response_skill_gap_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response skill gap ru"
-  response_skill_gap_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response skill gap zh"
-  response_statement_audit_capture_field_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response statement audit capture field en"
-  response_statement_audit_claim_predicate_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response statement audit claim predicate en"
-  response_statement_audit_claim_subject_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response statement audit claim subject en"
-  response_statement_audit_invalid_json_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response statement audit invalid json en"
-  response_statement_audit_invalid_temperature_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response statement audit invalid temperature en"
-  response_statement_audit_nonempty_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response statement audit nonempty en"
-  response_statement_audit_selector_exclusive_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response statement audit selector exclusive en"
-  response_statement_audit_selector_required_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response statement audit selector required en"
-  response_statement_audit_strength_range_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response statement audit strength range en"
-  response_statement_audit_temperature_range_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response statement audit temperature range en"
-  response_statement_audit_unknown_stance_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response statement audit unknown stance en"
-  response_statement_audit_unknown_tier_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response statement audit unknown tier en"

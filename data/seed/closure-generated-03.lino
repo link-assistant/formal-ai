@@ -1,4 +1,24 @@
 meanings
+  misinformation
+    defined-by word_surface
+    lexeme en
+      surface
+        text "misinformation"
+  missing_english_label_todo
+    defined-by concept
+    lexeme en
+      surface
+        text "missing english label todo"
+  missing_russian_label_todo
+    defined-by concept
+    lexeme en
+      surface
+        text "missing russian label todo"
+  mkdir
+    defined-by concept
+    lexeme en
+      surface
+        text "mkdir"
   mode
     defined-by concept
     lexeme en
@@ -1374,23 +1394,3 @@ meanings
     lexeme en
       surface
         text "periodic or manual"
-  permissioned-network
-    defined-by isolation_mode
-    lexeme en
-      surface
-        text "permissioned network"
-  philosophy-text
-    defined-by source_kind
-    lexeme en
-      surface
-        text "philosophy text"
-  physical_action_question
-    defined-by intent
-    lexeme en
-      surface
-        text "physical action question"
-  pip
-    defined-by token
-    lexeme en
-      surface
-        text "pip"

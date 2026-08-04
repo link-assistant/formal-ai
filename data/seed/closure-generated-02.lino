@@ -1,4 +1,24 @@
 meanings
+  external_benchmark_not_swe_case
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark not swe case"
+  external_benchmark_parquet_decode_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark parquet decode error"
+  external_benchmark_parquet_module_unavailable
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark parquet module unavailable"
+  external_benchmark_parquet_start_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark parquet start error"
   external_benchmark_parquet_utf8_error
     defined-by intent
     lexeme en
@@ -1374,23 +1394,3 @@ meanings
     lexeme en
       surface
         text "meta explanation"
-  misinformation
-    defined-by word_surface
-    lexeme en
-      surface
-        text "misinformation"
-  missing_english_label_todo
-    defined-by concept
-    lexeme en
-      surface
-        text "missing english label todo"
-  missing_russian_label_todo
-    defined-by concept
-    lexeme en
-      surface
-        text "missing russian label todo"
-  mkdir
-    defined-by concept
-    lexeme en
-      surface
-        text "mkdir"

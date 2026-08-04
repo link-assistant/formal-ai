@@ -1,4 +1,104 @@
 meanings
+  summarization_evidence_summary
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization evidence summary"
+  summarize_conversation
+    defined-by name
+    lexeme en
+      surface
+        text "summarize conversation"
+  supplied_file_contents
+    defined-by intent
+    lexeme en
+      surface
+        text "supplied file contents"
+  supplied_file_first_line
+    defined-by intent
+    lexeme en
+      surface
+        text "supplied file first line"
+  supported_languages
+    defined-by field
+    lexeme en
+      surface
+        text "supported languages"
+  symbolic-ai
+    defined-by category
+    lexeme en
+      surface
+        text "symbolic ai"
+  symmetry
+    defined-by term
+    lexeme en
+      surface
+        text "symmetry"
+  tabler
+    defined-by concept
+    lexeme en
+      surface
+        text "tabler"
+  tabler-icons
+    defined-by concept
+    lexeme en
+      surface
+        text "tabler icons"
+  tag_matching_facts
+    defined-by concept
+    lexeme en
+      surface
+        text "tag matching facts"
+  tail
+    defined-by token
+    lexeme en
+      surface
+        text "tail"
+  tar
+    defined-by token
+    lexeme en
+      surface
+        text "tar"
+  task_atomicity_no
+    defined-by intent
+    lexeme en
+      surface
+        text "task atomicity no"
+  task_atomicity_yes
+    defined-by intent
+    lexeme en
+      surface
+        text "task atomicity yes"
+  task_decomposition_atomic
+    defined-by intent
+    lexeme en
+      surface
+        text "task decomposition atomic"
+  task_decomposition_depth_bound
+    defined-by intent
+    lexeme en
+      surface
+        text "task decomposition depth bound"
+  task_decomposition_depth_marker
+    defined-by intent
+    lexeme en
+      surface
+        text "task decomposition depth marker"
+  task_decomposition_lead
+    defined-by intent
+    lexeme en
+      surface
+        text "task decomposition lead"
+  task_first_step_lead
+    defined-by intent
+    lexeme en
+      surface
+        text "task first step lead"
+  task_plan_stage_implementation
+    defined-by intent
+    lexeme en
+      surface
+        text "task plan stage implementation"
   task_plan_stage_regression
     defined-by intent
     lexeme en
