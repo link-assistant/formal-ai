@@ -104,6 +104,20 @@ pub struct ClientIntegrationGlobalConfig {
     pub toml_settings: Vec<(String, String)>,
     pub json_settings: Vec<(String, String)>,
     pub shell_env: Vec<TemplateEnv>,
+    /// Additional files the client needs before it can start headlessly, each
+    /// materialised, backed up, and restored exactly like the primary config.
+    ///
+    /// Gemini CLI is the motivating case: the exports alone leave it with no
+    /// *selected* auth type, so `--global` must also write
+    /// `~/.gemini/settings.json`.
+    pub companions: Vec<Self>,
+    /// Startup contract this configuration must satisfy, declared apart from
+    /// the settings that write it so a configured client is checked by reading
+    /// the result back, not by trusting the writer.
+    ///
+    /// Each entry is `(kind, target)`: `env` names a variable the shell profile
+    /// must export, and `json`/`toml` name `<relative path>:<dotted key>`.
+    pub headless_requirements: Vec<(String, String)>,
 }
 
 /// Seed-defined facts the real-client matrix needs to exercise an integration.
@@ -130,6 +144,9 @@ pub struct ClientVerification {
     pub required_response_tools: Vec<String>,
     /// Text that must remain absent from headless client output.
     pub forbidden_output: Vec<String>,
+    /// Refusals a client prints when no auth type is selected, used to turn a
+    /// silently incomplete global configuration into an immediate error.
+    pub auth_refusals: Vec<String>,
     /// Arguments used to launch a server or GUI surface.
     pub launch_args: Vec<String>,
     /// Output proving that a launched server is ready.
@@ -327,6 +344,7 @@ fn parse_verification(node: &super::parser::LinoNode) -> ClientVerification {
                 verification.required_response_tools.push(child.id.clone());
             }
             "forbidden_output" => verification.forbidden_output.push(child.id.clone()),
+            "auth_refusal" => verification.auth_refusals.push(child.id.clone()),
             "launch_arg" => verification.launch_args.push(child.id.clone()),
             "launch_required_output" => {
                 verification.launch_required_output.push(child.id.clone());
@@ -416,9 +434,21 @@ fn parse_global_config(node: &super::parser::LinoNode) -> Option<ClientIntegrati
         toml_settings: Vec::new(),
         json_settings: Vec::new(),
         shell_env: Vec::new(),
+        companions: Vec::new(),
+        headless_requirements: Vec::new(),
     };
     for child in &node.children {
         match child.name.as_str() {
+            "companion" => {
+                if let Some(companion) = parse_global_config(child) {
+                    config.companions.push(companion);
+                }
+            }
+            "headless_require" => {
+                if let Some((kind, target)) = split_once_equals(&child.id) {
+                    config.headless_requirements.push((kind, target));
+                }
+            }
             "toml_set" => {
                 if let Some((key, value)) = split_once_equals(&child.id) {
                     config.toml_settings.push((key, value));

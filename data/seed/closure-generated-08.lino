@@ -1,4 +1,104 @@
 meanings
+  tool_dom_extract
+    defined-by tool
+    lexeme en
+      surface
+        text "tool dom extract"
+  tool_dom_query
+    defined-by tool
+    lexeme en
+      surface
+        text "tool dom query"
+  tool_eval_js
+    defined-by tool
+    lexeme en
+      surface
+        text "tool eval js"
+  tool_export_memory
+    defined-by tool
+    lexeme en
+      surface
+        text "tool export memory"
+  tool_fact_lookup
+    defined-by tool
+    lexeme en
+      surface
+        text "tool fact lookup"
+  tool_fs_list
+    defined-by tool
+    lexeme en
+      surface
+        text "tool fs list"
+  tool_fs_move
+    defined-by tool
+    lexeme en
+      surface
+        text "tool fs move"
+  tool_fs_read
+    defined-by tool
+    lexeme en
+      surface
+        text "tool fs read"
+  tool_fs_write
+    defined-by tool
+    lexeme en
+      surface
+        text "tool fs write"
+  tool_http_fetch
+    defined-by tool
+    lexeme en
+      surface
+        text "tool http fetch"
+  tool_http_fetch_primitive
+    defined-by tool
+    lexeme en
+      surface
+        text "tool http fetch primitive"
+  tool_http_post_primitive
+    defined-by tool
+    lexeme en
+      surface
+        text "tool http post primitive"
+  tool_import_memory
+    defined-by tool
+    lexeme en
+      surface
+        text "tool import memory"
+  tool_intent_routing
+    defined-by tool
+    lexeme en
+      surface
+        text "tool intent routing"
+  tool_process_status
+    defined-by tool
+    lexeme en
+      surface
+        text "tool process status"
+  tool_read_local_file
+    defined-by tool
+    lexeme en
+      surface
+        text "tool read local file"
+  tool_result_completed
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result completed"
+  tool_result_empty_generic
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result empty generic"
+  tool_result_empty_list
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result empty list"
+  tool_result_empty_local_path_search
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result empty local path search"
   tool_result_empty_search
     defined-by intent
     lexeme en

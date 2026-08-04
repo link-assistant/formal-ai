@@ -52,7 +52,7 @@ fn expand_command_path(value: &str) -> String {
         .replace(LOCAL_APP_DATA_PLACEHOLDER, &local_app_data)
 }
 
-fn command_available(command: &Path) -> bool {
+pub(super) fn command_available(command: &Path) -> bool {
     if command.is_absolute() || command.components().count() > 1 {
         return command.is_file();
     }

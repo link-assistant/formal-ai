@@ -15,6 +15,7 @@ use toml_edit::{value as toml_value, DocumentMut, Item, Table};
 use crate::seed::{ClientIntegration, ConfigFormat};
 
 use super::command::ensure_trailing_newline;
+use super::global_verify::{probe_headless_start, verify_written_config};
 use super::{
     backup_path, codex_model_catalog, global_config_path, render_context, render_template,
     write_file, RenderContext, WithFormalAiArgs, EMPTY_BACKUP_SENTINEL, ERROR_PLACEHOLDER,
@@ -27,6 +28,24 @@ pub(super) fn write_global_config(
 ) -> Result<(), Box<dyn Error>> {
     let mut context = render_context(integration, args)?;
     let global_config = integration.global_config_for(&context.protocol);
+    // A client needs every file its headless start depends on, not only the
+    // one that carries the endpoint: gemini also needs the settings file that
+    // *selects* an auth type.
+    for node in std::iter::once(global_config).chain(global_config.companions.iter()) {
+        write_config_node(&integration.id, node, &mut context)?;
+    }
+    verify_written_config(integration, global_config, &context)?;
+    if args.verify {
+        probe_headless_start(integration, global_config, &context)?;
+    }
+    Ok(())
+}
+
+fn write_config_node(
+    integration_id: &str,
+    global_config: &crate::seed::ClientIntegrationGlobalConfig,
+    context: &mut RenderContext,
+) -> Result<(), Box<dyn Error>> {
     if !global_config.model_catalog_path.is_empty() {
         let catalog_path = global_config_path(&global_config.model_catalog_path)?;
         let catalog_backup = backup_path(&catalog_path, &global_config.backup_suffix);
@@ -40,22 +59,18 @@ pub(super) fn write_global_config(
     let existing = fs::read_to_string(&path).unwrap_or_default();
     let next = match global_config.format {
         ConfigFormat::Toml => {
-            render_toml_settings(&global_config.toml_settings, &existing, &context)?
+            render_toml_settings(&global_config.toml_settings, &existing, context)?
         }
-        ConfigFormat::Json => merge_json_config(global_config, &existing, &context)?,
+        ConfigFormat::Json => merge_json_config(global_config, &existing, context)?,
         ConfigFormat::ShellEnv => {
-            merge_shell_env_config(&integration.id, global_config, &existing, &context)
+            merge_shell_env_config(integration_id, global_config, &existing, context)
         }
     };
     if next == existing {
-        println!(
-            "{} already configured at {}",
-            integration.id,
-            path.display()
-        );
+        println!("{integration_id} already configured at {}", path.display());
     } else {
         write_file(&path, &next)?;
-        println!("configured {} at {}", integration.id, path.display());
+        println!("configured {integration_id} at {}", path.display());
     }
     Ok(())
 }
@@ -79,6 +94,16 @@ pub(super) fn undo_global_config(
         let catalog_backup_path = backup_path(&catalog_path, &global_config.backup_suffix);
         if catalog_backup_path.exists() {
             restore_backup(&catalog_path, &catalog_backup_path)?;
+            restored = true;
+        }
+    }
+    // Companion files are part of the same configuration, so `--undo` stays
+    // exact only when their backups are restored too.
+    for companion in &global_config.companions {
+        let companion_path = global_config_path(&companion.path)?;
+        let companion_backup_path = backup_path(&companion_path, &companion.backup_suffix);
+        if companion_backup_path.exists() {
+            restore_backup(&companion_path, &companion_backup_path)?;
             restored = true;
         }
     }

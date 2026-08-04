@@ -15,6 +15,70 @@ multilingual_responses
     intent client_integration_invalid_typed_json_setting
     language zh
     text "无效的带类型 JSON 设置 `{rendered}`：{error}"
+  response response_client_global_config_requirement_missing_en
+    intent client_global_config_requirement_missing
+    language en
+    text "{tool} is configured at {path}, but {requirement} is missing, so the client cannot start headlessly"
+  response response_client_global_config_requirement_missing_ru
+    intent client_global_config_requirement_missing
+    language ru
+    text "{tool} настроен в {path}, но {requirement} отсутствует, поэтому клиент не может запуститься в неинтерактивном режиме"
+  response response_client_global_config_requirement_missing_hi
+    intent client_global_config_requirement_missing
+    language hi
+    text "{tool} {path} पर कॉन्फ़िगर है, लेकिन {requirement} अनुपस्थित है, इसलिए क्लाइंट हेडलेस मोड में प्रारंभ नहीं हो सकता"
+  response response_client_global_config_requirement_missing_zh
+    intent client_global_config_requirement_missing
+    language zh
+    text "{tool} 已在 {path} 配置，但缺少 {requirement}，因此客户端无法以无界面模式启动"
+  response response_client_global_config_auth_refusal_en
+    intent client_global_config_auth_refusal
+    language en
+    text "{tool} refused to start after configuration: {output}"
+  response response_client_global_config_auth_refusal_ru
+    intent client_global_config_auth_refusal
+    language ru
+    text "{tool} отказался запускаться после настройки: {output}"
+  response response_client_global_config_auth_refusal_hi
+    intent client_global_config_auth_refusal
+    language hi
+    text "कॉन्फ़िगरेशन के बाद {tool} ने प्रारंभ होने से इनकार कर दिया: {output}"
+  response response_client_global_config_auth_refusal_zh
+    intent client_global_config_auth_refusal
+    language zh
+    text "配置后 {tool} 拒绝启动：{output}"
+  response response_client_global_config_probe_started_en
+    intent client_global_config_probe_started
+    language en
+    text "{tool} started non-interactively with the configuration at {path}"
+  response response_client_global_config_probe_started_ru
+    intent client_global_config_probe_started
+    language ru
+    text "{tool} запустился в неинтерактивном режиме с настройкой в {path}"
+  response response_client_global_config_probe_started_hi
+    intent client_global_config_probe_started
+    language hi
+    text "{tool} {path} पर मौजूद कॉन्फ़िगरेशन के साथ गैर-संवादात्मक रूप से प्रारंभ हुआ"
+  response response_client_global_config_probe_started_zh
+    intent client_global_config_probe_started
+    language zh
+    text "{tool} 已使用 {path} 中的配置以非交互方式启动"
+  response response_client_global_config_probe_skipped_en
+    intent client_global_config_probe_skipped
+    language en
+    text "skipped the {tool} startup probe: {command} is not an installed command-line client"
+  response response_client_global_config_probe_skipped_ru
+    intent client_global_config_probe_skipped
+    language ru
+    text "проверка запуска {tool} пропущена: {command} не является установленным клиентом командной строки"
+  response response_client_global_config_probe_skipped_hi
+    intent client_global_config_probe_skipped
+    language hi
+    text "{tool} स्टार्टअप जाँच छोड़ी गई: {command} एक स्थापित कमांड-लाइन क्लाइंट नहीं है"
+  response response_client_global_config_probe_skipped_zh
+    intent client_global_config_probe_skipped
+    language zh
+    text "已跳过 {tool} 的启动探测：{command} 不是已安装的命令行客户端"
   response response_agentic_report_target_question_en
     intent agentic_report_target_question
     language en

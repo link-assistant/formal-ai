@@ -1,4 +1,24 @@
 meanings
+  physical_action_question
+    defined-by intent
+    lexeme en
+      surface
+        text "physical action question"
+  pip
+    defined-by token
+    lexeme en
+      surface
+        text "pip"
+  pixel
+    defined-by word_surface
+    lexeme en
+      surface
+        text "pixel"
+  pixels
+    defined-by word_surface
+    lexeme en
+      surface
+        text "pixels"
   plagiaris
     defined-by word_surface
     lexeme en
@@ -1089,6 +1109,86 @@ meanings
     lexeme en
       surface
         text "response client contract read transcript error zh"
+  response_client_global_config_auth_refusal_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config auth refusal en"
+  response_client_global_config_auth_refusal_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config auth refusal hi"
+  response_client_global_config_auth_refusal_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config auth refusal ru"
+  response_client_global_config_auth_refusal_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config auth refusal zh"
+  response_client_global_config_probe_skipped_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config probe skipped en"
+  response_client_global_config_probe_skipped_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config probe skipped hi"
+  response_client_global_config_probe_skipped_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config probe skipped ru"
+  response_client_global_config_probe_skipped_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config probe skipped zh"
+  response_client_global_config_probe_started_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config probe started en"
+  response_client_global_config_probe_started_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config probe started hi"
+  response_client_global_config_probe_started_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config probe started ru"
+  response_client_global_config_probe_started_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config probe started zh"
+  response_client_global_config_requirement_missing_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config requirement missing en"
+  response_client_global_config_requirement_missing_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config requirement missing hi"
+  response_client_global_config_requirement_missing_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config requirement missing ru"
+  response_client_global_config_requirement_missing_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config requirement missing zh"
   response_client_integration_invalid_typed_json_setting_en
     defined-by response_template
     lexeme en
@@ -1294,103 +1394,3 @@ meanings
     lexeme en
       surface
         text "response compiled procedure zh"
-  response_completion_recovery_decompose_into_leaf_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery decompose into leaf en"
-  response_completion_recovery_decompose_into_leaf_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery decompose into leaf hi"
-  response_completion_recovery_decompose_into_leaf_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery decompose into leaf ru"
-  response_completion_recovery_decompose_into_leaf_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery decompose into leaf zh"
-  response_completion_recovery_name_target_artifact_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery name target artifact en"
-  response_completion_recovery_name_target_artifact_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery name target artifact hi"
-  response_completion_recovery_name_target_artifact_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery name target artifact ru"
-  response_completion_recovery_name_target_artifact_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery name target artifact zh"
-  response_completion_recovery_restate_postcondition_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery restate postcondition en"
-  response_completion_recovery_restate_postcondition_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery restate postcondition hi"
-  response_completion_recovery_restate_postcondition_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery restate postcondition ru"
-  response_completion_recovery_restate_postcondition_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery restate postcondition zh"
-  response_concept_lookup_in_context_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context en"
-  response_concept_lookup_in_context_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context hi"
-  response_concept_lookup_in_context_no_alias_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context no alias en"
-  response_concept_lookup_in_context_no_alias_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context no alias hi"
-  response_concept_lookup_in_context_no_alias_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context no alias ru"
-  response_concept_lookup_in_context_no_alias_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context no alias zh"
-  response_concept_lookup_in_context_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context ru"
-  response_concept_lookup_in_context_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context zh"

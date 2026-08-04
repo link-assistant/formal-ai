@@ -18,6 +18,7 @@ mod command;
 mod completion;
 mod completion_learning;
 mod global_config;
+mod global_verify;
 mod server;
 mod session_files;
 mod tool_args;
@@ -80,6 +81,11 @@ pub struct WithFormalAiArgs {
     /// Configure or undo every supported tool from the seed registry.
     #[arg(long, default_value_t = false)]
     pub all: bool,
+
+    /// After `--global`, start the tool once non-interactively and fail on an
+    /// auth refusal instead of reporting success.
+    #[arg(long, default_value_t = false)]
+    pub verify: bool,
 
     /// Formal AI server root URL. Protocol-specific paths are added from seed data.
     #[arg(long, default_value = DEFAULT_BASE_URL)]
@@ -187,6 +193,9 @@ pub fn run_with_formal_ai(args: &WithFormalAiArgs) -> Result<(), Box<dyn Error>>
 
     if args.all {
         return Err("--all is only valid with --global or --undo".into());
+    }
+    if args.verify {
+        return Err("--verify is only valid with --global".into());
     }
     let tool = args
         .tool

@@ -1,4 +1,24 @@
 meanings
+  external_benchmark_parquet_module_unavailable
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark parquet module unavailable"
+  external_benchmark_parquet_start_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark parquet start error"
+  external_benchmark_parquet_utf8_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark parquet utf8 error"
+  external_benchmark_provenance
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark provenance"
   external_benchmark_provenance_write_error
     defined-by intent
     lexeme en
@@ -1374,23 +1394,3 @@ meanings
     lexeme en
       surface
         text "missing english label todo"
-  missing_russian_label_todo
-    defined-by concept
-    lexeme en
-      surface
-        text "missing russian label todo"
-  mkdir
-    defined-by concept
-    lexeme en
-      surface
-        text "mkdir"
-  mode
-    defined-by concept
-    lexeme en
-      surface
-        text "mode"
-  move
-    defined-by word_surface
-    lexeme en
-      surface
-        text "move"
