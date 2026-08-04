@@ -49,9 +49,22 @@ impl CallerArgs {
         // the client — and survive a retry — as options rather than as request
         // text, even though nothing here knows their arity.
         let mut in_unknown_flag_values = false;
+        // How many bare tokens the current run has swallowed, so a run that
+        // reaches the end of the argv can give its last token back as the
+        // prompt — `codex -c key=value <prompt>` states the request that way.
+        let mut unknown_flag_values = 0usize;
         let mut index = 0;
         while index < user_args.len() {
             let argument = &user_args[index];
+            if argument == "--" {
+                // The caller ended their flags explicitly, so everything left is
+                // the request, whatever it looks like.
+                for rest in &user_args[index + 1..] {
+                    parsed.push_text(rest);
+                }
+                in_unknown_flag_values = false;
+                break;
+            }
             if let Some((flag, value)) = argument.split_once('=') {
                 if prompt_flags.contains(flag) {
                     parsed.set_prompt(value);
@@ -80,6 +93,7 @@ impl CallerArgs {
                 parsed.push_option(argument);
                 index += 1;
                 in_unknown_flag_values = !argument.contains('=');
+                unknown_flag_values = 0;
                 if in_unknown_flag_values && value_flags.contains(argument.as_str()) {
                     if let Some(value) = user_args.get(index) {
                         parsed.push_option(value);
@@ -89,17 +103,43 @@ impl CallerArgs {
                 }
                 continue;
             }
-            let is_last = index + 1 == user_args.len();
             if in_unknown_flag_values {
                 parsed.push_option(argument);
-            } else if parsed.prompt.is_none() && is_last {
-                parsed.prompt = Some(argument.clone());
+                unknown_flag_values += 1;
             } else {
                 parsed.push_text(argument);
             }
             index += 1;
         }
+        if parsed.prompt.is_none() {
+            // Bare tokens that belong to no flag are the request itself,
+            // wherever the caller put them: `<prompt> --file alpha.txt` states
+            // the same request as `--file alpha.txt <prompt>`, and both have to
+            // reach a client whose prompt flag takes it as a value.
+            parsed.take_text_as_prompt();
+        }
+        if parsed.prompt.is_none() && in_unknown_flag_values && unknown_flag_values > 1 {
+            // An unknown flag takes one value; a run that swallowed more and
+            // then ran out of argv ends with the request itself.
+            parsed.prompt = parsed.options.pop().map(|option| option.value);
+        }
         parsed
+    }
+
+    /// Move the unattributed text out of the forwarded options and into the
+    /// prompt, so it is rendered once, in the target client's own vocabulary.
+    fn take_text_as_prompt(&mut self) {
+        let text = self
+            .options
+            .iter()
+            .filter(|option| option.text)
+            .map(|option| option.value.clone())
+            .collect::<Vec<_>>();
+        if text.is_empty() {
+            return;
+        }
+        self.options.retain(|option| !option.text);
+        self.prompt = Some(text.join(" "));
     }
 
     fn push_option(&mut self, value: &str) {

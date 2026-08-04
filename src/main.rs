@@ -11,6 +11,7 @@ mod cli_benchmark;
 mod cli_clients;
 mod cli_computer_use;
 mod cli_context;
+mod cli_environments;
 mod cli_file_legality;
 mod cli_import;
 mod cli_improve;
@@ -27,6 +28,7 @@ use cli_benchmark::{run_benchmark, BenchmarkAction};
 use cli_clients::{run_clients, ClientsAction, ClientsFormat};
 use cli_computer_use::{run_computer_use, ComputerUseArgs};
 use cli_context::{run_context, ContextArgs};
+use cli_environments::run_environments;
 use cli_file_legality::{run_file_legality, FileLegalityArgs};
 use cli_import::{run_import, ImportAction};
 use cli_improve::{run_improve, ImproveArgs};
@@ -41,8 +43,8 @@ use formal_ai::agentic_coding::run_agentic_task;
 use formal_ai::{
     agent_info, collect_github_logs, create_chat_completion_with_solver,
     create_response_with_solver, delimit_tool_args, enable_http_agent_mode_for_current_process,
-    environment_records, export_memory_bundle, import_memory_full, knowledge_links_notation,
-    merged_bundle, naturalize_thinking_step, parse_bundle, render_github_log_plan, run_proxy,
+    export_memory_bundle, import_memory_full, knowledge_links_notation, merged_bundle,
+    naturalize_thinking_step, parse_bundle, render_github_log_plan, run_proxy,
     run_telegram_polling, run_telegram_webhook_server, run_with_formal_ai, seed_files,
     suggest_memory_migrations, ChatCompletionRequest, ChatMessage, ExecutionSurface,
     GithubLogCollectorConfig, MemoryStore, ProxyConfig, ResponsesRequest, SolverConfig,
@@ -932,29 +934,6 @@ fn run_bundle(action: BundleAction) -> Result<(), Box<dyn Error>> {
         }
     }
     Ok(())
-}
-
-fn run_environments() {
-    for record in environment_records() {
-        println!("# {}", record.id);
-        println!("  label: {}", record.label);
-        println!("  runtime: {}", record.runtime);
-        println!("  seed_path: {}", record.seed_path);
-        println!("  memory_store: {}", record.memory_store);
-        println!("  memory_export: {}", record.memory_export_command);
-        println!("  bundle_export: {}", record.bundle_export_command);
-        println!("  bundle_import: {}", record.bundle_import_command);
-        if !record.start_command.is_empty() {
-            println!("  start: {}", record.start_command);
-        }
-        if !record.package_command.is_empty() {
-            println!("  package: {}", record.package_command);
-        }
-        if !record.tools.is_empty() {
-            println!("  tools: {}", record.tools.join(", "));
-        }
-        println!();
-    }
 }
 
 pub(crate) fn read_input(path: &std::path::Path) -> Result<String, Box<dyn Error>> {

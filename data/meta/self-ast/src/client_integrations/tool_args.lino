@@ -1,0 +1,12 @@
+self_ast_census
+  target src/client_integrations/tool_args.rs
+  language rust
+  fidelity signature
+  byte_len 4593
+  line_count 118
+  content_id source_module_2a74b49ca941e970
+  symbol_count 3
+  symbols
+    function delimit_tool_args 20 60
+    function flag_token_length 68 100
+    function value_args 103 118
