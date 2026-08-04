@@ -367,6 +367,19 @@ meanings
         text "हल करो"
       surface
         text "गणना करें"
+    lexeme es
+      surface
+        text "resuelve la ecuación"
+      surface
+        text "resolver la ecuación"
+      surface
+        text "cuánto es"
+      surface
+        text resuelve
+      surface
+        text calcular
+      surface
+        text calcula
   politeness
     grounded-in Q281287
     defined-by property

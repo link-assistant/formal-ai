@@ -27,7 +27,7 @@ source provenance for download-on-test integration. Only permissive licenses
 | Search-fusion learning generalization | #709 | [`search-fusion-learning-generalization.lino`](../data/benchmarks/search-fusion-learning-generalization.lino) | `approved_recipe_round_trips_and_executes_a_held_out_task` | 1 |
 | Multilingual local-path discovery | #819 | [`local-path-discovery-suite.lino`](../data/benchmarks/local-path-discovery-suite.lino) | `local_path_discovery_benchmark_routes_every_case_to_find` | 56 |
 | Workspace-change learning generalization | #848 | [`workspace-change-learning-generalization.lino`](../data/benchmarks/workspace-change-learning-generalization.lino) | `only_a_green_named_review_promotes_and_replays_the_held_out_rewrite` | 1 |
-| Equation-type corpus | #891 (from #406) | [`equation-type-corpus.lino`](../data/benchmarks/equation-type-corpus.lino) | `issue_891_equation_corpus_solves_every_type` | 67 (and ≥50 distinct verified types) |
+| Equation-type corpus | #891 (from #406) | [`equation-type-corpus.lino`](../data/benchmarks/equation-type-corpus.lino) | `issue_891_equation_corpus_solves_every_type` | 72 (and ≥50 distinct verified types) |
 
 Related earlier work: issue **#103** introduced the competitor-derived prompt
 matrix in [`tests/unit/specification/prompt_variations.rs`](../tests/unit/specification/prompt_variations.rs)
@@ -120,7 +120,7 @@ are attribution for the task design, not for vendored data.
 
 ### Equation-type corpus — issue #891 (requirement from #406)
 
-Sixty-seven self-authored equation types, each replayed through the production
+Seventy-two self-authored equation types, each replayed through the production
 entry point (`FormalAiEngine::answer`) and each carrying the **exact answer the
 engine produced** — the expectations are observed, never hand-written
 (`cargo run --example issue_891_equation_probe`). The ratchet fails below 50
@@ -135,7 +135,7 @@ No third-party benchmark payload is imported.
 | `placeholder_unknown` | 8 | `?` and `*` placeholders standing in for the unknown, spaced and unspaced |
 | `symbolic_multi_variable` | 7 | isolation with a symbolic right-hand side (`2 * x + 3 * y = 12` → `x = 6 - 1.5*y`) |
 | `polynomial` | 14 | degree 2–5 with rational roots, double roots, pure powers, placeholder squares |
-| `natural_language_wrapper` | 13 | equation-solving cues in all four supported languages (en/ru/zh/hi) |
+| `natural_language_wrapper` | 18 | equation-solving cues in every registered language (en/ru/zh/hi/es) |
 | `evaluation_and_percent` | 3 | `2*2+2=?`, trailing `?`, `8% of x = 4` |
 
 Recorded upstream / stack limitations (`benchmark_limitation` records — asserted

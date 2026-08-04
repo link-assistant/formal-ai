@@ -75,3 +75,8 @@ x*2 = 123 ?	calculation	link-calculator	x*2 = 123 => x = 61.5
 Solve 8% of x = 4	calculation	link-calculator	8% of x = 4 => x = 50
 Solve x kg = 1000 g	calculation_error	-	I parsed 'x kg = 1000 g' as an arithmetic request but could not evaluate it: expression could not be parsed.
 Solve 2 * x = 10 kg	calculation_error	-	I parsed '2 * x = 10 kg' as an arithmetic request but could not evaluate it: expression could not be parsed.
+Resuelve la ecuación x + 2 = 5	calculation	link-calculator	x + 2 = 5 => x = 3
+Resolver la ecuación 3 * x = 12	calculation	link-calculator	3 * x = 12 => x = 4
+Calcula 2 + 2	calculation	link-calculator	2 + 2 = 4
+Cuánto es 7 * 6	calculation	link-calculator	7 * 6 = 42
+Resuelve x^2 - 5 * x + 6 = 0	calculation	link-calculator	x^2 - 5 * x + 6 = 0 => x = 2 or x = 3

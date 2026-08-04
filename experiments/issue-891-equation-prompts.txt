@@ -86,3 +86,10 @@ x*2 = 123 ?
 Solve 8% of x = 4
 Solve x kg = 1000 g
 Solve 2 * x = 10 kg
+
+# spanish wrappers
+Resuelve la ecuación x + 2 = 5
+Resolver la ecuación 3 * x = 12
+Calcula 2 + 2
+Cuánto es 7 * 6
+Resuelve x^2 - 5 * x + 6 = 0

@@ -1,13 +1,12 @@
    Compiling formal-ai v0.326.3 (/tmp/gh-issue-solver-1785873758603)
-    Finished `test` profile [unoptimized] target(s) in 1m 51s
+    Finished `test` profile [unoptimized] target(s) in 2m 48s
      Running tests/unit/mod.rs (target/debug/deps/unit-3f2e626b76aff2de)
 
 running 3 tests
 test specification::equation_corpus::issue_891_equation_corpus_is_well_formed ... ok
-test specification::equation_corpus::issue_891_recorded_limitations_never_fabricate_answers ... ok
-issue #891 equation-type corpus: passed=67 failed=0 total=67 verified_types=67 minimum_pass_count=67 minimum_verified_types=50
+test docs_requirements_issue_891::issue_891_equation_corpus_documents_are_traceable ... ok
+issue #891 equation-type corpus: passed=72 failed=0 total=72 verified_types=72 minimum_pass_count=72 minimum_verified_types=50
 test specification::equation_corpus::issue_891_equation_corpus_solves_every_type ... ok
 
-test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 2500 filtered out; finished in 25.23s
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 2505 filtered out; finished in 26.30s
 
-EXIT=0

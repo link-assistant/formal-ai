@@ -30,6 +30,7 @@ use std::collections::BTreeSet;
 use std::fs;
 use std::path::Path;
 
+use formal_ai::language::registered_languages;
 use formal_ai::FormalAiEngine;
 
 const FIXTURE: &str = "data/benchmarks/equation-type-corpus.lino";
@@ -246,6 +247,9 @@ fn issue_891_equation_corpus_is_well_formed() {
         "the recorded category coverage must stay complete",
     );
 
+    // The language coverage is read from the registry rather than spelled out,
+    // so registering a new language (English, Russian, Hindi, Chinese, Spanish
+    // today) fails this test until the corpus gains an equation wrapper for it.
     let languages = suite
         .cases
         .iter()
@@ -253,11 +257,11 @@ fn issue_891_equation_corpus_is_well_formed() {
         .collect::<BTreeSet<_>>();
     assert_eq!(
         languages,
-        ["en", "hi", "ru", "zh"]
+        registered_languages()
             .into_iter()
-            .map(str::to_owned)
+            .map(|language| language.slug().to_owned())
             .collect::<BTreeSet<_>>(),
-        "all four supported languages must be exercised",
+        "every registered language must be exercised by an equation wrapper",
     );
 
     for case in &suite.cases {

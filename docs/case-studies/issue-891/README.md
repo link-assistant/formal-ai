@@ -21,7 +21,7 @@ nothing defined the corpus in machine-readable form and nothing counted it.
   `prompt / intent / engine / answer`. This is the evidence every expected
   answer in the corpus is derived from; nothing was hand-written.
 - **Ratchet run**: [`raw-data/ratchet-run.log`](raw-data/ratchet-run.log) —
-  `passed=67 failed=0 total=67 verified_types=67 minimum_pass_count=67
+  `passed=72 failed=0 total=72 verified_types=72 minimum_pass_count=72
   minimum_verified_types=50`.
 
 ## 2. Requirements
@@ -42,7 +42,8 @@ placeholder, symbolic and rational-root polynomial equations — but it was
    as long as the specific asserted prompts still worked.
 3. Equation-solving request cues were missing from the seed. `Solve 2 * x = 10`
    worked (the bare `solve` cue), but `Solve the equation …`,
-   `Реши уравнение …`, `解方程 …` and `समीकरण हल करें …` did not: the wrapper was
+   `Реши уравнение …`, `解方程 …` and `समीकरण हल करें …` did not, and Spanish
+   (registered with `status partial`) had no calculation cues at all: the wrapper was
    left in the expression and the calculator could not parse it. That is a
    *vocabulary* gap in `data/seed/meanings-calculator.lino`, not a code gap.
 
@@ -53,13 +54,15 @@ placeholder, symbolic and rational-root polynomial equations — but it was
   the longer surface wins before the shorter one: `solve the equation` /
   `solve equation` (en), `реши уравнение` / `решите уравнение` / `реши` /
   `решите` (ru), `解方程` / `求解` (zh), `समीकरण हल करें` / `समीकरण हल करो` /
-  `हल करें` / `हल करो` (hi). Because the cues are seed data, the Rust engine
+  `हल करें` / `हल करो` (hi), plus a first `calculation_request` lexeme for
+  Spanish — `resuelve la ecuación` / `resolver la ecuación` / `cuánto es` /
+  `resuelve` / `calcular` / `calcula` (es), which had none at all before. Because the cues are seed data, the Rust engine
   (`calculation_request_prefixes()`) and the JavaScript worker
   (`src/web/seed_loader.js`) pick them up from the same source — no production
   code carries a hardcoded phrase.
 - **Corpus** — [`data/benchmarks/equation-type-corpus.lino`](../../../data/benchmarks/equation-type-corpus.lino):
-  67 `benchmark_case` records (one per distinct `equation_type`) plus 10
-  `benchmark_limitation` records, with `minimum_pass_count "67"` and
+  72 `benchmark_case` records (one per distinct `equation_type`) plus 10
+  `benchmark_limitation` records, with `minimum_pass_count "72"` and
   `minimum_verified_types "50"`.
 - **Ratchet** — [`tests/unit/specification/equation_corpus.rs`](../../../tests/unit/specification/equation_corpus.rs):
   well-formedness, a full replay of every case through the production entry
@@ -88,8 +91,8 @@ cargo test --test unit issue_891_equation_corpus -- --nocapture
 ```
 
 ```text
-issue #891 equation-type corpus: passed=67 failed=0 total=67 verified_types=67 \
-  minimum_pass_count=67 minimum_verified_types=50
+issue #891 equation-type corpus: passed=72 failed=0 total=72 verified_types=72 \
+  minimum_pass_count=72 minimum_verified_types=50
 ```
 
 ### Category coverage
@@ -101,12 +104,14 @@ issue #891 equation-type corpus: passed=67 failed=0 total=67 verified_types=67 \
 | `placeholder_unknown` | 8 | `?+2=4`, `2 * ? + 3 = 11`, `* / 4 = 3` |
 | `symbolic_multi_variable` | 7 | `2 * x + 3 * y = 12` → `x = 6 - 1.5*y`, `x + y + z = 6` |
 | `polynomial` | 14 | `x^2 - 5 * x + 6 = 0`, `x^3 - 6 * x^2 + 11 * x - 6 = 0`, `x^5 - x^3 = 0` |
-| `natural_language_wrapper` | 13 | en/ru/zh/hi cues over the same equations |
+| `natural_language_wrapper` | 18 | en/ru/zh/hi/es cues over the same equations |
 | `evaluation_and_percent` | 3 | `2*2+2=?`, `x*2 = 123 ?`, `8% of x = 4` |
-| **Total** | **67** | floor: 50 |
+| **Total** | **72** | floor: 50 |
 
-Language coverage across the corpus: 56 `en`, 4 `ru`, 4 `hi`, 3 `zh` cases; the
-well-formedness test asserts all four supported languages stay represented.
+Language coverage across the corpus: 56 `en`, 5 `es`, 4 `ru`, 4 `hi`, 3 `zh`
+cases. The well-formedness test reads the expected set from
+`formal_ai::language::registered_languages()`, so registering a new language
+fails the test until the corpus gains an equation wrapper for it.
 
 ### Upstream calculator limitations
 

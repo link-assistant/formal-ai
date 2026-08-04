@@ -95,6 +95,11 @@ CASES = [
     ("wrapper_hi_solve_equation_familiar", "natural_language_wrapper", "hi", "समीकरण हल करो x / 3 = 9", "Hindi familiar `समीकरण हल करो` cue"),
     ("wrapper_hi_solve_bare", "natural_language_wrapper", "hi", "हल करें x + 9 = 15", "Hindi bare `हल करें` cue"),
     ("wrapper_hi_trailing_question", "natural_language_wrapper", "hi", "x + 9 = 15 कितना है?", "Hindi trailing `कितना है` question"),
+    ("wrapper_es_solve_the_equation", "natural_language_wrapper", "es", "Resuelve la ecuación x + 2 = 5", "Spanish `resuelve la ecuación` cue"),
+    ("wrapper_es_solve_the_equation_infinitive", "natural_language_wrapper", "es", "Resolver la ecuación 3 * x = 12", "Spanish infinitive `resolver la ecuación` cue"),
+    ("wrapper_es_solve_bare", "natural_language_wrapper", "es", "Resuelve x^2 - 5 * x + 6 = 0", "Spanish bare `resuelve` cue on a quadratic"),
+    ("wrapper_es_calculate", "natural_language_wrapper", "es", "Calcula 2 + 2", "Spanish `calcula` cue"),
+    ("wrapper_es_how_much_is", "natural_language_wrapper", "es", "Cuánto es 7 * 6", "Spanish `cuánto es` question opener"),
     # --- evaluation and percent flavours -------------------------------------
     ("evaluation_placeholder_result", "evaluation_and_percent", "en", "2*2+2=?", "placeholder stands for the result, not the unknown"),
     ("evaluation_trailing_question_mark", "evaluation_and_percent", "en", "x*2 = 123 ?", "trailing question mark after an equation"),
