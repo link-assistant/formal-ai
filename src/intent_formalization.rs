@@ -602,28 +602,50 @@ fn requested_write_program_parameters(
     if crate::agentic_coding::general_planner::has_file_write_intent(&raw.to_lowercase()) {
         return None;
     }
+    // The same reading, applied to quoted operands: "Replace \"Hello World\"
+    // with \"Bye world\"" edits text, and the task alias table matches only
+    // because the words being edited happen to read "hello world". The test is
+    // whether the request still names the task once the quotes are removed:
+    // "Write hello world in JavaScript and replace `Hello World` with `Bye JS`"
+    // does, and so it is still a request to write a program.
+    let quotes_carry_the_task = !asks_for_program(normalized)
+        && crate::solver_handlers::names_a_quoted_replacement(raw)
+        && {
+            let outside = crate::engine::normalize_prompt(
+                &crate::solver_handlers::text_outside_quoted_segments(raw),
+            );
+            crate::coding::program_task_by_alias(&outside).is_none()
+        };
+    if quotes_carry_the_task {
+        return None;
+    }
     write_program_parameters(normalized)
+}
+
+/// Does the request name a program *as its artefact*?
+///
+/// Issue #386: "write a &lt;program&gt;" is recognised by *meaning*, not a hardcoded
+/// per-language word list. The prompt asks for a program when it evidences a
+/// `program_kind` meaning (the artefact: program / script / code / function /
+/// class) *and* a `program_request` meaning (the verb: write / create / show /
+/// generate / make / build). The surface words for every language live once, in
+/// `data/seed/meanings.lino`; this code understands the concepts.
+fn asks_for_program(normalized: &str) -> bool {
+    let lexicon = crate::seed::lexicon();
+    lexicon.mentions_role(crate::seed::ROLE_PROGRAM_KIND, normalized)
+        && lexicon.mentions_role(crate::seed::ROLE_PROGRAM_REQUEST, normalized)
 }
 
 /// The `write_program` parameters — task and language — that `normalized` names.
 fn write_program_parameters(normalized: &str) -> Option<BTreeMap<String, String>> {
     let task = crate::coding::program_task_by_alias(normalized);
     let language = requested_program_language(normalized);
-    // Issue #386: "write a <program>" is recognised by *meaning*, not a hardcoded
-    // per-language word list. The prompt asks for a program when it evidences a
-    // `program_kind` meaning (the artefact: program / script / code / function /
-    // class) *and* a `program_request` meaning (the verb: write / create / show /
-    // generate / make / build). The surface words for every language live once,
-    // in `data/seed/meanings.lino`; this code understands the concepts.
-    let lexicon = crate::seed::lexicon();
     let mentions_program_request =
-        lexicon.mentions_role(crate::seed::ROLE_PROGRAM_REQUEST, normalized);
-    let asks_for_program = lexicon.mentions_role(crate::seed::ROLE_PROGRAM_KIND, normalized)
-        && mentions_program_request;
+        crate::seed::lexicon().mentions_role(crate::seed::ROLE_PROGRAM_REQUEST, normalized);
     let asks_for_known_language_program = language
         .as_deref()
         .is_some_and(|language| mentions_program_request && known_write_program_language(language));
-    if task.is_none() && !asks_for_program && !asks_for_known_language_program {
+    if task.is_none() && !asks_for_program(normalized) && !asks_for_known_language_program {
         return None;
     }
     let mut parameters = BTreeMap::new();

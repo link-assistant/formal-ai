@@ -2,10 +2,10 @@ self_ast_census
   target src/intent_formalization.rs
   language rust
   fidelity signature
-  byte_len 37913
-  line_count 979
-  content_id source_module_45827e41424efb87
-  symbol_count 53
+  byte_len 38943
+  line_count 1001
+  content_id source_module_ee8c88afdd721043
+  symbol_count 54
   symbols
     module requirements 27 27
     enum IntentKind 31 38
@@ -40,23 +40,24 @@ self_ast_census
     function operation_vocabulary 560 563
     static VOCABULARY 561 561
     function detected_program_modifiers 572 579
-    function requested_write_program_parameters 598 606
-    function write_program_parameters 609 642
-    function known_write_program_language 644 646
-    function requested_program_language 655 657
-    function append_candidate_knowns 659 677
-    function slot_known_link 679 704
-    function append_prompt_relevants 706 823
-    function looks_like_single_concept_lookup 825 832
-    function looks_arithmetic 834 844
-    function looks_like_latest_news_search 846 851
-    function looks_like_records_information_search 857 862
-    function looks_like_program_synthesis 864 877
-    function looks_like_text_manipulation 879 883
-    function has_any_token 885 887
-    function contains_term_for_relevants 891 896
-    function route_from_relevants 898 907
-    function infer_kind 909 952
-    function starts_with_question_word 954 969
-    function contains_question_mark 971 973
-    function push_unique 975 979
+    function requested_write_program_parameters 598 623
+    function asks_for_program 633 637
+    function write_program_parameters 640 664
+    function known_write_program_language 666 668
+    function requested_program_language 677 679
+    function append_candidate_knowns 681 699
+    function slot_known_link 701 726
+    function append_prompt_relevants 728 845
+    function looks_like_single_concept_lookup 847 854
+    function looks_arithmetic 856 866
+    function looks_like_latest_news_search 868 873
+    function looks_like_records_information_search 879 884
+    function looks_like_program_synthesis 886 899
+    function looks_like_text_manipulation 901 905
+    function has_any_token 907 909
+    function contains_term_for_relevants 913 918
+    function route_from_relevants 920 929
+    function infer_kind 931 974
+    function starts_with_question_word 976 991
+    function contains_question_mark 993 995
+    function push_unique 997 1001
