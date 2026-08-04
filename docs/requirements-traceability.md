@@ -726,4 +726,10 @@ disambiguated below by its REQUIREMENTS.md line number.
 | R914-13 | 1709 | pre-2026-07 (undated); issue #914 | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_914.rs | not yet confirmed |
 | R914-14 | 1710 | pre-2026-07 (undated); issue #914 | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_914.rs | not yet confirmed |
 | R914-15 | 1711 | pre-2026-07 (undated); issue #914 | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_914.rs | not yet confirmed |
-| R536 | 1720 | doctrine adopted 2026-08-04 | none yet — enforcement tracked in #934/#951/#952/#953 | n/a |
+| R909-1 | 1723 | delivered 2026-08-04; issue #909 | tests/integration/with_formal_ai_headless_global.rs:45 | manually confirmed 2026-08-04: `formal-ai with --global gemini` into a throwaway HOME wrote `.gemini/settings.json` with `security.auth.selectedType`, `--undo` removed it |
+| R909-2 | 1724 | delivered 2026-08-04; issue #909 | tests/integration/with_formal_ai_headless_global.rs:147 | manually confirmed 2026-08-04: `formal-ai with --global qwen` wrote `OPENAI_API_KEY`, `OPENAI_BASE_URL`, and `OPENAI_MODEL` into `~/.profile` |
+| R909-3 | 1725 | delivered 2026-08-04; issue #909 | tests/integration/with_formal_ai_headless_global.rs:171 | manually confirmed 2026-08-04: `experiments/issue-909-headless-config-gaps.sh` reported every headless requirement present |
+| R909-4 | 1726 | delivered 2026-08-04; issue #909 | tests/unit/docs_requirements_issue_909.rs:13 | not yet confirmed |
+| R909-5 | 1727 | delivered 2026-08-04; issue #909 | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_909.rs | manually confirmed 2026-08-04: script run against the debug binary, exit 0 |
+| R909-6 | 1728 | delivered 2026-08-04; issue #909 | tests/integration/with_formal_ai_headless_global.rs:308 | manually confirmed 2026-08-04: `--global --all --verify` sweep into a throwaway HOME satisfied every registry-declared requirement |
+| R536 | 1737 | doctrine adopted 2026-08-04 | none yet — enforcement tracked in #934/#951/#952/#953 | n/a |

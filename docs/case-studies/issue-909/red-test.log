@@ -1,0 +1,56 @@
+   Compiling formal-ai v0.326.1 (/tmp/gh-issue-solver-1785853624296)
+    Finished `test` profile [unoptimized] target(s) in 1m 03s
+     Running tests/integration/mod.rs (target/debug/deps/integration-733bdc219e2b06e5)
+
+running 7 tests
+test with_formal_ai_headless_global::verify_is_rejected_without_global ... ok
+test with_formal_ai_headless_global::global_gemini_writes_the_settings_file_that_selects_an_auth_type ... FAILED
+test with_formal_ai_headless_global::global_gemini_preserves_and_restores_an_existing_settings_file ... FAILED
+test with_formal_ai_headless_global::global_qwen_writes_the_complete_openai_triple ... FAILED
+test with_formal_ai_headless_global::verify_fails_when_the_configured_client_refuses_to_start ... FAILED
+test with_formal_ai_headless_global::verify_succeeds_when_the_configured_client_starts ... ok
+test with_formal_ai_headless_global::global_all_leaves_every_client_headless_ready_and_probed ... FAILED
+
+failures:
+
+---- with_formal_ai_headless_global::global_gemini_writes_the_settings_file_that_selects_an_auth_type stdout ----
+
+thread 'with_formal_ai_headless_global::global_gemini_writes_the_settings_file_that_selects_an_auth_type' (127276) panicked at tests/integration/with_formal_ai_headless_global.rs:64:69:
+gemini settings: Os { code: 2, kind: NotFound, message: "No such file or directory" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- with_formal_ai_headless_global::global_gemini_preserves_and_restores_an_existing_settings_file stdout ----
+
+thread 'with_formal_ai_headless_global::global_gemini_preserves_and_restores_an_existing_settings_file' (127275) panicked at tests/integration/with_formal_ai_headless_global.rs:116:5:
+assertion `left == right` failed
+  left: None
+ right: Some("gemini-api-key")
+
+---- with_formal_ai_headless_global::global_qwen_writes_the_complete_openai_triple stdout ----
+
+thread 'with_formal_ai_headless_global::global_qwen_writes_the_complete_openai_triple' (127277) panicked at tests/integration/with_formal_ai_headless_global.rs:147:5:
+assertion failed: profile.contains("export OPENAI_MODEL=\"formal-ai\"")
+
+---- with_formal_ai_headless_global::verify_fails_when_the_configured_client_refuses_to_start stdout ----
+
+thread 'with_formal_ai_headless_global::verify_fails_when_the_configured_client_refuses_to_start' (127278) panicked at tests/integration/with_formal_ai_headless_global.rs:168:5:
+an auth refusal must fail the run, stdout: configured gemini at /tmp/formal-ai-headless-global-127273-5/home/.profile
+gemini started non-interactively with the configuration at /tmp/formal-ai-headless-global-127273-5/home/.profile
+
+
+---- with_formal_ai_headless_global::global_all_leaves_every_client_headless_ready_and_probed stdout ----
+
+thread 'with_formal_ai_headless_global::global_all_leaves_every_client_headless_ready_and_probed' (127274) panicked at tests/integration/with_formal_ai_headless_global.rs:323:5:
+expected the registry to declare the issue #909 startup contract, got 0
+
+
+failures:
+    with_formal_ai_headless_global::global_all_leaves_every_client_headless_ready_and_probed
+    with_formal_ai_headless_global::global_gemini_preserves_and_restores_an_existing_settings_file
+    with_formal_ai_headless_global::global_gemini_writes_the_settings_file_that_selects_an_auth_type
+    with_formal_ai_headless_global::global_qwen_writes_the_complete_openai_triple
+    with_formal_ai_headless_global::verify_fails_when_the_configured_client_refuses_to_start
+
+test result: FAILED. 2 passed; 5 failed; 0 ignored; 0 measured; 306 filtered out; finished in 0.67s
+
+error: test failed, to rerun pass `--test integration`

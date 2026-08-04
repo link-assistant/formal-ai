@@ -1710,6 +1710,23 @@ and opened-issue record live in `docs/case-studies/issue-914/`.
 | R914-14 | Fix critical vision-blocking code problems first, so the plan builds on a solid foundation. | Implemented in the plan: E69 is the foundation blocker consolidating #902-#909 behind the coding-ladder ratchet; every dependent epic declares its E69 dependency. |
 | R914-15 | Collect the data into `docs/case-studies/issue-914` with deep analysis, online research, the full requirement list, and per-requirement solution plans checking existing components. | Implemented: README, requirements, solution plan, proposed issues, raw GitHub data, and the component/license research live in that folder. |
 
+## Issue #909 Headless-Ready Global Client Configuration
+
+Issue [#909](https://github.com/link-assistant/formal-ai/issues/909) reports that
+`formal-ai with <tool> --global` wrote shell exports and nothing else, so gemini
+(`Invalid auth method selected`) and qwen (`No auth type is selected`) still
+refused to start headlessly while `--global` reported success and exited 0. The
+per-run path already wrote both missing pieces; only the global path had drifted.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R909-1 | `--global` must materialise every file the client needs for a headless start, not only shell exports, driven by the client registry. | Implemented by the nested `companion` global-config node in `data/seed/client-integrations.lino` (gemini's `~/.gemini/settings.json` with `security.auth.selectedType`), parsed recursively by `parse_global_config` and written, backed up, and undone through the same machinery as the primary node; guarded by `global_gemini_writes_the_settings_file_that_selects_an_auth_type` and `global_gemini_preserves_and_restores_an_existing_settings_file`. |
+| R909-2 | The OpenAI-compatible clients must receive the complete auth triple, including `OPENAI_MODEL`. | Implemented by `shell_env "OPENAI_MODEL={model}"` in qwen's `global` block; guarded by `global_qwen_writes_the_complete_openai_triple`. |
+| R909-3 | `--global` must not report success when the configuration it just wrote cannot start the client. | Implemented by `src/client_integrations/global_verify.rs`: `verify_written_config` re-reads every seed-declared `headless_require` from the files on disk and fails with `client_global_config_requirement_missing`; the opt-in `--verify` runs `probe_headless_start`, which starts the client once non-interactively and fails on a seeded `auth_refusal`. Guarded by `verify_fails_when_the_configured_client_refuses_to_start`, `verify_succeeds_when_the_configured_client_starts`, `verify_is_rejected_without_global`, and the unit tests in `global_verify.rs`. |
+| R909-4 | The headless contract must be declared as data, apart from the settings that write it, so verification reads back the result instead of trusting the writer. | Implemented by the `headless_require "<kind>=<target>"` and `auth_refusal "<text>"` seed entries and their `ClientIntegrationGlobalConfig::headless_requirements` / `ClientVerification::auth_refusals` fields; `issue_909_headless_global_configuration_is_traceable` guards the registry shape. |
+| R909-5 | The gap and its closure must be reproducible without a live client. | Implemented by `experiments/issue-909-headless-config-gaps.sh`, which runs `--global` into a throwaway `HOME` and reports every missing headless requirement per tool. |
+| R909-6 | The composition of R909-1..R909-4 must break the build, not only each requirement in isolation. | Guarded by the whole-task test `global_all_leaves_every_client_headless_ready_and_probed`: one `--global --all --verify` sweep must satisfy every requirement the registry declares, read back from the files on disk, and the same sweep must fail when a probed client answers with an auth refusal. |
+
 ## Standing Doctrine: Compiled Logic, Interfacing-Only JavaScript (2026-08-04)
 
 Stated by the project owner as a standing architectural requirement; it

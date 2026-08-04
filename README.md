@@ -405,6 +405,7 @@ with-formal-ai -g grok
 with-formal-ai -g aider
 with-formal-ai -g --all
 with-formal-ai -g --undo codex
+with-formal-ai -g --verify gemini
 ```
 
 Persistent targets are `~/.codex/config.toml`,
@@ -413,6 +414,20 @@ Persistent targets are `~/.codex/config.toml`,
 `~/.config/link-assistant-agent/opencode.json`, and a managed block in
 `~/.profile` for environment-configured clients, plus `~/.cursor/mcp.json` for
 Cursor. Re-running `-g` is idempotent.
+
+Some clients need more than exports before they will start headlessly, so `-g`
+writes those files too: gemini also gets `~/.gemini/settings.json` with
+`security.auth.selectedType`, because gemini-cli treats an auth type as
+*selected* only when a settings file says so, and qwen gets `OPENAI_MODEL`
+alongside `OPENAI_API_KEY` and `OPENAI_BASE_URL`, because its OpenAI-compatible
+auth path keys on the complete triple. Each of these companion files is backed
+up and restored by `--undo` like every other target.
+
+After writing, `-g` re-reads the files and fails if a piece the client needs for
+a headless start is missing. Add `--verify` to go further and start the client
+once non-interactively; the run fails when the client answers with an auth
+refusal instead of reporting success. `--verify` is skipped for clients that are
+not installed.
 
 ### Permission-gated multi-agent orchestration
 

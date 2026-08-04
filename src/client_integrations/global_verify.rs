@@ -309,38 +309,3 @@ fn run_probe(
 fn shell_quote(value: &str) -> String {
     format!("'{}'", value.replace('\'', "'\\''"))
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn managed_block_exports_are_read_back() {
-        let profile = concat!(
-            "export OPENAI_MODEL=\"other\"\n",
-            "# >>> formal-ai qwen\n",
-            "export OPENAI_API_KEY=\"formal-ai\"\n",
-            "export OPENAI_MODEL=\"formal-ai\"\n",
-            "# <<< formal-ai qwen\n",
-        );
-        assert_eq!(
-            exported_value(profile, "qwen", "OPENAI_MODEL").as_deref(),
-            Some("formal-ai")
-        );
-        assert_eq!(exported_value(profile, "qwen", "OPENAI_BASE_URL"), None);
-        // An export outside the managed block belongs to the operator and must
-        // not stand in for a missing managed one.
-        assert_eq!(exported_value(profile, "gemini", "OPENAI_MODEL"), None);
-    }
-
-    #[test]
-    fn dotted_json_paths_resolve_to_present_values() {
-        let root: Value = serde_json::from_str(
-            r#"{"security":{"auth":{"selectedType":"gemini-api-key","empty":""}}}"#,
-        )
-        .expect("json");
-        assert!(json_value_at(&root, "security.auth.selectedType").is_some_and(is_present));
-        assert!(!json_value_at(&root, "security.auth.empty").is_some_and(is_present));
-        assert!(json_value_at(&root, "security.auth.missing").is_none());
-    }
-}

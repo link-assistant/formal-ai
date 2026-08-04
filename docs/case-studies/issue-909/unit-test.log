@@ -1,0 +1,9 @@
+   Compiling formal-ai v0.326.1 (/tmp/gh-issue-solver-1785853624296)
+    Finished `test` profile [unoptimized] target(s) in 1m 27s
+     Running tests/unit/mod.rs (target/debug/deps/unit-3a87ac1aecc11b73)
+
+running 1 test
+test docs_requirements_issue_909::issue_909_headless_global_configuration_is_traceable ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2485 filtered out; finished in 0.03s
+
