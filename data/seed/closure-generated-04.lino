@@ -1174,6 +1174,11 @@ meanings
     lexeme en
       surface
         text "response client global config auth refusal en"
+  response_client_global_config_auth_refusal_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config auth refusal es"
   response_client_global_config_auth_refusal_hi
     defined-by response_template
     lexeme en
@@ -1194,6 +1199,11 @@ meanings
     lexeme en
       surface
         text "response client global config probe skipped en"
+  response_client_global_config_probe_skipped_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config probe skipped es"
   response_client_global_config_probe_skipped_hi
     defined-by response_template
     lexeme en
@@ -1214,6 +1224,11 @@ meanings
     lexeme en
       surface
         text "response client global config probe started en"
+  response_client_global_config_probe_started_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config probe started es"
   response_client_global_config_probe_started_hi
     defined-by response_template
     lexeme en
@@ -1234,6 +1249,11 @@ meanings
     lexeme en
       surface
         text "response client global config requirement missing en"
+  response_client_global_config_requirement_missing_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config requirement missing es"
   response_client_global_config_requirement_missing_hi
     defined-by response_template
     lexeme en
@@ -1374,23 +1394,3 @@ meanings
     lexeme en
       surface
         text "response coding workspace written unverified zh"
-  response_comparison_decomposed_evidence_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response comparison decomposed evidence en"
-  response_comparison_decomposed_evidence_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response comparison decomposed evidence hi"
-  response_comparison_decomposed_evidence_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response comparison decomposed evidence ru"
-  response_comparison_decomposed_evidence_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response comparison decomposed evidence zh"

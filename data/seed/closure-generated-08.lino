@@ -1,4 +1,24 @@
 meanings
+  sudo
+    defined-by token
+    lexeme en
+      surface
+        text "sudo"
+  sum_to_ten
+    defined-by task
+    lexeme en
+      surface
+        text "sum to ten"
+  summarization_disputed_statement
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization disputed statement"
+  summarization_evidence_denied
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization evidence denied"
   summarization_evidence_summary
     defined-by intent
     lexeme en

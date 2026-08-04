@@ -1,4 +1,24 @@
 meanings
+  response_shared_dialog_capture_unsupported_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response shared dialog capture unsupported en"
+  response_shared_dialog_capture_unsupported_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response shared dialog capture unsupported hi"
+  response_shared_dialog_capture_unsupported_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response shared dialog capture unsupported ru"
+  response_shared_dialog_capture_unsupported_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response shared dialog capture unsupported zh"
   response_skill_gap_en
     defined-by response_template
     lexeme en
@@ -1374,23 +1394,3 @@ meanings
     lexeme en
       surface
         text "substitute"
-  sudo
-    defined-by token
-    lexeme en
-      surface
-        text "sudo"
-  sum_to_ten
-    defined-by task
-    lexeme en
-      surface
-        text "sum to ten"
-  summarization_disputed_statement
-    defined-by intent
-    lexeme en
-      surface
-        text "summarization disputed statement"
-  summarization_evidence_denied
-    defined-by intent
-    lexeme en
-      surface
-        text "summarization evidence denied"

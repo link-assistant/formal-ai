@@ -15,6 +15,10 @@ multilingual_responses
     intent client_global_config_requirement_missing
     language zh
     text "{tool} 已在 {path} 配置，但缺少 {requirement}，因此客户端无法以无界面模式启动"
+  response response_client_global_config_requirement_missing_es
+    intent client_global_config_requirement_missing
+    language es
+    text "{tool} está configurado en {path}, pero falta {requirement}, por lo que el cliente no puede iniciarse sin interfaz"
   response response_client_global_config_auth_refusal_en
     intent client_global_config_auth_refusal
     language en
@@ -31,6 +35,10 @@ multilingual_responses
     intent client_global_config_auth_refusal
     language zh
     text "配置后 {tool} 拒绝启动：{output}"
+  response response_client_global_config_auth_refusal_es
+    intent client_global_config_auth_refusal
+    language es
+    text "{tool} se negó a iniciarse después de la configuración: {output}"
   response response_client_global_config_probe_started_en
     intent client_global_config_probe_started
     language en
@@ -47,6 +55,10 @@ multilingual_responses
     intent client_global_config_probe_started
     language zh
     text "{tool} 已使用 {path} 中的配置以非交互方式启动"
+  response response_client_global_config_probe_started_es
+    intent client_global_config_probe_started
+    language es
+    text "{tool} se inició de forma no interactiva con la configuración en {path}"
   response response_client_global_config_probe_skipped_en
     intent client_global_config_probe_skipped
     language en
@@ -63,3 +75,7 @@ multilingual_responses
     intent client_global_config_probe_skipped
     language zh
     text "已跳过 {tool} 的启动探测：{command} 不是已安装的命令行客户端"
+  response response_client_global_config_probe_skipped_es
+    intent client_global_config_probe_skipped
+    language es
+    text "se omitió la comprobación de inicio de {tool}: {command} no es un cliente de línea de comandos instalado"

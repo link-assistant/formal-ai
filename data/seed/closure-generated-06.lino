@@ -1,4 +1,24 @@
 meanings
+  response_lexeme_import_missing_label_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import missing label zh"
+  response_lexeme_import_missing_provenance_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import missing provenance en"
+  response_lexeme_import_missing_provenance_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import missing provenance hi"
+  response_lexeme_import_missing_provenance_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import missing provenance ru"
   response_lexeme_import_missing_provenance_zh
     defined-by response_template
     lexeme en
@@ -1374,23 +1394,3 @@ meanings
     lexeme en
       surface
         text "response shared dialog capture parse failed zh"
-  response_shared_dialog_capture_unsupported_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response shared dialog capture unsupported en"
-  response_shared_dialog_capture_unsupported_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response shared dialog capture unsupported hi"
-  response_shared_dialog_capture_unsupported_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response shared dialog capture unsupported ru"
-  response_shared_dialog_capture_unsupported_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response shared dialog capture unsupported zh"
