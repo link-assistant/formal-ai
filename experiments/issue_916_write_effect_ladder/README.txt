@@ -130,6 +130,10 @@ of the issue #408 ratchet:
   * every rung -- including appended ones -- must be green before the baseline
     may move.
 
+The throwaway sandbox path is redacted to `(sandbox)` in the record, so two runs
+of an unchanged system write byte-identical results.json files and a diff of the
+committed baseline shows a behavior change and nothing else.
+
 .github/workflows/write-effect-ladder.yml runs exactly that on every pull request
 that touches Rust sources, seed data, or this directory, so a regression is
 visible on the pull request that causes it rather than months later in a bug

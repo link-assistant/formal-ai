@@ -20,6 +20,7 @@ from ladder import (  # noqa: E402
     judge,
     observe_effects,
     ratchet_errors,
+    redact,
     shell_envelope,
     validate_rungs,
 )
@@ -196,6 +197,32 @@ class RatchetTests(unittest.TestCase):
         )
         errors = ratchet_errors(baseline, measured)
         self.assertTrue(any("current rung R916-02 is failing" in error for error in errors))
+
+
+class RecordStabilityTests(unittest.TestCase):
+    """The committed record must move only when behavior moves."""
+
+    def test_the_sandbox_path_is_redacted_everywhere_it_appears(self):
+        sandbox = "/tmp/formal-ai-write-effect.AbCdEf"
+        record = {
+            "id": "R916-04",
+            "answer": f"wrote {sandbox}/R916-04/hello.txt",
+            "commands": [f"cat {sandbox}/R916-04/hello.txt"],
+            "exit_codes": [0],
+            "pass": True,
+        }
+        redacted = redact(record, sandbox)
+        self.assertNotIn(sandbox, json.dumps(redacted))
+        self.assertEqual(redacted["answer"], "wrote (sandbox)/R916-04/hello.txt")
+        self.assertEqual(redacted["commands"], ["cat (sandbox)/R916-04/hello.txt"])
+        self.assertEqual(redacted["exit_codes"], [0])
+        self.assertTrue(redacted["pass"])
+
+    def test_two_runs_in_different_sandboxes_record_the_same_thing(self):
+        def record(sandbox):
+            return redact({"answer": f"{sandbox}/R916-01/hello.txt"}, sandbox)
+
+        self.assertEqual(record("/tmp/one"), record("/tmp/two"))
 
 
 if __name__ == "__main__":

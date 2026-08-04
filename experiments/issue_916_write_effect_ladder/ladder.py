@@ -487,6 +487,26 @@ def reason_for(result):
     return ""
 
 
+SANDBOX_PLACEHOLDER = "(sandbox)"
+
+
+def redact(value, sandbox):
+    """Replace the throwaway sandbox root wherever it appears in a record.
+
+    The temporary directory name is the one part of a rung's transcript that no
+    fix can make stable, and it is meaningless outside the run that created it.
+    Redacting it makes results.json move only when behavior moves, which is
+    what a committed baseline is for.
+    """
+    if isinstance(value, str):
+        return value.replace(sandbox, SANDBOX_PLACEHOLDER)
+    if isinstance(value, list):
+        return [redact(item, sandbox) for item in value]
+    if isinstance(value, dict):
+        return {key: redact(item, sandbox) for key, item in value.items()}
+    return value
+
+
 def workspace_for(root, rung_id):
     """Each rung gets its own directory: an absent file must mean absent."""
     workspace = Path(root) / rung_id
@@ -538,7 +558,7 @@ def run(arguments):
             **observation,
             **verdict,
         }
-        results.append(result)
+        results.append(redact(result, str(Path(arguments.sandbox))))
         print(
             f"{'PASS' if result['pass'] else 'FAIL'}  "
             f"{rung['id']:<10} #{rung['issue']}  "
