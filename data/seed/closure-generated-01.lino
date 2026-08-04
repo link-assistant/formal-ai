@@ -259,6 +259,16 @@ meanings
     lexeme en
       surface
         text "agentic report target question"
+  agentic_step_failed
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic step failed"
+  agentic_step_failed_with_exit_code
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic step failed with exit code"
   ai-orchestration
     defined-by category
     lexeme en
@@ -1384,13 +1394,3 @@ meanings
     lexeme en
       surface
         text "external benchmark parquet start error"
-  external_benchmark_parquet_utf8_error
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark parquet utf8 error"
-  external_benchmark_provenance
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark provenance"

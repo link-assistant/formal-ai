@@ -707,6 +707,46 @@ multilingual_responses
     intent general_plan_repository_planned
     language es
     text "Planificado, no ejecutado: {target}.\n\nNo se cambió nada de lo que nombra la solicitud. El único archivo que escribió esta ejecución es su propio registro de plan ({plan_path}), y volver a leer ese registro no probaría nada sobre el trabajo solicitado, así que no se afirmó ninguna verificación. Evento del plan:\n\n{plan}"
+  response response_agentic_step_failed_with_exit_code_en
+    intent agentic_step_failed_with_exit_code
+    language en
+    text "Step `{step}` for `{path}` failed with exit code {code}. The harness ran the command as asked; the command itself reported:\n\n```text\n{report}\n```"
+  response response_agentic_step_failed_with_exit_code_ru
+    intent agentic_step_failed_with_exit_code
+    language ru
+    text "Шаг `{step}` для `{path}` завершился с кодом выхода {code}. Оболочка выполнила команду как было запрошено; сама команда сообщила:\n\n```text\n{report}\n```"
+  response response_agentic_step_failed_with_exit_code_hi
+    intent agentic_step_failed_with_exit_code
+    language hi
+    text "`{path}` के लिए चरण `{step}` एग्ज़िट कोड {code} के साथ विफल रहा। हार्नेस ने कमांड को अनुरोध के अनुसार चलाया; कमांड ने स्वयं बताया:\n\n```text\n{report}\n```"
+  response response_agentic_step_failed_with_exit_code_zh
+    intent agentic_step_failed_with_exit_code
+    language zh
+    text "`{path}` 的步骤 `{step}` 以退出码 {code} 失败。工具按要求执行了该命令；命令本身报告：\n\n```text\n{report}\n```"
+  response response_agentic_step_failed_with_exit_code_es
+    intent agentic_step_failed_with_exit_code
+    language es
+    text "El paso `{step}` para `{path}` falló con código de salida {code}. El arnés ejecutó el comando tal como se pidió; el propio comando informó:\n\n```text\n{report}\n```"
+  response response_agentic_step_failed_en
+    intent agentic_step_failed
+    language en
+    text "Step `{step}` for `{path}` failed. No exit code was reported, so the verdict rests on what the tool said:\n\n```text\n{report}\n```"
+  response response_agentic_step_failed_ru
+    intent agentic_step_failed
+    language ru
+    text "Шаг `{step}` для `{path}` не выполнен. Код выхода не сообщён, поэтому вывод основан на том, что сообщил инструмент:\n\n```text\n{report}\n```"
+  response response_agentic_step_failed_hi
+    intent agentic_step_failed
+    language hi
+    text "`{path}` के लिए चरण `{step}` विफल रहा। कोई एग्ज़िट कोड नहीं बताया गया, इसलिए निर्णय टूल के कथन पर आधारित है:\n\n```text\n{report}\n```"
+  response response_agentic_step_failed_zh
+    intent agentic_step_failed
+    language zh
+    text "`{path}` 的步骤 `{step}` 失败。未报告退出码，因此结论仅基于工具的输出：\n\n```text\n{report}\n```"
+  response response_agentic_step_failed_es
+    intent agentic_step_failed
+    language es
+    text "El paso `{step}` para `{path}` falló. No se informó ningún código de salida, así que el veredicto se basa en lo que dijo la herramienta:\n\n```text\n{report}\n```"
   response response_client_contract_read_observations_error_en
     intent client_contract_read_observations_error
     language en
