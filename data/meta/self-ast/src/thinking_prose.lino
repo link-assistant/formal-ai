@@ -1,0 +1,21 @@
+self_ast_census
+  target src/thinking_prose.rs
+  language rust
+  fidelity signature
+  byte_len 4977
+  line_count 115
+  content_id source_module_c2cc927fd806164f
+  symbol_count 12
+  symbols
+    const STEP_INTENT_PREFIX 24 24
+    const PLAIN_INTENT_SUFFIX 26 26
+    const NARRATIVE_INTENT_PREFIX 28 28
+    const LANGUAGE_NAME_INTENT_PREFIX 30 30
+    const FALLBACK_LANGUAGE 34 34
+    function index 41 50
+    static INDEX 42 42
+    const THINKING_INTENT_PREFIX 54 54
+    function is_thinking_record 56 58
+    function normalize_language 62 69
+    function thinking_prose 78 89
+    function language_label 100 115

@@ -1,4 +1,59 @@
 meanings
+  exact_title
+    defined-by coverage_group
+    lexeme en
+      surface
+        text "exact title"
+  exceeds
+    defined-by word_surface
+    lexeme en
+      surface
+        text "exceeds"
+  expandable
+    defined-by concept
+    lexeme en
+      surface
+        text "expandable"
+  export_memory
+    defined-by name
+    lexeme en
+      surface
+        text "export memory"
+  express
+    defined-by word_surface
+    lexeme en
+      surface
+        text "express"
+  expression-language
+    defined-by category
+    lexeme en
+      surface
+        text "expression language"
+  external_benchmark_baseline_read_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark baseline read error"
+  external_benchmark_failure_observation
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark failure observation"
+  external_benchmark_learning_event
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark learning event"
+  external_benchmark_learning_lesson
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark learning lesson"
+  external_benchmark_learning_task
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark learning task"
   external_benchmark_not_swe_case
     defined-by intent
     lexeme en
@@ -194,6 +249,11 @@ meanings
     lexeme en
       surface
         text "fibonacci"
+  fields
+    defined-by concept
+    lexeme en
+      surface
+        text "fields"
   file_handle
     defined-by concept
     lexeme en
@@ -209,6 +269,11 @@ meanings
     lexeme en
       surface
         text "filesystem"
+  filled
+    defined-by concept
+    lexeme en
+      surface
+        text "filled"
   filtered
     defined-by word_surface
     lexeme en
@@ -394,6 +459,11 @@ meanings
     lexeme en
       surface
         text "heading"
+  headlines
+    defined-by concept
+    lexeme en
+      surface
+        text "headlines"
   hive-mind
     defined-by name
     lexeme en
@@ -424,6 +494,11 @@ meanings
     lexeme en
       surface
         text "http server"
+  human
+    defined-by concept
+    lexeme en
+      surface
+        text "human"
   human-language
     defined-by name
     lexeme en
@@ -454,6 +529,11 @@ meanings
     lexeme en
       surface
         text "indent lines"
+  inside
+    defined-by concept
+    lexeme en
+      surface
+        text "inside"
   integer
     defined-by word_surface
     lexeme en
@@ -1189,6 +1269,16 @@ meanings
     lexeme en
       surface
         text "list week events by topic"
+  literals
+    defined-by concept
+    lexeme en
+      surface
+        text "literals"
+  live
+    defined-by concept
+    lexeme en
+      surface
+        text "live"
   local
     defined-by concept
     lexeme en
@@ -1264,6 +1354,11 @@ meanings
     lexeme en
       surface
         text "local shell"
+  localized
+    defined-by concept
+    lexeme en
+      surface
+        text "localized"
   locate
     defined-by word_surface
     lexeme en
@@ -1299,98 +1394,3 @@ meanings
     lexeme en
       surface
         text "material"
-  material-symbols
-    defined-by concept
-    lexeme en
-      surface
-        text "material symbols"
-  mathematical-logic
-    defined-by category
-    lexeme en
-      surface
-        text "mathematical logic"
-  mathematics
-    defined-by category
-    lexeme en
-      surface
-        text "mathematics"
-  mcp_instructions
-    defined-by intent
-    lexeme en
-      surface
-        text "mcp instructions"
-  mcp_prompt_description
-    defined-by intent
-    lexeme en
-      surface
-        text "mcp prompt description"
-  mcp_tool_description
-    defined-by intent
-    lexeme en
-      surface
-        text "mcp tool description"
-  memory_export_filename
-    defined-by field
-    lexeme en
-      surface
-        text "memory export filename"
-  memory_program_compilation_gap
-    defined-by intent
-    lexeme en
-      surface
-        text "memory program compilation gap"
-  memory_program_complete
-    defined-by intent
-    lexeme en
-      surface
-        text "memory program complete"
-  memory_program_destructive_refused
-    defined-by intent
-    lexeme en
-      surface
-        text "memory program destructive refused"
-  memory_program_interpreter_gap
-    defined-by intent
-    lexeme en
-      surface
-        text "memory program interpreter gap"
-  memory_program_iteration_limit
-    defined-by intent
-    lexeme en
-      surface
-        text "memory program iteration limit"
-  memory_program_match_limit
-    defined-by intent
-    lexeme en
-      surface
-        text "memory program match limit"
-  memory_program_permission_refused
-    defined-by intent
-    lexeme en
-      surface
-        text "memory program permission refused"
-  memory_query_unrecognized
-    defined-by intent
-    lexeme en
-      surface
-        text "memory query unrecognized"
-  memory_root_header
-    defined-by field
-    lexeme en
-      surface
-        text "memory root header"
-  meta-expression
-    defined-by name
-    lexeme en
-      surface
-        text "meta expression"
-  meta-theory
-    defined-by word_surface
-    lexeme en
-      surface
-        text "meta theory"
-  meta_explanation
-    defined-by intent
-    lexeme en
-      surface
-        text "meta explanation"

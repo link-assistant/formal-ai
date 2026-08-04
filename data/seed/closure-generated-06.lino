@@ -1,4 +1,174 @@
 meanings
+  response_lexeme_import_fetch_invalid_json_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import fetch invalid json hi"
+  response_lexeme_import_fetch_invalid_json_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import fetch invalid json ru"
+  response_lexeme_import_fetch_invalid_json_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import fetch invalid json zh"
+  response_lexeme_import_grounding_lost_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import grounding lost en"
+  response_lexeme_import_grounding_lost_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import grounding lost hi"
+  response_lexeme_import_grounding_lost_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import grounding lost ru"
+  response_lexeme_import_grounding_lost_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import grounding lost zh"
+  response_lexeme_import_invalid_provenance_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid provenance en"
+  response_lexeme_import_invalid_provenance_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid provenance hi"
+  response_lexeme_import_invalid_provenance_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid provenance ru"
+  response_lexeme_import_invalid_provenance_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid provenance zh"
+  response_lexeme_import_invalid_qid_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid qid en"
+  response_lexeme_import_invalid_qid_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid qid hi"
+  response_lexeme_import_invalid_qid_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid qid ru"
+  response_lexeme_import_invalid_qid_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid qid zh"
+  response_lexeme_import_invalid_slug_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid slug en"
+  response_lexeme_import_invalid_slug_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid slug hi"
+  response_lexeme_import_invalid_slug_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid slug ru"
+  response_lexeme_import_invalid_slug_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid slug zh"
+  response_lexeme_import_invalid_surface_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid surface en"
+  response_lexeme_import_invalid_surface_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid surface hi"
+  response_lexeme_import_invalid_surface_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid surface ru"
+  response_lexeme_import_invalid_surface_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid surface zh"
+  response_lexeme_import_lexeme_lost_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import lexeme lost en"
+  response_lexeme_import_lexeme_lost_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import lexeme lost hi"
+  response_lexeme_import_lexeme_lost_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import lexeme lost ru"
+  response_lexeme_import_lexeme_lost_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import lexeme lost zh"
+  response_lexeme_import_missing_cached_label_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import missing cached label en"
+  response_lexeme_import_missing_cached_label_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import missing cached label hi"
+  response_lexeme_import_missing_cached_label_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import missing cached label ru"
+  response_lexeme_import_missing_cached_label_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import missing cached label zh"
+  response_lexeme_import_missing_label_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import missing label en"
+  response_lexeme_import_missing_label_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import missing label hi"
+  response_lexeme_import_missing_label_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import missing label ru"
   response_lexeme_import_missing_label_zh
     defined-by response_template
     lexeme en
@@ -1224,173 +1394,3 @@ meanings
     lexeme en
       surface
         text "response pattern sequence periodic hi"
-  response_pattern_sequence_periodic_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence periodic ru"
-  response_pattern_sequence_periodic_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence periodic zh"
-  response_pattern_sequence_repetition_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence repetition en"
-  response_pattern_sequence_repetition_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence repetition es"
-  response_pattern_sequence_repetition_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence repetition hi"
-  response_pattern_sequence_repetition_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence repetition ru"
-  response_pattern_sequence_repetition_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence repetition zh"
-  response_pattern_sequence_report_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence report en"
-  response_pattern_sequence_report_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence report es"
-  response_pattern_sequence_report_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence report hi"
-  response_pattern_sequence_report_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence report ru"
-  response_pattern_sequence_report_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence report zh"
-  response_physical_action_question_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response physical action question en"
-  response_physical_action_question_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response physical action question hi"
-  response_physical_action_question_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response physical action question ru"
-  response_physical_action_question_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response physical action question zh"
-  response_requirement_contradiction_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response requirement contradiction en"
-  response_requirement_contradiction_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response requirement contradiction hi"
-  response_requirement_contradiction_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response requirement contradiction ru"
-  response_requirement_contradiction_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response requirement contradiction zh"
-  response_search_fusion_header_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response search fusion header en"
-  response_search_fusion_header_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response search fusion header es"
-  response_search_fusion_header_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response search fusion header hi"
-  response_search_fusion_header_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response search fusion header ru"
-  response_search_fusion_header_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response search fusion header zh"
-  response_search_fusion_read_more_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response search fusion read more en"
-  response_search_fusion_read_more_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response search fusion read more es"
-  response_search_fusion_read_more_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response search fusion read more hi"
-  response_search_fusion_read_more_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response search fusion read more ru"
-  response_search_fusion_read_more_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response search fusion read more zh"
-  response_shared_dialog_capture_parse_failed_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response shared dialog capture parse failed en"
-  response_shared_dialog_capture_parse_failed_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response shared dialog capture parse failed hi"
-  response_shared_dialog_capture_parse_failed_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response shared dialog capture parse failed ru"
-  response_shared_dialog_capture_parse_failed_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response shared dialog capture parse failed zh"

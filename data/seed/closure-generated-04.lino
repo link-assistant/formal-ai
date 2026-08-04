@@ -1,4 +1,139 @@
 meanings
+  pattern_wellbeing_phrase_kak_vashi_dela
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase kak vashi dela"
+  pattern_wellbeing_phrase_kak_vy_pozhivaete
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase kak vy pozhivaete"
+  pattern_wellbeing_phrase_kya_haal_hai_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase kya haal hai hi"
+  pattern_wellbeing_phrase_ni_hai_hao_ma_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase ni hai hao ma zh"
+  pattern_wellbeing_phrase_ni_hao_ma_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase ni hao ma zh"
+  pattern_wellbeing_phrase_ni_zenmeyang_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase ni zenmeyang zh"
+  pattern_wellbeing_phrase_nin_zenmeyang_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase nin zenmeyang zh"
+  pattern_wellbeing_phrase_privet_kak_dela
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase privet kak dela"
+  pattern_wellbeing_phrase_sab_kaisa_chal_raha_hai_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase sab kaisa chal raha hai hi"
+  pattern_wellbeing_phrase_tum_kaise_ho_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase tum kaise ho hi"
+  pattern_wellbeing_phrase_zdravstvuyte_kak_vashi_dela
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase zdravstvuyte kak vashi dela"
+  pattern_wellbeing_phrase_zuijin_zenmeyang_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase zuijin zenmeyang zh"
+  pattern_wikipedia_article_question_exact_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wikipedia article question exact en"
+  pattern_wikipedia_article_question_exact_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wikipedia article question exact hi"
+  pattern_wikipedia_article_question_exact_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wikipedia article question exact ru"
+  pattern_wikipedia_article_question_exact_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wikipedia article question exact zh"
+  pattern_wikipedia_article_question_grammar_context_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wikipedia article question grammar context en"
+  pattern_wikipedia_article_question_grammar_context_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wikipedia article question grammar context hi"
+  pattern_wikipedia_article_question_grammar_context_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wikipedia article question grammar context ru"
+  pattern_wikipedia_article_question_grammar_context_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wikipedia article question grammar context zh"
+  pattern_x_kaise_kaam_karta_suffix_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern x kaise kaam karta suffix hi"
+  pattern_x_kaise_kaam_karti_suffix_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern x kaise kaam karti suffix hi"
+  pattern_x_ruhej_gongzuo_suffix_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern x ruhej gongzuo suffix zh"
+  pattern_x_shi_ruhej_gongzuo_de_suffix_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern x shi ruhej gongzuo de suffix zh"
+  per
+    defined-by concept
+    lexeme en
+      surface
+        text "per"
+  per-step
+    defined-by concept
+    lexeme en
+      surface
+        text "per step"
+  periodic_or_manual
+    defined-by concept
+    lexeme en
+      surface
+        text "periodic or manual"
   permissioned-network
     defined-by isolation_mode
     lexeme en
@@ -134,6 +269,11 @@ meanings
     lexeme en
       surface
         text "proposal only"
+  prose
+    defined-by concept
+    lexeme en
+      surface
+        text "prose"
   ps
     defined-by concept
     lexeme en
@@ -149,6 +289,11 @@ meanings
     lexeme en
       surface
         text "punctuation"
+  puts
+    defined-by concept
+    lexeme en
+      surface
+        text "puts"
   pwd
     defined-by concept
     lexeme en
@@ -174,6 +319,16 @@ meanings
     lexeme en
       surface
         text "qa network"
+  rather
+    defined-by concept
+    lexeme en
+      surface
+        text "rather"
+  re-run
+    defined-by concept
+    lexeme en
+      surface
+        text "re run"
   reach
     defined-by word_surface
     lexeme en
@@ -194,6 +349,11 @@ meanings
     lexeme en
       surface
         text "read local file"
+  reads
+    defined-by concept
+    lexeme en
+      surface
+        text "reads"
   reasoning
     defined-by category
     lexeme en
@@ -214,6 +374,11 @@ meanings
     lexeme en
       surface
         text "reflection"
+  registered
+    defined-by concept
+    lexeme en
+      surface
+        text "registered"
   relative-meta-logic
     defined-by term
     lexeme en
@@ -254,6 +419,11 @@ meanings
     lexeme en
       surface
         text "rendered"
+  renders
+    defined-by concept
+    lexeme en
+      surface
+        text "renders"
   repetition
     defined-by term
     lexeme en
@@ -1224,173 +1394,3 @@ meanings
     lexeme en
       surface
         text "response client global config probe started en"
-  response_client_global_config_probe_started_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config probe started es"
-  response_client_global_config_probe_started_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config probe started hi"
-  response_client_global_config_probe_started_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config probe started ru"
-  response_client_global_config_probe_started_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config probe started zh"
-  response_client_global_config_requirement_missing_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config requirement missing en"
-  response_client_global_config_requirement_missing_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config requirement missing es"
-  response_client_global_config_requirement_missing_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config requirement missing hi"
-  response_client_global_config_requirement_missing_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config requirement missing ru"
-  response_client_global_config_requirement_missing_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config requirement missing zh"
-  response_client_integration_invalid_typed_json_setting_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client integration invalid typed json setting en"
-  response_client_integration_invalid_typed_json_setting_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client integration invalid typed json setting hi"
-  response_client_integration_invalid_typed_json_setting_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client integration invalid typed json setting ru"
-  response_client_integration_invalid_typed_json_setting_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client integration invalid typed json setting zh"
-  response_coding_source_binary_operation_test_rust
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding source binary operation test rust"
-  response_coding_source_equality_test_rust
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding source equality test rust"
-  response_coding_source_function_division_rust
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding source function division rust"
-  response_coding_source_function_return_rust
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding source function return rust"
-  response_coding_source_module_registration_rust
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding source module registration rust"
-  response_coding_source_string_constant_rust
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding source string constant rust"
-  response_coding_workspace_effect_observed_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding workspace effect observed en"
-  response_coding_workspace_effect_observed_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding workspace effect observed es"
-  response_coding_workspace_effect_observed_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding workspace effect observed hi"
-  response_coding_workspace_effect_observed_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding workspace effect observed ru"
-  response_coding_workspace_effect_observed_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding workspace effect observed zh"
-  response_coding_workspace_verification_failed_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding workspace verification failed en"
-  response_coding_workspace_verification_failed_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding workspace verification failed es"
-  response_coding_workspace_verification_failed_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding workspace verification failed hi"
-  response_coding_workspace_verification_failed_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding workspace verification failed ru"
-  response_coding_workspace_verification_failed_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding workspace verification failed zh"
-  response_coding_workspace_written_unverified_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding workspace written unverified en"
-  response_coding_workspace_written_unverified_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding workspace written unverified es"
-  response_coding_workspace_written_unverified_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding workspace written unverified hi"
-  response_coding_workspace_written_unverified_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding workspace written unverified ru"
-  response_coding_workspace_written_unverified_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding workspace written unverified zh"

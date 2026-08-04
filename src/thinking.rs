@@ -1,20 +1,37 @@
-//! Human-readable "thinking" steps (issue #488).
+//! Human-readable "thinking" steps (issue #488), localized (issue #889).
 //!
 //! This module owns the [`ThinkingStep`] model and the deterministic
-//! `(step, detail) -> concrete English sentence` naturalizer that every native
-//! surface shares: the core `EventLog` projection, the CLI `--thinking` output,
-//! the OpenAI/Anthropic API responses, and the Telegram bot. The browser mirrors
-//! the same two stages in JavaScript — the curated projection in
-//! `src/web/formal_ai_worker.js` and the naturalizer (`naturalizeThinkingStep`,
-//! which additionally localizes into the user's language) in `src/web/app.js`.
+//! `(step, detail) -> concrete sentence` naturalizer that every native surface
+//! shares: the core `EventLog` projection, the CLI `--thinking` output, the
+//! OpenAI/Anthropic API responses, and the Telegram bot. The browser mirrors the
+//! same two stages in JavaScript — the curated projection in
+//! `src/web/formal_ai_worker.js` and the naturalizer (`naturalizeThinkingStep`)
+//! in `src/web/app.js`.
+//!
+//! The sentences themselves are *data*, not Rust literals: they live in
+//! `data/seed/multilingual-responses-thinking*.lino` and are looked up through
+//! [`crate::thinking_prose`] in the answer language, so the CLI, the APIs and
+//! Telegram narrate a Russian answer in Russian instead of describing it in
+//! English (issue #889). The trace keys (`step`, `detail`) stay
+//! language-neutral, so nothing downstream has to parse prose.
+//!
 //! Keeping it in its own module (rather than inside `engine.rs`) keeps each file
 //! focused and within the repository's per-file line budget while making
 //! "thinking" a first-class concern of the architecture rather than an engine
 //! implementation detail.
 
+use std::borrow::Cow;
+
 use serde::{Deserialize, Serialize};
 
 use crate::engine::stable_id;
+use crate::thinking_prose::{
+    language_label, normalize_language, thinking_prose, LANGUAGE_NAME_INTENT_PREFIX,
+    NARRATIVE_INTENT_PREFIX, PLAIN_INTENT_SUFFIX, STEP_INTENT_PREFIX,
+};
+
+/// The language a trace is narrated in when it carries no language step.
+pub const DEFAULT_THINKING_LANGUAGE: &str = "en";
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ThinkingStep {
@@ -24,11 +41,12 @@ pub struct ThinkingStep {
     pub detail: String,
     /// Concrete, human-readable description of this step (issue #488).
     ///
-    /// This is the "meta-language description" layer: a single English sentence
-    /// that surfaces the actual content of the step (the prompt, the computed
-    /// result, the looked-up entity, the chosen route, the composed answer)
-    /// rather than a generic category label. UI surfaces translate it into the
-    /// target user language; non-UI surfaces (CLI, API, Telegram) show it as-is.
+    /// This is the "meta-language description" layer: a single sentence that
+    /// surfaces the actual content of the step (the prompt, the computed result,
+    /// the looked-up entity, the chosen route, the composed answer) rather than
+    /// a generic category label. It is written in the answer language once the
+    /// trace is complete ([`localize_thinking_steps`], issue #889); the browser
+    /// re-derives its own localized sentence from `step` and `detail`.
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub summary: String,
     pub level: String,
@@ -50,6 +68,9 @@ impl ThinkingStep {
         let detail = detail.into();
         let level = level.into();
         let source_event = source_event.into();
+        // The answer language is only known once the whole trace exists (it is
+        // itself one of the steps), so a step is born narrating in the fallback
+        // language and is re-narrated by `localize_thinking_steps`.
         let summary = naturalize_thinking_step(&step, &detail);
         let seed = format!("{order}:{step}:{detail}:{level}:{source_event}");
         Self {
@@ -72,31 +93,72 @@ impl ThinkingStep {
         self.parent_id = Some(parent_id.into());
         self
     }
+
+    /// This step's sentence in `language`, ignoring any stored summary.
+    #[must_use]
+    pub fn sentence_in(&self, language: &str) -> String {
+        naturalize_thinking_step_in(language, &self.step, &self.detail)
+    }
+}
+
+/// Rewrite every step's `summary` in `language` (issue #889).
+///
+/// The `step`/`detail` keys are untouched, so the trace stays language-neutral
+/// and this is a pure presentation pass; the ids are derived from those keys
+/// too, so localizing never renumbers or re-identifies a trace.
+pub fn localize_thinking_steps(steps: &mut [ThinkingStep], language: &str) {
+    for step in steps.iter_mut() {
+        step.summary = naturalize_thinking_step_in(language, &step.step, &step.detail);
+    }
+}
+
+/// The language a finished trace should be narrated in.
+///
+/// Derived from the trace itself — the language the solver resolved to answer
+/// in, else the language it detected in the prompt — so every surface renders
+/// the same language the answer is written in without extra plumbing.
+#[must_use]
+pub fn thinking_answer_language(steps: &[ThinkingStep]) -> String {
+    for kind in ["resolve_response_language", "detect_language"] {
+        if let Some(step) = steps
+            .iter()
+            .find(|step| strip_agent_substep_prefix(&step.step) == kind)
+        {
+            let slug = normalize_language(&step.detail);
+            if !slug.is_empty() && crate::language::from_slug(&slug).is_some() {
+                return slug;
+            }
+        }
+    }
+    DEFAULT_THINKING_LANGUAGE.to_owned()
+}
+
+/// The word a surface labels a reasoning trace with ("Thinking", «Размышления»),
+/// in the language the trace is narrated in.
+#[must_use]
+pub fn thinking_trace_heading(language: &str) -> String {
+    thinking_prose("thinking_trace_heading", language, &[]).unwrap_or_default()
 }
 
 /// Map a language slug to its English name for concrete thinking summaries.
 #[must_use]
 pub fn thinking_language_label(code: &str) -> String {
-    let normalized = code.trim().to_ascii_lowercase();
-    let primary = normalized
-        .split(['-', '_'])
-        .next()
-        .unwrap_or(normalized.as_str());
-    // Issue #706: the English name of a language is a ledger fact
-    // (`data/seed/languages.lino`), so a newly registered language narrates
-    // by name without a Rust edit.
-    if let Some(name) = crate::language::language_name(primary) {
-        return name.to_owned();
-    }
-    match primary {
-        "" | "unknown" => "an unrecognized language".to_owned(),
-        other => other.to_owned(),
-    }
+    thinking_language_label_in(DEFAULT_THINKING_LANGUAGE, code)
+}
+
+/// Map a language slug to its name as spoken in `answer_language` (issue #889).
+#[must_use]
+pub fn thinking_language_label_in(answer_language: &str, code: &str) -> String {
+    language_label(answer_language, code)
 }
 
 /// Turn a meta-language identifier (`write_program`, `route:greeting`,
 /// `concept_lookup:hit`) into a lowercase human phrase (`write program`,
 /// `greeting`, `concept lookup hit`).
+///
+/// The identifiers are language-neutral trace keys, so this stays a mechanical
+/// transformation rather than a translation: the localized templates around it
+/// carry the words.
 #[must_use]
 pub fn humanize_meta_identifier(value: &str) -> String {
     let mut spaced = String::with_capacity(value.len());
@@ -116,6 +178,49 @@ pub fn humanize_meta_identifier(value: &str) -> String {
     collapsed.trim().to_ascii_lowercase()
 }
 
+/// The narrative headline each dispatch route gets, as an intent suffix in
+/// `data/seed/multilingual-responses-thinking-narrative.lino`.
+///
+/// Several routes share one headline (a `concept_lookup` and a `fact_lookup`
+/// are the same story to the reader), so the mapping is a table of route keys
+/// rather than one intent per route.
+const ROUTE_NARRATIVES: &[(&str, &str)] = &[
+    ("greeting", "greeting"),
+    ("wellbeing", "wellbeing"),
+    ("assistant_free_time", "assistant_free_time"),
+    ("farewell", "farewell"),
+    ("gratitude", "gratitude"),
+    ("thanks", "gratitude"),
+    ("courtesy_response", "gratitude"),
+    ("courtesy", "gratitude"),
+    ("identity", "identity"),
+    ("assistant_name", "identity"),
+    ("recall_name", "identity"),
+    ("naming", "identity"),
+    ("assistant_naming", "identity"),
+    ("calculation", "calculation"),
+    ("arithmetic", "calculation"),
+    ("fact_lookup", "fact_lookup"),
+    ("concept_lookup", "fact_lookup"),
+    ("concept_lookup_in_context", "fact_lookup"),
+    ("translation", "translation"),
+    ("web_search", "web"),
+    ("http_fetch", "web"),
+    ("url_navigate", "web"),
+    ("write_program", "code"),
+    ("software_project_plan", "code"),
+    ("software_project_implementation", "code"),
+    ("algorithm", "code"),
+    ("test_status", "test_status"),
+    ("self_healing", "self_healing"),
+    ("self_heal", "self_healing"),
+    ("meta_explanation", "meta_explanation"),
+    ("learn_from_source", "learn_from_source"),
+    ("clarification", "clarification"),
+    ("unknown", "unknown"),
+    ("fallback", "unknown"),
+];
+
 /// Build a short, first-person narrative headline that says, in plain language,
 /// what the assistant understood and decided (issue #676, R8).
 ///
@@ -128,14 +233,17 @@ pub fn humanize_meta_identifier(value: &str) -> String {
 ///
 /// The narrative is derived purely from the steps already present — the chosen
 /// route from `dispatch_handler` (falling back to `formalize`) — so it stays
-/// deterministic and needs no extra engine state. Returns `None` when the trace
-/// has no recognizable route, leaving the robotic steps to speak for themselves.
-///
-/// The English sentences are `src` template literals, exactly like the
-/// [`naturalize_thinking_step`] sentences below; the browser mirrors the same
-/// per-intent framing through its localized "plain" thinking variants.
+/// deterministic and needs no extra engine state, and it is written in the
+/// language the trace answers in (issue #889). Returns `None` when the trace has
+/// no recognizable route, leaving the robotic steps to speak for themselves.
 #[must_use]
 pub fn thinking_narrative(steps: &[ThinkingStep]) -> Option<String> {
+    thinking_narrative_in(&thinking_answer_language(steps), steps)
+}
+
+/// [`thinking_narrative`] in an explicit language.
+#[must_use]
+pub fn thinking_narrative_in(language: &str, steps: &[ThinkingStep]) -> Option<String> {
     let route_detail = steps
         .iter()
         .find(|step| strip_agent_substep_prefix(&step.step) == "dispatch_handler")
@@ -148,56 +256,24 @@ pub fn thinking_narrative(steps: &[ThinkingStep]) -> Option<String> {
     if route_detail.is_empty() {
         return None;
     }
-    let narrative = match route_detail.as_str() {
-        "greeting" => "You said hello, so I greeted you back.",
-        "wellbeing" => "You asked how I'm doing, so I told you and offered to help.",
-        "assistant_free_time" => {
-            "You asked what I get up to, so I answered in a friendly way and offered to help."
+    if let Some((_, suffix)) = ROUTE_NARRATIVES
+        .iter()
+        .find(|(route, _)| *route == route_detail)
+    {
+        if let Some(text) =
+            thinking_prose(&format!("{NARRATIVE_INTENT_PREFIX}{suffix}"), language, &[])
+        {
+            return Some(text);
         }
-        "farewell" => "You said goodbye, so I wished you well in return.",
-        "gratitude" | "thanks" | "courtesy_response" | "courtesy" => {
-            "You thanked me, so I acknowledged it warmly."
-        }
-        "identity" | "assistant_name" | "recall_name" | "naming" | "assistant_naming" => {
-            "You asked about my name or who I am, so I answered from what I remember of our chat."
-        }
-        "calculation" | "arithmetic" => {
-            "This was a calculation, so I worked it out step by step and checked the result."
-        }
-        "fact_lookup" | "concept_lookup" | "concept_lookup_in_context" => {
-            "You asked for a fact, so I looked it up and reported what I found."
-        }
-        "translation" => "You asked for a translation, so I converted the text and returned it.",
-        "web_search" | "http_fetch" | "url_navigate" => {
-            "You pointed me at the web, so I fetched what you needed and summarized it."
-        }
-        "write_program"
-        | "software_project_plan"
-        | "software_project_implementation"
-        | "algorithm" => "You asked for code, so I planned it and wrote the program.",
-        "test_status" => "You asked about the tests, so I checked their status and reported it.",
-        "self_healing" | "self_heal" => {
-            "You asked me to fix myself, so I diagnosed the failure and repaired it."
-        }
-        "meta_explanation" => "You asked how I work, so I walked through my reasoning.",
-        "learn_from_source" => {
-            "You gave me something to learn from, so I read it and updated what I know."
-        }
-        "clarification" => "The request could mean more than one thing, so I asked you to clarify.",
-        "unknown" | "fallback" => {
-            "I wasn't sure how to handle this one yet, so I explained what I can do."
-        }
-        other => {
-            // Any other resolved route still gets a human headline rather than a
-            // bare category label: describe it as the task it was read as.
-            let task = humanize_meta_identifier(other);
-            return Some(format!(
-                "I read this as {} {task} request, worked out the answer, and replied.",
-                indefinite_article(&task)
-            ));
-        }
-    };
-    Some(narrative.to_owned())
+    }
+    // Any other resolved route still gets a human headline rather than a bare
+    // category label: describe it as the task it was read as.
+    let task = humanize_meta_identifier(&route_detail);
+    thinking_prose(
+        &format!("{NARRATIVE_INTENT_PREFIX}generic"),
+        language,
+        &[("task", &task), ("article", indefinite_article(&task))],
+    )
 }
 
 /// Render a full reasoning trace as the plain-text form expected by protocol
@@ -205,19 +281,22 @@ pub fn thinking_narrative(steps: &[ThinkingStep]) -> Option<String> {
 ///
 /// The output leads with a human [`thinking_narrative`] headline (issue #676,
 /// R8) when the route is recognizable, followed by the concrete per-step
-/// sentences as the recursive "robotic detail" beneath it.
+/// sentences as the recursive "robotic detail" beneath it, all in the language
+/// the trace answers in (issue #889).
 #[must_use]
 pub fn render_thinking_steps(steps: &[ThinkingStep]) -> String {
+    render_thinking_steps_in(&thinking_answer_language(steps), steps)
+}
+
+/// [`render_thinking_steps`] in an explicit language.
+#[must_use]
+pub fn render_thinking_steps_in(language: &str, steps: &[ThinkingStep]) -> String {
     let mut lines = Vec::with_capacity(steps.len() + 1);
-    if let Some(narrative) = thinking_narrative(steps) {
+    if let Some(narrative) = thinking_narrative_in(language, steps) {
         lines.push(narrative);
     }
     for step in steps {
-        let sentence = if step.summary.is_empty() {
-            naturalize_thinking_step(&step.step, &step.detail)
-        } else {
-            step.summary.clone()
-        };
+        let sentence = step.sentence_in(language);
         if step.parent_id.is_some() {
             lines.push(format!("  ↳ {sentence}"));
         } else {
@@ -230,6 +309,9 @@ pub fn render_thinking_steps(steps: &[ThinkingStep]) -> String {
 /// Pick the English indefinite article (`a`/`an`) for the following phrase based
 /// on its first letter, so naturalized steps read grammatically ("an arithmetic
 /// task", "a greeting task").
+///
+/// Only the English templates interpolate `{article}`; the other languages'
+/// records simply do not mention it, so passing it is harmless.
 fn indefinite_article(phrase: &str) -> &'static str {
     match phrase.trim_start().chars().next() {
         Some(first) if matches!(first.to_ascii_lowercase(), 'a' | 'e' | 'i' | 'o' | 'u') => "an",
@@ -267,191 +349,204 @@ fn truncate_thinking_detail(value: &str) -> String {
     format!("{}…", truncated.trim_end())
 }
 
+/// Step kinds whose sentence interpolates their detail, as
+/// `(step kind, placeholder, humanize the detail?)`.
+///
+/// Each entry uses two seed intents: `thinking_step_<kind>` when the step
+/// carries a detail and `thinking_step_<kind>_plain` when it does not. A
+/// humanized detail is a meta-language identifier rendered as a phrase
+/// (`write_program` -> `write program`); a raw one is user-facing content (a
+/// prompt, an expression, a composed answer) that is passed through verbatim.
+const DETAIL_STEPS: &[(&str, &str, bool)] = &[
+    ("impulse", "prompt", false),
+    ("formalize", "task", true),
+    ("formalize_resolved", "entity", true),
+    ("clarify_formalization", "options", false),
+    ("dispatch_handler", "route", true),
+    ("route_attempt", "route", true),
+    ("match_rule", "rule", true),
+    ("compute", "expression", false),
+    ("compute_engine", "engine", true),
+    ("lookup_fact", "fact", true),
+    ("invoke_tool", "tool", true),
+    ("rule_verification", "rule", true),
+    ("policy_refusal", "policy", true),
+    ("program_plan", "plan", true),
+    ("scan_memory", "term", false),
+    ("user_context", "context", false),
+    ("deformalize", "answer", false),
+    ("agent_plan", "task", true),
+];
+
+/// Step kinds that always interpolate their (possibly empty) detail, so they
+/// have no `_plain` variant.
+const ALWAYS_DETAIL_STEPS: &[(&str, &str)] = &[
+    ("compute_expression", "expression"),
+    ("compute_steps", "count"),
+];
+
+/// Step kinds whose sentence carries no detail at all.
+const PLAIN_STEPS: &[&str] = &[
+    "rule_construction",
+    "coreference_binding",
+    "modifier_detection",
+    "http_chat",
+    "memory",
+    "extract_term",
+    "group_by_conversation",
+    "fallback",
+];
+
 /// Translate a single `(step, detail)` pair into one concrete English sentence.
+///
+/// Kept as the English-specific entry point that predates issue #889; new
+/// callers should pass the answer language to [`naturalize_thinking_step_in`].
+#[must_use]
+pub fn naturalize_thinking_step(step: &str, detail: &str) -> String {
+    naturalize_thinking_step_in(DEFAULT_THINKING_LANGUAGE, step, detail)
+}
+
+/// Translate a single `(step, detail)` pair into one concrete sentence in
+/// `language`.
 ///
 /// This is the deterministic "meta-language description" stage from issue #488.
 /// It is the single source of truth shared by the core projection, the CLI, the
 /// OpenAI/Anthropic API surfaces, and (mirrored) the browser worker, so every
-/// surface renders the *same* concrete thinking rather than a generic label.
+/// surface renders the *same* concrete thinking rather than a generic label —
+/// and, since issue #889, renders it in the language of the answer.
 #[must_use]
-pub fn naturalize_thinking_step(step: &str, detail: &str) -> String {
+pub fn naturalize_thinking_step_in(language: &str, step: &str, detail: &str) -> String {
     let canonical = strip_agent_substep_prefix(step);
     let trimmed = truncate_thinking_detail(detail);
     let has_detail = !trimmed.is_empty();
-    match canonical {
-        "impulse" => {
-            if has_detail {
-                format!("Read the request: \"{trimmed}\".")
-            } else {
-                "Read the incoming request.".to_owned()
-            }
-        }
-        "detect_language" => {
-            format!(
-                "Detect the request language: {}.",
-                thinking_language_label(detail)
-            )
-        }
-        "resolve_response_language" => {
-            format!("Plan to answer in {}.", thinking_language_label(detail))
-        }
-        "formalize" => {
-            if has_detail {
-                let task = humanize_meta_identifier(&trimmed);
-                format!(
-                    "Formalize the request as {} {task} task.",
-                    indefinite_article(&task)
-                )
-            } else {
-                "Formalize the request into a symbolic tuple.".to_owned()
-            }
-        }
-        "formalize_resolved" => {
-            if has_detail {
-                format!(
-                    "Resolve the request to {}.",
-                    humanize_meta_identifier(&trimmed)
-                )
-            } else {
-                "Resolve the request to a concrete entity.".to_owned()
-            }
-        }
-        "clarify_formalization" => {
-            if has_detail {
-                format!("Ask for clarification between {trimmed}.")
-            } else {
-                "Ask for clarification because the request was ambiguous.".to_owned()
-            }
-        }
-        "dispatch_handler" => {
-            if has_detail {
-                format!(
-                    "Route to the {} handler.",
-                    humanize_meta_identifier(&trimmed)
-                )
-            } else {
-                "Route the request to a handler.".to_owned()
-            }
-        }
-        "route_attempt" => {
-            if has_detail {
-                format!("Try the {} approach.", humanize_meta_identifier(&trimmed))
-            } else {
-                "Try the next candidate approach.".to_owned()
-            }
-        }
-        "match_rule" => {
-            if has_detail {
-                format!("Match the {} rule.", humanize_meta_identifier(&trimmed))
-            } else {
-                "Match a known rule.".to_owned()
-            }
-        }
-        "compute" => {
-            if has_detail {
-                format!("Compute {trimmed}.")
-            } else {
-                "Compute the result.".to_owned()
-            }
-        }
-        "compute_engine" => {
-            if has_detail {
-                format!("Evaluate with the {}.", humanize_meta_identifier(&trimmed))
-            } else {
-                "Evaluate with the calculator.".to_owned()
-            }
-        }
-        "compute_expression" => format!("Reduce the expression {trimmed}."),
-        "compute_steps" => format!("Apply {trimmed} reduction step(s)."),
-        "lookup_fact" => {
-            if has_detail {
-                format!("Look up {}.", humanize_meta_identifier(&trimmed))
-            } else {
-                "Look up the relevant fact.".to_owned()
-            }
-        }
-        "invoke_tool" => {
-            if has_detail {
-                format!("Use the {} capability.", humanize_meta_identifier(&trimmed))
-            } else {
-                "Use an available capability.".to_owned()
-            }
-        }
-        "rule_verification" => {
-            if has_detail {
-                format!(
-                    "Verify the result against the {} rule.",
-                    humanize_meta_identifier(&trimmed)
-                )
-            } else {
-                "Verify the result against the rules.".to_owned()
-            }
-        }
-        "policy_refusal" => {
-            if has_detail {
-                format!(
-                    "Decline the request under the {} policy.",
-                    humanize_meta_identifier(&trimmed)
-                )
-            } else {
-                "Decline the request under the safety policy.".to_owned()
-            }
-        }
-        "rule_construction" => "Build a local behavior rule.".to_owned(),
-        "coreference_binding" => "Resolve what the follow-up refers to.".to_owned(),
-        "modifier_detection" => "Detect modifiers in the request.".to_owned(),
-        "program_plan" => {
-            if has_detail {
-                format!("Plan the program: {}.", humanize_meta_identifier(&trimmed))
-            } else {
-                "Plan the requested program.".to_owned()
-            }
-        }
-        "scan_memory" => {
-            if has_detail {
-                format!("Search memory for {trimmed}.")
-            } else {
-                "Search memory for relevant facts.".to_owned()
-            }
-        }
-        "user_context" => {
-            if has_detail {
-                format!("Apply available context: {trimmed}.")
-            } else {
-                "Apply the available context.".to_owned()
-            }
-        }
-        "deformalize" => {
-            if has_detail {
-                format!("Compose the answer: \"{trimmed}\".")
-            } else {
-                "Compose the answer in natural language.".to_owned()
-            }
-        }
-        "http_chat" => "Exchange a request with the configured endpoint.".to_owned(),
-        "agent_plan" => {
-            if has_detail {
-                format!("Add an agent task: {}.", humanize_meta_identifier(&trimmed))
-            } else {
-                "Extend the agent plan.".to_owned()
-            }
-        }
-        "memory" => "Update the local memory bundle.".to_owned(),
-        "extract_term" => "Extract the search term.".to_owned(),
-        "group_by_conversation" => "Group matching memories by conversation.".to_owned(),
-        "fallback" => "Fall back to the general unknown-request strategy.".to_owned(),
-        other => {
-            let readable = humanize_meta_identifier(other);
-            let label = if readable.is_empty() {
-                "step".to_owned()
-            } else {
-                readable
-            };
-            if has_detail {
-                format!("{label}: {trimmed}.")
-            } else {
-                format!("{label}.")
-            }
+
+    // The two language steps name a language rather than quoting their detail,
+    // and that name is itself localized (`русский`, not `Russian`).
+    if matches!(canonical, "detect_language" | "resolve_response_language") {
+        let label = language_label(language, detail);
+        if let Some(text) = thinking_prose(
+            &format!("{STEP_INTENT_PREFIX}{canonical}"),
+            language,
+            &[("language", &label)],
+        ) {
+            return text;
         }
     }
+
+    if let Some((_, placeholder, humanize)) =
+        DETAIL_STEPS.iter().find(|(kind, _, _)| *kind == canonical)
+    {
+        let intent = if has_detail {
+            format!("{STEP_INTENT_PREFIX}{canonical}")
+        } else {
+            format!("{STEP_INTENT_PREFIX}{canonical}{PLAIN_INTENT_SUFFIX}")
+        };
+        let value: Cow<'_, str> = if *humanize {
+            Cow::Owned(humanize_meta_identifier(&trimmed))
+        } else {
+            Cow::Borrowed(trimmed.as_str())
+        };
+        if let Some(text) = thinking_prose(
+            &intent,
+            language,
+            &[
+                (placeholder, value.as_ref()),
+                ("article", indefinite_article(value.as_ref())),
+            ],
+        ) {
+            return text;
+        }
+    }
+
+    if let Some((_, placeholder)) = ALWAYS_DETAIL_STEPS
+        .iter()
+        .find(|(kind, _)| *kind == canonical)
+    {
+        if let Some(text) = thinking_prose(
+            &format!("{STEP_INTENT_PREFIX}{canonical}"),
+            language,
+            &[(placeholder, &trimmed)],
+        ) {
+            return text;
+        }
+    }
+
+    if PLAIN_STEPS.contains(&canonical) {
+        if let Some(text) =
+            thinking_prose(&format!("{STEP_INTENT_PREFIX}{canonical}"), language, &[])
+        {
+            return text;
+        }
+    }
+
+    generic_thinking_sentence(language, canonical, &trimmed, has_detail)
+}
+
+/// The sentence for a step kind the naturalizer has no dedicated template for:
+/// its humanized key, followed by its detail.
+fn generic_thinking_sentence(
+    language: &str,
+    canonical: &str,
+    trimmed: &str,
+    has_detail: bool,
+) -> String {
+    let readable = humanize_meta_identifier(canonical);
+    let label = if readable.is_empty() {
+        thinking_prose(&format!("{STEP_INTENT_PREFIX}unnamed"), language, &[])
+            .unwrap_or_else(|| canonical.to_owned())
+    } else {
+        readable
+    };
+    let intent = if has_detail {
+        format!("{STEP_INTENT_PREFIX}generic")
+    } else {
+        format!("{STEP_INTENT_PREFIX}generic{PLAIN_INTENT_SUFFIX}")
+    };
+    thinking_prose(&intent, language, &[("label", &label), ("detail", trimmed)]).unwrap_or_else(
+        || {
+            // Reached only if the seed lost its generic records; punctuation
+            // only, so it stays language-neutral rather than silently English.
+            if has_detail {
+                format!("{label}: {trimmed}")
+            } else {
+                label.clone()
+            }
+        },
+    )
+}
+
+/// Every seed intent this module renders, for the coverage tests that assert
+/// each registered language translates the whole vocabulary (issue #889).
+#[must_use]
+pub fn thinking_prose_intents() -> Vec<String> {
+    let mut intents = Vec::new();
+    for (kind, _, _) in DETAIL_STEPS {
+        intents.push(format!("{STEP_INTENT_PREFIX}{kind}"));
+        intents.push(format!("{STEP_INTENT_PREFIX}{kind}{PLAIN_INTENT_SUFFIX}"));
+    }
+    for (kind, _) in ALWAYS_DETAIL_STEPS {
+        intents.push(format!("{STEP_INTENT_PREFIX}{kind}"));
+    }
+    for kind in PLAIN_STEPS {
+        intents.push(format!("{STEP_INTENT_PREFIX}{kind}"));
+    }
+    for kind in ["detect_language", "resolve_response_language"] {
+        intents.push(format!("{STEP_INTENT_PREFIX}{kind}"));
+    }
+    intents.push(format!("{STEP_INTENT_PREFIX}unnamed"));
+    intents.push(format!("{STEP_INTENT_PREFIX}generic"));
+    intents.push(format!("{STEP_INTENT_PREFIX}generic{PLAIN_INTENT_SUFFIX}"));
+    let mut narratives: Vec<String> = ROUTE_NARRATIVES
+        .iter()
+        .map(|(_, suffix)| format!("{NARRATIVE_INTENT_PREFIX}{suffix}"))
+        .collect();
+    narratives.push(format!("{NARRATIVE_INTENT_PREFIX}generic"));
+    narratives.sort();
+    narratives.dedup();
+    intents.extend(narratives);
+    for language in crate::language::registered_languages() {
+        intents.push(format!("{LANGUAGE_NAME_INTENT_PREFIX}{}", language.slug()));
+    }
+    intents.push(format!("{LANGUAGE_NAME_INTENT_PREFIX}unknown"));
+    intents
 }
