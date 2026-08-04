@@ -2,32 +2,35 @@ self_ast_census
   target src/client_integrations/global_verify.rs
   language rust
   fidelity signature
-  byte_len 10979
-  line_count 311
-  content_id source_module_f47240a73d0d8aa4
-  symbol_count 24
+  byte_len 11556
+  line_count 325
+  content_id source_module_68018993373152ae
+  symbol_count 27
   symbols
-    const PROBE_TIMEOUT 31 31
-    const PROBE_PROMPT 34 34
-    const TOOL_PLACEHOLDER 36 36
-    const REQUIREMENT_PLACEHOLDER 37 37
-    const PATH_PLACEHOLDER 38 38
-    const OUTPUT_PLACEHOLDER 39 39
-    const COMMAND_PLACEHOLDER 40 40
-    struct Requirement 44 51
-    function label 56 58
-    function verify_written_config 63 74
-    function collect_requirements 76 101
-    function split_file_target 104 106
-    function is_satisfied 108 129
-    function exported_value 136 158
-    function unquote 160 166
-    function json_value_at 168 174
-    function is_present 176 182
-    function toml_string_at 184 190
-    function missing_requirement_error 192 197
-    function seed_text 199 201
-    function probe_headless_start 205 252
-    function probe_skipped_message 254 258
-    function run_probe 264 307
-    function shell_quote 309 311
+    const PROBE_TIMEOUT 32 32
+    const PROBE_PROMPT 35 35
+    const TOOL_PLACEHOLDER 37 37
+    const REQUIREMENT_PLACEHOLDER 38 38
+    const PATH_PLACEHOLDER 39 39
+    const OUTPUT_PLACEHOLDER 40 40
+    const COMMAND_PLACEHOLDER 41 41
+    const PROFILE_PLACEHOLDER 42 42
+    const EXPORT_PREFIX 46 46
+    const PROBE_SHELL_TEMPLATE 50 54
+    struct Requirement 58 65
+    function label 70 72
+    function verify_written_config 77 88
+    function collect_requirements 90 115
+    function split_file_target 118 120
+    function is_satisfied 122 143
+    function exported_value 150 172
+    function unquote 174 180
+    function json_value_at 182 188
+    function is_present 190 196
+    function toml_string_at 198 204
+    function missing_requirement_error 206 211
+    function seed_text 213 215
+    function probe_headless_start 219 266
+    function probe_skipped_message 268 272
+    function run_probe 278 321
+    function shell_quote 323 325

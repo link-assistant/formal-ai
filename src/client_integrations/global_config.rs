@@ -22,6 +22,20 @@ use super::{
     RENDERED_PLACEHOLDER,
 };
 
+/// Opening marker of the block a shell profile lets formal-ai own, per tool.
+/// Kept as data next to its closing counterpart so every reader and writer of a
+/// managed block agrees on one spelling.
+const MANAGED_BLOCK_START_PREFIX: &str = "# >>> formal-ai ";
+const MANAGED_BLOCK_END_PREFIX: &str = "# <<< formal-ai ";
+
+pub(super) fn managed_block_start(tool: &str) -> String {
+    format!("{MANAGED_BLOCK_START_PREFIX}{tool}")
+}
+
+pub(super) fn managed_block_end(tool: &str) -> String {
+    format!("{MANAGED_BLOCK_END_PREFIX}{tool}")
+}
+
 pub(super) fn write_global_config(
     integration: &ClientIntegration,
     args: &WithFormalAiArgs,
@@ -315,7 +329,7 @@ fn merge_shell_env_config(
     if !next.is_empty() && !next.ends_with('\n') {
         next.push('\n');
     }
-    let _ = writeln!(next, "# >>> formal-ai {integration_id}");
+    let _ = writeln!(next, "{}", managed_block_start(integration_id));
     for env in &global_config.shell_env {
         next.push_str("export ");
         next.push_str(&render_template(&env.key, context));
@@ -323,13 +337,13 @@ fn merge_shell_env_config(
         next.push_str(&shell_double_quote(&render_template(&env.value, context)));
         next.push('\n');
     }
-    let _ = writeln!(next, "# <<< formal-ai {integration_id}");
+    let _ = writeln!(next, "{}", managed_block_end(integration_id));
     next
 }
 
 fn remove_managed_block(existing: &str, tool: &str) -> String {
-    let start = format!("# >>> formal-ai {tool}");
-    let end = format!("# <<< formal-ai {tool}");
+    let start = managed_block_start(tool);
+    let end = managed_block_end(tool);
     let mut out = String::new();
     let mut skipping = false;
     for line in existing.lines() {

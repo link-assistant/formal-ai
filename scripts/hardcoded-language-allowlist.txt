@@ -162,8 +162,6 @@ src/client_integrations.rs	temporary config path must be relative: {relative}
 src/client_integrations.rs	unsupported tool `{tool}`; supported tools: {supported}
 src/client_integrations.rs	{} does not support protocol `{protocol}`
 src/client_integrations.rs	{} has no endpoint for {protocol}
-src/client_integrations/global_config.rs	# <<< formal-ai {tool}
-src/client_integrations/global_config.rs	# >>> formal-ai {tool}
 src/code_editing.rs	Hello, world!
 src/coding/blueprint.rs	Execution status: not run — this program needs external libraries and network access, so the offline sandbox does not execute it. The code is provided for review. Run it yourself: `{run_command}`.
 src/coding/blueprint.rs	Execution status: not run — this report blueprint was not executed in the offline sandbox, and the embedded data assumptions should be reviewed before use. The code is provided for review. Run it yourself: `{run_command}`.

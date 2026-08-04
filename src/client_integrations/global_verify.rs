@@ -24,6 +24,7 @@ use toml_edit::DocumentMut;
 use crate::seed::{ClientIntegration, ClientIntegrationGlobalConfig, ConfigFormat};
 
 use super::command::{command_available, resolve_integration_command};
+use super::global_config::{managed_block_end, managed_block_start};
 use super::{global_config_path, render_template, RenderContext};
 
 /// How long a startup probe may run before it is stopped. The probe only needs
@@ -38,6 +39,19 @@ const REQUIREMENT_PLACEHOLDER: &str = concat!("{", "requirement", "}");
 const PATH_PLACEHOLDER: &str = concat!("{", "path", "}");
 const OUTPUT_PLACEHOLDER: &str = concat!("{", "output", "}");
 const COMMAND_PLACEHOLDER: &str = concat!("{", "command", "}");
+const PROFILE_PLACEHOLDER: &str = concat!("{", "profile", "}");
+
+/// Prefix a shell profile uses to export a variable, so a managed block can be
+/// read back with the same spelling it was written with.
+const EXPORT_PREFIX: &str = "export ";
+
+/// Shell command the probe runs: source the profile (never fatal), then replace
+/// the shell with the client so its exit status and output are the client's.
+const PROBE_SHELL_TEMPLATE: &str = concat!(
+    ". {",
+    "profile",
+    "} >/dev/null 2>&1 || true; exec \"$0\" \"$@\""
+);
 
 /// A single seed-declared piece the configured client needs, resolved against
 /// the file that is supposed to carry it.
@@ -134,9 +148,9 @@ fn is_satisfied(requirement: &Requirement) -> Result<bool, Box<dyn Error>> {
 /// the operator elsewhere in the profile cannot make a requirement look
 /// satisfied.
 fn exported_value(contents: &str, tool: &str, name: &str) -> Option<String> {
-    let start = format!("# >>> formal-ai {tool}");
-    let end = format!("# <<< formal-ai {tool}");
-    let prefix = format!("export {name}=");
+    let start = managed_block_start(tool);
+    let end = managed_block_end(tool);
+    let prefix = format!("{EXPORT_PREFIX}{name}=");
     let mut inside = false;
     for line in contents.lines() {
         if line == start {
@@ -270,9 +284,9 @@ fn run_probe(
         || Command::new(program),
         |profile| {
             let mut shell = Command::new("sh");
-            shell.arg("-c").arg(format!(
-                ". {} >/dev/null 2>&1 || true; exec \"$0\" \"$@\"",
-                shell_quote(&profile.display().to_string())
+            shell.arg("-c").arg(PROBE_SHELL_TEMPLATE.replace(
+                PROFILE_PLACEHOLDER,
+                &shell_quote(&profile.display().to_string()),
             ));
             shell.arg(program);
             shell
