@@ -276,6 +276,7 @@ client_integrations
     ephemeral
       interactive_arg "--interactive"
       non_interactive_arg "-p"
+      prompt_arg "-p"
       temp_home_env "HOME"
       no_summarize_arg "--no-summarize-session"
       no_summarize_arg "--compaction-model"
@@ -327,6 +328,7 @@ client_integrations
       vendor_auth_error "authentication required"
     ephemeral
       non_interactive_arg "-p"
+      prompt_arg "-p"
       temp_home_env "HOME"
       temp_home_config_path ".cursor/mcp.json"
       temp_home_json_set "mcpServers.formal-ai.type=http"
@@ -360,6 +362,7 @@ client_integrations
       interactive_arg "--prompt-interactive"
       interactive_args_require_prompt "true"
       non_interactive_arg "-p"
+      prompt_arg "-p"
       env "GEMINI_API_KEY={api_key}"
       env "GEMINI_DEFAULT_AUTH_TYPE={google_auth_type}"
       env "GEMINI_CLI_TRUST_WORKSPACE=true"
@@ -401,6 +404,8 @@ client_integrations
       file_delivery "tool_call"
     ephemeral
       non_interactive_arg "--print"
+      prompt_arg "--print"
+      prompt_arg "-p"
       temp_home_env "CLAUDE_CONFIG_DIR"
       temp_home_config_path ".claude.json"
       temp_home_json_set "hasCompletedOnboarding=json:true"
@@ -443,6 +448,7 @@ client_integrations
       interactive_arg "--prompt-interactive"
       interactive_args_require_prompt "true"
       non_interactive_arg "-p"
+      prompt_arg "-p"
       env "OPENAI_API_KEY={api_key}"
       env "OPENAI_BASE_URL={endpoint_base_url}"
       env "OPENAI_MODEL={model}"
@@ -478,6 +484,7 @@ client_integrations
       file_delivery "tool_call"
     ephemeral
       non_interactive_arg "--prompt"
+      prompt_arg "--prompt"
       temp_home_env "HOME"
       env "GROK_API_KEY={api_key}"
       env "GROK_BASE_URL={endpoint_base_url}"
@@ -510,6 +517,7 @@ client_integrations
       interactive_preamble "2:\r"
     ephemeral
       non_interactive_arg "--message"
+      prompt_arg "--message"
       temp_home_env "HOME"
       env "OPENAI_API_KEY={api_key}"
       env "OPENAI_API_BASE={endpoint_base_url}"

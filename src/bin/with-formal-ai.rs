@@ -1,6 +1,7 @@
 use std::error::Error;
 
-use formal_ai::{run_with_formal_ai, WithFormalAiArgs};
+use clap::CommandFactory;
+use formal_ai::{delimit_tool_args, run_with_formal_ai, WithFormalAiArgs};
 use lino_arguments::Parser;
 
 #[derive(Debug, Parser)]
@@ -16,6 +17,10 @@ struct Args {
 
 fn main() -> Result<(), Box<dyn Error>> {
     lino_arguments::init();
-    let args = Args::parse();
+    // Everything after the tool name belongs to the wrapped client.
+    let args = Args::parse_from(delimit_tool_args(
+        std::env::args_os().collect(),
+        &Args::command(),
+    ));
     run_with_formal_ai(&args.with)
 }

@@ -1,0 +1,10 @@
+self_ast_census
+  target src/cli_environments.rs
+  language rust
+  fidelity signature
+  byte_len 999
+  line_count 26
+  content_id source_module_c18857f8c16e3264
+  symbol_count 1
+  symbols
+    function run_environments 5 26
