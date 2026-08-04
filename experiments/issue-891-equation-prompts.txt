@@ -1,0 +1,88 @@
+# Issue #891 — candidate equation prompts probed against the production solver.
+# Run: cargo run --example issue_891_equation_probe -- experiments/issue-891-equation-prompts.txt
+#
+# linear, one operation
+x + 2 = 5
+x - 3 = 7
+2 * x = 10
+x / 4 = 3
+x * 2 = 123
+Solve 5 = x + 1
+Solve 100 - x = 42
+Solve -2 * x = 8
+Solve 4 * x = 6
+Solve 0.5 * x = 2.5
+# linear, two or more operations
+2 * x + 3 = 11
+10 = y / 3 + 1
+Solve 3 * x + 2 = x + 10
+Solve 2 * (x + 3) = 10
+Solve 3 * (x - 1) = 2 * (x + 4)
+Solve 2 * x + 3 * x = 25
+Solve x - (2 - x) = 6
+Solve x / 2 + x / 3 = 5
+Solve x + 1 / 2 = 3 / 2
+Solve 7 * x - 4 = 3 * x + 12
+Solve x / 5 - 2 = 0
+Solve 12 = 4 * x - 8
+# placeholders for the unknown
+?+2=4
+*+2=4
+Solve 2 * ? + 3 = 11
+Solve ? / 4 = 3
+Solve ? - 5 = 5
+Solve 10 = ? * 5
+Solve 2 * * + 3 = 11
+Solve * / 4 = 3
+# symbolic / multi-variable answers
+Solve 2 * x + 3 * y = 12
+Solve x + ? = 4
+Solve x + * = 4
+Solve ? + * = 4
+Solve x + y + z = 6
+Solve 3 * x - y = 0
+Solve a * 2 + b = 10
+# polynomial equations
+Solve x^2 = 4
+Solve x^2 - 5 * x + 6 = 0
+Solve x^2 - 4 * x + 4 = 0
+Solve x^2 + 5 * x = 0
+Solve 2 * x^2 - 8 = 0
+Solve x * x = 9
+Solve x^2 = 0
+Solve x^3 - x = 0
+Solve x^3 = 27
+Solve x^4 - 1 = 0
+Solve x^5 - x^3 = 0
+Solve ? * ? = 4
+Solve * * * = 4
+Solve x^2 - 2 = 0
+Solve x^2 + 1 = 0
+Solve x^3 - 6 * x^2 + 11 * x - 6 = 0
+# degenerate / error shapes
+Solve 0 * x = 5
+Solve x = x
+Solve x + = 4
+# natural-language wrappers, four supported languages
+Solve the equation 2 * x + 3 = 11
+Solve equation x - 4 = 6
+What is x if x + 7 = 12?
+Find x: 5 * x = 45
+Calculate x for 6 * x = 42
+Реши уравнение 2 * x + 3 = 11
+Сколько будет ? + 2 = 4
+Решите уравнение x / 3 = 9
+Реши x / 3 = 9
+解方程 2 * x + 3 = 11
+求解 x^2 - 5 * x + 6 = 0
+计算 x * 4 = 20
+समीकरण हल करें 2 * x + 3 = 11
+समीकरण हल करो x / 3 = 9
+हल करें x + 9 = 15
+x + 9 = 15 कितना है?
+2*2+2=?
+x*2 = 123 ?
+# unit / percent flavored equations
+Solve 8% of x = 4
+Solve x kg = 1000 g
+Solve 2 * x = 10 kg

@@ -311,10 +311,22 @@ meanings
       surface
         text "how much is"
       surface
+        text "solve the equation"
+      surface
+        text "solve equation"
+      surface
         text solve
     lexeme ru
       surface
         text "сколько будет"
+      surface
+        text "реши уравнение"
+      surface
+        text "решите уравнение"
+      surface
+        text реши
+      surface
+        text решите
       surface
         text посчитай
       surface
@@ -337,10 +349,22 @@ meanings
       surface
         text 算一下
       surface
+        text 解方程
+      surface
+        text 求解
+      surface
         text 计算
     lexeme hi
       surface
         text "कृपया गणना करें"
+      surface
+        text "समीकरण हल करें"
+      surface
+        text "समीकरण हल करो"
+      surface
+        text "हल करें"
+      surface
+        text "हल करो"
       surface
         text "गणना करें"
   politeness

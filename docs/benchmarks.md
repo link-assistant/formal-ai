@@ -27,6 +27,7 @@ source provenance for download-on-test integration. Only permissive licenses
 | Search-fusion learning generalization | #709 | [`search-fusion-learning-generalization.lino`](../data/benchmarks/search-fusion-learning-generalization.lino) | `approved_recipe_round_trips_and_executes_a_held_out_task` | 1 |
 | Multilingual local-path discovery | #819 | [`local-path-discovery-suite.lino`](../data/benchmarks/local-path-discovery-suite.lino) | `local_path_discovery_benchmark_routes_every_case_to_find` | 56 |
 | Workspace-change learning generalization | #848 | [`workspace-change-learning-generalization.lino`](../data/benchmarks/workspace-change-learning-generalization.lino) | `only_a_green_named_review_promotes_and_replays_the_held_out_rewrite` | 1 |
+| Equation-type corpus | #891 (from #406) | [`equation-type-corpus.lino`](../data/benchmarks/equation-type-corpus.lino) | `issue_891_equation_corpus_solves_every_type` | 67 (and ≥50 distinct verified types) |
 
 Related earlier work: issue **#103** introduced the competitor-derived prompt
 matrix in [`tests/unit/specification/prompt_variations.rs`](../tests/unit/specification/prompt_variations.rs)
@@ -116,6 +117,39 @@ are attribution for the task design, not for vendored data.
 | --- | --- | --- | --- |
 | bAbI tasks 1 / 2 / 6 | CC-BY-3.0 (shape only, no text imported) | state tracking | <https://github.com/facebookarchive/bAbI-tasks> |
 | Everyday goal-directed assistant dialogues | CC-BY-4.0 | assistant dialog | <https://github.com/link-assistant/formal-ai> |
+
+### Equation-type corpus — issue #891 (requirement from #406)
+
+Sixty-seven self-authored equation types, each replayed through the production
+entry point (`FormalAiEngine::answer`) and each carrying the **exact answer the
+engine produced** — the expectations are observed, never hand-written
+(`cargo run --example issue_891_equation_probe`). The ratchet fails below 50
+distinct verified types or below the recorded pass count, which satisfies the
+issue #406 requirement of at least fifty verified equation-type examples.
+No third-party benchmark payload is imported.
+
+| Category | Types | What it covers |
+| --- | --- | --- |
+| `linear_one_operation` | 10 | one inverse operation: `x + 2 = 5`, `100 - x = 42`, `-2 * x = 8`, decimal and fractional roots |
+| `linear_multi_operation` | 12 | two or more steps: parentheses on both sides, like terms, fractional terms, unknown on both sides |
+| `placeholder_unknown` | 8 | `?` and `*` placeholders standing in for the unknown, spaced and unspaced |
+| `symbolic_multi_variable` | 7 | isolation with a symbolic right-hand side (`2 * x + 3 * y = 12` → `x = 6 - 1.5*y`) |
+| `polynomial` | 14 | degree 2–5 with rational roots, double roots, pure powers, placeholder squares |
+| `natural_language_wrapper` | 13 | equation-solving cues in all four supported languages (en/ru/zh/hi) |
+| `evaluation_and_percent` | 3 | `2*2+2=?`, trailing `?`, `8% of x = 4` |
+
+Recorded upstream / stack limitations (`benchmark_limitation` records — asserted
+to keep failing *loudly*, never with a fabricated answer):
+
+| Gap | Where | Example | Behaviour |
+| --- | --- | --- | --- |
+| Irrational roots | link-calculator | `x^2 - 2 = 0` | `calculation_error` (rational roots only) |
+| Complex roots | link-calculator | `x^2 + 1 = 0` | `calculation_error` |
+| Degenerate / contradictory | link-calculator | `0 * x = 5` | `calculation_error`, not "no solution" |
+| Identity | formal-ai | `x = x` | `unknown` (no calculation signal) |
+| Unit-carrying equations | link-calculator | `x kg = 1000 g` | `calculation_error` (units not converted before solving) |
+| Named-unknown declarations | formal-ai | `What is x if x + 7 = 12?` | `calculation_error` (the `x if …` declaration is not stripped) |
+| Command-shaped prompts | formal-ai | `Find x: 5 * x = 45` | `agent_suggestion` (`find` is claimed by the shell router) |
 
 ### Multilingual local-path discovery — issue #819
 
@@ -321,6 +355,9 @@ cargo test --test unit local_path_discovery_benchmark_routes_every_case_to_find 
 
 # Review-gated workspace-change generalization (#848)
 cargo test --test unit only_a_green_named_review_promotes_and_replays_the_held_out_rewrite -- --nocapture
+
+# Equation-type corpus (#891)
+cargo test --test unit issue_891_equation_corpus -- --nocapture
 ```
 
 ## Conventions
