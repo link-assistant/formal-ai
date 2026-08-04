@@ -1,0 +1,25 @@
+# Title-role Spider-Man feature films with their earliest publication date.
+#
+# Series membership is derived, not listed: a film qualifies when it is part of
+# (P179) "Spider-Man in film" (Q2307877) or of any series that item has as a
+# part (P527), which covers the Raimi trilogy, The Amazing Spider-Man, the MCU
+# series and the Spider-Verse series without naming them here.
+#
+# The exclusions keep the result to theatrical films in which Spider-Man is the
+# title role:
+#   * P750 (distributed by) present   -> excludes unreleased fan films
+#   * P449 (original broadcaster) absent -> excludes the 1970s CBS TV films
+#   * not a short film (Q24862)       -> excludes Spider-Verse shorts
+#   * not an extended cut (Q914242)   -> excludes re-releases of the same film
+SELECT ?film (MIN(?date) AS ?firstRelease) WHERE {
+  ?film wdt:P179 ?series ;
+        wdt:P31/wdt:P279* wd:Q11424 ;
+        wdt:P750 ?distributor .
+  { BIND(wd:Q2307877 AS ?series) } UNION { wd:Q2307877 wdt:P527 ?series }
+  FILTER NOT EXISTS { ?film wdt:P449 ?broadcaster }
+  FILTER NOT EXISTS { ?film wdt:P31/wdt:P279* wd:Q24862 }
+  FILTER NOT EXISTS { ?film wdt:P31/wdt:P279* wd:Q914242 }
+  OPTIONAL { ?film wdt:P577 ?date }
+}
+GROUP BY ?film
+ORDER BY ?firstRelease ?film

@@ -1,0 +1,69 @@
+{
+  "entities": {
+    "Q27985819": {
+      "type": "item",
+      "id": "Q27985819",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Spider-Man: Far From Home"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Человек-паук: Вдали от дома"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "स्पाइडर-मैन: फार फ्रॉम होम"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "蜘蛛人：離家日"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "2019 film directed by Jon Watts"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "супергеройский фильм 2019 года производства Marvel Studios и Columbia Pictures"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "2019 की मार्वल द्वारा निर्मित सुपरहीरो फिल्म"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "由漫威影業製作的2019年超級英雄電影"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Spider-Man: Far from Home"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Вдали от дома"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "蜘蛛俠：決戰千里"
+          },
+          {
+            "language": "zh",
+            "value": "蜘蛛侠：英雄远征"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

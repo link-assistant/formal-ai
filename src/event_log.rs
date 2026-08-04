@@ -385,9 +385,13 @@ fn curate_thinking_event(
         "concept_lookup:request" | "procedural_how_to:request" => {
             keep("scan_memory", detail, "detailed")
         }
-        "concept_lookup:hit" | "fact_query:relation" | "fact_query:subject" | "fact_lookup:hit" => {
-            keep("lookup_fact", detail, "detailed")
-        }
+        "concept_lookup:hit"
+        | "fact_query:relation"
+        | "fact_query:subject"
+        | "fact_lookup:hit"
+        // The timeline an answer was computed from is part of the lookup, so it
+        // shows up in the reasoning trace next to the fact it answered.
+        | "release_timeline:hit" => keep("lookup_fact", detail, "detailed"),
         "web_search:request" | "http_fetch:request" | "url_navigate:request" => {
             keep("http_chat", detail, "detailed")
         }
@@ -578,6 +582,22 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
                 format!("docs_method:source_kind:{}", event.payload)
             }
             "docs_method:source" | "source" => format!("source:{}", event.payload),
+            // Release-timeline provenance (Issue #892): the snapshot an answer
+            // was computed from travels with it, so a reader can tell how
+            // current the list is and re-derive it from the same bytes.
+            "release_timeline:hit" => format!("release_timeline:{}", event.payload),
+            "release_timeline:snapshot" => {
+                format!("release_timeline:snapshot:{}", event.payload)
+            }
+            "release_timeline:source" => format!("source:{}", event.payload),
+            "release_timeline:sha256" => format!("release_timeline:sha256:{}", event.payload),
+            "release_timeline:released" => {
+                format!("release_timeline:released:{}", event.payload)
+            }
+            "release_timeline:announced" => {
+                format!("release_timeline:announced:{}", event.payload)
+            }
+            "release_timeline:stale" => format!("release_timeline:stale:{}", event.payload),
             "project:promoted" => format!("project:promoted:{}", event.payload),
             "project_lookup:promotion" => {
                 format!("project_lookup:promotion:{}", event.payload)

@@ -1,0 +1,59 @@
+{
+  "entities": {
+    "Q76448600": {
+      "type": "item",
+      "id": "Q76448600",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Spider-Man: Across the Spider-Verse"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Человек-паук: Паутина вселенных"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "स्पाइडर-मैन: अक्रॉस द स्पाइडर-वर्स"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "蜘蛛侠：纵横宇宙（上）"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "2023 animated film by Joaquim Dos Santos, Kemp Powers and Justin K. Thompson"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "анимационный фильм 2023 года режиссёров Жуакина Душа Сантуша, Кэмпа Пауэрса и Джастина Томпсона"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "2023年的动画电影"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Across the Spider-Verse"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Человек-паук: Через вселенные 2"
+          },
+          {
+            "language": "ru",
+            "value": "Человек-паук: Паутина вселенных. Часть первая"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

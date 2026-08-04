@@ -1,0 +1,85 @@
+{
+  "entities": {
+    "Q229808": {
+      "type": "item",
+      "id": "Q229808",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "The Amazing Spider-Man"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Новый Человек-паук"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "द अमेज़िंग स्पाइडर-मैन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "蜘蛛人：驚奇再起"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "2012 film directed by Marc Webb"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "американский супергеройский фильм 2012 года, режиссёр Марк Уэбб"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Amazing Spider-Man"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Человек-паук 4"
+          },
+          {
+            "language": "ru",
+            "value": "Человек-паук 4. Лагуна смерти"
+          },
+          {
+            "language": "ru",
+            "value": "Человек-Паук"
+          },
+          {
+            "language": "ru",
+            "value": "Удивительный Человек-паук"
+          },
+          {
+            "language": "ru",
+            "value": "Человек-паук 3D"
+          },
+          {
+            "language": "ru",
+            "value": "Новый Человек Паук"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "蜘蛛侠：惊奇再起"
+          },
+          {
+            "language": "zh",
+            "value": "蜘蛛俠：驚世現新"
+          },
+          {
+            "language": "zh",
+            "value": "超凡蜘蛛侠"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

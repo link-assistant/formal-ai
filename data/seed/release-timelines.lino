@@ -1,0 +1,181 @@
+release_timelines
+  # Answer wording for every timeline, one block per supported language. The
+  # placeholders are filled by the renderer: {subject}, {position}, {title},
+  # {year}, {date}, {source}, {retrieved}.
+  phrasing en
+    released-heading "Released {subject} in release order:"
+    released-item "{position}. {title} ({year})"
+    announced-heading "Announced but not yet released:"
+    announced-item "{title} ({date})"
+    undated-item "{title} (no announced date)"
+    item-separator "; "
+    section-end "."
+    provenance-note "Source: {source}, snapshot taken {retrieved}."
+    stale-note "Source: {source}, snapshot taken {retrieved}; titles released after that date may be missing."
+  phrasing ru
+    released-heading "Вышедшие {subject} в порядке выхода:"
+    released-item "{position}. {title} ({year})"
+    announced-heading "Анонсированы, но ещё не вышли:"
+    announced-item "{title} ({date})"
+    undated-item "{title} (дата выхода не объявлена)"
+    item-separator "; "
+    section-end "."
+    provenance-note "Источник: {source}, снимок данных от {retrieved}."
+    stale-note "Источник: {source}, снимок данных от {retrieved}; фильмы, вышедшие после этой даты, могут отсутствовать."
+  phrasing hi
+    released-heading "{subject} रिलीज़ क्रम में:"
+    released-item "{position}. {title} ({year})"
+    announced-heading "घोषित, लेकिन अभी रिलीज़ नहीं हुईं:"
+    announced-item "{title} ({date})"
+    undated-item "{title} (रिलीज़ तिथि घोषित नहीं)"
+    item-separator "; "
+    section-end "।"
+    provenance-note "स्रोत: {source}, {retrieved} का स्नैपशॉट।"
+    stale-note "स्रोत: {source}, {retrieved} का स्नैपशॉट; उसके बाद रिलीज़ हुई फ़िल्में इसमें नहीं हो सकतीं।"
+  phrasing zh
+    released-heading "已上映的{subject}，按上映顺序："
+    released-item "{position}. {title} ({year})"
+    announced-heading "已公布但尚未上映："
+    announced-item "{title} ({date})"
+    undated-item "{title} (尚未公布上映日期)"
+    item-separator "; "
+    section-end "。"
+    provenance-note "来源: {source}, 快照日期 {retrieved}。"
+    stale-note "来源: {source}, 快照日期 {retrieved}; 该日期之后上映的影片可能缺失。"
+  timeline spider_man_title_role_films
+    subject-qid Q2307877
+    source-label "Wikidata Query Service"
+    source-url "https://query.wikidata.org/sparql"
+    query-file "data/cache/wikidata/query/spider-man-title-role-films.rq"
+    cache-file "data/cache/wikidata/query/spider-man-title-role-films.json"
+    retrieved-at 2026-08-04
+    fresh-for-days 180
+    sha256 f93ce6e55a7b5420067e3773460a1bf4d1dab7fb7bae259eabe305d4d36e33c3
+    localized en
+      subject "title-role Spider-Man films"
+    localized ru
+      subject "фильмы, где Человек-паук — главный герой"
+    localized hi
+      subject "मुख्य भूमिका वाली स्पाइडर-मैन फ़िल्में"
+    localized zh
+      subject "以蜘蛛人为主角的电影"
+    entry Q484442
+      release-date 2002-05-03
+      localized en
+        title "Spider-Man"
+      localized ru
+        title "Человек-паук"
+      localized hi
+        title "स्पाइडर-मैन"
+      localized zh
+        title "蜘蛛人"
+    entry Q190145
+      release-date 2004-06-30
+      localized en
+        title "Spider-Man 2"
+      localized ru
+        title "Человек-паук 2"
+      localized hi
+        title "स्पाइडर-मैन २"
+      localized zh
+        title "蜘蛛人2"
+    entry Q182212
+      release-date 2007-05-01
+      localized en
+        title "Spider-Man 3"
+      localized ru
+        title "Человек-паук 3: Враг в отражении"
+      localized hi
+        title "स्पाइडर-मैन ३"
+      localized zh
+        title "蜘蛛人3"
+    entry Q229808
+      release-date 2012-06-28
+      localized en
+        title "The Amazing Spider-Man"
+      localized ru
+        title "Новый Человек-паук"
+      localized hi
+        title "द अमेज़िंग स्पाइडर-मैन"
+      localized zh
+        title "蜘蛛人：驚奇再起"
+    entry Q4254026
+      release-date 2014-04-17
+      localized en
+        title "The Amazing Spider-Man 2"
+      localized ru
+        title "Новый Человек-паук. Высокое напряжение"
+      localized hi
+        title "द अमेज़िंग स्पाइडर-मैन २"
+      localized zh
+        title "蜘蛛人驚奇再起2：電光之戰"
+    entry Q23010088
+      release-date 2017-07-07
+      localized en
+        title "Spider-Man: Homecoming"
+      localized ru
+        title "Человек-паук: Возвращение домой"
+      localized hi
+        title "स्पाइडर-मैन:होमकमिंग"
+      localized zh
+        title "蜘蛛人：返校日"
+    entry Q29588607
+      release-date 2018-12-13
+      localized en
+        title "Spider-Man: Into the Spider-Verse"
+      localized ru
+        title "Человек-паук: Через вселенные"
+      localized hi
+        title "स्पाइडर मैन: इनटू द स्पाइडर वर्स"
+      localized zh
+        title "蜘蛛人：新宇宙"
+    entry Q27985819
+      release-date 2019-06-28
+      localized en
+        title "Spider-Man: Far From Home"
+      localized ru
+        title "Человек-паук: Вдали от дома"
+      localized hi
+        title "स्पाइडर-मैन: फार फ्रॉम होम"
+      localized zh
+        title "蜘蛛人：離家日"
+    entry Q68934496
+      release-date 2021-12-17
+      localized en
+        title "Spider-Man: No Way Home"
+      localized ru
+        title "Человек-паук: Нет пути домой"
+      localized hi
+        title "स्पाइडर-मैन : नो वे होम"
+      localized zh
+        title "蜘蛛侠：英雄无归"
+    entry Q76448600
+      release-date 2023-06-01
+      localized en
+        title "Spider-Man: Across the Spider-Verse"
+      localized ru
+        title "Человек-паук: Паутина вселенных"
+      localized hi
+        title "स्पाइडर-मैन: अक्रॉस द स्पाइडर-वर्स"
+      localized zh
+        title "蜘蛛侠：纵横宇宙（上）"
+    entry Q113244935
+      release-date 2026-07-29
+      localized en
+        title "Spider-Man: Brand New Day"
+      localized ru
+        title "Человек-паук: Новый день"
+      localized hi
+        title "स्पाइडर-मैन: ब्रैंड न्यू डे"
+      localized zh
+        title "蜘蛛人：重生日"
+    entry Q110152284
+      release-date 2027-06-18
+      localized en
+        title "Spider-Man: Beyond the Spider-Verse"
+      localized ru
+        title "Человек-паук: За пределами вселенных"
+      localized hi
+        title "स्पाइडर-मैन: बियॉन्ड द स्पाइडर-वर्स"
+      localized zh
+        title "蜘蛛人：超越新宇宙"

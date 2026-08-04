@@ -1,0 +1,55 @@
+{
+  "entities": {
+    "Q110152284": {
+      "type": "item",
+      "id": "Q110152284",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Spider-Man: Beyond the Spider-Verse"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Человек-паук: За пределами вселенных"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "स्पाइडर-मैन: बियॉन्ड द स्पाइडर-वर्स"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "蜘蛛人：超越新宇宙"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "2027 animated film directed by Bob Persichetti and Justin K. Thompson"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "предстоящий американский компьютерно-анимационный супергеройский фильм"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Spider-Man: Across the Spider-Verse (Part Two)"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Человек-паук: Паутина вселенных. Часть вторая"
+          },
+          {
+            "language": "ru",
+            "value": "Человек-паук: Через вселенные 3"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

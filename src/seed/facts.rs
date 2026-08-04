@@ -62,6 +62,11 @@ pub struct FactRecord {
     pub summary: String,
     pub source: String,
     pub source_kind: String,
+    /// Slug of a `data/seed/release-timelines.lino` timeline that answers this
+    /// fact. When set, the answer is *computed* from the checked-in snapshot at
+    /// question time instead of being read from `summary`, so a list of dated
+    /// works stays ordered and keeps announced titles apart (issue #892).
+    pub release_timeline: String,
     pub localized: Vec<LocalizedFact>,
 }
 
@@ -152,7 +157,10 @@ pub fn facts() -> Vec<FactRecord> {
             continue;
         }
         let summary = entry.find_child_value("summary").to_string();
-        if summary.is_empty() {
+        let release_timeline = entry.find_child_value("release_timeline").to_string();
+        // A record needs *an* answer: either a written summary or a timeline to
+        // compute one from. Anything else is an incomplete entry.
+        if summary.is_empty() && release_timeline.is_empty() {
             continue;
         }
         let subject_aliases = split_pipe_list(entry.find_child_value("subject_aliases"))
@@ -194,6 +202,7 @@ pub fn facts() -> Vec<FactRecord> {
             summary,
             source: entry.find_child_value("source").to_string(),
             source_kind: entry.find_child_value("source_kind").to_string(),
+            release_timeline,
             localized,
         });
     }

@@ -40,6 +40,7 @@ pub(crate) mod parser;
 mod personas;
 mod projects;
 mod proof_programs;
+mod release_timelines;
 mod roles;
 mod shell_intents;
 mod summary_topics;
@@ -78,8 +79,9 @@ pub use embedded::{
     MULTILINGUAL_RESPONSES_PATTERN_LINO, MULTILINGUAL_RESPONSES_PROCEDURE_LINO,
     NUMERIC_LIST_OPERATIONS_LINO, OPERATION_VOCABULARY_LINO, PERSONAS_LINO,
     PROGRAM_CST_GRAMMARS_LINO, PROGRAM_PLAN_RULES_LINO, PROJECTS_LINO, PROMPT_PATTERNS_LINO,
-    PROOF_PROGRAM_TEMPLATES_LINO, RESPONSE_FILES, SELF_IMPROVEMENT_LOOP_LINO, SHELL_INTENTS_LINO,
-    SUMMARY_TOPICS_LINO, TERMINAL_COMMANDS_LINO, TOOLS_LINO,
+    PROOF_PROGRAM_TEMPLATES_LINO, RELEASE_TIMELINES_LINO, RESPONSE_FILES,
+    SELF_IMPROVEMENT_LOOP_LINO, SHELL_INTENTS_LINO, SUMMARY_TOPICS_LINO, TERMINAL_COMMANDS_LINO,
+    TOOLS_LINO,
 };
 pub use entity_names::{entity_names, EntityName};
 pub use facts::{facts, FactRecord, LocalizedFact};
@@ -103,6 +105,10 @@ pub use projects::{
     projects_registry, LocalizedProject, ProjectRecord, ProjectStatement, ProjectsRegistry,
 };
 pub use proof_programs::{proof_program_templates, ProofLanguageTemplates, ProofProgramTemplates};
+pub use release_timelines::{
+    parse_release_timelines, release_timelines, ReleaseTimeline, ReleaseTimelineEntry,
+    ReleaseTimelinePhrasing, ReleaseTimelines,
+};
 // `roles` re-exports its own submodules with globs; mirror that here so the
 // per-role constant list does not have to be restated (and keeps this file
 // under the 1000-line limit as new roles land).
