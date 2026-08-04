@@ -21,6 +21,11 @@ bump: minor
   output is no longer read as success (issues #905 and #908).
 - Failure reports name the failing command and the code it exited with instead of
   blaming the harness, so exit codes propagate to the reported outcome (issue #908).
+- A read of a file that is not there is reported as a failure, in the language the
+  request was written in, instead of being answered with "Contents of `hello.txt`:"
+  wrapped around the raw transport envelope. Only the shell route consulted the
+  harness's exit code, so a client that advertised a typed read tool got the English
+  false success for a Russian, Hindi or Chinese request (issues #905 and #916).
 - A general change request is no longer reported as "completed and verified" when the
   verification command it named exited non-zero; the observed failure replaces the
   claim (issue #905).
