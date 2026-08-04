@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.326.1] - 2026-08-04
+
+### Fixed
+- Agent mode no longer reports success for a repository work item whose only steps
+  wrote the plan record and read it back: the self-referential verification command
+  is gone and such a plan now ends in a `planned_not_executed` terminal state with a
+  "Planned, not executed" answer (issue #904).
+- A composed plan's `goal` is now the objective stated after the documented request
+  lead (`Issue to solve:`, `Task:`, `Goal:`, and their Russian, Hindi and Chinese
+  surfaces) instead of the caller's whole system-prompt preamble (issue #904).
+
 ## [0.326.0] - 2026-08-04
 
 ### Fixed
