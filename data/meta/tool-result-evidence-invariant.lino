@@ -1,0 +1,5 @@
+tool_result_evidence
+  record_type meta_invariant
+  failure "a failed tool result never completes its planned step"
+  retry "after a rejected write read the target then retry once"
+  verification "claim completion only when observed evidence matches expected evidence"

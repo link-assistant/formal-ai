@@ -1,4 +1,64 @@
 meanings
+  response_statement_audit_strength_range_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response statement audit strength range en"
+  response_statement_audit_temperature_range_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response statement audit temperature range en"
+  response_statement_audit_unknown_stance_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response statement audit unknown stance en"
+  response_statement_audit_unknown_tier_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response statement audit unknown tier en"
+  response_summarization_disputed_statement_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization disputed statement en"
+  response_summarization_disputed_statement_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization disputed statement hi"
+  response_summarization_disputed_statement_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization disputed statement ru"
+  response_summarization_disputed_statement_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization disputed statement zh"
+  response_summarization_evidence_denied_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization evidence denied en"
+  response_summarization_evidence_denied_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization evidence denied hi"
+  response_summarization_evidence_denied_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization evidence denied ru"
+  response_summarization_evidence_denied_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization evidence denied zh"
   response_summarization_evidence_summary_en
     defined-by response_template
     lexeme en
@@ -1334,63 +1394,3 @@ meanings
     lexeme en
       surface
         text "tool export memory"
-  tool_fact_lookup
-    defined-by tool
-    lexeme en
-      surface
-        text "tool fact lookup"
-  tool_fs_list
-    defined-by tool
-    lexeme en
-      surface
-        text "tool fs list"
-  tool_fs_move
-    defined-by tool
-    lexeme en
-      surface
-        text "tool fs move"
-  tool_fs_read
-    defined-by tool
-    lexeme en
-      surface
-        text "tool fs read"
-  tool_fs_write
-    defined-by tool
-    lexeme en
-      surface
-        text "tool fs write"
-  tool_http_fetch
-    defined-by tool
-    lexeme en
-      surface
-        text "tool http fetch"
-  tool_http_fetch_primitive
-    defined-by tool
-    lexeme en
-      surface
-        text "tool http fetch primitive"
-  tool_http_post_primitive
-    defined-by tool
-    lexeme en
-      surface
-        text "tool http post primitive"
-  tool_import_memory
-    defined-by tool
-    lexeme en
-      surface
-        text "tool import memory"
-  tool_intent_routing
-    defined-by tool
-    lexeme en
-      surface
-        text "tool intent routing"
-  tool_process_status
-    defined-by tool
-    lexeme en
-      surface
-        text "tool process status"
-  tool_read_local_file
-    defined-by tool
-    lexeme en
-      surface
-        text "tool read local file"

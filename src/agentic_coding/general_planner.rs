@@ -763,7 +763,9 @@ fn first_prefix_lead_end(lowered: &str, role: &str) -> Option<(usize, usize)> {
                     .next()
                     .is_some_and(|c| c.is_whitespace() || c.is_ascii_punctuation());
             if before_ok && after_ok {
-                if best.is_none_or(|(best_start, _)| start < best_start) {
+                if best.is_none_or(|(best_start, best_end)| {
+                    start < best_start || (start == best_start && end > best_end)
+                }) {
                     best = Some((start, end));
                 }
                 break;

@@ -83,11 +83,26 @@ fn append_item(
                 .get("output")
                 .map_or_else(String::new, value_to_prompt_text);
             let name = tool_names_by_id.get(&call_id).cloned();
+            let is_error = item
+                .get("is_error")
+                .or_else(|| item.get("isError"))
+                .and_then(Value::as_bool)
+                .unwrap_or_else(|| {
+                    item.get("status")
+                        .and_then(Value::as_str)
+                        .is_some_and(|status| {
+                            matches!(
+                                status.to_ascii_lowercase().as_str(),
+                                "failed" | "error" | "errored" | "cancelled" | "canceled"
+                            )
+                        })
+                });
             out.push(ChatMessage {
                 role: String::from("tool"),
                 content: MessageContent::Text(output),
                 tool_call_id: Some(call_id),
                 name,
+                is_error,
                 ..ChatMessage::default()
             });
         }

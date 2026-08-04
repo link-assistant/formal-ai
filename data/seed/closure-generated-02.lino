@@ -284,6 +284,16 @@ meanings
     lexeme en
       surface
         text "general plan repository verify action"
+  general_plan_unverified
+    defined-by intent
+    lexeme en
+      surface
+        text "general plan unverified"
+  general_plan_verification_mismatch
+    defined-by intent
+    lexeme en
+      surface
+        text "general plan verification mismatch"
   genuine
     defined-by word_surface
     lexeme en
@@ -1384,13 +1394,3 @@ meanings
     lexeme en
       surface
         text "missing russian label todo"
-  mkdir
-    defined-by concept
-    lexeme en
-      surface
-        text "mkdir"
-  mode
-    defined-by concept
-    lexeme en
-      surface
-        text "mode"

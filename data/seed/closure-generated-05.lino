@@ -1,4 +1,14 @@
 meanings
+  response_concept_lookup_in_context_no_alias_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context no alias zh"
+  response_concept_lookup_in_context_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context ru"
   response_concept_lookup_in_context_zh
     defined-by response_template
     lexeme en
@@ -579,6 +589,56 @@ meanings
     lexeme en
       surface
         text "response general plan repository verify action zh"
+  response_general_plan_unverified_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan unverified en"
+  response_general_plan_unverified_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan unverified es"
+  response_general_plan_unverified_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan unverified hi"
+  response_general_plan_unverified_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan unverified ru"
+  response_general_plan_unverified_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan unverified zh"
+  response_general_plan_verification_mismatch_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan verification mismatch en"
+  response_general_plan_verification_mismatch_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan verification mismatch es"
+  response_general_plan_verification_mismatch_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan verification mismatch hi"
+  response_general_plan_verification_mismatch_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan verification mismatch ru"
+  response_general_plan_verification_mismatch_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan verification mismatch zh"
   response_github_repository_traffic_en
     defined-by response_template
     lexeme en
@@ -1334,63 +1394,3 @@ meanings
     lexeme en
       surface
         text "response lexeme import part of speech lost ru"
-  response_lexeme_import_part_of_speech_lost_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import part of speech lost zh"
-  response_lexeme_import_qid_absent_from_cache_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import qid absent from cache en"
-  response_lexeme_import_qid_absent_from_cache_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import qid absent from cache hi"
-  response_lexeme_import_qid_absent_from_cache_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import qid absent from cache ru"
-  response_lexeme_import_qid_absent_from_cache_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import qid absent from cache zh"
-  response_lexeme_import_qid_absent_from_fetch_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import qid absent from fetch en"
-  response_lexeme_import_qid_absent_from_fetch_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import qid absent from fetch hi"
-  response_lexeme_import_qid_absent_from_fetch_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import qid absent from fetch ru"
-  response_lexeme_import_qid_absent_from_fetch_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import qid absent from fetch zh"
-  response_lexeme_import_refused_batch_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import refused batch en"
-  response_lexeme_import_refused_batch_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import refused batch hi"
-  response_lexeme_import_refused_batch_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import refused batch ru"

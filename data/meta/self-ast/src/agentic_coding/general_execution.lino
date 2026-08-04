@@ -1,0 +1,87 @@
+self_ast_census
+  target src/agentic_coding/general_execution.rs
+  language rust
+  fidelity full_ast
+  byte_len 7929
+  line_count 197
+  content_id source_module_29e49995fe906a9c
+  symbol_count 10
+  symbols
+    const GENERAL_PLAN_BODY_PLACEHOLDER 11 11
+    const EXPECTED_PLACEHOLDER 12 12
+    const OBSERVED_PLACEHOLDER 13 13
+    function plan_general_change_step 15 88
+    function finish_general_change 90 138
+    function tool_argument_path 140 146
+    function read_arguments 148 155
+    function capability_label 157 174
+    function general_plan_mismatch 176 189
+    function general_plan_unverified 191 197
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 6085
+    named_node_count 1241
+    distinct_node_kinds 59
+    node_kinds
+      arguments 100
+      array_expression 1
+      array_type 2
+      assignment_expression 6
+      binary_expression 20
+      block 31
+      call_expression 100
+      closure_expression 3
+      closure_parameters 3
+      const_item 3
+      crate 7
+      doc_comment 1
+      else_clause 1
+      escape_sequence 4
+      expression_statement 39
+      field_expression 90
+      field_identifier 90
+      function_item 7
+      function_modifiers 1
+      generic_type 1
+      identifier 336
+      if_expression 19
+      inner_doc_comment_marker 1
+      integer_literal 9
+      let_condition 5
+      let_declaration 16
+      lifetime 1
+      line_comment 4
+      macro_invocation 8
+      match_arm 17
+      match_block 2
+      match_expression 2
+      match_pattern 17
+      mutable_specifier 3
+      or_pattern 2
+      parameter 11
+      parameters 7
+      primitive_type 8
+      reference_expression 15
+      reference_type 15
+      return_expression 13
+      scoped_identifier 74
+      scoped_type_identifier 1
+      scoped_use_list 2
+      source_file 1
+      string_content 44
+      string_literal 42
+      super 5
+      token_tree 14
+      try_expression 1
+      tuple_expression 1
+      tuple_pattern 1
+      tuple_struct_pattern 6
+      type_arguments 1
+      type_identifier 15
+      unary_expression 3
+      use_declaration 6
+      use_list 2
+      visibility_modifier 1

@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/general_planner.rs
   language rust
   fidelity full_ast
-  byte_len 36448
-  line_count 854
-  content_id source_module_4099856a5fa72f0a
+  byte_len 36538
+  line_count 856
+  content_id source_module_790c39117b52dc96
   symbol_count 37
   symbols
     const PLAN_PATH 18 18
@@ -35,22 +35,22 @@ self_ast_census
     function looks_like_file_path 717 723
     function clean_cue_token 726 729
     function first_content_lead_end 734 736
-    function first_prefix_lead_end 738 775
-    function first_action_cue_end 778 783
-    function clean_content 791 807
-    function safe_relative_path 809 816
-    function capability_slug 818 835
-    function language 837 839
-    function escape 841 846
-    function field 848 850
-    function field_nested 852 854
+    function first_prefix_lead_end 738 777
+    function first_action_cue_end 780 785
+    function clean_content 793 809
+    function safe_relative_path 811 818
+    function capability_slug 820 837
+    function language 839 841
+    function escape 843 848
+    function field 850 852
+    function field_nested 854 856
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 21531
-    named_node_count 4366
+    total_link_count 21603
+    named_node_count 4377
     distinct_node_kinds 88
     node_kinds
       arguments 335
@@ -59,8 +59,8 @@ self_ast_census
       assignment_expression 3
       attribute 8
       attribute_item 8
-      binary_expression 90
-      block 85
+      binary_expression 94
+      block 86
       boolean_literal 2
       break_expression 1
       call_expression 335
@@ -89,7 +89,7 @@ self_ast_census
       function_item 31
       function_modifiers 2
       generic_type 20
-      identifier 971
+      identifier 976
       if_expression 29
       impl_item 2
       index_expression 20
@@ -109,7 +109,7 @@ self_ast_census
       outer_doc_comment_marker 155
       parameter 42
       parameters 31
-      parenthesized_expression 12
+      parenthesized_expression 13
       primitive_type 62
       range_expression 19
       reference_expression 50

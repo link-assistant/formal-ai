@@ -15,10 +15,8 @@ use super::formalize::{
     coverage_line, formalize_text_to_links, FormalizedKnowledgeBase, CANONICAL_FISHERMAN_SYNOPSIS,
     FISHERMAN_DOC_ID,
 };
-use super::general_planner::{
-    compose_general_change_plan, has_authoritative_literal_write, GeneralChangePlan,
-    GeneralPlanMode, PLAN_PATH,
-};
+use super::general_execution::plan_general_change_step;
+use super::general_planner::{compose_general_change_plan, has_authoritative_literal_write};
 use super::google_trends_catalog;
 use super::google_trends_learning;
 use super::intent_router;
@@ -54,8 +52,6 @@ pub const CANONICAL_SOURCE_URL: &str =
 
 /// The path the planner writes the knowledge base to.
 pub const KB_PATH: &str = "knowledge-base.lino";
-
-const GENERAL_PLAN_BODY_PLACEHOLDER: &str = concat!("{", "plan", "}");
 
 /// The next deterministic step the server takes in an agentic coding loop.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -416,69 +412,6 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     }
     compose_general_change_plan(&task)
         .map(|plan| plan_general_change_step(messages, tool_names, &plan))
-}
-
-fn plan_general_change_step(
-    messages: &[ChatMessage],
-    tool_names: &[&str],
-    plan: &GeneralChangePlan,
-) -> AgenticPlan {
-    let progress = Progress::scan(messages);
-    let writes = progress.count(Capability::Write);
-    if let Some(tool) = tool_for(tool_names, Capability::Write) {
-        if writes == 0 {
-            return plan_one(tool, write_arguments(PLAN_PATH, &plan.links_notation()));
-        }
-        if writes == 1 && plan.mode == GeneralPlanMode::LiteralFile {
-            return plan_one(tool, write_arguments(&plan.target, &plan.content));
-        }
-    }
-    if let Some(tool) = tool_for(tool_names, Capability::Run) {
-        let runs = progress.count(Capability::Run);
-        match plan.mode {
-            GeneralPlanMode::CommandOutput => {
-                if let Some(generation) = plan.steps.get(1).and_then(|step| step.command.as_deref())
-                {
-                    if runs == 0 {
-                        return plan_one(tool, json!({ "command": generation }).to_string());
-                    }
-                    if runs == 1 {
-                        return plan_one(
-                            tool,
-                            json!({ "command": plan.verification_command }).to_string(),
-                        );
-                    }
-                }
-            }
-            GeneralPlanMode::LiteralFile | GeneralPlanMode::RepositoryWorkItem if runs == 0 => {
-                return plan_one(
-                    tool,
-                    json!({ "command": plan.verification_command }).to_string(),
-                );
-            }
-            GeneralPlanMode::LiteralFile | GeneralPlanMode::RepositoryWorkItem => {}
-        }
-    }
-    if plan.mode == GeneralPlanMode::RepositoryWorkItem {
-        let response_language = crate::language::detect(&plan.goal).slug();
-        let mut answer =
-            crate::seed::localized_response("general_plan_repository_complete", response_language)
-                .unwrap_or_default();
-        answer = answer.replace("{target}", &plan.target);
-        answer = answer.replace("{plan_path}", PLAN_PATH);
-        answer = answer.replace(
-            GENERAL_PLAN_BODY_PLACEHOLDER,
-            plan.links_notation().trim_end(),
-        );
-        return AgenticPlan::Final(answer);
-    }
-    AgenticPlan::Final(format!(
-        "Completed the general change request for {} and verified it with `{}`.\n\nPlan event ({}):\n\n{}",
-        plan.target,
-        plan.verification_command,
-        PLAN_PATH,
-        plan.links_notation().trim_end(),
-    ))
 }
 
 /// Run a shell command through the client-owned tool loop, then present its result.

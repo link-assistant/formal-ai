@@ -2,11 +2,11 @@ self_ast_census_index
   language rust
   engine meta_language
   full_fidelity_prefix src/agentic_coding/
-  module_count 429
-  full_ast_module_count 55
+  module_count 430
+  full_ast_module_count 56
   signature_module_count 374
-  symbol_count 8683
-  content_id self_ast_census_index_24daf7427abd8979
+  symbol_count 8704
+  content_id self_ast_census_index_db4c10af3a54882b
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/algorithm_learning.rs full_ast 13 source_module_0cde1901a8a78574
@@ -28,7 +28,8 @@ self_ast_census_index
     src/agentic_coding/external_benchmark_learning.rs full_ast 5 source_module_143122bfd70dcc0e
     src/agentic_coding/file_read.rs full_ast 43 source_module_7df97238be9a32aa
     src/agentic_coding/formalize.rs full_ast 23 source_module_0841b6b93be1278d
-    src/agentic_coding/general_planner.rs full_ast 37 source_module_4099856a5fa72f0a
+    src/agentic_coding/general_execution.rs full_ast 10 source_module_29e49995fe906a9c
+    src/agentic_coding/general_planner.rs full_ast 37 source_module_790c39117b52dc96
     src/agentic_coding/google_trends_catalog.rs full_ast 11 source_module_0269b7242306e817
     src/agentic_coding/google_trends_learning.rs full_ast 9 source_module_fd8f391bbc37c7f2
     src/agentic_coding/intent_router.rs full_ast 6 source_module_822f3a5dbf5305ca
@@ -43,11 +44,11 @@ self_ast_census_index
     src/agentic_coding/lexicon.rs full_ast 29 source_module_16601e4b778ef5d2
     src/agentic_coding/local_search.rs full_ast 46 source_module_35b601ec40ec2dba
     src/agentic_coding/meaning_detail.rs full_ast 38 source_module_763b6af219dd70d8
-    src/agentic_coding/mod.rs full_ast 48 source_module_acdd608b8305dc00
+    src/agentic_coding/mod.rs full_ast 49 source_module_7d2d5616d689fba8
     src/agentic_coding/narration.rs full_ast 9 source_module_256edf1475c908fe
-    src/agentic_coding/planner.rs full_ast 38 source_module_243e3f143b1475e3
+    src/agentic_coding/planner.rs full_ast 36 source_module_b651ebff5f6ee035
     src/agentic_coding/procedure.rs full_ast 5 source_module_59c2c30fbf44bc52
-    src/agentic_coding/progress.rs full_ast 10 source_module_c875bf0c4cba80c3
+    src/agentic_coding/progress.rs full_ast 17 source_module_edad2f9a1d67359a
     src/agentic_coding/question_catalog.rs full_ast 24 source_module_512a32489f4c308d
     src/agentic_coding/rebuild_plan.rs full_ast 9 source_module_1b3baad04d15abbb
     src/agentic_coding/repair_strategy.rs full_ast 9 source_module_7dd17a52ae12d7d3
@@ -61,13 +62,13 @@ self_ast_census_index
     src/agentic_coding/source_links.rs full_ast 11 source_module_6177a1573de819fc
     src/agentic_coding/statement_audit.rs full_ast 5 source_module_f81e28e434383dbf
     src/agentic_coding/structured_edit.rs full_ast 7 source_module_a03789fb54a6d371
-    src/agentic_coding/tool_result.rs full_ast 29 source_module_2b04e7947c63114d
+    src/agentic_coding/tool_result.rs full_ast 33 source_module_17f09758f0920080
     src/agentic_coding/web_research.rs full_ast 38 source_module_3284f1f58c70bb0a
     src/agentic_coding/workspace_change.rs full_ast 24 source_module_459ae62e4690a7e8
     src/algorithm_discovery.rs signature 41 source_module_ce34c381d0e5aa5a
     src/algorithm_discovery/adapters.rs signature 4 source_module_8b3513d5e4646c8e
     src/algorithm_discovery/execution.rs signature 17 source_module_22f5b6caa8c31be8
-    src/anthropic.rs signature 22 source_module_4521391b735b65a0
+    src/anthropic.rs signature 22 source_module_0e648f14bc04ae8d
     src/arithmetic.rs signature 50 source_module_0c0cbf53baa417f0
     src/arithmetic_word_tables.rs signature 2 source_module_05d1534ee9527818
     src/associative_package.rs signature 39 source_module_1f340d7636cff958
@@ -237,11 +238,11 @@ self_ast_census_index
     src/proof_engine/types.rs signature 15 source_module_24d7dff201c3547d
     src/proof_program.rs signature 3 source_module_6d477ecdcd32b74b
     src/proof_program/core.rs signature 16 source_module_456f5cd5ed2962be
-    src/protocol.rs signature 47 source_module_7d1bf82d5d584e0c
+    src/protocol.rs signature 48 source_module_f135eea56e884ffc
     src/protocol/content.rs signature 14 source_module_c8f01edf04d1857c
     src/protocol/output.rs signature 16 source_module_6cfbc8d372025668
     src/protocol/recording.rs signature 9 source_module_d363aceee7b57b11
-    src/protocol/responses_input.rs signature 3 source_module_b3001670f17b0fc4
+    src/protocol/responses_input.rs signature 3 source_module_068773bbe62fd9bd
     src/protocol_memory.rs signature 3 source_module_c144f67aafb2c4b8
     src/protocol_policy.rs signature 17 source_module_f9a923bc8ebee566
     src/protocol_responses.rs signature 15 source_module_75cde53e6c72c34e

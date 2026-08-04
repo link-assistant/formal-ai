@@ -24,6 +24,37 @@ pub(super) fn normalized_payload(raw: &str) -> Option<String> {
     (result.error.is_none() && !looks_like_error(&result.payload)).then_some(result.payload)
 }
 
+/// Return output after transport normalization when the transport itself
+/// succeeded. Unlike [`normalized_payload`], this does not classify arbitrary
+/// output vocabulary: verification targets are allowed to contain words such
+/// as `error` or `failed` when those are the requested bytes.
+pub(super) fn observed_payload(raw: &str) -> Option<String> {
+    let result = normalize(raw);
+    result.error.is_none().then_some(result.payload)
+}
+
+/// Return the client-owned failure detail when a result failed, whether the
+/// signal arrived as protocol metadata, a structured transport envelope, or a
+/// raw adapter message.
+pub(super) fn failure_message(
+    raw: &str,
+    explicitly_failed: bool,
+    infer_from_prose: bool,
+) -> Option<String> {
+    let result = normalize(raw);
+    if let Some(error) = result.error {
+        return Some(error);
+    }
+    if explicitly_failed || (infer_from_prose && looks_like_error(&result.payload)) {
+        return Some(if result.payload.trim().is_empty() {
+            raw.trim().to_owned()
+        } else {
+            result.payload
+        });
+    }
+    None
+}
+
 fn looks_like_error(text: &str) -> bool {
     crate::seed::lexicon().mentions_role(
         ROLE_TOOL_RESULT_FAILURE_SIGNAL,
@@ -73,6 +104,12 @@ pub(super) fn render(label: &str, raw: &str, prompt: &str) -> String {
         &result.payload,
         "",
     )
+}
+
+pub(super) fn render_failure(label: &str, detail: &str, prompt: &str) -> String {
+    let language = response_language(prompt);
+    let failure = fill("tool_result_failed", language, label, "", "", detail);
+    crate::failure_reporting::append_invitation(&failure, language)
 }
 
 pub(super) fn latest_turn_answer(
@@ -171,7 +208,9 @@ fn requested_index(lexicon: &crate::seed::Lexicon, prompt: &str) -> usize {
 fn normalize(raw: &str) -> NormalizedResult {
     let trimmed = raw.trim();
     let Ok(value) = serde_json::from_str::<Value>(trimmed) else {
-        return from_payload(&strip_transport_envelope(trimmed), None);
+        let payload = strip_transport_envelope(trimmed);
+        let error = plain_nonzero_status(&payload).then(|| payload.clone());
+        return from_payload(&payload, error);
     };
     let Some(object) = value.as_object() else {
         return from_payload(&pretty_json(&value), None);
@@ -193,6 +232,10 @@ fn normalize(raw: &str) -> NormalizedResult {
         .iter()
         .filter_map(|key| object.get(*key))
         .any(|value| value.as_bool() == Some(false));
+    let explicitly_failed = ["is_error", "isError"]
+        .iter()
+        .filter_map(|key| object.get(*key))
+        .any(|value| value.as_bool() == Some(true));
     let explicit_error = ["error", "stderr", "failure"]
         .iter()
         .filter_map(|key| object.get(*key))
@@ -202,10 +245,13 @@ fn normalize(raw: &str) -> NormalizedResult {
             || failed_http
             || failed_status
             || explicitly_unsuccessful
+            || explicitly_failed
             || explicit_error.is_some())
     {
         let error = explicit_error
             .or_else(|| object.get("output").and_then(nonempty_text))
+            .or_else(|| object.get("content").and_then(nonempty_text))
+            .or_else(|| object.get("result").and_then(nonempty_text))
             .or_else(|| {
                 [
                     "exit_code",
@@ -231,6 +277,23 @@ fn normalize(raw: &str) -> NormalizedResult {
         return from_payload(&payload, None);
     }
     from_payload(&pretty_json(&value), None)
+}
+
+fn plain_nonzero_status(text: &str) -> bool {
+    text.lines().any(|line| {
+        let normalized = line.trim().to_ascii_lowercase();
+        ["exit code:", "exit code =", "exited with status"]
+            .iter()
+            .find_map(|marker| normalized.strip_prefix(marker))
+            .and_then(|suffix| {
+                suffix
+                    .trim()
+                    .split(|character: char| !character.is_ascii_digit())
+                    .find(|part| !part.is_empty())
+            })
+            .and_then(|digits| digits.parse::<u32>().ok())
+            .is_some_and(|code| code != 0)
+    })
 }
 
 fn from_payload(payload: &str, error: Option<String>) -> NormalizedResult {
