@@ -1,7 +1,7 @@
 release_timelines
-  # Answer wording for every timeline, one block per supported language. The
-  # placeholders are filled by the renderer: {subject}, {position}, {title},
-  # {year}, {date}, {source}, {retrieved}.
+  # `Answer wording for every timeline, one block per supported language. The`
+  # `placeholders are filled by the renderer: {subject}, {position}, {title},`
+  # `{year}, {date}, {source}, {retrieved}.`
   phrasing en
     released-heading "Released {subject} in release order:"
     released-item "{position}. {title} ({year})"
@@ -50,7 +50,7 @@ release_timelines
     cache-file "data/cache/wikidata/query/spider-man-title-role-films.json"
     retrieved-at 2026-08-04
     fresh-for-days 180
-    sha256 f93ce6e55a7b5420067e3773460a1bf4d1dab7fb7bae259eabe305d4d36e33c3
+    sha256 "f93ce6e55a7b5420067e3773460a1bf4d1dab7fb7bae259eabe305d4d36e33c3"
     localized en
       subject "title-role Spider-Man films"
     localized ru

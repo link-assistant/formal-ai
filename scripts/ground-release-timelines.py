@@ -208,7 +208,7 @@ def render_timeline(block: list[str], refresh: bool) -> list[str]:
         if line.startswith("    entry "):
             break
         if stripped.startswith("sha256 "):
-            header.append(f"    sha256 {digest}")
+            header.append(f'    sha256 "{digest}"')
             continue
         if stripped.startswith("retrieved-at "):
             header.append(f"    retrieved-at {retrieved}")

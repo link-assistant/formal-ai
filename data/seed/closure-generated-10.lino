@@ -1,4 +1,14 @@
 meanings
+  truthfulness
+    defined-by word_surface
+    lexeme en
+      surface
+        text "truthfulness"
+  ts
+    defined-by word_surface
+    lexeme en
+      surface
+        text "ts"
   tue
     defined-by word_surface
     lexeme en
@@ -210,7 +220,7 @@ meanings
       surface
         text "wikibooks"
   wikidata
-    defined-by source
+    defined-by source_kind
     lexeme en
       surface
         text "wikidata"

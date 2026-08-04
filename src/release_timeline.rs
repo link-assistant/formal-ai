@@ -17,7 +17,7 @@ use crate::seed::{release_timelines, ReleaseTimeline, ReleaseTimelineEntry, Rele
 
 /// A rendered timeline plus the classification the answer is built from, so
 /// callers (and tests) can inspect the split without parsing prose.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RenderedTimeline {
     /// The full answer text.
     pub text: String,
@@ -138,6 +138,8 @@ fn is_released(entry: &ReleaseTimelineEntry, today: &str) -> bool {
     !entry.release_date.is_empty() && entry.release_date.as_str() <= today
 }
 
+/// Is this snapshot past its freshness window?
+///
 /// A snapshot is stale once more days than its freshness window have passed
 /// since it was taken. An unparseable or missing stamp is treated as stale, so
 /// a broken provenance record can never claim to be current.

@@ -581,7 +581,9 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "docs_method:source_kind" => {
                 format!("docs_method:source_kind:{}", event.payload)
             }
-            "docs_method:source" | "source" => format!("source:{}", event.payload),
+            "docs_method:source" | "source" | "release_timeline:source" => {
+                format!("source:{}", event.payload)
+            }
             // Release-timeline provenance (Issue #892): the snapshot an answer
             // was computed from travels with it, so a reader can tell how
             // current the list is and re-derive it from the same bytes.
@@ -589,7 +591,6 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "release_timeline:snapshot" => {
                 format!("release_timeline:snapshot:{}", event.payload)
             }
-            "release_timeline:source" => format!("source:{}", event.payload),
             "release_timeline:sha256" => format!("release_timeline:sha256:{}", event.payload),
             "release_timeline:released" => {
                 format!("release_timeline:released:{}", event.payload)

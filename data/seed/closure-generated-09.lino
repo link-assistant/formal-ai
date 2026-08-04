@@ -1,4 +1,9 @@
 meanings
+  response_write_program_language_unspecified_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified zh"
   response_write_program_request_unspecified_en
     defined-by response_template
     lexeme en
@@ -414,6 +419,11 @@ meanings
     lexeme en
       surface
         text "spanish"
+  spider_man_title_role_films
+    defined-by release_timeline
+    lexeme en
+      surface
+        text "spider man title role films"
   sqrt
     defined-by word_surface
     lexeme en
@@ -1384,13 +1394,3 @@ meanings
     lexeme en
       surface
         text "true"
-  truthfulness
-    defined-by word_surface
-    lexeme en
-      surface
-        text "truthfulness"
-  ts
-    defined-by word_surface
-    lexeme en
-      surface
-        text "ts"

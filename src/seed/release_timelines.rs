@@ -21,7 +21,7 @@ use super::parser::{parse_lino, LinoNode};
 use super::RELEASE_TIMELINES_LINO;
 
 /// Answer wording for one language, with `{placeholder}` slots.
-#[derive(Debug, Clone, Default, PartialEq)]
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct ReleaseTimelinePhrasing {
     pub language: String,
     pub released_heading: String,
@@ -36,7 +36,7 @@ pub struct ReleaseTimelinePhrasing {
 }
 
 /// One work in a timeline: its grounding id, localized titles, and release date.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ReleaseTimelineEntry {
     /// Wikidata entity id of the work, e.g. `Q484442`.
     pub qid: String,
@@ -65,7 +65,7 @@ impl ReleaseTimelineEntry {
 }
 
 /// A dated list of works for one subject, captured from one source snapshot.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ReleaseTimeline {
     /// Stable slug referenced by `release_timeline <slug>` in `facts.lino`.
     pub slug: String,
@@ -108,7 +108,7 @@ impl ReleaseTimeline {
 }
 
 /// The parsed registry: wording per language plus every declared timeline.
-#[derive(Debug, Clone, Default, PartialEq)]
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct ReleaseTimelines {
     pub phrasings: Vec<ReleaseTimelinePhrasing>,
     pub timelines: Vec<ReleaseTimeline>,

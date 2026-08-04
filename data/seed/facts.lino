@@ -42,9 +42,6 @@ fact_spider_man_films_release_order
   wikidata Q2307877
   subject_aliases ("spider man films" "spider man movies" "spider man film series" "spider-man films" "spider-man movies" "films about spider man" "movies about spider man" "человек паук фильмы" "человек-паук фильмы" "человека паука фильмы" "человека-паука фильмы" "фильмы про человека паука" "фильмы про человека-паука" "фильмы о человеке пауке" "фильмы о человеке-пауке" "фильмы человека паука" "фильмы человека-паука" "кино про человека паука" "кино про человека-паука")
   question_keywords ("release order" "order of release" "released order" "theatrical release order" "screen release order" "list" "перечисли" "перечислить" "назови" "порядке выхода" "порядок выхода" "порядку выхода" "в порядке выхода" "по порядку выхода" "выхода на экран")
-  # No frozen sentence: the answer is rendered from the timeline snapshot in
-  # data/seed/release-timelines.lino, so newly released films appear in order
-  # and announced ones stay in their own section (issue #892).
   release_timeline spider_man_title_role_films
   source "https://query.wikidata.org/sparql"
   source_kind wikidata

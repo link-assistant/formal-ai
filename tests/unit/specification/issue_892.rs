@@ -217,6 +217,89 @@ fn the_seeded_spider_man_timeline_is_grounded_and_ordered() {
     );
 }
 
+/// The seed must be a faithful transcription of the checked-in snapshot, not a
+/// hand-typed list that happens to look like one: every date is re-read from the
+/// SPARQL answer, every title from the entity cache, and the recorded digest is
+/// recomputed from the snapshot bytes.
+#[test]
+fn the_seeded_timeline_is_a_transcription_of_the_checked_in_cache() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
+    let timeline = release_timelines()
+        .timeline("spider_man_title_role_films")
+        .expect("the Spider-Man timeline should be registered");
+
+    let snapshot = std::fs::read(root.join(&timeline.cache_file))
+        .unwrap_or_else(|error| panic!("{} should be checked in: {error}", timeline.cache_file));
+    assert_eq!(
+        formal_ai::sha256_hex(&snapshot),
+        timeline.sha256,
+        "{} records the digest of a different snapshot",
+        timeline.cache_file
+    );
+    assert!(
+        root.join(&timeline.query_file).exists(),
+        "{} should ship the query the snapshot came from",
+        timeline.query_file
+    );
+
+    let document: serde_json::Value =
+        serde_json::from_slice(&snapshot).expect("the snapshot should be a SPARQL JSON answer");
+    let mut expected: Vec<(String, String)> = document["results"]["bindings"]
+        .as_array()
+        .expect("the SPARQL answer should carry bindings")
+        .iter()
+        .map(|binding| {
+            let qid = binding["film"]["value"]
+                .as_str()
+                .expect("every row names a film")
+                .rsplit('/')
+                .next()
+                .expect("an entity URI ends in its id")
+                .to_owned();
+            let date = binding["firstRelease"]["value"]
+                .as_str()
+                .unwrap_or_default()
+                .split('T')
+                .next()
+                .unwrap_or_default()
+                .to_owned();
+            (qid, date)
+        })
+        .collect();
+    expected.sort_by(|left, right| {
+        (left.1.is_empty(), &left.1, &left.0).cmp(&(right.1.is_empty(), &right.1, &right.0))
+    });
+
+    assert_eq!(
+        timeline
+            .entries
+            .iter()
+            .map(|entry| (entry.qid.clone(), entry.release_date.clone()))
+            .collect::<Vec<_>>(),
+        expected,
+        "the seeded entries should be exactly the films and dates the snapshot returned"
+    );
+
+    for entry in &timeline.entries {
+        let path = root.join(format!("data/cache/wikidata/entity/{}.json", entry.qid));
+        let cached: serde_json::Value = serde_json::from_slice(
+            &std::fs::read(&path)
+                .unwrap_or_else(|error| panic!("{} should be cached: {error}", entry.qid)),
+        )
+        .expect("a cached entity should be JSON");
+        for (language, title) in &entry.titles {
+            assert_eq!(
+                cached["entities"][&entry.qid]["labels"][language]["value"]
+                    .as_str()
+                    .unwrap_or_default(),
+                title,
+                "the {language} title of {} should be its cached Wikidata label",
+                entry.qid
+            );
+        }
+    }
+}
+
 #[test]
 fn spider_man_answers_come_from_the_snapshot_not_from_a_sentence() {
     let solver = UniversalSolver::default();

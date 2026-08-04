@@ -1,4 +1,9 @@
 meanings
+  response_coding_workspace_effect_observed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace effect observed zh"
   response_coding_workspace_verification_failed_en
     defined-by response_template
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "response lexeme import invalid surface zh"
-  response_lexeme_import_lexeme_lost_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import lexeme lost en"
