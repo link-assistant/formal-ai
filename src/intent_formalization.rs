@@ -11,7 +11,7 @@ use std::sync::OnceLock;
 use lino_objects_codec::format::escape_reference;
 
 use crate::engine::{
-    normalize_prompt, program_language_by_alias, program_spec, stable_id, SelectedRule,
+    normalize_prompt, program_spec, stable_id, SelectedRule,
     WRITE_PROGRAM_INTENT,
 };
 use crate::event_log::EventLog;
@@ -233,8 +233,8 @@ pub fn formalize_intent(
     candidate: Option<&FormalizationCandidate>,
 ) -> IntentFormalization {
     let normalized = normalize_prompt(prompt);
-    let route = route_for_prompt(&normalized);
-    let parameters = write_program_parameters(&normalized).unwrap_or_default();
+    let route = route_for_prompt(prompt, &normalized);
+    let parameters = write_program_parameters(prompt, &normalized).unwrap_or_default();
     let mut knowns = vec![
         format!("impulse:{}", impulse_id_for(prompt)),
         format!("language:{language}"),
@@ -329,8 +329,8 @@ struct MatchedRoute {
     response_link: String,
 }
 
-fn route_for_prompt(normalized: &str) -> Option<MatchedRoute> {
-    if write_program_parameters(normalized).is_some() {
+fn route_for_prompt(raw: &str, normalized: &str) -> Option<MatchedRoute> {
+    if write_program_parameters(raw, normalized).is_some() {
         return Some(MatchedRoute {
             slug: String::from(WRITE_PROGRAM_INTENT),
             response_link: String::from("response:write_program"),
@@ -451,7 +451,7 @@ pub(crate) fn active_program_context(history: &[ConversationTurn]) -> Option<Act
     let mut language = None;
     for turn in history.iter().rev() {
         let normalized = normalize_prompt(&turn.content);
-        let Some(parameters) = write_program_parameters(&normalized) else {
+        let Some(parameters) = write_program_parameters(&turn.content, &normalized) else {
             continue;
         };
         if task.is_none() {
@@ -503,7 +503,7 @@ pub(crate) fn recover_write_program_rule(
     if recovered_task.is_none() || recovered_language.is_none() {
         for turn in history.iter().rev() {
             let normalized = normalize_prompt(&turn.content);
-            let Some(parameters) = write_program_parameters(&normalized) else {
+            let Some(parameters) = write_program_parameters(&turn.content, &normalized) else {
                 continue;
             };
             if recovered_task.is_none() {
@@ -579,7 +579,7 @@ pub(crate) fn detected_program_modifiers(normalized: &str) -> Vec<String> {
         .collect()
 }
 
-fn write_program_parameters(normalized: &str) -> Option<BTreeMap<String, String>> {
+fn write_program_parameters(raw: &str, normalized: &str) -> Option<BTreeMap<String, String>> {
     let task = crate::coding::program_task_by_alias(normalized);
     let language = requested_program_language(normalized);
     // Issue #386: "write a <program>" is recognised by *meaning*, not a hardcoded
@@ -599,6 +599,18 @@ fn write_program_parameters(normalized: &str) -> Option<BTreeMap<String, String>
     if task.is_none() && !asks_for_program && !asks_for_known_language_program {
         return None;
     }
+    // Issue #906: "Create a file named hello.txt containing Hello World, in
+    // JavaScript." names a *file* — a path and its content — and the task alias
+    // table matched only because the content happens to read "hello world".
+    // Answering it with `console.log("Hello, world!")` discards both the path
+    // and the content and reports a program that was never asked for. A request
+    // whose artefact is a file is not a `write_program` request; the file-write
+    // shape is recognized by the same seed-driven parse that composes the plan
+    // (`data/seed/meanings-file-write.lino`), so this declines exactly the
+    // requests the file planner can actually carry out.
+    if crate::agentic_coding::general_planner::has_file_write_intent(&raw.to_lowercase()) {
+        return None;
+    }
     let mut parameters = BTreeMap::new();
     if let Some(task) = task {
         // Issue #358: modification phrases in the same turn lower the base task
@@ -615,57 +627,18 @@ fn write_program_parameters(normalized: &str) -> Option<BTreeMap<String, String>
 }
 
 fn known_write_program_language(language: &str) -> bool {
-    crate::coding::program_language_by_slug(language).is_some()
-        || crate::knowledge::CodingOracle::knows_language(language)
+    crate::implementation_language::is_known(language)
 }
 
+/// The implementation language the request names, if any.
+///
+/// Issue #386 introduced the seed-driven positional scan that reads an unknown
+/// language name after the modifier marker; issue #906 moved the whole question
+/// — including what may legally fill that position — into
+/// [`crate::implementation_language`], because "in the current directory" was
+/// being read as the language `the`.
 fn requested_program_language(normalized: &str) -> Option<String> {
-    if let Some(language) = program_language_by_alias(normalized) {
-        return Some(String::from(language.slug));
-    }
-    // Issue #386: the function words that introduce an *unknown* implementation
-    // language ("write a program in <name>", "на языке <name>") are seed data,
-    // not literals baked into the parser. Source the head-initial English/Russian
-    // surfaces of the target-preposition and "language" noun roles from the
-    // lexicon so this positional extractor reasons over the ontology instead of a
-    // hardcoded `matches!` list. The catalog-driven `program_language_by_alias`
-    // above already resolves every *known* language across all four supported
-    // languages; this fallback only reads the bare name trailing the marker, so
-    // it consults the two head-initial languages whose name follows the marker
-    // (the head-final Hindi/Chinese forms are carried in the seed for coverage
-    // but place the name before the marker, which this scan does not chase).
-    let lexicon = crate::seed::lexicon();
-    let preposition_surfaces = lexicon.words_for_role_in_languages(
-        crate::seed::ROLE_IMPLEMENTATION_LANGUAGE_PREPOSITION,
-        &["en", "ru"],
-    );
-    let language_noun_surfaces = lexicon.words_for_role_in_languages(
-        crate::seed::ROLE_IMPLEMENTATION_LANGUAGE_NOUN,
-        &["en", "ru"],
-    );
-    let tokens = normalized.split_whitespace().collect::<Vec<_>>();
-    for (index, token) in tokens.iter().enumerate() {
-        if !preposition_surfaces
-            .iter()
-            .any(|surface| surface.as_str() == *token)
-        {
-            continue;
-        }
-        let Some(next) = tokens.get(index + 1) else {
-            continue;
-        };
-        if language_noun_surfaces
-            .iter()
-            .any(|surface| surface.as_str() == *next)
-        {
-            if let Some(after_language_word) = tokens.get(index + 2) {
-                return Some((*after_language_word).to_owned());
-            }
-            continue;
-        }
-        return Some((*next).to_owned());
-    }
-    None
+    crate::implementation_language::requested(normalized)
 }
 
 fn append_candidate_knowns(
@@ -765,7 +738,7 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
         ),
         (
             "handler:write_program",
-            write_program_parameters(normalized).is_some(),
+            write_program_parameters(prompt, normalized).is_some(),
         ),
         (
             "handler:program_synthesis",
