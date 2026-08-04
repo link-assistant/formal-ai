@@ -284,4 +284,4 @@ exceeds the disk and the runner crashes with `No space left on device`.
 | [`jobs.json`](./data/jobs.json) | All jobs + steps + conclusions. |
 | [`deploy-annotations.json`](./data/deploy-annotations.json) | The `No space left on device` failure annotation. |
 | [`all-annotations.txt`](./data/all-annotations.txt) | Every annotation (failure + warnings) across all jobs. |
-| [`deploy-pages-81948748273.log`](./data/deploy-pages-81948748273.log) | Step log captured for the deploy job (up to the runner crash). |
+| `deploy-pages-81948748273.log` (not committed) | Step log captured for the deploy job (up to the runner crash). |

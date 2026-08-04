@@ -1,6 +1,9 @@
 # Languages and phrasing parity
 
-English, Russian, Chinese, and Hindi are supported language peers. A behavior
+English, Russian, Chinese, and Hindi are full-status language peers, and
+Spanish is registered as a partial peer. The supported set is data, not a Rust
+enum: it is declared in `data/seed/languages.lino` (with
+`fallback_policy explicit_gap`) and read through `registered_languages()`. A behavior
 is complete only when equivalent intents, tool routing, output rendering, and
 UI labels work in every supported language; English is not a privileged
 production fallback for a missing language entry.

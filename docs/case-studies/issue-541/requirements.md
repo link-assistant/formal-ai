@@ -41,7 +41,7 @@ Priorities:
   badge, the collapsed-sidebar toggle, the mobile drawer section headings, and
   the per-step `tool`/`agent` mode badges — renders against the dark palette,
   not the light hex from the base rule. The Playwright spec
-  [`tests/e2e/tests/issue-541-theme.spec.js`](../../tests/e2e/tests/issue-541-theme.spec.js)
+  [`tests/e2e/tests/issue-541-theme.spec.js`](../../../tests/e2e/tests/issue-541-theme.spec.js)
   reads `getComputedStyle()` and asserts the colour is in the dark band.
 
 ---
@@ -223,7 +223,7 @@ Priorities:
     `isPermitted` gate; the CTA grants every tool individually rather than
     bypassing checks.
 - **Acceptance:**
-  [`tests/e2e/tests/issue-541-permissions.spec.js`](../../tests/e2e/tests/issue-541-permissions.spec.js)
+  [`tests/e2e/tests/issue-541-permissions.spec.js`](../../../tests/e2e/tests/issue-541-permissions.spec.js)
   contains two cases: (a) no pending task — grant flips mode to Agent and
   every gate now reports `granted: true`; (b) pending task `ls ~` from chat
   mode — clicking the CTA flips mode, grants, and the mocked `runAgentProvider`

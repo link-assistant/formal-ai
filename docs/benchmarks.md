@@ -15,7 +15,7 @@ source provenance for download-on-test integration. Only permissive licenses
 
 | Suite | Issue(s) | Fixture | Ratchet test | `minimum_pass_count` |
 | --- | --- | --- | --- | --- |
-| Permissive industry slice | #304, #317 | [`industry-suite.lino`](../data/benchmarks/industry-suite.lino) | `issue_304_benchmark_suite_reports_pass_fail_counts` | 10 |
+| Permissive industry slice | #304, #317 | [`industry-suite.lino`](../data/benchmarks/industry-suite.lino) | `issue_304_benchmark_suite_reports_pass_fail_counts` | 13 |
 | Multilingual coding-modification | #362 | [`coding-modification-suite.lino`](../data/benchmarks/coding-modification-suite.lino) | `issue_362_multilingual_multi_turn_coding_modification_ratchet` | 4 |
 | Text/code edit profile | #408 | [`text-manipulation-suite.lino`](../data/benchmarks/text-manipulation-suite.lino) | `issue_408_text_code_edit_profile_passes_local_ratchet` | 1440 |
 | Procedural how-to / instruction-following | #444 | [`procedural-howto-suite.lino`](../data/benchmarks/procedural-howto-suite.lino) | `issue_444_procedural_howto_suite_routes_each_case` | 12 |
