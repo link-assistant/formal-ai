@@ -54,6 +54,16 @@ const CORPUS: &[Case] = &[
     case("напиши программу hello world на python", Some("python")),
     case("Напиши хелло ворлд на питоне", Some("python")),
     case("count to three in rust", Some("rust")),
+    // Hindi and Chinese put the name *before* the marker; Spanish puts it
+    // after, as English does. Every registered request language is read.
+    case("Python में hello world प्रोग्राम लिखो", Some("python")),
+    case("हैलो वर्ल्ड प्रोग्राम Python में लिखो", Some("python")),
+    case("用 Python 写一个 hello world 程序", Some("python")),
+    case("escribe un programa hola mundo en Python", Some("python")),
+    case(
+        "escribe un programa hello world en JavaScript",
+        Some("javascript"),
+    ),
     // --- languages we do not catalogue, but must still read ------------------
     case("hello world in elvish", Some("elvish")),
     case("hello world in the elvish language", Some("elvish")),
@@ -68,6 +78,12 @@ const CORPUS: &[Case] = &[
     case("Write a program that prints hello world.", None),
     case("write a program", None),
     case("hello world", None),
+    // The same negatives in the other registered request languages: a place is
+    // a place in Hindi, Chinese and Spanish too.
+    case("मौजूदा डायरेक्टरी में hello.txt नाम की फ़ाइल बनाओ", None),
+    case("在当前目录下创建一个名为 hello.txt 的文件", None),
+    case("crea un archivo llamado hello.txt en el directorio actual", None),
+    case("escribe un programa", None),
     // --- negatives: the position is filled by something that names no language
     case("hello world in 3 steps", None),
     case("print the numbers in reverse order", None),
