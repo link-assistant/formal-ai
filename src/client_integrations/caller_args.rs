@@ -111,11 +111,17 @@ impl CallerArgs {
             }
             index += 1;
         }
-        if parsed.prompt.is_none() {
+        if parsed.prompt.is_none() && !integration.invocation.prompt_args.is_empty() {
             // Bare tokens that belong to no flag are the request itself,
             // wherever the caller put them: `<prompt> --file alpha.txt` states
             // the same request as `--file alpha.txt <prompt>`, and both have to
             // reach a client whose prompt flag takes it as a value.
+            //
+            // Only a client that spells its prompt as a flag can be given the
+            // text out of order like that. A client whose prompt is positional
+            // has no way to tell a request from a subcommand — `t3code serve` is
+            // not a request — so its bare tokens stay exactly where the caller
+            // wrote them.
             parsed.take_text_as_prompt();
         }
         if parsed.prompt.is_none() && in_unknown_flag_values && unknown_flag_values > 1 {

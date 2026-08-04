@@ -9,7 +9,7 @@ static TMPDIR_SEQ: AtomicU64 = AtomicU64::new(0);
 
 mod model_metadata;
 
-pub(crate) fn tmpdir() -> PathBuf {
+pub fn tmpdir() -> PathBuf {
     let seq = TMPDIR_SEQ.fetch_add(1, Ordering::SeqCst);
     let thread_id = format!("{:?}", std::thread::current().id())
         .replace(|c: char| !c.is_ascii_alphanumeric(), "");
@@ -30,7 +30,7 @@ fn unused_loopback_port() -> u16 {
         .port()
 }
 
-pub(crate) fn write_fake_cli(bin_dir: &Path, name: &str) {
+pub fn write_fake_cli(bin_dir: &Path, name: &str) {
     let path = bin_dir.join(name);
     std::fs::write(
         &path,
@@ -137,12 +137,12 @@ printf 'Hi, how may I help you?\n'
     std::fs::set_permissions(&path, permissions).expect("chmod fake TUI cli");
 }
 
-pub(crate) fn path_with_fake_clis(bin_dir: &Path) -> String {
+pub fn path_with_fake_clis(bin_dir: &Path) -> String {
     let existing = std::env::var_os("PATH").unwrap_or_default();
     format!("{}:{}", bin_dir.display(), existing.to_string_lossy())
 }
 
-pub(crate) fn run_with_capture(
+pub fn run_with_capture(
     home: &Path,
     bin_dir: &Path,
     capture: &Path,
@@ -155,7 +155,7 @@ pub(crate) fn run_with_capture(
 /// empty, non-terminal stdin and `Some(text)` is a piped prompt. Interactive
 /// mode now follows `isatty(stdin)`, so a test that left stdin inherited would
 /// behave differently under `cargo test` in a terminal than in CI.
-pub(crate) fn run_with_capture_stdin(
+pub fn run_with_capture_stdin(
     home: &Path,
     bin_dir: &Path,
     capture: &Path,
@@ -202,7 +202,7 @@ pub(crate) fn run_with_capture_stdin(
     child.wait_with_output().expect("wait for formal-ai with")
 }
 
-pub(crate) fn captured_args(capture: &str) -> Vec<&str> {
+pub fn captured_args(capture: &str) -> Vec<&str> {
     capture
         .lines()
         .filter_map(|line| {
@@ -213,7 +213,7 @@ pub(crate) fn captured_args(capture: &str) -> Vec<&str> {
         .collect()
 }
 
-pub(crate) fn captured_args_without_model_catalog(capture: &str) -> Vec<&str> {
+pub fn captured_args_without_model_catalog(capture: &str) -> Vec<&str> {
     let mut args = captured_args(capture);
     if let Some(index) = args
         .iter()

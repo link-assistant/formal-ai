@@ -2,7 +2,7 @@
 
 use formal_ai::environment_records;
 
-pub(crate) fn run_environments() {
+pub fn run_environments() {
     for record in environment_records() {
         println!("# {}", record.id);
         println!("  label: {}", record.label);

@@ -174,6 +174,56 @@ fn with_formal_ai_reads_a_prompt_that_precedes_trailing_client_flags() {
     let _ = std::fs::remove_dir_all(&dir);
 }
 
+/// A client whose prompt is positional keeps the caller's tokens in the order
+/// they were written: `t3code serve` is a subcommand, not a request, and the
+/// launch leg of the client matrix fails outright when it is moved.
+#[test]
+fn with_formal_ai_keeps_a_positional_subcommand_in_place() {
+    let dir = tmpdir();
+    let home = dir.join("home");
+    let bin_dir = dir.join("bin");
+    std::fs::create_dir_all(&home).expect("home");
+    std::fs::create_dir_all(&bin_dir).expect("bin");
+    write_fake_cli(&bin_dir, "t3");
+    let capture = dir.join("capture.txt");
+
+    let output = run_with_capture(
+        &home,
+        &bin_dir,
+        &capture,
+        &[
+            "with",
+            "t3code",
+            "serve",
+            "--no-browser",
+            "--host",
+            "127.0.0.1",
+            "--port",
+            "9010",
+        ],
+    );
+
+    assert!(
+        output.status.success(),
+        "t3code: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let captured = std::fs::read_to_string(&capture).expect("capture");
+    assert_eq!(
+        captured_args_without_model_catalog(&captured),
+        [
+            "serve",
+            "--host",
+            "127.0.0.1",
+            "--port",
+            "9010",
+            "--no-browser",
+        ],
+        "capture:\n{captured}"
+    );
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
 /// The two shapes the E2E harnesses use: a caller who writes the `--`
 /// delimiter themselves, and repeated unknown flags whose values must not
 /// swallow the prompt that follows them.

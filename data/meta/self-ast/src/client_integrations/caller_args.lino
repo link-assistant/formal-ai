@@ -2,25 +2,25 @@ self_ast_census
   target src/client_integrations/caller_args.rs
   language rust
   fidelity signature
-  byte_len 10425
-  line_count 277
-  content_id source_module_311aaeb904eae047
+  byte_len 10842
+  line_count 283
+  content_id source_module_fde72e4c8dd663f2
   symbol_count 17
   symbols
     struct CallerArgs 15 22
     struct CallerOption 25 28
-    function parse 38 127
-    function take_text_as_prompt 131 143
-    function push_option 145 150
-    function push_text 152 157
-    function set_prompt 159 163
-    function options 165 170
-    function prompt 172 174
-    function has_text 180 182
-    function task 186 195
-    function with_prompt 199 209
-    function contains_flag 211 219
-    function is_flag 222 224
-    function prompt_flag_vocabulary 227 237
-    function value_flag_vocabulary 241 265
-    function mode_token_vocabulary 269 277
+    function parse 38 133
+    function take_text_as_prompt 137 149
+    function push_option 151 156
+    function push_text 158 163
+    function set_prompt 165 169
+    function options 171 176
+    function prompt 178 180
+    function has_text 186 188
+    function task 192 201
+    function with_prompt 205 215
+    function contains_flag 217 225
+    function is_flag 228 230
+    function prompt_flag_vocabulary 233 243
+    function value_flag_vocabulary 247 271
+    function mode_token_vocabulary 275 283
