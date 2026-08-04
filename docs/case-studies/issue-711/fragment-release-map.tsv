@@ -502,3 +502,4 @@ changelog.d/20260803_120000_issue_914_vision_planning.md	0.324.3
 changelog.d/20260803_223000_with_wrapper_argv.md	0.326.0
 changelog.d/20260804_120000_issue_904_planned_not_executed.md	0.326.1
 changelog.d/20260804_120000_language_router_modifier.md	0.326.2
+changelog.d/20260804_150000_issue_908_exit_code_verdict.md	0.326.3
