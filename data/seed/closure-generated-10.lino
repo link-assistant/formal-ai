@@ -1,4 +1,64 @@
 meanings
+  tue
+    defined-by word_surface
+    lexeme en
+      surface
+        text "tue"
+  two_paths
+    defined-by concept
+    lexeme en
+      surface
+        text "two paths"
+  ui
+    defined-by concept
+    lexeme en
+      surface
+        text "ui"
+  uname
+    defined-by token
+    lexeme en
+      surface
+        text "uname"
+  uncomment_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "uncomment lines"
+  under
+    defined-by word_surface
+    lexeme en
+      surface
+        text "under"
+  unique
+    defined-by word_surface
+    lexeme en
+      surface
+        text "unique"
+  uniqueness
+    defined-by word_surface
+    lexeme en
+      surface
+        text "uniqueness"
+  unknown_reasoning_question
+    defined-by intent
+    lexeme en
+      surface
+        text "unknown reasoning question"
+  unknown_reasoning_trace
+    defined-by intent
+    lexeme en
+      surface
+        text "unknown reasoning trace"
+  unpack
+    defined-by word_surface
+    lexeme en
+      surface
+        text "unpack"
+  unzip
+    defined-by word_surface
+    lexeme en
+      surface
+        text "unzip"
   update_dated_facts
     defined-by concept
     lexeme en
