@@ -614,6 +614,11 @@ meanings
     lexeme en
       surface
         text "response write program language unspecified en"
+  response_write_program_language_unspecified_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified es"
   response_write_program_language_unspecified_hi
     defined-by response_template
     lexeme en
@@ -624,6 +629,11 @@ meanings
     lexeme en
       surface
         text "response write program language unspecified name en"
+  response_write_program_language_unspecified_name_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified name es"
   response_write_program_language_unspecified_name_hi
     defined-by response_template
     lexeme en
@@ -654,6 +664,11 @@ meanings
     lexeme en
       surface
         text "response write program request unspecified en"
+  response_write_program_request_unspecified_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program request unspecified es"
   response_write_program_request_unspecified_hi
     defined-by response_template
     lexeme en
@@ -664,6 +679,11 @@ meanings
     lexeme en
       surface
         text "response write program request unspecified name en"
+  response_write_program_request_unspecified_name_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program request unspecified name es"
   response_write_program_request_unspecified_name_hi
     defined-by response_template
     lexeme en
@@ -719,6 +739,11 @@ meanings
     lexeme en
       surface
         text "response write program skill gap name task unspecified en"
+  response_write_program_skill_gap_name_task_unspecified_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap name task unspecified es"
   response_write_program_skill_gap_name_task_unspecified_hi
     defined-by response_template
     lexeme en
@@ -1369,28 +1394,3 @@ meanings
     lexeme en
       surface
         text "tool archive unpack"
-  tool_brainstorm
-    defined-by tool
-    lexeme en
-      surface
-        text "tool brainstorm"
-  tool_calculator
-    defined-by tool
-    lexeme en
-      surface
-        text "tool calculator"
-  tool_concept_lookup
-    defined-by tool
-    lexeme en
-      surface
-        text "tool concept lookup"
-  tool_conversation_recall
-    defined-by tool
-    lexeme en
-      surface
-        text "tool conversation recall"
-  tool_coreference
-    defined-by tool
-    lexeme en
-      surface
-        text "tool coreference"

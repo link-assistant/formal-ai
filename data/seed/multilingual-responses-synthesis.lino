@@ -47,6 +47,10 @@ multilingual_responses
     intent write_program_skill_gap_name_task_unspecified
     language zh
     text "没有合成路线能用「{language}」完成这个请求"
+  response response_write_program_skill_gap_name_task_unspecified_es
+    intent write_program_skill_gap_name_task_unspecified
+    language es
+    text "ninguna ruta de síntesis cubre esta solicitud en el lenguaje «{language}»"
   response response_write_program_language_unspecified_name_en
     intent write_program_language_unspecified_name
     language en
@@ -63,6 +67,10 @@ multilingual_responses
     intent write_program_language_unspecified_name
     language zh
     text "任务「{task}」没有指明实现语言"
+  response response_write_program_language_unspecified_name_es
+    intent write_program_language_unspecified_name
+    language es
+    text "no se nombró ningún lenguaje de implementación para la tarea «{task}»"
   response response_write_program_request_unspecified_name_en
     intent write_program_request_unspecified_name
     language en
@@ -79,6 +87,10 @@ multilingual_responses
     intent write_program_request_unspecified_name
     language zh
     text "请求既没有指明任务，也没有指明实现语言"
+  response response_write_program_request_unspecified_name_es
+    intent write_program_request_unspecified_name
+    language es
+    text "la solicitud no nombró ni una tarea ni un lenguaje de implementación"
   response response_write_program_language_unspecified_en
     intent write_program_language_unspecified
     language en
@@ -95,6 +107,10 @@ multilingual_responses
     intent write_program_language_unspecified
     language zh
     text "我不会猜测实现语言。你要的是 `{task}`，但请求没有说用哪种编程语言来写，替你挑一种就等于回答了一个你并未提出的请求。\n\n请指明语言——例如加上「用<语言>」——我就会用它推导出程序。"
+  response response_write_program_language_unspecified_es
+    intent write_program_language_unspecified
+    language es
+    text "No voy a adivinar el lenguaje de implementación. Pediste `{task}`, pero la solicitud no dice en qué lenguaje de programación escribirlo, y elegirlo por ti sería responder a una solicitud que no hiciste.\n\nNombra el lenguaje — por ejemplo añadiendo «en <lenguaje>» — y derivaré el programa en él."
   response response_write_program_request_unspecified_en
     intent write_program_request_unspecified
     language en
@@ -111,3 +127,7 @@ multilingual_responses
     intent write_program_request_unspecified
     language zh
     text "我不会猜测要写什么。这看起来是一个程序请求，但它既没有说明程序要做什么，也没有说明用哪种编程语言来写。\n\n请说明程序应当做什么、用哪种语言编写，我就会把它推导出来。"
+  response response_write_program_request_unspecified_es
+    intent write_program_request_unspecified
+    language es
+    text "No voy a adivinar qué escribir. Esto se lee como una solicitud de programa, pero no nombra ni lo que el programa debe hacer ni en qué lenguaje de programación escribirlo.\n\nDi qué debe hacer el programa y en qué lenguaje debe escribirse, y lo derivaré."
