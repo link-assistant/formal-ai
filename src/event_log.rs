@@ -168,6 +168,12 @@ impl EventLog {
             steps.push(step);
             order += 1;
         }
+
+        // Phase 3 — narrate the finished trace in the language of the answer
+        // (issue #889). A single step cannot know that language while the trace
+        // is still being built, because the language is itself one of the steps.
+        let language = crate::thinking::thinking_answer_language(&steps);
+        crate::thinking::localize_thinking_steps(&mut steps, &language);
         steps
     }
 

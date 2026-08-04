@@ -1,0 +1,1396 @@
+meanings
+  response_write_program_language_unspecified_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified es"
+  response_write_program_language_unspecified_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified hi"
+  response_write_program_language_unspecified_name_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified name en"
+  response_write_program_language_unspecified_name_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified name es"
+  response_write_program_language_unspecified_name_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified name hi"
+  response_write_program_language_unspecified_name_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified name ru"
+  response_write_program_language_unspecified_name_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified name zh"
+  response_write_program_language_unspecified_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified ru"
+  response_write_program_language_unspecified_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified zh"
+  response_write_program_request_unspecified_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program request unspecified en"
+  response_write_program_request_unspecified_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program request unspecified es"
+  response_write_program_request_unspecified_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program request unspecified hi"
+  response_write_program_request_unspecified_name_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program request unspecified name en"
+  response_write_program_request_unspecified_name_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program request unspecified name es"
+  response_write_program_request_unspecified_name_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program request unspecified name hi"
+  response_write_program_request_unspecified_name_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program request unspecified name ru"
+  response_write_program_request_unspecified_name_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program request unspecified name zh"
+  response_write_program_request_unspecified_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program request unspecified ru"
+  response_write_program_request_unspecified_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program request unspecified zh"
+  response_write_program_skill_gap_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap en"
+  response_write_program_skill_gap_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap hi"
+  response_write_program_skill_gap_name_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap name en"
+  response_write_program_skill_gap_name_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap name hi"
+  response_write_program_skill_gap_name_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap name ru"
+  response_write_program_skill_gap_name_task_unspecified_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap name task unspecified en"
+  response_write_program_skill_gap_name_task_unspecified_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap name task unspecified es"
+  response_write_program_skill_gap_name_task_unspecified_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap name task unspecified hi"
+  response_write_program_skill_gap_name_task_unspecified_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap name task unspecified ru"
+  response_write_program_skill_gap_name_task_unspecified_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap name task unspecified zh"
+  response_write_program_skill_gap_name_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap name zh"
+  response_write_program_skill_gap_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap ru"
+  response_write_program_skill_gap_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap zh"
+  restate_postcondition
+    defined-by concept
+    lexeme en
+      surface
+        text "restate postcondition"
+  restore
+    defined-by word_surface
+    lexeme en
+      surface
+        text "restore"
+  retract_contributed_facts
+    defined-by concept
+    lexeme en
+      surface
+        text "retract contributed facts"
+  reverse_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "reverse lines"
+  reverse_sort
+    defined-by operation
+    lexeme en
+      surface
+        text "reverse sort"
+  reverse_sort_list_files
+    defined-by rule
+    lexeme en
+      surface
+        text "reverse sort list files"
+  reverse_sort_list_files_arg
+    defined-by rule
+    lexeme en
+      surface
+        text "reverse sort list files arg"
+  reverse_string
+    defined-by task
+    lexeme en
+      surface
+        text "reverse string"
+  reverse_words
+    defined-by operation
+    lexeme en
+      surface
+        text "reverse words"
+  rg
+    defined-by concept
+    lexeme en
+      surface
+        text "rg"
+  rm
+    defined-by concept
+    lexeme en
+      surface
+        text "rm"
+  rmdir
+    defined-by concept
+    lexeme en
+      surface
+        text "rmdir"
+  role-only
+    defined-by concept
+    lexeme en
+      surface
+        text "role only"
+  rosetta_code
+    defined-by source
+    lexeme en
+      surface
+        text "rosetta code"
+  rotation
+    defined-by term
+    lexeme en
+      surface
+        text "rotation"
+  rs
+    defined-by word_surface
+    lexeme en
+      surface
+        text "rs"
+  rule_chinese
+    defined-by rule
+    lexeme en
+      surface
+        text "rule chinese"
+  rule_english
+    defined-by rule
+    lexeme en
+      surface
+        text "rule english"
+  rule_hindi
+    defined-by rule
+    lexeme en
+      surface
+        text "rule hindi"
+  rule_russian
+    defined-by rule
+    lexeme en
+      surface
+        text "rule russian"
+  rule_spanish
+    defined-by rule
+    lexeme en
+      surface
+        text "rule spanish"
+  run_agent
+    defined-by name
+    lexeme en
+      surface
+        text "run agent"
+  russian-colloquial-verb
+    defined-by category
+    lexeme en
+      surface
+        text "russian colloquial verb"
+  rust_library
+    defined-by environment
+    lexeme en
+      surface
+        text "rust library"
+  screenshot
+    defined-by word_surface
+    lexeme en
+      surface
+        text "screenshot"
+  script_and_markers
+    defined-by concept
+    lexeme en
+      surface
+        text "script and markers"
+  sdk
+    defined-by word_surface
+    lexeme en
+      surface
+        text "sdk"
+  search
+    defined-by word_surface
+    lexeme en
+      surface
+        text "search"
+  search_fusion_header
+    defined-by intent
+    lexeme en
+      surface
+        text "search fusion header"
+  search_fusion_read_more
+    defined-by intent
+    lexeme en
+      surface
+        text "search fusion read more"
+  search_query
+    defined-by concept
+    lexeme en
+      surface
+        text "search query"
+  sed
+    defined-by token
+    lexeme en
+      surface
+        text "sed"
+  selector
+    defined-by word_surface
+    lexeme en
+      surface
+        text "selector"
+  self_authored_for_issue_707
+    defined-by source
+    lexeme en
+      surface
+        text "self authored for issue 707"
+  self_improvement_loop
+    defined-by concept
+    lexeme en
+      surface
+        text "self improvement loop"
+  send
+    defined-by word_surface
+    lexeme en
+      surface
+        text "send"
+  sentence_case
+    defined-by operation
+    lexeme en
+      surface
+        text "sentence case"
+  sentences
+    defined-by concept
+    lexeme en
+      surface
+        text "sentences"
+  sequence
+    defined-by term
+    lexeme en
+      surface
+        text "sequence"
+  sequential_compose
+    defined-by concept
+    lexeme en
+      surface
+        text "sequential compose"
+  shared_dialog_capture_parse_failed
+    defined-by intent
+    lexeme en
+      surface
+        text "shared dialog capture parse failed"
+  shared_dialog_capture_unsupported
+    defined-by intent
+    lexeme en
+      surface
+        text "shared dialog capture unsupported"
+  shell-helpers
+    defined-by category
+    lexeme en
+      surface
+        text "shell helpers"
+  short
+    defined-by word_surface
+    lexeme en
+      surface
+        text "short"
+  short_rule_list
+    defined-by coverage_group
+    lexeme en
+      surface
+        text "short rule list"
+  should
+    defined-by concept
+    lexeme en
+      surface
+        text "should"
+  signal-processing
+    defined-by category
+    lexeme en
+      surface
+        text "signal processing"
+  skill_gap
+    defined-by intent
+    lexeme en
+      surface
+        text "skill gap"
+  skill_gap_name
+    defined-by intent
+    lexeme en
+      surface
+        text "skill gap name"
+  slang-dictionary
+    defined-by source_kind
+    lexeme en
+      surface
+        text "slang dictionary"
+  snake
+    defined-by concept
+    lexeme en
+      surface
+        text "snake"
+  snake_case
+    defined-by phrase
+    lexeme en
+      surface
+        text "snake case"
+  software-design
+    defined-by category
+    lexeme en
+      surface
+        text "software design"
+  software_docs
+    defined-by kind
+    lexeme en
+      surface
+        text "software docs"
+  software_project_implementation
+    defined-by concept
+    lexeme en
+      surface
+        text "software project implementation"
+  software_project_plan
+    defined-by concept
+    lexeme en
+      surface
+        text "software project plan"
+  solution
+    defined-by word_surface
+    lexeme en
+      surface
+        text "solution"
+  sort_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "sort lines"
+  sort_words
+    defined-by operation
+    lexeme en
+      surface
+        text "sort words"
+  spanish
+    defined-by word_surface
+    lexeme en
+      surface
+        text "spanish"
+  sqrt
+    defined-by word_surface
+    lexeme en
+      surface
+        text "sqrt"
+  ssh
+    defined-by token
+    lexeme en
+      surface
+        text "ssh"
+  stackexchange
+    defined-by source
+    lexeme en
+      surface
+        text "stackexchange"
+  standard
+    defined-by concept
+    lexeme en
+      surface
+        text "standard"
+  stat
+    defined-by concept
+    lexeme en
+      surface
+        text "stat"
+  statement
+    defined-by word_surface
+    lexeme en
+      surface
+        text "statement"
+  statement_audit_capture_field
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit capture field"
+  statement_audit_claim_predicate
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit claim predicate"
+  statement_audit_claim_subject
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit claim subject"
+  statement_audit_invalid_json
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit invalid json"
+  statement_audit_invalid_temperature
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit invalid temperature"
+  statement_audit_nonempty
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit nonempty"
+  statement_audit_selector_exclusive
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit selector exclusive"
+  statement_audit_selector_required
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit selector required"
+  statement_audit_strength_range
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit strength range"
+  statement_audit_temperature_range
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit temperature range"
+  statement_audit_unknown_stance
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit unknown stance"
+  statement_audit_unknown_tier
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit unknown tier"
+  stdout
+    defined-by word_surface
+    lexeme en
+      surface
+        text "stdout"
+  step
+    defined-by concept
+    lexeme en
+      surface
+        text "step"
+  still
+    defined-by concept
+    lexeme en
+      surface
+        text "still"
+  string
+    defined-by word_surface
+    lexeme en
+      surface
+        text "string"
+  strip_empty_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "strip empty lines"
+  struct
+    defined-by word_surface
+    lexeme en
+      surface
+        text "struct"
+  structure
+    defined-by concept
+    lexeme en
+      surface
+        text "structure"
+  structured
+    defined-by concept
+    lexeme en
+      surface
+        text "structured"
+  structured-document
+    defined-by isolation_mode
+    lexeme en
+      surface
+        text "structured document"
+  structured-knowledge
+    defined-by category
+    lexeme en
+      surface
+        text "structured knowledge"
+  structured_knowledge
+    defined-by kind
+    lexeme en
+      surface
+        text "structured knowledge"
+  submission
+    defined-by word_surface
+    lexeme en
+      surface
+        text "submission"
+  submit
+    defined-by word_surface
+    lexeme en
+      surface
+        text "submit"
+  submit_form
+    defined-by task
+    lexeme en
+      surface
+        text "submit form"
+  substitute
+    defined-by word_surface
+    lexeme en
+      surface
+        text "substitute"
+  sudo
+    defined-by token
+    lexeme en
+      surface
+        text "sudo"
+  sum_to_ten
+    defined-by task
+    lexeme en
+      surface
+        text "sum to ten"
+  summarization_disputed_statement
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization disputed statement"
+  summarization_evidence_denied
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization evidence denied"
+  summarization_evidence_summary
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization evidence summary"
+  summarize_conversation
+    defined-by name
+    lexeme en
+      surface
+        text "summarize conversation"
+  supplied_file_contents
+    defined-by intent
+    lexeme en
+      surface
+        text "supplied file contents"
+  supplied_file_first_line
+    defined-by intent
+    lexeme en
+      surface
+        text "supplied file first line"
+  supported_languages
+    defined-by field
+    lexeme en
+      surface
+        text "supported languages"
+  surface
+    defined-by concept
+    lexeme en
+      surface
+        text "surface"
+  symbolic-ai
+    defined-by category
+    lexeme en
+      surface
+        text "symbolic ai"
+  symmetry
+    defined-by term
+    lexeme en
+      surface
+        text "symmetry"
+  tabler
+    defined-by concept
+    lexeme en
+      surface
+        text "tabler"
+  tabler-icons
+    defined-by concept
+    lexeme en
+      surface
+        text "tabler icons"
+  tag_matching_facts
+    defined-by concept
+    lexeme en
+      surface
+        text "tag matching facts"
+  tail
+    defined-by token
+    lexeme en
+      surface
+        text "tail"
+  tar
+    defined-by token
+    lexeme en
+      surface
+        text "tar"
+  task_atomicity_no
+    defined-by intent
+    lexeme en
+      surface
+        text "task atomicity no"
+  task_atomicity_yes
+    defined-by intent
+    lexeme en
+      surface
+        text "task atomicity yes"
+  task_decomposition_atomic
+    defined-by intent
+    lexeme en
+      surface
+        text "task decomposition atomic"
+  task_decomposition_depth_bound
+    defined-by intent
+    lexeme en
+      surface
+        text "task decomposition depth bound"
+  task_decomposition_depth_marker
+    defined-by intent
+    lexeme en
+      surface
+        text "task decomposition depth marker"
+  task_decomposition_lead
+    defined-by intent
+    lexeme en
+      surface
+        text "task decomposition lead"
+  task_first_step_lead
+    defined-by intent
+    lexeme en
+      surface
+        text "task first step lead"
+  task_plan_stage_implementation
+    defined-by intent
+    lexeme en
+      surface
+        text "task plan stage implementation"
+  task_plan_stage_regression
+    defined-by intent
+    lexeme en
+      surface
+        text "task plan stage regression"
+  task_plan_stage_requirements
+    defined-by intent
+    lexeme en
+      surface
+        text "task plan stage requirements"
+  task_plan_stage_verification
+    defined-by intent
+    lexeme en
+      surface
+        text "task plan stage verification"
+  test_status
+    defined-by intent
+    lexeme en
+      surface
+        text "test status"
+  than
+    defined-by concept
+    lexeme en
+      surface
+        text "than"
+  there
+    defined-by concept
+    lexeme en
+      surface
+        text "there"
+  thinking-step
+    defined-by concept
+    lexeme en
+      surface
+        text "thinking step"
+  thinking_language_name_en
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking language name en"
+  thinking_language_name_es
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking language name es"
+  thinking_language_name_hi
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking language name hi"
+  thinking_language_name_ru
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking language name ru"
+  thinking_language_name_unknown
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking language name unknown"
+  thinking_language_name_zh
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking language name zh"
+  thinking_narrative_assistant_free_time
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative assistant free time"
+  thinking_narrative_calculation
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative calculation"
+  thinking_narrative_clarification
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative clarification"
+  thinking_narrative_code
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative code"
+  thinking_narrative_fact_lookup
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative fact lookup"
+  thinking_narrative_farewell
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative farewell"
+  thinking_narrative_generic
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative generic"
+  thinking_narrative_gratitude
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative gratitude"
+  thinking_narrative_greeting
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative greeting"
+  thinking_narrative_identity
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative identity"
+  thinking_narrative_learn_from_source
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative learn from source"
+  thinking_narrative_meta_explanation
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative meta explanation"
+  thinking_narrative_self_healing
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative self healing"
+  thinking_narrative_test_status
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative test status"
+  thinking_narrative_translation
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative translation"
+  thinking_narrative_unknown
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative unknown"
+  thinking_narrative_web
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative web"
+  thinking_narrative_wellbeing
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative wellbeing"
+  thinking_step_agent_plan
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step agent plan"
+  thinking_step_agent_plan_plain
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step agent plan plain"
+  thinking_step_clarify_formalization
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step clarify formalization"
+  thinking_step_clarify_formalization_plain
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step clarify formalization plain"
+  thinking_step_compute
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step compute"
+  thinking_step_compute_engine
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step compute engine"
+  thinking_step_compute_engine_plain
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step compute engine plain"
+  thinking_step_compute_expression
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step compute expression"
+  thinking_step_compute_plain
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step compute plain"
+  thinking_step_compute_steps
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step compute steps"
+  thinking_step_coreference_binding
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step coreference binding"
+  thinking_step_deformalize
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step deformalize"
+  thinking_step_deformalize_plain
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step deformalize plain"
+  thinking_step_detect_language
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step detect language"
+  thinking_step_dispatch_handler
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step dispatch handler"
+  thinking_step_dispatch_handler_plain
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step dispatch handler plain"
+  thinking_step_extract_term
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step extract term"
+  thinking_step_fallback
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step fallback"
+  thinking_step_formalize
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step formalize"
+  thinking_step_formalize_plain
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step formalize plain"
+  thinking_step_formalize_resolved
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step formalize resolved"
+  thinking_step_formalize_resolved_plain
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step formalize resolved plain"
+  thinking_step_generic
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step generic"
+  thinking_step_generic_plain
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step generic plain"
+  thinking_step_group_by_conversation
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step group by conversation"
+  thinking_step_http_chat
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step http chat"
+  thinking_step_impulse
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step impulse"
+  thinking_step_impulse_plain
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step impulse plain"
+  thinking_step_invoke_tool
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step invoke tool"
+  thinking_step_invoke_tool_plain
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step invoke tool plain"
+  thinking_step_lookup_fact
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step lookup fact"
+  thinking_step_lookup_fact_plain
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step lookup fact plain"
+  thinking_step_match_rule
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step match rule"
+  thinking_step_match_rule_plain
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step match rule plain"
+  thinking_step_memory
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step memory"
+  thinking_step_modifier_detection
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step modifier detection"
+  thinking_step_policy_refusal
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step policy refusal"
+  thinking_step_policy_refusal_plain
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step policy refusal plain"
+  thinking_step_program_plan
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step program plan"
+  thinking_step_program_plan_plain
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step program plan plain"
+  thinking_step_resolve_response_language
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step resolve response language"
+  thinking_step_route_attempt
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step route attempt"
+  thinking_step_route_attempt_plain
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step route attempt plain"
+  thinking_step_rule_construction
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step rule construction"
+  thinking_step_rule_verification
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step rule verification"
+  thinking_step_rule_verification_plain
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step rule verification plain"
+  thinking_step_scan_memory
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step scan memory"
+  thinking_step_scan_memory_plain
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step scan memory plain"
+  thinking_step_unnamed
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step unnamed"
+  thinking_step_user_context
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step user context"
+  thinking_step_user_context_plain
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step user context plain"
+  thinking_trace_heading
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking trace heading"
+  thu
+    defined-by word_surface
+    lexeme en
+      surface
+        text "thu"
+  thurs
+    defined-by word_surface
+    lexeme en
+      surface
+        text "thurs"
+  time_dilation
+    defined-by topic
+    lexeme en
+      surface
+        text "time dilation"
+  title
+    defined-by word_surface
+    lexeme en
+      surface
+        text "title"
+  title_case
+    defined-by operation
+    lexeme en
+      surface
+        text "title case"
+  tool_append_memory
+    defined-by tool
+    lexeme en
+      surface
+        text "tool append memory"
+  tool_archive_pack
+    defined-by tool
+    lexeme en
+      surface
+        text "tool archive pack"
+  tool_archive_unpack
+    defined-by tool
+    lexeme en
+      surface
+        text "tool archive unpack"
+  tool_brainstorm
+    defined-by tool
+    lexeme en
+      surface
+        text "tool brainstorm"
+  tool_calculator
+    defined-by tool
+    lexeme en
+      surface
+        text "tool calculator"
+  tool_concept_lookup
+    defined-by tool
+    lexeme en
+      surface
+        text "tool concept lookup"
+  tool_conversation_recall
+    defined-by tool
+    lexeme en
+      surface
+        text "tool conversation recall"
+  tool_coreference
+    defined-by tool
+    lexeme en
+      surface
+        text "tool coreference"
+  tool_dom_extract
+    defined-by tool
+    lexeme en
+      surface
+        text "tool dom extract"
+  tool_dom_query
+    defined-by tool
+    lexeme en
+      surface
+        text "tool dom query"
+  tool_eval_js
+    defined-by tool
+    lexeme en
+      surface
+        text "tool eval js"
+  tool_export_memory
+    defined-by tool
+    lexeme en
+      surface
+        text "tool export memory"
+  tool_fact_lookup
+    defined-by tool
+    lexeme en
+      surface
+        text "tool fact lookup"
+  tool_fs_list
+    defined-by tool
+    lexeme en
+      surface
+        text "tool fs list"
+  tool_fs_move
+    defined-by tool
+    lexeme en
+      surface
+        text "tool fs move"
+  tool_fs_read
+    defined-by tool
+    lexeme en
+      surface
+        text "tool fs read"
+  tool_fs_write
+    defined-by tool
+    lexeme en
+      surface
+        text "tool fs write"
+  tool_http_fetch
+    defined-by tool
+    lexeme en
+      surface
+        text "tool http fetch"
+  tool_http_fetch_primitive
+    defined-by tool
+    lexeme en
+      surface
+        text "tool http fetch primitive"
+  tool_http_post_primitive
+    defined-by tool
+    lexeme en
+      surface
+        text "tool http post primitive"
+  tool_import_memory
+    defined-by tool
+    lexeme en
+      surface
+        text "tool import memory"
+  tool_intent_routing
+    defined-by tool
+    lexeme en
+      surface
+        text "tool intent routing"
+  tool_process_status
+    defined-by tool
+    lexeme en
+      surface
+        text "tool process status"
+  tool_read_local_file
+    defined-by tool
+    lexeme en
+      surface
+        text "tool read local file"
+  tool_result_completed
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result completed"
+  tool_result_empty_generic
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result empty generic"
+  tool_result_empty_list
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result empty list"
+  tool_result_empty_local_path_search
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result empty local path search"
+  tool_result_empty_search
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result empty search"
+  tool_result_failed
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result failed"
+  tool_result_failed_exit_code
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result failed exit code"
+  tool_roleplay
+    defined-by tool
+    lexeme en
+      surface
+        text "tool roleplay"
+  tool_run_agent
+    defined-by tool
+    lexeme en
+      surface
+        text "tool run agent"
+  tool_shell_run
+    defined-by tool
+    lexeme en
+      surface
+        text "tool shell run"
+  tool_summarize_conversation
+    defined-by tool
+    lexeme en
+      surface
+        text "tool summarize conversation"
+  tool_url_navigate
+    defined-by tool
+    lexeme en
+      surface
+        text "tool url navigate"
+  tool_web_search
+    defined-by tool
+    lexeme en
+      surface
+        text "tool web search"
+  tool_wikipedia_lookup
+    defined-by tool
+    lexeme en
+      surface
+        text "tool wikipedia lookup"
+  tool_write_program
+    defined-by tool
+    lexeme en
+      surface
+        text "tool write program"
+  topic_count_summary_week
+    defined-by concept
+    lexeme en
+      surface
+        text "topic count summary week"
+  total
+    defined-by word_surface
+    lexeme en
+      surface
+        text "total"

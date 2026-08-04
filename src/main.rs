@@ -44,11 +44,12 @@ use formal_ai::{
     agent_info, collect_github_logs, create_chat_completion_with_solver,
     create_response_with_solver, delimit_tool_args, enable_http_agent_mode_for_current_process,
     export_memory_bundle, import_memory_full, knowledge_links_notation, merged_bundle,
-    naturalize_thinking_step, parse_bundle, render_github_log_plan, run_proxy,
+    naturalize_thinking_step_in, parse_bundle, render_github_log_plan, run_proxy,
     run_telegram_polling, run_telegram_webhook_server, run_with_formal_ai, seed_files,
-    suggest_memory_migrations, ChatCompletionRequest, ChatMessage, ExecutionSurface,
-    GithubLogCollectorConfig, MemoryStore, ProxyConfig, ResponsesRequest, SolverConfig,
-    SymbolicAnswer, TelegramPollingConfig, UniversalSolver, WithFormalAiArgs, DEFAULT_MODEL,
+    suggest_memory_migrations, thinking_answer_language, thinking_trace_heading,
+    ChatCompletionRequest, ChatMessage, ExecutionSurface, GithubLogCollectorConfig, MemoryStore,
+    ProxyConfig, ResponsesRequest, SolverConfig, SymbolicAnswer, TelegramPollingConfig,
+    UniversalSolver, WithFormalAiArgs, DEFAULT_MODEL,
 };
 
 /// The canonical issue-#468 task; its wording carries the planner's routing keywords.
@@ -795,17 +796,21 @@ fn solver_for_chat(
 /// rather than its internal `step` slug. Composite steps are nested under their
 /// parent with a `↳` marker so the recursively composite (fractal) structure of
 /// the reasoning is visible on the CLI too.
+///
+/// The sentences are written in the language the answer itself is written in
+/// (issue #889): a Russian answer gets a Russian trace, not an English
+/// description of a Russian answer.
 fn print_thinking_trace(answer: &SymbolicAnswer) {
     if answer.thinking_steps.is_empty() {
         return;
     }
-    println!("Thinking:");
+    let language = thinking_answer_language(&answer.thinking_steps);
+    let heading = thinking_trace_heading(&language);
+    if !heading.is_empty() {
+        println!("{heading}:");
+    }
     for step in &answer.thinking_steps {
-        let sentence = if step.summary.is_empty() {
-            naturalize_thinking_step(&step.step, &step.detail)
-        } else {
-            step.summary.clone()
-        };
+        let sentence = naturalize_thinking_step_in(&language, &step.step, &step.detail);
         if step.parent_id.is_some() {
             println!("    ↳ {sentence}");
         } else {

@@ -2,9 +2,9 @@ self_ast_census
   target src/main.rs
   language rust
   fidelity signature
-  byte_len 34468
-  line_count 982
-  content_id source_module_8f50fc67ee72da3b
+  byte_len 34791
+  line_count 987
+  content_id source_module_9db6aac6a3fc572a
   symbol_count 41
   symbols
     module cli_algorithm 9 9
@@ -23,28 +23,28 @@ self_ast_census
     module cli_report 22 22
     module cli_shared_dialog 23 23
     module cli_statement_audit 24 24
-    const DEFAULT_AGENT_TASK 55 75
-    struct Args 64 75
-    enum Command 78 298
-    enum MemoryAction 301 447
-    enum BundleAction 450 474
-    enum GithubLogsAction 477 482
-    struct GithubLogsOptions 485 521
-    enum OutputFormat 524 528
-    enum DefinitionFusionMode 531 534
-    enum TelegramMode 537 540
-    function fmt 543 549
-    function fmt 553 558
-    function fmt 562 567
-    function main 570 694
-    function run_github_logs 696 717
-    function run_agent 719 743
-    function into_config 746 758
-    struct TelegramRunArgs 761 770
-    function solver_for_chat 772 789
-    function print_thinking_trace 798 816
-    function run_chat 818 871
-    function run_bundle 873 937
-    function read_input 939 947
-    function run_telegram 949 974
-    function parse_allowed_updates 976 982
+    const DEFAULT_AGENT_TASK 56 76
+    struct Args 65 76
+    enum Command 79 299
+    enum MemoryAction 302 448
+    enum BundleAction 451 475
+    enum GithubLogsAction 478 483
+    struct GithubLogsOptions 486 522
+    enum OutputFormat 525 529
+    enum DefinitionFusionMode 532 535
+    enum TelegramMode 538 541
+    function fmt 544 550
+    function fmt 554 559
+    function fmt 563 568
+    function main 571 695
+    function run_github_logs 697 718
+    function run_agent 720 744
+    function into_config 747 759
+    struct TelegramRunArgs 762 771
+    function solver_for_chat 773 790
+    function print_thinking_trace 803 821
+    function run_chat 823 876
+    function run_bundle 878 942
+    function read_input 944 952
+    function run_telegram 954 979
+    function parse_allowed_updates 981 987
