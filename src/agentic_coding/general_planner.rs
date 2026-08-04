@@ -188,6 +188,10 @@ pub fn compose_general_change_plan(full_request: &str) -> Option<GeneralChangePl
     let Some((target, content)) = file_request else {
         return compose_repository_work_plan(request);
     };
+    // Issue #906: "…containing Hello World, in JavaScript." names the bytes and,
+    // separately, the language to write them with. Only the bytes are content.
+    let content = crate::implementation_language::without_trailing_known_modifier(&content)
+        .unwrap_or(content);
     if !safe_relative_path(&target) {
         return None;
     }
@@ -448,7 +452,7 @@ fn command_plan_text(intent: &str, language: &str, target: &str) -> String {
 /// parser for classification and composition cannot drift into claiming an
 /// operation that the planner is unable to execute.
 #[must_use]
-pub(super) fn has_file_write_intent(lower: &str) -> bool {
+pub(crate) fn has_file_write_intent(lower: &str) -> bool {
     parse_write_request(lower).is_some()
 }
 

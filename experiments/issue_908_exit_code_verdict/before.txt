@@ -1,0 +1,30 @@
+Issue #908, as reported: `qwen` drove `formal-ai serve --agent-mode` through the
+Python hello-world recipe. The verification step Formal AI had chosen itself
+exited 0 and printed nothing — its documented success behaviour — and the
+harness returned:
+
+    Command: python3 -m py_compile main.py
+    Directory: (root)
+    Output: (empty)
+    Error: (none)
+    Exit Code: 0
+    Signal: 0
+    Process Group PGID: 685377
+
+Formal AI abandoned the run with no answer, and the only thing it printed was:
+
+    The agentic CLI harness could not complete `main.py`. The tool reported:
+
+    ```text
+    Command: python3 -m py_compile main.py
+    Directory: (root)
+    Output: (empty)
+    Error: (none)
+    Exit Code: 0
+    Signal: 0
+    Process Group PGID: 685377
+    ```
+
+The verdict was "does this text look like an error", which the unconditional
+`Error: (none)` field satisfies; read the other way, the same predicate let a
+command that exited 1 while printing output pass as a success (#905).

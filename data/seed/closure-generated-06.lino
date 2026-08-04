@@ -1,4 +1,64 @@
 meanings
+  response_lexeme_import_part_of_speech_lost_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import part of speech lost zh"
+  response_lexeme_import_qid_absent_from_cache_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import qid absent from cache en"
+  response_lexeme_import_qid_absent_from_cache_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import qid absent from cache hi"
+  response_lexeme_import_qid_absent_from_cache_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import qid absent from cache ru"
+  response_lexeme_import_qid_absent_from_cache_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import qid absent from cache zh"
+  response_lexeme_import_qid_absent_from_fetch_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import qid absent from fetch en"
+  response_lexeme_import_qid_absent_from_fetch_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import qid absent from fetch hi"
+  response_lexeme_import_qid_absent_from_fetch_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import qid absent from fetch ru"
+  response_lexeme_import_qid_absent_from_fetch_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import qid absent from fetch zh"
+  response_lexeme_import_refused_batch_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import refused batch en"
+  response_lexeme_import_refused_batch_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import refused batch hi"
+  response_lexeme_import_refused_batch_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import refused batch ru"
   response_lexeme_import_refused_batch_zh
     defined-by response_template
     lexeme en
@@ -1334,63 +1394,3 @@ meanings
     lexeme en
       surface
         text "response statement audit selector required en"
-  response_statement_audit_strength_range_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response statement audit strength range en"
-  response_statement_audit_temperature_range_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response statement audit temperature range en"
-  response_statement_audit_unknown_stance_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response statement audit unknown stance en"
-  response_statement_audit_unknown_tier_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response statement audit unknown tier en"
-  response_summarization_disputed_statement_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response summarization disputed statement en"
-  response_summarization_disputed_statement_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response summarization disputed statement hi"
-  response_summarization_disputed_statement_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response summarization disputed statement ru"
-  response_summarization_disputed_statement_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response summarization disputed statement zh"
-  response_summarization_evidence_denied_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response summarization evidence denied en"
-  response_summarization_evidence_denied_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response summarization evidence denied hi"
-  response_summarization_evidence_denied_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response summarization evidence denied ru"
-  response_summarization_evidence_denied_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response summarization evidence denied zh"

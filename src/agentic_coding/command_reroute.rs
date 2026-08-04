@@ -36,10 +36,19 @@ pub fn plan_symbolic_command_reroute(
             .find(|name| is_workspace_creation_tool(name))
     })?;
     let run_tool = tool_for(tool_names, Capability::Run)?;
-    let progress = RecipeProgress::after_latest_user(messages, write_tool, recipe);
+    let progress = RecipeProgress::after_latest_user(messages, write_tool);
 
     if let Some(failure) = &progress.failure {
-        return Some(AgenticPlan::Final(failure.report(recipe, messages)));
+        let step = failure
+            .from_run
+            .then(|| recipe.commands.get(progress.commands_done))
+            .flatten()
+            .map_or(write_tool, String::as_str);
+        return Some(AgenticPlan::Final(failure.report(
+            messages,
+            &recipe.path,
+            step,
+        )));
     }
     if !progress.write_done {
         return Some(one_call(
@@ -85,30 +94,6 @@ impl ExecutionRecipe {
     }
 }
 
-/// A step the harness reported as unsuccessful, kept with the label of whatever
-/// was actually running so the report can name it (issue #908).
-struct StepFailure {
-    label: String,
-    output: String,
-}
-
-impl StepFailure {
-    fn report(&self, recipe: &ExecutionRecipe, messages: &[ChatMessage]) -> String {
-        // When the harness reported an exit status, the status is the finding:
-        // name the failing command and the code it exited with. Blaming the
-        // harness hid both (issue #908, suggested fix 3).
-        if super::tool_result::shell_step(&self.output).is_some() {
-            let prompt = crate::protocol::latest_user_request(messages).unwrap_or_default();
-            return super::tool_result::render(&self.label, &self.output, &prompt);
-        }
-        format!(
-            "The agentic CLI harness could not complete `{}`. The tool reported:\n\n```text\n{}\n```",
-            recipe.path,
-            self.output.trim()
-        )
-    }
-}
-
 #[derive(Default)]
 struct RecipeProgress {
     write_done: bool,
@@ -117,12 +102,58 @@ struct RecipeProgress {
     failure: Option<StepFailure>,
 }
 
+/// A step the harness reported as failed, kept with the evidence that makes the
+/// verdict checkable: the exit code the harness stated (when it stated one) and
+/// whether the step was a command run rather than the file write.
+struct StepFailure {
+    reported: String,
+    exit_code: Option<i32>,
+    from_run: bool,
+}
+
+impl StepFailure {
+    /// Report the failed step to the caller.
+    ///
+    /// The exit code is named when the harness gave one, and the step is named
+    /// by the command that produced it: a harness that ran the command exactly
+    /// as asked did not itself fail, so the report never says it did
+    /// (issue #908).
+    fn report(&self, messages: &[ChatMessage], path: &str, step: &str) -> String {
+        const STEP_PLACEHOLDER: &str = "{step}";
+        const PATH_PLACEHOLDER: &str = "{path}";
+        const CODE_PLACEHOLDER: &str = "{code}";
+        const REPORT_PLACEHOLDER: &str = "{report}";
+
+        let language = crate::language::detect(&latest_user_text(messages)).slug();
+        let intent = if self.exit_code.is_some() {
+            "agentic_step_failed_with_exit_code"
+        } else {
+            "agentic_step_failed"
+        };
+        let code = self
+            .exit_code
+            .map(|code| code.to_string())
+            .unwrap_or_default();
+        crate::seed::localized_response(intent, language)
+            .unwrap_or_default()
+            .replace(STEP_PLACEHOLDER, step)
+            .replace(PATH_PLACEHOLDER, path)
+            .replace(CODE_PLACEHOLDER, &code)
+            .replace(REPORT_PLACEHOLDER, self.reported.trim())
+    }
+}
+
+fn latest_user_text(messages: &[ChatMessage]) -> String {
+    messages
+        .iter()
+        .rev()
+        .find(|message| message.role == "user")
+        .map(|message| message.content.plain_text())
+        .unwrap_or_default()
+}
+
 impl RecipeProgress {
-    fn after_latest_user(
-        messages: &[ChatMessage],
-        write_tool: &str,
-        recipe: &ExecutionRecipe,
-    ) -> Self {
+    fn after_latest_user(messages: &[ChatMessage], write_tool: &str) -> Self {
         let start = messages
             .iter()
             .rposition(|message| message.role == "user")
@@ -138,18 +169,10 @@ impl RecipeProgress {
                 .or_else(|| tool_from_call_id(messages, message.tool_call_id.as_deref()));
             let capability = result_tool.and_then(tool_capability);
             let output = message.content.plain_text();
-            if tool_result_failed(&output) {
-                let label = match capability {
-                    Some(Capability::Run) => recipe
-                        .commands
-                        .get(progress.commands_done)
-                        .unwrap_or(&recipe.path),
-                    _ => &recipe.path,
-                };
-                progress.failure = Some(StepFailure {
-                    label: label.clone(),
-                    output,
-                });
+            if let Some(failure) =
+                StepFailure::from_result(output.clone(), capability == Some(Capability::Run))
+            {
+                progress.failure = Some(failure);
                 break;
             }
             match capability {
@@ -171,35 +194,90 @@ impl RecipeProgress {
     }
 }
 
-/// A step failed when the harness said so. Only when no harness reported a
-/// status does the wording of the result get a vote — reading `Error: (none)`
-/// as an error is exactly the defect issue #908 filed.
-fn tool_result_failed(output: &str) -> bool {
-    match super::tool_result::step_outcome(output) {
-        super::tool_result::StepOutcome::Succeeded => return false,
-        super::tool_result::StepOutcome::Failed => return true,
-        super::tool_result::StepOutcome::Unreported => {}
+/// Labels harnesses use to state the exit status of the process they ran.
+const EXIT_CODE_LABELS: [&str; 4] = [
+    "exit code:",
+    "exit status:",
+    "command exited with status",
+    "process exited with code",
+];
+
+/// Values a labelled field carries when the harness means "there was none".
+const ABSENT_FIELD_VALUES: [&str; 8] = [
+    "",
+    "-",
+    "none",
+    "(none)",
+    "empty",
+    "(empty)",
+    "no output",
+    "(no output)",
+];
+
+/// The exit code the harness stated for the process, when it stated one.
+///
+/// Every harness in use reports it in a fixed `Exit Code: <n>` field, so this
+/// is a read rather than an inference.
+fn reported_exit_code(output: &str) -> Option<i32> {
+    output.lines().find_map(|line| {
+        let line = line.trim().to_ascii_lowercase();
+        EXIT_CODE_LABELS
+            .iter()
+            .find_map(|label| line.strip_prefix(label))?
+            .split(|character: char| !(character.is_ascii_digit() || character == '-'))
+            .find(|token| !token.is_empty())
+            .and_then(|token| token.parse::<i32>().ok())
+    })
+}
+
+impl StepFailure {
+    /// Judge one tool result.
+    ///
+    /// The exit code the harness reported is the primary signal (issue #908):
+    /// `0` is a success even when the command printed nothing and the envelope
+    /// spells out an empty `Error:` field, and a non-zero code is a failure even
+    /// when the command printed output that reads like a result (#905). Prose
+    /// markers decide only when the harness reported no exit code at all, and
+    /// silence is never a failure by itself.
+    fn from_result(reported: String, from_run: bool) -> Option<Self> {
+        if let Some(exit_code) = reported_exit_code(&reported) {
+            return (exit_code != 0).then_some(Self {
+                reported,
+                exit_code: Some(exit_code),
+                from_run,
+            });
+        }
+        reports_failure_in_prose(&reported).then_some(Self {
+            reported,
+            exit_code: None,
+            from_run,
+        })
     }
+}
+
+/// Fallback verdict for a harness that reported no exit code at all.
+fn reports_failure_in_prose(output: &str) -> bool {
     let normalized = output.to_ascii_lowercase();
-    let explicit_failure = [
-        "command exited with status ",
+    if [
         "command timed out",
         "command terminated without an exit status",
-        "error:",
-        "failed:",
         "permission denied",
         "no such file or directory",
     ]
     .iter()
-    .any(|marker| normalized.contains(marker));
-    explicit_failure
-        || normalized.lines().any(|line| {
-            ["exit code:", "exit status:"]
-                .iter()
-                .find_map(|prefix| line.trim().strip_prefix(prefix))
-                .and_then(|value| value.trim().parse::<i32>().ok())
-                .is_some_and(|code| code != 0)
+    .any(|marker| normalized.contains(marker))
+    {
+        return true;
+    }
+    // `Error:` and `Failed:` head a field whose *contents* decide the verdict:
+    // harnesses print the label unconditionally and fill it with a placeholder
+    // when nothing went wrong (issue #908).
+    normalized.lines().any(|line| {
+        ["error:", "failed:"].iter().any(|marker| {
+            line.split_once(marker)
+                .is_some_and(|(_, rest)| !ABSENT_FIELD_VALUES.contains(&rest.trim()))
         })
+    })
 }
 
 fn tool_from_call_id<'a>(messages: &'a [ChatMessage], call_id: Option<&str>) -> Option<&'a str> {

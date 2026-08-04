@@ -379,6 +379,18 @@ fn infer_missing_focus(prompt: &str) -> Option<String> {
     if let Some(subject) = extract_question_subject(trimmed) {
         return Some(subject);
     }
+    // Issue #906: "in <language>" modifies a request, it does not name its
+    // topic. Leaving the modifier in the whole-prompt focus made "Fix the
+    // failing CI job in Rust." match the cached `concept_rust` record and come
+    // back as an encyclopedia definition of the language instead of an answer
+    // about the CI job. Only the fallback focus — the one that is the request
+    // itself — is stripped; an explicit subject ("what is rust") is left alone.
+    if let Some(without) = crate::implementation_language::without_modifier(trimmed) {
+        let stripped = clean_focus(&without);
+        if !stripped.is_empty() {
+            return Some(stripped.to_owned());
+        }
+    }
     Some(trimmed.to_owned())
 }
 

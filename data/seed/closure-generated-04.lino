@@ -1,4 +1,14 @@
 meanings
+  physical_action_question
+    defined-by intent
+    lexeme en
+      surface
+        text "physical action question"
+  pip
+    defined-by token
+    lexeme en
+      surface
+        text "pip"
   pixel
     defined-by word_surface
     lexeme en
@@ -864,6 +874,56 @@ meanings
     lexeme en
       surface
         text "response agentic report target question zh"
+  response_agentic_step_failed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed en"
+  response_agentic_step_failed_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed es"
+  response_agentic_step_failed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed hi"
+  response_agentic_step_failed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed ru"
+  response_agentic_step_failed_with_exit_code_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed with exit code en"
+  response_agentic_step_failed_with_exit_code_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed with exit code es"
+  response_agentic_step_failed_with_exit_code_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed with exit code hi"
+  response_agentic_step_failed_with_exit_code_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed with exit code ru"
+  response_agentic_step_failed_with_exit_code_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed with exit code zh"
+  response_agentic_step_failed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed zh"
   response_algorithm_discovery_summary_en
     defined-by response_template
     lexeme en
@@ -1334,63 +1394,3 @@ meanings
     lexeme en
       surface
         text "response completion recovery decompose into leaf zh"
-  response_completion_recovery_name_target_artifact_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery name target artifact en"
-  response_completion_recovery_name_target_artifact_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery name target artifact hi"
-  response_completion_recovery_name_target_artifact_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery name target artifact ru"
-  response_completion_recovery_name_target_artifact_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery name target artifact zh"
-  response_completion_recovery_restate_postcondition_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery restate postcondition en"
-  response_completion_recovery_restate_postcondition_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery restate postcondition hi"
-  response_completion_recovery_restate_postcondition_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery restate postcondition ru"
-  response_completion_recovery_restate_postcondition_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery restate postcondition zh"
-  response_concept_lookup_in_context_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context en"
-  response_concept_lookup_in_context_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context hi"
-  response_concept_lookup_in_context_no_alias_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context no alias en"
-  response_concept_lookup_in_context_no_alias_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context no alias hi"

@@ -62,4 +62,5 @@ mod openai_chat_streaming;
 mod openai_responses_streaming;
 mod with_formal_ai;
 mod with_formal_ai_argv;
+mod with_formal_ai_global;
 mod with_formal_ai_grok;

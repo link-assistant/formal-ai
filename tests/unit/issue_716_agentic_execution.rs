@@ -268,7 +268,10 @@ fn failed_compile_is_reported_and_the_run_command_is_not_attempted() {
     assert_eq!(completion.choices[0].finish_reason, "stop");
     assert!(completion.choices[0].message.tool_calls.is_empty());
     let answer = completion.choices[0].message.content.plain_text();
-    assert!(answer.contains("could not complete"));
+    // Issue #908: the report names the failed step and its exit code rather
+    // than blaming the harness that ran the command exactly as asked.
+    assert!(answer.contains("rustc main.rs -o main"), "{answer}");
+    assert!(answer.contains("exit code 1"), "{answer}");
     assert!(answer.contains("compile failed"));
 }
 
