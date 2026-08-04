@@ -2,6 +2,13 @@
 
 This document turns issue [#1](https://github.com/link-assistant/formal-ai/issues/1) into explicit implementation requirements.
 
+Per konard's 2026-08-04 standing requirement, every row below has a matching
+delivery/test-traceability row in
+[`docs/requirements-traceability.md`](docs/requirements-traceability.md):
+when it was delivered, the automated test that pins it, and manual test
+confirmation (with honest "not yet confirmed" / "not delivered" entries
+where no record exists yet).
+
 | ID | Requirement | implementation status |
 | --- | --- | --- |
 | R1 | Implement a formal / symbolic AI instead of a GPU-backed neural network. | Implemented as deterministic Rust rules in `FormalAiEngine`. |
