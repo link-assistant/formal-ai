@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/general_planner.rs
   language rust
   fidelity full_ast
-  byte_len 36448
-  line_count 854
-  content_id source_module_4099856a5fa72f0a
+  byte_len 36733
+  line_count 858
+  content_id source_module_ac6de39a03d69dca
   symbol_count 37
   symbols
     const PLAN_PATH 18 18
@@ -14,46 +14,46 @@ self_ast_census
     struct GeneralPlanStep 44 49
     struct GeneralChangePlan 53 61
     function links_notation 66 83
-    function compose_general_change_plan 103 184
-    function compose_repository_work_plan 186 232
-    function repository_work_reference 238 259
-    function parse_command_output_request 268 323
-    function mentions_bare_role 325 352
-    function shell_quote 354 356
-    function command_plan_text 358 362
-    function has_file_write_intent 376 378
-    function has_authoritative_literal_write 386 395
-    function parse_write_request 421 506
-    function is_literal_content 513 515
-    function is_non_referential_content 523 529
-    function resolve_census_target 549 556
-    function compose_edit_request 583 660
-    struct Token 663 667
-    function tokens 670 687
-    function bare_surfaces 690 697
-    function clean_path_token 704 707
-    function looks_like_file_path 717 723
-    function clean_cue_token 726 729
-    function first_content_lead_end 734 736
-    function first_prefix_lead_end 738 775
-    function first_action_cue_end 778 783
-    function clean_content 791 807
-    function safe_relative_path 809 816
-    function capability_slug 818 835
-    function language 837 839
-    function escape 841 846
-    function field 848 850
-    function field_nested 852 854
+    function compose_general_change_plan 103 188
+    function compose_repository_work_plan 190 236
+    function repository_work_reference 242 263
+    function parse_command_output_request 272 327
+    function mentions_bare_role 329 356
+    function shell_quote 358 360
+    function command_plan_text 362 366
+    function has_file_write_intent 380 382
+    function has_authoritative_literal_write 390 399
+    function parse_write_request 425 510
+    function is_literal_content 517 519
+    function is_non_referential_content 527 533
+    function resolve_census_target 553 560
+    function compose_edit_request 587 664
+    struct Token 667 671
+    function tokens 674 691
+    function bare_surfaces 694 701
+    function clean_path_token 708 711
+    function looks_like_file_path 721 727
+    function clean_cue_token 730 733
+    function first_content_lead_end 738 740
+    function first_prefix_lead_end 742 779
+    function first_action_cue_end 782 787
+    function clean_content 795 811
+    function safe_relative_path 813 820
+    function capability_slug 822 839
+    function language 841 843
+    function escape 845 850
+    function field 852 854
+    function field_nested 856 858
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 21531
-    named_node_count 4366
+    total_link_count 21622
+    named_node_count 4384
     distinct_node_kinds 88
     node_kinds
-      arguments 335
+      arguments 337
       array_expression 4
       array_type 1
       assignment_expression 3
@@ -63,14 +63,14 @@ self_ast_census
       block 85
       boolean_literal 2
       break_expression 1
-      call_expression 335
+      call_expression 337
       char_literal 61
       closure_expression 54
       closure_parameters 54
       compound_assignment_expr 1
       const_item 2
       continue_expression 5
-      crate 5
+      crate 7
       declaration_list 2
       doc_comment 161
       else_clause 10
@@ -81,25 +81,25 @@ self_ast_census
       expression_statement 62
       field_declaration 14
       field_declaration_list 3
-      field_expression 279
-      field_identifier 314
+      field_expression 280
+      field_identifier 315
       field_initializer 21
       field_initializer_list 6
       for_expression 3
       function_item 31
       function_modifiers 2
       generic_type 20
-      identifier 971
+      identifier 976
       if_expression 29
       impl_item 2
       index_expression 20
       inner_doc_comment_marker 6
       integer_literal 29
       let_condition 7
-      let_declaration 107
+      let_declaration 108
       lifetime 7
       lifetime_parameter 1
-      line_comment 205
+      line_comment 207
       macro_invocation 19
       match_arm 17
       match_block 2
@@ -112,10 +112,10 @@ self_ast_census
       parenthesized_expression 12
       primitive_type 62
       range_expression 19
-      reference_expression 50
+      reference_expression 51
       reference_type 44
       return_expression 12
-      scoped_identifier 68
+      scoped_identifier 70
       scoped_use_list 2
       self 11
       self_parameter 2
@@ -125,7 +125,7 @@ self_ast_census
       string_literal 67
       struct_expression 6
       struct_item 3
-      super 3
+      super 2
       token_tree 42
       try_expression 24
       tuple_expression 8

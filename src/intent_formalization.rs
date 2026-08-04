@@ -11,8 +11,7 @@ use std::sync::OnceLock;
 use lino_objects_codec::format::escape_reference;
 
 use crate::engine::{
-    normalize_prompt, program_spec, stable_id, SelectedRule,
-    WRITE_PROGRAM_INTENT,
+    normalize_prompt, program_spec, stable_id, SelectedRule, WRITE_PROGRAM_INTENT,
 };
 use crate::event_log::EventLog;
 use crate::link_store::{LinkStore, LinkStoreError};
@@ -234,7 +233,7 @@ pub fn formalize_intent(
 ) -> IntentFormalization {
     let normalized = normalize_prompt(prompt);
     let route = route_for_prompt(prompt, &normalized);
-    let parameters = write_program_parameters(prompt, &normalized).unwrap_or_default();
+    let parameters = requested_write_program_parameters(prompt, &normalized).unwrap_or_default();
     let mut knowns = vec![
         format!("impulse:{}", impulse_id_for(prompt)),
         format!("language:{language}"),
@@ -330,7 +329,7 @@ struct MatchedRoute {
 }
 
 fn route_for_prompt(raw: &str, normalized: &str) -> Option<MatchedRoute> {
-    if write_program_parameters(raw, normalized).is_some() {
+    if requested_write_program_parameters(raw, normalized).is_some() {
         return Some(MatchedRoute {
             slug: String::from(WRITE_PROGRAM_INTENT),
             response_link: String::from("response:write_program"),
@@ -451,7 +450,7 @@ pub(crate) fn active_program_context(history: &[ConversationTurn]) -> Option<Act
     let mut language = None;
     for turn in history.iter().rev() {
         let normalized = normalize_prompt(&turn.content);
-        let Some(parameters) = write_program_parameters(&turn.content, &normalized) else {
+        let Some(parameters) = write_program_parameters(&normalized) else {
             continue;
         };
         if task.is_none() {
@@ -503,7 +502,7 @@ pub(crate) fn recover_write_program_rule(
     if recovered_task.is_none() || recovered_language.is_none() {
         for turn in history.iter().rev() {
             let normalized = normalize_prompt(&turn.content);
-            let Some(parameters) = write_program_parameters(&turn.content, &normalized) else {
+            let Some(parameters) = write_program_parameters(&normalized) else {
                 continue;
             };
             if recovered_task.is_none() {
@@ -579,7 +578,35 @@ pub(crate) fn detected_program_modifiers(normalized: &str) -> Vec<String> {
         .collect()
 }
 
-fn write_program_parameters(raw: &str, normalized: &str) -> Option<BTreeMap<String, String>> {
+/// The `write_program` parameters the *request being routed* names, or `None`
+/// when the request is not a request to write a program at all.
+///
+/// Issue #906: "Create a file named hello.txt containing Hello World, in
+/// JavaScript." names a *file* — a path and its content — and the task alias
+/// table matched only because the content happens to read "hello world".
+/// Answering it with `console.log("Hello, world!")` discards both the path and
+/// the content and reports a program that was never asked for. A request whose
+/// artefact is a file is not a `write_program` request; the file-write shape is
+/// recognized by the same seed-driven parse that composes the plan
+/// (`data/seed/meanings-file-write.lino`), so this declines exactly the requests
+/// the file planner can actually carry out.
+///
+/// The veto is a *routing* decision about the current turn, which is why it does
+/// not live in [`write_program_parameters`]: recovering the active program from
+/// conversation history asks a different question — "which program are we
+/// talking about?" — and a turn that also names a file still answers it.
+fn requested_write_program_parameters(
+    raw: &str,
+    normalized: &str,
+) -> Option<BTreeMap<String, String>> {
+    if crate::agentic_coding::general_planner::has_file_write_intent(&raw.to_lowercase()) {
+        return None;
+    }
+    write_program_parameters(normalized)
+}
+
+/// The `write_program` parameters — task and language — that `normalized` names.
+fn write_program_parameters(normalized: &str) -> Option<BTreeMap<String, String>> {
     let task = crate::coding::program_task_by_alias(normalized);
     let language = requested_program_language(normalized);
     // Issue #386: "write a <program>" is recognised by *meaning*, not a hardcoded
@@ -597,18 +624,6 @@ fn write_program_parameters(raw: &str, normalized: &str) -> Option<BTreeMap<Stri
         .as_deref()
         .is_some_and(|language| mentions_program_request && known_write_program_language(language));
     if task.is_none() && !asks_for_program && !asks_for_known_language_program {
-        return None;
-    }
-    // Issue #906: "Create a file named hello.txt containing Hello World, in
-    // JavaScript." names a *file* — a path and its content — and the task alias
-    // table matched only because the content happens to read "hello world".
-    // Answering it with `console.log("Hello, world!")` discards both the path
-    // and the content and reports a program that was never asked for. A request
-    // whose artefact is a file is not a `write_program` request; the file-write
-    // shape is recognized by the same seed-driven parse that composes the plan
-    // (`data/seed/meanings-file-write.lino`), so this declines exactly the
-    // requests the file planner can actually carry out.
-    if crate::agentic_coding::general_planner::has_file_write_intent(&raw.to_lowercase()) {
         return None;
     }
     let mut parameters = BTreeMap::new();
@@ -738,7 +753,7 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
         ),
         (
             "handler:write_program",
-            write_program_parameters(prompt, normalized).is_some(),
+            requested_write_program_parameters(prompt, normalized).is_some(),
         ),
         (
             "handler:program_synthesis",

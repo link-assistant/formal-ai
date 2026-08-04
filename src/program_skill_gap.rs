@@ -66,7 +66,7 @@ pub enum Shape {
 impl Shape {
     /// The seed intent whose record carries the user-facing reply.
     #[must_use]
-    fn answer_intent(self) -> &'static str {
+    const fn answer_intent(self) -> &'static str {
         match self {
             Self::SkillGap | Self::TaskUnspecified => "write_program_skill_gap",
             Self::LanguageUnspecified => "write_program_language_unspecified",
@@ -76,7 +76,7 @@ impl Shape {
 
     /// The seed intent whose record names the dead end for the event log.
     #[must_use]
-    fn name_intent(self) -> &'static str {
+    const fn name_intent(self) -> &'static str {
         match self {
             Self::SkillGap => "write_program_skill_gap_name",
             Self::TaskUnspecified => "write_program_skill_gap_name_task_unspecified",
@@ -91,7 +91,7 @@ impl Shape {
     /// language never reached a route at all, so calling it a "skill gap" would
     /// misreport the engine's own capability.
     #[must_use]
-    pub fn intent(self) -> &'static str {
+    pub const fn intent(self) -> &'static str {
         match self {
             Self::SkillGap | Self::TaskUnspecified => "write_program_skill_gap",
             Self::LanguageUnspecified => "write_program_language_unspecified",
@@ -101,7 +101,7 @@ impl Shape {
 
     /// The evidence-trail event this shape appends.
     #[must_use]
-    pub fn event(self) -> &'static str {
+    pub const fn event(self) -> &'static str {
         match self {
             Self::SkillGap | Self::TaskUnspecified => "skill_gap",
             Self::LanguageUnspecified | Self::RequestUnspecified => "unspecified_parameter",
@@ -110,7 +110,7 @@ impl Shape {
 
     /// The response link this shape answers under.
     #[must_use]
-    pub fn response_link(self) -> &'static str {
+    pub const fn response_link(self) -> &'static str {
         match self {
             Self::SkillGap | Self::TaskUnspecified => "response:write_program:skill_gap",
             Self::LanguageUnspecified => "response:write_program:language_unspecified",
@@ -121,7 +121,7 @@ impl Shape {
 
 /// Classify a `(task, language)` pair — see [`Shape`].
 #[must_use]
-pub fn shape(task: Option<&str>, language: Option<&str>) -> Shape {
+pub const fn shape(task: Option<&str>, language: Option<&str>) -> Shape {
     match (task, language) {
         (Some(_), Some(_)) => Shape::SkillGap,
         (None, Some(_)) => Shape::TaskUnspecified,

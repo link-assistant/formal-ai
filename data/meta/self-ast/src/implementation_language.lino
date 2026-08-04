@@ -1,0 +1,25 @@
+self_ast_census
+  target src/implementation_language.rs
+  language rust
+  fidelity signature
+  byte_len 9897
+  line_count 240
+  content_id source_module_4739d44bea2453aa
+  symbol_count 16
+  symbols
+    struct ModifierSpan 39 47
+    function preposition_surfaces 49 52
+    static CACHE 50 50
+    function language_noun_surfaces 54 57
+    static CACHE 55 55
+    function head_initial_surfaces 64 70
+    function is_preposition 72 74
+    function is_language_noun 76 78
+    function is_function_word 82 86
+    function is_known 90 93
+    function could_name_a_language 97 99
+    function requested 107 113
+    function requested_in 122 124
+    function without_modifier 133 151
+    function without_trailing_known_modifier 163 181
+    function modifier_span 185 240

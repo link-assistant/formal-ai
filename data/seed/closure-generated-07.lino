@@ -629,6 +629,86 @@ meanings
     lexeme en
       surface
         text "response world state remaining zh"
+  response_write_program_language_unspecified_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified en"
+  response_write_program_language_unspecified_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified hi"
+  response_write_program_language_unspecified_name_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified name en"
+  response_write_program_language_unspecified_name_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified name hi"
+  response_write_program_language_unspecified_name_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified name ru"
+  response_write_program_language_unspecified_name_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified name zh"
+  response_write_program_language_unspecified_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified ru"
+  response_write_program_language_unspecified_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified zh"
+  response_write_program_request_unspecified_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program request unspecified en"
+  response_write_program_request_unspecified_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program request unspecified hi"
+  response_write_program_request_unspecified_name_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program request unspecified name en"
+  response_write_program_request_unspecified_name_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program request unspecified name hi"
+  response_write_program_request_unspecified_name_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program request unspecified name ru"
+  response_write_program_request_unspecified_name_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program request unspecified name zh"
+  response_write_program_request_unspecified_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program request unspecified ru"
+  response_write_program_request_unspecified_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program request unspecified zh"
   response_write_program_skill_gap_en
     defined-by response_template
     lexeme en
@@ -654,6 +734,26 @@ meanings
     lexeme en
       surface
         text "response write program skill gap name ru"
+  response_write_program_skill_gap_name_task_unspecified_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap name task unspecified en"
+  response_write_program_skill_gap_name_task_unspecified_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap name task unspecified hi"
+  response_write_program_skill_gap_name_task_unspecified_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap name task unspecified ru"
+  response_write_program_skill_gap_name_task_unspecified_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap name task unspecified zh"
   response_write_program_skill_gap_name_zh
     defined-by response_template
     lexeme en
@@ -1294,103 +1394,3 @@ meanings
     lexeme en
       surface
         text "tool brainstorm"
-  tool_calculator
-    defined-by tool
-    lexeme en
-      surface
-        text "tool calculator"
-  tool_concept_lookup
-    defined-by tool
-    lexeme en
-      surface
-        text "tool concept lookup"
-  tool_conversation_recall
-    defined-by tool
-    lexeme en
-      surface
-        text "tool conversation recall"
-  tool_coreference
-    defined-by tool
-    lexeme en
-      surface
-        text "tool coreference"
-  tool_dom_extract
-    defined-by tool
-    lexeme en
-      surface
-        text "tool dom extract"
-  tool_dom_query
-    defined-by tool
-    lexeme en
-      surface
-        text "tool dom query"
-  tool_eval_js
-    defined-by tool
-    lexeme en
-      surface
-        text "tool eval js"
-  tool_export_memory
-    defined-by tool
-    lexeme en
-      surface
-        text "tool export memory"
-  tool_fact_lookup
-    defined-by tool
-    lexeme en
-      surface
-        text "tool fact lookup"
-  tool_fs_list
-    defined-by tool
-    lexeme en
-      surface
-        text "tool fs list"
-  tool_fs_move
-    defined-by tool
-    lexeme en
-      surface
-        text "tool fs move"
-  tool_fs_read
-    defined-by tool
-    lexeme en
-      surface
-        text "tool fs read"
-  tool_fs_write
-    defined-by tool
-    lexeme en
-      surface
-        text "tool fs write"
-  tool_http_fetch
-    defined-by tool
-    lexeme en
-      surface
-        text "tool http fetch"
-  tool_http_fetch_primitive
-    defined-by tool
-    lexeme en
-      surface
-        text "tool http fetch primitive"
-  tool_http_post_primitive
-    defined-by tool
-    lexeme en
-      surface
-        text "tool http post primitive"
-  tool_import_memory
-    defined-by tool
-    lexeme en
-      surface
-        text "tool import memory"
-  tool_intent_routing
-    defined-by tool
-    lexeme en
-      surface
-        text "tool intent routing"
-  tool_process_status
-    defined-by tool
-    lexeme en
-      surface
-        text "tool process status"
-  tool_read_local_file
-    defined-by tool
-    lexeme en
-      surface
-        text "tool read local file"

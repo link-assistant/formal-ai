@@ -157,6 +157,7 @@ mod issue_870_routing;
 mod issue_885_document_fact_checking;
 mod issue_890;
 mod issue_896_component_boundaries;
+mod issue_906_language_router;
 mod local_surface;
 mod memory_learning;
 mod memory_maintenance;

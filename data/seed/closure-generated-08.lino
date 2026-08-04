@@ -1,4 +1,104 @@
 meanings
+  tool_calculator
+    defined-by tool
+    lexeme en
+      surface
+        text "tool calculator"
+  tool_concept_lookup
+    defined-by tool
+    lexeme en
+      surface
+        text "tool concept lookup"
+  tool_conversation_recall
+    defined-by tool
+    lexeme en
+      surface
+        text "tool conversation recall"
+  tool_coreference
+    defined-by tool
+    lexeme en
+      surface
+        text "tool coreference"
+  tool_dom_extract
+    defined-by tool
+    lexeme en
+      surface
+        text "tool dom extract"
+  tool_dom_query
+    defined-by tool
+    lexeme en
+      surface
+        text "tool dom query"
+  tool_eval_js
+    defined-by tool
+    lexeme en
+      surface
+        text "tool eval js"
+  tool_export_memory
+    defined-by tool
+    lexeme en
+      surface
+        text "tool export memory"
+  tool_fact_lookup
+    defined-by tool
+    lexeme en
+      surface
+        text "tool fact lookup"
+  tool_fs_list
+    defined-by tool
+    lexeme en
+      surface
+        text "tool fs list"
+  tool_fs_move
+    defined-by tool
+    lexeme en
+      surface
+        text "tool fs move"
+  tool_fs_read
+    defined-by tool
+    lexeme en
+      surface
+        text "tool fs read"
+  tool_fs_write
+    defined-by tool
+    lexeme en
+      surface
+        text "tool fs write"
+  tool_http_fetch
+    defined-by tool
+    lexeme en
+      surface
+        text "tool http fetch"
+  tool_http_fetch_primitive
+    defined-by tool
+    lexeme en
+      surface
+        text "tool http fetch primitive"
+  tool_http_post_primitive
+    defined-by tool
+    lexeme en
+      surface
+        text "tool http post primitive"
+  tool_import_memory
+    defined-by tool
+    lexeme en
+      surface
+        text "tool import memory"
+  tool_intent_routing
+    defined-by tool
+    lexeme en
+      surface
+        text "tool intent routing"
+  tool_process_status
+    defined-by tool
+    lexeme en
+      surface
+        text "tool process status"
+  tool_read_local_file
+    defined-by tool
+    lexeme en
+      surface
+        text "tool read local file"
   tool_result_completed
     defined-by intent
     lexeme en
@@ -434,6 +534,26 @@ meanings
     lexeme en
       surface
         text "write program"
+  write_program_language_unspecified
+    defined-by intent
+    lexeme en
+      surface
+        text "write program language unspecified"
+  write_program_language_unspecified_name
+    defined-by intent
+    lexeme en
+      surface
+        text "write program language unspecified name"
+  write_program_request_unspecified
+    defined-by intent
+    lexeme en
+      surface
+        text "write program request unspecified"
+  write_program_request_unspecified_name
+    defined-by intent
+    lexeme en
+      surface
+        text "write program request unspecified name"
   write_program_skill_gap
     defined-by intent
     lexeme en
@@ -444,6 +564,11 @@ meanings
     lexeme en
       surface
         text "write program skill gap name"
+  write_program_skill_gap_name_task_unspecified
+    defined-by intent
+    lexeme en
+      surface
+        text "write program skill gap name task unspecified"
   writing
     defined-by word_surface
     lexeme en

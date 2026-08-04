@@ -259,13 +259,16 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
     const oracleTask = task || programTaskFromPrompt(normalizeProgramPrompt(prompt));
     const oracleAnswer = language ? codingOracleAnswer(oracleTask, language) : null;
     if (oracleAnswer) return oracleAnswer;
+    // Issue #906: an unfilled parameter is not a skill gap — the dead end the
+    // request reached decides the intent, the event and the response link.
+    const deadEnd = programDeadEnd(task, language);
     return {
-      intent: "write_program_skill_gap",
+      intent: deadEnd.intent,
       content: programSkillGapAnswer(task, language, responseLanguage),
       confidence: 0.4,
       evidence: [
-        "response:write_program:skill_gap",
-        `skill_gap:${programSkillGapName(task, language, "en")}`,
+        deadEnd.link,
+        `${deadEnd.event}:${programSkillGapName(task, language, "en")}`,
         `program_parameter:language:${language || "missing"}`,
         `program_parameter:task:${task || "missing"}`,
       ],

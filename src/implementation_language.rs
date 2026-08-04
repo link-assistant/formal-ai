@@ -87,7 +87,7 @@ fn is_function_word(token: &str) -> bool {
 
 /// Does the catalogue or the coding oracle know `language` by that slug?
 #[must_use]
-pub(crate) fn is_known(language: &str) -> bool {
+pub fn is_known(language: &str) -> bool {
     crate::coding::program_language_by_slug(language).is_some()
         || crate::knowledge::CodingOracle::knows_language(language)
 }
@@ -104,12 +104,23 @@ fn could_name_a_language(token: &str) -> bool {
 /// languages, by the catalogue's alias table. Only then does the positional
 /// scan read a bare *unknown* name after the modifier marker.
 #[must_use]
-pub(crate) fn requested(normalized: &str) -> Option<String> {
+pub fn requested(normalized: &str) -> Option<String> {
     if let Some(language) = crate::coding::program_language_by_alias(normalized) {
         return Some(String::from(language.slug));
     }
     let tokens: Vec<&str> = normalized.split_whitespace().collect();
     modifier_span(&tokens).map(|span| span.name)
+}
+
+/// [`requested`] read from raw request text, which it normalizes first.
+///
+/// The formalizer already holds a normalized prompt and calls [`requested`]
+/// directly; this is the entry point for callers — the regression corpus in
+/// `tests/unit/issue_906_language_router.rs` among them — that hold the
+/// requester's own spelling.
+#[must_use]
+pub fn requested_in(text: &str) -> Option<String> {
+    requested(&crate::engine::normalize_prompt(text))
 }
 
 /// `text` with the implementation-language modifier removed, or `None` when it
@@ -119,7 +130,7 @@ pub(crate) fn requested(normalized: &str) -> Option<String> {
 /// modifier span is dropped, so "Fix the failing CI job in Rust." becomes "Fix
 /// the failing CI job." — a request whose topic no longer mentions a language.
 #[must_use]
-pub(crate) fn without_modifier(text: &str) -> Option<String> {
+pub fn without_modifier(text: &str) -> Option<String> {
     let words: Vec<&str> = text.split_whitespace().collect();
     let normalized: Vec<String> = words
         .iter()
@@ -149,7 +160,7 @@ pub(crate) fn without_modifier(text: &str) -> Option<String> {
 /// Hello World, in JavaScript." names the bytes *and* the language, and only
 /// the bytes belong in the file.
 #[must_use]
-pub(crate) fn without_trailing_known_modifier(text: &str) -> Option<String> {
+pub fn without_trailing_known_modifier(text: &str) -> Option<String> {
     let words: Vec<&str> = text.split_whitespace().collect();
     let normalized: Vec<String> = words
         .iter()
@@ -209,7 +220,13 @@ fn modifier_span(tokens: &[&str]) -> Option<ModifierSpan> {
         if !could_name_a_language(candidate) {
             continue;
         }
-        let accepted = is_known(candidate) || named_by_noun || !skipped_function_word;
+        // A bare unknown name is read as a language only when it *ends* the
+        // phrase: "hello world in elvish" names a language, "print the numbers
+        // in reverse order" names an ordering. Anything a known name or the
+        // explicit head noun already evidences is accepted wherever it sits.
+        let phrase_final = tokens[end..].iter().all(|next| is_function_word(next));
+        let accepted =
+            is_known(candidate) || named_by_noun || (!skipped_function_word && phrase_final);
         if !accepted {
             continue;
         }
