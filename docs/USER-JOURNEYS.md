@@ -55,7 +55,7 @@ not literal accounts — a single real user often wears several of these hats.
 | --- | --- | --- |
 | **Dana, the auditor** | An answer she can defend, with the reasoning attached | Black-box answers she cannot verify or cite |
 | **Mikhail, the multilingual user** | To work in Russian, Hindi, Chinese, or English and be understood equally | Assistants that treat non-English as second-class |
-| **Ltoo, the learner** | A "hello world" or small program, with an honest note on whether it ran | Confident code that was never executed |
+| **Lin, the learner** | A "hello world" or small program, with an honest note on whether it ran | Confident code that was never executed |
 | **Priya, the analyst** | Fast math, currency, and unit conversions she can trust | Plausible numbers with no shown work |
 | **Sven, the integrator** | A drop-in OpenAI-compatible endpoint with no GPU bill | Cloud lock-in, cost, and latency |
 | **Olúwa, the privacy-conscious owner** | To export and move everything the assistant saw and did | Memory she cannot inspect or carry |

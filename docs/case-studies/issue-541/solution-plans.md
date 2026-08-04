@@ -55,7 +55,7 @@ is wrong." Five lines of CSS per selector × five selectors × two contexts
 
 ### Test
 
-[`tests/e2e/tests/issue-541-theme.spec.js`](../../tests/e2e/tests/issue-541-theme.spec.js)
+[`tests/e2e/tests/issue-541-theme.spec.js`](../../../tests/e2e/tests/issue-541-theme.spec.js)
 boots the app with `theme "dark"` seeded into `localStorage`, waits for
 `<html data-theme="dark">`, then for each widget reads
 `getComputedStyle(node).color` (or `.backgroundColor`), parses the rgb, and
@@ -231,7 +231,7 @@ appeared to "overwrite" it.
 
 ### Test
 
-[`tests/e2e/tests/issue-541-demo-mode.spec.js`](../../tests/e2e/tests/issue-541-demo-mode.spec.js)
+[`tests/e2e/tests/issue-541-demo-mode.spec.js`](../../../tests/e2e/tests/issue-541-demo-mode.spec.js)
 drives:
 
 - seed a real conversation with two user turns;
@@ -414,7 +414,7 @@ command; there was no aggregate CTA on the permission panel.
 
 ### Test
 
-[`tests/e2e/tests/issue-541-permissions.spec.js`](../../tests/e2e/tests/issue-541-permissions.spec.js)
+[`tests/e2e/tests/issue-541-permissions.spec.js`](../../../tests/e2e/tests/issue-541-permissions.spec.js)
 mocks the FormalAiDesktop bridge and runs two cases:
 
 - *no pending task*: click CTA ⇒ mode flips to Agent, the gate registry now

@@ -26,8 +26,9 @@ Legacy `/v1` aliases remain available.
 
 Usage counts Unicode characters consistently across protocol adapters. It does
 not treat each UTF-8 byte as a token, so multibyte text is not inflated. Formal
-AI performs no paid inference and reports `cost: 0`; usage fields describe the
-request/response size for client displays.
+AI performs no paid inference; usage envelopes deliberately omit cost and
+cache fields, and the usage counts describe the request/response size for
+client displays.
 
 ```bash
 curl -s http://127.0.0.1:8080/v1/chat/completions \

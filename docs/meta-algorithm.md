@@ -11,8 +11,8 @@ a "how to X" request and its elaboration follow-up ("can you give me specific
 instructions?"). Its recipe lives at
 [`data/meta/procedural-howto-recipe.lino`](../data/meta/procedural-howto-recipe.lino).
 
-Nine recipes are grounded today. The **recursive core** (issue #559) is the
-general algorithm every prompt walks; the other eight encode a topic handler, a
+Twelve recipes are grounded today. The **recursive core** (issue #559) is the
+general algorithm every prompt walks; the other eleven encode a topic handler, a
 self-directed loop, or a codebase-hygiene procedure on top of it:
 
 | Recipe | Issue | What it reproduces |
@@ -26,6 +26,9 @@ self-directed loop, or a codebase-hygiene procedure on top of it:
 | [`dreaming-recipe.lino`](../data/meta/dreaming-recipe.lino) | #540 | Idle memory maintenance and self-generalization |
 | [`budget-search-recipe.lino`](../data/meta/budget-search-recipe.lino) | #662 | Budget-driven search recognition and gated skill proposals |
 | [`links-network-terminology-recipe.lino`](../data/meta/links-network-terminology-recipe.lino) | #664 | Keeping every public surface a links network, not a graph |
+| [`computer-use-recipe.lino`](../data/meta/computer-use-recipe.lino) | #707 | The audited computer-use primitive loop (grounded by `tests/unit/specification/computer_use_meta_algorithm.rs`) |
+| [`grounded-action-recipe.lino`](../data/meta/grounded-action-recipe.lino) | #840 | Grounding requested actions in observed effects (grounded by `tests/unit/specification/grounded_action_meta_algorithm.rs`) |
+| [`draft-portfolio-recipe.lino`](../data/meta/draft-portfolio-recipe.lino) | #704 | The k-draft portfolio loop behind `--draft-count` (grounded by `tests/unit/issue_704.rs`) |
 
 The other `data/meta/*.lino` files are catalogues, lexicons, and ledgers
 (cue sets, route/method aliases, repair cases, the self-AST census, …) that the
@@ -808,11 +811,11 @@ and [`tests/unit/budget_search.rs`](../tests/unit/budget_search.rs).
 
 ```sh
 # Solve a reachability puzzle via budget-driven search (default budget 512):
-formal-ai chat "Using the numbers 3, 5, and 7 with the operations + and *, find an expression that equals 26."
+formal-ai chat --prompt "Using the numbers 3, 5, and 7 with the operations + and *, find an expression that equals 26."
 
 # Raise or lower the compute budget (0 disables the search):
-FORMAL_AI_COMPUTE_BUDGET=256 formal-ai chat "…"
-formal-ai chat --compute-budget 256 "…"
+FORMAL_AI_COMPUTE_BUDGET=256 formal-ai chat --prompt "…"
+formal-ai chat --compute-budget 256 --prompt "…"
 
 # Verify the budget-search recipe still matches the live source:
 cargo test budget_search

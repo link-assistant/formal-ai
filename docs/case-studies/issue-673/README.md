@@ -119,7 +119,7 @@ their dispatch entry point resolved through the census index, with a real span.
   is computed lazily: a planner lookup pays only the ~1 s signature scan. The
   first version of this change compiled the AST eagerly and timed out the
   `issue_712_intent_routing` HTTP tests — the captured failure is in
-  [`dev/log/issues/673/pulls/807/full-test-eager-ast-regression.log`](../../../dev/log/issues/673/pulls/807/full-test-eager-ast-regression.log).
+  `dev/log/issues/673/pulls/807/full-test-eager-ast-regression.log` (a local capture that was not committed to the repository).
 
 ## Reproduce
 

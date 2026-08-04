@@ -709,7 +709,7 @@ The same pipeline also drives four additional surfaces:
   lot. `summarize_dialog(turns, &config)` runs the result through
   `summarize` / `deformalize`, and `generate_chat_title(turns, language)`
   wraps it in `SummarizationMode::Topic`. `try_summarize_conversation` in
-  `src/solver_handlers/mod.rs` now collects `prior_turn:user` and
+  `src/solver_handlers/conversation_memory/conversation_summary.rs` now collects `prior_turn:user` and
   `prior_turn:assistant` events into `DialogTurn`s, calls `summarize_dialog`
   in `Standard` mode, and logs `summarization:mode`,
   `summarization:language`, and `chat_title` evidence alongside the
@@ -1100,7 +1100,7 @@ The same `FormalAiEngine` answers prompts in every surface:
   [#666](https://github.com/link-assistant/formal-ai/issues/666).
 - **Browser demo** — `src/web/formal_ai_worker.js` (a small loader shim) plus
   the solver logic it `importScripts`-loads from
-  `src/web/worker/formal_ai_worker_00.js` … `_21.js`, alongside the WebAssembly
+  `src/web/worker/formal_ai_worker_00.js` … `_23.js`, alongside the WebAssembly
   worker built from `src/web/wasm-worker/src/lib.rs`.
 
 Rust/WASM owns deterministic domain primitives that must match the native
@@ -1112,8 +1112,8 @@ state, seed-file fetch/parsing, network/CORS orchestration, DOM integration,
 and compatibility fallbacks when WASM cannot be instantiated.
 
 **The browser boundary is not yet narrow, and this is the honest current
-state.** The WASM bridge (`src/web/wasm-worker/src/lib.rs`) is ~500 lines,
-while `src/web/worker/*.js` still carries roughly 26,700 lines of solver logic
+state.** The WASM worker crate (`src/web/wasm-worker/src/`) is roughly 1,700 lines,
+while `src/web/worker/*.js` still carries roughly 27,700 lines of solver logic
 mirroring the ~90,000-line Rust core — the cross-runtime parity (E34) and
 issue #349/#408 handlers were mirrored into JavaScript rather than absorbed
 into WASM. Pillar 18 ("Rust-to-WebAssembly parity with JavaScript reserved for
@@ -1123,6 +1123,15 @@ capped and lint-enforced as UI/glue — is tracked by issue
 [#658](https://github.com/link-assistant/formal-ai/issues/658) (R380), and is
 the blocker for the npm-published engine in issue
 [#665](https://github.com/link-assistant/formal-ai/issues/665).
+
+**Standing principle (2026-08-04, R536).** JavaScript is interfacing glue
+and JSX (React) UI only. All logic is compiled Rust: native in the CLI,
+server, and desktop-managed processes; Rust→WASM in the web app. The same
+WASM web engine is reused — not reimplemented — by the desktop shell and
+the VS Code hosts. The remaining `src/web/worker/*.js` solver logic is a
+transitional mirror under the shrink-only ratchet
+`scripts/check-worker-line-budget.rs`; it may only move into Rust→WASM
+(issue #658, R380), never grow.
 
 Each surface assembles the same `Context` shape so the pipeline answers
 identically. The desktop app intentionally stays a wrapper: it sends prompts
@@ -1200,7 +1209,7 @@ on the prompt: arithmetic/word-problem and counting answers are computed, Python
 functions are synthesized from spec + tests and verified in the bounded agent
 workspace (`src/solver_handlers/program_synthesis.rs`), text manipulation is
 generalized over arbitrary input, and the imported benchmark suite grew to a
-10-case slice that passes **10/10** with a `minimum_pass_count` ratchet
+10-case slice that passed **10/10** with a `minimum_pass_count` ratchet (13 cases / 13-floor today — see `data/benchmarks/industry-suite.lino`)
 (`tests/unit/specification/benchmarks.rs`).
 
 The 2026-05-29 audit (issue #244, fifth pass) found the next gap is **parity**,
@@ -1311,7 +1320,7 @@ the table in Section 2 and link the new module.
 - `VISION.md` — values, product story, north-star user experience.
 - `GOALS.md` — what counts as success per surface.
 - `NON-GOALS.md` — what we explicitly do not build.
-- `REQUIREMENTS.md` — issue-by-issue implementation matrix (R1 … R444, plus per-issue blocks such as R499-1…R499-8).
+- `REQUIREMENTS.md` — issue-by-issue implementation matrix (R1 … R535, plus per-issue blocks such as R499-1…R499-8 and R914-1…R914-15).
 - `ROADMAP.md` — implementation-progress tracker mapping each `VISION.md` pillar to its real code status, closed planning batches, and remaining follow-up gaps.
 - [`linksplatform/doublets-rs`](https://github.com/linksplatform/doublets-rs) — default native storage backend.
 - [`linksplatform/doublets-web`](https://github.com/linksplatform/doublets-web) — browser-side mirror.

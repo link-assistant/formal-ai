@@ -19,12 +19,12 @@ plain-text child output is normalized without putting multi-line values on
 stdout. The final line is owned by Formal AI:
 
 ```json
-{"attempts":1,"completion_state":"complete","observable_postcondition":{"expected":true,"kind":"workspace_effect","observed":true,"paths":["Hello.scala"]},"rawMetadata":{"formalai":{"actual_endpoint":null,"endpoint":"http://127.0.0.1:8080/api/openai/v1","input_tokens":15186,"model":"formal-ai","output_tokens":1553}},"reason":"workspace_effect_observed","type":"formal_ai_completion"}
+{"attempts":1,"completion_state":"complete","observable_postcondition":{"expected":true,"kind":"workspace_effect","observed":true,"paths":["Hello.scala"]},"rawMetadata":{"formalai":{"actual_endpoint":null,"endpoint":"http://127.0.0.1:8080/api/openai/v1","input_tokens":15186,"model":"formal-ai","output_tokens":1553}},"recovery":{"ledger":"/home/user/.local/state/formal-ai/completion-recovery.lino","max_attempts":4,"strategies_available":["restate_postcondition","name_target_artifact","decompose_into_leaf"],"strategies_spent":[]},"reason":"workspace_effect_observed","type":"formal_ai_completion"}
 ```
 
 `complete` requires a non-scratch workspace effect. `incomplete` means the
-client exited successfully but still produced no effect after the bounded
-corrective attempt. `failed` covers client failure and endpoint mismatch.
+client exited successfully but still produced no effect after the seeded
+ladder of bounded corrective attempts. `failed` covers client failure and endpoint mismatch.
 `attempts` makes recovery visible to callers. Token fields are populated from
 the supported clients' direct, nested, or JSON-string usage envelopes; the
 configured model and protocol endpoint are always present. If client output
@@ -248,7 +248,7 @@ report is filed and no complete log is uploaded before those choices.
 
 ### Troubleshooting
 
-- `dialog log unavailable` means the server did not start with
+- `FORMAL_AI_DIALOG_LOG_DIR is not configured` means the server did not start with
   `FORMAL_AI_DIALOG_LOG_DIR`, or export needs an explicit `--log-dir`.
 - `session not found` from OpenCode means `--db` points at a different data home
   or the requested `ses_...` id is absent.
