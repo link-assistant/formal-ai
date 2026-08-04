@@ -1,4 +1,4 @@
-//! The *implementation language* modifier: what "in <language>" means (#906).
+//! The *implementation language* modifier: what `"in <language>"` means (#906).
 //!
 //! Issue #906 reported that the router took whatever word followed "in" as the
 //! target programming language, so "Create a file named hello.txt **in the
