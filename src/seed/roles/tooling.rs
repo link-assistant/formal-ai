@@ -216,6 +216,19 @@ pub const ROLE_FILE_WRITE_TARGET_CUE: &str = "file_write_target_cue";
 /// taking the span before the file as the payload, which keeps
 /// "make sense of the file X" out of the write path.
 pub const ROLE_FILE_WRITE_DESTINATION_CUE: &str = "file_write_destination_cue";
+/// Semantic role: a marker phrase that separates a harness preamble from the
+/// objective the caller actually stated (issue #904).
+///
+/// A lead such as "Issue to solve:", "Task:", or "Request:" (plus
+/// translations), carried as [`crate::seed::Slot::Prefix`] forms by
+/// `request_objective` in `data/seed/meanings-agent-actions.lino`. Agent
+/// harnesses prepend their own system-prompt preamble ("You are an AI issue
+/// solver …") to the request, and the general change planner used to formalize
+/// that whole blob — so the recorded `goal` was the preamble rather than the
+/// objective. The planner now reads the objective as the span after this
+/// documented delimiter, and falls back to the whole request when no delimiter
+/// is present.
+pub const ROLE_REQUEST_OBJECTIVE_LEAD: &str = "request_objective_lead";
 /// Semantic role: a surface alias naming a runtime feature capability.
 ///
 /// Carried by the sixteen `feature_capability_*` meanings (for `web_search`,

@@ -39,6 +39,29 @@ impl GeneralPlanMode {
     }
 }
 
+/// Where a composed plan can honestly end (issue #904).
+///
+/// A plan whose steps all operate on the plan record itself changes nothing the
+/// request named, and reading that record back verifies only that the run wrote
+/// it. Such a plan reaches [`PlanTerminalState::PlannedNotExecuted`], never a
+/// success state.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PlanTerminalState {
+    /// Every step operates on an artifact the request named.
+    Executed,
+    /// The plan was recorded; no artifact the request named was touched.
+    PlannedNotExecuted,
+}
+
+impl PlanTerminalState {
+    const fn slug(self) -> &'static str {
+        match self {
+            Self::Executed => "executed",
+            Self::PlannedNotExecuted => "planned_not_executed",
+        }
+    }
+}
+
 /// One ordered, capability-tagged operation in a general change plan.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GeneralPlanStep {
@@ -57,7 +80,11 @@ pub struct GeneralChangePlan {
     pub target: String,
     pub content: String,
     pub steps: Vec<GeneralPlanStep>,
+    /// The command that observes the requested artifact after the change.
+    /// Empty when the plan can name no such command, which is the only honest
+    /// answer for a plan that reaches [`PlanTerminalState::PlannedNotExecuted`].
     pub verification_command: String,
+    pub terminal_state: PlanTerminalState,
 }
 
 impl GeneralChangePlan {
@@ -67,6 +94,7 @@ impl GeneralChangePlan {
         let mut out = String::from("general_change_plan\n");
         field(&mut out, "id", &self.id);
         field(&mut out, "execution_mode", self.mode.slug());
+        field(&mut out, "terminal_state", self.terminal_state.slug());
         field(&mut out, "goal", &self.goal);
         field(&mut out, "target", &self.target);
         for (index, step) in self.steps.iter().enumerate() {
@@ -78,8 +106,23 @@ impl GeneralChangePlan {
                 field_nested(&mut out, "command", command);
             }
         }
-        field(&mut out, "verification_command", &self.verification_command);
+        if !self.verification_command.is_empty() {
+            field(&mut out, "verification_command", &self.verification_command);
+        }
         out
+    }
+
+    /// Render the terminal answer of a plan that touched nothing the request
+    /// named: planned, not executed (issue #904).
+    #[must_use]
+    pub fn planned_not_executed_answer(&self) -> String {
+        const BODY_PLACEHOLDER: &str = concat!("{", "plan", "}");
+        let language = crate::language::detect(&self.goal).slug();
+        seed::localized_response("general_plan_repository_planned", language)
+            .unwrap_or_default()
+            .replace(TARGET_PLACEHOLDER, &self.target)
+            .replace("{plan_path}", PLAN_PATH)
+            .replace(BODY_PLACEHOLDER, self.links_notation().trim_end())
     }
 }
 
@@ -99,8 +142,44 @@ impl GeneralChangePlan {
 /// `data/seed/meanings-file-write.lino`) rather than from a hardcoded list of
 /// English or Russian phrasings, so a file-creation request in en/ru/hi/zh — in
 /// any phrasing — routes to the write tool (CONTRIBUTING §2).
+/// The objective a caller stated, separated from any harness preamble
+/// (issue #904).
+///
+/// Agent harnesses prepend their own system-prompt preamble to the request — "You
+/// are an AI issue solver using @link-assistant/agent. General guidelines. …" —
+/// and the planner used to formalize that whole blob, so the plan recorded the
+/// preamble as its `goal`. The preamble and the objective cannot be told apart
+/// by wording, so the boundary is made explicit instead: the objective is the
+/// span after the first line-anchored
+/// [`ROLE_REQUEST_OBJECTIVE_LEAD`](seed::ROLE_REQUEST_OBJECTIVE_LEAD) marker
+/// ("Issue to solve:", "Task:", "Request:", plus translations), which is the same
+/// delimiter the completion-recovery ladder already writes.
+///
+/// A request that states no such delimiter *is* its own objective, so the whole
+/// request is returned unchanged and every existing route keeps its input.
 #[must_use]
-pub fn compose_general_change_plan(request: &str) -> Option<GeneralChangePlan> {
+pub fn objective_text(request: &str) -> &str {
+    let lowered = request.to_lowercase();
+    first_prefix_lead_end(&lowered, seed::ROLE_REQUEST_OBJECTIVE_LEAD)
+        .filter(|(start, _)| line_anchored(&lowered, *start))
+        .and_then(|(_, end)| request.get(end..))
+        .map_or(request, str::trim)
+}
+
+/// Whether a marker at `start` opens its own line, so a delimiter quoted inside
+/// running prose ("write the words request: hello to notes.txt") does not
+/// silently truncate the request.
+fn line_anchored(text: &str, start: usize) -> bool {
+    text[..start]
+        .chars()
+        .rev()
+        .take_while(|character| *character != '\n')
+        .all(char::is_whitespace)
+}
+
+#[must_use]
+pub fn compose_general_change_plan(full_request: &str) -> Option<GeneralChangePlan> {
+    let request = objective_text(full_request);
     let command_output = parse_command_output_request(request);
     let file_request = command_output.as_ref().map_or_else(
         || parse_write_request(request),
@@ -184,6 +263,9 @@ pub fn compose_general_change_plan(request: &str) -> Option<GeneralChangePlan> {
         content,
         steps,
         verification_command,
+        // The verification command observes the file the request named, not the
+        // plan record this run wrote, so the plan really is executed.
+        terminal_state: PlanTerminalState::Executed,
     })
 }
 
@@ -195,7 +277,6 @@ fn compose_repository_work_plan(request: &str) -> Option<GeneralChangePlan> {
 
     let response_language = language(request);
     let intent = formalize_intent(request, response_language, None);
-    let verification_command = ["cat", PLAN_PATH].join(" ");
     Some(GeneralChangePlan {
         id: stable_id(
             "repository_work_item_plan",
@@ -205,33 +286,27 @@ fn compose_repository_work_plan(request: &str) -> Option<GeneralChangePlan> {
         goal: intent.source_text,
         target,
         content: String::new(),
-        steps: vec![
-            GeneralPlanStep {
-                capability: Capability::Write,
-                action: command_plan_text(
-                    "general_plan_repository_action",
-                    response_language,
-                    PLAN_PATH,
-                ),
-                expected_evidence: format!("written plan event {}", intent.impulse_id),
-                command: None,
-            },
-            GeneralPlanStep {
-                capability: Capability::Run,
-                action: command_plan_text(
-                    "general_plan_repository_verify_action",
-                    response_language,
-                    PLAN_PATH,
-                ),
-                expected_evidence: command_plan_text(
-                    "general_plan_repository_evidence",
-                    response_language,
-                    PLAN_PATH,
-                ),
-                command: Some(verification_command.clone()),
-            },
-        ],
-        verification_command,
+        // Recording the work item is the only thing this sandbox can honestly
+        // do. It deliberately names no verification command: the sole artifact
+        // the run touches is the plan record itself, and `cat`-ing that record
+        // back would observe nothing but the write that just happened
+        // (issue #904).
+        steps: vec![GeneralPlanStep {
+            capability: Capability::Write,
+            action: command_plan_text(
+                "general_plan_repository_action",
+                response_language,
+                PLAN_PATH,
+            ),
+            expected_evidence: command_plan_text(
+                "general_plan_repository_evidence",
+                response_language,
+                PLAN_PATH,
+            ),
+            command: None,
+        }],
+        verification_command: String::new(),
+        terminal_state: PlanTerminalState::PlannedNotExecuted,
     })
 }
 

@@ -1,24 +1,4 @@
 meanings
-  response_summarization_evidence_summary_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response summarization evidence summary en"
-  response_summarization_evidence_summary_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response summarization evidence summary hi"
-  response_summarization_evidence_summary_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response summarization evidence summary ru"
-  response_summarization_evidence_summary_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response summarization evidence summary zh"
   response_supplied_file_contents_en
     defined-by response_template
     lexeme en
@@ -1394,3 +1374,23 @@ meanings
     lexeme en
       surface
         text "tool brainstorm"
+  tool_calculator
+    defined-by tool
+    lexeme en
+      surface
+        text "tool calculator"
+  tool_concept_lookup
+    defined-by tool
+    lexeme en
+      surface
+        text "tool concept lookup"
+  tool_conversation_recall
+    defined-by tool
+    lexeme en
+      surface
+        text "tool conversation recall"
+  tool_coreference
+    defined-by tool
+    lexeme en
+      surface
+        text "tool coreference"

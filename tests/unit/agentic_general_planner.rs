@@ -82,18 +82,19 @@ fn compound_github_work_item_routes_to_agentic_planning_before_project_lookup() 
 
     let outcome = run_agentic_task(ISSUE_698_WORK_ITEM).expect("Agent CLI work-item replay");
     assert!(!outcome.hit_turn_cap);
+    // One step, not two: the run records the work item and stops. Issue #904
+    // removed the `cat .formal-ai/general-change-plan.lino` step, which verified
+    // nothing but the write the same run had just performed.
     assert_eq!(
         outcome
             .steps
             .iter()
             .map(|step| step.tool.as_str())
             .collect::<Vec<_>>(),
-        ["write_file", "run_command"]
+        ["write_file"]
     );
-    assert!(outcome.steps[1].arguments.contains(PLAN_PATH));
-    assert!(outcome
-        .final_answer
-        .contains("without claiming unobserved source edits"));
+    assert!(outcome.steps[0].arguments.contains(PLAN_PATH));
+    assert!(outcome.final_answer.contains("Planned, not executed"));
     assert!(!outcome.final_answer.contains("project lookup"));
 }
 
@@ -107,24 +108,24 @@ fn repository_work_item_completion_is_seeded_for_every_supported_language() {
     for case in [
         LocalizedCase {
             language: "en",
-            expected_fragment: "Recorded and verified",
+            expected_fragment: "Planned, not executed",
         },
         LocalizedCase {
             language: "ru",
-            expected_fragment: "записан и проверен",
+            expected_fragment: "Запланировано, но не выполнено",
         },
         LocalizedCase {
             language: "hi",
-            expected_fragment: "दर्ज और सत्यापित",
+            expected_fragment: "योजना बनी, निष्पादित नहीं",
         },
         LocalizedCase {
             language: "zh",
-            expected_fragment: "已记录并验证",
+            expected_fragment: "已规划，未执行",
         },
     ] {
         let response =
-            formal_ai::seed::response_for("general_plan_repository_complete", case.language)
-                .unwrap_or_else(|| panic!("missing repository completion for {}", case.language));
+            formal_ai::seed::response_for("general_plan_repository_planned", case.language)
+                .unwrap_or_else(|| panic!("missing repository outcome for {}", case.language));
         assert!(
             response.contains(case.expected_fragment),
             "repository completion is not localized for {}: {response}",
@@ -336,6 +337,9 @@ fn general_change_plan_fixture_pins_the_shape() {
         "expected_evidence",
         "verification_command",
         "append_before_execute",
+        "terminal_state",
+        "no_self_verification",
+        "planned_not_executed",
     ] {
         assert!(fixture.contains(field), "missing {field}");
     }
