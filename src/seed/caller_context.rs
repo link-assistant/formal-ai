@@ -14,7 +14,12 @@
 //!   describing itself, removed before the request is read;
 //! * **fact-statement copulas** — the linking words that make a sentence a
 //!   *statement about* something (*"today's date **is** Sunday"*) rather than a
-//!   request for it (*"what is today's date?"*). A statement carries no intent.
+//!   request for it (*"what is today's date?"*). A statement carries no intent;
+//! * **question words** — the words that make a sentence a question even when
+//!   the client dropped the question mark (*"what day is it"*, *"什么"*);
+//! * **subject leads** — the determiners a subject may open with, so *"**the**
+//!   current date is 2026-08-02"* is read as the same subject as *"current
+//!   date"*.
 //!
 //! Like every other trigger vocabulary the natural language lives in seed data
 //! rather than in the solver, so a maintainer adds a client or a language by
@@ -54,6 +59,10 @@ pub struct CallerContextVocabulary {
     pub injected_blocks: Vec<InjectedBlock>,
     /// Linking words that turn a phrase into a statement about its subject.
     pub fact_statement_copulas: Vec<String>,
+    /// Words that make a sentence a question even without a question mark.
+    pub question_words: Vec<String>,
+    /// Determiners a subject may open with ("**the** current date is …").
+    pub subject_leads: Vec<String>,
 }
 
 impl CallerContextVocabulary {
@@ -75,10 +84,24 @@ impl CallerContextVocabulary {
             })
             .map(String::as_str)
     }
+
+    /// Whether `sentence` carries a question word, which makes it a question
+    /// even when the client dropped the question mark (*"what is the date"*).
+    #[must_use]
+    pub fn asks_a_question(&self, sentence: &str) -> bool {
+        self.question_words.iter().any(|word| {
+            if word.chars().any(is_unspaced_script) {
+                return sentence.contains(word.as_str());
+            }
+            sentence
+                .split(|character: char| !character.is_alphanumeric())
+                .any(|token| token == word)
+        })
+    }
 }
 
 /// Whether `character` belongs to a script written without spaces between words.
-fn is_unspaced_script(character: char) -> bool {
+const fn is_unspaced_script(character: char) -> bool {
     matches!(character, '\u{3400}'..='\u{9fff}' | '\u{f900}'..='\u{faff}')
 }
 
@@ -110,6 +133,12 @@ pub fn caller_context_vocabulary() -> CallerContextVocabulary {
             }
             "fact_statement_copulas" => {
                 vocab.fact_statement_copulas = collect_language_values(group, "copula");
+            }
+            "question_words" => {
+                vocab.question_words = collect_language_values(group, "word");
+            }
+            "subject_leads" => {
+                vocab.subject_leads = collect_language_values(group, "lead");
             }
             _ => {}
         }

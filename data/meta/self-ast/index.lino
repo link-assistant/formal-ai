@@ -2,11 +2,11 @@ self_ast_census_index
   language rust
   engine meta_language
   full_fidelity_prefix src/agentic_coding/
-  module_count 429
+  module_count 430
   full_ast_module_count 55
-  signature_module_count 374
-  symbol_count 8689
-  content_id self_ast_census_index_699a54c7052357c8
+  signature_module_count 375
+  symbol_count 8704
+  content_id self_ast_census_index_6d65fec122430b89
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/algorithm_learning.rs full_ast 13 source_module_0cde1901a8a78574
@@ -56,7 +56,7 @@ self_ast_census_index
     src/agentic_coding/routing_learning.rs full_ast 7 source_module_976ea373edb73248
     src/agentic_coding/self_ast.rs full_ast 19 source_module_9104c8097027e9ae
     src/agentic_coding/self_heal.rs full_ast 10 source_module_dea3882ec18d6743
-    src/agentic_coding/shell_command.rs full_ast 31 source_module_60b5027ec9530eeb
+    src/agentic_coding/shell_command.rs full_ast 36 source_module_ffb77447c90c3c57
     src/agentic_coding/shell_file_fallback.rs full_ast 6 source_module_47984ba3ee10153a
     src/agentic_coding/source_links.rs full_ast 11 source_module_6177a1573de819fc
     src/agentic_coding/statement_audit.rs full_ast 5 source_module_f81e28e434383dbf
@@ -238,7 +238,7 @@ self_ast_census_index
     src/proof_program.rs signature 3 source_module_6d477ecdcd32b74b
     src/proof_program/core.rs signature 16 source_module_456f5cd5ed2962be
     src/protocol.rs signature 47 source_module_7d1bf82d5d584e0c
-    src/protocol/content.rs signature 14 source_module_c8f01edf04d1857c
+    src/protocol/content.rs signature 13 source_module_c9f773afe6d20f5a
     src/protocol/output.rs signature 16 source_module_6cfbc8d372025668
     src/protocol/recording.rs signature 9 source_module_d363aceee7b57b11
     src/protocol/responses_input.rs signature 3 source_module_b3001670f17b0fc4
@@ -261,14 +261,15 @@ self_ast_census_index
     src/search_fusion.rs signature 29 source_module_561bb8d32e5a8095
     src/search_fusion_grammar.rs signature 5 source_module_278c1816d6576c50
     src/search_fusion_learning.rs signature 38 source_module_7dc02c8e13dfc9de
-    src/seed.rs signature 61 source_module_69851760d6bb5cf8
+    src/seed.rs signature 62 source_module_607a2e4bbc1d5c65
     src/seed/agentic_tool_capabilities.rs signature 2 source_module_9847f4d6bab733ff
     src/seed/brainstorm.rs signature 5 source_module_6580e5a2ac5b3691
+    src/seed/caller_context.rs signature 9 source_module_ae1a4c3c3d5ff042
     src/seed/client_completion.rs signature 2 source_module_f8ccbc3460b19224
     src/seed/client_integrations.rs signature 19 source_module_efd3baa199ae743c
     src/seed/coreference.rs signature 6 source_module_2a031fb4770187f1
     src/seed/draft_strategies.rs signature 2 source_module_2dc41474ab87eb56
-    src/seed/embedded.rs signature 105 source_module_e4234f9b1c2dffad
+    src/seed/embedded.rs signature 106 source_module_446a3c426a97c475
     src/seed/entity_names.rs signature 6 source_module_ba95cc916c77b0a9
     src/seed/facts.rs signature 9 source_module_986f7657cab5c21a
     src/seed/grounding_overrides.rs signature 6 source_module_e1e4f825307e3b33

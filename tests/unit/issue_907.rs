@@ -18,7 +18,6 @@
 //! Each case uses a *different* phrasing so a passing run proves the routing is
 //! general rather than memorised (CONTRIBUTING rule 4).
 
-use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
 use formal_ai::gemini::{
     create_gemini_generate_content_response_with_solver_and_memory, GeminiGenerateContentRequest,
 };
@@ -41,16 +40,60 @@ fn agent_solver() -> UniversalSolver {
     })
 }
 
-/// The single tool call planned for `prompt`, or a panic naming the prompt.
-fn single_call(prompt: &str) -> (String, String) {
-    let messages = vec![ChatMessage::user(prompt)];
-    match plan_chat_step(&messages, &TOOLS) {
-        Some(AgenticPlan::ToolCalls(calls)) => {
-            assert_eq!(calls.len(), 1, "expected one tool call for {prompt:?}");
-            (calls[0].tool.clone(), calls[0].arguments.clone())
+/// The declarations the report's gemini session advertises, as the CLI sends them.
+fn function_declarations() -> serde_json::Value {
+    serde_json::json!([{"functionDeclarations": [
+        {
+            "name": TOOLS[0],
+            "description": "Run a shell command",
+            "parameters": {
+                "type": "OBJECT",
+                "properties": {"command": {"type": "STRING"}},
+                "required": ["command"]
+            }
+        },
+        {
+            "name": TOOLS[1],
+            "description": "Write a file",
+            "parameters": {
+                "type": "OBJECT",
+                "properties": {
+                    "file_path": {"type": "STRING"},
+                    "content": {"type": "STRING"}
+                },
+                "required": ["file_path", "content"]
+            }
         }
-        other => panic!("expected a tool call for {prompt:?}, got {other:?}"),
-    }
+    ]}])
+}
+
+/// The function call the Gemini surface emits for a turn made of `parts`.
+///
+/// Routing is exercised over the surface the report uses, so a passing test is
+/// evidence about the reported behaviour rather than about an inner helper.
+fn gemini_call(parts: &[&str]) -> serde_json::Value {
+    let request: GeminiGenerateContentRequest = serde_json::from_value(serde_json::json!({
+        "contents": [{
+            "role": "user",
+            "parts": parts.iter().map(|text| serde_json::json!({"text": text})).collect::<Vec<_>>(),
+        }],
+        "tools": function_declarations(),
+    }))
+    .expect("valid Gemini generateContent request");
+
+    let response = create_gemini_generate_content_response_with_solver_and_memory(
+        &request,
+        "formal-ai",
+        &agent_solver(),
+        &[],
+    );
+    response["candidates"][0]["content"]["parts"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .find_map(|part| part.get("functionCall"))
+        .cloned()
+        .unwrap_or_else(|| panic!("expected a function call for {parts:?}, got {response}"))
 }
 
 /// Requirement 1: what a client wraps in its own context block is the client
@@ -81,8 +124,8 @@ fn client_injected_context_is_not_the_users_request() {
             Some(REQUEST),
             "<{tag}> is the client talking, not the user"
         );
-        let (tool, _) = single_call(&framed);
-        assert_eq!(tool, "write_file", "<{tag}> must not decide the turn");
+        let call = gemini_call(&[&framed]);
+        assert_eq!(call["name"], "write_file", "<{tag}> must not decide the turn");
     }
 }
 
@@ -124,11 +167,10 @@ fn a_declarative_statement_does_not_fire_an_intent() {
         "आज की तारीख 2 अगस्त 2026 है।",
         "今天的日期是2026年8月2日。",
     ] {
-        let prompt = format!("{statement}\n\n{REQUEST}");
-        let (tool, arguments) = single_call(&prompt);
+        let call = gemini_call(&[&format!("{statement}\n\n{REQUEST}")]);
         assert_eq!(
-            tool, "write_file",
-            "a statement must not route: {statement:?} planned {arguments}"
+            call["name"], "write_file",
+            "a statement must not route: {statement:?} planned {call}"
         );
     }
 }
@@ -146,10 +188,9 @@ fn asking_for_the_date_still_runs_date() {
         "आज की तारीख क्या है?",
         "今天的日期是什么？",
     ] {
-        let (tool, arguments) = single_call(question);
-        assert_eq!(tool, "run_shell_command", "{question}");
-        let value: serde_json::Value = serde_json::from_str(&arguments).expect("json arguments");
-        assert_eq!(value["command"], "date", "{question}");
+        let call = gemini_call(&[question]);
+        assert_eq!(call["name"], "run_shell_command", "{question}");
+        assert_eq!(call["args"]["command"], "date", "{question}");
     }
 }
 
@@ -158,15 +199,17 @@ fn asking_for_the_date_still_runs_date() {
 #[test]
 fn a_turn_that_carries_a_task_gets_the_task() {
     for prompt in [
-        "What is today's date? Write a hello world program in Python.",
+        "Show me the current date. Write a hello world program in Python please.",
         "Today's date is Sunday. Create a file main.py that prints Hello, world!",
         "The current time is 20:00. Write a Python script that prints Hello, world!",
     ] {
-        let (tool, arguments) = single_call(prompt);
-        assert_eq!(tool, "write_file", "{prompt} planned {arguments}");
+        let call = gemini_call(&[prompt]);
+        assert_eq!(call["name"], "write_file", "{prompt} planned {call}");
         assert!(
-            arguments.contains("Hello, world!"),
-            "{prompt} planned {arguments}"
+            call["args"]["content"]
+                .as_str()
+                .is_some_and(|content| content.contains("Hello, world!")),
+            "{prompt} planned {call}"
         );
     }
 }
@@ -175,56 +218,14 @@ fn a_turn_that_carries_a_task_gets_the_task() {
 /// caller framing the gemini CLI actually sends.
 #[test]
 fn the_gemini_cli_session_context_no_longer_hijacks_the_request() {
-    let request: GeminiGenerateContentRequest = serde_json::from_value(serde_json::json!({
-        "contents": [{
-            "role": "user",
-            "parts": [{"text": GEMINI_SESSION_CONTEXT}, {"text": REQUEST}],
-        }],
-        "tools": [{"functionDeclarations": [
-            {
-                "name": "run_shell_command",
-                "description": "Run a shell command",
-                "parameters": {
-                    "type": "OBJECT",
-                    "properties": {"command": {"type": "STRING"}},
-                    "required": ["command"]
-                }
-            },
-            {
-                "name": "write_file",
-                "description": "Write a file",
-                "parameters": {
-                    "type": "OBJECT",
-                    "properties": {
-                        "file_path": {"type": "STRING"},
-                        "content": {"type": "STRING"}
-                    },
-                    "required": ["file_path", "content"]
-                }
-            }
-        ]}]
-    }))
-    .expect("valid Gemini generateContent request");
+    let call = gemini_call(&[GEMINI_SESSION_CONTEXT, REQUEST]);
 
-    let response = create_gemini_generate_content_response_with_solver_and_memory(
-        &request,
-        "formal-ai",
-        &agent_solver(),
-        &[],
-    );
-    let call = response["candidates"][0]["content"]["parts"]
-        .as_array()
-        .into_iter()
-        .flatten()
-        .find_map(|part| part.get("functionCall"))
-        .unwrap_or_else(|| panic!("expected a function call, got {response}"));
-
-    assert_eq!(call["name"], "write_file", "{response}");
-    assert_eq!(call["args"]["file_path"], "main.py", "{response}");
+    assert_eq!(call["name"], "write_file", "{call}");
+    assert_eq!(call["args"]["file_path"], "main.py", "{call}");
     assert!(
         call["args"]["content"]
             .as_str()
             .is_some_and(|content| content.contains("Hello, world!")),
-        "{response}"
+        "{call}"
     );
 }

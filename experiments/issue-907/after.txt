@@ -1,15 +1,33 @@
-== the same request under different caller framing
-  <session_context> ⏎ This is the Gemini CLI. We are   -> write_file({"content":"print(\"Hello, world!\")","file_path":"main.py"})
-  <session_context> ⏎ This is the Gemini CLI. We are   -> write_file({"content":"print(\"Hello, world!\")","file_path":"main.py"})
-  Today's date is Sunday, August 2, 2026.              -> write_file({"content":"print(\"Hello, world!\")","file_path":"main.py"})
-  The current time is 20:00.                           -> write_file({"content":"print(\"Hello, world!\")","file_path":"main.py"})
-  The date is Sunday.                                  -> write_file({"content":"print(\"Hello, world!\")","file_path":"main.py"})
-  Today is Sunday, August 2, 2026.                     -> write_file({"content":"print(\"Hello, world!\")","file_path":"main.py"})
-  date                                                 -> write_file({"content":"print(\"Hello, world!\")","file_path":"main.py"})
-  My operating system is: linux                        -> write_file({"content":"print(\"Hello, world!\")","file_path":"main.py"})
-                                                       -> write_file({"content":"print(\"Hello, world!\")","file_path":"main.py"})
-
-== a user who really does ask for the date still gets it
-  what is the date?                                    -> run_shell_command({"command":"date"})
-  show me today's date                                 -> run_shell_command({"command":"date"})
-  run date                                             -> run_shell_command({"command":"date"})
+--- "Write a hello world program in Python."
+  plan_chat_step: None
+  gemini: {"args":{"content":"print(\"Hello, world!\")","file_path":"main.py"},"id":"call_4f40eee4fe413ece","name":"write_file"}
+--- "Create a file main.py that prints Hello, world!"
+  plan_chat_step: None
+  gemini: {"args":{"content":"print(\"Hello, world!\")","file_path":"main.py"},"id":"call_91fb9b4490a18306","name":"write_file"}
+--- "我的用户名是什么"
+  plan_chat_step: Some(ToolCalls([PlannedToolCall { tool: "run_shell_command", arguments: "{\"command\":\"whoami\"}" }]))
+  gemini: {"args":{"command":"whoami"},"id":"call_dca553335814e1c4","name":"run_shell_command"}
+--- "Today's date is Sunday, August 2, 2026 (formatted according to the user's locale).\n\nWrite a hello world program in Python."
+  plan_chat_step: None
+  gemini: {"args":{"content":"print(\"Hello, world!\")","file_path":"main.py"},"id":"call_0c3e532dca2ac466","name":"write_file"}
+--- "The current time is 20:00.\n\nWrite a hello world program in Python."
+  plan_chat_step: None
+  gemini: {"args":{"content":"print(\"Hello, world!\")","file_path":"main.py"},"id":"call_6b9da909dabd657f","name":"write_file"}
+--- "Текущее время — 20:00.\n\nWrite a hello world program in Python."
+  plan_chat_step: None
+  gemini: {"args":{"content":"print(\"Hello, world!\")","file_path":"main.py"},"id":"call_cccdf61da54fadc7","name":"write_file"}
+--- "今天的日期是2026年8月2日。\n\nWrite a hello world program in Python."
+  plan_chat_step: None
+  gemini: {"args":{"content":"print(\"Hello, world!\")","file_path":"main.py"},"id":"call_452ed6180957f2ad","name":"write_file"}
+--- "<session_context>\nThis is the Gemini CLI. We are setting up the context for our chat.\nToday's date is Sunday, August 2, 2026 (formatted according to the user's locale).\n</session_context>\n\nWrite a hello world program in Python."
+  plan_chat_step: None
+  gemini: {"args":{"content":"print(\"Hello, world!\")","file_path":"main.py"},"id":"call_4f40eee4fe413ece","name":"write_file"}
+--- "what is the date?"
+  plan_chat_step: Some(ToolCalls([PlannedToolCall { tool: "run_shell_command", arguments: "{\"command\":\"date\"}" }]))
+  gemini: {"args":{"command":"date"},"id":"call_637777dd012c15aa","name":"run_shell_command"}
+--- "The current time is 20:00."
+  plan_chat_step: None
+  gemini: <no function call>
+--- "The current time is 20:00.\n\nWrite a hello world program in Python."
+  plan_chat_step: None
+  gemini: {"args":{"content":"print(\"Hello, world!\")","file_path":"main.py"},"id":"call_6b9da909dabd657f","name":"write_file"}

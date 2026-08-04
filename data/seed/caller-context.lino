@@ -1,15 +1,15 @@
 caller_context
   injected_blocks
-    block system-reminder
-      client claude
-      client qwen
-    block session_context
-      client gemini
-    block environment_context
-      client codex
-    block env
-      client agent
-      client opencode
+    block "system-reminder"
+      client "claude"
+      client "qwen"
+    block "session_context"
+      client "gemini"
+    block "environment_context"
+      client "codex"
+    block "env"
+      client "agent"
+      client "opencode"
   fact_statement_copulas
     language en
       copula "is"
@@ -29,3 +29,54 @@ caller_context
       copula "es"
       copula "son"
       copula "era"
+  subject_leads
+    language en
+      lead "the"
+      lead "a"
+      lead "an"
+      lead "my"
+      lead "our"
+      lead "your"
+    language es
+      lead "el"
+      lead "la"
+      lead "mi"
+  question_words
+    language en
+      word "what"
+      word "which"
+      word "when"
+      word "where"
+      word "who"
+      word "why"
+      word "how"
+    language ru
+      word "что"
+      word "какое"
+      word "какой"
+      word "какая"
+      word "когда"
+      word "сколько"
+      word "где"
+      word "кто"
+    language hi
+      word "क्या"
+      word "कौन"
+      word "कब"
+      word "कहाँ"
+      word "कितना"
+    language zh
+      word "什么"
+      word "哪"
+      word "几"
+      word "多少"
+      word "吗"
+      word "谁"
+      word "怎么"
+    language es
+      word "qué"
+      word "cuál"
+      word "cuándo"
+      word "dónde"
+      word "quién"
+      word "cómo"

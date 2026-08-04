@@ -1,0 +1,18 @@
+self_ast_census
+  target src/seed/caller_context.rs
+  language rust
+  fidelity signature
+  byte_len 6534
+  line_count 164
+  content_id source_module_ae1a4c3c3d5ff042
+  symbol_count 9
+  symbols
+    struct InjectedBlock 33 38
+    function open 43 45
+    function close 49 51
+    struct CallerContextVocabulary 57 66
+    function copula_in 75 86
+    function asks_a_question 91 100
+    function is_unspaced_script 104 106
+    function caller_context_vocabulary 110 147
+    function collect_language_values 151 164

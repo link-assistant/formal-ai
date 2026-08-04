@@ -275,6 +275,16 @@ fn sentences_with_mood(lower: &str) -> Vec<(&str, bool)> {
         ) {
             continue;
         }
+        // A dot inside a token ends nothing — `main.py` is one word, not two
+        // sentences.
+        if character == '.'
+            && lower[index + character.len_utf8()..]
+                .chars()
+                .next()
+                .is_some_and(char::is_alphanumeric)
+        {
+            continue;
+        }
         let text = lower[start..index].trim();
         if !text.is_empty() {
             sentences.push((text, matches!(character, '?' | '？')));
@@ -288,34 +298,60 @@ fn sentences_with_mood(lower: &str) -> Vec<(&str, bool)> {
     sentences
 }
 
-/// Whether `cue` is used to *ask* for something rather than to state a fact.
+/// The sentences of `lower` that ask or command, dropping those that merely
+/// state a fact about one of `cues`.
 ///
-/// A cue that occurs in at least one sentence that is not a statement about the
-/// cue is a request; a cue that only ever appears as the subject of a
-/// declarative sentence — the gemini CLI's *"Today's date is Sunday, August 2,
-/// 2026 …"* — is the caller describing the world, and describing the date is not
-/// asking for it (issue #907). A cue that spans a sentence boundary keeps the
-/// plain containment answer.
-fn asks_for_cue(
-    lower: &str,
-    sentences: &[(&str, bool)],
-    cue: &str,
+/// The gemini CLI's *"Today's date is Sunday, August 2, 2026 …"* describes the
+/// world; describing the date is not asking for it, so no cue inside such a
+/// sentence may route (issue #907). Classification is per sentence rather than
+/// per cue: once *"the current time is 20:00"* is a statement about *current
+/// time*, the shorter cue *time* riding inside it must not route either.
+fn requesting_sentences<'a>(
+    sentences: &[(&'a str, bool)],
+    cues: &[&str],
     vocab: &seed::CallerContextVocabulary,
-) -> bool {
-    if !lower.contains(cue) {
-        return false;
-    }
-    let mut seen = false;
-    for (sentence, interrogative) in sentences {
-        if !sentence.contains(cue) {
-            continue;
-        }
-        seen = true;
-        if !is_fact_statement(sentence, *interrogative, cue, vocab) {
-            return true;
-        }
-    }
-    !seen
+) -> Vec<&'a str> {
+    sentences
+        .iter()
+        .filter(|(sentence, interrogative)| {
+            !cues.iter().any(|cue| {
+                sentence.contains(cue) && is_fact_statement(sentence, *interrogative, cue, vocab)
+            })
+        })
+        .map(|(sentence, _)| *sentence)
+        .collect()
+}
+
+/// Whether `sentence` asks for an artifact to be authored — an authoring verb
+/// paired with a program, script or code artifact, as the lexicon evidences
+/// those roles in every supported language.
+///
+/// Issue #907, requirement 3: a turn that carries a task gets the task. A
+/// built-in intent riding alongside it ("what is today's date? create a file
+/// main.py that prints Hello, world!") answers the smaller of the two questions
+/// and silently drops the work, so the intent steps aside for the task.
+fn carries_authoring_task(sentence: &str) -> bool {
+    use crate::seed::{ROLE_HELLO_WORLD_REFERENCE, ROLE_PROGRAM_KIND, ROLE_PROGRAM_REQUEST};
+    let lexicon = seed::lexicon();
+    lexicon.mentions_role(ROLE_PROGRAM_REQUEST, sentence)
+        && [ROLE_PROGRAM_KIND, ROLE_HELLO_WORLD_REFERENCE]
+            .iter()
+            .any(|role| lexicon.mentions_role(role, sentence))
+}
+
+/// `sentence` without the determiner its subject may open with, so *"the current
+/// date is …"* is recognised as a statement about *"current date"*.
+fn strip_subject_lead<'a>(sentence: &'a str, vocab: &seed::CallerContextVocabulary) -> &'a str {
+    vocab
+        .subject_leads
+        .iter()
+        .find_map(|lead| {
+            sentence
+                .strip_prefix(lead.as_str())
+                .filter(|rest| rest.starts_with(' '))
+                .map(str::trim_start)
+        })
+        .unwrap_or(sentence)
 }
 
 /// Whether `sentence` states a fact *about* `cue` instead of requesting it.
@@ -323,7 +359,9 @@ fn asks_for_cue(
 /// The shape is `<cue> <copula> <value>` (English, Russian, Spanish, Chinese) or
 /// `<cue> <value> <copula>` (Hindi): the cue opens the sentence as its subject,
 /// a seed-declared copula links it, and a value follows. A question is never a
-/// statement, and a cue that does not open the sentence is not its subject — so
+/// statement — neither one punctuated with `?` nor one that merely carries a
+/// seed-declared question word ("我的用户名**是什么**") — and a cue that does not
+/// open the sentence is not its subject, so
 /// *"tell me what the current time is"* and *"what is the date?"* keep routing.
 fn is_fact_statement(
     sentence: &str,
@@ -331,10 +369,15 @@ fn is_fact_statement(
     cue: &str,
     vocab: &seed::CallerContextVocabulary,
 ) -> bool {
-    if interrogative {
+    if interrogative || vocab.asks_a_question(sentence) {
         return false;
     }
-    let Some(rest) = sentence.strip_prefix(cue) else {
+    // The cue may or may not carry the determiner itself ("the current time" vs
+    // "current date"), so the subject is tried with and without its lead.
+    let Some(rest) = sentence
+        .strip_prefix(cue)
+        .or_else(|| strip_subject_lead(sentence, vocab).strip_prefix(cue))
+    else {
         return false;
     };
     let rest = rest.trim_matches(|character: char| {
@@ -354,6 +397,17 @@ fn intent_shell_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Option<S
     let lower = prompt.to_lowercase();
     let sentences = sentences_with_mood(&lower);
     let caller_context = seed::caller_context_vocabulary();
+    let cues: Vec<&str> = vocab
+        .intents
+        .iter()
+        .flat_map(|intent| intent.cues.iter().map(String::as_str))
+        .collect();
+    let requesting = requesting_sentences(&sentences, &cues, &caller_context);
+    // A task the turn carries outranks any built-in intent riding alongside it
+    // (issue #907): answering the intent would silently drop the work.
+    if carries_authoring_task(&lower) {
+        return None;
+    }
     // Prefer the most specific matching cue across every intent. This prevents
     // a shorter generic cue (for example "current directory" → `pwd`) from
     // stealing a longer request ("list current directory" → `ls`).
@@ -363,7 +417,9 @@ fn intent_shell_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Option<S
         .filter(|intent| intent.command != REPORT_ISSUE_ACTION)
         .flat_map(|intent| intent.cues.iter().map(move |cue| (intent, cue)))
         .filter(|(intent, cue)| {
-            asks_for_cue(&lower, &sentences, cue, &caller_context)
+            requesting
+                .iter()
+                .any(|sentence| sentence.contains(cue.as_str()))
                 && (intent.argument != ShellIntentArgument::SearchQuery
                     || vocab
                         .local_search_scopes
