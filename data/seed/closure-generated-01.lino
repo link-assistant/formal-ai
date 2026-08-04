@@ -259,6 +259,16 @@ meanings
     lexeme en
       surface
         text "agentic report target question"
+  agentic_step_failed
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic step failed"
+  agentic_step_failed_with_exit_code
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic step failed with exit code"
   ai-orchestration
     defined-by category
     lexeme en
@@ -634,26 +644,6 @@ meanings
     lexeme en
       surface
         text "client contract read transcript error"
-  client_global_config_auth_refusal
-    defined-by intent
-    lexeme en
-      surface
-        text "client global config auth refusal"
-  client_global_config_probe_skipped
-    defined-by intent
-    lexeme en
-      surface
-        text "client global config probe skipped"
-  client_global_config_probe_started
-    defined-by intent
-    lexeme en
-      surface
-        text "client global config probe started"
-  client_global_config_requirement_missing
-    defined-by intent
-    lexeme en
-      surface
-        text "client global config requirement missing"
   client_integration_invalid_typed_json_setting
     defined-by intent
     lexeme en
@@ -1394,3 +1384,13 @@ meanings
     lexeme en
       surface
         text "external benchmark parquet decode error"
+  external_benchmark_parquet_module_unavailable
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark parquet module unavailable"
+  external_benchmark_parquet_start_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark parquet start error"

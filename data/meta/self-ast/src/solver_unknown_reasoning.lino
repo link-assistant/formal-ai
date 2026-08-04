@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_unknown_reasoning.rs
   language rust
   fidelity signature
-  byte_len 15672
-  line_count 489
-  content_id source_module_d03dac30a11f715b
+  byte_len 16375
+  line_count 501
+  content_id source_module_7f1cea55f6c5e89f
   symbol_count 26
   symbols
     const FOCUS_PLACEHOLDER 19 19
@@ -24,12 +24,12 @@ self_ast_census
     function render_source_link 341 348
     function render_unresolved_unknown 350 358
     function localized_seed_response 360 363
-    function infer_missing_focus 365 383
-    function is_unresolved_bare_term_prompt 385 397
-    function extract_question_subject 399 423
-    function tail_after_marker 425 429
-    function extract_memory_fact 431 447
-    function split_fact_statement 449 460
-    function clean_focus 462 468
-    function normalize_fact_subject 470 478
-    function normalize_search_surface 480 489
+    function infer_missing_focus 365 395
+    function is_unresolved_bare_term_prompt 397 409
+    function extract_question_subject 411 435
+    function tail_after_marker 437 441
+    function extract_memory_fact 443 459
+    function split_fact_statement 461 472
+    function clean_focus 474 480
+    function normalize_fact_subject 482 490
+    function normalize_search_surface 492 501

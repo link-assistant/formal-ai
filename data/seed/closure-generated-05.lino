@@ -1,44 +1,4 @@
 meanings
-  response_completion_recovery_decompose_into_leaf_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery decompose into leaf en"
-  response_completion_recovery_decompose_into_leaf_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery decompose into leaf hi"
-  response_completion_recovery_decompose_into_leaf_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery decompose into leaf ru"
-  response_completion_recovery_decompose_into_leaf_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery decompose into leaf zh"
-  response_completion_recovery_name_target_artifact_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery name target artifact en"
-  response_completion_recovery_name_target_artifact_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery name target artifact hi"
-  response_completion_recovery_name_target_artifact_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery name target artifact ru"
-  response_completion_recovery_name_target_artifact_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery name target artifact zh"
   response_completion_recovery_restate_postcondition_en
     defined-by response_template
     lexeme en
@@ -1394,3 +1354,43 @@ meanings
     lexeme en
       surface
         text "response lexeme import number lost ru"
+  response_lexeme_import_number_lost_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import number lost zh"
+  response_lexeme_import_part_of_speech_lost_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import part of speech lost en"
+  response_lexeme_import_part_of_speech_lost_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import part of speech lost hi"
+  response_lexeme_import_part_of_speech_lost_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import part of speech lost ru"
+  response_lexeme_import_part_of_speech_lost_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import part of speech lost zh"
+  response_lexeme_import_qid_absent_from_cache_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import qid absent from cache en"
+  response_lexeme_import_qid_absent_from_cache_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import qid absent from cache hi"
+  response_lexeme_import_qid_absent_from_cache_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import qid absent from cache ru"

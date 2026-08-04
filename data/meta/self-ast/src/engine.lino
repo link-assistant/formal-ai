@@ -2,9 +2,9 @@ self_ast_census
   target src/engine.rs
   language rust
   fidelity signature
-  byte_len 34359
-  line_count 888
-  content_id source_module_8e824657585d3354
+  byte_len 34687
+  line_count 893
+  content_id source_module_1710adadd85d7da4
   symbol_count 41
   symbols
     const DEFAULT_MODEL 44 44
@@ -30,21 +30,21 @@ self_ast_census
     function knowledge_graph_dot 483 499
     function stable_id 502 504
     enum SelectedRule 506 521
-    function intent 524 538
-    function response_link 540 556
-    function answer 558 576
-    function language_aware_intent_for 579 581
-    function language_aware_answer_for 583 651
-    function response_link_for_intent 653 655
-    function hello_world_program_by_alias 658 661
-    function normalize_prompt 663 681
-    function is_script_combining_mark 683 696
-    function answer_links_notation 698 744
-    function format_write_program_rule_record 746 770
-    function program_template_sources 772 780
-    function write_program_answer 782 809
-    function write_program_intro 811 822
-    function execution_report 824 851
-    function execution_status_phrase 853 863
-    function execution_output_label 865 876
-    function execution_command_lines 878 888
+    function intent 524 542
+    function response_link 544 561
+    function answer 563 581
+    function language_aware_intent_for 584 586
+    function language_aware_answer_for 588 656
+    function response_link_for_intent 658 660
+    function hello_world_program_by_alias 663 666
+    function normalize_prompt 668 686
+    function is_script_combining_mark 688 701
+    function answer_links_notation 703 749
+    function format_write_program_rule_record 751 775
+    function program_template_sources 777 785
+    function write_program_answer 787 814
+    function write_program_intro 816 827
+    function execution_report 829 856
+    function execution_status_phrase 858 868
+    function execution_output_label 870 881
+    function execution_command_lines 883 893

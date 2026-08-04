@@ -408,23 +408,65 @@ const PROGRAM_SYNTHESIS_ROUTES = [
 ];
 const MISSING_PROGRAM_PARAMETER = "missing";
 
+// Issue #906: `missing` is an internal sentinel and must never reach the
+// requester — substituting it into the localized wording produced replies that
+// named a gap "in language `missing`". Which of the four dead ends a request
+// reached decides the wording, the intent, the event and the response link.
+// Mirrors `Shape` in src/program_skill_gap.rs.
+const PROGRAM_DEAD_ENDS = {
+  skill_gap: {
+    name: "write_program_skill_gap_name",
+    answer: "write_program_skill_gap",
+    intent: "write_program_skill_gap",
+    event: "skill_gap",
+    link: "response:write_program:skill_gap",
+  },
+  task_unspecified: {
+    name: "write_program_skill_gap_name_task_unspecified",
+    answer: "write_program_skill_gap",
+    intent: "write_program_skill_gap",
+    event: "skill_gap",
+    link: "response:write_program:skill_gap",
+  },
+  language_unspecified: {
+    name: "write_program_language_unspecified_name",
+    answer: "write_program_language_unspecified",
+    intent: "write_program_language_unspecified",
+    event: "unspecified_parameter",
+    link: "response:write_program:language_unspecified",
+  },
+  request_unspecified: {
+    name: "write_program_request_unspecified_name",
+    answer: "write_program_request_unspecified",
+    intent: "write_program_request_unspecified",
+    event: "unspecified_parameter",
+    link: "response:write_program:request_unspecified",
+  },
+};
+
+// Classify a (task, language) pair — mirrors `program_skill_gap::shape`.
+function programDeadEnd(task, language) {
+  if (task && language) return PROGRAM_DEAD_ENDS.skill_gap;
+  if (!task && language) return PROGRAM_DEAD_ENDS.task_unspecified;
+  if (task && !language) return PROGRAM_DEAD_ENDS.language_unspecified;
+  return PROGRAM_DEAD_ENDS.request_unspecified;
+}
+
 // The English name is the gap's identity (it travels in the evidence trail);
 // the localized name is what the reader sees inside the reply.
 function programSkillGapName(task, language, responseLanguage) {
+  const shape = programDeadEnd(task, language);
   const template =
-    answerFor("write_program_skill_gap_name", responseLanguage) ||
-    answerFor("write_program_skill_gap_name", "en") ||
-    "";
+    answerFor(shape.name, responseLanguage) || answerFor(shape.name, "en") || "";
   return template
     .replace("{task}", task || MISSING_PROGRAM_PARAMETER)
     .replace("{language}", language || MISSING_PROGRAM_PARAMETER);
 }
 
 function programSkillGapAnswer(task, language, responseLanguage) {
+  const shape = programDeadEnd(task, language);
   const template =
-    answerFor("write_program_skill_gap", responseLanguage) ||
-    answerFor("write_program_skill_gap", "en") ||
-    "";
+    answerFor(shape.answer, responseLanguage) || answerFor(shape.answer, "en") || "";
   return template
     .replace("{gap}", programSkillGapName(task, language, responseLanguage))
     .replace("{routes}", PROGRAM_SYNTHESIS_ROUTES.join(", "))

@@ -1,14 +1,4 @@
 meanings
-  physical_action_question
-    defined-by intent
-    lexeme en
-      surface
-        text "physical action question"
-  pip
-    defined-by token
-    lexeme en
-      surface
-        text "pip"
   pixel
     defined-by word_surface
     lexeme en
@@ -864,6 +854,56 @@ meanings
     lexeme en
       surface
         text "response agentic report target question zh"
+  response_agentic_step_failed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed en"
+  response_agentic_step_failed_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed es"
+  response_agentic_step_failed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed hi"
+  response_agentic_step_failed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed ru"
+  response_agentic_step_failed_with_exit_code_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed with exit code en"
+  response_agentic_step_failed_with_exit_code_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed with exit code es"
+  response_agentic_step_failed_with_exit_code_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed with exit code hi"
+  response_agentic_step_failed_with_exit_code_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed with exit code ru"
+  response_agentic_step_failed_with_exit_code_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed with exit code zh"
+  response_agentic_step_failed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed zh"
   response_algorithm_discovery_summary_en
     defined-by response_template
     lexeme en
@@ -1109,86 +1149,6 @@ meanings
     lexeme en
       surface
         text "response client contract read transcript error zh"
-  response_client_global_config_auth_refusal_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config auth refusal en"
-  response_client_global_config_auth_refusal_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config auth refusal hi"
-  response_client_global_config_auth_refusal_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config auth refusal ru"
-  response_client_global_config_auth_refusal_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config auth refusal zh"
-  response_client_global_config_probe_skipped_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config probe skipped en"
-  response_client_global_config_probe_skipped_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config probe skipped hi"
-  response_client_global_config_probe_skipped_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config probe skipped ru"
-  response_client_global_config_probe_skipped_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config probe skipped zh"
-  response_client_global_config_probe_started_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config probe started en"
-  response_client_global_config_probe_started_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config probe started hi"
-  response_client_global_config_probe_started_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config probe started ru"
-  response_client_global_config_probe_started_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config probe started zh"
-  response_client_global_config_requirement_missing_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config requirement missing en"
-  response_client_global_config_requirement_missing_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config requirement missing hi"
-  response_client_global_config_requirement_missing_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config requirement missing ru"
-  response_client_global_config_requirement_missing_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config requirement missing zh"
   response_client_integration_invalid_typed_json_setting_en
     defined-by response_template
     lexeme en
@@ -1394,3 +1354,43 @@ meanings
     lexeme en
       surface
         text "response compiled procedure zh"
+  response_completion_recovery_decompose_into_leaf_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery decompose into leaf en"
+  response_completion_recovery_decompose_into_leaf_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery decompose into leaf hi"
+  response_completion_recovery_decompose_into_leaf_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery decompose into leaf ru"
+  response_completion_recovery_decompose_into_leaf_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery decompose into leaf zh"
+  response_completion_recovery_name_target_artifact_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery name target artifact en"
+  response_completion_recovery_name_target_artifact_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery name target artifact hi"
+  response_completion_recovery_name_target_artifact_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery name target artifact ru"
+  response_completion_recovery_name_target_artifact_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery name target artifact zh"
