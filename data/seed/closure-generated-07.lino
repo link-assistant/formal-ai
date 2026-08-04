@@ -1,4 +1,24 @@
 meanings
+  response_summarization_evidence_summary_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization evidence summary en"
+  response_summarization_evidence_summary_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization evidence summary hi"
+  response_summarization_evidence_summary_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization evidence summary ru"
+  response_summarization_evidence_summary_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization evidence summary zh"
   response_supplied_file_contents_en
     defined-by response_template
     lexeme en
@@ -384,6 +404,26 @@ meanings
     lexeme en
       surface
         text "response tool result failed en"
+  response_tool_result_failed_exit_code_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result failed exit code en"
+  response_tool_result_failed_exit_code_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result failed exit code hi"
+  response_tool_result_failed_exit_code_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result failed exit code ru"
+  response_tool_result_failed_exit_code_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result failed exit code zh"
   response_tool_result_failed_hi
     defined-by response_template
     lexeme en
@@ -1354,43 +1394,3 @@ meanings
     lexeme en
       surface
         text "tool http post primitive"
-  tool_import_memory
-    defined-by tool
-    lexeme en
-      surface
-        text "tool import memory"
-  tool_intent_routing
-    defined-by tool
-    lexeme en
-      surface
-        text "tool intent routing"
-  tool_process_status
-    defined-by tool
-    lexeme en
-      surface
-        text "tool process status"
-  tool_read_local_file
-    defined-by tool
-    lexeme en
-      surface
-        text "tool read local file"
-  tool_result_completed
-    defined-by intent
-    lexeme en
-      surface
-        text "tool result completed"
-  tool_result_empty_generic
-    defined-by intent
-    lexeme en
-      surface
-        text "tool result empty generic"
-  tool_result_empty_list
-    defined-by intent
-    lexeme en
-      surface
-        text "tool result empty list"
-  tool_result_empty_local_path_search
-    defined-by intent
-    lexeme en
-      surface
-        text "tool result empty local path search"

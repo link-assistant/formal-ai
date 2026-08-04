@@ -1,4 +1,44 @@
 meanings
+  tool_import_memory
+    defined-by tool
+    lexeme en
+      surface
+        text "tool import memory"
+  tool_intent_routing
+    defined-by tool
+    lexeme en
+      surface
+        text "tool intent routing"
+  tool_process_status
+    defined-by tool
+    lexeme en
+      surface
+        text "tool process status"
+  tool_read_local_file
+    defined-by tool
+    lexeme en
+      surface
+        text "tool read local file"
+  tool_result_completed
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result completed"
+  tool_result_empty_generic
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result empty generic"
+  tool_result_empty_list
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result empty list"
+  tool_result_empty_local_path_search
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result empty local path search"
   tool_result_empty_search
     defined-by intent
     lexeme en
@@ -9,6 +49,11 @@ meanings
     lexeme en
       surface
         text "tool result failed"
+  tool_result_failed_exit_code
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result failed exit code"
   tool_roleplay
     defined-by tool
     lexeme en
@@ -184,6 +229,11 @@ meanings
     lexeme en
       surface
         text "veracity"
+  verbatim
+    defined-by word_surface
+    lexeme en
+      surface
+        text "verbatim"
   verbose
     defined-by concept
     lexeme en

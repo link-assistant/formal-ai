@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/general_planner.rs
   language rust
   fidelity full_ast
-  byte_len 40009
-  line_count 929
-  content_id source_module_8d3f1d9445cad703
-  symbol_count 43
+  byte_len 41599
+  line_count 967
+  content_id source_module_e6c007a31ca8ba6b
+  symbol_count 45
   symbols
     const PLAN_PATH 18 18
     const TARGET_PLACEHOLDER 19 19
@@ -44,84 +44,87 @@ self_ast_census
     function first_prefix_lead_end 813 850
     function first_action_cue_end 853 858
     function clean_content 866 882
-    function safe_relative_path 884 891
-    function capability_slug 893 910
-    function language 912 914
-    function escape 916 921
-    function field 923 925
-    function field_nested 927 929
+    function strip_clause_lead 892 903
+    function strip_leading_qualifier 909 920
+    function safe_relative_path 922 929
+    function capability_slug 931 948
+    function language 950 952
+    function escape 954 959
+    function field 961 963
+    function field_nested 965 967
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 23141
-    named_node_count 4722
-    distinct_node_kinds 88
+    total_link_count 24093
+    named_node_count 4928
+    distinct_node_kinds 89
     node_kinds
-      arguments 359
-      array_expression 3
-      array_type 1
-      assignment_expression 3
+      arguments 378
+      array_expression 4
+      array_type 2
+      assignment_expression 4
       attribute 11
       attribute_item 11
-      binary_expression 91
-      block 90
+      binary_expression 92
+      block 95
       boolean_literal 2
       break_expression 1
-      call_expression 359
-      char_literal 62
-      closure_expression 57
-      closure_parameters 57
+      call_expression 378
+      char_literal 66
+      closure_expression 60
+      closure_parameters 60
       compound_assignment_expr 1
       const_item 3
       continue_expression 5
       crate 6
       declaration_list 3
-      doc_comment 192
+      doc_comment 204
       else_clause 10
       enum_item 2
       enum_variant 5
       enum_variant_list 2
       escape_sequence 11
-      expression_statement 65
+      expression_statement 69
       field_declaration 15
       field_declaration_list 3
-      field_expression 300
-      field_identifier 339
+      field_expression 316
+      field_identifier 355
       field_initializer 24
       field_initializer_list 6
       for_expression 3
-      function_item 35
+      function_item 37
       function_modifiers 3
       generic_type 20
-      identifier 1018
-      if_expression 30
+      identifier 1059
+      if_expression 31
       impl_item 3
       index_expression 21
       inner_doc_comment_marker 6
       integer_literal 29
       let_condition 7
-      let_declaration 109
-      lifetime 8
-      lifetime_parameter 1
-      line_comment 243
+      let_declaration 115
+      lifetime 11
+      lifetime_parameter 2
+      line_comment 255
+      loop_expression 1
       macro_invocation 20
       match_arm 19
       match_block 3
       match_expression 3
       match_pattern 19
-      mutable_specifier 18
-      outer_doc_comment_marker 186
-      parameter 45
-      parameters 35
+      mutable_specifier 19
+      outer_doc_comment_marker 198
+      parameter 48
+      parameters 37
       parenthesized_expression 12
-      primitive_type 69
-      range_expression 21
-      reference_expression 55
-      reference_type 49
-      return_expression 12
-      scoped_identifier 79
+      primitive_type 73
+      range_expression 22
+      reference_expression 56
+      reference_type 54
+      return_expression 13
+      scoped_identifier 80
       scoped_use_list 2
       self 19
       self_parameter 4
@@ -133,14 +136,14 @@ self_ast_census
       struct_item 3
       super 3
       token_tree 39
-      try_expression 24
+      try_expression 25
       tuple_expression 8
       tuple_pattern 13
       tuple_struct_pattern 10
       tuple_type 6
       type_arguments 20
-      type_identifier 69
-      type_parameters 1
+      type_identifier 70
+      type_parameters 2
       unary_expression 29
       use_as_clause 1
       use_declaration 6

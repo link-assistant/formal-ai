@@ -1,4 +1,14 @@
 meanings
+  pixel
+    defined-by word_surface
+    lexeme en
+      surface
+        text "pixel"
+  pixels
+    defined-by word_surface
+    lexeme en
+      surface
+        text "pixels"
   plagiaris
     defined-by word_surface
     lexeme en
@@ -34,6 +44,11 @@ meanings
     lexeme en
       surface
         text "powershell"
+  precisely
+    defined-by word_surface
+    lexeme en
+      surface
+        text "precisely"
   preferred
     defined-by concept
     lexeme en
@@ -49,6 +64,11 @@ meanings
     lexeme en
       surface
         text "prepend text"
+  print
+    defined-by concept
+    lexeme en
+      surface
+        text "print"
   problem
     defined-by word_surface
     lexeme en
@@ -1374,23 +1394,3 @@ meanings
     lexeme en
       surface
         text "response concept lookup in context no alias hi"
-  response_concept_lookup_in_context_no_alias_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context no alias ru"
-  response_concept_lookup_in_context_no_alias_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context no alias zh"
-  response_concept_lookup_in_context_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context ru"
-  response_concept_lookup_in_context_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context zh"
