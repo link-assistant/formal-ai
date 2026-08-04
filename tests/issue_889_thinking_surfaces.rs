@@ -30,11 +30,10 @@ const PROMPTS: &[(&str, &str)] = &[
 ];
 
 fn prompt_for(slug: &str) -> &'static str {
-    PROMPTS
-        .iter()
-        .find(|(language, _)| *language == slug)
-        .map(|(_, prompt)| *prompt)
-        .unwrap_or_else(|| panic!("issue #889: add a prompt for the newly registered {slug}"))
+    match PROMPTS.iter().find(|(language, _)| *language == slug) {
+        Some((_, prompt)) => prompt,
+        None => panic!("issue #889: add a prompt for the newly registered {slug}"),
+    }
 }
 
 /// The sentence the `impulse` step must render for `prompt` in `slug`.

@@ -1,0 +1,291 @@
+meanings
+  update_dated_facts
+    defined-by concept
+    lexeme en
+      surface
+        text "update dated facts"
+  usd
+    defined-by word_surface
+    lexeme en
+      surface
+        text "usd"
+  veracity
+    defined-by word_surface
+    lexeme en
+      surface
+        text "veracity"
+  verbose
+    defined-by concept
+    lexeme en
+      surface
+        text "verbose"
+  versus
+    defined-by word_surface
+    lexeme en
+      surface
+        text "versus"
+  views
+    defined-by word_surface
+    lexeme en
+      surface
+        text "views"
+  visited
+    defined-by word_surface
+    lexeme en
+      surface
+        text "visited"
+  visitor
+    defined-by word_surface
+    lexeme en
+      surface
+        text "visitor"
+  visitors
+    defined-by word_surface
+    lexeme en
+      surface
+        text "visitors"
+  visual-property
+    defined-by category
+    lexeme en
+      surface
+        text "visual property"
+  visually
+    defined-by word_surface
+    lexeme en
+      surface
+        text "visually"
+  vladimir_putin
+    defined-by concept
+    lexeme en
+      surface
+        text "vladimir putin"
+  vs
+    defined-by word_surface
+    lexeme en
+      surface
+        text "vs"
+  vscode
+    defined-by environment
+    lexeme en
+      surface
+        text "vscode"
+  vscode_local_sync
+    defined-by flow
+    lexeme en
+      surface
+        text "vscode local sync"
+  was
+    defined-by concept
+    lexeme en
+      surface
+        text "was"
+  web-search
+    defined-by word_surface
+    lexeme en
+      surface
+        text "web search"
+  web_research_no_content
+    defined-by field
+    lexeme en
+      surface
+        text "web research no content"
+  web_research_source_label
+    defined-by field
+    lexeme en
+      surface
+        text "web research source label"
+  web_search_live_results
+    defined-by intent
+    lexeme en
+      surface
+        text "web search live results"
+  web_search_unavailable
+    defined-by intent
+    lexeme en
+      surface
+        text "web search unavailable"
+  webvm
+    defined-by word_surface
+    lexeme en
+      surface
+        text "webvm"
+  wellbeing
+    defined-by intent
+    lexeme en
+      surface
+        text "wellbeing"
+  were
+    defined-by concept
+    lexeme en
+      surface
+        text "were"
+  wget
+    defined-by token
+    lexeme en
+      surface
+        text "wget"
+  whitespace
+    defined-by concept
+    lexeme en
+      surface
+        text "whitespace"
+  who_is_unknown_entity
+    defined-by intent
+    lexeme en
+      surface
+        text "who is unknown entity"
+  who_is_unknown_entity_suggestion
+    defined-by intent
+    lexeme en
+      surface
+        text "who is unknown entity suggestion"
+  whoami
+    defined-by concept
+    lexeme en
+      surface
+        text "whoami"
+  wikibooks
+    defined-by source
+    lexeme en
+      surface
+        text "wikibooks"
+  wikidata
+    defined-by source
+    lexeme en
+      surface
+        text "wikidata"
+  wikifunctions
+    defined-by source
+    lexeme en
+      surface
+        text "wikifunctions"
+  wikihow
+    defined-by source
+    lexeme en
+      surface
+        text "wikihow"
+  wikinews
+    defined-by source
+    lexeme en
+      surface
+        text "wikinews"
+  wikipedia
+    defined-by source_kind
+    lexeme en
+      surface
+        text "wikipedia"
+  wikipedia_article_question
+    defined-by intent
+    lexeme en
+      surface
+        text "wikipedia article question"
+  wikipedia_fallback_language
+    defined-by field
+    lexeme en
+      surface
+        text "wikipedia fallback language"
+  wikipedia_lookup
+    defined-by name
+    lexeme en
+      surface
+        text "wikipedia lookup"
+  wikipedia_summary_endpoint_template
+    defined-by field
+    lexeme en
+      surface
+        text "wikipedia summary endpoint template"
+  wikiversity
+    defined-by source
+    lexeme en
+      surface
+        text "wikiversity"
+  wikivoyage
+    defined-by source
+    lexeme en
+      surface
+        text "wikivoyage"
+  wiktionary
+    defined-by source_kind
+    lexeme en
+      surface
+        text "wiktionary"
+  will
+    defined-by concept
+    lexeme en
+      surface
+        text "will"
+  wordnet
+    defined-by source
+    lexeme en
+      surface
+        text "wordnet"
+  words
+    defined-by concept
+    lexeme en
+      surface
+        text "words"
+  world_state_reached
+    defined-by intent
+    lexeme en
+      surface
+        text "world state reached"
+  world_state_remaining
+    defined-by intent
+    lexeme en
+      surface
+        text "world state remaining"
+  would
+    defined-by concept
+    lexeme en
+      surface
+        text "would"
+  write_program
+    defined-by intent
+    lexeme en
+      surface
+        text "write program"
+  write_program_language_unspecified
+    defined-by intent
+    lexeme en
+      surface
+        text "write program language unspecified"
+  write_program_language_unspecified_name
+    defined-by intent
+    lexeme en
+      surface
+        text "write program language unspecified name"
+  write_program_request_unspecified
+    defined-by intent
+    lexeme en
+      surface
+        text "write program request unspecified"
+  write_program_request_unspecified_name
+    defined-by intent
+    lexeme en
+      surface
+        text "write program request unspecified name"
+  write_program_skill_gap
+    defined-by intent
+    lexeme en
+      surface
+        text "write program skill gap"
+  write_program_skill_gap_name
+    defined-by intent
+    lexeme en
+      surface
+        text "write program skill gap name"
+  write_program_skill_gap_name_task_unspecified
+    defined-by intent
+    lexeme en
+      surface
+        text "write program skill gap name task unspecified"
+  writing
+    defined-by word_surface
+    lexeme en
+      surface
+        text "writing"
+  your
+    defined-by word_surface
+    lexeme en
+      surface
+        text "your"

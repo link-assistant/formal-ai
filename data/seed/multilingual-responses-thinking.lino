@@ -1,7 +1,7 @@
 # Localized thinking-step prose (issue #889, parent #710).
 #
 # `src/thinking.rs` renders one sentence per structured thinking step for every
-# non-UI surface: the CLI `--thinking` trace, the OpenAI/Anthropic/Responses API
+# non-UI surface -- the CLI `--thinking` trace, the OpenAI/Anthropic/Responses API
 # `reasoning` fields, and the Telegram expandable blockquote. Those sentences
 # used to be English literals inside the Rust module, so a Russian, Hindi,
 # Chinese or Spanish answer still narrated its reasoning in English.
@@ -15,7 +15,6 @@
 # translation table there and re-run rather than editing this file by hand.
 # The narrative headlines and the localized language names live in
 # data/seed/multilingual-responses-thinking-narrative.lino.
-
 multilingual_responses
   response response_thinking_step_impulse_en
     intent thinking_step_impulse

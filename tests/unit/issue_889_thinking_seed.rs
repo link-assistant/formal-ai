@@ -38,6 +38,23 @@ fn placeholders(text: &str) -> HashSet<String> {
     found
 }
 
+/// Whether a template says anything of its own, i.e. carries letters outside of
+/// its `{placeholder}` fields.
+fn has_prose(text: &str) -> bool {
+    let mut outside = String::new();
+    let mut rest = text;
+    while let Some(start) = rest.find('{') {
+        outside.push_str(&rest[..start]);
+        let after = &rest[start + 1..];
+        match after.find('}') {
+            Some(end) => rest = &after[end + 1..],
+            None => break,
+        }
+    }
+    outside.push_str(rest);
+    outside.chars().any(char::is_alphabetic)
+}
+
 /// Every sentence the naturalizer can reach is translated into every registered
 /// language — the acceptance criterion of the issue, checked as data rather than
 /// per-surface prose so adding a language fails loudly here first.
@@ -132,6 +149,11 @@ fn translations_are_not_copies_of_the_english_record() {
         let Some(english) = records.get(&(intent.clone(), String::from("en"))) else {
             continue;
         };
+        // A template made only of fields and punctuation (`{label}: {detail}.`)
+        // carries no prose to translate, so every language shares it.
+        if !has_prose(english) {
+            continue;
+        }
         for language in registered_languages() {
             if language.slug() == "en" {
                 continue;

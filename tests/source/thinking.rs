@@ -20,6 +20,8 @@
 //! "thinking" a first-class concern of the architecture rather than an engine
 //! implementation detail.
 
+use std::borrow::Cow;
+
 use serde::{Deserialize, Serialize};
 
 use crate::engine::stable_id;
@@ -439,17 +441,17 @@ pub fn naturalize_thinking_step_in(language: &str, step: &str, detail: &str) -> 
         } else {
             format!("{STEP_INTENT_PREFIX}{canonical}{PLAIN_INTENT_SUFFIX}")
         };
-        let value = if *humanize {
-            humanize_meta_identifier(&trimmed)
+        let value: Cow<'_, str> = if *humanize {
+            Cow::Owned(humanize_meta_identifier(&trimmed))
         } else {
-            trimmed.clone()
+            Cow::Borrowed(trimmed.as_str())
         };
         if let Some(text) = thinking_prose(
             &intent,
             language,
             &[
-                (placeholder, &value),
-                ("article", indefinite_article(&value)),
+                (placeholder, value.as_ref()),
+                ("article", indefinite_article(value.as_ref())),
             ],
         ) {
             return text;
