@@ -1,4 +1,9 @@
 meanings
+  tool_result_empty_search
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result empty search"
   tool_result_failed
     defined-by intent
     lexeme en

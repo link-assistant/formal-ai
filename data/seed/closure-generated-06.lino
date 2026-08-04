@@ -1,4 +1,9 @@
 meanings
+  response_lexeme_import_reparse_failed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import reparse failed zh"
   response_lexeme_import_surface_changed_en
     defined-by response_template
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "response summarization evidence summary zh"
-  response_supplied_file_contents_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response supplied file contents en"

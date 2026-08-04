@@ -703,6 +703,10 @@ multilingual_responses
     intent general_plan_repository_planned
     language zh
     text "已规划，未执行：{target}。\n\n请求中指名的任何内容都未被更改。本次运行只写入了自己的计划记录（{plan_path}），回读该记录无法证明所请求的工作，因此未声称任何验证。计划事件：\n\n{plan}"
+  response response_general_plan_repository_planned_es
+    intent general_plan_repository_planned
+    language es
+    text "Planificado, no ejecutado: {target}.\n\nNo se cambió nada de lo que nombra la solicitud. El único archivo que escribió esta ejecución es su propio registro de plan ({plan_path}), y volver a leer ese registro no probaría nada sobre el trabajo solicitado, así que no se afirmó ninguna verificación. Evento del plan:\n\n{plan}"
   response response_client_contract_read_observations_error_en
     intent client_contract_read_observations_error
     language en
