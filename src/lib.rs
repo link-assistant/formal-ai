@@ -145,6 +145,7 @@ pub mod task_decomposition;
 pub mod telegram;
 pub mod telegram_runtime;
 pub mod thinking;
+pub mod thinking_prose;
 pub mod translation;
 pub(crate) mod unknown_opener;
 pub mod web_engine_core;
@@ -204,9 +205,11 @@ pub use dreaming_runtime::{
     core_is_idle, dreaming_disabled, run_core_dreaming_once, ForegroundActivity,
 };
 pub use engine::{
-    humanize_meta_identifier, knowledge_links_notation, naturalize_thinking_step,
-    render_thinking_steps, thinking_language_label, thinking_narrative, FormalAiEngine,
-    SymbolicAnswer, ThinkingStep, DEFAULT_MODEL,
+    humanize_meta_identifier, knowledge_links_notation, localize_thinking_steps,
+    naturalize_thinking_step, naturalize_thinking_step_in, render_thinking_steps,
+    render_thinking_steps_in, thinking_answer_language, thinking_language_label,
+    thinking_language_label_in, thinking_narrative, thinking_narrative_in, thinking_trace_heading,
+    FormalAiEngine, SymbolicAnswer, ThinkingStep, DEFAULT_MODEL,
 };
 pub use event_log::{Event, EventLog};
 pub use fact_checking::{
