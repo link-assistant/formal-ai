@@ -159,18 +159,22 @@ fn caller_context_markers_live_in_seed_data() {
 /// of the languages the date intent is declared in.
 #[test]
 fn a_declarative_statement_does_not_fire_an_intent() {
-    for statement in [
-        "Today's date is Sunday, August 2, 2026 (formatted according to the user's locale).",
-        "The current date is 2026-08-02.",
-        "The current time is 20:00.",
-        "Текущее время — 20:00.",
-        "आज की तारीख 2 अगस्त 2026 है।",
-        "今天的日期是2026年8月2日。",
+    for (language, statement) in [
+        (
+            "english",
+            "Today's date is Sunday, August 2, 2026 (formatted according to the user's locale).",
+        ),
+        ("english", "The current date is 2026-08-02."),
+        ("english", "The current time is 20:00."),
+        ("russian", "Текущее время — 20:00."),
+        ("hindi", "आज की तारीख 2 अगस्त 2026 है।"),
+        ("chinese", "今天的日期是2026年8月2日。"),
+        ("spanish", "La fecha de hoy es domingo."),
     ] {
         let call = gemini_call(&[&format!("{statement}\n\n{REQUEST}")]);
         assert_eq!(
             call["name"], "write_file",
-            "a statement must not route: {statement:?} planned {call}"
+            "a {language} statement must not route: {statement:?} planned {call}"
         );
     }
 }
@@ -179,18 +183,19 @@ fn a_declarative_statement_does_not_fire_an_intent() {
 /// A guard that silenced the intent altogether would pass the test above.
 #[test]
 fn asking_for_the_date_still_runs_date() {
-    for question in [
-        "what is the date?",
-        "show me today's date",
-        "what day is it",
-        "print the current date",
-        "какое сегодня число?",
-        "आज की तारीख क्या है?",
-        "今天的日期是什么？",
+    for (language, question) in [
+        ("english", "what is the date?"),
+        ("english", "show me today's date"),
+        ("english", "what day is it"),
+        ("english", "print the current date"),
+        ("russian", "какое сегодня число?"),
+        ("hindi", "आज की तारीख क्या है?"),
+        ("chinese", "今天的日期是什么？"),
+        ("spanish", "¿cuál es la fecha de hoy?"),
     ] {
         let call = gemini_call(&[question]);
-        assert_eq!(call["name"], "run_shell_command", "{question}");
-        assert_eq!(call["args"]["command"], "date", "{question}");
+        assert_eq!(call["name"], "run_shell_command", "{language}: {question}");
+        assert_eq!(call["args"]["command"], "date", "{language}: {question}");
     }
 }
 
