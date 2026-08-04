@@ -222,6 +222,10 @@ meanings
       surface
         text "with the following …"
       surface
+        text "whose content is …"
+      surface
+        text "whose contents are …"
+      surface
         text "that says …"
       surface
         text "that contains …"
@@ -254,6 +258,45 @@ meanings
         text "内容为 …"
       surface
         text "包含 …"
+  file_write_literal_qualifier
+    defined-by relation
+    role file_write_content_qualifier
+    lexeme en
+      surface
+        text exactly
+      surface
+        text precisely
+      surface
+        text verbatim
+      surface
+        text literally
+      surface
+        text "exactly this"
+      surface
+        text "precisely this"
+    lexeme ru
+      surface
+        text ровно
+      surface
+        text точно
+      surface
+        text именно
+      surface
+        text дословно
+    lexeme hi
+      surface
+        text ठीक
+      surface
+        text बिल्कुल
+      surface
+        text हूबहू
+    lexeme zh
+      surface
+        text 恰好
+      surface
+        text 正好
+      surface
+        text 完全
   file_write_authoritative_content
     defined-by relation
     role file_write_authoritative_content_lead

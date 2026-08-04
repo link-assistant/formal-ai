@@ -864,7 +864,7 @@ fn first_action_cue_end(toks: &[Token<'_>]) -> Option<usize> {
 /// Notation: a lone terminal quote is data, not presentation punctuation.
 /// Returns [`None`] when nothing is left.
 fn clean_content(raw: &str) -> Option<String> {
-    let led = raw.trim().trim_start_matches([':', '-', '—', '–']).trim();
+    let led = strip_clause_lead(raw);
     let result = if led.len() >= 6 && led.starts_with("```") && led.ends_with("```") {
         led[3..led.len() - 3].trim()
     } else if led.len() >= 2 {
@@ -879,6 +879,44 @@ fn clean_content(raw: &str) -> Option<String> {
         led
     };
     (!result.is_empty()).then(|| result.to_owned())
+}
+
+/// Strip everything a recovered span carries *before* its literal payload: the
+/// clause separators, and the seed-defined adverbs that qualify the requirement
+/// rather than naming content.
+///
+/// "…containing exactly: Hello World" delimits the content with `exactly:`, so
+/// slicing after the content lead captured `exactly: Hello World` as the bytes
+/// to write and as the evidence to verify against — the file would never have
+/// matched (issue #905 §3).
+fn strip_clause_lead(raw: &str) -> &str {
+    let qualifiers = bare_surfaces(seed::ROLE_FILE_WRITE_CONTENT_QUALIFIER);
+    let mut led = raw.trim();
+    loop {
+        let separated = led.trim_start_matches([':', '-', '—', '–']).trim();
+        let shortened = strip_leading_qualifier(separated, &qualifiers);
+        if shortened.len() == led.len() {
+            return led;
+        }
+        led = shortened;
+    }
+}
+
+/// Drop one leading qualifier, but only when a clause separator follows it. The
+/// separator is what marks the adverb as introducing the payload rather than
+/// opening it, so content that genuinely starts with "exactly what I asked for"
+/// keeps its first word.
+fn strip_leading_qualifier<'a>(text: &'a str, qualifiers: &[String]) -> &'a str {
+    let lowered = text.to_lowercase();
+    qualifiers
+        .iter()
+        .filter(|qualifier| lowered.starts_with(qualifier.as_str()))
+        .filter_map(|qualifier| {
+            let rest = text.get(qualifier.len()..)?.trim_start();
+            rest.starts_with([':', '-', '—', '–']).then_some(rest)
+        })
+        .min_by_key(|rest| rest.len())
+        .unwrap_or(text)
 }
 
 fn safe_relative_path(path: &str) -> bool {

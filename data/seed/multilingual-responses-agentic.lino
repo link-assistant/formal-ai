@@ -1139,3 +1139,19 @@ multilingual_responses
     intent coding_workspace_verification_failed
     language es
     text "La verificación de `{path}` falló: los bytes observados difieren del cambio planificado en el espacio de trabajo."
+  response response_tool_result_failed_exit_code_en
+    intent tool_result_failed_exit_code
+    language en
+    text "The command failed: `{tool}` exited with code {exit_code}.\n\n```text\n{error}\n```"
+  response response_tool_result_failed_exit_code_ru
+    intent tool_result_failed_exit_code
+    language ru
+    text "Команда завершилась с ошибкой: `{tool}` завершилась с кодом {exit_code}.\n\n```text\n{error}\n```"
+  response response_tool_result_failed_exit_code_hi
+    intent tool_result_failed_exit_code
+    language hi
+    text "कमांड विफल रही: `{tool}` कोड {exit_code} के साथ समाप्त हुई।\n\n```text\n{error}\n```"
+  response response_tool_result_failed_exit_code_zh
+    intent tool_result_failed_exit_code
+    language zh
+    text "命令失败：`{tool}` 以代码 {exit_code} 退出。\n\n```text\n{error}\n```"

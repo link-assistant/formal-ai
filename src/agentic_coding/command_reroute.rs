@@ -36,14 +36,10 @@ pub fn plan_symbolic_command_reroute(
             .find(|name| is_workspace_creation_tool(name))
     })?;
     let run_tool = tool_for(tool_names, Capability::Run)?;
-    let progress = RecipeProgress::after_latest_user(messages, write_tool);
+    let progress = RecipeProgress::after_latest_user(messages, write_tool, recipe);
 
     if let Some(failure) = &progress.failure {
-        return Some(AgenticPlan::Final(format!(
-            "The agentic CLI harness could not complete `{}`. The tool reported:\n\n```text\n{}\n```",
-            recipe.path,
-            failure.trim()
-        )));
+        return Some(AgenticPlan::Final(failure.report(recipe, messages)));
     }
     if !progress.write_done {
         return Some(one_call(
@@ -89,16 +85,44 @@ impl ExecutionRecipe {
     }
 }
 
+/// A step the harness reported as unsuccessful, kept with the label of whatever
+/// was actually running so the report can name it (issue #908).
+struct StepFailure {
+    label: String,
+    output: String,
+}
+
+impl StepFailure {
+    fn report(&self, recipe: &ExecutionRecipe, messages: &[ChatMessage]) -> String {
+        // When the harness reported an exit status, the status is the finding:
+        // name the failing command and the code it exited with. Blaming the
+        // harness hid both (issue #908, suggested fix 3).
+        if super::tool_result::shell_step(&self.output).is_some() {
+            let prompt = crate::protocol::latest_user_request(messages).unwrap_or_default();
+            return super::tool_result::render(&self.label, &self.output, &prompt);
+        }
+        format!(
+            "The agentic CLI harness could not complete `{}`. The tool reported:\n\n```text\n{}\n```",
+            recipe.path,
+            self.output.trim()
+        )
+    }
+}
+
 #[derive(Default)]
 struct RecipeProgress {
     write_done: bool,
     commands_done: usize,
     command_outputs: Vec<String>,
-    failure: Option<String>,
+    failure: Option<StepFailure>,
 }
 
 impl RecipeProgress {
-    fn after_latest_user(messages: &[ChatMessage], write_tool: &str) -> Self {
+    fn after_latest_user(
+        messages: &[ChatMessage],
+        write_tool: &str,
+        recipe: &ExecutionRecipe,
+    ) -> Self {
         let start = messages
             .iter()
             .rposition(|message| message.role == "user")
@@ -115,7 +139,17 @@ impl RecipeProgress {
             let capability = result_tool.and_then(tool_capability);
             let output = message.content.plain_text();
             if tool_result_failed(&output) {
-                progress.failure = Some(output);
+                let label = match capability {
+                    Some(Capability::Run) => recipe
+                        .commands
+                        .get(progress.commands_done)
+                        .unwrap_or(&recipe.path),
+                    _ => &recipe.path,
+                };
+                progress.failure = Some(StepFailure {
+                    label: label.clone(),
+                    output,
+                });
                 break;
             }
             match capability {
@@ -124,7 +158,11 @@ impl RecipeProgress {
                 }
                 Some(Capability::Run) => {
                     progress.commands_done += 1;
-                    progress.command_outputs.push(output);
+                    // Quote what the command printed, not the harness envelope
+                    // it arrived in (issues #905 and #908).
+                    let text = super::tool_result::shell_step(&output)
+                        .map_or(output, |step: super::tool_result::ShellStep| step.text);
+                    progress.command_outputs.push(text);
                 }
                 _ => {}
             }
@@ -133,7 +171,15 @@ impl RecipeProgress {
     }
 }
 
+/// A step failed when the harness said so. Only when no harness reported a
+/// status does the wording of the result get a vote — reading `Error: (none)`
+/// as an error is exactly the defect issue #908 filed.
 fn tool_result_failed(output: &str) -> bool {
+    match super::tool_result::step_outcome(output) {
+        super::tool_result::StepOutcome::Succeeded => return false,
+        super::tool_result::StepOutcome::Failed => return true,
+        super::tool_result::StepOutcome::Unreported => {}
+    }
     let normalized = output.to_ascii_lowercase();
     let explicit_failure = [
         "command exited with status ",

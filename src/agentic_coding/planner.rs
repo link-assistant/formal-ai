@@ -463,6 +463,13 @@ fn plan_general_change_step(
     if plan.mode == GeneralPlanMode::RepositoryWorkItem {
         return AgenticPlan::Final(plan.planned_not_executed_answer());
     }
+    if let Some(failure) = tool_result::failed_verification(
+        &progress.run_outputs,
+        &plan.verification_command,
+        latest_user_text(messages).as_deref().unwrap_or_default(),
+    ) {
+        return AgenticPlan::Final(failure);
+    }
     AgenticPlan::Final(format!(
         "Completed the general change request for {} and verified it with `{}`.\n\nPlan event ({}):\n\n{}",
         plan.target,
