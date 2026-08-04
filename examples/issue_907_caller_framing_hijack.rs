@@ -85,7 +85,11 @@ fn emitted(parts: &[&str]) -> String {
                 format!(
                     "{}({})",
                     call["name"].as_str().unwrap_or_default(),
-                    call["args"].to_string().chars().take(60).collect::<String>()
+                    call["args"]
+                        .to_string()
+                        .chars()
+                        .take(60)
+                        .collect::<String>()
                 )
             },
         )

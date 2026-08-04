@@ -1,0 +1,31 @@
+caller_context
+  injected_blocks
+    block system-reminder
+      client claude
+      client qwen
+    block session_context
+      client gemini
+    block environment_context
+      client codex
+    block env
+      client agent
+      client opencode
+  fact_statement_copulas
+    language en
+      copula "is"
+      copula "are"
+      copula "was"
+      copula "were"
+    language ru
+      copula "это"
+      copula "—"
+    language hi
+      copula "है"
+      copula "हैं"
+      copula "था"
+    language zh
+      copula "是"
+    language es
+      copula "es"
+      copula "son"
+      copula "era"

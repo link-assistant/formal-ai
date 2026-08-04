@@ -1,0 +1,15 @@
+== the same request under different caller framing
+  <session_context> ⏎ This is the Gemini CLI. We are   -> write_file({"content":"print(\"Hello, world!\")","file_path":"main.py"})
+  <session_context> ⏎ This is the Gemini CLI. We are   -> write_file({"content":"print(\"Hello, world!\")","file_path":"main.py"})
+  Today's date is Sunday, August 2, 2026.              -> write_file({"content":"print(\"Hello, world!\")","file_path":"main.py"})
+  The current time is 20:00.                           -> write_file({"content":"print(\"Hello, world!\")","file_path":"main.py"})
+  The date is Sunday.                                  -> write_file({"content":"print(\"Hello, world!\")","file_path":"main.py"})
+  Today is Sunday, August 2, 2026.                     -> write_file({"content":"print(\"Hello, world!\")","file_path":"main.py"})
+  date                                                 -> write_file({"content":"print(\"Hello, world!\")","file_path":"main.py"})
+  My operating system is: linux                        -> write_file({"content":"print(\"Hello, world!\")","file_path":"main.py"})
+                                                       -> write_file({"content":"print(\"Hello, world!\")","file_path":"main.py"})
+
+== a user who really does ask for the date still gets it
+  what is the date?                                    -> run_shell_command({"command":"date"})
+  show me today's date                                 -> run_shell_command({"command":"date"})
+  run date                                             -> run_shell_command({"command":"date"})

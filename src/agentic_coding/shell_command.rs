@@ -260,8 +260,100 @@ fn valid_search_identifier(token: &str) -> bool {
 /// recovered from the prompt. An intent whose cue matches but whose required
 /// argument is absent is skipped so the search continues rather than emitting an
 /// argument-less command that would hang (`wc -l` on stdin).
+/// The prompt split into sentences, each paired with whether it is a question.
+///
+/// Sentence boundaries are what separate the user's request from a sentence
+/// merely *placed next to* it, so intent cues are read one sentence at a time
+/// (issue #907).
+fn sentences_with_mood(lower: &str) -> Vec<(&str, bool)> {
+    let mut sentences = Vec::new();
+    let mut start = 0;
+    for (index, character) in lower.char_indices() {
+        if !matches!(
+            character,
+            '.' | '!' | '?' | ';' | '\n' | '。' | '！' | '？' | '；'
+        ) {
+            continue;
+        }
+        let text = lower[start..index].trim();
+        if !text.is_empty() {
+            sentences.push((text, matches!(character, '?' | '？')));
+        }
+        start = index + character.len_utf8();
+    }
+    let tail = lower[start..].trim();
+    if !tail.is_empty() {
+        sentences.push((tail, false));
+    }
+    sentences
+}
+
+/// Whether `cue` is used to *ask* for something rather than to state a fact.
+///
+/// A cue that occurs in at least one sentence that is not a statement about the
+/// cue is a request; a cue that only ever appears as the subject of a
+/// declarative sentence — the gemini CLI's *"Today's date is Sunday, August 2,
+/// 2026 …"* — is the caller describing the world, and describing the date is not
+/// asking for it (issue #907). A cue that spans a sentence boundary keeps the
+/// plain containment answer.
+fn asks_for_cue(
+    lower: &str,
+    sentences: &[(&str, bool)],
+    cue: &str,
+    vocab: &seed::CallerContextVocabulary,
+) -> bool {
+    if !lower.contains(cue) {
+        return false;
+    }
+    let mut seen = false;
+    for (sentence, interrogative) in sentences {
+        if !sentence.contains(cue) {
+            continue;
+        }
+        seen = true;
+        if !is_fact_statement(sentence, *interrogative, cue, vocab) {
+            return true;
+        }
+    }
+    !seen
+}
+
+/// Whether `sentence` states a fact *about* `cue` instead of requesting it.
+///
+/// The shape is `<cue> <copula> <value>` (English, Russian, Spanish, Chinese) or
+/// `<cue> <value> <copula>` (Hindi): the cue opens the sentence as its subject,
+/// a seed-declared copula links it, and a value follows. A question is never a
+/// statement, and a cue that does not open the sentence is not its subject — so
+/// *"tell me what the current time is"* and *"what is the date?"* keep routing.
+fn is_fact_statement(
+    sentence: &str,
+    interrogative: bool,
+    cue: &str,
+    vocab: &seed::CallerContextVocabulary,
+) -> bool {
+    if interrogative {
+        return false;
+    }
+    let Some(rest) = sentence.strip_prefix(cue) else {
+        return false;
+    };
+    let rest = rest.trim_matches(|character: char| {
+        character.is_whitespace() || matches!(character, ',' | ':' | '：' | '，' | '-')
+    });
+    let words: Vec<&str> = rest.split_whitespace().collect();
+    let (Some(head), Some(last)) = (words.first(), words.last()) else {
+        return false;
+    };
+    if let Some(copula) = vocab.copula_in(head) {
+        return words.len() > 1 || head.chars().count() > copula.chars().count();
+    }
+    words.len() > 1 && vocab.copula_in(last).is_some()
+}
+
 fn intent_shell_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Option<String> {
     let lower = prompt.to_lowercase();
+    let sentences = sentences_with_mood(&lower);
+    let caller_context = seed::caller_context_vocabulary();
     // Prefer the most specific matching cue across every intent. This prevents
     // a shorter generic cue (for example "current directory" → `pwd`) from
     // stealing a longer request ("list current directory" → `ls`).
@@ -271,7 +363,7 @@ fn intent_shell_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Option<S
         .filter(|intent| intent.command != REPORT_ISSUE_ACTION)
         .flat_map(|intent| intent.cues.iter().map(move |cue| (intent, cue)))
         .filter(|(intent, cue)| {
-            lower.contains(cue.as_str())
+            asks_for_cue(&lower, &sentences, cue, &caller_context)
                 && (intent.argument != ShellIntentArgument::SearchQuery
                     || vocab
                         .local_search_scopes
