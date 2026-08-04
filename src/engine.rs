@@ -532,7 +532,11 @@ impl SelectedRule {
             Self::Identity => String::from("identity"),
             Self::AssistantName => String::from("assistant_name"),
             Self::WriteProgram(_) => String::from(WRITE_PROGRAM_INTENT),
-            Self::UnsupportedWriteProgram { .. } => String::from("write_program_skill_gap"),
+            // Issue #906: an unfilled parameter is not a skill gap. Which dead
+            // end this is decides both the intent and the wording.
+            Self::UnsupportedWriteProgram { task, language } => String::from(
+                crate::program_skill_gap::shape(task.as_deref(), language.as_deref()).intent(),
+            ),
             Self::Unknown => String::from("unknown"),
         }
     }
@@ -548,9 +552,10 @@ impl SelectedRule {
             Self::Identity => String::from("response:identity"),
             Self::AssistantName => String::from("response:assistant_name"),
             Self::WriteProgram(spec) => spec.response_link(),
-            Self::UnsupportedWriteProgram { .. } => {
-                String::from("response:write_program:skill_gap")
-            }
+            Self::UnsupportedWriteProgram { task, language } => String::from(
+                crate::program_skill_gap::shape(task.as_deref(), language.as_deref())
+                    .response_link(),
+            ),
             Self::Unknown => String::from("response:unknown"),
         }
     }
