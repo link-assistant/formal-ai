@@ -147,6 +147,37 @@ fn issue_909_headless_global_configuration_is_traceable() {
         .exists());
 }
 
+/// The verification surface speaks to the operator, so its four intents must
+/// answer in every language the registry declares — english, russian, hindi,
+/// chinese, spanish — not only in the language the fix was written in.
+#[test]
+fn issue_909_verification_messages_answer_in_every_registered_language() {
+    let languages: Vec<&str> = formal_ai::language::registered_languages()
+        .into_iter()
+        .map(formal_ai::Language::slug)
+        .collect();
+    assert!(
+        languages.contains(&"en"),
+        "the registry should declare at least english, got {languages:?}"
+    );
+
+    for intent in [
+        "client_global_config_requirement_missing",
+        "client_global_config_auth_refusal",
+        "client_global_config_probe_started",
+        "client_global_config_probe_skipped",
+    ] {
+        for language in &languages {
+            let text = formal_ai::seed::response_for(intent, language)
+                .unwrap_or_else(|| panic!("{intent} should answer in {language}"));
+            assert!(
+                !text.trim().is_empty(),
+                "{intent} should carry text in {language}"
+            );
+        }
+    }
+}
+
 fn read(path: impl AsRef<Path>) -> String {
     fs::read_to_string(path.as_ref())
         .unwrap_or_else(|error| panic!("{} should be readable: {error}", path.as_ref().display()))
