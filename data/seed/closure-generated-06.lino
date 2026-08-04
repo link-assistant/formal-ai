@@ -1,29 +1,4 @@
 meanings
-  response_lexeme_import_refused_batch_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import refused batch zh"
-  response_lexeme_import_reparse_failed_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import reparse failed en"
-  response_lexeme_import_reparse_failed_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import reparse failed hi"
-  response_lexeme_import_reparse_failed_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import reparse failed ru"
-  response_lexeme_import_reparse_failed_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import reparse failed zh"
   response_lexeme_import_surface_changed_en
     defined-by response_template
     lexeme en
@@ -1394,3 +1369,28 @@ meanings
     lexeme en
       surface
         text "response summarization evidence denied zh"
+  response_summarization_evidence_summary_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization evidence summary en"
+  response_summarization_evidence_summary_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization evidence summary hi"
+  response_summarization_evidence_summary_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization evidence summary ru"
+  response_summarization_evidence_summary_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization evidence summary zh"
+  response_supplied_file_contents_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response supplied file contents en"

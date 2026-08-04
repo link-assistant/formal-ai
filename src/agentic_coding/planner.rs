@@ -55,8 +55,6 @@ pub const CANONICAL_SOURCE_URL: &str =
 /// The path the planner writes the knowledge base to.
 pub const KB_PATH: &str = "knowledge-base.lino";
 
-const GENERAL_PLAN_BODY_PLACEHOLDER: &str = concat!("{", "plan", "}");
-
 /// The next deterministic step the server takes in an agentic coding loop.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum AgenticPlan {
@@ -450,27 +448,20 @@ fn plan_general_change_step(
                     }
                 }
             }
-            GeneralPlanMode::LiteralFile | GeneralPlanMode::RepositoryWorkItem if runs == 0 => {
+            GeneralPlanMode::LiteralFile if runs == 0 => {
                 return plan_one(
                     tool,
                     json!({ "command": plan.verification_command }).to_string(),
                 );
             }
+            // A repository work item names no verification command: the only
+            // file this run writes is the plan record, and reading it back
+            // would verify nothing but the write itself (issue #904).
             GeneralPlanMode::LiteralFile | GeneralPlanMode::RepositoryWorkItem => {}
         }
     }
     if plan.mode == GeneralPlanMode::RepositoryWorkItem {
-        let response_language = crate::language::detect(&plan.goal).slug();
-        let mut answer =
-            crate::seed::localized_response("general_plan_repository_complete", response_language)
-                .unwrap_or_default();
-        answer = answer.replace("{target}", &plan.target);
-        answer = answer.replace("{plan_path}", PLAN_PATH);
-        answer = answer.replace(
-            GENERAL_PLAN_BODY_PLACEHOLDER,
-            plan.links_notation().trim_end(),
-        );
-        return AgenticPlan::Final(answer);
+        return AgenticPlan::Final(plan.planned_not_executed_answer());
     }
     AgenticPlan::Final(format!(
         "Completed the general change request for {} and verified it with `{}`.\n\nPlan event ({}):\n\n{}",

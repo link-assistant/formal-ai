@@ -1,0 +1,30 @@
+  id "repository_work_item_plan_c28b1cc6df2be453"
+  execution_mode "repository_work_item"
+  terminal_state "planned_not_executed"
+  goal "https://github.com/link-assistant/formal-ai/issues/904\nImplement the fix in the repository and verify it with tests."
+  target "https://github.com/link-assistant/formal-ai/issues/904"
+  step 1
+    capability "Write"
+    action "append the bounded repository work-item plan to .formal-ai/general-change-plan.lino"
+    expected_evidence "the exact repository work-item goal and execution boundary"
+
+goal: https://github.com/link-assistant/formal-ai/issues/904
+Implement the fix in the repository and verify it with tests.
+verification_command: ""
+--- tools used ---
+["write_file"]
+--- final answer ---
+Planned, not executed: https://github.com/link-assistant/formal-ai/issues/904.
+
+Nothing the request names was changed. The only file this run wrote is its own plan record (.formal-ai/general-change-plan.lino), and reading that record back would prove nothing about the requested work, so no verification was claimed. Plan event:
+
+general_change_plan
+  id "repository_work_item_plan_c28b1cc6df2be453"
+  execution_mode "repository_work_item"
+  terminal_state "planned_not_executed"
+  goal "https://github.com/link-assistant/formal-ai/issues/904\nImplement the fix in the repository and verify it with tests."
+  target "https://github.com/link-assistant/formal-ai/issues/904"
+  step 1
+    capability "Write"
+    action "append the bounded repository work-item plan to .formal-ai/general-change-plan.lino"
+    expected_evidence "the exact repository work-item goal and execution boundary"

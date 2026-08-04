@@ -1,13 +1,16 @@
 general_change_plan_shape
-  goal "formalized requirement supplied by the user"
+  goal "objective stated after the documented request lead, never the harness preamble"
+  terminal_state "executed|planned_not_executed"
   ordered_steps
     step
       capability "Search|Fetch|Read|Write|Run"
       action "deterministic operation derived from the requirement"
       expected_evidence "observable result required before the next step"
       command "optional bounded verification command"
-  verification_command "request-derived command executed after the change"
+  verification_command "request-derived command executed after the change; empty when none can be named"
   invariants
     deterministic "same issue text plus same seed produces the same plan"
     append_before_execute "the serialized plan is written before change tools run"
     safe_target "only workspace-relative paths without traversal are executable"
+    no_self_verification "verification observes an artifact the request named, never the plan record the run wrote"
+    planned_not_executed "a plan whose steps touch no requested artifact ends planned, not successful"

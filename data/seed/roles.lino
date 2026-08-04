@@ -435,6 +435,8 @@ roles
     kind meaning
   repository_reference
     kind meaning
+  request_objective_lead
+    kind predicate
   research_criterion
     kind predicate
   research_evaluation_domain

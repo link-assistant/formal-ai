@@ -687,38 +687,22 @@ multilingual_responses
     intent general_plan_repository_evidence
     language zh
     text "准确的仓库工作项目标和执行边界"
-  response response_general_plan_repository_verify_action_en
-    intent general_plan_repository_verify_action
+  response response_general_plan_repository_planned_en
+    intent general_plan_repository_planned
     language en
-    text "read back the persisted work-item plan"
-  response response_general_plan_repository_verify_action_ru
-    intent general_plan_repository_verify_action
+    text "Planned, not executed: {target}.\n\nNothing the request names was changed. The only file this run wrote is its own plan record ({plan_path}), and reading that record back would prove nothing about the requested work, so no verification was claimed. Plan event:\n\n{plan}"
+  response response_general_plan_repository_planned_ru
+    intent general_plan_repository_planned
     language ru
-    text "прочитать сохранённый план работы"
-  response response_general_plan_repository_verify_action_hi
-    intent general_plan_repository_verify_action
+    text "Запланировано, но не выполнено: {target}.\n\nНичего из названного в запросе не изменено. Единственный файл, записанный этим запуском, — его собственная запись плана ({plan_path}); чтение этой записи ничего не доказывало бы о запрошенной работе, поэтому проверка не заявляется. Событие плана:\n\n{plan}"
+  response response_general_plan_repository_planned_hi
+    intent general_plan_repository_planned
     language hi
-    text "सहेजी गई कार्य योजना को वापस पढ़ें"
-  response response_general_plan_repository_verify_action_zh
-    intent general_plan_repository_verify_action
+    text "योजना बनी, निष्पादित नहीं: {target}।\n\nअनुरोध में नामित कुछ भी नहीं बदला गया। इस रन ने केवल अपनी योजना रिकॉर्ड ({plan_path}) लिखी, और उस रिकॉर्ड को वापस पढ़ना अनुरोधित कार्य के बारे में कुछ भी सिद्ध नहीं करता, इसलिए कोई सत्यापन का दावा नहीं किया गया। योजना घटना:\n\n{plan}"
+  response response_general_plan_repository_planned_zh
+    intent general_plan_repository_planned
     language zh
-    text "读回已保存的工作项计划"
-  response response_general_plan_repository_complete_en
-    intent general_plan_repository_complete
-    language en
-    text "Recorded and verified the bounded repository work-item plan for {target}.\n\nThe deterministic sandbox preserved the requested goal without claiming unobserved source edits. Plan event ({plan_path}):\n\n{plan}"
-  response response_general_plan_repository_complete_ru
-    intent general_plan_repository_complete
-    language ru
-    text "Ограниченный план работы над репозиторием для {target} записан и проверен.\n\nДетерминированная песочница сохранила запрошенную цель, не заявляя о ненаблюдавшихся изменениях исходного кода. Событие плана ({plan_path}):\n\n{plan}"
-  response response_general_plan_repository_complete_hi
-    intent general_plan_repository_complete
-    language hi
-    text "{target} के लिए सीमित रिपॉज़िटरी कार्य योजना दर्ज और सत्यापित की गई।\n\nनियतात्मक सैंडबॉक्स ने अनदेखे स्रोत परिवर्तनों का दावा किए बिना अनुरोधित लक्ष्य सुरक्षित रखा। योजना घटना ({plan_path}):\n\n{plan}"
-  response response_general_plan_repository_complete_zh
-    intent general_plan_repository_complete
-    language zh
-    text "已记录并验证 {target} 的有界仓库工作项计划。\n\n确定性沙箱保留了请求的目标，且未声称存在未经观察的源代码编辑。计划事件（{plan_path}）：\n\n{plan}"
+    text "已规划，未执行：{target}。\n\n请求中指名的任何内容都未被更改。本次运行只写入了自己的计划记录（{plan_path}），回读该记录无法证明所请求的工作，因此未声称任何验证。计划事件：\n\n{plan}"
   response response_client_contract_read_observations_error_en
     intent client_contract_read_observations_error
     language en
