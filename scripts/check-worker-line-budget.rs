@@ -59,8 +59,13 @@ const TARGET_TOTAL_LINES: usize = 3_000;
 /// formatter for Rust↔JS parity, adding a net 64 lines on the merged baseline.
 /// Issue #890 moves the formal-proof parser and renderer into the shared
 /// Rust→WASM core, lowering the ratchet by one line after its routing adapter.
+/// Issue #906's validated implementation-language modifier — the seed-driven
+/// span scan that refuses a closed-class word as a language name, and the four
+/// `write_program` dead-end shapes that keep the `missing` sentinel out of the
+/// reply — must be mirrored in the browser worker for Rust↔JS parity, adding a
+/// net 112 lines and raising the ratchet from 27,705 to 27,817.
 #[cfg(not(test))]
-const CEILING_TOTAL_LINES: usize = 27_705;
+const CEILING_TOTAL_LINES: usize = 27_817;
 
 const WORKER_DIR: &str = "src/web/worker";
 

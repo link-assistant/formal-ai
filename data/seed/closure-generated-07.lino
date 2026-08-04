@@ -669,6 +669,106 @@ meanings
     lexeme en
       surface
         text "response world state remaining zh"
+  response_write_program_language_unspecified_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified en"
+  response_write_program_language_unspecified_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified es"
+  response_write_program_language_unspecified_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified hi"
+  response_write_program_language_unspecified_name_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified name en"
+  response_write_program_language_unspecified_name_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified name es"
+  response_write_program_language_unspecified_name_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified name hi"
+  response_write_program_language_unspecified_name_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified name ru"
+  response_write_program_language_unspecified_name_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified name zh"
+  response_write_program_language_unspecified_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified ru"
+  response_write_program_language_unspecified_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified zh"
+  response_write_program_request_unspecified_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program request unspecified en"
+  response_write_program_request_unspecified_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program request unspecified es"
+  response_write_program_request_unspecified_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program request unspecified hi"
+  response_write_program_request_unspecified_name_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program request unspecified name en"
+  response_write_program_request_unspecified_name_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program request unspecified name es"
+  response_write_program_request_unspecified_name_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program request unspecified name hi"
+  response_write_program_request_unspecified_name_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program request unspecified name ru"
+  response_write_program_request_unspecified_name_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program request unspecified name zh"
+  response_write_program_request_unspecified_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program request unspecified ru"
+  response_write_program_request_unspecified_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program request unspecified zh"
   response_write_program_skill_gap_en
     defined-by response_template
     lexeme en
@@ -694,6 +794,31 @@ meanings
     lexeme en
       surface
         text "response write program skill gap name ru"
+  response_write_program_skill_gap_name_task_unspecified_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap name task unspecified en"
+  response_write_program_skill_gap_name_task_unspecified_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap name task unspecified es"
+  response_write_program_skill_gap_name_task_unspecified_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap name task unspecified hi"
+  response_write_program_skill_gap_name_task_unspecified_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap name task unspecified ru"
+  response_write_program_skill_gap_name_task_unspecified_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap name task unspecified zh"
   response_write_program_skill_gap_name_zh
     defined-by response_template
     lexeme en
@@ -1269,128 +1394,3 @@ meanings
     lexeme en
       surface
         text "task plan stage implementation"
-  task_plan_stage_regression
-    defined-by intent
-    lexeme en
-      surface
-        text "task plan stage regression"
-  task_plan_stage_requirements
-    defined-by intent
-    lexeme en
-      surface
-        text "task plan stage requirements"
-  task_plan_stage_verification
-    defined-by intent
-    lexeme en
-      surface
-        text "task plan stage verification"
-  test_status
-    defined-by intent
-    lexeme en
-      surface
-        text "test status"
-  thu
-    defined-by word_surface
-    lexeme en
-      surface
-        text "thu"
-  thurs
-    defined-by word_surface
-    lexeme en
-      surface
-        text "thurs"
-  time_dilation
-    defined-by topic
-    lexeme en
-      surface
-        text "time dilation"
-  title
-    defined-by word_surface
-    lexeme en
-      surface
-        text "title"
-  title_case
-    defined-by operation
-    lexeme en
-      surface
-        text "title case"
-  tool_append_memory
-    defined-by tool
-    lexeme en
-      surface
-        text "tool append memory"
-  tool_archive_pack
-    defined-by tool
-    lexeme en
-      surface
-        text "tool archive pack"
-  tool_archive_unpack
-    defined-by tool
-    lexeme en
-      surface
-        text "tool archive unpack"
-  tool_brainstorm
-    defined-by tool
-    lexeme en
-      surface
-        text "tool brainstorm"
-  tool_calculator
-    defined-by tool
-    lexeme en
-      surface
-        text "tool calculator"
-  tool_concept_lookup
-    defined-by tool
-    lexeme en
-      surface
-        text "tool concept lookup"
-  tool_conversation_recall
-    defined-by tool
-    lexeme en
-      surface
-        text "tool conversation recall"
-  tool_coreference
-    defined-by tool
-    lexeme en
-      surface
-        text "tool coreference"
-  tool_dom_extract
-    defined-by tool
-    lexeme en
-      surface
-        text "tool dom extract"
-  tool_dom_query
-    defined-by tool
-    lexeme en
-      surface
-        text "tool dom query"
-  tool_eval_js
-    defined-by tool
-    lexeme en
-      surface
-        text "tool eval js"
-  tool_export_memory
-    defined-by tool
-    lexeme en
-      surface
-        text "tool export memory"
-  tool_fact_lookup
-    defined-by tool
-    lexeme en
-      surface
-        text "tool fact lookup"
-  tool_fs_list
-    defined-by tool
-    lexeme en
-      surface
-        text "tool fs list"
-  tool_fs_move
-    defined-by tool
-    lexeme en
-      surface
-        text "tool fs move"
-  tool_fs_read
-    defined-by tool
-    lexeme en
-      surface
-        text "tool fs read"
