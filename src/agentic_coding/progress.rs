@@ -151,6 +151,27 @@ impl Progress {
             .map(|attempt| attempt.detail.as_str())
     }
 
+    pub(super) fn attempted_write_for(&self, path: &str) -> bool {
+        self.attempts.iter().any(|attempt| {
+            attempt.capability == Capability::Write
+                && attempt
+                    .arguments
+                    .as_deref()
+                    .is_some_and(|arguments| argument_targets(arguments, path))
+        })
+    }
+
+    pub(super) fn successful_write_for(&self, path: &str) -> bool {
+        self.attempts.iter().any(|attempt| {
+            attempt.capability == Capability::Write
+                && attempt.succeeded
+                && attempt
+                    .arguments
+                    .as_deref()
+                    .is_some_and(|arguments| argument_targets(arguments, path))
+        })
+    }
+
     /// The capability of the most recent tool result in this turn.
     ///
     /// `completed` is in arrival order, so this distinguishes *which phase* a
@@ -182,9 +203,7 @@ impl Progress {
                     && attempt
                         .arguments
                         .as_deref()
-                        .and_then(argument_path)
-                        .as_deref()
-                        == Some(path)
+                        .is_some_and(|arguments| argument_targets(arguments, path))
             })
             .count()
     }
@@ -204,6 +223,14 @@ fn argument_path(arguments: &str) -> Option<String> {
         .iter()
         .find_map(|key| value.get(*key).and_then(serde_json::Value::as_str))
         .map(str::to_owned)
+}
+
+fn argument_targets(arguments: &str, path: &str) -> bool {
+    argument_path(arguments).is_some_and(|observed| {
+        observed == path
+            || (std::path::Path::new(path).is_relative()
+                && std::path::Path::new(&observed).ends_with(path))
+    })
 }
 
 /// Resolve which capability the tool result at `index` answers. Prefer the

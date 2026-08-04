@@ -42,7 +42,9 @@ nonzero exit/status fields, and raw nonzero exit markers.
 Progress separates observed attempts from successful step satisfaction. On the
 first rejected write for a concrete path, the general planner reads that
 path and retries the write once; a second failure for the same path terminates
-with the observed error. Failed verification terminates honestly. Successful
+with the observed error. If a write-only client rejects the auxiliary plan
+file, the planner still attempts the user's primary file once. Failed
+verification terminates honestly. Successful
 literal-file verification reaches completion only when normalized stdout equals
 the request-derived content. Output vocabulary alone is not a failure signal,
 so a user may legitimately request the exact bytes `failed` or `error`.

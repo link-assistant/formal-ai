@@ -1,20 +1,21 @@
    Compiling formal-ai v0.326.0 (/tmp/gh-issue-solver-1785815927048)
-    Finished `test` profile [unoptimized] target(s) in 1m 46s
+    Finished `test` profile [unoptimized] target(s) in 1m 31s
      Running tests/unit/mod.rs (target/debug/deps/unit-6b88de2d309fb6c0)
 
-running 13 tests
+running 14 tests
 test issue_905::anthropic_and_responses_adapters_preserve_error_metadata ... ok
-test issue_905::issue_905_case_study_and_self_authorship_are_preserved ... ok
 test issue_905::exact_modifier_is_not_written_as_part_of_the_payload ... ok
+test issue_905::issue_905_case_study_and_self_authorship_are_preserved ... ok
+test issue_905::failed_auxiliary_plan_write_without_read_still_attempts_the_target ... ok
 test issue_905::failed_write_is_followed_by_read_then_one_write_retry ... ok
 test issue_905::matching_observed_evidence_allows_completion ... ok
-test issue_905::a_second_failed_write_for_the_same_path_stops_retrying ... ok
-test issue_905::tool_error_metadata_survives_openai_compatible_deserialization ... ok
 test issue_905::requested_failure_vocabulary_is_valid_successful_evidence ... ok
-test issue_905::explicit_error_verification_cannot_produce_a_success_claim ... ok
+test issue_905::tool_error_metadata_survives_openai_compatible_deserialization ... ok
 test issue_905::nonzero_exit_verification_cannot_produce_a_success_claim ... ok
+test issue_905::explicit_error_verification_cannot_produce_a_success_claim ... ok
+test issue_905::a_second_failed_write_for_the_same_path_stops_retrying ... ok
 test issue_905::successful_command_with_wrong_evidence_is_not_verified ... ok
 test issue_905::exact_content_parsing_generalizes_across_payloads_and_punctuation ... ok
 test issue_905::verification_failure_responses_cover_every_supported_language ... ok
 
-test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 2478 filtered out; finished in 1.95s
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 2478 filtered out; finished in 1.50s

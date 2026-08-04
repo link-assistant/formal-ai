@@ -28,6 +28,18 @@ pub(super) fn plan_general_change_step(
                     return plan_one(read_tool, read_arguments(path));
                 }
             }
+            // The plan event is auxiliary. A write-only client cannot perform
+            // the preferred read-before-retry recovery, but its failure must
+            // not swallow the user's primary literal-file write.
+            if path.as_deref() == Some(PLAN_PATH)
+                && plan.mode == GeneralPlanMode::LiteralFile
+                && tool_for(tool_names, Capability::Read).is_none()
+                && progress.failed_write_count_for(PLAN_PATH) == 1
+            {
+                if let Some(write_tool) = tool_for(tool_names, Capability::Write) {
+                    return plan_one(write_tool, write_arguments(&plan.target, &plan.content));
+                }
+            }
             return AgenticPlan::Final(tool_result::render_failure(
                 path.as_deref().unwrap_or("write"),
                 &failure.detail,
@@ -49,12 +61,30 @@ pub(super) fn plan_general_change_step(
             ));
         }
     }
-    let writes = progress.successful_count(Capability::Write);
+    let recovering_write = progress.last() == Some(Capability::Read)
+        && progress.previous_attempt().is_some_and(|previous| {
+            previous.capability == Capability::Write && !previous.succeeded
+        });
+    if recovering_write {
+        if let (Some(tool), Some(arguments)) = (
+            tool_for(tool_names, Capability::Write),
+            progress
+                .previous_attempt()
+                .and_then(|attempt| attempt.arguments.as_deref()),
+        ) {
+            return plan_one(tool, arguments.to_owned());
+        }
+    }
     if let Some(tool) = tool_for(tool_names, Capability::Write) {
-        if writes == 0 {
+        let plan_attempted = progress.attempted_write_for(PLAN_PATH);
+        let plan_written = progress.successful_write_for(PLAN_PATH);
+        if !plan_attempted {
             return plan_one(tool, write_arguments(PLAN_PATH, &plan.links_notation()));
         }
-        if writes == 1 && plan.mode == GeneralPlanMode::LiteralFile {
+        if plan.mode == GeneralPlanMode::LiteralFile
+            && !progress.successful_write_for(&plan.target)
+            && (plan_written || plan_attempted)
+        {
             return plan_one(tool, write_arguments(&plan.target, &plan.content));
         }
     }

@@ -157,6 +157,30 @@ fn a_second_failed_write_for_the_same_path_stops_retrying() {
 }
 
 #[test]
+fn failed_auxiliary_plan_write_without_read_still_attempts_the_target() {
+    let tools = ["write_file"];
+    let mut messages = vec![ChatMessage::user(PROMPT)];
+    let Some(AgenticPlan::ToolCalls(mut calls)) = plan_chat_step(&messages, &tools) else {
+        panic!("expected the auxiliary plan write");
+    };
+    let plan_write = calls.remove(0);
+    record(
+        &mut messages,
+        &plan_write,
+        "<tool_use_error>Error writing file</tool_use_error>",
+    );
+
+    let Some(AgenticPlan::ToolCalls(mut calls)) = plan_chat_step(&messages, &tools) else {
+        panic!("the unavailable auxiliary plan must not swallow the user's write");
+    };
+    let target_write = calls.remove(0);
+    let arguments: serde_json::Value =
+        serde_json::from_str(&target_write.arguments).expect("target write arguments");
+    assert_eq!(arguments["path"], "hello.txt");
+    assert_eq!(arguments["content"], "Hello World");
+}
+
+#[test]
 fn explicit_error_verification_cannot_produce_a_success_claim() {
     let (mut messages, verification) = advance_to_verification();
     record(

@@ -5,8 +5,8 @@ self_ast_census_index
   module_count 430
   full_ast_module_count 56
   signature_module_count 374
-  symbol_count 8704
-  content_id self_ast_census_index_db4c10af3a54882b
+  symbol_count 8707
+  content_id self_ast_census_index_b45d3b42ff8c5e39
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/algorithm_learning.rs full_ast 13 source_module_0cde1901a8a78574
@@ -28,7 +28,7 @@ self_ast_census_index
     src/agentic_coding/external_benchmark_learning.rs full_ast 5 source_module_143122bfd70dcc0e
     src/agentic_coding/file_read.rs full_ast 43 source_module_7df97238be9a32aa
     src/agentic_coding/formalize.rs full_ast 23 source_module_0841b6b93be1278d
-    src/agentic_coding/general_execution.rs full_ast 10 source_module_29e49995fe906a9c
+    src/agentic_coding/general_execution.rs full_ast 10 source_module_63ddaae716c5fdac
     src/agentic_coding/general_planner.rs full_ast 37 source_module_790c39117b52dc96
     src/agentic_coding/google_trends_catalog.rs full_ast 11 source_module_0269b7242306e817
     src/agentic_coding/google_trends_learning.rs full_ast 9 source_module_fd8f391bbc37c7f2
@@ -48,7 +48,7 @@ self_ast_census_index
     src/agentic_coding/narration.rs full_ast 9 source_module_256edf1475c908fe
     src/agentic_coding/planner.rs full_ast 36 source_module_b651ebff5f6ee035
     src/agentic_coding/procedure.rs full_ast 5 source_module_59c2c30fbf44bc52
-    src/agentic_coding/progress.rs full_ast 17 source_module_edad2f9a1d67359a
+    src/agentic_coding/progress.rs full_ast 20 source_module_9bdcc5fa2dc5c8c4
     src/agentic_coding/question_catalog.rs full_ast 24 source_module_512a32489f4c308d
     src/agentic_coding/rebuild_plan.rs full_ast 9 source_module_1b3baad04d15abbb
     src/agentic_coding/repair_strategy.rs full_ast 9 source_module_7dd17a52ae12d7d3
