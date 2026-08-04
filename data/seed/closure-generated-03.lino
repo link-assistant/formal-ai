@@ -1,9 +1,4 @@
 meanings
-  mkdir
-    defined-by concept
-    lexeme en
-      surface
-        text "mkdir"
   mode
     defined-by concept
     lexeme en
@@ -1394,3 +1389,8 @@ meanings
     lexeme en
       surface
         text "physical action question"
+  pip
+    defined-by token
+    lexeme en
+      surface
+        text "pip"

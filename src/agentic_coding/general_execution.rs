@@ -8,7 +8,6 @@ use super::progress::Progress;
 use super::tool_result;
 use crate::protocol::ChatMessage;
 
-const GENERAL_PLAN_BODY_PLACEHOLDER: &str = concat!("{", "plan", "}");
 const EXPECTED_PLACEHOLDER: &str = concat!("{", "expected", "}");
 const OBSERVED_PLACEHOLDER: &str = concat!("{", "observed", "}");
 
@@ -105,12 +104,15 @@ pub(super) fn plan_general_change_step(
                     }
                 }
             }
-            GeneralPlanMode::LiteralFile | GeneralPlanMode::RepositoryWorkItem if runs == 0 => {
+            GeneralPlanMode::LiteralFile if runs == 0 => {
                 return plan_one(
                     tool,
                     json!({ "command": plan.verification_command }).to_string(),
                 );
             }
+            // A repository work item names no verification command: the only
+            // file this run writes is the plan record, and reading it back
+            // would verify nothing but the write itself (issue #904).
             GeneralPlanMode::LiteralFile | GeneralPlanMode::RepositoryWorkItem => {}
         }
     }
@@ -119,30 +121,7 @@ pub(super) fn plan_general_change_step(
 
 fn finish_general_change(plan: &GeneralChangePlan, progress: &Progress) -> AgenticPlan {
     if plan.mode == GeneralPlanMode::RepositoryWorkItem {
-        if progress.successful_count(Capability::Run) == 0 {
-            return AgenticPlan::Final(general_plan_unverified(plan));
-        }
-        let expected = plan.links_notation();
-        let observed = progress
-            .latest_successful_output(Capability::Run)
-            .and_then(tool_result::observed_payload);
-        if observed.as_deref().map(str::trim) != Some(expected.trim()) {
-            return AgenticPlan::Final(general_plan_mismatch(
-                plan,
-                observed.as_deref().unwrap_or_default(),
-            ));
-        }
-        let response_language = crate::language::detect(&plan.goal).slug();
-        let mut answer =
-            crate::seed::localized_response("general_plan_repository_complete", response_language)
-                .unwrap_or_default();
-        answer = answer.replace("{target}", &plan.target);
-        answer = answer.replace("{plan_path}", PLAN_PATH);
-        answer = answer.replace(
-            GENERAL_PLAN_BODY_PLACEHOLDER,
-            plan.links_notation().trim_end(),
-        );
-        return AgenticPlan::Final(answer);
+        return AgenticPlan::Final(plan.planned_not_executed_answer());
     }
     if progress.successful_count(Capability::Run) == 0 {
         return AgenticPlan::Final(general_plan_unverified(plan));

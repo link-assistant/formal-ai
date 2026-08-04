@@ -269,21 +269,16 @@ meanings
     lexeme en
       surface
         text "general plan repository action"
-  general_plan_repository_complete
-    defined-by intent
-    lexeme en
-      surface
-        text "general plan repository complete"
   general_plan_repository_evidence
     defined-by intent
     lexeme en
       surface
         text "general plan repository evidence"
-  general_plan_repository_verify_action
+  general_plan_repository_planned
     defined-by intent
     lexeme en
       surface
-        text "general plan repository verify action"
+        text "general plan repository planned"
   general_plan_unverified
     defined-by intent
     lexeme en
@@ -1394,3 +1389,8 @@ meanings
     lexeme en
       surface
         text "missing russian label todo"
+  mkdir
+    defined-by concept
+    lexeme en
+      surface
+        text "mkdir"

@@ -1,9 +1,4 @@
 meanings
-  response_concept_lookup_in_context_no_alias_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context no alias zh"
   response_concept_lookup_in_context_ru
     defined-by response_template
     lexeme en
@@ -529,26 +524,6 @@ meanings
     lexeme en
       surface
         text "response general plan repository action zh"
-  response_general_plan_repository_complete_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository complete en"
-  response_general_plan_repository_complete_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository complete hi"
-  response_general_plan_repository_complete_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository complete ru"
-  response_general_plan_repository_complete_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response general plan repository complete zh"
   response_general_plan_repository_evidence_en
     defined-by response_template
     lexeme en
@@ -569,26 +544,31 @@ meanings
     lexeme en
       surface
         text "response general plan repository evidence zh"
-  response_general_plan_repository_verify_action_en
+  response_general_plan_repository_planned_en
     defined-by response_template
     lexeme en
       surface
-        text "response general plan repository verify action en"
-  response_general_plan_repository_verify_action_hi
+        text "response general plan repository planned en"
+  response_general_plan_repository_planned_es
     defined-by response_template
     lexeme en
       surface
-        text "response general plan repository verify action hi"
-  response_general_plan_repository_verify_action_ru
+        text "response general plan repository planned es"
+  response_general_plan_repository_planned_hi
     defined-by response_template
     lexeme en
       surface
-        text "response general plan repository verify action ru"
-  response_general_plan_repository_verify_action_zh
+        text "response general plan repository planned hi"
+  response_general_plan_repository_planned_ru
     defined-by response_template
     lexeme en
       surface
-        text "response general plan repository verify action zh"
+        text "response general plan repository planned ru"
+  response_general_plan_repository_planned_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan repository planned zh"
   response_general_plan_unverified_en
     defined-by response_template
     lexeme en
@@ -1394,3 +1374,23 @@ meanings
     lexeme en
       surface
         text "response lexeme import part of speech lost ru"
+  response_lexeme_import_part_of_speech_lost_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import part of speech lost zh"
+  response_lexeme_import_qid_absent_from_cache_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import qid absent from cache en"
+  response_lexeme_import_qid_absent_from_cache_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import qid absent from cache hi"
+  response_lexeme_import_qid_absent_from_cache_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import qid absent from cache ru"
