@@ -1,4 +1,64 @@
 meanings
+  response_completion_recovery_restate_postcondition_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery restate postcondition en"
+  response_completion_recovery_restate_postcondition_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery restate postcondition hi"
+  response_completion_recovery_restate_postcondition_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery restate postcondition ru"
+  response_completion_recovery_restate_postcondition_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery restate postcondition zh"
+  response_concept_lookup_in_context_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context en"
+  response_concept_lookup_in_context_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context hi"
+  response_concept_lookup_in_context_no_alias_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context no alias en"
+  response_concept_lookup_in_context_no_alias_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context no alias hi"
+  response_concept_lookup_in_context_no_alias_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context no alias ru"
+  response_concept_lookup_in_context_no_alias_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context no alias zh"
+  response_concept_lookup_in_context_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context ru"
+  response_concept_lookup_in_context_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context zh"
   response_courtesy_response_en
     defined-by response_template
     lexeme en
@@ -1334,63 +1394,3 @@ meanings
     lexeme en
       surface
         text "response lexeme import qid absent from cache ru"
-  response_lexeme_import_qid_absent_from_cache_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import qid absent from cache zh"
-  response_lexeme_import_qid_absent_from_fetch_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import qid absent from fetch en"
-  response_lexeme_import_qid_absent_from_fetch_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import qid absent from fetch hi"
-  response_lexeme_import_qid_absent_from_fetch_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import qid absent from fetch ru"
-  response_lexeme_import_qid_absent_from_fetch_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import qid absent from fetch zh"
-  response_lexeme_import_refused_batch_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import refused batch en"
-  response_lexeme_import_refused_batch_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import refused batch hi"
-  response_lexeme_import_refused_batch_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import refused batch ru"
-  response_lexeme_import_refused_batch_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import refused batch zh"
-  response_lexeme_import_reparse_failed_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import reparse failed en"
-  response_lexeme_import_reparse_failed_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import reparse failed hi"
-  response_lexeme_import_reparse_failed_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import reparse failed ru"

@@ -1,4 +1,64 @@
 meanings
+  task_plan_stage_regression
+    defined-by intent
+    lexeme en
+      surface
+        text "task plan stage regression"
+  task_plan_stage_requirements
+    defined-by intent
+    lexeme en
+      surface
+        text "task plan stage requirements"
+  task_plan_stage_verification
+    defined-by intent
+    lexeme en
+      surface
+        text "task plan stage verification"
+  test_status
+    defined-by intent
+    lexeme en
+      surface
+        text "test status"
+  thu
+    defined-by word_surface
+    lexeme en
+      surface
+        text "thu"
+  thurs
+    defined-by word_surface
+    lexeme en
+      surface
+        text "thurs"
+  time_dilation
+    defined-by topic
+    lexeme en
+      surface
+        text "time dilation"
+  title
+    defined-by word_surface
+    lexeme en
+      surface
+        text "title"
+  title_case
+    defined-by operation
+    lexeme en
+      surface
+        text "title case"
+  tool_append_memory
+    defined-by tool
+    lexeme en
+      surface
+        text "tool append memory"
+  tool_archive_pack
+    defined-by tool
+    lexeme en
+      surface
+        text "tool archive pack"
+  tool_archive_unpack
+    defined-by tool
+    lexeme en
+      surface
+        text "tool archive unpack"
   tool_brainstorm
     defined-by tool
     lexeme en

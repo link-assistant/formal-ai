@@ -1,4 +1,14 @@
 meanings
+  mode
+    defined-by concept
+    lexeme en
+      surface
+        text "mode"
+  move
+    defined-by word_surface
+    lexeme en
+      surface
+        text "move"
   move_note
     defined-by task
     lexeme en
@@ -1384,13 +1394,3 @@ meanings
     lexeme en
       surface
         text "pip"
-  pixel
-    defined-by word_surface
-    lexeme en
-      surface
-        text "pixel"
-  pixels
-    defined-by word_surface
-    lexeme en
-      surface
-        text "pixels"
