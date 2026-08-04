@@ -116,7 +116,7 @@ impl MessageContent {
     /// Every other CLI does the same with a marker of its own — the gemini CLI's
     /// `<session_context>` announces the date, codex's `<environment_context>`
     /// the sandbox, agent's and opencode's `<env>` the working directory — so
-    /// the tags are read from [`seed::caller_context_vocabulary`] rather than
+    /// the tags are read from [`crate::seed::caller_context_vocabulary`] rather than
     /// hardcoded one client at a time (issue #907).
     #[must_use]
     pub fn user_request_text(&self) -> String {
