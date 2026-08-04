@@ -105,6 +105,39 @@ fn literal_file_plans_still_execute_and_verify_the_requested_artifact() {
     assert_eq!(plan.verification_command, "cat notes/general-demo.txt");
 }
 
+/// The "planned, not executed" answer is user-visible text, so every registered
+/// language must state it — an English-only honesty message would let the same
+/// run read as a success in the other languages.
+#[test]
+fn every_registered_language_states_planned_not_executed() {
+    // english, russian, hindi, chinese, spanish — the registered matrix.
+    let leads = [
+        ("en", "Planned, not executed"),
+        ("ru", "Запланировано, но не выполнено"),
+        ("hi", "योजना बनी, निष्पादित नहीं"),
+        ("zh", "已规划，未执行"),
+        ("es", "Planificado, no ejecutado"),
+    ];
+
+    for language in formal_ai::language::registered_languages() {
+        let slug = language.slug();
+        let text = formal_ai::seed::localized_response("general_plan_repository_planned", slug)
+            .unwrap_or_else(|| panic!("{slug} planned-not-executed response"));
+        let (_, lead) = leads
+            .iter()
+            .find(|(candidate, _)| *candidate == slug)
+            .unwrap_or_else(|| panic!("{slug} is registered but has no expected lead"));
+
+        assert!(text.starts_with(lead), "{slug} lead: {text}");
+        for placeholder in ["{target}", "{plan_path}", "{plan}"] {
+            assert!(
+                text.contains(placeholder),
+                "{slug} answer must name {placeholder}: {text}"
+            );
+        }
+    }
+}
+
 /// Whole-task test: the run described by the issue, end to end.
 #[test]
 fn repository_work_item_run_reports_planned_not_executed_instead_of_success() {
