@@ -2,57 +2,58 @@ self_ast_census
   target src/agentic_coding/tool_result.rs
   language rust
   fidelity full_ast
-  byte_len 24250
-  line_count 704
-  content_id source_module_29a3ce6fb0fd2be2
-  symbol_count 36
+  byte_len 24798
+  line_count 715
+  content_id source_module_41567a879cfe1d5a
+  symbol_count 37
   symbols
     struct NormalizedResult 13 21
     enum StepOutcome 31 38
     function step_outcome 42 53
     function failed_verification 62 71
     struct ShellStep 75 77
-    function shell_step 82 87
-    function normalized_payload 92 97
-    function looks_like_error 99 104
-    function render 106 142
-    function failure_report 148 171
-    function latest_turn_answer 173 192
-    function has_latest_turn_result 194 205
-    function is_write_run_recipe 207 217
-    function follow_up_answer 219 250
-    function requested_index 252 264
-    function normalize 266 345
-    struct ShellEnvelope 353 357
-    function into_result 360 386
-    function parse_shell_envelope 389 433
-    function is_field 435 441
-    function envelope_section 445 465
-    function from_payload 467 513
-    function mcp_text_content 515 534
-    function strip_transport_envelope 540 572
-    function nonzero_status 574 582
-    function failed_status 584 597
-    function expected_stop_status 599 613
-    function nonempty_text 615 625
-    function pretty_json 627 629
-    function result_tool 631 641
-    function result_label 643 660
-    function extract_urls 662 678
-    function is_listing 680 685
-    function is_search 687 692
-    function response_language 694 696
-    function fill 698 704
+    function harness_reported_failure 86 88
+    function shell_step 93 98
+    function normalized_payload 103 108
+    function looks_like_error 110 115
+    function render 117 153
+    function failure_report 159 182
+    function latest_turn_answer 184 203
+    function has_latest_turn_result 205 216
+    function is_write_run_recipe 218 228
+    function follow_up_answer 230 261
+    function requested_index 263 275
+    function normalize 277 356
+    struct ShellEnvelope 364 368
+    function into_result 371 397
+    function parse_shell_envelope 400 444
+    function is_field 446 452
+    function envelope_section 456 476
+    function from_payload 478 524
+    function mcp_text_content 526 545
+    function strip_transport_envelope 551 583
+    function nonzero_status 585 593
+    function failed_status 595 608
+    function expected_stop_status 610 624
+    function nonempty_text 626 636
+    function pretty_json 638 640
+    function result_tool 642 652
+    function result_label 654 671
+    function extract_urls 673 689
+    function is_listing 691 696
+    function is_search 698 703
+    function response_language 705 707
+    function fill 709 715
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 19432
-    named_node_count 3939
+    total_link_count 19608
+    named_node_count 3981
     distinct_node_kinds 86
     node_kinds
-      arguments 364
+      arguments 366
       array_expression 13
       array_type 11
       assignment_expression 3
@@ -60,17 +61,17 @@ self_ast_census
       attribute_item 3
       base_field_initializer 4
       binary_expression 50
-      block 93
+      block 94
       boolean_literal 2
       break_expression 2
-      call_expression 364
+      call_expression 366
       char_literal 4
       closure_expression 71
       closure_parameters 71
       compound_assignment_expr 1
       crate 10
       declaration_list 1
-      doc_comment 45
+      doc_comment 52
       else_clause 11
       enum_item 1
       enum_variant 3
@@ -79,15 +80,15 @@ self_ast_census
       expression_statement 61
       field_declaration 8
       field_declaration_list 3
-      field_expression 332
-      field_identifier 357
+      field_expression 334
+      field_identifier 359
       field_initializer 17
       field_initializer_list 10
       for_expression 2
-      function_item 32
+      function_item 33
       generic_function 10
       generic_type 19
-      identifier 805
+      identifier 809
       if_expression 32
       impl_item 1
       index_expression 13
@@ -96,7 +97,7 @@ self_ast_census
       let_condition 8
       let_declaration 78
       lifetime 2
-      line_comment 56
+      line_comment 63
       macro_invocation 7
       match_arm 13
       match_block 4
@@ -104,14 +105,14 @@ self_ast_census
       match_pattern 13
       mutable_specifier 6
       or_pattern 1
-      outer_doc_comment_marker 44
-      parameter 53
-      parameters 32
+      outer_doc_comment_marker 51
+      parameter 54
+      parameters 33
       parenthesized_expression 7
-      primitive_type 57
+      primitive_type 59
       range_expression 10
       reference_expression 42
-      reference_type 55
+      reference_type 56
       return_expression 24
       scoped_identifier 54
       scoped_type_identifier 1
@@ -124,7 +125,7 @@ self_ast_census
       string_literal 122
       struct_expression 10
       struct_item 3
-      super 14
+      super 15
       token_tree 17
       try_expression 14
       tuple_expression 9
@@ -136,5 +137,5 @@ self_ast_census
       unary_expression 20
       use_declaration 4
       use_list 1
-      visibility_modifier 12
+      visibility_modifier 13
       while_expression 2

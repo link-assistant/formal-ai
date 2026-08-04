@@ -348,6 +348,140 @@ fn r916_03_a_genuinely_failing_check_command_names_its_exit_code() {
     );
 }
 
+/// The registered-language matrix for the rungs that produce user-visible text.
+///
+/// Each row is a request phrased in that language whose recorded step failed,
+/// together with the lead of that language's failure report. The rows are looked
+/// up from [`formal_ai::language::registered_languages`], so a newly registered
+/// language fails this rung until its row is added — an English-only fix to a
+/// user-visible report is exactly the single-locale regression this ladder is
+/// meant to stop.
+///
+/// The four `status full` languages ask for the file by name, which is the
+/// phrasing that routes through the file-read recipe. Spanish is registered
+/// `status partial` with `uncovered_behavior language_gap`, and its file-read
+/// vocabulary is not seeded, so its row asks about the command instead. Closing
+/// that vocabulary gap is not this ladder's business; reporting the failure *in
+/// Spanish* is.
+const FAILED_STEP_REQUESTS: [(&str, &str, &str); 5] = [
+    (
+        "en",
+        "Show me the contents of hello.txt",
+        "The command failed",
+    ),
+    (
+        "ru",
+        "Покажи содержимое hello.txt",
+        "Команда завершилась с ошибкой",
+    ),
+    ("hi", "hello.txt की सामग्री दिखाएँ", "कमांड विफल रही"),
+    ("zh", "显示 hello.txt 的内容", "命令失败"),
+    (
+        "es",
+        "Ejecuta el comando y dime qué pasó, por favor",
+        "El comando falló",
+    ),
+];
+
+fn failed_step_request(slug: &str) -> (&'static str, &'static str) {
+    let (_, request, lead) = FAILED_STEP_REQUESTS
+        .iter()
+        .find(|(candidate, _, _)| *candidate == slug)
+        .unwrap_or_else(|| panic!("{slug} is registered but has no failed-step request"));
+    (request, lead)
+}
+
+#[test]
+fn r916_03_every_registered_language_states_the_observed_exit_code() {
+    for language in formal_ai::language::registered_languages() {
+        let slug = language.slug();
+        let text = formal_ai::seed::localized_response("tool_result_failed_exit_code", slug)
+            .unwrap_or_else(|| panic!("{slug} names no exit-code failure report"));
+        for placeholder in ["{tool}", "{exit_code}", "{error}"] {
+            assert!(
+                text.contains(placeholder),
+                "{slug} must name {placeholder}: {text}"
+            );
+        }
+    }
+}
+
+/// The whole-turn counterpart of the rung above: a `cat` that exited 1 is
+/// reported as a failure — in the request's own language — however the client
+/// advertised its tools.
+///
+/// Only English took the route that reads the harness's exit code, so the same
+/// missing file was answered in Russian, Hindi and Chinese with a hardcoded
+/// English "Contents of `hello.txt`:" wrapped around the raw transport envelope
+/// (rungs `R916-01` and `R916-03`).
+#[test]
+fn r916_01_a_missing_file_is_a_failure_in_every_registered_language() {
+    for language in formal_ai::language::registered_languages() {
+        let slug = language.slug();
+        let (request, lead) = failed_step_request(slug);
+        assert_eq!(
+            formal_ai::language::detect(request).slug(),
+            slug,
+            "the {slug} rung must be asked in {slug}: {request}"
+        );
+
+        let messages = tool_turn(
+            request,
+            "bash",
+            r#"{"command":"cat hello.txt"}"#,
+            MISSING_FILE_ENVELOPE,
+        );
+        // Both shapes of client: shell-only, and one that also advertises a
+        // typed reader. The second is the one that regressed.
+        for tools in [&["bash"][..], &["bash", "read_file"][..]] {
+            let answer = final_answer(&messages, tools);
+            assert!(
+                answer.starts_with(lead),
+                "{slug} must be answered in {slug} ({tools:?}): {answer}"
+            );
+            assert!(
+                answer.contains("`cat hello.txt`") && answer.contains('1'),
+                "{slug} must name the command and its exit code ({tools:?}): {answer}"
+            );
+            assert!(
+                answer.contains("No such file or directory"),
+                "{slug} must quote what the harness observed ({tools:?}): {answer}"
+            );
+            assert!(
+                !answer.contains("Contents of") && !answer.contains("Exit Code:"),
+                "a failed read has no contents, and the envelope is not them \
+                 ({slug}, {tools:?}): {answer}"
+            );
+        }
+    }
+}
+
+/// The other direction of the same rung: a `cat` that exited 0 still answers
+/// with the file's bytes, even when those bytes read like an error message.
+/// Only the harness can say a read failed (`R916-02`).
+#[test]
+fn r916_02_a_successful_read_still_answers_with_the_file_contents() {
+    let log = "Command: cat hello.txt\nDirectory: (root)\n\
+         Output: error: the log file records one\nError: (none)\n\
+         Exit Code: 0\nSignal: 0\nProcess Group PGID: 685377";
+    let messages = tool_turn(
+        "Show me the contents of hello.txt",
+        "bash",
+        r#"{"command":"cat hello.txt"}"#,
+        log,
+    );
+    let answer = final_answer(&messages, &["bash", "read_file"]);
+
+    assert!(
+        answer.contains("error: the log file records one"),
+        "an exit-0 read is the file's contents, whatever they say: {answer}"
+    );
+    assert!(
+        !answer.contains("The command failed"),
+        "the harness reported success; do not overrule it: {answer}"
+    );
+}
+
 // ---------------------------------------------------------------------------
 // R916-04 — no completion claim without an observed workspace effect
 // ---------------------------------------------------------------------------

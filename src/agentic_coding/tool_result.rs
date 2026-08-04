@@ -76,6 +76,17 @@ pub(super) struct ShellStep {
     pub(super) text: String,
 }
 
+/// Whether the *harness itself* judged this step a failure: it named an error
+/// field, or it reported a non-zero exit status (rung `R916-01`).
+///
+/// The failure lexicon [`step_outcome`] falls back on is deliberately not
+/// consulted here. Callers that hold bytes which are legitimately file contents
+/// use this: a file that merely *reads* like an error message is still that
+/// file's contents, and only the harness can say the read failed.
+pub(super) fn harness_reported_failure(raw: &str) -> bool {
+    normalize(raw).error.is_some()
+}
+
 /// Read a shell-harness envelope, if the result is one. Callers that report a
 /// step's outcome use this to quote the command's own text instead of the
 /// transport wrapper; [`step_outcome`] reads the status the harness observed.
