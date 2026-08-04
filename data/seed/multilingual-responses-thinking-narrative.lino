@@ -162,7 +162,7 @@ multilingual_responses
   response response_thinking_narrative_calculation_hi
     intent thinking_narrative_calculation
     language hi
-    text "यह एक calculation थी, तो मैंने इसे step-by-step हल किया और नतीजा जाँचा।"
+    text "यह एक गणना थी, तो मैंने इसे चरण दर चरण हल किया और नतीजा जाँचा।"
   response response_thinking_narrative_calculation_zh
     intent thinking_narrative_calculation
     language zh
@@ -182,7 +182,7 @@ multilingual_responses
   response response_thinking_narrative_fact_lookup_hi
     intent thinking_narrative_fact_lookup
     language hi
-    text "आपने एक fact पूछा, तो मैंने उसे ढूँढकर बताया।"
+    text "आपने एक तथ्य पूछा, तो मैंने उसे ढूँढकर बताया।"
   response response_thinking_narrative_fact_lookup_zh
     intent thinking_narrative_fact_lookup
     language zh
@@ -202,7 +202,7 @@ multilingual_responses
   response response_thinking_narrative_translation_hi
     intent thinking_narrative_translation
     language hi
-    text "आपने translation माँगा, तो मैंने text बदलकर लौटाया।"
+    text "आपने अनुवाद माँगा, तो मैंने पाठ बदलकर लौटाया।"
   response response_thinking_narrative_translation_zh
     intent thinking_narrative_translation
     language zh
@@ -222,7 +222,7 @@ multilingual_responses
   response response_thinking_narrative_web_hi
     intent thinking_narrative_web
     language hi
-    text "आपने मुझे web पर भेजा, तो मैंने ज़रूरी जानकारी लाकर सारांश दिया।"
+    text "आपने मुझे वेब पर भेजा, तो मैंने ज़रूरी जानकारी लाकर सारांश दिया।"
   response response_thinking_narrative_web_zh
     intent thinking_narrative_web
     language zh
@@ -242,7 +242,7 @@ multilingual_responses
   response response_thinking_narrative_code_hi
     intent thinking_narrative_code
     language hi
-    text "आपने code माँगा, तो मैंने उसकी योजना बनाई और program लिखा।"
+    text "आपने कोड माँगा, तो मैंने उसकी योजना बनाई और कार्यक्रम लिखा।"
   response response_thinking_narrative_code_zh
     intent thinking_narrative_code
     language zh
@@ -262,7 +262,7 @@ multilingual_responses
   response response_thinking_narrative_test_status_hi
     intent thinking_narrative_test_status
     language hi
-    text "आपने tests के बारे में पूछा, तो मैंने उनकी status जाँचकर बताई।"
+    text "आपने परीक्षणों के बारे में पूछा, तो मैंने उनकी स्थिति जाँचकर बताई।"
   response response_thinking_narrative_test_status_zh
     intent thinking_narrative_test_status
     language zh
@@ -302,7 +302,7 @@ multilingual_responses
   response response_thinking_narrative_meta_explanation_hi
     intent thinking_narrative_meta_explanation
     language hi
-    text "आपने पूछा कि मैं कैसे काम करता हूँ, तो मैंने अपनी reasoning समझाई।"
+    text "आपने पूछा कि मैं कैसे काम करता हूँ, तो मैंने अपनी तर्क-प्रक्रिया समझाई।"
   response response_thinking_narrative_meta_explanation_zh
     intent thinking_narrative_meta_explanation
     language zh

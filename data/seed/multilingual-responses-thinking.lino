@@ -27,7 +27,7 @@ multilingual_responses
   response response_thinking_step_impulse_hi
     intent thinking_step_impulse
     language hi
-    text "अनुरोध पढ़ें: “{prompt}”."
+    text "अनुरोध पढ़ें: “{prompt}”।"
   response response_thinking_step_impulse_zh
     intent thinking_step_impulse
     language zh
@@ -47,7 +47,7 @@ multilingual_responses
   response response_thinking_step_impulse_plain_hi
     intent thinking_step_impulse_plain
     language hi
-    text "आने वाला अनुरोध पढ़ें."
+    text "आने वाला अनुरोध पढ़ें।"
   response response_thinking_step_impulse_plain_zh
     intent thinking_step_impulse_plain
     language zh
@@ -67,7 +67,7 @@ multilingual_responses
   response response_thinking_step_detect_language_hi
     intent thinking_step_detect_language
     language hi
-    text "अनुरोध की भाषा पहचानें: {language}."
+    text "अनुरोध की भाषा पहचानें: {language}।"
   response response_thinking_step_detect_language_zh
     intent thinking_step_detect_language
     language zh
@@ -87,7 +87,7 @@ multilingual_responses
   response response_thinking_step_resolve_response_language_hi
     intent thinking_step_resolve_response_language
     language hi
-    text "{language} में उत्तर देने की योजना बनाएं."
+    text "{language} में उत्तर देने की योजना बनाएँ।"
   response response_thinking_step_resolve_response_language_zh
     intent thinking_step_resolve_response_language
     language zh
@@ -107,7 +107,7 @@ multilingual_responses
   response response_thinking_step_formalize_hi
     intent thinking_step_formalize
     language hi
-    text "अनुरोध को {task} task के रूप में formalize करें."
+    text "अनुरोध को «{task}» कार्य के रूप में औपचारिक रूप दें।"
   response response_thinking_step_formalize_zh
     intent thinking_step_formalize
     language zh
@@ -127,7 +127,7 @@ multilingual_responses
   response response_thinking_step_formalize_plain_hi
     intent thinking_step_formalize_plain
     language hi
-    text "अनुरोध को symbolic tuple में formalize करें."
+    text "अनुरोध को प्रतीकात्मक टपल में औपचारिक रूप दें।"
   response response_thinking_step_formalize_plain_zh
     intent thinking_step_formalize_plain
     language zh
@@ -147,7 +147,7 @@ multilingual_responses
   response response_thinking_step_formalize_resolved_hi
     intent thinking_step_formalize_resolved
     language hi
-    text "अनुरोध को {entity} तक resolve करें."
+    text "अनुरोध को {entity} तक सुलझाएँ।"
   response response_thinking_step_formalize_resolved_zh
     intent thinking_step_formalize_resolved
     language zh
@@ -167,7 +167,7 @@ multilingual_responses
   response response_thinking_step_formalize_resolved_plain_hi
     intent thinking_step_formalize_resolved_plain
     language hi
-    text "अनुरोध को किसी ठोस entity तक resolve करें."
+    text "अनुरोध को किसी ठोस इकाई तक सुलझाएँ।"
   response response_thinking_step_formalize_resolved_plain_zh
     intent thinking_step_formalize_resolved_plain
     language zh
@@ -187,7 +187,7 @@ multilingual_responses
   response response_thinking_step_clarify_formalization_hi
     intent thinking_step_clarify_formalization
     language hi
-    text "इनके बीच clarification मांगें: {options}."
+    text "इनके बीच स्पष्टीकरण माँगें: {options}।"
   response response_thinking_step_clarify_formalization_zh
     intent thinking_step_clarify_formalization
     language zh
@@ -207,7 +207,7 @@ multilingual_responses
   response response_thinking_step_clarify_formalization_plain_hi
     intent thinking_step_clarify_formalization_plain
     language hi
-    text "Clarification मांगें, क्योंकि अनुरोध अस्पष्ट था."
+    text "स्पष्टीकरण माँगें, क्योंकि अनुरोध अस्पष्ट था।"
   response response_thinking_step_clarify_formalization_plain_zh
     intent thinking_step_clarify_formalization_plain
     language zh
@@ -227,7 +227,7 @@ multilingual_responses
   response response_thinking_step_dispatch_handler_hi
     intent thinking_step_dispatch_handler
     language hi
-    text "{route} handler पर route करें."
+    text "«{route}» हैंडलर को भेजें।"
   response response_thinking_step_dispatch_handler_zh
     intent thinking_step_dispatch_handler
     language zh
@@ -247,7 +247,7 @@ multilingual_responses
   response response_thinking_step_dispatch_handler_plain_hi
     intent thinking_step_dispatch_handler_plain
     language hi
-    text "अनुरोध को किसी handler पर route करें."
+    text "अनुरोध को किसी हैंडलर को भेजें।"
   response response_thinking_step_dispatch_handler_plain_zh
     intent thinking_step_dispatch_handler_plain
     language zh
@@ -267,7 +267,7 @@ multilingual_responses
   response response_thinking_step_route_attempt_hi
     intent thinking_step_route_attempt
     language hi
-    text "{route} तरीका आजमाएं."
+    text "«{route}» तरीका आज़माएँ।"
   response response_thinking_step_route_attempt_zh
     intent thinking_step_route_attempt
     language zh
@@ -287,7 +287,7 @@ multilingual_responses
   response response_thinking_step_route_attempt_plain_hi
     intent thinking_step_route_attempt_plain
     language hi
-    text "अगला candidate तरीका आजमाएं."
+    text "अगला संभावित तरीका आज़माएँ।"
   response response_thinking_step_route_attempt_plain_zh
     intent thinking_step_route_attempt_plain
     language zh
@@ -307,7 +307,7 @@ multilingual_responses
   response response_thinking_step_match_rule_hi
     intent thinking_step_match_rule
     language hi
-    text "{rule} rule match करें."
+    text "«{rule}» नियम से मिलान करें।"
   response response_thinking_step_match_rule_zh
     intent thinking_step_match_rule
     language zh
@@ -327,7 +327,7 @@ multilingual_responses
   response response_thinking_step_match_rule_plain_hi
     intent thinking_step_match_rule_plain
     language hi
-    text "कोई ज्ञात rule match करें."
+    text "किसी ज्ञात नियम से मिलान करें।"
   response response_thinking_step_match_rule_plain_zh
     intent thinking_step_match_rule_plain
     language zh
@@ -347,7 +347,7 @@ multilingual_responses
   response response_thinking_step_compute_hi
     intent thinking_step_compute
     language hi
-    text "{expression} compute करें."
+    text "{expression} की गणना करें।"
   response response_thinking_step_compute_zh
     intent thinking_step_compute
     language zh
@@ -367,7 +367,7 @@ multilingual_responses
   response response_thinking_step_compute_plain_hi
     intent thinking_step_compute_plain
     language hi
-    text "परिणाम compute करें."
+    text "परिणाम की गणना करें।"
   response response_thinking_step_compute_plain_zh
     intent thinking_step_compute_plain
     language zh
@@ -387,7 +387,7 @@ multilingual_responses
   response response_thinking_step_compute_engine_hi
     intent thinking_step_compute_engine
     language hi
-    text "{engine} से evaluate करें."
+    text "{engine} से मूल्यांकन करें।"
   response response_thinking_step_compute_engine_zh
     intent thinking_step_compute_engine
     language zh
@@ -407,7 +407,7 @@ multilingual_responses
   response response_thinking_step_compute_engine_plain_hi
     intent thinking_step_compute_engine_plain
     language hi
-    text "Calculator से evaluate करें."
+    text "कैलकुलेटर से मूल्यांकन करें।"
   response response_thinking_step_compute_engine_plain_zh
     intent thinking_step_compute_engine_plain
     language zh
@@ -427,7 +427,7 @@ multilingual_responses
   response response_thinking_step_compute_expression_hi
     intent thinking_step_compute_expression
     language hi
-    text "Expression {expression} reduce करें."
+    text "व्यंजक {expression} को सरल करें।"
   response response_thinking_step_compute_expression_zh
     intent thinking_step_compute_expression
     language zh
@@ -447,7 +447,7 @@ multilingual_responses
   response response_thinking_step_compute_steps_hi
     intent thinking_step_compute_steps
     language hi
-    text "{count} reduction step apply करें."
+    text "{count} सरलीकरण चरण लागू करें।"
   response response_thinking_step_compute_steps_zh
     intent thinking_step_compute_steps
     language zh
@@ -467,7 +467,7 @@ multilingual_responses
   response response_thinking_step_lookup_fact_hi
     intent thinking_step_lookup_fact
     language hi
-    text "{fact} देखें."
+    text "{fact} देखें।"
   response response_thinking_step_lookup_fact_zh
     intent thinking_step_lookup_fact
     language zh
@@ -487,7 +487,7 @@ multilingual_responses
   response response_thinking_step_lookup_fact_plain_hi
     intent thinking_step_lookup_fact_plain
     language hi
-    text "संबंधित fact देखें."
+    text "संबंधित तथ्य देखें।"
   response response_thinking_step_lookup_fact_plain_zh
     intent thinking_step_lookup_fact_plain
     language zh
@@ -507,7 +507,7 @@ multilingual_responses
   response response_thinking_step_invoke_tool_hi
     intent thinking_step_invoke_tool
     language hi
-    text "{tool} capability का उपयोग करें."
+    text "{tool} क्षमता का उपयोग करें।"
   response response_thinking_step_invoke_tool_zh
     intent thinking_step_invoke_tool
     language zh
@@ -527,7 +527,7 @@ multilingual_responses
   response response_thinking_step_invoke_tool_plain_hi
     intent thinking_step_invoke_tool_plain
     language hi
-    text "किसी उपलब्ध capability का उपयोग करें."
+    text "किसी उपलब्ध क्षमता का उपयोग करें।"
   response response_thinking_step_invoke_tool_plain_zh
     intent thinking_step_invoke_tool_plain
     language zh
@@ -547,7 +547,7 @@ multilingual_responses
   response response_thinking_step_rule_verification_hi
     intent thinking_step_rule_verification
     language hi
-    text "परिणाम को {rule} rule के विरुद्ध verify करें."
+    text "परिणाम को «{rule}» नियम से जाँचें।"
   response response_thinking_step_rule_verification_zh
     intent thinking_step_rule_verification
     language zh
@@ -567,7 +567,7 @@ multilingual_responses
   response response_thinking_step_rule_verification_plain_hi
     intent thinking_step_rule_verification_plain
     language hi
-    text "परिणाम को rules के विरुद्ध verify करें."
+    text "परिणाम को नियमों से जाँचें।"
   response response_thinking_step_rule_verification_plain_zh
     intent thinking_step_rule_verification_plain
     language zh
@@ -587,7 +587,7 @@ multilingual_responses
   response response_thinking_step_policy_refusal_hi
     intent thinking_step_policy_refusal
     language hi
-    text "{policy} policy के तहत अनुरोध अस्वीकार करें."
+    text "«{policy}» नीति के तहत अनुरोध अस्वीकार करें।"
   response response_thinking_step_policy_refusal_zh
     intent thinking_step_policy_refusal
     language zh
@@ -607,7 +607,7 @@ multilingual_responses
   response response_thinking_step_policy_refusal_plain_hi
     intent thinking_step_policy_refusal_plain
     language hi
-    text "Safety policy के तहत अनुरोध अस्वीकार करें."
+    text "सुरक्षा नीति के तहत अनुरोध अस्वीकार करें।"
   response response_thinking_step_policy_refusal_plain_zh
     intent thinking_step_policy_refusal_plain
     language zh
@@ -627,7 +627,7 @@ multilingual_responses
   response response_thinking_step_rule_construction_hi
     intent thinking_step_rule_construction
     language hi
-    text "Local behavior rule बनाएं."
+    text "स्थानीय व्यवहार नियम बनाएँ।"
   response response_thinking_step_rule_construction_zh
     intent thinking_step_rule_construction
     language zh
@@ -647,7 +647,7 @@ multilingual_responses
   response response_thinking_step_coreference_binding_hi
     intent thinking_step_coreference_binding
     language hi
-    text "समझें कि follow-up किसकी बात कर रहा है."
+    text "समझें कि आगे का प्रश्न किसकी बात कर रहा है।"
   response response_thinking_step_coreference_binding_zh
     intent thinking_step_coreference_binding
     language zh
@@ -667,7 +667,7 @@ multilingual_responses
   response response_thinking_step_modifier_detection_hi
     intent thinking_step_modifier_detection
     language hi
-    text "अनुरोध में modifiers पहचानें."
+    text "अनुरोध में संशोधक पहचानें।"
   response response_thinking_step_modifier_detection_zh
     intent thinking_step_modifier_detection
     language zh
@@ -687,7 +687,7 @@ multilingual_responses
   response response_thinking_step_program_plan_hi
     intent thinking_step_program_plan
     language hi
-    text "Program plan करें: {plan}."
+    text "कार्यक्रम की योजना बनाएँ: {plan}।"
   response response_thinking_step_program_plan_zh
     intent thinking_step_program_plan
     language zh
@@ -707,7 +707,7 @@ multilingual_responses
   response response_thinking_step_program_plan_plain_hi
     intent thinking_step_program_plan_plain
     language hi
-    text "Requested program plan करें."
+    text "माँगे गए कार्यक्रम की योजना बनाएँ।"
   response response_thinking_step_program_plan_plain_zh
     intent thinking_step_program_plan_plain
     language zh
@@ -727,7 +727,7 @@ multilingual_responses
   response response_thinking_step_scan_memory_hi
     intent thinking_step_scan_memory
     language hi
-    text "Memory में खोजें: {term}."
+    text "स्मृति में खोजें: {term}।"
   response response_thinking_step_scan_memory_zh
     intent thinking_step_scan_memory
     language zh
@@ -747,7 +747,7 @@ multilingual_responses
   response response_thinking_step_scan_memory_plain_hi
     intent thinking_step_scan_memory_plain
     language hi
-    text "Memory में संबंधित facts खोजें."
+    text "स्मृति में संबंधित तथ्य खोजें।"
   response response_thinking_step_scan_memory_plain_zh
     intent thinking_step_scan_memory_plain
     language zh
@@ -767,7 +767,7 @@ multilingual_responses
   response response_thinking_step_user_context_hi
     intent thinking_step_user_context
     language hi
-    text "उपलब्ध context लागू करें: {context}."
+    text "उपलब्ध संदर्भ लागू करें: {context}।"
   response response_thinking_step_user_context_zh
     intent thinking_step_user_context
     language zh
@@ -787,7 +787,7 @@ multilingual_responses
   response response_thinking_step_user_context_plain_hi
     intent thinking_step_user_context_plain
     language hi
-    text "उपलब्ध context लागू करें."
+    text "उपलब्ध संदर्भ लागू करें।"
   response response_thinking_step_user_context_plain_zh
     intent thinking_step_user_context_plain
     language zh
@@ -807,7 +807,7 @@ multilingual_responses
   response response_thinking_step_deformalize_hi
     intent thinking_step_deformalize
     language hi
-    text "उत्तर लिखें: “{answer}”."
+    text "उत्तर लिखें: “{answer}”।"
   response response_thinking_step_deformalize_zh
     intent thinking_step_deformalize
     language zh
@@ -827,7 +827,7 @@ multilingual_responses
   response response_thinking_step_deformalize_plain_hi
     intent thinking_step_deformalize_plain
     language hi
-    text "उत्तर natural language में लिखें."
+    text "उत्तर सहज भाषा में लिखें।"
   response response_thinking_step_deformalize_plain_zh
     intent thinking_step_deformalize_plain
     language zh
@@ -847,7 +847,7 @@ multilingual_responses
   response response_thinking_step_http_chat_hi
     intent thinking_step_http_chat
     language hi
-    text "Configured endpoint के साथ request का आदान-प्रदान करें."
+    text "निर्धारित सिरे के साथ अनुरोध का आदान-प्रदान करें।"
   response response_thinking_step_http_chat_zh
     intent thinking_step_http_chat
     language zh
@@ -867,7 +867,7 @@ multilingual_responses
   response response_thinking_step_agent_plan_hi
     intent thinking_step_agent_plan
     language hi
-    text "Agent task जोड़ें: {task}."
+    text "एजेंट कार्य जोड़ें: {task}।"
   response response_thinking_step_agent_plan_zh
     intent thinking_step_agent_plan
     language zh
@@ -887,7 +887,7 @@ multilingual_responses
   response response_thinking_step_agent_plan_plain_hi
     intent thinking_step_agent_plan_plain
     language hi
-    text "Agent plan को आगे बढ़ाएं."
+    text "एजेंट की योजना आगे बढ़ाएँ।"
   response response_thinking_step_agent_plan_plain_zh
     intent thinking_step_agent_plan_plain
     language zh
@@ -907,7 +907,7 @@ multilingual_responses
   response response_thinking_step_memory_hi
     intent thinking_step_memory
     language hi
-    text "Local memory bundle अपडेट करें."
+    text "स्थानीय स्मृति बंडल अद्यतन करें।"
   response response_thinking_step_memory_zh
     intent thinking_step_memory
     language zh
@@ -927,7 +927,7 @@ multilingual_responses
   response response_thinking_step_extract_term_hi
     intent thinking_step_extract_term
     language hi
-    text "Search term निकालें."
+    text "खोज शब्द निकालें।"
   response response_thinking_step_extract_term_zh
     intent thinking_step_extract_term
     language zh
@@ -947,7 +947,7 @@ multilingual_responses
   response response_thinking_step_group_by_conversation_hi
     intent thinking_step_group_by_conversation
     language hi
-    text "Matching memories को conversation के हिसाब से group करें."
+    text "मिलती हुई स्मृतियों को बातचीत के हिसाब से समूहित करें।"
   response response_thinking_step_group_by_conversation_zh
     intent thinking_step_group_by_conversation
     language zh
@@ -967,7 +967,7 @@ multilingual_responses
   response response_thinking_step_fallback_hi
     intent thinking_step_fallback
     language hi
-    text "सामान्य unknown-request रणनीति पर fall back करें."
+    text "सामान्य अज्ञात-अनुरोध रणनीति पर लौटें।"
   response response_thinking_step_fallback_zh
     intent thinking_step_fallback
     language zh
@@ -1027,7 +1027,7 @@ multilingual_responses
   response response_thinking_step_generic_plain_hi
     intent thinking_step_generic_plain
     language hi
-    text "{label}."
+    text "{label}।"
   response response_thinking_step_generic_plain_zh
     intent thinking_step_generic_plain
     language zh
