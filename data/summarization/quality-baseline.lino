@@ -10,14 +10,14 @@ summarization_quality_baseline
   max_iterations "24"
   stability_window "3"
   stability_tolerance_percent "5"
-  iterations "3"
+  iterations "22"
   stabilized "true"
   bound_reached "false"
-  embedded_grammar_files "2"
-  embedded_grammar_blocks "2"
-  passed_criteria "53"
-  applicable_criteria "53"
-  percent "100"
+  embedded_grammar_files "1"
+  embedded_grammar_blocks "7"
+  passed_criteria "364"
+  applicable_criteria "365"
+  percent "99"
   criterion "identity_names_path"
   criterion "format_declared"
   criterion "size_reported"
@@ -32,12 +32,12 @@ summarization_quality_baseline
     index "0"
     percent "100"
     file
-      path "docs/associative-tech-stack.md"
-      format "markdown"
+      path "docs/case-studies/issue-730/local-ci/issue-730-route-tests-2.log"
+      format "text"
       percent "100"
-      embedded_grammar_blocks "1"
+      embedded_grammar_blocks "0"
     file
-      path "docs/case-studies/issue-870/agent-cli-evidence/agent-stderr-second.log"
+      path "docs/case-studies/issue-438/raw-data/after-docs-traceability-rerun.txt"
       format "text"
       percent "100"
       embedded_grammar_blocks "0"
@@ -45,25 +45,273 @@ summarization_quality_baseline
     index "1"
     percent "100"
     file
-      path "docs/case-studies/issue-686/agent-cli-session-associative-learning.json"
-      format "json"
+      path "tests/source/source_tests/link_store/tests.rs"
+      format "rust"
       percent "100"
       embedded_grammar_blocks "0"
     file
-      path "experiments/issue-386-worker-user-intent-parity.mjs"
-      format "javascript"
+      path "docs/case-studies/issue-763/red-test-agent-run/formal-ai.log"
+      format "text"
       percent "100"
       embedded_grammar_blocks "0"
   iteration
     index "2"
     percent "100"
     file
-      path "dev/log/issues/681/pulls/684/code/agentic_coding/driver.rs"
+      path "docs/case-studies/issue-699/agent-cli-evidence/agent-stderr.log"
+      format "text"
+      percent "100"
+      embedded_grammar_blocks "0"
+    file
+      path "data/cache/wikidata/entity/Q13099586.lino"
+      format "links_notation"
+      percent "100"
+      embedded_grammar_blocks "0"
+  iteration
+    index "3"
+    percent "100"
+    file
+      path "data/cache/wikidata/entity/Q7363.lino"
+      format "links_notation"
+      percent "100"
+      embedded_grammar_blocks "0"
+    file
+      path "data/cache/wordnet/en/calculate.json"
+      format "json"
+      percent "100"
+      embedded_grammar_blocks "0"
+  iteration
+    index "4"
+    percent "100"
+    file
+      path "data/cache/wordnet/en/service.json"
+      format "json"
+      percent "100"
+      embedded_grammar_blocks "0"
+    file
+      path "data/seed/meanings-finance.lino"
+      format "links_notation"
+      percent "100"
+      embedded_grammar_blocks "0"
+  iteration
+    index "5"
+    percent "100"
+    file
+      path "data/cache/wikidata/entity/Q82042.json"
+      format "json"
+      percent "100"
+      embedded_grammar_blocks "0"
+    file
+      path "docs/case-studies/issue-760/focused-test.log"
+      format "text"
+      percent "100"
+      embedded_grammar_blocks "0"
+  iteration
+    index "6"
+    percent "100"
+    file
+      path "docs/case-studies/issue-717/agent-cli-attest.log"
+      format "text"
+      percent "100"
+      embedded_grammar_blocks "0"
+    file
+      path "data/cache/wikidata/entity/Q2735883.lino"
+      format "links_notation"
+      percent "100"
+      embedded_grammar_blocks "0"
+  iteration
+    index "7"
+    percent "100"
+    file
+      path "docs/case-studies/issue-423/raw-data/pr-424-review-comments.json"
+      format "json"
+      percent "100"
+      embedded_grammar_blocks "0"
+    file
+      path "tests/integration/issue_819_narration.rs"
+      format "rust"
+      percent "100"
+      embedded_grammar_blocks "0"
+  iteration
+    index "8"
+    percent "100"
+    file
+      path "docs/case-studies/issue-94/raw-data/pr-95.json"
+      format "json"
+      percent "100"
+      embedded_grammar_blocks "0"
+    file
+      path "data/view/en/version.lino"
+      format "links_notation"
+      percent "100"
+      embedded_grammar_blocks "0"
+  iteration
+    index "9"
+    percent "100"
+    file
+      path "data/cache/wiktionary/en/smallest.json"
+      format "json"
+      percent "100"
+      embedded_grammar_blocks "0"
+    file
+      path "data/cache/wikidata/entity/Q2539.json"
+      format "json"
+      percent "100"
+      embedded_grammar_blocks "0"
+  iteration
+    index "10"
+    percent "100"
+    file
+      path "dev/log/issues/781/pulls/803/tests/four-client-harness-opencode-mcp.log"
+      format "text"
+      percent "100"
+      embedded_grammar_blocks "0"
+    file
+      path "data/meta/self-ast/src/cli_improve.lino"
+      format "links_notation"
+      percent "100"
+      embedded_grammar_blocks "0"
+  iteration
+    index "11"
+    percent "100"
+    file
+      path "docs/case-studies/issue-493/raw-data/pr-619-reviews.json"
+      format "json"
+      percent "100"
+      embedded_grammar_blocks "0"
+    file
+      path "docs/case-studies/issue-4/template-data/python/github/workflows/release.yml"
+      format "yaml"
+      percent "100"
+      embedded_grammar_blocks "0"
+  iteration
+    index "12"
+    percent "100"
+    file
+      path "tests/source/associative_package.rs"
       format "rust"
       percent "100"
       embedded_grammar_blocks "0"
     file
-      path "docs/case-studies/issue-324/universal-solver-roadmap.md"
-      format "markdown"
+      path "docs/case-studies/issue-479/raw-data/issue-479-comments.json"
+      format "json"
       percent "100"
-      embedded_grammar_blocks "1"
+      embedded_grammar_blocks "0"
+  iteration
+    index "13"
+    percent "100"
+    file
+      path "tests/source/calculation.rs"
+      format "rust"
+      percent "100"
+      embedded_grammar_blocks "0"
+    file
+      path "data/view/en/temperature.lino"
+      format "links_notation"
+      percent "100"
+      embedded_grammar_blocks "0"
+  iteration
+    index "14"
+    percent "100"
+    file
+      path "data/cache/wiktionary/en/that.lino"
+      format "links_notation"
+      percent "100"
+      embedded_grammar_blocks "0"
+    file
+      path "docs/case-studies/issue-531/raw-data/csharp-string-to-unicode-sequence-converter.cs.txt"
+      format "text"
+      percent "100"
+      embedded_grammar_blocks "0"
+  iteration
+    index "15"
+    percent "100"
+    file
+      path "dev/log/issues/798/pulls/799/templates/python-ai-driven-development-pipeline-template/scripts/bump_version.py"
+      format "python"
+      percent "100"
+      embedded_grammar_blocks "0"
+    file
+      path "docs/case-studies/issue-715/test-logs/doc-tests-green.log"
+      format "text"
+      percent "100"
+      embedded_grammar_blocks "0"
+  iteration
+    index "16"
+    percent "100"
+    file
+      path "dev/log/issues/781/pulls/803/github/pr-reviews-final.json"
+      format "json"
+      percent "100"
+      embedded_grammar_blocks "0"
+    file
+      path "tests/unit/specification/meta_algorithm.rs"
+      format "rust"
+      percent "100"
+      embedded_grammar_blocks "0"
+  iteration
+    index "17"
+    percent "100"
+    file
+      path "docs/case-studies/issue-18/raw-data/issue-18-comments.json"
+      format "json"
+      percent "100"
+      embedded_grammar_blocks "0"
+    file
+      path "data/cache/wiktionary/en/meters.lino"
+      format "links_notation"
+      percent "100"
+      embedded_grammar_blocks "0"
+  iteration
+    index "18"
+    percent "94"
+    file
+      path "docs/case-studies/issue-180/raw-data/issue.json"
+      format "json"
+      percent "100"
+      embedded_grammar_blocks "0"
+    file
+      path "experiments/agentic_cli_matrix/README.md"
+      format "markdown"
+      percent "88"
+      embedded_grammar_blocks "7"
+      failed_criterion "content_grounded"
+  iteration
+    index "19"
+    percent "100"
+    file
+      path "experiments/issue_906_language_router/worker_parity.mjs"
+      format "javascript"
+      percent "100"
+      embedded_grammar_blocks "0"
+    file
+      path "src/probability.rs"
+      format "rust"
+      percent "100"
+      embedded_grammar_blocks "0"
+  iteration
+    index "20"
+    percent "100"
+    file
+      path "data/meta/self-ast/src/solver_handlers/calculator_rate.lino"
+      format "links_notation"
+      percent "100"
+      embedded_grammar_blocks "0"
+    file
+      path "docs/case-studies/issue-840/self-hosting-projection/self-ast/src/agentic_coding/conversation_recall.lino"
+      format "links_notation"
+      percent "100"
+      embedded_grammar_blocks "0"
+  iteration
+    index "21"
+    percent "100"
+    file
+      path "data/meta/self-ast/src/statement_audit/repository.lino"
+      format "links_notation"
+      percent "100"
+      embedded_grammar_blocks "0"
+    file
+      path "data/seed/hello-world-programs.lino"
+      format "links_notation"
+      percent "100"
+      embedded_grammar_blocks "0"

@@ -19,9 +19,11 @@ and no metric existed to be 80% *of*.
   [`raw-data/published-criteria.txt`](raw-data/published-criteria.txt)
   (`formal-ai summarization criteria`).
 - **Protocol run** — the run the committed baseline records:
-  [`raw-data/protocol-run.log`](raw-data/protocol-run.log). Seed 563, three
-  iterations, six files, `53/53` criteria, stabilized before the bound, two
-  Markdown embedded grammar blocks across two files.
+  [`raw-data/protocol-run.log`](raw-data/protocol-run.log). Seed 563, 22
+  iterations, 44 files, `364/365` criteria = 99%, stabilized before the 24
+  iteration bound, seven Markdown embedded grammar blocks. The one failure is a
+  real `content_grounded` defect on `experiments/agentic_cli_matrix/README.md`
+  (`ungrounded=artifacts///, recorded//`).
 - **Wide sweep** — [`raw-data/wide-sweep.log`](raw-data/wide-sweep.log). The
   stability loop stops early by design, so a separate sweep scored the first 600
   files of the same seeded permutation over a 10,560-file corpus:
@@ -99,12 +101,13 @@ free points.
 ### Why the enforced floor is 80%, not the measured 100%
 
 The corpus is every Git-tracked file, so it changes with every commit and the
-seeded draw lands on different files — the same seed drew six different files
-before and after this branch added its own. Pinning the enforced floor to a
-lucky 100% run would turn an unlucky-but-honest draw into a red build: at four
-failures per 600 files, a six-file sample hits one about 4% of the time. So the
-baseline records two separate numbers. `percent` is what the committed run
-measured (100). `ratchet_percent` is what the ratchet enforces (80, the
+seeded draw lands on different files. This is not hypothetical: the run recorded
+before merging `main` into this branch drew six files and scored `53/53` = 100%;
+the run recorded after the merge drew forty-four and scored `364/365` = 99%.
+Same seed, same code, different corpus. Had the floor been pinned to that first
+lucky 100%, merging `main` would have turned an honest draw into a red build. So
+the baseline records two separate numbers. `percent` is what the committed run
+measured (99). `ratchet_percent` is what the ratchet enforces (80, the
 published minimum); it may only ever be raised, and raising it is a deliberate,
 reviewed edit backed by a sweep — not an automatic consequence of one good
 sample.
@@ -135,11 +138,18 @@ formal-ai summarization ratchet
 ```
 
 ```text
-seed 563 — 3 iteration(s), 53 of 53 criteria passed (100%)
-stabilized before the iteration bound; 2 Markdown embedded grammar block(s) across 2 file(s)
-summarization quality ratchet holds: 100% measured against a 80% minimum and a
-committed ratchet of 80% (last recorded run: 100%)
+seed 563 — 22 iteration(s), 364 of 365 criteria passed (99%)
+stabilized before the iteration bound; 7 Markdown embedded grammar block(s) across 1 file(s)
+summarization quality ratchet holds: 99% measured against a 80% minimum and a
+committed ratchet of 80% (last recorded run: 99%)
 ```
+
+Two things in that run are worth reading twice. It took 22 of the 24 permitted
+iterations to stabilize even though iterations 0–17 all scored 100%, because a
+run may not declare stability before it has actually exercised an embedded
+grammar — the first Markdown file in this draw appeared at iteration 18. And
+that same file cost the run its only failure. Both are the protocol working,
+not noise.
 
 ### What the sweep found
 
@@ -148,10 +158,13 @@ Over the first 600 files of the seeded permutation: **4964/4968 = 99%**.
 | Failing criterion | Count | What it is |
 | --- | --- | --- |
 | `compression` | 4 | A file just above the 400-byte floor whose structured summary (path, format, size, retained content) costs a few bytes more than the file itself — e.g. `summary_bytes=460 file_bytes=452`. |
-| `content_grounded` | 0 in this sample | But it does bite: `docs/case-studies/issue-492/README.md` scores 87% because the summary emits `https://img.shields.io/badge/crates.io--orange` for a source that reads `https://img.shields.io/badge/crates.io-<version>-orange?logo=rust`. |
+| `content_grounded` | 0 in this sample | But it does bite — twice since. The committed protocol run above fails it on `experiments/agentic_cli_matrix/README.md` (`ungrounded=artifacts///, recorded//`), and `docs/case-studies/issue-492/README.md` scores 87% because the summary emits `https://img.shields.io/badge/crates.io--orange` for a source that reads `https://img.shields.io/badge/crates.io-<version>-orange?logo=rust`. |
 
-That second one is a real defect, not a checker artefact, and the metric is what
-surfaced it. `strip_inline_code_and_html` in `src/summarization/markdown.rs`
+Both are the same real defect, not a checker artefact, and the metric is what
+surfaced it — twice, on files chosen by the seed rather than by me.
+`experiments/agentic_cli_matrix/README.md` writes `` `artifacts/<client>/<case>/` ``
+and `` `recorded/<client>/<case>.jsonl` ``, which the summary quotes as
+`artifacts///` and `recorded//`. `strip_inline_code_and_html` in `src/summarization/markdown.rs`
 treats any `<`…`>` as an HTML tag, including inside an inline code span, so a
 placeholder such as `<version>` is deleted from text the summary then quotes as
 if it were verbatim. Fixing the Markdown normalizer is a change to the

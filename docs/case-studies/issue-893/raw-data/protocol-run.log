@@ -1,12 +1,70 @@
-seed 563 — 3 iteration(s), 53 of 53 criteria passed (100%)
-stabilized before the iteration bound; 2 Markdown embedded grammar block(s) across 2 file(s)
+seed 563 — 22 iteration(s), 364 of 365 criteria passed (99%)
+stabilized before the iteration bound; 7 Markdown embedded grammar block(s) across 1 file(s)
   iteration 0: 100%
-    docs/associative-tech-stack.md [markdown] 100% (9/9)
-    docs/case-studies/issue-870/agent-cli-evidence/agent-stderr-second.log [text] 100% (8/8)
+    docs/case-studies/issue-730/local-ci/issue-730-route-tests-2.log [text] 100% (8/8)
+    docs/case-studies/issue-438/raw-data/after-docs-traceability-rerun.txt [text] 100% (8/8)
   iteration 1: 100%
-    docs/case-studies/issue-686/agent-cli-session-associative-learning.json [json] 100% (9/9)
-    experiments/issue-386-worker-user-intent-parity.mjs [javascript] 100% (9/9)
+    tests/source/source_tests/link_store/tests.rs [rust] 100% (9/9)
+    docs/case-studies/issue-763/red-test-agent-run/formal-ai.log [text] 100% (8/8)
   iteration 2: 100%
-    dev/log/issues/681/pulls/684/code/agentic_coding/driver.rs [rust] 100% (9/9)
-    docs/case-studies/issue-324/universal-solver-roadmap.md [markdown] 100% (9/9)
-baseline updated: /tmp/gh-issue-solver-1785889070162/data/summarization/quality-baseline.lino
+    docs/case-studies/issue-699/agent-cli-evidence/agent-stderr.log [text] 100% (8/8)
+    data/cache/wikidata/entity/Q13099586.lino [links_notation] 100% (7/7)
+  iteration 3: 100%
+    data/cache/wikidata/entity/Q7363.lino [links_notation] 100% (7/7)
+    data/cache/wordnet/en/calculate.json [json] 100% (9/9)
+  iteration 4: 100%
+    data/cache/wordnet/en/service.json [json] 100% (9/9)
+    data/seed/meanings-finance.lino [links_notation] 100% (8/8)
+  iteration 5: 100%
+    data/cache/wikidata/entity/Q82042.json [json] 100% (9/9)
+    docs/case-studies/issue-760/focused-test.log [text] 100% (8/8)
+  iteration 6: 100%
+    docs/case-studies/issue-717/agent-cli-attest.log [text] 100% (8/8)
+    data/cache/wikidata/entity/Q2735883.lino [links_notation] 100% (7/7)
+  iteration 7: 100%
+    docs/case-studies/issue-423/raw-data/pr-424-review-comments.json [json] 100% (8/8)
+    tests/integration/issue_819_narration.rs [rust] 100% (9/9)
+  iteration 8: 100%
+    docs/case-studies/issue-94/raw-data/pr-95.json [json] 100% (9/9)
+    data/view/en/version.lino [links_notation] 100% (8/8)
+  iteration 9: 100%
+    data/cache/wiktionary/en/smallest.json [json] 100% (9/9)
+    data/cache/wikidata/entity/Q2539.json [json] 100% (9/9)
+  iteration 10: 100%
+    dev/log/issues/781/pulls/803/tests/four-client-harness-opencode-mcp.log [text] 100% (8/8)
+    data/meta/self-ast/src/cli_improve.lino [links_notation] 100% (7/7)
+  iteration 11: 100%
+    docs/case-studies/issue-493/raw-data/pr-619-reviews.json [json] 100% (8/8)
+    docs/case-studies/issue-4/template-data/python/github/workflows/release.yml [yaml] 100% (9/9)
+  iteration 12: 100%
+    tests/source/associative_package.rs [rust] 100% (9/9)
+    docs/case-studies/issue-479/raw-data/issue-479-comments.json [json] 100% (9/9)
+  iteration 13: 100%
+    tests/source/calculation.rs [rust] 100% (9/9)
+    data/view/en/temperature.lino [links_notation] 100% (8/8)
+  iteration 14: 100%
+    data/cache/wiktionary/en/that.lino [links_notation] 100% (8/8)
+    docs/case-studies/issue-531/raw-data/csharp-string-to-unicode-sequence-converter.cs.txt [text] 100% (8/8)
+  iteration 15: 100%
+    dev/log/issues/798/pulls/799/templates/python-ai-driven-development-pipeline-template/scripts/bump_version.py [python] 100% (9/9)
+    docs/case-studies/issue-715/test-logs/doc-tests-green.log [text] 100% (8/8)
+  iteration 16: 100%
+    dev/log/issues/781/pulls/803/github/pr-reviews-final.json [json] 100% (8/8)
+    tests/unit/specification/meta_algorithm.rs [rust] 100% (9/9)
+  iteration 17: 100%
+    docs/case-studies/issue-18/raw-data/issue-18-comments.json [json] 100% (8/8)
+    data/cache/wiktionary/en/meters.lino [links_notation] 100% (8/8)
+  iteration 18: 94%
+    docs/case-studies/issue-180/raw-data/issue.json [json] 100% (9/9)
+    experiments/agentic_cli_matrix/README.md [markdown] 88% (8/9)
+      failed content_grounded: ungrounded=artifacts///, recorded//
+  iteration 19: 100%
+    experiments/issue_906_language_router/worker_parity.mjs [javascript] 100% (9/9)
+    src/probability.rs [rust] 100% (9/9)
+  iteration 20: 100%
+    data/meta/self-ast/src/solver_handlers/calculator_rate.lino [links_notation] 100% (8/8)
+    docs/case-studies/issue-840/self-hosting-projection/self-ast/src/agentic_coding/conversation_recall.lino [links_notation] 100% (8/8)
+  iteration 21: 100%
+    data/meta/self-ast/src/statement_audit/repository.lino [links_notation] 100% (7/7)
+    data/seed/hello-world-programs.lino [links_notation] 100% (8/8)
+summarization quality ratchet holds: 99% measured against a 80% minimum and a committed ratchet of 80% (last recorded run: 100%)
