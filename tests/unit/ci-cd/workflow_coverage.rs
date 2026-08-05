@@ -73,8 +73,11 @@ fn coverage_workflow_keeps_the_timeout_and_change_gating_contract() {
 
     for (job_name, timeout_minutes) in [
         ("detect-changes", 5),
-        // Issue #812: raised from 15; measured worst case on main was 14.1 min.
-        ("coverage", 25),
+        // Issue #812 raised this from 15 (worst case then: 14.1 min). Issue
+        // #895 re-measured the last eight green runs on main -- 17.2..19.6 min
+        // -- and raised it again, because 19.6 of 25 is the same one-slow-run
+        // margin #812 was filed about.
+        ("coverage", 40),
         // Issue #895: the browser denominator. `node --test` over tests/web/
         // needs no cargo build, so the budget is dominated by checkout plus the
         // rust-script install for the ratchet gate.
