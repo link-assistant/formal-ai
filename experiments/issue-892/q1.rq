@@ -1,0 +1,7 @@
+SELECT ?film ?filmLabel ?date ?statusLabel WHERE {
+  ?film wdt:P31/wdt:P279* wd:Q11424 .
+  { ?film wdt:P179 wd:Q2307877 } UNION { ?film wdt:P674 wd:Q79784 } UNION { ?film wdt:P921 wd:Q79784 }
+  OPTIONAL { ?film wdt:P577 ?date }
+  OPTIONAL { ?film wdt:P31 ?status }
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}

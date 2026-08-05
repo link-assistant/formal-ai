@@ -1,0 +1,15 @@
+self_ast_census
+  target src/release_timeline.rs
+  language rust
+  fidelity signature
+  byte_len 6627
+  line_count 175
+  content_id source_module_d98f74ba45885e5e
+  symbol_count 6
+  symbols
+    struct RenderedTimeline 21 30
+    function render 35 37
+    function render_from 42 133
+    function is_released 137 139
+    function is_stale 147 155
+    function days_from_iso_date 160 175

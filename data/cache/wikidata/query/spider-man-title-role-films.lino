@@ -1,0 +1,100 @@
+head
+  vars (film firstRelease)
+results
+  bindings
+    entry
+      film
+        type uri
+        value "http://www.wikidata.org/entity/Q484442"
+      firstRelease
+        datatype "http://www.w3.org/2001/XMLSchema#dateTime"
+        type literal
+        value "2002-05-03T00:00:00Z"
+    entry
+      film
+        type uri
+        value "http://www.wikidata.org/entity/Q190145"
+      firstRelease
+        datatype "http://www.w3.org/2001/XMLSchema#dateTime"
+        type literal
+        value "2004-06-30T00:00:00Z"
+    entry
+      film
+        type uri
+        value "http://www.wikidata.org/entity/Q182212"
+      firstRelease
+        datatype "http://www.w3.org/2001/XMLSchema#dateTime"
+        type literal
+        value "2007-05-01T00:00:00Z"
+    entry
+      film
+        type uri
+        value "http://www.wikidata.org/entity/Q229808"
+      firstRelease
+        datatype "http://www.w3.org/2001/XMLSchema#dateTime"
+        type literal
+        value "2012-06-28T00:00:00Z"
+    entry
+      film
+        type uri
+        value "http://www.wikidata.org/entity/Q4254026"
+      firstRelease
+        datatype "http://www.w3.org/2001/XMLSchema#dateTime"
+        type literal
+        value "2014-04-17T00:00:00Z"
+    entry
+      film
+        type uri
+        value "http://www.wikidata.org/entity/Q23010088"
+      firstRelease
+        datatype "http://www.w3.org/2001/XMLSchema#dateTime"
+        type literal
+        value "2017-07-07T00:00:00Z"
+    entry
+      film
+        type uri
+        value "http://www.wikidata.org/entity/Q29588607"
+      firstRelease
+        datatype "http://www.w3.org/2001/XMLSchema#dateTime"
+        type literal
+        value "2018-12-13T00:00:00Z"
+    entry
+      film
+        type uri
+        value "http://www.wikidata.org/entity/Q27985819"
+      firstRelease
+        datatype "http://www.w3.org/2001/XMLSchema#dateTime"
+        type literal
+        value "2019-06-28T00:00:00Z"
+    entry
+      film
+        type uri
+        value "http://www.wikidata.org/entity/Q68934496"
+      firstRelease
+        datatype "http://www.w3.org/2001/XMLSchema#dateTime"
+        type literal
+        value "2021-12-17T00:00:00Z"
+    entry
+      film
+        type uri
+        value "http://www.wikidata.org/entity/Q76448600"
+      firstRelease
+        datatype "http://www.w3.org/2001/XMLSchema#dateTime"
+        type literal
+        value "2023-06-01T00:00:00Z"
+    entry
+      film
+        type uri
+        value "http://www.wikidata.org/entity/Q113244935"
+      firstRelease
+        datatype "http://www.w3.org/2001/XMLSchema#dateTime"
+        type literal
+        value "2026-07-29T00:00:00Z"
+    entry
+      film
+        type uri
+        value "http://www.wikidata.org/entity/Q110152284"
+      firstRelease
+        datatype "http://www.w3.org/2001/XMLSchema#dateTime"
+        type literal
+        value "2027-06-18T00:00:00Z"
