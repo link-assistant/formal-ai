@@ -1,0 +1,55 @@
+# github.com/link-assistant/formal-ai/actions/runs/30971344229 (commit 557c3f5a)
+[Show the published criteria] minimum quality ratchet: 80%
+[Show the published criteria] identity_names_path — The summary names the file it summarizes.
+[Show the published criteria] format_declared — The summary names the detected file format.
+[Show the published criteria] size_reported — The summary reports the file's line and byte counts.
+[Show the published criteria] content_retained — A file with content yields retained content statements in the summary.
+[Show the published criteria] content_grounded — Every identifier-shaped token in the summary occurs in the file's path or content.
+[Show the published criteria] compression — The summary is shorter than the file it summarizes.
+[Show the published criteria] embedded_grammar_recursion — Every Markdown fenced block is recursively formalized and its language is named in the summary.
+[Show the published criteria] meta_language_evidence — A valid meta-language parse is reported with its label and syntax-link count.
+[Show the published criteria] determinism — Summarizing the same file twice returns byte-identical output.
+[Show the published criteria] mode_ladder — Short, Standard and Full summaries grow monotonically with the mode ladder.
+[Enforce the ratchet against the committed baseline] seed 563 — 13 iteration(s), 212 of 213 criteria passed (99%)
+[Enforce the ratchet against the committed baseline] stabilized before the iteration bound; 2 Markdown embedded grammar block(s) across 1 file(s)
+[Enforce the ratchet against the committed baseline]   iteration 0: 100%
+[Enforce the ratchet against the committed baseline]     dev/log/issues/776/pulls/794/raw/cargo-test-all-features-ci-stabilization-final.log [text] 100% (8/8)
+[Enforce the ratchet against the committed baseline]     data/cache/wordnet/en/testing.lino [links_notation] 100% (8/8)
+[Enforce the ratchet against the committed baseline]   iteration 1: 100%
+[Enforce the ratchet against the committed baseline]     experiments/agentic_cli_matrix/recorded/qwen/read-file.jsonl [text] 100% (8/8)
+[Enforce the ratchet against the committed baseline]     docs/case-studies/issue-715/test-logs/doc-tests-green.log [text] 100% (8/8)
+[Enforce the ratchet against the committed baseline]   iteration 2: 100%
+[Enforce the ratchet against the committed baseline]     tests/source/solver_handlers/behavior_rule_matching.rs [rust] 100% (9/9)
+[Enforce the ratchet against the committed baseline]     docs/case-studies/issue-757/agent-cli-evidence/formal-ai-server.log [text] 100% (8/8)
+[Enforce the ratchet against the committed baseline]   iteration 3: 100%
+[Enforce the ratchet against the committed baseline]     docs/case-studies/issue-715/opencode-run/turn-3.jsonl [text] 100% (8/8)
+[Enforce the ratchet against the committed baseline]     tests/source/source_tests/translation/formalization/tests.rs [rust] 100% (9/9)
+[Enforce the ratchet against the committed baseline]   iteration 4: 100%
+[Enforce the ratchet against the committed baseline]     docs/case-studies/issue-115/raw-data/hive-mind/run-25976224438.json [json] 100% (9/9)
+[Enforce the ratchet against the committed baseline]     docs/case-studies/issue-760/red-test-agent-run/agent-stderr.log [text] 100% (8/8)
+[Enforce the ratchet against the committed baseline]   iteration 5: 100%
+[Enforce the ratchet against the committed baseline]     data/cache/wikidata/entity/Q7363.lino [links_notation] 100% (7/7)
+[Enforce the ratchet against the committed baseline]     docs/case-studies/issue-745/agent-apply-collision-followup.jsonl [text] 100% (8/8)
+[Enforce the ratchet against the committed baseline]   iteration 6: 100%
+[Enforce the ratchet against the committed baseline]     docs/case-studies/issue-894/requirements.md [markdown] 100% (8/8)
+[Enforce the ratchet against the committed baseline]     docs/case-studies/issue-707/agent-cli-evidence/generalization/replay/customers_filter_and_pack.jsonl [text] 100% (8/8)
+[Enforce the ratchet against the committed baseline]   iteration 7: 93%
+[Enforce the ratchet against the committed baseline]     docs/case-studies/issue-24/raw-data/node-check-seed-loader.log [text] 100% (7/7)
+[Enforce the ratchet against the committed baseline]     docs/case-studies/issue-492/raw-data/repro-crate-release-badges-after.log [text] 87% (7/8)
+[Enforce the ratchet against the committed baseline]       failed compression: summary_bytes=458 file_bytes=442
+[Enforce the ratchet against the committed baseline]   iteration 8: 100%
+[Enforce the ratchet against the committed baseline]     scripts/build-views.py [python] 100% (9/9)
+[Enforce the ratchet against the committed baseline]     data/cache/wikidata/entity/Q152415.json [json] 100% (9/9)
+[Enforce the ratchet against the committed baseline]   iteration 9: 100%
+[Enforce the ratchet against the committed baseline]     vscode/scripts/webview-html.test.mjs [javascript] 100% (9/9)
+[Enforce the ratchet against the committed baseline]     dev/log/issues/776/pulls/794/raw/issue-776-events.json [json] 100% (9/9)
+[Enforce the ratchet against the committed baseline]   iteration 10: 100%
+[Enforce the ratchet against the committed baseline]     tests/unit/issue_527.rs [rust] 100% (9/9)
+[Enforce the ratchet against the committed baseline]     data/meta/issue-709-search-fusion-learning.lino [links_notation] 100% (8/8)
+[Enforce the ratchet against the committed baseline]   iteration 11: 100%
+[Enforce the ratchet against the committed baseline]     data/cache/wordnet/en/upload.lino [links_notation] 100% (7/7)
+[Enforce the ratchet against the committed baseline]     docs/case-studies/issue-749/cli-matrix/qwen.log [text] 100% (7/7)
+[Enforce the ratchet against the committed baseline]   iteration 12: 100%
+[Enforce the ratchet against the committed baseline]     docs/case-studies/issue-412/raw-data/issue-412-body.md [markdown] 100% (9/9)
+[Enforce the ratchet against the committed baseline]     data/seed/computer-use-tasks.lino [links_notation] 100% (8/8)
+[Enforce the ratchet against the committed baseline] summarization quality ratchet holds: 99% measured against a 80% minimum and a committed ratchet of 80% (last recorded run: 99%)
