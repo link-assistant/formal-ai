@@ -1,4 +1,9 @@
 meanings
+  response_thinking_step_compute_plain_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step compute plain hi"
   response_thinking_step_compute_plain_ru
     defined-by response_template
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "response who is unknown entity suggestion en"
-  response_who_is_unknown_entity_suggestion_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response who is unknown entity suggestion hi"

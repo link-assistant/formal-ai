@@ -1,4 +1,14 @@
 meanings
+  tool_result_empty_local_path_search
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result empty local path search"
+  tool_result_empty_search
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result empty search"
   tool_result_failed
     defined-by intent
     lexeme en
@@ -325,7 +335,7 @@ meanings
       surface
         text "wikibooks"
   wikidata
-    defined-by source
+    defined-by source_kind
     lexeme en
       surface
         text "wikidata"

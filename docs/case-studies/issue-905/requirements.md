@@ -2,7 +2,7 @@
 
 | Requirement | Implementation | Executable evidence |
 | --- | --- | --- |
-| Write exactly `Hello World`, without the control word `exactly:`. | Seed the longer `containing exactly …` marker and prefer the longest marker at an equal start offset. | `exact_modifier_is_not_written_as_part_of_the_payload`; twenty-case parsing matrix |
+| Write exactly `Hello World`, without the control word `exactly:`. | `strip_clause_lead` drops clause separators and seed-defined `file_write_content_qualifier` adverbs from the recovered span, but only when a separator marks the adverb as introducing the payload. | `exact_modifier_is_not_written_as_part_of_the_payload`; twenty-case parsing matrix |
 | Treat any explicit tool error as a failed step. | Preserve `ChatMessage::is_error`; normalize `is_error`, `isError`, failed status, nonzero exits, and raw exit markers. | explicit-error and nonzero-exit regressions |
 | Preserve provider error signals across protocol surfaces. | Anthropic `tool_result.is_error` and Responses failure status project into the shared chat message. | `anthropic_and_responses_adapters_preserve_error_metadata` |
 | Do not advance after a failed tool call. | `Progress` records observed attempts separately from successful step satisfaction. | failed-write regression; failed-verification regressions |
