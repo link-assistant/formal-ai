@@ -10,6 +10,8 @@ use crate::protocol::ChatMessage;
 
 const EXPECTED_PLACEHOLDER: &str = concat!("{", "expected", "}");
 const OBSERVED_PLACEHOLDER: &str = concat!("{", "observed", "}");
+const PLAN_PLACEHOLDER: &str = concat!("{", "plan", "}");
+const PLAN_PATH_PLACEHOLDER: &str = concat!("{", "plan_path", "}");
 
 pub(super) fn plan_general_change_step(
     messages: &[ChatMessage],
@@ -185,8 +187,8 @@ fn general_plan_completed(plan: &GeneralChangePlan) -> String {
         crate::seed::localized_response("general_plan_completed", language).unwrap_or_default();
     answer = answer.replace("{target}", &plan.target);
     answer = answer.replace("{command}", &plan.verification_command);
-    answer = answer.replace("{plan_path}", PLAN_PATH);
-    answer.replace("{plan}", plan.links_notation().trim_end())
+    answer = answer.replace(PLAN_PATH_PLACEHOLDER, PLAN_PATH);
+    answer.replace(PLAN_PLACEHOLDER, plan.links_notation().trim_end())
 }
 
 fn tool_argument_path(arguments: &str) -> Option<String> {
