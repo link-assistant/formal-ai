@@ -36,11 +36,11 @@
         "src/"
       ],
       "exclude": [],
-      "lines_percent": 0.0,
-      "functions_percent": 0.0,
+      "lines_percent": 86.47,
+      "functions_percent": 44.34,
       "tolerance_percent": 0.5,
       "reviewed": "2026-08-05",
-      "evidence": "`cargo llvm-cov --all-features --lcov` over the whole workspace, which is what the `coverage` job in .github/workflows/release.yml already produces."
+      "evidence": "`cargo llvm-cov --all-features --lcov` over the whole workspace, which is what the `coverage` job in .github/workflows/coverage.yml runs. The floor recorded here was measured from a full local run of that command; a handful of integration cases that need outbound network could not complete in the measuring sandbox, so a green CI run measures at or above this floor rather than below it."
     }
   }
 }
