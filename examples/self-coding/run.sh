@@ -8,7 +8,10 @@ OUT="${OUT:-$ROOT/docs/case-studies/issue-651/self-coding-run}"
 TASK='Create file self-coding-result.txt containing self-coding=passed'
 if [[ "${1:-}" == "--live" ]]; then
   [[ -n "${2:-}" ]] || { echo "usage: $0 --live ISSUE_URL" >&2; exit 2; }
-  exec solve "$2" --tool agent --model formal-ai --verbose
+  # --attach-logs publishes the session log to the pull request and --verbose
+  # makes the Agent adapter dump the raw JSON of every error record, so a failed
+  # run leaves recoverable evidence instead of a bare reason line (issue #973).
+  exec solve "$2" --tool agent --model formal-ai --attach-logs --verbose
 fi
 command -v "$AGENT" >/dev/null
 [[ -x "$BIN" ]] || { echo "build first: cargo build --release --bin formal-ai" >&2; exit 2; }

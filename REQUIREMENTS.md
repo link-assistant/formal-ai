@@ -1805,3 +1805,20 @@ evidence and the filed issue bodies live in `docs/case-studies/issue-894/`.
 | R894-2 | File each confirmed gap in the owning upstream repository with a reproduction, a workaround, and a suggested fix. | Implemented: eight issues filed — security scanning (js#122, rust#115, python#48, csharp#43), `links.yml` port (rust#116, python#49, csharp#44), optional desktop-release workflow (rust#117). Bodies preserved verbatim as `docs/case-studies/issue-894/raw-data/sec-*.md`, `links-*.md`, `desktop-rust.md`; the created issues as `filed-upstream-issues.json`. |
 | R894-3 | Link every filing from the report and mark obsolete findings explicitly. | Implemented: the report's *Recommended upstream issues to file* section is replaced by the *Upstream filing status (revalidated 2026-08-05)* ledger — every `confirmed` row carries its filing URL, U4/U5/U6 are `not-applicable` with the reason, and L1/L3/L4/L7 (API-docs deploy, published-crate smoke test, resilient buildx, main-safe concurrency) are `obsolete` with the evidence that closed them. |
 | R894-4 | A confirmed finding may never remain ready-to-file without a URL, enforced by a documentation check. | Implemented: `tests/unit/docs_requirements_issue_894.rs` parses the ledger and fails when a `confirmed` row has no `link-foundation` issue URL, when a status outside the documented vocabulary (`confirmed` / `obsolete` / `not-applicable` / `local`) appears, when the pre-filing recommendation section returns, or when the preserved evidence goes missing. |
+
+## Issue #973 Automated Solve Session Evidence
+
+Issue [#973](https://github.com/link-assistant/formal-ai/issues/973) follows the
+2026-08-04 run on PR [#927](https://github.com/link-assistant/formal-ai/pull/927),
+which failed after 22 seconds and recorded its entire reason as `[object Object]`
+with no log attached. The container is gone, so that cause is unrecoverable, and
+a failure recorded that way is unlearnable by construction — the next iteration
+of the self/auto-learning loop has nothing to act on. Timeline, root causes
+RC1–RC6, and the captured GitHub API evidence live in
+`docs/case-studies/issue-973/`.
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R973-1 | Automated `solve` sessions on this repository run with `--attach-logs --verbose`. | Implemented: `examples/self-coding/run.sh --live` executes `solve "$2" --tool agent --model formal-ai --attach-logs --verbose`; it previously passed `--verbose` alone, which is the configuration that produced the unrecoverable failure. |
+| R973-2 | The two flags are documented as non-substitutable, with the reason each is load-bearing. | Implemented: CONTRIBUTING.md § *Always run automated `solve` sessions with `--attach-logs --verbose`* records the canonical command, that `--attach-logs` publishes the session log to the pull request, and that `--verbose` is what makes the Agent adapter dump the raw JSON of every error and fatal-startup record ([hive-mind#2143](https://github.com/link-assistant/hive-mind/pull/2143)) — the record that survives a payload shape the renderer does not know. |
+| R973-3 | The policy is enforced by a test, not only written down. | Implemented: `tests/issue_973_solve_flags.rs` scans the guides and scripts this repository publishes (`docs/`, `examples/`, `scripts/`, `.github/`, `src/`, root guides), joins shell and Markdown line continuations so a wrapped command is judged whole, ignores prose such as "we do not solve a task by hand", and fails on any `solve` invocation missing either flag. Recorded history under `docs/case-studies/`, `dev/log/`, and `experiments/` is exempt so past runs stay byte-for-byte as they happened. |
