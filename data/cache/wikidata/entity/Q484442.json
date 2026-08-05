@@ -1,0 +1,79 @@
+{
+  "entities": {
+    "Q484442": {
+      "type": "item",
+      "id": "Q484442",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Spider-Man"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Человек-паук"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "स्पाइडर-मैन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "蜘蛛人"
+        },
+        "es": {
+          "language": "es",
+          "value": "Spider-Man"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "2002 film directed by Sam Raimi"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "фильм Сэма Рэйми (2002)"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "2002 की सुपरहीरो फिल्म"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "山姆·萊米執導的2002年電影"
+        },
+        "es": {
+          "language": "es",
+          "value": "película de 2002 dirigida por Sam Raimi"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Человек-паук 1"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "स्पाइडर मैन"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "蜘蛛俠"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Spider Man"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,4 +1,14 @@
 meanings
+  topic_count_summary_week
+    defined-by concept
+    lexeme en
+      surface
+        text "topic count summary week"
+  total
+    defined-by word_surface
+    lexeme en
+      surface
+        text "total"
   touch
     defined-by concept
     lexeme en
@@ -265,7 +275,7 @@ meanings
       surface
         text "wikibooks"
   wikidata
-    defined-by source
+    defined-by source_kind
     lexeme en
       surface
         text "wikidata"

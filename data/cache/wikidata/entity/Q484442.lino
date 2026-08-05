@@ -1,0 +1,21 @@
+Q484442
+  aliases
+    es ("Spider Man")
+    hi ("स्पाइडर मैन")
+    ru ("Человек-паук 1")
+    zh ("蜘蛛俠")
+  descriptions
+    en "2002 film directed by Sam Raimi"
+    es "película de 2002 dirigida por Sam Raimi"
+    hi "2002 की सुपरहीरो फिल्म"
+    ru "фильм Сэма Рэйми (2002)"
+    zh "山姆·萊米執導的2002年電影"
+  id Q484442
+  labels
+    en Spider-Man
+    es Spider-Man
+    hi "स्पाइडर-मैन"
+    ru "Человек-паук"
+    zh "蜘蛛人"
+  type item
+success 1
