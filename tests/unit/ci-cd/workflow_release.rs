@@ -283,8 +283,11 @@ fn change_gated_jobs_never_depend_on_a_skipped_changelog() {
     // Generalises issue #442 across every change-gated job: none of them should
     // treat a *skipped* changelog/version check as a signal to run. A skipped
     // upstream check means "no code changed", which must never widen coverage.
+    // The `coverage` job moved to `.github/workflows/coverage.yml` for issue
+    // #895; `coverage_jobs_never_depend_on_a_skipped_upstream_check` in
+    // `workflow_coverage.rs` pins this same property for it there.
     let workflow = release_workflow();
-    for job_name in ["lint", "test", "coverage", "test-e2e-local"] {
+    for job_name in ["lint", "test", "test-e2e-local"] {
         let job = job_block(&workflow, job_name);
         // Inspect only effective YAML (skip `#` comment lines) so the rationale
         // comments that quote the old buggy clause don't trip the guard.
@@ -528,8 +531,6 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // after the suite passed. See
         // `test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten`.
         ("test", 25),
-        // Issue #812: raised from 15; measured worst case on main was 14.1 min.
-        ("coverage", 25),
         // Issue #896: raised from 10; the published web-search/web-capture
         // graphs moved the job from ~4-5 to 7.2 minutes, and a cold release
         // build after a Cargo.lock change hit the former cap.
