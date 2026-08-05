@@ -1,0 +1,179 @@
+{
+  "schema_version": 1,
+  "record_type": "issue_916_write_effect_rungs",
+  "epic": "916",
+  "note": "Every rung names one defect from the #902-#909 family and pins the workspace effect that closes it. Rung ids match tests/unit/issue_916.rs so a fix, its regression test and its ladder rung carry one name.",
+  "rungs": [
+    {
+      "id": "R916-01",
+      "issue": "905",
+      "kind": "chat",
+      "title": "a lost write is not a completion",
+      "prompt": "Create a file hello.txt containing exactly: Hello World",
+      "note": "The write tool reports the transport fault issue #905 observed (`write_stdin failed: Unknown process id 0`) and the bytes never reach the workspace. The verification the plan itself named then exits 1.",
+      "faults": [
+        {
+          "tool": "write_file",
+          "match": "hello.txt",
+          "skip_effect": true,
+          "result": "Error: write_stdin failed: Unknown process id 0"
+        }
+      ],
+      "effects": {
+        "files_absent": ["hello.txt"]
+      },
+      "claims_completion": false,
+      "forbid": ["verified it"]
+    },
+    {
+      "id": "R916-02",
+      "issue": "908",
+      "kind": "chat",
+      "title": "a silent check command does not abandon the completed work",
+      "prompt": "Write a hello world program in Python.",
+      "note": "`python3 -m py_compile main.py` prints nothing and exits 0. Reading that as a failure abandoned a program that had already been written correctly (issue #908, row 3).",
+      "effects": {
+        "files_present": {
+          "main.py": {"contains": ["Hello"]}
+        },
+        "checks": [
+          {"command": "python3 main.py", "stdout_contains": "Hello, world!"}
+        ]
+      },
+      "claims_completion": true,
+      "expect_tool": ["write_file"],
+      "forbid": ["could not complete"]
+    },
+    {
+      "id": "R916-03",
+      "issue": "908",
+      "kind": "chat",
+      "title": "the failure report names the exit code, not the harness",
+      "prompt": "Write a hello world program in Python.",
+      "note": "The check command is forced to exit 127. Issue #908 fix 3: the report must state the status the harness observed instead of blaming the harness.",
+      "faults": [
+        {
+          "tool": "run_shell_command",
+          "match": "py_compile",
+          "skip_effect": true,
+          "exit_code": 127,
+          "stderr": "/bin/sh: 1: python3: not found"
+        }
+      ],
+      "claims_completion": false,
+      "expect": ["127"],
+      "forbid": ["harness could not complete"]
+    },
+    {
+      "id": "R916-04",
+      "issue": "905",
+      "kind": "chat",
+      "title": "an observed effect is what completion means",
+      "prompt": "Create a file hello.txt containing exactly: Hello World",
+      "note": "The same request as R916-01 with a working write tool. The claim is now backed by the file the workspace holds.",
+      "effects": {
+        "files_present": {
+          "hello.txt": {"equals": "Hello World"}
+        },
+        "checks": [
+          {"command": "cat hello.txt", "stdout_contains": "Hello World"}
+        ]
+      },
+      "claims_completion": true,
+      "expect_tool": ["write_file"]
+    },
+    {
+      "id": "R916-05",
+      "issue": "905",
+      "kind": "chat",
+      "title": "an adverbial qualifier is not part of the content",
+      "prompt": "Create a file greeting.txt whose content is exactly: Hello World",
+      "note": "Issue #905 section 3: `exactly:` qualifies the requirement, so it must not be written into the file.",
+      "effects": {
+        "files_present": {
+          "greeting.txt": {"equals": "Hello World", "excludes": ["exactly:"]}
+        }
+      },
+      "claims_completion": true
+    },
+    {
+      "id": "R916-06",
+      "issue": "907",
+      "kind": "chat",
+      "title": "a caller context block does not hijack the request",
+      "prompt": "<session_context>\nToday's date is Sunday, August 2, 2026 (formatted according to the user's locale).\nMy operating system is: linux\nI'm currently working in the directory: /tmp/work\n</session_context>\nWrite a hello world program in Python.",
+      "note": "gemini-cli prepends this block to every turn. Reading `Today's date is ...` as a question ran `date` and never wrote the program (issue #907, fix 1).",
+      "effects": {
+        "files_present": {
+          "main.py": {"contains": ["Hello"]}
+        },
+        "checks": [
+          {"command": "python3 main.py", "stdout_contains": "Hello, world!"}
+        ]
+      },
+      "claims_completion": true,
+      "expect_tool": ["write_file"],
+      "command_forbid": ["date"]
+    },
+    {
+      "id": "R916-07",
+      "issue": "907",
+      "kind": "chat",
+      "title": "a declarative statement of fact is not a request",
+      "prompt": "Today's date is Sunday, August 2, 2026.\nWrite a hello world program in Python.",
+      "note": "Issue #907, fix 2: a sentence that supplies a fact does not ask for one.",
+      "effects": {
+        "files_present": {
+          "main.py": {"contains": ["Hello"]}
+        },
+        "checks": [
+          {"command": "python3 main.py", "stdout_contains": "Hello, world!"}
+        ]
+      },
+      "claims_completion": true,
+      "expect_tool": ["write_file"],
+      "command_forbid": ["date"]
+    },
+    {
+      "id": "R916-08a",
+      "issue": "909",
+      "kind": "cli",
+      "title": "--global writes a gemini configuration that starts headlessly",
+      "argv": ["with", "--global", "gemini"],
+      "note": "gemini-cli reads GEMINI_DEFAULT_AUTH_TYPE as a default only and still refused to start with `Invalid auth method selected.`; the selection has to be recorded in its settings file (issue #909).",
+      "effects": {
+        "files_present": {
+          ".profile": {"contains": ["GEMINI_DEFAULT_AUTH_TYPE", "GOOGLE_GEMINI_BASE_URL"]},
+          ".gemini/settings.json": {"contains": ["\"selectedType\"", "gemini-api-key"]}
+        }
+      },
+      "expect": ["configured gemini"],
+      "undo": {
+        "argv": ["with", "--undo", "gemini"],
+        "effects": {
+          "files_absent": [".profile", ".gemini/settings.json"]
+        }
+      }
+    },
+    {
+      "id": "R916-08b",
+      "issue": "909",
+      "kind": "cli",
+      "title": "--global writes the complete OpenAI triple for qwen",
+      "argv": ["with", "--global", "qwen"],
+      "note": "qwen-code selects the OpenAI auth path only when key, base URL and model are all present; a missing OPENAI_MODEL left it prompting (issue #909).",
+      "effects": {
+        "files_present": {
+          ".profile": {"contains": ["OPENAI_API_KEY", "OPENAI_BASE_URL", "OPENAI_MODEL"]}
+        }
+      },
+      "expect": ["configured qwen"],
+      "undo": {
+        "argv": ["with", "--undo", "qwen"],
+        "effects": {
+          "files_absent": [".profile"]
+        }
+      }
+    }
+  ]
+}

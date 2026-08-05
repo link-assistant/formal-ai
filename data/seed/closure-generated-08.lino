@@ -1,4 +1,24 @@
 meanings
+  response_thinking_step_coreference_binding_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step coreference binding ru"
+  response_thinking_step_coreference_binding_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step coreference binding zh"
+  response_thinking_step_deformalize_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step deformalize en"
+  response_thinking_step_deformalize_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step deformalize es"
   response_thinking_step_deformalize_hi
     defined-by response_template
     lexeme en
@@ -1119,6 +1139,31 @@ meanings
     lexeme en
       surface
         text "response tool result failed en"
+  response_tool_result_failed_exit_code_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result failed exit code en"
+  response_tool_result_failed_exit_code_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result failed exit code es"
+  response_tool_result_failed_exit_code_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result failed exit code hi"
+  response_tool_result_failed_exit_code_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result failed exit code ru"
+  response_tool_result_failed_exit_code_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result failed exit code zh"
   response_tool_result_failed_hi
     defined-by response_template
     lexeme en
@@ -1349,48 +1394,3 @@ meanings
     lexeme en
       surface
         text "response write program language unspecified en"
-  response_write_program_language_unspecified_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response write program language unspecified es"
-  response_write_program_language_unspecified_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response write program language unspecified hi"
-  response_write_program_language_unspecified_name_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response write program language unspecified name en"
-  response_write_program_language_unspecified_name_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response write program language unspecified name es"
-  response_write_program_language_unspecified_name_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response write program language unspecified name hi"
-  response_write_program_language_unspecified_name_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response write program language unspecified name ru"
-  response_write_program_language_unspecified_name_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response write program language unspecified name zh"
-  response_write_program_language_unspecified_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response write program language unspecified ru"
-  response_write_program_language_unspecified_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response write program language unspecified zh"

@@ -42,7 +42,9 @@ pub(super) fn write_global_config(
         ConfigFormat::Toml => {
             render_toml_settings(&global_config.toml_settings, &existing, &context)?
         }
-        ConfigFormat::Json => merge_json_config(global_config, &existing, &context)?,
+        ConfigFormat::Json => {
+            merge_json_settings(&global_config.json_settings, &existing, &context)?
+        }
         ConfigFormat::ShellEnv => {
             merge_shell_env_config(&integration.id, global_config, &existing, &context)
         }
@@ -56,6 +58,42 @@ pub(super) fn write_global_config(
     } else {
         write_file(&path, &next)?;
         println!("configured {} at {}", integration.id, path.display());
+    }
+    for companion in &global_config.companion_files {
+        write_companion_file(&integration.id, companion, &context)?;
+    }
+    Ok(())
+}
+
+/// Materialise a companion settings file belonging to the same global install.
+///
+/// Environment alone is not always a configuration: gemini-cli reads
+/// `GEMINI_DEFAULT_AUTH_TYPE` as a *default* and still refuses to start headlessly
+/// unless a settings file records the selection, so `--global` reported success and
+/// the client then failed with `Invalid auth method selected.` (issue #909). The
+/// companion is backed up before it is touched, exactly like the main file, so
+/// `--undo` stays exact.
+fn write_companion_file(
+    integration_id: &str,
+    companion: &crate::seed::ClientIntegrationCompanionFile,
+    context: &RenderContext,
+) -> Result<(), Box<dyn Error>> {
+    let path = global_config_path(&companion.path)?;
+    ensure_backup(&path, &backup_path(&path, &companion.backup_suffix))?;
+    let existing = fs::read_to_string(&path).unwrap_or_default();
+    let next = match companion.format {
+        ConfigFormat::Toml => render_toml_settings(&companion.toml_settings, &existing, context)?,
+        ConfigFormat::Json => merge_json_settings(&companion.json_settings, &existing, context)?,
+        // A companion carries settings; environment belongs to the profile block the
+        // main config writes. The seed parser rejects a `shell_env` companion, so
+        // reaching here means there is nothing of its own to write.
+        ConfigFormat::ShellEnv => existing.clone(),
+    };
+    if next == existing {
+        println!("{integration_id} already configured at {}", path.display());
+    } else {
+        write_file(&path, &next)?;
+        println!("configured {integration_id} at {}", path.display());
     }
     Ok(())
 }
@@ -79,6 +117,14 @@ pub(super) fn undo_global_config(
         let catalog_backup_path = backup_path(&catalog_path, &global_config.backup_suffix);
         if catalog_backup_path.exists() {
             restore_backup(&catalog_path, &catalog_backup_path)?;
+            restored = true;
+        }
+    }
+    for companion in &global_config.companion_files {
+        let companion_path = global_config_path(&companion.path)?;
+        let companion_backup = backup_path(&companion_path, &companion.backup_suffix);
+        if companion_backup.exists() {
+            restore_backup(&companion_path, &companion_backup)?;
             restored = true;
         }
     }
@@ -182,8 +228,8 @@ fn table_at_path_mut<'a>(mut table: &'a mut Table, parts: &[&str]) -> &'a mut Ta
     table
 }
 
-fn merge_json_config(
-    global_config: &crate::seed::ClientIntegrationGlobalConfig,
+fn merge_json_settings(
+    settings: &[(String, String)],
     existing: &str,
     context: &RenderContext,
 ) -> Result<String, Box<dyn Error>> {
@@ -192,7 +238,7 @@ fn merge_json_config(
     } else {
         serde_json::from_str(existing)?
     };
-    let overlay = json_settings_value(&global_config.json_settings, context)?;
+    let overlay = json_settings_value(settings, context)?;
     merge_json_value(&mut base, overlay);
     Ok(format!("{}\n", serde_json::to_string_pretty(&base)?))
 }

@@ -1,4 +1,24 @@
 meanings
+  response_lexeme_import_invalid_surface_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid surface hi"
+  response_lexeme_import_invalid_surface_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid surface ru"
+  response_lexeme_import_invalid_surface_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid surface zh"
+  response_lexeme_import_lexeme_lost_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import lexeme lost en"
   response_lexeme_import_lexeme_lost_hi
     defined-by response_template
     lexeme en
@@ -1374,23 +1394,3 @@ meanings
     lexeme en
       surface
         text "response requirement contradiction zh"
-  response_search_fusion_header_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response search fusion header en"
-  response_search_fusion_header_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response search fusion header es"
-  response_search_fusion_header_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response search fusion header hi"
-  response_search_fusion_header_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response search fusion header ru"
