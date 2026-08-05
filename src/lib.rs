@@ -433,9 +433,9 @@ pub use summarization::{
     evaluate_file, ratchet_violations, validate_repository_summarization, CorpusFile, Criterion,
     CriterionOutcome, FileQualityReport, IterationReport, QualityBaseline, QualityScore,
     SamplingProtocol, ValidationReport, BASELINE_PATH, BASELINE_RECORD, COMPRESSION_FLOOR_BYTES,
-    CRITERIA, DEFAULT_FILES_PER_ITERATION, DEFAULT_MAX_ITERATIONS, DEFAULT_SAMPLING_SEED,
-    DEFAULT_STABILITY_TOLERANCE_PERCENT, DEFAULT_STABILITY_WINDOW, HONESTY_POLICY,
-    QUALITY_RATCHET_PERCENT, RATCHET_POLICY, RATCHET_RUNNER,
+    CRITERIA, DEFAULT_FILES_PER_ITERATION, DEFAULT_MAX_ITERATIONS, DEFAULT_MINIMUM_ITERATIONS,
+    DEFAULT_SAMPLING_SEED, DEFAULT_STABILITY_TOLERANCE_PERCENT, DEFAULT_STABILITY_WINDOW,
+    HONESTY_POLICY, QUALITY_RATCHET_PERCENT, RATCHET_POLICY, RATCHET_RUNNER,
 };
 pub use telegram::{
     handle_telegram_webhook, parse_get_updates_response, telegram_html_from_markdown,

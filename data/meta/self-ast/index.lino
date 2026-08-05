@@ -6,7 +6,7 @@ self_ast_census_index
   full_ast_module_count 55
   signature_module_count 384
   symbol_count 8889
-  content_id self_ast_census_index_ac137e5352ec6610
+  content_id self_ast_census_index_3dce427ee2bc23af
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/algorithm_learning.rs full_ast 13 source_module_0cde1901a8a78574
@@ -180,7 +180,7 @@ self_ast_census_index
     src/learning_cycle.rs signature 35 source_module_5111044fb9a4d31d
     src/learning_ledger.rs signature 26 source_module_b3603c2c577cd078
     src/lexeme_import.rs signature 49 source_module_03ae22d5093d8a37
-    src/lib.rs signature 158 source_module_fe2d8fb28ed6599f
+    src/lib.rs signature 158 source_module_0821c7186f89645c
     src/link_store.rs signature 53 source_module_4163b0ff62ebee82
     src/links_format.rs signature 7 source_module_17ae7d7e69b8c450
     src/links_query.rs signature 30 source_module_434647cf5697218d
@@ -405,7 +405,7 @@ self_ast_census_index
     src/summarization/identifier.rs signature 16 source_module_a6730e8b4c415cb1
     src/summarization/importance.rs signature 20 source_module_50a811eed65f8c88
     src/summarization/markdown.rs signature 8 source_module_26ef8adcabd82c46
-    src/summarization/mod.rs signature 47 source_module_b3a188e471bb351c
+    src/summarization/mod.rs signature 47 source_module_e1a3971fec5a0f6f
     src/summarization/pipeline.rs signature 7 source_module_7436071879e680a6
     src/summarization/recheck.rs signature 15 source_module_a1d91e119f01b6fe
     src/summarization/resource.rs signature 19 source_module_38f92a468be1b09a
