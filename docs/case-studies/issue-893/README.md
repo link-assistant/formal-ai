@@ -20,9 +20,9 @@ and no metric existed to be 80% *of*.
   (`formal-ai summarization criteria`).
 - **Protocol run** — the run the committed baseline records:
   [`raw-data/protocol-run.log`](raw-data/protocol-run.log). Seed 563, 12
-  iterations, 24 files, `198/199` criteria = 99%, one `content_grounded` failure
-  on `docs/case-studies/issue-479/template-comparison/REPORT.md`, stabilized at
-  the minimum sample and before the 24 iteration bound, five Markdown embedded
+  iterations, 24 files, `196/197` criteria = 99%, one `compression` failure on
+  `experiments/agentic_cli_matrix/recorded/agent/greeting.jsonl`, stabilized at
+  the minimum sample and before the 24 iteration bound, two Markdown embedded
   grammar blocks drawn into iteration 0 by the stratified draw.
 - **Wide sweep** — [`raw-data/wide-sweep.log`](raw-data/wide-sweep.log). The
   stability loop stops early by design, so a separate sweep scored the first 600
@@ -198,18 +198,19 @@ formal-ai summarization ratchet
 ```
 
 ```text
-seed 563 — 12 iteration(s), 198 of 199 criteria passed (99%)
-stabilized before the iteration bound; 5 Markdown embedded grammar block(s) across 1 file(s)
+seed 563 — 12 iteration(s), 196 of 197 criteria passed (99%)
+stabilized before the iteration bound; 2 Markdown embedded grammar block(s) across 1 file(s)
 summarization quality ratchet holds: 99% measured against a 80% minimum and a
 committed ratchet of 80% (last recorded run: 99%)
 ```
 
-The one failure is left in rather than tuned away: `content_grounded` rejects
-`docs/case-studies/issue-479/template-comparison/REPORT.md` because the summary
-carries the token `docs/case-studies/issue-479/template-comparison//`, which the
-source file never contains. It is the same defect the sweep found on `/api//`
-and `github.com//` — the summarizer joins a path fragment to an empty segment —
-and it is recorded here as an open finding.
+The one failure is left in rather than tuned away: `compression` rejects
+`experiments/agentic_cli_matrix/recorded/agent/greeting.jsonl` at
+`summary_bytes=635 file_bytes=520` — a 520-byte file just above the 400-byte
+floor, whose structured summary (path, format, size, retained content) costs
+more bytes than the file itself. It is the same class the 600-file sweep found
+four times below, and it is recorded here as an open finding rather than tuned
+out of the metric.
 
 The run stops at 12 iterations rather than 3 because the window is not allowed
 to end a run that has only seen six files, and it reaches an embedded grammar in
@@ -239,12 +240,13 @@ enforced floor does not.
 Under the stratified draw, the same commit measured on CI
 ([30977384628](https://github.com/link-assistant/formal-ai/actions/runs/30977384628),
 [`raw-data/ci-run-stratified.log`](raw-data/ci-run-stratified.log)) reproduces
-the local run exactly — 12 iterations, `198/199`, the same twenty-four files,
-the same five embedded grammar blocks, the same single `content_grounded`
-failure. That is the determinism the protocol claims, now visible across two
-machines rather than asserted. It does not make the enforced floor safe to
-raise: the numbers agree here because the corpus is identical, and the corpus is
-exactly what changes between commits.
+the local run at that commit exactly — 12 iterations, `198/199`, the same
+twenty-four files, the same five embedded grammar blocks, the same single
+`content_grounded` failure. That is the determinism the protocol claims, now
+visible across two machines rather than asserted. It does not make the enforced
+floor safe to raise: the numbers agree there because the corpus is identical,
+and the corpus is exactly what changes between commits — a later merge of `main`
+moved the same seed onto a different twenty-four files, scoring `196/197`.
 
 ### What the sweep found
 
