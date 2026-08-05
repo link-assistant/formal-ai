@@ -151,6 +151,24 @@ grammar — the first Markdown file in this draw appeared at iteration 18. And
 that same file cost the run its only failure. Both are the protocol working,
 not noise.
 
+### The ratchet in CI
+
+`.github/workflows/summarization-ratchet.yml` re-measures on every pull request.
+Its first green run
+([30971344229](https://github.com/link-assistant/formal-ai/actions/runs/30971344229),
+log kept in [`raw-data/ci-run.log`](raw-data/ci-run.log)) is itself evidence for
+the two-number design:
+
+```text
+seed 563 — 13 iteration(s), 212 of 213 criteria passed (99%)
+stabilized before the iteration bound; 2 Markdown embedded grammar block(s) across 1 file(s)
+summarization quality ratchet holds: 99% measured against a 80% minimum and a committed ratchet of 80% (last recorded run: 99%)
+```
+
+Thirteen iterations and 213 criteria, where the run recorded in the baseline saw
+22 and 365 — same seed, same code, two commits apart. Only a floor that does not
+chase the last measurement survives that.
+
 ### What the sweep found
 
 Over the first 600 files of the seeded permutation: **4964/4968 = 99%**.
