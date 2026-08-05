@@ -1,4 +1,9 @@
 meanings
+  response_lexeme_import_invalid_surface_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid surface en"
   response_lexeme_import_invalid_surface_hi
     defined-by response_template
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "response requirement contradiction ru"
-  response_requirement_contradiction_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response requirement contradiction zh"

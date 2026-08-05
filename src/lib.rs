@@ -95,6 +95,7 @@ pub mod rebuild_plan;
 pub mod recipe_interpreter;
 pub mod recursive_execution;
 pub mod relative_meta_logic;
+pub mod release_timeline;
 pub mod repair_strategy;
 pub mod requirement_contradiction;
 pub(crate) mod responses_stream;

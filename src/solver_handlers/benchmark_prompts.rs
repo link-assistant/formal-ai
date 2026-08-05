@@ -4,7 +4,9 @@ use super::finalize_simple;
 
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
+use crate::external_benchmarks::today_utc;
 use crate::language::detect as detect_language;
+use crate::release_timeline;
 use crate::seed::{
     self, Antecedent, BrainstormSeeds, CoreferenceSeeds, FactRecord, Meaning, PersonaSeeds,
     Pronoun, SummaryTopicSeeds,
@@ -290,20 +292,54 @@ pub fn try_fact_lookup(
     }
 
     let language = detect_language(prompt).slug();
-    let summary = record.summary_for(language);
     let source = record.source_for(language);
     if !source.is_empty() {
         log.append("source", source.to_owned());
     }
+
+    // A record backed by a release timeline has no frozen answer: the sentence
+    // is built from the checked-in snapshot against today's date, so a title
+    // that has not come out yet is reported as announced rather than released
+    // (issue #892). Only a missing timeline falls back to the written summary.
+    let summary = record
+        .release_timeline
+        .is_empty()
+        .then(|| record.summary_for(language).to_owned())
+        .or_else(|| render_release_timeline(&record.release_timeline, language, log))
+        .unwrap_or_else(|| record.summary_for(language).to_owned());
 
     Some(finalize_simple(
         prompt,
         log,
         "fact_lookup",
         "response:fact_lookup",
-        summary,
+        &summary,
         0.9,
     ))
+}
+
+/// Render `slug` as of today, logging the snapshot provenance so the evidence
+/// trail records *which* snapshot the answer came from and whether it is stale.
+fn render_release_timeline(slug: &str, language: &str, log: &mut EventLog) -> Option<String> {
+    let today = today_utc();
+    let rendered = release_timeline::render(slug, language, &today)?;
+    let timeline = seed::release_timelines().timeline(slug)?;
+    log.append("release_timeline:hit", slug.to_owned());
+    log.append("release_timeline:snapshot", timeline.retrieved_at.clone());
+    log.append("release_timeline:source", timeline.source_url.clone());
+    log.append("release_timeline:sha256", timeline.sha256.clone());
+    log.append(
+        "release_timeline:released",
+        rendered.released.len().to_string(),
+    );
+    log.append(
+        "release_timeline:announced",
+        rendered.announced.len().to_string(),
+    );
+    if rendered.stale {
+        log.append("release_timeline:stale", timeline.retrieved_at.clone());
+    }
+    Some(rendered.text)
 }
 
 fn coreference_seed_data() -> &'static CoreferenceSeeds {

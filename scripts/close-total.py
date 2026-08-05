@@ -87,12 +87,15 @@ PARENT_BY_HEAD = {
     "phrase": "phrase",
     "trace_prefix": "identifier",
     "source": "source",
+    "timeline": "release_timeline",
+    "release_timeline": "release_timeline",
 }
 DEFAULT_PARENT = "concept"
 
 # How to root any parent category that does not already resolve in the base seed.
 PARENT_DEFINED_BY = {
     "intent": "concept",
+    "release_timeline": "concept",
     "prompt_pattern": "concept",
     "source_kind": "source",
     "task": "concept",
