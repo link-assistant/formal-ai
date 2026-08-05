@@ -1,4 +1,9 @@
 meanings
+  local_search_found_path
+    defined-by intent
+    lexeme en
+      surface
+        text "local search found path"
   local_search_mismatch_requested_directory
     defined-by intent
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern test status phrase main yahan hun hi"
-  pattern_test_status_phrase_ni_zai_ma_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase ni zai ma zh"

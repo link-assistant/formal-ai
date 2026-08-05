@@ -1,4 +1,34 @@
 meanings
+  response_task_plan_stage_implementation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage implementation hi"
+  response_task_plan_stage_implementation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage implementation ru"
+  response_task_plan_stage_implementation_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage implementation zh"
+  response_task_plan_stage_regression_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage regression en"
+  response_task_plan_stage_regression_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage regression hi"
+  response_task_plan_stage_regression_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage regression ru"
   response_task_plan_stage_regression_zh
     defined-by response_template
     lexeme en
@@ -1364,33 +1394,3 @@ meanings
     lexeme en
       surface
         text "response thinking step impulse zh"
-  response_thinking_step_invoke_tool_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step invoke tool en"
-  response_thinking_step_invoke_tool_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step invoke tool es"
-  response_thinking_step_invoke_tool_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step invoke tool hi"
-  response_thinking_step_invoke_tool_plain_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step invoke tool plain en"
-  response_thinking_step_invoke_tool_plain_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step invoke tool plain es"
-  response_thinking_step_invoke_tool_plain_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step invoke tool plain hi"

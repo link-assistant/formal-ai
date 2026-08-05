@@ -52,7 +52,6 @@ src/agentic_coding/file_read.rs	No files were listed in `{directory}`.
 src/agentic_coding/file_read.rs	Read {} file(s):
 src/agentic_coding/file_read.rs	Value of `{key}` in `{path}`: {value}
 src/agentic_coding/file_read.rs	find {} -maxdepth 1 -type f | sed 's#^.*/##' | sort
-src/agentic_coding/general_execution.rs	Completed the general change request for {} and verified it with `{}`.\n\nPlan event ({}):\n\n{}
 src/agentic_coding/general_planner.rs	append the composed plan to {PLAN_PATH}
 src/agentic_coding/general_planner.rs	cat {target}
 src/agentic_coding/general_planner.rs	workspace file {target}

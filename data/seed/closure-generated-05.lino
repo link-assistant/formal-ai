@@ -1,4 +1,9 @@
 meanings
+  response_clarification_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response clarification zh"
   response_client_contract_missing_evidence_error_en
     defined-by response_template
     lexeme en
@@ -899,6 +904,31 @@ meanings
     lexeme en
       surface
         text "response general plan command verification evidence zh"
+  response_general_plan_completed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan completed en"
+  response_general_plan_completed_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan completed es"
+  response_general_plan_completed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan completed hi"
+  response_general_plan_completed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan completed ru"
+  response_general_plan_completed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan completed zh"
   response_general_plan_repository_action_en
     defined-by response_template
     lexeme en
@@ -1364,33 +1394,3 @@ meanings
     lexeme en
       surface
         text "response lexeme import cannot stage hi"
-  response_lexeme_import_cannot_stage_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot stage ru"
-  response_lexeme_import_cannot_stage_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot stage zh"
-  response_lexeme_import_cannot_write_json_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot write json en"
-  response_lexeme_import_cannot_write_json_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot write json hi"
-  response_lexeme_import_cannot_write_json_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot write json ru"
-  response_lexeme_import_cannot_write_json_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot write json zh"

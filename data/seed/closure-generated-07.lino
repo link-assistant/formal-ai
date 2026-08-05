@@ -1,4 +1,34 @@
 meanings
+  response_pattern_sequence_count_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence count es"
+  response_pattern_sequence_count_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence count hi"
+  response_pattern_sequence_count_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence count ru"
+  response_pattern_sequence_count_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence count zh"
+  response_pattern_sequence_empty_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence empty en"
+  response_pattern_sequence_empty_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence empty es"
   response_pattern_sequence_empty_hi
     defined-by response_template
     lexeme en
@@ -1364,33 +1394,3 @@ meanings
     lexeme en
       surface
         text "response task plan stage implementation en"
-  response_task_plan_stage_implementation_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task plan stage implementation hi"
-  response_task_plan_stage_implementation_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task plan stage implementation ru"
-  response_task_plan_stage_implementation_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task plan stage implementation zh"
-  response_task_plan_stage_regression_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task plan stage regression en"
-  response_task_plan_stage_regression_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task plan stage regression hi"
-  response_task_plan_stage_regression_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task plan stage regression ru"

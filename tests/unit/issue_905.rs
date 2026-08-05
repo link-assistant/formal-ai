@@ -367,6 +367,9 @@ fn verification_failure_responses_cover_every_supported_language() {
         for intent in [
             "general_plan_verification_mismatch",
             "general_plan_unverified",
+            // The completion claim is seeded too: the sentence this issue
+            // quotes as the false report must not be English typed into Rust.
+            "general_plan_completed",
         ] {
             let response = formal_ai::seed::response_for(intent, language)
                 .unwrap_or_else(|| panic!("missing {intent} response for language {language}"));

@@ -747,6 +747,26 @@ multilingual_responses
     intent general_plan_unverified
     language es
     text "No pude verificar {target} porque no se observó la ejecución de `{command}`. No he marcado el cambio como completado."
+  response response_general_plan_completed_en
+    intent general_plan_completed
+    language en
+    text "Completed the general change request for {target} and verified it with `{command}`.\n\nPlan event ({plan_path}):\n\n{plan}"
+  response response_general_plan_completed_ru
+    intent general_plan_completed
+    language ru
+    text "Общий запрос на изменение для {target} выполнен и проверен командой `{command}`.\n\nСобытие плана ({plan_path}):\n\n{plan}"
+  response response_general_plan_completed_hi
+    intent general_plan_completed
+    language hi
+    text "{target} के लिए सामान्य परिवर्तन अनुरोध पूरा हुआ और `{command}` से सत्यापित किया गया।\n\nयोजना घटना ({plan_path}):\n\n{plan}"
+  response response_general_plan_completed_zh
+    intent general_plan_completed
+    language zh
+    text "已完成 {target} 的通用变更请求，并通过 `{command}` 进行了验证。\n\n计划事件（{plan_path}）：\n\n{plan}"
+  response response_general_plan_completed_es
+    intent general_plan_completed
+    language es
+    text "Se completó la solicitud de cambio general para {target} y se verificó con `{command}`.\n\nEvento del plan ({plan_path}):\n\n{plan}"
   response response_agentic_step_failed_with_exit_code_en
     intent agentic_step_failed_with_exit_code
     language en

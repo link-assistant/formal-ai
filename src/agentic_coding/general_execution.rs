@@ -172,13 +172,21 @@ fn finish_general_change(plan: &GeneralChangePlan, progress: &Progress) -> Agent
             ));
         }
     }
-    AgenticPlan::Final(format!(
-        "Completed the general change request for {} and verified it with `{}`.\n\nPlan event ({}):\n\n{}",
-        plan.target,
-        plan.verification_command,
-        PLAN_PATH,
-        plan.links_notation().trim_end(),
-    ))
+    AgenticPlan::Final(general_plan_completed(plan))
+}
+
+/// The completion claim is the sentence the issue quotes as the false report,
+/// so it is seeded like every other outcome of this state machine rather than
+/// typed into Rust: the words live in `data/seed/`, and the reply follows the
+/// language the request was written in.
+fn general_plan_completed(plan: &GeneralChangePlan) -> String {
+    let language = crate::language::detect(&plan.goal).slug();
+    let mut answer =
+        crate::seed::localized_response("general_plan_completed", language).unwrap_or_default();
+    answer = answer.replace("{target}", &plan.target);
+    answer = answer.replace("{command}", &plan.verification_command);
+    answer = answer.replace("{plan_path}", PLAN_PATH);
+    answer.replace("{plan}", plan.links_notation().trim_end())
 }
 
 fn tool_argument_path(arguments: &str) -> Option<String> {
