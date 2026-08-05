@@ -231,6 +231,16 @@ Thirteen iterations and 213 criteria, where the local run at the same code saw
 last measurement survives that. The measured percent moves with the corpus; the
 enforced floor does not.
 
+Under the stratified draw, the same commit measured on CI
+([30977384628](https://github.com/link-assistant/formal-ai/actions/runs/30977384628),
+[`raw-data/ci-run-stratified.log`](raw-data/ci-run-stratified.log)) reproduces
+the local run exactly — 12 iterations, `198/199`, the same twenty-four files,
+the same five embedded grammar blocks, the same single `content_grounded`
+failure. That is the determinism the protocol claims, now visible across two
+machines rather than asserted. It does not make the enforced floor safe to
+raise: the numbers agree here because the corpus is identical, and the corpus is
+exactly what changes between commits.
+
 ### What the sweep found
 
 Over the first 600 files of the seeded permutation: **4964/4968 = 99%**.
