@@ -1,18 +1,83 @@
-corpus files: 10560
-iterations=3 stabilized=true bound_reached=false percent=100 (53/53)
-embedded grammar: files=2 blocks=2
+corpus files: 10653
+iterations=12 stabilized=true bound_reached=false percent=100 (191/191)
+embedded grammar: files=1 blocks=8
 -- iteration 0 => 100%
-   docs/associative-tech-stack.md [markdown] 100% (9/9)
-   docs/case-studies/issue-870/agent-cli-evidence/agent-stderr-second.log [text] 100% (8/8)
+   docs/case-studies/issue-410/raw-data/web-capture/README.md [markdown] 100% (9/9)
+   experiments/issue_493_ocr_check.mjs [javascript] 100% (9/9)
 -- iteration 1 => 100%
-   docs/case-studies/issue-686/agent-cli-session-associative-learning.json [json] 100% (9/9)
-   experiments/issue-386-worker-user-intent-parity.mjs [javascript] 100% (9/9)
+   docs/case-studies/issue-559/raw-data/upstream/repo-linksplatform-mem-rs.json [json] 100% (8/8)
+   docs/case-studies/issue-493/raw-data/binance-ethusdt-2024-summary.json [json] 100% (8/8)
 -- iteration 2 => 100%
-   dev/log/issues/681/pulls/684/code/agentic_coding/driver.rs [rust] 100% (9/9)
-   docs/case-studies/issue-324/universal-solver-roadmap.md [markdown] 100% (9/9)
-== sweep over 600 files: 4964/4968 criteria
+   data/cache/wiktionary/en/carrots.lino [links_notation] 100% (8/8)
+   dev/log/issues/798/pulls/799/templates/js-ai-driven-development-pipeline-template/scripts/create-github-release.mjs [javascript] 100% (9/9)
+-- iteration 3 => 100%
+   dev/log/issues/781/pulls/803/real-cli/agent/dialogs/dialog_813709ca61d82c38.jsonl [text] 100% (8/8)
+   docs/case-studies/issue-711/raw-data/collector-history.txt [text] 100% (7/7)
+-- iteration 4 => 100%
+   docs/case-studies/issue-428/raw-data/pr-429.json [json] 100% (9/9)
+   docs/case-studies/issue-226/raw-data/check-i18n.log [text] 100% (7/7)
+-- iteration 5 => 100%
+   desktop/build/entitlements.mac.plist [text] 100% (7/7)
+   docs/case-studies/issue-842/self-hosting-census/workspace-census/src/protocol_policy.lino [links_notation] 100% (8/8)
+-- iteration 6 => 100%
+   docs/case-studies/issue-546/raw-data/issue-546-comments.json [json] 100% (8/8)
+   docs/case-studies/issue-390/raw-data/changelog-0.177.0-metrics.json [json] 100% (8/8)
+-- iteration 7 => 100%
+   dev/log/issues/680/pulls/683/pull/pr-683-review-comments.json [json] 100% (8/8)
+   dev/log/issues/796/pulls/797/raw/glob-dependency-chain.txt [text] 100% (7/7)
+-- iteration 8 => 100%
+   docs/case-studies/issue-440/raw-data/cargo-test-full.log [text] 100% (8/8)
+   tests/unit/ci-cd/desktop_release_resolve.rs [rust] 100% (9/9)
+-- iteration 9 => 100%
+   data/meta/self-ast/src/coding/blueprint_data.lino [links_notation] 100% (7/7)
+   data/cache/wordnet/en/deterministic.lino [links_notation] 100% (7/7)
+-- iteration 10 => 100%
+   tests/source/attachment_context.rs [rust] 100% (9/9)
+   docs/case-studies/issue-717/bun-install.log [text] 100% (7/7)
+-- iteration 11 => 100%
+   data/cache/wordnet/en/comparing.lino [links_notation] 100% (8/8)
+   docs/case-studies/issue-195/raw-data/cargo-test-all-features.txt [text] 100% (8/8)
+   slow 16 tests/unit/ci-cd/desktop_release_resolve.rs bytes=20495 241ms
+   slow 61 src/solver_handlers/software_project.rs bytes=34156 817ms
+   slow 75 docs/case-studies/issue-559/raw-data/merged-prs-universal-solver.json bytes=97702 882ms
+   slow 83 tests/e2e/tests/issue-386.spec.js bytes=17063 272ms
+   slow 117 docs/case-studies/issue-428/raw-data/meta-language-issues.json bytes=17322 292ms
+   slow 126 tests/unit/issue_843.rs bytes=18944 361ms
+   slow 136 docs/case-studies/issue-558/raw-data/related-issues.json bytes=18104 290ms
+   slow 142 docs/case-studies/issue-10/raw-data/meta-expression-page-report.js bytes=14977 242ms
+   slow 144 tests/source/proof_engine/mod.rs bytes=34556 329ms
+   slow 158 dev/log/issues/776/pulls/794/artifacts/run-29677905727/trace/defaultSettingsView.BDKsFU3c.css bytes=110856 7823ms
+   slow 167 docs/case-studies/issue-841/tui-artifacts/path-discovery/claude-reworded/recording.svg bytes=85872 4679ms
+   slow 172 docs/case-studies/issue-24/raw-data/run-25920440588.log bytes=1134352 421ms
+   slow 174 src/anthropic.rs bytes=24076 403ms
+   slow 178 src/translation/pipeline.rs bytes=31860 710ms
+   slow 191 tests/unit/issue_916.rs bytes=27035 373ms
+   slow 196 src/web/worker/formal_ai_worker_09.js bytes=46033 1710ms
+   slow 215 src/proof_engine/presenter.rs bytes=18676 246ms
+   slow 225 dev/log/issues/776/pulls/794/sessions/019f78c9-110d-76a1-bb82-c8dd1ad4bfe4/solve.log bytes=25438537 22659ms
+   slow 228 tests/unit/agentic_surfaces.rs bytes=18985 262ms
+   slow 269 tests/source/arithmetic.rs bytes=28181 683ms
+   slow 275 docs/case-studies/issue-558/raw-data/pr-601.diff bytes=3809941 946ms
+   slow 278 src/proof_engine/decision/boolean.rs bytes=20758 338ms
+   slow 387 tests/source/solver_handlers/software_project.rs bytes=34156 766ms
+   slow 422 docs/case-studies/issue-717/raw-data/templates/js-ai-driven-development-pipeline-template/latest-release-run.json bytes=34622 1098ms
+   slow 454 src/summarization/gathering.rs bytes=23950 401ms
+   slow 472 docs/case-studies/issue-717/raw-data/templates/js-ai-driven-development-pipeline-template/latest-release-run.log bytes=1038325 437ms
+   slow 478 docs/case-studies/issue-730/raw-data/ci-logs/branch-29482019343.log bytes=5555390 2523ms
+   slow 497 docs/case-studies/issue-115/raw-data/hive-mind/pr-1816.json bytes=22232 256ms
+   slow 500 docs/case-studies/issue-781/raw-data/shopee-browser.html bytes=182563 6987ms
+   slow 515 tests/unit/issue_781.rs bytes=25009 422ms
+   slow 520 data/cache/wikidata/lexeme/L3865.json bytes=24452 376ms
+   slow 551 docs/case-studies/issue-84/template-data/js-template-release.yml bytes=23017 233ms
+   slow 578 docs/case-studies/issue-711/raw-data/cargo-test-all-first-run.log bytes=1033033 472ms
+   slow 587 dev/log/issues/781/pulls/803/github/related-pr-795.diff bytes=3109537 788ms
+   slow 591 src/self_explanation.rs bytes=13911 345ms
+   slow 592 tests/source/seed/roles/reasoning.rs bytes=30951 255ms
+== sweep over 600 files: 4940/4945 criteria
    failing criterion compression: 4
-   87% dev/log/issues/781/pulls/803/tests/final-matrix-fix-issue716.log
-   87% docs/case-studies/issue-531/raw-data/focused-traceability-test.log
-   87% docs/case-studies/issue-822/test-logs/arbitrary-json-keys-after.log
-   87% experiments/agentic_cli_matrix/recorded/agent/summarize.jsonl
+   failing criterion content_grounded: 1
+   87% dev/log/issues/781/pulls/803/tests/final-matrix-rerun-issue558.log
+   87% docs/case-studies/issue-710/raw-data/report-closed-issues-351-plus.md
+   87% docs/case-studies/issue-715/test-logs/source-placement-green.log
+   87% docs/case-studies/issue-717/agent-read-before-edit-integration-test.log
+   87% docs/case-studies/issue-730/local-ci/issue-730-rerun-4.log

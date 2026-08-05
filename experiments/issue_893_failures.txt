@@ -1,7 +1,12 @@
 docs/case-studies/issue-492/README.md [markdown] 87% (7/8) bytes=8373
    FAIL content_grounded: ungrounded=https://img.shields.io/badge/crates.io--orange
-docs/case-studies/issue-563/README.md [markdown] 100% (8/8) bytes=15422
-dev/log/issues/781/pulls/803/tests/final-matrix-fix-issue716.log [text] 87% (7/8) bytes=452
-   FAIL compression: summary_bytes=460 file_bytes=452
-docs/case-studies/issue-822/test-logs/arbitrary-json-keys-after.log [text] 87% (7/8) bytes=422
-   FAIL compression: summary_bytes=433 file_bytes=422
+docs/case-studies/issue-710/raw-data/report-closed-issues-351-plus.md [markdown] 87% (7/8) bytes=191607
+   FAIL content_grounded: ungrounded=/api//, data/cache//
+dev/log/issues/781/pulls/803/tests/final-matrix-rerun-issue558.log [text] 87% (7/8) bytes=443
+   FAIL compression: summary_bytes=452 file_bytes=443
+docs/case-studies/issue-715/test-logs/source-placement-green.log [text] 87% (7/8) bytes=401
+   FAIL compression: summary_bytes=409 file_bytes=401
+docs/case-studies/issue-717/agent-read-before-edit-integration-test.log [text] 87% (7/8) bytes=430
+   FAIL compression: summary_bytes=446 file_bytes=430
+docs/case-studies/issue-730/local-ci/issue-730-rerun-4.log [text] 87% (7/8) bytes=440
+   FAIL compression: summary_bytes=442 file_bytes=440

@@ -1,40 +1,38 @@
-seed 563 — 12 iteration(s), 196 of 197 criteria passed (99%)
-stabilized before the iteration bound; 2 Markdown embedded grammar block(s) across 1 file(s)
+seed 563 — 12 iteration(s), 191 of 191 criteria passed (100%)
+stabilized before the iteration bound; 8 Markdown embedded grammar block(s) across 1 file(s)
   iteration 0: 100%
-    docs/case-studies/issue-21/README.md [markdown] 100% (9/9)
-    docs/case-studies/issue-657/requirements.md [markdown] 100% (8/8)
+    docs/case-studies/issue-410/raw-data/web-capture/README.md [markdown] 100% (9/9)
+    experiments/issue_493_ocr_check.mjs [javascript] 100% (9/9)
   iteration 1: 100%
-    docs/case-studies/issue-428/raw-data/meta-language-release-v0.40.0.json [json] 100% (9/9)
-    tests/source/source_tests/program_plan/tests.rs [rust] 100% (9/9)
+    docs/case-studies/issue-559/raw-data/upstream/repo-linksplatform-mem-rs.json [json] 100% (8/8)
+    docs/case-studies/issue-493/raw-data/binance-ethusdt-2024-summary.json [json] 100% (8/8)
   iteration 2: 100%
-    experiments/lindera-docsrs-repro/src/main.rs [rust] 100% (8/8)
-    docs/case-studies/issue-423/raw-data/pr-424-review-comments.json [json] 100% (8/8)
+    data/cache/wiktionary/en/carrots.lino [links_notation] 100% (8/8)
+    dev/log/issues/798/pulls/799/templates/js-ai-driven-development-pipeline-template/scripts/create-github-release.mjs [javascript] 100% (9/9)
   iteration 3: 100%
-    docs/case-studies/issue-717/raw-data/actions-attest-pr-443.json [json] 100% (9/9)
-    experiments/issue_754_test_prompt.txt [text] 100% (8/8)
+    dev/log/issues/781/pulls/803/real-cli/agent/dialogs/dialog_813709ca61d82c38.jsonl [text] 100% (8/8)
+    docs/case-studies/issue-711/raw-data/collector-history.txt [text] 100% (7/7)
   iteration 4: 100%
-    docs/case-studies/issue-410/raw-data/web-capture/repo.json [json] 100% (9/9)
-    docs/case-studies/issue-559/raw-data/upstream/issues-linksplatform-mem-rs.json [json] 100% (8/8)
+    docs/case-studies/issue-428/raw-data/pr-429.json [json] 100% (9/9)
+    docs/case-studies/issue-226/raw-data/check-i18n.log [text] 100% (7/7)
   iteration 5: 100%
-    docs/case-studies/issue-819/followup/raw-data/empty-result-clients/final-complete/claude/dialogs/dialog_6c759a895ca47bfc.jsonl [text] 100% (7/7)
-    experiments/issue-781-log-timeline.rb [ruby] 100% (9/9)
+    desktop/build/entitlements.mac.plist [text] 100% (7/7)
+    docs/case-studies/issue-842/self-hosting-census/workspace-census/src/protocol_policy.lino [links_notation] 100% (8/8)
   iteration 6: 100%
-    data/cache/wordnet/en/method.json [json] 100% (9/9)
-    docs/case-studies/issue-242/raw-data/check-intent-coverage-supported-language-audit.log [text] 100% (7/7)
-  iteration 7: 94%
-    experiments/agentic_cli_matrix/recorded/agent/greeting.jsonl [text] 87% (7/8)
-      failed compression: summary_bytes=635 file_bytes=520
-    docs/case-studies/issue-24/raw-data/templates/rust-ai-driven-development-pipeline-template.json [json] 100% (9/9)
+    docs/case-studies/issue-546/raw-data/issue-546-comments.json [json] 100% (8/8)
+    docs/case-studies/issue-390/raw-data/changelog-0.177.0-metrics.json [json] 100% (8/8)
+  iteration 7: 100%
+    dev/log/issues/680/pulls/683/pull/pr-683-review-comments.json [json] 100% (8/8)
+    dev/log/issues/796/pulls/797/raw/glob-dependency-chain.txt [text] 100% (7/7)
   iteration 8: 100%
-    docs/case-studies/issue-761/agent-cli-evidence/task.txt [text] 100% (8/8)
-    data/view/en/logic.lino [links_notation] 100% (8/8)
+    docs/case-studies/issue-440/raw-data/cargo-test-full.log [text] 100% (8/8)
+    tests/unit/ci-cd/desktop_release_resolve.rs [rust] 100% (9/9)
   iteration 9: 100%
-    docs/case-studies/issue-561/template-comparison/csharp/FULL-FILE-TREE.txt [text] 100% (8/8)
-    docs/case-studies/issue-736/data/run-29214051612.json [json] 100% (8/8)
+    data/meta/self-ast/src/coding/blueprint_data.lino [links_notation] 100% (7/7)
+    data/cache/wordnet/en/deterministic.lino [links_notation] 100% (7/7)
   iteration 10: 100%
-    data/meta/self-ast/src/seed/meanings.lino [links_notation] 100% (8/8)
-    docs/case-studies/issue-715/test-logs/markov-red.log [text] 100% (8/8)
+    tests/source/attachment_context.rs [rust] 100% (9/9)
+    docs/case-studies/issue-717/bun-install.log [text] 100% (7/7)
   iteration 11: 100%
-    docs/case-studies/issue-347/raw-data/js-template-meta.json [json] 100% (8/8)
-    docs/case-studies/issue-660/agent-cli-evidence/opencode-stderr.log [text] 100% (7/7)
-baseline updated: /tmp/gh-issue-solver-1785889070162/data/summarization/quality-baseline.lino
+    data/cache/wordnet/en/comparing.lino [links_notation] 100% (8/8)
+    docs/case-studies/issue-195/raw-data/cargo-test-all-features.txt [text] 100% (8/8)
