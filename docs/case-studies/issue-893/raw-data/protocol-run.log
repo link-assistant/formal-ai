@@ -1,0 +1,12 @@
+seed 563 — 3 iteration(s), 53 of 53 criteria passed (100%)
+stabilized before the iteration bound; 2 Markdown embedded grammar block(s) across 2 file(s)
+  iteration 0: 100%
+    docs/associative-tech-stack.md [markdown] 100% (9/9)
+    docs/case-studies/issue-870/agent-cli-evidence/agent-stderr-second.log [text] 100% (8/8)
+  iteration 1: 100%
+    docs/case-studies/issue-686/agent-cli-session-associative-learning.json [json] 100% (9/9)
+    experiments/issue-386-worker-user-intent-parity.mjs [javascript] 100% (9/9)
+  iteration 2: 100%
+    dev/log/issues/681/pulls/684/code/agentic_coding/driver.rs [rust] 100% (9/9)
+    docs/case-studies/issue-324/universal-solver-roadmap.md [markdown] 100% (9/9)
+baseline updated: /tmp/gh-issue-solver-1785889070162/data/summarization/quality-baseline.lino

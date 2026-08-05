@@ -109,7 +109,8 @@ pub const CRITERIA: &[Criterion] = &[
     },
     Criterion {
         name: "meta_language_evidence",
-        description: "A valid meta-language parse is reported with its label and syntax-link count.",
+        description:
+            "A valid meta-language parse is reported with its label and syntax-link count.",
     },
     Criterion {
         name: "determinism",
@@ -154,7 +155,12 @@ impl QualityScore {
         if self.applicable == 0 {
             return 0;
         }
-        ((self.passed * 100) / self.applicable) as u32
+        // A percentage of a ratio of counts never exceeds 100, so the narrowing
+        // is exact regardless of how large the corpus grows.
+        #[allow(clippy::cast_possible_truncation)]
+        {
+            ((self.passed * 100) / self.applicable) as u32
+        }
     }
 
     /// Does this score clear the supplied floor?
@@ -249,7 +255,8 @@ impl ValidationReport {
     /// writes and `formal-ai summarization ratchet` reads back, so the committed
     /// baseline is never hand-maintained prose about a run — it is the run.
     #[must_use]
-    pub fn to_links_notation(&self) -> String {
+    pub fn to_links_notation(&self, ratchet_percent: u32) -> String {
+        let ratchet_percent = ratchet_percent.max(QUALITY_RATCHET_PERCENT);
         let mut out = String::new();
         push_lino_node(&mut out, 0, BASELINE_RECORD, None);
         let field = |out: &mut String, name: &str, value: &str| {
@@ -259,7 +266,12 @@ impl ValidationReport {
         field(&mut out, "ratchet_runner", RATCHET_RUNNER);
         field(&mut out, "ratchet_policy", RATCHET_POLICY);
         field(&mut out, "honesty_policy", HONESTY_POLICY);
-        field(&mut out, "minimum_percent", &QUALITY_RATCHET_PERCENT.to_string());
+        field(
+            &mut out,
+            "minimum_percent",
+            &QUALITY_RATCHET_PERCENT.to_string(),
+        );
+        field(&mut out, "ratchet_percent", &ratchet_percent.to_string());
         field(&mut out, "seed", &self.protocol.seed.to_string());
         field(
             &mut out,
@@ -352,8 +364,9 @@ pub const RATCHET_RUNNER: &str = "formal-ai summarization validate --append";
 
 /// The monotonic rule the baseline enforces.
 pub const RATCHET_POLICY: &str =
-    "the measured percent may never fall below the committed baseline percent, and never below \
-     the published 80 percent minimum";
+    "the measured percent may never fall below the committed ratchet_percent, which starts at \
+     the published 80 percent minimum and may only ever be raised; the recorded percent is what \
+     the committed run measured, and raising the floor to it is a deliberate reviewed edit";
 
 /// What the recorded number is, and what it is not.
 pub const HONESTY_POLICY: &str =
@@ -365,7 +378,11 @@ pub const HONESTY_POLICY: &str =
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct QualityBaseline {
     pub seed: u64,
+    /// The percent the committed run actually measured — a record, not a rule.
     pub percent: u32,
+    /// The percent the ratchet enforces. It starts at the published
+    /// [`QUALITY_RATCHET_PERCENT`] and may only ever be raised.
+    pub ratchet_percent: u32,
     pub passed_criteria: usize,
     pub applicable_criteria: usize,
     pub iterations: usize,
@@ -391,6 +408,7 @@ impl QualityBaseline {
             };
             match name {
                 "seed" => baseline.seed = value.parse().unwrap_or_default(),
+                "ratchet_percent" => baseline.ratchet_percent = value.parse().unwrap_or_default(),
                 "percent" if !saw_percent => {
                     baseline.percent = value.parse().unwrap_or_default();
                     saw_percent = true;
@@ -401,14 +419,18 @@ impl QualityBaseline {
                 }
                 "iterations" => baseline.iterations = value.parse().unwrap_or_default(),
                 "stabilized" => baseline.stabilized = value == "true",
-                "embedded_grammar_blocks" => {
-                    if baseline.embedded_grammar_blocks == 0 {
-                        baseline.embedded_grammar_blocks = value.parse().unwrap_or_default();
-                    }
+                // Only the header field counts: per-file `embedded_grammar_blocks`
+                // lines appear later in the record and must not overwrite it.
+                "embedded_grammar_blocks" if baseline.embedded_grammar_blocks == 0 => {
+                    baseline.embedded_grammar_blocks = value.parse().unwrap_or_default();
                 }
                 _ => {}
             }
         }
+        // A baseline written before the enforced floor was recorded separately,
+        // or one whose floor was edited below the published minimum, still
+        // enforces the published minimum.
+        baseline.ratchet_percent = baseline.ratchet_percent.max(QUALITY_RATCHET_PERCENT);
         saw_percent.then_some(baseline)
     }
 }
@@ -416,8 +438,16 @@ impl QualityBaseline {
 /// Every way `report` violates the ratchet, in report order. An empty result
 /// means the ratchet holds.
 ///
-/// Two rules apply, and both are absolute: the published 80% floor, and
-/// monotonicity against whatever the repository last committed.
+/// Two rules apply, and both are absolute: the published 80% floor, and the
+/// committed `ratchet_percent`, which starts at that floor and may only ever be
+/// raised.
+///
+/// The enforced floor is deliberately *not* the last measured percent. The
+/// corpus is every Git-tracked file, so it changes with every commit and the
+/// seeded draw lands on different files; pinning the floor to a lucky 100% run
+/// would turn an unlucky-but-honest draw into a red build. The measured percent
+/// is recorded next to the floor so raising the floor stays a deliberate,
+/// reviewable edit backed by evidence.
 #[must_use]
 pub fn ratchet_violations(
     report: &ValidationReport,
@@ -444,10 +474,10 @@ pub fn ratchet_violations(
         );
     }
     if let Some(baseline) = baseline {
-        if measured < baseline.percent {
+        if measured < baseline.ratchet_percent {
             violations.push(format!(
-                "measured quality {measured}% regressed below the committed baseline {}%",
-                baseline.percent
+                "measured quality {measured}% regressed below the committed ratchet {}%",
+                baseline.ratchet_percent
             ));
         }
     }
@@ -645,7 +675,11 @@ pub fn validate_repository_summarization(
         let start = index * protocol.files_per_iteration;
         let mut files = Vec::with_capacity(protocol.files_per_iteration);
         let mut iteration_score = QualityScore::default();
-        for path in ordered.iter().skip(start).take(protocol.files_per_iteration) {
+        for path in ordered
+            .iter()
+            .skip(start)
+            .take(protocol.files_per_iteration)
+        {
             let Some(entry) = corpus.iter().find(|file| file.path == *path) else {
                 continue;
             };
@@ -706,10 +740,7 @@ fn check_identity(path: &str, summary: &str) -> CriterionOutcome {
     outcome("identity_names_path", true, passed, format!("path={path}"))
 }
 
-fn check_format(
-    formalized: &RepositoryFileFormalization,
-    summary: &str,
-) -> CriterionOutcome {
+fn check_format(formalized: &RepositoryFileFormalization, summary: &str) -> CriterionOutcome {
     let label = display_file_format(&formalized.format);
     let passed = summary.contains(label);
     outcome(
@@ -809,7 +840,11 @@ fn check_compression(content: &str, summary: &str) -> CriterionOutcome {
         "compression",
         applicable,
         passed,
-        format!("summary_bytes={} file_bytes={}", summary.len(), content.len()),
+        format!(
+            "summary_bytes={} file_bytes={}",
+            summary.len(),
+            content.len()
+        ),
     )
 }
 
@@ -905,7 +940,7 @@ fn check_mode_ladder(
     )
 }
 
-fn outcome(
+const fn outcome(
     name: &'static str,
     applicable: bool,
     passed: bool,
@@ -921,7 +956,7 @@ fn outcome(
     }
 }
 
-/// Independent CommonMark fence scanner used as the metric's oracle.
+/// Independent `CommonMark` fence scanner used as the metric's oracle.
 ///
 /// This deliberately does *not* call the summarizer's own fence scanner: a
 /// criterion that asked the implementation to grade itself would pass by
@@ -940,12 +975,13 @@ fn fenced_block_languages(markdown: &str) -> Vec<String> {
             {
                 open = None;
             }
-            (Some(_), _) => {}
             (None, Some((ch, len))) => {
                 open = Some((ch, len));
                 languages.push(fence_language(&trimmed[len..]));
             }
-            (None, None) => {}
+            // A non-closing marker inside an open block, or an ordinary line
+            // outside one, is content rather than structure.
+            _ => {}
         }
     }
     languages
@@ -962,7 +998,6 @@ fn fence_marker(trimmed_line: &str) -> Option<(char, usize)> {
 
 fn fence_language(info_string: &str) -> String {
     info_string
-        .trim()
         .split_whitespace()
         .next()
         .unwrap_or_default()
@@ -974,7 +1009,8 @@ fn fence_language(info_string: &str) -> String {
 fn identifier_tokens(summary: &str) -> Vec<String> {
     let mut tokens = Vec::new();
     for raw in summary.split(|c: char| c.is_whitespace() || matches!(c, ',' | ';' | '(' | ')')) {
-        let token = raw.trim_matches(|c: char| matches!(c, '.' | ':' | '`' | '"' | '\'' | '!' | '?'));
+        let token =
+            raw.trim_matches(|c: char| matches!(c, '.' | ':' | '`' | '"' | '\'' | '!' | '?'));
         if token.len() < 4 {
             continue;
         }

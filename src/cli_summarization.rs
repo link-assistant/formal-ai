@@ -95,7 +95,10 @@ pub fn run_summarization(action: SummarizationAction) -> Result<(), Box<dyn Erro
                 if !violations.is_empty() {
                     return Err(ratchet_error(&violations).into());
                 }
-                write_baseline(&path, &report)?;
+                let floor = previous
+                    .as_ref()
+                    .map_or(QUALITY_RATCHET_PERCENT, |baseline| baseline.ratchet_percent);
+                write_baseline(&path, &report, floor)?;
                 println!("baseline updated: {}", path.display());
             }
             Ok(())
@@ -107,9 +110,11 @@ pub fn run_summarization(action: SummarizationAction) -> Result<(), Box<dyn Erro
             let root = resolve_root(repository_root);
             let path = root.join(&baseline);
             let previous = read_baseline(&path);
-            let protocol = previous.as_ref().map_or_else(SamplingProtocol::default, |
-                baseline,
-            | SamplingProtocol::default().with_seed(baseline.seed));
+            let protocol = previous
+                .as_ref()
+                .map_or_else(SamplingProtocol::default, |baseline| {
+                    SamplingProtocol::default().with_seed(baseline.seed)
+                });
             let report = measure(&root, &protocol)?;
             print_report(&report);
             let violations = ratchet_violations(&report, previous.as_ref());
@@ -118,10 +123,12 @@ pub fn run_summarization(action: SummarizationAction) -> Result<(), Box<dyn Erro
                     "summarization quality ratchet holds: {}% measured against a {}% minimum{}",
                     report.score.percent(),
                     QUALITY_RATCHET_PERCENT,
-                    previous.as_ref().map_or_else(String::new, |baseline| format!(
-                        " and a committed baseline of {}%",
-                        baseline.percent
-                    )),
+                    previous
+                        .as_ref()
+                        .map_or_else(String::new, |baseline| format!(
+                            " and a committed ratchet of {}% (last recorded run: {}%)",
+                            baseline.ratchet_percent, baseline.percent
+                        )),
                 );
                 return Ok(());
             }
@@ -178,7 +185,11 @@ fn print_report(report: &ValidationReport) {
         report.embedded_grammar_files,
     );
     for iteration in &report.iterations {
-        println!("  iteration {}: {}%", iteration.index, iteration.score.percent());
+        println!(
+            "  iteration {}: {}%",
+            iteration.index,
+            iteration.score.percent()
+        );
         for file in &iteration.files {
             println!(
                 "    {} [{}] {}% ({}/{})",
@@ -202,11 +213,15 @@ fn read_baseline(path: &Path) -> Option<QualityBaseline> {
         .and_then(QualityBaseline::parse)
 }
 
-fn write_baseline(path: &Path, report: &ValidationReport) -> Result<(), Box<dyn Error>> {
+fn write_baseline(
+    path: &Path,
+    report: &ValidationReport,
+    ratchet_percent: u32,
+) -> Result<(), Box<dyn Error>> {
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent)?;
     }
-    fs::write(path, report.to_links_notation())
+    fs::write(path, report.to_links_notation(ratchet_percent))
         .map_err(|error| format!("failed to write {}: {error}", path.display()).into())
 }
 

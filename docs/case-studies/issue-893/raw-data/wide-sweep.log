@@ -1,0 +1,18 @@
+corpus files: 10560
+iterations=3 stabilized=true bound_reached=false percent=100 (53/53)
+embedded grammar: files=2 blocks=2
+-- iteration 0 => 100%
+   docs/associative-tech-stack.md [markdown] 100% (9/9)
+   docs/case-studies/issue-870/agent-cli-evidence/agent-stderr-second.log [text] 100% (8/8)
+-- iteration 1 => 100%
+   docs/case-studies/issue-686/agent-cli-session-associative-learning.json [json] 100% (9/9)
+   experiments/issue-386-worker-user-intent-parity.mjs [javascript] 100% (9/9)
+-- iteration 2 => 100%
+   dev/log/issues/681/pulls/684/code/agentic_coding/driver.rs [rust] 100% (9/9)
+   docs/case-studies/issue-324/universal-solver-roadmap.md [markdown] 100% (9/9)
+== sweep over 600 files: 4964/4968 criteria
+   failing criterion compression: 4
+   87% dev/log/issues/781/pulls/803/tests/final-matrix-fix-issue716.log
+   87% docs/case-studies/issue-531/raw-data/focused-traceability-test.log
+   87% docs/case-studies/issue-822/test-logs/arbitrary-json-keys-after.log
+   87% experiments/agentic_cli_matrix/recorded/agent/summarize.jsonl

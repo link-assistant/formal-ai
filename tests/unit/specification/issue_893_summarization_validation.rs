@@ -70,7 +70,9 @@ fn issue_893_seeded_sampling_is_reproducible_and_seed_dependent() {
         "the sampling order must not depend on the caller's corpus order"
     );
 
-    let other = protocol.with_seed(DEFAULT_SAMPLING_SEED + 1).sampling_order(&paths);
+    let other = protocol
+        .with_seed(DEFAULT_SAMPLING_SEED + 1)
+        .sampling_order(&paths);
     assert_ne!(
         first, other,
         "a different seed must draw a different order, or the seed is not doing anything"
@@ -110,11 +112,8 @@ fn issue_893_iterations_validate_two_files_each_until_stable_or_bounded() {
         );
     }
 
-    let report = validate_repository_summarization(
-        &files,
-        &protocol,
-        &SummarizationConfig::default(),
-    );
+    let report =
+        validate_repository_summarization(&files, &protocol, &SummarizationConfig::default());
     for iteration in &report.iterations {
         assert_eq!(
             iteration.files.len(),
@@ -200,15 +199,29 @@ fn issue_893_quality_metric_is_published_and_ratcheted_at_eighty_percent() {
     );
     assert!(ratchet_violations(&report, None).is_empty());
 
-    // The ratchet is monotonic against whatever the repository last committed.
+    // The ratchet is monotonic against the committed floor — and it is the
+    // floor that binds, not the percent the last run happened to measure.
     let higher = QualityBaseline {
-        percent: report.score.percent() + 1,
+        percent: 0,
+        ratchet_percent: report.score.percent() + 1,
         ..QualityBaseline::default()
     };
     let violations = ratchet_violations(&report, Some(&higher));
     assert!(
-        violations.iter().any(|violation| violation.contains("regressed")),
-        "a score below the committed baseline must be a violation: {violations:?}"
+        violations
+            .iter()
+            .any(|violation| violation.contains("regressed")),
+        "a score below the committed ratchet must be a violation: {violations:?}"
+    );
+
+    let recorded_only = QualityBaseline {
+        percent: 100,
+        ratchet_percent: QUALITY_RATCHET_PERCENT,
+        ..QualityBaseline::default()
+    };
+    assert!(
+        ratchet_violations(&report, Some(&recorded_only)).is_empty(),
+        "a lucky previous measurement must not become the enforced floor by itself"
     );
 }
 
@@ -225,6 +238,11 @@ fn issue_893_committed_baseline_records_the_measured_run() {
         "the committed baseline records {}%, below the published {QUALITY_RATCHET_PERCENT}% floor",
         baseline.percent
     );
+    assert!(
+        baseline.ratchet_percent >= QUALITY_RATCHET_PERCENT,
+        "the committed baseline enforces {}%, below the published {QUALITY_RATCHET_PERCENT}% floor",
+        baseline.ratchet_percent
+    );
     assert_eq!(baseline.seed, DEFAULT_SAMPLING_SEED);
     assert!(baseline.applicable_criteria > 0);
     assert!(
@@ -236,6 +254,7 @@ fn issue_893_committed_baseline_records_the_measured_run() {
         "ratchet_policy",
         "honesty_policy",
         "minimum_percent",
+        "ratchet_percent",
     ] {
         assert!(
             text.contains(field),
@@ -293,7 +312,7 @@ fn issue_893_markdown_embedded_grammars_run_through_the_production_summarizer() 
     // A run that never reaches an embedded grammar cannot be certified.
     let no_markdown: Vec<CorpusFile> = corpus()
         .into_iter()
-        .filter(|file| !file.path.ends_with(".md"))
+        .filter(|file| !file.path.to_ascii_lowercase().ends_with(".md"))
         .collect();
     let run = validate_repository_summarization(
         &no_markdown,
@@ -344,11 +363,8 @@ fn issue_893_whole_task_validates_real_repository_files_against_the_ratchet() {
     }
 
     let protocol = SamplingProtocol::default();
-    let report = validate_repository_summarization(
-        &files,
-        &protocol,
-        &SummarizationConfig::default(),
-    );
+    let report =
+        validate_repository_summarization(&files, &protocol, &SummarizationConfig::default());
 
     assert!(
         report.stabilized && !report.bound_reached,
@@ -370,9 +386,10 @@ fn issue_893_whole_task_validates_real_repository_files_against_the_ratchet() {
     assert!(ratchet_violations(&report, None).is_empty());
 
     // The rendered baseline reads back as the run it describes.
-    let rendered = report.to_links_notation();
+    let rendered = report.to_links_notation(QUALITY_RATCHET_PERCENT);
     let parsed = QualityBaseline::parse(&rendered).expect("the rendered run parses as a baseline");
     assert_eq!(parsed.percent, report.score.percent());
+    assert_eq!(parsed.ratchet_percent, QUALITY_RATCHET_PERCENT);
     assert_eq!(parsed.seed, protocol.seed);
     assert_eq!(parsed.passed_criteria, report.score.passed);
     assert_eq!(parsed.applicable_criteria, report.score.applicable);
