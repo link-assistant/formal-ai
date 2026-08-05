@@ -1,4 +1,9 @@
 meanings
+  essay
+    defined-by word_surface
+    lexeme en
+      surface
+        text "essay"
   eur
     defined-by word_surface
     lexeme en
@@ -285,7 +290,7 @@ meanings
       surface
         text "file handle"
   files
-    defined-by word_surface
+    defined-by concept
     lexeme en
       surface
         text "files"
@@ -374,6 +379,11 @@ meanings
     lexeme en
       surface
         text "function catalog"
+  gate
+    defined-by concept
+    lexeme en
+      surface
+        text "gate"
   general_plan_command_capture_action
     defined-by intent
     lexeme en
@@ -414,6 +424,11 @@ meanings
     lexeme en
       surface
         text "get"
+  gets
+    defined-by concept
+    lexeme en
+      surface
+        text "gets"
   git
     defined-by token
     lexeme en
@@ -504,6 +519,11 @@ meanings
     lexeme en
       surface
         text "headlines"
+  held
+    defined-by concept
+    lexeme en
+      surface
+        text "held"
   hive-mind
     defined-by name
     lexeme en
@@ -1019,6 +1039,11 @@ meanings
     lexeme en
       surface
         text "language detection"
+  languages
+    defined-by concept
+    lexeme en
+      surface
+        text "languages"
   last_message
     defined-by concept
     lexeme en
@@ -1369,28 +1394,3 @@ meanings
     lexeme en
       surface
         text "local search mismatch requested file"
-  local_search_not_found
-    defined-by intent
-    lexeme en
-      surface
-        text "local search not found"
-  local_search_route_local
-    defined-by intent
-    lexeme en
-      surface
-        text "local search route local"
-  local_search_scope_listing
-    defined-by intent
-    lexeme en
-      surface
-        text "local search scope listing"
-  local_search_type_directory
-    defined-by intent
-    lexeme en
-      surface
-        text "local search type directory"
-  local_search_type_file
-    defined-by intent
-    lexeme en
-      surface
-        text "local search type file"

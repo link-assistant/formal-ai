@@ -1,4 +1,29 @@
 meanings
+  local_search_not_found
+    defined-by intent
+    lexeme en
+      surface
+        text "local search not found"
+  local_search_route_local
+    defined-by intent
+    lexeme en
+      surface
+        text "local search route local"
+  local_search_scope_listing
+    defined-by intent
+    lexeme en
+      surface
+        text "local search scope listing"
+  local_search_type_directory
+    defined-by intent
+    lexeme en
+      surface
+        text "local search type directory"
+  local_search_type_file
+    defined-by intent
+    lexeme en
+      surface
+        text "local search type file"
   local_shell
     defined-by word_surface
     lexeme en
@@ -219,6 +244,11 @@ meanings
     lexeme en
       surface
         text "natural"
+  next
+    defined-by concept
+    lexeme en
+      surface
+        text "next"
   nikola_tesla
     defined-by concept
     lexeme en
@@ -389,6 +419,11 @@ meanings
     lexeme en
       surface
         text "paper"
+  parity
+    defined-by concept
+    lexeme en
+      surface
+        text "parity"
   parse
     defined-by concept
     lexeme en
@@ -1359,38 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern test status phrase success zh"
-  pattern_test_status_phrase_test_passed_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase test passed en"
-  pattern_test_status_phrase_test_proyden_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase test proyden ru"
-  pattern_test_status_phrase_vy_zdes_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase vy zdes ru"
-  pattern_test_status_phrase_wo_zai_zheli_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase wo zai zheli zh"
-  pattern_test_status_phrase_ya_zdes_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase ya zdes ru"
-  pattern_wellbeing_phrase_aap_kaise_hain_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase aap kaise hain hi"
-  pattern_wellbeing_phrase_aapka_kya_haal_hai_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase aapka kya haal hai hi"

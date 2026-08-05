@@ -20,16 +20,16 @@ and no metric existed to be 80% *of*.
   (`formal-ai summarization criteria`).
 - **Protocol run** — the run the committed baseline records:
   [`raw-data/protocol-run.log`](raw-data/protocol-run.log). Seed 563, 12
-  iterations, 24 files, `191/191` criteria = 100%, stabilized at the minimum
-  sample and before the 24 iteration bound, eight Markdown embedded grammar
-  blocks drawn into iteration 0 by the stratified draw.
+  iterations, 24 files, `197/197` criteria = 100%, stabilized at the minimum
+  sample and before the 24 iteration bound, one Markdown embedded grammar
+  block drawn into iteration 0 by the stratified draw.
 - **Wide sweep** — [`raw-data/wide-sweep.log`](raw-data/wide-sweep.log). The
   stability loop stops early by design, so a separate sweep scored the first 600
-  files of the same seeded permutation over a 10,653-file corpus:
-  **4940/4945 criteria = 99%**, five failures — four `compression`, one
-  `content_grounded`.
+  files of the same seeded permutation over a 10,654-file corpus:
+  **4983/4989 criteria = 99%**, six failures, all `compression`.
 - **Failing files**, re-run individually with their evidence:
-  [`raw-data/failing-files.txt`](raw-data/failing-files.txt).
+  [`raw-data/failing-files.txt`](raw-data/failing-files.txt) — the six sweep
+  failures, plus the three `content_grounded` files below re-run by name.
 
 ## 2. Requirements
 
@@ -152,7 +152,7 @@ The first version of the protocol drew uniformly and simply refused to certify a
 run that never reached an embedded grammar. That is the right *rule* — a run
 that never exercised the recursive case has not validated it — but paired with a
 uniform draw it made requirement (d) a coin flip. Fenced Markdown is a small
-minority of a 10,653-file repository, and the bound allows
+minority of a 10,654-file repository, and the bound allows
 `24 x 2 = 48` files. CI proved it: run
 [30969709384](https://github.com/link-assistant/formal-ai/actions/runs/30969709384)
 (commit `ca1412d0`, log in
@@ -177,7 +177,7 @@ partitioned into files that can be scored on recursion and files that cannot,
 and one file from the first stratum is drawn into iteration 0. Stratified
 sampling is the standard answer to exactly this problem — a stratum too rare for
 a uniform draw of the affordable size to represent — and it costs the draw one
-promoted file, not its randomness. The other 10,652 keep their seeded order, as
+promoted file, not its randomness. The other 10,653 keep their seeded order, as
 `issue_893_markdown_embedded_grammars_run_through_the_production_summarizer`
 asserts by comparing the uniform and stratified orders element for element. That
 test also runs four different seeds over a 413-file corpus with a single fenced
@@ -209,15 +209,15 @@ formal-ai summarization ratchet
 ```
 
 ```text
-seed 563 — 12 iteration(s), 191 of 191 criteria passed (100%)
-stabilized before the iteration bound; 8 Markdown embedded grammar block(s) across 1 file(s)
+seed 563 — 12 iteration(s), 197 of 197 criteria passed (100%)
+stabilized before the iteration bound; 1 Markdown embedded grammar block(s) across 1 file(s)
 summarization quality ratchet holds: 100% measured against a 80% minimum and a
 committed ratchet of 80% (last recorded run: 100%)
 ```
 
 This draw happens to score 100%, and that is exactly the situation the two-number
 baseline exists for: the floor stays at 80 rather than following the sample up.
-The 600-file sweep below, over the same seeded permutation, still finds five
+The 600-file sweep below, over the same seeded permutation, still finds six
 failures — so a perfect 24-file draw is a fact about which files the seed
 reached, not evidence that the summarizer is defect-free.
 
@@ -254,21 +254,33 @@ twenty-four files, the same five embedded grammar blocks, the same single
 `content_grounded` failure. That is the determinism the protocol claims, now
 visible across two machines rather than asserted. It does not make the enforced
 floor safe to raise: the numbers agree there because the corpus is identical,
-and the corpus is exactly what changes between commits — a later merge of `main`
-moved the same seed onto a different twenty-four files, scoring `191/191`.
+and the corpus is exactly what changes between commits — later merges of `main`
+moved the same seed onto different twenty-four-file draws, scoring `191/191` and
+then `197/197`.
 
 ### What the sweep found
 
-Over the first 600 files of the seeded permutation: **4940/4945 = 99%**.
+Over the first 600 files of the seeded permutation: **4983/4989 = 99%**.
 
 | Failing criterion | Count | What it is |
 | --- | --- | --- |
-| `compression` | 4 | A file just above the 400-byte floor whose structured summary (path, format, size, retained content) costs a few bytes more than the file itself — e.g. `summary_bytes=452 file_bytes=443`. |
-| `content_grounded` | 1 | `docs/case-studies/issue-710/raw-data/report-closed-issues-351-plus.md` scores 87% with `ungrounded=/api//, data/cache//`. The same defect bites elsewhere: an earlier protocol run (44 files, before the draw was stratified) failed it on `experiments/agentic_cli_matrix/README.md` (`ungrounded=artifacts///, recorded//`), and `docs/case-studies/issue-492/README.md` scores 87% because the summary emits `https://img.shields.io/badge/crates.io--orange` for a source that reads `https://img.shields.io/badge/crates.io-<version>-orange?logo=rust`. |
+| `compression` | 6 | A file just above the 400-byte floor whose structured summary (path, format, size, retained content) costs a few bytes more than the file itself — e.g. `summary_bytes=426 file_bytes=424` on `dev/log/issues/776/pulls/794/raw/test-docs-policy-final.log`. |
 
-All three `content_grounded` failures are the same real defect, not a checker
-artefact, and the metric is what surfaced it — on files chosen by the seed rather
-than by me. `experiments/agentic_cli_matrix/README.md` writes `` `artifacts/<client>/<case>/` ``
+`content_grounded` failed nowhere in this sample, and that is a fact about which
+files the seed reached rather than a fix: the three files below still fail it
+today, re-run by name in
+[`raw-data/failing-files.txt`](raw-data/failing-files.txt).
+`docs/case-studies/issue-710/raw-data/report-closed-issues-351-plus.md` scores
+87% with `ungrounded=/api//, data/cache//` — it was inside the sample one corpus
+change ago; `experiments/agentic_cli_matrix/README.md` scores 88% with
+`ungrounded=artifacts///, recorded//`; and `docs/case-studies/issue-492/README.md`
+scores 87% because the summary emits
+`https://img.shields.io/badge/crates.io--orange` for a source that reads
+`https://img.shields.io/badge/crates.io-<version>-orange?logo=rust`.
+
+All three are the same real defect, not a checker artefact, and the metric is
+what surfaced it — on files chosen by the seed rather than by me.
+`experiments/agentic_cli_matrix/README.md` writes `` `artifacts/<client>/<case>/` ``
 and `` `recorded/<client>/<case>.jsonl` ``, which the summary quotes as
 `artifacts///` and `recorded//`. `strip_inline_code_and_html` in `src/summarization/markdown.rs`
 treats any `<`…`>` as an HTML tag, including inside an inline code span, so a

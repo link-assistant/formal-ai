@@ -1,0 +1,56 @@
+meanings
+  would
+    defined-by concept
+    lexeme en
+      surface
+        text "would"
+  write_program
+    defined-by intent
+    lexeme en
+      surface
+        text "write program"
+  write_program_language_unspecified
+    defined-by intent
+    lexeme en
+      surface
+        text "write program language unspecified"
+  write_program_language_unspecified_name
+    defined-by intent
+    lexeme en
+      surface
+        text "write program language unspecified name"
+  write_program_request_unspecified
+    defined-by intent
+    lexeme en
+      surface
+        text "write program request unspecified"
+  write_program_request_unspecified_name
+    defined-by intent
+    lexeme en
+      surface
+        text "write program request unspecified name"
+  write_program_skill_gap
+    defined-by intent
+    lexeme en
+      surface
+        text "write program skill gap"
+  write_program_skill_gap_name
+    defined-by intent
+    lexeme en
+      surface
+        text "write program skill gap name"
+  write_program_skill_gap_name_task_unspecified
+    defined-by intent
+    lexeme en
+      surface
+        text "write program skill gap name task unspecified"
+  writing
+    defined-by word_surface
+    lexeme en
+      surface
+        text "writing"
+  your
+    defined-by word_surface
+    lexeme en
+      surface
+        text "your"

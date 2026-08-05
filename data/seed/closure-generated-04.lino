@@ -1,4 +1,39 @@
 meanings
+  pattern_test_status_phrase_test_passed_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase test passed en"
+  pattern_test_status_phrase_test_proyden_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase test proyden ru"
+  pattern_test_status_phrase_vy_zdes_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase vy zdes ru"
+  pattern_test_status_phrase_wo_zai_zheli_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase wo zai zheli zh"
+  pattern_test_status_phrase_ya_zdes_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase ya zdes ru"
+  pattern_wellbeing_phrase_aap_kaise_hain_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase aap kaise hain hi"
+  pattern_wellbeing_phrase_aapka_kya_haal_hai_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase aapka kya haal hai hi"
   pattern_wellbeing_phrase_guode_zenmeyang_zh
     defined-by prompt_pattern
     lexeme en
@@ -444,6 +479,11 @@ meanings
     lexeme en
       surface
         text "read local file"
+  reader
+    defined-by concept
+    lexeme en
+      surface
+        text "reader"
   reads
     defined-by concept
     lexeme en
@@ -1354,43 +1394,3 @@ meanings
     lexeme en
       surface
         text "response client contract missing evidence error hi"
-  response_client_contract_missing_evidence_error_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract missing evidence error ru"
-  response_client_contract_missing_evidence_error_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract missing evidence error zh"
-  response_client_contract_parse_observation_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract parse observation error en"
-  response_client_contract_parse_observation_error_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract parse observation error hi"
-  response_client_contract_parse_observation_error_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract parse observation error ru"
-  response_client_contract_parse_observation_error_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract parse observation error zh"
-  response_client_contract_parse_transcript_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract parse transcript error en"
-  response_client_contract_parse_transcript_error_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract parse transcript error hi"

@@ -11,9 +11,11 @@
 //! - d. recursive Markdown embedded grammars exercised through the *production*
 //!   summarizer.
 
+use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::{Path, PathBuf};
 
+use formal_ai::language::registered_languages;
 use formal_ai::statement_audit::RepositoryCorpus;
 use formal_ai::summarization::validation::{
     evaluate_file, ratchet_violations, validate_repository_summarization, CorpusFile,
@@ -22,6 +24,9 @@ use formal_ai::summarization::validation::{
     DEFAULT_SAMPLING_SEED, DEFAULT_STABILITY_WINDOW, QUALITY_RATCHET_PERCENT,
 };
 use formal_ai::SummarizationConfig;
+
+/// The seed file that owns every sentence this protocol prints.
+const QUALITY_PROSE_SEED_PATH: &str = "data/seed/multilingual-responses-summarization-quality.lino";
 
 fn repository_root() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).to_path_buf()
@@ -294,6 +299,69 @@ fn issue_893_committed_baseline_records_the_measured_run() {
         assert!(
             text.contains(criterion.name),
             "the committed baseline does not publish criterion {}",
+            criterion.name
+        );
+    }
+}
+
+/// The protocol's prose lives in the seed (R379), and a seeded surface is only
+/// finished when it speaks every registered language: English, Russian, Hindi,
+/// Chinese and Spanish alike. The CLI publishes the English record, but a
+/// language registered without a record here would leave a reader of that
+/// language with an untranslated protocol, so the parity is asserted against
+/// `registered_languages()` rather than against a list written twice.
+#[test]
+fn issue_893_protocol_prose_is_seeded_in_every_registered_language() {
+    let path = repository_root().join(QUALITY_PROSE_SEED_PATH);
+    let text = fs::read_to_string(&path)
+        .unwrap_or_else(|error| panic!("failed to read {}: {error}", path.display()));
+
+    // `intent`/`language` arrive as consecutive fields of one response record,
+    // so pairing them in order needs no Links Notation parser here.
+    let mut records: BTreeMap<String, BTreeSet<String>> = BTreeMap::new();
+    let mut intent: Option<String> = None;
+    for line in text.lines() {
+        let trimmed = line.trim();
+        if let Some(value) = trimmed.strip_prefix("intent ") {
+            intent = Some(value.trim().to_owned());
+        } else if let Some(value) = trimmed.strip_prefix("language ") {
+            let intent = intent
+                .clone()
+                .unwrap_or_else(|| panic!("a language record precedes its intent: {line}"));
+            assert!(
+                records
+                    .entry(intent.clone())
+                    .or_default()
+                    .insert(value.trim().to_owned()),
+                "intent {intent} declares {} twice",
+                value.trim()
+            );
+        }
+    }
+
+    let expected: BTreeSet<String> = registered_languages()
+        .iter()
+        .map(|language| language.slug().to_owned())
+        .collect();
+    assert!(
+        !records.is_empty(),
+        "{} declares no response records",
+        path.display()
+    );
+    for (intent, languages) in &records {
+        assert_eq!(
+            languages, &expected,
+            "intent {intent} is not seeded in every registered language"
+        );
+    }
+
+    // Every criterion the CLI publishes is one of those intents, so registering
+    // a language really does reach the published surface.
+    for criterion in CRITERIA {
+        let intent = format!("{CRITERION_INTENT_PREFIX}{}", criterion.name);
+        assert!(
+            records.contains_key(&intent),
+            "criterion {} has no seeded prose under {intent}",
             criterion.name
         );
     }

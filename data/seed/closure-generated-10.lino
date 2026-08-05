@@ -1,4 +1,634 @@
 meanings
+  statement_audit_selector_exclusive
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit selector exclusive"
+  statement_audit_selector_required
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit selector required"
+  statement_audit_strength_range
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit strength range"
+  statement_audit_temperature_range
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit temperature range"
+  statement_audit_unknown_stance
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit unknown stance"
+  statement_audit_unknown_tier
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit unknown tier"
+  stay
+    defined-by concept
+    lexeme en
+      surface
+        text "stay"
+  stdout
+    defined-by word_surface
+    lexeme en
+      surface
+        text "stdout"
+  step
+    defined-by concept
+    lexeme en
+      surface
+        text "step"
+  still
+    defined-by concept
+    lexeme en
+      surface
+        text "still"
+  string
+    defined-by word_surface
+    lexeme en
+      surface
+        text "string"
+  strip_empty_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "strip empty lines"
+  struct
+    defined-by word_surface
+    lexeme en
+      surface
+        text "struct"
+  structure
+    defined-by concept
+    lexeme en
+      surface
+        text "structure"
+  structured
+    defined-by concept
+    lexeme en
+      surface
+        text "structured"
+  structured-document
+    defined-by isolation_mode
+    lexeme en
+      surface
+        text "structured document"
+  structured-knowledge
+    defined-by category
+    lexeme en
+      surface
+        text "structured knowledge"
+  structured_knowledge
+    defined-by kind
+    lexeme en
+      surface
+        text "structured knowledge"
+  study
+    defined-by concept
+    lexeme en
+      surface
+        text "study"
+  submission
+    defined-by word_surface
+    lexeme en
+      surface
+        text "submission"
+  submit
+    defined-by word_surface
+    lexeme en
+      surface
+        text "submit"
+  submit_form
+    defined-by task
+    lexeme en
+      surface
+        text "submit form"
+  substitute
+    defined-by word_surface
+    lexeme en
+      surface
+        text "substitute"
+  sudo
+    defined-by token
+    lexeme en
+      surface
+        text "sudo"
+  sum_to_ten
+    defined-by task
+    lexeme en
+      surface
+        text "sum to ten"
+  summarization
+    defined-by concept
+    lexeme en
+      surface
+        text "summarization"
+  summarization_cli_baseline_updated
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization cli baseline updated"
+  summarization_cli_baseline_write_failed
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization cli baseline write failed"
+  summarization_cli_criteria_minimum
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization cli criteria minimum"
+  summarization_cli_criterion_line
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization cli criterion line"
+  summarization_cli_no_readable_files
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization cli no readable files"
+  summarization_criterion_compression
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization criterion compression"
+  summarization_criterion_content_grounded
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization criterion content grounded"
+  summarization_criterion_content_retained
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization criterion content retained"
+  summarization_criterion_determinism
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization criterion determinism"
+  summarization_criterion_embedded_grammar_recursion
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization criterion embedded grammar recursion"
+  summarization_criterion_format_declared
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization criterion format declared"
+  summarization_criterion_identity_names_path
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization criterion identity names path"
+  summarization_criterion_meta_language_evidence
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization criterion meta language evidence"
+  summarization_criterion_mode_ladder
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization criterion mode ladder"
+  summarization_criterion_size_reported
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization criterion size reported"
+  summarization_disputed_statement
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization disputed statement"
+  summarization_evidence_denied
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization evidence denied"
+  summarization_evidence_summary
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization evidence summary"
+  summarization_ratchet_below_committed
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization ratchet below committed"
+  summarization_ratchet_below_minimum
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization ratchet below minimum"
+  summarization_ratchet_committed_suffix
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization ratchet committed suffix"
+  summarization_ratchet_holds
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization ratchet holds"
+  summarization_ratchet_no_embedded_grammar
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization ratchet no embedded grammar"
+  summarization_ratchet_nothing_applicable
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization ratchet nothing applicable"
+  summarization_ratchet_violated
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization ratchet violated"
+  summarization_report_bound_reached
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization report bound reached"
+  summarization_report_failure
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization report failure"
+  summarization_report_file
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization report file"
+  summarization_report_grammar
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization report grammar"
+  summarization_report_headline
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization report headline"
+  summarization_report_iteration
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization report iteration"
+  summarization_report_stabilized
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization report stabilized"
+  summarize_conversation
+    defined-by name
+    lexeme en
+      surface
+        text "summarize conversation"
+  supplied_file_contents
+    defined-by intent
+    lexeme en
+      surface
+        text "supplied file contents"
+  supplied_file_first_line
+    defined-by intent
+    lexeme en
+      surface
+        text "supplied file first line"
+  supported
+    defined-by concept
+    lexeme en
+      surface
+        text "supported"
+  supported_languages
+    defined-by field
+    lexeme en
+      surface
+        text "supported languages"
+  surface
+    defined-by concept
+    lexeme en
+      surface
+        text "surface"
+  symbolic-ai
+    defined-by category
+    lexeme en
+      surface
+        text "symbolic ai"
+  symmetry
+    defined-by term
+    lexeme en
+      surface
+        text "symmetry"
+  tabler
+    defined-by concept
+    lexeme en
+      surface
+        text "tabler"
+  tabler-icons
+    defined-by concept
+    lexeme en
+      surface
+        text "tabler icons"
+  tag_matching_facts
+    defined-by concept
+    lexeme en
+      surface
+        text "tag matching facts"
+  tail
+    defined-by token
+    lexeme en
+      surface
+        text "tail"
+  tar
+    defined-by token
+    lexeme en
+      surface
+        text "tar"
+  task_atomicity_no
+    defined-by intent
+    lexeme en
+      surface
+        text "task atomicity no"
+  task_atomicity_yes
+    defined-by intent
+    lexeme en
+      surface
+        text "task atomicity yes"
+  task_decomposition_atomic
+    defined-by intent
+    lexeme en
+      surface
+        text "task decomposition atomic"
+  task_decomposition_depth_bound
+    defined-by intent
+    lexeme en
+      surface
+        text "task decomposition depth bound"
+  task_decomposition_depth_marker
+    defined-by intent
+    lexeme en
+      surface
+        text "task decomposition depth marker"
+  task_decomposition_lead
+    defined-by intent
+    lexeme en
+      surface
+        text "task decomposition lead"
+  task_first_step_lead
+    defined-by intent
+    lexeme en
+      surface
+        text "task first step lead"
+  task_plan_stage_implementation
+    defined-by intent
+    lexeme en
+      surface
+        text "task plan stage implementation"
+  task_plan_stage_regression
+    defined-by intent
+    lexeme en
+      surface
+        text "task plan stage regression"
+  task_plan_stage_requirements
+    defined-by intent
+    lexeme en
+      surface
+        text "task plan stage requirements"
+  task_plan_stage_verification
+    defined-by intent
+    lexeme en
+      surface
+        text "task plan stage verification"
+  test_status
+    defined-by intent
+    lexeme en
+      surface
+        text "test status"
+  than
+    defined-by concept
+    lexeme en
+      surface
+        text "than"
+  them
+    defined-by concept
+    lexeme en
+      surface
+        text "them"
+  there
+    defined-by concept
+    lexeme en
+      surface
+        text "there"
+  thinking-step
+    defined-by concept
+    lexeme en
+      surface
+        text "thinking step"
+  thinking_language_name_en
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking language name en"
+  thinking_language_name_es
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking language name es"
+  thinking_language_name_hi
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking language name hi"
+  thinking_language_name_ru
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking language name ru"
+  thinking_language_name_unknown
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking language name unknown"
+  thinking_language_name_zh
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking language name zh"
+  thinking_narrative_assistant_free_time
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative assistant free time"
+  thinking_narrative_calculation
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative calculation"
+  thinking_narrative_clarification
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative clarification"
+  thinking_narrative_code
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative code"
+  thinking_narrative_fact_lookup
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative fact lookup"
+  thinking_narrative_farewell
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative farewell"
+  thinking_narrative_generic
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative generic"
+  thinking_narrative_gratitude
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative gratitude"
+  thinking_narrative_greeting
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative greeting"
+  thinking_narrative_identity
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative identity"
+  thinking_narrative_learn_from_source
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative learn from source"
+  thinking_narrative_meta_explanation
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative meta explanation"
+  thinking_narrative_self_healing
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative self healing"
+  thinking_narrative_test_status
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative test status"
+  thinking_narrative_translation
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative translation"
+  thinking_narrative_unknown
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative unknown"
+  thinking_narrative_web
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative web"
+  thinking_narrative_wellbeing
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative wellbeing"
+  thinking_step_agent_plan
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step agent plan"
+  thinking_step_agent_plan_plain
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step agent plan plain"
+  thinking_step_clarify_formalization
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step clarify formalization"
+  thinking_step_clarify_formalization_plain
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step clarify formalization plain"
+  thinking_step_compute
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step compute"
+  thinking_step_compute_engine
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step compute engine"
+  thinking_step_compute_engine_plain
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step compute engine plain"
+  thinking_step_compute_expression
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step compute expression"
+  thinking_step_compute_plain
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step compute plain"
+  thinking_step_compute_steps
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step compute steps"
+  thinking_step_coreference_binding
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step coreference binding"
+  thinking_step_deformalize
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step deformalize"
+  thinking_step_deformalize_plain
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step deformalize plain"
+  thinking_step_detect_language
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step detect language"
+  thinking_step_dispatch_handler
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step dispatch handler"
   thinking_step_dispatch_handler_plain
     defined-by intent
     lexeme en
@@ -764,58 +1394,3 @@ meanings
     lexeme en
       surface
         text "world state remaining"
-  would
-    defined-by concept
-    lexeme en
-      surface
-        text "would"
-  write_program
-    defined-by intent
-    lexeme en
-      surface
-        text "write program"
-  write_program_language_unspecified
-    defined-by intent
-    lexeme en
-      surface
-        text "write program language unspecified"
-  write_program_language_unspecified_name
-    defined-by intent
-    lexeme en
-      surface
-        text "write program language unspecified name"
-  write_program_request_unspecified
-    defined-by intent
-    lexeme en
-      surface
-        text "write program request unspecified"
-  write_program_request_unspecified_name
-    defined-by intent
-    lexeme en
-      surface
-        text "write program request unspecified name"
-  write_program_skill_gap
-    defined-by intent
-    lexeme en
-      surface
-        text "write program skill gap"
-  write_program_skill_gap_name
-    defined-by intent
-    lexeme en
-      surface
-        text "write program skill gap name"
-  write_program_skill_gap_name_task_unspecified
-    defined-by intent
-    lexeme en
-      surface
-        text "write program skill gap name task unspecified"
-  writing
-    defined-by word_surface
-    lexeme en
-      surface
-        text "writing"
-  your
-    defined-by word_surface
-    lexeme en
-      surface
-        text "your"

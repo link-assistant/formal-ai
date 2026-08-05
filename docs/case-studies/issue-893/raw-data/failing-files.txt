@@ -1,12 +1,18 @@
+dev/log/issues/776/pulls/794/raw/test-docs-policy-final.log [text] 87% (7/8) bytes=424
+   FAIL compression: summary_bytes=426 file_bytes=424
+dev/log/issues/781/pulls/803/tests/reproduction-codex-mcp-envelope-after-fix.log [text] 87% (7/8) bytes=410
+   FAIL compression: summary_bytes=433 file_bytes=410
+docs/case-studies/issue-711/raw-data/version-script-final.log [text] 87% (7/8) bytes=466
+   FAIL compression: summary_bytes=476 file_bytes=466
+experiments/agentic_cli_matrix/recorded/codex/summarize.jsonl [text] 87% (7/8) bytes=820
+   FAIL compression: summary_bytes=851 file_bytes=820
+experiments/agentic_cli_matrix/recorded/grok/greeting.jsonl [text] 87% (7/8) bytes=497
+   FAIL compression: summary_bytes=611 file_bytes=497
+experiments/issue_712_edit_correction.patch [text] 87% (7/8) bytes=450
+   FAIL compression: summary_bytes=450 file_bytes=450
 docs/case-studies/issue-492/README.md [markdown] 87% (7/8) bytes=8373
    FAIL content_grounded: ungrounded=https://img.shields.io/badge/crates.io--orange
 docs/case-studies/issue-710/raw-data/report-closed-issues-351-plus.md [markdown] 87% (7/8) bytes=191607
    FAIL content_grounded: ungrounded=/api//, data/cache//
-dev/log/issues/781/pulls/803/tests/final-matrix-rerun-issue558.log [text] 87% (7/8) bytes=443
-   FAIL compression: summary_bytes=452 file_bytes=443
-docs/case-studies/issue-715/test-logs/source-placement-green.log [text] 87% (7/8) bytes=401
-   FAIL compression: summary_bytes=409 file_bytes=401
-docs/case-studies/issue-717/agent-read-before-edit-integration-test.log [text] 87% (7/8) bytes=430
-   FAIL compression: summary_bytes=446 file_bytes=430
-docs/case-studies/issue-730/local-ci/issue-730-rerun-4.log [text] 87% (7/8) bytes=440
-   FAIL compression: summary_bytes=442 file_bytes=440
+experiments/agentic_cli_matrix/README.md [markdown] 88% (8/9) bytes=12764
+   FAIL content_grounded: ungrounded=artifacts///, recorded//

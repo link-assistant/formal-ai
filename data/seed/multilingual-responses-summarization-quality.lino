@@ -11,123 +11,591 @@
 # (`identity_names_path`, `compression`) stay language-neutral, so the committed
 # baseline and the report parser never have to read prose.
 #
-# This is a CI and operator surface, published in English alongside the case
-# study in docs/case-studies/issue-893/. Adding a language means adding records
-# here, not editing Rust.
+# Every supported language carries every intent, the same parity the other
+# `multilingual-responses-*.lino` files are held to. The CLI and the CI gate
+# read the `en` record (`PUBLICATION_LANGUAGE` in
+# `src/summarization/validation/prose.rs`), because the report is published in
+# English next to the case study in docs/case-studies/issue-893/; the other
+# languages are here so a reader in one of them gets the same protocol, and so
+# adding a language means adding records here, not editing Rust.
 multilingual_responses
   response response_summarization_criterion_identity_names_path_en
     intent summarization_criterion_identity_names_path
     language en
     text "The summary names the file it summarizes."
+  response response_summarization_criterion_identity_names_path_ru
+    intent summarization_criterion_identity_names_path
+    language ru
+    text "Сводка называет файл, который она описывает."
+  response response_summarization_criterion_identity_names_path_hi
+    intent summarization_criterion_identity_names_path
+    language hi
+    text "सारांश उस फ़ाइल का नाम बताता है जिसका वह सारांश है।"
+  response response_summarization_criterion_identity_names_path_zh
+    intent summarization_criterion_identity_names_path
+    language zh
+    text "摘要指明它所概括的文件。"
+  response response_summarization_criterion_identity_names_path_es
+    intent summarization_criterion_identity_names_path
+    language es
+    text "El resumen nombra el archivo que resume."
   response response_summarization_criterion_format_declared_en
     intent summarization_criterion_format_declared
     language en
     text "The summary names the detected file format."
+  response response_summarization_criterion_format_declared_ru
+    intent summarization_criterion_format_declared
+    language ru
+    text "Сводка называет определённый формат файла."
+  response response_summarization_criterion_format_declared_hi
+    intent summarization_criterion_format_declared
+    language hi
+    text "सारांश पहचाने गए फ़ाइल प्रारूप का नाम बताता है।"
+  response response_summarization_criterion_format_declared_zh
+    intent summarization_criterion_format_declared
+    language zh
+    text "摘要指明检测到的文件格式。"
+  response response_summarization_criterion_format_declared_es
+    intent summarization_criterion_format_declared
+    language es
+    text "El resumen nombra el formato de archivo detectado."
   response response_summarization_criterion_size_reported_en
     intent summarization_criterion_size_reported
     language en
     text "The summary reports the file's line and byte counts."
+  response response_summarization_criterion_size_reported_ru
+    intent summarization_criterion_size_reported
+    language ru
+    text "Сводка сообщает количество строк и байт в файле."
+  response response_summarization_criterion_size_reported_hi
+    intent summarization_criterion_size_reported
+    language hi
+    text "सारांश फ़ाइल की पंक्तियों और बाइट्स की संख्या बताता है।"
+  response response_summarization_criterion_size_reported_zh
+    intent summarization_criterion_size_reported
+    language zh
+    text "摘要报告文件的行数和字节数。"
+  response response_summarization_criterion_size_reported_es
+    intent summarization_criterion_size_reported
+    language es
+    text "El resumen informa el número de líneas y bytes del archivo."
   response response_summarization_criterion_content_retained_en
     intent summarization_criterion_content_retained
     language en
     text "A file with content yields retained content statements in the summary."
+  response response_summarization_criterion_content_retained_ru
+    intent summarization_criterion_content_retained
+    language ru
+    text "Непустой файл даёт в сводке утверждения о сохранённом содержимом."
+  response response_summarization_criterion_content_retained_hi
+    intent summarization_criterion_content_retained
+    language hi
+    text "सामग्री वाली फ़ाइल सारांश में संरक्षित सामग्री के कथन देती है।"
+  response response_summarization_criterion_content_retained_zh
+    intent summarization_criterion_content_retained
+    language zh
+    text "有内容的文件在摘要中产生保留内容的陈述。"
+  response response_summarization_criterion_content_retained_es
+    intent summarization_criterion_content_retained
+    language es
+    text "Un archivo con contenido produce declaraciones de contenido retenido en el resumen."
   response response_summarization_criterion_content_grounded_en
     intent summarization_criterion_content_grounded
     language en
     text "Every identifier-shaped token in the summary occurs in the file's path or content."
+  response response_summarization_criterion_content_grounded_ru
+    intent summarization_criterion_content_grounded
+    language ru
+    text "Каждый токен вида идентификатора в сводке встречается в пути или содержимом файла."
+  response response_summarization_criterion_content_grounded_hi
+    intent summarization_criterion_content_grounded
+    language hi
+    text "सारांश में पहचानकर्ता जैसा हर टोकन फ़ाइल के पथ या सामग्री में मौजूद होता है।"
+  response response_summarization_criterion_content_grounded_zh
+    intent summarization_criterion_content_grounded
+    language zh
+    text "摘要中每个标识符形状的词元都出现在文件的路径或内容中。"
+  response response_summarization_criterion_content_grounded_es
+    intent summarization_criterion_content_grounded
+    language es
+    text "Cada token con forma de identificador del resumen aparece en la ruta o el contenido del archivo."
   response response_summarization_criterion_compression_en
     intent summarization_criterion_compression
     language en
     text "The summary is shorter than the file it summarizes."
+  response response_summarization_criterion_compression_ru
+    intent summarization_criterion_compression
+    language ru
+    text "Сводка короче файла, который она описывает."
+  response response_summarization_criterion_compression_hi
+    intent summarization_criterion_compression
+    language hi
+    text "सारांश उस फ़ाइल से छोटा है जिसका वह सारांश है।"
+  response response_summarization_criterion_compression_zh
+    intent summarization_criterion_compression
+    language zh
+    text "摘要比它所概括的文件更短。"
+  response response_summarization_criterion_compression_es
+    intent summarization_criterion_compression
+    language es
+    text "El resumen es más corto que el archivo que resume."
   response response_summarization_criterion_embedded_grammar_recursion_en
     intent summarization_criterion_embedded_grammar_recursion
     language en
     text "Every Markdown fenced block is recursively formalized and its language is named in the summary."
+  response response_summarization_criterion_embedded_grammar_recursion_ru
+    intent summarization_criterion_embedded_grammar_recursion
+    language ru
+    text "Каждый огороженный блок Markdown рекурсивно формализуется, и его язык назван в сводке."
+  response response_summarization_criterion_embedded_grammar_recursion_hi
+    intent summarization_criterion_embedded_grammar_recursion
+    language hi
+    text "हर Markdown फेंस्ड ब्लॉक पुनरावर्ती रूप से औपचारिक किया जाता है और सारांश में उसकी भाषा का नाम आता है।"
+  response response_summarization_criterion_embedded_grammar_recursion_zh
+    intent summarization_criterion_embedded_grammar_recursion
+    language zh
+    text "每个 Markdown 围栏块都被递归形式化，并在摘要中指明其语言。"
+  response response_summarization_criterion_embedded_grammar_recursion_es
+    intent summarization_criterion_embedded_grammar_recursion
+    language es
+    text "Cada bloque delimitado de Markdown se formaliza recursivamente y su lenguaje se nombra en el resumen."
   response response_summarization_criterion_meta_language_evidence_en
     intent summarization_criterion_meta_language_evidence
     language en
     text "A valid meta-language parse is reported with its label and syntax-link count."
+  response response_summarization_criterion_meta_language_evidence_ru
+    intent summarization_criterion_meta_language_evidence
+    language ru
+    text "Корректный разбор метаязыка сообщается вместе с его меткой и числом синтаксических связей."
+  response response_summarization_criterion_meta_language_evidence_hi
+    intent summarization_criterion_meta_language_evidence
+    language hi
+    text "वैध मेटा-भाषा पार्स उसके लेबल और सिंटैक्स-लिंक संख्या के साथ बताया जाता है।"
+  response response_summarization_criterion_meta_language_evidence_zh
+    intent summarization_criterion_meta_language_evidence
+    language zh
+    text "有效的元语言解析连同其标签和语法链接数一起报告。"
+  response response_summarization_criterion_meta_language_evidence_es
+    intent summarization_criterion_meta_language_evidence
+    language es
+    text "Un análisis válido de meta-lenguaje se informa con su etiqueta y su número de enlaces de sintaxis."
   response response_summarization_criterion_determinism_en
     intent summarization_criterion_determinism
     language en
     text "Summarizing the same file twice returns byte-identical output."
+  response response_summarization_criterion_determinism_ru
+    intent summarization_criterion_determinism
+    language ru
+    text "Повторная сводка того же файла возвращает побайтово одинаковый вывод."
+  response response_summarization_criterion_determinism_hi
+    intent summarization_criterion_determinism
+    language hi
+    text "एक ही फ़ाइल का दो बार सारांश बनाने पर बाइट-समान आउटपुट मिलता है।"
+  response response_summarization_criterion_determinism_zh
+    intent summarization_criterion_determinism
+    language zh
+    text "两次概括同一文件返回逐字节相同的输出。"
+  response response_summarization_criterion_determinism_es
+    intent summarization_criterion_determinism
+    language es
+    text "Resumir el mismo archivo dos veces devuelve una salida idéntica byte a byte."
   response response_summarization_criterion_mode_ladder_en
     intent summarization_criterion_mode_ladder
     language en
     text "Short, Standard and Full summaries grow monotonically with the mode ladder."
+  response response_summarization_criterion_mode_ladder_ru
+    intent summarization_criterion_mode_ladder
+    language ru
+    text "Краткая, стандартная и полная сводки растут монотонно по лестнице режимов."
+  response response_summarization_criterion_mode_ladder_hi
+    intent summarization_criterion_mode_ladder
+    language hi
+    text "संक्षिप्त, मानक और पूर्ण सारांश मोड सीढ़ी के साथ एकदिश रूप से बढ़ते हैं।"
+  response response_summarization_criterion_mode_ladder_zh
+    intent summarization_criterion_mode_ladder
+    language zh
+    text "简短、标准和完整摘要随模式阶梯单调增长。"
+  response response_summarization_criterion_mode_ladder_es
+    intent summarization_criterion_mode_ladder
+    language es
+    text "Los resúmenes corto, estándar y completo crecen monótonamente con la escalera de modos."
   response response_summarization_ratchet_nothing_applicable_en
     intent summarization_ratchet_nothing_applicable
     language en
     text "no criterion was applicable: the run validated nothing and cannot be counted as a pass"
+  response response_summarization_ratchet_nothing_applicable_ru
+    intent summarization_ratchet_nothing_applicable
+    language ru
+    text "ни один критерий не применим: запуск ничего не проверил и не может считаться пройденным"
+  response response_summarization_ratchet_nothing_applicable_hi
+    intent summarization_ratchet_nothing_applicable
+    language hi
+    text "कोई मानदंड लागू नहीं था: इस रन ने कुछ भी सत्यापित नहीं किया और इसे उत्तीर्ण नहीं गिना जा सकता"
+  response response_summarization_ratchet_nothing_applicable_zh
+    intent summarization_ratchet_nothing_applicable
+    language zh
+    text "没有适用的标准：本次运行未验证任何内容，不能算作通过"
+  response response_summarization_ratchet_nothing_applicable_es
+    intent summarization_ratchet_nothing_applicable
+    language es
+    text "ningún criterio era aplicable: la ejecución no validó nada y no puede contarse como aprobada"
   response response_summarization_ratchet_below_minimum_en
     intent summarization_ratchet_below_minimum
     language en
     text "measured quality {measured}% is below the published minimum {minimum}%"
+  response response_summarization_ratchet_below_minimum_ru
+    intent summarization_ratchet_below_minimum
+    language ru
+    text "измеренное качество {measured}% ниже опубликованного минимума {minimum}%"
+  response response_summarization_ratchet_below_minimum_hi
+    intent summarization_ratchet_below_minimum
+    language hi
+    text "मापी गई गुणवत्ता {measured}% प्रकाशित न्यूनतम {minimum}% से कम है"
+  response response_summarization_ratchet_below_minimum_zh
+    intent summarization_ratchet_below_minimum
+    language zh
+    text "实测质量 {measured}% 低于公布的最低值 {minimum}%"
+  response response_summarization_ratchet_below_minimum_es
+    intent summarization_ratchet_below_minimum
+    language es
+    text "la calidad medida {measured}% está por debajo del mínimo publicado {minimum}%"
   response response_summarization_ratchet_no_embedded_grammar_en
     intent summarization_ratchet_no_embedded_grammar
     language en
     text "no Markdown embedded grammar block was exercised: the run never reached the recursive case the protocol exists to cover"
+  response response_summarization_ratchet_no_embedded_grammar_ru
+    intent summarization_ratchet_no_embedded_grammar
+    language ru
+    text "ни один встроенный грамматический блок Markdown не был задействован: запуск не дошёл до рекурсивного случая, ради которого существует протокол"
+  response response_summarization_ratchet_no_embedded_grammar_hi
+    intent summarization_ratchet_no_embedded_grammar
+    language hi
+    text "कोई Markdown अंतःस्थापित व्याकरण ब्लॉक नहीं चला: यह रन उस पुनरावर्ती स्थिति तक कभी नहीं पहुँचा जिसे कवर करने के लिए यह प्रोटोकॉल है"
+  response response_summarization_ratchet_no_embedded_grammar_zh
+    intent summarization_ratchet_no_embedded_grammar
+    language zh
+    text "没有执行任何 Markdown 内嵌语法块：本次运行从未到达该协议存在的目的，即递归情形"
+  response response_summarization_ratchet_no_embedded_grammar_es
+    intent summarization_ratchet_no_embedded_grammar
+    language es
+    text "no se ejercitó ningún bloque de gramática incrustada de Markdown: la ejecución nunca alcanzó el caso recursivo que el protocolo existe para cubrir"
   response response_summarization_ratchet_below_committed_en
     intent summarization_ratchet_below_committed
     language en
     text "measured quality {measured}% regressed below the committed ratchet {committed}%"
+  response response_summarization_ratchet_below_committed_ru
+    intent summarization_ratchet_below_committed
+    language ru
+    text "измеренное качество {measured}% упало ниже зафиксированного порога {committed}%"
+  response response_summarization_ratchet_below_committed_hi
+    intent summarization_ratchet_below_committed
+    language hi
+    text "मापी गई गुणवत्ता {measured}% प्रतिबद्ध रैचेट {committed}% से नीचे गिर गई"
+  response response_summarization_ratchet_below_committed_zh
+    intent summarization_ratchet_below_committed
+    language zh
+    text "实测质量 {measured}% 回退到已提交的棘轮值 {committed}% 以下"
+  response response_summarization_ratchet_below_committed_es
+    intent summarization_ratchet_below_committed
+    language es
+    text "la calidad medida {measured}% retrocedió por debajo del trinquete comprometido {committed}%"
   response response_summarization_ratchet_violated_en
     intent summarization_ratchet_violated
     language en
     text "summarization quality ratchet violated:"
+  response response_summarization_ratchet_violated_ru
+    intent summarization_ratchet_violated
+    language ru
+    text "нарушен порог качества сводок:"
+  response response_summarization_ratchet_violated_hi
+    intent summarization_ratchet_violated
+    language hi
+    text "सारांश गुणवत्ता रैचेट का उल्लंघन:"
+  response response_summarization_ratchet_violated_zh
+    intent summarization_ratchet_violated
+    language zh
+    text "摘要质量棘轮被违反："
+  response response_summarization_ratchet_violated_es
+    intent summarization_ratchet_violated
+    language es
+    text "trinquete de calidad de resumen violado:"
   response response_summarization_ratchet_committed_suffix_en
     intent summarization_ratchet_committed_suffix
     language en
     text " and a committed ratchet of {committed}% (last recorded run: {recorded}%)"
+  response response_summarization_ratchet_committed_suffix_ru
+    intent summarization_ratchet_committed_suffix
+    language ru
+    text " и зафиксированного порога {committed}% (последний записанный запуск: {recorded}%)"
+  response response_summarization_ratchet_committed_suffix_hi
+    intent summarization_ratchet_committed_suffix
+    language hi
+    text " और {committed}% के प्रतिबद्ध रैचेट के सापेक्ष (अंतिम दर्ज रन: {recorded}%)"
+  response response_summarization_ratchet_committed_suffix_zh
+    intent summarization_ratchet_committed_suffix
+    language zh
+    text "以及已提交的棘轮值 {committed}%（上次记录的运行：{recorded}%）"
+  response response_summarization_ratchet_committed_suffix_es
+    intent summarization_ratchet_committed_suffix
+    language es
+    text " y un trinquete comprometido de {committed}% (última ejecución registrada: {recorded}%)"
   response response_summarization_ratchet_holds_en
     intent summarization_ratchet_holds
     language en
     text "summarization quality ratchet holds: {measured}% measured against a {minimum}% minimum{suffix}"
+  response response_summarization_ratchet_holds_ru
+    intent summarization_ratchet_holds
+    language ru
+    text "порог качества сводок соблюдён: измерено {measured}% при минимуме {minimum}%{suffix}"
+  response response_summarization_ratchet_holds_hi
+    intent summarization_ratchet_holds
+    language hi
+    text "सारांश गुणवत्ता रैचेट कायम है: {minimum}% न्यूनतम के सापेक्ष {measured}% मापा गया{suffix}"
+  response response_summarization_ratchet_holds_zh
+    intent summarization_ratchet_holds
+    language zh
+    text "摘要质量棘轮成立：相对于 {minimum}% 的最低值实测 {measured}%{suffix}"
+  response response_summarization_ratchet_holds_es
+    intent summarization_ratchet_holds
+    language es
+    text "el trinquete de calidad de resumen se mantiene: {measured}% medido frente a un mínimo de {minimum}%{suffix}"
   response response_summarization_report_headline_en
     intent summarization_report_headline
     language en
     text "seed {seed} — {iterations} iteration(s), {passed} of {applicable} criteria passed ({percent}%)"
+  response response_summarization_report_headline_ru
+    intent summarization_report_headline
+    language ru
+    text "зерно {seed} — итераций: {iterations}, пройдено критериев {passed} из {applicable} ({percent}%)"
+  response response_summarization_report_headline_hi
+    intent summarization_report_headline
+    language hi
+    text "बीज {seed} — {iterations} पुनरावृत्ति, {applicable} में से {passed} मानदंड उत्तीर्ण ({percent}%)"
+  response response_summarization_report_headline_zh
+    intent summarization_report_headline
+    language zh
+    text "种子 {seed} — {iterations} 次迭代，{applicable} 项标准中通过 {passed} 项（{percent}%）"
+  response response_summarization_report_headline_es
+    intent summarization_report_headline
+    language es
+    text "semilla {seed} — {iterations} iteración(es), {passed} de {applicable} criterios aprobados ({percent}%)"
   response response_summarization_report_grammar_en
     intent summarization_report_grammar
     language en
     text "{stability}; {blocks} Markdown embedded grammar block(s) across {files} file(s)"
+  response response_summarization_report_grammar_ru
+    intent summarization_report_grammar
+    language ru
+    text "{stability}; встроенных грамматических блоков Markdown: {blocks} в {files} файле(ах)"
+  response response_summarization_report_grammar_hi
+    intent summarization_report_grammar
+    language hi
+    text "{stability}; {files} फ़ाइल में {blocks} Markdown अंतःस्थापित व्याकरण ब्लॉक"
+  response response_summarization_report_grammar_zh
+    intent summarization_report_grammar
+    language zh
+    text "{stability}；{files} 个文件中共 {blocks} 个 Markdown 内嵌语法块"
+  response response_summarization_report_grammar_es
+    intent summarization_report_grammar
+    language es
+    text "{stability}; {blocks} bloque(s) de gramática incrustada de Markdown en {files} archivo(s)"
   response response_summarization_report_iteration_en
     intent summarization_report_iteration
     language en
     text "  iteration {index}: {percent}%"
+  response response_summarization_report_iteration_ru
+    intent summarization_report_iteration
+    language ru
+    text "  итерация {index}: {percent}%"
+  response response_summarization_report_iteration_hi
+    intent summarization_report_iteration
+    language hi
+    text "  पुनरावृत्ति {index}: {percent}%"
+  response response_summarization_report_iteration_zh
+    intent summarization_report_iteration
+    language zh
+    text "  迭代 {index}：{percent}%"
+  response response_summarization_report_iteration_es
+    intent summarization_report_iteration
+    language es
+    text "  iteración {index}: {percent}%"
   response response_summarization_report_file_en
     intent summarization_report_file
     language en
+    text "    {path} [{format}] {percent}% ({passed}/{applicable})"
+  response response_summarization_report_file_ru
+    intent summarization_report_file
+    language ru
+    text "    {path} [{format}] {percent}% ({passed}/{applicable})"
+  response response_summarization_report_file_hi
+    intent summarization_report_file
+    language hi
+    text "    {path} [{format}] {percent}% ({passed}/{applicable})"
+  response response_summarization_report_file_zh
+    intent summarization_report_file
+    language zh
+    text "    {path} [{format}] {percent}%（{passed}/{applicable}）"
+  response response_summarization_report_file_es
+    intent summarization_report_file
+    language es
     text "    {path} [{format}] {percent}% ({passed}/{applicable})"
   response response_summarization_report_failure_en
     intent summarization_report_failure
     language en
     text "      failed {name}: {detail}"
+  response response_summarization_report_failure_ru
+    intent summarization_report_failure
+    language ru
+    text "      не пройдено {name}: {detail}"
+  response response_summarization_report_failure_hi
+    intent summarization_report_failure
+    language hi
+    text "      विफल {name}: {detail}"
+  response response_summarization_report_failure_zh
+    intent summarization_report_failure
+    language zh
+    text "      失败 {name}：{detail}"
+  response response_summarization_report_failure_es
+    intent summarization_report_failure
+    language es
+    text "      falló {name}: {detail}"
   response response_summarization_cli_criteria_minimum_en
     intent summarization_cli_criteria_minimum
     language en
     text "minimum quality ratchet: {minimum}%"
+  response response_summarization_cli_criteria_minimum_ru
+    intent summarization_cli_criteria_minimum
+    language ru
+    text "минимальный порог качества: {minimum}%"
+  response response_summarization_cli_criteria_minimum_hi
+    intent summarization_cli_criteria_minimum
+    language hi
+    text "न्यूनतम गुणवत्ता रैचेट: {minimum}%"
+  response response_summarization_cli_criteria_minimum_zh
+    intent summarization_cli_criteria_minimum
+    language zh
+    text "最低质量棘轮：{minimum}%"
+  response response_summarization_cli_criteria_minimum_es
+    intent summarization_cli_criteria_minimum
+    language es
+    text "trinquete mínimo de calidad: {minimum}%"
   response response_summarization_cli_criterion_line_en
     intent summarization_cli_criterion_line
     language en
+    text "{name} — {description}"
+  response response_summarization_cli_criterion_line_ru
+    intent summarization_cli_criterion_line
+    language ru
+    text "{name} — {description}"
+  response response_summarization_cli_criterion_line_hi
+    intent summarization_cli_criterion_line
+    language hi
+    text "{name} — {description}"
+  response response_summarization_cli_criterion_line_zh
+    intent summarization_cli_criterion_line
+    language zh
+    text "{name} — {description}"
+  response response_summarization_cli_criterion_line_es
+    intent summarization_cli_criterion_line
+    language es
     text "{name} — {description}"
   response response_summarization_cli_baseline_updated_en
     intent summarization_cli_baseline_updated
     language en
     text "baseline updated: {path}"
+  response response_summarization_cli_baseline_updated_ru
+    intent summarization_cli_baseline_updated
+    language ru
+    text "базовая линия обновлена: {path}"
+  response response_summarization_cli_baseline_updated_hi
+    intent summarization_cli_baseline_updated
+    language hi
+    text "आधाररेखा अद्यतन: {path}"
+  response response_summarization_cli_baseline_updated_zh
+    intent summarization_cli_baseline_updated
+    language zh
+    text "基线已更新：{path}"
+  response response_summarization_cli_baseline_updated_es
+    intent summarization_cli_baseline_updated
+    language es
+    text "línea base actualizada: {path}"
   response response_summarization_report_stabilized_en
     intent summarization_report_stabilized
     language en
     text "stabilized before the iteration bound"
+  response response_summarization_report_stabilized_ru
+    intent summarization_report_stabilized
+    language ru
+    text "стабилизировалось до предела итераций"
+  response response_summarization_report_stabilized_hi
+    intent summarization_report_stabilized
+    language hi
+    text "पुनरावृत्ति सीमा से पहले स्थिर हुआ"
+  response response_summarization_report_stabilized_zh
+    intent summarization_report_stabilized
+    language zh
+    text "在迭代上限之前已稳定"
+  response response_summarization_report_stabilized_es
+    intent summarization_report_stabilized
+    language es
+    text "estabilizado antes del límite de iteraciones"
   response response_summarization_report_bound_reached_en
     intent summarization_report_bound_reached
     language en
     text "reached the iteration bound without stabilizing"
+  response response_summarization_report_bound_reached_ru
+    intent summarization_report_bound_reached
+    language ru
+    text "достигнут предел итераций без стабилизации"
+  response response_summarization_report_bound_reached_hi
+    intent summarization_report_bound_reached
+    language hi
+    text "स्थिर हुए बिना पुनरावृत्ति सीमा तक पहुँचा"
+  response response_summarization_report_bound_reached_zh
+    intent summarization_report_bound_reached
+    language zh
+    text "未稳定即达到迭代上限"
+  response response_summarization_report_bound_reached_es
+    intent summarization_report_bound_reached
+    language es
+    text "alcanzó el límite de iteraciones sin estabilizarse"
   response response_summarization_cli_no_readable_files_en
     intent summarization_cli_no_readable_files
     language en
     text "no readable files found under {root}"
+  response response_summarization_cli_no_readable_files_ru
+    intent summarization_cli_no_readable_files
+    language ru
+    text "не найдено читаемых файлов в {root}"
+  response response_summarization_cli_no_readable_files_hi
+    intent summarization_cli_no_readable_files
+    language hi
+    text "{root} के अंतर्गत कोई पठनीय फ़ाइल नहीं मिली"
+  response response_summarization_cli_no_readable_files_zh
+    intent summarization_cli_no_readable_files
+    language zh
+    text "在 {root} 下未找到可读文件"
+  response response_summarization_cli_no_readable_files_es
+    intent summarization_cli_no_readable_files
+    language es
+    text "no se encontraron archivos legibles en {root}"
   response response_summarization_cli_baseline_write_failed_en
     intent summarization_cli_baseline_write_failed
     language en
     text "failed to write {path}: {error}"
+  response response_summarization_cli_baseline_write_failed_ru
+    intent summarization_cli_baseline_write_failed
+    language ru
+    text "не удалось записать {path}: {error}"
+  response response_summarization_cli_baseline_write_failed_hi
+    intent summarization_cli_baseline_write_failed
+    language hi
+    text "{path} लिखने में विफल: {error}"
+  response response_summarization_cli_baseline_write_failed_zh
+    intent summarization_cli_baseline_write_failed
+    language zh
+    text "写入 {path} 失败：{error}"
+  response response_summarization_cli_baseline_write_failed_es
+    intent summarization_cli_baseline_write_failed
+    language es
+    text "no se pudo escribir {path}: {error}"

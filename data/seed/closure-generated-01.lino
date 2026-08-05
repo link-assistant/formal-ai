@@ -319,11 +319,6 @@ meanings
     lexeme en
       surface
         text "algorithm observation missing"
-  alongside
-    defined-by concept
-    lexeme en
-      surface
-        text "alongside"
   am
     defined-by concept
     lexeme en
@@ -469,6 +464,11 @@ meanings
     lexeme en
       surface
         text "be"
+  because
+    defined-by concept
+    lexeme en
+      surface
+        text "because"
   behavior_rules_list
     defined-by intent
     lexeme en
@@ -609,6 +609,11 @@ meanings
     lexeme en
       surface
         text "capabilities more"
+  carries
+    defined-by concept
+    lexeme en
+      surface
+        text "carries"
   case
     defined-by concept
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "env"
-  essay
-    defined-by word_surface
-    lexeme en
-      surface
-        text "essay"
