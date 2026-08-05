@@ -1,4 +1,24 @@
 meanings
+  response_pattern_sequence_palindrome_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence palindrome zh"
+  response_pattern_sequence_periodic_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence periodic en"
+  response_pattern_sequence_periodic_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence periodic es"
+  response_pattern_sequence_periodic_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence periodic hi"
   response_pattern_sequence_periodic_ru
     defined-by response_template
     lexeme en
@@ -1374,23 +1394,3 @@ meanings
     lexeme en
       surface
         text "response thinking step compute engine plain zh"
-  response_thinking_step_compute_engine_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step compute engine ru"
-  response_thinking_step_compute_engine_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step compute engine zh"
-  response_thinking_step_compute_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step compute es"
-  response_thinking_step_compute_expression_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step compute expression en"

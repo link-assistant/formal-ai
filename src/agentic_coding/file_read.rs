@@ -53,19 +53,43 @@ pub(super) fn plan_file_read_step(
     let read_tool = tool_for(tool_names, Capability::Read);
     let run_tool = tool_for(tool_names, Capability::Run);
     let records = tool_result_records(messages);
+    let request = crate::protocol::latest_user_request(messages).unwrap_or_default();
 
     match task {
         FileReadTask::Direct {
             path,
             mode,
             prefer_run,
-        } => plan_direct_file_read(path, mode, *prefer_run, read_tool, run_tool, &records),
+        } => plan_direct_file_read(
+            path,
+            mode,
+            *prefer_run,
+            read_tool,
+            run_tool,
+            &records,
+            &request,
+        ),
         FileReadTask::ListThenRead {
             directory,
             selection,
             mode,
-        } => plan_list_then_read(directory, *selection, mode, read_tool, run_tool, &records),
+        } => plan_list_then_read(
+            directory, *selection, mode, read_tool, run_tool, &records, &request,
+        ),
     }
+}
+
+/// The report for a recorded step the harness itself judged failed (rung
+/// `R916-01`).
+///
+/// A read whose command exited non-zero has no contents to show: issue #905
+/// watched `cat hello.txt` exit 1 and still be answered with "Contents of
+/// `hello.txt`:" wrapped around the transport envelope, so the missing file read
+/// as an empty one. The report is the seed-localized one every other route
+/// uses, so the request's own language answers it.
+fn failed_step_answer(label: &str, raw: &str, request: &str) -> Option<String> {
+    super::tool_result::harness_reported_failure(raw)
+        .then(|| super::tool_result::render(label, raw, request))
 }
 
 fn plan_direct_file_read(
@@ -75,11 +99,24 @@ fn plan_direct_file_read(
     read_tool: Option<&str>,
     run_tool: Option<&str>,
     records: &[ToolResultRecord],
+    request: &str,
 ) -> AgenticPlan {
-    if let Some(content) = read_result_for_path(records, path)
-        .map(ToOwned::to_owned)
-        .or_else(|| run_result_for_command(records, &read_command_for(path, mode)))
-    {
+    let read_command = read_command_for(path, mode);
+    let recorded = read_result_for_path(records, path)
+        .map(|raw| (path, raw, raw.to_owned()))
+        .or_else(|| {
+            run_record_for_command(records, &read_command).map(|raw| {
+                (
+                    read_command.as_str(),
+                    raw,
+                    super::tool_result::strip_transport_envelope(raw),
+                )
+            })
+        });
+    if let Some((label, raw, content)) = recorded {
+        if let Some(failure) = failed_step_answer(label, raw, request) {
+            return AgenticPlan::Final(failure);
+        }
         return AgenticPlan::Final(file_read_final_answer(mode, &[(path.to_owned(), content)]));
     }
 
@@ -114,9 +151,10 @@ fn plan_list_then_read(
     read_tool: Option<&str>,
     run_tool: Option<&str>,
     records: &[ToolResultRecord],
+    request: &str,
 ) -> AgenticPlan {
     let list_command = list_files_command(directory);
-    let Some(listing) = run_result_for_command(records, &list_command) else {
+    let Some(raw_listing) = run_record_for_command(records, &list_command) else {
         if let Some(tool) = run_tool {
             return plan_one(tool, json!({ "command": list_command }).to_string());
         }
@@ -125,6 +163,10 @@ fn plan_list_then_read(
                 .to_owned(),
         );
     };
+    if let Some(failure) = failed_step_answer(&list_command, raw_listing, request) {
+        return AgenticPlan::Final(failure);
+    }
+    let listing = super::tool_result::strip_transport_envelope(raw_listing);
 
     let paths = selected_paths_from_listing(directory, &listing, selection);
     if paths.is_empty() {
@@ -132,6 +174,12 @@ fn plan_list_then_read(
     }
 
     if let Some(contents) = read_results_for_paths(records, &paths) {
+        if let Some(failure) = contents
+            .iter()
+            .find_map(|(path, raw)| failed_step_answer(path, raw, request))
+        {
+            return AgenticPlan::Final(failure);
+        }
         return AgenticPlan::Final(file_read_final_answer(mode, &contents));
     }
 
@@ -159,10 +207,16 @@ fn plan_list_then_read(
         } else {
             read_command_for(&paths[0], mode)
         };
-        if let Some(content) = run_result_for_command(records, &command) {
+        if let Some(raw) = run_record_for_command(records, &command) {
+            if let Some(failure) = failed_step_answer(&command, raw, request) {
+                return AgenticPlan::Final(failure);
+            }
             return AgenticPlan::Final(file_read_final_answer(
                 mode,
-                &[(paths.join(", "), content)],
+                &[(
+                    paths.join(", "),
+                    super::tool_result::strip_transport_envelope(raw),
+                )],
             ));
         }
         return plan_one(tool, json!({ "command": command }).to_string());
@@ -464,14 +518,20 @@ fn read_results_for_paths(
     Some(out)
 }
 
-fn run_result_for_command(records: &[ToolResultRecord], command: &str) -> Option<String> {
+/// The recorded run result for `command`, exactly as the harness reported it.
+///
+/// Callers that only want the command's own text strip the transport envelope
+/// themselves; callers that have to judge whether the step *succeeded* need the
+/// envelope intact, because the `Exit Code:` field is what it carries (rung
+/// `R916-01`).
+fn run_record_for_command<'a>(records: &'a [ToolResultRecord], command: &str) -> Option<&'a str> {
     records
         .iter()
         .find(|record| {
             record.capability == Some(Capability::Run)
                 && command_argument(&record.arguments) == Some(command)
         })
-        .map(|record| super::tool_result::strip_transport_envelope(&record.content))
+        .map(|record| record.content.as_str())
 }
 
 /// The shell command a recorded run call carried.

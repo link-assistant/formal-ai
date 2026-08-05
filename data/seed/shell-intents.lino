@@ -78,6 +78,70 @@ shell_intents
       scope 在代码中
       scope 在源码中
       scope 在仓库中
+  statement_copulas
+    language en
+      copula is
+      copula are
+      copula was
+      copula were
+      copula "will be"
+    language ru
+      copula есть
+      copula была
+      copula было
+      copula "—"
+    language hi
+      copula है
+      copula हैं
+      copula था
+    language zh
+      copula 是
+      copula 为
+  question_markers
+    language en
+      marker "?"
+      marker what
+      marker "what's"
+      marker which
+      marker when
+      marker where
+      marker who
+      marker how
+      marker show
+      marker tell
+      marker print
+      marker give
+    language ru
+      marker "?"
+      marker какое
+      marker какая
+      marker какой
+      marker когда
+      marker где
+      marker кто
+      marker сколько
+      marker покажи
+      marker выведи
+      marker скажи
+    language hi
+      marker "?"
+      marker क्या
+      marker कौन
+      marker कब
+      marker कहाँ
+      marker कितना
+      marker दिखाएँ
+      marker बताएँ
+    language zh
+      marker "?"
+      marker "？"
+      marker 什么
+      marker 哪个
+      marker 何时
+      marker 谁
+      marker 多少
+      marker 显示
+      marker 告诉
   local_path_search
     command_template "find \"{root}\"{predicate} \\( {patterns} \\) -print -quit"
     actions

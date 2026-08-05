@@ -1,4 +1,24 @@
 meanings
+  response_thinking_step_compute_engine_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step compute engine ru"
+  response_thinking_step_compute_engine_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step compute engine zh"
+  response_thinking_step_compute_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step compute es"
+  response_thinking_step_compute_expression_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step compute expression en"
   response_thinking_step_compute_expression_es
     defined-by response_template
     lexeme en
@@ -1239,6 +1259,31 @@ meanings
     lexeme en
       surface
         text "response tool result failed en"
+  response_tool_result_failed_exit_code_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result failed exit code en"
+  response_tool_result_failed_exit_code_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result failed exit code es"
+  response_tool_result_failed_exit_code_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result failed exit code hi"
+  response_tool_result_failed_exit_code_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result failed exit code ru"
+  response_tool_result_failed_exit_code_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result failed exit code zh"
   response_tool_result_failed_hi
     defined-by response_template
     lexeme en
@@ -1349,48 +1394,3 @@ meanings
     lexeme en
       surface
         text "response web search unavailable en"
-  response_web_search_unavailable_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response web search unavailable hi"
-  response_web_search_unavailable_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response web search unavailable ru"
-  response_web_search_unavailable_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response web search unavailable zh"
-  response_wellbeing_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response wellbeing en"
-  response_wellbeing_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response wellbeing hi"
-  response_wellbeing_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response wellbeing ru"
-  response_wellbeing_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response wellbeing zh"
-  response_who_is_unknown_entity_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response who is unknown entity en"
-  response_who_is_unknown_entity_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response who is unknown entity hi"

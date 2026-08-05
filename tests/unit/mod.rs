@@ -163,6 +163,7 @@ mod issue_896_component_boundaries;
 mod issue_904;
 mod issue_906_language_router;
 mod issue_908;
+mod issue_916;
 mod local_surface;
 mod memory_learning;
 mod memory_maintenance;

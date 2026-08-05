@@ -1,0 +1,122 @@
+# === WRITE-EFFECT LADDER (issue #916, epic E69) ===
+# Drive the issue #916 write-effect ladder against a live server and enforce the
+# score as a monotonic ratchet. The task ladder next door measures what an answer
+# says; this one measures what the workspace holds after the request -- every
+# planned `write_file` and `run_shell_command` is executed for real in a
+# throwaway directory, and a rung passes only when the declared effect is on
+# disk. The defects of issues #902-#909 were right-sounding answers over an
+# unchanged workspace, which no unit test and no answer-shaped ladder catches.
+#
+# BASELINE makes the run a gate in the style of the issue #408 ratchet: it fails
+# when a rung that was green goes red, when a baseline rung disappears, or when
+# any rung is currently failing. So a regression is visible on the pull request
+# that causes it rather than months later in a bug report.
+#
+# This lives outside release.yml because that file had reached the 2000-line
+# ceiling `scripts/check-file-size.rs` enforces; the `paths` filters below
+# replace what its `detect-changes` job would have provided.
+name: Write-Effect Ladder
+
+on:
+  push:
+    branches:
+      - main
+    # Duplicated below rather than shared through a YAML anchor: GitHub Actions
+    # does not expand anchors in workflow files.
+    paths:
+      - '**.rs'
+      - '**/Cargo.toml'
+      - 'Cargo.lock'
+      - 'data/seed/**'
+      - 'experiments/issue_916_write_effect_ladder/**'
+      - '.github/workflows/write-effect-ladder.yml'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - '**.rs'
+      - '**/Cargo.toml'
+      - 'Cargo.lock'
+      - 'data/seed/**'
+      - 'experiments/issue_916_write_effect_ladder/**'
+      - '.github/workflows/write-effect-ladder.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+env:
+  GIT_CONFIG_COUNT: '1'
+  GIT_CONFIG_KEY_0: init.defaultBranch
+  GIT_CONFIG_VALUE_0: main
+  CARGO_NET_RETRY: '10'
+  CARGO_HTTP_MULTIPLEXING: 'false'
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: -Dwarnings
+  CARGO_INCREMENTAL: '0'
+
+jobs:
+  write-effect-ladder:
+    name: Write-Effect Ladder (issue #916 rungs)
+    runs-on: ubuntu-latest
+    # A release build of the server plus one request/execute/observe round trip
+    # per rung; the build dominates and starts cold.
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - uses: ./.github/actions/setup-sccache
+
+      - name: Test the write-effect judge
+        run: |
+          cd experiments/issue_916_write_effect_ladder
+          python3 -m unittest -v test_ladder.py
+
+      - name: Build the server
+        run: cargo build --release --bin formal-ai
+
+      # The committed results.json is both the record of the last measurement
+      # and the floor this run must not fall below.
+      - name: Run the ladder against the committed baseline
+        env:
+          BASELINE: experiments/issue_916_write_effect_ladder/results.json
+          OUT: ${{ runner.temp }}/write-effect-results.json
+        # pipefail, or `tee` would swallow the ratchet's non-zero exit code.
+        run: |
+          set -euo pipefail
+          bash experiments/issue_916_write_effect_ladder/run_write_effect_ladder.sh \
+            | tee "${{ runner.temp }}/write-effect-ladder.log"
+
+      - name: Record the score in the run summary
+        if: always()
+        run: |
+          set -euo pipefail
+          results='${{ runner.temp }}/write-effect-results.json'
+          [ -f "$results" ] || exit 0
+          {
+            echo '### Write-effect ladder (issue #916 rungs)'
+            echo
+            python3 -c "import json,sys;s=json.load(open(sys.argv[1]))['summary'];print(f\"**{s['passed']}/{s['total']}** write-effect rungs passed.\")" "$results"
+            echo
+            echo '<details><summary>Per-rung results</summary>'
+            echo
+            echo '```'
+            cat '${{ runner.temp }}/write-effect-ladder.log'
+            echo '```'
+            echo
+            echo '</details>'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Retain the ladder results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: write-effect-ladder-results
+          path: ${{ runner.temp }}/write-effect-results.json
+          if-no-files-found: ignore

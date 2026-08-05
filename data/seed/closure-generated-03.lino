@@ -1,4 +1,14 @@
 meanings
+  match
+    defined-by concept
+    lexeme en
+      surface
+        text "match"
+  material
+    defined-by concept
+    lexeme en
+      surface
+        text "material"
   material-symbols
     defined-by concept
     lexeme en
@@ -1384,13 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern wellbeing phrase kak tvoi dela"
-  pattern_wellbeing_phrase_kak_u_tebya_dela
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase kak u tebya dela"
-  pattern_wellbeing_phrase_kak_u_vas_dela
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase kak u vas dela"

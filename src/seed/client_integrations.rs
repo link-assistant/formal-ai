@@ -104,19 +104,37 @@ pub struct ClientIntegrationGlobalConfig {
     pub toml_settings: Vec<(String, String)>,
     pub json_settings: Vec<(String, String)>,
     pub shell_env: Vec<TemplateEnv>,
-    /// Additional files the client needs before it can start headlessly, each
-    /// materialised, backed up, and restored exactly like the primary config.
-    ///
-    /// Gemini CLI is the motivating case: the exports alone leave it with no
-    /// *selected* auth type, so `--global` must also write
-    /// `~/.gemini/settings.json`.
-    pub companions: Vec<Self>,
+    /// Further files the same `--global` install must materialise.
+    pub companion_files: Vec<ClientIntegrationCompanionFile>,
     /// Startup contract this configuration must satisfy, declared apart from
     /// the settings that write it so a configured client is checked by reading
     /// the result back, not by trusting the writer.
     ///
     /// Each entry is `(kind, target)`: `env` names a variable the shell profile
     /// must export, and `json`/`toml` name `<relative path>:<dotted key>`.
+    pub headless_requirements: Vec<(String, String)>,
+}
+
+/// A second file a global install has to write for the client to start headless.
+///
+/// Shell environment alone is not always a configuration. Gemini CLI reads
+/// `GEMINI_DEFAULT_AUTH_TYPE` only as a *default* and still asks the user to pick
+/// an authentication type unless `~/.gemini/settings.json` records one, so
+/// `formal-ai with --global gemini` produced a client that could not run
+/// unattended (issue #909). The ephemeral (temp-home) path already wrote that
+/// file; this carries the same fact into the global path.
+#[derive(Debug, Clone)]
+pub struct ClientIntegrationCompanionFile {
+    /// Path relative to the user's home directory.
+    pub path: String,
+    pub format: ConfigFormat,
+    /// Suffix of the backup taken before the file is touched, so `--undo` can put
+    /// the operator's own settings back.
+    pub backup_suffix: String,
+    pub toml_settings: Vec<(String, String)>,
+    pub json_settings: Vec<(String, String)>,
+    /// Startup contract this file must satisfy once written; see
+    /// [`ClientIntegrationGlobalConfig::headless_requirements`].
     pub headless_requirements: Vec<(String, String)>,
 }
 
@@ -434,14 +452,14 @@ fn parse_global_config(node: &super::parser::LinoNode) -> Option<ClientIntegrati
         toml_settings: Vec::new(),
         json_settings: Vec::new(),
         shell_env: Vec::new(),
-        companions: Vec::new(),
+        companion_files: Vec::new(),
         headless_requirements: Vec::new(),
     };
     for child in &node.children {
         match child.name.as_str() {
             "companion" => {
-                if let Some(companion) = parse_global_config(child) {
-                    config.companions.push(companion);
+                if let Some(companion) = parse_companion_file(child) {
+                    config.companion_files.push(companion);
                 }
             }
             "headless_require" => {
@@ -468,6 +486,39 @@ fn parse_global_config(node: &super::parser::LinoNode) -> Option<ClientIntegrati
         }
     }
     Some(config)
+}
+
+fn parse_companion_file(node: &super::parser::LinoNode) -> Option<ClientIntegrationCompanionFile> {
+    let format = match ConfigFormat::from_seed(node.find_child_value("kind"))? {
+        // A companion is a settings file. Environment variables belong to the
+        // profile block the main global config already writes, so a `shell_env`
+        // companion would have nothing of its own to render.
+        ConfigFormat::ShellEnv => return None,
+        format => format,
+    };
+    let mut companion = ClientIntegrationCompanionFile {
+        path: node.id.clone(),
+        format,
+        backup_suffix: node.find_child_value("backup_suffix").to_owned(),
+        toml_settings: Vec::new(),
+        json_settings: Vec::new(),
+        headless_requirements: Vec::new(),
+    };
+    if companion.path.is_empty() {
+        return None;
+    }
+    for child in &node.children {
+        let Some((key, value)) = split_once_equals(&child.id) else {
+            continue;
+        };
+        match child.name.as_str() {
+            "toml_set" => companion.toml_settings.push((key, value)),
+            "json_set" => companion.json_settings.push((key, value)),
+            "headless_require" => companion.headless_requirements.push((key, value)),
+            _ => {}
+        }
+    }
+    Some(companion)
 }
 
 fn split_once_equals(value: &str) -> Option<(String, String)> {

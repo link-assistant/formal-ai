@@ -20,7 +20,7 @@ fn issue_909_headless_global_configuration_is_traceable() {
     let gemini_global = gemini.global_config_for("gemini");
     assert_eq!(gemini_global.format, ConfigFormat::ShellEnv);
     let settings = gemini_global
-        .companions
+        .companion_files
         .iter()
         .find(|companion| companion.path == ".gemini/settings.json")
         .expect("gemini settings companion");

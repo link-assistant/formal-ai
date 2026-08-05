@@ -2,9 +2,9 @@ self_ast_census
   target src/protocol/content.rs
   language rust
   fidelity signature
-  byte_len 7185
-  line_count 181
-  content_id source_module_c8f01edf04d1857c
+  byte_len 8347
+  line_count 204
+  content_id source_module_fe662e41841bb0ff
   symbol_count 14
   symbols
     function latest_user_request 10 21
@@ -18,6 +18,6 @@ self_ast_census
     function user_request_text_without_system_echo 132 134
     function strip_system_echo 145 163
     const MIN_ECHO 146 146
-    function strip_system_reminders 165 181
-    const OPEN 166 166
-    const CLOSE 167 167
+    const CLIENT_CONTEXT_TAGS 175 175
+    function strip_client_context_blocks 177 183
+    function strip_tagged_block 188 204

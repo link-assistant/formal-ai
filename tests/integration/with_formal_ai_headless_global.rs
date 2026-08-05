@@ -339,8 +339,14 @@ fn global_all_leaves_every_client_headless_ready_and_probed() {
     let mut checked = 0_usize;
     for integration in formal_ai::seed::client_integrations() {
         let config = &integration.global_config;
-        for node in std::iter::once(config).chain(config.companions.iter()) {
-            for (kind, target) in &node.headless_requirements {
+        let declarations = std::iter::once(&config.headless_requirements).chain(
+            config
+                .companion_files
+                .iter()
+                .map(|companion| &companion.headless_requirements),
+        );
+        for headless_requirements in declarations {
+            for (kind, target) in headless_requirements {
                 let target = render_requirement(target, &integration.default_protocol);
                 assert!(
                     requirement_is_materialised(&home, kind, &target),

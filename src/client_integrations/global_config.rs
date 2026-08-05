@@ -42,24 +42,6 @@ pub(super) fn write_global_config(
 ) -> Result<(), Box<dyn Error>> {
     let mut context = render_context(integration, args)?;
     let global_config = integration.global_config_for(&context.protocol);
-    // A client needs every file its headless start depends on, not only the
-    // one that carries the endpoint: gemini also needs the settings file that
-    // *selects* an auth type.
-    for node in std::iter::once(global_config).chain(global_config.companions.iter()) {
-        write_config_node(&integration.id, node, &mut context)?;
-    }
-    verify_written_config(integration, global_config, &context)?;
-    if args.verify {
-        probe_headless_start(integration, global_config, &context)?;
-    }
-    Ok(())
-}
-
-fn write_config_node(
-    integration_id: &str,
-    global_config: &crate::seed::ClientIntegrationGlobalConfig,
-    context: &mut RenderContext,
-) -> Result<(), Box<dyn Error>> {
     if !global_config.model_catalog_path.is_empty() {
         let catalog_path = global_config_path(&global_config.model_catalog_path)?;
         let catalog_backup = backup_path(&catalog_path, &global_config.backup_suffix);
@@ -73,12 +55,60 @@ fn write_config_node(
     let existing = fs::read_to_string(&path).unwrap_or_default();
     let next = match global_config.format {
         ConfigFormat::Toml => {
-            render_toml_settings(&global_config.toml_settings, &existing, context)?
+            render_toml_settings(&global_config.toml_settings, &existing, &context)?
         }
-        ConfigFormat::Json => merge_json_config(global_config, &existing, context)?,
+        ConfigFormat::Json => {
+            merge_json_settings(&global_config.json_settings, &existing, &context)?
+        }
         ConfigFormat::ShellEnv => {
-            merge_shell_env_config(integration_id, global_config, &existing, context)
+            merge_shell_env_config(&integration.id, global_config, &existing, &context)
         }
+    };
+    if next == existing {
+        println!(
+            "{} already configured at {}",
+            integration.id,
+            path.display()
+        );
+    } else {
+        write_file(&path, &next)?;
+        println!("configured {} at {}", integration.id, path.display());
+    }
+    for companion in &global_config.companion_files {
+        write_companion_file(&integration.id, companion, &context)?;
+    }
+    // Writing is not configuring: the client is only ready once the files read
+    // back the startup contract the seed declares (issue #909).
+    verify_written_config(integration, global_config, &context)?;
+    if args.verify {
+        probe_headless_start(integration, global_config, &context)?;
+    }
+    Ok(())
+}
+
+/// Materialise a companion settings file belonging to the same global install.
+///
+/// Environment alone is not always a configuration: gemini-cli reads
+/// `GEMINI_DEFAULT_AUTH_TYPE` as a *default* and still refuses to start headlessly
+/// unless a settings file records the selection, so `--global` reported success and
+/// the client then failed with `Invalid auth method selected.` (issue #909). The
+/// companion is backed up before it is touched, exactly like the main file, so
+/// `--undo` stays exact.
+fn write_companion_file(
+    integration_id: &str,
+    companion: &crate::seed::ClientIntegrationCompanionFile,
+    context: &RenderContext,
+) -> Result<(), Box<dyn Error>> {
+    let path = global_config_path(&companion.path)?;
+    ensure_backup(&path, &backup_path(&path, &companion.backup_suffix))?;
+    let existing = fs::read_to_string(&path).unwrap_or_default();
+    let next = match companion.format {
+        ConfigFormat::Toml => render_toml_settings(&companion.toml_settings, &existing, context)?,
+        ConfigFormat::Json => merge_json_settings(&companion.json_settings, &existing, context)?,
+        // A companion carries settings; environment belongs to the profile block the
+        // main config writes. The seed parser rejects a `shell_env` companion, so
+        // reaching here means there is nothing of its own to write.
+        ConfigFormat::ShellEnv => existing.clone(),
     };
     if next == existing {
         println!("{integration_id} already configured at {}", path.display());
@@ -111,13 +141,11 @@ pub(super) fn undo_global_config(
             restored = true;
         }
     }
-    // Companion files are part of the same configuration, so `--undo` stays
-    // exact only when their backups are restored too.
-    for companion in &global_config.companions {
+    for companion in &global_config.companion_files {
         let companion_path = global_config_path(&companion.path)?;
-        let companion_backup_path = backup_path(&companion_path, &companion.backup_suffix);
-        if companion_backup_path.exists() {
-            restore_backup(&companion_path, &companion_backup_path)?;
+        let companion_backup = backup_path(&companion_path, &companion.backup_suffix);
+        if companion_backup.exists() {
+            restore_backup(&companion_path, &companion_backup)?;
             restored = true;
         }
     }
@@ -221,8 +249,8 @@ fn table_at_path_mut<'a>(mut table: &'a mut Table, parts: &[&str]) -> &'a mut Ta
     table
 }
 
-fn merge_json_config(
-    global_config: &crate::seed::ClientIntegrationGlobalConfig,
+fn merge_json_settings(
+    settings: &[(String, String)],
     existing: &str,
     context: &RenderContext,
 ) -> Result<String, Box<dyn Error>> {
@@ -231,7 +259,7 @@ fn merge_json_config(
     } else {
         serde_json::from_str(existing)?
     };
-    let overlay = json_settings_value(&global_config.json_settings, context)?;
+    let overlay = json_settings_value(settings, context)?;
     merge_json_value(&mut base, overlay);
     Ok(format!("{}\n", serde_json::to_string_pretty(&base)?))
 }

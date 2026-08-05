@@ -1,4 +1,49 @@
 meanings
+  response_web_search_unavailable_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response web search unavailable hi"
+  response_web_search_unavailable_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response web search unavailable ru"
+  response_web_search_unavailable_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response web search unavailable zh"
+  response_wellbeing_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response wellbeing en"
+  response_wellbeing_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response wellbeing hi"
+  response_wellbeing_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response wellbeing ru"
+  response_wellbeing_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response wellbeing zh"
+  response_who_is_unknown_entity_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response who is unknown entity en"
+  response_who_is_unknown_entity_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response who is unknown entity hi"
   response_who_is_unknown_entity_ru
     defined-by response_template
     lexeme en
@@ -1349,48 +1394,3 @@ meanings
     lexeme en
       surface
         text "tool fs write"
-  tool_http_fetch
-    defined-by tool
-    lexeme en
-      surface
-        text "tool http fetch"
-  tool_http_fetch_primitive
-    defined-by tool
-    lexeme en
-      surface
-        text "tool http fetch primitive"
-  tool_http_post_primitive
-    defined-by tool
-    lexeme en
-      surface
-        text "tool http post primitive"
-  tool_import_memory
-    defined-by tool
-    lexeme en
-      surface
-        text "tool import memory"
-  tool_intent_routing
-    defined-by tool
-    lexeme en
-      surface
-        text "tool intent routing"
-  tool_process_status
-    defined-by tool
-    lexeme en
-      surface
-        text "tool process status"
-  tool_read_local_file
-    defined-by tool
-    lexeme en
-      surface
-        text "tool read local file"
-  tool_result_completed
-    defined-by intent
-    lexeme en
-      surface
-        text "tool result completed"
-  tool_result_empty_generic
-    defined-by intent
-    lexeme en
-      surface
-        text "tool result empty generic"

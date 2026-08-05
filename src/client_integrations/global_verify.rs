@@ -93,9 +93,17 @@ fn collect_requirements(
     context: &RenderContext,
 ) -> Result<Vec<Requirement>, Box<dyn Error>> {
     let mut requirements = Vec::new();
-    for node in std::iter::once(config).chain(config.companions.iter()) {
-        let node_path = global_config_path(&node.path)?;
-        for (kind, target) in &node.headless_requirements {
+    // The contract lives beside the file that has to satisfy it: the main
+    // config declares the exports, each companion declares the keys it writes.
+    let declarations = std::iter::once((&config.path, &config.headless_requirements)).chain(
+        config
+            .companion_files
+            .iter()
+            .map(|companion| (&companion.path, &companion.headless_requirements)),
+    );
+    for (path, headless_requirements) in declarations {
+        let node_path = global_config_path(path)?;
+        for (kind, target) in headless_requirements {
             let target = render_template(target, context);
             let source = if kind == "env" {
                 node_path.clone()

@@ -113,7 +113,7 @@ impl MessageContent {
     /// the task lets their keywords override the actual request that follows.
     #[must_use]
     pub fn user_request_text(&self) -> String {
-        strip_system_reminders(&self.plain_text())
+        strip_client_context_blocks(&self.plain_text())
     }
 
     /// The same text, with a reminder the client re-appended from its own system
@@ -162,20 +162,43 @@ fn strip_system_echo(request: &str, system: &str) -> String {
     request.to_owned()
 }
 
-fn strip_system_reminders(text: &str) -> String {
-    const OPEN: &str = "<system-reminder>";
-    const CLOSE: &str = "</system-reminder>";
+/// Element names a client wraps around its *own* framing.
+///
+/// None of these is the user speaking. Qwen Code marks its startup metadata with
+/// `<system-reminder>`; Gemini CLI prepends `<session_context>` — the date, the
+/// operating system and the working directory — to every single turn, and the
+/// Cline family appends `<environment_details>`. Issue #907 is what happens when
+/// that framing is routed as the request: `Today's date is …` inside Gemini's
+/// block turned *"Write a hello world program in Python."* into `date`. These are
+/// protocol markers, not natural language, so they belong here rather than in the
+/// seed vocabulary.
+const CLIENT_CONTEXT_TAGS: &[&str] = &["system-reminder", "session_context", "environment_details"];
+
+fn strip_client_context_blocks(text: &str) -> String {
+    CLIENT_CONTEXT_TAGS
+        .iter()
+        .fold(text.to_owned(), |text, tag| strip_tagged_block(&text, tag))
+        .trim()
+        .to_owned()
+}
+
+/// Drop every `<tag>…</tag>` block. An unterminated opening tag swallows the
+/// rest of the message: a client that opened a context block and never closed it
+/// is still talking about itself all the way down.
+fn strip_tagged_block(text: &str, tag: &str) -> String {
+    let open = format!("<{tag}>");
+    let close = format!("</{tag}>");
     let mut remaining = text;
     let mut request = String::new();
-    while let Some(start) = remaining.find(OPEN) {
+    while let Some(start) = remaining.find(&open) {
         request.push_str(&remaining[..start]);
-        let after_open = &remaining[start + OPEN.len()..];
-        let Some(end) = after_open.find(CLOSE) else {
+        let after_open = &remaining[start + open.len()..];
+        let Some(end) = after_open.find(&close) else {
             remaining = "";
             break;
         };
-        remaining = &after_open[end + CLOSE.len()..];
+        remaining = &after_open[end + close.len()..];
     }
     request.push_str(remaining);
-    request.trim().to_owned()
+    request
 }

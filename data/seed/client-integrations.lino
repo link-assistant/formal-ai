@@ -394,9 +394,8 @@ client_integrations
       shell_env "{protocol_base_env}={endpoint_base_url}"
       headless_require "env=GEMINI_API_KEY"
       headless_require "env={protocol_base_env}"
-      companion
+      companion ".gemini/settings.json"
         kind "json"
-        path ".gemini/settings.json"
         backup_suffix ".formal-ai.bak"
         json_set "security.auth.selectedType={google_auth_type}"
         headless_require "json=.gemini/settings.json:security.auth.selectedType"

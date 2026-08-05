@@ -60,11 +60,13 @@ write, never what a client would find.
 
 Expressed as data rather than per-client branching in `src/`:
 
-- a nested `companion` global-config node, parsed recursively by
-  `parse_global_config` and written, backed up, and undone by the same machinery
-  as the primary node — gemini's is `.gemini/settings.json` with
-  `security.auth.selectedType={google_auth_type}`;
-- `shell_env "OPENAI_MODEL={model}"` in qwen's `global` block;
+- a `companion "<path>"` global-config node, parsed by `parse_companion_file` and
+  written, backed up, and undone by `write_companion_file` alongside the primary
+  file — gemini's is `.gemini/settings.json` with
+  `security.auth.selectedType={google_auth_type}` (landed on `main` for
+  R916-08a);
+- `shell_env "OPENAI_MODEL={model}"` in qwen's `global` block (landed on `main`
+  for R916-08b);
 - a `headless_require "<kind>=<target>"` contract declared *apart* from the
   settings that write it, plus `auth_refusal "<text>"` entries in each client's
   `verification` block.
