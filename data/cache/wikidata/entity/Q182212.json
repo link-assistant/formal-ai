@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "蜘蛛人3"
+        },
+        "es": {
+          "language": "es",
+          "value": "Spider-Man 3"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "山姆·萊米執導的2007年電影"
+        },
+        "es": {
+          "language": "es",
+          "value": "película de 2007 dirigida por Sam Raimi"
         }
       },
       "aliases": {

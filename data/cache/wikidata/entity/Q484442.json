@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "蜘蛛人"
+        },
+        "es": {
+          "language": "es",
+          "value": "Spider-Man"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "山姆·萊米執導的2002年電影"
+        },
+        "es": {
+          "language": "es",
+          "value": "película de 2002 dirigida por Sam Raimi"
         }
       },
       "aliases": {
@@ -56,6 +64,12 @@
           {
             "language": "zh",
             "value": "蜘蛛俠"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Spider Man"
           }
         ]
       }

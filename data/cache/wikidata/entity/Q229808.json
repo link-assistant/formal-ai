@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "蜘蛛人：驚奇再起"
+        },
+        "es": {
+          "language": "es",
+          "value": "The Amazing Spider-Man"
         }
       },
       "descriptions": {
@@ -29,6 +33,10 @@
         "ru": {
           "language": "ru",
           "value": "американский супергеройский фильм 2012 года, режиссёр Марк Уэбб"
+        },
+        "es": {
+          "language": "es",
+          "value": "película de 2012 dirigida por Marc Webb"
         }
       },
       "aliases": {
@@ -76,6 +84,20 @@
           {
             "language": "zh",
             "value": "超凡蜘蛛侠"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Spider-Man"
+          },
+          {
+            "language": "es",
+            "value": "El Sorprendente Hombre Araña"
+          },
+          {
+            "language": "es",
+            "value": "Spider-Man Reboot"
           }
         ]
       }

@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "蜘蛛人：超越新宇宙"
+        },
+        "es": {
+          "language": "es",
+          "value": "Spider-Man: Beyond the Spider-Verse"
         }
       },
       "descriptions": {
@@ -29,6 +33,10 @@
         "ru": {
           "language": "ru",
           "value": "предстоящий американский компьютерно-анимационный супергеройский фильм"
+        },
+        "es": {
+          "language": "es",
+          "value": "película animada de 2027 dirigida por Bob Persichetti y Justin K. Thompson"
         }
       },
       "aliases": {
@@ -46,6 +54,12 @@
           {
             "language": "ru",
             "value": "Человек-паук: Через вселенные 3"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Spider-Man: Across the Spider-Verse Parte 2"
           }
         ]
       }

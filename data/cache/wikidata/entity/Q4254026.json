@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "蜘蛛人驚奇再起2：電光之戰"
+        },
+        "es": {
+          "language": "es",
+          "value": "The Amazing Spider-Man 2: Rise of Electro"
         }
       },
       "descriptions": {
@@ -29,6 +33,10 @@
         "ru": {
           "language": "ru",
           "value": "американский супергеройский фильм 2014 года, режиссёр Марк Уэбб"
+        },
+        "es": {
+          "language": "es",
+          "value": "película de 2014 dirigida por Marc Webb"
         }
       },
       "aliases": {

@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "蜘蛛人：重生日"
+        },
+        "es": {
+          "language": "es",
+          "value": "Spider-Man: Brand New Day"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "德斯汀·丹尼爾·克雷頓執導的2026年電影"
+        },
+        "es": {
+          "language": "es",
+          "value": "película de 2026 dirigida por Destin Daniel Cretton"
         }
       },
       "aliases": {

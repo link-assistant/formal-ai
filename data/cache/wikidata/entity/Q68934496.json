@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "蜘蛛侠：英雄无归"
+        },
+        "es": {
+          "language": "es",
+          "value": "Spider-Man: Sin camino a casa"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "2021年美國超級英雄電影"
+        },
+        "es": {
+          "language": "es",
+          "value": "película de 2021 dirigida por Jon Watts"
         }
       },
       "aliases": {

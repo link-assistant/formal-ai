@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "蜘蛛人：離家日"
+        },
+        "es": {
+          "language": "es",
+          "value": "Spider-Man: Far From Home"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "由漫威影業製作的2019年超級英雄電影"
+        },
+        "es": {
+          "language": "es",
+          "value": "película de 2019 dirigida por Jon Watts"
         }
       },
       "aliases": {

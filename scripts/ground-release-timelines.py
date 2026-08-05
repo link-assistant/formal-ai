@@ -36,11 +36,24 @@ import urllib.request
 from pathlib import Path
 
 USER_AGENT = "formal-ai-grounding/1.0 (https://github.com/link-assistant/formal-ai)"
-LANGUAGES = ["en", "ru", "hi", "zh"]
 SEED = Path("data/seed/release-timelines.lino")
+LANGUAGE_REGISTRY = Path("data/seed/languages.lino")
 ENTITY_CACHE = Path("data/cache/wikidata/entity")
 FETCH_ATTEMPTS = 40
 FETCH_BACKOFF_SECONDS = 15
+
+
+def supported_languages() -> list[str]:
+    """Return the registered language codes, so the registry stays the interface."""
+    codes = []
+    for line in LANGUAGE_REGISTRY.read_text(encoding="utf-8").split("\n"):
+        stripped = line.strip()
+        if stripped.startswith("language "):
+            codes.append(stripped.split(" ", 1)[1].strip())
+    return codes
+
+
+LANGUAGES = supported_languages()
 
 
 def get(url: str, accept: str = "application/json") -> bytes:

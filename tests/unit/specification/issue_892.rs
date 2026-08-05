@@ -217,6 +217,83 @@ fn the_seeded_spider_man_timeline_is_grounded_and_ordered() {
     );
 }
 
+/// Every registered language answers in its own words. The renderer falls back
+/// to English when a language has no wording, which would silently hand a Hindi,
+/// Chinese or Spanish reader an English sentence — so the seed must carry a
+/// phrasing block, a subject and localized titles for every language the
+/// registry declares, and each language's wording must be its own.
+#[test]
+fn every_registered_language_gets_its_own_release_timeline_wording() {
+    let registry = release_timelines();
+    let timeline = registry
+        .timeline("spider_man_title_role_films")
+        .expect("the Spider-Man timeline should be registered");
+    let languages: Vec<&str> = formal_ai::language::registered_languages()
+        .iter()
+        .map(|language| language.slug())
+        .collect();
+    assert!(
+        ["en", "ru", "hi", "zh", "es"]
+            .iter()
+            .all(|expected| languages.contains(expected)),
+        "the registry should still declare en, ru, hi, zh and es, got {languages:?}"
+    );
+
+    let mut headings: Vec<(&str, &str)> = Vec::new();
+    for language in &languages {
+        let phrasing = registry
+            .phrasing_for(language)
+            .expect("English wording always exists");
+        assert_eq!(
+            phrasing.language, *language,
+            "{language} answers fall back to {} wording",
+            phrasing.language
+        );
+        assert!(
+            timeline
+                .subjects
+                .iter()
+                .any(|(candidate, _)| candidate == language),
+            "the timeline subject is missing in {language}"
+        );
+        headings.push((language, phrasing.released_heading.as_str()));
+
+        let rendered =
+            release_timeline::render("spider_man_title_role_films", language, "2026-08-04")
+                .expect("every registered language should render");
+        assert!(
+            rendered.text.starts_with(
+                phrasing
+                    .released_heading
+                    .split("{subject}")
+                    .next()
+                    .unwrap_or_default()
+            ),
+            "the {language} answer should open with the {language} heading, got: {}",
+            rendered.text
+        );
+        for entry in &timeline.entries {
+            assert!(
+                entry
+                    .titles
+                    .iter()
+                    .any(|(candidate, _)| candidate == language),
+                "{} has no {language} title",
+                entry.qid
+            );
+        }
+    }
+
+    for (left, left_heading) in &headings {
+        for (right, right_heading) in &headings {
+            assert!(
+                left == right || left_heading != right_heading,
+                "the {left} and {right} headings are the same text: {left_heading:?}"
+            );
+        }
+    }
+}
+
 /// The seed must be a faithful transcription of the checked-in snapshot, not a
 /// hand-typed list that happens to look like one: every date is re-read from the
 /// SPARQL answer, every title from the entity cache, and the recorded digest is
