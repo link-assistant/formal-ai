@@ -1,38 +1,39 @@
-seed 563 — 12 iteration(s), 193 of 193 criteria passed (100%)
+seed 563 — 12 iteration(s), 198 of 199 criteria passed (99%)
 stabilized before the iteration bound; 5 Markdown embedded grammar block(s) across 1 file(s)
-  iteration 0: 100%
-    dev/log/issues/681/pulls/684/code/endpoint-dispatch-excerpts.md [markdown] 100% (9/9)
-    dev/log/issues/798/pulls/799/github/run-29691392494.json [json] 100% (9/9)
+  iteration 0: 94%
+    docs/case-studies/issue-479/template-comparison/REPORT.md [markdown] 88% (8/9)
+      failed content_grounded: ungrounded=docs/case-studies/issue-479/template-comparison//
+    docs/case-studies/issue-526/requirements.md [markdown] 100% (8/8)
   iteration 1: 100%
-    docs/case-studies/issue-890/raw-data/github/pull-review-comments.json [json] 100% (8/8)
-    docs/case-studies/issue-108/raw-data/pr-109-conversation-comments.json [json] 100% (8/8)
+    docs/case-studies/issue-957/raw-data/req-chunk-621-775.ndjson [text] 100% (8/8)
+    docs/case-studies/issue-822/test-logs/clippy.log [text] 100% (8/8)
   iteration 2: 100%
-    data/meta/self-ast/src/agentic_coding/driver.lino [links_notation] 100% (8/8)
-    docs/case-studies/issue-842/self-hosting-census/workspace-census/src/solver_handlers/installation_conversion.lino [links_notation] 100% (8/8)
+    docs/case-studies/issue-559/raw-data/link-assistant-intent-formalization-code-search.txt [text] 100% (8/8)
+    dev/log/issues/810/pulls/811/ci-logs/run-29737218421.json [json] 100% (9/9)
   iteration 3: 100%
-    docs/case-studies/issue-730/local-ci/issue-730-route-final.log [text] 100% (8/8)
-    src/web/worker/formal_ai_worker_16.js [javascript] 100% (9/9)
+    data/meta/self-ast/src/thinking_prose.lino [links_notation] 100% (8/8)
+    docs/case-studies/issue-745/agent-apply-fix.stderr.log [text] 100% (8/8)
   iteration 4: 100%
-    dev/log/issues/781/pulls/803/real-cli/four-client-final-2/opencode/dialogs/dialog_54fc52d0a621a4e3.jsonl [text] 100% (8/8)
-    data/cache/wordnet/en/installation.lino [links_notation] 100% (8/8)
+    docs/case-studies/issue-341/raw-data/pr-345.json [json] 100% (9/9)
+    data/benchmarks/local-path-discovery-suite.lino [links_notation] 100% (8/8)
   iteration 5: 100%
-    data/seed/meanings-lexicon-import-04.lino [links_notation] 100% (8/8)
-    docs/case-studies/issue-4/template-data/rust/scripts/collect-changelog.rs [rust] 100% (9/9)
+    src/attachment_context.rs [rust] 100% (9/9)
+    data/cache/wordnet/en/upload.json [json] 100% (8/8)
   iteration 6: 100%
-    data/cache/wikidata/entity/Q121769.lino [links_notation] 100% (7/7)
-    docs/case-studies/issue-112/raw-data/check-file-size.log [text] 100% (8/8)
+    data/cache/wiktionary/en/continent.json [json] 100% (9/9)
+    tests/unit/local_surface.rs [rust] 100% (9/9)
   iteration 7: 100%
-    data/cache/wordnet/en/multiply.lino [links_notation] 100% (8/8)
-    data/seed/meanings-number-constraints.lino [links_notation] 100% (8/8)
+    docs/case-studies/issue-559/raw-data/upstream/repo-link-foundation-meta-language.json [json] 100% (8/8)
+    docs/case-studies/issue-848/self-hosting-workspace-learning/generalization-fixture/formal-ai.log [text] 100% (8/8)
   iteration 8: 100%
-    tests/unit/ci-cd/workflow_task_ladder.rs [rust] 100% (9/9)
-    data/cache/wikidata/entity/Q195.lino [links_notation] 100% (8/8)
+    docs/case-studies/issue-717/raw-data/codecov-search-before-fix.log [text] 100% (8/8)
+    docs/case-studies/issue-841/self-hosting-evidence/agent-stream.jsonl [text] 100% (8/8)
   iteration 9: 100%
-    data/meta/self-ast/src/engine_responses.lino [links_notation] 100% (8/8)
-    data/cache/wordnet/en/fri.lino [links_notation] 100% (7/7)
+    tests/source/coding/catalog/tasks.rs [rust] 100% (9/9)
+    docs/case-studies/issue-410/raw-data/web-capture/search-provider-contract.txt [text] 100% (8/8)
   iteration 10: 100%
-    docs/case-studies/issue-842/self-hosting-census/workspace-census/src/solver_handlers/numeric_list/mod.lino [links_notation] 100% (8/8)
-    docs/case-studies/issue-715/opencode-run/turn-3.stderr [text] 100% (7/7)
+    data/view/en/prefix.lino [links_notation] 100% (7/7)
+    docs/case-studies/issue-232/raw-data/pr-233-reviews.json [json] 100% (8/8)
   iteration 11: 100%
-    data/view/en/summarize.lino [links_notation] 100% (7/7)
-    dev/log/issues/681/pulls/684/sessions/ce9c725d-2ec5-49b2-8ff9-677422847ab5/claude-ce9c725d-2ec5-49b2-8ff9-677422847ab5.jsonl [text] 100% (8/8)
+    src/web/docs/docs.js [javascript] 100% (9/9)
+    docs/case-studies/issue-842/self-hosting-census/workspace-census/src/context_capacity.lino [links_notation] 100% (8/8)

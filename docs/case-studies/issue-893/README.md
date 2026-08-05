@@ -20,9 +20,10 @@ and no metric existed to be 80% *of*.
   (`formal-ai summarization criteria`).
 - **Protocol run** — the run the committed baseline records:
   [`raw-data/protocol-run.log`](raw-data/protocol-run.log). Seed 563, 12
-  iterations, 24 files, `193/193` criteria = 100%, stabilized at the minimum
-  sample and before the 24 iteration bound, five Markdown embedded grammar
-  blocks drawn into iteration 0 by the stratified draw.
+  iterations, 24 files, `198/199` criteria = 99%, one `content_grounded` failure
+  on `docs/case-studies/issue-479/template-comparison/REPORT.md`, stabilized at
+  the minimum sample and before the 24 iteration bound, five Markdown embedded
+  grammar blocks drawn into iteration 0 by the stratified draw.
 - **Wide sweep** — [`raw-data/wide-sweep.log`](raw-data/wide-sweep.log). The
   stability loop stops early by design, so a separate sweep scored the first 600
   files of the same seeded permutation over a 10,560-file corpus:
@@ -111,7 +112,7 @@ free points.
 | `determinism` | Summarizing the same file twice returns byte-identical output. |
 | `mode_ladder` | Short, Standard and Full summaries grow monotonically with the mode ladder. |
 
-### Why the enforced floor is 80%, not the measured 100%
+### Why the enforced floor is 80%, not the measured percent
 
 The corpus is every Git-tracked file, so it changes with every commit and the
 seeded draw lands on different files. This is not hypothetical: the run recorded
@@ -120,9 +121,10 @@ the run recorded after the merge drew forty-four and scored `364/365` = 99%.
 Same seed, same code, different corpus. Had the floor been pinned to that first
 lucky 100%, merging `main` would have turned an honest draw into a red build. So
 the baseline records two separate numbers. `percent` is what the committed run
-measured (100, on the 24 files this draw reaches; the 600-file sweep below
-scores 99% on the same permutation, which is why one perfect run is not an
-argument for raising the floor to 100). `ratchet_percent` is what the ratchet
+measured (99, on the 24 files this draw reaches; the same protocol scored 100%
+one merge earlier, and the 600-file sweep below scores 99% on the same
+permutation — which is why no single run, perfect or not, is an argument for
+moving the floor). `ratchet_percent` is what the ratchet
 enforces (80, the
 published minimum); it may only ever be raised, and raising it is a deliberate,
 reviewed edit backed by a sweep — not an automatic consequence of one good
@@ -191,11 +193,18 @@ formal-ai summarization ratchet
 ```
 
 ```text
-seed 563 — 12 iteration(s), 193 of 193 criteria passed (100%)
+seed 563 — 12 iteration(s), 198 of 199 criteria passed (99%)
 stabilized before the iteration bound; 5 Markdown embedded grammar block(s) across 1 file(s)
-summarization quality ratchet holds: 100% measured against a 80% minimum and a
-committed ratchet of 80% (last recorded run: 100%)
+summarization quality ratchet holds: 99% measured against a 80% minimum and a
+committed ratchet of 80% (last recorded run: 99%)
 ```
+
+The one failure is left in rather than tuned away: `content_grounded` rejects
+`docs/case-studies/issue-479/template-comparison/REPORT.md` because the summary
+carries the token `docs/case-studies/issue-479/template-comparison//`, which the
+source file never contains. It is the same defect the sweep found on `/api//`
+and `github.com//` — the summarizer joins a path fragment to an empty segment —
+and it is recorded here as an open finding.
 
 The run stops at 12 iterations rather than 3 because the window is not allowed
 to end a run that has only seen six files, and it reaches an embedded grammar in
