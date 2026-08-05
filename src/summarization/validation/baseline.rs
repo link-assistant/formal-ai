@@ -3,7 +3,16 @@
 //! Split out of [`super`] to keep each file inside the repository's own
 //! thousand-line ceiling; the protocol is unchanged.
 
+use super::prose::sentence;
 use super::{ValidationReport, QUALITY_RATCHET_PERCENT};
+
+/// Seed intents for the four ways a run can fail the ratchet. The keys are
+/// language-neutral; the sentences live in
+/// `data/seed/multilingual-responses-summarization-quality.lino` (R379).
+const NOTHING_APPLICABLE: &str = "summarization_ratchet_nothing_applicable";
+const BELOW_MINIMUM: &str = "summarization_ratchet_below_minimum";
+const NO_EMBEDDED_GRAMMAR: &str = "summarization_ratchet_no_embedded_grammar";
+const BELOW_COMMITTED: &str = "summarization_ratchet_below_committed";
 
 /// Record name of the committed quality baseline document.
 pub const BASELINE_RECORD: &str = "summarization_quality_baseline";
@@ -109,28 +118,28 @@ pub fn ratchet_violations(
     let mut violations = Vec::new();
     let measured = report.score.percent();
     if report.score.applicable == 0 {
-        violations.push(
-            "no criterion was applicable: the run validated nothing and cannot be counted as a pass"
-                .to_owned(),
-        );
+        violations.push(sentence(NOTHING_APPLICABLE, &[]));
     }
     if !report.meets_ratchet() {
-        violations.push(format!(
-            "measured quality {measured}% is below the published minimum {QUALITY_RATCHET_PERCENT}%"
+        violations.push(sentence(
+            BELOW_MINIMUM,
+            &[
+                ("measured", &measured.to_string()),
+                ("minimum", &QUALITY_RATCHET_PERCENT.to_string()),
+            ],
         ));
     }
     if report.embedded_grammar_blocks == 0 {
-        violations.push(
-            "no Markdown embedded grammar block was exercised: the run never reached the \
-             recursive case the protocol exists to cover"
-                .to_owned(),
-        );
+        violations.push(sentence(NO_EMBEDDED_GRAMMAR, &[]));
     }
     if let Some(baseline) = baseline {
         if measured < baseline.ratchet_percent {
-            violations.push(format!(
-                "measured quality {measured}% regressed below the committed ratchet {}%",
-                baseline.ratchet_percent
+            violations.push(sentence(
+                BELOW_COMMITTED,
+                &[
+                    ("measured", &measured.to_string()),
+                    ("committed", &baseline.ratchet_percent.to_string()),
+                ],
             ));
         }
     }

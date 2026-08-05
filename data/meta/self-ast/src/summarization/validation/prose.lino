@@ -1,0 +1,15 @@
+self_ast_census
+  target src/summarization/validation/prose.rs
+  language rust
+  fidelity signature
+  byte_len 2723
+  line_count 64
+  content_id source_module_6be8b66c7999ffc5
+  symbol_count 6
+  symbols
+    const INTENT_PREFIX 21 21
+    const PUBLICATION_LANGUAGE 26 26
+    function index 33 42
+    static INDEX 34 34
+    function is_summarization_record 44 46
+    function sentence 54 64

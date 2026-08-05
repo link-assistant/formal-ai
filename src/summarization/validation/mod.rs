@@ -36,6 +36,7 @@
 
 mod baseline;
 mod criteria;
+mod prose;
 mod sampling;
 
 pub use baseline::{
@@ -43,6 +44,7 @@ pub use baseline::{
     RATCHET_POLICY, RATCHET_RUNNER,
 };
 pub use criteria::COMPRESSION_FLOOR_BYTES;
+pub use prose::sentence as quality_sentence;
 pub use sampling::SamplingProtocol;
 
 use criteria::{
@@ -95,58 +97,61 @@ pub const DEFAULT_MINIMUM_ITERATIONS: usize = 12;
 /// (embedded-grammar recursion on a file with no fenced blocks, for instance)
 /// is left out of that file's denominator instead of being scored as a free
 /// pass or an unfair failure.
+///
+/// Only the language-neutral `name` lives in Rust; the sentence that describes
+/// the criterion is looked up from the seed (R379), so publishing the metric in
+/// another language is a seed edit rather than a code change.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Criterion {
     /// Stable machine-readable name, used in reports and the baseline artifact.
     pub name: &'static str,
-    /// What the criterion checks, published verbatim in the case study.
-    pub description: &'static str,
 }
+
+impl Criterion {
+    /// What the criterion checks, published verbatim in the case study.
+    ///
+    /// Read from `data/seed/multilingual-responses-summarization-quality.lino`
+    /// under the intent `summarization_criterion_<name>`.
+    #[must_use]
+    pub fn description(&self) -> String {
+        prose::sentence(&format!("{CRITERION_INTENT_PREFIX}{}", self.name), &[])
+    }
+}
+
+/// Intent prefix under which each criterion's published description is seeded.
+pub const CRITERION_INTENT_PREFIX: &str = "summarization_criterion_";
 
 /// The published quality metric: every criterion a sampled file is scored on.
 pub const CRITERIA: &[Criterion] = &[
     Criterion {
         name: "identity_names_path",
-        description: "The summary names the file it summarizes.",
     },
     Criterion {
         name: "format_declared",
-        description: "The summary names the detected file format.",
     },
     Criterion {
         name: "size_reported",
-        description: "The summary reports the file's line and byte counts.",
     },
     Criterion {
         name: "content_retained",
-        description: "A file with content yields retained content statements in the summary.",
     },
     Criterion {
         name: "content_grounded",
-        description:
-            "Every identifier-shaped token in the summary occurs in the file's path or content.",
     },
     Criterion {
         name: "compression",
-        description: "The summary is shorter than the file it summarizes.",
     },
     Criterion {
         name: "embedded_grammar_recursion",
-        description: "Every Markdown fenced block is recursively formalized and its language is \
-             named in the summary.",
     },
     Criterion {
         name: "meta_language_evidence",
-        description:
-            "A valid meta-language parse is reported with its label and syntax-link count.",
     },
     Criterion {
         name: "determinism",
-        description: "Summarizing the same file twice returns byte-identical output.",
     },
     Criterion {
         name: "mode_ladder",
-        description: "Short, Standard and Full summaries grow monotonically with the mode ladder.",
     },
 ];
 

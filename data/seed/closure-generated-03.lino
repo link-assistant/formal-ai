@@ -1,4 +1,54 @@
 meanings
+  local_shell
+    defined-by word_surface
+    lexeme en
+      surface
+        text "local shell"
+  localized
+    defined-by concept
+    lexeme en
+      surface
+        text "localized"
+  locate
+    defined-by word_surface
+    lexeme en
+      surface
+        text "locate"
+  ls
+    defined-by concept
+    lexeme en
+      surface
+        text "ls"
+  manuscript
+    defined-by word_surface
+    lexeme en
+      surface
+        text "manuscript"
+  map_matches
+    defined-by concept
+    lexeme en
+      surface
+        text "map matches"
+  marie_curie
+    defined-by concept
+    lexeme en
+      surface
+        text "marie curie"
+  match
+    defined-by concept
+    lexeme en
+      surface
+        text "match"
+  material
+    defined-by concept
+    lexeme en
+      surface
+        text "material"
+  material-symbols
+    defined-by concept
+    lexeme en
+      surface
+        text "material symbols"
   mathematical-logic
     defined-by category
     lexeme en
@@ -24,6 +74,11 @@ meanings
     lexeme en
       surface
         text "mcp tool description"
+  measured
+    defined-by concept
+    lexeme en
+      surface
+        text "measured"
   memory_export_filename
     defined-by field
     lexeme en
@@ -159,6 +214,11 @@ meanings
     lexeme en
       surface
         text "narrative"
+  natural
+    defined-by concept
+    lexeme en
+      surface
+        text "natural"
   nikola_tesla
     defined-by concept
     lexeme en
@@ -304,6 +364,11 @@ meanings
     lexeme en
       surface
         text "owlbear"
+  owns
+    defined-by concept
+    lexeme en
+      surface
+        text "owns"
   pack
     defined-by word_surface
     lexeme en
@@ -329,6 +394,11 @@ meanings
     lexeme en
       surface
         text "parse"
+  parser
+    defined-by concept
+    lexeme en
+      surface
+        text "parser"
   pascal
     defined-by concept
     lexeme en
@@ -1324,73 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern wellbeing phrase aapka kya haal hai hi"
-  pattern_wellbeing_phrase_guode_zenmeyang_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase guode zenmeyang zh"
-  pattern_wellbeing_phrase_how_are_things_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase how are things en"
-  pattern_wellbeing_phrase_how_are_you_doing_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase how are you doing en"
-  pattern_wellbeing_phrase_how_are_you_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase how are you en"
-  pattern_wellbeing_phrase_how_do_you_do_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase how do you do en"
-  pattern_wellbeing_phrase_how_is_it_going_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase how is it going en"
-  pattern_wellbeing_phrase_how_s_it_going_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase how s it going en"
-  pattern_wellbeing_phrase_kaise_ho_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase kaise ho hi"
-  pattern_wellbeing_phrase_kak_dela
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase kak dela"
-  pattern_wellbeing_phrase_kak_pozhivaesh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase kak pozhivaesh"
-  pattern_wellbeing_phrase_kak_tvoi_dela
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase kak tvoi dela"
-  pattern_wellbeing_phrase_kak_u_tebya_dela
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase kak u tebya dela"
-  pattern_wellbeing_phrase_kak_u_vas_dela
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase kak u vas dela"
-  pattern_wellbeing_phrase_kak_vashi_dela
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase kak vashi dela"

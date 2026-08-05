@@ -18,8 +18,8 @@ use formal_ai::statement_audit::RepositoryCorpus;
 use formal_ai::summarization::validation::{
     evaluate_file, ratchet_violations, validate_repository_summarization, CorpusFile,
     QualityBaseline, QualityScore, SamplingProtocol, BASELINE_PATH, CRITERIA,
-    DEFAULT_FILES_PER_ITERATION, DEFAULT_MINIMUM_ITERATIONS, DEFAULT_SAMPLING_SEED,
-    DEFAULT_STABILITY_WINDOW, QUALITY_RATCHET_PERCENT,
+    CRITERION_INTENT_PREFIX, DEFAULT_FILES_PER_ITERATION, DEFAULT_MINIMUM_ITERATIONS,
+    DEFAULT_SAMPLING_SEED, DEFAULT_STABILITY_WINDOW, QUALITY_RATCHET_PERCENT,
 };
 use formal_ai::SummarizationConfig;
 
@@ -180,9 +180,18 @@ fn issue_893_quality_metric_is_published_and_ratcheted_at_eighty_percent() {
     );
     for criterion in CRITERIA {
         assert!(!criterion.name.is_empty());
+        let description = criterion.description();
         assert!(
-            criterion.description.len() > 20,
+            description.len() > 20,
             "criterion {} has no published description",
+            criterion.name
+        );
+        // A missing seed record renders as the intent itself, so this also
+        // proves the description really came from the seed (R379).
+        assert!(
+            !description.starts_with(CRITERION_INTENT_PREFIX),
+            "criterion {} has no seeded description in \
+             data/seed/multilingual-responses-summarization-quality.lino",
             criterion.name
         );
     }

@@ -2,38 +2,41 @@ self_ast_census
   target src/summarization/validation/mod.rs
   language rust
   fidelity signature
-  byte_len 20427
-  line_count 540
-  content_id source_module_b9484533c591dbf4
-  symbol_count 30
+  byte_len 20202
+  line_count 545
+  content_id source_module_0a3f4d08eb110795
+  symbol_count 33
   symbols
     module baseline 37 37
     module criteria 38 38
-    module sampling 39 39
-    const QUALITY_RATCHET_PERCENT 62 62
-    const DEFAULT_SAMPLING_SEED 66 66
-    const DEFAULT_FILES_PER_ITERATION 69 69
-    const DEFAULT_MAX_ITERATIONS 72 72
-    const DEFAULT_STABILITY_WINDOW 76 76
-    const DEFAULT_STABILITY_TOLERANCE_PERCENT 80 80
-    const DEFAULT_MINIMUM_ITERATIONS 90 90
-    struct Criterion 99 104
-    const CRITERIA 107 111
-    struct CriterionOutcome 155 163
-    struct QualityScore 168 171
-    function absorb 175 178
-    function percent 182 192
-    function meets 196 198
-    struct FileQualityReport 203 212
-    function failures 217 222
-    struct IterationReport 227 232
-    struct ValidationReport 236 248
-    function meets_ratchet 253 255
-    function sampled_paths 259 264
-    function failures 268 278
-    function to_links_notation 286 385
-    struct CorpusFile 390 393
-    function new 397 402
-    function evaluate_file 411 446
-    function validate_repository_summarization 455 511
-    function is_stable 515 540
+    module prose 39 39
+    module sampling 40 40
+    const QUALITY_RATCHET_PERCENT 64 64
+    const DEFAULT_SAMPLING_SEED 68 68
+    const DEFAULT_FILES_PER_ITERATION 71 71
+    const DEFAULT_MAX_ITERATIONS 74 74
+    const DEFAULT_STABILITY_WINDOW 78 78
+    const DEFAULT_STABILITY_TOLERANCE_PERCENT 82 82
+    const DEFAULT_MINIMUM_ITERATIONS 92 92
+    struct Criterion 105 108
+    function description 116 118
+    const CRITERION_INTENT_PREFIX 122 122
+    const CRITERIA 125 128
+    struct CriterionOutcome 160 168
+    struct QualityScore 173 176
+    function absorb 180 183
+    function percent 187 197
+    function meets 201 203
+    struct FileQualityReport 208 217
+    function failures 222 227
+    struct IterationReport 232 237
+    struct ValidationReport 241 253
+    function meets_ratchet 258 260
+    function sampled_paths 264 269
+    function failures 273 283
+    function to_links_notation 291 390
+    struct CorpusFile 395 398
+    function new 402 407
+    function evaluate_file 416 451
+    function validate_repository_summarization 460 516
+    function is_stable 520 545

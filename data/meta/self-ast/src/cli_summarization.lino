@@ -2,17 +2,32 @@ self_ast_census
   target src/cli_summarization.rs
   language rust
   fidelity signature
-  byte_len 8179
-  line_count 233
-  content_id source_module_06b2f7d05333e98b
-  symbol_count 9
+  byte_len 11240
+  line_count 320
+  content_id source_module_d209a332e62175fa
+  symbol_count 24
   symbols
-    enum SummarizationAction 27 66
-    function run_summarization 68 138
-    function resolve_root 140 142
-    function list_criteria 144 149
-    function measure 151 166
-    function print_report 168 207
-    function read_baseline 209 214
-    function write_baseline 216 226
-    function ratchet_error 228 233
+    const RATCHET_HOLDS 29 29
+    const RATCHET_VIOLATED 30 30
+    const COMMITTED_SUFFIX 31 31
+    const REPORT_HEADLINE 32 32
+    const REPORT_GRAMMAR 33 33
+    const REPORT_STABILIZED 34 34
+    const REPORT_BOUND_REACHED 35 35
+    const REPORT_ITERATION 36 36
+    const REPORT_FILE 37 37
+    const REPORT_FAILURE 38 38
+    const CRITERIA_MINIMUM 39 39
+    const CRITERION_LINE 40 40
+    const NO_READABLE_FILES 41 41
+    const BASELINE_UPDATED 42 42
+    const BASELINE_WRITE_FAILED 43 43
+    enum SummarizationAction 46 85
+    function run_summarization 87 169
+    function resolve_root 171 173
+    function list_criteria 175 195
+    function measure 197 214
+    function print_report 216 285
+    function read_baseline 287 292
+    function write_baseline 294 312
+    function ratchet_error 314 320

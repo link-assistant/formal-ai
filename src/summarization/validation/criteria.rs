@@ -11,7 +11,12 @@ use super::{formalize_repository_file, CriterionOutcome};
 
 pub(super) fn check_identity(path: &str, summary: &str) -> CriterionOutcome {
     let passed = summary.contains(path);
-    outcome("identity_names_path", true, passed, format!("path={path}"))
+    outcome(
+        "identity_names_path",
+        true,
+        passed,
+        evidence(&[("path", path.to_owned())]),
+    )
 }
 
 pub(super) fn check_format(
@@ -24,7 +29,10 @@ pub(super) fn check_format(
         "format_declared",
         true,
         passed,
-        format!("format={} label={label}", formalized.format),
+        evidence(&[
+            ("format", formalized.format.clone()),
+            ("label", label.to_owned()),
+        ]),
     )
 }
 
@@ -38,10 +46,10 @@ pub(super) fn check_size(
         "size_reported",
         true,
         passed,
-        format!(
-            "lines={} bytes={}",
-            formalized.line_count, formalized.byte_count
-        ),
+        evidence(&[
+            ("lines", formalized.line_count.to_string()),
+            ("bytes", formalized.byte_count.to_string()),
+        ]),
     )
 }
 
@@ -58,11 +66,10 @@ pub(super) fn check_content_retained(
         "content_retained",
         applicable,
         passed,
-        format!(
-            "statements={} retained={}",
-            formalized.statements.len(),
-            retained.len()
-        ),
+        evidence(&[
+            ("statements", formalized.statements.len().to_string()),
+            ("retained", retained.len().to_string()),
+        ]),
     )
 }
 
@@ -104,7 +111,7 @@ pub(super) fn check_content_grounded(
     let detail = if ungrounded.is_empty() {
         "all identifier tokens grounded".to_owned()
     } else {
-        format!("ungrounded={}", ungrounded.join(", "))
+        evidence(&[("ungrounded", ungrounded.join(", "))])
     };
     outcome("content_grounded", true, ungrounded.is_empty(), detail)
 }
@@ -120,11 +127,10 @@ pub(super) fn check_compression(content: &str, summary: &str) -> CriterionOutcom
         "compression",
         applicable,
         passed,
-        format!(
-            "summary_bytes={} file_bytes={}",
-            summary.len(),
-            content.len()
-        ),
+        evidence(&[
+            ("summary_bytes", summary.len().to_string()),
+            ("file_bytes", content.len().to_string()),
+        ]),
     )
 }
 
@@ -151,12 +157,11 @@ pub(super) fn check_embedded_grammars(
         "embedded_grammar_recursion",
         applicable,
         passed,
-        format!(
-            "fences={} recorded={} languages={}",
-            expected.len(),
-            recorded.len(),
-            recorded.join(",")
-        ),
+        evidence(&[
+            ("fences", expected.len().to_string()),
+            ("recorded", recorded.len().to_string()),
+            ("languages", recorded.join(",")),
+        ]),
     )
 }
 
@@ -164,21 +169,26 @@ pub(super) fn check_meta_language(
     formalized: &RepositoryFileFormalization,
     summary: &str,
 ) -> CriterionOutcome {
-    let evidence = formalized
+    let valid = formalized
         .meta_language
         .as_ref()
         .filter(|meta| meta.is_valid());
-    let applicable = evidence.is_some();
-    let passed = evidence.is_some_and(|meta| {
+    let applicable = valid.is_some();
+    let passed = valid.is_some_and(|meta| {
         summary.contains(&meta.label) && summary.contains(&meta.syntax_link_count.to_string())
     });
     outcome(
         "meta_language_evidence",
         applicable,
         passed,
-        evidence.map_or_else(
+        valid.map_or_else(
             || "no valid meta-language parse".to_owned(),
-            |meta| format!("label={} links={}", meta.label, meta.syntax_link_count),
+            |meta| {
+                evidence(&[
+                    ("label", meta.label.clone()),
+                    ("links", meta.syntax_link_count.to_string()),
+                ])
+            },
         ),
     )
 }
@@ -195,7 +205,7 @@ pub(super) fn check_determinism(
         "determinism",
         true,
         passed,
-        format!("summary_bytes={}", summary.len()),
+        evidence(&[("summary_bytes", summary.len().to_string())]),
     )
 }
 
@@ -211,13 +221,26 @@ pub(super) fn check_mode_ladder(
         "mode_ladder",
         true,
         passed,
-        format!(
-            "short={} standard={} full={}",
-            short.len(),
-            standard.len(),
-            full.len()
-        ),
+        evidence(&[
+            ("short", short.len().to_string()),
+            ("standard", standard.len().to_string()),
+            ("full", full.len().to_string()),
+        ]),
     )
+}
+
+/// Render a criterion's evidence as space-separated `field=value` pairs.
+///
+/// The evidence a report carries is machine-readable data, not prose: keeping
+/// it a list of named fields rather than a sentence template means the field
+/// names stay language-neutral (R379) and a reader — or a script — can split a
+/// detail back into its fields without parsing English.
+fn evidence(fields: &[(&str, String)]) -> String {
+    fields
+        .iter()
+        .map(|(name, value)| format!("{name}={value}"))
+        .collect::<Vec<_>>()
+        .join(" ")
 }
 
 pub(super) const fn outcome(

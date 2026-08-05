@@ -1,4 +1,249 @@
 meanings
+  response_tool_result_failed_exit_code_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result failed exit code es"
+  response_tool_result_failed_exit_code_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result failed exit code hi"
+  response_tool_result_failed_exit_code_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result failed exit code ru"
+  response_tool_result_failed_exit_code_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result failed exit code zh"
+  response_tool_result_failed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result failed hi"
+  response_tool_result_failed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result failed ru"
+  response_tool_result_failed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result failed zh"
+  response_unknown_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown en"
+  response_unknown_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown hi"
+  response_unknown_reasoning_question_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown reasoning question en"
+  response_unknown_reasoning_question_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown reasoning question hi"
+  response_unknown_reasoning_question_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown reasoning question ru"
+  response_unknown_reasoning_question_unknown
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown reasoning question unknown"
+  response_unknown_reasoning_question_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown reasoning question zh"
+  response_unknown_reasoning_trace_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown reasoning trace en"
+  response_unknown_reasoning_trace_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown reasoning trace hi"
+  response_unknown_reasoning_trace_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown reasoning trace ru"
+  response_unknown_reasoning_trace_unknown
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown reasoning trace unknown"
+  response_unknown_reasoning_trace_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown reasoning trace zh"
+  response_unknown_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown ru"
+  response_unknown_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown zh"
+  response_web_search_live_results_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response web search live results en"
+  response_web_search_live_results_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response web search live results hi"
+  response_web_search_live_results_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response web search live results ru"
+  response_web_search_live_results_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response web search live results zh"
+  response_web_search_unavailable_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response web search unavailable en"
+  response_web_search_unavailable_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response web search unavailable hi"
+  response_web_search_unavailable_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response web search unavailable ru"
+  response_web_search_unavailable_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response web search unavailable zh"
+  response_wellbeing_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response wellbeing en"
+  response_wellbeing_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response wellbeing hi"
+  response_wellbeing_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response wellbeing ru"
+  response_wellbeing_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response wellbeing zh"
+  response_who_is_unknown_entity_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response who is unknown entity en"
+  response_who_is_unknown_entity_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response who is unknown entity hi"
+  response_who_is_unknown_entity_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response who is unknown entity ru"
+  response_who_is_unknown_entity_suggestion_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response who is unknown entity suggestion en"
+  response_who_is_unknown_entity_suggestion_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response who is unknown entity suggestion hi"
+  response_who_is_unknown_entity_suggestion_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response who is unknown entity suggestion ru"
+  response_who_is_unknown_entity_suggestion_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response who is unknown entity suggestion zh"
+  response_who_is_unknown_entity_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response who is unknown entity zh"
+  response_world_state_reached_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response world state reached en"
+  response_world_state_reached_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response world state reached hi"
+  response_world_state_reached_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response world state reached ru"
+  response_world_state_reached_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response world state reached zh"
+  response_world_state_remaining_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response world state remaining en"
+  response_world_state_remaining_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response world state remaining hi"
+  response_world_state_remaining_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response world state remaining ru"
+  response_world_state_remaining_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response world state remaining zh"
   response_write_program_language_unspecified_en
     defined-by response_template
     lexeme en
@@ -559,6 +804,11 @@ meanings
     lexeme en
       surface
         text "statement audit unknown tier"
+  stay
+    defined-by concept
+    lexeme en
+      surface
+        text "stay"
   stdout
     defined-by word_surface
     lexeme en
@@ -614,6 +864,11 @@ meanings
     lexeme en
       surface
         text "structured knowledge"
+  study
+    defined-by concept
+    lexeme en
+      surface
+        text "study"
   submission
     defined-by word_surface
     lexeme en
@@ -644,6 +899,86 @@ meanings
     lexeme en
       surface
         text "sum to ten"
+  summarization
+    defined-by concept
+    lexeme en
+      surface
+        text "summarization"
+  summarization_cli_baseline_updated
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization cli baseline updated"
+  summarization_cli_baseline_write_failed
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization cli baseline write failed"
+  summarization_cli_criteria_minimum
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization cli criteria minimum"
+  summarization_cli_criterion_line
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization cli criterion line"
+  summarization_cli_no_readable_files
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization cli no readable files"
+  summarization_criterion_compression
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization criterion compression"
+  summarization_criterion_content_grounded
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization criterion content grounded"
+  summarization_criterion_content_retained
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization criterion content retained"
+  summarization_criterion_determinism
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization criterion determinism"
+  summarization_criterion_embedded_grammar_recursion
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization criterion embedded grammar recursion"
+  summarization_criterion_format_declared
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization criterion format declared"
+  summarization_criterion_identity_names_path
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization criterion identity names path"
+  summarization_criterion_meta_language_evidence
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization criterion meta language evidence"
+  summarization_criterion_mode_ladder
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization criterion mode ladder"
+  summarization_criterion_size_reported
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization criterion size reported"
   summarization_disputed_statement
     defined-by intent
     lexeme en
@@ -659,6 +994,76 @@ meanings
     lexeme en
       surface
         text "summarization evidence summary"
+  summarization_ratchet_below_committed
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization ratchet below committed"
+  summarization_ratchet_below_minimum
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization ratchet below minimum"
+  summarization_ratchet_committed_suffix
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization ratchet committed suffix"
+  summarization_ratchet_holds
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization ratchet holds"
+  summarization_ratchet_no_embedded_grammar
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization ratchet no embedded grammar"
+  summarization_ratchet_nothing_applicable
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization ratchet nothing applicable"
+  summarization_ratchet_violated
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization ratchet violated"
+  summarization_report_bound_reached
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization report bound reached"
+  summarization_report_failure
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization report failure"
+  summarization_report_file
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization report file"
+  summarization_report_grammar
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization report grammar"
+  summarization_report_headline
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization report headline"
+  summarization_report_iteration
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization report iteration"
+  summarization_report_stabilized
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization report stabilized"
   summarize_conversation
     defined-by name
     lexeme en
@@ -989,408 +1394,3 @@ meanings
     lexeme en
       surface
         text "thinking step dispatch handler"
-  thinking_step_dispatch_handler_plain
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step dispatch handler plain"
-  thinking_step_extract_term
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step extract term"
-  thinking_step_fallback
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step fallback"
-  thinking_step_formalize
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step formalize"
-  thinking_step_formalize_plain
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step formalize plain"
-  thinking_step_formalize_resolved
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step formalize resolved"
-  thinking_step_formalize_resolved_plain
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step formalize resolved plain"
-  thinking_step_generic
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step generic"
-  thinking_step_generic_plain
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step generic plain"
-  thinking_step_group_by_conversation
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step group by conversation"
-  thinking_step_http_chat
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step http chat"
-  thinking_step_impulse
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step impulse"
-  thinking_step_impulse_plain
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step impulse plain"
-  thinking_step_invoke_tool
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step invoke tool"
-  thinking_step_invoke_tool_plain
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step invoke tool plain"
-  thinking_step_lookup_fact
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step lookup fact"
-  thinking_step_lookup_fact_plain
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step lookup fact plain"
-  thinking_step_match_rule
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step match rule"
-  thinking_step_match_rule_plain
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step match rule plain"
-  thinking_step_memory
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step memory"
-  thinking_step_modifier_detection
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step modifier detection"
-  thinking_step_policy_refusal
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step policy refusal"
-  thinking_step_policy_refusal_plain
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step policy refusal plain"
-  thinking_step_program_plan
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step program plan"
-  thinking_step_program_plan_plain
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step program plan plain"
-  thinking_step_resolve_response_language
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step resolve response language"
-  thinking_step_route_attempt
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step route attempt"
-  thinking_step_route_attempt_plain
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step route attempt plain"
-  thinking_step_rule_construction
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step rule construction"
-  thinking_step_rule_verification
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step rule verification"
-  thinking_step_rule_verification_plain
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step rule verification plain"
-  thinking_step_scan_memory
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step scan memory"
-  thinking_step_scan_memory_plain
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step scan memory plain"
-  thinking_step_unnamed
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step unnamed"
-  thinking_step_user_context
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step user context"
-  thinking_step_user_context_plain
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking step user context plain"
-  thinking_trace_heading
-    defined-by intent
-    lexeme en
-      surface
-        text "thinking trace heading"
-  thu
-    defined-by word_surface
-    lexeme en
-      surface
-        text "thu"
-  thurs
-    defined-by word_surface
-    lexeme en
-      surface
-        text "thurs"
-  time_dilation
-    defined-by topic
-    lexeme en
-      surface
-        text "time dilation"
-  title
-    defined-by word_surface
-    lexeme en
-      surface
-        text "title"
-  title_case
-    defined-by operation
-    lexeme en
-      surface
-        text "title case"
-  tool_append_memory
-    defined-by tool
-    lexeme en
-      surface
-        text "tool append memory"
-  tool_archive_pack
-    defined-by tool
-    lexeme en
-      surface
-        text "tool archive pack"
-  tool_archive_unpack
-    defined-by tool
-    lexeme en
-      surface
-        text "tool archive unpack"
-  tool_brainstorm
-    defined-by tool
-    lexeme en
-      surface
-        text "tool brainstorm"
-  tool_calculator
-    defined-by tool
-    lexeme en
-      surface
-        text "tool calculator"
-  tool_concept_lookup
-    defined-by tool
-    lexeme en
-      surface
-        text "tool concept lookup"
-  tool_conversation_recall
-    defined-by tool
-    lexeme en
-      surface
-        text "tool conversation recall"
-  tool_coreference
-    defined-by tool
-    lexeme en
-      surface
-        text "tool coreference"
-  tool_dom_extract
-    defined-by tool
-    lexeme en
-      surface
-        text "tool dom extract"
-  tool_dom_query
-    defined-by tool
-    lexeme en
-      surface
-        text "tool dom query"
-  tool_eval_js
-    defined-by tool
-    lexeme en
-      surface
-        text "tool eval js"
-  tool_export_memory
-    defined-by tool
-    lexeme en
-      surface
-        text "tool export memory"
-  tool_fact_lookup
-    defined-by tool
-    lexeme en
-      surface
-        text "tool fact lookup"
-  tool_fs_list
-    defined-by tool
-    lexeme en
-      surface
-        text "tool fs list"
-  tool_fs_move
-    defined-by tool
-    lexeme en
-      surface
-        text "tool fs move"
-  tool_fs_read
-    defined-by tool
-    lexeme en
-      surface
-        text "tool fs read"
-  tool_fs_write
-    defined-by tool
-    lexeme en
-      surface
-        text "tool fs write"
-  tool_http_fetch
-    defined-by tool
-    lexeme en
-      surface
-        text "tool http fetch"
-  tool_http_fetch_primitive
-    defined-by tool
-    lexeme en
-      surface
-        text "tool http fetch primitive"
-  tool_http_post_primitive
-    defined-by tool
-    lexeme en
-      surface
-        text "tool http post primitive"
-  tool_import_memory
-    defined-by tool
-    lexeme en
-      surface
-        text "tool import memory"
-  tool_intent_routing
-    defined-by tool
-    lexeme en
-      surface
-        text "tool intent routing"
-  tool_process_status
-    defined-by tool
-    lexeme en
-      surface
-        text "tool process status"
-  tool_read_local_file
-    defined-by tool
-    lexeme en
-      surface
-        text "tool read local file"
-  tool_result_completed
-    defined-by intent
-    lexeme en
-      surface
-        text "tool result completed"
-  tool_result_empty_generic
-    defined-by intent
-    lexeme en
-      surface
-        text "tool result empty generic"
-  tool_result_empty_list
-    defined-by intent
-    lexeme en
-      surface
-        text "tool result empty list"
-  tool_result_empty_local_path_search
-    defined-by intent
-    lexeme en
-      surface
-        text "tool result empty local path search"
-  tool_result_empty_search
-    defined-by intent
-    lexeme en
-      surface
-        text "tool result empty search"
-  tool_result_failed
-    defined-by intent
-    lexeme en
-      surface
-        text "tool result failed"
-  tool_result_failed_exit_code
-    defined-by intent
-    lexeme en
-      surface
-        text "tool result failed exit code"
-  tool_roleplay
-    defined-by tool
-    lexeme en
-      surface
-        text "tool roleplay"
-  tool_run_agent
-    defined-by tool
-    lexeme en
-      surface
-        text "tool run agent"
-  tool_shell_run
-    defined-by tool
-    lexeme en
-      surface
-        text "tool shell run"
-  tool_summarize_conversation
-    defined-by tool
-    lexeme en
-      surface
-        text "tool summarize conversation"
-  tool_url_navigate
-    defined-by tool
-    lexeme en
-      surface
-        text "tool url navigate"
-  tool_web_search
-    defined-by tool
-    lexeme en
-      surface
-        text "tool web search"
-  tool_wikipedia_lookup
-    defined-by tool
-    lexeme en
-      surface
-        text "tool wikipedia lookup"
-  tool_write_program
-    defined-by tool
-    lexeme en
-      surface
-        text "tool write program"
