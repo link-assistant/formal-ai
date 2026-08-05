@@ -109,3 +109,25 @@ fn coverage_workflow_keeps_the_timeout_and_change_gating_contract() {
         "rust-script installs go through the retry wrapper here too"
     );
 }
+
+/// Issue #442, carried across the extraction: a *skipped* upstream check means
+/// "no code changed", which must never be read as a reason to run. The release
+/// workflow pins this for its own jobs in
+/// `change_gated_jobs_never_depend_on_a_skipped_changelog`.
+#[test]
+fn coverage_jobs_never_depend_on_a_skipped_upstream_check() {
+    let workflow = coverage_workflow();
+
+    for job_name in ["coverage", "browser-coverage"] {
+        // Inspect only effective YAML (skip `#` comment lines) so a rationale
+        // comment quoting the old buggy clause doesn't trip the guard.
+        let has_skip_dependency = job_block(&workflow, job_name)
+            .lines()
+            .filter(|line| !line.trim_start().starts_with('#'))
+            .any(|line| line.contains("result == 'skipped'"));
+        assert!(
+            !has_skip_dependency,
+            "{job_name} job must not run because an upstream check was skipped (issue #442)"
+        );
+    }
+}

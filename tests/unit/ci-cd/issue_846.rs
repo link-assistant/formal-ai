@@ -21,7 +21,7 @@ fn change_gated_jobs_do_not_bypass_detection_on_pushes() {
 
     // The coverage job moved to .github/workflows/coverage.yml for issue #895;
     // `coverage_workflow_keeps_the_timeout_and_change_gating_contract` in
-    // workflow_release.rs asserts this same property for it there.
+    // workflow_coverage.rs asserts this same property for it there.
     for (name, next) in [
         ("secrets-scan", "version-check"),
         ("lint", "test"),
