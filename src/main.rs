@@ -22,6 +22,7 @@ mod cli_procedure;
 mod cli_report;
 mod cli_shared_dialog;
 mod cli_statement_audit;
+mod cli_summarization;
 
 use cli_algorithm::{run_algorithm, AlgorithmArgs};
 use cli_benchmark::{run_benchmark, BenchmarkAction};
@@ -39,6 +40,7 @@ use cli_procedure::{run_procedure, ProcedureArgs};
 use cli_report::{run_report, ReportArgs};
 use cli_shared_dialog::{run_shared_dialog, SharedDialogAction};
 use cli_statement_audit::{run_statement_audit, StatementAuditArgs};
+use cli_summarization::{run_summarization, SummarizationAction};
 use formal_ai::agentic_coding::run_agentic_task;
 use formal_ai::{
     agent_info, collect_github_logs, create_chat_completion_with_solver,
@@ -192,6 +194,12 @@ enum Command {
     },
     /// Weigh statement-bearing repository text against captured provenance.
     StatementAudit(StatementAuditArgs),
+    /// Validate repository-file summarization quality on seeded random files
+    /// and enforce the published 80 percent ratchet (issue #893).
+    Summarization {
+        #[command(subcommand)]
+        action: SummarizationAction,
+    },
     /// Assess file risk signals by legal category and jurisdiction.
     FileLegality(FileLegalityArgs),
     /// Run or permanently configure external CLIs against a local Formal AI server.
@@ -615,6 +623,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::GithubLogs { action } => run_github_logs(action)?,
         Command::Benchmark { action } => run_benchmark(action)?,
         Command::StatementAudit(args) => run_statement_audit(&args)?,
+        Command::Summarization { action } => run_summarization(action)?,
         Command::FileLegality(args) => run_file_legality(&args)?,
         Command::With(args) => run_with_formal_ai(&args)?,
         Command::Procedure(args) => run_procedure(args)?,
