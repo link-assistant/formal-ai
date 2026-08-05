@@ -36,3 +36,14 @@ bump: minor
   ordering; it puts one job per denominator in the checks list, and it returns
   `release.yml` to 1930 lines, back under the 2000-line ceiling
   `scripts/check-file-size.rs` documents as debt that must not grow.
+
+### Fixed
+- The coverage job's timeout, raised from 25 to 40 minutes. Issue #812 set 25 against
+  a worst case of 14.1 minutes, but the instrumented suite has since grown to
+  17.2–19.6 minutes across the last eight green runs on `main` — 78% of the budget,
+  the same one-slow-run margin #812 was filed about — and it hit the cap outright.
+- `npm run test:web` and `npm run coverage:web`, which passed `tests/web/` to
+  `node --test`. Node 20 recurses into that directory, but the Node 22 the workflow
+  pins resolves it as a module path and fails with "Cannot find module". Both scripts
+  now use `tests/web/*.test.mjs`, which the shell expands identically on either
+  version.
