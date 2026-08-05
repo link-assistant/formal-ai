@@ -109,6 +109,11 @@ meanings
     lexeme en
       surface
         text "ada lovelace"
+  adding
+    defined-by concept
+    lexeme en
+      surface
+        text "adding"
   addon
     defined-by word_surface
     lexeme en
@@ -449,11 +454,21 @@ meanings
     lexeme en
       surface
         text "barack obama"
+  baseline
+    defined-by concept
+    lexeme en
+      surface
+        text "baseline"
   be
     defined-by concept
     lexeme en
       surface
         text "be"
+  because
+    defined-by concept
+    lexeme en
+      surface
+        text "because"
   behavior_rules_list
     defined-by intent
     lexeme en
@@ -594,6 +609,11 @@ meanings
     lexeme en
       surface
         text "capabilities more"
+  carries
+    defined-by concept
+    lexeme en
+      surface
+        text "carries"
   case
     defined-by concept
     lexeme en
@@ -779,6 +799,11 @@ meanings
     lexeme en
       surface
         text "comments"
+  committed
+    defined-by concept
+    lexeme en
+      surface
+        text "committed"
   comparison_decomposed_evidence
     defined-by intent
     lexeme en
@@ -1069,6 +1094,16 @@ meanings
     lexeme en
       surface
         text "credibility"
+  criteria
+    defined-by concept
+    lexeme en
+      surface
+        text "criteria"
+  criterion
+    defined-by concept
+    lexeme en
+      surface
+        text "criterion"
   csharp
     defined-by programming_language
     lexeme en
@@ -1154,6 +1189,11 @@ meanings
     lexeme en
       surface
         text "demo memory"
+  description
+    defined-by concept
+    lexeme en
+      surface
+        text "description"
   desktop_local_sync
     defined-by flow
     lexeme en
@@ -1324,6 +1364,11 @@ meanings
     lexeme en
       surface
         text "elon musk"
+  emits
+    defined-by concept
+    lexeme en
+      surface
+        text "emits"
   entries
     defined-by concept
     lexeme en
@@ -1349,48 +1394,3 @@ meanings
     lexeme en
       surface
         text "env"
-  essay
-    defined-by word_surface
-    lexeme en
-      surface
-        text "essay"
-  eur
-    defined-by word_surface
-    lexeme en
-      surface
-        text "eur"
-  eval_js
-    defined-by name
-    lexeme en
-      surface
-        text "eval js"
-  even
-    defined-by concept
-    lexeme en
-      surface
-        text "even"
-  events
-    defined-by concept
-    lexeme en
-      surface
-        text "events"
-  every
-    defined-by concept
-    lexeme en
-      surface
-        text "every"
-  exact_title
-    defined-by coverage_group
-    lexeme en
-      surface
-        text "exact title"
-  exceeds
-    defined-by word_surface
-    lexeme en
-      surface
-        text "exceeds"
-  expandable
-    defined-by concept
-    lexeme en
-      surface
-        text "expandable"

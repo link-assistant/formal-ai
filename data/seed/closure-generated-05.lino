@@ -1,4 +1,144 @@
 meanings
+  response_client_contract_missing_evidence_error_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract missing evidence error ru"
+  response_client_contract_missing_evidence_error_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract missing evidence error zh"
+  response_client_contract_parse_observation_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse observation error en"
+  response_client_contract_parse_observation_error_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse observation error hi"
+  response_client_contract_parse_observation_error_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse observation error ru"
+  response_client_contract_parse_observation_error_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse observation error zh"
+  response_client_contract_parse_transcript_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse transcript error en"
+  response_client_contract_parse_transcript_error_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse transcript error hi"
+  response_client_contract_parse_transcript_error_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse transcript error ru"
+  response_client_contract_parse_transcript_error_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse transcript error zh"
+  response_client_contract_read_observations_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read observations error en"
+  response_client_contract_read_observations_error_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read observations error hi"
+  response_client_contract_read_observations_error_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read observations error ru"
+  response_client_contract_read_observations_error_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read observations error zh"
+  response_client_contract_read_transcript_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read transcript error en"
+  response_client_contract_read_transcript_error_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read transcript error hi"
+  response_client_contract_read_transcript_error_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read transcript error ru"
+  response_client_contract_read_transcript_error_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read transcript error zh"
+  response_client_integration_invalid_typed_json_setting_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client integration invalid typed json setting en"
+  response_client_integration_invalid_typed_json_setting_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client integration invalid typed json setting hi"
+  response_client_integration_invalid_typed_json_setting_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client integration invalid typed json setting ru"
+  response_client_integration_invalid_typed_json_setting_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client integration invalid typed json setting zh"
+  response_coding_source_binary_operation_test_rust
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding source binary operation test rust"
+  response_coding_source_equality_test_rust
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding source equality test rust"
+  response_coding_source_function_division_rust
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding source function division rust"
+  response_coding_source_function_return_rust
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding source function return rust"
+  response_coding_source_module_registration_rust
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding source module registration rust"
+  response_coding_source_string_constant_rust
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding source string constant rust"
   response_coding_workspace_effect_observed_en
     defined-by response_template
     lexeme en
@@ -1254,143 +1394,3 @@ meanings
     lexeme en
       surface
         text "response lexeme import duplicate qid zh"
-  response_lexeme_import_duplicate_slug_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import duplicate slug en"
-  response_lexeme_import_duplicate_slug_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import duplicate slug hi"
-  response_lexeme_import_duplicate_slug_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import duplicate slug ru"
-  response_lexeme_import_duplicate_slug_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import duplicate slug zh"
-  response_lexeme_import_fetch_failed_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import fetch failed en"
-  response_lexeme_import_fetch_failed_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import fetch failed hi"
-  response_lexeme_import_fetch_failed_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import fetch failed ru"
-  response_lexeme_import_fetch_failed_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import fetch failed zh"
-  response_lexeme_import_fetch_invalid_json_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import fetch invalid json en"
-  response_lexeme_import_fetch_invalid_json_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import fetch invalid json hi"
-  response_lexeme_import_fetch_invalid_json_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import fetch invalid json ru"
-  response_lexeme_import_fetch_invalid_json_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import fetch invalid json zh"
-  response_lexeme_import_grounding_lost_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import grounding lost en"
-  response_lexeme_import_grounding_lost_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import grounding lost hi"
-  response_lexeme_import_grounding_lost_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import grounding lost ru"
-  response_lexeme_import_grounding_lost_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import grounding lost zh"
-  response_lexeme_import_invalid_provenance_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import invalid provenance en"
-  response_lexeme_import_invalid_provenance_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import invalid provenance hi"
-  response_lexeme_import_invalid_provenance_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import invalid provenance ru"
-  response_lexeme_import_invalid_provenance_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import invalid provenance zh"
-  response_lexeme_import_invalid_qid_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import invalid qid en"
-  response_lexeme_import_invalid_qid_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import invalid qid hi"
-  response_lexeme_import_invalid_qid_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import invalid qid ru"
-  response_lexeme_import_invalid_qid_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import invalid qid zh"
-  response_lexeme_import_invalid_slug_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import invalid slug en"
-  response_lexeme_import_invalid_slug_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import invalid slug hi"
-  response_lexeme_import_invalid_slug_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import invalid slug ru"
-  response_lexeme_import_invalid_slug_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import invalid slug zh"
