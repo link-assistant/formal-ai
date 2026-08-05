@@ -19,11 +19,10 @@ and no metric existed to be 80% *of*.
   [`raw-data/published-criteria.txt`](raw-data/published-criteria.txt)
   (`formal-ai summarization criteria`).
 - **Protocol run** — the run the committed baseline records:
-  [`raw-data/protocol-run.log`](raw-data/protocol-run.log). Seed 563, 22
-  iterations, 44 files, `364/365` criteria = 99%, stabilized before the 24
-  iteration bound, seven Markdown embedded grammar blocks. The one failure is a
-  real `content_grounded` defect on `experiments/agentic_cli_matrix/README.md`
-  (`ungrounded=artifacts///, recorded//`).
+  [`raw-data/protocol-run.log`](raw-data/protocol-run.log). Seed 563, 12
+  iterations, 24 files, `193/193` criteria = 100%, stabilized at the minimum
+  sample and before the 24 iteration bound, five Markdown embedded grammar
+  blocks drawn into iteration 0 by the stratified draw.
 - **Wide sweep** — [`raw-data/wide-sweep.log`](raw-data/wide-sweep.log). The
   stability loop stops early by design, so a separate sweep scored the first 600
   files of the same seeded permutation over a 10,560-file corpus:
@@ -65,7 +64,15 @@ free points.
   seed and the set of paths only — hand the same files over in a different
   order and the same files come back — and it is a permutation, so a run never
   scores the same file twice. Defaults: `seed 563`, `files_per_iteration 2`,
-  `max_iterations 24`, `stability_window 3`, `stability_tolerance_percent 5`.
+  `max_iterations 24`, `minimum_iterations 12`, `stability_window 3`,
+  `stability_tolerance_percent 5`.
+- **Minimum sample** — the stability window alone would stop a healthy run after
+  three iterations, six files. Three perfect iterations over six files is not
+  evidence about a corpus of ten thousand, and a CI gate that only ever looks at
+  six files cannot notice a regression, so `minimum_iterations` holds a run to
+  half the bound — twenty-four files — before the window is allowed to stop it.
+  A corpus too small to supply that many is held to what it has, so a
+  twelve-file fixture still terminates.
 - **Metric** — ten criteria, published by name and description, scored as an
   exact integer `passed/applicable` ratio. Percentages are floored, so 79.9%
   gates as 79%; an empty score is 0, never a vacuous 100. A criterion that
@@ -82,6 +89,12 @@ free points.
   implementation cannot grade itself. A run may not declare stability until at
   least one embedded grammar block has actually been exercised, and the ratchet
   rejects a run that recorded none.
+- **Stratified draw** — `SamplingProtocol::stratified_sampling_order` computes
+  the seeded permutation and then promotes the first fence-carrying Markdown
+  file to the front, so iteration 0 always reaches the recursive case. Every
+  other file keeps its seeded position; the result is still a permutation and
+  still a pure function of the seed and the file set. See
+  "[Why the draw is stratified](#why-the-draw-is-stratified)".
 
 ### Published criteria
 
@@ -107,10 +120,50 @@ the run recorded after the merge drew forty-four and scored `364/365` = 99%.
 Same seed, same code, different corpus. Had the floor been pinned to that first
 lucky 100%, merging `main` would have turned an honest draw into a red build. So
 the baseline records two separate numbers. `percent` is what the committed run
-measured (99). `ratchet_percent` is what the ratchet enforces (80, the
+measured (100, on the 24 files this draw reaches; the 600-file sweep below
+scores 99% on the same permutation, which is why one perfect run is not an
+argument for raising the floor to 100). `ratchet_percent` is what the ratchet
+enforces (80, the
 published minimum); it may only ever be raised, and raising it is a deliberate,
 reviewed edit backed by a sweep — not an automatic consequence of one good
 sample.
+
+### Why the draw is stratified
+
+The first version of the protocol drew uniformly and simply refused to certify a
+run that never reached an embedded grammar. That is the right *rule* — a run
+that never exercised the recursive case has not validated it — but paired with a
+uniform draw it made requirement (d) a coin flip. Fenced Markdown is a small
+minority of a 10,560-file repository, and the bound allows
+`24 x 2 = 48` files. CI proved it: run
+[30969709384](https://github.com/link-assistant/formal-ai/actions/runs/30969709384)
+(commit `ca1412d0`, log in
+[`raw-data/ci-fail-uniform-draw.log`](raw-data/ci-fail-uniform-draw.log)) walked
+all 24 iterations at essentially 100% and then failed:
+
+```text
+Error: "summarization quality ratchet violated:
+no Markdown embedded grammar block was exercised: the run never reached the recursive case the protocol exists to cover"
+```
+
+Nothing was wrong with the summaries. The draw simply never offered the checker
+a file it could apply the criterion to, and the next commit passed only because
+its draw happened to land on one at iteration 12.
+
+There were three ways out and only one of them is honest. Raising
+`max_iterations` until it "usually" works trades a red build for a slow one and
+still leaves the guarantee probabilistic. Dropping the rule — certifying runs
+that never reached the recursive case — deletes requirement (d) rather than
+satisfying it. What the protocol does instead is *stratify*: the corpus is
+partitioned into files that can be scored on recursion and files that cannot,
+and one file from the first stratum is drawn into iteration 0. Stratified
+sampling is the standard answer to exactly this problem — a stratum too rare for
+a uniform draw of the affordable size to represent — and it costs the draw one
+promoted file, not its randomness. The other 10,559 keep their seeded order, as
+`issue_893_markdown_embedded_grammars_run_through_the_production_summarizer`
+asserts by comparing the uniform and stratified orders element for element. That
+test also runs four different seeds over a 413-file corpus with a single fenced
+Markdown file in it; before the change, seeds that missed it failed the run.
 
 ## 5. Prior Art And Existing Components
 
@@ -138,23 +191,22 @@ formal-ai summarization ratchet
 ```
 
 ```text
-seed 563 — 22 iteration(s), 364 of 365 criteria passed (99%)
-stabilized before the iteration bound; 7 Markdown embedded grammar block(s) across 1 file(s)
-summarization quality ratchet holds: 99% measured against a 80% minimum and a
-committed ratchet of 80% (last recorded run: 99%)
+seed 563 — 12 iteration(s), 193 of 193 criteria passed (100%)
+stabilized before the iteration bound; 5 Markdown embedded grammar block(s) across 1 file(s)
+summarization quality ratchet holds: 100% measured against a 80% minimum and a
+committed ratchet of 80% (last recorded run: 100%)
 ```
 
-Two things in that run are worth reading twice. It took 22 of the 24 permitted
-iterations to stabilize even though iterations 0–17 all scored 100%, because a
-run may not declare stability before it has actually exercised an embedded
-grammar — the first Markdown file in this draw appeared at iteration 18. And
-that same file cost the run its only failure. Both are the protocol working,
-not noise.
+The run stops at 12 iterations rather than 3 because the window is not allowed
+to end a run that has only seen six files, and it reaches an embedded grammar in
+iteration 0 rather than by luck because the draw is stratified. Neither number
+is a tuning knob found by trying values until the build went green: 12 is half
+the bound, and the stratified promotion is one file.
 
 ### The ratchet in CI
 
 `.github/workflows/summarization-ratchet.yml` re-measures on every pull request.
-Its first green run
+An early green run under the uniform draw
 ([30971344229](https://github.com/link-assistant/formal-ai/actions/runs/30971344229),
 log kept in [`raw-data/ci-run.log`](raw-data/ci-run.log)) is itself evidence for
 the two-number design:
@@ -165,9 +217,10 @@ stabilized before the iteration bound; 2 Markdown embedded grammar block(s) acro
 summarization quality ratchet holds: 99% measured against a 80% minimum and a committed ratchet of 80% (last recorded run: 99%)
 ```
 
-Thirteen iterations and 213 criteria, where the run recorded in the baseline saw
-22 and 365 — same seed, same code, two commits apart. Only a floor that does not
-chase the last measurement survives that.
+Thirteen iterations and 213 criteria, where the local run at the same code saw
+22 and 365 — same seed, two commits apart. Only a floor that does not chase the
+last measurement survives that. The measured percent moves with the corpus; the
+enforced floor does not.
 
 ### What the sweep found
 
@@ -176,7 +229,7 @@ Over the first 600 files of the seeded permutation: **4964/4968 = 99%**.
 | Failing criterion | Count | What it is |
 | --- | --- | --- |
 | `compression` | 4 | A file just above the 400-byte floor whose structured summary (path, format, size, retained content) costs a few bytes more than the file itself — e.g. `summary_bytes=460 file_bytes=452`. |
-| `content_grounded` | 0 in this sample | But it does bite — twice since. The committed protocol run above fails it on `experiments/agentic_cli_matrix/README.md` (`ungrounded=artifacts///, recorded//`), and `docs/case-studies/issue-492/README.md` scores 87% because the summary emits `https://img.shields.io/badge/crates.io--orange` for a source that reads `https://img.shields.io/badge/crates.io-<version>-orange?logo=rust`. |
+| `content_grounded` | 0 in this sample | But it does bite — twice on draws this branch recorded. An earlier protocol run (44 files, before the draw was stratified) failed it on `experiments/agentic_cli_matrix/README.md` (`ungrounded=artifacts///, recorded//`), and `docs/case-studies/issue-492/README.md` scores 87% because the summary emits `https://img.shields.io/badge/crates.io--orange` for a source that reads `https://img.shields.io/badge/crates.io-<version>-orange?logo=rust`. |
 
 Both are the same real defect, not a checker artefact, and the metric is what
 surfaced it — twice, on files chosen by the seed rather than by me.

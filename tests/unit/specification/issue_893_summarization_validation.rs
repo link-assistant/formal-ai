@@ -14,11 +14,12 @@
 use std::fs;
 use std::path::{Path, PathBuf};
 
+use formal_ai::statement_audit::RepositoryCorpus;
 use formal_ai::summarization::validation::{
     evaluate_file, ratchet_violations, validate_repository_summarization, CorpusFile,
     QualityBaseline, QualityScore, SamplingProtocol, BASELINE_PATH, CRITERIA,
-    DEFAULT_FILES_PER_ITERATION, DEFAULT_SAMPLING_SEED, DEFAULT_STABILITY_WINDOW,
-    QUALITY_RATCHET_PERCENT,
+    DEFAULT_FILES_PER_ITERATION, DEFAULT_MINIMUM_ITERATIONS, DEFAULT_SAMPLING_SEED,
+    DEFAULT_STABILITY_WINDOW, QUALITY_RATCHET_PERCENT,
 };
 use formal_ai::SummarizationConfig;
 
@@ -128,11 +129,30 @@ fn issue_893_iterations_validate_two_files_each_until_stable_or_bounded() {
         "the run neither stabilized nor reported a bound: {report:?}"
     );
     assert!(!report.bound_reached);
+    // Stability is declared once the window is satisfied, but never before the
+    // run has taken a minimum sample — capped by what this small corpus can
+    // supply.
+    let available = protocol.available_iterations(files.len());
     assert_eq!(
         report.iterations.len(),
-        DEFAULT_STABILITY_WINDOW.max(2),
-        "stability must not be declared before the whole window is observed"
+        DEFAULT_MINIMUM_ITERATIONS
+            .min(available)
+            .max(DEFAULT_STABILITY_WINDOW),
+        "stability must not be declared before the minimum sample and the whole window"
     );
+    assert!(report.iterations.len() > DEFAULT_STABILITY_WINDOW);
+
+    // Three perfect iterations are six files; that is not evidence about a
+    // corpus of thousands, so the window alone may not stop a run.
+    let window_only = validate_repository_summarization(
+        &files,
+        &SamplingProtocol {
+            minimum_iterations: 0,
+            ..protocol
+        },
+        &SummarizationConfig::default(),
+    );
+    assert_eq!(window_only.iterations.len(), DEFAULT_STABILITY_WINDOW);
 
     // A bound that cannot fit the stability window must be reported honestly
     // instead of claiming a stability the run never observed.
@@ -331,41 +351,88 @@ fn issue_893_markdown_embedded_grammars_run_through_the_production_summarizer() 
             .any(|violation| violation.contains("embedded grammar")),
         "the ratchet must reject a run that skipped the recursive case: {violations:?}"
     );
+
+    // ...and because that rejection is fatal, reaching the recursive case may
+    // not be left to luck. A uniform draw bounded at `max_iterations *
+    // files_per_iteration` files can miss every fenced Markdown file in a large
+    // corpus; the stratified draw promotes one into iteration 0 instead.
+    let mut sparse = corpus();
+    for index in 0..400 {
+        sparse.push(CorpusFile::new(
+            format!("src/filler_{index}.rs"),
+            format!("//! Filler {index} loads records.\n\npub fn filler_{index}() {{}}\n"),
+        ));
+    }
+    for seed in [0_u64, 1, 563, 99_991] {
+        let protocol = SamplingProtocol::default().with_seed(seed);
+        let ordered = protocol.stratified_sampling_order(&sparse);
+        assert_eq!(
+            ordered.len(),
+            sparse.len(),
+            "stratifying must not drop or duplicate corpus files"
+        );
+        assert_eq!(
+            ordered.first().copied(),
+            Some("docs/embedded.md"),
+            "seed {seed} must reach the recursive case in iteration 0"
+        );
+        let run =
+            validate_repository_summarization(&sparse, &protocol, &SummarizationConfig::default());
+        assert!(
+            run.embedded_grammar_blocks > 0,
+            "seed {seed} exercised no embedded grammar over {} files",
+            sparse.len()
+        );
+        assert!(run.stabilized, "seed {seed} failed to stabilize");
+    }
+    // The remaining files keep their seeded positions, so stratifying costs the
+    // draw one promotion rather than replacing it with a hand-picked list.
+    let protocol = SamplingProtocol::default();
+    let paths: Vec<&str> = sparse.iter().map(|file| file.path.as_str()).collect();
+    let uniform: Vec<&str> = protocol
+        .sampling_order(&paths)
+        .into_iter()
+        .filter(|path| *path != "docs/embedded.md")
+        .collect();
+    let stratified: Vec<&str> = protocol
+        .stratified_sampling_order(&sparse)
+        .into_iter()
+        .skip(1)
+        .collect();
+    assert_eq!(uniform, stratified);
 }
 
 // --- whole task ------------------------------------------------------------
 
 #[test]
 fn issue_893_whole_task_validates_real_repository_files_against_the_ratchet() {
-    // The whole task, on the repository's own files rather than a fixture: draw
-    // seeded random files, validate two per iteration through the production
-    // summarizer until stable, exercise embedded grammars, and clear 80%.
+    // The whole task, on the repository's own Git-tracked files rather than a
+    // fixture or a hand-picked list: draw seeded random files, validate two per
+    // iteration through the production summarizer until stable, exercise
+    // embedded grammars, and clear 80%. This is the same corpus loader
+    // `formal-ai summarization validate` uses, so the run this test makes is the
+    // run the committed baseline records.
     let root = repository_root();
-    let mut files = Vec::new();
-    for relative in [
-        "README.md",
-        "ARCHITECTURE.md",
-        "CONTRIBUTING.md",
-        "REQUIREMENTS.md",
-        "src/lib.rs",
-        "src/summarization/mod.rs",
-        "src/summarization/file.rs",
-        "src/summarization/resource.rs",
-        "src/summarization/validation.rs",
-        "src/cli_summarization.rs",
-        "docs/case-studies/issue-893/README.md",
-        "Cargo.toml",
-    ] {
-        let path = root.join(relative);
-        let content = fs::read_to_string(&path)
-            .unwrap_or_else(|error| panic!("failed to read {}: {error}", path.display()));
-        files.push(CorpusFile::new(relative, content));
-    }
+    let corpus = RepositoryCorpus::from_repository(&root).expect("the repository corpus loads");
+    let files: Vec<CorpusFile> = corpus
+        .documents
+        .iter()
+        .map(|document| CorpusFile::new(document.path.clone(), document.content.clone()))
+        .collect();
+    assert!(
+        files.len() > 100,
+        "a corpus of {} files is not the repository",
+        files.len()
+    );
 
     let protocol = SamplingProtocol::default();
     let report =
         validate_repository_summarization(&files, &protocol, &SummarizationConfig::default());
 
+    assert_eq!(
+        report.stabilized, !report.bound_reached,
+        "a run must record either stability or its bound, never both or neither"
+    );
     assert!(
         report.stabilized && !report.bound_reached,
         "the protocol did not stabilize on real repository files: {:?}",

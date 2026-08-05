@@ -720,9 +720,15 @@ The same pipeline also drives four additional surfaces:
   `passed/applicable` ratios micro-averaged across files and floored when
   rendered, so 79.6% gates as 79%. `validate_repository_summarization` iterates
   until `stability_window` consecutive iterations all clear the ratchet within
-  `stability_tolerance_percent` of one another *and* at least one Markdown
-  embedded grammar block has been exercised; otherwise it stops at the bound and
-  reports `bound_reached` rather than claiming stability. `QUALITY_RATCHET_PERCENT
+  `stability_tolerance_percent` of one another, at least `minimum_iterations`
+  iterations have run (three perfect iterations are six files, which say nothing
+  about a corpus of thousands) *and* at least one Markdown embedded grammar block
+  has been exercised; otherwise it stops at the bound and reports
+  `bound_reached` rather than claiming stability. Because that last condition is
+  fatal and fenced Markdown is a small minority of the corpus, the draw is
+  stratified: `stratified_sampling_order` promotes the first fence-carrying
+  Markdown file of the seeded permutation into iteration 0 and leaves every other
+  file where the seed put it. `QUALITY_RATCHET_PERCENT
   = 80` is the published floor, `ratchet_violations` enforces it together with
   monotonicity against the committed baseline
   `data/summarization/quality-baseline.lino`, and `formal-ai summarization

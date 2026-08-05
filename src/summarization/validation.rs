@@ -11,7 +11,9 @@
 //!    (two, as the issue asks) and an iteration bound. The corpus is permuted
 //!    once with a seeded `splitmix64` Fisher-Yates shuffle, so the same seed and
 //!    the same corpus always draw the same files in the same order, and no file
-//!    is validated twice inside one run.
+//!    is validated twice inside one run. The draw is then stratified over the
+//!    one case the issue names explicitly — see
+//!    [`SamplingProtocol::stratified_sampling_order`].
 //! 2. **Validate.** Every sampled file goes through the *production* summarizer
 //!    ([`formalize_repository_file`] and [`RepositoryFileFormalization::summary`]),
 //!    never a test-only reimplementation, and is scored against the published
@@ -19,7 +21,8 @@
 //! 3. **Iterate until stable.** The loop stops as soon as
 //!    [`SamplingProtocol::stability_window`] consecutive iterations all clear the
 //!    ratchet and stay within [`SamplingProtocol::stability_tolerance_percent`]
-//!    of each other — the issue's "2-3 times similar summarization". Otherwise it
+//!    of each other — the issue's "2-3 times similar summarization" — and the
+//!    run has taken at least [`DEFAULT_MINIMUM_ITERATIONS`] samples. Otherwise it
 //!    stops at the iteration bound and reports that bound plainly, rather than
 //!    claiming a stability it never observed.
 //! 4. **Ratchet.** [`QUALITY_RATCHET_PERCENT`] is the 80% floor. A committed
@@ -60,6 +63,16 @@ pub const DEFAULT_STABILITY_WINDOW: usize = 3;
 /// How far apart, in percentage points, two iteration scores may be and still
 /// count as "similar".
 pub const DEFAULT_STABILITY_TOLERANCE_PERCENT: u32 = 5;
+
+/// Iterations that must run before stability may be declared at all.
+///
+/// The stability window alone would let a healthy corpus stop after three
+/// iterations — six files. Three consecutive perfect iterations over six files
+/// is not evidence about a corpus of ten thousand, and a gate that only ever
+/// looks at six files stops being able to notice a regression. The bound is
+/// halved rather than removed: a run samples at least twenty-four files, then
+/// stops as soon as the window is satisfied.
+pub const DEFAULT_MINIMUM_ITERATIONS: usize = 12;
 
 /// One published quality criterion.
 ///
@@ -285,6 +298,11 @@ impl ValidationReport {
         );
         field(
             &mut out,
+            "minimum_iterations",
+            &self.protocol.minimum_iterations.to_string(),
+        );
+        field(
+            &mut out,
             "stability_window",
             &self.protocol.stability_window.to_string(),
         );
@@ -506,6 +524,7 @@ pub struct SamplingProtocol {
     pub seed: u64,
     pub files_per_iteration: usize,
     pub max_iterations: usize,
+    pub minimum_iterations: usize,
     pub stability_window: usize,
     pub stability_tolerance_percent: u32,
 }
@@ -516,6 +535,7 @@ impl Default for SamplingProtocol {
             seed: DEFAULT_SAMPLING_SEED,
             files_per_iteration: DEFAULT_FILES_PER_ITERATION,
             max_iterations: DEFAULT_MAX_ITERATIONS,
+            minimum_iterations: DEFAULT_MINIMUM_ITERATIONS,
             stability_window: DEFAULT_STABILITY_WINDOW,
             stability_tolerance_percent: DEFAULT_STABILITY_TOLERANCE_PERCENT,
         }
@@ -553,6 +573,43 @@ impl SamplingProtocol {
         for index in (1..ordered.len()).rev() {
             let swap = prng.below(index + 1);
             ordered.swap(index, swap);
+        }
+        ordered
+    }
+
+    /// Deterministic sampling order stratified over the recursive case.
+    ///
+    /// [`Self::sampling_order`] is a uniform permutation, which is the right
+    /// draw for "files nobody optimized for" but the wrong one for a
+    /// requirement that a *particular kind* of file be exercised. Markdown
+    /// files carrying fenced blocks are a small minority of this repository, so
+    /// a uniform draw bounded at `max_iterations * files_per_iteration` files
+    /// can miss every one of them — that is not a hypothetical, it failed a CI
+    /// run at 100% measured quality (see `docs/case-studies/issue-893/`).
+    ///
+    /// So the draw is stratified rather than enlarged: the seeded permutation
+    /// is computed exactly as before, then the first entry that carries an
+    /// embedded grammar is promoted to the front. Every other file keeps its
+    /// seeded position, the result is still a permutation of the same corpus,
+    /// and it is still a pure function of the seed and the file set — but
+    /// iteration 0 now always reaches the recursive case, on any corpus that
+    /// contains one.
+    #[must_use]
+    pub fn stratified_sampling_order<'corpus>(
+        &self,
+        corpus: &'corpus [CorpusFile],
+    ) -> Vec<&'corpus str> {
+        let paths: Vec<&str> = corpus.iter().map(|file| file.path.as_str()).collect();
+        let mut ordered = self.sampling_order(&paths);
+        let promote = ordered.iter().position(|path| {
+            corpus
+                .iter()
+                .find(|file| file.path == *path)
+                .is_some_and(|file| carries_embedded_grammar(&file.path, &file.content))
+        });
+        if let Some(index) = promote {
+            let file = ordered.remove(index);
+            ordered.insert(0, file);
         }
         ordered
     }
@@ -661,8 +718,7 @@ pub fn validate_repository_summarization(
     protocol: &SamplingProtocol,
     config: &SummarizationConfig,
 ) -> ValidationReport {
-    let paths: Vec<&str> = corpus.iter().map(|file| file.path.as_str()).collect();
-    let ordered = protocol.sampling_order(&paths);
+    let ordered = protocol.stratified_sampling_order(corpus);
     let available = protocol.available_iterations(ordered.len());
 
     let mut iterations: Vec<IterationReport> = Vec::new();
@@ -698,7 +754,7 @@ pub fn validate_repository_summarization(
             score: iteration_score,
         });
 
-        if embedded_grammar_blocks > 0 && is_stable(&iterations, protocol) {
+        if embedded_grammar_blocks > 0 && is_stable(&iterations, protocol, available) {
             stabilized = true;
             break;
         }
@@ -717,8 +773,17 @@ pub fn validate_repository_summarization(
 
 /// Are the last `stability_window` iterations all above the ratchet and within
 /// the configured tolerance of one another?
-fn is_stable(iterations: &[IterationReport], protocol: &SamplingProtocol) -> bool {
+fn is_stable(
+    iterations: &[IterationReport],
+    protocol: &SamplingProtocol,
+    available: usize,
+) -> bool {
     if protocol.stability_window == 0 || iterations.len() < protocol.stability_window {
+        return false;
+    }
+    // A corpus too small to supply the minimum sample cannot be held to it, or
+    // a run over a twelve-file fixture could never stabilize at all.
+    if iterations.len() < protocol.minimum_iterations.min(available) {
         return false;
     }
     let window = &iterations[iterations.len() - protocol.stability_window..];
@@ -954,6 +1019,19 @@ const fn outcome(
         passed: applicable && passed,
         detail,
     }
+}
+
+/// Does this file reach the recursive case the `embedded_grammar_recursion`
+/// criterion scores?
+///
+/// This mirrors that criterion's applicability test, so the stratified draw
+/// promotes a file the metric will actually be able to score rather than one
+/// that merely looks like Markdown.
+fn carries_embedded_grammar(path: &str, content: &str) -> bool {
+    let markdown = std::path::Path::new(path)
+        .extension()
+        .is_some_and(|extension| extension.eq_ignore_ascii_case("md"));
+    markdown && !fenced_block_languages(content).is_empty()
 }
 
 /// Independent `CommonMark` fence scanner used as the metric's oracle.
