@@ -15,7 +15,8 @@
 //!    one case the issue names explicitly — see
 //!    [`SamplingProtocol::stratified_sampling_order`].
 //! 2. **Validate.** Every sampled file goes through the *production* summarizer
-//!    ([`formalize_repository_file`] and [`RepositoryFileFormalization::summary`]),
+//!    ([`formalize_repository_file`] and
+//!    [`RepositoryFileFormalization::summary`](super::file::RepositoryFileFormalization::summary)),
 //!    never a test-only reimplementation, and is scored against the published
 //!    criteria in [`CRITERIA`].
 //! 3. **Iterate until stable.** The loop stops as soon as
