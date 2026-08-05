@@ -1,0 +1,21 @@
+# Browser production files this repository does not measure yet — issue #895.
+#
+# Every `.js`/`.jsx` file under `src/web/` must either appear in the browser
+# coverage report or be listed here with a reason. `scripts/check-coverage-ratchet.rs`
+# fails the build when a file is neither measured nor declared, when a row names
+# a file that no longer exists, when a row names a file that *is* measured now
+# (prune it), or when a row has no reason. The list is therefore a ratchet in its
+# own right: it can shrink, never grow silently.
+#
+# Generated bundles (`app.js`, `*.bundle.js`) are not listed here. They are build
+# output, excluded from the denominator in `coverage/baseline.json`, and their
+# sources are measured instead.
+#
+# Format: <repo-relative path><TAB><reason>
+
+src/web/app/main.jsx	React entry point: mounts the chat UI into a live DOM and Chakra provider. Exercised end-to-end by tests/e2e/tests/*.spec.js against the built app.js; its extracted pure logic lives in src/web/app/*.js, which is measured.
+src/web/app/theme.js	Chakra UI theme definition; importing it requires the @chakra-ui/react dependency tree and it contains no branching logic. Rendered and asserted visually by tests/e2e/tests/issue-672-theme-snapshots.spec.js.
+src/web/tests/connectivity.js	Connectivity self-test page: every function reads and writes live DOM elements that only exist on tests/index.html. Covered by tests/e2e/tests/connectivity.spec.js.
+src/web/ocr-entry.js	Bundler entry point: a re-export of tesseract.js consumed by `bun build` into ocr.bundle.js. Has no logic of its own to test.
+src/web/vendor-entry.js	Bundler entry point: re-exports marked, dompurify and lino-i18n into vendor.bundle.js. Has no logic of its own to test.
+src/web/web-search-component-entry.js	Bundler entry point: re-exports @link-assistant/web-search into web-search-component.bundle.js. Has no logic of its own to test.
