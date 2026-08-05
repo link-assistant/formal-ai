@@ -1063,6 +1063,21 @@ cargo test --doc --verbose
 rust-script scripts/check-file-size.rs
 ```
 
+Coverage is measured as two separate denominators — the Rust workspace and the
+browser JavaScript — and ratcheted: CI fails when either falls below the
+reviewed floor in `coverage/baseline.json`, and lowering a floor requires an
+explicit justification recorded in that file. See
+[docs/design/coverage-ratchet.md](docs/design/coverage-ratchet.md).
+
+```bash
+npm run test:web                              # browser unit suite
+npm run coverage:web                          # writes coverage/browser-lcov.info
+npm run coverage:ratchet -- --only browser    # publish + enforce
+
+cargo llvm-cov --all-features --lcov --output-path lcov.info
+npm run coverage:ratchet -- --only rust
+```
+
 Decode an overlong prefilled GitHub issue URL into readable Markdown during
 report-link triage:
 

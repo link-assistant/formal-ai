@@ -15,6 +15,19 @@ pub fn release_workflow() -> String {
     .replace("\r\n", "\n")
 }
 
+/// Issue #895: the two coverage denominators live in their own workflow. They
+/// are a leaf of the release graph -- nothing `needs:` them -- so moving them
+/// out of `release.yml` changed no ordering, and it keeps that file under the
+/// 2000-line ceiling `scripts/check-file-size.rs` enforces.
+pub fn coverage_workflow() -> String {
+    fs::read_to_string(format!(
+        "{}/.github/workflows/coverage.yml",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .unwrap()
+    .replace("\r\n", "\n")
+}
+
 pub fn desktop_release_workflow() -> String {
     fs::read_to_string(format!(
         "{}/.github/workflows/desktop-release.yml",

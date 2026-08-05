@@ -245,6 +245,9 @@ Removal from a public thread is not approval to retain another copy.
 
    # Run a specific test
    cargo test test_name
+
+   # Run the browser unit suite (the site's production JavaScript)
+   npm run test:web
    ```
 
    CI caps each test-matrix job at 10 minutes. Rust's built-in `cargo test` runner does not provide a portable global per-test timeout, so wrap long-running network, IO, or async tests with explicit test-level deadlines. If a repository adopts `cargo nextest`, configure runner deadlines with options such as `--slow-timeout` and `--leak-timeout`.
@@ -342,7 +345,23 @@ pub fn example_function(arg1: i32, arg2: i32) -> i32 {
 ## Testing Guidelines
 
 - Write tests for all new features
-- Maintain or improve test coverage
+- Maintain or improve test coverage — this is enforced, not requested. CI
+  measures two separate denominators, Rust and browser, against the reviewed
+  floors in `coverage/baseline.json` and fails on a decrease. Raising a floor is
+  a one-liner; lowering one requires an explicit reviewed justification recorded
+  in the file. See [docs/design/coverage-ratchet.md](docs/design/coverage-ratchet.md).
+
+  ```bash
+  # Browser denominator
+  npm run coverage:web && npm run coverage:ratchet -- --only browser
+
+  # Rust denominator
+  cargo llvm-cov --all-features --lcov --output-path lcov.info
+  npm run coverage:ratchet -- --only rust
+
+  # Lock in a gain
+  npm run coverage:ratchet -- --only browser --update-baseline
+  ```
 - Use descriptive test names
 - Organize tests in modules when appropriate
 - Use `#[cfg(test)]` for test-only code

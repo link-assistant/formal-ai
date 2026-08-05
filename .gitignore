@@ -39,9 +39,14 @@ __pycache__/
 *.pyc
 *.pyo
 
-# Coverage reports
+# Coverage reports. The measured numbers are regenerated on every run, but the
+# reviewed baseline and the unmeasured-file inventory are the ratchet itself
+# (issue #895) and must be committed so a decrease shows up in a diff.
 *.lcov
-coverage/
+lcov.info
+coverage/*
+!coverage/baseline.json
+!coverage/browser-unmeasured.txt
 tarpaulin-report.html
 
 # Benchmark results

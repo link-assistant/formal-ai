@@ -25,6 +25,7 @@ mod release_publishing;
 #[path = "../../../scripts/rust-paths.rs"]
 mod rust_paths;
 mod source_test_placement;
+mod workflow_coverage;
 mod workflow_fixtures;
 mod workflow_release;
 mod workflow_task_ladder;
