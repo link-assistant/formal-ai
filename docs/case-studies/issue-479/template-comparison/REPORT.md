@@ -2,6 +2,7 @@
 
 **Issue:** #479 ("Not available in latest release" for all desktop apps) — broader audit.
 **Date:** 2026-06-14
+**Revalidated:** 2026-08-05 (issue #894) — every finding below was re-checked against the current template default branches, each confirmed upstream gap was filed, and superseded findings were marked obsolete. See [Upstream filing status](#upstream-filing-status-revalidated-2026-08-05). Template line references in this report are from the 2026-06-14 snapshot; the revalidation line numbers are in the filing-status section and in `docs/case-studies/issue-894/raw-data/`.
 **Mode:** Read-only research. No working-repo files were modified except this report and the fetched template evidence under `docs/case-studies/issue-479/template-comparison/`.
 
 Compared repositories (all `link-foundation`, default branch `main`):
@@ -24,8 +25,8 @@ All fetched template CI/CD files are preserved verbatim under
 2. **The working repo's resolve logic is sound, but it was only ONE of three coupled layers.** `scripts/desktop-release-resolve.sh` implements a 2-tier resolution (exact-SHA tier 1 + "latest published release / auto-release child commit" tier 2) plus an idempotency guard, and is unit-tested in `tests/unit/ci-cd/desktop_release_resolve.rs`. It landed (merged) in PR #480 but stayed **dormant**: the desktop-release job was gated on full-pipeline `conclusion == 'success'`, and the E2E Pages probe kept timing out, so the build never ran and `/download` stayed broken through v0.203.0. PR #486 relaxes the gate and makes the Pages probe marker-authoritative so the (sound) resolve logic finally executes. See the case-study README for the full three-layer analysis.
 3. **The working repo is far more advanced than every template on desktop/release surface.** It is the **only** repo with: a cross-platform desktop matrix (6 targets incl. arm64), SLSA build provenance / attestation (`actions/attest-build-provenance@v2`), consolidated `SHA256SUMS.txt` + `BUILD-PROVENANCE.txt`, and a `/download` page wired to the GitHub Releases API. No template produces release-attached binaries or attestations.
 4. **Best practices the working repo is MISSING that the Rust template has** (highest-value gaps): (a) a **`cargo-lock` guard job** (`scripts/check-cargo-lock.rs`); (b) a **published-artifact smoke test** (`scripts/smoke-test-published-crate.rs`) run after every crates.io publish; (c) a **`setup-buildx-resilient` composite action** (`.github/actions/`) that retries + falls back to `mirror.gcr.io` on Docker Hub outages; (d) a **multi-OS test matrix** (`ubuntu/macos/windows` — the working repo dropped macOS/Windows to "speed up iteration"); (e) a **dedicated, separate docs-deploy job** (the working repo's API-docs/`/docs/api` *route* is now CLOSED — `release.yml`'s `deploy-demo` job runs `cargo doc --no-deps --lib` and copies it into `src/web/docs/api/` — but the Rust template still keeps it as an independent job rather than folding it into the demo deploy).
-5. **Best practice in the JS template the working repo (and Rust/Python/C# templates) lack: a broken-link checker** (`.github/workflows/links.yml`, lychee + Wayback-Machine fallback). The working repo has *zero* markdown/link validation in CI.
-6. **No template has security scanning.** None of the four has CodeQL, `dependency-review`, SBOM, Trivy/Grype/OSV, or `permissions: security-events`. The working repo also lacks these. This is a genuine cross-cutting gap worth filing upstream against **all** templates (and adding to the working repo).
+5. **Best practice in the JS template the working repo (and Rust/Python/C# templates) lack: a broken-link checker** (`.github/workflows/links.yml`, lychee + Wayback-Machine fallback). The working repo has *zero* markdown/link validation in CI. **Filed upstream** (U2-\*): [rust#116](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/116), [python#49](https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/49), [csharp#44](https://github.com/link-foundation/csharp-ai-driven-development-pipeline-template/issues/44).
+6. **No template has security scanning.** None of the four has CodeQL, `dependency-review`, SBOM, Trivy/Grype/OSV, or `permissions: security-events`. The working repo also lacks these. This is a genuine cross-cutting gap worth filing upstream against **all** templates (and adding to the working repo). **Filed upstream** (U1-\*): [js#122](https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/122), [rust#115](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/115), [python#48](https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/48), [csharp#43](https://github.com/link-foundation/csharp-ai-driven-development-pipeline-template/issues/43).
 7. **Page-structure (`/`, `/download`, `/docs/api`, `/docs/*`, `/app`) parity is poor and inconsistent — but the working repo is now the most complete.** Working repo: has `/` (landing chooser) + `/app` + `/download` + `/docs/` (hub) + **`/docs/api`** (its `deploy-demo` job now runs `cargo doc` and copies the output into `src/web/docs/api/`). Rust: deploys rustdoc to Pages root (its `/docs/api`), nothing else. Python: Sphinx docs. C#: DocFX docs. JS: an example web+desktop+mobile app to Pages, no docs. **The working repo is now the only repo implementing the full `/`, `/app`, `/download`, `/docs/api`, `/docs/*` structure** issue #479 envisions; the templates each cover only a slice.
 8. **The working repo now publishes API docs (gap CLOSED).** All three *other-language* templates (rust/python/csharp) publish API docs to Pages; the working repo previously deployed only the React demo, but `release.yml`'s `deploy-demo` job now runs `cargo doc --no-deps --lib` and copies it into `src/web/docs/api/` (release.yml L874-920), serving `/docs/api` alongside the demo under one Pages site. The Rust template's standalone `deploy-docs` job remains a structural reference (a *separate* job vs. folding it into the demo deploy).
 9. **Action-version hygiene is consistent and good across the board** (`actions/checkout@v6`, `actions/cache@v5`, `dtolnay/rust-toolchain@stable`, `actions/deploy-pages@v5`). No template pins to commit SHAs, and neither does the working repo — a minor, shared, low-severity hardening gap.
@@ -141,13 +142,13 @@ Both files are named `CI/CD Pipeline` and share the same DNA (changelog-fragment
 ## Concrete, actionable improvements for `formal-ai` (ordered by value)
 
 1. ~~**Add an API-docs (`/docs/api`) deploy job.**~~ **DONE / CLOSED.** The working repo's `deploy-demo` job now runs `cargo doc --no-deps --lib` and copies the rustdoc output into `src/web/docs/api/` (release.yml L874-920), synthesizing a root redirect (`src/web/docs/api/index.html`) and serving `/docs/api` under the same Pages site as the demo via a sub-path layout — exactly the structure this item recommended. The Rust template's standalone `deploy-docs` job (`rust/.github/workflows/release.yml` L730-795) remains a reference for splitting it into an *independent* job if desired, but the `/docs/api` route is no longer missing.
-2. **Add a `cargo-lock` guard job.** Copy `rust/.github/workflows/release.yml` **L124-153** + `scripts/check-cargo-lock.rs`; gate lint/test/coverage on it. Rationale (template L124-127): a missing/stale `Cargo.lock` degrades `hashFiles('**/Cargo.lock')` cache keys to the empty hash; working repo caches use exactly that key (release.yml L171).
-3. **Add a published-crate smoke test.** Copy `scripts/smoke-test-published-crate.rs` + steps `rust/.github/workflows/release.yml` **L421-427 / L589-594**.
-4. **Adopt `setup-buildx-resilient`.** Copy `rust/.github/actions/setup-buildx-resilient/action.yml` into the (nonexistent) working `.github/actions/`; replace plain `docker/setup-buildx-action@v4` at working `release.yml` **L493** and **L643**. Retries + `mirror.gcr.io` fallback (action L77-100).
-5. **Add a broken-link checker.** Copy `js/.github/workflows/links.yml` (lychee + Web-Archive fallback, helper `scripts/check-web-archive.mjs` L67-72; exclude `docs/case-studies/` per L55). Working repo has no link validation.
-6. **Restore (or document dropping) the multi-OS test matrix.** Working `release.yml` L264-266 drops macOS/Windows; Rust template runs all three (L231-232). For a desktop app, platform regressions otherwise surface only in the heavier desktop build.
-7. **Make `release.yml` concurrency main-safe.** Change working `release.yml` L33-35 to `cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}` (matches Rust template L34 and the working repo's own `desktop-release.yml` L46).
-8. **(Cross-cutting) Add security scanning** (CodeQL + dependency-review) — absent everywhere.
+2. **Add a `cargo-lock` guard job.** *(L2 — still open, local.)* Copy `rust/.github/workflows/release.yml` **L124-153** (L272 at `c867f78`) + `scripts/check-cargo-lock.rs`; gate lint/test/coverage on it. Rationale (template L124-127): a missing/stale `Cargo.lock` degrades `hashFiles('**/Cargo.lock')` cache keys to the empty hash; working repo caches use exactly that key (release.yml L171).
+3. ~~**Add a published-crate smoke test.**~~ **DONE / CLOSED** *(L3.)* The working repo ships `scripts/smoke-test-published-crate.sh`, invoked at `release.yml` **L853** (existing-version path) and **L1098** (fresh-release path).
+4. ~~**Adopt `setup-buildx-resilient`.**~~ **DONE / CLOSED** *(L4.)* `.github/actions/setup-buildx-resilient/` now exists in the working repo and is used at `release.yml` **L165**, **L887**, and **L1125**; no plain `docker/setup-buildx-action` call remains.
+5. **Add a broken-link checker.** *(L5 — still open, local; the same gap was filed upstream as U2-\*.)* Copy `js/.github/workflows/links.yml` (lychee + Web-Archive fallback, helper `scripts/check-web-archive.mjs` L67-72; exclude `docs/case-studies/` per L55). Working repo has no link validation.
+6. **Restore (or document dropping) the multi-OS test matrix.** *(L6 — still open, local.)* Working `release.yml` L557 still runs `os: [ubuntu-latest]`; Rust template runs all three (L387 at `c867f78`). For a desktop app, platform regressions otherwise surface only in the heavier desktop build. Related macOS portability work: formal-ai #961.
+7. ~~**Make `release.yml` concurrency main-safe.**~~ **DONE / CLOSED** *(L7.)* Working `release.yml` now sets `cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}` at the top-level `concurrency` block.
+8. **(Cross-cutting) Add security scanning** (CodeQL + dependency-review) — absent everywhere. *(L8 — still open locally; filed upstream as U1-js / U1-rust / U1-python / U1-csharp.)*
 
 ---
 
@@ -181,8 +182,13 @@ signing-skip defect exists in any template (no template uses electron-builder or
 signs macOS bundles). There is **no upstream bug to file** for either; the
 remediation lives only in the working repo's `desktop-release.yml`. The single
 actionable upstream item remains the optional hardened desktop-release workflow
-enhancement (below), which should ship the EB26-correct `-c.mac.identity=-`
-ad-hoc command if Electron + electron-builder is ever upstreamed.
+enhancement, which should ship the EB26-correct `-c.mac.identity=-` ad-hoc
+command if Electron + electron-builder is ever upstreamed. Both non-defects are
+recorded as **not-applicable** (U4, U5) in the filing ledger, and the
+enhancement was filed as
+<https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/117>
+(U3-rust). Revalidated 2026-08-05: still 0 `workflow_run` / `head_sha` /
+`electron-builder` / macOS-signing matches across all four templates.
 
 ---
 
@@ -200,28 +206,78 @@ ad-hoc command if Electron + electron-builder is ever upstreamed.
 
 ---
 
-## Recommended upstream issues to file
+## Upstream filing status (revalidated 2026-08-05)
 
-### Per-template desktop-release / #479 bug
-**None.** No template carries the #479 defect (or any desktop-release workflow). Filing a #479-analogous bug against any template would be invalid.
+Issue #894 required that every finding be revalidated against the current template
+default branches, that every confirmed gap be filed in its owning repository with a
+reproduction / workaround / suggested fix, and that nothing be left "ready to file"
+without a URL. This section is the authoritative filing ledger and is enforced by
+`tests/unit/docs_requirements_issue_894.rs`.
 
-### Genuine gaps worth filing upstream (enhancements)
+Template heads used for the revalidation (recorded in
+`docs/case-studies/issue-894/raw-data/template-heads.json`):
+`js` `7b70923`, `rust` `c867f78`, `python` `98d6dca`, `csharp` `6806bd9` — all
+`main`, all fetched 2026-08-05.
 
-**1. All four templates — add CI security scanning.**
-- *Title:* "Add CodeQL + dependency-review to the CI pipeline"
-- *Body:* "The pipeline has thorough lint/test/coverage/release automation but no security analysis. Add a `github/codeql-action` job (language-appropriate) and `actions/dependency-review-action` on `pull_request`. Verified absent: no `codeql`/`dependency-review`/`security-events`/SBOM/scanner reference in any workflow."
-- *Check:* `gh api repos/link-foundation/<repo>/git/trees/HEAD?recursive=1 --jq '.tree[].path' | grep -iE 'codeql|security'` returns nothing.
+Status vocabulary:
 
-**2. rust / python / csharp — port the `links.yml` broken-link checker from `js`.**
-- *Title:* "Port the `links.yml` broken-link checker from the JS template"
-- *Body:* "`js` ships `.github/workflows/links.yml` (lychee + Web-Archive fallback) but rust/python/csharp do not, so doc links can rot undetected. Port it + the `check-web-archive` helper; exclude `docs/case-studies/`."
-- *Check:* `links.yml` present only in `js`.
+- **confirmed** — still reproducible upstream; a filing URL is mandatory.
+- **obsolete** — superseded since 2026-06-14 (fixed upstream or downstream); no filing.
+- **not-applicable** — investigated and found to be a non-defect upstream; nothing to file.
+- **local** — a working-repo (`link-assistant/formal-ai`) work item, not an upstream gap.
 
-**3. rust template — optional hardened desktop-release workflow + /download page (parity with formal-ai).**
-- *Title:* "Provide an optional cross-platform desktop-release workflow + /download page"
-- *Body:* "Downstream `link-assistant/formal-ai` built a complete desktop pipeline (6-target matrix, SLSA attestation via `actions/attest-build-provenance`, consolidated `SHA256SUMS.txt`, `/download` page from the Releases API). Consider upstreaming. **Ship the FIXED resolve logic** from `scripts/desktop-release-resolve.sh` (resolve the latest published release — the auto-release tags a child `chore: release vX.Y.Z` commit whose first parent is the CI head SHA), **not** a naive `workflow_run.head_sha == tag commit` match, which caused formal-ai #479."
-- *Reproducible bug to avoid:* a `workflow_run` job doing `gh api repos/$REPO/tags --jq '.[] | select(.commit.sha=="'$HEAD_SHA'")'` returns empty whenever the tag sits on the auto-release child commit -> build skipped forever.
-- *Second reproducible bug to avoid (electron-builder 26):* an unsigned/ad-hoc macOS build must pass `-c.mac.identity=-`. On electron-builder **26**, `MacPackager.findSigningIdentity()` returns `null` for any qualifier other than `"-"` when no Apple certificate is present (even with `CSC_IDENTITY_AUTO_DISCOVERY=false`), so `isSignAllowed()` skips signing entirely and a custom `-c.mac.sign=<hook>` is **never invoked** — the produced `.app` ships with no `Contents/_CodeSignature/CodeResources`. This is a behavior change from electron-builder 25 (where the hook ran without the flag) and caused formal-ai #479's macOS-only failure at v0.205.0/v0.206.0. Minimal repro: `electron-builder --mac --publish never -c.mac.sign=./sign.cjs` on EB26 with no cert -> hook never runs; adding `-c.mac.identity=-` makes it run. Workaround/fix: always pass `-c.mac.identity=-` on the ad-hoc path.
+### Upstream findings
+
+| ID | Finding (report section) | Owning repository | Status | Filing |
+|---|---|---|---|---|
+| U1-js | No CI security scanning (summary 6) | `js-ai-driven-development-pipeline-template` | confirmed | <https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/122> |
+| U1-rust | No CI security scanning (summary 6) | `rust-ai-driven-development-pipeline-template` | confirmed | <https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/115> |
+| U1-python | No CI security scanning (summary 6) | `python-ai-driven-development-pipeline-template` | confirmed | <https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/48> |
+| U1-csharp | No CI security scanning (summary 6) | `csharp-ai-driven-development-pipeline-template` | confirmed | <https://github.com/link-foundation/csharp-ai-driven-development-pipeline-template/issues/43> |
+| U2-rust | No broken-link checker; `links.yml` exists only in `js` (summary 5) | `rust-ai-driven-development-pipeline-template` | confirmed | <https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/116> |
+| U2-python | No broken-link checker (summary 5) | `python-ai-driven-development-pipeline-template` | confirmed | <https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/49> |
+| U2-csharp | No broken-link checker (summary 5) | `csharp-ai-driven-development-pipeline-template` | confirmed | <https://github.com/link-foundation/csharp-ai-driven-development-pipeline-template/issues/44> |
+| U3-rust | No desktop-release workflow / `/download` page; ship the fixed resolver and the electron-builder 26 ad-hoc signing flag (summary 3, page-structure table) | `rust-ai-driven-development-pipeline-template` | confirmed | <https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/117> |
+| U4 | A #479-analogous `workflow_run.head_sha` defect in any template | — | not-applicable | no template references `workflow_run` or `head_sha` (revalidated: `raw-data/revalidation-greps.txt`, F3) |
+| U5 | A PR #510-analogous electron-builder 26 macOS signing-skip in any template | — | not-applicable | no template uses electron-builder or signs macOS bundles (revalidated: `raw-data/revalidation-greps-2.txt`, F4) |
+| U6 | Action SHA-pinning (summary 9) | all four | not-applicable | shared, deliberate tag-pinning convention across the fleet including the working repo; no divergence to report |
+
+Filed issue bodies are preserved verbatim under
+`docs/case-studies/issue-894/raw-data/` (`sec-*.md`, `links-*.md`,
+`desktop-rust.md`); the created-issue metadata is in
+`raw-data/filed-upstream-issues.json`.
+
+### Working-repo findings (owned by `link-assistant/formal-ai`, not upstream)
+
+| ID | Finding | Status | Note |
+|---|---|---|---|
+| L1 | `/docs/api` deploy job missing | obsolete | closed before this revalidation — `deploy-demo` runs `cargo doc --no-deps --lib` into `src/web/docs/api/` |
+| L2 | No `cargo-lock` guard job | local | still open; rust template reference is `release.yml` L272 (`scripts/check-cargo-lock.rs`) at `c867f78` |
+| L3 | No published-crate smoke test | obsolete | closed since 2026-06-14 — `scripts/smoke-test-published-crate.sh`, called at `release.yml` L853 and L1098 |
+| L4 | No `setup-buildx-resilient` action | obsolete | closed since 2026-06-14 — `.github/actions/setup-buildx-resilient`, used at `release.yml` L165, L887, L1125 |
+| L5 | No broken-link checker | local | still open; same gap as U2-*, but the working repo owns its own fix |
+| L6 | Test matrix is `[ubuntu-latest]` only | local | still open (`release.yml` L557); related macOS portability work is tracked in <https://github.com/link-assistant/formal-ai/issues/961> |
+| L7 | `concurrency: cancel-in-progress: true` unconditionally on `main` | obsolete | closed since 2026-06-14 — `release.yml` now uses `cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}` |
+| L8 | No security scanning | local | still open; same gap as U1-*, but the working repo owns its own fix |
+
+`local` rows are working-repo backlog items, not upstream filings: the owning
+repository is `link-assistant/formal-ai` itself, so there is no upstream issue to
+open for them.
+
+### What the 2026-08-05 revalidation changed
+
+- Confirmed unchanged upstream: no security scanning in any of the four templates;
+  `links.yml` present only in `js`; no desktop-release workflow, `/download` page,
+  `workflow_run`, `head_sha`, or electron-builder usage anywhere.
+- Confirmed unchanged in the Rust template (line numbers now, `c867f78`, 991-line
+  `release.yml`): `check-cargo-lock.rs` L272, multi-OS matrix L387,
+  `smoke-test-published-crate.rs` L611/L781, `setup-buildx-resilient` L658/L827,
+  standalone `deploy-docs` job L931.
+- Changed since the snapshot: the Rust template's `release.yml` grew from 795 to 991
+  lines and moved from one top-level `concurrency` block to per-job concurrency
+  groups, so summary 9 / the concurrency row of the feature matrix no longer
+  describe it literally. The substance (writes are never cancelled) is unchanged.
+- Closed downstream: L1, L3, L4, L7 (see table above).
 
 ---
 

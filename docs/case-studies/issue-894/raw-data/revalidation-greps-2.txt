@@ -1,0 +1,34 @@
+## F4 electron-builder / mac signing across templates (expect 0)
+(no matches in any fetched .github file)
+
+## js example-app.yml desktop-package job
+67:        uses: actions/upload-artifact@v7
+102:  desktop-package:
+103:    name: Package desktop app (${{ matrix.os }})
+104:    runs-on: ${{ matrix.os }}
+107:      group: check-${{ github.workflow }}-${{ github.ref }}-desktop-package-${{ matrix.os }}
+111:      matrix:
+112:        os: [ubuntu-latest, macos-latest, windows-latest]
+147:        uses: actions/upload-artifact@v7
+149:          name: universal-example-desktop-${{ matrix.os }}
+190:        uses: actions/upload-artifact@v7
+220:        run: npm --prefix examples/universal-app run mobile:ios:add
+223:        run: npm --prefix examples/universal-app run mobile:ios:build
+298:        uses: actions/upload-artifact@v7
+
+## rust template reliability jobs (current line numbers, HEAD c867f78)
+272:        run: rust-script scripts/check-cargo-lock.rs
+387:        os: [ubuntu-latest, macos-latest, windows-latest]
+611:        run: rust-script scripts/smoke-test-published-crate.rs --release-version "${{ steps.current_version.outputs.version }}"
+658:        uses: ./.github/actions/setup-buildx-resilient
+781:        run: rust-script scripts/smoke-test-published-crate.rs --release-version "${{ steps.version.outputs.new_version }}"
+827:        uses: ./.github/actions/setup-buildx-resilient
+931:  deploy-docs:
+
+## rust template line counts
+  991 rust/.github/workflows/release.yml
+  101 js/.github/workflows/links.yml
+  315 js/.github/workflows/example-app.yml
+   95 python/.github/workflows/docs.yml
+  110 csharp/.github/workflows/docs.yml
+ 1612 total
