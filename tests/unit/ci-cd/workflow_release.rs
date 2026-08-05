@@ -528,8 +528,6 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // after the suite passed. See
         // `test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten`.
         ("test", 25),
-        // Issue #812: raised from 15; measured worst case on main was 14.1 min.
-        ("coverage", 25),
         // Issue #896: raised from 10; the published web-search/web-capture
         // graphs moved the job from ~4-5 to 7.2 minutes, and a cold release
         // build after a Cargo.lock change hit the former cap.

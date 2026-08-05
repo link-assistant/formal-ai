@@ -1,0 +1,46 @@
+{
+  "policy": "Coverage may not decrease. Each denominator is measured separately and never averaged into a single number, because a Rust percentage and a browser percentage count different things. `scripts/check-coverage-ratchet.rs` compares a fresh LCOV report against the floors below and fails the build on a decrease beyond the stated tolerance. Raising a floor is automatic: run the script with --update-baseline and commit the result. Lowering one is not: it additionally requires --justification \"<reviewed reason>\", which is recorded as `lowered_reason` so a reviewer sees, in the diff, that the decrease was a deliberate decision.",
+  "denominators": {
+    "browser": {
+      "label": "Browser production JavaScript",
+      "lcov": "coverage/browser-lcov.info",
+      "include": [
+        "src/web/"
+      ],
+      "exclude": [
+        "src/web/app.js",
+        "src/web/ocr.bundle.js",
+        "src/web/vendor.bundle.js",
+        "src/web/web-search-component.bundle.js"
+      ],
+      "lines_percent": 50.48,
+      "functions_percent": 45.54,
+      "tolerance_percent": 0.5,
+      "reviewed": "2026-08-05",
+      "evidence": "`npm run coverage:web` runs tests/web/**/*.test.mjs under `node --test --experimental-test-coverage`. The unbundled page scripts and the 24-module worker mirror are executed through `node:vm` with their real repository paths as the script filename, so V8 attributes coverage to the files the browser downloads. The generated bundles above are build output and are excluded; their sources are measured instead.",
+      "inventory": {
+        "roots": [
+          "src/web"
+        ],
+        "extensions": [
+          "js",
+          "jsx"
+        ],
+        "unmeasured_list": "coverage/browser-unmeasured.txt"
+      }
+    },
+    "rust": {
+      "label": "Rust workspace",
+      "lcov": "lcov.info",
+      "include": [
+        "src/"
+      ],
+      "exclude": [],
+      "lines_percent": 0.0,
+      "functions_percent": 0.0,
+      "tolerance_percent": 0.5,
+      "reviewed": "2026-08-05",
+      "evidence": "`cargo llvm-cov --all-features --lcov` over the whole workspace, which is what the `coverage` job in .github/workflows/release.yml already produces."
+    }
+  }
+}

@@ -1,0 +1,211 @@
+name: Coverage
+# Issue #895: coverage lives in its own workflow rather than in release.yml.
+#
+# Two reasons. The first is honesty: this pipeline measures two different
+# denominators -- the Rust workspace and the browser production sources -- that
+# must never be averaged into a single number, and a workflow named "Coverage"
+# with one job per denominator makes that visible in the checks list instead of
+# burying it among twenty release jobs. The second is the repository's own file
+# size gate (scripts/check-file-size.rs), which caps a workflow at 2000 lines
+# and documents release.yml as debt that "cannot grow": these jobs are a leaf of
+# the release graph -- nothing `needs:` them -- so moving them out is
+# behaviour-preserving and pays some of that debt down.
+#
+# The triggers, the concurrency group and the change-detection gate are the same
+# contract release.yml applies, so a docs-only pull request still does not pay
+# for a 25-minute instrumented build.
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+env:
+  CARGO_NET_RETRY: '10'
+  CARGO_HTTP_MULTIPLEXING: 'false'
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: -Dwarnings
+jobs:
+  # === DETECT CHANGES - determines which jobs should run ===
+  # Identical to release.yml's detector, and deliberately so: a second copy of
+  # the *gate* is cheap (a 5-minute job), while a second copy of the *rule* is
+  # not, so both workflows call the same scripts/detect-code-changes.rs.
+  detect-changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: github.event_name != 'workflow_dispatch'
+    outputs:
+      rs-changed: ${{ steps.changes.outputs.rs-changed }}
+      toml-changed: ${{ steps.changes.outputs.toml-changed }}
+      docs-changed: ${{ steps.changes.outputs.docs-changed }}
+      workflow-changed: ${{ steps.changes.outputs.workflow-changed }}
+      any-code-changed: ${{ steps.changes.outputs.any-code-changed }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install rust-script
+        run: bash scripts/install-rust-script.sh
+      - name: Detect changes
+        id: changes
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
+        run: rust-script scripts/detect-code-changes.rs
+  # === CODE COVERAGE ===
+  # Generate and upload code coverage using cargo-llvm-cov
+  coverage:
+    name: Code Coverage
+    runs-on: ubuntu-latest
+    # Issue #812: the same margin problem as `test`, one run away from the same
+    # false failure. Measured on the last eight `main` runs: 11.2, 11.5, 11.4,
+    # 11.9, 12.6, 12.7, 13.5, 14.1 minutes -- the worst case used 94% of the old
+    # 15-minute cap. It instruments the same suite that takes ~11m unarmed.
+    timeout-minutes: 25
+    needs: [detect-changes]
+    if: |
+      !cancelled() && (
+        github.event_name == 'workflow_dispatch' ||
+        needs.detect-changes.outputs.rs-changed == 'true' ||
+        needs.detect-changes.outputs.toml-changed == 'true'
+      )
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: llvm-tools-preview
+
+      - uses: ./.github/actions/setup-sccache
+
+      - name: Cache cargo registry
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: ${{ runner.os }}-cargo-coverage-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-coverage-
+
+      - name: Install cargo-llvm-cov
+        uses: taiki-e/install-action@cargo-llvm-cov
+
+      - name: Clean stale coverage artifacts
+        run: cargo llvm-cov clean --workspace
+
+      - name: Generate code coverage
+        run: cargo llvm-cov --all-features --lcov --output-path lcov.info
+
+      # Issue #895: an LCOV file nobody reads is not a coverage requirement.
+      # This step reads it, publishes a human-readable summary into the run
+      # summary alongside the machine-readable JSON, and fails when the measured
+      # percentage falls below the reviewed floor in coverage/baseline.json.
+      - name: Install rust-script
+        run: bash scripts/install-rust-script.sh
+
+      - name: Check Rust coverage ratchet
+        run: rust-script scripts/check-coverage-ratchet.rs --only rust
+
+      - name: Retain LCOV report
+        uses: actions/upload-artifact@v7
+        with:
+          name: rust-lcov
+          path: lcov.info
+          if-no-files-found: error
+
+      - name: Publish Rust coverage reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-rust
+          path: |
+            coverage/summary-rust.md
+            coverage/summary-rust.json
+          if-no-files-found: warn
+
+      - name: Detect Codecov configuration
+        id: codecov-config
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        run: |
+          if [[ -n "$CODECOV_TOKEN" ]]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload coverage to Codecov when configured
+        if: steps.codecov-config.outputs.configured == 'true'
+        uses: codecov/codecov-action@v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: lcov.info
+          disable_search: true
+          plugins: noop
+          fail_ci_if_error: true
+
+      - name: Report optional Codecov integration status
+        if: steps.codecov-config.outputs.configured != 'true'
+        run: echo "::notice title=Codecov upload not configured::The LCOV report is retained as the rust-lcov workflow artifact; configure CODECOV_TOKEN to enable fail-closed remote upload."
+
+  # === BROWSER CODE COVERAGE ===
+  # Issue #895: the Rust denominator above says nothing about the code the
+  # website actually runs. `tests/web/` executes the unbundled browser sources
+  # and the worker mirror through `node:vm` under their real repository paths,
+  # so V8 attributes coverage to the files the browser downloads. The two
+  # denominators are ratcheted separately and never averaged: a Rust percentage
+  # and a browser percentage count different things, and one number covering
+  # both would be a number nobody can act on.
+  browser-coverage:
+    name: Browser Code Coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [detect-changes]
+    if: |
+      !cancelled() && (
+        github.event_name == 'workflow_dispatch' ||
+        needs.detect-changes.outputs.any-code-changed == 'true' ||
+        needs.detect-changes.outputs.workflow-changed == 'true'
+      )
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install rust-script
+        run: bash scripts/install-rust-script.sh
+
+      - name: Generate browser coverage
+        run: npm run coverage:web
+
+      - name: Check browser coverage ratchet
+        run: rust-script scripts/check-coverage-ratchet.rs --only browser
+
+      - name: Publish browser coverage reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-browser
+          path: |
+            coverage/browser-lcov.info
+            coverage/summary-browser.md
+            coverage/summary-browser.json
+          if-no-files-found: warn
