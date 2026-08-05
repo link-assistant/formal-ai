@@ -2,10 +2,10 @@ self_ast_census
   target src/main.rs
   language rust
   fidelity signature
-  byte_len 34791
-  line_count 987
-  content_id source_module_9db6aac6a3fc572a
-  symbol_count 41
+  byte_len 35192
+  line_count 996
+  content_id source_module_68f2aab71598f8ee
+  symbol_count 42
   symbols
     module cli_algorithm 9 9
     module cli_benchmark 10 10
@@ -23,28 +23,29 @@ self_ast_census
     module cli_report 22 22
     module cli_shared_dialog 23 23
     module cli_statement_audit 24 24
-    const DEFAULT_AGENT_TASK 56 76
-    struct Args 65 76
-    enum Command 79 299
-    enum MemoryAction 302 448
-    enum BundleAction 451 475
-    enum GithubLogsAction 478 483
-    struct GithubLogsOptions 486 522
-    enum OutputFormat 525 529
-    enum DefinitionFusionMode 532 535
-    enum TelegramMode 538 541
-    function fmt 544 550
-    function fmt 554 559
-    function fmt 563 568
-    function main 571 695
-    function run_github_logs 697 718
-    function run_agent 720 744
-    function into_config 747 759
-    struct TelegramRunArgs 762 771
-    function solver_for_chat 773 790
-    function print_thinking_trace 803 821
-    function run_chat 823 876
-    function run_bundle 878 942
-    function read_input 944 952
-    function run_telegram 954 979
-    function parse_allowed_updates 981 987
+    module cli_summarization 25 25
+    const DEFAULT_AGENT_TASK 58 78
+    struct Args 67 78
+    enum Command 81 307
+    enum MemoryAction 310 456
+    enum BundleAction 459 483
+    enum GithubLogsAction 486 491
+    struct GithubLogsOptions 494 530
+    enum OutputFormat 533 537
+    enum DefinitionFusionMode 540 543
+    enum TelegramMode 546 549
+    function fmt 552 558
+    function fmt 562 567
+    function fmt 571 576
+    function main 579 704
+    function run_github_logs 706 727
+    function run_agent 729 753
+    function into_config 756 768
+    struct TelegramRunArgs 771 780
+    function solver_for_chat 782 799
+    function print_thinking_trace 812 830
+    function run_chat 832 885
+    function run_bundle 887 951
+    function read_input 953 961
+    function run_telegram 963 988
+    function parse_allowed_updates 990 996

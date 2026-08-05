@@ -1,0 +1,73 @@
+self_ast_census
+  target src/summarization/validation.rs
+  language rust
+  fidelity signature
+  byte_len 39159
+  line_count 1072
+  content_id source_module_210c0e63da077ab8
+  symbol_count 64
+  symbols
+    const QUALITY_RATCHET_PERCENT 44 44
+    const DEFAULT_SAMPLING_SEED 48 48
+    const DEFAULT_FILES_PER_ITERATION 51 51
+    const DEFAULT_MAX_ITERATIONS 54 54
+    const DEFAULT_STABILITY_WINDOW 58 58
+    const DEFAULT_STABILITY_TOLERANCE_PERCENT 62 62
+    struct Criterion 71 76
+    const CRITERIA 79 83
+    struct CriterionOutcome 127 135
+    struct QualityScore 140 143
+    function absorb 147 150
+    function percent 154 164
+    function meets 168 170
+    struct FileQualityReport 175 184
+    function failures 189 194
+    struct IterationReport 199 204
+    struct ValidationReport 208 220
+    function meets_ratchet 225 227
+    function sampled_paths 231 236
+    function failures 240 250
+    function to_links_notation 258 352
+    const BASELINE_RECORD 356 356
+    const BASELINE_PATH 359 359
+    const RATCHET_RUNNER 363 363
+    const RATCHET_POLICY 366 368
+    const HONESTY_POLICY 372 374
+    struct QualityBaseline 379 391
+    function parse 399 435
+    function ratchet_violations 452 485
+    function split_field 487 500
+    struct SamplingProtocol 505 511
+    function default 514 522
+    function with_seed 528 531
+    function with_max_iterations 535 538
+    function sampling_order 547 558
+    function iteration_paths 563 575
+    function available_iterations 579 589
+    struct CorpusFile 594 597
+    function new 601 606
+    function evaluate_file 615 650
+    function validate_repository_summarization 659 716
+    function is_stable 720 736
+    function check_identity 738 741
+    function check_format 743 752
+    function check_size 754 766
+    function check_content_retained 768 787
+    function check_content_grounded 789 830
+    function check_compression 832 849
+    const COMPRESSION_FLOOR_BYTES 852 852
+    function check_embedded_grammars 854 881
+    function check_meta_language 883 904
+    function check_determinism 906 920
+    function check_mode_ladder 922 941
+    function outcome 943 957
+    function fenced_block_languages 964 988
+    function fence_marker 990 997
+    function fence_language 999 1005
+    function identifier_tokens 1009 1028
+    function is_camel_case 1033 1038
+    function is_identifier_char 1040 1042
+    struct Prng 1046 1048
+    function seeded 1051 1055
+    function next_u64 1057 1063
+    function below 1065 1071
