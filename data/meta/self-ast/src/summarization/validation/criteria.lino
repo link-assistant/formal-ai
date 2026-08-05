@@ -1,0 +1,28 @@
+self_ast_census
+  target src/summarization/validation/criteria.rs
+  language rust
+  fidelity signature
+  byte_len 11470
+  line_count 335
+  content_id source_module_0b06cf23e7324eda
+  symbol_count 19
+  symbols
+    function check_identity 12 15
+    function check_format 17 29
+    function check_size 31 46
+    function check_content_retained 48 67
+    function check_content_grounded 69 110
+    function check_compression 112 129
+    const COMPRESSION_FLOOR_BYTES 132 132
+    function check_embedded_grammars 134 161
+    function check_meta_language 163 184
+    function check_determinism 186 200
+    function check_mode_ladder 202 221
+    function outcome 223 237
+    function carries_embedded_grammar 245 250
+    function fenced_block_languages 257 281
+    function fence_marker 283 290
+    function fence_language 292 298
+    function identifier_tokens 302 321
+    function is_camel_case 326 331
+    function is_identifier_char 333 335

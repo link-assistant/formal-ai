@@ -704,7 +704,7 @@ The same pipeline also drives four additional surfaces:
   kind) for inspectable evidence, and `summarize_repository_resource` is the
   general entry point that subsumes `summarize_repository_file` for file inputs.
 - **Summarization quality protocol (seeded sampling + 80% ratchet).**
-  `src/summarization/validation.rs` answers the part of issue #563 that a
+  `src/summarization/validation/` answers the part of issue #563 that a
   summarizer alone cannot: *is the summarizer any good on files nobody
   optimized for?* `SamplingProtocol` fixes a seed, two files per iteration, an
   iteration bound and a stability window, and permutes the corpus with a seeded

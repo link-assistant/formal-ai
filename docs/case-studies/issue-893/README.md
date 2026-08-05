@@ -59,7 +59,12 @@ free points.
 
 ## 4. Implemented Design
 
-- **Protocol** — [`src/summarization/validation.rs`](../../../src/summarization/validation.rs).
+- **Protocol** — [`src/summarization/validation/`](../../../src/summarization/validation):
+  `mod.rs` (the loop, the scores and the reports), `sampling.rs` (the seeded,
+  stratified draw), `criteria.rs` (the checks and the CommonMark oracle), and
+  `baseline.rs` (the committed baseline and the ratchet). Four files rather than
+  one because the repository fails any Rust file past a thousand lines — a gate
+  this module hit at 1150.
   `SamplingProtocol` sorts and de-duplicates the corpus paths, then permutes
   them with a seeded `splitmix64` Fisher-Yates shuffle. The draw depends on the
   seed and the set of paths only — hand the same files over in a different

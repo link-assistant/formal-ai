@@ -1,0 +1,39 @@
+self_ast_census
+  target src/summarization/validation/mod.rs
+  language rust
+  fidelity signature
+  byte_len 20427
+  line_count 540
+  content_id source_module_b9484533c591dbf4
+  symbol_count 30
+  symbols
+    module baseline 37 37
+    module criteria 38 38
+    module sampling 39 39
+    const QUALITY_RATCHET_PERCENT 62 62
+    const DEFAULT_SAMPLING_SEED 66 66
+    const DEFAULT_FILES_PER_ITERATION 69 69
+    const DEFAULT_MAX_ITERATIONS 72 72
+    const DEFAULT_STABILITY_WINDOW 76 76
+    const DEFAULT_STABILITY_TOLERANCE_PERCENT 80 80
+    const DEFAULT_MINIMUM_ITERATIONS 90 90
+    struct Criterion 99 104
+    const CRITERIA 107 111
+    struct CriterionOutcome 155 163
+    struct QualityScore 168 171
+    function absorb 175 178
+    function percent 182 192
+    function meets 196 198
+    struct FileQualityReport 203 212
+    function failures 217 222
+    struct IterationReport 227 232
+    struct ValidationReport 236 248
+    function meets_ratchet 253 255
+    function sampled_paths 259 264
+    function failures 268 278
+    function to_links_notation 286 385
+    struct CorpusFile 390 393
+    function new 397 402
+    function evaluate_file 411 446
+    function validate_repository_summarization 455 511
+    function is_stable 515 540

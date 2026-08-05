@@ -4,7 +4,7 @@ bump: minor
 
 ### Added
 - An iterative repository-summarization validation protocol with a published quality
-  metric and an 80% ratchet (`src/summarization/validation.rs`). A seeded
+  metric and an 80% ratchet (`src/summarization/validation/`). A seeded
   `splitmix64` Fisher-Yates permutation draws repository files reproducibly, two per
   iteration, and the loop keeps going until three consecutive iterations sit within
   five points of one another above the ratchet — never before twelve iterations have

@@ -2,11 +2,11 @@ self_ast_census_index
   language rust
   engine meta_language
   full_fidelity_prefix src/agentic_coding/
-  module_count 436
+  module_count 439
   full_ast_module_count 55
-  signature_module_count 381
-  symbol_count 8886
-  content_id self_ast_census_index_6659c0f7c823e09b
+  signature_module_count 384
+  symbol_count 8889
+  content_id self_ast_census_index_ac137e5352ec6610
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/algorithm_learning.rs full_ast 13 source_module_0cde1901a8a78574
@@ -409,7 +409,10 @@ self_ast_census_index
     src/summarization/pipeline.rs signature 7 source_module_7436071879e680a6
     src/summarization/recheck.rs signature 15 source_module_a1d91e119f01b6fe
     src/summarization/resource.rs signature 19 source_module_38f92a468be1b09a
-    src/summarization/validation.rs signature 67 source_module_a2a0cfa91800582d
+    src/summarization/validation/baseline.rs signature 9 source_module_2909aea66e1d2be9
+    src/summarization/validation/criteria.rs signature 19 source_module_0b06cf23e7324eda
+    src/summarization/validation/mod.rs signature 30 source_module_b9484533c591dbf4
+    src/summarization/validation/sampling.rs signature 12 source_module_4d2cd15f856754b1
     src/summarization/vocabulary.rs signature 16 source_module_16af636d118b518c
     src/task_decomposition.rs signature 40 source_module_45093599dd4c0f1a
     src/task_decomposition/artifact.rs signature 9 source_module_b03830849be5aeca

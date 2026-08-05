@@ -70,7 +70,10 @@ fn issue_893_summarization_validation_documents_are_traceable() {
     );
 
     for relative in [
-        "src/summarization/validation.rs",
+        "src/summarization/validation/mod.rs",
+        "src/summarization/validation/sampling.rs",
+        "src/summarization/validation/criteria.rs",
+        "src/summarization/validation/baseline.rs",
         "src/cli_summarization.rs",
         "data/summarization/quality-baseline.lino",
         "tests/unit/specification/issue_893_summarization_validation.rs",
