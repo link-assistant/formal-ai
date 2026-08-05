@@ -39,6 +39,21 @@ pub(super) fn plan_general_change_step(
                     return plan_one(write_tool, write_arguments(&plan.target, &plan.content));
                 }
             }
+            // Recovery is exhausted, but the failed call is not the last word:
+            // run the check the plan itself named so the report can carry the
+            // status the workspace answered with rather than a transport
+            // message alone (issue #916, rung R916-01).
+            if plan.mode != GeneralPlanMode::RepositoryWorkItem
+                && !plan.verification_command.trim().is_empty()
+                && progress.count(Capability::Run) == 0
+            {
+                if let Some(run_tool) = tool_for(tool_names, Capability::Run) {
+                    return plan_one(
+                        run_tool,
+                        json!({ "command": plan.verification_command }).to_string(),
+                    );
+                }
+            }
             return AgenticPlan::Final(tool_result::render_failure(
                 path.as_deref().unwrap_or("write"),
                 &failure.detail,

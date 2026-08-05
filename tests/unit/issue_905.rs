@@ -143,6 +143,16 @@ fn a_second_failed_write_for_the_same_path_stops_retrying() {
         r#"{"is_error":true,"content":"Write transport remains unavailable"}"#,
     );
 
+    // Retrying stops, but the plan still asks the workspace: the check the
+    // plan itself named runs once, and its status is what gets reported.
+    let verification = next_call(&messages);
+    assert_eq!(verification.tool, "run_command");
+    record(
+        &mut messages,
+        &verification,
+        "Command: cat hello.txt\nOutput: (empty)\nError: cat: hello.txt: No such file or directory\nExit Code: 1\n",
+    );
+
     let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &TOOLS) else {
         panic!("the bounded retry must stop after the second failure");
     };
@@ -150,10 +160,44 @@ fn a_second_failed_write_for_the_same_path_stops_retrying() {
         !answer.contains("Completed the general change request"),
         "{answer}"
     );
+    assert!(answer.contains('1'), "{answer}");
+    assert!(answer.contains("hello.txt"), "{answer}");
+}
+
+/// Issue #916 rung R916-01: the write transport fault of issue #905 leaves the
+/// plan without a recovery path, and the report must carry what the workspace
+/// answered — the check the plan named, and the status it exited with — rather
+/// than the transport message alone.
+#[test]
+fn an_unrecoverable_write_still_asks_the_workspace_before_reporting() {
+    let tools = ["write_file", "run_command"];
+    let mut messages = vec![ChatMessage::user(PROMPT)];
+    let mut guard = 0;
+    let answer = loop {
+        guard += 1;
+        assert!(guard < 8, "the plan must terminate");
+        match plan_chat_step(&messages, &tools) {
+            Some(AgenticPlan::ToolCalls(mut calls)) => {
+                let call = calls.remove(0);
+                let result = if call.tool == "write_file" {
+                    "Error: write_stdin failed: Unknown process id 0".to_owned()
+                } else {
+                    "Command: cat hello.txt\nOutput: (empty)\nError: cat: hello.txt: No such file \
+                     or directory\nExit Code: 1\n"
+                        .to_owned()
+                };
+                record(&mut messages, &call, &result);
+            }
+            Some(AgenticPlan::Final(answer)) => break answer,
+            other => panic!("unexpected plan {other:?}"),
+        }
+    };
+    assert!(!answer.contains("verified it"), "{answer}");
     assert!(
-        answer.contains("Write transport remains unavailable"),
+        !answer.contains("Completed the general change request"),
         "{answer}"
     );
+    assert!(answer.contains('1'), "{answer}");
 }
 
 #[test]
