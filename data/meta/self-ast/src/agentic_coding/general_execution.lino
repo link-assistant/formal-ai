@@ -2,36 +2,36 @@ self_ast_census
   target src/agentic_coding/general_execution.rs
   language rust
   fidelity full_ast
-  byte_len 8450
-  line_count 206
-  content_id source_module_38efbbb6a6ac3258
+  byte_len 9291
+  line_count 226
+  content_id source_module_1f9c56cc24a2868b
   symbol_count 9
   symbols
     const EXPECTED_PLACEHOLDER 11 11
     const OBSERVED_PLACEHOLDER 12 12
-    function plan_general_change_step 14 120
-    function finish_general_change 122 147
-    function tool_argument_path 149 155
-    function read_arguments 157 164
-    function capability_label 166 183
-    function general_plan_mismatch 185 198
-    function general_plan_unverified 200 206
+    function plan_general_change_step 14 131
+    function finish_general_change 133 167
+    function tool_argument_path 169 175
+    function read_arguments 177 184
+    function capability_label 186 203
+    function general_plan_mismatch 205 218
+    function general_plan_unverified 220 226
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 6169
-    named_node_count 1248
+    total_link_count 6566
+    named_node_count 1326
     distinct_node_kinds 60
     node_kinds
-      arguments 98
+      arguments 102
       array_expression 1
       array_type 2
       assignment_expression 3
-      binary_expression 28
-      block 34
-      call_expression 98
+      binary_expression 29
+      block 37
+      call_expression 102
       closure_expression 5
       closure_parameters 5
       const_item 2
@@ -39,20 +39,20 @@ self_ast_census
       doc_comment 1
       else_clause 1
       escape_sequence 4
-      expression_statement 38
-      field_expression 92
-      field_identifier 92
+      expression_statement 43
+      field_expression 99
+      field_identifier 99
       function_item 7
       function_modifiers 1
       generic_type 1
-      identifier 343
-      if_expression 21
+      identifier 366
+      if_expression 24
       inner_doc_comment_marker 1
       integer_literal 7
-      let_condition 7
+      let_condition 9
       let_declaration 14
       lifetime 1
-      line_comment 10
+      line_comment 14
       macro_invocation 7
       match_arm 17
       match_block 2
@@ -64,10 +64,10 @@ self_ast_census
       parameters 7
       parenthesized_expression 1
       primitive_type 7
-      reference_expression 16
+      reference_expression 22
       reference_type 14
-      return_expression 13
-      scoped_identifier 68
+      return_expression 15
+      scoped_identifier 73
       scoped_type_identifier 1
       scoped_use_list 2
       source_file 1
@@ -78,7 +78,7 @@ self_ast_census
       try_expression 1
       tuple_expression 2
       tuple_pattern 2
-      tuple_struct_pattern 9
+      tuple_struct_pattern 11
       type_arguments 1
       type_identifier 15
       unary_expression 6

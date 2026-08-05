@@ -44,7 +44,10 @@ pub const DEFAULT_MODEL: &str = "formal-ai";
 // Thinking model + deterministic naturalizer live in `crate::thinking` (issue #488),
 // re-exported so `crate::engine::{...}` / `formal_ai::{...}` paths stay unchanged.
 pub use crate::thinking::{
-    humanize_meta_identifier, naturalize_thinking_step, thinking_language_label, ThinkingStep,
+    humanize_meta_identifier, localize_thinking_steps, naturalize_thinking_step,
+    naturalize_thinking_step_in, render_thinking_steps, render_thinking_steps_in,
+    thinking_answer_language, thinking_language_label, thinking_language_label_in,
+    thinking_narrative, thinking_narrative_in, thinking_trace_heading, ThinkingStep,
 };
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]

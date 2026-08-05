@@ -272,6 +272,7 @@ fn intent_shell_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Option<S
         .flat_map(|intent| intent.cues.iter().map(move |cue| (intent, cue)))
         .filter(|(intent, cue)| {
             lower.contains(cue.as_str())
+                && !only_states_a_fact(&lower, cue, vocab)
                 && (intent.argument != ShellIntentArgument::SearchQuery
                     || vocab
                         .local_search_scopes
@@ -297,6 +298,82 @@ fn intent_shell_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Option<S
         ShellIntentArgument::SearchQuery => local_search_query(prompt, cue, vocab)
             .map(|arg| format!("{} --fixed-strings -- '{arg}' .", intent.command)),
     }
+}
+
+/// Whether *every* occurrence of `cue` supplies a fact instead of asking for one.
+///
+/// `Today's date is Sunday, August 2, 2026.` — the line gemini-cli puts in front
+/// of every turn — contains the `date` intent's cue verbatim, and issue #907 is
+/// what happened next: the actual request behind it was never planned. A cue
+/// immediately followed by a copula is the *subject* of an assertion, so it names
+/// no intent. The sentence still wins if it is itself a question or an order, so
+/// *"How much disk space is free?"* keeps routing to `df -h`.
+fn only_states_a_fact(lower: &str, cue: &str, vocab: &ShellIntentVocabulary) -> bool {
+    let mut searched = 0;
+    let mut seen = false;
+    while let Some(offset) = lower.get(searched..).and_then(|rest| rest.find(cue)) {
+        let start = searched + offset;
+        let end = start + cue.len();
+        seen = true;
+        let asserted = starts_with_copula(&lower[end..], &vocab.statement_copulas)
+            && !asks_or_orders(sentence_around(lower, start, end), &vocab.question_markers);
+        if !asserted {
+            return false;
+        }
+        searched = end;
+    }
+    seen
+}
+
+/// Whether the text right after a cue opens a predicate about it.
+fn starts_with_copula(rest: &str, copulas: &[String]) -> bool {
+    let rest = rest.trim_start();
+    copulas.iter().any(|copula| {
+        rest.strip_prefix(copula.as_str())
+            .is_some_and(|after| ends_a_word(copula, after))
+    })
+}
+
+/// A copula written in a space-separated script must end at a word boundary;
+/// one written in a script without word spacing (`是`, `为`) needs no boundary.
+fn ends_a_word(copula: &str, after: &str) -> bool {
+    !copula
+        .chars()
+        .last()
+        .is_some_and(|last| last.is_ascii_alphanumeric())
+        || after
+            .chars()
+            .next()
+            .is_none_or(|next| !next.is_ascii_alphanumeric() && next != '_')
+}
+
+/// The sentence containing the byte range `start..end`, terminator included.
+fn sentence_around(text: &str, start: usize, end: usize) -> &str {
+    const BOUNDARIES: [char; 6] = ['.', '?', '!', '\n', '。', '？'];
+    let from = text[..start]
+        .char_indices()
+        .rev()
+        .find(|(_, character)| BOUNDARIES.contains(character))
+        .map_or(0, |(index, character)| index + character.len_utf8());
+    let to = text[end..]
+        .char_indices()
+        .find(|(_, character)| BOUNDARIES.contains(character))
+        .map_or(text.len(), |(index, character)| {
+            end + index + character.len_utf8()
+        });
+    &text[from..to]
+}
+
+fn asks_or_orders(sentence: &str, markers: &[String]) -> bool {
+    markers.iter().any(|marker| {
+        if marker.is_ascii() && marker.chars().any(|c| c.is_ascii_alphanumeric()) {
+            sentence
+                .split(|c: char| !c.is_alphanumeric() && c != '\'')
+                .any(|word| word == marker)
+        } else {
+            sentence.contains(marker.as_str())
+        }
+    })
 }
 
 fn path_arguments(

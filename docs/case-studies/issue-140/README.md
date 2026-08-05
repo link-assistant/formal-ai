@@ -58,7 +58,7 @@ case studies and extends it; it does not replace the existing flow.
   original prefilled `Report issue` link.
 - [`../issue-18/README.md`](../issue-18/README.md) — added the
   `## Attach full memory` block.
-- [`../issue-44/README.md`](../issue-44/README.md) — added the
+- [issue #44](https://github.com/link-assistant/formal-ai/issues/44) — added the
   `Unknown prompt: …` issue title (which is the title surface that #140
   exercises).
 - [`../issue-78/README.md`](../issue-78/README.md) — switched the dialog

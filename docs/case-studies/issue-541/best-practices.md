@@ -114,7 +114,7 @@ do not scale across `0` (immediate), the default, and the maximum
 ## 4. Theme coverage audit — measure the seam, not the value
 
 R1's test
-([`tests/e2e/tests/issue-541-theme.spec.js`](../../tests/e2e/tests/issue-541-theme.spec.js))
+([`tests/e2e/tests/issue-541-theme.spec.js`](../../../tests/e2e/tests/issue-541-theme.spec.js))
 does NOT assert specific rgb values. It asserts the *band*:
 
 ```js

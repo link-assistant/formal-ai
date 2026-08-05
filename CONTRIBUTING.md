@@ -379,11 +379,16 @@ agent whose every answer is a projection of an append-only event log, with no
 hardcoded prompt→answer tables.
 
 1. **Mirror parity (Rust ↔ JS worker).** Every reasoning path in the Rust engine
-   (`src/*.rs`) has a twin in the browser worker `src/web/formal_ai_worker.js`,
+   (`src/*.rs`) has a twin in the browser worker (`src/web/formal_ai_worker.js`
+   loader plus the `src/web/worker/formal_ai_worker_*.js` shards),
    so the CLI, library, HTTP server, Telegram bot, and website all answer the
    same prompt identically. A behavioural change in one **must** be mirrored in
    the other in the same PR. Name and comment the twin so the parity is obvious
    (e.g. "Mirrors `try_x` in `src/solver_handler_x.rs`").
+   Mirror parity is the transitional contract while JS worker logic remains:
+   under the compiled-logic doctrine (REQUIREMENTS.md R536), prefer absorbing
+   the path into the Rust→WASM worker over adding a new JS twin, and never
+   grow the worker line budget (`scripts/check-worker-line-budget.rs`).
 
 2. **Data-driven seed, no hardcoded natural language in code (issues #386,
    #513).** Natural language is *data*, never a string literal in the engine.

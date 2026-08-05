@@ -46,8 +46,10 @@ pub const DEFAULT_MODEL: &str = "formal-ai";
 // Thinking model + deterministic naturalizer live in `crate::thinking` (issue #488),
 // re-exported so `crate::engine::{...}` / `formal_ai::{...}` paths stay unchanged.
 pub use crate::thinking::{
-    humanize_meta_identifier, naturalize_thinking_step, render_thinking_steps,
-    thinking_language_label, thinking_narrative, ThinkingStep,
+    humanize_meta_identifier, localize_thinking_steps, naturalize_thinking_step,
+    naturalize_thinking_step_in, render_thinking_steps, render_thinking_steps_in,
+    thinking_answer_language, thinking_language_label, thinking_language_label_in,
+    thinking_narrative, thinking_narrative_in, thinking_trace_heading, ThinkingStep,
 };
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -532,7 +534,11 @@ impl SelectedRule {
             Self::Identity => String::from("identity"),
             Self::AssistantName => String::from("assistant_name"),
             Self::WriteProgram(_) => String::from(WRITE_PROGRAM_INTENT),
-            Self::UnsupportedWriteProgram { .. } => String::from("write_program_skill_gap"),
+            // Issue #906: an unfilled parameter is not a skill gap. Which dead
+            // end this is decides both the intent and the wording.
+            Self::UnsupportedWriteProgram { task, language } => String::from(
+                crate::program_skill_gap::shape(task.as_deref(), language.as_deref()).intent(),
+            ),
             Self::Unknown => String::from("unknown"),
         }
     }
@@ -548,9 +554,10 @@ impl SelectedRule {
             Self::Identity => String::from("response:identity"),
             Self::AssistantName => String::from("response:assistant_name"),
             Self::WriteProgram(spec) => spec.response_link(),
-            Self::UnsupportedWriteProgram { .. } => {
-                String::from("response:write_program:skill_gap")
-            }
+            Self::UnsupportedWriteProgram { task, language } => String::from(
+                crate::program_skill_gap::shape(task.as_deref(), language.as_deref())
+                    .response_link(),
+            ),
             Self::Unknown => String::from("response:unknown"),
         }
     }

@@ -68,7 +68,7 @@ issues; we extend it rather than replace it.
 - [`../issue-18/README.md`](../issue-18/README.md) — added the verbose
   **Attach full memory (recommended)** block (`.zip` + redaction steps) that
   is the main culprit behind the URL overflow.
-- [`../issue-44/README.md`](../issue-44/README.md) — added the "Unknown
+- [issue #44](https://github.com/link-assistant/formal-ai/issues/44) — added the "Unknown
   prompt: …" issue title.
 
 ## Timeline of Events

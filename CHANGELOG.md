@@ -7,6 +7,125 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.329.1] - 2026-08-05
+
+### Changed
+- The four-template CI/CD audit report
+  (`docs/case-studies/issue-479/template-comparison/REPORT.md`) no longer ends with
+  drafted-but-unfiled recommendations. Every finding was revalidated against the
+  current template default branches (2026-08-05) and the *Recommended upstream
+  issues to file* section is replaced by an *Upstream filing status* ledger that
+  carries a status (`confirmed` / `obsolete` / `not-applicable` / `local`) and, for
+  every confirmed row, the upstream issue URL. Eight issues were filed upstream —
+  CI security scanning in all four templates, the `links.yml` broken-link checker in
+  the Rust/Python/C# templates, and an optional desktop-release workflow in the Rust
+  template — each with a reproduction, a workaround and a suggested fix. Findings
+  that closed since the June snapshot (API-docs deploy, published-crate smoke test,
+  resilient buildx, main-safe concurrency) are marked obsolete with the evidence
+  that closed them (issue #894).
+
+### Added
+- `tests/unit/docs_requirements_issue_894.rs` parses the filing ledger and fails
+  when a `confirmed` finding carries no upstream issue URL, when a status outside
+  the documented vocabulary appears, when the pre-filing recommendation section
+  returns, or when the preserved revalidation evidence goes missing (R894-4).
+
+## [0.329.0] - 2026-08-05
+
+### Added
+- A write-effect coding ladder (`experiments/issue_916_write_effect_ladder`) that
+  executes every planned `write_file` and `run_shell_command` for real in a throwaway
+  workspace and passes a rung only when the declared effect is observable on disk.
+  `.github/workflows/write-effect-ladder.yml` enforces the score as a monotonic
+  ratchet in the style of the issue #408 gate, so a rung that was green can never
+  silently go red (epic E69, issue #916).
+- `formal-ai with --global gemini` now also writes `~/.gemini/settings.json` with the
+  selected authentication type, and `--undo` restores it from its backup: the
+  environment variable alone is only a *default*, so the configured client still
+  refused to start headlessly (issue #909).
+
+### Fixed
+- A tool result's exit code is now the primary success signal. `Exit Code: 0` with
+  `Output: (empty)` / `Error: (none)` — how `python3 -m py_compile` reports success —
+  is no longer read as a failure, and `Exit Code: 1` alongside plausible-looking
+  output is no longer read as success (issues #905 and #908).
+- Failure reports name the failing command and the code it exited with instead of
+  blaming the harness, so exit codes propagate to the reported outcome (issue #908).
+- A read of a file that is not there is reported as a failure, in the language the
+  request was written in, instead of being answered with "Contents of `hello.txt`:"
+  wrapped around the raw transport envelope. Only the shell route consulted the
+  harness's exit code, so a client that advertised a typed read tool got the English
+  false success for a Russian, Hindi or Chinese request (issues #905 and #916).
+- A general change request is no longer reported as "completed and verified" when the
+  verification command it named exited non-zero; the observed failure replaces the
+  claim (issue #905).
+- An adverbial qualifier that delimits literal content ("containing exactly: Hello
+  World", "содержащий ровно: …") is no longer captured as part of the bytes to write
+  (issue #905).
+- A client's own framing block — Gemini CLI's `<session_context>`, Cline's
+  `<environment_details>` — is stripped from the user request like `<system-reminder>`
+  already was, and a declarative statement of fact ("Today's date is …") no longer
+  fires the shell intent whose cue it happens to contain, so the request that follows
+  it is the one that gets planned (issue #907).
+- `formal-ai with --global qwen` writes the complete OpenAI triple (`OPENAI_API_KEY`,
+  `OPENAI_BASE_URL`, `OPENAI_MODEL`), which is what qwen-code needs to select the
+  OpenAI authentication path unattended (issue #909).
+
+## [0.328.0] - 2026-08-04
+
+### Added
+- Equation-type corpus with a CI ratchet (issue #891, requirement from #406):
+  `data/benchmarks/equation-type-corpus.lino` defines 72 distinct equation
+  types — one-step and multi-step linear, `?`/`*` placeholder unknowns,
+  symbolic multi-variable isolation, polynomials up to degree five,
+  natural-language wrappers in every registered language, and
+  evaluation/percent flavours — each carrying the exact answer observed from
+  the production solver. `issue_891_equation_corpus_solves_every_type` replays
+  every case through `FormalAiEngine::answer` and fails below the recorded pass
+  count or below 50 distinct verified types.
+- Ten recorded `benchmark_limitation` records (irrational and complex roots,
+  contradictions, malformed input, identities, unit-carrying equations,
+  named-unknown declarations, command-shaped prompts) asserted to keep
+  declining loudly rather than fabricating an answer.
+
+### Fixed
+- Equation-solving request cues in `data/seed/meanings-calculator.lino`: "solve
+  the equation" / "solve equation" (en), "реши/решите уравнение" (ru), "解方程"
+  and "求解" (zh), and "समीकरण हल करें/करो", "हल करें/करो" (hi) are now stripped
+  before delegation, so `Solve the equation 2 * x + 3 = 11` and its Russian,
+  Chinese and Hindi equivalents solve instead of returning a parse error. The
+  `calculation_request` meaning also gains its first Spanish lexeme
+  ("resuelve la ecuación", "resolver la ecuación", "cuánto es", "resuelve",
+  "calcular", "calcula"), so Spanish calculation prompts route at all. The
+  cues are seed data, so the Rust engine and the JavaScript worker gain them
+  from the same source.
+
+## [0.327.0] - 2026-08-04
+
+### Fixed
+- Thinking traces are now written in the language of the answer on every non-UI surface (issue #889, parent #710). The browser panel was already localized through the web i18n catalog, so a Russian, Hindi, Chinese or Spanish answer arrived with an English explanation of how it was produced everywhere else:
+  - the sentences a trace is made of moved out of `src/thinking.rs` into seed data (`data/seed/multilingual-responses-thinking.lino` and `…-thinking-narrative.lino`), translated into every registered language, so adding a language means adding records rather than editing Rust (R379);
+  - the CLI `--thinking` trace (including its heading), the OpenAI Chat Completions `reasoning`/`reasoning_content` fields, the OpenAI Responses reasoning item, the Anthropic extended-thinking block and the Telegram expandable blockquote all narrate in the resolved answer language, which is derived from the trace itself;
+  - the language names inside the trace are localized too, so a Russian trace reads «Определить язык запроса: русский.» instead of naming the language in English;
+  - the machine-readable `step`/`detail` trace keys and the step ids stay language-neutral, so downstream consumers never have to parse prose.
+
+## [0.326.3] - 2026-08-04
+
+### Fixed
+- Step verification in the agentic command reroute now reads the exit code the harness reported instead of guessing from the shape of the output (#908). A verification command that exits `0` without printing anything — `python3 -m py_compile`, `tsc --noEmit`, `diff -q` — is a success, and a command that exits non-zero is a failure even when it printed output. Prose markers decide only when the harness reported no exit code at all, and an `Error: (none)` placeholder field no longer reads as an error.
+
+### Changed
+- A failed step is now reported as `Step \`<command>\` for \`<file>\` failed with exit code <n>` in every registered language, instead of the English-only claim that "the agentic CLI harness could not complete" the file — the harness had run the command exactly as asked.
+
+## [0.326.2] - 2026-08-04
+
+### Fixed
+- The implementation-language router now validates what fills the `in <language>` position instead of taking whatever word follows `in` (issue #906):
+  - a closed-class word is no longer read as a language name, so "Create a file named `hello.txt` in the current directory…" is no longer routed as a request in language `the` (an unknown *name* such as `elvish` is still read, so the engine can report what it was asked for);
+  - a request that names no language gets its own answer — "I will not guess an implementation language… name the language" — with its own intent, event and response link, so the internal `missing` sentinel never reaches the reply;
+  - the modifier modifies the request instead of replacing it: "Fix the failing CI job in Rust." is answered about the CI job rather than with an encyclopedia definition of Rust;
+  - a request whose artefact is a *file* is no longer normalised into a `write_program` request, so the path and the content survive into the change plan instead of being replaced by `console.log('Hello, world!')`.
+
 ## [0.326.1] - 2026-08-04
 
 ### Fixed

@@ -45,6 +45,17 @@ pub(super) fn plan_general_change_step(
                 &plan.goal,
             ));
         }
+        // A failed run is reported as the command that failed and the status it
+        // exited with, not as an anonymous "run" step (issues #905 and #908).
+        if failure.capability == Capability::Run {
+            if let Some(report) = tool_result::failed_verification(
+                &progress.run_outputs,
+                &plan.verification_command,
+                &plan.goal,
+            ) {
+                return AgenticPlan::Final(report);
+            }
+        }
         // A client may require an attempted read before creating a missing
         // file. Whether that read found bytes or reported absence, retry the
         // original write once; its per-target failure budget remains bounded.
@@ -122,6 +133,15 @@ pub(super) fn plan_general_change_step(
 fn finish_general_change(plan: &GeneralChangePlan, progress: &Progress) -> AgenticPlan {
     if plan.mode == GeneralPlanMode::RepositoryWorkItem {
         return AgenticPlan::Final(plan.planned_not_executed_answer());
+    }
+    // The workspace gets the last word over a completion claim: a verification
+    // command that exited non-zero replaces the claim with its own report.
+    if let Some(report) = tool_result::failed_verification(
+        &progress.run_outputs,
+        &plan.verification_command,
+        &plan.goal,
+    ) {
+        return AgenticPlan::Final(report);
     }
     if progress.successful_count(Capability::Run) == 0 {
         return AgenticPlan::Final(general_plan_unverified(plan));

@@ -124,7 +124,7 @@ through the native server when that surface is available.
 
 | Layer | Command | What it covers |
 |---|---|---|
-| Node unit + smoke | `npm run vscode:test` | 50 `node:test` cases across config/bridge/webview-html/chat-view/server-process, plus the static smoke check. Reads only committed source, so no `npm ci` or `prepare-resources` is needed. Wired into the CI **lint** job. |
+| Node unit + smoke | `npm run vscode:test` | 51 `node:test` cases across config/bridge/webview-html/chat-view/server-process, plus the static smoke check. Reads only committed source, so no `npm ci` or `prepare-resources` is needed. Wired into the CI **lint** job. |
 | Rust spec | `cargo test --test unit vscode_surface` | Pins the VS Code file contracts (dual host, no-node-builtins web host, webview sandbox, default-deny bridge, settings→status, server launcher) **and** exercises the shared engine endpoints (`/v1/chat/completions`, `/v1/graph`, full-bundle memory round-trip) to prove "all the same features." |
 | E2E | `cd tests/e2e && npm run test:local -- issue-353` | Boots the committed web chat behind a fake `window.FormalAiDesktop` bridge and asserts the surface labelling for both hosts (Node-with-server and Web-in-process) plus language robustness. Wired into the `test-e2e-local` CI job. |
 

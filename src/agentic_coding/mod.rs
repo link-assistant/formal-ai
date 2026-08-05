@@ -64,7 +64,7 @@ mod shell_file_fallback;
 pub mod source_links;
 pub mod statement_audit;
 mod structured_edit;
-mod tool_result;
+pub mod tool_result;
 mod web_research;
 mod workspace_change;
 

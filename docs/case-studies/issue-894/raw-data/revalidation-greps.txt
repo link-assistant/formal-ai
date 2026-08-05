@@ -1,0 +1,52 @@
+# Revalidation grep log (2026-08-05)
+
+## F1 security scanning — expect 0 matches in every template
+### js
+(no matches)
+tree hits for security files:
+(none)
+### rust
+(no matches)
+tree hits for security files:
+tests/unit/ci-cd/workflow_security.rs
+### python
+(no matches)
+tree hits for security files:
+(none)
+### csharp
+(no matches)
+tree hits for security files:
+(none)
+
+## F2 links.yml presence
+js: 1
+rust: 0
+python: 0
+csharp: 0
+
+## F3 desktop-release / download / workflow_run / head_sha
+### js
+(no workflow_run/head_sha)
+docs/case-studies/issue-56/data/deep-sdk-electron-package.json
+docs/case-studies/issue-56/data/example-desktop-package-final-2.log
+docs/case-studies/issue-56/data/npm-electron-forge-cli.json
+docs/case-studies/issue-56/data/vk-bot-desktop-build-renderer.mjs
+docs/case-studies/issue-56/data/vk-bot-desktop-electron-main.cjs
+docs/case-studies/issue-56/data/vk-bot-desktop-file-tree.txt
+docs/case-studies/issue-56/data/vk-bot-desktop-js-workflow.yml
+docs/case-studies/issue-56/data/vk-bot-desktop-package.json
+docs/case-studies/issue-56/data/vk-bot-desktop-repo.json
+docs/case-studies/issue-58/data/example-desktop-package.log
+examples/universal-app/electron
+examples/universal-app/electron/main.cjs
+examples/universal-app/electron/preload.cjs
+### rust
+(no workflow_run/head_sha)
+docs/case-studies/issue-52/raw-data/vk-bot-desktop-issue-51.json
+docs/case-studies/issue-52/raw-data/vk-bot-desktop-pr-52.json
+### python
+(no workflow_run/head_sha)
+(no desktop/download paths)
+### csharp
+(no workflow_run/head_sha)
+(no desktop/download paths)

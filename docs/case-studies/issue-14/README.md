@@ -7,8 +7,8 @@ project to stop running two different reasoning systems. The Rust library,
 CLI, HTTP server, and Telegram bot all route every prompt through the
 [`UniversalSolver`](../../../src/solver.rs) 11-step loop, but the GitHub Pages
 demo still answers from a hardcoded answer table inside
-[`docs/demo/formal_ai_worker.js`](../../../docs/demo/formal_ai_worker.js) and a
-[`#![no_std]` classifier](../../../docs/demo/wasm-worker/src/lib.rs) that
+[`src/web/formal_ai_worker.js`](../../../src/web/formal_ai_worker.js) and a
+[`#![no_std]` classifier](../../../src/web/wasm-worker/src/lib.rs) that
 returns one of nine `u32` codes. The demo therefore lies about which engine is
 running, and prompts that the universal solver already understands
 (translation, primes, network introspection, meta explanation, policy events,
@@ -116,7 +116,7 @@ Sources checked while planning solutions:
 ## Root Cause
 
 `docs/demo/formal_ai_worker.js` and the
-[`#![no_std]` classifier](../../../docs/demo/wasm-worker/src/lib.rs) were
+[`#![no_std]` classifier](../../../src/web/wasm-worker/src/lib.rs) were
 created during issue #1 when the engine itself was a fixed answer table, and
 they were never re-platformed when the universal solver landed. The demo
 hashes prompts into one of nine codes, picks a string from a JavaScript
@@ -240,7 +240,7 @@ Per requirement, in implementation order:
   the existing path.
 - [`lino-objects-codec`](https://github.com/link-foundation/lino-objects-codec) —
   already a dependency; reused for the persisted demo config format.
-- [`docs/demo/app.js`](../../../docs/demo/app.js) — existing markdown / quick
+- [`src/web/app.js`](../../../src/web/app.js) — existing markdown / quick
   prompts / diagnostics infrastructure. Extended with `useDemoConfig` and
   capability-aware message rendering.
 - [`scripts/check-file-size.rs`](../../../scripts/check-file-size.rs) — the

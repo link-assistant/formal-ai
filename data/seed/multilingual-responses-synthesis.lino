@@ -31,3 +31,103 @@ multilingual_responses
     intent write_program_skill_gap
     language zh
     text "我无法编写这个程序：{gap}。\n\n我已把请求分解，并按顺序尝试了全部合成路线——{routes}——没有一条能推导出它。\n\n没有任何猜测：推导不出来的程序我不会返回，也不会罗列我手头的模板。请教我 `{language}` 缺失的写法，或者用我已经能编译的步骤重述该任务。"
+  response response_write_program_skill_gap_name_task_unspecified_en
+    intent write_program_skill_gap_name_task_unspecified
+    language en
+    text "no synthesis route reaches this request in language ""{language}"""
+  response response_write_program_skill_gap_name_task_unspecified_ru
+    intent write_program_skill_gap_name_task_unspecified
+    language ru
+    text "ни один маршрут синтеза не покрывает этот запрос на языке «{language}»"
+  response response_write_program_skill_gap_name_task_unspecified_hi
+    intent write_program_skill_gap_name_task_unspecified
+    language hi
+    text "इस request को «{language}» भाषा में बनाने वाला कोई synthesis route नहीं है"
+  response response_write_program_skill_gap_name_task_unspecified_zh
+    intent write_program_skill_gap_name_task_unspecified
+    language zh
+    text "没有合成路线能用「{language}」完成这个请求"
+  response response_write_program_skill_gap_name_task_unspecified_es
+    intent write_program_skill_gap_name_task_unspecified
+    language es
+    text "ninguna ruta de síntesis cubre esta solicitud en el lenguaje «{language}»"
+  response response_write_program_language_unspecified_name_en
+    intent write_program_language_unspecified_name
+    language en
+    text "no implementation language was named for task ""{task}"""
+  response response_write_program_language_unspecified_name_ru
+    intent write_program_language_unspecified_name
+    language ru
+    text "для задачи «{task}» не назван язык реализации"
+  response response_write_program_language_unspecified_name_hi
+    intent write_program_language_unspecified_name
+    language hi
+    text "«{task}» कार्य के लिए कोई implementation language नहीं बताई गई"
+  response response_write_program_language_unspecified_name_zh
+    intent write_program_language_unspecified_name
+    language zh
+    text "任务「{task}」没有指明实现语言"
+  response response_write_program_language_unspecified_name_es
+    intent write_program_language_unspecified_name
+    language es
+    text "no se nombró ningún lenguaje de implementación para la tarea «{task}»"
+  response response_write_program_request_unspecified_name_en
+    intent write_program_request_unspecified_name
+    language en
+    text "the request named neither a task nor an implementation language"
+  response response_write_program_request_unspecified_name_ru
+    intent write_program_request_unspecified_name
+    language ru
+    text "в запросе не названы ни задача, ни язык реализации"
+  response response_write_program_request_unspecified_name_hi
+    intent write_program_request_unspecified_name
+    language hi
+    text "request में न task बताया गया है और न implementation language"
+  response response_write_program_request_unspecified_name_zh
+    intent write_program_request_unspecified_name
+    language zh
+    text "请求既没有指明任务，也没有指明实现语言"
+  response response_write_program_request_unspecified_name_es
+    intent write_program_request_unspecified_name
+    language es
+    text "la solicitud no nombró ni una tarea ni un lenguaje de implementación"
+  response response_write_program_language_unspecified_en
+    intent write_program_language_unspecified
+    language en
+    text "I will not guess an implementation language. You asked for `{task}`, but the request does not say which programming language to write it in, and choosing one for you would answer a request you did not make.\n\nName the language — for example by adding ""in <language>"" — and I will derive the program in it."
+  response response_write_program_language_unspecified_ru
+    intent write_program_language_unspecified
+    language ru
+    text "Я не угадываю язык реализации. Вы попросили `{task}`, но в запросе не сказано, на каком языке программирования его написать, а выбрать язык за вас — значит ответить на запрос, которого вы не делали.\n\nНазовите язык — например, добавив «на <язык>» — и я выведу программу на нём."
+  response response_write_program_language_unspecified_hi
+    intent write_program_language_unspecified
+    language hi
+    text "मैं implementation language का अनुमान नहीं लगाऊँगा. आपने `{task}` माँगा, पर request में यह नहीं है कि इसे किस programming language में लिखना है, और आपकी जगह भाषा चुनना उस request का उत्तर देना होगा जो आपने की ही नहीं.\n\nभाषा बताइए — जैसे «<भाषा> में» जोड़कर — और मैं उसी में program derive कर दूँगा."
+  response response_write_program_language_unspecified_zh
+    intent write_program_language_unspecified
+    language zh
+    text "我不会猜测实现语言。你要的是 `{task}`，但请求没有说用哪种编程语言来写，替你挑一种就等于回答了一个你并未提出的请求。\n\n请指明语言——例如加上「用<语言>」——我就会用它推导出程序。"
+  response response_write_program_language_unspecified_es
+    intent write_program_language_unspecified
+    language es
+    text "No voy a adivinar el lenguaje de implementación. Pediste `{task}`, pero la solicitud no dice en qué lenguaje de programación escribirlo, y elegirlo por ti sería responder a una solicitud que no hiciste.\n\nNombra el lenguaje — por ejemplo añadiendo «en <lenguaje>» — y derivaré el programa en él."
+  response response_write_program_request_unspecified_en
+    intent write_program_request_unspecified
+    language en
+    text "I will not guess what to write. This reads as a program request, but it names neither what the program must do nor which programming language to write it in.\n\nSay what the program should do and which language it should be written in, and I will derive it."
+  response response_write_program_request_unspecified_ru
+    intent write_program_request_unspecified
+    language ru
+    text "Я не угадываю, что писать. Это похоже на запрос программы, но в нём не названо ни что программа должна делать, ни на каком языке программирования её написать.\n\nСкажите, что должна делать программа и на каком языке, и я её выведу."
+  response response_write_program_request_unspecified_hi
+    intent write_program_request_unspecified
+    language hi
+    text "मैं अनुमान से नहीं लिखूँगा. यह program request जैसा लगता है, पर इसमें न यह बताया गया है कि program को करना क्या है, न यह कि उसे किस programming language में लिखना है.\n\nबताइए कि program को क्या करना चाहिए और किस भाषा में लिखा जाए, फिर मैं उसे derive कर दूँगा."
+  response response_write_program_request_unspecified_zh
+    intent write_program_request_unspecified
+    language zh
+    text "我不会猜测要写什么。这看起来是一个程序请求，但它既没有说明程序要做什么，也没有说明用哪种编程语言来写。\n\n请说明程序应当做什么、用哪种语言编写，我就会把它推导出来。"
+  response response_write_program_request_unspecified_es
+    intent write_program_request_unspecified
+    language es
+    text "No voy a adivinar qué escribir. Esto se lee como una solicitud de programa, pero no nombra ni lo que el programa debe hacer ni en qué lenguaje de programación escribirlo.\n\nDi qué debe hacer el programa y en qué lenguaje debe escribirse, y lo derivaré."
