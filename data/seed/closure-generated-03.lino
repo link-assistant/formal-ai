@@ -1,4 +1,14 @@
 meanings
+  mathematical-logic
+    defined-by category
+    lexeme en
+      surface
+        text "mathematical logic"
+  mathematics
+    defined-by category
+    lexeme en
+      surface
+        text "mathematics"
   mcp_instructions
     defined-by intent
     lexeme en
@@ -1384,13 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern wellbeing phrase kak vashi dela"
-  pattern_wellbeing_phrase_kak_vy_pozhivaete
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase kak vy pozhivaete"
-  pattern_wellbeing_phrase_kya_haal_hai_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase kya haal hai hi"

@@ -57,9 +57,9 @@ pub use agentic_tool_capabilities::{agentic_tool_capabilities, AgenticToolCapabi
 pub use brainstorm::{brainstorm_seeds, BrainstormCategory, BrainstormSeeds};
 pub use client_completion::{software_authoring_completion_contract, ClientCompletionContract};
 pub use client_integrations::{
-    client_integrations, ClientIntegration, ClientIntegrationGlobalConfig,
-    ClientIntegrationInvocation, ClientVerification, ConfigFormat, ModeArgPosition,
-    ModelArgPosition, TemplateEnv,
+    client_integrations, ClientIntegration, ClientIntegrationCompanionFile,
+    ClientIntegrationGlobalConfig, ClientIntegrationInvocation, ClientVerification, ConfigFormat,
+    ModeArgPosition, ModelArgPosition, TemplateEnv,
 };
 pub use coreference::{coreference_seeds, Antecedent, CoreferenceSeeds, Pronoun};
 pub use draft_strategies::{draft_strategies, draft_strategies_from};

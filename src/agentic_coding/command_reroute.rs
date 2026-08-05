@@ -181,7 +181,11 @@ impl RecipeProgress {
                 }
                 Some(Capability::Run) => {
                     progress.commands_done += 1;
-                    progress.command_outputs.push(output);
+                    // Quote what the command printed, not the harness envelope
+                    // it arrived in (issues #905 and #908).
+                    let text = super::tool_result::shell_step(&output)
+                        .map_or(output, |step: super::tool_result::ShellStep| step.text);
+                    progress.command_outputs.push(text);
                 }
                 _ => {}
             }

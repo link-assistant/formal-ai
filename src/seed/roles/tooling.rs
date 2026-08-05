@@ -174,6 +174,17 @@ pub const ROLE_FILE_WRITE_ACTION_CUE: &str = "file_write_action_cue";
 /// so a *read* request ("show me the contents of …") is never mistaken for a
 /// write.
 pub const ROLE_FILE_WRITE_CONTENT_LEAD: &str = "file_write_content_lead";
+/// Semantic role: an adverb that qualifies *how faithfully* content must be
+/// written rather than naming any of it (issue #905 §3).
+///
+/// Bare forms such as "exactly", "precisely", or "ровно" are carried by
+/// `file_write_content_qualifier` in `data/seed/meanings-file-write.lino`. In
+/// "…containing exactly: Hello World" the adverb sits between the content lead
+/// and the payload, and slicing after the lead captured it as literal bytes, so
+/// the verification command would have compared the file against the wrong
+/// string. The qualifier is dropped only when a clause separator follows it, so
+/// a payload that genuinely begins with the word survives untouched.
+pub const ROLE_FILE_WRITE_CONTENT_QUALIFIER: &str = "file_write_content_qualifier";
 /// Semantic role: an explicit promise that the following span is authoritative
 /// literal file content, even when those bytes resemble another operation.
 ///

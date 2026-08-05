@@ -1,4 +1,24 @@
 meanings
+  response_requirement_contradiction_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response requirement contradiction zh"
+  response_search_fusion_header_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response search fusion header en"
+  response_search_fusion_header_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response search fusion header es"
+  response_search_fusion_header_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response search fusion header hi"
   response_search_fusion_header_ru
     defined-by response_template
     lexeme en
@@ -1374,23 +1394,3 @@ meanings
     lexeme en
       surface
         text "response thinking step coreference binding es"
-  response_thinking_step_coreference_binding_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step coreference binding hi"
-  response_thinking_step_coreference_binding_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step coreference binding ru"
-  response_thinking_step_coreference_binding_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step coreference binding zh"
-  response_thinking_step_deformalize_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step deformalize en"
