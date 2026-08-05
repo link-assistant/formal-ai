@@ -508,4 +508,6 @@ changelog.d/20260804_170000_issue_891_equation_corpus_ratchet.md	0.328.0
 changelog.d/20260804_180000_issue_916_write_effect_ratchet.md	0.329.0
 changelog.d/20260804_220000_release_timelines.md	0.330.0
 changelog.d/20260805_010000_issue_895_coverage_ratchet.md	0.331.0
+changelog.d/20260805_090000_issue_893_summarization_quality_ratchet.md	0.332.0
+changelog.d/20260805_110000_issue_973_solve_evidence_flags.md	0.332.1
 changelog.d/20260805_120000_issue_894_template_upstream_filings.md	0.329.1

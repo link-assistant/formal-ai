@@ -472,7 +472,7 @@ fn is_structured_format(format: &str) -> bool {
     )
 }
 
-fn display_file_format(format: &str) -> &'static str {
+pub(super) fn display_file_format(format: &str) -> &'static str {
     match format {
         "markdown" => "Markdown",
         "rust" => "Rust",

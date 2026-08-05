@@ -1,0 +1,110 @@
+# === SUMMARIZATION QUALITY RATCHET (issue #893, re-opening issue #563) ===
+# Re-measure the repository-summarization quality protocol on every pull request
+# and enforce its floor. `formal-ai summarization ratchet` samples Git-tracked
+# files with the seed recorded in data/summarization/quality-baseline.lino, runs
+# each through the production summarizer, scores it against the published
+# criteria, and exits non-zero when the score falls below the published 80%
+# minimum or below the committed `ratchet_percent`.
+#
+# The corpus is every Git-tracked file, so it changes with every commit and the
+# seeded draw lands on different files. That is deliberate: the point of issue
+# #563 was to validate summaries on files nobody optimized for. It is also why
+# the enforced floor is the committed `ratchet_percent` rather than whatever the
+# last run happened to measure -- see the "Why the enforced floor is 80%" section
+# of docs/case-studies/issue-893/README.md.
+#
+# This lives outside release.yml because that file is at the 2000-line ceiling
+# `scripts/check-file-size.rs` enforces; the `paths` filters below replace what
+# its `detect-changes` job would have provided.
+name: Summarization Ratchet
+
+on:
+  push:
+    branches:
+      - main
+    # Duplicated below rather than shared through a YAML anchor: GitHub Actions
+    # does not expand anchors in workflow files.
+    paths:
+      - 'src/summarization/**'
+      - 'src/cli_summarization.rs'
+      - 'data/summarization/**'
+      - '**/Cargo.toml'
+      - 'Cargo.lock'
+      - '.github/workflows/summarization-ratchet.yml'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'src/summarization/**'
+      - 'src/cli_summarization.rs'
+      - 'data/summarization/**'
+      - '**/Cargo.toml'
+      - 'Cargo.lock'
+      - '.github/workflows/summarization-ratchet.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+env:
+  CARGO_NET_RETRY: '10'
+  CARGO_HTTP_MULTIPLEXING: 'false'
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: -Dwarnings
+  CARGO_INCREMENTAL: '0'
+
+jobs:
+  summarization-ratchet:
+    name: Summarization quality ratchet (issue #893)
+    runs-on: ubuntu-latest
+    # A release build of the CLI plus a few dozen summarizations; the build
+    # dominates and starts cold.
+    timeout-minutes: 25
+    steps:
+      # The corpus is `git ls-files`, so the checkout must be a real work tree
+      # with the full file set, not a sparse or blobless one.
+      - uses: actions/checkout@v6
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - uses: ./.github/actions/setup-sccache
+
+      - name: Build the CLI
+        run: cargo build --release --bin formal-ai
+
+      - name: Show the published criteria
+        run: ./target/release/formal-ai summarization criteria
+
+      # The committed baseline is both the record of the last measurement and
+      # the floor this run may not fall below.
+      - name: Enforce the ratchet against the committed baseline
+        run: |
+          set -euo pipefail
+          ./target/release/formal-ai summarization ratchet \
+            | tee "${{ runner.temp }}/summarization-ratchet.log"
+
+      - name: Record the score in the run summary
+        if: always()
+        run: |
+          set -euo pipefail
+          log='${{ runner.temp }}/summarization-ratchet.log'
+          [ -f "$log" ] || exit 0
+          {
+            echo '### Summarization quality ratchet (issue #893)'
+            echo
+            echo '```'
+            cat "$log"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Retain the measured run
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: summarization-ratchet-log
+          path: ${{ runner.temp }}/summarization-ratchet.log
+          if-no-files-found: ignore

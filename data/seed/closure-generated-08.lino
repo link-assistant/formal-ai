@@ -1,4 +1,869 @@
 meanings
+  response_task_plan_stage_regression_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage regression zh"
+  response_task_plan_stage_requirements_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage requirements en"
+  response_task_plan_stage_requirements_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage requirements hi"
+  response_task_plan_stage_requirements_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage requirements ru"
+  response_task_plan_stage_requirements_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage requirements zh"
+  response_task_plan_stage_verification_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage verification en"
+  response_task_plan_stage_verification_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage verification hi"
+  response_task_plan_stage_verification_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage verification ru"
+  response_task_plan_stage_verification_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage verification zh"
+  response_test_status_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response test status en"
+  response_test_status_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response test status hi"
+  response_test_status_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response test status ru"
+  response_test_status_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response test status zh"
+  response_thinking_language_name_en_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name en en"
+  response_thinking_language_name_en_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name en es"
+  response_thinking_language_name_en_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name en hi"
+  response_thinking_language_name_en_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name en ru"
+  response_thinking_language_name_en_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name en zh"
+  response_thinking_language_name_es_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name es en"
+  response_thinking_language_name_es_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name es es"
+  response_thinking_language_name_es_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name es hi"
+  response_thinking_language_name_es_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name es ru"
+  response_thinking_language_name_es_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name es zh"
+  response_thinking_language_name_hi_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name hi en"
+  response_thinking_language_name_hi_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name hi es"
+  response_thinking_language_name_hi_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name hi hi"
+  response_thinking_language_name_hi_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name hi ru"
+  response_thinking_language_name_hi_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name hi zh"
+  response_thinking_language_name_ru_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name ru en"
+  response_thinking_language_name_ru_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name ru es"
+  response_thinking_language_name_ru_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name ru hi"
+  response_thinking_language_name_ru_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name ru ru"
+  response_thinking_language_name_ru_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name ru zh"
+  response_thinking_language_name_unknown_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name unknown en"
+  response_thinking_language_name_unknown_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name unknown es"
+  response_thinking_language_name_unknown_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name unknown hi"
+  response_thinking_language_name_unknown_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name unknown ru"
+  response_thinking_language_name_unknown_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name unknown zh"
+  response_thinking_language_name_zh_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name zh en"
+  response_thinking_language_name_zh_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name zh es"
+  response_thinking_language_name_zh_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name zh hi"
+  response_thinking_language_name_zh_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name zh ru"
+  response_thinking_language_name_zh_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name zh zh"
+  response_thinking_narrative_assistant_free_time_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative assistant free time en"
+  response_thinking_narrative_assistant_free_time_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative assistant free time es"
+  response_thinking_narrative_assistant_free_time_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative assistant free time hi"
+  response_thinking_narrative_assistant_free_time_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative assistant free time ru"
+  response_thinking_narrative_assistant_free_time_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative assistant free time zh"
+  response_thinking_narrative_calculation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative calculation en"
+  response_thinking_narrative_calculation_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative calculation es"
+  response_thinking_narrative_calculation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative calculation hi"
+  response_thinking_narrative_calculation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative calculation ru"
+  response_thinking_narrative_calculation_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative calculation zh"
+  response_thinking_narrative_clarification_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative clarification en"
+  response_thinking_narrative_clarification_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative clarification es"
+  response_thinking_narrative_clarification_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative clarification hi"
+  response_thinking_narrative_clarification_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative clarification ru"
+  response_thinking_narrative_clarification_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative clarification zh"
+  response_thinking_narrative_code_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative code en"
+  response_thinking_narrative_code_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative code es"
+  response_thinking_narrative_code_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative code hi"
+  response_thinking_narrative_code_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative code ru"
+  response_thinking_narrative_code_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative code zh"
+  response_thinking_narrative_fact_lookup_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative fact lookup en"
+  response_thinking_narrative_fact_lookup_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative fact lookup es"
+  response_thinking_narrative_fact_lookup_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative fact lookup hi"
+  response_thinking_narrative_fact_lookup_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative fact lookup ru"
+  response_thinking_narrative_fact_lookup_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative fact lookup zh"
+  response_thinking_narrative_farewell_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative farewell en"
+  response_thinking_narrative_farewell_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative farewell es"
+  response_thinking_narrative_farewell_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative farewell hi"
+  response_thinking_narrative_farewell_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative farewell ru"
+  response_thinking_narrative_farewell_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative farewell zh"
+  response_thinking_narrative_generic_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative generic en"
+  response_thinking_narrative_generic_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative generic es"
+  response_thinking_narrative_generic_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative generic hi"
+  response_thinking_narrative_generic_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative generic ru"
+  response_thinking_narrative_generic_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative generic zh"
+  response_thinking_narrative_gratitude_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative gratitude en"
+  response_thinking_narrative_gratitude_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative gratitude es"
+  response_thinking_narrative_gratitude_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative gratitude hi"
+  response_thinking_narrative_gratitude_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative gratitude ru"
+  response_thinking_narrative_gratitude_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative gratitude zh"
+  response_thinking_narrative_greeting_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative greeting en"
+  response_thinking_narrative_greeting_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative greeting es"
+  response_thinking_narrative_greeting_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative greeting hi"
+  response_thinking_narrative_greeting_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative greeting ru"
+  response_thinking_narrative_greeting_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative greeting zh"
+  response_thinking_narrative_identity_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative identity en"
+  response_thinking_narrative_identity_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative identity es"
+  response_thinking_narrative_identity_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative identity hi"
+  response_thinking_narrative_identity_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative identity ru"
+  response_thinking_narrative_identity_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative identity zh"
+  response_thinking_narrative_learn_from_source_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative learn from source en"
+  response_thinking_narrative_learn_from_source_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative learn from source es"
+  response_thinking_narrative_learn_from_source_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative learn from source hi"
+  response_thinking_narrative_learn_from_source_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative learn from source ru"
+  response_thinking_narrative_learn_from_source_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative learn from source zh"
+  response_thinking_narrative_meta_explanation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative meta explanation en"
+  response_thinking_narrative_meta_explanation_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative meta explanation es"
+  response_thinking_narrative_meta_explanation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative meta explanation hi"
+  response_thinking_narrative_meta_explanation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative meta explanation ru"
+  response_thinking_narrative_meta_explanation_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative meta explanation zh"
+  response_thinking_narrative_self_healing_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative self healing en"
+  response_thinking_narrative_self_healing_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative self healing es"
+  response_thinking_narrative_self_healing_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative self healing hi"
+  response_thinking_narrative_self_healing_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative self healing ru"
+  response_thinking_narrative_self_healing_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative self healing zh"
+  response_thinking_narrative_test_status_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative test status en"
+  response_thinking_narrative_test_status_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative test status es"
+  response_thinking_narrative_test_status_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative test status hi"
+  response_thinking_narrative_test_status_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative test status ru"
+  response_thinking_narrative_test_status_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative test status zh"
+  response_thinking_narrative_translation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative translation en"
+  response_thinking_narrative_translation_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative translation es"
+  response_thinking_narrative_translation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative translation hi"
+  response_thinking_narrative_translation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative translation ru"
+  response_thinking_narrative_translation_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative translation zh"
+  response_thinking_narrative_unknown_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative unknown en"
+  response_thinking_narrative_unknown_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative unknown es"
+  response_thinking_narrative_unknown_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative unknown hi"
+  response_thinking_narrative_unknown_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative unknown ru"
+  response_thinking_narrative_unknown_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative unknown zh"
+  response_thinking_narrative_web_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative web en"
+  response_thinking_narrative_web_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative web es"
+  response_thinking_narrative_web_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative web hi"
+  response_thinking_narrative_web_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative web ru"
+  response_thinking_narrative_web_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative web zh"
+  response_thinking_narrative_wellbeing_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative wellbeing en"
+  response_thinking_narrative_wellbeing_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative wellbeing es"
+  response_thinking_narrative_wellbeing_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative wellbeing hi"
+  response_thinking_narrative_wellbeing_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative wellbeing ru"
+  response_thinking_narrative_wellbeing_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative wellbeing zh"
+  response_thinking_step_agent_plan_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step agent plan en"
+  response_thinking_step_agent_plan_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step agent plan es"
+  response_thinking_step_agent_plan_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step agent plan hi"
+  response_thinking_step_agent_plan_plain_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step agent plan plain en"
+  response_thinking_step_agent_plan_plain_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step agent plan plain es"
+  response_thinking_step_agent_plan_plain_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step agent plan plain hi"
+  response_thinking_step_agent_plan_plain_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step agent plan plain ru"
+  response_thinking_step_agent_plan_plain_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step agent plan plain zh"
+  response_thinking_step_agent_plan_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step agent plan ru"
+  response_thinking_step_agent_plan_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step agent plan zh"
+  response_thinking_step_clarify_formalization_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step clarify formalization en"
+  response_thinking_step_clarify_formalization_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step clarify formalization es"
+  response_thinking_step_clarify_formalization_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step clarify formalization hi"
+  response_thinking_step_clarify_formalization_plain_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step clarify formalization plain en"
+  response_thinking_step_clarify_formalization_plain_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step clarify formalization plain es"
+  response_thinking_step_clarify_formalization_plain_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step clarify formalization plain hi"
+  response_thinking_step_clarify_formalization_plain_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step clarify formalization plain ru"
+  response_thinking_step_clarify_formalization_plain_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step clarify formalization plain zh"
+  response_thinking_step_clarify_formalization_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step clarify formalization ru"
+  response_thinking_step_clarify_formalization_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step clarify formalization zh"
+  response_thinking_step_compute_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step compute en"
+  response_thinking_step_compute_engine_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step compute engine en"
+  response_thinking_step_compute_engine_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step compute engine es"
+  response_thinking_step_compute_engine_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step compute engine hi"
+  response_thinking_step_compute_engine_plain_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step compute engine plain en"
+  response_thinking_step_compute_engine_plain_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step compute engine plain es"
+  response_thinking_step_compute_engine_plain_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step compute engine plain hi"
+  response_thinking_step_compute_engine_plain_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step compute engine plain ru"
+  response_thinking_step_compute_engine_plain_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step compute engine plain zh"
+  response_thinking_step_compute_engine_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step compute engine ru"
+  response_thinking_step_compute_engine_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step compute engine zh"
+  response_thinking_step_compute_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step compute es"
+  response_thinking_step_compute_expression_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step compute expression en"
+  response_thinking_step_compute_expression_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step compute expression es"
+  response_thinking_step_compute_expression_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step compute expression hi"
+  response_thinking_step_compute_expression_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step compute expression ru"
+  response_thinking_step_compute_expression_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step compute expression zh"
+  response_thinking_step_compute_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step compute hi"
+  response_thinking_step_compute_plain_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step compute plain en"
+  response_thinking_step_compute_plain_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step compute plain es"
   response_thinking_step_compute_plain_hi
     defined-by response_template
     lexeme en
@@ -529,868 +1394,3 @@ meanings
     lexeme en
       surface
         text "response thinking step invoke tool plain hi"
-  response_thinking_step_invoke_tool_plain_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step invoke tool plain ru"
-  response_thinking_step_invoke_tool_plain_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step invoke tool plain zh"
-  response_thinking_step_invoke_tool_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step invoke tool ru"
-  response_thinking_step_invoke_tool_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step invoke tool zh"
-  response_thinking_step_lookup_fact_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step lookup fact en"
-  response_thinking_step_lookup_fact_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step lookup fact es"
-  response_thinking_step_lookup_fact_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step lookup fact hi"
-  response_thinking_step_lookup_fact_plain_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step lookup fact plain en"
-  response_thinking_step_lookup_fact_plain_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step lookup fact plain es"
-  response_thinking_step_lookup_fact_plain_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step lookup fact plain hi"
-  response_thinking_step_lookup_fact_plain_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step lookup fact plain ru"
-  response_thinking_step_lookup_fact_plain_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step lookup fact plain zh"
-  response_thinking_step_lookup_fact_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step lookup fact ru"
-  response_thinking_step_lookup_fact_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step lookup fact zh"
-  response_thinking_step_match_rule_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step match rule en"
-  response_thinking_step_match_rule_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step match rule es"
-  response_thinking_step_match_rule_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step match rule hi"
-  response_thinking_step_match_rule_plain_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step match rule plain en"
-  response_thinking_step_match_rule_plain_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step match rule plain es"
-  response_thinking_step_match_rule_plain_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step match rule plain hi"
-  response_thinking_step_match_rule_plain_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step match rule plain ru"
-  response_thinking_step_match_rule_plain_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step match rule plain zh"
-  response_thinking_step_match_rule_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step match rule ru"
-  response_thinking_step_match_rule_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step match rule zh"
-  response_thinking_step_memory_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step memory en"
-  response_thinking_step_memory_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step memory es"
-  response_thinking_step_memory_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step memory hi"
-  response_thinking_step_memory_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step memory ru"
-  response_thinking_step_memory_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step memory zh"
-  response_thinking_step_modifier_detection_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step modifier detection en"
-  response_thinking_step_modifier_detection_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step modifier detection es"
-  response_thinking_step_modifier_detection_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step modifier detection hi"
-  response_thinking_step_modifier_detection_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step modifier detection ru"
-  response_thinking_step_modifier_detection_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step modifier detection zh"
-  response_thinking_step_policy_refusal_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step policy refusal en"
-  response_thinking_step_policy_refusal_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step policy refusal es"
-  response_thinking_step_policy_refusal_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step policy refusal hi"
-  response_thinking_step_policy_refusal_plain_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step policy refusal plain en"
-  response_thinking_step_policy_refusal_plain_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step policy refusal plain es"
-  response_thinking_step_policy_refusal_plain_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step policy refusal plain hi"
-  response_thinking_step_policy_refusal_plain_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step policy refusal plain ru"
-  response_thinking_step_policy_refusal_plain_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step policy refusal plain zh"
-  response_thinking_step_policy_refusal_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step policy refusal ru"
-  response_thinking_step_policy_refusal_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step policy refusal zh"
-  response_thinking_step_program_plan_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step program plan en"
-  response_thinking_step_program_plan_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step program plan es"
-  response_thinking_step_program_plan_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step program plan hi"
-  response_thinking_step_program_plan_plain_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step program plan plain en"
-  response_thinking_step_program_plan_plain_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step program plan plain es"
-  response_thinking_step_program_plan_plain_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step program plan plain hi"
-  response_thinking_step_program_plan_plain_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step program plan plain ru"
-  response_thinking_step_program_plan_plain_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step program plan plain zh"
-  response_thinking_step_program_plan_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step program plan ru"
-  response_thinking_step_program_plan_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step program plan zh"
-  response_thinking_step_resolve_response_language_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step resolve response language en"
-  response_thinking_step_resolve_response_language_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step resolve response language es"
-  response_thinking_step_resolve_response_language_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step resolve response language hi"
-  response_thinking_step_resolve_response_language_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step resolve response language ru"
-  response_thinking_step_resolve_response_language_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step resolve response language zh"
-  response_thinking_step_route_attempt_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step route attempt en"
-  response_thinking_step_route_attempt_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step route attempt es"
-  response_thinking_step_route_attempt_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step route attempt hi"
-  response_thinking_step_route_attempt_plain_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step route attempt plain en"
-  response_thinking_step_route_attempt_plain_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step route attempt plain es"
-  response_thinking_step_route_attempt_plain_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step route attempt plain hi"
-  response_thinking_step_route_attempt_plain_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step route attempt plain ru"
-  response_thinking_step_route_attempt_plain_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step route attempt plain zh"
-  response_thinking_step_route_attempt_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step route attempt ru"
-  response_thinking_step_route_attempt_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step route attempt zh"
-  response_thinking_step_rule_construction_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step rule construction en"
-  response_thinking_step_rule_construction_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step rule construction es"
-  response_thinking_step_rule_construction_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step rule construction hi"
-  response_thinking_step_rule_construction_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step rule construction ru"
-  response_thinking_step_rule_construction_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step rule construction zh"
-  response_thinking_step_rule_verification_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step rule verification en"
-  response_thinking_step_rule_verification_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step rule verification es"
-  response_thinking_step_rule_verification_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step rule verification hi"
-  response_thinking_step_rule_verification_plain_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step rule verification plain en"
-  response_thinking_step_rule_verification_plain_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step rule verification plain es"
-  response_thinking_step_rule_verification_plain_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step rule verification plain hi"
-  response_thinking_step_rule_verification_plain_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step rule verification plain ru"
-  response_thinking_step_rule_verification_plain_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step rule verification plain zh"
-  response_thinking_step_rule_verification_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step rule verification ru"
-  response_thinking_step_rule_verification_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step rule verification zh"
-  response_thinking_step_scan_memory_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step scan memory en"
-  response_thinking_step_scan_memory_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step scan memory es"
-  response_thinking_step_scan_memory_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step scan memory hi"
-  response_thinking_step_scan_memory_plain_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step scan memory plain en"
-  response_thinking_step_scan_memory_plain_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step scan memory plain es"
-  response_thinking_step_scan_memory_plain_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step scan memory plain hi"
-  response_thinking_step_scan_memory_plain_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step scan memory plain ru"
-  response_thinking_step_scan_memory_plain_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step scan memory plain zh"
-  response_thinking_step_scan_memory_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step scan memory ru"
-  response_thinking_step_scan_memory_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step scan memory zh"
-  response_thinking_step_unnamed_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step unnamed en"
-  response_thinking_step_unnamed_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step unnamed es"
-  response_thinking_step_unnamed_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step unnamed hi"
-  response_thinking_step_unnamed_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step unnamed ru"
-  response_thinking_step_unnamed_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step unnamed zh"
-  response_thinking_step_user_context_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step user context en"
-  response_thinking_step_user_context_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step user context es"
-  response_thinking_step_user_context_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step user context hi"
-  response_thinking_step_user_context_plain_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step user context plain en"
-  response_thinking_step_user_context_plain_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step user context plain es"
-  response_thinking_step_user_context_plain_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step user context plain hi"
-  response_thinking_step_user_context_plain_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step user context plain ru"
-  response_thinking_step_user_context_plain_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step user context plain zh"
-  response_thinking_step_user_context_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step user context ru"
-  response_thinking_step_user_context_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking step user context zh"
-  response_thinking_trace_heading_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking trace heading en"
-  response_thinking_trace_heading_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking trace heading es"
-  response_thinking_trace_heading_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking trace heading hi"
-  response_thinking_trace_heading_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking trace heading ru"
-  response_thinking_trace_heading_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response thinking trace heading zh"
-  response_tool_result_completed_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result completed en"
-  response_tool_result_completed_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result completed hi"
-  response_tool_result_completed_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result completed ru"
-  response_tool_result_completed_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result completed zh"
-  response_tool_result_empty_generic_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty generic en"
-  response_tool_result_empty_generic_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty generic hi"
-  response_tool_result_empty_generic_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty generic ru"
-  response_tool_result_empty_generic_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty generic zh"
-  response_tool_result_empty_list_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty list en"
-  response_tool_result_empty_list_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty list hi"
-  response_tool_result_empty_list_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty list ru"
-  response_tool_result_empty_list_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty list zh"
-  response_tool_result_empty_local_path_search_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty local path search en"
-  response_tool_result_empty_local_path_search_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty local path search hi"
-  response_tool_result_empty_local_path_search_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty local path search ru"
-  response_tool_result_empty_local_path_search_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty local path search zh"
-  response_tool_result_empty_search_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty search en"
-  response_tool_result_empty_search_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty search hi"
-  response_tool_result_empty_search_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty search ru"
-  response_tool_result_empty_search_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty search zh"
-  response_tool_result_failed_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result failed en"
-  response_tool_result_failed_exit_code_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result failed exit code en"
-  response_tool_result_failed_exit_code_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result failed exit code es"
-  response_tool_result_failed_exit_code_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result failed exit code hi"
-  response_tool_result_failed_exit_code_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result failed exit code ru"
-  response_tool_result_failed_exit_code_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result failed exit code zh"
-  response_tool_result_failed_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result failed hi"
-  response_tool_result_failed_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result failed ru"
-  response_tool_result_failed_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result failed zh"
-  response_unknown_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown en"
-  response_unknown_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown hi"
-  response_unknown_reasoning_question_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown reasoning question en"
-  response_unknown_reasoning_question_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown reasoning question hi"
-  response_unknown_reasoning_question_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown reasoning question ru"
-  response_unknown_reasoning_question_unknown
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown reasoning question unknown"
-  response_unknown_reasoning_question_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown reasoning question zh"
-  response_unknown_reasoning_trace_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown reasoning trace en"
-  response_unknown_reasoning_trace_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown reasoning trace hi"
-  response_unknown_reasoning_trace_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown reasoning trace ru"
-  response_unknown_reasoning_trace_unknown
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown reasoning trace unknown"
-  response_unknown_reasoning_trace_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown reasoning trace zh"
-  response_unknown_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown ru"
-  response_unknown_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown zh"
-  response_web_search_live_results_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response web search live results en"
-  response_web_search_live_results_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response web search live results hi"
-  response_web_search_live_results_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response web search live results ru"
-  response_web_search_live_results_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response web search live results zh"
-  response_web_search_unavailable_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response web search unavailable en"
-  response_web_search_unavailable_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response web search unavailable hi"
-  response_web_search_unavailable_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response web search unavailable ru"
-  response_web_search_unavailable_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response web search unavailable zh"
-  response_wellbeing_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response wellbeing en"
-  response_wellbeing_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response wellbeing hi"
-  response_wellbeing_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response wellbeing ru"
-  response_wellbeing_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response wellbeing zh"
-  response_who_is_unknown_entity_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response who is unknown entity en"
-  response_who_is_unknown_entity_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response who is unknown entity hi"
-  response_who_is_unknown_entity_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response who is unknown entity ru"
-  response_who_is_unknown_entity_suggestion_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response who is unknown entity suggestion en"

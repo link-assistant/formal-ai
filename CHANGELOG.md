@@ -7,6 +7,62 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.332.1] - 2026-08-05
+
+### Changed
+- Automated `solve` sessions on this repository now run with `--attach-logs
+  --verbose`. `examples/self-coding/run.sh --live` passes both flags, and
+  `CONTRIBUTING.md` records the canonical command plus why neither flag
+  substitutes for the other: `--attach-logs` publishes the session log to the
+  pull request, and `--verbose` is what makes the Agent adapter dump the raw
+  JSON of every error and fatal-startup record
+  (link-assistant/hive-mind#2143). The 2026-08-04 run on PR #927 failed in 22
+  seconds and left only `AGENT execution failed with Agent reported error:
+  [object Object]` with no log attached; that cause is unrecoverable, and a
+  failure recorded that way is unlearnable by construction (issue #973).
+
+### Added
+- `tests/issue_973_solve_flags.rs`, which enforces the policy instead of only
+  documenting it: it scans the guides and scripts the repository publishes and
+  fails when any `solve` invocation drops either flag, naming the file, line,
+  and missing flag. Recorded history under `docs/case-studies/`, `dev/log/`, and
+  `experiments/` stays exempt, so past runs remain byte-for-byte as they
+  happened.
+- `docs/case-studies/issue-973/` — the timeline of PR #927's failure, root
+  causes RC1–RC6 with the upstream reports (link-assistant/hive-mind#2141,
+  link-assistant/agent#289, link-assistant/agent#290), and the captured GitHub
+  API evidence under `raw-data/`.
+
+## [0.332.0] - 2026-08-05
+
+### Added
+- An iterative repository-summarization validation protocol with a published quality
+  metric and an 80% ratchet (`src/summarization/validation/`). A seeded
+  `splitmix64` Fisher-Yates permutation draws repository files reproducibly, two per
+  iteration, and the loop keeps going until three consecutive iterations sit within
+  five points of one another above the ratchet — never before twelve iterations have
+  run, because three perfect iterations are six files and six files say nothing about
+  a corpus of ten thousand — or it stops at the iteration bound and reports
+  `bound_reached` instead of claiming a stability it never observed. The
+  ten criteria are scored as an exact integer `passed/applicable` ratio, floored, with
+  criteria that cannot apply to a file dropped from that file's denominator rather
+  than counted as free passes (issue #893, re-opening issue #563).
+- `formal-ai summarization criteria | validate | ratchet` — the operator surface for
+  the metric. `validate --append` writes the measured run to
+  `data/summarization/quality-baseline.lino`; `ratchet` re-measures and fails when the
+  score drops below the published 80% minimum or below whatever the repository last
+  committed (issue #893).
+
+### Fixed
+- Markdown embedded grammars are now exercised through the production summarizer on
+  every validation run, and counted against an *independent* CommonMark fence scanner
+  so the summarizer cannot grade itself. A run that recorded no embedded grammar block
+  may not declare stability and is rejected by the ratchet — and because fenced
+  Markdown is rare enough that a uniform draw of the affordable size can miss it
+  entirely (it failed one CI run at 100% measured quality), the draw is stratified:
+  the seeded permutation is computed as before, then one fence-carrying Markdown file
+  is promoted into iteration 0 (issue #893).
+
 ## [0.331.0] - 2026-08-05
 
 ### Added
