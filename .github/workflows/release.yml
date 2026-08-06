@@ -1364,7 +1364,9 @@ jobs:
         # additionally proves the same research loop through Claude Code's
         # Anthropic transport and Codex's Responses transport, so all clients
         # are mandatory and their E2E scripts fail rather than skip if missing.
-        run: bun add -g opencode-ai @anthropic-ai/claude-code @openai/codex
+        # Issue #907 adds gemini: its `<session_context>` framing is the client
+        # behaviour that broke intent routing, and only the real CLI sends it.
+        run: bun add -g opencode-ai @anthropic-ai/claude-code @openai/codex @google/gemini-cli
 
       - name: Build formal-ai (release)
         # The E2E script runs against target/release/formal-ai — that's the
@@ -1483,6 +1485,17 @@ jobs:
         env:
           PORT: 8782
         run: experiments/agent_cli_e2e/run_issue_758.sh
+
+      - name: "Run gemini CLI E2E — caller framing does not hijack the request (issue #907)"
+        # The reported failure needs a real client to reproduce: the gemini CLI
+        # injects a `<session_context>` block into every turn, and its
+        # "Today's date is …" line used to fire the date intent so the actual
+        # request was never attempted. Both legs run — the task must produce the
+        # program, and a real question must still reach `date` — so a guard that
+        # simply silenced the intent cannot pass.
+        env:
+          PORT: 8907
+        run: experiments/agent_cli_e2e/run_issue_907.sh
 
       - name: "Run agent CLI E2E — generated programs use harness commands (issue #716)"
         # The exact screenshot reproduction must create the source in the real

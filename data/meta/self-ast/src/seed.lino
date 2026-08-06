@@ -2,70 +2,71 @@ self_ast_census
   target src/seed.rs
   language rust
   fidelity signature
-  byte_len 36480
-  line_count 929
-  content_id source_module_f325ba4c86134def
-  symbol_count 62
+  byte_len 36618
+  line_count 932
+  content_id source_module_fa5d3615cd83b808
+  symbol_count 63
   symbols
     module agentic_tool_capabilities 24 24
     module brainstorm 25 25
-    module client_completion 26 26
-    module client_integrations 27 27
-    module coreference 28 28
-    module draft_strategies 29 29
-    module embedded 30 30
-    module entity_names 31 31
-    module facts 32 32
-    module grounding_overrides 33 33
-    module handler_precedence 34 34
-    module market_price_references 35 35
-    module meanings 36 36
-    module model_aliases 37 37
-    module operation_vocabulary 38 38
-    module parser 39 39
-    module personas 40 40
-    module projects 41 41
-    module proof_programs 42 42
-    module release_timelines 43 43
-    module roles 44 44
-    module shell_intents 45 45
-    module summary_topics 46 46
-    module terminal_commands 47 47
-    function merged_bundle 130 132
-    function bundle_from_files 140 157
-    function parse_bundle 178 253
-    struct ResponseRecord 257 262
-    function multilingual_responses 266 288
-    function response_for 293 300
-    function render_response 304 311
-    function localized_response 324 334
-    function response_values_for 341 343
-    function agent_info 347 360
-    function supported_languages 369 374
-    struct LanguageRule 378 391
-    function language_rules 394 414
-    function language_of_source 421 426
-    struct PromptPattern 430 436
-    struct LocalizedConcept 444 451
-    struct ConceptRecord 474 486
-    function localized_for 492 497
-    function concepts 501 551
-    struct LocalizedContextLabel 555 558
-    struct ContextRecord 564 569
-    function label_for 575 583
-    function matches 588 603
-    function concept_contexts 607 637
-    struct IntentRoute 649 657
-    struct IntentRouting 660 664
-    function intent_routing 667 712
-    struct LearningSource 722 727
-    struct LearningSources 732 735
-    function match_directive 753 768
-    function learning_sources 777 807
-    function prompt_patterns 810 829
-    struct EnvironmentRecord 839 851
-    struct MigrationFlow 854 858
-    struct EnvironmentDirectory 861 865
-    function environment_directory 868 912
-    function child_value_alias 914 921
-    function environment_records 927 929
+    module caller_context 26 26
+    module client_completion 27 27
+    module client_integrations 28 28
+    module coreference 29 29
+    module draft_strategies 30 30
+    module embedded 31 31
+    module entity_names 32 32
+    module facts 33 33
+    module grounding_overrides 34 34
+    module handler_precedence 35 35
+    module market_price_references 36 36
+    module meanings 37 37
+    module model_aliases 38 38
+    module operation_vocabulary 39 39
+    module parser 40 40
+    module personas 41 41
+    module projects 42 42
+    module proof_programs 43 43
+    module release_timelines 44 44
+    module roles 45 45
+    module shell_intents 46 46
+    module summary_topics 47 47
+    module terminal_commands 48 48
+    function merged_bundle 133 135
+    function bundle_from_files 143 160
+    function parse_bundle 181 256
+    struct ResponseRecord 260 265
+    function multilingual_responses 269 291
+    function response_for 296 303
+    function render_response 307 314
+    function localized_response 327 337
+    function response_values_for 344 346
+    function agent_info 350 363
+    function supported_languages 372 377
+    struct LanguageRule 381 394
+    function language_rules 397 417
+    function language_of_source 424 429
+    struct PromptPattern 433 439
+    struct LocalizedConcept 447 454
+    struct ConceptRecord 477 489
+    function localized_for 495 500
+    function concepts 504 554
+    struct LocalizedContextLabel 558 561
+    struct ContextRecord 567 572
+    function label_for 578 586
+    function matches 591 606
+    function concept_contexts 610 640
+    struct IntentRoute 652 660
+    struct IntentRouting 663 667
+    function intent_routing 670 715
+    struct LearningSource 725 730
+    struct LearningSources 735 738
+    function match_directive 756 771
+    function learning_sources 780 810
+    function prompt_patterns 813 832
+    struct EnvironmentRecord 842 854
+    struct MigrationFlow 857 861
+    struct EnvironmentDirectory 864 868
+    function environment_directory 871 915
+    function child_value_alias 917 924
+    function environment_records 930 932

@@ -98,13 +98,6 @@ pub struct ShellIntentVocabulary {
     pub argument_noise: Vec<String>,
     /// Phrases that distinguish repository/file search from internet search.
     pub local_search_scopes: Vec<String>,
-    /// Copulas that turn the phrase before them into the subject of an
-    /// assertion — `Today's date is …` supplies a fact, it does not ask for one
-    /// (issue #907).
-    pub statement_copulas: Vec<String>,
-    /// Tokens that keep a sentence a request: question words, the question mark
-    /// itself, and the imperative verbs that introduce one.
-    pub question_markers: Vec<String>,
     /// Seed-defined portable command with root, predicate, and pattern slots.
     pub local_path_search_command_template: String,
     /// Verbs that ask to discover a path by name.
@@ -135,12 +128,6 @@ pub fn shell_intent_vocabulary() -> ShellIntentVocabulary {
             }
             "local_search_scopes" => {
                 vocab.local_search_scopes = collect_language_values(group, "scope");
-            }
-            "statement_copulas" => {
-                vocab.statement_copulas = lowercased(collect_language_values(group, "copula"));
-            }
-            "question_markers" => {
-                vocab.question_markers = lowercased(collect_language_values(group, "marker"));
             }
             "local_path_search" => {
                 group
@@ -235,13 +222,6 @@ fn parse_intent(node: &LinoNode) -> ShellIntent {
             .map(|cue| cue.to_lowercase())
             .collect(),
     }
-}
-
-fn lowercased(values: Vec<String>) -> Vec<String> {
-    values
-        .into_iter()
-        .map(|value| value.to_lowercase())
-        .collect()
 }
 
 /// Collect every `<child_name>` id nested under the `language` children of `group`,
