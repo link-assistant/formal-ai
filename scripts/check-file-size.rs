@@ -54,7 +54,16 @@ const WORKFLOW_YAML_LIMIT: FileLimit = FileLimit {
     label: "GitHub Actions workflow",
 };
 const EXCLUDE_PATTERNS: &[&str] = &["target", ".git", "node_modules"];
-const EXCLUDE_PATH_FRAGMENTS: &[&str] = &["data/cache/wikidata/", "dev/log/"];
+/// Issue #960 (R222-1): `data/cache/wikidata/` used to sit outside the gate, so
+/// the one hard number the maintainer gave for cached data — "each .lino file
+/// cannot be larger than 1500 lines" — was unenforced exactly where the
+/// generator that can breach it writes. The refresh tool already splits
+/// oversized responses into `<bucket>-partN.lino`
+/// (`examples/refresh_translation_cache.rs`), so the cap is actionable: the
+/// largest cached file today is `data/cache/wikidata/lexeme/L3302.lino` at 1347
+/// lines. Generated-but-committed is not a reason to be exempt; it is the
+/// reason to be measured.
+const EXCLUDE_PATH_FRAGMENTS: &[&str] = &["dev/log/"];
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 struct FileLimit {
@@ -669,18 +678,30 @@ mod tests {
         assert_eq!(result.warnings, Vec::new());
     }
 
+    /// Issue #960 (R222-1): "each .lino file cannot be larger than 1500 lines"
+    /// applies to the generated Wikidata cache too — that is where the
+    /// generator writes, so that is where the cap has to bite. Oversized
+    /// responses are split into `<bucket>-partN.lino` instead of exempted.
     #[test]
-    fn check_directory_skips_generated_wikidata_cache() {
+    fn check_directory_enforces_lino_limit_inside_wikidata_cache() {
         let repo = temp_dir("wikidata-cache");
-        let cache_dir = repo.join("data/cache/wikidata");
+        let cache_dir = repo.join("data/cache/wikidata/entity");
         fs::create_dir_all(&cache_dir).unwrap();
         let lino_limit = FILE_LIMITS[1];
         write_lino_file_with_lines(&cache_dir.join("Q1860.lino"), lino_limit.max_lines + 1);
 
         let result = check_directory(&repo);
 
-        assert_eq!(result.violations, Vec::new());
-        assert_eq!(result.warnings, Vec::new());
+        assert_eq!(
+            result.violations,
+            vec![Finding {
+                file: "data/cache/wikidata/entity/Q1860.lino".to_string(),
+                lines: lino_limit.max_lines + 1,
+                max_lines: lino_limit.max_lines,
+                warn_lines: lino_limit.warn_lines,
+                label: lino_limit.label,
+            }]
+        );
         assert_eq!(result.embedded_data_violations, Vec::new());
     }
 
