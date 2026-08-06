@@ -1,0 +1,11 @@
+"What is 2 plus 2?" -> intent=calculation answer=2 plus 2 = 4
+"Сколько будет 2 плюс 2?" -> intent=calculation answer=2 плюс 2 = 4
+"2 जोड\u{93c} 2 कितना होता ह\u{948}?" -> intent=calculation answer=2 जोड़ 2 = 4
+"2 जमा 2 कितना होता ह\u{948}?" -> intent=calculation answer=2 जमा 2 = 4
+"2 加 2 等于多少?" -> intent=calculation answer=2 加 2 = 4
+"4 घटा 2 कितना ह\u{948}?" -> intent=calculation answer=4 घटा 2 = 2
+"4 减 2 等于多少?" -> intent=calculation answer=4 减 2 = 2
+"3 ग\u{941}णा 2 कितना ह\u{948}?" -> intent=calculation answer=3 गुणा 2 = 6
+"3 乘 2 等于多少?" -> intent=calculation answer=3 乘 2 = 6
+"6 बटा 2 कितना ह\u{948}?" -> intent=calculation answer=6 बटा 2 = 3
+"6 除 2 等于多少?" -> intent=calculation answer=6 除 2 = 3

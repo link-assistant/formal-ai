@@ -81,3 +81,52 @@ needs is a row in the seed, the recogniser is in the right shape.
   `arithmetic_hindi_word_variations_match` and
   `arithmetic_chinese_word_variations_match`, mirroring the existing English and
   Russian blocks operator for operator.
+
+## Prior art surveyed
+
+No new dependency was needed, and none would have helped. The recogniser this
+issue exercises (`contains_word_operator` → `has_calculation_signal` →
+`evaluate_calculation`) already delegates the *evaluation* to `link-calculator`
+upstream; what failed was *recognition*, which is by design this repository's
+own seed-driven layer (issue #386 moved the operator vocabulary out of a
+hardcoded Rust array and into the `arithmetic_operation` meanings precisely so
+that a language gap becomes a data edit). A tokenizer such as `lindera`
+(already a transitive dependency) would not have helped either: the Chinese
+prompts in this issue are already whitespace-separated, and the failure was a
+missing lexical entry, not a segmentation error.
+
+## Verification
+
+`raw-data/after-fix-run.txt` is the live output of
+`experiments/issue_962_repro.rs` after the fix — all eleven prompts route to
+`intent=calculation`. `raw-data/github/` holds the issue, its comments, and the
+closing pull request as fetched from the API.
+
+Automated: `cargo test --test unit` and `cargo test --test source` pass in full.
+Two generated artefacts had to be regenerated and their guards caught it before
+CI did — `arithmetic_word_tables_match_seed` (stale `no_std` table) and
+`issue_673_self_ast_census::committed_census_documents_match_what_the_sources_render`
+(stale self-AST census).
+
+## Requirements from the issue
+
+| # | Requirement | Where delivered |
+| --- | --- | --- |
+| R962-1 | Add the missing Hindi infix operator words (`जोड़`, `जमा`) and the Chinese infix operator word (`加`) alongside the already-present `相加`. | `data/seed/meanings-calculator.lino` (`जोड़` was already present; `जमा` and `加` added). `相加` lives in `operation-vocabulary.lino`, a different table from the one the calculator reads — see the note below. |
+| R962-2 | Audit the full operator table for other infix-vs-standalone gaps across all four languages. | Same file: `减`, `乘`, `除` (zh) and `बटा` (hi) added; en and ru were already complete. RC2 (the missing `कितना होता है` cue) was found by that audit. |
+| R962-3 | Regression tests pinning the three reported prompts to `= 4`, in the style of the existing en/ru tests. | `tests/unit/issue_962_word_operator_parity.rs` (exact answers, not fragments) and the two new blocks in `tests/unit/multilingual_variations.rs`. |
+| R962-4 | Manual re-run of the three failing prompts. | `raw-data/after-fix-run.txt`. |
+| R962-5 | Spot-check minus/times/divide in hi and zh. | `other_word_operators_answer_in_hindi_and_chinese`. |
+| R962-6 | `docs/case-studies/issue-{id}`; single PR. | This file; PR #976. |
+
+### A note on `operation-vocabulary.lino`
+
+The issue points at `data/seed/operation-vocabulary.lino`, where the Chinese
+`相加` is recognised for the `sum` operation. That file drives the *text/list
+operation* router ("sum of these numbers", "sort lines"), not the arithmetic
+expression evaluator. The arithmetic operator words the reported prompts need
+live in the `arithmetic_operation` meanings in
+`data/seed/meanings-calculator.lino`, which is where the fix belongs — adding
+`加` to `operation-vocabulary.lino` would not have made `2 加 2 等于多少?`
+evaluate. Tracing each prompt to the handler that rejected it is what separated
+the two tables.
