@@ -29,15 +29,31 @@ automated scripts for mass actions … preserve them" instruction:
   3. Emit each token as a first-class meaning nested under ``meanings``:
      ``defined-by <parent>`` plus an English ``lexeme`` whose surface is the
      identifier with separators turned to spaces (quoted, so it adds no new
-     tokens). Output is sharded into ``closure-generated-NN.lino`` files capped
-     well under the 1500-line data-file limit.
+     tokens). Output is sharded into a fixed set of ``closure-generated-NN.lino``
+     files, each well under the 1500-line data-file limit.
 
 Run ``python3 scripts/close-total.py`` then ``python3 scripts/audit-total-closure.py``;
 the unresolved count must be 0.
+
+Sharding is **content-addressed, not sequential** (PR #965 review). Filling shards
+in sorted order up to a line cap makes every shard depend on the *size* of every
+block before it: two branches that each define one new token rewrite the tail of
+every shard from the insertion point onward, so `data/seed` conflicted in almost
+every pull request. Instead each block is placed by a stable digest of its own
+slug — ``sha256(slug) % SHARD_COUNT`` — over a shard count that is fixed rather
+than derived from the corpus size. A token's shard therefore depends only on the
+token, so adding, removing or reparenting one touches exactly one file and leaves
+the other ``SHARD_COUNT - 1`` byte-identical. Two branches conflict only when
+their new tokens hash to the same shard *and* land adjacent within it.
+
+``SHARD_COUNT`` is deliberately generous: it is the one number whose change
+reshuffles everything, so it is raised rarely and never automatically. Bump it
+(and re-run) only when ``check-file-size`` starts warning on a shard.
 """
 from __future__ import annotations
 
 import glob
+import hashlib
 import importlib.util
 import os
 import re
@@ -47,6 +63,20 @@ from pathlib import Path
 SEED_DIR = Path("data/seed")
 GENERATED_PREFIX = "closure-generated-"
 MAX_LINES = 1400
+
+#: Number of content-addressed shards. Fixed on purpose — see the module docstring.
+#: At ~5 lines per meaning this leaves each shard room for ~280 meanings before it
+#: approaches ``MAX_LINES``; raising it reshuffles every shard exactly once.
+SHARD_COUNT = 16
+
+
+def shard_for(slug: str) -> int:
+    """Return the 1-based shard index that owns ``slug``.
+
+    Keyed on the slug alone so a block's file never depends on what else exists.
+    """
+    digest = hashlib.sha256(slug.encode("utf-8")).digest()
+    return int.from_bytes(digest[:8], "big") % SHARD_COUNT + 1
 
 SLUG = re.compile(r"^[a-z][a-z0-9_-]*$")
 QID = re.compile(r"^[QLP][0-9]+$")
@@ -251,29 +281,33 @@ def main() -> int:
     for old in glob.glob(str(SEED_DIR / f"{GENERATED_PREFIX}*.lino")):
         os.remove(old)
 
-    # Shard into files, each opening with its own `meanings` header.
-    shard_idx = 1
-    body: list[str] = []
-    written = 0
-
-    def flush():
-        nonlocal body, shard_idx, written
-        if not body:
-            return
-        path = SEED_DIR / f"{GENERATED_PREFIX}{shard_idx:02d}.lino"
-        path.write_text("meanings\n" + "\n".join(body) + "\n", encoding="utf-8")
-        print(f"  wrote {path} ({len(body) + 1} lines)")
-        shard_idx += 1
-        body = []
-        written = 0
-
+    # Shard into files by a stable digest of each slug, so a block's file is a
+    # function of the block alone. `blocks` is already in a deterministic order
+    # (parents first, then members, each sorted), and bucketing preserves it, so
+    # a new token is inserted at one place in one shard.
+    buckets: dict[int, list[str]] = defaultdict(list)
     for slug, parent in blocks:
-        block = emit_meaning(slug, parent)
-        if written + len(block) + 1 > MAX_LINES:
-            flush()
-        body.extend(block)
-        written += len(block)
-    flush()
+        buckets[shard_for(slug)].extend(emit_meaning(slug, parent))
+
+    oversized: list[str] = []
+    for shard_idx in range(1, SHARD_COUNT + 1):
+        body = buckets.get(shard_idx, [])
+        path = SEED_DIR / f"{GENERATED_PREFIX}{shard_idx:02d}.lino"
+        # Every shard is written even when empty, so the file set is stable too:
+        # a shard emptying out must not delete a file other branches still edit.
+        path.write_text("meanings\n" + "\n".join(body) + "\n", encoding="utf-8")
+        lines = len(body) + 1
+        print(f"  wrote {path} ({lines} lines)")
+        if lines > MAX_LINES:
+            oversized.append(f"{path.name} ({lines} lines)")
+
+    if oversized:
+        print(
+            "ERROR: shards exceed the "
+            f"{MAX_LINES}-line budget: {', '.join(oversized)}\n"
+            "       raise SHARD_COUNT in scripts/close-total.py and re-run."
+        )
+        return 1
 
     print(
         f"defined {len(parent_defs)} parent categories + "
