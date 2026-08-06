@@ -107,6 +107,37 @@ pub(super) fn normalized_payload(raw: &str) -> Option<String> {
         .then_some(result.payload)
 }
 
+/// Return output after transport normalization when the transport itself
+/// succeeded. Unlike [`normalized_payload`], this does not classify arbitrary
+/// output vocabulary: verification targets are allowed to contain words such
+/// as `error` or `failed` when those are the requested bytes.
+pub(super) fn observed_payload(raw: &str) -> Option<String> {
+    let result = normalize(raw);
+    result.error.is_none().then_some(result.payload)
+}
+
+/// Return the client-owned failure detail when a result failed, whether the
+/// signal arrived as protocol metadata, a structured transport envelope, or a
+/// raw adapter message.
+pub(super) fn failure_message(
+    raw: &str,
+    explicitly_failed: bool,
+    infer_from_prose: bool,
+) -> Option<String> {
+    let result = normalize(raw);
+    if let Some(error) = result.error {
+        return Some(error);
+    }
+    if explicitly_failed || (infer_from_prose && looks_like_error(&result.payload)) {
+        return Some(if result.payload.trim().is_empty() {
+            raw.trim().to_owned()
+        } else {
+            result.payload
+        });
+    }
+    None
+}
+
 fn looks_like_error(text: &str) -> bool {
     crate::seed::lexicon().mentions_role(
         ROLE_TOOL_RESULT_FAILURE_SIGNAL,
@@ -150,6 +181,15 @@ pub(super) fn render(label: &str, raw: &str, prompt: &str) -> String {
             ("{payload}", &result.payload),
         ],
     )
+}
+
+/// Report a step the planner itself observed to have failed, naming the tool or
+/// path it failed on. The plan's own execution state machine uses this when a
+/// client-owned attempt came back marked as an error (issue #905).
+pub(super) fn render_failure(label: &str, detail: &str, prompt: &str) -> String {
+    let result = normalize(detail);
+    let error = result.error.unwrap_or(result.payload);
+    failure_report(label, &error, result.exit_code, response_language(prompt))
 }
 
 /// Report a failed step. When the harness reported the status, the status is
@@ -302,6 +342,10 @@ fn normalize(raw: &str) -> NormalizedResult {
         .iter()
         .filter_map(|key| object.get(*key))
         .any(|value| value.as_bool() == Some(false));
+    let explicitly_failed = ["is_error", "isError"]
+        .iter()
+        .filter_map(|key| object.get(*key))
+        .any(|value| value.as_bool() == Some(true));
     let explicit_error = ["error", "stderr", "failure"]
         .iter()
         .filter_map(|key| object.get(*key))
@@ -315,10 +359,13 @@ fn normalize(raw: &str) -> NormalizedResult {
             || failed_http
             || failed_status
             || explicitly_unsuccessful
+            || explicitly_failed
             || explicit_error.is_some())
     {
         let error = explicit_error
             .or_else(|| object.get("output").and_then(nonempty_text))
+            .or_else(|| object.get("content").and_then(nonempty_text))
+            .or_else(|| object.get("result").and_then(nonempty_text))
             .or_else(|| {
                 [
                     "exit_code",

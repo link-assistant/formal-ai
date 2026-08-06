@@ -167,7 +167,17 @@ fn generated_api_documentation_fails_on_every_rustdoc_warning() {
         })
         .expect("cargo doc step");
 
+    // RUSTDOCFLAGS stays on the workflow step so the fail-closed contract is
+    // visible where the job is defined; issue #977 moved the command itself
+    // into a script to keep release.yml under its line ceiling.
     assert!(docs.contains("RUSTDOCFLAGS: -D warnings"));
-    assert!(docs.contains("cargo doc --no-deps --lib"));
+    assert!(docs.contains("scripts/build-rust-api-docs.sh"));
     assert!(!docs.contains("RUSTDOCFLAGS is unset"));
+
+    let script = fs::read_to_string(format!(
+        "{}/scripts/build-rust-api-docs.sh",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .expect("build-rust-api-docs.sh");
+    assert!(script.contains("cargo doc --no-deps --lib"));
 }

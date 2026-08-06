@@ -1,34 +1,4 @@
 meanings
-  response_pattern_sequence_constant_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence constant en"
-  response_pattern_sequence_constant_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence constant es"
-  response_pattern_sequence_constant_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence constant hi"
-  response_pattern_sequence_constant_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence constant ru"
-  response_pattern_sequence_constant_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence constant zh"
-  response_pattern_sequence_count_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence count en"
   response_pattern_sequence_count_es
     defined-by response_template
     lexeme en
@@ -1394,3 +1364,33 @@ meanings
     lexeme en
       surface
         text "response task decomposition lead ru"
+  response_task_decomposition_lead_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition lead zh"
+  response_task_first_step_lead_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task first step lead en"
+  response_task_first_step_lead_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task first step lead hi"
+  response_task_first_step_lead_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task first step lead ru"
+  response_task_first_step_lead_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task first step lead zh"
+  response_task_plan_stage_implementation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task plan stage implementation en"

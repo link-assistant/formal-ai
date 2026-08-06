@@ -1,0 +1,22 @@
+.github/workflows/external-benchmarks.yml:94:        uses: actions/cache@v5
+.github/workflows/agentic-cli-matrix.yml:63:        uses: actions/cache@v5
+.github/workflows/agentic-cli-matrix.yml:84:        uses: actions/upload-artifact@v4
+.github/workflows/agentic-cli-matrix.yml:112:        uses: actions/download-artifact@v4
+.github/workflows/agentic-cli-matrix.yml:135:        uses: actions/setup-node@v4
+.github/workflows/agentic-cli-matrix.yml:144:        uses: actions/setup-python@v5
+.github/workflows/agentic-cli-matrix.yml:198:        uses: actions/upload-artifact@v4
+.github/workflows/agentic-cli-matrix.yml:226:        uses: actions/download-artifact@v4
+.github/workflows/agentic-cli-matrix.yml:232:        uses: actions/download-artifact@v4
+.github/workflows/agentic-cli-matrix.yml:254:        uses: actions/upload-artifact@v4
+.github/workflows/task-ladder.yml:115:        uses: actions/upload-artifact@v4
+.github/workflows/desktop-release.yml:669:        uses: actions/download-artifact@v8
+.github/workflows/learning-cycle.yml:29:      - uses: actions/checkout@v4
+.github/workflows/learning-cycle.yml:33:      - uses: Swatinem/rust-cache@v2
+.github/workflows/learning-cycle.yml:59:        uses: actions/upload-artifact@v4
+.github/workflows/coverage.yml:97:        uses: actions/cache@v5
+.github/workflows/summarization-ratchet.yml:106:        uses: actions/upload-artifact@v4
+.github/workflows/release.yml:304:        uses: actions/cache@v5
+.github/workflows/release.yml:691:        uses: actions/cache@v5
+.github/workflows/release.yml:1374:        uses: actions/cache@v5
+.github/workflows/release.yml:1837:        uses: actions/cache@v5
+.github/workflows/write-effect-ladder.yml:118:        uses: actions/upload-artifact@v4

@@ -1,34 +1,4 @@
 meanings
-  were
-    defined-by concept
-    lexeme en
-      surface
-        text "were"
-  wget
-    defined-by token
-    lexeme en
-      surface
-        text "wget"
-  whitespace
-    defined-by concept
-    lexeme en
-      surface
-        text "whitespace"
-  who_is_unknown_entity
-    defined-by intent
-    lexeme en
-      surface
-        text "who is unknown entity"
-  who_is_unknown_entity_suggestion
-    defined-by intent
-    lexeme en
-      surface
-        text "who is unknown entity suggestion"
-  whoami
-    defined-by concept
-    lexeme en
-      surface
-        text "whoami"
   wikibooks
     defined-by source
     lexeme en

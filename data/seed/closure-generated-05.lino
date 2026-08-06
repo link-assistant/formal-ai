@@ -1,9 +1,4 @@
 meanings
-  response_clarification_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response clarification ru"
   response_clarification_zh
     defined-by response_template
     lexeme en
@@ -109,106 +104,6 @@ meanings
     lexeme en
       surface
         text "response client contract read transcript error zh"
-  response_client_global_config_auth_refusal_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config auth refusal en"
-  response_client_global_config_auth_refusal_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config auth refusal es"
-  response_client_global_config_auth_refusal_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config auth refusal hi"
-  response_client_global_config_auth_refusal_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config auth refusal ru"
-  response_client_global_config_auth_refusal_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config auth refusal zh"
-  response_client_global_config_probe_skipped_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config probe skipped en"
-  response_client_global_config_probe_skipped_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config probe skipped es"
-  response_client_global_config_probe_skipped_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config probe skipped hi"
-  response_client_global_config_probe_skipped_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config probe skipped ru"
-  response_client_global_config_probe_skipped_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config probe skipped zh"
-  response_client_global_config_probe_started_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config probe started en"
-  response_client_global_config_probe_started_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config probe started es"
-  response_client_global_config_probe_started_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config probe started hi"
-  response_client_global_config_probe_started_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config probe started ru"
-  response_client_global_config_probe_started_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config probe started zh"
-  response_client_global_config_requirement_missing_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config requirement missing en"
-  response_client_global_config_requirement_missing_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config requirement missing es"
-  response_client_global_config_requirement_missing_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config requirement missing hi"
-  response_client_global_config_requirement_missing_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config requirement missing ru"
-  response_client_global_config_requirement_missing_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client global config requirement missing zh"
   response_client_integration_invalid_typed_json_setting_en
     defined-by response_template
     lexeme en
@@ -1009,6 +904,31 @@ meanings
     lexeme en
       surface
         text "response general plan command verification evidence zh"
+  response_general_plan_completed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan completed en"
+  response_general_plan_completed_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan completed es"
+  response_general_plan_completed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan completed hi"
+  response_general_plan_completed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan completed ru"
+  response_general_plan_completed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan completed zh"
   response_general_plan_repository_action_en
     defined-by response_template
     lexeme en
@@ -1074,6 +994,56 @@ meanings
     lexeme en
       surface
         text "response general plan repository planned zh"
+  response_general_plan_unverified_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan unverified en"
+  response_general_plan_unverified_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan unverified es"
+  response_general_plan_unverified_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan unverified hi"
+  response_general_plan_unverified_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan unverified ru"
+  response_general_plan_unverified_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan unverified zh"
+  response_general_plan_verification_mismatch_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan verification mismatch en"
+  response_general_plan_verification_mismatch_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan verification mismatch es"
+  response_general_plan_verification_mismatch_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan verification mismatch hi"
+  response_general_plan_verification_mismatch_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan verification mismatch ru"
+  response_general_plan_verification_mismatch_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan verification mismatch zh"
   response_github_repository_traffic_en
     defined-by response_template
     lexeme en
@@ -1394,3 +1364,33 @@ meanings
     lexeme en
       surface
         text "response lexeme import cannot list zh"
+  response_lexeme_import_cannot_remove_stale_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot remove stale en"
+  response_lexeme_import_cannot_remove_stale_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot remove stale hi"
+  response_lexeme_import_cannot_remove_stale_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot remove stale ru"
+  response_lexeme_import_cannot_remove_stale_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot remove stale zh"
+  response_lexeme_import_cannot_stage_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot stage en"
+  response_lexeme_import_cannot_stage_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot stage hi"

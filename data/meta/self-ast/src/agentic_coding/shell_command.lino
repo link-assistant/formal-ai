@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/shell_command.rs
   language rust
   fidelity full_ast
-  byte_len 29540
-  line_count 751
-  content_id source_module_0302e29c10463d6e
-  symbol_count 37
+  byte_len 32437
+  line_count 822
+  content_id source_module_ffb77447c90c3c57
+  symbol_count 36
   symbols
     const REPORT_ISSUE_ACTION 13 13
     function shell_command_for_task 32 67
@@ -21,108 +21,107 @@ self_ast_census
     function search_tokens 217 223
     function search_tokens_with_offsets 225 236
     function valid_search_identifier 238 248
-    function intent_shell_command 263 301
-    function only_states_a_fact 311 326
-    function starts_with_copula 329 335
-    function ends_a_word 339 348
-    function sentence_around 351 365
-    const BOUNDARIES 352 352
-    function asks_or_orders 367 377
-    function path_arguments 379 395
-    function collect_path_arguments 397 425
-    function local_search_query 427 453
-    function resolve_shell_command 455 461
-    function workspace_command 463 474
-    function remainder_argument 477 485
-    function path_argument 490 500
-    function name_lead_argument 505 520
-    function is_safe_path 524 531
-    function named_shell_command 547 587
-    function collect_command 591 604
-    function normalize_command_word 609 615
-    function is_prose_word 620 680
-    const PROSE_WORDS 621 675
-    function asks_for_directory_listing 686 747
-    function contains_any 749 751
+    function sentences_with_mood 268 299
+    function requesting_sentences 309 323
+    function carries_authoring_task 333 340
+    function strip_subject_lead 344 355
+    function is_fact_statement 366 394
+    function intent_shell_command 396 448
+    function path_arguments 450 466
+    function collect_path_arguments 468 496
+    function local_search_query 498 524
+    function resolve_shell_command 526 532
+    function workspace_command 534 545
+    function remainder_argument 548 556
+    function path_argument 561 571
+    function name_lead_argument 576 591
+    function is_safe_path 595 602
+    function named_shell_command 618 658
+    function collect_command 662 675
+    function normalize_command_word 680 686
+    function is_prose_word 691 751
+    const PROSE_WORDS 692 746
+    function asks_for_directory_listing 757 818
+    function contains_any 820 822
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 21740
-    named_node_count 4490
+    total_link_count 23026
+    named_node_count 4762
     distinct_node_kinds 73
     node_kinds
       abstract_type 2
-      arguments 424
+      arguments 443
       array_expression 7
-      array_type 7
-      assignment_expression 3
-      binary_expression 107
-      block 82
-      boolean_literal 3
+      array_type 6
+      assignment_expression 2
+      binary_expression 106
+      block 89
+      boolean_literal 4
       break_expression 3
-      call_expression 424
-      char_literal 76
-      closure_expression 115
-      closure_parameters 115
+      call_expression 443
+      char_literal 86
+      closure_expression 112
+      closure_parameters 112
       compound_assignment_expr 1
-      const_item 3
-      continue_expression 2
-      crate 3
-      doc_comment 102
-      else_clause 2
-      expression_statement 44
-      field_expression 386
-      field_identifier 386
-      for_expression 4
+      const_item 2
+      continue_expression 4
+      crate 4
+      doc_comment 122
+      else_clause 1
+      expression_statement 56
+      field_expression 403
+      field_identifier 403
+      for_expression 5
       function_item 34
       generic_function 4
-      generic_type 27
-      identifier 896
-      if_expression 19
-      index_expression 9
+      generic_type 31
+      identifier 941
+      if_expression 24
+      index_expression 8
       inner_doc_comment_marker 9
       integer_literal 20
       let_condition 5
-      let_declaration 79
-      lifetime 3
-      lifetime_parameter 1
-      line_comment 113
-      macro_invocation 15
+      let_declaration 84
+      lifetime 9
+      lifetime_parameter 3
+      line_comment 139
+      macro_invocation 18
       match_arm 11
       match_block 2
       match_expression 2
       match_pattern 11
       mutable_specifier 6
-      outer_doc_comment_marker 93
-      parameter 77
+      outer_doc_comment_marker 113
+      parameter 76
       parameters 34
       parenthesized_expression 11
-      primitive_type 86
-      range_expression 13
+      primitive_type 88
+      range_expression 11
       reference_expression 39
-      reference_type 71
-      return_expression 9
-      scoped_identifier 36
-      scoped_use_list 1
+      reference_type 77
+      return_expression 13
+      scoped_identifier 43
+      scoped_type_identifier 3
+      scoped_use_list 2
       self 1
       source_file 1
       string_content 113
       string_literal 114
       super 2
-      token_tree 17
+      token_tree 20
       try_expression 10
-      tuple_expression 8
+      tuple_expression 11
       tuple_pattern 18
-      tuple_struct_pattern 5
-      tuple_type 1
-      type_arguments 31
+      tuple_struct_pattern 8
+      tuple_type 3
+      type_arguments 35
       type_binding 2
-      type_identifier 67
-      type_parameters 1
+      type_identifier 71
+      type_parameters 3
       unary_expression 56
-      use_declaration 1
-      use_list 1
+      use_declaration 2
+      use_list 2
       visibility_modifier 3
-      while_expression 1

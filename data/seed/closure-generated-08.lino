@@ -1,34 +1,4 @@
 meanings
-  response_task_decomposition_lead_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition lead zh"
-  response_task_first_step_lead_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task first step lead en"
-  response_task_first_step_lead_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task first step lead hi"
-  response_task_first_step_lead_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task first step lead ru"
-  response_task_first_step_lead_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task first step lead zh"
-  response_task_plan_stage_implementation_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task plan stage implementation en"
   response_task_plan_stage_implementation_hi
     defined-by response_template
     lexeme en
@@ -1394,3 +1364,33 @@ meanings
     lexeme en
       surface
         text "response thinking step impulse plain en"
+  response_thinking_step_impulse_plain_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step impulse plain es"
+  response_thinking_step_impulse_plain_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step impulse plain hi"
+  response_thinking_step_impulse_plain_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step impulse plain ru"
+  response_thinking_step_impulse_plain_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step impulse plain zh"
+  response_thinking_step_impulse_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step impulse ru"
+  response_thinking_step_impulse_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step impulse zh"

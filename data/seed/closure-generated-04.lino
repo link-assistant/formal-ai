@@ -1,9 +1,4 @@
 meanings
-  pattern_test_status_phrase_main_yahan_hun_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase main yahan hun hi"
   pattern_test_status_phrase_ni_zai_ma_zh
     defined-by prompt_pattern
     lexeme en
@@ -1394,3 +1389,8 @@ meanings
     lexeme en
       surface
         text "response clarification hi"
+  response_clarification_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response clarification ru"

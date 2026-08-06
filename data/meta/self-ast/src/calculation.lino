@@ -2,9 +2,9 @@ self_ast_census
   target src/calculation.rs
   language rust
   fidelity signature
-  byte_len 32008
-  line_count 914
-  content_id source_module_805047ac48b4f4de
+  byte_len 32421
+  line_count 919
+  content_id source_module_a33aeafa435b4f33
   symbol_count 51
   symbols
     enum CalculationEngine 15 19
@@ -41,20 +41,20 @@ self_ast_census
     function evaluate_linear_equation 375 401
     function contains_word_operator 403 420
     function evaluate_calculation 425 441
-    function trim_prompt_punctuation 443 452
-    function strip_prefix_case_insensitive 454 459
-    function strip_suffix_case_insensitive 461 466
-    function leading_word_spans 468 487
-    function fuzzy_prefix_match 489 520
-    function strip_fuzzy_prefix_case_insensitive 522 539
-    function interpretation_statements 542 553
-    function calculation_wrapper_suffixes 568 587
-    function calculation_request_prefixes 589 610
-    function strip_calculation_wrappers_with_prefixes 612 662
-    function has_prefix_boundary 664 671
-    function embedded_calculation_request_slices 673 698
-    function calculator_domain_signals 724 747
-    function has_calculation_signal 749 784
-    function contains_spelled_arithmetic 786 800
-    function push_calculation_candidate 802 823
-    function calculation_expression_candidates 829 914
+    function trim_prompt_punctuation 443 457
+    function strip_prefix_case_insensitive 459 464
+    function strip_suffix_case_insensitive 466 471
+    function leading_word_spans 473 492
+    function fuzzy_prefix_match 494 525
+    function strip_fuzzy_prefix_case_insensitive 527 544
+    function interpretation_statements 547 558
+    function calculation_wrapper_suffixes 573 592
+    function calculation_request_prefixes 594 615
+    function strip_calculation_wrappers_with_prefixes 617 667
+    function has_prefix_boundary 669 676
+    function embedded_calculation_request_slices 678 703
+    function calculator_domain_signals 729 752
+    function has_calculation_signal 754 789
+    function contains_spelled_arithmetic 791 805
+    function push_calculation_candidate 807 828
+    function calculation_expression_candidates 834 919

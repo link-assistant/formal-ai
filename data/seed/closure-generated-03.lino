@@ -1,9 +1,4 @@
 meanings
-  local_search_found_file
-    defined-by intent
-    lexeme en
-      surface
-        text "local search found file"
   local_search_found_path
     defined-by intent
     lexeme en
@@ -1394,3 +1389,8 @@ meanings
     lexeme en
       surface
         text "pattern test status phrase kya aap vahan hain hi"
+  pattern_test_status_phrase_main_yahan_hun_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase main yahan hun hi"

@@ -15,10 +15,8 @@ use super::formalize::{
     coverage_line, formalize_text_to_links, FormalizedKnowledgeBase, CANONICAL_FISHERMAN_SYNOPSIS,
     FISHERMAN_DOC_ID,
 };
-use super::general_planner::{
-    compose_general_change_plan, has_authoritative_literal_write, GeneralChangePlan,
-    GeneralPlanMode, PLAN_PATH,
-};
+use super::general_execution::plan_general_change_step;
+use super::general_planner::{compose_general_change_plan, has_authoritative_literal_write};
 use super::google_trends_catalog;
 use super::google_trends_learning;
 use super::intent_router;
@@ -414,69 +412,6 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     }
     compose_general_change_plan(&task)
         .map(|plan| plan_general_change_step(messages, tool_names, &plan))
-}
-
-fn plan_general_change_step(
-    messages: &[ChatMessage],
-    tool_names: &[&str],
-    plan: &GeneralChangePlan,
-) -> AgenticPlan {
-    let progress = Progress::scan(messages);
-    let writes = progress.count(Capability::Write);
-    if let Some(tool) = tool_for(tool_names, Capability::Write) {
-        if writes == 0 {
-            return plan_one(tool, write_arguments(PLAN_PATH, &plan.links_notation()));
-        }
-        if writes == 1 && plan.mode == GeneralPlanMode::LiteralFile {
-            return plan_one(tool, write_arguments(&plan.target, &plan.content));
-        }
-    }
-    if let Some(tool) = tool_for(tool_names, Capability::Run) {
-        let runs = progress.count(Capability::Run);
-        match plan.mode {
-            GeneralPlanMode::CommandOutput => {
-                if let Some(generation) = plan.steps.get(1).and_then(|step| step.command.as_deref())
-                {
-                    if runs == 0 {
-                        return plan_one(tool, json!({ "command": generation }).to_string());
-                    }
-                    if runs == 1 {
-                        return plan_one(
-                            tool,
-                            json!({ "command": plan.verification_command }).to_string(),
-                        );
-                    }
-                }
-            }
-            GeneralPlanMode::LiteralFile if runs == 0 => {
-                return plan_one(
-                    tool,
-                    json!({ "command": plan.verification_command }).to_string(),
-                );
-            }
-            // A repository work item names no verification command: the only
-            // file this run writes is the plan record, and reading it back
-            // would verify nothing but the write itself (issue #904).
-            GeneralPlanMode::LiteralFile | GeneralPlanMode::RepositoryWorkItem => {}
-        }
-    }
-    if plan.mode == GeneralPlanMode::RepositoryWorkItem {
-        return AgenticPlan::Final(plan.planned_not_executed_answer());
-    }
-    if let Some(failure) = tool_result::failed_verification(
-        &progress.run_outputs,
-        &plan.verification_command,
-        latest_user_text(messages).as_deref().unwrap_or_default(),
-    ) {
-        return AgenticPlan::Final(failure);
-    }
-    AgenticPlan::Final(format!(
-        "Completed the general change request for {} and verified it with `{}`.\n\nPlan event ({}):\n\n{}",
-        plan.target,
-        plan.verification_command,
-        PLAN_PATH,
-        plan.links_notation().trim_end(),
-    ))
 }
 
 /// Run a shell command through the client-owned tool loop, then present its result.
