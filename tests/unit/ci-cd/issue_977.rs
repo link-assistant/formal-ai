@@ -283,14 +283,25 @@ fn gate_script_behaves_correctly_for_every_conclusion() {
     let root = env!("CARGO_MANIFEST_DIR");
 
     // jq is preinstalled on GitHub-hosted runners; the script relies on it.
-    assert!(
-        std::process::Command::new("jq")
-            .arg("--version")
-            .output()
-            .is_ok_and(|out| out.status.success()),
-        "jq is required by scripts/check-pipeline-status.sh; install it to run \
-         this test locally (it is preinstalled on GitHub-hosted runners)"
-    );
+    // Off CI a missing `jq` means "this machine cannot run the case", not "the
+    // gate is broken" -- but on CI its absence must be loud, or this test would
+    // silently stop checking anything.
+    let has_jq = std::process::Command::new("jq")
+        .arg("--version")
+        .output()
+        .is_ok_and(|out| out.status.success());
+    if !has_jq {
+        assert!(
+            std::env::var_os("CI").is_none(),
+            "jq is required by scripts/check-pipeline-status.sh and must be \
+             present on CI"
+        );
+        eprintln!(
+            "skipping: jq is not installed; install it to run this test locally \
+             (it is preinstalled on GitHub-hosted runners)"
+        );
+        return;
+    }
 
     let all_ok = r#"{"lint":{"result":"success"},"test":{"result":"skipped"}}"#;
     let timed_out = r#"{"lint":{"result":"success"},"auto-release":{"result":"cancelled"}}"#;
