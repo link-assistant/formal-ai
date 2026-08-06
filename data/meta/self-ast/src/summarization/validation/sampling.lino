@@ -1,0 +1,21 @@
+self_ast_census
+  target src/summarization/validation/sampling.rs
+  language rust
+  fidelity signature
+  byte_len 6125
+  line_count 169
+  content_id source_module_4d2cd15f856754b1
+  symbol_count 12
+  symbols
+    struct SamplingProtocol 15 22
+    function default 25 34
+    function with_seed 40 43
+    function with_max_iterations 47 50
+    function sampling_order 59 70
+    function stratified_sampling_order 90 107
+    function iteration_paths 112 124
+    function available_iterations 128 138
+    struct Prng 143 145
+    function seeded 148 152
+    function next_u64 154 160
+    function below 162 168

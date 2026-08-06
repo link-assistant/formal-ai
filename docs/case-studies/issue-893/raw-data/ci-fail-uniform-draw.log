@@ -1,0 +1,80 @@
+# github.com/link-assistant/formal-ai/actions/runs/30969709384 (commit ca1412d0)
+# The uniform draw exhausted all 24 iterations at ~100% without ever reaching
+# a fenced Markdown file, so the run could not be certified. Fixed by the
+# stratified draw; see the case study.
+seed 563 — 24 iteration(s), 393 of 394 criteria passed (99%)
+reached the iteration bound without stabilizing; 0 Markdown embedded grammar block(s) across 0 file(s)
+  iteration 0: 100%
+    tests/unit/proof_request.rs [rust] 100% (9/9)
+    tests/integration/http_server.rs [rust] 100% (9/9)
+  iteration 1: 100%
+    data/cache/wiktionary/en/five.json [json] 100% (9/9)
+    tests/unit/issue_848_workspace_change_learning.rs [rust] 100% (9/9)
+  iteration 2: 100%
+    tests/e2e/playwright.pages.config.js [javascript] 100% (9/9)
+    data/view/en/gb.lino [links_notation] 100% (8/8)
+  iteration 3: 100%
+    docs/case-studies/issue-656/README.md [markdown] 100% (8/8)
+    dev/log/issues/655/pulls/679/sessions/b6bada22-c936-467f-9a7d-521dce3f4f2f/claude-b6bada22-c936-467f-9a7d-521dce3f4f2f.jsonl [text] 100% (8/8)
+  iteration 4: 100%
+    docs/case-studies/issue-112/raw-data/issue-112-comments.json [json] 100% (8/8)
+    docs/case-studies/issue-526/raw-data/pr-635-reviews.json [json] 100% (8/8)
+  iteration 5: 100%
+    data/meta/self-ast/src/thinking.lino [links_notation] 100% (8/8)
+    docs/case-studies/issue-819/raw-data/github/issue-timeline.json [json] 100% (9/9)
+  iteration 6: 100%
+    docs/case-studies/issue-822/recursive-self-coding/session.json [json] 100% (9/9)
+    docs/case-studies/issue-552/raw-data/meta-language-repo.json [json] 100% (8/8)
+  iteration 7: 100%
+    data/view/en/in.lino [links_notation] 100% (8/8)
+    desktop/lib/shared-memory.cjs [javascript] 100% (9/9)
+  iteration 8: 100%
+    data/cache/wikidata/entity/Q98815142.json [json] 100% (9/9)
+    docs/case-studies/issue-885/agent-cli-evidence/statement-audit/formal-ai.log [text] 100% (8/8)
+  iteration 9: 100%
+    docs/case-studies/issue-210/raw-data/repro-before-good-apple.txt [text] 100% (7/7)
+    src/seed/model_aliases.rs [rust] 100% (9/9)
+  iteration 10: 100%
+    docs/case-studies/issue-842/self-hosting-census/workspace-census/src/external_benchmarks/learning.lino [links_notation] 100% (7/7)
+    docs/case-studies/issue-957/raw-data/req-chunk-001-155.md [markdown] 100% (8/8)
+  iteration 11: 100%
+    dev/log/issues/781/pulls/803/github/related-issue-800.json.stderr [text] 100% (7/7)
+    docs/case-studies/issue-846/raw-data/ci-logs/run-30118611467.log [text] 100% (8/8)
+  iteration 12: 100%
+    docs/case-studies/issue-242/raw-data/e2e-issue242-after.log [text] 100% (8/8)
+    dev/log/issues/781/pulls/803/real-cli/codex-mcp/client-after-namespace-fix.log [text] 100% (8/8)
+  iteration 13: 100%
+    data/cache/wikidata/entity/Q956.lino [links_notation] 100% (8/8)
+    desktop/scripts/smoke.mjs [javascript] 100% (9/9)
+  iteration 14: 93%
+    data/cache/wordnet/en/website.lino [links_notation] 100% (8/8)
+    experiments/agentic_cli_matrix/recorded/codex/summarize.jsonl [text] 87% (7/8)
+      failed compression: summary_bytes=851 file_bytes=820
+  iteration 15: 100%
+    docs/case-studies/issue-12/raw-data/pr-13-review-comments.json [json] 100% (8/8)
+    data/meta/self-ast/src/external_benchmarks/cases.lino [links_notation] 100% (8/8)
+  iteration 16: 100%
+    dev/log/issues/781/pulls/803/real-cli/codex-mcp/server-after-readonly-annotations.log [text] 100% (8/8)
+    experiments/agent_cli_e2e/issue_819_tui/tui-fixture.mjs [javascript] 100% (9/9)
+  iteration 17: 100%
+    tests/unit/specification/dreaming_meta_algorithm.rs [rust] 100% (9/9)
+    docs/case-studies/issue-890/agent-cli-evidence/agent-stream.jsonl [text] 100% (8/8)
+  iteration 18: 100%
+    data/view/en/artist.lino [links_notation] 100% (8/8)
+    docs/case-studies/issue-842/self-hosting-census/workspace-census/src/links_substitution_query/text.lino [links_notation] 100% (8/8)
+  iteration 19: 100%
+    data/cache/wordnet/en/display.lino [links_notation] 100% (8/8)
+    docs/case-studies/issue-839/self-hosting-evidence/self-ast-census.summary.log [text] 100% (7/7)
+  iteration 20: 100%
+    docs/case-studies/issue-195/raw-data/after-docs-issue-195.txt [text] 100% (8/8)
+    src/links_substitution_query/text.rs [rust] 100% (9/9)
+  iteration 21: 100%
+    docs/case-studies/issue-711/raw-data/diff-formal-ai-csharp-github.txt [text] 100% (7/7)
+    tests/source/source_tests/translation/cache/tests.rs [rust] 100% (9/9)
+  iteration 22: 100%
+    docs/case-studies/issue-839/self-hosting-evidence/agent-stream-self-ast.jsonl [text] 100% (8/8)
+    docs/case-studies/issue-914/solution-plan.md [markdown] 100% (8/8)
+  iteration 23: 100%
+    dev/log/issues/702/pulls/818/agent-cli/formal-ai.log [text] 100% (8/8)
+    docs/case-studies/issue-756/red-test-agent-run-3/agent-stream.raw.log [text] 100% (8/8)
+Error: "summarization quality ratchet violated:\nno Markdown embedded grammar block was exercised: the run never reached the recursive case the protocol exists to cover"

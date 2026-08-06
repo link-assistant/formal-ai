@@ -44,6 +44,8 @@ mod docs_requirements_issue_858;
 mod docs_requirements_issue_864;
 mod docs_requirements_issue_890;
 mod docs_requirements_issue_891;
+mod docs_requirements_issue_893;
+mod docs_requirements_issue_894;
 mod docs_requirements_issue_909;
 mod docs_requirements_issue_914;
 mod dreaming_runtime;

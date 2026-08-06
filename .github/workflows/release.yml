@@ -416,6 +416,14 @@ jobs:
       - name: Test release changelog collection
         run: rust-script --test scripts/version-and-commit.rs
 
+      # Issue #895: the ratchet is the thing that makes the coverage requirement
+      # enforceable, so its own threshold and baseline-update logic is tested
+      # here rather than trusted. The final case also validates the committed
+      # coverage/baseline.json, so a hand-edit that breaks the schema fails lint
+      # instead of silently disabling the gate two jobs later.
+      - name: Test coverage ratchet
+        run: rust-script --test scripts/check-coverage-ratchet.rs
+
       - name: Test fragment release map regeneration
         run: node --test experiments/issue_738_fragment_release_map.test.mjs
 
@@ -629,84 +637,6 @@ jobs:
 
       - name: Run doc tests
         run: cargo test --doc --verbose
-
-  # === CODE COVERAGE ===
-  # Generate and upload code coverage using cargo-llvm-cov
-  coverage:
-    name: Code Coverage
-    runs-on: ubuntu-latest
-    # Issue #812: the same margin problem as `test`, one run away from the same
-    # false failure. Measured on the last eight `main` runs: 11.2, 11.5, 11.4,
-    # 11.9, 12.6, 12.7, 13.5, 14.1 minutes -- the worst case used 94% of the old
-    # 15-minute cap. It instruments the same suite that takes ~11m unarmed.
-    timeout-minutes: 25
-    needs: [detect-changes]
-    if: |
-      !cancelled() && (
-        github.event_name == 'workflow_dispatch' ||
-        needs.detect-changes.outputs.rs-changed == 'true' ||
-        needs.detect-changes.outputs.toml-changed == 'true'
-      )
-    steps:
-      - uses: actions/checkout@v6
-
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          components: llvm-tools-preview
-
-      - uses: ./.github/actions/setup-sccache
-
-      - name: Cache cargo registry
-        uses: actions/cache@v5
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-          key: ${{ runner.os }}-cargo-coverage-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-coverage-
-
-      - name: Install cargo-llvm-cov
-        uses: taiki-e/install-action@cargo-llvm-cov
-
-      - name: Clean stale coverage artifacts
-        run: cargo llvm-cov clean --workspace
-
-      - name: Generate code coverage
-        run: cargo llvm-cov --all-features --lcov --output-path lcov.info
-
-      - name: Retain LCOV report
-        uses: actions/upload-artifact@v7
-        with:
-          name: rust-lcov
-          path: lcov.info
-          if-no-files-found: error
-
-      - name: Detect Codecov configuration
-        id: codecov-config
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        run: |
-          if [[ -n "$CODECOV_TOKEN" ]]; then
-            echo "configured=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "configured=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Upload coverage to Codecov when configured
-        if: steps.codecov-config.outputs.configured == 'true'
-        uses: codecov/codecov-action@v7
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: lcov.info
-          disable_search: true
-          plugins: noop
-          fail_ci_if_error: true
-
-      - name: Report optional Codecov integration status
-        if: steps.codecov-config.outputs.configured != 'true'
-        run: echo "::notice title=Codecov upload not configured::The LCOV report is retained as the rust-lcov workflow artifact; configure CODECOV_TOKEN to enable fail-closed remote upload."
 
   # === BUILD ===
   # Build package - only runs if lint and test pass

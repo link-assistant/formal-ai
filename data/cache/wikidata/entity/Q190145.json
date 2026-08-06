@@ -1,0 +1,97 @@
+{
+  "entities": {
+    "Q190145": {
+      "type": "item",
+      "id": "Q190145",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Spider-Man 2"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Человек-паук 2"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "स्पाइडर-मैन २"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "蜘蛛人2"
+        },
+        "es": {
+          "language": "es",
+          "value": "Spider-Man 2"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "2004 American film directed by Sam Raimi"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "американский супергеройский фильм 2004 года, режиссёр Сэм Рэйми"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "2004 सैम राइमी द्वारा निर्देशित सुपरहीरो फ़िल्म"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "山姆·萊米執導的2004年電影"
+        },
+        "es": {
+          "language": "es",
+          "value": "película de 2004 dirigida por Sam Raimi"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Человек-Паук-2"
+          },
+          {
+            "language": "ru",
+            "value": "Человек-Паук - 2"
+          },
+          {
+            "language": "ru",
+            "value": "Человек-паук — 2"
+          },
+          {
+            "language": "ru",
+            "value": "Человек-Паук — 2"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "स्पाइडर मैन २"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "Spider-Man 2"
+          },
+          {
+            "language": "zh",
+            "value": "蜘蛛俠 2"
+          },
+          {
+            "language": "zh",
+            "value": "蜘蛛俠2"
+          },
+          {
+            "language": "zh",
+            "value": "蜘蛛人 2"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}
