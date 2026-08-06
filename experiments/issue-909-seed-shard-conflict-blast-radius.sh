@@ -39,34 +39,52 @@ if ! git diff --quiet -- 'data/seed/closure-generated-*.lino'; then
 fi
 echo "   committed shards are byte-identical to a fresh run (idempotent)"
 
-echo
-echo "== introduce exactly one new unresolved token =="
-# A token that resolves to nothing, so close-total.py must define it.
-cat >"$PROBE_FILE" <<'LINO'
-meanings
-  shard_blast_radius_probe
-    defined-by intent
-LINO
-echo "   added intent 'shard_blast_radius_probe' via $PROBE_FILE"
-
-python3 scripts/close-total.py >/dev/null
-
-changed=$(git diff --name-only -- 'data/seed/closure-generated-*.lino' | wc -l | tr -d ' ')
 total=$(ls data/seed/closure-generated-*.lino | wc -l | tr -d ' ')
 
 echo
-echo "== result =="
-git diff --stat -- 'data/seed/closure-generated-*.lino' || true
+echo "== introduce one new unresolved token, at four points in the sort order =="
+echo "   (sequential fill cascades forward from the insertion point, so its blast"
+echo "    radius depends on where the token sorts; a digest's must not)"
 echo
-echo "   shards changed by one new token: $changed / $total"
+status=0
 
-if [ "$changed" -gt 1 ]; then
-  echo
-  echo "FAIL: one new token dirtied $changed shards. Sharding is size-dependent again;"
-  echo "      each shard must be selected by a digest of its own slug (shard_for())."
+for slug in aaa_shard_probe mmm_shard_probe sss_shard_probe zzz_shard_probe; do
+  # The probe must be a dangling *value* token, not a definition: close-total.py
+  # defines the unresolved values it finds, so a token that defines itself under
+  # `meanings` already resolves and would produce no work at all.
+  cat >"$PROBE_FILE" <<LINO
+meanings
+  shard_blast_radius_holder
+    defined-by intent
+    intent $slug
+LINO
+  python3 scripts/close-total.py >/dev/null
+  changed=$(git diff --name-only -- 'data/seed/closure-generated-*.lino' | wc -l | tr -d ' ')
+  printf '   %-18s -> %2d / %s shards dirtied\n' "$slug" "$changed" "$total"
+
+  if [ "$changed" -eq 0 ]; then
+    echo "   FAIL: the probe changed nothing, so this run proved nothing. The probe"
+    echo "         must reach close-total.py as an unresolved value (base_tokens())."
+    status=1
+  elif [ "$changed" -gt 1 ]; then
+    echo "   FAIL: one new token dirtied $changed shards. Sharding is size-dependent"
+    echo "         again; each block must be placed by a digest of its own slug."
+    status=1
+  fi
+  git checkout -- 'data/seed/closure-generated-*.lino'
+done
+
+rm -f "$PROBE_FILE"
+
+echo
+if [ "$status" -ne 0 ]; then
+  echo "FAIL: sharding is not content-addressed."
   exit 1
 fi
 
+echo "PASS: every new token is confined to exactly one shard, wherever it sorts."
 echo
-echo "PASS: a single new token is confined to a single shard."
-echo "      Under the previous sequential fill this was $total / $total."
+echo "   For comparison, the same four probes against the previous sequential fill"
+echo "   (measured on commit 198b11cd, 11 shards) dirtied 11, 9, 2 and 1 shards"
+echo "   respectively — a mid-alphabet token rewrote most of data/seed, which is"
+echo "   why nearly every pull request conflicted there."
