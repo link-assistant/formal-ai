@@ -2,89 +2,105 @@ self_ast_census
   target src/agentic_coding/progress.rs
   language rust
   fidelity full_ast
-  byte_len 5984
-  line_count 150
-  content_id source_module_c875bf0c4cba80c3
-  symbol_count 10
+  byte_len 10145
+  line_count 265
+  content_id source_module_9bdcc5fa2dc5c8c4
+  symbol_count 20
   symbols
-    struct Progress 13 26
-    function scan 29 88
-    function done 91 93
-    function count 95 100
-    function last 108 110
-    function fetch_result 112 114
-    function search_result 116 118
-    function result_capability 124 132
-    function result_tool_call 134 141
-    function fetch_call_url 143 150
+    struct ToolAttempt 14 19
+    struct Progress 22 40
+    function scan 43 123
+    function done 126 128
+    function count 130 135
+    function successful_count 138 143
+    function latest_successful_output 146 152
+    function attempted_write_for 154 162
+    function successful_write_for 164 173
+    function last 181 183
+    function latest_failure 187 189
+    function previous_attempt 191 193
+    function failed_write_count_for 197 209
+    function fetch_result 211 213
+    function search_result 215 217
+    function argument_path 220 226
+    function argument_targets 228 234
+    function result_capability 239 247
+    function result_tool_call 249 256
+    function fetch_call_url 258 265
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 4306
-    named_node_count 892
-    distinct_node_kinds 62
+    total_link_count 7360
+    named_node_count 1533
+    distinct_node_kinds 68
     node_kinds
-      arguments 69
+      arguments 122
+      array_expression 1
       array_type 3
       assignment_expression 4
-      binary_expression 6
-      block 22
-      call_expression 69
-      closure_expression 9
-      closure_parameters 9
+      attribute 1
+      attribute_item 1
+      binary_expression 21
+      block 36
+      call_expression 122
+      closure_expression 23
+      closure_parameters 23
       continue_expression 2
       crate 3
       declaration_list 1
-      doc_comment 22
-      expression_statement 23
-      field_declaration 8
-      field_declaration_list 1
-      field_expression 70
-      field_identifier 78
-      field_initializer_list 1
+      doc_comment 32
+      expression_statement 26
+      field_declaration 14
+      field_declaration_list 2
+      field_expression 132
+      field_identifier 148
+      field_initializer 2
+      field_initializer_list 2
       for_expression 1
-      function_item 9
-      generic_type 14
-      identifier 174
-      if_expression 11
+      function_item 18
+      generic_type 21
+      identifier 295
+      if_expression 12
       impl_item 1
       index_expression 3
       inner_doc_comment_marker 7
-      integer_literal 2
+      integer_literal 3
       let_condition 6
-      let_declaration 16
-      line_comment 23
-      mutable_specifier 8
-      outer_doc_comment_marker 15
-      parameter 8
-      parameters 9
-      primitive_type 6
+      let_declaration 22
+      line_comment 33
+      mutable_specifier 10
+      outer_doc_comment_marker 25
+      parameter 16
+      parameters 18
+      parenthesized_expression 1
+      primitive_type 19
       range_expression 1
-      reference_expression 8
-      reference_type 7
+      reference_expression 10
+      reference_type 16
       return_expression 1
-      scoped_identifier 20
-      scoped_type_identifier 3
+      scoped_identifier 38
+      scoped_type_identifier 4
       scoped_use_list 1
-      self 10
-      self_parameter 5
-      shorthand_field_initializer 8
+      self 24
+      self_parameter 12
+      shorthand_field_initializer 12
       source_file 1
-      string_content 3
-      string_literal 3
-      struct_expression 1
-      struct_item 1
-      super 17
-      try_expression 2
+      string_content 6
+      string_literal 6
+      struct_expression 2
+      struct_item 2
+      super 30
+      token_tree 1
+      try_expression 3
       tuple_expression 1
       tuple_pattern 1
       tuple_struct_pattern 7
       tuple_type 1
-      type_arguments 14
-      type_identifier 38
-      unary_expression 7
+      type_arguments 21
+      type_identifier 58
+      unary_expression 12
       use_declaration 2
       use_list 1
-      visibility_modifier 15
+      visibility_modifier 27

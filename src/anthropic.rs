@@ -230,7 +230,7 @@ fn append_anthropic_blocks(
     let is_assistant = role.eq_ignore_ascii_case("assistant");
     let mut text = String::new();
     let mut tool_calls = Vec::new();
-    let mut tool_results: Vec<(String, String)> = Vec::new();
+    let mut tool_results: Vec<(String, String, bool)> = Vec::new();
 
     for block in blocks {
         match block.get("type").and_then(Value::as_str) {
@@ -270,7 +270,11 @@ fn append_anthropic_blocks(
                 let content = block
                     .get("content")
                     .map_or_else(String::new, anthropic_content_to_text);
-                tool_results.push((id, content));
+                let is_error = block
+                    .get("is_error")
+                    .and_then(Value::as_bool)
+                    .unwrap_or(false);
+                tool_results.push((id, content, is_error));
             }
             _ => {}
         }
@@ -292,13 +296,14 @@ fn append_anthropic_blocks(
         if !text.trim().is_empty() {
             out.push(ChatMessage::new(role.to_owned(), text));
         }
-        for (id, content) in tool_results {
+        for (id, content, is_error) in tool_results {
             let name = tool_names_by_id.get(&id).cloned();
             out.push(ChatMessage {
                 role: String::from("tool"),
                 content: MessageContent::Text(content),
                 tool_call_id: Some(id),
                 name,
+                is_error,
                 ..ChatMessage::default()
             });
         }

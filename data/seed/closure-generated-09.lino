@@ -1,4 +1,94 @@
 meanings
+  response_thinking_step_invoke_tool_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step invoke tool en"
+  response_thinking_step_invoke_tool_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step invoke tool es"
+  response_thinking_step_invoke_tool_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step invoke tool hi"
+  response_thinking_step_invoke_tool_plain_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step invoke tool plain en"
+  response_thinking_step_invoke_tool_plain_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step invoke tool plain es"
+  response_thinking_step_invoke_tool_plain_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step invoke tool plain hi"
+  response_thinking_step_invoke_tool_plain_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step invoke tool plain ru"
+  response_thinking_step_invoke_tool_plain_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step invoke tool plain zh"
+  response_thinking_step_invoke_tool_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step invoke tool ru"
+  response_thinking_step_invoke_tool_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step invoke tool zh"
+  response_thinking_step_lookup_fact_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step lookup fact en"
+  response_thinking_step_lookup_fact_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step lookup fact es"
+  response_thinking_step_lookup_fact_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step lookup fact hi"
+  response_thinking_step_lookup_fact_plain_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step lookup fact plain en"
+  response_thinking_step_lookup_fact_plain_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step lookup fact plain es"
+  response_thinking_step_lookup_fact_plain_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step lookup fact plain hi"
+  response_thinking_step_lookup_fact_plain_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step lookup fact plain ru"
+  response_thinking_step_lookup_fact_plain_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step lookup fact plain zh"
   response_thinking_step_lookup_fact_ru
     defined-by response_template
     lexeme en
@@ -1304,93 +1394,3 @@ meanings
     lexeme en
       surface
         text "software project implementation"
-  software_project_plan
-    defined-by concept
-    lexeme en
-      surface
-        text "software project plan"
-  solution
-    defined-by word_surface
-    lexeme en
-      surface
-        text "solution"
-  sort_lines
-    defined-by operation
-    lexeme en
-      surface
-        text "sort lines"
-  sort_words
-    defined-by operation
-    lexeme en
-      surface
-        text "sort words"
-  spanish
-    defined-by word_surface
-    lexeme en
-      surface
-        text "spanish"
-  spider_man_title_role_films
-    defined-by release_timeline
-    lexeme en
-      surface
-        text "spider man title role films"
-  sqrt
-    defined-by word_surface
-    lexeme en
-      surface
-        text "sqrt"
-  ssh
-    defined-by token
-    lexeme en
-      surface
-        text "ssh"
-  stackexchange
-    defined-by source
-    lexeme en
-      surface
-        text "stackexchange"
-  standard
-    defined-by concept
-    lexeme en
-      surface
-        text "standard"
-  stat
-    defined-by concept
-    lexeme en
-      surface
-        text "stat"
-  statement
-    defined-by word_surface
-    lexeme en
-      surface
-        text "statement"
-  statement_audit_capture_field
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit capture field"
-  statement_audit_claim_predicate
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit claim predicate"
-  statement_audit_claim_subject
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit claim subject"
-  statement_audit_invalid_json
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit invalid json"
-  statement_audit_invalid_temperature
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit invalid temperature"
-  statement_audit_nonempty
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit nonempty"

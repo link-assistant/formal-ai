@@ -163,6 +163,7 @@ mod issue_889_thinking_seed;
 mod issue_890;
 mod issue_896_component_boundaries;
 mod issue_904;
+mod issue_905;
 mod issue_906_language_router;
 mod issue_908;
 mod issue_916;

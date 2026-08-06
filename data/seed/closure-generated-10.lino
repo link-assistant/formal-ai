@@ -1,4 +1,94 @@
 meanings
+  software_project_plan
+    defined-by concept
+    lexeme en
+      surface
+        text "software project plan"
+  solution
+    defined-by word_surface
+    lexeme en
+      surface
+        text "solution"
+  sort_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "sort lines"
+  sort_words
+    defined-by operation
+    lexeme en
+      surface
+        text "sort words"
+  spanish
+    defined-by word_surface
+    lexeme en
+      surface
+        text "spanish"
+  spider_man_title_role_films
+    defined-by release_timeline
+    lexeme en
+      surface
+        text "spider man title role films"
+  sqrt
+    defined-by word_surface
+    lexeme en
+      surface
+        text "sqrt"
+  ssh
+    defined-by token
+    lexeme en
+      surface
+        text "ssh"
+  stackexchange
+    defined-by source
+    lexeme en
+      surface
+        text "stackexchange"
+  standard
+    defined-by concept
+    lexeme en
+      surface
+        text "standard"
+  stat
+    defined-by concept
+    lexeme en
+      surface
+        text "stat"
+  statement
+    defined-by word_surface
+    lexeme en
+      surface
+        text "statement"
+  statement_audit_capture_field
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit capture field"
+  statement_audit_claim_predicate
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit claim predicate"
+  statement_audit_claim_subject
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit claim subject"
+  statement_audit_invalid_json
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit invalid json"
+  statement_audit_invalid_temperature
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit invalid temperature"
+  statement_audit_nonempty
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit nonempty"
   statement_audit_selector_exclusive
     defined-by intent
     lexeme en
@@ -1304,93 +1394,3 @@ meanings
     lexeme en
       surface
         text "whoami"
-  wikibooks
-    defined-by source
-    lexeme en
-      surface
-        text "wikibooks"
-  wikidata
-    defined-by source_kind
-    lexeme en
-      surface
-        text "wikidata"
-  wikifunctions
-    defined-by source
-    lexeme en
-      surface
-        text "wikifunctions"
-  wikihow
-    defined-by source
-    lexeme en
-      surface
-        text "wikihow"
-  wikinews
-    defined-by source
-    lexeme en
-      surface
-        text "wikinews"
-  wikipedia
-    defined-by source_kind
-    lexeme en
-      surface
-        text "wikipedia"
-  wikipedia_article_question
-    defined-by intent
-    lexeme en
-      surface
-        text "wikipedia article question"
-  wikipedia_fallback_language
-    defined-by field
-    lexeme en
-      surface
-        text "wikipedia fallback language"
-  wikipedia_lookup
-    defined-by name
-    lexeme en
-      surface
-        text "wikipedia lookup"
-  wikipedia_summary_endpoint_template
-    defined-by field
-    lexeme en
-      surface
-        text "wikipedia summary endpoint template"
-  wikiversity
-    defined-by source
-    lexeme en
-      surface
-        text "wikiversity"
-  wikivoyage
-    defined-by source
-    lexeme en
-      surface
-        text "wikivoyage"
-  wiktionary
-    defined-by source_kind
-    lexeme en
-      surface
-        text "wiktionary"
-  will
-    defined-by concept
-    lexeme en
-      surface
-        text "will"
-  wordnet
-    defined-by source
-    lexeme en
-      surface
-        text "wordnet"
-  words
-    defined-by concept
-    lexeme en
-      surface
-        text "words"
-  world_state_reached
-    defined-by intent
-    lexeme en
-      surface
-        text "world state reached"
-  world_state_remaining
-    defined-by intent
-    lexeme en
-      surface
-        text "world state remaining"
