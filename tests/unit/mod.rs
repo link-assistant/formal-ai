@@ -165,6 +165,7 @@ mod issue_904;
 mod issue_906_language_router;
 mod issue_908;
 mod issue_916;
+mod issue_962_word_operator_parity;
 mod local_surface;
 mod memory_learning;
 mod memory_maintenance;

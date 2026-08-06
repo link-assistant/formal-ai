@@ -330,6 +330,44 @@ fn arithmetic_russian_word_variations_match() {
     assert_calculation(&cases);
 }
 
+// Issue #962: Hindi and Chinese infix operator words fell to the unknown
+// handler while their English/Russian counterparts answered, because the
+// `arithmetic_operation` meanings only carried the standalone/compound
+// surfaces ("जोड़", "加上") and not the bare infix forms speakers actually
+// type ("जमा", "加"). The doctrine is that every operation is recognised
+// equally across en | ru | hi | zh, so these two blocks mirror the English
+// and Russian ones operator for operator.
+#[test]
+fn arithmetic_hindi_word_variations_match() {
+    let cases = [
+        ("दो जोड़ दो", "4"),
+        ("दो जमा दो", "4"),
+        ("सात घटा चार", "3"),
+        ("छह गुणा सात", "42"),
+        ("दस भाग दो", "5"),
+        ("दस बटा दो", "5"),
+        ("आठ मॉड्यूलो तीन", "2"),
+        ("एक जोड़ दो जोड़ तीन", "6"),
+    ];
+    assert_calculation(&cases);
+}
+
+#[test]
+fn arithmetic_chinese_word_variations_match() {
+    let cases = [
+        ("二 加上 二", "4"),
+        ("二 加 二", "4"),
+        ("七 减去 四", "3"),
+        ("七 减 四", "3"),
+        ("六 乘以 七", "42"),
+        ("六 乘 七", "42"),
+        ("十 除以 二", "5"),
+        ("十 除 二", "5"),
+        ("八 取模 三", "2"),
+    ];
+    assert_calculation(&cases);
+}
+
 #[test]
 fn arithmetic_symbolic_variations_match() {
     let cases = [

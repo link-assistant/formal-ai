@@ -194,9 +194,13 @@ meanings
     lexeme hi
       surface
         text जोड़
+      surface
+        text जमा
     lexeme zh
       surface
         text 加上
+      surface
+        text 加
   subtraction
     grounded-in Q40754
     defined-by arithmetic_operation
@@ -215,6 +219,8 @@ meanings
     lexeme zh
       surface
         text 减去
+      surface
+        text 减
   multiplication
     grounded-in Q40276
     defined-by arithmetic_operation
@@ -239,6 +245,8 @@ meanings
     lexeme zh
       surface
         text 乘以
+      surface
+        text 乘
   division
     grounded-in Q1226939
     defined-by arithmetic_operation
@@ -256,9 +264,13 @@ meanings
     lexeme hi
       surface
         text भाग
+      surface
+        text बटा
     lexeme zh
       surface
         text 除以
+      surface
+        text 除
   modulo
     grounded-in Q1799665
     defined-by arithmetic_operation
@@ -422,6 +434,10 @@ meanings
     lexeme hi
       surface
         text "कितना है"
+      surface
+        text "कितना होता है"
+      surface
+        text "कितने होते हैं"
       surface
         text "क्या है"
       surface
