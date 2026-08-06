@@ -71,6 +71,53 @@ fn pages_deploy_uses_github_pages_workflow_artifact() {
     assert!(!deploy_demo.contains("publish_branch: gh-pages"));
 }
 
+/// PR #965 review: "All CI/CD warnings, and errors must be also fixed.
+/// Including all false positives and false negatives."
+///
+/// `actions/deploy-pages` defaults to a 600 000 ms wait. On `main` run
+/// 31090830031 the artifact uploaded successfully (15.7 MB, id 8966823763) and
+/// the action then reported `Current status: deployment_queued` for that entire
+/// default before `Timeout reached, aborting!` — a red pipeline caused by
+/// GitHub's Pages deployment queue rather than by anything in the commit. The
+/// next push deployed green with no code change, which is the signature of a
+/// false positive. Pin an explicit, longer wait so a backlog is outlasted, and
+/// keep the job's own budget above it so the raise is not silently undone by a
+/// `timeout-minutes` kill.
+#[test]
+fn pages_deploy_outwaits_a_backlogged_pages_deployment_queue() {
+    const DEPLOY_ACTION_DEFAULT_MS: u64 = 600_000;
+
+    let workflow = release_workflow();
+    let deploy_demo = job_block(&workflow, "deploy-pages");
+
+    let timeout_ms = deploy_demo
+        .split("actions/deploy-pages@v5")
+        .nth(1)
+        .and_then(|after| after.split_once("timeout: "))
+        .and_then(|(_, rest)| rest.split_whitespace().next())
+        .and_then(|value| value.parse::<u64>().ok())
+        .expect("the deploy-pages step should pin an explicit `timeout:` in milliseconds");
+
+    assert!(
+        timeout_ms > DEPLOY_ACTION_DEFAULT_MS,
+        "deploy-pages should wait longer than the action's {DEPLOY_ACTION_DEFAULT_MS} ms default, \
+         got {timeout_ms} ms"
+    );
+
+    let job_budget_ms = job_block(&workflow, "deploy-pages")
+        .split_once("timeout-minutes: ")
+        .and_then(|(_, rest)| rest.split_whitespace().next())
+        .and_then(|value| value.parse::<u64>().ok())
+        .map(|minutes| minutes * 60_000)
+        .expect("deploy-pages should declare timeout-minutes");
+
+    assert!(
+        job_budget_ms > timeout_ms,
+        "the deploy-pages job budget ({job_budget_ms} ms) must exceed the deployment wait \
+         ({timeout_ms} ms), or `timeout-minutes` kills the job before the wait can help"
+    );
+}
+
 #[test]
 fn pages_e2e_uses_deployment_output_url() {
     let workflow = release_workflow();
@@ -559,7 +606,11 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         ("test-agent-cli-e2e", 20),
         // deploy-pages also runs `cargo doc` for the /docs/api reference (issue
         // #479), which compiles the dependency tree on a cold cargo cache.
-        ("deploy-pages", 20),
+        // Raised from 20 (PR #965 review): the budget also has to cover the
+        // GitHub Pages deployment queue, which is not part of the build and can
+        // stall for many minutes — see
+        // `pages_deploy_outwaits_a_backlogged_pages_deployment_queue`.
+        ("deploy-pages", 35),
         ("test-e2e-pages", 15),
         // Issue #977: the terminal gate that turns a silently-`cancelled` run
         // (the shape a `timeout-minutes` kill takes) into a red failure.

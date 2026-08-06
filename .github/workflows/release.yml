@@ -1747,9 +1747,12 @@ jobs:
         (github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant' && needs.manual-release.result == 'success')
       )
     runs-on: ubuntu-latest
-    # 20 min (was 15): this job now also runs `cargo doc` for the /docs/api
-    # reference, which compiles the dependency tree on a cold cargo cache.
-    timeout-minutes: 20
+    # 35 min (was 20): 20 covered `cargo doc` for the /docs/api reference on a
+    # cold cargo cache, but left no room for the Pages deployment queue itself.
+    # Run 31090830031 built and uploaded the artifact fine and then spent the
+    # whole `deploy-pages` wait in `deployment_queued` before aborting, so the
+    # budget has to cover both the build and a backlogged deployment.
+    timeout-minutes: 35
     permissions:
       contents: read
       pages: write
@@ -1862,6 +1865,17 @@ jobs:
       - name: Deploy Pages artifact
         id: deployment
         uses: actions/deploy-pages@v5
+        with:
+          # 20 min, up from the action's 10-minute default. The default turned a
+          # GitHub Pages *queue* backlog into a red pipeline on `main`: in run
+          # 31090830031 the artifact uploaded successfully (15.7 MB, id
+          # 8966823763) and the action then polled `Current status:
+          # deployment_queued` for the full 600 000 ms before `Timeout reached,
+          # aborting!`. Nothing about the build was wrong — the next push
+          # deployed green with no code change — so the failure carried no
+          # signal about the commit. Waiting longer costs idle minutes only when
+          # Pages is already backlogged.
+          timeout: 1200000
         env:
           # deploy-pages v5 still imports core punycode. Keep every other Node
           # warning visible while upstream issue #434 removes this dependency.
