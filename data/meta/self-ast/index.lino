@@ -6,7 +6,7 @@ self_ast_census_index
   full_ast_module_count 56
   signature_module_count 385
   symbol_count 8945
-  content_id self_ast_census_index_94f44a2b915d55c5
+  content_id self_ast_census_index_1738649186b51330
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/algorithm_learning.rs full_ast 13 source_module_0cde1901a8a78574
@@ -70,12 +70,12 @@ self_ast_census_index
     src/algorithm_discovery/execution.rs signature 17 source_module_22f5b6caa8c31be8
     src/anthropic.rs signature 22 source_module_0e648f14bc04ae8d
     src/arithmetic.rs signature 50 source_module_0c0cbf53baa417f0
-    src/arithmetic_word_tables.rs signature 2 source_module_05d1534ee9527818
+    src/arithmetic_word_tables.rs signature 2 source_module_86358ac7e9fc3fcc
     src/associative_package.rs signature 39 source_module_1f340d7636cff958
     src/associative_persistence.rs signature 38 source_module_f3088323046aedae
     src/attachment_context.rs signature 11 source_module_b623663841aa0b5c
     src/bin/with-formal-ai.rs signature 2 source_module_b8dfc10314e0abbb
-    src/calculation.rs signature 51 source_module_805047ac48b4f4de
+    src/calculation.rs signature 51 source_module_a33aeafa435b4f33
     src/calculation_time.rs signature 4 source_module_d1f1e0b165700b3f
     src/calculation_word_problem.rs signature 24 source_module_9a1e1bed263ecfe9
     src/change_request.rs signature 20 source_module_bcf2749e602b677a
