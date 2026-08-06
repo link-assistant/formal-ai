@@ -201,6 +201,9 @@ meanings
         text 加上
       surface
         text 加
+    lexeme es
+      surface
+        text "más"
   subtraction
     grounded-in Q40754
     defined-by arithmetic_operation
@@ -221,6 +224,9 @@ meanings
         text 减去
       surface
         text 减
+    lexeme es
+      surface
+        text "menos"
   multiplication
     grounded-in Q40276
     defined-by arithmetic_operation
@@ -247,6 +253,11 @@ meanings
         text 乘以
       surface
         text 乘
+    lexeme es
+      surface
+        text "por"
+      surface
+        text "multiplicado por"
   division
     grounded-in Q1226939
     defined-by arithmetic_operation
@@ -271,6 +282,11 @@ meanings
         text 除以
       surface
         text 除
+    lexeme es
+      surface
+        text "dividido por"
+      surface
+        text "entre"
   modulo
     grounded-in Q1799665
     defined-by arithmetic_operation
@@ -291,6 +307,9 @@ meanings
     lexeme zh
       surface
         text 取模
+    lexeme es
+      surface
+        text "módulo"
   calculation_request
     defined-by action
     defined-by inquiry
@@ -442,6 +461,13 @@ meanings
         text "क्या है"
       surface
         text "की गणना करें"
+    lexeme es
+      surface
+        text "cuánto es"
+      surface
+        text "cuánto da"
+      surface
+        text "cuántos son"
   time_duration
     defined-by time
     defined-by inquiry

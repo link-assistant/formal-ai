@@ -12,14 +12,19 @@
 // expression is split on whitespace. Sorted by surface for a stable diff.
 pub(crate) static WORD_VALUE_TOKENS: &[(&str, &str)] = &[
     ("eight", "8"),
+    ("entre", "/"),
     ("five", "5"),
     ("four", "4"),
+    ("menos", "-"),
     ("minus", "-"),
     ("mod", "%"),
     ("modulo", "%"),
+    ("más", "+"),
+    ("módulo", "%"),
     ("nine", "9"),
     ("one", "1"),
     ("plus", "+"),
+    ("por", "*"),
     ("seven", "7"),
     ("six", "6"),
     ("ten", "10"),
@@ -90,7 +95,9 @@ pub(crate) static WORD_VALUE_TOKENS: &[(&str, &str)] = &[
 // before tokenization. Longest first so a phrase is rewritten before any
 // shorter phrase it contains ("разделить на" before "делить на").
 pub(crate) static WORD_VALUE_PHRASES: &[(&str, &str)] = &[
+    ("multiplicado por", "*"),
     ("multiplied by", "*"),
+    ("dividido por", "/"),
     ("разделить на", "/"),
     ("умножить на", "*"),
     ("divided by", "/"),

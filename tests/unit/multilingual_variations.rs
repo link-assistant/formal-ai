@@ -368,6 +368,24 @@ fn arithmetic_chinese_word_variations_match() {
     assert_calculation(&cases);
 }
 
+/// Spanish uses digits here, not spelled numerals: the `cardinal_number_word`
+/// meanings in `data/seed/meanings-units.lino` lexicalise en, ru, hi and zh but
+/// not es, so `dos más dos` still does not resolve. That gap is real but is
+/// about numerals rather than operators, so it is left for its own change
+/// instead of being half-fixed here.
+#[test]
+fn arithmetic_spanish_word_variations_match() {
+    let cases = [
+        ("2 más 2", "4"),
+        ("7 menos 4", "3"),
+        ("6 por 7", "42"),
+        ("10 dividido por 2", "5"),
+        ("10 entre 2", "5"),
+        ("8 módulo 3", "2"),
+    ];
+    assert_calculation(&cases);
+}
+
 #[test]
 fn arithmetic_symbolic_variations_match() {
     let cases = [

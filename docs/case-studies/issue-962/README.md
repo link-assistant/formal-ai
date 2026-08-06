@@ -130,3 +130,45 @@ live in the `arithmetic_operation` meanings in
 `加` to `operation-vocabulary.lino` would not have made `2 加 2 等于多少?`
 evaluate. Tracing each prompt to the handler that rejected it is what separated
 the two tables.
+
+## A fifth language, found by CI
+
+The first push failed `check:language-test-coverage`: "Language-facing changes
+were detected in: data/seed/meanings-calculator.lino … Missing: es." Spanish had
+become a supported language, and the gate is right to insist a change to shared
+vocabulary carry every language with it.
+
+Probing Spanish showed it had the reported defect in a stronger form —
+`grep -c 'lexeme es' data/seed/meanings-calculator.lino` returned **0** for the
+arithmetic meanings, so no operator word and no result-query cue existed at all:
+
+```
+"¿Cuánto es 2 más 2?"        -> intent=unknown
+"¿Cuánto es 6 dividido por 2?" -> intent=unknown
+```
+
+and a fourth root cause underneath it, this one in code rather than data:
+
+**RC4 — `¿` was not leading punctuation.** `trim_prompt_punctuation` in
+`src/calculation.rs` stripped `!`, `。`, `？` and `！` from the front of a prompt
+but not the Spanish opening marks. So `¿Cuánto es 2 + 2?` presented its cue as
+`¿cuánto es`, one character away from the seeded `cuánto es`, and the fuzzy
+prefix matcher claimed it: the engine replied `Interpreted "¿Cuánto es" as
+"cuánto es".` and dropped the expression. This affected the *symbolic* form too,
+so it was a Spanish-wide calculator failure that predated this issue and was
+invisible while Spanish had no operator words to reach.
+
+The fix adds `'¡'` and `'¿'` to that character set — punctuation, not
+vocabulary, so it does not breach the no-hardcoded-natural-language rule (`。？！`
+were already there). `spanish_opening_question_mark_does_not_change_the_answer`
+pins it by asserting the same prompt with and without the mark.
+
+### Left deliberately unfixed
+
+`dos más dos` still does not resolve: the `cardinal_number_word` meanings in
+`data/seed/meanings-units.lino` lexicalise en, ru, hi and zh but not es. That is
+a numeral gap rather than an operator gap, so it belongs to its own change
+instead of being half-done here; the comment on
+`arithmetic_spanish_word_variations_match` records it at the point a reader will
+ask. Likewise `Cuanto es 2 mas 2?` (Spanish written without accents) still
+fails — accent-insensitive matching is a separate concern.

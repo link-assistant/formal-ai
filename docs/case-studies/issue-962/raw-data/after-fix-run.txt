@@ -9,3 +9,9 @@
 "3 乘 2 等于多少?" -> intent=calculation answer=3 乘 2 = 6
 "6 बटा 2 कितना ह\u{948}?" -> intent=calculation answer=6 बटा 2 = 3
 "6 除 2 等于多少?" -> intent=calculation answer=6 除 2 = 3
+"¿Cuánto es 2 más 2?" -> intent=calculation answer=2 más 2 = 4
+"¿Cuánto es 4 menos 2?" -> intent=calculation answer=4 menos 2 = 2
+"¿Cuánto es 3 por 2?" -> intent=calculation answer=3 por 2 = 6
+"¿Cuánto es 6 dividido por 2?" -> intent=calculation answer=6 dividido por 2 = 3
+"¿Cuánto es 6 entre 2?" -> intent=calculation answer=6 entre 2 = 3
+"¿Cuánto es 8 módulo 3?" -> intent=calculation answer=8 módulo 3 = 2

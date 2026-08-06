@@ -28,6 +28,14 @@ fn main() {
         "3 乘 2 等于多少?",
         "6 बटा 2 कितना है?",
         "6 除 2 等于多少?",
+        // Spanish, found by the holistic audit: no operator words were seeded
+        // at all, and the opening `¿` was not trimmed as leading punctuation.
+        "¿Cuánto es 2 más 2?",
+        "¿Cuánto es 4 menos 2?",
+        "¿Cuánto es 3 por 2?",
+        "¿Cuánto es 6 dividido por 2?",
+        "¿Cuánto es 6 entre 2?",
+        "¿Cuánto es 8 módulo 3?",
     ] {
         let response = FormalAiEngine.answer(prompt);
         let head: String = response.answer.chars().take(48).collect();
