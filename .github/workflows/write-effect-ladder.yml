@@ -115,7 +115,7 @@ jobs:
 
       - name: Retain the ladder results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: write-effect-ladder-results
           path: ${{ runner.temp }}/write-effect-results.json

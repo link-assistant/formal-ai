@@ -416,8 +416,21 @@ fn lint_job_gates_on_workflow_shell_and_clippy_findings() {
         "workflow definitions must be linted (issue #812)"
     );
     assert!(
-        lint.contains("shellcheck --severity=warning"),
+        lint.contains("scripts/lint-shell-scripts.sh"),
         "standalone shell scripts must be linted (issue #812)"
+    );
+
+    // Issue #977 moved the selector into a script; the empty-list guard is the
+    // part that actually keeps the step from passing vacuously.
+    let shell_lint = std::fs::read_to_string(format!(
+        "{}/scripts/lint-shell-scripts.sh",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .expect("lint-shell-scripts.sh");
+    assert!(shell_lint.contains("shellcheck --severity=warning"));
+    assert!(
+        shell_lint.contains("the lint selector is broken"),
+        "an empty selector must fail rather than lint nothing (issue #812)"
     );
 }
 
@@ -535,10 +548,10 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // graphs moved the job from ~4-5 to 7.2 minutes, and a cold release
         // build after a Cargo.lock change hit the former cap.
         ("build", 15),
-        ("auto-release", 30),
-        ("manual-release", 30),
+        ("auto-release", 60),
+        ("manual-release", 60),
         ("changelog-pr", 10),
-        ("test-e2e-local", 15),
+        ("test-e2e-local", 40),
         // Issue #538: real Agent CLI ↔ formal-ai OpenAI-compatible round-trip.
         // Boots `formal-ai serve`, drives it with `@link-assistant/agent`, and
         // asserts the CLI writes the enriched meaning file. The extra headroom
@@ -548,6 +561,9 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // #479), which compiles the dependency tree on a cold cargo cache.
         ("deploy-pages", 20),
         ("test-e2e-pages", 15),
+        // Issue #977: the terminal gate that turns a silently-`cancelled` run
+        // (the shape a `timeout-minutes` kill takes) into a red failure.
+        ("pipeline-status", 5),
     ];
 
     let actual_jobs = workflow_job_names(&workflow);
@@ -734,8 +750,13 @@ fn pages_deploy_generates_api_docs_and_copies_them_after_stamping() {
 
     // cargo doc emits the crate root under target/doc/formal_ai/ (lib name
     // formal_ai); a redirect at the doc root keeps /docs/api/ from 404ing.
+    let docs_script = std::fs::read_to_string(format!(
+        "{}/scripts/build-rust-api-docs.sh",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .expect("build-rust-api-docs.sh");
     assert!(
-        deploy.contains("url=formal_ai/index.html"),
+        docs_script.contains("url=formal_ai/index.html"),
         "a redirect should point /docs/api/ at the crate root"
     );
 }

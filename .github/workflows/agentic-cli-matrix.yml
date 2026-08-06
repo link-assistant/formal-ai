@@ -81,7 +81,7 @@ jobs:
           echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
 
       - name: Upload formal-ai binary
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: formal-ai-binary
           path: target/release/formal-ai
@@ -109,7 +109,7 @@ jobs:
           no-cache: true
 
       - name: Download formal-ai binary
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: formal-ai-binary
           path: target/release
@@ -132,7 +132,7 @@ jobs:
         # half-installed CLI then migrates its database and *only then* exits 1
         # with `NodePtyModuleLoadError`, which reads like a defect in our server.
         # The `npm-native` installer kind in clients.lock needs a real Node here.
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '22'
 
@@ -141,7 +141,7 @@ jobs:
         # aider-chat declares `Requires-Python >=3.10,<3.13`. Without a pinned
         # interpreter pip resolves *backwards* to a 2024 release rather than
         # failing, which would install a two-year-old CLI under a pinned name.
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
@@ -195,7 +195,7 @@ jobs:
         # success too, because a green leg's transcript is the recorded session
         # issue #671 asks for on claude, grok and aider.
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: transcripts-${{ matrix.client }}
           path: |
@@ -223,13 +223,13 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Download formal-ai binary
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: formal-ai-binary
           path: target/release
 
       - name: Download every real-client observation
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: transcripts-*
           path: matrix-evidence
@@ -251,7 +251,7 @@ jobs:
           grep -q 'independently_worded_groups "[1-9]' client-contract-learning.lino
 
       - name: Upload contract-learning review artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: client-contract-learning
           path: client-contract-learning.lino
