@@ -389,6 +389,36 @@ jobs:
           FILE_SIZE_WARNING_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: rust-script scripts/check-file-size.rs
 
+      # Issue #960 (R222-2): MAX_SEED_RECORDS_PER_BUCKET was recorded in
+      # src/translation/cache.rs but nothing failed when a bucket exceeded it.
+      # The check reads the constant from the library so the two cannot drift.
+      - name: Test cache bucket budget check
+        run: rust-script --test scripts/check-cache-budget.rs
+
+      - name: Check cache bucket budget
+        run: rust-script scripts/check-cache-budget.rs
+
+      # Issue #960 (R234-2): behavioural tests are documentation, so they must
+      # show the exact answer instead of asserting a substring. Burn-down
+      # ratchet over scripts/tests-as-docs-allowlist.txt: new loose-only tests
+      # fail here, and rows made explicit must be pruned.
+      - name: Test tests-as-docs check
+        run: rust-script --test scripts/check-tests-as-docs.rs
+
+      - name: Check tests document exact answers
+        run: rust-script scripts/check-tests-as-docs.rs
+
+      # Issue #960 (R234-4): "Addresses #146" is not a GitHub closing keyword,
+      # so the issue stays open after the merge. Skips silently when there is no
+      # pull-request body (tag and branch builds).
+      - name: Test pull-request link check
+        run: rust-script --test scripts/check-pull-request-link.rs
+
+      - name: Check pull-request links its issue
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: rust-script scripts/check-pull-request-link.rs
+
       - name: Check associative terminology
         run: rust-script scripts/check-associative-terminology.rs
 
