@@ -442,7 +442,12 @@ pub fn evaluate_calculation(expression: &str) -> Result<CalculationEvaluation, A
 fn trim_prompt_punctuation(value: &str) -> &str {
     value
         .trim()
-        .trim_start_matches(['!', '。', '？', '！'])
+        // `¿`/`¡` open a Spanish question or exclamation, so they are leading
+        // punctuation exactly as `!` and `！` are. Without them the cue in
+        // `¿Cuánto es 2 más 2?` reads as `¿cuánto` — one character away from the
+        // seeded `cuánto es`, which sent the prompt to the typo responder
+        // ("Interpreted ... as ...") instead of the calculator (issue #962).
+        .trim_start_matches(['!', '¡', '¿', '。', '？', '！'])
         .trim()
         .trim_end_matches(['?', '!', '。', '？', '！'])
         .trim()
