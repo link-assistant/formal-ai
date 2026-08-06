@@ -103,11 +103,17 @@ fn issue_909_headless_global_configuration_is_traceable() {
             "| R909-4 |",
             "| R909-5 |",
             "| R909-6 |",
+            // R909-7 came out of review on this issue rather than its body: the
+            // seed sharding that keeps one changed block from dirtying the rest
+            // of `data/seed`.
+            "| R909-7 |",
         ],
     );
 
     let traceability = read(root.join("docs/requirements-traceability.md"));
-    for id in ["R909-1", "R909-2", "R909-3", "R909-4", "R909-5", "R909-6"] {
+    for id in [
+        "R909-1", "R909-2", "R909-3", "R909-4", "R909-5", "R909-6", "R909-7",
+    ] {
         assert!(
             traceability.contains(&format!("| {id} |")),
             "docs/requirements-traceability.md should carry a row for {id}"
