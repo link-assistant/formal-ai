@@ -108,8 +108,20 @@ fn check_body(body: &str) -> Vec<Problem> {
     let mut problems = Vec::new();
     let mut closes = false;
 
+    let mut in_code_fence = false;
+
     for (index, line) in body.lines().enumerate() {
-        // Quoted template guidance and checklists are instructions, not links.
+        // A description quotes the run it is reporting, so a fenced block can
+        // legitimately contain the very wording this check rejects. Quoted
+        // output is evidence, not a link: skip it in both directions.
+        if line.trim_start().starts_with("```") {
+            in_code_fence = !in_code_fence;
+            continue;
+        }
+        if in_code_fence {
+            continue;
+        }
+
         for keyword in CLOSING_KEYWORDS {
             if links_with(line, keyword) {
                 closes = true;
@@ -258,6 +270,23 @@ mod tests {
         let body = "Prefixes #146 is not a keyword\nFixes #146\n";
 
         assert_eq!(check_body(body), Vec::new());
+    }
+
+    /// A description that reports running this very check quotes its own
+    /// output; the quote must not be read as the description's own wording.
+    #[test]
+    fn wording_quoted_inside_a_code_fence_is_not_read_as_a_link() {
+        let body = "Fixes #960\n\n```console\n$ check pr-body-loose.md  # \"Addresses #1\"\n```\n";
+
+        assert_eq!(check_body(body), Vec::new());
+    }
+
+    /// The converse: a code fence cannot supply the closing keyword either.
+    #[test]
+    fn a_closing_keyword_only_inside_a_code_fence_does_not_count() {
+        let body = "## Summary\n\n```\nFixes #960\n```\n";
+
+        assert_eq!(check_body(body), vec![Problem::MissingClosingKeyword]);
     }
 
     #[test]
