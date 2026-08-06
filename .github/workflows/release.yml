@@ -1311,7 +1311,12 @@ jobs:
   test-agent-cli-e2e:
     name: E2E Tests (agent CLI ↔ formal-ai)
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # 32 min (was 20). Measured on `main`: successful runs take 16m16s
+    # (31086651127) and 17m30s (31090830031), so 20 left barely two minutes of
+    # headroom and run 31097339962 tipped over it -- reported as *cancelled*,
+    # which reads as a false positive rather than a real regression. Budget for
+    # ~2x the observed cost so ordinary runner variance cannot fail the job.
+    timeout-minutes: 32
     needs: [detect-changes]
     if: |
       !cancelled() && (
@@ -1747,11 +1752,8 @@ jobs:
         (github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant' && needs.manual-release.result == 'success')
       )
     runs-on: ubuntu-latest
-    # 35 min (was 20): 20 covered `cargo doc` for the /docs/api reference on a
-    # cold cargo cache, but left no room for the Pages deployment queue itself.
-    # Run 31090830031 built and uploaded the artifact fine and then spent the
-    # whole `deploy-pages` wait in `deployment_queued` before aborting, so the
-    # budget has to cover both the build and a backlogged deployment.
+    # 35 min (was 20): 20 covered `cargo doc` on a cold cargo cache but left no
+    # room for the Pages deployment queue, which the deploy step now outwaits.
     timeout-minutes: 35
     permissions:
       contents: read
@@ -1866,15 +1868,11 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v5
         with:
-          # 20 min, up from the action's 10-minute default. The default turned a
-          # GitHub Pages *queue* backlog into a red pipeline on `main`: in run
-          # 31090830031 the artifact uploaded successfully (15.7 MB, id
-          # 8966823763) and the action then polled `Current status:
-          # deployment_queued` for the full 600 000 ms before `Timeout reached,
-          # aborting!`. Nothing about the build was wrong — the next push
-          # deployed green with no code change — so the failure carried no
-          # signal about the commit. Waiting longer costs idle minutes only when
-          # Pages is already backlogged.
+          # 20 min, up from the action's 600 000 ms default. In run 31090830031
+          # the artifact uploaded fine and the action then sat in
+          # `deployment_queued` until `Timeout reached, aborting!` -- a red
+          # `main` caused by the Pages queue, not by the commit. Rationale and
+          # the guard test: `pages_deploy_outwaits_a_backlogged_pages_deployment_queue`.
           timeout: 1200000
         env:
           # deploy-pages v5 still imports core punycode. Keep every other Node
