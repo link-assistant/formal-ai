@@ -1,4 +1,94 @@
 meanings
+  response_lexeme_import_cannot_stage_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot stage ru"
+  response_lexeme_import_cannot_stage_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot stage zh"
+  response_lexeme_import_cannot_write_json_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot write json en"
+  response_lexeme_import_cannot_write_json_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot write json hi"
+  response_lexeme_import_cannot_write_json_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot write json ru"
+  response_lexeme_import_cannot_write_json_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot write json zh"
+  response_lexeme_import_cannot_write_lino_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot write lino en"
+  response_lexeme_import_cannot_write_lino_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot write lino hi"
+  response_lexeme_import_cannot_write_lino_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot write lino ru"
+  response_lexeme_import_cannot_write_lino_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot write lino zh"
+  response_lexeme_import_denotation_lost_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import denotation lost en"
+  response_lexeme_import_denotation_lost_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import denotation lost hi"
+  response_lexeme_import_denotation_lost_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import denotation lost ru"
+  response_lexeme_import_denotation_lost_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import denotation lost zh"
+  response_lexeme_import_duplicate_qid_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import duplicate qid en"
+  response_lexeme_import_duplicate_qid_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import duplicate qid hi"
+  response_lexeme_import_duplicate_qid_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import duplicate qid ru"
+  response_lexeme_import_duplicate_qid_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import duplicate qid zh"
   response_lexeme_import_duplicate_slug_en
     defined-by response_template
     lexeme en
@@ -1304,93 +1394,3 @@ meanings
     lexeme en
       surface
         text "response pattern sequence count en"
-  response_pattern_sequence_count_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence count es"
-  response_pattern_sequence_count_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence count hi"
-  response_pattern_sequence_count_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence count ru"
-  response_pattern_sequence_count_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence count zh"
-  response_pattern_sequence_empty_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence empty en"
-  response_pattern_sequence_empty_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence empty es"
-  response_pattern_sequence_empty_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence empty hi"
-  response_pattern_sequence_empty_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence empty ru"
-  response_pattern_sequence_empty_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence empty zh"
-  response_pattern_sequence_next_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence next en"
-  response_pattern_sequence_next_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence next es"
-  response_pattern_sequence_next_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence next hi"
-  response_pattern_sequence_next_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence next ru"
-  response_pattern_sequence_next_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence next zh"
-  response_pattern_sequence_no_compression_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence no compression en"
-  response_pattern_sequence_no_compression_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence no compression es"
-  response_pattern_sequence_no_compression_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence no compression hi"
-  response_pattern_sequence_no_compression_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response pattern sequence no compression ru"

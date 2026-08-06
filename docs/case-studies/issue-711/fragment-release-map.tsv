@@ -511,3 +511,7 @@ changelog.d/20260805_010000_issue_895_coverage_ratchet.md	0.331.0
 changelog.d/20260805_090000_issue_893_summarization_quality_ratchet.md	0.332.0
 changelog.d/20260805_110000_issue_973_solve_evidence_flags.md	0.332.1
 changelog.d/20260805_120000_issue_894_template_upstream_filings.md	0.329.1
+changelog.d/20260806_020000_enforce-recorded-conventions.md	0.333.0
+changelog.d/20260806_020951_issue_962_hindi_chinese_word_operators.md	0.333.1
+changelog.d/20260806_041500_issue_962_spanish_word_operators.md	0.333.1
+changelog.d/20260806_120000_issue_977_cicd_timeouts_hidden_as_cancelled.md	0.333.1

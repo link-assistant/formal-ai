@@ -2,11 +2,11 @@ self_ast_census
   target src/protocol/responses_input.rs
   language rust
   fidelity signature
-  byte_len 3456
-  line_count 108
-  content_id source_module_b3001670f17b0fc4
+  byte_len 4086
+  line_count 123
+  content_id source_module_068773bbe62fd9bd
   symbol_count 3
   symbols
     function messages 13 18
     function append 20 39
-    function append_item 41 108
+    function append_item 41 123

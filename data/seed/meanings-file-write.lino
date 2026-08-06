@@ -206,6 +206,8 @@ meanings
     role file_write_content_lead
     lexeme en
       surface
+        text "containing exactly …"
+      surface
         text "containing …"
       surface
         text "with content …"

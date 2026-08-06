@@ -573,15 +573,77 @@ hardcoded prompt→answer tables.
     explicitly and still deliver a real, tested slice of *each* axis — never dress
     "did part of everything" as an honest scope cut.
 
+12. **Link the issue with a GitHub closing keyword; never "Addresses"
+    (issue #960).** A pull-request description must close its issue with one of
+    GitHub's [recognised keywords](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue)
+    — write `Fixes #146` or, preferably, the full form
+    `Fixes https://github.com/link-assistant/formal-ai/issues/146`. Words like
+    *Addresses*, *Relates to*, *Part of* and *Refs* read to a human exactly like
+    a link and to GitHub like plain prose: the issue silently stays open after
+    the merge. `scripts/check-pull-request-link.rs` reads the description
+    (`PR_BODY`, or a file passed as its argument) and fails the build on a
+    missing closing keyword or a non-closing word used in its place.
+
+13. **Case study per pull request.** Alongside the per-issue case study
+    (rule 8), a case study that documents a *pull request* — its review
+    conversation, CI history, and the decisions taken in it — lives in
+    `docs/case-studies/pull-request-{id}/`, mirroring the `issue-{id}` layout
+    (raw JSON under `raw-data/`). Keep issue-driven and PR-driven narratives in
+    their own directories so neither is buried inside the other.
+
+14. **The 1500-line Links Notation cap covers cached data too (issue #960).**
+    `scripts/check-file-size.rs` and `tests/unit/data_files.rs` apply the cap to
+    every `.lino` file in the repository, `data/cache/wikidata/` included.
+    Generated-but-committed is not a reason to be exempt; it is the reason to be
+    measured, because the generator is what can breach the cap. When a fetched
+    response would exceed it, split it into `<bucket>-partN.lino` the way
+    `examples/refresh_translation_cache.rs` already does.
+
+15. **Budget cache buckets: 128 records each (issue #960).**
+    `MAX_SEED_RECORDS_PER_BUCKET` in `src/translation/cache.rs` is enforced, not
+    merely recorded: `scripts/check-cache-budget.rs` fails when a bucket under
+    `data/cache/` holds more than 128 records (a record is a file stem, so
+    `Q1860.json` and `Q1860.lino` count once). Bucket or trim instead of growing
+    past the cap. The three buckets whose size is *forced* by the total-closure
+    gate — `wikidata/entity`, `wordnet/en`, `wiktionary/en`, where every record
+    exists because a seed token references it — are listed as
+    `CLOSURE_DRIVEN_BUCKETS` with a written reason, and pay for the exemption
+    with a stricter invariant: the check fails if any of their records is an
+    orphan nothing references.
+
+16. **Tests are documentation: assert the exact answer (issue #960).** A
+    behavioural or conversational test should show the reader what the system
+    says, not merely that the reply is not empty. Assert the answer verbatim
+    (`assert_eq!(response.answer, "…")`, or membership in an explicit list of
+    exact answers) and keep looser `contains` guards only as extra checks
+    *after* the exact one. `scripts/check-tests-as-docs.rs` enforces this as a
+    burn-down ratchet: existing loose-only tests are recorded in
+    `scripts/tests-as-docs-allowlist.txt`, new ones fail the build, and a row
+    that has been made explicit must be pruned (`--write` regenerates the list).
+
 ## Pull Request Process
 
 1. Ensure all tests pass locally
 2. Update documentation if needed
 3. Add a changelog fragment (see step 5 in Development Workflow)
 4. Ensure the PR description clearly describes the changes
-5. Link any related issues in the PR description
-6. Wait for CI checks to pass
-7. Address any review feedback
+5. Link the issue the PR closes with a GitHub closing keyword — `Fixes #146` or
+   `Fixes https://github.com/link-assistant/formal-ai/issues/146`. **Never**
+   write `Addresses #146`, `Relates to #146`, or `Part of #146` in its place:
+   GitHub does not recognise those, so the issue stays open after the merge.
+   Verify locally before opening the PR:
+
+   ```bash
+   PR_BODY="$(gh pr view <number> --json body --jq .body)" \
+     rust-script scripts/check-pull-request-link.rs
+   ```
+
+   CI runs the same check on every pull request.
+6. Put any case study *about the pull request itself* in
+   `docs/case-studies/pull-request-{id}/` (issue case studies stay in
+   `docs/case-studies/issue-{id}/`)
+7. Wait for CI checks to pass
+8. Address any review feedback
 
 ## Changelog Management
 

@@ -77,7 +77,6 @@ src/agentic_coding/ledger.rs	Recorded the approved learning ledger: {count} less
 src/agentic_coding/meaning_detail.rs	Made the {name} meaning more detailed: every surface now pins its part of speech and grammatical number, is grounded in its Wikidata lexeme forms, and every plural surface recovered from the source is added.\n\nEnriched meaning block ({path}):\n\n{block}
 src/agentic_coding/meaning_detail.rs	Make the tomato meaning more detailed: pin every surface's part of speech and grammatical number, ground it in Wikidata, and add the missing plural to томат.
 src/agentic_coding/meaning_detail.rs	Please make the potato word and meaning richer — record the singular/plural of each surface, add the missing plural form potatoes, and keep it grounded in Wikidata.
-src/agentic_coding/planner.rs	Completed the general change request for {} and verified it with `{}`.\n\nPlan event ({}):\n\n{}
 src/agentic_coding/planner.rs	Formalized {subject} into a Links Notation knowledge base: {records} records realising all nine protocol primitives ({coverage}).\n\nKnowledge base ({KB_PATH}):\n\n{kb}
 src/agentic_coding/planner.rs	I can run `{command}` when the client advertises a shell tool such as `bash`, `shell`, or `run_command`.
 src/agentic_coding/planner.rs	cat {KB_PATH}

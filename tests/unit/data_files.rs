@@ -28,13 +28,17 @@ fn lino_data_files_are_parseable_human_readable_and_bounded() {
         checked_files += 1;
         let content = fs::read_to_string(path).expect("lino file should be UTF-8 text");
         let line_count = content.lines().count();
-        if !path_has_component(path, "cache") {
-            assert!(
-                line_count <= MAX_LINO_LINES,
-                "{} has {line_count} lines, exceeding {MAX_LINO_LINES}",
-                path.display()
-            );
-        }
+        // Issue #960 (R222-1): the 1500-line cap covers cached Links Notation
+        // too. It used to be skipped for every path containing a `cache`
+        // component, which is precisely where a generator can emit an
+        // unreviewable file; `examples/refresh_translation_cache.rs` splits
+        // oversized responses into `<bucket>-partN.lino` so the cap is
+        // actionable rather than aspirational.
+        assert!(
+            line_count <= MAX_LINO_LINES,
+            "{} has {line_count} lines, exceeding {MAX_LINO_LINES}",
+            path.display()
+        );
         // The typed-object-encoding guard targets the Links Notation skeleton,
         // not quoted prose: a cached definition may legitimately read
         // `"(object pronoun) …"`. Strip quoted scalar spans first so the check

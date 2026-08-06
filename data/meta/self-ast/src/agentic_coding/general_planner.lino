@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/general_planner.rs
   language rust
   fidelity full_ast
-  byte_len 41884
-  line_count 971
-  content_id source_module_546e76b6f834fa9f
+  byte_len 41974
+  line_count 973
+  content_id source_module_802a58810675b7d3
   symbol_count 45
   symbols
     const PLAN_PATH 18 18
@@ -41,24 +41,24 @@ self_ast_census
     function looks_like_file_path 796 802
     function clean_cue_token 805 808
     function first_content_lead_end 813 815
-    function first_prefix_lead_end 817 854
-    function first_action_cue_end 857 862
-    function clean_content 870 886
-    function strip_clause_lead 896 907
-    function strip_leading_qualifier 913 924
-    function safe_relative_path 926 933
-    function capability_slug 935 952
-    function language 954 956
-    function escape 958 963
-    function field 965 967
-    function field_nested 969 971
+    function first_prefix_lead_end 817 856
+    function first_action_cue_end 859 864
+    function clean_content 872 888
+    function strip_clause_lead 898 909
+    function strip_leading_qualifier 915 926
+    function safe_relative_path 928 935
+    function capability_slug 937 954
+    function language 956 958
+    function escape 960 965
+    function field 967 969
+    function field_nested 971 973
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 24184
-    named_node_count 4946
+    total_link_count 24256
+    named_node_count 4957
     distinct_node_kinds 89
     node_kinds
       arguments 380
@@ -67,8 +67,8 @@ self_ast_census
       assignment_expression 4
       attribute 11
       attribute_item 11
-      binary_expression 92
-      block 95
+      binary_expression 96
+      block 96
       boolean_literal 2
       break_expression 1
       call_expression 380
@@ -97,7 +97,7 @@ self_ast_census
       function_item 37
       function_modifiers 3
       generic_type 20
-      identifier 1064
+      identifier 1069
       if_expression 31
       impl_item 3
       index_expression 21
@@ -118,7 +118,7 @@ self_ast_census
       outer_doc_comment_marker 198
       parameter 48
       parameters 37
-      parenthesized_expression 12
+      parenthesized_expression 13
       primitive_type 73
       range_expression 22
       reference_expression 57

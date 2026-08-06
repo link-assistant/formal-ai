@@ -335,18 +335,7 @@ jobs:
       # `experiments/` is deliberately excluded: those are throwaway
       # reproduction scripts, not shipped code.
       - name: Lint shell scripts
-        run: |
-          set -euo pipefail
-          mapfile -t scripts < <(
-            git ls-files '*.sh' \
-              | grep -v -e '^experiments/' -e '^dev/log/' -e '^docs/case-studies/'
-          )
-          if [ ${#scripts[@]} -eq 0 ]; then
-            echo "::error::No shell scripts matched; the lint selector is broken" >&2
-            exit 1
-          fi
-          printf 'Linting %s shell script(s)\n' "${#scripts[@]}"
-          shellcheck --severity=warning "${scripts[@]}"
+        run: bash scripts/lint-shell-scripts.sh
 
       - name: Check formatting
         run: cargo fmt --all -- --check
@@ -388,6 +377,36 @@ jobs:
         env:
           FILE_SIZE_WARNING_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: rust-script scripts/check-file-size.rs
+
+      # Issue #960 (R222-2): MAX_SEED_RECORDS_PER_BUCKET was recorded in
+      # src/translation/cache.rs but nothing failed when a bucket exceeded it.
+      # The check reads the constant from the library so the two cannot drift.
+      - name: Test cache bucket budget check
+        run: rust-script --test scripts/check-cache-budget.rs
+
+      - name: Check cache bucket budget
+        run: rust-script scripts/check-cache-budget.rs
+
+      # Issue #960 (R234-2): behavioural tests are documentation, so they must
+      # show the exact answer instead of asserting a substring. Burn-down
+      # ratchet over scripts/tests-as-docs-allowlist.txt: new loose-only tests
+      # fail here, and rows made explicit must be pruned.
+      - name: Test tests-as-docs check
+        run: rust-script --test scripts/check-tests-as-docs.rs
+
+      - name: Check tests document exact answers
+        run: rust-script scripts/check-tests-as-docs.rs
+
+      # Issue #960 (R234-4): "Addresses #146" is not a GitHub closing keyword,
+      # so the issue stays open after the merge. Skips silently when there is no
+      # pull-request body (tag and branch builds).
+      - name: Test pull-request link check
+        run: rust-script --test scripts/check-pull-request-link.rs
+
+      - name: Check pull-request links its issue
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: rust-script scripts/check-pull-request-link.rs
 
       - name: Check associative terminology
         run: rust-script scripts/check-associative-terminology.rs
@@ -506,27 +525,7 @@ jobs:
       # which is only present after `npm ci` in desktop/, so it stays out of
       # this dependency-free job rather than being silently skipped inside it.
       - name: Run desktop library tests
-        run: |
-          set -euo pipefail
-          # Issue #812: this was `node --test $(ls ... | grep -v ...)`. If the
-          # glob ever stopped matching, the substitution collapsed to nothing and
-          # `node --test` fell back to its own directory discovery -- a green
-          # step that ran none of these tests. Build the list explicitly and
-          # refuse to pass on an empty one.
-          shopt -s nullglob
-          tests=()
-          for test_file in desktop/scripts/*.test.mjs; do
-            case "$test_file" in
-              */web-tools.test.mjs) continue ;;
-            esac
-            tests+=("$test_file")
-          done
-          if [ ${#tests[@]} -eq 0 ]; then
-            echo "::error::No desktop library tests matched desktop/scripts/*.test.mjs" >&2
-            exit 1
-          fi
-          printf 'Running %s test file(s)\n' "${#tests[@]}"
-          node --test "${tests[@]}"
+        run: bash scripts/run-desktop-lib-tests.sh
 
   # === TEST ===
   # Test runs independently of the changelog check and gates on the change
@@ -706,7 +705,13 @@ jobs:
       (needs.test-e2e-local.result == 'success' || needs.test-e2e-local.result == 'skipped') &&
       (needs.test-agent-cli-e2e.result == 'success' || needs.test-agent-cli-e2e.result == 'skipped')
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # Issue #977: was 30. Crate build + publish + clean-install smoke test
+    # (~8 min) + one or two Docker builds all precede `Create GitHub Release`.
+    # Run 31065367736 ran out mid-Docker-build, so 0.326.2..0.333.0 shipped to
+    # crates.io and got tags but never a GitHub Release. Layer caching (above)
+    # cuts the Docker cost; this cap makes a cold cache a slow release rather
+    # than a half-published one.
+    timeout-minutes: 60
     outputs:
       pages_sha: ${{ steps.release_pages_ref.outputs.sha }}
       pages_version: ${{ steps.release_pages_ref.outputs.version }}
@@ -844,6 +849,12 @@ jobs:
           push: true
           tags: ${{ steps.ghcr-meta.outputs.tags }}
           labels: ${{ steps.ghcr-meta.outputs.labels }}
+          # Issue #977: the PR-check build has always used the GHA layer cache;
+          # the *release* builds did not, so each one recompiled the whole crate
+          # from scratch. Run 31065367736 was still compiling when the 30-minute
+          # cap killed `Auto Release` before `Create GitHub Release` ever ran.
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Configure Docker Hub publishing
         if: |
@@ -852,30 +863,7 @@ jobs:
             steps.publish-crate.outputs.publish_result == 'success'
           )
         id: dockerhub
-        run: |
-          disable_dockerhub() {
-            echo "enabled=false" >> "$GITHUB_OUTPUT"
-            echo "$1"
-          }
-
-          if [ -z "$DOCKERHUB_IMAGE" ]; then
-            disable_dockerhub "Docker Hub publishing disabled: DOCKERHUB_IMAGE repository variable is not set"
-            exit 0
-          fi
-
-          if [ ! -f Dockerfile ]; then
-            disable_dockerhub "Docker Hub publishing disabled: Dockerfile was not found at repository root"
-            exit 0
-          fi
-
-          if [ -z "$DOCKERHUB_USERNAME" ] || [ -z "$DOCKERHUB_TOKEN" ]; then
-            echo "::error::Docker Hub publishing requires DOCKERHUB_USERNAME and DOCKERHUB_TOKEN"
-            echo "Set DOCKERHUB_USERNAME as a repository variable or secret, and DOCKERHUB_TOKEN as a secret."
-            exit 1
-          fi
-
-          echo "enabled=true" >> "$GITHUB_OUTPUT"
-          echo "docker_hub_url=https://hub.docker.com/r/${DOCKERHUB_IMAGE}" >> "$GITHUB_OUTPUT"
+        run: bash scripts/configure-dockerhub-publishing.sh
 
       - name: Log in to Docker Hub
         if: steps.dockerhub.outputs.enabled == 'true'
@@ -904,6 +892,10 @@ jobs:
           push: true
           tags: ${{ steps.docker-meta.outputs.tags }}
           labels: ${{ steps.docker-meta.outputs.labels }}
+          # Issue #977: without this the Docker Hub push rebuilt the identical
+          # image from scratch a second time in the same job.
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Create GitHub Release
         if: |
@@ -915,23 +907,10 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GHCR_URL: https://github.com/${{ github.repository }}/pkgs/container/formal-ai
           DOCKER_HUB_URL: ${{ steps.dockerhub.outputs.docker_hub_url }}
-        run: |
-          # Use new_version from version-and-commit when available (tag-checked), else fall back to Cargo.toml version
-          RELEASE_VERSION="${{ steps.version.outputs.new_version }}"
-          if [ -z "$RELEASE_VERSION" ]; then
-            RELEASE_VERSION="${{ steps.current_version.outputs.version }}"
-          fi
-
-          release_args=(
-            --release-version "$RELEASE_VERSION"
-            --repository "${{ github.repository }}"
-            --self-hosting-ledger data/meta/self-hosting-ledger.lino
-          )
-          release_args+=(--ghcr-url "$GHCR_URL")
-          if [ -n "$DOCKER_HUB_URL" ]; then
-            release_args+=(--docker-hub-url "$DOCKER_HUB_URL")
-          fi
-          rust-script scripts/create-github-release.rs "${release_args[@]}"
+          # new_version comes from version-and-commit (tag-checked); fall back
+          # to the Cargo.toml version when that step did not bump.
+          RELEASE_VERSION: ${{ steps.version.outputs.new_version || steps.current_version.outputs.version }}
+        run: bash scripts/invoke-create-github-release.sh
 
       - name: Resolve Pages deploy ref
         id: release_pages_ref
@@ -969,7 +948,13 @@ jobs:
       (needs.test-e2e-local.result == 'success' || needs.test-e2e-local.result == 'skipped') &&
       (needs.test-agent-cli-e2e.result == 'success' || needs.test-agent-cli-e2e.result == 'skipped')
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # Issue #977: was 30. Crate build + publish + clean-install smoke test
+    # (~8 min) + one or two Docker builds all precede `Create GitHub Release`.
+    # Run 31065367736 ran out mid-Docker-build, so 0.326.2..0.333.0 shipped to
+    # crates.io and got tags but never a GitHub Release. Layer caching (above)
+    # cuts the Docker cost; this cap makes a cold cache a slow release rather
+    # than a half-published one.
+    timeout-minutes: 60
     outputs:
       pages_sha: ${{ steps.release_pages_ref.outputs.sha }}
       pages_version: ${{ steps.release_pages_ref.outputs.version }}
@@ -1080,6 +1065,12 @@ jobs:
           push: true
           tags: ${{ steps.ghcr-meta.outputs.tags }}
           labels: ${{ steps.ghcr-meta.outputs.labels }}
+          # Issue #977: the PR-check build has always used the GHA layer cache;
+          # the *release* builds did not, so each one recompiled the whole crate
+          # from scratch. Run 31065367736 was still compiling when the 30-minute
+          # cap killed `Auto Release` before `Create GitHub Release` ever ran.
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Configure Docker Hub publishing
         if: |
@@ -1087,30 +1078,7 @@ jobs:
             steps.version.outputs.already_released == 'true') &&
           steps.publish-crate.outputs.publish_result == 'success'
         id: dockerhub
-        run: |
-          disable_dockerhub() {
-            echo "enabled=false" >> "$GITHUB_OUTPUT"
-            echo "$1"
-          }
-
-          if [ -z "$DOCKERHUB_IMAGE" ]; then
-            disable_dockerhub "Docker Hub publishing disabled: DOCKERHUB_IMAGE repository variable is not set"
-            exit 0
-          fi
-
-          if [ ! -f Dockerfile ]; then
-            disable_dockerhub "Docker Hub publishing disabled: Dockerfile was not found at repository root"
-            exit 0
-          fi
-
-          if [ -z "$DOCKERHUB_USERNAME" ] || [ -z "$DOCKERHUB_TOKEN" ]; then
-            echo "::error::Docker Hub publishing requires DOCKERHUB_USERNAME and DOCKERHUB_TOKEN"
-            echo "Set DOCKERHUB_USERNAME as a repository variable or secret, and DOCKERHUB_TOKEN as a secret."
-            exit 1
-          fi
-
-          echo "enabled=true" >> "$GITHUB_OUTPUT"
-          echo "docker_hub_url=https://hub.docker.com/r/${DOCKERHUB_IMAGE}" >> "$GITHUB_OUTPUT"
+        run: bash scripts/configure-dockerhub-publishing.sh
 
       - name: Log in to Docker Hub
         if: steps.dockerhub.outputs.enabled == 'true'
@@ -1139,6 +1107,10 @@ jobs:
           push: true
           tags: ${{ steps.docker-meta.outputs.tags }}
           labels: ${{ steps.docker-meta.outputs.labels }}
+          # Issue #977: without this the Docker Hub push rebuilt the identical
+          # image from scratch a second time in the same job.
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Create GitHub Release
         if: |
@@ -1149,17 +1121,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GHCR_URL: https://github.com/${{ github.repository }}/pkgs/container/formal-ai
           DOCKER_HUB_URL: ${{ steps.dockerhub.outputs.docker_hub_url }}
-        run: |
-          release_args=(
-            --release-version "${{ steps.version.outputs.new_version }}"
-            --repository "${{ github.repository }}"
-            --self-hosting-ledger data/meta/self-hosting-ledger.lino
-          )
-          release_args+=(--ghcr-url "$GHCR_URL")
-          if [ -n "$DOCKER_HUB_URL" ]; then
-            release_args+=(--docker-hub-url "$DOCKER_HUB_URL")
-          fi
-          rust-script scripts/create-github-release.rs "${release_args[@]}"
+          RELEASE_VERSION: ${{ steps.version.outputs.new_version }}
+        run: bash scripts/invoke-create-github-release.sh
 
       - name: Resolve Pages deploy ref
         id: release_pages_ref
@@ -1230,7 +1193,12 @@ jobs:
   test-e2e-local:
     name: E2E Tests (local web app)
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # Issue #977: was 15, of which run 31073507682 spent 10m36s in
+    # `playwright install --with-deps` and was then killed at test 159/468 --
+    # reported as *cancelled*, not failed. Setup is bounded separately below;
+    # this cap sits above Playwright's own `globalTimeout` so Playwright aborts
+    # first and the job reads as `failure` with a report. See ANALYSIS.md.
+    timeout-minutes: 40
     needs: [detect-changes]
     if: |
       !cancelled() && (
@@ -1265,10 +1233,35 @@ jobs:
           cd tests/e2e
           npm ci
 
-      - name: Install Playwright browsers
+      # Issue #977: ~300 MB of browser binaries that change only with the
+      # pinned Playwright version -- key on the lockfile, restore instead of
+      # re-downloading.
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('tests/e2e/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      # Issue #977: split out of `--with-deps`. On ubuntu-latest every library
+      # Chromium needs is already current; apt only fetches *fonts*, and in run
+      # 31073507682 that crawled at ~30-60 KB/s for ten minutes and ate the job
+      # budget. Bounded and non-fatal: headless Chromium runs without them, and
+      # a genuinely missing library still fails loudly at browser launch.
+      - name: Install Playwright system dependencies (best effort)
+        timeout-minutes: 6
+        continue-on-error: true
         run: |
           cd tests/e2e
-          npx playwright install --with-deps chromium
+          npx playwright install-deps chromium
+
+      - name: Install Playwright browsers
+        timeout-minutes: 10
+        run: |
+          cd tests/e2e
+          npx playwright install chromium
 
       - name: Sync data/seed into src/web/seed (deployment mirror)
         run: scripts/sync-seed.sh
@@ -1829,27 +1822,7 @@ jobs:
       - name: Generate Rust API docs (cargo doc)
         env:
           RUSTDOCFLAGS: -D warnings
-        run: |
-          # Document just the library (lib name: formal_ai). --no-deps keeps the
-          # output small and fast. Keep rustdoc fail-closed just like rustc so a
-          # green Pages deployment cannot conceal broken API links or markup.
-          cargo doc --no-deps --lib
-          # rustdoc emits the crate docs under target/doc/formal_ai/; add a root
-          # redirect so /docs/api/ lands on the crate root instead of 404ing.
-          cat > target/doc/index.html <<'HTML'
-          <!doctype html>
-          <html lang="en">
-            <head>
-              <meta charset="utf-8" />
-              <meta http-equiv="refresh" content="0; url=formal_ai/index.html" />
-              <link rel="canonical" href="formal_ai/index.html" />
-              <title>formal-ai API reference</title>
-            </head>
-            <body>
-              <p>Redirecting to the <a href="formal_ai/index.html">formal-ai API reference</a>&hellip;</p>
-            </body>
-          </html>
-          HTML
+        run: bash scripts/build-rust-api-docs.sh
 
       - name: Sync data/seed into src/web/seed (deployment mirror)
         run: scripts/sync-seed.sh
@@ -1919,10 +1892,28 @@ jobs:
           cd tests/e2e
           npm ci
 
-      - name: Install Playwright browsers
+      # Issue #977: same split as `test-e2e-local` -- see the comments there.
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('tests/e2e/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright system dependencies (best effort)
+        timeout-minutes: 6
+        continue-on-error: true
         run: |
           cd tests/e2e
-          npx playwright install --with-deps chromium
+          npx playwright install-deps chromium
+
+      - name: Install Playwright browsers
+        timeout-minutes: 10
+        run: |
+          cd tests/e2e
+          npx playwright install chromium
 
       - name: Wait for GitHub Pages deployment
         env:
@@ -1941,3 +1932,30 @@ jobs:
           name: playwright-report-pages
           path: tests/e2e/playwright-report/
           retention-days: 7
+
+  # === PIPELINE STATUS GATE ===
+  # Issue #977: a job killed by `timeout-minutes` is reported as **cancelled**,
+  # not failed, so a run whose only casualty is a timeout gets the benign-looking
+  # `cancelled` conclusion and never shows up as red. Eighteen consecutive main
+  # runs hid a timing-out `Auto Release` that way. This job makes that state
+  # loud. Rationale and the full reconstruction live in
+  # scripts/check-pipeline-status.sh and
+  # dev/log/issues/977/pulls/978/ANALYSIS.md.
+  pipeline-status:
+    name: Pipeline Status
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: always()
+    # Every other job, so nothing can time out unobserved.
+    needs: [detect-changes, changelog, evidence-check, docker-build, secrets-scan,
+            version-check, lint, test, build, auto-release, manual-release,
+            changelog-pr, test-e2e-local, test-agent-cli-e2e, deploy-pages,
+            test-e2e-pages]
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Fail the run when a required job was cancelled or failed
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+          IS_MAIN: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+        run: bash scripts/check-pipeline-status.sh

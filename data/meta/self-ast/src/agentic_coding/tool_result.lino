@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/tool_result.rs
   language rust
   fidelity full_ast
-  byte_len 24798
-  line_count 715
-  content_id source_module_41567a879cfe1d5a
-  symbol_count 37
+  byte_len 26731
+  line_count 762
+  content_id source_module_f18aa00ddffb7302
+  symbol_count 40
   symbols
     struct NormalizedResult 13 21
     enum StepOutcome 31 38
@@ -15,89 +15,92 @@ self_ast_census
     function harness_reported_failure 86 88
     function shell_step 93 98
     function normalized_payload 103 108
-    function looks_like_error 110 115
-    function render 117 153
-    function failure_report 159 182
-    function latest_turn_answer 184 203
-    function has_latest_turn_result 205 216
-    function is_write_run_recipe 218 228
-    function follow_up_answer 230 261
-    function requested_index 263 275
-    function normalize 277 356
-    struct ShellEnvelope 364 368
-    function into_result 371 397
-    function parse_shell_envelope 400 444
-    function is_field 446 452
-    function envelope_section 456 476
-    function from_payload 478 524
-    function mcp_text_content 526 545
-    function strip_transport_envelope 551 583
-    function nonzero_status 585 593
-    function failed_status 595 608
-    function expected_stop_status 610 624
-    function nonempty_text 626 636
-    function pretty_json 638 640
-    function result_tool 642 652
-    function result_label 654 671
-    function extract_urls 673 689
-    function is_listing 691 696
-    function is_search 698 703
-    function response_language 705 707
-    function fill 709 715
+    function observed_payload 114 117
+    function failure_message 122 139
+    function looks_like_error 141 146
+    function render 148 184
+    function render_failure 189 193
+    function failure_report 199 222
+    function latest_turn_answer 224 243
+    function has_latest_turn_result 245 256
+    function is_write_run_recipe 258 268
+    function follow_up_answer 270 301
+    function requested_index 303 315
+    function normalize 317 403
+    struct ShellEnvelope 411 415
+    function into_result 418 444
+    function parse_shell_envelope 447 491
+    function is_field 493 499
+    function envelope_section 503 523
+    function from_payload 525 571
+    function mcp_text_content 573 592
+    function strip_transport_envelope 598 630
+    function nonzero_status 632 640
+    function failed_status 642 655
+    function expected_stop_status 657 671
+    function nonempty_text 673 683
+    function pretty_json 685 687
+    function result_tool 689 699
+    function result_label 701 718
+    function extract_urls 720 736
+    function is_listing 738 743
+    function is_search 745 750
+    function response_language 752 754
+    function fill 756 762
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 19608
-    named_node_count 3981
+    total_link_count 20944
+    named_node_count 4265
     distinct_node_kinds 86
     node_kinds
-      arguments 366
-      array_expression 13
+      arguments 393
+      array_expression 14
       array_type 11
       assignment_expression 3
       attribute 3
       attribute_item 3
       base_field_initializer 4
-      binary_expression 50
-      block 94
-      boolean_literal 2
+      binary_expression 54
+      block 101
+      boolean_literal 3
       break_expression 2
-      call_expression 366
+      call_expression 393
       char_literal 4
-      closure_expression 71
-      closure_parameters 71
+      closure_expression 75
+      closure_parameters 75
       compound_assignment_expr 1
       crate 10
       declaration_list 1
-      doc_comment 52
-      else_clause 11
+      doc_comment 62
+      else_clause 12
       enum_item 1
       enum_variant 3
       enum_variant_list 1
       escape_sequence 3
-      expression_statement 61
+      expression_statement 65
       field_declaration 8
       field_declaration_list 3
-      field_expression 334
-      field_identifier 359
+      field_expression 361
+      field_identifier 386
       field_initializer 17
       field_initializer_list 10
       for_expression 2
-      function_item 33
+      function_item 36
       generic_function 10
-      generic_type 19
-      identifier 809
-      if_expression 32
+      generic_type 21
+      identifier 865
+      if_expression 35
       impl_item 1
       index_expression 13
       inner_doc_comment_marker 1
       integer_literal 25
-      let_condition 8
-      let_declaration 78
+      let_condition 9
+      let_declaration 83
       lifetime 2
-      line_comment 63
+      line_comment 73
       macro_invocation 7
       match_arm 13
       match_block 4
@@ -105,15 +108,15 @@ self_ast_census
       match_pattern 13
       mutable_specifier 6
       or_pattern 1
-      outer_doc_comment_marker 51
-      parameter 54
-      parameters 33
-      parenthesized_expression 7
-      primitive_type 59
+      outer_doc_comment_marker 61
+      parameter 61
+      parameters 36
+      parenthesized_expression 8
+      primitive_type 66
       range_expression 10
-      reference_expression 42
-      reference_type 56
-      return_expression 24
+      reference_expression 44
+      reference_type 61
+      return_expression 26
       scoped_identifier 54
       scoped_type_identifier 1
       scoped_use_list 1
@@ -121,21 +124,21 @@ self_ast_census
       self_parameter 1
       shorthand_field_initializer 7
       source_file 1
-      string_content 118
-      string_literal 122
+      string_content 122
+      string_literal 126
       struct_expression 10
       struct_item 3
-      super 15
+      super 18
       token_tree 17
       try_expression 14
       tuple_expression 9
       tuple_pattern 12
-      tuple_struct_pattern 18
+      tuple_struct_pattern 19
       tuple_type 1
-      type_arguments 29
-      type_identifier 81
-      unary_expression 20
+      type_arguments 31
+      type_identifier 86
+      unary_expression 21
       use_declaration 4
       use_list 1
-      visibility_modifier 13
+      visibility_modifier 16
       while_expression 2

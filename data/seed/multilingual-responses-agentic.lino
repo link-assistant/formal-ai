@@ -707,6 +707,66 @@ multilingual_responses
     intent general_plan_repository_planned
     language es
     text "Planificado, no ejecutado: {target}.\n\nNo se cambió nada de lo que nombra la solicitud. El único archivo que escribió esta ejecución es su propio registro de plan ({plan_path}), y volver a leer ese registro no probaría nada sobre el trabajo solicitado, así que no se afirmó ninguna verificación. Evento del plan:\n\n{plan}"
+  response response_general_plan_verification_mismatch_en
+    intent general_plan_verification_mismatch
+    language en
+    text "Verification did not confirm {target}. Expected `{expected}` but observed `{observed}`. I have not marked the change complete."
+  response response_general_plan_verification_mismatch_ru
+    intent general_plan_verification_mismatch
+    language ru
+    text "Проверка не подтвердила {target}. Ожидалось `{expected}`, получено `{observed}`. Изменение не отмечено как завершённое."
+  response response_general_plan_verification_mismatch_hi
+    intent general_plan_verification_mismatch
+    language hi
+    text "सत्यापन ने {target} की पुष्टि नहीं की। `{expected}` अपेक्षित था, लेकिन `{observed}` मिला। परिवर्तन को पूर्ण चिह्नित नहीं किया गया है।"
+  response response_general_plan_verification_mismatch_zh
+    intent general_plan_verification_mismatch
+    language zh
+    text "验证未确认 {target}。预期为 `{expected}`，实际观察到 `{observed}`。此更改尚未标记为完成。"
+  response response_general_plan_verification_mismatch_es
+    intent general_plan_verification_mismatch
+    language es
+    text "La verificación no confirmó {target}. Se esperaba `{expected}`, pero se observó `{observed}`. No he marcado el cambio como completado."
+  response response_general_plan_unverified_en
+    intent general_plan_unverified
+    language en
+    text "I could not verify {target} because `{command}` was not observed. I have not marked the change complete."
+  response response_general_plan_unverified_ru
+    intent general_plan_unverified
+    language ru
+    text "Не удалось проверить {target}: выполнение `{command}` не наблюдалось. Изменение не отмечено как завершённое."
+  response response_general_plan_unverified_hi
+    intent general_plan_unverified
+    language hi
+    text "{target} को सत्यापित नहीं किया जा सका क्योंकि `{command}` का परिणाम नहीं देखा गया। परिवर्तन को पूर्ण चिह्नित नहीं किया गया है।"
+  response response_general_plan_unverified_zh
+    intent general_plan_unverified
+    language zh
+    text "无法验证 {target}，因为未观察到 `{command}` 的执行结果。此更改尚未标记为完成。"
+  response response_general_plan_unverified_es
+    intent general_plan_unverified
+    language es
+    text "No pude verificar {target} porque no se observó la ejecución de `{command}`. No he marcado el cambio como completado."
+  response response_general_plan_completed_en
+    intent general_plan_completed
+    language en
+    text "Completed the general change request for {target} and verified it with `{command}`.\n\nPlan event ({plan_path}):\n\n{plan}"
+  response response_general_plan_completed_ru
+    intent general_plan_completed
+    language ru
+    text "Общий запрос на изменение для {target} выполнен и проверен командой `{command}`.\n\nСобытие плана ({plan_path}):\n\n{plan}"
+  response response_general_plan_completed_hi
+    intent general_plan_completed
+    language hi
+    text "{target} के लिए सामान्य परिवर्तन अनुरोध पूरा हुआ और `{command}` से सत्यापित किया गया।\n\nयोजना घटना ({plan_path}):\n\n{plan}"
+  response response_general_plan_completed_zh
+    intent general_plan_completed
+    language zh
+    text "已完成 {target} 的通用变更请求，并通过 `{command}` 进行了验证。\n\n计划事件（{plan_path}）：\n\n{plan}"
+  response response_general_plan_completed_es
+    intent general_plan_completed
+    language es
+    text "Se completó la solicitud de cambio general para {target} y se verificó con `{command}`.\n\nEvento del plan ({plan_path}):\n\n{plan}"
   response response_agentic_step_failed_with_exit_code_en
     intent agentic_step_failed_with_exit_code
     language en

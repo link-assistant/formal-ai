@@ -1,0 +1,50 @@
+== run 31073507682 ==
+notice	.github:36	100% - 1 hit, 0 misses, 0 errors
+notice	.github:53	58% - 923 hits, 665 misses, 0 errors
+warning	data/cache/wordnet/en:0	Closure-driven cache bucket holds 332 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+warning	data/cache/wiktionary/en:0	Closure-driven cache bucket holds 243 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+warning	data/cache/wikidata/entity:0	Closure-driven cache bucket holds 406 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+warning	src/calculation.rs:0	Rust file has 919 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+warning	tests/source/calculation.rs:0	Rust file has 928 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+failure	.github:1	The job has exceeded the maximum execution time of 15m0s
+failure	.github:181	The operation was canceled.
+notice	.github:51	64% - 1521 hits, 846 misses, 0 errors
+notice	.github:51	75% - 1105 hits, 361 misses, 0 errors
+== run 31065367736 ==
+notice	.github:53	41% - 648 hits, 940 misses, 0 errors
+warning	data/cache/wordnet/en:0	Closure-driven cache bucket holds 332 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+warning	data/cache/wiktionary/en:0	Closure-driven cache bucket holds 243 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+warning	data/cache/wikidata/entity:0	Closure-driven cache bucket holds 406 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+warning	tests/unit/data_files.rs:0	Rust file has 964 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+warning	.github/workflows/release.yml:0	GitHub Actions workflow file has 1960 lines (approaching limit of 2000). Consider extracting content to keep at or below 1500 lines and prevent review and merge conflicts.
+notice	.github:51	54% - 1281 hits, 1086 misses, 0 errors
+notice	.github:36	100% - 1 hit, 0 misses, 0 errors
+notice	.github:51	38% - 553 hits, 913 misses, 0 errors
+failure	.github:1	The job has exceeded the maximum execution time of 30m0s
+failure	.github:1946	The operation was canceled.
+== run 31073507665 ==
+notice	.github:43	0% - 0 hits, 67 misses, 0 errors
+notice	.github:18	The LCOV report is retained as the rust-lcov workflow artifact; configure CODECOV_TOKEN to enable fail-closed remote upload.
+== run 31073507685 ==
+warning	.github:3	Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+notice	.github:51	74% - 1048 hits, 360 misses, 0 errors
+== run 31073507696 ==
+warning	.github:4	Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+warning	.github:2	Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/download-artifact@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+warning	.github:2	Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/download-artifact@v4, actions/setup-python@v5, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+warning	.github:2	Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/download-artifact@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+warning	.github:2	Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/download-artifact@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+warning	.github:2	Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/download-artifact@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+warning	.github:2	Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/download-artifact@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+warning	.github:2	Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/download-artifact@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+warning	.github:2	Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/download-artifact@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+warning	.github:2	Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/download-artifact@v4, actions/setup-node@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+warning	.github:2	Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/download-artifact@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+warning	.github:2	Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/download-artifact@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+warning	.github:2	Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/download-artifact@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+warning	.github:2	Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/download-artifact@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+== run 31073507670 ==
+warning	.github:3	Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+notice	.github:51	30% - 428 hits, 980 misses, 0 errors
+== run 31076060826 ==
+warning	.github:2	Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

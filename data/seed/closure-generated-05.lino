@@ -1,4 +1,19 @@
 meanings
+  response_clarification_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response clarification zh"
+  response_client_contract_missing_evidence_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract missing evidence error en"
+  response_client_contract_missing_evidence_error_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract missing evidence error hi"
   response_client_contract_missing_evidence_error_ru
     defined-by response_template
     lexeme en
@@ -889,6 +904,31 @@ meanings
     lexeme en
       surface
         text "response general plan command verification evidence zh"
+  response_general_plan_completed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan completed en"
+  response_general_plan_completed_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan completed es"
+  response_general_plan_completed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan completed hi"
+  response_general_plan_completed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan completed ru"
+  response_general_plan_completed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan completed zh"
   response_general_plan_repository_action_en
     defined-by response_template
     lexeme en
@@ -954,6 +994,56 @@ meanings
     lexeme en
       surface
         text "response general plan repository planned zh"
+  response_general_plan_unverified_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan unverified en"
+  response_general_plan_unverified_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan unverified es"
+  response_general_plan_unverified_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan unverified hi"
+  response_general_plan_unverified_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan unverified ru"
+  response_general_plan_unverified_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan unverified zh"
+  response_general_plan_verification_mismatch_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan verification mismatch en"
+  response_general_plan_verification_mismatch_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan verification mismatch es"
+  response_general_plan_verification_mismatch_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan verification mismatch hi"
+  response_general_plan_verification_mismatch_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan verification mismatch ru"
+  response_general_plan_verification_mismatch_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response general plan verification mismatch zh"
   response_github_repository_traffic_en
     defined-by response_template
     lexeme en
@@ -1304,93 +1394,3 @@ meanings
     lexeme en
       surface
         text "response lexeme import cannot stage hi"
-  response_lexeme_import_cannot_stage_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot stage ru"
-  response_lexeme_import_cannot_stage_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot stage zh"
-  response_lexeme_import_cannot_write_json_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot write json en"
-  response_lexeme_import_cannot_write_json_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot write json hi"
-  response_lexeme_import_cannot_write_json_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot write json ru"
-  response_lexeme_import_cannot_write_json_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot write json zh"
-  response_lexeme_import_cannot_write_lino_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot write lino en"
-  response_lexeme_import_cannot_write_lino_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot write lino hi"
-  response_lexeme_import_cannot_write_lino_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot write lino ru"
-  response_lexeme_import_cannot_write_lino_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot write lino zh"
-  response_lexeme_import_denotation_lost_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import denotation lost en"
-  response_lexeme_import_denotation_lost_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import denotation lost hi"
-  response_lexeme_import_denotation_lost_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import denotation lost ru"
-  response_lexeme_import_denotation_lost_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import denotation lost zh"
-  response_lexeme_import_duplicate_qid_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import duplicate qid en"
-  response_lexeme_import_duplicate_qid_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import duplicate qid hi"
-  response_lexeme_import_duplicate_qid_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import duplicate qid ru"
-  response_lexeme_import_duplicate_qid_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import duplicate qid zh"

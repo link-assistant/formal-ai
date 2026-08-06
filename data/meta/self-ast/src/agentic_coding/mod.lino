@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/mod.rs
   language rust
   fidelity full_ast
-  byte_len 5825
-  line_count 141
-  content_id source_module_19afa1de9afa1531
-  symbol_count 48
+  byte_len 5848
+  line_count 142
+  content_id source_module_9a4c6648eabb8b79
+  symbol_count 49
   symbols
     module algorithm_learning 21 21
     module associative_learning 22 22
@@ -26,50 +26,51 @@ self_ast_census
     module external_benchmark_learning 37 37
     module file_read 38 38
     module formalize 39 39
-    module general_planner 40 40
-    module google_trends_catalog 41 41
-    module google_trends_learning 42 42
-    module intent_router 43 43
-    module learning_report 44 44
-    module ledger 45 45
-    module lexicon 46 46
-    module local_search 47 47
-    module meaning_detail 48 48
-    module narration 49 49
-    module planner 50 50
-    module procedure 51 51
-    module progress 52 52
-    module question_catalog 53 53
-    module rebuild_plan 54 54
-    module repair_strategy 55 55
-    module report_issue 56 56
-    module report_script 57 57
-    module routing_learning 58 58
-    module self_ast 59 59
-    module self_heal 60 60
-    module shell_command 61 61
-    module shell_file_fallback 62 62
-    module source_links 63 63
-    module statement_audit 64 64
-    module structured_edit 65 65
-    module tool_result 66 66
-    module web_research 67 67
-    module workspace_change 68 68
+    module general_execution 40 40
+    module general_planner 41 41
+    module google_trends_catalog 42 42
+    module google_trends_learning 43 43
+    module intent_router 44 44
+    module learning_report 45 45
+    module ledger 46 46
+    module lexicon 47 47
+    module local_search 48 48
+    module meaning_detail 49 49
+    module narration 50 50
+    module planner 51 51
+    module procedure 52 52
+    module progress 53 53
+    module question_catalog 54 54
+    module rebuild_plan 55 55
+    module repair_strategy 56 56
+    module report_issue 57 57
+    module report_script 58 58
+    module routing_learning 59 59
+    module self_ast 60 60
+    module self_heal 61 61
+    module shell_command 62 62
+    module shell_file_fallback 63 63
+    module source_links 64 64
+    module statement_audit 65 65
+    module structured_edit 66 66
+    module tool_result 67 67
+    module web_research 68 68
+    module workspace_change 69 69
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 2879
-    named_node_count 476
+    total_link_count 2893
+    named_node_count 478
     distinct_node_kinds 13
     node_kinds
       crate 5
       doc_comment 19
-      identifier 194
+      identifier 195
       inner_doc_comment_marker 19
       line_comment 19
-      mod_item 48
+      mod_item 49
       scoped_identifier 10
       scoped_use_list 30
       source_file 1

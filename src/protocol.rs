@@ -158,6 +158,13 @@ pub struct ChatMessage {
     /// For a `tool` role message: the name of the tool that produced the result.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Whether a client explicitly marked this tool result as an error.
+    ///
+    /// Anthropic uses `is_error`; some OpenAI-compatible clients use the
+    /// camelCase alias. Preserve the signal instead of forcing planners to
+    /// infer failure from provider-specific prose.
+    #[serde(default, alias = "isError", skip_serializing_if = "is_false")]
+    pub is_error: bool,
     /// Ordered solver-thinking projection attached to assistant answers.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub thinking_steps: Vec<ThinkingStep>,
@@ -169,6 +176,11 @@ pub struct ChatMessage {
     /// text as `reasoning_content`.
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub reasoning: String,
+}
+
+#[allow(clippy::trivially_copy_pass_by_ref)] // serde's predicate receives `&T`.
+const fn is_false(value: &bool) -> bool {
+    !*value
 }
 
 impl ChatMessage {
