@@ -484,6 +484,16 @@ hardcoded prompt→answer tables.
      `python3 scripts/close-total.py` (idempotent; emits each unresolved token
      as a first-class meaning under `data/seed/closure-generated-*.lino`) until
      `python3 scripts/audit-total-closure.py` reports `unresolved_distinct: 0`.
+     Those shards are **content-addressed**: each meaning lands in the shard
+     picked by `sha256(slug) % SHARD_COUNT`, so a new token rewrites exactly one
+     file and leaves the others byte-identical. Do not re-sort them into
+     alphabetical files — filling shards sequentially makes every shard depend
+     on the size of everything before it, which is what made `data/seed`
+     conflict in almost every pull request. `SHARD_COUNT` is fixed rather than
+     derived from the corpus, because changing it reshuffles every shard once;
+     raise it only when a shard approaches the 1500-line data-file limit.
+     `./experiments/issue-909-seed-shard-conflict-blast-radius.sh` asserts the
+     property by adding one token and counting the files it dirties.
    - **Worker seed parity checks.** Where the JS worker consumes a generated web
      seed copy, a `--check` guard fails the build on loader regressions and on
      drift in a present mirror (e.g. the “Check terminal vocabulary worker seed
