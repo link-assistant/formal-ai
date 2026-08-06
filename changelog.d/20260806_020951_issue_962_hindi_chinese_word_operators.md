@@ -1,2 +1,0 @@
-### Fixed
-- Hindi and Chinese word-operator arithmetic no longer falls to the unknown handler: `2 जमा 2 कितना होता है?` and `2 加 2 等于多少?` now answer `4`, matching the English and Russian equivalents (#962). The `arithmetic_operation` meanings gained the bare infix operator surfaces (`जमा`, `बटा`, `加`, `减`, `乘`, `除`) alongside the compound forms they already carried, and the Hindi `calculation_result_query` cue list gained `कितना होता है` / `कितने होते हैं`.
