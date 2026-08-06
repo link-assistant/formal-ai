@@ -221,6 +221,8 @@ roles
     kind predicate
   file_write_content_lead
     kind predicate
+  file_write_content_qualifier
+    kind predicate
   file_write_destination_cue
     kind predicate
   file_write_target_cue

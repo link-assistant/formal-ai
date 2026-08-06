@@ -1281,73 +1281,7 @@ src/telegram.rs	I can only process Telegram text messages in this implementation
 src/telegram.rs	\n\n/trace {trace}
 src/telegram.rs	formal-ai {FORMAL_AI_VERSION}
 src/telegram_runtime.rs	curl exited with {status}: {stderr}
-src/thinking.rs	Add an agent task: {}.
-src/thinking.rs	Apply available context: {trimmed}.
-src/thinking.rs	Apply the available context.
-src/thinking.rs	Apply {trimmed} reduction step(s).
-src/thinking.rs	Ask for clarification because the request was ambiguous.
-src/thinking.rs	Ask for clarification between {trimmed}.
-src/thinking.rs	Build a local behavior rule.
-src/thinking.rs	Compose the answer in natural language.
-src/thinking.rs	Compose the answer: \"{trimmed}\".
-src/thinking.rs	Compute the result.
-src/thinking.rs	Compute {trimmed}.
-src/thinking.rs	Decline the request under the safety policy.
-src/thinking.rs	Decline the request under the {} policy.
-src/thinking.rs	Detect modifiers in the request.
-src/thinking.rs	Detect the request language: {}.
-src/thinking.rs	Evaluate with the calculator.
-src/thinking.rs	Evaluate with the {}.
-src/thinking.rs	Exchange a request with the configured endpoint.
-src/thinking.rs	Extend the agent plan.
-src/thinking.rs	Extract the search term.
-src/thinking.rs	Fall back to the general unknown-request strategy.
-src/thinking.rs	Formalize the request as {} {task} task.
-src/thinking.rs	Formalize the request into a symbolic tuple.
-src/thinking.rs	Group matching memories by conversation.
-src/thinking.rs	I read this as {} {task} request, worked out the answer, and replied.
-src/thinking.rs	I wasn't sure how to handle this one yet, so I explained what I can do.
-src/thinking.rs	Look up the relevant fact.
-src/thinking.rs	Look up {}.
-src/thinking.rs	Match a known rule.
-src/thinking.rs	Match the {} rule.
-src/thinking.rs	Plan the program: {}.
-src/thinking.rs	Plan the requested program.
-src/thinking.rs	Plan to answer in {}.
-src/thinking.rs	Read the incoming request.
-src/thinking.rs	Read the request: \"{trimmed}\".
-src/thinking.rs	Reduce the expression {trimmed}.
-src/thinking.rs	Resolve the request to a concrete entity.
-src/thinking.rs	Resolve the request to {}.
-src/thinking.rs	Resolve what the follow-up refers to.
-src/thinking.rs	Route the request to a handler.
-src/thinking.rs	Route to the {} handler.
-src/thinking.rs	Search memory for relevant facts.
-src/thinking.rs	Search memory for {trimmed}.
-src/thinking.rs	The request could mean more than one thing, so I asked you to clarify.
-src/thinking.rs	This was a calculation, so I worked it out step by step and checked the result.
-src/thinking.rs	Try the next candidate approach.
-src/thinking.rs	Try the {} approach.
-src/thinking.rs	Update the local memory bundle.
-src/thinking.rs	Use an available capability.
-src/thinking.rs	Use the {} capability.
-src/thinking.rs	Verify the result against the rules.
-src/thinking.rs	Verify the result against the {} rule.
-src/thinking.rs	You asked about my name or who I am, so I answered from what I remember of our chat.
-src/thinking.rs	You asked about the tests, so I checked their status and reported it.
-src/thinking.rs	You asked for a fact, so I looked it up and reported what I found.
-src/thinking.rs	You asked for a translation, so I converted the text and returned it.
-src/thinking.rs	You asked for code, so I planned it and wrote the program.
-src/thinking.rs	You asked how I work, so I walked through my reasoning.
-src/thinking.rs	You asked how I'm doing, so I told you and offered to help.
-src/thinking.rs	You asked me to fix myself, so I diagnosed the failure and repaired it.
-src/thinking.rs	You asked what I get up to, so I answered in a friendly way and offered to help.
-src/thinking.rs	You gave me something to learn from, so I read it and updated what I know.
-src/thinking.rs	You pointed me at the web, so I fetched what you needed and summarized it.
-src/thinking.rs	You said goodbye, so I wished you well in return.
-src/thinking.rs	You said hello, so I greeted you back.
-src/thinking.rs	You thanked me, so I acknowledged it warmly.
-src/thinking.rs	{label}: {trimmed}.
+src/thinking.rs	{label}: {trimmed}
 src/translation/cache.rs	failed to create cache directory {}: {error}
 src/translation/cache.rs	failed to write cache body {}: {error}
 src/translation/cache.rs	failed to write cache url marker {}: {error}

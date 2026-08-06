@@ -1,0 +1,25 @@
+self_ast_census
+  target src/seed/release_timelines.rs
+  language rust
+  fidelity signature
+  byte_len 8874
+  line_count 232
+  content_id source_module_85b932ef41def8de
+  symbol_count 16
+  symbols
+    struct ReleaseTimelinePhrasing 25 36
+    struct ReleaseTimelineEntry 40 47
+    function title_for 52 58
+    function release_year 62 64
+    struct ReleaseTimeline 69 92
+    function subject_for 97 107
+    struct ReleaseTimelines 112 115
+    function timeline 120 122
+    function phrasing_for 126 135
+    function release_timelines 140 143
+    static REGISTRY 141 141
+    function parse_release_timelines 147 170
+    function parse_phrasing 172 185
+    function parse_timeline 187 210
+    function parse_entry 212 218
+    function localized_pairs 222 232

@@ -95,6 +95,7 @@ pub mod rebuild_plan;
 pub mod recipe_interpreter;
 pub mod recursive_execution;
 pub mod relative_meta_logic;
+pub mod release_timeline;
 pub mod repair_strategy;
 pub mod requirement_contradiction;
 pub(crate) mod responses_stream;
@@ -145,6 +146,7 @@ pub mod task_decomposition;
 pub mod telegram;
 pub mod telegram_runtime;
 pub mod thinking;
+pub mod thinking_prose;
 pub mod translation;
 pub(crate) mod unknown_opener;
 pub mod web_engine_core;
@@ -204,9 +206,11 @@ pub use dreaming_runtime::{
     core_is_idle, dreaming_disabled, run_core_dreaming_once, ForegroundActivity,
 };
 pub use engine::{
-    humanize_meta_identifier, knowledge_links_notation, naturalize_thinking_step,
-    render_thinking_steps, thinking_language_label, thinking_narrative, FormalAiEngine,
-    SymbolicAnswer, ThinkingStep, DEFAULT_MODEL,
+    humanize_meta_identifier, knowledge_links_notation, localize_thinking_steps,
+    naturalize_thinking_step, naturalize_thinking_step_in, render_thinking_steps,
+    render_thinking_steps_in, thinking_answer_language, thinking_language_label,
+    thinking_language_label_in, thinking_narrative, thinking_narrative_in, thinking_trace_heading,
+    FormalAiEngine, SymbolicAnswer, ThinkingStep, DEFAULT_MODEL,
 };
 pub use event_log::{Event, EventLog};
 pub use fact_checking::{
@@ -424,6 +428,15 @@ pub use summarization::{
     SourceProvider, SourcedStatement, Statement, StatementKind, StatementSignature,
     StatementVariant, SummarizationConfig, SummarizationMode, Verdict,
     DEFAULT_IDENTIFIER_MAX_LENGTH, DEFAULT_IDENTIFIER_MAX_WORDS, DEFAULT_MAX_STATEMENTS,
+};
+pub use summarization::{
+    evaluate_file, quality_sentence, ratchet_violations, validate_repository_summarization,
+    CorpusFile, Criterion, CriterionOutcome, FileQualityReport, IterationReport, QualityBaseline,
+    QualityScore, SamplingProtocol, ValidationReport, BASELINE_PATH, BASELINE_RECORD,
+    COMPRESSION_FLOOR_BYTES, CRITERIA, DEFAULT_FILES_PER_ITERATION, DEFAULT_MAX_ITERATIONS,
+    DEFAULT_MINIMUM_ITERATIONS, DEFAULT_SAMPLING_SEED, DEFAULT_STABILITY_TOLERANCE_PERCENT,
+    DEFAULT_STABILITY_WINDOW, HONESTY_POLICY, QUALITY_RATCHET_PERCENT, RATCHET_POLICY,
+    RATCHET_RUNNER,
 };
 pub use telegram::{
     handle_telegram_webhook, parse_get_updates_response, telegram_html_from_markdown,

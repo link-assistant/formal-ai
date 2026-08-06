@@ -36,10 +36,17 @@ pub const MULTILINGUAL_RESPONSES_PATTERN_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-pattern.lino");
 pub const MULTILINGUAL_RESPONSES_SUMMARIZATION_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-summarization.lino");
+pub const MULTILINGUAL_RESPONSES_SUMMARIZATION_QUALITY_LINO: &str =
+    include_str!("../../data/seed/multilingual-responses-summarization-quality.lino");
+pub const MULTILINGUAL_RESPONSES_THINKING_LINO: &str =
+    include_str!("../../data/seed/multilingual-responses-thinking.lino");
+pub const MULTILINGUAL_RESPONSES_THINKING_NARRATIVE_LINO: &str =
+    include_str!("../../data/seed/multilingual-responses-thinking-narrative.lino");
 pub const CONCEPTS_LINO: &str = include_str!("../../data/seed/concepts.lino");
 pub const CONCEPT_CONTEXTS_LINO: &str = include_str!("../../data/seed/concept-contexts.lino");
 pub const FACTS_LINO: &str = include_str!("../../data/seed/facts.lino");
 pub const MODEL_ALIASES_LINO: &str = include_str!("../../data/seed/model-aliases.lino");
+pub const RELEASE_TIMELINES_LINO: &str = include_str!("../../data/seed/release-timelines.lino");
 pub const MARKET_PRICE_REFERENCES_LINO: &str =
     include_str!("../../data/seed/market-price-references.lino");
 pub const ENTITY_NAMES_LINO: &str = include_str!("../../data/seed/entity-names.lino");
@@ -226,6 +233,18 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             "data/seed/multilingual-responses-summarization.lino",
             MULTILINGUAL_RESPONSES_SUMMARIZATION_LINO,
         ),
+        (
+            "data/seed/multilingual-responses-summarization-quality.lino",
+            MULTILINGUAL_RESPONSES_SUMMARIZATION_QUALITY_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-thinking.lino",
+            MULTILINGUAL_RESPONSES_THINKING_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-thinking-narrative.lino",
+            MULTILINGUAL_RESPONSES_THINKING_NARRATIVE_LINO,
+        ),
         ("data/seed/concepts.lino", CONCEPTS_LINO),
         ("data/seed/concept-contexts.lino", CONCEPT_CONTEXTS_LINO),
         ("data/seed/facts.lino", FACTS_LINO),
@@ -234,6 +253,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             "data/seed/market-price-references.lino",
             MARKET_PRICE_REFERENCES_LINO,
         ),
+        ("data/seed/release-timelines.lino", RELEASE_TIMELINES_LINO),
         ("data/seed/entity-names.lino", ENTITY_NAMES_LINO),
         (
             "data/seed/client-integrations.lino",
@@ -467,6 +487,9 @@ pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_PROCEDURE_LINO,
     MULTILINGUAL_RESPONSES_PATTERN_LINO,
     MULTILINGUAL_RESPONSES_SUMMARIZATION_LINO,
+    MULTILINGUAL_RESPONSES_SUMMARIZATION_QUALITY_LINO,
+    MULTILINGUAL_RESPONSES_THINKING_LINO,
+    MULTILINGUAL_RESPONSES_THINKING_NARRATIVE_LINO,
 ];
 
 /// The ordered set of meaning-lexicon files, concatenated by [`super::lexicon`].

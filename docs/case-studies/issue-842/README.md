@@ -92,7 +92,7 @@ change.
 
 After the final explicit-evidence planner correction changed the owned source,
 session `ses_03ab2b5ecffeE6OM87CFgu5dJ2` reran that self-AST axis through the
-real Agent CLI. A separate session, `ses_034a4ef73ffecQRKl6MOdzht2z`, reran the
+real Agent CLI. A separate session, `ses_0321e6e65ffefzct0vPr3Uc0ip`, reran the
 self-healing axis whose repair-case source map also depends on the planner.
 `self-hosting-census-refresh/` retains both final-source streams, Formal AI
 traces, focused artifacts, and the census renderer summary. The historical

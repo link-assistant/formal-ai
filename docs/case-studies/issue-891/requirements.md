@@ -1,0 +1,10 @@
+# Requirements trace — issue #891
+
+| ID | Requirement | Evidence |
+|---|---|---|
+| R891-1 | Define a machine-readable corpus with at least 50 distinct equation types. | `data/benchmarks/equation-type-corpus.lino` holds 72 `benchmark_case` records, one per distinct `equation_type`; `issue_891_equation_corpus_is_well_formed` asserts the types are distinct and at least `minimum_verified_types` (50). |
+| R891-2 | Run every case through the production solver and verify the result. | Every expected answer was observed from `FormalAiEngine::answer` via `examples/issue_891_equation_probe.rs` (raw output: `raw-data/production-solver-probe.tsv`); `issue_891_equation_corpus_solves_every_type` replays all 72 cases through the same entry point and compares intent, engine and the exact answer. |
+| R891-3 | Add a CI ratchet that fails below 50 or on any corpus regression. | `issue_891_equation_corpus_solves_every_type` asserts `passed >= minimum_pass_count` (72) and `verified_types >= minimum_verified_types` (50); the test runs in the default `cargo test --test unit` CI job. |
+| R891-4 | Record category coverage. | Seven categories with per-category counts in `docs/benchmarks.md` and in this case study; `issue_891_equation_corpus_is_well_formed` pins the exact category set and reads the language coverage from the language registry (`registered_languages()`), so a dropped category fails CI. |
+| R891-5 | Record upstream calculator limitations. | Ten `benchmark_limitation` records (irrational and complex roots, contradiction, malformed input, identity, unit-carrying equations, named-unknown declarations, command-shaped prompts); `issue_891_recorded_limitations_never_fabricate_answers` asserts each still declines rather than fabricating an answer, and fires when a gap is fixed so the record gets promoted. |
+| R891-6 | Solve the class rather than encode individual prompts. | The wrapper gap was fixed in seed data (`data/seed/meanings-calculator.lino`, role `calculation_request_cue`), not in code: the Rust engine and the JavaScript worker both read the new equation-solving cues from the same seed, and `src/` gained no hardcoded phrase. |

@@ -199,5 +199,5 @@ fn strip_block(text: &str, open: &str, close: &str) -> String {
         remaining = &after_open[end + close.len()..];
     }
     request.push_str(remaining);
-    request.trim().to_owned()
+    request
 }

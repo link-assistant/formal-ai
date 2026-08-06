@@ -1,0 +1,82 @@
+x + 2 = 5	calculation	link-calculator	x + 2 = 5 => x = 3
+x - 3 = 7	calculation	link-calculator	x - 3 = 7 => x = 10
+2 * x = 10	calculation	link-calculator	2 * x = 10 => x = 5
+x / 4 = 3	calculation	link-calculator	x / 4 = 3 => x = 12
+x * 2 = 123	calculation	link-calculator	x * 2 = 123 => x = 61.5
+Solve 5 = x + 1	calculation	link-calculator	5 = x + 1 => x = 4
+Solve 100 - x = 42	calculation	link-calculator	100 - x = 42 => x = 58
+Solve -2 * x = 8	calculation	link-calculator	-2 * x = 8 => x = -4
+Solve 4 * x = 6	calculation	link-calculator	4 * x = 6 => x = 1.5
+Solve 0.5 * x = 2.5	calculation	link-calculator	0.5 * x = 2.5 => x = 5
+2 * x + 3 = 11	calculation	link-calculator	2 * x + 3 = 11 => x = 4
+10 = y / 3 + 1	calculation	link-calculator	10 = y / 3 + 1 => y = 27
+Solve 3 * x + 2 = x + 10	calculation	link-calculator	3 * x + 2 = x + 10 => x = 4
+Solve 2 * (x + 3) = 10	calculation	link-calculator	2 * (x + 3) = 10 => x = 2
+Solve 3 * (x - 1) = 2 * (x + 4)	calculation	link-calculator	3 * (x - 1) = 2 * (x + 4) => x = 11
+Solve 2 * x + 3 * x = 25	calculation	link-calculator	2 * x + 3 * x = 25 => x = 5
+Solve x - (2 - x) = 6	calculation	link-calculator	x - (2 - x) = 6 => x = 4
+Solve x / 2 + x / 3 = 5	calculation	link-calculator	x / 2 + x / 3 = 5 => x = 6
+Solve x + 1 / 2 = 3 / 2	calculation	link-calculator	x + 1 / 2 = 3 / 2 => x = 1
+Solve 7 * x - 4 = 3 * x + 12	calculation	link-calculator	7 * x - 4 = 3 * x + 12 => x = 4
+Solve x / 5 - 2 = 0	calculation	link-calculator	x / 5 - 2 = 0 => x = 10
+Solve 12 = 4 * x - 8	calculation	link-calculator	12 = 4 * x - 8 => x = 5
+?+2=4	calculation	link-calculator	?+2=4 => ? = 2
+*+2=4	calculation	link-calculator	*+2=4 => * = 2
+Solve 2 * ? + 3 = 11	calculation	link-calculator	2 * ? + 3 = 11 => ? = 4
+Solve ? / 4 = 3	calculation	link-calculator	? / 4 = 3 => ? = 12
+Solve ? - 5 = 5	calculation	link-calculator	? - 5 = 5 => ? = 10
+Solve 10 = ? * 5	calculation	link-calculator	10 = ? * 5 => ? = 2
+Solve 2 * * + 3 = 11	calculation	link-calculator	2 * * + 3 = 11 => * = 4
+Solve * / 4 = 3	calculation	link-calculator	* / 4 = 3 => * = 12
+Solve 2 * x + 3 * y = 12	calculation	link-calculator	2 * x + 3 * y = 12 => x = 6 - 1.5*y
+Solve x + ? = 4	calculation	link-calculator	x + ? = 4 => ? = 4 - x
+Solve x + * = 4	calculation	link-calculator	x + * = 4 => * = 4 - x
+Solve ? + * = 4	calculation	link-calculator	? + * = 4 => ? = 4 - *
+Solve x + y + z = 6	calculation	link-calculator	x + y + z = 6 => x = 6 - y - z
+Solve 3 * x - y = 0	calculation	link-calculator	3 * x - y = 0 => x = 0.3333333333333333*y
+Solve a * 2 + b = 10	calculation	link-calculator	a * 2 + b = 10 => a = 5 - 0.5*b
+Solve x^2 = 4	calculation	link-calculator	x^2 = 4 => x = -2 or x = 2
+Solve x^2 - 5 * x + 6 = 0	calculation	link-calculator	x^2 - 5 * x + 6 = 0 => x = 2 or x = 3
+Solve x^2 - 4 * x + 4 = 0	calculation	link-calculator	x^2 - 4 * x + 4 = 0 => x = 2
+Solve x^2 + 5 * x = 0	calculation	link-calculator	x^2 + 5 * x = 0 => x = -5 or x = 0
+Solve 2 * x^2 - 8 = 0	calculation	link-calculator	2 * x^2 - 8 = 0 => x = -2 or x = 2
+Solve x * x = 9	calculation	link-calculator	x * x = 9 => x = -3 or x = 3
+Solve x^2 = 0	calculation	link-calculator	x^2 = 0 => x = 0
+Solve x^3 - x = 0	calculation	link-calculator	x^3 - x = 0 => x = -1 or x = 0 or x = 1
+Solve x^3 = 27	calculation	link-calculator	x^3 = 27 => x = 3
+Solve x^4 - 1 = 0	calculation	link-calculator	x^4 - 1 = 0 => x = -1 or x = 1
+Solve x^5 - x^3 = 0	calculation	link-calculator	x^5 - x^3 = 0 => x = -1 or x = 0 or x = 1
+Solve ? * ? = 4	calculation	link-calculator	? * ? = 4 => ? = -2 or ? = 2
+Solve * * * = 4	calculation	link-calculator	* * * = 4 => * = -2 or * = 2
+Solve x^2 - 2 = 0	calculation_error	-	I parsed 'x^2 - 2 = 0' as an arithmetic request but could not evaluate it: expression could not be parsed.
+Solve x^2 + 1 = 0	calculation_error	-	I parsed 'x^2 + 1 = 0' as an arithmetic request but could not evaluate it: expression could not be parsed.
+Solve x^3 - 6 * x^2 + 11 * x - 6 = 0	calculation	link-calculator	x^3 - 6 * x^2 + 11 * x - 6 = 0 => x = 1 or x = 2 or x = 3
+Solve 0 * x = 5	calculation_error	-	I parsed '0 * x = 5' as an arithmetic request but could not evaluate it: expression could not be parsed.
+Solve x = x	unknown	-	I could not determine `Solve x = x` from local Links Notation memory, cached public knowledge, or the source cache, and cannot infer a verified answer. I recorded the failed gather attempts in the trace.\n\nIf reasoning still cannot resolve this and a shared Links Notation seed fact or links rule is needed, use Report issue with the trace. To keep a dialog-local rule durable, export memory or teach it with `When I say ... answer ...`; inspect routes with `List behavior rules` and `Show behavior rule unknown`.\n\nI detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`.
+Solve x + = 4	calculation_error	-	I parsed 'x + = 4' as an arithmetic request but could not evaluate it: expression could not be parsed.
+Solve the equation 2 * x + 3 = 11	calculation	link-calculator	2 * x + 3 = 11 => x = 4
+Solve equation x - 4 = 6	calculation	link-calculator	x - 4 = 6 => x = 10
+What is x if x + 7 = 12?	calculation_error	-	I parsed 'x if x + 7 = 12' as an arithmetic request but could not evaluate it: expression could not be parsed.
+Find x: 5 * x = 45	agent_suggestion	-	It looks like you want to run a terminal command: `Find x: 5 * x = 45`.\n\nRunning shell commands requires Agent mode. In Chat mode I only reason about your request and do not execute commands.\n\nSwitch to Agent mode and grant the `shell` capability so I can run `Find x: 5 * x = 45`? Use the mode radio in the toolbar to pick "Agent" (or "Full Auto" to run commands automatically).
+Calculate x for 6 * x = 42	calculation_error	-	I parsed 'x for 6 * x = 42' as an arithmetic request but could not evaluate it: expression could not be parsed.
+Реши уравнение 2 * x + 3 = 11	calculation	link-calculator	2 * x + 3 = 11 => x = 4
+Сколько будет ? + 2 = 4	calculation	link-calculator	? + 2 = 4 => ? = 2
+Решите уравнение x / 3 = 9	calculation	link-calculator	x / 3 = 9 => x = 27
+Реши x / 3 = 9	calculation	link-calculator	x / 3 = 9 => x = 27
+解方程 2 * x + 3 = 11	calculation	link-calculator	2 * x + 3 = 11 => x = 4
+求解 x^2 - 5 * x + 6 = 0	calculation	link-calculator	x^2 - 5 * x + 6 = 0 => x = 2 or x = 3
+计算 x * 4 = 20	calculation	link-calculator	x * 4 = 20 => x = 5
+समीकरण हल करें 2 * x + 3 = 11	calculation	link-calculator	2 * x + 3 = 11 => x = 4
+समीकरण हल करो x / 3 = 9	calculation	link-calculator	x / 3 = 9 => x = 27
+हल करें x + 9 = 15	calculation	link-calculator	x + 9 = 15 => x = 6
+x + 9 = 15 कितना है?	calculation	link-calculator	x + 9 = 15 => x = 6
+2*2+2=?	calculation	link-calculator	2*2+2 = 6
+x*2 = 123 ?	calculation	link-calculator	x*2 = 123 => x = 61.5
+Solve 8% of x = 4	calculation	link-calculator	8% of x = 4 => x = 50
+Solve x kg = 1000 g	calculation_error	-	I parsed 'x kg = 1000 g' as an arithmetic request but could not evaluate it: expression could not be parsed.
+Solve 2 * x = 10 kg	calculation_error	-	I parsed '2 * x = 10 kg' as an arithmetic request but could not evaluate it: expression could not be parsed.
+Resuelve la ecuación x + 2 = 5	calculation	link-calculator	x + 2 = 5 => x = 3
+Resolver la ecuación 3 * x = 12	calculation	link-calculator	3 * x = 12 => x = 4
+Calcula 2 + 2	calculation	link-calculator	2 + 2 = 4
+Cuánto es 7 * 6	calculation	link-calculator	7 * 6 = 42
+Resuelve x^2 - 5 * x + 6 = 0	calculation	link-calculator	x^2 - 5 * x + 6 = 0 => x = 2 or x = 3

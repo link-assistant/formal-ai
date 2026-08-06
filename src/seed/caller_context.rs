@@ -19,7 +19,13 @@
 //!   the client dropped the question mark (*"what day is it"*, *"什么"*);
 //! * **subject leads** — the determiners a subject may open with, so *"**the**
 //!   current date is 2026-08-02"* is read as the same subject as *"current
-//!   date"*.
+//!   date"*;
+//! * **request verbs** — the verbs that make a sentence an order rather than a
+//!   statement (*"**print** the current directory"*, *"**покажи** дату"*).
+//!
+//! This is the single home for *"is this sentence asking, or telling?"*: every
+//! router that has to tell a request from the framing around it reads these
+//! lists rather than growing a copy of its own.
 //!
 //! Like every other trigger vocabulary the natural language lives in seed data
 //! rather than in the solver, so a maintainer adds a client or a language by
@@ -63,6 +69,9 @@ pub struct CallerContextVocabulary {
     pub question_words: Vec<String>,
     /// Determiners a subject may open with ("**the** current date is …").
     pub subject_leads: Vec<String>,
+    /// Verbs that make a sentence an order rather than a statement
+    /// ("**print** the current directory").
+    pub request_verbs: Vec<String>,
 }
 
 impl CallerContextVocabulary {
@@ -86,17 +95,26 @@ impl CallerContextVocabulary {
     }
 
     /// Whether `sentence` carries a question word, which makes it a question
-    /// even when the client dropped the question mark (*"what is the date"*).
+    /// even when the client dropped the question mark (*"what is the date"*),
+    /// or a request verb, which makes it an order (*"print the date"*). Either
+    /// way the sentence asks for something, so it is not a statement of fact.
     #[must_use]
     pub fn asks_a_question(&self, sentence: &str) -> bool {
-        self.question_words.iter().any(|word| {
-            if word.chars().any(is_unspaced_script) {
-                return sentence.contains(word.as_str());
-            }
-            sentence
-                .split(|character: char| !character.is_alphanumeric())
-                .any(|token| token == word)
-        })
+        self.question_words
+            .iter()
+            .chain(self.request_verbs.iter())
+            .any(|word| {
+                if word.chars().any(is_unspaced_script) {
+                    return sentence.contains(word.as_str());
+                }
+                // The apostrophe stays inside the token so a contracted question
+                // word ("what's the date") is one word, not two.
+                sentence
+                    .split(|character: char| {
+                        !character.is_alphanumeric() && !matches!(character, '\'' | '’')
+                    })
+                    .any(|token| token == word)
+            })
     }
 }
 
@@ -139,6 +157,9 @@ pub fn caller_context_vocabulary() -> CallerContextVocabulary {
             }
             "subject_leads" => {
                 vocab.subject_leads = collect_language_values(group, "lead");
+            }
+            "request_verbs" => {
+                vocab.request_verbs = collect_language_values(group, "verb");
             }
             _ => {}
         }

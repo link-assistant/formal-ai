@@ -107,9 +107,46 @@ examples/self-coding/run.sh
 cargo test self_coding_session_replays
 ```
 
-For a real GitHub issue, run `examples/self-coding/run.sh --live ISSUE_URL`.
-This invokes `solve ISSUE_URL --tool agent --model formal-ai`: Hive Mind drives
-the Agent CLI, which drives the local Formal AI server.
+For a real GitHub issue, run `examples/self-coding/run.sh --live ISSUE_URL`,
+which invokes the command below — Hive Mind drives the Agent CLI, which drives
+the local Formal AI server:
+
+```bash
+solve ISSUE_URL --tool agent --model formal-ai --attach-logs --verbose
+```
+
+### Always run automated `solve` sessions with `--attach-logs --verbose`
+
+Every automated session started against this repository — by hand or by a
+maintainer's dispatcher — must carry both flags:
+
+```bash
+solve https://github.com/link-assistant/formal-ai/issues/905 \
+  --tool agent --model formal-ai --attach-logs --verbose
+```
+
+Both are load-bearing, and neither substitutes for the other:
+
+- **`--attach-logs`** publishes the session log to the pull request, so a
+  failure leaves behind evidence rather than a single line in a comment.
+- **`--verbose`** is what makes the Agent adapter dump the **raw JSON** of every
+  error record and every fatal startup log record
+  ([link-assistant/hive-mind#2143](https://github.com/link-assistant/hive-mind/pull/2143)).
+  That raw record is what survives a future payload shape the renderer does not
+  know about.
+
+This is not a style preference; it is a precondition of the self/auto-learning
+loop this repository is built around. On 2026-08-04 a run on PR #927 failed
+after 22 seconds and recorded its whole reason as `[object Object]`, with no log
+attached — a failure that is unlearnable by construction, because the next
+iteration has nothing to act on. The container is gone and that cause is
+unrecoverable. The full timeline, root causes, and raw evidence are in
+[`docs/case-studies/issue-973/README.md`](docs/case-studies/issue-973/README.md).
+
+`tests/issue_973_solve_flags.rs` enforces the policy: it scans the guides and
+scripts this repository publishes and fails when any `solve` invocation drops
+either flag. Recorded history under `docs/case-studies/`, `dev/log/`, and
+`experiments/` is exempt — a past run stays as it happened.
 
 ### Recording self-authorship
 
@@ -245,6 +282,9 @@ Removal from a public thread is not approval to retain another copy.
 
    # Run a specific test
    cargo test test_name
+
+   # Run the browser unit suite (the site's production JavaScript)
+   npm run test:web
    ```
 
    CI caps each test-matrix job at 10 minutes. Rust's built-in `cargo test` runner does not provide a portable global per-test timeout, so wrap long-running network, IO, or async tests with explicit test-level deadlines. If a repository adopts `cargo nextest`, configure runner deadlines with options such as `--slow-timeout` and `--leak-timeout`.
@@ -342,7 +382,23 @@ pub fn example_function(arg1: i32, arg2: i32) -> i32 {
 ## Testing Guidelines
 
 - Write tests for all new features
-- Maintain or improve test coverage
+- Maintain or improve test coverage — this is enforced, not requested. CI
+  measures two separate denominators, Rust and browser, against the reviewed
+  floors in `coverage/baseline.json` and fails on a decrease. Raising a floor is
+  a one-liner; lowering one requires an explicit reviewed justification recorded
+  in the file. See [docs/design/coverage-ratchet.md](docs/design/coverage-ratchet.md).
+
+  ```bash
+  # Browser denominator
+  npm run coverage:web && npm run coverage:ratchet -- --only browser
+
+  # Rust denominator
+  cargo llvm-cov --all-features --lcov --output-path lcov.info
+  npm run coverage:ratchet -- --only rust
+
+  # Lock in a gain
+  npm run coverage:ratchet -- --only browser --update-baseline
+  ```
 - Use descriptive test names
 - Organize tests in modules when appropriate
 - Use `#[cfg(test)]` for test-only code

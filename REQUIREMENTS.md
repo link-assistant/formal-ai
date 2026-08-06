@@ -1710,6 +1710,75 @@ and opened-issue record live in `docs/case-studies/issue-914/`.
 | R914-14 | Fix critical vision-blocking code problems first, so the plan builds on a solid foundation. | Implemented in the plan: E69 is the foundation blocker consolidating #902-#909 behind the coding-ladder ratchet; every dependent epic declares its E69 dependency. |
 | R914-15 | Collect the data into `docs/case-studies/issue-914` with deep analysis, online research, the full requirement list, and per-requirement solution plans checking existing components. | Implemented: README, requirements, solution plan, proposed issues, raw GitHub data, and the component/license research live in that folder. |
 
+## Issue #891 Equation Corpus Ratchet
+
+Issue [#891](https://github.com/link-assistant/formal-ai/issues/891) (child of
+[#710](https://github.com/link-assistant/formal-ai/issues/710)) closes the issue
+[#406](https://github.com/link-assistant/formal-ai/issues/406) requirement of at
+least fifty *verified* equation-type examples. The delegation tests asserted
+equation categories but nothing defined them in machine-readable form and
+nothing counted them, so no ratchet could fail on a regression. The corpus lives
+in `data/benchmarks/equation-type-corpus.lino`, the ratchet in
+`tests/unit/specification/equation_corpus.rs`, and the analysis in
+`docs/case-studies/issue-891/`.
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R891-1 | Define a machine-readable corpus with at least 50 distinct equation types. | Implemented: `data/benchmarks/equation-type-corpus.lino` defines 72 distinct `equation_type` records; `issue_891_equation_corpus_is_well_formed` asserts distinctness and the 50-type floor. |
+| R891-2 | Run every case through the production solver and verify the result. | Implemented: every expected answer is the observed output of `FormalAiEngine::answer` (`examples/issue_891_equation_probe.rs`); `issue_891_equation_corpus_solves_every_type` replays all 72 cases and compares intent, engine and exact answer. |
+| R891-3 | Add a CI ratchet that fails below 50 verified types or on any corpus regression. | Implemented: the ratchet asserts `passed >= minimum_pass_count` (72) and `verified_types >= minimum_verified_types` (50) inside the default `cargo test --test unit` job. |
+| R891-4 | Record category coverage. | Implemented: seven categories (linear one-step / multi-step, placeholder, symbolic multi-variable, polynomial, natural-language wrapper, evaluation-and-percent) with counts in `docs/benchmarks.md`; the category set is pinned by the well-formedness test, which reads the expected language coverage from `registered_languages()`. |
+| R891-5 | Record upstream calculator limitations. | Implemented: ten `benchmark_limitation` records (irrational/complex roots, contradiction, malformed input, identity, unit-carrying equations, named-unknown declarations, command-shaped prompts) asserted by `issue_891_recorded_limitations_never_fabricate_answers` to keep declining rather than fabricating. |
+| R891-6 | Solve the class, not the prompts: new equation-solving cues belong to the seed. | Implemented: `data/seed/meanings-calculator.lino` gains `calculation_request_cue` surfaces for en/ru/zh/hi equation phrasings and a first Spanish lexeme; the Rust engine and the JavaScript worker read them from the same seed and `src/` carries no hardcoded phrase. |
+
+## Issue #893 Iterative Summarization Validation and the 80% Quality Ratchet
+
+Issue [#893](https://github.com/link-assistant/formal-ai/issues/893) (child of
+[#710](https://github.com/link-assistant/formal-ai/issues/710)) records the
+audit verdict *still-broken* for the part of issue
+[#563](https://github.com/link-assistant/formal-ai/issues/563) that the file and
+folder summarizers never covered. #563 did not only ask for
+`summarize_repository_file`; it asked for a *protocol*: take two random
+repository files, check the summaries, generalize, take two more, and repeat
+until the result is stable on files nobody optimized for, at a quality bar of at
+least 80%. The pipeline had the recursion, the exact captures and the
+determinism, but nothing sampled random files, nothing iterated, and no metric
+existed to be 80% of. The protocol lives in `src/summarization/validation/`
+(`mod.rs` the loop and the reports, `sampling.rs` the draw, `criteria.rs` the
+checks, `baseline.rs` the ratchet),
+the operator surface in `src/cli_summarization.rs`, the committed baseline in
+`data/summarization/quality-baseline.lino`, and the analysis in
+`docs/case-studies/issue-893/`. One test per requirement, plus a whole-task test
+that runs the protocol over the real repository, lives in
+`tests/unit/specification/issue_893_summarization_validation.rs`.
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R893-1 | Define a reproducible seeded sampling protocol over repository files. | Implemented: `SamplingProtocol { seed, files_per_iteration, max_iterations, minimum_iterations, stability_window, stability_tolerance_percent }` sorts the corpus and permutes it with a seeded `splitmix64` Fisher-Yates shuffle, so the draw depends on the seed and the corpus alone — not on caller order — and is a permutation, so no file repeats inside a run. `stratified_sampling_order` then promotes the first fence-carrying Markdown file to the front, leaving every other file at its seeded position, because a uniform draw of the affordable size can miss that stratum entirely. `issue_893_seeded_sampling_is_reproducible_and_seed_dependent` asserts reproducibility, caller-order independence, seed dependence and the permutation property. |
+| R893-2 | Validate two files per iteration until the result stabilizes or a reported bound is reached. | Implemented: `DEFAULT_FILES_PER_ITERATION = 2`; `validate_repository_summarization` draws disjoint two-file slices of the permutation and stops when `DEFAULT_STABILITY_WINDOW = 3` consecutive iterations all clear the ratchet within `DEFAULT_STABILITY_TOLERANCE_PERCENT = 5` points of one another — but never before `DEFAULT_MINIMUM_ITERATIONS = 12` iterations (24 files) have run, capped by what the corpus can supply, since three perfect iterations are six files and six files are no evidence about a corpus of thousands. Otherwise it stops at `max_iterations` with `bound_reached true`. `issue_893_iterations_validate_two_files_each_until_stable_or_bounded` asserts both exits and the minimum sample. |
+| R893-3 | Define and publish the quality metric with an 80 percent minimum ratchet. | Implemented: `CRITERIA` publishes ten named, described criteria; `QualityScore` is an exact integer `passed/applicable` ratio, floored, with an empty score scoring 0 rather than a vacuous 100; `QUALITY_RATCHET_PERCENT = 80` and `ratchet_violations` enforce the floor plus monotonicity against `data/summarization/quality-baseline.lino`. `formal-ai summarization criteria` prints the published metric. `issue_893_quality_metric_is_published_and_ratcheted_at_eighty_percent` and `issue_893_committed_baseline_records_the_measured_run` assert it. |
+| R893-4 | Exercise recursive Markdown embedded grammars through the production summarizer. | Implemented: `evaluate_file` scores every sampled file through `formalize_repository_file` / `RepositoryFileFormalization::summary`, and the `embedded_grammar_recursion` criterion checks every fenced block against an *independent* CommonMark fence scanner so the summarizer never grades itself. A run may not declare stability until at least one embedded grammar block has been exercised, and `ratchet_violations` rejects a run that recorded none. Because that rejection is fatal, reaching the recursive case is not left to luck: the stratified draw puts a fence-carrying Markdown file into iteration 0. `issue_893_markdown_embedded_grammars_run_through_the_production_summarizer` asserts all three, plus stratification over four seeds on a 413-file corpus. |
+| R893-5 | Report honestly rather than claiming a stability the run never observed. | Implemented: `ValidationReport` carries `stabilized` and `bound_reached` separately, records every failing criterion with its evidence detail, and `to_links_notation` writes exactly what the ratchet reads back, including `ratchet_runner`, `ratchet_policy` and `honesty_policy`. Criteria that do not apply to a file are excluded from its denominator instead of counted as passes. |
+
+## Issue #895 Coverage Publication And Ratchet
+
+Issue [#895](https://github.com/link-assistant/formal-ai/issues/895) (child of
+[#710](https://github.com/link-assistant/formal-ai/issues/710)) makes the
+"double the tests toward 100%" requirement enforceable. CI generated an LCOV
+file and uploaded it, but nothing read the numbers, so no threshold could fail
+and no decrease could be detected. The gate lives in
+`scripts/check-coverage-ratchet.rs`, the reviewed floors in
+`coverage/baseline.json`, and the design rationale in
+[`docs/design/coverage-ratchet.md`](docs/design/coverage-ratchet.md).
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R895-1 | Publish coverage in both a human-readable and a machine-readable form. | Implemented: `coverage/summary-<name>.md` (per-metric table of covered/total counts, measured percentage, baseline, delta in percentage points, status; the ten least-covered files; the inventory result) is appended to `$GITHUB_STEP_SUMMARY` and uploaded, alongside `coverage/summary-<name>.json` carrying the same metrics plus per-file counts. Regressions are also emitted as `::error::` annotations. |
+| R895-2 | Check a baseline threshold and reject decreases unless an explicit reviewed baseline update is included. | Implemented: `scripts/check-coverage-ratchet.rs` compares measured line and function percentages against `coverage/baseline.json` and exits `1` on a drop beyond `tolerance_percent`. `--update-baseline` raises a floor freely but refuses to lower one without `--justification "<reviewed reason>"`, which is recorded as `lowered_reason` so the decrease reaches review as a sentence in the diff. An empty denominator is a hard error rather than `0%`. |
+| R895-3 | Cover Rust and browser production paths, or document separate honest denominators. | Implemented as two denominators, never averaged. `rust` measures the workspace via `cargo llvm-cov`. `browser` measures `src/web/` via `tests/web/`, which loads the unbundled page scripts and the 24-module worker mirror through `node:vm` under their real repository paths so V8 attributes coverage to the files the browser downloads, and boots the worker through `src/web/formal_ai_worker.js` with the canonical `data/seed/*.lino` corpus behind `fetch`. |
+| R895-4 | The browser denominator must not be narrowed silently. | Implemented: every `src/web/**/*.{js,jsx}` file must be measured or listed in `coverage/browser-unmeasured.txt` as a `path<TAB>reason` row. Modeled on `scripts/hardcoded-language-allowlist.txt`, the gate fails on an undeclared, missing, stale or unexplained row, so the list can shrink but never grow silently. Generated bundles are excluded as build output and their sources measured instead. |
+| R895-5 | Add regression tests for threshold enforcement and baseline updates. | Implemented: `scripts/check-coverage-ratchet-tests.rs` covers LCOV parsing, the threshold and tolerance band, the published Markdown and JSON reports, the refusal to lower without a justification, the recording and later clearing of `lowered_reason`, and the inventory gate; a final case validates the committed `coverage/baseline.json`. Run as `rust-script --test scripts/check-coverage-ratchet.rs` in the `lint` job. |
+
 ## Standing Doctrine: Compiled Logic, Interfacing-Only JavaScript (2026-08-04)
 
 Stated by the project owner as a standing architectural requirement; it
@@ -1718,3 +1787,38 @@ strengthens R194/R249/R380 from "as much as possible" to a boundary rule.
 | ID | Requirement | Status / Evidence |
 | --- | --- | --- |
 | R536 | JavaScript must be used only as interfacing glue and for JSX (React) UI components. All logic must be compiled Rust — native on the server side, WebAssembly in the web app — and the same WASM web engine must be reused by the desktop shell and other surfaces (VS Code, etc.) rather than reimplemented. | Partially implemented: `src/web/wasm-worker/` owns the parity-sensitive primitives and `src/web/app/main.jsx` is the JSX UI; `src/web/worker/*.js` still carries ~27,700 lines of mirrored solver logic under the shrink-only ratchet `scripts/check-worker-line-budget.rs`. Desktop serves the same `src/web/` engine bundle and prefers the native `formal-ai serve` process; the VS Code web host runs the in-process WASM engine. Full absorption of the JS worker into Rust→WASM is tracked by [#658](https://github.com/link-assistant/formal-ai/issues/658) (R380); after absorption the JavaScript surface is capped and lint-enforced as UI/glue. |
+
+## Issue #894 CI Template Upstream Filings
+
+Issue [#894](https://github.com/link-assistant/formal-ai/issues/894) (child of
+[#710](https://github.com/link-assistant/formal-ai/issues/710)) closes the
+four-template CI/CD audit
+(`docs/case-studies/issue-479/template-comparison/REPORT.md`), which ended with
+*drafted* upstream issues and no field in which a filing URL could live. A
+recommendation with no URL is indistinguishable from an unreported gap and, once
+the templates move on, from a gap that no longer exists. The revalidation
+evidence and the filed issue bodies live in `docs/case-studies/issue-894/`.
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R894-1 | Revalidate every audit finding against the current template default branches before acting on it. | Implemented: all four templates re-fetched 2026-08-05 (`js` `7b70923`, `rust` `c867f78`, `python` `98d6dca`, `csharp` `6806bd9`); commands and verbatim output preserved in `docs/case-studies/issue-894/raw-data/revalidation-greps.txt` and `revalidation-greps-2.txt`; what moved since the snapshot is recorded in the report's *What the 2026-08-05 revalidation changed* subsection. |
+| R894-2 | File each confirmed gap in the owning upstream repository with a reproduction, a workaround, and a suggested fix. | Implemented: eight issues filed — security scanning (js#122, rust#115, python#48, csharp#43), `links.yml` port (rust#116, python#49, csharp#44), optional desktop-release workflow (rust#117). Bodies preserved verbatim as `docs/case-studies/issue-894/raw-data/sec-*.md`, `links-*.md`, `desktop-rust.md`; the created issues as `filed-upstream-issues.json`. |
+| R894-3 | Link every filing from the report and mark obsolete findings explicitly. | Implemented: the report's *Recommended upstream issues to file* section is replaced by the *Upstream filing status (revalidated 2026-08-05)* ledger — every `confirmed` row carries its filing URL, U4/U5/U6 are `not-applicable` with the reason, and L1/L3/L4/L7 (API-docs deploy, published-crate smoke test, resilient buildx, main-safe concurrency) are `obsolete` with the evidence that closed them. |
+| R894-4 | A confirmed finding may never remain ready-to-file without a URL, enforced by a documentation check. | Implemented: `tests/unit/docs_requirements_issue_894.rs` parses the ledger and fails when a `confirmed` row has no `link-foundation` issue URL, when a status outside the documented vocabulary (`confirmed` / `obsolete` / `not-applicable` / `local`) appears, when the pre-filing recommendation section returns, or when the preserved evidence goes missing. |
+
+## Issue #973 Automated Solve Session Evidence
+
+Issue [#973](https://github.com/link-assistant/formal-ai/issues/973) follows the
+2026-08-04 run on PR [#927](https://github.com/link-assistant/formal-ai/pull/927),
+which failed after 22 seconds and recorded its entire reason as `[object Object]`
+with no log attached. The container is gone, so that cause is unrecoverable, and
+a failure recorded that way is unlearnable by construction — the next iteration
+of the self/auto-learning loop has nothing to act on. Timeline, root causes
+RC1–RC6, and the captured GitHub API evidence live in
+`docs/case-studies/issue-973/`.
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R973-1 | Automated `solve` sessions on this repository run with `--attach-logs --verbose`. | Implemented: `examples/self-coding/run.sh --live` executes `solve "$2" --tool agent --model formal-ai --attach-logs --verbose`; it previously passed `--verbose` alone, which is the configuration that produced the unrecoverable failure. |
+| R973-2 | The two flags are documented as non-substitutable, with the reason each is load-bearing. | Implemented: CONTRIBUTING.md § *Always run automated `solve` sessions with `--attach-logs --verbose`* records the canonical command, that `--attach-logs` publishes the session log to the pull request, and that `--verbose` is what makes the Agent adapter dump the raw JSON of every error and fatal-startup record ([hive-mind#2143](https://github.com/link-assistant/hive-mind/pull/2143)) — the record that survives a payload shape the renderer does not know. |
+| R973-3 | The policy is enforced by a test, not only written down. | Implemented: `tests/issue_973_solve_flags.rs` scans the guides and scripts this repository publishes (`docs/`, `examples/`, `scripts/`, `.github/`, `src/`, root guides), joins shell and Markdown line continuations so a wrapped command is judged whole, ignores prose such as "we do not solve a task by hand", and fails on any `solve` invocation missing either flag. Recorded history under `docs/case-studies/`, `dev/log/`, and `experiments/` is exempt so past runs stay byte-for-byte as they happened. |

@@ -115,6 +115,10 @@ fn client_injected_context_is_not_the_users_request() {
             "<cwd>/tmp/workspace</cwd>\n<approval_policy>on-request</approval_policy>",
         ),
         ("env", "Working directory: /tmp/workspace\nToday's date: 2026-08-02"),
+        (
+            "environment_details",
+            "# Current Time\n2026-08-02T20:00:00Z\n# Current Working Directory\n/tmp/workspace",
+        ),
     ] {
         let framed = format!("<{tag}>\n{context}\n</{tag}>\n\n{REQUEST}");
         let messages = vec![ChatMessage::user(&framed)];
@@ -140,6 +144,7 @@ fn caller_context_markers_live_in_seed_data() {
         ("system-reminder", "qwen"),
         ("environment_context", "codex"),
         ("env", "opencode"),
+        ("environment_details", "cline"),
     ] {
         let block = vocabulary
             .injected_blocks

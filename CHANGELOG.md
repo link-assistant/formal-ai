@@ -7,6 +7,250 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.332.1] - 2026-08-05
+
+### Changed
+- Automated `solve` sessions on this repository now run with `--attach-logs
+  --verbose`. `examples/self-coding/run.sh --live` passes both flags, and
+  `CONTRIBUTING.md` records the canonical command plus why neither flag
+  substitutes for the other: `--attach-logs` publishes the session log to the
+  pull request, and `--verbose` is what makes the Agent adapter dump the raw
+  JSON of every error and fatal-startup record
+  (link-assistant/hive-mind#2143). The 2026-08-04 run on PR #927 failed in 22
+  seconds and left only `AGENT execution failed with Agent reported error:
+  [object Object]` with no log attached; that cause is unrecoverable, and a
+  failure recorded that way is unlearnable by construction (issue #973).
+
+### Added
+- `tests/issue_973_solve_flags.rs`, which enforces the policy instead of only
+  documenting it: it scans the guides and scripts the repository publishes and
+  fails when any `solve` invocation drops either flag, naming the file, line,
+  and missing flag. Recorded history under `docs/case-studies/`, `dev/log/`, and
+  `experiments/` stays exempt, so past runs remain byte-for-byte as they
+  happened.
+- `docs/case-studies/issue-973/` — the timeline of PR #927's failure, root
+  causes RC1–RC6 with the upstream reports (link-assistant/hive-mind#2141,
+  link-assistant/agent#289, link-assistant/agent#290), and the captured GitHub
+  API evidence under `raw-data/`.
+
+## [0.332.0] - 2026-08-05
+
+### Added
+- An iterative repository-summarization validation protocol with a published quality
+  metric and an 80% ratchet (`src/summarization/validation/`). A seeded
+  `splitmix64` Fisher-Yates permutation draws repository files reproducibly, two per
+  iteration, and the loop keeps going until three consecutive iterations sit within
+  five points of one another above the ratchet — never before twelve iterations have
+  run, because three perfect iterations are six files and six files say nothing about
+  a corpus of ten thousand — or it stops at the iteration bound and reports
+  `bound_reached` instead of claiming a stability it never observed. The
+  ten criteria are scored as an exact integer `passed/applicable` ratio, floored, with
+  criteria that cannot apply to a file dropped from that file's denominator rather
+  than counted as free passes (issue #893, re-opening issue #563).
+- `formal-ai summarization criteria | validate | ratchet` — the operator surface for
+  the metric. `validate --append` writes the measured run to
+  `data/summarization/quality-baseline.lino`; `ratchet` re-measures and fails when the
+  score drops below the published 80% minimum or below whatever the repository last
+  committed (issue #893).
+
+### Fixed
+- Markdown embedded grammars are now exercised through the production summarizer on
+  every validation run, and counted against an *independent* CommonMark fence scanner
+  so the summarizer cannot grade itself. A run that recorded no embedded grammar block
+  may not declare stability and is rejected by the ratchet — and because fenced
+  Markdown is rare enough that a uniform draw of the affordable size can miss it
+  entirely (it failed one CI run at 100% measured quality), the draw is stratified:
+  the seeded permutation is computed as before, then one fence-carrying Markdown file
+  is promoted into iteration 0 (issue #893).
+
+## [0.331.0] - 2026-08-05
+
+### Added
+- A non-decreasing coverage ratchet. `scripts/check-coverage-ratchet.rs` reads the
+  LCOV report CI already produced, publishes a human-readable
+  `coverage/summary-<name>.md` (per-metric table, deltas in percentage points, the
+  ten least-covered files) into the run summary alongside a machine-readable
+  `coverage/summary-<name>.json`, and fails the build when a percentage drops below
+  the reviewed floor in `coverage/baseline.json`. Raising a floor is
+  `--update-baseline`; lowering one is refused unless `--justification "<reviewed
+  reason>"` records the decision in the file, so a decrease reaches review as a
+  sentence in the diff rather than two digits changing (issue #895, epic #710).
+- Coverage of the browser production sources, which had none. `tests/web/` loads the
+  unbundled `src/web/` page scripts and the 24-module worker mirror into a `node:vm`
+  sandbox under their real repository paths — which is what makes V8 attribute
+  coverage to the files the browser downloads — and boots the worker through its real
+  entry point with the canonical `data/seed/*.lino` corpus behind `fetch`. 48 new
+  tests; `npm run test:web` and `npm run coverage:web` run them, and a new
+  `browser-coverage` job in `.github/workflows/coverage.yml` enforces the browser
+  denominator.
+- `coverage/browser-unmeasured.txt`, a committed `path<TAB>reason` inventory of every
+  `src/web/**` file the browser denominator does not measure. A file that is neither
+  measured nor declared fails the build, as does a stale, redundant or unexplained
+  row, so the denominator cannot be quietly narrowed to flatter the number. The list
+  can shrink; it cannot grow silently.
+
+### Changed
+- The Rust and browser denominators are ratcheted separately and never averaged into
+  a single figure: a large Rust suite would otherwise mask an untested website while
+  the combined number went up. `docs/design/coverage-ratchet.md` documents the
+  measurement, the publication format, and the baseline-update policy.
+- Coverage now runs from `.github/workflows/coverage.yml` instead of the release
+  pipeline. Nothing in the release graph depended on the job, so the move changed no
+  ordering; it puts one job per denominator in the checks list, and it returns
+  `release.yml` to 1930 lines, back under the 2000-line ceiling
+  `scripts/check-file-size.rs` documents as debt that must not grow.
+
+### Fixed
+- The coverage job's timeout, raised from 25 to 40 minutes. Issue #812 set 25 against
+  a worst case of 14.1 minutes, but the instrumented suite has since grown to
+  17.2–19.6 minutes across the last eight green runs on `main` — 78% of the budget,
+  the same one-slow-run margin #812 was filed about — and it hit the cap outright.
+- `npm run test:web` and `npm run coverage:web`, which passed `tests/web/` to
+  `node --test`. Node 20 recurses into that directory, but the Node 22 the workflow
+  pins resolves it as a module path and fails with "Cannot find module". Both scripts
+  now use `tests/web/*.test.mjs`, which the shell expands identically on either
+  version.
+
+## [0.330.0] - 2026-08-05
+
+### Changed
+- Spider-Man release-order answers are no longer a frozen sentence in
+  `data/seed/facts.lino`. They are rendered at question time from a
+  source-backed snapshot: a checked-in SPARQL query against the Wikidata Query
+  Service (`data/cache/wikidata/query/spider-man-title-role-films.rq`), its raw
+  answer, and the cached Wikidata labels of every film (issue #892).
+
+### Added
+- `data/seed/release-timelines.lino`: a general release-timeline registry —
+  per-language answer wording plus, for each timeline, its source, query, cache
+  file, snapshot date, freshness window, SHA-256, and the dated works with their
+  localized titles. `scripts/ground-release-timelines.py` regenerates it from
+  the cache (`--check` verifies, `--refresh` re-fetches).
+- `formal_ai::release_timeline`: renders a timeline for a language as of a given
+  day, ordering released works by date, listing announced ones separately, and
+  switching to stale wording once the snapshot outlives its freshness window.
+- `release_timeline:*` evidence links recording which snapshot an answer was
+  computed from, its digest, the released/announced counts, and staleness.
+
+## [0.329.1] - 2026-08-05
+
+### Changed
+- The four-template CI/CD audit report
+  (`docs/case-studies/issue-479/template-comparison/REPORT.md`) no longer ends with
+  drafted-but-unfiled recommendations. Every finding was revalidated against the
+  current template default branches (2026-08-05) and the *Recommended upstream
+  issues to file* section is replaced by an *Upstream filing status* ledger that
+  carries a status (`confirmed` / `obsolete` / `not-applicable` / `local`) and, for
+  every confirmed row, the upstream issue URL. Eight issues were filed upstream —
+  CI security scanning in all four templates, the `links.yml` broken-link checker in
+  the Rust/Python/C# templates, and an optional desktop-release workflow in the Rust
+  template — each with a reproduction, a workaround and a suggested fix. Findings
+  that closed since the June snapshot (API-docs deploy, published-crate smoke test,
+  resilient buildx, main-safe concurrency) are marked obsolete with the evidence
+  that closed them (issue #894).
+
+### Added
+- `tests/unit/docs_requirements_issue_894.rs` parses the filing ledger and fails
+  when a `confirmed` finding carries no upstream issue URL, when a status outside
+  the documented vocabulary appears, when the pre-filing recommendation section
+  returns, or when the preserved revalidation evidence goes missing (R894-4).
+
+## [0.329.0] - 2026-08-05
+
+### Added
+- A write-effect coding ladder (`experiments/issue_916_write_effect_ladder`) that
+  executes every planned `write_file` and `run_shell_command` for real in a throwaway
+  workspace and passes a rung only when the declared effect is observable on disk.
+  `.github/workflows/write-effect-ladder.yml` enforces the score as a monotonic
+  ratchet in the style of the issue #408 gate, so a rung that was green can never
+  silently go red (epic E69, issue #916).
+- `formal-ai with --global gemini` now also writes `~/.gemini/settings.json` with the
+  selected authentication type, and `--undo` restores it from its backup: the
+  environment variable alone is only a *default*, so the configured client still
+  refused to start headlessly (issue #909).
+
+### Fixed
+- A tool result's exit code is now the primary success signal. `Exit Code: 0` with
+  `Output: (empty)` / `Error: (none)` — how `python3 -m py_compile` reports success —
+  is no longer read as a failure, and `Exit Code: 1` alongside plausible-looking
+  output is no longer read as success (issues #905 and #908).
+- Failure reports name the failing command and the code it exited with instead of
+  blaming the harness, so exit codes propagate to the reported outcome (issue #908).
+- A read of a file that is not there is reported as a failure, in the language the
+  request was written in, instead of being answered with "Contents of `hello.txt`:"
+  wrapped around the raw transport envelope. Only the shell route consulted the
+  harness's exit code, so a client that advertised a typed read tool got the English
+  false success for a Russian, Hindi or Chinese request (issues #905 and #916).
+- A general change request is no longer reported as "completed and verified" when the
+  verification command it named exited non-zero; the observed failure replaces the
+  claim (issue #905).
+- An adverbial qualifier that delimits literal content ("containing exactly: Hello
+  World", "содержащий ровно: …") is no longer captured as part of the bytes to write
+  (issue #905).
+- A client's own framing block — Gemini CLI's `<session_context>`, Cline's
+  `<environment_details>` — is stripped from the user request like `<system-reminder>`
+  already was, and a declarative statement of fact ("Today's date is …") no longer
+  fires the shell intent whose cue it happens to contain, so the request that follows
+  it is the one that gets planned (issue #907).
+- `formal-ai with --global qwen` writes the complete OpenAI triple (`OPENAI_API_KEY`,
+  `OPENAI_BASE_URL`, `OPENAI_MODEL`), which is what qwen-code needs to select the
+  OpenAI authentication path unattended (issue #909).
+
+## [0.328.0] - 2026-08-04
+
+### Added
+- Equation-type corpus with a CI ratchet (issue #891, requirement from #406):
+  `data/benchmarks/equation-type-corpus.lino` defines 72 distinct equation
+  types — one-step and multi-step linear, `?`/`*` placeholder unknowns,
+  symbolic multi-variable isolation, polynomials up to degree five,
+  natural-language wrappers in every registered language, and
+  evaluation/percent flavours — each carrying the exact answer observed from
+  the production solver. `issue_891_equation_corpus_solves_every_type` replays
+  every case through `FormalAiEngine::answer` and fails below the recorded pass
+  count or below 50 distinct verified types.
+- Ten recorded `benchmark_limitation` records (irrational and complex roots,
+  contradictions, malformed input, identities, unit-carrying equations,
+  named-unknown declarations, command-shaped prompts) asserted to keep
+  declining loudly rather than fabricating an answer.
+
+### Fixed
+- Equation-solving request cues in `data/seed/meanings-calculator.lino`: "solve
+  the equation" / "solve equation" (en), "реши/решите уравнение" (ru), "解方程"
+  and "求解" (zh), and "समीकरण हल करें/करो", "हल करें/करो" (hi) are now stripped
+  before delegation, so `Solve the equation 2 * x + 3 = 11` and its Russian,
+  Chinese and Hindi equivalents solve instead of returning a parse error. The
+  `calculation_request` meaning also gains its first Spanish lexeme
+  ("resuelve la ecuación", "resolver la ecuación", "cuánto es", "resuelve",
+  "calcular", "calcula"), so Spanish calculation prompts route at all. The
+  cues are seed data, so the Rust engine and the JavaScript worker gain them
+  from the same source.
+
+## [0.327.0] - 2026-08-04
+
+### Fixed
+- Thinking traces are now written in the language of the answer on every non-UI surface (issue #889, parent #710). The browser panel was already localized through the web i18n catalog, so a Russian, Hindi, Chinese or Spanish answer arrived with an English explanation of how it was produced everywhere else:
+  - the sentences a trace is made of moved out of `src/thinking.rs` into seed data (`data/seed/multilingual-responses-thinking.lino` and `…-thinking-narrative.lino`), translated into every registered language, so adding a language means adding records rather than editing Rust (R379);
+  - the CLI `--thinking` trace (including its heading), the OpenAI Chat Completions `reasoning`/`reasoning_content` fields, the OpenAI Responses reasoning item, the Anthropic extended-thinking block and the Telegram expandable blockquote all narrate in the resolved answer language, which is derived from the trace itself;
+  - the language names inside the trace are localized too, so a Russian trace reads «Определить язык запроса: русский.» instead of naming the language in English;
+  - the machine-readable `step`/`detail` trace keys and the step ids stay language-neutral, so downstream consumers never have to parse prose.
+
+## [0.326.3] - 2026-08-04
+
+### Fixed
+- Step verification in the agentic command reroute now reads the exit code the harness reported instead of guessing from the shape of the output (#908). A verification command that exits `0` without printing anything — `python3 -m py_compile`, `tsc --noEmit`, `diff -q` — is a success, and a command that exits non-zero is a failure even when it printed output. Prose markers decide only when the harness reported no exit code at all, and an `Error: (none)` placeholder field no longer reads as an error.
+
+### Changed
+- A failed step is now reported as `Step \`<command>\` for \`<file>\` failed with exit code <n>` in every registered language, instead of the English-only claim that "the agentic CLI harness could not complete" the file — the harness had run the command exactly as asked.
+
+## [0.326.2] - 2026-08-04
+
+### Fixed
+- The implementation-language router now validates what fills the `in <language>` position instead of taking whatever word follows `in` (issue #906):
+  - a closed-class word is no longer read as a language name, so "Create a file named `hello.txt` in the current directory…" is no longer routed as a request in language `the` (an unknown *name* such as `elvish` is still read, so the engine can report what it was asked for);
+  - a request that names no language gets its own answer — "I will not guess an implementation language… name the language" — with its own intent, event and response link, so the internal `missing` sentinel never reaches the reply;
+  - the modifier modifies the request instead of replacing it: "Fix the failing CI job in Rust." is answered about the CI job rather than with an encyclopedia definition of Rust;
+  - a request whose artefact is a *file* is no longer normalised into a `write_program` request, so the path and the content survive into the change plan instead of being replaced by `console.log('Hello, world!')`.
+
 ## [0.326.1] - 2026-08-04
 
 ### Fixed

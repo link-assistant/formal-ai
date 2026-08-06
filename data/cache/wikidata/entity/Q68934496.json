@@ -1,0 +1,67 @@
+{
+  "entities": {
+    "Q68934496": {
+      "type": "item",
+      "id": "Q68934496",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Spider-Man: No Way Home"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Человек-паук: Нет пути домой"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "स्पाइडर-मैन : नो वे होम"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "蜘蛛侠：英雄无归"
+        },
+        "es": {
+          "language": "es",
+          "value": "Spider-Man: Sin camino a casa"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "2021 film directed by Jon Watts"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "фильм Джона Уоттса (2021)"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मार्वल स्टूडियोज़ और सोनी पिक्चर्स द्वारा सह-निर्मित आगामी सुपरहीरो फ़िल्म"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "2021年美國超級英雄電影"
+        },
+        "es": {
+          "language": "es",
+          "value": "película de 2021 dirigida por Jon Watts"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "No Way Home"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "蜘蛛人：無家日"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

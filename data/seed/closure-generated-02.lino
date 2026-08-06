@@ -1,4 +1,119 @@
 meanings
+  essay
+    defined-by word_surface
+    lexeme en
+      surface
+        text "essay"
+  eur
+    defined-by word_surface
+    lexeme en
+      surface
+        text "eur"
+  eval_js
+    defined-by name
+    lexeme en
+      surface
+        text "eval js"
+  even
+    defined-by concept
+    lexeme en
+      surface
+        text "even"
+  events
+    defined-by concept
+    lexeme en
+      surface
+        text "events"
+  every
+    defined-by concept
+    lexeme en
+      surface
+        text "every"
+  exact_title
+    defined-by coverage_group
+    lexeme en
+      surface
+        text "exact title"
+  exceeds
+    defined-by word_surface
+    lexeme en
+      surface
+        text "exceeds"
+  expandable
+    defined-by concept
+    lexeme en
+      surface
+        text "expandable"
+  export_memory
+    defined-by name
+    lexeme en
+      surface
+        text "export memory"
+  express
+    defined-by word_surface
+    lexeme en
+      surface
+        text "express"
+  expression-language
+    defined-by category
+    lexeme en
+      surface
+        text "expression language"
+  external_benchmark_baseline_read_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark baseline read error"
+  external_benchmark_failure_observation
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark failure observation"
+  external_benchmark_learning_event
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark learning event"
+  external_benchmark_learning_lesson
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark learning lesson"
+  external_benchmark_learning_task
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark learning task"
+  external_benchmark_not_swe_case
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark not swe case"
+  external_benchmark_parquet_decode_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark parquet decode error"
+  external_benchmark_parquet_module_unavailable
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark parquet module unavailable"
+  external_benchmark_parquet_start_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark parquet start error"
+  external_benchmark_parquet_utf8_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark parquet utf8 error"
+  external_benchmark_provenance
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark provenance"
   external_benchmark_provenance_write_error
     defined-by intent
     lexeme en
@@ -164,13 +279,18 @@ meanings
     lexeme en
       surface
         text "fibonacci"
+  fields
+    defined-by concept
+    lexeme en
+      surface
+        text "fields"
   file_handle
     defined-by concept
     lexeme en
       surface
         text "file handle"
   files
-    defined-by word_surface
+    defined-by concept
     lexeme en
       surface
         text "files"
@@ -179,6 +299,11 @@ meanings
     lexeme en
       surface
         text "filesystem"
+  filled
+    defined-by concept
+    lexeme en
+      surface
+        text "filled"
   filtered
     defined-by word_surface
     lexeme en
@@ -219,6 +344,11 @@ meanings
     lexeme en
       surface
         text "for"
+  forbids
+    defined-by concept
+    lexeme en
+      surface
+        text "forbids"
   form
     defined-by word_surface
     lexeme en
@@ -249,6 +379,11 @@ meanings
     lexeme en
       surface
         text "function catalog"
+  gate
+    defined-by concept
+    lexeme en
+      surface
+        text "gate"
   general_plan_command_capture_action
     defined-by intent
     lexeme en
@@ -289,6 +424,11 @@ meanings
     lexeme en
       surface
         text "get"
+  gets
+    defined-by concept
+    lexeme en
+      surface
+        text "gets"
   git
     defined-by token
     lexeme en
@@ -304,6 +444,11 @@ meanings
     lexeme en
       surface
         text "github repository traffic"
+  give
+    defined-by concept
+    lexeme en
+      surface
+        text "give"
   gives
     defined-by word_surface
     lexeme en
@@ -349,6 +494,11 @@ meanings
     lexeme en
       surface
         text "gui rendering"
+  hardcoded
+    defined-by concept
+    lexeme en
+      surface
+        text "hardcoded"
   has
     defined-by concept
     lexeme en
@@ -364,6 +514,16 @@ meanings
     lexeme en
       surface
         text "heading"
+  headlines
+    defined-by concept
+    lexeme en
+      surface
+        text "headlines"
+  held
+    defined-by concept
+    lexeme en
+      surface
+        text "held"
   hive-mind
     defined-by name
     lexeme en
@@ -394,6 +554,11 @@ meanings
     lexeme en
       surface
         text "http server"
+  human
+    defined-by concept
+    lexeme en
+      surface
+        text "human"
   human-language
     defined-by name
     lexeme en
@@ -424,6 +589,11 @@ meanings
     lexeme en
       surface
         text "indent lines"
+  inside
+    defined-by concept
+    lexeme en
+      surface
+        text "inside"
   integer
     defined-by word_surface
     lexeme en
@@ -869,6 +1039,11 @@ meanings
     lexeme en
       surface
         text "language detection"
+  languages
+    defined-by concept
+    lexeme en
+      surface
+        text "languages"
   last_message
     defined-by concept
     lexeme en
@@ -1159,6 +1334,21 @@ meanings
     lexeme en
       surface
         text "list week events by topic"
+  literally
+    defined-by word_surface
+    lexeme en
+      surface
+        text "literally"
+  literals
+    defined-by concept
+    lexeme en
+      surface
+        text "literals"
+  live
+    defined-by concept
+    lexeme en
+      surface
+        text "live"
   local
     defined-by concept
     lexeme en
@@ -1204,193 +1394,3 @@ meanings
     lexeme en
       surface
         text "local search mismatch requested file"
-  local_search_not_found
-    defined-by intent
-    lexeme en
-      surface
-        text "local search not found"
-  local_search_route_local
-    defined-by intent
-    lexeme en
-      surface
-        text "local search route local"
-  local_search_scope_listing
-    defined-by intent
-    lexeme en
-      surface
-        text "local search scope listing"
-  local_search_type_directory
-    defined-by intent
-    lexeme en
-      surface
-        text "local search type directory"
-  local_search_type_file
-    defined-by intent
-    lexeme en
-      surface
-        text "local search type file"
-  local_shell
-    defined-by word_surface
-    lexeme en
-      surface
-        text "local shell"
-  locate
-    defined-by word_surface
-    lexeme en
-      surface
-        text "locate"
-  ls
-    defined-by concept
-    lexeme en
-      surface
-        text "ls"
-  manuscript
-    defined-by word_surface
-    lexeme en
-      surface
-        text "manuscript"
-  map_matches
-    defined-by concept
-    lexeme en
-      surface
-        text "map matches"
-  marie_curie
-    defined-by concept
-    lexeme en
-      surface
-        text "marie curie"
-  match
-    defined-by concept
-    lexeme en
-      surface
-        text "match"
-  material
-    defined-by concept
-    lexeme en
-      surface
-        text "material"
-  material-symbols
-    defined-by concept
-    lexeme en
-      surface
-        text "material symbols"
-  mathematical-logic
-    defined-by category
-    lexeme en
-      surface
-        text "mathematical logic"
-  mathematics
-    defined-by category
-    lexeme en
-      surface
-        text "mathematics"
-  mcp_instructions
-    defined-by intent
-    lexeme en
-      surface
-        text "mcp instructions"
-  mcp_prompt_description
-    defined-by intent
-    lexeme en
-      surface
-        text "mcp prompt description"
-  mcp_tool_description
-    defined-by intent
-    lexeme en
-      surface
-        text "mcp tool description"
-  memory_export_filename
-    defined-by field
-    lexeme en
-      surface
-        text "memory export filename"
-  memory_program_compilation_gap
-    defined-by intent
-    lexeme en
-      surface
-        text "memory program compilation gap"
-  memory_program_complete
-    defined-by intent
-    lexeme en
-      surface
-        text "memory program complete"
-  memory_program_destructive_refused
-    defined-by intent
-    lexeme en
-      surface
-        text "memory program destructive refused"
-  memory_program_interpreter_gap
-    defined-by intent
-    lexeme en
-      surface
-        text "memory program interpreter gap"
-  memory_program_iteration_limit
-    defined-by intent
-    lexeme en
-      surface
-        text "memory program iteration limit"
-  memory_program_match_limit
-    defined-by intent
-    lexeme en
-      surface
-        text "memory program match limit"
-  memory_program_permission_refused
-    defined-by intent
-    lexeme en
-      surface
-        text "memory program permission refused"
-  memory_query_unrecognized
-    defined-by intent
-    lexeme en
-      surface
-        text "memory query unrecognized"
-  memory_root_header
-    defined-by field
-    lexeme en
-      surface
-        text "memory root header"
-  meta-expression
-    defined-by name
-    lexeme en
-      surface
-        text "meta expression"
-  meta-theory
-    defined-by word_surface
-    lexeme en
-      surface
-        text "meta theory"
-  meta_explanation
-    defined-by intent
-    lexeme en
-      surface
-        text "meta explanation"
-  misinformation
-    defined-by word_surface
-    lexeme en
-      surface
-        text "misinformation"
-  missing_english_label_todo
-    defined-by concept
-    lexeme en
-      surface
-        text "missing english label todo"
-  missing_russian_label_todo
-    defined-by concept
-    lexeme en
-      surface
-        text "missing russian label todo"
-  mkdir
-    defined-by concept
-    lexeme en
-      surface
-        text "mkdir"
-  mode
-    defined-by concept
-    lexeme en
-      surface
-        text "mode"
-  move
-    defined-by word_surface
-    lexeme en
-      surface
-        text "move"

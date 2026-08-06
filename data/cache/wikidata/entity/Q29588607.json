@@ -1,0 +1,46 @@
+{
+  "entities": {
+    "Q29588607": {
+      "type": "item",
+      "id": "Q29588607",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Spider-Man: Into the Spider-Verse"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Человек-паук: Через вселенные"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "स्पाइडर मैन: इनटू द स्पाइडर वर्स"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "蜘蛛人：新宇宙"
+        },
+        "es": {
+          "language": "es",
+          "value": "Spider-Man: Un nuevo universo"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "2018 animated film directed by Bob Persichetti, Peter Ramsey and Rodney Rothman"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "американский анимационный фильм"
+        },
+        "es": {
+          "language": "es",
+          "value": "película de 2018 dirigida por Bob Persichetti, Peter Ramsey y Rodney Rothman"
+        }
+      },
+      "aliases": {}
+    }
+  },
+  "success": 1
+}

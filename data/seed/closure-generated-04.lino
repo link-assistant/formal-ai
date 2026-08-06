@@ -1,4 +1,269 @@
 meanings
+  pattern_test_status_phrase_test_passed_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase test passed en"
+  pattern_test_status_phrase_test_proyden_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase test proyden ru"
+  pattern_test_status_phrase_vy_zdes_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase vy zdes ru"
+  pattern_test_status_phrase_wo_zai_zheli_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase wo zai zheli zh"
+  pattern_test_status_phrase_ya_zdes_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase ya zdes ru"
+  pattern_wellbeing_phrase_aap_kaise_hain_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase aap kaise hain hi"
+  pattern_wellbeing_phrase_aapka_kya_haal_hai_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase aapka kya haal hai hi"
+  pattern_wellbeing_phrase_guode_zenmeyang_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase guode zenmeyang zh"
+  pattern_wellbeing_phrase_how_are_things_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase how are things en"
+  pattern_wellbeing_phrase_how_are_you_doing_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase how are you doing en"
+  pattern_wellbeing_phrase_how_are_you_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase how are you en"
+  pattern_wellbeing_phrase_how_do_you_do_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase how do you do en"
+  pattern_wellbeing_phrase_how_is_it_going_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase how is it going en"
+  pattern_wellbeing_phrase_how_s_it_going_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase how s it going en"
+  pattern_wellbeing_phrase_kaise_ho_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase kaise ho hi"
+  pattern_wellbeing_phrase_kak_dela
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase kak dela"
+  pattern_wellbeing_phrase_kak_pozhivaesh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase kak pozhivaesh"
+  pattern_wellbeing_phrase_kak_tvoi_dela
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase kak tvoi dela"
+  pattern_wellbeing_phrase_kak_u_tebya_dela
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase kak u tebya dela"
+  pattern_wellbeing_phrase_kak_u_vas_dela
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase kak u vas dela"
+  pattern_wellbeing_phrase_kak_vashi_dela
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase kak vashi dela"
+  pattern_wellbeing_phrase_kak_vy_pozhivaete
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase kak vy pozhivaete"
+  pattern_wellbeing_phrase_kya_haal_hai_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase kya haal hai hi"
+  pattern_wellbeing_phrase_ni_hai_hao_ma_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase ni hai hao ma zh"
+  pattern_wellbeing_phrase_ni_hao_ma_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase ni hao ma zh"
+  pattern_wellbeing_phrase_ni_zenmeyang_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase ni zenmeyang zh"
+  pattern_wellbeing_phrase_nin_zenmeyang_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase nin zenmeyang zh"
+  pattern_wellbeing_phrase_privet_kak_dela
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase privet kak dela"
+  pattern_wellbeing_phrase_sab_kaisa_chal_raha_hai_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase sab kaisa chal raha hai hi"
+  pattern_wellbeing_phrase_tum_kaise_ho_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase tum kaise ho hi"
+  pattern_wellbeing_phrase_zdravstvuyte_kak_vashi_dela
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase zdravstvuyte kak vashi dela"
+  pattern_wellbeing_phrase_zuijin_zenmeyang_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase zuijin zenmeyang zh"
+  pattern_wikipedia_article_question_exact_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wikipedia article question exact en"
+  pattern_wikipedia_article_question_exact_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wikipedia article question exact hi"
+  pattern_wikipedia_article_question_exact_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wikipedia article question exact ru"
+  pattern_wikipedia_article_question_exact_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wikipedia article question exact zh"
+  pattern_wikipedia_article_question_grammar_context_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wikipedia article question grammar context en"
+  pattern_wikipedia_article_question_grammar_context_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wikipedia article question grammar context hi"
+  pattern_wikipedia_article_question_grammar_context_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wikipedia article question grammar context ru"
+  pattern_wikipedia_article_question_grammar_context_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wikipedia article question grammar context zh"
+  pattern_x_kaise_kaam_karta_suffix_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern x kaise kaam karta suffix hi"
+  pattern_x_kaise_kaam_karti_suffix_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern x kaise kaam karti suffix hi"
+  pattern_x_ruhej_gongzuo_suffix_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern x ruhej gongzuo suffix zh"
+  pattern_x_shi_ruhej_gongzuo_de_suffix_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern x shi ruhej gongzuo de suffix zh"
+  per
+    defined-by concept
+    lexeme en
+      surface
+        text "per"
+  per-step
+    defined-by concept
+    lexeme en
+      surface
+        text "per step"
+  periodic_or_manual
+    defined-by concept
+    lexeme en
+      surface
+        text "periodic or manual"
+  permissioned-network
+    defined-by isolation_mode
+    lexeme en
+      surface
+        text "permissioned network"
+  philosophy-text
+    defined-by source_kind
+    lexeme en
+      surface
+        text "philosophy text"
+  physical_action_question
+    defined-by intent
+    lexeme en
+      surface
+        text "physical action question"
+  pip
+    defined-by token
+    lexeme en
+      surface
+        text "pip"
+  pixel
+    defined-by word_surface
+    lexeme en
+      surface
+        text "pixel"
+  pixels
+    defined-by word_surface
+    lexeme en
+      surface
+        text "pixels"
   plagiaris
     defined-by word_surface
     lexeme en
@@ -34,6 +299,11 @@ meanings
     lexeme en
       surface
         text "powershell"
+  precisely
+    defined-by word_surface
+    lexeme en
+      surface
+        text "precisely"
   preferred
     defined-by concept
     lexeme en
@@ -49,6 +319,11 @@ meanings
     lexeme en
       surface
         text "prepend text"
+  print
+    defined-by concept
+    lexeme en
+      surface
+        text "print"
   problem
     defined-by word_surface
     lexeme en
@@ -104,6 +379,16 @@ meanings
     lexeme en
       surface
         text "proposal only"
+  prose
+    defined-by concept
+    lexeme en
+      surface
+        text "prose"
+  protocol
+    defined-by concept
+    lexeme en
+      surface
+        text "protocol"
   ps
     defined-by concept
     lexeme en
@@ -114,11 +399,21 @@ meanings
     lexeme en
       surface
         text "public"
+  published
+    defined-by concept
+    lexeme en
+      surface
+        text "published"
   punctuation
     defined-by concept
     lexeme en
       surface
         text "punctuation"
+  puts
+    defined-by concept
+    lexeme en
+      surface
+        text "puts"
   pwd
     defined-by concept
     lexeme en
@@ -144,6 +439,26 @@ meanings
     lexeme en
       surface
         text "qa network"
+  quality
+    defined-by concept
+    lexeme en
+      surface
+        text "quality"
+  ratchet
+    defined-by concept
+    lexeme en
+      surface
+        text "ratchet"
+  rather
+    defined-by concept
+    lexeme en
+      surface
+        text "rather"
+  re-run
+    defined-by concept
+    lexeme en
+      surface
+        text "re run"
   reach
     defined-by word_surface
     lexeme en
@@ -164,6 +479,16 @@ meanings
     lexeme en
       surface
         text "read local file"
+  reader
+    defined-by concept
+    lexeme en
+      surface
+        text "reader"
+  reads
+    defined-by concept
+    lexeme en
+      surface
+        text "reads"
   reasoning
     defined-by category
     lexeme en
@@ -174,6 +499,11 @@ meanings
     lexeme en
       surface
         text "recall name"
+  records
+    defined-by concept
+    lexeme en
+      surface
+        text "records"
   referrers
     defined-by word_surface
     lexeme en
@@ -184,6 +514,16 @@ meanings
     lexeme en
       surface
         text "reflection"
+  refuses
+    defined-by concept
+    lexeme en
+      surface
+        text "refuses"
+  registered
+    defined-by concept
+    lexeme en
+      surface
+        text "registered"
   relative-meta-logic
     defined-by term
     lexeme en
@@ -224,6 +564,11 @@ meanings
     lexeme en
       surface
         text "rendered"
+  renders
+    defined-by concept
+    lexeme en
+      surface
+        text "renders"
   repetition
     defined-by term
     lexeme en
@@ -844,6 +1189,56 @@ meanings
     lexeme en
       surface
         text "response agentic report target question zh"
+  response_agentic_step_failed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed en"
+  response_agentic_step_failed_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed es"
+  response_agentic_step_failed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed hi"
+  response_agentic_step_failed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed ru"
+  response_agentic_step_failed_with_exit_code_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed with exit code en"
+  response_agentic_step_failed_with_exit_code_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed with exit code es"
+  response_agentic_step_failed_with_exit_code_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed with exit code hi"
+  response_agentic_step_failed_with_exit_code_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed with exit code ru"
+  response_agentic_step_failed_with_exit_code_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed with exit code zh"
+  response_agentic_step_failed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed zh"
   response_algorithm_discovery_summary_en
     defined-by response_template
     lexeme en
@@ -999,398 +1394,3 @@ meanings
     lexeme en
       surface
         text "response client contract missing evidence error hi"
-  response_client_contract_missing_evidence_error_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract missing evidence error ru"
-  response_client_contract_missing_evidence_error_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract missing evidence error zh"
-  response_client_contract_parse_observation_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract parse observation error en"
-  response_client_contract_parse_observation_error_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract parse observation error hi"
-  response_client_contract_parse_observation_error_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract parse observation error ru"
-  response_client_contract_parse_observation_error_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract parse observation error zh"
-  response_client_contract_parse_transcript_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract parse transcript error en"
-  response_client_contract_parse_transcript_error_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract parse transcript error hi"
-  response_client_contract_parse_transcript_error_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract parse transcript error ru"
-  response_client_contract_parse_transcript_error_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract parse transcript error zh"
-  response_client_contract_read_observations_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract read observations error en"
-  response_client_contract_read_observations_error_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract read observations error hi"
-  response_client_contract_read_observations_error_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract read observations error ru"
-  response_client_contract_read_observations_error_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract read observations error zh"
-  response_client_contract_read_transcript_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract read transcript error en"
-  response_client_contract_read_transcript_error_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract read transcript error hi"
-  response_client_contract_read_transcript_error_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract read transcript error ru"
-  response_client_contract_read_transcript_error_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract read transcript error zh"
-  response_client_integration_invalid_typed_json_setting_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client integration invalid typed json setting en"
-  response_client_integration_invalid_typed_json_setting_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client integration invalid typed json setting hi"
-  response_client_integration_invalid_typed_json_setting_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client integration invalid typed json setting ru"
-  response_client_integration_invalid_typed_json_setting_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client integration invalid typed json setting zh"
-  response_coding_source_binary_operation_test_rust
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding source binary operation test rust"
-  response_coding_source_equality_test_rust
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding source equality test rust"
-  response_coding_source_function_division_rust
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding source function division rust"
-  response_coding_source_function_return_rust
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding source function return rust"
-  response_coding_source_module_registration_rust
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding source module registration rust"
-  response_coding_source_string_constant_rust
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding source string constant rust"
-  response_coding_workspace_effect_observed_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding workspace effect observed en"
-  response_coding_workspace_effect_observed_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding workspace effect observed es"
-  response_coding_workspace_effect_observed_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding workspace effect observed hi"
-  response_coding_workspace_effect_observed_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding workspace effect observed ru"
-  response_coding_workspace_effect_observed_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding workspace effect observed zh"
-  response_coding_workspace_verification_failed_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding workspace verification failed en"
-  response_coding_workspace_verification_failed_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding workspace verification failed es"
-  response_coding_workspace_verification_failed_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding workspace verification failed hi"
-  response_coding_workspace_verification_failed_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding workspace verification failed ru"
-  response_coding_workspace_verification_failed_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding workspace verification failed zh"
-  response_coding_workspace_written_unverified_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding workspace written unverified en"
-  response_coding_workspace_written_unverified_es
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding workspace written unverified es"
-  response_coding_workspace_written_unverified_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding workspace written unverified hi"
-  response_coding_workspace_written_unverified_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding workspace written unverified ru"
-  response_coding_workspace_written_unverified_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response coding workspace written unverified zh"
-  response_comparison_decomposed_evidence_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response comparison decomposed evidence en"
-  response_comparison_decomposed_evidence_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response comparison decomposed evidence hi"
-  response_comparison_decomposed_evidence_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response comparison decomposed evidence ru"
-  response_comparison_decomposed_evidence_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response comparison decomposed evidence zh"
-  response_comparison_decomposed_no_evidence_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response comparison decomposed no evidence en"
-  response_comparison_decomposed_no_evidence_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response comparison decomposed no evidence hi"
-  response_comparison_decomposed_no_evidence_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response comparison decomposed no evidence ru"
-  response_comparison_decomposed_no_evidence_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response comparison decomposed no evidence zh"
-  response_compiled_procedure_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response compiled procedure en"
-  response_compiled_procedure_explanation_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response compiled procedure explanation en"
-  response_compiled_procedure_explanation_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response compiled procedure explanation hi"
-  response_compiled_procedure_explanation_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response compiled procedure explanation ru"
-  response_compiled_procedure_explanation_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response compiled procedure explanation zh"
-  response_compiled_procedure_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response compiled procedure hi"
-  response_compiled_procedure_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response compiled procedure ru"
-  response_compiled_procedure_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response compiled procedure zh"
-  response_completion_recovery_decompose_into_leaf_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery decompose into leaf en"
-  response_completion_recovery_decompose_into_leaf_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery decompose into leaf hi"
-  response_completion_recovery_decompose_into_leaf_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery decompose into leaf ru"
-  response_completion_recovery_decompose_into_leaf_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery decompose into leaf zh"
-  response_completion_recovery_name_target_artifact_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery name target artifact en"
-  response_completion_recovery_name_target_artifact_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery name target artifact hi"
-  response_completion_recovery_name_target_artifact_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery name target artifact ru"
-  response_completion_recovery_name_target_artifact_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery name target artifact zh"
-  response_completion_recovery_restate_postcondition_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery restate postcondition en"
-  response_completion_recovery_restate_postcondition_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery restate postcondition hi"
-  response_completion_recovery_restate_postcondition_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery restate postcondition ru"
-  response_completion_recovery_restate_postcondition_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response completion recovery restate postcondition zh"
-  response_concept_lookup_in_context_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context en"
-  response_concept_lookup_in_context_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context hi"
-  response_concept_lookup_in_context_no_alias_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context no alias en"
-  response_concept_lookup_in_context_no_alias_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context no alias hi"
-  response_concept_lookup_in_context_no_alias_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context no alias ru"
-  response_concept_lookup_in_context_no_alias_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context no alias zh"
-  response_concept_lookup_in_context_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context ru"
-  response_concept_lookup_in_context_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context zh"

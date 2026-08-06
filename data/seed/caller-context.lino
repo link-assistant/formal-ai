@@ -10,14 +10,21 @@ caller_context
     block "env"
       client "agent"
       client "opencode"
+    block "environment_details"
+      client "cline"
+      client "roo"
   fact_statement_copulas
     language en
       copula "is"
       copula "are"
       copula "was"
       copula "were"
+      copula "will be"
     language ru
       copula "это"
+      copula "есть"
+      copula "была"
+      copula "было"
       copula "—"
     language hi
       copula "है"
@@ -25,6 +32,7 @@ caller_context
       copula "था"
     language zh
       copula "是"
+      copula "为"
     language es
       copula "es"
       copula "son"
@@ -44,6 +52,7 @@ caller_context
   question_words
     language en
       word "what"
+      word "what's"
       word "which"
       word "when"
       word "where"
@@ -73,6 +82,7 @@ caller_context
       word "吗"
       word "谁"
       word "怎么"
+      word "何时"
     language es
       word "qué"
       word "cuál"
@@ -80,3 +90,23 @@ caller_context
       word "dónde"
       word "quién"
       word "cómo"
+  request_verbs
+    language en
+      verb "show"
+      verb "tell"
+      verb "print"
+      verb "give"
+    language ru
+      verb "покажи"
+      verb "выведи"
+      verb "скажи"
+    language hi
+      verb "दिखाएँ"
+      verb "बताएँ"
+    language zh
+      verb "显示"
+      verb "告诉"
+    language es
+      verb "muestra"
+      verb "dime"
+      verb "imprime"

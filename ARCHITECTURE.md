@@ -703,6 +703,38 @@ The same pipeline also drives four additional surfaces:
   renders a link-native `repository_directory` block (path, counts, per-child
   kind) for inspectable evidence, and `summarize_repository_resource` is the
   general entry point that subsumes `summarize_repository_file` for file inputs.
+- **Summarization quality protocol (seeded sampling + 80% ratchet).**
+  `src/summarization/validation/` answers the part of issue #563 that a
+  summarizer alone cannot: *is the summarizer any good on files nobody
+  optimized for?* `SamplingProtocol` fixes a seed, two files per iteration, an
+  iteration bound and a stability window, and permutes the corpus with a seeded
+  `splitmix64` Fisher-Yates shuffle, so the same seed over the same corpus draws
+  the same files in the same order and no file is drawn twice in one run. Each
+  sampled file goes through the *production* summarizer — `evaluate_file` calls
+  `formalize_repository_file` and `RepositoryFileFormalization::summary`, never a
+  test-only reimplementation — and is scored against the published `CRITERIA`
+  (identity, format, size, retained content, grounded content, compression,
+  embedded-grammar recursion, meta-language evidence, determinism, mode ladder).
+  A criterion that cannot apply to a file is excluded from that file's
+  denominator rather than scored as a free pass, and scores are exact integer
+  `passed/applicable` ratios micro-averaged across files and floored when
+  rendered, so 79.6% gates as 79%. `validate_repository_summarization` iterates
+  until `stability_window` consecutive iterations all clear the ratchet within
+  `stability_tolerance_percent` of one another, at least `minimum_iterations`
+  iterations have run (three perfect iterations are six files, which say nothing
+  about a corpus of thousands) *and* at least one Markdown embedded grammar block
+  has been exercised; otherwise it stops at the bound and reports
+  `bound_reached` rather than claiming stability. Because that last condition is
+  fatal and fenced Markdown is a small minority of the corpus, the draw is
+  stratified: `stratified_sampling_order` promotes the first fence-carrying
+  Markdown file of the seeded permutation into iteration 0 and leaves every other
+  file where the seed put it. `QUALITY_RATCHET_PERCENT
+  = 80` is the published floor, `ratchet_violations` enforces it together with
+  monotonicity against the committed baseline
+  `data/summarization/quality-baseline.lino`, and `formal-ai summarization
+  criteria | validate | ratchet` (`src/cli_summarization.rs`) is the operator
+  surface. The embedded-grammar criterion grades against its own independent
+  CommonMark fence scanner, so the summarizer never grades itself.
 - **Dialog summarization.** `DialogTurn { role, text }` and
   `formalize_dialog` weight user turns +20 and assistant turns -10 so a
   short summary keeps the user's questions even when both sides talk a

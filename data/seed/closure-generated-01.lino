@@ -59,6 +59,11 @@ meanings
     lexeme en
       surface
         text "prompt pattern"
+  release_timeline
+    defined-by concept
+    lexeme en
+      surface
+        text "release timeline"
   response_template
     defined-by response
     lexeme en
@@ -104,6 +109,11 @@ meanings
     lexeme en
       surface
         text "ada lovelace"
+  adding
+    defined-by concept
+    lexeme en
+      surface
+        text "adding"
   addon
     defined-by word_surface
     lexeme en
@@ -259,6 +269,16 @@ meanings
     lexeme en
       surface
         text "agentic report target question"
+  agentic_step_failed
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic step failed"
+  agentic_step_failed_with_exit_code
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic step failed with exit code"
   ai-orchestration
     defined-by category
     lexeme en
@@ -434,6 +454,21 @@ meanings
     lexeme en
       surface
         text "barack obama"
+  baseline
+    defined-by concept
+    lexeme en
+      surface
+        text "baseline"
+  be
+    defined-by concept
+    lexeme en
+      surface
+        text "be"
+  because
+    defined-by concept
+    lexeme en
+      surface
+        text "because"
   behavior_rules_list
     defined-by intent
     lexeme en
@@ -559,11 +594,26 @@ meanings
     lexeme en
       surface
         text "cancel reverse sort"
+  cannot
+    defined-by concept
+    lexeme en
+      surface
+        text "cannot"
+  canonical
+    defined-by concept
+    lexeme en
+      surface
+        text "canonical"
   capabilities_more
     defined-by intent
     lexeme en
       surface
         text "capabilities more"
+  carries
+    defined-by concept
+    lexeme en
+      surface
+        text "carries"
   case
     defined-by concept
     lexeme en
@@ -749,6 +799,11 @@ meanings
     lexeme en
       surface
         text "comments"
+  committed
+    defined-by concept
+    lexeme en
+      surface
+        text "committed"
   comparison_decomposed_evidence
     defined-by intent
     lexeme en
@@ -849,6 +904,11 @@ meanings
     lexeme en
       surface
         text "constant"
+  contain
+    defined-by concept
+    lexeme en
+      surface
+        text "contain"
   context_bsd_operating_systems
     defined-by context
     lexeme en
@@ -1034,6 +1094,16 @@ meanings
     lexeme en
       surface
         text "credibility"
+  criteria
+    defined-by concept
+    lexeme en
+      surface
+        text "criteria"
+  criterion
+    defined-by concept
+    lexeme en
+      surface
+        text "criterion"
   csharp
     defined-by programming_language
     lexeme en
@@ -1119,6 +1189,11 @@ meanings
     lexeme en
       surface
         text "demo memory"
+  description
+    defined-by concept
+    lexeme en
+      surface
+        text "description"
   desktop_local_sync
     defined-by flow
     lexeme en
@@ -1134,6 +1209,11 @@ meanings
     lexeme en
       surface
         text "destructive"
+  detail
+    defined-by concept
+    lexeme en
+      surface
+        text "detail"
   detailed
     defined-by concept
     lexeme en
@@ -1239,6 +1319,11 @@ meanings
     lexeme en
       surface
         text "download"
+  downstream
+    defined-by concept
+    lexeme en
+      surface
+        text "downstream"
   draft_comparison_explanation
     defined-by intent
     lexeme en
@@ -1264,11 +1349,26 @@ meanings
     lexeme en
       surface
         text "echo"
+  edit
+    defined-by concept
+    lexeme en
+      surface
+        text "edit"
+  editing
+    defined-by concept
+    lexeme en
+      surface
+        text "editing"
   elon_musk
     defined-by concept
     lexeme en
       surface
         text "elon musk"
+  emits
+    defined-by concept
+    lexeme en
+      surface
+        text "emits"
   entries
     defined-by concept
     lexeme en
@@ -1294,103 +1394,3 @@ meanings
     lexeme en
       surface
         text "env"
-  essay
-    defined-by word_surface
-    lexeme en
-      surface
-        text "essay"
-  eur
-    defined-by word_surface
-    lexeme en
-      surface
-        text "eur"
-  eval_js
-    defined-by name
-    lexeme en
-      surface
-        text "eval js"
-  events
-    defined-by concept
-    lexeme en
-      surface
-        text "events"
-  exact_title
-    defined-by coverage_group
-    lexeme en
-      surface
-        text "exact title"
-  exceeds
-    defined-by word_surface
-    lexeme en
-      surface
-        text "exceeds"
-  export_memory
-    defined-by name
-    lexeme en
-      surface
-        text "export memory"
-  express
-    defined-by word_surface
-    lexeme en
-      surface
-        text "express"
-  expression-language
-    defined-by category
-    lexeme en
-      surface
-        text "expression language"
-  external_benchmark_baseline_read_error
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark baseline read error"
-  external_benchmark_failure_observation
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark failure observation"
-  external_benchmark_learning_event
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark learning event"
-  external_benchmark_learning_lesson
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark learning lesson"
-  external_benchmark_learning_task
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark learning task"
-  external_benchmark_not_swe_case
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark not swe case"
-  external_benchmark_parquet_decode_error
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark parquet decode error"
-  external_benchmark_parquet_module_unavailable
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark parquet module unavailable"
-  external_benchmark_parquet_start_error
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark parquet start error"
-  external_benchmark_parquet_utf8_error
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark parquet utf8 error"
-  external_benchmark_provenance
-    defined-by intent
-    lexeme en
-      surface
-        text "external benchmark provenance"

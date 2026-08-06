@@ -2,24 +2,25 @@ self_ast_census
   target src/client_integrations/global_config.rs
   language rust
   fidelity signature
-  byte_len 10743
-  line_count 330
-  content_id source_module_ba545dc25ecca009
-  symbol_count 16
+  byte_len 12879
+  line_count 376
+  content_id source_module_b7ab98f4965f737c
+  symbol_count 17
   symbols
-    function write_global_config 24 61
-    function undo_global_config 63 99
-    function restore_backup 101 117
-    function ensure_backup 119 132
-    function render_toml_settings 134 152
-    function set_toml_string 154 170
-    function table_at_path_mut 172 183
-    function merge_json_config 185 198
-    function render_json_settings 200 208
-    function json_settings_value 210 219
-    function set_json_setting 221 258
-    function invalid_typed_json_setting_error 260 265
-    function merge_json_value 267 281
-    function merge_shell_env_config 283 303
-    function remove_managed_block 305 325
-    function shell_double_quote 327 330
+    function write_global_config 24 66
+    function write_companion_file 76 99
+    function undo_global_config 101 145
+    function restore_backup 147 163
+    function ensure_backup 165 178
+    function render_toml_settings 180 198
+    function set_toml_string 200 216
+    function table_at_path_mut 218 229
+    function merge_json_settings 231 244
+    function render_json_settings 246 254
+    function json_settings_value 256 265
+    function set_json_setting 267 304
+    function invalid_typed_json_setting_error 306 311
+    function merge_json_value 313 327
+    function merge_shell_env_config 329 349
+    function remove_managed_block 351 371
+    function shell_double_quote 373 376

@@ -4,7 +4,7 @@ use std::fmt::{Display, Formatter, Write};
 use serde::{Deserialize, Serialize};
 
 use crate::attachment_context::{compose_prompt_with_attachments, Attachment};
-use crate::engine::{naturalize_thinking_step, ThinkingStep};
+use crate::engine::{naturalize_thinking_step_in, thinking_answer_language, ThinkingStep};
 use crate::solver::{ExecutionSurface, SolverConfig, UniversalSolver};
 
 const TEXT_ONLY_MESSAGE: &str = "I can only process Telegram text messages in this implementation. Send a text prompt or a message caption.";
@@ -376,22 +376,19 @@ fn compose_telegram_reply(message: &TelegramMessage) -> TelegramReplyBundle {
 /// Telegram's native `<blockquote expandable>` is collapsed by default and
 /// expands on tap, which is a direct, native fit for the issue's "show the
 /// reasoning, collapsed, with an expand affordance" requirement on a non-UI
-/// surface. The lines are the same concrete English meta-language descriptions
-/// every other surface renders (the CLI `--thinking` trace, the OpenAI and
-/// Anthropic APIs); the browser UI additionally translates them into the user's
-/// language through its i18n catalog. Returns `None` when there is nothing to
-/// show so callers can skip the separator entirely.
+/// surface. The lines are the same concrete meta-language descriptions every
+/// other surface renders (the CLI `--thinking` trace, the OpenAI and Anthropic
+/// APIs), written in the language the answer is written in (issue #889) exactly
+/// like the browser UI's own localized trace. Returns `None` when there is
+/// nothing to show so callers can skip the separator entirely.
 fn telegram_thinking_blockquote(steps: &[ThinkingStep]) -> Option<String> {
     if steps.is_empty() {
         return None;
     }
+    let language = thinking_answer_language(steps);
     let mut body = String::new();
     for step in steps {
-        let sentence = if step.summary.is_empty() {
-            naturalize_thinking_step(&step.step, &step.detail)
-        } else {
-            step.summary.clone()
-        };
+        let sentence = naturalize_thinking_step_in(&language, &step.step, &step.detail);
         if !body.is_empty() {
             body.push('\n');
         }

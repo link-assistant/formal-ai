@@ -22,6 +22,7 @@ mod cli_procedure;
 mod cli_report;
 mod cli_shared_dialog;
 mod cli_statement_audit;
+mod cli_summarization;
 
 use cli_algorithm::{run_algorithm, AlgorithmArgs};
 use cli_benchmark::{run_benchmark, BenchmarkAction};
@@ -39,16 +40,18 @@ use cli_procedure::{run_procedure, ProcedureArgs};
 use cli_report::{run_report, ReportArgs};
 use cli_shared_dialog::{run_shared_dialog, SharedDialogAction};
 use cli_statement_audit::{run_statement_audit, StatementAuditArgs};
+use cli_summarization::{run_summarization, SummarizationAction};
 use formal_ai::agentic_coding::run_agentic_task;
 use formal_ai::{
     agent_info, collect_github_logs, create_chat_completion_with_solver,
     create_response_with_solver, delimit_tool_args, enable_http_agent_mode_for_current_process,
     export_memory_bundle, import_memory_full, knowledge_links_notation, merged_bundle,
-    naturalize_thinking_step, parse_bundle, render_github_log_plan, run_proxy,
+    naturalize_thinking_step_in, parse_bundle, render_github_log_plan, run_proxy,
     run_telegram_polling, run_telegram_webhook_server, run_with_formal_ai, seed_files,
-    suggest_memory_migrations, ChatCompletionRequest, ChatMessage, ExecutionSurface,
-    GithubLogCollectorConfig, MemoryStore, ProxyConfig, ResponsesRequest, SolverConfig,
-    SymbolicAnswer, TelegramPollingConfig, UniversalSolver, WithFormalAiArgs, DEFAULT_MODEL,
+    suggest_memory_migrations, thinking_answer_language, thinking_trace_heading,
+    ChatCompletionRequest, ChatMessage, ExecutionSurface, GithubLogCollectorConfig, MemoryStore,
+    ProxyConfig, ResponsesRequest, SolverConfig, SymbolicAnswer, TelegramPollingConfig,
+    UniversalSolver, WithFormalAiArgs, DEFAULT_MODEL,
 };
 
 /// The canonical issue-#468 task; its wording carries the planner's routing keywords.
@@ -191,6 +194,12 @@ enum Command {
     },
     /// Weigh statement-bearing repository text against captured provenance.
     StatementAudit(StatementAuditArgs),
+    /// Validate repository-file summarization quality on seeded random files
+    /// and enforce the published 80 percent ratchet (issue #893).
+    Summarization {
+        #[command(subcommand)]
+        action: SummarizationAction,
+    },
     /// Assess file risk signals by legal category and jurisdiction.
     FileLegality(FileLegalityArgs),
     /// Run or permanently configure external CLIs against a local Formal AI server.
@@ -614,6 +623,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::GithubLogs { action } => run_github_logs(action)?,
         Command::Benchmark { action } => run_benchmark(action)?,
         Command::StatementAudit(args) => run_statement_audit(&args)?,
+        Command::Summarization { action } => run_summarization(action)?,
         Command::FileLegality(args) => run_file_legality(&args)?,
         Command::With(args) => run_with_formal_ai(&args)?,
         Command::Procedure(args) => run_procedure(args)?,
@@ -795,17 +805,21 @@ fn solver_for_chat(
 /// rather than its internal `step` slug. Composite steps are nested under their
 /// parent with a `↳` marker so the recursively composite (fractal) structure of
 /// the reasoning is visible on the CLI too.
+///
+/// The sentences are written in the language the answer itself is written in
+/// (issue #889): a Russian answer gets a Russian trace, not an English
+/// description of a Russian answer.
 fn print_thinking_trace(answer: &SymbolicAnswer) {
     if answer.thinking_steps.is_empty() {
         return;
     }
-    println!("Thinking:");
+    let language = thinking_answer_language(&answer.thinking_steps);
+    let heading = thinking_trace_heading(&language);
+    if !heading.is_empty() {
+        println!("{heading}:");
+    }
     for step in &answer.thinking_steps {
-        let sentence = if step.summary.is_empty() {
-            naturalize_thinking_step(&step.step, &step.detail)
-        } else {
-            step.summary.clone()
-        };
+        let sentence = naturalize_thinking_step_in(&language, &step.step, &step.detail);
         if step.parent_id.is_some() {
             println!("    ↳ {sentence}");
         } else {

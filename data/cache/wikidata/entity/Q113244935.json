@@ -1,0 +1,81 @@
+{
+  "entities": {
+    "Q113244935": {
+      "type": "item",
+      "id": "Q113244935",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Spider-Man: Brand New Day"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Человек-паук: Новый день"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "स्पाइडर-मैन: ब्रैंड न्यू डे"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "蜘蛛人：重生日"
+        },
+        "es": {
+          "language": "es",
+          "value": "Spider-Man: Brand New Day"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "2026 American film directed by Destin Daniel Cretton"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "фильм Дестина Дэниела Креттона (2026)"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "डेस्टिन डैनियल क्रेटन द्वारा निर्देशित 2026 की फ़िल्म"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "德斯汀·丹尼爾·克雷頓執導的2026年電影"
+        },
+        "es": {
+          "language": "es",
+          "value": "película de 2026 dirigida por Destin Daniel Cretton"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Человек-паук 4"
+          },
+          {
+            "language": "ru",
+            "value": "Человек-паук: Совершенно новый день"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "स्पाइडर-मैन 4"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "蜘蛛侠：崭新之日"
+          },
+          {
+            "language": "zh",
+            "value": "蜘蛛俠：英雄重生"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}
