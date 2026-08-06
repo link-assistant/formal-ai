@@ -1,0 +1,11 @@
+
+Checking cached-record budget for data/cache/**...
+
+::warning file=data/cache/wikidata/entity::Closure-driven cache bucket holds 406 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+WARNING: data/cache/wikidata/entity holds 406 records, above the 128-record cap (closure-driven exemption)
+::warning file=data/cache/wiktionary/en::Closure-driven cache bucket holds 243 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+WARNING: data/cache/wiktionary/en holds 243 records, above the 128-record cap (closure-driven exemption)
+::warning file=data/cache/wordnet/en::Closure-driven cache bucket holds 332 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+WARNING: data/cache/wordnet/en holds 332 records, above the 128-record cap (closure-driven exemption)
+All cache buckets are within their record budget
+

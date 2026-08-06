@@ -47,6 +47,7 @@ mod docs_requirements_issue_891;
 mod docs_requirements_issue_893;
 mod docs_requirements_issue_894;
 mod docs_requirements_issue_914;
+mod docs_requirements_issue_960;
 mod dreaming_runtime;
 mod formal_ai;
 mod github_logs;
