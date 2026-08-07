@@ -244,3 +244,83 @@ fn view_layer_has_real_multi_source_entities() {
          actually merging anything"
     );
 }
+
+/// Generated closure shards must be **content-addressed** (PR #965 review).
+///
+/// `data/seed` conflicted in nearly every pull request because `close-total.py`
+/// filled `closure-generated-NN.lino` sequentially up to a line cap: each shard's
+/// contents then depended on the total size of every block sorted before it, so
+/// one new token rewrote its own shard and shifted a block into each following
+/// one. Measured on the pre-fix tree, a single new token dirtied 11 of 11 shards
+/// when it sorted early and 9 of 11 mid-alphabet.
+///
+/// The fix places each meaning in the shard chosen by a digest of its own slug,
+/// making the file a function of the block alone. This gate pins that invariant
+/// so a future refactor cannot quietly restore size-dependent packing — the
+/// symptom (merge conflicts) shows up in other people's branches, not in this
+/// one, so it would otherwise go unnoticed for a long time.
+#[test]
+fn generated_closure_shards_are_content_addressed() {
+    use sha2::{Digest, Sha256};
+
+    /// Mirrors `SHARD_COUNT` in `scripts/close-total.py`.
+    const SHARD_COUNT: u64 = 16;
+
+    fn expected_shard(slug: &str) -> u64 {
+        let digest = Sha256::digest(slug.as_bytes());
+        let head = u64::from_be_bytes(digest[..8].try_into().expect("8 bytes"));
+        head % SHARD_COUNT + 1
+    }
+
+    let seed_dir = repo_root().join("data/seed");
+    let mut checked = 0usize;
+    let mut misplaced: Vec<String> = Vec::new();
+    let mut shards_seen = 0u64;
+
+    for index in 1..=SHARD_COUNT {
+        let path = seed_dir.join(format!("closure-generated-{index:02}.lino"));
+        let text = std::fs::read_to_string(&path).unwrap_or_else(|err| {
+            panic!(
+                "missing generated shard {}: {err} — run `python3 scripts/close-total.py`",
+                path.display()
+            )
+        });
+        shards_seen += 1;
+
+        for line in text.lines() {
+            // Meaning slugs are the two-space-indented heads under `meanings`.
+            let Some(rest) = line.strip_prefix("  ") else {
+                continue;
+            };
+            if rest.starts_with(' ') || rest.is_empty() {
+                continue;
+            }
+            let slug = rest.split_whitespace().next().unwrap_or_default();
+            checked += 1;
+            let want = expected_shard(slug);
+            if want != index {
+                misplaced.push(format!("{slug} is in shard {index:02} but hashes to {want:02}"));
+            }
+        }
+    }
+
+    assert_eq!(
+        shards_seen, SHARD_COUNT,
+        "expected exactly {SHARD_COUNT} generated shards; the file set must stay \
+         stable even when a shard empties out"
+    );
+    assert!(
+        checked > 500,
+        "only {checked} generated meanings found — the shards look truncated, so \
+         this gate would pass vacuously"
+    );
+    assert!(
+        misplaced.is_empty(),
+        "{} of {checked} generated meanings are not in the shard their digest \
+         selects. Sharding must stay content-addressed (sha256(slug) % {SHARD_COUNT}) \
+         so one new token dirties one file; re-run `python3 scripts/close-total.py`. \
+         First offenders: {:?}",
+        misplaced.len(),
+        misplaced.iter().take(10).collect::<Vec<_>>()
+    );
+}

@@ -42,6 +42,8 @@ pub const MULTILINGUAL_RESPONSES_THINKING_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-thinking.lino");
 pub const MULTILINGUAL_RESPONSES_THINKING_NARRATIVE_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-thinking-narrative.lino");
+pub const MULTILINGUAL_RESPONSES_CLIENT_CONFIG_LINO: &str =
+    include_str!("../../data/seed/multilingual-responses-client-config.lino");
 pub const CONCEPTS_LINO: &str = include_str!("../../data/seed/concepts.lino");
 pub const CONCEPT_CONTEXTS_LINO: &str = include_str!("../../data/seed/concept-contexts.lino");
 pub const FACTS_LINO: &str = include_str!("../../data/seed/facts.lino");
@@ -244,6 +246,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         (
             "data/seed/multilingual-responses-thinking-narrative.lino",
             MULTILINGUAL_RESPONSES_THINKING_NARRATIVE_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-client-config.lino",
+            MULTILINGUAL_RESPONSES_CLIENT_CONFIG_LINO,
         ),
         ("data/seed/concepts.lino", CONCEPTS_LINO),
         ("data/seed/concept-contexts.lino", CONCEPT_CONTEXTS_LINO),
@@ -490,6 +496,7 @@ pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_SUMMARIZATION_QUALITY_LINO,
     MULTILINGUAL_RESPONSES_THINKING_LINO,
     MULTILINGUAL_RESPONSES_THINKING_NARRATIVE_LINO,
+    MULTILINGUAL_RESPONSES_CLIENT_CONFIG_LINO,
 ];
 
 /// The ordered set of meaning-lexicon files, concatenated by [`super::lexicon`].

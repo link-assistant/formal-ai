@@ -15,11 +15,26 @@ use toml_edit::{value as toml_value, DocumentMut, Item, Table};
 use crate::seed::{ClientIntegration, ConfigFormat};
 
 use super::command::ensure_trailing_newline;
+use super::global_verify::{probe_headless_start, verify_written_config};
 use super::{
     backup_path, codex_model_catalog, global_config_path, render_context, render_template,
     write_file, RenderContext, WithFormalAiArgs, EMPTY_BACKUP_SENTINEL, ERROR_PLACEHOLDER,
     RENDERED_PLACEHOLDER,
 };
+
+/// Opening marker of the block a shell profile lets formal-ai own, per tool.
+/// Kept as data next to its closing counterpart so every reader and writer of a
+/// managed block agrees on one spelling.
+const MANAGED_BLOCK_START_PREFIX: &str = "# >>> formal-ai ";
+const MANAGED_BLOCK_END_PREFIX: &str = "# <<< formal-ai ";
+
+pub(super) fn managed_block_start(tool: &str) -> String {
+    format!("{MANAGED_BLOCK_START_PREFIX}{tool}")
+}
+
+pub(super) fn managed_block_end(tool: &str) -> String {
+    format!("{MANAGED_BLOCK_END_PREFIX}{tool}")
+}
 
 pub(super) fn write_global_config(
     integration: &ClientIntegration,
@@ -61,6 +76,12 @@ pub(super) fn write_global_config(
     }
     for companion in &global_config.companion_files {
         write_companion_file(&integration.id, companion, &context)?;
+    }
+    // Writing is not configuring: the client is only ready once the files read
+    // back the startup contract the seed declares (issue #909).
+    verify_written_config(integration, global_config, &context)?;
+    if args.verify {
+        probe_headless_start(integration, global_config, &context)?;
     }
     Ok(())
 }
@@ -336,7 +357,7 @@ fn merge_shell_env_config(
     if !next.is_empty() && !next.ends_with('\n') {
         next.push('\n');
     }
-    let _ = writeln!(next, "# >>> formal-ai {integration_id}");
+    let _ = writeln!(next, "{}", managed_block_start(integration_id));
     for env in &global_config.shell_env {
         next.push_str("export ");
         next.push_str(&render_template(&env.key, context));
@@ -344,13 +365,13 @@ fn merge_shell_env_config(
         next.push_str(&shell_double_quote(&render_template(&env.value, context)));
         next.push('\n');
     }
-    let _ = writeln!(next, "# <<< formal-ai {integration_id}");
+    let _ = writeln!(next, "{}", managed_block_end(integration_id));
     next
 }
 
 fn remove_managed_block(existing: &str, tool: &str) -> String {
-    let start = format!("# >>> formal-ai {tool}");
-    let end = format!("# <<< formal-ai {tool}");
+    let start = managed_block_start(tool);
+    let end = managed_block_end(tool);
     let mut out = String::new();
     let mut skipping = false;
     for line in existing.lines() {

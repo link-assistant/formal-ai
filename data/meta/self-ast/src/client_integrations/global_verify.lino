@@ -1,0 +1,36 @@
+self_ast_census
+  target src/client_integrations/global_verify.rs
+  language rust
+  fidelity signature
+  byte_len 11928
+  line_count 333
+  content_id source_module_41bc4b04a52575c7
+  symbol_count 27
+  symbols
+    const PROBE_TIMEOUT 32 32
+    const PROBE_PROMPT 35 35
+    const TOOL_PLACEHOLDER 37 37
+    const REQUIREMENT_PLACEHOLDER 38 38
+    const PATH_PLACEHOLDER 39 39
+    const OUTPUT_PLACEHOLDER 40 40
+    const COMMAND_PLACEHOLDER 41 41
+    const PROFILE_PLACEHOLDER 42 42
+    const EXPORT_PREFIX 46 46
+    const PROBE_SHELL_TEMPLATE 50 54
+    struct Requirement 58 65
+    function label 70 72
+    function verify_written_config 77 88
+    function collect_requirements 90 123
+    function split_file_target 126 128
+    function is_satisfied 130 151
+    function exported_value 158 180
+    function unquote 182 188
+    function json_value_at 190 196
+    function is_present 198 204
+    function toml_string_at 206 212
+    function missing_requirement_error 214 219
+    function seed_text 221 223
+    function probe_headless_start 227 274
+    function probe_skipped_message 276 280
+    function run_probe 286 329
+    function shell_quote 331 333

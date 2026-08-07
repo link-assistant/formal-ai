@@ -1311,7 +1311,12 @@ jobs:
   test-agent-cli-e2e:
     name: E2E Tests (agent CLI ↔ formal-ai)
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # 32 min (was 20). Measured on `main`: successful runs take 16m16s
+    # (31086651127) and 17m30s (31090830031), so 20 left barely two minutes of
+    # headroom and run 31097339962 tipped over it -- reported as *cancelled*,
+    # which reads as a false positive rather than a real regression. Budget for
+    # ~2x the observed cost so ordinary runner variance cannot fail the job.
+    timeout-minutes: 32
     needs: [detect-changes]
     if: |
       !cancelled() && (
@@ -1747,9 +1752,9 @@ jobs:
         (github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant' && needs.manual-release.result == 'success')
       )
     runs-on: ubuntu-latest
-    # 20 min (was 15): this job now also runs `cargo doc` for the /docs/api
-    # reference, which compiles the dependency tree on a cold cargo cache.
-    timeout-minutes: 20
+    # 35 min (was 20): 20 covered `cargo doc` on a cold cargo cache but left no
+    # room for the Pages deployment queue, which the deploy step now outwaits.
+    timeout-minutes: 35
     permissions:
       contents: read
       pages: write
@@ -1862,6 +1867,13 @@ jobs:
       - name: Deploy Pages artifact
         id: deployment
         uses: actions/deploy-pages@v5
+        with:
+          # 20 min, up from the action's 600 000 ms default. In run 31090830031
+          # the artifact uploaded fine and the action then sat in
+          # `deployment_queued` until `Timeout reached, aborting!` -- a red
+          # `main` caused by the Pages queue, not by the commit. Rationale and
+          # the guard test: `pages_deploy_outwaits_a_backlogged_pages_deployment_queue`.
+          timeout: 1200000
         env:
           # deploy-pages v5 still imports core punycode. Keep every other Node
           # warning visible while upstream issue #434 removes this dependency.

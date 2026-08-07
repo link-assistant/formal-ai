@@ -64,3 +64,4 @@ mod with_formal_ai;
 mod with_formal_ai_argv;
 mod with_formal_ai_global;
 mod with_formal_ai_grok;
+mod with_formal_ai_headless_global;

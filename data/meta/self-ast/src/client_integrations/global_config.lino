@@ -2,25 +2,29 @@ self_ast_census
   target src/client_integrations/global_config.rs
   language rust
   fidelity signature
-  byte_len 12879
-  line_count 376
-  content_id source_module_b7ab98f4965f737c
-  symbol_count 17
+  byte_len 13793
+  line_count 397
+  content_id source_module_192c84af9de612e6
+  symbol_count 21
   symbols
-    function write_global_config 24 66
-    function write_companion_file 76 99
-    function undo_global_config 101 145
-    function restore_backup 147 163
-    function ensure_backup 165 178
-    function render_toml_settings 180 198
-    function set_toml_string 200 216
-    function table_at_path_mut 218 229
-    function merge_json_settings 231 244
-    function render_json_settings 246 254
-    function json_settings_value 256 265
-    function set_json_setting 267 304
-    function invalid_typed_json_setting_error 306 311
-    function merge_json_value 313 327
-    function merge_shell_env_config 329 349
-    function remove_managed_block 351 371
-    function shell_double_quote 373 376
+    const MANAGED_BLOCK_START_PREFIX 28 28
+    const MANAGED_BLOCK_END_PREFIX 29 29
+    function managed_block_start 31 33
+    function managed_block_end 35 37
+    function write_global_config 39 87
+    function write_companion_file 97 120
+    function undo_global_config 122 166
+    function restore_backup 168 184
+    function ensure_backup 186 199
+    function render_toml_settings 201 219
+    function set_toml_string 221 237
+    function table_at_path_mut 239 250
+    function merge_json_settings 252 265
+    function render_json_settings 267 275
+    function json_settings_value 277 286
+    function set_json_setting 288 325
+    function invalid_typed_json_setting_error 327 332
+    function merge_json_value 334 348
+    function merge_shell_env_config 350 370
+    function remove_managed_block 372 392
+    function shell_double_quote 394 397

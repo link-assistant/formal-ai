@@ -1,0 +1,32 @@
+########## gemini
+  configured gemini at /tmp/tmp.L1Z4JByWdR/.profile
+  configured gemini at /tmp/tmp.L1Z4JByWdR/.gemini/settings.json
+  --- what --global wrote to ~/.profile
+      # >>> formal-ai gemini
+      export GEMINI_API_KEY="${FORMAL_AI_API_KEY:-formal-ai}"
+      export GEMINI_DEFAULT_AUTH_TYPE="gemini-api-key"
+      export GEMINI_CLI_TRUST_WORKSPACE="true"
+      export GOOGLE_GEMINI_BASE_URL="http://127.0.0.1:18080/api/gemini"
+      # <<< formal-ai gemini
+  --- companion settings file
+      {
+        "security": {
+          "auth": {
+            "selectedType": "gemini-api-key"
+          }
+        }
+      }
+      present: security.auth.selectedType in ~/.gemini/settings.json
+########## qwen
+  configured qwen at /tmp/tmp.L1Z4JByWdR/.profile
+  --- what --global wrote to ~/.profile
+      # >>> formal-ai qwen
+      export OPENAI_API_KEY="${FORMAL_AI_API_KEY:-formal-ai}"
+      export OPENAI_BASE_URL="http://127.0.0.1:18080/api/openai/v1"
+      export OPENAI_MODEL="formal-ai"
+      # <<< formal-ai qwen
+      present: export OPENAI_API_KEY in ~/.profile
+      present: export OPENAI_BASE_URL in ~/.profile
+      present: export OPENAI_MODEL in ~/.profile
+
+every headless requirement is written by --global

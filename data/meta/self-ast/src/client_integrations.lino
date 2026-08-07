@@ -2,40 +2,41 @@ self_ast_census
   target src/client_integrations.rs
   language rust
   fidelity signature
-  byte_len 27135
-  line_count 749
-  content_id source_module_049a49add72b7b49
-  symbol_count 32
+  byte_len 27443
+  line_count 758
+  content_id source_module_4e7f1f281989b21d
+  symbol_count 33
   symbols
     module caller_args 16 16
     module command 17 17
     module completion 18 18
     module completion_learning 19 19
     module global_config 20 20
-    module server 21 21
-    module session_files 22 22
-    module tool_args 23 23
-    module url 24 24
-    const DEFAULT_BASE_URL 39 39
-    const EMPTY_BACKUP_SENTINEL 40 40
-    const RENDERED_PLACEHOLDER 41 41
-    const ERROR_PLACEHOLDER 42 42
-    enum ClientProtocol 45 50
-    function as_str 53 60
-    struct WithFormalAiArgs 66 143
-    struct RenderContext 146 160
-    struct InvocationOptions 164 172
-    function run_with_formal_ai 174 232
-    function read_piped_prompt 235 243
-    function select_integrations 245 257
-    function find_integration 259 279
-    function render_context 281 353
-    function run_ephemeral 355 513
-    function temp_scoped_path 515 529
-    function build_invocation_args 537 640
-    function overlay_args 644 666
-    function render_template 668 688
-    function codex_model_catalog 690 724
-    function global_config_path 726 735
-    function backup_path 737 741
-    function write_file 743 749
+    module global_verify 21 21
+    module server 22 22
+    module session_files 23 23
+    module tool_args 24 24
+    module url 25 25
+    const DEFAULT_BASE_URL 40 40
+    const EMPTY_BACKUP_SENTINEL 41 41
+    const RENDERED_PLACEHOLDER 42 42
+    const ERROR_PLACEHOLDER 43 43
+    enum ClientProtocol 46 51
+    function as_str 54 61
+    struct WithFormalAiArgs 67 149
+    struct RenderContext 152 166
+    struct InvocationOptions 170 178
+    function run_with_formal_ai 180 241
+    function read_piped_prompt 244 252
+    function select_integrations 254 266
+    function find_integration 268 288
+    function render_context 290 362
+    function run_ephemeral 364 522
+    function temp_scoped_path 524 538
+    function build_invocation_args 546 649
+    function overlay_args 653 675
+    function render_template 677 697
+    function codex_model_catalog 699 733
+    function global_config_path 735 744
+    function backup_path 746 750
+    function write_file 752 758
