@@ -1,0 +1,101 @@
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:39:    timeout-minutes: 10
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:87:    timeout-minutes: 10
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:105:    timeout-minutes: 20
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:157:    timeout-minutes: 30
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:202:    timeout-minutes: 30
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:234:    timeout-minutes: 20
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:251:          token: ${{ secrets.GITHUB_TOKEN }}
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:280:          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/links.yml:34:    # Typical run: <1min with lychee cache. 10min prevents slow
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/links.yml:36:    timeout-minutes: 10
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/links.yml:45:      - name: Check links with lychee
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/links.yml:46:        id: lychee
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/links.yml:47:        uses: lycheeverse/lychee-action@v2
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/links.yml:52:          # in this repository (similar exclusion pattern as eslint.config.js)
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/links.yml:69:          output: lychee/out.md
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/links.yml:73:          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/links.yml:76:        if: steps.lychee.outputs.exit_code != 0
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/links.yml:80:          LYCHEE_OUTPUT: lychee/out.md
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/links.yml:83:        if: steps.lychee.outputs.exit_code != 0 && steps.webarchive.outputs.all_archived != 'true'
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/links.yml:88:          echo "  lychee found one or more broken links in the *.md and *.html files of this repository."
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/links.yml:92:          echo "  1. Review the 'Check links with lychee' step above for a full list of broken links."
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/links.yml:98:          echo "     c. Add the URL to .lycheeignore if it is a known false positive."
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/links.yml:100:          echo "Report location: lychee/out.md (available as a workflow artifact if configured)."
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:54:    timeout-minutes: 5
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:70:        run: node scripts/detect-code-changes.mjs
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:80:    timeout-minutes: 5
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:98:    timeout-minutes: 5
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:115:        run: bash scripts/simulate-fresh-merge.sh
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:129:    timeout-minutes: 5
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:151:    timeout-minutes: 10
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:198:    # and secretlint. 10min protects against a hung lint plugin.
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:199:    timeout-minutes: 10
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:221:        run: bash scripts/simulate-fresh-merge.sh
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:240:      - name: Check for secrets
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:241:        run: npx --yes -p secretlint -p @secretlint/secretlint-rule-preset-recommend secretlint "**/*"
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:253:    timeout-minutes: 10
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:298:        run: bash scripts/simulate-fresh-merge.sh
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:350:    timeout-minutes: 30
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:390:    timeout-minutes: 5
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:437:    timeout-minutes: 30
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:515:          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:525:          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:531:          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:549:    timeout-minutes: 30
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:593:        # when the secret is unset. See the release job above for details (#77).
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:595:          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:605:          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:611:          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:616:  # vars.DOCKERHUB_USERNAME and secrets.DOCKERHUB_TOKEN.
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:620:    timeout-minutes: 30
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:637:      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:674:    timeout-minutes: 10
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:703:          npx prettier --write ".changeset/*.md" || true
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:710:          token: ${{ secrets.GITHUB_TOKEN }}
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/lint.mjs:12:import { ESLint } from 'eslint';
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/lint.mjs:71:  const eslint = new ESLint();
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/lint.mjs:72:  const results = await eslint.lintFiles(['.']);
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/lint.mjs:80:  const formatter = await eslint.loadFormatter('stylish');
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/format-release-notes.mjs:11: * 1. Extract commit hash from changelog entry (if present)
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/format-release-notes.mjs:154:  // Uses commit hash from changelog or passed commit SHA from workflow
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/format-release-notes.mjs:161:    const source = commitHash ? 'changelog' : 'workflow';
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/publish-failure-classifier.mjs:67:    '     - Add it as the repository secret NPM_TOKEN.',
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/publish-failure-classifier.mjs:72:    '     need no token at all. The NPM_TOKEN secret then becomes optional.',
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/create-manual-changeset.mjs:91:  await $`npx prettier --write "${changesetFile}"`;
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/simulate-fresh-merge.sh:2:# simulate-fresh-merge.sh
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/simulate-fresh-merge.sh:8:#   BASE_REF=main bash scripts/simulate-fresh-merge.sh
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/check-file-line-limits.sh:13:# Intentional exceptions (kept in sync with the eslint.config.js ignore
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/check-file-line-limits.sh:55:# (see header note and eslint.config.js ignores).
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/check-web-archive.mjs:6: * This script reads the lychee link checker output (markdown format),
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/check-web-archive.mjs:16: *   - LYCHEE_OUTPUT: Path to lychee markdown output file (default: lychee/out.md)
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/check-web-archive.mjs:44: * Extract broken URLs from lychee markdown output
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/check-web-archive.mjs:48: * @param {string} content - The markdown content from lychee
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/check-web-archive.mjs:150:  const lycheeOutput = process.env.LYCHEE_OUTPUT || 'lychee/out.md';
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/check-web-archive.mjs:153:  console.log(`Reading lychee output from: ${lycheeOutput}\n`);
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/check-web-archive.mjs:155:  if (!existsSync(lycheeOutput)) {
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/check-web-archive.mjs:156:    console.log('No lychee output file found. Skipping web archive check.');
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/check-web-archive.mjs:161:  const content = readFileSync(lycheeOutput, 'utf-8');
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/check-web-archive.mjs:165:    console.log('No broken URLs found in lychee output.');
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/check-web-archive.mjs:236:          `  3. Add the URL to .lycheeignore if it is a known false positive (e.g. localhost, example.com).`
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/create-github-release.mjs:93:export function extractReleaseNotes(changelog, version) {
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/create-github-release.mjs:98:  const match = changelog.match(versionHeaderRegex);
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/create-github-release.mjs:136:  const changelogUrl = buildTaggedChangelogUrl(repository, tag);
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/create-github-release.mjs:138:  return `Release notes were shortened to fit GitHub's release body limit. See the full tagged CHANGELOG.md: ${changelogUrl}`;
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/create-github-release.mjs:171:  changelog,
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/create-github-release.mjs:180:  const releaseNotes = extractReleaseNotes(changelog, normalizedVersion);
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/create-github-release.mjs:272:    const changelogPath =
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/create-github-release.mjs:274:    const changelog = readFileSync(path.join(cwd, changelogPath), 'utf8');
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/create-github-release.mjs:276:      changelog,
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/instant-version-bump.mjs:5: * Bypasses the changeset workflow and directly updates version and changelog
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/instant-version-bump.mjs:110:  const changelogPath =
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/instant-version-bump.mjs:112:  let changelog = readFileSync(changelogPath, 'utf-8');
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/instant-version-bump.mjs:114:  // Create new changelog entry
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/instant-version-bump.mjs:125:  const firstVersionMatch = changelog.match(/^## /m);
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/instant-version-bump.mjs:129:    changelog =
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/instant-version-bump.mjs:130:      changelog.slice(0, insertPosition) +
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/instant-version-bump.mjs:132:      changelog.slice(insertPosition);
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/instant-version-bump.mjs:135:    const mainHeadingMatch = changelog.match(/^# .+$/m);
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/instant-version-bump.mjs:139:      changelog = `${changelog.slice(0, insertPosition)}\n\n${newEntry}${changelog.slice(insertPosition)}`;
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/instant-version-bump.mjs:142:      changelog = `${newEntry}\n${changelog}`;
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/instant-version-bump.mjs:146:  writeFileSync(changelogPath, changelog, 'utf-8');
+dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/scripts/format-github-release.mjs:105:    // This allows proper PR lookup even if the changelog doesn't have a commit hash
