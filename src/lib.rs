@@ -264,10 +264,13 @@ pub use links_query::{
 pub use memory::{
     export_bundle as export_memory_bundle, export_full_memory as export_memory_full,
     export_links_notation, export_links_notation as export_memory_links_notation,
-    extract_memory_from_bundle, import_full_memory as import_memory_full,
-    parse_links_notation as parse_memory_links_notation, seed_cache_events,
-    suggest_migrations as suggest_memory_migrations, write_locked_atomic, BundleInfo, MemoryEvent,
-    MemoryStore, ParsedBundle,
+    extract_memory_from_bundle, import_full_memory as import_memory_full, migrate_memory,
+    migrate_memory_with_pre_commit, parse_links_notation as parse_memory_links_notation,
+    preflight_memory_upgrade, seed_cache_events, suggest_migrations as suggest_memory_migrations,
+    write_locked_atomic, BundleInfo, MemoryEvent, MemoryMigrationReceipt, MemoryMigrationState,
+    MemoryStore, MemoryUpgradeError, MemoryUpgradeStatus, ParsedBundle,
+    MAXIMUM_READABLE_MEMORY_SCHEMA_VERSION, MINIMUM_READABLE_MEMORY_SCHEMA_VERSION,
+    TARGET_MEMORY_SCHEMA_VERSION,
 };
 pub use memory_sync::{
     configured_memory_path, events_since, merge_event, merge_union_by_id, SyncStore,

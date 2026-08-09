@@ -2,10 +2,10 @@ self_ast_census
   target src/link_store.rs
   language rust
   fidelity signature
-  byte_len 19351
-  line_count 571
-  content_id source_module_4163b0ff62ebee82
-  symbol_count 53
+  byte_len 20030
+  line_count 588
+  content_id source_module_6d1eeee5943d9030
+  symbol_count 54
   symbols
     struct DoubletLink 23 27
     struct LinkRecord 31 37
@@ -51,12 +51,13 @@ self_ast_census
     function records 404 406
     function format_backend_error 410 412
     function ensure_event_id 414 420
-    function validate_demo_memory_document 422 438
-    function validate_event_line 440 447
-    function validate_field_line 449 464
-    function validate_strict_quoted 466 493
-    function event_source_id 495 501
-    function canonical_memory_event 503 539
-    function push_canonical 541 547
-    function push_optional_field 549 563
-    function push_doublet 565 571
+    function validate_demo_memory_document 422 439
+    function validate_schema_version_line 441 455
+    function validate_event_line 457 464
+    function validate_field_line 466 481
+    function validate_strict_quoted 483 510
+    function event_source_id 512 518
+    function canonical_memory_event 520 556
+    function push_canonical 558 564
+    function push_optional_field 566 580
+    function push_doublet 582 588
