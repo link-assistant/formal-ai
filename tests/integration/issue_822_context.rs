@@ -337,7 +337,7 @@ fn oversized_local_report_body_links_the_full_gist_and_keeps_a_bounded_excerpt()
     let dialog_id = "issue-840-large-atomic-report";
     let request = json!({
         "model": "formal-ai",
-        "messages": [{"role": "user", "content": format!("{}TAIL-EVIDENCE", "x".repeat(52_000))}]
+        "messages": [{"role": "user", "content": format!("{}TAIL-EVIDENCE", "x".repeat(100_000))}]
     })
     .to_string();
     write_dialog_exchange(

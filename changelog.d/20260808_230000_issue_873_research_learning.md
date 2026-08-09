@@ -18,3 +18,6 @@ bump: minor
 - Repository summarization now bounds optional concrete-syntax parsing for
   oversized traces, preventing seeded validation from spending hours on a
   single generated evidence file while still summarizing its full structure.
+- Agentic GitHub reports now bound the readable transcript independently of the
+  complete context attachment, so research tool results cannot exceed GitHub's
+  issue-body limit after unknown inputs are promoted to online research.
