@@ -1,0 +1,5 @@
+?? .formal-ai/
+?? dialog-logs/
+?? formal-language-projection-invariant.md
+?? memory.lino
+?? memory.lino.lock
