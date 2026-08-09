@@ -221,7 +221,16 @@ impl SyncStore {
                 )
             }
             Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
-                (Vec::new(), TARGET_MEMORY_SCHEMA_VERSION, true)
+                let compatible = match crate::shared_memory::ensure_shared_memory_file(path) {
+                    Ok(()) => true,
+                    Err(error) => {
+                        if std::env::var("FORMAL_AI_MEMORY_DEBUG").as_deref() == Ok("1") {
+                            eprintln!("[memory] could not initialize {}: {error}", path.display());
+                        }
+                        false
+                    }
+                };
+                (Vec::new(), TARGET_MEMORY_SCHEMA_VERSION, compatible)
             }
             Err(error) => {
                 if std::env::var("FORMAL_AI_MEMORY_DEBUG").as_deref() == Ok("1") {

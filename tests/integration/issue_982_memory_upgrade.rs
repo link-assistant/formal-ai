@@ -568,8 +568,14 @@ fn first_write_to_a_new_store_uses_the_target_schema() {
     let memory_path = dir.join("nested").join("memory.lino");
     let mut store = SyncStore::open_at(&memory_path);
     assert!(
-        !memory_path.exists(),
-        "opening must not create an empty file"
+        memory_path.is_file(),
+        "an operational store retains the established eager-create contract"
+    );
+    assert!(
+        std::fs::read(&memory_path)
+            .expect("read newly initialized store")
+            .is_empty(),
+        "opening a missing store creates no synthetic event"
     );
 
     store

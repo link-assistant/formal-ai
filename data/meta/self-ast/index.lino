@@ -6,7 +6,7 @@ self_ast_census_index
   full_ast_module_count 56
   signature_module_count 390
   symbol_count 9093
-  content_id self_ast_census_index_39146a67ab25b7e6
+  content_id self_ast_census_index_06b1ac0759a843db
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/algorithm_learning.rs full_ast 13 source_module_0cde1901a8a78574
@@ -203,7 +203,7 @@ self_ast_census_index
     src/memory_query_language/mod.rs signature 49 source_module_e7af20e2e9e75a76
     src/memory_query_language/sql.rs signature 20 source_module_099d6dd781773c8a
     src/memory_query_language/syntax.rs signature 19 source_module_998957801ee9a72d
-    src/memory_sync.rs signature 18 source_module_66a82850827c4097
+    src/memory_sync.rs signature 18 source_module_e22b2483005dd976
     src/meta_construction.rs signature 13 source_module_da0a9566309dca10
     src/meta_core.rs signature 2 source_module_e646686ca2a955c3
     src/meta_frame.rs signature 37 source_module_c6de4ce55a2c52df
