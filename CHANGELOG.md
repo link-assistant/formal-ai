@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.335.0] - 2026-08-09
+
+### Added
+- Natural statements in English, Russian, Hindi, Chinese, and Spanish can now
+  project to seed-defined first-order logic and back through one
+  Wikidata-grounded meaning.
+  Native and browser translation paths share the same projection catalog and
+  preserve round-trip identity without language-pair translators (issue #917).
+
 ## [0.334.0] - 2026-08-09
 
 ### Fixed
