@@ -308,6 +308,10 @@ enum Command {
 
 #[derive(Debug, Subcommand)]
 enum MemoryAction {
+    /// Inspect persisted-memory compatibility without creating artifacts.
+    UpgradeStatus(cli_memory::UpgradeStatusArgs),
+    /// Explicitly migrate under the writer lock after a verified backup.
+    Migrate(cli_memory::MigrateArgs),
     /// Write the agent's full memory (seed + event log) to a `.lino` file —
     /// the same self-contained `formal_ai_bundle` the browser's "Export
     /// memory" button produces. Pass `--events-only` to fall back to the

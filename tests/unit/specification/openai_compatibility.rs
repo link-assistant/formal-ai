@@ -5,8 +5,6 @@
 //! Responses dialects so that existing tooling can call `formal-ai` as a
 //! drop-in symbolic engine.
 
-use std::sync::{Mutex, MutexGuard, OnceLock};
-
 use formal_ai::{
     create_chat_completion, create_response, export_memory_links_notation, handle_api_request,
     handle_api_request_with_auth, model_aliases, resolve_model_id, ApiAuthConfig,
@@ -626,7 +624,7 @@ fn http_responses_route_queries_persisted_memory_with_natural_language() {
 }
 
 fn with_recall_memory<T>(run: impl FnOnce() -> T) -> T {
-    let _guard = memory_env_lock();
+    let _guard = super::super::memory_env_lock();
     let dir = std::env::temp_dir().join(format!("formal-ai-memory-query-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(&dir).expect("temp dir");
@@ -687,11 +685,6 @@ fn memory_event(
         conversation_title: Some(conversation_title.to_owned()),
         ..MemoryEvent::default()
     }
-}
-
-fn memory_env_lock() -> MutexGuard<'static, ()> {
-    static LOCK: OnceLock<Mutex<()>> = OnceLock::new();
-    LOCK.get_or_init(|| Mutex::new(())).lock().unwrap()
 }
 
 fn sse_event_names(body: &str) -> Vec<&str> {

@@ -5,8 +5,6 @@
 //! These exercise the HTTP handler directly so the routes documented in
 //! `docs/desktop/server-api.md` are verified end-to-end without a live socket.
 
-use std::sync::{Mutex, MutexGuard, OnceLock};
-
 use formal_ai::{
     export_memory_links_notation, handle_api_request, parse_bundle, run_links_query, MemoryEvent,
     SyncStore,
@@ -189,7 +187,7 @@ fn chat_completions_route_records_live_exchange_into_configured_memory() {
     // Issue #540 §1: a POSTed chat must land in the persistent memory log so
     // background dreaming has organic data to learn from — proven end-to-end
     // through the HTTP handler against a temp FORMAL_AI_MEMORY_PATH.
-    let _guard = memory_env_lock();
+    let _guard = super::memory_env_lock();
     let dir = std::env::temp_dir().join(format!(
         "formal-ai-local-surface-chat-record-{}",
         std::process::id()
@@ -246,7 +244,7 @@ fn sample_event(id: &str, content: &str) -> formal_ai::MemoryEvent {
 }
 
 fn with_recall_memory<T>(run: impl FnOnce() -> T) -> T {
-    let _guard = memory_env_lock();
+    let _guard = super::memory_env_lock();
     let dir = std::env::temp_dir().join(format!(
         "formal-ai-local-surface-memory-query-{}",
         std::process::id()
@@ -300,9 +298,4 @@ fn recall_event(
         conversation_title: Some(conversation_title.to_owned()),
         ..MemoryEvent::default()
     }
-}
-
-fn memory_env_lock() -> MutexGuard<'static, ()> {
-    static LOCK: OnceLock<Mutex<()>> = OnceLock::new();
-    LOCK.get_or_init(|| Mutex::new(())).lock().unwrap()
 }

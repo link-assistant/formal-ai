@@ -63,13 +63,6 @@ pub fn start_core_dreaming() {
         return;
     }
     let path = crate::shared_memory::shared_memory_path();
-    if let Err(error) = crate::shared_memory::ensure_shared_memory_file(&path) {
-        eprintln!(
-            "[dreaming] could not initialize {}: {error}",
-            path.display()
-        );
-        return;
-    }
     START.call_once(|| {
         LAST_FOREGROUND_SECONDS.store(now_seconds(), Ordering::SeqCst);
         std::thread::Builder::new()

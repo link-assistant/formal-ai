@@ -1,0 +1,9 @@
+demo_memory
+  event "event-1"
+    role "user"
+    content "keep me"
+    futureField "preserve me"
+  event "event-2"
+    role "assistant"
+    content "second"
+    evidence "source-a|source-b"

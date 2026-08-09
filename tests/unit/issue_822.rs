@@ -356,12 +356,15 @@ fn conversation_api_returns_full_transcript_server_logs_and_metadata_as_lino_by_
 
 #[test]
 fn conversation_learning_endpoint_stages_structured_server_trace_for_review() {
+    let _memory_lock = super::memory_env_lock();
     let _lock = DIALOG_LOG_ENV_LOCK
         .get_or_init(|| Mutex::new(()))
         .lock()
         .unwrap();
     let directory = isolated_directory("conversation-learning");
     let _env = EnvRestore::set("FORMAL_AI_DIALOG_LOG_DIR", &directory);
+    let memory_path = directory.join("memory.lino");
+    let _memory_env = EnvRestore::set("FORMAL_AI_MEMORY_PATH", &memory_path);
     let headers = [("X-Formal-AI-Dialog-ID", "issue-822-learning")];
     let request = json!({
         "model": "formal-ai",

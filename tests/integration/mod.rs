@@ -55,6 +55,8 @@ mod issue_845_fact_checking;
 mod issue_859_codex;
 mod issue_879_completion;
 mod issue_885_document_audit;
+mod issue_982_memory_upgrade;
+mod issue_982_self_hosting;
 mod logging_proxy;
 mod memory_query;
 mod multi_protocol_api;

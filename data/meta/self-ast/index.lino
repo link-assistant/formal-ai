@@ -2,11 +2,11 @@ self_ast_census_index
   language rust
   engine meta_language
   full_fidelity_prefix src/agentic_coding/
-  module_count 445
+  module_count 446
   full_ast_module_count 56
-  signature_module_count 389
-  symbol_count 9045
-  content_id self_ast_census_index_887275a161d4b020
+  signature_module_count 390
+  symbol_count 9095
+  content_id self_ast_census_index_93aa178501e048ba
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/algorithm_learning.rs full_ast 13 source_module_0cde1901a8a78574
@@ -89,7 +89,7 @@ self_ast_census_index
     src/cli_import.rs signature 2 source_module_a03f4f2a6132bf13
     src/cli_improve.rs signature 5 source_module_9c508efbe830879e
     src/cli_learn.rs signature 7 source_module_1ab3707797fe02f7
-    src/cli_memory.rs signature 5 source_module_4e041a61b5bd4d9e
+    src/cli_memory.rs signature 8 source_module_30dea04d684790f4
     src/cli_orchestration.rs signature 20 source_module_3cc7a5de6d3d9b9b
     src/cli_procedure.rs signature 3 source_module_c9c5b58779d0ecd8
     src/cli_report.rs signature 26 source_module_c317d32202610bc8
@@ -144,7 +144,7 @@ self_ast_census_index
     src/dreaming/lexicon.rs signature 8 source_module_14f4c530d1709a72
     src/dreaming/support.rs signature 9 source_module_97a5224caa148647
     src/dreaming_application.rs signature 15 source_module_6730530bbc27a989
-    src/dreaming_runtime.rs signature 16 source_module_c732564226f90051
+    src/dreaming_runtime.rs signature 16 source_module_bcf9951b82465adc
     src/engine.rs signature 41 source_module_3fa688e17471a2d4
     src/engine_assistant_name.rs signature 14 source_module_583e88ddfdd53ff1
     src/engine_responses.rs signature 67 source_module_ee7c6bbd0d2660f4
@@ -182,17 +182,18 @@ self_ast_census_index
     src/learning_cycle.rs signature 35 source_module_5111044fb9a4d31d
     src/learning_ledger.rs signature 26 source_module_b3603c2c577cd078
     src/lexeme_import.rs signature 49 source_module_03ae22d5093d8a37
-    src/lib.rs signature 158 source_module_50b67c0f1db5347b
-    src/link_store.rs signature 53 source_module_4163b0ff62ebee82
+    src/lib.rs signature 158 source_module_ef1720f3a2f5d803
+    src/link_store.rs signature 54 source_module_6d1eeee5943d9030
     src/links_format.rs signature 7 source_module_17ae7d7e69b8c450
     src/links_query.rs signature 30 source_module_434647cf5697218d
     src/links_substitution_query/links.rs signature 34 source_module_b93fba6da2b6abdb
     src/links_substitution_query/mod.rs signature 18 source_module_c280ddedbe0be41b
     src/links_substitution_query/text.rs signature 10 source_module_54590acf88bfa6d5
-    src/main.rs signature 42 source_module_68f2aab71598f8ee
+    src/main.rs signature 42 source_module_26a7518326914cd7
     src/mcp.rs signature 14 source_module_ef53f007e3562f02
-    src/memory.rs signature 38 source_module_0295dd993338b603
+    src/memory.rs signature 41 source_module_5c268b32325d589e
     src/memory/bundle.rs signature 12 source_module_aa109e11a210ec80
+    src/memory/upgrade.rs signature 41 source_module_910ceb4dec78d09b
     src/memory_program.rs signature 41 source_module_c2d225986a252f04
     src/memory_program/execution.rs signature 30 source_module_dc92b150c60bce1d
     src/memory_query_language/execution.rs signature 23 source_module_6920a36491a30f94
@@ -202,7 +203,7 @@ self_ast_census_index
     src/memory_query_language/mod.rs signature 49 source_module_e7af20e2e9e75a76
     src/memory_query_language/sql.rs signature 20 source_module_099d6dd781773c8a
     src/memory_query_language/syntax.rs signature 19 source_module_998957801ee9a72d
-    src/memory_sync.rs signature 17 source_module_c741226eb9c28f61
+    src/memory_sync.rs signature 18 source_module_e22b2483005dd976
     src/meta_construction.rs signature 13 source_module_da0a9566309dca10
     src/meta_core.rs signature 2 source_module_e646686ca2a955c3
     src/meta_frame.rs signature 37 source_module_c6de4ce55a2c52df
@@ -315,7 +316,7 @@ self_ast_census_index
     src/sequences/patterns_1d.rs signature 12 source_module_b718a844c6dfed87
     src/sequences/store.rs signature 18 source_module_7b7de92b8a7328df
     src/sequences/symbols.rs signature 9 source_module_5543a57e46ec516d
-    src/server.rs signature 43 source_module_38af8c77165c02c6
+    src/server.rs signature 44 source_module_716bfb123e72a002
     src/server/conversation_reports.rs signature 4 source_module_605a703e153ee173
     src/server/transport.rs signature 8 source_module_8eeb2e2d068c530c
     src/shared_dialog.rs signature 34 source_module_60cbca77b2671e8d
