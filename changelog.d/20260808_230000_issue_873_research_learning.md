@@ -15,3 +15,6 @@ bump: minor
 - The self-AST workspace aggregate is now rendered on demand instead of tracked,
   preventing unrelated source branches from repeatedly conflicting in the same
   generated `index.lino` while retaining per-module drift checks.
+- Repository summarization now bounds optional concrete-syntax parsing for
+  oversized traces, preventing seeded validation from spending hours on a
+  single generated evidence file while still summarizing its full structure.
