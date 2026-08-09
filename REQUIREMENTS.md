@@ -1840,6 +1840,21 @@ evidence and the filed issue bodies live in `docs/case-studies/issue-894/`.
 | R894-3 | Link every filing from the report and mark obsolete findings explicitly. | Implemented: the report's *Recommended upstream issues to file* section is replaced by the *Upstream filing status (revalidated 2026-08-05)* ledger — every `confirmed` row carries its filing URL, U4/U5/U6 are `not-applicable` with the reason, and L1/L3/L4/L7 (API-docs deploy, published-crate smoke test, resilient buildx, main-safe concurrency) are `obsolete` with the evidence that closed them. |
 | R894-4 | A confirmed finding may never remain ready-to-file without a URL, enforced by a documentation check. | Implemented: `tests/unit/docs_requirements_issue_894.rs` parses the ledger and fails when a `confirmed` row has no `link-foundation` issue URL, when a status outside the documented vocabulary (`confirmed` / `obsolete` / `not-applicable` / `local`) appears, when the pre-filing recommendation section returns, or when the preserved evidence goes missing. |
 
+## Issue #980 Default-Branch CI False Results
+
+Issue [#980](https://github.com/link-assistant/formal-ai/issues/980) audits the
+seven default-branch workflows named in the issue, compares the full Rust, JS,
+and Python pipeline-template trees, and fixes every actionable error found. The
+complete run logs, template snapshots, timeline, requirements ledger, and root
+cause analysis live in `dev/log/issues/980/pulls/981/`.
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R980-1 | Download and inspect every referenced workflow run, including warnings and retry-masked flakes. | Implemented: all seven run records and complete logs are preserved under `dev/log/issues/980/pulls/981/ci-logs/`; run 31186108359 is the only failed workflow and its findings name the deterministic formatter error, external-search interception, and permission-state race. |
+| R980-2 | Fix every actionable failure without hiding real failures behind retries. | Implemented: the rejected Rust line is formatted, `issue-282.spec.js` blocks cross-origin providers during local WASM parity checks, and `issue-541-permissions-cold-start.spec.js` waits for the observable pending-task state rather than returning after the user-message append. |
+| R980-3 | Compare all CI/workflow/script files with the Rust, JS, and Python templates and Hive Mind practices. | Implemented: complete template tree snapshots at Rust `c867f78`, JS `7b70923`, and Python `98d6dca`, plus searchable control indexes and the Hive Mind guide, are preserved in the evidence bundle. Applicable workflow controls were already adopted by PRs 809 and 971; no new template-owned defect was found and therefore no duplicate upstream issue was filed. |
+| R980-4 | Prevent recurrence with per-defect and composed verification. | Implemented: `tests/unit/ci-cd/issue_980.rs` pins all three source invariants; the actual browser specs exercise the external-network boundary and pending-task boundary end to end. Focused repetition passed 12/12 opener cases and 9/9 permission cases. |
+
 ## Issue #973 Automated Solve Session Evidence
 
 Issue [#973](https://github.com/link-assistant/formal-ai/issues/973) follows the

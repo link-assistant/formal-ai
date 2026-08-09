@@ -1,0 +1,47 @@
+* 3a730a5b (HEAD -> issue-980-7930e3c647c0, origin/issue-980-7930e3c647c0) Initial commit with task details
+*   5625a53a (origin/main, origin/HEAD, main) Merge pull request #965 from link-assistant/issue-909-de2fb1cd1edc
+|\  
+| * 50fa3a0a (origin/issue-909-de2fb1cd1edc) ci: fix the file-size violation and the agent-CLI e2e timeout false positive
+| * 598d52a7 docs(requirements): trace the content-addressed seed sharding as R909-7
+| * c7548f52 ci(pages): outwait a backlogged GitHub Pages deployment queue
+| * ffbcf1bf docs(changelog): note content-addressed seed sharding
+| * 9f772b53 test(seed): gate content-addressed shard placement; document it in CONTRIBUTING
+| * 11b22fc9 test(seed): measure shard blast radius across sort positions, not one probe
+| * d345e3a0 fix(seed): shard closure-generated meanings by content digest, not sequential fill
+| *   198b11cd Merge remote-tracking branch 'origin/main' into issue-909-de2fb1cd1edc
+| |\  
+| |/  
+|/|   
+* |   6d0f41c8 Merge pull request #929 from link-assistant/issue-907-a7979a72a133
+|\ \  
+| * \   3e5dfa38 (origin/issue-907-a7979a72a133) Merge origin/main into issue-907-a7979a72a133
+| |\ \  
+| * | | 8533c125 test(issue-907): make the gemini CLI E2E leg pass against the real client
+| * | |   eb6afc9e Merge origin/main into issue-907-a7979a72a133
+| |\ \ \  
+| * \ \ \   ccedbe83 Merge origin/main into issue-907-a7979a72a133
+| |\ \ \ \  
+| * | | | | 899f679d test(issue-907): cover the caller-framing fix in every supported language
+| * | | | | cb72a100 docs(protocol): fix the intra-doc link to the caller-context vocabulary
+| * | | | |   342ec9c8 Merge main into issue-907-a7979a72a133
+| |\ \ \ \ \  
+| * | | | | | 79b5cba8 fix(agentic): a turn that carries a task gets the task (issue #907)
+| * | | | | | 6d427f75 Auto-commit: Changes made by Claude during problem-solving session
+| * | | | | | 638dcc6e fix(protocol): read the user's request, not the caller's framing (issue #907)
+| * | | | | | 63292287 test(issue-907): reproduce the caller-framing intent hijack over the Gemini surface
+| * | | | | | 50c1536c Initial commit with task details
+* | | | | | | 980e2305 (tag: v0.333.2) chore: release v0.333.2
+| |_|_|_|/ /  
+|/| | | | |   
+* | | | | |   976141d7 Merge pull request #927 from link-assistant/issue-905-84e37855d352
+|\ \ \ \ \ \  
+| * \ \ \ \ \   06d5a9e2 (origin/issue-905-84e37855d352) Merge origin/main into issue-905 branch and regenerate self-AST census
+| |\ \ \ \ \ \  
+| * | | | | | | b1f8fd45 Refresh the self-AST census and route placeholders through consts
+| * | | | | | | e76beb20 Seed the general-change completion claim in all five languages
+| * | | | | | |   b4976c2d Merge remote-tracking branch 'origin/main' into issue-905-84e37855d352
+| |\ \ \ \ \ \ \  
+| | | |_|_|_|/ /  
+| | |/| | | | |   
+| * | | | | | |   30383935 Merge remote-tracking branch 'origin/main' into issue-905-84e37855d352
+| |\ \ \ \ \ \ \  

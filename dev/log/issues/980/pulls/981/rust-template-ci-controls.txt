@@ -1,0 +1,235 @@
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:18:          - changelog-pr
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:49:  CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:50:  CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:64:    timeout-minutes: 5
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:89:        run: rust-script scripts/detect-code-changes.rs
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:92:  # Docs-only PRs (./docs folder, markdown files) don't require changelog fragments
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:93:  changelog:
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:96:    timeout-minutes: 10
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:98:      group: ${{ github.workflow }}-${{ github.ref }}-changelog
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:113:      - name: Check for changelog fragments
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:116:        run: rust-script scripts/check-changelog-fragment.rs
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:123:    timeout-minutes: 5
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:148:  secrets-scan:
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:151:    timeout-minutes: 10
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:153:      group: ${{ github.workflow }}-${{ github.ref }}-secrets-scan
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:158:      - name: Run secretlint
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:159:        run: npx --yes -p secretlint -p @secretlint/secretlint-rule-preset-recommend secretlint --secretlintignore .gitignore "**/*"
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:164:  fresh-merge:
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:167:    timeout-minutes: 30
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:169:      group: ${{ github.workflow }}-${{ github.ref }}-fresh-merge
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:190:          key: ${{ runner.os }}-cargo-fresh-merge-${{ hashFiles('**/Cargo.lock') }}
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:192:            ${{ runner.os }}-cargo-fresh-merge-
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:197:        run: bash scripts/simulate-fresh-merge.sh
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:208:    timeout-minutes: 60
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:249:    timeout-minutes: 5
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:275:  # Lint runs independently of changelog check - it's a fast check that should always run
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:280:    timeout-minutes: 10
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:323:        run: cargo fmt --all -- --check
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:326:        run: cargo clippy --all-targets --all-features
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:359:        run: rust-script scripts/check-file-size.rs
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:362:  # Test runs independently of changelog check and only for code-affecting changes
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:366:    timeout-minutes: 20
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:428:    timeout-minutes: 15
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:434:      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:486:    timeout-minutes: 10
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:522:  # Automatic release on push to main using changelog fragments
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:523:  # This job automatically bumps version based on fragments in changelog.d/
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:537:    timeout-minutes: 30
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:539:      DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME }}
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:540:      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:547:          token: ${{ secrets.GITHUB_TOKEN }}
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:558:      - name: Determine bump type from changelog fragments
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:566:          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:569:      - name: Collect changelog and bump version
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:593:          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:594:          CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:638:            echo "Set DOCKERHUB_USERNAME as a repository variable or secret, and DOCKERHUB_TOKEN as a secret."
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:688:          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:722:    timeout-minutes: 30
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:724:      DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME }}
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:725:      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:732:          token: ${{ secrets.GITHUB_TOKEN }}
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:743:      - name: Collect changelog fragments
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:744:        run: rust-script scripts/collect-changelog.rs
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:765:          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:766:          CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:807:            echo "Set DOCKERHUB_USERNAME as a repository variable or secret, and DOCKERHUB_TOKEN as a secret."
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:856:          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:869:  changelog-pr:
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:871:    if: github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'changelog-pr'
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:873:    timeout-minutes: 10
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:891:      - name: Create changelog fragment
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:895:        run: rust-script scripts/create-changelog-fragment.rs --bump-type "$BUMP_TYPE" --description "$DESCRIPTION"
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:900:          token: ${{ secrets.GITHUB_TOKEN }}
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:901:          commit-message: 'chore: add changelog for manual ${{ github.event.inputs.bump_type }} release'
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:902:          branch: changelog-manual-release-${{ github.run_id }}
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:916:            1. Review the changelog fragment in this PR
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:944:    timeout-minutes: 15
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/check-file-size.rs:5://! Usage: rust-script scripts/check-file-size.rs
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/check-file-size.rs:260:        let path = std::env::temp_dir().join(format!("check-file-size-{name}-{nanos}"));
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/collect-changelog.rs:2://! Collect changelog fragments into CHANGELOG.md
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/collect-changelog.rs:4://! This script collects all .md files from changelog.d/ (except README.md)
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/collect-changelog.rs:8://! - Single-language: Cargo.toml and changelog.d/ in repository root
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/collect-changelog.rs:9://! - Multi-language: Cargo.toml and changelog.d/ in rust/ subfolder
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/collect-changelog.rs:11://! Usage: rust-script scripts/collect-changelog.rs [--rust-root <path>]
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/collect-changelog.rs:26:const INSERT_MARKER: &str = "<!-- changelog-insert-here -->";
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/collect-changelog.rs:68:fn get_changelog_dir(rust_root: &str) -> String {
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/collect-changelog.rs:70:        "./changelog.d".to_string()
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/collect-changelog.rs:72:        format!("{}/changelog.d", rust_root)
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/collect-changelog.rs:76:fn get_changelog_path(rust_root: &str) -> String {
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/collect-changelog.rs:106:fn collect_fragments(changelog_dir: &str) -> String {
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/collect-changelog.rs:107:    let dir_path = Path::new(changelog_dir);
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/collect-changelog.rs:139:fn update_changelog(changelog_file: &str, version: &str, fragments: &str) {
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/collect-changelog.rs:143:    if Path::new(changelog_file).exists() {
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/collect-changelog.rs:144:        let mut content = fs::read_to_string(changelog_file).unwrap_or_default();
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/collect-changelog.rs:171:        fs::write(changelog_file, content).expect("Failed to write changelog");
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/collect-changelog.rs:176:            The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),\n\
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/collect-changelog.rs:181:        fs::write(changelog_file, content).expect("Failed to write changelog");
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/collect-changelog.rs:187:fn remove_fragments(changelog_dir: &str) {
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/collect-changelog.rs:188:    let dir_path = Path::new(changelog_dir);
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/collect-changelog.rs:210:    let changelog_dir = get_changelog_dir(&rust_root);
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/collect-changelog.rs:211:    let changelog_file = get_changelog_path(&rust_root);
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/collect-changelog.rs:221:    println!("Collecting changelog fragments for version {}", version);
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/collect-changelog.rs:223:    let fragments = collect_fragments(&changelog_dir);
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/collect-changelog.rs:226:        println!("No changelog fragments found");
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/collect-changelog.rs:230:    update_changelog(&changelog_file, &version, &fragments);
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/collect-changelog.rs:231:    remove_fragments(&changelog_dir);
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/check-changelog-fragment.rs:2://! Check if a changelog fragment was added in the current PR
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/check-changelog-fragment.rs:4://! This script validates that a changelog fragment is added in the PR diff,
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/check-changelog-fragment.rs:9://! Usage: rust-script scripts/check-changelog-fragment.rs
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/check-changelog-fragment.rs:16://!   - 1: Check failed (source changes without changelog fragment)
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/check-changelog-fragment.rs:93:fn is_changelog_fragment(file_path: &str, rust_root: &str) -> bool {
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/check-changelog-fragment.rs:94:    let changelog_dir = if rust_root == "." { "changelog.d/".to_string() } else { format!("{}/changelog.d/", rust_root) };
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/check-changelog-fragment.rs:96:    (file_path.starts_with(&changelog_dir) || file_path.starts_with("changelog.d/"))
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/check-changelog-fragment.rs:102:    println!("Checking for changelog fragment in PR diff...\n");
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/check-changelog-fragment.rs:134:    // Count changelog fragments added in this PR
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/check-changelog-fragment.rs:137:        .filter(|f| is_changelog_fragment(f, &rust_root))
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/check-changelog-fragment.rs:151:        eprintln!("::error::No changelog fragment found in this PR. Please add a changelog entry in changelog.d/");
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/check-changelog-fragment.rs:153:        eprintln!("To create a changelog fragment:");
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/check-changelog-fragment.rs:154:        eprintln!("  Create a new .md file in changelog.d/ with your changes");
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/check-changelog-fragment.rs:156:        eprintln!("See changelog.d/README.md for more information.");
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/get-bump-type.rs:2://! Parse changelog fragments and determine version bump type
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/get-bump-type.rs:4://! This script reads changeset fragments from changelog.d/ and determines
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/get-bump-type.rs:8://! - Single-language: changelog.d/ in repository root
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/get-bump-type.rs:9://! - Multi-language: changelog.d/ in rust/ subfolder
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/get-bump-type.rs:65:fn get_changelog_dir(rust_root: &str) -> String {
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/get-bump-type.rs:67:        "./changelog.d".to_string()
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/get-bump-type.rs:69:        format!("{}/changelog.d", rust_root)
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/get-bump-type.rs:109:fn determine_bump_type(changelog_dir: &str, default_bump: &str) -> (String, usize) {
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/get-bump-type.rs:110:    let dir_path = Path::new(changelog_dir);
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/get-bump-type.rs:112:        println!("No {} directory found", changelog_dir);
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/get-bump-type.rs:126:            println!("No changelog fragments found");
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/get-bump-type.rs:132:        println!("No changelog fragments found");
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/get-bump-type.rs:165:    let changelog_dir = get_changelog_dir(&rust_root);
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/get-bump-type.rs:167:    let (bump_type, fragment_count) = determine_bump_type(&changelog_dir, &default_bump);
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/detect-code-changes.rs:16://! Excluded from code changes (don't require changelog fragments):
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/detect-code-changes.rs:18://! - changelog.d/ folder (changelog fragments)
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/detect-code-changes.rs:24://! Usage: rust-script scripts/detect-code-changes.rs
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/detect-code-changes.rs:33://!   - any-code-changed: 'true' if any code files changed (excludes docs, changelog.d, experiments, examples)
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/detect-code-changes.rs:172:        "changelog.d/",
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/detect-code-changes.rs:240:    // Detect code changes (excluding docs, changelog.d, experiments, examples folders, and markdown files)
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/detect-code-changes.rs:273:        let path = env::temp_dir().join(format!("detect-code-changes-{name}-{nanos}"));
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/check-release-needed.rs:2://! Check if a release is needed based on changelog fragments and version state
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/check-release-needed.rs:5://! 1. If there are changelog fragments to process
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/check-release-needed.rs:22://!   - HAS_FRAGMENTS: 'true' if changelog fragments exist (from get-bump-type.rs)
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/check-release-needed.rs:381:                "No changelog fragments and v{} is fully published",
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/check-release-needed.rs:387:                "No changelog fragments but v{} is missing at least one release artifact",
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/check-release-needed.rs:394:        println!("Found changelog fragments, proceeding with release");
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/create-changelog-fragment.rs:2://! Create a changelog fragment for manual release PR
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/create-changelog-fragment.rs:4://! This script creates a changelog fragment with the appropriate
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/create-changelog-fragment.rs:7://! Usage: rust-script scripts/create-changelog-fragment.rs --bump-type <type> [--description <desc>]
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/create-changelog-fragment.rs:54:fn get_changelog_dir(rust_root: &str) -> String {
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/create-changelog-fragment.rs:56:        "changelog.d".to_string()
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/create-changelog-fragment.rs:58:        format!("{}/changelog.d", rust_root)
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/create-changelog-fragment.rs:86:    let changelog_dir = get_changelog_dir(&rust_root);
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/create-changelog-fragment.rs:88:    let fragment_file = format!("{}/{}-manual-{}.md", changelog_dir, timestamp, bump_type);
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/create-changelog-fragment.rs:90:    // Determine changelog category based on bump type
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/create-changelog-fragment.rs:93:    // Create changelog fragment with frontmatter
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/create-changelog-fragment.rs:100:    // Ensure changelog directory exists
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/create-changelog-fragment.rs:101:    let dir_path = Path::new(&changelog_dir);
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/create-changelog-fragment.rs:104:            eprintln!("Error creating directory {}: {}", changelog_dir, e);
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/create-changelog-fragment.rs:115:    println!("Created changelog fragment: {}", fragment_file);
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/publish-crate.rs:174:        println!("To fix this, ensure one of the following secrets is configured:");
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/publish-crate.rs:178:        println!("For organization secrets, you may need to map the secret name in your workflow:");
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/publish-crate.rs:180:        println!("    CARGO_REGISTRY_TOKEN: ${{{{ secrets.CARGO_TOKEN }}}}");
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/publish-crate.rs:244:                eprintln!("SOLUTION: Configure one of these secrets in your repository or organization:");
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/publish-crate.rs:248:                eprintln!("If using organization secrets with a different name, map it in your workflow:");
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/publish-crate.rs:251:                eprintln!("      CARGO_REGISTRY_TOKEN: ${{{{ secrets.YOUR_SECRET_NAME }}}}");
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/simulate-fresh-merge.sh:51:  # shellcheck disable=SC2086
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/simulate-fresh-merge.sh:58:  echo "::group::cargo fmt --all -- --check"
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/simulate-fresh-merge.sh:59:  cargo fmt --all -- --check || status=1
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/simulate-fresh-merge.sh:62:  echo "::group::cargo clippy --all-targets --all-features"
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/simulate-fresh-merge.sh:63:  cargo clippy --all-targets --all-features || status=1
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/rust-paths.rs:116:/// Get the path to changelog.d directory
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/rust-paths.rs:117:pub fn get_changelog_dir(rust_root: &str) -> PathBuf {
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/rust-paths.rs:119:        PathBuf::from("./changelog.d")
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/rust-paths.rs:121:        PathBuf::from(rust_root).join("changelog.d")
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/rust-paths.rs:126:pub fn get_changelog_path(rust_root: &str) -> PathBuf {
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/rust-paths.rs:266:            println!("Changelog dir: {}", get_changelog_dir(&root).display());
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/check-version-modification.rs:6://! using changelog fragments in changelog.d/.
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/check-version-modification.rs:11://! - Skips check for automated release branches (changelog-manual-release-*)
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/check-version-modification.rs:56:        "changelog-manual-release-",
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/check-version-modification.rs:153:        eprintln!("To trigger a release, add a changelog fragment to changelog.d/");
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/check-version-modification.rs:155:        eprintln!("See changelog.d/README.md for more information.\n");
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/create-github-release.rs:54:fn get_changelog_path(rust_root: &str) -> String {
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/create-github-release.rs:109:fn get_changelog_for_version(changelog_path: &str, version: &str) -> String {
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/create-github-release.rs:110:    if !Path::new(changelog_path).exists() {
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/create-github-release.rs:114:    let content = match fs::read_to_string(changelog_path) {
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/create-github-release.rs:212:fn normalize_changelog_blob_path(changelog_path: &str) -> String {
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/create-github-release.rs:213:    changelog_path
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/create-github-release.rs:220:fn full_changelog_url(repository: &str, tag: &str, changelog_path: &str) -> String {
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/create-github-release.rs:223:        normalize_changelog_blob_path(changelog_path)
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/create-github-release.rs:231:    changelog_path: &str,
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/create-github-release.rs:238:        "\n\nRelease notes truncated. See the [full changelog]({}).",
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/create-github-release.rs:239:        full_changelog_url(repository, tag, changelog_path)
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/create-github-release.rs:318:    let changelog_path = get_changelog_path(&rust_root);
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/create-github-release.rs:319:    let mut release_notes = get_changelog_for_version(&changelog_path, &normalized_version);
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/create-github-release.rs:337:    release_notes = cap_release_notes(release_notes, &repository, &release_tag, &changelog_path);
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/create-github-release.rs:531:    fn oversized_release_notes_are_capped_with_full_changelog_link() {
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:12://! - Single-language: Cargo.toml and changelog.d/ in repository root
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:13://! - Multi-language: Cargo.toml and changelog.d/ in rust/ subfolder
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:56:fn get_changelog_dir(rust_root: &str) -> String {
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:58:        "./changelog.d".to_string()
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:60:        format!("{}/changelog.d", rust_root)
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:64:fn get_changelog_path(rust_root: &str) -> String {
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:352:fn remove_changelog_fragments(files: &[PathBuf]) {
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:361:fn collect_changelog(changelog_dir: &str, changelog_file: &str, version: &str) {
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:363:    collect_changelog_with_date(changelog_dir, changelog_file, version, &date_str);
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:366:fn collect_changelog_with_date(
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:367:    changelog_dir: &str,
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:368:    changelog_file: &str,
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:372:    let dir_path = Path::new(changelog_dir);
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:413:    if !Path::new(changelog_file).exists() {
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:417:    let mut content = fs::read_to_string(changelog_file).unwrap_or_default();
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:437:    fs::write(changelog_file, content).expect("Failed to write changelog");
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:438:    remove_changelog_fragments(&files);
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:439:    println!("Collected {} changelog fragment(s)", files.len());
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:444:    use super::{collect_changelog_with_date, update_cargo_lock};
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:530:    fn changelog_collection_removes_consumed_fragments_and_keeps_readme() {
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:531:        let repo = temp_dir("changelog-cleanup");
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:532:        let changelog_dir = repo.join("changelog.d");
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:533:        fs::create_dir_all(&changelog_dir).unwrap();
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:535:        let first_fragment = changelog_dir.join("20260608_fix_release_loop.md");
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:536:        let second_fragment = changelog_dir.join("20260608_note_release_loop.md");
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:544:- Prevent already-collected changelog fragments from triggering another release.
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:551:- Keep release commits from leaving stale changelog fragments behind.
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:555:        fs::write(changelog_dir.join("README.md"), "Fragment instructions\n").unwrap();
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:557:        let changelog = repo.join("CHANGELOG.md");
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:559:            &changelog,
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:570:        collect_changelog_with_date(
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:571:            changelog_dir.to_str().unwrap(),
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:572:            changelog.to_str().unwrap(),
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:577:        let updated = fs::read_to_string(&changelog).unwrap();
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:579:        assert!(updated.contains("Prevent already-collected changelog fragments"));
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:580:        assert!(updated.contains("Keep release commits from leaving stale changelog fragments"));
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:584:        assert!(changelog_dir.join("README.md").exists());
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:705:    let changelog_dir = get_changelog_dir(&rust_root);
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:706:    let changelog_file = get_changelog_path(&rust_root);
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:827:    // Collect changelog fragments
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:828:    collect_changelog(&changelog_dir, &changelog_file, &new_version);
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:830:    // Stage Cargo.toml, Cargo.lock if changed, CHANGELOG.md, and consumed changelog fragments.
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:833:    let mut add_args = vec!["add", &package_manifest_str, &changelog_file];
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:841:    if Path::new(&changelog_dir).exists() {
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:842:        if let Err(e) = exec("git", &["add", "-A", &changelog_dir]) {
+dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/scripts/version-and-commit.rs:843:            eprintln!("Error staging changelog fragments: {}", e);

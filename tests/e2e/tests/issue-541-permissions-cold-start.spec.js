@@ -190,9 +190,16 @@ async function sendPrompt(page, text) {
   await expect(input).toBeEnabled({ timeout: 5_000 });
   await input.fill(text);
   await page.locator('[data-testid="chat-composer-submit"]').click();
+  // Wait for the worker's pending-task result, not merely the user message
+  // appended by the click. The worker may emit more than one assistant message,
+  // so an exact total is another race. Default-branch run 31186108359 read the
+  // CTA before this state existed and saw `data-has-pending-task="false"`.
   await expect
     .poll(async () => messages.count(), { timeout: 20_000 })
-    .toBeGreaterThan(initial);
+    .toBeGreaterThan(initial + 1);
+  await expect(
+    page.locator('[data-testid="desktop-permission-panel-message-grant-all"]'),
+  ).toHaveAttribute('data-has-pending-task', 'true');
 }
 
 test.describe('Issue #541 (R9) over a raw IPC-shaped boundary', () => {
