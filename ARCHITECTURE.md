@@ -305,7 +305,31 @@ unrefs timers/processes, and wraps the CLI with `nice -n 19` on Unix-like
 platforms. Operators can disable that scheduler with
 `FORMAL_AI_DESKTOP_DREAMING=off`.
 
-### 4.3 Default native doublets-rs / doublets-web store
+### 4.3 Research, learning, and stable recovery
+
+Issue #873 joins the existing unknown trace, exact source captures, promotion
+gates, and agent orchestration behind `src/research_learning.rs`. Online inputs
+that exhaust specialized and memory routes become grounded research tasks;
+offline mode remains an explicit no-network boundary. The cycle's ordered
+phases are reviewable data in `data/meta/research-learning-recovery.lino`.
+
+External observations use `SourceReceipt`: locator and content identity are
+durable while a recomputable capture payload may be evicted. Identity-matching
+recollection can rehydrate that payload; changed observations append a new
+receipt. Learned facts, executable procedures, and amendments to the cycle
+itself share a parent-linked `KnowledgeVersion` history. Candidates never
+replace the active stable pointer until every gate passes, all required baseline
+ids are immutable, and immutable gates are a strict majority. Rejected
+candidates remain inspectable while any prior stable version stays recoverable.
+
+All errors enter one recovery reducer. User-led mode asks only when several
+options remain; full-trust mode ranks explicit prior outcomes and tradeoffs;
+per-command mode returns a permission boundary. The shared default limit is one
+hour. At that bound the reducer retains the current plan in an
+`AwaitingContinuation` decision and resumes only through explicit continuation,
+so the bound is not represented as irreversible failure.
+
+### 4.4 Default native doublets-rs / doublets-web store
 
 Native Rust builds select `LinkStoreBackend::DoubletsRs` by default because
 Cargo's default feature set enables `doublets-native`. The library exposes

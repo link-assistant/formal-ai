@@ -106,7 +106,9 @@ impl AgentRunConfig {
             model: DEFAULT_MODEL.to_string(),
             base_url: DEFAULT_BASE_URL.to_string(),
             target: AgentTarget::FormalAi,
-            timeout: Duration::from_mins(15),
+            timeout: Duration::from_secs(
+                crate::research_learning::DEFAULT_RESEARCH_TIME_LIMIT_SECONDS,
+            ),
             permission: AgentRunPermission::default(),
             allowlisted_agent_commands: BTreeSet::new(),
             allowlisted_commands: BTreeSet::new(),

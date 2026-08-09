@@ -98,6 +98,7 @@ pub mod relative_meta_logic;
 pub mod release_timeline;
 pub mod repair_strategy;
 pub mod requirement_contradiction;
+pub mod research_learning;
 pub(crate) mod responses_stream;
 pub mod route_method_alias;
 pub(crate) mod rule_synthesis;

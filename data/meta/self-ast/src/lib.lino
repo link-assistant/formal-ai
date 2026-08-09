@@ -2,10 +2,10 @@ self_ast_census
   target src/lib.rs
   language rust
   fidelity signature
-  byte_len 21503
-  line_count 475
-  content_id source_module_50b67c0f1db5347b
-  symbol_count 158
+  byte_len 21530
+  line_count 476
+  content_id source_module_226e2797ab8a069d
+  symbol_count 159
   symbols
     module agent 3 3
     module agentic_coding 4 4
@@ -105,63 +105,64 @@ self_ast_census
     module release_timeline 98 98
     module repair_strategy 99 99
     module requirement_contradiction 100 100
-    module responses_stream 101 101
-    module route_method_alias 102 102
-    module rule_synthesis 103 103
-    module rule_synthesis_portfolio 104 104
-    module search_fusion 105 105
-    module search_fusion_grammar 106 106
-    module search_fusion_learning 107 107
-    module seed 108 108
-    module selection 109 109
-    module self_ast_census 110 110
-    module self_explanation 111 111
-    module self_healing 112 112
-    module self_improvement 113 113
-    module self_source_links 114 114
-    module sequences 115 115
-    module server 116 116
-    module shared_dialog 117 117
-    module shared_memory 118 118
-    module skill_compiler 119 119
-    module skill_ledger 120 120
-    module skill_procedure 121 121
-    module solution_evidence 122 122
-    module solver 123 123
-    module solver_diagnostics 124 124
-    module solver_dispatch 125 125
-    module solver_formalization 126 126
-    module solver_handler_docs 127 127
-    module solver_handler_how 128 128
-    module solver_handler_oracle 129 129
-    module solver_handler_units 130 130
-    module solver_handlers 131 131
-    module solver_handlers_policy 132 132
-    module solver_helpers 133 133
-    module solver_search 134 134
-    module solver_synthesis 135 135
-    module solver_terminal 136 136
-    module solver_unknown_reasoning 137 137
-    module source_fetch 138 138
-    module source_research 139 139
-    module statement_audit 140 140
-    module statement_verification 141 141
-    module storage_policy 142 142
-    module substitution 143 143
-    module summarization 144 144
-    module task_decomposition 145 145
-    module telegram 146 146
-    module telegram_runtime 147 147
-    module thinking 148 148
-    module thinking_prose 149 149
-    module translation 150 150
-    module unknown_opener 151 151
-    module web_engine_core 152 152
-    module web_search_core 153 153
-    module web_search_fusion_core 154 154
-    module workspace_change_learning 155 155
-    module world_model 156 156
-    module world_model_atoms 157 157
-    module world_model_context 158 158
-    module world_model_cycles 159 159
-    module world_model_dialog 160 160
+    module research_learning 101 101
+    module responses_stream 102 102
+    module route_method_alias 103 103
+    module rule_synthesis 104 104
+    module rule_synthesis_portfolio 105 105
+    module search_fusion 106 106
+    module search_fusion_grammar 107 107
+    module search_fusion_learning 108 108
+    module seed 109 109
+    module selection 110 110
+    module self_ast_census 111 111
+    module self_explanation 112 112
+    module self_healing 113 113
+    module self_improvement 114 114
+    module self_source_links 115 115
+    module sequences 116 116
+    module server 117 117
+    module shared_dialog 118 118
+    module shared_memory 119 119
+    module skill_compiler 120 120
+    module skill_ledger 121 121
+    module skill_procedure 122 122
+    module solution_evidence 123 123
+    module solver 124 124
+    module solver_diagnostics 125 125
+    module solver_dispatch 126 126
+    module solver_formalization 127 127
+    module solver_handler_docs 128 128
+    module solver_handler_how 129 129
+    module solver_handler_oracle 130 130
+    module solver_handler_units 131 131
+    module solver_handlers 132 132
+    module solver_handlers_policy 133 133
+    module solver_helpers 134 134
+    module solver_search 135 135
+    module solver_synthesis 136 136
+    module solver_terminal 137 137
+    module solver_unknown_reasoning 138 138
+    module source_fetch 139 139
+    module source_research 140 140
+    module statement_audit 141 141
+    module statement_verification 142 142
+    module storage_policy 143 143
+    module substitution 144 144
+    module summarization 145 145
+    module task_decomposition 146 146
+    module telegram 147 147
+    module telegram_runtime 148 148
+    module thinking 149 149
+    module thinking_prose 150 150
+    module translation 151 151
+    module unknown_opener 152 152
+    module web_engine_core 153 153
+    module web_search_core 154 154
+    module web_search_fusion_core 155 155
+    module workspace_change_learning 156 156
+    module world_model 157 157
+    module world_model_atoms 158 158
+    module world_model_context 159 159
+    module world_model_cycles 160 160
+    module world_model_dialog 161 161

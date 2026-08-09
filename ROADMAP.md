@@ -65,7 +65,11 @@ The post-merge audit found:
   is **now closed** by merged PRs #305-#311 (see the Completed Planning Batch
   table). Every message is now formalized into a Links-Notation intent
   (`src/intent_formalization.rs`), unmatched prompts run a reasoning-under-unknowns
-  loop (`src/solver_unknown_reasoning.rs`) instead of a canned opener, `write a
+  loop (`src/solver_unknown_reasoning.rs`) instead of a canned opener, and issue
+  [#873](https://github.com/link-assistant/formal-ai/issues/873) now promotes any
+  still-unresolved online input into grounded search/fetch/answer research while
+  a versioned reducer retains source receipts, immutable promotion gates, and
+  recoverable stable memory. `write a
   program` is one parametric intent, substitution rules (`src/substitution.rs`)
   run over link CRUD, and a permissive industry-benchmark slice is imported
   (`data/benchmarks/industry-suite.lino`).
@@ -131,7 +135,7 @@ Status legend:
 | 16 | Desktop application path | Built | `desktop/` Electron shell | Packaged by [#280](https://github.com/link-assistant/formal-ai/issues/280) (PR #289). |
 | 17 | Reusable associative packages, handlers, permissions, triggers | Built | `src/associative_package.rs`, handler registry, tool-call gating | Unified by [#281](https://github.com/link-assistant/formal-ai/issues/281) (PR #290). |
 | 18 | Rust-to-WebAssembly parity with JavaScript reserved for UI/glue | Partial | `src/web_engine_core.rs`, `src/web/wasm-worker/` own the parity-sensitive primitives (#282, PR #291); `src/web/worker/*.js` still carries ~27,700 lines of mirrored solver logic under the `scripts/check-worker-line-budget.rs` shrink-only ratchet | Absorbing the remaining worker logic into Rust→WASM is tracked by [#658](https://github.com/link-assistant/formal-ai/issues/658) (R380); see ARCHITECTURE.md §13. |
-| 19 | Reasoning under unknowns rather than a canned fallback | Built | `src/solver_unknown_reasoning.rs`, active `unknown_reasoning` specs record `reasoning:known:` / `reasoning:unknown:` / `reasoning:candidate_source:` / `reasoning:gather_attempt:` and ask at most one minimal question | Implemented by E21 [#298](https://github.com/link-assistant/formal-ai/issues/298) (PR #305). The synthesis it falls into is still seeded — see pillar 26. |
+| 19 | Reasoning under unknowns rather than a canned fallback | Built | `src/solver_unknown_reasoning.rs` records `reasoning:known:` / `reasoning:unknown:` / `reasoning:candidate_source:` / `reasoning:gather_attempt:`; online unresolved inputs enter grounded web research and offline inputs ask at most one minimal question | Implemented by E21 [#298](https://github.com/link-assistant/formal-ai/issues/298) (PR #305), generalized from bare terms/questions to every unresolved online intent by [#873](https://github.com/link-assistant/formal-ai/issues/873) (PR #983). |
 | 20 | Routing by formalized intent, not a fixed catalogue | Built | `src/intent_formalization.rs`, `src/solver_formalization.rs`, active `intent_formalization` specs; every prompt is formalized into a Links-Notation intent and prior reasoning is cached | Implemented by E22 [#299](https://github.com/link-assistant/formal-ai/issues/299) (PR #306). The specialized-handler precedence behind the formalized router is now data: E44 [#663](https://github.com/link-assistant/formal-ai/issues/663) retired the `SPECIALIZED_HANDLERS` constant into `data/seed/handler-precedence.lino`, joined with the Rust function pointers by `specialized_handlers()`. |
 | 21 | Parametric intents instead of one intent per language | Built | `SelectedRule::WriteProgram` with `program_parameter:language` / `program_parameter:task`, active `code_generation` specs | Implemented by E23 [#300](https://github.com/link-assistant/formal-ai/issues/300) (PR #307). |
 | 22 | Substitution-rule handlers over link CRUD | Built | `src/substitution.rs`, active `substitution_rules` specs (`replace x y`, `when n do m` over link CRUD) | Implemented by E24 [#301](https://github.com/link-assistant/formal-ai/issues/301) (PR #308). |
@@ -422,7 +426,7 @@ Requirement-level status by area, updated:
 | Self-coding chain | Mechanics Done (#673 census, #656 gated promotion, #657 release metric); the measured self-authored share is still near its baseline, owned by E77 |
 | Coding via formal reasoning, coding first (#914) | Partial: catalog, oracle, and synthesis layers exist, but the #848 ladder passes 2 of 13 rungs with zero successful write effects; E69 is the blocker epic |
 | Question necessity (ask only requirement-level unknowns) | Partial: clarify-vs-guess, the one-question unknown path, and the #527 catalog exist; no necessity proof per question — E73 |
-| Learning the universal algorithm itself | Not done beyond inert discovery (`src/algorithm_discovery.rs`); proposal-loop learning is E75 |
+| Learning the universal algorithm itself | Partial: `src/research_learning.rs` now versions meta-algorithm candidates through the same immutable promotion and stable recovery gate as facts/procedures; routine proposal generation and adoption remains E75 |
 | Formal-reasoning breadth (beyond SAT + linear arithmetic) | Partial; growth with external benchmark scoring is E76 |
 
 **Open planning batch E69-E77**

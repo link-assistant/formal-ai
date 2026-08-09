@@ -4,10 +4,14 @@
 //! API, Telegram, web demo) is expected to share. They cover both the active
 //! implementation and the full-scope scope from `VISION.md`/`GOALS.md`.
 
-use formal_ai::{ConversationTurn, FormalAiEngine, SymbolicAnswer, UniversalSolver};
+use formal_ai::{ConversationTurn, SolverConfig, SymbolicAnswer, UniversalSolver};
 
 fn answer(prompt: &str) -> SymbolicAnswer {
-    FormalAiEngine.answer(prompt)
+    UniversalSolver::new(SolverConfig {
+        offline: true,
+        ..SolverConfig::default()
+    })
+    .solve(prompt)
 }
 
 // ---------------------------------------------------------------------------

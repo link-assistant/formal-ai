@@ -5,10 +5,18 @@
 //! candidate validation, selection of the smallest sufficient answer,
 //! trace publication, and reply. These tests pin down each step.
 
-use formal_ai::{FormalAiEngine, SymbolicAnswer};
+use formal_ai::{FormalAiEngine, SolverConfig, SymbolicAnswer, UniversalSolver};
 
 fn answer(prompt: &str) -> SymbolicAnswer {
     FormalAiEngine.answer(prompt)
+}
+
+fn offline_answer(prompt: &str) -> SymbolicAnswer {
+    UniversalSolver::new(SolverConfig {
+        offline: true,
+        ..SolverConfig::default()
+    })
+    .solve(prompt)
 }
 
 // ---------------------------------------------------------------------------
@@ -24,7 +32,7 @@ fn known_prompts_resolve_via_local_knowledge() {
 
 #[test]
 fn unknown_prompts_acknowledge_inability_to_answer() {
-    let response = answer("Completely unrelated request");
+    let response = offline_answer("Completely unrelated request");
     assert_eq!(response.intent, "unknown");
     assert!(response.confidence.abs() < f32::EPSILON);
     assert!(response.answer.contains("Links Notation"));
@@ -243,7 +251,7 @@ fn step_9_reply_is_returned_with_trace_pointer() {
 
 #[test]
 fn loop_terminates_on_unsolvable_questions() {
-    let response = answer("Prove that P=NP in two sentences");
+    let response = offline_answer("Prove that P=NP in two sentences");
     assert_eq!(response.intent, "unknown");
     assert!(response
         .evidence_links

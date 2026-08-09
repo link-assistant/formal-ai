@@ -2,34 +2,34 @@ self_ast_census
   target src/solver_unknown_reasoning.rs
   language rust
   fidelity signature
-  byte_len 16375
-  line_count 501
-  content_id source_module_7f1cea55f6c5e89f
+  byte_len 16542
+  line_count 504
+  content_id source_module_60e438502ef41e93
   symbol_count 26
   symbols
     const FOCUS_PLACEHOLDER 19 19
     struct UnknownReasoningConfig 22 25
-    function answer_unknown_prompt 27 107
-    function record_initial_unknown_trace 109 137
-    function answer_unresolved_unknown 139 156
-    function answer_with_legacy_fallback 158 178
-    function answer_from_link_memory 180 217
-    function answer_from_public_knowledge_cache 219 263
-    function public_concepts 265 268
-    static CELL 266 266
-    function public_concept_candidate_terms 270 297
-    function concept_candidate_surfaces 299 309
-    function render_concept_plain 311 331
-    function concept_source 333 339
-    function render_source_link 341 348
-    function render_unresolved_unknown 350 358
-    function localized_seed_response 360 363
-    function infer_missing_focus 365 395
-    function is_unresolved_bare_term_prompt 397 409
-    function extract_question_subject 411 435
-    function tail_after_marker 437 441
-    function extract_memory_fact 443 459
-    function split_fact_statement 461 472
-    function clean_focus 474 480
-    function normalize_fact_subject 482 490
-    function normalize_search_surface 492 501
+    function answer_unknown_prompt 27 110
+    function record_initial_unknown_trace 112 140
+    function answer_unresolved_unknown 142 159
+    function answer_with_legacy_fallback 161 181
+    function answer_from_link_memory 183 220
+    function answer_from_public_knowledge_cache 222 266
+    function public_concepts 268 271
+    static CELL 269 269
+    function public_concept_candidate_terms 273 300
+    function concept_candidate_surfaces 302 312
+    function render_concept_plain 314 334
+    function concept_source 336 342
+    function render_source_link 344 351
+    function render_unresolved_unknown 353 361
+    function localized_seed_response 363 366
+    function infer_missing_focus 368 398
+    function is_unresolved_bare_term_prompt 400 412
+    function extract_question_subject 414 438
+    function tail_after_marker 440 444
+    function extract_memory_fact 446 462
+    function split_fact_statement 464 475
+    function clean_focus 477 483
+    function normalize_fact_subject 485 493
+    function normalize_search_surface 495 504

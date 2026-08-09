@@ -407,11 +407,27 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
             }
         }
     }
+    if web_research::has_successful_search_result(messages) {
+        if let Some(query) = web_research::unresolved_web_research_query_for(messages) {
+            if let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
+                return Some(plan);
+            }
+        }
+    }
     if let Some(answer) = tool_result::latest_turn_answer(messages, tool_names, &task) {
         return Some(AgenticPlan::Final(answer));
     }
-    compose_general_change_plan(&task)
+    if let Some(plan) = compose_general_change_plan(&task)
         .map(|plan| plan_general_change_step(messages, tool_names, &plan))
+    {
+        return Some(plan);
+    }
+    if let Some(query) = web_research::unresolved_web_research_query_for(messages) {
+        if let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
+            return Some(plan);
+        }
+    }
+    None
 }
 
 /// Run a shell command through the client-owned tool loop, then present its result.

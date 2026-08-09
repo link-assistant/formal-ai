@@ -299,7 +299,9 @@ fn generated_closure_shards_are_content_addressed() {
             checked += 1;
             let want = expected_shard(slug);
             if want != index {
-                misplaced.push(format!("{slug} is in shard {index:02} but hashes to {want:02}"));
+                misplaced.push(format!(
+                    "{slug} is in shard {index:02} but hashes to {want:02}"
+                ));
             }
         }
     }

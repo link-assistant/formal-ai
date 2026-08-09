@@ -92,7 +92,10 @@ pub struct ExternalRunArgs {
     #[arg(long, value_enum, default_value_t = TargetArg::FormalAi)]
     pub target: TargetArg,
     /// Hard process deadline; a timeout is recorded and never retried.
-    #[arg(long, default_value_t = 900)]
+    #[arg(
+        long,
+        default_value_t = formal_ai::research_learning::DEFAULT_RESEARCH_TIME_LIMIT_SECONDS
+    )]
     pub timeout_seconds: u64,
     /// Optional canonical session destination.
     #[arg(long)]
@@ -132,7 +135,10 @@ pub struct ExternalDispatchArgs {
     pub base_url: String,
     #[arg(long, value_enum, default_value_t = TargetArg::FormalAi)]
     pub target: TargetArg,
-    #[arg(long, default_value_t = 900)]
+    #[arg(
+        long,
+        default_value_t = formal_ai::research_learning::DEFAULT_RESEARCH_TIME_LIMIT_SECONDS
+    )]
     pub timeout_seconds: u64,
     /// Custom adapter in `CLI=JSON_ARGV` form. JSON argv must contain
     /// `{task}`; repeat for multiple adapters.
@@ -175,7 +181,10 @@ pub struct ExternalResumeArgs {
     /// Reviewable proof supplied to the original model.
     #[arg(long)]
     pub evidence: String,
-    #[arg(long, default_value_t = 900)]
+    #[arg(
+        long,
+        default_value_t = formal_ai::research_learning::DEFAULT_RESEARCH_TIME_LIMIT_SECONDS
+    )]
     pub timeout_seconds: u64,
     #[arg(long)]
     pub session: Option<PathBuf>,
