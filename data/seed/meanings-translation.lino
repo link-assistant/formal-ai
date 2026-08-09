@@ -410,6 +410,25 @@ meanings
         text 从汉语
       surface
         text 从漢語
+  translate_from_spanish
+    defined-by language_spanish
+    defined-by translation_direction_source
+    role translation_source_marker
+    lexeme en
+      surface
+        text "from spanish"
+    lexeme ru
+      surface
+        text "с испанского"
+    lexeme hi
+      surface
+        text "स्पेनिश से"
+    lexeme zh
+      surface
+        text 从西班牙语
+    lexeme es
+      surface
+        text "del español"
   translate_into_english
     defined-by language_english
     defined-by translation_direction_target
@@ -544,6 +563,25 @@ meanings
         text 到汉语
       surface
         text 到漢語
+  translate_into_spanish
+    defined-by language_spanish
+    defined-by translation_direction_target
+    role translation_target_marker
+    lexeme en
+      surface
+        text "to spanish"
+    lexeme ru
+      surface
+        text "на испанский"
+    lexeme hi
+      surface
+        text "स्पेनिश में"
+    lexeme zh
+      surface
+        text 到西班牙语
+    lexeme es
+      surface
+        text "al español"
   translation_unquoted_frame
     defined-by translate
     defined-by translation_direction_target

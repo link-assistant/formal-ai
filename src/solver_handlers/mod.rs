@@ -524,6 +524,7 @@ pub fn try_translation(
     }
 
     let target = detect_target_language(normalized);
+    let formal_language = crate::translation::formal_language_in_prompt(normalized);
     let backticked = extract_backticked(prompt);
     let detected_program = backticked.as_deref().and_then(|code| {
         detect_program_languages(normalized)
@@ -543,14 +544,14 @@ pub fn try_translation(
         .words_for_role_in_languages(crate::seed::ROLE_TRANSLATION_ACTION, &["en", "ru"])
         .iter()
         .any(|stem| normalized.starts_with(stem.as_str()));
-    let head_final_command = (target.is_some() || has_program_target)
+    let head_final_command = (target.is_some() || has_program_target || formal_language.is_some())
         && lexicon
             .words_for_role_in_languages(crate::seed::ROLE_TRANSLATION_ACTION, &["hi", "zh"])
             .iter()
             .any(|stem| normalized.contains(stem.as_str()));
     let source_first_command = crate::translation::prompt::is_source_first_translation_request(
         normalized,
-        target.is_some() || has_program_target,
+        target.is_some() || has_program_target || formal_language.is_some(),
         unquoted_surface.is_some(),
     );
     // Issue #386: the define-in-Links-Notation request is recognised by *meaning*
@@ -582,6 +583,41 @@ pub fn try_translation(
     let mut source = detect_source_language(normalized);
     if source.is_none() {
         source = Some(infer_source_from_prompt(prompt));
+    }
+
+    // Issue #917: natural and formal statements are concrete syntaxes of the
+    // same seed-defined semantic triple. A natural target means the formal
+    // syntax is the source (`from FOL to Russian`); otherwise the named formal
+    // language is the target (`from English to FOL`). This runs before the
+    // atomic Wiktionary pipeline because a complete statement carries three
+    // language-neutral meaning ids, not one word meaning.
+    if let Some(formal_slug) = formal_language {
+        let statement_surface = backticked
+            .clone()
+            .or_else(|| extract_quoted_phrase(prompt))
+            .or_else(|| unquoted_surface.clone())
+            .unwrap_or_default();
+        let (source_slug, target_slug) = target.map_or_else(
+            || (source.unwrap_or("en"), formal_slug),
+            |natural_target| (formal_slug, natural_target),
+        );
+        if let Ok(translated) =
+            crate::translation::translate_statement(&statement_surface, source_slug, target_slug)
+        {
+            log.append("language_from", source_slug.to_owned());
+            log.append("language_to", target_slug.to_owned());
+            log.append("meaning", translated.meaning);
+            log.append("surface", translated.surface.clone());
+            let intent = format!("translate_{source_slug}_to_{target_slug}");
+            return Some(finalize_simple(
+                prompt,
+                log,
+                &intent,
+                "response:translate_statement",
+                &translated.surface,
+                1.0,
+            ));
+        }
     }
 
     if let Some(code) = &backticked {
