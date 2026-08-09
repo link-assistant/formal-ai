@@ -80,6 +80,8 @@ pub const PROGRAM_CST_GRAMMARS_LINO: &str =
     include_str!("../../data/seed/program-cst-grammars.lino");
 pub const PROOF_PROGRAM_TEMPLATES_LINO: &str =
     include_str!("../../data/seed/proof-program-templates.lino");
+pub const FORMAL_LANGUAGE_PROJECTIONS_LINO: &str =
+    include_str!("../../data/seed/formal-language-projections.lino");
 pub const MEANINGS_LINO: &str = include_str!("../../data/seed/meanings.lino");
 pub const MEANINGS_UNITS_LINO: &str = include_str!("../../data/seed/meanings-units.lino");
 pub const MEANINGS_CALENDAR_LINO: &str = include_str!("../../data/seed/meanings-calendar.lino");
@@ -301,6 +303,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         (
             "data/seed/proof-program-templates.lino",
             PROOF_PROGRAM_TEMPLATES_LINO,
+        ),
+        (
+            "data/seed/formal-language-projections.lino",
+            FORMAL_LANGUAGE_PROJECTIONS_LINO,
         ),
         ("data/seed/meanings.lino", MEANINGS_LINO),
         ("data/seed/meanings-units.lino", MEANINGS_UNITS_LINO),

@@ -42,6 +42,7 @@ mod search_fusion_grammar;
 #[allow(dead_code, unused_imports)]
 mod memory_query_language;
 
+mod formal_statement_worker;
 mod memory_query_worker;
 mod proof_translation_worker;
 
@@ -527,6 +528,23 @@ pub extern "C" fn engine_translate_formal_proof(input_length: usize) -> usize {
         return 0;
     };
     write_output(proof_translation_worker::answer(payload).as_bytes())
+}
+
+/// Project a semantic statement between a seeded natural language and formal
+/// concrete syntax. The line-oriented adapter returns a complete answer JSON.
+#[no_mangle]
+pub extern "C" fn engine_translate_formal_statement(input_length: usize) -> usize {
+    reset_bump();
+    let bytes = unsafe {
+        core::slice::from_raw_parts(
+            core::ptr::addr_of!(INPUT).cast::<u8>(),
+            min(input_length, INPUT_CAPACITY),
+        )
+    };
+    let Ok(payload) = core::str::from_utf8(bytes) else {
+        return 0;
+    };
+    write_output(formal_statement_worker::answer(payload).as_bytes())
 }
 
 struct FactCheckTemplates<'a> {

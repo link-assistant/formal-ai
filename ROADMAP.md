@@ -327,6 +327,17 @@ request forms. Research, the requirement map, the solution plan, and real
 Agent CLI evidence live under
 `docs/case-studies/issue-890/`.
 
+## Issue #917 General Natural-Formal Translation (PR #984)
+
+Issue [#917](https://github.com/link-assistant/formal-ai/issues/917) closes E70
+for the seeded statement slice. Statements in English, Russian, Hindi, Chinese,
+and Spanish formalize to one semantic triple and project to seed-defined FOL.
+They project back through the same meaning identity. Native and browser
+regressions cover the complete natural -> FOL -> natural matrix. Additional
+formal syntaxes and statement families remain catalog growth, not new pairwise
+translation implementations. Research, requirements, design, and Agent CLI
+evidence live under `docs/case-studies/issue-917/`.
+
 ## 2026-07-14 Requirement-Status Audit (issue #651)
 
 An eighth pass on 2026-07-14 audited **all 329 closed issues and all 317 merged
@@ -411,7 +422,7 @@ Requirement-level status by area, updated:
 | Formal AI as orchestrator of external agent CLIs, Hive-Mind dispatch | Done for #703; the missing piece is the end-to-end gate in both directions (hive-mind driving Formal AI as the model, per hive-mind#2059), owned by E74 |
 | Parallel candidate portfolios + budget-driven search | Done for #662/#704 (was stale "Not done"): `src/draft_portfolio.rs` and `src/solver_search.rs` with `SolverConfig::compute_budget` |
 | Anticipatory learning | Not done — [#705](https://github.com/link-assistant/formal-ai/issues/705) |
-| "All languages" through the meta language | Partial: #660/#706 closed (any-language protocol, PR #880); four seed languages remain the fully covered set, and formal languages as first-class translation targets are owned by E70 |
+| "All languages" through the meta language | Partial: #660/#706 closed (any-language protocol, PR #880); #917 closes E70's first natural/formal statement slice for all five registered seed languages and FOL, while broader language and statement coverage remains incremental seed growth |
 | General computer-use without vision | Done for #707 (PR #882): permission-gated verified plans; pixels remain an honestly named `capability_gap` |
 | Turing-complete NL memory queries | Done for #708 |
 | Multi-source search fusion through the meta language | Done for #709 (was stale "Not done"): `src/search_fusion.rs` and `src/web_search_fusion_core.rs` fuse providers with provenance; turning retrieval into learned coding procedures is E72 |
@@ -430,7 +441,8 @@ Requirement-level status by area, updated:
 Created from issue #914's gap analysis (case study in
 `docs/case-studies/issue-914/`): E69 coding-ladder ratchet
 over agent-harness fixes (foundation blocker), E70 general natural-formal
-translation, E71 minimal-core boundary and seed-metadata audit, E72
+translation (delivered by #917 for the seeded FOL statement slice), E71
+minimal-core boundary and seed-metadata audit, E72
 research-driven coding knowledge loop, E73 question-necessity protocol, E74
 hive-mind end-to-end integration gate, E75 method learning for the
 universal algorithm, E76 formal-reasoning coverage growth, E77

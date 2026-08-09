@@ -1,0 +1,33 @@
+self_ast_census
+  target src/web/wasm-worker/src/formal_statement_worker.rs
+  language rust
+  fidelity signature
+  byte_len 12385
+  line_count 398
+  content_id source_module_f77368344636bfb6
+  symbol_count 24
+  symbols
+    const SUBJECT_SLOT 11 11
+    const PREDICATE_SLOT 12 12
+    const OBJECT_SLOT 13 13
+    struct Meaning 16 20
+    struct FormalProjection 22 26
+    struct NaturalProjection 28 32
+    struct Catalog 34 37
+    struct Statement 39 43
+    function answer 47 104
+    function parse_catalog 106 140
+    function parse_meanings 142 170
+    function children 172 178
+    function parse_natural 180 218
+    function parse_formal 220 247
+    function render_natural 249 285
+    function has_role 287 289
+    function words 291 298
+    function meaning_with_role 300 304
+    function first_word 306 314
+    function render_template 316 321
+    function match_template 323 346
+    function normalize_statement 348 356
+    function surface_present 358 371
+    function serialize_answer 373 398

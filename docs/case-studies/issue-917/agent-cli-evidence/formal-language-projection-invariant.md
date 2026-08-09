@@ -1,0 +1,1 @@
+Formal language projections must map one language-neutral semantic statement into seed-defined concrete syntaxes and preserve the same meaning on the return path.

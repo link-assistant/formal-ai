@@ -1,0 +1,40 @@
+self_ast_census
+  target src/translation/formal_statement.rs
+  language rust
+  fidelity signature
+  byte_len 13645
+  line_count 425
+  content_id source_module_f26c88993a563250
+  symbol_count 31
+  symbols
+    const PROJECTIONS 13 13
+    const SUBJECT_SLOT 14 14
+    const PREDICATE_SLOT 15 15
+    const OBJECT_SLOT 16 16
+    struct SemanticStatement 19 23
+    function meaning 27 32
+    struct StatementTranslation 36 39
+    enum StatementTranslationError 42 45
+    function fmt 48 57
+    struct ProjectionCatalog 63 66
+    struct FormalProjection 69 73
+    struct NaturalProjection 76 80
+    struct RelationSurface 83 86
+    function catalog 88 91
+    static CATALOG 89 89
+    function parse_catalog 93 109
+    function parse_formal_projection 111 122
+    function parse_natural_projection 124 138
+    function formal_language_targets 142 148
+    function formal_language_in_prompt 152 160
+    function translate_statement 163 190
+    function parse_natural_statement 192 232
+    function parse_formal_statement 234 282
+    function render_formal_statement 284 299
+    function render_natural_statement 301 347
+    function meaning_with_role 349 358
+    function word_surfaces 360 367
+    function render_template 369 374
+    function match_template 376 400
+    function normalized_statement 402 410
+    function surface_present 412 425
