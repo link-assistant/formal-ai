@@ -149,6 +149,9 @@ jobs:
   docker-build:
     name: Docker Image Build & Runtime Check
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
     # The image compiles the crate in a builder stage; 30 minutes is not enough
     # on a cold layer cache.
     timeout-minutes: 60
@@ -182,6 +185,14 @@ jobs:
         run: |
           set -euo pipefail
           docker run --rm --privileged formal-ai:pr-check verify-formal-ai-dind
+      - name: Log in to GHCR for the released upgrade fixture
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Test released-to-candidate memory upgrade
+        run: experiments/issue_982_memory_upgrade/run_container_upgrade.sh
   # === SECRETS SCAN ===
   # Issue #808 / R5 (CI-CD-BEST-PRACTICES.md section 11): no secrets scan
   # existed anywhere in this pipeline. secretlint is language-agnostic, so it

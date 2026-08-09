@@ -1,3 +1,10 @@
+use std::sync::{Mutex, MutexGuard, OnceLock};
+
+fn memory_env_lock() -> MutexGuard<'static, ()> {
+    static LOCK: OnceLock<Mutex<()>> = OnceLock::new();
+    LOCK.get_or_init(|| Mutex::new(())).lock().unwrap()
+}
+
 mod agentic_coding;
 mod agentic_general_planner;
 mod agentic_surfaces;

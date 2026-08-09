@@ -1,0 +1,1 @@
+rollback restores the byte-exact schema-1 backup

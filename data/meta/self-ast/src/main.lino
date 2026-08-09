@@ -2,9 +2,9 @@ self_ast_census
   target src/main.rs
   language rust
   fidelity signature
-  byte_len 35192
-  line_count 996
-  content_id source_module_68f2aab71598f8ee
+  byte_len 35429
+  line_count 1000
+  content_id source_module_26a7518326914cd7
   symbol_count 42
   symbols
     module cli_algorithm 9 9
@@ -27,25 +27,25 @@ self_ast_census
     const DEFAULT_AGENT_TASK 58 78
     struct Args 67 78
     enum Command 81 307
-    enum MemoryAction 310 456
-    enum BundleAction 459 483
-    enum GithubLogsAction 486 491
-    struct GithubLogsOptions 494 530
-    enum OutputFormat 533 537
-    enum DefinitionFusionMode 540 543
-    enum TelegramMode 546 549
-    function fmt 552 558
-    function fmt 562 567
-    function fmt 571 576
-    function main 579 704
-    function run_github_logs 706 727
-    function run_agent 729 753
-    function into_config 756 768
-    struct TelegramRunArgs 771 780
-    function solver_for_chat 782 799
-    function print_thinking_trace 812 830
-    function run_chat 832 885
-    function run_bundle 887 951
-    function read_input 953 961
-    function run_telegram 963 988
-    function parse_allowed_updates 990 996
+    enum MemoryAction 310 460
+    enum BundleAction 463 487
+    enum GithubLogsAction 490 495
+    struct GithubLogsOptions 498 534
+    enum OutputFormat 537 541
+    enum DefinitionFusionMode 544 547
+    enum TelegramMode 550 553
+    function fmt 556 562
+    function fmt 566 571
+    function fmt 575 580
+    function main 583 708
+    function run_github_logs 710 731
+    function run_agent 733 757
+    function into_config 760 772
+    struct TelegramRunArgs 775 784
+    function solver_for_chat 786 803
+    function print_thinking_trace 816 834
+    function run_chat 836 889
+    function run_bundle 891 955
+    function read_input 957 965
+    function run_telegram 967 992
+    function parse_allowed_updates 994 1000

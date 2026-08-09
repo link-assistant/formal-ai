@@ -453,6 +453,20 @@ universal algorithm, E76 formal-reasoning coverage growth, E77
 self-development loop. Issue URLs are recorded in
 `docs/case-studies/issue-914/proposed-issues.md`.
 
+## Issue #982 Persisted-Memory Upgrade Safety (PR #985)
+
+Issue [#982](https://github.com/link-assistant/formal-ai/issues/982) closes the
+deployment gap for persistent memory across binary and container upgrades. The
+implemented path is explicit and reversible: side-effect-free JSON preflight,
+schema-1 → schema-2 migration under the shared writer lock, verified byte-exact
+backup, same-directory atomic replacement, durable JSON receipt, retry/no-op
+semantics, and health compatibility fields. Released readers remain compatible
+with the additive marker, while schema-99 input fails closed. CI exercises the
+last released image and the candidate image against one named volume through
+write, preflight, migration, load/query/export, rollback, and released-image
+reopen. Evidence and design analysis are in
+`docs/case-studies/issue-982/` and `docs/case-studies/pull-request-985/`.
+
 ## Verification Contract
 
 When any roadmap item changes, the PR should update the corresponding rows in

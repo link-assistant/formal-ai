@@ -199,6 +199,7 @@ fn dispatch_api_request_with_auth(
                 "status": "ok",
                 "model": canonical_model_id(),
                 "version": env!("CARGO_PKG_VERSION"),
+                "memory": memory_health_status(),
             }),
         ),
         ("GET", "/v1/models" | "/api/openai/v1/models") => handle_openai_models_request(),
@@ -299,6 +300,30 @@ fn dispatch_api_request_with_auth(
         },
         _ => error_response(404, "route not found"),
     }
+}
+
+fn memory_health_status() -> Value {
+    let Some(path) = crate::memory_sync::configured_memory_path() else {
+        return json!({
+            "schema_version": Value::Null,
+            "minimum_readable_schema_version": crate::memory::MINIMUM_READABLE_MEMORY_SCHEMA_VERSION,
+            "maximum_readable_schema_version": crate::memory::MAXIMUM_READABLE_MEMORY_SCHEMA_VERSION,
+            "target_schema_version": crate::memory::TARGET_MEMORY_SCHEMA_VERSION,
+            "compatible": true,
+            "migration_required": false,
+            "migration_state": "missing",
+        });
+    };
+    let status = crate::memory::preflight_memory_upgrade(&path);
+    json!({
+        "schema_version": status.detected_schema_version,
+        "minimum_readable_schema_version": status.minimum_readable_schema_version,
+        "maximum_readable_schema_version": status.maximum_readable_schema_version,
+        "target_schema_version": status.target_schema_version,
+        "compatible": status.compatible,
+        "migration_required": status.migration_required,
+        "migration_state": status.migration_state,
+    })
 }
 
 fn requires_bearer_auth(method: &str, normalized_path: &str) -> bool {

@@ -412,8 +412,10 @@ fn release_workflow_publishes_prebuilt_ghcr_image_after_crate_is_visible_and_opt
     );
     assert_eq!(
         workflow.matches("docker/login-action@v4").count(),
-        4,
-        "auto and manual release jobs should log in to GHCR and optionally Docker Hub"
+        // Four publishing logins, plus the issue #982 pull-request upgrade
+        // check, which pulls the last released image from GHCR.
+        5,
+        "release publishing and upgrade checks should authenticate to their registries"
     );
     assert_eq!(
         workflow.matches("docker/metadata-action@v6").count(),

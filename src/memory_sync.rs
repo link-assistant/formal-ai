@@ -20,7 +20,10 @@
 
 use std::path::{Path, PathBuf};
 
-use crate::memory::{export_links_notation, parse_links_notation, MemoryEvent};
+use crate::memory::{
+    export_links_notation_with_schema, parse_links_notation, MemoryEvent,
+    TARGET_MEMORY_SCHEMA_VERSION,
+};
 
 /// Return every event that appears strictly **after** the event `last_seen`.
 ///
@@ -77,6 +80,22 @@ pub fn merge_event(base: &MemoryEvent, incoming: &MemoryEvent) -> MemoryEvent {
     } else {
         incoming.evidence.clone()
     };
+    let mut unknown_fields = base.unknown_fields.clone();
+    let mut unknown_fields_changed = false;
+    for (key, value) in &incoming.unknown_fields {
+        if let Some((_, existing_value)) = unknown_fields
+            .iter_mut()
+            .find(|(existing_key, _)| existing_key == key)
+        {
+            if existing_value != value {
+                existing_value.clone_from(value);
+                unknown_fields_changed = true;
+            }
+        } else {
+            unknown_fields.push((key.clone(), value.clone()));
+            unknown_fields_changed = true;
+        }
+    }
     let payload_changed = [
         (&base.kind, &incoming.kind),
         (&base.role, &incoming.role),
@@ -92,7 +111,8 @@ pub fn merge_event(base: &MemoryEvent, incoming: &MemoryEvent) -> MemoryEvent {
     ]
     .iter()
     .any(|(left, right)| right.as_ref().is_some_and(|value| !value.is_empty()) && left != right)
-        || (!incoming.evidence.is_empty() && base.evidence != incoming.evidence);
+        || (!incoming.evidence.is_empty() && base.evidence != incoming.evidence)
+        || unknown_fields_changed;
     let observed_writes = base.write_count.max(1).max(incoming.write_count.max(1));
     let write_count = if payload_changed && incoming.write_count <= base.write_count {
         observed_writes.saturating_add(1)
@@ -119,6 +139,7 @@ pub fn merge_event(base: &MemoryEvent, incoming: &MemoryEvent) -> MemoryEvent {
             incoming.conversation_title.as_ref(),
         ),
         evidence,
+        unknown_fields,
         // Access counts are monotone per event; the larger side has seen more
         // reads, so max is the lossless merge.
         access_count: base.access_count.max(incoming.access_count),
@@ -150,10 +171,23 @@ pub fn chat_recording_enabled() -> bool {
 ///
 /// Each request loads the current log, applies its operation, and (for writes)
 /// saves it back, so the stateless server still shares one log across requests.
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone)]
 pub struct SyncStore {
     path: Option<PathBuf>,
     events: Vec<MemoryEvent>,
+    schema_version: u32,
+    compatible: bool,
+}
+
+impl Default for SyncStore {
+    fn default() -> Self {
+        Self {
+            path: None,
+            events: Vec::new(),
+            schema_version: TARGET_MEMORY_SCHEMA_VERSION,
+            compatible: true,
+        }
+    }
 }
 
 /// One client-executed tool step recovered from an agentic API transcript.
@@ -174,17 +208,42 @@ impl SyncStore {
     /// Open a store at an explicit path (used by tests).
     #[must_use]
     pub fn open_at(path: &Path) -> Self {
-        if let Err(error) = crate::shared_memory::ensure_shared_memory_file(path) {
-            if std::env::var("FORMAL_AI_MEMORY_DEBUG").as_deref() == Ok("1") {
-                eprintln!("[memory] could not initialize {}: {error}", path.display());
+        let (events, schema_version, compatible) = match std::fs::read_to_string(path) {
+            Ok(text) => {
+                let status = crate::memory::upgrade::inspect_memory_text(&text, true);
+                let schema_version = status
+                    .detected_schema_version
+                    .unwrap_or(TARGET_MEMORY_SCHEMA_VERSION);
+                (
+                    parse_links_notation(&text),
+                    schema_version,
+                    status.compatible,
+                )
             }
-        }
-        let events = std::fs::read_to_string(path)
-            .map(|text| parse_links_notation(&text))
-            .unwrap_or_default();
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
+                let compatible = match crate::shared_memory::ensure_shared_memory_file(path) {
+                    Ok(()) => true,
+                    Err(error) => {
+                        if std::env::var("FORMAL_AI_MEMORY_DEBUG").as_deref() == Ok("1") {
+                            eprintln!("[memory] could not initialize {}: {error}", path.display());
+                        }
+                        false
+                    }
+                };
+                (Vec::new(), TARGET_MEMORY_SCHEMA_VERSION, compatible)
+            }
+            Err(error) => {
+                if std::env::var("FORMAL_AI_MEMORY_DEBUG").as_deref() == Ok("1") {
+                    eprintln!("[memory] could not read {}: {error}", path.display());
+                }
+                (Vec::new(), TARGET_MEMORY_SCHEMA_VERSION, false)
+            }
+        };
         Self {
             path: Some(path.to_path_buf()),
             events,
+            schema_version,
+            compatible,
         }
     }
 
@@ -197,14 +256,17 @@ impl SyncStore {
     /// Render the log as a `demo_memory` Links-Notation document.
     #[must_use]
     pub fn to_links_notation(&self) -> String {
-        export_links_notation(&self.events)
+        export_links_notation_with_schema(&self.events, self.schema_version)
     }
 
     /// Render only the events after `last_seen` as Links Notation (the delta a
     /// puller applies).
     #[must_use]
     pub fn delta_links_notation(&self, last_seen: Option<&str>) -> String {
-        export_links_notation(&events_since(&self.events, last_seen))
+        export_links_notation_with_schema(
+            &events_since(&self.events, last_seen),
+            self.schema_version,
+        )
     }
 
     /// Import a `demo_memory` document, merging by id, and persist the result.
@@ -317,6 +379,12 @@ impl SyncStore {
         let Some(path) = self.path.as_ref() else {
             return Ok(());
         };
+        if !self.compatible {
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::InvalidData,
+                "refusing to write an incompatible persisted-memory schema",
+            ));
+        }
         // Locked atomic write (issue #540 §6): the HTTP handlers and the
         // background dreaming thread share this log.
         crate::memory::write_locked_atomic(path, &self.to_links_notation())

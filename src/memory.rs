@@ -41,10 +41,17 @@ use std::io;
 use std::path::Path;
 
 pub mod bundle;
+pub mod upgrade;
 
 pub use bundle::{
     export_bundle, export_full_memory, extract_memory_from_bundle, import_full_memory,
     seed_cache_events, suggest_migrations, BundleInfo, ParsedBundle,
+};
+pub use upgrade::{
+    migrate_memory, migrate_memory_with_pre_commit, preflight_memory_upgrade,
+    MemoryMigrationReceipt, MemoryMigrationState, MemoryUpgradeError, MemoryUpgradeStatus,
+    MAXIMUM_READABLE_MEMORY_SCHEMA_VERSION, MINIMUM_READABLE_MEMORY_SCHEMA_VERSION,
+    TARGET_MEMORY_SCHEMA_VERSION,
 };
 
 pub(crate) const ROOT_HEADER: &str = "demo_memory";
@@ -70,6 +77,13 @@ pub struct MemoryEvent {
     pub conversation_id: Option<String>,
     pub conversation_title: Option<String>,
     pub evidence: Vec<String>,
+    /// Forward-compatible event fields this binary does not yet understand.
+    ///
+    /// Keeping their key/value pairs means a read followed by a write cannot
+    /// erase metadata produced by a future binary. The explicit schema
+    /// migration also transforms the original bytes directly, so ordering and
+    /// spelling survive that transaction byte-for-byte.
+    pub unknown_fields: Vec<(String, String)>,
     /// How many times this event has been read back (recalled) so far.
     ///
     /// Issue #494 asks that usage be *counted on access*, not inferred from
@@ -108,15 +122,25 @@ impl MemoryEvent {
 
 /// Memory log for dynamic events. Normal writes append records; explicit purge
 /// and reset methods exist for irreversible user-requested cleanup.
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Clone)]
 pub struct MemoryStore {
     events: Vec<MemoryEvent>,
+    schema_version: u32,
+}
+
+impl Default for MemoryStore {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl MemoryStore {
     #[must_use]
     pub const fn new() -> Self {
-        Self { events: Vec::new() }
+        Self {
+            events: Vec::new(),
+            schema_version: TARGET_MEMORY_SCHEMA_VERSION,
+        }
     }
 
     /// Build a store from an existing list. Useful for tests and for the
@@ -126,7 +150,10 @@ impl MemoryStore {
         for event in &mut events {
             initialize_write_count(event);
         }
-        Self { events }
+        Self {
+            events,
+            schema_version: TARGET_MEMORY_SCHEMA_VERSION,
+        }
     }
 
     pub fn append(&mut self, mut event: MemoryEvent) {
@@ -270,11 +297,13 @@ impl MemoryStore {
     /// Notation document.
     #[must_use]
     pub fn export_links_notation(&self) -> String {
-        export_links_notation(&self.events)
+        export_links_notation_with_schema(&self.events, self.schema_version)
     }
 
     /// Parse a `demo_memory` document and replace the store's contents.
     pub fn replace_from_links_notation(&mut self, text: &str) {
+        self.schema_version = upgrade::schema_version_for_loaded_document(text)
+            .unwrap_or(TARGET_MEMORY_SCHEMA_VERSION);
         self.events = parse_links_notation(text);
     }
 
@@ -292,7 +321,27 @@ impl MemoryStore {
             return Ok(Self::new());
         }
         let text = fs::read_to_string(path)?;
-        Ok(Self::from_events(import_full_memory(&text).events))
+        let schema_version = if text.is_empty() || text.starts_with(ROOT_HEADER) {
+            let status = upgrade::inspect_memory_text(&text, true);
+            if !status.compatible {
+                return Err(io::Error::new(
+                    io::ErrorKind::InvalidData,
+                    status
+                        .refusal_reason
+                        .unwrap_or_else(|| String::from("memory schema is incompatible")),
+                ));
+            }
+            status
+                .detected_schema_version
+                .unwrap_or(TARGET_MEMORY_SCHEMA_VERSION)
+        } else {
+            // Full `formal_ai_bundle` imports are not persisted memory logs and
+            // therefore do not participate in the demo_memory schema contract.
+            TARGET_MEMORY_SCHEMA_VERSION
+        };
+        let mut store = Self::from_events(import_full_memory(&text).events);
+        store.schema_version = schema_version;
+        Ok(store)
     }
 
     /// Persist the full store back to a file on disk. Creates parent
@@ -369,6 +418,32 @@ pub fn export_links_notation(events: &[MemoryEvent]) -> String {
     out
 }
 
+/// Serialize events using an explicit persisted-memory schema.
+///
+/// Schema 1 is the released, unversioned `demo_memory` shape. Schema 2 adds a
+/// root-level marker which older binaries safely ignore. This is crate-visible
+/// so file-backed stores can retain the schema they opened and avoid silently
+/// migrating on startup or on the first request.
+#[must_use]
+pub(crate) fn export_links_notation_with_schema(
+    events: &[MemoryEvent],
+    schema_version: u32,
+) -> String {
+    let mut out = String::from(ROOT_HEADER);
+    out.push('\n');
+    if schema_version >= 2 {
+        out.push_str("  ");
+        out.push_str("schema_version");
+        out.push_str(" \"");
+        out.push_str(&schema_version.to_string());
+        out.push_str("\"\n");
+    }
+    for event in events {
+        format_event_into(event, &mut out);
+    }
+    out
+}
+
 pub(crate) fn format_event_into(event: &MemoryEvent, out: &mut String) {
     out.push_str("  event \"");
     out.push_str(&escape_value(&event.id));
@@ -403,6 +478,16 @@ pub(crate) fn format_event_into(event: &MemoryEvent, out: &mut String) {
         out.push_str(&escape_value(&joined));
         out.push_str("\"\n");
     }
+    for (key, value) in &event.unknown_fields {
+        if key.is_empty() || value.is_empty() {
+            continue;
+        }
+        out.push_str("    ");
+        out.push_str(key);
+        out.push_str(" \"");
+        out.push_str(&escape_value(value));
+        out.push_str("\"\n");
+    }
     if event.access_count > 0 {
         out.push_str("    accessCount \"");
         out.push_str(&event.access_count.to_string());
@@ -416,8 +501,8 @@ pub(crate) fn format_event_into(event: &MemoryEvent, out: &mut String) {
 /// Parse a `demo_memory` Links Notation document into events.
 ///
 /// The parser is lenient: a missing or differently-named header yields an
-/// empty list (no panic), and unknown field names are ignored so newer
-/// browser logs can be imported into older CLI builds without breaking.
+/// empty list (no panic), and unknown field names are retained so a future
+/// producer's metadata survives an ordinary read/write cycle.
 #[must_use]
 pub fn parse_links_notation(text: &str) -> Vec<MemoryEvent> {
     let mut events = Vec::new();
@@ -483,7 +568,7 @@ pub fn parse_links_notation(text: &str) -> Vec<MemoryEvent> {
                         .map(ToOwned::to_owned)
                         .collect();
                 }
-                _ => {}
+                _ => current.unknown_fields.push((key.to_owned(), value)),
             }
         }
     }
