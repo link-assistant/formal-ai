@@ -50,6 +50,7 @@
     "seed/numeric-list-operations.lino",
     "seed/coding-idioms.lino",
     "seed/proof-program-templates.lino",
+    "seed/formal-language-projections.lino",
     "seed/terminal-commands.lino",
     "seed/shell-intents.lino",
     "seed/program-plan-rules.lino",
