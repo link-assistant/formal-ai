@@ -3,7 +3,10 @@ use std::process::Command;
 #[cfg(unix)]
 use std::os::unix::fs::PermissionsExt as _;
 
-use formal_ai::{handle_api_request, migrate_memory_with_pre_commit, MemoryStore, SyncStore};
+use formal_ai::{
+    export_memory_links_notation, handle_api_request, migrate_memory_with_pre_commit, MemoryEvent,
+    MemoryStore, SyncStore,
+};
 use fs2::FileExt as _;
 
 fn fixture_dir(name: &str) -> std::path::PathBuf {
@@ -118,6 +121,49 @@ fn upgrade_status_detects_released_schema_without_mutating_memory() {
         "preflight must not create a lock, backup, temp file, or receipt"
     );
 
+    let _ = std::fs::remove_dir_all(dir);
+}
+
+#[test]
+fn released_writer_escapes_are_valid_upgrade_input_and_round_trip_losslessly() {
+    let dir = fixture_dir("released-escapes");
+    let memory_path = dir.join("memory.lino");
+    let backup_path = dir.join("rollback.lino");
+    let inputs = concat!(
+        "{\"command\":\"set -eu\\n",
+        "printf '%s\\\\n' \\\"migration canary\\\"\",\"description\":\"\"}"
+    );
+    let released = export_memory_links_notation(&[MemoryEvent {
+        id: String::from("released-tool-event"),
+        kind: Some(String::from("tool_call")),
+        inputs: Some(String::from(inputs)),
+        content: Some(String::from("quotes: \\\"double\\\" and \\ slash")),
+        ..MemoryEvent::default()
+    }]);
+    std::fs::write(&memory_path, &released).expect("write released output");
+
+    let status = formal_ai::preflight_memory_upgrade(&memory_path);
+    assert!(status.compatible, "{status:?}");
+    assert_eq!(status.detected_schema_version, Some(1));
+    assert_eq!(status.event_count, Some(1));
+
+    formal_ai::migrate_memory(&memory_path, Some(&backup_path), None)
+        .expect("migrate released escaped scalars");
+    assert_eq!(
+        std::fs::read_to_string(&backup_path).expect("read rollback backup"),
+        released
+    );
+    let migrated = std::fs::read_to_string(&memory_path).expect("read migrated memory");
+    assert_eq!(
+        migrated,
+        released.replacen("demo_memory\n", "demo_memory\n  schema_version \"2\"\n", 1)
+    );
+    let loaded = MemoryStore::load_from_file(&memory_path).expect("load migrated memory");
+    assert_eq!(loaded.events()[0].inputs.as_deref(), Some(inputs));
+    assert_eq!(
+        loaded.events()[0].content.as_deref(),
+        Some("quotes: \\\"double\\\" and \\ slash")
+    );
     let _ = std::fs::remove_dir_all(dir);
 }
 

@@ -15,7 +15,7 @@ use fs2::FileExt as _;
 use serde::Serialize;
 use sha2::{Digest as _, Sha256};
 
-use super::{parse_links_notation, ROOT_HEADER};
+use super::ROOT_HEADER;
 
 pub const MINIMUM_READABLE_MEMORY_SCHEMA_VERSION: u32 = 1;
 pub const MAXIMUM_READABLE_MEMORY_SCHEMA_VERSION: u32 = 2;
@@ -267,7 +267,7 @@ fn inspect_memory_bytes(bytes: &[u8], path_exists: bool) -> MemoryUpgradeStatus 
         let Some(value) = content.strip_prefix("schema_version ") else {
             continue;
         };
-        let Some(value) = super::parse_quoted(value) else {
+        let Some(value) = parse_persisted_quoted(value) else {
             return MemoryUpgradeStatus::incompatible_bytes(
                 bytes,
                 path_exists,
@@ -297,7 +297,6 @@ fn inspect_memory_bytes(bytes: &[u8], path_exists: bool) -> MemoryUpgradeStatus 
     }
     let detected = detected.unwrap_or(MINIMUM_READABLE_MEMORY_SCHEMA_VERSION);
     status.detected_schema_version = Some(detected);
-    status.event_count = Some(parse_links_notation(text).len());
     if detected < MINIMUM_READABLE_MEMORY_SCHEMA_VERSION {
         return MemoryUpgradeStatus::incompatible_bytes(
             bytes,
@@ -320,21 +319,100 @@ fn inspect_memory_bytes(bytes: &[u8], path_exists: bool) -> MemoryUpgradeStatus 
             ),
         );
     }
-    if let Err(error) = crate::link_store::validate_memory_links_notation(text) {
-        return MemoryUpgradeStatus::incompatible_bytes(
-            bytes,
-            path_exists,
-            Some(detected),
-            "memory_malformed",
-            format!("memory_malformed:error={error}"),
-        );
-    }
+    let event_count = match validate_persisted_memory_text(text) {
+        Ok(event_count) => event_count,
+        Err(error) => {
+            return MemoryUpgradeStatus::incompatible_bytes(
+                bytes,
+                path_exists,
+                Some(detected),
+                "memory_malformed",
+                format!("memory_malformed:error={error}"),
+            );
+        }
+    };
+    status.event_count = Some(event_count);
     if detected < TARGET_MEMORY_SCHEMA_VERSION {
         status.migration_required = true;
         status.migration_id = Some(String::from(V1_TO_V2_MIGRATION_ID));
         status.migration_state = MemoryMigrationState::UpgradeRequired;
     }
     status
+}
+
+/// Validate the exact line-oriented format emitted by released memory writers.
+///
+/// Persisted `demo_memory` is intentionally not passed through the canonical
+/// Links Notation parser here. Released binaries escaped quoted scalars with
+/// C-style backslashes, while canonical Links Notation doubles delimiters and
+/// treats backslashes as data. Rejecting the released writer's own output would
+/// make otherwise healthy memories impossible to upgrade. This validator is
+/// strict about the released document shape while accepting precisely the
+/// quoted-scalar convention its reader and writer already use.
+fn validate_persisted_memory_text(text: &str) -> Result<usize, String> {
+    let mut event_count = 0;
+    let mut inside_event = false;
+
+    for (index, line) in text.lines().enumerate() {
+        let line_number = index + 1;
+        let line = line.trim_end();
+        if line.is_empty() {
+            continue;
+        }
+        let indent = line
+            .chars()
+            .take_while(|character| *character == ' ')
+            .count();
+        let content = &line[indent..];
+        match indent {
+            0 if line_number == 1 && content == ROOT_HEADER => {}
+            2 => {
+                inside_event = false;
+                let Some((key, value)) = content.split_once(' ') else {
+                    return Err(format!("line={line_number}:root_value_missing"));
+                };
+                if key.is_empty() || parse_persisted_quoted(value).is_none() {
+                    return Err(format!("line={line_number}:root_value_invalid"));
+                }
+                if key == "event" {
+                    event_count += 1;
+                    inside_event = true;
+                }
+            }
+            4 if inside_event => {
+                let Some((key, value)) = content.split_once(' ') else {
+                    return Err(format!("line={line_number}:event_value_missing"));
+                };
+                if key.is_empty() || parse_persisted_quoted(value).is_none() {
+                    return Err(format!("line={line_number}:event_value_invalid"));
+                }
+            }
+            _ => return Err(format!("line={line_number}:indent_or_parent_invalid")),
+        }
+    }
+
+    Ok(event_count)
+}
+
+/// Parse one released-writer quoted scalar and require no trailing tokens.
+fn parse_persisted_quoted(value: &str) -> Option<String> {
+    let value = value.trim_start();
+    let bytes = value.as_bytes();
+    if bytes.first() != Some(&b'"') {
+        return None;
+    }
+    let mut index = 1;
+    while index < bytes.len() {
+        match bytes[index] {
+            b'\\' => index += 2,
+            b'"' if value[index + 1..].trim().is_empty() => {
+                return super::parse_quoted(&value[..=index]);
+            }
+            b'"' => return None,
+            _ => index += 1,
+        }
+    }
+    None
 }
 
 /// Perform the supported migration while holding the shared writer lock.
