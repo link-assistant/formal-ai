@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.336.0] - 2026-08-09
+
+### Added
+- Add side-effect-free persisted-memory compatibility preflight and explicit, locked, backed-up, atomic schema migration with JSON receipts and rollback guidance.
+
+### Changed
+- Expose memory schema compatibility through `/health` and preserve unknown event metadata across native load/export/write paths.
+
 ## [0.335.0] - 2026-08-09
 
 ### Added
