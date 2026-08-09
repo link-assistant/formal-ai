@@ -6,15 +6,21 @@ set -euo pipefail
 
 PREVIOUS_IMAGE="${PREVIOUS_IMAGE:-ghcr.io/link-assistant/formal-ai:0.335.0}"
 CANDIDATE_IMAGE="${CANDIDATE_IMAGE:-formal-ai:pr-check}"
-MEMORY_PATH=/root/.formal-ai/memory.lino
-BACKUP_PATH=/root/.formal-ai/rollback.lino
-RECEIPT_PATH=/root/.formal-ai/upgrade-receipt.json
+MEMORY_PATH=/home/box/.formal-ai/memory.lino
+BACKUP_PATH=/home/box/.formal-ai/rollback.lino
+RECEIPT_PATH=/home/box/.formal-ai/upgrade-receipt.json
 suffix="${GITHUB_RUN_ID:-local}-$$"
 volume="formal-ai-memory-upgrade-$suffix"
 server="formal-ai-memory-upgrade-server-$suffix"
 workdir="$(mktemp -d)"
 
 cleanup() {
+  if docker inspect "$server" >/dev/null 2>&1; then
+    docker inspect --format \
+      'candidate server: status={{.State.Status}} exit={{.State.ExitCode}} oom={{.State.OOMKilled}} error={{.State.Error}}' \
+      "$server" >&2 || true
+    docker logs "$server" >&2 || true
+  fi
   docker rm -f "$server" >/dev/null 2>&1 || true
   docker volume rm "$volume" >/dev/null 2>&1 || true
   rm -rf "$workdir"
@@ -29,8 +35,9 @@ fail() {
 run_image() {
   local image="$1"
   shift
-  docker run --rm --privileged \
-    -v "$volume:/root/.formal-ai" \
+  docker run --rm --privileged -i \
+    -e DIND_SKIP_DAEMON=1 \
+    -v "$volume:/home/box/.formal-ai" \
     "$image" "$@"
 }
 
@@ -76,6 +83,13 @@ if ! docker image inspect "$PREVIOUS_IMAGE" >/dev/null 2>&1; then
   docker pull "$PREVIOUS_IMAGE"
 fi
 docker volume create "$volume" >/dev/null
+# The dind image's entrypoint executes application commands as `box`. Seed the
+# otherwise root-owned named volume with the same ownership before either
+# released or candidate binary opens it.
+docker run --rm \
+  -v "$volume:/home/box/.formal-ai" \
+  --entrypoint chown "$CANDIDATE_IMAGE" \
+  -R box:box /home/box/.formal-ai
 
 cat >"$workdir/released-memory.lino" <<'EOF'
 demo_memory
@@ -141,12 +155,13 @@ second_line="$(grep -n 'event "released-assistant"' "$workdir/exported.lino" | c
 # the compatibility contract from /health.
 docker run -d --privileged --name "$server" \
   -p 127.0.0.1::8080 \
+  -e DIND_SKIP_DAEMON=1 \
   -e FORMAL_AI_MEMORY_PATH="$MEMORY_PATH" \
   -e FORMAL_AI_DREAMING=0 \
-  -v "$volume:/root/.formal-ai" \
+  -v "$volume:/home/box/.formal-ai" \
   "$CANDIDATE_IMAGE" formal-ai serve --host 0.0.0.0 --port 8080 >/dev/null
 host_port="$(docker port "$server" 8080/tcp | awk -F: 'NR == 1 {print $NF}')"
-curl -fsS --retry 30 --retry-delay 1 --retry-connrefused --max-time 40 \
+curl -fsS --retry 30 --retry-delay 1 --retry-all-errors --max-time 40 \
   "http://127.0.0.1:$host_port/health" >"$workdir/health.json"
 assert_json_contract "$workdir/health.json" health
 docker rm -f "$server" >/dev/null
