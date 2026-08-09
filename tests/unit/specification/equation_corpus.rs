@@ -31,7 +31,7 @@ use std::fs;
 use std::path::Path;
 
 use formal_ai::language::registered_languages;
-use formal_ai::FormalAiEngine;
+use formal_ai::{FormalAiEngine, SolverConfig, UniversalSolver};
 
 const FIXTURE: &str = "data/benchmarks/equation-type-corpus.lino";
 
@@ -364,7 +364,11 @@ fn issue_891_recorded_limitations_never_fabricate_answers() {
     let suite = load_suite();
 
     for limitation in &suite.limitations {
-        let response = FormalAiEngine.answer(&limitation.prompt);
+        let response = UniversalSolver::new(SolverConfig {
+            offline: true,
+            ..SolverConfig::default()
+        })
+        .solve(&limitation.prompt);
         assert_ne!(
             response.intent, "calculation",
             "limitation {} now solves ({}); promote it into a benchmark_case with its \

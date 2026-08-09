@@ -190,7 +190,10 @@ Markdown file in it; before the change, seeds that missed it failed the run.
   than walking the filesystem itself.
 - `src/summarization/file.rs` (issue #563) — `formalize_repository_file` and
   `RepositoryFileFormalization::summary` are the production path every sampled
-  file goes through. No test double, no reimplementation.
+  file goes through. Optional concrete-syntax parsing stops at 32 KiB while the
+  complete file still receives its bounded structural summary; this prevents a
+  random multi-megabyte trace from turning one validation iteration into hours
+  of superlinear parser work. No test double, no reimplementation.
 - `src/cli_benchmark.rs` + `data/benchmarks/external-results.lino` — the
   committed-artifact-plus-CLI-subcommand shape reused for the baseline.
 - `tests/unit/specification/equation_corpus.rs` (issue #891) — the

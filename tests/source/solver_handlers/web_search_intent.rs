@@ -46,6 +46,7 @@ pub enum WebSearchQueryKind {
     ImplicitResearchQuestion,
     EnumerationResearchRequest,
     UnresolvedBareTerm,
+    UnknownReasoningFallback,
 }
 
 impl WebSearchQueryKind {
@@ -58,6 +59,7 @@ impl WebSearchQueryKind {
             Self::ImplicitResearchQuestion => "implicit_research_question",
             Self::EnumerationResearchRequest => "enumeration_research_request",
             Self::UnresolvedBareTerm => "unresolved_bare_term",
+            Self::UnknownReasoningFallback => "unknown_reasoning_fallback",
         }
     }
 }

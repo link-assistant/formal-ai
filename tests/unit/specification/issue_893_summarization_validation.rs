@@ -17,6 +17,7 @@ use std::path::{Path, PathBuf};
 
 use formal_ai::language::registered_languages;
 use formal_ai::statement_audit::RepositoryCorpus;
+use formal_ai::summarization::formalize_repository_file;
 use formal_ai::summarization::validation::{
     evaluate_file, ratchet_violations, validate_repository_summarization, CorpusFile,
     QualityBaseline, QualityScore, SamplingProtocol, BASELINE_PATH, CRITERIA,
@@ -480,6 +481,26 @@ fn issue_893_markdown_embedded_grammars_run_through_the_production_summarizer() 
 }
 
 // --- whole task ------------------------------------------------------------
+
+#[test]
+fn issue_893_oversized_structured_files_skip_the_unbounded_meta_language_parse() {
+    // A seeded repository draw can select large, single-line JSONL evidence.
+    // Parsing that entire payload through the concrete-syntax network used to
+    // take longer than the complete test suite even though structural summary
+    // extraction itself is bounded to eight keys.
+    let content = format!("{{\"payload\":\"{}\"}}", "x".repeat(32 * 1024));
+    let formalized = formalize_repository_file("evidence.jsonl", &content);
+
+    assert!(
+        formalized.meta_language.is_none(),
+        "oversized repository evidence must use bounded structural summarization"
+    );
+    assert_eq!(formalized.byte_count, content.len());
+    assert!(
+        !formalized.statements.is_empty(),
+        "the complete artifact must still receive structural summarization"
+    );
+}
 
 #[test]
 fn issue_893_whole_task_validates_real_repository_files_against_the_ratchet() {

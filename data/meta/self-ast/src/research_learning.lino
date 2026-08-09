@@ -1,0 +1,54 @@
+self_ast_census
+  target src/research_learning.rs
+  language rust
+  fidelity signature
+  byte_len 20444
+  line_count 607
+  content_id source_module_899d34f071a5627a
+  symbol_count 45
+  symbols
+    const DEFAULT_RESEARCH_TIME_LIMIT_SECONDS 16 16
+    const RESEARCH_LEARNING_RECIPE 19 20
+    enum AutonomyMode 24 31
+    struct CycleConfig 35 38
+    function default 41 46
+    enum KnowledgeKind 51 55
+    function slug 58 64
+    enum VersionStatus 68 72
+    function slug 75 81
+    struct VerificationGate 86 90
+    function immutable 94 100
+    function adaptive 103 109
+    struct KnowledgeVersion 115 122
+    struct SourceReceipt 127 133
+    struct RecoveryOption 138 144
+    function new 148 156
+    function score 159 163
+    enum RecoveryDecision 167 172
+    enum CycleState 175 183
+    function slug 186 196
+    struct CycleEvent 202 208
+    struct ResearchLearningCycle 212 221
+    function new 225 251
+    function config 254 256
+    function state 259 261
+    function versions 264 266
+    function sources 269 271
+    function events 274 276
+    function active_version 279 284
+    function begin_unknown 286 289
+    function record_source 291 313
+    function evict_source 316 326
+    function recollect_source 331 348
+    function propose_version 350 368
+    function verify_candidate 372 413
+    function recover_stable 417 428
+    function recover_from_error 433 473
+    function select_recovery 475 486
+    function check_time_limit 490 502
+    function continue_with_permission 504 511
+    function links_notation 515 550
+    function append_event 552 569
+    function recipe_steps 575 585
+    function decision_slug 587 598
+    function quote 600 607

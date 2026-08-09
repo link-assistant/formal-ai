@@ -10,7 +10,7 @@ TASK='When you cannot answer an input, run your self-healing loop: reason about 
 
 TASK="$TASK" \
 EXPECT_FILE="self-healing-case.lino" \
-EXPECT_TEXT='total_link_count "20115"' \
+EXPECT_TEXT='total_link_count "20588"' \
 MIN_POSTS=3 \
 ATTEMPTS=3 \
 PORT="${PORT:-8846}" \

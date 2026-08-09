@@ -167,6 +167,7 @@ mod issue_858;
 mod issue_859;
 mod issue_864;
 mod issue_870_routing;
+mod issue_873;
 mod issue_885_document_fact_checking;
 mod issue_889_thinking_seed;
 mod issue_890;

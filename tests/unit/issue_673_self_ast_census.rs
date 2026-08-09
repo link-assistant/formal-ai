@@ -7,7 +7,7 @@
 //! criteria of the issue:
 //!
 //! 1. `data/meta/self-ast/` holds a census for *every* `src/` module, each
-//!    carrying its fidelity marker, and the workspace index resolves any
+//!    carrying its fidelity marker, and the in-memory workspace index resolves any
 //!    `path:symbol` the method registry knows;
 //! 2. the census regenerates deterministically and incrementally, and the drift
 //!    check fails on a fixture whose census is stale;
@@ -23,7 +23,7 @@ use formal_ai::method_registry::MethodRegistry;
 use formal_ai::protocol::ChatMessage;
 use formal_ai::self_ast_census::{
     document_path_for, drift_report, workspace, CensusDrift, CensusFidelity, WorkspaceCensus,
-    CENSUS_DIR, FULL_FIDELITY_PREFIX, INDEX_PATH,
+    CENSUS_DIR, FULL_FIDELITY_PREFIX,
 };
 
 /// The repository root, so the tests read the *committed* census rather than a
@@ -102,10 +102,6 @@ fn committed_census_documents_match_what_the_sources_render() {
             .collect::<Vec<_>>()
             .join("\n")
     );
-    assert!(
-        root.join(INDEX_PATH).is_file(),
-        "the workspace census index is missing — {REGENERATE}"
-    );
 }
 
 #[test]
@@ -164,8 +160,8 @@ fn census_regenerates_deterministically_and_incrementally() {
     let again = WorkspaceCensus::compile(&files).documents();
     assert_eq!(first, again, "census regeneration is not deterministic");
 
-    // One changed module must rewrite exactly one module document (plus the
-    // index, which summarises the workspace) — the incremental property.
+    // One changed module must rewrite exactly one independently committed
+    // module document — the incremental property.
     let mut changed = files;
     changed[1].1 = "pub struct Beta;\npub fn beta() {}\n";
     let after = WorkspaceCensus::compile(&changed).documents();
@@ -177,7 +173,7 @@ fn census_regenerates_deterministically_and_incrementally() {
         .collect();
     assert_eq!(
         rewritten,
-        vec![INDEX_PATH, document_path_for("src/beta.rs").as_str()],
+        vec![document_path_for("src/beta.rs").as_str()],
         "a one-module change re-censused the wrong set of documents"
     );
 
@@ -189,6 +185,32 @@ fn census_regenerates_deterministically_and_incrementally() {
         WorkspaceCensus::compile(&shuffled).documents(),
         first,
         "census output depends on input order"
+    );
+}
+
+#[test]
+fn committed_documents_exclude_the_redundant_workspace_aggregate() {
+    let census = WorkspaceCensus::compile(&[
+        ("src/alpha.rs", "pub fn alpha() {}\n"),
+        ("src/beta.rs", "pub fn beta() {}\n"),
+    ]);
+
+    assert!(
+        census
+            .documents()
+            .iter()
+            .all(|(path, _)| path != "data/meta/self-ast/index.lino"),
+        "the whole-workspace aggregate changes for every source edit and creates cross-branch conflicts"
+    );
+    let index = census.index_notation();
+    assert!(index.contains("  module_count 2\n"));
+    assert!(index.contains("    src/alpha.rs signature"));
+    assert!(index.contains("    src/beta.rs signature"));
+    assert!(
+        !repository_root()
+            .join("data/meta/self-ast/index.lino")
+            .is_file(),
+        "the on-demand aggregate must remain untracked; run {REGENERATE} to remove a legacy copy"
     );
 }
 

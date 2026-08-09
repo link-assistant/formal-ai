@@ -70,8 +70,9 @@ fn unseen_web_search_paraphrases_route_by_semantic_frame() {
 
 #[test]
 fn source_frames_require_whole_seeded_source_markers() {
-    let messages = vec![ChatMessage::user("webhook status regarding serde")];
-    assert_eq!(plan_chat_step(&messages, &["web_search"]), None);
+    let (tool, arguments) = single_call("webhook status regarding serde", &["web_search"]);
+    assert_eq!(tool, "web_search");
+    assert_eq!(arguments["query"], "webhook status regarding serde");
 }
 #[test]
 fn failed_edit_phrasings_route_by_replacement_shape() {

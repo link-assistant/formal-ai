@@ -5,8 +5,10 @@
 //! ```
 //!
 //! The census is a pure function of the owned sources, so this only ever rewrites
-//! the documents whose modules actually changed — the incremental property the
-//! issue asks for — and deletes documents whose module is gone.
+//! the per-module documents whose modules actually changed — the incremental
+//! property the issue asks for — and deletes documents whose module is gone.
+//! The workspace aggregate is available from `dump_self_ast_census` and is not
+//! committed because every source edit would otherwise contend on one file.
 
 use std::collections::BTreeSet;
 use std::fs;

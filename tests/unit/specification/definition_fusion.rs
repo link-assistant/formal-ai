@@ -7,10 +7,16 @@
 //! labels, deduplicate exact repeated facts, and expose the provenance in the
 //! evidence links.
 
-use formal_ai::{FormalAiEngine, SolverConfig, SymbolicAnswer, UniversalSolver};
+use formal_ai::{SolverConfig, SymbolicAnswer, UniversalSolver};
 
 fn answer(prompt: &str) -> SymbolicAnswer {
-    FormalAiEngine.answer(prompt)
+    answer_with_config(
+        prompt,
+        SolverConfig {
+            offline: true,
+            ..SolverConfig::default()
+        },
+    )
 }
 
 fn answer_with_config(prompt: &str, config: SolverConfig) -> SymbolicAnswer {
