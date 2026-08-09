@@ -995,6 +995,24 @@ compiles the same presentation-independent core into
 the quoted statement and target before crossing the WASM boundary. Worker 13
 supplies the script-aware target-language alias match used by Chinese requests.
 
+Issue #917 makes formal languages first-class projections of the same semantic
+layer. `src/translation/formal_statement.rs` formalizes a natural statement as
+a Wikidata-grounded predicate plus role-qualified subject and object meanings,
+then renders that value through `data/seed/formal-language-projections.lino`.
+The catalog owns formal aliases and statement templates as well as each natural
+language's word order and canonical relation surface. Consequently a new
+syntax adds one projection rather than translators for every natural/formal
+pair. The inverse lookup uses both Wikidata ID and semantic role because one
+identifier can legitimately ground multiple lexicon meanings.
+
+The browser compiles the corresponding catalog interpreter into
+`src/web/wasm-worker/src/formal_statement_worker.rs` and loads the same
+projection and Wikidata seed files. JavaScript only recognizes the translation
+request and crosses the WASM boundary. Both surfaces expose the stable meaning
+`statement:P31(Q89,Q3314483)`, so the issue #526 round-trip contract now covers
+natural -> FOL -> natural without a direct pair path. Formal output is not
+executed as code, leaving issue #917 independent of E69's execution gate.
+
 The Rust pipeline is the canonical implementation. The browser worker
 (`src/web/formal_ai_worker.js`) cannot reach Wiktionary or Wikidata
 directly because of browser CORS restrictions, so it keeps a small
