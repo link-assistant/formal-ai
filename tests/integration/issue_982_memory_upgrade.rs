@@ -160,13 +160,10 @@ fn released_zero_byte_store_is_readable_and_upgradeable() {
     assert_eq!(status.event_count, Some(0));
     assert!(status.compatible);
     assert!(status.migration_required);
-    let store = MemoryStore::load_from_file(&memory_path)
-        .expect("released empty store remains readable");
+    let store =
+        MemoryStore::load_from_file(&memory_path).expect("released empty store remains readable");
     assert!(store.is_empty());
-    assert_eq!(
-        store.export_links_notation(),
-        "demo_memory\n"
-    );
+    assert_eq!(store.export_links_notation(), "demo_memory\n");
 
     let receipt = formal_ai::migrate_memory(&memory_path, Some(&backup_path), None)
         .expect("upgrade released empty store");
