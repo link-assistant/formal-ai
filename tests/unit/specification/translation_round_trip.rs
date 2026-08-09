@@ -24,7 +24,7 @@
 //! widening the covered vocabulary is a pure seed edit.
 
 use formal_ai::seed::{lexicon, LANGUAGES_LINO};
-use formal_ai::translation::translate_via_default_pipeline;
+use formal_ai::translation::{translate_statement, translate_via_default_pipeline};
 
 #[derive(Clone, Copy)]
 struct SurfaceCase {
@@ -243,5 +243,29 @@ fn one_meaning_backs_every_language_surface() {
                  got {meaning} for {target} vs {expected}",
             ),
         }
+    }
+}
+
+/// Issue #917 extends #526's quality rule beyond natural-language pairs: a
+/// formal concrete syntax must preserve the same semantic identity and return
+/// to the exact natural statement as well.
+#[test]
+fn every_seed_language_round_trips_through_first_order_logic() {
+    const FORMAL: &str = "P31(Q89, Q3314483)";
+    for (language, natural) in [
+        ("en", "apple is a fruit"),
+        ("ru", "яблоко это фрукт"),
+        ("hi", "सेब फल है"),
+        ("zh", "苹果是水果"),
+        ("es", "manzana es una fruta"),
+    ] {
+        let forward = translate_statement(natural, language, "fol")
+            .unwrap_or_else(|error| panic!("#917: {language}->fol failed: {error}"));
+        assert_eq!(forward.surface, FORMAL);
+
+        let backward = translate_statement(&forward.surface, "fol", language)
+            .unwrap_or_else(|error| panic!("#917: fol->{language} failed: {error}"));
+        assert_eq!(backward.meaning, forward.meaning);
+        assert_eq!(backward.surface, natural);
     }
 }

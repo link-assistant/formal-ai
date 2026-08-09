@@ -21,6 +21,9 @@ meanings
         text 苹果
       surface
         text 蘋果
+    lexeme es
+      surface
+        text manzana
   wikidata_item_fruit
     grounded-in Q3314483
     defined-by concept
@@ -47,6 +50,9 @@ meanings
         text 水果
       surface
         text 水果类
+    lexeme es
+      surface
+        text fruta
   wikidata_item_sorting_algorithm
     grounded-in Q181593
     defined-by concept
@@ -235,6 +241,9 @@ meanings
     lexeme zh
       surface
         text 是
+    lexeme es
+      surface
+        text "es una"
   wikidata_property_part_of
     grounded-in P361
     defined-by relation

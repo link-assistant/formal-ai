@@ -8,8 +8,9 @@ could not introspect, let alone edit, anything else.
 
 ## What the census is now
 
-`data/meta/self-ast/` holds **289 committed documents**: one per owned `src/`
-module plus `index.lino`, the workspace index.
+`data/meta/self-ast/` holds one committed document per owned `src/` module.
+`WorkspaceCensus` is the live workspace index, and the same deterministic Links
+Notation aggregate is available on demand:
 
 ```text
 self_ast_census_index
@@ -78,10 +79,15 @@ and three tests use it:
   (`Check self-AST census freshness`).
 
 Regeneration is incremental by construction — `cargo run --example
-regenerate_self_ast_census` rewrites only the documents whose modules changed:
+regenerate_self_ast_census` rewrites only the documents whose modules changed.
+The aggregate `index.lino` was later removed from version control: because it
+contains every module's counts and content id, every parallel source branch
+rewrote it and unrelated changes repeatedly conflicted. The on-demand index and
+planner resolution are unchanged, while committed changes are now isolated to
+the affected per-module documents:
 
 ```text
-self-AST census: 289 documents (3 rewritten, 0 removed)
+self-AST census: 446 documents (3 rewritten, 0 removed)
 ```
 
 ## Feeding E35: targets resolve through the index

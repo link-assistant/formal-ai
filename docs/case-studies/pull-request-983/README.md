@@ -28,3 +28,13 @@ self-application evidence.
 
 Final validation and CI evidence belong in the PR body so reviewers can compare
 the exact head SHA with each run.
+
+## Conflict-proof census follow-up
+
+After PR #984 advanced `main`, this branch conflicted only in
+`data/meta/self-ast/index.lino`. That generated aggregate changes whenever any
+Rust module changes, although production resolution uses the deterministic
+in-memory `WorkspaceCensus`. PR #983 therefore stops tracking the redundant
+aggregate, keeps per-module byte-for-byte drift checks, and retains identical
+on-demand output through `dump_self_ast_census`. A regression asserts that the
+committed artifact set can no longer recreate this shared conflict target.

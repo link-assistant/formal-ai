@@ -10,3 +10,8 @@ bump: minor
   passing candidates, restores earlier stable versions, and supports user-led,
   full-trust, and per-command recovery with a configurable one-hour default
   continuation boundary. ([#873](https://github.com/link-assistant/formal-ai/issues/873))
+
+### Fixed
+- The self-AST workspace aggregate is now rendered on demand instead of tracked,
+  preventing unrelated source branches from repeatedly conflicting in the same
+  generated `index.lino` while retaining per-module drift checks.

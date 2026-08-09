@@ -506,6 +506,23 @@ program syntax are projections of that value.
 | R890-6 | Issue, PR, related-work, online-research, requirement, plan, and release evidence must remain traceable in the repository. | `issue_890_case_study_and_release_metadata_are_traceable` guards `docs/case-studies/issue-890`, this matrix, architecture, roadmap, and the minor changelog fragment. |
 | R890-7 | At least one of the five reviewed implementation leaves must be authored through the real Formal AI/Agent CLI loop and reproducible byte-for-byte. | Session `ses_03b44e557ffeSQeAuCYzxfc3BR` authored the proof invariant leaf, captured under `docs/case-studies/issue-890/agent-cli-evidence`; `agent_cli_authorship_leaf_is_byte_exact_and_reproducible` guards the artifact, session, raw stream, and replay script. |
 
+## Issue #917 General Natural-Formal Translation
+
+Issue [#917](https://github.com/link-assistant/formal-ai/issues/917) makes a
+formal language a first-class concrete syntax of the semantic meta language.
+Natural and formal statements therefore share one meaning identity and use
+seed-defined projections instead of direct language-pair translators.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R917-1 | A statement in every registered seed language must translate to at least one formal target and back without changing meaning. | `every_seed_language_round_trips_through_a_seeded_formal_target` covers English, Russian, Hindi, Chinese, and Spanish through FOL and requires the stable meaning `statement:P31(Q89,Q3314483)`. |
+| R917-2 | Formal targets, natural word order, and canonical relation surfaces must be seed-defined projections of one semantic statement, not per-pair translators. | `data/seed/formal-language-projections.lino` defines the projection catalog; `src/translation/formal_statement.rs` interprets it as one parser and one renderer per syntax. |
+| R917-3 | The issue #526 round-trip contract must extend to every new natural/formal pair. | `specification::translation_round_trip::every_seed_language_round_trips_through_first_order_logic` checks every natural-to-FOL-to-natural path through the same Wikidata-grounded predicate and entity roles. |
+| R917-4 | Native and browser surfaces must expose the same natural-formal translation behavior. | `whole_task_translation_uses_the_formal_projection_in_both_directions` covers the native engine; `tests/e2e/tests/issue-917.spec.js` covers both directions for every seed language through the Rust-to-WASM worker. |
+| R917-5 | Adding another formal target or natural projection must remain a data change. | The projection interpreters use the catalog's formal alias, statement template, word order, and relation surface; no source/target pair table is present. |
+| R917-6 | Issue, PR, related-work, research, requirements, plan, architecture, roadmap, and release evidence must remain traceable. | `issue_917_case_study_and_release_metadata_are_traceable` guards `docs/case-studies/issue-917`, the root documents, raw snapshots, and the minor changelog fragment. |
+| R917-7 | At least one of five independently reviewed leaves must be authored through the real Formal AI/Agent CLI loop and reproduced byte-for-byte. | Session `ses_01c33a95effeAcU4AdF9Ec66Wr` authored the formal-projection invariant; `issue_917_agent_cli_authorship_leaf_is_byte_exact_and_reproducible` and `experiments/issue_917_agent_cli.sh` guard the artifact and raw evidence. |
+
 ## Issue #498 Google Trends Requirements
 
 Issue [#498](https://github.com/link-assistant/formal-ai/issues/498) asks
@@ -1314,12 +1331,12 @@ Issue [#673](https://github.com/link-assistant/formal-ai/issues/673) (E54) asks
 the self-representation to grow from the single pinned module of R381 to a
 census of the whole workspace, so a self-coding planner can introspect more than
 one file. PR [#807](https://github.com/link-assistant/formal-ai/pull/807) adds
-per-module census documents under `data/meta/self-ast/`, a workspace index, a
+per-module census documents under `data/meta/self-ast/`, an in-memory workspace index, a
 drift guard, and census-backed edit-target resolution in the general planner.
 
 | ID | Requirement | Status |
 | --- | --- | --- |
-| R480 | Census every owned `src/` module, not one pinned file, and address each module through a workspace index. | `src/self_ast_census.rs` compiles a `WorkspaceCensus` from the compile-time `OWNED_SOURCE_FILES` manifest and renders one `.lino` document per module plus `data/meta/self-ast/index.lino`; covered by `every_owned_module_has_a_committed_census_with_its_fidelity_marker`. |
+| R480 | Census every owned `src/` module, not one pinned file, and address each module through a workspace index. | `src/self_ast_census.rs` compiles a `WorkspaceCensus` from the compile-time `OWNED_SOURCE_FILES` manifest and renders one `.lino` document per module. The deterministic aggregate remains available through `index_notation`/`dump_self_ast_census` but is not tracked, preventing every parallel source branch from editing the same generated file; covered by `every_owned_module_has_a_committed_census_with_its_fidelity_marker` and `committed_documents_exclude_the_redundant_workspace_aggregate`. |
 | R481 | Scale honestly with a documented fidelity marker per module: full AST for `src/agentic_coding/`, signature-level census elsewhere. | `CensusFidelity::{FullAst, Signature}` is chosen by `fidelity_for` and written as a `fidelity` line in every document; `the_workspace_census_is_addressable_without_a_multi_megabyte_seed` pins the size discipline. |
 | R482 | Regenerate deterministically and incrementally, and fail a drift check when a committed census diverges from its source. | `WorkspaceCensus::documents` is a pure, path-sorted function of the sources; `drift_report` reports `Missing`/`Stale`/`Orphan`. Covered by `census_regenerates_deterministically_and_incrementally`, `drift_check_fails_on_a_fixture_with_a_stale_census`, and the disk guard `committed_census_documents_match_what_the_sources_render`. |
 | R483 | Resolve edit targets through the census index instead of hardcoded paths, for any module the method registry knows. | `resolve_census_target` in `src/agentic_coding/general_planner.rs` routes `compose_edit_request` through `WorkspaceCensus::resolve`; covered by `the_planner_resolves_an_edit_target_outside_planner_rs_via_the_census` and `the_index_resolves_every_path_symbol_the_method_registry_knows`. |

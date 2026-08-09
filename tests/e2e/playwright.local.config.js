@@ -103,6 +103,7 @@ module.exports = defineConfig({
     '**/issue-870.spec.js',
     '**/issue-890.spec.js',
     '**/issue-896.spec.js',
+    '**/issue-917.spec.js',
     '**/issue-1963.spec.js',
   ],
   // Per-test cap. A single app spec navigates, waits for the worker to boot,

@@ -49,6 +49,7 @@
 use std::sync::OnceLock;
 
 pub mod cache;
+pub(crate) mod formal_statement;
 pub mod formalization;
 pub mod formatting;
 pub mod http;
@@ -61,6 +62,11 @@ pub mod wikidata;
 pub mod wiktionary;
 
 pub use cache::CachedHttpClient;
+pub(crate) use formal_statement::formal_language_in_prompt;
+pub use formal_statement::{
+    formal_language_targets, translate_statement, SemanticStatement, StatementTranslation,
+    StatementTranslationError,
+};
 pub use formalization::{
     formalize_prompt, formalize_prompt_candidates, FormalizationAnchor, FormalizationAnchorKind,
     FormalizationCandidate, FormalizationRole, FormalizationSlot,
