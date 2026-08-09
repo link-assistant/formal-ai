@@ -1,0 +1,397 @@
+.github/workflows/learning-cycle.yml:19:concurrency:
+.github/workflows/learning-cycle.yml:21:  cancel-in-progress: false
+.github/workflows/learning-cycle.yml:27:    timeout-minutes: 45
+.github/workflows/external-benchmarks.yml:42:concurrency:
+.github/workflows/external-benchmarks.yml:44:  cancel-in-progress: false
+.github/workflows/external-benchmarks.yml:55:    timeout-minutes: 15
+.github/workflows/external-benchmarks.yml:82:    timeout-minutes: 90
+.github/workflows/write-effect-ladder.yml:16:# ceiling `scripts/check-file-size.rs` enforces; the `paths` filters below
+.github/workflows/write-effect-ladder.yml:47:concurrency:
+.github/workflows/write-effect-ladder.yml:49:  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+.github/workflows/write-effect-ladder.yml:67:    timeout-minutes: 25
+.github/workflows/agentic-cli-matrix.yml:38:concurrency:
+.github/workflows/agentic-cli-matrix.yml:40:  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+.github/workflows/agentic-cli-matrix.yml:53:    timeout-minutes: 30
+.github/workflows/agentic-cli-matrix.yml:94:    timeout-minutes: 25
+.github/workflows/agentic-cli-matrix.yml:213:    timeout-minutes: 5
+.github/workflows/agentic-cli-matrix.yml:223:    timeout-minutes: 5
+.github/workflows/desktop-release.yml:70:concurrency:
+.github/workflows/desktop-release.yml:80:  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+.github/workflows/desktop-release.yml:94:    timeout-minutes: 10
+.github/workflows/desktop-release.yml:176:    timeout-minutes: ${{ (matrix.label == 'macos-x64' || startsWith(matrix.label, 'windows-')) && 50 || 40 }}
+.github/workflows/desktop-release.yml:192:          # 0 is needed by simulate-fresh-merge.sh, which merges origin/<base>.
+.github/workflows/desktop-release.yml:206:        run: bash scripts/simulate-fresh-merge.sh
+.github/workflows/desktop-release.yml:250:      - name: Check macOS signing secrets
+.github/workflows/desktop-release.yml:252:        id: mac_secrets
+.github/workflows/desktop-release.yml:254:          MAC_CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
+.github/workflows/desktop-release.yml:255:          MAC_CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
+.github/workflows/desktop-release.yml:256:          APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
+.github/workflows/desktop-release.yml:257:          APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+.github/workflows/desktop-release.yml:258:          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+.github/workflows/desktop-release.yml:269:            echo "has_secrets=false" >> "$GITHUB_OUTPUT"
+.github/workflows/desktop-release.yml:271:            echo "::notice::macOS signing/notarization secrets are not configured: ${missing[*]}"
+.github/workflows/desktop-release.yml:274:            echo "has_secrets=true" >> "$GITHUB_OUTPUT"
+.github/workflows/desktop-release.yml:286:        if: matrix.ebflag == '--mac' && steps.mac_secrets.outputs.has_secrets == 'true'
+.github/workflows/desktop-release.yml:289:          CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
+.github/workflows/desktop-release.yml:290:          CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
+.github/workflows/desktop-release.yml:291:          APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
+.github/workflows/desktop-release.yml:292:          APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+.github/workflows/desktop-release.yml:293:          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+.github/workflows/desktop-release.yml:309:        if: matrix.ebflag == '--mac' && steps.mac_secrets.outputs.has_secrets != 'true'
+.github/workflows/desktop-release.yml:319:          # warning attached to this flag is about *secret* certificates leaking
+.github/workflows/desktop-release.yml:320:          # to fork builds; this step only runs when no signing secrets exist and
+.github/workflows/desktop-release.yml:335:          MACOS_BUILD_MODE: ${{ steps.mac_secrets.outputs.mode }}
+.github/workflows/desktop-release.yml:363:          # to word-split and is flagged by shellcheck (SC2066). Behaviour is
+.github/workflows/desktop-release.yml:557:    timeout-minutes: 15
+.github/workflows/desktop-release.yml:579:        run: bash scripts/simulate-fresh-merge.sh
+.github/workflows/desktop-release.yml:603:          # exit status is swallowed here (shellcheck SC2012).
+.github/workflows/desktop-release.yml:663:    timeout-minutes: 10
+.github/workflows/task-ladder.yml:11:# ceiling `scripts/check-file-size.rs` enforces. The gate is independent of the
+.github/workflows/task-ladder.yml:44:concurrency:
+.github/workflows/task-ladder.yml:46:  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+.github/workflows/task-ladder.yml:64:    timeout-minutes: 25
+.github/workflows/coverage.yml:9:# size gate (scripts/check-file-size.rs), which caps a workflow at 2000 lines
+.github/workflows/coverage.yml:27:concurrency:
+.github/workflows/coverage.yml:29:  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+.github/workflows/coverage.yml:39:  # not, so both workflows call the same scripts/detect-code-changes.rs.
+.github/workflows/coverage.yml:43:    timeout-minutes: 5
+.github/workflows/coverage.yml:64:        run: rust-script scripts/detect-code-changes.rs
+.github/workflows/coverage.yml:78:    timeout-minutes: 40
+.github/workflows/coverage.yml:145:          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+.github/workflows/coverage.yml:157:          token: ${{ secrets.CODECOV_TOKEN }}
+.github/workflows/coverage.yml:178:    timeout-minutes: 15
+.github/workflows/summarization-ratchet.yml:17:# `scripts/check-file-size.rs` enforces; the `paths` filters below replace what
+.github/workflows/summarization-ratchet.yml:48:concurrency:
+.github/workflows/summarization-ratchet.yml:50:  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+.github/workflows/summarization-ratchet.yml:65:    timeout-minutes: 25
+.github/workflows/proactive-failure-report-e2e.yml:20:    timeout-minutes: 20
+.github/workflows/release.yml:17:          - changelog-pr
+.github/workflows/release.yml:33:concurrency:
+.github/workflows/release.yml:38:  # leave a release half-published. desktop-release.yml uses cancel-in-progress:
+.github/workflows/release.yml:40:  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+.github/workflows/release.yml:50:  CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
+.github/workflows/release.yml:51:  CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}
+.github/workflows/release.yml:61:    timeout-minutes: 5
+.github/workflows/release.yml:82:        run: rust-script scripts/detect-code-changes.rs
+.github/workflows/release.yml:84:  # Docs-only PRs (./docs folder, markdown files) don't require changelog fragments
+.github/workflows/release.yml:85:  changelog:
+.github/workflows/release.yml:88:    timeout-minutes: 10
+.github/workflows/release.yml:99:      - name: Check for changelog fragments
+.github/workflows/release.yml:102:        run: rust-script scripts/check-changelog-fragment.rs
+.github/workflows/release.yml:115:    timeout-minutes: 10
+.github/workflows/release.yml:154:    timeout-minutes: 60
+.github/workflows/release.yml:186:  # Issue #808 / R5 (CI-CD-BEST-PRACTICES.md section 11): no secrets scan
+.github/workflows/release.yml:187:  # existed anywhere in this pipeline. secretlint is language-agnostic, so it
+.github/workflows/release.yml:188:  # applies to a Rust repository unchanged; .secretlintrc.json selects the
+.github/workflows/release.yml:192:  # full-tree `secretlint "**/*"` (what the js template runs) had not finished
+.github/workflows/release.yml:197:  # `bash scripts/check-secrets.sh --all` locally to audit everything.
+.github/workflows/release.yml:198:  secrets-scan:
+.github/workflows/release.yml:201:    timeout-minutes: 10
+.github/workflows/release.yml:213:          # check-secrets.sh diffs against the base branch / previous commit.
+.github/workflows/release.yml:219:      - name: Check for secrets
+.github/workflows/release.yml:224:        run: bash scripts/check-secrets.sh
+.github/workflows/release.yml:230:    timeout-minutes: 5
+.github/workflows/release.yml:247:  # Lint runs independently of changelog check - it's a fast check that should always run
+.github/workflows/release.yml:256:    timeout-minutes: 15
+.github/workflows/release.yml:285:        run: bash scripts/simulate-fresh-merge.sh
+.github/workflows/release.yml:317:      # skipping the guarded step with a green check. actionlint type-checks
+.github/workflows/release.yml:318:      # `needs`/`steps`/`env` contexts and runs shellcheck over every `run:`
+.github/workflows/release.yml:319:      # block. Pinned by version; `.github/actionlint.yaml` declares the runner
+.github/workflows/release.yml:327:            "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz" \
+.github/workflows/release.yml:328:            | tar xz -C /tmp actionlint
+.github/workflows/release.yml:329:          /tmp/actionlint -color
+.github/workflows/release.yml:331:      # actionlint only reaches shell embedded in `run:` blocks. The standalone
+.github/workflows/release.yml:332:      # scripts those blocks invoke -- install.sh, check-secrets.sh,
+.github/workflows/release.yml:333:      # simulate-fresh-merge.sh and the rest -- had no linter at all, which is
+.github/workflows/release.yml:341:        run: cargo fmt --all -- --check
+.github/workflows/release.yml:352:        run: cargo clippy --lib --bins --tests --all-features -- -D warnings && cargo check --examples --all-features
+.github/workflows/release.yml:379:        run: rust-script scripts/check-file-size.rs
+.github/workflows/release.yml:435:      - name: Test release changelog collection
+.github/workflows/release.yml:449:      - name: Check reconstructed changelog
+.github/workflows/release.yml:450:        run: node experiments/issue_711_rebuild_changelog.mjs --check
+.github/workflows/release.yml:531:  # Test runs independently of the changelog check and gates on the change
+.github/workflows/release.yml:534:  # Previously this job ran whenever `changelog` was skipped. But `changelog`
+.github/workflows/release.yml:536:  # changelog-fragment-only commits), so `needs.changelog.result == 'skipped'`
+.github/workflows/release.yml:545:    timeout-minutes: 25
+.github/workflows/release.yml:568:          # Needed by simulate-fresh-merge.sh, which merges origin/<base>.
+.github/workflows/release.yml:577:        run: bash scripts/simulate-fresh-merge.sh
+.github/workflows/release.yml:609:      # test passed -- the suite finished at 18:43:50 and `timeout-minutes: 15`
+.github/workflows/release.yml:645:    timeout-minutes: 15
+.github/workflows/release.yml:679:  # Automatic release on push to main using changelog fragments
+.github/workflows/release.yml:680:  # This job automatically bumps version based on fragments in changelog.d/
+.github/workflows/release.yml:687:    needs: [lint, test, build, secrets-scan, test-e2e-local, test-agent-cli-e2e]
+.github/workflows/release.yml:694:    # `timeout-minutes` is reported as **cancelled**, not failed -- run
+.github/workflows/release.yml:697:    # secrets scan or E2E suite would have counted as "not failing" and released
+.github/workflows/release.yml:704:      (needs.secrets-scan.result == 'success' || needs.secrets-scan.result == 'skipped') &&
+.github/workflows/release.yml:714:    timeout-minutes: 60
+.github/workflows/release.yml:719:      DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME }}
+.github/workflows/release.yml:720:      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+.github/workflows/release.yml:728:          token: ${{ secrets.GITHUB_TOKEN }}
+.github/workflows/release.yml:739:      - name: Determine bump type from changelog fragments
+.github/workflows/release.yml:747:          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+.github/workflows/release.yml:750:      - name: Collect changelog and bump version
+.github/workflows/release.yml:770:          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
+.github/workflows/release.yml:771:          CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}
+.github/workflows/release.yml:814:          password: ${{ secrets.GITHUB_TOKEN }}
+.github/workflows/release.yml:907:          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+.github/workflows/release.yml:934:    # able to publish past a failing secrets scan or E2E suite.
+.github/workflows/release.yml:935:    needs: [lint, test, build, secrets-scan, test-e2e-local, test-agent-cli-e2e]
+.github/workflows/release.yml:940:    # 'failure': a job killed by `timeout-minutes` reports as 'cancelled', which
+.github/workflows/release.yml:947:      (needs.secrets-scan.result == 'success' || needs.secrets-scan.result == 'skipped') &&
+.github/workflows/release.yml:957:    timeout-minutes: 60
+.github/workflows/release.yml:962:      DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME }}
+.github/workflows/release.yml:963:      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+.github/workflows/release.yml:971:          token: ${{ secrets.GITHUB_TOKEN }}
+.github/workflows/release.yml:997:          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
+.github/workflows/release.yml:998:          CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}
+.github/workflows/release.yml:1033:          password: ${{ secrets.GITHUB_TOKEN }}
+.github/workflows/release.yml:1121:          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+.github/workflows/release.yml:1142:  changelog-pr:
+.github/workflows/release.yml:1144:    if: github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'changelog-pr'
+.github/workflows/release.yml:1146:    timeout-minutes: 10
+.github/workflows/release.yml:1161:      - name: Create changelog fragment
+.github/workflows/release.yml:1165:        run: rust-script scripts/create-changelog-fragment.rs --bump-type "${{ github.event.inputs.bump_type }}" --description "${{ github.event.inputs.description }}"
+.github/workflows/release.yml:1170:          token: ${{ secrets.GITHUB_TOKEN }}
+.github/workflows/release.yml:1171:          commit-message: 'chore: add changelog for manual ${{ github.event.inputs.bump_type }} release'
+.github/workflows/release.yml:1172:          branch: changelog-manual-release-${{ github.run_id }}
+.github/workflows/release.yml:1186:            1. Review the changelog fragment in this PR
+.github/workflows/release.yml:1201:    timeout-minutes: 40
+.github/workflows/release.yml:1254:        timeout-minutes: 6
+.github/workflows/release.yml:1261:        timeout-minutes: 10
+.github/workflows/release.yml:1319:    timeout-minutes: 32
+.github/workflows/release.yml:1386:        timeout-minutes: 5
+.github/workflows/release.yml:1547:        timeout-minutes: 3
+.github/workflows/release.yml:1564:        timeout-minutes: 10
+.github/workflows/release.yml:1576:        timeout-minutes: 12
+.github/workflows/release.yml:1596:        timeout-minutes: 10
+.github/workflows/release.yml:1611:        timeout-minutes: 15
+.github/workflows/release.yml:1618:        timeout-minutes: 5
+.github/workflows/release.yml:1627:        timeout-minutes: 5
+.github/workflows/release.yml:1633:        timeout-minutes: 3
+.github/workflows/release.yml:1638:        timeout-minutes: 3
+.github/workflows/release.yml:1649:        timeout-minutes: 5
+.github/workflows/release.yml:1662:        timeout-minutes: 5
+.github/workflows/release.yml:1671:        timeout-minutes: 5
+.github/workflows/release.yml:1679:        timeout-minutes: 5
+.github/workflows/release.yml:1689:        timeout-minutes: 5
+.github/workflows/release.yml:1697:        timeout-minutes: 5
+.github/workflows/release.yml:1707:        timeout-minutes: 5
+.github/workflows/release.yml:1712:        timeout-minutes: 5
+.github/workflows/release.yml:1757:    timeout-minutes: 35
+.github/workflows/release.yml:1891:    timeout-minutes: 15
+.github/workflows/release.yml:1918:        timeout-minutes: 6
+.github/workflows/release.yml:1925:        timeout-minutes: 10
+.github/workflows/release.yml:1949:  # Issue #977: a job killed by `timeout-minutes` is reported as **cancelled**,
+.github/workflows/release.yml:1959:    timeout-minutes: 5
+.github/workflows/release.yml:1962:    needs: [detect-changes, changelog, evidence-check, docker-build, secrets-scan,
+.github/workflows/release.yml:1964:            changelog-pr, test-e2e-local, test-agent-cli-e2e, deploy-pages,
+scripts/check-file-size.rs:5://! Usage: rust-script scripts/check-file-size.rs
+scripts/check-file-size.rs:434:        let path = std::env::temp_dir().join(format!("check-file-size-{name}-{nanos}"));
+scripts/check-coverage-ratchet-reports.rs:4://! rust-script is a single file by construction and `scripts/check-file-size.rs`
+scripts/version-and-commit.rs:12://! - Single-language: Cargo.toml and changelog.d/ in repository root
+scripts/version-and-commit.rs:13://! - Multi-language: Cargo.toml and changelog.d/ in rust/ subfolder
+scripts/version-and-commit.rs:40:const CHANGELOG_REBUILD_SCRIPT: &str = "experiments/issue_711_rebuild_changelog.mjs";
+scripts/version-and-commit.rs:55:fn get_changelog_dir(rust_root: &str) -> String {
+scripts/version-and-commit.rs:57:        "./changelog.d".to_string()
+scripts/version-and-commit.rs:59:        format!("{}/changelog.d", rust_root)
+scripts/version-and-commit.rs:63:fn get_changelog_path(rust_root: &str) -> String {
+scripts/version-and-commit.rs:405:fn remove_changelog_fragments(files: &[PathBuf]) {
+scripts/version-and-commit.rs:408:        println!("Removed changelog fragment {}", file.display());
+scripts/version-and-commit.rs:412:fn collect_changelog_with_date(changelog_dir: &str, changelog_file: &str, version: &str, date_str: &str) -> bool {
+scripts/version-and-commit.rs:413:    let dir_path = Path::new(changelog_dir);
+scripts/version-and-commit.rs:449:    // line that `issue_711_rebuild_changelog.mjs --check` rejects.
+scripts/version-and-commit.rs:452:    if !Path::new(changelog_file).exists() {
+scripts/version-and-commit.rs:456:    let mut content = fs::read_to_string(changelog_file).unwrap_or_default();
+scripts/version-and-commit.rs:478:    fs::write(changelog_file, content).expect("Failed to write changelog");
+scripts/version-and-commit.rs:479:    remove_changelog_fragments(&files);
+scripts/version-and-commit.rs:481:    println!("Collected {} changelog fragment(s)", files.len());
+scripts/version-and-commit.rs:502:    println!("Regenerated changelog and fragment release map");
+scripts/version-and-commit.rs:580:    let changelog_dir = get_changelog_dir(&rust_root);
+scripts/version-and-commit.rs:581:    let changelog_file = get_changelog_path(&rust_root);
+scripts/version-and-commit.rs:672:    // Collect changelog fragments, then reconstruct the release artifacts while
+scripts/version-and-commit.rs:677:    let collected = collect_changelog_with_date(&changelog_dir, &changelog_file, &new_version, &release_date);
+scripts/version-and-commit.rs:698:        &changelog_file,
+scripts/version-and-commit.rs:708:    if Path::new(&changelog_dir).exists() {
+scripts/version-and-commit.rs:709:        if let Err(e) = exec("git", &["add", "-A", &changelog_dir]) {
+scripts/version-and-commit.rs:710:            eprintln!("Error staging consumed changelog fragments: {}", e);
+scripts/check-secrets.sh:2:# check-secrets.sh
+scripts/check-secrets.sh:4:# Scans the files a change touches for committed credentials, using secretlint
+scripts/check-secrets.sh:8:#   BASE_REF=main bash scripts/check-secrets.sh     # scan the diff vs BASE_REF
+scripts/check-secrets.sh:9:#   bash scripts/check-secrets.sh --all             # scan every tracked file
+scripts/check-secrets.sh:10:#   bash scripts/check-secrets.sh path/to/file ...  # scan specific files
+scripts/check-secrets.sh:12:# Exit code 0 = no secrets found; non-zero = secretlint reported a finding.
+scripts/check-secrets.sh:16:# The js template runs `secretlint "**/*"`. Measured on this repository that
+scripts/check-secrets.sh:33:    printf '[check-secrets] %s\n' "$1" >&2
+scripts/check-secrets.sh:54:  # than failing the job on something that is not a secret problem.
+scripts/check-secrets.sh:75:echo "Scanning ${#files[@]} file(s) for secrets..."
+scripts/check-secrets.sh:80:# Pinned, not floating (issue #812): `npx --yes -p secretlint` resolved to
+scripts/check-secrets.sh:85:debug "secretlint ${SECRETLINT_VERSION}"
+scripts/check-secrets.sh:89:    -p "secretlint@${SECRETLINT_VERSION}" \
+scripts/check-secrets.sh:90:    -p "@secretlint/secretlint-rule-preset-recommend@${SECRETLINT_VERSION}" \
+scripts/check-secrets.sh:91:    secretlint
+scripts/check-secrets.sh:93:echo "No secrets found."
+scripts/create-github-release.rs:232:fn limit_release_body_to(body: String, full_changelog_url: &str, max_bytes: usize) -> String {
+scripts/create-github-release.rs:238:        "\n\n---\n\nRelease notes were shortened to fit GitHub Releases API validation. See the full changelog: {full_changelog_url}\n"
+scripts/create-github-release.rs:249:fn limit_release_body(body: String, full_changelog_url: &str) -> String {
+scripts/create-github-release.rs:250:    limit_release_body_to(body, full_changelog_url, GITHUB_RELEASE_BODY_MAX_BYTES)
+scripts/create-github-release.rs:256:    full_changelog_url: &str,
+scripts/create-github-release.rs:266:    let body = limit_release_body_to(body, full_changelog_url, available_bytes);
+scripts/create-github-release.rs:363:fn get_changelog_for_version(version: &str) -> String {
+scripts/create-github-release.rs:364:    let changelog_path = "CHANGELOG.md";
+scripts/create-github-release.rs:366:    if !Path::new(changelog_path).exists() {
+scripts/create-github-release.rs:370:    let content = match fs::read_to_string(changelog_path) {
+scripts/create-github-release.rs:476:    let mut release_notes = get_changelog_for_version(&normalized_version);
+scripts/create-github-release.rs:502:    let full_changelog_url = format!("https://github.com/{repository}/blob/{tag}/CHANGELOG.md");
+scripts/create-github-release.rs:508:        limit_release_body_with_suffix(release_notes, &note, &full_changelog_url).unwrap_or_else(
+scripts/create-github-release.rs:515:        limit_release_body(release_notes, &full_changelog_url)
+scripts/create-github-release.rs:718:    fn oversized_release_body_is_shortened_with_full_changelog_link() {
+scripts/create-github-release.rs:772:release notes already exists in generated changelog text"#;
+scripts/version-and-commit-tests.rs:4://! grown past the 1000-line limit `scripts/check-file-size.rs` enforces, and the
+scripts/version-and-commit-tests.rs:8:use super::collect_changelog_with_date;
+scripts/version-and-commit-tests.rs:21:fn changelog_collection_consumes_fragments_once_and_keeps_readme() {
+scripts/version-and-commit-tests.rs:22:    let repo = temp_dir("changelog-cleanup");
+scripts/version-and-commit-tests.rs:23:    let changelog_dir = repo.join("changelog.d");
+scripts/version-and-commit-tests.rs:24:    fs::create_dir_all(&changelog_dir).unwrap();
+scripts/version-and-commit-tests.rs:26:    let first_fragment = changelog_dir.join("20260714_fix_release_loop.md");
+scripts/version-and-commit-tests.rs:27:    let second_fragment = changelog_dir.join("20260714_note_release_loop.md");
+scripts/version-and-commit-tests.rs:35:- Prevent already-collected changelog fragments from triggering another release.
+scripts/version-and-commit-tests.rs:42:- Keep release commits from leaving stale changelog fragments behind.
+scripts/version-and-commit-tests.rs:46:    fs::write(changelog_dir.join("README.md"), "Fragment instructions\n").unwrap();
+scripts/version-and-commit-tests.rs:48:    let changelog = repo.join("CHANGELOG.md");
+scripts/version-and-commit-tests.rs:50:        &changelog,
+scripts/version-and-commit-tests.rs:61:    collect_changelog_with_date(
+scripts/version-and-commit-tests.rs:62:        changelog_dir.to_str().unwrap(),
+scripts/version-and-commit-tests.rs:63:        changelog.to_str().unwrap(),
+scripts/version-and-commit-tests.rs:68:    let after_first_release = fs::read_to_string(&changelog).unwrap();
+scripts/version-and-commit-tests.rs:75:    assert!(changelog_dir.join("README.md").exists());
+scripts/version-and-commit-tests.rs:77:    collect_changelog_with_date(
+scripts/version-and-commit-tests.rs:78:        changelog_dir.to_str().unwrap(),
+scripts/version-and-commit-tests.rs:79:        changelog.to_str().unwrap(),
+scripts/version-and-commit-tests.rs:83:    assert_eq!(fs::read_to_string(&changelog).unwrap(), after_first_release);
+scripts/version-and-commit-tests.rs:87:/// `experiments/issue_711_rebuild_changelog.mjs --check` reconstructs from
+scripts/version-and-commit-tests.rs:99:fn release_writes_the_changelog_exactly_as_reconstruction_expects() {
+scripts/version-and-commit-tests.rs:100:    let repo = temp_dir("changelog-canonical-shape");
+scripts/version-and-commit-tests.rs:101:    let changelog_dir = repo.join("changelog.d");
+scripts/version-and-commit-tests.rs:102:    fs::create_dir_all(&changelog_dir).unwrap();
+scripts/version-and-commit-tests.rs:104:        changelog_dir.join("fragment.md"),
+scripts/version-and-commit-tests.rs:111:    let changelog = repo.join("CHANGELOG.md");
+scripts/version-and-commit-tests.rs:115:<!-- changelog-insert-here -->
+scripts/version-and-commit-tests.rs:122:    fs::write(&changelog, before).unwrap();
+scripts/version-and-commit-tests.rs:124:    collect_changelog_with_date(
+scripts/version-and-commit-tests.rs:125:        changelog_dir.to_str().unwrap(),
+scripts/version-and-commit-tests.rs:126:        changelog.to_str().unwrap(),
+scripts/version-and-commit-tests.rs:134:<!-- changelog-insert-here -->
+scripts/version-and-commit-tests.rs:146:    assert_eq!(fs::read_to_string(&changelog).unwrap(), expected);
+scripts/invoke-create-github-release.sh:7:# by `timeout-minutes` during the uncached Docker build that precedes it. One
+scripts/check-associative-terminology.rs:64:    "/changelog.d/",
+scripts/check-disk-usage-policy.rs:35:    if workflows.contains("cargo clippy --all-targets")
+scripts/close-total.py:51:(and re-run) only when ``check-file-size`` starts warning on a shard.
+scripts/create-changelog-fragment.rs:2://! Create a changelog fragment for manual release PR
+scripts/create-changelog-fragment.rs:4://! This script creates a changelog fragment with the appropriate
+scripts/create-changelog-fragment.rs:7://! Usage: rust-script scripts/create-changelog-fragment.rs --bump-type <type> [--description <desc>]
+scripts/create-changelog-fragment.rs:54:fn get_changelog_dir(rust_root: &str) -> String {
+scripts/create-changelog-fragment.rs:56:        "changelog.d".to_string()
+scripts/create-changelog-fragment.rs:58:        format!("{}/changelog.d", rust_root)
+scripts/create-changelog-fragment.rs:86:    let changelog_dir = get_changelog_dir(&rust_root);
+scripts/create-changelog-fragment.rs:88:    let fragment_file = format!("{}/{}-manual-{}.md", changelog_dir, timestamp, bump_type);
+scripts/create-changelog-fragment.rs:90:    // Determine changelog category based on bump type
+scripts/create-changelog-fragment.rs:93:    // Create changelog fragment with frontmatter
+scripts/create-changelog-fragment.rs:100:    // Ensure changelog directory exists
+scripts/create-changelog-fragment.rs:101:    let dir_path = Path::new(&changelog_dir);
+scripts/create-changelog-fragment.rs:104:            eprintln!("Error creating directory {}: {}", changelog_dir, e);
+scripts/create-changelog-fragment.rs:115:    println!("Created changelog fragment: {}", fragment_file);
+scripts/check-release-needed.rs:2://! Check if a release is needed based on changelog fragments and version state
+scripts/check-release-needed.rs:5://! 1. If there are changelog fragments to process
+scripts/check-release-needed.rs:22://!   - HAS_FRAGMENTS: 'true' if changelog fragments exist (from get-bump-type.rs)
+scripts/check-release-needed.rs:378:                "No changelog fragments and v{} is fully published",
+scripts/check-release-needed.rs:384:                "No changelog fragments but v{} is missing at least one release artifact",
+scripts/check-release-needed.rs:391:        println!("Found changelog fragments, proceeding with release");
+scripts/collect-changelog.rs:2://! Collect changelog fragments into CHANGELOG.md
+scripts/collect-changelog.rs:4://! This script collects all .md files from changelog.d/ (except README.md)
+scripts/collect-changelog.rs:8://! - Single-language: Cargo.toml and changelog.d/ in repository root
+scripts/collect-changelog.rs:9://! - Multi-language: Cargo.toml and changelog.d/ in rust/ subfolder
+scripts/collect-changelog.rs:11://! Usage: rust-script scripts/collect-changelog.rs [--rust-root <path>]
+scripts/collect-changelog.rs:26:const INSERT_MARKER: &str = "<!-- changelog-insert-here -->";
+scripts/collect-changelog.rs:68:fn get_changelog_dir(rust_root: &str) -> String {
+scripts/collect-changelog.rs:70:        "./changelog.d".to_string()
+scripts/collect-changelog.rs:72:        format!("{}/changelog.d", rust_root)
+scripts/collect-changelog.rs:76:fn get_changelog_path(rust_root: &str) -> String {
+scripts/collect-changelog.rs:106:fn collect_fragments(changelog_dir: &str) -> String {
+scripts/collect-changelog.rs:107:    let dir_path = Path::new(changelog_dir);
+scripts/collect-changelog.rs:139:fn update_changelog(changelog_file: &str, version: &str, fragments: &str) {
+scripts/collect-changelog.rs:143:    // `experiments/issue_711_rebuild_changelog.mjs --check` reconstructs: the
+scripts/collect-changelog.rs:149:    if Path::new(changelog_file).exists() {
+scripts/collect-changelog.rs:150:        let mut content = fs::read_to_string(changelog_file).unwrap_or_default();
+scripts/collect-changelog.rs:181:        fs::write(changelog_file, content).expect("Failed to write changelog");
+scripts/collect-changelog.rs:186:            The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),\n\
+scripts/collect-changelog.rs:191:        fs::write(changelog_file, content).expect("Failed to write changelog");
+scripts/collect-changelog.rs:197:fn remove_fragments(changelog_dir: &str) {
+scripts/collect-changelog.rs:198:    let dir_path = Path::new(changelog_dir);
+scripts/collect-changelog.rs:220:    let changelog_dir = get_changelog_dir(&rust_root);
+scripts/collect-changelog.rs:221:    let changelog_file = get_changelog_path(&rust_root);
+scripts/collect-changelog.rs:231:    println!("Collecting changelog fragments for version {}", version);
+scripts/collect-changelog.rs:233:    let fragments = collect_fragments(&changelog_dir);
+scripts/collect-changelog.rs:236:        println!("No changelog fragments found");
+scripts/collect-changelog.rs:240:    update_changelog(&changelog_file, &version, &fragments);
+scripts/collect-changelog.rs:241:    remove_fragments(&changelog_dir);
+scripts/publish-crate.rs:148:        println!("To fix this, ensure one of the following secrets is configured:");
+scripts/publish-crate.rs:152:        println!("For organization secrets, you may need to map the secret name in your workflow:");
+scripts/publish-crate.rs:154:        println!("    CARGO_REGISTRY_TOKEN: ${{{{ secrets.CARGO_TOKEN }}}}");
+scripts/publish-crate.rs:246:                eprintln!("SOLUTION: Configure one of these secrets in your repository or organization:");
+scripts/publish-crate.rs:250:                eprintln!("If using organization secrets with a different name, map it in your workflow:");
+scripts/publish-crate.rs:253:                eprintln!("      CARGO_REGISTRY_TOKEN: ${{{{ secrets.YOUR_SECRET_NAME }}}}");
+scripts/rust-paths.rs:116:/// Get the path to changelog.d directory
+scripts/rust-paths.rs:117:pub fn get_changelog_dir(rust_root: &str) -> PathBuf {
+scripts/rust-paths.rs:119:        PathBuf::from("./changelog.d")
+scripts/rust-paths.rs:121:        PathBuf::from(rust_root).join("changelog.d")
+scripts/rust-paths.rs:126:pub fn get_changelog_path(rust_root: &str) -> PathBuf {
+scripts/rust-paths.rs:266:            println!("Changelog dir: {}", get_changelog_dir(&root).display());
+scripts/run-desktop-lib-tests.sh:15:# ceiling scripts/check-file-size.rs enforces, and so the empty-glob guard can
+scripts/check-changelog-fragment.rs:2://! Check if a changelog fragment was added in the current PR
+scripts/check-changelog-fragment.rs:4://! This script validates that a changelog fragment is added in the PR diff,
+scripts/check-changelog-fragment.rs:9://! Usage: rust-script scripts/check-changelog-fragment.rs
+scripts/check-changelog-fragment.rs:16://!   - 1: Check failed (source changes without changelog fragment)
+scripts/check-changelog-fragment.rs:93:fn is_changelog_fragment(file_path: &str, rust_root: &str) -> bool {
+scripts/check-changelog-fragment.rs:94:    let changelog_dir = if rust_root == "." { "changelog.d/".to_string() } else { format!("{}/changelog.d/", rust_root) };
+scripts/check-changelog-fragment.rs:96:    (file_path.starts_with(&changelog_dir) || file_path.starts_with("changelog.d/"))
+scripts/check-changelog-fragment.rs:102:    println!("Checking for changelog fragment in PR diff...\n");
+scripts/check-changelog-fragment.rs:134:    // Count changelog fragments added in this PR
+scripts/check-changelog-fragment.rs:137:        .filter(|f| is_changelog_fragment(f, &rust_root))
+scripts/check-changelog-fragment.rs:151:        eprintln!("::error::No changelog fragment found in this PR. Please add a changelog entry in changelog.d/");
+scripts/check-changelog-fragment.rs:153:        eprintln!("To create a changelog fragment:");
+scripts/check-changelog-fragment.rs:154:        eprintln!("  Create a new .md file in changelog.d/ with your changes");
+scripts/check-changelog-fragment.rs:156:        eprintln!("See changelog.d/README.md for more information.");
+scripts/simulate-fresh-merge.sh:2:# simulate-fresh-merge.sh
+scripts/simulate-fresh-merge.sh:8:#   BASE_REF=main bash scripts/simulate-fresh-merge.sh
+scripts/detect-code-changes.rs:15://! Excluded from code changes (don't require changelog fragments):
+scripts/detect-code-changes.rs:17://! - changelog.d/ folder (changelog fragments)
+scripts/detect-code-changes.rs:27://! Usage: rust-script scripts/detect-code-changes.rs
+scripts/detect-code-changes.rs:170:    let excluded_folders = ["changelog.d/", "docs/", "examples/"];
+scripts/build-rust-api-docs.sh:10:# ceiling scripts/check-file-size.rs enforces.
+scripts/check-pipeline-status.sh:8:# `timeout-minutes` as **cancelled**, not **failed**, and a workflow run whose
+scripts/check-pipeline-status.sh:23:# `cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}` -- so on `main` a
+scripts/check-pipeline-status.sh:58:    echo "::error::Pipeline has cancelled jobs on main: ${cancelled}. A job killed by 'timeout-minutes' is reported as cancelled, which would otherwise hide the failure. Check each job's annotations for 'has exceeded the maximum execution time'."
+scripts/lint-shell-scripts.sh:9:# matching, `shellcheck` with no arguments would read stdin and exit 0 -- a
+scripts/lint-shell-scripts.sh:14:# ceiling scripts/check-file-size.rs enforces.
+scripts/lint-shell-scripts.sh:28:shellcheck --severity=warning "${scripts[@]}"
+scripts/check-version-modification.rs:6://! using changelog fragments in changelog.d/.
+scripts/check-version-modification.rs:11://! - Skips check for automated release branches (changelog-manual-release-*)
+scripts/check-version-modification.rs:56:        "changelog-manual-release-",
+scripts/check-version-modification.rs:153:        eprintln!("To trigger a release, add a changelog fragment to changelog.d/");
+scripts/check-version-modification.rs:155:        eprintln!("See changelog.d/README.md for more information.\n");
+scripts/get-bump-type.rs:2://! Parse changelog fragments and determine version bump type
+scripts/get-bump-type.rs:4://! This script reads changeset fragments from changelog.d/ and determines
+scripts/get-bump-type.rs:8://! - Single-language: changelog.d/ in repository root
+scripts/get-bump-type.rs:9://! - Multi-language: changelog.d/ in rust/ subfolder
+scripts/get-bump-type.rs:65:fn get_changelog_dir(rust_root: &str) -> String {
+scripts/get-bump-type.rs:67:        "./changelog.d".to_string()
+scripts/get-bump-type.rs:69:        format!("{}/changelog.d", rust_root)
+scripts/get-bump-type.rs:109:fn determine_bump_type(changelog_dir: &str, default_bump: &str) -> (String, usize) {
+scripts/get-bump-type.rs:110:    let dir_path = Path::new(changelog_dir);
+scripts/get-bump-type.rs:112:        println!("No {} directory found", changelog_dir);
+scripts/get-bump-type.rs:126:            println!("No changelog fragments found");
+scripts/get-bump-type.rs:132:        println!("No changelog fragments found");
+scripts/get-bump-type.rs:165:    let changelog_dir = get_changelog_dir(&rust_root);
+scripts/get-bump-type.rs:167:    let (bump_type, fragment_count) = determine_bump_type(&changelog_dir, &default_bump);
+scripts/configure-dockerhub-publishing.sh:13:# and keeps release.yml under the 2000-line ceiling scripts/check-file-size.rs
+scripts/configure-dockerhub-publishing.sh:46:  echo "Set DOCKERHUB_USERNAME as a repository variable or secret, and DOCKERHUB_TOKEN as a secret."

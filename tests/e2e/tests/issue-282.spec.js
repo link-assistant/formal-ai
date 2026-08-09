@@ -45,6 +45,20 @@ async function sendPrompt(page, text) {
   return body;
 }
 
+async function disableExternalResearch(page) {
+  // Unknown-opener parity is a local Rust/WASM contract.  A real provider
+  // response would test live search instead, and made the Chinese case depend
+  // on the network in default-branch run 31186108359.
+  await page.route('**/*', async (route) => {
+    const url = new URL(route.request().url());
+    if (url.origin === new URL(page.url()).origin) {
+      await route.continue();
+      return;
+    }
+    await route.abort('blockedbyclient');
+  });
+}
+
 test.describe('Issue #282 Rust/WASM worker parity', () => {
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
@@ -64,6 +78,7 @@ test.describe('Issue #282 Rust/WASM worker parity', () => {
   for (const { language, name, prompt, expected, forbidden } of wasmParityCases) {
     test(`${name} unknown prompts use the native Rust stable-id opener`, async ({ page }) => {
       await expect(page.locator('.status')).toContainText('wasm worker');
+      await disableExternalResearch(page);
 
       const reply = await sendPrompt(page, prompt);
       await expect(reply, `${language} opener should match native Rust`).toContainText(expected);
