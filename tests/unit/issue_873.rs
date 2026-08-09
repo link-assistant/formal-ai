@@ -2,6 +2,7 @@
 //! `unknown` answer, whenever external research is permitted.
 
 use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
+use formal_ai::language::registered_languages;
 use formal_ai::orchestration::AgentRunConfig;
 use formal_ai::protocol::{ChatMessage, ToolCall};
 use formal_ai::research_learning::{
@@ -24,15 +25,36 @@ fn cycle(autonomy: AutonomyMode) -> ResearchLearningCycle {
 }
 
 #[test]
-fn online_solver_researches_an_unknown_instruction() {
-    let response = UniversalSolver::new(SolverConfig::default())
-        .solve("Calibrate the snorflax against silent teal weather");
+fn online_solver_researches_unknown_in_every_registered_language() {
+    let cases = [
+        ("en", "Calibrate the snorflax against silent teal weather"),
+        ("ru", "Откалибруй снорфлакс для тихой бирюзовой погоды"),
+        ("hi", "शांत नीले मौसम के लिए स्नोरफ्लैक्स को कैलिब्रेट करो"),
+        ("zh", "请 校准 斯诺弗拉克斯 适应 安静 青色 天气"),
+        (
+            "es",
+            "Calibra el snorflax para el clima turquesa silencioso",
+        ),
+    ];
+    assert_eq!(cases.len(), registered_languages().len());
 
-    assert_eq!(response.intent, "web_search", "{}", response.answer);
-    assert!(response
-        .evidence_links
-        .iter()
-        .any(|link| link == "web_search:query_kind:unknown_reasoning_fallback"));
+    for (language, prompt) in cases {
+        let response = UniversalSolver::new(SolverConfig::default()).solve(prompt);
+
+        assert_eq!(
+            response.intent, "web_search",
+            "[{language}] {}",
+            response.answer
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "web_search:query_kind:unknown_reasoning_fallback"),
+            "[{language}] {:?}",
+            response.evidence_links,
+        );
+    }
 }
 
 #[test]
