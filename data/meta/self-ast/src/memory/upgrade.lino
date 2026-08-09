@@ -2,10 +2,10 @@ self_ast_census
   target src/memory/upgrade.rs
   language rust
   fidelity signature
-  byte_len 26007
-  line_count 779
-  content_id source_module_f03bc0f5d90ca238
-  symbol_count 39
+  byte_len 28943
+  line_count 857
+  content_id source_module_910ceb4dec78d09b
+  symbol_count 41
   symbols
     const MINIMUM_READABLE_MEMORY_SCHEMA_VERSION 20 20
     const MAXIMUM_READABLE_MEMORY_SCHEMA_VERSION 21 21
@@ -29,20 +29,22 @@ self_ast_census
     function preflight_memory_upgrade 185 196
     function inspect_memory_text 198 200
     function schema_version_for_loaded_document 202 209
-    function inspect_memory_bytes 211 338
-    function migrate_memory 341 347
-    function migrate_memory_with_pre_commit 354 538
-    function noop_receipt 540 558
-    function migrate_v1_to_v2 560 601
-    function memory_lock_path 603 609
-    function open_lock_file 611 634
-    function default_backup_path 636 642
-    function default_receipt_path 644 650
-    function validate_auxiliary_paths 652 670
-    function write_verified_backup 672 712
-    function write_atomic_with_permissions 714 726
-    function write_new_file 728 748
-    function temporary_path 750 761
-    function sync_parent 764 770
-    function sync_parent 773 775
-    function sha256 777 779
+    function inspect_memory_bytes 211 341
+    function validate_persisted_memory_text 352 395
+    function parse_persisted_quoted 398 416
+    function migrate_memory 419 425
+    function migrate_memory_with_pre_commit 432 616
+    function noop_receipt 618 636
+    function migrate_v1_to_v2 638 679
+    function memory_lock_path 681 687
+    function open_lock_file 689 712
+    function default_backup_path 714 720
+    function default_receipt_path 722 728
+    function validate_auxiliary_paths 730 748
+    function write_verified_backup 750 790
+    function write_atomic_with_permissions 792 804
+    function write_new_file 806 826
+    function temporary_path 828 839
+    function sync_parent 842 848
+    function sync_parent 851 853
+    function sha256 855 857
