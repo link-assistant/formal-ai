@@ -7,6 +7,93 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.334.0] - 2026-08-09
+
+### Fixed
+- Intent routing now reads the user's request rather than the caller's framing: the
+  blocks a client wraps its own context in (`<session_context>`, `<system-reminder>`,
+  `<environment_context>`, `<env>`, `<environment_details>`) are stripped before the
+  turn is interpreted, so the gemini CLI's "Today's date is …" preamble no longer
+  turns every agent-mode run into `run_shell_command({"command":"date"})` (issue #907).
+- A declarative statement no longer fires a shell intent: a cue only routes when the
+  sentence carrying it asks or commands, not when it states a fact about it
+  ("Today's date is Sunday" vs "what is today's date?"), across the English, Russian,
+  Hindi, Chinese and Spanish copulas declared in `data/seed/caller-context.lino`
+  (issue #907).
+- A turn that carries a task gets the task: a built-in intent riding alongside an
+  authoring request steps aside instead of answering the smaller question and
+  dropping the work (issue #907).
+
+### Changed
+- "Is this sentence asking, or telling?" now has a single home. The copulas, question
+  words and request verbs that were duplicated between `data/seed/shell-intents.lino`
+  and the caller-context vocabulary are declared once in
+  `data/seed/caller-context.lino`, and classification runs per sentence rather than per
+  cue occurrence — so a shorter cue riding inside a statement ("the current **time** is
+  20:00") cannot route either (issue #907).
+- The gemini CLI joins the required agentic E2E matrix.
+  `experiments/agent_cli_e2e/run_issue_907.sh` drives the real client against
+  `formal-ai serve --agent-mode` over the native Gemini routes, because the
+  `<session_context>` framing that caused this bug only exists once a real client
+  injects it (issue #907).
+
+### Fixed
+- `--global` no longer reports success when the configuration it just wrote
+  cannot start the client: every file a headless start depends on — gemini's
+  `~/.gemini/settings.json` with `security.auth.selectedType`, qwen's complete
+  `OPENAI_API_KEY`/`OPENAI_BASE_URL`/`OPENAI_MODEL` triple — is now declared as a
+  registry `headless_require` contract and read back from disk, so a silently
+  incomplete install fails the run instead of surfacing later as
+  `Invalid auth method selected.` ([#909](https://github.com/link-assistant/formal-ai/issues/909))
+
+### Added
+- `formal-ai with --global --verify <tool>` starts the configured client once
+  non-interactively and fails when it answers with an auth refusal, instead of
+  leaving the gap to surface later as an unrelated startup error. Clients that
+  are not installed are skipped. ([#909](https://github.com/link-assistant/formal-ai/issues/909))
+
+### Changed
+- `data/seed/closure-generated-*.lino` shards are now content-addressed: each
+  generated meaning is placed by `sha256(slug) % SHARD_COUNT` instead of filling
+  shards in sorted order up to a line cap. Sequential fill made every shard depend
+  on the size of everything sorted before it, so adding one token rewrote up to
+  11 of 11 shards and `data/seed` conflicted in nearly every pull request; a new
+  token now touches exactly one shard.
+  ([#909](https://github.com/link-assistant/formal-ai/issues/909))
+
+### Fixed
+- The `deploy-pages` job no longer fails the pipeline when GitHub's Pages
+  deployment queue is backlogged. `actions/deploy-pages` waited only its
+  600 000 ms default, so a run whose artifact had uploaded successfully still
+  aborted with `Timeout reached, aborting!` while the deployment was still
+  `deployment_queued` — a red `main` pipeline that said nothing about the
+  commit. The wait is now pinned to 1 200 000 ms and the job budget raised to
+  35 minutes so the longer wait is not undone by a `timeout-minutes` kill.
+  ([#909](https://github.com/link-assistant/formal-ai/issues/909))
+
+### Fixed
+- The `test-agent-cli-e2e` job no longer fails on ordinary runner variance. Green
+  runs on `main` measured 16m16s and 17m30s against a 20-minute cap, so run
+  31097339962 tipped over it and was reported as *cancelled* — a red pipeline
+  that looked like a regression but carried no signal about the commit. The
+  budget is now 32 minutes, roughly twice the observed cost.
+  ([#909](https://github.com/link-assistant/formal-ai/issues/909))
+
+### Changed
+- `tests/unit/ci-cd/workflow_release.rs` crossed the 1000-line cap that
+  `scripts/check-file-size.rs` enforces. The self-contained Desktop Release
+  assertions moved to `tests/unit/ci-cd/workflow_release_desktop.rs`, putting
+  both files back under the warning threshold with no change in coverage.
+  ([#909](https://github.com/link-assistant/formal-ai/issues/909))
+
+### Fixed
+- Default-branch CI is green again: the total-closure regression test now
+  passes `cargo fmt --check`, unknown-opener browser tests cannot be intercepted
+  by live search providers, and permission-replay tests wait for the worker
+  response before reading queued-task state. This removes one deterministic
+  failure and one retry-masked false positive from run 31186108359.
+  ([#980](https://github.com/link-assistant/formal-ai/issues/980))
+
 ## [0.333.2] - 2026-08-06
 
 ### Fixed
