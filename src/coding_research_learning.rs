@@ -26,6 +26,10 @@ use crate::workspace_change_learning::{
 
 const SEARCH_PAGE_LIMIT: usize = 3;
 const SOURCE_HEADER: &str = "Formal AI coding procedure";
+const LANGUAGE_PLACEHOLDER: &str = concat!("{", "language", "}");
+const TASK_PLACEHOLDER: &str = concat!("{", "task", "}");
+const BASE_QUERY_PLACEHOLDER: &str = concat!("{", "base_query", "}");
+const ROUND_PLACEHOLDER: &str = concat!("{", "round", "}");
 
 /// Data-authored policy interpreted before every research round.
 pub const CODING_RESEARCH_LEARNING_CONTRACT: &str =
@@ -144,9 +148,15 @@ impl CodingResearchGap {
             detail: reason.to_owned(),
         });
         let next_round = self.failed_rounds() + 1;
-        self.next_query = format!(
-            "{} alternative evidence round {next_round}",
-            base_query(&self.task, &self.language)
+        self.next_query = render_query_template(
+            "retry_query_template",
+            &[
+                (
+                    BASE_QUERY_PLACEHOLDER,
+                    &base_query(&self.task, &self.language),
+                ),
+                (ROUND_PLACEHOLDER, &next_round.to_string()),
+            ],
         );
     }
 
@@ -161,7 +171,30 @@ impl CodingResearchGap {
 }
 
 fn base_query(task: &str, language: &str) -> String {
-    format!("{language} {task} verified coding procedure SPDX license")
+    render_query_template(
+        "base_query_template",
+        &[(LANGUAGE_PLACEHOLDER, language), (TASK_PLACEHOLDER, task)],
+    )
+}
+
+fn render_query_template(name: &str, replacements: &[(&str, &str)]) -> String {
+    let tree = parse_lino(CODING_RESEARCH_LEARNING_CONTRACT);
+    let root = tree
+        .children
+        .iter()
+        .find(|node| node.name == "coding_research_learning_contract")
+        .expect("coding_research_contract_root_missing");
+    let mut rendered = root
+        .children
+        .iter()
+        .find(|child| child.name == name)
+        .map(|child| child.id.clone())
+        .filter(|template| !template.is_empty())
+        .expect("coding_research_query_template_missing");
+    for (placeholder, value) in replacements {
+        rendered = rendered.replace(placeholder, value);
+    }
+    rendered
 }
 
 /// Named review gate retained from the existing procedure-learning contract.
@@ -733,6 +766,24 @@ fn validate_contract() -> Result<(), CodingResearchError> {
         ("human_review", "required"),
     ] {
         if required(root, field)? != expected {
+            return Err(error(format!("coding_research_contract_invalid_{field}")));
+        }
+    }
+    for (field, placeholders) in [
+        (
+            "base_query_template",
+            [LANGUAGE_PLACEHOLDER, TASK_PLACEHOLDER],
+        ),
+        (
+            "retry_query_template",
+            [BASE_QUERY_PLACEHOLDER, ROUND_PLACEHOLDER],
+        ),
+    ] {
+        let template = required(root, field)?;
+        if !placeholders
+            .iter()
+            .all(|placeholder| template.contains(placeholder))
+        {
             return Err(error(format!("coding_research_contract_invalid_{field}")));
         }
     }

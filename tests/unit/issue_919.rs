@@ -68,6 +68,10 @@ fn coding_gap_is_solved_by_a_verified_researched_procedure_and_replays_offline()
     let source = "def main\n  __COUNT_TO_THREE__\nend\n";
     let expected = "def main\n  1.upto(3) { |number| puts number }\nend\n";
     let mut gap = CodingResearchGap::for_program_task("count_to_three", "ruby");
+    assert_eq!(
+        gap.next_query(),
+        "ruby count_to_three verified coding procedure SPDX license"
+    );
     let mut ledger = ResearchedCodingProcedureLedger::new();
 
     let learned = research_coding_skill_gap(
@@ -164,7 +168,10 @@ fn failed_execution_is_not_kept_and_schedules_the_next_research_round() {
     );
     assert_eq!(gap.failed_rounds(), 1);
     assert_ne!(gap.next_query(), first_query);
-    assert!(gap.next_query().contains("alternative evidence round 2"));
+    assert_eq!(
+        gap.next_query(),
+        "ruby count_to_three verified coding procedure SPDX license alternative evidence round 2"
+    );
     assert!(gap.links_notation().contains(&first_query));
     assert!(gap
         .links_notation()
@@ -184,6 +191,8 @@ fn coding_research_policy_is_data_authored_and_pins_the_safety_boundaries() {
         "live_fetch opt_in",
         "offline_replay source_cache",
         "failure_effect schedule_next_query",
+        "base_query_template \"{language} {task} verified coding procedure SPDX license\"",
+        "retry_query_template \"{base_query} alternative evidence round {round}\"",
         "human_review required",
     ] {
         assert!(

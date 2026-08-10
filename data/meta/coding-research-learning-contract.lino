@@ -11,6 +11,8 @@ coding_research_learning_contract
   live_fetch opt_in
   offline_replay source_cache
   failure_effect schedule_next_query
+  base_query_template "{language} {task} verified coding procedure SPDX license"
+  retry_query_template "{base_query} alternative evidence round {round}"
   human_review required
   provenance_field source_url
   provenance_field source_license
