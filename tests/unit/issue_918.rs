@@ -113,9 +113,19 @@ fn meaning_records(source: &str, text: &str) -> Vec<(String, String, BTreeSet<St
                 BTreeSet::new(),
             ));
         } else if indentation == 4 {
-            if let (Some(record), Some(field)) = (current.as_mut(), line.split_whitespace().next())
+            let trimmed = line.trim();
+            if let (Some(record), Some(value_offset)) =
+                (current.as_mut(), trimmed.find(char::is_whitespace))
             {
-                record.2.insert(field.to_owned());
+                let field = &trimmed[..value_offset];
+                let raw_value = trimmed[value_offset..].trim();
+                let value = raw_value
+                    .strip_prefix('"')
+                    .and_then(|value| value.strip_suffix('"'))
+                    .unwrap_or(raw_value);
+                if !value.trim().is_empty() {
+                    record.2.insert(field.to_owned());
+                }
             }
         }
     }

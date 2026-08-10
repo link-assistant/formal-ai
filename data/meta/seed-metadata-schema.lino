@@ -2,6 +2,7 @@ seed_metadata_schema
   issue 918
   record_kind problem_solving_concept
   audit_scope "direct children of every concept record in a data/seed meanings root"
+  completeness "each required field has a non-empty direct value"
   gap_data_prefix "data/meta/seed-metadata-gaps-"
   unit_not_applicable "not applicable"
   complete_source "data/seed/meanings-coding-catalog.lino"

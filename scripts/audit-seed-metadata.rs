@@ -117,8 +117,13 @@ fn parse_meanings(source: &str, text: &str) -> Result<Vec<MeaningRecord>, String
                         index + 1
                     )
                 })?;
-                if let Some(field) = line.split_whitespace().next() {
-                    record.fields.insert(field.to_owned());
+                let trimmed = line.trim();
+                if let Some(value_offset) = trimmed.find(char::is_whitespace) {
+                    let field = &trimmed[..value_offset];
+                    let raw_value = trimmed[value_offset..].trim();
+                    if !unquote(raw_value).trim().is_empty() {
+                        record.fields.insert(field.to_owned());
+                    }
                 }
             }
             _ => {}
@@ -376,6 +381,17 @@ mod tests {
         .expect("meaning records");
         let error = find_gaps(&records, &schema()).expect_err("coding gap must fail");
         assert!(error.contains("precondition,effect,unit,example"));
+    }
+
+    #[test]
+    fn complete_coding_sources_reject_empty_values() {
+        let records = parse_meanings(
+            "data/seed/coding.lino",
+            "meanings\n  coding_loop\n    role \"\"\n    precondition ready\n    effect selected\n    unit \"not applicable\"\n    example loop\n",
+        )
+        .expect("meaning records");
+        let error = find_gaps(&records, &schema()).expect_err("empty metadata must fail");
+        assert!(error.contains("role"));
     }
 
     #[test]

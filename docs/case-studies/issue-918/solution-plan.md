@@ -10,8 +10,8 @@ its source-census gap.
 
 ## R918-3 and R918-4: Metadata Contract And Coding Floor
 
-Represent role, precondition, effect, unit, and example as direct concept
-fields. Record why the shape follows FrameNet and Wikidata. Require every
+Represent role, precondition, effect, unit, and example as non-empty direct
+concept fields. Record why the shape follows FrameNet and Wikidata. Require every
 coding-catalog and coding-task concept to carry every field so the first
 problem-solving path cannot regress.
 
