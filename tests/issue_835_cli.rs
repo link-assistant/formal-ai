@@ -1,11 +1,14 @@
 use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use formal_ai::file_legality::{
     AssessmentStatus, FileLegalityReport, LegalCategory, SafetyDisposition,
 };
+
+static TMPDIR_SEQ: AtomicU64 = AtomicU64::new(0);
 
 #[test]
 fn file_legality_cli_accepts_provider_receipts_and_emits_safe_json() {
@@ -101,12 +104,13 @@ fn whole_file_legality_task_runs_documented_sidecar_end_to_end() {
 }
 
 fn temp_workspace() -> PathBuf {
+    let sequence = TMPDIR_SEQ.fetch_add(1, Ordering::Relaxed);
     let nonce = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .expect("clock after epoch")
         .as_nanos();
     std::env::temp_dir().join(format!(
-        "formal-ai-issue-835-cli-{}-{nonce}",
-        std::process::id()
+        "formal-ai-issue-835-cli-{}-{nonce}-{sequence}",
+        std::process::id(),
     ))
 }
