@@ -172,18 +172,17 @@ fn requirement_matrix_and_case_studies_cover_the_complete_issue() {
 fn formal_ai_and_the_real_agent_cli_authored_two_of_seven_smallest_leaves() {
     const FORMAL_AI_AUTHORED_LEAVES: usize = 2;
     const SMALLEST_REQUIREMENT_LEAVES: usize = 7;
-    const GENERATED_CHANGELOG: &[u8] = include_bytes!(
+    const GENERATED_CHANGELOG: &str = include_str!(
         "../docs/case-studies/issue-961/self-hosting-authorship/changelog-session/20260810_120000_issue_961_macos_ci_parity.md"
     );
-    const CANONICAL_CHANGELOG: &[u8] =
-        include_bytes!("../changelog.d/20260810_120000_issue_961_macos_ci_parity.md");
+    const RELEASE_CHANGELOG: &str = include_str!("../CHANGELOG.md");
     const GENERATED_DECOMPOSITION: &[u8] = include_bytes!(
         "../docs/case-studies/issue-961/self-hosting-authorship/decomposition-session/issue-961-task-decomposition.lino"
     );
     const CANONICAL_DECOMPOSITION: &[u8] =
         include_bytes!("../docs/case-studies/issue-961/issue-961-task-decomposition.lino");
 
-    assert_eq!(GENERATED_CHANGELOG, CANONICAL_CHANGELOG);
+    assert!(RELEASE_CHANGELOG.contains(GENERATED_CHANGELOG));
     assert_eq!(GENERATED_DECOMPOSITION, CANONICAL_DECOMPOSITION);
     assert_eq!(
         FORMAL_AI_AUTHORED_LEAVES * 100 / SMALLEST_REQUIREMENT_LEAVES,
