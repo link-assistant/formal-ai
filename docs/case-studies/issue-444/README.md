@@ -291,10 +291,17 @@ infrastructure rather than deferring it:
    against the live source — the eight ordered steps that reproduce this topic's
    Rust handler, so the source is a reproducible artifact of the meta-algorithm.
 
-### What remains genuinely network-dependent (R4 depth, R7, R9, R10)
-The *shape* of multi-source guide construction is in place (a deterministic
-discovery plan the worker executes live). The deeper runtime behaviours — fully
-reasoned cross-source step synthesis (R4), recursive crawling of search results
-(R7), the ≥7-day accessibility cache (R9), and pre-cached QA fixtures answered
-instantly (R10) — are network- and environment-dependent and continue to harden
-against the `source_cache` infrastructure rather than being unit-pinned here.
+### The deeper runtime behaviours (R4 depth, R7, R9, R10), completed in #991
+This issue delivered the *shape* of multi-source guide construction: a
+deterministic discovery plan the worker executes live. The behaviours the plan
+only described — fully reasoned cross-source step synthesis (R4), recursive
+crawling of search results (R7), the ≥7-day accessibility cache (R9), and
+pre-cached QA fixtures answered instantly (R10) — were left network- and
+environment-dependent here and were completed in
+[#991](https://github.com/link-assistant/formal-ai/issues/991)
+([case study](../issue-991/README.md)). They are no longer network-dependent:
+`src/how_to_guide.rs` and its browser mirror synthesise the guide from the
+services registered in `data/seed/sources-registry.lino`,
+`src/service_accessibility.rs` keeps the seven-day record, and the committed
+captures under `tests/fixtures/issue-991/` let the native, HTTP, and browser
+suites replay every one of them offline.
