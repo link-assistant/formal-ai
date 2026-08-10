@@ -9,8 +9,18 @@ const ENGLISH_TEST_STATUS_PROMPTS: &[&str] = &[
     "testing 123",
     "are you there?",
 ];
-const RUSSIAN_TEST_STATUS_PROMPTS: &[&str] =
-    &["тест", "тест пройден", "я здесь", "ты здесь", "вы здесь"];
+// "Ты тут?" is the exact liveness probe from issue #979's reported dialog: it
+// fell through intent routing and came back as web-search noise.
+const RUSSIAN_TEST_STATUS_PROMPTS: &[&str] = &[
+    "тест",
+    "тест пройден",
+    "я здесь",
+    "я тут",
+    "ты здесь",
+    "Ты тут?",
+    "вы здесь",
+    "вы тут",
+];
 const HINDI_TEST_STATUS_PROMPTS: &[&str] = &[
     "टेस्ट",
     "परीक्षण",
