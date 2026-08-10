@@ -1,6 +1,7 @@
 use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use formal_ai::file_legality::{
@@ -101,12 +102,15 @@ fn whole_file_legality_task_runs_documented_sidecar_end_to_end() {
 }
 
 fn temp_workspace() -> PathBuf {
+    static NEXT_WORKSPACE: AtomicU64 = AtomicU64::new(0);
+
     let nonce = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .expect("clock after epoch")
         .as_nanos();
+    let sequence = NEXT_WORKSPACE.fetch_add(1, Ordering::Relaxed);
     std::env::temp_dir().join(format!(
-        "formal-ai-issue-835-cli-{}-{nonce}",
-        std::process::id()
+        "formal-ai-issue-835-cli-{}-{nonce}-{sequence}",
+        std::process::id(),
     ))
 }
