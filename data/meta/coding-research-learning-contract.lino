@@ -1,0 +1,20 @@
+coding_research_learning_contract
+  schema_version 1
+  gap_source program_skill_gap
+  research_boundary source_research
+  source_format formal_ai_coding_procedure_v1
+  formalization links_notation
+  procedure_origin research
+  candidate_effect inert_until_verified
+  executor verified_workspace_rewrite
+  verification exact_expected_output
+  live_fetch opt_in
+  offline_replay source_cache
+  failure_effect schedule_next_query
+  base_query_template "{language} {task} verified coding procedure SPDX license"
+  retry_query_template "{base_query} alternative evidence round {round}"
+  human_review required
+  provenance_field source_url
+  provenance_field source_license
+  provenance_field fetched_at
+  provenance_field source_sha256
