@@ -1716,7 +1716,7 @@ and opened-issue record live in `docs/case-studies/issue-914/`.
 | R914-3 | Documentation must be in sync with the actual state of the code. | Implemented: four stale eighth-pass rows corrected (#698, #709, #662/#704, #686/#702 shipped after the eighth pass) and every area re-verified against `src/` and the epic sweep. |
 | R914-4 | After the docs are in sync, create all the issues needed to fully implement the vision. | Implemented: epics E69-E77 drafted in `docs/case-studies/issue-914/proposed-issues.md` and opened on GitHub with URLs recorded there. |
 | R914-5 | The system learns the universal problem-solving algorithm, making it possible to truly solve translation between natural and formal languages. | Tracked: E70 owns general natural-formal translation; E75 owns method learning over the recipe interpreter and method registry. |
-| R914-6 | Keep a minimum core of algorithms plus a data seed whose metadata is rich enough to problem-solve the way people do. | Tracked: E71 owns the core-boundary ratchet over the remaining `src/solver_handlers/` files and the seed-metadata audit. |
+| R914-6 | Keep a minimum core of algorithms plus a data seed whose metadata is rich enough to problem-solve the way people do. | Implemented by #918: the accepted four-part boundary, recursive handler ledger, metadata schema, complete coding-path floor, per-record gap data, and shrink-only CI ratchets are documented in `docs/case-studies/issue-918/`. |
 | R914-7 | No neural networks in reasoning; formal reasoning covers all existing test cases and much more. | Standing invariant (NON-GOALS.md) restated as a binding design rule for every epic; coverage growth with external benchmark scoring is E76. |
 | R914-8 | Learn to discover enough knowledge from the internet and other sources to solve all tasks, coding first. | Tracked: E72 owns the research-to-verified-procedure loop over the provenance-tracked source cache, building on #873 and #896. |
 | R914-9 | Coding first: once Formal AI can code, that skill speeds up its own development. | Tracked: E69 ratchets the #848 coding ladder (baseline 2 of 13 rungs, zero write effects) over the #902-#909 harness fixes; E77 routes real repository work through Formal AI per release. |
@@ -1726,6 +1726,21 @@ and opened-issue record live in `docs/case-studies/issue-914/`.
 | R914-13 | Build on the best previous experience; generalize without dropping anything already supported. | Binding design rule ("keep the regression floor") in the epic batch; every epic lists the existing components it generalizes. |
 | R914-14 | Fix critical vision-blocking code problems first, so the plan builds on a solid foundation. | Implemented in the plan: E69 is the foundation blocker consolidating #902-#909 behind the coding-ladder ratchet; every dependent epic declares its E69 dependency. |
 | R914-15 | Collect the data into `docs/case-studies/issue-914` with deep analysis, online research, the full requirement list, and per-requirement solution plans checking existing components. | Implemented: README, requirements, solution plan, proposed issues, raw GitHub data, and the component/license research live in that folder. |
+
+## Issue #918 Minimal-Core Boundary And Seed-Metadata Audit
+
+Issue [#918](https://github.com/link-assistant/formal-ai/issues/918) turns E71's
+architectural goal into audited data and shrink-only gates. See PR #986 and
+`docs/case-studies/issue-918/`.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R918-1 | Define the smallest acceptable compiled core and classify everything else as data or migration debt. | Implemented in `docs/design/minimal-core-boundary.md`: meta algorithm, link store, generic interpreters, and host surfaces are the only four core categories. |
+| R918-2 | Inventory every handler source recursively and record migrate, promote, or delete with a reason. | `data/meta/core-boundary-ledger.lino` covers all 46 files: 43 migration candidates and 3 promoted generic interpreters; `scripts/check-minimal-core-boundary.rs` ratchets the 19,021 outside-core lines. |
+| R918-3 | Define role, precondition, effect, unit, and example metadata using established semantic-data shapes. | `data/meta/seed-metadata-schema.lino` defines the five-field contract and records the FrameNet and Wikidata provenance used to choose it. |
+| R918-4 | Make concepts on the coding path satisfy the complete schema. | All 37 direct concepts in `meanings-coding-catalog.lino` and `meanings-coding-tasks.lino` carry all five fields; the auditor rejects any new gap. |
+| R918-5 | Represent all other metadata gaps as reviewable data, not an informal document. | Sixteen deterministic `seed-metadata-gaps-*.lino` shards record the exact missing fields for the other 3,447 concepts, and the auditor rejects stale, omitted, or invented rows. |
+| R918-6 | Preserve the existing regression floor and reproducible self-hosting evidence. | Focused Rust/script tests, default CI gates, raw issue/PR evidence, and one of five reviewed leaves produced by the real Formal AI/Agent CLI loop are preserved in the case study. |
 
 ## Issue #891 Equation Corpus Ratchet
 

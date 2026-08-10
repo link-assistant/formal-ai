@@ -14,6 +14,8 @@
 //! walkdir = "2"
 //! ```
 
+#![cfg_attr(test, allow(dead_code, unused_imports))]
+
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::{Path, PathBuf};
