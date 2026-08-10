@@ -126,6 +126,7 @@ async function waitForApi(port, options = {}) {
 
 async function startApiProcess(port, options = {}) {
   const spawn = options.spawn || childProcess.spawn;
+  const startCommand = options.startCommand;
   const stdout = options.stdout || process.stdout;
   const stderr = options.stderr || process.stderr;
   let lastError = null;
@@ -133,25 +134,40 @@ async function startApiProcess(port, options = {}) {
   for (const candidate of apiCandidates(port, options)) {
     let child = null;
     try {
-      child = spawn(candidate.command, candidate.args, {
-        cwd: candidate.cwd,
-        env: scrubbedEnvironment(port, options.env || process.env),
-        stdio: ["ignore", "pipe", "pipe"],
-      });
-      if (child.stdout && typeof child.stdout.on === "function") {
-        child.stdout.on("data", (chunk) => stdout.write(`[formal-ai] ${chunk}`));
-      }
-      if (child.stderr && typeof child.stderr.on === "function") {
-        child.stderr.on("data", (chunk) => stderr.write(`[formal-ai] ${chunk}`));
-      }
-
-      await Promise.race([
-        waitForApi(port, options),
-        new Promise((_, reject) => {
+      let completion;
+      if (typeof startCommand === "function") {
+        const handle = await startCommand(candidate.command, candidate.args, {
+          cwd: candidate.cwd,
+          env: scrubbedEnvironment(port, options.env || process.env),
+          onStdout: (chunk) => stdout.write(`[formal-ai] ${chunk}`),
+          onStderr: (chunk) => stderr.write(`[formal-ai] ${chunk}`),
+        });
+        child = handle;
+        completion = handle.completion;
+      } else {
+        child = spawn(candidate.command, candidate.args, {
+          cwd: candidate.cwd,
+          env: scrubbedEnvironment(port, options.env || process.env),
+          stdio: ["ignore", "pipe", "pipe"],
+        });
+        if (child.stdout && typeof child.stdout.on === "function") {
+          child.stdout.on("data", (chunk) => stdout.write(`[formal-ai] ${chunk}`));
+        }
+        if (child.stderr && typeof child.stderr.on === "function") {
+          child.stderr.on("data", (chunk) => stderr.write(`[formal-ai] ${chunk}`));
+        }
+        completion = new Promise((_, reject) => {
           child.once("error", reject);
           child.once("exit", (code, signal) => {
             reject(new Error(`${candidate.label} exited before ready: ${code || signal}`));
           });
+        });
+      }
+
+      await Promise.race([
+        waitForApi(port, options),
+        completion.then((result) => {
+          throw new Error(`${candidate.label} exited before ready: ${result.code}`);
         }),
       ]);
       return child;

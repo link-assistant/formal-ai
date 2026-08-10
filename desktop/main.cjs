@@ -20,6 +20,7 @@ const { createDataMigration } = require("./lib/data-migration.cjs");
 const { createAutoUpdateController } = require("./lib/auto-update.cjs");
 const { createVsCodeInstaller } = require("./lib/vscode-install.cjs");
 const { createDreamingScheduler } = require("./lib/dreaming.cjs");
+const { createCommandRunner } = require("./lib/command-runner.cjs");
 const {
   ensureSharedMemoryDirectory,
   resolveSharedMemoryPath,
@@ -42,6 +43,7 @@ const {
 } = require("./lib/local-server.cjs");
 
 const REPO_ROOT = path.resolve(__dirname, "..");
+const commandRunner = createCommandRunner();
 
 function packagedBrowserExecutable() {
   if (!app.isPackaged) return "";
@@ -122,7 +124,7 @@ let lastDataMigration = null;
 const dreamingScheduler = createDreamingScheduler({
   repoRoot: REPO_ROOT,
   env: process.env,
-  spawn: childProcess.spawn,
+  processRunner: commandRunner.run,
   resourcesPath: process.resourcesPath,
   memoryPath: desktopMemoryPath(),
   isIdle: () => powerMonitor.getSystemIdleTime() >= 60,
@@ -279,6 +281,7 @@ const localServerManager = createLocalServerManager({
   agentMode: true,
   stdout: process.stdout,
   stderr: process.stderr,
+  startCommand: commandRunner.start,
 });
 
 function applyLocalServerStatus(status) {
@@ -392,81 +395,38 @@ function dockerIsAvailable() {
   return dockerDetector.dockerIsAvailable();
 }
 
-function runInSandbox({ image, tool, command }) {
-  return new Promise((resolve, reject) => {
-    const logPath = path.join(os.tmpdir(), `formal-ai-${tool}-${process.pid}-${Date.now()}.log`);
-    const dockerBin = dockerDetector.resolveDockerBinary();
-    const child = childProcess.spawn(dockerBin, ["run", "--rm", image, "sh", "-c", command], {
-      stdio: ["ignore", "pipe", "pipe"],
-    });
-    let output = "";
-    child.stdout.on("data", (chunk) => {
-      output += chunk;
-    });
-    child.stderr.on("data", (chunk) => {
-      output += chunk;
-    });
-    child.once("error", reject);
-    child.once("exit", (code) => {
-      try {
-        fs.writeFileSync(logPath, output);
-      } catch (_error) {
-        /* best-effort log capture */
-      }
-      resolve({ exitCode: typeof code === "number" ? code : 0, output, logPath });
-    });
+async function runInSandbox({ image, tool, command }) {
+  const logPath = path.join(os.tmpdir(), `formal-ai-${tool}-${process.pid}-${Date.now()}.log`);
+  const result = await commandRunner.runTool({
+    isolation: "docker",
+    dockerBinary: dockerDetector.resolveDockerBinary(),
+    image,
+    command,
   });
+  const output = `${result.stdout}${result.stderr}`;
+  try {
+    fs.writeFileSync(logPath, output);
+  } catch (_error) {
+    /* best-effort log capture */
+  }
+  return { exitCode: result.code, output, stdout: result.stdout, stderr: result.stderr, logPath };
 }
 
-function runOnHost({ tool, command }) {
-  return new Promise((resolve) => {
-    const logPath = path.join(os.tmpdir(), `formal-ai-${tool}-host-${process.pid}-${Date.now()}.log`);
-    let child = null;
-    try {
-      child = childProcess.spawn(command, {
-        cwd: os.homedir() || REPO_ROOT,
-        env: process.env,
-        shell: true,
-        stdio: ["ignore", "pipe", "pipe"],
-      });
-    } catch (error) {
-      resolve({
-        exitCode: 1,
-        output: "",
-        stdout: "",
-        stderr: error && error.message ? error.message : String(error),
-        logPath,
-      });
-      return;
-    }
-    let stdout = "";
-    let stderr = "";
-    child.stdout.on("data", (chunk) => {
-      stdout += chunk;
-    });
-    child.stderr.on("data", (chunk) => {
-      stderr += chunk;
-    });
-    child.once("error", (error) => {
-      stderr += error && error.message ? error.message : String(error);
-      resolve({ exitCode: 1, output: `${stdout}${stderr}`, stdout, stderr, logPath });
-    });
-    child.once("exit", (code) => {
-      const output = `${stdout}${stderr}`;
-      try {
-        fs.writeFileSync(logPath, output);
-      } catch (_error) {
-        /* best-effort log capture */
-      }
-      resolve({
-        exitCode: typeof code === "number" ? code : 1,
-        output,
-        stdout,
-        stderr,
-        logPath,
-      });
-    });
+async function runOnHost({ tool, command }) {
+  const logPath = path.join(os.tmpdir(), `formal-ai-${tool}-host-${process.pid}-${Date.now()}.log`);
+  const result = await commandRunner.runTool({
+    isolation: "host",
+    command,
+    cwd: os.homedir() || REPO_ROOT,
+    env: process.env,
   });
+  const output = `${result.stdout}${result.stderr}`;
+  try {
+    fs.writeFileSync(logPath, output);
+  } catch (_error) {
+    /* best-effort log capture */
+  }
+  return { exitCode: result.code, output, stdout: result.stdout, stderr: result.stderr, logPath };
 }
 
 // Issue #438 (follow-up): one-click start/stop of the prepared Telegram bot and
@@ -475,31 +435,7 @@ function runOnHost({ tool, command }) {
 // lifecycle logic (argument vectors, running-state probes, stale-container
 // reaping) so the same contract is exercised by node:test without a daemon.
 function runDocker(args) {
-  return new Promise((resolve) => {
-    let child = null;
-    try {
-      child = childProcess.spawn(dockerDetector.resolveDockerBinary(), args, {
-        stdio: ["ignore", "pipe", "pipe"],
-      });
-    } catch (error) {
-      resolve({ code: 1, stdout: "", stderr: error && error.message ? error.message : String(error) });
-      return;
-    }
-    let stdout = "";
-    let stderr = "";
-    child.stdout.on("data", (chunk) => {
-      stdout += chunk;
-    });
-    child.stderr.on("data", (chunk) => {
-      stderr += chunk;
-    });
-    child.once("error", (error) => {
-      resolve({ code: 1, stdout, stderr: error && error.message ? error.message : String(error) });
-    });
-    child.once("exit", (code) => {
-      resolve({ code: typeof code === "number" ? code : 1, stdout, stderr });
-    });
-  });
+  return commandRunner.run(dockerDetector.resolveDockerBinary(), args, { env: process.env });
 }
 
 const serviceControl = createServiceControl({
@@ -603,6 +539,7 @@ const inProcessAgentProvider = createAgentProvider({
   type: "in-process",
   toolRouter,
   workingDirectory: REPO_ROOT,
+  processRunner: commandRunner.run,
 });
 const commanderAgentProvider = createAgentProvider({
   type: "commander",
@@ -699,33 +636,35 @@ ipcMain.handle("formalAiDesktop:syncMemory", async (_event, payload) => {
 // --install-extension` — the same artifact the manual `install.sh vscode` flow
 // uses. Each side-effecting dependency is injected so the lib stays testable.
 function runVsCodeCli(command, args) {
-  return new Promise((resolve) => {
-    let child = null;
-    try {
-      child = childProcess.spawn(command, args, {
-        stdio: ["ignore", "pipe", "pipe"],
-        // VS Code installs `code` as `code.cmd` on Windows; a `.cmd` shim is only
-        // resolvable through the shell.
-        shell: process.platform === "win32",
+  if (process.platform === "win32") {
+    // command-stream#191: its shell mode accepts a command string but has no
+    // argv-safe Windows command-shim interface. Keep Node's native argv
+    // handling for code.cmd until that focused upstream limitation is fixed.
+    return new Promise((resolve) => {
+      let stdout = "";
+      let stderr = "";
+      let child;
+      try {
+        child = childProcess.spawn(command, args, {
+          stdio: ["ignore", "pipe", "pipe"],
+          shell: true,
+        });
+      } catch (error) {
+        resolve({ code: 1, stdout, stderr: error && error.message ? error.message : String(error) });
+        return;
+      }
+      child.stdout.on("data", (chunk) => { stdout += chunk; });
+      child.stderr.on("data", (chunk) => { stderr += chunk; });
+      child.once("error", (error) => {
+        resolve({ code: 1, stdout, stderr: error && error.message ? error.message : String(error) });
       });
-    } catch (error) {
-      resolve({ code: 1, stdout: "", stderr: error && error.message ? error.message : String(error) });
-      return;
-    }
-    let stdout = "";
-    let stderr = "";
-    child.stdout.on("data", (chunk) => {
-      stdout += chunk;
+      child.once("exit", (code) => {
+        resolve({ code: typeof code === "number" ? code : 1, stdout, stderr });
+      });
     });
-    child.stderr.on("data", (chunk) => {
-      stderr += chunk;
-    });
-    child.once("error", (error) => {
-      resolve({ code: 1, stdout, stderr: error && error.message ? error.message : String(error) });
-    });
-    child.once("exit", (code) => {
-      resolve({ code: typeof code === "number" ? code : 1, stdout, stderr });
-    });
+  }
+  return commandRunner.run(command, args, {
+    env: process.env,
   });
 }
 
