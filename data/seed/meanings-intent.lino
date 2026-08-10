@@ -1057,6 +1057,16 @@ meanings
     lexeme en
       surface
         text "ambiguous modification clarification intent"
+  localized_response_template
+    defined-by answer
+    role localized_response_template
+    precondition "a handled intent has a response in the selected language"
+    effect "the matching localized response text is available for rendering"
+    unit "not applicable"
+    example "Which program or result should I modify?"
+    lexeme en
+      surface
+        text "localized response template"
   response_set_assistant_name_en
     defined-by answer
     role localized_response_template

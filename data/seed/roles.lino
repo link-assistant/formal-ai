@@ -23,6 +23,8 @@ roles
     kind meaning
   assistant_name_assignment
     kind meaning
+  assistant_name_recall
+    kind meaning
   assistant_self_reference
     kind meaning
   behavior_rule_edit_directive
@@ -305,6 +307,8 @@ roles
     kind meaning
   local_shell_request_cue
     kind predicate
+  localized_response_template
+    kind meaning
   math_function_name
     kind predicate
   measurement_concept
