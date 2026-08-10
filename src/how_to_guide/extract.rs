@@ -58,6 +58,9 @@ pub struct ItemEntry {
     pub link: String,
     /// Rendered HTML body.
     pub body: String,
+    /// Stack Exchange question id, when the entry is a question rather than an
+    /// answer; the procedure usually lives one hop deeper, in its answers.
+    pub question_id: Option<u64>,
 }
 
 /// Decide the payload shape from the exact captured bytes.
@@ -137,6 +140,7 @@ fn classify_value(value: &Value) -> Payload {
                     .and_then(Value::as_str)
                     .unwrap_or_default()
                     .to_owned(),
+                question_id: item.get("question_id").and_then(Value::as_u64),
             })
             .collect();
         return Payload::Items { entries };

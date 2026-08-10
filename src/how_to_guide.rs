@@ -268,12 +268,23 @@ impl HowToGuide {
 ///
 /// Primary procedural sources come first, then higher tiers, then registry
 /// order, so the ordering is total and reproducible. Sources the settings opt
-/// out of, and sources whose role is `none`, never appear.
+/// out of, sources whose role is `none`, and sources whose API template a task
+/// alone cannot bind (GitHub needs an `{owner}`/`{repo}` a question does not
+/// carry) never appear — an unbindable service must not consume one of the
+/// `max_services` slots a bindable one could have used.
 #[must_use]
-pub fn select_sources(preferences: &ServicePreferences, bounds: &GuideBounds) -> Vec<SourceRecord> {
+pub fn select_sources(
+    task: &str,
+    preferences: &ServicePreferences,
+    bounds: &GuideBounds,
+) -> Vec<SourceRecord> {
     let mut selected: Vec<SourceRecord> = external_trusted_sources()
         .into_iter()
-        .filter(|record| record.how_to_role.contributes() && preferences.allows(record))
+        .filter(|record| {
+            record.how_to_role.contributes()
+                && preferences.allows(record)
+                && entry_url(record, task).is_some()
+        })
         .collect();
     selected.sort_by_key(|record| {
         (
@@ -307,11 +318,11 @@ pub fn synthesize_how_to_guide<T: SourceTransport>(
         copies: Vec::new(),
         bounds: *bounds,
     };
-    for record in skipped_sources(preferences) {
+    for record in skipped_sources(&guide.task, preferences) {
         guide.outcomes.push(record);
     }
     let mut collected: Vec<GuideStep> = Vec::new();
-    for record in select_sources(preferences, bounds) {
+    for record in select_sources(&guide.task, preferences, bounds) {
         if availability.known_unreachable(&record.id, now) {
             guide.outcomes.push(GuideSourceOutcome::new(
                 &record.id,
@@ -322,12 +333,9 @@ pub fn synthesize_how_to_guide<T: SourceTransport>(
             ));
             continue;
         }
+        // `select_sources` already dropped every template this task cannot
+        // bind, and reported it; the fallback keeps the walk total.
         let Some(entry_url) = entry_url(&record, &guide.task) else {
-            guide.outcomes.push(GuideSourceOutcome::new(
-                &record.id,
-                "unbound_template",
-                record.api.clone(),
-            ));
             continue;
         };
         let mut outcome = GuideSourceOutcome::new(&record.id, "no_steps", entry_url.clone());
@@ -358,11 +366,30 @@ pub fn synthesize_how_to_guide<T: SourceTransport>(
 
 /// Services the settings opted out of, reported so the trace shows the user's
 /// choice rather than an unexplained absence.
-fn skipped_sources(preferences: &ServicePreferences) -> Vec<GuideSourceOutcome> {
+fn skipped_sources(task: &str, preferences: &ServicePreferences) -> Vec<GuideSourceOutcome> {
     external_trusted_sources()
         .into_iter()
-        .filter(|record| record.how_to_role.contributes() && !preferences.allows(record))
-        .map(|record| GuideSourceOutcome::new(&record.id, "disabled", record.settings_key.clone()))
+        .filter(|record| record.how_to_role.contributes())
+        .filter_map(|record| {
+            if !preferences.allows(&record) {
+                Some(GuideSourceOutcome::new(
+                    &record.id,
+                    "disabled",
+                    record.settings_key.clone(),
+                ))
+            } else if entry_url(&record, task).is_none() {
+                // Still reported rather than silently dropped: a reader has to be
+                // able to see that the service exists, is enabled, and was not
+                // consulted only because this question cannot address it.
+                Some(GuideSourceOutcome::new(
+                    &record.id,
+                    "unbound_template",
+                    record.api.clone(),
+                ))
+            } else {
+                None
+            }
+        })
         .collect()
 }
 
@@ -411,6 +438,20 @@ fn search_url(record: &SourceRecord, task: &str) -> String {
     )
 }
 
+/// The Stack Exchange answers of one question, best-voted first.
+fn answers_url(record: &SourceRecord, question_id: u64) -> String {
+    let base = record.api.split("/search").next().unwrap_or(&record.api);
+    let site = record
+        .api
+        .split_once("site=")
+        .map_or("stackoverflow", |(_, rest)| {
+            rest.split('&').next().unwrap_or("stackoverflow")
+        });
+    format!(
+        "{base}/questions/{question_id}/answers?order=desc&sort=votes&site={site}&filter=withbody"
+    )
+}
+
 /// A `MediaWiki` `action=parse` URL on the same wiki as `record`'s endpoint.
 fn parse_url(record: &SourceRecord, title: &str) -> String {
     let base = record.api.split('?').next().unwrap_or(&record.api);
@@ -418,6 +459,48 @@ fn parse_url(record: &SourceRecord, title: &str) -> String {
         "{base}?action=parse&page={}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*",
         percent_encode(title)
     )
+}
+
+/// Words that carry no topic, so requiring a candidate to repeat them would
+/// reject correct pages ("Reverse a string in Python" must match "reverse a
+/// string in python" without depending on the article).
+const TOPIC_STOPWORDS: &[&str] = &[
+    "the", "and", "for", "with", "your", "you", "how", "does", "did", "are", "was", "were", "its",
+    "into", "onto", "from", "that", "this",
+];
+
+/// Whether `candidate` is about `task`.
+///
+/// A search endpoint answers with its *best* matches, not with matching pages:
+/// Wikibooks offers "Programming Fundamentals/Academic or Scholastic Dishonesty"
+/// for "make pancakes" and Stack Overflow offers an ORM question that merely
+/// says "pancakes". Following those produces confidently-sourced nonsense, so a
+/// candidate contributes only when it repeats *every* topic word of the task.
+fn matches_task(task: &str, candidate: &str) -> bool {
+    let wanted = topic_words(task);
+    if wanted.is_empty() {
+        return true;
+    }
+    let offered = topic_words(candidate);
+    wanted.iter().all(|word| offered.contains(word))
+}
+
+/// The topic words of a phrase: lowercased, de-punctuated, de-pluralised, with
+/// stopwords and one/two-letter fragments dropped.
+fn topic_words(value: &str) -> Vec<String> {
+    value
+        .split(|character: char| !character.is_alphanumeric())
+        .map(str::to_lowercase)
+        .filter(|word| word.len() > 2 && !TOPIC_STOPWORDS.contains(&word.as_str()))
+        .map(|word| singular(&word))
+        .collect()
+}
+
+fn singular(word: &str) -> String {
+    match word.strip_suffix('s') {
+        Some(stem) if stem.len() > 2 && !word.ends_with("ss") => stem.to_owned(),
+        _ => word.to_owned(),
+    }
 }
 
 /// Everything a service walk needs besides the service itself.
@@ -453,7 +536,20 @@ fn capture_service<T: SourceTransport>(
         let capture = match client.fetch(&url) {
             Ok(capture) => capture,
             Err(error) => {
-                observe_failure(record, &url, &error, availability, now, outcome);
+                // Only the service's *declared* entry endpoint speaks for the
+                // service. wikiHow answers `action=parse` and 500s on
+                // `list=search`; letting the fallback's failure mark the whole
+                // service unreachable would blank its working endpoint for the
+                // seven-day accessibility TTL.
+                observe_failure(
+                    record,
+                    &url,
+                    &error,
+                    availability,
+                    now,
+                    outcome,
+                    url == entry_url,
+                );
                 break;
             }
         };
@@ -473,23 +569,57 @@ fn capture_service<T: SourceTransport>(
                 let found = extract_steps(&html, bounds.max_steps);
                 if found.is_empty() && depth < bounds.max_depth {
                     for title in wiki_link_titles(&html, bounds.max_pages_per_service) {
-                        queue.push_back((parse_url(record, &title), depth + 1));
+                        if matches_task(task, &title) {
+                            queue.push_back((parse_url(record, &title), depth + 1));
+                        }
                     }
                 }
                 push_steps(record, &capture, depth, &found, &mut steps);
             }
             Payload::Items { entries } => {
-                for entry in entries {
+                // Depth 0 is the question search, where relevance still has to be
+                // judged; deeper captures are the answers to a question that was
+                // already judged relevant, so every entry counts.
+                let relevant: Vec<&extract::ItemEntry> = if depth == 0 {
+                    entries
+                        .iter()
+                        .filter(|entry| {
+                            matches_task(task, &entry.title) || matches_task(task, &entry.link)
+                        })
+                        .collect()
+                } else {
+                    entries.iter().collect()
+                };
+                if relevant.is_empty() {
+                    outcome.detail = format!("no_relevant_result url={url}");
+                }
+                let before = steps.len();
+                for entry in &relevant {
                     let found = extract_steps(&entry.body, bounds.max_steps);
                     push_steps(record, &capture, depth, &found, &mut steps);
+                }
+                if steps.len() == before && depth < bounds.max_depth {
+                    // A question body states the problem; the procedure is in the
+                    // answers. Following them is the recursion this shape needs.
+                    for question in relevant.iter().filter_map(|entry| entry.question_id) {
+                        queue.push_back((answers_url(record, question), depth + 1));
+                    }
                 }
             }
             Payload::Compressed => {
                 outcome.detail = format!("compressed_payload url={url}");
             }
             Payload::OpenSearch { titles, .. } | Payload::Search { titles } => {
+                let relevant: Vec<&String> = titles
+                    .iter()
+                    .filter(|title| matches_task(task, title))
+                    .take(bounds.max_pages_per_service)
+                    .collect();
+                if relevant.is_empty() {
+                    outcome.detail = format!("no_relevant_result url={url}");
+                }
                 if depth < bounds.max_depth {
-                    for title in titles.iter().take(bounds.max_pages_per_service) {
+                    for title in relevant {
                         queue.push_back((parse_url(record, title), depth + 1));
                     }
                 }
@@ -514,8 +644,11 @@ fn observe_failure(
     availability: &mut ServiceAccessibilityCache,
     now: u64,
     outcome: &mut GuideSourceOutcome,
+    is_entry_endpoint: bool,
 ) {
-    let status = if matches!(error, FetchError::OfflineCacheMiss(_)) {
+    let status = if !is_entry_endpoint {
+        "fallback_failed"
+    } else if matches!(error, FetchError::OfflineCacheMiss(_)) {
         // An offline replay without this capture says nothing about whether the
         // service is up, so it must not poison the accessibility record.
         "offline_cache_miss"
@@ -651,9 +784,13 @@ fn action_key(text: &str) -> String {
 /// Presentation order: primary sources first, then by tier, then by the order
 /// each source itself listed the step.
 fn order_steps(mut steps: Vec<GuideStep>, max_steps: usize) -> Vec<GuideStep> {
+    // Tier first, then depth: a page the service answered directly is more
+    // direct evidence than one reached by following a search result, so equal
+    // tiers rank the shallower capture ahead of the deeper one.
     steps.sort_by_key(|step| {
         (
             u8::MAX - step.tier.weight_percent(),
+            step.depth,
             step.source_id.clone(),
             step.position,
         )

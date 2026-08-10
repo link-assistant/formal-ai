@@ -1,0 +1,4 @@
+source-capture-v2
+url=https://en.wikibooks.org/w/api.php?action=query&list=search&srsearch=make%20pancakes&srlimit=5&format=json&origin=*
+fetched_at=1786392351
+sha256=dcd3126527129d2ee2c7cffa4b26217866a8a1a6e2d6276cce637ac925b31b2c
