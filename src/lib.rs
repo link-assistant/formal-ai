@@ -44,6 +44,7 @@ pub mod gemini;
 pub mod github_logs;
 pub mod google_trends_catalog;
 pub mod google_trends_learning;
+pub mod how_to_guide;
 pub mod implementation_language;
 pub mod intent_formalization;
 pub mod issue_report;

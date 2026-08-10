@@ -8,6 +8,8 @@
 //! exist, which settings key opts each one out, what its API template is, and
 //! under which license its bytes may be quoted.
 
+use std::fmt::Write as _;
+
 use super::embedded::SOURCES_REGISTRY_LINO;
 use super::parser::parse_lino;
 use crate::relative_meta_logic::SourceTier;
@@ -131,7 +133,11 @@ impl SourceRecord {
 pub fn source_registry() -> Vec<SourceRecord> {
     let tree = parse_lino(SOURCES_REGISTRY_LINO);
     let mut records = Vec::new();
-    for root in tree.children.iter().filter(|node| node.name == "sources_registry") {
+    for root in tree
+        .children
+        .iter()
+        .filter(|node| node.name == "sources_registry")
+    {
         for entry in root.children.iter().filter(|node| node.name == "source") {
             records.push(SourceRecord {
                 id: entry.id.clone(),
@@ -188,7 +194,7 @@ pub fn percent_encode(value: &str) -> String {
         if byte.is_ascii_alphanumeric() || matches!(byte, b'-' | b'_' | b'.' | b'~') {
             encoded.push(byte as char);
         } else {
-            encoded.push_str(&format!("%{byte:02X}"));
+            let _ = write!(encoded, "%{byte:02X}");
         }
     }
     encoded
