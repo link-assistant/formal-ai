@@ -167,3 +167,29 @@ fn interaction_sends_input_after_the_readiness_marker() {
     assert_eq!(output.stdout, b"TUI_READY\r\n");
     assert!(output.stderr.is_empty());
 }
+
+#[test]
+fn interaction_keeps_stdin_open_until_the_pty_command_exits() {
+    let mut command = Command::new("sh");
+    command.args([
+        "-c",
+        "printf 'TUI_READY\n'; IFS= read -r input; \
+         (IFS= read -r trailing) & reader=$!; sleep 0.2; \
+         if kill -0 \"$reader\" 2>/dev/null; then \
+           kill \"$reader\"; wait \"$reader\" 2>/dev/null || :; \
+           [ \"$input\" = hi ]; \
+         else \
+           wait \"$reader\" 2>/dev/null || :; \
+           echo 'stdin reached EOF before the PTY command exited' >&2; exit 91; \
+         fi",
+    ]);
+
+    let output = interact_after_ready(command, b"TUI_READY", b"hi\n")
+        .expect("complete interaction without an early EOF");
+
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+}
