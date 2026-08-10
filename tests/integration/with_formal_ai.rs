@@ -479,24 +479,13 @@ fn with_formal_ai_default_interactive_mode_launches_every_tool_in_a_pty() {
         write_fake_tui_cli(&bin_dir, tool);
 
         let wrapper = env!("CARGO_BIN_EXE_formal-ai");
-        let command = format!("{wrapper} with --no-start-server {tool}");
-        let mut child = Command::new("script")
-            .args(["-qfec", &command, "/dev/null"])
+        let mut command = super::pty::command(wrapper, &["with", "--no-start-server", tool]);
+        command
             .env("HOME", &home)
             .env("PATH", path_with_fake_clis(&bin_dir))
-            .env_remove("FORMAL_AI_API_KEY")
-            .stdin(Stdio::piped())
-            .stdout(Stdio::piped())
-            .stderr(Stdio::piped())
-            .spawn()
-            .expect("launch wrapper in PTY");
-        child
-            .stdin
-            .take()
-            .expect("PTY stdin")
-            .write_all(b"hi\n")
-            .expect("send interactive input");
-        let output = child.wait_with_output().expect("wait for PTY wrapper");
+            .env_remove("FORMAL_AI_API_KEY");
+        let output = super::pty::interact_after_ready(command, b"TUI_READY", b"hi\n")
+            .expect("interact with wrapper in PTY");
         let stdout = String::from_utf8_lossy(&output.stdout);
         let stderr = String::from_utf8_lossy(&output.stderr);
 

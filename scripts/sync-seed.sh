@@ -59,13 +59,18 @@ if [[ "$mode" == "check" ]]; then
   shopt -s nullglob
   dests=("$DEST_DIR"/*.lino)
   shopt -u nullglob
-  for dst in "${dests[@]}"; do
-    name=$(basename "$dst")
-    if [[ ! -f "$SRC_DIR/$name" ]]; then
-      echo "sync-seed: orphan in destination — $name" >&2
-      status=1
-    fi
-  done
+  # Bash 3.2 treats an empty "${dests[@]}" expansion as an unbound variable
+  # under `set -u`. macOS still ships that Bash version, so only expand the
+  # array after proving that it contains at least one destination.
+  if [[ ${#dests[@]} -gt 0 ]]; then
+    for dst in "${dests[@]}"; do
+      name=$(basename "$dst")
+      if [[ ! -f "$SRC_DIR/$name" ]]; then
+        echo "sync-seed: orphan in destination — $name" >&2
+        status=1
+      fi
+    done
+  fi
 fi
 
 exit "$status"

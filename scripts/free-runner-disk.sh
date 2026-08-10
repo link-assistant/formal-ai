@@ -25,7 +25,8 @@ DISPOSABLE_PATHS=(
 )
 
 avail_kb() {
-  df --output=avail / | tail -n 1 | tr -d ' '
+  # POSIX output keeps the available-kilobytes column stable on GNU and BSD df.
+  df -Pk / | awk 'NR == 2 { print $4 }'
 }
 
 before_kb="$(avail_kb)"

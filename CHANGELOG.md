@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.338.0] - 2026-08-10
+
+### Added
+- Define and ratchet Formal AI's minimal-core handler boundary, and audit seed problem-solving metadata with coding-path completeness and per-record gap data (#918).
+
+### Fixed
+- Restored macOS CI parity for desktop packaging, canonical session diagnostics, PTY integration tests, and Bash 3.2 seed synchronization.
+
 ## [0.337.0] - 2026-08-09
 
 ### Added

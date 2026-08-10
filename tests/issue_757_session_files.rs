@@ -1,3 +1,4 @@
+use std::os::unix::fs::symlink;
 use std::os::unix::fs::PermissionsExt as _;
 use std::path::{Path, PathBuf};
 use std::process::Command;
@@ -120,8 +121,13 @@ fn reports_every_requested_tool_session_and_proxy_log() {
     let bin_dir = dir.join("bin");
     std::fs::create_dir_all(&home).expect("home");
     std::fs::create_dir_all(&bin_dir).expect("bin");
-    let proxy_log = dir.join("proxy.jsonl");
+    let real_logs = dir.join("real-logs");
+    let log_alias = dir.join("log-alias");
+    std::fs::create_dir_all(&real_logs).expect("real log directory");
+    symlink(&real_logs, &log_alias).expect("symlinked log directory");
+    let proxy_log = log_alias.join("proxy.jsonl");
     std::fs::write(&proxy_log, "{}\n").expect("proxy log");
+    let canonical_proxy_log = proxy_log.canonicalize().expect("canonical proxy log");
 
     for (tool, expected_file, expected_resume) in [
         (
@@ -163,7 +169,7 @@ fn reports_every_requested_tool_session_and_proxy_log() {
         let stderr = String::from_utf8_lossy(&output.stderr);
         assert!(stderr.contains(&format!("  {tool}: ")), "stderr:\n{stderr}");
         assert!(stderr.contains(expected_file), "stderr:\n{stderr}");
-        assert!(stderr.contains(&format!("  server log: {}", proxy_log.display())));
+        assert!(stderr.contains(&format!("  server log: {}", canonical_proxy_log.display())));
         if let Some(resume) = expected_resume {
             assert!(stderr.contains(resume), "stderr:\n{stderr}");
         }

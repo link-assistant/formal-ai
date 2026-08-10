@@ -1,0 +1,1952 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:44.864Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:44.894Z",
+  "service": "default",
+  "version": "0.25.6",
+  "command": "/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Finish Formal AI issue #961 by restoring macOS CI parity. As one smallest leaf of that same task, create file 20260810_120000_issue_961_macos_ci_parity.md containing exactly\n### Fixed\n- Restored macOS CI parity for desktop packaging, canonical session diagnostics, PTY integration tests, and Bash 3.2 seed synchronization. --disable-stdin --no-summarize-session --compaction-model same --model formal-ai/formal-ai",
+  "workingDirectory": "/tmp/tmp.tcjaY2gbT6",
+  "scriptPath": "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:44.895Z",
+  "service": "default",
+  "directory": "/tmp/tmp.tcjaY2gbT6",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:44.895Z",
+  "service": "project",
+  "directory": "/tmp/tmp.tcjaY2gbT6",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.139Z",
+  "service": "default",
+  "processArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Finish Formal AI issue #961 by restoring macOS CI parity. As one smallest leaf of that same task, create file 20260810_120000_issue_961_macos_ci_parity.md containing exactly\n### Fixed\n- Restored macOS CI parity for desktop packaging, canonical session diagnostics, PTY integration tests, and Bash 3.2 seed synchronization.",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-model",
+    "same",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Finish Formal AI issue #961 by restoring macOS CI parity. As one smallest leaf of that same task, create file 20260810_120000_issue_961_macos_ci_parity.md containing exactly\n### Fixed\n- Restored macOS CI parity for desktop packaging, canonical session diagnostics, PTY integration tests, and Bash 3.2 seed synchronization.",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-model",
+    "same",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.139Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.154Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.161Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.162Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.163Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.177Z",
+  "service": "config",
+  "path": "/tmp/tmp.tcjaY2gbT6/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.260Z",
+  "service": "models.dev",
+  "path": "/home/box/.cache/link-assistant-agent/models.json",
+  "age": 59160,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.260Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.506Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.571Z",
+  "service": "claude-oauth",
+  "path": "/home/box/.claude/.credentials.json",
+  "message": "credentials file not found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.573Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.573Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.573Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.573Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.573Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.573Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 420,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.583Z",
+  "service": "provider",
+  "modelID": "big-pickle",
+  "providerID": "opencode",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.585Z",
+  "service": "provider",
+  "modelID": "minimax-m2.5-free",
+  "providerID": "kilo",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.587Z",
+  "service": "default",
+  "models": [
+    "opencode/big-pickle",
+    "kilo/minimax-m2.5-free",
+    "same"
+  ],
+  "source": "default",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.682Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.682Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.709Z",
+  "service": "session",
+  "id": "ses_014a75079ffewrf0nGhHCIG06f",
+  "version": "0.25.6",
+  "projectID": "global",
+  "directory": "/tmp/tmp.tcjaY2gbT6",
+  "title": "New session - 2026-08-10T11:04:45.707Z",
+  "time": {
+    "created": 1786359885707,
+    "updated": 1786359885707
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.710Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.713Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.719Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 37,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.764Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.771Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_014a75079ffewrf0nGhHCIG06f/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.771Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_014a75079ffewrf0nGhHCIG06f/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.852Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 81,
+  "method": "POST",
+  "path": "/session/ses_014a75079ffewrf0nGhHCIG06f/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.895Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.930Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.942Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.953Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.991Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.991Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.992Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.997Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.998Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.998Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.998Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 1,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:45.999Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:46.005Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:46.005Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:46.005Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:46.005Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:46.005Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:46.006Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 1,
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:46.006Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:49.285Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:49.321Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:49.331Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:49.457Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:49.518Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:49.634Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:49.634Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:49.636Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:49.636Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.176Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1786359890176,
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "part": {
+    "id": "prt_feb58c0d4001vFxSGoO7vhiQUw",
+    "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+    "messageID": "msg_feb58bd98001gW4AcF5XLrIKzQ",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.185Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.189Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1786359890189,
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "part": {
+    "id": "prt_feb58c109001sZiomUNfYt3Z2c",
+    "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+    "messageID": "msg_feb58bd98001gW4AcF5XLrIKzQ",
+    "type": "tool",
+    "callID": "call_2f4ece7d2bc7f6a4",
+    "tool": "write",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.190Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1786359890190,
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "part": {
+    "id": "prt_feb58c1010010vJ1MjUjQ2AxQN",
+    "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+    "messageID": "msg_feb58bd98001gW4AcF5XLrIKzQ",
+    "type": "text",
+    "text": "Let me update .formal-ai/general-change-plan.lino for you.",
+    "time": {
+      "start": 1786359890190,
+      "end": 1786359890190
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.198Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1786359890198,
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "part": {
+    "id": "prt_feb58c109001sZiomUNfYt3Z2c",
+    "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+    "messageID": "msg_feb58bd98001gW4AcF5XLrIKzQ",
+    "type": "tool",
+    "callID": "call_2f4ece7d2bc7f6a4",
+    "tool": "write",
+    "state": {
+      "status": "running",
+      "input": {
+        "content": "general_change_plan\n  id \"general_change_plan_f8772f45a6bb2949\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"Finish Formal AI issue #961 by restoring macOS CI parity. As one smallest leaf of that same task, create file 20260810_120000_issue_961_macos_ci_parity.md containing exactly\\n### Fixed\\n- Restored macOS CI parity for desktop packaging, canonical session diagnostics, PTY integration tests, and Bash 3.2 seed synchronization.\"\n  target \"20260810_120000_issue_961_macos_ci_parity.md\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_be7549e6158e01dd\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to 20260810_120000_issue_961_macos_ci_parity.md\"\n    expected_evidence \"workspace file 20260810_120000_issue_961_macos_ci_parity.md\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"### Fixed\\n- Restored macOS CI parity for desktop packaging, canonical session diagnostics, PTY integration tests, and Bash 3.2 seed synchronization.\"\n    command \"cat 20260810_120000_issue_961_macos_ci_parity.md\"\n  verification_command \"cat 20260810_120000_issue_961_macos_ci_parity.md\"\n",
+        "filePath": "/tmp/tmp.tcjaY2gbT6/.formal-ai/general-change-plan.lino"
+      },
+      "time": {
+        "start": 1786359890190
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.287Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1786359890287,
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "part": {
+    "id": "prt_feb58c109001sZiomUNfYt3Z2c",
+    "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+    "messageID": "msg_feb58bd98001gW4AcF5XLrIKzQ",
+    "type": "tool",
+    "callID": "call_2f4ece7d2bc7f6a4",
+    "tool": "write",
+    "state": {
+      "status": "completed",
+      "input": {
+        "content": "general_change_plan\n  id \"general_change_plan_f8772f45a6bb2949\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"Finish Formal AI issue #961 by restoring macOS CI parity. As one smallest leaf of that same task, create file 20260810_120000_issue_961_macos_ci_parity.md containing exactly\\n### Fixed\\n- Restored macOS CI parity for desktop packaging, canonical session diagnostics, PTY integration tests, and Bash 3.2 seed synchronization.\"\n  target \"20260810_120000_issue_961_macos_ci_parity.md\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_be7549e6158e01dd\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to 20260810_120000_issue_961_macos_ci_parity.md\"\n    expected_evidence \"workspace file 20260810_120000_issue_961_macos_ci_parity.md\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"### Fixed\\n- Restored macOS CI parity for desktop packaging, canonical session diagnostics, PTY integration tests, and Bash 3.2 seed synchronization.\"\n    command \"cat 20260810_120000_issue_961_macos_ci_parity.md\"\n  verification_command \"cat 20260810_120000_issue_961_macos_ci_parity.md\"\n",
+        "filePath": "/tmp/tmp.tcjaY2gbT6/.formal-ai/general-change-plan.lino"
+      },
+      "output": "",
+      "title": "tmp/tmp.tcjaY2gbT6/.formal-ai/general-change-plan.lino",
+      "metadata": {
+        "diagnostics": {},
+        "filepath": "/tmp/tmp.tcjaY2gbT6/.formal-ai/general-change-plan.lino",
+        "exists": false
+      },
+      "time": {
+        "start": 1786359890190,
+        "end": 1786359890246
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.342Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1786359890344,
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "part": {
+    "id": "prt_feb58c18b001u7EJSZN9i4jruv",
+    "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+    "messageID": "msg_feb58bd98001gW4AcF5XLrIKzQ",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8765,
+      "output": 1496,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 10261,
+      "headroom": 28595,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.346Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.353Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.446Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.448Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.469Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.469Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.474Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.474Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.523Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.523Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.526Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.528Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 10261,
+  "providerTokens": 10261,
+  "estimatedInputTokens": 89,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8765,
+    "cacheRead": 0,
+    "output": 1496
+  },
+  "overflow": false,
+  "headroom": 41547,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.531Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.531Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.548Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.562Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.878Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1786359890879,
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "part": {
+    "id": "prt_feb58c3b5001lYq377T4GlVxBC",
+    "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+    "messageID": "msg_feb58c260001CsS78Uw39Q4iXn",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.879Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.884Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1786359890884,
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "part": {
+    "id": "prt_feb58c3bf0026UpHoXsm7ISOMC",
+    "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+    "messageID": "msg_feb58c260001CsS78Uw39Q4iXn",
+    "type": "tool",
+    "callID": "call_b810fa66aeeb8ecb",
+    "tool": "write",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.885Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1786359890885,
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "part": {
+    "id": "prt_feb58c3bf001DFZhIICsugU0ZR",
+    "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+    "messageID": "msg_feb58c260001CsS78Uw39Q4iXn",
+    "type": "text",
+    "text": "Let me update 20260810_120000_issue_961_macos_ci_parity.md for you.",
+    "time": {
+      "start": 1786359890884,
+      "end": 1786359890884
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.885Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1786359890885,
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "part": {
+    "id": "prt_feb58c3bf0026UpHoXsm7ISOMC",
+    "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+    "messageID": "msg_feb58c260001CsS78Uw39Q4iXn",
+    "type": "tool",
+    "callID": "call_b810fa66aeeb8ecb",
+    "tool": "write",
+    "state": {
+      "status": "running",
+      "input": {
+        "content": "### Fixed\n- Restored macOS CI parity for desktop packaging, canonical session diagnostics, PTY integration tests, and Bash 3.2 seed synchronization.",
+        "filePath": "/tmp/tmp.tcjaY2gbT6/20260810_120000_issue_961_macos_ci_parity.md"
+      },
+      "time": {
+        "start": 1786359890885
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.890Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1786359890890,
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "part": {
+    "id": "prt_feb58c3bf0026UpHoXsm7ISOMC",
+    "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+    "messageID": "msg_feb58c260001CsS78Uw39Q4iXn",
+    "type": "tool",
+    "callID": "call_b810fa66aeeb8ecb",
+    "tool": "write",
+    "state": {
+      "status": "completed",
+      "input": {
+        "content": "### Fixed\n- Restored macOS CI parity for desktop packaging, canonical session diagnostics, PTY integration tests, and Bash 3.2 seed synchronization.",
+        "filePath": "/tmp/tmp.tcjaY2gbT6/20260810_120000_issue_961_macos_ci_parity.md"
+      },
+      "output": "",
+      "title": "tmp/tmp.tcjaY2gbT6/20260810_120000_issue_961_macos_ci_parity.md",
+      "metadata": {
+        "diagnostics": {},
+        "filepath": "/tmp/tmp.tcjaY2gbT6/20260810_120000_issue_961_macos_ci_parity.md",
+        "exists": false
+      },
+      "time": {
+        "start": 1786359890885,
+        "end": 1786359890889
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.891Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1786359890891,
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "part": {
+    "id": "prt_feb58c3ca001viC7ZF6AqlSgxr",
+    "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+    "messageID": "msg_feb58c260001CsS78Uw39Q4iXn",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8823,
+      "output": 313,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 9136,
+      "headroom": 29720,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.891Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.895Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.898Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.898Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.904Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.904Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.904Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.904Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.936Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.939Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.939Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.940Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 9136,
+  "providerTokens": 9136,
+  "estimatedInputTokens": 111,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8823,
+    "cacheRead": 0,
+    "output": 313
+  },
+  "overflow": false,
+  "headroom": 42672,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.941Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.943Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.963Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:50.976Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.133Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1786359891133,
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "part": {
+    "id": "prt_feb58c4950019lOAmArxIdTXSR",
+    "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+    "messageID": "msg_feb58c3fc001yRwzWX38Ii70Um",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.135Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.135Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1786359891135,
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "part": {
+    "id": "prt_feb58c4bf001A2vhjmPYySwG5Z",
+    "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+    "messageID": "msg_feb58c3fc001yRwzWX38Ii70Um",
+    "type": "tool",
+    "callID": "call_77974970041bc76f",
+    "tool": "bash",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.138Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1786359891138,
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "part": {
+    "id": "prt_feb58c4bd0015Gxs8jKoYlYBvY",
+    "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+    "messageID": "msg_feb58c3fc001yRwzWX38Ii70Um",
+    "type": "text",
+    "text": "Let me run a quick command to get that for you.",
+    "time": {
+      "start": 1786359891136,
+      "end": 1786359891136
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.138Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1786359891138,
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "part": {
+    "id": "prt_feb58c4bf001A2vhjmPYySwG5Z",
+    "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+    "messageID": "msg_feb58c3fc001yRwzWX38Ii70Um",
+    "type": "tool",
+    "callID": "call_77974970041bc76f",
+    "tool": "bash",
+    "state": {
+      "status": "running",
+      "input": {
+        "command": "cat 20260810_120000_issue_961_macos_ci_parity.md"
+      },
+      "time": {
+        "start": 1786359891138
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.184Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1786359891184,
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "part": {
+    "id": "prt_feb58c4bf001A2vhjmPYySwG5Z",
+    "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+    "messageID": "msg_feb58c3fc001yRwzWX38Ii70Um",
+    "type": "tool",
+    "callID": "call_77974970041bc76f",
+    "tool": "bash",
+    "state": {
+      "status": "completed",
+      "input": {
+        "command": "cat 20260810_120000_issue_961_macos_ci_parity.md"
+      },
+      "output": "### Fixed\n- Restored macOS CI parity for desktop packaging, canonical session diagnostics, PTY integration tests, and Bash 3.2 seed synchronization.",
+      "title": "cat 20260810_120000_issue_961_macos_ci_parity.md",
+      "metadata": {
+        "output": "### Fixed\n- Restored macOS CI parity for desktop packaging, canonical session diagnostics, PTY integration tests, and Bash 3.2 seed synchronization.",
+        "exit": 0
+      },
+      "time": {
+        "start": 1786359891138,
+        "end": 1786359891166
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.189Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1786359891189,
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "part": {
+    "id": "prt_feb58c4f4001GPJBOV97WOUrC2",
+    "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+    "messageID": "msg_feb58c3fc001yRwzWX38Ii70Um",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8890,
+      "output": 113,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 9003,
+      "headroom": 29853,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.190Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.190Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.289Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.289Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.339Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.339Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.340Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.340Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.377Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.377Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.381Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.381Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 9003,
+  "providerTokens": 9003,
+  "estimatedInputTokens": 155,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8890,
+    "cacheRead": 0,
+    "output": 113
+  },
+  "overflow": false,
+  "headroom": 42805,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.382Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.382Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.400Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.408Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.588Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1786359891588,
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "part": {
+    "id": "prt_feb58c67f001FfmNEx1mIoPLIQ",
+    "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+    "messageID": "msg_feb58c5b5001lDYivL7ywOIreQ",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.589Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.589Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1786359891589,
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "part": {
+    "id": "prt_feb58c6840017uy0Ui3Cm03PnI",
+    "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+    "messageID": "msg_feb58c5b5001lDYivL7ywOIreQ",
+    "type": "text",
+    "text": "Completed the general change request for 20260810_120000_issue_961_macos_ci_parity.md and verified it with `cat 20260810_120000_issue_961_macos_ci_parity.md`.\n\nPlan event (.formal-ai/general-change-plan.lino):\n\ngeneral_change_plan\n  id \"general_change_plan_f8772f45a6bb2949\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"Finish Formal AI issue #961 by restoring macOS CI parity. As one smallest leaf of that same task, create file 20260810_120000_issue_961_macos_ci_parity.md containing exactly\\n### Fixed\\n- Restored macOS CI parity for desktop packaging, canonical session diagnostics, PTY integration tests, and Bash 3.2 seed synchronization.\"\n  target \"20260810_120000_issue_961_macos_ci_parity.md\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_be7549e6158e01dd\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to 20260810_120000_issue_961_macos_ci_parity.md\"\n    expected_evidence \"workspace file 20260810_120000_issue_961_macos_ci_parity.md\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"### Fixed\\n- Restored macOS CI parity for desktop packaging, canonical session diagnostics, PTY integration tests, and Bash 3.2 seed synchronization.\"\n    command \"cat 20260810_120000_issue_961_macos_ci_parity.md\"\n  verification_command \"cat 20260810_120000_issue_961_macos_ci_parity.md\"",
+    "time": {
+      "start": 1786359891589,
+      "end": 1786359891589
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.593Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1786359891593,
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "part": {
+    "id": "prt_feb58c685001Mw9t1mvVvX4f6Y",
+    "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+    "messageID": "msg_feb58c5b5001lDYivL7ywOIreQ",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 9085,
+      "output": 1505,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 10590,
+      "headroom": 28266,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.593Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.594Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.637Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.638Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.809Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.809Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.809Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.810Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.810Z",
+  "service": "session.prompt",
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.811Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.922Z",
+  "service": "session.prompt",
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.930Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.930Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1786359891930,
+  "sessionID": "ses_014a75079ffewrf0nGhHCIG06f"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.930Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.931Z",
+  "service": "default",
+  "directory": "/tmp/tmp.tcjaY2gbT6",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.932Z",
+  "service": "state",
+  "key": "/tmp/tmp.tcjaY2gbT6",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.939Z",
+  "service": "state",
+  "key": "/tmp/tmp.tcjaY2gbT6",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-10T11:04:51.939Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 10,
+  "message": "Agent exiting"
+}
+

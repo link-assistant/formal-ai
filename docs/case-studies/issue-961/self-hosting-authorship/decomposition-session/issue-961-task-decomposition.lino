@@ -1,0 +1,10 @@
+issue_961_task_decomposition
+  total_smallest_leaves 7
+  required_self_authored_leaves 2
+  leaf macos_mktemp author human
+  leaf canonical_proxy_log author human
+  leaf portable_pty_launcher author human
+  leaf bash_3_2_empty_array author human
+  leaf macos_ci_matrix author human
+  leaf changelog_fragment author formal_ai
+  leaf reviewed_task_decomposition author formal_ai

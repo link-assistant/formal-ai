@@ -1,0 +1,263 @@
+//! Cross-platform source contracts for the four macOS portability regressions
+//! reported in issue #961.
+
+const PACKAGE_WRAPPER: &str = include_str!("../desktop/scripts/package-macos-with-retry.sh");
+const SESSION_FILE_TEST: &str = include_str!("issue_757_session_files.rs");
+const TUI_ISOLATION_TEST: &str = include_str!("integration/issue_819_tui_isolation.rs");
+const PTY_HELPER: &str = include_str!("integration/pty.rs");
+const WITH_FORMAL_AI_TEST: &str = include_str!("integration/with_formal_ai.rs");
+const SYNC_SEED: &str = include_str!("../scripts/sync-seed.sh");
+const RUNNER_DISK_CLEANUP: &str = include_str!("../scripts/free-runner-disk.sh");
+const RELEASE_WORKFLOW: &str = include_str!("../.github/workflows/release.yml");
+const REQUIREMENTS: &str = include_str!("../REQUIREMENTS.md");
+const ISSUE_CASE_STUDY: &str = include_str!("../docs/case-studies/issue-961/README.md");
+const PR_CASE_STUDY: &str = include_str!("../docs/case-studies/pull-request-987/README.md");
+
+fn seed_array_guard_precedes_expansion() -> bool {
+    let guard = SYNC_SEED.find("if [[ ${#dests[@]} -gt 0 ]]");
+    let expansion = SYNC_SEED.find("for dst in \"${dests[@]}\"");
+    matches!((guard, expansion), (Some(guard), Some(expansion)) if guard < expansion)
+}
+
+fn macos_portability_failures() -> Vec<&'static str> {
+    let mut failures = Vec::new();
+
+    if PACKAGE_WRAPPER.contains("formal-ai-macos-package.XXXXXX.log")
+        || !PACKAGE_WRAPPER.contains("formal-ai-macos-package.log.XXXXXX")
+    {
+        failures.push("the package log mktemp placeholder must be the template suffix");
+    }
+    if !SESSION_FILE_TEST.contains("proxy_log.canonicalize()") {
+        failures.push("the expected proxy log path must be canonicalized");
+    }
+    if TUI_ISOLATION_TEST.contains(".args([\"-qfec\"")
+        || WITH_FORMAL_AI_TEST.contains(".args([\"-qfec\"")
+        || !PTY_HELPER.contains("ScriptDialect::Bsd")
+        || !PTY_HELPER.contains("command.args([\"-q\", \"/dev/null\", program])")
+    {
+        failures.push("PTY tests must select BSD script syntax on macOS");
+    }
+    if !seed_array_guard_precedes_expansion() {
+        failures.push("the empty destination array must be guarded before expansion");
+    }
+    if !RELEASE_WORKFLOW.contains("os: [ubuntu-latest, macos-15-intel]") {
+        failures.push("the full test matrix must include a supported macOS runner");
+    }
+
+    failures
+}
+
+#[test]
+fn package_log_uses_a_bsd_portable_mktemp_template() {
+    assert!(
+        PACKAGE_WRAPPER.contains("formal-ai-macos-package.log.XXXXXX"),
+        "BSD mktemp only replaces trailing X characters"
+    );
+    assert!(!PACKAGE_WRAPPER.contains("formal-ai-macos-package.XXXXXX.log"));
+}
+
+#[test]
+fn proxy_log_expectation_matches_the_canonicalized_product_path() {
+    assert!(SESSION_FILE_TEST.contains("proxy_log.canonicalize()"));
+}
+
+#[test]
+fn pty_tests_do_not_embed_util_linux_only_script_flags() {
+    assert!(!TUI_ISOLATION_TEST.contains(".args([\"-qfec\""));
+    assert!(!WITH_FORMAL_AI_TEST.contains(".args([\"-qfec\""));
+    assert!(PTY_HELPER.contains("ScriptDialect::Bsd"));
+    assert!(PTY_HELPER.contains("command.args([\"-q\", \"/dev/null\", program])"));
+}
+
+#[test]
+fn pty_input_waits_for_tui_readiness_before_writing() {
+    assert!(PTY_HELPER.contains("interact_after_ready"));
+    assert!(WITH_FORMAL_AI_TEST.contains("pty::interact_after_ready"));
+}
+
+#[test]
+fn seed_sync_guards_an_empty_destination_array() {
+    assert!(seed_array_guard_precedes_expansion());
+}
+
+#[test]
+fn full_test_matrix_runs_on_a_supported_macos_image() {
+    assert!(RELEASE_WORKFLOW.contains("os: [ubuntu-latest, macos-15-intel]"));
+    assert!(RELEASE_WORKFLOW
+        .contains("timeout-minutes: ${{ matrix.os == 'macos-15-intel' && 35 || 25 }}"));
+    assert!(RELEASE_WORKFLOW
+        .contains("TEST_BUDGET_SECONDS: ${{ matrix.os == 'macos-15-intel' && 2100 || 1500 }}"));
+}
+
+#[test]
+fn macos_test_bootstrap_uses_portable_df_syntax() {
+    assert!(!RUNNER_DISK_CLEANUP.contains("--output=avail"));
+    assert!(RUNNER_DISK_CLEANUP.contains("df -Pk /"));
+}
+
+#[cfg(unix)]
+#[test]
+fn runner_disk_cleanup_accepts_a_bsd_shaped_df() {
+    use std::os::unix::fs::PermissionsExt as _;
+    use std::time::{SystemTime, UNIX_EPOCH};
+
+    let nonce = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .expect("clock after epoch")
+        .as_nanos();
+    let root = std::env::temp_dir().join(format!(
+        "formal-ai-issue-961-runner-disk-{}-{nonce}",
+        std::process::id()
+    ));
+    let bin_dir = root.join("bin");
+    std::fs::create_dir_all(&bin_dir).expect("fake binary directory");
+    let script = root.join("free-runner-disk.sh");
+    std::fs::write(&script, RUNNER_DISK_CLEANUP).expect("sandbox cleanup script");
+
+    for (name, body) in [
+        (
+            "df",
+            "#!/bin/sh\ncase \"$1\" in\n  -Pk) printf 'Filesystem 1024-blocks Used Available Capacity Mounted on\\n/dev/mock 100000 50000 50000 50%% /\\n' ;;\n  -h) printf 'Filesystem Size Used Avail Capacity Mounted on\\n/dev/mock 100G 50G 50G 50%% /\\n' ;;\n  *) echo \"df: unrecognized option '$1'\" >&2; exit 64 ;;\nesac\n",
+        ),
+        ("sudo", "#!/bin/sh\nexit 0\n"),
+    ] {
+        let path = bin_dir.join(name);
+        std::fs::write(&path, body).expect("fake command");
+        let mut permissions = std::fs::metadata(&path).expect("fake command metadata").permissions();
+        permissions.set_mode(0o755);
+        std::fs::set_permissions(&path, permissions).expect("fake command permissions");
+    }
+
+    let mut paths = vec![bin_dir];
+    paths.extend(std::env::split_paths(
+        &std::env::var_os("PATH").unwrap_or_default(),
+    ));
+    let output = std::process::Command::new("/bin/bash")
+        .arg(&script)
+        .env("PATH", std::env::join_paths(paths).expect("sandbox PATH"))
+        .env("RUNNER_DISK_MIN_MIB", "0")
+        .output()
+        .expect("run cleanup against BSD-shaped df");
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    std::fs::remove_dir_all(&root).expect("remove runner disk sandbox");
+
+    assert!(output.status.success(), "stderr:\n{stderr}");
+}
+
+#[test]
+fn requirement_matrix_and_case_studies_cover_the_complete_issue() {
+    for requirement in ["R961-1", "R961-2", "R961-3", "R961-4", "R961-5", "R961-6"] {
+        assert!(REQUIREMENTS.contains(requirement));
+        assert!(ISSUE_CASE_STUDY.contains(requirement));
+    }
+    for section in [
+        "## 1. Collected data",
+        "## 2. Timeline",
+        "## 3. Requirements",
+        "## 4. Root causes",
+        "## 5. Research and prior art",
+        "## 6. Tests-first reproduction",
+        "## 7. Implemented fix",
+        "## 8. Formal AI / Agent CLI authorship",
+        "## 9. Verification",
+    ] {
+        assert!(ISSUE_CASE_STUDY.contains(section));
+    }
+    assert!(PR_CASE_STUDY.contains("## Initial state and discussion audit"));
+    assert!(PR_CASE_STUDY.contains("## Decisions made in this pull request"));
+    assert!(PR_CASE_STUDY.contains("## Verification and CI"));
+}
+
+#[test]
+fn formal_ai_and_the_real_agent_cli_authored_two_of_seven_smallest_leaves() {
+    const FORMAL_AI_AUTHORED_LEAVES: usize = 2;
+    const SMALLEST_REQUIREMENT_LEAVES: usize = 7;
+    const GENERATED_CHANGELOG: &[u8] = include_bytes!(
+        "../docs/case-studies/issue-961/self-hosting-authorship/changelog-session/20260810_120000_issue_961_macos_ci_parity.md"
+    );
+    const CANONICAL_CHANGELOG: &[u8] =
+        include_bytes!("../changelog.d/20260810_120000_issue_961_macos_ci_parity.md");
+    const GENERATED_DECOMPOSITION: &[u8] = include_bytes!(
+        "../docs/case-studies/issue-961/self-hosting-authorship/decomposition-session/issue-961-task-decomposition.lino"
+    );
+    const CANONICAL_DECOMPOSITION: &[u8] =
+        include_bytes!("../docs/case-studies/issue-961/issue-961-task-decomposition.lino");
+
+    assert_eq!(GENERATED_CHANGELOG, CANONICAL_CHANGELOG);
+    assert_eq!(GENERATED_DECOMPOSITION, CANONICAL_DECOMPOSITION);
+    assert_eq!(
+        FORMAL_AI_AUTHORED_LEAVES * 100 / SMALLEST_REQUIREMENT_LEAVES,
+        28
+    );
+
+    for (agent_log, server_log, session, target) in [
+        (
+            include_str!(
+                "../docs/case-studies/issue-961/self-hosting-authorship/changelog-session/agent-cli.log"
+            ),
+            include_str!(
+                "../docs/case-studies/issue-961/self-hosting-authorship/changelog-session/formal-ai.log"
+            ),
+            "ses_014a75079ffewrf0nGhHCIG06f",
+            "20260810_120000_issue_961_macos_ci_parity.md",
+        ),
+        (
+            include_str!(
+                "../docs/case-studies/issue-961/self-hosting-authorship/decomposition-session/agent-cli.log"
+            ),
+            include_str!(
+                "../docs/case-studies/issue-961/self-hosting-authorship/decomposition-session/formal-ai.log"
+            ),
+            "ses_014a725dbffeJQOYwc4T0yJjFT",
+            "issue-961-task-decomposition.lino",
+        ),
+    ] {
+        assert!(agent_log.contains(session));
+        for evidence in ["planned ToolCalls", "tool=write", "planned Final", target] {
+            assert!(server_log.contains(evidence));
+        }
+    }
+}
+
+#[cfg(unix)]
+#[test]
+fn seed_sync_reaches_the_orphan_pass_with_an_empty_destination() {
+    use std::time::{SystemTime, UNIX_EPOCH};
+
+    let nonce = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .expect("clock after epoch")
+        .as_nanos();
+    let root = std::env::temp_dir().join(format!(
+        "formal-ai-issue-961-sync-seed-{}-{nonce}",
+        std::process::id()
+    ));
+    let script_dir = root.join("scripts");
+    let source_dir = root.join("data/seed");
+    let destination_dir = root.join("src/web/seed");
+    std::fs::create_dir_all(&script_dir).expect("script directory");
+    std::fs::create_dir_all(&source_dir).expect("seed source directory");
+    std::fs::create_dir_all(&destination_dir).expect("empty seed destination directory");
+    std::fs::write(source_dir.join("canary.lino"), "canary\n").expect("source canary");
+    std::fs::write(script_dir.join("sync-seed.sh"), SYNC_SEED).expect("sandbox script");
+
+    let output = std::process::Command::new("/bin/bash")
+        .arg(script_dir.join("sync-seed.sh"))
+        .arg("--check")
+        .output()
+        .expect("run seed sync with the platform Bash");
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    std::fs::remove_dir_all(&root).expect("remove seed sync sandbox");
+
+    assert_eq!(output.status.code(), Some(1), "stderr:\n{stderr}");
+    assert!(
+        stderr.contains("sync-seed: out of sync"),
+        "stderr:\n{stderr}"
+    );
+    assert!(!stderr.contains("unbound variable"), "stderr:\n{stderr}");
+}
+
+#[test]
+fn complete_macos_portability_contract_holds() {
+    assert_eq!(macos_portability_failures(), Vec::<&str>::new());
+}
