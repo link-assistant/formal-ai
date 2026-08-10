@@ -639,7 +639,12 @@ jobs:
         run: |
           set -euo pipefail
           started=$SECONDS
-          cargo test --lib --bins --tests --all-features --verbose
+          # The two focused gates above already exercise these groups and give
+          # them isolated diagnostics. Do not spend the macOS budget running
+          # them again inside the full suite (run 31428625331).
+          cargo test --lib --bins --tests --all-features --verbose -- \
+            --skip data_files:: \
+            --skip self_ast_census
           elapsed=$((SECONDS - started))
           threshold=$((TEST_BUDGET_SECONDS * TEST_WARN_RATIO_PERCENT / 100))
           printf 'Test suite took %ss of the %ss job budget.\n' \
