@@ -178,14 +178,14 @@ fn formal_ai_and_the_real_agent_cli_authored_two_of_seven_smallest_leaves() {
     // Towncrier removes the canonical fragment after publishing it. Keep the
     // authorship check valid on release commits by verifying the generated
     // fragment against its durable canonical destination instead.
-    const RELEASE_CHANGELOG: &str = include_str!("../CHANGELOG.md");
+    const CANONICAL_CHANGELOG: &str = include_str!("../CHANGELOG.md");
     const GENERATED_DECOMPOSITION: &[u8] = include_bytes!(
         "../docs/case-studies/issue-961/self-hosting-authorship/decomposition-session/issue-961-task-decomposition.lino"
     );
     const CANONICAL_DECOMPOSITION: &[u8] =
         include_bytes!("../docs/case-studies/issue-961/issue-961-task-decomposition.lino");
 
-    assert!(RELEASE_CHANGELOG.contains(GENERATED_CHANGELOG.trim()));
+    assert!(CANONICAL_CHANGELOG.contains(GENERATED_CHANGELOG.trim()));
     assert_eq!(GENERATED_DECOMPOSITION, CANONICAL_DECOMPOSITION);
     assert_eq!(
         FORMAL_AI_AUTHORED_LEAVES * 100 / SMALLEST_REQUIREMENT_LEAVES,
