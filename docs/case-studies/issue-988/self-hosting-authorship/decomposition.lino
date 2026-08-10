@@ -1,0 +1,32 @@
+issue_988_smallest_leaf_1
+  parent stock_rust_install
+  leaf "reject the native TLS packages in the committed default lock"
+  implementation tests/unit/issue_988_stock_rust_install.rs
+  authorship human
+issue_988_smallest_leaf_2
+  parent stock_rust_install
+  leaf "select the published transport-independent web component features"
+  implementation Cargo.toml
+  authorship human
+issue_988_smallest_leaf_3
+  parent stock_rust_install
+  leaf "preserve the published merger contract without server features"
+  implementation tests/unit/issue_896_component_boundaries.rs
+  authorship human
+issue_988_smallest_leaf_4
+  parent stock_rust_install
+  leaf "install and inspect the binary in an unmodified stock Rust image"
+  implementation .github/workflows/stock-rust-install.yml
+  authorship human
+issue_988_smallest_leaf_5
+  parent stock_rust_install
+  leaf "record the stock Rust installation fix in the changelog"
+  implementation changelog.d/20260810_988_stock_rust_install.md
+  authorship formal_ai_agent_cli
+  session ses_0132073d7ffeHL6POmzfQ29hoH
+  evidence docs/case-studies/issue-988/self-hosting-authorship/agent-cli.log
+
+issue_988_self_authorship_measurement
+  reviewed_smallest_leaves 5
+  formal_ai_authored_leaves 1
+  formal_ai_authored_percent 20
