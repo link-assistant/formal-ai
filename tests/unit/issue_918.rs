@@ -288,6 +288,8 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
         .map(|value| value.trim_matches('"').to_owned())
         .collect::<BTreeSet<_>>();
     assert_eq!(complete_sources.len(), 2);
+    let registered_languages = formal_ai::language::registered_languages();
+    assert!(!registered_languages.is_empty(), "language registry");
 
     let mut expected_gaps = BTreeMap::new();
     let mut coding_records = 0;
@@ -307,10 +309,13 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
                 .collect::<Vec<_>>();
             if complete_sources.contains(&source) {
                 coding_records += 1;
-                assert!(
-                    missing.is_empty(),
-                    "{source}:{record} is missing {missing:?}"
-                );
+                for language in &registered_languages {
+                    assert!(
+                        missing.is_empty(),
+                        "{source}:{record} is missing language-neutral metadata {missing:?} for {}",
+                        language.slug()
+                    );
+                }
             } else if !missing.is_empty() {
                 expected_gaps.insert((source, record), missing.join(","));
             }
