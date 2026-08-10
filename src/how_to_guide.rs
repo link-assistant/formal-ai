@@ -5,9 +5,12 @@
 //! capture their pages recursively inside declared depth/page/time bounds, keep
 //! exact provenance on every accepted step, and resolve copies and
 //! contradictions with the issue #709 source-tier policy. This module owns that
-//! contract for the Rust side; `src/web/worker/formal_ai_worker_21.js` mirrors
-//! it byte-for-byte on the browser side and the offline QA replay in
-//! `tests/unit/issue_991_how_to_synthesis.rs` holds the two together.
+//! contract for the Rust side; `src/web/worker/formal_ai_worker_24.js` mirrors
+//! it on the browser side. The two are held to one answer by replaying the same
+//! committed captures through both: `examples/issue_991_how_to_parity.rs` writes
+//! `tests/fixtures/issue-991/expected-guides.json` from this path, and both
+//! `tests/unit/issue_991_how_to_synthesis.rs` and
+//! `tests/web/issue-991-how-to-synthesis.test.mjs` assert against it.
 //!
 //! Nothing here reaches the network on its own: every byte arrives through
 //! [`CachedSourceClient`], so an offline run replays committed captures and a
