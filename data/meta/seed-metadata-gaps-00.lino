@@ -331,6 +331,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-07.lino"
     record "memory_program_complete"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_f63f5b873a51fbc0
+    source "data/seed/closure-generated-07.lino"
+    record "none"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_842ee01661c2ae70
     source "data/seed/closure-generated-07.lino"
     record "pattern_assistant_free_time_phrase_chto_delaesh_v_svobodnoe_vremya_ru"

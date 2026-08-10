@@ -419,6 +419,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-11.lino"
     record "thinking_language_name_ru"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_fdd44438337fdc7a
+    source "data/seed/closure-generated-12.lino"
+    record "independent_corroboration"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_b39c159ac1d8e33a
     source "data/seed/closure-generated-12.lino"
     record "intent_concept_lookup_in_context"

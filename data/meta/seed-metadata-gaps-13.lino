@@ -67,6 +67,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-02.lino"
     record "pattern_assistant_free_time_phrase_what_do_you_do_in_your_free_time_en"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_74ec436e606900ad
+    source "data/seed/closure-generated-02.lino"
+    record "primary"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_0e600ebcc34cf5fd
     source "data/seed/closure-generated-02.lino"
     record "response_lexeme_import_lexeme_lost_hi"

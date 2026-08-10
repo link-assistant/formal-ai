@@ -219,6 +219,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-05.lino"
     record "lexeme_import_number_lost"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_476a7345d36a7991
+    source "data/seed/closure-generated-05.lino"
+    record "original_first_party"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_a91fe09ca5c57d71
     source "data/seed/closure-generated-05.lino"
     record "pattern_sequence_no_compression"

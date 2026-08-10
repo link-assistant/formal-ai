@@ -395,6 +395,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-08.lino"
     record "response_thinking_trace_heading_es"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_879b2a2fd82b814f
+    source "data/seed/closure-generated-08.lino"
+    record "secondary"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_eb0e18490a9390ef
     source "data/seed/closure-generated-09.lino"
     record "context_command_failed"
