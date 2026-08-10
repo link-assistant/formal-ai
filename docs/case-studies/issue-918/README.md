@@ -61,4 +61,5 @@ record cannot bypass it by living outside a hand-picked catalog.
 drives the installed Agent CLI, and compares one independently reviewed
 minimal-core invariant leaf byte-for-byte. Its raw stream, server log, task,
 session identifier, worktree status, and exact output live under
-`agent-cli-evidence/`.
+`agent-cli-evidence/`. The captured session is
+`ses_014a5dad0ffeb7y8r0KogQ8WsM`.

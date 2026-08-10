@@ -56,6 +56,7 @@ mod docs_requirements_issue_894;
 mod docs_requirements_issue_909;
 mod docs_requirements_issue_914;
 mod docs_requirements_issue_917;
+mod docs_requirements_issue_918;
 mod docs_requirements_issue_960;
 mod dreaming_runtime;
 mod formal_ai;
