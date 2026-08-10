@@ -8,6 +8,9 @@ const PTY_HELPER: &str = include_str!("integration/pty.rs");
 const WITH_FORMAL_AI_TEST: &str = include_str!("integration/with_formal_ai.rs");
 const SYNC_SEED: &str = include_str!("../scripts/sync-seed.sh");
 const RELEASE_WORKFLOW: &str = include_str!("../.github/workflows/release.yml");
+const REQUIREMENTS: &str = include_str!("../REQUIREMENTS.md");
+const ISSUE_CASE_STUDY: &str = include_str!("../docs/case-studies/issue-961/README.md");
+const PR_CASE_STUDY: &str = include_str!("../docs/case-studies/pull-request-987/README.md");
 
 fn seed_array_guard_precedes_expansion() -> bool {
     let guard = SYNC_SEED.find("if [[ ${#dests[@]} -gt 0 ]]");
@@ -73,6 +76,85 @@ fn seed_sync_guards_an_empty_destination_array() {
 #[test]
 fn full_test_matrix_runs_on_a_supported_macos_image() {
     assert!(RELEASE_WORKFLOW.contains("os: [ubuntu-latest, macos-15-intel]"));
+    assert!(RELEASE_WORKFLOW
+        .contains("timeout-minutes: ${{ matrix.os == 'macos-15-intel' && 35 || 25 }}"));
+    assert!(RELEASE_WORKFLOW
+        .contains("TEST_BUDGET_SECONDS: ${{ matrix.os == 'macos-15-intel' && 2100 || 1500 }}"));
+}
+
+#[test]
+fn requirement_matrix_and_case_studies_cover_the_complete_issue() {
+    for requirement in ["R961-1", "R961-2", "R961-3", "R961-4", "R961-5", "R961-6"] {
+        assert!(REQUIREMENTS.contains(requirement));
+        assert!(ISSUE_CASE_STUDY.contains(requirement));
+    }
+    for section in [
+        "## 1. Collected data",
+        "## 2. Timeline",
+        "## 3. Requirements",
+        "## 4. Root causes",
+        "## 5. Research and prior art",
+        "## 6. Tests-first reproduction",
+        "## 7. Implemented fix",
+        "## 8. Formal AI / Agent CLI authorship",
+        "## 9. Verification",
+    ] {
+        assert!(ISSUE_CASE_STUDY.contains(section));
+    }
+    assert!(PR_CASE_STUDY.contains("## Initial state and discussion audit"));
+    assert!(PR_CASE_STUDY.contains("## Decisions made in this pull request"));
+    assert!(PR_CASE_STUDY.contains("## Verification and CI"));
+}
+
+#[test]
+fn formal_ai_and_the_real_agent_cli_authored_two_of_seven_smallest_leaves() {
+    const FORMAL_AI_AUTHORED_LEAVES: usize = 2;
+    const SMALLEST_REQUIREMENT_LEAVES: usize = 7;
+    const GENERATED_CHANGELOG: &[u8] = include_bytes!(
+        "../docs/case-studies/issue-961/self-hosting-authorship/changelog-session/20260810_120000_issue_961_macos_ci_parity.md"
+    );
+    const CANONICAL_CHANGELOG: &[u8] =
+        include_bytes!("../changelog.d/20260810_120000_issue_961_macos_ci_parity.md");
+    const GENERATED_DECOMPOSITION: &[u8] = include_bytes!(
+        "../docs/case-studies/issue-961/self-hosting-authorship/decomposition-session/issue-961-task-decomposition.lino"
+    );
+    const CANONICAL_DECOMPOSITION: &[u8] =
+        include_bytes!("../docs/case-studies/issue-961/issue-961-task-decomposition.lino");
+
+    assert_eq!(GENERATED_CHANGELOG, CANONICAL_CHANGELOG);
+    assert_eq!(GENERATED_DECOMPOSITION, CANONICAL_DECOMPOSITION);
+    assert_eq!(
+        FORMAL_AI_AUTHORED_LEAVES * 100 / SMALLEST_REQUIREMENT_LEAVES,
+        28
+    );
+
+    for (agent_log, server_log, session, target) in [
+        (
+            include_str!(
+                "../docs/case-studies/issue-961/self-hosting-authorship/changelog-session/agent-cli.log"
+            ),
+            include_str!(
+                "../docs/case-studies/issue-961/self-hosting-authorship/changelog-session/formal-ai.log"
+            ),
+            "ses_014a75079ffewrf0nGhHCIG06f",
+            "20260810_120000_issue_961_macos_ci_parity.md",
+        ),
+        (
+            include_str!(
+                "../docs/case-studies/issue-961/self-hosting-authorship/decomposition-session/agent-cli.log"
+            ),
+            include_str!(
+                "../docs/case-studies/issue-961/self-hosting-authorship/decomposition-session/formal-ai.log"
+            ),
+            "ses_014a725dbffeJQOYwc4T0yJjFT",
+            "issue-961-task-decomposition.lino",
+        ),
+    ] {
+        assert!(agent_log.contains(session));
+        for evidence in ["planned ToolCalls", "tool=write", "planned Final", target] {
+            assert!(server_log.contains(evidence));
+        }
+    }
 }
 
 #[cfg(unix)]
