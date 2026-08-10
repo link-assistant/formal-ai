@@ -25,6 +25,10 @@ failures came from the four portability defects grouped into issue #961.
 - **2026-08-10** — a tests-first source-contract suite is added and run against
   the unfixed files. All five tests fail: one for each of the four defects and
   one whole-task composition test.
+- **2026-08-10** — the first fresh macOS CI leg exposes a bootstrap blocker
+  before Cargo: the shared disk cleanup script passes GNU-only
+  `--output=avail` to BSD `df`. Two new tests reproduce the exit-64 failure
+  before the helper is changed to its POSIX output form.
 
 ## 3. Requirements
 
@@ -34,7 +38,7 @@ failures came from the four portability defects grouped into issue #961.
 | R961-2 | Compare the session diagnostic with the same canonical proxy-log path the product prints. | `proxy_log_expectation_matches_the_canonicalized_product_path` plus a real symlink-alias integration case in `issue_757_session_files`. |
 | R961-3 | Run both PTY integration tests with the platform’s `script(1)` syntax. | `pty` helper unit tests pin exact BSD and util-linux argv; both affected integration tests use the helper. |
 | R961-4 | Let `sync-seed.sh --check` reach orphan detection under Bash 3.2 when the destination is empty. | Source-order contract plus `seed_sync_reaches_the_orphan_pass_with_an_empty_destination`. |
-| R961-5 | Run the complete Rust test suite on macOS in CI. | `full_test_matrix_runs_on_a_supported_macos_image` pins `macos-15-intel` beside Linux. |
+| R961-5 | Run the complete Rust test suite on macOS in CI. | `full_test_matrix_runs_on_a_supported_macos_image` pins `macos-15-intel` beside Linux; source and fake-BSD execution tests ensure the shared disk-cleanup bootstrap reaches Cargo. |
 | R961-6 | Keep a whole-task regression and the required issue/PR evidence. | `complete_macos_portability_contract_holds`, this case study, and the PR #987 case study. |
 
 ## 4. Root causes
@@ -64,6 +68,12 @@ destination state both ordinary and reachable, but expanded it unconditionally.
 only `ubuntu-latest`, even though the repository already releases macOS desktop
 artifacts. The platform whose utilities define these contracts never ran them.
 
+**RC6 — the new runner leg inherited a GNU-only bootstrap command.** The shared
+disk cleanup step used `df --output=avail`, which BSD `df` rejects with exit 64.
+That step runs before toolchain setup, so the first fresh macOS job correctly
+failed before it could exercise any Rust test. A fake BSD-shaped `df` makes the
+bootstrap defect reproducible on Linux.
+
 ## 5. Research and prior art
 
 - The [FreeBSD `mktemp(1)` manual](https://man.freebsd.org/mktemp%281%29)
@@ -72,6 +82,9 @@ artifacts. The platform whose utilities define these contracts never ran them.
 - The [FreeBSD `script(1)` manual](https://man.freebsd.org/script%281%29) gives
   the BSD shape as `file [command ...]`. A small shared Rust helper centralizes
   that dialect choice and retains util-linux `-qfec` on Linux.
+- The [FreeBSD `df(1)` manual](https://man.freebsd.org/df%281%29) identifies
+  `-k` and `-P` as POSIX options. `df -Pk /` therefore supplies a stable
+  available-kilobytes column on both GNU and BSD implementations.
 - GitHub’s maintained
   [runner-image table](https://github.com/actions/runner-images#available-images)
   lists `macos-15-intel`; the repository’s desktop-release matrix already uses
@@ -107,6 +120,12 @@ packaging tests collided, two PTY tests received `script: illegal option -- f`,
 the proxy-log expectation missed `/private/var`, and seed sync reported
 `dests[@]: unbound variable` before its orphan pass.
 
+The first pushed macOS job then supplied a second tests-first cycle for its
+bootstrap dependency. Before changing `free-runner-disk.sh`, both
+`macos_test_bootstrap_uses_portable_df_syntax` and
+`runner_disk_cleanup_accepts_a_bsd_shaped_df` failed with
+`df: unrecognized option '--output=avail'`, matching CI exactly.
+
 ## 7. Implemented fix
 
 | Requirement | Change |
@@ -115,7 +134,7 @@ the proxy-log expectation missed `/private/var`, and seed sync reported
 | R961-2 | The integration fixture writes through a symlink alias, canonicalizes the resulting file, and compares diagnostics with that canonical path. |
 | R961-3 | `tests/integration/pty.rs` selects BSD argv on macOS and a safely shell-quoted util-linux command elsewhere; both former call sites use it. |
 | R961-4 | `sync-seed.sh` checks `${#dests[@]}` before expanding the array, preserving the orphan loop for non-empty destinations. |
-| R961-5 | The release test matrix now contains `ubuntu-latest` and `macos-15-intel`, with a 35-minute macOS budget and the existing 25-minute Linux budget. |
+| R961-5 | The release test matrix now contains `ubuntu-latest` and `macos-15-intel`, with a 35-minute macOS budget and the existing 25-minute Linux budget. Its disk-cleanup bootstrap reads available space through POSIX `df -Pk` rather than GNU `--output`. |
 | R961-6 | `tests/issue_961_macos_portability.rs` holds per-requirement and whole-task contracts; issue and PR evidence are committed separately. |
 
 ## 8. Formal AI / Agent CLI authorship
@@ -151,7 +170,7 @@ Focused Linux verification after the fix:
 
 ```console
 $ cargo test --test issue_961_macos_portability -- --nocapture
-test result: ok. 9 passed; 0 failed
+test result: ok. 11 passed; 0 failed
 $ cargo test --test issue_757_session_files -- --nocapture
 test result: ok. 2 passed; 0 failed
 ```

@@ -57,5 +57,16 @@ SHAs, and draft state.
 ## Verification and CI
 
 Local focused and repository-wide results are recorded in the issue case study.
-Fresh CI runs for the final head SHA, including downloaded logs for every
-non-passing run if any, are recorded here after the branch is pushed.
+The first fresh CI run for implementation SHA `324fc3fe` created the required
+`Test (macos-15-intel)` job, but its pre-test `free-runner-disk.sh` step failed:
+
+```text
+df: unrecognized option `--output=avail'
+Process completed with exit code 64.
+```
+
+The complete 1,100-line job log is preserved locally as
+`ci-logs/test-macos-15-intel-31387639397.log`; the failure is at lines
+1,064–1,066. Two tests reproduced the BSD parsing failure before the helper was
+changed to POSIX `df -Pk`. Fresh final-head results are added here once both
+platform legs complete.

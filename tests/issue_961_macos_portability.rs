@@ -7,6 +7,7 @@ const TUI_ISOLATION_TEST: &str = include_str!("integration/issue_819_tui_isolati
 const PTY_HELPER: &str = include_str!("integration/pty.rs");
 const WITH_FORMAL_AI_TEST: &str = include_str!("integration/with_formal_ai.rs");
 const SYNC_SEED: &str = include_str!("../scripts/sync-seed.sh");
+const RUNNER_DISK_CLEANUP: &str = include_str!("../scripts/free-runner-disk.sh");
 const RELEASE_WORKFLOW: &str = include_str!("../.github/workflows/release.yml");
 const REQUIREMENTS: &str = include_str!("../REQUIREMENTS.md");
 const ISSUE_CASE_STUDY: &str = include_str!("../docs/case-studies/issue-961/README.md");
@@ -80,6 +81,61 @@ fn full_test_matrix_runs_on_a_supported_macos_image() {
         .contains("timeout-minutes: ${{ matrix.os == 'macos-15-intel' && 35 || 25 }}"));
     assert!(RELEASE_WORKFLOW
         .contains("TEST_BUDGET_SECONDS: ${{ matrix.os == 'macos-15-intel' && 2100 || 1500 }}"));
+}
+
+#[test]
+fn macos_test_bootstrap_uses_portable_df_syntax() {
+    assert!(!RUNNER_DISK_CLEANUP.contains("--output=avail"));
+    assert!(RUNNER_DISK_CLEANUP.contains("df -Pk /"));
+}
+
+#[cfg(unix)]
+#[test]
+fn runner_disk_cleanup_accepts_a_bsd_shaped_df() {
+    use std::os::unix::fs::PermissionsExt as _;
+    use std::time::{SystemTime, UNIX_EPOCH};
+
+    let nonce = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .expect("clock after epoch")
+        .as_nanos();
+    let root = std::env::temp_dir().join(format!(
+        "formal-ai-issue-961-runner-disk-{}-{nonce}",
+        std::process::id()
+    ));
+    let bin_dir = root.join("bin");
+    std::fs::create_dir_all(&bin_dir).expect("fake binary directory");
+    let script = root.join("free-runner-disk.sh");
+    std::fs::write(&script, RUNNER_DISK_CLEANUP).expect("sandbox cleanup script");
+
+    for (name, body) in [
+        (
+            "df",
+            "#!/bin/sh\ncase \"$1\" in\n  -Pk) printf 'Filesystem 1024-blocks Used Available Capacity Mounted on\\n/dev/mock 100000 50000 50000 50%% /\\n' ;;\n  -h) printf 'Filesystem Size Used Avail Capacity Mounted on\\n/dev/mock 100G 50G 50G 50%% /\\n' ;;\n  *) echo \"df: unrecognized option '$1'\" >&2; exit 64 ;;\nesac\n",
+        ),
+        ("sudo", "#!/bin/sh\nexit 0\n"),
+    ] {
+        let path = bin_dir.join(name);
+        std::fs::write(&path, body).expect("fake command");
+        let mut permissions = std::fs::metadata(&path).expect("fake command metadata").permissions();
+        permissions.set_mode(0o755);
+        std::fs::set_permissions(&path, permissions).expect("fake command permissions");
+    }
+
+    let mut paths = vec![bin_dir];
+    paths.extend(std::env::split_paths(
+        &std::env::var_os("PATH").unwrap_or_default(),
+    ));
+    let output = std::process::Command::new("/bin/bash")
+        .arg(&script)
+        .env("PATH", std::env::join_paths(paths).expect("sandbox PATH"))
+        .env("RUNNER_DISK_MIN_MIB", "0")
+        .output()
+        .expect("run cleanup against BSD-shaped df");
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    std::fs::remove_dir_all(&root).expect("remove runner disk sandbox");
+
+    assert!(output.status.success(), "stderr:\n{stderr}");
 }
 
 #[test]
