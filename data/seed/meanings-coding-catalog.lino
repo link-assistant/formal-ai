@@ -3,6 +3,10 @@ meanings
     grounded-in Q9143
     defined-by software_language
     role program_language
+    precondition "a coding request needs an implementation language"
+    effect "the implementation-language concept can be selected"
+    unit "not applicable"
+    example "programming language"
     lexeme en
       surface
         text "programming language"
@@ -20,6 +24,10 @@ meanings
     defined-by program_language
     defined-by language_rust
     role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to Rust"
+    unit "not applicable"
+    example "rust"
     lexeme en
       surface
         text rust
@@ -41,6 +49,10 @@ meanings
     defined-by program_language
     defined-by language_python
     role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to Python"
+    unit "not applicable"
+    example "python"
     lexeme en
       surface
         text python
@@ -62,6 +74,10 @@ meanings
     defined-by program_language
     defined-by language_javascript
     role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to JavaScript"
+    unit "not applicable"
+    example "javascript"
     lexeme en
       surface
         text javascript
@@ -82,6 +98,10 @@ meanings
     grounded-in Q978185
     defined-by program_language
     role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to TypeScript"
+    unit "not applicable"
+    example "typescript"
     lexeme en
       surface
         text typescript
@@ -100,6 +120,10 @@ meanings
     grounded-in Q37227
     defined-by program_language
     role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to Go"
+    unit "not applicable"
+    example "go"
     lexeme en
       surface
         text go
@@ -118,6 +142,10 @@ meanings
     grounded-in Q15777
     defined-by program_language
     role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to C"
+    unit "not applicable"
+    example "c"
     lexeme en
       surface
         text c
@@ -134,6 +162,10 @@ meanings
     grounded-in Q2407
     defined-by program_language
     role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to C++"
+    unit "not applicable"
+    example "cpp"
     lexeme en
       surface
         text cpp
@@ -154,6 +186,10 @@ meanings
     grounded-in Q251
     defined-by program_language
     role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to Java"
+    unit "not applicable"
+    example "java"
     lexeme en
       surface
         text java
@@ -170,6 +206,10 @@ meanings
     grounded-in Q2370
     defined-by program_language
     role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to C sharp"
+    unit "not applicable"
+    example "csharp"
     lexeme en
       surface
         text csharp
@@ -192,6 +232,10 @@ meanings
     grounded-in Q161053
     defined-by program_language
     role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to Ruby"
+    unit "not applicable"
+    example "ruby"
     lexeme en
       surface
         text ruby
@@ -209,6 +253,10 @@ meanings
   program_task
     defined-by program
     role program_task
+    precondition "a coding request needs a program objective"
+    effect "the program-task concept can be selected"
+    unit "not applicable"
+    example "coding task"
     lexeme en
       surface
         text "coding task"
@@ -225,6 +273,10 @@ meanings
     defined-by program_task
     defined-by hello_world
     role program_task_alias
+    precondition "a coding request contains this task surface"
+    effect "the program-task slot is bound to hello world"
+    unit "not applicable"
+    example "hello world"
     lexeme en
       surface
         text "hello world"
@@ -240,6 +292,10 @@ meanings
   program_task_count_to_three
     defined-by program_task
     role program_task_alias
+    precondition "a coding request contains this task surface"
+    effect "the program-task slot is bound to count to three"
+    unit "not applicable"
+    example "count to three"
     lexeme en
       surface
         text "count to three"
@@ -267,6 +323,10 @@ meanings
   program_task_list_files
     defined-by program_task
     role program_task_alias
+    precondition "a coding request contains this task surface"
+    effect "the program-task slot is bound to list files"
+    unit "not applicable"
+    example "list files in the current directory"
     lexeme en
       surface
         text "list files in the current directory"
@@ -344,6 +404,10 @@ meanings
   program_task_list_files_arg
     defined-by program_task
     role program_task_alias
+    precondition "a coding request contains this task surface"
+    effect "the program-task slot is bound to list files from an argument"
+    unit "not applicable"
+    example "list files in the directory given as a path argument"
     lexeme en
       surface
         text "list files in the directory given as a path argument"
@@ -375,6 +439,10 @@ meanings
   program_task_list_files_reverse_sort
     defined-by program_task
     role program_task_alias
+    precondition "a coding request contains this task surface"
+    effect "the program-task slot is bound to reverse-sorted file listing"
+    unit "not applicable"
+    example "list files in reverse order"
     lexeme en
       surface
         text "list files in reverse order"
@@ -402,6 +470,10 @@ meanings
   program_task_list_files_arg_reverse_sort
     defined-by program_task
     role program_task_alias
+    precondition "a coding request contains this task surface"
+    effect "the program-task slot is bound to reverse-sorted argument-path listing"
+    unit "not applicable"
+    example "list files from a path argument in reverse order"
     lexeme en
       surface
         text "list files from a path argument in reverse order"
@@ -429,6 +501,10 @@ meanings
   program_task_fizzbuzz
     defined-by program_task
     role program_task_alias
+    precondition "a coding request contains this task surface"
+    effect "the program-task slot is bound to fizzbuzz"
+    unit "not applicable"
+    example "fizzbuzz"
     lexeme en
       surface
         text fizzbuzz
@@ -452,6 +528,10 @@ meanings
   program_task_factorial
     defined-by program_task
     role program_task_alias
+    precondition "a coding request contains this task surface"
+    effect "the program-task slot is bound to factorial"
+    unit "not applicable"
+    example "factorial of 5"
     lexeme en
       surface
         text "factorial of 5"
@@ -481,6 +561,10 @@ meanings
   program_task_reverse_string
     defined-by program_task
     role program_task_alias
+    precondition "a coding request contains this task surface"
+    effect "the program-task slot is bound to reverse string"
+    unit "not applicable"
+    example "reverse a string"
     lexeme en
       surface
         text "reverse a string"
@@ -514,6 +598,10 @@ meanings
   program_task_sum_to_ten
     defined-by program_task
     role program_task_alias
+    precondition "a coding request contains this task surface"
+    effect "the program-task slot is bound to sum to ten"
+    unit "not applicable"
+    example "sum of 1 to 10"
     lexeme en
       surface
         text "sum of 1 to 10"
@@ -549,6 +637,10 @@ meanings
   program_task_fibonacci
     defined-by program_task
     role program_task_alias
+    precondition "a coding request contains this task surface"
+    effect "the program-task slot is bound to recursive fibonacci"
+    unit "not applicable"
+    example "fibonacci sequence recursively"
     lexeme en
       surface
         text "fibonacci sequence recursively"

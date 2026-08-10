@@ -1,0 +1,302 @@
+//! Regression coverage for issue #918's minimal-core and seed-metadata audit.
+
+use std::collections::{BTreeMap, BTreeSet};
+use std::fs;
+use std::path::{Path, PathBuf};
+
+fn rust_sources_below(directory: &Path) -> BTreeSet<String> {
+    fn visit(root: &Path, directory: &Path, sources: &mut BTreeSet<String>) {
+        for entry in fs::read_dir(directory).expect("handler directory") {
+            let path = entry.expect("handler entry").path();
+            if path.is_dir() {
+                visit(root, &path, sources);
+            } else if path.extension().is_some_and(|extension| extension == "rs") {
+                sources.insert(
+                    path.strip_prefix(root)
+                        .expect("handler source below repository root")
+                        .to_string_lossy()
+                        .replace('\\', "/"),
+                );
+            }
+        }
+    }
+
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let mut sources = BTreeSet::new();
+    visit(root, directory, &mut sources);
+    sources
+}
+
+#[derive(Default)]
+struct LedgerEntry {
+    path: String,
+    disposition: String,
+    core_component: String,
+    reason: String,
+}
+
+fn ledger_entries(ledger: &str) -> Vec<LedgerEntry> {
+    let mut entries = Vec::new();
+    let mut current: Option<LedgerEntry> = None;
+    for line in ledger.lines() {
+        if let Some(path) = line.strip_prefix("  source ") {
+            if let Some(entry) = current.take() {
+                entries.push(entry);
+            }
+            current = Some(LedgerEntry {
+                path: path.to_owned(),
+                ..LedgerEntry::default()
+            });
+        } else if let Some(entry) = current.as_mut() {
+            let trimmed = line.trim();
+            if let Some(value) = trimmed.strip_prefix("disposition ") {
+                entry.disposition = value.to_owned();
+            } else if let Some(value) = trimmed.strip_prefix("core_component ") {
+                entry.core_component = value.to_owned();
+            } else if let Some(value) = trimmed.strip_prefix("reason ") {
+                entry.reason = value.trim_matches('"').to_owned();
+            }
+        }
+    }
+    if let Some(entry) = current {
+        entries.push(entry);
+    }
+    entries
+}
+
+fn lino_files_below(directory: &Path) -> Vec<PathBuf> {
+    fn visit(directory: &Path, paths: &mut Vec<PathBuf>) {
+        for entry in fs::read_dir(directory).expect("data directory") {
+            let path = entry.expect("data entry").path();
+            if path.is_dir() {
+                visit(&path, paths);
+            } else if path
+                .extension()
+                .is_some_and(|extension| extension == "lino")
+            {
+                paths.push(path);
+            }
+        }
+    }
+    let mut paths = Vec::new();
+    visit(directory, &mut paths);
+    paths.sort();
+    paths
+}
+
+fn required_metadata(schema: &str) -> Vec<String> {
+    schema
+        .lines()
+        .filter_map(|line| line.strip_prefix("  required_field "))
+        .map(str::to_owned)
+        .collect()
+}
+
+fn meaning_records(source: &str, text: &str) -> Vec<(String, String, BTreeSet<String>)> {
+    if text.lines().find(|line| !line.trim().is_empty()) != Some("meanings") {
+        return Vec::new();
+    }
+    let mut records = Vec::new();
+    let mut current: Option<(String, String, BTreeSet<String>)> = None;
+    for line in text.lines().skip(1) {
+        let indentation = line.bytes().take_while(|byte| *byte == b' ').count();
+        if indentation == 2 {
+            if let Some(record) = current.take() {
+                records.push(record);
+            }
+            current = Some((
+                source.to_owned(),
+                line.split_whitespace()
+                    .next()
+                    .expect("meaning name")
+                    .to_owned(),
+                BTreeSet::new(),
+            ));
+        } else if indentation == 4 {
+            if let (Some(record), Some(field)) = (current.as_mut(), line.split_whitespace().next())
+            {
+                record.2.insert(field.to_owned());
+            }
+        }
+    }
+    if let Some(record) = current {
+        records.push(record);
+    }
+    records
+}
+
+fn committed_gaps(root: &Path) -> BTreeMap<(String, String), String> {
+    let mut paths = fs::read_dir(root.join("data/meta"))
+        .expect("metadata directory")
+        .filter_map(Result::ok)
+        .map(|entry| entry.path())
+        .filter(|path| {
+            path.file_name().is_some_and(|name| {
+                let name = name.to_string_lossy();
+                name.starts_with("seed-metadata-gaps-") && name.ends_with(".lino")
+            })
+        })
+        .collect::<Vec<_>>();
+    paths.sort();
+    assert_eq!(
+        paths.len(),
+        16,
+        "the metadata gap audit uses 16 stable shards"
+    );
+
+    let mut gaps = BTreeMap::new();
+    for path in paths {
+        let text = fs::read_to_string(&path).expect("metadata gap shard");
+        assert!(
+            text.lines().count() <= 1_500,
+            "{} exceeds the data-file line limit",
+            path.display()
+        );
+        let mut record = None;
+        let mut source = None;
+        for line in text.lines() {
+            if let Some(value) = line.strip_prefix("  gap ") {
+                record = Some(value.to_owned());
+                source = None;
+            } else if let Some(value) = line.strip_prefix("    source ") {
+                source = Some(value.trim_matches('"').to_owned());
+            } else if let Some(value) = line.strip_prefix("    missing ") {
+                let key = (
+                    source.take().expect("gap source"),
+                    record.take().expect("gap record"),
+                );
+                assert!(
+                    gaps.insert(key, value.trim_matches('"').to_owned())
+                        .is_none(),
+                    "each seed record has at most one gap entry"
+                );
+            }
+        }
+    }
+    gaps
+}
+
+#[test]
+fn minimal_core_ledger_covers_every_recursive_handler_source() {
+    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    let actual = rust_sources_below(&root.join("src/solver_handlers"));
+    let ledger = fs::read_to_string(root.join("data/meta/core-boundary-ledger.lino"))
+        .expect("issue #918 must provide the source-file core-boundary ledger");
+    let entries = ledger_entries(&ledger);
+    let active = entries
+        .iter()
+        .filter(|entry| entry.disposition != "delete")
+        .map(|entry| entry.path.clone())
+        .collect::<BTreeSet<_>>();
+
+    assert_eq!(active, actual);
+    assert_eq!(actual.len(), 46);
+    assert_eq!(
+        entries
+            .iter()
+            .filter(|entry| entry.disposition == "migrate")
+            .count(),
+        43
+    );
+    assert_eq!(
+        entries
+            .iter()
+            .filter(|entry| entry.disposition == "promote")
+            .count(),
+        3
+    );
+    for entry in entries
+        .iter()
+        .filter(|entry| entry.disposition == "promote")
+    {
+        assert!(
+            !entry.core_component.is_empty(),
+            "{} promotion must name its core component",
+            entry.path
+        );
+        assert!(
+            !entry.reason.is_empty(),
+            "{} promotion must explain the boundary decision",
+            entry.path
+        );
+    }
+    for disposition in entries.iter().map(|entry| entry.disposition.as_str()) {
+        assert!(matches!(disposition, "migrate" | "promote" | "delete"));
+    }
+    assert!(ledger.contains("outside_core_lines_max 19021"));
+}
+
+#[test]
+fn boundary_document_names_the_only_four_compiled_core_categories() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let boundary = fs::read_to_string(root.join("docs/design/minimal-core-boundary.md"))
+        .expect("minimal-core boundary document");
+    for category in [
+        "Meta algorithm",
+        "Link store",
+        "Generic interpreters",
+        "Host surfaces",
+    ] {
+        assert!(
+            boundary.contains(category),
+            "missing boundary category {category}"
+        );
+    }
+    assert!(boundary.contains("Mixed files fail the promotion test"));
+    assert!(boundary.contains("Everything else is seed or learned data"));
+}
+
+#[test]
+fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let schema_text = fs::read_to_string(root.join("data/meta/seed-metadata-schema.lino"))
+        .expect("seed metadata schema");
+    let required = required_metadata(&schema_text);
+    assert_eq!(
+        required,
+        ["role", "precondition", "effect", "unit", "example"]
+    );
+    for external_shape in ["FrameNet", "Wikidata:Data_model", "typed property value"] {
+        assert!(
+            schema_text.contains(external_shape),
+            "schema must cite {external_shape}"
+        );
+    }
+    let complete_sources = schema_text
+        .lines()
+        .filter_map(|line| line.strip_prefix("  complete_source "))
+        .map(|value| value.trim_matches('"').to_owned())
+        .collect::<BTreeSet<_>>();
+    assert_eq!(complete_sources.len(), 2);
+
+    let mut expected_gaps = BTreeMap::new();
+    let mut coding_records = 0;
+    let seed_root = root.join("data/seed");
+    for path in lino_files_below(&seed_root) {
+        let source = path
+            .strip_prefix(root)
+            .expect("relative seed path")
+            .to_string_lossy()
+            .replace('\\', "/");
+        let text = fs::read_to_string(&path).expect("seed file");
+        for (source, record, fields) in meaning_records(&source, &text) {
+            let missing = required
+                .iter()
+                .filter(|field| !fields.contains(field.as_str()))
+                .cloned()
+                .collect::<Vec<_>>();
+            if complete_sources.contains(&source) {
+                coding_records += 1;
+                assert!(
+                    missing.is_empty(),
+                    "{source}:{record} is missing {missing:?}"
+                );
+            } else if !missing.is_empty() {
+                expected_gaps.insert((source, record), missing.join(","));
+            }
+        }
+    }
+    assert_eq!(coding_records, 37, "coding-path regression floor");
+    assert_eq!(committed_gaps(root), expected_gaps);
+    assert_eq!(expected_gaps.len(), 3_447);
+}

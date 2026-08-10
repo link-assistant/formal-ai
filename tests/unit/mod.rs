@@ -179,6 +179,7 @@ mod issue_907;
 mod issue_908;
 mod issue_916;
 mod issue_917;
+mod issue_918;
 mod issue_962_word_operator_parity;
 mod local_surface;
 mod memory_learning;
