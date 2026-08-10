@@ -70,6 +70,12 @@ fn pty_tests_do_not_embed_util_linux_only_script_flags() {
 }
 
 #[test]
+fn pty_input_waits_for_tui_readiness_before_writing() {
+    assert!(PTY_HELPER.contains("interact_after_ready"));
+    assert!(WITH_FORMAL_AI_TEST.contains("pty::interact_after_ready"));
+}
+
+#[test]
 fn seed_sync_guards_an_empty_destination_array() {
     assert!(seed_array_guard_precedes_expansion());
 }
