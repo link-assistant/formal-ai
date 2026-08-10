@@ -145,7 +145,10 @@ fn issue_918_agent_cli_authorship_leaf_is_byte_exact_and_reproducible() {
         "formal-ai-server.log",
         "worktree-status.txt",
     ] {
-        assert!(evidence.join(file).is_file(), "missing Agent evidence: {file}");
+        assert!(
+            evidence.join(file).is_file(),
+            "missing Agent evidence: {file}"
+        );
     }
 
     let script = read(root.join("experiments/issue_918_agent_cli.sh"));

@@ -50,11 +50,11 @@ fn ledger_entries(ledger: &str) -> Vec<LedgerEntry> {
         } else if let Some(entry) = current.as_mut() {
             let trimmed = line.trim();
             if let Some(value) = trimmed.strip_prefix("disposition ") {
-                entry.disposition = value.to_owned();
+                value.clone_into(&mut entry.disposition);
             } else if let Some(value) = trimmed.strip_prefix("core_component ") {
-                entry.core_component = value.to_owned();
+                value.clone_into(&mut entry.core_component);
             } else if let Some(value) = trimmed.strip_prefix("reason ") {
-                entry.reason = value.trim_matches('"').to_owned();
+                value.trim_matches('"').clone_into(&mut entry.reason);
             }
         }
     }
