@@ -25,6 +25,17 @@ const SCHEMA_MARKER: &str = "schema_version";
 
 static TEMP_SEQUENCE: AtomicU64 = AtomicU64::new(0);
 
+struct ExclusiveFileLock(fs::File);
+
+impl Drop for ExclusiveFileLock {
+    fn drop(&mut self) {
+        // Explicitly release the advisory lock before closing the descriptor.
+        // A concurrently forked child can briefly inherit the open file
+        // description even though the descriptor is close-on-exec.
+        let _ = fs2::FileExt::unlock(&self.0);
+    }
+}
+
 /// Machine-readable state returned by preflight and `/health`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "snake_case")]
@@ -457,6 +468,7 @@ where
         )
         .with_status(preflight_memory_upgrade(path))
     })?;
+    let _lock = ExclusiveFileLock(lock_file);
 
     let original = fs::read(path).map_err(|error| {
         MemoryUpgradeError::new(
