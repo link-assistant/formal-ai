@@ -551,9 +551,10 @@ jobs:
   test:
     name: Test (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
-    # 25 minutes, not 15: see the note on the "Run tests" step. Keep this in
-    # sync with TEST_BUDGET_SECONDS there.
-    timeout-minutes: 25
+    # macOS compiles from a separate cache and runs the whole suite with its BSD
+    # utilities and stock Bash; keep Linux's measured budget while allowing the
+    # portability leg enough cold-run headroom.
+    timeout-minutes: ${{ matrix.os == 'macos-15-intel' && 35 || 25 }}
     needs: [detect-changes]
     # Note: a status-check function is required because detect-changes is skipped
     # on workflow_dispatch; without one the skipped dependency would cascade and
@@ -570,9 +571,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Windows and macOS execution is dropped for now to speed up iteration;
-        # the tests themselves are kept and still run on Linux.
-        os: [ubuntu-latest]
+        # macOS is a required parity leg: several shell and PTY contracts cannot
+        # be exercised by GNU userland on Linux (issue #961).
+        os: [ubuntu-latest, macos-15-intel]
     steps:
       - uses: actions/checkout@v6
         with:
@@ -631,7 +632,7 @@ jobs:
       # separately -- inflating the cap silently is what this avoids.
       - name: Run tests
         env:
-          TEST_BUDGET_SECONDS: 1500
+          TEST_BUDGET_SECONDS: ${{ matrix.os == 'macos-15-intel' && 2100 || 1500 }}
           TEST_WARN_RATIO_PERCENT: 70
         run: |
           set -euo pipefail
