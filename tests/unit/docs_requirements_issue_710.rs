@@ -28,7 +28,7 @@ const VERDICTS: [&str; 4] = [
 #[test]
 fn every_issue_710_checklist_row_has_one_allowed_verdict_and_evidence() {
     let audit = CASE_STUDY
-        .split("## 2026-08-01 re-verification")
+        .split("## 2026-08-10 follow-up re-verification")
         .nth(1)
         .expect("case study should contain the dated re-verification")
         .split("Totals:")
@@ -70,7 +70,11 @@ fn every_issue_710_checklist_row_has_one_allowed_verdict_and_evidence() {
 
 #[test]
 fn no_conversational_gap_is_left_without_a_green_specification() {
-    let chat_rows = CASE_STUDY
+    let current_audit = CASE_STUDY
+        .split("## 2026-08-10 follow-up re-verification")
+        .nth(1)
+        .expect("case study should contain the follow-up re-verification");
+    let chat_rows = current_audit
         .lines()
         .filter(|line| line.starts_with('|') && line.contains("| Chat |"))
         .collect::<Vec<_>>();
@@ -93,13 +97,13 @@ fn requirements_and_roadmap_report_the_same_partial_reality() {
         rows.iter()
             .filter(|row| row.contains("`works-now`"))
             .count(),
-        21
+        29
     );
     assert_eq!(
         rows.iter()
             .filter(|row| row.contains("`still-broken`"))
             .count(),
-        10
+        2
     );
     assert_eq!(
         rows.iter()
@@ -107,10 +111,20 @@ fn requirements_and_roadmap_report_the_same_partial_reality() {
             .count(),
         1
     );
-    assert!(ROADMAP.contains("21 works now, 1 superseded, 10 still broken"));
+    assert!(ROADMAP.contains("29 works now, 1 superseded, 2 still broken"));
     assert!(
         !ROADMAP.contains("Silently-dropped chat/UX/process requirements re-verified | Not done")
     );
+}
+
+#[test]
+fn current_open_gaps_have_focused_open_owners() {
+    assert!(CASE_STUDY.contains("[#990](https://github.com/link-assistant/formal-ai/issues/990)"));
+    assert!(CASE_STUDY.contains("[#991](https://github.com/link-assistant/formal-ai/issues/991)"));
+    assert!(REQUIREMENTS.contains("R710-20 | How-to multi-source synthesis and seven-day availability cache. | `still-broken` — [#991]"));
+    assert!(REQUIREMENTS.contains(
+        "R710-30 | link-foundation/start and command-stream adoption. | `still-broken` — [#990]"
+    ));
 }
 
 #[test]
@@ -125,6 +139,8 @@ fn formal_ai_authored_verdict_leaf_is_byte_exact_and_has_session_evidence() {
 
 #[test]
 fn formal_ai_authored_audit_leaf_matches_all_reconciled_requirements() {
+    // This 2026-08-01 Agent-authored artifact is intentionally immutable even
+    // though the current follow-up audit records later merged implementations.
     let requirements = AGENT_AUTHORED_AUDIT
         .split("\n  requirement\n")
         .skip(1)
