@@ -1,8 +1,9 @@
 use std::net::TcpListener;
 use std::os::unix::fs::PermissionsExt;
 use std::path::Path;
-use std::process::Command;
 use std::time::{SystemTime, UNIX_EPOCH};
+
+use super::pty;
 
 fn tmpdir() -> std::path::PathBuf {
     let unique = SystemTime::now()
@@ -56,15 +57,17 @@ fn temporary_server_diagnostics_do_not_leak_into_the_wrapped_tui() {
     let path = format!("{}:{}", bin_dir.display(), existing_path.to_string_lossy());
 
     let wrapper = env!("CARGO_BIN_EXE_formal-ai");
-    let command = format!("{wrapper} with --port {port} --start-server opencode");
-    let output = Command::new("script")
-        .args(["-qfec", &command, "/dev/null"])
-        .env("HOME", &home)
-        .env("PATH", path)
-        .env("FORMAL_AI_DIALOG_LOG_DIR", &logs)
-        .env("FORMAL_AI_TEST_PORT", port.to_string())
-        .output()
-        .expect("launch wrapper with temporary server in PTY");
+    let port_arg = port.to_string();
+    let output = pty::command(
+        wrapper,
+        &["with", "--port", &port_arg, "--start-server", "opencode"],
+    )
+    .env("HOME", &home)
+    .env("PATH", path)
+    .env("FORMAL_AI_DIALOG_LOG_DIR", &logs)
+    .env("FORMAL_AI_TEST_PORT", port.to_string())
+    .output()
+    .expect("launch wrapper with temporary server in PTY");
     let terminal = format!(
         "{}{}",
         String::from_utf8_lossy(&output.stdout),

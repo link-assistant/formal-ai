@@ -15,7 +15,7 @@ if [ "$#" -eq 0 ]; then
   exit 2
 fi
 
-package_log="$(mktemp "${RUNNER_TEMP:-${TMPDIR:-/tmp}}/formal-ai-macos-package.XXXXXX.log")"
+package_log="$(mktemp "${RUNNER_TEMP:-${TMPDIR:-/tmp}}/formal-ai-macos-package.log.XXXXXX")"
 cleanup_log() {
   rm -f -- "$package_log"
 }
