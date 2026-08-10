@@ -61,10 +61,13 @@ fn coding_gap_is_solved_by_a_verified_researched_procedure_and_replays_offline()
         .with_clock(fixed_time);
     let failed_task = formal_ai::FormalAiEngine.answer("Write a Ruby program that counts to three");
     assert_eq!(failed_task.intent, "write_program_skill_gap");
+    assert_eq!(
+        failed_task.answer,
+        "I cannot write this program: no synthesis route reaches task \"count_to_three\" in language \"ruby\".\n\nI decomposed the request and tried every synthesis route I have, in order — catalog, blueprint_recipes, coding_oracle, seed_idiom_composer — and none of them derives it.\n\nNothing was guessed: I do not return a program I cannot derive, and I do not recite the templates I happen to hold. Teach me the missing idiom for `ruby`, or restate the task in steps I can already compile."
+    );
     let source = "def main\n  __COUNT_TO_THREE__\nend\n";
     let expected = "def main\n  1.upto(3) { |number| puts number }\nend\n";
     let mut gap = CodingResearchGap::for_program_task("count_to_three", "ruby");
-    assert!(failed_task.answer.contains(gap.name()));
     let mut ledger = ResearchedCodingProcedureLedger::new();
 
     let learned = research_coding_skill_gap(
