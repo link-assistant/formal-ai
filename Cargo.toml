@@ -63,8 +63,8 @@ toml_edit = "0.25.13"
 walkdir = "2"
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-web-capture = "0.3.34"
-web-search = "0.3.1"
+web-capture = { version = "0.3.36", default-features = false, features = ["search"] }
+web-search = { version = "0.5.0", default-features = false }
 
 [features]
 default = ["doublets-native", "meta-language"]

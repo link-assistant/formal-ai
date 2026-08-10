@@ -185,11 +185,28 @@ fn native_search_reports_both_component_and_fallback_failures() {
 }
 
 #[test]
-fn published_web_search_default_plan_remains_the_production_plan() {
-    assert_eq!(
-        web_search::get_default_provider_ids(),
-        formal_ai::default_search_plan_ids()
+fn published_web_search_merger_remains_available_without_the_server_feature() {
+    let by_provider = std::collections::HashMap::from([(
+        String::from("duckduckgo"),
+        vec![web_search::SearchResult {
+            title: String::from("Component result"),
+            url: String::from("https://component.invalid/result"),
+            snippet: String::from("Transport-independent merge input"),
+            source: String::from("duckduckgo"),
+            rank: 1,
+            score: None,
+            sources: None,
+        }],
+    )]);
+
+    let merged = web_search::merger::merge_results(
+        &by_provider,
+        &web_search::MergeOptions::new().with_rrf_k(60.0),
     );
+
+    assert_eq!(merged.len(), 1);
+    assert_eq!(merged[0].url, "https://component.invalid/result");
+    assert_eq!(merged[0].source, "duckduckgo");
 }
 
 #[test]

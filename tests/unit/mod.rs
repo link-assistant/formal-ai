@@ -183,6 +183,7 @@ mod issue_917;
 mod issue_918;
 mod issue_919;
 mod issue_962_word_operator_parity;
+mod issue_988_stock_rust_install;
 mod local_surface;
 mod memory_learning;
 mod memory_maintenance;
