@@ -31,12 +31,22 @@ const SCRATCH_VARIABLE: &str = "report_dir";
 /// every artifact carry a real extension.
 const SCRATCH_SETUP: &str = "report_dir=$(mktemp -d \"${TMPDIR:-/tmp}/formal-ai-report.XXXXXX\")\n\
                              trap 'rm -rf \"$report_dir\"' EXIT";
+/// Shell variable holding the directory of one report's deliverable exports.
+const EXPORT_VARIABLE: &str = "export_dir";
+/// One directory per export, outside the caller's working directory (#945).
+///
+/// Unlike [`SCRATCH_SETUP`] there is no removal trap: a harness or server log
+/// export *is* the deliverable, so the directory must outlive the script. What
+/// it must never do is land in the CWD, where a repo checkout would collect
+/// untracked session dumps at its root.
+const EXPORT_SETUP: &str = "export_dir=$(mktemp -d \"${TMPDIR:-/tmp}/formal-ai-export.XXXXXX\")";
 
 /// A shell script assembled from named steps.
 pub(super) struct ReportScript {
     programs: Vec<String>,
     steps: Vec<String>,
     scratch: bool,
+    export: bool,
 }
 
 impl ReportScript {
@@ -45,6 +55,7 @@ impl ReportScript {
             programs: Vec::new(),
             steps: Vec::new(),
             scratch: false,
+            export: false,
         }
     }
 
@@ -62,12 +73,21 @@ impl ReportScript {
         format!("\"${SCRATCH_VARIABLE}/{name}\"")
     }
 
-    /// Render the script: strict mode, preflight, scratch setup, then steps.
+    /// A shell-quoted path inside this report's surviving export directory.
+    pub(super) fn export(&mut self, name: &str) -> String {
+        self.export = true;
+        format!("\"${EXPORT_VARIABLE}/{name}\"")
+    }
+
+    /// Render the script: strict mode, preflight, directory setup, then steps.
     pub(super) fn render(&self) -> String {
         let mut lines = vec![String::from(STRICT_MODE)];
         lines.extend(self.programs.iter().map(|program| preflight(program)));
         if self.scratch {
             lines.push(String::from(SCRATCH_SETUP));
+        }
+        if self.export {
+            lines.push(String::from(EXPORT_SETUP));
         }
         lines.extend(self.steps.iter().cloned());
         lines.join("\n")
