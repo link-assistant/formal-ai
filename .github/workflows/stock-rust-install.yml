@@ -1,0 +1,39 @@
+name: Stock Rust Install
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  stock-rust-install:
+    runs-on: ubuntu-latest
+    container: rust:1.96-slim-bookworm
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v6
+      - name: Reject a system OpenSSL dependency
+        run: |
+          if cargo tree --locked -i openssl-sys; then
+            echo "openssl-sys unexpectedly remains in the default dependency graph" >&2
+            exit 1
+          fi
+      - name: Install on the unmodified stock image
+        run: cargo install --path . --locked --root /tmp/formal-ai-install
+      - name: Verify the installed binary has no OpenSSL runtime link
+        run: |
+          ldd /tmp/formal-ai-install/bin/formal-ai | tee /tmp/formal-ai-ldd.txt
+          if grep -Eq 'libssl|libcrypto' /tmp/formal-ai-ldd.txt; then
+            echo "formal-ai unexpectedly links a system OpenSSL library" >&2
+            exit 1
+          fi
+          /tmp/formal-ai-install/bin/formal-ai --version
