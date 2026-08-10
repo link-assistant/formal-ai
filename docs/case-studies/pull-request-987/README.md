@@ -68,8 +68,7 @@ Process completed with exit code 64.
 The complete 1,100-line job log is preserved locally as
 `ci-logs/test-macos-15-intel-31387639397.log`; the failure is at lines
 1,064–1,066. Two tests reproduced the BSD parsing failure before the helper was
-changed to POSIX `df -Pk`. Fresh final-head results are added here once both
-platform legs complete.
+changed to POSIX `df -Pk`.
 
 The next implementation run for SHA `c4ba33e3` passed that bootstrap and
 reached the full macOS integration target. It passed 329 of 330 cases and
@@ -88,3 +87,22 @@ starting BSD `script`, before the fake client announced readiness. A failing
 source contract was added first, then the shared PTY helper was extended to
 observe a line-ending-independent `TUI_READY` token before writing. Its unit
 test covers a CRLF stream and the real eight-client integration passes locally.
+
+The third implementation run for SHA `3c34d77c` kept the readiness gate and
+again passed 329 of 330 macOS integration cases. Its output made the remaining
+lifecycle race explicit:
+
+```text
+TUI_READY
+^D^H^Hhi
+interactive input was not forwarded
+```
+
+The complete 3,741-line job log is preserved locally as
+`ci-logs/test-macos-15-intel-31392614858.log`; the failure is at lines
+3,562 and 3,595–3,613. The complete 35,118-line workflow log is
+`ci-logs/CI-CD-Pipeline-31392614858.log`, with the same evidence at lines
+15,153–15,204. A behavioral test then reproduced the immediate pipe close as
+premature EOF. The helper now retains `script`'s stdin until its child exits;
+the four helper cases, real eight-client integration, formatting, and full
+workspace Clippy pass locally.

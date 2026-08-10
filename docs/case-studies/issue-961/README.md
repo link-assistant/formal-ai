@@ -33,6 +33,10 @@ failures came from the four portability defects grouped into issue #961.
   and exposes an input-order race in the migrated interactive PTY test. A new
   tests-first contract requires the caller to wait for its fake TUI's readiness
   marker; focused unit and eight-client integration tests verify the repair.
+- **2026-08-10** — a third macOS leg proves readiness alone is insufficient:
+  BSD `script` prints `TUI_READY`, terminal EOT, then `hi`. A behavioral
+  regression reproduces the early EOF before the helper keeps stdin open until
+  the PTY command exits.
 
 ## 3. Requirements
 
@@ -40,7 +44,7 @@ failures came from the four portability defects grouped into issue #961.
 | --- | --- | --- |
 | R961-1 | Give the macOS packaging retry wrapper a BSD-portable random log path. | `package_log_uses_a_bsd_portable_mktemp_template`; the existing parallel `macos_package_retry` tests exercise collision freedom. |
 | R961-2 | Compare the session diagnostic with the same canonical proxy-log path the product prints. | `proxy_log_expectation_matches_the_canonicalized_product_path` plus a real symlink-alias integration case in `issue_757_session_files`. |
-| R961-3 | Run both PTY integration tests with the platform’s `script(1)` syntax. | `pty` helper unit tests pin exact BSD and util-linux argv; the interactive caller waits for a line-ending-independent readiness marker before writing input. |
+| R961-3 | Run both PTY integration tests with the platform’s `script(1)` syntax. | `pty` helper unit tests pin exact BSD and util-linux argv; the interactive caller waits for a line-ending-independent readiness marker and keeps the input pipe open until the PTY command exits. |
 | R961-4 | Let `sync-seed.sh --check` reach orphan detection under Bash 3.2 when the destination is empty. | Source-order contract plus `seed_sync_reaches_the_orphan_pass_with_an_empty_destination`. |
 | R961-5 | Run the complete Rust test suite on macOS in CI. | `full_test_matrix_runs_on_a_supported_macos_image` pins `macos-15-intel` beside Linux; source and fake-BSD execution tests ensure the shared disk-cleanup bootstrap reaches Cargo. |
 | R961-6 | Keep a whole-task regression and the required issue/PR evidence. | `complete_macos_portability_contract_holds`, this case study, and the PR #987 case study. |
@@ -78,11 +82,13 @@ That step runs before toolchain setup, so the first fresh macOS job correctly
 failed before it could exercise any Rust test. A fake BSD-shaped `df` makes the
 bootstrap defect reproducible on Linux.
 
-**RC7 — the interactive PTY fixture wrote before its fake client was ready.**
-The util-linux implementation queued the early `hi\n`, but BSD `script`
-processed terminal EOF before the fake Codex client reached its read. The test
-now observes `TUI_READY` first, then writes. The marker intentionally omits a
-newline because PTYs can translate `\n` to `\r\n`.
+**RC7 — the interactive PTY fixture had two input-lifecycle races.** The
+util-linux implementation queued the early `hi\n`, but BSD `script` could
+process terminal EOF before the fake Codex client reached its read. Waiting for
+`TUI_READY` removed that ordering race, but closing `script`'s stdin immediately
+after the write still translated the pipe close into terminal EOT ahead of the
+buffered line. The helper now uses a line-ending-independent readiness token
+and retains the stdin handle until the PTY command exits.
 
 ## 5. Research and prior art
 
@@ -143,13 +149,19 @@ Before changing the helper and caller,
 also exercises a `TUI_READY\r\n` stream so the repaired synchronization does
 not reintroduce a platform-specific newline assumption.
 
+The third pushed macOS job again passed 329 of 330 integration cases, but its
+captured order was `TUI_READY`, `^D`, then `hi`. The behavioral
+`interaction_keeps_stdin_open_until_the_pty_command_exits` test failed against
+the immediate-close helper with `stdin reached EOF before the PTY command
+exited`, then passed after stdin's lifetime was extended through child exit.
+
 ## 7. Implemented fix
 
 | Requirement | Change |
 | --- | --- |
 | R961-1 | `package-macos-with-retry.sh` now uses `formal-ai-macos-package.log.XXXXXX`, with every placeholder character at the end. |
 | R961-2 | The integration fixture writes through a symlink alias, canonicalizes the resulting file, and compares diagnostics with that canonical path. |
-| R961-3 | `tests/integration/pty.rs` selects BSD argv on macOS and a safely shell-quoted util-linux command elsewhere; both former call sites use it, and the interactive test waits for `TUI_READY` before sending input. |
+| R961-3 | `tests/integration/pty.rs` selects BSD argv on macOS and a safely shell-quoted util-linux command elsewhere; both former call sites use it, and the interactive helper waits for `TUI_READY`, sends input, and defers EOF until the command exits. |
 | R961-4 | `sync-seed.sh` checks `${#dests[@]}` before expanding the array, preserving the orphan loop for non-empty destinations. |
 | R961-5 | The release test matrix now contains `ubuntu-latest` and `macos-15-intel`, with a 35-minute macOS budget and the existing 25-minute Linux budget. Its disk-cleanup bootstrap reads available space through POSIX `df -Pk` rather than GNU `--output`. |
 | R961-6 | `tests/issue_961_macos_portability.rs` holds per-requirement and whole-task contracts; issue and PR evidence are committed separately. |
@@ -191,7 +203,7 @@ test result: ok. 12 passed; 0 failed
 $ cargo test --test issue_757_session_files -- --nocapture
 test result: ok. 2 passed; 0 failed
 $ cargo test --test integration pty:: -- --nocapture
-test result: ok. 3 passed; 0 failed
+test result: ok. 4 passed; 0 failed
 $ cargo test --test integration with_formal_ai::with_formal_ai_default_interactive_mode_launches_every_tool_in_a_pty -- --nocapture
 test result: ok. 1 passed; 0 failed
 ```
