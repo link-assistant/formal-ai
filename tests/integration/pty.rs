@@ -66,10 +66,13 @@ pub fn interact_after_ready(
         .ok_or_else(|| io::Error::other("PTY stdin was not piped"))?;
     stdin.write_all(input)?;
     stdin.flush()?;
-    drop(stdin);
 
+    // BSD script translates closing its input into a terminal EOT. Keep the
+    // pipe alive until the command exits so that EOT cannot overtake input
+    // already buffered for the PTY.
     stdout_reader.read_to_end(&mut stdout)?;
     let status = child.wait()?;
+    drop(stdin);
     let stderr = stderr_reader
         .join()
         .map_err(|_| io::Error::other("PTY stderr reader panicked"))??;
@@ -173,8 +176,8 @@ fn interaction_keeps_stdin_open_until_the_pty_command_exits() {
     let mut command = Command::new("sh");
     command.args([
         "-c",
-        "printf 'TUI_READY\n'; IFS= read -r input; \
-         (IFS= read -r trailing) & reader=$!; sleep 0.2; \
+        "printf 'TUI_READY\n'; IFS= read -r input; exec 3<&0; \
+         (IFS= read -r trailing <&3) & reader=$!; sleep 0.2; \
          if kill -0 \"$reader\" 2>/dev/null; then \
            kill \"$reader\"; wait \"$reader\" 2>/dev/null || :; \
            [ \"$input\" = hi ]; \
