@@ -6,7 +6,7 @@ enum ScriptDialect {
     UtilLinux,
 }
 
-pub(super) fn command(program: &str, args: &[&str]) -> Command {
+pub fn command(program: &str, args: &[&str]) -> Command {
     #[cfg(target_os = "macos")]
     let dialect = ScriptDialect::Bsd;
     #[cfg(not(target_os = "macos"))]
