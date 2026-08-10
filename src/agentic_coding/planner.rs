@@ -11,10 +11,7 @@ use super::diagram;
 use super::dreaming_audit;
 use super::explain;
 use super::file_read::{file_read_task_for, plan_file_read_step};
-use super::formalize::{
-    coverage_line, formalize_text_to_links, FormalizedKnowledgeBase, CANONICAL_FISHERMAN_SYNOPSIS,
-    FISHERMAN_DOC_ID,
-};
+use super::formalization_recipe;
 use super::general_execution::plan_general_change_step;
 use super::general_planner::{compose_general_change_plan, has_authoritative_literal_write};
 use super::google_trends_catalog;
@@ -43,15 +40,7 @@ use super::{algorithm_learning, capability_router};
 use super::{change_request, code_artifact};
 use crate::protocol::ChatMessage;
 
-/// The Russian web-search query the planner issues when a search tool exists.
-pub const SEARCH_QUERY: &str = "Пушкин Сказка о рыбаке и рыбке полный текст";
-
-/// The source URL the planner fetches when a fetch tool exists.
-pub const CANONICAL_SOURCE_URL: &str =
-    "https://ru.wikisource.org/wiki/Сказка_о_рыбаке_и_рыбке_(Пушкин)";
-
-/// The path the planner writes the knowledge base to.
-pub const KB_PATH: &str = "knowledge-base.lino";
+pub use super::formalization_recipe::{CANONICAL_SOURCE_URL, KB_PATH, SEARCH_QUERY};
 
 /// The next deterministic step the server takes in an agentic coding loop.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -156,6 +145,7 @@ pub fn tool_capability(name: &str) -> Option<Capability> {
 #[must_use]
 pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<AgenticPlan> {
     let task = latest_user_text(messages)?;
+    trace_route("agentic_task", &task);
     // Issue #707: seed-defined computer-use plans own their exact multilingual
     // prompts before broad write/search routing. Each emitted primitive carries
     // explicit pre/postconditions and is executed by the advertising client.
@@ -368,8 +358,10 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if let Some(file_task) = file_read_task_for(&task) {
         return Some(plan_file_read_step(&file_task, messages, tool_names));
     }
-    if is_formalization_task(&task) {
-        return Some(plan_formalization_step(messages, tool_names));
+    if formalization_recipe::is_formalization_task(&task) {
+        return Some(formalization_recipe::plan_formalization_step(
+            &task, messages, tool_names,
+        ));
     }
     if meaning_detail::is_meaning_detail_task(&task) {
         return Some(plan_meaning_detail_step(&task, messages, tool_names));
@@ -498,54 +490,6 @@ pub(super) fn plan_document_recipe(
     }
     // Step 3: nothing left to do — answer with the generated document inline.
     AgenticPlan::Final(recipe.final_answer)
-}
-
-// State machine: web_search → web_fetch → write_file(formalize) → run_command(verify) → final.
-fn plan_formalization_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
-    let search_tool = tool_for(tool_names, Capability::Search);
-    let fetch_tool = tool_for(tool_names, Capability::Fetch);
-    let write_tool = tool_for(tool_names, Capability::Write);
-    let run_tool = tool_for(tool_names, Capability::Run);
-
-    let progress = Progress::scan(messages);
-
-    // Step 1: search for the source text.
-    if let Some(tool) = search_tool {
-        if !progress.done(Capability::Search) {
-            return plan_one(tool, json!({ "query": SEARCH_QUERY }).to_string());
-        }
-    }
-    // Step 2: fetch the source text.
-    if let Some(tool) = fetch_tool {
-        if !progress.done(Capability::Fetch) {
-            return plan_one(tool, fetch_arguments(CANONICAL_SOURCE_URL));
-        }
-    }
-
-    // The source text for the knowledge base: the latest non-errored fetch result
-    // if we have one, else the canonical synopsis (the determinism fallback).
-    let source = progress
-        .fetched_text
-        .as_deref()
-        .unwrap_or(CANONICAL_FISHERMAN_SYNOPSIS);
-    let formalized = formalize_text_to_links(source, "");
-
-    // Step 3: write the formalized knowledge base.
-    if let Some(tool) = write_tool {
-        if !progress.done(Capability::Write) {
-            return plan_one(tool, write_arguments(KB_PATH, &formalized.links_notation));
-        }
-    }
-    // Step 4: verify by reading the file back.
-    if let Some(tool) = run_tool {
-        if !progress.done(Capability::Run) {
-            let arguments = json!({ "command": format!("cat {KB_PATH}") });
-            return plan_one(tool, arguments.to_string());
-        }
-    }
-
-    // Step 5: nothing left to do — answer with the knowledge base inline.
-    AgenticPlan::Final(final_answer(&formalized))
 }
 
 /// The issue-#538 recipe: search → fetch (Wikidata lexemes) → write the enriched
@@ -910,42 +854,12 @@ fn latest_user_text(messages: &[ChatMessage]) -> Option<String> {
     crate::protocol::latest_user_request(messages)
 }
 
-/// Keywords that mark a user turn as the canonical issue-#468 formalization task.
-const FORMALIZATION_KEYWORDS: [&str; 7] = [
-    "formaliz",
-    "формализ",
-    "knowledge base",
-    "links notation",
-    "рыбак",
-    "fisherman",
-    "сказк",
-];
-
-/// Whether `prompt` asks to formalize the canonical tale into a knowledge base.
-fn is_formalization_task(prompt: &str) -> bool {
-    let lower = prompt.to_lowercase();
-    FORMALIZATION_KEYWORDS
-        .iter()
-        .any(|keyword| lower.contains(keyword))
-}
-
-/// The self-contained final answer: a natural-language summary, the coverage
-/// line, and the Links Notation knowledge base inline.
-fn final_answer(formalized: &FormalizedKnowledgeBase) -> String {
-    let summary = &formalized.summary;
-    let subject = if summary.doc_id == FISHERMAN_DOC_ID {
-        "«Сказка о рыбаке и рыбке»".to_owned()
-    } else {
-        format!("the source text ({})", summary.doc_id)
-    };
-    format!(
-        "Formalized {subject} into a Links Notation knowledge base: {records} records realising \
-         all nine protocol primitives ({coverage}).\n\nKnowledge base ({KB_PATH}):\n\n{kb}",
-        records = summary.total_records(),
-        coverage = coverage_line(summary),
-        kb = crate::issue_report::fenced_block(
-            crate::issue_report::LINO_FENCE_LANGUAGE,
-            &formalized.links_notation,
-        ),
-    )
+/// Emit a `route=value` planner-routing trace line to stderr when
+/// `FORMAL_AI_TRACE_REQUESTS=1`, mirroring the request tracing in
+/// `crate::protocol`. Off by default; issue #956 asked for visibility into how
+/// a received task was routed.
+pub(super) fn trace_route(route: &str, value: &str) {
+    if std::env::var("FORMAL_AI_TRACE_REQUESTS").as_deref() == Ok("1") {
+        eprintln!("[trace] {route}={value}");
+    }
 }

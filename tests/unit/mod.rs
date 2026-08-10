@@ -183,6 +183,7 @@ mod issue_917;
 mod issue_918;
 mod issue_919;
 mod issue_945;
+mod issue_956;
 mod issue_962_word_operator_parity;
 mod issue_996_markdown;
 mod local_surface;
