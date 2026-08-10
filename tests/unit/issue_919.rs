@@ -7,7 +7,7 @@ use std::sync::Arc;
 
 use formal_ai::coding_research_learning::{
     execute_researched_coding_procedure, research_coding_skill_gap, CodingResearchApproval,
-    CodingResearchGap, ResearchedCodingProcedureLedger,
+    CodingResearchGap, ResearchedCodingProcedureLedger, CODING_RESEARCH_LEARNING_CONTRACT,
 };
 use formal_ai::{CachedSourceClient, FetchError, SourceTransport};
 
@@ -23,13 +23,13 @@ impl SourceTransport for ProcedureTransport {
         self.requests.fetch_add(1, Ordering::SeqCst);
         if url.starts_with("https://api.duckduckgo.com/") {
             return Ok(
-                br#"{"AbstractURL":"https://research.invalid/rust-trim","Heading":"Rust migration guide","AbstractText":"Use trim_end for the deprecated right-trim operation."}"#
+                br#"{"AbstractURL":"https://research.invalid/ruby-count","Heading":"Ruby iteration guide","AbstractText":"Use upto to emit each integer in an inclusive range."}"#
                     .to_vec(),
             );
         }
-        if url == "https://research.invalid/rust-trim" {
+        if url == "https://research.invalid/ruby-count" {
             return Ok(
-                b"Formal AI coding procedure\nSPDX-License-Identifier: CC0-1.0\nTask: modernize_trim_right\nLanguage: rust\nOperation: verified_workspace_rewrite\nPattern: .trim_right()\nReplacement: .trim_end()\n"
+                b"Formal AI coding procedure\nSPDX-License-Identifier: CC0-1.0\nTask: count_to_three\nLanguage: ruby\nOperation: verified_workspace_rewrite\nPattern: __COUNT_TO_THREE__\nReplacement: 1.upto(3) { |number| puts number }\n"
                     .to_vec(),
             );
         }
@@ -59,9 +59,12 @@ fn coding_gap_is_solved_by_a_verified_researched_procedure_and_replays_offline()
     let online = CachedSourceClient::new(&cache, transport.clone())
         .with_online(true)
         .with_clock(fixed_time);
-    let source = "fn clean(value: &str) -> &str { value.trim_right() }\n";
-    let expected = "fn clean(value: &str) -> &str { value.trim_end() }\n";
-    let mut gap = CodingResearchGap::for_program_task("modernize_trim_right", "rust");
+    let failed_task = formal_ai::FormalAiEngine.answer("Write a Ruby program that counts to three");
+    assert_eq!(failed_task.intent, "write_program_skill_gap");
+    let source = "def main\n  __COUNT_TO_THREE__\nend\n";
+    let expected = "def main\n  1.upto(3) { |number| puts number }\nend\n";
+    let mut gap = CodingResearchGap::for_program_task("count_to_three", "ruby");
+    assert!(failed_task.answer.contains(gap.name()));
     let mut ledger = ResearchedCodingProcedureLedger::new();
 
     let learned = research_coding_skill_gap(
@@ -70,7 +73,7 @@ fn coding_gap_is_solved_by_a_verified_researched_procedure_and_replays_offline()
         &online,
         source,
         expected,
-        CodingResearchApproval::granted("pull_request_review"),
+        &CodingResearchApproval::granted("pull_request_review"),
     )
     .expect("captured procedure solves the recorded skill gap");
 
@@ -86,7 +89,7 @@ fn coding_gap_is_solved_by_a_verified_researched_procedure_and_replays_offline()
     for field in [
         "origin \"research\"",
         "status \"execution_verified\"",
-        "source_url \"https://research.invalid/rust-trim\"",
+        "source_url \"https://research.invalid/ruby-count\"",
         "source_license \"CC0-1.0\"",
         "fetched_at \"1786320000\"",
         "source_sha256",
@@ -100,7 +103,7 @@ fn coding_gap_is_solved_by_a_verified_researched_procedure_and_replays_offline()
 
     let requests_after_live = requests.load(Ordering::SeqCst);
     let offline = CachedSourceClient::new(&cache, transport);
-    let mut replay_gap = CodingResearchGap::for_program_task("modernize_trim_right", "rust");
+    let mut replay_gap = CodingResearchGap::for_program_task("count_to_three", "ruby");
     let mut replay_ledger = ResearchedCodingProcedureLedger::new();
     let replay = research_coding_skill_gap(
         &mut replay_gap,
@@ -108,7 +111,7 @@ fn coding_gap_is_solved_by_a_verified_researched_procedure_and_replays_offline()
         &offline,
         source,
         expected,
-        CodingResearchApproval::granted("pull_request_review"),
+        &CodingResearchApproval::granted("pull_request_review"),
     )
     .expect("CI can replay the complete research loop from captured bytes");
 
@@ -119,13 +122,15 @@ fn coding_gap_is_solved_by_a_verified_researched_procedure_and_replays_offline()
 
     let restored = ResearchedCodingProcedureLedger::from_links_notation(&durable)
         .expect("content-addressed researched procedure ledger restores");
-    let held_out = execute_researched_coding_procedure(
-        &restored,
-        gap.name(),
-        "let name = input.trim_right();\n",
-    )
-    .expect("approved researched procedure uses the same bounded executor");
-    assert_eq!(held_out.output, "let name = input.trim_end();\n");
+    let tampered = durable.replace("source_license \"CC0-1.0\"", "source_license \"NONE\"");
+    assert!(
+        ResearchedCodingProcedureLedger::from_links_notation(&tampered).is_err(),
+        "a rewritten source license must invalidate durable capability"
+    );
+    let held_out =
+        execute_researched_coding_procedure(&restored, gap.name(), "__COUNT_TO_THREE__\n")
+            .expect("approved researched procedure uses the same bounded executor");
+    assert_eq!(held_out.output, "1.upto(3) { |number| puts number }\n");
 
     fs::remove_dir_all(cache).expect("remove fixture cache");
 }
@@ -136,7 +141,7 @@ fn failed_execution_is_not_kept_and_schedules_the_next_research_round() {
     let client = CachedSourceClient::new(&cache, ProcedureTransport::default())
         .with_online(true)
         .with_clock(fixed_time);
-    let mut gap = CodingResearchGap::for_program_task("modernize_trim_right", "rust");
+    let mut gap = CodingResearchGap::for_program_task("count_to_three", "ruby");
     let first_query = gap.next_query().to_owned();
     let mut ledger = ResearchedCodingProcedureLedger::new();
 
@@ -144,13 +149,16 @@ fn failed_execution_is_not_kept_and_schedules_the_next_research_round() {
         &mut gap,
         &mut ledger,
         &client,
-        "value.trim_right()",
-        "value.strip_suffix()",
-        CodingResearchApproval::granted("pull_request_review"),
+        "__COUNT_TO_THREE__",
+        "puts 3.downto(1)",
+        &CodingResearchApproval::granted("pull_request_review"),
     )
     .expect_err("an execution that misses the task oracle cannot become a skill");
 
-    assert_eq!(error.reason, "coding_research_execution_verification_failed");
+    assert_eq!(
+        error.reason,
+        "coding_research_execution_verification_failed"
+    );
     assert_eq!(gap.failed_rounds(), 1);
     assert_ne!(gap.next_query(), first_query);
     assert!(gap.next_query().contains("alternative evidence round 2"));
@@ -161,4 +169,29 @@ fn failed_execution_is_not_kept_and_schedules_the_next_research_round() {
     assert!(ledger.is_empty());
 
     fs::remove_dir_all(cache).expect("remove fixture cache");
+}
+
+#[test]
+fn coding_research_policy_is_data_authored_and_pins_the_safety_boundaries() {
+    for invariant in [
+        "gap_source program_skill_gap",
+        "procedure_origin research",
+        "candidate_effect inert_until_verified",
+        "executor verified_workspace_rewrite",
+        "live_fetch opt_in",
+        "offline_replay source_cache",
+        "failure_effect schedule_next_query",
+        "human_review required",
+    ] {
+        assert!(
+            CODING_RESEARCH_LEARNING_CONTRACT.contains(invariant),
+            "missing contract invariant: {invariant}"
+        );
+    }
+    assert_eq!(
+        CODING_RESEARCH_LEARNING_CONTRACT
+            .matches("provenance_field ")
+            .count(),
+        4
+    );
 }
