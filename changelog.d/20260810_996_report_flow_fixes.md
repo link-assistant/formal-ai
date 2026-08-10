@@ -11,3 +11,7 @@ bump: patch
 - Report-target answers that use machine values now select every target:
   `formal_ai` was silently dropped because prompt normalization turned the
   underscore into a space before matching (#996).
+- Final answers that inline machine text — the general-change plan event and
+  the formalized knowledge base — wrap it in a fenced `lino` code block, so
+  the text survives GitHub-comment markdown rendering instead of collapsing
+  into flowing prose (#996, hive-mind #2146).

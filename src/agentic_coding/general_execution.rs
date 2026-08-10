@@ -188,7 +188,13 @@ fn general_plan_completed(plan: &GeneralChangePlan) -> String {
     answer = answer.replace("{target}", &plan.target);
     answer = answer.replace("{command}", &plan.verification_command);
     answer = answer.replace(PLAN_PATH_PLACEHOLDER, PLAN_PATH);
-    answer.replace(PLAN_PLACEHOLDER, plan.links_notation().trim_end())
+    answer.replace(
+        PLAN_PLACEHOLDER,
+        &crate::issue_report::fenced_block(
+            crate::issue_report::LINO_FENCE_LANGUAGE,
+            &plan.links_notation(),
+        ),
+    )
 }
 
 fn tool_argument_path(arguments: &str) -> Option<String> {

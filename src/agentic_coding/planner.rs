@@ -943,6 +943,9 @@ fn final_answer(formalized: &FormalizedKnowledgeBase) -> String {
          all nine protocol primitives ({coverage}).\n\nKnowledge base ({KB_PATH}):\n\n{kb}",
         records = summary.total_records(),
         coverage = coverage_line(summary),
-        kb = formalized.links_notation.trim_end(),
+        kb = crate::issue_report::fenced_block(
+            crate::issue_report::LINO_FENCE_LANGUAGE,
+            &formalized.links_notation,
+        ),
     )
 }

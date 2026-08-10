@@ -122,7 +122,13 @@ impl GeneralChangePlan {
             .unwrap_or_default()
             .replace(TARGET_PLACEHOLDER, &self.target)
             .replace("{plan_path}", PLAN_PATH)
-            .replace(BODY_PLACEHOLDER, self.links_notation().trim_end())
+            .replace(
+                BODY_PLACEHOLDER,
+                &crate::issue_report::fenced_block(
+                    crate::issue_report::LINO_FENCE_LANGUAGE,
+                    &self.links_notation(),
+                ),
+            )
     }
 }
 
