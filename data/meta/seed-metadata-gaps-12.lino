@@ -3,729 +3,971 @@ seed_metadata_gaps
   shard 12
   shard_count 16
   audit_scope "problem-solving concept records under data/seed meanings roots"
-  gap issue_report_export_heading
+  gap seed_metadata_gap_2948aeca4fe5fa5c
     source "data/seed/closure-generated-01.lino"
+    record "issue_report_export_heading"
     missing "role,precondition,effect,unit,example"
-  gap pattern_concept_prefix_obyasni
+  gap seed_metadata_gap_140ca4217cab610c
     source "data/seed/closure-generated-01.lino"
+    record "pattern_concept_prefix_obyasni"
     missing "role,precondition,effect,unit,example"
-  gap pattern_wellbeing_phrase_kak_tvoi_dela
+  gap seed_metadata_gap_a6842472aeda18ec
     source "data/seed/closure-generated-01.lino"
+    record "pattern_wellbeing_phrase_kak_tvoi_dela"
     missing "role,precondition,effect,unit,example"
-  gap response_agentic_step_failed_with_exit_code_hi
+  gap seed_metadata_gap_980f60a18314313c
     source "data/seed/closure-generated-01.lino"
+    record "response_agentic_step_failed_with_exit_code_hi"
     missing "role,precondition,effect,unit,example"
-  gap response_definition_merge_sources_label_hi
+  gap seed_metadata_gap_bd664b582dff4c8c
     source "data/seed/closure-generated-01.lino"
+    record "response_definition_merge_sources_label_hi"
     missing "role,precondition,effect,unit,example"
-  gap response_fact_check_arithmetic_counterexample_zh
+  gap seed_metadata_gap_577c692e3aae286c
     source "data/seed/closure-generated-01.lino"
+    record "response_fact_check_arithmetic_counterexample_zh"
     missing "role,precondition,effect,unit,example"
-  gap response_local_search_type_directory_zh
+  gap seed_metadata_gap_dfab03a1252ef2ec
     source "data/seed/closure-generated-01.lino"
+    record "response_local_search_type_directory_zh"
     missing "role,precondition,effect,unit,example"
-  gap response_pattern_grid_report_en
+  gap seed_metadata_gap_39d3f68cdb015f2c
     source "data/seed/closure-generated-01.lino"
+    record "response_pattern_grid_report_en"
     missing "role,precondition,effect,unit,example"
-  gap response_pattern_grid_rotation_hi
+  gap seed_metadata_gap_0a5769b0f5184b2c
     source "data/seed/closure-generated-01.lino"
+    record "response_pattern_grid_rotation_hi"
     missing "role,precondition,effect,unit,example"
-  gap response_pattern_sequence_repetition_ru
+  gap seed_metadata_gap_3b555ba176dbe5bc
     source "data/seed/closure-generated-01.lino"
+    record "response_pattern_sequence_repetition_ru"
     missing "role,precondition,effect,unit,example"
-  gap reverse_words
+  gap seed_metadata_gap_2ab52432d0ca0c1c
     source "data/seed/closure-generated-01.lino"
+    record "reverse_words"
     missing "role,precondition,effect,unit,example"
-  gap task_decomposition_lead
+  gap seed_metadata_gap_f7017822664a413c
     source "data/seed/closure-generated-01.lino"
+    record "task_decomposition_lead"
     missing "role,precondition,effect,unit,example"
-  gap be
+  gap seed_metadata_gap_e2365cdb4c5cf95c
     source "data/seed/closure-generated-02.lino"
+    record "be"
     missing "role,precondition,effect,unit,example"
-  gap for
+  gap seed_metadata_gap_e3828aa2d6e4f20c
     source "data/seed/closure-generated-02.lino"
+    record "for"
     missing "role,precondition,effect,unit,example"
-  gap response_algorithm_invalid_binding_en
+  gap seed_metadata_gap_ad460ca930f82aac
     source "data/seed/closure-generated-02.lino"
+    record "response_algorithm_invalid_binding_en"
     missing "role,precondition,effect,unit,example"
-  gap response_definition_merge_sources_label_zh
+  gap seed_metadata_gap_5b1592b1bb8cbe3c
     source "data/seed/closure-generated-02.lino"
+    record "response_definition_merge_sources_label_zh"
     missing "role,precondition,effect,unit,example"
-  gap response_summarization_report_headline_en
+  gap seed_metadata_gap_cdd1d5cfa584a60c
     source "data/seed/closure-generated-02.lino"
+    record "response_summarization_report_headline_en"
     missing "role,precondition,effect,unit,example"
-  gap response_thinking_step_scan_memory_ru
+  gap seed_metadata_gap_2d47c11484a0169c
     source "data/seed/closure-generated-02.lino"
+    record "response_thinking_step_scan_memory_ru"
     missing "role,precondition,effect,unit,example"
-  gap struct
+  gap seed_metadata_gap_0049f23eb28b660c
     source "data/seed/closure-generated-02.lino"
+    record "struct"
     missing "role,precondition,effect,unit,example"
-  gap wordnet
+  gap seed_metadata_gap_fd37a50778fdec8c
     source "data/seed/closure-generated-02.lino"
+    record "wordnet"
     missing "role,precondition,effect,unit,example"
-  gap brainstorm_names
+  gap seed_metadata_gap_4a00344396e4820c
     source "data/seed/closure-generated-03.lino"
+    record "brainstorm_names"
     missing "role,precondition,effect,unit,example"
-  gap class-library
+  gap seed_metadata_gap_e3636a2a6ccf972c
     source "data/seed/closure-generated-03.lino"
+    record "class-library"
     missing "role,precondition,effect,unit,example"
-  gap disinformation
+  gap seed_metadata_gap_160031fcd90c02ac
     source "data/seed/closure-generated-03.lino"
+    record "disinformation"
     missing "role,precondition,effect,unit,example"
-  gap issue_report_context_link_heading
+  gap seed_metadata_gap_5464bbeec696b12c
     source "data/seed/closure-generated-03.lino"
+    record "issue_report_context_link_heading"
     missing "role,precondition,effect,unit,example"
-  gap pattern_behavior_rules_list_liechu_nide_guize_zh
+  gap seed_metadata_gap_3dba070b9a684a1c
     source "data/seed/closure-generated-03.lino"
+    record "pattern_behavior_rules_list_liechu_nide_guize_zh"
     missing "role,precondition,effect,unit,example"
-  gap pattern_wellbeing_phrase_kak_u_vas_dela
+  gap seed_metadata_gap_263a26671ccfe17c
     source "data/seed/closure-generated-03.lino"
+    record "pattern_wellbeing_phrase_kak_u_vas_dela"
     missing "role,precondition,effect,unit,example"
-  gap response_agent_suggestion_ru
+  gap seed_metadata_gap_508951d1a8e6729c
     source "data/seed/closure-generated-03.lino"
+    record "response_agent_suggestion_ru"
     missing "role,precondition,effect,unit,example"
-  gap response_client_contract_read_transcript_error_zh
+  gap seed_metadata_gap_58a355e713f3ebfc
     source "data/seed/closure-generated-03.lino"
+    record "response_client_contract_read_transcript_error_zh"
     missing "role,precondition,effect,unit,example"
-  gap response_coding_source_string_constant_rust
+  gap seed_metadata_gap_a8b8117356c1478c
     source "data/seed/closure-generated-03.lino"
+    record "response_coding_source_string_constant_rust"
     missing "role,precondition,effect,unit,example"
-  gap response_pattern_sequence_compression_zh
+  gap seed_metadata_gap_9d991211680ff07c
     source "data/seed/closure-generated-03.lino"
+    record "response_pattern_sequence_compression_zh"
     missing "role,precondition,effect,unit,example"
-  gap response_summarization_criterion_compression_ru
+  gap seed_metadata_gap_08331100012e99fc
     source "data/seed/closure-generated-03.lino"
+    record "response_summarization_criterion_compression_ru"
     missing "role,precondition,effect,unit,example"
-  gap response_thinking_narrative_gratitude_es
+  gap seed_metadata_gap_4b898c095cb744cc
     source "data/seed/closure-generated-03.lino"
+    record "response_thinking_narrative_gratitude_es"
     missing "role,precondition,effect,unit,example"
-  gap response_thinking_narrative_test_status_es
+  gap seed_metadata_gap_c628bc455b76b97c
     source "data/seed/closure-generated-03.lino"
+    record "response_thinking_narrative_test_status_es"
     missing "role,precondition,effect,unit,example"
-  gap response_thinking_step_rule_construction_ru
+  gap seed_metadata_gap_a6f8829a24d4a3cc
     source "data/seed/closure-generated-03.lino"
+    record "response_thinking_step_rule_construction_ru"
     missing "role,precondition,effect,unit,example"
-  gap thinking_step_detect_language
+  gap seed_metadata_gap_5b6758b86bda975c
     source "data/seed/closure-generated-03.lino"
+    record "thinking_step_detect_language"
     missing "role,precondition,effect,unit,example"
-  gap views
+  gap seed_metadata_gap_cf43cedcd6516c3c
     source "data/seed/closure-generated-03.lino"
+    record "views"
     missing "role,precondition,effect,unit,example"
-  gap dangling_meaning_review
+  gap seed_metadata_gap_dd5804dafeb7dd6c
     source "data/seed/closure-generated-04.lino"
+    record "dangling_meaning_review"
     missing "role,precondition,effect,unit,example"
-  gap issue_report_surface_label
+  gap seed_metadata_gap_ea9782fab27fbe0c
     source "data/seed/closure-generated-04.lino"
+    record "issue_report_surface_label"
     missing "role,precondition,effect,unit,example"
-  gap localized
+  gap seed_metadata_gap_961aa2c090e5df5c
     source "data/seed/closure-generated-04.lino"
+    record "localized"
     missing "role,precondition,effect,unit,example"
-  gap pattern_how_does_it_work_en
+  gap seed_metadata_gap_0160d4635eae815c
     source "data/seed/closure-generated-04.lino"
+    record "pattern_how_does_it_work_en"
     missing "role,precondition,effect,unit,example"
-  gap pattern_test_status_phrase_test_proyden_ru
+  gap seed_metadata_gap_7c73695152f59e1c
     source "data/seed/closure-generated-04.lino"
+    record "pattern_test_status_phrase_test_proyden_ru"
     missing "role,precondition,effect,unit,example"
-  gap response_pattern_sequence_constant_ru
+  gap seed_metadata_gap_346719837ce5896c
     source "data/seed/closure-generated-04.lino"
+    record "response_pattern_sequence_constant_ru"
     missing "role,precondition,effect,unit,example"
-  gap response_pattern_sequence_report_hi
+  gap seed_metadata_gap_f7447757f8f4fefc
     source "data/seed/closure-generated-04.lino"
+    record "response_pattern_sequence_report_hi"
     missing "role,precondition,effect,unit,example"
-  gap response_summarization_cli_criteria_minimum_ru
+  gap seed_metadata_gap_e65cbbbf117b3bac
     source "data/seed/closure-generated-04.lino"
+    record "response_summarization_cli_criteria_minimum_ru"
     missing "role,precondition,effect,unit,example"
-  gap response_summarization_criterion_meta_language_evidence_zh
+  gap seed_metadata_gap_0b934ab9ddeb78bc
     source "data/seed/closure-generated-04.lino"
+    record "response_summarization_criterion_meta_language_evidence_zh"
     missing "role,precondition,effect,unit,example"
-  gap response_summarization_criterion_size_reported_hi
+  gap seed_metadata_gap_136e47972c13916c
     source "data/seed/closure-generated-04.lino"
+    record "response_summarization_criterion_size_reported_hi"
     missing "role,precondition,effect,unit,example"
-  gap response_thinking_step_compute_hi
+  gap seed_metadata_gap_0709da2ea6fe888c
     source "data/seed/closure-generated-04.lino"
+    record "response_thinking_step_compute_hi"
     missing "role,precondition,effect,unit,example"
-  gap response_thinking_step_memory_en
+  gap seed_metadata_gap_a7254b0b5c0158ac
     source "data/seed/closure-generated-04.lino"
+    record "response_thinking_step_memory_en"
     missing "role,precondition,effect,unit,example"
-  gap response_thinking_step_unnamed_es
+  gap seed_metadata_gap_062e819dceea03ac
     source "data/seed/closure-generated-04.lino"
+    record "response_thinking_step_unnamed_es"
     missing "role,precondition,effect,unit,example"
-  gap russian-colloquial-verb
+  gap seed_metadata_gap_9f9f2ebdf3d5ed1c
     source "data/seed/closure-generated-04.lino"
+    record "russian-colloquial-verb"
     missing "role,precondition,effect,unit,example"
-  gap statement
+  gap seed_metadata_gap_29c69c49f5a447ac
     source "data/seed/closure-generated-04.lino"
+    record "statement"
     missing "role,precondition,effect,unit,example"
-  gap agentic_report_contents_question
+  gap seed_metadata_gap_14555157c741e76c
     source "data/seed/closure-generated-05.lino"
+    record "agentic_report_contents_question"
     missing "role,precondition,effect,unit,example"
-  gap git
+  gap seed_metadata_gap_b45d49df145f6a9c
     source "data/seed/closure-generated-05.lino"
+    record "git"
     missing "role,precondition,effect,unit,example"
-  gap intent_concept_lookup
+  gap seed_metadata_gap_4ff4e8efafc32a1c
     source "data/seed/closure-generated-05.lino"
+    record "intent_concept_lookup"
     missing "role,precondition,effect,unit,example"
-  gap pattern_concept_prefix_rasskazhi_mne_pro
+  gap seed_metadata_gap_081e0a19af80254c
     source "data/seed/closure-generated-05.lino"
+    record "pattern_concept_prefix_rasskazhi_mne_pro"
     missing "role,precondition,effect,unit,example"
-  gap pattern_greeting_keyword_nihao
+  gap seed_metadata_gap_1baea450f5704a3c
     source "data/seed/closure-generated-05.lino"
+    record "pattern_greeting_keyword_nihao"
     missing "role,precondition,effect,unit,example"
-  gap pattern_test_status_phrase_success_hi
+  gap seed_metadata_gap_01e4f4c99ed2064c
     source "data/seed/closure-generated-05.lino"
+    record "pattern_test_status_phrase_success_hi"
     missing "role,precondition,effect,unit,example"
-  gap response_agentic_action_list_desktop_en
+  gap seed_metadata_gap_05272eba6927343c
     source "data/seed/closure-generated-05.lino"
+    record "response_agentic_action_list_desktop_en"
     missing "role,precondition,effect,unit,example"
-  gap response_meta_explanation_zh
+  gap seed_metadata_gap_92b14e40456e77ac
     source "data/seed/closure-generated-05.lino"
+    record "response_meta_explanation_zh"
     missing "role,precondition,effect,unit,example"
-  gap response_thinking_step_formalize_resolved_plain_es
+  gap seed_metadata_gap_5aaa1a6943c70b1c
     source "data/seed/closure-generated-05.lino"
+    record "response_thinking_step_formalize_resolved_plain_es"
     missing "role,precondition,effect,unit,example"
-  gap response_write_program_skill_gap_zh
+  gap seed_metadata_gap_f2b8f89eb0364dcc
     source "data/seed/closure-generated-05.lino"
+    record "response_write_program_skill_gap_zh"
     missing "role,precondition,effect,unit,example"
-  gap source_kind
+  gap seed_metadata_gap_816ec7c02c0713ac
     source "data/seed/closure-generated-05.lino"
+    record "source_kind"
     missing "role,precondition,effect,unit,example"
-  gap authentic
+  gap seed_metadata_gap_bd67e121c875150c
     source "data/seed/closure-generated-06.lino"
+    record "authentic"
     missing "role,precondition,effect,unit,example"
-  gap material-symbols
+  gap seed_metadata_gap_c5bb716f29e60e8c
     source "data/seed/closure-generated-06.lino"
+    record "material-symbols"
     missing "role,precondition,effect,unit,example"
-  gap pattern_behavior_rules_list_pokazhi_pravila_ru
+  gap seed_metadata_gap_a6bd59e43607c69c
     source "data/seed/closure-generated-06.lino"
+    record "pattern_behavior_rules_list_pokazhi_pravila_ru"
     missing "role,precondition,effect,unit,example"
-  gap pattern_concept_prefix_opishi
+  gap seed_metadata_gap_eb72ab3670fc5e9c
     source "data/seed/closure-generated-06.lino"
+    record "pattern_concept_prefix_opishi"
     missing "role,precondition,effect,unit,example"
-  gap rendered
+  gap seed_metadata_gap_029e61e30f5c3bbc
     source "data/seed/closure-generated-06.lino"
+    record "rendered"
     missing "role,precondition,effect,unit,example"
-  gap response_agentic_action_ask_user_zh
+  gap seed_metadata_gap_d2b158a2a5d84a9c
     source "data/seed/closure-generated-06.lino"
+    record "response_agentic_action_ask_user_zh"
     missing "role,precondition,effect,unit,example"
-  gap response_agentic_action_list_current_hi
+  gap seed_metadata_gap_db63543008df173c
     source "data/seed/closure-generated-06.lino"
+    record "response_agentic_action_list_current_hi"
     missing "role,precondition,effect,unit,example"
-  gap response_external_benchmark_baseline_read_error_en
+  gap seed_metadata_gap_1d62e19995888c0c
     source "data/seed/closure-generated-06.lino"
+    record "response_external_benchmark_baseline_read_error_en"
     missing "role,precondition,effect,unit,example"
-  gap response_local_search_not_found_en
+  gap seed_metadata_gap_1a9da0aaab5f4bac
     source "data/seed/closure-generated-06.lino"
+    record "response_local_search_not_found_en"
     missing "role,precondition,effect,unit,example"
-  gap response_meta_explanation_en
+  gap seed_metadata_gap_b1614ef35cc67d7c
     source "data/seed/closure-generated-06.lino"
+    record "response_meta_explanation_en"
     missing "role,precondition,effect,unit,example"
-  gap response_pattern_sequence_empty_es
+  gap seed_metadata_gap_13f402baa93e1f9c
     source "data/seed/closure-generated-06.lino"
+    record "response_pattern_sequence_empty_es"
     missing "role,precondition,effect,unit,example"
-  gap response_summarization_evidence_summary_zh
+  gap seed_metadata_gap_3dd44db37ed0364c
     source "data/seed/closure-generated-06.lino"
+    record "response_summarization_evidence_summary_zh"
     missing "role,precondition,effect,unit,example"
-  gap response_task_plan_stage_implementation_ru
+  gap seed_metadata_gap_719001e50335ce9c
     source "data/seed/closure-generated-06.lino"
+    record "response_task_plan_stage_implementation_ru"
     missing "role,precondition,effect,unit,example"
-  gap response_test_status_hi
+  gap seed_metadata_gap_9443a44b239e73fc
     source "data/seed/closure-generated-06.lino"
+    record "response_test_status_hi"
     missing "role,precondition,effect,unit,example"
-  gap response_thinking_step_dispatch_handler_hi
+  gap seed_metadata_gap_84a7514de675e02c
     source "data/seed/closure-generated-06.lino"
+    record "response_thinking_step_dispatch_handler_hi"
     missing "role,precondition,effect,unit,example"
-  gap response_write_program_language_unspecified_name_en
+  gap seed_metadata_gap_1044b50234df81dc
     source "data/seed/closure-generated-06.lino"
+    record "response_write_program_language_unspecified_name_en"
     missing "role,precondition,effect,unit,example"
-  gap statement_audit_unknown_tier
+  gap seed_metadata_gap_354f7fee9cc2ce3c
     source "data/seed/closure-generated-06.lino"
+    record "statement_audit_unknown_tier"
     missing "role,precondition,effect,unit,example"
-  gap thinking_step_http_chat
+  gap seed_metadata_gap_02f6eaf4f52e0a1c
     source "data/seed/closure-generated-06.lino"
+    record "thinking_step_http_chat"
     missing "role,precondition,effect,unit,example"
-  gap external_benchmark_swe_clear_logs_error
+  gap seed_metadata_gap_1f5ee470be94d78c
     source "data/seed/closure-generated-07.lino"
+    record "external_benchmark_swe_clear_logs_error"
     missing "role,precondition,effect,unit,example"
-  gap memory_program_interpreter_gap
+  gap seed_metadata_gap_552783c8ae24869c
     source "data/seed/closure-generated-07.lino"
+    record "memory_program_interpreter_gap"
     missing "role,precondition,effect,unit,example"
-  gap post
+  gap seed_metadata_gap_93286a33c80b896c
     source "data/seed/closure-generated-07.lino"
+    record "post"
     missing "role,precondition,effect,unit,example"
-  gap response_client_global_config_probe_started_es
+  gap seed_metadata_gap_048765bb22a1fc9c
     source "data/seed/closure-generated-07.lino"
+    record "response_client_global_config_probe_started_es"
     missing "role,precondition,effect,unit,example"
-  gap response_general_plan_completed_en
+  gap seed_metadata_gap_6fb1eb40af06a28c
     source "data/seed/closure-generated-07.lino"
+    record "response_general_plan_completed_en"
     missing "role,precondition,effect,unit,example"
-  gap response_general_plan_repository_planned_ru
+  gap seed_metadata_gap_4745610770a0ab7c
     source "data/seed/closure-generated-07.lino"
+    record "response_general_plan_repository_planned_ru"
     missing "role,precondition,effect,unit,example"
-  gap response_lexeme_import_cannot_install_hi
+  gap seed_metadata_gap_78f691521503718c
     source "data/seed/closure-generated-07.lino"
+    record "response_lexeme_import_cannot_install_hi"
     missing "role,precondition,effect,unit,example"
-  gap response_pattern_grid_vertical_ru
+  gap seed_metadata_gap_9ac24f7cb5987efc
     source "data/seed/closure-generated-07.lino"
+    record "response_pattern_grid_vertical_ru"
     missing "role,precondition,effect,unit,example"
-  gap response_pattern_sequence_repetition_en
+  gap seed_metadata_gap_379dfca4654de75c
     source "data/seed/closure-generated-07.lino"
+    record "response_pattern_sequence_repetition_en"
     missing "role,precondition,effect,unit,example"
-  gap response_summarization_ratchet_violated_hi
+  gap seed_metadata_gap_e6ae920ddfd39f6c
     source "data/seed/closure-generated-07.lino"
+    record "response_summarization_ratchet_violated_hi"
     missing "role,precondition,effect,unit,example"
-  gap sentences
+  gap seed_metadata_gap_2566ff9e0942184c
     source "data/seed/closure-generated-07.lino"
+    record "sentences"
     missing "role,precondition,effect,unit,example"
-  gap software-design
+  gap seed_metadata_gap_838f2fb2c410954c
     source "data/seed/closure-generated-07.lino"
+    record "software-design"
     missing "role,precondition,effect,unit,example"
-  gap thinking_step_generic_plain
+  gap seed_metadata_gap_a1349738f579f6ac
     source "data/seed/closure-generated-07.lino"
+    record "thinking_step_generic_plain"
     missing "role,precondition,effect,unit,example"
-  gap tool_result_failed
+  gap seed_metadata_gap_f6288523d76147bc
     source "data/seed/closure-generated-07.lino"
+    record "tool_result_failed"
     missing "role,precondition,effect,unit,example"
-  gap baseline
+  gap seed_metadata_gap_946f810e619a1d1c
     source "data/seed/closure-generated-08.lino"
+    record "baseline"
     missing "role,precondition,effect,unit,example"
-  gap lexeme_import_cannot_create
+  gap seed_metadata_gap_3026f80f3df85dbc
     source "data/seed/closure-generated-08.lino"
+    record "lexeme_import_cannot_create"
     missing "role,precondition,effect,unit,example"
-  gap lexeme_import_fetch_failed
+  gap seed_metadata_gap_1ddc7139afa42bfc
     source "data/seed/closure-generated-08.lino"
+    record "lexeme_import_fetch_failed"
     missing "role,precondition,effect,unit,example"
-  gap originality
+  gap seed_metadata_gap_c24a27e1a83ca3ec
     source "data/seed/closure-generated-08.lino"
+    record "originality"
     missing "role,precondition,effect,unit,example"
-  gap pattern_sequence_compression
+  gap seed_metadata_gap_0a10452fbbcdbd0c
     source "data/seed/closure-generated-08.lino"
+    record "pattern_sequence_compression"
     missing "role,precondition,effect,unit,example"
-  gap pattern_wellbeing_phrase_kak_dela
+  gap seed_metadata_gap_8e9736497b3186ac
     source "data/seed/closure-generated-08.lino"
+    record "pattern_wellbeing_phrase_kak_dela"
     missing "role,precondition,effect,unit,example"
-  gap response_agentic_action_compile_program_ru
+  gap seed_metadata_gap_917be1bee78e99bc
     source "data/seed/closure-generated-08.lino"
+    record "response_agentic_action_compile_program_ru"
     missing "role,precondition,effect,unit,example"
-  gap response_lexeme_import_denotation_lost_hi
+  gap seed_metadata_gap_5755731729a4c55c
     source "data/seed/closure-generated-08.lino"
+    record "response_lexeme_import_denotation_lost_hi"
     missing "role,precondition,effect,unit,example"
-  gap response_search_fusion_header_hi
+  gap seed_metadata_gap_58fbe31f6c9a657c
     source "data/seed/closure-generated-08.lino"
+    record "response_search_fusion_header_hi"
     missing "role,precondition,effect,unit,example"
-  gap response_summarization_ratchet_holds_es
+  gap seed_metadata_gap_02b8b3c08f5d7e4c
     source "data/seed/closure-generated-08.lino"
+    record "response_summarization_ratchet_holds_es"
     missing "role,precondition,effect,unit,example"
-  gap response_summarization_ratchet_no_embedded_grammar_zh
+  gap seed_metadata_gap_027370cfe85cd68c
     source "data/seed/closure-generated-08.lino"
+    record "response_summarization_ratchet_no_embedded_grammar_zh"
     missing "role,precondition,effect,unit,example"
-  gap response_thinking_language_name_es_es
+  gap seed_metadata_gap_eb0ecb1de52e162c
     source "data/seed/closure-generated-08.lino"
+    record "response_thinking_language_name_es_es"
     missing "role,precondition,effect,unit,example"
-  gap response_thinking_narrative_meta_explanation_ru
+  gap seed_metadata_gap_e87b6308cb5004fc
     source "data/seed/closure-generated-08.lino"
+    record "response_thinking_narrative_meta_explanation_ru"
     missing "role,precondition,effect,unit,example"
-  gap response_wellbeing_ru
+  gap seed_metadata_gap_2a0676f8df65588c
     source "data/seed/closure-generated-08.lino"
+    record "response_wellbeing_ru"
     missing "role,precondition,effect,unit,example"
-  gap structured
+  gap seed_metadata_gap_26e0f671a069a91c
     source "data/seed/closure-generated-08.lino"
+    record "structured"
     missing "role,precondition,effect,unit,example"
-  gap write_program_skill_gap
+  gap seed_metadata_gap_8ecf95269fc4f9dc
     source "data/seed/closure-generated-08.lino"
+    record "write_program_skill_gap"
     missing "role,precondition,effect,unit,example"
-  gap command-stream
+  gap seed_metadata_gap_0bd1dfac506587dc
     source "data/seed/closure-generated-09.lino"
+    record "command-stream"
     missing "role,precondition,effect,unit,example"
-  gap express
+  gap seed_metadata_gap_b69b6e051b1c749c
     source "data/seed/closure-generated-09.lino"
+    record "express"
     missing "role,precondition,effect,unit,example"
-  gap intent_http_fetch
+  gap seed_metadata_gap_95e8cbf9b8071eec
     source "data/seed/closure-generated-09.lino"
+    record "intent_http_fetch"
     missing "role,precondition,effect,unit,example"
-  gap pattern_concept_suffix_shi_shei_traditional
+  gap seed_metadata_gap_a21d60620a48f27c
     source "data/seed/closure-generated-09.lino"
+    record "pattern_concept_suffix_shi_shei_traditional"
     missing "role,precondition,effect,unit,example"
-  gap response_completion_recovery_name_target_artifact_zh
+  gap seed_metadata_gap_fa5b20febf19d80c
     source "data/seed/closure-generated-09.lino"
+    record "response_completion_recovery_name_target_artifact_zh"
     missing "role,precondition,effect,unit,example"
-  gap response_general_plan_repository_action_en
+  gap seed_metadata_gap_85b8e811db6dc5ac
     source "data/seed/closure-generated-09.lino"
+    record "response_general_plan_repository_action_en"
     missing "role,precondition,effect,unit,example"
-  gap response_lexeme_import_qid_absent_from_fetch_zh
+  gap seed_metadata_gap_6f3e7d2497aeb6cc
     source "data/seed/closure-generated-09.lino"
+    record "response_lexeme_import_qid_absent_from_fetch_zh"
     missing "role,precondition,effect,unit,example"
-  gap response_pattern_sequence_no_compression_zh
+  gap seed_metadata_gap_1161cfbc6156e02c
     source "data/seed/closure-generated-09.lino"
+    record "response_pattern_sequence_no_compression_zh"
     missing "role,precondition,effect,unit,example"
-  gap response_task_atomicity_yes_zh
+  gap seed_metadata_gap_14b0705a8e0336cc
     source "data/seed/closure-generated-09.lino"
+    record "response_task_atomicity_yes_zh"
     missing "role,precondition,effect,unit,example"
-  gap response_write_program_skill_gap_name_task_unspecified_es
+  gap seed_metadata_gap_56bdf090027ffd5c
     source "data/seed/closure-generated-09.lino"
+    record "response_write_program_skill_gap_name_task_unspecified_es"
     missing "role,precondition,effect,unit,example"
-  gap summarization_ratchet_below_minimum
+  gap seed_metadata_gap_9523180f0ab9c2ac
     source "data/seed/closure-generated-09.lino"
+    record "summarization_ratchet_below_minimum"
     missing "role,precondition,effect,unit,example"
-  gap summarization_report_stabilized
+  gap seed_metadata_gap_dd7347a9738deadc
     source "data/seed/closure-generated-09.lino"
+    record "summarization_report_stabilized"
     missing "role,precondition,effect,unit,example"
-  gap general_plan_repository_planned
+  gap seed_metadata_gap_94546e8e3877b79c
     source "data/seed/closure-generated-10.lino"
+    record "general_plan_repository_planned"
     missing "role,precondition,effect,unit,example"
-  gap pattern_concept_prefix_chto_oboznachaet
+  gap seed_metadata_gap_1337b54dd091356c
     source "data/seed/closure-generated-10.lino"
+    record "pattern_concept_prefix_chto_oboznachaet"
     missing "role,precondition,effect,unit,example"
-  gap pattern_concept_prefix_describe
+  gap seed_metadata_gap_0059e95dcff783ac
     source "data/seed/closure-generated-10.lino"
+    record "pattern_concept_prefix_describe"
     missing "role,precondition,effect,unit,example"
-  gap pattern_concept_prefix_tell_me_what
+  gap seed_metadata_gap_220562ccca1aec3c
     source "data/seed/closure-generated-10.lino"
+    record "pattern_concept_prefix_tell_me_what"
     missing "role,precondition,effect,unit,example"
-  gap pattern_concept_prefix_whats_the
+  gap seed_metadata_gap_6b1d1613fc3d924c
     source "data/seed/closure-generated-10.lino"
+    record "pattern_concept_prefix_whats_the"
     missing "role,precondition,effect,unit,example"
-  gap response_general_plan_completed_hi
+  gap seed_metadata_gap_bce77bf3f0f3cadc
     source "data/seed/closure-generated-10.lino"
+    record "response_general_plan_completed_hi"
     missing "role,precondition,effect,unit,example"
-  gap response_lexeme_import_cannot_write_json_zh
+  gap seed_metadata_gap_1f60de2855119f4c
     source "data/seed/closure-generated-10.lino"
+    record "response_lexeme_import_cannot_write_json_zh"
     missing "role,precondition,effect,unit,example"
-  gap response_who_is_unknown_entity_suggestion_zh
+  gap seed_metadata_gap_b3fec6454bf636bc
     source "data/seed/closure-generated-10.lino"
+    record "response_who_is_unknown_entity_suggestion_zh"
     missing "role,precondition,effect,unit,example"
-  gap restate_postcondition
+  gap seed_metadata_gap_87fa2712e68c04ac
     source "data/seed/closure-generated-10.lino"
+    record "restate_postcondition"
     missing "role,precondition,effect,unit,example"
-  gap rust_library
+  gap seed_metadata_gap_86a65bd3caf03a9c
     source "data/seed/closure-generated-10.lino"
+    record "rust_library"
     missing "role,precondition,effect,unit,example"
-  gap wikipedia_lookup
+  gap seed_metadata_gap_a678a2364ddf5a2c
     source "data/seed/closure-generated-10.lino"
+    record "wikipedia_lookup"
     missing "role,precondition,effect,unit,example"
-  gap algorithm_empty_binding_name
+  gap seed_metadata_gap_a0a4b9045e65b1fc
     source "data/seed/closure-generated-11.lino"
+    record "algorithm_empty_binding_name"
     missing "role,precondition,effect,unit,example"
-  gap desktop_to_cli
+  gap seed_metadata_gap_7419b9524994205c
     source "data/seed/closure-generated-11.lino"
+    record "desktop_to_cli"
     missing "role,precondition,effect,unit,example"
-  gap pattern_assistant_free_time_phrase_ni_yeyu_shijian_zuo_shenme_zh
+  gap seed_metadata_gap_afa459f7c8d5c5cc
     source "data/seed/closure-generated-11.lino"
+    record "pattern_assistant_free_time_phrase_ni_yeyu_shijian_zuo_shenme_zh"
     missing "role,precondition,effect,unit,example"
-  gap pattern_behavior_rules_list_perechisli_svoi_pravila_ru
+  gap seed_metadata_gap_0752b8311210b3cc
     source "data/seed/closure-generated-11.lino"
+    record "pattern_behavior_rules_list_perechisli_svoi_pravila_ru"
     missing "role,precondition,effect,unit,example"
-  gap response_client_global_config_probe_started_hi
+  gap seed_metadata_gap_12c487827b780cbc
     source "data/seed/closure-generated-11.lino"
+    record "response_client_global_config_probe_started_hi"
     missing "role,precondition,effect,unit,example"
-  gap response_draft_comparison_explanation_en
+  gap seed_metadata_gap_2d2ef3fbc322b98c
     source "data/seed/closure-generated-11.lino"
+    record "response_draft_comparison_explanation_en"
     missing "role,precondition,effect,unit,example"
-  gap response_fact_check_arithmetic_counterexample_en
+  gap seed_metadata_gap_f6fc8245da98c16c
     source "data/seed/closure-generated-11.lino"
+    record "response_fact_check_arithmetic_counterexample_en"
     missing "role,precondition,effect,unit,example"
-  gap response_lexeme_import_denotation_lost_ru
+  gap seed_metadata_gap_a5fc64c537a2153c
     source "data/seed/closure-generated-11.lino"
+    record "response_lexeme_import_denotation_lost_ru"
     missing "role,precondition,effect,unit,example"
-  gap response_local_search_found_path_en
+  gap seed_metadata_gap_af947675d4778fac
     source "data/seed/closure-generated-11.lino"
+    record "response_local_search_found_path_en"
     missing "role,precondition,effect,unit,example"
-  gap response_thinking_narrative_unknown_es
+  gap seed_metadata_gap_7a5911c5d90ad84c
     source "data/seed/closure-generated-11.lino"
+    record "response_thinking_narrative_unknown_es"
     missing "role,precondition,effect,unit,example"
-  gap response_thinking_step_impulse_plain_zh
+  gap seed_metadata_gap_8102f16c3cbc7d9c
     source "data/seed/closure-generated-11.lino"
+    record "response_thinking_step_impulse_plain_zh"
     missing "role,precondition,effect,unit,example"
-  gap response_thinking_step_program_plan_plain_en
+  gap seed_metadata_gap_550e30a164225edc
     source "data/seed/closure-generated-11.lino"
+    record "response_thinking_step_program_plan_plain_en"
     missing "role,precondition,effect,unit,example"
-  gap issue_report_gist_failed
+  gap seed_metadata_gap_ab39a39355560cbc
     source "data/seed/closure-generated-12.lino"
+    record "issue_report_gist_failed"
     missing "role,precondition,effect,unit,example"
-  gap package-management
+  gap seed_metadata_gap_2aba531196d0f0bc
     source "data/seed/closure-generated-12.lino"
+    record "package-management"
     missing "role,precondition,effect,unit,example"
-  gap pattern_grid_horizontal
+  gap seed_metadata_gap_7bf9bfc386520fec
     source "data/seed/closure-generated-12.lino"
+    record "pattern_grid_horizontal"
     missing "role,precondition,effect,unit,example"
-  gap response_general_plan_repository_planned_hi
+  gap seed_metadata_gap_03fac793a2f4fbcc
     source "data/seed/closure-generated-12.lino"
+    record "response_general_plan_repository_planned_hi"
     missing "role,precondition,effect,unit,example"
-  gap response_general_plan_unverified_ru
+  gap seed_metadata_gap_faa1431a2de0544c
     source "data/seed/closure-generated-12.lino"
+    record "response_general_plan_unverified_ru"
     missing "role,precondition,effect,unit,example"
-  gap response_lexeme_import_part_of_speech_lost_ru
+  gap seed_metadata_gap_a1afc20bf56eafac
     source "data/seed/closure-generated-12.lino"
+    record "response_lexeme_import_part_of_speech_lost_ru"
     missing "role,precondition,effect,unit,example"
-  gap response_thinking_narrative_generic_es
+  gap seed_metadata_gap_d57f1c10b8c46c3c
     source "data/seed/closure-generated-12.lino"
+    record "response_thinking_narrative_generic_es"
     missing "role,precondition,effect,unit,example"
-  gap response_thinking_narrative_unknown_ru
+  gap seed_metadata_gap_3c8b93411fb407bc
     source "data/seed/closure-generated-12.lino"
+    record "response_thinking_narrative_unknown_ru"
     missing "role,precondition,effect,unit,example"
-  gap search
+  gap seed_metadata_gap_9fe3f9af9a66b4dc
     source "data/seed/closure-generated-12.lino"
+    record "search"
     missing "role,precondition,effect,unit,example"
-  gap summarization_report_bound_reached
+  gap seed_metadata_gap_e5e5f5141f4af50c
     source "data/seed/closure-generated-12.lino"
+    record "summarization_report_bound_reached"
     missing "role,precondition,effect,unit,example"
-  gap donald_trump
+  gap seed_metadata_gap_e4a1fc1f5839559c
     source "data/seed/closure-generated-13.lino"
+    record "donald_trump"
     missing "role,precondition,effect,unit,example"
-  gap pattern_assistant_free_time_phrase_khali_samay_men_kya_karte_ho_hi
+  gap seed_metadata_gap_0ae27407aafc611c
     source "data/seed/closure-generated-13.lino"
+    record "pattern_assistant_free_time_phrase_khali_samay_men_kya_karte_ho_hi"
     missing "role,precondition,effect,unit,example"
-  gap pattern_concept_prefix_what_do
+  gap seed_metadata_gap_b24e38ebc2ce54ec
     source "data/seed/closure-generated-13.lino"
+    record "pattern_concept_prefix_what_do"
     missing "role,precondition,effect,unit,example"
-  gap philosophy-text
+  gap seed_metadata_gap_dd7577fa1da3722c
     source "data/seed/closure-generated-13.lino"
+    record "philosophy-text"
     missing "role,precondition,effect,unit,example"
-  gap programming_task_catalog
+  gap seed_metadata_gap_d38cf9e8e9e08b0c
     source "data/seed/closure-generated-13.lino"
+    record "programming_task_catalog"
     missing "role,precondition,effect,unit,example"
-  gap qa_network
+  gap seed_metadata_gap_03fc5b52f8e934bc
     source "data/seed/closure-generated-13.lino"
+    record "qa_network"
     missing "role,precondition,effect,unit,example"
-  gap reader
+  gap seed_metadata_gap_ceb4ef862a9b4fac
     source "data/seed/closure-generated-13.lino"
+    record "reader"
     missing "role,precondition,effect,unit,example"
-  gap response_lexeme_import_qid_absent_from_fetch_en
+  gap seed_metadata_gap_9f9349991379f3cc
     source "data/seed/closure-generated-13.lino"
+    record "response_lexeme_import_qid_absent_from_fetch_en"
     missing "role,precondition,effect,unit,example"
-  gap response_local_search_mismatch_requested_directory_zh
+  gap seed_metadata_gap_02d3cb12432111cc
     source "data/seed/closure-generated-13.lino"
+    record "response_local_search_mismatch_requested_directory_zh"
     missing "role,precondition,effect,unit,example"
-  gap response_thinking_step_formalize_plain_es
+  gap seed_metadata_gap_91c875584c56300c
     source "data/seed/closure-generated-13.lino"
+    record "response_thinking_step_formalize_plain_es"
     missing "role,precondition,effect,unit,example"
-  gap response_web_search_live_results_ru
+  gap seed_metadata_gap_d26a5527b7a00fcc
     source "data/seed/closure-generated-13.lino"
+    record "response_web_search_live_results_ru"
     missing "role,precondition,effect,unit,example"
-  gap tool_wikipedia_lookup
+  gap seed_metadata_gap_466e383455f3dc3c
     source "data/seed/closure-generated-13.lino"
+    record "tool_wikipedia_lookup"
     missing "role,precondition,effect,unit,example"
-  gap lexeme_import_duplicate_slug
+  gap seed_metadata_gap_41d00a19e7e3fcac
     source "data/seed/closure-generated-14.lino"
+    record "lexeme_import_duplicate_slug"
     missing "role,precondition,effect,unit,example"
-  gap pattern_behavior_rules_list_niyam_dikhao_hi
+  gap seed_metadata_gap_4fd1239feee2898c
     source "data/seed/closure-generated-14.lino"
+    record "pattern_behavior_rules_list_niyam_dikhao_hi"
     missing "role,precondition,effect,unit,example"
-  gap response_agentic_report_contents_options_ru
+  gap seed_metadata_gap_bebf5578794a684c
     source "data/seed/closure-generated-14.lino"
+    record "response_agentic_report_contents_options_ru"
     missing "role,precondition,effect,unit,example"
-  gap response_budget_search_solution_hi
+  gap seed_metadata_gap_0b9e903985e387fc
     source "data/seed/closure-generated-14.lino"
+    record "response_budget_search_solution_hi"
     missing "role,precondition,effect,unit,example"
-  gap response_coding_workspace_effect_observed_es
+  gap seed_metadata_gap_e7c77a6292e8bfdc
     source "data/seed/closure-generated-14.lino"
+    record "response_coding_workspace_effect_observed_es"
     missing "role,precondition,effect,unit,example"
-  gap response_external_benchmark_not_swe_case_en
+  gap seed_metadata_gap_65dd574bc46cc35c
     source "data/seed/closure-generated-14.lino"
+    record "response_external_benchmark_not_swe_case_en"
     missing "role,precondition,effect,unit,example"
-  gap response_mcp_instructions_hi
+  gap seed_metadata_gap_730aae0346a10a0c
     source "data/seed/closure-generated-14.lino"
+    record "response_mcp_instructions_hi"
     missing "role,precondition,effect,unit,example"
-  gap response_memory_program_destructive_refused_hi
+  gap seed_metadata_gap_cc1ffc90da4f527c
     source "data/seed/closure-generated-14.lino"
+    record "response_memory_program_destructive_refused_hi"
     missing "role,precondition,effect,unit,example"
-  gap response_orchestration_cross_agent_denial_ru
+  gap seed_metadata_gap_91c1ba9b728397bc
     source "data/seed/closure-generated-14.lino"
+    record "response_orchestration_cross_agent_denial_ru"
     missing "role,precondition,effect,unit,example"
-  gap response_task_decomposition_lead_en
+  gap seed_metadata_gap_030e1bb077dbeb8c
     source "data/seed/closure-generated-14.lino"
+    record "response_task_decomposition_lead_en"
     missing "role,precondition,effect,unit,example"
-  gap response_thinking_step_detect_language_ru
+  gap seed_metadata_gap_382d8e26ea159b5c
     source "data/seed/closure-generated-14.lino"
+    record "response_thinking_step_detect_language_ru"
     missing "role,precondition,effect,unit,example"
-  gap reverse_string
+  gap seed_metadata_gap_ec3efb0e85dd464c
     source "data/seed/closure-generated-14.lino"
+    record "reverse_string"
     missing "role,precondition,effect,unit,example"
-  gap there
+  gap seed_metadata_gap_50852c918a64ae2c
     source "data/seed/closure-generated-14.lino"
+    record "there"
     missing "role,precondition,effect,unit,example"
-  gap agentic_action_run_program
+  gap seed_metadata_gap_db8438b8ea675ccc
     source "data/seed/closure-generated-15.lino"
+    record "agentic_action_run_program"
     missing "role,precondition,effect,unit,example"
-  gap echo
+  gap seed_metadata_gap_c37e0db8ea078d0c
     source "data/seed/closure-generated-15.lino"
+    record "echo"
     missing "role,precondition,effect,unit,example"
-  gap lexeme_import_invalid_qid
+  gap seed_metadata_gap_f8d0e925fbb5979c
     source "data/seed/closure-generated-15.lino"
+    record "lexeme_import_invalid_qid"
     missing "role,precondition,effect,unit,example"
-  gap pattern_wellbeing_phrase_tum_kaise_ho_hi
+  gap seed_metadata_gap_7925384104d5a92c
     source "data/seed/closure-generated-15.lino"
+    record "pattern_wellbeing_phrase_tum_kaise_ho_hi"
     missing "role,precondition,effect,unit,example"
-  gap response_general_plan_repository_action_zh
+  gap seed_metadata_gap_faf617c348c80f3c
     source "data/seed/closure-generated-15.lino"
+    record "response_general_plan_repository_action_zh"
     missing "role,precondition,effect,unit,example"
-  gap response_summarization_criterion_meta_language_evidence_es
+  gap seed_metadata_gap_a0ed5626e2079d7c
     source "data/seed/closure-generated-15.lino"
+    record "response_summarization_criterion_meta_language_evidence_es"
     missing "role,precondition,effect,unit,example"
-  gap response_thinking_step_compute_expression_es
+  gap seed_metadata_gap_4841178c70fa161c
     source "data/seed/closure-generated-15.lino"
+    record "response_thinking_step_compute_expression_es"
     missing "role,precondition,effect,unit,example"
-  gap response_thinking_step_extract_term_es
+  gap seed_metadata_gap_a7626669879feecc
     source "data/seed/closure-generated-15.lino"
+    record "response_thinking_step_extract_term_es"
     missing "role,precondition,effect,unit,example"
-  gap category
+  gap seed_metadata_gap_f90ab789ca84507c
     source "data/seed/closure-generated-16.lino"
+    record "category"
     missing "role,precondition,effect,unit,example"
-  gap download
+  gap seed_metadata_gap_6ebe3c538c6ffc4c
     source "data/seed/closure-generated-16.lino"
+    record "download"
     missing "role,precondition,effect,unit,example"
-  gap expandable
+  gap seed_metadata_gap_1b48d7b5ff4037bc
     source "data/seed/closure-generated-16.lino"
+    record "expandable"
     missing "role,precondition,effect,unit,example"
-  gap external_benchmark_swe_unavailable
+  gap seed_metadata_gap_26010391c254767c
     source "data/seed/closure-generated-16.lino"
+    record "external_benchmark_swe_unavailable"
     missing "role,precondition,effect,unit,example"
-  gap pattern_wellbeing_phrase_how_are_you_en
+  gap seed_metadata_gap_70a0ec443b71dc0c
     source "data/seed/closure-generated-16.lino"
+    record "pattern_wellbeing_phrase_how_are_you_en"
     missing "role,precondition,effect,unit,example"
-  gap response_compiled_procedure_zh
+  gap seed_metadata_gap_475df94701925a5c
     source "data/seed/closure-generated-16.lino"
+    record "response_compiled_procedure_zh"
     missing "role,precondition,effect,unit,example"
-  gap response_search_fusion_header_es
+  gap seed_metadata_gap_2362dadcf72ff4fc
     source "data/seed/closure-generated-16.lino"
+    record "response_search_fusion_header_es"
     missing "role,precondition,effect,unit,example"
-  gap response_task_plan_stage_requirements_zh
+  gap seed_metadata_gap_f699cfcbb20a0b2c
     source "data/seed/closure-generated-16.lino"
+    record "response_task_plan_stage_requirements_zh"
     missing "role,precondition,effect,unit,example"
-  gap response_thinking_step_compute_expression_ru
+  gap seed_metadata_gap_2eb5c01ae587d88c
     source "data/seed/closure-generated-16.lino"
+    record "response_thinking_step_compute_expression_ru"
     missing "role,precondition,effect,unit,example"
-  gap response_tool_result_failed_exit_code_zh
+  gap seed_metadata_gap_675b346284e54fac
     source "data/seed/closure-generated-16.lino"
+    record "response_tool_result_failed_exit_code_zh"
     missing "role,precondition,effect,unit,example"
-  gap tool_http_fetch
+  gap seed_metadata_gap_84ed837969c7040c
     source "data/seed/closure-generated-16.lino"
+    record "tool_http_fetch"
     missing "role,precondition,effect,unit,example"
-  gap usd
+  gap seed_metadata_gap_63c0d79db33f909c
     source "data/seed/closure-generated-16.lino"
+    record "usd"
     missing "role,precondition,effect,unit,example"
-  gap report_issue_subject
+  gap seed_metadata_gap_4aed7b3fc08a3f6c
     source "data/seed/meanings-agent-actions.lino"
+    record "report_issue_subject"
     missing "precondition,effect,unit,example"
-  gap rule_enumeration_request
+  gap seed_metadata_gap_d26e57d9ccc1e96c
     source "data/seed/meanings-behavior-rules.lino"
+    record "rule_enumeration_request"
     missing "precondition,effect,unit,example"
-  gap addition
+  gap seed_metadata_gap_4ed3b205edbedc0c
     source "data/seed/meanings-calculator.lino"
+    record "addition"
     missing "precondition,effect,unit,example"
-  gap calculation_basis
+  gap seed_metadata_gap_06b790283415001c
     source "data/seed/meanings-calculator.lino"
+    record "calculation_basis"
     missing "precondition,effect,unit,example"
-  gap calculation_result_query
+  gap seed_metadata_gap_26f4193f68b69f3c
     source "data/seed/meanings-calculator.lino"
+    record "calculation_result_query"
     missing "precondition,effect,unit,example"
-  gap calendar_interrogative
+  gap seed_metadata_gap_9621e3d40c0525ec
     source "data/seed/meanings-calendar.lino"
+    record "calendar_interrogative"
     missing "precondition,effect,unit,example"
-  gap computer_use_resource_inventory
+  gap seed_metadata_gap_caf8509f64bed94c
     source "data/seed/meanings-computer-use.lino"
+    record "computer_use_resource_inventory"
     missing "precondition,effect,unit,example"
-  gap knowledge_relation
+  gap seed_metadata_gap_c075bf64987c3b0c
     source "data/seed/meanings-facts.lino"
+    record "knowledge_relation"
     missing "precondition,effect,unit,example"
-  gap feature_capability_greeting
+  gap seed_metadata_gap_b2a294f102063dec
     source "data/seed/meanings-feature-capability.lino"
+    record "feature_capability_greeting"
     missing "precondition,effect,unit,example"
-  gap file_write_content
+  gap seed_metadata_gap_517a51260ab2024c
     source "data/seed/meanings-file-write.lino"
+    record "file_write_content"
     missing "precondition,effect,unit,example"
-  gap answer
+  gap seed_metadata_gap_e67f25b32d1e516c
     source "data/seed/meanings-intent.lino"
+    record "answer"
     missing "precondition,effect,unit,example"
-  gap conversation_return_recap
+  gap seed_metadata_gap_be9c70a2d74e9e2c
     source "data/seed/meanings-intent.lino"
+    record "conversation_return_recap"
     missing "precondition,effect,unit,example"
-  gap understanding
+  gap seed_metadata_gap_5f216e122839f7bc
     source "data/seed/meanings-intent.lino"
+    record "understanding"
     missing "precondition,effect,unit,example"
-  gap who_is_question
+  gap seed_metadata_gap_e430a591c6b069cc
     source "data/seed/meanings-intent.lino"
+    record "who_is_question"
     missing "precondition,effect,unit,example"
-  gap grammatical_number
+  gap seed_metadata_gap_76c6d5099b28610c
     source "data/seed/meanings-lexical-meta.lino"
+    record "grammatical_number"
     missing "precondition,effect,unit,example"
-  gap zero-or-more:
+  gap seed_metadata_gap_877bfbe62704fc7c
     source "data/seed/meanings-links-root.lino"
+    record "zero-or-more:"
     missing "precondition,effect,unit,example"
-  gap local_path_directory_kind
+  gap seed_metadata_gap_6ca58d50336b578c
     source "data/seed/meanings-local-search.lino"
+    record "local_path_directory_kind"
     missing "precondition,effect,unit,example"
-  gap assistant_self_reference
+  gap seed_metadata_gap_db28e03a49280d0c
     source "data/seed/meanings-meta.lino"
+    record "assistant_self_reference"
     missing "precondition,effect,unit,example"
-  gap prior_answer_reference
+  gap seed_metadata_gap_7659af4ab70b22cc
     source "data/seed/meanings-meta.lino"
+    record "prior_answer_reference"
     missing "precondition,effect,unit,example"
-  gap playwright
+  gap seed_metadata_gap_dd2ef6a626a35c2c
     source "data/seed/meanings-playwright.lino"
+    record "playwright"
     missing "precondition,effect,unit,example"
-  gap signal_count_vowels
+  gap seed_metadata_gap_afa36d0569b96d8c
     source "data/seed/meanings-program-synthesis.lino"
+    record "signal_count_vowels"
     missing "precondition,effect,unit,example"
-  gap metatheory
+  gap seed_metadata_gap_449b108075d171dc
     source "data/seed/meanings-proof.lino"
+    record "metatheory"
     missing "precondition,effect,unit,example"
-  gap table
+  gap seed_metadata_gap_b6d43547d7a1692c
     source "data/seed/meanings-research-table.lino"
+    record "table"
     missing "precondition,effect,unit,example"
-  gap reachability_target_marker
+  gap seed_metadata_gap_66648bd2f266e28c
     source "data/seed/meanings-search.lino"
+    record "reachability_target_marker"
     missing "precondition,effect,unit,example"
-  gap cached_source_response
+  gap seed_metadata_gap_5ce5badb13cf128c
     source "data/seed/meanings-semantic-meta.lino"
+    record "cached_source_response"
     missing "precondition,effect,unit,example"
-  gap skill_procedure_object_translation
+  gap seed_metadata_gap_d352bb231ceead8c
     source "data/seed/meanings-skill-procedure.lino"
+    record "skill_procedure_object_translation"
     missing "precondition,effect,unit,example"
-  gap skill_procedure_store
+  gap seed_metadata_gap_01d401b580c91c5c
     source "data/seed/meanings-skill-procedure.lino"
+    record "skill_procedure_store"
     missing "precondition,effect,unit,example"
-  gap software_followup_execution
+  gap seed_metadata_gap_0e140b8ac9b12dfc
     source "data/seed/meanings-software-project.lino"
+    record "software_followup_execution"
     missing "precondition,effect,unit,example"
-  gap tool_result_failure
+  gap seed_metadata_gap_13e8ab4a3250e40c
     source "data/seed/meanings-tool-access.lino"
+    record "tool_result_failure"
     missing "precondition,effect,unit,example"
-  gap language_gap
+  gap seed_metadata_gap_611c39e73b8dbb5c
     source "data/seed/meanings-translation.lino"
+    record "language_gap"
     missing "role,precondition,effect,unit,example"
-  gap response_language_gap_en
+  gap seed_metadata_gap_7c90015732eb04ac
     source "data/seed/meanings-translation.lino"
+    record "response_language_gap_en"
     missing "role,precondition,effect,unit,example"
-  gap water
+  gap seed_metadata_gap_a42523c675ae38cc
     source "data/seed/meanings-translation.lino"
+    record "water"
     missing "precondition,effect,unit,example"
-  gap kelvin
+  gap seed_metadata_gap_0458e3b4bfaa743c
     source "data/seed/meanings-units.lino"
+    record "kelvin"
     missing "precondition,effect,unit,example"
-  gap ten
+  gap seed_metadata_gap_6c41cee7a2e1f13c
     source "data/seed/meanings-units.lino"
+    record "ten"
     missing "precondition,effect,unit,example"
-  gap time
+  gap seed_metadata_gap_6d1dd0998a73c02c
     source "data/seed/meanings-units.lino"
+    record "time"
     missing "precondition,effect,unit,example"
-  gap web_resource
+  gap seed_metadata_gap_003cf5c4af3c4f0c
     source "data/seed/meanings-web-navigation.lino"
+    record "web_resource"
     missing "precondition,effect,unit,example"
-  gap research_question_opener
+  gap seed_metadata_gap_bd0f486834b3614c
     source "data/seed/meanings-web-research.lino"
+    record "research_question_opener"
     missing "precondition,effect,unit,example"
-  gap research_superlative_modifier
+  gap seed_metadata_gap_d78c0ff414680d7c
     source "data/seed/meanings-web-research.lino"
+    record "research_superlative_modifier"
     missing "precondition,effect,unit,example"
-  gap explicit_web_search_command
+  gap seed_metadata_gap_79a4c44e10dddf8c
     source "data/seed/meanings-web-search-query.lino"
+    record "explicit_web_search_command"
     missing "precondition,effect,unit,example"
-  gap query_leading_noise
+  gap seed_metadata_gap_696c55dd83944d1c
     source "data/seed/meanings-web-search-query.lino"
+    record "query_leading_noise"
     missing "precondition,effect,unit,example"
-  gap wikidata_item_carrot
+  gap seed_metadata_gap_ca73ed1bc6984c3c
     source "data/seed/meanings-wikidata.lino"
+    record "wikidata_item_carrot"
     missing "precondition,effect,unit,example"
-  gap script
+  gap seed_metadata_gap_08361ffffebab3dc
     source "data/seed/meanings.lino"
+    record "script"
     missing "precondition,effect,unit,example"

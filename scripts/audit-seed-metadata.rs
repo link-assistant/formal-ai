@@ -202,7 +202,7 @@ fn find_gaps(records: &[MeaningRecord], schema: &Schema) -> Result<Vec<Gap>, Str
     Ok(gaps)
 }
 
-fn stable_shard(gap: &Gap) -> usize {
+fn stable_hash(gap: &Gap) -> u64 {
     let mut hash = 0xcbf2_9ce4_8422_2325_u64;
     for byte in gap
         .source
@@ -213,7 +213,15 @@ fn stable_shard(gap: &Gap) -> usize {
         hash ^= u64::from(byte);
         hash = hash.wrapping_mul(0x0000_0100_0000_01b3);
     }
-    hash as usize % SHARD_COUNT
+    hash
+}
+
+fn stable_shard(gap: &Gap) -> usize {
+    stable_hash(gap) as usize % SHARD_COUNT
+}
+
+fn quoted(value: &str) -> String {
+    format!("\"{}\"", value.replace('\\', "\\\\").replace('"', "\\\""))
 }
 
 fn render_shards(gaps: &[Gap]) -> BTreeMap<String, String> {
@@ -229,12 +237,15 @@ fn render_shards(gaps: &[Gap]) -> BTreeMap<String, String> {
             let mut output = format!(
                 "seed_metadata_gaps\n  issue 918\n  shard {index}\n  shard_count {SHARD_COUNT}\n  audit_scope \"problem-solving concept records under data/seed meanings roots\"\n"
             );
+            let mut ids = BTreeSet::new();
             for gap in gaps {
+                let id = format!("seed_metadata_gap_{:016x}", stable_hash(gap));
+                assert!(ids.insert(id.clone()), "stable gap id collision: {id}");
                 output.push_str(&format!(
-                    "  gap {}\n    source \"{}\"\n    missing \"{}\"\n",
-                    gap.record,
-                    gap.source,
-                    gap.missing.join(",")
+                    "  gap {id}\n    source {}\n    record {}\n    missing {}\n",
+                    quoted(&gap.source),
+                    quoted(&gap.record),
+                    quoted(&gap.missing.join(","))
                 ));
             }
             (
@@ -388,6 +399,22 @@ mod tests {
         );
         assert!(render_shards(&gaps)
             .values()
-            .any(|shard| shard.contains("gap domain_term")));
+            .any(|shard| shard.contains("record \"domain_term\"")));
+    }
+
+    #[test]
+    fn renders_punctuation_in_record_names_as_quoted_data() {
+        let gap = Gap {
+            source: "data/seed/domain.lino".to_owned(),
+            record: "lexical-sense:".to_owned(),
+            missing: vec!["effect".to_owned()],
+        };
+        let rendered = render_shards(&[gap]);
+        let shard = rendered
+            .values()
+            .find(|content| content.contains("lexical-sense:"))
+            .expect("gap shard");
+        assert!(shard.contains("gap seed_metadata_gap_"));
+        assert!(shard.contains("record \"lexical-sense:\""));
     }
 }

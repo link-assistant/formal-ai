@@ -152,15 +152,24 @@ fn committed_gaps(root: &Path) -> BTreeMap<(String, String), String> {
             "{} exceeds the data-file line limit",
             path.display()
         );
+        let mut gap_id = None;
         let mut record = None;
         let mut source = None;
         for line in text.lines() {
             if let Some(value) = line.strip_prefix("  gap ") {
-                record = Some(value.to_owned());
+                gap_id = Some(value.to_owned());
+                record = None;
                 source = None;
             } else if let Some(value) = line.strip_prefix("    source ") {
                 source = Some(value.trim_matches('"').to_owned());
+            } else if let Some(value) = line.strip_prefix("    record ") {
+                record = Some(value.trim_matches('"').to_owned());
             } else if let Some(value) = line.strip_prefix("    missing ") {
+                let id = gap_id.take().expect("gap id");
+                assert!(
+                    id.starts_with("seed_metadata_gap_") && id.len() == 34,
+                    "gap identifier should be a stable 64-bit hash: {id}"
+                );
                 let key = (
                     source.take().expect("gap source"),
                     record.take().expect("gap record"),
