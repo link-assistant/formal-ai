@@ -1,0 +1,35 @@
+seed_metadata_schema
+  issue 918
+  record_kind problem_solving_concept
+  audit_scope "direct children of every concept record in a data/seed meanings root"
+  completeness "each required field has a non-empty direct value"
+  gap_data_prefix "data/meta/seed-metadata-gaps-"
+  unit_not_applicable "not applicable"
+  complete_source "data/seed/meanings-coding-catalog.lino"
+  complete_source "data/seed/meanings-coding-tasks.lino"
+  required_field role
+    value_kind "meaning reference or stable role identifier"
+    semantics "the participant, function, or problem-solving slot filled by the concept"
+    external_shape "FrameNet frame element"
+  required_field precondition
+    value_kind "meaning reference or explicit condition text"
+    semantics "what must hold before the concept or method is applicable"
+    external_shape "typed property value"
+  required_field effect
+    value_kind "meaning reference or explicit postcondition text"
+    semantics "the state, binding, artifact, or knowledge produced when applied"
+    external_shape "typed property value"
+  required_field unit
+    value_kind "measurement-unit reference or the explicit not-applicable sentinel"
+    semantics "the dimension used to interpret numeric values associated with the concept"
+    external_shape "typed property value"
+  required_field example
+    value_kind "meaning reference or concrete example text"
+    semantics "an observable use that evokes or demonstrates the concept"
+    external_shape "FrameNet annotated example"
+  source_reference "https://framenet.icsi.berkeley.edu/fndrupal/frameIndex"
+    supports "frames organize concepts around participant roles called frame elements"
+  source_reference "https://aclanthology.org/P98-1013/"
+    supports "FrameNet couples semantic frames and roles with corpus examples"
+  source_reference "https://www.wikidata.org/wiki/Wikidata:Data_model/en"
+    supports "statements attach typed property values, qualifiers, and references to items"

@@ -647,6 +647,21 @@ The solver follows the universal loop documented in `VISION.md` (Section
 
 Every numbered step writes its own event before the next one starts.
 
+### Minimal Compiled Core (Issue #918)
+
+The implementation boundary has exactly four categories: **Meta algorithm**
+for bounded selection, proof, and learning; **Link store** for associative
+memory; **Generic interpreters** for data-defined rules, recipes, queries, and
+programs; and **Host surfaces** for safe CLI, server, browser, filesystem,
+process, and network I/O. Domain vocabulary, routing policy, prose, examples,
+units, preconditions, and effects belong in data.
+
+The complete rationale and promotion test live in
+`docs/design/minimal-core-boundary.md`. The source-level ledger recursively
+covers `src/solver_handlers/**/*.rs`; `scripts/check-minimal-core-boundary.rs`
+rejects unreviewed files, expanded migration debt, or stale lowered baselines.
+This is a burn-down boundary, not a claim that mixed handlers are already core.
+
 ### 7.1 Project lookups and summarization
 
 "What is `<project>`?" prompts about projects and repository URLs go through a

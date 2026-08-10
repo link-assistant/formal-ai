@@ -418,7 +418,7 @@ Requirement-level status by area, updated:
 | Area (standing requirement) | Status 2026-08-03 |
 | --- | --- |
 | Universal 11-step solver runs for every prompt | Done (pillar 2); the recipe is data (`data/meta/recursive-core-recipe.lino`) executed by `src/recipe_interpreter.rs` |
-| Only memory + meta algorithm; no specialized Rust handlers (#559 mandate) | Partial: #699 closed its migration batches, but about 19,600 lines across 46 files remain in `src/solver_handlers/`; the boundary audit continues as E71 |
+| Only memory + meta algorithm; no specialized Rust handlers (#559 mandate) | Partial with an enforced boundary: #918 recursively classifies all 46 mixed handler sources as migration debt and ratchets their 19,731 outside-core lines; dedicated generic interpreter modules remain core, while this debt must now shrink |
 | Real upstream benchmarks with honest scores | Done for #698 (was stale "Not done"): `src/external_benchmarks/` and `tests/unit/specification/external_benchmarks.rs` score external corpora with results in `data/benchmarks/external-results.lino` |
 | Self-improvement that compounds | Partial: #656/#657/#701 closed (gated promotion, release self-hosting metric, generalized adoption for one class); anticipatory learning #705 remains open; making the loop routinely produce merged work is E77 |
 | Symbolic world models (#649) | Done for #686/#702 (was stale "Partial ... behaviors unimplemented"): `src/world_model.rs` implements contexts, STRIPS-style actions, justification-based recalculation, and dialogue behaviors, covered by `tests/unit/issue_649_world_model.rs` |
@@ -446,12 +446,25 @@ Created from issue #914's gap analysis (case study in
 `docs/case-studies/issue-914/`): E69 coding-ladder ratchet
 over agent-harness fixes (foundation blocker), E70 general natural-formal
 translation (delivered by #917 for the seeded FOL statement slice), E71
-minimal-core boundary and seed-metadata audit, E72
+minimal-core boundary and seed-metadata audit (delivered by #918), E72
 research-driven coding knowledge loop, E73 question-necessity protocol, E74
 hive-mind end-to-end integration gate, E75 method learning for the
 universal algorithm, E76 formal-reasoning coverage growth, E77
 self-development loop. Issue URLs are recorded in
 `docs/case-studies/issue-914/proposed-issues.md`.
+
+## Issue #918 Minimal-Core Boundary And Seed-Metadata Audit (PR #986)
+
+Issue #918 completes E71's audit and enforcement layer. A recursive ledger now
+covers 46 recursive handler sources. Every current handler is mixed, so all 46
+files and 19,731 outside-core lines remain explicit migration debt under
+shrink-only file and line ceilings; dedicated generic interpreter modules live
+outside the specialized handler tree. The seed audit defines
+role, precondition, effect, unit, and example shapes; all 37 coding-path
+concepts satisfy them. The audit preserves 3,447 remaining metadata-gap records.
+Future handler migration and metadata enrichment
+can lower these ceilings, but cannot silently add debt. Evidence is in
+`docs/case-studies/issue-918/`.
 
 ## Issue #982 Persisted-Memory Upgrade Safety (PR #985)
 

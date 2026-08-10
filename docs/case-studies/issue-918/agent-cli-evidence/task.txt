@@ -1,0 +1,1 @@
+Create file minimal-core-invariant.md containing Compiled code belongs in Formal AI's minimal core only when it implements the meta algorithm, link-store substrate, a generic interpreter, or a host surface; domain knowledge and policy belong in data.
