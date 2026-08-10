@@ -44,6 +44,7 @@
     "seed/language-detection.lino",
     "seed/unknown-openers.lino",
     "seed/prompt-patterns.lino",
+    "seed/sources-registry.lino",
     "seed/intent-routing.lino",
     "seed/handler-precedence.lino",
     "seed/operation-vocabulary.lino",

@@ -115,6 +115,7 @@ pub mod self_improvement;
 pub mod self_source_links;
 pub mod sequences;
 pub mod server;
+pub mod service_accessibility;
 pub mod shared_dialog;
 pub mod shared_memory;
 pub mod skill_compiler;

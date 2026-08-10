@@ -64,6 +64,7 @@ pub const LANGUAGES_LINO: &str = include_str!("../../data/seed/languages.lino");
 pub const COMPUTER_USE_TASKS_LINO: &str = include_str!("../../data/seed/computer-use-tasks.lino");
 pub const LANGUAGE_DETECTION_LINO: &str = include_str!("../../data/seed/language-detection.lino");
 pub const PROMPT_PATTERNS_LINO: &str = include_str!("../../data/seed/prompt-patterns.lino");
+pub const SOURCES_REGISTRY_LINO: &str = include_str!("../../data/seed/sources-registry.lino");
 pub const INTENT_ROUTING_LINO: &str = include_str!("../../data/seed/intent-routing.lino");
 pub const HANDLER_PRECEDENCE_LINO: &str = include_str!("../../data/seed/handler-precedence.lino");
 pub const DRAFT_STRATEGIES_LINO: &str = include_str!("../../data/seed/draft-strategies.lino");
@@ -280,6 +281,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/computer-use-tasks.lino", COMPUTER_USE_TASKS_LINO),
         ("data/seed/language-detection.lino", LANGUAGE_DETECTION_LINO),
         ("data/seed/prompt-patterns.lino", PROMPT_PATTERNS_LINO),
+        ("data/seed/sources-registry.lino", SOURCES_REGISTRY_LINO),
         ("data/seed/intent-routing.lino", INTENT_ROUTING_LINO),
         ("data/seed/handler-precedence.lino", HANDLER_PRECEDENCE_LINO),
         ("data/seed/draft-strategies.lino", DRAFT_STRATEGIES_LINO),
