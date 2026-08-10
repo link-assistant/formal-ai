@@ -1,0 +1,64 @@
+self_ast_census
+  target src/coding_research_learning.rs
+  language rust
+  fidelity signature
+  byte_len 29193
+  line_count 850
+  content_id source_module_6e40dacd1e76129f
+  symbol_count 55
+  symbols
+    const SEARCH_PAGE_LIMIT 27 27
+    const SOURCE_HEADER 28 28
+    const LANGUAGE_PLACEHOLDER 29 29
+    const TASK_PLACEHOLDER 30 30
+    const BASE_QUERY_PLACEHOLDER 31 31
+    const ROUND_PLACEHOLDER 32 32
+    const CODING_RESEARCH_LEARNING_CONTRACT 35 36
+    struct CodingResearchError 41 44
+    function fmt 47 49
+    struct ResearchRound 55 59
+    struct CodingResearchGap 63 70
+    function for_program_task 76 89
+    function name 92 94
+    function next_query 97 99
+    function failed_rounds 102 107
+    function links_notation 110 142
+    function record_failure 144 161
+    function record_success 163 170
+    function base_query 173 178
+    function render_query_template 180 198
+    struct CodingResearchApproval 202 205
+    function granted 209 214
+    function declined 217 222
+    struct SourceProcedure 226 233
+    function parse 236 269
+    function formalize 271 278
+    function formalization_body 280 290
+    function valid_spdx_expression 293 300
+    struct ResearchedCodingProcedure 304 321
+    function identity 324 347
+    function expected_id 349 351
+    function write_body 353 382
+    struct ResearchedCodingProcedureLedger 387 389
+    function new 393 397
+    function is_empty 400 402
+    function procedure_for 405 407
+    function promote 409 414
+    function links_notation 417 426
+    function review_body 428 434
+    function from_links_notation 436 474
+    struct CodingResearchExecution 479 486
+    function research_coding_skill_gap 492 614
+    function execute_researched_coding_procedure 618 634
+    function captured_procedure 636 653
+    function verification_gates 655 667
+    function procedure_from_execution 670 697
+    function validate_procedure 699 736
+    function valid_source_url 738 743
+    function is_sha256 745 750
+    function validate_contract 752 807
+    function fail 809 821
+    function error 823 828
+    function root_named 830 835
+    function required 837 844
+    function parse_usize 846 850

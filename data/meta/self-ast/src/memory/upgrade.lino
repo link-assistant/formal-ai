@@ -2,10 +2,10 @@ self_ast_census
   target src/memory/upgrade.rs
   language rust
   fidelity signature
-  byte_len 28943
-  line_count 857
-  content_id source_module_910ceb4dec78d09b
-  symbol_count 41
+  byte_len 29361
+  line_count 869
+  content_id source_module_4006f66a6f95d6b0
+  symbol_count 43
   symbols
     const MINIMUM_READABLE_MEMORY_SCHEMA_VERSION 20 20
     const MAXIMUM_READABLE_MEMORY_SCHEMA_VERSION 21 21
@@ -13,38 +13,40 @@ self_ast_census
     const V1_TO_V2_MIGRATION_ID 23 23
     const SCHEMA_MARKER 24 24
     static TEMP_SEQUENCE 26 26
-    enum MemoryMigrationState 31 36
-    struct MemoryUpgradeStatus 43 61
-    function base 64 86
-    function incompatible 88 103
-    function incompatible_bytes 105 115
-    struct MemoryMigrationReceipt 120 134
-    struct MemoryUpgradeError 139 143
-    function new 146 152
-    function with_status 154 157
-    function code 160 162
-    function message 165 167
-    function status 170 172
-    function fmt 176 178
-    function preflight_memory_upgrade 185 196
-    function inspect_memory_text 198 200
-    function schema_version_for_loaded_document 202 209
-    function inspect_memory_bytes 211 341
-    function validate_persisted_memory_text 352 395
-    function parse_persisted_quoted 398 416
-    function migrate_memory 419 425
-    function migrate_memory_with_pre_commit 432 616
-    function noop_receipt 618 636
-    function migrate_v1_to_v2 638 679
-    function memory_lock_path 681 687
-    function open_lock_file 689 712
-    function default_backup_path 714 720
-    function default_receipt_path 722 728
-    function validate_auxiliary_paths 730 748
-    function write_verified_backup 750 790
-    function write_atomic_with_permissions 792 804
-    function write_new_file 806 826
-    function temporary_path 828 839
-    function sync_parent 842 848
-    function sync_parent 851 853
-    function sha256 855 857
+    struct ExclusiveFileLock 28 28
+    function drop 31 36
+    enum MemoryMigrationState 42 47
+    struct MemoryUpgradeStatus 54 72
+    function base 75 97
+    function incompatible 99 114
+    function incompatible_bytes 116 126
+    struct MemoryMigrationReceipt 131 145
+    struct MemoryUpgradeError 150 154
+    function new 157 163
+    function with_status 165 168
+    function code 171 173
+    function message 176 178
+    function status 181 183
+    function fmt 187 189
+    function preflight_memory_upgrade 196 207
+    function inspect_memory_text 209 211
+    function schema_version_for_loaded_document 213 220
+    function inspect_memory_bytes 222 352
+    function validate_persisted_memory_text 363 406
+    function parse_persisted_quoted 409 427
+    function migrate_memory 430 436
+    function migrate_memory_with_pre_commit 443 628
+    function noop_receipt 630 648
+    function migrate_v1_to_v2 650 691
+    function memory_lock_path 693 699
+    function open_lock_file 701 724
+    function default_backup_path 726 732
+    function default_receipt_path 734 740
+    function validate_auxiliary_paths 742 760
+    function write_verified_backup 762 802
+    function write_atomic_with_permissions 804 816
+    function write_new_file 818 838
+    function temporary_path 840 851
+    function sync_parent 854 860
+    function sync_parent 863 865
+    function sha256 867 869
