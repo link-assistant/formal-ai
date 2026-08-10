@@ -5,16 +5,18 @@ use crate::DEFAULT_MODEL;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use sha2::{Digest, Sha256};
+#[cfg(unix)]
+use std::collections::HashMap;
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
-use std::io::{self, Read};
+use std::io;
+#[cfg(not(unix))]
+use std::io::Read;
 use std::path::{Path, PathBuf};
+#[cfg(not(unix))]
 use std::process::{Command, Stdio};
 use std::thread;
 use std::time::{Duration, Instant};
-
-#[cfg(unix)]
-use std::os::unix::process::CommandExt as _;
 
 const DEFAULT_BASE_URL: &str = "http://127.0.0.1:8080";
 
@@ -592,6 +594,123 @@ fn execute(
     workspace: &Path,
     timeout: Duration,
 ) -> Result<ProcessOutput, AgentRunError> {
+    #[cfg(unix)]
+    {
+        execute_with_command_stream(command, workspace, timeout)
+    }
+    #[cfg(not(unix))]
+    {
+        execute_with_std_process(command, workspace, timeout)
+    }
+}
+
+#[cfg(unix)]
+fn execute_with_command_stream(
+    command: &AgentCommand,
+    workspace: &Path,
+    timeout: Duration,
+) -> Result<ProcessOutput, AgentRunError> {
+    ensure_program_available(command, workspace)?;
+    let command_line = std::iter::once(command.program.to_string_lossy().into_owned())
+        .chain(command.args.iter().cloned())
+        .map(|part| command_stream::quote(&part))
+        .collect::<Vec<_>>()
+        .join(" ");
+    let workspace = workspace.to_path_buf();
+    let mut env = command.env.clone().into_iter().collect::<HashMap<_, _>>();
+    env.insert("PWD".to_string(), workspace.display().to_string());
+
+    // `run_agent` is synchronous and may itself be called by an async host. A
+    // dedicated runtime thread avoids nesting a Tokio runtime in that caller.
+    thread::spawn(move || {
+        let runtime = tokio::runtime::Builder::new_current_thread()
+            .enable_all()
+            .build()
+            .map_err(AgentRunError::Process)?;
+        runtime.block_on(collect_command_stream(
+            command_stream::StreamingRunner::new(command_line)
+                .cwd(workspace)
+                .env(env)
+                .kill_signal("SIGKILL"),
+            timeout,
+        ))
+    })
+    .join()
+    .map_err(|_| AgentRunError::Process(io::Error::other("command_stream_worker_panicked")))?
+}
+
+#[cfg(unix)]
+fn ensure_program_available(command: &AgentCommand, workspace: &Path) -> Result<(), AgentRunError> {
+    let search_path = command
+        .env
+        .get("PATH")
+        .map_or_else(|| std::env::var_os("PATH"), |path| Some(path.into()));
+    which::which_in(&command.program, search_path, workspace)
+        .map(|_| ())
+        .map_err(|error| AgentRunError::Process(io::Error::new(io::ErrorKind::NotFound, error)))
+}
+
+#[cfg(unix)]
+async fn collect_command_stream(
+    runner: command_stream::StreamingRunner,
+    timeout: Duration,
+) -> Result<ProcessOutput, AgentRunError> {
+    let mut stream = runner.stream();
+    let deadline = tokio::time::Instant::now() + timeout;
+    let mut stdout = Vec::new();
+    let mut stderr = Vec::new();
+    let mut exit_code = None;
+    let mut timed_out = false;
+
+    loop {
+        match tokio::time::timeout_at(deadline, stream.next()).await {
+            Ok(Some(command_stream::OutputChunk::Stdout(chunk))) => stdout.extend(chunk),
+            Ok(Some(command_stream::OutputChunk::Stderr(chunk))) => stderr.extend(chunk),
+            Ok(Some(command_stream::OutputChunk::Exit(code))) => {
+                exit_code = Some(code);
+                break;
+            }
+            Ok(None) => break,
+            Err(_) => {
+                timed_out = true;
+                stream.kill_with("SIGKILL");
+                while let Some(chunk) = stream.next().await {
+                    match chunk {
+                        command_stream::OutputChunk::Stdout(chunk) => stdout.extend(chunk),
+                        command_stream::OutputChunk::Stderr(chunk) => stderr.extend(chunk),
+                        command_stream::OutputChunk::Exit(code) => {
+                            exit_code = Some(code);
+                            break;
+                        }
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    if exit_code.is_none() && !timed_out {
+        return Err(AgentRunError::Process(io::Error::other(
+            "command_stream_ended_without_exit",
+        )));
+    }
+    Ok(ProcessOutput {
+        exit_code,
+        stdout: String::from_utf8_lossy(&stdout).into_owned(),
+        stderr: String::from_utf8_lossy(&stderr).into_owned(),
+        timed_out,
+    })
+}
+
+// command-stream's Rust API accepts a shell command string, and its quoting
+// helper currently targets POSIX shells. Keep the existing exact-argv Windows
+// implementation until upstream exposes an argv-safe interface there.
+#[cfg(not(unix))]
+fn execute_with_std_process(
+    command: &AgentCommand,
+    workspace: &Path,
+    timeout: Duration,
+) -> Result<ProcessOutput, AgentRunError> {
     let mut process = Command::new(&command.program);
     process
         .args(&command.args)
@@ -601,8 +720,6 @@ fn execute(
         .stdin(Stdio::null())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped());
-    #[cfg(unix)]
-    process.process_group(0);
     let mut child = process.spawn().map_err(AgentRunError::Process)?;
     let stdout = child
         .stdout
@@ -636,30 +753,19 @@ fn execute(
     })
 }
 
-#[cfg(unix)]
-fn terminate_process_tree(child: &mut std::process::Child) -> Result<(), AgentRunError> {
-    let group = format!("-{}", child.id());
-    let status = Command::new("/bin/kill")
-        .args(["-KILL", "--", &group])
-        .status()
-        .map_err(AgentRunError::Process)?;
-    if !status.success() {
-        child.kill().map_err(AgentRunError::Process)?;
-    }
-    Ok(())
-}
-
 #[cfg(not(unix))]
 fn terminate_process_tree(child: &mut std::process::Child) -> Result<(), AgentRunError> {
     child.kill().map_err(AgentRunError::Process)
 }
 
+#[cfg(not(unix))]
 fn read_all(mut reader: impl Read) -> io::Result<String> {
     let mut bytes = Vec::new();
     reader.read_to_end(&mut bytes)?;
     Ok(String::from_utf8_lossy(&bytes).into_owned())
 }
 
+#[cfg(not(unix))]
 fn join_reader(reader: thread::JoinHandle<io::Result<String>>) -> Result<String, AgentRunError> {
     reader
         .join()
