@@ -68,6 +68,11 @@ pub struct ClientIntegrationInvocation {
     pub interactive_args: Vec<String>,
     pub interactive_args_require_prompt: bool,
     pub non_interactive_args: Vec<String>,
+    /// Flags this client accepts as carriers of the prompt text. An empty list
+    /// means the client takes its prompt as a trailing positional argument.
+    /// The union over every integration is the vocabulary used to recognise a
+    /// caller-supplied prompt before it is re-rendered for the target client.
+    pub prompt_args: Vec<String>,
     pub mode_arg_position: Option<ModeArgPosition>,
     pub env: Vec<TemplateEnv>,
     pub config_content_env: String,
@@ -99,6 +104,38 @@ pub struct ClientIntegrationGlobalConfig {
     pub toml_settings: Vec<(String, String)>,
     pub json_settings: Vec<(String, String)>,
     pub shell_env: Vec<TemplateEnv>,
+    /// Further files the same `--global` install must materialise.
+    pub companion_files: Vec<ClientIntegrationCompanionFile>,
+    /// Startup contract this configuration must satisfy, declared apart from
+    /// the settings that write it so a configured client is checked by reading
+    /// the result back, not by trusting the writer.
+    ///
+    /// Each entry is `(kind, target)`: `env` names a variable the shell profile
+    /// must export, and `json`/`toml` name `<relative path>:<dotted key>`.
+    pub headless_requirements: Vec<(String, String)>,
+}
+
+/// A second file a global install has to write for the client to start headless.
+///
+/// Shell environment alone is not always a configuration. Gemini CLI reads
+/// `GEMINI_DEFAULT_AUTH_TYPE` only as a *default* and still asks the user to pick
+/// an authentication type unless `~/.gemini/settings.json` records one, so
+/// `formal-ai with --global gemini` produced a client that could not run
+/// unattended (issue #909). The ephemeral (temp-home) path already wrote that
+/// file; this carries the same fact into the global path.
+#[derive(Debug, Clone)]
+pub struct ClientIntegrationCompanionFile {
+    /// Path relative to the user's home directory.
+    pub path: String,
+    pub format: ConfigFormat,
+    /// Suffix of the backup taken before the file is touched, so `--undo` can put
+    /// the operator's own settings back.
+    pub backup_suffix: String,
+    pub toml_settings: Vec<(String, String)>,
+    pub json_settings: Vec<(String, String)>,
+    /// Startup contract this file must satisfy once written; see
+    /// [`ClientIntegrationGlobalConfig::headless_requirements`].
+    pub headless_requirements: Vec<(String, String)>,
 }
 
 /// Seed-defined facts the real-client matrix needs to exercise an integration.
@@ -125,6 +162,9 @@ pub struct ClientVerification {
     pub required_response_tools: Vec<String>,
     /// Text that must remain absent from headless client output.
     pub forbidden_output: Vec<String>,
+    /// Refusals a client prints when no auth type is selected, used to turn a
+    /// silently incomplete global configuration into an immediate error.
+    pub auth_refusals: Vec<String>,
     /// Arguments used to launch a server or GUI surface.
     pub launch_args: Vec<String>,
     /// Output proving that a launched server is ready.
@@ -322,6 +362,7 @@ fn parse_verification(node: &super::parser::LinoNode) -> ClientVerification {
                 verification.required_response_tools.push(child.id.clone());
             }
             "forbidden_output" => verification.forbidden_output.push(child.id.clone()),
+            "auth_refusal" => verification.auth_refusals.push(child.id.clone()),
             "launch_arg" => verification.launch_args.push(child.id.clone()),
             "launch_required_output" => {
                 verification.launch_required_output.push(child.id.clone());
@@ -354,6 +395,7 @@ fn parse_invocation(node: &super::parser::LinoNode) -> ClientIntegrationInvocati
                 invocation.interactive_args_require_prompt = child.id == "true";
             }
             "non_interactive_arg" => invocation.non_interactive_args.push(child.id.clone()),
+            "prompt_arg" => invocation.prompt_args.push(child.id.clone()),
             "mode_arg_position" => {
                 invocation.mode_arg_position = ModeArgPosition::from_seed(&child.id);
             }
@@ -410,9 +452,21 @@ fn parse_global_config(node: &super::parser::LinoNode) -> Option<ClientIntegrati
         toml_settings: Vec::new(),
         json_settings: Vec::new(),
         shell_env: Vec::new(),
+        companion_files: Vec::new(),
+        headless_requirements: Vec::new(),
     };
     for child in &node.children {
         match child.name.as_str() {
+            "companion" => {
+                if let Some(companion) = parse_companion_file(child) {
+                    config.companion_files.push(companion);
+                }
+            }
+            "headless_require" => {
+                if let Some((kind, target)) = split_once_equals(&child.id) {
+                    config.headless_requirements.push((kind, target));
+                }
+            }
             "toml_set" => {
                 if let Some((key, value)) = split_once_equals(&child.id) {
                     config.toml_settings.push((key, value));
@@ -432,6 +486,39 @@ fn parse_global_config(node: &super::parser::LinoNode) -> Option<ClientIntegrati
         }
     }
     Some(config)
+}
+
+fn parse_companion_file(node: &super::parser::LinoNode) -> Option<ClientIntegrationCompanionFile> {
+    let format = match ConfigFormat::from_seed(node.find_child_value("kind"))? {
+        // A companion is a settings file. Environment variables belong to the
+        // profile block the main global config already writes, so a `shell_env`
+        // companion would have nothing of its own to render.
+        ConfigFormat::ShellEnv => return None,
+        format => format,
+    };
+    let mut companion = ClientIntegrationCompanionFile {
+        path: node.id.clone(),
+        format,
+        backup_suffix: node.find_child_value("backup_suffix").to_owned(),
+        toml_settings: Vec::new(),
+        json_settings: Vec::new(),
+        headless_requirements: Vec::new(),
+    };
+    if companion.path.is_empty() {
+        return None;
+    }
+    for child in &node.children {
+        let Some((key, value)) = split_once_equals(&child.id) else {
+            continue;
+        };
+        match child.name.as_str() {
+            "toml_set" => companion.toml_settings.push((key, value)),
+            "json_set" => companion.json_settings.push((key, value)),
+            "headless_require" => companion.headless_requirements.push((key, value)),
+            _ => {}
+        }
+    }
+    Some(companion)
 }
 
 fn split_once_equals(value: &str) -> Option<(String, String)> {

@@ -20,12 +20,16 @@ mod issue_742;
 mod issue_796;
 mod issue_798;
 mod issue_846;
+mod issue_977;
+mod issue_980;
 mod macos_package_retry;
 mod release_publishing;
 #[path = "../../../scripts/rust-paths.rs"]
 mod rust_paths;
 mod source_test_placement;
+mod workflow_coverage;
 mod workflow_fixtures;
 mod workflow_release;
+mod workflow_release_desktop;
 mod workflow_task_ladder;
 mod workspace_manifest_resolution;

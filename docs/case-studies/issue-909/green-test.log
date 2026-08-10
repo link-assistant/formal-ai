@@ -1,0 +1,15 @@
+   Compiling formal-ai v0.326.1 (/tmp/gh-issue-solver-1785853624296)
+    Finished `test` profile [unoptimized] target(s) in 1m 02s
+     Running tests/integration/mod.rs (target/debug/deps/integration-733bdc219e2b06e5)
+
+running 7 tests
+test with_formal_ai_headless_global::global_gemini_preserves_and_restores_an_existing_settings_file ... ok
+test with_formal_ai_headless_global::global_qwen_writes_the_complete_openai_triple ... ok
+test with_formal_ai_headless_global::verify_is_rejected_without_global ... ok
+test with_formal_ai_headless_global::global_gemini_writes_the_settings_file_that_selects_an_auth_type ... ok
+test with_formal_ai_headless_global::verify_succeeds_when_the_configured_client_starts ... ok
+test with_formal_ai_headless_global::verify_fails_when_the_configured_client_refuses_to_start ... ok
+test with_formal_ai_headless_global::global_all_leaves_every_client_headless_ready_and_probed ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 306 filtered out; finished in 1.38s
+

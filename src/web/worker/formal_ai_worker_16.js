@@ -259,13 +259,16 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
     const oracleTask = task || programTaskFromPrompt(normalizeProgramPrompt(prompt));
     const oracleAnswer = language ? codingOracleAnswer(oracleTask, language) : null;
     if (oracleAnswer) return oracleAnswer;
+    // Issue #906: an unfilled parameter is not a skill gap — the dead end the
+    // request reached decides the intent, the event and the response link.
+    const deadEnd = programDeadEnd(task, language);
     return {
-      intent: "write_program_skill_gap",
+      intent: deadEnd.intent,
       content: programSkillGapAnswer(task, language, responseLanguage),
       confidence: 0.4,
       evidence: [
-        "response:write_program:skill_gap",
-        `skill_gap:${programSkillGapName(task, language, "en")}`,
+        deadEnd.link,
+        `${deadEnd.event}:${programSkillGapName(task, language, "en")}`,
         `program_parameter:language:${language || "missing"}`,
         `program_parameter:task:${task || "missing"}`,
       ],
@@ -325,11 +328,64 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
   };
 }
 
+function recapPlainSentence(text) {
+  let plain = String(text || "")
+    .replace(/```[\s\S]*?```|~~~[\s\S]*?~~~/gu, " ")
+    .replace(/^\s*(?:#{1,6}|[-+>*])\s*/gmu, " ")
+    .replace(/[#`*]/gu, "")
+    .replace(/\s+/gu, " ")
+    .trim()
+    .split(/\s+[—–]\s+/u)[0];
+  const sentence = plain.match(/^.*?(?:[.!?](?=\s|$)|[。！？])/u);
+  if (sentence) plain = sentence[0];
+  if (plain && !/[.!?。！？]$/u.test(plain)) plain += ".";
+  return plain;
+}
+
+function tryRecapConversation(history) {
+  if (!Array.isArray(history)) return null;
+  let userIndex = -1;
+  for (let index = history.length - 1; index >= 0; index -= 1) {
+    if (history[index]?.role === "user" && history[index]?.content) {
+      userIndex = index;
+      break;
+    }
+  }
+  if (userIndex < 0) return null;
+  const sentences = [recapPlainSentence(history[userIndex].content)].filter(Boolean);
+  for (let index = history.length - 1; index > userIndex; index -= 1) {
+    if (history[index]?.role !== "assistant" || !history[index]?.content) continue;
+    const status = recapPlainSentence(history[index].content);
+    if (status && status.toLowerCase() !== sentences[0]?.toLowerCase())
+      sentences.push(status);
+    break;
+  }
+  const words = sentences.slice(0, 2).join(" ").split(/\s+/u).filter(Boolean);
+  let content = words.slice(0, 39).join(" ");
+  if (words.length > 39) content = `${content.replace(/[.,;:!?。！？]+$/u, "")}.`;
+  if (!content) return null;
+  return {
+    intent: "summarize_conversation",
+    content,
+    confidence: 0.9,
+    evidence: [
+      "summarize_conversation",
+      "summarization:format:plain",
+      "max_words:39",
+      "max_sentences:2",
+    ],
+  };
+}
+
 function tryHistorical(prompt, history) {
   const normalized = normalizePrompt(prompt);
   // Issue #386: a conversation-summary request is recognised by composing
   // meaning roles (see isSummarizePrompt) across every supported language, so
-  // we test it before the empty-normalized bail-out below.
+  // we test it before the empty-normalized bail-out below. Issue #858 selects
+  // the returning-user recap's bounded plain format before the detailed report.
+  if (isReturnRecapPrompt(normalized)) {
+    return tryRecapConversation(history);
+  }
   if (isSummarizePrompt(normalized)) {
     return trySummarizeConversation(history);
   }
@@ -688,11 +744,19 @@ function tryResearchResultFollowup(prompt, normalized, history = []) {
 function isSummarizePrompt(normalized) {
   const cleaned = normalizePrompt(normalized);
   return (
+    isReturnRecapPrompt(cleaned) ||
     lexiconMentionsRole(ROLE_CONVERSATION_SUMMARY_PHRASE, cleaned) ||
     lexiconMentionsRole(ROLE_CONVERSATION_SUMMARY_COURTESY, cleaned) ||
     (lexiconMentionsRole(ROLE_CONVERSATION_SUMMARY_DIRECTIVE, cleaned) &&
       lexiconMentionsRole(ROLE_CONVERSATION_REFERENCE, cleaned)) ||
     summaryDirectiveLeads(cleaned)
+  );
+}
+
+function isReturnRecapPrompt(normalized) {
+  return lexiconMentionsRole(
+    ROLE_CONVERSATION_RETURN_RECAP,
+    normalizePrompt(normalized),
   );
 }
 

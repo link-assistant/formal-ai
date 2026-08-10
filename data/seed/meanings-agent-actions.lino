@@ -71,3 +71,46 @@ meanings
         text 问题
       surface
         text 错误
+  request_objective
+    defined-by relation
+    role request_objective_lead
+    lexeme en
+      surface
+        text "issue to solve: …"
+      surface
+        text "task to solve: …"
+      surface
+        text "objective: …"
+      surface
+        text "request: …"
+      surface
+        text "task: …"
+      surface
+        text "goal: …"
+    lexeme ru
+      surface
+        text "задача для решения: …"
+      surface
+        text "запрос: …"
+      surface
+        text "задача: …"
+      surface
+        text "цель: …"
+    lexeme hi
+      surface
+        text "हल करने का कार्य: …"
+      surface
+        text "अनुरोध: …"
+      surface
+        text "कार्य: …"
+      surface
+        text "लक्ष्य: …"
+    lexeme zh
+      surface
+        text "待解决的问题：…"
+      surface
+        text "请求：…"
+      surface
+        text "任务：…"
+      surface
+        text "目标：…"

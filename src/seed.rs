@@ -23,6 +23,7 @@
 
 mod agentic_tool_capabilities;
 mod brainstorm;
+mod caller_context;
 mod client_completion;
 mod client_integrations;
 mod coreference;
@@ -39,6 +40,8 @@ mod operation_vocabulary;
 pub(crate) mod parser;
 mod personas;
 mod projects;
+mod proof_programs;
+mod release_timelines;
 mod roles;
 mod shell_intents;
 mod summary_topics;
@@ -53,31 +56,36 @@ use parser::{
 
 pub use agentic_tool_capabilities::{agentic_tool_capabilities, AgenticToolCapability};
 pub use brainstorm::{brainstorm_seeds, BrainstormCategory, BrainstormSeeds};
+pub use caller_context::{caller_context_vocabulary, CallerContextVocabulary, InjectedBlock};
 pub use client_completion::{software_authoring_completion_contract, ClientCompletionContract};
 pub use client_integrations::{
-    client_integrations, ClientIntegration, ClientIntegrationGlobalConfig,
-    ClientIntegrationInvocation, ClientVerification, ConfigFormat, ModeArgPosition,
-    ModelArgPosition, TemplateEnv,
+    client_integrations, ClientIntegration, ClientIntegrationCompanionFile,
+    ClientIntegrationGlobalConfig, ClientIntegrationInvocation, ClientVerification, ConfigFormat,
+    ModeArgPosition, ModelArgPosition, TemplateEnv,
 };
 pub use coreference::{coreference_seeds, Antecedent, CoreferenceSeeds, Pronoun};
 pub use draft_strategies::{draft_strategies, draft_strategies_from};
 pub use embedded::{
     seed_files, AGENTIC_TOOL_CAPABILITIES_LINO, AGENT_INFO_LINO, BRAINSTORM_SEEDS_LINO,
-    CLIENT_COMPLETION_CONTRACTS_LINO, CLIENT_INTEGRATIONS_LINO, CODING_IDIOMS_LINO,
-    COMPUTER_USE_TASKS_LINO, CONCEPTS_LINO, CONCEPT_CONTEXTS_LINO, COREFERENCE_LINO,
-    DEMO_DIALOGS_LINO, DRAFT_STRATEGIES_LINO, ENTITY_NAMES_LINO, ENVIRONMENTS_LINO, FACTS_LINO,
-    GREETINGS_LINO, HANDLER_PRECEDENCE_LINO, HELLO_WORLD_PROGRAMS_LINO, IDENTITY_LINO,
-    INTENT_ROUTING_LINO, LANGUAGES_LINO, LANGUAGE_DETECTION_LINO, LEARNING_SOURCES_LINO,
-    MARKET_PRICE_REFERENCES_LINO, MEANINGS_CALENDAR_LINO, MEANINGS_FACTS_LINO,
+    CALLER_CONTEXT_LINO, CLIENT_COMPLETION_CONTRACTS_LINO, CLIENT_INTEGRATIONS_LINO,
+    CODING_IDIOMS_LINO, COMPUTER_USE_TASKS_LINO, CONCEPTS_LINO, CONCEPT_CONTEXTS_LINO,
+    COREFERENCE_LINO, DEMO_DIALOGS_LINO, DRAFT_STRATEGIES_LINO, ENTITY_NAMES_LINO,
+    ENVIRONMENTS_LINO, FACTS_LINO, FORMAL_LANGUAGE_PROJECTIONS_LINO, GREETINGS_LINO,
+    HANDLER_PRECEDENCE_LINO, HELLO_WORLD_PROGRAMS_LINO, IDENTITY_LINO, INTENT_ROUTING_LINO,
+    LANGUAGES_LINO, LANGUAGE_DETECTION_LINO, LEARNING_SOURCES_LINO, MARKET_PRICE_REFERENCES_LINO,
+    MEANINGS_CALENDAR_LINO, MEANINGS_CODING_TASKS_LINO, MEANINGS_FACTS_LINO,
     MEANINGS_LINKS_ROOT_LINO, MEANINGS_LINO, MEANINGS_NUMBER_CONSTRAINTS_LINO,
     MEANINGS_SEMANTIC_META_LINO, MEANINGS_SOFTWARE_PROJECT_LINO, MEANINGS_UNITS_LINO,
     MEANING_FILES, MODEL_ALIASES_LINO, MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,
     MULTILINGUAL_RESPONSES_ENTITIES_LINO, MULTILINGUAL_RESPONSES_ISSUE_710_LINO,
     MULTILINGUAL_RESPONSES_LANGUAGE_PROTOCOL_LINO, MULTILINGUAL_RESPONSES_LINO,
-    MULTILINGUAL_RESPONSES_PROCEDURE_LINO, NUMERIC_LIST_OPERATIONS_LINO, OPERATION_VOCABULARY_LINO,
-    PERSONAS_LINO, PROGRAM_CST_GRAMMARS_LINO, PROGRAM_PLAN_RULES_LINO, PROJECTS_LINO,
-    PROMPT_PATTERNS_LINO, RESPONSE_FILES, SELF_IMPROVEMENT_LOOP_LINO, SHELL_INTENTS_LINO,
-    SUMMARY_TOPICS_LINO, TERMINAL_COMMANDS_LINO, TOOLS_LINO,
+    MULTILINGUAL_RESPONSES_MEMORY_PROGRAM_LINO,
+    MULTILINGUAL_RESPONSES_PATTERN_LINO, MULTILINGUAL_RESPONSES_PROCEDURE_LINO,
+    NUMERIC_LIST_OPERATIONS_LINO, OPERATION_VOCABULARY_LINO, PERSONAS_LINO,
+    PROGRAM_CST_GRAMMARS_LINO, PROGRAM_PLAN_RULES_LINO, PROJECTS_LINO, PROMPT_PATTERNS_LINO,
+    PROOF_PROGRAM_TEMPLATES_LINO, RELEASE_TIMELINES_LINO, RESPONSE_FILES,
+    SELF_IMPROVEMENT_LOOP_LINO, SHELL_INTENTS_LINO, SUMMARY_TOPICS_LINO, TERMINAL_COMMANDS_LINO,
+    TOOLS_LINO,
 };
 pub use entity_names::{entity_names, EntityName};
 pub use facts::{facts, FactRecord, LocalizedFact};
@@ -99,6 +107,11 @@ pub use operation_vocabulary::{
 pub use personas::{persona_seeds, Persona, PersonaSeeds, PersonaTopic};
 pub use projects::{
     projects_registry, LocalizedProject, ProjectRecord, ProjectStatement, ProjectsRegistry,
+};
+pub use proof_programs::{proof_program_templates, ProofLanguageTemplates, ProofProgramTemplates};
+pub use release_timelines::{
+    parse_release_timelines, release_timelines, ReleaseTimeline, ReleaseTimelineEntry,
+    ReleaseTimelinePhrasing, ReleaseTimelines,
 };
 // `roles` re-exports its own submodules with globs; mirror that here so the
 // per-role constant list does not have to be restated (and keeps this file
@@ -323,6 +336,17 @@ pub fn response_variant_for(intent: &str, language: &str, prompt: &str) -> Optio
             let index = usize::try_from(hash % variant_count).unwrap_or_default();
             record.variants[index].clone()
         })
+}
+
+/// Look up one response and substitute its named template fields.
+#[must_use]
+pub fn render_response(intent: &str, language: &str, values: &[(&str, &str)]) -> Option<String> {
+    response_for(intent, language).map(|mut rendered| {
+        for (name, value) in values {
+            rendered = rendered.replace(&format!("{{{name}}}"), value);
+        }
+        rendered
+    })
 }
 
 /// Look up a localized response, applying the registry's `explicit_gap`

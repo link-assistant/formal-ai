@@ -425,6 +425,7 @@ fn validate_demo_memory_document(text: &str) -> Result<(), LinkStoreError> {
         let content = &line[indent..];
         match indent {
             0 if content == ROOT_HEADER => {}
+            2 if content.starts_with("schema_version ") => validate_schema_version_line(content)?,
             2 => validate_event_line(content)?,
             4 => validate_field_line(content)?,
             _ => {
@@ -433,6 +434,22 @@ fn validate_demo_memory_document(text: &str) -> Result<(), LinkStoreError> {
                 )));
             }
         }
+    }
+    Ok(())
+}
+
+fn validate_schema_version_line(content: &str) -> Result<(), LinkStoreError> {
+    let Some(rest) = content.strip_prefix("schema_version ") else {
+        return Err(LinkStoreError::IllFormedLinksNotation(String::from(
+            "invalid schema version marker",
+        )));
+    };
+    validate_strict_quoted(rest)?;
+    let value = crate::memory::parse_quoted(rest).unwrap_or_default();
+    if value.parse::<u32>().is_err() {
+        return Err(LinkStoreError::IllFormedLinksNotation(format!(
+            "invalid_schema_version:value={value}"
+        )));
     }
     Ok(())
 }

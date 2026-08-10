@@ -16,6 +16,7 @@ import { ChakraProvider, chakra } from "@chakra-ui/react";
 // styles.css stays authoritative while the UI migrates to Chakra primitives.
 import { system as chakraSystem } from "./theme.js";
 import { enhanceWithDesktopReadOnlyTool } from "./desktop-read-only-tools.js";
+import { answerHasDetectedFailure } from "./detected-failure.js";
 
 // Issue #839: the six-section issue-report document is no longer written here.
 // `src/issue_report.rs` owns the format for every surface and
@@ -2580,6 +2581,7 @@ function messagesForConversation(events, conversationId) {
         intent: event.intent,
         evidence,
         iframeUrl: event.iframeUrl || null,
+        detectedFailure: event.detectedFailure === true,
       }),
     );
   }
@@ -5784,7 +5786,7 @@ function createIssueUrl(context) {
 }
 
 function shouldOfferMessageReport(message) {
-  return message?.role === "assistant" && message.intent === "unknown";
+  return message?.role === "assistant" && answerHasDetectedFailure(message);
 }
 
 // Issue #180: format the unified link-notation projection for an HTTP
@@ -6315,7 +6317,7 @@ function Message({
     // so it never lingers as dead chrome on a settled message.
     reveal.active && !reveal.bodyShown ? <button type="button" className="skip-animation" data-testid="message-skip-animation" onClick={reveal.skip} title={t("message.skipAnimation")}>{t("message.skipAnimation")}</button> : null}<div ref={markdownRef} className={`markdown-body${bodyRevealClass}`} aria-hidden={reveal.active && !reveal.bodyShown ? "true" : null} data-testid="message-markdown-body" dangerouslySetInnerHTML={markdownContent} />{message.permissionPanel && typeof renderPermissionPanel === "function" ? <div className="message-permission-panel">{renderPermissionPanel("desktop-permission-panel-message")}</div> : null}{message.commandApproval ? <CommandApprovalPanel approval={message.commandApproval} status={commandApprovals && commandApprovals[message.commandApproval.id] && commandApprovals[message.commandApproval.id].status} onApprove={onApproveCommand} onDeny={onDenyCommand} t={t} /> : null}{message.iframeUrl ? <div className={`fetch-iframe-container${iframeFullscreen ? " is-fullscreen" : ""}`} data-testid="fetch-iframe-container"><div className="fetch-iframe-header"><span className="fetch-iframe-url">{message.iframeUrl}</span><div className="fetch-iframe-actions"><a href={message.iframeUrl} target="_blank" rel="noopener noreferrer" className="fetch-iframe-open fetch-iframe-control" aria-label={t("fetch.openInNewTab")} title={t("fetch.openInNewTab")}>{"↗"}</a><button type="button" className="fetch-iframe-toggle fetch-iframe-control" onClick={() => setIframeFullscreen(prev => !prev)} aria-label={iframeFullscreen ? t("fetch.minimize") : t("fetch.fullscreen")} aria-pressed={iframeFullscreen ? "true" : "false"} title={iframeFullscreen ? t("fetch.minimize") : t("fetch.fullscreen")}>{iframeFullscreen ? "⤡" : "⛶"}</button></div></div><iframe className="fetch-iframe" src={message.iframeUrl} title={t("fetch.frameTitle", {
         url: message.iframeUrl
-      })} sandbox="allow-scripts allow-same-origin allow-forms allow-popups" loading="lazy" data-testid="fetch-iframe" /></div> : null}{evidence.length ? <div className="evidence-list">{evidence.map(item => <span key={item}>{item}</span>)}</div> : null}{thinkingSteps.length ? <div className="thinking-steps"><strong>{t("message.thinking")}</strong><ol>{thinkingSteps.map(item => <li key={item}>{item}</li>)}</ol></div> : null}{diagnosticsSteps.length ? <div className="diagnostics-steps" data-testid="diagnostics-steps"><strong>{t("message.diagnosticsSteps")}</strong><ol className="diagnostics-step-list">{diagnosticsSteps.map((entry, index) => <li key={`${entry.step}-${index}`} className="diagnostics-step"><details className="diagnostics-detail" data-testid="diagnostics-step" data-step={entry.step} data-level={overrides.get(thinkingStepKey(entry)) || entry.level || null} data-solver-level={entry.level || null} data-level-override={overrides.get(thinkingStepKey(entry)) || null} onContextMenu={event => handleStepContextMenu(event, entry.step)}><summary title={t("message.stepLevel.hint")}><span className="diagnostics-step-name">{entry.formalization ? t("message.formalization") : entry.step}</span><span className="diagnostics-step-summary">{entry.formalization ? truncateDiagnosticDetail(entry.formalization.tuple) : truncateDiagnosticDetail(entry.detail)}</span></summary><div className="diagnostics-detail-body">{entry.formalization ? <FormalizationView formalization={entry.formalization} t={t} /> : <pre className="diagnostics-payload">{formatDiagnosticPayload(entry.detail)}</pre>}</div></details></li>)}</ol><StepHierarchyMenu menu={stepMenu} currentLevel={stepMenu ? overrides.get(stepMenu.step) || (diagnosticsSteps.find(entry => thinkingStepKey(entry) === stepMenu.step) || {}).level || "" : ""} overridden={stepMenu ? overrides.has(stepMenu.step) : false} onSelect={handleStepLevelSelect} t={t} /></div> : null}{diagnosticsToolCalls.length ? <div className="diagnostics-tools" data-testid="diagnostics-tools"><strong>{t("message.diagnosticsTools")}</strong><ol className="diagnostics-tool-list">{diagnosticsToolCalls.map((call, index) => <li key={`${call.tool || "tool"}-${index}`} className="diagnostics-tool"><details className="diagnostics-detail" data-testid="diagnostics-tool"><summary><span className="diagnostics-tool-name">{call.tool || "(tool)"}</span><span className="diagnostics-tool-summary">{summarizeToolCall(call)}</span></summary><div className="diagnostics-detail-body"><div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolInputs")}</span><pre className="diagnostics-payload">{formatDiagnosticPayload(call.inputs)}</pre></div><div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolOutputs")}</span><pre className="diagnostics-payload">{formatDiagnosticPayload(call.outputs)}</pre></div>{Array.isArray(call.steps) && call.steps.length > 0 ? <div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolReasoning")}</span><ol className="diagnostics-tool-reasoning">{call.steps.map((s, j) => <li key={`${call.tool}-step-${j}`}>{`${s.step}: ${s.detail}`}</li>)}</ol></div> : null}</div></details></li>)}</ol></div> : null}{diagnosticsPayload ? <DiagnosticsHttpPanel providers={diagnosticsProviders} exchanges={diagnosticsHttp} t={t} /> : null}{reportIssueUrl ? <div className="message-actions"><a href={reportIssueUrl} target="_blank" rel="noopener noreferrer">{reportLabel}</a></div> : null}</div></article>;
+      })} sandbox="allow-scripts allow-same-origin allow-forms allow-popups" loading="lazy" data-testid="fetch-iframe" /></div> : null}{evidence.length ? <div className="evidence-list">{evidence.map(item => <span key={item}>{item}</span>)}</div> : null}{thinkingSteps.length ? <div className="thinking-steps"><strong>{t("message.thinking")}</strong><ol>{thinkingSteps.map(item => <li key={item}>{item}</li>)}</ol></div> : null}{diagnosticsSteps.length ? <div className="diagnostics-steps" data-testid="diagnostics-steps"><strong>{t("message.diagnosticsSteps")}</strong><ol className="diagnostics-step-list">{diagnosticsSteps.map((entry, index) => <li key={`${entry.step}-${index}`} className="diagnostics-step"><details className="diagnostics-detail" data-testid="diagnostics-step" data-step={entry.step} data-level={overrides.get(thinkingStepKey(entry)) || entry.level || null} data-solver-level={entry.level || null} data-level-override={overrides.get(thinkingStepKey(entry)) || null} onContextMenu={event => handleStepContextMenu(event, entry.step)}><summary title={t("message.stepLevel.hint")}><span className="diagnostics-step-name">{entry.formalization ? t("message.formalization") : entry.step}</span><span className="diagnostics-step-summary">{entry.formalization ? truncateDiagnosticDetail(entry.formalization.tuple) : truncateDiagnosticDetail(entry.detail)}</span></summary><div className="diagnostics-detail-body">{entry.formalization ? <FormalizationView formalization={entry.formalization} t={t} /> : <pre className="diagnostics-payload">{formatDiagnosticPayload(entry.detail)}</pre>}</div></details></li>)}</ol><StepHierarchyMenu menu={stepMenu} currentLevel={stepMenu ? overrides.get(stepMenu.step) || (diagnosticsSteps.find(entry => thinkingStepKey(entry) === stepMenu.step) || {}).level || "" : ""} overridden={stepMenu ? overrides.has(stepMenu.step) : false} onSelect={handleStepLevelSelect} t={t} /></div> : null}{diagnosticsToolCalls.length ? <div className="diagnostics-tools" data-testid="diagnostics-tools"><strong>{t("message.diagnosticsTools")}</strong><ol className="diagnostics-tool-list">{diagnosticsToolCalls.map((call, index) => <li key={`${call.tool || "tool"}-${index}`} className="diagnostics-tool"><details className="diagnostics-detail" data-testid="diagnostics-tool"><summary><span className="diagnostics-tool-name">{call.tool || "(tool)"}</span><span className="diagnostics-tool-summary">{summarizeToolCall(call)}</span></summary><div className="diagnostics-detail-body"><div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolInputs")}</span><pre className="diagnostics-payload">{formatDiagnosticPayload(call.inputs)}</pre></div><div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolOutputs")}</span><pre className="diagnostics-payload">{formatDiagnosticPayload(call.outputs)}</pre></div>{Array.isArray(call.steps) && call.steps.length > 0 ? <div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolReasoning")}</span><ol className="diagnostics-tool-reasoning">{call.steps.map((s, j) => <li key={`${call.tool}-step-${j}`}>{`${s.step}: ${s.detail}`}</li>)}</ol></div> : null}</div></details></li>)}</ol></div> : null}{diagnosticsPayload ? <DiagnosticsHttpPanel providers={diagnosticsProviders} exchanges={diagnosticsHttp} t={t} /> : null}{reportIssueUrl ? <div className="message-actions" data-testid="detected-failure-report"><span>{t("message.detectedFailureReport")}</span><a href={reportIssueUrl} target="_blank" rel="noopener noreferrer">{reportLabel}</a></div> : null}</div></article>;
 }
 
 // Issue #27: a VS Code-style collapsible sidebar section. When `collapsed` is
@@ -7863,11 +7865,14 @@ function App() {
     // rewrites. The actual read+write transform is applied back to IndexedDB
     // when the answer returns (see handleMemoryOperation).
     let memory = [];
+    let memoryEvents = [];
     if (typeof window !== "undefined" && window.FormalAiMemory) {
       try {
+        memoryEvents = await window.FormalAiMemory.listEvents();
         memory = await window.FormalAiMemory.collectSearchableValues();
       } catch (_error) {
         memory = [];
+        memoryEvents = [];
       }
     }
     const prefs = {
@@ -7934,6 +7939,7 @@ function App() {
             prefs,
             userContext: userContextRef.current,
             memory,
+            memoryEvents,
           });
         });
       });
@@ -7950,6 +7956,7 @@ function App() {
           prefs,
           userContext: userContextRef.current,
           memory,
+          memoryEvents,
         });
       });
     }
@@ -8115,6 +8122,7 @@ function App() {
     const structuredToolCalls = Array.isArray(answer.toolCalls)
       ? answer.toolCalls
       : [];
+    const detectedFailure = answerHasDetectedFailure(answer);
     const thinkingSteps = structuredSteps.length > 0
       ? structuredSteps.map((entry) => `${entry.step}: ${entry.detail}`)
       : [
@@ -8137,6 +8145,7 @@ function App() {
       thinkingPreviewSource: source,
       diagnosticsSteps: structuredSteps,
       diagnosticsToolCalls: structuredToolCalls,
+      detectedFailure,
       // Issue #180: forward the web_search diagnostics envelope so the
       // diagnostics panel can show raw HTTP request/response exchanges and
       // the per-provider success/failure status.
@@ -8193,6 +8202,7 @@ function App() {
       intent: answer.intent,
       evidence,
       iframeUrl: answer.iframeUrl || null,
+      detectedFailure,
       sentAt,
       conversationId,
       conversationTitle,
@@ -8265,6 +8275,15 @@ function App() {
         conversationTitle,
         isDemo: demoFlag,
       });
+      refreshConversations();
+      return;
+    }
+    if (operation.action === "program") {
+      try {
+        await window.FormalAiMemory.applyProgramOperation(operation);
+      } catch (_error) {
+        return;
+      }
       refreshConversations();
     }
   }, [ensureConversation, refreshConversations]);
@@ -8642,6 +8661,7 @@ function App() {
       const aggregatedSteps = [];
       const aggregatedToolCalls = [];
       const aggregatedEvidence = [];
+      let detectedFailure = false;
       const workingHistory = Array.isArray(history) ? history.slice() : [];
       for (let index = 0; index < steps.length; index += 1) {
         const step = steps[index];
@@ -8650,6 +8670,7 @@ function App() {
           detail: `${index + 1}/${steps.length} ${step}`,
         });
         const answer = await requestAnswer(step, workingHistory);
+        detectedFailure = detectedFailure || answerHasDetectedFailure(answer);
         lines.push(`### Step ${index + 1}: ${step}`);
         lines.push(answer.content || "(no output)");
         lines.push("");
@@ -8679,6 +8700,7 @@ function App() {
         evidence: ["rule:agent_mode", `steps:${steps.length}`, ...aggregatedEvidence],
         steps: aggregatedSteps,
         toolCalls: aggregatedToolCalls,
+        detectedFailure,
       });
     },
     [requestAnswer, appendAssistantMessage],

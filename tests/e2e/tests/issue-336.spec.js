@@ -92,15 +92,8 @@ test.describe('Issue #336 — compound interest with EUR conversion', () => {
     await expect(message).not.toContainText('unparseable');
   });
 
-  test('agent mode works across supported UI languages', async ({ browser, baseURL }) => {
-    const cases = [
-      { language: 'en' },
-      { language: 'ru' },
-      { language: 'hi' },
-      { language: 'zh' },
-    ];
-
-    for (const { language } of cases) {
+  for (const language of ['en', 'ru', 'hi', 'zh']) {
+    test(`agent mode works with the ${language} UI language`, async ({ browser, baseURL }) => {
       const context = await browser.newContext();
       await context.addInitScript((value) => {
         window.localStorage.clear();
@@ -131,6 +124,6 @@ test.describe('Issue #336 — compound interest with EUR conversion', () => {
       } finally {
         await context.close();
       }
-    }
-  });
+    });
+  }
 });

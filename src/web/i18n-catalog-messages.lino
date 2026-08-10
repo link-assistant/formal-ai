@@ -7,6 +7,7 @@ en
   message
     author
       user "You"
+    detectedFailureReport "I detected a failure while working on this request. Would you like to report it?"
     copyCode "Copy"
     copyCodeDone "Copied!"
     copyCodeTitle "Copy code to clipboard"
@@ -157,6 +158,7 @@ ru
   message
     author
       user "Вы"
+    detectedFailureReport "Я обнаружил сбой при выполнении этого запроса. Хотите сообщить о нём?"
     copyCode "Копировать"
     copyCodeDone "Скопировано!"
     copyCodeTitle "Скопировать код в буфер обмена"
@@ -307,6 +309,7 @@ zh
   message
     author
       user "你"
+    detectedFailureReport "我在处理此请求时检测到故障。要报告此问题吗？"
     copyCode "复制"
     copyCodeDone "已复制！"
     copyCodeTitle "将代码复制到剪贴板"
@@ -457,6 +460,7 @@ hi
   message
     author
       user "आप"
+    detectedFailureReport "इस अनुरोध पर काम करते समय मुझे एक विफलता मिली। क्या आप इसकी रिपोर्ट करना चाहेंगे?"
     copyCode "कॉपी करें"
     copyCodeDone "कॉपी हो गया!"
     copyCodeTitle "कोड को क्लिपबोर्ड पर कॉपी करें"

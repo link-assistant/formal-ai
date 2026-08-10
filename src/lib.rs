@@ -2,6 +2,7 @@ extern crate alloc;
 
 pub mod agent;
 pub mod agentic_coding;
+pub mod algorithm_discovery;
 pub mod anthropic;
 pub mod arithmetic;
 pub mod associative_package;
@@ -35,12 +36,15 @@ pub mod entity_resolution;
 pub mod event_log;
 pub mod external_benchmarks;
 pub mod fact_checking;
+pub(crate) mod failure_reporting;
+pub mod file_legality;
 pub mod formal_system;
 pub(crate) mod fuzzy;
 pub mod gemini;
 pub mod github_logs;
 pub mod google_trends_catalog;
 pub mod google_trends_learning;
+pub mod implementation_language;
 pub mod intent_formalization;
 pub mod issue_report;
 pub mod json_lino;
@@ -58,6 +62,8 @@ pub mod links_query;
 pub mod links_substitution_query;
 pub(crate) mod mcp;
 pub mod memory;
+pub mod memory_program;
+pub mod memory_query_language;
 pub mod memory_sync;
 pub mod meta_construction;
 pub(crate) mod meta_core;
@@ -78,6 +84,7 @@ pub mod program_plan;
 pub mod program_skill_gap;
 pub mod promotion;
 pub mod proof_engine;
+pub mod proof_program;
 pub mod protocol;
 pub(crate) mod protocol_memory;
 pub(crate) mod protocol_policy;
@@ -88,12 +95,17 @@ pub mod rebuild_plan;
 pub mod recipe_interpreter;
 pub mod recursive_execution;
 pub mod relative_meta_logic;
+pub mod release_timeline;
 pub mod repair_strategy;
 pub mod requirement_contradiction;
+pub mod research_learning;
 pub(crate) mod responses_stream;
 pub mod route_method_alias;
 pub(crate) mod rule_synthesis;
 pub(crate) mod rule_synthesis_portfolio;
+pub mod search_fusion;
+pub mod search_fusion_grammar;
+pub mod search_fusion_learning;
 pub mod seed;
 pub mod selection;
 pub mod self_ast_census;
@@ -101,6 +113,7 @@ pub mod self_explanation;
 pub mod self_healing;
 pub mod self_improvement;
 pub mod self_source_links;
+pub mod sequences;
 pub mod server;
 pub mod shared_dialog;
 pub mod shared_memory;
@@ -134,10 +147,13 @@ pub mod task_decomposition;
 pub mod telegram;
 pub mod telegram_runtime;
 pub mod thinking;
+pub mod thinking_prose;
 pub mod translation;
 pub(crate) mod unknown_opener;
 pub mod web_engine_core;
 pub mod web_search_core;
+pub mod web_search_fusion_core;
+pub mod workspace_change_learning;
 pub mod world_model;
 pub mod world_model_atoms;
 pub mod world_model_context;
@@ -167,7 +183,9 @@ pub use client_contract_learning::{
     learn_client_contracts, load_observations, observe_proxy_transcript, ClientContractFinding,
     ClientContractLearningReport, ClientContractObservation, ClientContractProposal, DeliveryMode,
 };
-pub use client_integrations::{run_with_formal_ai, ClientProtocol, WithFormalAiArgs};
+pub use client_integrations::{
+    delimit_tool_args, run_with_formal_ai, ClientProtocol, WithFormalAiArgs,
+};
 pub use document_formats::{
     canonical_document_format_label, convert_document_format, cross_format_document_concepts,
     document_format_capabilities, document_package_is_recognized, document_profile_is_recognized,
@@ -189,9 +207,11 @@ pub use dreaming_runtime::{
     core_is_idle, dreaming_disabled, run_core_dreaming_once, ForegroundActivity,
 };
 pub use engine::{
-    humanize_meta_identifier, knowledge_links_notation, naturalize_thinking_step,
-    render_thinking_steps, thinking_language_label, thinking_narrative, FormalAiEngine,
-    SymbolicAnswer, ThinkingStep, DEFAULT_MODEL,
+    humanize_meta_identifier, knowledge_links_notation, localize_thinking_steps,
+    naturalize_thinking_step, naturalize_thinking_step_in, render_thinking_steps,
+    render_thinking_steps_in, thinking_answer_language, thinking_language_label,
+    thinking_language_label_in, thinking_narrative, thinking_narrative_in, thinking_trace_heading,
+    FormalAiEngine, SymbolicAnswer, ThinkingStep, DEFAULT_MODEL,
 };
 pub use event_log::{Event, EventLog};
 pub use fact_checking::{
@@ -245,10 +265,13 @@ pub use links_query::{
 pub use memory::{
     export_bundle as export_memory_bundle, export_full_memory as export_memory_full,
     export_links_notation, export_links_notation as export_memory_links_notation,
-    extract_memory_from_bundle, import_full_memory as import_memory_full,
-    parse_links_notation as parse_memory_links_notation, seed_cache_events,
-    suggest_migrations as suggest_memory_migrations, write_locked_atomic, BundleInfo, MemoryEvent,
-    MemoryStore, ParsedBundle,
+    extract_memory_from_bundle, import_full_memory as import_memory_full, migrate_memory,
+    migrate_memory_with_pre_commit, parse_links_notation as parse_memory_links_notation,
+    preflight_memory_upgrade, seed_cache_events, suggest_migrations as suggest_memory_migrations,
+    write_locked_atomic, BundleInfo, MemoryEvent, MemoryMigrationReceipt, MemoryMigrationState,
+    MemoryStore, MemoryUpgradeError, MemoryUpgradeStatus, ParsedBundle,
+    MAXIMUM_READABLE_MEMORY_SCHEMA_VERSION, MINIMUM_READABLE_MEMORY_SCHEMA_VERSION,
+    TARGET_MEMORY_SCHEMA_VERSION,
 };
 pub use memory_sync::{
     configured_memory_path, events_since, merge_event, merge_union_by_id, SyncStore,
@@ -270,10 +293,10 @@ pub use protocol::{
     create_chat_completion, create_chat_completion_with_solver,
     create_chat_completion_with_solver_and_memory, create_response, create_response_with_solver,
     create_response_with_solver_and_memory, ChatChoice, ChatCompletion, ChatCompletionRequest,
-    ChatMessage, FunctionCall, MessageContent, MessageContentPart, ResponseFunctionToolCall,
-    ResponseObject, ResponseOutputContent, ResponseOutputItem, ResponseOutputMessage,
-    ResponseUsage, ResponseWebSearchAction, ResponseWebSearchToolCall, ResponsesRequest,
-    TokenUsage, ToolCall,
+    ChatMessage, FunctionCall, MessageContent, MessageContentPart, ResponseCustomToolCall,
+    ResponseFunctionToolCall, ResponseObject, ResponseOutputContent, ResponseOutputItem,
+    ResponseOutputMessage, ResponseUsage, ResponseWebSearchAction, ResponseWebSearchToolCall,
+    ResponsesRequest, TokenUsage, ToolCall,
 };
 pub use proxy::{
     run_proxy, summarize_proxy_exchange, ProxyConfig, ProxyExchangeLog, ProxyToolCallLog,
@@ -290,14 +313,24 @@ pub use relative_meta_logic::{
     ASSUMED_TRUE_PRIOR,
 };
 pub use repair_strategy::{canonical_strategies, RepairStrategy, RepairTarget};
+pub use search_fusion::{
+    execute_search_fusion, FormalizedSearchObservation, FusedSearchStatement,
+    NormalizedSearchSource, SearchFusionAnswer, SearchFusionExecution, SearchObservationOrigin,
+    SearchSourceClassification,
+};
+pub use search_fusion_learning::{
+    execute_search_fusion_with_recipe, SearchFusionLearningApproval, SearchFusionLearningError,
+    SearchFusionLearningFrontier, SearchFusionLearningGate, SearchFusionLearningObservation,
+    SearchFusionRecipeCandidate, SearchFusionRecipeLedger, SEARCH_FUSION_TASK_FAMILY,
+};
 pub use seed::{
     agent_info, canonical_model_id, concepts as seed_concepts, environment_directory,
     environment_records, intent_routing, language_rules, merged_bundle, model_aliases,
     multilingual_responses, operation_vocabulary, parse_bundle, projects_registry, prompt_patterns,
-    resolve_model_id, response_for, seed_files, supported_languages, try_resolve_model_id,
-    EnvironmentDirectory, EnvironmentRecord, IntentRouting, LocalizedProject, MigrationFlow,
-    ModelAliasRegistry, OperationLanguageForms, OperationTrigger, OperationVocabulary,
-    ProjectRecord, ProjectStatement, ProjectsRegistry,
+    render_response, resolve_model_id, response_for, seed_files, supported_languages,
+    try_resolve_model_id, EnvironmentDirectory, EnvironmentRecord, IntentRouting, LocalizedProject,
+    MigrationFlow, ModelAliasRegistry, OperationLanguageForms, OperationTrigger,
+    OperationVocabulary, ProjectRecord, ProjectStatement, ProjectsRegistry,
 };
 pub use self_ast_census::{
     drift_report, scan_symbols, CensusDrift, CensusFidelity, CensusResolution, ModuleCensus,
@@ -317,6 +350,13 @@ pub use self_improvement::{
 pub use self_source_links::{
     owned_file_count, owned_manifest, owned_manifest_content_id, owned_manifest_notation,
     owned_source_files, owned_total_bytes, SourceLinks, SourceModuleDigest, SourceModuleProjection,
+};
+pub use sequences::{
+    balanced_convert, compress, detect_palindrome, detect_period, detect_repetition,
+    infer_grid_patterns, infer_sequence_patterns, CompressionResult, CompressionStep, Doublet,
+    Grid, GridPatternReport, GridSymmetry, GridTransform, LinkAddress, LinkFrequenciesCache,
+    LinkFrequency, RepetitionPattern, SequenceIndex, SequencePattern, SequencePatternReport,
+    SequenceStore, SymbolTable,
 };
 pub use server::{
     enable_http_agent_mode_for_current_process, handle_api_request, handle_api_request_with_auth,
@@ -348,7 +388,8 @@ pub use solver::{
     ExecutionSurface, SolverConfig, UniversalSolver,
 };
 pub use solver_handlers::{
-    answer_memory_recall, execute_memory_query, try_web_search_with_client, MemoryQueryExecution,
+    answer_memory_recall, execute_memory_query, execute_memory_query_with_options,
+    try_web_search_with_client, MemoryQueryExecution,
 };
 pub use solver_helpers::humanize_url;
 pub use source_fetch::{
@@ -391,6 +432,15 @@ pub use summarization::{
     SourceProvider, SourcedStatement, Statement, StatementKind, StatementSignature,
     StatementVariant, SummarizationConfig, SummarizationMode, Verdict,
     DEFAULT_IDENTIFIER_MAX_LENGTH, DEFAULT_IDENTIFIER_MAX_WORDS, DEFAULT_MAX_STATEMENTS,
+};
+pub use summarization::{
+    evaluate_file, quality_sentence, ratchet_violations, validate_repository_summarization,
+    CorpusFile, Criterion, CriterionOutcome, FileQualityReport, IterationReport, QualityBaseline,
+    QualityScore, SamplingProtocol, ValidationReport, BASELINE_PATH, BASELINE_RECORD,
+    COMPRESSION_FLOOR_BYTES, CRITERIA, DEFAULT_FILES_PER_ITERATION, DEFAULT_MAX_ITERATIONS,
+    DEFAULT_MINIMUM_ITERATIONS, DEFAULT_SAMPLING_SEED, DEFAULT_STABILITY_TOLERANCE_PERCENT,
+    DEFAULT_STABILITY_WINDOW, HONESTY_POLICY, QUALITY_RATCHET_PERCENT, RATCHET_POLICY,
+    RATCHET_RUNNER,
 };
 pub use telegram::{
     handle_telegram_webhook, parse_get_updates_response, telegram_html_from_markdown,

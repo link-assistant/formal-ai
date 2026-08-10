@@ -127,22 +127,22 @@ fn task_ladder_ratchet_preserves_real_formal_ai_authorship_evidence() {
         "docs/case-studies/issue-842/self-hosting-census-refresh/agent-stream-self-ast.jsonl",
     ))
     .expect("final-source Agent CLI self-AST stream");
-    assert!(refresh_stream.contains("ses_042218b91ffeMauWr4EdyYktPl"));
+    assert!(refresh_stream.contains("ses_03ab2b5ecffeE6OM87CFgu5dJ2"));
     assert!(refresh_stream.contains("formal-ai"));
 
     let self_heal_stream = fs::read_to_string(root.join(
         "docs/case-studies/issue-842/self-hosting-census-refresh/agent-stream-self-heal.jsonl",
     ))
     .expect("final-source Agent CLI self-healing stream");
-    assert!(self_heal_stream.contains("ses_0421c21aeffeCTNh8jVBVg46Ik"));
+    assert!(self_heal_stream.contains("ses_0321e6e65ffefzct0vPr3Uc0ip"));
     assert!(self_heal_stream.contains("formal-ai"));
     assert_eq!(
         fs::read(root.join("data/meta/self-healing-case.lino")).expect("canonical repair case"),
         fs::read(root.join(
-            "docs/case-studies/issue-842/self-hosting-census-refresh/self-healing-case.lino",
+            "docs/case-studies/issue-905/self-hosting-fixture-refresh/self-healing-case.lino",
         ),)
-        .expect("Agent-authored repair case"),
-        "the committed repair case must match the real Agent CLI artifact"
+        .expect("latest Agent-authored repair case"),
+        "the committed repair case must match the latest real Agent CLI artifact"
     );
 
     let snapshot_root =

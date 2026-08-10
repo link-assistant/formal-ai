@@ -1,0 +1,15 @@
+Running 1 test using 1 worker
+
+  ✘  1 [chromium] › tests/issue-864.spec.js:7:1 › detected provider failures proactively offer a contextual issue report
+
+  1) [chromium] › tests/issue-864.spec.js:7:1 › detected provider failures proactively offer a contextual issue report
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('[data-testid="chat-message"].assistant').last().locator('[data-testid="detected-failure-report"]')
+    Expected substring: "I detected a failure while working on this request. Would you like to report it?"
+    Timeout: 10000ms
+    Error: element(s) not found
+
+  1 failed
+    [chromium] › tests/issue-864.spec.js:7:1 › detected provider failures proactively offer a contextual issue report

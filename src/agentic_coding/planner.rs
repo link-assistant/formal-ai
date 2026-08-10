@@ -1,15 +1,10 @@
-//! Deterministic agentic planner — the server's "brain" for issue #468.
-//!
-//! This pure meta-algorithm chooses the next tool or final answer from the
-//! conversation and advertised capabilities. It supports stored task recipes and
-//! a bounded general fallback; neural sampling and hidden state remain non-goals.
+//! Deterministic agentic planner for choosing the next tool or final answer from
+//! a conversation and its advertised capabilities, without hidden neural state.
 
 use serde_json::json;
 
-use super::capability_router;
 pub(super) use super::capability_router::tool_for;
-use super::change_request;
-use super::code_artifact;
+use super::code_task;
 use super::comparison;
 use super::conversation_recall;
 use super::diagram;
@@ -20,9 +15,8 @@ use super::formalize::{
     coverage_line, formalize_text_to_links, FormalizedKnowledgeBase, CANONICAL_FISHERMAN_SYNOPSIS,
     FISHERMAN_DOC_ID,
 };
-use super::general_planner::{
-    compose_general_change_plan, GeneralChangePlan, GeneralPlanMode, PLAN_PATH,
-};
+use super::general_execution::plan_general_change_step;
+use super::general_planner::{compose_general_change_plan, has_authoritative_literal_write};
 use super::google_trends_catalog;
 use super::google_trends_learning;
 use super::intent_router;
@@ -42,8 +36,11 @@ use super::shell_command;
 use super::shell_file_fallback;
 use super::source_links;
 use super::statement_audit;
+use super::structured_edit;
 use super::tool_result;
 use super::web_research;
+use super::{algorithm_learning, capability_router};
+use super::{change_request, code_artifact};
 use crate::protocol::ChatMessage;
 
 /// The Russian web-search query the planner issues when a search tool exists.
@@ -55,8 +52,6 @@ pub const CANONICAL_SOURCE_URL: &str =
 
 /// The path the planner writes the knowledge base to.
 pub const KB_PATH: &str = "knowledge-base.lino";
-
-const GENERAL_PLAN_BODY_PLACEHOLDER: &str = concat!("{", "plan", "}");
 
 /// The next deterministic step the server takes in an agentic coding loop.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -167,6 +162,35 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if let Some(plan) = crate::computer_use::plan_agentic_step(messages, tool_names) {
         return Some(plan);
     }
+    // An explicit exact-content marker makes the following bytes authoritative.
+    // Claim this narrow shape before edit/source semantics inspect the payload:
+    // literal bytes may themselves say "rename X to Y" (issue #708). Broader
+    // file-write requests remain below the semantic coding routes.
+    if has_authoritative_literal_write(&task) {
+        if let Some(plan) = tool_for(tool_names, Capability::Write)
+            .and_then(|_| compose_general_change_plan(&task))
+            .map(|plan| plan_general_change_step(messages, tool_names, &plan))
+        {
+            return Some(plan);
+        }
+    }
+    // A learned workspace-change procedure owns grounded repository rewrites
+    // and multi-file compositions before source creation or shell routing can
+    // collapse them into one incomplete action.
+    if let Some(plan) =
+        super::workspace_change::plan_workspace_change_step(&task, messages, tool_names)
+    {
+        return Some(plan);
+    }
+    // A source-code description is not literal file content. Lower bounded
+    // seed-backed source tasks before the broad literal-write parser so coding
+    // requests produce executable bytes and verify those exact bytes.
+    if let Some(plan) = code_task::plan_generated_source_step(&task, messages, tool_names) {
+        return Some(plan);
+    }
+    if let Some(plan) = structured_edit::plan_structured_edit_step(&task, messages, tool_names) {
+        return Some(plan);
+    }
     // Resolve an unambiguous literal write before keyword recipes: arbitrary
     // filenames/payloads may legitimately contain "issue", "report", or "learning".
     if let Some(plan) = tool_for(tool_names, Capability::Write)
@@ -174,6 +198,10 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
         .map(|plan| plan_general_change_step(messages, tool_names, &plan))
     {
         return Some(plan);
+    }
+    // Portable event logs own the independently validated trace-learning route.
+    if let Some(task) = algorithm_learning::compile_task(&task) {
+        return Some(algorithm_learning::plan_step(messages, tool_names, &task));
     }
     // A freely phrased procedure is one generalized compile → persist → verify
     // recipe on both the symbolic and Agent CLI surfaces.
@@ -379,74 +407,27 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
             }
         }
     }
+    if web_research::has_successful_search_result(messages) {
+        if let Some(query) = web_research::unresolved_web_research_query_for(messages) {
+            if let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
+                return Some(plan);
+            }
+        }
+    }
     if let Some(answer) = tool_result::latest_turn_answer(messages, tool_names, &task) {
         return Some(AgenticPlan::Final(answer));
     }
-    compose_general_change_plan(&task)
+    if let Some(plan) = compose_general_change_plan(&task)
         .map(|plan| plan_general_change_step(messages, tool_names, &plan))
-}
-
-fn plan_general_change_step(
-    messages: &[ChatMessage],
-    tool_names: &[&str],
-    plan: &GeneralChangePlan,
-) -> AgenticPlan {
-    let progress = Progress::scan(messages);
-    let writes = progress.count(Capability::Write);
-    if let Some(tool) = tool_for(tool_names, Capability::Write) {
-        if writes == 0 {
-            return plan_one(tool, write_arguments(PLAN_PATH, &plan.links_notation()));
-        }
-        if writes == 1 && plan.mode == GeneralPlanMode::LiteralFile {
-            return plan_one(tool, write_arguments(&plan.target, &plan.content));
+    {
+        return Some(plan);
+    }
+    if let Some(query) = web_research::unresolved_web_research_query_for(messages) {
+        if let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
+            return Some(plan);
         }
     }
-    if let Some(tool) = tool_for(tool_names, Capability::Run) {
-        let runs = progress.count(Capability::Run);
-        match plan.mode {
-            GeneralPlanMode::CommandOutput => {
-                if let Some(generation) = plan.steps.get(1).and_then(|step| step.command.as_deref())
-                {
-                    if runs == 0 {
-                        return plan_one(tool, json!({ "command": generation }).to_string());
-                    }
-                    if runs == 1 {
-                        return plan_one(
-                            tool,
-                            json!({ "command": plan.verification_command }).to_string(),
-                        );
-                    }
-                }
-            }
-            GeneralPlanMode::LiteralFile | GeneralPlanMode::RepositoryWorkItem if runs == 0 => {
-                return plan_one(
-                    tool,
-                    json!({ "command": plan.verification_command }).to_string(),
-                );
-            }
-            GeneralPlanMode::LiteralFile | GeneralPlanMode::RepositoryWorkItem => {}
-        }
-    }
-    if plan.mode == GeneralPlanMode::RepositoryWorkItem {
-        let response_language = crate::language::detect(&plan.goal).slug();
-        let mut answer =
-            crate::seed::localized_response("general_plan_repository_complete", response_language)
-                .unwrap_or_default();
-        answer = answer.replace("{target}", &plan.target);
-        answer = answer.replace("{plan_path}", PLAN_PATH);
-        answer = answer.replace(
-            GENERAL_PLAN_BODY_PLACEHOLDER,
-            plan.links_notation().trim_end(),
-        );
-        return AgenticPlan::Final(answer);
-    }
-    AgenticPlan::Final(format!(
-        "Completed the general change request for {} and verified it with `{}`.\n\nPlan event ({}):\n\n{}",
-        plan.target,
-        plan.verification_command,
-        PLAN_PATH,
-        plan.links_notation().trim_end(),
-    ))
+    None
 }
 
 /// Run a shell command through the client-owned tool loop, then present its result.

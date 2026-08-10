@@ -1,21 +1,18 @@
 //! Natural-language web-search intent recognition.
 //!
-//! Every surface cue this recogniser reasons about — the explicit command
-//! prefixes, the action verbs, the source/signal nouns, the topic connectives,
-//! the query noise, the follow-up instruction verbs and clause boundaries, and
-//! the research/enumeration vocabulary — is sourced from the language-independent
-//! meaning lexicon (`data/seed/meanings-web-search*.lino`,
-//! `meanings-web-research.lino`, `meanings-web-followup.lino`). The handler
-//! references those meanings by their semantic *role* (e.g.
-//! [`ROLE_WEB_SEARCH_EXPLICIT_PREFIX`], [`ROLE_FOLLOWUP_INSTRUCTION_VERB`]) and
-//! by the *slot* each word form occupies (prefix / suffix / bare), never by raw
-//! words baked into the code. Adding a language or a synonym is therefore a pure
-//! data edit: drop a `word`/`description` into the relevant meaning and this
-//! handler reasons about it automatically. The follow-up truncation in
-//! particular is a universal boundary algorithm — a follow-up clause is detected
-//! structurally (an instruction verb immediately preceded by sentence
-//! punctuation or a chained clause-continuation marker), not by memorising the
-//! handful of `". compare"`-style fragments the prompts happen to use.
+//! Every surface cue this recogniser reasons about — explicit prefixes, action
+//! verbs, source nouns, query noise, follow-up verbs, and research vocabulary —
+//! comes from the language-independent meaning lexicon:
+//! `data/seed/meanings-web-search*.lino`, `meanings-web-research.lino`, and
+//! `meanings-web-followup.lino`. The handler references those meanings by their
+//! semantic *role* (for example [`ROLE_WEB_SEARCH_EXPLICIT_PREFIX`] and
+//! [`ROLE_FOLLOWUP_INSTRUCTION_VERB`]) and by each word form's *slot* (prefix,
+//! suffix, or bare), never by raw words. Adding a synonym remains a data edit:
+//! add a `word`/`description` and the handler reasons about it automatically.
+//! Follow-up truncation is a universal boundary algorithm. It detects a clause
+//! structurally from an instruction verb immediately preceded by sentence
+//! punctuation or a chained clause-continuation marker, rather than memorising
+//! the handful of `". compare"`-style fragments the prompts happen to use.
 
 use std::sync::OnceLock;
 
@@ -79,6 +76,7 @@ pub enum WebSearchQueryKind {
     ImplicitResearchQuestion,
     EnumerationResearchRequest,
     UnresolvedBareTerm,
+    UnknownReasoningFallback,
     DocumentOriginalityCheck,
 }
 
@@ -92,6 +90,7 @@ impl WebSearchQueryKind {
             Self::ImplicitResearchQuestion => "implicit_research_question",
             Self::EnumerationResearchRequest => "enumeration_research_request",
             Self::UnresolvedBareTerm => "unresolved_bare_term",
+            Self::UnknownReasoningFallback => "unknown_reasoning_fallback",
             Self::DocumentOriginalityCheck => "document_originality_check",
         }
     }

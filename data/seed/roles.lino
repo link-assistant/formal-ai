@@ -77,6 +77,26 @@ roles
     kind meaning
   code_method_noun
     kind predicate
+  coding_artifact_kind
+    kind predicate
+  coding_division_action
+    kind predicate
+  coding_identifier_rename_action
+    kind predicate
+  coding_module_registration_action
+    kind predicate
+  coding_name_slot
+    kind predicate
+  coding_return_action
+    kind predicate
+  coding_search_literal_query
+    kind predicate
+  coding_search_subject_kind
+    kind predicate
+  coding_value_slot
+    kind predicate
+  coding_visibility
+    kind predicate
   common_typo
     kind meaning
   comparison_difference_cue
@@ -118,6 +138,8 @@ roles
   conversation_recall_query
     kind meaning
   conversation_reference
+    kind meaning
+  conversation_return_recap
     kind meaning
   conversation_summary_courtesy
     kind meaning
@@ -195,9 +217,13 @@ roles
     kind predicate
   file_write_action_cue
     kind predicate
+  file_write_authoritative_content_lead
+    kind predicate
   file_write_command_output_reference
     kind predicate
   file_write_content_lead
+    kind predicate
+  file_write_content_qualifier
     kind predicate
   file_write_destination_cue
     kind predicate
@@ -415,6 +441,8 @@ roles
     kind meaning
   repository_reference
     kind meaning
+  request_objective_lead
+    kind predicate
   research_criterion
     kind predicate
   research_evaluation_domain

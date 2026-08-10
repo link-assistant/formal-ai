@@ -1175,13 +1175,13 @@ function conceptPatternsByKind(kind) {
 let cachedConceptResponseLanguageMarkers = null;
 
 function meaningDefinedLanguageCode(meaning) {
+  const ledger = seedRawText(SEED_RAW, "languages.lino");
   for (const slug of meaning && Array.isArray(meaning.definedBy)
     ? meaning.definedBy
     : []) {
-    if (slug === "language_english") return "en";
-    if (slug === "language_russian") return "ru";
-    if (slug === "language_hindi") return "hi";
-    if (slug === "language_chinese") return "zh";
+    const name = slug.replace(/^language_/, "");
+    const match = new RegExp(`^  language ([a-z-]+)\\r?\\n    name ${name}$`, "im").exec(ledger);
+    if (match) return match[1];
   }
   return null;
 }

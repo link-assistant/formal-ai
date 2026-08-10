@@ -8,7 +8,7 @@
 //! human [`thinking_narrative`] headline and keeps the concrete steps beneath it
 //! as the recursive "robotic detail" layer.
 
-use formal_ai::{render_thinking_steps, thinking_narrative, FormalAiEngine};
+use formal_ai::{render_thinking_steps, thinking_narrative, thinking_narrative_in, FormalAiEngine};
 
 /// Every reasoning trace opens with a human, first-person narrative headline and
 /// still carries the concrete robotic detail (issue #676, R8).
@@ -49,16 +49,30 @@ fn greeting_and_wellbeing_get_distinct_human_headlines() {
     assert!(wellbeing.to_lowercase().contains("how i'm doing"));
 }
 
-/// The headline is language-agnostic: it summarizes the *decision*, so the same
-/// wellbeing route reached in Russian gets the same English reasoning headline
-/// (the API `reasoning` field stays a stable meta-language) while the composed
-/// answer below remains localized.
+/// The headline summarizes the *decision*, so the same wellbeing route reached
+/// in Russian yields the same headline — but written in Russian, because since
+/// issue #889 every non-UI surface narrates in the language of the answer. The
+/// route itself stays a stable, language-neutral trace key, which is why asking
+/// for the English rendering of the Russian trace reproduces the English one.
 #[test]
 fn narrative_summarizes_the_route_regardless_of_prompt_language() {
     let english = thinking_narrative(&FormalAiEngine.answer("How are you?").thinking_steps);
-    let russian = thinking_narrative(&FormalAiEngine.answer("как дела").thinking_steps);
-    assert_eq!(english, russian);
+    let russian_steps = FormalAiEngine.answer("как дела").thinking_steps;
     assert!(english.is_some());
+    assert_eq!(thinking_narrative_in("en", &russian_steps), english);
+
+    let russian = thinking_narrative(&russian_steps).expect("russian narrative");
+    assert_ne!(
+        Some(russian.clone()),
+        english,
+        "a Russian answer should narrate its reasoning in Russian"
+    );
+    assert!(
+        russian
+            .chars()
+            .any(|character| ('а'..='я').contains(&character)),
+        "the Russian narrative should be Cyrillic, got: {russian}"
+    );
 }
 
 /// A calculation opens with a calculation-shaped headline and still exposes the

@@ -2,9 +2,9 @@ self_ast_census
   target src/proxy/summary.rs
   language rust
   fidelity signature
-  byte_len 14138
-  line_count 409
-  content_id source_module_6dddae79e5dd994e
+  byte_len 14520
+  line_count 420
+  content_id source_module_4f83f9863247fcce
   symbol_count 23
   symbols
     struct ResponseSummary 15 19
@@ -20,13 +20,13 @@ self_ast_census
     function finish 234 248
     function summarize_response_value 251 255
     function merge_response_summary 257 263
-    function apply_response_value 265 308
-    function set_model 310 314
-    function apply_chat_message 316 328
-    function apply_response_item 330 349
-    function apply_gemini_part 351 361
-    function apply_anthropic_content_block 363 376
-    function append_function_call 378 385
-    function append_content_value 387 397
-    function arguments_from_value 399 405
-    function arguments_from_str 407 409
+    function apply_response_value 265 311
+    function set_model 313 317
+    function apply_chat_message 319 331
+    function apply_response_item 333 360
+    function apply_gemini_part 362 372
+    function apply_anthropic_content_block 374 387
+    function append_function_call 389 396
+    function append_content_value 398 408
+    function arguments_from_value 410 416
+    function arguments_from_str 418 420

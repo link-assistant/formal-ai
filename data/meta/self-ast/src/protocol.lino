@@ -2,56 +2,56 @@ self_ast_census
   target src/protocol.rs
   language rust
   fidelity signature
-  byte_len 37148
-  line_count 997
-  content_id source_module_7f98b95dbe4240ec
+  byte_len 35431
+  line_count 933
+  content_id source_module_f135eea56e884ffc
   symbol_count 48
   symbols
-    module content 26 26
-    module output 28 28
-    module recording 29 29
-    function resolved_request_model 37 39
-    function response_timestamp 41 45
-    struct ChatCompletionRequest 48 71
-    struct StreamOptions 75 78
-    function requests_tool_execution 82 106
-    function requested_tool_names 108 141
-    struct ChatMessage 145 169
-    function new 174 180
-    function user 184 186
-    function assistant 190 192
-    function assistant_tool_calls 196 202
-    function assistant_tool_calls_with_content 210 220
-    function tool_result 225 237
-    enum MessageContent 242 245
-    function default 248 250
-    function message_content_tokens 253 260
-    function message_input_tokens 265 269
-    function deserialize_null_content 281 286
-    struct MessageContentPart 289 294
-    struct ToolCall 298 303
-    function tool_call_kind 305 307
-    function function 313 326
-    struct FunctionCall 331 334
-    struct ChatCompletion 337 346
-    struct ChatChoice 349 353
-    struct TokenUsage 356 360
-    struct ResponsesRequest 363 380
-    function to_chat_completion_request 392 412
-    function responses_input_tokens 415 417
-    function append_response_input 423 442
-    function append_response_item 446 512
-    function create_chat_completion 515 517
-    function create_chat_completion_with_solver 520 525
-    function create_chat_completion_with_solver_and_memory 528 562
-    function command_reroute_plan 564 575
-    enum AgenticOutcome 581 590
-    function agentic_outcome 596 652
-    function chat_completion_from_plan 658 729
-    function chat_completion_from_symbolic 731 765
-    function create_response 768 772
-    function create_response_with_solver 775 780
-    function create_response_with_solver_and_memory 783 817
-    function response_from_plan 823 938
-    function response_from_symbolic 940 979
-    function response_reasoning_item 981 997
+    module content 27 27
+    module output 29 29
+    module recording 30 30
+    module responses_input 31 31
+    function resolved_request_model 40 42
+    function response_timestamp 44 48
+    struct ChatCompletionRequest 51 74
+    struct StreamOptions 78 81
+    function requests_tool_execution 85 109
+    function requested_tool_names 111 144
+    struct ChatMessage 148 179
+    function is_false 182 184
+    function new 189 195
+    function user 199 201
+    function assistant 205 207
+    function assistant_tool_calls 211 217
+    function assistant_tool_calls_with_content 225 235
+    function tool_result 240 252
+    enum MessageContent 257 260
+    function default 263 265
+    function message_content_tokens 268 275
+    function message_input_tokens 280 284
+    function deserialize_null_content 296 301
+    struct MessageContentPart 304 309
+    struct ToolCall 313 318
+    function tool_call_kind 320 322
+    function function 328 341
+    struct FunctionCall 346 349
+    struct ChatCompletion 352 361
+    struct ChatChoice 364 368
+    struct TokenUsage 371 375
+    struct ResponsesRequest 378 396
+    function to_chat_completion_request 408 426
+    function responses_input_tokens 429 431
+    function create_chat_completion 434 436
+    function create_chat_completion_with_solver 439 444
+    function create_chat_completion_with_solver_and_memory 447 481
+    function command_reroute_plan 483 494
+    enum AgenticOutcome 500 509
+    function agentic_outcome 515 571
+    function chat_completion_from_plan 577 648
+    function chat_completion_from_symbolic 650 684
+    function create_response 687 691
+    function create_response_with_solver 694 699
+    function create_response_with_solver_and_memory 702 736
+    function response_from_plan 742 874
+    function response_from_symbolic 876 915
+    function response_reasoning_item 917 933

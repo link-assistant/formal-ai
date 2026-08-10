@@ -1,0 +1,169 @@
+{
+  "entities": {
+    "Q1321": {
+      "type": "item",
+      "id": "Q1321",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Spanish"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "испанский язык"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "स्पेनी भाषा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "西班牙語"
+        },
+        "es": {
+          "language": "es",
+          "value": "español"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "Romance language originating in the Iberian Peninsula"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "плюрицентрический иберо-романский язык"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "रोमांस भाषा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "羅曼語族的語言"
+        },
+        "es": {
+          "language": "es",
+          "value": "lengua romance originaria de la península ibérica"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Castilian"
+          },
+          {
+            "language": "en",
+            "value": "Spanish language"
+          },
+          {
+            "language": "en",
+            "value": "Castilian language"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "кастильский язык"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "स्पेनिश"
+          },
+          {
+            "language": "hi",
+            "value": "स्पैनिश"
+          },
+          {
+            "language": "hi",
+            "value": "कैस्टिलियाई"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "西班牙语"
+          },
+          {
+            "language": "zh",
+            "value": "西语"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "castellano"
+          },
+          {
+            "language": "es",
+            "value": "idioma español"
+          },
+          {
+            "language": "es",
+            "value": "lengua española"
+          },
+          {
+            "language": "es",
+            "value": "idioma castellano"
+          },
+          {
+            "language": "es",
+            "value": "lengua castellana"
+          },
+          {
+            "language": "es",
+            "value": "lengua de Cervantes"
+          },
+          {
+            "language": "es",
+            "value": "idioma de Cervantes"
+          },
+          {
+            "language": "es",
+            "value": "lengua hispana"
+          },
+          {
+            "language": "es",
+            "value": "idioma hispano"
+          },
+          {
+            "language": "es",
+            "value": "hispanohablante"
+          },
+          {
+            "language": "es",
+            "value": "hispanoparlante"
+          },
+          {
+            "language": "es",
+            "value": "lengua de Castilla"
+          },
+          {
+            "language": "es",
+            "value": "idioma de Castilla"
+          },
+          {
+            "language": "es",
+            "value": "castellano (idioma)"
+          },
+          {
+            "language": "es",
+            "value": "español (idioma)"
+          },
+          {
+            "language": "es",
+            "value": "castellano (lengua)"
+          },
+          {
+            "language": "es",
+            "value": "español (lengua)"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

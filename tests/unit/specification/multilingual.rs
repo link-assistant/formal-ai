@@ -1,12 +1,13 @@
-//! Multilingual chat surface tests.
-//!
-//! `VISION.md` asks for chat in English, Russian, Hindi, Chinese, and later
-//! other languages. These tests pin down the user-visible expectations.
+//! Multilingual chat behavior required by `VISION.md` across current and future languages.
 
-use formal_ai::{humanize_url, ConversationTurn, FormalAiEngine, SymbolicAnswer, UniversalSolver};
+use formal_ai::{humanize_url, ConversationTurn, SolverConfig, SymbolicAnswer, UniversalSolver};
 
 fn answer(prompt: &str) -> SymbolicAnswer {
-    FormalAiEngine.answer(prompt)
+    UniversalSolver::new(SolverConfig {
+        offline: true,
+        ..SolverConfig::default()
+    })
+    .solve(prompt)
 }
 
 // ---------------------------------------------------------------------------

@@ -18,11 +18,13 @@
 //! extraction is grounded in a closed lexicon (see `lexicon`) and the planner is
 //! a pure, deterministic function of the message history.
 
+pub mod algorithm_learning;
 pub mod associative_learning;
 mod capability_router;
 pub mod change_request;
 mod code_artifact;
 pub mod code_rewrite_learning;
+mod code_task;
 pub(crate) mod command_reroute;
 mod comparison;
 mod conversation_recall;
@@ -35,6 +37,7 @@ pub mod explain;
 pub mod external_benchmark_learning;
 mod file_read;
 pub mod formalize;
+mod general_execution;
 pub mod general_planner;
 pub mod google_trends_catalog;
 pub mod google_trends_learning;
@@ -60,8 +63,10 @@ mod shell_command;
 mod shell_file_fallback;
 pub mod source_links;
 pub mod statement_audit;
-mod tool_result;
+mod structured_edit;
+pub mod tool_result;
 mod web_research;
+mod workspace_change;
 
 pub use associative_learning::{
     is_associative_learning_task, ASSOCIATIVE_LEARNING_PATH, ASSOCIATIVE_LEARNING_TASK,
@@ -106,6 +111,9 @@ pub use learning_report::hardcoded_language_learning::{
 };
 pub use learning_report::lexeme_import_learning::{
     is_lexeme_import_learning_task, LEXEME_IMPORT_LEARNING_PATH, LEXEME_IMPORT_LEARNING_TASK,
+};
+pub use learning_report::search_fusion_learning::{
+    is_search_fusion_learning_task, SEARCH_FUSION_LEARNING_PATH, SEARCH_FUSION_LEARNING_TASK,
 };
 pub use learning_report::self_hosting_learning::{
     is_self_hosting_learning_task, SELF_HOSTING_LEARNING_PATH, SELF_HOSTING_LEARNING_TASK,

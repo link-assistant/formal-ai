@@ -1,0 +1,100 @@
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/version_and_commit.py:166:        help="Description for changelog",
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_github_release.py:61:def extract_changelog_entry(changelog_path: Path, version: str) -> str:
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_github_release.py:62:    """Extract the changelog entry for a specific version."""
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_github_release.py:63:    if not changelog_path.exists():
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_github_release.py:64:        print(f"Warning: {changelog_path} not found", file=sys.stderr)
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_github_release.py:67:    content = changelog_path.read_text()
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_github_release.py:75:            f"Warning: Version {version} not found in {changelog_path}",
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_github_release.py:119:def build_changelog_url(repository: str, tag: str) -> str:
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_github_release.py:120:    """Build a link to the changelog file at the release tag."""
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_github_release.py:130:    """Cap release notes to a conservative byte limit and link the full changelog."""
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_github_release.py:136:        "Release notes were truncated because the changelog entry is too large "
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_github_release.py:138:        f"{build_changelog_url(repository, tag)}"
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_github_release.py:274:    changelog_path = project_root / "CHANGELOG.md"
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_github_release.py:279:        release_notes = extract_changelog_entry(changelog_path, bare_version)
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_manual_changeset.py:3:Create a manual changelog fragment for releases.
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_manual_changeset.py:6:It creates a changelog fragment in the changelog.d/ directory for documenting changes.
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_manual_changeset.py:72:    print("Using scriv to create changelog fragment...")
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_manual_changeset.py:89:        changelog_dir = Path("changelog.d")
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_manual_changeset.py:90:        if changelog_dir.exists():
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_manual_changeset.py:94:                    for f in changelog_dir.glob("*.md")
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_manual_changeset.py:127:    changelog_dir: Path, bump_type: str, description: str
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_manual_changeset.py:129:    """Create a changelog fragment manually without scriv."""
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_manual_changeset.py:139:    fragment_path = changelog_dir / filename
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_manual_changeset.py:185:    print(f"Created changelog fragment: {fragment_path}")
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_manual_changeset.py:197:        description="Create a changelog fragment for release documentation",
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_manual_changeset.py:200:This script creates a changelog fragment in changelog.d/ to document changes.
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_manual_changeset.py:225:    # Determine project root and changelog directory
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_manual_changeset.py:228:    changelog_dir = project_root / "changelog.d"
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_manual_changeset.py:230:    # Ensure changelog directory exists
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_manual_changeset.py:231:    if not changelog_dir.exists():
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_manual_changeset.py:232:        changelog_dir.mkdir(parents=True)
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_manual_changeset.py:233:        print(f"Created directory: {changelog_dir}")
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/create_manual_changeset.py:245:        return create_manual_fragment(changelog_dir, args.bump_type, args.description)
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/docs.yml:44:    timeout-minutes: 10
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/docs.yml:88:    timeout-minutes: 10
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/validate_changeset.py:3:Validate that PRs contain proper changelog fragments.
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/validate_changeset.py:6:It ensures that pull requests include changelog documentation.
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/validate_changeset.py:16:    - name: Validate changelog fragment
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/validate_changeset.py:25:def get_fragment_files(changelog_dir: Path) -> list[Path]:
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/validate_changeset.py:26:    """Get list of changelog fragment files (excluding README and template)."""
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/validate_changeset.py:27:    if not changelog_dir.exists():
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/validate_changeset.py:32:        for f in changelog_dir.glob("*.md")
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/validate_changeset.py:82:    # Determine project root and changelog directory
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/validate_changeset.py:85:    changelog_dir = project_root / "changelog.d"
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/validate_changeset.py:87:    print("Validating changelog fragments...")
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/validate_changeset.py:91:    fragments = get_fragment_files(changelog_dir)
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/validate_changeset.py:94:    print(f"Found {fragment_count} changelog fragment(s)")
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/validate_changeset.py:98:        print("WARNING: No changelog fragment found!")
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/validate_changeset.py:100:        print("To document your changes, create a changelog fragment:")
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/validate_changeset.py:111:        print("See changelog.d/README.md for more information.")
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/detect_code_changes.py:13:Excluded from code changes (don't require changelog fragments):
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/detect_code_changes.py:15:- changelog.d/ folder (changelog metadata)
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/detect_code_changes.py:40:    "changelog.d/",
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/bump_version.py:65:def update_changelog(
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/bump_version.py:66:    changelog_path: Path, version: str, bump_type: str, description: str
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/bump_version.py:69:    if not changelog_path.exists():
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/bump_version.py:70:        print(f"Warning: {changelog_path} not found, skipping changelog update")
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/bump_version.py:73:    content = changelog_path.read_text()
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/bump_version.py:105:    changelog_path.write_text(new_content)
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/bump_version.py:106:    print(f"✓ Updated {changelog_path.name}")
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/bump_version.py:112:        description="Bump version and update changelog",
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/bump_version.py:124:        help="Description of changes for changelog",
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/bump_version.py:133:    changelog_path = project_root / "CHANGELOG.md"
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/bump_version.py:152:        update_changelog(changelog_path, new_version, args.bump_type, description)
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:41:    timeout-minutes: 5
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:95:  # Lint runs independently of changelog check for detected code changes.
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:100:    timeout-minutes: 20
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:121:        run: bash scripts/simulate-fresh-merge.sh
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:162:          ruff check .
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:167:          ruff format --check .
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:179:      - name: Check for secrets
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:180:        run: npx --yes -p secretlint -p @secretlint/secretlint-rule-preset-recommend secretlint "**/*"
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:187:    timeout-minutes: 30
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:193:      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:243:          pytest tests/ -v --cov=src --cov-report=xml --cov-report=term
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:263:    timeout-minutes: 20
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:332:  # Docs-only PRs (./docs folder, markdown files) don't require changelog fragments
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:333:  changelog:
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:336:    timeout-minutes: 10
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:338:      group: ${{ github.workflow }}-${{ github.ref }}-changelog
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:380:      - name: Check for changelog fragments
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:388:            FRAGMENT_DIR="changelog.d"
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:391:            FRAGMENT_DIR="$PYTHON_ROOT/changelog.d"
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:405:            echo "::error::No changelog fragment found. Please run 'scriv create' and document your changes."
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:407:            echo "To create a changelog fragment:"
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:412:            echo "See changelog.d/README.md for more information."
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:424:    timeout-minutes: 60
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:470:    timeout-minutes: 30
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:560:          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:585:    timeout-minutes: 30
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:593:          token: ${{ secrets.GITHUB_TOKEN }}
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:636:      - name: Collect changelog fragments
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:642:          FRAGMENTS=$(find changelog.d -name "*.md" ! -name "README.md" ! -name "*.j2" 2>/dev/null | wc -l)
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:644:            echo "Found $FRAGMENTS changelog fragment(s), collecting..."
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:647:            echo "No changelog fragments found, skipping collection"
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:688:          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/check_file_size.py:41:    """A file-size warning or violation."""
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/check_file_size.py:49:    """Collected warnings and violations from a file-size check."""
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/check_file_size.py:174:    """Print non-failing file-size warnings."""
+dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/scripts/check_file_size.py:195:    """Print hard-limit file-size violations."""

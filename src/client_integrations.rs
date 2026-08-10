@@ -1,33 +1,40 @@
 use std::error::Error;
-use std::fmt::Write as _;
 use std::fs;
+use std::io::{IsTerminal as _, Read as _};
 use std::path::{Component, Path, PathBuf};
 use std::process::Command;
 
 use clap::{Args as ClapArgs, ValueEnum};
-use serde_json::Value;
-use toml_edit::{value as toml_value, DocumentMut, Item, Table};
 
 use crate::context_capacity::ContextCapacity;
 use crate::seed::{
-    client_integrations as seed_client_integrations, ClientIntegration, ConfigFormat,
-    ModeArgPosition, ModelArgPosition,
+    client_integrations as seed_client_integrations, ClientIntegration, ModeArgPosition,
+    ModelArgPosition,
 };
 use crate::DEFAULT_MODEL;
 
+mod caller_args;
 mod command;
 mod completion;
 mod completion_learning;
+mod global_config;
+mod global_verify;
 mod server;
 mod session_files;
+mod tool_args;
 mod url;
-use command::{contains_model_arg, ensure_trailing_newline, resolve_integration_command};
+use caller_args::CallerArgs;
+use command::{contains_model_arg, resolve_integration_command};
 use completion::{require_completed, run_to_completion, AuthoringRun, CompletionInvocation};
+use global_config::{
+    render_json_settings, render_toml_settings, undo_global_config, write_global_config,
+};
 use server::maybe_start_server;
 use session_files::{
     newest_changed_session_file, print_session_files, session_file_snapshot, user_home_dir,
     TempConfigDir,
 };
+pub use tool_args::delimit_tool_args;
 use url::{base_url_with_port, join_url_path};
 
 const DEFAULT_BASE_URL: &str = "http://127.0.0.1:8080";
@@ -74,6 +81,11 @@ pub struct WithFormalAiArgs {
     /// Configure or undo every supported tool from the seed registry.
     #[arg(long, default_value_t = false)]
     pub all: bool,
+
+    /// After `--global`, start the tool once non-interactively and fail on an
+    /// auth refusal instead of reporting success.
+    #[arg(long, default_value_t = false)]
+    pub verify: bool,
 
     /// Formal AI server root URL. Protocol-specific paths are added from seed data.
     #[arg(long, default_value = DEFAULT_BASE_URL)]
@@ -160,6 +172,9 @@ struct InvocationOptions {
     force_interactive: bool,
     force_non_interactive: bool,
     orchestration: bool,
+    /// Whether standard input is a terminal. A piped invocation is headless
+    /// even when the caller passed no prompt text.
+    stdin_is_terminal: bool,
 }
 
 pub fn run_with_formal_ai(args: &WithFormalAiArgs) -> Result<(), Box<dyn Error>> {
@@ -179,6 +194,9 @@ pub fn run_with_formal_ai(args: &WithFormalAiArgs) -> Result<(), Box<dyn Error>>
     if args.all {
         return Err("--all is only valid with --global or --undo".into());
     }
+    if args.verify {
+        return Err("--verify is only valid with --global".into());
+    }
     let tool = args
         .tool
         .as_deref()
@@ -194,20 +212,43 @@ pub fn run_with_formal_ai(args: &WithFormalAiArgs) -> Result<(), Box<dyn Error>>
     } else {
         None
     };
+    let stdin_is_terminal = std::io::stdin().is_terminal();
+    let mut caller = CallerArgs::parse(&args.tool_args, integration, &integrations);
+    if !caller.has_text() && !stdin_is_terminal && !args.interactive {
+        // A piped prompt becomes the same structured prompt an argument would
+        // have produced, so every client renders it in its own vocabulary
+        // (`codex exec <prompt>`, `claude --print <prompt>`) instead of being
+        // handed a mode flag with nothing to say.
+        if let Some(piped) = read_piped_prompt()? {
+            caller = caller.with_prompt(&piped);
+        }
+    }
     run_ephemeral(
         integration,
-        &args.tool_args,
+        &caller,
         &context,
         InvocationOptions {
             keep_summarization: args.summarize,
             force_interactive: args.interactive,
             force_non_interactive: args.non_interactive,
             orchestration: args.orchestration,
+            stdin_is_terminal,
         },
         server.as_ref().map(|server| server.output_log.as_path()),
         args.orchestration_home.as_deref(),
         args.orchestration_resume.as_deref(),
     )
+}
+
+/// Read a prompt piped into the wrapper, or `None` when stdin carries nothing.
+fn read_piped_prompt() -> Result<Option<String>, Box<dyn Error>> {
+    let mut piped = String::new();
+    std::io::stdin().read_to_string(&mut piped)?;
+    let piped = piped.trim();
+    if piped.is_empty() {
+        return Ok(None);
+    }
+    Ok(Some(piped.to_owned()))
 }
 
 fn select_integrations<'a>(
@@ -309,7 +350,10 @@ fn render_context(
         google_auth_type,
         model_catalog_path: String::new(),
     };
-    context.model_selector = if integration.model_selector.is_empty() {
+    // An already-qualified selector (`provider/model`) is passed through: the
+    // seed template only supplies the provider a bare alias is missing.
+    context.model_selector = if integration.model_selector.is_empty() || context.model.contains('/')
+    {
         context.model.clone()
     } else {
         render_template(&integration.model_selector, &context)
@@ -319,7 +363,7 @@ fn render_context(
 
 fn run_ephemeral(
     integration: &ClientIntegration,
-    user_args: &[String],
+    caller: &CallerArgs,
     context: &RenderContext,
     mut options: InvocationOptions,
     temporary_server_log: Option<&Path>,
@@ -328,7 +372,7 @@ fn run_ephemeral(
 ) -> Result<(), Box<dyn Error>> {
     let invocation = &integration.invocation;
     let mut context = context.clone();
-    let mut authoring = AuthoringRun::for_invocation(user_args, &mut options)?;
+    let mut authoring = AuthoringRun::for_invocation(caller, &mut options)?;
     let mut temp_dirs = Vec::new();
     let mut session_home = None;
     let resolved_command = resolve_integration_command(integration);
@@ -419,7 +463,7 @@ fn run_ephemeral(
                 CompletionInvocation {
                     command: &command,
                     integration,
-                    user_args,
+                    caller,
                     context: &context,
                     options,
                     session_root: session_root.as_deref(),
@@ -433,13 +477,8 @@ fn run_ephemeral(
                 Some(outcome.completion_passed),
             )
         } else {
-            let final_args = build_invocation_args(
-                integration,
-                user_args,
-                &context,
-                options,
-                orchestration_resume,
-            );
+            let final_args =
+                build_invocation_args(integration, caller, &context, options, orchestration_resume);
             command.args(final_args);
             let status = command.status()?;
             (
@@ -498,9 +537,15 @@ fn temp_scoped_path(root: &Path, relative: &str) -> Result<PathBuf, Box<dyn Erro
     Ok(root.join(path))
 }
 
+/// Render one client invocation from the seed-declared contract plus the
+/// caller's parsed request.
+///
+/// Every attempt goes through here, so a completion retry re-renders the same
+/// option set with only the prompt substituted instead of rebuilding an argv
+/// from the correction text alone.
 fn build_invocation_args(
     integration: &ClientIntegration,
-    user_args: &[String],
+    caller: &CallerArgs,
     context: &RenderContext,
     options: InvocationOptions,
     orchestration_resume: Option<&str>,
@@ -520,27 +565,23 @@ fn build_invocation_args(
             }
         }
     }
-    let interactive =
-        options.force_interactive || (!options.force_non_interactive && user_args.is_empty());
+    // A request with no text still runs headless when stdin is a pipe: the
+    // prompt arrives on stdin, so injecting the client's interactive flags
+    // would hang a scripted invocation.
+    let interactive = options.force_interactive
+        || (!options.force_non_interactive && !caller.has_text() && options.stdin_is_terminal);
     let mode_args: &[String] =
-        if interactive && invocation.interactive_args_require_prompt && user_args.is_empty() {
+        if interactive && invocation.interactive_args_require_prompt && caller.prompt().is_none() {
             &[]
         } else if interactive {
             &invocation.interactive_args
         } else {
             &invocation.non_interactive_args
         };
-    let rendered_mode_args = if mode_args
+    let rendered_mode_args = mode_args
         .iter()
-        .any(|mode_arg| user_args.contains(mode_arg))
-    {
-        Vec::new()
-    } else {
-        mode_args
-            .iter()
-            .map(|arg| render_template(arg, context))
-            .collect::<Vec<_>>()
-    };
+        .map(|arg| render_template(arg, context))
+        .collect::<Vec<_>>();
     if invocation.mode_arg_position == Some(ModeArgPosition::BeforeInvocation) {
         args.splice(0..0, rendered_mode_args.iter().cloned());
     }
@@ -552,14 +593,14 @@ fn build_invocation_args(
                 .map(|arg| render_template(arg, context)),
         );
     }
+    let caller_options = caller.options();
     let mut effective_user_args = Vec::new();
     if options.orchestration {
-        effective_user_args.extend(
-            invocation
-                .orchestration_args
-                .iter()
-                .map(|arg| render_template(arg, context)),
-        );
+        effective_user_args.extend(overlay_args(
+            &invocation.orchestration_args,
+            caller,
+            context,
+        ));
     }
     if let Some(session_id) = orchestration_resume {
         effective_user_args.extend(
@@ -569,11 +610,14 @@ fn build_invocation_args(
                 .map(|argument| argument.replace(concat!("{", "session_id", "}"), session_id)),
         );
     }
+    effective_user_args.extend(caller_options.iter().cloned());
     if invocation.mode_arg_position != Some(ModeArgPosition::BeforeInvocation) {
         effective_user_args.extend(rendered_mode_args);
     }
-    effective_user_args.extend(user_args.iter().cloned());
-    if invocation.model_arg.is_empty() || contains_model_arg(user_args) {
+    if let Some(prompt) = caller.prompt() {
+        effective_user_args.push(prompt.to_owned());
+    }
+    if invocation.model_arg.is_empty() || contains_model_arg(&caller_options) {
         args.extend(effective_user_args);
         return args;
     }
@@ -604,312 +648,30 @@ fn build_invocation_args(
     args
 }
 
-fn write_global_config(
-    integration: &ClientIntegration,
-    args: &WithFormalAiArgs,
-) -> Result<(), Box<dyn Error>> {
-    let mut context = render_context(integration, args)?;
-    let global_config = integration.global_config_for(&context.protocol);
-    if !global_config.model_catalog_path.is_empty() {
-        let catalog_path = global_config_path(&global_config.model_catalog_path)?;
-        let catalog_backup = backup_path(&catalog_path, &global_config.backup_suffix);
-        ensure_backup(&catalog_path, &catalog_backup)?;
-        context.model_catalog_path = catalog_path.display().to_string();
-        write_file(&catalog_path, &codex_model_catalog(&context.model)?)?;
-    }
-    let path = global_config_path(&global_config.path)?;
-    let backup_path = backup_path(&path, &global_config.backup_suffix);
-    ensure_backup(&path, &backup_path)?;
-    let existing = fs::read_to_string(&path).unwrap_or_default();
-    let next = match global_config.format {
-        ConfigFormat::Toml => {
-            render_toml_settings(&global_config.toml_settings, &existing, &context)?
-        }
-        ConfigFormat::Json => merge_json_config(global_config, &existing, &context)?,
-        ConfigFormat::ShellEnv => {
-            merge_shell_env_config(&integration.id, global_config, &existing, &context)
-        }
-    };
-    if next == existing {
-        println!(
-            "{} already configured at {}",
-            integration.id,
-            path.display()
+/// Render a seed-declared argument overlay, dropping any flag the caller
+/// already passed so the client never receives the same option twice.
+fn overlay_args(overlay: &[String], caller: &CallerArgs, context: &RenderContext) -> Vec<String> {
+    let mut rendered = Vec::new();
+    let mut index = 0;
+    while index < overlay.len() {
+        let argument = &overlay[index];
+        let is_flag = argument.len() > 1 && argument.starts_with('-');
+        let value_count = usize::from(
+            is_flag
+                && overlay
+                    .get(index + 1)
+                    .is_some_and(|value| !value.starts_with('-')),
         );
-    } else {
-        write_file(&path, &next)?;
-        println!("configured {} at {}", integration.id, path.display());
-    }
-    Ok(())
-}
-
-fn undo_global_config(
-    integration: &ClientIntegration,
-    args: &WithFormalAiArgs,
-) -> Result<(), Box<dyn Error>> {
-    let context = render_context(integration, args)?;
-    let global_config = integration.global_config_for(&context.protocol);
-    let path = global_config_path(&global_config.path)?;
-    let config_backup_path = backup_path(&path, &global_config.backup_suffix);
-    let mut restored = if config_backup_path.exists() {
-        restore_backup(&path, &config_backup_path)?;
-        true
-    } else {
-        false
-    };
-    if !global_config.model_catalog_path.is_empty() {
-        let catalog_path = global_config_path(&global_config.model_catalog_path)?;
-        let catalog_backup_path = backup_path(&catalog_path, &global_config.backup_suffix);
-        if catalog_backup_path.exists() {
-            restore_backup(&catalog_path, &catalog_backup_path)?;
-            restored = true;
-        }
-    }
-    if !restored {
-        println!(
-            "no formal-ai backup for {} at {}",
-            integration.id,
-            path.display()
-        );
-        return Ok(());
-    }
-    println!(
-        "restored {} from {}",
-        integration.id,
-        config_backup_path.display()
-    );
-    Ok(())
-}
-
-fn restore_backup(path: &Path, backup_path: &Path) -> Result<(), Box<dyn Error>> {
-    if !backup_path.exists() {
-        return Ok(());
-    }
-    let backup = fs::read_to_string(backup_path)?;
-    if backup == EMPTY_BACKUP_SENTINEL {
-        match fs::remove_file(path) {
-            Ok(()) => {}
-            Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
-            Err(error) => return Err(error.into()),
-        }
-    } else {
-        write_file(path, &backup)?;
-    }
-    fs::remove_file(backup_path)?;
-    Ok(())
-}
-
-fn ensure_backup(path: &Path, backup_path: &Path) -> Result<(), Box<dyn Error>> {
-    if backup_path.exists() {
-        return Ok(());
-    }
-    if let Some(parent) = backup_path.parent() {
-        fs::create_dir_all(parent)?;
-    }
-    if path.exists() {
-        fs::copy(path, backup_path)?;
-    } else {
-        fs::write(backup_path, EMPTY_BACKUP_SENTINEL)?;
-    }
-    Ok(())
-}
-
-fn render_toml_settings(
-    settings: &[(String, String)],
-    existing: &str,
-    context: &RenderContext,
-) -> Result<String, Box<dyn Error>> {
-    let mut document = if existing.trim().is_empty() {
-        DocumentMut::new()
-    } else {
-        existing.parse::<DocumentMut>()?
-    };
-    for (path, value) in settings {
-        set_toml_string(
-            document.as_table_mut(),
-            &render_template(path, context),
-            &render_template(value, context),
-        )?;
-    }
-    Ok(ensure_trailing_newline(document.to_string()))
-}
-
-fn set_toml_string(
-    table: &mut Table,
-    dotted_path: &str,
-    value: &str,
-) -> Result<(), Box<dyn Error>> {
-    let parts = dotted_path
-        .split('.')
-        .map(str::trim)
-        .filter(|part| !part.is_empty())
-        .collect::<Vec<_>>();
-    let Some((last, parents)) = parts.split_last() else {
-        return Err("empty TOML setting path".into());
-    };
-    let parent = table_at_path_mut(table, parents);
-    parent[*last] = toml_value(value);
-    Ok(())
-}
-
-fn table_at_path_mut<'a>(mut table: &'a mut Table, parts: &[&str]) -> &'a mut Table {
-    for part in parts {
-        let item = table
-            .entry(part)
-            .or_insert_with(|| Item::Table(Table::new()));
-        if !item.is_table() {
-            *item = Item::Table(Table::new());
-        }
-        table = item.as_table_mut().expect("table item");
-    }
-    table
-}
-
-fn merge_json_config(
-    global_config: &crate::seed::ClientIntegrationGlobalConfig,
-    existing: &str,
-    context: &RenderContext,
-) -> Result<String, Box<dyn Error>> {
-    let mut base = if existing.trim().is_empty() {
-        Value::Object(serde_json::Map::new())
-    } else {
-        serde_json::from_str(existing)?
-    };
-    let overlay = json_settings_value(&global_config.json_settings, context)?;
-    merge_json_value(&mut base, overlay);
-    Ok(format!("{}\n", serde_json::to_string_pretty(&base)?))
-}
-
-fn render_json_settings(
-    settings: &[(String, String)],
-    context: &RenderContext,
-) -> Result<String, Box<dyn Error>> {
-    Ok(format!(
-        "{}\n",
-        serde_json::to_string_pretty(&json_settings_value(settings, context)?)?
-    ))
-}
-
-fn json_settings_value(
-    settings: &[(String, String)],
-    context: &RenderContext,
-) -> Result<Value, Box<dyn Error>> {
-    let mut value = Value::Object(serde_json::Map::new());
-    for (path, setting_value) in settings {
-        set_json_setting(&mut value, path, setting_value, context)?;
-    }
-    Ok(value)
-}
-
-fn set_json_setting(
-    root: &mut Value,
-    dotted_path: &str,
-    value: &str,
-    context: &RenderContext,
-) -> Result<(), Box<dyn Error>> {
-    let parts = dotted_path
-        .split('.')
-        .map(str::trim)
-        .filter(|part| !part.is_empty())
-        .map(|part| render_template(part, context))
-        .collect::<Vec<_>>();
-    let Some((last, parents)) = parts.split_last() else {
-        return Err("empty JSON setting path".into());
-    };
-
-    let mut current = root;
-    for part in parents {
-        let object = current
-            .as_object_mut()
-            .ok_or("JSON setting path conflicts with a scalar value")?;
-        current = object
-            .entry(part.clone())
-            .or_insert_with(|| Value::Object(serde_json::Map::new()));
-    }
-    let object = current
-        .as_object_mut()
-        .ok_or("JSON setting path conflicts with a scalar value")?;
-    let rendered = render_template(value, context);
-    let setting = if let Some(literal) = rendered.strip_prefix("json:") {
-        serde_json::from_str(literal)
-            .map_err(|error| invalid_typed_json_setting_error(&rendered, &error))?
-    } else {
-        Value::String(rendered)
-    };
-    object.insert(last.clone(), setting);
-    Ok(())
-}
-
-fn invalid_typed_json_setting_error(rendered: &str, error: &serde_json::Error) -> String {
-    crate::seed::response_for("client_integration_invalid_typed_json_setting", "en")
-        .unwrap_or_else(|| "client_integration_invalid_typed_json_setting".to_owned())
-        .replace(RENDERED_PLACEHOLDER, rendered)
-        .replace(ERROR_PLACEHOLDER, &error.to_string())
-}
-
-fn merge_json_value(base: &mut Value, overlay: Value) {
-    match (base, overlay) {
-        (Value::Object(base_map), Value::Object(overlay_map)) => {
-            for (key, overlay_value) in overlay_map {
-                match base_map.get_mut(&key) {
-                    Some(base_value) => merge_json_value(base_value, overlay_value),
-                    None => {
-                        base_map.insert(key, overlay_value);
-                    }
-                }
-            }
-        }
-        (base_value, overlay_value) => *base_value = overlay_value,
-    }
-}
-
-fn merge_shell_env_config(
-    integration_id: &str,
-    global_config: &crate::seed::ClientIntegrationGlobalConfig,
-    existing: &str,
-    context: &RenderContext,
-) -> String {
-    let mut next = remove_managed_block(existing, integration_id);
-    if !next.is_empty() && !next.ends_with('\n') {
-        next.push('\n');
-    }
-    let _ = writeln!(next, "# >>> formal-ai {integration_id}");
-    for env in &global_config.shell_env {
-        next.push_str("export ");
-        next.push_str(&render_template(&env.key, context));
-        next.push('=');
-        next.push_str(&shell_double_quote(&render_template(&env.value, context)));
-        next.push('\n');
-    }
-    let _ = writeln!(next, "# <<< formal-ai {integration_id}");
-    next
-}
-
-fn remove_managed_block(existing: &str, tool: &str) -> String {
-    let start = format!("# >>> formal-ai {tool}");
-    let end = format!("# <<< formal-ai {tool}");
-    let mut out = String::new();
-    let mut skipping = false;
-    for line in existing.lines() {
-        if line == start {
-            skipping = true;
+        if is_flag && caller.contains_flag(argument) {
+            index += 1 + value_count;
             continue;
         }
-        if skipping {
-            if line == end {
-                skipping = false;
-            }
-            continue;
+        for argument in &overlay[index..=index + value_count] {
+            rendered.push(render_template(argument, context));
         }
-        out.push_str(line);
-        out.push('\n');
+        index += 1 + value_count;
     }
-    out
-}
-
-fn shell_double_quote(value: &str) -> String {
-    let escaped = value.replace('\\', "\\\\").replace('"', "\\\"");
-    format!("\"{escaped}\"")
+    rendered
 }
 
 fn render_template(template: &str, context: &RenderContext) -> String {

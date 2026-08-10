@@ -94,20 +94,42 @@ module.exports = defineConfig({
     '**/issue-687.spec.js',
     '**/issue-707.spec.js',
     '**/issue-710.spec.js',
+    '**/issue-709.spec.js',
+    '**/issue-708.spec.js',
     '**/issue-747.spec.js',
     '**/issue-759.spec.js',
     '**/issue-776.spec.js',
     '**/issue-845.spec.js',
+    '**/issue-864.spec.js',
     '**/issue-870.spec.js',
+    '**/issue-890.spec.js',
+    '**/issue-896.spec.js',
+    '**/issue-917.spec.js',
     '**/issue-1963.spec.js',
   ],
   // Per-test cap. A single app spec navigates, waits for the worker to boot,
   // and asserts on one answer — comfortably under 30s even on a cold worker.
   timeout: 30_000,
   // Whole-suite cap so a hung worker or server can never wedge CI indefinitely;
-  // it aborts the run instead of waiting for the job-level kill. Sized for the
-  // full local matrix (~50 specs, retries:1) with headroom for the build step.
-  globalTimeout: 15 * 60_000,
+  // it aborts the run instead of waiting for the job-level kill.
+  //
+  // Issue #977: this was 15 minutes -- exactly the `timeout-minutes: 15` of the
+  // `E2E Tests (local web app)` job, which also has to pay for checkout, bun
+  // install, the web bundle build, `npm ci` and the browser install. The job
+  // clock therefore always ran out first, and a job killed by `timeout-minutes`
+  // is reported as **cancelled**, not failed: run 31073507682 died at test
+  // 159/468 and the pipeline showed a green-ish "cancelled" instead of a red
+  // failure. `if: failure()` never fired either, so no Playwright report was
+  // uploaded. The job cap is now 40 minutes, and this one is deliberately kept
+  // well below the remaining budget so *Playwright* aborts first, exits
+  // non-zero, and leaves a report behind.
+  globalTimeout: 25 * 60_000,
+  // Issue #977: the suite is 468 tests. Playwright's default is half the
+  // available cores (2 on a 4-vCPU ubuntu-latest runner), which left the suite
+  // unable to finish in any reasonable budget. These specs are I/O-bound
+  // (navigate, wait for the wasm worker, assert), so one worker per vCPU is the
+  // right trade. Locally the default is kept so a dev machine is not saturated.
+  workers: process.env.CI ? 4 : undefined,
   // Fail individual web-first assertions fast (default is 5s) so flakes surface
   // quickly rather than each burning the full per-test budget.
   expect: { timeout: 10_000 },

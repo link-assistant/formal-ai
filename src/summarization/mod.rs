@@ -673,6 +673,7 @@ mod markdown;
 pub mod pipeline;
 pub mod recheck;
 mod resource;
+pub mod validation;
 pub mod vocabulary;
 
 pub use context::{merge_into_context, merge_into_formal_context, MergedContext};
@@ -680,7 +681,9 @@ pub use dedup::{
     deduplicate, Contradiction, DedupReport, MergeLink, MergedStatement, Polarity,
     SourcedStatement, StatementSignature, StatementVariant,
 };
-pub use dialog::{formalize_dialog, generate_chat_title, summarize_dialog, DialogTurn};
+pub use dialog::{
+    formalize_dialog, generate_chat_title, summarize_dialog, summarize_dialog_plain, DialogTurn,
+};
 pub use file::{
     formalize_repository_file, summarize_repository_file, EmbeddedGrammarFormalization,
     MetaLanguageFormalization, RepositoryFileFormalization,
@@ -701,4 +704,13 @@ pub use recheck::{recheck, RecheckReport, RecheckedStatement, Verdict};
 pub use resource::{
     formalize_repository_directory, formalize_repository_resource, summarize_repository_resource,
     RepositoryDirectoryFormalization, RepositoryEntry, RepositoryResourceFormalization,
+};
+pub use validation::{
+    evaluate_file, quality_sentence, ratchet_violations, validate_repository_summarization,
+    CorpusFile, Criterion, CriterionOutcome, FileQualityReport, IterationReport, QualityBaseline,
+    QualityScore, SamplingProtocol, ValidationReport, BASELINE_PATH, BASELINE_RECORD,
+    COMPRESSION_FLOOR_BYTES, CRITERIA, DEFAULT_FILES_PER_ITERATION, DEFAULT_MAX_ITERATIONS,
+    DEFAULT_MINIMUM_ITERATIONS, DEFAULT_SAMPLING_SEED, DEFAULT_STABILITY_TOLERANCE_PERCENT,
+    DEFAULT_STABILITY_WINDOW, HONESTY_POLICY, QUALITY_RATCHET_PERCENT, RATCHET_POLICY,
+    RATCHET_RUNNER,
 };

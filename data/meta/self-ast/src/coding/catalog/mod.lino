@@ -2,9 +2,9 @@ self_ast_census
   target src/coding/catalog/mod.rs
   language rust
   fidelity signature
-  byte_len 6650
-  line_count 170
-  content_id source_module_4bdf510848b96cbc
+  byte_len 7670
+  line_count 189
+  content_id source_module_bd7bbeebfda5f850
   symbol_count 22
   symbols
     module languages 18 18
@@ -27,5 +27,5 @@ self_ast_census
     function supported_program_tasks 119 125
     function contains_cjk 133 142
     function contains_devanagari 150 153
-    function contains_token 155 160
-    function contains_phrase 162 170
+    function contains_token 155 179
+    function contains_phrase 181 189

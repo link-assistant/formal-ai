@@ -76,17 +76,20 @@ pub fn answer_unknown_prompt(
         "public_knowledge_cache:miss".to_owned(),
     );
 
-    if let Some(focus) = focus.as_deref() {
-        if !config.offline && is_unresolved_bare_term_prompt(prompt, focus) {
-            log.append("reasoning:candidate_source", "web_search".to_owned());
-            log.append("reasoning:gather_attempt", format!("web_search:{focus}"));
-            return answer_web_search_query(
-                prompt,
-                focus,
-                WebSearchQueryKind::UnresolvedBareTerm,
-                log,
-            );
-        }
+    if let Some(focus) = focus.as_deref().filter(|_| {
+        !config.offline
+            && seed::supported_languages()
+                .iter()
+                .any(|supported| supported == language.slug())
+    }) {
+        let kind = if is_unresolved_bare_term_prompt(prompt, focus) {
+            WebSearchQueryKind::UnresolvedBareTerm
+        } else {
+            WebSearchQueryKind::UnknownReasoningFallback
+        };
+        log.append("reasoning:candidate_source", "web_search".to_owned());
+        log.append("reasoning:gather_attempt", format!("web_search:{focus}"));
+        return answer_web_search_query(prompt, focus, kind, log);
     }
 
     log.append(

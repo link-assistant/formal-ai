@@ -2,9 +2,9 @@ self_ast_census
   target src/client_integrations/command.rs
   language rust
   fidelity signature
-  byte_len 2201
+  byte_len 2212
   line_count 65
-  content_id source_module_d70321ad602a094c
+  content_id source_module_078d164fe36213eb
   symbol_count 7
   symbols
     function resolve_integration_command 7 28

@@ -39,6 +39,29 @@ impl GeneralPlanMode {
     }
 }
 
+/// Where a composed plan can honestly end (issue #904).
+///
+/// A plan whose steps all operate on the plan record itself changes nothing the
+/// request named, and reading that record back verifies only that the run wrote
+/// it. Such a plan reaches [`PlanTerminalState::PlannedNotExecuted`], never a
+/// success state.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PlanTerminalState {
+    /// Every step operates on an artifact the request named.
+    Executed,
+    /// The plan was recorded; no artifact the request named was touched.
+    PlannedNotExecuted,
+}
+
+impl PlanTerminalState {
+    const fn slug(self) -> &'static str {
+        match self {
+            Self::Executed => "executed",
+            Self::PlannedNotExecuted => "planned_not_executed",
+        }
+    }
+}
+
 /// One ordered, capability-tagged operation in a general change plan.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GeneralPlanStep {
@@ -57,7 +80,11 @@ pub struct GeneralChangePlan {
     pub target: String,
     pub content: String,
     pub steps: Vec<GeneralPlanStep>,
+    /// The command that observes the requested artifact after the change.
+    /// Empty when the plan can name no such command, which is the only honest
+    /// answer for a plan that reaches [`PlanTerminalState::PlannedNotExecuted`].
     pub verification_command: String,
+    pub terminal_state: PlanTerminalState,
 }
 
 impl GeneralChangePlan {
@@ -67,6 +94,7 @@ impl GeneralChangePlan {
         let mut out = String::from("general_change_plan\n");
         field(&mut out, "id", &self.id);
         field(&mut out, "execution_mode", self.mode.slug());
+        field(&mut out, "terminal_state", self.terminal_state.slug());
         field(&mut out, "goal", &self.goal);
         field(&mut out, "target", &self.target);
         for (index, step) in self.steps.iter().enumerate() {
@@ -78,8 +106,23 @@ impl GeneralChangePlan {
                 field_nested(&mut out, "command", command);
             }
         }
-        field(&mut out, "verification_command", &self.verification_command);
+        if !self.verification_command.is_empty() {
+            field(&mut out, "verification_command", &self.verification_command);
+        }
         out
+    }
+
+    /// Render the terminal answer of a plan that touched nothing the request
+    /// named: planned, not executed (issue #904).
+    #[must_use]
+    pub fn planned_not_executed_answer(&self) -> String {
+        const BODY_PLACEHOLDER: &str = concat!("{", "plan", "}");
+        let language = crate::language::detect(&self.goal).slug();
+        seed::localized_response("general_plan_repository_planned", language)
+            .unwrap_or_default()
+            .replace(TARGET_PLACEHOLDER, &self.target)
+            .replace("{plan_path}", PLAN_PATH)
+            .replace(BODY_PLACEHOLDER, self.links_notation().trim_end())
     }
 }
 
@@ -99,8 +142,44 @@ impl GeneralChangePlan {
 /// `data/seed/meanings-file-write.lino`) rather than from a hardcoded list of
 /// English or Russian phrasings, so a file-creation request in en/ru/hi/zh — in
 /// any phrasing — routes to the write tool (CONTRIBUTING §2).
+/// The objective a caller stated, separated from any harness preamble
+/// (issue #904).
+///
+/// Agent harnesses prepend their own system-prompt preamble to the request — "You
+/// are an AI issue solver using @link-assistant/agent. General guidelines. …" —
+/// and the planner used to formalize that whole blob, so the plan recorded the
+/// preamble as its `goal`. The preamble and the objective cannot be told apart
+/// by wording, so the boundary is made explicit instead: the objective is the
+/// span after the first line-anchored
+/// [`ROLE_REQUEST_OBJECTIVE_LEAD`](seed::ROLE_REQUEST_OBJECTIVE_LEAD) marker
+/// ("Issue to solve:", "Task:", "Request:", plus translations), which is the same
+/// delimiter the completion-recovery ladder already writes.
+///
+/// A request that states no such delimiter *is* its own objective, so the whole
+/// request is returned unchanged and every existing route keeps its input.
 #[must_use]
-pub fn compose_general_change_plan(request: &str) -> Option<GeneralChangePlan> {
+pub fn objective_text(request: &str) -> &str {
+    let lowered = request.to_lowercase();
+    first_prefix_lead_end(&lowered, seed::ROLE_REQUEST_OBJECTIVE_LEAD)
+        .filter(|(start, _)| line_anchored(&lowered, *start))
+        .and_then(|(_, end)| request.get(end..))
+        .map_or(request, str::trim)
+}
+
+/// Whether a marker at `start` opens its own line, so a delimiter quoted inside
+/// running prose ("write the words request: hello to notes.txt") does not
+/// silently truncate the request.
+fn line_anchored(text: &str, start: usize) -> bool {
+    text[..start]
+        .chars()
+        .rev()
+        .take_while(|character| *character != '\n')
+        .all(char::is_whitespace)
+}
+
+#[must_use]
+pub fn compose_general_change_plan(full_request: &str) -> Option<GeneralChangePlan> {
+    let request = objective_text(full_request);
     let command_output = parse_command_output_request(request);
     let file_request = command_output.as_ref().map_or_else(
         || parse_write_request(request),
@@ -109,6 +188,10 @@ pub fn compose_general_change_plan(request: &str) -> Option<GeneralChangePlan> {
     let Some((target, content)) = file_request else {
         return compose_repository_work_plan(request);
     };
+    // Issue #906: "…containing Hello World, in JavaScript." names the bytes and,
+    // separately, the language to write them with. Only the bytes are content.
+    let content = crate::implementation_language::without_trailing_known_modifier(&content)
+        .unwrap_or(content);
     if !safe_relative_path(&target) {
         return None;
     }
@@ -180,6 +263,9 @@ pub fn compose_general_change_plan(request: &str) -> Option<GeneralChangePlan> {
         content,
         steps,
         verification_command,
+        // The verification command observes the file the request named, not the
+        // plan record this run wrote, so the plan really is executed.
+        terminal_state: PlanTerminalState::Executed,
     })
 }
 
@@ -191,7 +277,6 @@ fn compose_repository_work_plan(request: &str) -> Option<GeneralChangePlan> {
 
     let response_language = language(request);
     let intent = formalize_intent(request, response_language, None);
-    let verification_command = ["cat", PLAN_PATH].join(" ");
     Some(GeneralChangePlan {
         id: stable_id(
             "repository_work_item_plan",
@@ -201,33 +286,27 @@ fn compose_repository_work_plan(request: &str) -> Option<GeneralChangePlan> {
         goal: intent.source_text,
         target,
         content: String::new(),
-        steps: vec![
-            GeneralPlanStep {
-                capability: Capability::Write,
-                action: command_plan_text(
-                    "general_plan_repository_action",
-                    response_language,
-                    PLAN_PATH,
-                ),
-                expected_evidence: format!("written plan event {}", intent.impulse_id),
-                command: None,
-            },
-            GeneralPlanStep {
-                capability: Capability::Run,
-                action: command_plan_text(
-                    "general_plan_repository_verify_action",
-                    response_language,
-                    PLAN_PATH,
-                ),
-                expected_evidence: command_plan_text(
-                    "general_plan_repository_evidence",
-                    response_language,
-                    PLAN_PATH,
-                ),
-                command: Some(verification_command.clone()),
-            },
-        ],
-        verification_command,
+        // Recording the work item is the only thing this sandbox can honestly
+        // do. It deliberately names no verification command: the sole artifact
+        // the run touches is the plan record itself, and `cat`-ing that record
+        // back would observe nothing but the write that just happened
+        // (issue #904).
+        steps: vec![GeneralPlanStep {
+            capability: Capability::Write,
+            action: command_plan_text(
+                "general_plan_repository_action",
+                response_language,
+                PLAN_PATH,
+            ),
+            expected_evidence: command_plan_text(
+                "general_plan_repository_evidence",
+                response_language,
+                PLAN_PATH,
+            ),
+            command: None,
+        }],
+        verification_command: String::new(),
+        terminal_state: PlanTerminalState::PlannedNotExecuted,
     })
 }
 
@@ -373,8 +452,25 @@ fn command_plan_text(intent: &str, language: &str, target: &str) -> String {
 /// parser for classification and composition cannot drift into claiming an
 /// operation that the planner is unable to execute.
 #[must_use]
-pub(super) fn has_file_write_intent(lower: &str) -> bool {
+pub(crate) fn has_file_write_intent(lower: &str) -> bool {
     parse_write_request(lower).is_some()
+}
+
+/// Whether a request explicitly marks its recovered payload as authoritative
+/// literal bytes rather than a description of another workspace operation.
+///
+/// The marker is seed-backed and multilingual. Requiring both the narrow marker
+/// role and a successfully composed literal-file plan prevents arbitrary prose
+/// containing "exactly" from changing planner precedence.
+pub(super) fn has_authoritative_literal_write(request: &str) -> bool {
+    let normalized = request.to_lowercase();
+    first_prefix_lead_end(
+        &normalized,
+        seed::ROLE_FILE_WRITE_AUTHORITATIVE_CONTENT_LEAD,
+    )
+    .is_some()
+        && compose_general_change_plan(request)
+            .is_some_and(|plan| plan.mode == GeneralPlanMode::LiteralFile)
 }
 
 /// Recover the `(target, content)` of a write request from its wording.
@@ -715,8 +811,12 @@ fn clean_cue_token(word: &str) -> String {
 /// lowercased request, honouring whole-word boundaries for space-delimited
 /// scripts and substring matches for CJK (which has no inter-word spaces).
 fn first_content_lead_end(lowered: &str) -> Option<(usize, usize)> {
+    first_prefix_lead_end(lowered, seed::ROLE_FILE_WRITE_CONTENT_LEAD)
+}
+
+fn first_prefix_lead_end(lowered: &str, role: &str) -> Option<(usize, usize)> {
     let markers: Vec<String> = seed::lexicon()
-        .role_word_forms(seed::ROLE_FILE_WRITE_CONTENT_LEAD)
+        .role_word_forms(role)
         .iter()
         .filter(|form| form.slot() == Slot::Prefix)
         .map(|form| form.before_slot().trim().to_lowercase())
@@ -742,7 +842,9 @@ fn first_content_lead_end(lowered: &str) -> Option<(usize, usize)> {
                     .next()
                     .is_some_and(|c| c.is_whitespace() || c.is_ascii_punctuation());
             if before_ok && after_ok {
-                if best.is_none_or(|(best_start, _)| start < best_start) {
+                if best.is_none_or(|(best_start, best_end)| {
+                    start < best_start || (start == best_start && end > best_end)
+                }) {
                     best = Some((start, end));
                 }
                 break;
@@ -768,7 +870,7 @@ fn first_action_cue_end(toks: &[Token<'_>]) -> Option<usize> {
 /// Notation: a lone terminal quote is data, not presentation punctuation.
 /// Returns [`None`] when nothing is left.
 fn clean_content(raw: &str) -> Option<String> {
-    let led = raw.trim().trim_start_matches([':', '-', '—', '–']).trim();
+    let led = strip_clause_lead(raw);
     let result = if led.len() >= 6 && led.starts_with("```") && led.ends_with("```") {
         led[3..led.len() - 3].trim()
     } else if led.len() >= 2 {
@@ -783,6 +885,44 @@ fn clean_content(raw: &str) -> Option<String> {
         led
     };
     (!result.is_empty()).then(|| result.to_owned())
+}
+
+/// Strip everything a recovered span carries *before* its literal payload: the
+/// clause separators, and the seed-defined adverbs that qualify the requirement
+/// rather than naming content.
+///
+/// "…containing exactly: Hello World" delimits the content with `exactly:`, so
+/// slicing after the content lead captured `exactly: Hello World` as the bytes
+/// to write and as the evidence to verify against — the file would never have
+/// matched (issue #905 §3).
+fn strip_clause_lead(raw: &str) -> &str {
+    let qualifiers = bare_surfaces(seed::ROLE_FILE_WRITE_CONTENT_QUALIFIER);
+    let mut led = raw.trim();
+    loop {
+        let separated = led.trim_start_matches([':', '-', '—', '–']).trim();
+        let shortened = strip_leading_qualifier(separated, &qualifiers);
+        if shortened.len() == led.len() {
+            return led;
+        }
+        led = shortened;
+    }
+}
+
+/// Drop one leading qualifier, but only when a clause separator follows it. The
+/// separator is what marks the adverb as introducing the payload rather than
+/// opening it, so content that genuinely starts with "exactly what I asked for"
+/// keeps its first word.
+fn strip_leading_qualifier<'a>(text: &'a str, qualifiers: &[String]) -> &'a str {
+    let lowered = text.to_lowercase();
+    qualifiers
+        .iter()
+        .filter(|qualifier| lowered.starts_with(qualifier.as_str()))
+        .filter_map(|qualifier| {
+            let rest = text.get(qualifier.len()..)?.trim_start();
+            rest.starts_with([':', '-', '—', '–']).then_some(rest)
+        })
+        .min_by_key(|rest| rest.len())
+        .unwrap_or(text)
 }
 
 fn safe_relative_path(path: &str) -> bool {

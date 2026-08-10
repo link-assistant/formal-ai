@@ -1,17 +1,85 @@
 use std::error::Error;
 use std::io::{self, IsTerminal, Write};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use crate::{read_input, MemoryAction};
+use clap::{Args as ClapArgs, ValueEnum};
 use formal_ai::{
     agent_info, apply_dreaming_plan, auto_free_space_choice, execute_memory_query,
     export_memory_full, measure_storage, persist_auto_free_space_choice, plan_memory_dreaming,
-    render_dreaming_plan, seed_files, suggest_memory_migrations, AutoFreeSpaceChoice, BundleInfo,
-    DreamingConfig, MemoryStore,
+    preflight_memory_upgrade, render_dreaming_plan, render_response, response_for, seed_files,
+    suggest_memory_migrations, AutoFreeSpaceChoice, BundleInfo, DreamingConfig, MemoryStore,
 };
+
+#[derive(Debug, ClapArgs)]
+pub struct UpgradeStatusArgs {
+    #[arg(
+        long,
+        env = "FORMAL_AI_MEMORY_PATH",
+        default_value_os_t = formal_ai::shared_memory_path()
+    )]
+    path: PathBuf,
+
+    #[arg(long, value_enum, default_value_t = MemoryUpgradeFormat::Json)]
+    format: MemoryUpgradeFormat,
+}
+
+#[derive(Debug, ClapArgs)]
+pub struct MigrateArgs {
+    #[arg(
+        long,
+        env = "FORMAL_AI_MEMORY_PATH",
+        default_value_os_t = formal_ai::shared_memory_path()
+    )]
+    path: PathBuf,
+
+    /// Byte-exact rollback backup. Defaults to a content-addressed sibling.
+    #[arg(long)]
+    backup: Option<PathBuf>,
+
+    /// Machine-readable receipt. Defaults to `<path>.upgrade-receipt.json`.
+    #[arg(long)]
+    receipt: Option<PathBuf>,
+
+    #[arg(long, value_enum, default_value_t = MemoryUpgradeFormat::Json)]
+    format: MemoryUpgradeFormat,
+}
+
+#[derive(Debug, Clone, Copy, ValueEnum)]
+enum MemoryUpgradeFormat {
+    Json,
+}
 
 pub fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
     match action {
+        MemoryAction::UpgradeStatus(UpgradeStatusArgs { path, format: _ }) => {
+            let status = preflight_memory_upgrade(&path);
+            println!("{}", serde_json::to_string_pretty(&status)?);
+            if !status.compatible {
+                return Err("persisted-memory preflight refused an incompatible file".into());
+            }
+        }
+        MemoryAction::Migrate(MigrateArgs {
+            path,
+            backup,
+            receipt,
+            format: _,
+        }) => match formal_ai::migrate_memory(&path, backup.as_deref(), receipt.as_deref()) {
+            Ok(receipt) => println!("{}", serde_json::to_string_pretty(&receipt)?),
+            Err(error) => {
+                println!(
+                    "{}",
+                    serde_json::to_string_pretty(&serde_json::json!({
+                        "error": {
+                            "code": error.code(),
+                            "message": error.message(),
+                        },
+                        "status": error.status(),
+                    }))?
+                );
+                return Err("persisted-memory migration refused to modify the file".into());
+            }
+        },
         MemoryAction::Export {
             path,
             from,
@@ -102,7 +170,10 @@ pub fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
                     }
                     println!("{}", execution.answer.answer);
                 }
-                None => println!("No natural-language memory query recognized."),
+                None => println!(
+                    "{}",
+                    response_for("memory_query_unrecognized", "en").unwrap_or_default()
+                ),
             }
         }
         MemoryAction::Dream {
@@ -166,16 +237,30 @@ pub fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
                 }
                 let outcome = apply_dreaming_plan(&mut store, &plan);
                 store.save_to_file(&path)?;
-                eprintln!(
-                    "Applied dreaming plan to {}; removed {} event(s), estimated {} byte(s) reclaimable, learned {} meta-algorithm amendment(s) and {} recurring pattern(s), preserved {} failed simulation(s) and {} dreaming trial(s).",
-                    path.display(),
-                    outcome.removed_events,
-                    outcome.estimated_reclaimed_bytes,
-                    outcome.learned_amendments,
-                    outcome.learned_patterns,
-                    outcome.recorded_failures,
-                    outcome.recorded_trials
-                );
+                let path = path.display().to_string();
+                let removed = outcome.removed_events.to_string();
+                let bytes = outcome.estimated_reclaimed_bytes.to_string();
+                let amendments = outcome.learned_amendments.to_string();
+                let patterns = outcome.learned_patterns.to_string();
+                let algorithms = outcome.learned_algorithm_candidates.to_string();
+                let failures = outcome.recorded_failures.to_string();
+                let trials = outcome.recorded_trials.to_string();
+                let summary = render_response(
+                    "algorithm_dreaming_applied",
+                    "en",
+                    &[
+                        ("path", &path),
+                        ("removed", &removed),
+                        ("bytes", &bytes),
+                        ("amendments", &amendments),
+                        ("patterns", &patterns),
+                        ("algorithms", &algorithms),
+                        ("failures", &failures),
+                        ("trials", &trials),
+                    ],
+                )
+                .unwrap_or_default();
+                eprintln!("{summary}");
             } else if !plan.actions.is_empty() {
                 eprintln!(
                     "Plan only; rerun with `--apply --confirm` and preferably `--backup` to mutate {}.",
@@ -253,7 +338,6 @@ pub fn load_memory_or_empty(path: &Path) -> Result<MemoryStore, Box<dyn Error>> 
     if path.as_os_str() == "-" {
         return Ok(MemoryStore::new());
     }
-    formal_ai::ensure_shared_memory_file(path)?;
     Ok(MemoryStore::load_from_file(path)?)
 }
 

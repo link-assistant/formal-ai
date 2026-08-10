@@ -149,6 +149,9 @@ jobs:
   docker-build:
     name: Docker Image Build & Runtime Check
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
     # The image compiles the crate in a builder stage; 30 minutes is not enough
     # on a cold layer cache.
     timeout-minutes: 60
@@ -182,6 +185,14 @@ jobs:
         run: |
           set -euo pipefail
           docker run --rm --privileged formal-ai:pr-check verify-formal-ai-dind
+      - name: Log in to GHCR for the released upgrade fixture
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Test released-to-candidate memory upgrade
+        run: experiments/issue_982_memory_upgrade/run_container_upgrade.sh
   # === SECRETS SCAN ===
   # Issue #808 / R5 (CI-CD-BEST-PRACTICES.md section 11): no secrets scan
   # existed anywhere in this pipeline. secretlint is language-agnostic, so it
@@ -335,18 +346,7 @@ jobs:
       # `experiments/` is deliberately excluded: those are throwaway
       # reproduction scripts, not shipped code.
       - name: Lint shell scripts
-        run: |
-          set -euo pipefail
-          mapfile -t scripts < <(
-            git ls-files '*.sh' \
-              | grep -v -e '^experiments/' -e '^dev/log/' -e '^docs/case-studies/'
-          )
-          if [ ${#scripts[@]} -eq 0 ]; then
-            echo "::error::No shell scripts matched; the lint selector is broken" >&2
-            exit 1
-          fi
-          printf 'Linting %s shell script(s)\n' "${#scripts[@]}"
-          shellcheck --severity=warning "${scripts[@]}"
+        run: bash scripts/lint-shell-scripts.sh
 
       - name: Check formatting
         run: cargo fmt --all -- --check
@@ -389,6 +389,36 @@ jobs:
           FILE_SIZE_WARNING_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: rust-script scripts/check-file-size.rs
 
+      # Issue #960 (R222-2): MAX_SEED_RECORDS_PER_BUCKET was recorded in
+      # src/translation/cache.rs but nothing failed when a bucket exceeded it.
+      # The check reads the constant from the library so the two cannot drift.
+      - name: Test cache bucket budget check
+        run: rust-script --test scripts/check-cache-budget.rs
+
+      - name: Check cache bucket budget
+        run: rust-script scripts/check-cache-budget.rs
+
+      # Issue #960 (R234-2): behavioural tests are documentation, so they must
+      # show the exact answer instead of asserting a substring. Burn-down
+      # ratchet over scripts/tests-as-docs-allowlist.txt: new loose-only tests
+      # fail here, and rows made explicit must be pruned.
+      - name: Test tests-as-docs check
+        run: rust-script --test scripts/check-tests-as-docs.rs
+
+      - name: Check tests document exact answers
+        run: rust-script scripts/check-tests-as-docs.rs
+
+      # Issue #960 (R234-4): "Addresses #146" is not a GitHub closing keyword,
+      # so the issue stays open after the merge. Skips silently when there is no
+      # pull-request body (tag and branch builds).
+      - name: Test pull-request link check
+        run: rust-script --test scripts/check-pull-request-link.rs
+
+      - name: Check pull-request links its issue
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: rust-script scripts/check-pull-request-link.rs
+
       - name: Check associative terminology
         run: rust-script scripts/check-associative-terminology.rs
 
@@ -416,6 +446,14 @@ jobs:
       - name: Test release changelog collection
         run: rust-script --test scripts/version-and-commit.rs
 
+      # Issue #895: the ratchet is the thing that makes the coverage requirement
+      # enforceable, so its own threshold and baseline-update logic is tested
+      # here rather than trusted. The final case also validates the committed
+      # coverage/baseline.json, so a hand-edit that breaks the schema fails lint
+      # instead of silently disabling the gate two jobs later.
+      - name: Test coverage ratchet
+        run: rust-script --test scripts/check-coverage-ratchet.rs
+
       - name: Test fragment release map regeneration
         run: node --test experiments/issue_738_fragment_release_map.test.mjs
 
@@ -429,7 +467,7 @@ jobs:
         run: bun run build:web
 
       - name: Check web bundles are current
-        run: git diff --exit-code -- src/web/vendor.bundle.js src/web/ocr.bundle.js src/web/app.js
+        run: git diff --exit-code -- src/web/vendor.bundle.js src/web/web-search-component.bundle.js src/web/ocr.bundle.js src/web/app.js
 
       - name: Setup Node
         uses: actions/setup-node@v6
@@ -498,27 +536,7 @@ jobs:
       # which is only present after `npm ci` in desktop/, so it stays out of
       # this dependency-free job rather than being silently skipped inside it.
       - name: Run desktop library tests
-        run: |
-          set -euo pipefail
-          # Issue #812: this was `node --test $(ls ... | grep -v ...)`. If the
-          # glob ever stopped matching, the substitution collapsed to nothing and
-          # `node --test` fell back to its own directory discovery -- a green
-          # step that ran none of these tests. Build the list explicitly and
-          # refuse to pass on an empty one.
-          shopt -s nullglob
-          tests=()
-          for test_file in desktop/scripts/*.test.mjs; do
-            case "$test_file" in
-              */web-tools.test.mjs) continue ;;
-            esac
-            tests+=("$test_file")
-          done
-          if [ ${#tests[@]} -eq 0 ]; then
-            echo "::error::No desktop library tests matched desktop/scripts/*.test.mjs" >&2
-            exit 1
-          fi
-          printf 'Running %s test file(s)\n' "${#tests[@]}"
-          node --test "${tests[@]}"
+        run: bash scripts/run-desktop-lib-tests.sh
 
   # === TEST ===
   # Test runs independently of the changelog check and gates on the change
@@ -630,90 +648,12 @@ jobs:
       - name: Run doc tests
         run: cargo test --doc --verbose
 
-  # === CODE COVERAGE ===
-  # Generate and upload code coverage using cargo-llvm-cov
-  coverage:
-    name: Code Coverage
-    runs-on: ubuntu-latest
-    # Issue #812: the same margin problem as `test`, one run away from the same
-    # false failure. Measured on the last eight `main` runs: 11.2, 11.5, 11.4,
-    # 11.9, 12.6, 12.7, 13.5, 14.1 minutes -- the worst case used 94% of the old
-    # 15-minute cap. It instruments the same suite that takes ~11m unarmed.
-    timeout-minutes: 25
-    needs: [detect-changes]
-    if: |
-      !cancelled() && (
-        github.event_name == 'workflow_dispatch' ||
-        needs.detect-changes.outputs.rs-changed == 'true' ||
-        needs.detect-changes.outputs.toml-changed == 'true'
-      )
-    steps:
-      - uses: actions/checkout@v6
-
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          components: llvm-tools-preview
-
-      - uses: ./.github/actions/setup-sccache
-
-      - name: Cache cargo registry
-        uses: actions/cache@v5
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-          key: ${{ runner.os }}-cargo-coverage-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-coverage-
-
-      - name: Install cargo-llvm-cov
-        uses: taiki-e/install-action@cargo-llvm-cov
-
-      - name: Clean stale coverage artifacts
-        run: cargo llvm-cov clean --workspace
-
-      - name: Generate code coverage
-        run: cargo llvm-cov --all-features --lcov --output-path lcov.info
-
-      - name: Retain LCOV report
-        uses: actions/upload-artifact@v7
-        with:
-          name: rust-lcov
-          path: lcov.info
-          if-no-files-found: error
-
-      - name: Detect Codecov configuration
-        id: codecov-config
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        run: |
-          if [[ -n "$CODECOV_TOKEN" ]]; then
-            echo "configured=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "configured=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Upload coverage to Codecov when configured
-        if: steps.codecov-config.outputs.configured == 'true'
-        uses: codecov/codecov-action@v7
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: lcov.info
-          disable_search: true
-          plugins: noop
-          fail_ci_if_error: true
-
-      - name: Report optional Codecov integration status
-        if: steps.codecov-config.outputs.configured != 'true'
-        run: echo "::notice title=Codecov upload not configured::The LCOV report is retained as the rust-lcov workflow artifact; configure CODECOV_TOKEN to enable fail-closed remote upload."
-
   # === BUILD ===
   # Build package - only runs if lint and test pass
   build:
     name: Build Package
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     needs: [lint, test]
     if: ${{ !cancelled() && needs.lint.result == 'success' && needs.test.result == 'success' }}
     steps:
@@ -776,7 +716,13 @@ jobs:
       (needs.test-e2e-local.result == 'success' || needs.test-e2e-local.result == 'skipped') &&
       (needs.test-agent-cli-e2e.result == 'success' || needs.test-agent-cli-e2e.result == 'skipped')
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # Issue #977: was 30. Crate build + publish + clean-install smoke test
+    # (~8 min) + one or two Docker builds all precede `Create GitHub Release`.
+    # Run 31065367736 ran out mid-Docker-build, so 0.326.2..0.333.0 shipped to
+    # crates.io and got tags but never a GitHub Release. Layer caching (above)
+    # cuts the Docker cost; this cap makes a cold cache a slow release rather
+    # than a half-published one.
+    timeout-minutes: 60
     outputs:
       pages_sha: ${{ steps.release_pages_ref.outputs.sha }}
       pages_version: ${{ steps.release_pages_ref.outputs.version }}
@@ -914,6 +860,12 @@ jobs:
           push: true
           tags: ${{ steps.ghcr-meta.outputs.tags }}
           labels: ${{ steps.ghcr-meta.outputs.labels }}
+          # Issue #977: the PR-check build has always used the GHA layer cache;
+          # the *release* builds did not, so each one recompiled the whole crate
+          # from scratch. Run 31065367736 was still compiling when the 30-minute
+          # cap killed `Auto Release` before `Create GitHub Release` ever ran.
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Configure Docker Hub publishing
         if: |
@@ -922,30 +874,7 @@ jobs:
             steps.publish-crate.outputs.publish_result == 'success'
           )
         id: dockerhub
-        run: |
-          disable_dockerhub() {
-            echo "enabled=false" >> "$GITHUB_OUTPUT"
-            echo "$1"
-          }
-
-          if [ -z "$DOCKERHUB_IMAGE" ]; then
-            disable_dockerhub "Docker Hub publishing disabled: DOCKERHUB_IMAGE repository variable is not set"
-            exit 0
-          fi
-
-          if [ ! -f Dockerfile ]; then
-            disable_dockerhub "Docker Hub publishing disabled: Dockerfile was not found at repository root"
-            exit 0
-          fi
-
-          if [ -z "$DOCKERHUB_USERNAME" ] || [ -z "$DOCKERHUB_TOKEN" ]; then
-            echo "::error::Docker Hub publishing requires DOCKERHUB_USERNAME and DOCKERHUB_TOKEN"
-            echo "Set DOCKERHUB_USERNAME as a repository variable or secret, and DOCKERHUB_TOKEN as a secret."
-            exit 1
-          fi
-
-          echo "enabled=true" >> "$GITHUB_OUTPUT"
-          echo "docker_hub_url=https://hub.docker.com/r/${DOCKERHUB_IMAGE}" >> "$GITHUB_OUTPUT"
+        run: bash scripts/configure-dockerhub-publishing.sh
 
       - name: Log in to Docker Hub
         if: steps.dockerhub.outputs.enabled == 'true'
@@ -974,6 +903,10 @@ jobs:
           push: true
           tags: ${{ steps.docker-meta.outputs.tags }}
           labels: ${{ steps.docker-meta.outputs.labels }}
+          # Issue #977: without this the Docker Hub push rebuilt the identical
+          # image from scratch a second time in the same job.
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Create GitHub Release
         if: |
@@ -985,23 +918,10 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GHCR_URL: https://github.com/${{ github.repository }}/pkgs/container/formal-ai
           DOCKER_HUB_URL: ${{ steps.dockerhub.outputs.docker_hub_url }}
-        run: |
-          # Use new_version from version-and-commit when available (tag-checked), else fall back to Cargo.toml version
-          RELEASE_VERSION="${{ steps.version.outputs.new_version }}"
-          if [ -z "$RELEASE_VERSION" ]; then
-            RELEASE_VERSION="${{ steps.current_version.outputs.version }}"
-          fi
-
-          release_args=(
-            --release-version "$RELEASE_VERSION"
-            --repository "${{ github.repository }}"
-            --self-hosting-ledger data/meta/self-hosting-ledger.lino
-          )
-          release_args+=(--ghcr-url "$GHCR_URL")
-          if [ -n "$DOCKER_HUB_URL" ]; then
-            release_args+=(--docker-hub-url "$DOCKER_HUB_URL")
-          fi
-          rust-script scripts/create-github-release.rs "${release_args[@]}"
+          # new_version comes from version-and-commit (tag-checked); fall back
+          # to the Cargo.toml version when that step did not bump.
+          RELEASE_VERSION: ${{ steps.version.outputs.new_version || steps.current_version.outputs.version }}
+        run: bash scripts/invoke-create-github-release.sh
 
       - name: Resolve Pages deploy ref
         id: release_pages_ref
@@ -1039,7 +959,13 @@ jobs:
       (needs.test-e2e-local.result == 'success' || needs.test-e2e-local.result == 'skipped') &&
       (needs.test-agent-cli-e2e.result == 'success' || needs.test-agent-cli-e2e.result == 'skipped')
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # Issue #977: was 30. Crate build + publish + clean-install smoke test
+    # (~8 min) + one or two Docker builds all precede `Create GitHub Release`.
+    # Run 31065367736 ran out mid-Docker-build, so 0.326.2..0.333.0 shipped to
+    # crates.io and got tags but never a GitHub Release. Layer caching (above)
+    # cuts the Docker cost; this cap makes a cold cache a slow release rather
+    # than a half-published one.
+    timeout-minutes: 60
     outputs:
       pages_sha: ${{ steps.release_pages_ref.outputs.sha }}
       pages_version: ${{ steps.release_pages_ref.outputs.version }}
@@ -1150,6 +1076,12 @@ jobs:
           push: true
           tags: ${{ steps.ghcr-meta.outputs.tags }}
           labels: ${{ steps.ghcr-meta.outputs.labels }}
+          # Issue #977: the PR-check build has always used the GHA layer cache;
+          # the *release* builds did not, so each one recompiled the whole crate
+          # from scratch. Run 31065367736 was still compiling when the 30-minute
+          # cap killed `Auto Release` before `Create GitHub Release` ever ran.
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Configure Docker Hub publishing
         if: |
@@ -1157,30 +1089,7 @@ jobs:
             steps.version.outputs.already_released == 'true') &&
           steps.publish-crate.outputs.publish_result == 'success'
         id: dockerhub
-        run: |
-          disable_dockerhub() {
-            echo "enabled=false" >> "$GITHUB_OUTPUT"
-            echo "$1"
-          }
-
-          if [ -z "$DOCKERHUB_IMAGE" ]; then
-            disable_dockerhub "Docker Hub publishing disabled: DOCKERHUB_IMAGE repository variable is not set"
-            exit 0
-          fi
-
-          if [ ! -f Dockerfile ]; then
-            disable_dockerhub "Docker Hub publishing disabled: Dockerfile was not found at repository root"
-            exit 0
-          fi
-
-          if [ -z "$DOCKERHUB_USERNAME" ] || [ -z "$DOCKERHUB_TOKEN" ]; then
-            echo "::error::Docker Hub publishing requires DOCKERHUB_USERNAME and DOCKERHUB_TOKEN"
-            echo "Set DOCKERHUB_USERNAME as a repository variable or secret, and DOCKERHUB_TOKEN as a secret."
-            exit 1
-          fi
-
-          echo "enabled=true" >> "$GITHUB_OUTPUT"
-          echo "docker_hub_url=https://hub.docker.com/r/${DOCKERHUB_IMAGE}" >> "$GITHUB_OUTPUT"
+        run: bash scripts/configure-dockerhub-publishing.sh
 
       - name: Log in to Docker Hub
         if: steps.dockerhub.outputs.enabled == 'true'
@@ -1209,6 +1118,10 @@ jobs:
           push: true
           tags: ${{ steps.docker-meta.outputs.tags }}
           labels: ${{ steps.docker-meta.outputs.labels }}
+          # Issue #977: without this the Docker Hub push rebuilt the identical
+          # image from scratch a second time in the same job.
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Create GitHub Release
         if: |
@@ -1219,17 +1132,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GHCR_URL: https://github.com/${{ github.repository }}/pkgs/container/formal-ai
           DOCKER_HUB_URL: ${{ steps.dockerhub.outputs.docker_hub_url }}
-        run: |
-          release_args=(
-            --release-version "${{ steps.version.outputs.new_version }}"
-            --repository "${{ github.repository }}"
-            --self-hosting-ledger data/meta/self-hosting-ledger.lino
-          )
-          release_args+=(--ghcr-url "$GHCR_URL")
-          if [ -n "$DOCKER_HUB_URL" ]; then
-            release_args+=(--docker-hub-url "$DOCKER_HUB_URL")
-          fi
-          rust-script scripts/create-github-release.rs "${release_args[@]}"
+          RELEASE_VERSION: ${{ steps.version.outputs.new_version }}
+        run: bash scripts/invoke-create-github-release.sh
 
       - name: Resolve Pages deploy ref
         id: release_pages_ref
@@ -1300,7 +1204,12 @@ jobs:
   test-e2e-local:
     name: E2E Tests (local web app)
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # Issue #977: was 15, of which run 31073507682 spent 10m36s in
+    # `playwright install --with-deps` and was then killed at test 159/468 --
+    # reported as *cancelled*, not failed. Setup is bounded separately below;
+    # this cap sits above Playwright's own `globalTimeout` so Playwright aborts
+    # first and the job reads as `failure` with a report. See ANALYSIS.md.
+    timeout-minutes: 40
     needs: [detect-changes]
     if: |
       !cancelled() && (
@@ -1335,10 +1244,35 @@ jobs:
           cd tests/e2e
           npm ci
 
-      - name: Install Playwright browsers
+      # Issue #977: ~300 MB of browser binaries that change only with the
+      # pinned Playwright version -- key on the lockfile, restore instead of
+      # re-downloading.
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('tests/e2e/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      # Issue #977: split out of `--with-deps`. On ubuntu-latest every library
+      # Chromium needs is already current; apt only fetches *fonts*, and in run
+      # 31073507682 that crawled at ~30-60 KB/s for ten minutes and ate the job
+      # budget. Bounded and non-fatal: headless Chromium runs without them, and
+      # a genuinely missing library still fails loudly at browser launch.
+      - name: Install Playwright system dependencies (best effort)
+        timeout-minutes: 6
+        continue-on-error: true
         run: |
           cd tests/e2e
-          npx playwright install --with-deps chromium
+          npx playwright install-deps chromium
+
+      - name: Install Playwright browsers
+        timeout-minutes: 10
+        run: |
+          cd tests/e2e
+          npx playwright install chromium
 
       - name: Sync data/seed into src/web/seed (deployment mirror)
         run: scripts/sync-seed.sh
@@ -1388,7 +1322,12 @@ jobs:
   test-agent-cli-e2e:
     name: E2E Tests (agent CLI ↔ formal-ai)
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # 32 min (was 20). Measured on `main`: successful runs take 16m16s
+    # (31086651127) and 17m30s (31090830031), so 20 left barely two minutes of
+    # headroom and run 31097339962 tipped over it -- reported as *cancelled*,
+    # which reads as a false positive rather than a real regression. Budget for
+    # ~2x the observed cost so ordinary runner variance cannot fail the job.
+    timeout-minutes: 32
     needs: [detect-changes]
     if: |
       !cancelled() && (
@@ -1441,7 +1380,9 @@ jobs:
         # additionally proves the same research loop through Claude Code's
         # Anthropic transport and Codex's Responses transport, so all clients
         # are mandatory and their E2E scripts fail rather than skip if missing.
-        run: bun add -g opencode-ai @anthropic-ai/claude-code @openai/codex
+        # Issue #907 adds gemini: its `<session_context>` framing is the client
+        # behaviour that broke intent routing, and only the real CLI sends it.
+        run: bun add -g opencode-ai @anthropic-ai/claude-code @openai/codex @google/gemini-cli
 
       - name: Build formal-ai (release)
         # The E2E script runs against target/release/formal-ai — that's the
@@ -1449,13 +1390,13 @@ jobs:
         # the local-dev instructions in the case study.
         run: cargo build --release --bin formal-ai
 
-      # Each recipe axis of issue #538 is driven live through the real Agent CLI
-      # against the real formal-ai server — no in-repo simulation. Every step
-      # boots the server, drives the CLI with a *differently worded* request, and
-      # asserts the CLI exits 0, wrote the expected file, the file carries the
-      # requirement's canary string, and the loop walked ≥MIN_POSTS chat rounds.
-      # Running all three (two meaning concepts + one non-lexeme diagram axis)
-      # proves the recipe generalises live, not just for the tomato answer.
+      # Every recipe below must leave its expected artifact and canary string,
+      # and the server trace must prove the loop walked its minimum round count.
+      # Separate tasks and phrasings keep the live path generalization-tested.
+      - name: Run Agent CLI E2E — held-out algorithm discovery (issue #531)
+        timeout-minutes: 5
+        env: { PORT: 8896 }
+        run: experiments/agent_cli_e2e/run_issue_531.sh
       - name: Run agent CLI E2E — tomato meaning (search → fetch → write → verify)
         # Distinct port per step to avoid collisions if a runner is shared.
         # Canary: the Russian plural `томаты`, previously missing from `томат`.
@@ -1528,7 +1469,8 @@ jobs:
           EXPECT_TEXT: general planner e2e passed
           MIN_POSTS: 4
         run: experiments/agent_cli_e2e/run_agent_cli.sh
-
+      - name: "Run agent CLI E2E — literal payload containing an edit phrase (issue #708)"
+        run: PORT=8808 experiments/agent_cli_e2e/run_issue_708.sh
       - name: "Run agent CLI E2E — file-creation routes to write not read (issue #681)"
         # The exact reproduction from issue #681: a "create a file … with the
         # content …" request used to emit a `read` on the not-yet-existing target
@@ -1543,7 +1485,6 @@ jobs:
           EXPECT_TEXT: hello world
           MIN_POSTS: 4
         run: experiments/agent_cli_e2e/run_agent_cli.sh
-
       - name: "Run agent CLI E2E — existing issue reference does not file a duplicate (issue #730)"
         # Use wording different from the captured case-study run. Mentioning an
         # existing issue beside a file request must drive the complete write plan,
@@ -1560,6 +1501,17 @@ jobs:
         env:
           PORT: 8782
         run: experiments/agent_cli_e2e/run_issue_758.sh
+
+      - name: "Run gemini CLI E2E — caller framing does not hijack the request (issue #907)"
+        # The reported failure needs a real client to reproduce: the gemini CLI
+        # injects a `<session_context>` block into every turn, and its
+        # "Today's date is …" line used to fire the date intent so the actual
+        # request was never attempted. Both legs run — the task must produce the
+        # program, and a real question must still reach `date` — so a guard that
+        # simply silenced the intent cannot pass.
+        env:
+          PORT: 8907
+        run: experiments/agent_cli_e2e/run_issue_907.sh
 
       - name: "Run agent CLI E2E — generated programs use harness commands (issue #716)"
         # The exact screenshot reproduction must create the source in the real
@@ -1767,13 +1719,15 @@ jobs:
         env:
           PORT: 8884
         run: experiments/agent_cli_e2e/run_issue_661_statement_audit.sh
-
       - name: "Run agent CLI E2E — relative and whole-document audit (issue #885)"
         timeout-minutes: 5
         env:
           PORT: 8895
         run: experiments/agent_cli_e2e/run_issue_885_statement_audit.sh
-
+      - name: "Run agent CLI E2E — proof translation invariant (issue #890)"
+        run: PORT=8890 BIN=target/release/formal-ai OUT=/tmp/formal-ai-issue-890-evidence experiments/issue_890_agent_cli.sh
+      - name: "Run agent CLI E2E — formal projection invariant (issue #917)"
+        run: PORT=8917 BIN=target/release/formal-ai OUT=/tmp/formal-ai-issue-917-evidence experiments/issue_917_agent_cli.sh
       - name: "Replay Hive Mind self-coding inner loop (issue #655)"
         env:
           PORT: 8774
@@ -1811,9 +1765,9 @@ jobs:
         (github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant' && needs.manual-release.result == 'success')
       )
     runs-on: ubuntu-latest
-    # 20 min (was 15): this job now also runs `cargo doc` for the /docs/api
-    # reference, which compiles the dependency tree on a cold cargo cache.
-    timeout-minutes: 20
+    # 35 min (was 20): 20 covered `cargo doc` on a cold cargo cache but left no
+    # room for the Pages deployment queue, which the deploy step now outwaits.
+    timeout-minutes: 35
     permissions:
       contents: read
       pages: write
@@ -1886,27 +1840,7 @@ jobs:
       - name: Generate Rust API docs (cargo doc)
         env:
           RUSTDOCFLAGS: -D warnings
-        run: |
-          # Document just the library (lib name: formal_ai). --no-deps keeps the
-          # output small and fast. Keep rustdoc fail-closed just like rustc so a
-          # green Pages deployment cannot conceal broken API links or markup.
-          cargo doc --no-deps --lib
-          # rustdoc emits the crate docs under target/doc/formal_ai/; add a root
-          # redirect so /docs/api/ lands on the crate root instead of 404ing.
-          cat > target/doc/index.html <<'HTML'
-          <!doctype html>
-          <html lang="en">
-            <head>
-              <meta charset="utf-8" />
-              <meta http-equiv="refresh" content="0; url=formal_ai/index.html" />
-              <link rel="canonical" href="formal_ai/index.html" />
-              <title>formal-ai API reference</title>
-            </head>
-            <body>
-              <p>Redirecting to the <a href="formal_ai/index.html">formal-ai API reference</a>&hellip;</p>
-            </body>
-          </html>
-          HTML
+        run: bash scripts/build-rust-api-docs.sh
 
       - name: Sync data/seed into src/web/seed (deployment mirror)
         run: scripts/sync-seed.sh
@@ -1946,6 +1880,13 @@ jobs:
       - name: Deploy Pages artifact
         id: deployment
         uses: actions/deploy-pages@v5
+        with:
+          # 20 min, up from the action's 600 000 ms default. In run 31090830031
+          # the artifact uploaded fine and the action then sat in
+          # `deployment_queued` until `Timeout reached, aborting!` -- a red
+          # `main` caused by the Pages queue, not by the commit. Rationale and
+          # the guard test: `pages_deploy_outwaits_a_backlogged_pages_deployment_queue`.
+          timeout: 1200000
         env:
           # deploy-pages v5 still imports core punycode. Keep every other Node
           # warning visible while upstream issue #434 removes this dependency.
@@ -1976,10 +1917,28 @@ jobs:
           cd tests/e2e
           npm ci
 
-      - name: Install Playwright browsers
+      # Issue #977: same split as `test-e2e-local` -- see the comments there.
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('tests/e2e/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright system dependencies (best effort)
+        timeout-minutes: 6
+        continue-on-error: true
         run: |
           cd tests/e2e
-          npx playwright install --with-deps chromium
+          npx playwright install-deps chromium
+
+      - name: Install Playwright browsers
+        timeout-minutes: 10
+        run: |
+          cd tests/e2e
+          npx playwright install chromium
 
       - name: Wait for GitHub Pages deployment
         env:
@@ -1998,3 +1957,30 @@ jobs:
           name: playwright-report-pages
           path: tests/e2e/playwright-report/
           retention-days: 7
+
+  # === PIPELINE STATUS GATE ===
+  # Issue #977: a job killed by `timeout-minutes` is reported as **cancelled**,
+  # not failed, so a run whose only casualty is a timeout gets the benign-looking
+  # `cancelled` conclusion and never shows up as red. Eighteen consecutive main
+  # runs hid a timing-out `Auto Release` that way. This job makes that state
+  # loud. Rationale and the full reconstruction live in
+  # scripts/check-pipeline-status.sh and
+  # dev/log/issues/977/pulls/978/ANALYSIS.md.
+  pipeline-status:
+    name: Pipeline Status
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: always()
+    # Every other job, so nothing can time out unobserved.
+    needs: [detect-changes, changelog, evidence-check, docker-build, secrets-scan,
+            version-check, lint, test, build, auto-release, manual-release,
+            changelog-pr, test-e2e-local, test-agent-cli-e2e, deploy-pages,
+            test-e2e-pages]
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Fail the run when a required job was cancelled or failed
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+          IS_MAIN: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+        run: bash scripts/check-pipeline-status.sh

@@ -9,8 +9,9 @@
 use std::collections::{BTreeMap, HashSet};
 use std::sync::OnceLock;
 
-use crate::engine::{FormalAiEngine, SymbolicAnswer};
+use crate::engine::SymbolicAnswer;
 use crate::seed::parser::{parse_lino, split_pipe_list};
+use crate::solver::{SolverConfig, UniversalSolver};
 
 const BASIS_POINTS_DENOMINATOR: usize = 10_000;
 
@@ -565,19 +566,22 @@ pub struct GeneratedQuestionAnswer {
 #[derive(Debug, Clone)]
 pub struct GeneratedQuestionAnswerStream {
     questions: QuestionGenerator,
-    engine: FormalAiEngine,
 }
 
 impl Iterator for GeneratedQuestionAnswerStream {
     type Item = GeneratedQuestionAnswer;
 
     fn next(&mut self) -> Option<Self::Item> {
-        self.questions
-            .next()
-            .map(|question| GeneratedQuestionAnswer {
-                answer: self.engine.answer(&question.text),
+        self.questions.next().map(|question| {
+            let config = SolverConfig {
+                offline: true,
+                ..SolverConfig::default()
+            };
+            GeneratedQuestionAnswer {
+                answer: UniversalSolver::new(config).solve(&question.text),
                 question,
-            })
+            }
+        })
     }
 }
 
@@ -587,7 +591,6 @@ pub fn generated_question_answers(
 ) -> GeneratedQuestionAnswerStream {
     GeneratedQuestionAnswerStream {
         questions: QuestionGenerator::new(config),
-        engine: FormalAiEngine,
     }
 }
 

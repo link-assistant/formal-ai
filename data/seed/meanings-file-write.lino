@@ -183,6 +183,8 @@ meanings
       surface
         text बनाओ
       surface
+        text बनाएँ
+      surface
         text लिखो
       surface
         text सहेजो
@@ -204,6 +206,8 @@ meanings
     role file_write_content_lead
     lexeme en
       surface
+        text "containing exactly …"
+      surface
         text "containing …"
       surface
         text "with content …"
@@ -212,11 +216,17 @@ meanings
       surface
         text "with the content …"
       surface
+        text "with exactly this content …"
+      surface
         text "contents …"
       surface
         text "with the text …"
       surface
         text "with the following …"
+      surface
+        text "whose content is …"
+      surface
+        text "whose contents are …"
       surface
         text "that says …"
       surface
@@ -227,6 +237,8 @@ meanings
         text "saying …"
     lexeme ru
       surface
+        text "с точно таким содержанием …"
+      surface
         text "с текстом …"
       surface
         text "с содержанием …"
@@ -236,14 +248,72 @@ meanings
         text "содержащей …"
     lexeme hi
       surface
+        text "ठीक इसी सामग्री के साथ …"
+      surface
         text "जिसमें लिखा हो …"
       surface
         text "सामग्री के साथ …"
     lexeme zh
       surface
+        text "内容与以下完全相同 …"
+      surface
         text "内容为 …"
       surface
         text "包含 …"
+  file_write_literal_qualifier
+    defined-by relation
+    role file_write_content_qualifier
+    lexeme en
+      surface
+        text exactly
+      surface
+        text precisely
+      surface
+        text verbatim
+      surface
+        text literally
+      surface
+        text "exactly this"
+      surface
+        text "precisely this"
+    lexeme ru
+      surface
+        text ровно
+      surface
+        text точно
+      surface
+        text именно
+      surface
+        text дословно
+    lexeme hi
+      surface
+        text ठीक
+      surface
+        text बिल्कुल
+      surface
+        text हूबहू
+    lexeme zh
+      surface
+        text 恰好
+      surface
+        text 正好
+      surface
+        text 完全
+  file_write_authoritative_content
+    defined-by relation
+    role file_write_authoritative_content_lead
+    lexeme en
+      surface
+        text "with exactly this content …"
+    lexeme ru
+      surface
+        text "с точно таким содержанием …"
+    lexeme hi
+      surface
+        text "ठीक इसी सामग्री के साथ …"
+    lexeme zh
+      surface
+        text "内容与以下完全相同 …"
   file_write_command_output
     defined-by relation
     role file_write_command_output_reference

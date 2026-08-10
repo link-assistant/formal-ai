@@ -77,7 +77,6 @@ src/agentic_coding/ledger.rs	Recorded the approved learning ledger: {count} less
 src/agentic_coding/meaning_detail.rs	Made the {name} meaning more detailed: every surface now pins its part of speech and grammatical number, is grounded in its Wikidata lexeme forms, and every plural surface recovered from the source is added.\n\nEnriched meaning block ({path}):\n\n{block}
 src/agentic_coding/meaning_detail.rs	Make the tomato meaning more detailed: pin every surface's part of speech and grammatical number, ground it in Wikidata, and add the missing plural to томат.
 src/agentic_coding/meaning_detail.rs	Please make the potato word and meaning richer — record the singular/plural of each surface, add the missing plural form potatoes, and keep it grounded in Wikidata.
-src/agentic_coding/planner.rs	Completed the general change request for {} and verified it with `{}`.\n\nPlan event ({}):\n\n{}
 src/agentic_coding/planner.rs	Formalized {subject} into a Links Notation knowledge base: {records} records realising all nine protocol primitives ({coverage}).\n\nKnowledge base ({KB_PATH}):\n\n{kb}
 src/agentic_coding/planner.rs	I can run `{command}` when the client advertises a shell tool such as `bash`, `shell`, or `run_command`.
 src/agentic_coding/planner.rs	cat {KB_PATH}
@@ -145,10 +144,8 @@ src/cli_learn.rs	Learning cycle over '{}': {} frontier item(s), {} validated can
 src/cli_learn.rs	Note: the cycle is proposal-only whether or not --dry-run is passed; adoption stays behind the human-gated issue-#656 promotion protocol.
 src/cli_learn.rs	Proposal-only run; no seed file was written. Pipe `--proposals` into `formal-ai improve --promote --proposals <file>` to replay the canonical gates.
 src/cli_learn.rs	unknown frontier '{}'. Recorded frontiers: {}
-src/cli_memory.rs	Applied dreaming plan to {}; removed {} event(s), estimated {} byte(s) reclaimable, learned {} meta-algorithm amendment(s) and {} recurring pattern(s), preserved {} failed simulation(s) and {} dreaming trial(s).
 src/cli_memory.rs	Dreaming could not meet the requested free-space target from recomputable memory; migrate memory to larger storage or lower the target.
 src/cli_memory.rs	Imported {parsed_count} event(s) and cached {seed_count} seed file(s) into {}; total now {}.
-src/cli_memory.rs	No natural-language memory query recognized.
 src/cli_memory.rs	Permanently deleted {removed} event(s) from deleted conversation(s) in {}.
 src/cli_memory.rs	Plan only; rerun with `--apply --confirm` and preferably `--backup` to mutate {}.
 src/cli_memory.rs	Refusing to apply a dreaming plan to stdin/stdout memory path '-'.
@@ -159,8 +156,6 @@ src/cli_memory.rs	Wrote full memory: {} event(s) + {} seed file(s)
 src/cli_memory.rs	Wrote full-memory backup with {} event(s) to {}.
 src/cli_memory.rs	Wrote {} events (events-only)
 src/cli_shared_dialog.rs	Wrote demo_memory to {}.
-src/client_integrations.rs	# <<< formal-ai {tool}
-src/client_integrations.rs	# >>> formal-ai {tool}
 src/client_integrations.rs	temporary config path escapes its root: {relative}
 src/client_integrations.rs	temporary config path must be relative: {relative}
 src/client_integrations.rs	unsupported tool `{tool}`; supported tools: {supported}
@@ -890,6 +885,9 @@ src/solver_handlers/compound_interest.rs	Rate detail: {detail}
 src/solver_handlers/compound_interest.rs	Source amount: {} {}
 src/solver_handlers/compound_interest.rs	Step 1: periodic rate = r/n = {}/{} = {}
 src/solver_handlers/compound_interest.rs	Step 2: number of periods = n*t = {}*{} = {}
+src/solver_handlers/conversation_memory/conversation_summary.rs	Conversation summary: {summary}\n\nTitle: {title}\n\nUser turns:\n
+src/solver_handlers/conversation_memory/conversation_summary.rs	Резюме разговора: {summary}\n\nЗаголовок: {title}\n\nРеплики пользователя:\n
+src/solver_handlers/conversation_memory/conversation_summary.rs	对话摘要:{summary}\n\n标题:{title}\n\n用户发言:\n
 src/solver_handlers/conversation_memory/link_query.rs	This query would {attempted} links, which memory cannot apply: the doublet view is a one-way projection of memory events, so an edited link has no way back to the event it came from. Reads are supported here -- ((($i: $s $t)) (($i: $s $t))) matches every link. To change memory, write to it in natural language, which appends an event the projection is then derived from.
 src/solver_handlers/conversation_memory/link_query.rs	matched {} of {total} links
 src/solver_handlers/conversation_memory/memory_write.rs	Recorded memory: {statement}
@@ -902,7 +900,6 @@ src/solver_handlers/conversation_memory/memory_write.rs	Запомнил: {state
 src/solver_handlers/conversation_memory/memory_write.rs	स्मृति में \"{old_value}\" को \"{new_value}\" से बदला ({applied})।
 src/solver_handlers/conversation_memory/memory_write.rs	स्मृति में सहेजा गया: {statement}
 src/solver_handlers/conversation_memory/memory_write.rs	已在记忆中将\"{old_value}\"替换为\"{new_value}\"(更新 {applied} 处)。
-src/solver_handlers/conversation_memory/mod.rs	Conversation summary: {summary}\n\nTitle: {title}\n\nUser turns:\n
 src/solver_handlers/conversation_memory/mod.rs	Found {} mention(s) of \"{}\" across {} conversation(s) in memory.\n
 src/solver_handlers/conversation_memory/mod.rs	Found {} mention(s) of \"{}\" in the conversation history.\n
 src/solver_handlers/conversation_memory/mod.rs	No mentions of \"{}\" found in memory.
@@ -923,7 +920,6 @@ src/solver_handlers/conversation_memory/mod.rs	Вы спрашивали: \"{con
 src/solver_handlers/conversation_memory/mod.rs	Найдено упоминаний \"{}\" в истории разговора: {}\n
 src/solver_handlers/conversation_memory/mod.rs	Найдено упоминаний \"{}\" в памяти: {} (бесед: {}).\n
 src/solver_handlers/conversation_memory/mod.rs	Прошлого сообщения пока нет.
-src/solver_handlers/conversation_memory/mod.rs	Резюме разговора: {summary}\n\nЗаголовок: {title}\n\nРеплики пользователя:\n
 src/solver_handlers/conversation_memory/mod.rs	Упоминаний \"{}\" в истории разговора не найдено.
 src/solver_handlers/conversation_memory/mod.rs	Упоминаний \"{}\" в памяти не найдено.
 src/solver_handlers/conversation_memory/mod.rs	अभी तक कोई पिछला संदेश नहीं है.
@@ -1275,73 +1271,7 @@ src/telegram.rs	I can only process Telegram text messages in this implementation
 src/telegram.rs	\n\n/trace {trace}
 src/telegram.rs	formal-ai {FORMAL_AI_VERSION}
 src/telegram_runtime.rs	curl exited with {status}: {stderr}
-src/thinking.rs	Add an agent task: {}.
-src/thinking.rs	Apply available context: {trimmed}.
-src/thinking.rs	Apply the available context.
-src/thinking.rs	Apply {trimmed} reduction step(s).
-src/thinking.rs	Ask for clarification because the request was ambiguous.
-src/thinking.rs	Ask for clarification between {trimmed}.
-src/thinking.rs	Build a local behavior rule.
-src/thinking.rs	Compose the answer in natural language.
-src/thinking.rs	Compose the answer: \"{trimmed}\".
-src/thinking.rs	Compute the result.
-src/thinking.rs	Compute {trimmed}.
-src/thinking.rs	Decline the request under the safety policy.
-src/thinking.rs	Decline the request under the {} policy.
-src/thinking.rs	Detect modifiers in the request.
-src/thinking.rs	Detect the request language: {}.
-src/thinking.rs	Evaluate with the calculator.
-src/thinking.rs	Evaluate with the {}.
-src/thinking.rs	Exchange a request with the configured endpoint.
-src/thinking.rs	Extend the agent plan.
-src/thinking.rs	Extract the search term.
-src/thinking.rs	Fall back to the general unknown-request strategy.
-src/thinking.rs	Formalize the request as {} {task} task.
-src/thinking.rs	Formalize the request into a symbolic tuple.
-src/thinking.rs	Group matching memories by conversation.
-src/thinking.rs	I read this as {} {task} request, worked out the answer, and replied.
-src/thinking.rs	I wasn't sure how to handle this one yet, so I explained what I can do.
-src/thinking.rs	Look up the relevant fact.
-src/thinking.rs	Look up {}.
-src/thinking.rs	Match a known rule.
-src/thinking.rs	Match the {} rule.
-src/thinking.rs	Plan the program: {}.
-src/thinking.rs	Plan the requested program.
-src/thinking.rs	Plan to answer in {}.
-src/thinking.rs	Read the incoming request.
-src/thinking.rs	Read the request: \"{trimmed}\".
-src/thinking.rs	Reduce the expression {trimmed}.
-src/thinking.rs	Resolve the request to a concrete entity.
-src/thinking.rs	Resolve the request to {}.
-src/thinking.rs	Resolve what the follow-up refers to.
-src/thinking.rs	Route the request to a handler.
-src/thinking.rs	Route to the {} handler.
-src/thinking.rs	Search memory for relevant facts.
-src/thinking.rs	Search memory for {trimmed}.
-src/thinking.rs	The request could mean more than one thing, so I asked you to clarify.
-src/thinking.rs	This was a calculation, so I worked it out step by step and checked the result.
-src/thinking.rs	Try the next candidate approach.
-src/thinking.rs	Try the {} approach.
-src/thinking.rs	Update the local memory bundle.
-src/thinking.rs	Use an available capability.
-src/thinking.rs	Use the {} capability.
-src/thinking.rs	Verify the result against the rules.
-src/thinking.rs	Verify the result against the {} rule.
-src/thinking.rs	You asked about my name or who I am, so I answered from what I remember of our chat.
-src/thinking.rs	You asked about the tests, so I checked their status and reported it.
-src/thinking.rs	You asked for a fact, so I looked it up and reported what I found.
-src/thinking.rs	You asked for a translation, so I converted the text and returned it.
-src/thinking.rs	You asked for code, so I planned it and wrote the program.
-src/thinking.rs	You asked how I work, so I walked through my reasoning.
-src/thinking.rs	You asked how I'm doing, so I told you and offered to help.
-src/thinking.rs	You asked me to fix myself, so I diagnosed the failure and repaired it.
-src/thinking.rs	You asked what I get up to, so I answered in a friendly way and offered to help.
-src/thinking.rs	You gave me something to learn from, so I read it and updated what I know.
-src/thinking.rs	You pointed me at the web, so I fetched what you needed and summarized it.
-src/thinking.rs	You said goodbye, so I wished you well in return.
-src/thinking.rs	You said hello, so I greeted you back.
-src/thinking.rs	You thanked me, so I acknowledged it warmly.
-src/thinking.rs	{label}: {trimmed}.
+src/thinking.rs	{label}: {trimmed}
 src/translation/cache.rs	failed to create cache directory {}: {error}
 src/translation/cache.rs	failed to write cache body {}: {error}
 src/translation/cache.rs	failed to write cache url marker {}: {error}

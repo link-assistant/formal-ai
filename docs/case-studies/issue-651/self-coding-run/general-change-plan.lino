@@ -1,5 +1,7 @@
 general_change_plan
   id "general_change_plan_7f80d22ec9052a9a"
+  execution_mode "literal_file"
+  terminal_state "executed"
   goal "Create file self-coding-result.txt containing self-coding=passed"
   target "self-coding-result.txt"
   step 1

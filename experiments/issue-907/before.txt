@@ -1,0 +1,18 @@
+   Compiling formal-ai v0.326.0 (/tmp/gh-issue-solver-1785833526524)
+    Finished `dev` profile [unoptimized] target(s) in 1m 06s
+     Running `target/debug/examples/issue_907_caller_framing_hijack`
+== the same request under different caller framing
+  <session_context> ⏎ This is the Gemini CLI. We are   -> run_shell_command({"command":"date"})
+  <session_context> ⏎ This is the Gemini CLI. We are   -> write_file({"content":"print(\"Hello, world!\")","file_path":"main.py"})
+  Today's date is Sunday, August 2, 2026.              -> run_shell_command({"command":"date"})
+  The current time is 20:00.                           -> run_shell_command({"command":"date"})
+  The date is Sunday.                                  -> write_file({"content":"print(\"Hello, world!\")","file_path":"main.py"})
+  Today is Sunday, August 2, 2026.                     -> write_file({"content":"print(\"Hello, world!\")","file_path":"main.py"})
+  date                                                 -> write_file({"content":"print(\"Hello, world!\")","file_path":"main.py"})
+  My operating system is: linux                        -> write_file({"content":"print(\"Hello, world!\")","file_path":"main.py"})
+                                                       -> write_file({"content":"print(\"Hello, world!\")","file_path":"main.py"})
+
+== a user who really does ask for the date still gets it
+  what is the date?                                    -> run_shell_command({"command":"date"})
+  show me today's date                                 -> run_shell_command({"command":"date"})
+  run date                                             -> run_shell_command({"command":"date"})

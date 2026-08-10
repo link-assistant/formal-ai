@@ -31,6 +31,12 @@ use crate::cli_context::{exported_context, write_output, ContextSource};
 const DEFAULT_INLINE_BYTES: usize = 50_000;
 /// Largest excerpt kept in the body once the full context lives in a gist.
 const DEFAULT_EXCERPT_BYTES: usize = 12_000;
+/// Conservative whole-body budget below GitHub's 65,536-character limit.
+///
+/// Bytes are stricter than characters for non-ASCII conversations. Keeping a
+/// little headroom also protects the caller if GitHub counts the final newline
+/// or normalizes the Markdown body differently.
+const MAX_ISSUE_BODY_BYTES: usize = 60_000;
 /// Surface recorded when the caller does not name one.
 const DEFAULT_SURFACE: &str = "agentic-cli";
 /// Fence info string of the attached context block.
@@ -139,11 +145,33 @@ pub fn run_report(args: ReportArgs) -> Result<(), Box<dyn Error>> {
                     gist_visibility,
                 },
             )?;
-            let body = report_body(&session, source, &surface, &context, &lino, attachment);
+            let body = bound_report_body(report_body(
+                &session, source, &surface, &context, &lino, attachment,
+            ));
             write_output(&output, &body.render())?;
         }
     }
     Ok(())
+}
+
+/// Keep the GitHub document bounded while the complete context stays attached.
+///
+/// The attachment already moves oversized context to a gist, but the readable
+/// transcript can independently contain a multi-megabyte tool result. Prefer
+/// the dialog over optional assembly metadata, then omit whole oldest turns
+/// until the body fits. [`ReportBody::earlier_omitted`] makes that loss explicit
+/// and the full Links Notation export remains available through the attachment.
+fn bound_report_body(mut body: ReportBody) -> ReportBody {
+    if body.render().len() <= MAX_ISSUE_BODY_BYTES {
+        return body;
+    }
+
+    body.reasoning_trace.clear();
+    while !body.turns.is_empty() && body.render().len() > MAX_ISSUE_BODY_BYTES {
+        body.turns.remove(0);
+        body.earlier_omitted += 1;
+    }
+    body
 }
 
 /// Where the exported context is written; a report always leaves the complete

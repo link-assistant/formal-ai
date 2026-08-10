@@ -1,0 +1,32 @@
+issue_873_smallest_leaf_1
+  parent research_learning_recovery
+  leaf "route every unresolved online native intent into grounded research"
+  implementation "src/solver_unknown_reasoning.rs src/agentic_coding/web_research.rs"
+  authorship human
+issue_873_smallest_leaf_2
+  parent research_learning_recovery
+  leaf "implement the reusable versioned lifecycle reducer"
+  implementation src/research_learning.rs
+  authorship human
+issue_873_smallest_leaf_3
+  parent research_learning_recovery
+  leaf "prove routing evidence versioning verification recovery autonomy and budget"
+  implementation tests/unit/issue_873.rs
+  authorship human
+issue_873_smallest_leaf_4
+  parent research_learning_recovery
+  leaf "preserve the requirements case study and online research"
+  implementation docs/case-studies/issue-873
+  authorship human
+issue_873_smallest_leaf_5
+  parent research_learning_recovery
+  leaf "record the research learning and recovery invariant"
+  implementation data/meta/research-learning-recovery-invariant.lino
+  authorship formal_ai_agent_cli
+  session ses_01c561b3bffeG2Bl3eBvtDHYzq
+  evidence docs/case-studies/issue-873/self-hosting-authorship/agent-cli.log
+
+issue_873_self_authorship_measurement
+  reviewed_smallest_leaves 5
+  formal_ai_authored_leaves 1
+  formal_ai_authored_percent 20

@@ -2,6 +2,13 @@
 
 This document turns issue [#1](https://github.com/link-assistant/formal-ai/issues/1) into explicit implementation requirements.
 
+Per konard's 2026-08-04 standing requirement, every row below has a matching
+delivery/test-traceability row in
+[`docs/requirements-traceability.md`](docs/requirements-traceability.md):
+when it was delivered, the automated test that pins it, and manual test
+confirmation (with honest "not yet confirmed" / "not delivered" entries
+where no record exists yet).
+
 | ID | Requirement | implementation status |
 | --- | --- | --- |
 | R1 | Implement a formal / symbolic AI instead of a GPU-backed neural network. | Implemented as deterministic Rust rules in `FormalAiEngine`. |
@@ -131,9 +138,9 @@ conversation memory, and persists the demo's UI state in Links Notation.
 | R83 | Route every demo answer through the same universal solver as the library, CLI, HTTP server, and Telegram bot — no hardcoded prompt→answer table in `src/web/formal_ai_worker.js`. | Implemented by rewriting `src/web/formal_ai_worker.js` so the worker runs greeting, identity, arithmetic, concept-lookup, recall, JavaScript-execution, hello-world, and unknown-fallback handlers that mirror `src/solver.rs`. |
 | R84 | Persist demo on/off and diagnostics toggles in `localStorage` using Links Notation so the UI state remains portable and human-readable. | Implemented by `src/web/preferences.js` (load/save/format/parse around the `formal-ai.preferences.v1` key with `demo_preferences` root) and wired into `src/web/app.js`. |
 | R85 | Solve arithmetic prompts (symbols, English-word operators, parentheses, decimals, modulo) without hardcoding answers; report division-by-zero rather than panic. | Implemented by `calculation_expression_candidates`/`evaluate_calculation` in `src/calculation.rs`, the local fallback in `src/arithmetic.rs`, and `try_arithmetic` in `src/solver_handlers/mod.rs`; covered by `tests/unit/specification/reasoning_paths.rs::arithmetic_*` and mirrored in `src/web/formal_ai_worker.js`. |
-| R86 | Answer "what is X?" / "tell me about X" / "define X" from a seeded Wikipedia/Wikidata/Wiktionary concept table and always cite the source. | Implemented by `data/seed/concepts.lino`, `CONCEPTS`/`lookup_concept`/`extract_concept_term` in `src/solver_helpers.rs`, and `try_concept_lookup` in `src/solver.rs`; covered by `tests/unit/specification/reasoning_paths.rs::concept_lookup_*` and mirrored in the demo worker. |
+| R86 | Answer "what is X?" / "tell me about X" / "define X" from a seeded Wikipedia/Wikidata/Wiktionary concept table and always cite the source. | Implemented by `data/seed/concepts.lino`, `CONCEPTS`/`lookup_concept`/`extract_concept_term` in `src/solver_helpers/`, and `try_concept_lookup` in `src/solver.rs`; covered by `tests/unit/specification/reasoning_paths.rs::concept_lookup_*` and mirrored in the demo worker. |
 | R87 | Remember the conversation: recall the user's name, the previous question, and summarize prior turns through the solver, with prior turns recorded as `prior_turn:` events. | Implemented through `ConversationTurn`, `ConversationRole`, and `UniversalSolver::solve_with_history` in `src/solver.rs`; covered by `tests/unit/specification/reasoning_paths.rs::solve_with_history_*`; the demo passes `history` to the worker. |
-| R88 | Declare JavaScript execution capability explicitly: the Rust solver explains it has no JS runtime, the browser demo actually runs the snippet in a Worker sandbox and reports stdout/return value/errors. | Implemented by `extract_javascript_program`/`extract_fenced_block` in `src/solver_helpers.rs`, `try_javascript_execution` in `src/solver.rs`, and the worker's `tryJavaScriptExecution` handler; covered by `tests/unit/specification/reasoning_paths.rs::javascript_*`. |
+| R88 | Declare JavaScript execution capability explicitly: the Rust solver explains it has no JS runtime, the browser demo actually runs the snippet in a Worker sandbox and reports stdout/return value/errors. | Implemented by `extract_javascript_program`/`extract_fenced_block` in `src/solver_helpers/`, `try_javascript_execution` in `src/solver.rs`, and the worker's `tryJavaScriptExecution` handler; covered by `tests/unit/specification/reasoning_paths.rs::javascript_*`. |
 | R89 | Compile case-study evidence (issue body, comments, PR comments, online research, requirement-to-solution mapping) under `docs/case-studies/issue-14/`. | Implemented in `docs/case-studies/issue-14/README.md` with raw data in `docs/case-studies/issue-14/raw-data/`. |
 
 ## Issue #16 Multilingual, Wikipedia, and Append-Only Memory Requirements
@@ -246,7 +253,7 @@ and `REQUIREMENTS.md` in lockstep.
 
 | ID | Requirement | Status |
 | --- | --- | --- |
-| R129 | For every existing test case, exercise 5–10 most probable input/output variations. | Implemented by `tests/unit/specification/prompt_variations.rs` and matrix expansions in `tests/unit/specification/chat_surface.rs`, `tests/unit/specification/code_generation.rs`, and `tests/unit/specification/multilingual.rs`; each block iterates `for (prompt, expected) in [...]` over 5–10 variations covering greeting, identity, capabilities, concept lookup, hello-world, idioms, transliteration, clarification, and math intents. |
+| R129 | For every existing test case, exercise 5–10 most probable input/output variations. | Implemented by `tests/unit/specification/prompt_variations.rs` and matrix expansions in `tests/unit/specification/chat_surface.rs`, `tests/unit/specification/code_generation/`, and `tests/unit/specification/multilingual.rs`; each block iterates `for (prompt, expected) in [...]` over 5–10 variations covering greeting, identity, capabilities, concept lookup, hello-world, idioms, transliteration, clarification, and math intents. |
 | R130 | Translate each test case into English, Russian, Hindi, and Chinese. | Implemented by per-language matrix builders (`english_variations`, `russian_variations`, `hindi_variations`, `chinese_variations`) inside `tests/unit/specification/prompt_variations.rs` and `tests/unit/specification/multilingual.rs`; each block asserts the right `language:*` evidence link is emitted on every prompt. |
 | R131 | Compare formal-ai's tests against competitor AI models and agentic CLI tools, and adopt the most frequent prompts. | Implemented in `docs/case-studies/issue-103/raw-data/competitor-test-research.md` (Claude Code, Aider, Codex, Continue, Cursor, GitHub Copilot CLI, MT-Bench, AlpacaEval, WildBench, Belebele, XNLI, XCOPA, MGSM, FLORES-200, TyDi-QA, XQuAD, Aya, HumanEval, MBPP, GSM8K, TruthfulQA); the high-frequency categories (definitions, summarization-intent, brainstorming-intent, factual Q&A, refusal/safety, multi-turn coreference, math, roleplay) are implemented through active `prompt_variations.rs` regression tests and the matching deterministic solver handlers. |
 | R132 | Generalize the test-case logic where possible. | Implemented by `tests/unit/specification/prompt_variations.rs` helpers `assert_intent_for_each`, `assert_language_for_each`, and `assert_answer_contains_for_each`, plus matrix-builder tuples `(language, prompts)` so future categories can be added in one block instead of per-language test functions. |
@@ -304,7 +311,7 @@ answer keeps language/source evidence visible.
 
 | ID | Requirement | Status |
 | --- | --- | --- |
-| R150 | Recognize requests to merge or combine Wikipedia definitions/translations for a concept. | Implemented by the `definition_merge` specialized handler in `src/solver_handlers/definition_merge.rs`, mirrored by `tryDefinitionMerge` in `src/web/formal_ai_worker.js`. |
+| R150 | Recognize requests to merge or combine Wikipedia definitions/translations for a concept. | Implemented by the `definition_merge` method in `src/definition_merge.rs` (migrated out of `solver_handlers/` by #699), mirrored by `tryDefinitionMerge` in `src/web/formal_ai_worker.js`. |
 | R151 | Merge only definitions that belong to the same resolved concept anchor, preferring seeded Wikidata Q-ID records when available. | Implemented by resolving the requested term through `lookup_concept_query` before collecting localized fragments; the answer and evidence keep the shared `wikidata:` link. |
 | R152 | Preserve source languages and citations for every contributing definition fragment. | Implemented by `definition_merge:language:*` and `source:http:*` evidence links in Rust, matching source-language evidence chips in the browser, plus the user-facing `Source languages:` and `Sources:` sections. |
 | R153 | Deduplicate repeated facts deterministically instead of concatenating every source verbatim. | Implemented by sentence-level normalized fact keys in `merged_definition_facts` / `mergedDefinitionFacts`; the output is stable for the same seed data. |
@@ -395,7 +402,7 @@ CORS-block.
 | R190 | The planner must run providers in parallel with a cap of five per category. | Implemented by `runWithConcurrencyLimit` (cap `WEB_SEARCH_CONCURRENCY = 5`) in the worker and by the matching `CATEGORY_CONCURRENCY = 5` runner in the dashboard. |
 | R191 | When a provider CORS-blocks or fails the network, the planner must temporarily disable it for the rest of the session and record the decision. | Implemented by the `WEB_SEARCH_DISABLED` map in the worker and the `state.disabled` map in the dashboard; both emit a `web_search:disabled:<provider>` / `disabled:<service-id>` entry and skip the provider until the page reloads. |
 | R192 | Issue data, online research, and case-study analysis must be compiled to `docs/case-studies/issue-133/`. | Implemented by `docs/case-studies/issue-133/README.md` and the raw-data folder (issue JSON, PR JSON, branch log, and online research). |
-| R193 | A changelog fragment must record the user-visible change and trigger an automated minor crate-version bump. | Implemented by `changelog.d/20260519_140000_issue_133_default_duckduckgo_rrf.md`, which declares `bump: minor` so the release pipeline raises the version from 0.69.0 on merge. |
+| R193 | A changelog fragment must record the user-visible change and trigger an automated minor crate-version bump. | Implemented by the issue #133 fragment `20260519_140000_issue_133_default_duckduckgo_rrf.md` (declared `bump: minor`; collected into `CHANGELOG.md` at release, as all fragments are) so the release pipeline raises the version from 0.69.0 on merge. |
 | R194 | As much logic as possible should be compiled from Rust to WebAssembly, with JavaScript reserved for UI. | Implemented boundary: `src/web_engine_core.rs` and `src/web_search_core.rs` own prompt normalization, language detection, arithmetic evaluation, stable FNV-1a ids, unknown-answer opener selection, intent-route matching semantics, provider order, RRF constants, request evidence, and fused ranking. `src/web/wasm-worker/src/lib.rs` exposes those primitives to the browser worker. JavaScript is intentionally retained for UI state, seed-file fetching/parsing, browser-only network calls/CORS handling, DOM integration, and no-WASM compatibility fallbacks; parity is covered by Rust unit tests, `experiments/issue-282-wasm-parity.mjs`, and the Issue #282 browser regression. |
 
 ## Issue #159 Hive Mind Lookup and Curated Project Summarization
@@ -416,16 +423,16 @@ summaries, chat titles, and URL content.
 | --- | --- | --- |
 | R195 | "What is Hive Mind?" must prefer `link-assistant/hive-mind` before any web-search closest-match fallback in every supported language when associative project promotion is enabled. | Implemented by the generic `try_project_lookup` path in `src/solver_handlers/web_requests.rs`, which matches the `hive mind` / `hivemind` aliases against the project registry and renders a language-aware promoted answer. Covered by `tests/unit/specification/project_lookups.rs::russian_hive_mind_prompt_prefers_link_assistant_project` and the matching English test. |
 | R196 | Hive Mind / project answers must be generated from a reviewable seed file rather than hard-coded strings, so adding or editing a project is a data change. | Implemented by `data/seed/projects.lino` (15 curated Link Assistant / Link Foundation / LinksPlatform projects with weighted statements, localisations, repository URLs, topic labels, and aliases) and the `ProjectsRegistry` reader in `src/seed/projects.rs`; the browser worker loads the same records through `src/web/seed_loader.js`. |
-| R197 | A configurable summarization pipeline must expose `formalize`, `summarize`, and `deformalize` stages so the same code can drive topic labels, short descriptions, standard answers, full text, and expanded explanations. | Implemented by `src/summarization.rs` with `Statement`, `StatementKind`, `SummarizationMode` (`Topic` / `Short` / `Standard` / `Full` / `Expand`), `SummarizationConfig`, and the `formalize` / `summarize` / `deformalize` / `to_topic` / `describe_project` functions. Covered by 18 unit tests in `src/summarization.rs::tests`. |
+| R197 | A configurable summarization pipeline must expose `formalize`, `summarize`, and `deformalize` stages so the same code can drive topic labels, short descriptions, standard answers, full text, and expanded explanations. | Implemented by `src/summarization/mod.rs` with `Statement`, `StatementKind`, `SummarizationMode` (`Topic` / `Short` / `Standard` / `Full` / `Expand`), `SummarizationConfig`, and the `formalize` / `summarize` / `deformalize` / `to_topic` / `describe_project` functions. Covered by unit tests in `src/summarization/mod.rs::tests`. |
 | R198 | Compressed answers must filter out boilerplate (install / example) sentences and keep the highest-weighted purpose, language, and feature statements. | Implemented by `StatementKind::is_boilerplate` plus `SummarizationConfig::drop_boilerplate` (default `true`) and the weight-descending sort in `summarize`. |
 | R199 | Configurable compound-word substitution and Natural Semantic Metalanguage primes must be available so callers can shorten chat titles or expand explanations from the same configuration. | Implemented by `apply_compound_words` (compound-word shortening) and `apply_semantic_primes` (NSM substitution table for English and Russian); `Expand` mode appends NSM paraphrases to the surviving statements. |
 | R200 | The project handler must run after `concept_lookup` so existing seed-backed concepts (Links Notation, Wikipedia, …) keep their answers, while promoted repository aliases such as Hive Mind are treated like any other project record. | Implemented by invoking `try_project_lookup` immediately after the `concept_lookup` method point in `src/meta_method_dispatch.rs::try_dispatch`; there is no dedicated Hive Mind handler. Covered by `tests/unit/specification/project_lookups.rs::curated_project_concept_prompt_routes_to_project_lookup` (uses `link-cli`). |
 | R201 | Every promoted project answer must log the summarization configuration so the trace explains both what was matched and how the text was compressed. | Implemented by `render_project_lookup` emitting `project:promoted`, `summarization:mode`, `summarization:language`, `source` (the project URL), and the consulted web-search providers. Covered by `tests/unit/specification/project_lookups.rs::curated_project_lookup_records_summarization_evidence`. |
-| R202 | The summarization pipeline must accept raw README markdown, strip badges / HTML comments / fenced code blocks / heading markers before classification, and feed the remaining prose through the same `formalize` / `summarize` / `deformalize` stages. | Implemented by `strip_markdown_noise`, `formalize_markdown`, and `describe_readme` in `src/summarization.rs`. Covered by `tests/unit/specification/summarization_pipeline.rs::strip_markdown_noise_drops_badges_html_comments_and_code_blocks`, `formalize_markdown_classifies_install_and_purpose_lines`, `describe_readme_short_keeps_purpose_drops_install`, and `describe_readme_topic_returns_repo_slug`. |
-| R203 | Multi-turn dialogs must be summarizable through the same pipeline, biasing user turns above assistant turns so a short summary keeps the user's questions. | Implemented by `DialogTurn`, `formalize_dialog`, and `summarize_dialog` in `src/summarization.rs` (user turns weigh +20, assistant turns weigh -10). Covered by `tests/unit/specification/summarization_pipeline.rs::formalize_dialog_biases_user_turns_above_assistant_turns` and `summarize_dialog_short_keeps_user_questions`. The conversation-summary intent now runs through this pipeline (`src/solver_handlers/mod.rs::try_summarize_conversation`) and logs `summarization:mode`, `summarization:language`, and `chat_title` events; existing reasoning-paths tests still pass. |
+| R202 | The summarization pipeline must accept raw README markdown, strip badges / HTML comments / fenced code blocks / heading markers before classification, and feed the remaining prose through the same `formalize` / `summarize` / `deformalize` stages. | Implemented by `strip_markdown_noise`, `formalize_markdown`, and `describe_readme` in `src/summarization/mod.rs`. Covered by `tests/unit/specification/summarization_pipeline.rs::strip_markdown_noise_drops_badges_html_comments_and_code_blocks`, `formalize_markdown_classifies_install_and_purpose_lines`, `describe_readme_short_keeps_purpose_drops_install`, and `describe_readme_topic_returns_repo_slug`. |
+| R203 | Multi-turn dialogs must be summarizable through the same pipeline, biasing user turns above assistant turns so a short summary keeps the user's questions. | Implemented by `DialogTurn`, `formalize_dialog`, and `summarize_dialog` in `src/summarization/mod.rs` (user turns weigh +20, assistant turns weigh -10). Covered by `tests/unit/specification/summarization_pipeline.rs::formalize_dialog_biases_user_turns_above_assistant_turns` and `summarize_dialog_short_keeps_user_questions`. The conversation-summary intent now runs through this pipeline (`src/solver_handlers/conversation_memory/conversation_summary.rs::try_summarize_conversation`) and logs `summarization:mode`, `summarization:language`, and `chat_title` events; existing reasoning-paths tests still pass. |
 | R204 | Generating a 1-5 word chat title must reuse the same pipeline in `Topic` mode so titles never drift from the body summary. | Implemented by `generate_chat_title` (wraps `summarize_dialog` with `SummarizationMode::Topic`). Covered by `tests/unit/specification/summarization_pipeline.rs::generate_chat_title_returns_five_or_fewer_words`. |
 | R205 | When `try_http_fetch` receives a URL pointing to a curated GitHub repository, the response must surface the curated description through the summarization pipeline and emit explicit trace evidence. | Implemented by `match_curated_github_url` in `src/solver_handlers/web_requests.rs`: the handler invokes `describe_project` in `Standard` mode and logs `http_fetch:curated_project`, `summarization:mode`, and `summarization:language` evidence. Covered by `tests/unit/specification/project_lookups.rs::http_fetch_of_curated_github_url_describes_project_via_summarization` and `http_fetch_of_unknown_url_skips_curated_project_summary`. |
-| R206 | The default cap on retained statements after summarization must be a documented constant (30) that any caller can override via `SummarizationConfig::with_max_statements`. | Implemented by `DEFAULT_MAX_STATEMENTS = 30` in `src/summarization.rs` and `SummarizationConfig::effective_max_statements`. Covered by `tests/unit/specification/summarization_pipeline.rs::default_max_statements_is_thirty` and the existing `effective_max_statements_*` unit tests. |
+| R206 | The default cap on retained statements after summarization must be a documented constant (30) that any caller can override via `SummarizationConfig::with_max_statements`. | Implemented by `DEFAULT_MAX_STATEMENTS = 30` in `src/summarization/mod.rs` and `SummarizationConfig::effective_max_statements`. Covered by `tests/unit/specification/summarization_pipeline.rs::default_max_statements_is_thirty` and the existing `effective_max_statements_*` unit tests. |
 | R207 | The 5 summarization modes must match the documented size targets (topic = 1-5 words, short ≈ 20%, standard ≈ 50%, full = 100%, expand ≈ 200%). | Implemented by `SummarizationMode::target_percent`. Covered by `tests/unit/specification/summarization_pipeline.rs::summarization_mode_target_percent_matches_vision`. |
 | R208 | Associative repository promotion must be switchable off and default on. | Implemented by `SolverConfig::associative_project_promotion` (default `true`) with `FORMAL_AI_ASSOCIATIVE_PROJECT_PROMOTION` / `FORMAL_AI_PROJECT_PROMOTION` overrides, plus the browser `associativeProjectPromotion` preference. Covered by `tests/unit/specification/project_lookups.rs::associative_project_promotion_can_be_disabled`. |
 | R209 | Explicit repository URLs must route through generic project lookup across GitHub, GitLab, and Bitbucket. | Implemented by repository URL parsing in `try_project_lookup`; covered by `github_repository_url_routes_to_generic_project_lookup`, `gitlab_repository_url_routes_to_generic_project_lookup`, and `bitbucket_repository_url_routes_to_generic_project_lookup`. |
@@ -478,9 +485,43 @@ return through the same meta-language meaning to the original source surface.
 | R526-1 | Translation quality must be measured by round-trip survival: source -> meta -> target -> meta -> source preserves meaning and source surface. | Implemented by `tests/unit/specification/translation_round_trip.rs`, which asserts both `MeaningId` equality and final surface equality. |
 | R526-2 | Translation to the meta language from every supported source language must be lossless for seeded surfaces. | Implemented by `supported_language_surfaces_survive_meta_language_round_trip`, covering `apple`, `яблоко`, `सेब`, and `苹果` through language-to-meta-to-same-language projection. |
 | R526-3 | Every supported natural-language pair must translate through the shared meta-language meaning rather than a direct pair-only path. | Implemented by `every_supported_language_pair_round_trips_via_meta_language`, which covers all directed pairs across en, ru, hi, and zh with `translate_via_default_pipeline`. |
-| R526-4 | Code translation must route through a code meta language (`source -> CodeMeaning -> target`), never a direct `(source, target)` table, and preserve one shared meaning across the round trip — Rust <-> JavaScript included. | Implemented by `src/solver_helpers.rs::{CodeMeaning, formalize_code_meaning, render_code_meaning, translate_program, normalize_code_meaning}`, verified by `translation_via_links.rs::rust_javascript_code_translation_round_trips_through_code_meaning` and `code_translation_routes_through_the_code_meta_language_not_direct_pairs` (which proves never-hardcoded pairs such as Python -> JavaScript and Rust -> Go translate through one `meaning:` link). |
+| R526-4 | Code translation must route through a code meta language (`source -> CodeMeaning -> target`), never a direct `(source, target)` table, and preserve one shared meaning across the round trip — Rust <-> JavaScript included. | Implemented by `src/solver_helpers/code.rs::{CodeMeaning, formalize_code_meaning, render_code_meaning, translate_program, normalize_code_meaning}`, verified by `translation_via_links.rs::rust_javascript_code_translation_round_trips_through_code_meaning` and `code_translation_routes_through_the_code_meta_language_not_direct_pairs` (which proves never-hardcoded pairs such as Python -> JavaScript and Rust -> Go translate through one `meaning:` link). |
 | R526-5 | The architecture must state that translation goes through the meta language and that direct translation bypasses are not the quality path. | Implemented in `VISION.md`, `ARCHITECTURE.md` section 10, `ROADMAP.md`, and `CONTRIBUTING.md`. |
 | R526-6 | Issue data, online research, requirements, and solution planning must be compiled under `docs/case-studies/issue-526`. | Implemented by `docs/case-studies/issue-526/{README,requirements,solution-plans}.md`, `raw-data/online-research.md`, and raw GitHub snapshots. |
+
+## Issue #890 Formal Proof Program Translation
+
+Issue [#890](https://github.com/link-assistant/formal-ai/issues/890) closes the
+gap between solving a formal constraint and presenting its proof in an
+executable programming language. The proof is a semantic value first; prose and
+program syntax are projections of that value.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R890-1 | A formal proof must be represented independently from natural-language prose and programming-language syntax. | `FormalProof::IntegerInterval` stores bounds, inclusivity, satisfiability, and a witness; `proof_meaning_is_independent_from_its_programming_language_presentations` verifies canonical statement round trips and renderer independence. |
+| R890-2 | The same solved proof must translate to at least two programming languages through the general code meta-language path. | `CodeMeaning::FormalProof` formalizes once and `render_code_meaning` projects through `data/seed/proof-program-templates.lino` to Rust or Python without a direct source-target pair; `same_solved_proof_uses_general_translation_path_for_two_targets` checks both targets share one `meaning:` link. |
+| R890-3 | Generated proof programs must compile or execute where the environment supports it. | `generated_proof_programs_compile_and_execute` compiles the Rust renderer with `rustc`, executes it, runs the Python renderer with `python3`, and requires both witnesses to print `2`. |
+| R890-4 | Every registered supported natural language must be able to request proof translation. | `every_registered_natural_language_can_request_proof_translation` covers and compares the live `supported_languages()` registry: English, Russian, Hindi, and Chinese. |
+| R890-5 | The native and browser surfaces must expose the same proof-translation behavior, with a whole-task regression. | `whole_issue_890_workflow_solves_translates_and_executes` covers the native composition; `tests/e2e/tests/issue-890.spec.js` covers Rust and Python plus all registered natural-language request forms in the browser worker. |
+| R890-6 | Issue, PR, related-work, online-research, requirement, plan, and release evidence must remain traceable in the repository. | `issue_890_case_study_and_release_metadata_are_traceable` guards `docs/case-studies/issue-890`, this matrix, architecture, roadmap, and the minor changelog fragment. |
+| R890-7 | At least one of the five reviewed implementation leaves must be authored through the real Formal AI/Agent CLI loop and reproducible byte-for-byte. | Session `ses_03b44e557ffeSQeAuCYzxfc3BR` authored the proof invariant leaf, captured under `docs/case-studies/issue-890/agent-cli-evidence`; `agent_cli_authorship_leaf_is_byte_exact_and_reproducible` guards the artifact, session, raw stream, and replay script. |
+
+## Issue #917 General Natural-Formal Translation
+
+Issue [#917](https://github.com/link-assistant/formal-ai/issues/917) makes a
+formal language a first-class concrete syntax of the semantic meta language.
+Natural and formal statements therefore share one meaning identity and use
+seed-defined projections instead of direct language-pair translators.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R917-1 | A statement in every registered seed language must translate to at least one formal target and back without changing meaning. | `every_seed_language_round_trips_through_a_seeded_formal_target` covers English, Russian, Hindi, Chinese, and Spanish through FOL and requires the stable meaning `statement:P31(Q89,Q3314483)`. |
+| R917-2 | Formal targets, natural word order, and canonical relation surfaces must be seed-defined projections of one semantic statement, not per-pair translators. | `data/seed/formal-language-projections.lino` defines the projection catalog; `src/translation/formal_statement.rs` interprets it as one parser and one renderer per syntax. |
+| R917-3 | The issue #526 round-trip contract must extend to every new natural/formal pair. | `specification::translation_round_trip::every_seed_language_round_trips_through_first_order_logic` checks every natural-to-FOL-to-natural path through the same Wikidata-grounded predicate and entity roles. |
+| R917-4 | Native and browser surfaces must expose the same natural-formal translation behavior. | `whole_task_translation_uses_the_formal_projection_in_both_directions` covers the native engine; `tests/e2e/tests/issue-917.spec.js` covers both directions for every seed language through the Rust-to-WASM worker. |
+| R917-5 | Adding another formal target or natural projection must remain a data change. | The projection interpreters use the catalog's formal alias, statement template, word order, and relation surface; no source/target pair table is present. |
+| R917-6 | Issue, PR, related-work, research, requirements, plan, architecture, roadmap, and release evidence must remain traceable. | `issue_917_case_study_and_release_metadata_are_traceable` guards `docs/case-studies/issue-917`, the root documents, raw snapshots, and the minor changelog fragment. |
+| R917-7 | At least one of five independently reviewed leaves must be authored through the real Formal AI/Agent CLI loop and reproduced byte-for-byte. | Session `ses_01c33a95effeAcU4AdF9Ec66Wr` authored the formal-projection invariant; `issue_917_agent_cli_authorship_leaf_is_byte_exact_and_reproducible` and `experiments/issue_917_agent_cli.sh` guard the artifact and raw evidence. |
 
 ## Issue #498 Google Trends Requirements
 
@@ -713,7 +754,7 @@ records the larger source-import/backfill plan in the case study.
 | R271 | External knowledge sources and cached source responses must become first-class semantic concepts so future imports can preserve provenance. | Seeded as `external_knowledge_source` and `cached_source_response` meanings; full source-response importers are tracked as follow-up work in the case study. |
 | R272 | The semantic meta-language must stay small at startup while allowing on-demand expansion from external corpora. | Implemented by adding only the compact facet vocabulary to `data/seed/`; the case study recommends chunked `.lino` source-response caches for large corpora. |
 | R273 | Vision documentation must reflect recursive meaning descriptions and semantic facets. | Implemented in `VISION.md` under "Meaning And Identity". |
-| R274 | User-facing changes must be captured for release notes. | Implemented by `changelog.d/20260606_201500_issue_398_semantic_facets.md`. |
+| R274 | User-facing changes must be captured for release notes. | Implemented by the issue #398 fragment `20260606_201500_issue_398_semantic_facets.md` (collected into `CHANGELOG.md` at release). |
 | R275 | The self-defining Links-Theory root draft from PR feedback must be executable seed data, not only prose in a comment. | Implemented by `data/seed/meanings-links-root.lino`, embedded in `src/seed/embedded.rs` and `tests/source/seed/embedded.rs`, with `semantic_root` tests for root terms and closure. |
 | R276 | Self-referential primitives must be represented as meaning-backed self-equations. | Implemented by the `self_equation` semantic facet kind plus `type`, `not`, and `same` facet links, covered by `self_equations_are_explicit_semantic_facets`. |
 | R277 | Ambiguous symbols must split into one-symbol-one-meaning records. | Implemented by `one_symbol_one_meaning`, `sense_split`, `bank_river`, and `bank_money`; `ambiguous_bank_surface_is_split_into_distinct_symbols` asserts there is no ambiguous bare `bank` meaning. |
@@ -1056,6 +1097,40 @@ implemented, human-gated slice of the loop in code.
 | R394 | Verify the source-to-links representation round-trips back to source byte-for-byte for a real module (R558-05). | Implemented by `src/self_healing.rs` (`SourceRoundTrip`) over `src/agentic_coding/self_ast.rs`, confirming `source → links → source` reproduces the pinned planner module exactly (`faithful = true`), verified by `tests/unit/issue_558_self_healing.rs`. |
 | R395 | Make the self-healing loop reachable through the agentic interface (Codex, OpenCode, Gemini, Agent CLI) and prove it end to end. | Implemented by the fifth recipe `src/agentic_coding/self_heal.rs`, dispatched from `src/agentic_coding/planner.rs`; the driver write and agent-mode server routing are covered by `tests/unit/issue_558_self_healing.rs` and `tests/integration/issue_558_self_healing.rs`. |
 
+## Issue #531 Pattern Inference Research
+
+Issue [#531](https://github.com/link-assistant/formal-ai/issues/531) asks for a
+research-first plan for pattern inference across sequences, text, and 2D images,
+starting from associative deduplication and the upstream
+`linksplatform/Data.Doublets.Sequences` converters. PR
+[#642](https://github.com/link-assistant/formal-ai/pull/642) preserves the
+research record and implements the sequence, pattern, and algorithm-learning
+runtime, including the August 2026 review follow-up.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R396 | Preserve issue #531, PR #642, comments, review comments, upstream repository metadata, and selected sequence-converter source evidence under `docs/case-studies/issue-531`. | Implemented by `docs/case-studies/issue-531/raw-data/`, including GitHub JSON snapshots, Data.Doublets.Sequences metadata, checked commit data, converter file inventories, and selected C#/C++ source excerpts. |
+| R397 | Decompose issue #531 into explicit requirements and proposed solutions before runtime implementation. | Implemented by `docs/case-studies/issue-531/requirements.md`, which records `R531-01` through `R531-25`. |
+| R398 | Inventory current Formal AI integration points for link-native sequence and pattern inference. | Implemented by `docs/case-studies/issue-531/architecture-inventory.md`, covering `link_store`, `substitution`, `solver`, `meta_core`, existing text deduplication, and dependency boundaries. |
+| R399 | Research `linksplatform/Data.Doublets.Sequences` converters and dependencies before reimplementing sequence support in Rust. | Implemented by the saved upstream excerpts and summarized in `docs/case-studies/issue-531/README.md`, including `BalancedVariantConverter`, `OptimalVariantConverter`, `CompressingConverter`, `LinkFrequenciesCache`, `SequenceIndex`, and `StringToUnicodeSequenceConverter`. |
+| R400 | Document the known C# vs C++ `CompressingConverter` max-frequency discrepancy so it is verified before porting. | Implemented in `docs/case-studies/issue-531/{README.md,architecture-inventory.md,solution-plan.md}` and backed by raw C# and C++ converter excerpts. |
+| R401 | Research known algorithms and benchmark families relevant to associative deduplication, sequence pattern inference, and transformed 2D matching. | Implemented by `docs/case-studies/issue-531/raw-data/online-research.md`, covering SEQUITUR, Re-Pair, ARC-AGI, Data.Doublets.Sequences, meta-theory, and relative-meta-logic. |
+| R402 | Implement link-native sequence symbols, sequence markers, balanced/compressing converters, frequency caches, and exact expansion in Rust. | Implemented in `src/sequences/{store,symbols,converter,compression}.rs`: a doublet store with structural deduplication and lossless `expand`, unique symbol allocation, a balanced converter with a sequence index and frequency cache, and a Re-Pair-style compressor with an auditable trace. Covered by `tests/unit/sequences_{store,symbols,converter,compression}.rs`. |
+| R403 | Implement transformed pattern matching for 1D sequences/text and 2D grids, including symmetry, rotation, reflection, translation, and analogy-like comparisons. | Implemented in `src/sequences/{patterns_1d,grid_2d,inference}.rs`: 1D repetition/period/palindrome/reversal/translation classification and 2D horizontal/vertical/diagonal symmetry, rotations, reflections, and translations, unified by the inference reports. Covered by `tests/unit/sequences_{patterns_1d,grid_2d,inference}.rs`. |
+| R404 | Ground pattern-inference vocabulary in ontology/seed meanings instead of ad hoc strings. | Implemented by seed concepts in `data/seed/concepts.lino` for sequence, pattern, repetition, compression, deduplication, transformation, symmetry, rotation, reflection, translation, analogy, and invariant, all rooted in links and closed by the total-closure resolver. Covered by `tests/unit/issue_531_concepts_probe.rs`. |
+| R405 | Integrate pattern inference through a solver method with default-off diagnostics and auditable evidence. | Implemented by the `pattern_inference` method (`src/solver_handlers/pattern_inference.rs`), wired through `src/solver_dispatch.rs` and ranked ahead of the concept lookup for data-carrying prompts via `src/intent_formalization.rs`. It emits `pattern_inference:*` event-log entries surfaced only in diagnostic/trace views. Covered by `tests/unit/issue_531_pattern_inference.rs`. |
+| R406 | Define benchmark directions for text, symbolic sequences, event streams, ARC-style grids, and requirements-solution fact checking. | Planned in `docs/case-studies/issue-531/solution-plan.md` Phase 7. |
+| R407 | Protect the research contract with automated traceability coverage in PR #642. | Implemented by `tests/unit/docs_requirements_issue_531.rs`, wired through `tests/unit/mod.rs`. |
+| R531-17 | Address the latest review in this PR: discover algorithms from logs/events/steps/guides, apply the result to auto-learning, deepen the analysis, and replay the same task through Formal AI via Agent CLI. | The request is preserved in `raw-data/pr-642-latest-feedback.md`; R531-18 through R531-25 implement its independently testable parts. |
+| R531-18 | Normalize logs, events, portable memory, compiled guides, and Agent-CLI sessions into one ordered representation. | Implemented by `ExecutionTrace`, `TraceStep`, `src/algorithm_discovery/adapters.rs`, and `agentic_coding::algorithm_learning::trace_from_driver_outcome`; adapter coverage lives in `tests/unit/issue_531_algorithm_discovery.rs`. |
+| R531-19 | Discover reusable routines through link-native sequence matching, including episodes repeated inside one log. | `src/algorithm_discovery.rs` interns operations as link addresses, proves lossless compression, and mines maximal non-overlapping episodes without crossing unique trace boundaries. |
+| R531-20 | Generalize demonstrations into constants, parameters, and reused cross-step data flow rather than memorizing literal values. | Support-value vectors determine constant vs parameter arguments; equal varying vectors reuse the same parameter, then execute through a generic `AlgorithmHost` only after promotion. |
+| R531-21 | Use held-out observations as a real rejection boundary and retain value, operation, and missing-step counterexamples. | Two occurrences form support; later exact or same-entry traces become held-out tests. Both validated and failed candidates serialize their evidence and are covered by dedicated regressions. |
+| R531-22 | Keep discovery and self-learning safe: proposals must not execute or promote themselves. | Artifacts have schema/evidence integrity IDs, conformance has `side_effects "false"`, and execution requires validated evidence, a green named gate, named human approval, and an explicit host. |
+| R531-23 | Apply the learner to default idle auto-learning and preserve auditable artifacts. | `src/dreaming.rs`, `dreaming_runtime.rs`, and `cli_memory.rs` discover, retain, persist, and report `algorithm_learning_candidate` events without implicit promotion. |
+| R531-24 | Expose the same portable workflow through the library, public CLI, in-repo Agent loop, and real external Agent CLI. | Implemented by `formal-ai learn algorithms`, `formal-ai algorithm conformance`, `src/agentic_coding/algorithm_learning.rs`, binary/whole-task tests, and mandatory `experiments/agent_cli_e2e/run_issue_531.sh` CI coverage over the versioned benchmark. |
+| R531-25 | Deepen and fact-check the design against sequence compression, process mining/conformance, trace-model inference, abstraction-library learning, and project policy; document implemented behavior and limits. | `online-research.md`, `architecture-inventory.md`, and `solution-plan.md` record source-linked decisions, while the README distinguishes contiguous routines from unsupported branch/concurrency/recursion synthesis. |
+
 ## Issue #540 Dreaming Memory Maintenance
 
 Issue [#540](https://github.com/link-assistant/formal-ai/issues/540) asks for
@@ -1256,12 +1331,12 @@ Issue [#673](https://github.com/link-assistant/formal-ai/issues/673) (E54) asks
 the self-representation to grow from the single pinned module of R381 to a
 census of the whole workspace, so a self-coding planner can introspect more than
 one file. PR [#807](https://github.com/link-assistant/formal-ai/pull/807) adds
-per-module census documents under `data/meta/self-ast/`, a workspace index, a
+per-module census documents under `data/meta/self-ast/`, an in-memory workspace index, a
 drift guard, and census-backed edit-target resolution in the general planner.
 
 | ID | Requirement | Status |
 | --- | --- | --- |
-| R480 | Census every owned `src/` module, not one pinned file, and address each module through a workspace index. | `src/self_ast_census.rs` compiles a `WorkspaceCensus` from the compile-time `OWNED_SOURCE_FILES` manifest and renders one `.lino` document per module plus `data/meta/self-ast/index.lino`; covered by `every_owned_module_has_a_committed_census_with_its_fidelity_marker`. |
+| R480 | Census every owned `src/` module, not one pinned file, and address each module through a workspace index. | `src/self_ast_census.rs` compiles a `WorkspaceCensus` from the compile-time `OWNED_SOURCE_FILES` manifest and renders one `.lino` document per module. The deterministic aggregate remains available through `index_notation`/`dump_self_ast_census` but is not tracked, preventing every parallel source branch from editing the same generated file; covered by `every_owned_module_has_a_committed_census_with_its_fidelity_marker` and `committed_documents_exclude_the_redundant_workspace_aggregate`. |
 | R481 | Scale honestly with a documented fidelity marker per module: full AST for `src/agentic_coding/`, signature-level census elsewhere. | `CensusFidelity::{FullAst, Signature}` is chosen by `fidelity_for` and written as a `fidelity` line in every document; `the_workspace_census_is_addressable_without_a_multi_megabyte_seed` pins the size discipline. |
 | R482 | Regenerate deterministically and incrementally, and fail a drift check when a committed census diverges from its source. | `WorkspaceCensus::documents` is a pure, path-sorted function of the sources; `drift_report` reports `Missing`/`Stale`/`Orphan`. Covered by `census_regenerates_deterministically_and_incrementally`, `drift_check_fails_on_a_fixture_with_a_stale_census`, and the disk guard `committed_census_documents_match_what_the_sources_render`. |
 | R483 | Resolve edit targets through the census index instead of hardcoded paths, for any module the method registry knows. | `resolve_census_target` in `src/agentic_coding/general_planner.rs` routes `compose_edit_request` through `WorkspaceCensus::resolve`; covered by `the_planner_resolves_an_edit_target_outside_planner_rs_via_the_census` and `the_index_resolves_every_path_symbol_the_method_registry_knows`. |
@@ -1486,6 +1561,30 @@ judgement as its base case.
 | R847-7 | A real corpus task must decompose into children a human agrees are smaller and jointly sufficient. | Covered by `a_real_corpus_task_splits_into_smaller_jointly_sufficient_children`, which splits this repository's own `experiments/` code-change-detector task into its two edits. |
 | R847-8 | The spectrum must run from a GitHub issue down to a single atomic edit, with regression coverage in the specification suites in all four languages. | `the_spectrum_runs_from_issue_to_atomic_edit` pins both ends of the ladder; `tests/unit/specification/task_decomposition.rs` holds the four-language specifications and `tests/unit/issue_847_task_decomposition.rs` the reproduction cases. |
 
+## Issue #848 Executable Coding Tasks
+
+Issue [#848](https://github.com/link-assistant/formal-ai/issues/848) asks for
+an honest, broad measurement of Formal AI doing real coding work through the
+Agent CLI. The v0.303.0 baseline passed 38/130 tasks; the prepared branch
+passed 45/130 with no test authoring or targeted edit. PR
+[#897](https://github.com/link-assistant/formal-ai/pull/897) adds a semantic,
+observed execution floor and makes the ladder reject false greens. See
+`docs/case-studies/issue-848/` for the full evidence and residual boundary. The
+final complete v0.320.0 measurement passes 65/130 tasks (L2 5/12, L3 10/28).
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R848-1 | A complete run must measure all 130 tasks and never confuse a filtered diagnostic or unavailable server with the canonical score. | The runner records completeness and `not_measured`, writes filtered results separately, persists every task incrementally, and requires absence of the launcher success marker before diagnostic text can mean the server never started. |
+| R848-2 | Source creation must render executable bytes from the formalized request, never echo request prose, and must observe the exact target after writing. | `src/agentic_coding/code_task.rs` lowers seed-backed function, constant, and test concepts and verifies with an exact `cat`. |
+| R848-3 | New Rust targets must compile before the ladder credits them. | The real-client harness invokes `rustc` only for requested targets that did not exist before the task. |
+| R848-4 | The full result must have nonzero `test_authoring`, `targeted_edit`, L2, and L3 outcomes. | The complete ladder result records all four above zero; deterministic regressions pin source generation and grounded edits. |
+| R848-5 | Repository search must use the named code subject rather than the full conversational prompt. | `src/agentic_coding/shell_command.rs` emits one focused query; seven independent subject shapes are covered. |
+| R848-6 | Structured collection edits must transform existing workspace bytes and verify the written result. | `src/agentic_coding/structured_edit.rs` implements read → transform → write → exact observation. |
+| R848-7 | The approach must work across supported languages and benchmark facts must track the repository version. | Coding meanings cover en/ru/hi/zh; file-derived expectations resolve the current version from `Cargo.toml` and fail closed. |
+| R848-8 | At least 20% of reviewed smallest leaves must be completed through Formal AI and the real Agent CLI. | Sessions `ses_04160c59fffe3FDUKteR56kfQp`, `ses_03d2e0597ffeAUZhq3qAtj2I4U`, `ses_03d2df24effeijLfzPXiUeV4pG`, and `ses_03d2ddb1cffeQkS5gxWjpMojc6` authored four of seven leaves (57%); exact client/server logs, canonical artifacts, and replays are committed. |
+| R848-9 | Repeated verified workspace changes may become reusable procedures only after a review-gated learning cycle, and unapproved candidates must remain inert. | `src/workspace_change_learning.rs` separates task and execution fingerprints, records exact successful observations, forms candidates after two distinct tasks, requires a named approval and zero-failure gate, and exposes execution only for content-addressed approved-ledger recipes. |
+| R848-10 | Symbol refactors and composite module requests must transform grounded workspace bytes, verify each effect exactly, and terminate. | `src/agentic_coding/workspace_change.rs` uses the shared bounded Normal Markov executor, a compact edit or validated repeated-identifier command, and exact SHA-256 observations; composite requests perform an observed source write followed by a compact registration edit. Issue #848 regressions cover Agent absolute paths, repeated matches, write-only fallback, and both transaction effects. |
+
 ## Issue #706 Any-Language Protocol
 
 Issue [#706](https://github.com/link-assistant/formal-ai/issues/706) (E64)
@@ -1549,3 +1648,337 @@ owner remains required and must not be read as implemented.
 | R710-30 | link-foundation/start and command-stream adoption. | `still-broken` — [#8](https://github.com/link-assistant/formal-ai/issues/8) and [#195](https://github.com/link-assistant/formal-ai/issues/195). |
 | R710-31 | web-search/web-capture as production components. | `still-broken` — [#896](https://github.com/link-assistant/formal-ai/issues/896). |
 | R710-32 | Iframe pre-check and external-link actions. | `works-now` — browser navigation/embedding regressions. |
+
+## Issue #858 Claude Code Returning-User Recap
+
+Issue [#858](https://github.com/link-assistant/formal-ai/issues/858) reports
+that Claude Code's `/recap` command fell through to the unknown-intent answer.
+PR [#899](https://github.com/link-assistant/formal-ai/pull/899) adds a semantic
+returning-user role, bounded plain recap output, canonical history sanitation,
+and browser-worker parity. See `docs/case-studies/issue-858/`.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R858-1 | Recognize Claude Code's expanded returning-user recap semantically and answer without a tool call or unknown fallback. | Implemented by `conversation_return_recap` seed data and `conversation_memory/conversation_summary.rs`; covered by the exact Anthropic Messages regression. |
+| R858-2 | Produce fewer than 40 words in one or two plain sentences without Markdown. | Implemented by `summarize_dialog_plain` with explicit 39-word/two-sentence limits. |
+| R858-3 | Lead with the real user goal and current assistant status, never Claude's injected `<system-reminder>` metadata. | Agentic recap and conversation-aware research reuse `protocol::chat_prompt_and_history`; covered by the multi-part reminder fixture and live Claude before/after evidence. |
+| R858-4 | Preserve the existing detailed ordinary conversation summary. | The compact formatter is selected only by the returning-user role; covered by `ordinary_summary_keeps_the_existing_detailed_report`. |
+| R858-5 | Keep language surfaces in seed data for every supported language. | English, Russian, Hindi, Chinese, and Spanish forms live in `meanings-intent.lino`; generated role registries and the multilingual regression pin them. |
+| R858-6 | Keep the Rust core and browser worker behavior aligned. | The worker mirrors semantic routing and the bounded formatter; `browser_worker_matches_the_rust_recap_contract` executes the parity harness. |
+
+## Issue #708 Bounded Natural-Language Memory Programs
+
+Issue [#708](https://github.com/link-assistant/formal-ai/issues/708) (E66)
+requires associative-memory requests to compile into one inspectable,
+permissioned Links Notation program rather than disappear into handler control
+flow. PR [#883](https://github.com/link-assistant/formal-ai/pull/883) adds a
+closed seeded algebra, explicit caller-derived bounds, editable review shapes,
+and matching native/browser interpreters.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R708-1 | Natural-language memory requests must compile into an executable program using only the closed primitive set `match`, `create`, `update`, `delete_with_retraction`, `map_matches`, `filter`, `sequential_compose`, and bounded fixpoint iteration. | `src/memory_program.rs` compiles only complete families from `data/seed/memory-programs.lino`; `src/memory_program/execution.rs` interprets the closed enum. Covered by `fifteen_seeded_query_families_compile_with_a_program_trace` and the parser unit suite. |
+| R708-2 | Equivalent English, Russian, Hindi, and Chinese requests must produce the same program; the current language protocol additionally requires Spanish. | Language is excluded from canonical identity while bindings, limits, permissions, and steps remain included. Covered by `equivalent_multilingual_requests_compile_to_the_same_program_links`, the browser multilingual case, and language-parity checks. |
+| R708-3 | Compilation and execution must remain inspectable: show program, stable id, permissions, limits, matched ids, outcome, halt reason, and an honest `program_gap`. | The shared query surface embeds the serialized program and execution trace; unmatched memory cues report `program_gap` without partial compilation. Covered by `query_surface_traces_the_compiled_program_and_names_program_gaps`. |
+| R708-4 | Bounds must come from task decomposition depth, stop before unsafe partial effects, and distinguish fixpoint from a bound stop. | `MemoryProgramLimits::from_decomposition_depth` derives iteration and match caps, serializes them into program identity, and the interpreter reports `match_limit` or `iteration_limit`. Covered by `bounds_stop_honestly_before_partial_writes`. |
+| R708-5 | Destructive effects require explicit confirmation and preserve append-only history. | Permission is seed-owned and revalidated after edits; `delete_with_retraction` is refused without `DestructiveConfirmed` and appends a retraction rather than erasing its target. Covered by `destructive_program_requires_confirmation_and_appends_a_retraction`. |
+| R708-6 | Reviewers must be able to parse, edit, and re-execute the visible `replace x y` and `when n do m` forms without a hidden permission escalation. | The parser makes the visible forms authoritative, rebuilds affected steps, reapplies seed permissions, and recomputes canonical identity. Covered by `compiled_program_round_trips_replace_and_when_do_shapes`. |
+| R708-7 | At least 15 families must include selective contributed-fact rename, weekly topic summary, and missing-Russian-label todos. | The seed contains exactly 15 reviewed families across reads, writes, mapping, filtering, retraction, and fixpoint normalization. Covered by the 15-family compiler regression and the native execution suite. |
+| R708-8 | Mapping must affect execution, and the same compile/execute/persist/refuse/gap semantics must work in native and browser memory. | Both interpreters carry `map_matches` state into aggregation and source-preserving collection copies; browser events are atomically persisted to IndexedDB. Covered by `mapped_copy_retains_source_content_and_collection` and `tests/e2e/tests/issue-708.spec.js`. |
+| R708-9 | The solution must document the link-cli operation census, natural-language triple-store querying, bounded Datalog relationship, and self-application evidence. | `docs/case-studies/issue-708/README.md` records the source-pinned census and conservative boundedness decision; `issue_708_self_hosting` byte-checks three Agent-CLI-authored leaves, satisfying the repository's 20% self-hosting gate. |
+
+## Issue #709 Multi-Source Search Fusion
+
+Issue [#709](https://github.com/link-assistant/formal-ai/issues/709) composes
+exact search/page capture, multilingual formalization, #844's statement merge,
+relative source tiers, and normalized presentation into one ranked answer. See
+`docs/case-studies/issue-709/` and PR #884.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R709-1 | Formalize every captured search hit and fetched page with source provenance. | `execute_search_fusion` records a `FormalizedSearchObservation` plus event-log and learning-proposal receipts for each statement. |
+| R709-2 | Merge equivalent meanings across languages and rank them using original, independent, and unoriginal source tiers. | Complete Q/P/Q meaning links enter #844's semantic signature; reposts are traced but excluded from evidence. |
+| R709-3 | Deformalize the smallest sufficient ranked answer into the query language and show both conflict sides with posteriors. | The selection is bounded to three meanings, retains both polarities, and emits `conflict:source_disagreement`. |
+| R709-4 | Normalize URL, title, quote, and read-more fields across web, CLI/HTTP, and Telegram. | `NormalizedSearchSource`, the shared Rust Markdown renderer, Telegram HTML conversion, and the browser worker source cards are covered by unit and Playwright fixtures. |
+| R709-5 | Replay deterministically in CI while live search remains explicitly gated. | A three-source exact-capture fixture compares the live and offline render, trace, and proposal byte-for-byte; browser providers are intercepted. |
+
+## Issue #835 Multi-Jurisdiction File Legal-Risk Assessment
+
+Issue [#835](https://github.com/link-assistant/formal-ai/issues/835) asks Formal
+AI to check files across jurisdictions without pretending that one global
+legality database exists. PR
+[#900](https://github.com/link-assistant/formal-ai/pull/900) implements an
+evidence-oriented library and CLI pipeline. See
+`docs/case-studies/issue-835/` for the decomposition, sources, raw captures,
+solution, and real Agent CLI evidence.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R835-1 | Inspect files without returning a blanket global legality decision. | `check_file_legality` always emits `verdict: not_provided` plus no-global-verdict and not-legal-advice limitations. |
+| R835-2 | Assess national-security, forbidden-content, and copyright/IP risk independently for every jurisdiction. | The Cartesian jurisdiction/category report preserves `unknown`, negative signal, risk signal, and confirmed prohibited match as distinct statuses. |
+| R835-3 | Preserve jurisdiction, versioned policy, evidence, confidence, and provenance. | `JurisdictionPolicy`, `DetectorObservation`, category assessments, and provider-run receipts serialize all review inputs and actions. |
+| R835-4 | Run detector integrations independently. | `LegalityEvidenceProvider` executes category-declared adapters separately and records completed/failed/skipped states without one timeout suppressing other evidence. |
+| R835-5 | Fail closed for confirmed child-safety hashes without storing or reproducing content. | An authorized-provider receipt suppresses SHA-256 and Exif/GPS derivatives, skips ordinary providers, emits only safe provider references, and requires refusal/escalation. |
+| R835-6 | Extract relevant Exif/GPS metadata with field-level provenance. | Generated-TIFF tests cover author, copyright, camera make/model, capture time, latitude, longitude, source, and locator. |
+| R835-7 | Generalize to image, document, audio, video, and other files. | Byte-signature and extension classification feed the same report schema; a five-family regression verifies it. |
+| R835-8 | Expose a callable function and CLI. | The Rust API and `formal-ai file-legality FILE [--config JSON] [--jurisdiction CODE]` share the serializable configuration/report. |
+| R835-9 | Preserve reproducible TDD, research, and self-hosting evidence. | Focused unit and CLI tests, primary-source research, raw GitHub JSON, and session `ses_03d2a3c95ffe1gfVxnh24MtxFi` live in the issue #835 case study. |
+
+## Issue #864 Proactive Failure-Report Invitations
+
+Issue [#864](https://github.com/link-assistant/formal-ai/issues/864) asks
+Formal AI to initiate issue reporting after failures it detects in every UX
+surface. PR [#910](https://github.com/link-assistant/formal-ai/pull/910) adds an
+opt-in invitation while preserving #839's contextual report and confirmation
+boundary. See `docs/case-studies/issue-864/`.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R864-1 | Proactively ask for issue-report consent after detected reasoning, provider, and tool failures in Rust, browser/desktop, and agentic coding harnesses. | A shared seed-backed Rust invitation, explicit browser `detectedFailure` state, and Agent-plan aggregation cover every surface; focused Rust and Playwright regressions exercise each route. |
+| R864-2 | Detect semantic failure signals without treating ordinary error-like prose, refusal, denial, cancellation, abort, pending approval, or missing grants as Formal AI failures. | Rust uses structured result fields plus the seeded tool-failure role; the browser uses intents and structured results only. Positive and negative regressions pin the boundary. |
+| R864-3 | Localize the invitation and preserve detected-failure state across UI persistence and nested Agent execution. | Seed invitations cover English, Russian, Hindi, Chinese, and Spanish; four UI-catalog prompts cover the currently published browser locales; IndexedDB hydration and every Agent subanswer retain the failure bit. |
+| R864-4 | Reuse the contextual six-section issue report and never file automatically. | The inline action calls #839's existing report builder; browser assertions inspect all six sections and the live Agent CLI E2E rejects any `gh issue create` before consent. |
+| R864-5 | Preserve reproducible browser, real Agent CLI, CI, and self-application evidence. | Before/after screenshots, raw two-round failure evidence, a dedicated live-client workflow, and Agent-authored policy leaf from session `ses_03b54b716ffe3E7D9TZMDg6Evs` live in the case study. |
+
+## Issue #914 Vision Implementation Planning, Coding First
+
+Issue [#914](https://github.com/link-assistant/formal-ai/issues/914) is a
+meta-planning issue in the lineage of
+[#244](https://github.com/link-assistant/formal-ai/issues/244) and
+[#651](https://github.com/link-assistant/formal-ai/issues/651): sync the
+documentation with the actual state of the code, then create all the issues
+needed to fully implement the vision, with coding via formal logical
+reasoning as the first skill to complete and critical vision-blocking code
+problems fixed first. The case study, gap analysis, epic bodies (E69-E77),
+and opened-issue record live in `docs/case-studies/issue-914/`.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R914-1 | Use all previous issues, pull requests, comments, and the requirements and vision files as input evidence for the plan. | Collected: `docs/case-studies/issue-914/raw-data/` holds the GitHub snapshots and the 152-issue post-audit sweep; prior audits are cited in the case-study README. |
+| R914-2 | First update documentation to fully track implementation progress of all requirements. | Implemented by the ninth-pass audit in `ROADMAP.md` (2026-08-03) and this table; guarded by `issue_914_case_study_and_planning_docs_are_traceable`. |
+| R914-3 | Documentation must be in sync with the actual state of the code. | Implemented: four stale eighth-pass rows corrected (#698, #709, #662/#704, #686/#702 shipped after the eighth pass) and every area re-verified against `src/` and the epic sweep. |
+| R914-4 | After the docs are in sync, create all the issues needed to fully implement the vision. | Implemented: epics E69-E77 drafted in `docs/case-studies/issue-914/proposed-issues.md` and opened on GitHub with URLs recorded there. |
+| R914-5 | The system learns the universal problem-solving algorithm, making it possible to truly solve translation between natural and formal languages. | Tracked: E70 owns general natural-formal translation; E75 owns method learning over the recipe interpreter and method registry. |
+| R914-6 | Keep a minimum core of algorithms plus a data seed whose metadata is rich enough to problem-solve the way people do. | Tracked: E71 owns the core-boundary ratchet over the remaining `src/solver_handlers/` files and the seed-metadata audit. |
+| R914-7 | No neural networks in reasoning; formal reasoning covers all existing test cases and much more. | Standing invariant (NON-GOALS.md) restated as a binding design rule for every epic; coverage growth with external benchmark scoring is E76. |
+| R914-8 | Learn to discover enough knowledge from the internet and other sources to solve all tasks, coding first. | Tracked: E72 owns the research-to-verified-procedure loop over the provenance-tracked source cache, building on #873 and #896. |
+| R914-9 | Coding first: once Formal AI can code, that skill speeds up its own development. | Tracked: E69 ratchets the #848 coding ladder (baseline 2 of 13 rungs, zero write effects) over the #902-#909 harness fixes; E77 routes real repository work through Formal AI per release. |
+| R914-10 | Work with unknowns, asking the user as few questions as possible and only requirement-level ones. | Tracked: E73 adds the question-necessity protocol over the existing clarify-vs-guess, unknown-reasoning, and #527 question-catalog mechanisms. |
+| R914-11 | Integrate well with link-assistant/hive-mind through agentic harness CLIs and TUIs. | Tracked: E74 owns the replayable end-to-end gate in both directions, including the hive-mind#2059 invocation shape. |
+| R914-12 | The result is issues created in this repository representing the full plan. | Implemented: opened-issue URLs recorded in `docs/case-studies/issue-914/proposed-issues.md`. |
+| R914-13 | Build on the best previous experience; generalize without dropping anything already supported. | Binding design rule ("keep the regression floor") in the epic batch; every epic lists the existing components it generalizes. |
+| R914-14 | Fix critical vision-blocking code problems first, so the plan builds on a solid foundation. | Implemented in the plan: E69 is the foundation blocker consolidating #902-#909 behind the coding-ladder ratchet; every dependent epic declares its E69 dependency. |
+| R914-15 | Collect the data into `docs/case-studies/issue-914` with deep analysis, online research, the full requirement list, and per-requirement solution plans checking existing components. | Implemented: README, requirements, solution plan, proposed issues, raw GitHub data, and the component/license research live in that folder. |
+
+## Issue #891 Equation Corpus Ratchet
+
+Issue [#891](https://github.com/link-assistant/formal-ai/issues/891) (child of
+[#710](https://github.com/link-assistant/formal-ai/issues/710)) closes the issue
+[#406](https://github.com/link-assistant/formal-ai/issues/406) requirement of at
+least fifty *verified* equation-type examples. The delegation tests asserted
+equation categories but nothing defined them in machine-readable form and
+nothing counted them, so no ratchet could fail on a regression. The corpus lives
+in `data/benchmarks/equation-type-corpus.lino`, the ratchet in
+`tests/unit/specification/equation_corpus.rs`, and the analysis in
+`docs/case-studies/issue-891/`.
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R891-1 | Define a machine-readable corpus with at least 50 distinct equation types. | Implemented: `data/benchmarks/equation-type-corpus.lino` defines 72 distinct `equation_type` records; `issue_891_equation_corpus_is_well_formed` asserts distinctness and the 50-type floor. |
+| R891-2 | Run every case through the production solver and verify the result. | Implemented: every expected answer is the observed output of `FormalAiEngine::answer` (`examples/issue_891_equation_probe.rs`); `issue_891_equation_corpus_solves_every_type` replays all 72 cases and compares intent, engine and exact answer. |
+| R891-3 | Add a CI ratchet that fails below 50 verified types or on any corpus regression. | Implemented: the ratchet asserts `passed >= minimum_pass_count` (72) and `verified_types >= minimum_verified_types` (50) inside the default `cargo test --test unit` job. |
+| R891-4 | Record category coverage. | Implemented: seven categories (linear one-step / multi-step, placeholder, symbolic multi-variable, polynomial, natural-language wrapper, evaluation-and-percent) with counts in `docs/benchmarks.md`; the category set is pinned by the well-formedness test, which reads the expected language coverage from `registered_languages()`. |
+| R891-5 | Record upstream calculator limitations. | Implemented: ten `benchmark_limitation` records (irrational/complex roots, contradiction, malformed input, identity, unit-carrying equations, named-unknown declarations, command-shaped prompts) asserted by `issue_891_recorded_limitations_never_fabricate_answers` to keep declining rather than fabricating. |
+| R891-6 | Solve the class, not the prompts: new equation-solving cues belong to the seed. | Implemented: `data/seed/meanings-calculator.lino` gains `calculation_request_cue` surfaces for en/ru/zh/hi equation phrasings and a first Spanish lexeme; the Rust engine and the JavaScript worker read them from the same seed and `src/` carries no hardcoded phrase. |
+## Issue #909 Headless-Ready Global Client Configuration
+
+Issue [#909](https://github.com/link-assistant/formal-ai/issues/909) reports that
+`formal-ai with <tool> --global` wrote shell exports and nothing else, so gemini
+(`Invalid auth method selected`) and qwen (`No auth type is selected`) still
+refused to start headlessly while `--global` reported success and exited 0. The
+per-run path already wrote both missing pieces; only the global path had drifted.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R909-1 | `--global` must materialise every file the client needs for a headless start, not only shell exports, driven by the client registry. | Implemented by the `companion "<path>"` global-config node in `data/seed/client-integrations.lino` (gemini's `~/.gemini/settings.json` with `security.auth.selectedType`), parsed by `parse_companion_file` and written, backed up, and undone by `write_companion_file` alongside the primary file (landed for R916-08a); guarded here by `global_gemini_writes_the_settings_file_that_selects_an_auth_type` and `global_gemini_preserves_and_restores_an_existing_settings_file`. |
+| R909-2 | The OpenAI-compatible clients must receive the complete auth triple, including `OPENAI_MODEL`. | Implemented by `shell_env "OPENAI_MODEL={model}"` in qwen's `global` block (landed for R916-08b); guarded here by `global_qwen_writes_the_complete_openai_triple`. |
+| R909-3 | `--global` must not report success when the configuration it just wrote cannot start the client. | Implemented by `src/client_integrations/global_verify.rs`: `verify_written_config` re-reads every seed-declared `headless_require` from the files on disk and fails with `client_global_config_requirement_missing`; the opt-in `--verify` runs `probe_headless_start`, which starts the client once non-interactively and fails on a seeded `auth_refusal`. Guarded by `verify_fails_when_the_configured_client_refuses_to_start`, `verify_succeeds_when_the_configured_client_starts`, `verify_is_rejected_without_global`, and the unit tests in `global_verify.rs`. |
+| R909-4 | The headless contract must be declared as data, apart from the settings that write it, so verification reads back the result instead of trusting the writer. | Implemented by the `headless_require "<kind>=<target>"` and `auth_refusal "<text>"` seed entries and their `ClientIntegrationGlobalConfig::headless_requirements` / `ClientIntegrationCompanionFile::headless_requirements` / `ClientVerification::auth_refusals` fields; `issue_909_headless_global_configuration_is_traceable` guards the registry shape. |
+| R909-5 | The gap and its closure must be reproducible without a live client. | Implemented by `experiments/issue-909-headless-config-gaps.sh`, which runs `--global` into a throwaway `HOME` and reports every missing headless requirement per tool. |
+| R909-6 | The composition of R909-1..R909-4 must break the build, not only each requirement in isolation. | Guarded by the whole-task test `global_all_leaves_every_client_headless_ready_and_probed`: one `--global --all --verify` sweep must satisfy every requirement the registry declares, read back from the files on disk, and the same sweep must fail when a probed client answers with an auth refusal. |
+| R909-7 | A generated seed block's shard must be a function of that block alone, so a change to one block cannot dirty the rest of `data/seed`. | Raised in review on this issue: `scripts/close-total.py` filled `closure-generated-NN.lino` sequentially up to a line cap, so each shard depended on the total size of everything sorted before it and one new token dirtied 11 of 11 shards. Implemented by `shard_for(slug)`, which places a meaning by `sha256(slug) % SHARD_COUNT`; guarded by `generated_closure_shards_are_content_addressed` and measured across four sort positions by `experiments/issue-909-seed-shard-conflict-blast-radius.sh`. |
+
+## Issue #893 Iterative Summarization Validation and the 80% Quality Ratchet
+
+Issue [#893](https://github.com/link-assistant/formal-ai/issues/893) (child of
+[#710](https://github.com/link-assistant/formal-ai/issues/710)) records the
+audit verdict *still-broken* for the part of issue
+[#563](https://github.com/link-assistant/formal-ai/issues/563) that the file and
+folder summarizers never covered. #563 did not only ask for
+`summarize_repository_file`; it asked for a *protocol*: take two random
+repository files, check the summaries, generalize, take two more, and repeat
+until the result is stable on files nobody optimized for, at a quality bar of at
+least 80%. The pipeline had the recursion, the exact captures and the
+determinism, but nothing sampled random files, nothing iterated, and no metric
+existed to be 80% of. The protocol lives in `src/summarization/validation/`
+(`mod.rs` the loop and the reports, `sampling.rs` the draw, `criteria.rs` the
+checks, `baseline.rs` the ratchet),
+the operator surface in `src/cli_summarization.rs`, the committed baseline in
+`data/summarization/quality-baseline.lino`, and the analysis in
+`docs/case-studies/issue-893/`. One test per requirement, plus a whole-task test
+that runs the protocol over the real repository, lives in
+`tests/unit/specification/issue_893_summarization_validation.rs`.
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R893-1 | Define a reproducible seeded sampling protocol over repository files. | Implemented: `SamplingProtocol { seed, files_per_iteration, max_iterations, minimum_iterations, stability_window, stability_tolerance_percent }` sorts the corpus and permutes it with a seeded `splitmix64` Fisher-Yates shuffle, so the draw depends on the seed and the corpus alone — not on caller order — and is a permutation, so no file repeats inside a run. `stratified_sampling_order` then promotes the first fence-carrying Markdown file to the front, leaving every other file at its seeded position, because a uniform draw of the affordable size can miss that stratum entirely. `issue_893_seeded_sampling_is_reproducible_and_seed_dependent` asserts reproducibility, caller-order independence, seed dependence and the permutation property. |
+| R893-2 | Validate two files per iteration until the result stabilizes or a reported bound is reached. | Implemented: `DEFAULT_FILES_PER_ITERATION = 2`; `validate_repository_summarization` draws disjoint two-file slices of the permutation and stops when `DEFAULT_STABILITY_WINDOW = 3` consecutive iterations all clear the ratchet within `DEFAULT_STABILITY_TOLERANCE_PERCENT = 5` points of one another — but never before `DEFAULT_MINIMUM_ITERATIONS = 12` iterations (24 files) have run, capped by what the corpus can supply, since three perfect iterations are six files and six files are no evidence about a corpus of thousands. Otherwise it stops at `max_iterations` with `bound_reached true`. `issue_893_iterations_validate_two_files_each_until_stable_or_bounded` asserts both exits and the minimum sample. |
+| R893-3 | Define and publish the quality metric with an 80 percent minimum ratchet. | Implemented: `CRITERIA` publishes ten named, described criteria; `QualityScore` is an exact integer `passed/applicable` ratio, floored, with an empty score scoring 0 rather than a vacuous 100; `QUALITY_RATCHET_PERCENT = 80` and `ratchet_violations` enforce the floor plus monotonicity against `data/summarization/quality-baseline.lino`. `formal-ai summarization criteria` prints the published metric. `issue_893_quality_metric_is_published_and_ratcheted_at_eighty_percent` and `issue_893_committed_baseline_records_the_measured_run` assert it. |
+| R893-4 | Exercise recursive Markdown embedded grammars through the production summarizer. | Implemented: `evaluate_file` scores every sampled file through `formalize_repository_file` / `RepositoryFileFormalization::summary`, and the `embedded_grammar_recursion` criterion checks every fenced block against an *independent* CommonMark fence scanner so the summarizer never grades itself. A run may not declare stability until at least one embedded grammar block has been exercised, and `ratchet_violations` rejects a run that recorded none. Because that rejection is fatal, reaching the recursive case is not left to luck: the stratified draw puts a fence-carrying Markdown file into iteration 0. Optional concrete-syntax evidence is bounded to 32 KiB per file or embedded block, while structural summarization still processes the complete artifact, so a seeded draw of a multi-megabyte trace cannot monopolize validation. `issue_893_markdown_embedded_grammars_run_through_the_production_summarizer` and `issue_893_oversized_structured_files_skip_the_unbounded_meta_language_parse` cover both paths. |
+| R893-5 | Report honestly rather than claiming a stability the run never observed. | Implemented: `ValidationReport` carries `stabilized` and `bound_reached` separately, records every failing criterion with its evidence detail, and `to_links_notation` writes exactly what the ratchet reads back, including `ratchet_runner`, `ratchet_policy` and `honesty_policy`. Criteria that do not apply to a file are excluded from its denominator instead of counted as passes. |
+
+## Issue #895 Coverage Publication And Ratchet
+
+Issue [#895](https://github.com/link-assistant/formal-ai/issues/895) (child of
+[#710](https://github.com/link-assistant/formal-ai/issues/710)) makes the
+"double the tests toward 100%" requirement enforceable. CI generated an LCOV
+file and uploaded it, but nothing read the numbers, so no threshold could fail
+and no decrease could be detected. The gate lives in
+`scripts/check-coverage-ratchet.rs`, the reviewed floors in
+`coverage/baseline.json`, and the design rationale in
+[`docs/design/coverage-ratchet.md`](docs/design/coverage-ratchet.md).
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R895-1 | Publish coverage in both a human-readable and a machine-readable form. | Implemented: `coverage/summary-<name>.md` (per-metric table of covered/total counts, measured percentage, baseline, delta in percentage points, status; the ten least-covered files; the inventory result) is appended to `$GITHUB_STEP_SUMMARY` and uploaded, alongside `coverage/summary-<name>.json` carrying the same metrics plus per-file counts. Regressions are also emitted as `::error::` annotations. |
+| R895-2 | Check a baseline threshold and reject decreases unless an explicit reviewed baseline update is included. | Implemented: `scripts/check-coverage-ratchet.rs` compares measured line and function percentages against `coverage/baseline.json` and exits `1` on a drop beyond `tolerance_percent`. `--update-baseline` raises a floor freely but refuses to lower one without `--justification "<reviewed reason>"`, which is recorded as `lowered_reason` so the decrease reaches review as a sentence in the diff. An empty denominator is a hard error rather than `0%`. |
+| R895-3 | Cover Rust and browser production paths, or document separate honest denominators. | Implemented as two denominators, never averaged. `rust` measures the workspace via `cargo llvm-cov`. `browser` measures `src/web/` via `tests/web/`, which loads the unbundled page scripts and the 24-module worker mirror through `node:vm` under their real repository paths so V8 attributes coverage to the files the browser downloads, and boots the worker through `src/web/formal_ai_worker.js` with the canonical `data/seed/*.lino` corpus behind `fetch`. |
+| R895-4 | The browser denominator must not be narrowed silently. | Implemented: every `src/web/**/*.{js,jsx}` file must be measured or listed in `coverage/browser-unmeasured.txt` as a `path<TAB>reason` row. Modeled on `scripts/hardcoded-language-allowlist.txt`, the gate fails on an undeclared, missing, stale or unexplained row, so the list can shrink but never grow silently. Generated bundles are excluded as build output and their sources measured instead. |
+| R895-5 | Add regression tests for threshold enforcement and baseline updates. | Implemented: `scripts/check-coverage-ratchet-tests.rs` covers LCOV parsing, the threshold and tolerance band, the published Markdown and JSON reports, the refusal to lower without a justification, the recording and later clearing of `lowered_reason`, and the inventory gate; a final case validates the committed `coverage/baseline.json`. Run as `rust-script --test scripts/check-coverage-ratchet.rs` in the `lint` job. |
+
+## Standing Doctrine: Compiled Logic, Interfacing-Only JavaScript (2026-08-04)
+
+Stated by the project owner as a standing architectural requirement; it
+strengthens R194/R249/R380 from "as much as possible" to a boundary rule.
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R536 | JavaScript must be used only as interfacing glue and for JSX (React) UI components. All logic must be compiled Rust — native on the server side, WebAssembly in the web app — and the same WASM web engine must be reused by the desktop shell and other surfaces (VS Code, etc.) rather than reimplemented. | Partially implemented: `src/web/wasm-worker/` owns the parity-sensitive primitives and `src/web/app/main.jsx` is the JSX UI; `src/web/worker/*.js` still carries ~27,700 lines of mirrored solver logic under the shrink-only ratchet `scripts/check-worker-line-budget.rs`. Desktop serves the same `src/web/` engine bundle and prefers the native `formal-ai serve` process; the VS Code web host runs the in-process WASM engine. Full absorption of the JS worker into Rust→WASM is tracked by [#658](https://github.com/link-assistant/formal-ai/issues/658) (R380); after absorption the JavaScript surface is capped and lint-enforced as UI/glue. |
+
+## Issue #894 CI Template Upstream Filings
+
+Issue [#894](https://github.com/link-assistant/formal-ai/issues/894) (child of
+[#710](https://github.com/link-assistant/formal-ai/issues/710)) closes the
+four-template CI/CD audit
+(`docs/case-studies/issue-479/template-comparison/REPORT.md`), which ended with
+*drafted* upstream issues and no field in which a filing URL could live. A
+recommendation with no URL is indistinguishable from an unreported gap and, once
+the templates move on, from a gap that no longer exists. The revalidation
+evidence and the filed issue bodies live in `docs/case-studies/issue-894/`.
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R894-1 | Revalidate every audit finding against the current template default branches before acting on it. | Implemented: all four templates re-fetched 2026-08-05 (`js` `7b70923`, `rust` `c867f78`, `python` `98d6dca`, `csharp` `6806bd9`); commands and verbatim output preserved in `docs/case-studies/issue-894/raw-data/revalidation-greps.txt` and `revalidation-greps-2.txt`; what moved since the snapshot is recorded in the report's *What the 2026-08-05 revalidation changed* subsection. |
+| R894-2 | File each confirmed gap in the owning upstream repository with a reproduction, a workaround, and a suggested fix. | Implemented: eight issues filed — security scanning (js#122, rust#115, python#48, csharp#43), `links.yml` port (rust#116, python#49, csharp#44), optional desktop-release workflow (rust#117). Bodies preserved verbatim as `docs/case-studies/issue-894/raw-data/sec-*.md`, `links-*.md`, `desktop-rust.md`; the created issues as `filed-upstream-issues.json`. |
+| R894-3 | Link every filing from the report and mark obsolete findings explicitly. | Implemented: the report's *Recommended upstream issues to file* section is replaced by the *Upstream filing status (revalidated 2026-08-05)* ledger — every `confirmed` row carries its filing URL, U4/U5/U6 are `not-applicable` with the reason, and L1/L3/L4/L7 (API-docs deploy, published-crate smoke test, resilient buildx, main-safe concurrency) are `obsolete` with the evidence that closed them. |
+| R894-4 | A confirmed finding may never remain ready-to-file without a URL, enforced by a documentation check. | Implemented: `tests/unit/docs_requirements_issue_894.rs` parses the ledger and fails when a `confirmed` row has no `link-foundation` issue URL, when a status outside the documented vocabulary (`confirmed` / `obsolete` / `not-applicable` / `local`) appears, when the pre-filing recommendation section returns, or when the preserved evidence goes missing. |
+
+## Issue #982 Persisted-Memory Compatibility Contract
+
+Issue [#982](https://github.com/link-assistant/formal-ai/issues/982) requires a
+safe upgrade boundary for long-lived `.lino` memory shared by CLI, server,
+desktop, Telegram, and container deployments. The schema contract lives in
+`src/memory/upgrade.rs`; operator guidance is in
+`docs/configuration/memory.md`; regression and container coverage is in
+`tests/integration/issue_982_memory_upgrade.rs` and
+`experiments/issue_982_memory_upgrade/run_container_upgrade.sh`.
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R982-1 | Preflight compatibility must be machine-readable and must not mutate memory or create migration artifacts. | Implemented by `formal-ai memory upgrade-status --format json` / `preflight_memory_upgrade`; `upgrade_status_detects_released_schema_without_mutating_memory` asserts byte equality and a one-entry directory. |
+| R982-2 | Persist and report explicit detected, minimum-readable, maximum-readable, and target schema versions. | Schema 1 names released unversioned `demo_memory`; schema 2 adds the root marker. The CLI and `/health` expose all four values and the migration state. |
+| R982-3 | Upgrades must be explicit; startup, health, ordinary reads, and ordinary writes must never silently migrate an existing file. | `MemoryStore` and `SyncStore` retain the detected source schema on save; only `memory migrate` targets schema 2. Guarded by `ordinary_server_write_preserves_released_schema_and_unknown_metadata` and the health test. |
+| R982-4 | Migration must coordinate with ordinary writers and reject incompatible/future schemas without modifying them. | `migrate_memory` holds the existing sibling `fs2` writer lock for the whole transaction and fails closed. Lock and schema-99 refusals are asserted as nonzero JSON responses. |
+| R982-5 | Create and verify a byte-exact rollback backup before commit. | The migration checks both bytes and SHA-256, preserves source permissions, rejects a conflicting pre-existing backup, and emits its path/digest in the receipt. |
+| R982-6 | Commit atomically and make interruption/retry safe and idempotent. | Same-directory create-new staging, `sync_all`, atomic rename, parent sync, cleanup on the pre-commit interruption hook, content-addressed default backup, and target-schema no-op retry; tested by interruption and whole-flow cases. |
+| R982-7 | Preserve unknown metadata, stable identifiers, event ordering, and history. | Migration inserts only the additive root marker; event parsing/formatting also round-trips unknown fields. The whole-flow test compares exact bytes apart from the marker and checks ids/order/extensions/query/export. |
+| R982-8 | Emit a durable machine-readable migration receipt with rollback instructions. | `MemoryMigrationReceipt` includes binary/schema versions, migration id, paths, before/after hashes, event count, changed flag, and rollback strategy; its exact JSON value is checked against stdout. |
+| R982-9 | Provide fixtures for every readable/released schema and reject an intentionally incompatible fixture. | `tests/fixtures/memory/schema-{1,2}.lino` are enumerated by `fixtures_cover_every_readable_schema`; the schema-99 test verifies status and migration refusals. |
+| R982-10 | Prove a previous released container and candidate container can use the same named volume through upgrade, verification, rollback, and old-version reopen. | `run_container_upgrade.sh`, wired after the candidate Docker build in CI, writes with `0.335.0`, preflights/migrates, checks candidate server health/query/export, restores the verified backup, and reopens with `0.335.0`. |
+| R982-11 | Keep implementation provenance and self-hosting evidence reproducible. | The issue/PR evidence collector outputs are committed with manifests; two differently worded real Agent-CLI runs and deterministic session JSON live under `docs/case-studies/issue-982/self-hosting/` and are replayed byte-for-byte by the integration suite. |
+
+## Issue #980 Default-Branch CI False Results
+
+Issue [#980](https://github.com/link-assistant/formal-ai/issues/980) audits the
+seven default-branch workflows named in the issue, compares the full Rust, JS,
+and Python pipeline-template trees, and fixes every actionable error found. The
+complete run logs, template snapshots, timeline, requirements ledger, and root
+cause analysis live in `dev/log/issues/980/pulls/981/`.
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R980-1 | Download and inspect every referenced workflow run, including warnings and retry-masked flakes. | Implemented: all seven run records and complete logs are preserved under `dev/log/issues/980/pulls/981/ci-logs/`; run 31186108359 is the only failed workflow and its findings name the deterministic formatter error, external-search interception, and permission-state race. |
+| R980-2 | Fix every actionable failure without hiding real failures behind retries. | Implemented: the rejected Rust line is formatted, `issue-282.spec.js` blocks cross-origin providers during local WASM parity checks, and `issue-541-permissions-cold-start.spec.js` waits for the observable pending-task state rather than returning after the user-message append. |
+| R980-3 | Compare all CI/workflow/script files with the Rust, JS, and Python templates and Hive Mind practices. | Implemented: complete template tree snapshots at Rust `c867f78`, JS `7b70923`, and Python `98d6dca`, plus searchable control indexes and the Hive Mind guide, are preserved in the evidence bundle. Applicable workflow controls were already adopted by PRs 809 and 971; no new template-owned defect was found and therefore no duplicate upstream issue was filed. |
+| R980-4 | Prevent recurrence with per-defect and composed verification. | Implemented: `tests/unit/ci-cd/issue_980.rs` pins all three source invariants; the actual browser specs exercise the external-network boundary and pending-task boundary end to end. Focused repetition passed 12/12 opener cases and 9/9 permission cases. |
+
+## Issue #973 Automated Solve Session Evidence
+
+Issue [#973](https://github.com/link-assistant/formal-ai/issues/973) follows the
+2026-08-04 run on PR [#927](https://github.com/link-assistant/formal-ai/pull/927),
+which failed after 22 seconds and recorded its entire reason as `[object Object]`
+with no log attached. The container is gone, so that cause is unrecoverable, and
+a failure recorded that way is unlearnable by construction — the next iteration
+of the self/auto-learning loop has nothing to act on. Timeline, root causes
+RC1–RC6, and the captured GitHub API evidence live in
+`docs/case-studies/issue-973/`.
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R973-1 | Automated `solve` sessions on this repository run with `--attach-logs --verbose`. | Implemented: `examples/self-coding/run.sh --live` executes `solve "$2" --tool agent --model formal-ai --attach-logs --verbose`; it previously passed `--verbose` alone, which is the configuration that produced the unrecoverable failure. |
+| R973-2 | The two flags are documented as non-substitutable, with the reason each is load-bearing. | Implemented: CONTRIBUTING.md § *Always run automated `solve` sessions with `--attach-logs --verbose`* records the canonical command, that `--attach-logs` publishes the session log to the pull request, and that `--verbose` is what makes the Agent adapter dump the raw JSON of every error and fatal-startup record ([hive-mind#2143](https://github.com/link-assistant/hive-mind/pull/2143)) — the record that survives a payload shape the renderer does not know. |
+| R973-3 | The policy is enforced by a test, not only written down. | Implemented: `tests/issue_973_solve_flags.rs` scans the guides and scripts this repository publishes (`docs/`, `examples/`, `scripts/`, `.github/`, `src/`, root guides), joins shell and Markdown line continuations so a wrapped command is judged whole, ignores prose such as "we do not solve a task by hand", and fails on any `solve` invocation missing either flag. Recorded history under `docs/case-studies/`, `dev/log/`, and `experiments/` is exempt so past runs stay byte-for-byte as they happened. |
+
+## Issue #960 Enforcing Recorded-But-Unenforced Conventions
+
+Issue [#960](https://github.com/link-assistant/formal-ai/issues/960) collects
+three maintainer requirements that each landed once as a practice and were then
+written down without anything that fails when they are broken: the 128-record
+cache budget (R222-1,
+[#222](https://github.com/link-assistant/formal-ai/pull/222#issuecomment-4513844358)),
+the tests-as-documentation exact-answer style (R234-2,
+[#234](https://github.com/link-assistant/formal-ai/pull/234#issuecomment-4528554549)),
+and the `Fixes <url>` pull-request linking rule (R234-4, same thread). A
+convention that is recorded but unenforced decays silently: by the time this
+issue was filed `data/cache/wikidata/entity` held 406 records against a
+documented cap of 128. Timeline, root causes, and the measurements behind the
+one deliberate exemption live in `docs/case-studies/issue-960/`.
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R960-1 | `data/cache/wikidata/` is inside the 1500-line Links Notation gate, or its exemption is stated with a reason. | Implemented: `scripts/check-file-size.rs` no longer excludes the cache (`EXCLUDE_PATH_FRAGMENTS` is now `dev/log/` only) and `tests/unit/data_files.rs` dropped its blanket `cache` exemption. The cap is actionable rather than aspirational: the largest cached file, `data/cache/wikidata/lexeme/L3302.lino`, is 1347 lines, and `examples/refresh_translation_cache.rs` already splits oversized responses into `<bucket>-partN.lino`. |
+| R960-2 | `MAX_SEED_RECORDS_PER_BUCKET = 128` is actively enforced, not merely documented. | Implemented: `scripts/check-cache-budget.rs` (wired into `.github/workflows/release.yml`) fails when a bucket under `data/cache/` exceeds the cap, counting a record once per file stem so `Q1860.json` and `Q1860.lino` are one record. It parses the constant out of `src/translation/cache.rs` so the gate and the library cannot drift. |
+| R960-3 | The three closure-driven buckets are exempted explicitly, with a reason and a compensating invariant. | Implemented: `CLOSURE_DRIVEN_BUCKETS` lists `wikidata/entity` (406), `wordnet/en` (332) and `wiktionary/en` (243), each with a written reason — their size is *forced* by the total-closure gate (`scripts/audit-total-closure.py`, `tests/unit/total_closure.rs`), which requires a cached record for every referenced seed token. Measured: 0 of those records are orphans, so trimming to 128 would break closure rather than remove waste. The exemption is paid for by a stricter rule — the check fails if any exempt-bucket record becomes unreferenced — plus a permanent warning so the overflow stays visible. |
+| R960-4 | Behavioural tests assert exact answers, enforced repo-wide rather than by convention. | Implemented: `scripts/check-tests-as-docs.rs` flags any `#[test]` that touches `.answer` without an exact assertion (`assert_eq!` on the answer, or membership in an explicit list of exact answers). It is a burn-down ratchet over `scripts/tests-as-docs-allowlist.txt`: new loose-only tests fail, and a row made explicit must be pruned. `tests/unit/assistant_name.rs` is converted as the worked exemplar, which took the allowlist from 399 rows to 398. |
+| R960-5 | Pull-request descriptions link their issue with a GitHub closing keyword; `Addresses` is rejected. | Implemented: `scripts/check-pull-request-link.rs` reads `PR_BODY` (or a file) and fails on a missing closing keyword or on a non-closing word (`Addresses`, `Relates to`, `Part of`, `Refs`, `See`) used where one belongs, distinguishing a link verb from prose such as "this fixes the parser crash". CI runs it on every pull request. |
+| R960-6 | The conventions are codified where contributors read them. | Implemented: CONTRIBUTING.md § *Project Conventions* rules 12–16 and § *Pull Request Process* steps 5–6, plus `.github/pull_request_template.md`, state the linking syntax, the `docs/case-studies/pull-request-{id}` layout, the `.lino` cap over cached data, the 128-record budget, and the exact-answer test style. |
+
+## Issue #873 Research-Driven Unknown Recovery
+
+Issue [#873](https://github.com/link-assistant/formal-ai/issues/873) makes an
+unknown a research frontier and gives research, learning, verification, and
+recovery one shared lifecycle. The full source analysis, alternatives, online
+research, and raw issue data live in `docs/case-studies/issue-873/`.
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R873-1 | Every unresolved online input must trigger research and still produce an evidence-backed answer. | Implemented by the general fallback in `src/solver_unknown_reasoning.rs` and the intent-driven agentic handoff in `src/agentic_coding/web_research.rs`; the direct, tool-call, and search→fetch→answer proofs are in `tests/unit/issue_873.rs`. Explicit offline mode retains the diagnostic unknown boundary. |
+| R873-2 | Use reachable internet/local observations and allow recomputable payloads to be evicted and recollected without losing provenance. | `research_learning::SourceReceipt` retains locator/content identity separately from its optional payload. `evict_source` drops only recomputable payloads; `recollect_source` restores an identity match and changed data becomes a new receipt. |
+| R873-3 | Version memory, retain its history, recover every tested stable state, and leave the prior stable version running when a candidate fails compilation or tests. | `KnowledgeVersion` is parent-linked and append-only; candidate/stable/rejected states are separate from the active stable pointer. `verify_candidate` never activates a failed proposal and `recover_stable` moves only to a previously stable version. |
+| R873-4 | Keep most gates immutable and never switch unless the complete baseline passes. | Promotion requires every gate to pass, every configured baseline id to be immutable, and immutable gates to form a strict majority. Exact rejection/promotion/incomplete-baseline tests pin all three conditions. |
+| R873-5 | Convert any error into a recovery path instead of becoming stuck. | `recover_from_error` accepts every error id and supplies `restore_stable_and_research` when no caller-provided alternative exists; its transition is retained in the hash-linked cycle history. |
+| R873-6 | Ask the user when recovery is ambiguous; in full-trust mode rank prior advantages and disadvantages and select automatically. | `AskOnAmbiguity` returns the deterministically ordered alternatives; `FullTrust` transparently scores prior successes, failures, advantages, and disadvantages; `PerCommand` returns a permission request. |
+| R873-7 | Bound work at a configurable one-hour default, return the current plan, and require continuation permission while supporting full autonomy and per-command approval. | `DEFAULT_RESEARCH_TIME_LIMIT_SECONDS` is 3,600 and is shared with external-agent orchestration defaults. `check_time_limit` returns `AwaitingContinuation { current_plan }`; `continue_with_permission` is the explicit resumption boundary. |
+| R873-8 | Express the architecture as one general meta-algorithm that can append/generalize itself. | `ResearchLearningCycle` applies one reducer to facts, procedures, and `MetaAlgorithm` versions. `data/meta/research-learning-recovery.lino` records its ordered phases, and changes to that recipe pass through the same proposal, immutable gate, promotion, and recovery logic. |
+| R873-9 | Preserve all issue data, enumerate every requirement, research primary external sources and related components, and compare solution plans in a deep case study. | Implemented in `docs/case-studies/issue-873/README.md`, `requirements.md`, `online-research.md`, `raw-data/`, and the same-task authorship record. |
+| R873-10 | Complete the plan in one pull request. | Code, data, tests, example, architecture/requirement documentation, changelog, and evidence are delivered together by PR #983. |

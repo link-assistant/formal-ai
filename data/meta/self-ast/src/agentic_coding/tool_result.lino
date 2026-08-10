@@ -2,115 +2,143 @@ self_ast_census
   target src/agentic_coding/tool_result.rs
   language rust
   fidelity full_ast
-  byte_len 14594
-  line_count 447
-  content_id source_module_908a786095a5e847
-  symbol_count 28
+  byte_len 26731
+  line_count 762
+  content_id source_module_f18aa00ddffb7302
+  symbol_count 40
   symbols
-    struct NormalizedResult 13 17
-    function normalized_payload 22 25
-    function looks_like_error 27 32
-    function render 34 60
-    function latest_turn_answer 62 81
-    function has_latest_turn_result 83 94
-    function is_write_run_recipe 96 115
-    function follow_up_answer 117 148
-    function requested_index 150 162
-    function normalize 164 212
-    function from_payload 214 257
-    function mcp_text_content 259 278
-    function strip_transport_envelope 284 316
-    function nonzero_status 318 326
-    function failed_status 328 338
-    function nonempty_text 340 350
-    function pretty_json 352 354
-    function result_tool 356 366
-    function result_label 368 385
-    function extract_urls 387 403
-    function is_listing 405 410
-    function is_search 412 417
-    function response_language 419 426
-    function fill 428 447
-    const TOOL_PLACEHOLDER 436 436
-    const FORMAT_PLACEHOLDER 437 437
-    const PAYLOAD_PLACEHOLDER 438 438
-    const ERROR_PLACEHOLDER 439 439
+    struct NormalizedResult 13 21
+    enum StepOutcome 31 38
+    function step_outcome 42 53
+    function failed_verification 62 71
+    struct ShellStep 75 77
+    function harness_reported_failure 86 88
+    function shell_step 93 98
+    function normalized_payload 103 108
+    function observed_payload 114 117
+    function failure_message 122 139
+    function looks_like_error 141 146
+    function render 148 184
+    function render_failure 189 193
+    function failure_report 199 222
+    function latest_turn_answer 224 243
+    function has_latest_turn_result 245 256
+    function is_write_run_recipe 258 268
+    function follow_up_answer 270 301
+    function requested_index 303 315
+    function normalize 317 403
+    struct ShellEnvelope 411 415
+    function into_result 418 444
+    function parse_shell_envelope 447 491
+    function is_field 493 499
+    function envelope_section 503 523
+    function from_payload 525 571
+    function mcp_text_content 573 592
+    function strip_transport_envelope 598 630
+    function nonzero_status 632 640
+    function failed_status 642 655
+    function expected_stop_status 657 671
+    function nonempty_text 673 683
+    function pretty_json 685 687
+    function result_tool 689 699
+    function result_label 701 718
+    function extract_urls 720 736
+    function is_listing 738 743
+    function is_search 745 750
+    function response_language 752 754
+    function fill 756 762
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 13356
-    named_node_count 2714
-    distinct_node_kinds 70
+    total_link_count 20944
+    named_node_count 4265
+    distinct_node_kinds 86
     node_kinds
-      arguments 272
-      array_expression 6
-      array_type 8
-      assignment_expression 1
-      binary_expression 39
-      block 64
-      boolean_literal 2
-      call_expression 272
-      closure_expression 52
-      closure_parameters 52
-      const_item 4
-      crate 9
-      doc_comment 8
-      else_clause 8
+      arguments 393
+      array_expression 14
+      array_type 11
+      assignment_expression 3
+      attribute 3
+      attribute_item 3
+      base_field_initializer 4
+      binary_expression 54
+      block 101
+      boolean_literal 3
+      break_expression 2
+      call_expression 393
+      char_literal 4
+      closure_expression 75
+      closure_parameters 75
+      compound_assignment_expr 1
+      crate 10
+      declaration_list 1
+      doc_comment 62
+      else_clause 12
+      enum_item 1
+      enum_variant 3
+      enum_variant_list 1
       escape_sequence 3
-      expression_statement 39
-      field_declaration 3
-      field_declaration_list 1
-      field_expression 252
-      field_identifier 260
-      field_initializer 5
-      field_initializer_list 3
-      function_item 23
-      generic_function 8
-      generic_type 13
-      identifier 555
-      if_expression 23
-      index_expression 8
+      expression_statement 65
+      field_declaration 8
+      field_declaration_list 3
+      field_expression 361
+      field_identifier 386
+      field_initializer 17
+      field_initializer_list 10
+      for_expression 2
+      function_item 36
+      generic_function 10
+      generic_type 21
+      identifier 865
+      if_expression 35
+      impl_item 1
+      index_expression 13
       inner_doc_comment_marker 1
-      integer_literal 13
-      let_condition 7
-      let_declaration 55
+      integer_literal 25
+      let_condition 9
+      let_declaration 83
       lifetime 2
-      line_comment 8
-      macro_invocation 5
-      match_arm 8
-      match_block 2
-      match_expression 2
-      match_pattern 8
-      mutable_specifier 2
-      outer_doc_comment_marker 7
-      parameter 42
-      parameters 23
-      parenthesized_expression 5
-      primitive_type 46
-      range_expression 6
-      reference_expression 31
-      reference_type 46
-      return_expression 18
-      scoped_identifier 36
+      line_comment 73
+      macro_invocation 7
+      match_arm 13
+      match_block 4
+      match_expression 4
+      match_pattern 13
+      mutable_specifier 6
+      or_pattern 1
+      outer_doc_comment_marker 61
+      parameter 61
+      parameters 36
+      parenthesized_expression 8
+      primitive_type 66
+      range_expression 10
+      reference_expression 44
+      reference_type 61
+      return_expression 26
+      scoped_identifier 54
       scoped_type_identifier 1
       scoped_use_list 1
-      shorthand_field_initializer 4
+      self 9
+      self_parameter 1
+      shorthand_field_initializer 7
       source_file 1
-      string_content 95
-      string_literal 104
-      struct_expression 3
-      struct_item 1
-      super 7
-      token_tree 7
-      try_expression 9
-      tuple_pattern 5
-      tuple_struct_pattern 12
-      type_arguments 21
-      type_identifier 51
-      unary_expression 14
+      string_content 122
+      string_literal 126
+      struct_expression 10
+      struct_item 3
+      super 18
+      token_tree 17
+      try_expression 14
+      tuple_expression 9
+      tuple_pattern 12
+      tuple_struct_pattern 19
+      tuple_type 1
+      type_arguments 31
+      type_identifier 86
+      unary_expression 21
       use_declaration 4
       use_list 1
-      visibility_modifier 6
-      while_expression 1
+      visibility_modifier 16
+      while_expression 2

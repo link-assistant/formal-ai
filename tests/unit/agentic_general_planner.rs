@@ -82,18 +82,19 @@ fn compound_github_work_item_routes_to_agentic_planning_before_project_lookup() 
 
     let outcome = run_agentic_task(ISSUE_698_WORK_ITEM).expect("Agent CLI work-item replay");
     assert!(!outcome.hit_turn_cap);
+    // One step, not two: the run records the work item and stops. Issue #904
+    // removed the `cat .formal-ai/general-change-plan.lino` step, which verified
+    // nothing but the write the same run had just performed.
     assert_eq!(
         outcome
             .steps
             .iter()
             .map(|step| step.tool.as_str())
             .collect::<Vec<_>>(),
-        ["write_file", "run_command"]
+        ["write_file"]
     );
-    assert!(outcome.steps[1].arguments.contains(PLAN_PATH));
-    assert!(outcome
-        .final_answer
-        .contains("without claiming unobserved source edits"));
+    assert!(outcome.steps[0].arguments.contains(PLAN_PATH));
+    assert!(outcome.final_answer.contains("Planned, not executed"));
     assert!(!outcome.final_answer.contains("project lookup"));
 }
 
@@ -107,24 +108,24 @@ fn repository_work_item_completion_is_seeded_for_every_supported_language() {
     for case in [
         LocalizedCase {
             language: "en",
-            expected_fragment: "Recorded and verified",
+            expected_fragment: "Planned, not executed",
         },
         LocalizedCase {
             language: "ru",
-            expected_fragment: "записан и проверен",
+            expected_fragment: "Запланировано, но не выполнено",
         },
         LocalizedCase {
             language: "hi",
-            expected_fragment: "दर्ज और सत्यापित",
+            expected_fragment: "योजना बनी, निष्पादित नहीं",
         },
         LocalizedCase {
             language: "zh",
-            expected_fragment: "已记录并验证",
+            expected_fragment: "已规划，未执行",
         },
     ] {
         let response =
-            formal_ai::seed::response_for("general_plan_repository_complete", case.language)
-                .unwrap_or_else(|| panic!("missing repository completion for {}", case.language));
+            formal_ai::seed::response_for("general_plan_repository_planned", case.language)
+                .unwrap_or_else(|| panic!("missing repository outcome for {}", case.language));
         assert!(
             response.contains(case.expected_fragment),
             "repository completion is not localized for {}: {response}",
@@ -196,6 +197,43 @@ fn general_task_preserves_exact_multiline_lino_payload() {
         serde_json::from_str(&outcome.steps[1].arguments).expect("write arguments");
     assert_eq!(write["path"], "data/seed/learned-program-rules.lino");
     assert_eq!(write["content"], payload);
+}
+
+#[test]
+fn literal_file_marker_owns_payload_that_contains_an_edit_phrase() {
+    let payload = "prefix rename X to Y suffix";
+    let task =
+        format!("Create file issue_708_memory_program.rs with exactly this content:\n{payload}");
+
+    let plan = compose_general_change_plan(&task).expect("literal file plan");
+    assert_eq!(plan.content, payload);
+}
+
+#[test]
+fn literal_file_marker_routes_before_edit_shaped_payload() {
+    let payload = "prefix rename X to Y suffix";
+    let tools = ["write", "read", "edit", "bash"];
+
+    for task in [
+        format!("Create file issue-708-literal-payload.txt with exactly this content:\n{payload}"),
+        format!("Создай файл issue-708-literal-payload.txt с точно таким содержанием:\n{payload}"),
+        format!("फ़ाइल issue-708-literal-payload.txt ठीक इसी सामग्री के साथ बनाओ:\n{payload}"),
+        format!("创建 文件 issue-708-literal-payload.txt 内容与以下完全相同：\n{payload}"),
+    ] {
+        let messages = vec![ChatMessage::user(&task)];
+        let AgenticPlan::ToolCalls(calls) =
+            plan_chat_step(&messages, &tools).expect("literal file plan must own the request")
+        else {
+            panic!("literal file plan must persist its plan before execution: {task}")
+        };
+        assert_eq!(calls.len(), 1);
+        assert_eq!(calls[0].tool, "write", "{task}");
+        assert!(
+            calls[0].arguments.contains(PLAN_PATH),
+            "edit-shaped payload must not route to a read of the new target: {}",
+            calls[0].arguments,
+        );
+    }
 }
 
 #[test]
@@ -299,6 +337,9 @@ fn general_change_plan_fixture_pins_the_shape() {
         "expected_evidence",
         "verification_command",
         "append_before_execute",
+        "terminal_state",
+        "no_self_verification",
+        "planned_not_executed",
     ] {
         assert!(fixture.contains(field), "missing {field}");
     }

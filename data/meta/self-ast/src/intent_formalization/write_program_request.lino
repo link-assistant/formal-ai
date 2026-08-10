@@ -1,0 +1,14 @@
+self_ast_census
+  target src/intent_formalization/write_program_request.rs
+  language rust
+  fidelity signature
+  byte_len 5396
+  line_count 109
+  content_id source_module_03c5df9d9e219425
+  symbol_count 5
+  symbols
+    function requested_write_program_parameters 28 53
+    function asks_for_program 63 67
+    function write_program_parameters 70 94
+    function known_write_program_language 96 98
+    function requested_program_language 107 109

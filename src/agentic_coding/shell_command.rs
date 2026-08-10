@@ -158,7 +158,93 @@ pub(super) fn code_search_query_for_task(prompt: &str) -> Option<String> {
         .filter(|cue| lower.contains(cue.as_str()))
         .map(|cue| (cue.chars().count(), cue))
         .max_by_key(|(length, _)| *length)?;
-    local_search_query(prompt, cue, &vocab)
+    literal_code_search_query(&lower)
+        .or_else(|| shaped_code_search_token(prompt))
+        .or_else(|| adjacent_code_search_token(prompt, &lower))
+        .or_else(|| local_search_query(prompt, cue, &vocab))
+}
+
+fn literal_code_search_query(normalized: &str) -> Option<String> {
+    seed::lexicon()
+        .role_word_forms(seed::ROLE_CODING_SEARCH_LITERAL_QUERY)
+        .into_iter()
+        .find(|form| normalized.contains(&form.text.to_lowercase()))
+        .and_then(|form| (!form.action.is_empty()).then(|| form.action.clone()))
+}
+
+fn shaped_code_search_token(prompt: &str) -> Option<String> {
+    search_tokens(prompt)
+        .filter_map(|token| {
+            let interior_uppercase = token
+                .chars()
+                .skip(1)
+                .any(|character| character.is_ascii_uppercase());
+            let score = usize::from(token.contains('.')) * 4
+                + usize::from(token.contains('_')) * 4
+                + usize::from(interior_uppercase) * 3;
+            (score > 0 && !token.contains('/')).then_some((score, token.len(), token))
+        })
+        .max_by_key(|(score, length, _)| (*score, *length))
+        .map(|(_, _, token)| token.to_owned())
+}
+
+fn adjacent_code_search_token(prompt: &str, normalized: &str) -> Option<String> {
+    let tokens = search_tokens_with_offsets(prompt).collect::<Vec<_>>();
+    seed::lexicon()
+        .role_word_forms(seed::ROLE_CODING_SEARCH_SUBJECT_KIND)
+        .into_iter()
+        .filter_map(|form| {
+            let surface = form.text.to_lowercase();
+            let start = normalized.find(&surface)?;
+            let end = start.checked_add(surface.len())?;
+            tokens
+                .iter()
+                .filter(|(_, token_start, token_end)| *token_end <= start || *token_start >= end)
+                .filter_map(|(token, token_start, token_end)| {
+                    let distance = if *token_end <= start {
+                        start - *token_end
+                    } else {
+                        *token_start - end
+                    };
+                    valid_search_identifier(token).then_some((distance, *token_start, *token))
+                })
+                .min_by_key(|(distance, offset, _)| (*distance, *offset))
+        })
+        .min_by_key(|(distance, offset, _)| (*distance, *offset))
+        .map(|(_, _, token)| token.to_owned())
+}
+
+fn search_tokens(text: &str) -> impl Iterator<Item = &str> {
+    text.split(|character: char| {
+        !character.is_ascii_alphanumeric() && !matches!(character, '_' | '.' | ':')
+    })
+    .map(|token| token.trim_matches('.'))
+    .filter(|token| !token.is_empty())
+}
+
+fn search_tokens_with_offsets(text: &str) -> impl Iterator<Item = (&str, usize, usize)> {
+    text.split_inclusive(|character: char| !character.is_ascii_alphanumeric() && character != '_')
+        .scan(0, |offset, chunk| {
+            let start = *offset;
+            *offset += chunk.len();
+            let token = chunk.trim_end_matches(|character: char| {
+                !character.is_ascii_alphanumeric() && character != '_'
+            });
+            Some((token, start, start + token.len()))
+        })
+        .filter(|(token, _, _)| !token.is_empty())
+}
+
+fn valid_search_identifier(token: &str) -> bool {
+    let mut characters = token.chars();
+    characters
+        .next()
+        .is_some_and(|first| first.is_ascii_alphabetic() || first == '_')
+        && characters.all(|character| character.is_ascii_alphanumeric() || character == '_')
+        && !seed::lexicon()
+            .words_for_role(seed::ROLE_CODING_SEARCH_SUBJECT_KIND)
+            .iter()
+            .any(|surface| surface.eq_ignore_ascii_case(token))
 }
 
 /// Resolve a semantic *intent* to its concrete command, backed by the seed
@@ -174,8 +260,154 @@ pub(super) fn code_search_query_for_task(prompt: &str) -> Option<String> {
 /// recovered from the prompt. An intent whose cue matches but whose required
 /// argument is absent is skipped so the search continues rather than emitting an
 /// argument-less command that would hang (`wc -l` on stdin).
+/// The prompt split into sentences, each paired with whether it is a question.
+///
+/// Sentence boundaries are what separate the user's request from a sentence
+/// merely *placed next to* it, so intent cues are read one sentence at a time
+/// (issue #907).
+fn sentences_with_mood(lower: &str) -> Vec<(&str, bool)> {
+    let mut sentences = Vec::new();
+    let mut start = 0;
+    for (index, character) in lower.char_indices() {
+        if !matches!(
+            character,
+            '.' | '!' | '?' | ';' | '\n' | '。' | '！' | '？' | '；'
+        ) {
+            continue;
+        }
+        // A dot inside a token ends nothing — `main.py` is one word, not two
+        // sentences.
+        if character == '.'
+            && lower[index + character.len_utf8()..]
+                .chars()
+                .next()
+                .is_some_and(char::is_alphanumeric)
+        {
+            continue;
+        }
+        let text = lower[start..index].trim();
+        if !text.is_empty() {
+            sentences.push((text, matches!(character, '?' | '？')));
+        }
+        start = index + character.len_utf8();
+    }
+    let tail = lower[start..].trim();
+    if !tail.is_empty() {
+        sentences.push((tail, false));
+    }
+    sentences
+}
+
+/// The sentences of `lower` that ask or command, dropping those that merely
+/// state a fact about one of `cues`.
+///
+/// The gemini CLI's *"Today's date is Sunday, August 2, 2026 …"* describes the
+/// world; describing the date is not asking for it, so no cue inside such a
+/// sentence may route (issue #907). Classification is per sentence rather than
+/// per cue: once *"the current time is 20:00"* is a statement about *current
+/// time*, the shorter cue *time* riding inside it must not route either.
+fn requesting_sentences<'a>(
+    sentences: &[(&'a str, bool)],
+    cues: &[&str],
+    vocab: &seed::CallerContextVocabulary,
+) -> Vec<&'a str> {
+    sentences
+        .iter()
+        .filter(|(sentence, interrogative)| {
+            !cues.iter().any(|cue| {
+                sentence.contains(cue) && is_fact_statement(sentence, *interrogative, cue, vocab)
+            })
+        })
+        .map(|(sentence, _)| *sentence)
+        .collect()
+}
+
+/// Whether `sentence` asks for an artifact to be authored — an authoring verb
+/// paired with a program, script or code artifact, as the lexicon evidences
+/// those roles in every supported language.
+///
+/// Issue #907, requirement 3: a turn that carries a task gets the task. A
+/// built-in intent riding alongside it ("what is today's date? create a file
+/// main.py that prints Hello, world!") answers the smaller of the two questions
+/// and silently drops the work, so the intent steps aside for the task.
+fn carries_authoring_task(sentence: &str) -> bool {
+    use crate::seed::{ROLE_HELLO_WORLD_REFERENCE, ROLE_PROGRAM_KIND, ROLE_PROGRAM_REQUEST};
+    let lexicon = seed::lexicon();
+    lexicon.mentions_role(ROLE_PROGRAM_REQUEST, sentence)
+        && [ROLE_PROGRAM_KIND, ROLE_HELLO_WORLD_REFERENCE]
+            .iter()
+            .any(|role| lexicon.mentions_role(role, sentence))
+}
+
+/// `sentence` without the determiner its subject may open with, so *"the current
+/// date is …"* is recognised as a statement about *"current date"*.
+fn strip_subject_lead<'a>(sentence: &'a str, vocab: &seed::CallerContextVocabulary) -> &'a str {
+    vocab
+        .subject_leads
+        .iter()
+        .find_map(|lead| {
+            sentence
+                .strip_prefix(lead.as_str())
+                .filter(|rest| rest.starts_with(' '))
+                .map(str::trim_start)
+        })
+        .unwrap_or(sentence)
+}
+
+/// Whether `sentence` states a fact *about* `cue` instead of requesting it.
+///
+/// The shape is `<cue> <copula> <value>` (English, Russian, Spanish, Chinese) or
+/// `<cue> <value> <copula>` (Hindi): the cue opens the sentence as its subject,
+/// a seed-declared copula links it, and a value follows. A question is never a
+/// statement — neither one punctuated with `?` nor one that merely carries a
+/// seed-declared question word ("我的用户名**是什么**") — and a cue that does not
+/// open the sentence is not its subject, so
+/// *"tell me what the current time is"* and *"what is the date?"* keep routing.
+fn is_fact_statement(
+    sentence: &str,
+    interrogative: bool,
+    cue: &str,
+    vocab: &seed::CallerContextVocabulary,
+) -> bool {
+    if interrogative || vocab.asks_a_question(sentence) {
+        return false;
+    }
+    // The cue may or may not carry the determiner itself ("the current time" vs
+    // "current date"), so the subject is tried with and without its lead.
+    let Some(rest) = sentence
+        .strip_prefix(cue)
+        .or_else(|| strip_subject_lead(sentence, vocab).strip_prefix(cue))
+    else {
+        return false;
+    };
+    let rest = rest.trim_matches(|character: char| {
+        character.is_whitespace() || matches!(character, ',' | ':' | '：' | '，' | '-')
+    });
+    let words: Vec<&str> = rest.split_whitespace().collect();
+    let (Some(head), Some(last)) = (words.first(), words.last()) else {
+        return false;
+    };
+    if let Some(copula) = vocab.copula_in(head) {
+        return words.len() > 1 || head.chars().count() > copula.chars().count();
+    }
+    words.len() > 1 && vocab.copula_in(last).is_some()
+}
+
 fn intent_shell_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Option<String> {
     let lower = prompt.to_lowercase();
+    let sentences = sentences_with_mood(&lower);
+    let caller_context = seed::caller_context_vocabulary();
+    let cues: Vec<&str> = vocab
+        .intents
+        .iter()
+        .flat_map(|intent| intent.cues.iter().map(String::as_str))
+        .collect();
+    let requesting = requesting_sentences(&sentences, &cues, &caller_context);
+    // A task the turn carries outranks any built-in intent riding alongside it
+    // (issue #907): answering the intent would silently drop the work.
+    if carries_authoring_task(&lower) {
+        return None;
+    }
     // Prefer the most specific matching cue across every intent. This prevents
     // a shorter generic cue (for example "current directory" → `pwd`) from
     // stealing a longer request ("list current directory" → `ls`).
@@ -185,7 +417,9 @@ fn intent_shell_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Option<S
         .filter(|intent| intent.command != REPORT_ISSUE_ACTION)
         .flat_map(|intent| intent.cues.iter().map(move |cue| (intent, cue)))
         .filter(|(intent, cue)| {
-            lower.contains(cue.as_str())
+            requesting
+                .iter()
+                .any(|sentence| sentence.contains(cue.as_str()))
                 && (intent.argument != ShellIntentArgument::SearchQuery
                     || vocab
                         .local_search_scopes

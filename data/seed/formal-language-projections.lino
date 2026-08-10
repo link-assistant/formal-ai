@@ -1,0 +1,27 @@
+formal_language_projections
+  formal_language "fol"
+    name "First-order logic"
+    alias "fol"
+    alias "first-order logic"
+    alias "predicate logic"
+    statement "{predicate}({subject}, {object})"
+  natural_language en
+    statement "{subject} {predicate} {object}"
+    relation P31
+      predicate "is a"
+  natural_language ru
+    statement "{subject} {predicate} {object}"
+    relation P31
+      predicate это
+  natural_language hi
+    statement "{subject} {object} {predicate}"
+    relation P31
+      predicate है
+  natural_language zh
+    statement "{subject}{predicate}{object}"
+    relation P31
+      predicate 是
+  natural_language es
+    statement "{subject} {predicate} {object}"
+    relation P31
+      predicate "es una"

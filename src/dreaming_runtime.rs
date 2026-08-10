@@ -63,13 +63,6 @@ pub fn start_core_dreaming() {
         return;
     }
     let path = crate::shared_memory::shared_memory_path();
-    if let Err(error) = crate::shared_memory::ensure_shared_memory_file(&path) {
-        eprintln!(
-            "[dreaming] could not initialize {}: {error}",
-            path.display()
-        );
-        return;
-    }
     START.call_once(|| {
         LAST_FOREGROUND_SECONDS.store(now_seconds(), Ordering::SeqCst);
         std::thread::Builder::new()
@@ -121,6 +114,7 @@ pub fn run_core_dreaming_once(memory_path: &Path) -> io::Result<DreamingOutcome>
     if outcome.removed_events > 0
         || outcome.learned_amendments > 0
         || outcome.learned_patterns > 0
+        || outcome.learned_algorithm_candidates > 0
         || outcome.recorded_failures > 0
         || outcome.recorded_trials > 0
     {

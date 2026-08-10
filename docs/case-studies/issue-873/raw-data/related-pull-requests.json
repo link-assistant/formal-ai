@@ -1,0 +1,10 @@
+[
+  {"number": 305, "title": "E21: Reason through unknown prompts before fallback", "url": "https://github.com/link-assistant/formal-ai/pull/305"},
+  {"number": 637, "title": "feat(issue-558): complete human-gated auto-learning loop (R558-01…R558-06) via the agentic interface", "url": "https://github.com/link-assistant/formal-ai/pull/637"},
+  {"number": 690, "title": "E37: Replay trusted gates and apply Agent-authored promotions", "url": "https://github.com/link-assistant/formal-ai/pull/690"},
+  {"number": 817, "title": "feat(701): close the auto-learning adoption gap — learned items change answers", "url": "https://github.com/link-assistant/formal-ai/pull/817"},
+  {"number": 850, "title": "Generalize grounded tool actions across local search and research", "url": "https://github.com/link-assistant/formal-ai/pull/850"},
+  {"number": 853, "title": "Ground source research in exact replayable captures", "url": "https://github.com/link-assistant/formal-ai/pull/853"},
+  {"number": 876, "title": "feat: add resumable evidence-aware agent orchestration", "url": "https://github.com/link-assistant/formal-ai/pull/876"},
+  {"number": 884, "title": "feat: fuse multilingual search statements with learned provenance", "url": "https://github.com/link-assistant/formal-ai/pull/884"}
+]

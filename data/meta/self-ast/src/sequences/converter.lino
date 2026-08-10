@@ -1,0 +1,22 @@
+self_ast_census
+  target src/sequences/converter.rs
+  language rust
+  fidelity signature
+  byte_len 7070
+  line_count 187
+  content_id source_module_2a596e78794b8a88
+  symbol_count 13
+  symbols
+    function balanced_convert 27 40
+    function halve_sequence 45 58
+    struct SequenceIndex 67 67
+    function add 76 96
+    function might_contain 101 105
+    struct LinkFrequency 113 118
+    struct LinkFrequenciesCache 126 128
+    function new 133 135
+    function len 139 141
+    function is_empty 145 147
+    function get 152 160
+    function increment 165 178
+    function increment_sequence 182 186

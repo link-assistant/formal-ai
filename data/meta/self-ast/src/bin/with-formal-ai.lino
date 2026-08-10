@@ -2,10 +2,10 @@ self_ast_census
   target src/bin/with-formal-ai.rs
   language rust
   fidelity signature
-  byte_len 470
-  line_count 21
-  content_id source_module_d5c1c302b4fe286e
+  byte_len 678
+  line_count 26
+  content_id source_module_b8dfc10314e0abbb
   symbol_count 2
   symbols
-    struct Args 12 15
-    function main 17 21
+    struct Args 13 16
+    function main 18 26

@@ -22,10 +22,11 @@ registered editing and machine-output arguments, records a workspace snapshot,
 and requires an observable file effect before accepting a zero exit status.
 
 If the client reports success without an effect, the seeded completion contract
-supplies one corrective prompt. The wrapper resumes the exact native session
-when the client exposes one. A second no-effect result exits nonzero with a
-structured `completion_state: "incomplete"` record instead of silently
-succeeding. Client failure and evidence that a `formal-ai` run reached a public
+supplies a ladder of corrective prompts (one recovery strategy per retry, up
+to the contract's `max_attempts`, default 4). The wrapper resumes the exact
+native session when the client exposes one. Exhausting the ladder with no
+effect exits nonzero with a structured `completion_state: "incomplete"` record
+instead of silently succeeding. Client failure and evidence that a `formal-ai` run reached a public
 vendor endpoint fail immediately.
 
 Wrapper planning state under `.formal-ai/` is excluded from both the completion
@@ -104,8 +105,8 @@ external fact proof.
 The default is one-shot/temporary. `--interactive` or `--non-interactive`
 overrides a client's normal mode. Use `--global` only for permanent setup;
 the wrapper merges its provider into the normal client config and makes a
-`.formal-ai.bak` backup. Restore it with `--global --undo <tool>` (or
-`--undo <tool>` with the standalone `with-formal-ai` wrapper).
+`.formal-ai.bak` backup. Restore it with `--undo <tool>` (with or without `--global`; the standalone
+`with-formal-ai` wrapper accepts the same flags).
 
 ```bash
 formal-ai with --global codex

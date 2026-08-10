@@ -70,6 +70,13 @@ The local-path discovery suite contains only self-authored multilingual prompts
 and deterministic routing expectations. It imports no upstream dataset or
 third-party payload, so no additional upstream license applies.
 
+## Issue #891 Equation-Type Corpus
+
+`equation-type-corpus.lino` contains only self-authored equation prompts and the
+answers the production solver produced for them. It imports no upstream dataset
+or third-party payload, so no additional upstream license applies; the recorded
+source (`equation_types`, CC-BY-4.0, `issue-891`) is this repository.
+
 ## Issue #482 Nemotron Training-Data Samples
 
 | Source | License | Upstream revision | Sampled rows | Download mode |

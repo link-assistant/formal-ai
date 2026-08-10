@@ -15,15 +15,19 @@ source provenance for download-on-test integration. Only permissive licenses
 
 | Suite | Issue(s) | Fixture | Ratchet test | `minimum_pass_count` |
 | --- | --- | --- | --- | --- |
-| Permissive industry slice | #304, #317 | [`industry-suite.lino`](../data/benchmarks/industry-suite.lino) | `issue_304_benchmark_suite_reports_pass_fail_counts` | 10 |
+| Permissive industry slice | #304, #317 | [`industry-suite.lino`](../data/benchmarks/industry-suite.lino) | `issue_304_benchmark_suite_reports_pass_fail_counts` | 13 |
 | Multilingual coding-modification | #362 | [`coding-modification-suite.lino`](../data/benchmarks/coding-modification-suite.lino) | `issue_362_multilingual_multi_turn_coding_modification_ratchet` | 4 |
 | Text/code edit profile | #408 | [`text-manipulation-suite.lino`](../data/benchmarks/text-manipulation-suite.lino) | `issue_408_text_code_edit_profile_passes_local_ratchet` | 1440 |
 | Procedural how-to / instruction-following | #444 | [`procedural-howto-suite.lino`](../data/benchmarks/procedural-howto-suite.lino) | `issue_444_procedural_howto_suite_routes_each_case` | 12 |
 | Nemotron training-data sample ingestion | #482 | [`nemotron-training-samples.lino`](../data/benchmarks/nemotron-training-samples.lino) | `issue_482_nemotron_training_ingestion_ratchet_passes_all_samples` | 10 |
+| Held-out algorithm discovery | #531 | [`issue-531-algorithm-traces.lino`](../data/benchmarks/issue-531-algorithm-traces.lino) | `repeated_event_sequences_become_a_validated_parameterized_algorithm` | 1 |
 | External (upstream) harness | #698 | [`external-results.lino`](../data/benchmarks/external-results.lino) | `external_benchmarks::recorded_upstream_pass_count_may_never_regress` | per suite, see below |
 | bAbI-style world-state tracking | #702 | [`world-state-tracking-suite.lino`](../data/benchmarks/world-state-tracking-suite.lino) | `issue_702_world_state_suite_tracks_each_case` | 16 |
 | Held-out computer-use generalization | #707 | [`computer-use-generalization.lino`](../data/benchmarks/computer-use-generalization.lino) | `every_synthesized_plan_executes_with_every_step_verified` | 12 |
+| Search-fusion learning generalization | #709 | [`search-fusion-learning-generalization.lino`](../data/benchmarks/search-fusion-learning-generalization.lino) | `approved_recipe_round_trips_and_executes_a_held_out_task` | 1 |
 | Multilingual local-path discovery | #819 | [`local-path-discovery-suite.lino`](../data/benchmarks/local-path-discovery-suite.lino) | `local_path_discovery_benchmark_routes_every_case_to_find` | 56 |
+| Workspace-change learning generalization | #848 | [`workspace-change-learning-generalization.lino`](../data/benchmarks/workspace-change-learning-generalization.lino) | `only_a_green_named_review_promotes_and_replays_the_held_out_rewrite` | 1 |
+| Equation-type corpus | #891 (from #406) | [`equation-type-corpus.lino`](../data/benchmarks/equation-type-corpus.lino) | `issue_891_equation_corpus_solves_every_type` | 72 (and ≥50 distinct verified types) |
 
 Related earlier work: issue **#103** introduced the competitor-derived prompt
 matrix in [`tests/unit/specification/prompt_variations.rs`](../tests/unit/specification/prompt_variations.rs)
@@ -90,6 +94,15 @@ files or full splits.
 | --- | --- | --- | --- |
 | Nemotron Pretraining Legal v1 | CC-BY-4.0 | legal training-data ingestion | <https://huggingface.co/datasets/nvidia/Nemotron-Pretraining-Legal-v1> |
 
+### Held-out algorithm discovery — issue #531
+
+Records three self-authored event traces. Two support traces establish a
+repeated `fetch → normalize → persist` episode while the held-out trace changes
+the subject binding. The ratchet requires the link-native learner to infer the
+shared dataflow, parameterize the changing value, reproduce the held-out trace
+losslessly, and keep the resulting algorithm inert until explicit approval.
+No third-party benchmark payload is imported.
+
 ### bAbI-style world-state tracking — issue #702
 
 Sixteen self-authored dialogues in all four supported languages (en/ru/hi/zh),
@@ -105,12 +118,62 @@ are attribution for the task design, not for vendored data.
 | bAbI tasks 1 / 2 / 6 | CC-BY-3.0 (shape only, no text imported) | state tracking | <https://github.com/facebookarchive/bAbI-tasks> |
 | Everyday goal-directed assistant dialogues | CC-BY-4.0 | assistant dialog | <https://github.com/link-assistant/formal-ai> |
 
+### Equation-type corpus — issue #891 (requirement from #406)
+
+Seventy-two self-authored equation types, each replayed through the production
+entry point (`FormalAiEngine::answer`) and each carrying the **exact answer the
+engine produced** — the expectations are observed, never hand-written
+(`cargo run --example issue_891_equation_probe`). The ratchet fails below 50
+distinct verified types or below the recorded pass count, which satisfies the
+issue #406 requirement of at least fifty verified equation-type examples.
+No third-party benchmark payload is imported.
+
+| Category | Types | What it covers |
+| --- | --- | --- |
+| `linear_one_operation` | 10 | one inverse operation: `x + 2 = 5`, `100 - x = 42`, `-2 * x = 8`, decimal and fractional roots |
+| `linear_multi_operation` | 12 | two or more steps: parentheses on both sides, like terms, fractional terms, unknown on both sides |
+| `placeholder_unknown` | 8 | `?` and `*` placeholders standing in for the unknown, spaced and unspaced |
+| `symbolic_multi_variable` | 7 | isolation with a symbolic right-hand side (`2 * x + 3 * y = 12` → `x = 6 - 1.5*y`) |
+| `polynomial` | 14 | degree 2–5 with rational roots, double roots, pure powers, placeholder squares |
+| `natural_language_wrapper` | 18 | equation-solving cues in every registered language (en/ru/zh/hi/es) |
+| `evaluation_and_percent` | 3 | `2*2+2=?`, trailing `?`, `8% of x = 4` |
+
+Recorded upstream / stack limitations (`benchmark_limitation` records — asserted
+to keep failing *loudly*, never with a fabricated answer):
+
+| Gap | Where | Example | Behaviour |
+| --- | --- | --- | --- |
+| Irrational roots | link-calculator | `x^2 - 2 = 0` | `calculation_error` (rational roots only) |
+| Complex roots | link-calculator | `x^2 + 1 = 0` | `calculation_error` |
+| Degenerate / contradictory | link-calculator | `0 * x = 5` | `calculation_error`, not "no solution" |
+| Identity | formal-ai | `x = x` | `unknown` (no calculation signal) |
+| Unit-carrying equations | link-calculator | `x kg = 1000 g` | `calculation_error` (units not converted before solving) |
+| Named-unknown declarations | formal-ai | `What is x if x + 7 = 12?` | `calculation_error` (the `x if …` declaration is not stripped) |
+| Command-shaped prompts | formal-ai | `Find x: 5 * x = 45` | `agent_suggestion` (`find` is claimed by the shell router) |
+
 ### Multilingual local-path discovery — issue #819
 
 Records 56 self-authored prompts spanning English, Russian, Hindi, and Chinese,
 the three local scopes, and file/directory targets. Every case must select the
 shell tool, emit a bounded `find` command with the expected root and predicate,
 and avoid web search. The suite has no imported payload or upstream license.
+
+### Search-fusion learning generalization — issue #709
+
+Records a self-authored held-out research task that is intentionally absent
+from the two successful executions used to infer the search-fusion recipe. The
+ratchet restores the reviewed recipe from its content-addressed ledger and
+requires it to execute that unseen task with complete statement provenance,
+ranked sources, semantic merging, and query-language deformalization. No
+third-party benchmark payload is imported.
+
+### Workspace-change learning generalization — issue #848
+
+Records two self-authored training identifiers and one unseen equivalent
+identifier rewrite. The ratchet verifies that observations with distinct task
+and execution fingerprints produce only an inert candidate, then requires a
+zero-failure gate and named human approval before the content-addressed recipe
+can execute the held-out rewrite. No third-party benchmark payload is imported.
 
 ### Text/code edit profile — issue #408
 
@@ -189,8 +252,9 @@ byte length, and content id match the adjacent provenance record.
 
 ### Honest current numbers
 
-Recorded `2026-07-20`, solver version `0.300.0`, slice `20` upstream cases per
-suite, offline deterministic solver (`temperature = 0.0`):
+Recorded `2026-08-03`, solver version `0.323.0`, slice `20` upstream cases per
+core suite and a separately bounded one-case SWE-bench slice, offline
+deterministic solver (`temperature = 0.0`):
 
 | Suite | License | Grading | Passed | Total |
 | --- | --- | --- | ---: | ---: |
@@ -200,20 +264,21 @@ suite, offline deterministic solver (`temperature = 0.0`):
 | MATH (`prm800k` 500-problem split) | MIT | final `\boxed{...}` vs. gold | 0 | 20 |
 | BIG-bench `object_counting` | Apache-2.0 | final number vs. target | 0 | 20 |
 | CoEdIT | Apache-2.0 | edited text vs. gold target | 0 | 20 |
-| SWE-bench Lite (dev) | MIT | `benchmark_unavailable` (legacy proxy score withdrawn; official evaluator required) | — | — |
+| SWE-bench Lite (dev) | MIT | official upstream instance tests executed | 0 | 1 |
 | EditEval | — | `benchmark_unavailable` | — | — |
 
-`2 / 20` on GSM8K and `0 / 20` on the other scored suites is the real
-measurement of the current offline solver against unmodified upstream cases.
-It is recorded exactly as measured; the ratchet makes it the floor these
-numbers may never fall below.
+`2 / 20` on GSM8K, `0 / 20` on the other scored core suites, and `0 / 1` on
+SWE-bench Lite are the real measurements of the current offline solver against
+unmodified upstream cases. They are recorded exactly as measured; the ratchet
+makes them the floor these numbers may never fall below.
 
 The original SWE-bench row was withdrawn: it compared output with the gold
 patch, which is not the SWE-bench pass criterion. Scheduled runs now use the
 pinned official harness (`f7bbbb2…`) to apply a candidate patch in the upstream
-container and execute the instance tests. An evaluator, Docker, or parquet
-decoder failure becomes `benchmark_unavailable`; it is never counted as a
-solver failure and never replaced by an exact-diff proxy.
+container and execute the instance tests; the current `0 / 1` score came through
+that evaluator. An evaluator, Docker, or parquet decoder failure becomes
+`benchmark_unavailable`; it is never counted as a solver failure and never
+replaced by an exact-diff proxy.
 
 EditEval is recorded as `benchmark_unavailable` rather than being replaced by a
 local proxy: the upstream repository ships an evaluation harness with no task
@@ -287,6 +352,12 @@ cargo test --test unit issue_482_nemotron_training -- --nocapture
 
 # Multilingual local-path discovery (#819)
 cargo test --test unit local_path_discovery_benchmark_routes_every_case_to_find -- --nocapture
+
+# Review-gated workspace-change generalization (#848)
+cargo test --test unit only_a_green_named_review_promotes_and_replays_the_held_out_rewrite -- --nocapture
+
+# Equation-type corpus (#891)
+cargo test --test unit issue_891_equation_corpus -- --nocapture
 ```
 
 ## Conventions

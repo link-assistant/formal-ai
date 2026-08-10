@@ -15,7 +15,7 @@ use formal_ai::dreaming_application::STANDING_REQUIREMENT_INTENT;
 use formal_ai::{
     create_chat_completion_with_solver_and_memory, create_response_with_solver_and_memory,
     solve_with_amendment_records, solve_with_standing_requirements, ChatCompletionRequest,
-    ChatMessage, MemoryEvent, ResponsesRequest, RetainedAmendment, UniversalSolver,
+    ChatMessage, MemoryEvent, ResponsesRequest, RetainedAmendment, SolverConfig, UniversalSolver,
 };
 
 /// A learned topic, its standing rule, and the held-out paraphrases — one per
@@ -179,7 +179,10 @@ fn a_covered_task_is_never_reported_unresolved() {
         })
         .collect::<Vec<_>>();
 
-    let solver = UniversalSolver::default();
+    let solver = UniversalSolver::new(SolverConfig {
+        offline: true,
+        ..SolverConfig::default()
+    });
     let mut reclassified = 0;
     for topic in &topics {
         for (language, prompt) in topic.held_out {

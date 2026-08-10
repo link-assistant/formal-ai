@@ -18,6 +18,13 @@ use super::{
     SummarizationConfig,
 };
 
+/// Keep optional concrete-syntax evidence bounded for repository artifacts.
+///
+/// Structural summaries still inspect oversized files, but sending a large
+/// single-line trace through the link-network parser has superlinear cost and
+/// can make a seeded validation draw take hours.
+const MAX_META_LANGUAGE_PARSE_BYTES: usize = 32 * 1024;
+
 /// meta-language parse evidence for a repository file or embedded grammar.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct MetaLanguageFormalization {
@@ -118,7 +125,7 @@ pub fn formalize_repository_file(path: &str, content: &str) -> RepositoryFileFor
     let format = detect_repository_file_format(path);
     #[cfg(feature = "meta-language")]
     let meta_language = meta_language_label_for_format(format)
-        .map(|label| parse_with_meta_language(label, content));
+        .and_then(|label| parse_with_meta_language_if_bounded(label, content));
     #[cfg(not(feature = "meta-language"))]
     let meta_language = None;
     let embedded_grammars = if format == "markdown" {
@@ -288,7 +295,7 @@ fn formalize_fenced_block(block: &FencedBlock) -> EmbeddedGrammarFormalization {
     };
     #[cfg(feature = "meta-language")]
     let meta_language = meta_language_label_for_format(&language)
-        .map(|label| parse_with_meta_language(label, &block.source));
+        .and_then(|label| parse_with_meta_language_if_bounded(label, &block.source));
     #[cfg(not(feature = "meta-language"))]
     let meta_language = None;
     EmbeddedGrammarFormalization {
@@ -351,6 +358,14 @@ fn fence_language(trimmed_line: &str) -> String {
             .unwrap_or("text")
             .to_owned()
     }
+}
+
+#[cfg(feature = "meta-language")]
+fn parse_with_meta_language_if_bounded(
+    label: &str,
+    source: &str,
+) -> Option<MetaLanguageFormalization> {
+    (source.len() <= MAX_META_LANGUAGE_PARSE_BYTES).then(|| parse_with_meta_language(label, source))
 }
 
 #[cfg(feature = "meta-language")]
@@ -472,7 +487,7 @@ fn is_structured_format(format: &str) -> bool {
     )
 }
 
-fn display_file_format(format: &str) -> &'static str {
+pub(super) fn display_file_format(format: &str) -> &'static str {
     match format {
         "markdown" => "Markdown",
         "rust" => "Rust",

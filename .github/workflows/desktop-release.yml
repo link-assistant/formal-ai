@@ -161,7 +161,19 @@ jobs:
     # (attempts 1 and 2) were both cancelled at the former 30-minute cap while
     # electron-builder was completing a valid installer. Keep the job bounded
     # while allowing for runner and antivirus/file-lock variance.
-    timeout-minutes: 40
+    #
+    # Issue #896 added the published web-search/web-capture Rust crates. Their
+    # current releases expose the server/browser dependency graphs
+    # unconditionally (upstream web-search#22 and web-capture#148). On the cold
+    # macos-15-intel runner in run 30788311906, release compilation took 33m21s
+    # and the otherwise-valid job hit the 40-minute cap while creating the DMG.
+    # The Windows targets moved the same way: in run 30832897812, windows-x64
+    # compiled for 17m39s, packaged a valid installer, and was cancelled at the
+    # cap while uploading its checksum fragment, with windows-arm64 finishing at
+    # 36m04s. Give those three targets bounded packaging headroom until the
+    # adapter-only upstream features let us remove the heavyweight graph; the
+    # Linux and macOS ARM64 targets stay well under 40 minutes.
+    timeout-minutes: ${{ (matrix.label == 'macos-x64' || startsWith(matrix.label, 'windows-')) && 50 || 40 }}
     permissions:
       contents: write
       id-token: write

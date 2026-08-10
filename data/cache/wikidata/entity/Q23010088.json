@@ -1,0 +1,105 @@
+{
+  "entities": {
+    "Q23010088": {
+      "type": "item",
+      "id": "Q23010088",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Spider-Man: Homecoming"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Человек-паук: Возвращение домой"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "स्पाइडर-मैन:होमकमिंग"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "蜘蛛人：返校日"
+        },
+        "es": {
+          "language": "es",
+          "value": "Spider-Man: Homecoming"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "2017 film directed by Jon Watts"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "фильм Джона Уоттса (2017)"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "2017 की मार्वल द्वारा निर्मित सुपरहीरो फिल्म"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "2017年超級英雄電影"
+        },
+        "es": {
+          "language": "es",
+          "value": "película de 2017 dirigida por Jon Watts"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Spider-Man - Homecoming"
+          },
+          {
+            "language": "en",
+            "value": "Spider-Man: Homecoming An IMAX 3D Experience"
+          },
+          {
+            "language": "en",
+            "value": "Spider-Man: Homecoming The IMAX 2D Experience"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Возвращение домой"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "勞拉·哈里爾"
+          },
+          {
+            "language": "zh",
+            "value": "蜘蛛侠:归乡"
+          },
+          {
+            "language": "zh",
+            "value": "蜘蛛侠归乡"
+          },
+          {
+            "language": "zh",
+            "value": "蜘蛛侠：英雄归来"
+          },
+          {
+            "language": "zh",
+            "value": "蜘蛛俠：強勢回歸"
+          },
+          {
+            "language": "zh",
+            "value": "蜘蛛侠：英雄回归"
+          },
+          {
+            "language": "zh",
+            "value": "蜘蛛人：英雄回歸"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

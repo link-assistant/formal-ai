@@ -229,3 +229,39 @@ fn thinking_blockquote_is_expandable_and_html_escaped() {
         "raw HTML-significant characters must not leak: {html}"
     );
 }
+
+#[test]
+fn thinking_blockquote_is_written_in_the_answer_language() {
+    // Issue #889: the bot's expandable reasoning used to be English regardless
+    // of the language it answered in. It now narrates in the language the trace
+    // resolved to, for every registered language, while the `step`/`detail`
+    // trace keys stay language-neutral.
+    use super::{html_escape, telegram_thinking_blockquote, ThinkingStep};
+    use crate::language::registered_languages;
+    use crate::thinking_prose::thinking_prose;
+
+    for language in registered_languages() {
+        let slug = language.slug();
+        let steps = vec![
+            ThinkingStep::new(0, "resolve_response_language", slug, "high", "evt-0"),
+            ThinkingStep::new(1, "impulse", "ping", "high", "evt-1"),
+            ThinkingStep::new(2, "memory", "", "detailed", "evt-2"),
+        ];
+        let html = telegram_thinking_blockquote(&steps).expect("steps should render");
+
+        let expected = thinking_prose("thinking_step_impulse", slug, &[("prompt", "ping")])
+            .expect("impulse prose");
+        assert!(
+            html.contains(&html_escape(&expected)),
+            "telegram blockquote should narrate in {slug}, got: {html}"
+        );
+
+        if slug != "en" {
+            let english = thinking_prose("thinking_step_memory", "en", &[]).expect("english prose");
+            assert!(
+                !html.contains(&english),
+                "telegram blockquote leaked English into a {slug} answer: {html}"
+            );
+        }
+    }
+}

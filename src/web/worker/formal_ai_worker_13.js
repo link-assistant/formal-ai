@@ -106,32 +106,100 @@ function programTaskFromPrompt(normalized) {
 const ROLE_IMPLEMENTATION_LANGUAGE_PREPOSITION =
   "implementation_language_preposition";
 const ROLE_IMPLEMENTATION_LANGUAGE_NOUN = "implementation_language_noun";
+// Issue #906: the closed class of determiners, prepositions, copulas and
+// coordinators — exactly the words that can never *name* a language. Mirrors
+// ROLE_STATEMENT_FUNCTION_WORD as read by src/implementation_language.rs.
+const ROLE_STATEMENT_FUNCTION_WORD = "statement_function_word";
+
+// Does the catalogue or the cached coding oracle know this slug? Mirrors
+// `implementation_language::is_known` in Rust.
+function knownImplementationLanguage(slug) {
+  return Boolean(WRITE_PROGRAM_LANGUAGES[slug]) || codingOracleKnowsLanguage(slug);
+}
+
+// Issue #906: find the first `"<preposition> [language] <name>"` span whose name
+// may actually be a language, returning { start, end, name } or null. Mirrors
+// `modifier_span` in src/implementation_language.rs: an unknown name is still
+// accepted ("hello world in elvish"), but a closed-class word is admitted only
+// when the wording independently evidences a language — which is what stops
+// "in the current directory" from routing as language `the`.
+function implementationLanguageSpan(tokens) {
+  const prepositions = wordsForRoleInLanguages(
+    ROLE_IMPLEMENTATION_LANGUAGE_PREPOSITION,
+    ["en", "ru"],
+  );
+  const languageNouns = wordsForRoleInLanguages(
+    ROLE_IMPLEMENTATION_LANGUAGE_NOUN,
+    ["en", "ru"],
+  );
+  const functionWords = wordsForRoleInLanguages(ROLE_STATEMENT_FUNCTION_WORD, [
+    "en",
+    "ru",
+    "hi",
+    "zh",
+  ]);
+  for (let start = 0; start < tokens.length; start += 1) {
+    if (!prepositions.includes(tokens[start])) continue;
+    let cursor = start + 1;
+    // The head noun ("in language X", "на языке X") is explicit evidence that
+    // whatever follows is meant as a language name; a determiner in between
+    // ("in the current directory") is evidence of nothing.
+    let namedByNoun = false;
+    let skippedFunctionWord = false;
+    while (cursor < tokens.length) {
+      if (languageNouns.includes(tokens[cursor])) {
+        namedByNoun = true;
+        cursor += 1;
+        continue;
+      }
+      if (
+        functionWords.includes(tokens[cursor]) &&
+        !knownImplementationLanguage(tokens[cursor])
+      ) {
+        skippedFunctionWord = true;
+        cursor += 1;
+        continue;
+      }
+      break;
+    }
+    const candidate = tokens[cursor];
+    if (!candidate) continue;
+    let end = cursor + 1;
+    // "in the elvish language" names the noun after the candidate.
+    if (languageNouns.includes(tokens[end])) {
+      namedByNoun = true;
+      end += 1;
+    }
+    // A name can only be a language when it has letters: "in 3 steps" names none.
+    if (!/\p{L}/u.test(candidate)) continue;
+    // A bare unknown name is read as a language only when it *ends* the phrase:
+    // "hello world in elvish" names a language, "print the numbers in reverse
+    // order" names an ordering.
+    const phraseFinal = tokens
+      .slice(end)
+      .every((next) => functionWords.includes(next));
+    const accepted =
+      knownImplementationLanguage(candidate) ||
+      namedByNoun ||
+      (!skippedFunctionWord && phraseFinal);
+    if (!accepted) continue;
+    return { start, end, name: candidate };
+  }
+  return null;
+}
 
 function programLanguageFromPrompt(normalized) {
-  const tokens = normalized.split(/\s+/).filter(Boolean);
+  const delimited = normalized.replace(/(\p{Script=Han})(?=[a-z0-9])|([a-z0-9])(?=\p{Script=Han})/giu, "$1$2 ");
+  const tokens = delimited.split(/\s+/).filter(Boolean);
   // Each language's alias surfaces live in its `program_language_<slug>` meaning,
   // not inline on WRITE_PROGRAM_LANGUAGES — read them by slug (issue #386). Names
   // are single tokens, matched on whitespace boundaries exactly as in Rust.
   for (const slug of Object.keys(WRITE_PROGRAM_LANGUAGES)) {
     const surfaces = wordsForMeaning(`program_language_${slug}`);
-    if (surfaces.some((alias) => tokens.includes(alias))) return slug;
+    if (surfaces.some((alias) => containsProgramToken(delimited, alias))) return slug;
   }
-  const prepositionSurfaces = wordsForRoleInLanguages(
-    ROLE_IMPLEMENTATION_LANGUAGE_PREPOSITION,
-    ["en", "ru"],
-  );
-  const languageNounSurfaces = wordsForRoleInLanguages(
-    ROLE_IMPLEMENTATION_LANGUAGE_NOUN,
-    ["en", "ru"],
-  );
-  for (let index = 0; index < tokens.length - 1; index += 1) {
-    if (!prepositionSurfaces.includes(tokens[index])) continue;
-    if (languageNounSurfaces.includes(tokens[index + 1])) {
-      return tokens[index + 2] || null;
-    }
-    return tokens[index + 1];
-  }
-  return null;
+  const span = implementationLanguageSpan(tokens);
+  return span ? span.name : null;
 }
 
 // ---------------------------------------------------------------------------
@@ -325,6 +393,9 @@ const ROLE_CONVERSATION_SUMMARY_DIRECTIVE = "conversation_summary_directive";
 const ROLE_CONVERSATION_REFERENCE = "conversation_reference";
 const ROLE_CONVERSATION_SUMMARY_PHRASE = "conversation_summary_phrase";
 const ROLE_CONVERSATION_SUMMARY_COURTESY = "conversation_summary_courtesy";
+// Issue #858 returning-user recap role; its multilingual surfaces likewise
+// live in data/seed/meanings-intent.lino.
+const ROLE_CONVERSATION_RETURN_RECAP = "conversation_return_recap";
 // Issue #529 previous-message recall role — mirrors
 // ROLE_CONVERSATION_RECALL_PREVIOUS_MESSAGE in src/seed/roles/intent.rs. Its
 // bare surface phrases ("what was written in the previous message", "что было

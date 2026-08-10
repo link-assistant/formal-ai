@@ -92,7 +92,7 @@ Verify it is up:
 
 ```bash
 curl http://127.0.0.1:8080/health
-# {"status":"ok","model":"formal-ai"}
+# {"status":"ok","model":"formal-ai","version":"<crate version>"}
 ```
 
 ### Endpoints
@@ -109,12 +109,17 @@ curl http://127.0.0.1:8080/health
 | `POST` | `/api/gemini/v1beta/models/{model}:streamGenerateContent` | - | Gemini native streaming `generateContent` SSE |
 | `GET` | `/api/vertex/v1/projects/{project}/locations/{location}/publishers/google/models` | - | Vertex publisher model list |
 | `POST` | `/api/vertex/v1/projects/{project}/locations/{location}/publishers/google/models/{model}:generateContent` | - | Vertex-shaped `generateContent` |
-| `GET` | `/api/formal-ai/v1/graph` | `/v1/graph` | Reasoning-graph nodes/edges for a trace |
+| `GET` | `/api/formal-ai/v1/network` | `/v1/network`, `/v1/graph` (deprecated alias) | Links-network nodes/edges for a trace |
+| `GET` | `/api/formal-ai/v1/conversations/{id}` | `/v1/conversations/{id}` | Conversation context report for a dialog |
+| `POST` | `/api/formal-ai/v1/conversations/{id}/learn` | `/v1/conversations/{id}/learn` | Trigger conversation learning for a dialog |
+| `POST` | `/mcp` | - | Model Context Protocol JSON-RPC endpoint (`GET /mcp` returns `405`; SSE streams unsupported) |
 | `OPTIONS` | *(any)* | - | CORS preflight -> `204 No Content` |
 
 Compatibility aliases remain available for existing configs: `POST /v1/responses`,
 `POST /v1/chat/completions`, `POST /v1/messages`, `GET /v1/models`, and the
-native formal-ai `/v1/*` graph, bundle, links, and memory routes.
+native formal-ai `/v1/*` network/graph, bundle, links, and memory routes
+(`/v1/graph` is the deprecated alias of `/v1/network` and answers with a
+`Deprecation` header plus a successor `link` to the canonical route).
 
 The single advertised model id is **`formal-ai`**. The OpenAI and Gemini model
 list endpoints expose that id, and the OpenAI list also advertises a rate limit
@@ -660,6 +665,16 @@ calls it:
   `${apiBase}/v1/chat/completions` (server mode).
 - Otherwise it stays on the in-process engine (default mode).
 
+Beyond `getStatus()`, the same `window.FormalAiDesktop` bridge
+(`desktop/preload.cjs`) exposes: `setEngine` (engine selection),
+`checkForUpdates` / `installUpdate` + `onUpdateStatus` (auto-updater),
+`installVsCodeExtension` (one-click VS Code extension install, issue #554),
+`ensureAgentServer` (issue #515 agent-mode server autostart),
+`runAgentProvider` / `onAgentEvent` (swappable agent execution provider,
+issue #516), `dataMigrationStatus` / `replayDataMigration` (issue #672
+profile-migration status and non-destructive replay), plus the tool-gate,
+memory-sync, and service-control methods described in the sections below.
+
 Because detection is gated behind the desktop bridge and the server binds
 `127.0.0.1`, the public web build is never exposed to a local API and the
 desktop never reaches across the network for one.
@@ -697,7 +712,10 @@ renderer through `formalAiDesktop:invokeTool` /
   (`{ok:false, status:"refused", executed:false}`) and nothing executes.
 - **Local I/O tools** — `http_fetch`, `url_navigate`, `read_local_file` — are
   served by the local process. `read_local_file` is confined to an allowed root;
-  anything outside it is refused (`forbidden`).
+  anything outside it is refused (`forbidden`). The router also serves the
+  browser tool vocabulary's native counterparts locally: `web_search`,
+  `web_fetch`, `read_file`, `grep`, `glob`, `list_directory`, and
+  `read_many_files`.
 - **Shell** runs on the host machine by default, after the same explicit grant,
   with output and logs returned through the tool result. A shell request may opt
   into Docker isolation with `input.isolation = "docker"`.

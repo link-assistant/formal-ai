@@ -19,6 +19,44 @@ use crate::substitution::{
     CrudEvent, SubstitutionGraph, SubstitutionRuleSet, SubstitutionTraceReport,
 };
 
+/// Does `prompt` name a replacement over quoted literals — the shape
+/// [`parse_replace_request`] reads?
+///
+/// Issue #906: the operands of such a request are *content*. "Replace
+/// \"Hello World\" with \"Bye world\"" quotes the words to edit, and the
+/// program-task alias table matches "hello world" inside that quote, which is
+/// how a text edit came to be routed as a request to write a program. The
+/// routing check in `crate::intent_formalization` asks this before it reads a
+/// task out of a request that never asked for a program.
+#[must_use]
+pub fn names_a_quoted_replacement(prompt: &str) -> bool {
+    quoted_segment_spans(prompt).len() >= 2 && contains_replacement_keyword(prompt)
+}
+
+/// `prompt` with every quoted literal blanked out, leaving only the prose that
+/// frames them.
+///
+/// Issue #906: this is how a caller asks whether a request names something
+/// *itself* rather than merely quoting it. "Write hello world in JavaScript and
+/// replace `Hello World` with `Bye JS`" still says "hello world" once the
+/// quotes are gone, so it really does request that program; "заменил \"Hello
+/// World\" на \"Bye world\"" says nothing of the sort.
+#[must_use]
+pub fn text_outside_quoted_segments(prompt: &str) -> String {
+    let mut outside = String::with_capacity(prompt.len());
+    let mut cursor = 0usize;
+    for segment in quoted_segment_spans(prompt) {
+        if segment.start < cursor {
+            continue;
+        }
+        outside.push_str(&prompt[cursor..segment.start]);
+        outside.push(' ');
+        cursor = segment.end;
+    }
+    outside.push_str(&prompt[cursor..]);
+    outside
+}
+
 pub fn try_text_manipulation(
     prompt: &str,
     normalized: &str,

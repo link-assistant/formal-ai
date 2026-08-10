@@ -1,0 +1,8 @@
+research_learning_recovery_invariant
+  record_type meta_invariant
+  unknown "inspect local state then research reachable external sources"
+  evidence "retain source provenance while allowing recomputable payload eviction"
+  promotion "activate a candidate only after the immutable baseline passes"
+  recovery "keep the previous tested stable version active after any candidate failure"
+  autonomy "ask on ambiguity rank recorded outcomes in full trust and gate each command when configured"
+  budget "after the configured limit preserve the current plan and request continuation"

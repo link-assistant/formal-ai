@@ -616,8 +616,13 @@ impl UniversalSolver {
             // the evidence trail — the same `skill_gap` event the procedure
             // compiler emits — so the miss is actionable instead of being
             // rendered as a recitation of the templates we happen to hold.
+            //
+            // Issue #906: a request that named no implementation language never
+            // reached a route, so it is logged under its own event rather than
+            // as a gap in what we can synthesize.
+            let shape = crate::program_skill_gap::shape(task.as_deref(), language.as_deref());
             log.append(
-                "skill_gap",
+                shape.event(),
                 crate::program_skill_gap::gap_name(task.as_deref(), language.as_deref()),
             );
         }

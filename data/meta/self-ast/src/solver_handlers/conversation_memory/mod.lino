@@ -2,55 +2,53 @@ self_ast_census
   target src/solver_handlers/conversation_memory/mod.rs
   language rust
   fidelity signature
-  byte_len 33276
-  line_count 966
-  content_id source_module_8b340c4f0a369b67
-  symbol_count 47
+  byte_len 26859
+  line_count 813
+  content_id source_module_3646a846638d6309
+  symbol_count 45
   symbols
-    module link_query 3 3
-    module memory_write 4 4
-    enum RecallScope 27 30
-    function as_str 33 38
-    struct RecallQuery 42 45
-    struct RecallMatch 48 52
-    struct MemoryRecallMatch 55 62
-    enum MemoryRecallDetail 65 68
-    struct MemoryQueryExecution 72 75
-    function try_conversation_memory 77 101
-    function answer_memory_recall 104 119
-    function execute_memory_query 122 161
-    function recalled_event_indices 164 182
-    function try_recall_name 184 203
-    function try_assistant_name 214 250
-    function render_assistant_name_ack 253 257
-    function render_assistant_name_recall 260 264
-    function try_recall_last_question 266 291
-    function previous_user_request_turn 293 306
-    function is_recall_meta_prompt 308 315
-    function render_previous_user_message 317 324
-    function try_recall_previous_message 334 362
-    function localized_role 365 376
-    function render_previous_message 378 386
-    function render_no_previous_message 388 395
-    function try_conversation_recall 397 426
-    function try_memory_recall 428 468
-    function recognize_recall_query 470 484
-    function recall_term_for_role 486 492
-    function term_from_form 494 504
-    function clean_recall_term 506 520
-    function recall_matches 522 544
-    function memory_recall_matches 546 596
-    function event_in_recall_scope 598 606
-    function memory_event_field_values 608 634
-    function push_memory_field 636 644
-    function memory_field_match 646 660
-    function memory_link_match 662 671
-    function memory_match 673 700
-    function log_fragment 703 708
-    function render_line 710 723
-    function memory_conversation_count 726 734
-    function render_recall_report 736 783
-    function render_memory_recall_report 785 854
-    function asks_for_conversation_summary 866 874
-    function summary_directive_leads 886 897
-    function try_summarize_conversation 899 966
+    module conversation_summary 3 3
+    module link_query 4 4
+    module memory_write 5 5
+    module program_query 6 6
+    enum RecallScope 28 31
+    function as_str 34 39
+    struct RecallQuery 43 46
+    struct RecallMatch 49 53
+    struct MemoryRecallMatch 56 63
+    enum MemoryRecallDetail 66 69
+    struct MemoryQueryExecution 73 76
+    function try_conversation_memory 78 102
+    function answer_memory_recall 105 120
+    function recalled_event_indices 123 141
+    function try_recall_name 143 162
+    function try_assistant_name 173 209
+    function render_assistant_name_ack 212 216
+    function render_assistant_name_recall 219 223
+    function try_recall_last_question 225 250
+    function previous_user_request_turn 252 265
+    function is_recall_meta_prompt 267 274
+    function render_previous_user_message 276 283
+    function try_recall_previous_message 293 321
+    function localized_role 324 335
+    function render_previous_message 337 345
+    function render_no_previous_message 347 354
+    function try_conversation_recall 356 385
+    function try_memory_recall 387 427
+    function recognize_recall_query 429 443
+    function recall_term_for_role 445 451
+    function term_from_form 453 463
+    function clean_recall_term 465 479
+    function recall_matches 481 503
+    function memory_recall_matches 505 555
+    function event_in_recall_scope 557 565
+    function memory_event_field_values 567 593
+    function push_memory_field 595 603
+    function memory_field_match 605 619
+    function memory_link_match 621 630
+    function memory_match 632 659
+    function log_fragment 662 667
+    function render_line 669 682
+    function memory_conversation_count 685 693
+    function render_recall_report 695 742
+    function render_memory_recall_report 744 813

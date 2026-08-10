@@ -2,9 +2,9 @@ self_ast_census
   target src/event_log.rs
   language rust
   fidelity signature
-  byte_len 33310
-  line_count 739
-  content_id source_module_5b07db869cfdc937
+  byte_len 35112
+  line_count 769
+  content_id source_module_0ce6eb145d5ccdf2
   symbol_count 25
   symbols
     struct Event 17 21
@@ -17,18 +17,18 @@ self_ast_census
     function evidence_links 71 76
     function steps_block 81 93
     function thinking_steps 108 110
-    function thinking_steps_for_answer 116 172
-    function append_to_link_store 179 193
-    enum StepRole 198 205
-    struct PlannedThinkingStep 208 214
-    function normal 217 230
-    function parent 232 242
-    function child 244 254
-    struct CalculationCluster 261 267
-    function absorb 270 282
-    function has_data 284 290
-    function drain_into 292 329
-    function collapse_thinking_whitespace 334 336
-    function curate_thinking_event 347 404
-    function build_evidence_links 411 732
-    function sanitize_payload 734 739
+    function thinking_steps_for_answer 116 178
+    function append_to_link_store 185 199
+    enum StepRole 204 211
+    struct PlannedThinkingStep 214 220
+    function normal 223 236
+    function parent 238 248
+    function child 250 260
+    struct CalculationCluster 267 273
+    function absorb 276 288
+    function has_data 290 296
+    function drain_into 298 335
+    function collapse_thinking_whitespace 340 342
+    function curate_thinking_event 353 414
+    function build_evidence_links 421 762
+    function sanitize_payload 764 769

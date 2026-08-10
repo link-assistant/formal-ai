@@ -4,7 +4,7 @@ use std::fmt::{Display, Formatter, Write};
 use serde::{Deserialize, Serialize};
 
 use crate::attachment_context::{compose_prompt_with_attachments, Attachment};
-use crate::engine::{naturalize_thinking_step, ThinkingStep};
+use crate::engine::{naturalize_thinking_step_in, thinking_answer_language, ThinkingStep};
 use crate::solver::{ExecutionSurface, SolverConfig, UniversalSolver};
 
 const TEXT_ONLY_MESSAGE: &str = "I can only process Telegram text messages in this implementation. Send a text prompt or a message caption.";
@@ -376,22 +376,19 @@ fn compose_telegram_reply(message: &TelegramMessage) -> TelegramReplyBundle {
 /// Telegram's native `<blockquote expandable>` is collapsed by default and
 /// expands on tap, which is a direct, native fit for the issue's "show the
 /// reasoning, collapsed, with an expand affordance" requirement on a non-UI
-/// surface. The lines are the same concrete English meta-language descriptions
-/// every other surface renders (the CLI `--thinking` trace, the OpenAI and
-/// Anthropic APIs); the browser UI additionally translates them into the user's
-/// language through its i18n catalog. Returns `None` when there is nothing to
-/// show so callers can skip the separator entirely.
+/// surface. The lines are the same concrete meta-language descriptions every
+/// other surface renders (the CLI `--thinking` trace, the OpenAI and Anthropic
+/// APIs), written in the language the answer is written in (issue #889) exactly
+/// like the browser UI's own localized trace. Returns `None` when there is
+/// nothing to show so callers can skip the separator entirely.
 fn telegram_thinking_blockquote(steps: &[ThinkingStep]) -> Option<String> {
     if steps.is_empty() {
         return None;
     }
+    let language = thinking_answer_language(steps);
     let mut body = String::new();
     for step in steps {
-        let sentence = if step.summary.is_empty() {
-            naturalize_thinking_step(&step.step, &step.detail)
-        } else {
-            step.summary.clone()
-        };
+        let sentence = naturalize_thinking_step_in(&language, &step.step, &step.detail);
         if !body.is_empty() {
             body.push('\n');
         }
@@ -434,8 +431,20 @@ pub fn telegram_html_from_markdown(markdown: &str) -> String {
             continue;
         }
 
-        rendered.push_str(&html_escape(line));
-        rendered.push('\n');
+        if in_code_block {
+            rendered.push_str(&html_escape(line));
+            rendered.push('\n');
+            continue;
+        }
+
+        if let Some(quote) = trimmed.strip_prefix('>') {
+            rendered.push_str("<blockquote>");
+            rendered.push_str(&telegram_inline_html(quote.trim_start()));
+            rendered.push_str("</blockquote>\n");
+        } else {
+            rendered.push_str(&telegram_inline_html(line));
+            rendered.push('\n');
+        }
     }
 
     if in_code_block {
@@ -443,6 +452,55 @@ pub fn telegram_html_from_markdown(markdown: &str) -> String {
     }
 
     rendered.trim_end().to_owned()
+}
+
+/// Render Telegram's supported inline Markdown subset while escaping every
+/// character that is not part of a recognized construct. Search source cards
+/// use links, bold titles, and machine-readable code spans.
+fn telegram_inline_html(markdown: &str) -> String {
+    let mut rendered = String::new();
+    let mut rest = markdown;
+    while !rest.is_empty() {
+        if let Some(inner) = rest.strip_prefix("**") {
+            if let Some(end) = inner.find("**") {
+                rendered.push_str("<b>");
+                rendered.push_str(&telegram_inline_html(&inner[..end]));
+                rendered.push_str("</b>");
+                rest = &inner[end + 2..];
+                continue;
+            }
+        }
+        if let Some(inner) = rest.strip_prefix('`') {
+            if let Some(end) = inner.find('`') {
+                rendered.push_str("<code>");
+                rendered.push_str(&html_escape(&inner[..end]));
+                rendered.push_str("</code>");
+                rest = &inner[end + 1..];
+                continue;
+            }
+        }
+        if let Some(label) = rest.strip_prefix('[') {
+            if let Some(label_end) = label.find("](") {
+                let after_label = &label[label_end + 2..];
+                if let Some(url_end) = after_label.find(')') {
+                    let url = &after_label[..url_end];
+                    if url.starts_with("https://") || url.starts_with("http://") {
+                        rendered.push_str("<a href=\"");
+                        rendered.push_str(&html_escape(url));
+                        rendered.push_str("\">");
+                        rendered.push_str(&html_escape(&label[..label_end]));
+                        rendered.push_str("</a>");
+                        rest = &after_label[url_end + 1..];
+                        continue;
+                    }
+                }
+            }
+        }
+        let character = rest.chars().next().expect("non-empty inline text");
+        rendered.push_str(&html_escape(&character.to_string()));
+        rest = &rest[character.len_utf8()..];
+    }
+    rendered
 }
 
 fn open_pre_code_tag(language: &str) -> String {

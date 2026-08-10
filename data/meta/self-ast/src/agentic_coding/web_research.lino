@@ -2,94 +2,96 @@ self_ast_census
   target src/agentic_coding/web_research.rs
   language rust
   fidelity full_ast
-  byte_len 28305
-  line_count 685
-  content_id source_module_ca64b5f832776e25
-  symbol_count 38
+  byte_len 28954
+  line_count 697
+  content_id source_module_a5faa6371f47814d
+  symbol_count 40
   symbols
-    function web_research_query_for 17 42
-    function is_definition_followup 44 49
-    function definition_followup_topic 51 92
-    function definition_followup_clarification 94 97
-    function contextual_reference_clarification 104 108
-    function seed_research_subject 114 116
-    function seed_definition_subject 118 138
-    function seed_slotted_subject 145 164
-    function seed_unresolved_question_subject 172 179
-    function seed_prefix_subject 181 194
-    const MAX_RESEARCH_ROUNDS 206 206
-    function plan_web_research_step 208 234
-    function plan_fetches 242 254
-    function plan_deeper_round 263 300
-    function uncovered_aspects 313 327
-    const MIN_ASPECT_CHARS 331 331
-    function aspects_of 333 348
-    const MAX_EXTRACT_CHARS 353 353
-    const EXTRACT_SENTENCES 357 357
-    function final_answer 359 396
-    function extract_answer 407 442
-    function structurally_complete_prose 453 469
-    function is_sentence_terminal 471 473
-    function relevance 483 489
-    function character_overlap 497 513
-    function truncate_chars 517 524
-    function seed_text 526 530
-    function render_seed_text 532 538
-    function preferred_url 544 546
-    const MAX_RESEARCH_SOURCES 552 552
-    function research_urls 554 563
-    function urls_in 565 574
-    function authoritative_host 576 592
-    function is_context_reference 594 606
-    function topic_from_history 608 655
-    function is_conversation_meta_request 657 674
-    function trim_question_punctuation 676 681
-    function latest_user_text 683 685
+    function web_research_query_for 17 33
+    function unresolved_web_research_query_for 38 55
+    function has_successful_search_result 61 65
+    function is_definition_followup 67 72
+    function definition_followup_topic 74 115
+    function definition_followup_clarification 117 120
+    function contextual_reference_clarification 127 131
+    function seed_research_subject 137 139
+    function seed_definition_subject 141 161
+    function seed_slotted_subject 168 187
+    function seed_unresolved_question_subject 195 202
+    function seed_prefix_subject 204 217
+    const MAX_RESEARCH_ROUNDS 229 229
+    function plan_web_research_step 231 257
+    function plan_fetches 265 277
+    function plan_deeper_round 286 323
+    function uncovered_aspects 336 350
+    const MIN_ASPECT_CHARS 354 354
+    function aspects_of 356 371
+    const MAX_EXTRACT_CHARS 376 376
+    const EXTRACT_SENTENCES 380 380
+    function final_answer 382 419
+    function extract_answer 430 465
+    function structurally_complete_prose 476 492
+    function is_sentence_terminal 494 496
+    function relevance 506 512
+    function character_overlap 520 536
+    function truncate_chars 540 547
+    function seed_text 549 553
+    function render_seed_text 555 561
+    function preferred_url 567 569
+    const MAX_RESEARCH_SOURCES 575 575
+    function research_urls 577 586
+    function urls_in 588 597
+    function authoritative_host 599 615
+    function is_context_reference 617 629
+    function topic_from_history 631 678
+    function is_conversation_meta_request 680 686
+    function trim_question_punctuation 688 693
+    function latest_user_text 695 697
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 18100
-    named_node_count 3873
+    total_link_count 18187
+    named_node_count 3895
     distinct_node_kinds 73
     node_kinds
-      arguments 384
+      arguments 383
       array_expression 3
-      array_type 9
+      array_type 11
       assignment_expression 1
       attribute 1
       attribute_item 1
       binary_expression 31
-      block 77
+      block 74
       boolean_literal 1
       break_expression 2
-      call_expression 384
-      char_literal 32
-      closure_expression 61
-      closure_parameters 61
+      call_expression 383
+      char_literal 28
+      closure_expression 60
+      closure_parameters 60
       const_item 5
-      crate 33
-      doc_comment 109
-      else_clause 5
+      crate 32
+      doc_comment 116
+      else_clause 2
       escape_sequence 9
-      expression_statement 60
-      field_expression 304
-      field_identifier 300
+      expression_statement 59
+      field_expression 301
+      field_identifier 297
       float_literal 3
       for_expression 2
-      function_item 33
+      function_item 35
       function_modifiers 1
       generic_function 4
-      generic_type 28
-      identifier 807
-      if_expression 25
+      generic_type 29
+      identifier 809
+      if_expression 22
       index_expression 3
       inner_doc_comment_marker 6
-      integer_literal 16
+      integer_literal 17
       let_condition 3
       let_declaration 60
-      line_comment 145
+      line_comment 154
       macro_invocation 12
       match_arm 11
       match_block 3
@@ -97,33 +99,33 @@ self_ast_census
       match_pattern 11
       mutable_specifier 12
       or_pattern 1
-      outer_doc_comment_marker 103
-      parameter 52
-      parameters 33
+      outer_doc_comment_marker 110
+      parameter 54
+      parameters 35
       parenthesized_expression 3
-      primitive_type 64
-      range_expression 3
-      reference_expression 51
-      reference_type 55
+      primitive_type 65
+      range_expression 4
+      reference_expression 52
+      reference_type 57
       return_expression 13
       scoped_identifier 137
       scoped_type_identifier 3
       scoped_use_list 3
       self 1
       source_file 1
-      string_content 42
-      string_literal 44
-      super 9
+      string_content 40
+      string_literal 42
+      super 11
       token_tree 26
-      try_expression 13
+      try_expression 14
       tuple_expression 1
       tuple_pattern 8
       tuple_struct_pattern 6
       tuple_type 1
-      type_arguments 32
+      type_arguments 33
       type_cast_expression 2
-      type_identifier 69
-      unary_expression 19
+      type_identifier 73
+      unary_expression 20
       use_declaration 7
       use_list 3
-      visibility_modifier 7
+      visibility_modifier 9

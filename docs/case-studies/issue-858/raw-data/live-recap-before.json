@@ -1,0 +1,10 @@
+{
+  "captured_at": "2026-08-02T00:53:02.951Z",
+  "client": "Claude Code 2.1.220",
+  "surface": "Anthropic Messages API via resumed /recap session",
+  "result": "As you answer the user's questions, you can use the following context: currentDate Today's date is 2026-08-02. Here is a minimal Rust hello world program: Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).",
+  "word_count": 37,
+  "sentence_count": 2,
+  "metadata_leaked": true,
+  "goal_led": false
+}

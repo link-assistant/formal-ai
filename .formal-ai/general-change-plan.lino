@@ -1,0 +1,19 @@
+general_change_plan
+  id "general_change_plan_5e9b7ea1ed96d2da"
+  execution_mode "literal_file"
+  goal "Create file changelog.d/20260803_104200_issue_902_codex_config.md containing\n### Fixed\n\n- Keep the Codex wrapper connected to Formal AI when callers pass their own configuration overrides after the exec subcommand."
+  target "changelog.d/20260803_104200_issue_902_codex_config.md"
+  step 1
+    capability "Write"
+    action "append the composed plan to .formal-ai/general-change-plan.lino"
+    expected_evidence "written plan event impulse_34ca1fcd43868371"
+  step 2
+    capability "Write"
+    action "write the requested content to changelog.d/20260803_104200_issue_902_codex_config.md"
+    expected_evidence "workspace file changelog.d/20260803_104200_issue_902_codex_config.md"
+  step 3
+    capability "Run"
+    action "run the request-derived verification command"
+    expected_evidence "### Fixed\n\n- Keep the Codex wrapper connected to Formal AI when callers pass their own configuration overrides after the exec subcommand."
+    command "cat changelog.d/20260803_104200_issue_902_codex_config.md"
+  verification_command "cat changelog.d/20260803_104200_issue_902_codex_config.md"

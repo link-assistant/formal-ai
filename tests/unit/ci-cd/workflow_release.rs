@@ -1,5 +1,7 @@
-//! Release-workflow structure + issue #479 Pages deploy / landing-page /
-//! desktop-gating assertions. Shared helpers live in `workflow_fixtures`.
+//! Release-workflow structure + issue #479 Pages deploy / landing-page
+//! assertions. The desktop-gating half lives in `workflow_release_desktop`,
+//! split out when this file crossed the 1000-line cap. Shared helpers live in
+//! `workflow_fixtures`.
 
 use std::fs;
 
@@ -69,6 +71,53 @@ fn pages_deploy_uses_github_pages_workflow_artifact() {
     assert!(!deploy_demo.contains("peaceiris/actions-gh-pages"));
     assert!(!deploy_demo.contains("publish_dir: src/web"));
     assert!(!deploy_demo.contains("publish_branch: gh-pages"));
+}
+
+/// PR #965 review: "All CI/CD warnings, and errors must be also fixed.
+/// Including all false positives and false negatives."
+///
+/// `actions/deploy-pages` defaults to a 600 000 ms wait. On `main` run
+/// 31090830031 the artifact uploaded successfully (15.7 MB, id 8966823763) and
+/// the action then reported `Current status: deployment_queued` for that entire
+/// default before `Timeout reached, aborting!` — a red pipeline caused by
+/// GitHub's Pages deployment queue rather than by anything in the commit. The
+/// next push deployed green with no code change, which is the signature of a
+/// false positive. Pin an explicit, longer wait so a backlog is outlasted, and
+/// keep the job's own budget above it so the raise is not silently undone by a
+/// `timeout-minutes` kill.
+#[test]
+fn pages_deploy_outwaits_a_backlogged_pages_deployment_queue() {
+    const DEPLOY_ACTION_DEFAULT_MS: u64 = 600_000;
+
+    let workflow = release_workflow();
+    let deploy_demo = job_block(&workflow, "deploy-pages");
+
+    let timeout_ms = deploy_demo
+        .split("actions/deploy-pages@v5")
+        .nth(1)
+        .and_then(|after| after.split_once("timeout: "))
+        .and_then(|(_, rest)| rest.split_whitespace().next())
+        .and_then(|value| value.parse::<u64>().ok())
+        .expect("the deploy-pages step should pin an explicit `timeout:` in milliseconds");
+
+    assert!(
+        timeout_ms > DEPLOY_ACTION_DEFAULT_MS,
+        "deploy-pages should wait longer than the action's {DEPLOY_ACTION_DEFAULT_MS} ms default, \
+         got {timeout_ms} ms"
+    );
+
+    let job_budget_ms = job_block(&workflow, "deploy-pages")
+        .split_once("timeout-minutes: ")
+        .and_then(|(_, rest)| rest.split_whitespace().next())
+        .and_then(|value| value.parse::<u64>().ok())
+        .map(|minutes| minutes * 60_000)
+        .expect("deploy-pages should declare timeout-minutes");
+
+    assert!(
+        job_budget_ms > timeout_ms,
+        "the deploy-pages job budget ({job_budget_ms} ms) must exceed the deployment wait \
+         ({timeout_ms} ms), or `timeout-minutes` kills the job before the wait can help"
+    );
 }
 
 #[test]
@@ -283,8 +332,11 @@ fn change_gated_jobs_never_depend_on_a_skipped_changelog() {
     // Generalises issue #442 across every change-gated job: none of them should
     // treat a *skipped* changelog/version check as a signal to run. A skipped
     // upstream check means "no code changed", which must never widen coverage.
+    // The `coverage` job moved to `.github/workflows/coverage.yml` for issue
+    // #895; `coverage_jobs_never_depend_on_a_skipped_upstream_check` in
+    // `workflow_coverage.rs` pins this same property for it there.
     let workflow = release_workflow();
-    for job_name in ["lint", "test", "coverage", "test-e2e-local"] {
+    for job_name in ["lint", "test", "test-e2e-local"] {
         let job = job_block(&workflow, job_name);
         // Inspect only effective YAML (skip `#` comment lines) so the rationale
         // comments that quote the old buggy clause don't trip the guard.
@@ -413,8 +465,21 @@ fn lint_job_gates_on_workflow_shell_and_clippy_findings() {
         "workflow definitions must be linted (issue #812)"
     );
     assert!(
-        lint.contains("shellcheck --severity=warning"),
+        lint.contains("scripts/lint-shell-scripts.sh"),
         "standalone shell scripts must be linted (issue #812)"
+    );
+
+    // Issue #977 moved the selector into a script; the empty-list guard is the
+    // part that actually keeps the step from passing vacuously.
+    let shell_lint = std::fs::read_to_string(format!(
+        "{}/scripts/lint-shell-scripts.sh",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .expect("lint-shell-scripts.sh");
+    assert!(shell_lint.contains("shellcheck --severity=warning"));
+    assert!(
+        shell_lint.contains("the lint selector is broken"),
+        "an empty selector must fail rather than lint nothing (issue #812)"
     );
 }
 
@@ -528,22 +593,34 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // after the suite passed. See
         // `test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten`.
         ("test", 25),
-        // Issue #812: raised from 15; measured worst case on main was 14.1 min.
-        ("coverage", 25),
-        ("build", 10),
-        ("auto-release", 30),
-        ("manual-release", 30),
+        // Issue #896: raised from 10; the published web-search/web-capture
+        // graphs moved the job from ~4-5 to 7.2 minutes, and a cold release
+        // build after a Cargo.lock change hit the former cap.
+        ("build", 15),
+        ("auto-release", 60),
+        ("manual-release", 60),
         ("changelog-pr", 10),
-        ("test-e2e-local", 15),
+        ("test-e2e-local", 40),
         // Issue #538: real Agent CLI ↔ formal-ai OpenAI-compatible round-trip.
         // Boots `formal-ai serve`, drives it with `@link-assistant/agent`, and
         // asserts the CLI writes the enriched meaning file. The extra headroom
         // over test-e2e-local absorbs a cold cargo build of the release binary.
-        ("test-agent-cli-e2e", 20),
+        // Raised from 20 (PR #965 review): green runs measured 16m16s and
+        // 17m30s on `main`, so 20 left ~2 minutes of headroom and run
+        // 31097339962 tipped over into a *cancelled* job that looked like a
+        // regression but was only variance.
+        ("test-agent-cli-e2e", 32),
         // deploy-pages also runs `cargo doc` for the /docs/api reference (issue
         // #479), which compiles the dependency tree on a cold cargo cache.
-        ("deploy-pages", 20),
+        // Raised from 20 (PR #965 review): the budget also has to cover the
+        // GitHub Pages deployment queue, which is not part of the build and can
+        // stall for many minutes — see
+        // `pages_deploy_outwaits_a_backlogged_pages_deployment_queue`.
+        ("deploy-pages", 35),
         ("test-e2e-pages", 15),
+        // Issue #977: the terminal gate that turns a silently-`cancelled` run
+        // (the shape a `timeout-minutes` kill takes) into a red failure.
+        ("pipeline-status", 5),
     ];
 
     let actual_jobs = workflow_job_names(&workflow);
@@ -730,236 +807,13 @@ fn pages_deploy_generates_api_docs_and_copies_them_after_stamping() {
 
     // cargo doc emits the crate root under target/doc/formal_ai/ (lib name
     // formal_ai); a redirect at the doc root keeps /docs/api/ from 404ing.
+    let docs_script = std::fs::read_to_string(format!(
+        "{}/scripts/build-rust-api-docs.sh",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .expect("build-rust-api-docs.sh");
     assert!(
-        deploy.contains("url=formal_ai/index.html"),
+        docs_script.contains("url=formal_ai/index.html"),
         "a redirect should point /docs/api/ at the crate root"
-    );
-}
-
-#[test]
-fn desktop_release_does_not_archive_cargo_dependencies_after_packaging() {
-    let workflow = desktop_release_workflow();
-    let build = job_block(&workflow, "build");
-    let install_sccache = workflow_step_block(build, "Cache Rust compiler outputs");
-    let enable_sccache = workflow_step_block(build, "Enable Rust compiler cache");
-
-    assert!(
-        !build.contains("uses: actions/cache@"),
-        "desktop builds must not register a post-job Cargo dependency archive: \
-         a cold Windows x64 build already completed and uploaded every artifact, \
-         then timed out compressing this redundant cache"
-    );
-    assert!(
-        build.contains("mozilla-actions/sccache-action@"),
-        "desktop builds should retain the compiler-output cache"
-    );
-    for step in [install_sccache, enable_sccache] {
-        assert!(
-            step.contains("if: runner.os != 'Windows'"),
-            "desktop builds must bypass sccache on Windows: wrapping rustc makes \
-             web-sys's generated feature-check command exceed CreateProcess's \
-             command-line limit (os error 206)"
-        );
-    }
-    assert!(
-        install_sccache.contains("version: v0.16.0"),
-        "desktop builds must pin the last known-good sccache version: v0.17.0 \
-         expands Rust response files and exceeds the Windows command-line limit"
-    );
-
-    let shared_setup = fs::read_to_string(format!(
-        "{}/.github/actions/setup-sccache/action.yml",
-        env!("CARGO_MANIFEST_DIR")
-    ))
-    .expect("read shared sccache setup action");
-    assert!(
-        shared_setup.contains("version: v0.16.0"),
-        "the shared setup action must pin sccache instead of silently tracking its latest release"
-    );
-}
-
-#[test]
-fn desktop_release_workflow_run_resolves_child_release_not_head_sha_tag() {
-    // Issue #479: the automated release tags a CHILD "chore: release vX.Y.Z"
-    // commit (its first parent is the completed CI head SHA) and is pushed with
-    // GITHUB_TOKEN, so GitHub never starts a CI run for it and suppresses the
-    // `release` event. The previous resolve logic required a tag whose commit
-    // EQUALS the workflow_run head SHA -- a match that could never happen -- so
-    // the build was skipped and every /download entry read "Not available in
-    // latest release".
-    //
-    // The corrected resolve logic lives in scripts/desktop-release-resolve.sh
-    // (behaviorally covered by desktop_release_resolve.rs). This guard pins the
-    // workflow wiring and the absence of the old, broken skip path.
-    let workflow = desktop_release_workflow();
-    let resolve = job_block(&workflow, "resolve");
-    let pick = workflow_step_block(resolve, "Resolve tag and whether desktop assets are needed");
-    let resolve_script = fs::read_to_string(format!(
-        "{}/scripts/desktop-release-resolve.sh",
-        env!("CARGO_MANIFEST_DIR")
-    ))
-    .unwrap()
-    .replace("\r\n", "\n");
-
-    assert!(
-        pick.contains("WORKFLOW_RUN_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}"),
-        "workflow_run desktop builds should pass the completed CI run head SHA to the resolve script"
-    );
-    assert!(
-        pick.contains("bash scripts/desktop-release-resolve.sh"),
-        "the resolve step should delegate to the unit-tested resolve script"
-    );
-    assert!(
-        resolve.contains("actions/checkout@v6"),
-        "the resolve job must check out the repo so the resolve script is available"
-    );
-
-    // The old, broken behavior must not come back: never skip merely because no
-    // tag points at the head SHA (the auto-release tag never does).
-    assert!(
-        !workflow.contains("No release tag points at workflow_run head SHA"),
-        "issue #479 regression: must not skip when no tag matches the head SHA"
-    );
-    assert!(
-        !resolve_script.contains("No release tag points at workflow_run head SHA"),
-        "issue #479 regression: the resolve script must not reinstate the head-SHA skip"
-    );
-
-    // The corrected script must fall back to the latest release and keep the
-    // self-healing idempotency guard.
-    assert!(
-        resolve_script.contains("latest_release_tag()"),
-        "resolve script should fall back to the latest published release"
-    );
-    assert!(
-        resolve_script.contains(r#"select(.commit.sha == \"$WORKFLOW_RUN_HEAD_SHA\")"#),
-        "resolve script should keep the defensive exact-SHA tier"
-    );
-    assert!(
-        resolve_script.contains("expected_desktop_assets()"),
-        "resolve script should enumerate the complete required desktop asset set for the idempotency guard"
-    );
-    assert!(
-        resolve_script.contains("missing required desktop assets"),
-        "resolve script should report missing platform assets instead of treating a partial release as complete"
-    );
-    assert!(
-        resolve_script.contains("already-has-all-assets"),
-        "resolve script should skip only when every required desktop asset is present"
-    );
-    assert!(
-        resolve_script.contains("::group::"),
-        "resolve script should emit grouped verbose diagnostics for future debugging"
-    );
-}
-
-#[test]
-fn desktop_release_normalizes_linux_artifact_names_before_checksums() {
-    // Electron Builder emits Linux x64 artifacts as x86_64 AppImage and amd64
-    // .deb files. Normalize before checksums/upload so the release assets match
-    // src/web/download and scripts/desktop-release-resolve.sh.
-    let workflow = desktop_release_workflow();
-    let build = job_block(&workflow, "build");
-    let normalize = workflow_step_block(build, "Normalize desktop artifact names");
-    let normalizer = fs::read_to_string(format!(
-        "{}/desktop/scripts/normalize-artifacts.mjs",
-        env!("CARGO_MANIFEST_DIR")
-    ))
-    .unwrap()
-    .replace("\r\n", "\n");
-
-    let package_pos = build
-        .find("- name: Package desktop app")
-        .expect("desktop build should package the app");
-    let normalize_pos = build
-        .find("- name: Normalize desktop artifact names")
-        .expect("desktop build should normalize Electron Builder artifact aliases");
-    let collect_pos = build
-        .find("- name: Collect artifacts and checksums")
-        .expect("desktop build should collect checksums");
-    let upload_pos = build
-        .find("- name: Upload assets to release")
-        .expect("desktop build should upload release assets");
-
-    assert!(
-        package_pos < normalize_pos && normalize_pos < collect_pos && collect_pos < upload_pos,
-        "desktop artifacts must be normalized after packaging but before checksum generation and release upload"
-    );
-    assert!(
-        normalize.contains("working-directory: desktop")
-            && normalize.contains("node scripts/normalize-artifacts.mjs"),
-        "desktop workflow should run the normalizer from the desktop directory"
-    );
-    assert!(
-        normalizer.contains("linux-x86_64")
-            && normalizer.contains("linux-amd64")
-            && normalizer.contains("linux-x64")
-            && normalizer.contains("latest(?:-mac|-linux)?\\.yml"),
-        "normalizer should map Electron Builder Linux x64 aliases to the x64 download and updater contracts"
-    );
-}
-
-#[test]
-fn desktop_release_uploads_auto_update_metadata() {
-    let workflow = desktop_release_workflow();
-    let build = job_block(&workflow, "build");
-    let collect = workflow_step_block(build, "Collect artifacts and checksums");
-    let upload = workflow_step_block(build, "Upload assets to release");
-    let resolve_script = fs::read_to_string(format!(
-        "{}/scripts/desktop-release-resolve.sh",
-        env!("CARGO_MANIFEST_DIR")
-    ))
-    .unwrap();
-
-    for step in [collect, upload] {
-        assert!(
-            step.contains("*.blockmap") && step.contains("release/latest.yml"),
-            "desktop release should collect/upload updater blockmaps and latest.yml metadata"
-        );
-        assert!(
-            !step.contains("*.blockmap|*.yml) continue"),
-            "issue #548 regression: updater metadata must not be filtered out of release uploads"
-        );
-    }
-    assert!(
-        collect.contains("latest(-mac|-linux)?\\.yml"),
-        "checksum fragments should include updater metadata for provenance"
-    );
-    assert!(
-        resolve_script.contains("latest.yml")
-            && resolve_script.contains("latest-mac.yml")
-            && resolve_script.contains("latest-linux.yml")
-            && resolve_script.contains("required desktop assets: 17"),
-        "release resolver should require update metadata before skipping an automatic build"
-    );
-}
-
-#[test]
-fn desktop_release_runs_on_any_completed_main_pipeline_not_only_success() {
-    // Issue #479 (root cause, take 2): PR #480 fixed the resolve *script* but
-    // left the resolve *job* gated behind `workflow_run.conclusion == 'success'`.
-    // The auto-release publishes the GitHub release in an EARLY pipeline job, so
-    // any LATER job failing (e.g. the E2E Pages probe timing out) made the whole
-    // pipeline conclude `failure`, the gate skipped, and no desktop assets were
-    // ever built -- the fix stayed dormant and /download still read "Not
-    // available in latest release". The gate must run on ANY completed main-branch
-    // pipeline except cancelled/skipped, delegating the real build decision to the
-    // self-healing resolve script + its idempotency guard.
-    let workflow = desktop_release_workflow();
-    let resolve = job_block(&workflow, "resolve");
-
-    assert!(
-        resolve.contains("github.event.workflow_run.head_branch == 'main'"),
-        "desktop release should still only auto-build for main-branch pipelines"
-    );
-    assert!(
-        resolve.contains("github.event.workflow_run.conclusion != 'cancelled'")
-            && resolve.contains("github.event.workflow_run.conclusion != 'skipped'"),
-        "desktop release should run on any completed main pipeline except cancelled/skipped"
-    );
-    assert!(
-        !resolve.contains("github.event.workflow_run.conclusion == 'success'"),
-        "issue #479 regression: desktop release must NOT gate on full-pipeline success -- a late \
-         unrelated failure (e.g. E2E Pages timeout) would again suppress every desktop build"
     );
 }

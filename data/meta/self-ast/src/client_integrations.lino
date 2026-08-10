@@ -2,51 +2,41 @@ self_ast_census
   target src/client_integrations.rs
   language rust
   fidelity signature
-  byte_len 34221
-  line_count 996
-  content_id source_module_0dfc79115adbaf5b
-  symbol_count 43
+  byte_len 27443
+  line_count 758
+  content_id source_module_4e7f1f281989b21d
+  symbol_count 33
   symbols
-    module command 18 18
-    module completion 19 19
-    module completion_learning 20 20
-    module server 21 21
-    module session_files 22 22
-    module url 23 23
-    const DEFAULT_BASE_URL 33 33
-    const EMPTY_BACKUP_SENTINEL 34 34
-    const RENDERED_PLACEHOLDER 35 35
-    const ERROR_PLACEHOLDER 36 36
-    enum ClientProtocol 39 44
-    function as_str 47 54
-    struct WithFormalAiArgs 60 137
-    struct RenderContext 140 154
-    struct InvocationOptions 158 163
-    function run_with_formal_ai 165 211
-    function select_integrations 213 225
-    function find_integration 227 247
-    function render_context 249 318
-    function run_ephemeral 320 483
-    function temp_scoped_path 485 499
-    function build_invocation_args 501 605
-    function write_global_config 607 644
-    function undo_global_config 646 682
-    function restore_backup 684 700
-    function ensure_backup 702 715
-    function render_toml_settings 717 735
-    function set_toml_string 737 753
-    function table_at_path_mut 755 766
-    function merge_json_config 768 781
-    function render_json_settings 783 791
-    function json_settings_value 793 802
-    function set_json_setting 804 841
-    function invalid_typed_json_setting_error 843 848
-    function merge_json_value 850 864
-    function merge_shell_env_config 866 886
-    function remove_managed_block 888 908
-    function shell_double_quote 910 913
-    function render_template 915 935
-    function codex_model_catalog 937 971
-    function global_config_path 973 982
-    function backup_path 984 988
-    function write_file 990 996
+    module caller_args 16 16
+    module command 17 17
+    module completion 18 18
+    module completion_learning 19 19
+    module global_config 20 20
+    module global_verify 21 21
+    module server 22 22
+    module session_files 23 23
+    module tool_args 24 24
+    module url 25 25
+    const DEFAULT_BASE_URL 40 40
+    const EMPTY_BACKUP_SENTINEL 41 41
+    const RENDERED_PLACEHOLDER 42 42
+    const ERROR_PLACEHOLDER 43 43
+    enum ClientProtocol 46 51
+    function as_str 54 61
+    struct WithFormalAiArgs 67 149
+    struct RenderContext 152 166
+    struct InvocationOptions 170 178
+    function run_with_formal_ai 180 241
+    function read_piped_prompt 244 252
+    function select_integrations 254 266
+    function find_integration 268 288
+    function render_context 290 362
+    function run_ephemeral 364 522
+    function temp_scoped_path 524 538
+    function build_invocation_args 546 649
+    function overlay_args 653 675
+    function render_template 677 697
+    function codex_model_catalog 699 733
+    function global_config_path 735 744
+    function backup_path 746 750
+    function write_file 752 758

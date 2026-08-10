@@ -1,0 +1,33 @@
+   Compiling formal-ai v0.318.0 (/tmp/gh-issue-solver-1785615454177)
+    Finished `test` profile [unoptimized] target(s) in 1m 30s
+     Running tests/unit/mod.rs (target/debug/deps/unit-082382454c70c081)
+
+running 2 tests
+test issue_859::codex_process_input_is_not_a_workspace_file_writer ... FAILED
+test issue_859::codex_hello_world_starts_with_apply_patch_instead_of_write_stdin ... FAILED
+
+failures:
+
+---- issue_859::codex_process_input_is_not_a_workspace_file_writer stdout ----
+
+thread 'issue_859::codex_process_input_is_not_a_workspace_file_writer' (15579) panicked at tests/unit/issue_859.rs:8:5:
+assertion `left == right` failed: writing to a running process must not satisfy a file-write recipe
+  left: Some(Write)
+ right: None
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- issue_859::codex_hello_world_starts_with_apply_patch_instead_of_write_stdin stdout ----
+
+thread 'issue_859::codex_hello_world_starts_with_apply_patch_instead_of_write_stdin' (15578) panicked at tests/unit/issue_859.rs:32:5:
+assertion `left == right` failed
+  left: "write_stdin"
+ right: "apply_patch"
+
+
+failures:
+    issue_859::codex_hello_world_starts_with_apply_patch_instead_of_write_stdin
+    issue_859::codex_process_input_is_not_a_workspace_file_writer
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 2296 filtered out; finished in 0.38s
+
+error: test failed, to rerun pass `--test unit`

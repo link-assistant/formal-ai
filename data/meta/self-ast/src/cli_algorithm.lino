@@ -1,0 +1,13 @@
+self_ast_census
+  target src/cli_algorithm.rs
+  language rust
+  fidelity signature
+  byte_len 2475
+  line_count 77
+  content_id source_module_65beedd25f6420bc
+  symbol_count 4
+  symbols
+    struct AlgorithmArgs 12 15
+    enum AlgorithmAction 18 34
+    function run_algorithm 36 53
+    function parse_bindings 55 77

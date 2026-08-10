@@ -1,0 +1,12 @@
+self_ast_census
+  target src/proof_program.rs
+  language rust
+  fidelity signature
+  byte_len 1042
+  line_count 31
+  content_id source_module_6d477ecdcd32b74b
+  symbol_count 3
+  symbols
+    module core 8 8
+    function statement 16 18
+    function render_program 22 30

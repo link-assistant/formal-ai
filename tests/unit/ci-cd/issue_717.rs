@@ -35,14 +35,20 @@ fn attestations_digest_artifacts_without_parsing_cross_platform_checksum_text() 
 
 #[test]
 fn coverage_is_retained_and_remote_upload_is_fail_closed_when_configured() {
-    let release = workflow("release.yml");
+    // Issue #895 moved the coverage job into its own workflow; the retention and
+    // fail-closed-upload contract this test pins is unchanged, only relocated.
+    let coverage_workflow = workflow("coverage.yml");
 
-    assert!(release.contains("uses: codecov/codecov-action@v7"));
-    assert!(!release.contains("uses: codecov/codecov-action@v5"));
-    let coverage = release
+    assert!(coverage_workflow.contains("uses: codecov/codecov-action@v7"));
+    assert!(!coverage_workflow.contains("uses: codecov/codecov-action@v5"));
+    assert!(
+        !workflow("release.yml").contains("  coverage:\n"),
+        "the coverage job must not be duplicated back into release.yml"
+    );
+    let coverage = coverage_workflow
         .split("  coverage:\n")
         .nth(1)
-        .and_then(|tail| tail.split("\n  build:\n").next())
+        .and_then(|tail| tail.split("\n  browser-coverage:\n").next())
         .expect("coverage job");
     assert!(!coverage.contains("    env:\n      CODECOV_TOKEN:"));
     assert!(coverage.contains("id: codecov-config"));
@@ -161,7 +167,17 @@ fn generated_api_documentation_fails_on_every_rustdoc_warning() {
         })
         .expect("cargo doc step");
 
+    // RUSTDOCFLAGS stays on the workflow step so the fail-closed contract is
+    // visible where the job is defined; issue #977 moved the command itself
+    // into a script to keep release.yml under its line ceiling.
     assert!(docs.contains("RUSTDOCFLAGS: -D warnings"));
-    assert!(docs.contains("cargo doc --no-deps --lib"));
+    assert!(docs.contains("scripts/build-rust-api-docs.sh"));
     assert!(!docs.contains("RUSTDOCFLAGS is unset"));
+
+    let script = fs::read_to_string(format!(
+        "{}/scripts/build-rust-api-docs.sh",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .expect("build-rust-api-docs.sh");
+    assert!(script.contains("cargo doc --no-deps --lib"));
 }

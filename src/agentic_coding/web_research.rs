@@ -29,16 +29,39 @@ pub(super) fn web_research_query_for(messages: &[ChatMessage]) -> Option<String>
         };
     }
 
-    // A punctuation-marked question that the local engine cannot answer is an
-    // open-world lookup. Question words themselves remain seed data in the
-    // shared detector; punctuation is script structure, not language vocabulary.
+    None
+}
+
+/// Promote a request only after every specialized local route and completed
+/// tool result has declined it. Keeping this separate from explicit research
+/// preserves those higher-priority outcomes while closing the open-world gap.
+pub(super) fn unresolved_web_research_query_for(messages: &[ChatMessage]) -> Option<String> {
+    let task = latest_user_text(messages)?;
+    // Once every specialized local route has declined, any unresolved request
+    // is an open-world research task. This is deliberately intent-driven rather
+    // than punctuation-driven: instructions can require missing knowledge just
+    // as questions do. Conversation-meta requests remain local because searching
+    // the public web cannot recover private dialog history.
     let trimmed = task.trim();
-    let asks_question = trimmed.ends_with(['?', '？', '؟', '¿']);
     let unresolved = matches!(
         FormalAiEngine.answer(&task).intent.as_str(),
         "unknown" | "web_search"
     );
-    (asks_question && unresolved).then(|| trim_question_punctuation(&task))
+    let preceding = messages
+        .get(..messages.len().saturating_sub(1))
+        .unwrap_or(&[]);
+    (unresolved && !is_conversation_meta_request(&task, preceding))
+        .then(|| trim_question_punctuation(trimmed))
+}
+
+/// Whether this turn has already entered a successful search → fetch research
+/// sequence. Generic tool results retain their friendly renderer; only a
+/// search that produced usable output proves that an unresolved fallback owns
+/// the rest of this turn.
+pub(super) fn has_successful_search_result(messages: &[ChatMessage]) -> bool {
+    Progress::scan(messages)
+        .latest_successful_output(Capability::Search)
+        .is_some()
 }
 
 pub(super) fn is_definition_followup(task: &str) -> bool {
@@ -617,7 +640,7 @@ fn topic_from_history(messages: &[ChatMessage]) -> Option<String> {
         let context_id = format!("conversation:turn:{}", index + 1);
         let mut context = Context::new(&context_id);
         if message.role.eq_ignore_ascii_case("user") {
-            let text = message.content.plain_text();
+            let text = message.content.user_request_text();
             if !super::report_issue::is_report_intent(&text)
                 && !is_conversation_meta_request(&text, &messages[..index])
             {
@@ -657,18 +680,7 @@ fn topic_from_history(messages: &[ChatMessage]) -> Option<String> {
 fn is_conversation_meta_request(prompt: &str, preceding: &[ChatMessage]) -> bool {
     let history = preceding
         .iter()
-        .filter_map(|message| {
-            let text = message.content.plain_text();
-            if text.trim().is_empty() {
-                None
-            } else if message.role.eq_ignore_ascii_case("user") {
-                Some(crate::ConversationTurn::user(text))
-            } else if message.role.eq_ignore_ascii_case("assistant") {
-                Some(crate::ConversationTurn::assistant(text))
-            } else {
-                None
-            }
-        })
+        .filter_map(crate::protocol::chat_message_to_turn)
         .collect::<Vec<_>>();
     crate::solve_with_history(prompt, &history).intent == "summarize_conversation"
 }

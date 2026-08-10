@@ -46,7 +46,7 @@ Crates.io checks found `links-notation = 0.13.0` and `lino-objects-codec = 0.2.1
 
 ## Requirements Extracted
 
-The full requirement matrix is maintained in [`../../REQUIREMENTS.md`](../../REQUIREMENTS.md). The main groups are:
+The full requirement matrix is maintained in [`../../../REQUIREMENTS.md`](../../../REQUIREMENTS.md). The main groups are:
 
 - API compatibility: Chat Completions and Responses
 - symbolic execution: deterministic rules, no neural network inference

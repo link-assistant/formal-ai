@@ -9,7 +9,7 @@
 - **Trigger commit:** [`19a07a58`](https://github.com/link-assistant/formal-ai/pull/437/commits/19a07a58e8cb32541ae4995df8e31b7c68ec7a3d) — *"Revert 'Initial commit with task details'"*
 - **Evidence run:** [Actions run 27463712189](https://github.com/link-assistant/formal-ai/actions/runs/27463712189)
 
-All raw artifacts referenced below live in [`./logs/`](./logs/).
+All raw artifacts referenced below lived in a local `logs/` capture that was not committed to the repository.
 
 ---
 
@@ -31,14 +31,14 @@ the full `cargo test` matrix executed (824+ tests compiled and run).
 
 | Time (UTC) | Event |
 |---|---|
-| 2026-06-13 10:06:02 | Commit `19a07a58` *"Revert 'Initial commit with task details'"* pushed to branch `issue-436-e9e553c5e92f`. Diff: **`.gitkeep` — 1 deletion, nothing else** (see [`logs/commit-19a07a58.txt`](./logs/commit-19a07a58.txt)). |
+| 2026-06-13 10:06:02 | Commit `19a07a58` *"Revert 'Initial commit with task details'"* pushed to branch `issue-436-e9e553c5e92f`. Diff: **`.gitkeep` — 1 deletion, nothing else** (see `logs/commit-19a07a58.txt`, not committed). |
 | 2026-06-13 10:08:27 | CI/CD Pipeline run **27463712189** starts for that commit as a `pull_request` event (PR #437). |
-| 2026-06-13 10:08:36 | The **`Test (ubuntu-latest)`** job begins `cargo test` despite no code changing (see [`logs/test-job-evidence.txt`](./logs/test-job-evidence.txt)). |
+| 2026-06-13 10:08:36 | The **`Test (ubuntu-latest)`** job begins `cargo test` despite no code changing (see `logs/test-job-evidence.txt`, not committed). |
 | 2026-06-13 10:09:31 | Hundreds of tests compile & pass — pure wasted runner time. |
 | 2026-06-13 ~10:08 | In the **same run**, `Lint`, `Code Coverage`, `E2E Tests (local demo)`, `Changelog Fragment Check`, and `Build` all correctly **skip** (they gate on the change detector). Only `Test` ran. |
 | 2026-06-13 (later) | Issue #442 filed. |
 
-Job outcomes for that run (from [`logs/run-27463712189-jobs.json`](./logs/run-27463712189-jobs.json)):
+Job outcomes for that run (from `logs/run-27463712189-jobs.json`, not committed):
 
 | Job | Result | Gated on change detector? |
 |---|---|---|
@@ -174,7 +174,7 @@ already-documented rationale for decoupling `lint`
 ## 6. The same bug in the templates (R2, R3)
 
 Downloaded copies of all four template release workflows are in
-[`logs/templates/`](./logs/templates/). Comparing the `test`-job gating:
+`logs/templates/` (not committed). Comparing the `test`-job gating:
 
 | Template | `test` gating | Same bug? |
 |---|---|---|

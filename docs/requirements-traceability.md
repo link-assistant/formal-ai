@@ -1,0 +1,758 @@
+# Requirements Traceability
+
+Companion table for [REQUIREMENTS.md](../REQUIREMENTS.md). Per konard's
+2026-08-04 standing requirement, every tracked requirement must record (1)
+when it was delivered in code, (2) the automated test that pins it, and (3)
+manual test confirmation. Populated from the 2026-08-04 requirement audit
+(944 audited requirement records, `docs/case-studies/issue-914/` lineage).
+
+Honesty rules applied throughout: `not yet confirmed` and `none recorded`
+mean exactly that -- absence of a record, not failure. `not delivered --
+tracked in #NNN` rows point at the batch #930-#962 trackers or pre-existing
+open issues. Manual-confirmation entries are cited **only** for the specific
+checks the 2026-08-04 audit test battery actually ran by hand (see
+`docs/case-studies/issue-914/` audit report); every other row is honestly
+"not yet confirmed" even where the automated suite passes. CI enforcement
+of this table's freshness is tracked by E105 (#957); this is the initial
+data population, not an automated generator wired into CI yet.
+
+Two pre-existing ID collisions in REQUIREMENTS.md are preserved here rather
+than silently renumbered (out of scope for this table): R396-R407 appear in
+both the issue-531 and issue-540 sections; R480 appears twice; R501-R509
+appear in both the issue-451 and issue-559 sections. Each occurrence is
+disambiguated below by its REQUIREMENTS.md line number.
+
+| ID | Line | Delivered | Automated test | Manual confirmation |
+| --- | --- | --- | --- | --- |
+| R1 | 14 | pre-2026-07 (undated) | none recorded | not yet confirmed |
+| R2 | 15 | pre-2026-07 (undated) | none recorded | not yet confirmed |
+| R3 | 16 | pre-2026-07 (undated) | none recorded | not yet confirmed |
+| R4 | 17 | pre-2026-07 (undated) | none recorded | not yet confirmed |
+| R5 | 18 | pre-2026-07 (undated) | none recorded | not yet confirmed |
+| R6 | 19 | pre-2026-07 (undated) | none recorded | not yet confirmed |
+| R7 | 20 | pre-2026-07 (undated) | none recorded | not yet confirmed |
+| R8 | 21 | pre-2026-07 (undated) | none recorded | not yet confirmed |
+| R9 | 22 | pre-2026-07 (undated) | none recorded | manually confirmed 2026-08-04 (audit): README `chat --prompt "Hi"` en greeting run via built binary |
+| R10 | 23 | pre-2026-07 (undated) | none recorded | manually confirmed 2026-08-04 (audit): README `chat --prompt "Write me hello world program in Rust"` run, JSON chat format checked |
+| R11 | 24 | pre-2026-07 (undated) | none recorded | not yet confirmed |
+| R12 | 25 | pre-2026-07 (undated) | none recorded | not yet confirmed |
+| R13 | 26 | pre-2026-07 (undated) | none recorded | manually confirmed 2026-08-04 (audit): `formal-ai serve` started, `/v1/chat/completions` and `/v1/responses` called, server stopped cleanly |
+| R14 | 27 | pre-2026-07 (undated) | none recorded | not yet confirmed |
+| R15 | 28 | pre-2026-07 (undated) | none recorded | not yet confirmed |
+| R16 | 29 | pre-2026-07 (undated) | none recorded | not yet confirmed |
+| R17 | 30 | pre-2026-07 (undated) | none recorded | manually confirmed 2026-08-04 (audit): `npm --prefix desktop run smoke` passed |
+| R18 | 31 | pre-2026-07 (undated) | none recorded | not yet confirmed |
+| R19 | 32 | pre-2026-07 (undated) | none recorded | not yet confirmed |
+| R20 | 33 | pre-2026-07 (undated) | none recorded | not yet confirmed |
+| R21 | 34 | pre-2026-07 (undated) | none recorded | not yet confirmed |
+| R22 | 35 | pre-2026-07 (undated) | none recorded | manually confirmed 2026-08-04 (audit): README greetings run in en/ru/hi/zh (Hello/Привет/नमस्ते/你好) |
+| R23 | 36 | pre-2026-07 (undated) | none recorded | not yet confirmed |
+| R24 | 37 | pre-2026-07 (undated) | none recorded | not yet confirmed |
+| R25 | 38 | pre-2026-07 (undated) | none recorded | not yet confirmed |
+| R26 | 50 | pre-2026-07 (undated); issue #6 | issue-level coverage (not row-pinned): tests/e2e/tests/demo.spec.js:80 | not yet confirmed |
+| R27 | 51 | pre-2026-07 (undated); issue #6 | issue-level coverage (not row-pinned): tests/e2e/tests/demo.spec.js:80 | not yet confirmed |
+| R28 | 52 | pre-2026-07 (undated); issue #6 | issue-level coverage (not row-pinned): tests/e2e/tests/demo.spec.js:80 | not yet confirmed |
+| R29 | 53 | pre-2026-07 (undated); issue #6 | issue-level coverage (not row-pinned): tests/e2e/tests/demo.spec.js:80 | not yet confirmed |
+| R30 | 54 | pre-2026-07 (undated); issue #6 | issue-level coverage (not row-pinned): tests/e2e/tests/demo.spec.js:80 | not yet confirmed |
+| R31 | 62 | pre-2026-07 (undated); issue #8 | issue-level coverage (not row-pinned): tests/unit/specification/agent_isolation.rs | not yet confirmed |
+| R32 | 63 | pre-2026-07 (undated); issue #8 | issue-level coverage (not row-pinned): tests/unit/specification/agent_isolation.rs | not yet confirmed |
+| R33 | 64 | pre-2026-07 (undated); issue #8 | issue-level coverage (not row-pinned): tests/unit/specification/agent_isolation.rs | not yet confirmed |
+| R34 | 65 | pre-2026-07 (undated); issue #8 | issue-level coverage (not row-pinned): tests/unit/specification/agent_isolation.rs | not yet confirmed |
+| R35 | 66 | pre-2026-07 (undated); issue #8 | issue-level coverage (not row-pinned): tests/unit/specification/agent_isolation.rs | not yet confirmed |
+| R36 | 67 | pre-2026-07 (undated); issue #8 | issue-level coverage (not row-pinned): tests/unit/specification/agent_isolation.rs | not yet confirmed |
+| R37 | 68 | pre-2026-07 (undated); issue #8 | issue-level coverage (not row-pinned): tests/unit/specification/agent_isolation.rs | not yet confirmed |
+| R38 | 69 | pre-2026-07 (undated); issue #8 | issue-level coverage (not row-pinned): tests/unit/specification/agent_isolation.rs | not yet confirmed |
+| R39 | 70 | pre-2026-07 (undated); issue #8 | issue-level coverage (not row-pinned): tests/unit/specification/agent_isolation.rs | not yet confirmed |
+| R40 | 71 | pre-2026-07 (undated); issue #8 | issue-level coverage (not row-pinned): tests/unit/specification/agent_isolation.rs | not yet confirmed |
+| R41 | 72 | pre-2026-07 (undated); issue #8 | issue-level coverage (not row-pinned): tests/unit/specification/agent_isolation.rs | not yet confirmed |
+| R42 | 73 | pre-2026-07 (undated); issue #8 | issue-level coverage (not row-pinned): tests/unit/specification/agent_isolation.rs | not yet confirmed |
+| R43 | 74 | pre-2026-07 (undated); issue #8 | issue-level coverage (not row-pinned): tests/unit/specification/agent_isolation.rs | not yet confirmed |
+| R44 | 75 | pre-2026-07 (undated); issue #8 | issue-level coverage (not row-pinned): tests/unit/specification/agent_isolation.rs | not yet confirmed |
+| R45 | 76 | pre-2026-07 (undated); issue #8 | issue-level coverage (not row-pinned): tests/unit/specification/agent_isolation.rs | not yet confirmed |
+| R46 | 77 | pre-2026-07 (undated); issue #8 | issue-level coverage (not row-pinned): tests/unit/specification/agent_isolation.rs | not yet confirmed |
+| R47 | 78 | pre-2026-07 (undated); issue #8 | issue-level coverage (not row-pinned): tests/unit/specification/agent_isolation.rs | not yet confirmed |
+| R48 | 86 | pre-2026-07 (undated); issue #10 | issue-level coverage (not row-pinned): tests/e2e/tests/demo.spec.js:443 | not yet confirmed |
+| R49 | 87 | pre-2026-07 (undated); issue #10 | issue-level coverage (not row-pinned): tests/e2e/tests/demo.spec.js:443 | not yet confirmed |
+| R50 | 88 | pre-2026-07 (undated); issue #10 | issue-level coverage (not row-pinned): tests/e2e/tests/demo.spec.js:443 | not yet confirmed |
+| R51 | 89 | pre-2026-07 (undated); issue #10 | issue-level coverage (not row-pinned): tests/e2e/tests/demo.spec.js:443 | not yet confirmed |
+| R52 | 90 | pre-2026-07 (undated); issue #10 | issue-level coverage (not row-pinned): tests/e2e/tests/demo.spec.js:443 | not yet confirmed |
+| R53 | 91 | pre-2026-07 (undated); issue #10 | issue-level coverage (not row-pinned): tests/e2e/tests/demo.spec.js:443 | not yet confirmed |
+| R54 | 92 | pre-2026-07 (undated); issue #10 | issue-level coverage (not row-pinned): tests/e2e/tests/demo.spec.js:443 | not yet confirmed |
+| R55 | 100 | pre-2026-07 (undated); issue #12 | issue-level coverage (not row-pinned): tests/unit/docs_requirements.rs | not yet confirmed |
+| R56 | 101 | pre-2026-07 (undated); issue #12 | issue-level coverage (not row-pinned): tests/unit/docs_requirements.rs | not yet confirmed |
+| R57 | 102 | pre-2026-07 (undated); issue #12 | issue-level coverage (not row-pinned): tests/unit/docs_requirements.rs | not yet confirmed |
+| R58 | 103 | pre-2026-07 (undated); issue #12 | issue-level coverage (not row-pinned): tests/unit/docs_requirements.rs | not yet confirmed |
+| R59 | 104 | pre-2026-07 (undated); issue #12 | issue-level coverage (not row-pinned): tests/unit/docs_requirements.rs | not yet confirmed |
+| R60 | 105 | pre-2026-07 (undated); issue #12 | issue-level coverage (not row-pinned): tests/unit/docs_requirements.rs | not yet confirmed |
+| R61 | 106 | pre-2026-07 (undated); issue #12 | issue-level coverage (not row-pinned): tests/unit/docs_requirements.rs | manually confirmed 2026-08-04 (audit): `chat --prompt "What is 8% of $50?"` run twice, outputs byte-identical (cmp) |
+| R62 | 107 | pre-2026-07 (undated); issue #12 | issue-level coverage (not row-pinned): tests/unit/docs_requirements.rs | not yet confirmed |
+| R63 | 108 | pre-2026-07 (undated); issue #12 | issue-level coverage (not row-pinned): tests/unit/docs_requirements.rs | not yet confirmed |
+| R64 | 109 | pre-2026-07 (undated); issue #12 | issue-level coverage (not row-pinned): tests/unit/docs_requirements.rs | not yet confirmed |
+| R65 | 110 | pre-2026-07 (undated); issue #12 | issue-level coverage (not row-pinned): tests/unit/docs_requirements.rs | not yet confirmed |
+| R66 | 111 | pre-2026-07 (undated); issue #12 | tests/unit/specification/reasoning_loop.rs | not yet confirmed |
+| R67 | 112 | pre-2026-07 (undated); issue #12 | tests/unit/specification/source_cache.rs | not yet confirmed |
+| R68 | 113 | pre-2026-07 (undated); issue #12 | issue-level coverage (not row-pinned): tests/unit/docs_requirements.rs | not yet confirmed |
+| R69 | 114 | pre-2026-07 (undated); issue #12 | issue-level coverage (not row-pinned): tests/unit/docs_requirements.rs | not yet confirmed |
+| R70 | 115 | pre-2026-07 (undated); issue #12 | tests/unit/docs_requirements.rs | not yet confirmed |
+| R71 | 116 | pre-2026-07 (undated); issue #12 | tests/unit/specification/ | not yet confirmed |
+| R72 | 117 | pre-2026-07 (undated); issue #12 | tests/unit/specification/reasoning_loop.rs | not yet confirmed |
+| R73 | 118 | pre-2026-07 (undated); issue #12 | issue-level coverage (not row-pinned): tests/unit/docs_requirements.rs | not yet confirmed |
+| R74 | 119 | pre-2026-07 (undated); issue #12 | issue-level coverage (not row-pinned): tests/unit/docs_requirements.rs | not yet confirmed |
+| R75 | 120 | pre-2026-07 (undated); issue #12 | issue-level coverage (not row-pinned): tests/unit/docs_requirements.rs | not yet confirmed |
+| R76 | 121 | pre-2026-07 (undated); issue #12 | issue-level coverage (not row-pinned): tests/unit/docs_requirements.rs | not yet confirmed |
+| R77 | 122 | pre-2026-07 (undated); issue #12 | tests/unit/specification/transparent_state.rs | not yet confirmed |
+| R78 | 123 | pre-2026-07 (undated); issue #12 | issue-level coverage (not row-pinned): tests/unit/docs_requirements.rs | not yet confirmed |
+| R79 | 124 | pre-2026-07 (undated); issue #12 | tests/unit/specification/source_cache.rs | not yet confirmed |
+| R80 | 125 | pre-2026-07 (undated); issue #12 | tests/unit/specification/agent_isolation.rs | not yet confirmed |
+| R81 | 126 | pre-2026-07 (undated); issue #12 | tests/unit/specification/network_visualization.rs | not yet confirmed |
+| R82 | 127 | pre-2026-07 (undated); issue #12 | tests/unit/specification/reasoning_loop.rs::answers_are_repeatable_for_the_same_prompt | not yet confirmed |
+| R83 | 138 | pre-2026-07 (undated); issue #14 | issue-level coverage (not row-pinned): tests/unit/specification/conversation_history.rs | not yet confirmed |
+| R84 | 139 | pre-2026-07 (undated); issue #14 | issue-level coverage (not row-pinned): tests/unit/specification/conversation_history.rs | not yet confirmed |
+| R85 | 140 | pre-2026-07 (undated); issue #14 | tests/unit/specification/reasoning_paths.rs::arithmetic_* | not yet confirmed |
+| R86 | 141 | pre-2026-07 (undated); issue #14 | tests/unit/specification/reasoning_paths.rs::concept_lookup_* | not yet confirmed |
+| R87 | 142 | pre-2026-07 (undated); issue #14 | tests/unit/specification/reasoning_paths.rs::solve_with_history_* | not yet confirmed |
+| R88 | 143 | pre-2026-07 (undated); issue #14 | tests/unit/specification/reasoning_paths.rs::javascript_* | not yet confirmed |
+| R89 | 144 | pre-2026-07 (undated); issue #14 | issue-level coverage (not row-pinned): tests/unit/specification/conversation_history.rs | not yet confirmed |
+| R90 | 156 | pre-2026-07 (undated); issue #16 | issue-level coverage (not row-pinned): tests/unit/specification/multilingual.rs | not yet confirmed |
+| R91 | 157 | pre-2026-07 (undated); issue #16 | issue-level coverage (not row-pinned): tests/unit/specification/multilingual.rs | not yet confirmed |
+| R92 | 158 | pre-2026-07 (undated); issue #16 | issue-level coverage (not row-pinned): tests/unit/specification/multilingual.rs | not yet confirmed |
+| R93 | 159 | pre-2026-07 (undated); issue #16 | tests/e2e/tests/multilingual.spec.js; tests/e2e/playwright.local.config.js | not yet confirmed |
+| R94 | 160 | pre-2026-07 (undated); issue #16 | issue-level coverage (not row-pinned): tests/unit/specification/multilingual.rs | not yet confirmed |
+| R95 | 161 | pre-2026-07 (undated); issue #16 | tests/e2e/tests/multilingual.spec.js | not yet confirmed |
+| R96 | 162 | pre-2026-07 (undated); issue #16 | issue-level coverage (not row-pinned): tests/unit/specification/multilingual.rs | not yet confirmed |
+| R97 | 163 | pre-2026-07 (undated); issue #16 | issue-level coverage (not row-pinned): tests/unit/specification/multilingual.rs | not yet confirmed |
+| R98 | 164 | pre-2026-07 (undated); issue #16 | issue-level coverage (not row-pinned): tests/unit/specification/multilingual.rs | not yet confirmed |
+| R99 | 165 | pre-2026-07 (undated); issue #16 | issue-level coverage (not row-pinned): tests/unit/specification/multilingual.rs | not yet confirmed |
+| R100 | 166 | pre-2026-07 (undated); issue #16 | issue-level coverage (not row-pinned): tests/unit/specification/multilingual.rs | not yet confirmed |
+| R101 | 180 | PR #17 (issue #16) | issue-level coverage (not row-pinned): tests/unit/specification/multilingual.rs | not yet confirmed |
+| R102 | 181 | PR #17 (issue #16) | issue-level coverage (not row-pinned): tests/unit/specification/multilingual.rs | not yet confirmed |
+| R103 | 182 | PR #17 (issue #16) | seed::tests | not yet confirmed |
+| R104 | 183 | PR #17 (issue #16) | seed::tests::bundle_round_trips_through_parse_bundle; seed::tests::parse_bundle_recovers_intent_routing_via_inner_parser | not yet confirmed |
+| R105 | 184 | PR #17 (issue #16) | tests/e2e/playwright.local.config.js | not yet confirmed |
+| R106 | 185 | PR #17 (issue #16) | issue-level coverage (not row-pinned): tests/unit/specification/multilingual.rs | not yet confirmed |
+| R107 | 186 | PR #17 (issue #16) | issue-level coverage (not row-pinned): tests/unit/specification/multilingual.rs | not yet confirmed |
+| R108 | 187 | PR #17 (issue #16) | issue-level coverage (not row-pinned): tests/unit/specification/multilingual.rs | not yet confirmed |
+| R109 | 199 | pre-2026-07 (undated); issue #18 | issue-level coverage (not row-pinned): tests/e2e/tests/issue-672-migration-replay.spec.js | not yet confirmed |
+| R110 | 200 | pre-2026-07 (undated); issue #18 | issue-level coverage (not row-pinned): tests/e2e/tests/issue-672-migration-replay.spec.js | not yet confirmed |
+| R111 | 201 | pre-2026-07 (undated); issue #18 | issue-level coverage (not row-pinned): tests/e2e/tests/issue-672-migration-replay.spec.js | not yet confirmed |
+| R112 | 202 | pre-2026-07 (undated); issue #18 | issue-level coverage (not row-pinned): tests/e2e/tests/issue-672-migration-replay.spec.js | not yet confirmed |
+| R113 | 203 | pre-2026-07 (undated); issue #18 | issue-level coverage (not row-pinned): tests/e2e/tests/issue-672-migration-replay.spec.js | not yet confirmed |
+| R114 | 204 | pre-2026-07 (undated); issue #18 | tests/e2e/tests/multilingual.spec.js; memory::tests::full_memory_round_trip_* | not yet confirmed |
+| R115 | 218 | pre-2026-07 (undated); issue #78 | none recorded | not yet confirmed |
+| R116 | 219 | pre-2026-07 (undated); issue #78 | tests/e2e/tests/demo.spec.js | not yet confirmed |
+| R117 | 220 | pre-2026-07 (undated); issue #78 | none recorded | not yet confirmed |
+| R118 | 221 | pre-2026-07 (undated); issue #78 | none recorded | not yet confirmed |
+| R119 | 222 | pre-2026-07 (undated); issue #78 | tests/e2e/tests/multilingual.spec.js; tests/e2e/tests/demo.spec.js | not yet confirmed |
+| R120 | 233 | pre-2026-07 (undated); issue #96 | none recorded | manually confirmed 2026-08-04 (audit): README arithmetic examples run in en (`8% of $50`) and ru (currency conversion) |
+| R121 | 234 | pre-2026-07 (undated); issue #96 | none recorded | not yet confirmed |
+| R122 | 235 | pre-2026-07 (undated); issue #96 | tests/unit/specification/calculator_delegation.rs | not yet confirmed |
+| R123 | 236 | pre-2026-07 (undated); issue #96 | none recorded | not yet confirmed |
+| R124 | 237 | pre-2026-07 (undated); issue #96 | tests/unit/specification/calculator_delegation.rs | not yet confirmed |
+| R125 | 238 | pre-2026-07 (undated); issue #96 | none recorded | not yet confirmed |
+| R126 | 239 | pre-2026-07 (undated); issue #96 | none recorded | not yet confirmed |
+| R127 | 240 | pre-2026-07 (undated); issue #96 | none recorded | not yet confirmed |
+| R128 | 241 | pre-2026-07 (undated); issue #96 | none recorded | not yet confirmed |
+| R129 | 256 | pre-2026-07 (undated); issue #103 | tests/unit/specification/prompt_variations.rs; tests/unit/specification/chat_surface.rs | not yet confirmed |
+| R130 | 257 | pre-2026-07 (undated); issue #103 | tests/unit/specification/prompt_variations.rs; tests/unit/specification/multilingual.rs | not yet confirmed |
+| R131 | 258 | pre-2026-07 (undated); issue #103 | issue-level coverage (not row-pinned): tests/unit/specification/prompt_variations.rs | not yet confirmed |
+| R132 | 259 | pre-2026-07 (undated); issue #103 | tests/unit/specification/prompt_variations.rs | not yet confirmed |
+| R133 | 260 | pre-2026-07 (undated); issue #103 | issue-level coverage (not row-pinned): tests/unit/specification/prompt_variations.rs | not yet confirmed |
+| R134 | 261 | pre-2026-07 (undated); issue #103 | issue-level coverage (not row-pinned): tests/unit/specification/prompt_variations.rs | not yet confirmed |
+| R135 | 262 | pre-2026-07 (undated); issue #103 | issue-level coverage (not row-pinned): tests/unit/specification/prompt_variations.rs | not yet confirmed |
+| R136 | 263 | pre-2026-07 (undated); issue #103 | issue-level coverage (not row-pinned): tests/unit/specification/prompt_variations.rs | not yet confirmed |
+| R137 | 275 | pre-2026-07 (undated); issue #117 | none recorded | not yet confirmed |
+| R138 | 276 | pre-2026-07 (undated); issue #117 | none recorded | not yet confirmed |
+| R139 | 277 | pre-2026-07 (undated); issue #117 | none recorded | not yet confirmed |
+| R140 | 278 | pre-2026-07 (undated); issue #117 | tests/e2e/scripts/check-i18n-catalog.mjs; npm run --prefix tests/e2e check:i18n | not yet confirmed |
+| R141 | 279 | pre-2026-07 (undated); issue #117 | tests/e2e/tests/demo.spec.js | not yet confirmed |
+| R142 | 280 | pre-2026-07 (undated); issue #117 | none recorded | not yet confirmed |
+| R143 | 294 | pre-2026-07 (undated); issue #115 | none recorded | not yet confirmed |
+| R144 | 295 | pre-2026-07 (undated); issue #115 | none recorded | not yet confirmed |
+| R145 | 296 | pre-2026-07 (undated); issue #115 | none recorded | not yet confirmed |
+| R146 | 297 | pre-2026-07 (undated); issue #115 | none recorded | not yet confirmed |
+| R147 | 298 | pre-2026-07 (undated); issue #115 | none recorded | not yet confirmed |
+| R148 | 299 | pre-2026-07 (undated); issue #115 | none recorded | not yet confirmed |
+| R149 | 300 | pre-2026-07 (undated); issue #115 | tests/unit/github_logs.rs; tests/integration/formal_ai_cli.rs | not yet confirmed |
+| R150 | 314 | pre-2026-07 (undated); issue #63 | issue-level coverage (not row-pinned): tests/unit/specification/definition_fusion.rs | not yet confirmed |
+| R151 | 315 | pre-2026-07 (undated); issue #63 | issue-level coverage (not row-pinned): tests/unit/specification/definition_fusion.rs | not yet confirmed |
+| R152 | 316 | pre-2026-07 (undated); issue #63 | issue-level coverage (not row-pinned): tests/unit/specification/definition_fusion.rs | not yet confirmed |
+| R153 | 317 | pre-2026-07 (undated); issue #63 | issue-level coverage (not row-pinned): tests/unit/specification/definition_fusion.rs | not yet confirmed |
+| R154 | 318 | pre-2026-07 (undated); issue #63 | tests/unit/specification/definition_fusion.rs; tests/e2e/tests/multilingual.spec.js | not yet confirmed |
+| R155 | 319 | pre-2026-07 (undated); issue #63 | issue-level coverage (not row-pinned): tests/unit/specification/definition_fusion.rs | not yet confirmed |
+| R156 | 332 | pre-2026-07 (undated); issue #80 | none recorded | not yet confirmed |
+| R157 | 333 | pre-2026-07 (undated); issue #80 | none recorded | not yet confirmed |
+| R158 | 334 | pre-2026-07 (undated); issue #80 | none recorded | not yet confirmed |
+| R159 | 335 | pre-2026-07 (undated); issue #80 | none recorded | not yet confirmed |
+| R160 | 336 | pre-2026-07 (undated); issue #80 | none recorded | not yet confirmed |
+| R161 | 337 | pre-2026-07 (undated); issue #80 | none recorded | not yet confirmed |
+| R162 | 338 | pre-2026-07 (undated); issue #80 | none recorded | not yet confirmed |
+| R163 | 339 | pre-2026-07 (undated); issue #80 | none recorded | not yet confirmed |
+| R164 | 340 | pre-2026-07 (undated); issue #80 | none recorded | not yet confirmed |
+| R165 | 351 | pre-2026-07 (undated); issue #129 | src/web/tests/index.html | not yet confirmed |
+| R166 | 352 | pre-2026-07 (undated); issue #129 | src/web/tests/connectivity.js | not yet confirmed |
+| R167 | 353 | pre-2026-07 (undated); issue #129 | issue-level coverage (not row-pinned): tests/connectivity.js | not yet confirmed |
+| R168 | 354 | pre-2026-07 (undated); issue #129 | issue-level coverage (not row-pinned): tests/connectivity.js | not yet confirmed |
+| R169 | 355 | pre-2026-07 (undated); issue #129 | issue-level coverage (not row-pinned): tests/connectivity.js | not yet confirmed |
+| R170 | 356 | pre-2026-07 (undated); issue #129 | tests/e2e/tests/connectivity.spec.js | not yet confirmed |
+| R171 | 357 | pre-2026-07 (undated); issue #129 | tests/unit/ci-cd/workflow_release.rs | not yet confirmed |
+| R172 | 358 | pre-2026-07 (undated); issue #129 | issue-level coverage (not row-pinned): tests/connectivity.js | not yet confirmed |
+| R173 | 371 | pre-2026-07 (undated); issue #127 | none recorded | not yet confirmed |
+| R174 | 372 | pre-2026-07 (undated); issue #127 | none recorded | not yet confirmed |
+| R175 | 373 | pre-2026-07 (undated); issue #127 | none recorded | not yet confirmed |
+| R176 | 374 | pre-2026-07 (undated); issue #127 | none recorded | not yet confirmed |
+| R177 | 375 | pre-2026-07 (undated); issue #127 | none recorded | not yet confirmed |
+| R178 | 376 | pre-2026-07 (undated); issue #127 | none recorded | not yet confirmed |
+| R179 | 377 | pre-2026-07 (undated); issue #127 | none recorded | not yet confirmed |
+| R180 | 378 | pre-2026-07 (undated); issue #127 | tests/unit/specification/prompt_variations.rs; tests/e2e/tests/multilingual.spec.js | not yet confirmed |
+| R181 | 393 | pre-2026-07 (undated); issue #133 | issue-level coverage (not row-pinned): tests/connectivity.js | not yet confirmed |
+| R182 | 394 | pre-2026-07 (undated); issue #133 | issue-level coverage (not row-pinned): tests/connectivity.js | not yet confirmed |
+| R183 | 395 | pre-2026-07 (undated); issue #133 | issue-level coverage (not row-pinned): tests/connectivity.js | not yet confirmed |
+| R184 | 396 | pre-2026-07 (undated); issue #133 | src/web/tests/connectivity.js | not yet confirmed |
+| R185 | 397 | pre-2026-07 (undated); issue #133 | src/web/tests/connectivity.js | not yet confirmed |
+| R186 | 398 | pre-2026-07 (undated); issue #133 | issue-level coverage (not row-pinned): tests/connectivity.js | not yet confirmed |
+| R187 | 399 | pre-2026-07 (undated); issue #133 | issue-level coverage (not row-pinned): tests/connectivity.js | not yet confirmed |
+| R188 | 400 | pre-2026-07 (undated); issue #133 | issue-level coverage (not row-pinned): tests/connectivity.js | not yet confirmed |
+| R189 | 401 | pre-2026-07 (undated); issue #133 | issue-level coverage (not row-pinned): tests/connectivity.js | not yet confirmed |
+| R190 | 402 | pre-2026-07 (undated); issue #133 | issue-level coverage (not row-pinned): tests/connectivity.js | not yet confirmed |
+| R191 | 403 | pre-2026-07 (undated); issue #133 | issue-level coverage (not row-pinned): tests/connectivity.js | not yet confirmed |
+| R192 | 404 | pre-2026-07 (undated); issue #133 | issue-level coverage (not row-pinned): tests/connectivity.js | not yet confirmed |
+| R193 | 405 | pre-2026-07 (undated); issue #133 | issue-level coverage (not row-pinned): tests/connectivity.js | not yet confirmed |
+| R194 | 406 | pre-2026-07 (undated); issue #133 | issue-level coverage (not row-pinned): tests/connectivity.js | not yet confirmed |
+| R195 | 424 | pre-2026-07 (undated); issue #159 | tests/unit/specification/project_lookups.rs::russian_hive_mind_prompt_prefers_link_assistant_project | not yet confirmed |
+| R196 | 425 | pre-2026-07 (undated); issue #159 | issue-level coverage (not row-pinned): tests/unit/specification/project_lookups.rs:17 | not yet confirmed |
+| R197 | 426 | pre-2026-07 (undated); issue #159 | src/summarization/mod.rs::tests | not yet confirmed |
+| R198 | 427 | pre-2026-07 (undated); issue #159 | issue-level coverage (not row-pinned): tests/unit/specification/project_lookups.rs:17 | not yet confirmed |
+| R199 | 428 | pre-2026-07 (undated); issue #159 | issue-level coverage (not row-pinned): tests/unit/specification/project_lookups.rs:17 | not yet confirmed |
+| R200 | 429 | pre-2026-07 (undated); issue #159 | tests/unit/specification/project_lookups.rs::curated_project_concept_prompt_routes_to_project_lookup | not yet confirmed |
+| R201 | 430 | pre-2026-07 (undated); issue #159 | tests/unit/specification/project_lookups.rs::curated_project_lookup_records_summarization_evidence | not yet confirmed |
+| R202 | 431 | pre-2026-07 (undated); issue #159 | tests/unit/specification/summarization_pipeline.rs::strip_markdown_noise_drops_badges_html_comments_and_code_blocks | not yet confirmed |
+| R203 | 432 | pre-2026-07 (undated); issue #159 | tests/unit/specification/summarization_pipeline.rs::formalize_dialog_biases_user_turns_above_assistant_turns | not yet confirmed |
+| R204 | 433 | pre-2026-07 (undated); issue #159 | tests/unit/specification/summarization_pipeline.rs::generate_chat_title_returns_five_or_fewer_words | not yet confirmed |
+| R205 | 434 | pre-2026-07 (undated); issue #159 | tests/unit/specification/project_lookups.rs::http_fetch_of_curated_github_url_describes_project_via_summarization | not yet confirmed |
+| R206 | 435 | pre-2026-07 (undated); issue #159 | tests/unit/specification/summarization_pipeline.rs::default_max_statements_is_thirty | not yet confirmed |
+| R207 | 436 | pre-2026-07 (undated); issue #159 | tests/unit/specification/summarization_pipeline.rs::summarization_mode_target_percent_matches_vision | not yet confirmed |
+| R208 | 437 | pre-2026-07 (undated); issue #159 | tests/unit/specification/project_lookups.rs::associative_project_promotion_can_be_disabled | not yet confirmed |
+| R209 | 438 | pre-2026-07 (undated); issue #159 | issue-level coverage (not row-pinned): tests/unit/specification/project_lookups.rs:17 | not yet confirmed |
+| R210 | 450 | pre-2026-07 (undated); issue #162 | issue-level coverage (not row-pinned): tests/unit/specification/reasoning_paths.rs:221 | not yet confirmed |
+| R211 | 451 | pre-2026-07 (undated); issue #162 | issue-level coverage (not row-pinned): tests/unit/specification/reasoning_paths.rs:221 | not yet confirmed |
+| R212 | 452 | pre-2026-07 (undated); issue #162 | tests/unit/specification/reasoning_paths.rs | not yet confirmed |
+| R213 | 471 | pre-2026-07 (undated); issue #207 | tests/unit/specification/translation_via_links.rs::russian_translate_how_are_you_prompt_returns_english_surface | not yet confirmed |
+| R214 | 472 | pre-2026-07 (undated); issue #207 | tests/unit/specification/translation_via_links.rs::russian_translate_how_are_you_prompt_returns_english_surface | not yet confirmed |
+| R215 | 473 | pre-2026-07 (undated); issue #207 | tests/unit/specification/translation_via_links.rs::translation_meaning_registry_covers_extended_phrases | not yet confirmed |
+| R526-1 | 485 | pre-2026-07 (undated); issue #526 | tests/unit/specification/translation_round_trip.rs | not yet confirmed |
+| R526-2 | 486 | pre-2026-07 (undated); issue #526 | issue-level coverage (not row-pinned): tests/unit/specification/translation_round_trip.rs | not yet confirmed |
+| R526-3 | 487 | pre-2026-07 (undated); issue #526 | issue-level coverage (not row-pinned): tests/unit/specification/translation_round_trip.rs | not yet confirmed |
+| R526-4 | 488 | pre-2026-07 (undated); issue #526 | issue-level coverage (not row-pinned): tests/unit/specification/translation_round_trip.rs | not yet confirmed |
+| R526-5 | 489 | pre-2026-07 (undated); issue #526 | issue-level coverage (not row-pinned): tests/unit/specification/translation_round_trip.rs | not yet confirmed |
+| R526-6 | 490 | pre-2026-07 (undated); issue #526 | issue-level coverage (not row-pinned): tests/unit/specification/translation_round_trip.rs | not yet confirmed |
+| R890-1 | 501 | pre-2026-07 (undated); issue #890 | issue-level coverage (not row-pinned): tests/unit/issue_890.rs | not yet confirmed |
+| R890-2 | 502 | pre-2026-07 (undated); issue #890 | issue-level coverage (not row-pinned): tests/unit/issue_890.rs | not yet confirmed |
+| R890-3 | 503 | pre-2026-07 (undated); issue #890 | issue-level coverage (not row-pinned): tests/unit/issue_890.rs | not yet confirmed |
+| R890-4 | 504 | pre-2026-07 (undated); issue #890 | issue-level coverage (not row-pinned): tests/unit/issue_890.rs | not yet confirmed |
+| R890-5 | 505 | pre-2026-07 (undated); issue #890 | tests/e2e/tests/issue-890.spec.js | not yet confirmed |
+| R890-6 | 506 | pre-2026-07 (undated); issue #890 | issue-level coverage (not row-pinned): tests/unit/issue_890.rs | not yet confirmed |
+| R890-7 | 507 | pre-2026-07 (undated); issue #890 | issue-level coverage (not row-pinned): tests/unit/issue_890.rs | not yet confirmed |
+| R498-1 | 519 | pre-2026-07 (undated); issue #498 | issue-level coverage (not row-pinned): tests/unit/issue_498_google_trends_learning.rs | not yet confirmed |
+| R498-2 | 520 | pre-2026-07 (undated); issue #498 | issue-level coverage (not row-pinned): tests/unit/issue_498_google_trends_learning.rs | not yet confirmed |
+| R498-3 | 521 | pre-2026-07 (undated); issue #498 | issue-level coverage (not row-pinned): tests/unit/issue_498_google_trends_learning.rs | not yet confirmed |
+| R498-4 | 522 | pre-2026-07 (undated); issue #498 | issue-level coverage (not row-pinned): tests/unit/issue_498_google_trends_learning.rs | not yet confirmed |
+| R498-5 | 523 | pre-2026-07 (undated); issue #498 | issue-level coverage (not row-pinned): tests/unit/issue_498_google_trends_learning.rs | not yet confirmed |
+| R498-6 | 524 | pre-2026-07 (undated); issue #498 | issue-level coverage (not row-pinned): tests/unit/issue_498_google_trends_learning.rs | not yet confirmed |
+| R498-7 | 525 | pre-2026-07 (undated); issue #498 | tests/unit/issue_498_google_trends_catalog.rs | not yet confirmed |
+| R498-8 | 526 | pre-2026-07 (undated); issue #498 | issue-level coverage (not row-pinned): tests/unit/issue_498_google_trends_learning.rs | not yet confirmed |
+| R498-9 | 527 | pre-2026-07 (undated); issue #498 | issue-level coverage (not row-pinned): tests/unit/issue_498_google_trends_learning.rs | not yet confirmed |
+| R498-10 | 528 | pre-2026-07 (undated); issue #498 | issue-level coverage (not row-pinned): tests/unit/issue_498_google_trends_learning.rs | not yet confirmed |
+| R527-1 | 539 | pre-2026-07 (undated); issue #527 | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_527.rs | not yet confirmed |
+| R527-2 | 540 | pre-2026-07 (undated); issue #527 | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_527.rs | not yet confirmed |
+| R527-3 | 541 | pre-2026-07 (undated); issue #527 | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_527.rs | not yet confirmed |
+| R527-4 | 542 | pre-2026-07 (undated); issue #527 | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_527.rs | not yet confirmed |
+| R527-5 | 543 | pre-2026-07 (undated); issue #527 | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_527.rs | not yet confirmed |
+| R527-6 | 544 | pre-2026-07 (undated); issue #527 | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_527.rs | not yet confirmed |
+| R527-7 | 545 | pre-2026-07 (undated); issue #527 | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_527.rs | not yet confirmed |
+| R527-8 | 546 | pre-2026-07 (undated); issue #527 | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_527.rs | not yet confirmed |
+| R527-9 | 547 | pre-2026-07 (undated); issue #527 | tests/unit/issue_527_question_catalog.rs | not yet confirmed |
+| R527-10 | 548 | pre-2026-07 (undated); issue #527 | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_527.rs | not yet confirmed |
+| R527-11 | 549 | pre-2026-07 (undated); issue #527 | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_527.rs | not yet confirmed |
+| R527-12 | 550 | pre-2026-07 (undated); issue #527 | tests/unit/issue_527_question_catalog.rs | not yet confirmed |
+| R216 | 562 | pre-2026-07 (undated); issue #187 | none recorded | not yet confirmed |
+| R217 | 563 | pre-2026-07 (undated); issue #187 | none recorded | not yet confirmed |
+| R218 | 564 | pre-2026-07 (undated); issue #187 | tests/unit/specification/reasoning_paths.rs; tests/e2e/tests/multilingual.spec.js | not yet confirmed |
+| R219 | 565 | pre-2026-07 (undated); issue #187 | tests/e2e/scripts/check-multilingual-intent-coverage.mjs | not yet confirmed |
+| R220 | 577 | pre-2026-07 (undated); issue #195 | tests/unit/docker_runtime.rs | not yet confirmed |
+| R221 | 578 | pre-2026-07 (undated); issue #195 | issue-level coverage (not row-pinned): tests/unit/specification/agent_isolation.rs | not yet confirmed |
+| R222 | 579 | pre-2026-07 (undated); issue #195 | issue-level coverage (not row-pinned): tests/unit/specification/agent_isolation.rs | not yet confirmed |
+| R223 | 580 | pre-2026-07 (undated); issue #195 | issue-level coverage (not row-pinned): tests/unit/specification/agent_isolation.rs | not yet confirmed |
+| R224 | 581 | pre-2026-07 (undated); issue #195 | tests/unit/docs_requirements.rs | not yet confirmed |
+| R225 | 582 | pre-2026-07 (undated); issue #195 | issue-level coverage (not row-pinned): tests/unit/specification/agent_isolation.rs | not yet confirmed |
+| R226 | 593 | pre-2026-07 (undated); issue #196 | none recorded | not yet confirmed |
+| R227 | 594 | pre-2026-07 (undated); issue #196 | none recorded | not yet confirmed |
+| R228 | 595 | pre-2026-07 (undated); issue #196 | none recorded | not yet confirmed |
+| R229 | 596 | pre-2026-07 (undated); issue #196 | none recorded | not yet confirmed |
+| R230 | 597 | pre-2026-07 (undated); issue #196 | none recorded | not yet confirmed |
+| R231 | 603 | pre-2026-07 (undated); issue #278 | none recorded | not yet confirmed |
+| R232 | 604 | pre-2026-07 (undated); issue #278 | none recorded | not yet confirmed |
+| R233 | 605 | pre-2026-07 (undated); issue #278 | none recorded | not yet confirmed |
+| R234 | 606 | pre-2026-07 (undated); issue #278 | none recorded | not yet confirmed |
+| R235 | 607 | pre-2026-07 (undated); issue #278 | none recorded | not yet confirmed |
+| R236 | 608 | pre-2026-07 (undated); issue #278 | none recorded | not yet confirmed |
+| R237 | 619 | pre-2026-07 (undated); issue #279 | none recorded | not yet confirmed |
+| R238 | 620 | pre-2026-07 (undated); issue #279 | none recorded | not yet confirmed |
+| R239 | 621 | pre-2026-07 (undated); issue #279 | none recorded | not yet confirmed |
+| R240 | 622 | pre-2026-07 (undated); issue #279 | none recorded | not yet confirmed |
+| R241 | 623 | pre-2026-07 (undated); issue #279 | none recorded | not yet confirmed |
+| R242 | 624 | pre-2026-07 (undated); issue #279 | none recorded | not yet confirmed |
+| R243 | 634 | pre-2026-07 (undated); issue #283 | issue-level coverage (not row-pinned): tests/unit/specification/arbitrary_skill_compilation.rs | not yet confirmed |
+| R244 | 635 | pre-2026-07 (undated); issue #283 | issue-level coverage (not row-pinned): tests/unit/specification/arbitrary_skill_compilation.rs | not yet confirmed |
+| R245 | 636 | pre-2026-07 (undated); issue #283 | issue-level coverage (not row-pinned): tests/unit/specification/arbitrary_skill_compilation.rs | not yet confirmed |
+| R246 | 647 | pre-2026-07 (undated); issue #327 | issue-level coverage (not row-pinned): tests/unit/specification/synthesis.rs:39 | not yet confirmed |
+| R247 | 648 | pre-2026-07 (undated); issue #327 | tests/e2e/tests/issue-327.spec.js | not yet confirmed |
+| R248 | 649 | pre-2026-07 (undated); issue #327 | issue-level coverage (not row-pinned): tests/unit/specification/synthesis.rs:39 | not yet confirmed |
+| R249 | 650 | pre-2026-07 (undated); issue #327 | issue-level coverage (not row-pinned): tests/unit/specification/synthesis.rs:39 | not yet confirmed |
+| R250 | 687 | pre-2026-07 (undated); issue #244 | none recorded | not yet confirmed |
+| R251 | 688 | pre-2026-07 (undated); issue #244 | none recorded | not yet confirmed |
+| R252 | 689 | pre-2026-07 (undated); issue #244 | none recorded | not yet confirmed |
+| R253 | 690 | pre-2026-07 (undated); issue #244 | none recorded | not yet confirmed |
+| R254 | 691 | pre-2026-07 (undated); issue #244 | none recorded | not yet confirmed |
+| R255 | 692 | pre-2026-07 (undated); issue #244 | none recorded | not yet confirmed |
+| R256 | 710 | pre-2026-07 (undated); issue #349 | tests/integration/issue_349_reverse_sort.rs::issue_349_reverse_sort_follow_up_must_not_be_unknown | not yet confirmed |
+| R257 | 711 | pre-2026-07 (undated); issue #349 | tests/unit/specification/code_generation_coreference.rs | not yet confirmed |
+| R258 | 712 | pre-2026-07 (undated); issue #349 | none recorded | not yet confirmed |
+| R259 | 713 | pre-2026-07 (undated); issue #349 | tests/unit/specification/code_generation_program_modifiers.rs | not yet confirmed |
+| R260 | 714 | pre-2026-07 (undated); issue #349 | tests/integration/issue_349_reverse_sort.rs::issue_349_diagnostic_mode_emits_full_turn_5_reasoning_chain; tests/e2e/tests/issue-360.spec.js | not yet confirmed |
+| R261 | 715 | pre-2026-07 (undated); issue #349 | none recorded | not yet confirmed |
+| R262 | 716 | pre-2026-07 (undated); issue #349 | tests/unit/specification/coding_modification_benchmarks.rs::issue_362_multilingual_multi_turn_coding_modification_ratchet | not yet confirmed |
+| R263 | 717 | pre-2026-07 (undated); issue #349 | tests/e2e/tests/issue-363.spec.js | not yet confirmed |
+| R264 | 718 | pre-2026-07 (undated); issue #349 | tests/unit/specification/self_improvement.rs | not yet confirmed |
+| R265 | 719 | pre-2026-07 (undated); issue #349 | none recorded | not yet confirmed |
+| R266 | 732 | pre-2026-07 (undated); issue #398 | issue-level coverage (not row-pinned): tests/unit/reference_closure.rs | not yet confirmed |
+| R267 | 733 | pre-2026-07 (undated); issue #398 | issue-level coverage (not row-pinned): tests/unit/reference_closure.rs | not yet confirmed |
+| R268 | 734 | pre-2026-07 (undated); issue #398 | issue-level coverage (not row-pinned): tests/unit/reference_closure.rs | not yet confirmed |
+| R269 | 735 | pre-2026-07 (undated); issue #398 | issue-level coverage (not row-pinned): tests/unit/reference_closure.rs | not yet confirmed |
+| R270 | 736 | pre-2026-07 (undated); issue #398 | issue-level coverage (not row-pinned): tests/unit/reference_closure.rs | not yet confirmed |
+| R271 | 737 | pre-2026-07 (undated); issue #398 | issue-level coverage (not row-pinned): tests/unit/reference_closure.rs | not yet confirmed |
+| R272 | 738 | pre-2026-07 (undated); issue #398 | issue-level coverage (not row-pinned): tests/unit/reference_closure.rs | not yet confirmed |
+| R273 | 739 | pre-2026-07 (undated); issue #398 | issue-level coverage (not row-pinned): tests/unit/reference_closure.rs | not yet confirmed |
+| R274 | 740 | pre-2026-07 (undated); issue #398 | issue-level coverage (not row-pinned): tests/unit/reference_closure.rs | not yet confirmed |
+| R275 | 741 | pre-2026-07 (undated); issue #398 | tests/source/seed/embedded.rs | not yet confirmed |
+| R276 | 742 | pre-2026-07 (undated); issue #398 | issue-level coverage (not row-pinned): tests/unit/reference_closure.rs | not yet confirmed |
+| R277 | 743 | pre-2026-07 (undated); issue #398 | issue-level coverage (not row-pinned): tests/unit/reference_closure.rs | not yet confirmed |
+| R278 | 761 | PR #399 (issue #398) | tests/unit/data_files.rs | not yet confirmed |
+| R279 | 762 | PR #399 (issue #398) | tests/unit/overrides.rs | not yet confirmed |
+| R280 | 763 | PR #399 (issue #398) | issue-level coverage (not row-pinned): tests/unit/reference_closure.rs | not yet confirmed |
+| R281 | 764 | PR #399 (issue #398) | issue-level coverage (not row-pinned): tests/unit/reference_closure.rs | not yet confirmed |
+| R282 | 765 | PR #399 (issue #398) | issue-level coverage (not row-pinned): tests/unit/reference_closure.rs | not yet confirmed |
+| R283 | 766 | PR #399 (issue #398) | issue-level coverage (not row-pinned): tests/unit/reference_closure.rs | not yet confirmed |
+| R284 | 779 | pre-2026-07 (undated); issue #398 | tests/unit/total_closure.rs | not yet confirmed |
+| R285 | 780 | pre-2026-07 (undated); issue #398 | issue-level coverage (not row-pinned): tests/unit/reference_closure.rs | not yet confirmed |
+| R286 | 781 | pre-2026-07 (undated); issue #398 | issue-level coverage (not row-pinned): tests/unit/reference_closure.rs | not yet confirmed |
+| R287 | 782 | pre-2026-07 (undated); issue #398 | issue-level coverage (not row-pinned): tests/unit/reference_closure.rs | not yet confirmed |
+| R288 | 783 | pre-2026-07 (undated); issue #398 | issue-level coverage (not row-pinned): tests/unit/reference_closure.rs | not yet confirmed |
+| R289 | 795 | pre-2026-07 (undated); issue #412 | tests/integration/issue_412_oracle_languages.rs; source_tests/solver_handler_oracle | not yet confirmed |
+| R290 | 796 | pre-2026-07 (undated); issue #412 | issue-level coverage (not row-pinned): tests/integration/issue_412_oracle_languages.rs | not yet confirmed |
+| R291 | 797 | pre-2026-07 (undated); issue #412 | issue-level coverage (not row-pinned): tests/integration/issue_412_oracle_languages.rs | not yet confirmed |
+| R292 | 798 | pre-2026-07 (undated); issue #412 | issue-level coverage (not row-pinned): tests/integration/issue_412_oracle_languages.rs | not yet confirmed |
+| R293 | 811 | PR #416 (issue #408) | tests/unit/specification/text_manipulation.rs | not yet confirmed |
+| R294 | 812 | PR #416 (issue #408) | none recorded | not yet confirmed |
+| R295 | 813 | PR #416 (issue #408) | tests/unit/specification/text_manipulation_benchmarks.rs::issue_408_text_code_edit_profile_passes_local_ratchet | not yet confirmed |
+| R296 | 814 | PR #416 (issue #408) | tests/unit/docs_requirements.rs::issue_408_text_edit_benchmark_scope_documents_are_traceable | not yet confirmed |
+| R297 | 815 | PR #416 (issue #408) | none recorded | not yet confirmed |
+| R298 | 829 | PR #452 (issue #451) | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_451.rs | not yet confirmed |
+| R299 | 830 | PR #452 (issue #451) | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_451.rs | not yet confirmed |
+| R300 | 831 | PR #452 (issue #451) | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_451.rs | not yet confirmed |
+| R301 | 832 | PR #452 (issue #451) | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_451.rs | not yet confirmed |
+| R302 | 833 | PR #452 (issue #451) | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_451.rs | not yet confirmed |
+| R303 | 834 | PR #452 (issue #451) | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_451.rs | not yet confirmed |
+| R304 | 835 | PR #452 (issue #451) | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_451.rs | not yet confirmed |
+| R305 | 836 | PR #452 (issue #451) | tests/source/source_tests/proof_engine/decision/{sat,boolean}/tests.rs | not yet confirmed |
+| R306 | 859 | PR #469 (issue #468) | issue-level coverage (not row-pinned): tests/integration/issue_716_agentic_execution.rs | not yet confirmed |
+| R307 | 860 | PR #469 (issue #468) | tests/unit/agentic_coding.rs | not yet confirmed |
+| R308 | 861 | PR #469 (issue #468) | issue-level coverage (not row-pinned): tests/integration/issue_716_agentic_execution.rs | not yet confirmed |
+| R309 | 862 | PR #469 (issue #468) | issue-level coverage (not row-pinned): tests/integration/issue_716_agentic_execution.rs | not yet confirmed |
+| R310 | 863 | PR #469 (issue #468) | tests/unit/agentic_coding.rs | not yet confirmed |
+| R311 | 864 | PR #469 (issue #468) | issue-level coverage (not row-pinned): tests/integration/issue_716_agentic_execution.rs | not yet confirmed |
+| R312 | 865 | PR #469 (issue #468) | tests/unit/agentic_coding.rs | not yet confirmed |
+| R313 | 866 | PR #469 (issue #468) | issue-level coverage (not row-pinned): tests/integration/issue_716_agentic_execution.rs | not yet confirmed |
+| R314 | 867 | PR #469 (issue #468) | tests/unit/agentic_coding.rs; tests/unit/agentic_surfaces.rs | manually confirmed 2026-08-04 (audit): `formal-ai agent --help` run; offline `agent --silent --task ...` exit 0 (see audit finding: falls back to seeded fairy-tale KB rather than reflecting custom --task) |
+| R315 | 868 | PR #469 (issue #468) | issue-level coverage (not row-pinned): tests/integration/issue_716_agentic_execution.rs | not yet confirmed |
+| R316 | 869 | PR #469 (issue #468) | issue-level coverage (not row-pinned): tests/integration/issue_716_agentic_execution.rs | not yet confirmed |
+| R317 | 870 | PR #469 (issue #468) | issue-level coverage (not row-pinned): tests/integration/issue_716_agentic_execution.rs | not yet confirmed |
+| R318 | 871 | PR #469 (issue #468) | issue-level coverage (not row-pinned): tests/integration/issue_716_agentic_execution.rs | not yet confirmed |
+| R319 | 872 | PR #469 (issue #468) | tests/unit/agentic_coding.rs; tests/unit/agentic_surfaces.rs | not yet confirmed |
+| R320 | 888 | PR #470 (issue #438) | none recorded | not yet confirmed |
+| R321 | 889 | PR #470 (issue #438) | none recorded | not yet confirmed |
+| R322 | 890 | PR #470 (issue #438) | none recorded | not yet confirmed |
+| R323 | 891 | PR #470 (issue #438) | none recorded | not yet confirmed |
+| R324 | 892 | PR #470 (issue #438) | none recorded | not yet confirmed |
+| R325 | 893 | PR #470 (issue #438) | none recorded | not yet confirmed |
+| R326 | 894 | PR #470 (issue #438) | tests/unit/docker_runtime.rs::compose_file_runs_prebuilt_telegram_image_with_minimum_configuration; tests/unit/ci-cd/release_publishing.rs::release_workflow_publishes_prebuilt_ghcr_image_after_crate_is_visible_and_optional_docker_hub_mirror | not yet confirmed |
+| R327 | 895 | PR #470 (issue #438) | none recorded | not yet confirmed |
+| R328 | 896 | PR #470 (issue #438) | none recorded | not yet confirmed |
+| R329 | 897 | PR #470 (issue #438) | tests/unit/specification/desktop_surface.rs::{desktop_service_control_starts_and_stops_prepared_containers,desktop_web_surface_exposes_one_click_service_controls}; tests/unit/docker_runtime.rs::compose_file_offers_optional_openai_compatible_server_profile | not yet confirmed |
+| R330 | 918 | PR #560 (issue #559) | tests/unit/specification/meta_frame.rs; tests/unit/docs_requirements_issue_559.rs::issue_559_problem_frame_is_traceable | not yet confirmed |
+| R331 | 919 | PR #560 (issue #559) | tests/unit/specification/method_registry.rs; tests/unit/specification/reasoning_paths.rs::selected_specialized_handler_is_recorded_as_a_meta_method | not yet confirmed |
+| R332 | 920 | PR #560 (issue #559) | tests/unit/specification/meta_frame.rs; tests/unit/specification/reasoning_loop.rs::handler_families_publish_loop_events_as_recursion_leaves | not yet confirmed |
+| R333 | 921 | PR #560 (issue #559) | tests/unit/specification/meta_frame.rs; tests/unit/docs_requirements_issue_559.rs::issue_559_need_ledger_is_traceable | not yet confirmed |
+| R334 | 922 | PR #560 (issue #559) | tests/unit/specification/solution_evidence.rs; tests/unit/docs_requirements_issue_559.rs::issue_559_solution_evidence_is_traceable | not yet confirmed |
+| R335 | 923 | PR #560 (issue #559) | tests/unit/specification/recursive_core_recipe.rs; tests/unit/docs_requirements_issue_559.rs::issue_559_recursive_core_recipe_is_traceable | not yet confirmed |
+| R336 | 924 | PR #560 (issue #559) | tests/unit/specification/route_method_alias.rs; tests/unit/docs_requirements_issue_559.rs::issue_559_route_method_alias_is_traceable | not yet confirmed |
+| R337 | 925 | PR #560 (issue #559) | tests/unit/specification/meta_reasoning.rs; tests/unit/docs_requirements_issue_559.rs::issue_559_work_unit_reasoning_is_traceable | not yet confirmed |
+| R338 | 926 | PR #560 (issue #559) | tests/unit/specification/meta_construction.rs; tests/unit/docs_requirements_issue_559.rs::issue_559_upward_construction_is_traceable | not yet confirmed |
+| R339 | 927 | PR #560 (issue #559) | tests/unit/specification/selection.rs; tests/unit/docs_requirements_issue_559.rs::issue_559_selection_trace_is_traceable | not yet confirmed |
+| R340 | 928 | PR #560 (issue #559) | tests/unit/specification/meta_self_improvement.rs; tests/unit/docs_requirements_issue_559.rs::issue_559_meta_self_improvement_is_traceable | not yet confirmed |
+| R341 | 929 | PR #560 (issue #559) | tests/unit/specification/cue_lexicon.rs; tests/unit/docs_requirements_issue_559.rs::issue_559_cue_lexicon_is_traceable | not yet confirmed |
+| R342 | 930 | PR #560 (issue #559) | tests/unit/specification/skill_ledger.rs; tests/unit/docs_requirements_issue_559.rs::issue_559_skill_ledger_is_traceable | not yet confirmed |
+| R343 | 931 | PR #560 (issue #559) | tests/unit/specification/recipe_interpreter.rs; tests/unit/docs_requirements_issue_559.rs::issue_559_recipe_interpreter_is_traceable | not yet confirmed |
+| R344 | 932 | PR #560 (issue #559) | tests/unit/issue_699_handler_migration.rs | not yet confirmed |
+| R345 | 956 | PR #564 (issue #563) | tests/unit/specification/summarization_pipeline.rs::repository_file_summary_recurses_into_markdown_embedded_grammars | not yet confirmed |
+| R346 | 957 | PR #564 (issue #563) | none recorded | not yet confirmed |
+| R347 | 958 | PR #564 (issue #563) | none recorded | not yet confirmed |
+| R348 | 959 | PR #564 (issue #563) | none recorded | not yet confirmed |
+| R349 | 960 | PR #564 (issue #563) | none recorded | not yet confirmed |
+| R350 | 961 | PR #564 (issue #563) | none recorded | not yet confirmed |
+| R351 | 962 | PR #564 (issue #563) | tests/source/source_tests/summarization/mod/tests.rs::formalize_repository_file_rust_records_meta_language_and_symbols; tests/unit/docs_requirements_issue_563.rs::issue_563_repository_file_summarization_documents_are_traceable | not yet confirmed |
+| R352 | 963 | PR #564 (issue #563) | none recorded | not yet confirmed |
+| R353 | 964 | PR #564 (issue #563) | none recorded | not yet confirmed |
+| R354 | 965 | PR #564 (issue #563) | none recorded | not yet confirmed |
+| R355 | 966 | PR #564 (issue #563) | tests/unit/specification/summarization_pipeline.rs::summarize_repository_resource_subsumes_file_summarization | not yet confirmed |
+| R356 | 967 | PR #564 (issue #563) | none recorded | not yet confirmed |
+| R357 | 968 | PR #564 (issue #563) | none recorded | not yet confirmed |
+| R358 | 969 | PR #564 (issue #563) | none recorded | not yet confirmed |
+| R359 | 970 | PR #564 (issue #563) | tests/source/source_tests/summarization/mod/tests.rs::{summarize_repository_resource_topic_directory_is_identity_only,summarize_repository_resource_full_directory_recurses_into_nested_folder} | not yet confirmed |
+| R360 | 986 | PR #583 (issue #492) | none recorded | not yet confirmed |
+| R361 | 987 | PR #583 (issue #492) | none recorded | not yet confirmed |
+| R362 | 988 | PR #583 (issue #492) | none recorded | not yet confirmed |
+| R363 | 989 | PR #583 (issue #492) | none recorded | not yet confirmed |
+| R364 | 990 | PR #583 (issue #492) | none recorded | not yet confirmed |
+| R365 | 991 | PR #583 (issue #492) | none recorded | not yet confirmed |
+| R366 | 992 | PR #583 (issue #492) | none recorded | not yet confirmed |
+| R367 | 993 | PR #583 (issue #492) | none recorded | not yet confirmed |
+| R368 | 994 | PR #583 (issue #492) | none recorded | not yet confirmed |
+| R369 | 995 | PR #583 (issue #492) | none recorded | not yet confirmed |
+| R499-1 | 1012 | PR #641 (issue #499) | issue-level coverage (not row-pinned): tests/unit/issue_499_learn_from_source.rs | not yet confirmed |
+| R499-2 | 1013 | PR #641 (issue #499) | tests/unit/issue_499_learn_from_source.rs | not yet confirmed |
+| R499-3 | 1014 | PR #641 (issue #499) | issue-level coverage (not row-pinned): tests/unit/issue_499_learn_from_source.rs | not yet confirmed |
+| R499-4 | 1015 | PR #641 (issue #499) | issue-level coverage (not row-pinned): tests/unit/issue_499_learn_from_source.rs | not yet confirmed |
+| R499-5 | 1016 | PR #641 (issue #499) | issue-level coverage (not row-pinned): tests/unit/issue_499_learn_from_source.rs | not yet confirmed |
+| R499-6 | 1017 | PR #641 (issue #499) | issue-level coverage (not row-pinned): tests/unit/issue_499_learn_from_source.rs | not yet confirmed |
+| R499-7 | 1018 | PR #641 (issue #499) | issue-level coverage (not row-pinned): tests/unit/issue_499_learn_from_source.rs | not yet confirmed |
+| R499-8 | 1019 | PR #641 (issue #499) | tests/unit/issue_499_learn_from_source.rs; tests/unit/docs_requirements_issue_499.rs | not yet confirmed |
+| R370 | 1042 | PR #601 (issue #538) | tests/unit/issue_538.rs::tomato_surfaces_pin_their_grammatical_number | not yet confirmed |
+| R371 | 1043 | PR #601 (issue #538) | tests/unit/issue_538.rs::tomato_surfaces_expose_part_of_speech_from_data | not yet confirmed |
+| R372 | 1044 | PR #601 (issue #538) | tests/unit/issue_538.rs::every_tomato_surface_denotes_the_tomato_meaning | not yet confirmed |
+| R373 | 1045 | PR #601 (issue #538) | tests/unit/issue_538.rs::tomato_singular_and_plural_are_distinct_forms_in_each_language | not yet confirmed |
+| R374 | 1046 | PR #601 (issue #538) | tests/unit/semantic_grounding.rs | not yet confirmed |
+| R375 | 1047 | PR #601 (issue #538) | none recorded | not yet confirmed |
+| R376 | 1048 | PR #601 (issue #538) | tests/unit/issue_538.rs::grammatical_number_meanings_are_grounded_and_multilingual | not yet confirmed |
+| R377 | 1049 | PR #601 (issue #538) | none recorded | not yet confirmed |
+| R378 | 1050 | PR #601 (issue #538) | none recorded | not yet confirmed |
+| R379 | 1051 | PR #601 (issue #538) | none recorded | not yet confirmed |
+| R380 | 1052 | PR #601 (issue #538) | none recorded | not yet confirmed |
+| R381 | 1053 | PR #601 (issue #538) | none recorded | not yet confirmed |
+| R382 | 1054 | PR #601 (issue #538) | none recorded | not yet confirmed |
+| R383 | 1055 | not delivered — untracked | none — untracked | not yet confirmed |
+| R384 | 1056 | PR #601 (issue #538) | none recorded | not yet confirmed |
+| R385 | 1057 | PR #601 (issue #538) | tests/unit/issue_538_agentic.rs | not yet confirmed |
+| R386 | 1058 | PR #601 (issue #538) | none recorded | not yet confirmed |
+| R387 | 1073 | PR #637 (issue #558) | none recorded | not yet confirmed |
+| R388 | 1074 | PR #637 (issue #558) | none recorded | not yet confirmed |
+| R389 | 1075 | PR #637 (issue #558) | none recorded | not yet confirmed |
+| R390 | 1076 | PR #637 (issue #558) | none recorded | not yet confirmed |
+| R391 | 1077 | PR #637 (issue #558) | none recorded | not yet confirmed |
+| R392 | 1078 | PR #637 (issue #558) | tests/unit/docs_requirements_issue_558.rs; tests/unit/mod.rs | not yet confirmed |
+| R393 | 1079 | PR #637 (issue #558) | tests/unit/issue_558_self_healing.rs | not yet confirmed |
+| R394 | 1080 | PR #637 (issue #558) | tests/unit/issue_558_self_healing.rs | not yet confirmed |
+| R395 | 1081 | PR #637 (issue #558) | tests/unit/issue_558_self_healing.rs; tests/integration/issue_558_self_healing.rs | not yet confirmed |
+| R396 (L1095) | 1095 | PR #642 (issue #531) | none recorded | not yet confirmed |
+| R397 (L1096) | 1096 | PR #642 (issue #531) | none recorded | not yet confirmed |
+| R398 (L1097) | 1097 | PR #642 (issue #531) | none recorded | not yet confirmed |
+| R399 (L1098) | 1098 | PR #642 (issue #531) | none recorded | not yet confirmed |
+| R400 (L1099) | 1099 | PR #642 (issue #531) | none recorded | not yet confirmed |
+| R401 (L1100) | 1100 | PR #642 (issue #531) | none recorded | not yet confirmed |
+| R402 (L1101) | 1101 | PR #642 (issue #531) | tests/unit/sequences_{store,symbols,converter,compression}.rs | not yet confirmed |
+| R403 (L1102) | 1102 | PR #642 (issue #531) | tests/unit/sequences_{patterns_1d,grid_2d,inference}.rs | not yet confirmed |
+| R404 (L1103) | 1103 | PR #642 (issue #531) | tests/unit/issue_531_concepts_probe.rs | not yet confirmed |
+| R405 (L1104) | 1104 | PR #642 (issue #531) | tests/unit/issue_531_pattern_inference.rs | not yet confirmed |
+| R406 (L1105) | 1105 | PR #642 (issue #531) | none recorded | not yet confirmed |
+| R407 (L1106) | 1106 | PR #642 (issue #531) | tests/unit/docs_requirements_issue_531.rs; tests/unit/mod.rs | manually confirmed 2026-08-04 (audit): `npm --prefix desktop run smoke` passed (desktop/scripts/smoke.mjs) |
+| R531-17 | 1107 | PR #642 (issue #531) | none recorded | not yet confirmed |
+| R531-18 | 1108 | PR #642 (issue #531) | tests/unit/issue_531_algorithm_discovery.rs | not yet confirmed |
+| R531-19 | 1109 | PR #642 (issue #531) | none recorded | not yet confirmed |
+| R531-20 | 1110 | PR #642 (issue #531) | none recorded | not yet confirmed |
+| R531-21 | 1111 | PR #642 (issue #531) | none recorded | not yet confirmed |
+| R531-22 | 1112 | PR #642 (issue #531) | none recorded | not yet confirmed |
+| R531-23 | 1113 | PR #642 (issue #531) | none recorded | not yet confirmed |
+| R531-24 | 1114 | PR #642 (issue #531) | none recorded | not yet confirmed |
+| R531-25 | 1115 | PR #642 (issue #531) | none recorded | not yet confirmed |
+| R396 (L1138) | 1138 | PR #645 (issue #540) | tests/unit/docs_requirements_issue_540.rs | not yet confirmed |
+| R397 (L1139) | 1139 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R398 (L1140) | 1140 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R399 (L1141) | 1141 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R400 (L1142) | 1142 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R401 (L1143) | 1143 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R402 (L1144) | 1144 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R403 (L1145) | 1145 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R404 (L1146) | 1146 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R405 (L1147) | 1147 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R406 (L1148) | 1148 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R407 (L1149) | 1149 | PR #645 (issue #540) | tests/unit/memory_maintenance.rs; tests/unit/docs_requirements_issue_540.rs | manually confirmed 2026-08-04 (audit): `npm --prefix desktop run smoke` passed (desktop/scripts/smoke.mjs) |
+| R408 | 1150 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R409 | 1151 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R410 | 1152 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R411 | 1153 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R412 | 1154 | PR #645 (issue #540) | tests/unit/specification/dreaming_meta_algorithm.rs | not yet confirmed |
+| R413 | 1155 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R414 | 1156 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R415 | 1157 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R416 | 1158 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R417 | 1159 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R418 | 1160 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R419 | 1161 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R420 | 1162 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R421 | 1163 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R422 | 1164 | PR #645 (issue #540) | tests/unit/issue_540_agent_cli.rs | not yet confirmed |
+| R423 | 1165 | PR #645 (issue #540) | tests/unit/memory_learning.rs | not yet confirmed |
+| R424 | 1166 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R425 | 1167 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R426 | 1168 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R427 | 1169 | PR #645 (issue #540) | tests/unit/dreaming_runtime.rs | not yet confirmed |
+| R428 | 1194 | PR #675 (issue #649) | tests/unit/docs_requirements_issue_649.rs | not yet confirmed |
+| R429 | 1195 | PR #675 (issue #649) | issue-level coverage (not row-pinned): tests/unit/issue_702_world_model_dialog.rs:152 | not yet confirmed |
+| R430 | 1196 | PR #675 (issue #649) | issue-level coverage (not row-pinned): tests/unit/issue_702_world_model_dialog.rs:152 | not yet confirmed |
+| R431 | 1197 | PR #675 (issue #649) | issue-level coverage (not row-pinned): tests/unit/issue_702_world_model_dialog.rs:152 | not yet confirmed |
+| R432 | 1198 | PR #675 (issue #649) | issue-level coverage (not row-pinned): tests/unit/issue_702_world_model_dialog.rs:152 | not yet confirmed |
+| R433 | 1199 | PR #675 (issue #649) | issue-level coverage (not row-pinned): tests/unit/issue_702_world_model_dialog.rs:152 | not yet confirmed |
+| R434 | 1200 | PR #675 (issue #649) | tests/unit/docs_requirements_issue_649.rs; tests/unit/mod.rs | not yet confirmed |
+| R435 | 1213 | PR #639 (issue #482) | issue-level coverage (not row-pinned): tests/unit/specification/nemotron_training_samples.rs | not yet confirmed |
+| R436 | 1214 | PR #639 (issue #482) | issue-level coverage (not row-pinned): tests/unit/specification/nemotron_training_samples.rs | not yet confirmed |
+| R437 | 1215 | PR #639 (issue #482) | issue-level coverage (not row-pinned): tests/unit/specification/nemotron_training_samples.rs | not yet confirmed |
+| R438 | 1216 | PR #639 (issue #482) | issue-level coverage (not row-pinned): tests/unit/specification/nemotron_training_samples.rs | not yet confirmed |
+| R439 | 1217 | PR #639 (issue #482) | issue-level coverage (not row-pinned): tests/unit/specification/nemotron_training_samples.rs | not yet confirmed |
+| R440 | 1218 | PR #639 (issue #482) | tests/unit/specification/nemotron_training_samples.rs | not yet confirmed |
+| R441 | 1219 | PR #639 (issue #482) | issue-level coverage (not row-pinned): tests/unit/specification/nemotron_training_samples.rs | not yet confirmed |
+| R442 | 1220 | PR #639 (issue #482) | issue-level coverage (not row-pinned): tests/unit/specification/nemotron_training_samples.rs | not yet confirmed |
+| R443 | 1221 | PR #639 (issue #482) | issue-level coverage (not row-pinned): tests/unit/specification/nemotron_training_samples.rs | not yet confirmed |
+| R444 | 1222 | PR #639 (issue #482) | tests/unit/docs_requirements_issue_482.rs; tests/unit/mod.rs | not yet confirmed |
+| R445 | 1249 | PR #689 (issue #686) | tests/unit/docs_requirements_issue_686.rs | not yet confirmed |
+| R446 | 1250 | PR #689 (issue #686) | issue-level coverage (not row-pinned): tests/unit/issue_686_associative_persistence.rs | not yet confirmed |
+| R447 | 1251 | PR #689 (issue #686) | issue-level coverage (not row-pinned): tests/unit/issue_686_associative_persistence.rs | not yet confirmed |
+| R448 | 1252 | PR #689 (issue #686) | issue-level coverage (not row-pinned): tests/unit/issue_686_associative_persistence.rs | not yet confirmed |
+| R449 | 1253 | PR #689 (issue #686) | issue-level coverage (not row-pinned): tests/unit/issue_686_associative_persistence.rs | not yet confirmed |
+| R450 | 1254 | PR #689 (issue #686) | tests/unit/issue_686_associative_persistence.rs | not yet confirmed |
+| R451 | 1255 | PR #689 (issue #686) | issue-level coverage (not row-pinned): tests/unit/issue_686_associative_persistence.rs | not yet confirmed |
+| R452 | 1256 | PR #689 (issue #686) | tests/unit/docs_requirements_issue_686.rs; tests/unit/mod.rs | not yet confirmed |
+| R453 | 1257 | PR #689 (issue #686) | issue-level coverage (not row-pinned): tests/unit/issue_686_associative_persistence.rs | not yet confirmed |
+| R454 | 1258 | PR #689 (issue #686) | issue-level coverage (not row-pinned): tests/unit/issue_686_associative_persistence.rs | not yet confirmed |
+| R455 | 1259 | PR #689 (issue #686) | issue-level coverage (not row-pinned): tests/unit/issue_686_associative_persistence.rs | not yet confirmed |
+| R456 | 1260 | PR #689 (issue #686) | issue-level coverage (not row-pinned): tests/unit/issue_686_associative_persistence.rs | not yet confirmed |
+| R457 | 1261 | PR #689 (issue #686) | issue-level coverage (not row-pinned): tests/unit/issue_686_associative_persistence.rs | not yet confirmed |
+| R458 | 1262 | PR #689 (issue #686) | issue-level coverage (not row-pinned): tests/unit/issue_686_associative_persistence.rs | not yet confirmed |
+| R459 | 1276 | PR #690 (issue #656) | issue-level coverage (not row-pinned): tests/integration/issue_656_improve.rs | not yet confirmed |
+| R460 | 1277 | PR #690 (issue #656) | issue-level coverage (not row-pinned): tests/integration/issue_656_improve.rs | not yet confirmed |
+| R461 | 1278 | PR #690 (issue #656) | issue-level coverage (not row-pinned): tests/integration/issue_656_improve.rs | not yet confirmed |
+| R462 | 1279 | PR #690 (issue #656) | issue-level coverage (not row-pinned): tests/integration/issue_656_improve.rs | not yet confirmed |
+| R463 | 1280 | PR #690 (issue #656) | tests/integration/issue_656_improve.rs | not yet confirmed |
+| R464 | 1281 | PR #690 (issue #656) | issue-level coverage (not row-pinned): tests/integration/issue_656_improve.rs | not yet confirmed |
+| R465 | 1282 | PR #690 (issue #656) | tests/unit/docs_requirements_issue_656.rs | not yet confirmed |
+| R466 | 1283 | PR #690 (issue #656) | issue-level coverage (not row-pinned): tests/integration/issue_656_improve.rs | not yet confirmed |
+| R467 | 1284 | PR #690 (issue #656) | issue-level coverage (not row-pinned): tests/integration/issue_656_improve.rs | not yet confirmed |
+| R468 | 1285 | PR #690 (issue #656) | issue-level coverage (not row-pinned): tests/integration/issue_656_improve.rs | not yet confirmed |
+| R469 | 1286 | PR #690 (issue #656) | issue-level coverage (not row-pinned): tests/integration/issue_656_improve.rs | not yet confirmed |
+| R470 | 1287 | PR #690 (issue #656) | issue-level coverage (not row-pinned): tests/integration/issue_656_improve.rs | not yet confirmed |
+| R471 | 1288 | PR #690 (issue #656) | issue-level coverage (not row-pinned): tests/integration/issue_656_improve.rs | not yet confirmed |
+| R472 | 1289 | PR #690 (issue #656) | issue-level coverage (not row-pinned): tests/integration/issue_656_improve.rs | not yet confirmed |
+| R473 | 1302 | PR #735 (issue #657) | issue-level coverage (not row-pinned): tests/unit/issue_657_self_hosting_learning.rs | not yet confirmed |
+| R474 | 1303 | PR #735 (issue #657) | issue-level coverage (not row-pinned): tests/unit/issue_657_self_hosting_learning.rs | not yet confirmed |
+| R475 | 1304 | PR #735 (issue #657) | issue-level coverage (not row-pinned): tests/unit/issue_657_self_hosting_learning.rs | not yet confirmed |
+| R476 | 1305 | PR #735 (issue #657) | issue-level coverage (not row-pinned): tests/unit/issue_657_self_hosting_learning.rs | not yet confirmed |
+| R477 | 1306 | PR #735 (issue #657) | issue-level coverage (not row-pinned): tests/unit/issue_657_self_hosting_learning.rs | not yet confirmed |
+| R478 | 1307 | PR #735 (issue #657) | issue-level coverage (not row-pinned): tests/unit/issue_657_self_hosting_learning.rs | not yet confirmed |
+| R479 | 1308 | PR #735 (issue #657) | issue-level coverage (not row-pinned): tests/unit/issue_657_self_hosting_learning.rs | not yet confirmed |
+| R480 (L1309) | 1309 | PR #735 (issue #657) | issue-level coverage (not row-pinned): tests/unit/issue_657_self_hosting_learning.rs | not yet confirmed |
+| R480 (L1322) | 1322 | PR #807 (issue #673) | issue-level coverage (not row-pinned): tests/unit/issue_673_self_ast_census.rs | not yet confirmed |
+| R481 | 1323 | PR #807 (issue #673) | issue-level coverage (not row-pinned): tests/unit/issue_673_self_ast_census.rs | not yet confirmed |
+| R482 | 1324 | PR #807 (issue #673) | issue-level coverage (not row-pinned): tests/unit/issue_673_self_ast_census.rs | not yet confirmed |
+| R483 | 1325 | PR #807 (issue #673) | issue-level coverage (not row-pinned): tests/unit/issue_673_self_ast_census.rs | not yet confirmed |
+| R701-1 | 1339 | PR #817 (issue #701) | issue-level coverage (not row-pinned): tests/unit/issue_701_learning_adoption.rs | not yet confirmed |
+| R701-2 | 1340 | PR #817 (issue #701) | issue-level coverage (not row-pinned): tests/unit/issue_701_learning_adoption.rs | not yet confirmed |
+| R701-3 | 1341 | PR #817 (issue #701) | issue-level coverage (not row-pinned): tests/unit/issue_701_learning_adoption.rs | not yet confirmed |
+| R701-4 | 1342 | PR #817 (issue #701) | tests/unit/issue_701_dreaming_amendment_class.rs | not yet confirmed |
+| R701-5 | 1343 | PR #817 (issue #701) | issue-level coverage (not row-pinned): tests/unit/issue_701_learning_adoption.rs | not yet confirmed |
+| R701-6 | 1344 | PR #817 (issue #701) | issue-level coverage (not row-pinned): tests/unit/issue_701_learning_adoption.rs | not yet confirmed |
+| R501 (L1358) | 1358 | PR #815 (issue #674) | none recorded | not yet confirmed |
+| R502 (L1359) | 1359 | PR #815 (issue #674) | none recorded | not yet confirmed |
+| R503 (L1360) | 1360 | PR #815 (issue #674) | none recorded | not yet confirmed |
+| R504 (L1361) | 1361 | PR #815 (issue #674) | none recorded | not yet confirmed |
+| R505 (L1362) | 1362 | PR #815 (issue #674) | none recorded | not yet confirmed |
+| R506 (L1363) | 1363 | PR #815 (issue #674) | none recorded | not yet confirmed |
+| R507 (L1364) | 1364 | PR #815 (issue #674) | none recorded | not yet confirmed |
+| R508 (L1365) | 1365 | PR #815 (issue #674) | none recorded | not yet confirmed |
+| R509 (L1366) | 1366 | PR #815 (issue #674) | none recorded | not yet confirmed |
+| R528 | 1380 | PR #816 (issue #698) | none recorded | not yet confirmed |
+| R529 | 1381 | PR #816 (issue #698) | none recorded | not yet confirmed |
+| R530 | 1382 | PR #816 (issue #698) | none recorded | not yet confirmed |
+| R531 | 1383 | PR #816 (issue #698) | none recorded | not yet confirmed |
+| R532 | 1384 | PR #816 (issue #698) | none recorded | not yet confirmed |
+| R533 | 1385 | PR #816 (issue #698) | none recorded | not yet confirmed |
+| R534 | 1386 | PR #816 (issue #698) | none recorded | not yet confirmed |
+| R535 | 1387 | PR #816 (issue #698) | none recorded | not yet confirmed |
+| R702-1 | 1410 | PR #675 (issue #702) | none recorded | not yet confirmed |
+| R702-2 | 1411 | PR #675 (issue #702) | none recorded | not yet confirmed |
+| R702-3 | 1412 | PR #675 (issue #702) | none recorded | not yet confirmed |
+| R702-4 | 1413 | PR #675 (issue #702) | none recorded | not yet confirmed |
+| R702-5 | 1414 | PR #675 (issue #702) | none recorded | not yet confirmed |
+| R702-6 | 1415 | PR #675 (issue #702) | none recorded | not yet confirmed |
+| R702-7 | 1416 | PR #675 (issue #702) | none recorded | not yet confirmed |
+| R702-8 | 1417 | PR #675 (issue #702) | none recorded | not yet confirmed |
+| R702-9 | 1418 | PR #675 (issue #702) | none recorded | not yet confirmed |
+| R702-10 | 1419 | PR #675 (issue #702) | tests/unit/docs_requirements_issue_702.rs | not yet confirmed |
+| R702-11 | 1420 | PR #675 (issue #702) | none recorded | not yet confirmed |
+| R702-12 | 1421 | PR #675 (issue #702) | none recorded | not yet confirmed |
+| R702-13 | 1422 | PR #675 (issue #702) | none recorded | not yet confirmed |
+| R702-14 | 1423 | PR #675 (issue #702) | none recorded | not yet confirmed |
+| R702-15 | 1424 | PR #675 (issue #702) | none recorded | not yet confirmed |
+| R702-16 | 1425 | PR #675 (issue #702) | none recorded | not yet confirmed |
+| R703-1 | 1442 | PR #876 (issue #703) | tests/integration/issue_703_orchestration.rs | not yet confirmed |
+| R703-2 | 1443 | PR #876 (issue #703) | none recorded | not yet confirmed |
+| R703-3 | 1444 | PR #876 (issue #703) | none recorded | not yet confirmed |
+| R703-4 | 1445 | PR #876 (issue #703) | none recorded | not yet confirmed |
+| R703-5 | 1446 | PR #876 (issue #703) | none recorded | not yet confirmed |
+| R703-6 | 1447 | PR #876 (issue #703) | none recorded | not yet confirmed |
+| R703-7 | 1448 | PR #876 (issue #703) | none recorded | not yet confirmed |
+| R703-8 | 1449 | PR #876 (issue #703) | none recorded | not yet confirmed |
+| R703-9 | 1450 | PR #876 (issue #703) | none recorded | not yet confirmed |
+| R703-10 | 1451 | PR #876 (issue #703) | none recorded | not yet confirmed |
+| R703-11 | 1452 | PR #876 (issue #703) | none recorded | not yet confirmed |
+| R703-12 | 1453 | PR #876 (issue #703) | none recorded | not yet confirmed |
+| R484 | 1469 | PR #837 (issue #834) | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_834.rs | not yet confirmed |
+| R485 | 1470 | PR #837 (issue #834) | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_834.rs | not yet confirmed |
+| R486 | 1471 | PR #837 (issue #834) | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_834.rs | not yet confirmed |
+| R487 | 1472 | PR #837 (issue #834) | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_834.rs | not yet confirmed |
+| R488 | 1473 | PR #837 (issue #834) | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_834.rs | not yet confirmed |
+| R489 | 1474 | PR #837 (issue #834) | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_834.rs | not yet confirmed |
+| R490 | 1475 | PR #837 (issue #834) | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_834.rs | not yet confirmed |
+| R491 | 1476 | PR #837 (issue #834) | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_834.rs | not yet confirmed |
+| R492 | 1477 | PR #837 (issue #834) | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_834.rs | not yet confirmed |
+| R493 | 1478 | PR #837 (issue #834) | tests/unit/docs_requirements_issue_834.rs | not yet confirmed |
+| R494 | 1493 | pre-2026-07 (undated); issue #839 | issue-level coverage (not row-pinned): tests/integration/issue_839_context_export.rs | not yet confirmed |
+| R495 | 1494 | pre-2026-07 (undated); issue #839 | issue-level coverage (not row-pinned): tests/integration/issue_839_context_export.rs | not yet confirmed |
+| R496 | 1495 | pre-2026-07 (undated); issue #839 | issue-level coverage (not row-pinned): tests/integration/issue_839_context_export.rs | not yet confirmed |
+| R497 | 1496 | pre-2026-07 (undated); issue #839 | tests/integration/issue_839_report_parity.rs | not yet confirmed |
+| R498 | 1497 | pre-2026-07 (undated); issue #839 | issue-level coverage (not row-pinned): tests/integration/issue_839_context_export.rs | not yet confirmed |
+| R499 | 1498 | pre-2026-07 (undated); issue #839 | issue-level coverage (not row-pinned): tests/integration/issue_839_context_export.rs | not yet confirmed |
+| R500 | 1499 | pre-2026-07 (undated); issue #839 | issue-level coverage (not row-pinned): tests/integration/issue_839_context_export.rs | not yet confirmed |
+| R501 (L1514) | 1514 | PR #855 (issue #844) | issue-level coverage (not row-pinned): tests/unit/issue_844_statement_merge.rs | not yet confirmed |
+| R502 (L1515) | 1515 | PR #855 (issue #844) | issue-level coverage (not row-pinned): tests/unit/issue_844_statement_merge.rs | not yet confirmed |
+| R503 (L1516) | 1516 | PR #855 (issue #844) | issue-level coverage (not row-pinned): tests/unit/issue_844_statement_merge.rs | not yet confirmed |
+| R504 (L1517) | 1517 | PR #855 (issue #844) | issue-level coverage (not row-pinned): tests/unit/issue_844_statement_merge.rs | not yet confirmed |
+| R505 (L1518) | 1518 | PR #855 (issue #844) | issue-level coverage (not row-pinned): tests/unit/issue_844_statement_merge.rs | not yet confirmed |
+| R506 (L1519) | 1519 | PR #855 (issue #844) | issue-level coverage (not row-pinned): tests/unit/issue_844_statement_merge.rs | not yet confirmed |
+| R507 (L1520) | 1520 | PR #855 (issue #844) | issue-level coverage (not row-pinned): tests/unit/issue_844_statement_merge.rs | not yet confirmed |
+| R508 (L1521) | 1521 | PR #855 (issue #844) | issue-level coverage (not row-pinned): tests/unit/issue_844_statement_merge.rs | not yet confirmed |
+| R509 (L1522) | 1522 | PR #855 (issue #844) | issue-level coverage (not row-pinned): tests/unit/issue_844_statement_merge.rs | not yet confirmed |
+| R510 | 1523 | PR #855 (issue #844) | tests/unit/docs_requirements_issue_844.rs | not yet confirmed |
+| R847-1 | 1538 | PR #857 (issue #847) | issue-level coverage (not row-pinned): tests/unit/issue_847_task_decomposition.rs | not yet confirmed |
+| R847-2 | 1539 | PR #857 (issue #847) | issue-level coverage (not row-pinned): tests/unit/issue_847_task_decomposition.rs | not yet confirmed |
+| R847-3 | 1540 | PR #857 (issue #847) | issue-level coverage (not row-pinned): tests/unit/issue_847_task_decomposition.rs | not yet confirmed |
+| R847-4 | 1541 | PR #857 (issue #847) | issue-level coverage (not row-pinned): tests/unit/issue_847_task_decomposition.rs | not yet confirmed |
+| R847-5 | 1542 | PR #857 (issue #847) | issue-level coverage (not row-pinned): tests/unit/issue_847_task_decomposition.rs | not yet confirmed |
+| R847-6 | 1543 | PR #857 (issue #847) | issue-level coverage (not row-pinned): tests/unit/issue_847_task_decomposition.rs | not yet confirmed |
+| R847-7 | 1544 | PR #857 (issue #847) | issue-level coverage (not row-pinned): tests/unit/issue_847_task_decomposition.rs | not yet confirmed |
+| R847-8 | 1545 | PR #857 (issue #847) | tests/unit/specification/task_decomposition.rs; tests/unit/issue_847_task_decomposition.rs | not yet confirmed |
+| R848-1 | 1560 | PR #897 (issue #848) | none recorded | not yet confirmed |
+| R848-2 | 1561 | PR #897 (issue #848) | none recorded | not yet confirmed |
+| R848-3 | 1562 | PR #897 (issue #848) | none recorded | not yet confirmed |
+| R848-4 | 1563 | PR #897 (issue #848) | none recorded | not yet confirmed |
+| R848-5 | 1564 | PR #897 (issue #848) | none recorded | not yet confirmed |
+| R848-6 | 1565 | PR #897 (issue #848) | none recorded | not yet confirmed |
+| R848-7 | 1566 | PR #897 (issue #848) | none recorded | not yet confirmed |
+| R848-8 | 1567 | PR #897 (issue #848) | none recorded | not yet confirmed |
+| R848-9 | 1568 | PR #897 (issue #848) | none recorded | not yet confirmed |
+| R848-10 | 1569 | PR #897 (issue #848) | none recorded | not yet confirmed |
+| R706-1 | 1582 | PR #880 (issue #706) | issue-level coverage (not row-pinned): tests/unit/issue_706_any_language.rs | not yet confirmed |
+| R706-2 | 1583 | PR #880 (issue #706) | issue-level coverage (not row-pinned): tests/unit/issue_706_any_language.rs | not yet confirmed |
+| R706-3 | 1584 | PR #880 (issue #706) | issue-level coverage (not row-pinned): tests/unit/issue_706_any_language.rs | not yet confirmed |
+| R706-4 | 1585 | PR #880 (issue #706) | issue-level coverage (not row-pinned): tests/unit/issue_706_any_language.rs | not yet confirmed |
+| R706-5 | 1586 | PR #880 (issue #706) | tests/e2e/scripts/check-language-{test-coverage,change-parity}.mjs | not yet confirmed |
+| R706-6 | 1587 | PR #880 (issue #706) | issue-level coverage (not row-pinned): tests/unit/issue_706_any_language.rs | not yet confirmed |
+| R706-7 | 1588 | PR #880 (issue #706) | issue-level coverage (not row-pinned): tests/unit/issue_706_any_language.rs | not yet confirmed |
+| R706-8 | 1589 | PR #880 (issue #706) | issue-level coverage (not row-pinned): tests/unit/issue_706_any_language.rs | not yet confirmed |
+| R706-9 | 1590 | PR #880 (issue #706) | issue-level coverage (not row-pinned): tests/unit/issue_706_any_language.rs | not yet confirmed |
+| R858-1 | 1602 | PR #899 (issue #858) | issue-level coverage (not row-pinned): tests/unit/issue_858.rs | not yet confirmed |
+| R858-2 | 1603 | PR #899 (issue #858) | issue-level coverage (not row-pinned): tests/unit/issue_858.rs | not yet confirmed |
+| R858-3 | 1604 | PR #899 (issue #858) | issue-level coverage (not row-pinned): tests/unit/issue_858.rs | not yet confirmed |
+| R858-4 | 1605 | PR #899 (issue #858) | issue-level coverage (not row-pinned): tests/unit/issue_858.rs | not yet confirmed |
+| R858-5 | 1606 | PR #899 (issue #858) | issue-level coverage (not row-pinned): tests/unit/issue_858.rs | not yet confirmed |
+| R858-6 | 1607 | PR #899 (issue #858) | issue-level coverage (not row-pinned): tests/unit/issue_858.rs | not yet confirmed |
+| R708-1 | 1620 | PR #883 (issue #708) | issue-level coverage (not row-pinned): tests/integration/memory_query.rs | not yet confirmed |
+| R708-2 | 1621 | PR #883 (issue #708) | issue-level coverage (not row-pinned): tests/integration/memory_query.rs | not yet confirmed |
+| R708-3 | 1622 | PR #883 (issue #708) | issue-level coverage (not row-pinned): tests/integration/memory_query.rs | not yet confirmed |
+| R708-4 | 1623 | PR #883 (issue #708) | issue-level coverage (not row-pinned): tests/integration/memory_query.rs | not yet confirmed |
+| R708-5 | 1624 | PR #883 (issue #708) | issue-level coverage (not row-pinned): tests/integration/memory_query.rs | not yet confirmed |
+| R708-6 | 1625 | PR #883 (issue #708) | issue-level coverage (not row-pinned): tests/integration/memory_query.rs | not yet confirmed |
+| R708-7 | 1626 | PR #883 (issue #708) | issue-level coverage (not row-pinned): tests/integration/memory_query.rs | not yet confirmed |
+| R708-8 | 1627 | PR #883 (issue #708) | tests/e2e/tests/issue-708.spec.js | not yet confirmed |
+| R708-9 | 1628 | PR #883 (issue #708) | issue-level coverage (not row-pinned): tests/integration/memory_query.rs | not yet confirmed |
+| R709-1 | 1639 | pre-2026-07 (undated); issue #709 | none recorded | not yet confirmed |
+| R709-2 | 1640 | pre-2026-07 (undated); issue #709 | none recorded | not yet confirmed |
+| R709-3 | 1641 | pre-2026-07 (undated); issue #709 | none recorded | not yet confirmed |
+| R709-4 | 1642 | pre-2026-07 (undated); issue #709 | none recorded | not yet confirmed |
+| R709-5 | 1643 | pre-2026-07 (undated); issue #709 | none recorded | not yet confirmed |
+| R835-1 | 1657 | PR #900 (issue #835) | issue-level coverage (not row-pinned): tests/unit/issue_835_file_legality.rs | not yet confirmed |
+| R835-2 | 1658 | PR #900 (issue #835) | issue-level coverage (not row-pinned): tests/unit/issue_835_file_legality.rs | not yet confirmed |
+| R835-3 | 1659 | PR #900 (issue #835) | issue-level coverage (not row-pinned): tests/unit/issue_835_file_legality.rs | not yet confirmed |
+| R835-4 | 1660 | PR #900 (issue #835) | issue-level coverage (not row-pinned): tests/unit/issue_835_file_legality.rs | not yet confirmed |
+| R835-5 | 1661 | PR #900 (issue #835) | issue-level coverage (not row-pinned): tests/unit/issue_835_file_legality.rs | not yet confirmed |
+| R835-6 | 1662 | PR #900 (issue #835) | issue-level coverage (not row-pinned): tests/unit/issue_835_file_legality.rs | not yet confirmed |
+| R835-7 | 1663 | PR #900 (issue #835) | issue-level coverage (not row-pinned): tests/unit/issue_835_file_legality.rs | not yet confirmed |
+| R835-8 | 1664 | PR #900 (issue #835) | issue-level coverage (not row-pinned): tests/unit/issue_835_file_legality.rs | not yet confirmed |
+| R835-9 | 1665 | PR #900 (issue #835) | issue-level coverage (not row-pinned): tests/unit/issue_835_file_legality.rs | not yet confirmed |
+| R864-1 | 1677 | PR #910 (issue #864) | issue-level coverage (not row-pinned): tests/unit/issue_864.rs | not yet confirmed |
+| R864-2 | 1678 | PR #910 (issue #864) | issue-level coverage (not row-pinned): tests/unit/issue_864.rs | not yet confirmed |
+| R864-3 | 1679 | PR #910 (issue #864) | issue-level coverage (not row-pinned): tests/unit/issue_864.rs | not yet confirmed |
+| R864-4 | 1680 | PR #910 (issue #864) | issue-level coverage (not row-pinned): tests/unit/issue_864.rs | not yet confirmed |
+| R864-5 | 1681 | PR #910 (issue #864) | issue-level coverage (not row-pinned): tests/unit/issue_864.rs | not yet confirmed |
+| R914-1 | 1697 | pre-2026-07 (undated); issue #914 | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_914.rs | not yet confirmed |
+| R914-2 | 1698 | pre-2026-07 (undated); issue #914 | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_914.rs | not yet confirmed |
+| R914-3 | 1699 | pre-2026-07 (undated); issue #914 | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_914.rs | not yet confirmed |
+| R914-4 | 1700 | pre-2026-07 (undated); issue #914 | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_914.rs | not yet confirmed |
+| R914-5 | 1701 | not delivered — untracked | none — untracked | not yet confirmed |
+| R914-6 | 1702 | not delivered — untracked | none — untracked | not yet confirmed |
+| R914-7 | 1703 | pre-2026-07 (undated); issue #914 | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_914.rs | not yet confirmed |
+| R914-8 | 1704 | not delivered — tracked in #873 | none — tracked in #873 | not yet confirmed |
+| R914-9 | 1705 | not delivered — tracked in #848 | none — tracked in #848 | not yet confirmed |
+| R914-10 | 1706 | not delivered — tracked in #527 | none — tracked in #527 | not yet confirmed |
+| R914-11 | 1707 | not delivered — untracked | none — untracked | not yet confirmed |
+| R914-12 | 1708 | pre-2026-07 (undated); issue #914 | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_914.rs | not yet confirmed |
+| R914-13 | 1709 | pre-2026-07 (undated); issue #914 | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_914.rs | not yet confirmed |
+| R914-14 | 1710 | pre-2026-07 (undated); issue #914 | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_914.rs | not yet confirmed |
+| R914-15 | 1711 | pre-2026-07 (undated); issue #914 | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_914.rs | not yet confirmed |
+| R891-1 | 1727 | PR #968 (issue #891) | tests/unit/specification/equation_corpus.rs; tests/unit/docs_requirements_issue_891.rs | manually probed 2026-08-04 with `cargo run --example issue_891_equation_probe`; raw engine output kept in docs/case-studies/issue-891/raw-data/production-solver-probe.tsv |
+| R891-2 | 1728 | PR #968 (issue #891) | tests/unit/specification/equation_corpus.rs; tests/unit/docs_requirements_issue_891.rs | manually probed 2026-08-04 with `cargo run --example issue_891_equation_probe`; raw engine output kept in docs/case-studies/issue-891/raw-data/production-solver-probe.tsv |
+| R891-3 | 1729 | PR #968 (issue #891) | tests/unit/specification/equation_corpus.rs; tests/unit/docs_requirements_issue_891.rs | manually probed 2026-08-04 with `cargo run --example issue_891_equation_probe`; raw engine output kept in docs/case-studies/issue-891/raw-data/production-solver-probe.tsv |
+| R891-4 | 1730 | PR #968 (issue #891) | tests/unit/specification/equation_corpus.rs; tests/unit/docs_requirements_issue_891.rs | manually probed 2026-08-04 with `cargo run --example issue_891_equation_probe`; raw engine output kept in docs/case-studies/issue-891/raw-data/production-solver-probe.tsv |
+| R891-5 | 1731 | PR #968 (issue #891) | tests/unit/specification/equation_corpus.rs; tests/unit/docs_requirements_issue_891.rs | manually probed 2026-08-04 with `cargo run --example issue_891_equation_probe`; raw engine output kept in docs/case-studies/issue-891/raw-data/production-solver-probe.tsv |
+| R891-6 | 1732 | PR #968 (issue #891) | tests/unit/specification/equation_corpus.rs; tests/unit/docs_requirements_issue_891.rs | manually probed 2026-08-04 with `cargo run --example issue_891_equation_probe`; raw engine output kept in docs/case-studies/issue-891/raw-data/production-solver-probe.tsv |
+| R909-1 | 1743 | delivered 2026-08-04; issue #909 | tests/integration/with_formal_ai_headless_global.rs:45 | manually confirmed 2026-08-04: `formal-ai with --global gemini` into a throwaway HOME wrote `.gemini/settings.json` with `security.auth.selectedType`, `--undo` removed it |
+| R909-2 | 1744 | delivered 2026-08-04; issue #909 | tests/integration/with_formal_ai_headless_global.rs:147 | manually confirmed 2026-08-04: `formal-ai with --global qwen` wrote `OPENAI_API_KEY`, `OPENAI_BASE_URL`, and `OPENAI_MODEL` into `~/.profile` |
+| R909-3 | 1745 | delivered 2026-08-04; issue #909 | tests/integration/with_formal_ai_headless_global.rs:171 | manually confirmed 2026-08-04: `experiments/issue-909-headless-config-gaps.sh` reported every headless requirement present |
+| R909-4 | 1746 | delivered 2026-08-04; issue #909 | tests/unit/docs_requirements_issue_909.rs:13 | not yet confirmed |
+| R909-5 | 1747 | delivered 2026-08-04; issue #909 | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_909.rs | manually confirmed 2026-08-04: script run against the debug binary, exit 0 |
+| R909-6 | 1748 | delivered 2026-08-04; issue #909 | tests/integration/with_formal_ai_headless_global.rs:308 | manually confirmed 2026-08-04: `--global --all --verify` sweep into a throwaway HOME satisfied every registry-declared requirement |
+| R909-7 | 1749 | delivered 2026-08-06; issue #909 review | tests/unit/total_closure.rs:25 | manually confirmed 2026-08-06: `experiments/issue-909-seed-shard-conflict-blast-radius.sh` dirtied exactly 1 of 16 shards at each of four sort positions, against 11 of 11 before the fix |
+| R893-1 | 1773 | PR #970 (issue #893) | tests/unit/specification/issue_893_summarization_validation.rs; tests/unit/docs_requirements_issue_893.rs | measured 2026-08-05 with `cargo run --release --example issue_893_measure`; raw run kept in docs/case-studies/issue-893/raw-data/ |
+| R893-2 | 1774 | PR #970 (issue #893) | tests/unit/specification/issue_893_summarization_validation.rs; tests/unit/docs_requirements_issue_893.rs | measured 2026-08-05 with `cargo run --release --example issue_893_measure`; raw run kept in docs/case-studies/issue-893/raw-data/ |
+| R893-3 | 1775 | PR #970 (issue #893) | tests/unit/specification/issue_893_summarization_validation.rs; tests/unit/docs_requirements_issue_893.rs | committed baseline data/summarization/quality-baseline.lino, re-measured by `formal-ai summarization ratchet` |
+| R893-4 | 1776 | PR #970 (issue #893) | tests/unit/specification/issue_893_summarization_validation.rs; tests/unit/docs_requirements_issue_893.rs | measured 2026-08-05; embedded-grammar blocks counted against an independent CommonMark fence scanner |
+| R893-5 | 1777 | PR #970 (issue #893) | tests/unit/specification/issue_893_summarization_validation.rs; tests/unit/docs_requirements_issue_893.rs | the four compression failures and the `<version>` grounding defect found by the 600-file sweep are recorded in docs/case-studies/issue-893/README.md rather than tuned away |
+| R536 | 1805 | doctrine adopted 2026-08-04 | none yet — enforcement tracked in #934/#951/#952/#953 | n/a |
+| R894-1 | 1820 | PR #971 (issue #894) | tests/unit/docs_requirements_issue_894.rs | revalidated 2026-08-05 against the four template default branches; commands and verbatim output kept in docs/case-studies/issue-894/raw-data/revalidation-greps.txt and revalidation-greps-2.txt |
+| R894-2 | 1821 | PR #971 (issue #894) | tests/unit/docs_requirements_issue_894.rs | eight issues filed upstream 2026-08-05; bodies and API snapshot kept in docs/case-studies/issue-894/raw-data/ |
+| R894-3 | 1822 | PR #971 (issue #894) | tests/unit/docs_requirements_issue_894.rs | ledger rendered and links opened 2026-08-05 in docs/case-studies/issue-479/template-comparison/REPORT.md |
+| R894-4 | 1823 | PR #971 (issue #894) | tests/unit/docs_requirements_issue_894.rs | falsified 2026-08-05 by deleting a filing URL from the ledger and observing the test fail |
+| R980-1 | 1836 | PR #981 (issue #980) | tests/unit/ci-cd/issue_980.rs | manually confirmed 2026-08-08 by downloading all seven referenced workflow logs and matching each run timestamp and SHA; findings preserved in dev/log/issues/980/pulls/981/ |
+| R980-2 | 1837 | PR #981 (issue #980) | tests/unit/ci-cd/issue_980.rs; tests/e2e/tests/issue-282.spec.js; tests/e2e/tests/issue-541-permissions-cold-start.spec.js | manually confirmed 2026-08-08: opener parity passed 12/12 repeated cases and permission replay passed 9/9 repeated cases |
+| R980-3 | 1838 | PR #981 (issue #980) | tests/unit/ci-cd/issue_980.rs | manually confirmed 2026-08-08 against complete tracked trees at rust c867f78, js 7b70923, and python 98d6dca; snapshots and control indexes preserved in the evidence bundle |
+| R980-4 | 1839 | PR #981 (issue #980) | tests/unit/ci-cd/issue_980.rs | falsified 2026-08-08 by running the regression gates before the fixes; the formatting and isolation guards failed, then all three passed after the fixes |
+| R973-1 | 1854 | PR #974 (issue #973) | tests/issue_973_solve_flags.rs::the_live_self_coding_entry_point_attaches_logs_and_runs_verbose; tests/issue_973_solve_flags.rs::every_published_solve_invocation_carries_both_evidence_flags | falsified 2026-08-05 by removing `--attach-logs` from examples/self-coding/run.sh and observing both tests fail |
+| R973-2 | 1855 | PR #974 (issue #973) | tests/issue_973_solve_flags.rs::contributing_explains_why_both_flags_are_load_bearing | falsified 2026-08-05 by removing `--verbose` from the CONTRIBUTING.md command and observing the scan fail at CONTRIBUTING.md:115 |
+| R973-3 | 1856 | PR #974 (issue #973) | tests/issue_973_solve_flags.rs::every_published_solve_invocation_carries_both_evidence_flags; tests/issue_973_solve_flags.rs::the_case_study_records_the_unrecoverable_failure_and_the_fix | not yet confirmed beyond the two falsification runs above |

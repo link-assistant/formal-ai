@@ -11,8 +11,7 @@ use std::sync::OnceLock;
 use lino_objects_codec::format::escape_reference;
 
 use crate::engine::{
-    normalize_prompt, program_language_by_alias, program_spec, stable_id, SelectedRule,
-    WRITE_PROGRAM_INTENT,
+    normalize_prompt, program_spec, stable_id, SelectedRule, WRITE_PROGRAM_INTENT,
 };
 use crate::event_log::EventLog;
 use crate::link_store::{LinkStore, LinkStoreError};
@@ -26,7 +25,9 @@ use crate::translation::{FormalizationAnchorKind, FormalizationCandidate, Formal
 use crate::{concepts, cue_lexicon};
 
 mod requirements;
+mod write_program_request;
 pub use requirements::{ordered_requirement_spans, OrderedRequirementSpan};
+use write_program_request::{requested_write_program_parameters, write_program_parameters};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum IntentKind {
@@ -233,8 +234,8 @@ pub fn formalize_intent(
     candidate: Option<&FormalizationCandidate>,
 ) -> IntentFormalization {
     let normalized = normalize_prompt(prompt);
-    let route = route_for_prompt(&normalized);
-    let parameters = write_program_parameters(&normalized).unwrap_or_default();
+    let route = route_for_prompt(prompt, &normalized);
+    let parameters = requested_write_program_parameters(prompt, &normalized).unwrap_or_default();
     let mut knowns = vec![
         format!("impulse:{}", impulse_id_for(prompt)),
         format!("language:{language}"),
@@ -329,8 +330,8 @@ struct MatchedRoute {
     response_link: String,
 }
 
-fn route_for_prompt(normalized: &str) -> Option<MatchedRoute> {
-    if write_program_parameters(normalized).is_some() {
+fn route_for_prompt(raw: &str, normalized: &str) -> Option<MatchedRoute> {
+    if requested_write_program_parameters(raw, normalized).is_some() {
         return Some(MatchedRoute {
             slug: String::from(WRITE_PROGRAM_INTENT),
             response_link: String::from("response:write_program"),
@@ -579,95 +580,6 @@ pub(crate) fn detected_program_modifiers(normalized: &str) -> Vec<String> {
         .collect()
 }
 
-fn write_program_parameters(normalized: &str) -> Option<BTreeMap<String, String>> {
-    let task = crate::coding::program_task_by_alias(normalized);
-    let language = requested_program_language(normalized);
-    // Issue #386: "write a <program>" is recognised by *meaning*, not a hardcoded
-    // per-language word list. The prompt asks for a program when it evidences a
-    // `program_kind` meaning (the artefact: program / script / code / function /
-    // class) *and* a `program_request` meaning (the verb: write / create / show /
-    // generate / make / build). The surface words for every language live once,
-    // in `data/seed/meanings.lino`; this code understands the concepts.
-    let lexicon = crate::seed::lexicon();
-    let mentions_program_request =
-        lexicon.mentions_role(crate::seed::ROLE_PROGRAM_REQUEST, normalized);
-    let asks_for_program = lexicon.mentions_role(crate::seed::ROLE_PROGRAM_KIND, normalized)
-        && mentions_program_request;
-    let asks_for_known_language_program = language
-        .as_deref()
-        .is_some_and(|language| mentions_program_request && known_write_program_language(language));
-    if task.is_none() && !asks_for_program && !asks_for_known_language_program {
-        return None;
-    }
-    let mut parameters = BTreeMap::new();
-    if let Some(task) = task {
-        // Issue #358: modification phrases in the same turn lower the base task
-        // through the data-backed substitution pipeline so composed requests can
-        // resolve directly.
-        let modifiers = detected_program_modifiers(normalized);
-        let task_slug = crate::program_plan::resolve_task(task.slug, &modifiers);
-        parameters.insert(String::from("task"), task_slug);
-    }
-    if let Some(language) = language {
-        parameters.insert(String::from("language"), language);
-    }
-    Some(parameters)
-}
-
-fn known_write_program_language(language: &str) -> bool {
-    crate::coding::program_language_by_slug(language).is_some()
-        || crate::knowledge::CodingOracle::knows_language(language)
-}
-
-fn requested_program_language(normalized: &str) -> Option<String> {
-    if let Some(language) = program_language_by_alias(normalized) {
-        return Some(String::from(language.slug));
-    }
-    // Issue #386: the function words that introduce an *unknown* implementation
-    // language ("write a program in <name>", "на языке <name>") are seed data,
-    // not literals baked into the parser. Source the head-initial English/Russian
-    // surfaces of the target-preposition and "language" noun roles from the
-    // lexicon so this positional extractor reasons over the ontology instead of a
-    // hardcoded `matches!` list. The catalog-driven `program_language_by_alias`
-    // above already resolves every *known* language across all four supported
-    // languages; this fallback only reads the bare name trailing the marker, so
-    // it consults the two head-initial languages whose name follows the marker
-    // (the head-final Hindi/Chinese forms are carried in the seed for coverage
-    // but place the name before the marker, which this scan does not chase).
-    let lexicon = crate::seed::lexicon();
-    let preposition_surfaces = lexicon.words_for_role_in_languages(
-        crate::seed::ROLE_IMPLEMENTATION_LANGUAGE_PREPOSITION,
-        &["en", "ru"],
-    );
-    let language_noun_surfaces = lexicon.words_for_role_in_languages(
-        crate::seed::ROLE_IMPLEMENTATION_LANGUAGE_NOUN,
-        &["en", "ru"],
-    );
-    let tokens = normalized.split_whitespace().collect::<Vec<_>>();
-    for (index, token) in tokens.iter().enumerate() {
-        if !preposition_surfaces
-            .iter()
-            .any(|surface| surface.as_str() == *token)
-        {
-            continue;
-        }
-        let Some(next) = tokens.get(index + 1) else {
-            continue;
-        };
-        if language_noun_surfaces
-            .iter()
-            .any(|surface| surface.as_str() == *next)
-        {
-            if let Some(after_language_word) = tokens.get(index + 2) {
-                return Some((*after_language_word).to_owned());
-            }
-            continue;
-        }
-        return Some((*next).to_owned());
-    }
-    None
-}
-
 fn append_candidate_knowns(
     candidate: &FormalizationCandidate,
     knowns: &mut Vec<String>,
@@ -765,7 +677,7 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
         ),
         (
             "handler:write_program",
-            write_program_parameters(normalized).is_some(),
+            requested_write_program_parameters(prompt, normalized).is_some(),
         ),
         (
             "handler:program_synthesis",
@@ -782,6 +694,16 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
         (
             "handler:meta_explanation",
             seed::lexicon().mentions_role_raw(seed::ROLE_ASSISTANT_MECHANISM_INQUIRY, normalized),
+        ),
+        // Issue #531: a concrete "what is the pattern in <grid/sequence>" request
+        // carries both pattern-inference intent and a parseable run of atoms. It
+        // must rank ahead of `concept_lookup` (which the shared "what is …" cue
+        // would otherwise claim) so the data is analysed structurally instead of
+        // answered as a dictionary definition. The gate mirrors the handler, so a
+        // bare "what is a pattern?" stays with the concept lookup.
+        (
+            "handler:pattern_inference",
+            crate::solver_handlers::looks_like_pattern_inference(prompt),
         ),
         (
             "handler:concept_lookup",

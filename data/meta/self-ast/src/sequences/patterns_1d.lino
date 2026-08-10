@@ -1,0 +1,21 @@
+self_ast_census
+  target src/sequences/patterns_1d.rs
+  language rust
+  fidelity signature
+  byte_len 5714
+  line_count 165
+  content_id source_module_b718a844c6dfed87
+  symbol_count 12
+  symbols
+    struct RepetitionPattern 15 22
+    enum SequencePattern 26 40
+    function detect_repetition 46 64
+    function tiles_exactly 67 72
+    function detect_period 78 84
+    function has_period 87 93
+    function detect_palindrome 98 109
+    function is_constant 113 117
+    function is_reverse 121 123
+    function detect_translation 130 139
+    function is_rotation_by 142 145
+    function classify_sequence 151 165

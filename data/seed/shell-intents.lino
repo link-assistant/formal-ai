@@ -349,6 +349,11 @@ shell_intents
       language zh
         cue 今天的日期
         cue 当前时间
+      language es
+        cue "la fecha de hoy"
+        cue "fecha actual"
+        cue "qué día es hoy"
+        cue "la hora actual"
     intent
       command ps
       argument "none"

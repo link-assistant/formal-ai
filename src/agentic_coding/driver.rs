@@ -24,6 +24,10 @@ use serde_json::{json, Value};
 
 use super::corpus;
 use crate::agent::{AgentCommandResult, AgentError, AgentWorkspace, AgentWorkspaceConfig};
+use crate::algorithm_discovery::{
+    discover_algorithms, traces_from_memory_events, AlgorithmCandidate,
+};
+use crate::memory::MemoryStore;
 use crate::protocol::{
     create_chat_completion_with_solver, ChatCompletionRequest, ChatMessage, ToolCall,
 };
@@ -227,6 +231,9 @@ fn execute_tool_call(call: &ToolCall, workspace: &mut AgentWorkspace) -> String 
         }
         "run_command" => {
             let command = arg_str(&arguments, "command");
+            if let Some(result) = execute_algorithm_command(command, workspace) {
+                return result;
+            }
             if let Some(result) = execute_procedure_conformance(command, workspace) {
                 return result;
             }
@@ -238,6 +245,72 @@ fn execute_tool_call(call: &ToolCall, workspace: &mut AgentWorkspace) -> String 
         }
         other => format!("error: unsupported tool {other}"),
     }
+}
+
+/// Mirror the public discovery/conformance commands inside the deterministic
+/// in-repo driver. External Agent CLIs invoke the installed binary instead.
+fn execute_algorithm_command(command: &str, workspace: &AgentWorkspace) -> Option<String> {
+    let parts = command.split_whitespace().collect::<Vec<_>>();
+    if parts.get(..3) == Some(&["formal-ai", "learn", "algorithms"]) {
+        let from = option_value(&parts, "--from")?;
+        let output = option_value(&parts, "--output")?;
+        if from != super::algorithm_learning::OBSERVATIONS_PATH
+            || output != super::algorithm_learning::DISCOVERY_PATH
+        {
+            return Some(format!(
+                "algorithm_learning_paths_unsupported:{from:?}:{output:?}"
+            ));
+        }
+        let document = match std::fs::read_to_string(workspace.root().join(from)) {
+            Ok(document) => document,
+            Err(error) => return Some(format!("algorithm_observations_read_failed:{error}")),
+        };
+        let mut memory = MemoryStore::new();
+        memory.replace_from_links_notation(&document);
+        let run = discover_algorithms(&traces_from_memory_events(memory.events()));
+        if let Err(error) = std::fs::write(workspace.root().join(output), run.links_notation()) {
+            return Some(format!("algorithm_artifact_write_failed:{error}"));
+        }
+        return Some(format!(
+            "algorithm_learning_complete:candidates={}:validated={}",
+            run.candidates.len(),
+            run.validated_candidates().len()
+        ));
+    }
+    if parts.get(..3) != Some(&["formal-ai", "algorithm", "conformance"]) {
+        return None;
+    }
+    let artifact = option_value(&parts, "--artifact")?;
+    let trigger = option_value(&parts, "--trigger")?;
+    if artifact != super::algorithm_learning::DISCOVERY_PATH {
+        return Some(format!("algorithm_artifact_unsupported:{artifact:?}"));
+    }
+    let document = match std::fs::read_to_string(workspace.root().join(artifact)) {
+        Ok(document) => document,
+        Err(error) => return Some(format!("algorithm_artifact_read_failed:{artifact}:{error}")),
+    };
+    let candidate = match AlgorithmCandidate::from_links_notation(&document) {
+        Ok(candidate) => candidate,
+        Err(error) => return Some(format!("algorithm_artifact_invalid:{error}")),
+    };
+    let mut bindings = std::collections::BTreeMap::new();
+    for (index, part) in parts.iter().enumerate() {
+        if *part != "--binding" {
+            continue;
+        }
+        let Some(binding) = parts.get(index + 1) else {
+            return Some(String::from("algorithm_binding_missing"));
+        };
+        let Some((name, value)) = binding.split_once('=') else {
+            return Some(format!("algorithm_binding_invalid:{binding:?}"));
+        };
+        bindings.insert(name.to_owned(), value.to_owned());
+    }
+    Some(
+        candidate
+            .conformance_links_notation(trigger, &bindings)
+            .unwrap_or_else(|error| format!("algorithm_conformance_failed:{error}")),
+    )
 }
 
 /// Mirror the public `formal-ai procedure conformance` command inside the

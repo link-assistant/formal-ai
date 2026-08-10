@@ -2,10 +2,10 @@ self_ast_census
   target src/telegram.rs
   language rust
   fidelity signature
-  byte_len 27735
-  line_count 789
-  content_id source_module_e89425cdf4910b35
-  symbol_count 58
+  byte_len 30259
+  line_count 847
+  content_id source_module_44036fea4a81cda9
+  symbol_count 59
   symbols
     const TEXT_ONLY_MESSAGE 10 10
     const DEFAULT_API_BASE 11 11
@@ -39,29 +39,30 @@ self_ast_census
     function reply_for_message 301 303
     struct TelegramReplyBundle 310 313
     function compose_telegram_reply 315 371
-    function telegram_thinking_blockquote 384 401
-    function telegram_solver 403 407
-    function is_version_command 409 413
-    function version_reply_text 415 417
-    function telegram_html_from_markdown 420 446
-    function open_pre_code_tag 448 453
-    function language_class 455 465
-    function html_escape 467 472
-    struct TelegramPollingConfig 483 489
-    function new 493 501
-    function get_updates_url 504 520
-    function send_message_url 523 529
-    function edit_message_text_url 532 538
-    function http_timeout_seconds 541 544
-    enum TelegramPollingError 548 551
-    function fmt 554 566
-    struct GetUpdatesResponse 572 578
-    struct TelegramPollingReply 590 600
-    function to_send_message_body 605 607
-    function extract_sent_message_id 617 624
-    struct ParsedUpdatesBatch 628 631
-    function parse_get_updates_response 637 674
-    function reply_for_polling_message 676 698
-    function build_progressive_thinking_edits 711 754
-    function serialize_string_array 756 776
-    function url_encode 778 789
+    function telegram_thinking_blockquote 384 398
+    function telegram_solver 400 404
+    function is_version_command 406 410
+    function version_reply_text 412 414
+    function telegram_html_from_markdown 417 455
+    function telegram_inline_html 460 504
+    function open_pre_code_tag 506 511
+    function language_class 513 523
+    function html_escape 525 530
+    struct TelegramPollingConfig 541 547
+    function new 551 559
+    function get_updates_url 562 578
+    function send_message_url 581 587
+    function edit_message_text_url 590 596
+    function http_timeout_seconds 599 602
+    enum TelegramPollingError 606 609
+    function fmt 612 624
+    struct GetUpdatesResponse 630 636
+    struct TelegramPollingReply 648 658
+    function to_send_message_body 663 665
+    function extract_sent_message_id 675 682
+    struct ParsedUpdatesBatch 686 689
+    function parse_get_updates_response 695 732
+    function reply_for_polling_message 734 756
+    function build_progressive_thinking_edits 769 812
+    function serialize_string_array 814 834
+    function url_encode 836 847

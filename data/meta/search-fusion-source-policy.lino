@@ -1,0 +1,14 @@
+search_fusion_source_policy
+  schema_version 1
+  task_family captured_search_statement_fusion
+  stage capture
+  stage formalize_each_statement
+  stage semantic_merge
+  stage source_tier_rank
+  stage smallest_conflict_complete_select
+  stage deformalize_preserving_quote
+  stage normalized_provenance_render
+  language_scope statement
+  duplicate_capture unoriginal
+  original_precedence highest_tier_then_retrieval_rank
+  unoriginal_contribution zero

@@ -1,0 +1,11 @@
+search_fusion_language_grammar
+  schema_version 1
+  fallback_order "subject predicate object"
+  language en
+    order "subject predicate object"
+  language ru
+    order "subject predicate object"
+  language hi
+    order "subject object predicate"
+  language zh
+    order "subject predicate object"

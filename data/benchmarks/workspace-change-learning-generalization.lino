@@ -1,0 +1,12 @@
+workspace_change_learning_generalization
+  training web_search_constant
+    task_family verified_workspace_rewrite
+    transformation identifier_substitution
+  training parser_limit_constant
+    task_family verified_workspace_rewrite
+    transformation identifier_substitution
+  held_out cache_capacity_constant
+    task_family verified_workspace_rewrite
+    transformation identifier_substitution
+    expected_stages 7
+    expected_failures 0

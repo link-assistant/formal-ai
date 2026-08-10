@@ -20,6 +20,7 @@ mod installation_conversion;
 mod meta_explanation;
 mod natural_language_tools;
 mod numeric_list;
+mod pattern_inference;
 mod playwright_script;
 mod procedure_rules;
 mod program_blueprint;
@@ -47,8 +48,10 @@ pub use benchmark_prompts::{
 };
 pub use calendar::{try_calendar_create_event, try_calendar_reasoning};
 pub use compound_interest::try_compound_interest;
+pub use conversation_memory::is_exact_memory_query;
 pub use conversation_memory::{
-    answer_memory_recall, execute_memory_query, try_conversation_memory, MemoryQueryExecution,
+    answer_memory_recall, execute_memory_query, execute_memory_query_with_options,
+    try_conversation_memory, MemoryQueryExecution,
 };
 pub use document_originality::try_document_originality_check;
 pub use document_request::try_document_request;
@@ -59,6 +62,10 @@ pub use installation_conversion::try_installation_conversion;
 pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
 pub use natural_language_tools::try_natural_language_tool_request;
 pub use numeric_list::{try_numeric_list, try_numeric_list_with_history};
+pub use pattern_inference::{
+    looks_like_pattern_inference, try_pattern_inference,
+    try_pattern_inference_with_response_language,
+};
 pub use playwright_script::try_playwright_script;
 pub use program_blueprint::try_program_blueprint;
 pub use program_synthesis::try_program_synthesis;
@@ -71,6 +78,7 @@ pub use shell_command_transform::{
 pub use software_project::try_software_project_request;
 pub use software_project_followup::try_software_project_followup;
 pub use task_decomposition::{looks_like_task_decomposition, try_task_decomposition_with_depth};
+pub use text_manipulation::{names_a_quoted_replacement, text_outside_quoted_segments};
 pub use text_manipulation::{try_text_manipulation, try_text_manipulation_with_history};
 pub use user_intent::{
     try_capabilities, try_clarification, try_ill_formed, try_opinion_question, try_proof_request,
@@ -516,6 +524,13 @@ pub fn try_translation(
     }
 
     let target = detect_target_language(normalized);
+    let formal_language = crate::translation::formal_language_in_prompt(normalized);
+    let backticked = extract_backticked(prompt);
+    let detected_program = backticked.as_deref().and_then(|code| {
+        detect_program_languages(normalized)
+            .or_else(|| infer_program_languages_from_code(code, normalized))
+    });
+    let has_program_target = detected_program.is_some();
     let unquoted_surface = extract_unquoted_translation_surface(prompt);
     // Issue #386: recognise a translation command by *meaning*, not by hardcoded
     // verbs. The translation-action stems live once in
@@ -529,14 +544,14 @@ pub fn try_translation(
         .words_for_role_in_languages(crate::seed::ROLE_TRANSLATION_ACTION, &["en", "ru"])
         .iter()
         .any(|stem| normalized.starts_with(stem.as_str()));
-    let head_final_command = target.is_some()
+    let head_final_command = (target.is_some() || has_program_target || formal_language.is_some())
         && lexicon
             .words_for_role_in_languages(crate::seed::ROLE_TRANSLATION_ACTION, &["hi", "zh"])
             .iter()
             .any(|stem| normalized.contains(stem.as_str()));
     let source_first_command = crate::translation::prompt::is_source_first_translation_request(
         normalized,
-        target.is_some(),
+        target.is_some() || has_program_target || formal_language.is_some(),
         unquoted_surface.is_some(),
     );
     // Issue #386: the define-in-Links-Notation request is recognised by *meaning*
@@ -570,12 +585,43 @@ pub fn try_translation(
         source = Some(infer_source_from_prompt(prompt));
     }
 
-    let backticked = extract_backticked(prompt);
+    // Issue #917: natural and formal statements are concrete syntaxes of the
+    // same seed-defined semantic triple. A natural target means the formal
+    // syntax is the source (`from FOL to Russian`); otherwise the named formal
+    // language is the target (`from English to FOL`). This runs before the
+    // atomic Wiktionary pipeline because a complete statement carries three
+    // language-neutral meaning ids, not one word meaning.
+    if let Some(formal_slug) = formal_language {
+        let statement_surface = backticked
+            .clone()
+            .or_else(|| extract_quoted_phrase(prompt))
+            .or_else(|| unquoted_surface.clone())
+            .unwrap_or_default();
+        let (source_slug, target_slug) = target.map_or_else(
+            || (source.unwrap_or("en"), formal_slug),
+            |natural_target| (formal_slug, natural_target),
+        );
+        if let Ok(translated) =
+            crate::translation::translate_statement(&statement_surface, source_slug, target_slug)
+        {
+            log.append("language_from", source_slug.to_owned());
+            log.append("language_to", target_slug.to_owned());
+            log.append("meaning", translated.meaning);
+            log.append("surface", translated.surface.clone());
+            let intent = format!("translate_{source_slug}_to_{target_slug}");
+            return Some(finalize_simple(
+                prompt,
+                log,
+                &intent,
+                "response:translate_statement",
+                &translated.surface,
+                1.0,
+            ));
+        }
+    }
 
     if let Some(code) = &backticked {
-        let detected = detect_program_languages(normalized)
-            .or_else(|| infer_program_languages_from_code(code, normalized));
-        if let Some((source_lang, target_lang)) = detected {
+        if let Some((source_lang, target_lang)) = detected_program {
             let translated = translate_program(code, source_lang, target_lang);
             let body = format!(
                 "Translated `{code}` from {source_lang} to {target_lang}:\n\n```{target_lang}\n{translated}\n```"

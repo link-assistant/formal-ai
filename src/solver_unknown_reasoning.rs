@@ -76,17 +76,20 @@ pub fn answer_unknown_prompt(
         "public_knowledge_cache:miss".to_owned(),
     );
 
-    if let Some(focus) = focus.as_deref() {
-        if !config.offline && is_unresolved_bare_term_prompt(prompt, focus) {
-            log.append("reasoning:candidate_source", "web_search".to_owned());
-            log.append("reasoning:gather_attempt", format!("web_search:{focus}"));
-            return answer_web_search_query(
-                prompt,
-                focus,
-                WebSearchQueryKind::UnresolvedBareTerm,
-                log,
-            );
-        }
+    if let Some(focus) = focus.as_deref().filter(|_| {
+        !config.offline
+            && seed::supported_languages()
+                .iter()
+                .any(|supported| supported == language.slug())
+    }) {
+        let kind = if is_unresolved_bare_term_prompt(prompt, focus) {
+            WebSearchQueryKind::UnresolvedBareTerm
+        } else {
+            WebSearchQueryKind::UnknownReasoningFallback
+        };
+        log.append("reasoning:candidate_source", "web_search".to_owned());
+        log.append("reasoning:gather_attempt", format!("web_search:{focus}"));
+        return answer_web_search_query(prompt, focus, kind, log);
     }
 
     log.append(
@@ -144,6 +147,7 @@ fn answer_unresolved_unknown(
     config: UnknownReasoningConfig,
 ) -> SymbolicAnswer {
     let body = render_unresolved_unknown(language, focus, config.questioning_rigor);
+    let body = crate::failure_reporting::append_invitation(&body, language.slug());
     finalize_simple(
         prompt,
         log,
@@ -172,6 +176,7 @@ fn answer_with_legacy_fallback(
         ),
     );
     let body = language_aware_unknown_answer(prompt, language);
+    let body = crate::failure_reporting::append_invitation(&body, language.slug());
     finalize_simple(prompt, log, "unknown", "response:unknown", &body, 0.0)
 }
 
@@ -376,6 +381,18 @@ fn infer_missing_focus(prompt: &str) -> Option<String> {
     }
     if let Some(subject) = extract_question_subject(trimmed) {
         return Some(subject);
+    }
+    // Issue #906: "in <language>" modifies a request, it does not name its
+    // topic. Leaving the modifier in the whole-prompt focus made "Fix the
+    // failing CI job in Rust." match the cached `concept_rust` record and come
+    // back as an encyclopedia definition of the language instead of an answer
+    // about the CI job. Only the fallback focus — the one that is the request
+    // itself — is stripped; an explicit subject ("what is rust") is left alone.
+    if let Some(without) = crate::implementation_language::without_modifier(trimmed) {
+        let stripped = clean_focus(&without);
+        if !stripped.is_empty() {
+            return Some(stripped.to_owned());
+        }
     }
     Some(trimmed.to_owned())
 }

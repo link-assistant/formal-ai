@@ -1,0 +1,1 @@
+Formal proofs must keep semantic bounds and witnesses independent from natural-language prose and programming-language syntax, then project the same meaning into every requested target.

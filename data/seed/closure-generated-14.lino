@@ -1,0 +1,871 @@
+meanings
+  active_customers
+    defined-by task
+    lexeme en
+      surface
+        text "active customers"
+  agent_procedure_verification_failed
+    defined-by intent
+    lexeme en
+      surface
+        text "agent procedure verification failed"
+  agentic_action_edit
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action edit"
+  api
+    defined-by word_surface
+    lexeme en
+      surface
+        text "api"
+  browser_to_browser
+    defined-by flow
+    lexeme en
+      surface
+        text "browser to browser"
+  cd
+    defined-by token
+    lexeme en
+      surface
+        text "cd"
+  committed
+    defined-by concept
+    lexeme en
+      surface
+        text "committed"
+  completion_recovery_restate_postcondition
+    defined-by intent
+    lexeme en
+      surface
+        text "completion recovery restate postcondition"
+  context_programming
+    defined-by context
+    lexeme en
+      surface
+        text "context programming"
+  customers
+    defined-by word_surface
+    lexeme en
+      surface
+        text "customers"
+  deduplication
+    defined-by term
+    lexeme en
+      surface
+        text "deduplication"
+  default_language
+    defined-by field
+    lexeme en
+      surface
+        text "default language"
+  distinct_numbers
+    defined-by operation
+    lexeme en
+      surface
+        text "distinct numbers"
+  env
+    defined-by concept
+    lexeme en
+      surface
+        text "env"
+  external_benchmark_swe_inspect_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe inspect error"
+  fabricated
+    defined-by word_surface
+    lexeme en
+      surface
+        text "fabricated"
+  fact_check_arithmetic_counterexample
+    defined-by intent
+    lexeme en
+      surface
+        text "fact check arithmetic counterexample"
+  fact_lookup
+    defined-by intent
+    lexeme en
+      surface
+        text "fact lookup"
+  genuine
+    defined-by word_surface
+    lexeme en
+      surface
+        text "genuine"
+  google_trends
+    defined-by source
+    lexeme en
+      surface
+        text "google trends"
+  intent_routing
+    defined-by name
+    lexeme en
+      surface
+        text "intent routing"
+  isolated-workspace-allowlist
+    defined-by isolation_mode
+    lexeme en
+      surface
+        text "isolated workspace allowlist"
+  kebab_case
+    defined-by operation
+    lexeme en
+      surface
+        text "kebab case"
+  kubaturit
+    defined-by term
+    lexeme en
+      surface
+        text "kubaturit"
+  lexeme_import_cache_unreadable
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import cache unreadable"
+  lexeme_import_cannot_stage
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import cannot stage"
+  lexeme_import_denotation_lost
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import denotation lost"
+  lexeme_import_duplicate_slug
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import duplicate slug"
+  lexeme_import_surface_changed
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import surface changed"
+  lexical_database
+    defined-by kind
+    lexeme en
+      surface
+        text "lexical database"
+  local-library
+    defined-by isolation_mode
+    lexeme en
+      surface
+        text "local library"
+  local_search_not_found
+    defined-by intent
+    lexeme en
+      surface
+        text "local search not found"
+  narrative
+    defined-by concept
+    lexeme en
+      surface
+        text "narrative"
+  olleh
+    defined-by concept
+    lexeme en
+      surface
+        text "olleh"
+  pattern_behavior_rules_list_niyam_dikhao_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list niyam dikhao hi"
+  pattern_behavior_rules_list_show_behavior_rules_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list show behavior rules en"
+  pattern_behavior_rules_list_show_rules_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list show rules en"
+  pattern_concept_context_delimiter_v_ramkakh_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter v ramkakh ru"
+  pattern_concept_prefix_define
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix define"
+  pattern_concept_prefix_shenmeshi_simplified
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix shenmeshi simplified"
+  pattern_concept_prefix_whats_an
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix whats an"
+  pattern_grid_vertical
+    defined-by intent
+    lexeme en
+      surface
+        text "pattern grid vertical"
+  pattern_how_x_works_prefix_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern how x works prefix en"
+  pattern_kak_ustroena_x_prefix_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern kak ustroena x prefix ru"
+  pattern_sequence_repetition
+    defined-by intent
+    lexeme en
+      surface
+        text "pattern sequence repetition"
+  pattern_wellbeing_phrase_kak_vy_pozhivaete
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase kak vy pozhivaete"
+  pattern_wellbeing_phrase_ni_hao_ma_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase ni hao ma zh"
+  pattern_wikipedia_article_question_grammar_context_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wikipedia article question grammar context hi"
+  playright
+    defined-by word_surface
+    lexeme en
+      surface
+        text "playright"
+  powershell
+    defined-by token
+    lexeme en
+      surface
+        text "powershell"
+  prepend
+    defined-by phrase
+    lexeme en
+      surface
+        text "prepend"
+  pwsh
+    defined-by token
+    lexeme en
+      surface
+        text "pwsh"
+  reasoning
+    defined-by category
+    lexeme en
+      surface
+        text "reasoning"
+  relocate
+    defined-by word_surface
+    lexeme en
+      surface
+        text "relocate"
+  response_agent_procedure_readback_unavailable_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure readback unavailable en"
+  response_agent_procedure_write_unavailable_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure write unavailable en"
+  response_agent_suggestion_active_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion active ru"
+  response_agentic_action_find_desktop_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action find desktop ru"
+  response_agentic_action_search_code_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action search code en"
+  response_agentic_report_contents_options_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report contents options ru"
+  response_agentic_report_target_question_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report target question en"
+  response_agentic_step_failed_with_exit_code_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic step failed with exit code zh"
+  response_assistant_name_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant name hi"
+  response_budget_search_solution_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response budget search solution hi"
+  response_capabilities_more_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response capabilities more en"
+  response_clarification_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response clarification en"
+  response_client_contract_parse_observation_error_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse observation error zh"
+  response_client_contract_read_observations_error_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read observations error zh"
+  response_client_global_config_probe_skipped_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config probe skipped es"
+  response_client_global_config_requirement_missing_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client global config requirement missing en"
+  response_coding_workspace_effect_observed_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace effect observed es"
+  response_coding_workspace_written_unverified_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response coding workspace written unverified en"
+  response_comparison_decomposed_evidence_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response comparison decomposed evidence ru"
+  response_comparison_decomposed_no_evidence_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response comparison decomposed no evidence zh"
+  response_compiled_procedure_explanation_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response compiled procedure explanation zh"
+  response_completion_recovery_restate_postcondition_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response completion recovery restate postcondition zh"
+  response_detected_failure_report_invitation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response detected failure report invitation ru"
+  response_external_benchmark_not_swe_case_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark not swe case en"
+  response_external_benchmark_swe_remove_report_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark swe remove report error en"
+  response_fact_check_arithmetic_counterexample_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check arithmetic counterexample hi"
+  response_fact_check_arithmetic_counterexample_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check arithmetic counterexample ru"
+  response_fact_check_no_statements_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check no statements en"
+  response_fact_check_statement_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement hi"
+  response_fact_check_statement_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement ru"
+  response_lexeme_import_cannot_install_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot install ru"
+  response_lexeme_import_cannot_stage_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot stage en"
+  response_lexeme_import_cannot_write_json_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot write json hi"
+  response_lexeme_import_fetch_invalid_json_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import fetch invalid json hi"
+  response_lexeme_import_grounding_lost_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import grounding lost en"
+  response_lexeme_import_invalid_qid_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid qid en"
+  response_lexeme_import_invalid_slug_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid slug hi"
+  response_lexeme_import_missing_cached_label_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import missing cached label ru"
+  response_lexeme_import_qid_absent_from_fetch_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import qid absent from fetch hi"
+  response_lexeme_import_refused_batch_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import refused batch hi"
+  response_lexeme_import_refused_batch_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import refused batch zh"
+  response_lexeme_import_surface_missing_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import surface missing ru"
+  response_lexeme_import_wrong_genus_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import wrong genus en"
+  response_local_search_contents_listing_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search contents listing ru"
+  response_local_search_mismatch_requested_directory_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search mismatch requested directory en"
+  response_local_search_mismatch_requested_directory_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search mismatch requested directory ru"
+  response_mcp_instructions_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp instructions hi"
+  response_memory_program_destructive_refused_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory program destructive refused hi"
+  response_orchestration_correction_prompt_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response orchestration correction prompt en"
+  response_orchestration_cross_agent_denial_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response orchestration cross agent denial ru"
+  response_pattern_grid_anti_diagonal_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid anti diagonal ru"
+  response_pattern_grid_shape_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern grid shape en"
+  response_pattern_sequence_constant_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response pattern sequence constant hi"
+  response_search_fusion_read_more_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response search fusion read more es"
+  response_search_fusion_read_more_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response search fusion read more hi"
+  response_shared_dialog_capture_unsupported_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response shared dialog capture unsupported zh"
+  response_skill_gap_name_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response skill gap name ru"
+  response_statement_audit_invalid_json_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response statement audit invalid json en"
+  response_summarization_cli_no_readable_files_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization cli no readable files en"
+  response_summarization_criterion_content_retained_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization criterion content retained en"
+  response_summarization_criterion_format_declared_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization criterion format declared zh"
+  response_summarization_criterion_size_reported_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization criterion size reported zh"
+  response_summarization_evidence_denied_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization evidence denied zh"
+  response_summarization_ratchet_nothing_applicable_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization ratchet nothing applicable en"
+  response_summarization_ratchet_violated_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization ratchet violated es"
+  response_summarization_report_failure_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization report failure hi"
+  response_summarization_report_file_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response summarization report file hi"
+  response_supplied_file_contents_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response supplied file contents zh"
+  response_task_decomposition_lead_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response task decomposition lead en"
+  response_thinking_language_name_hi_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name hi ru"
+  response_thinking_language_name_unknown_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name unknown ru"
+  response_thinking_language_name_zh_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking language name zh hi"
+  response_thinking_narrative_assistant_free_time_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative assistant free time en"
+  response_thinking_narrative_calculation_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative calculation zh"
+  response_thinking_narrative_fact_lookup_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative fact lookup es"
+  response_thinking_narrative_learn_from_source_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative learn from source zh"
+  response_thinking_narrative_translation_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking narrative translation zh"
+  response_thinking_step_compute_expression_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step compute expression hi"
+  response_thinking_step_compute_plain_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step compute plain es"
+  response_thinking_step_detect_language_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step detect language ru"
+  response_thinking_step_dispatch_handler_plain_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step dispatch handler plain hi"
+  response_thinking_step_generic_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step generic hi"
+  response_thinking_step_impulse_plain_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step impulse plain hi"
+  response_thinking_step_lookup_fact_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step lookup fact en"
+  response_thinking_step_lookup_fact_plain_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step lookup fact plain ru"
+  response_thinking_step_rule_verification_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step rule verification en"
+  response_thinking_step_scan_memory_plain_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step scan memory plain es"
+  response_thinking_step_unnamed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response thinking step unnamed zh"
+  response_unknown_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown hi"
+  response_world_state_reached_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response world state reached hi"
+  response_world_state_remaining_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response world state remaining zh"
+  response_write_program_language_unspecified_name_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program language unspecified name ru"
+  response_write_program_skill_gap_name_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response write program skill gap name hi"
+  reverse_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "reverse lines"
+  reverse_sort_list_files
+    defined-by rule
+    lexeme en
+      surface
+        text "reverse sort list files"
+  reverse_string
+    defined-by task
+    lexeme en
+      surface
+        text "reverse string"
+  sed
+    defined-by token
+    lexeme en
+      surface
+        text "sed"
+  sequence
+    defined-by term
+    lexeme en
+      surface
+        text "sequence"
+  solution
+    defined-by word_surface
+    lexeme en
+      surface
+        text "solution"
+  statement_audit_nonempty
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit nonempty"
+  statement_audit_selector_exclusive
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit selector exclusive"
+  still
+    defined-by concept
+    lexeme en
+      surface
+        text "still"
+  summarization_criterion_compression
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization criterion compression"
+  summarization_criterion_content_retained
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization criterion content retained"
+  summarization_criterion_embedded_grammar_recursion
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization criterion embedded grammar recursion"
+  there
+    defined-by concept
+    lexeme en
+      surface
+        text "there"
+  thinking-step
+    defined-by concept
+    lexeme en
+      surface
+        text "thinking step"
+  thinking_narrative_identity
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative identity"
+  thinking_narrative_web
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking narrative web"
+  thinking_step_clarify_formalization
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step clarify formalization"
+  thinking_step_compute_engine_plain
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step compute engine plain"
+  thinking_step_dispatch_handler
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step dispatch handler"
+  thinking_step_invoke_tool_plain
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking step invoke tool plain"
+  thinking_trace_heading
+    defined-by intent
+    lexeme en
+      surface
+        text "thinking trace heading"
+  tool_fs_move
+    defined-by tool
+    lexeme en
+      surface
+        text "tool fs move"
+  tool_result_empty_local_path_search
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result empty local path search"
+  tool_roleplay
+    defined-by tool
+    lexeme en
+      surface
+        text "tool roleplay"
+  two_paths
+    defined-by concept
+    lexeme en
+      surface
+        text "two paths"
+  wikibooks
+    defined-by source
+    lexeme en
+      surface
+        text "wikibooks"
+  wikivoyage
+    defined-by source
+    lexeme en
+      surface
+        text "wikivoyage"

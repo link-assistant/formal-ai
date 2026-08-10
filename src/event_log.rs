@@ -168,6 +168,12 @@ impl EventLog {
             steps.push(step);
             order += 1;
         }
+
+        // Phase 3 — narrate the finished trace in the language of the answer
+        // (issue #889). A single step cannot know that language while the trace
+        // is still being built, because the language is itself one of the steps.
+        let language = crate::thinking::thinking_answer_language(&steps);
+        crate::thinking::localize_thinking_steps(&mut steps, &language);
         steps
     }
 
@@ -379,9 +385,13 @@ fn curate_thinking_event(
         "concept_lookup:request" | "procedural_how_to:request" => {
             keep("scan_memory", detail, "detailed")
         }
-        "concept_lookup:hit" | "fact_query:relation" | "fact_query:subject" | "fact_lookup:hit" => {
-            keep("lookup_fact", detail, "detailed")
-        }
+        "concept_lookup:hit"
+        | "fact_query:relation"
+        | "fact_query:subject"
+        | "fact_lookup:hit"
+        // The timeline an answer was computed from is part of the lookup, so it
+        // shows up in the reasoning trace next to the fact it answered.
+        | "release_timeline:hit" => keep("lookup_fact", detail, "detailed"),
         "web_search:request" | "http_fetch:request" | "url_navigate:request" => {
             keep("http_chat", detail, "detailed")
         }
@@ -571,7 +581,24 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "docs_method:source_kind" => {
                 format!("docs_method:source_kind:{}", event.payload)
             }
-            "docs_method:source" | "source" => format!("source:{}", event.payload),
+            "docs_method:source" | "source" | "release_timeline:source" => {
+                format!("source:{}", event.payload)
+            }
+            // Release-timeline provenance (Issue #892): the snapshot an answer
+            // was computed from travels with it, so a reader can tell how
+            // current the list is and re-derive it from the same bytes.
+            "release_timeline:hit" => format!("release_timeline:{}", event.payload),
+            "release_timeline:snapshot" => {
+                format!("release_timeline:snapshot:{}", event.payload)
+            }
+            "release_timeline:sha256" => format!("release_timeline:sha256:{}", event.payload),
+            "release_timeline:released" => {
+                format!("release_timeline:released:{}", event.payload)
+            }
+            "release_timeline:announced" => {
+                format!("release_timeline:announced:{}", event.payload)
+            }
+            "release_timeline:stale" => format!("release_timeline:stale:{}", event.payload),
             "project:promoted" => format!("project:promoted:{}", event.payload),
             "project_lookup:promotion" => {
                 format!("project_lookup:promotion:{}", event.payload)
@@ -661,6 +688,9 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             // Issue #674: the named gap is the evidence, so it travels in the link
             // rather than being reduced to an opaque event id.
             "skill_gap" => format!("skill_gap:{}", event.payload.replace(' ', "_")),
+            "program_gap" => format!("program_gap:{}", event.payload.replace(' ', "_")),
+            "memory_program_compiled" => format!("memory_program_compiled:{}", event.id),
+            "memory_program_execution" => format!("memory_program_execution:{}", event.id),
             "skill_learning_proposal" => {
                 format!("skill_learning_proposal:{}", event.payload)
             }

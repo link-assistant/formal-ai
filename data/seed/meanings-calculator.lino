@@ -194,9 +194,16 @@ meanings
     lexeme hi
       surface
         text जोड़
+      surface
+        text जमा
     lexeme zh
       surface
         text 加上
+      surface
+        text 加
+    lexeme es
+      surface
+        text "más"
   subtraction
     grounded-in Q40754
     defined-by arithmetic_operation
@@ -215,6 +222,11 @@ meanings
     lexeme zh
       surface
         text 减去
+      surface
+        text 减
+    lexeme es
+      surface
+        text "menos"
   multiplication
     grounded-in Q40276
     defined-by arithmetic_operation
@@ -239,6 +251,13 @@ meanings
     lexeme zh
       surface
         text 乘以
+      surface
+        text 乘
+    lexeme es
+      surface
+        text "por"
+      surface
+        text "multiplicado por"
   division
     grounded-in Q1226939
     defined-by arithmetic_operation
@@ -256,9 +275,18 @@ meanings
     lexeme hi
       surface
         text भाग
+      surface
+        text बटा
     lexeme zh
       surface
         text 除以
+      surface
+        text 除
+    lexeme es
+      surface
+        text "dividido por"
+      surface
+        text "entre"
   modulo
     grounded-in Q1799665
     defined-by arithmetic_operation
@@ -279,6 +307,9 @@ meanings
     lexeme zh
       surface
         text 取模
+    lexeme es
+      surface
+        text "módulo"
   calculation_request
     defined-by action
     defined-by inquiry
@@ -311,10 +342,22 @@ meanings
       surface
         text "how much is"
       surface
+        text "solve the equation"
+      surface
+        text "solve equation"
+      surface
         text solve
     lexeme ru
       surface
         text "сколько будет"
+      surface
+        text "реши уравнение"
+      surface
+        text "решите уравнение"
+      surface
+        text реши
+      surface
+        text решите
       surface
         text посчитай
       surface
@@ -337,12 +380,37 @@ meanings
       surface
         text 算一下
       surface
+        text 解方程
+      surface
+        text 求解
+      surface
         text 计算
     lexeme hi
       surface
         text "कृपया गणना करें"
       surface
+        text "समीकरण हल करें"
+      surface
+        text "समीकरण हल करो"
+      surface
+        text "हल करें"
+      surface
+        text "हल करो"
+      surface
         text "गणना करें"
+    lexeme es
+      surface
+        text "resuelve la ecuación"
+      surface
+        text "resolver la ecuación"
+      surface
+        text "cuánto es"
+      surface
+        text resuelve
+      surface
+        text calcular
+      surface
+        text calcula
   politeness
     grounded-in Q281287
     defined-by property
@@ -386,9 +454,20 @@ meanings
       surface
         text "कितना है"
       surface
+        text "कितना होता है"
+      surface
+        text "कितने होते हैं"
+      surface
         text "क्या है"
       surface
         text "की गणना करें"
+    lexeme es
+      surface
+        text "cuánto es"
+      surface
+        text "cuánto da"
+      surface
+        text "cuántos son"
   time_duration
     defined-by time
     defined-by inquiry

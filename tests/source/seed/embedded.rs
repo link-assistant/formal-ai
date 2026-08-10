@@ -16,10 +16,19 @@ pub const MULTILINGUAL_RESPONSES_AGENTIC_LINO: &str =
     include_str!("../../../data/seed/multilingual-responses-agentic.lino");
 pub const MULTILINGUAL_RESPONSES_PROCEDURE_LINO: &str =
     include_str!("../../../data/seed/multilingual-responses-procedure.lino");
+pub const MULTILINGUAL_RESPONSES_PATTERN_LINO: &str =
+    include_str!("../../../data/seed/multilingual-responses-pattern.lino");
+pub const MULTILINGUAL_RESPONSES_THINKING_LINO: &str =
+    include_str!("../../../data/seed/multilingual-responses-thinking.lino");
+pub const MULTILINGUAL_RESPONSES_THINKING_NARRATIVE_LINO: &str =
+    include_str!("../../../data/seed/multilingual-responses-thinking-narrative.lino");
 pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_LINO,
     MULTILINGUAL_RESPONSES_AGENTIC_LINO,
     MULTILINGUAL_RESPONSES_PROCEDURE_LINO,
+    MULTILINGUAL_RESPONSES_PATTERN_LINO,
+    MULTILINGUAL_RESPONSES_THINKING_LINO,
+    MULTILINGUAL_RESPONSES_THINKING_NARRATIVE_LINO,
 ];
 pub const CONCEPTS_LINO: &str = include_str!("../../../data/seed/concepts.lino");
 pub const CONCEPT_CONTEXTS_LINO: &str = include_str!("../../../data/seed/concept-contexts.lino");
@@ -126,6 +135,18 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         (
             "data/seed/multilingual-responses-agentic.lino",
             MULTILINGUAL_RESPONSES_AGENTIC_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-pattern.lino",
+            MULTILINGUAL_RESPONSES_PATTERN_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-thinking.lino",
+            MULTILINGUAL_RESPONSES_THINKING_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-thinking-narrative.lino",
+            MULTILINGUAL_RESPONSES_THINKING_NARRATIVE_LINO,
         ),
         ("data/seed/concepts.lino", CONCEPTS_LINO),
         ("data/seed/concept-contexts.lino", CONCEPT_CONTEXTS_LINO),

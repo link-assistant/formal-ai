@@ -9,9 +9,23 @@
 use super::planner::{classify_tool, Capability};
 use crate::protocol::ChatMessage;
 
+/// One observed client-owned tool execution in transcript order.
+#[derive(Debug)]
+pub(super) struct ToolAttempt {
+    pub(super) capability: Capability,
+    pub(super) succeeded: bool,
+    pub(super) detail: String,
+    pub(super) arguments: Option<String>,
+}
+
 /// Tool results produced since the current user turn began.
 pub struct Progress {
+    /// Observed results, including failures. Existing recipes use this to move
+    /// to their fallback or rendering phase after a client-owned attempt.
     completed: Vec<Capability>,
+    /// Results that actually satisfied their planned step.
+    successful: Vec<Capability>,
+    attempts: Vec<ToolAttempt>,
     pub(super) fetched_text: Option<String>,
     pub(super) fetched_pages: Vec<(String, String)>,
     pub(super) attempted_fetches: Vec<String>,
@@ -28,6 +42,8 @@ pub struct Progress {
 impl Progress {
     pub(super) fn scan(messages: &[ChatMessage]) -> Self {
         let mut completed = Vec::new();
+        let mut successful = Vec::new();
+        let mut attempts = Vec::new();
         let mut fetched_text = None;
         let mut fetched_pages = Vec::new();
         let mut attempted_fetches = Vec::new();
@@ -47,8 +63,22 @@ impl Progress {
             let Some(capability) = result_capability(messages, index) else {
                 continue;
             };
+            let raw = message.content.plain_text();
+            let failure = super::tool_result::failure_message(
+                &raw,
+                message.is_error,
+                capability != Capability::Run,
+            );
+            let arguments =
+                result_tool_call(messages, index).map(|call| call.function.arguments.clone());
+            attempts.push(ToolAttempt {
+                capability,
+                succeeded: failure.is_none(),
+                detail: failure.clone().unwrap_or_else(|| raw.clone()),
+                arguments,
+            });
             if capability == Capability::Fetch {
-                let payload = super::tool_result::normalized_payload(&message.content.plain_text());
+                let payload = super::tool_result::normalized_payload(&raw);
                 fetch_result = Some(payload.clone().unwrap_or_default());
                 let fetch_url = result_tool_call(messages, index).and_then(fetch_call_url);
                 if let Some(url) = fetch_url.as_ref() {
@@ -64,19 +94,24 @@ impl Progress {
                 }
             }
             if capability == Capability::Search {
-                let payload = super::tool_result::normalized_payload(&message.content.plain_text());
+                let payload = super::tool_result::normalized_payload(&raw);
                 search_result = Some(payload.clone().unwrap_or_default());
                 if let Some(text) = payload.filter(|text| !text.trim().is_empty()) {
                     search_output = Some(text);
                 }
             }
             if capability == Capability::Run {
-                run_outputs.push(message.content.plain_text());
+                run_outputs.push(raw);
             }
             completed.push(capability);
+            if failure.is_none() {
+                successful.push(capability);
+            }
         }
         Self {
             completed,
+            successful,
+            attempts,
             fetched_text,
             fetched_pages,
             attempted_fetches,
@@ -99,6 +134,44 @@ impl Progress {
             .count()
     }
 
+    /// Number of observations that satisfied the planned capability.
+    pub(super) fn successful_count(&self, capability: Capability) -> usize {
+        self.successful
+            .iter()
+            .filter(|done| **done == capability)
+            .count()
+    }
+
+    /// Most recent successful result payload for one capability.
+    pub(super) fn latest_successful_output(&self, capability: Capability) -> Option<&str> {
+        self.attempts
+            .iter()
+            .rev()
+            .find(|attempt| attempt.capability == capability && attempt.succeeded)
+            .map(|attempt| attempt.detail.as_str())
+    }
+
+    pub(super) fn attempted_write_for(&self, path: &str) -> bool {
+        self.attempts.iter().any(|attempt| {
+            attempt.capability == Capability::Write
+                && attempt
+                    .arguments
+                    .as_deref()
+                    .is_some_and(|arguments| argument_targets(arguments, path))
+        })
+    }
+
+    pub(super) fn successful_write_for(&self, path: &str) -> bool {
+        self.attempts.iter().any(|attempt| {
+            attempt.capability == Capability::Write
+                && attempt.succeeded
+                && attempt
+                    .arguments
+                    .as_deref()
+                    .is_some_and(|arguments| argument_targets(arguments, path))
+        })
+    }
+
     /// The capability of the most recent tool result in this turn.
     ///
     /// `completed` is in arrival order, so this distinguishes *which phase* a
@@ -109,6 +182,32 @@ impl Progress {
         self.completed.last().copied()
     }
 
+    /// The latest observed result when it failed. Successful observations do
+    /// not leave an older failure active.
+    pub(super) fn latest_failure(&self) -> Option<&ToolAttempt> {
+        self.attempts.last().filter(|attempt| !attempt.succeeded)
+    }
+
+    pub(super) fn previous_attempt(&self) -> Option<&ToolAttempt> {
+        self.attempts.iter().rev().nth(1)
+    }
+
+    /// Bound retries per concrete write target, rather than globally across a
+    /// multi-file recipe.
+    pub(super) fn failed_write_count_for(&self, path: &str) -> usize {
+        self.attempts
+            .iter()
+            .filter(|attempt| {
+                attempt.capability == Capability::Write
+                    && !attempt.succeeded
+                    && attempt
+                        .arguments
+                        .as_deref()
+                        .is_some_and(|arguments| argument_targets(arguments, path))
+            })
+            .count()
+    }
+
     pub(super) fn fetch_result(&self) -> Option<&str> {
         self.fetch_result.as_deref()
     }
@@ -116,6 +215,22 @@ impl Progress {
     pub(super) fn search_result(&self) -> Option<&str> {
         self.search_result.as_deref()
     }
+}
+
+fn argument_path(arguments: &str) -> Option<String> {
+    let value: serde_json::Value = serde_json::from_str(arguments).ok()?;
+    ["path", "filePath", "file_path"]
+        .iter()
+        .find_map(|key| value.get(*key).and_then(serde_json::Value::as_str))
+        .map(str::to_owned)
+}
+
+fn argument_targets(arguments: &str, path: &str) -> bool {
+    argument_path(arguments).is_some_and(|observed| {
+        observed == path
+            || (std::path::Path::new(path).is_relative()
+                && std::path::Path::new(&observed).ends_with(path))
+    })
 }
 
 /// Resolve which capability the tool result at `index` answers. Prefer the

@@ -1,0 +1,84 @@
+corpus files: 10654
+iterations=12 stabilized=true bound_reached=false percent=100 (197/197)
+embedded grammar: files=1 blocks=1
+-- iteration 0 => 100%
+   docs/case-studies/pull-request-234/decoded/issue-139.md [markdown] 100% (9/9)
+   docs/case-studies/issue-559/raw-data/upstream/cargo-info-lino-objects-codec.txt [text] 100% (7/7)
+-- iteration 1 => 100%
+   docs/case-studies/issue-651/self-coding-run/result.diff [text] 100% (7/7)
+   docs/case-studies/pull-request-234/raw/issues/issue-237-comments.json [json] 100% (8/8)
+-- iteration 2 => 100%
+   docs/case-studies/issue-659/raw-data/github/pull.json [json] 100% (9/9)
+   docs/case-studies/issue-190/raw-data/pr-191-reviews.json [json] 100% (8/8)
+-- iteration 3 => 100%
+   tests/unit/specification/probabilistic_reasoning/counted_utility.rs [rust] 100% (9/9)
+   experiments/agent_cli_e2e/issue_819_tui/tui-transcript.test.mjs [javascript] 100% (9/9)
+-- iteration 4 => 100%
+   tests/unit/issue_627.rs [rust] 100% (9/9)
+   tests/unit/issue_916.rs [rust] 100% (9/9)
+-- iteration 5 => 100%
+   docs/case-studies/issue-864/failure-e2e/agent-stream.jsonl [text] 100% (8/8)
+   docs/case-studies/issue-712/agent-cli-routing-learning/tool-routing-learning-report.lino [links_notation] 100% (8/8)
+-- iteration 6 => 100%
+   data/cache/wordnet/en/phrase.lino [links_notation] 100% (8/8)
+   examples/repro_issue_340.rs [rust] 100% (9/9)
+-- iteration 7 => 100%
+   docs/case-studies/issue-571/raw-data/web-requests-test.log [text] 100% (8/8)
+   dev/log/issues/798/pulls/799/ci-logs/warnings-index.txt [text] 100% (8/8)
+-- iteration 8 => 100%
+   scripts/install.ps1 [text] 100% (8/8)
+   data/cache/wordnet/en/attribute.json [json] 100% (9/9)
+-- iteration 9 => 100%
+   data/cache/wordnet/en/fuse.lino [links_notation] 100% (8/8)
+   docs/case-studies/issue-750/agent-cli-evidence/memory.lino [links_notation] 100% (8/8)
+-- iteration 10 => 100%
+   dev/log/issues/781/pulls/803/research/upstream/opencode-issue-20465-comments.stderr [text] 100% (7/7)
+   data/meta/self-ast/src/protocol/responses_input.lino [links_notation] 100% (7/7)
+-- iteration 11 => 100%
+   docs/case-studies/issue-24/raw-data/cargo-test-doc-after-fix.log [text] 100% (8/8)
+   docs/case-studies/issue-218/raw-data/issue-207.json [json] 100% (9/9)
+   slow 3 docs/case-studies/issue-659/raw-data/github/pull.json bytes=22512 238ms
+   slow 8 tests/unit/issue_916.rs bytes=27035 402ms
+   slow 24 tests/unit/issue_781_option_network.rs bytes=17705 241ms
+   slow 32 tests/unit/agentic_coding.rs bytes=30774 609ms
+   slow 35 dev/log/issues/798/pulls/799/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml bytes=30210 273ms
+   slow 82 src/world_model.rs bytes=39180 702ms
+   slow 86 dev/log/issues/798/pulls/799/github/related-pr-795.json bytes=20687 269ms
+   slow 100 src/solver_handlers/document_request.rs bytes=24045 329ms
+   slow 112 src/anthropic.rs bytes=24076 449ms
+   slow 151 desktop/lib/agent-provider.cjs bytes=22977 401ms
+   slow 158 src/calculation.rs bytes=32008 663ms
+   slow 172 dev/log/issues/776/pulls/794/artifacts/run-29677905727/trace/uiMode.Btcz36p_.css bytes=60239 1926ms
+   slow 261 tests/source/web_search_core.rs bytes=17520 220ms
+   slow 267 src/solver_handlers/program_synthesis.rs bytes=21923 293ms
+   slow 271 src/google_trends_catalog.rs bytes=16922 235ms
+   slow 280 tests/source/proof_engine/mod.rs bytes=34556 270ms
+   slow 286 src/lexeme_import.rs bytes=34806 1085ms
+   slow 309 docs/case-studies/issue-84/raw-data/run-25961456440.json bytes=23086 523ms
+   slow 344 docs/case-studies/issue-832/raw-data/related-pr-831.json bytes=24666 328ms
+   slow 363 docs/case-studies/issue-841/tui-artifacts/path-discovery/opencode/recording.svg bytes=122977 15489ms
+   slow 366 docs/case-studies/issue-558/raw-data/related-issues.json bytes=18104 324ms
+   slow 370 desktop/lib/tool-router.cjs bytes=35585 1320ms
+   slow 372 tests/source/seed/meanings.rs bytes=39958 961ms
+   slow 411 src/cli_orchestration.rs bytes=16257 237ms
+   slow 412 dev/log/issues/681/pulls/684/sessions/ce9c725d-2ec5-49b2-8ff9-677422847ab5/claude-ce9c725d-2ec5-49b2-8ff9-677422847ab5.log bytes=1312498 372ms
+   slow 433 src/web/worker/formal_ai_worker_18.js bytes=47009 1812ms
+   slow 435 docs/case-studies/issue-847/raw-data/pr-857.json bytes=33285 684ms
+   slow 440 src/workspace_change_learning.rs bytes=18018 280ms
+   slow 456 src/server.rs bytes=34053 862ms
+   slow 470 src/memory_query_language/learning.rs bytes=16145 257ms
+   slow 503 src/links_query.rs bytes=17407 287ms
+   slow 522 src/proof_engine/decision/boolean.rs bytes=20758 293ms
+   slow 525 tests/unit/issue_840.rs bytes=23122 409ms
+   slow 534 docs/case-studies/issue-717/cargo-test-all-features-rerun.log bytes=584083 246ms
+   slow 558 docs/case-studies/issue-230/raw-data/pr-231-conversation-comments.json bytes=21754 259ms
+   slow 571 dev/log/issues/812/pulls/813/ci-logs/run-29752745259.json bytes=29499 755ms
+   slow 594 tests/source/translation/formalization.rs bytes=26866 600ms
+== sweep over 600 files: 4983/4989 criteria
+   failing criterion compression: 6
+   87% dev/log/issues/776/pulls/794/raw/test-docs-policy-final.log
+   87% dev/log/issues/781/pulls/803/tests/reproduction-codex-mcp-envelope-after-fix.log
+   87% docs/case-studies/issue-711/raw-data/version-script-final.log
+   87% experiments/agentic_cli_matrix/recorded/codex/summarize.jsonl
+   87% experiments/agentic_cli_matrix/recorded/grok/greeting.jsonl
+   87% experiments/issue_712_edit_correction.patch

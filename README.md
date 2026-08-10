@@ -405,6 +405,7 @@ with-formal-ai -g grok
 with-formal-ai -g aider
 with-formal-ai -g --all
 with-formal-ai -g --undo codex
+with-formal-ai -g --verify gemini
 ```
 
 Persistent targets are `~/.codex/config.toml`,
@@ -413,6 +414,20 @@ Persistent targets are `~/.codex/config.toml`,
 `~/.config/link-assistant-agent/opencode.json`, and a managed block in
 `~/.profile` for environment-configured clients, plus `~/.cursor/mcp.json` for
 Cursor. Re-running `-g` is idempotent.
+
+Some clients need more than exports before they will start headlessly, so `-g`
+writes those files too: gemini also gets `~/.gemini/settings.json` with
+`security.auth.selectedType`, because gemini-cli treats an auth type as
+*selected* only when a settings file says so, and qwen gets `OPENAI_MODEL`
+alongside `OPENAI_API_KEY` and `OPENAI_BASE_URL`, because its OpenAI-compatible
+auth path keys on the complete triple. Each of these companion files is backed
+up and restored by `--undo` like every other target.
+
+After writing, `-g` re-reads the files and fails if a piece the client needs for
+a headless start is missing. Add `--verify` to go further and start the client
+once non-interactively; the run fails when the client answers with an auth
+refusal instead of reporting success. `--verify` is skipped for clients that are
+not installed.
 
 ### Permission-gated multi-agent orchestration
 
@@ -506,7 +521,11 @@ codex exec --skip-git-repo-check --sandbox read-only "hi"
 ```
 
 For a one-shot invocation without editing `~/.codex/config.toml`, pass the same
-provider block through `-c`:
+provider block through `-c`. Keep every `-c` **after** the `exec` subcommand:
+Codex 0.146 discards the global override group placed before a subcommand as
+soon as any `-c` follows that subcommand, which silently falls back to the
+default OpenAI provider (see the
+[issue 902 case study](docs/case-studies/issue-902/README.md)).
 
 ```bash
 FORMAL_AI_API_KEY="sk-local-demo" codex exec \
@@ -832,7 +851,9 @@ cargo run -- memory export --from memory.lino --path full.lino           # defau
 cargo run -- memory export --from memory.lino --path events.lino --events-only  # legacy demo_memory
 cargo run -- memory import --path full.lino --into memory.lino           # accepts either format
 cargo run -- memory show --path memory.lino                              # print every recorded event
-cargo run -- memory query --path memory.lino --query "Find Rust in another conversation"
+cargo run -- memory query --path memory.lino --prompt "Find Rust in another conversation"
+cargo run -- memory query --path memory.lino --prompt "SELECT id, content FROM memory WHERE kind = 'fact' LIMIT 10"
+cargo run -- memory query --path memory.lino --prompt 'query { memory(first: 10) { id content } }'
 cargo run -- memory dream --path memory.lino                             # plan low-priority cleanup
 cargo run -- memory dream --path memory.lino --storage-capacity-bytes 1000000 --free-bytes 50000
 cargo run -- memory dream --path memory.lino --apply --confirm           # persist learning; cleanup asks consent
@@ -841,6 +862,17 @@ cargo run -- memory reset --path memory.lino --backup before-reset.lino --confir
 cargo run -- bundle export --path bundle.lino --memory memory.lino
 cargo run -- bundle import --path bundle.lino --into memory.lino
 ```
+
+Exact SQL and GraphQL memory requests share one typed plan, permission model,
+and bounded link-substitution program with learned natural-language templates.
+The supported schema includes every `MemoryEvent` field and covers CRUD,
+boolean filtering, projection, grouping, sorting, pagination, count, sum,
+average, minimum, maximum, population variance, and population standard
+deviation. Reads use identity substitution (`same -> same`); deletes remain
+append-only retractions and require explicit destructive confirmation. The
+architecture, exact dialects, auto-learning gates, Agent CLI evidence, and
+meta-language audit are documented in the
+[issue #708 query-language case study](docs/case-studies/issue-708/query-languages.md).
 
 Memory normally remains append-only: deleting a conversation first records a
 `conversation_deleted` event and hides the thread. The explicit
@@ -970,7 +1002,7 @@ Seed rules currently cover:
 - URL requests such as `Navigate to github.com`, `fetch example.com`, and `Сделай запрос к google.com`; navigation prompts check CORS-readable frame-policy metadata and render an iframe only when `X-Frame-Options` and CSP `frame-ancestors` do not block embedding, while explicit fetch prompts attempt a browser `fetch()` first and use the same frame-policy check before any embedded fallback
 - web-search, information-search, and implicit research prompts such as `Search the web for Nikola Tesla`, `Найди яблоко в интернете`, `Найди информацию о Rust программировании`, `Rust programming के बारे में जानकारी खोजो`, `查找关于 Rust 编程的信息`, and `What is the most popular dataset for translation quality validation?`; the browser demo queries DuckDuckGo, Internet Archive, Wikipedia, Wikidata, and Wiktionary, then returns reciprocal-rank-fused links
 - merged definition prompts such as `Merge Wikipedia definitions of IIR`, which combine localized definition blocks for the same seed/Wikidata concept, deduplicate repeated facts, and cite every source language; use `--definition-fusion auto`, `FORMAL_AI_DEFINITION_FUSION=auto`, or the browser Settings control to make plain prompts like `What is IIR?` use the same fusion path
-- generic project lookups for GitHub/GitLab/Bitbucket repository URLs plus default-on promotion for matching `link-assistant`, `link-foundation`, and `linksplatform` projects such as `What is Hive Mind?`, `Что такое Hive Mind?`, and `What is link-cli?`; promoted answers are generated from `data/seed/projects.lino` through the deterministic `formalize → summarize → deformalize` pipeline in `src/summarization/` (split into `mod.rs`, `markdown.rs`, `dialog.rs`, `file.rs`, and `resource.rs`), which also drives README ingestion, repository-file summaries with recursive Markdown embedded-grammar formalization, recursive repository-resource summaries that generalize from files to whole folders (`resource.rs`, via the decompose → summarize → compose meta-algorithm loop bounded by the summarization mode ladder), multi-turn dialog summaries, and chat-title generation (see [ARCHITECTURE.md § 7.1](ARCHITECTURE.md#71-project-lookups-and-summarization))
+- generic project lookups for GitHub/GitLab/Bitbucket repository URLs plus default-on promotion for matching `link-assistant`, `link-foundation`, and `linksplatform` projects such as `What is Hive Mind?`, `Что такое Hive Mind?`, and `What is link-cli?`; promoted answers are generated from `data/seed/projects.lino` through the deterministic `formalize → summarize → deformalize` pipeline in `src/summarization/` (core stages in `mod.rs`, with `markdown.rs`, `dialog.rs`, `file.rs`, `resource.rs`, `dedup.rs`, and further stage modules), which also drives README ingestion, repository-file summaries with recursive Markdown embedded-grammar formalization, recursive repository-resource summaries that generalize from files to whole folders (`resource.rs`, via the decompose → summarize → compose meta-algorithm loop bounded by the summarization mode ladder), multi-turn dialog summaries, and chat-title generation (see [ARCHITECTURE.md § 7.1](ARCHITECTURE.md#71-project-lookups-and-summarization)); summarization quality is itself measured rather than asserted — `formal-ai summarization criteria | validate | ratchet` samples Git-tracked files with a fixed seed, runs each through the production summarizer, scores it against ten published criteria, and enforces an 80% floor against the committed `data/summarization/quality-baseline.lino` (issue [#893](https://github.com/link-assistant/formal-ai/issues/893); see [docs/case-studies/issue-893/](docs/case-studies/issue-893/README.md))
 - behavior-rule inspection and dialog-local rule updates through `List behavior rules` (grouped by topic, each rendered as a `When X then Y` statement), `Show behavior rule unknown`, and the multilingual `When ... then ...` / `When ... do ...` / `When I say ... answer ...` grammar
 - unknown prompts, which return a larger learnable-rule fallback with exact commands for inspecting rules, teaching the current dialog, exporting memory, or reporting a missing built-in rule
 
@@ -1014,6 +1046,27 @@ in [`data/training/`](data/training/README.md); benchmark fixtures and runtime
 retrieval data are separate classifications and cannot silently become
 training data.
 
+### File legal-risk assessment
+
+`formal-ai file-legality` inspects image, document, audio, video, or other files
+and returns separate national-security, forbidden-content, and copyright/IP
+signals for each requested jurisdiction. The report includes Exif/GPS field
+provenance, versioned policy/evidence links, detector confidence, and required
+review actions. It never returns a universal legal verdict.
+
+```bash
+formal-ai file-legality ./candidate.jpg \
+  --config examples/file-legality/evidence.json \
+  --pretty
+```
+
+Detector and policy data are explicit caller inputs; provider adapters can be
+registered through the Rust API and fail independently. Confirmed child-safety
+matches are accepted only as authorized-provider receipts: they suppress local
+hash/metadata derivatives, skip ordinary detectors, and require provider
+escalation. See the [issue #835 case study](docs/case-studies/issue-835/) and
+the [synthetic sidecar example](examples/file-legality/).
+
 ## Development
 
 ```bash
@@ -1025,6 +1078,21 @@ cargo test --doc --verbose
 rust-script scripts/check-file-size.rs
 ```
 
+Coverage is measured as two separate denominators — the Rust workspace and the
+browser JavaScript — and ratcheted: CI fails when either falls below the
+reviewed floor in `coverage/baseline.json`, and lowering a floor requires an
+explicit justification recorded in that file. See
+[docs/design/coverage-ratchet.md](docs/design/coverage-ratchet.md).
+
+```bash
+npm run test:web                              # browser unit suite
+npm run coverage:web                          # writes coverage/browser-lcov.info
+npm run coverage:ratchet -- --only browser    # publish + enforce
+
+cargo llvm-cov --all-features --lcov --output-path lcov.info
+npm run coverage:ratchet -- --only rust
+```
+
 Decode an overlong prefilled GitHub issue URL into readable Markdown during
 report-link triage:
 
@@ -1032,4 +1100,4 @@ report-link triage:
 rust-script scripts/decode-github-issue-url.rs --url 'https://github.com/link-assistant/formal-ai/issues/new?...'
 ```
 
-See [REQUIREMENTS.md](REQUIREMENTS.md) for the cumulative requirement matrix (now alongside [VISION.md](VISION.md)) and [docs/case-studies/issue-1/README.md](docs/case-studies/issue-1/README.md) for the collected research and implementation plan.
+See [REQUIREMENTS.md](REQUIREMENTS.md) for the cumulative requirement matrix and [docs/case-studies/issue-1/README.md](docs/case-studies/issue-1/README.md) for the collected research and implementation plan.

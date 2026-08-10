@@ -1,0 +1,11 @@
+minimum quality ratchet: 80%
+identity_names_path — The summary names the file it summarizes.
+format_declared — The summary names the detected file format.
+size_reported — The summary reports the file's line and byte counts.
+content_retained — A file with content yields retained content statements in the summary.
+content_grounded — Every identifier-shaped token in the summary occurs in the file's path or content.
+compression — The summary is shorter than the file it summarizes.
+embedded_grammar_recursion — Every Markdown fenced block is recursively formalized and its language is named in the summary.
+meta_language_evidence — A valid meta-language parse is reported with its label and syntax-link count.
+determinism — Summarizing the same file twice returns byte-identical output.
+mode_ladder — Short, Standard and Full summaries grow monotonically with the mode ladder.

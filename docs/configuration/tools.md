@@ -9,13 +9,14 @@ hosts; writes and shell require the active permission policy.
 
 ## Internal tools
 
-These are symbolic engine operations and do not delegate to an agent harness:
+These are symbolic engine operations; all but `run_agent` stay inside the engine (`run_agent` launches one seed-registered agent CLI only after an explicit workspace-scoped grant — see the orchestration guide):
 
 | Capability | Complete internal tools registry |
 | --- | --- |
 | Reasoning/routing | `intent_routing`, `concept_lookup`, `fact_lookup`, `coreference`, `roleplay` |
 | Generation | `write_program`, `brainstorm`, `summarize_conversation` |
 | Calculation | `calculator` |
+| Agent delegation | `run_agent` |
 | Web/browser | `http_fetch`, `url_navigate`, `wikipedia_lookup`, browser `web_search` |
 | Memory | `append_memory`, `conversation_recall`, `export_memory`, `import_memory` |
 | Browser sandbox | `read_local_file`, `eval_js` |

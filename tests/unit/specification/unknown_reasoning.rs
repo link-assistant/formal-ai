@@ -15,6 +15,15 @@ fn answer(prompt: &str) -> SymbolicAnswer {
     .solve(prompt)
 }
 
+fn answer_offline(prompt: &str) -> SymbolicAnswer {
+    UniversalSolver::new(SolverConfig {
+        questioning_rigor: 0.8,
+        offline: true,
+        ..Default::default()
+    })
+    .solve(prompt)
+}
+
 fn has_evidence(response: &SymbolicAnswer, prefix: &str) -> bool {
     response
         .evidence_links
@@ -117,17 +126,19 @@ fn seed_backed_bare_terms_still_use_public_knowledge_cache() {
 }
 
 #[test]
-fn unknown_reasoning_uses_one_minimal_question_when_unreachable() {
-    let response = answer("How should snorflax be calibrated for teal silence");
+fn unknown_reasoning_uses_one_diagnostic_question_plus_report_consent() {
+    let response = answer_offline("How should snorflax be calibrated for teal silence");
 
     assert_eq!(response.intent, "unknown");
     assert!(response.answer.contains("snorflax"));
     assert!(response.answer.contains("could not determine"));
-    assert!(
-        response.answer.matches('?').count() <= 1,
-        "unknown reasoning should ask at most one question: {}",
+    assert_eq!(
+        response.answer.matches('?').count(),
+        2,
+        "unknown reasoning should ask one diagnostic question and one issue-report consent question: {}",
         response.answer,
     );
+    assert!(response.answer.contains("`Report issue`"));
 }
 
 #[test]
@@ -140,7 +151,7 @@ fn unknown_reasoning_records_trace_for_every_supported_language() {
     ];
 
     for (language, prompt) in cases {
-        let response = answer(prompt);
+        let response = answer_offline(prompt);
         assert_eq!(
             response.intent, "unknown",
             "{language} prompt should stay on the unknown reasoning path"
@@ -160,7 +171,7 @@ fn unknown_reasoning_records_trace_for_every_supported_language() {
 
 #[test]
 fn russian_unknown_reasoning_hint_uses_russian_rule_commands() {
-    let response = answer("снорфлакс тихая бирюзовая погода без правила");
+    let response = answer_offline("снорфлакс тихая бирюзовая погода без правила");
 
     assert_eq!(response.intent, "unknown");
     assert!(

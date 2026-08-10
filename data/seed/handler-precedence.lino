@@ -28,6 +28,7 @@ handler_precedence
   numeric_list # issue 395 generated code plus deterministic result beats arithmetic and the generic algorithm handler
   shell_command_transform # issue 552 a shell-command rewrite beats generic script writing and terminal-command refusal
   number_constraint_reasoning
+  pattern_inference # issue 531 explicit sequences and grids beat arithmetic and generic concept lookup
   arithmetic
   javascript_execution
   definition_merge

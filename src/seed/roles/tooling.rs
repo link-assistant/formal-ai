@@ -174,6 +174,27 @@ pub const ROLE_FILE_WRITE_ACTION_CUE: &str = "file_write_action_cue";
 /// so a *read* request ("show me the contents of …") is never mistaken for a
 /// write.
 pub const ROLE_FILE_WRITE_CONTENT_LEAD: &str = "file_write_content_lead";
+/// Semantic role: an adverb that qualifies *how faithfully* content must be
+/// written rather than naming any of it (issue #905 §3).
+///
+/// Bare forms such as "exactly", "precisely", or "ровно" are carried by
+/// `file_write_content_qualifier` in `data/seed/meanings-file-write.lino`. In
+/// "…containing exactly: Hello World" the adverb sits between the content lead
+/// and the payload, and slicing after the lead captured it as literal bytes, so
+/// the verification command would have compared the file against the wrong
+/// string. The qualifier is dropped only when a clause separator follows it, so
+/// a payload that genuinely begins with the word survives untouched.
+pub const ROLE_FILE_WRITE_CONTENT_QUALIFIER: &str = "file_write_content_qualifier";
+/// Semantic role: an explicit promise that the following span is authoritative
+/// literal file content, even when those bytes resemble another operation.
+///
+/// Forms such as "with exactly this content" (plus translations) are separate
+/// from the broader [`ROLE_FILE_WRITE_CONTENT_LEAD`] set. The agentic planner
+/// uses this narrower role to keep an edit-shaped payload such as "rename X to
+/// Y" inside the requested new file rather than treating it as an instruction
+/// to edit that not-yet-existing file (issue #708).
+pub const ROLE_FILE_WRITE_AUTHORITATIVE_CONTENT_LEAD: &str =
+    "file_write_authoritative_content_lead";
 /// Semantic role: a reference to bytes produced by an explicitly requested
 /// command rather than literal prose to write.
 ///
@@ -206,6 +227,19 @@ pub const ROLE_FILE_WRITE_TARGET_CUE: &str = "file_write_target_cue";
 /// taking the span before the file as the payload, which keeps
 /// "make sense of the file X" out of the write path.
 pub const ROLE_FILE_WRITE_DESTINATION_CUE: &str = "file_write_destination_cue";
+/// Semantic role: a marker phrase that separates a harness preamble from the
+/// objective the caller actually stated (issue #904).
+///
+/// A lead such as "Issue to solve:", "Task:", or "Request:" (plus
+/// translations), carried as [`crate::seed::Slot::Prefix`] forms by
+/// `request_objective` in `data/seed/meanings-agent-actions.lino`. Agent
+/// harnesses prepend their own system-prompt preamble ("You are an AI issue
+/// solver …") to the request, and the general change planner used to formalize
+/// that whole blob — so the recorded `goal` was the preamble rather than the
+/// objective. The planner now reads the objective as the span after this
+/// documented delimiter, and falls back to the whole request when no delimiter
+/// is present.
+pub const ROLE_REQUEST_OBJECTIVE_LEAD: &str = "request_objective_lead";
 /// Semantic role: a surface alias naming a runtime feature capability.
 ///
 /// Carried by the sixteen `feature_capability_*` meanings (for `web_search`,

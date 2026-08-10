@@ -1,0 +1,47 @@
+self_ast_census
+  target src/search_fusion_learning.rs
+  language rust
+  fidelity signature
+  byte_len 17703
+  line_count 510
+  content_id source_module_7dc02c8e13dfc9de
+  symbol_count 38
+  symbols
+    const LEARNING_CONTRACT 19 19
+    const SOURCE_POLICY 20 20
+    const SEARCH_FUSION_TASK_FAMILY 22 22
+    struct SearchFusionLearningError 25 27
+    function fmt 30 32
+    function error 37 41
+    struct FusionPolicy 44 48
+    function policy 50 82
+    struct SearchFusionLearningObservation 86 93
+    function from_execution 96 119
+    function validate_execution 122 151
+    struct SearchFusionRecipeCandidate 155 160
+    struct SearchFusionLearningFrontier 164 166
+    function new 170 174
+    function record_execution 178 193
+    function observation_count 196 198
+    function infer_candidate 200 220
+    function links_notation 223 246
+    struct SearchFusionLearningGate 250 254
+    function passed 258 264
+    function failed 267 273
+    function is_green 275 277
+    struct SearchFusionLearningApproval 281 284
+    function granted 288 293
+    function declined 296 301
+    struct ApprovedRecipe 305 310
+    struct SearchFusionRecipeLedger 314 316
+    function new 320 324
+    function promote 326 365
+    function plan_for 368 372
+    function links_notation 375 384
+    function review_body 386 411
+    function from_links_notation 413 452
+    function execute_search_fusion_with_recipe 456 476
+    function candidate_identity 478 485
+    function root_named 487 495
+    function required 497 504
+    function parse_usize 506 510

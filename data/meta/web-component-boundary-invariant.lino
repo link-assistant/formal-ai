@@ -1,0 +1,6 @@
+web_component_boundary
+  record_type meta_invariant
+  search "normalize provider captures with web-capture then fuse with web-search"
+  provenance "retain exact URL fetched_at SHA-256 bytes and provider ranks"
+  fallback "use the bounded local adapter only when a component capability is unavailable"
+  failure "record component errors as diagnostics never source evidence"

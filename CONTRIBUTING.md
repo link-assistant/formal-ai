@@ -107,9 +107,46 @@ examples/self-coding/run.sh
 cargo test self_coding_session_replays
 ```
 
-For a real GitHub issue, run `examples/self-coding/run.sh --live ISSUE_URL`.
-This invokes `solve ISSUE_URL --tool agent --model formal-ai`: Hive Mind drives
-the Agent CLI, which drives the local Formal AI server.
+For a real GitHub issue, run `examples/self-coding/run.sh --live ISSUE_URL`,
+which invokes the command below — Hive Mind drives the Agent CLI, which drives
+the local Formal AI server:
+
+```bash
+solve ISSUE_URL --tool agent --model formal-ai --attach-logs --verbose
+```
+
+### Always run automated `solve` sessions with `--attach-logs --verbose`
+
+Every automated session started against this repository — by hand or by a
+maintainer's dispatcher — must carry both flags:
+
+```bash
+solve https://github.com/link-assistant/formal-ai/issues/905 \
+  --tool agent --model formal-ai --attach-logs --verbose
+```
+
+Both are load-bearing, and neither substitutes for the other:
+
+- **`--attach-logs`** publishes the session log to the pull request, so a
+  failure leaves behind evidence rather than a single line in a comment.
+- **`--verbose`** is what makes the Agent adapter dump the **raw JSON** of every
+  error record and every fatal startup log record
+  ([link-assistant/hive-mind#2143](https://github.com/link-assistant/hive-mind/pull/2143)).
+  That raw record is what survives a future payload shape the renderer does not
+  know about.
+
+This is not a style preference; it is a precondition of the self/auto-learning
+loop this repository is built around. On 2026-08-04 a run on PR #927 failed
+after 22 seconds and recorded its whole reason as `[object Object]`, with no log
+attached — a failure that is unlearnable by construction, because the next
+iteration has nothing to act on. The container is gone and that cause is
+unrecoverable. The full timeline, root causes, and raw evidence are in
+[`docs/case-studies/issue-973/README.md`](docs/case-studies/issue-973/README.md).
+
+`tests/issue_973_solve_flags.rs` enforces the policy: it scans the guides and
+scripts this repository publishes and fails when any `solve` invocation drops
+either flag. Recorded history under `docs/case-studies/`, `dev/log/`, and
+`experiments/` is exempt — a past run stays as it happened.
 
 ### Recording self-authorship
 
@@ -121,12 +158,13 @@ Formal-AI-Session: <session-id>
 Formal-AI-Evidence: <repo-relative committed evidence path>
 ```
 
-The evidence file must exist in that commit and contain both `formal-ai` and
-the exact session id. Add one pair per session when multiple sessions authored
-a commit. Do not add these trailers to a human-authored or manually corrected
-commit; an honest 0% release is valid. The metric counts additions plus
-deletions from non-merge commits and ignores binary files. Reproduce it with
-`rust-script scripts/self-hosting-metric.rs --since <previous-tag>`.
+The evidence path must exist in that commit. It may name one evidence file or a
+directory bundle; one file at or below the path must contain both `formal-ai`
+and the exact session id. Add one pair per session when multiple sessions
+authored a commit. Do not add these trailers to a human-authored or manually
+corrected commit; an honest 0% release is valid. The metric counts additions
+plus deletions from non-merge commits and ignores binary files. Reproduce it
+with `rust-script scripts/self-hosting-metric.rs --since <previous-tag>`.
 
 ## Contribution rights and external material
 
@@ -244,6 +282,9 @@ Removal from a public thread is not approval to retain another copy.
 
    # Run a specific test
    cargo test test_name
+
+   # Run the browser unit suite (the site's production JavaScript)
+   npm run test:web
    ```
 
    CI caps each test-matrix job at 10 minutes. Rust's built-in `cargo test` runner does not provide a portable global per-test timeout, so wrap long-running network, IO, or async tests with explicit test-level deadlines. If a repository adopts `cargo nextest`, configure runner deadlines with options such as `--slow-timeout` and `--leak-timeout`.
@@ -341,7 +382,23 @@ pub fn example_function(arg1: i32, arg2: i32) -> i32 {
 ## Testing Guidelines
 
 - Write tests for all new features
-- Maintain or improve test coverage
+- Maintain or improve test coverage — this is enforced, not requested. CI
+  measures two separate denominators, Rust and browser, against the reviewed
+  floors in `coverage/baseline.json` and fails on a decrease. Raising a floor is
+  a one-liner; lowering one requires an explicit reviewed justification recorded
+  in the file. See [docs/design/coverage-ratchet.md](docs/design/coverage-ratchet.md).
+
+  ```bash
+  # Browser denominator
+  npm run coverage:web && npm run coverage:ratchet -- --only browser
+
+  # Rust denominator
+  cargo llvm-cov --all-features --lcov --output-path lcov.info
+  npm run coverage:ratchet -- --only rust
+
+  # Lock in a gain
+  npm run coverage:ratchet -- --only browser --update-baseline
+  ```
 - Use descriptive test names
 - Organize tests in modules when appropriate
 - Use `#[cfg(test)]` for test-only code
@@ -378,11 +435,16 @@ agent whose every answer is a projection of an append-only event log, with no
 hardcoded prompt→answer tables.
 
 1. **Mirror parity (Rust ↔ JS worker).** Every reasoning path in the Rust engine
-   (`src/*.rs`) has a twin in the browser worker `src/web/formal_ai_worker.js`,
+   (`src/*.rs`) has a twin in the browser worker (`src/web/formal_ai_worker.js`
+   loader plus the `src/web/worker/formal_ai_worker_*.js` shards),
    so the CLI, library, HTTP server, Telegram bot, and website all answer the
    same prompt identically. A behavioural change in one **must** be mirrored in
    the other in the same PR. Name and comment the twin so the parity is obvious
    (e.g. "Mirrors `try_x` in `src/solver_handler_x.rs`").
+   Mirror parity is the transitional contract while JS worker logic remains:
+   under the compiled-logic doctrine (REQUIREMENTS.md R536), prefer absorbing
+   the path into the Rust→WASM worker over adding a new JS twin, and never
+   grow the worker line budget (`scripts/check-worker-line-budget.rs`).
 
 2. **Data-driven seed, no hardcoded natural language in code (issues #386,
    #513).** Natural language is *data*, never a string literal in the engine.
@@ -422,6 +484,16 @@ hardcoded prompt→answer tables.
      `python3 scripts/close-total.py` (idempotent; emits each unresolved token
      as a first-class meaning under `data/seed/closure-generated-*.lino`) until
      `python3 scripts/audit-total-closure.py` reports `unresolved_distinct: 0`.
+     Those shards are **content-addressed**: each meaning lands in the shard
+     picked by `sha256(slug) % SHARD_COUNT`, so a new token rewrites exactly one
+     file and leaves the others byte-identical. Do not re-sort them into
+     alphabetical files — filling shards sequentially makes every shard depend
+     on the size of everything before it, which is what made `data/seed`
+     conflict in almost every pull request. `SHARD_COUNT` is fixed rather than
+     derived from the corpus, because changing it reshuffles every shard once;
+     raise it only when a shard approaches the 1500-line data-file limit.
+     `./experiments/issue-909-seed-shard-conflict-blast-radius.sh` asserts the
+     property by adding one token and counting the files it dirties.
    - **Worker seed parity checks.** Where the JS worker consumes a generated web
      seed copy, a `--check` guard fails the build on loader regressions and on
      drift in a present mirror (e.g. the “Check terminal vocabulary worker seed
@@ -511,15 +583,77 @@ hardcoded prompt→answer tables.
     explicitly and still deliver a real, tested slice of *each* axis — never dress
     "did part of everything" as an honest scope cut.
 
+12. **Link the issue with a GitHub closing keyword; never "Addresses"
+    (issue #960).** A pull-request description must close its issue with one of
+    GitHub's [recognised keywords](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue)
+    — write `Fixes #146` or, preferably, the full form
+    `Fixes https://github.com/link-assistant/formal-ai/issues/146`. Words like
+    *Addresses*, *Relates to*, *Part of* and *Refs* read to a human exactly like
+    a link and to GitHub like plain prose: the issue silently stays open after
+    the merge. `scripts/check-pull-request-link.rs` reads the description
+    (`PR_BODY`, or a file passed as its argument) and fails the build on a
+    missing closing keyword or a non-closing word used in its place.
+
+13. **Case study per pull request.** Alongside the per-issue case study
+    (rule 8), a case study that documents a *pull request* — its review
+    conversation, CI history, and the decisions taken in it — lives in
+    `docs/case-studies/pull-request-{id}/`, mirroring the `issue-{id}` layout
+    (raw JSON under `raw-data/`). Keep issue-driven and PR-driven narratives in
+    their own directories so neither is buried inside the other.
+
+14. **The 1500-line Links Notation cap covers cached data too (issue #960).**
+    `scripts/check-file-size.rs` and `tests/unit/data_files.rs` apply the cap to
+    every `.lino` file in the repository, `data/cache/wikidata/` included.
+    Generated-but-committed is not a reason to be exempt; it is the reason to be
+    measured, because the generator is what can breach the cap. When a fetched
+    response would exceed it, split it into `<bucket>-partN.lino` the way
+    `examples/refresh_translation_cache.rs` already does.
+
+15. **Budget cache buckets: 128 records each (issue #960).**
+    `MAX_SEED_RECORDS_PER_BUCKET` in `src/translation/cache.rs` is enforced, not
+    merely recorded: `scripts/check-cache-budget.rs` fails when a bucket under
+    `data/cache/` holds more than 128 records (a record is a file stem, so
+    `Q1860.json` and `Q1860.lino` count once). Bucket or trim instead of growing
+    past the cap. The three buckets whose size is *forced* by the total-closure
+    gate — `wikidata/entity`, `wordnet/en`, `wiktionary/en`, where every record
+    exists because a seed token references it — are listed as
+    `CLOSURE_DRIVEN_BUCKETS` with a written reason, and pay for the exemption
+    with a stricter invariant: the check fails if any of their records is an
+    orphan nothing references.
+
+16. **Tests are documentation: assert the exact answer (issue #960).** A
+    behavioural or conversational test should show the reader what the system
+    says, not merely that the reply is not empty. Assert the answer verbatim
+    (`assert_eq!(response.answer, "…")`, or membership in an explicit list of
+    exact answers) and keep looser `contains` guards only as extra checks
+    *after* the exact one. `scripts/check-tests-as-docs.rs` enforces this as a
+    burn-down ratchet: existing loose-only tests are recorded in
+    `scripts/tests-as-docs-allowlist.txt`, new ones fail the build, and a row
+    that has been made explicit must be pruned (`--write` regenerates the list).
+
 ## Pull Request Process
 
 1. Ensure all tests pass locally
 2. Update documentation if needed
 3. Add a changelog fragment (see step 5 in Development Workflow)
 4. Ensure the PR description clearly describes the changes
-5. Link any related issues in the PR description
-6. Wait for CI checks to pass
-7. Address any review feedback
+5. Link the issue the PR closes with a GitHub closing keyword — `Fixes #146` or
+   `Fixes https://github.com/link-assistant/formal-ai/issues/146`. **Never**
+   write `Addresses #146`, `Relates to #146`, or `Part of #146` in its place:
+   GitHub does not recognise those, so the issue stays open after the merge.
+   Verify locally before opening the PR:
+
+   ```bash
+   PR_BODY="$(gh pr view <number> --json body --jq .body)" \
+     rust-script scripts/check-pull-request-link.rs
+   ```
+
+   CI runs the same check on every pull request.
+6. Put any case study *about the pull request itself* in
+   `docs/case-studies/pull-request-{id}/` (issue case studies stay in
+   `docs/case-studies/issue-{id}/`)
+7. Wait for CI checks to pass
+8. Address any review feedback
 
 ## Changelog Management
 

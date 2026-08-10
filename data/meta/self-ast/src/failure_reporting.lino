@@ -1,0 +1,10 @@
+self_ast_census
+  target src/failure_reporting.rs
+  language rust
+  fidelity signature
+  byte_len 962
+  line_count 26
+  content_id source_module_5f21c2d796a4d3a4
+  symbol_count 1
+  symbols
+    function append_invitation 6 26

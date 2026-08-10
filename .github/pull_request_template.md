@@ -2,6 +2,23 @@
 
 -
 
+<!--
+Link the issue this PR closes with a GitHub closing keyword, on its own line:
+
+    Fixes https://github.com/link-assistant/formal-ai/issues/146
+
+`Fixes #146`, `Closes #146` and `Resolves #146` also work. Do NOT write
+`Addresses #146` / `Relates to #146` / `Part of #146` — GitHub does not
+recognise those, so the issue will stay open after this PR merges. CI runs
+`scripts/check-pull-request-link.rs` against this description.
+
+A case study about this pull request belongs in
+`docs/case-studies/pull-request-{id}/`; a case study about the issue belongs in
+`docs/case-studies/issue-{id}/`.
+-->
+
+Fixes #
+
 ## Verification
 
 -

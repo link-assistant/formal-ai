@@ -264,25 +264,31 @@ fn issue_case_study_preserves_requirements_research_and_solution_artifacts() {
 }
 
 #[test]
-fn whole_solution_is_linked_and_has_a_release_trace() {
-    let fragment = root().join("changelog.d/20260801_000000_issue_885.md");
-    if fragment.is_file() {
-        assert_contains_all(
-            "issue 885 changelog fragment",
-            &read("changelog.d/20260801_000000_issue_885.md"),
-            &["bump: minor", "relative references", "legal source-review"],
+fn whole_solution_is_linked_and_has_release_notes() {
+    let fragment_path = root().join("changelog.d/20260801_000000_issue_885.md");
+    let (release_label, release_notes) = if fragment_path.exists() {
+        let fragment = read("changelog.d/20260801_000000_issue_885.md");
+        assert!(
+            fragment.contains("bump: minor"),
+            "issue 885 release fragment must request a minor bump"
         );
+        ("issue 885 release fragment", fragment)
     } else {
-        assert_contains_all(
-            "released issue 885 changelog entry",
-            &read("CHANGELOG.md"),
-            &[
-                "## [0.318.0] - 2026-08-01",
-                "relative references",
-                "legal source-review",
-            ],
-        );
-    }
+        let changelog = read("CHANGELOG.md");
+        let release = changelog
+            .split_once("## [0.318.0]")
+            .expect("released issue 885 notes must remain under v0.318.0")
+            .1
+            .split("\n## [")
+            .next()
+            .expect("v0.318.0 release section");
+        ("issue 885 v0.318.0 release notes", release.to_owned())
+    };
+    assert_contains_all(
+        release_label,
+        &release_notes,
+        &["relative references", "legal source-review"],
+    );
 
     let case_study = read("docs/case-studies/issue-885/README.md");
     assert!(case_study.contains("repository-audit-summary.md"));

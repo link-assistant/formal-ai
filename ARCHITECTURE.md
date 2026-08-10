@@ -305,7 +305,31 @@ unrefs timers/processes, and wraps the CLI with `nice -n 19` on Unix-like
 platforms. Operators can disable that scheduler with
 `FORMAL_AI_DESKTOP_DREAMING=off`.
 
-### 4.3 Default native doublets-rs / doublets-web store
+### 4.3 Research, learning, and stable recovery
+
+Issue #873 joins the existing unknown trace, exact source captures, promotion
+gates, and agent orchestration behind `src/research_learning.rs`. Online inputs
+that exhaust specialized and memory routes become grounded research tasks;
+offline mode remains an explicit no-network boundary. The cycle's ordered
+phases are reviewable data in `data/meta/research-learning-recovery.lino`.
+
+External observations use `SourceReceipt`: locator and content identity are
+durable while a recomputable capture payload may be evicted. Identity-matching
+recollection can rehydrate that payload; changed observations append a new
+receipt. Learned facts, executable procedures, and amendments to the cycle
+itself share a parent-linked `KnowledgeVersion` history. Candidates never
+replace the active stable pointer until every gate passes, all required baseline
+ids are immutable, and immutable gates are a strict majority. Rejected
+candidates remain inspectable while any prior stable version stays recoverable.
+
+All errors enter one recovery reducer. User-led mode asks only when several
+options remain; full-trust mode ranks explicit prior outcomes and tradeoffs;
+per-command mode returns a permission boundary. The shared default limit is one
+hour. At that bound the reducer retains the current plan in an
+`AwaitingContinuation` decision and resumes only through explicit continuation,
+so the bound is not represented as irreversible failure.
+
+### 4.4 Default native doublets-rs / doublets-web store
 
 Native Rust builds select `LinkStoreBackend::DoubletsRs` by default because
 Cargo's default feature set enables `doublets-native`. The library exposes
@@ -703,13 +727,45 @@ The same pipeline also drives four additional surfaces:
   renders a link-native `repository_directory` block (path, counts, per-child
   kind) for inspectable evidence, and `summarize_repository_resource` is the
   general entry point that subsumes `summarize_repository_file` for file inputs.
+- **Summarization quality protocol (seeded sampling + 80% ratchet).**
+  `src/summarization/validation/` answers the part of issue #563 that a
+  summarizer alone cannot: *is the summarizer any good on files nobody
+  optimized for?* `SamplingProtocol` fixes a seed, two files per iteration, an
+  iteration bound and a stability window, and permutes the corpus with a seeded
+  `splitmix64` Fisher-Yates shuffle, so the same seed over the same corpus draws
+  the same files in the same order and no file is drawn twice in one run. Each
+  sampled file goes through the *production* summarizer — `evaluate_file` calls
+  `formalize_repository_file` and `RepositoryFileFormalization::summary`, never a
+  test-only reimplementation — and is scored against the published `CRITERIA`
+  (identity, format, size, retained content, grounded content, compression,
+  embedded-grammar recursion, meta-language evidence, determinism, mode ladder).
+  A criterion that cannot apply to a file is excluded from that file's
+  denominator rather than scored as a free pass, and scores are exact integer
+  `passed/applicable` ratios micro-averaged across files and floored when
+  rendered, so 79.6% gates as 79%. `validate_repository_summarization` iterates
+  until `stability_window` consecutive iterations all clear the ratchet within
+  `stability_tolerance_percent` of one another, at least `minimum_iterations`
+  iterations have run (three perfect iterations are six files, which say nothing
+  about a corpus of thousands) *and* at least one Markdown embedded grammar block
+  has been exercised; otherwise it stops at the bound and reports
+  `bound_reached` rather than claiming stability. Because that last condition is
+  fatal and fenced Markdown is a small minority of the corpus, the draw is
+  stratified: `stratified_sampling_order` promotes the first fence-carrying
+  Markdown file of the seeded permutation into iteration 0 and leaves every other
+  file where the seed put it. `QUALITY_RATCHET_PERCENT
+  = 80` is the published floor, `ratchet_violations` enforces it together with
+  monotonicity against the committed baseline
+  `data/summarization/quality-baseline.lino`, and `formal-ai summarization
+  criteria | validate | ratchet` (`src/cli_summarization.rs`) is the operator
+  surface. The embedded-grammar criterion grades against its own independent
+  CommonMark fence scanner, so the summarizer never grades itself.
 - **Dialog summarization.** `DialogTurn { role, text }` and
   `formalize_dialog` weight user turns +20 and assistant turns -10 so a
   short summary keeps the user's questions even when both sides talk a
   lot. `summarize_dialog(turns, &config)` runs the result through
   `summarize` / `deformalize`, and `generate_chat_title(turns, language)`
   wraps it in `SummarizationMode::Topic`. `try_summarize_conversation` in
-  `src/solver_handlers/mod.rs` now collects `prior_turn:user` and
+  `src/solver_handlers/conversation_memory/conversation_summary.rs` now collects `prior_turn:user` and
   `prior_turn:assistant` events into `DialogTurn`s, calls `summarize_dialog`
   in `Standard` mode, and logs `summarization:mode`,
   `summarization:language`, and `chat_title` evidence alongside the
@@ -946,6 +1002,41 @@ enters the formalizer, any pair — including ones with no hardcoded arm, such a
 Python -> JavaScript — shares one meaning, and Rust <-> JavaScript returns to the
 same `meaning:` link.
 
+Issue #890 extends that meta-language path from simple functions to formal
+proofs. `FormalProof` (`src/proof_program.rs`) owns interval bounds, inclusive
+flags, satisfiability, and the integer witness without owning any prose or
+program syntax. The number-constraint solver emits its canonical statement;
+`formalize_code_meaning` recovers `CodeMeaning::FormalProof`, and
+`render_code_meaning` projects the same value into a complete Rust or Python
+program. The presentation templates live in
+`data/seed/proof-program-templates.lino`; native and browser renderers only
+bind proof fields into the selected target template. Each program checks the
+witness at runtime before printing it. This keeps the architecture at
+one proof formalizer plus one data-defined projection per target, never one
+implementation per natural-language/programming-language pair. The browser
+compiles the same presentation-independent core into
+`src/web/wasm-worker/src/proof_translation_worker.rs`; JavaScript only extracts
+the quoted statement and target before crossing the WASM boundary. Worker 13
+supplies the script-aware target-language alias match used by Chinese requests.
+
+Issue #917 makes formal languages first-class projections of the same semantic
+layer. `src/translation/formal_statement.rs` formalizes a natural statement as
+a Wikidata-grounded predicate plus role-qualified subject and object meanings,
+then renders that value through `data/seed/formal-language-projections.lino`.
+The catalog owns formal aliases and statement templates as well as each natural
+language's word order and canonical relation surface. Consequently a new
+syntax adds one projection rather than translators for every natural/formal
+pair. The inverse lookup uses both Wikidata ID and semantic role because one
+identifier can legitimately ground multiple lexicon meanings.
+
+The browser compiles the corresponding catalog interpreter into
+`src/web/wasm-worker/src/formal_statement_worker.rs` and loads the same
+projection and Wikidata seed files. JavaScript only recognizes the translation
+request and crosses the WASM boundary. Both surfaces expose the stable meaning
+`statement:P31(Q89,Q3314483)`, so the issue #526 round-trip contract now covers
+natural -> FOL -> natural without a direct pair path. Formal output is not
+executed as code, leaving issue #917 independent of E69's execution gate.
+
 The Rust pipeline is the canonical implementation. The browser worker
 (`src/web/formal_ai_worker.js`) cannot reach Wiktionary or Wikidata
 directly because of browser CORS restrictions, so it keeps a small
@@ -1083,7 +1174,7 @@ The same `FormalAiEngine` answers prompts in every surface:
   [#666](https://github.com/link-assistant/formal-ai/issues/666).
 - **Browser demo** — `src/web/formal_ai_worker.js` (a small loader shim) plus
   the solver logic it `importScripts`-loads from
-  `src/web/worker/formal_ai_worker_00.js` … `_21.js`, alongside the WebAssembly
+  `src/web/worker/formal_ai_worker_00.js` … `_23.js`, alongside the WebAssembly
   worker built from `src/web/wasm-worker/src/lib.rs`.
 
 Rust/WASM owns deterministic domain primitives that must match the native
@@ -1095,8 +1186,8 @@ state, seed-file fetch/parsing, network/CORS orchestration, DOM integration,
 and compatibility fallbacks when WASM cannot be instantiated.
 
 **The browser boundary is not yet narrow, and this is the honest current
-state.** The WASM bridge (`src/web/wasm-worker/src/lib.rs`) is ~500 lines,
-while `src/web/worker/*.js` still carries roughly 26,700 lines of solver logic
+state.** The WASM worker crate (`src/web/wasm-worker/src/`) is roughly 1,700 lines,
+while `src/web/worker/*.js` still carries roughly 27,700 lines of solver logic
 mirroring the ~90,000-line Rust core — the cross-runtime parity (E34) and
 issue #349/#408 handlers were mirrored into JavaScript rather than absorbed
 into WASM. Pillar 18 ("Rust-to-WebAssembly parity with JavaScript reserved for
@@ -1106,6 +1197,15 @@ capped and lint-enforced as UI/glue — is tracked by issue
 [#658](https://github.com/link-assistant/formal-ai/issues/658) (R380), and is
 the blocker for the npm-published engine in issue
 [#665](https://github.com/link-assistant/formal-ai/issues/665).
+
+**Standing principle (2026-08-04, R536).** JavaScript is interfacing glue
+and JSX (React) UI only. All logic is compiled Rust: native in the CLI,
+server, and desktop-managed processes; Rust→WASM in the web app. The same
+WASM web engine is reused — not reimplemented — by the desktop shell and
+the VS Code hosts. The remaining `src/web/worker/*.js` solver logic is a
+transitional mirror under the shrink-only ratchet
+`scripts/check-worker-line-budget.rs`; it may only move into Rust→WASM
+(issue #658, R380), never grow.
 
 Each surface assembles the same `Context` shape so the pipeline answers
 identically. The desktop app intentionally stays a wrapper: it sends prompts
@@ -1183,7 +1283,7 @@ on the prompt: arithmetic/word-problem and counting answers are computed, Python
 functions are synthesized from spec + tests and verified in the bounded agent
 workspace (`src/solver_handlers/program_synthesis.rs`), text manipulation is
 generalized over arbitrary input, and the imported benchmark suite grew to a
-10-case slice that passes **10/10** with a `minimum_pass_count` ratchet
+10-case slice that passed **10/10** with a `minimum_pass_count` ratchet (13 cases / 13-floor today — see `data/benchmarks/industry-suite.lino`)
 (`tests/unit/specification/benchmarks.rs`).
 
 The 2026-05-29 audit (issue #244, fifth pass) found the next gap is **parity**,
@@ -1294,7 +1394,7 @@ the table in Section 2 and link the new module.
 - `VISION.md` — values, product story, north-star user experience.
 - `GOALS.md` — what counts as success per surface.
 - `NON-GOALS.md` — what we explicitly do not build.
-- `REQUIREMENTS.md` — issue-by-issue implementation matrix (R1 … R444, plus per-issue blocks such as R499-1…R499-8).
+- `REQUIREMENTS.md` — issue-by-issue implementation matrix (R1 … R535, plus per-issue blocks such as R499-1…R499-8 and R914-1…R914-15).
 - `ROADMAP.md` — implementation-progress tracker mapping each `VISION.md` pillar to its real code status, closed planning batches, and remaining follow-up gaps.
 - [`linksplatform/doublets-rs`](https://github.com/linksplatform/doublets-rs) — default native storage backend.
 - [`linksplatform/doublets-web`](https://github.com/linksplatform/doublets-web) — browser-side mirror.

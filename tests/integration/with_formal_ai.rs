@@ -9,7 +9,7 @@ static TMPDIR_SEQ: AtomicU64 = AtomicU64::new(0);
 
 mod model_metadata;
 
-fn tmpdir() -> PathBuf {
+pub fn tmpdir() -> PathBuf {
     let seq = TMPDIR_SEQ.fetch_add(1, Ordering::SeqCst);
     let thread_id = format!("{:?}", std::thread::current().id())
         .replace(|c: char| !c.is_ascii_alphanumeric(), "");
@@ -30,7 +30,7 @@ fn unused_loopback_port() -> u16 {
         .port()
 }
 
-fn write_fake_cli(bin_dir: &Path, name: &str) {
+pub fn write_fake_cli(bin_dir: &Path, name: &str) {
     let path = bin_dir.join(name);
     std::fs::write(
         &path,
@@ -62,6 +62,10 @@ fn write_fake_cli(bin_dir: &Path, name: &str) {
   echo "OPENAI_MODEL=$OPENAI_MODEL"
   echo "GROK_API_KEY=$GROK_API_KEY"
   echo "GROK_BASE_URL=$GROK_BASE_URL"
+  if [ -f "$HOME/.codex/config.toml" ]; then
+    echo "---CODEX_CONFIG---"
+    cat "$HOME/.codex/config.toml"
+  fi
   model_catalog_path=""
   for arg in "$@"; do
     case "$arg" in
@@ -72,6 +76,9 @@ fn write_fake_cli(bin_dir: &Path, name: &str) {
         ;;
     esac
   done
+  if [ -z "$model_catalog_path" ] && [ -f "$HOME/.codex/config.toml" ]; then
+    model_catalog_path=$(sed -n 's/^model_catalog_json = "\(.*\)"$/\1/p' "$HOME/.codex/config.toml")
+  fi
   if [ -n "$model_catalog_path" ] && [ -f "$model_catalog_path" ]; then
     echo "---CODEX_MODEL_CATALOG---"
     cat "$model_catalog_path"
@@ -130,16 +137,30 @@ printf 'Hi, how may I help you?\n'
     std::fs::set_permissions(&path, permissions).expect("chmod fake TUI cli");
 }
 
-fn path_with_fake_clis(bin_dir: &Path) -> String {
+pub fn path_with_fake_clis(bin_dir: &Path) -> String {
     let existing = std::env::var_os("PATH").unwrap_or_default();
     format!("{}:{}", bin_dir.display(), existing.to_string_lossy())
 }
 
-fn run_with_capture(
+pub fn run_with_capture(
     home: &Path,
     bin_dir: &Path,
     capture: &Path,
     args: &[&str],
+) -> std::process::Output {
+    run_with_capture_stdin(home, bin_dir, capture, args, None)
+}
+
+/// Same as [`run_with_capture`], with the wrapper's stdin pinned: `None` is an
+/// empty, non-terminal stdin and `Some(text)` is a piped prompt. Interactive
+/// mode now follows `isatty(stdin)`, so a test that left stdin inherited would
+/// behave differently under `cargo test` in a terminal than in CI.
+pub fn run_with_capture_stdin(
+    home: &Path,
+    bin_dir: &Path,
+    capture: &Path,
+    args: &[&str],
+    stdin: Option<&str>,
 ) -> std::process::Output {
     let mut command = Command::new(env!("CARGO_BIN_EXE_formal-ai"));
     command.arg(args[0]);
@@ -163,11 +184,25 @@ fn run_with_capture(
         .env_remove("GOOGLE_GEMINI_BASE_URL")
         .env_remove("GOOGLE_VERTEX_BASE_URL")
         .env_remove("GROK_API_KEY")
-        .output()
-        .expect("run formal-ai with")
+        .stdin(match stdin {
+            Some(_) => Stdio::piped(),
+            None => Stdio::null(),
+        })
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped());
+    let mut child = command.spawn().expect("run formal-ai with");
+    if let Some(text) = stdin {
+        child
+            .stdin
+            .take()
+            .expect("wrapper stdin")
+            .write_all(text.as_bytes())
+            .expect("pipe prompt");
+    }
+    child.wait_with_output().expect("wait for formal-ai with")
 }
 
-fn captured_args(capture: &str) -> Vec<&str> {
+pub fn captured_args(capture: &str) -> Vec<&str> {
     capture
         .lines()
         .filter_map(|line| {
@@ -178,7 +213,7 @@ fn captured_args(capture: &str) -> Vec<&str> {
         .collect()
 }
 
-fn captured_args_without_model_catalog(capture: &str) -> Vec<&str> {
+pub fn captured_args_without_model_catalog(capture: &str) -> Vec<&str> {
     let mut args = captured_args(capture);
     if let Some(index) = args
         .iter()
@@ -283,39 +318,12 @@ fn with_formal_ai_selects_uniform_interactive_and_non_interactive_modes() {
     let cases = [
         (
             "codex",
-            vec![
-                "--sandbox",
-                "read-only",
-                "-c",
-                "model_providers.formalai.name=\"formal-ai server\"",
-                "-c",
-                "model_providers.formalai.base_url=\"http://127.0.0.1:8080/api/openai/v1\"",
-                "-c",
-                "model_providers.formalai.env_key=\"FORMAL_AI_API_KEY\"",
-                "-c",
-                "model_providers.formalai.wire_api=\"responses\"",
-                "-c",
-                "model_provider=\"formalai\"",
-                "-c",
-                "model=\"formal-ai\"",
-            ],
+            vec!["--sandbox", "read-only"],
             vec![
                 "exec",
                 "--skip-git-repo-check",
                 "--sandbox",
                 "read-only",
-                "-c",
-                "model_providers.formalai.name=\"formal-ai server\"",
-                "-c",
-                "model_providers.formalai.base_url=\"http://127.0.0.1:8080/api/openai/v1\"",
-                "-c",
-                "model_providers.formalai.env_key=\"FORMAL_AI_API_KEY\"",
-                "-c",
-                "model_providers.formalai.wire_api=\"responses\"",
-                "-c",
-                "model_provider=\"formalai\"",
-                "-c",
-                "model=\"formal-ai\"",
                 "hi",
             ],
         ),

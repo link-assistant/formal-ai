@@ -14,6 +14,87 @@ struct NormalizedResult {
     payload: String,
     error: Option<String>,
     format: &'static str,
+    /// The process exit status the harness reported, when it reported one.
+    /// This is the *primary* success signal (issues #905 and #908); the failure
+    /// lexicon below is only consulted when no harness reported a status.
+    exit_code: Option<i64>,
+}
+
+/// What a finished tool step actually did, read from the harness's own report.
+///
+/// Issues #905 and #908 are the two directions of one defect: the verdict was
+/// keyed on whether the result *text* looked like a failure, so `cat: …: No such
+/// file or directory` with `Exit Code: 1` was read as success and `Exit Code: 0`
+/// with `Output: (empty)` / `Error: (none)` was read as failure. Every harness in
+/// the #902–#909 corpus reports the status explicitly, so it is read, not inferred.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum StepOutcome {
+    /// The harness reported a zero exit status.
+    Succeeded,
+    /// The harness reported a non-zero status, or an explicit error field.
+    Failed,
+    /// No harness status was reported and nothing in the text signals failure.
+    Unreported,
+}
+
+/// Read the verdict of one finished tool result (issues #905 and #908).
+#[must_use]
+pub fn step_outcome(raw: &str) -> StepOutcome {
+    let result = normalize(raw);
+    if result.error.is_some() {
+        return StepOutcome::Failed;
+    }
+    match result.exit_code {
+        Some(0) => StepOutcome::Succeeded,
+        Some(_) => StepOutcome::Failed,
+        None if looks_like_error(&result.payload) => StepOutcome::Failed,
+        None => StepOutcome::Unreported,
+    }
+}
+
+/// The workspace's veto over a completion claim (issue #905).
+///
+/// "Completed … and verified it" is a claim about the workspace, so the
+/// workspace gets the last word: issue #905 watched that sentence go out after
+/// `cat hello.txt` had exited 1 because the file was never created. The
+/// verification the plan itself named had already disproved the claim. When the
+/// last observed step failed, the report of that failure replaces the claim.
+pub(super) fn failed_verification(
+    run_outputs: &[String],
+    verification_command: &str,
+    prompt: &str,
+) -> Option<String> {
+    let output = run_outputs
+        .last()
+        .filter(|output| step_outcome(output) == StepOutcome::Failed)?;
+    Some(render(verification_command, output, prompt))
+}
+
+/// One shell step as the harness itself reported it: the command's own text,
+/// with the transport envelope removed.
+pub(super) struct ShellStep {
+    pub(super) text: String,
+}
+
+/// Whether the *harness itself* judged this step a failure: it named an error
+/// field, or it reported a non-zero exit status (rung `R916-01`).
+///
+/// The failure lexicon [`step_outcome`] falls back on is deliberately not
+/// consulted here. Callers that hold bytes which are legitimately file contents
+/// use this: a file that merely *reads* like an error message is still that
+/// file's contents, and only the harness can say the read failed.
+pub(super) fn harness_reported_failure(raw: &str) -> bool {
+    normalize(raw).error.is_some()
+}
+
+/// Read a shell-harness envelope, if the result is one. Callers that report a
+/// step's outcome use this to quote the command's own text instead of the
+/// transport wrapper; [`step_outcome`] reads the status the harness observed.
+pub(super) fn shell_step(raw: &str) -> Option<ShellStep> {
+    let result = parse_shell_envelope(raw.trim())?.into_result();
+    Some(ShellStep {
+        text: result.error.unwrap_or(result.payload),
+    })
 }
 
 /// Remove client transport wrappers while preserving the tool's actual text.
@@ -21,7 +102,40 @@ struct NormalizedResult {
 /// the original result byte-for-byte.
 pub(super) fn normalized_payload(raw: &str) -> Option<String> {
     let result = normalize(raw);
-    (result.error.is_none() && !looks_like_error(&result.payload)).then_some(result.payload)
+    let succeeded = result.exit_code == Some(0);
+    (result.error.is_none() && (succeeded || !looks_like_error(&result.payload)))
+        .then_some(result.payload)
+}
+
+/// Return output after transport normalization when the transport itself
+/// succeeded. Unlike [`normalized_payload`], this does not classify arbitrary
+/// output vocabulary: verification targets are allowed to contain words such
+/// as `error` or `failed` when those are the requested bytes.
+pub(super) fn observed_payload(raw: &str) -> Option<String> {
+    let result = normalize(raw);
+    result.error.is_none().then_some(result.payload)
+}
+
+/// Return the client-owned failure detail when a result failed, whether the
+/// signal arrived as protocol metadata, a structured transport envelope, or a
+/// raw adapter message.
+pub(super) fn failure_message(
+    raw: &str,
+    explicitly_failed: bool,
+    infer_from_prose: bool,
+) -> Option<String> {
+    let result = normalize(raw);
+    if let Some(error) = result.error {
+        return Some(error);
+    }
+    if explicitly_failed || (infer_from_prose && looks_like_error(&result.payload)) {
+        return Some(if result.payload.trim().is_empty() {
+            raw.trim().to_owned()
+        } else {
+            result.payload
+        });
+    }
+    None
 }
 
 fn looks_like_error(text: &str) -> bool {
@@ -35,7 +149,16 @@ pub(super) fn render(label: &str, raw: &str, prompt: &str) -> String {
     let result = normalize(raw);
     let language = response_language(prompt);
     if let Some(error) = result.error {
-        return fill("tool_result_failed", language, label, "", "", &error);
+        return failure_report(label, &error, result.exit_code, language);
+    }
+    // Some harnesses, including Agent CLI's shell adapter, return only the
+    // process text and omit an exit-code field. Reuse the seed-backed failure
+    // lexicon already used by `normalized_payload` so those genuine failures
+    // reach the same opt-in report path without matching hardcoded prose here.
+    // A harness that *did* report a zero status has already answered the
+    // question, so its own verdict wins over the lexicon (issue #908).
+    if result.exit_code != Some(0) && looks_like_error(&result.payload) {
+        return failure_report(label, &result.payload, result.exit_code, language);
     }
     if result.payload.trim().is_empty() {
         let intent = if local_search::request_for(prompt).is_some() {
@@ -47,16 +170,55 @@ pub(super) fn render(label: &str, raw: &str, prompt: &str) -> String {
         } else {
             "tool_result_empty_generic"
         };
-        return fill(intent, language, label, "", "", "");
+        return fill(intent, language, &[("{tool}", label)]);
     }
     fill(
         "tool_result_completed",
         language,
-        label,
-        result.format,
-        &result.payload,
-        "",
+        &[
+            ("{tool}", label),
+            ("{format}", result.format),
+            ("{payload}", &result.payload),
+        ],
     )
+}
+
+/// Report a step the planner itself observed to have failed, naming the tool or
+/// path it failed on. The plan's own execution state machine uses this when a
+/// client-owned attempt came back marked as an error (issue #905).
+pub(super) fn render_failure(label: &str, detail: &str, prompt: &str) -> String {
+    let result = normalize(detail);
+    let error = result.error.unwrap_or(result.payload);
+    failure_report(label, &error, result.exit_code, response_language(prompt))
+}
+
+/// Report a failed step. When the harness reported the status, the status is
+/// named: attributing the failure to the harness hid which command failed and
+/// why (issue #908, suggested fix 3).
+#[allow(clippy::literal_string_with_formatting_args)]
+fn failure_report(label: &str, error: &str, exit_code: Option<i64>, language: &str) -> String {
+    let code = exit_code.map(|code| code.to_string());
+    let failure = code.as_ref().map_or_else(
+        || {
+            fill(
+                "tool_result_failed",
+                language,
+                &[("{tool}", label), ("{error}", error.trim())],
+            )
+        },
+        |code| {
+            fill(
+                "tool_result_failed_exit_code",
+                language,
+                &[
+                    ("{tool}", label),
+                    ("{exit_code}", code),
+                    ("{error}", error.trim()),
+                ],
+            )
+        },
+    );
+    crate::failure_reporting::append_invitation(&failure, language)
 }
 
 pub(super) fn latest_turn_answer(
@@ -94,18 +256,9 @@ pub(super) fn has_latest_turn_result(messages: &[ChatMessage]) -> bool {
 }
 
 fn is_write_run_recipe(messages: &[ChatMessage], tool_names: &[&str]) -> bool {
-    let is_write = |name: &str| {
-        let lower = name.to_ascii_lowercase();
-        lower.contains("write") || lower.contains("create_file")
-    };
-    let is_run = |name: &str| {
-        let lower = name.to_ascii_lowercase();
-        lower.contains("run")
-            || lower.contains("bash")
-            || lower.contains("command")
-            || lower.contains("exec")
-            || lower.contains("shell")
-    };
+    let is_write = super::capability_router::is_workspace_creation_tool;
+    let is_run =
+        |name: &str| super::planner::tool_capability(name) == Some(super::planner::Capability::Run);
     tool_names.iter().copied().any(is_write)
         && tool_names.iter().copied().any(is_run)
         && messages
@@ -164,6 +317,9 @@ fn requested_index(lexicon: &crate::seed::Lexicon, prompt: &str) -> usize {
 fn normalize(raw: &str) -> NormalizedResult {
     let trimmed = raw.trim();
     let Ok(value) = serde_json::from_str::<Value>(trimmed) else {
+        if let Some(envelope) = parse_shell_envelope(trimmed) {
+            return envelope.into_result();
+        }
         return from_payload(&strip_transport_envelope(trimmed), None);
     };
     let Some(object) = value.as_object() else {
@@ -177,27 +333,56 @@ fn normalize(raw: &str) -> NormalizedResult {
         .get("status_code")
         .and_then(Value::as_u64)
         .is_some_and(|status| status >= 400);
-    let failed_status = object.get("status").is_some_and(failed_status);
-    let explicitly_unsuccessful = object.get("success").and_then(Value::as_bool) == Some(false);
+    let status = ["status", "state", "outcome"]
+        .iter()
+        .find_map(|key| object.get(*key));
+    let expected_stop = status.is_some_and(expected_stop_status);
+    let failed_status = status.is_some_and(failed_status);
+    let explicitly_unsuccessful = ["ok", "success"]
+        .iter()
+        .filter_map(|key| object.get(*key))
+        .any(|value| value.as_bool() == Some(false));
+    let explicitly_failed = ["is_error", "isError"]
+        .iter()
+        .filter_map(|key| object.get(*key))
+        .any(|value| value.as_bool() == Some(true));
     let explicit_error = ["error", "stderr", "failure"]
         .iter()
         .filter_map(|key| object.get(*key))
         .find_map(nonempty_text);
-    if nonzero_exit
-        || failed_http
-        || failed_status
-        || explicitly_unsuccessful
-        || explicit_error.is_some()
+    let reported_exit = ["exit_code", "exitCode"]
+        .iter()
+        .filter_map(|key| object.get(*key))
+        .find_map(|value| value.as_i64().or_else(|| value.as_str()?.parse().ok()));
+    if !expected_stop
+        && (nonzero_exit
+            || failed_http
+            || failed_status
+            || explicitly_unsuccessful
+            || explicitly_failed
+            || explicit_error.is_some())
     {
         let error = explicit_error
             .or_else(|| object.get("output").and_then(nonempty_text))
+            .or_else(|| object.get("content").and_then(nonempty_text))
+            .or_else(|| object.get("result").and_then(nonempty_text))
             .or_else(|| {
-                ["exit_code", "exitCode", "status_code", "status"]
-                    .iter()
-                    .find_map(|key| object.get(*key).map(|value| format!("{key}={value}")))
+                [
+                    "exit_code",
+                    "exitCode",
+                    "status_code",
+                    "status",
+                    "state",
+                    "outcome",
+                ]
+                .iter()
+                .find_map(|key| object.get(*key).map(|value| format!("{key}={value}")))
             })
             .unwrap_or_default();
-        return from_payload("", Some(error));
+        return NormalizedResult {
+            exit_code: reported_exit.filter(|code| *code != 0),
+            ..from_payload("", Some(error))
+        };
     }
     if let Some(payload) = ["output", "stdout", "content", "result"]
         .iter()
@@ -206,9 +391,135 @@ fn normalize(raw: &str) -> NormalizedResult {
         let payload = payload
             .as_str()
             .map_or_else(|| pretty_json(payload), strip_transport_envelope);
-        return from_payload(&payload, None);
+        return NormalizedResult {
+            exit_code: reported_exit,
+            ..from_payload(&payload, None)
+        };
     }
-    from_payload(&pretty_json(&value), None)
+    NormalizedResult {
+        exit_code: reported_exit,
+        ..from_payload(&pretty_json(&value), None)
+    }
+}
+
+/// The fixed report every agent-CLI shell adapter wraps a command result in:
+/// `Command:` / `Directory:` / `Output:` / `Error:` / `Exit Code:` / `Signal:` /
+/// `Process Group PGID:`. The exit code is the harness's own verdict, so reading
+/// it is what keeps `Error: (none)` from being read as an error (issue #908) and
+/// `No such file or directory` with `Exit Code: 1` from being read as output
+/// (issue #905).
+struct ShellEnvelope {
+    output: String,
+    error: String,
+    exit_code: i64,
+}
+
+impl ShellEnvelope {
+    fn into_result(self) -> NormalizedResult {
+        if self.exit_code == 0 {
+            // A zero exit is success even when the command wrote to stderr, and
+            // even when it wrote nothing at all: `python3 -m py_compile main.py`
+            // succeeds silently.
+            let payload = if self.output.is_empty() {
+                self.error
+            } else {
+                self.output
+            };
+            return NormalizedResult {
+                exit_code: Some(0),
+                ..from_payload(&payload, None)
+            };
+        }
+        let error = if self.error.is_empty() {
+            self.output
+        } else {
+            self.error
+        };
+        NormalizedResult {
+            payload: String::new(),
+            error: Some(error),
+            format: "text",
+            exit_code: Some(self.exit_code),
+        }
+    }
+}
+
+fn parse_shell_envelope(text: &str) -> Option<ShellEnvelope> {
+    let inner = text
+        .split_once("<untrusted_context>")
+        .and_then(|(_, rest)| rest.split_once("</untrusted_context>"))
+        .map_or(text, |(inside, _)| inside);
+    let lines = inner.lines().collect::<Vec<_>>();
+    let mut exit_code = None;
+    let mut end = lines.len();
+    while end > 0 {
+        let Some((field, value)) = lines[end - 1].trim().split_once(':') else {
+            break;
+        };
+        match field.trim() {
+            "Exit Code" => match value.trim().parse::<i64>() {
+                Ok(code) => exit_code = Some(code),
+                // A harness that could not report a status (a timeout, say) is
+                // not an envelope this reader can trust.
+                Err(_) => return None,
+            },
+            "Signal" | "Process Group PGID" => {}
+            _ => break,
+        }
+        end -= 1;
+    }
+    let exit_code = exit_code?;
+    let output_at = lines[..end]
+        .iter()
+        .position(|line| is_field(line, "Output"))?;
+    let error_at = lines[..end]
+        .iter()
+        .enumerate()
+        .skip(output_at + 1)
+        .rev()
+        .find(|(_, line)| is_field(line, "Error"))
+        .map(|(index, _)| index);
+    let output = envelope_section(&lines[output_at..error_at.unwrap_or(end)], "Output:");
+    let error = error_at.map_or_else(String::new, |at| {
+        envelope_section(&lines[at..end], "Error:")
+    });
+    Some(ShellEnvelope {
+        output,
+        error,
+        exit_code,
+    })
+}
+
+fn is_field(line: &str, field: &str) -> bool {
+    let trimmed = line.trim();
+    trimmed
+        .strip_prefix(field)
+        .and_then(|rest| rest.strip_prefix(':'))
+        .is_some_and(|rest| rest.is_empty() || rest.starts_with(' '))
+}
+
+/// Join one `Output:`/`Error:` section, dropping the field name and the
+/// placeholders harnesses print for an absent section.
+fn envelope_section(lines: &[&str], field: &str) -> String {
+    let mut section = String::new();
+    for (index, line) in lines.iter().enumerate() {
+        if index > 0 {
+            section.push('\n');
+        }
+        if index == 0 {
+            section.push_str(line.trim().strip_prefix(field).unwrap_or(line).trim_start());
+        } else {
+            section.push_str(line);
+        }
+    }
+    let trimmed = section.trim();
+    if matches!(
+        trimmed.to_ascii_lowercase().as_str(),
+        "" | "(empty)" | "(none)" | "(no output)" | "(no error)" | "none"
+    ) {
+        return String::new();
+    }
+    trimmed.to_owned()
 }
 
 fn from_payload(payload: &str, error: Option<String>) -> NormalizedResult {
@@ -233,12 +544,14 @@ fn from_payload(payload: &str, error: Option<String>) -> NormalizedResult {
                 payload: text,
                 error,
                 format: "text",
+                exit_code: None,
             };
         }
         return NormalizedResult {
             payload: pretty_json(&json),
             error,
             format: "json",
+            exit_code: None,
         };
     }
     let format = if trimmed.starts_with("#!/bin/bash") || trimmed.starts_with("#!/usr/bin/env bash")
@@ -253,6 +566,7 @@ fn from_payload(payload: &str, error: Option<String>) -> NormalizedResult {
         payload: trimmed,
         error,
         format,
+        exit_code: None,
     }
 }
 
@@ -329,12 +643,31 @@ fn failed_status(value: &Value) -> bool {
     let numeric = value.as_i64().or_else(|| value.as_str()?.parse().ok());
     numeric.map_or_else(
         || {
-            value
-                .as_str()
-                .is_some_and(|status| !matches!(status, "ok" | "success" | "completed" | "passed"))
+            value.as_str().is_some_and(|status| {
+                !matches!(
+                    status.to_ascii_lowercase().as_str(),
+                    "ok" | "success" | "succeeded" | "completed" | "passed"
+                ) && !expected_stop_status(value)
+            })
         },
         |status| status < 0 || (0 < status && status < 100) || status >= 400,
     )
+}
+
+fn expected_stop_status(value: &Value) -> bool {
+    value.as_str().is_some_and(|status| {
+        matches!(
+            status.to_ascii_lowercase().as_str(),
+            "refused"
+                | "denied"
+                | "cancelled"
+                | "canceled"
+                | "aborted"
+                | "pending"
+                | "awaiting_approval"
+                | "not_granted"
+        )
+    })
 }
 
 fn nonempty_text(value: &Value) -> Option<String> {
@@ -417,31 +750,13 @@ fn is_search(label: &str) -> bool {
 }
 
 fn response_language(prompt: &str) -> &'static str {
-    match crate::language::detect(prompt).slug() {
-        "ru" => "ru",
-        "hi" => "hi",
-        "zh" => "zh",
-        _ => "en",
-    }
+    crate::language::detect(prompt).slug()
 }
 
-fn fill(
-    intent: &str,
-    language: &str,
-    tool: &str,
-    format: &str,
-    payload: &str,
-    error: &str,
-) -> String {
-    const TOOL_PLACEHOLDER: &str = "{tool}";
-    const FORMAT_PLACEHOLDER: &str = "{format}";
-    const PAYLOAD_PLACEHOLDER: &str = "{payload}";
-    const ERROR_PLACEHOLDER: &str = "{error}";
-
-    crate::seed::localized_response(intent, language)
-        .unwrap_or_default()
-        .replace(TOOL_PLACEHOLDER, tool)
-        .replace(FORMAT_PLACEHOLDER, format)
-        .replace(PAYLOAD_PLACEHOLDER, payload)
-        .replace(ERROR_PLACEHOLDER, error)
+fn fill(intent: &str, language: &str, values: &[(&str, &str)]) -> String {
+    let mut text = crate::seed::localized_response(intent, language).unwrap_or_default();
+    for (placeholder, value) in values {
+        text = text.replace(placeholder, value);
+    }
+    text
 }

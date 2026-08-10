@@ -11,6 +11,7 @@ This project should build a practical, inspectable symbolic assistant before it 
 - Make transparent reasoning a default property of the system, not a diagnostics afterthought.
 - Preserve add-only history for user messages, assistant actions, external data accesses, edits, and state projections.
 - Support reusable associative packages for datasets, skills, substitution rules, and executable handlers.
+- Keep JavaScript as interfacing glue and JSX UI only; compile all logic from Rust (native on servers, WebAssembly in the web app) and reuse the same WASM engine across desktop and editor surfaces.
 
 ## Product Goals
 

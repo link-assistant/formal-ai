@@ -159,7 +159,8 @@ test.describe('issue #541 R4: demo mode is non-destructive', () => {
     await sendPrompt(page, 'My user conversation seed');
     const messages = page.locator('[data-testid="chat-message"]');
     await expect(messages).toHaveCount(2);
-    const userBubbleTextBefore = await messages.nth(0).textContent();
+    const userBody = messages.nth(0).locator('[data-testid="message-markdown-body"]');
+    const userBubbleTextBefore = await userBody.textContent();
 
     // Switch demo on — UI clears and demo plays.
     await clickDemoToggle(page);
@@ -174,7 +175,7 @@ test.describe('issue #541 R4: demo mode is non-destructive', () => {
       timeout: 10_000,
     });
     await expect(messages).toHaveCount(2, { timeout: 10_000 });
-    const userBubbleTextAfter = await messages.nth(0).textContent();
+    const userBubbleTextAfter = await userBody.textContent();
     expect(userBubbleTextAfter).toBe(userBubbleTextBefore);
   });
 

@@ -3,13 +3,16 @@ use std::path::PathBuf;
 use std::sync::atomic::AtomicBool;
 use std::sync::Arc;
 
-use clap::{Args as ClapArgs, Subcommand, ValueEnum};
+use clap::{Args as ClapArgs, CommandFactory, Subcommand, ValueEnum};
 use lino_arguments::Parser;
 
+mod cli_algorithm;
 mod cli_benchmark;
 mod cli_clients;
 mod cli_computer_use;
 mod cli_context;
+mod cli_environments;
+mod cli_file_legality;
 mod cli_import;
 mod cli_improve;
 mod cli_learn;
@@ -19,11 +22,15 @@ mod cli_procedure;
 mod cli_report;
 mod cli_shared_dialog;
 mod cli_statement_audit;
+mod cli_summarization;
 
+use cli_algorithm::{run_algorithm, AlgorithmArgs};
 use cli_benchmark::{run_benchmark, BenchmarkAction};
 use cli_clients::{run_clients, ClientsAction, ClientsFormat};
 use cli_computer_use::{run_computer_use, ComputerUseArgs};
 use cli_context::{run_context, ContextArgs};
+use cli_environments::run_environments;
+use cli_file_legality::{run_file_legality, FileLegalityArgs};
 use cli_import::{run_import, ImportAction};
 use cli_improve::{run_improve, ImproveArgs};
 use cli_learn::{run_learn_action, LearnAction};
@@ -33,21 +40,21 @@ use cli_procedure::{run_procedure, ProcedureArgs};
 use cli_report::{run_report, ReportArgs};
 use cli_shared_dialog::{run_shared_dialog, SharedDialogAction};
 use cli_statement_audit::{run_statement_audit, StatementAuditArgs};
+use cli_summarization::{run_summarization, SummarizationAction};
 use formal_ai::agentic_coding::run_agentic_task;
 use formal_ai::{
     agent_info, collect_github_logs, create_chat_completion_with_solver,
-    create_response_with_solver, enable_http_agent_mode_for_current_process, environment_records,
+    create_response_with_solver, delimit_tool_args, enable_http_agent_mode_for_current_process,
     export_memory_bundle, import_memory_full, knowledge_links_notation, merged_bundle,
-    naturalize_thinking_step, parse_bundle, render_github_log_plan, run_proxy,
+    naturalize_thinking_step_in, parse_bundle, render_github_log_plan, run_proxy,
     run_telegram_polling, run_telegram_webhook_server, run_with_formal_ai, seed_files,
-    suggest_memory_migrations, ChatCompletionRequest, ChatMessage, ExecutionSurface,
-    GithubLogCollectorConfig, MemoryStore, ProxyConfig, ResponsesRequest, SolverConfig,
-    SymbolicAnswer, TelegramPollingConfig, UniversalSolver, WithFormalAiArgs, DEFAULT_MODEL,
+    suggest_memory_migrations, thinking_answer_language, thinking_trace_heading,
+    ChatCompletionRequest, ChatMessage, ExecutionSurface, GithubLogCollectorConfig, MemoryStore,
+    ProxyConfig, ResponsesRequest, SolverConfig, SymbolicAnswer, TelegramPollingConfig,
+    UniversalSolver, WithFormalAiArgs, DEFAULT_MODEL,
 };
 
-/// The default task the `agent` subcommand drives: the canonical issue-#468
-/// formalization. The wording carries the keywords the server's planner uses to
-/// recognise the task.
+/// The canonical issue-#468 task; its wording carries the planner's routing keywords.
 const DEFAULT_AGENT_TASK: &str = "Formalize «Сказка о рыбаке и рыбке» into a Links Notation \
                                   knowledge base covering all nine protocol primitives.";
 
@@ -187,19 +194,27 @@ enum Command {
     },
     /// Weigh statement-bearing repository text against captured provenance.
     StatementAudit(StatementAuditArgs),
+    /// Validate repository-file summarization quality on seeded random files
+    /// and enforce the published 80 percent ratchet (issue #893).
+    Summarization {
+        #[command(subcommand)]
+        action: SummarizationAction,
+    },
+    /// Assess file risk signals by legal category and jurisdiction.
+    FileLegality(FileLegalityArgs),
     /// Run or permanently configure external CLIs against a local Formal AI server.
     With(WithFormalAiArgs),
     /// Execute and inspect persisted natural-language procedure artifacts.
     Procedure(ProcedureArgs),
+    /// Inspect learned execution-algorithm proposals without approving them.
+    Algorithm(AlgorithmArgs),
     /// Execute a seeded natural-language computer-use plan inside a fresh,
     /// isolated workspace and emit its per-step verification record.
     ComputerUse(ComputerUseArgs),
-    /// Drive the full agentic-coding loop offline (issue #468). The in-repo
-    /// driver plays the role of an external agentic CLI against our
-    /// OpenAI-compatible server: it advertises tools, executes every emitted
-    /// tool call (web search/fetch against an offline corpus, file writes and
-    /// commands in a sandboxed workspace), feeds results back, and loops until
-    /// the server returns the finished Links Notation knowledge base.
+    /// Drive the full agentic-coding loop offline (issue #468). The in-repo driver
+    /// acts as an external CLI: it advertises tools, executes emitted calls in an
+    /// offline sandbox, feeds results back, and loops until the server returns the
+    /// finished Links Notation knowledge base.
     Agent(AgentArgs),
     /// Run the Telegram bot client (long polling by default; webhook server is opt-in).
     Telegram {
@@ -293,6 +308,10 @@ enum Command {
 
 #[derive(Debug, Subcommand)]
 enum MemoryAction {
+    /// Inspect persisted-memory compatibility without creating artifacts.
+    UpgradeStatus(cli_memory::UpgradeStatusArgs),
+    /// Explicitly migrate under the writer lock after a verified backup.
+    Migrate(cli_memory::MigrateArgs),
     /// Write the agent's full memory (seed + event log) to a `.lino` file —
     /// the same self-contained `formal_ai_bundle` the browser's "Export
     /// memory" button produces. Pass `--events-only` to fall back to the
@@ -342,7 +361,7 @@ enum MemoryAction {
         )]
         path: PathBuf,
     },
-    /// Answer a natural-language recall query against the persisted memory log.
+    /// Execute a natural-language, ANSI/common-vendor SQL, or GraphQL memory query.
     Query {
         #[arg(
             long,
@@ -351,7 +370,7 @@ enum MemoryAction {
         )]
         path: PathBuf,
 
-        /// Natural-language memory query, for example "Find Rust in another conversation".
+        /// Natural-language, SQL, or GraphQL query over the shared memory schema.
         #[arg(long)]
         prompt: String,
     },
@@ -563,7 +582,12 @@ impl std::fmt::Display for TelegramMode {
 
 fn main() -> Result<(), Box<dyn Error>> {
     lino_arguments::init();
-    let args = Args::parse();
+    // `formal-ai with <tool> …` hands everything after the tool name to that
+    // tool, including flags this command also defines globally.
+    let args = Args::parse_from(delimit_tool_args(
+        std::env::args_os().collect(),
+        &Args::command(),
+    ));
     let verbose = args.verbose && !args.silent;
     formal_ai::dialog_log::configure_verbose(verbose);
     let command = args.command.unwrap_or_else(|| Command::Chat {
@@ -603,8 +627,11 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::GithubLogs { action } => run_github_logs(action)?,
         Command::Benchmark { action } => run_benchmark(action)?,
         Command::StatementAudit(args) => run_statement_audit(&args)?,
+        Command::Summarization { action } => run_summarization(action)?,
+        Command::FileLegality(args) => run_file_legality(&args)?,
         Command::With(args) => run_with_formal_ai(&args)?,
         Command::Procedure(args) => run_procedure(args)?,
+        Command::Algorithm(args) => run_algorithm(args)?,
         Command::ComputerUse(args) => run_computer_use(args)?,
         Command::Agent(args) => {
             if let Some(action) = args.action {
@@ -782,17 +809,21 @@ fn solver_for_chat(
 /// rather than its internal `step` slug. Composite steps are nested under their
 /// parent with a `↳` marker so the recursively composite (fractal) structure of
 /// the reasoning is visible on the CLI too.
+///
+/// The sentences are written in the language the answer itself is written in
+/// (issue #889): a Russian answer gets a Russian trace, not an English
+/// description of a Russian answer.
 fn print_thinking_trace(answer: &SymbolicAnswer) {
     if answer.thinking_steps.is_empty() {
         return;
     }
-    println!("Thinking:");
+    let language = thinking_answer_language(&answer.thinking_steps);
+    let heading = thinking_trace_heading(&language);
+    if !heading.is_empty() {
+        println!("{heading}:");
+    }
     for step in &answer.thinking_steps {
-        let sentence = if step.summary.is_empty() {
-            naturalize_thinking_step(&step.step, &step.detail)
-        } else {
-            step.summary.clone()
-        };
+        let sentence = naturalize_thinking_step_in(&language, &step.step, &step.detail);
         if step.parent_id.is_some() {
             println!("    ↳ {sentence}");
         } else {
@@ -921,29 +952,6 @@ fn run_bundle(action: BundleAction) -> Result<(), Box<dyn Error>> {
         }
     }
     Ok(())
-}
-
-fn run_environments() {
-    for record in environment_records() {
-        println!("# {}", record.id);
-        println!("  label: {}", record.label);
-        println!("  runtime: {}", record.runtime);
-        println!("  seed_path: {}", record.seed_path);
-        println!("  memory_store: {}", record.memory_store);
-        println!("  memory_export: {}", record.memory_export_command);
-        println!("  bundle_export: {}", record.bundle_export_command);
-        println!("  bundle_import: {}", record.bundle_import_command);
-        if !record.start_command.is_empty() {
-            println!("  start: {}", record.start_command);
-        }
-        if !record.package_command.is_empty() {
-            println!("  package: {}", record.package_command);
-        }
-        if !record.tools.is_empty() {
-            println!("  tools: {}", record.tools.join(", "));
-        }
-        println!();
-    }
 }
 
 pub(crate) fn read_input(path: &std::path::Path) -> Result<String, Box<dyn Error>> {

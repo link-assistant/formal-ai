@@ -1,0 +1,21 @@
+   Compiling formal-ai v0.319.1 (/tmp/gh-issue-solver-1785646809000)
+    Finished `test` profile [unoptimized] target(s) in 1m 15s
+     Running tests/unit/mod.rs (target/debug/deps/unit-a0c98f2b6ec183cf)
+
+running 1 test
+
+thread 'issue_709_search_fusion::capture_policy_is_per_statement_and_demotes_exact_mirrors' (14876) panicked at tests/unit/issue_709_search_fusion.rs:464:5:
+assertion failed: fetched.iter().any(|observation|
+        observation.original_text == "Apple is a fruit." &&
+            observation.language == "en")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test issue_709_search_fusion::capture_policy_is_per_statement_and_demotes_exact_mirrors ... FAILED
+
+failures:
+
+failures:
+    issue_709_search_fusion::capture_policy_is_per_statement_and_demotes_exact_mirrors
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 2350 filtered out; finished in 0.30s
+
+error: test failed, to rerun pass `--test unit`
