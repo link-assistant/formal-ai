@@ -2,6 +2,10 @@ meanings
   coding_constant
     defined-by code
     role coding_artifact_kind
+    precondition "a coding request contains this concept surface"
+    effect "the artifact-kind slot is bound to constant"
+    unit "not applicable"
+    example "constant"
     lexeme en
       surface
         text constant
@@ -19,6 +23,10 @@ meanings
   coding_test
     defined-by code
     role coding_artifact_kind
+    precondition "a coding request contains this concept surface"
+    effect "the artifact-kind slot is bound to test"
+    unit "not applicable"
+    example "test"
     lexeme en
       surface
         text test
@@ -36,6 +44,10 @@ meanings
   coding_public_visibility
     defined-by relation
     role coding_visibility
+    precondition "a coding request contains this concept surface"
+    effect "the visibility slot is bound to public"
+    unit "not applicable"
+    example "public"
     lexeme en
       surface
         text public
@@ -55,6 +67,10 @@ meanings
   coding_return
     defined-by action
     role coding_return_action
+    precondition "a coding request contains this concept surface"
+    effect "the requested operation is bound to return"
+    unit "not applicable"
+    example "return"
     lexeme en
       surface
         text return
@@ -76,6 +92,10 @@ meanings
   coding_division
     defined-by action
     role coding_division_action
+    precondition "a coding request contains this concept surface"
+    effect "the requested operation is bound to division"
+    unit "not applicable"
+    example "divided by"
     lexeme en
       surface
         text "divided by"
@@ -97,6 +117,10 @@ meanings
   coding_module_registration
     defined-by action
     role coding_module_registration_action
+    precondition "a coding request contains this concept surface"
+    effect "the requested operation is bound to module registration"
+    unit "not applicable"
+    example "register the module"
     lexeme en
       surface
         text "register the module"
@@ -122,6 +146,10 @@ meanings
   coding_identifier_rename
     defined-by action
     role coding_identifier_rename_action
+    precondition "a coding request contains this concept surface"
+    effect "the requested operation is bound to identifier rename"
+    unit "not applicable"
+    example "rename"
     lexeme en
       surface
         text rename
@@ -137,6 +165,10 @@ meanings
   coding_artifact_name
     defined-by relation
     role coding_name_slot
+    precondition "a coding request contains this concept surface"
+    effect "the artifact-name slot can be bound from the request"
+    unit "not applicable"
+    example "named …"
     lexeme en
       surface
         text "named …"
@@ -156,6 +188,10 @@ meanings
   coding_string_value
     defined-by relation
     role coding_value_slot
+    precondition "a coding request contains this concept surface"
+    effect "the string-value slot can be bound from the request"
+    unit "not applicable"
+    example "with the value …"
     lexeme en
       surface
         text "with the value …"
@@ -173,6 +209,10 @@ meanings
   coding_search_string
     defined-by code
     role coding_search_subject_kind
+    precondition "a coding request contains this concept surface"
+    effect "the search-subject slot is bound to string"
+    unit "not applicable"
+    example "string"
     lexeme en
       surface
         text string
@@ -188,6 +228,10 @@ meanings
   coding_search_function
     defined-by function
     role coding_search_subject_kind
+    precondition "a coding request contains this concept surface"
+    effect "the search-subject slot is bound to function"
+    unit "not applicable"
+    example "function"
     lexeme en
       surface
         text function
@@ -203,6 +247,10 @@ meanings
   coding_search_array
     defined-by code
     role coding_search_subject_kind
+    precondition "a coding request contains this concept surface"
+    effect "the search-subject slot is bound to array"
+    unit "not applicable"
+    example "array"
     lexeme en
       surface
         text array
@@ -218,6 +266,10 @@ meanings
   coding_search_struct
     defined-by code
     role coding_search_subject_kind
+    precondition "a coding request contains this concept surface"
+    effect "the search-subject slot is bound to struct"
+    unit "not applicable"
+    example "struct"
     lexeme en
       surface
         text struct
@@ -233,6 +285,10 @@ meanings
   coding_search_issue_creation
     defined-by code
     role coding_search_literal_query
+    precondition "a coding request contains this concept surface"
+    effect "the literal-search slot is bound to issue creation"
+    unit "not applicable"
+    example "GitHub issue creation command"
     lexeme en
       surface
         text "GitHub issue creation command"
