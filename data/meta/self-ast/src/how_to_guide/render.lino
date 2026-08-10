@@ -2,12 +2,29 @@ self_ast_census
   target src/how_to_guide/render.rs
   language rust
   fidelity signature
-  byte_len 5152
-  line_count 153
-  content_id source_module_85cc49c05eed2b3f
-  symbol_count 4
+  byte_len 9118
+  line_count 258
+  content_id source_module_18aa0ac791c27f10
+  symbol_count 21
   symbols
-    function trace 11 43
-    function record 46 84
-    function markdown 88 133
-    function sources_section 135 153
+    const EVENT_BOUNDS 25 25
+    const EVENT_SOURCE 26 26
+    const EVENT_COPIED_SOURCE 27 27
+    const EVENT_CONFLICT 28 28
+    const EVENT_STEP 29 29
+    const EVENT_INSUFFICIENT_EVIDENCE 30 30
+    const TIER_UNORIGINAL 33 33
+    const DEFAULT_LANGUAGE 36 36
+    const DIGEST_PREFIX 39 39
+    function trace 42 72
+    function record 75 95
+    function bounds_payload 97 102
+    function copied_source_payload 104 109
+    function conflict_payload 111 117
+    function conflict_event_payload 119 124
+    function step_payload 126 128
+    function insufficient_evidence_payload 130 135
+    function markdown 138 140
+    function markdown_in 147 212
+    function sources_section 214 245
+    function chrome 252 258

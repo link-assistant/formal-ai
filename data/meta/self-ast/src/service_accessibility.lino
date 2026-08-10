@@ -2,43 +2,51 @@ self_ast_census
   target src/service_accessibility.rs
   language rust
   fidelity signature
-  byte_len 13155
-  line_count 371
-  content_id source_module_fa8298f6dc6f2e00
-  symbol_count 35
+  byte_len 14224
+  line_count 403
+  content_id source_module_6b738a5d4998a198
+  symbol_count 43
   symbols
-    const SERVICE_ACCESSIBILITY_TTL_SECONDS 39 39
-    const SERVICE_ACCESSIBILITY_FILE 42 42
-    const ROOT 45 45
-    enum ServiceStatus 49 54
-    function slug 59 64
-    function from_slug 69 75
-    function is_reachable 79 81
-    struct ServiceAccessibilityRecord 86 97
-    function expires_at 102 104
-    function is_fresh 108 110
-    function age 115 117
-    function trace_payload 121 130
-    function memory_id 134 136
-    function memory_text 140 148
-    function memory_id 153 155
-    struct ServiceAccessibilityCache 159 163
-    function new 168 174
-    function with_ttl_seconds 180 183
-    function ttl_seconds 187 189
-    function path 193 195
-    function load 201 207
-    function records 211 213
-    function record 217 219
-    function fresh_record 223 227
-    function needs_refresh 232 234
-    function known_unreachable 239 242
-    function observe 245 262
-    function invalidate 265 267
-    function invalidate_all 270 274
-    function prune_expired 279 283
-    function links_notation 287 308
-    function associative_memory 314 323
-    function save 326 331
-    function parse_projection 334 363
-    function unix_now 367 371
+    const SERVICE_ACCESSIBILITY_TTL_SECONDS 40 40
+    const SERVICE_ACCESSIBILITY_FILE 43 43
+    const ROOT 46 46
+    const FIELD_SERVICE 51 51
+    const FIELD_STATUS 52 52
+    const FIELD_DETAIL 53 53
+    const FIELD_CHECKED_AT 54 54
+    const FIELD_TTL_SECONDS 55 55
+    const RECORD_INDENT 58 58
+    const FIELD_INDENT 59 59
+    function push_field 62 68
+    enum ServiceStatus 72 77
+    function slug 82 87
+    function from_slug 92 98
+    function is_reachable 102 104
+    struct ServiceAccessibilityRecord 109 120
+    function expires_at 125 127
+    function is_fresh 131 133
+    function age 138 140
+    function trace_payload 144 152
+    function memory_id 156 158
+    function memory_text 162 170
+    function memory_id 175 177
+    struct ServiceAccessibilityCache 181 185
+    function new 190 196
+    function with_ttl_seconds 202 205
+    function ttl_seconds 209 211
+    function path 215 217
+    function load 223 229
+    function records 233 235
+    function record 239 241
+    function fresh_record 245 249
+    function needs_refresh 254 256
+    function known_unreachable 261 264
+    function observe 267 284
+    function invalidate 287 289
+    function invalidate_all 292 296
+    function prune_expired 301 305
+    function links_notation 309 340
+    function associative_memory 346 355
+    function save 358 363
+    function parse_projection 366 395
+    function unix_now 399 403

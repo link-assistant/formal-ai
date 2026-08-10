@@ -75,7 +75,7 @@ const TARGET_TOTAL_LINES: usize = 3_000;
 /// expectation in `tests/fixtures/issue-991/expected-guides.json`, so it is a
 /// migration candidate once the guide synthesis moves into the Rust→WASM core.
 #[cfg(not(test))]
-const CEILING_TOTAL_LINES: usize = 28_679;
+const CEILING_TOTAL_LINES: usize = 28_678;
 
 const WORKER_DIR: &str = "src/web/worker";
 

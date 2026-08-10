@@ -32,6 +32,9 @@ const HOW_TO_GUIDE_BOUNDS = {
 /** Fewer accepted steps than this is not a procedure. */
 const HOW_TO_MIN_ACCEPTED_STEPS = 2;
 
+/** How many hex characters of a digest a reader-facing citation shows. */
+const HOW_TO_DIGEST_PREFIX = 12;
+
 /** A step shorter than this is a caption or a navigation label. */
 const HOW_TO_MIN_STEP_CHARS = 40;
 /** Steps are compacted to at most this many characters. */
@@ -770,50 +773,46 @@ function howToGuideEvidence(guide) {
   return lines;
 }
 
-/** The guide as a reader sees it: numbered steps with the source of each. */
-function howToGuideMarkdown(guide) {
-  const sections = [`## How to ${guide.task}`];
-  if (howToGuideIsSufficient(guide)) {
-    sections.push(
-      guide.steps
-        .map(
-          (step, index) =>
-            `${index + 1}. ${step.text} — ${step.sourceName} (${step.licenseName}, sha256 ${step.sha256.slice(0, 12)})`,
-        )
-        .join("\n"),
-    );
-  } else {
-    sections.push(
-      `Insufficient evidence: ${guide.steps.length} step(s) were captured and ${HOW_TO_MIN_ACCEPTED_STEPS} are required, so no procedure is asserted.`,
-    );
-  }
-  const sources = ["### Sources"];
-  for (const outcome of guide.outcomes) {
-    sources.push(
-      `- ${outcome.sourceId} — ${outcome.status} (${outcome.pages} page(s), ${outcome.steps} step(s)): ${outcome.detail}`,
-    );
-  }
+/** One seeded `how_to_guide_*` phrase with its named fields substituted. */
+function howToGuideChrome(intent, language, values) {
+  let rendered = answerFor(intent, language || "en");
+  for (const name of Object.keys(values)) rendered = rendered.split(`{${name}}`).join(String(values[name]));
+  return rendered;
+}
+
+/**
+ * The guide as a reader sees it: numbered steps with the source of each.
+ *
+ * Every fragment of prose is looked up from `data/seed/multilingual-responses-procedure.lino`,
+ * exactly as `src/how_to_guide/render.rs` looks it up, so the two runtimes cannot drift apart on
+ * wording and a seeded language renders that evidence rather than a translation of it.
+ */
+function howToGuideMarkdown(guide, language) {
+  const say = (intent, values) => howToGuideChrome(intent, language, values || {});
+  const renderStep = (step, index) =>
+    say("how_to_guide_step", { rank: index + 1, text: step.text, source: step.sourceName, license: step.licenseName, digest: step.sha256.slice(0, HOW_TO_DIGEST_PREFIX) });
+  const sections = [say("how_to_guide_heading", { task: guide.task })];
+  sections.push(
+    howToGuideIsSufficient(guide)
+      ? guide.steps.map(renderStep).join("\n")
+      : say("how_to_guide_insufficient_evidence", { steps: guide.steps.length, required: HOW_TO_MIN_ACCEPTED_STEPS }),
+  );
+  const sources = [say("how_to_guide_sources_heading")];
+  for (const { sourceId: source, status, pages, steps, detail } of guide.outcomes)
+    sources.push(say("how_to_guide_source_outcome", { source, status, pages, steps, detail }));
   for (const step of guide.steps) {
-    const citation = `- ${step.sourceId} → ${step.sourceUrl} (${step.licenseName}: ${step.licenseUrl})`;
+    const citation = say("how_to_guide_citation", { source: step.sourceId, url: step.sourceUrl, license: step.licenseName, license_url: step.licenseUrl });
     if (!sources.includes(citation)) sources.push(citation);
   }
   sections.push(sources.join("\n"));
   if (guide.conflicts.length > 0) {
-    sections.push(
-      ["### Conflicts"]
-        .concat(
-          guide.conflicts.map(
-            (conflict) =>
-              `- \`${conflict.action}\`: kept ${conflict.keptSource}, dropped ${conflict.droppedSource} ("${conflict.droppedText}")`,
-          ),
-        )
-        .join("\n"),
-    );
+    const conflicts = guide.conflicts.map((conflict) =>
+      say("how_to_guide_conflict", { action: conflict.action, kept: conflict.keptSource, dropped: conflict.droppedSource, text: conflict.droppedText }));
+    sections.push([say("how_to_guide_conflicts_heading")].concat(conflicts).join("\n"));
   }
-  if (guide.copies.length > 0) {
-    sections.push(["### Copied sources ignored"].concat(guide.copies.map((copy) => `- ${copy}`)).join("\n"));
-  }
-  sections.push(`Bounds: ${howToBoundsTracePayload(guide.bounds)}`);
+  const copies = guide.copies.map((copy) => say("how_to_guide_copy", { url: copy }));
+  if (copies.length > 0) sections.push([say("how_to_guide_copies_heading")].concat(copies).join("\n"));
+  sections.push(say("how_to_guide_bounds", { bounds: howToBoundsTracePayload(guide.bounds) }));
   return sections.join("\n\n");
 }
 

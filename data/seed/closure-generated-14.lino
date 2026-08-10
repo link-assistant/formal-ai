@@ -419,6 +419,26 @@ meanings
     lexeme en
       surface
         text "response fact check statement ru"
+  response_how_to_guide_citation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide citation en"
+  response_how_to_guide_conflicts_heading_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide conflicts heading ru"
+  response_how_to_guide_copy_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide copy zh"
+  response_how_to_guide_step_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide step en"
   response_lexeme_import_cannot_install_ru
     defined-by response_template
     lexeme en

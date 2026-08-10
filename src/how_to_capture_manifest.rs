@@ -19,6 +19,7 @@ use crate::links_format::push_lino_node;
 use crate::seed::parser::parse_lino;
 use crate::seed::{source_registry, SourceRecord};
 use crate::source_fetch::sha256_hex;
+use crate::trace_record;
 
 /// File the manifest is committed as, next to the capture tree.
 pub const CAPTURE_MANIFEST_FILE: &str = "capture-manifest.lino";
@@ -49,10 +50,14 @@ impl CaptureManifestEntry {
     /// Stable one-line payload used in traces and drift reports.
     #[must_use]
     pub fn trace_payload(&self) -> String {
-        format!(
-            "url={} source={} sha256={} fetched_at={} bytes={} license={}",
-            self.url, self.source_id, self.sha256, self.fetched_at, self.bytes, self.license_name
-        )
+        trace_record::payload(&[
+            ("url", self.url.clone()),
+            ("source", self.source_id.clone()),
+            ("sha256", self.sha256.clone()),
+            ("fetched_at", self.fetched_at.clone()),
+            ("bytes", self.bytes.to_string()),
+            ("license", self.license_name.clone()),
+        ])
     }
 }
 
@@ -85,15 +90,23 @@ impl CaptureDrift {
     #[must_use]
     pub fn trace_payload(&self) -> String {
         match self {
-            Self::Missing { url } => format!("drift=missing url={url}"),
-            Self::Unrecorded { url } => format!("drift=unrecorded url={url}"),
+            Self::Missing { url } => {
+                trace_record::payload(&[("drift", String::from("missing")), ("url", url.clone())])
+            }
+            Self::Unrecorded { url } => trace_record::payload(&[
+                ("drift", String::from("unrecorded")),
+                ("url", url.clone()),
+            ]),
             Self::Changed {
                 url,
                 recorded_sha256,
                 current_sha256,
-            } => format!(
-                "drift=changed url={url} recorded={recorded_sha256} current={current_sha256}"
-            ),
+            } => trace_record::payload(&[
+                ("drift", String::from("changed")),
+                ("url", url.clone()),
+                ("recorded", recorded_sha256.clone()),
+                ("current", current_sha256.clone()),
+            ]),
         }
     }
 }

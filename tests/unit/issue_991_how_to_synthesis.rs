@@ -367,6 +367,56 @@ fn the_native_and_browser_runtimes_synthesise_the_same_guide() {
     }
 }
 
+/// Every phrase the reader sees is seed data, not a literal in the renderer
+/// (R379, `docs/design/no-hardcoded-natural-language.md`). Deleting or
+/// mistyping one of the `how_to_guide_*` intents would silently render an empty
+/// heading, so the seed lookup is asserted directly, in every seeded language.
+#[test]
+fn the_reader_facing_guide_is_rendered_from_seeded_prose() {
+    const CHROME_INTENTS: [&str; 11] = [
+        "how_to_guide_heading",
+        "how_to_guide_step",
+        "how_to_guide_insufficient_evidence",
+        "how_to_guide_sources_heading",
+        "how_to_guide_source_outcome",
+        "how_to_guide_citation",
+        "how_to_guide_conflicts_heading",
+        "how_to_guide_conflict",
+        "how_to_guide_copies_heading",
+        "how_to_guide_copy",
+        "how_to_guide_bounds",
+    ];
+    for intent in CHROME_INTENTS {
+        for language in ["en", "ru", "hi", "zh"] {
+            let text = formal_ai::seed::response_for(intent, language)
+                .unwrap_or_else(|| panic!("{intent} must be seeded for {language}"));
+            assert!(
+                !text.trim().is_empty(),
+                "{intent} must carry text for {language}"
+            );
+        }
+    }
+
+    let guide = offline_guide(DOCUMENTED_TASK, &ServicePreferences::default());
+    let english = guide.markdown();
+    assert_eq!(english, guide.markdown_in("en"));
+    let russian = guide.markdown_in("ru");
+    assert_ne!(
+        russian, english,
+        "another seeded language must change the chrome"
+    );
+    // The evidence itself is language-neutral: the same steps, digests, and
+    // bounds are reported either way.
+    for step in &guide.steps {
+        let digest = &step.sha256[..12];
+        assert!(english.contains(digest) && russian.contains(digest));
+    }
+    assert!(
+        russian.contains(&guide.bounds.trace_payload()),
+        "the declared bounds are reported in every language"
+    );
+}
+
 #[test]
 fn the_gated_refresh_check_detects_drift_against_the_real_services() {
     let fixture = fixture_dir();

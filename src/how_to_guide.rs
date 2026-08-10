@@ -26,6 +26,7 @@ use crate::relative_meta_logic::SourceTier;
 use crate::seed::{external_trusted_sources, percent_encode, SourceRecord};
 use crate::service_accessibility::{ServiceAccessibilityCache, ServiceStatus};
 use crate::source_fetch::{CachedSourceClient, FetchError, SourceTransport};
+use crate::trace_record;
 
 use extract::{classify, extract_steps, wiki_link_titles, Payload};
 
@@ -67,14 +68,19 @@ impl GuideBounds {
     /// Stable one-line description used in traces and rendered guides.
     #[must_use]
     pub fn trace_payload(&self) -> String {
-        format!(
-            "max_depth={} max_pages_per_service={} max_services={} max_steps={} max_capture_age_seconds={}",
-            self.max_depth,
-            self.max_pages_per_service,
-            self.max_services,
-            self.max_steps,
-            self.max_capture_age_seconds,
-        )
+        trace_record::payload(&[
+            ("max_depth", self.max_depth.to_string()),
+            (
+                "max_pages_per_service",
+                self.max_pages_per_service.to_string(),
+            ),
+            ("max_services", self.max_services.to_string()),
+            ("max_steps", self.max_steps.to_string()),
+            (
+                "max_capture_age_seconds",
+                self.max_capture_age_seconds.to_string(),
+            ),
+        ])
     }
 }
 
@@ -149,18 +155,17 @@ impl GuideStep {
     /// Exact provenance for one step, in the order a reviewer checks it.
     #[must_use]
     pub fn provenance(&self) -> String {
-        format!(
-            "source={} url={} sha256={} fetched_at={} cached={} tier={} license={} depth={} position={}",
-            self.source_id,
-            self.source_url,
-            self.sha256,
-            self.fetched_at,
-            self.cached,
-            self.tier.slug(),
-            self.license_name,
-            self.depth,
-            self.position,
-        )
+        trace_record::payload(&[
+            ("source", self.source_id.clone()),
+            ("url", self.source_url.clone()),
+            ("sha256", self.sha256.clone()),
+            ("fetched_at", self.fetched_at.clone()),
+            ("cached", self.cached.to_string()),
+            ("tier", self.tier.slug().to_owned()),
+            ("license", self.license_name.clone()),
+            ("depth", self.depth.to_string()),
+            ("position", self.position.to_string()),
+        ])
     }
 }
 
@@ -193,10 +198,13 @@ impl GuideSourceOutcome {
     /// Stable one-line payload for the trace.
     #[must_use]
     pub fn trace_payload(&self) -> String {
-        format!(
-            "source={} status={} pages={} steps={} detail={}",
-            self.source_id, self.status, self.pages, self.steps, self.detail
-        )
+        trace_record::payload(&[
+            ("source", self.source_id.clone()),
+            ("status", self.status.clone()),
+            ("pages", self.pages.to_string()),
+            ("steps", self.steps.to_string()),
+            ("detail", self.detail.clone()),
+        ])
     }
 }
 
@@ -264,6 +272,15 @@ impl HowToGuide {
     #[must_use]
     pub fn markdown(&self) -> String {
         render::markdown(self)
+    }
+
+    /// The guide rendered for a reader of `language`.
+    ///
+    /// The evidence is language-neutral, so only the seeded chrome changes: the
+    /// same steps, sources, digests, and bounds are reported either way.
+    #[must_use]
+    pub fn markdown_in(&self, language: &str) -> String {
+        render::markdown_in(self, language)
     }
 }
 
@@ -560,12 +577,15 @@ fn capture_service<T: SourceTransport>(
         availability.observe(
             &record.id,
             ServiceStatus::Reachable,
-            format!("captured {url}"),
+            trace_record::line("captured", &[("url", url.clone())]),
             now,
         );
         let age = now.saturating_sub(capture.fetched_at().parse::<u64>().unwrap_or(now));
         if age > bounds.max_capture_age_seconds {
-            outcome.detail = format!("stale_capture age_seconds={age} url={url}");
+            outcome.detail = trace_record::line(
+                "stale_capture",
+                &[("age_seconds", age.to_string()), ("url", url.clone())],
+            );
         }
         match classify(capture.bytes()) {
             Payload::Parse { html, .. } => {
@@ -594,7 +614,8 @@ fn capture_service<T: SourceTransport>(
                     entries.iter().collect()
                 };
                 if relevant.is_empty() {
-                    outcome.detail = format!("no_relevant_result url={url}");
+                    outcome.detail =
+                        trace_record::line("no_relevant_result", &[("url", url.clone())]);
                 }
                 let before = steps.len();
                 for entry in &relevant {
@@ -610,7 +631,7 @@ fn capture_service<T: SourceTransport>(
                 }
             }
             Payload::Compressed => {
-                outcome.detail = format!("compressed_payload url={url}");
+                outcome.detail = trace_record::line("compressed_payload", &[("url", url.clone())]);
             }
             Payload::OpenSearch { titles, .. } | Payload::Search { titles } => {
                 let relevant: Vec<&String> = titles
@@ -619,7 +640,8 @@ fn capture_service<T: SourceTransport>(
                     .take(bounds.max_pages_per_service)
                     .collect();
                 if relevant.is_empty() {
-                    outcome.detail = format!("no_relevant_result url={url}");
+                    outcome.detail =
+                        trace_record::line("no_relevant_result", &[("url", url.clone())]);
                 }
                 if depth < bounds.max_depth {
                     for title in relevant {
@@ -628,7 +650,10 @@ fn capture_service<T: SourceTransport>(
                 }
             }
             Payload::Unrecognized { reason } => {
-                outcome.detail = format!("unreadable_payload reason={reason} url={url}");
+                outcome.detail = trace_record::line(
+                    "unreadable_payload",
+                    &[("reason", reason.clone()), ("url", url.clone())],
+                );
                 // A title guess that misses is not a dead end: the same wiki can
                 // be searched for the task, and the hits parsed one hop deeper.
                 if is_wiki && reason.starts_with("api_error") && depth < bounds.max_depth {
@@ -665,7 +690,7 @@ fn observe_failure(
         "unreachable"
     };
     outcome.status = String::from(status);
-    outcome.detail = format!("{error} url={url}");
+    outcome.detail = trace_record::line(&error.to_string(), &[("url", url.to_owned())]);
 }
 
 fn push_steps(

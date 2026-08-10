@@ -179,6 +179,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-04.lino"
     record "response_concept_lookup_in_context_no_alias_hi"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_9b4216d9e9d7c591
+    source "data/seed/closure-generated-04.lino"
+    record "response_how_to_guide_heading_hi"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_ee37662efdd51c91
     source "data/seed/closure-generated-04.lino"
     record "response_inappropriate_content_ru"
@@ -455,6 +459,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-10.lino"
     record "replace_everywhere"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_774cf62c96b47101
+    source "data/seed/closure-generated-10.lino"
+    record "response_how_to_guide_citation_hi"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_6efac54f5a3225a1
     source "data/seed/closure-generated-10.lino"
     record "response_lexeme_import_cannot_create_ru"
@@ -535,6 +543,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-12.lino"
     record "events"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_8d89e80e635327d1
+    source "data/seed/closure-generated-12.lino"
+    record "how_to_guide_sources_heading"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_8a2a6518e4f1a231
     source "data/seed/closure-generated-12.lino"
     record "issue_report_context_gist_note"
@@ -595,6 +607,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-13.lino"
     record "response_general_plan_repository_planned_en"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_657b3f57df01e981
+    source "data/seed/closure-generated-13.lino"
+    record "response_how_to_guide_heading_en"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_2e23480261b82421
     source "data/seed/closure-generated-13.lino"
     record "response_pattern_sequence_empty_hi"
@@ -638,6 +654,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_0c36dfceb1d73ee1
     source "data/seed/closure-generated-14.lino"
     record "response_agent_suggestion_active_ru"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_21b6790ca356cd81
+    source "data/seed/closure-generated-14.lino"
+    record "response_how_to_guide_citation_en"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_1b38d406ef41fb01
     source "data/seed/closure-generated-14.lino"

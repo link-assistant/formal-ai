@@ -34,6 +34,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use crate::associative_persistence::AssociativeMemory;
 use crate::links_format::{format_lino_value, sanitize_lino_value};
 use crate::seed::parser::parse_lino;
+use crate::trace_record;
 
 /// Seven days, the minimum TTL issue #991 requires for availability records.
 pub const SERVICE_ACCESSIBILITY_TTL_SECONDS: u64 = 7 * 24 * 60 * 60;
@@ -43,6 +44,28 @@ pub const SERVICE_ACCESSIBILITY_FILE: &str = "service-accessibility.lino";
 
 /// Root node name of the Links Notation projection.
 const ROOT: &str = "service_accessibility";
+
+/// Field names of one availability record. They are the same tokens in the
+/// evidence payload and in the Links Notation projection, so a reader who
+/// learns one reads the other (R379: these are identifiers, not prose).
+const FIELD_SERVICE: &str = "service";
+const FIELD_STATUS: &str = "status";
+const FIELD_DETAIL: &str = "detail";
+const FIELD_CHECKED_AT: &str = "checked_at";
+const FIELD_TTL_SECONDS: &str = "ttl_seconds";
+
+/// Indentation of a record head and of a field below it.
+const RECORD_INDENT: &str = "  ";
+const FIELD_INDENT: &str = "    ";
+
+/// Write one `indent name value` line of the projection.
+fn push_field(out: &mut String, indent: &str, name: &str, value: &str) {
+    out.push_str(indent);
+    out.push_str(name);
+    out.push(' ');
+    out.push_str(value);
+    out.push('\n');
+}
 
 /// Whether a declared service answered the last time it was probed.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -119,14 +142,13 @@ impl ServiceAccessibilityRecord {
     /// Stable payload for evidence events.
     #[must_use]
     pub fn trace_payload(&self) -> String {
-        format!(
-            "service={} status={} checked_at={} ttl_seconds={} detail={}",
-            self.service_id,
-            self.status.slug(),
-            self.checked_at,
-            self.ttl_seconds,
-            self.detail
-        )
+        trace_record::payload(&[
+            (FIELD_SERVICE, self.service_id.clone()),
+            (FIELD_STATUS, self.status.slug().to_owned()),
+            (FIELD_CHECKED_AT, self.checked_at.to_string()),
+            (FIELD_TTL_SECONDS, self.ttl_seconds.to_string()),
+            (FIELD_DETAIL, self.detail.clone()),
+        ])
     }
 
     /// The associative-memory expression id for this service.
@@ -288,21 +310,31 @@ impl ServiceAccessibilityCache {
         let mut out = String::from(ROOT);
         out.push('\n');
         for record in self.records.values() {
-            out.push_str("  service ");
-            out.push_str(&format_lino_value(&record.service_id));
-            out.push('\n');
-            out.push_str("    status ");
-            out.push_str(record.status.slug());
-            out.push('\n');
-            out.push_str("    detail ");
-            out.push_str(&format_lino_value(&record.detail));
-            out.push('\n');
-            out.push_str("    checked_at ");
-            out.push_str(&record.checked_at.to_string());
-            out.push('\n');
-            out.push_str("    ttl_seconds ");
-            out.push_str(&record.ttl_seconds.to_string());
-            out.push('\n');
+            push_field(
+                &mut out,
+                RECORD_INDENT,
+                FIELD_SERVICE,
+                &format_lino_value(&record.service_id),
+            );
+            push_field(&mut out, FIELD_INDENT, FIELD_STATUS, record.status.slug());
+            push_field(
+                &mut out,
+                FIELD_INDENT,
+                FIELD_DETAIL,
+                &format_lino_value(&record.detail),
+            );
+            push_field(
+                &mut out,
+                FIELD_INDENT,
+                FIELD_CHECKED_AT,
+                &record.checked_at.to_string(),
+            );
+            push_field(
+                &mut out,
+                FIELD_INDENT,
+                FIELD_TTL_SECONDS,
+                &record.ttl_seconds.to_string(),
+            );
         }
         out
     }

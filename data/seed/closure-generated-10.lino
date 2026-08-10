@@ -74,6 +74,11 @@ meanings
     lexeme en
       surface
         text "hive mind"
+  how_to_guide_step
+    defined-by intent
+    lexeme en
+      surface
+        text "how to guide step"
   import_memory
     defined-by name
     lexeme en
@@ -344,6 +349,26 @@ meanings
     lexeme en
       surface
         text "response general plan completed hi"
+  response_how_to_guide_citation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide citation hi"
+  response_how_to_guide_copies_heading_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide copies heading en"
+  response_how_to_guide_copies_heading_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide copies heading hi"
+  response_how_to_guide_copy_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide copy ru"
   response_http_fetch_curated_project_en
     defined-by response_template
     lexeme en

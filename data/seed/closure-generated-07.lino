@@ -89,6 +89,11 @@ meanings
     lexeme en
       surface
         text "how to guide"
+  how_to_guide_conflicts_heading
+    defined-by intent
+    lexeme en
+      surface
+        text "how to guide conflicts heading"
   javascript
     defined-by programming_language
     lexeme en
@@ -399,6 +404,16 @@ meanings
     lexeme en
       surface
         text "response general plan verification mismatch zh"
+  response_how_to_guide_insufficient_evidence_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide insufficient evidence ru"
+  response_how_to_guide_step_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide step zh"
   response_identity_en
     defined-by response_template
     lexeme en
