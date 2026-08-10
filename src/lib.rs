@@ -44,6 +44,7 @@ pub mod gemini;
 pub mod github_logs;
 pub mod google_trends_catalog;
 pub mod google_trends_learning;
+pub mod how_to_capture_manifest;
 pub mod how_to_guide;
 pub mod implementation_language;
 pub mod intent_formalization;
@@ -129,6 +130,7 @@ pub(crate) mod solver_dispatch;
 pub(crate) mod solver_formalization;
 pub(crate) mod solver_handler_docs;
 pub(crate) mod solver_handler_how;
+pub(crate) mod solver_handler_how_synthesis;
 pub(crate) mod solver_handler_oracle;
 pub(crate) mod solver_handler_units;
 pub(crate) mod solver_handlers;
@@ -388,6 +390,10 @@ pub use skill_procedure::{
 pub use solver::{
     solve, solve_with_history, BlueprintComposition, ConversationRole, ConversationTurn,
     ExecutionSurface, SolverConfig, UniversalSolver,
+};
+pub use solver_handler_how_synthesis::{
+    service_preferences_from_env, try_how_to_procedure_with_client,
+    try_how_to_procedure_with_offline, DISABLED_SERVICES_ENV,
 };
 pub use solver_handlers::{
     answer_memory_recall, execute_memory_query, execute_memory_query_with_options,

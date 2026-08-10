@@ -1,0 +1,44 @@
+self_ast_census
+  target src/service_accessibility.rs
+  language rust
+  fidelity signature
+  byte_len 13155
+  line_count 371
+  content_id source_module_fa8298f6dc6f2e00
+  symbol_count 35
+  symbols
+    const SERVICE_ACCESSIBILITY_TTL_SECONDS 39 39
+    const SERVICE_ACCESSIBILITY_FILE 42 42
+    const ROOT 45 45
+    enum ServiceStatus 49 54
+    function slug 59 64
+    function from_slug 69 75
+    function is_reachable 79 81
+    struct ServiceAccessibilityRecord 86 97
+    function expires_at 102 104
+    function is_fresh 108 110
+    function age 115 117
+    function trace_payload 121 130
+    function memory_id 134 136
+    function memory_text 140 148
+    function memory_id 153 155
+    struct ServiceAccessibilityCache 159 163
+    function new 168 174
+    function with_ttl_seconds 180 183
+    function ttl_seconds 187 189
+    function path 193 195
+    function load 201 207
+    function records 211 213
+    function record 217 219
+    function fresh_record 223 227
+    function needs_refresh 232 234
+    function known_unreachable 239 242
+    function observe 245 262
+    function invalidate 265 267
+    function invalidate_all 270 274
+    function prune_expired 279 283
+    function links_notation 287 308
+    function associative_memory 314 323
+    function save 326 331
+    function parse_projection 334 363
+    function unix_now 367 371

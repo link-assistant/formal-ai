@@ -16,6 +16,7 @@ use crate::solver_handler_docs::try_docs_method_explanation;
 use crate::solver_handler_how::{
     try_how_it_works, try_how_to_procedure, try_procedural_how_to_followup,
 };
+use crate::solver_handler_how_synthesis::try_how_to_procedure_with_offline;
 use crate::solver_handler_units::try_incompatible_units;
 use crate::solver_handlers::{
     try_algorithm, try_arithmetic, try_brainstorming_request, try_calendar_create_event,
@@ -140,6 +141,12 @@ pub const CONTEXTUAL_HANDLER_NAMES: &[&str] = &[
     "fact_checking",
     "world_state",
     "web_search",
+    // Issue #991: the procedural handler must execute the bounded multi-source
+    // synthesis, which needs the runtime's offline flag to decide whether the
+    // capture client may go to the network. It stays a *contextual* override of
+    // the same `procedural_how_to` name the regular table registers, so the
+    // discovery-plan handler remains the fallback when the evidence is thin.
+    "procedural_how_to",
 ];
 
 /// Method names that run before the regular handler table.
@@ -219,6 +226,18 @@ pub fn try_contextual_override(
             try_fact_checking(prompt, normalized, log, history, runtime.solver_config)
         }
         "world_state" => try_world_state(prompt, normalized, log, history, runtime.solver_config),
+        "procedural_how_to" => try_how_to_procedure_with_offline(
+            prompt,
+            normalized,
+            log,
+            runtime.solver_config.offline
+                || !std::env::var("FORMAL_AI_LIVE_FETCH").is_ok_and(|value| {
+                    matches!(
+                        value.trim().to_ascii_lowercase().as_str(),
+                        "1" | "true" | "yes" | "on"
+                    )
+                }),
+        ),
         _ => return ContextualOutcome::NotHandled,
     };
     answer.map_or(ContextualOutcome::Skip, ContextualOutcome::Answer)

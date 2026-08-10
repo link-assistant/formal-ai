@@ -1,0 +1,13 @@
+self_ast_census
+  target src/how_to_guide/render.rs
+  language rust
+  fidelity signature
+  byte_len 5152
+  line_count 153
+  content_id source_module_85cc49c05eed2b3f
+  symbol_count 4
+  symbols
+    function trace 11 43
+    function record 46 84
+    function markdown 88 133
+    function sources_section 135 153

@@ -1,0 +1,47 @@
+self_ast_census
+  target src/how_to_guide.rs
+  language rust
+  fidelity signature
+  byte_len 23930
+  line_count 663
+  content_id source_module_019b3d575f67968f
+  symbol_count 38
+  symbols
+    module extract 16 16
+    module render 17 17
+    const MIN_ACCEPTED_STEPS 31 31
+    struct GuideBounds 36 49
+    function default 52 60
+    function trace_payload 66 75
+    struct ServicePreferences 84 86
+    function from_pairs 91 97
+    function with 101 104
+    function allows 108 113
+    struct GuideStep 118 143
+    function provenance 148 161
+    struct GuideSourceOutcome 166 177
+    function new 180 188
+    function trace_payload 192 197
+    struct GuideConflict 202 211
+    struct HowToGuide 215 228
+    function is_sufficient 233 235
+    function contributing_sources 239 247
+    function trace 251 253
+    function record 256 258
+    function markdown 262 264
+    function select_sources 273 287
+    function synthesize_how_to_guide 294 357
+    function skipped_sources 361 367
+    function entry_url 372 380
+    function page_title 385 392
+    function capitalize 394 399
+    function search_url 406 412
+    function parse_url 415 421
+    struct Walk 424 428
+    function capture_service 431 508
+    function observe_failure 510 533
+    function push_steps 535 562
+    function apply_copied_source_policy 568 597
+    function apply_conflict_policy 601 633
+    function action_key 637 649
+    function order_steps 653 663

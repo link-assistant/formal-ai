@@ -106,3 +106,8 @@ data/wikidata-cache/
 data/wiktionary-cache/
 data/http-cache/
 data/source-cache/
+
+# Per-service accessibility record (issue #991). Like the capture cache above it
+# is a runtime accelerator with a 7-day TTL, rebuilt by any run that probes a
+# service; the committed evidence is the QA capture manifest, not this file.
+data/service-accessibility.lino

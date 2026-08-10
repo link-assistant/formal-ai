@@ -172,18 +172,36 @@ fn requirement_matrix_and_case_studies_cover_the_complete_issue() {
 fn formal_ai_and_the_real_agent_cli_authored_two_of_seven_smallest_leaves() {
     const FORMAL_AI_AUTHORED_LEAVES: usize = 2;
     const SMALLEST_REQUIREMENT_LEAVES: usize = 7;
-    const GENERATED_CHANGELOG: &[u8] = include_bytes!(
+    const GENERATED_CHANGELOG: &str = include_str!(
         "../docs/case-studies/issue-961/self-hosting-authorship/changelog-session/20260810_120000_issue_961_macos_ci_parity.md"
     );
-    const CANONICAL_CHANGELOG: &[u8] =
-        include_bytes!("../changelog.d/20260810_120000_issue_961_macos_ci_parity.md");
+    // The canonical home of a fragment moves at release time: `cargo release`
+    // consumes `changelog.d/*.md` into `CHANGELOG.md` and records the move in
+    // the issue #711 fragment-release map. Comparing against the fragment path
+    // therefore only compiles until the next release (v0.338.0 consumed this
+    // one). The durable claim — that what the model wrote is what shipped — is
+    // checked against the released changelog and that map instead.
+    const RELEASED_CHANGELOG: &str = include_str!("../CHANGELOG.md");
+    const FRAGMENT_RELEASE_MAP: &str =
+        include_str!("../docs/case-studies/issue-711/fragment-release-map.tsv");
     const GENERATED_DECOMPOSITION: &[u8] = include_bytes!(
         "../docs/case-studies/issue-961/self-hosting-authorship/decomposition-session/issue-961-task-decomposition.lino"
     );
     const CANONICAL_DECOMPOSITION: &[u8] =
         include_bytes!("../docs/case-studies/issue-961/issue-961-task-decomposition.lino");
 
-    assert_eq!(GENERATED_CHANGELOG, CANONICAL_CHANGELOG);
+    for line in GENERATED_CHANGELOG
+        .lines()
+        .map(str::trim)
+        .filter(|line| line.starts_with('-'))
+    {
+        assert!(
+            RELEASED_CHANGELOG.contains(line),
+            "the released changelog no longer carries the generated entry: {line}"
+        );
+    }
+    assert!(FRAGMENT_RELEASE_MAP
+        .contains("changelog.d/20260810_120000_issue_961_macos_ci_parity.md\t0.338.0"));
     assert_eq!(GENERATED_DECOMPOSITION, CANONICAL_DECOMPOSITION);
     assert_eq!(
         FORMAL_AI_AUTHORED_LEAVES * 100 / SMALLEST_REQUIREMENT_LEAVES,

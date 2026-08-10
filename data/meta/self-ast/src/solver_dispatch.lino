@@ -2,22 +2,22 @@ self_ast_census
   target src/solver_dispatch.rs
   language rust
   fidelity signature
-  byte_len 18633
-  line_count 405
-  content_id source_module_e770fc8eeb42e501
+  byte_len 19579
+  line_count 424
+  content_id source_module_6426ac3e7966d80d
   symbol_count 14
   symbols
-    type SpecializedHandler 45 45
-    function handle_arithmetic 47 53
-    function handle_javascript_execution 55 61
-    function handle_concept_lookup 63 69
-    function response_language_followup_noop 71 77
-    struct ContextualRuntime 80 87
-    function new 91 101
-    enum ContextualOutcome 105 113
-    const CONTEXTUAL_HANDLER_NAMES 131 143
-    const PRELUDE_METHOD_NAMES 151 157
-    function try_contextual_override 159 225
-    const HANDLER_FUNCTIONS 240 349
-    function specialized_handlers 360 396
-    function handler_for_method 401 405
+    type SpecializedHandler 46 46
+    function handle_arithmetic 48 54
+    function handle_javascript_execution 56 62
+    function handle_concept_lookup 64 70
+    function response_language_followup_noop 72 78
+    struct ContextualRuntime 81 88
+    function new 92 102
+    enum ContextualOutcome 106 114
+    const CONTEXTUAL_HANDLER_NAMES 132 150
+    const PRELUDE_METHOD_NAMES 158 164
+    function try_contextual_override 166 244
+    const HANDLER_FUNCTIONS 259 368
+    function specialized_handlers 379 415
+    function handler_for_method 420 424
