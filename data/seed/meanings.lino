@@ -135,6 +135,40 @@ meanings
         text 你好世界
       surface
         text 你好，世界
+  program_modification_reference
+    defined-by reference
+    role program_modification_reference
+    precondition "a program-modification request refers to an earlier artifact"
+    effect "the referenced program artifact is selected for modification"
+    unit "not applicable"
+    example "change it"
+    lexeme en
+      surface
+        text it
+      surface
+        text that
+    lexeme ru
+      surface
+        text это
+      surface
+        text его
+      surface
+        text её
+    lexeme hi
+      surface
+        text इसे
+      surface
+        text उसको
+    lexeme zh
+      surface
+        text 它
+      surface
+        text 这个
+    lexeme es
+      surface
+        text lo
+      surface
+        text eso
   sort
     grounded-in Q2303697
     defined-by order
@@ -300,6 +334,13 @@ meanings
         text 修改
       surface
         text 改
+    lexeme es
+      surface
+        text cambia
+      surface
+        text cambiar
+      surface
+        text modifica
   update
     defined-by modify
     role program_modification

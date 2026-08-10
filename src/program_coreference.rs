@@ -9,7 +9,9 @@
 //! The surface words for every language live once, in `data/seed/meanings.lino`;
 //! this code understands the *concepts*, not the words.
 
-use crate::seed::{lexicon, ROLE_PROGRAM_ARTIFACT, ROLE_PROGRAM_MODIFICATION};
+use crate::seed::{
+    lexicon, ROLE_PROGRAM_ARTIFACT, ROLE_PROGRAM_MODIFICATION, ROLE_PROGRAM_MODIFICATION_REFERENCE,
+};
 
 /// True when `normalized` reads like a bare follow-up that modifies an existing
 /// program artifact — e.g. "cancel the sorting", "Отмени сортировку",
@@ -19,4 +21,14 @@ pub fn looks_like_bare_program_artifact_follow_up(normalized: &str) -> bool {
     let lexicon = lexicon();
     lexicon.mentions_role(ROLE_PROGRAM_ARTIFACT, normalized)
         && lexicon.mentions_role(ROLE_PROGRAM_MODIFICATION, normalized)
+}
+
+/// True when a modification names only a history-dependent pronoun and no
+/// concrete artifact in the current prompt.
+#[must_use]
+pub fn looks_like_ambiguous_program_modification(normalized: &str) -> bool {
+    let lexicon = lexicon();
+    lexicon.mentions_role(ROLE_PROGRAM_MODIFICATION, normalized)
+        && lexicon.mentions_role(ROLE_PROGRAM_MODIFICATION_REFERENCE, normalized)
+        && !lexicon.mentions_role(ROLE_PROGRAM_ARTIFACT, normalized)
 }

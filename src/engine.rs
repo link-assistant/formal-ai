@@ -25,16 +25,14 @@ pub(crate) use crate::engine_responses::{
     unknown_language_fallback_answer, wellbeing_answer,
 };
 use crate::engine_responses::{
-    chinese_assistant_free_time_answer, chinese_courtesy_response_answer, chinese_farewell_answer,
-    chinese_greeting_answer, chinese_identity_answer, chinese_test_status_answer,
-    chinese_wellbeing_answer, courtesy_response_answer, hindi_assistant_free_time_answer,
-    hindi_courtesy_response_answer, hindi_farewell_answer, hindi_greeting_answer,
-    hindi_identity_answer, hindi_test_status_answer, hindi_wellbeing_answer,
-    russian_assistant_free_time_answer, russian_courtesy_response_answer, russian_farewell_answer,
-    russian_greeting_answer, russian_identity_answer, russian_test_status_answer,
-    russian_wellbeing_answer, test_status_answer, ASSISTANT_FREE_TIME_EXAMPLES,
-    COURTESY_RESPONSE_EXAMPLES, GREETING_EXAMPLES, IDENTITY_EXAMPLES, TEST_STATUS_EXAMPLES,
-    UNKNOWN_EXAMPLES,
+    chinese_courtesy_response_answer, chinese_farewell_answer, chinese_greeting_answer,
+    chinese_identity_answer, chinese_test_status_answer, chinese_wellbeing_answer,
+    courtesy_response_answer, hindi_courtesy_response_answer, hindi_farewell_answer,
+    hindi_greeting_answer, hindi_identity_answer, hindi_test_status_answer, hindi_wellbeing_answer,
+    russian_courtesy_response_answer, russian_farewell_answer, russian_greeting_answer,
+    russian_identity_answer, russian_test_status_answer, russian_wellbeing_answer,
+    test_status_answer, ASSISTANT_FREE_TIME_EXAMPLES, COURTESY_RESPONSE_EXAMPLES,
+    GREETING_EXAMPLES, IDENTITY_EXAMPLES, TEST_STATUS_EXAMPLES, UNKNOWN_EXAMPLES,
 };
 use crate::event_log::EventLog;
 use crate::language::Language;
@@ -594,6 +592,10 @@ pub(crate) fn language_aware_answer_for(
     prior_code_response: bool,
 ) -> String {
     match (rule, language) {
+        (SelectedRule::AssistantFreeTime, _) => {
+            seed::response_variant_for("assistant_free_time", language.slug(), prompt)
+                .unwrap_or_else(|| assistant_free_time_answer().to_owned())
+        }
         (SelectedRule::Greeting, Language::Russian) => String::from(russian_greeting_answer()),
         (SelectedRule::Greeting, Language::Hindi) => String::from(hindi_greeting_answer()),
         (SelectedRule::Greeting, Language::Chinese) => String::from(chinese_greeting_answer()),
@@ -614,15 +616,6 @@ pub(crate) fn language_aware_answer_for(
         }
         (SelectedRule::CourtesyResponse, Language::Chinese) => {
             String::from(chinese_courtesy_response_answer())
-        }
-        (SelectedRule::AssistantFreeTime, Language::Russian) => {
-            String::from(russian_assistant_free_time_answer())
-        }
-        (SelectedRule::AssistantFreeTime, Language::Hindi) => {
-            String::from(hindi_assistant_free_time_answer())
-        }
-        (SelectedRule::AssistantFreeTime, Language::Chinese) => {
-            String::from(chinese_assistant_free_time_answer())
         }
         (SelectedRule::Identity, Language::Russian) => String::from(russian_identity_answer()),
         (SelectedRule::Identity, Language::Hindi) => String::from(hindi_identity_answer()),

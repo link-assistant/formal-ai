@@ -1,0 +1,77 @@
+multilingual_responses_issue_710
+  response response_client_integration_invalid_typed_json_setting_en
+    intent client_integration_invalid_typed_json_setting
+    language en
+    text "invalid typed JSON setting `{rendered}`: {error}"
+  response response_client_integration_invalid_typed_json_setting_ru
+    intent client_integration_invalid_typed_json_setting
+    language ru
+    text "недопустимая типизированная настройка JSON `{rendered}`: {error}"
+  response response_client_integration_invalid_typed_json_setting_hi
+    intent client_integration_invalid_typed_json_setting
+    language hi
+    text "अमान्य टाइप की गई JSON सेटिंग `{rendered}`: {error}"
+  response response_client_integration_invalid_typed_json_setting_zh
+    intent client_integration_invalid_typed_json_setting
+    language zh
+    text "无效的带类型 JSON 设置 `{rendered}`：{error}"
+  response response_set_assistant_name_en
+    intent set_assistant_name
+    language en
+    text "Nice to meet you! I'll go by {name} from now on."
+  response response_set_assistant_name_ru
+    intent set_assistant_name
+    language ru
+    text "Отлично, теперь меня зовут {name}. Приятно познакомиться!"
+  response response_set_assistant_name_hi
+    intent set_assistant_name
+    language hi
+    text "बढ़िया, अब से मेरा नाम {name} है। आपसे मिलकर अच्छा लगा!"
+  response response_set_assistant_name_zh
+    intent set_assistant_name
+    language zh
+    text "好的，从现在起就叫我 {name} 吧。很高兴认识你！"
+  response response_set_assistant_name_es
+    intent set_assistant_name
+    language es
+    text "¡Encantado! A partir de ahora usaré el nombre {name}."
+  response response_assistant_name_recall_en
+    intent assistant_name_recall
+    language en
+    text "My name is {name} — that's what you named me."
+  response response_assistant_name_recall_ru
+    intent assistant_name_recall
+    language ru
+    text "Меня зовут {name} — так вы меня назвали."
+  response response_assistant_name_recall_hi
+    intent assistant_name_recall
+    language hi
+    text "मेरा नाम {name} है — यह नाम आपने मुझे दिया था।"
+  response response_assistant_name_recall_zh
+    intent assistant_name_recall
+    language zh
+    text "我叫 {name}，这是你给我起的名字。"
+  response response_assistant_name_recall_es
+    intent assistant_name_recall
+    language es
+    text "Me llamo {name}; ese es el nombre que me diste."
+  response response_ambiguous_modification_clarification_en
+    intent ambiguous_modification_clarification
+    language en
+    text "Which program or result should I modify?"
+  response response_ambiguous_modification_clarification_ru
+    intent ambiguous_modification_clarification
+    language ru
+    text "Какую программу или результат нужно изменить?"
+  response response_ambiguous_modification_clarification_hi
+    intent ambiguous_modification_clarification
+    language hi
+    text "मुझे किस प्रोग्राम या परिणाम को बदलना चाहिए?"
+  response response_ambiguous_modification_clarification_zh
+    intent ambiguous_modification_clarification
+    language zh
+    text "我应该修改哪个程序或结果？"
+  response response_ambiguous_modification_clarification_es
+    intent ambiguous_modification_clarification
+    language es
+    text "¿Qué programa o resultado debo modificar?"

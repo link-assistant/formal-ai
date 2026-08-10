@@ -3,6 +3,48 @@
 use formal_ai::server::{enable_http_agent_mode_for_current_process, handle_api_request};
 use serde_json::{json, Value};
 
+use crate::http_server::{
+    http_post_json, reserve_loopback_port, spawn_formal_ai_server_agent_mode,
+};
+
+#[test]
+fn live_http_server_routes_reported_folder_variants_to_one_shell_contract() {
+    let port = reserve_loopback_port();
+    let _server = spawn_formal_ai_server_agent_mode(port);
+    let schema = json!({
+        "type": "object",
+        "properties": {"command": {"type": "string"}},
+        "required": ["command"],
+        "additionalProperties": false
+    });
+
+    // These are the three Russian phrasings reported against v0.303 in the
+    // #710 conversation, plus the English control. They used to reach three
+    // different routes. Exercise the real TCP server so an in-process planner
+    // test cannot hide a protocol/configuration regression.
+    for prompt in [
+        "list files in this folder",
+        "покажи файлы в этой папке",
+        "список файлов",
+        "какие файлы в этой папке",
+    ] {
+        let response = http_post_json(
+            port,
+            "/v1/chat/completions",
+            Some("sk-local-agentic-tools"),
+            &json!({
+                "model": "formal-ai",
+                "messages": [{"role": "user", "content": prompt}],
+                "tools": [tool("exec_command", &schema)]
+            }),
+        );
+        let call = &response["choices"][0]["message"]["tool_calls"][0]["function"];
+        assert_eq!(call["name"], "exec_command", "{prompt}: {response}");
+        let arguments: Value = serde_json::from_str(call["arguments"].as_str().unwrap()).unwrap();
+        assert_eq!(arguments, json!({"command": "ls"}), "{prompt}");
+    }
+}
+
 #[test]
 fn local_search_aliases_never_turn_into_web_search_calls() {
     for alias in ["grep", "grep_search", "search", "codesearch", "Grep"] {

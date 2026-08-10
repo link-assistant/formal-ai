@@ -660,6 +660,23 @@ impl UniversalSolver {
         }
 
         if matches!(rule, SelectedRule::Unknown) {
+            if crate::program_coreference::looks_like_ambiguous_program_modification(
+                &normalize_prompt(prompt),
+            ) {
+                let body = seed::localized_response(
+                    "ambiguous_modification_clarification",
+                    language.slug(),
+                )
+                .unwrap_or_default();
+                return finalize_simple(
+                    prompt,
+                    &mut log,
+                    "ambiguous_modification_clarification",
+                    "response:ambiguous_modification_clarification",
+                    &body,
+                    0.9,
+                );
+            }
             let intent = language_aware_intent_for(&rule, language);
             record_candidates(&mut log, prompt, &intent);
             if let Some(choice) = record_validation(&mut log, prompt) {

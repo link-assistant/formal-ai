@@ -41,6 +41,12 @@ pub const ROLE_FACT_CHECK_CURRENT_DIALOGUE_QUERY: &str = "fact_check_current_dia
 /// "介绍一下你自己", …). Suppressed when a [`ROLE_SELF_FACT_QUERY`] surface
 /// also matches.
 pub const ROLE_SELF_INTRODUCTION_REQUEST: &str = "self_introduction_request";
+/// Semantic role: a declarative phrase assigning a name to the assistant.
+///
+/// Each surface ends immediately before the assigned name ("your name is …",
+/// "тебя зовут …", …). The extractor reads the following token while rejecting
+/// questions, keeping assistant naming distinct from user self-introduction.
+pub const ROLE_ASSISTANT_NAME_ASSIGNMENT: &str = "assistant_name_assignment";
 /// Semantic role: the noun naming the items a known-facts inventory asks about.
 ///
 /// The "facts" surface inside a known-facts question ("what *facts* do you

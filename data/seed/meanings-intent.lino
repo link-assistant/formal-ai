@@ -638,6 +638,74 @@ meanings
         text 认识一下吧
       surface
         text 让我们认识一下
+  assistant_name_assignment
+    defined-by assistant
+    role assistant_name_assignment
+    precondition "the user addresses the assistant with a proposed name"
+    effect "the proposed name is available for conversational assignment"
+    unit "not applicable"
+    example "your name is Nova"
+    lexeme en
+      surface
+        text "your name is"
+      surface
+        text "your name shall be"
+      surface
+        text "your name will be"
+      surface
+        text "your name would be"
+      surface
+        text "your new name is"
+      surface
+        text "let your name be"
+      surface
+        text "you are named"
+      surface
+        text "you're named"
+      surface
+        text "you are called"
+      surface
+        text "you're called"
+      surface
+        text "i'll call you"
+      surface
+        text "i will call you"
+      surface
+        text "i'll name you"
+      surface
+        text "i will name you"
+      surface
+        text "i name you"
+      surface
+        text "i'll refer to you as"
+    lexeme ru
+      surface
+        text "тебя зовут"
+      surface
+        text "твоё имя"
+      surface
+        text "твое имя"
+    lexeme hi
+      surface
+        text "तुम्हारा नाम"
+      surface
+        text "आपका नाम"
+    lexeme zh
+      surface
+        text 你叫
+      surface
+        text 你的名字是
+      surface
+        text 您叫
+      surface
+        text 您的名字是
+    lexeme es
+      surface
+        text "tu nombre es"
+      surface
+        text "te llamaré"
+      surface
+        text "te voy a llamar"
   conversation_summary_directive
     defined-by inquiry
     defined-by answer
@@ -959,3 +1027,203 @@ meanings
         text 如何
       surface
         text 哪个
+  set_assistant_name
+    defined-by action
+    role assistant_name_assignment
+    precondition "an assistant name and an assignment phrase are recognized"
+    effect "the requested assistant name is persisted for later turns"
+    unit "not applicable"
+    example "Your name is Nova"
+    lexeme en
+      surface
+        text "set assistant name intent"
+  assistant_name_recall
+    defined-by inquiry
+    role assistant_name_recall
+    precondition "the user asks which name is assigned to the assistant"
+    effect "the assistant returns its current assigned name"
+    unit "not applicable"
+    example "What is your name?"
+    lexeme en
+      surface
+        text "assistant name recall intent"
+  ambiguous_modification_clarification
+    defined-by inquiry
+    role program_modification_reference
+    precondition "a modification request lacks a resolvable program artifact"
+    effect "the assistant requests the missing program or result reference"
+    unit "not applicable"
+    example "Change it"
+    lexeme en
+      surface
+        text "ambiguous modification clarification intent"
+  localized_response_template
+    defined-by answer
+    role localized_response_template
+    precondition "a handled intent has a response in the selected language"
+    effect "the matching localized response text is available for rendering"
+    unit "not applicable"
+    example "Which program or result should I modify?"
+    lexeme en
+      surface
+        text "localized response template"
+  response_set_assistant_name_en
+    defined-by answer
+    role localized_response_template
+    precondition "set_assistant_name is handled in English"
+    effect "an English assistant-name confirmation is emitted"
+    unit "not applicable"
+    example "Nice to meet you! I'll go by Nova from now on."
+    lexeme en
+      surface
+        text "response set assistant name en"
+  response_set_assistant_name_ru
+    defined-by answer
+    role localized_response_template
+    precondition "set_assistant_name is handled in Russian"
+    effect "a Russian assistant-name confirmation is emitted"
+    unit "not applicable"
+    example "Отлично, теперь меня зовут Нова. Приятно познакомиться!"
+    lexeme en
+      surface
+        text "response set assistant name ru"
+  response_set_assistant_name_hi
+    defined-by answer
+    role localized_response_template
+    precondition "set_assistant_name is handled in Hindi"
+    effect "a Hindi assistant-name confirmation is emitted"
+    unit "not applicable"
+    example "बढ़िया, अब से मेरा नाम नोवा है। आपसे मिलकर अच्छा लगा!"
+    lexeme en
+      surface
+        text "response set assistant name hi"
+  response_set_assistant_name_zh
+    defined-by answer
+    role localized_response_template
+    precondition "set_assistant_name is handled in Chinese"
+    effect "a Chinese assistant-name confirmation is emitted"
+    unit "not applicable"
+    example "好的，从现在起就叫我诺瓦吧。很高兴认识你！"
+    lexeme en
+      surface
+        text "response set assistant name zh"
+  response_set_assistant_name_es
+    defined-by answer
+    role localized_response_template
+    precondition "set_assistant_name is handled in Spanish"
+    effect "a Spanish assistant-name confirmation is emitted"
+    unit "not applicable"
+    example "¡Encantado! A partir de ahora usaré el nombre Nova."
+    lexeme en
+      surface
+        text "response set assistant name es"
+  response_assistant_name_recall_en
+    defined-by answer
+    role localized_response_template
+    precondition "assistant_name_recall is handled in English"
+    effect "the assigned assistant name is recalled in English"
+    unit "not applicable"
+    example "My name is Nova — that's what you named me."
+    lexeme en
+      surface
+        text "response assistant name recall en"
+  response_assistant_name_recall_ru
+    defined-by answer
+    role localized_response_template
+    precondition "assistant_name_recall is handled in Russian"
+    effect "the assigned assistant name is recalled in Russian"
+    unit "not applicable"
+    example "Меня зовут Нова — так вы меня назвали."
+    lexeme en
+      surface
+        text "response assistant name recall ru"
+  response_assistant_name_recall_hi
+    defined-by answer
+    role localized_response_template
+    precondition "assistant_name_recall is handled in Hindi"
+    effect "the assigned assistant name is recalled in Hindi"
+    unit "not applicable"
+    example "मेरा नाम नोवा है — यह नाम आपने मुझे दिया था।"
+    lexeme en
+      surface
+        text "response assistant name recall hi"
+  response_assistant_name_recall_zh
+    defined-by answer
+    role localized_response_template
+    precondition "assistant_name_recall is handled in Chinese"
+    effect "the assigned assistant name is recalled in Chinese"
+    unit "not applicable"
+    example "我叫诺瓦，这是你给我起的名字。"
+    lexeme en
+      surface
+        text "response assistant name recall zh"
+  response_assistant_name_recall_es
+    defined-by answer
+    role localized_response_template
+    precondition "assistant_name_recall is handled in Spanish"
+    effect "the assigned assistant name is recalled in Spanish"
+    unit "not applicable"
+    example "Me llamo Nova; ese es el nombre que me diste."
+    lexeme en
+      surface
+        text "response assistant name recall es"
+  response_ambiguous_modification_clarification_en
+    defined-by answer
+    role localized_response_template
+    precondition "ambiguous_modification_clarification is handled in English"
+    effect "an English request for the missing modification target is emitted"
+    unit "not applicable"
+    example "Which program or result should I modify?"
+    lexeme en
+      surface
+        text "response ambiguous modification clarification en"
+  response_ambiguous_modification_clarification_ru
+    defined-by answer
+    role localized_response_template
+    precondition "ambiguous_modification_clarification is handled in Russian"
+    effect "a Russian request for the missing modification target is emitted"
+    unit "not applicable"
+    example "Какую программу или результат нужно изменить?"
+    lexeme en
+      surface
+        text "response ambiguous modification clarification ru"
+  response_ambiguous_modification_clarification_hi
+    defined-by answer
+    role localized_response_template
+    precondition "ambiguous_modification_clarification is handled in Hindi"
+    effect "a Hindi request for the missing modification target is emitted"
+    unit "not applicable"
+    example "मुझे किस प्रोग्राम या परिणाम को बदलना चाहिए?"
+    lexeme en
+      surface
+        text "response ambiguous modification clarification hi"
+  response_ambiguous_modification_clarification_zh
+    defined-by answer
+    role localized_response_template
+    precondition "ambiguous_modification_clarification is handled in Chinese"
+    effect "a Chinese request for the missing modification target is emitted"
+    unit "not applicable"
+    example "我应该修改哪个程序或结果？"
+    lexeme en
+      surface
+        text "response ambiguous modification clarification zh"
+  response_ambiguous_modification_clarification_es
+    defined-by answer
+    role localized_response_template
+    precondition "ambiguous_modification_clarification is handled in Spanish"
+    effect "a Spanish request for the missing modification target is emitted"
+    unit "not applicable"
+    example "¿Qué programa o resultado debo modificar?"
+    lexeme en
+      surface
+        text "response ambiguous modification clarification es"
+  response_assistant_free_time_es
+    defined-by answer
+    role localized_response_template
+    precondition "assistant_free_time is handled in Spanish"
+    effect "the assistant's availability is explained in Spanish"
+    unit "not applicable"
+    example "No tengo tiempo libre como una persona."
+    lexeme en
+      surface
+        text "response assistant free time es"

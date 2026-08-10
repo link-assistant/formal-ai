@@ -243,7 +243,7 @@ fn minimal_core_ledger_covers_every_recursive_handler_source() {
     for disposition in entries.iter().map(|entry| entry.disposition.as_str()) {
         assert!(matches!(disposition, "migrate" | "promote" | "delete"));
     }
-    assert!(ledger.contains("outside_core_lines_max 19731"));
+    assert!(ledger.contains("outside_core_lines_max 19720"));
 }
 
 #[test]

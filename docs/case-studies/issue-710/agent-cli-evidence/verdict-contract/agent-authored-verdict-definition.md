@@ -1,0 +1,1 @@
+A works-now verdict requires a passing regression test against the current production path; a still-broken verdict requires an open focused tracking issue.

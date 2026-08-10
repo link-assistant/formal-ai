@@ -971,7 +971,7 @@ summarization mode ladder.
 | ID | Requirement | Status |
 | --- | --- | --- |
 | R345 | The system must summarize arbitrary files from this repository, not only existing curated summarization inputs. | Implemented by `src/summarization/file.rs::{formalize_repository_file,summarize_repository_file}` and public re-exports from `src/lib.rs`; covered by `tests/unit/specification/summarization_pipeline.rs::repository_file_summary_recurses_into_markdown_embedded_grammars`. |
-| R346 | The implementation should start from two random repository files, summarize them manually, and generalize the algorithm beyond those exact files. | Implemented by `docs/case-studies/issue-563/raw-data/random-files-sampled.txt` and `manual-random-file-summaries.md`; the code handles generic code, structured data, Markdown, and fallback text rather than hardcoding the sampled JSON files. |
+| R346 | The implementation should start from two random repository files, summarize them manually, and generalize the algorithm beyond those exact files. | Implemented by the original two-file sample and generic summarizer plus the issue-893 validation protocol in `src/summarization/validation/`: seeded disjoint two-file iterations run until stable or bounded, recursive embedded grammars exercise the production summarizer, and the published metric enforces an 80% non-decreasing ratchet. Covered by `tests/unit/specification/issue_893_summarization_validation.rs`. |
 | R347 | Each file must be formalized before summarization, using the project's meta-language orientation. | Implemented by `RepositoryFileFormalization` and `RepositoryFileFormalization::links_notation()`, with `MetaLanguageFormalization` parser evidence for supported grammars. |
 | R348 | Markdown files must be handled recursively with multiple embedded grammars. | Implemented by `EmbeddedGrammarFormalization` records for fenced code blocks, including CommonMark EOF-close behavior; covered by `formalize_repository_file_markdown_records_embedded_grammars` and `formalize_repository_file_markdown_closes_embedded_grammar_at_eof`. |
 | R349 | Summarization must remain part of the meta algorithm, not a detached ad hoc formatter. | Implemented by routing repository-file content statements through the existing `SummarizationConfig`, `summarize`, and `deformalize` stages. |
@@ -1605,6 +1605,50 @@ round-trip matrix, and CI guards all read the same records.
 | R706-7 | Per-language behaviour outside the detector must also be data: unknown-intent opener pools, display names, concept slugs, and script checks. | `data/seed/unknown-openers.lino` feeds the Rust core, the WASM worker, and the JS worker; `language::language_name`, `language_for_concept_slug`, and `surface_matches_language` read `data/seed/languages.lino` and `language-detection.lino`, replacing the `match` arms in `thinking.rs`, `concepts.rs`, `translation/language_markers.rs`, and `lexeme_import.rs`. Covered by `unknown_openers_are_seed_data_on_every_surface` and `language_metadata_comes_from_the_ledger_not_from_rust_branches`. |
 | R706-8 | A new language's request frames must be *learned* from a recorded frontier by the existing issue-#701 cycle, not hand-written. | `src/language_frontier.rs` records `data/meta/learning-frontier-language-gap.lino` by running the live engine over `data/language-additions/*.lino`; `learning_cycle::recorded_frontiers` turns `--frontier` into an open registry so `formal-ai learn cycle --frontier language-gap` replays it through the same cycle. Covered by `the_learn_cli_replays_the_language_frontier_through_the_shared_cycle`. |
 | R706-9 | Adoption must be proved as a capability delta, not claimed. | The two validated Spanish frames were adopted as seed data in `data/seed/learned-request-openers.lino`; `data/meta/language-adoption-ledger.lino` pins 7/7 before/after pairs (`unknown_to_web_search`, term recovered, 0 unadopted) and re-recording the frontier now returns `learning_frontier "0"`. Covered by `adopting_the_proposals_changed_what_the_engine_answers` and `re_recording_the_language_frontier_now_finds_nothing_to_learn`. |
+
+## Issue #710 Dropped-Requirements Re-verification
+
+Issue [#710](https://github.com/link-assistant/formal-ai/issues/710) audits 32
+requirements that earlier issue closures did not prove. The detailed evidence
+matrix was re-verified on 2026-08-10 against v0.337.0 in
+`docs/case-studies/issue-710/README.md`; this table is the compact current
+requirement-status authority. `still-broken` means the linked open focused
+owner remains required and must not be read as implemented.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R710-01 | Conversation-history recall. | `works-now` — pinned history-search and previous-question specifications. |
+| R710-02 | Russian identity and capabilities. | `works-now` — pinned localized identity/capability specifications. |
+| R710-03 | Multi-statement and many-question composition. | `works-now` — issue-710 native and browser regressions. |
+| R710-04 | Context-qualified questions such as IIR in ML. | `works-now` — four-language contextual concept regressions. |
+| R710-05 | Typo tolerance, clarification, and full-path fuzzy matching. | `works-now` — worker and native fuzzy regressions. |
+| R710-06 | Antiregime and false-totality definition class. | `works-now` — seeded multilingual concept regressions. |
+| R710-07 | Folder-listing prompt variants. | `superseded` — #745, #758, and PR #850 generalized capability routing. |
+| R710-08 | Target-less modifications ask exactly one question. | `works-now` — issue-710 four-language specification. |
+| R710-09 | Multiple deterministic free-time replies. | `works-now` — issue-710 stable-variant specification. |
+| R710-10 | Assistant name set/read and attribution. | `works-now` — issue-710 four-language naming plus issue-157 attribution coverage. |
+| R710-11 | Issue #292 rules, answer language, parity, and Markdown. | `works-now` — native/browser localization and generated parity checks. |
+| R710-12 | Thinking localization on CLI/API/Telegram. | `works-now` — issue-889 cross-surface regressions for every registered language. |
+| R710-13 | Collapsed thinking animation and top placement. | `works-now` — issue-488 browser and issue-676 narrative-order regressions. |
+| R710-14 | Translate formal proofs to programming languages. | `works-now` — issue-890 compile-and-execute regressions for every registered target. |
+| R710-15 | At least 50 verified equation types. | `works-now` — issue-891 catalog and non-decreasing ratchet cover 72 types. |
+| R710-16 | Compose calculations with other instructions. | `works-now` — calculator continuation and issue-710 composition regressions. |
+| R710-17 | Word problems beyond train meeting. | `works-now` — Fibonacci and box-relation regressions. |
+| R710-18 | Current source-backed film release ordering. | `works-now` — issue-892 timestamped Wikidata timeline regressions. |
+| R710-19 | Closest contextual pronoun resolution. | `works-now` — issue-465 follow-up specification. |
+| R710-20 | How-to multi-source synthesis and seven-day availability cache. | `still-broken` — [#991](https://github.com/link-assistant/formal-ai/issues/991); #709 delivered statement fusion, not the procedural contract. |
+| R710-21 | Iterative two-file summary validation and 80% quality bar. | `works-now` — issue-893 iteration, threshold, and ratchet regressions. |
+| R710-22 | Interior/plain-capitalized entity reasoning class. | `works-now` — issue-571 class regression and worker entity coverage. |
+| R710-23 | Calendar interchange and Apple/Google/Microsoft flows. | `works-now` — RFC 5545 plus Google insertion regression. |
+| R710-24 | Optional gated OCR and attachment transcription. | `works-now` — issue-493 real-worker OCR regressions. |
+| R710-25 | E2E against deployed GitHub Pages. | `works-now` — deployment-output and matching-deployment workflow regressions. |
+| R710-26 | Four-template CI comparison and upstream filings. | `works-now` — issue-894 four-template comparison and filing-ledger regressions. |
+| R710-27 | Published coverage with a non-decreasing ratchet. | `works-now` — issue-895 80% published-coverage floor and ratchet regressions. |
+| R710-28 | Gemini headless tools. | `works-now` — #671 / PR #814 real-client matrix evidence. |
+| R710-29 | macOS signed/notarized auto-update production path. | `works-now` — desktop workflow and issue-548 regressions. |
+| R710-30 | link-foundation/start and command-stream adoption. | `still-broken` — [#990](https://github.com/link-assistant/formal-ai/issues/990); start-command shipped, but production command runners still bypass command-stream. |
+| R710-31 | web-search/web-capture as production components. | `works-now` — issue-896 production-component and feature-wiring regressions. |
+| R710-32 | Iframe pre-check and external-link actions. | `works-now` — browser navigation/embedding regressions. |
 
 ## Issue #858 Claude Code Returning-User Recap
 

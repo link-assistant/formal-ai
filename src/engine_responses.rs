@@ -126,21 +126,6 @@ pub fn chinese_courtesy_response_answer() -> &'static str {
     cached_response(&CELL, "courtesy_response", "zh")
 }
 
-pub fn russian_assistant_free_time_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "assistant_free_time", "ru")
-}
-
-pub fn hindi_assistant_free_time_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "assistant_free_time", "hi")
-}
-
-pub fn chinese_assistant_free_time_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "assistant_free_time", "zh")
-}
-
 pub fn identity_answer() -> &'static str {
     static CELL: OnceLock<String> = OnceLock::new();
     cached_response(&CELL, "identity", "en")

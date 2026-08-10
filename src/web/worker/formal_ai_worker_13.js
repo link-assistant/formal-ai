@@ -342,6 +342,7 @@ const ROLE_PROGRAM_ARTIFACT = "program_artifact";
 // Semantic role: an operation a follow-up turn can request against the active
 // program (sort, reverse, cancel, change, …) — additive or subtractive.
 const ROLE_PROGRAM_MODIFICATION = "program_modification";
+const ROLE_PROGRAM_MODIFICATION_REFERENCE = "program_modification_reference";
 // Semantic role: a kind of program artifact a user can ask to be authored
 // (a program, a script, code, a function, a class) — the noun side of "write a <kind>".
 const ROLE_PROGRAM_KIND = "program_kind";
@@ -369,6 +370,7 @@ const ROLE_CAPABILITY_QUERY_MORE = "capability_query_more";
 const ROLE_SELF_FACT_QUERY = "self_fact_query";
 const ROLE_FACT_CHECK_CURRENT_DIALOGUE_QUERY = "fact_check_current_dialogue_query";
 const ROLE_SELF_INTRODUCTION_REQUEST = "self_introduction_request";
+const ROLE_ASSISTANT_NAME_ASSIGNMENT = "assistant_name_assignment";
 // Issue #386 known-facts inventory roles — mirror the ROLE_KNOWLEDGE_INVENTORY_*
 // / ROLE_KNOWLEDGE_POSSESSION consts in src/seed/roles.rs. Their surface words
 // live in data/seed/meanings-intent.lino (the shared `fact` noun plus the
