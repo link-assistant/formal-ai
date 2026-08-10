@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.339.0] - 2026-08-10
+
+### Added
+
+- Learn execution-verified coding procedures from licensed, provenance-bearing
+  cached research after a program skill gap, with deterministic offline replay
+  and failure-driven follow-up queries.
+
+### Fixed
+- Restored `cargo install formal-ai --locked` on stock Rust images by selecting web-capture's transport-independent search feature, removing transitive system OpenSSL build requirements.
+
 ## [0.338.0] - 2026-08-10
 
 ### Added
