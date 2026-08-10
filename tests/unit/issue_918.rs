@@ -215,14 +215,15 @@ fn minimal_core_ledger_covers_every_recursive_handler_source() {
             .iter()
             .filter(|entry| entry.disposition == "migrate")
             .count(),
-        43
+        46
     );
     assert_eq!(
         entries
             .iter()
             .filter(|entry| entry.disposition == "promote")
             .count(),
-        3
+        0,
+        "mixed handler files cannot be promoted into the minimal core"
     );
     for entry in entries
         .iter()
@@ -242,7 +243,7 @@ fn minimal_core_ledger_covers_every_recursive_handler_source() {
     for disposition in entries.iter().map(|entry| entry.disposition.as_str()) {
         assert!(matches!(disposition, "migrate" | "promote" | "delete"));
     }
-    assert!(ledger.contains("outside_core_lines_max 19021"));
+    assert!(ledger.contains("outside_core_lines_max 19731"));
 }
 
 #[test]

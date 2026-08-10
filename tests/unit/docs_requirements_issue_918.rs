@@ -20,7 +20,7 @@ fn issue_918_case_study_and_release_metadata_are_traceable() {
             "| R918-6 ",
             "docs/design/minimal-core-boundary.md",
             "data/meta/seed-metadata-schema.lino",
-            "43 migration candidates",
+            "all 46 files as migration candidates",
         ],
     );
     assert_contains_all(
@@ -41,7 +41,7 @@ fn issue_918_case_study_and_release_metadata_are_traceable() {
         &[
             "Issue #918 Minimal-Core Boundary And Seed-Metadata Audit (PR #986)",
             "46 recursive handler sources",
-            "19,021 outside-core lines",
+            "19,731 outside-core lines",
             "3,447 remaining metadata-gap records",
         ],
     );

@@ -7,7 +7,7 @@ issue, recent actions, and collection manifest before implementation review.
 
 ## Review Scope
 
-Review the four-category boundary and each promote decision first. Then review
+Review the four-category boundary and the all-migrate result first. Then review
 the independent census test, coding metadata fields, deterministic gap map, and
 the two script gates. The migration ledger intentionally records remaining
 debt; it does not relabel specialized handlers as core.

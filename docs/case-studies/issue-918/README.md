@@ -39,8 +39,10 @@ record of that debt. Prose-only progress could therefore drift from the data.
 `docs/design/minimal-core-boundary.md` admits only the meta algorithm, link
 store, generic interpreters, and host surfaces. The recursive source ledger
 classifies every handler as migrate, promote, or delete and records a concrete
-reason. Three link-store/memory-program interpreter files pass promotion; 43
-files remain migration candidates. Both per-file and aggregate line counts are
+reason. No handler file passes the strict promotion test because each is mixed
+with prose, policy, or routing precedence; the dedicated generic interpreter
+modules outside the handler tree remain core. All 46 handler files and 19,731
+lines are migration candidates. Both per-file and aggregate line counts are
 ceilings, so reductions must lower the committed baseline.
 
 `data/meta/seed-metadata-schema.lino` defines role, precondition, effect, unit,
