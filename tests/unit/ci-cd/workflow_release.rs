@@ -401,13 +401,13 @@ fn test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten(
     let test_job = job_block(&workflow, "test");
 
     assert!(
-        test_job.contains("timeout-minutes: 25"),
-        "the test job budget must cover the ~14min measured cost (issue #812)"
+        test_job.contains("timeout-minutes: ${{ matrix.os == 'macos-15-intel' && 35 || 25 }}"),
+        "Linux must retain the measured 25min budget while the macOS parity leg gets 35min"
     );
     assert!(
-        test_job.contains("TEST_BUDGET_SECONDS: 1500"),
-        "the warning threshold must be derived from the declared budget, and \
-         1500s is `timeout-minutes: 25` (issue #812)"
+        test_job
+            .contains("TEST_BUDGET_SECONDS: ${{ matrix.os == 'macos-15-intel' && 2100 || 1500 }}"),
+        "each warning threshold must be derived from its platform's declared budget"
     );
     assert!(
         test_job.contains("::warning title=Test suite is approaching its timeout"),
@@ -592,6 +592,8 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // Issue #812: raised from 15 after run 29767811026 was killed 1.1 s
         // after the suite passed. See
         // `test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten`.
+        // Issue #961 keeps this Linux baseline and selects a 35-minute macOS
+        // budget through the matrix expression checked below.
         ("test", 25),
         // Issue #896: raised from 10; the published web-search/web-capture
         // graphs moved the job from ~4-5 to 7.2 minutes, and a cold release
@@ -632,7 +634,11 @@ fn release_workflow_jobs_have_explicit_timeouts() {
 
     for (job_name, timeout_minutes) in expected_timeouts {
         let job = job_block(&workflow, job_name);
-        let expected = format!("    timeout-minutes: {timeout_minutes}\n");
+        let expected = if job_name == "test" {
+            "    timeout-minutes: ${{ matrix.os == 'macos-15-intel' && 35 || 25 }}\n".to_string()
+        } else {
+            format!("    timeout-minutes: {timeout_minutes}\n")
+        };
         assert!(
             job.contains(&expected),
             "{job_name} should declare {expected:?}"
