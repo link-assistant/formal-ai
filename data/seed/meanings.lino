@@ -138,6 +138,10 @@ meanings
   program_modification_reference
     defined-by reference
     role program_modification_reference
+    precondition "a program-modification request refers to an earlier artifact"
+    effect "the referenced program artifact is selected for modification"
+    unit "not applicable"
+    example "change it"
     lexeme en
       surface
         text it
