@@ -400,7 +400,7 @@ fn issue_905_case_study_and_self_authorship_are_preserved() {
         read("self-hosting-authorship/agent-cli.log").contains("ses_034e9dafeffe7nxeTkFhmHLmZN")
     );
     assert!(read("self-hosting-fixture-refresh/agent-cli.log")
-        .contains("ses_01bb97ce6ffeVJGAEUjGbtrkUr"));
+        .contains("ses_00ea26880ffeRCSs97U7BNbw9A"));
 
     let authored = fs::read(format!(
         "{case}/self-hosting-authorship/tool-result-evidence-invariant.lino"
