@@ -489,20 +489,3 @@ fn config(key: &str) -> String {
         .remove(key)
         .unwrap_or_else(|| key.to_owned())
 }
-
-#[cfg(test)]
-mod tests {
-    use super::{context_filename, safe_session_component};
-
-    #[test]
-    fn report_context_filenames_cannot_escape_the_output_directory() {
-        assert_eq!(
-            safe_session_component("../../session name"),
-            "------session-name"
-        );
-        assert_eq!(
-            context_filename("../../session name"),
-            "formal-ai-context-------session-name.lino"
-        );
-    }
-}

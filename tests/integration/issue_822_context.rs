@@ -23,23 +23,25 @@ fn temporary_directory(label: &str) -> PathBuf {
     ))
 }
 
-fn create_opencode_fixture(path: &std::path::Path) {
+fn create_opencode_fixture(path: &std::path::Path, session: &str) {
     let script = r"
 import json, sqlite3, sys
 db = sqlite3.connect(sys.argv[1])
 db.execute('CREATE TABLE session (id TEXT PRIMARY KEY, directory TEXT, model TEXT, version TEXT, time_created INTEGER, time_updated INTEGER)')
 db.execute('CREATE TABLE message (id TEXT PRIMARY KEY, session_id TEXT, time_created INTEGER, time_updated INTEGER, data TEXT)')
 db.execute('CREATE TABLE part (id TEXT PRIMARY KEY, message_id TEXT, session_id TEXT, time_created INTEGER, time_updated INTEGER, data TEXT)')
-db.execute('INSERT INTO session VALUES (?, ?, ?, ?, ?, ?)', ('ses_fixture', '/workspace/a:b', json.dumps({'providerID':'formalai','id':'formal-ai'}), '1.18.4', 1, 9))
-db.execute('INSERT INTO message VALUES (?, ?, ?, ?, ?)', ('msg_b', 'ses_fixture', 2, 4, json.dumps({'role':'assistant','tokens':{'input':31},'cost':0.01})))
-db.execute('INSERT INTO message VALUES (?, ?, ?, ?, ?)', ('msg_a', 'ses_fixture', 1, 1, json.dumps({'role':'user'})))
-db.execute('INSERT INTO part VALUES (?, ?, ?, ?, ?, ?)', ('part_b', 'msg_b', 'ses_fixture', 4, 4, json.dumps({'type':'tool','tool':'websearch','state':{'status':'completed','output':'result','input':{'unsafe:key':'preserved'}}})))
-db.execute('INSERT INTO part VALUES (?, ?, ?, ?, ?, ?)', ('part_a', 'msg_a', 'ses_fixture', 1, 1, json.dumps({'type':'text','text':'true'})))
+session = sys.argv[2]
+db.execute('INSERT INTO session VALUES (?, ?, ?, ?, ?, ?)', (session, '/workspace/a:b', json.dumps({'providerID':'formalai','id':'formal-ai'}), '1.18.4', 1, 9))
+db.execute('INSERT INTO message VALUES (?, ?, ?, ?, ?)', ('msg_b', session, 2, 4, json.dumps({'role':'assistant','tokens':{'input':31},'cost':0.01})))
+db.execute('INSERT INTO message VALUES (?, ?, ?, ?, ?)', ('msg_a', session, 1, 1, json.dumps({'role':'user'})))
+db.execute('INSERT INTO part VALUES (?, ?, ?, ?, ?, ?)', ('part_b', 'msg_b', session, 4, 4, json.dumps({'type':'tool','tool':'websearch','state':{'status':'completed','output':'result','input':{'unsafe:key':'preserved'}}})))
+db.execute('INSERT INTO part VALUES (?, ?, ?, ?, ?, ?)', ('part_a', 'msg_a', session, 1, 1, json.dumps({'type':'text','text':'true'})))
 db.commit()
 ";
     let output = Command::new("python3")
         .args(["-c", script])
         .arg(path)
+        .arg(session)
         .output()
         .expect("create SQLite fixture");
     assert!(
@@ -54,7 +56,7 @@ fn opencode_export_is_complete_native_read_only_and_deterministic() {
     let directory = temporary_directory("opencode");
     fs::create_dir_all(&directory).unwrap();
     let database = directory.join("opencode.db");
-    create_opencode_fixture(&database);
+    create_opencode_fixture(&database, "ses_fixture");
     let before = fs::read(&database).unwrap();
 
     let run = |format: Option<&str>| {
@@ -151,6 +153,52 @@ fn general_json_converter_defaults_to_links_notation() {
     assert!(lino.contains("messages\n  message\n"), "{lino}");
     assert!(lino.contains("content \"a:b\""), "{lino}");
     assert!(!lino.contains("message_0"), "{lino}");
+}
+
+#[test]
+fn report_context_filenames_cannot_escape_the_temp_directory() {
+    let directory = temporary_directory("safe-report-path");
+    let temp = directory.join("tmp");
+    fs::create_dir_all(&temp).unwrap();
+    let database = directory.join("opencode.db");
+    let session = "../../session name";
+    create_opencode_fixture(&database, session);
+    let report = directory.join("report.md");
+
+    let output = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args([
+            "--silent",
+            "report",
+            "body",
+            "--session",
+            session,
+            "--source",
+            "opencode",
+            "--db",
+        ])
+        .arg(&database)
+        .arg("--output")
+        .arg(&report)
+        .env("TMPDIR", &temp)
+        .output()
+        .expect("run report with an unsafe session component");
+
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert!(report.is_file());
+    assert!(
+        temp.join("formal-ai-context-------session-name.lino")
+            .is_file(),
+        "the default context copy must stay inside the temporary directory"
+    );
+    assert!(
+        !directory.join("session name.lino").exists(),
+        "the session must not escape through the generated filename"
+    );
+    fs::remove_dir_all(directory).unwrap();
 }
 
 #[test]
@@ -444,7 +492,7 @@ fn issue_989_report_body_uploads_harness_server_and_merged_contexts_separately()
     let bin = directory.join("bin");
     fs::create_dir_all(&bin).unwrap();
     let database = directory.join("opencode.db");
-    create_opencode_fixture(&database);
+    create_opencode_fixture(&database, "ses_fixture");
     write_dialog_exchange(
         &directory,
         "POST",
