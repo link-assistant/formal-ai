@@ -299,6 +299,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-08.lino"
     record "permissioned-network"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_635669aa179f08d6
+    source "data/seed/closure-generated-08.lino"
+    record "prueba"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_fe4719a0742fe276
     source "data/seed/closure-generated-08.lino"
     record "response_client_global_config_probe_started_en"

@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/formalization_recipe.rs
   language rust
   fidelity full_ast
-  byte_len 6677
-  line_count 165
-  content_id source_module_01299f5158e3321d
+  byte_len 6781
+  line_count 166
+  content_id source_module_ebc7caef9a8e04ac
   symbol_count 11
   symbols
     const SEARCH_QUERY 21 21
@@ -16,15 +16,15 @@ self_ast_census
     const INLINE_SOURCE_DELIMITERS 47 47
     function inline_formalization_source 57 73
     function is_canonical_tale_reference 76 81
-    function plan_formalization_step 84 144
-    function final_answer 148 165
+    function plan_formalization_step 85 145
+    function final_answer 149 166
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 3714
-    named_node_count 706
+    total_link_count 3723
+    named_node_count 707
     distinct_node_kinds 55
     node_kinds
       arguments 48
@@ -55,7 +55,7 @@ self_ast_census
       integer_literal 3
       let_condition 4
       let_declaration 15
-      line_comment 36
+      line_comment 37
       macro_invocation 4
       outer_doc_comment_marker 18
       parameter 7

@@ -215,21 +215,22 @@ fn meta_tools_match_driver_planner_and_packages() {
 #[test]
 fn meta_stages_match_the_planner_state_machine() {
     let records = records();
-    let planner = read("src/agentic_coding/planner.rs");
+    let recipe = read("src/agentic_coding/formalization_recipe.rs");
 
-    // The documented state machine appears verbatim in the planner.
+    // The documented state machine appears verbatim in the recipe module.
     assert!(
-        planner.contains(
+        recipe.contains(
             "web_search → web_fetch → write_file(formalize) → run_command(verify) → final"
         ),
-        "planner.rs should document the search → fetch → write → run → final state machine"
+        "formalization_recipe.rs should document the search → fetch → write → run → final state \
+         machine"
     );
 
     for stage in of_kind(&records, "meta_stage") {
         let order = stage.require("order");
         assert!(
-            planner.contains(&format!("Step {order}:")),
-            "planner.rs should mark `Step {order}:` for the {} stage",
+            recipe.contains(&format!("Step {order}:")),
+            "formalization_recipe.rs should mark `Step {order}:` for the {} stage",
             stage.require("stage")
         );
     }

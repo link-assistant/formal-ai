@@ -81,6 +81,7 @@ fn is_canonical_tale_reference(text: &str) -> bool {
 }
 
 /// Plan the next formalization step from the conversation and advertised tools.
+// State machine: web_search → web_fetch → write_file(formalize) → run_command(verify) → final.
 pub(super) fn plan_formalization_step(
     task: &str,
     messages: &[ChatMessage],

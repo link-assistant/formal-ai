@@ -10,14 +10,14 @@ step_recognise_task
   id "recognise_task"
   title "Recognise the agentic task from the latest user turn"
   detail "The planner reads only the most recent user message (latest_user_text) and classifies it with is_formalization_task against a small closed keyword set (FORMALIZATION_KEYWORDS). A non-matching turn yields None, so the server falls through to its ordinary symbolic solver and agentic coding stays strictly opt-in."
-  seed_file "src/agentic_coding/planner.rs"
+  seed_file "src/agentic_coding/formalization_recipe.rs"
 step_pin_constants
   record_type "meta_step"
   order "2"
   id "pin_constants"
   title "Pin the canonical plan as named constants"
   detail "Expose the task's fixed plan as stable constants — SEARCH_QUERY, CANONICAL_SOURCE_URL, and KB_PATH — so the recipe is data, not scattered string literals, and the grounding test can verify each is declared."
-  seed_file "src/agentic_coding/planner.rs"
+  seed_file "src/agentic_coding/formalization_recipe.rs"
 step_classify_tools
   record_type "meta_step"
   order "3"
@@ -38,7 +38,7 @@ step_understand_errors
   id "understand_errors"
   title "Understand tool errors and fall back deterministically"
   detail "A fetch result that looks_like_error (error / failed / not found / 404) is not trusted as source text; the formalizer then falls back to the canonical synopsis so the loop still completes with a stable, all-nine-primitive knowledge base. This is the issue's `understand errors from tools` requirement."
-  seed_file "src/agentic_coding/planner.rs"
+  seed_file "src/agentic_coding/formalization_recipe.rs"
 step_wire_server
   record_type "meta_step"
   order "6"
@@ -63,15 +63,15 @@ step_execute_loop
 constant_search_query
   record_type "meta_constant"
   constant "SEARCH_QUERY"
-  source_file "src/agentic_coding/planner.rs"
+  source_file "src/agentic_coding/formalization_recipe.rs"
 constant_canonical_source_url
   record_type "meta_constant"
   constant "CANONICAL_SOURCE_URL"
-  source_file "src/agentic_coding/planner.rs"
+  source_file "src/agentic_coding/formalization_recipe.rs"
 constant_kb_path
   record_type "meta_constant"
   constant "KB_PATH"
-  source_file "src/agentic_coding/planner.rs"
+  source_file "src/agentic_coding/formalization_recipe.rs"
 tool_web_search
   record_type "meta_tool"
   tool "web_search"
@@ -129,7 +129,7 @@ fn_classify_tool
 fn_is_formalization_task
   record_type "meta_function"
   function "is_formalization_task"
-  source_file "src/agentic_coding/planner.rs"
+  source_file "src/agentic_coding/formalization_recipe.rs"
   kind "recogniser"
 fn_looks_like_error
   record_type "meta_function"
@@ -139,7 +139,7 @@ fn_looks_like_error
 fn_final_answer
   record_type "meta_function"
   function "final_answer"
-  source_file "src/agentic_coding/planner.rs"
+  source_file "src/agentic_coding/formalization_recipe.rs"
   kind "renderer"
 fn_formalize_text_to_links
   record_type "meta_function"
