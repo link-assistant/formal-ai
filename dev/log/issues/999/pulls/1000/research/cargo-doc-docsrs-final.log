@@ -1,0 +1,36 @@
+   Compiling serde_core v1.0.229
+    Checking memchr v2.8.3
+   Compiling getrandom v0.3.4
+    Checking percent-encoding v2.3.2
+    Checking rustix v1.1.4
+    Checking either v1.17.0
+    Checking form_urlencoded v1.2.2
+    Checking url v2.5.8
+   Compiling formal-ai v0.339.1 (/tmp/gh-issue-solver-1786471194109)
+    Checking aho-corasick v1.1.4
+    Checking ahash v0.8.12
+    Checking nom v8.0.0
+    Checking regex-automata v0.4.16
+    Checking which v7.0.3
+    Checking serde v1.0.229
+    Checking serde_json v1.0.151
+    Checking string_cache v0.8.9
+    Checking num-bigint v0.4.8
+    Checking chrono v0.4.45
+    Checking markup5ever v0.14.1
+    Checking regex v1.13.1
+    Checking rust_decimal v1.42.1
+    Checking links-notation v0.13.0
+    Checking serde-wasm-bindgen v0.6.5
+    Checking lino-objects-codec v0.2.1
+    Checking web-search v0.5.0
+    Checking lino-arguments v0.3.0
+    Checking html5ever v0.29.1
+    Checking num-rational v0.4.2
+    Checking command-stream v0.15.0
+    Checking link-calculator v0.20.3
+    Checking scraper v0.21.0
+    Checking web-capture v0.3.36
+ Documenting formal-ai v0.339.1 (/tmp/gh-issue-solver-1786471194109)
+    Finished `dev` profile [unoptimized] target(s) in 25.88s
+   Generated /tmp/gh-issue-solver-1786471194109/target/doc/formal_ai/index.html

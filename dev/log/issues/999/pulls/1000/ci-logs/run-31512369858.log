@@ -1,0 +1,1631 @@
+Task Ladder (issue	UNKNOWN STEP	﻿2026-08-11T16:26:12.5728170Z Current runner version: '2.336.0'
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5750535Z ##[group]Runner Image Provisioner
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5751813Z Hosted Compute Agent
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5752540Z Version: 20260707.563
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5753364Z Commit: 02667638d2b423fbc733a8e32a88b44996a3ba6e
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5754293Z Build Date: 2026-07-07T19:33:50Z
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5755300Z Worker ID: {afd4f098-726d-455b-8d67-752f0295e023}
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5756236Z Azure Region: westus3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5756780Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5758415Z ##[group]Operating System
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5759064Z Ubuntu
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5759533Z 24.04.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5760102Z LTS
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5760758Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5761593Z ##[group]Runner Image
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5762259Z Image: ubuntu-24.04
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5762888Z Version: 20260720.247.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5764239Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260720.247/images/ubuntu/Ubuntu2404-Readme.md
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5766229Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260720.247
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5767212Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5768429Z ##[group]GITHUB_TOKEN Permissions
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5770727Z Contents: read
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5771350Z Metadata: read
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5772093Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5774241Z Secret source: Actions
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.5775436Z Prepare workflow directory
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.6202571Z Prepare all required actions
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.6253827Z Getting action download info
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:12.9522938Z Download action repository 'actions/checkout@v6' (SHA:d23441a48e516b6c34aea4fa41551a30e30af803)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:13.9475483Z Download action repository 'dtolnay/rust-toolchain@stable' (SHA:4360b52568e2003a75bf9bc1d59f33a8e3fc893c)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.2170792Z Download action repository 'actions/upload-artifact@v7' (SHA:043fb46d1a93c77aae656e7c1c64a875d1fc6a0a)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.4393660Z Complete job name: Task Ladder (issue
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.5196047Z ##[group]Run actions/checkout@v6
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.5197457Z with:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.5198414Z   repository: link-assistant/formal-ai
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.5206301Z   token: ***
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.5207273Z   ssh-strict: true
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.5208206Z   ssh-user: git
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.5209167Z   persist-credentials: true
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.5210232Z   clean: true
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.5211177Z   sparse-checkout-cone-mode: true
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.5212394Z   fetch-depth: 1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.5213344Z   fetch-tags: false
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.5214326Z   show-progress: true
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.5215321Z   lfs: false
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.5216212Z   submodules: false
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.5217208Z   set-safe-directory: true
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.5218279Z   allow-unsafe-pr-checkout: false
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.5219558Z env:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.5220420Z   GIT_CONFIG_COUNT: 1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.5221615Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.5222890Z   GIT_CONFIG_VALUE_0: main
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.5223956Z   CARGO_NET_RETRY: 10
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.5225000Z   CARGO_HTTP_MULTIPLEXING: false
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.5226218Z   CARGO_TERM_COLOR: always
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.5227323Z   RUSTFLAGS: -Dwarnings
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.5228330Z   CARGO_INCREMENTAL: 0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.5229335Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.6440892Z Syncing repository: link-assistant/formal-ai
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.6445741Z ##[group]Getting Git version info
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.6447443Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.6450219Z [command]/usr/bin/git version
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.6493760Z git version 2.54.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.6523053Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.6544482Z Temporarily overriding HOME='/home/runner/work/_temp/e7174e97-aa9b-4496-87c0-43f1d0944bf4' before making global git config changes
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.6549841Z Adding repository directory to the temporary git global config as a safe directory
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.6555405Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.6585139Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.6589075Z ##[group]Determining repository object format
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.6592706Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.6595377Z ##[group]Initializing the repository
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.6598028Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.6861780Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.6874758Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.6904964Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.6907998Z ##[group]Disabling automatic garbage collection
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.6910820Z [command]/usr/bin/git config --local gc.auto 0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.6937909Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.6940367Z ##[group]Setting up auth
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.6942364Z Removing SSH command configuration
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.6955080Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.6991419Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.7463699Z Removing HTTP extra header
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.7472042Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.7502174Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.7667300Z Removing includeIf entries pointing to credentials config files
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.7672033Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.7699163Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.7883623Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-2ab1a438-edfc-4327-b2d1-ab62157e44bc.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.7916750Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-2ab1a438-edfc-4327-b2d1-ab62157e44bc.config
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.7944539Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-2ab1a438-edfc-4327-b2d1-ab62157e44bc.config
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.7972044Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-2ab1a438-edfc-4327-b2d1-ab62157e44bc.config
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.8005483Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-2ab1a438-edfc-4327-b2d1-ab62157e44bc.config
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.8028803Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.8030404Z ##[group]Fetching the repository
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:14.8036797Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +d00c61686d0a51c9932558f4be858e5a5febe153:refs/remotes/origin/main
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.2350062Z From https://github.com/link-assistant/formal-ai
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.2355144Z  * [new ref]         d00c61686d0a51c9932558f4be858e5a5febe153 -> origin/main
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.2375692Z [command]/usr/bin/git branch --list --remote origin/main
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.2397568Z   origin/main
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.2404896Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.2425342Z d00c61686d0a51c9932558f4be858e5a5febe153
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.2428267Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.2429195Z ##[group]Determining the checkout info
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.2430565Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.2434891Z [command]/usr/bin/git sparse-checkout disable
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.2466261Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.2490069Z ##[group]Checking out the ref
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:25.2493008Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.2984686Z Updating files:  36% (4342/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.3163278Z Updating files:  37% (4381/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.3277100Z Updating files:  38% (4499/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.3376499Z Updating files:  39% (4617/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.3422762Z Updating files:  40% (4736/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.3552856Z Updating files:  41% (4854/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4006644Z Updating files:  42% (4972/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4278024Z Updating files:  43% (5091/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4833242Z Updating files:  44% (5209/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.4989402Z Updating files:  45% (5328/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5026082Z Updating files:  46% (5446/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5101034Z Updating files:  47% (5564/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5172119Z Updating files:  48% (5683/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5382216Z Updating files:  49% (5801/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5449342Z Updating files:  50% (5919/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5538884Z Updating files:  51% (6038/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.5755947Z Updating files:  52% (6156/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.6205480Z Updating files:  53% (6275/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.6429581Z Updating files:  54% (6393/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.6555738Z Updating files:  55% (6511/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.6912998Z Updating files:  56% (6630/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.7337918Z Updating files:  57% (6748/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.7567969Z Updating files:  58% (6867/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.8217176Z Updating files:  59% (6985/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.8864399Z Updating files:  60% (7103/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.8971083Z Updating files:  61% (7222/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.9090324Z Updating files:  62% (7340/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.9447575Z Updating files:  63% (7458/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.9572486Z Updating files:  64% (7577/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.9662551Z Updating files:  65% (7695/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.9732227Z Updating files:  66% (7814/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.9810348Z Updating files:  67% (7932/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:26.9868550Z Updating files:  68% (8050/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0003796Z Updating files:  69% (8169/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0156501Z Updating files:  70% (8287/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0248365Z Updating files:  71% (8405/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0335092Z Updating files:  72% (8524/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0462160Z Updating files:  73% (8642/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0550180Z Updating files:  74% (8761/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0575858Z Updating files:  75% (8879/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0604198Z Updating files:  76% (8997/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0737789Z Updating files:  77% (9116/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.0995481Z Updating files:  78% (9234/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.1055796Z Updating files:  79% (9353/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.1105216Z Updating files:  80% (9471/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.1321092Z Updating files:  81% (9589/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.1390429Z Updating files:  82% (9708/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.1824457Z Updating files:  83% (9826/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.1861413Z Updating files:  84% (9944/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.1904523Z Updating files:  85% (10063/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.1965239Z Updating files:  86% (10181/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.2032916Z Updating files:  87% (10300/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.2098561Z Updating files:  88% (10418/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.2177624Z Updating files:  89% (10536/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.2276138Z Updating files:  90% (10655/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.2365711Z Updating files:  91% (10773/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.2604119Z Updating files:  92% (10891/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.2604613Z Updating files:  93% (11010/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.2700958Z Updating files:  93% (11011/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.2758605Z Updating files:  94% (11128/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.2820290Z Updating files:  95% (11247/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.2884598Z Updating files:  96% (11365/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.2939114Z Updating files:  97% (11483/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3003955Z Updating files:  98% (11602/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3066722Z Updating files:  99% (11720/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3067079Z Updating files: 100% (11838/11838)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3067496Z Updating files: 100% (11838/11838), done.
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3167867Z Reset branch 'main'
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3171198Z branch 'main' set up to track 'origin/main'.
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3210276Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3247473Z [command]/usr/bin/git log -1 --format=%H
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3268544Z d00c61686d0a51c9932558f4be858e5a5febe153
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3552526Z ##[group]Run dtolnay/rust-toolchain@stable
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3552885Z with:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3553133Z   toolchain: stable
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3553389Z env:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3553681Z   GIT_CONFIG_COUNT: 1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3553951Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3554262Z   GIT_CONFIG_VALUE_0: main
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3554553Z   CARGO_NET_RETRY: 10
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3554801Z   CARGO_HTTP_MULTIPLEXING: false
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3555129Z   CARGO_TERM_COLOR: always
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3555401Z   RUSTFLAGS: -Dwarnings
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3555667Z   CARGO_INCREMENTAL: 0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3555930Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3620334Z ##[start-action display=Parse toolchain version;id=__dtolnay_rust-toolchain.parse]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3677262Z ##[group]Run if [[ -z $toolchain ]]; then
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3677757Z ^[[36;1mif [[ -z $toolchain ]]; then^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3678348Z ^[[36;1m  # GitHub does not enforce `required: true` inputs itself. https://github.com/actions/runner/issues/1070^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3678889Z ^[[36;1m  echo "'toolchain' is a required input" >&2^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3679218Z ^[[36;1m  exit 1^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3679595Z ^[[36;1melif [[ $toolchain =~ ^stable' '[0-9]+' '(year|month|week|day)s?' 'ago$ ]]; then^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3680065Z ^[[36;1m  if [[ Linux == macOS ]]; then^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3680570Z ^[[36;1m    echo "toolchain=1.$((($(date -v-$(sed 's/stable \([0-9]*\) \(.\).*/\1\2/' <<< $toolchain) +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3681077Z ^[[36;1m  else^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3681633Z ^[[36;1m    echo "toolchain=1.$((($(date --date "${toolchain#stable }" +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3682095Z ^[[36;1m  fi^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3682508Z ^[[36;1melif [[ $toolchain =~ ^stable' 'minus' '[0-9]+' 'releases?$ ]]; then^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3683017Z ^[[36;1m  echo "toolchain=1.$((($(date +%s)/60/60/24-16569)/7/6-${toolchain//[^0-9]/}))" >> $GITHUB_OUTPUT^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3683469Z ^[[36;1melif [[ $toolchain =~ ^1\.[0-9]+$ ]]; then^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3683973Z ^[[36;1m  echo "toolchain=1.$((i=${toolchain#1.}, c=($(date +%s)/60/60/24-16569)/7/6, i+9*i*(10*i<=c)+90*i*(100*i<=c)))" >> $GITHUB_OUTPUT^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3684462Z ^[[36;1melse^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3684761Z ^[[36;1m  echo "toolchain=$toolchain" >> $GITHUB_OUTPUT^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3685150Z ^[[36;1mfi^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3714559Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3714962Z env:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3715283Z   GIT_CONFIG_COUNT: 1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3715563Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3715858Z   GIT_CONFIG_VALUE_0: main
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3716162Z   CARGO_NET_RETRY: 10
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3716471Z   CARGO_HTTP_MULTIPLEXING: false
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3716764Z   CARGO_TERM_COLOR: always
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3717082Z   RUSTFLAGS: -Dwarnings
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3717400Z   CARGO_INCREMENTAL: 0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3717693Z   toolchain: stable
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3717966Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3810825Z ##[end-action id=__dtolnay_rust-toolchain.parse;outcome=success;conclusion=success;duration_ms=18]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3822133Z ##[start-action display=Construct rustup command line;id=__dtolnay_rust-toolchain.flags]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3851289Z ##[group]Run echo "targets=$(for t in ${targets//,/ }; do echo -n ' --target' $t; done)" >> $GITHUB_OUTPUT
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3852142Z ^[[36;1mecho "targets=$(for t in ${targets//,/ }; do echo -n ' --target' $t; done)" >> $GITHUB_OUTPUT^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3852739Z ^[[36;1mecho "components=$(for c in ${components//,/ }; do echo -n ' --component' $c; done)" >> $GITHUB_OUTPUT^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3853223Z ^[[36;1mecho "downgrade=" >> $GITHUB_OUTPUT^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3875435Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3875811Z env:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3876085Z   GIT_CONFIG_COUNT: 1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3876533Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3876848Z   GIT_CONFIG_VALUE_0: main
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3877117Z   CARGO_NET_RETRY: 10
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3877421Z   CARGO_HTTP_MULTIPLEXING: false
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3877755Z   CARGO_TERM_COLOR: always
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3878034Z   RUSTFLAGS: -Dwarnings
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3878308Z   CARGO_INCREMENTAL: 0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3878567Z   targets: 
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3878824Z   components: 
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3879091Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3930674Z ##[end-action id=__dtolnay_rust-toolchain.flags;outcome=success;conclusion=success;duration_ms=10]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3933219Z ##[start-action display=Set $CARGO_HOME;id=__dtolnay_rust-toolchain.__run]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3953226Z ##[group]Run echo CARGO_HOME=${CARGO_HOME:-"$HOME/.cargo"} >> $GITHUB_ENV
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3953714Z ^[[36;1mecho CARGO_HOME=${CARGO_HOME:-"$HOME/.cargo"} >> $GITHUB_ENV^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3973649Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3974011Z env:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3974260Z   GIT_CONFIG_COUNT: 1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3974547Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3974857Z   GIT_CONFIG_VALUE_0: main
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3975154Z   CARGO_NET_RETRY: 10
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3975415Z   CARGO_HTTP_MULTIPLEXING: false
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3975691Z   CARGO_TERM_COLOR: always
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3975981Z   RUSTFLAGS: -Dwarnings
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3976243Z   CARGO_INCREMENTAL: 0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.3976495Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4022996Z ##[end-action id=__dtolnay_rust-toolchain.__run;outcome=success;conclusion=success;duration_ms=8]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4025314Z ##[start-action display=Install rustup if needed;id=__dtolnay_rust-toolchain.__run_2]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4050576Z ##[group]Run if ! command -v rustup &>/dev/null; then
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4050962Z ^[[36;1mif ! command -v rustup &>/dev/null; then^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4051968Z ^[[36;1m  curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://sh.rustup.rs | sh -s -- --default-toolchain none -y^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4052658Z ^[[36;1m  echo "$CARGO_HOME/bin" >> $GITHUB_PATH^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4052972Z ^[[36;1mfi^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4072848Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4073224Z env:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4073514Z   GIT_CONFIG_COUNT: 1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4073798Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4074128Z   GIT_CONFIG_VALUE_0: main
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4074444Z   CARGO_NET_RETRY: 10
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4074726Z   CARGO_HTTP_MULTIPLEXING: false
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4075028Z   CARGO_TERM_COLOR: always
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4075315Z   RUSTFLAGS: -Dwarnings
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4075607Z   CARGO_INCREMENTAL: 0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4075892Z   CARGO_HOME: /home/runner/.cargo
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4076186Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4117557Z ##[end-action id=__dtolnay_rust-toolchain.__run_2;outcome=success;conclusion=success;duration_ms=9]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4119917Z ##[start-action display=Install rustup if needed on windows;id=__dtolnay_rust-toolchain.__run_3]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4126623Z ##[end-action id=__dtolnay_rust-toolchain.__run_3;outcome=skipped;conclusion=skipped;duration_ms=0]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4136689Z ##[start-action display=rustup toolchain install stable;id=__dtolnay_rust-toolchain.__run_4]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4156284Z ##[group]Run rustup toolchain install stable --profile minimal --no-self-update
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4156817Z ^[[36;1mrustup toolchain install stable --profile minimal --no-self-update^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4176004Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4176366Z env:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4176613Z   GIT_CONFIG_COUNT: 1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4176914Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4177208Z   GIT_CONFIG_VALUE_0: main
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4177487Z   CARGO_NET_RETRY: 10
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4177787Z   CARGO_HTTP_MULTIPLEXING: false
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4178178Z   CARGO_TERM_COLOR: always
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4178496Z   RUSTFLAGS: -Dwarnings
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4178778Z   CARGO_INCREMENTAL: 0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4179039Z   CARGO_HOME: /home/runner/.cargo
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4179366Z   RUSTUP_PERMIT_COPY_RENAME: 1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.4179639Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:27.9818511Z info: syncing channel updates for stable-x86_64-unknown-linux-gnu
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1448528Z 
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1528863Z   stable-x86_64-unknown-linux-gnu unchanged - rustc 1.97.1 (8bab26f4f 2026-07-14)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1529258Z 
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1545589Z ##[end-action id=__dtolnay_rust-toolchain.__run_4;outcome=success;conclusion=success;duration_ms=740]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1551375Z ##[start-action display=rustup default stable;id=__dtolnay_rust-toolchain.__run_5]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1572625Z ##[group]Run rustup default stable
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1572972Z ^[[36;1mrustup default stable^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1598465Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1598823Z env:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1599149Z   GIT_CONFIG_COUNT: 1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1599437Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1599795Z   GIT_CONFIG_VALUE_0: main
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1600077Z   CARGO_NET_RETRY: 10
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1600354Z   CARGO_HTTP_MULTIPLEXING: false
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1600657Z   CARGO_TERM_COLOR: always
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1600930Z   RUSTFLAGS: -Dwarnings
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1601207Z   CARGO_INCREMENTAL: 0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1601643Z   CARGO_HOME: /home/runner/.cargo
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1601932Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1693849Z info: using existing install for stable-x86_64-unknown-linux-gnu
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1703218Z info: default toolchain set to stable-x86_64-unknown-linux-gnu
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1703456Z 
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1774988Z   stable-x86_64-unknown-linux-gnu unchanged - rustc 1.97.1 (8bab26f4f 2026-07-14)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1775313Z 
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1786068Z ##[end-action id=__dtolnay_rust-toolchain.__run_5;outcome=success;conclusion=success;duration_ms=23]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1788407Z ##[start-action display=Create cachekey;id=__dtolnay_rust-toolchain.rustc-version]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1807546Z ##[group]Run DATE=$(rustc +stable --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1808293Z ^[[36;1mDATE=$(rustc +stable --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1808848Z ^[[36;1mHASH=$(rustc +stable --version --verbose | sed -ne 's/^commit-hash: //p')^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1809448Z ^[[36;1mecho "cachekey=$(echo $DATE$HASH | head -c12)" >> $GITHUB_OUTPUT^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1831640Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1832005Z env:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1832271Z   GIT_CONFIG_COUNT: 1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1832577Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1832876Z   GIT_CONFIG_VALUE_0: main
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1833183Z   CARGO_NET_RETRY: 10
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1833449Z   CARGO_HTTP_MULTIPLEXING: false
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1833739Z   CARGO_TERM_COLOR: always
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1834164Z   RUSTFLAGS: -Dwarnings
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1834433Z   CARGO_INCREMENTAL: 0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1834714Z   CARGO_HOME: /home/runner/.cargo
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.1834991Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2128542Z ##[end-action id=__dtolnay_rust-toolchain.rustc-version;outcome=success;conclusion=success;duration_ms=33]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2131123Z ##[start-action display=Disable incremental compilation;id=__dtolnay_rust-toolchain.__run_6]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2148766Z ##[group]Run if [ -z "${CARGO_INCREMENTAL+set}" ]; then
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2149201Z ^[[36;1mif [ -z "${CARGO_INCREMENTAL+set}" ]; then^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2149604Z ^[[36;1m  echo CARGO_INCREMENTAL=0 >> $GITHUB_ENV^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2149943Z ^[[36;1mfi^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2172636Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2173032Z env:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2173371Z   GIT_CONFIG_COUNT: 1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2173673Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2174061Z   GIT_CONFIG_VALUE_0: main
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2174368Z   CARGO_NET_RETRY: 10
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2174671Z   CARGO_HTTP_MULTIPLEXING: false
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2175006Z   CARGO_TERM_COLOR: always
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2175309Z   RUSTFLAGS: -Dwarnings
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2175616Z   CARGO_INCREMENTAL: 0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2175945Z   CARGO_HOME: /home/runner/.cargo
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2176262Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2219815Z ##[end-action id=__dtolnay_rust-toolchain.__run_6;outcome=success;conclusion=success;duration_ms=8]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2222509Z ##[start-action display=Enable colors in Cargo output;id=__dtolnay_rust-toolchain.__run_7]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2240046Z ##[group]Run if [ -z "${CARGO_TERM_COLOR+set}" ]; then
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2240480Z ^[[36;1mif [ -z "${CARGO_TERM_COLOR+set}" ]; then^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2240883Z ^[[36;1m  echo CARGO_TERM_COLOR=always >> $GITHUB_ENV^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2241221Z ^[[36;1mfi^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2262615Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2263078Z env:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2263356Z   GIT_CONFIG_COUNT: 1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2263686Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2264065Z   GIT_CONFIG_VALUE_0: main
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2264377Z   CARGO_NET_RETRY: 10
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2264698Z   CARGO_HTTP_MULTIPLEXING: false
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2265035Z   CARGO_TERM_COLOR: always
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2265361Z   RUSTFLAGS: -Dwarnings
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2265674Z   CARGO_INCREMENTAL: 0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2265969Z   CARGO_HOME: /home/runner/.cargo
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2266270Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2310046Z ##[end-action id=__dtolnay_rust-toolchain.__run_7;outcome=success;conclusion=success;duration_ms=8]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2313049Z ##[start-action display=Enable Cargo sparse registry;id=__dtolnay_rust-toolchain.__run_8]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2332886Z ##[group]Run # implemented in 1.66, stabilized in 1.68, made default in 1.70
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2333464Z ^[[36;1m# implemented in 1.66, stabilized in 1.68, made default in 1.70^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2334198Z ^[[36;1mif [ -z "${CARGO_REGISTRIES_CRATES_IO_PROTOCOL+set}" -o -f "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol ]; then^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2334909Z ^[[36;1m  if rustc +stable --version --verbose | grep -q '^release: 1\.6[89]\.'; then^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2335514Z ^[[36;1m    touch "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2336077Z ^[[36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse >> $GITHUB_ENV^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2336661Z ^[[36;1m  elif rustc +stable --version --verbose | grep -q '^release: 1\.6[67]\.'; then^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2337247Z ^[[36;1m    touch "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2337790Z ^[[36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=git >> $GITHUB_ENV^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2338204Z ^[[36;1m  fi^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2338472Z ^[[36;1mfi^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2360499Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2360979Z env:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2361328Z   GIT_CONFIG_COUNT: 1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2361881Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2362236Z   GIT_CONFIG_VALUE_0: main
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2362523Z   CARGO_NET_RETRY: 10
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2362858Z   CARGO_HTTP_MULTIPLEXING: false
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2363209Z   CARGO_TERM_COLOR: always
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2363513Z   RUSTFLAGS: -Dwarnings
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2363822Z   CARGO_INCREMENTAL: 0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2364123Z   CARGO_HOME: /home/runner/.cargo
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2364456Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2649955Z ##[end-action id=__dtolnay_rust-toolchain.__run_8;outcome=success;conclusion=success;duration_ms=33]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2652705Z ##[start-action display=Work around spurious network errors in curl 8.0;id=__dtolnay_rust-toolchain.__run_9]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2670660Z ##[group]Run # https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2671409Z ^[[36;1m# https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2672250Z ^[[36;1mif rustc +stable --version --verbose | grep -q '^release: 1\.7[01]\.'; then^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2672746Z ^[[36;1m  echo CARGO_HTTP_MULTIPLEXING=false >> $GITHUB_ENV^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2673131Z ^[[36;1mfi^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2694326Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2694786Z env:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2695051Z   GIT_CONFIG_COUNT: 1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2695395Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2695729Z   GIT_CONFIG_VALUE_0: main
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2696026Z   CARGO_NET_RETRY: 10
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2696368Z   CARGO_HTTP_MULTIPLEXING: false
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2696678Z   CARGO_TERM_COLOR: always
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2696984Z   RUSTFLAGS: -Dwarnings
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2697269Z   CARGO_INCREMENTAL: 0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2697553Z   CARGO_HOME: /home/runner/.cargo
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2697907Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2857488Z ##[end-action id=__dtolnay_rust-toolchain.__run_9;outcome=success;conclusion=success;duration_ms=20]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2861212Z ##[start-action display=rustc +stable --version --verbose;id=__dtolnay_rust-toolchain.__run_10]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2878875Z ##[group]Run rustc +stable --version --verbose
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2879269Z ^[[36;1mrustc +stable --version --verbose^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2900034Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2900410Z env:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2900654Z   GIT_CONFIG_COUNT: 1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2901004Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2901313Z   GIT_CONFIG_VALUE_0: main
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2901787Z   CARGO_NET_RETRY: 10
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2902083Z   CARGO_HTTP_MULTIPLEXING: false
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2902372Z   CARGO_TERM_COLOR: always
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2902684Z   RUSTFLAGS: -Dwarnings
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2902962Z   CARGO_INCREMENTAL: 0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2903408Z   CARGO_HOME: /home/runner/.cargo
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.2903721Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.3044815Z rustc 1.97.1 (8bab26f4f 2026-07-14)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.3045382Z binary: rustc
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.3045783Z commit-hash: 8bab26f4f68e0e26f0bb7960be334d5b520ea452
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.3046454Z commit-date: 2026-07-14
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.3046886Z host: x86_64-unknown-linux-gnu
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.3047347Z release: 1.97.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.3047844Z LLVM version: 22.1.6
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.3060044Z ##[end-action id=__dtolnay_rust-toolchain.__run_10;outcome=success;conclusion=success;duration_ms=19]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.3123894Z Prepare all required actions
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.3124420Z Getting action download info
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.4359993Z Download action repository 'mozilla-actions/sccache-action@v0.0.10' (SHA:9e7fa8a12102821edf02ca5dbea1acd0f89a2696)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.9723644Z ##[group]Run ./.github/actions/setup-sccache
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.9724090Z env:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.9724378Z   GIT_CONFIG_COUNT: 1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.9724664Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.9724977Z   GIT_CONFIG_VALUE_0: main
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.9725291Z   CARGO_NET_RETRY: 10
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.9725567Z   CARGO_HTTP_MULTIPLEXING: false
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.9725880Z   CARGO_TERM_COLOR: always
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.9726164Z   RUSTFLAGS: -Dwarnings
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.9726425Z   CARGO_INCREMENTAL: 0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.9726754Z   CARGO_HOME: /home/runner/.cargo
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.9727045Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.9731377Z ##[start-action display=Install sccache;id=__self.__mozilla-actions_sccache-action]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.9762784Z ##[group]Run mozilla-actions/sccache-action@v0.0.10
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.9763113Z with:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.9763350Z   version: v0.16.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.9765190Z   token: ***
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.9765441Z   disable_annotations: false
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.9765726Z env:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.9765959Z   GIT_CONFIG_COUNT: 1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.9766233Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.9766558Z   GIT_CONFIG_VALUE_0: main
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.9766845Z   CARGO_NET_RETRY: 10
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.9767102Z   CARGO_HTTP_MULTIPLEXING: false
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.9767394Z   CARGO_TERM_COLOR: always
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.9767661Z   RUSTFLAGS: -Dwarnings
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.9767932Z   CARGO_INCREMENTAL: 0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.9768214Z   CARGO_HOME: /home/runner/.cargo
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:28.9768475Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:29.0492930Z try to setup sccache version: v0.16.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:29.0503096Z sccache download from url: https://github.com/mozilla/sccache/releases/download/v0.16.0/sccache-v0.16.0-x86_64-unknown-linux-musl.tar.gz
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:29.7744938Z Correct checksum: aec995a83ad3dff3d14b6314e08858b7b73d35ca85a5bcf3d3a9ec07dee35588
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:29.7832091Z [command]/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/6659c01e-cbb8-44cb-beb8-537301bd5df4 -f /home/runner/work/_temp/9b8cd2ee-871c-4a39-92a1-00703fadb096
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:29.9553637Z sccache extracted to: /home/runner/work/_temp/6659c01e-cbb8-44cb-beb8-537301bd5df4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1712507Z sccache cached to: /opt/hostedtoolcache/sccache/0.16.0/x64
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1773749Z ##[end-action id=__self.__mozilla-actions_sccache-action;outcome=success;conclusion=success;duration_ms=1204]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1776622Z ##[start-action display=Enable sccache for Rust;id=__self.__run]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1795696Z ##[group]Run echo "SCCACHE_GHA_ENABLED=$SCCACHE_GHA_ENABLED" >> "$GITHUB_ENV"
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1796271Z ^[[36;1mecho "SCCACHE_GHA_ENABLED=$SCCACHE_GHA_ENABLED" >> "$GITHUB_ENV"^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1796743Z ^[[36;1mecho "RUSTC_WRAPPER=$RUSTC_WRAPPER" >> "$GITHUB_ENV"^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1826534Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1827016Z env:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1827305Z   GIT_CONFIG_COUNT: 1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1827625Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1828008Z   GIT_CONFIG_VALUE_0: main
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1828330Z   CARGO_NET_RETRY: 10
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1828621Z   CARGO_HTTP_MULTIPLEXING: false
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1828985Z   CARGO_TERM_COLOR: always
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1829293Z   RUSTFLAGS: -Dwarnings
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1829638Z   CARGO_INCREMENTAL: 0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1829956Z   CARGO_HOME: /home/runner/.cargo
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1830329Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1830756Z   ACTIONS_CACHE_SERVICE_V2: on
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1831210Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1877277Z   ACTIONS_RUNTIME_TOKEN: ***
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1877645Z   SCCACHE_GHA_ENABLED: true
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1877964Z   RUSTC_WRAPPER: sccache
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1878286Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1931746Z ##[end-action id=__self.__run;outcome=success;conclusion=success;duration_ms=15]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1956571Z ##[group]Run cd experiments/issue_840_task_ladder
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1957113Z ^[[36;1mcd experiments/issue_840_task_ladder^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1957493Z ^[[36;1mpython3 -m unittest -v test_ladder.py^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1980367Z shell: /usr/bin/bash -e {0}
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1980699Z env:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1981017Z   GIT_CONFIG_COUNT: 1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1981325Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1981877Z   GIT_CONFIG_VALUE_0: main
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1982416Z   CARGO_NET_RETRY: 10
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1982715Z   CARGO_HTTP_MULTIPLEXING: false
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1983041Z   CARGO_TERM_COLOR: always
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1983347Z   RUSTFLAGS: -Dwarnings
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1983645Z   CARGO_INCREMENTAL: 0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1983979Z   CARGO_HOME: /home/runner/.cargo
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1984352Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1984733Z   ACTIONS_CACHE_SERVICE_V2: on
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.1985308Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.2029767Z   ACTIONS_RUNTIME_TOKEN: ***
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.2030072Z   SCCACHE_GHA_ENABLED: true
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.2030358Z   RUSTC_WRAPPER: sccache
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.2030653Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3323353Z test_fixture_matching_is_case_insensitive_and_conjunctive (test_ladder.JudgeTests.test_fixture_matching_is_case_insensitive_and_conjunctive) ... ok
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3324966Z test_judge_checks_alternatives_routes_and_shell_shape (test_ladder.JudgeTests.test_judge_checks_alternatives_routes_and_shell_shape) ... ok
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3326658Z test_mixed_script_english_request_selects_the_english_fixture (test_ladder.JudgeTests.test_mixed_script_english_request_selects_the_english_fixture) ... ok
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3328907Z test_raw_tool_results_cannot_satisfy_answer_assertions (test_ladder.JudgeTests.test_raw_tool_results_cannot_satisfy_answer_assertions) ... ok
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3331126Z test_seeded_generic_fallbacks_fail_in_every_supported_language (test_ladder.JudgeTests.test_seeded_generic_fallbacks_fail_in_every_supported_language) ... ok
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3332967Z test_only_observed_failures_become_review_gated_candidates (test_ladder.LearningProposalTests.test_only_observed_failures_become_review_gated_candidates) ... ok
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3334389Z test_a_removed_or_regressed_node_fails_by_stable_id (test_ladder.RatchetTests.test_a_removed_or_regressed_node_fails_by_stable_id) ... ok
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3335633Z test_new_green_nodes_extend_the_dataset (test_ladder.RatchetTests.test_new_green_nodes_extend_the_dataset) ... ok
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3336770Z test_new_nodes_must_be_green_before_the_baseline_can_move (test_ladder.RatchetTests.test_new_nodes_must_be_green_before_the_baseline_can_move) ... ok
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3337524Z 
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3337744Z ----------------------------------------------------------------------
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3338359Z Ran 9 tests in 0.001s
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3338660Z 
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3338806Z OK
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3454138Z ##[group]Run cargo build --release --bin formal-ai
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3454573Z ^[[36;1mcargo build --release --bin formal-ai^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3480532Z shell: /usr/bin/bash -e {0}
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3480953Z env:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3481232Z   GIT_CONFIG_COUNT: 1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3481790Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3482140Z   GIT_CONFIG_VALUE_0: main
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3482436Z   CARGO_NET_RETRY: 10
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3482778Z   CARGO_HTTP_MULTIPLEXING: false
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3483097Z   CARGO_TERM_COLOR: always
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3483382Z   RUSTFLAGS: -Dwarnings
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3483704Z   CARGO_INCREMENTAL: 0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3484005Z   CARGO_HOME: /home/runner/.cargo
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3484413Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3484850Z   ACTIONS_CACHE_SERVICE_V2: on
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3485298Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3531097Z   ACTIONS_RUNTIME_TOKEN: ***
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3531594Z   SCCACHE_GHA_ENABLED: true
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3531945Z   RUSTC_WRAPPER: sccache
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:30.3532245Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:31.0756632Z ^[[1m^[[92m    Updating^[[0m crates.io index
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.2226066Z ^[[1m^[[92m Downloading^[[0m crates ...
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.2767641Z ^[[1m^[[92m  Downloaded^[[0m abnf-core v0.5.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.2862696Z ^[[1m^[[92m  Downloaded^[[0m abnf v0.13.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.2912341Z ^[[1m^[[92m  Downloaded^[[0m digest v0.10.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.3028555Z ^[[1m^[[92m  Downloaded^[[0m doublets v0.4.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.3052803Z ^[[1m^[[92m  Downloaded^[[0m dtoa-short v0.3.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.3150414Z ^[[1m^[[92m  Downloaded^[[0m dunce v1.0.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.3166382Z ^[[1m^[[92m  Downloaded^[[0m either v1.17.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.3266986Z ^[[1m^[[92m  Downloaded^[[0m env_home v0.1.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.3299550Z ^[[1m^[[92m  Downloaded^[[0m fastrand v2.5.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.3385272Z ^[[1m^[[92m  Downloaded^[[0m find-msvc-tools v0.1.9
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.3431795Z ^[[1m^[[92m  Downloaded^[[0m foldhash v0.1.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.3497755Z ^[[1m^[[92m  Downloaded^[[0m fs2 v0.4.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.3560350Z ^[[1m^[[92m  Downloaded^[[0m funty v2.0.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.3627526Z ^[[1m^[[92m  Downloaded^[[0m futures-core v0.3.33
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.3683384Z ^[[1m^[[92m  Downloaded^[[0m fxhash v0.2.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.3760992Z ^[[1m^[[92m  Downloaded^[[0m getrandom v0.2.17
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.3838607Z ^[[1m^[[92m  Downloaded^[[0m glob v0.3.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.3963933Z ^[[1m^[[92m  Downloaded^[[0m hashbrown v0.15.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.3996225Z ^[[1m^[[92m  Downloaded^[[0m hashlink v0.10.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.4092570Z ^[[1m^[[92m  Downloaded^[[0m html5ever v0.29.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.4120378Z ^[[1m^[[92m  Downloaded^[[0m http-body-util v0.1.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.4215087Z ^[[1m^[[92m  Downloaded^[[0m hyper-rustls v0.27.9
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.4335309Z ^[[1m^[[92m  Downloaded^[[0m icu_collections v2.2.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.4366037Z ^[[1m^[[92m  Downloaded^[[0m icu_normalizer_data v2.2.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.4455794Z ^[[1m^[[92m  Downloaded^[[0m icu_provider v2.2.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.4472468Z ^[[1m^[[92m  Downloaded^[[0m idna_adapter v1.2.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.4598246Z ^[[1m^[[92m  Downloaded^[[0m indexmap v2.14.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.4622202Z ^[[1m^[[92m  Downloaded^[[0m itertools v0.14.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.4723820Z ^[[1m^[[92m  Downloaded^[[0m kanaria v0.2.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.4775559Z ^[[1m^[[92m  Downloaded^[[0m js-sys v0.3.103
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.4852877Z ^[[1m^[[92m  Downloaded^[[0m lindera-jieba v3.0.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.5035218Z ^[[1m^[[92m  Downloaded^[[0m libc v0.2.189
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.5246556Z ^[[1m^[[92m  Downloaded^[[0m lingua-bengali-language-model v1.3.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.5483898Z ^[[1m^[[92m  Downloaded^[[0m lingua-french-language-model v1.3.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.5690585Z ^[[1m^[[92m  Downloaded^[[0m lingua-russian-language-model v1.3.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.5919564Z ^[[1m^[[92m  Downloaded^[[0m lino-env v0.1.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.5927475Z ^[[1m^[[92m  Downloaded^[[0m litemap v0.8.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.5963382Z ^[[1m^[[92m  Downloaded^[[0m link-calculator v0.20.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.6627249Z ^[[1m^[[92m  Downloaded^[[0m lru-slab v0.1.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.6631845Z ^[[1m^[[92m  Downloaded^[[0m markup5ever v0.14.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.6641585Z ^[[1m^[[92m  Downloaded^[[0m memchr v2.8.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.6670800Z ^[[1m^[[92m  Downloaded^[[0m minimal-lexical v0.2.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.6697193Z ^[[1m^[[92m  Downloaded^[[0m munge v0.4.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.6708111Z ^[[1m^[[92m  Downloaded^[[0m new_debug_unreachable v1.0.6
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.6713714Z ^[[1m^[[92m  Downloaded^[[0m num-integer v0.1.46
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.6722501Z ^[[1m^[[92m  Downloaded^[[0m nom v7.1.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.6750318Z ^[[1m^[[92m  Downloaded^[[0m num_cpus v1.17.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.6765254Z ^[[1m^[[92m  Downloaded^[[0m parking_lot v0.12.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.6780532Z ^[[1m^[[92m  Downloaded^[[0m percent-encoding v2.3.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.6785468Z ^[[1m^[[92m  Downloaded^[[0m pest_generator v2.8.8
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.6794624Z ^[[1m^[[92m  Downloaded^[[0m phf_codegen v0.11.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.6824401Z ^[[1m^[[92m  Downloaded^[[0m phf_shared v0.11.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.6919386Z ^[[1m^[[92m  Downloaded^[[0m platform-data v2.0.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.6951720Z ^[[1m^[[92m  Downloaded^[[0m platform-trees v0.3.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.7031003Z ^[[1m^[[92m  Downloaded^[[0m ppv-lite86 v0.2.21
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.7078932Z ^[[1m^[[92m  Downloaded^[[0m proc-macro2 v1.0.107
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.7145389Z ^[[1m^[[92m  Downloaded^[[0m ptr_meta_derive v0.1.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.7203558Z ^[[1m^[[92m  Downloaded^[[0m quinn-proto v0.11.16
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.7267688Z ^[[1m^[[92m  Downloaded^[[0m radium v0.7.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.7329572Z ^[[1m^[[92m  Downloaded^[[0m rand v0.9.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.7378298Z ^[[1m^[[92m  Downloaded^[[0m rand_chacha v0.9.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.7445944Z ^[[1m^[[92m  Downloaded^[[0m rand_core v0.10.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.7499757Z ^[[1m^[[92m  Downloaded^[[0m rayon-core v1.13.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.7568067Z ^[[1m^[[92m  Downloaded^[[0m regex-syntax v0.8.11
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.7619817Z ^[[1m^[[92m  Downloaded^[[0m reqwest v0.13.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.7700203Z ^[[1m^[[92m  Downloaded^[[0m rkyv v0.8.17
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.7762428Z ^[[1m^[[92m  Downloaded^[[0m rust_decimal v1.42.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.7848114Z ^[[1m^[[92m  Downloaded^[[0m rustls v0.23.42
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.7919654Z ^[[1m^[[92m  Downloaded^[[0m rustls-platform-verifier v0.7.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.7972188Z ^[[1m^[[92m  Downloaded^[[0m ryu v1.0.23
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.7992926Z ^[[1m^[[92m  Downloaded^[[0m scraper v0.21.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.8090948Z ^[[1m^[[92m  Downloaded^[[0m serde v1.0.229
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.8111603Z ^[[1m^[[92m  Downloaded^[[0m serde_derive v1.0.229
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.8215645Z ^[[1m^[[92m  Downloaded^[[0m serial2 v0.2.38
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.8231896Z ^[[1m^[[92m  Downloaded^[[0m shell-words v1.1.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.8339115Z ^[[1m^[[92m  Downloaded^[[0m simd-adler32 v0.3.10
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.8349787Z ^[[1m^[[92m  Downloaded^[[0m slab v0.4.12
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.8454029Z ^[[1m^[[92m  Downloaded^[[0m stable_deref_trait v1.2.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.8464995Z ^[[1m^[[92m  Downloaded^[[0m string_cache_codegen v0.5.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.8571564Z ^[[1m^[[92m  Downloaded^[[0m strum v0.28.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.8584895Z ^[[1m^[[92m  Downloaded^[[0m subtle v2.6.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.8695617Z ^[[1m^[[92m  Downloaded^[[0m syn v3.0.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.8756644Z ^[[1m^[[92m  Downloaded^[[0m tap v1.0.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.8818634Z ^[[1m^[[92m  Downloaded^[[0m tendril v0.4.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.8829321Z ^[[1m^[[92m  Downloaded^[[0m thiserror-impl v1.0.69
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.8938028Z ^[[1m^[[92m  Downloaded^[[0m tinystr v0.8.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.8986930Z ^[[1m^[[92m  Downloaded^[[0m tokio v1.53.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.9208873Z ^[[1m^[[92m  Downloaded^[[0m toml_datetime v1.1.1+spec-1.1.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.9217393Z ^[[1m^[[92m  Downloaded^[[0m toml_writer v1.1.2+spec-1.1.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.9226390Z ^[[1m^[[92m  Downloaded^[[0m tower-layer v0.3.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.9232277Z ^[[1m^[[92m  Downloaded^[[0m tracing-core v0.1.36
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.9317345Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-c-sharp v0.23.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.9573439Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-go v0.25.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.9602114Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-ini v1.4.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.9611940Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-json v0.24.8
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.9620590Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-lua v0.2.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.9634549Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-proto v0.4.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.9712124Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-ruby v0.23.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:35.9852673Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-sequel v0.3.11
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.0036396Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-typescript v0.23.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.0212292Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-yaml v0.7.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.0237672Z ^[[1m^[[92m  Downloaded^[[0m typenum v1.20.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.0259987Z ^[[1m^[[92m  Downloaded^[[0m unicode-blocks v0.1.10
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.0266204Z ^[[1m^[[92m  Downloaded^[[0m unicode-segmentation v1.13.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.0285520Z ^[[1m^[[92m  Downloaded^[[0m unsafe-libyaml v0.2.11
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.0303430Z ^[[1m^[[92m  Downloaded^[[0m utf8parse v0.2.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.0308825Z ^[[1m^[[92m  Downloaded^[[0m utf-8 v0.7.6
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.0339979Z ^[[1m^[[92m  Downloaded^[[0m vte v0.11.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.0351017Z ^[[1m^[[92m  Downloaded^[[0m want v0.3.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.0454314Z ^[[1m^[[92m  Downloaded^[[0m wasm-bindgen-macro v0.2.126
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.0476138Z ^[[1m^[[92m  Downloaded^[[0m web-capture v0.3.36
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.0571849Z ^[[1m^[[92m  Downloaded^[[0m whatlang v0.18.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.0593559Z ^[[1m^[[92m  Downloaded^[[0m writeable v0.6.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.0690798Z ^[[1m^[[92m  Downloaded^[[0m yoke v0.8.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.0703005Z ^[[1m^[[92m  Downloaded^[[0m zerofrom v0.1.8
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.0813974Z ^[[1m^[[92m  Downloaded^[[0m zerotrie v0.2.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.0835833Z ^[[1m^[[92m  Downloaded^[[0m zmij v1.0.23
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.0931864Z ^[[1m^[[92m  Downloaded^[[0m ahash v0.8.12
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.0948542Z ^[[1m^[[92m  Downloaded^[[0m allocator-api2 v0.4.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.1041864Z ^[[1m^[[92m  Downloaded^[[0m anstyle-parse v1.0.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.1071615Z ^[[1m^[[92m  Downloaded^[[0m arrayvec v0.7.8
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.1156087Z ^[[1m^[[92m  Downloaded^[[0m autocfg v1.5.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.1199943Z ^[[1m^[[92m  Downloaded^[[0m base64 v0.22.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.1269790Z ^[[1m^[[92m  Downloaded^[[0m bitflags v1.3.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.1323216Z ^[[1m^[[92m  Downloaded^[[0m block-buffer v0.10.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.1387502Z ^[[1m^[[92m  Downloaded^[[0m borsh-derive v1.8.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.1439395Z ^[[1m^[[92m  Downloaded^[[0m bytecheck v0.8.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.1497685Z ^[[1m^[[92m  Downloaded^[[0m byteorder v1.5.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.1548762Z ^[[1m^[[92m  Downloaded^[[0m cfg-if v1.0.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.1617213Z ^[[1m^[[92m  Downloaded^[[0m chacha20 v0.10.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.1669246Z ^[[1m^[[92m  Downloaded^[[0m clap_builder v4.6.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.1735678Z ^[[1m^[[92m  Downloaded^[[0m cmake v0.1.58
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.1804814Z ^[[1m^[[92m  Downloaded^[[0m console_error_panic_hook v0.1.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.1860247Z ^[[1m^[[92m  Downloaded^[[0m cpufeatures v0.3.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.1921074Z ^[[1m^[[92m  Downloaded^[[0m crossbeam-epoch v0.9.20
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.1990524Z ^[[1m^[[92m  Downloaded^[[0m cssparser v0.34.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.2039784Z ^[[1m^[[92m  Downloaded^[[0m csv-core v0.1.13
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.2113422Z ^[[1m^[[92m  Downloaded^[[0m daachorse v2.1.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.2156133Z ^[[1m^[[92m  Downloaded^[[0m darling_macro v0.20.11
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.2224627Z ^[[1m^[[92m  Downloaded^[[0m derive_builder_core v0.20.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.2273867Z ^[[1m^[[92m  Downloaded^[[0m displaydoc v0.2.6
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.2344100Z ^[[1m^[[92m  Downloaded^[[0m dtoa v1.0.11
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.2391259Z ^[[1m^[[92m  Downloaded^[[0m ebnf v0.1.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.2464261Z ^[[1m^[[92m  Downloaded^[[0m encoding_rs_io v0.1.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.2507329Z ^[[1m^[[92m  Downloaded^[[0m filedescriptor v0.8.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.2584829Z ^[[1m^[[92m  Downloaded^[[0m fnv v1.0.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.2635701Z ^[[1m^[[92m  Downloaded^[[0m fs_extra v1.3.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.2704741Z ^[[1m^[[92m  Downloaded^[[0m futures-channel v0.3.33
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.2753713Z ^[[1m^[[92m  Downloaded^[[0m generic-array v0.14.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.2828298Z ^[[1m^[[92m  Downloaded^[[0m getrandom v0.4.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.2874384Z ^[[1m^[[92m  Downloaded^[[0m hashbrown v0.16.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.2949786Z ^[[1m^[[92m  Downloaded^[[0m html-escape v0.2.14
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.3005651Z ^[[1m^[[92m  Downloaded^[[0m httparse v1.10.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.3070241Z ^[[1m^[[92m  Downloaded^[[0m iana-time-zone v0.1.65
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.3123684Z ^[[1m^[[92m  Downloaded^[[0m icu_properties v2.2.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.3195631Z ^[[1m^[[92m  Downloaded^[[0m idna v1.1.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.3240497Z ^[[1m^[[92m  Downloaded^[[0m ipnet v2.12.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.3314829Z ^[[1m^[[92m  Downloaded^[[0m jobserver v0.1.35
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.3353506Z ^[[1m^[[92m  Downloaded^[[0m lazy_static v1.5.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.3434955Z ^[[1m^[[92m  Downloaded^[[0m lindera-dictionary v3.0.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.3482838Z ^[[1m^[[92m  Downloaded^[[0m lingua-chinese-language-model v1.3.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.3603462Z ^[[1m^[[92m  Downloaded^[[0m links-notation v0.13.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.3647895Z ^[[1m^[[92m  Downloaded^[[0m lingua-portuguese-language-model v1.3.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.3808387Z ^[[1m^[[92m  Downloaded^[[0m mac v0.1.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.3858472Z ^[[1m^[[92m  Downloaded^[[0m linux-raw-sys v0.12.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.4292389Z ^[[1m^[[92m  Downloaded^[[0m md5 v0.8.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.4298078Z ^[[1m^[[92m  Downloaded^[[0m miniz_oxide v0.8.9
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.4313450Z ^[[1m^[[92m  Downloaded^[[0m mutate_once v0.1.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.4317634Z ^[[1m^[[92m  Downloaded^[[0m nom v8.0.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.4348267Z ^[[1m^[[92m  Downloaded^[[0m num-traits v0.2.19
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.4363275Z ^[[1m^[[92m  Downloaded^[[0m parking_lot_core v0.9.12
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.4374286Z ^[[1m^[[92m  Downloaded^[[0m pest_derive v2.8.8
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.4384812Z ^[[1m^[[92m  Downloaded^[[0m phf_generator v0.11.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.4390983Z ^[[1m^[[92m  Downloaded^[[0m pkg-config v0.3.33
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.4440423Z ^[[1m^[[92m  Downloaded^[[0m portable-pty v0.9.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.4467032Z ^[[1m^[[92m  Downloaded^[[0m proc-macro-crate v3.5.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.4566356Z ^[[1m^[[92m  Downloaded^[[0m ptr_meta_derive v0.3.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.4582052Z ^[[1m^[[92m  Downloaded^[[0m quote v1.0.47
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.4680756Z ^[[1m^[[92m  Downloaded^[[0m rand v0.10.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.4702764Z ^[[1m^[[92m  Downloaded^[[0m rand_core v0.9.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.4794323Z ^[[1m^[[92m  Downloaded^[[0m regex v1.13.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.4825823Z ^[[1m^[[92m  Downloaded^[[0m rend v0.5.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.4910715Z ^[[1m^[[92m  Downloaded^[[0m rkyv_derive v0.7.46
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.4953781Z ^[[1m^[[92m  Downloaded^[[0m rustix v1.1.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.5086335Z ^[[1m^[[92m  Downloaded^[[0m rustls-webpki v0.103.13
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.5104945Z ^[[1m^[[92m  Downloaded^[[0m scopeguard v1.2.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.5155154Z ^[[1m^[[92m  Downloaded^[[0m serde-wasm-bindgen v0.6.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.5190127Z ^[[1m^[[92m  Downloaded^[[0m serde_yaml_ng v0.10.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.5314572Z ^[[1m^[[92m  Downloaded^[[0m shlex v2.0.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.5315148Z ^[[1m^[[92m  Downloaded^[[0m siphasher v1.0.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.5396425Z ^[[1m^[[92m  Downloaded^[[0m streaming-iterator v0.1.9
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.5411401Z ^[[1m^[[92m  Downloaded^[[0m strum v0.27.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.5526002Z ^[[1m^[[92m  Downloaded^[[0m syn v1.0.109
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.5585077Z ^[[1m^[[92m  Downloaded^[[0m synstructure v0.13.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.5637091Z ^[[1m^[[92m  Downloaded^[[0m thiserror v1.0.69
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.5663169Z ^[[1m^[[92m  Downloaded^[[0m thread-priority v3.1.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.5752774Z ^[[1m^[[92m  Downloaded^[[0m tokio-macros v2.7.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.5773147Z ^[[1m^[[92m  Downloaded^[[0m toml_parser v1.1.2+spec-1.1.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.5865020Z ^[[1m^[[92m  Downloaded^[[0m tower-service v0.3.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.5897769Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-c v0.24.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.6029765Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-javascript v0.25.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.6067768Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-graphql v0.1.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.6171674Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-pascal v0.10.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.6214803Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-r v1.3.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.6295133Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-xml v0.7.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.6328641Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-swift v0.7.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.6530365Z ^[[1m^[[92m  Downloaded^[[0m ucd-trie v0.1.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.6541312Z ^[[1m^[[92m  Downloaded^[[0m unicode-normalization v0.1.25
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.6567596Z ^[[1m^[[92m  Downloaded^[[0m untrusted v0.9.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.6576967Z ^[[1m^[[92m  Downloaded^[[0m uuid v1.24.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.6660734Z ^[[1m^[[92m  Downloaded^[[0m vte_generate_state_changes v0.1.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.6691195Z ^[[1m^[[92m  Downloaded^[[0m wasm-bindgen-futures v0.4.76
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.6780047Z ^[[1m^[[92m  Downloaded^[[0m web-search v0.5.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.6818725Z ^[[1m^[[92m  Downloaded^[[0m winnow v1.0.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.6895638Z ^[[1m^[[92m  Downloaded^[[0m yoke-derive v0.8.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.6936776Z ^[[1m^[[92m  Downloaded^[[0m zeroize v1.9.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.7027490Z ^[[1m^[[92m  Downloaded^[[0m adler2 v2.0.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.7072739Z ^[[1m^[[92m  Downloaded^[[0m allocator-api2 v0.2.21
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.7166394Z ^[[1m^[[92m  Downloaded^[[0m anstyle-query v1.1.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.7193414Z ^[[1m^[[92m  Downloaded^[[0m atomic-waker v1.1.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.7287259Z ^[[1m^[[92m  Downloaded^[[0m base64 v0.23.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.7312800Z ^[[1m^[[92m  Downloaded^[[0m bitvec v1.1.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.7399903Z ^[[1m^[[92m  Downloaded^[[0m bumpalo v3.20.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.7432043Z ^[[1m^[[92m  Downloaded^[[0m bytecheck_derive v0.8.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.7516855Z ^[[1m^[[92m  Downloaded^[[0m cfg_aliases v0.1.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.7553741Z ^[[1m^[[92m  Downloaded^[[0m clap v4.6.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.7631597Z ^[[1m^[[92m  Downloaded^[[0m colorchoice v1.0.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.7667044Z ^[[1m^[[92m  Downloaded^[[0m cpufeatures v0.2.17
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.7750166Z ^[[1m^[[92m  Downloaded^[[0m crossbeam-utils v0.8.22
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.7816829Z ^[[1m^[[92m  Downloaded^[[0m csv v1.4.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.7957017Z ^[[1m^[[92m  Downloaded^[[0m darling v0.20.11
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.7981123Z ^[[1m^[[92m  Downloaded^[[0m derive_builder v0.20.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.8006184Z ^[[1m^[[92m  Downloaded^[[0m dotenvy v0.15.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.8043794Z ^[[1m^[[92m  Downloaded^[[0m dtor-proc-macro v0.0.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.8112860Z ^[[1m^[[92m  Downloaded^[[0m equivalent v1.0.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.8169209Z ^[[1m^[[92m  Downloaded^[[0m flate2 v1.1.9
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.8298266Z ^[[1m^[[92m  Downloaded^[[0m fst v0.4.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.8487444Z ^[[1m^[[92m  Downloaded^[[0m futures-util v0.3.33
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.8548166Z ^[[1m^[[92m  Downloaded^[[0m heck v0.5.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.8554037Z ^[[1m^[[92m  Downloaded^[[0m hashbrown v0.12.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.8575761Z ^[[1m^[[92m  Downloaded^[[0m hyper v1.11.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.8614347Z ^[[1m^[[92m  Downloaded^[[0m icu_normalizer v2.2.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.8661844Z ^[[1m^[[92m  Downloaded^[[0m include_dir v0.7.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.8668360Z ^[[1m^[[92m  Downloaded^[[0m itoa v1.0.18
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.8777101Z ^[[1m^[[92m  Downloaded^[[0m leak_slice v0.2.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.8919124Z ^[[1m^[[92m  Downloaded^[[0m lingua-arabic-language-model v1.3.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.9289060Z ^[[1m^[[92m  Downloaded^[[0m lingua-spanish-language-model v1.3.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.9463428Z ^[[1m^[[92m  Downloaded^[[0m lino-objects-codec v0.2.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.9473855Z ^[[1m^[[92m  Downloaded^[[0m maplit v1.0.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.9479187Z ^[[1m^[[92m  Downloaded^[[0m meta-language v0.54.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.9562231Z ^[[1m^[[92m  Downloaded^[[0m nix v0.28.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.9623102Z ^[[1m^[[92m  Downloaded^[[0m num-rational v0.4.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.9630356Z ^[[1m^[[92m  Downloaded^[[0m parse-hyperlinks v0.23.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.9640089Z ^[[1m^[[92m  Downloaded^[[0m phf v0.11.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.9647078Z ^[[1m^[[92m  Downloaded^[[0m platform-mem v0.3.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.9671107Z ^[[1m^[[92m  Downloaded^[[0m precomputed-hash v0.1.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.9675065Z ^[[1m^[[92m  Downloaded^[[0m quinn v0.11.11
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.9694516Z ^[[1m^[[92m  Downloaded^[[0m rand v0.8.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.9714178Z ^[[1m^[[92m  Downloaded^[[0m rand_pcg v0.10.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.9785271Z ^[[1m^[[92m  Downloaded^[[0m rend v0.4.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.9800059Z ^[[1m^[[92m  Downloaded^[[0m rkyv_derive v0.8.17
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.9907162Z ^[[1m^[[92m  Downloaded^[[0m rustls-pki-types v1.15.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:36.9924970Z ^[[1m^[[92m  Downloaded^[[0m seahash v4.1.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.0029089Z ^[[1m^[[92m  Downloaded^[[0m serde_json v1.0.151
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.0069000Z ^[[1m^[[92m  Downloaded^[[0m signal-hook-registry v1.4.8
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.0153310Z ^[[1m^[[92m  Downloaded^[[0m strum_macros v0.27.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.0166789Z ^[[1m^[[92m  Downloaded^[[0m socket2 v0.6.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.0272296Z ^[[1m^[[92m  Downloaded^[[0m sync_wrapper v1.0.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.0277915Z ^[[1m^[[92m  Downloaded^[[0m thiserror v2.0.19
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.0384268Z ^[[1m^[[92m  Downloaded^[[0m tinyvec_macros v0.1.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.0389393Z ^[[1m^[[92m  Downloaded^[[0m tokio-rustls v0.26.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.0511390Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter v0.25.10
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.0548191Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-html v0.23.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.0633994Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-language v0.1.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.0643717Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-rust v0.24.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.0762254Z ^[[1m^[[92m  Downloaded^[[0m unicode-bidi v0.3.18
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.0777797Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-vb-dotnet v0.1.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.0881316Z ^[[1m^[[92m  Downloaded^[[0m unicode-width v0.2.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.0920451Z ^[[1m^[[92m  Downloaded^[[0m version_check v0.9.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.1000777Z ^[[1m^[[92m  Downloaded^[[0m wasm-bindgen v0.2.126
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.1030602Z ^[[1m^[[92m  Downloaded^[[0m web-sys v0.3.103
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.2325859Z ^[[1m^[[92m  Downloaded^[[0m xattr v1.6.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.2336760Z ^[[1m^[[92m  Downloaded^[[0m zerovec v0.11.6
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.2371937Z ^[[1m^[[92m  Downloaded^[[0m aho-corasick v1.1.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.2404864Z ^[[1m^[[92m  Downloaded^[[0m anyhow v1.0.104
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.2424911Z ^[[1m^[[92m  Downloaded^[[0m bnf v0.6.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.2442968Z ^[[1m^[[92m  Downloaded^[[0m bytecheck_derive v0.6.12
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.2447163Z ^[[1m^[[92m  Downloaded^[[0m aws-lc-sys v0.43.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4081981Z ^[[1m^[[92m  Downloaded^[[0m cfg_aliases v0.2.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4086117Z ^[[1m^[[92m  Downloaded^[[0m clap_lex v1.1.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4092327Z ^[[1m^[[92m  Downloaded^[[0m crc32fast v1.5.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4103575Z ^[[1m^[[92m  Downloaded^[[0m cssparser-macros v0.6.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4107403Z ^[[1m^[[92m  Downloaded^[[0m darling_core v0.20.11
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4131855Z ^[[1m^[[92m  Downloaded^[[0m derive_more v0.99.20
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4156382Z ^[[1m^[[92m  Downloaded^[[0m ego-tree v0.9.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4165635Z ^[[1m^[[92m  Downloaded^[[0m filetime v0.2.29
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4174261Z ^[[1m^[[92m  Downloaded^[[0m futf v0.1.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4179626Z ^[[1m^[[92m  Downloaded^[[0m getrandom v0.3.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4198480Z ^[[1m^[[92m  Downloaded^[[0m http v1.4.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4221070Z ^[[1m^[[92m  Downloaded^[[0m icu_locale_core v2.2.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4254641Z ^[[1m^[[92m  Downloaded^[[0m include_dir_macros v0.7.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4258381Z ^[[1m^[[92m  Downloaded^[[0m kamadak-exif v0.6.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4274482Z ^[[1m^[[92m  Downloaded^[[0m lino-arguments v0.3.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4283321Z ^[[1m^[[92m  Downloaded^[[0m lingua-english-language-model v1.3.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4489325Z ^[[1m^[[92m  Downloaded^[[0m match_token v0.1.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4493308Z ^[[1m^[[92m  Downloaded^[[0m munge_macro v0.4.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4498821Z ^[[1m^[[92m  Downloaded^[[0m once_cell v1.21.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4513419Z ^[[1m^[[92m  Downloaded^[[0m pest_meta v2.8.8
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4525913Z ^[[1m^[[92m  Downloaded^[[0m platform-num v0.8.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4531390Z ^[[1m^[[92m  Downloaded^[[0m ptr_meta v0.3.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4536762Z ^[[1m^[[92m  Downloaded^[[0m rand_chacha v0.3.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4543907Z ^[[1m^[[92m  Downloaded^[[0m regex-automata v0.4.16
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4639704Z ^[[1m^[[92m  Downloaded^[[0m rustc-hash v2.1.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4647011Z ^[[1m^[[92m  Downloaded^[[0m same-file v1.0.6
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4653934Z ^[[1m^[[92m  Downloaded^[[0m servo_arc v0.4.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4659310Z ^[[1m^[[92m  Downloaded^[[0m smallvec v1.15.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4668720Z ^[[1m^[[92m  Downloaded^[[0m strum_macros v0.28.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4681377Z ^[[1m^[[92m  Downloaded^[[0m tempfile v3.27.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4696140Z ^[[1m^[[92m  Downloaded^[[0m toml_edit v0.25.13+spec-1.1.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4718221Z ^[[1m^[[92m  Downloaded^[[0m tracing v0.1.44
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4814589Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-java v0.23.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4850286Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-python v0.25.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4892060Z ^[[1m^[[92m  Downloaded^[[0m try-lock v0.2.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4896400Z ^[[1m^[[92m  Downloaded^[[0m unicode-width v0.1.14
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4933836Z ^[[1m^[[92m  Downloaded^[[0m vt100 v0.15.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4942439Z ^[[1m^[[92m  Downloaded^[[0m wasm-bindgen-shared v0.2.126
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.4948411Z ^[[1m^[[92m  Downloaded^[[0m zerocopy v0.8.55
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.5051419Z ^[[1m^[[92m  Downloaded^[[0m ahash v0.7.8
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.5065849Z ^[[1m^[[92m  Downloaded^[[0m async-trait v0.1.92
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.5083177Z ^[[1m^[[92m  Downloaded^[[0m bitflags v2.13.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.5103841Z ^[[1m^[[92m  Downloaded^[[0m bytes v1.12.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.5123679Z ^[[1m^[[92m  Downloaded^[[0m clap_derive v4.6.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.5136226Z ^[[1m^[[92m  Downloaded^[[0m crossbeam-deque v0.8.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.5145349Z ^[[1m^[[92m  Downloaded^[[0m ctor-proc-macro v0.0.6
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.5149496Z ^[[1m^[[92m  Downloaded^[[0m downcast-rs v1.2.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.5156316Z ^[[1m^[[92m  Downloaded^[[0m errno v0.3.14
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.5163772Z ^[[1m^[[92m  Downloaded^[[0m futures-task v0.3.33
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.5170168Z ^[[1m^[[92m  Downloaded^[[0m hashbrown v0.17.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.5206832Z ^[[1m^[[92m  Downloaded^[[0m icu_properties_data v2.2.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.5268622Z ^[[1m^[[92m  Downloaded^[[0m json5_nodes v2.0.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.5274954Z ^[[1m^[[92m  Downloaded^[[0m lingua-hindi-language-model v1.3.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.5308242Z ^[[1m^[[92m  Downloaded^[[0m log v0.4.33
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.5324384Z ^[[1m^[[92m  Downloaded^[[0m nix v0.29.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.5389510Z ^[[1m^[[92m  Downloaded^[[0m pest v2.8.8
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.5417271Z ^[[1m^[[92m  Downloaded^[[0m potential_utf v0.1.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.5432121Z ^[[1m^[[92m  Downloaded^[[0m rancor v0.1.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.5438790Z ^[[1m^[[92m  Downloaded^[[0m ring v0.17.14
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.5709199Z ^[[1m^[[92m  Downloaded^[[0m rustversion v1.0.23
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.5724612Z ^[[1m^[[92m  Downloaded^[[0m sha2 v0.10.9
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.5737806Z ^[[1m^[[92m  Downloaded^[[0m strsim v0.11.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.5745812Z ^[[1m^[[92m  Downloaded^[[0m thiserror-impl v2.0.19
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.5754130Z ^[[1m^[[92m  Downloaded^[[0m tinyvec v1.12.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.5771101Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-toml-ng v0.7.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.5781071Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-kotlin-ng v1.1.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.5995402Z ^[[1m^[[92m  Downloaded^[[0m url v2.5.8
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.6012985Z ^[[1m^[[92m  Downloaded^[[0m wasm-bindgen-macro-support v0.2.126
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.6028295Z ^[[1m^[[92m  Downloaded^[[0m zerofrom-derive v0.1.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.6034272Z ^[[1m^[[92m  Downloaded^[[0m anstyle v1.0.14
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.6043282Z ^[[1m^[[92m  Downloaded^[[0m borsh v1.8.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.6080242Z ^[[1m^[[92m  Downloaded^[[0m chrono v0.4.45
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.6122747Z ^[[1m^[[92m  Downloaded^[[0m crypto-common v0.1.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.6135987Z ^[[1m^[[92m  Downloaded^[[0m derive_builder_macro v0.20.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.6170935Z ^[[1m^[[92m  Downloaded^[[0m foldhash v0.2.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.6252440Z ^[[1m^[[92m  Downloaded^[[0m hashbrown v0.14.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.6288647Z ^[[1m^[[92m  Downloaded^[[0m ident_case v1.0.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.6405479Z ^[[1m^[[92m  Downloaded^[[0m memmap2 v0.9.11
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.6444291Z ^[[1m^[[92m  Downloaded^[[0m lingua v1.8.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.7990065Z ^[[1m^[[92m  Downloaded^[[0m openssl-probe v0.2.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.7995844Z ^[[1m^[[92m  Downloaded^[[0m ptr_meta v0.1.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.8000673Z ^[[1m^[[92m  Downloaded^[[0m rayon v1.12.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.8051290Z ^[[1m^[[92m  Downloaded^[[0m selectors v0.26.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.8066378Z ^[[1m^[[92m  Downloaded^[[0m string_cache v0.8.9
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.8074959Z ^[[1m^[[92m  Downloaded^[[0m tower v0.5.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.8121231Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-css v0.25.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.8135327Z ^[[1m^[[92m  Downloaded^[[0m ts-parser-perl v1.2.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.8429597Z ^[[1m^[[92m  Downloaded^[[0m walkdir v2.5.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.8438721Z ^[[1m^[[92m  Downloaded^[[0m zerovec-derive v0.11.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.8447823Z ^[[1m^[[92m  Downloaded^[[0m beef v0.5.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.8457242Z ^[[1m^[[92m  Downloaded^[[0m command-stream v0.15.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.8485992Z ^[[1m^[[92m  Downloaded^[[0m dashmap v6.2.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.8499340Z ^[[1m^[[92m  Downloaded^[[0m form_urlencoded v1.2.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.8503907Z ^[[1m^[[92m  Downloaded^[[0m hyper-util v0.1.20
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.8535223Z ^[[1m^[[92m  Downloaded^[[0m num-bigint v0.4.8
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.8560612Z ^[[1m^[[92m  Downloaded^[[0m lingua-urdu-language-model v1.3.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.8827584Z ^[[1m^[[92m  Downloaded^[[0m quinn-udp v0.5.15
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.8837382Z ^[[1m^[[92m  Downloaded^[[0m rustls-native-certs v0.8.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.8845424Z ^[[1m^[[92m  Downloaded^[[0m syn v2.0.119
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.8908605Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-cpp v0.23.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.9085854Z ^[[1m^[[92m  Downloaded^[[0m unicode-ident v1.0.24
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.9100142Z ^[[1m^[[92m  Downloaded^[[0m wyz v0.5.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.9106985Z ^[[1m^[[92m  Downloaded^[[0m bytecheck v0.6.12
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.9111724Z ^[[1m^[[92m  Downloaded^[[0m ctor v0.4.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.9117725Z ^[[1m^[[92m  Downloaded^[[0m getopts v0.2.24
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.9125951Z ^[[1m^[[92m  Downloaded^[[0m lindera v3.0.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.9148905Z ^[[1m^[[92m  Downloaded^[[0m phf_macros v0.11.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.9154836Z ^[[1m^[[92m  Downloaded^[[0m rkyv v0.7.46
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.9194376Z ^[[1m^[[92m  Downloaded^[[0m tar v0.4.46
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.9210966Z ^[[1m^[[92m  Downloaded^[[0m anstream v1.0.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.9222285Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-scala v0.25.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.9536832Z ^[[1m^[[92m  Downloaded^[[0m counter v0.7.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.9546251Z ^[[1m^[[92m  Downloaded^[[0m http-body v1.1.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.9551344Z ^[[1m^[[92m  Downloaded^[[0m mio v1.2.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.9581214Z ^[[1m^[[92m  Downloaded^[[0m serde_core v1.0.229
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.9597670Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-php v0.24.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.9722335Z ^[[1m^[[92m  Downloaded^[[0m aws-lc-rs v1.17.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.9778972Z ^[[1m^[[92m  Downloaded^[[0m pin-project-lite v0.2.17
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.9803738Z ^[[1m^[[92m  Downloaded^[[0m encoding_rs v0.8.35
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:37.9959778Z ^[[1m^[[92m  Downloaded^[[0m tower-http v0.6.11
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:38.0011790Z ^[[1m^[[92m  Downloaded^[[0m cc v1.2.67
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:38.0032115Z ^[[1m^[[92m  Downloaded^[[0m lock_api v0.4.14
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:38.0040376Z ^[[1m^[[92m  Downloaded^[[0m utf8_iter v1.0.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:38.0046109Z ^[[1m^[[92m  Downloaded^[[0m is_terminal_polyfill v1.70.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:38.0052732Z ^[[1m^[[92m  Downloaded^[[0m which v7.0.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:38.0061019Z ^[[1m^[[92m  Downloaded^[[0m simdutf8 v0.1.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:38.0073713Z ^[[1m^[[92m  Downloaded^[[0m dtor v0.0.6
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:38.0078693Z ^[[1m^[[92m  Downloaded^[[0m rand_core v0.6.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:38.3262758Z ^[[1m^[[92m   Compiling^[[0m unicode-ident v1.0.24
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:38.3263354Z ^[[1m^[[92m   Compiling^[[0m proc-macro2 v1.0.107
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:38.3286033Z ^[[1m^[[92m   Compiling^[[0m quote v1.0.47
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:38.3312567Z ^[[1m^[[92m   Compiling^[[0m libc v0.2.189
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:38.6928632Z ^[[1m^[[92m   Compiling^[[0m shlex v2.0.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:38.7487117Z ^[[1m^[[92m   Compiling^[[0m find-msvc-tools v0.1.9
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:39.2296532Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-language v0.1.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:39.2967147Z ^[[1m^[[92m   Compiling^[[0m cfg-if v1.0.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:39.6542859Z ^[[1m^[[92m   Compiling^[[0m serde_core v1.0.229
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:39.8099141Z ^[[1m^[[92m   Compiling^[[0m jobserver v0.1.35
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:40.0457336Z ^[[1m^[[92m   Compiling^[[0m syn v2.0.119
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:40.0840741Z ^[[1m^[[92m   Compiling^[[0m syn v3.0.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:40.3643055Z ^[[1m^[[92m   Compiling^[[0m cc v1.2.67
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:40.6456316Z ^[[1m^[[92m   Compiling^[[0m serde v1.0.229
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:40.7918641Z ^[[1m^[[92m   Compiling^[[0m memchr v2.8.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:41.5667182Z ^[[1m^[[92m   Compiling^[[0m icu_properties_data v2.2.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:41.6343287Z ^[[1m^[[92m   Compiling^[[0m icu_normalizer_data v2.2.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:41.6980050Z ^[[1m^[[92m   Compiling^[[0m stable_deref_trait v1.2.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:42.4190179Z ^[[1m^[[92m   Compiling^[[0m serde_derive v1.0.229
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:42.6359545Z ^[[1m^[[92m   Compiling^[[0m smallvec v1.15.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:42.8050427Z ^[[1m^[[92m   Compiling^[[0m once_cell v1.21.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:43.0395461Z ^[[1m^[[92m   Compiling^[[0m itoa v1.0.18
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:43.2210285Z ^[[1m^[[92m   Compiling^[[0m zmij v1.0.23
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:43.2297936Z ^[[1m^[[92m   Compiling^[[0m synstructure v0.13.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:43.3180491Z ^[[1m^[[92m   Compiling^[[0m zerovec-derive v0.11.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:43.4530414Z ^[[1m^[[92m   Compiling^[[0m displaydoc v0.2.6
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:43.4715944Z ^[[1m^[[92m   Compiling^[[0m zerofrom-derive v0.1.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:44.0152753Z ^[[1m^[[92m   Compiling^[[0m yoke-derive v0.8.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:44.1703069Z ^[[1m^[[92m   Compiling^[[0m cmake v0.1.58
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:44.3276612Z ^[[1m^[[92m   Compiling^[[0m zerofrom v0.1.8
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:44.3623590Z ^[[1m^[[92m   Compiling^[[0m fs_extra v1.3.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:44.4919445Z ^[[1m^[[92m   Compiling^[[0m dunce v1.0.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:44.5481988Z ^[[1m^[[92m   Compiling^[[0m yoke v0.8.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:44.5848345Z ^[[1m^[[92m   Compiling^[[0m pkg-config v0.3.33
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:44.6475503Z ^[[1m^[[92m   Compiling^[[0m ptr_meta_derive v0.3.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:44.7693676Z ^[[1m^[[92m   Compiling^[[0m aws-lc-sys v0.43.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:44.7772838Z ^[[1m^[[92m   Compiling^[[0m autocfg v1.5.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:44.7840034Z ^[[1m^[[92m   Compiling^[[0m bytes v1.12.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:45.0582939Z ^[[1m^[[92m   Compiling^[[0m zerovec v0.11.6
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:45.1530417Z ^[[1m^[[92m   Compiling^[[0m pin-project-lite v0.2.17
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:45.2924048Z ^[[1m^[[92m   Compiling^[[0m num-traits v0.2.19
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:45.4713087Z ^[[1m^[[92m   Compiling^[[0m tokio-macros v2.7.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:45.5482846Z ^[[1m^[[92m   Compiling^[[0m rand_core v0.6.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:45.5802714Z ^[[1m^[[92m   Compiling^[[0m thiserror v2.0.19
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:45.7055371Z ^[[1m^[[92m   Compiling^[[0m futures-core v0.3.33
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:45.7236147Z ^[[1m^[[92m   Compiling^[[0m siphasher v1.0.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:45.7262607Z ^[[1m^[[92m   Compiling^[[0m rand v0.8.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:45.9231772Z ^[[1m^[[92m   Compiling^[[0m phf_shared v0.11.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:45.9928699Z ^[[1m^[[92m   Compiling^[[0m tinystr v0.8.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:46.1869598Z ^[[1m^[[92m   Compiling^[[0m heck v0.5.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:46.2636190Z ^[[1m^[[92m   Compiling^[[0m litemap v0.8.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:46.2864216Z ^[[1m^[[92m   Compiling^[[0m zeroize v1.9.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:46.4678071Z ^[[1m^[[92m   Compiling^[[0m aws-lc-rs v1.17.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:46.5602217Z ^[[1m^[[92m   Compiling^[[0m writeable v0.6.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:47.0017230Z ^[[1m^[[92m   Compiling^[[0m icu_locale_core v2.2.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:47.0762952Z ^[[1m^[[92m   Compiling^[[0m phf_generator v0.11.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:47.8324950Z ^[[1m^[[92m   Compiling^[[0m potential_utf v0.1.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:47.9141215Z ^[[1m^[[92m   Compiling^[[0m zerotrie v0.2.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:48.0107896Z ^[[1m^[[92m   Compiling^[[0m thiserror-impl v2.0.19
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:48.0858264Z ^[[1m^[[92m   Compiling^[[0m mio v1.2.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:48.2695029Z ^[[1m^[[92m   Compiling^[[0m socket2 v0.6.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:48.7939302Z ^[[1m^[[92m   Compiling^[[0m ident_case v1.0.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:48.8920107Z ^[[1m^[[92m   Compiling^[[0m fnv v1.0.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:49.2041038Z ^[[1m^[[92m   Compiling^[[0m utf8_iter v1.0.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:49.4833962Z ^[[1m^[[92m   Compiling^[[0m wasm-bindgen-shared v0.2.126
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:49.5054257Z ^[[1m^[[92m   Compiling^[[0m strsim v0.11.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:49.5663061Z ^[[1m^[[92m   Compiling^[[0m icu_collections v2.2.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:49.5693332Z ^[[1m^[[92m   Compiling^[[0m tokio v1.53.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:49.8321646Z ^[[1m^[[92m   Compiling^[[0m darling_core v0.20.11
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:50.0683998Z ^[[1m^[[92m   Compiling^[[0m icu_provider v2.2.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:50.5168498Z ^[[1m^[[92m   Compiling^[[0m rustls-pki-types v1.15.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:51.0752005Z ^[[1m^[[92m   Compiling^[[0m http v1.4.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:51.4428278Z ^[[1m^[[92m   Compiling^[[0m bytecheck_derive v0.8.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:51.8016184Z ^[[1m^[[92m   Compiling^[[0m include_dir_macros v0.7.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:51.9932838Z ^[[1m^[[92m   Compiling^[[0m log v0.4.33
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:52.0588802Z ^[[1m^[[92m   Compiling^[[0m bitflags v2.13.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:52.2812706Z ^[[1m^[[92m   Compiling^[[0m anyhow v1.0.104
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:52.4064987Z ^[[1m^[[92m   Compiling^[[0m parking_lot_core v0.9.12
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:52.5055724Z ^[[1m^[[92m   Compiling^[[0m http-body v1.1.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:52.8406269Z ^[[1m^[[92m   Compiling^[[0m include_dir v0.7.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:53.2817373Z ^[[1m^[[92m   Compiling^[[0m darling_macro v0.20.11
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:53.4223887Z ^[[1m^[[92m   Compiling^[[0m untrusted v0.9.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:53.9256646Z ^[[1m^[[92m   Compiling^[[0m scopeguard v1.2.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:53.9461114Z ^[[1m^[[92m   Compiling^[[0m futures-task v0.3.33
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:54.2004691Z ^[[1m^[[92m   Compiling^[[0m hashbrown v0.17.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:54.5117897Z ^[[1m^[[92m   Compiling^[[0m version_check v0.9.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:54.5879603Z ^[[1m^[[92m   Compiling^[[0m rustversion v1.0.23
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:54.6967038Z ^[[1m^[[92m   Compiling^[[0m rustls v0.23.42
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:54.7412556Z ^[[1m^[[92m   Compiling^[[0m httparse v1.10.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:54.8461628Z ^[[1m^[[92m   Compiling^[[0m percent-encoding v2.3.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:54.8506447Z ^[[1m^[[92m   Compiling^[[0m slab v0.4.12
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:55.0349956Z ^[[1m^[[92m   Compiling^[[0m futures-util v0.3.33
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:55.0545341Z ^[[1m^[[92m   Compiling^[[0m lock_api v0.4.14
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:55.2502592Z ^[[1m^[[92m   Compiling^[[0m darling v0.20.11
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:55.4227815Z ^[[1m^[[92m   Compiling^[[0m icu_normalizer v2.2.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:55.4791300Z ^[[1m^[[92m   Compiling^[[0m icu_properties v2.2.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:56.5966100Z ^[[1m^[[92m   Compiling^[[0m munge_macro v0.4.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:56.7514731Z ^[[1m^[[92m   Compiling^[[0m equivalent v1.0.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:56.7977071Z ^[[1m^[[92m   Compiling^[[0m tower-service v0.3.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:56.9582874Z ^[[1m^[[92m   Compiling^[[0m subtle v2.6.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:57.2125019Z ^[[1m^[[92m   Compiling^[[0m try-lock v0.2.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:57.3945896Z ^[[1m^[[92m   Compiling^[[0m serde_json v1.0.151
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:57.4618173Z ^[[1m^[[92m   Compiling^[[0m want v0.3.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:57.5941074Z ^[[1m^[[92m   Compiling^[[0m indexmap v2.14.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:58.0993731Z ^[[1m^[[92m   Compiling^[[0m idna_adapter v1.2.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:58.2590738Z ^[[1m^[[92m   Compiling^[[0m derive_builder_core v0.20.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:58.9698786Z ^[[1m^[[92m   Compiling^[[0m tracing-core v0.1.36
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:59.2975190Z ^[[1m^[[92m   Compiling^[[0m futures-channel v0.3.33
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:59.5484975Z ^[[1m^[[92m   Compiling^[[0m ptr_meta v0.3.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:59.6086894Z ^[[1m^[[92m   Compiling^[[0m aho-corasick v1.1.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:59.7894070Z ^[[1m^[[92m   Compiling^[[0m rustix v1.1.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:59.9014474Z ^[[1m^[[92m   Compiling^[[0m thiserror v1.0.69
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:26:59.9212887Z ^[[1m^[[92m   Compiling^[[0m regex-syntax v0.8.11
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:00.3072285Z ^[[1m^[[92m   Compiling^[[0m zerocopy v0.8.55
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:00.4767948Z ^[[1m^[[92m   Compiling^[[0m atomic-waker v1.1.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:00.6592863Z ^[[1m^[[92m   Compiling^[[0m getrandom v0.3.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:00.8068981Z ^[[1m^[[92m   Compiling^[[0m hyper v1.11.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:03.5693408Z ^[[1m^[[92m   Compiling^[[0m rancor v0.1.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:03.7536147Z ^[[1m^[[92m   Compiling^[[0m tracing v0.1.44
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:04.0613254Z ^[[1m^[[92m   Compiling^[[0m derive_builder_macro v0.20.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:04.1491338Z ^[[1m^[[92m   Compiling^[[0m idna v1.1.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:04.6836847Z ^[[1m^[[92m   Compiling^[[0m form_urlencoded v1.2.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:04.9743379Z ^[[1m^[[92m   Compiling^[[0m phf_codegen v0.11.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:05.1090603Z ^[[1m^[[92m   Compiling^[[0m strum_macros v0.28.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:05.2242240Z ^[[1m^[[92m   Compiling^[[0m sync_wrapper v1.0.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:05.7363009Z ^[[1m^[[92m   Compiling^[[0m rkyv_derive v0.8.17
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:05.7972885Z ^[[1m^[[92m   Compiling^[[0m regex-automata v0.4.16
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:05.9644343Z ^[[1m^[[92m   Compiling^[[0m thiserror-impl v1.0.69
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:06.6240065Z ^[[1m^[[92m   Compiling^[[0m bumpalo v3.20.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:06.6837650Z ^[[1m^[[92m   Compiling^[[0m crc32fast v1.5.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:06.7648686Z ^[[1m^[[92m   Compiling^[[0m simdutf8 v0.1.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:07.3561608Z ^[[1m^[[92m   Compiling^[[0m openssl-probe v0.2.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:07.4645474Z ^[[1m^[[92m   Compiling^[[0m ipnet v2.12.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:07.5254207Z ^[[1m^[[92m   Compiling^[[0m crossbeam-utils v0.8.22
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:07.6330670Z ^[[1m^[[92m   Compiling^[[0m linux-raw-sys v0.12.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:08.0661418Z ^[[1m^[[92m   Compiling^[[0m base64 v0.22.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:08.4480878Z ^[[1m^[[92m   Compiling^[[0m tower-layer v0.3.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:08.6302430Z ^[[1m^[[92m   Compiling^[[0m utf8parse v0.2.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:08.8159496Z ^[[1m^[[92m   Compiling^[[0m tower v0.5.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:09.0062856Z ^[[1m^[[92m   Compiling^[[0m hyper-util v0.1.20
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:10.0111344Z ^[[1m^[[92m   Compiling^[[0m rustls-native-certs v0.8.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:10.9704876Z ^[[1m^[[92m   Compiling^[[0m wasm-bindgen-macro-support v0.2.126
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:11.5131019Z ^[[1m^[[92m   Compiling^[[0m bytecheck v0.8.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:13.3950867Z ^[[1m^[[92m   Compiling^[[0m url v2.5.8
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:13.5940390Z ^[[1m^[[92m   Compiling^[[0m regex v1.13.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:13.9774346Z ^[[1m^[[92m   Compiling^[[0m wasm-bindgen v0.2.126
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:14.2363243Z ^[[1m^[[92m   Compiling^[[0m byteorder v1.5.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:15.9985717Z ^[[1m^[[92m   Compiling^[[0m adler2 v2.0.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:16.3980516Z ^[[1m^[[92m   Compiling^[[0m simd-adler32 v0.3.10
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:16.7256546Z ^[[1m^[[92m   Compiling^[[0m new_debug_unreachable v1.0.6
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:16.9037509Z ^[[1m^[[92m   Compiling^[[0m miniz_oxide v0.8.9
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:18.0715682Z ^[[1m^[[92m   Compiling^[[0m tower-http v0.6.11
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:18.5247091Z ^[[1m^[[92m   Compiling^[[0m wasm-bindgen-macro v0.2.126
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:20.1742313Z ^[[1m^[[92m   Compiling^[[0m rend v0.5.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:20.6883148Z ^[[1m^[[92m   Compiling^[[0m xattr v1.6.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:20.8764708Z ^[[1m^[[92m   Compiling^[[0m munge v0.4.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:21.1033211Z ^[[1m^[[92m   Compiling^[[0m parking_lot v0.12.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:21.4638404Z ^[[1m^[[92m   Compiling^[[0m encoding_rs v0.8.35
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:21.7197463Z ^[[1m^[[92m   Compiling^[[0m filetime v0.2.29
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:21.8917610Z ^[[1m^[[92m   Compiling^[[0m http-body-util v0.1.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:22.6033330Z ^[[1m^[[92m   Compiling^[[0m phf_macros v0.11.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:22.7620154Z ^[[1m^[[92m   Compiling^[[0m csv-core v0.1.13
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:22.8202906Z ^[[1m^[[92m   Compiling^[[0m crossbeam-epoch v0.9.20
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:22.8465456Z ^[[1m^[[92m   Compiling^[[0m ryu v1.0.23
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:22.8860243Z ^[[1m^[[92m   Compiling^[[0m rand_core v0.10.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:23.1873497Z ^[[1m^[[92m   Compiling^[[0m allocator-api2 v0.2.21
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:23.4950992Z ^[[1m^[[92m   Compiling^[[0m rand v0.10.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:23.9711290Z ^[[1m^[[92m   Compiling^[[0m csv v1.4.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:24.0842298Z ^[[1m^[[92m   Compiling^[[0m phf v0.11.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:24.6632965Z ^[[1m^[[92m   Compiling^[[0m rkyv v0.8.17
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:24.7581181Z ^[[1m^[[92m   Compiling^[[0m encoding_rs_io v0.1.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:25.1567839Z ^[[1m^[[92m   Compiling^[[0m tar v0.4.46
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:25.6532880Z ^[[1m^[[92m   Compiling^[[0m flate2 v1.1.9
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:26.3047076Z ^[[1m^[[92m   Compiling^[[0m strum v0.28.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:26.7990557Z ^[[1m^[[92m   Compiling^[[0m derive_builder v0.20.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:26.9987454Z ^[[1m^[[92m   Compiling^[[0m generic-array v0.14.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:27.0468965Z ^[[1m^[[92m   Compiling^[[0m string_cache_codegen v0.5.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:27.0495299Z ^[[1m^[[92m   Compiling^[[0m memmap2 v0.9.11
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:27.3938835Z ^[[1m^[[92m   Compiling^[[0m num_cpus v1.17.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:27.6855879Z ^[[1m^[[92m   Compiling^[[0m md5 v0.8.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:28.3100950Z ^[[1m^[[92m   Compiling^[[0m precomputed-hash v0.1.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:28.4923338Z ^[[1m^[[92m   Compiling^[[0m either v1.17.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:29.0509669Z ^[[1m^[[92m   Compiling^[[0m glob v0.3.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:29.0973279Z ^[[1m^[[92m   Compiling^[[0m minimal-lexical v0.2.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:29.3019406Z ^[[1m^[[92m   Compiling^[[0m ucd-trie v0.1.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:29.3020755Z ^[[1m^[[92m   Compiling^[[0m crossbeam-deque v0.8.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:29.3732701Z ^[[1m^[[92m   Compiling^[[0m mac v0.1.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:29.4050403Z ^[[1m^[[92m   Compiling^[[0m daachorse v2.1.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:29.4680755Z ^[[1m^[[92m   Compiling^[[0m pest v2.8.8
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:29.5332780Z ^[[1m^[[92m   Compiling^[[0m futf v0.1.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:29.6006616Z ^[[1m^[[92m   Compiling^[[0m nom v7.1.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:31.1603625Z ^[[1m^[[92m   Compiling^[[0m markup5ever v0.14.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:33.0489624Z ^[[1m^[[92m   Compiling^[[0m anstyle-parse v1.0.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:33.7322661Z ^[[1m^[[92m   Compiling^[[0m typenum v1.20.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:34.6018067Z ^[[1m^[[92m   Compiling^[[0m anstyle-query v1.1.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:34.7797624Z ^[[1m^[[92m   Compiling^[[0m foldhash v0.1.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:34.8082026Z ^[[1m^[[92m   Compiling^[[0m rayon-core v1.13.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:34.8569694Z ^[[1m^[[92m   Compiling^[[0m cfg_aliases v0.1.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:35.0348565Z ^[[1m^[[92m   Compiling^[[0m getrandom v0.4.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:35.0441225Z ^[[1m^[[92m   Compiling^[[0m dtoa v1.0.11
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:35.1147250Z ^[[1m^[[92m   Compiling^[[0m is_terminal_polyfill v1.70.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:35.2656677Z ^[[1m^[[92m   Compiling^[[0m arrayvec v0.7.8
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:35.3093168Z ^[[1m^[[92m   Compiling^[[0m colorchoice v1.0.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:35.5753469Z ^[[1m^[[92m   Compiling^[[0m fastrand v2.5.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:35.9195740Z ^[[1m^[[92m   Compiling^[[0m anstyle v1.0.14
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:35.9263027Z ^[[1m^[[92m   Compiling^[[0m utf-8 v0.7.6
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:36.1816629Z ^[[1m^[[92m   Compiling^[[0m tendril v0.4.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:36.2257212Z ^[[1m^[[92m   Compiling^[[0m anstream v1.0.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:36.3967312Z ^[[1m^[[92m   Compiling^[[0m dtoa-short v0.3.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:36.5293347Z ^[[1m^[[92m   Compiling^[[0m nix v0.28.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:36.6006041Z ^[[1m^[[92m   Compiling^[[0m hashbrown v0.15.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:37.9922993Z ^[[1m^[[92m   Compiling^[[0m js-sys v0.3.103
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:39.1354415Z ^[[1m^[[92m   Compiling^[[0m pest_meta v2.8.8
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:39.3043326Z ^[[1m^[[92m   Compiling^[[0m string_cache v0.8.9
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:40.1181313Z ^[[1m^[[92m   Compiling^[[0m ppv-lite86 v0.2.21
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:40.5948166Z ^[[1m^[[92m   Compiling^[[0m rand_core v0.9.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:40.8447386Z ^[[1m^[[92m   Compiling^[[0m selectors v0.26.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:40.9742562Z ^[[1m^[[92m   Compiling^[[0m ahash v0.8.12
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:41.0297597Z ^[[1m^[[92m   Compiling^[[0m cssparser-macros v0.6.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:41.1630097Z ^[[1m^[[92m   Compiling^[[0m nom v8.0.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:41.8397536Z ^[[1m^[[92m   Compiling^[[0m fst v0.4.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:43.1142834Z ^[[1m^[[92m   Compiling^[[0m cfg_aliases v0.2.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:43.3463261Z ^[[1m^[[92m   Compiling^[[0m tinyvec_macros v0.1.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:43.5653340Z ^[[1m^[[92m   Compiling^[[0m html-escape v0.2.14
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:44.1528134Z ^[[1m^[[92m   Compiling^[[0m clap_lex v1.1.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:44.5539859Z ^[[1m^[[92m   Compiling^[[0m clap_builder v4.6.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:45.2463472Z ^[[1m^[[92m   Compiling^[[0m lindera-dictionary v3.0.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:45.4772881Z ^[[1m^[[92m   Compiling^[[0m tinyvec v1.12.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:46.0728042Z ^[[1m^[[92m   Compiling^[[0m nix v0.29.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:47.7142003Z ^[[1m^[[92m   Compiling^[[0m cssparser v0.34.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:48.9947033Z ^[[1m^[[92m   Compiling^[[0m rand_chacha v0.9.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:49.5704401Z ^[[1m^[[92m   Compiling^[[0m pest_generator v2.8.8
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:51.4773694Z ^[[1m^[[92m   Compiling^[[0m fxhash v0.2.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:51.5231365Z ^[[1m^[[92m   Compiling^[[0m tree-sitter v0.25.10
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:51.6026375Z ^[[1m^[[92m   Compiling^[[0m platform-num v0.8.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:51.7155077Z ^[[1m^[[92m   Compiling^[[0m num-integer v0.1.46
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:51.8270698Z ^[[1m^[[92m   Compiling^[[0m clap_derive v4.6.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:51.9775382Z ^[[1m^[[92m   Compiling^[[0m match_token v0.1.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:52.1380151Z ^[[1m^[[92m   Compiling^[[0m derive_more v0.99.20
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:52.2740168Z ^[[1m^[[92m   Compiling^[[0m servo_arc v0.4.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:52.4715036Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-xml v0.7.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:52.5682825Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-r v1.3.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:52.6234516Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-typescript v0.23.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:52.7067284Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-html v0.23.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:52.7317249Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-ini v1.4.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:52.7538670Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-php v0.24.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:52.7981654Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-rust v0.24.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:52.8174909Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-graphql v0.1.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:52.8486669Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-lua v0.2.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:52.8965594Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-yaml v0.7.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:52.9075400Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-vb-dotnet v0.1.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:52.9423093Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-css v0.25.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:52.9881957Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-cpp v0.23.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:52.9904406Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-pascal v0.10.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:53.0420334Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-javascript v0.25.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:53.0712552Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-c-sharp v0.23.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:53.0754488Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-c v0.24.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:53.1243669Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-kotlin-ng v1.1.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:53.1919769Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-java v0.23.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:53.1954766Z ^[[1m^[[92m   Compiling^[[0m ts-parser-perl v1.2.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:53.2145937Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-swift v0.7.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:53.2753228Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-python v0.25.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:53.3004852Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-proto v0.4.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:53.3005917Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-toml-ng v0.7.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:53.3630243Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-json v0.24.8
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:53.3798539Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-sequel v0.3.11
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:53.3911835Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-scala v0.25.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:53.4502794Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-go v0.25.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:53.4693093Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-ruby v0.23.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:53.4711197Z ^[[1m^[[92m   Compiling^[[0m errno v0.3.14
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:53.5423162Z ^[[1m^[[92m   Compiling^[[0m vte_generate_state_changes v0.1.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:53.5511782Z ^[[1m^[[92m   Compiling^[[0m unicode-width v0.2.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:53.6559931Z ^[[1m^[[92m   Compiling^[[0m foldhash v0.2.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:53.7324684Z ^[[1m^[[92m   Compiling^[[0m unsafe-libyaml v0.2.11
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:53.9381202Z ^[[1m^[[92m   Compiling^[[0m hashbrown v0.14.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:53.9432863Z ^[[1m^[[92m   Compiling^[[0m dtor-proc-macro v0.0.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:54.0453126Z ^[[1m^[[92m   Compiling^[[0m bitflags v1.3.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:54.2622188Z ^[[1m^[[92m   Compiling^[[0m iana-time-zone v0.1.65
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:54.7055783Z ^[[1m^[[92m   Compiling^[[0m rust_decimal v1.42.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:54.7261743Z ^[[1m^[[92m   Compiling^[[0m chrono v0.4.45
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:54.8150460Z ^[[1m^[[92m   Compiling^[[0m dashmap v6.2.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:55.1443012Z ^[[1m^[[92m   Compiling^[[0m serde_yaml_ng v0.10.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:55.3996140Z ^[[1m^[[92m   Compiling^[[0m kanaria v0.2.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:55.8371400Z ^[[1m^[[92m   Compiling^[[0m dtor v0.0.6
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:56.0549020Z ^[[1m^[[92m   Compiling^[[0m getopts v0.2.24
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:56.9776496Z ^[[1m^[[92m   Compiling^[[0m hashbrown v0.16.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:57.0686688Z ^[[1m^[[92m   Compiling^[[0m signal-hook-registry v1.4.8
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:27:57.4821974Z ^[[1m^[[92m   Compiling^[[0m vte v0.11.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:17.6215542Z ^[[1m^[[92m   Compiling^[[0m clap v4.6.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:20.1523665Z ^[[1m^[[92m   Compiling^[[0m num-bigint v0.4.8
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:20.2187423Z ^[[1m^[[92m   Compiling^[[0m html5ever v0.29.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:20.6620908Z ^[[1m^[[92m   Compiling^[[0m rayon v1.12.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:21.2155190Z ^[[1m^[[92m   Compiling^[[0m tempfile v3.27.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:21.5096310Z ^[[1m^[[92m   Compiling^[[0m pest_derive v2.8.8
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:21.6189801Z ^[[1m^[[92m   Compiling^[[0m rand v0.9.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:23.1245920Z ^[[1m^[[92m   Compiling^[[0m unicode-normalization v0.1.25
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:23.5974556Z ^[[1m^[[92m   Compiling^[[0m parse-hyperlinks v0.23.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:23.7518536Z ^[[1m^[[92m   Compiling^[[0m links-notation v0.13.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:25.1930192Z ^[[1m^[[92m   Compiling^[[0m hashlink v0.10.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:25.4033219Z ^[[1m^[[92m   Compiling^[[0m crypto-common v0.1.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:25.5880649Z ^[[1m^[[92m   Compiling^[[0m block-buffer v0.10.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:25.6875686Z ^[[1m^[[92m   Compiling^[[0m abnf-core v0.5.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:25.7783212Z ^[[1m^[[92m   Compiling^[[0m itertools v0.14.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:25.8477054Z ^[[1m^[[92m   Compiling^[[0m filedescriptor v0.8.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:26.1719021Z ^[[1m^[[92m   Compiling^[[0m lingua-portuguese-language-model v1.3.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:26.8307252Z ^[[1m^[[92m   Compiling^[[0m lingua-urdu-language-model v1.3.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:27.1540358Z ^[[1m^[[92m   Compiling^[[0m lingua-spanish-language-model v1.3.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:27.1909541Z ^[[1m^[[92m   Compiling^[[0m lingua-arabic-language-model v1.3.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:27.2058906Z ^[[1m^[[92m   Compiling^[[0m lingua-french-language-model v1.3.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:27.4353880Z ^[[1m^[[92m   Compiling^[[0m lingua-hindi-language-model v1.3.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:27.6040599Z ^[[1m^[[92m   Compiling^[[0m lingua-english-language-model v1.3.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:27.8959368Z ^[[1m^[[92m   Compiling^[[0m lingua-chinese-language-model v1.3.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:27.9755011Z ^[[1m^[[92m   Compiling^[[0m lingua-russian-language-model v1.3.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:28.0716356Z ^[[1m^[[92m   Compiling^[[0m lingua-bengali-language-model v1.3.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:28.0965173Z ^[[1m^[[92m   Compiling^[[0m counter v0.7.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:28.2663403Z ^[[1m^[[92m   Compiling^[[0m strum_macros v0.27.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:28.4555043Z ^[[1m^[[92m   Compiling^[[0m serial2 v0.2.38
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:29.1616935Z ^[[1m^[[92m   Compiling^[[0m allocator-api2 v0.4.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:29.3828493Z ^[[1m^[[92m   Compiling^[[0m unicode-width v0.1.14
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:29.4135611Z ^[[1m^[[92m   Compiling^[[0m beef v0.5.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:29.5981218Z ^[[1m^[[92m   Compiling^[[0m unicode-segmentation v1.13.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:30.0852820Z ^[[1m^[[92m   Compiling^[[0m ego-tree v0.9.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:30.1080357Z ^[[1m^[[92m   Compiling^[[0m strum v0.27.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:30.3242890Z ^[[1m^[[92m   Compiling^[[0m unicode-blocks v0.1.10
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:30.4144055Z ^[[1m^[[92m   Compiling^[[0m env_home v0.1.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:30.4875629Z ^[[1m^[[92m   Compiling^[[0m shell-words v1.1.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:30.5673055Z ^[[1m^[[92m   Compiling^[[0m winnow v1.0.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:30.5722555Z ^[[1m^[[92m   Compiling^[[0m maplit v1.0.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:30.6490105Z ^[[1m^[[92m   Compiling^[[0m downcast-rs v1.2.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:30.8597996Z ^[[1m^[[92m   Compiling^[[0m streaming-iterator v0.1.9
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:31.2600401Z ^[[1m^[[92m   Compiling^[[0m ctor-proc-macro v0.0.6
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:31.3871170Z ^[[1m^[[92m   Compiling^[[0m ctor v0.4.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:31.7282729Z ^[[1m^[[92m   Compiling^[[0m toml_parser v1.1.2+spec-1.1.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:32.5587682Z ^[[1m^[[92m   Compiling^[[0m lingua v1.8.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:32.9845371Z ^[[1m^[[92m   Compiling^[[0m portable-pty v0.9.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:33.3262758Z ^[[1m^[[92m   Compiling^[[0m which v7.0.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:34.0101786Z ^[[1m^[[92m   Compiling^[[0m scraper v0.21.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:37.8677820Z ^[[1m^[[92m   Compiling^[[0m vt100 v0.15.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:38.0892855Z ^[[1m^[[92m   Compiling^[[0m platform-mem v0.3.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:38.2842641Z ^[[1m^[[92m   Compiling^[[0m platform-data v2.0.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:38.4769871Z ^[[1m^[[92m   Compiling^[[0m abnf v0.13.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:39.3423743Z ^[[1m^[[92m   Compiling^[[0m digest v0.10.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:39.5789566Z ^[[1m^[[92m   Compiling^[[0m ebnf v0.1.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:39.7772790Z ^[[1m^[[92m   Compiling^[[0m json5_nodes v2.0.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:40.5235839Z ^[[1m^[[92m   Compiling^[[0m bnf v0.6.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:41.0405750Z ^[[1m^[[92m   Compiling^[[0m num-rational v0.4.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:43.9277189Z ^[[1m^[[92m   Compiling^[[0m platform-trees v0.3.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:44.1703446Z ^[[1m^[[92m   Compiling^[[0m serde-wasm-bindgen v0.6.5
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:44.7871617Z ^[[1m^[[92m   Compiling^[[0m web-sys v0.3.103
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:45.5293026Z ^[[1m^[[92m   Compiling^[[0m wasm-bindgen-futures v0.4.76
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:45.7413531Z ^[[1m^[[92m   Compiling^[[0m whatlang v0.18.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:47.4873173Z ^[[1m^[[92m   Compiling^[[0m console_error_panic_hook v0.1.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:47.5232685Z ^[[1m^[[92m   Compiling^[[0m async-trait v0.1.92
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:47.8679017Z ^[[1m^[[92m   Compiling^[[0m dotenvy v0.15.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:47.8711842Z ^[[1m^[[92m   Compiling^[[0m formal-ai v0.339.1 (/home/runner/work/formal-ai/formal-ai)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:47.9943672Z ^[[1m^[[92m   Compiling^[[0m cpufeatures v0.2.17
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:48.1941155Z ^[[1m^[[92m   Compiling^[[0m rustls-webpki v0.103.13
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:48.1981972Z ^[[1m^[[92m   Compiling^[[0m same-file v1.0.6
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:48.2059343Z ^[[1m^[[92m   Compiling^[[0m tap v1.0.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:48.4236613Z ^[[1m^[[92m   Compiling^[[0m mutate_once v0.1.2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:48.4449783Z ^[[1m^[[92m   Compiling^[[0m leak_slice v0.2.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:48.4563206Z ^[[1m^[[92m   Compiling^[[0m toml_datetime v1.1.1+spec-1.1.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:48.6310124Z ^[[1m^[[92m   Compiling^[[0m lazy_static v1.5.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:48.6428641Z ^[[1m^[[92m   Compiling^[[0m unicode-bidi v0.3.18
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:48.7866899Z ^[[1m^[[92m   Compiling^[[0m lino-env v0.1.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:48.8650148Z ^[[1m^[[92m   Compiling^[[0m toml_writer v1.1.2+spec-1.1.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:49.1781194Z ^[[1m^[[92m   Compiling^[[0m toml_edit v0.25.13+spec-1.1.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:49.3872959Z ^[[1m^[[92m   Compiling^[[0m lino-arguments v0.3.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:49.5182878Z ^[[1m^[[92m   Compiling^[[0m link-calculator v0.20.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:50.6133238Z ^[[1m^[[92m   Compiling^[[0m doublets v0.4.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:51.4242985Z ^[[1m^[[92m   Compiling^[[0m kamadak-exif v0.6.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:51.6033042Z ^[[1m^[[92m   Compiling^[[0m walkdir v2.5.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:52.5420283Z ^[[1m^[[92m   Compiling^[[0m lino-objects-codec v0.2.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:52.9164207Z ^[[1m^[[92m   Compiling^[[0m sha2 v0.10.9
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:52.9403160Z ^[[1m^[[92m   Compiling^[[0m tokio-rustls v0.26.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:53.3377915Z ^[[1m^[[92m   Compiling^[[0m hyper-rustls v0.27.9
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:53.7160376Z ^[[1m^[[92m   Compiling^[[0m rustls-platform-verifier v0.7.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:53.8188207Z ^[[1m^[[92m   Compiling^[[0m command-stream v0.15.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:53.9180596Z ^[[1m^[[92m   Compiling^[[0m web-capture v0.3.36
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:54.0166530Z ^[[1m^[[92m   Compiling^[[0m reqwest v0.13.4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:55.6682939Z ^[[1m^[[92m   Compiling^[[0m web-search v0.5.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:56.7398699Z ^[[1m^[[92m   Compiling^[[0m thread-priority v3.1.1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:57.2851802Z ^[[1m^[[92m   Compiling^[[0m fs2 v0.4.3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:57.5656843Z ^[[1m^[[92m   Compiling^[[0m base64 v0.23.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:28:58.3154110Z ^[[1m^[[92m   Compiling^[[0m lindera-jieba v3.0.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:29:15.7158136Z ^[[1m^[[92m   Compiling^[[0m lindera v3.0.7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:29:15.9852684Z ^[[1m^[[92m   Compiling^[[0m meta-language v0.54.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:32.3844232Z ^[[1m^[[92m    Finished^[[0m `release` profile [optimized] target(s) in 7m 01s
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:32.4635138Z ##[group]Run set -euo pipefail
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:32.4635417Z ^[[36;1mset -euo pipefail^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:32.4635782Z ^[[36;1mbash experiments/issue_840_task_ladder/run_ladder.sh | tee "/home/runner/work/_temp/ladder.log"^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:32.4660199Z shell: /usr/bin/bash -e {0}
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:32.4660434Z env:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:32.4660603Z   GIT_CONFIG_COUNT: 1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:32.4660807Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:32.4661029Z   GIT_CONFIG_VALUE_0: main
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:32.4661219Z   CARGO_NET_RETRY: 10
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:32.4661414Z   CARGO_HTTP_MULTIPLEXING: false
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:32.4661843Z   CARGO_TERM_COLOR: always
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:32.4662095Z   RUSTFLAGS: -Dwarnings
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:32.4662286Z   CARGO_INCREMENTAL: 0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:32.4662478Z   CARGO_HOME: /home/runner/.cargo
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:32.4662738Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:32.4663016Z   ACTIONS_CACHE_SERVICE_V2: on
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:32.4663386Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:32.4704236Z   ACTIONS_RUNTIME_TOKEN: ***
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:32.4704641Z   SCCACHE_GHA_ENABLED: true
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:32.4704857Z   RUSTC_WRAPPER: sccache
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:32.4705112Z   BASELINE: experiments/issue_840_task_ladder/results.json
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:32.4705454Z   OUT: /home/runner/work/_temp/ladder-results.json
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:32.4705788Z   LEARNING_OUT: /home/runner/work/_temp/ladder-learning.json
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:32.4706104Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:32.4974851Z sandbox: /tmp/formal-ai-ladder.rYmVfp
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8834215Z PASS  838.L1       L1  'Find hive-mind-control center folder on my desktop'
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8834879Z PASS  838.L2.a     L2  "Is the request 'Find hive-mind-control center folder on my"
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8835391Z PASS  838.L2.b     L2  'List the folders on my desktop'
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8835855Z PASS  838.L3.a     L3  'Search hive-mind-control-center on my desktop'
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8836193Z PASS  838.L3.b     L3  'Find hive-mind-control center folder on desktop'
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8836519Z PASS  838.L3.c     L3  'What is inside the Archive folder on my desktop?'
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8837146Z PASS  838.L4.a     L4  'Найди папку hive-mind-control center на моём рабочем столе'
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8837521Z PASS  838.L4.b     L4  "Is there a folder named exactly 'hive-mind-control-center'"
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8837901Z PASS  838.L4.c     L4  'On my desktop, is hive-control-center a file or a folder?'
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8838274Z PASS  838.L4.d     L4  'Find a folder called zzz-nonexistent-folder on my desktop'
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8838630Z PASS  827.L1       L1  'Что такое фуфломицин?'
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8838969Z PASS  827.L2.a     L2  'Дай определение слова фуфломицин одним предложением'
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8839342Z PASS  827.L2.b     L2  'Что такое фуфломицин? Затем: так что это такое то?'
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8840087Z PASS  827.L3.a     L3  'What is a fufloмицин (фуфломицин)? Answer in English.'
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8840468Z PASS  827.L3.b     L3  'Так что это такое то?'
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8840818Z PASS  827.L4.a     L4  'Приведи один пример препарата, который называют фуфломицин'
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8841216Z PASS  827.L4.b     L4  'Что означает слово это в предложении: так что это такое то'
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8841715Z PASS  826.L1       L1  'ФБС vs ФБО'
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8841977Z PASS  826.L2.a     L2  'Что такое ФБО?'
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8842228Z PASS  826.L2.b     L2  'Зарепорти баг'
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8842468Z PASS  826.L3.a     L3  'Что такое ФБС?'
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8842718Z PASS  826.L3.b     L3  'Сообщи об ошибке'
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8843026Z PASS  826.L4.a     L4  'Чем отличается ФБС от ФБО одним предложением?'
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8843291Z PASS  826.L4.b     L4  'Report a bug'
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8843427Z 
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8843507Z TOTAL 24/24 passed
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8843681Z   L1: 3/3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8843837Z   L2: 6/6
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8844302Z   L3: 7/7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8844465Z   L4: 8/8
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8844616Z   #826: 7/7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8844771Z   #827: 7/7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8844915Z   #838: 10/10
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8845030Z 
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8845148Z wrote /home/runner/work/_temp/ladder-results.json
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8845504Z wrote /home/runner/work/_temp/ladder-learning.json (0 review-gated candidate(s))
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8845863Z baseline 24/24 -> now 24/24
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8973994Z ##[group]Run set -euo pipefail
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8974270Z ^[[36;1mset -euo pipefail^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8974531Z ^[[36;1mresults='/home/runner/work/_temp/ladder-results.json'^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8974827Z ^[[36;1m[ -f "$results" ] || exit 0^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8975033Z ^[[36;1m{^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8975230Z ^[[36;1m  echo '### Task ladder (issue #840 dataset)'^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8975468Z ^[[36;1m  echo^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8975878Z ^[[36;1m  python3 -c "import json,sys;s=json.load(open(sys.argv[1]))['summary'];print(f\"**{s['passed']}/{s['total']}** nodes passed.\")" "$results"^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8976304Z ^[[36;1m  echo^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8976522Z ^[[36;1m  echo '<details><summary>Per-node results</summary>'^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8976871Z ^[[36;1m  echo^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8977033Z ^[[36;1m  echo '```'^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8977242Z ^[[36;1m  cat '/home/runner/work/_temp/ladder.log'^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8977473Z ^[[36;1m  echo '```'^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8977681Z ^[[36;1m  echo^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8977853Z ^[[36;1m  echo '</details>'^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.8978059Z ^[[36;1m} >> "$GITHUB_STEP_SUMMARY"^[[0m
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9002184Z shell: /usr/bin/bash -e {0}
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9002407Z env:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9002578Z   GIT_CONFIG_COUNT: 1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9002779Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9003005Z   GIT_CONFIG_VALUE_0: main
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9003197Z   CARGO_NET_RETRY: 10
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9003388Z   CARGO_HTTP_MULTIPLEXING: false
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9003599Z   CARGO_TERM_COLOR: always
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9003790Z   RUSTFLAGS: -Dwarnings
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9003978Z   CARGO_INCREMENTAL: 0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9004168Z   CARGO_HOME: /home/runner/.cargo
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9004446Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9004731Z   ACTIONS_CACHE_SERVICE_V2: on
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9005073Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9046955Z   ACTIONS_RUNTIME_TOKEN: ***
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9047212Z   SCCACHE_GHA_ENABLED: true
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9047444Z   RUSTC_WRAPPER: sccache
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9047664Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9329380Z ##[group]Run actions/upload-artifact@v7
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9329617Z with:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9329793Z   name: task-ladder-results
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9330143Z   path: /home/runner/work/_temp/ladder-results.json
+Task Ladder (issue	UNKNOWN STEP	/home/runner/work/_temp/ladder-learning.json
+Task Ladder (issue	UNKNOWN STEP	
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9330508Z   if-no-files-found: ignore
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9330712Z   compression-level: 6
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9330899Z   overwrite: false
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9331086Z   include-hidden-files: false
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9331297Z   archive: true
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9331667Z env:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9331847Z   GIT_CONFIG_COUNT: 1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9332040Z   GIT_CONFIG_KEY_0: init.defaultBranch
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9332261Z   GIT_CONFIG_VALUE_0: main
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9332450Z   CARGO_NET_RETRY: 10
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9332641Z   CARGO_HTTP_MULTIPLEXING: false
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9332846Z   CARGO_TERM_COLOR: always
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9333041Z   RUSTFLAGS: -Dwarnings
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9333256Z   CARGO_INCREMENTAL: 0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9333446Z   CARGO_HOME: /home/runner/.cargo
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9333707Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9333981Z   ACTIONS_CACHE_SERVICE_V2: on
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9334307Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9375258Z   ACTIONS_RUNTIME_TOKEN: ***
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9375514Z   SCCACHE_GHA_ENABLED: true
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9375741Z   RUSTC_WRAPPER: sccache
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:34.9375966Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:35.0505971Z Multiple search paths detected. Calculating the least common ancestor of all paths
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:35.0507902Z The least common ancestor is /home/runner/work/_temp. This will be the root directory of the artifact
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:35.0508622Z With the provided path, there will be 2 files uploaded
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:35.0514762Z Artifact name is valid!
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:35.0515145Z Root directory input is valid!
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:35.3362371Z Uploading artifact: task-ladder-results.zip
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:35.3417537Z Beginning upload of artifact content to blob storage
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:35.6472229Z Uploaded bytes 5149
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:35.7138447Z Finished uploading artifact content to blob storage!
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:35.7139163Z SHA256 digest of uploaded artifact is 116d92fe87ecf5163fa61214fdd2bf73c41704591c154e749097df665acf96f1
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:35.7139759Z Finalizing artifact upload
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.0692549Z Artifact task-ladder-results successfully finalized. Artifact ID 9109864096
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.0693681Z Artifact task-ladder-results has been successfully uploaded! Final size is 5149 bytes. Artifact ID is 9109864096
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.0694448Z Artifact download URL: https://github.com/link-assistant/formal-ai/actions/runs/31512369858/artifacts/9109864096
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.0799402Z Post job cleanup.
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.0802948Z ##[start-action display=Install sccache;id=__6b14bdc7-0fa1-4b6d-b985-948f161a00a3.__mozilla-actions_sccache-action]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.0824721Z Post job cleanup.
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1524387Z ##[group]Get human-readable stats
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1537063Z [command]/opt/hostedtoolcache/sccache/0.16.0/x64/sccache --show-stats
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1586272Z Compile requests                     994
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1586609Z Compile requests executed            873
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1586854Z Cache hits                           499
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1587150Z Cache hits (Assembler)               111
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1587376Z Cache hits (C/C++)                   268
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1587612Z Cache hits (Rust)                    120
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1587898Z Cache misses                         368
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1588112Z Cache misses (C/C++)                  46
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1588364Z Cache misses (Rust)                  322
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1588646Z Cache hits rate                    57.55 %
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1588880Z Cache hits rate (Assembler)       100.00 %
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1589107Z Cache hits rate (C/C++)            85.35 %
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1589389Z Cache hits rate (Rust)             27.15 %
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1589615Z Cache timeouts                         0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1589841Z Cache read errors                      0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1590099Z Forced recaches                        0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1590340Z Cache write errors                   295
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1590554Z Cache errors                           0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1590771Z Compilations                         368
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1591212Z Compilation failures                   6
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1591719Z Non-cacheable compilations             0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1592183Z Non-cacheable calls                  117
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1592583Z Non-compilation calls                  4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1592894Z Unsupported compiler calls             0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1593267Z Average cache write                0.485 s
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1593571Z Average compiler                   0.973 s
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1593861Z Average cache read hit             0.180 s
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1594239Z Failed distributed compilations        0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1594451Z 
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1594591Z Non-cacheable reasons:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1595031Z crate-type                           106
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1595313Z -o                                     6
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1595674Z -                                      3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1596043Z missing input                          2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1596334Z 
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1596765Z Cache location                  ghac, name: 90541733aa72480a9e77ce99e66fc1cfabfa835d74c751408eb0351b7adcec6b, prefix: /sccache/
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1597314Z Base directories                (none)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1597663Z Version (client)                0.16.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1609617Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1610164Z ##[group]Get JSON stats
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1612867Z [command]/opt/hostedtoolcache/sccache/0.16.0/x64/sccache --show-stats --stats-format=json
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1648954Z {"stats":{"compile_requests":994,"requests_unsupported_compiler":0,"requests_not_compile":4,"requests_not_cacheable":117,"requests_executed":873,"cache_errors":{"counts":{},"adv_counts":{}},"cache_hits":{"counts":{"Rust":120,"Assembler":111,"C/C++":268},"adv_counts":{"assemblerToPreprocess [gcc]":111,"rust":120,"c [gcc]":268}},"cache_misses":{"counts":{"Rust":322,"C/C++":46},"adv_counts":{"rust":322,"c [gcc]":46}},"cache_timeouts":0,"cache_read_errors":0,"non_cacheable_compilations":0,"forced_recaches":0,"cache_write_errors":295,"cache_writes":73,"cache_write_duration":{"secs":35,"nanos":418816937},"cache_read_hit_duration":{"secs":90,"nanos":265709724},"compilations":368,"compiler_write_duration":{"secs":358,"nanos":410586736},"compile_fails":6,"not_cached":{"-o":6,"-":3,"crate-type":106,"missing input":2},"dist_compiles":{},"dist_errors":0,"multi_level":null},"cache_location":"ghac, name: 90541733aa72480a9e77ce99e66fc1cfabfa835d74c751408eb0351b7adcec6b, prefix: /sccache/","cache_size":null,"max_cache_size":null,"use_preprocessor_cache_mode":false,"version":"0.16.0","basedirs":[]}
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1654328Z ##[endgroup]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1677626Z ##[notice]58% - 499 hits, 368 misses, 0 errors
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1678034Z 
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1678185Z Full human-readable stats:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1678558Z Compile requests                     994
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1678982Z Compile requests executed            873
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1679392Z Cache hits                           499
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1679820Z Cache hits (Assembler)               111
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1680219Z Cache hits (C/C++)                   268
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1680630Z Cache hits (Rust)                    120
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1680974Z Cache misses                         368
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1681334Z Cache misses (C/C++)                  46
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1681794Z Cache misses (Rust)                  322
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1682096Z Cache hits rate                    57.55 %
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1682463Z Cache hits rate (Assembler)       100.00 %
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1682827Z Cache hits rate (C/C++)            85.35 %
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1683187Z Cache hits rate (Rust)             27.15 %
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1683535Z Cache timeouts                         0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1683874Z Cache read errors                      0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1684216Z Forced recaches                        0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1684555Z Cache write errors                   295
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1684889Z Cache errors                           0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1685245Z Compilations                         368
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1685597Z Compilation failures                   6
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1685958Z Non-cacheable compilations             0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1686401Z Non-cacheable calls                  117
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1686759Z Non-compilation calls                  4
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1687118Z Unsupported compiler calls             0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1687470Z Average cache write                0.485 s
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1687831Z Average compiler                   0.973 s
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1688186Z Average cache read hit             0.180 s
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1688546Z Failed distributed compilations        0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1688781Z 
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1688906Z Non-cacheable reasons:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1689199Z crate-type                           106
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1689527Z -o                                     6
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1689852Z -                                      3
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1690198Z missing input                          2
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1690412Z 
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1690895Z Cache location                  ghac, name: 90541733aa72480a9e77ce99e66fc1cfabfa835d74c751408eb0351b7adcec6b, prefix: /sccache/
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1691785Z Base directories                (none)
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1692129Z Version (client)                0.16.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1692349Z 
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1722637Z ##[end-action id=__6b14bdc7-0fa1-4b6d-b985-948f161a00a3.__mozilla-actions_sccache-action;outcome=success;conclusion=success;duration_ms=91]
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.1799449Z Post job cleanup.
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.2546022Z [command]/usr/bin/git version
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.2580247Z git version 2.54.0
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.2609239Z Temporarily overriding HOME='/home/runner/work/_temp/c78fb718-88fe-474d-bdcc-7c04cecf57b1' before making global git config changes
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.2610202Z Adding repository directory to the temporary git global config as a safe directory
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.2613067Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.2639355Z Removing SSH command configuration
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.2644932Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.2673282Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.2892544Z Removing HTTP extra header
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.2896612Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.2923084Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.3122694Z Removing includeIf entries pointing to credentials config files
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.3128225Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.3146516Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.3155475Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.3156359Z includeif.gitdir:/github/workspace/.git.path
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.3157068Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.3158545Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.3173887Z /home/runner/work/_temp/git-credentials-2ab1a438-edfc-4327-b2d1-ab62157e44bc.config
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.3184751Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-2ab1a438-edfc-4327-b2d1-ab62157e44bc.config
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.3221678Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.3233322Z /home/runner/work/_temp/git-credentials-2ab1a438-edfc-4327-b2d1-ab62157e44bc.config
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.3255043Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-2ab1a438-edfc-4327-b2d1-ab62157e44bc.config
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.3275750Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.3297219Z /github/runner_temp/git-credentials-2ab1a438-edfc-4327-b2d1-ab62157e44bc.config
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.3299443Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-2ab1a438-edfc-4327-b2d1-ab62157e44bc.config
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.3324777Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.3341383Z /github/runner_temp/git-credentials-2ab1a438-edfc-4327-b2d1-ab62157e44bc.config
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.3353487Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-2ab1a438-edfc-4327-b2d1-ab62157e44bc.config
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.3751426Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.3952871Z Removing credentials config '/home/runner/work/_temp/git-credentials-2ab1a438-edfc-4327-b2d1-ab62157e44bc.config'
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.4072296Z Cleaning up orphan processes
+Task Ladder (issue	UNKNOWN STEP	2026-08-11T16:33:36.4307999Z Terminate orphan process: pid (2287) (sccache)

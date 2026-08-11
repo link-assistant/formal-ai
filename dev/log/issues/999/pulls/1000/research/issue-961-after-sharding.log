@@ -1,0 +1,20 @@
+   Compiling formal-ai v0.339.1 (/tmp/gh-issue-solver-1786471194109)
+    Finished `test` profile [unoptimized] target(s) in 1m 07s
+     Running tests/issue_961_macos_portability.rs (target/debug/deps/issue_961_macos_portability-d0748c407ee91f7f)
+
+running 12 tests
+test complete_macos_portability_contract_holds ... ok
+test full_test_matrix_runs_on_a_supported_macos_image ... ok
+test proxy_log_expectation_matches_the_canonicalized_product_path ... ok
+test macos_test_bootstrap_uses_portable_df_syntax ... ok
+test package_log_uses_a_bsd_portable_mktemp_template ... ok
+test pty_input_waits_for_tui_readiness_before_writing ... ok
+test pty_tests_do_not_embed_util_linux_only_script_flags ... ok
+test seed_sync_guards_an_empty_destination_array ... ok
+test formal_ai_and_the_real_agent_cli_authored_two_of_seven_smallest_leaves ... ok
+test requirement_matrix_and_case_studies_cover_the_complete_issue ... ok
+test seed_sync_reaches_the_orphan_pass_with_an_empty_destination ... ok
+test runner_disk_cleanup_accepts_a_bsd_shaped_df ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+

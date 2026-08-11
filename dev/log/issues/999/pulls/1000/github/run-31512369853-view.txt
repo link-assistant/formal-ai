@@ -1,0 +1,27 @@
+
+✓ main Coverage · 31512369853
+Triggered via push about 1 hour ago
+
+JOBS
+✓ Detect Changes in 1m20s (ID 93849096635)
+✓ Code Coverage in 21m23s (ID 93849506036)
+✓ Browser Code Coverage in 1m5s (ID 93849506065)
+
+ANNOTATIONS
+- 0% - 0 hits, 67 misses, 0 errors
+Code Coverage: .github#43
+
+- The LCOV report is retained as the rust-lcov workflow artifact; configure CODECOV_TOKEN to enable fail-closed remote upload.
+Code Coverage: .github#18
+
+- Coverage for `browser` functions rose to 46.16% (baseline 45.54%). Run `--only browser --update-baseline` to lock the gain in.
+Browser Code Coverage: .github#40
+
+
+ARTIFACTS
+coverage-rust
+rust-lcov
+coverage-browser
+
+For more information about a job, try: gh run view --job=<job-id>
+View this run on GitHub: https://github.com/link-assistant/formal-ai/actions/runs/31512369853

@@ -1,0 +1,10 @@
+
+✓ issue-999-31976d2c6ce9 External Benchmarks link-assistant/formal-ai#1000 · 31520515620
+Triggered via pull_request about 12 minutes ago
+
+JOBS
+✓ Verify monotonic ledger in 2m7s (ID 93876128149)
+- Run upstream suites (ID 93876129698)
+
+For more information about a job, try: gh run view --job=<job-id>
+View this run on GitHub: https://github.com/link-assistant/formal-ai/actions/runs/31520515620

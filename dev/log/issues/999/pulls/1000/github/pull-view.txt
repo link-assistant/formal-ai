@@ -1,0 +1,58 @@
+title:	fix(ci): complete issue 999 workflow audit
+state:	DRAFT
+author:	konard (Konstantin Diachenko)
+labels:	
+assignees:	konard (Konstantin Diachenko)
+reviewers:	
+projects:	
+milestone:	
+number:	1000
+url:	https://github.com/link-assistant/formal-ai/pull/1000
+additions:	204468
+deletions:	1164
+auto-merge:	disabled
+--
+## Summary
+
+- identify the repeated Intel macOS failure as a 35-minute capacity boundary, then split that lane into complementary `core` and `specification` shards without raising its timeout or dropping coverage
+- move concurrency from mixed workflows to individual jobs, retaining cancellation for superseded reads while placing every material repository writer in a non-lossy `queue: max` scope
+- eliminate current warning debt: use the supported Pages timeout, classify intentional exemptions/reports as notices, and bring all five flagged files below their warning thresholds
+- add the missing CodeQL, dependency-review, and live-link gates; repair five stale documentation links and keep Wayback diagnostic-only so archived copies cannot make dead live links pass
+- enable the repository's Dependency Graph prerequisite after the first remote Dependency Review run exposed that settings-level gap; SBOM export and base/head comparison now succeed
+- preserve the complete issue/PR/run/template investigation, root-cause analysis, timeline, alternatives, source research, and verification logs in a SHA-256-manifested evidence archive
+- strengthen the split-seed regression after the first full remote lint run correctly required language-matrix coverage; all four moved intents are now checked for every registered locale and every runtime loader
+- fix a fresh link-gate finding: replace a repeatedly unavailable reference with live university course material, and prevent the Wayback helper from misreporting Lychee's successful redirects as broken links
+
+## Root causes
+
+The latest default-branch pipeline had no failed or hanging test. Its Intel macOS job was still producing passing specification results when GitHub killed it at the unchanged 35-minute limit. The last successful instance already took 28m37s, so cold build time plus the growing monolithic suite had exhausted the remaining margin.
+
+The wider audit also found a cancellation-scope defect: read checks and write jobs shared workflow-level concurrency. A newer run could interrupt an active writer, and GitHub's default one-pending-run behavior could replace an older queued writer. Job-level concurrency now matches side-effect boundaries.
+
+A fresh link run found one real 502 and 18 healthy redirects. The copied template helper parsed every Markdown bullet across both sections and announced 19 broken URLs. It now parses only Lychee's error section (with a compatibility fallback), covered by a red/green Node regression; the unavailable source was replaced rather than ignored or excused by its archive.
+
+The complete root-cause analysis and all nine issue requirements are mapped in the [durable evidence report](https://github.com/link-assistant/formal-ai/blob/issue-999-31976d2c6ce9/dev/log/issues/999/pulls/1000/README.md).
+
+## Verification
+
+- issue #999 regressions: 6/6
+- complete CI/CD unit module: 183/183
+- all-features repository tests: 2,664 passed, 3 intentionally ignored, 0 failed in the final 2,667-test target; all integration executables and doc tests passed
+- self-AST census: 8/8; browser suite: 53/53
+- Clippy with warnings denied, examples, normal/docs.rs rustdoc, formatting, actionlint 1.7.12, ShellCheck, changelog reconstruction, fragment mapping, file-size enforcement, diff check, and repository secret scan: passed
+- local link gates: 1,071 checked before the remote probe changed; clean-tree rerun after replacement: 991 current inputs, 0 errors
+- diff-aware language-test-coverage gate: `en`, `ru`, `hi`, `zh`, and `es` covered
+- evidence manifest: all archived files verified
+
+The minimum regression ran before implementation and failed on the missing sharding, writer queues, gates, and size bounds; it passes after the fix. Full logs are in the evidence report and the [readable case study](https://github.com/link-assistant/formal-ai/blob/issue-999-31976d2c6ce9/docs/case-studies/issue-999/README.md).
+
+No visual UI behavior changed, so screenshots do not apply.
+
+## Upstream reports
+
+- corrected the Rust template's obsolete concurrency conclusion in [issue 113](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/113#issuecomment-5257178147)
+- reported the shared archived-link false negative with reproductions, workarounds, and code fixes in [Rust #125](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/125), [JavaScript #127](https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/127), and [Python #54](https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/54)
+- reported the shared redirect-parser false positive in [Rust #126](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/126) and [JavaScript #128](https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/128)
+
+Fixes #999
+

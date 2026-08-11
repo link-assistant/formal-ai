@@ -1,0 +1,40 @@
+
+✓ main Agentic CLI Matrix · 31512369864
+Triggered via push about 1 hour ago
+
+JOBS
+✓ Build formal-ai in 6m35s (ID 93849096349)
+✓ Replay recorded sessions in 19s (ID 93849096460)
+✓ E2E (agent) in 1m19s (ID 93851093984)
+✓ E2E (opencode-vscode) in 2m31s (ID 93851093986)
+✓ E2E (aider) in 2m19s (ID 93851093988)
+✓ E2E (t3code) in 57s (ID 93851093991)
+✓ E2E (opencode) in 1m31s (ID 93851093995)
+✓ E2E (cursor) in 32s (ID 93851094008)
+✓ E2E (claude) in 3m27s (ID 93851094020)
+✓ E2E (gemini) in 1m28s (ID 93851094022)
+✓ E2E (opencode-desktop) in 1m22s (ID 93851094033)
+✓ E2E (qwen) in 3m38s (ID 93851094075)
+✓ E2E (codex) in 1m19s (ID 93851094078)
+✓ E2E (grok) in 3m18s (ID 93851094145)
+✓ Learn reusable client contracts in 11s (ID 93852169414)
+✓ Matrix summary in 4s (ID 93852232036)
+
+ARTIFACTS
+client-contract-learning
+transcripts-qwen
+transcripts-claude
+transcripts-grok
+transcripts-opencode-vscode
+transcripts-aider
+transcripts-opencode
+transcripts-gemini
+transcripts-opencode-desktop
+transcripts-codex
+transcripts-agent
+transcripts-t3code
+transcripts-cursor
+formal-ai-binary
+
+For more information about a job, try: gh run view --job=<job-id>
+View this run on GitHub: https://github.com/link-assistant/formal-ai/actions/runs/31512369864

@@ -23,17 +23,14 @@ function objectForFormalization(prompt, normalized, match) {
   }
   return cleanSearchQuery(normalized || "");
 }
-
 function virtualObjectId(term) {
   const trimmed = String(term || "").trim();
   if (!trimmed) return "?";
   return `?${trimmed}`;
 }
-
 function formatFormalizationTuple(parts) {
   return `(${parts.filter(Boolean).join(" ")})`;
 }
-
 function buildFormalization(prompt, normalized) {
   const match = detectFormalizationMatch(prompt, normalized);
   if (!match || match.ambiguous) {
@@ -59,7 +56,6 @@ function buildFormalization(prompt, normalized) {
     interpretations: match.interpretations || [],
   };
 }
-
 function formalizationDetail(formalization) {
   if (!formalization || typeof formalization !== "object") {
     return String(formalization || "(empty)");
@@ -67,7 +63,6 @@ function formalizationDetail(formalization) {
   const arrow = formalization.raw && formalization.tuple ? " -> " : "";
   return `${formalization.raw || ""}${arrow}${formalization.tuple || ""}`.trim();
 }
-
 function formalizationClarificationMessage(formalization, language) {
   const suggestions = Array.isArray(formalization && formalization.suggestions)
     ? formalization.suggestions
@@ -86,7 +81,6 @@ function formalizationClarificationMessage(formalization, language) {
   }
   return `I am not sure how to interpret that request. Did you mean ${rendered}?`;
 }
-
 // Once a handler resolves the search object to a concrete entity, this helper
 // folds the resolved id back into the original formalization so the trace
 // shows the canonical (@USER OP:search Q<id>) tuple alongside the placeholder.
@@ -102,9 +96,7 @@ function resolveFormalizationWithId(formalization, resolvedId) {
   });
   return next;
 }
-
 const associativeResearchId = (prompt) => stableBehaviorRuleId("associative_research", normalizePrompt(prompt));
-
 function recallAssociativeResearch(prompt, memory) {
   const id = associativeResearchId(prompt);
   for (const value of Array.isArray(memory) ? memory : []) {
@@ -126,7 +118,6 @@ function recallAssociativeResearch(prompt, memory) {
   }
   return null;
 }
-
 function associativeResearchMemoryOperation(prompt, answer) {
   const fused = answer?.diagnostics?.fused;
   if (!Array.isArray(fused) || fused.length === 0 || !answer.content) return null;
@@ -138,7 +129,6 @@ function associativeResearchMemoryOperation(prompt, answer) {
     ...sources.map((source) => `  source ${linoString(source)}`)];
   return { action: "append", kind: "associative_research", statement: lines.join("\n") };
 }
-
 async function solve(prompt, history, prefs, userContext = {}, memory = [], options = {}) {
   // Issue #556: activate the forced response language for the whole replay and
   // always restore the previous value, so a nested follow-up replay never
@@ -154,7 +144,6 @@ async function solve(prompt, history, prefs, userContext = {}, memory = [], opti
     setForcedResponseLanguage(previousForced);
   }
 }
-
 async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], options = {}) {
   const preferences = prefs || {};
   // Issue #556: a response-language follow-up replays the previous request
@@ -202,7 +191,6 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     events.push(`response_language:${responseLanguage}`);
     steps.push({ step: "resolve_response_language", detail: responseLanguage });
   }
-
   // Issue #180: bundle the per-turn formalization context so every
   // handler hit can fold a resolved entity id back into the tuple and
   // every `finalize` call can emit a `deformalize` step that records the
@@ -213,7 +201,6 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     resolved: null,
     language,
   };
-
   if (formalization.needsClarification) {
     events.push("formalization:ambiguous");
     steps.push({
@@ -227,7 +214,6 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
       evidence: ["formalization:ambiguous"],
     }, formalizationContext);
   }
-
   const compoundProcedure = await tryGreetingProceduralCompound(prompt, language, preferences);
   if (compoundProcedure) {
     for (const event of compoundProcedure.trace || []) events.push(event);
@@ -253,14 +239,12 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     });
     return finalize(events, steps, toolCalls, compoundProcedure, formalizationContext);
   }
-
   const behaviorRule = tryBehaviorRules(prompt, normalized, history, preferences);
   if (behaviorRule) {
     events.push(`handler:${behaviorRule.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryBehaviorRules" });
     return finalize(events, steps, toolCalls, behaviorRule, formalizationContext);
   }
-
   const memoryEvents = Array.isArray(options.memoryEvents)
     ? options.memoryEvents
     : [];
@@ -276,7 +260,6 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     steps.push({ step: "dispatch_handler", detail: "tryMemoryInspection" });
     return finalize(events, steps, toolCalls, memoryInspection, formalizationContext);
   }
-
   if (isPunctuationOnlyPrompt(prompt)) {
     events.push("handler:clarification");
     events.push(`clarification:punctuation_only:${String(prompt).trim()}`);
@@ -293,14 +276,12 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
       ],
     }, formalizationContext);
   }
-
   const translation = await tryTranslation(prompt, normalized);
   if (translation) {
     events.push(`handler:${translation.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryTranslation" });
     return finalize(events, steps, toolCalls, translation, formalizationContext);
   }
-
   // Skip the response-language follow-up during a forced-language replay: the
   // replay IS the follow-up's body, so re-entering here would recurse forever.
   if (!forcedResponseLanguage) {
@@ -338,7 +319,6 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
       );
     }
   }
-
   steps.push({ step: "invoke_tool", detail: "project_lookup" });
   const projectLookup = await tryProjectLookup(prompt, language, preferences);
   if (projectLookup) {
@@ -354,7 +334,6 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     });
     return finalize(events, steps, toolCalls, projectLookup, formalizationContext);
   }
-
   steps.push({ step: "invoke_tool", detail: "wikipedia_article_question" });
   const earlyWikiArticleQuestion = await tryWikipediaArticleQuestion(
     prompt,
@@ -388,7 +367,6 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
       formalizationContext,
     );
   }
-
   const githubRepositoryTraffic = tryGithubRepositoryTraffic(normalized, language);
   if (githubRepositoryTraffic) {
     events.push(`handler:${githubRepositoryTraffic.intent}`);
@@ -404,7 +382,6 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
       formalizationContext,
     );
   }
-
   const githubRepoInfoRequest = githubRepositoryInfoRequest(prompt, normalized);
   if (githubRepoInfoRequest) {
     steps.push({
@@ -435,21 +412,18 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     });
     return finalize(events, steps, toolCalls, githubRepoInfo, formalizationContext);
   }
-
   const capabilities = tryCapabilities(prompt, normalized, preferences, history);
   if (capabilities) {
     events.push(`handler:${capabilities.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryCapabilities" });
     return finalize(events, steps, toolCalls, capabilities, formalizationContext);
   }
-
   const architecture = tryArchitectureExplanation(prompt, normalized);
   if (architecture) {
     events.push("handler:meta_explanation");
     steps.push({ step: "dispatch_handler", detail: "tryArchitectureExplanation" });
     return finalize(events, steps, toolCalls, architecture, formalizationContext);
   }
-
   // Issue #676: "how are you?" small talk is its own wellbeing intent so the
   // reply differs from a bare greeting. It must be checked before the greeting
   // rule because some phrasings ("привет как дела") also contain a greeting cue.
@@ -573,7 +547,6 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
       evidence: ["rule:identity", `language:${language}`],
     }, formalizationContext);
   }
-
   // Issue #312: compute the write-program result once so a concrete program
   // request (a known language + task with a template) can take precedence over
   // the concept lookup, while the "unsupported" variant still falls back after
@@ -741,14 +714,12 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
       return finalize(events, steps, toolCalls, hit, formalizationContext);
     }
   }
-
   const coreferenceFact = tryCoreferenceFactLookup(prompt, normalized, history);
   if (coreferenceFact) {
     events.push(`handler:${coreferenceFact.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryCoreferenceFactLookup" });
     return finalize(events, steps, toolCalls, coreferenceFact, formalizationContext);
   }
-
   // Real-time fact reasoning: parse structured (relation, subject) queries, hit
   // the 1-week TTL cache, fall back to Wikidata/Wikipedia for any country or
   // entity. Cache warmed from `data/seed/facts.lino` so the test matrix and
@@ -774,14 +745,12 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     });
     return finalize(events, steps, toolCalls, factQuery, formalizationContext);
   }
-
   const legacyFact = tryFactLookup(prompt, normalized);
   if (legacyFact) {
     events.push(`handler:${legacyFact.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryFactLookup" });
     return finalize(events, steps, toolCalls, legacyFact, formalizationContext);
   }
-
   steps.push({ step: "invoke_tool", detail: "http_fetch" });
   const fetched = await tryFetch(prompt);
   if (fetched) {
@@ -794,7 +763,6 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     });
     return finalize(events, steps, toolCalls, fetched, formalizationContext);
   }
-
   steps.push({ step: "invoke_tool", detail: "url_navigate" });
   const navigated = await tryUrlNavigate(prompt);
   if (navigated) {
@@ -807,7 +775,6 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     });
     return finalize(events, steps, toolCalls, navigated, formalizationContext);
   }
-
   steps.push({ step: "invoke_tool", detail: "docs_method_explanation" });
   const docsMethod = tryDocsMethodExplanation(prompt, language);
   if (docsMethod) {
@@ -824,7 +791,6 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     });
     return finalize(events, steps, toolCalls, docsMethod, formalizationContext);
   }
-
   steps.push({ step: "invoke_tool", detail: "procedural_how_to" });
   const procedure = await tryProceduralHowTo(prompt, language, preferences);
   if (procedure) {
@@ -846,7 +812,6 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     });
     return finalize(events, steps, toolCalls, procedure, formalizationContext);
   }
-
   // Issue #444: a bare follow-up that asks for the concrete steps ("Can you
   // give me specific instructions?") carries no "how to" lead-in of its own, so
   // tryProceduralHowTo above returned null. Rebind it to the procedure recovered
@@ -874,7 +839,6 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     });
     return finalize(events, steps, toolCalls, procedureFollowup, formalizationContext);
   }
-
   steps.push({ step: "invoke_tool", detail: "document_originality_check" });
   const originality = tryDocumentOriginalityCheck(prompt, language);
   if (originality) {
@@ -905,7 +869,6 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     });
     return finalize(events, steps, toolCalls, originality, formalizationContext);
   }
-
   steps.push({ step: "invoke_tool", detail: "web_search" });
   const webSearch = await tryWebSearch(prompt, language);
   if (webSearch) {
@@ -922,7 +885,6 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     });
     return finalize(events, steps, toolCalls, webSearch, formalizationContext);
   }
-
   steps.push({ step: "invoke_tool", detail: "wikipedia_lookup" });
   const wiki = await tryWikipediaLookup(prompt, language, preferences);
   if (wiki) {
@@ -949,7 +911,6 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     inputs: { prompt, language },
     outputs: { intent: "no_match" },
   });
-
   // Issue #69: "who is X" prompts that were not resolved by the local
   // knowledge base or Wikipedia should still return a question-typed response
   // (not "unknown") and offer a typo correction when the entity name is close
@@ -960,7 +921,6 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     steps.push({ step: "dispatch_handler", detail: "tryWhoIsQuestion" });
     return finalize(events, steps, toolCalls, whoIs, formalizationContext);
   }
-
   // Route literal and seeded semantic shell requests before unknown fallback.
   const terminal = tryTerminalCommand(prompt, language, preferences);
   if (terminal) {
@@ -968,7 +928,6 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     steps.push({ step: "dispatch_handler", detail: "tryTerminalCommand" });
     return finalize(events, steps, toolCalls, terminal, formalizationContext);
   }
-
   const learnedResearch = recallAssociativeResearch(prompt, memory);
   if (learnedResearch) {
     events.push("handler:associative_research_memory");
@@ -978,7 +937,6 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
       outputs: { intent: learnedResearch.intent, confidence: learnedResearch.confidence } });
     return finalize(events, steps, toolCalls, learnedResearch, formalizationContext);
   }
-
   const bareTermQuery = extractUnresolvedBareTermSearchQuery(prompt);
   if (bareTermQuery) {
     steps.push({ step: "invoke_tool", detail: "web_search_unresolved_bare_term" });
@@ -995,7 +953,6 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
       return finalize(events, steps, toolCalls, bareTermSearch, formalizationContext);
     }
   }
-
   steps.push({ step: "invoke_tool", detail: "unknown_intent_research" });
   const researchedUnknown = await runWebSearchQuery(prompt, language, "unknown_intent_research", preferences);
   const researchedSources = researchedUnknown?.diagnostics?.fused;
@@ -1014,7 +971,6 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
       outputs: { intent: researchedUnknown.intent, confidence: researchedUnknown.confidence, associationId } });
     return finalize(events, steps, toolCalls, researchedUnknown, formalizationContext);
   }
-
   events.push("fallback:unknown");
   steps.push({ step: "fallback", detail: "unknown" });
   return finalize(events, steps, toolCalls, {
@@ -1024,7 +980,6 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     evidence: ["fallback:unknown", `language:${language}`],
   }, formalizationContext);
 }
-
 // Fold a handler's concrete entity back into its initial formalization trace.
 function applyResolvedFormalization(events, steps, formalizationContext, answer) {
   if (!formalizationContext || !answer || !answer.formalizedObject) return;
@@ -1049,7 +1004,6 @@ function applyResolvedFormalization(events, steps, formalizationContext, answer)
     },
   });
 }
-
 function collectInterpretations(formalizationContext, answer) {
   const combined = [];
   const pushAll = (items) => {
@@ -1076,13 +1030,11 @@ function collectInterpretations(formalizationContext, answer) {
     return true;
   });
 }
-
 function interpretationStatements(interpretations) {
   return interpretations
     .map((item) => `Interpreted "${item.original}" as "${item.corrected}".`)
     .join("\n");
 }
-
 function applyVisibleInterpretations(answer, interpretations) {
   if (!answer || interpretations.length === 0) return answer;
   const statements = interpretationStatements(interpretations);
@@ -1094,7 +1046,6 @@ function applyVisibleInterpretations(answer, interpretations) {
     ],
   });
 }
-
 function deformalizeProjection(formalizationContext, answer) {
   const tuple =
     (formalizationContext &&
@@ -1117,7 +1068,6 @@ function deformalizeProjection(formalizationContext, answer) {
     summary: `${tuple} ⇒ ${answer.intent || "unknown"}: ${projection}`,
   };
 }
-
 // Issue #488: classify each reasoning step into a granularity tier so the
 // thinking preview can show only the high-level universal-algorithm phases at
 // the default ("standard") granularity and fold the mechanical sub-steps
@@ -1139,14 +1089,12 @@ const HIGH_LEVEL_THINKING_STEPS = new Set([
   "user_context",
   "fallback",
 ]);
-
 function thinkingStepLevel(step) {
   const raw = String(step || "");
   // Nested agent sub-reasoning always folds under its composite agent task.
   if (/^agent_\d+_/i.test(raw)) return "detailed";
   return HIGH_LEVEL_THINKING_STEPS.has(raw) ? "high" : "detailed";
 }
-
 function withThinkingLevels(steps) {
   if (!Array.isArray(steps)) return [];
   return steps.map((step) =>
@@ -1155,7 +1103,6 @@ function withThinkingLevels(steps) {
       : step,
   );
 }
-
 function finalize(events, steps, toolCalls, answer, formalizationContext) {
   const interpretations = collectInterpretations(formalizationContext, answer);
   answer = applyVisibleInterpretations(answer, interpretations);
@@ -1196,10 +1143,8 @@ function finalize(events, steps, toolCalls, answer, formalizationContext) {
   }
   return result;
 }
-
 let seedLoaded = false;
 let seedLoadPromise = null;
-
 async function loadSeed() {
   if (seedLoaded) return;
   if (seedLoadPromise) return seedLoadPromise;
@@ -1334,9 +1279,7 @@ async function loadSeed() {
   })();
   return seedLoadPromise;
 }
-
 let initPromise = null;
-
 async function init() {
   if (wasm !== undefined) return;
   if (initPromise) return initPromise;
@@ -1369,7 +1312,6 @@ async function init() {
   })();
   return initPromise;
 }
-
 self.onmessage = async (event) => {
   await init();
   const data = event.data || {};
@@ -1422,5 +1364,4 @@ self.onmessage = async (event) => {
     memoryOperation: answer.memoryOperation || null,
   });
 };
-
 init();

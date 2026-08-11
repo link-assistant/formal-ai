@@ -28,6 +28,7 @@
     "seed/multilingual-responses-synthesis.lino",
     "seed/multilingual-responses-orchestration.lino",
     "seed/multilingual-responses-agentic.lino",
+    "seed/multilingual-responses-agentic-tools.lino",
     "seed/multilingual-responses-decomposition.lino",
     "seed/multilingual-responses-procedure.lino",
     "seed/multilingual-responses-pattern.lino",

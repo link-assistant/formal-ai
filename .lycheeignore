@@ -1,0 +1,24 @@
+# Lychee ignore patterns - regex patterns for URLs to skip during link checking
+
+# Localhost and local development URLs
+https?://localhost
+https?://127\.0\.0\.1
+
+# Example and placeholder URLs used by the template
+https?://example\.com
+https://docs\.rs/example-sum-package-name
+
+# Web Archive rejects automated checks despite serving browser requests
+https://web\.archive\.org
+
+# These pages require a browser session or reject automated HEAD/GET probes.
+https://openai\.com/index/introducing-gpt-oss/
+https://openai\.com/index/introducing-simpleqa/
+https://openai\.com/policies/eu-terms-of-use/
+https://openai\.com/policies/services-agreement/
+https://artofproblemsolving\.com/wiki/index\.php/AIME_Problems_and_Solutions
+https://app\.docker\.com/settings/personal-access-tokens
+
+# The HTML is stamped and served from src/web/, so this build-time relative
+# asset is not resolvable from src/web/app/index.html in the checkout.
+styles\.css\?v=__FORMAL_AI_ASSET_VERSION__

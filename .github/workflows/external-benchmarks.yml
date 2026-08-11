@@ -39,10 +39,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: external-benchmarks-${{ github.ref }}
-  cancel-in-progress: false
-
 env:
   CARGO_NET_RETRY: '10'
   CARGO_TERM_COLOR: always
@@ -51,6 +47,9 @@ jobs:
   # === RATCHET - every PR compares its ledger with the actual base revision ===
   ratchet:
     name: Verify monotonic ledger
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-ratchet
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -77,6 +76,9 @@ jobs:
   # === EXTERNAL BENCHMARKS - run upstream suites and publish honest scores ===
   external-benchmarks:
     name: Run upstream suites
+    concurrency:
+      group: formal-ai-repository-writes
+      queue: max
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 90

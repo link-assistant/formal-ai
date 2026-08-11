@@ -67,18 +67,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  # The workflow_run path (the automatic one) carries neither release.tag_name
-  # nor inputs.tag, so this fell through to the always-unique run_id and never
-  # actually deduped: concurrent runs for the same tag raced each other on
-  # `gh release upload --clobber` and on finalize's SHA256SUMS.txt. Key on the
-  # commit for that path, which is what resolve maps to a tag.
-  group: desktop-release-${{ github.event.pull_request.number || github.event.release.tag_name || github.event.inputs.tag || github.event.workflow_run.head_sha || github.run_id }}
-  # Release runs must never be cancelled mid-upload; pull-request dry runs are
-  # pure verification, so superseding pushes should cancel the stale six-runner
-  # matrix instead of queueing behind it.
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
-
 env:
   GIT_CONFIG_COUNT: '1'
   GIT_CONFIG_KEY_0: init.defaultBranch
@@ -92,6 +80,9 @@ jobs:
     name: Resolve target release
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-resolve
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     permissions:
       contents: read
     # For workflow_run, continue after ANY completed main-branch pipeline except
@@ -143,6 +134,9 @@ jobs:
   build:
     name: Build ${{ matrix.label }}
     needs: resolve
+    concurrency:
+      group: desktop-release-${{ github.event.pull_request.number || needs.resolve.outputs.tag }}-${{ matrix.label }}
+      queue: max
     # `resolve` is skipped on pull requests, and a skipped dependency would
     # normally skip this job too -- hence the explicit `!cancelled()`.
     if: ${{ !cancelled() && (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true') }}
@@ -557,6 +551,9 @@ jobs:
   vscode:
     name: Package VS Code extension (.vsix)
     needs: resolve
+    concurrency:
+      group: desktop-release-${{ github.event.pull_request.number || needs.resolve.outputs.tag }}-vscode
+      queue: max
     # Same skipped-dependency handling as `build`; see the comment there.
     if: ${{ !cancelled() && (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true') }}
     runs-on: ubuntu-latest
@@ -656,6 +653,9 @@ jobs:
   finalize:
     name: Publish SHA256SUMS.txt + provenance
     needs: [resolve, build, vscode]
+    concurrency:
+      group: formal-ai-repository-writes
+      queue: max
     # !cancelled(), not always(): a partial matrix (one arch failing under
     # fail-fast:false) must still publish checksums for the arches that did
     # build, but a *cancelled* run must not. The upload below uses

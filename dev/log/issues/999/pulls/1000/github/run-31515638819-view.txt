@@ -1,0 +1,12 @@
+
+- main Desktop Release · 31515638819
+Triggered via workflow_run about 1 hour ago
+
+JOBS
+- Resolve target release (ID 93859971572)
+- Build ${{ matrix.label }} (ID 93859971890)
+- Publish SHA256SUMS.txt + provenance in 0s (ID 93859972502)
+- Package VS Code extension (.vsix) (ID 93860011557)
+
+For more information about a job, try: gh run view --job=<job-id>
+View this run on GitHub: https://github.com/link-assistant/formal-ai/actions/runs/31515638819

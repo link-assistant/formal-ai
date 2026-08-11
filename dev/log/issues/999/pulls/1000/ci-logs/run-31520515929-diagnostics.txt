@@ -1,0 +1,98 @@
+1110:Self-Hosting Evidence Check	Setup Rust	2026-08-11T18:01:17.3511821Z ^[[36;1m  curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://sh.rustup.rs | sh -s -- --default-toolchain none -y^[[0m
+1130:Self-Hosting Evidence Check	Setup Rust	2026-08-11T18:01:17.3589263Z ##[end-action id=__dtolnay_rust-toolchain.__run_3;outcome=skipped;conclusion=skipped;duration_ms=0]
+2630:Detect Changes	Setup Rust	2026-08-11T18:01:20.1560214Z ^[[36;1m  curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://sh.rustup.rs | sh -s -- --default-toolchain none -y^[[0m
+2650:Detect Changes	Setup Rust	2026-08-11T18:01:20.1681266Z ##[end-action id=__dtolnay_rust-toolchain.__run_3;outcome=skipped;conclusion=skipped;duration_ms=0]
+4155:Version Modification Check	Setup Rust	2026-08-11T18:01:14.5486329Z ^[[36;1m  curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://sh.rustup.rs | sh -s -- --default-toolchain none -y^[[0m
+4175:Version Modification Check	Setup Rust	2026-08-11T18:01:14.5825305Z ##[end-action id=__dtolnay_rust-toolchain.__run_3;outcome=skipped;conclusion=skipped;duration_ms=0]
+4760:Pipeline Status	Fail the run when a required job was cancelled or failed	﻿2026-08-11T18:02:30.2184082Z ##[group]Run bash scripts/check-pipeline-status.sh
+4761:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-11T18:02:30.2184556Z ^[[36;1mbash scripts/check-pipeline-status.sh^[[0m
+4762:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-11T18:02:30.2232527Z shell: /usr/bin/bash -e {0}
+4763:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-11T18:02:30.2232803Z env:
+4764:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-11T18:02:30.2232999Z   GIT_CONFIG_COUNT: 1
+4765:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-11T18:02:30.2233242Z   GIT_CONFIG_KEY_0: init.defaultBranch
+4766:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-11T18:02:30.2233516Z   GIT_CONFIG_VALUE_0: main
+4767:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-11T18:02:30.2233750Z   CARGO_NET_RETRY: 10
+4768:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-11T18:02:30.2233997Z   CARGO_HTTP_MULTIPLEXING: false
+4769:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-11T18:02:30.2234252Z   CARGO_TERM_COLOR: always
+4770:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-11T18:02:30.2234476Z   RUSTFLAGS: -Dwarnings
+4771:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-11T18:02:30.2234981Z   CARGO_REGISTRY_TOKEN: ***
+4772:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-11T18:02:30.2235280Z   CARGO_TOKEN: ***
+4773:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-11T18:02:30.2235791Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+4774:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-11T18:02:30.2236154Z   DOCKERHUB_IMAGE: 
+4775:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-11T18:02:30.2239430Z   NEEDS_JSON: {
+4776:Pipeline Status	Fail the run when a required job was cancelled or failed	  "detect-changes": {
+4777:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+4778:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {
+4779:Pipeline Status	Fail the run when a required job was cancelled or failed	      "toml-changed": "false",
+4780:Pipeline Status	Fail the run when a required job was cancelled or failed	      "docs-changed": "false",
+4781:Pipeline Status	Fail the run when a required job was cancelled or failed	      "workflow-changed": "false",
+4782:Pipeline Status	Fail the run when a required job was cancelled or failed	      "any-code-changed": "false",
+4783:Pipeline Status	Fail the run when a required job was cancelled or failed	      "rs-changed": "false"
+4784:Pipeline Status	Fail the run when a required job was cancelled or failed	    }
+4785:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+4786:Pipeline Status	Fail the run when a required job was cancelled or failed	  "changelog": {
+4787:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+4788:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+4789:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+4790:Pipeline Status	Fail the run when a required job was cancelled or failed	  "evidence-check": {
+4791:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+4792:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+4793:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+4794:Pipeline Status	Fail the run when a required job was cancelled or failed	  "docker-build": {
+4795:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+4796:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+4797:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+4798:Pipeline Status	Fail the run when a required job was cancelled or failed	  "secrets-scan": {
+4799:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+4800:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+4801:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+4802:Pipeline Status	Fail the run when a required job was cancelled or failed	  "version-check": {
+4803:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+4804:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+4805:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+4806:Pipeline Status	Fail the run when a required job was cancelled or failed	  "lint": {
+4807:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+4808:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+4809:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+4810:Pipeline Status	Fail the run when a required job was cancelled or failed	  "test": {
+4811:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+4812:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+4813:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+4814:Pipeline Status	Fail the run when a required job was cancelled or failed	  "build": {
+4815:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+4816:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+4817:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+4818:Pipeline Status	Fail the run when a required job was cancelled or failed	  "auto-release": {
+4819:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+4820:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+4821:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+4822:Pipeline Status	Fail the run when a required job was cancelled or failed	  "manual-release": {
+4823:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+4824:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+4825:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+4826:Pipeline Status	Fail the run when a required job was cancelled or failed	  "changelog-pr": {
+4827:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+4828:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+4829:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+4830:Pipeline Status	Fail the run when a required job was cancelled or failed	  "test-e2e-local": {
+4831:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+4832:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+4833:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+4834:Pipeline Status	Fail the run when a required job was cancelled or failed	  "test-agent-cli-e2e": {
+4835:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+4836:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+4837:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+4838:Pipeline Status	Fail the run when a required job was cancelled or failed	  "deploy-pages": {
+4839:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+4840:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+4841:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+4842:Pipeline Status	Fail the run when a required job was cancelled or failed	  "test-e2e-pages": {
+4843:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+4844:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+4845:Pipeline Status	Fail the run when a required job was cancelled or failed	  }
+4846:Pipeline Status	Fail the run when a required job was cancelled or failed	}
+4847:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-11T18:02:30.2243034Z   IS_MAIN: false
+4848:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-11T18:02:30.2243236Z ##[endgroup]
+4849:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-11T18:02:30.2403368Z Failed jobs:    <none>
+4850:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-11T18:02:30.2470779Z Cancelled jobs: <none>
+4851:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-08-11T18:02:30.2471396Z All required jobs succeeded or were legitimately skipped.

@@ -1,0 +1,82 @@
+71:Build formal-ai	UNKNOWN STEP	2026-08-11T16:26:25.1847375Z hint: to use in all of your new repositories, which will suppress this warning,
+253:Build formal-ai	UNKNOWN STEP	2026-08-11T16:26:34.8483759Z ^[[36;1m  curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://sh.rustup.rs | sh -s -- --default-toolchain none -y^[[0m
+265:Build formal-ai	UNKNOWN STEP	2026-08-11T16:26:34.9581282Z ##[end-action id=__dtolnay_rust-toolchain.__run_3;outcome=skipped;conclusion=skipped;duration_ms=0]
+813:Build formal-ai	UNKNOWN STEP	2026-08-11T16:26:42.7132682Z ^[[1m^[[92m  Downloaded^[[0m console_error_panic_hook v0.1.7
+1201:Build formal-ai	UNKNOWN STEP	2026-08-11T16:28:40.0363454Z ^[[1m^[[92m   Compiling^[[0m console_error_panic_hook v0.1.7
+1247:Build formal-ai	UNKNOWN STEP	2026-08-11T16:32:37.6079302Z   if-no-files-found: warn
+1387:Replay recorded sessions	UNKNOWN STEP	2026-08-11T16:26:19.8204573Z hint: to use in all of your new repositories, which will suppress this warning,
+1665:E2E (agent)	UNKNOWN STEP	2026-08-11T16:33:02.8185737Z hint: to use in all of your new repositories, which will suppress this warning,
+1808:E2E (agent)	UNKNOWN STEP	2026-08-11T16:33:16.4754557Z   digest-mismatch: error
+1819:E2E (agent)	UNKNOWN STEP	2026-08-11T16:33:17.2913812Z (node:2278) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+1820:E2E (agent)	UNKNOWN STEP	2026-08-11T16:33:17.2915189Z (Use `node --trace-deprecation ...` to show where the warning was created)
+1847:E2E (agent)	UNKNOWN STEP	2026-08-11T16:33:21.4735040Z warn: incorrect peer dependency "solid-js@1.9.14"
+1895:E2E (agent)	UNKNOWN STEP	2026-08-11T16:34:04.8819571Z /home/runner/work/formal-ai/formal-ai/experiments/agentic_cli_matrix/lib.sh: line 574: printf: write error: Broken pipe
+1914:E2E (agent)	UNKNOWN STEP	2026-08-11T16:34:14.9564786Z   if-no-files-found: warn
+2044:E2E (opencode-vscode)	UNKNOWN STEP	2026-08-11T16:33:04.0096919Z hint: to use in all of your new repositories, which will suppress this warning,
+2186:E2E (opencode-vscode)	UNKNOWN STEP	2026-08-11T16:33:18.6176475Z   digest-mismatch: error
+2197:E2E (opencode-vscode)	UNKNOWN STEP	2026-08-11T16:33:19.8068227Z (node:2320) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+2198:E2E (opencode-vscode)	UNKNOWN STEP	2026-08-11T16:33:19.8070090Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2232:E2E (opencode-vscode)	UNKNOWN STEP	2026-08-11T16:33:40.7755079Z (Use `code --trace-deprecation ...` to show where the warning was created)
+2274:E2E (opencode-vscode)	UNKNOWN STEP	2026-08-11T16:35:25.4749950Z   if-no-files-found: warn
+2405:E2E (aider)	UNKNOWN STEP	2026-08-11T16:33:06.3157456Z hint: to use in all of your new repositories, which will suppress this warning,
+2548:E2E (aider)	UNKNOWN STEP	2026-08-11T16:33:20.2233260Z   digest-mismatch: error
+2559:E2E (aider)	UNKNOWN STEP	2026-08-11T16:33:21.3404894Z (node:2215) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+2560:E2E (aider)	UNKNOWN STEP	2026-08-11T16:33:21.3406133Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2673:E2E (aider)	UNKNOWN STEP	2026-08-11T16:35:15.4191218Z   if-no-files-found: warn
+2810:E2E (t3code)	UNKNOWN STEP	2026-08-11T16:33:10.3608514Z hint: to use in all of your new repositories, which will suppress this warning,
+2953:E2E (t3code)	UNKNOWN STEP	2026-08-11T16:33:19.2675796Z   digest-mismatch: error
+2964:E2E (t3code)	UNKNOWN STEP	2026-08-11T16:33:20.5681003Z (node:2187) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+2965:E2E (t3code)	UNKNOWN STEP	2026-08-11T16:33:20.5682699Z (Use `node --trace-deprecation ...` to show where the warning was created)
+3049:E2E (t3code)	UNKNOWN STEP	2026-08-11T16:33:57.6992022Z   if-no-files-found: warn
+3180:E2E (opencode)	UNKNOWN STEP	2026-08-11T16:33:08.8834168Z hint: to use in all of your new repositories, which will suppress this warning,
+3323:E2E (opencode)	UNKNOWN STEP	2026-08-11T16:33:19.5357556Z   digest-mismatch: error
+3334:E2E (opencode)	UNKNOWN STEP	2026-08-11T16:33:20.2586813Z (node:2397) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+3335:E2E (opencode)	UNKNOWN STEP	2026-08-11T16:33:20.2588373Z (Use `node --trace-deprecation ...` to show where the warning was created)
+3406:E2E (opencode)	UNKNOWN STEP	2026-08-11T16:34:23.3287689Z /home/runner/work/formal-ai/formal-ai/experiments/agentic_cli_matrix/lib.sh: line 574: printf: write error: Broken pipe
+3424:E2E (opencode)	UNKNOWN STEP	2026-08-11T16:34:33.4122354Z   if-no-files-found: warn
+3554:E2E (cursor)	UNKNOWN STEP	2026-08-11T16:33:03.5387944Z hint: to use in all of your new repositories, which will suppress this warning,
+3697:E2E (cursor)	UNKNOWN STEP	2026-08-11T16:33:17.1336250Z   digest-mismatch: error
+3708:E2E (cursor)	UNKNOWN STEP	2026-08-11T16:33:18.4621110Z (node:2168) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+3709:E2E (cursor)	UNKNOWN STEP	2026-08-11T16:33:18.4622850Z (Use `node --trace-deprecation ...` to show where the warning was created)
+3809:E2E (cursor)	UNKNOWN STEP	2026-08-11T16:33:27.2342384Z   if-no-files-found: warn
+3939:E2E (claude)	UNKNOWN STEP	2026-08-11T16:33:08.6311743Z hint: to use in all of your new repositories, which will suppress this warning,
+4082:E2E (claude)	UNKNOWN STEP	2026-08-11T16:33:18.7086473Z   digest-mismatch: error
+4093:E2E (claude)	UNKNOWN STEP	2026-08-11T16:33:19.4597912Z (node:2379) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+4094:E2E (claude)	UNKNOWN STEP	2026-08-11T16:33:19.4599321Z (Use `node --trace-deprecation ...` to show where the warning was created)
+4182:E2E (claude)	UNKNOWN STEP	2026-08-11T16:36:28.9637370Z   if-no-files-found: warn
+4312:E2E (gemini)	UNKNOWN STEP	2026-08-11T16:33:02.8624621Z hint: to use in all of your new repositories, which will suppress this warning,
+4455:E2E (gemini)	UNKNOWN STEP	2026-08-11T16:33:17.2146868Z   digest-mismatch: error
+4466:E2E (gemini)	UNKNOWN STEP	2026-08-11T16:33:18.4033725Z (node:2291) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+4467:E2E (gemini)	UNKNOWN STEP	2026-08-11T16:33:18.4035453Z (Use `node --trace-deprecation ...` to show where the warning was created)
+4561:E2E (gemini)	UNKNOWN STEP	2026-08-11T16:34:23.7454385Z   if-no-files-found: warn
+4691:E2E (opencode-desktop)	UNKNOWN STEP	2026-08-11T16:33:04.8724244Z hint: to use in all of your new repositories, which will suppress this warning,
+4825:E2E (opencode-desktop)	UNKNOWN STEP	2026-08-11T16:33:18.3206344Z   digest-mismatch: error
+4836:E2E (opencode-desktop)	UNKNOWN STEP	2026-08-11T16:33:19.5871834Z (node:2081) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+4837:E2E (opencode-desktop)	UNKNOWN STEP	2026-08-11T16:33:19.5872676Z (Use `node --trace-deprecation ...` to show where the warning was created)
+4908:E2E (opencode-desktop)	UNKNOWN STEP	2026-08-11T16:34:17.1736343Z   if-no-files-found: warn
+5039:E2E (qwen)	UNKNOWN STEP	2026-08-11T16:33:01.8720469Z hint: to use in all of your new repositories, which will suppress this warning,
+5181:E2E (qwen)	UNKNOWN STEP	2026-08-11T16:33:15.6133658Z   digest-mismatch: error
+5192:E2E (qwen)	UNKNOWN STEP	2026-08-11T16:33:16.4374991Z (node:2221) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+5193:E2E (qwen)	UNKNOWN STEP	2026-08-11T16:33:16.4376315Z (Use `node --trace-deprecation ...` to show where the warning was created)
+5286:E2E (qwen)	UNKNOWN STEP	2026-08-11T16:36:34.2412485Z   if-no-files-found: warn
+5416:E2E (codex)	UNKNOWN STEP	2026-08-11T16:33:02.5055155Z hint: to use in all of your new repositories, which will suppress this warning,
+5559:E2E (codex)	UNKNOWN STEP	2026-08-11T16:33:18.6260589Z   digest-mismatch: error
+5570:E2E (codex)	UNKNOWN STEP	2026-08-11T16:33:19.3439725Z (node:2410) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+5571:E2E (codex)	UNKNOWN STEP	2026-08-11T16:33:19.3440768Z (Use `node --trace-deprecation ...` to show where the warning was created)
+5659:E2E (codex)	UNKNOWN STEP	2026-08-11T16:34:05.5708903Z /home/runner/work/formal-ai/formal-ai/experiments/agentic_cli_matrix/lib.sh: line 574: printf: write error: Broken pipe
+5677:E2E (codex)	UNKNOWN STEP	2026-08-11T16:34:15.7078711Z   if-no-files-found: warn
+5807:E2E (grok)	UNKNOWN STEP	2026-08-11T16:33:04.2461154Z hint: to use in all of your new repositories, which will suppress this warning,
+5950:E2E (grok)	UNKNOWN STEP	2026-08-11T16:33:19.0139542Z   digest-mismatch: error
+5961:E2E (grok)	UNKNOWN STEP	2026-08-11T16:33:20.1387460Z (node:2410) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+5962:E2E (grok)	UNKNOWN STEP	2026-08-11T16:33:20.1389229Z (Use `node --trace-deprecation ...` to show where the warning was created)
+6033:E2E (grok)	UNKNOWN STEP	2026-08-11T16:36:03.0449565Z /home/runner/work/formal-ai/formal-ai/experiments/agentic_cli_matrix/lib.sh: line 574: printf: write error: Broken pipe
+6051:E2E (grok)	UNKNOWN STEP	2026-08-11T16:36:13.1124910Z   if-no-files-found: warn
+6148:Learn reusable client contracts	UNKNOWN STEP	2026-08-11T16:36:42.6882754Z   digest-mismatch: error
+6159:Learn reusable client contracts	UNKNOWN STEP	2026-08-11T16:36:43.7842389Z (node:2019) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+6160:Learn reusable client contracts	UNKNOWN STEP	2026-08-11T16:36:43.7844284Z (Use `node --trace-deprecation ...` to show where the warning was created)
+6173:Learn reusable client contracts	UNKNOWN STEP	2026-08-11T16:36:46.2901399Z   digest-mismatch: error
+6218:Learn reusable client contracts	UNKNOWN STEP	2026-08-11T16:36:47.3465894Z (node:2031) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+6219:Learn reusable client contracts	UNKNOWN STEP	2026-08-11T16:36:47.3467425Z (Use `node --trace-deprecation ...` to show where the warning was created)
+6270:Learn reusable client contracts	UNKNOWN STEP	2026-08-11T16:36:47.9079466Z   if-no-files-found: warn
+6323:Matrix summary	UNKNOWN STEP	2026-08-11T16:36:54.8007041Z ^[[36;1m  echo "one or more client legs failed" >&2^[[0m
+6331:Matrix summary	UNKNOWN STEP	2026-08-11T16:36:54.8011826Z ^[[36;1m  echo "client-contract learning failed" >&2^[[0m

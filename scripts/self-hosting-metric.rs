@@ -358,7 +358,7 @@ fn percentage_basis_points(numerator: u64, denominator: u64) -> u64 {
 ///   `.github/workflows/release.yml`, via `--check-ratchet`). A fall is a hard
 ///   error while the commits that cause it can still be amended.
 /// - `Report` — release recording. The row is appended exactly as measured, the
-///   fall is announced on stderr and as a GitHub `::warning` annotation, and the
+///   fall is announced on stderr and as a GitHub `::notice` annotation, and the
 ///   release ships. The ledger records the regression honestly instead of
 ///   hiding it behind a job that never completes.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -451,8 +451,8 @@ pub fn record_release_with_policy(
         match ratchet {
             RatchetPolicy::Enforce => return Err(regression),
             RatchetPolicy::Report => {
-                eprintln!("warning: {regression}");
-                println!("::warning title=Self-hosting ratchet fell::{regression}");
+                eprintln!("notice: {regression}");
+                println!("::notice title=Self-hosting ratchet fell::{regression}");
             }
         }
     }

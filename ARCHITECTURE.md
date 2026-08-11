@@ -1414,7 +1414,7 @@ the table in Section 2 and link the new module.
 - [`linksplatform/doublets-rs`](https://github.com/linksplatform/doublets-rs) — default native storage backend.
 - [`linksplatform/doublets-web`](https://github.com/linksplatform/doublets-web) — browser-side mirror.
 - [`link-assistant/calculator`](https://github.com/link-assistant/calculator) — delegated calculator engine (`link-calculator` crate).
-- [`link-assistant/relative-meta-logic`](https://github.com/link-assistant/relative-meta-logic) — future formal-reasoning integration.
+- [`link-foundation/relative-meta-logic`](https://github.com/link-foundation/relative-meta-logic) — future formal-reasoning integration.
 - Wikidata (`https://www.wikidata.org/`) — public source of P/Q-ID anchors.
 - Wikipedia (`https://*.wikipedia.org/`) — public source of per-language
   concept articles.

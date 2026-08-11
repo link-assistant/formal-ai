@@ -1,0 +1,239 @@
+diff -ruN '--exclude=.git' dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/links.yml /tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/links.yml
+--- dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/links.yml	1970-01-01 00:00:00.000000000 +0000
++++ /tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/links.yml	2026-08-11 18:08:41.391267474 +0000
+@@ -0,0 +1,82 @@
++name: Broken Link Checker
++
++on:
++  push:
++    branches:
++      - main
++    paths:
++      - '**.md'
++      - '**.html'
++      - '.github/workflows/links.yml'
++  pull_request:
++    types: [opened, synchronize, reopened]
++    paths:
++      - '**.md'
++      - '**.html'
++      - '.github/workflows/links.yml'
++  workflow_dispatch:
++
++permissions:
++  contents: read
++
++env:
++  GIT_CONFIG_COUNT: '1'
++  GIT_CONFIG_KEY_0: init.defaultBranch
++  GIT_CONFIG_VALUE_0: main
++
++jobs:
++  link-checker:
++    name: Check Links
++    runs-on: ubuntu-latest
++    timeout-minutes: 10
++    concurrency:
++      group: check-${{ github.workflow }}-${{ github.ref }}-link-checker
++      cancel-in-progress: true
++    permissions:
++      contents: read
++    steps:
++      - uses: actions/checkout@v6
++
++      - name: Check links with lychee
++        id: lychee
++        uses: lycheeverse/lychee-action@v2
++        with:
++          args: >-
++            --verbose
++            --no-progress
++            --cache
++            --max-cache-age 1d
++            --max-retries 3
++            --timeout 30
++            --exclude-path docs/case-studies
++            './**/*.md'
++            './**/*.html'
++          fail: false
++          output: lychee/out.md
++          jobSummary: true
++        env:
++          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
++
++      - name: Check broken links against Web Archive
++        if: steps.lychee.outputs.exit_code != 0
++        id: webarchive
++        run: python scripts/check_web_archive.py
++        env:
++          LYCHEE_OUTPUT: lychee/out.md
++
++      - name: Fail if broken links found and no web archive fallback
++        if: steps.lychee.outputs.exit_code != 0 && steps.webarchive.outputs.all_archived != 'true'
++        run: |
++          echo "::error::Broken links were detected with no Web Archive fallback available."
++          echo ""
++          echo "What happened:"
++          echo "  lychee found one or more broken links in the *.md and *.html files of this repository."
++          echo "  The Web Archive check found no archived versions for some of them."
++          echo ""
++          echo "How to fix:"
++          echo "  1. Review the 'Check links with lychee' step above for the broken links."
++          echo "  2. Replace links with suggested archive.org URLs when available."
++          echo "  3. Otherwise find an updated URL, remove the link, or add a known false positive to .lycheeignore."
++          echo ""
++          echo "Report location: lychee/out.md."
++          exit 1
+diff -ruN '--exclude=.git' dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml /tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml
+--- dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/release.yml	2026-08-11 18:00:33.723573309 +0000
++++ /tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/release.yml	2026-08-11 18:08:41.391267474 +0000
+@@ -30,9 +30,9 @@
+   GIT_CONFIG_VALUE_0: main
+ 
+ # Concurrency is intentionally job-scoped. Superseded read-only jobs cancel
+-# independently, including on main. Write-capable release jobs share one FIFO
+-# queue so a publication that has started is never cancelled and subsequent
+-# publications run one at a time.
++# independently away from main. Jobs on main are never superseded, which lets
++# the terminal status gate reliably treat a cancellation there as a timeout or
++# manual cancellation. Write-capable release jobs share one FIFO queue.
+ jobs:
+   # === DETECT CHANGES - determines which jobs should run ===
+   detect-changes:
+@@ -41,7 +41,7 @@
+     timeout-minutes: 5
+     concurrency:
+       group: ${{ github.workflow }}-${{ github.ref }}-detect-changes
+-      cancel-in-progress: true
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     if: github.event_name != 'workflow_dispatch'
+     outputs:
+       any-code-changed: ${{ steps.changes.outputs.any-code-changed }}
+@@ -100,7 +100,7 @@
+     timeout-minutes: 20
+     concurrency:
+       group: ${{ github.workflow }}-${{ github.ref }}-lint
+-      cancel-in-progress: true
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     needs: [detect-changes]
+     # !cancelled() lets this job evaluate even though detect-changes is skipped
+     # for workflow_dispatch while still propagating workflow cancellation.
+@@ -187,7 +187,7 @@
+     timeout-minutes: 30
+     concurrency:
+       group: ${{ github.workflow }}-${{ github.ref }}-test
+-      cancel-in-progress: true
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     needs: [detect-changes]
+     env:
+       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+@@ -263,7 +263,7 @@
+     timeout-minutes: 20
+     concurrency:
+       group: ${{ github.workflow }}-${{ github.ref }}-build
+-      cancel-in-progress: true
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     needs: [detect-changes, lint, test]
+     # Build change-bearing automatic events and all manually dispatched releases.
+     if: |
+@@ -336,7 +336,7 @@
+     timeout-minutes: 10
+     concurrency:
+       group: ${{ github.workflow }}-${{ github.ref }}-changelog
+-      cancel-in-progress: true
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     needs: [detect-changes]
+     if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+     steps:
+@@ -424,7 +424,7 @@
+     timeout-minutes: 60
+     concurrency:
+       group: ${{ github.workflow }}-${{ github.ref }}-docker-build
+-      cancel-in-progress: true
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     needs: [detect-changes]
+     if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+     steps:
+@@ -691,3 +691,21 @@
+             --version "${{ steps.version.outputs.new_version }}" \
+             --repository "${{ github.repository }}" \
+             --repository-root "."
++
++  # A job killed by timeout-minutes concludes "cancelled", not "failure".
++  # Observe every other job so that state cannot silently hide a broken run.
++  pipeline-status:
++    name: Pipeline Status
++    runs-on: ubuntu-latest
++    timeout-minutes: 5
++    if: always()
++    needs: [detect-changes, lint, test, build, changelog, docker-build,
++            auto-release, manual-release]
++    steps:
++      - uses: actions/checkout@v6
++
++      - name: Fail the run when a required job was cancelled or failed
++        env:
++          NEEDS_JSON: ${{ toJSON(needs) }}
++          IS_MAIN: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
++        run: bash scripts/check-pipeline-status.sh
+diff -ruN '--exclude=.git' dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/security.yml /tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/security.yml
+--- dev/log/issues/980/pulls/981/templates/python-ai-driven-development-pipeline-template/.github/workflows/security.yml	1970-01-01 00:00:00.000000000 +0000
++++ /tmp/formal-ai-issue999-templates.FZURWz/python/.github/workflows/security.yml	2026-08-11 18:08:41.391267474 +0000
+@@ -0,0 +1,57 @@
++name: Security
++
++on:
++  push:
++    branches: [main]
++  pull_request:
++  schedule:
++    - cron: '0 6 * * 1'
++
++permissions:
++  contents: read
++
++jobs:
++  codeql:
++    name: CodeQL (${{ matrix.language }})
++    runs-on: ubuntu-latest
++    timeout-minutes: 30
++    concurrency:
++      group: check-${{ github.workflow }}-${{ github.ref }}-codeql-${{ matrix.language }}
++      cancel-in-progress: true
++    permissions:
++      contents: read
++      security-events: write
++    strategy:
++      fail-fast: false
++      matrix:
++        language: [python, actions]
++    steps:
++      - uses: actions/checkout@v6
++
++      - name: Initialize CodeQL
++        uses: github/codeql-action/init@v4
++        with:
++          languages: ${{ matrix.language }}
++
++      - name: Autobuild
++        uses: github/codeql-action/autobuild@v4
++
++      - name: Analyze
++        uses: github/codeql-action/analyze@v4
++
++  dependency-review:
++    name: Dependency Review
++    if: github.event_name == 'pull_request'
++    runs-on: ubuntu-latest
++    timeout-minutes: 10
++    permissions:
++      contents: read
++      pull-requests: write
++    steps:
++      - uses: actions/checkout@v6
++
++      - name: Review dependency changes
++        uses: actions/dependency-review-action@v5
++        with:
++          fail-on-severity: high
++          comment-summary-in-pr: on-failure

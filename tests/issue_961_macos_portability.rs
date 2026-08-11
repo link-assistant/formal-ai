@@ -19,6 +19,12 @@ fn seed_array_guard_precedes_expansion() -> bool {
     matches!((guard, expansion), (Some(guard), Some(expansion)) if guard < expansion)
 }
 
+fn supported_macos_test_shards_are_complete() -> bool {
+    RELEASE_WORKFLOW.matches("os: macos-15-intel").count() == 2
+        && RELEASE_WORKFLOW.contains("test-suite: core")
+        && RELEASE_WORKFLOW.contains("test-suite: specification")
+}
+
 fn macos_portability_failures() -> Vec<&'static str> {
     let mut failures = Vec::new();
 
@@ -40,8 +46,8 @@ fn macos_portability_failures() -> Vec<&'static str> {
     if !seed_array_guard_precedes_expansion() {
         failures.push("the empty destination array must be guarded before expansion");
     }
-    if !RELEASE_WORKFLOW.contains("os: [ubuntu-latest, macos-15-intel]") {
-        failures.push("the full test matrix must include a supported macOS runner");
+    if !supported_macos_test_shards_are_complete() {
+        failures.push("the test matrix must include both supported macOS shards");
     }
 
     failures
@@ -82,7 +88,7 @@ fn seed_sync_guards_an_empty_destination_array() {
 
 #[test]
 fn full_test_matrix_runs_on_a_supported_macos_image() {
-    assert!(RELEASE_WORKFLOW.contains("os: [ubuntu-latest, macos-15-intel]"));
+    assert!(supported_macos_test_shards_are_complete());
     assert!(RELEASE_WORKFLOW
         .contains("timeout-minutes: ${{ matrix.os == 'macos-15-intel' && 35 || 25 }}"));
     assert!(RELEASE_WORKFLOW
