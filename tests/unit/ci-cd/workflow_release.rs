@@ -76,18 +76,18 @@ fn pages_deploy_uses_github_pages_workflow_artifact() {
 /// PR #965 review: "All CI/CD warnings, and errors must be also fixed.
 /// Including all false positives and false negatives."
 ///
-/// `actions/deploy-pages` defaults to a 600 000 ms wait. On `main` run
+/// `actions/deploy-pages` accepts at most a 600 000 ms wait. On `main` run
 /// 31090830031 the artifact uploaded successfully (15.7 MB, id 8966823763) and
 /// the action then reported `Current status: deployment_queued` for that entire
 /// default before `Timeout reached, aborting!` — a red pipeline caused by
 /// GitHub's Pages deployment queue rather than by anything in the commit. The
 /// next push deployed green with no code change, which is the signature of a
-/// false positive. Pin an explicit, longer wait so a backlog is outlasted, and
-/// keep the job's own budget above it so the raise is not silently undone by a
-/// `timeout-minutes` kill.
+/// false positive. Pin the documented maximum rather than supplying the
+/// unsupported 1 200 000 ms value that the action silently clamps, and keep
+/// the job's own budget above it.
 #[test]
-fn pages_deploy_outwaits_a_backlogged_pages_deployment_queue() {
-    const DEPLOY_ACTION_DEFAULT_MS: u64 = 600_000;
+fn pages_deploy_uses_the_actions_maximum_supported_wait() {
+    const DEPLOY_ACTION_MAXIMUM_MS: u64 = 600_000;
 
     let workflow = release_workflow();
     let deploy_demo = job_block(&workflow, "deploy-pages");
@@ -101,9 +101,8 @@ fn pages_deploy_outwaits_a_backlogged_pages_deployment_queue() {
         .expect("the deploy-pages step should pin an explicit `timeout:` in milliseconds");
 
     assert!(
-        timeout_ms > DEPLOY_ACTION_DEFAULT_MS,
-        "deploy-pages should wait longer than the action's {DEPLOY_ACTION_DEFAULT_MS} ms default, \
-         got {timeout_ms} ms"
+        timeout_ms == DEPLOY_ACTION_MAXIMUM_MS,
+        "deploy-pages accepts at most {DEPLOY_ACTION_MAXIMUM_MS} ms, got {timeout_ms} ms"
     );
 
     let job_budget_ms = job_block(&workflow, "deploy-pages")
@@ -424,12 +423,19 @@ fn full_suite_does_not_repeat_focused_data_integrity_checks() {
     let workflow = release_workflow();
     let test_job = job_block(&workflow, "test");
     let full_suite = workflow_step_block(test_job, "Run tests");
+    let core_suite = workflow_step_block(test_job, "Run core tests");
 
     assert!(test_job.contains("cargo test --test unit data_files -- --nocapture"));
     assert!(test_job.contains("cargo test --test unit self_ast_census -- --nocapture"));
     assert!(
         full_suite.contains("--skip data_files::") && full_suite.contains("--skip self_ast_census"),
         "the full suite must skip integrity groups already exercised by their focused gates"
+    );
+    assert!(
+        core_suite.contains("--skip data_files::")
+            && core_suite.contains("--skip self_ast_census")
+            && core_suite.contains("--skip specification::"),
+        "the macOS core shard must skip focused gates and the separately executed specification shard"
     );
 }
 
@@ -634,7 +640,7 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // Raised from 20 (PR #965 review): the budget also has to cover the
         // GitHub Pages deployment queue, which is not part of the build and can
         // stall for many minutes — see
-        // `pages_deploy_outwaits_a_backlogged_pages_deployment_queue`.
+        // `pages_deploy_uses_the_actions_maximum_supported_wait`.
         ("deploy-pages", 35),
         ("test-e2e-pages", 15),
         // Issue #977: the terminal gate that turns a silently-`cancelled` run
@@ -809,8 +815,8 @@ fn pages_deploy_generates_api_docs_and_copies_them_after_stamping() {
     let deploy = job_block(&workflow, "deploy-pages");
 
     assert!(
-        deploy.contains("cargo doc --no-deps --lib"),
-        "deploy-pages should build the Rust API docs with cargo doc"
+        deploy.contains("bash scripts/build-rust-api-docs.sh"),
+        "deploy-pages should invoke the API-docs builder"
     );
     assert!(
         deploy.contains("cp -R target/doc/. src/web/docs/api/"),
@@ -835,6 +841,10 @@ fn pages_deploy_generates_api_docs_and_copies_them_after_stamping() {
         env!("CARGO_MANIFEST_DIR")
     ))
     .expect("build-rust-api-docs.sh");
+    assert!(
+        docs_script.contains("cargo doc --no-deps --lib"),
+        "the API-docs builder should run cargo doc"
+    );
     assert!(
         docs_script.contains("url=formal_ai/index.html"),
         "a redirect should point /docs/api/ at the crate root"

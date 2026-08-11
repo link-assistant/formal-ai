@@ -68,18 +68,8 @@ pub struct IntentFormalization {
 }
 
 impl IntentFormalization {
-    /// Render this record as Links Notation.
-    ///
-    /// `source_text` is the user's own prompt, so a value carrying a quote is
-    /// ordinary rather than exotic. This used to hand-roll a C-style backslash
-    /// escape, which Links Notation does not define: notation escapes a quote by
-    /// *doubling* it, so a backslash left the quote visible to the reader, which
-    /// ended the value early and silently dropped the field — and once a value
-    /// has ended early, a quoted code fragment's `(` is an unclosed group rather
-    /// than text, so the whole document failed to parse. Delegating to
-    /// `format_lino_record`, which the rest of the codebase already publishes
-    /// records through, keeps the notation's definition and this encoder from
-    /// drifting apart again.
+    /// Render this record with the shared Links Notation encoder so quoted
+    /// prompt text follows the same escaping rules as every other record.
     #[must_use]
     pub fn to_links_notation(&self) -> String {
         let mut pairs = vec![

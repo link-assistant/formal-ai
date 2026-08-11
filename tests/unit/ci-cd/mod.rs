@@ -22,6 +22,7 @@ mod issue_798;
 mod issue_846;
 mod issue_977;
 mod issue_980;
+mod issue_999;
 mod macos_package_retry;
 mod release_publishing;
 #[path = "../../../scripts/rust-paths.rs"]
