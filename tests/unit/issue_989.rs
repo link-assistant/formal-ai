@@ -149,20 +149,28 @@ fn preference_and_mutation_correction_receive_explicit_acknowledgements() {
         seed::ROLE_CONVERSATION_PREFERENCE_AVOID,
         "no uses estas palabras"
     ));
-    for intent in [
-        "conversation_preference",
-        "action_correction",
-        "memory_link_count",
-        "memory_inventory",
-        "memory_inventory_item",
-        "memory_inventory_empty",
-        "memory_root_links",
-        "memory_root_links_empty",
+    for (language_name, language) in [
+        ("English", "en"),
+        ("Russian", "ru"),
+        ("Hindi", "hi"),
+        ("Chinese", "zh"),
+        ("Spanish", "es"),
     ] {
-        assert!(
-            seed::localized_response(intent, "es").is_some(),
-            "missing Spanish response for {intent}"
-        );
+        for intent in [
+            "conversation_preference",
+            "action_correction",
+            "memory_link_count",
+            "memory_inventory",
+            "memory_inventory_item",
+            "memory_inventory_empty",
+            "memory_root_links",
+            "memory_root_links_empty",
+        ] {
+            assert!(
+                seed::localized_response(intent, language).is_some(),
+                "missing {language_name} ({language}) response for {intent}"
+            );
+        }
     }
 
     let correction = solver.solve("I didn't ask to update anything.");
