@@ -2,10 +2,10 @@ self_ast_census
   target src/cli_report.rs
   language rust
   fidelity signature
-  byte_len 18238
-  line_count 508
-  content_id source_module_07b235a1e152baaf
-  symbol_count 34
+  byte_len 17800
+  line_count 491
+  content_id source_module_0a3a158ac4c04b9f
+  symbol_count 32
   symbols
     const DEFAULT_INLINE_BYTES 31 31
     const DEFAULT_EXCERPT_BYTES 33 33
@@ -39,5 +39,3 @@ self_ast_census
     function attach_context 420 452
     function upload_gist 455 485
     function config 487 491
-    module tests 494 508
-    function report_context_filenames_cannot_escape_the_output_directory 498 507

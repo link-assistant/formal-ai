@@ -469,6 +469,21 @@ meanings
     lexeme en
       surface
         text "response mcp instructions ru"
+  response_memory_inventory_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory inventory es"
+  response_memory_inventory_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory inventory zh"
+  response_memory_link_count_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory link count hi"
   response_meta_explanation_en
     defined-by response_template
     lexeme en

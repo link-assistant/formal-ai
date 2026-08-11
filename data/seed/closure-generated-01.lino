@@ -9,6 +9,11 @@ meanings
     lexeme en
       surface
         text "organization"
+  action_correction
+    defined-by intent
+    lexeme en
+      surface
+        text "action correction"
   agentic_action_before_tool
     defined-by intent
     lexeme en
@@ -199,6 +204,11 @@ meanings
     lexeme en
       surface
         text "material"
+  memory_link_count
+    defined-by intent
+    lexeme en
+      surface
+        text "memory link count"
   memory_query_unrecognized
     defined-by intent
     lexeme en
@@ -344,6 +354,11 @@ meanings
     lexeme en
       surface
         text "repetition"
+  response_action_correction_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response action correction es"
   response_agent_procedure_verified_zh
     defined-by response_template
     lexeme en
@@ -539,6 +554,16 @@ meanings
     lexeme en
       surface
         text "response local search type file ru"
+  response_memory_inventory_item_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory inventory item zh"
+  response_memory_link_count_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory link count zh"
   response_memory_program_compilation_gap_en
     defined-by response_template
     lexeme en
@@ -549,6 +574,11 @@ meanings
     lexeme en
       surface
         text "response memory program compilation gap hi"
+  response_memory_root_links_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory root links es"
   response_pattern_grid_report_en
     defined-by response_template
     lexeme en

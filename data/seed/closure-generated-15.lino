@@ -229,6 +229,11 @@ meanings
     lexeme en
       surface
         text "measured"
+  memory_inventory
+    defined-by intent
+    lexeme en
+      surface
+        text "memory inventory"
   misinformation
     defined-by word_surface
     lexeme en
@@ -414,6 +419,11 @@ meanings
     lexeme en
       surface
         text "response compiled procedure en"
+  response_conversation_preference_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response conversation preference ru"
   response_definition_merge_sources_label_en
     defined-by response_template
     lexeme en

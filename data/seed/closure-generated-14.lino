@@ -109,6 +109,11 @@ meanings
     lexeme en
       surface
         text "isolated workspace allowlist"
+  issue_report_harness_context_heading
+    defined-by field
+    lexeme en
+      surface
+        text "issue report harness context heading"
   kebab_case
     defined-by operation
     lexeme en
@@ -159,6 +164,11 @@ meanings
     lexeme en
       surface
         text "local search not found"
+  memory_inventory_item
+    defined-by intent
+    lexeme en
+      surface
+        text "memory inventory item"
   narrative
     defined-by concept
     lexeme en
@@ -504,11 +514,36 @@ meanings
     lexeme en
       surface
         text "response mcp instructions hi"
+  response_memory_inventory_empty_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory inventory empty zh"
+  response_memory_inventory_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory inventory ru"
   response_memory_program_destructive_refused_hi
     defined-by response_template
     lexeme en
       surface
         text "response memory program destructive refused hi"
+  response_memory_root_links_empty_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory root links empty en"
+  response_memory_root_links_empty_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory root links empty es"
+  response_memory_root_links_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory root links hi"
   response_orchestration_correction_prompt_en
     defined-by response_template
     lexeme en

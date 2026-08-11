@@ -109,6 +109,11 @@ meanings
     lexeme en
       surface
         text "issue report language label"
+  issue_report_server_context_heading
+    defined-by field
+    lexeme en
+      surface
+        text "issue report server context heading"
   kupi_slona
     defined-by intent
     lexeme en
@@ -414,6 +419,11 @@ meanings
     lexeme en
       surface
         text "response mcp instructions zh"
+  response_memory_inventory_item_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory inventory item ru"
   response_memory_program_iteration_limit_hi
     defined-by response_template
     lexeme en

@@ -243,6 +243,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-05.lino"
     record "response_memory_program_permission_refused_en"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_744987da0dc581e1
+    source "data/seed/closure-generated-05.lino"
+    record "response_memory_root_links_zh"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_e47e34941f4d12f1
     source "data/seed/closure-generated-05.lino"
     record "response_pattern_sequence_repetition_es"
@@ -555,6 +559,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-12.lino"
     record "response_agentic_action_search_en"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_456a879d9fcffd41
+    source "data/seed/closure-generated-12.lino"
+    record "response_conversation_preference_hi"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_e81d42c3e9bc4ca1
     source "data/seed/closure-generated-12.lino"
     record "response_lexeme_import_cannot_stage_hi"
@@ -670,6 +678,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_08a2aaea1ac20da1
     source "data/seed/closure-generated-16.lino"
     record "compiled_procedure_explanation"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_4aaeeb43ce8e6231
+    source "data/seed/closure-generated-16.lino"
+    record "conversation_preference"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_f34ed5a629e5add1
     source "data/seed/closure-generated-16.lino"

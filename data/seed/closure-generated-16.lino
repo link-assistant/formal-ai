@@ -69,6 +69,11 @@ meanings
     lexeme en
       surface
         text "context opencode export failed"
+  conversation_preference
+    defined-by intent
+    lexeme en
+      surface
+        text "conversation preference"
   copy
     defined-by concept
     lexeme en
@@ -154,6 +159,11 @@ meanings
     lexeme en
       surface
         text "formal ai"
+  formalize
+    defined-by word_surface
+    lexeme en
+      surface
+        text "formalize"
   held
     defined-by concept
     lexeme en
@@ -484,6 +494,11 @@ meanings
     lexeme en
       surface
         text "response local search mismatch requested file hi"
+  response_memory_inventory_empty_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory inventory empty hi"
   response_memory_program_complete_hi
     defined-by response_template
     lexeme en
@@ -509,6 +524,11 @@ meanings
     lexeme en
       surface
         text "response memory query unrecognized en"
+  response_memory_root_links_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory root links ru"
   response_meta_explanation_ru
     defined-by response_template
     lexeme en

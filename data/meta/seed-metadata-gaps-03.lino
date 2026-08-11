@@ -323,6 +323,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-08.lino"
     record "issue_report_failed"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_f43948f0eae4ecb3
+    source "data/seed/closure-generated-08.lino"
+    record "response_memory_inventory_item_ru"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_a100ee31678075d3
     source "data/seed/closure-generated-08.lino"
     record "response_thinking_narrative_assistant_free_time_es"

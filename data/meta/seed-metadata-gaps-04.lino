@@ -11,6 +11,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-01.lino"
     record "pattern_assistant_free_time_phrase_what_do_you_do_in_free_time_en"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_d994e531de8bc5b4
+    source "data/seed/closure-generated-01.lino"
+    record "response_action_correction_es"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_6be892dbf2369f04
     source "data/seed/closure-generated-01.lino"
     record "response_client_global_config_probe_started_zh"
@@ -542,6 +546,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_bd1d299eef472054
     source "data/seed/closure-generated-13.lino"
     record "response_lexeme_import_cannot_remove_stale_ru"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_ba8f918ea26a6c94
+    source "data/seed/closure-generated-13.lino"
+    record "response_memory_link_count_es"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_1af20a3b18606094
     source "data/seed/closure-generated-13.lino"
