@@ -24,6 +24,7 @@
  */
 
 import { readFileSync, appendFileSync, existsSync } from 'fs';
+import { pathToFileURL } from 'url';
 
 const WAYBACK_API = 'https://archive.org/wayback/available?url=';
 
@@ -48,8 +49,24 @@ function setOutput(name, value) {
  * @param {string} content - The markdown content from lychee
  * @returns {string[]} Array of broken URLs
  */
-function extractBrokenUrls(content) {
+export function extractBrokenUrls(content) {
   const urls = [];
+
+  // Lychee's Markdown report puts failures and successful redirects in
+  // separate level-two sections. Restrict the permissive bullet parser to
+  // the failure section so a healthy redirect is never sent to Wayback or
+  // reported as an error. Older/plain Lychee output has no headings, so keep
+  // parsing the complete report in that case.
+  const errorsHeading = /^## Errors per input\s*$/m.exec(content);
+  let errorContent = content;
+  if (errorsHeading) {
+    const sectionStart = errorsHeading.index + errorsHeading[0].length;
+    const remainingContent = content.slice(sectionStart);
+    const nextHeading = /^##\s+/m.exec(remainingContent);
+    errorContent = nextHeading
+      ? remainingContent.slice(0, nextHeading.index)
+      : remainingContent;
+  }
 
   // Match lines with error status codes or ERROR markers followed by URLs
   // Lychee output format: [STATUS_CODE] URL or bullet points with links
@@ -57,7 +74,7 @@ function extractBrokenUrls(content) {
     /\[(?:4\d\d|5\d\d|ERROR|TIMEOUT|UNKNOWN)\]\s+(https?:\/\/[^\s)]+)/gi;
   let match;
 
-  while ((match = urlPattern.exec(content)) !== null) {
+  while ((match = urlPattern.exec(errorContent)) !== null) {
     const url = match[1].trim();
     if (url && !urls.includes(url)) {
       urls.push(url);
@@ -69,7 +86,7 @@ function extractBrokenUrls(content) {
   const linePattern = /^\s*(?:\*|-)\s+.*?(https?:\/\/[^\s|)>\]]+)/gm;
   let lineMatch;
 
-  while ((lineMatch = linePattern.exec(content)) !== null) {
+  while ((lineMatch = linePattern.exec(errorContent)) !== null) {
     const url = lineMatch[1].trim().replace(/[.,;!?]+$/, '');
     if (url && !urls.includes(url) && url.startsWith('http')) {
       urls.push(url);
@@ -257,7 +274,12 @@ async function main() {
   }
 }
 
-main().catch((error) => {
-  console.error('Unexpected error:', error);
-  process.exit(1);
-});
+const isDirectRun =
+  process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+
+if (isDirectRun) {
+  main().catch((error) => {
+    console.error('Unexpected error:', error);
+    process.exit(1);
+  });
+}

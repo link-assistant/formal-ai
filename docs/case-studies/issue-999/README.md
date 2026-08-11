@@ -11,7 +11,7 @@ guidance.
 
 ## Preserved evidence
 
-The complete 430-plus-file evidence archive (35 MiB) and the full analysis are kept
+The complete 450-plus-file evidence archive (35 MiB) and the full analysis are kept
 at [`dev/log/issues/999/pulls/1000/`](../../../dev/log/issues/999/pulls/1000/README.md),
 the path required by the task. It includes unabridged logs for the latest seven
 default-branch workflows, two earlier timeout runs, the preceding successful
@@ -66,6 +66,13 @@ work in this one PR.
    `registered_languages()` entry and asserts that production Rust, test-source,
    and browser loaders all register the split file. The policy and focused suite
    pass afterward.
+9. A fresh link run found one real 502 and 18 successful redirects, but the
+   copied Wayback helper reported all 19 as broken because its permissive URL
+   expression crossed Lychee's section boundary. The parser now reads only
+   `## Errors per input` (with a fallback for old/plain output), covered by a
+   red/green Node regression. The unavailable reference now points to live
+   University of Calgary course material instead of being ignored or excused
+   by an archive.
 
 The complete evidence-to-root-cause table, alternatives, known components, and
 source links are in the [durable analysis](../../../dev/log/issues/999/pulls/1000/README.md).
@@ -78,6 +85,9 @@ source links are in the [durable analysis](../../../dev/log/issues/999/pulls/100
   workarounds, and code fixes as [Rust #125](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/125),
   [JavaScript #127](https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/127),
   and [Python #54](https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/54).
+- The redirect-parser false positive was reported as
+  [Rust #126](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/126)
+  and [JavaScript #128](https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/128).
 - Exact existing upstream reports were reused for the Pages maximum,
   actionlint's schema lag, and transient sccache cache-service rate limits; no
   duplicate issues were filed.
@@ -101,9 +111,10 @@ complete CI/CD unit module passes 183/183, and the generated-census suite passes
 8/8. The all-features repository run completed with zero failures (2,664 pass
 and 3 intentional ignores in its final 2,667-test target), as did Clippy with
 warnings denied, examples, both rustdoc profiles, moved response lookups,
-data-file integrity, 51 browser tests, actionlint 1.7.12, ShellCheck,
-formatting, file-size enforcement, changelog checks, and the 1,071-link local
-gate. Their logs and SHA-256 manifest live in the evidence archive. Fresh
+data-file integrity, 53 browser tests, actionlint 1.7.12, ShellCheck,
+formatting, file-size enforcement, changelog checks, and zero-error local link
+gates (including a clean-tree rerun after the remote source failed). Their logs
+and SHA-256 manifest live in the evidence archive. Fresh
 remote checks are matched to the final pushed head SHA.
 
 No visual UI behavior changed, so browser screenshots and visual-regression
@@ -122,3 +133,6 @@ artifacts do not apply.
 - 2026-08-11: complete evidence collection, template/online research, red/green
   tests, implementation, upstream reports, and local verification were
   performed in the same PR.
+- 2026-08-11 20:36–20:48 UTC: a fresh remote link failure exposed the live 502
+  and shared redirect-parser defect; both were reproduced, fixed, tested, and
+  reported upstream.
