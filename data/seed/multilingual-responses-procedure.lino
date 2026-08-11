@@ -175,6 +175,10 @@ multilingual_responses
     intent how_to_guide_heading
     language zh
     text "## 如何{task}"
+  response response_how_to_guide_heading_es
+    intent how_to_guide_heading
+    language es
+    text "## Cómo {task}"
   response response_how_to_guide_step_en
     intent how_to_guide_step
     language en
@@ -191,6 +195,10 @@ multilingual_responses
     intent how_to_guide_step
     language zh
     text "{rank}. {text} — {source}（{license}，sha256 {digest}）"
+  response response_how_to_guide_step_es
+    intent how_to_guide_step
+    language es
+    text "{rank}. {text} — {source} ({license}, sha256 {digest})"
   response response_how_to_guide_insufficient_evidence_en
     intent how_to_guide_insufficient_evidence
     language en
@@ -207,6 +215,10 @@ multilingual_responses
     intent how_to_guide_insufficient_evidence
     language zh
     text "证据不足：仅捕获 {steps} 个步骤，而需要 {required} 个，因此不给出流程。"
+  response response_how_to_guide_insufficient_evidence_es
+    intent how_to_guide_insufficient_evidence
+    language es
+    text "Pruebas insuficientes: se capturaron {steps} paso(s) y se requieren {required}, así que no se afirma ningún procedimiento."
   response response_how_to_guide_sources_heading_en
     intent how_to_guide_sources_heading
     language en
@@ -223,6 +235,10 @@ multilingual_responses
     intent how_to_guide_sources_heading
     language zh
     text "### 来源"
+  response response_how_to_guide_sources_heading_es
+    intent how_to_guide_sources_heading
+    language es
+    text "### Fuentes"
   response response_how_to_guide_source_outcome_en
     intent how_to_guide_source_outcome
     language en
@@ -239,6 +255,10 @@ multilingual_responses
     intent how_to_guide_source_outcome
     language zh
     text "- {source} — {status}（{pages} 页，{steps} 步）：{detail}"
+  response response_how_to_guide_source_outcome_es
+    intent how_to_guide_source_outcome
+    language es
+    text "- {source} — {status} ({pages} página(s), {steps} paso(s)): {detail}"
   response response_how_to_guide_citation_en
     intent how_to_guide_citation
     language en
@@ -255,6 +275,10 @@ multilingual_responses
     intent how_to_guide_citation
     language zh
     text "- {source} → {url}（{license}：{license_url}）"
+  response response_how_to_guide_citation_es
+    intent how_to_guide_citation
+    language es
+    text "- {source} → {url} ({license}: {license_url})"
   response response_how_to_guide_conflicts_heading_en
     intent how_to_guide_conflicts_heading
     language en
@@ -271,6 +295,10 @@ multilingual_responses
     intent how_to_guide_conflicts_heading
     language zh
     text "### 冲突"
+  response response_how_to_guide_conflicts_heading_es
+    intent how_to_guide_conflicts_heading
+    language es
+    text "### Contradicciones"
   response response_how_to_guide_conflict_en
     intent how_to_guide_conflict
     language en
@@ -287,6 +315,10 @@ multilingual_responses
     intent how_to_guide_conflict
     language zh
     text "- `{action}`：保留 {kept}，舍弃 {dropped}（“{text}”）"
+  response response_how_to_guide_conflict_es
+    intent how_to_guide_conflict
+    language es
+    text "- `{action}`: se conserva {kept}, se descarta {dropped} («{text}»)"
   response response_how_to_guide_copies_heading_en
     intent how_to_guide_copies_heading
     language en
@@ -303,6 +335,10 @@ multilingual_responses
     intent how_to_guide_copies_heading
     language zh
     text "### 已忽略的转载来源"
+  response response_how_to_guide_copies_heading_es
+    intent how_to_guide_copies_heading
+    language es
+    text "### Fuentes copiadas ignoradas"
   response response_how_to_guide_copy_en
     intent how_to_guide_copy
     language en
@@ -318,6 +354,10 @@ multilingual_responses
   response response_how_to_guide_copy_zh
     intent how_to_guide_copy
     language zh
+    text "- {url}"
+  response response_how_to_guide_copy_es
+    intent how_to_guide_copy
+    language es
     text "- {url}"
   response response_how_to_guide_bounds_en
     intent how_to_guide_bounds
@@ -335,3 +375,7 @@ multilingual_responses
     intent how_to_guide_bounds
     language zh
     text "边界：{bounds}"
+  response response_how_to_guide_bounds_es
+    intent how_to_guide_bounds
+    language es
+    text "Límites: {bounds}"

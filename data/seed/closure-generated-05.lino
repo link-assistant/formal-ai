@@ -444,6 +444,11 @@ meanings
     lexeme en
       surface
         text "response external benchmark parquet decode error en"
+  response_how_to_guide_bounds_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide bounds es"
   response_how_to_guide_conflict_zh
     defined-by response_template
     lexeme en

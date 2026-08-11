@@ -449,6 +449,11 @@ meanings
     lexeme en
       surface
         text "response github repository traffic ru"
+  response_how_to_guide_copies_heading_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide copies heading es"
   response_how_to_guide_heading_hi
     defined-by response_template
     lexeme en

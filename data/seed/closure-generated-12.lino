@@ -439,6 +439,11 @@ meanings
     lexeme en
       surface
         text "response how to guide conflict ru"
+  response_how_to_guide_conflicts_heading_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide conflicts heading es"
   response_how_to_guide_conflicts_heading_hi
     defined-by response_template
     lexeme en
@@ -449,6 +454,16 @@ meanings
     lexeme en
       surface
         text "response how to guide copy en"
+  response_how_to_guide_heading_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide heading es"
+  response_how_to_guide_insufficient_evidence_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide insufficient evidence es"
   response_how_to_guide_step_ru
     defined-by response_template
     lexeme en
