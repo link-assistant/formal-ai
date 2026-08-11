@@ -143,6 +143,7 @@ intent_routing
     keyword परीक्षण
     keyword 测试
     keyword 測試
+    keyword prueba
     phrase "test passed"
     phrase "testing 123"
     phrase "are you there"
@@ -161,6 +162,13 @@ intent_routing
     phrase "मैं यहां हूं"
     phrase "क्या आप वहाँ हैं"
     phrase "क्या आप वहां हैं"
+    phrase "prueba superada"
+    phrase "estoy aquí"
+    phrase "estoy aqui"
+    phrase "estás ahí"
+    phrase "estas ahi"
+    phrase "sigues ahí"
+    phrase "sigues ahi"
     phrase 测试通过
     phrase 測試通過
     phrase 我在这里
@@ -176,6 +184,7 @@ intent_routing
     combo тест+пройден
     combo тест+здесь
     combo परीक्षण+सफल
+    combo prueba+superada
   intent intent_assistant_name
     slug assistant_name
     response_link "response:assistant_name"

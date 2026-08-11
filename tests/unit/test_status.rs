@@ -30,6 +30,17 @@ const HINDI_TEST_STATUS_PROMPTS: &[&str] = &[
 ];
 const CHINESE_TEST_STATUS_PROMPTS: &[&str] =
     &["测试", "测试通过", "我在这里", "你在吗?", "您在吗?"];
+// Spanish liveness probes keep the es locale in the same routed matrix as the
+// other registered languages, with and without accents.
+const SPANISH_TEST_STATUS_PROMPTS: &[&str] = &[
+    "prueba",
+    "prueba superada",
+    "estoy aquí",
+    "estoy aqui",
+    "¿Estás ahí?",
+    "estas ahi",
+    "¿Sigues ahí?",
+];
 
 // Issue #149: the health-check prompt "Test" was reported as unknown in the
 // browser demo. Keep the short smoke-test phrases and their combinations on a
@@ -66,6 +77,7 @@ fn test_status_matrix_is_classified_across_languages() {
         RUSSIAN_TEST_STATUS_PROMPTS,
         HINDI_TEST_STATUS_PROMPTS,
         CHINESE_TEST_STATUS_PROMPTS,
+        SPANISH_TEST_STATUS_PROMPTS,
     ] {
         for prompt in prompts {
             let response = FormalAiEngine.answer(prompt);
