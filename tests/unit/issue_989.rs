@@ -1,5 +1,8 @@
 //! Regression coverage for the failures reported in issue #989.
 
+use std::fmt::Write as _;
+
+use formal_ai::agentic_coding::tool_result::{step_outcome, StepOutcome};
 use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
 use formal_ai::issue_report::{ReportAttachment, ReportBody};
 use formal_ai::memory::MemoryEvent;
@@ -361,6 +364,21 @@ fn failed_web_transport_is_reported_as_failure_not_empty_success() {
     assert!(answer.contains("Transport error"), "{answer}");
     assert!(!answer.contains("Research completed"), "{answer}");
     assert!(!answer.contains("no content"), "{answer}");
+}
+
+#[test]
+fn successful_web_page_with_record_404_is_not_a_transport_failure() {
+    let mut page = String::from("Private space companies by country.\n");
+    for record in 1..=404 {
+        writeln!(
+            page,
+            "Evidence record {record}: companies operate under national licensing regimes."
+        )
+        .unwrap();
+    }
+
+    assert!(page.contains("Evidence record 404:"));
+    assert_eq!(step_outcome(&page), StepOutcome::Unreported);
 }
 
 #[test]
