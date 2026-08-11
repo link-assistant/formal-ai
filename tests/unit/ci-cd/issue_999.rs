@@ -112,7 +112,7 @@ fn actionlint_tracks_githubs_queue_schema_without_hiding_other_errors() {
 }
 
 #[test]
-fn every_file_observed_in_the_ci_warning_band_is_below_it() {
+fn warning_band_files_are_small_and_split_responses_cover_the_registry() {
     for (path, warning_limit) in [
         (".github/workflows/release.yml", 1_500),
         ("src/intent_formalization.rs", 900),
@@ -125,6 +125,32 @@ fn every_file_observed_in_the_ci_warning_band_is_below_it() {
         assert!(
             lines <= warning_limit,
             "{path} has {lines} lines; warning threshold is {warning_limit}"
+        );
+    }
+
+    for language in formal_ai::language::registered_languages() {
+        for intent in [
+            "coding_workspace_effect_observed",
+            "coding_workspace_written_unverified",
+            "coding_workspace_verification_failed",
+            "tool_result_failed_exit_code",
+        ] {
+            assert!(
+                formal_ai::seed::response_for(intent, language.slug()).is_some(),
+                "{intent} must remain directly available in {} after the seed split",
+                language.slug()
+            );
+        }
+    }
+
+    for registry in [
+        "src/seed/embedded.rs",
+        "tests/source/seed/embedded.rs",
+        "src/web/seed_loader.js",
+    ] {
+        assert!(
+            repository_file(registry).contains("multilingual-responses-agentic-tools.lino"),
+            "{registry} must register the split response file"
         );
     }
 }
