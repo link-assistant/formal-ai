@@ -125,10 +125,10 @@ fn specialized_order_follows_table_precedence() {
         .filter(|m| m.surface == MethodSurface::Specialized)
         .map(|m| m.name.as_str())
         .collect();
-    // The first table entry is the http_fetch handler; precedence is observable.
+    // Conversation controls precede generic URL handling; precedence is observable.
     assert_eq!(
         specialized.first().copied(),
-        Some("http_fetch"),
+        Some("conversation_control"),
         "the ordered table must lead with the first dispatch entry"
     );
     let orders: Vec<usize> = registry

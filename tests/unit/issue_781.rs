@@ -401,7 +401,7 @@ fn codex_mcp_transport_envelope_yields_clean_research_urls() {
 }
 
 #[test]
-fn a_failed_source_is_not_retried_or_used_as_evidence() {
+fn a_failed_source_reports_its_diagnostic_without_retrying() {
     let mut messages = vec![ChatMessage::user(
         "Find the voltage and connector required by this laptop?",
     )];
@@ -419,22 +419,14 @@ fn a_failed_source_is_not_retried_or_used_as_evidence() {
     );
     answer_tool_calls(&mut messages, &blocked, &["Error: HTTP 403 Forbidden"]);
 
-    let working = tool_calls(&messages);
-    assert_eq!(working.len(), 1);
-    assert_eq!(
-        arguments(&working[0])["url"],
-        "https://example.test/working",
-        "the failed source must be observed once, then research must re-plan"
-    );
-    answer_tool_calls(&mut messages, &working, &["The adapter supplies 19.5 V."]);
-
     let answer = final_answer(&messages);
-    assert!(answer.contains("19.5 V"), "{answer}");
-    assert!(!answer.contains("HTTP 403"), "{answer}");
+    assert!(answer.contains("HTTP 403 Forbidden"), "{answer}");
+    assert!(answer.contains("Report issue"), "{answer}");
+    assert!(!answer.contains("example.test/working"), "{answer}");
 }
 
 #[test]
-fn a_plain_text_provider_denial_is_not_used_as_research_evidence() {
+fn a_plain_text_provider_denial_is_reported_without_retrying() {
     let mut messages = vec![ChatMessage::user(
         "Find the voltage required by this laptop charger?",
     )];
@@ -456,21 +448,14 @@ fn a_plain_text_provider_denial_is_not_used_as_research_evidence() {
         &["You can't perform that action at this time."],
     );
 
-    let working = tool_calls(&messages);
-    assert_eq!(
-        arguments(&working[0])["url"],
-        "https://example.test/working",
-        "the denial is an observed failed attempt, not fetched evidence"
-    );
-    answer_tool_calls(&mut messages, &working, &["The adapter requires 19.5 V."]);
-
     let answer = final_answer(&messages);
-    assert!(answer.contains("19.5 V"), "{answer}");
-    assert!(!answer.contains("can't perform"), "{answer}");
+    assert!(answer.contains("can't perform that action"), "{answer}");
+    assert!(answer.contains("Report issue"), "{answer}");
+    assert!(!answer.contains("example.test/working"), "{answer}");
 }
 
 #[test]
-fn research_reports_no_content_when_every_fetch_attempt_fails() {
+fn research_reports_the_failure_when_every_fetch_attempt_fails() {
     let mut messages = vec![ChatMessage::user(
         "Find the voltage required by this laptop charger?",
     )];
@@ -489,9 +474,9 @@ fn research_reports_no_content_when_every_fetch_attempt_fails() {
     );
 
     let answer = final_answer(&messages);
-    assert!(answer.contains("returned no content"), "{answer}");
-    assert!(!answer.contains("example.test/blocked"), "{answer}");
-    assert!(!answer.contains("can't perform"), "{answer}");
+    assert!(answer.contains("can't perform that action"), "{answer}");
+    assert!(answer.contains("Report issue"), "{answer}");
+    assert!(!answer.contains("returned no content"), "{answer}");
 }
 
 #[test]

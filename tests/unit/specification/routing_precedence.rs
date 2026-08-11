@@ -116,8 +116,8 @@ fn shipped_precedence_pins_todays_dispatch_invariants() {
 
     assert_eq!(
         order.first().map(String::as_str),
-        Some("http_fetch"),
-        "the ordered table still leads with the http_fetch handler"
+        Some("conversation_control"),
+        "local conversation controls must precede generic URL handling"
     );
     // The precedence relations documented as guards in the seed and prior issues.
     assert!(
@@ -303,8 +303,8 @@ fn shipped_precedence_is_a_nonempty_ordered_list() {
     );
     assert_eq!(
         order.first().map(String::as_str),
-        Some("http_fetch"),
-        "the table leads with the http_fetch handler"
+        Some("conversation_control"),
+        "the table leads with local conversation controls"
     );
 }
 
