@@ -61,6 +61,9 @@ grammars, not by one defective response:
 9. The report command exposed one merged attachment. Passing multiple files to
    one `gh gist create` call still creates one gist, so it cannot satisfy a
    request for three distinct links.
+10. Status-less tool results used a failure lexicon across the entire payload.
+    A successful research page whose 404th evidence label contained `404` was
+    therefore misclassified as a transport error during Agent CLI verification.
 
 ## Implementation
 
@@ -75,6 +78,9 @@ and Spanish:
   handler order;
 - formalization requires an explicit formalization action;
 - failed search and fetch observations stop with their real diagnostic;
+- prose-only failure inference is bounded to the payload's leading diagnostic
+  region, so error notices remain detectable without classifying later document
+  contents as transport status;
 - the skill compiler derives the unquoted teaching separators from seeded
   roles, including the longest `answer with` form;
 - both behavior/behaviour spellings are recognized, and subjective narration
@@ -90,7 +96,7 @@ introduced.
 
 ## Verification
 
-The final focused Rust run passes all 13 issue tests. The issue-specific browser
+The final focused Rust run passes all 14 issue tests. The issue-specific browser
 mirror regression passes alongside the 14 pre-existing mirror checks. The exact
 logs are retained as `test-evidence/focused-green.log` and
 `test-evidence/browser-green.log`. The requirements-to-test mapping is in

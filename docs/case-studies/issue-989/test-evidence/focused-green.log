@@ -1,20 +1,21 @@
    Compiling formal-ai v0.339.1 (/tmp/gh-issue-solver-1786436524785)
-    Finished `test` profile [unoptimized] target(s) in 1m 23s
+    Finished `test` profile [unoptimized] target(s) in 1m 24s
      Running tests/unit/mod.rs (target/debug/deps/unit-ecd6eeaa7ca9cfae)
 
-running 13 tests
+running 14 tests
 test issue_989::link_only_report_attachments_do_not_emit_empty_code_fences ... ok
 test issue_989::agentic_narration_does_not_reintroduce_the_rejected_subjective_wording ... ok
 test issue_989::associative_memory_introspection_preempts_web_and_document_planning ... ok
 test issue_989::github_report_requests_three_separate_context_links ... ok
 test issue_989::plain_text_trigger_and_answer_compile_and_replay ... ok
-test issue_989::links_notation_question_falls_through_to_the_symbolic_concept_answer ... ok
-test issue_989::same_task_agent_cli_authorship_is_preserved ... ok
 test issue_989::british_behaviour_rule_queries_match_the_rule_catalog ... ok
+test issue_989::same_task_agent_cli_authorship_is_preserved ... ok
+test issue_989::successful_web_page_with_record_404_is_not_a_transport_failure ... ok
+test issue_989::links_notation_question_falls_through_to_the_symbolic_concept_answer ... ok
 test issue_989::failed_web_transport_is_reported_as_failure_not_empty_success ... ok
 test issue_989::natural_location_questions_use_pwd_instead_of_web_search ... ok
-test issue_989::preference_and_mutation_correction_receive_explicit_acknowledgements ... ok
 test issue_989::ordinary_file_edits_are_not_mistaken_for_dialog_control ... ok
+test issue_989::preference_and_mutation_correction_receive_explicit_acknowledgements ... ok
 test issue_989::whole_reported_dialog_stays_local_and_preserves_diagnostics ... ok
 
-test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 2647 filtered out; finished in 17.30s
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 2647 filtered out; finished in 19.35s
