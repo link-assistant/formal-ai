@@ -1,0 +1,14 @@
+
+✓ issue-999-31976d2c6ce9 Broken Link Checker link-assistant/formal-ai#1000 · 31535677995
+Triggered via pull_request about 2 minutes ago
+
+JOBS
+✓ Check Links in 1m59s (ID 93926093343)
+
+ANNOTATIONS
+- Summary report available at: https://github.com/link-assistant/formal-ai/actions/runs/31535677995#summary-93926093343
+Check Links: .github#219
+
+
+For more information about the job, try: gh run view --job=93926093343
+View this run on GitHub: https://github.com/link-assistant/formal-ai/actions/runs/31535677995

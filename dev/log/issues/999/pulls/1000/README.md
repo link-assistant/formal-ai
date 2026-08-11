@@ -1,6 +1,6 @@
 # Issue 999 / pull request 1000 evidence and analysis
 
-Collected on 2026-08-11 UTC for [formal-ai issue 999](https://github.com/link-assistant/formal-ai/issues/999) and [pull request 1000](https://github.com/link-assistant/formal-ai/pull/1000). This directory is the durable record behind the fix. It contains more than 430 raw or derived files (35 MiB), including the original GitHub records and final local verification.
+Collected on 2026-08-11 UTC for [formal-ai issue 999](https://github.com/link-assistant/formal-ai/issues/999) and [pull request 1000](https://github.com/link-assistant/formal-ai/pull/1000). This directory is the durable record behind the fix. It contains more than 450 raw or derived files (35 MiB), including the original GitHub records and final local verification.
 
 ## Executive conclusion
 
@@ -8,11 +8,11 @@ The latest default-branch pipeline did not contain a failing test. Its Intel mac
 
 The annotation audit also found four recurring false-warning categories: three intentional closure-cache exemptions, an informational self-hosting dry-run report, a Pages timeout value above the action's accepted maximum, and five files in their size-warning bands. The first two are now notices, Pages uses its real 600,000 ms maximum, and every observed file is below its warning threshold.
 
-The complete template comparison found two missing preventive controls (CodeQL/dependency review and link validation) and a workflow-wide concurrency defect. Mixed read/write workflows could cancel repository writers, while the default GitHub concurrency queue can replace an older pending writer. All material repository writers now share a repository-scoped `queue: max` group; read-only jobs keep branch/ref-specific cancellation. The latest template security and link gates were adapted under the templates' Unlicense terms. The first Dependency Review run then exposed a repository-level prerequisite: alerts were enabled but the Dependency Graph had never been generated. Reapplying GitHub's documented vulnerability-alerts setting enabled both features; the SBOM and dependency-diff APIs now succeed.
+The complete template comparison found two missing preventive controls (CodeQL/dependency review and link validation) and a workflow-wide concurrency defect. Mixed read/write workflows could cancel repository writers, while the default GitHub concurrency queue can replace an older pending writer. All material repository writers now share a repository-scoped `queue: max` group; read-only jobs keep branch/ref-specific cancellation. The latest template security and link gates were adapted under the templates' Unlicense terms. The first Dependency Review run then exposed a repository-level prerequisite: alerts were enabled but the Dependency Graph had never been generated. Reapplying GitHub's documented vulnerability-alerts setting enabled both features; the SBOM and dependency-diff APIs now succeed. A later live-link run exposed both a newly unavailable external reference and a second shared template bug: the Wayback helper treated every successful redirect bullet as a broken URL. The reference now uses live university material, and the parser is section-aware with a red/green regression test.
 
 ## Evidence map
 
-- `github/issue*` and `github/pull*`: complete issue and PR metadata, comments, reviews, events, timeline, commits, file list, and diff. Empty JSON arrays are retained to prove that a comment/review channel was checked and had no entries.
+- `github/issue*` and `github/pull*`: complete issue and PR metadata, comments, reviews, events, timeline, commits, file list, and diff at final source SHA `219b3dc7`, immediately before the self-describing evidence commit. GitHub's diff endpoint rejected the 501-file PR with HTTP 406, so `pull.diff.stderr` preserves that response and `pull.diff` is the equivalent complete `origin/main...origin/issue-999-31976d2c6ce9` diff. Empty JSON arrays are retained to prove that a comment/review channel was checked and had no entries.
 - `github/run-*.json`, `run-*-jobs*.json`, and `annotations/`: run metadata, every job, and every annotation returned by GitHub for the investigated runs.
 - `ci-logs/run-*.log`: full downloaded workflow logs. The large logs are intentionally kept unabridged; `*-diagnostics.txt` and `cross-run-warning-context.txt` are searchable extracts.
 - `research/*-tree.txt`: full repository trees for Formal AI and every named reference project.
@@ -21,7 +21,7 @@ The complete template comparison found two missing preventive controls (CodeQL/d
 - `research/all-run-annotations.tsv`: normalized, cross-run annotation inventory.
 - `research/*actionlint*.log`: workflow validation at the template-pinned and latest actionlint versions.
 - `research/issue-999-regression-before-fix.log` and `issue-999-regression-after-fix.log`: red/green regression evidence.
-- `research/upstream-*`: existing upstream issue records and the corrective template comment filed during this audit.
+- `research/upstream-*`: existing upstream issue records, the corrective template comment, and four reproducible template reports filed during this audit.
 - `EVIDENCE-MANIFEST.sha256`: SHA-256 digest and relative path for every other retained evidence file.
 
 ## Requirements inventory
@@ -37,7 +37,7 @@ The issue has nine independently verifiable requirements:
 | R5 | Compare the full CI/CD file tree with the JavaScript template. | Compared revision `9af528fb034643c03b4354e5273a8a20d830ee02`; tree and diffs are retained. |
 | R6 | Compare the full CI/CD file tree with the Python template. | Compared revision `bd07d1ce958cbc852a9ec9eae569f2064172b90f`; tree and diffs are retained. |
 | R7 | Reuse all applicable template and Hive Mind CI/CD best practices. | Adopted missing security, link, file-size, test-sharding, and mixed-workflow concurrency controls. Enabled the repository-level Dependency Graph prerequisite discovered by the first remote run. Existing stronger project-specific controls remain. |
-| R8 | If the same issue is present in a template, report it there. | Corrected the Rust template's stale `queue` conclusion with a reproduction, workaround, and code-level fix at [issue 113 comment](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/113#issuecomment-5257178147). Exact text and prior issue state are retained. |
+| R8 | If the same issue is present in a template, report it there. | Corrected the Rust template's stale `queue` conclusion and filed reproducible reports for the archived-link false negative and redirect-parser false positive in every affected named template. Links appear under External reports; exact records are retained. |
 | R9 | Plan and execute everything in this one PR without deferral. | All applicable changes, regression tests, research, and evidence are in PR 1000. No follow-up implementation is deferred. |
 
 The task instructions add evidence retention, online corroboration, root-cause analysis, known-component research, codebase-wide application, reproducible testing, PR finalization, and CI verification. Those are addressed by this report, the raw archive, tests, and final PR checks.
@@ -59,6 +59,9 @@ The task instructions add evidence retention, online corroboration, root-cause a
 | 2026-08-11 20:15:49–20:15:56 | The documented vulnerability-alerts repository setting was reapplied through GitHub's REST API. The endpoint returned 204; SBOM export and the base/head dependency diff immediately changed from unavailable to successful. The diff found the five newly introduced Actions dependencies and no vulnerabilities. |
 | 2026-08-11 20:21:12–20:27:45 | The first full replacement pipeline passed every preceding lint command, then its language-test-coverage policy correctly rejected the seed split because no changed test asserted the supported-language matrix. The complete 3,752-line job log and annotation are archived under run 31532227251/job 93915498383. |
 | 2026-08-11, follow-up | The existing file-size regression was strengthened to load every moved response intent for every `registered_languages()` entry and assert registration in the production Rust, test-source, and browser loaders. The previously red language policy, focused 6-test suite, formatting, and Clippy then passed locally. |
+| 2026-08-11 20:36:44–20:40:42 | Fresh Broken Link run [31533813546](https://github.com/link-assistant/formal-ai/actions/runs/31533813546) found one real 502 for the Encyclopedia of Mathematics reference and 18 successful redirects. The archive helper incorrectly announced 19 broken URLs and emitted false annotations for redirected links. Its complete 697-line log, metadata, jobs, and annotations are archived. |
+| 2026-08-11 20:41–20:48 | A minimum Node regression reproduced the parser defect before implementation. The parser was restricted to Lychee's error section, the unavailable reference was replaced with live University of Calgary course material, and the focused tests, all 53 browser unit tests, syntax check, direct HTTP probes, and a clean-tree full Lychee run passed. The shared defect was reported to both affected templates. |
+| 2026-08-11 20:59:08–21:01:11 | Broken Link run [31535677995](https://github.com/link-assistant/formal-ai/actions/runs/31535677995) passed on the exact corrective source SHA `219b3dc782bc4e7b6a485e16bd7e3d990e58c682`. Its complete 450-line log, run and job metadata, and zero-annotation result are archived beside the failing reproduction. |
 
 ## Root causes, alternatives, and selected solutions
 
@@ -155,7 +158,15 @@ Root cause: splitting a multilingual response family was correctly classified as
 
 Selected solution: strengthen the existing sixth issue regression rather than adding language-name comments or bypassing the policy. It now iterates `formal_ai::language::registered_languages()`, requires direct records for all four moved intents, and checks registration in the production Rust bundle, source-test mirror, and browser loader. This both satisfies the diff-aware guard and catches a real missing-file/missing-locale regression. The guard changed from red to `Language test coverage OK against origin/main: en, ru, hi, zh, es`; the same six focused tests and Clippy pass afterward.
 
-### 9. Correct true positives and non-actionable historical signals
+### 9. Wayback redirect misclassification and unavailable reference
+
+Evidence: run 31533813546's Lychee summary contained exactly one error and 18 redirects. `extractBrokenUrls` first matched explicit 4xx/5xx statuses, then applied a permissive bullet-URL expression to the entire report. That second pass captured all 18 bullets under `## Redirects per input`; the helper therefore said `Found 19 broken URL(s)` and emitted seven false error annotations when Wayback had no snapshot for healthy redirect sources. The same script blob (`2b8244d7d76d56d9acdf88b4ea766e35c554b1fe`) was current in both the Rust and JavaScript templates. Python does not contain the helper.
+
+Selected solution: when Lychee emits structured Markdown, parse only `## Errors per input` through the next level-two heading. Preserve whole-document parsing for old/plain output. The parser is exported behind a direct-run guard so a `node:test` fixture can assert that one error plus one redirect returns only the error. The test failed before the fix and passes afterward. Reports with the exact fixture, workaround, and proposed patch were filed upstream.
+
+The sole real error was independent: `https://encyclopediaofmath.org/wiki/Normal_algorithm` returned 502 on the runner and on four consecutive local probes. It was not ignored or replaced by an archive. The documentation now links to live University of Calgary course notes that directly define a Markov algorithm as a finite ordered sequence of substitution rules and state its equivalence with Turing computation; the replacement returned 200 and the clean-tree Lychee run finished with zero errors.
+
+### 10. Correct true positives and non-actionable historical signals
 
 These were inspected and intentionally not hidden:
 
@@ -201,8 +212,9 @@ Final local verification completed successfully:
 - the all-features repository run completed every integration executable and its final 2,667-test target passed 2,664 with 3 intentional ignores and 0 failures; doc tests also passed;
 - all-features Clippy passed with warnings denied, every example compiled, and both normal and docs.rs/no-default-features rustdoc builds passed with warnings denied;
 - formatting, actionlint 1.7.12, ShellCheck, changelog reconstruction, fragment-map tests, and `git diff --check` passed;
-- the split seed's Rust, browser, worker, response-lookup, and data-integrity regressions passed (51/51 browser tests and the focused Rust suites are retained in `research/`);
-- the local live-link gate checked 1,071 links with 0 errors after repairing the discovered stale links and classifying only reproducible probe limitations.
+- the split seed's Rust, browser, worker, response-lookup, data-integrity, and archive-parser regressions passed (53/53 browser tests and the focused Rust suites are retained in `research/`);
+- the initial local live-link gate checked 1,071 links with 0 errors after repairing the discovered stale links and classifying only reproducible probe limitations; after the remote 502, a clean-tree rerun checked 991 current inputs with 0 errors;
+- the remote Broken Link Checker passed on corrective source SHA `219b3dc782bc4e7b6a485e16bd7e3d990e58c682` after the parser and source corrections;
 - the diff-aware language-test-coverage policy passed for all registered locales (`en`, `ru`, `hi`, `zh`, `es`) after the split-response regression was made registry-driven.
 
 Remote workflow results are retained in `github/` and `ci-logs/` and are checked against the pushed head SHA before finalization.
@@ -223,5 +235,6 @@ Remote workflow results are retained in `github/` and `ci-logs/` and are checked
 
 - Rust template concurrency correction: [link-foundation/rust-ai-driven-development-pipeline-template#113 comment](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/113#issuecomment-5257178147). The stored comment includes a minimal YAML reproduction, the narrow actionlint workaround, and the code-level recommendation.
 - The archived-link false negative was present in all three named templates. Reproducible reports with workarounds and code-level fixes were filed as [Rust template issue 125](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/125), [JavaScript template issue 127](https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/127), and [Python template issue 54](https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/54).
+- The redirect-parser false positive was present in the identical Wayback helper shipped by the Rust and JavaScript templates. Reproducible reports were filed as [Rust template issue 126](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/126) and [JavaScript template issue 128](https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/128). The Python template has no such helper, so no inapplicable report was filed there.
 - No duplicate reports were filed for Pages or actionlint because exact open upstream reports already exist and are linked above.
 - No new sccache report was filed because the exact cache-rate-limit behavior is already tracked upstream and did not reproduce in the issue's latest run.

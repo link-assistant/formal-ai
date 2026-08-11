@@ -1,0 +1,17 @@
+URL: https://encyclopediaofmath.org/wiki/Normal_algorithm
+HTTP/2 502 
+date: Tue, 11 Aug 2026 20:48:19 GMT
+alt-svc: h3=":443"; ma=2592000
+
+HTTP/2 502 
+date: Tue, 11 Aug 2026 20:48:20 GMT
+alt-svc: h3=":443"; ma=2592000
+
+HTTP/2 502 
+date: Tue, 11 Aug 2026 20:48:21 GMT
+alt-svc: h3=":443"; ma=2592000
+
+HTTP/2 502 
+date: Tue, 11 Aug 2026 20:48:22 GMT
+alt-svc: h3=":443"; ma=2592000
+
