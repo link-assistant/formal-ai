@@ -416,6 +416,23 @@ fn test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten(
     );
 }
 
+/// Run 31428625331 passed all 2,629 tests on macOS, then exceeded the job
+/// budget during cleanup. The focused data-integrity gates had already run the
+/// same tests before the full suite, consuming more than 90 seconds twice.
+#[test]
+fn full_suite_does_not_repeat_focused_data_integrity_checks() {
+    let workflow = release_workflow();
+    let test_job = job_block(&workflow, "test");
+    let full_suite = workflow_step_block(test_job, "Run tests");
+
+    assert!(test_job.contains("cargo test --test unit data_files -- --nocapture"));
+    assert!(test_job.contains("cargo test --test unit self_ast_census -- --nocapture"));
+    assert!(
+        full_suite.contains("--skip data_files::") && full_suite.contains("--skip self_ast_census"),
+        "the full suite must skip integrity groups already exercised by their focused gates"
+    );
+}
+
 /// Run 30087447926 exhausted `/` twice while the test job rebuilt the package
 /// on top of its restored, target-heavy cache. The first attempt killed the
 /// runner worker; the second could not create a rustc temp directory and made
