@@ -243,6 +243,12 @@ jobs:
       - name: Install desktop dependencies
         run: scripts/install-node-dependencies.sh desktop
 
+      # Issue #990: execute the real published command-stream adapter after the
+      # production dependency tree is installed, on every packaged platform.
+      - name: Test command-stream production adapter
+        working-directory: desktop
+        run: node --test scripts/command-runner.test.mjs
+
       - name: Prepare desktop resources (web + bundled binary + version sync)
         working-directory: desktop
         run: node scripts/prepare-resources.mjs

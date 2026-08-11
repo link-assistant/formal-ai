@@ -61,9 +61,12 @@ fn same_task_agent_cli_authorship_is_preserved() {
         "docs/case-studies/issue-988/self-hosting-authorship/20260810_988_stock_rust_install.md",
     ))
     .expect("the Agent-CLI-generated changelog artifact should be readable");
-    let canonical = fs::read_to_string(root.join("changelog.d/20260810_988_stock_rust_install.md"))
-        .expect("the committed changelog fragment should be readable");
-    assert_eq!(generated, canonical);
+    // Towncrier removes the source fragment after publishing it. Compare the
+    // authored artifact with its durable destination so release commits keep
+    // the provenance check valid.
+    let canonical = fs::read_to_string(root.join("CHANGELOG.md"))
+        .expect("the canonical changelog should be readable");
+    assert!(canonical.contains(generated.trim()));
 
     let evidence = root.join("docs/case-studies/issue-988/self-hosting-authorship");
     let agent_log = fs::read_to_string(evidence.join("agent-cli.log"))
