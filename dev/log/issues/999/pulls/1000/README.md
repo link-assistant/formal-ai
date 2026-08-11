@@ -8,7 +8,7 @@ The latest default-branch pipeline did not contain a failing test. Its Intel mac
 
 The annotation audit also found four recurring false-warning categories: three intentional closure-cache exemptions, an informational self-hosting dry-run report, a Pages timeout value above the action's accepted maximum, and five files in their size-warning bands. The first two are now notices, Pages uses its real 600,000 ms maximum, and every observed file is below its warning threshold.
 
-The complete template comparison found two missing preventive controls (CodeQL/dependency review and link validation) and a workflow-wide concurrency defect. Mixed read/write workflows could cancel repository writers, while the default GitHub concurrency queue can replace an older pending writer. All material repository writers now share a repository-scoped `queue: max` group; read-only jobs keep branch/ref-specific cancellation. The latest template security and link gates were adapted under the templates' Unlicense terms.
+The complete template comparison found two missing preventive controls (CodeQL/dependency review and link validation) and a workflow-wide concurrency defect. Mixed read/write workflows could cancel repository writers, while the default GitHub concurrency queue can replace an older pending writer. All material repository writers now share a repository-scoped `queue: max` group; read-only jobs keep branch/ref-specific cancellation. The latest template security and link gates were adapted under the templates' Unlicense terms. The first Dependency Review run then exposed a repository-level prerequisite: alerts were enabled but the Dependency Graph had never been generated. Reapplying GitHub's documented vulnerability-alerts setting enabled both features; the SBOM and dependency-diff APIs now succeed.
 
 ## Evidence map
 
@@ -36,7 +36,7 @@ The issue has nine independently verifiable requirements:
 | R4 | Compare the full CI/CD file tree with the Rust template. | Compared revision `86dd57e97e404e3c2865da1a3512bb8878ba8ef4`; tree and diffs are retained. |
 | R5 | Compare the full CI/CD file tree with the JavaScript template. | Compared revision `9af528fb034643c03b4354e5273a8a20d830ee02`; tree and diffs are retained. |
 | R6 | Compare the full CI/CD file tree with the Python template. | Compared revision `bd07d1ce958cbc852a9ec9eae569f2064172b90f`; tree and diffs are retained. |
-| R7 | Reuse all applicable template and Hive Mind CI/CD best practices. | Adopted missing security, link, file-size, test-sharding, and mixed-workflow concurrency controls. Existing stronger project-specific controls remain. |
+| R7 | Reuse all applicable template and Hive Mind CI/CD best practices. | Adopted missing security, link, file-size, test-sharding, and mixed-workflow concurrency controls. Enabled the repository-level Dependency Graph prerequisite discovered by the first remote run. Existing stronger project-specific controls remain. |
 | R8 | If the same issue is present in a template, report it there. | Corrected the Rust template's stale `queue` conclusion with a reproduction, workaround, and code-level fix at [issue 113 comment](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/113#issuecomment-5257178147). Exact text and prior issue state are retained. |
 | R9 | Plan and execute everything in this one PR without deferral. | All applicable changes, regression tests, research, and evidence are in PR 1000. No follow-up implementation is deferred. |
 
@@ -55,6 +55,8 @@ The task instructions add evidence retention, online corroboration, root-cause a
 | 2026-08-11 18:00:48 | Draft PR 1000 and branch `issue-999-31976d2c6ce9` were created. |
 | 2026-08-11, investigation | Every run/job annotation and full non-skipped log was downloaded. The three templates and Hive Mind were cloned/read at the revisions recorded above. Official GitHub, Cargo, and action/project documentation was checked. |
 | 2026-08-11, implementation | A six-test regression suite was run red, the fixes were implemented, and the same suite passed 6/6. Actionlint 1.7.12 passed with only its known schema gap narrowly ignored. |
+| 2026-08-11 20:13:08–20:13:28 | The first new Dependency Review job failed before analysis because this repository's Dependency Graph was not enabled. Its full log and annotation are archived under run 31531791299/job 93913334294. |
+| 2026-08-11 20:15:49–20:15:56 | The documented vulnerability-alerts repository setting was reapplied through GitHub's REST API. The endpoint returned 204; SBOM export and the base/head dependency diff immediately changed from unavailable to successful. The diff found the five newly introduced Actions dependencies and no vulnerabilities. |
 
 ## Root causes, alternatives, and selected solutions
 
@@ -140,6 +142,8 @@ Selected solution:
 - any broken live link remains fatal whether or not Wayback has a snapshot.
 
 These are established components rather than custom scanners: [GitHub dependency review](https://docs.github.com/en/pull-requests/how-tos/review-pull-requests/reviewing-dependency-changes-in-a-pull-request), `github/codeql-action`, `actions/dependency-review-action`, and `lycheeverse/lychee-action`.
+
+The first remote Dependency Review execution revealed a separate repository-setting dependency. GitHub returned `Dependency review is not supported on this repository` and pointed to Dependency Graph enablement. The repository was public and Dependabot alerts answered as enabled, but SBOM export returned 404 and GraphQL reported zero manifests. GitHub's official REST schema states that enabling vulnerability alerts also enables the Dependency Graph, so the administrator endpoint `PUT /repos/link-assistant/formal-ai/vulnerability-alerts` was called idempotently. It returned 204; SBOM export then produced a GitHub Dependency Graph document, and `dependency-graph/compare/d00c6168...940fbd05` returned the five new Actions dependencies with empty vulnerability lists. The full job log, annotation, REST response, official enablement documentation, SBOM, and comparison are retained in this archive. Skipping the job would have recreated the false negative that the new gate is intended to close.
 
 ### 8. Correct true positives and non-actionable historical signals
 

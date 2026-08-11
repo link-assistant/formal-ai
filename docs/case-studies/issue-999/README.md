@@ -55,7 +55,11 @@ work in this one PR.
    Wayback only to suggest a replacement. The first local run then exposed five
    genuine stale documentation links, all repaired; host throttling and exact
    browser-only ignores classify the remaining checker false positives without
-   accepting 403 responses globally.
+   accepting 403 responses globally. The first remote Dependency Review run
+   also exposed its missing repository-level Dependency Graph prerequisite.
+   GitHub's documented vulnerability-alerts endpoint was reapplied; SBOM export
+   and base/head dependency comparison now succeed, so the gate remains active
+   instead of being skipped.
 
 The complete evidence-to-root-cause table, alternatives, known components, and
 source links are in the [durable analysis](../../../dev/log/issues/999/pulls/1000/README.md).
