@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.339.1] - 2026-08-11
+
+### Fixed
+- Routed Desktop and supported Rust command-execution boundaries through the published `command-stream` component while preserving streaming output, cancellation, exit diagnostics, and host/Docker selection, with focused upstream limitations recorded for excluded boundaries.
+
 ## [0.339.0] - 2026-08-10
 
 ### Added
