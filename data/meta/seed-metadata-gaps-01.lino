@@ -607,6 +607,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-13.lino"
     record "response_general_plan_repository_planned_en"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_fcd894d8fc94f701
+    source "data/seed/closure-generated-13.lino"
+    record "response_how_to_guide_citation_es"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_657b3f57df01e981
     source "data/seed/closure-generated-13.lino"
     record "response_how_to_guide_heading_en"

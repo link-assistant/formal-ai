@@ -163,6 +163,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-05.lino"
     record "response_agentic_action_find_current_ru"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_b5b3f122f47fb034
+    source "data/seed/closure-generated-05.lino"
+    record "response_how_to_guide_bounds_es"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_1ee1408d5549f0b4
     source "data/seed/closure-generated-05.lino"
     record "response_lexeme_import_cache_invalid_json_hi"

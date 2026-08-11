@@ -495,6 +495,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-12.lino"
     record "response_fact_check_statement_counterexample_en"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_644139b9d0378fe8
+    source "data/seed/closure-generated-12.lino"
+    record "response_how_to_guide_insufficient_evidence_es"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_c077827ca58211c8
     source "data/seed/closure-generated-12.lino"
     record "response_pattern_grid_no_symmetry_hi"

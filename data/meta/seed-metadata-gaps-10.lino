@@ -99,6 +99,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-03.lino"
     record "literals"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_3a1e2c74a4a5e57a
+    source "data/seed/closure-generated-03.lino"
+    record "response_how_to_guide_copy_es"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_6b6998f11824c3aa
     source "data/seed/closure-generated-03.lino"
     record "response_how_to_guide_source_outcome_ru"

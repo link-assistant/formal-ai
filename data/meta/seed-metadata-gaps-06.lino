@@ -247,6 +247,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-06.lino"
     record "response_how_to_guide_citation_ru"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_f76d527392047616
+    source "data/seed/closure-generated-06.lino"
+    record "response_how_to_guide_step_es"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_b310a1f179a92ca6
     source "data/seed/closure-generated-06.lino"
     record "response_lexeme_import_surface_missing_en"
