@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Real Agent CLI reproduction for issue #822: reporting pauses for both user
-# choices, then files complete matching context in Links Notation.
+# choices, then files separate harness, server, and merged context links.
 
 set -euo pipefail
 
@@ -19,7 +19,7 @@ SERVER_LOG="$WORKDIR/formal-ai.log"
 AGENT_LOG="$WORKDIR/agent-cli.log"
 GH_CAPTURE="$WORKDIR/gh-invocation.txt"
 BODY_CAPTURE="$WORKDIR/issue-body.md"
-GIST_CAPTURE="$WORKDIR/formal-ai-context.lino"
+GIST_DIR="$WORKDIR/gists"
 
 cleanup() {
   if [[ -n "${SERVER_PID:-}" ]]; then
@@ -29,7 +29,7 @@ cleanup() {
 }
 trap cleanup EXIT
 
-mkdir -p "$FAKE_BIN"
+mkdir -p "$FAKE_BIN" "$GIST_DIR"
 cd "$WORKDIR"
 
 cat > opencode.json <<EOF
@@ -56,8 +56,20 @@ cat > "$FAKE_BIN/gh" <<'EOF'
 set -euo pipefail
 
 if [[ "${1:-} ${2:-}" == "gist create" ]]; then
-  cp "${@: -1}" "$FORMAL_AI_GIST_CAPTURE"
-  printf '%s\n' 'https://gist.github.com/formal-ai/complete-context'
+  filename=''
+  source_file=''
+  while [[ $# -gt 0 ]]; do
+    if [[ "$1" == "--filename" ]]; then
+      filename="$2"
+      shift 2
+      continue
+    fi
+    source_file="$1"
+    shift
+  done
+  [[ -n "$filename" && -n "$source_file" ]]
+  cp "$source_file" "$FORMAL_AI_GIST_DIR/$filename"
+  printf 'https://gist.github.com/formal-ai/%s\n' "$filename"
   exit 0
 fi
 
@@ -109,7 +121,7 @@ run_turn() {
     FORMAL_AI_DIALOG_LOG_DIR="$WORKDIR/dialog-logs" \
     FORMAL_AI_GH_CAPTURE="$GH_CAPTURE" \
     FORMAL_AI_BODY_CAPTURE="$BODY_CAPTURE" \
-    FORMAL_AI_GIST_CAPTURE="$GIST_CAPTURE" \
+    FORMAL_AI_GIST_DIR="$GIST_DIR" \
     LINK_ASSISTANT_AGENT_DISABLE_AUTOUPDATE=1 \
     PATH="$FAKE_BIN:$BIN_DIR:$PATH" \
     timeout 90 "$AGENT" run \
@@ -138,20 +150,39 @@ grep -Fxq 'create' "$GH_CAPTURE" || fail "gh did not receive the create subcomma
 grep -Fxq 'link-assistant/formal-ai' "$GH_CAPTURE" \
   || fail "gh did not target the Formal AI repository"
 [[ -s "$BODY_CAPTURE" ]] || fail "the confirmed report had no body"
-grep -Fq 'Complete agentic context' "$BODY_CAPTURE" \
-  || grep -Fq 'Agentic context' "$BODY_CAPTURE" \
-  || fail "the report body did not describe its complete context"
 
-if [[ -s "$GIST_CAPTURE" ]]; then
-  grep -Fq 'conversation' "$GIST_CAPTURE" \
-    || fail "the linked context did not contain the conversation"
-  grep -Fq 'server_logs' "$GIST_CAPTURE" \
-    || fail "the linked context did not contain server logs"
-else
-  grep -Fq 'conversation' "$BODY_CAPTURE" \
-    || fail "the inline context did not contain the conversation"
-  grep -Fq 'server_logs' "$BODY_CAPTURE" \
-    || fail "the inline context did not contain server logs"
+shopt -s nullglob
+harness_files=("$GIST_DIR"/formal-ai-harness-context-*.lino)
+server_files=("$GIST_DIR"/formal-ai-server-context-*.lino)
+[[ "${#harness_files[@]}" -eq 1 ]] \
+  || fail "expected one captured harness context"
+[[ "${#server_files[@]}" -eq 1 ]] \
+  || fail "expected one captured server context"
+[[ -s "$GIST_DIR/context.lino" ]] \
+  || fail "expected one captured merged context"
+
+if ! grep -Fq 'conversation' "${harness_files[0]}"; then
+  grep -Fq 'context_export_failure' "${harness_files[0]}" \
+    && grep -Fq 'source harness' "${harness_files[0]}" \
+    || fail "the harness context was neither exported nor given an explicit diagnostic"
+fi
+grep -Fq 'server_logs' "${server_files[0]}" \
+  || fail "the server context did not contain server logs"
+grep -Fq 'conversation' "$GIST_DIR/context.lino" \
+  || fail "the merged context did not contain the conversation"
+grep -Fq 'server_logs' "$GIST_DIR/context.lino" \
+  || fail "the merged context did not contain server logs"
+
+for heading in '### Harness context' '### Server context' '### Merged context'; do
+  grep -Fq "$heading" "$BODY_CAPTURE" \
+    || fail "the report body omitted $heading"
+done
+for context_file in "${harness_files[0]}" "${server_files[0]}" "$GIST_DIR/context.lino"; do
+  grep -Fq "https://gist.github.com/formal-ai/${context_file##*/}" "$BODY_CAPTURE" \
+    || fail "the report body omitted the ${context_file##*/} link"
+done
+if grep -Fq '```lino' "$BODY_CAPTURE"; then
+  fail "the linked context was duplicated inline"
 fi
 
 grep -Fq 'issues/999999' "$AGENT_LOG" \
@@ -160,7 +191,7 @@ grep -Fq 'issues/999999' "$AGENT_LOG" \
 posts="$(grep -c 'POST /v1/chat/completions' "$SERVER_LOG" || true)"
 [[ "$posts" -ge 3 ]] || fail "expected at least three confirmation rounds, got $posts"
 
-echo "== issue #822 E2E OK: two confirmations preceded a complete-context issue ($posts rounds) =="
+echo "== issue #822 E2E OK: two confirmations preceded three linked contexts ($posts rounds) =="
 tail -60 "$AGENT_LOG"
 if [[ -n "$ARTIFACT_DIR" ]]; then
   mkdir -p "$ARTIFACT_DIR"
@@ -168,7 +199,7 @@ if [[ -n "$ARTIFACT_DIR" ]]; then
   cp "$AGENT_LOG" "$ARTIFACT_DIR/agent-cli.log"
   cp "$GH_CAPTURE" "$ARTIFACT_DIR/gh-invocation.txt"
   cp "$BODY_CAPTURE" "$ARTIFACT_DIR/issue-body.md"
-  if [[ -s "$GIST_CAPTURE" ]]; then
-    cp "$GIST_CAPTURE" "$ARTIFACT_DIR/formal-ai-context.lino"
-  fi
+  cp "${harness_files[0]}" "$ARTIFACT_DIR/formal-ai-harness-context.lino"
+  cp "${server_files[0]}" "$ARTIFACT_DIR/formal-ai-server-context.lino"
+  cp "$GIST_DIR/context.lino" "$ARTIFACT_DIR/formal-ai-merged-context.lino"
 fi
