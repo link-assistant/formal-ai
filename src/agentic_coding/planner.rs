@@ -38,7 +38,9 @@ use super::tool_result;
 use super::web_research;
 use super::{algorithm_learning, capability_router};
 use super::{change_request, code_artifact};
+use crate::conversation_control::is_conversation_control_prompt;
 use crate::protocol::ChatMessage;
+use crate::skill_compiler::looks_like_skill_description;
 
 pub use super::formalization_recipe::{CANONICAL_SOURCE_URL, KB_PATH, SEARCH_QUERY};
 
@@ -146,6 +148,9 @@ pub fn tool_capability(name: &str) -> Option<Capability> {
 pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<AgenticPlan> {
     let task = latest_user_text(messages)?;
     trace_route("agentic_task", &task);
+    if is_conversation_control_prompt(&task) || looks_like_skill_description(&task) {
+        return None;
+    }
     // Issue #707: seed-defined computer-use plans own their exact multilingual
     // prompts before broad write/search routing. Each emitted primitive carries
     // explicit pre/postconditions and is executed by the advertising client.

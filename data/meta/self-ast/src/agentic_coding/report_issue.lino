@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/report_issue.rs
   language rust
   fidelity full_ast
-  byte_len 19494
-  line_count 538
-  content_id source_module_2cbd5f715797efc8
-  symbol_count 45
+  byte_len 19665
+  line_count 542
+  content_id source_module_6b7ffe3931831aeb
+  symbol_count 46
   symbols
     const REPORT_BODY_COMMAND 14 14
     const CONTEXT_EXPORT_COMMAND 15 15
@@ -15,66 +15,67 @@ self_ast_census
     const SOURCE_FLAG 19 19
     const OUTPUT_FLAG 20 20
     const CONTEXT_OUTPUT_FLAG 21 21
-    const SURFACE_FLAG 22 22
-    const TITLE_FLAG 23 23
-    const BODY_FILE_FLAG 24 24
-    const FORMAL_AI_PROGRAM 26 26
-    const GH_PROGRAM 27 27
-    const PRINTF_PROGRAM 28 28
-    const PRINTF_LINE_FORMAT 30 30
-    const AGENTIC_SURFACE 32 32
-    const BODY_FILE 33 33
-    const CONTEXT_FILE 34 34
-    const LATEST_SESSION 36 36
-    enum ReportTarget 39 44
-    enum ReportContents 47 51
-    function plan_report_flow 55 143
-    function ask_or_render 145 185
-    function localized 187 189
-    function localized_options 191 198
-    function is_report_question 200 209
-    function answer_texts 211 221
-    function parse_targets 223 241
-    function parse_contents 243 252
-    function matches_option 254 265
-    function is_report_intent 268 280
-    function report_action_governs_subject 282 326
-    function commands_for_targets 335 348
-    function command_for 350 371
-    function export_command 378 394
-    function learning_command 396 403
-    function github_command 410 442
-    function source_name 444 450
-    function dialog_id 460 465
-    function report_title 467 472
-    function title_turns 479 489
-    function report_finished 492 522
-    function formal_ai_repo 524 526
-    function config 528 532
-    function render 534 538
+    const SEPARATE_CONTEXT_LINKS_FLAG 22 22
+    const SURFACE_FLAG 23 23
+    const TITLE_FLAG 24 24
+    const BODY_FILE_FLAG 25 25
+    const FORMAL_AI_PROGRAM 27 27
+    const GH_PROGRAM 28 28
+    const PRINTF_PROGRAM 29 29
+    const PRINTF_LINE_FORMAT 31 31
+    const AGENTIC_SURFACE 33 33
+    const BODY_FILE 34 34
+    const CONTEXT_FILE 35 35
+    const LATEST_SESSION 37 37
+    enum ReportTarget 40 45
+    enum ReportContents 48 52
+    function plan_report_flow 56 144
+    function ask_or_render 146 186
+    function localized 188 190
+    function localized_options 192 199
+    function is_report_question 201 210
+    function answer_texts 212 222
+    function parse_targets 224 242
+    function parse_contents 244 253
+    function matches_option 255 266
+    function is_report_intent 269 281
+    function report_action_governs_subject 283 327
+    function commands_for_targets 336 349
+    function command_for 351 372
+    function export_command 379 395
+    function learning_command 397 404
+    function github_command 411 446
+    function source_name 448 454
+    function dialog_id 464 469
+    function report_title 471 476
+    function title_turns 483 493
+    function report_finished 496 526
+    function formal_ai_repo 528 530
+    function config 532 536
+    function render 538 542
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 14115
-    named_node_count 2852
+    total_link_count 14228
+    named_node_count 2873
     distinct_node_kinds 76
     node_kinds
-      arguments 259
+      arguments 260
       array_expression 7
       array_type 13
       assignment_expression 1
       attribute 2
       attribute_item 2
       base_field_initializer 1
-      binary_expression 23
-      block 55
+      binary_expression 24
+      block 56
       boolean_literal 10
-      call_expression 259
+      call_expression 260
       closure_expression 38
       closure_parameters 38
-      const_item 19
+      const_item 20
       crate 5
       doc_comment 39
       else_clause 3
@@ -82,9 +83,9 @@ self_ast_census
       enum_variant 7
       enum_variant_list 2
       escape_sequence 11
-      expression_statement 54
-      field_expression 193
-      field_identifier 194
+      expression_statement 56
+      field_expression 194
+      field_identifier 195
       field_initializer 1
       field_initializer_list 1
       for_expression 1
@@ -92,8 +93,8 @@ self_ast_census
       function_modifiers 1
       generic_function 4
       generic_type 11
-      identifier 689
-      if_expression 11
+      identifier 695
+      if_expression 12
       index_expression 6
       inner_doc_comment_marker 1
       integer_literal 16
@@ -111,17 +112,17 @@ self_ast_census
       parameter 53
       parameters 24
       parenthesized_expression 3
-      primitive_type 62
+      primitive_type 63
       range_expression 3
       reference_expression 40
-      reference_type 63
+      reference_type 64
       return_expression 10
-      scoped_identifier 63
+      scoped_identifier 64
       scoped_type_identifier 1
       scoped_use_list 4
       source_file 1
-      string_content 89
-      string_literal 83
+      string_content 90
+      string_literal 84
       struct_expression 1
       super 4
       token_tree 18

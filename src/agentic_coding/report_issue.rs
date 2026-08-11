@@ -19,6 +19,7 @@ const CONTEXT_SESSION_FLAG: &str = " --session ";
 const SOURCE_FLAG: &str = " --source ";
 const OUTPUT_FLAG: &str = " --output ";
 const CONTEXT_OUTPUT_FLAG: &str = " --context-output ";
+const SEPARATE_CONTEXT_LINKS_FLAG: &str = " --separate-context-links";
 const SURFACE_FLAG: &str = " --surface ";
 const TITLE_FLAG: &str = " --title ";
 const BODY_FILE_FLAG: &str = " --body-file ";
@@ -428,6 +429,9 @@ fn github_command(
     body.push_str(&body_file);
     body.push_str(CONTEXT_OUTPUT_FLAG);
     body.push_str(&context_file);
+    if contents == ReportContents::Both {
+        body.push_str(SEPARATE_CONTEXT_LINKS_FLAG);
+    }
     script.step(FORMAL_AI_PROGRAM, body);
 
     let mut create = ISSUE_CREATE_COMMAND.to_owned();

@@ -64,8 +64,12 @@ const TARGET_TOTAL_LINES: usize = 3_000;
 /// `write_program` dead-end shapes that keep the `missing` sentinel out of the
 /// reply — must be mirrored in the browser worker for Rust↔JS parity, adding a
 /// net 112 lines and raising the ratchet from 27,705 to 27,817.
+/// Issue #989 adds the associative-memory inspection projection that the web
+/// runtime needs to answer count, inventory, root-link, and correction turns
+/// from its IndexedDB-shaped records. Along with the parity routing changes,
+/// this raises the reviewed merged baseline to 27,996 lines.
 #[cfg(not(test))]
-const CEILING_TOTAL_LINES: usize = 27_817;
+const CEILING_TOTAL_LINES: usize = 27_996;
 
 const WORKER_DIR: &str = "src/web/worker";
 

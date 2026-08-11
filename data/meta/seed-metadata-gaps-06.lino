@@ -695,6 +695,10 @@ seed_metadata_gaps
     source "data/seed/meanings-conversation.lino"
     record "memory_substitution_directive"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_ddc6c038253b1ae6
+    source "data/seed/meanings-conversation.lino"
+    record "unauthorized_mutation_correction"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_b6067295fb656596
     source "data/seed/meanings-facts.lino"
     record "population"

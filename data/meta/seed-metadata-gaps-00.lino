@@ -815,6 +815,10 @@ seed_metadata_gaps
     source "data/seed/meanings-calculator.lino"
     record "money"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_1a5a085b515b6710
+    source "data/seed/meanings-conversation.lino"
+    record "memory_inventory_query"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_4f30b950ed6d8cb0
     source "data/seed/meanings-facts.lino"
     record "knowledge_subject"

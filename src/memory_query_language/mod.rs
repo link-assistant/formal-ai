@@ -139,6 +139,33 @@ impl QueryDialect {
     }
 }
 
+/// Detect an explicitly memory-scoped exact query without claiming ordinary
+/// prose that happens to begin with an SQL verb such as "update".
+#[must_use]
+pub(crate) fn detect_exact_memory_query(prompt: &str) -> Option<QueryDialect> {
+    let normalized = prompt.trim().to_ascii_lowercase();
+    let tokens = normalized.split_ascii_whitespace().collect::<Vec<_>>();
+    let sql = match tokens.as_slice() {
+        ["select", rest @ ..] => rest.windows(2).any(|pair| pair == ["from", "memory"]),
+        ["insert", "into", "memory", ..]
+        | ["update", "memory", ..]
+        | ["delete", "from", "memory", ..] => true,
+        _ => false,
+    };
+    if sql {
+        return Some(QueryDialect::SqlAnsi);
+    }
+    let graphql = normalized.contains('{')
+        && (normalized.starts_with("query")
+            || normalized.starts_with("mutation")
+            || normalized.starts_with('{'))
+        && (normalized.contains("memory")
+            || normalized.contains("creatememory")
+            || normalized.contains("updatememory")
+            || normalized.contains("deletememory"));
+    graphql.then_some(QueryDialect::GraphQl)
+}
+
 /// One field in the shared dynamic-memory record.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum MemoryField {

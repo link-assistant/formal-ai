@@ -2,9 +2,9 @@ self_ast_census
   target src/intent_formalization.rs
   language rust
   fidelity signature
-  byte_len 34018
-  line_count 903
-  content_id source_module_a7d7c7cf390dc8c4
+  byte_len 34164
+  line_count 907
+  content_id source_module_36790bb1adc5eca6
   symbol_count 50
   symbols
     module requirements 27 27
@@ -43,17 +43,17 @@ self_ast_census
     function detected_program_modifiers 574 581
     function append_candidate_knowns 583 601
     function slot_known_link 603 628
-    function append_prompt_relevants 630 747
-    function looks_like_single_concept_lookup 749 756
-    function looks_arithmetic 758 768
-    function looks_like_latest_news_search 770 775
-    function looks_like_records_information_search 781 786
-    function looks_like_program_synthesis 788 801
-    function looks_like_text_manipulation 803 807
-    function has_any_token 809 811
-    function contains_term_for_relevants 815 820
-    function route_from_relevants 822 831
-    function infer_kind 833 876
-    function starts_with_question_word 878 893
-    function contains_question_mark 895 897
-    function push_unique 899 903
+    function append_prompt_relevants 630 751
+    function looks_like_single_concept_lookup 753 760
+    function looks_arithmetic 762 772
+    function looks_like_latest_news_search 774 779
+    function looks_like_records_information_search 785 790
+    function looks_like_program_synthesis 792 805
+    function looks_like_text_manipulation 807 811
+    function has_any_token 813 815
+    function contains_term_for_relevants 819 824
+    function route_from_relevants 826 835
+    function infer_kind 837 880
+    function starts_with_question_word 882 897
+    function contains_question_mark 899 901
+    function push_unique 903 907

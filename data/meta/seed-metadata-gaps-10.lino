@@ -739,6 +739,10 @@ seed_metadata_gaps
     source "data/seed/meanings-conversation.lino"
     record "conversation_recall_previous_user_message"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_2de2b62a841c91aa
+    source "data/seed/meanings-conversation.lino"
+    record "memory_link_count_query"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_31506a4938ce93ca
     source "data/seed/meanings-facts.lino"
     record "author_of_book"

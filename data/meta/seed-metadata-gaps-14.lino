@@ -715,6 +715,10 @@ seed_metadata_gaps
     source "data/seed/meanings-computer-use.lino"
     record "computer_use_resource_form"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_1e31523da645bc5e
+    source "data/seed/meanings-conversation.lino"
+    record "conversation_preference_avoid"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_08c9574468aba89e
     source "data/seed/meanings-definition-merge.lino"
     record "definition_artifact_request"

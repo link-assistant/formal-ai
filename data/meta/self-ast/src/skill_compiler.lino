@@ -2,10 +2,10 @@ self_ast_census
   target src/skill_compiler.rs
   language rust
   fidelity signature
-  byte_len 28955
-  line_count 757
-  content_id source_module_9d5cf71a7e6517b6
-  symbol_count 26
+  byte_len 31491
+  line_count 815
+  content_id source_module_fac40ebc04e22db6
+  symbol_count 30
   symbols
     module structured 17 17
     struct CompiledSkillPackage 26 59
@@ -27,9 +27,13 @@ self_ast_census
     function links_notation 410 491
     function link_records 495 615
     function extract_trigger_response 618 632
-    function looks_like_skill_description 649 672
-    function explicit_teaching_form 688 693
-    function code_spans 695 707
-    function link_record 709 739
-    function push_field 741 749
-    function push_doublet 751 757
+    function extract_unquoted_explicit_rule 637 663
+    function clean_unquoted_rule_part 665 671
+    function clean_unquoted_rule_response 673 680
+    function looks_like_skill_description 697 720
+    function explicit_teaching_form 736 740
+    function direct_role_surface_present 746 751
+    function code_spans 753 765
+    function link_record 767 797
+    function push_field 799 807
+    function push_doublet 809 815

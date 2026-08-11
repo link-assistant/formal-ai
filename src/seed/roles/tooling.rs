@@ -99,6 +99,11 @@ pub const ROLE_TOOL_ARGUMENT_MARKER: &str = "tool_argument_marker";
 /// consumers query the role after normalizing the payload so failed operations
 /// cannot be mistaken for grounded evidence.
 pub const ROLE_TOOL_RESULT_FAILURE_SIGNAL: &str = "tool_result_failure_signal";
+/// Semantic role: an explicit action requesting document formalization.
+///
+/// Multilingual surfaces live in `data/seed/meanings-agent-actions.lino` so
+/// mentioning the Links Notation output format alone never implies mutation.
+pub const ROLE_AGENT_ACTION_FORMALIZE_VERB: &str = "agent_action_formalize_verb";
 /// Semantic role: a natural-language request to create a repository issue.
 ///
 /// Surface templates live in `data/seed/meanings-agent-actions.lino`; the

@@ -699,6 +699,14 @@ seed_metadata_gaps
     source "data/seed/meanings-conversation.lino"
     record "conversation_recall_previous_message"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_8dcb4cb68e92d2c8
+    source "data/seed/meanings-conversation.lino"
+    record "memory_retrieval_correction"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_6ea5dc8f9fe2cad8
+    source "data/seed/meanings-conversation.lino"
+    record "memory_root_links_query"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_7a54c2ffe51815d8
     source "data/seed/meanings-definition-merge.lino"
     record "definition_merge_tail_boundary"

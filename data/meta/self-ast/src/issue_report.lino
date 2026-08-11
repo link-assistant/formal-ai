@@ -2,9 +2,9 @@ self_ast_census
   target src/issue_report.rs
   language rust
   fidelity signature
-  byte_len 24173
-  line_count 644
-  content_id source_module_f83572dd9f4956a6
+  byte_len 24243
+  line_count 646
+  content_id source_module_2a093906f17ab811
   symbol_count 46
   symbols
     const SECTION_ENVIRONMENT 21 21
@@ -27,29 +27,29 @@ self_ast_census
     struct ReportLabels 136 153
     function from_seed 158 171
     struct ReportBody 177 192
-    function render 197 254
-    function push_dialog 256 299
-    function push_fields 302 306
-    function push_code_block 308 313
-    const LINO_FENCE_LANGUAGE 316 316
-    function fenced_block 322 332
-    function pick_fence 335 341
-    function render_count 345 347
-    struct TitleSettings 352 357
-    function from_seed 362 370
-    function issue_title 380 395
-    function title_subjects 399 417
-    function normalize_single_line 419 421
-    function truncate_words 425 439
-    struct TruncatedRecords 443 448
-    function truncate_records 464 524
-    struct RecordRun 527 536
-    function len 539 541
-    function record 544 546
-    function longest_record_run 554 573
-    function runs_at 577 598
-    function close_run 601 612
-    function head_token 614 616
-    function truncate_lines 618 636
-    function indent_of 638 640
-    function joined_len 642 644
+    function render 197 256
+    function push_dialog 258 301
+    function push_fields 304 308
+    function push_code_block 310 315
+    const LINO_FENCE_LANGUAGE 318 318
+    function fenced_block 324 334
+    function pick_fence 337 343
+    function render_count 347 349
+    struct TitleSettings 354 359
+    function from_seed 364 372
+    function issue_title 382 397
+    function title_subjects 401 419
+    function normalize_single_line 421 423
+    function truncate_words 427 441
+    struct TruncatedRecords 445 450
+    function truncate_records 466 526
+    struct RecordRun 529 538
+    function len 541 543
+    function record 546 548
+    function longest_record_run 556 575
+    function runs_at 579 600
+    function close_run 603 614
+    function head_token 616 618
+    function truncate_lines 620 638
+    function indent_of 640 642
+    function joined_len 644 646

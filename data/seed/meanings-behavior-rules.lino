@@ -182,6 +182,8 @@ meanings
     lexeme en
       surface
         text behavior
+      surface
+        text behaviour
     lexeme ru
       surface
         text поведения
@@ -247,15 +249,23 @@ meanings
       surface
         text "list behavior rules"
       surface
+        text "list behaviour rules"
+      surface
         text "list all behavior rules"
       surface
+        text "list all behaviour rules"
+      surface
         text "show behavior rules"
+      surface
+        text "show behaviour rules"
       surface
         text "show all behavior rules"
       surface
         text "show rules"
       surface
         text "what behavior rules"
+      surface
+        text "what behaviour rules"
       surface
         text "existing behavior rules"
     lexeme ru
