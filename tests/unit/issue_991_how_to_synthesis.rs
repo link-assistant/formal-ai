@@ -373,6 +373,14 @@ fn the_native_and_browser_runtimes_synthesise_the_same_guide() {
 /// heading, so the seed lookup is asserted directly, in every seeded language.
 #[test]
 fn the_reader_facing_guide_is_rendered_from_seeded_prose() {
+    // Every language registered in data/seed/languages.lino:
+    const SEEDED_LANGUAGES: [&str; 5] = [
+        "en", // English
+        "ru", // Russian
+        "hi", // Hindi
+        "zh", // Chinese
+        "es", // Spanish
+    ];
     const CHROME_INTENTS: [&str; 11] = [
         "how_to_guide_heading",
         "how_to_guide_step",
@@ -387,7 +395,7 @@ fn the_reader_facing_guide_is_rendered_from_seeded_prose() {
         "how_to_guide_bounds",
     ];
     for intent in CHROME_INTENTS {
-        for language in ["en", "ru", "hi", "zh"] {
+        for language in SEEDED_LANGUAGES {
             let text = formal_ai::seed::response_for(intent, language)
                 .unwrap_or_else(|| panic!("{intent} must be seeded for {language}"));
             assert!(
@@ -415,6 +423,26 @@ fn the_reader_facing_guide_is_rendered_from_seeded_prose() {
         russian.contains(&guide.bounds.trace_payload()),
         "the declared bounds are reported in every language"
     );
+
+    // Every registered language renders its own seeded heading and section
+    // titles, so no locale silently falls back to the English chrome. The
+    // expected wording is read from the seed, never written here (R379).
+    for language in SEEDED_LANGUAGES {
+        let rendered = guide.markdown_in(language);
+        for intent in ["how_to_guide_sources_heading", "how_to_guide_bounds"] {
+            let seeded = formal_ai::seed::response_for(intent, language)
+                .unwrap_or_else(|| panic!("{intent} must be seeded for {language}"));
+            let fragment = seeded.split('{').next().unwrap_or_default().trim();
+            assert!(
+                rendered.contains(fragment),
+                "{language} must render the seeded {intent}"
+            );
+        }
+        assert!(
+            rendered.contains(&guide.bounds.trace_payload()),
+            "{language} keeps the language-neutral bounds payload"
+        );
+    }
 }
 
 #[test]
