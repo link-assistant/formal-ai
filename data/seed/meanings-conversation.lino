@@ -27,6 +27,13 @@ meanings
         text 不要使用
       surface
         text 别再用
+    lexeme es
+      surface
+        text "no uses"
+      surface
+        text "deja de usar"
+      surface
+        text "evita usar"
   unauthorized_mutation_correction
     defined-by inquiry
     defined-by conversation_reference
@@ -51,6 +58,11 @@ meanings
     lexeme zh
       surface
         text 我没让你更新
+    lexeme es
+      surface
+        text "no te pedí actualizar"
+      surface
+        text "no te pedí cambiar"
   memory_link_count_query
     defined-by inquiry
     defined-by knowledge
@@ -67,6 +79,9 @@ meanings
     lexeme zh
       surface
         text 你的记忆中有多少链接
+    lexeme es
+      surface
+        text "cuántos enlaces hay en tu memoria"
   memory_inventory_query
     defined-by inquiry
     defined-by knowledge
@@ -85,6 +100,9 @@ meanings
     lexeme zh
       surface
         text 你的本地记忆中有什么
+    lexeme es
+      surface
+        text "qué hay disponible en tu memoria local"
   memory_root_links_query
     defined-by inquiry
     defined-by knowledge
@@ -103,6 +121,11 @@ meanings
     lexeme zh
       surface
         text 显示你记忆中的根链接
+    lexeme es
+      surface
+        text "muéstrame los enlaces raíz de tu memoria"
+      surface
+        text "dame los enlaces raíz que tienes en tu memoria"
   memory_retrieval_correction
     defined-by inquiry
     defined-by knowledge
@@ -119,6 +142,9 @@ meanings
     lexeme zh
       surface
         text 这不是生成文档而是检索关联记忆数据
+    lexeme es
+      surface
+        text "no se trata de generar documentos sino de recuperar datos de la memoria asociativa"
   conversation_topic_opener
     defined-by inquiry
     defined-by action

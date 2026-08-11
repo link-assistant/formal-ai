@@ -15,6 +15,10 @@ multilingual_responses
     intent conversation_preference
     language zh
     text "明白了。在本次对话中我不会使用 `{term}`。"
+  response response_conversation_preference_es
+    intent conversation_preference
+    language es
+    text "Entendido. Evitaré `{term}` en este diálogo."
   response response_action_correction_en
     intent action_correction
     language en
@@ -31,6 +35,10 @@ multilingual_responses
     intent action_correction
     language zh
     text "抱歉。你请求的是信息，而不是更新。除非你明确要求，否则我不会再做更改。"
+  response response_action_correction_es
+    intent action_correction
+    language es
+    text "Lo siento. Pediste información, no una actualización. No haré más cambios salvo que los solicites explícitamente."
   response response_memory_link_count_en
     intent memory_link_count
     language en
@@ -47,6 +55,10 @@ multilingual_responses
     intent memory_link_count
     language zh
     text "本地关联记忆——记录：{records}；投影链接：{links}。"
+  response response_memory_link_count_es
+    intent memory_link_count
+    language es
+    text "Memoria asociativa local — registros: {records}; enlaces proyectados: {links}."
   response response_memory_inventory_en
     intent memory_inventory
     language en
@@ -63,6 +75,10 @@ multilingual_responses
     intent memory_inventory
     language zh
     text "本地关联记忆——记录：{records}；类型：{kinds}；对话：{conversations}。"
+  response response_memory_inventory_es
+    intent memory_inventory
+    language es
+    text "Memoria asociativa local — registros: {records}; tipos: {kinds}; conversaciones: {conversations}."
   response response_memory_inventory_item_en
     intent memory_inventory_item
     language en
@@ -78,6 +94,10 @@ multilingual_responses
   response response_memory_inventory_item_zh
     intent memory_inventory_item
     language zh
+    text "{name}: {count}"
+  response response_memory_inventory_item_es
+    intent memory_inventory_item
+    language es
     text "{name}: {count}"
   response response_memory_inventory_empty_en
     intent memory_inventory_empty
@@ -95,6 +115,10 @@ multilingual_responses
     intent memory_inventory_empty
     language zh
     text 无
+  response response_memory_inventory_empty_es
+    intent memory_inventory_empty
+    language es
+    text ninguno
   response response_memory_root_links_en
     intent memory_root_links
     language en
@@ -111,6 +135,10 @@ multilingual_responses
     intent memory_root_links
     language zh
     text "关联记忆根链接（记录根 → 源事件）：\n{listing}"
+  response response_memory_root_links_es
+    intent memory_root_links
+    language es
+    text "Enlaces raíz de la memoria asociativa (raíz del registro → evento de origen):\n{listing}"
   response response_memory_root_links_empty_en
     intent memory_root_links_empty
     language en
@@ -127,6 +155,10 @@ multilingual_responses
     intent memory_root_links_empty
     language zh
     text "(无)"
+  response response_memory_root_links_empty_es
+    intent memory_root_links_empty
+    language es
+    text "(ninguno)"
   response response_http_fetch_curated_project_en
     intent http_fetch_curated_project
     language en

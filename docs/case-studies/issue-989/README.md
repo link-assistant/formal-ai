@@ -64,8 +64,8 @@ grammars, not by one defective response:
 
 ## Implementation
 
-The fix keeps recognition data-driven across English, Russian, Hindi, and
-Chinese:
+The fix keeps recognition data-driven across English, Russian, Hindi, Chinese,
+and Spanish:
 
 - new seed roles cover dialog preferences, corrections, associative-memory
   count/inventory/root queries, and correction turns;

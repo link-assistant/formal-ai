@@ -1,5 +1,5 @@
    Compiling formal-ai v0.339.1 (/tmp/gh-issue-solver-1786436524785)
-    Finished `test` profile [unoptimized] target(s) in 1m 30s
+    Finished `test` profile [unoptimized] target(s) in 1m 23s
      Running tests/unit/mod.rs (target/debug/deps/unit-ecd6eeaa7ca9cfae)
 
 running 13 tests
@@ -12,9 +12,9 @@ test issue_989::links_notation_question_falls_through_to_the_symbolic_concept_an
 test issue_989::same_task_agent_cli_authorship_is_preserved ... ok
 test issue_989::british_behaviour_rule_queries_match_the_rule_catalog ... ok
 test issue_989::failed_web_transport_is_reported_as_failure_not_empty_success ... ok
-test issue_989::preference_and_mutation_correction_receive_explicit_acknowledgements ... ok
 test issue_989::natural_location_questions_use_pwd_instead_of_web_search ... ok
+test issue_989::preference_and_mutation_correction_receive_explicit_acknowledgements ... ok
 test issue_989::ordinary_file_edits_are_not_mistaken_for_dialog_control ... ok
 test issue_989::whole_reported_dialog_stays_local_and_preserves_diagnostics ... ok
 
-test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 2647 filtered out; finished in 18.73s
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 2647 filtered out; finished in 17.30s
