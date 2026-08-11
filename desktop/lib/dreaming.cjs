@@ -143,6 +143,61 @@ function appendCapture(current, chunk, maxBytes) {
 }
 
 function spawnAndCollect(candidate, options = {}) {
+  if (typeof options.processRunner === "function") {
+    const maxBytes = options.maxCaptureBytes || MAX_CAPTURE_BYTES;
+    const controller = new AbortController();
+    let stdout = "";
+    let stderr = "";
+    let yielded = false;
+    let idlePoll = null;
+    if (options.isIdle) {
+      idlePoll = (options.setInterval || setInterval)(() => {
+        if (!options.isIdle()) {
+          yielded = true;
+          controller.abort();
+        }
+      }, options.idlePollMs || 250);
+      if (idlePoll && typeof idlePoll.unref === "function") idlePoll.unref();
+    }
+    return options.processRunner(candidate.command, candidate.args, {
+      cwd: candidate.cwd,
+      env: options.env || process.env,
+      signal: controller.signal,
+      onStdout: (chunk) => { stdout = appendCapture(stdout, chunk, maxBytes); },
+      onStderr: (chunk) => { stderr = appendCapture(stderr, chunk, maxBytes); },
+    }).then((result) => {
+      const ok = result.code === 0 && !yielded;
+      return {
+        ok,
+        label: candidate.label,
+        command: candidate.command,
+        args: candidate.args,
+        code: result.code,
+        signal: result.cancelled ? "SIGTERM" : null,
+        stdout,
+        stderr,
+        yielded,
+        reason: yielded ? "foreground work arrived" : ok ? "" : stderr.trim() || `exit ${result.code}`,
+      };
+    }, (error) => {
+      const message = error && error.message ? error.message : String(error);
+      stderr = appendCapture(stderr, message, maxBytes);
+      return {
+        ok: false,
+        label: candidate.label,
+        command: candidate.command,
+        args: candidate.args,
+        code: null,
+        signal: null,
+        stdout,
+        stderr,
+        yielded,
+        reason: yielded ? "foreground work arrived" : message,
+      };
+    }).finally(() => {
+      if (idlePoll) (options.clearInterval || clearInterval)(idlePoll);
+    });
+  }
   const spawn = options.spawn || childProcess.spawn;
   const maxBytes = options.maxCaptureBytes || MAX_CAPTURE_BYTES;
   return new Promise((resolve) => {
