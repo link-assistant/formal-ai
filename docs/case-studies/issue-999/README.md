@@ -60,6 +60,12 @@ work in this one PR.
    GitHub's documented vulnerability-alerts endpoint was reapplied; SBOM export
    and base/head dependency comparison now succeed, so the gate remains active
    instead of being skipped.
+8. The first replacement pipeline correctly rejected the response-file split
+   because no changed test covered the supported-language matrix. The existing
+   sixth issue regression now checks all four moved intents for every
+   `registered_languages()` entry and asserts that production Rust, test-source,
+   and browser loaders all register the split file. The policy and focused suite
+   pass afterward.
 
 The complete evidence-to-root-cause table, alternatives, known components, and
 source links are in the [durable analysis](../../../dev/log/issues/999/pulls/1000/README.md).

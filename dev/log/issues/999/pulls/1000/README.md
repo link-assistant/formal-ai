@@ -57,6 +57,8 @@ The task instructions add evidence retention, online corroboration, root-cause a
 | 2026-08-11, implementation | A six-test regression suite was run red, the fixes were implemented, and the same suite passed 6/6. Actionlint 1.7.12 passed with only its known schema gap narrowly ignored. |
 | 2026-08-11 20:13:08–20:13:28 | The first new Dependency Review job failed before analysis because this repository's Dependency Graph was not enabled. Its full log and annotation are archived under run 31531791299/job 93913334294. |
 | 2026-08-11 20:15:49–20:15:56 | The documented vulnerability-alerts repository setting was reapplied through GitHub's REST API. The endpoint returned 204; SBOM export and the base/head dependency diff immediately changed from unavailable to successful. The diff found the five newly introduced Actions dependencies and no vulnerabilities. |
+| 2026-08-11 20:21:12–20:27:45 | The first full replacement pipeline passed every preceding lint command, then its language-test-coverage policy correctly rejected the seed split because no changed test asserted the supported-language matrix. The complete 3,752-line job log and annotation are archived under run 31532227251/job 93915498383. |
+| 2026-08-11, follow-up | The existing file-size regression was strengthened to load every moved response intent for every `registered_languages()` entry and assert registration in the production Rust, test-source, and browser loaders. The previously red language policy, focused 6-test suite, formatting, and Clippy then passed locally. |
 
 ## Root causes, alternatives, and selected solutions
 
@@ -145,7 +147,15 @@ These are established components rather than custom scanners: [GitHub dependency
 
 The first remote Dependency Review execution revealed a separate repository-setting dependency. GitHub returned `Dependency review is not supported on this repository` and pointed to Dependency Graph enablement. The repository was public and Dependabot alerts answered as enabled, but SBOM export returned 404 and GraphQL reported zero manifests. GitHub's official REST schema states that enabling vulnerability alerts also enables the Dependency Graph, so the administrator endpoint `PUT /repos/link-assistant/formal-ai/vulnerability-alerts` was called idempotently. It returned 204; SBOM export then produced a GitHub Dependency Graph document, and `dependency-graph/compare/d00c6168...940fbd05` returned the five new Actions dependencies with empty vulnerability lists. The full job log, annotation, REST response, official enablement documentation, SBOM, and comparison are retained in this archive. Skipping the job would have recreated the false negative that the new gate is intended to close.
 
-### 8. Correct true positives and non-actionable historical signals
+### 8. Split-seed language coverage
+
+Evidence: the first full replacement pipeline's lint job passed Clippy, rustdoc, file-size enforcement, cache policy, generated-source checks, i18n catalog validation, and language-change parity. `check-language-test-coverage.mjs` then reported the three changed language-facing files, four changed CI test files, and zero languages covered in added test lines. The same command reproduced locally against `origin/main`.
+
+Root cause: splitting a multilingual response family was correctly classified as language-facing, but the first issue regression only checked line limits. Existing older tests happened to cover one moved intent, while no changed test proved that every moved intent remained present for every language or that all runtime registries loaded the new file. The policy failure was therefore a true positive, even though the worker edit itself removed blank lines only.
+
+Selected solution: strengthen the existing sixth issue regression rather than adding language-name comments or bypassing the policy. It now iterates `formal_ai::language::registered_languages()`, requires direct records for all four moved intents, and checks registration in the production Rust bundle, source-test mirror, and browser loader. This both satisfies the diff-aware guard and catches a real missing-file/missing-locale regression. The guard changed from red to `Language test coverage OK against origin/main: en, ru, hi, zh, es`; the same six focused tests and Clippy pass afterward.
+
+### 9. Correct true positives and non-actionable historical signals
 
 These were inspected and intentionally not hidden:
 
@@ -193,6 +203,7 @@ Final local verification completed successfully:
 - formatting, actionlint 1.7.12, ShellCheck, changelog reconstruction, fragment-map tests, and `git diff --check` passed;
 - the split seed's Rust, browser, worker, response-lookup, and data-integrity regressions passed (51/51 browser tests and the focused Rust suites are retained in `research/`);
 - the local live-link gate checked 1,071 links with 0 errors after repairing the discovered stale links and classifying only reproducible probe limitations.
+- the diff-aware language-test-coverage policy passed for all registered locales (`en`, `ru`, `hi`, `zh`, `es`) after the split-response regression was made registry-driven.
 
 Remote workflow results are retained in `github/` and `ci-logs/` and are checked against the pushed head SHA before finalization.
 

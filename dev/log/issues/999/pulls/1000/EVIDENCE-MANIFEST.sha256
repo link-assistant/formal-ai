@@ -1,4 +1,4 @@
-f3af1faa7e0e99f5377575f305a0bb84663ced6d6a65952157ada245acf398ba  ./README.md
+b6f417e4b44d2ff8a0a253a568b35e056979dd347453748a22a71053b876131d  ./README.md
 822717088dc11ba46c5a0e8baa1c46f54f9ca4a7129c2b86e49ec9bb8c0fb05b  ./ci-logs/cross-run-warning-context.txt
 cab5f433bbfcc0100d6a3640c51ae704421e9408ba9043d85486bb6e87d7f63e  ./ci-logs/run-31427622514.log
 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  ./ci-logs/run-31427622514.stderr
@@ -41,6 +41,7 @@ d999eb3104db8d0c31feceb3f276218771b89d7584a640f1ac87d0059e1324aa  ./ci-logs/run-
 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  ./ci-logs/run-31520515929.stderr
 fb981b2652b91d8aa23b370992a13d5132628661e13e28fce9655e4125759e51  ./ci-logs/run-31531791299-dependency-review.log
 7cf023b3a6b3b9d92ed3c5159b5bdf6625a32a4f1e97e5281bde5825af815be8  ./ci-logs/run-31531791299-dependency-review.stderr
+cc4bdb30fc3942486d01e1b3214ddc63cef7f67da19dc0ecc6ea60c8a3fdaada  ./ci-logs/run-31532227251-job-93915498383-lint.log
 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945  ./github/annotations/run-31427622514-job-93582972077.json
 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945  ./github/annotations/run-31427622514-job-93582972630.json
 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945  ./github/annotations/run-31427622514-job-93582972710.json
@@ -163,6 +164,7 @@ dfd98576889d84ea3e9fbd4f81a270dc666be75a9ab8bc32eab8832f14576ea8  ./github/annot
 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945  ./github/annotations/run-31520515929-job-93876502939.json
 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945  ./github/annotations/run-31520515929-job-93876503819.json
 cfd1a3fe6494b7d5735ef325e989c6bb83c899a5d09c2c4d7186f24c43813558  ./github/annotations/run-31531791299-job-93913334294.json
+94b52fbd17195a226892a5ac52a4a2caf0fb563efc8b8e2307615866bfc1b1e3  ./github/annotations/run-31532227251-job-93915498383.json
 45092ac62cd83f6df07d5b33ad7d1ac14c6bae4f3c06206cc7976f188306c9e9  ./github/ci-runs.json
 d21f44b5d17825411b0842ae5d00a77f58ac3f2c04fad4cebc44bbf8825b815f  ./github/final-latest-five-runs-head-940fbd05.json
 63792f424bfd94a022f9d8087b0974279c3e5687ad10a4f36c98c0415c773727  ./github/final-pr-runs-head-940fbd05.json
@@ -309,6 +311,7 @@ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  ./github/run-3
 660698b502d59785874a023a0114e1533b9c3abf51ac2db5c2669c8e71a639ab  ./github/run-31520515929.json.stderr
 65372efa8eb456bca31ce9cdd0df56e08894cbda97a6995174de1e40c8860da9  ./github/run-31531791299-jobs.json
 b4479fc2fce4ef462ef6b406671fd8dccb1e4245d897313b5e827bc04506607e  ./github/run-31531791299.json
+6c5839484508370d1bb4ea04650f271a1dd626f8668eb3bdfe853b891bf13bbe  ./github/run-31532227251.json
 9a4723df3bb59140a313337389b7a7eb59bc95d166855a09f07de2d380dfa2ac  ./research/CI-CD-BEST-PRACTICES.md
 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  ./research/actionlint-1.7.12-final.log
 261734d0353dbed69210df60d59a929a5511a90bf75b9de37f4bc8cc9732685f  ./research/actionlint-1.7.12-temp-path.txt
@@ -352,6 +355,7 @@ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  ./research/che
 1b11927a7b1e75eaf7c36f4796b70258ff6983745208c6e5b03a81f3387d912a  ./research/ci-cd-unit-after-fix-2.log
 a1ae5737197cdd5cabb8dd0079977d2580929f1a6bc36970abcc305aa7d0c2bb  ./research/ci-cd-unit-after-fix.log
 7ae43db55cfcacd0b3de0342fb0b4e4c86a3c08b9d9fc6b742a73800a4286fb9  ./research/ci-cd-unit-final.log
+dce607e9899b9598cf2694f644d8ea0bede2ef4a5f6f80259a22e7479569302c  ./research/clippy-after-language-fix.log
 6c30fdb074c7a8cc1e53c017076d621ca75da2ddb02a6aeb21848f7a68368b2e  ./research/data-files-final.log
 594a008ae41cae82b23644b0d880873630b3a71530480e8e2a0a8c66fd530038  ./research/dependency-diff-after-enable.json
 910f33173a262bf5ddf4032a82caaeef7399083ba843f6601a342d4149aa0b77  ./research/dependency-graph-sbom-after-enable.json
@@ -376,6 +380,7 @@ d074ecb9da9f96757a4731dac0a3f8e14ecbc4c61bf8ea4e32bc61d38aa0c6bc  ./research/hiv
 db8e7efada7d5d94888190e2a5ef9be1bc72b26e4e5bbd490003eb9ab9e149d0  ./research/install-rust-script.log
 44053171a697fd71f5ea704a7434481779e024c9c7a3e682a39f7e65eafdea9f  ./research/issue-961-after-sharding.log
 5236f15db225a2319e5eedf38d7c2e77bff9bb127a1f5bc7281a8dfa0004c6cc  ./research/issue-999-regression-after-fix.log
+98c408c7fdab80a756291f2be2db531b13b4afc0b1b17aa6580593b7f99860c5  ./research/issue-999-regression-after-language-fix.log
 06b9259dc07d0bb553d45b281c2fb6be6decc1b8714cc42b7a602cece5e19bb5  ./research/issue-999-regression-before-fix.log
 dfcd2f08768f48d5a1d48ef252ddb34741345030b90b5631810c471d6d7a18fc  ./research/issue-999-regression-final.log
 5ed4c8bc6623988096ec7d0857529642811d23c295fad9afb5f7c73fb3b6f89a  ./research/issue-999-regression-post-clippy.log
@@ -387,6 +392,8 @@ c653091a1e068ae448615aef0c795b809bef28a4f340a54c90d1014a4f1c24ea  ./research/js-
 c6a3920af728384d5d4d1752e9f298aa36667caa47a96596e7a01fd192186453  ./research/js-scripts-diff-since-issue-980.diff
 bc146428b226cd83ef514f00091ee79695191c7e81cd4b4a3afc977572abf89b  ./research/js-since-issue-980.diff-summary.txt
 cbb9a288607c04a851ff8fef8bcd4af283a8af0a01c7aede0e6b2d139930bc8a  ./research/js-tree.txt
+3948c218c7ed49b13cc37020b7cdbe2994d6b8de3b2ac69ccdf05433424fcaf0  ./research/language-test-coverage-after-fix.log
+b1d81acb8b8b58561d8d01be5cd2f722ea5490c4062838c84a912bfa2e739bd6  ./research/language-test-coverage-before-fix.log
 a06887c770e711c6cd33f8516623e6ebbed32e991c5e7edaa597eb1169bc8ef9  ./research/lint-shell-scripts-final.log
 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  ./research/local-file-size-baseline.log
 af8c421f74ee6906fef24ae4baa400340bc64ce49db5c659e94def2a27c90b03  ./research/local-file-size-baseline.stderr
