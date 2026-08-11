@@ -246,6 +246,12 @@ which context to include. Selecting a GitHub issue, Formal AI learning, a
 harness log, or a server log is confirmation for that destination only. No
 report is filed and no complete log is uploaded before those choices.
 
+A harness or server log export is written into a fresh directory under the
+system temporary location (`$TMPDIR/formal-ai-export.XXXXXX/`), never into the
+caller's working directory, so a run started from a repository checkout cannot
+leave session dumps at the checkout root (#945). The export script prints the
+final path of the `.lino` artifact as its last line.
+
 ### Troubleshooting
 
 - `FORMAL_AI_DIALOG_LOG_DIR is not configured` means the server did not start with

@@ -25,6 +25,9 @@ const BODY_FILE_FLAG: &str = " --body-file ";
 /// Programs the generated script checks for before it does anything.
 const FORMAL_AI_PROGRAM: &str = "formal-ai";
 const GH_PROGRAM: &str = "gh";
+const PRINTF_PROGRAM: &str = "printf";
+/// One `%s` line, so the script's last output is the exported artifact's path.
+const PRINTF_LINE_FORMAT: &str = " '%s\\n' ";
 /// Surface recorded in the report body's User Context section.
 const AGENTIC_SURFACE: &str = "agentic-cli";
 const BODY_FILE: &str = "body.md";
@@ -249,8 +252,11 @@ fn parse_contents(text: &str) -> Option<ReportContents> {
 }
 
 fn matches_option(text: &str, intent: &str, option_index: usize, machine_value: &str) -> bool {
+    // Normalization turns `_` into a space, so the machine value must be
+    // normalized too: a raw `contains("formal_ai")` can never match and the
+    // learning target silently vanished from harness answers (#996).
     let normalized = normalize_prompt(text);
-    normalized.contains(machine_value)
+    normalized.contains(&normalize_prompt(machine_value))
         || ["en", "ru", "hi", "zh"].into_iter().any(|language| {
             localized_options(intent, language)
                 .get(option_index)
@@ -364,16 +370,26 @@ fn command_for(
     }
 }
 
+/// Export a session log into a surviving directory outside the CWD (#945).
+///
+/// A bare relative `--output` made runs from a repository checkout drop
+/// session dumps at the repo root. The export directory keeps the artifact
+/// usable, and the final `printf` tells the caller where it went.
 fn export_command(dialog_id: &str, contents: ReportContents, output: &str) -> String {
+    let mut script = ReportScript::new();
+    let output_path = script.export(output);
     let mut command = CONTEXT_EXPORT_COMMAND.to_owned();
     command.push_str(CONTEXT_SESSION_FLAG);
     command.push_str(&shell_quote(dialog_id));
     command.push_str(SOURCE_FLAG);
     command.push_str(source_name(contents));
     command.push_str(OUTPUT_FLAG);
-    command.push_str(&shell_quote(output));
-    let mut script = ReportScript::new();
+    command.push_str(&output_path);
     script.step(FORMAL_AI_PROGRAM, command);
+    let mut echo = PRINTF_PROGRAM.to_owned();
+    echo.push_str(PRINTF_LINE_FORMAT);
+    echo.push_str(&output_path);
+    script.step(PRINTF_PROGRAM, echo);
     script.render()
 }
 

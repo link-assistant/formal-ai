@@ -16,11 +16,12 @@ checks the 2026-08-04 audit test battery actually ran by hand (see
 of this table's freshness is tracked by E105 (#957); this is the initial
 data population, not an automated generator wired into CI yet.
 
-Two pre-existing ID collisions in REQUIREMENTS.md are preserved here rather
-than silently renumbered (out of scope for this table): R396-R407 appear in
-both the issue-531 and issue-540 sections; R480 appears twice; R501-R509
-appear in both the issue-451 and issue-559 sections. Each occurrence is
-disambiguated below by its REQUIREMENTS.md line number.
+The ID collisions this table originally preserved were resolved by issue
+#964 (executed in PR #997): the later duplicate blocks were renumbered to
+fresh IDs — the issue-540 R396-R407 became R537-R548, the issue-657 R480
+became R549, and the issue-674 R501-R509 became R550-R558. The `Line`
+column still records the REQUIREMENTS.md line each row was audited at in
+2026-08-04 and is therefore historical, not live.
 
 | ID | Line | Delivered | Automated test | Manual confirmation |
 | --- | --- | --- | --- | --- |
@@ -462,18 +463,18 @@ disambiguated below by its REQUIREMENTS.md line number.
 | R393 | 1079 | PR #637 (issue #558) | tests/unit/issue_558_self_healing.rs | not yet confirmed |
 | R394 | 1080 | PR #637 (issue #558) | tests/unit/issue_558_self_healing.rs | not yet confirmed |
 | R395 | 1081 | PR #637 (issue #558) | tests/unit/issue_558_self_healing.rs; tests/integration/issue_558_self_healing.rs | not yet confirmed |
-| R396 (L1095) | 1095 | PR #642 (issue #531) | none recorded | not yet confirmed |
-| R397 (L1096) | 1096 | PR #642 (issue #531) | none recorded | not yet confirmed |
-| R398 (L1097) | 1097 | PR #642 (issue #531) | none recorded | not yet confirmed |
-| R399 (L1098) | 1098 | PR #642 (issue #531) | none recorded | not yet confirmed |
-| R400 (L1099) | 1099 | PR #642 (issue #531) | none recorded | not yet confirmed |
-| R401 (L1100) | 1100 | PR #642 (issue #531) | none recorded | not yet confirmed |
-| R402 (L1101) | 1101 | PR #642 (issue #531) | tests/unit/sequences_{store,symbols,converter,compression}.rs | not yet confirmed |
-| R403 (L1102) | 1102 | PR #642 (issue #531) | tests/unit/sequences_{patterns_1d,grid_2d,inference}.rs | not yet confirmed |
-| R404 (L1103) | 1103 | PR #642 (issue #531) | tests/unit/issue_531_concepts_probe.rs | not yet confirmed |
-| R405 (L1104) | 1104 | PR #642 (issue #531) | tests/unit/issue_531_pattern_inference.rs | not yet confirmed |
-| R406 (L1105) | 1105 | PR #642 (issue #531) | none recorded | not yet confirmed |
-| R407 (L1106) | 1106 | PR #642 (issue #531) | tests/unit/docs_requirements_issue_531.rs; tests/unit/mod.rs | manually confirmed 2026-08-04 (audit): `npm --prefix desktop run smoke` passed (desktop/scripts/smoke.mjs) |
+| R396 | 1095 | PR #642 (issue #531) | none recorded | not yet confirmed |
+| R397 | 1096 | PR #642 (issue #531) | none recorded | not yet confirmed |
+| R398 | 1097 | PR #642 (issue #531) | none recorded | not yet confirmed |
+| R399 | 1098 | PR #642 (issue #531) | none recorded | not yet confirmed |
+| R400 | 1099 | PR #642 (issue #531) | none recorded | not yet confirmed |
+| R401 | 1100 | PR #642 (issue #531) | none recorded | not yet confirmed |
+| R402 | 1101 | PR #642 (issue #531) | tests/unit/sequences_{store,symbols,converter,compression}.rs | not yet confirmed |
+| R403 | 1102 | PR #642 (issue #531) | tests/unit/sequences_{patterns_1d,grid_2d,inference}.rs | not yet confirmed |
+| R404 | 1103 | PR #642 (issue #531) | tests/unit/issue_531_concepts_probe.rs | not yet confirmed |
+| R405 | 1104 | PR #642 (issue #531) | tests/unit/issue_531_pattern_inference.rs | not yet confirmed |
+| R406 | 1105 | PR #642 (issue #531) | none recorded | not yet confirmed |
+| R407 | 1106 | PR #642 (issue #531) | tests/unit/docs_requirements_issue_531.rs; tests/unit/mod.rs | manually confirmed 2026-08-04 (audit): `npm --prefix desktop run smoke` passed (desktop/scripts/smoke.mjs) |
 | R531-17 | 1107 | PR #642 (issue #531) | none recorded | not yet confirmed |
 | R531-18 | 1108 | PR #642 (issue #531) | tests/unit/issue_531_algorithm_discovery.rs | not yet confirmed |
 | R531-19 | 1109 | PR #642 (issue #531) | none recorded | not yet confirmed |
@@ -483,18 +484,18 @@ disambiguated below by its REQUIREMENTS.md line number.
 | R531-23 | 1113 | PR #642 (issue #531) | none recorded | not yet confirmed |
 | R531-24 | 1114 | PR #642 (issue #531) | none recorded | not yet confirmed |
 | R531-25 | 1115 | PR #642 (issue #531) | none recorded | not yet confirmed |
-| R396 (L1138) | 1138 | PR #645 (issue #540) | tests/unit/docs_requirements_issue_540.rs | not yet confirmed |
-| R397 (L1139) | 1139 | PR #645 (issue #540) | none recorded | not yet confirmed |
-| R398 (L1140) | 1140 | PR #645 (issue #540) | none recorded | not yet confirmed |
-| R399 (L1141) | 1141 | PR #645 (issue #540) | none recorded | not yet confirmed |
-| R400 (L1142) | 1142 | PR #645 (issue #540) | none recorded | not yet confirmed |
-| R401 (L1143) | 1143 | PR #645 (issue #540) | none recorded | not yet confirmed |
-| R402 (L1144) | 1144 | PR #645 (issue #540) | none recorded | not yet confirmed |
-| R403 (L1145) | 1145 | PR #645 (issue #540) | none recorded | not yet confirmed |
-| R404 (L1146) | 1146 | PR #645 (issue #540) | none recorded | not yet confirmed |
-| R405 (L1147) | 1147 | PR #645 (issue #540) | none recorded | not yet confirmed |
-| R406 (L1148) | 1148 | PR #645 (issue #540) | none recorded | not yet confirmed |
-| R407 (L1149) | 1149 | PR #645 (issue #540) | tests/unit/memory_maintenance.rs; tests/unit/docs_requirements_issue_540.rs | manually confirmed 2026-08-04 (audit): `npm --prefix desktop run smoke` passed (desktop/scripts/smoke.mjs) |
+| R537 | 1138 | PR #645 (issue #540) | tests/unit/docs_requirements_issue_540.rs | not yet confirmed |
+| R538 | 1139 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R539 | 1140 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R540 | 1141 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R541 | 1142 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R542 | 1143 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R543 | 1144 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R544 | 1145 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R545 | 1146 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R546 | 1147 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R547 | 1148 | PR #645 (issue #540) | none recorded | not yet confirmed |
+| R548 | 1149 | PR #645 (issue #540) | tests/unit/memory_maintenance.rs; tests/unit/docs_requirements_issue_540.rs | manually confirmed 2026-08-04 (audit): `npm --prefix desktop run smoke` passed (desktop/scripts/smoke.mjs) |
 | R408 | 1150 | PR #645 (issue #540) | none recorded | not yet confirmed |
 | R409 | 1151 | PR #645 (issue #540) | none recorded | not yet confirmed |
 | R410 | 1152 | PR #645 (issue #540) | none recorded | not yet confirmed |
@@ -567,8 +568,8 @@ disambiguated below by its REQUIREMENTS.md line number.
 | R477 | 1306 | PR #735 (issue #657) | issue-level coverage (not row-pinned): tests/unit/issue_657_self_hosting_learning.rs | not yet confirmed |
 | R478 | 1307 | PR #735 (issue #657) | issue-level coverage (not row-pinned): tests/unit/issue_657_self_hosting_learning.rs | not yet confirmed |
 | R479 | 1308 | PR #735 (issue #657) | issue-level coverage (not row-pinned): tests/unit/issue_657_self_hosting_learning.rs | not yet confirmed |
-| R480 (L1309) | 1309 | PR #735 (issue #657) | issue-level coverage (not row-pinned): tests/unit/issue_657_self_hosting_learning.rs | not yet confirmed |
-| R480 (L1322) | 1322 | PR #807 (issue #673) | issue-level coverage (not row-pinned): tests/unit/issue_673_self_ast_census.rs | not yet confirmed |
+| R549 | 1309 | PR #735 (issue #657) | issue-level coverage (not row-pinned): tests/unit/issue_657_self_hosting_learning.rs | not yet confirmed |
+| R480 | 1322 | PR #807 (issue #673) | issue-level coverage (not row-pinned): tests/unit/issue_673_self_ast_census.rs | not yet confirmed |
 | R481 | 1323 | PR #807 (issue #673) | issue-level coverage (not row-pinned): tests/unit/issue_673_self_ast_census.rs | not yet confirmed |
 | R482 | 1324 | PR #807 (issue #673) | issue-level coverage (not row-pinned): tests/unit/issue_673_self_ast_census.rs | not yet confirmed |
 | R483 | 1325 | PR #807 (issue #673) | issue-level coverage (not row-pinned): tests/unit/issue_673_self_ast_census.rs | not yet confirmed |
@@ -578,15 +579,15 @@ disambiguated below by its REQUIREMENTS.md line number.
 | R701-4 | 1342 | PR #817 (issue #701) | tests/unit/issue_701_dreaming_amendment_class.rs | not yet confirmed |
 | R701-5 | 1343 | PR #817 (issue #701) | issue-level coverage (not row-pinned): tests/unit/issue_701_learning_adoption.rs | not yet confirmed |
 | R701-6 | 1344 | PR #817 (issue #701) | issue-level coverage (not row-pinned): tests/unit/issue_701_learning_adoption.rs | not yet confirmed |
-| R501 (L1358) | 1358 | PR #815 (issue #674) | none recorded | not yet confirmed |
-| R502 (L1359) | 1359 | PR #815 (issue #674) | none recorded | not yet confirmed |
-| R503 (L1360) | 1360 | PR #815 (issue #674) | none recorded | not yet confirmed |
-| R504 (L1361) | 1361 | PR #815 (issue #674) | none recorded | not yet confirmed |
-| R505 (L1362) | 1362 | PR #815 (issue #674) | none recorded | not yet confirmed |
-| R506 (L1363) | 1363 | PR #815 (issue #674) | none recorded | not yet confirmed |
-| R507 (L1364) | 1364 | PR #815 (issue #674) | none recorded | not yet confirmed |
-| R508 (L1365) | 1365 | PR #815 (issue #674) | none recorded | not yet confirmed |
-| R509 (L1366) | 1366 | PR #815 (issue #674) | none recorded | not yet confirmed |
+| R550 | 1358 | PR #815 (issue #674) | none recorded | not yet confirmed |
+| R551 | 1359 | PR #815 (issue #674) | none recorded | not yet confirmed |
+| R552 | 1360 | PR #815 (issue #674) | none recorded | not yet confirmed |
+| R553 | 1361 | PR #815 (issue #674) | none recorded | not yet confirmed |
+| R554 | 1362 | PR #815 (issue #674) | none recorded | not yet confirmed |
+| R555 | 1363 | PR #815 (issue #674) | none recorded | not yet confirmed |
+| R556 | 1364 | PR #815 (issue #674) | none recorded | not yet confirmed |
+| R557 | 1365 | PR #815 (issue #674) | none recorded | not yet confirmed |
+| R558 | 1366 | PR #815 (issue #674) | none recorded | not yet confirmed |
 | R528 | 1380 | PR #816 (issue #698) | none recorded | not yet confirmed |
 | R529 | 1381 | PR #816 (issue #698) | none recorded | not yet confirmed |
 | R530 | 1382 | PR #816 (issue #698) | none recorded | not yet confirmed |
@@ -640,15 +641,15 @@ disambiguated below by its REQUIREMENTS.md line number.
 | R498 | 1497 | pre-2026-07 (undated); issue #839 | issue-level coverage (not row-pinned): tests/integration/issue_839_context_export.rs | not yet confirmed |
 | R499 | 1498 | pre-2026-07 (undated); issue #839 | issue-level coverage (not row-pinned): tests/integration/issue_839_context_export.rs | not yet confirmed |
 | R500 | 1499 | pre-2026-07 (undated); issue #839 | issue-level coverage (not row-pinned): tests/integration/issue_839_context_export.rs | not yet confirmed |
-| R501 (L1514) | 1514 | PR #855 (issue #844) | issue-level coverage (not row-pinned): tests/unit/issue_844_statement_merge.rs | not yet confirmed |
-| R502 (L1515) | 1515 | PR #855 (issue #844) | issue-level coverage (not row-pinned): tests/unit/issue_844_statement_merge.rs | not yet confirmed |
-| R503 (L1516) | 1516 | PR #855 (issue #844) | issue-level coverage (not row-pinned): tests/unit/issue_844_statement_merge.rs | not yet confirmed |
-| R504 (L1517) | 1517 | PR #855 (issue #844) | issue-level coverage (not row-pinned): tests/unit/issue_844_statement_merge.rs | not yet confirmed |
-| R505 (L1518) | 1518 | PR #855 (issue #844) | issue-level coverage (not row-pinned): tests/unit/issue_844_statement_merge.rs | not yet confirmed |
-| R506 (L1519) | 1519 | PR #855 (issue #844) | issue-level coverage (not row-pinned): tests/unit/issue_844_statement_merge.rs | not yet confirmed |
-| R507 (L1520) | 1520 | PR #855 (issue #844) | issue-level coverage (not row-pinned): tests/unit/issue_844_statement_merge.rs | not yet confirmed |
-| R508 (L1521) | 1521 | PR #855 (issue #844) | issue-level coverage (not row-pinned): tests/unit/issue_844_statement_merge.rs | not yet confirmed |
-| R509 (L1522) | 1522 | PR #855 (issue #844) | issue-level coverage (not row-pinned): tests/unit/issue_844_statement_merge.rs | not yet confirmed |
+| R501 | 1514 | PR #855 (issue #844) | issue-level coverage (not row-pinned): tests/unit/issue_844_statement_merge.rs | not yet confirmed |
+| R502 | 1515 | PR #855 (issue #844) | issue-level coverage (not row-pinned): tests/unit/issue_844_statement_merge.rs | not yet confirmed |
+| R503 | 1516 | PR #855 (issue #844) | issue-level coverage (not row-pinned): tests/unit/issue_844_statement_merge.rs | not yet confirmed |
+| R504 | 1517 | PR #855 (issue #844) | issue-level coverage (not row-pinned): tests/unit/issue_844_statement_merge.rs | not yet confirmed |
+| R505 | 1518 | PR #855 (issue #844) | issue-level coverage (not row-pinned): tests/unit/issue_844_statement_merge.rs | not yet confirmed |
+| R506 | 1519 | PR #855 (issue #844) | issue-level coverage (not row-pinned): tests/unit/issue_844_statement_merge.rs | not yet confirmed |
+| R507 | 1520 | PR #855 (issue #844) | issue-level coverage (not row-pinned): tests/unit/issue_844_statement_merge.rs | not yet confirmed |
+| R508 | 1521 | PR #855 (issue #844) | issue-level coverage (not row-pinned): tests/unit/issue_844_statement_merge.rs | not yet confirmed |
+| R509 | 1522 | PR #855 (issue #844) | issue-level coverage (not row-pinned): tests/unit/issue_844_statement_merge.rs | not yet confirmed |
 | R510 | 1523 | PR #855 (issue #844) | tests/unit/docs_requirements_issue_844.rs | not yet confirmed |
 | R847-1 | 1538 | PR #857 (issue #847) | issue-level coverage (not row-pinned): tests/unit/issue_847_task_decomposition.rs | not yet confirmed |
 | R847-2 | 1539 | PR #857 (issue #847) | issue-level coverage (not row-pinned): tests/unit/issue_847_task_decomposition.rs | not yet confirmed |

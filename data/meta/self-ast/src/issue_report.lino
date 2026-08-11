@@ -2,10 +2,10 @@ self_ast_census
   target src/issue_report.rs
   language rust
   fidelity signature
-  byte_len 23478
-  line_count 625
-  content_id source_module_66b9d5e3975b4536
-  symbol_count 44
+  byte_len 24173
+  line_count 644
+  content_id source_module_f83572dd9f4956a6
+  symbol_count 46
   symbols
     const SECTION_ENVIRONMENT 21 21
     const SECTION_USER_CONTEXT 23 23
@@ -31,23 +31,25 @@ self_ast_census
     function push_dialog 256 299
     function push_fields 302 306
     function push_code_block 308 313
-    function pick_fence 316 322
-    function render_count 326 328
-    struct TitleSettings 333 338
-    function from_seed 343 351
-    function issue_title 361 376
-    function title_subjects 380 398
-    function normalize_single_line 400 402
-    function truncate_words 406 420
-    struct TruncatedRecords 424 429
-    function truncate_records 445 505
-    struct RecordRun 508 517
-    function len 520 522
-    function record 525 527
-    function longest_record_run 535 554
-    function runs_at 558 579
-    function close_run 582 593
-    function head_token 595 597
-    function truncate_lines 599 617
-    function indent_of 619 621
-    function joined_len 623 625
+    const LINO_FENCE_LANGUAGE 316 316
+    function fenced_block 322 332
+    function pick_fence 335 341
+    function render_count 345 347
+    struct TitleSettings 352 357
+    function from_seed 362 370
+    function issue_title 380 395
+    function title_subjects 399 417
+    function normalize_single_line 419 421
+    function truncate_words 425 439
+    struct TruncatedRecords 443 448
+    function truncate_records 464 524
+    struct RecordRun 527 536
+    function len 539 541
+    function record 544 546
+    function longest_record_run 554 573
+    function runs_at 577 598
+    function close_run 601 612
+    function head_token 614 616
+    function truncate_lines 618 636
+    function indent_of 638 640
+    function joined_len 642 644

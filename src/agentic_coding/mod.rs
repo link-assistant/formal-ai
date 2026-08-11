@@ -36,6 +36,7 @@ pub mod execution_learning;
 pub mod explain;
 pub mod external_benchmark_learning;
 mod file_read;
+mod formalization_recipe;
 pub mod formalize;
 mod general_execution;
 pub mod general_planner;

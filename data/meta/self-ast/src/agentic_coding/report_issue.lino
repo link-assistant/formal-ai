@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/report_issue.rs
   language rust
   fidelity full_ast
-  byte_len 18599
-  line_count 522
-  content_id source_module_753872faaa036a31
-  symbol_count 43
+  byte_len 19494
+  line_count 538
+  content_id source_module_2cbd5f715797efc8
+  symbol_count 45
   symbols
     const REPORT_BODY_COMMAND 14 14
     const CONTEXT_EXPORT_COMMAND 15 15
@@ -20,46 +20,48 @@ self_ast_census
     const BODY_FILE_FLAG 24 24
     const FORMAL_AI_PROGRAM 26 26
     const GH_PROGRAM 27 27
-    const AGENTIC_SURFACE 29 29
-    const BODY_FILE 30 30
-    const CONTEXT_FILE 31 31
-    const LATEST_SESSION 33 33
-    enum ReportTarget 36 41
-    enum ReportContents 44 48
-    function plan_report_flow 52 140
-    function ask_or_render 142 182
-    function localized 184 186
-    function localized_options 188 195
-    function is_report_question 197 206
-    function answer_texts 208 218
-    function parse_targets 220 238
-    function parse_contents 240 249
-    function matches_option 251 259
-    function is_report_intent 262 274
-    function report_action_governs_subject 276 320
-    function commands_for_targets 329 342
-    function command_for 344 365
-    function export_command 367 378
-    function learning_command 380 387
-    function github_command 394 426
-    function source_name 428 434
-    function dialog_id 444 449
-    function report_title 451 456
-    function title_turns 463 473
-    function report_finished 476 506
-    function formal_ai_repo 508 510
-    function config 512 516
-    function render 518 522
+    const PRINTF_PROGRAM 28 28
+    const PRINTF_LINE_FORMAT 30 30
+    const AGENTIC_SURFACE 32 32
+    const BODY_FILE 33 33
+    const CONTEXT_FILE 34 34
+    const LATEST_SESSION 36 36
+    enum ReportTarget 39 44
+    enum ReportContents 47 51
+    function plan_report_flow 55 143
+    function ask_or_render 145 185
+    function localized 187 189
+    function localized_options 191 198
+    function is_report_question 200 209
+    function answer_texts 211 221
+    function parse_targets 223 241
+    function parse_contents 243 252
+    function matches_option 254 265
+    function is_report_intent 268 280
+    function report_action_governs_subject 282 326
+    function commands_for_targets 335 348
+    function command_for 350 371
+    function export_command 378 394
+    function learning_command 396 403
+    function github_command 410 442
+    function source_name 444 450
+    function dialog_id 460 465
+    function report_title 467 472
+    function title_turns 479 489
+    function report_finished 492 522
+    function formal_ai_repo 524 526
+    function config 528 532
+    function render 534 538
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 13763
-    named_node_count 2777
+    total_link_count 14115
+    named_node_count 2852
     distinct_node_kinds 76
     node_kinds
-      arguments 254
+      arguments 259
       array_expression 7
       array_type 13
       assignment_expression 1
@@ -69,20 +71,20 @@ self_ast_census
       binary_expression 23
       block 55
       boolean_literal 10
-      call_expression 254
+      call_expression 259
       closure_expression 38
       closure_parameters 38
-      const_item 17
+      const_item 19
       crate 5
-      doc_comment 33
+      doc_comment 39
       else_clause 3
       enum_item 2
       enum_variant 7
       enum_variant_list 2
-      escape_sequence 10
-      expression_statement 51
-      field_expression 188
-      field_identifier 189
+      escape_sequence 11
+      expression_statement 54
+      field_expression 193
+      field_identifier 194
       field_initializer 1
       field_initializer_list 1
       for_expression 1
@@ -90,36 +92,36 @@ self_ast_census
       function_modifiers 1
       generic_function 4
       generic_type 11
-      identifier 675
+      identifier 689
       if_expression 11
       index_expression 6
       inner_doc_comment_marker 1
       integer_literal 16
       let_condition 3
-      let_declaration 47
+      let_declaration 49
       lifetime 1
-      line_comment 42
+      line_comment 51
       macro_invocation 11
       match_arm 11
       match_block 3
       match_expression 3
       match_pattern 11
-      mutable_specifier 9
-      outer_doc_comment_marker 32
+      mutable_specifier 10
+      outer_doc_comment_marker 38
       parameter 53
       parameters 24
       parenthesized_expression 3
-      primitive_type 60
+      primitive_type 62
       range_expression 3
-      reference_expression 38
-      reference_type 61
+      reference_expression 40
+      reference_type 63
       return_expression 10
       scoped_identifier 63
       scoped_type_identifier 1
       scoped_use_list 4
       source_file 1
-      string_content 86
-      string_literal 81
+      string_content 89
+      string_literal 83
       struct_expression 1
       super 4
       token_tree 18
