@@ -27,20 +27,13 @@ pub const CANONICAL_SOURCE_URL: &str =
 /// The path the planner writes the knowledge base to.
 pub const KB_PATH: &str = "knowledge-base.lino";
 
-/// Keywords that mark a user turn as an issue-#468 formalization task.
-const FORMALIZATION_KEYWORDS: [&str; 4] =
-    ["formaliz", "формализ", "knowledge base", "links notation"];
-
 /// Keywords that name the canonical tale itself, quoted or not.
 const CANONICAL_TALE_KEYWORDS: [&str; 3] = ["рыбак", "fisherman", "сказк"];
 
 /// Whether `prompt` asks to formalize a text into a knowledge base.
 pub(super) fn is_formalization_task(prompt: &str) -> bool {
-    let lower = prompt.to_lowercase();
-    FORMALIZATION_KEYWORDS
-        .iter()
-        .chain(CANONICAL_TALE_KEYWORDS.iter())
-        .any(|keyword| lower.contains(keyword))
+    let normalized = crate::engine::normalize_prompt(prompt);
+    crate::seed::lexicon().mentions_role(crate::seed::ROLE_AGENT_ACTION_FORMALIZE_VERB, &normalized)
 }
 
 /// Quote pairs a formalization task may wrap its inline source text in.

@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/behavior_rules.rs
   language rust
   fidelity signature
-  byte_len 44464
+  byte_len 44496
   line_count 953
-  content_id source_module_9c9a7fb266fbefaf
+  content_id source_module_2bd5c685dcc2fce0
   symbol_count 25
   symbols
     struct BehaviorRuleRecord 36 45

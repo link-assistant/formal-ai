@@ -28,10 +28,10 @@ WORKDIR="$(mktemp -d)"
 FAKE_BIN="$WORKDIR/fake-bin"
 GH_LOG="$WORKDIR/gh-invocations.log"
 BODY_FILE="$WORKDIR/issue-body.md"
-GIST_FILE="$WORKDIR/formal-ai-context.lino"
+GIST_DIR="$WORKDIR/gists"
 GITHUB_BODY_LIMIT=65536
 
-mkdir -p "$FAKE_BIN"
+mkdir -p "$FAKE_BIN" "$GIST_DIR"
 cd "$WORKDIR"
 
 cat > opencode.json <<EOF
@@ -72,8 +72,19 @@ cat > "$FAKE_BIN/gh" <<EOF
 #!/usr/bin/env bash
 printf '%s\n' "\$*" >> "$GH_LOG"
 if [ "\${1:-} \${2:-}" = "gist create" ]; then
-  cp "\${@: -1}" "$GIST_FILE"
-  printf '%s\n' 'https://gist.github.com/formal-ai/complete-context'
+  filename=''
+  source_file=''
+  while [ \$# -gt 0 ]; do
+    if [ "\$1" = "--filename" ]; then
+      filename="\$2"
+      shift 2
+      continue
+    fi
+    source_file="\$1"
+    shift
+  done
+  cp "\$source_file" "$GIST_DIR/\$filename"
+  printf 'https://gist.github.com/formal-ai/%s\n' "\$filename"
   exit 0
 fi
 while [ \$# -gt 0 ]; do
@@ -147,9 +158,12 @@ run_turn report_context "Both logs" --continue --no-fork
 [ -f "$GH_LOG" ] || fail "confirmed report request did not execute gh"
 grep -q 'issue create --repo link-assistant/formal-ai' "$GH_LOG" \
   || fail "gh invocation did not target the Formal AI repository"
+gist_count="$(grep -c '^gist create ' "$GH_LOG" || true)"
+[ "$gist_count" -eq 3 ] \
+  || fail "expected three separate context gists, found $gist_count"
 
-# Requirement 2: the transcript stays inside a LiNo block and within the body
-# limit.
+# Requirement 2: the transcript stays inside fenced blocks and within the body
+# limit; its complete contexts live behind the three links required by #989.
 [ -s "$BODY_FILE" ] || fail "the gh invocation carried no --body argument"
 body="$(cat "$BODY_FILE")"
 
@@ -161,11 +175,11 @@ size="$(wc -m < "$BODY_FILE" | tr -d ' ')"
 # never bare prose that would render as top-level markdown.
 #
 # Issue #839 gave this surface the web reporter's six-section document, so the
-# body now carries several fenced blocks (the dialog, the reasoning trace, and
-# the LiNo context attachment) instead of the single `lino` block #771 shipped.
-# The property being pinned is unchanged and asserted more precisely: fences
-# balance, exactly one of them is the complete LiNo context, that context is the
-# last block in the document, and no transcript line escapes into the markdown.
+# body carries separate fenced dialog and reasoning-trace blocks. Issue #989
+# moved harness, server, and merged context into three linked files, so no LiNo
+# block belongs in the issue body. The property being pinned is unchanged and
+# asserted more precisely: fences balance and no transcript line escapes into
+# the surrounding Markdown.
 escaped="$(REPORT_BODY="$body" python3 - <<'PY'
 import os
 import re
@@ -182,8 +196,7 @@ turn_pattern = re.compile(r"^(?:[UAT](?: \([^)]*\))?: |   \S)")
 fence = None
 outside = []
 lino_blocks = 0
-last_close = -1
-for index, line in enumerate(lines):
+for line in lines:
     if fence is None:
         opening = fence_pattern.match(line)
         if opening:
@@ -194,15 +207,12 @@ for index, line in enumerate(lines):
         outside.append(line)
     elif line.rstrip() == fence:
         fence = None
-        last_close = index
 
 problems = []
 if fence is not None:
     problems.append("a fenced block was never closed")
-if lino_blocks != 1:
-    problems.append(f"expected exactly one lino context block, found {lino_blocks}")
-if any(line.strip() for line in lines[last_close + 1:]):
-    problems.append("content follows the last closing fence")
+if lino_blocks != 0:
+    problems.append(f"expected linked context and no lino block, found {lino_blocks}")
 leaked = [line for line in outside if turn_pattern.match(line)]
 if leaked:
     problems.append(f"transcript lines outside any fence: {leaked[:3]}")
@@ -210,20 +220,39 @@ print("\n".join(problems))
 PY
 )" || fail "could not scan the transcript"
 [ -z "$escaped" ] \
-  || fail "the transcript escaped its LiNo block:
+  || fail "the transcript escaped its fenced block:
 $escaped"
 
-if [ -s "$GIST_FILE" ]; then
-  grep -q 'conversation' "$GIST_FILE" \
-    || fail "the linked context did not contain the conversation"
-  grep -q 'server_logs' "$GIST_FILE" \
-    || fail "the linked context did not contain server logs"
-else
-  grep -q 'conversation' <<<"$body" \
-    || fail "the inline context did not contain the conversation"
-  grep -q 'server_logs' <<<"$body" \
-    || fail "the inline context did not contain server logs"
+shopt -s nullglob
+harness_files=("$GIST_DIR"/formal-ai-harness-context-*.lino)
+server_files=("$GIST_DIR"/formal-ai-server-context-*.lino)
+[ "${#harness_files[@]}" -eq 1 ] \
+  || fail "expected one captured harness context"
+[ "${#server_files[@]}" -eq 1 ] \
+  || fail "expected one captured server context"
+[ -s "$GIST_DIR/context.lino" ] \
+  || fail "expected one captured merged context"
+
+if ! grep -q 'conversation' "${harness_files[0]}"; then
+  grep -q 'context_export_failure' "${harness_files[0]}" \
+    && grep -q 'source harness' "${harness_files[0]}" \
+    || fail "the harness context was neither exported nor given an explicit diagnostic"
 fi
+grep -q 'server_logs' "${server_files[0]}" \
+  || fail "the server context did not contain server logs"
+grep -q 'conversation' "$GIST_DIR/context.lino" \
+  || fail "the merged context did not contain the conversation"
+grep -q 'server_logs' "$GIST_DIR/context.lino" \
+  || fail "the merged context did not contain server logs"
+
+for heading in '### Harness context' '### Server context' '### Merged context'; do
+  grep -q "$heading" <<<"$body" \
+    || fail "the report body omitted $heading"
+done
+for context_file in "${harness_files[0]}" "${server_files[0]}" "$GIST_DIR/context.lino"; do
+  grep -q "https://gist.github.com/formal-ai/${context_file##*/}" <<<"$body" \
+    || fail "the report body omitted the ${context_file##*/} link"
+done
 
 # Requirement 1: the answer under review is an extract, not the whole page. The
 # extract's exact content is not part of this regression, so the size bound above
@@ -236,5 +265,5 @@ posts="$(grep -c 'POST /v1/chat/completions' "$LOG" || true)"
 searches="$(grep -c 'agentic_outcome: planned ToolCalls.*websearch' "$LOG" || true)"
 [ "$searches" -ge 1 ] || fail "the question never reached websearch"
 
-echo "== issue #771 E2E OK: report body is $size characters and its LiNo context is contained ($posts rounds) =="
+echo "== issue #771 E2E OK: report body is $size characters and its three contexts are linked ($posts rounds) =="
 tail -40 "$AGENT_LOG"

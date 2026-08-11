@@ -89,6 +89,11 @@ meanings
     lexeme en
       surface
         text "how to guide"
+  issue_report_context_export_failure
+    defined-by field
+    lexeme en
+      surface
+        text "issue report context export failure"
   javascript
     defined-by programming_language
     lexeme en
@@ -109,6 +114,11 @@ meanings
     lexeme en
       surface
         text "link calculator"
+  memory_inventory_empty
+    defined-by intent
+    lexeme en
+      surface
+        text "memory inventory empty"
   memory_program_complete
     defined-by intent
     lexeme en
@@ -124,6 +134,16 @@ meanings
     lexeme en
       surface
         text "memory program interpreter gap"
+  ninguno
+    defined-by word_surface
+    lexeme en
+      surface
+        text "ninguno"
+  none
+    defined-by word_surface
+    lexeme en
+      surface
+        text "none"
   pattern_assistant_free_time_phrase_chto_delaesh_v_svobodnoe_vremya_ru
     defined-by prompt_pattern
     lexeme en
@@ -459,6 +479,16 @@ meanings
     lexeme en
       surface
         text "response mcp tool description hi"
+  response_memory_inventory_empty_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory inventory empty en"
+  response_memory_root_links_empty_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory root links empty zh"
   response_pattern_grid_anti_diagonal_es
     defined-by response_template
     lexeme en

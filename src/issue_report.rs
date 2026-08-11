@@ -246,8 +246,10 @@ impl ReportBody {
                 lines.push(attachment.note.clone());
                 lines.push(String::new());
             }
-            push_code_block(&mut lines, &attachment.language, &attachment.content);
-            lines.push(String::new());
+            if !attachment.content.is_empty() {
+                push_code_block(&mut lines, &attachment.language, &attachment.content);
+                lines.push(String::new());
+            }
         }
 
         lines.join("\n")

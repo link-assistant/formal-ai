@@ -138,10 +138,17 @@ pub(super) fn failure_message(
     None
 }
 
+/// Status-less adapters sometimes return only a provider's denial or error
+/// notice. Inspect the leading diagnostic region for that fallback: successful
+/// pages and documents can legitimately contain error vocabulary or HTTP codes
+/// later in their contents.
+const PROSE_FAILURE_PREFIX_CHARS: usize = 512;
+
 fn looks_like_error(text: &str) -> bool {
+    let diagnostic_prefix: String = text.chars().take(PROSE_FAILURE_PREFIX_CHARS).collect();
     crate::seed::lexicon().mentions_role(
         ROLE_TOOL_RESULT_FAILURE_SIGNAL,
-        &crate::engine::normalize_prompt(text),
+        &crate::engine::normalize_prompt(&diagnostic_prefix),
     )
 }
 

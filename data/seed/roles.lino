@@ -9,6 +9,8 @@
 # kind meaning   -> the role name is also a defined meaning slug
 # kind predicate -> the role name is a reserved role-only identifier
 roles
+  agent_action_formalize_verb
+    kind predicate
   agent_action_report_subject
     kind predicate
   agent_action_report_verb
@@ -127,6 +129,8 @@ roles
     kind predicate
   computer_use_resource_cue
     kind predicate
+  conversation_preference_avoid
+    kind meaning
   conversation_recall_other_query
     kind meaning
   conversation_recall_previous_message
@@ -314,6 +318,14 @@ roles
   mechanism_predicate
     kind meaning
   memory_append_directive
+    kind meaning
+  memory_inventory_query
+    kind meaning
+  memory_link_count_query
+    kind meaning
+  memory_retrieval_correction
+    kind meaning
+  memory_root_links_query
     kind meaning
   memory_scope
     kind meaning
@@ -594,6 +606,8 @@ roles
   translation_target_marker
     kind predicate
   translation_unquoted_frame
+    kind meaning
+  unauthorized_mutation_correction
     kind meaning
   unobservable_task_action
     kind meaning

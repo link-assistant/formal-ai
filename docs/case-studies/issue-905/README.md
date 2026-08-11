@@ -90,7 +90,7 @@ and raw client/server traces are under
 
 Moving the general-change state machine into its own size-compliant module also
 changed the planner-derived self-healing fixture. Session
-`ses_01bb97ce6ffeVJGAEUjGbtrkUr` reran the canonical self-healing recipe through
+`ses_00ea26880ffeRCSs97U7BNbw9A` reran the canonical self-healing recipe through
 Formal AI and the real Agent CLI, wrote the refreshed fixture, and read it back
 successfully. The byte-identical artifact and trace are retained under
 [`self-hosting-fixture-refresh/`](self-hosting-fixture-refresh/); the replay

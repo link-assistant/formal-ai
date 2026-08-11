@@ -2,67 +2,67 @@ self_ast_census
   target src/agentic_coding/planner.rs
   language rust
   fidelity full_ast
-  byte_len 38960
-  line_count 865
-  content_id source_module_8fb3e4f1774cb168
+  byte_len 39195
+  line_count 870
+  content_id source_module_32f71486eebc9276
   symbol_count 30
   symbols
-    enum AgenticPlan 47 52
-    struct PlannedToolCall 56 61
-    enum Capability 71 86
-    function permission_key 94 111
-    function registry_id 113 130
-    function tool_capability 139 141
-    function plan_chat_step 146 423
-    function plan_shell_step 426 443
-    struct DocumentRecipe 455 464
-    function plan_document_recipe 469 493
-    function plan_meaning_detail_step 502 551
-    function plan_diagram_step 558 571
-    function plan_self_ast_step 578 591
-    function plan_self_heal_step 598 611
-    function plan_source_links_step 619 632
-    function plan_ledger_step 639 652
-    function plan_explain_step 659 672
-    function plan_change_request_step 680 693
-    function plan_repair_strategy_step 701 714
-    function plan_rebuild_step 723 736
-    function plan_question_catalog_step 744 757
-    function plan_dreaming_audit_step 759 772
-    function plan_google_trends_learning_step 780 793
-    function plan_google_trends_catalog_step 795 808
-    function plan_one 810 815
-    function write_arguments 823 831
-    function fetch_arguments 840 846
-    function classify_tool 848 850
-    function latest_user_text 853 855
-    function trace_route 861 865
+    enum AgenticPlan 49 54
+    struct PlannedToolCall 58 63
+    enum Capability 73 88
+    function permission_key 96 113
+    function registry_id 115 132
+    function tool_capability 141 143
+    function plan_chat_step 148 428
+    function plan_shell_step 431 448
+    struct DocumentRecipe 460 469
+    function plan_document_recipe 474 498
+    function plan_meaning_detail_step 507 556
+    function plan_diagram_step 563 576
+    function plan_self_ast_step 583 596
+    function plan_self_heal_step 603 616
+    function plan_source_links_step 624 637
+    function plan_ledger_step 644 657
+    function plan_explain_step 664 677
+    function plan_change_request_step 685 698
+    function plan_repair_strategy_step 706 719
+    function plan_rebuild_step 728 741
+    function plan_question_catalog_step 749 762
+    function plan_dreaming_audit_step 764 777
+    function plan_google_trends_learning_step 785 798
+    function plan_google_trends_catalog_step 800 813
+    function plan_one 815 820
+    function write_arguments 828 836
+    function fetch_arguments 845 851
+    function classify_tool 853 855
+    function latest_user_text 858 860
+    function trace_route 866 870
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 18748
-    named_node_count 3773
+    total_link_count 18885
+    named_node_count 3802
     distinct_node_kinds 67
     node_kinds
-      arguments 247
+      arguments 249
       array_type 35
       attribute 6
       attribute_item 6
-      binary_expression 1
-      block 97
-      call_expression 247
+      binary_expression 2
+      block 98
+      call_expression 249
       closure_expression 7
       closure_parameters 7
-      crate 3
+      crate 5
       declaration_list 1
       doc_comment 131
       else_clause 1
       enum_item 2
       enum_variant 16
       enum_variant_list 2
-      expression_statement 130
+      expression_statement 132
       field_declaration 6
       field_declaration_list 2
       field_expression 37
@@ -72,8 +72,8 @@ self_ast_census
       function_item 26
       function_modifiers 2
       generic_type 5
-      identifier 1091
-      if_expression 70
+      identifier 1100
+      if_expression 71
       impl_item 1
       inner_doc_comment_marker 2
       let_condition 43
@@ -90,10 +90,10 @@ self_ast_census
       parameter 47
       parameters 26
       primitive_type 30
-      reference_expression 77
+      reference_expression 79
       reference_type 65
-      return_expression 56
-      scoped_identifier 207
+      return_expression 57
+      scoped_identifier 211
       scoped_use_list 5
       self 4
       self_parameter 2
@@ -110,6 +110,6 @@ self_ast_census
       type_arguments 5
       type_identifier 73
       unary_expression 7
-      use_declaration 38
+      use_declaration 40
       use_list 5
       visibility_modifier 23

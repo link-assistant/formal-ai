@@ -75,6 +75,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-02.lino"
     record "memory_export_filename"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_d061fd44c52dd43b
+    source "data/seed/closure-generated-02.lino"
+    record "memory_root_links_empty"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_9e6d4fa2afd396eb
     source "data/seed/closure-generated-02.lino"
     record "now"

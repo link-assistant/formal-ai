@@ -632,6 +632,10 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
     let operation_view = seed::operation_vocabulary().canonicalized_prompt(normalized);
     let handlers = [
         (
+            "handler:conversation_control",
+            crate::conversation_control::is_conversation_control_prompt(prompt),
+        ),
+        (
             "handler:execution_failure",
             cue_lexicon::matches("execution_failure_prompt", &lower_prompt)
                 || cue_lexicon::matches("execution_failure_normalized", normalized),

@@ -1,4 +1,32 @@
 meanings
+  formalize_document_action
+    defined-by action
+    role agent_action_formalize_verb
+    lexeme en
+      surface
+        text formalize
+      surface
+        text formalise
+    lexeme ru
+      surface
+        text формализуй
+      surface
+        text формализировать
+      surface
+        text формализовать
+    lexeme hi
+      surface
+        text "औपचारिक रूप दें"
+      surface
+        text formalize
+    lexeme zh
+      surface
+        text 形式化
+    lexeme es
+      surface
+        text formaliza
+      surface
+        text formalizar
   report_issue_action
     defined-by action
     role agent_action_report_verb

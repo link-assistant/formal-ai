@@ -1,0 +1,8 @@
+issue_989_task_decomposition
+  total_smallest_leaves 5
+  required_self_authored_leaves 1
+  leaf dialog_routing author human
+  leaf associative_memory_inspection author human
+  leaf report_context_links author human
+  leaf cross_runtime_regressions author human
+  leaf reviewed_task_decomposition author formal_ai

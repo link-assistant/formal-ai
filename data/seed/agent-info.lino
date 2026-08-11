@@ -25,6 +25,14 @@ agent_info
     value "### Agentic context"
   field issue_report_context_link_intro
     value "The complete Links Notation context is available at {url}."
+  field issue_report_context_export_failure
+    value "context_export_failure\n  session {session}\n  source {source}\n  error {error}\n"
+  field issue_report_harness_context_heading
+    value "### Harness context"
+  field issue_report_server_context_heading
+    value "### Server context"
+  field issue_report_merged_context_heading
+    value "### Merged context"
   field issue_report_empty_history
     value "No prior conversation was captured."
   field issue_report_conversation_heading

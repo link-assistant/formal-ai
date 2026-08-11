@@ -1,4 +1,5 @@
 handler_precedence
+  conversation_control # explicit preferences and corrections stay local instead of becoming web searches
   http_fetch
   url_navigate
   github_repository_traffic

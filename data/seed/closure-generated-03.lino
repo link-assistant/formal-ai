@@ -189,6 +189,11 @@ meanings
     lexeme en
       surface
         text "local search found path"
+  memory_root_links
+    defined-by intent
+    lexeme en
+      surface
+        text "memory root links"
   openai
     defined-by word_surface
     lexeme en
@@ -419,6 +424,26 @@ meanings
     lexeme en
       surface
         text "response local search type directory en"
+  response_memory_inventory_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory inventory en"
+  response_memory_inventory_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory inventory hi"
+  response_memory_inventory_item_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory inventory item en"
+  response_memory_link_count_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory link count en"
   response_memory_program_compilation_gap_es
     defined-by response_template
     lexeme en

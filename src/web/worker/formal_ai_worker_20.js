@@ -261,6 +261,22 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     return finalize(events, steps, toolCalls, behaviorRule, formalizationContext);
   }
 
+  const memoryEvents = Array.isArray(options.memoryEvents)
+    ? options.memoryEvents
+    : [];
+  const memoryInspection = tryMemoryInspection(
+    prompt,
+    normalized,
+    history,
+    memoryEvents,
+    language,
+  );
+  if (memoryInspection) {
+    events.push(`handler:${memoryInspection.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryMemoryInspection" });
+    return finalize(events, steps, toolCalls, memoryInspection, formalizationContext);
+  }
+
   if (isPunctuationOnlyPrompt(prompt)) {
     events.push("handler:clarification");
     events.push(`clarification:punctuation_only:${String(prompt).trim()}`);
@@ -576,9 +592,6 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     }
     return writeProgramResult;
   };
-  const memoryEvents = Array.isArray(options.memoryEvents)
-    ? options.memoryEvents
-    : [];
   const syncHandlers = [
     { name: "tryExactMemoryQuery", run: () => tryExactMemoryQuery(prompt, memoryEvents) },
     // Issue #708: compile the complete seeded memory-program family before the

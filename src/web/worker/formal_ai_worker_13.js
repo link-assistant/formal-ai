@@ -364,6 +364,12 @@ const ROLE_PROGRAM_SYNTHESIS_TASK = "program_synthesis_task";
 // data/seed/meanings-intent.lino (loaded into MEANINGS_LINO); the
 // recognizers below ask the lexicon by meaning instead of hardcoding phrases.
 const ROLE_CLARIFICATION_REQUEST = "clarification_request";
+const ROLE_CONVERSATION_PREFERENCE_AVOID = "conversation_preference_avoid";
+const ROLE_UNAUTHORIZED_MUTATION_CORRECTION = "unauthorized_mutation_correction";
+const ROLE_MEMORY_LINK_COUNT_QUERY = "memory_link_count_query";
+const ROLE_MEMORY_INVENTORY_QUERY = "memory_inventory_query";
+const ROLE_MEMORY_ROOT_LINKS_QUERY = "memory_root_links_query";
+const ROLE_MEMORY_RETRIEVAL_CORRECTION = "memory_retrieval_correction";
 const ROLE_CAPABILITY_QUERY = "capability_query";
 const ROLE_CAPABILITY_QUERY_MORE = "capability_query_more";
 const ROLE_SELF_FACT_QUERY = "self_fact_query";

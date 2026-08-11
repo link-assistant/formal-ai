@@ -451,6 +451,13 @@ pub fn create_chat_completion_with_solver_and_memory(
 ) -> ChatCompletion {
     let (prompt, history) = chat_prompt_and_history(&request.messages);
 
+    if let Some(mut symbolic_answer) =
+        answer_from_memory_if_requested(&prompt, &history, memory_events)
+    {
+        apply_retained_amendments(&prompt, &mut symbolic_answer, memory_events);
+        return chat_completion_from_symbolic(request, &prompt, symbolic_answer);
+    }
+
     match agentic_outcome(request, solver.config.agent_mode) {
         AgenticOutcome::Refused(answer) => {
             return chat_completion_from_symbolic(request, &prompt, answer)
@@ -459,15 +466,6 @@ pub fn create_chat_completion_with_solver_and_memory(
             return chat_completion_from_plan(request, &prompt, plan, memory_events)
         }
         AgenticOutcome::Fallthrough => {}
-    }
-
-    if let Some(mut symbolic_answer) =
-        answer_from_memory_if_requested(&prompt, &history, memory_events)
-    {
-        // Memory-recall answers honour standing requirements too — recall must
-        // not become a side door around retained learning.
-        apply_retained_amendments(&prompt, &mut symbolic_answer, memory_events);
-        return chat_completion_from_symbolic(request, &prompt, symbolic_answer);
     }
 
     // Standing requirements are injected into the solving context itself (as if
@@ -706,13 +704,6 @@ pub fn create_response_with_solver_and_memory(
 ) -> ResponseObject {
     let prompt = response_prompt(request);
     let chat_request = request.to_chat_completion_request();
-    match agentic_outcome(&chat_request, solver.config.agent_mode) {
-        AgenticOutcome::Refused(answer) => return response_from_symbolic(request, &prompt, answer),
-        AgenticOutcome::Planned(plan) => {
-            return response_from_plan(request, &prompt, plan, memory_events)
-        }
-        AgenticOutcome::Fallthrough => {}
-    }
     let (memory_prompt, history) = chat_prompt_and_history(&chat_request.messages);
     let memory_prompt = if memory_prompt.trim().is_empty() {
         prompt.as_str()
@@ -724,6 +715,13 @@ pub fn create_response_with_solver_and_memory(
     {
         apply_retained_amendments(&prompt, &mut symbolic_answer, memory_events);
         return response_from_symbolic(request, &prompt, symbolic_answer);
+    }
+    match agentic_outcome(&chat_request, solver.config.agent_mode) {
+        AgenticOutcome::Refused(answer) => return response_from_symbolic(request, &prompt, answer),
+        AgenticOutcome::Planned(plan) => {
+            return response_from_plan(request, &prompt, plan, memory_events)
+        }
+        AgenticOutcome::Fallthrough => {}
     }
     let symbolic_answer =
         solve_with_standing_requirements(solver, memory_prompt, &history, memory_events);

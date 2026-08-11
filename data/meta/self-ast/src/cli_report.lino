@@ -2,10 +2,10 @@ self_ast_census
   target src/cli_report.rs
   language rust
   fidelity signature
-  byte_len 15046
-  line_count 420
-  content_id source_module_bc1fdf20ab665a41
-  symbol_count 28
+  byte_len 17800
+  line_count 491
+  content_id source_module_0a3a158ac4c04b9f
+  symbol_count 32
   symbols
     const DEFAULT_INLINE_BYTES 31 31
     const DEFAULT_EXCERPT_BYTES 33 33
@@ -14,24 +14,28 @@ self_ast_census
     const LINO 43 43
     const TRACE_SEPARATOR 46 46
     const ERROR_PLACEHOLDER 47 47
-    const URL_PLACEHOLDER 48 48
-    struct ReportArgs 51 54
-    enum ReportAction 57 94
-    enum OversizeContext 98 103
-    enum GistVisibility 110 115
-    function run_report 117 155
-    function bound_report_body 164 175
-    function context_path 179 181
-    function context_filename 183 195
-    function report_body 197 233
-    function version 235 237
-    function ui_language 240 250
-    function export_trace 255 270
-    function report_turns 272 278
-    function report_turn 280 288
-    function message_text 295 316
-    function collect_text 318 336
-    struct AttachmentSettings 338 343
-    function attach_context 351 383
-    function upload_gist 386 414
-    function config 416 420
+    const SESSION_PLACEHOLDER 48 48
+    const SOURCE_PLACEHOLDER 49 49
+    const URL_PLACEHOLDER 50 50
+    struct ReportArgs 53 56
+    enum ReportAction 59 99
+    enum OversizeContext 103 108
+    enum GistVisibility 115 120
+    function run_report 122 173
+    function bound_report_body 182 193
+    function context_path 197 199
+    function context_filename 201 203
+    function safe_session_component 205 216
+    function report_body 218 254
+    function separate_context_attachments 256 302
+    function version 304 306
+    function ui_language 309 319
+    function export_trace 324 339
+    function report_turns 341 347
+    function report_turn 349 357
+    function message_text 364 385
+    function collect_text 387 405
+    struct AttachmentSettings 407 412
+    function attach_context 420 452
+    function upload_gist 455 485
+    function config 487 491

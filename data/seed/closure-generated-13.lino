@@ -524,6 +524,11 @@ meanings
     lexeme en
       surface
         text "response mcp prompt description ru"
+  response_memory_link_count_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory link count es"
   response_memory_program_complete_ru
     defined-by response_template
     lexeme en

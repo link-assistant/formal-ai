@@ -12,6 +12,18 @@
 /// "समझ नहीं आया", "我不明白", …). A meaning carrying this role is `defined_by`
 /// the `clarification` and `understanding` concepts.
 pub const ROLE_CLARIFICATION_REQUEST: &str = "clarification_request";
+/// Semantic role: a dialog-local request to stop using a quoted expression.
+pub const ROLE_CONVERSATION_PREFERENCE_AVOID: &str = "conversation_preference_avoid";
+/// Semantic role: a correction that an informational request did not authorize a mutation.
+pub const ROLE_UNAUTHORIZED_MUTATION_CORRECTION: &str = "unauthorized_mutation_correction";
+/// Semantic role: a natural-language count of the links projected from memory.
+pub const ROLE_MEMORY_LINK_COUNT_QUERY: &str = "memory_link_count_query";
+/// Semantic role: a natural-language inventory of locally available memory.
+pub const ROLE_MEMORY_INVENTORY_QUERY: &str = "memory_inventory_query";
+/// Semantic role: a request for associative-memory record roots.
+pub const ROLE_MEMORY_ROOT_LINKS_QUERY: &str = "memory_root_links_query";
+/// Semantic role: a follow-up correcting document generation to memory retrieval.
+pub const ROLE_MEMORY_RETRIEVAL_CORRECTION: &str = "memory_retrieval_correction";
 /// Semantic role: the user asking what the assistant is able to do.
 ///
 /// A request to enumerate its capabilities ("what can you do", "что ты умеешь",

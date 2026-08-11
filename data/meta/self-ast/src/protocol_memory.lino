@@ -2,11 +2,14 @@ self_ast_census
   target src/protocol_memory.rs
   language rust
   fidelity signature
-  byte_len 2157
-  line_count 55
-  content_id source_module_c144f67aafb2c4b8
-  symbol_count 3
+  byte_len 6591
+  line_count 179
+  content_id source_module_a628d05663d000f2
+  symbol_count 6
   symbols
-    const REQUEST_HISTORY_CONVERSATION_ID 9 9
-    function answer_from_memory_if_requested 11 35
-    function memory_events_with_request_history 37 55
+    const REQUEST_HISTORY_CONVERSATION_ID 14 14
+    function answer_from_memory_if_requested 16 43
+    function answer_memory_inspection 45 137
+    function is_root_links_query 139 141
+    function render_counts 143 159
+    function memory_events_with_request_history 161 179

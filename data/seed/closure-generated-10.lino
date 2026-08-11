@@ -59,6 +59,11 @@ meanings
     lexeme en
       surface
         text "folders"
+  formalise
+    defined-by word_surface
+    lexeme en
+      surface
+        text "formalise"
   general_plan_completed
     defined-by intent
     lexeme en
@@ -304,6 +309,16 @@ meanings
     lexeme en
       surface
         text "response completion recovery name target artifact en"
+  response_conversation_preference_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response conversation preference en"
+  response_conversation_preference_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response conversation preference zh"
   response_detected_failure_report_invitation_en
     defined-by response_template
     lexeme en
@@ -424,6 +439,16 @@ meanings
     lexeme en
       surface
         text "response local search type file hi"
+  response_memory_inventory_empty_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory inventory empty es"
+  response_memory_inventory_item_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory inventory item hi"
   response_memory_program_compilation_gap_zh
     defined-by response_template
     lexeme en
@@ -439,6 +464,16 @@ meanings
     lexeme en
       surface
         text "response memory program match limit ru"
+  response_memory_root_links_empty_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory root links empty ru"
+  response_memory_root_links_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory root links en"
   response_orchestration_cross_agent_denial_hi
     defined-by response_template
     lexeme en
