@@ -1,0 +1,25 @@
+
+✓ issue-999-31976d2c6ce9 CI/CD Pipeline link-assistant/formal-ai#1000 · 31520515929
+Triggered via pull_request about 12 minutes ago
+
+JOBS
+✓ Self-Hosting Evidence Check in 59s (ID 93876129267)
+✓ Detect Changes in 1m16s (ID 93876129286)
+✓ Version Modification Check in 1m2s (ID 93876129337)
+- Create Changelog PR (ID 93876130722)
+- Lint and Format Check in 0s (ID 93876501023)
+- Test (${{ matrix.os }}) in 0s (ID 93876501154)
+- Changelog Fragment Check in 0s (ID 93876501162)
+- Docker Image Build & Runtime Check in 0s (ID 93876501373)
+- E2E Tests (agent CLI ↔ formal-ai) in 0s (ID 93876501394)
+- Secrets Scan in 0s (ID 93876501551)
+- E2E Tests (local web app) (ID 93876501774)
+- Build Package (ID 93876501901)
+- Instant Release (ID 93876502146)
+- Auto Release (ID 93876502538)
+- Deploy Web App to GitHub Pages in 0s (ID 93876502767)
+✓ Pipeline Status in 18s (ID 93876502939)
+- E2E Tests (GitHub Pages) in 0s (ID 93876503819)
+
+For more information about a job, try: gh run view --job=<job-id>
+View this run on GitHub: https://github.com/link-assistant/formal-ai/actions/runs/31520515929

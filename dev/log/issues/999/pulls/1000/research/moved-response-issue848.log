@@ -1,0 +1,25 @@
+   Compiling formal-ai v0.339.1 (/tmp/gh-issue-solver-1786471194109)
+    Finished `test` profile [unoptimized] target(s) in 1m 25s
+     Running tests/unit/mod.rs (target/debug/deps/unit-ecd6eeaa7ca9cfae)
+
+running 17 tests
+test issue_848_coding_ladder::case_study_and_release_trace_every_issue_848_acceptance_boundary ... ok
+test issue_848_coding_ladder::compiler_measurement_and_same_task_authorship_are_preserved ... ok
+test issue_848_coding_ladder::collection_edit_reads_transforms_writes_and_observes_workspace_bytes ... ok
+test issue_848_coding_ladder::identifier_refactor_accepts_agent_cli_absolute_tool_paths ... ok
+test issue_848_coding_ladder::identifier_refactor_is_a_grounded_verified_rewrite_not_a_file_move ... ok
+test issue_848_coding_ladder::composite_module_uses_a_compact_agent_registration_edit ... ok
+test issue_848_coding_ladder::composite_module_request_creates_source_and_registers_the_module ... ok
+test issue_848_coding_ladder::coding_source_templates_and_outcomes_are_seed_grounded ... ok
+test issue_848_coding_ladder::rust_addition_test_preserves_the_requested_expression ... ok
+test issue_848_workspace_change_learning::exact_observations_infer_a_candidate_but_cannot_activate_it ... ok
+test issue_848_workspace_change_learning::formal_ai_authored_contract_policy_and_fixture_are_runtime_evidence ... ok
+test issue_848_workspace_change_learning::only_a_green_named_review_promotes_and_replays_the_held_out_rewrite ... ok
+test issue_848_coding_ladder::rust_constant_request_writes_source_and_observes_it ... ok
+test issue_848_coding_ladder::rust_function_request_writes_executable_source_and_observes_it ... ok
+test issue_848_coding_ladder::rust_test_request_writes_source_and_observes_it ... ok
+test issue_848_coding_ladder::multilingual_rust_function_requests_generate_source ... ok
+test issue_848_coding_ladder::repository_searches_use_the_named_code_subject ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 2650 filtered out; finished in 18.45s
+

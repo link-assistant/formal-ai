@@ -1,0 +1,31 @@
+[2026-08-11T19:13:06Z INFO  rust_script] Arguments: Args { script: Some("scripts/check-disk-usage-policy.rs"), script_args: [], expr: false, loop_: false, count: false, base_path: None, pkg_path: None, gen_pkg_only: false, cargo_output: false, clear_cache: false, debug: false, dep: [], extern_: [], force: false, unstable_features: [], build_kind: Normal, toolchain_version: None, wrapper: None }
+[2026-08-11T19:13:06Z INFO  rust_script] input: File("check-disk-usage-policy", "/tmp/gh-issue-solver-1786471194109/scripts/check-disk-usage-policy.rs", "#!/usr/bin/env rust-script\n//! CI guard for the development disk-usage policy introduced by issue #534.\n\nuse std::{fs, process::ExitCode};\n\nfn main() -> ExitCode {\n    let manifest = fs::read_to_string(\"Cargo.toml\").expect(\"read Cargo.toml\");\n    let workflows = [\n        \".github/workflows/release.yml\",\n        \".github/workflows/desktop-release.yml\",\n        \".github/actions/setup-sccache/action.yml\",\n    ]\n    .into_iter()\n    .map(|path| fs::read_to_string(path).unwrap_or_else(|error| panic!(\"read {path}: {error}\")))\n    .collect::<Vec<_>>()\n    .join(\"\\n\");\n\n    let required_profiles = [\n        \"[profile.dev]\\ndebug = 0\\nincremental = false\",\n        \"[profile.test]\\ndebug = 0\\nincremental = false\",\n    ];\n    let mut errors = required_profiles\n        .into_iter()\n        .filter(|profile| !manifest.contains(profile))\n        .map(|profile| format!(\"Cargo.toml must retain `{profile}`\"))\n        .collect::<Vec<_>>();\n\n    if workflows.lines().any(|line| line.trim() == \"target\") {\n        errors.push(\n            \"workflows must not cache the multi-GiB target tree; cache compiler outputs with \\\n             sccache instead\"\n                .to_owned(),\n        );\n    }\n    if workflows.contains(\"cargo clippy --all-targets\")\n        || workflows.contains(\"cargo test --all-features\")\n    {\n        errors.push(\n            \"routine validation must not link every example; select lib/bin/test targets\"\n                .to_owned(),\n        );\n    }\n    if !workflows.contains(\"cargo check --examples --all-features\") {\n        errors.push(\n            \"workflows must retain compile coverage for examples without linking them\".to_owned(),\n        );\n    }\n    if !workflows.contains(\"mozilla-actions/sccache-action@v0.0.10\") {\n        errors.push(\"workflows must install the supported sccache action version\".to_owned());\n    }\n    for setting in [\"SCCACHE_GHA_ENABLED:\", \"RUSTC_WRAPPER: sccache\"] {\n        if !workflows.contains(setting) {\n            errors.push(format!(\"workflows must export `{setting}`\"));\n        }\n    }\n\n    if errors.is_empty() {\n        println!(\"disk usage policy: bounded profiles, targeted validation, and no target/ cache\");\n        ExitCode::SUCCESS\n    } else {\n        for error in errors {\n            eprintln!(\"disk usage policy violation: {error}\");\n        }\n        ExitCode::FAILURE\n    }\n}\n", "/tmp/gh-issue-solver-1786471194109/scripts")
+[2026-08-11T19:13:06Z INFO  rust_script] prelude_items: []
+[2026-08-11T19:13:06Z INFO  rust_script] id: "dd10338ae7512eae315fc9c6"
+[2026-08-11T19:13:06Z INFO  rust_script] pkg_path: "/home/box/.cache/rust-script/projects/dd10338ae7512eae315fc9c6"
+[2026-08-11T19:13:06Z INFO  rust_script] using_cache: true
+[2026-08-11T19:13:06Z INFO  rust_script::manifest] part_mani: {}
+[2026-08-11T19:13:06Z INFO  rust_script::manifest] source: None
+[2026-08-11T19:13:06Z INFO  rust_script::manifest] manifest: [[bin]]
+    name = "check-disk-usage-policy_dd10338ae7512eae315fc9c6"
+    path = "/tmp/gh-issue-solver-1786471194109/scripts/check-disk-usage-policy.rs"
+    
+    [dependencies]
+    
+    [package]
+    authors = ["Anonymous"]
+    edition = "2021"
+    name = "check-disk-usage-policy_dd10338ae7512eae315fc9c6"
+    version = "0.1.0"
+    
+    [profile.release]
+    strip = true
+    
+[2026-08-11T19:13:06Z INFO  rust_script] action: InputAction { cargo_output: false, force_compile: false, execute: true, pkg_path: "/home/box/.cache/rust-script/projects/dd10338ae7512eae315fc9c6", script_path: "/tmp/gh-issue-solver-1786471194109/scripts/check-disk-usage-policy.rs", using_cache: true, toolchain_version: None, debug: false, manifest: "[[bin]]\nname = \"check-disk-usage-policy_dd10338ae7512eae315fc9c6\"\npath = \"/tmp/gh-issue-solver-1786471194109/scripts/check-disk-usage-policy.rs\"\n\n[dependencies]\n\n[package]\nauthors = [\"Anonymous\"]\nedition = \"2021\"\nname = \"check-disk-usage-policy_dd10338ae7512eae315fc9c6\"\nversion = \"0.1.0\"\n\n[profile.release]\nstrip = true\n", script: None, build_kind: Normal, bin_name: "check-disk-usage-policy_dd10338ae7512eae315fc9c6", original_script_path: Some("scripts/check-disk-usage-policy.rs") }
+[2026-08-11T19:13:06Z INFO  rust_script] creating pkg dir...
+[2026-08-11T19:13:06Z INFO  rust_script] generating Cargo package...
+[2026-08-11T19:13:06Z DEBUG rust_script] overwrite_file("/home/box/.cache/rust-script/projects/dd10338ae7512eae315fc9c6/Cargo.toml", _)
+[2026-08-11T19:13:06Z DEBUG rust_script] .. files differ
+[2026-08-11T19:13:06Z INFO  rust_script] disarming pkg dir cleanup...
+[2026-08-11T19:13:06Z DEBUG rust_script] No old binary found
+disk usage policy: bounded profiles, targeted validation, and no target/ cache

@@ -1,0 +1,70 @@
+
+✓ main CI/CD Pipeline · 31444469911
+Triggered via push about 18 hours ago
+
+JOBS
+✓ Detect Changes in 1m18s (ID 93635616388)
+- Create Changelog PR in 0s (ID 93635616890)
+- Version Modification Check in 0s (ID 93635617022)
+- Self-Hosting Evidence Check in 0s (ID 93635617060)
+✓ Lint and Format Check in 7m15s (ID 93637320009)
+✓ Secrets Scan in 30s (ID 93637320023)
+✓ Test (macos-15-intel) in 28m37s (ID 93637320032)
+✓ E2E Tests (agent CLI ↔ formal-ai) in 13m36s (ID 93637320037)
+✓ Test (ubuntu-latest) in 16m25s (ID 93637320049)
+✓ E2E Tests (local web app) in 8m5s (ID 93637320055)
+- Changelog Fragment Check in 0s (ID 93637320507)
+- Docker Image Build & Runtime Check in 0s (ID 93637320876)
+✓ Build Package in 8m59s (ID 93643275610)
+✓ Auto Release in 31m45s (ID 93644742682)
+- Instant Release in 0s (ID 93644743306)
+✓ Deploy Web App to GitHub Pages in 3m56s (ID 93649793558)
+✓ E2E Tests (GitHub Pages) in 4m42s (ID 93650393936)
+✓ Pipeline Status in 14s (ID 93651125136)
+
+ANNOTATIONS
+- 41% - 526 hits, 762 misses, 0 errors
+Lint and Format Check: .github#52
+
+! Closure-driven cache bucket holds 332 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+Lint and Format Check: data/cache/wordnet/en#0
+
+! Closure-driven cache bucket holds 243 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+Lint and Format Check: data/cache/wiktionary/en#0
+
+! Closure-driven cache bucket holds 406 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+Lint and Format Check: data/cache/wikidata/entity#0
+
+! GitHub Actions workflow file has 1996 lines (approaching limit of 2000). Consider extracting content to keep at or below 1500 lines and prevent review and merge conflicts.
+Lint and Format Check: .github/workflows/release.yml#0
+
+- 0% - 0 hits, 1 miss, 0 errors
+Test (macos-15-intel): .github#36
+
+- 63% - 1066 hits, 613 misses, 0 errors
+E2E Tests (agent CLI ↔ formal-ai): .github#49
+
+! You've hit a rate limit, your rate limit will reset in 27 seconds
+E2E Tests (agent CLI ↔ formal-ai): .github#3
+
+- 72% - 590 hits, 225 misses, 0 errors
+Test (ubuntu-latest): .github#49
+
+- 46% - 429 hits, 496 misses, 0 errors
+Build Package: .github#49
+
+! self-hosting ratchet would fall from 9.20% to 0.13% for v0.339.1
+Auto Release: .github#27
+
+! Warning: timeout value is greater than the allowed maximum - timeout set to the maximum of 600000 milliseconds.
+Deploy Web App to GitHub Pages: .github#26
+
+
+ARTIFACTS
+github-pages
+link-assistant~formal-ai~AB9XN0.dockerbuild
+agent-cli-tui-replays
+download-page-screenshots
+
+For more information about a job, try: gh run view --job=<job-id>
+View this run on GitHub: https://github.com/link-assistant/formal-ai/actions/runs/31444469911
