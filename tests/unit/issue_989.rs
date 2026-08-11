@@ -372,3 +372,41 @@ fn whole_reported_dialog_stays_local_and_preserves_diagnostics() {
     assert!(github_report_command().contains("--separate-context-links"));
     assert!(failed_web_transport_answer().contains("Transport error"));
 }
+
+#[test]
+fn same_task_agent_cli_authorship_is_preserved() {
+    const SESSION: &str = "ses_00fc002c9ffetId67J25NEeudn";
+    const COMMITTED: &str =
+        include_str!("../../docs/case-studies/issue-989/issue-989-task-decomposition.lino");
+    const GENERATED: &str = include_str!(
+        "../../docs/case-studies/issue-989/self-hosting-authorship/decomposition-session/issue-989-task-decomposition.lino"
+    );
+    const AGENT_LOG: &str = include_str!(
+        "../../docs/case-studies/issue-989/self-hosting-authorship/decomposition-session/agent-cli.log"
+    );
+    const FORMAL_AI_LOG: &str = include_str!(
+        "../../docs/case-studies/issue-989/self-hosting-authorship/decomposition-session/formal-ai.log"
+    );
+
+    assert_eq!(COMMITTED, GENERATED);
+    assert_eq!(COMMITTED.matches("  leaf ").count(), 5, "{COMMITTED}");
+    assert_eq!(
+        COMMITTED.matches("author formal_ai").count(),
+        1,
+        "{COMMITTED}"
+    );
+    assert!(COMMITTED.contains("required_self_authored_leaves 1"));
+    assert!(AGENT_LOG.contains(SESSION));
+    for transition in [
+        "planned ToolCalls",
+        "tool=write",
+        "tool: \"bash\"",
+        "planned Final",
+        "issue-989-task-decomposition.lino",
+    ] {
+        assert!(
+            FORMAL_AI_LOG.contains(transition),
+            "server trace is missing {transition:?}"
+        );
+    }
+}
