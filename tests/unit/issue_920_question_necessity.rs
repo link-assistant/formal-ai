@@ -24,6 +24,19 @@ fn necessity_trace(answer: &SymbolicAnswer) -> Vec<&str> {
         .collect()
 }
 
+fn traced_question_id(log: &EventLog) -> &str {
+    log.events()
+        .iter()
+        .find(|event| event.kind == "question_necessity:memory")
+        .and_then(|event| {
+            event
+                .payload
+                .split_whitespace()
+                .find_map(|field| field.strip_prefix("question="))
+        })
+        .expect("question trace identity")
+}
+
 #[test]
 fn issue_920_clarification_has_a_replayable_three_stage_necessity_trace() {
     let config = SolverConfig {
@@ -220,6 +233,20 @@ fn issue_920_duplicate_question_presentations_share_one_identity() {
     assert!(!enforced.contains("Still needed from you:"));
     assert!(enforced.contains("1. First input"));
     assert!(!enforced.contains("2. Second input"));
+}
+
+#[test]
+fn issue_920_question_identity_normalizes_case_and_whitespace() {
+    let mut first_log = EventLog::new();
+    let mut replay_log = EventLog::new();
+
+    enforce_questions("Would you like me to continue?", &mut first_log);
+    enforce_questions("would   YOU like me to continue?", &mut replay_log);
+
+    assert_eq!(
+        traced_question_id(&first_log),
+        traced_question_id(&replay_log)
+    );
 }
 
 #[test]

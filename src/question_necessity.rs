@@ -149,7 +149,7 @@ pub fn enforce_questions(body: &str, log: &mut EventLog) -> String {
         .collect::<Vec<_>>();
     let mut asked = 0;
     for candidate in candidates {
-        let question_id = stable_id("question", candidate.text.trim());
+        let question_id = stable_id("question", &normalized_question_text(&candidate.text));
         let trace = record_search_trace(log, &question_id);
         let classification = classify(&candidate.text, candidate.in_requirement_section);
         log.append(
@@ -375,6 +375,14 @@ fn trace_payload(fields: &[(&str, String)]) -> String {
         .join(" ")
 }
 
+fn normalized_question_text(question: &str) -> String {
+    question
+        .to_lowercase()
+        .split_whitespace()
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
 fn question_candidates(body: &str) -> Vec<Candidate> {
     let section_ranges = requirement_section_ranges(body);
     let mut candidates = punctuation_candidates(body);
@@ -401,10 +409,9 @@ fn question_candidates(body: &str) -> Vec<Candidate> {
     candidates.sort_by_key(|candidate| candidate.start);
     let mut unique: Vec<Candidate> = Vec::new();
     for candidate in candidates {
-        if let Some(previous) = unique
-            .iter_mut()
-            .find(|previous| previous.text.trim() == candidate.text.trim())
-        {
+        if let Some(previous) = unique.iter_mut().find(|previous| {
+            normalized_question_text(&previous.text) == normalized_question_text(&candidate.text)
+        }) {
             previous
                 .duplicate_ranges
                 .push((previous.start, previous.end));
