@@ -35,6 +35,9 @@ test -f "${HIVE_MIND_ROOT}/src/agent.lib.mjs" || {
 SCRATCH="$(mktemp -d /tmp/formal-ai-issue-921.XXXXXX)"
 REAL_GH="$(command -v gh)"
 SERVER_PID=""
+export NPM_CONFIG_PREFIX="${SCRATCH}/npm-global"
+export PATH="${NPM_CONFIG_PREFIX}/bin:${PATH}"
+mkdir -p "${NPM_CONFIG_PREFIX}"
 cleanup() {
   if [[ -n "${SERVER_PID}" ]]; then
     kill "${SERVER_PID}" 2>/dev/null || true

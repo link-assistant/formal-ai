@@ -72,7 +72,9 @@ prepare-only exit even though that route cannot write. The release job retains
 `contents: read`. A narrowly scoped `gh` wrapper returns write permission only
 for that one preflight request and delegates every issue, repository, and user
 read to the authenticated GitHub CLI. It is not present for the production
-executor or either live Agent process.
+executor or either live Agent process. Hive Mind also resolves pinned helper
+packages lazily; the harness gives npm a disposable prefix inside its scratch
+directory so an unprivileged CI runner never tries to write `/usr/local`.
 
 **Formal AI -> external Agent CLI.** The gate sends a bounded acceptance payload
 extracted from the committed hive-mind-shaped issue fixture through

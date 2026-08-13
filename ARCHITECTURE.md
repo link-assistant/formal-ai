@@ -1063,7 +1063,9 @@ failed gate in both directions. CI prepares the public Hive Mind command but
 suppresses the GitHub-writing portion, then calls the same production executor
 directly, keeping the integration real without mutating issue state. A scoped
 permission-response shim lets Hive Mind 2.12.2 reach its no-write preparation
-exit under the workflow's read-only token; it is absent from execution.
+exit under the workflow's read-only token; it is absent from execution. Lazy
+Hive Mind helper installs use an isolated, writable npm prefix owned by the
+gate, rather than relying on machine-global package permissions.
 
 The Rust pipeline is the canonical implementation. The browser worker
 (`src/web/formal_ai_worker.js`) cannot reach Wiktionary or Wikidata
