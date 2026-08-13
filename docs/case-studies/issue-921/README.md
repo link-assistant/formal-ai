@@ -74,7 +74,11 @@ for that one preflight request and delegates every issue, repository, and user
 read to the authenticated GitHub CLI. It is not present for the production
 executor or either live Agent process. Hive Mind also resolves pinned helper
 packages lazily; the harness gives npm a disposable prefix inside its scratch
-directory so an unprivileged CI runner never tries to write `/usr/local`.
+directory so an unprivileged CI runner never tries to write `/usr/local`. The
+disposable prepare clone also receives a repository-local Git identity, which
+satisfies Git operations without changing the runner's global config. Because
+Hive Mind checks identity before entering `--working-directory`, the same
+identity is passed as process-local Git config only to the prepare command.
 
 **Formal AI -> external Agent CLI.** The gate sends a bounded acceptance payload
 extracted from the committed hive-mind-shaped issue fixture through

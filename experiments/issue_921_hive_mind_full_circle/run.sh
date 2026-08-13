@@ -121,12 +121,19 @@ printf '%s\n' \
   "solve ${ISSUE_URL} --tool agent --model formal-ai --attach-logs --verbose" \
   >"${HIVE_OUT}/invocation.txt"
 git clone --quiet --local "${ROOT}" "${SCRATCH}/prepare-repository"
+git -C "${SCRATCH}/prepare-repository" config user.name "Issue 921 Replay"
+git -C "${SCRATCH}/prepare-repository" config user.email "issue-921@example.invalid"
 mkdir -p "${SCRATCH}/readonly-prepare-bin"
 ln -s "${GH_PREPARE_WRAPPER}" "${SCRATCH}/readonly-prepare-bin/gh"
 set +e
 (
   cd "${OUT}/raw-logs"
-  PATH="${SCRATCH}/readonly-prepare-bin:${PATH}" REAL_GH="${REAL_GH}" \
+  GIT_CONFIG_COUNT=2 \
+    GIT_CONFIG_KEY_0=user.name \
+    GIT_CONFIG_VALUE_0="Issue 921 Replay" \
+    GIT_CONFIG_KEY_1=user.email \
+    GIT_CONFIG_VALUE_1="issue-921@example.invalid" \
+    PATH="${SCRATCH}/readonly-prepare-bin:${PATH}" REAL_GH="${REAL_GH}" \
     solve "${ISSUE_URL}" --tool agent --model formal-ai \
     --attach-logs --verbose \
     --only-prepare-command \
