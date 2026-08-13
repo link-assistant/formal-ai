@@ -94,6 +94,16 @@ fn issue_920_factual_unknown_is_not_asked_after_bounded_research() {
         .position(|link| link.starts_with("question_necessity:research_required:"))
         .expect("research handoff event");
     assert!(refused < research, "{:?}", answer.evidence_links);
+    let source_traces = answer
+        .links_notation
+        .matches("question_necessity:sources question=")
+        .count();
+    let accurately_counted = answer.links_notation.matches("attempts=2 budget=3").count();
+    assert_eq!(source_traces, 2, "{}", answer.links_notation);
+    assert_eq!(
+        accurately_counted, source_traces,
+        "question traces must count source attempts, not their own audit events"
+    );
 }
 
 #[test]

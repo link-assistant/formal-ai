@@ -166,7 +166,7 @@ pub fn enforce_questions(body: &str, log: &mut EventLog) -> String {
             ]),
         );
 
-        let authorization = authorize_with_policy(classification.class, &trace, asked);
+        let authorization = authorize_question(classification.class, &trace, asked);
         match authorization {
             QuestionAuthorization::Authorized => {
                 log.append(
@@ -311,23 +311,6 @@ fn classify(question: &str, in_requirement_section: bool) -> QuestionClassificat
     }
 }
 
-fn authorize_with_policy(
-    class: QuestionClass,
-    trace: &NecessityTrace,
-    already_asked: usize,
-) -> QuestionAuthorization {
-    if !trace.is_complete() {
-        return QuestionAuthorization::Refused(QuestionRefusal::MissingTrace);
-    }
-    if matches!(class, QuestionClass::Factual) {
-        return QuestionAuthorization::Refused(QuestionRefusal::FactualUnknown);
-    }
-    if already_asked >= policy().summary.maximum_questions_per_answer {
-        return QuestionAuthorization::Refused(QuestionRefusal::QuestionBudgetExhausted);
-    }
-    QuestionAuthorization::Authorized
-}
-
 fn record_search_trace(log: &mut EventLog, question_id: &str) -> NecessityTrace {
     let prior_turns = log
         .events()
@@ -364,11 +347,7 @@ fn record_search_trace(log: &mut EventLog, question_id: &str) -> NecessityTrace 
     let source_attempts = log
         .events()
         .iter()
-        .filter(|event| {
-            event.kind.contains("source")
-                || event.kind.contains("research")
-                || event.kind.contains("search")
-        })
+        .filter(|event| event.kind == "reasoning:gather_attempt")
         .count();
     let sources_event = log.append(
         "question_necessity:sources",
