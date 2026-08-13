@@ -76,6 +76,11 @@ fn issue_921_both_directions_are_committed_and_traceable() {
 fn issue_921_hive_mind_direction_uses_the_real_public_and_executor_boundaries() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
     let script = read(root.join("experiments/issue_921_hive_mind_full_circle/run.sh"));
+    let github_wrapper = read(
+        root.join(
+            "experiments/issue_921_hive_mind_full_circle/github-readonly-prepare-wrapper.sh",
+        ),
+    );
     assert_contains_all(
         "Hive Mind full-circle runner",
         &script,
@@ -113,6 +118,16 @@ fn issue_921_hive_mind_direction_uses_the_real_public_and_executor_boundaries() 
     assert!(
         !executor.contains("fake solve") && !executor.contains("mock solve"),
         "the passing direction must use Hive Mind's production executor"
+    );
+    assert_contains_all(
+        "read-only GitHub prepare wrapper",
+        &github_wrapper,
+        &[
+            "refused GitHub mutation",
+            "--method=POST",
+            "--field",
+            "issue\" | \"pr",
+        ],
     );
 
     let evidence = root.join("docs/case-studies/issue-921/hive-mind-to-formal-ai");
