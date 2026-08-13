@@ -112,6 +112,16 @@ fn issue_920_classification_and_budget_are_loaded_from_seed_data() {
 }
 
 #[test]
+fn issue_920_agent_authored_seed_is_preserved_byte_for_byte() {
+    assert_eq!(
+        include_str!("../../data/seed/question-necessity.lino"),
+        include_str!(
+            "../../docs/case-studies/issue-920/self-hosting-authorship/question-necessity.lino"
+        )
+    );
+}
+
+#[test]
 fn issue_920_proof_followups_keep_only_the_smallest_requirement_question() {
     let answer = UniversalSolver::new(SolverConfig {
         guess_probability: 0.05,
