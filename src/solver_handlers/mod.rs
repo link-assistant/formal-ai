@@ -972,14 +972,13 @@ pub fn finalize_simple(
     let trace_id = log.append("trace", intent.to_owned());
     let evidence_links = build_evidence_links(prompt, log, response_link);
     let links_notation = answer_links_notation(prompt, intent, &body, log, &trace_id);
-    let thinking_steps = log.thinking_steps_for_answer(&body);
     SymbolicAnswer {
         intent: intent.to_owned(),
         answer: body,
         execution_recipe: None,
         confidence,
         evidence_links,
-        thinking_steps,
+        thinking_steps: log.thinking_steps_for_answer(&body),
         links_notation,
     }
 }
