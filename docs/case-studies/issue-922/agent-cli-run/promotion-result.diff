@@ -1,0 +1,26 @@
+diff --git a/data/seed/learned-methods.lino b/data/seed/learned-methods.lino
+index e69de29..55dd443 100644
+--- a/data/seed/learned-methods.lino
++++ b/data/seed/learned-methods.lino
+@@ -0,0 +1,20 @@
++learned_method "learned_recursive_core_740155f4b5796f69"
++  status "adopted"
++  source "algorithm_candidate:algorithm_740155f4b5796f69"
++  algorithm_id "algorithm_740155f4b5796f69"
++  evidence_id "algorithm_evidence_b758572e108b5114"
++  support_trace "solve-translation"
++  support_trace "solve-composed"
++  held_out_trace "solve-unknown"
++  operation "need:status"
++  operation "method_registry"
++  operation "method_registry:count"
++  operation "work_unit_reasoning"
++  operation "work_unit_reasoning:steps"
++  operation "upward_construction"
++  operation "upward_construction:steps"
++  operation "solution_evidence"
++  operation "solution_evidence:accounted_for"
++  operation "selection"
++  operation "skill_ledger"
++  operation "skill_ledger:promotable"
+\ No newline at end of file
