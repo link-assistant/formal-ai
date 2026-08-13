@@ -51,6 +51,68 @@ fn real_observations() -> Vec<(String, EventLog)> {
     .collect()
 }
 
+/// Localized payloads for every language in the seed registry. Method learning
+/// must abstract the stable control-flow kinds, never language-specific event
+/// text; the registry comparison makes a newly supported language extend this
+/// test instead of silently losing coverage.
+const LOCALIZED_EVENT_PAYLOADS: [(&str, &str); 5] = [
+    ("en", "English solved request"),
+    ("ru", "Русский решённый запрос"),
+    ("hi", "हिंदी में हल किया गया अनुरोध"),
+    ("zh", "中文已解决请求"),
+    ("es", "Solicitud resuelta en español"),
+];
+
+#[test]
+fn event_payload_language_does_not_change_the_learned_method() {
+    let mut registered = formal_ai::language::registered_languages()
+        .into_iter()
+        .map(formal_ai::Language::slug)
+        .collect::<Vec<_>>();
+    let mut covered = LOCALIZED_EVENT_PAYLOADS
+        .iter()
+        .map(|(language, _)| *language)
+        .collect::<Vec<_>>();
+    registered.sort_unstable();
+    covered.sort_unstable();
+    assert_eq!(
+        covered, registered,
+        "every registered language needs a case"
+    );
+
+    let observations = LOCALIZED_EVENT_PAYLOADS
+        .iter()
+        .map(|(language, payload)| {
+            let mut log = EventLog::new();
+            log.append("formalize", format!("language:{language}:{payload}"));
+            log.append("select", format!("language:{language}:{payload}"));
+            log.append("execute", format!("language:{language}:{payload}"));
+            log.append("verify", format!("language:{language}:{payload}"));
+            (format!("language-{language}"), log)
+        })
+        .collect::<Vec<_>>();
+    let borrowed = observations
+        .iter()
+        .map(|(id, log)| (id.as_str(), log))
+        .collect::<Vec<_>>();
+    let learning = learn_methods_from_event_logs(&borrowed);
+    let proposal = learning
+        .validated_proposals()
+        .into_iter()
+        .next()
+        .expect("localized payloads should produce one shared control-flow method");
+
+    assert_eq!(
+        proposal.operations,
+        ["formalize", "select", "execute", "verify"]
+    );
+    assert_eq!(proposal.support_trace_ids, ["language-en", "language-ru"]);
+    assert_eq!(
+        proposal.held_out_trace_ids,
+        ["language-hi", "language-zh", "language-es"]
+    );
+}
+
 #[test]
 fn real_event_logs_propose_an_inert_method_that_is_adopted_only_after_promotion() {
     let observations = real_observations();
