@@ -123,6 +123,7 @@ printf '%s\n' \
 git clone --quiet --local "${ROOT}" "${SCRATCH}/prepare-repository"
 git -C "${SCRATCH}/prepare-repository" config user.name "Issue 921 Replay"
 git -C "${SCRATCH}/prepare-repository" config user.email "issue-921@example.invalid"
+git -C "${SCRATCH}/prepare-repository" checkout -B main HEAD >/dev/null
 mkdir -p "${SCRATCH}/readonly-prepare-bin"
 ln -s "${GH_PREPARE_WRAPPER}" "${SCRATCH}/readonly-prepare-bin/gh"
 set +e

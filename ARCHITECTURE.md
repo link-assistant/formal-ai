@@ -1068,7 +1068,9 @@ Hive Mind helper installs use an isolated, writable npm prefix owned by the
 gate, rather than relying on machine-global package permissions. Hive Mind's
 identity preflight is satisfied with repository-local config in the disposable
 prepare clone plus process-local config on the prepare-only command, never with
-runner-global Git config.
+runner-global Git config. The disposable clone materializes its candidate HEAD
+as a local branch as well, making Hive Mind's current-branch preflight
+independent of GitHub Actions' detached checkout shape.
 
 The Rust pipeline is the canonical implementation. The browser worker
 (`src/web/formal_ai_worker.js`) cannot reach Wiktionary or Wikidata
