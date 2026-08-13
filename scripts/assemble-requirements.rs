@@ -165,6 +165,11 @@ fn to_shard_relative(target: &str) -> String {
         .count();
     let mut rebased: Vec<&str> = vec![".."; base.len() - shared];
     rebased.extend(&parts[shared..]);
+    // A link to the shard directory itself has nothing left to say once it is
+    // rebased into that directory; an empty target is a broken link, `.` is not.
+    if rebased.is_empty() {
+        return ".".to_string();
+    }
     rebased.join("/")
 }
 
@@ -518,6 +523,11 @@ mod tests {
             assert_eq!(to_root_relative(shard), root, "{shard} assembles to {root}");
             assert_eq!(to_shard_relative(root), shard, "{root} shards to {shard}");
         }
+    }
+
+    #[test]
+    fn a_link_to_the_shard_directory_itself_stays_a_link() {
+        assert_eq!(to_shard_relative(SHARDS), ".");
     }
 
     #[test]
