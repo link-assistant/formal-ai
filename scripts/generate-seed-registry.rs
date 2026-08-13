@@ -27,6 +27,7 @@
 //! ```
 
 use std::collections::BTreeSet;
+#[cfg(not(test))]
 use std::fs;
 #[cfg(not(test))]
 use std::path::Path;
