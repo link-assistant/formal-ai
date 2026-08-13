@@ -85,6 +85,8 @@ fn issue_921_hive_mind_direction_uses_the_real_public_and_executor_boundaries() 
             "--only-prepare-command",
             "NPM_CONFIG_PREFIX",
             "${SCRATCH}/npm-global",
+            "git -C \"${SCRATCH}/prepare-repository\" config user.name",
+            "git -C \"${SCRATCH}/prepare-repository\" config user.email",
             "run-hive-executor.mjs",
             "formal-ai-to-hive-mind.txt",
             "agent replay",
