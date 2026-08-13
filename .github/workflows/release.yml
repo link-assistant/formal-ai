@@ -308,7 +308,13 @@ jobs:
       - name: Check development disk policy
         run: rust-script scripts/check-disk-usage-policy.rs
       - name: Check worker JS line budget
-        run: rust-script scripts/check-worker-line-budget.rs
+        run: rust-script --test scripts/check-worker-line-budget.rs && rust-script scripts/check-worker-line-budget.rs
+      - name: Check merge-conflict policy (issue #991)
+        run: rust-script --test scripts/check-merge-conflict-policy.rs && rust-script scripts/check-merge-conflict-policy.rs
+      - name: Check union-merged ordered lists are canonical (issue #991)
+        run: rust-script --test scripts/normalize-ordered-lists.rs && rust-script scripts/normalize-ordered-lists.rs
+      - name: Check REQUIREMENTS.md matches its shards (issue #991)
+        run: rust-script --test scripts/assemble-requirements.rs && rust-script scripts/assemble-requirements.rs
       - name: Build Rust→WASM worker
         run: sh src/web/wasm-worker/build.sh
       - name: Check wasm-worker size budget

@@ -1,0 +1,23 @@
+## Issue #991 Dynamic Multi-Source How-To Synthesis
+
+Issue [#991](https://github.com/link-assistant/formal-ai/issues/991) is the
+remainder of [#710](https://github.com/link-assistant/formal-ai/issues/710)
+row 20 after #444/PR #448 delivered the discovery plan and #709/PR #884 delivered
+the source-tier and contradiction policy: a procedural request has to return the
+guide the plan describes. `src/how_to_guide.rs` (with `extract.rs`,
+`render.rs`), `src/service_accessibility.rs`, and the browser mirror
+`src/web/worker/formal_ai_worker_24.js` execute one bounded selection and
+synthesis contract; `tests/fixtures/issue-991/` holds the committed real-service
+captures the native, HTTP, and browser suites replay offline. The before/after
+evidence, root causes, and the known lexical-relevance limitation are in
+`docs/case-studies/issue-991/`.
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R991-1 | The Rust/server and browser-worker production paths execute the same bounded source-selection and guide-synthesis contract. | Implemented: `src/how_to_guide.rs` and `src/web/worker/formal_ai_worker_24.js` order accepted steps by source tier, depth, source, then position under the same `GuideBounds`. Both are checked against one recorded expectation, `tests/fixtures/issue-991/expected-guides.json`, written from the Rust path by `examples/issue_991_how_to_parity.rs` — `tests/unit/issue_991_how_to_synthesis.rs` and `tests/web/issue-991-how-to-synthesis.test.mjs` fail on any drift. |
+| R991-2 | Every enabled relevant service from `sources-registry.lino` can contribute, and settings opt-outs remain authoritative. | Implemented: candidate services are read from `data/seed/sources-registry.lino` (`service_group external_trusted`) rather than hardcoded, and a service whose `settings_key` is opted out is reported as `disabled` with zero pages and zero steps and is never contacted, cached or not. Pinned natively and over HTTP by `chat_completions_honours_a_service_opt_out` in `tests/integration/issue_991_how_to_http.rs`. |
+| R991-3 | Search results are captured recursively within declared depth/page/time bounds, and every accepted step retains exact provenance. | Implemented: a relevant Stack Exchange question at depth 0 is followed to its answers at depth 1 and a listless wiki page to its same-wiki links, all inside `max_depth=2 max_pages_per_service=4 max_services=4 max_steps=12` with a capture-age bound. Each step keeps its source id, exact URL, license, sha256 digest, and depth, and the rendered guide states the bounds it ran under. |
+| R991-4 | Conflicts, copied sources, and insufficient evidence use the #709 source-tier and contradiction policy. | Implemented: contradicting steps are reported under `### Conflicts`, mirrored bodies under `### Copied sources ignored`, and a run below `MIN_ACCEPTED_STEPS` renders `Insufficient evidence` instead of a procedure — `chat_completions_reports_insufficient_evidence_instead_of_inventing_steps` proves an undocumented task asserts no step and carries no digest. |
+| R991-5 | Per-service accessibility success *and* failure is stored in the environment associative memory with a TTL of at least seven days, with explicit refresh/invalidation. | Implemented: `src/service_accessibility.rs` records both outcomes with `TTL = 7 * 24 * 60 * 60` seconds and exposes `needs_refresh`, `invalidate`, and `invalidate_all`; a failure on a fallback endpoint is recorded as `fallback_failed` so it does not condemn a service whose entry endpoint works. The record round-trips through `service-accessibility.lino` in the cache directory. |
+| R991-6 | Real-service QA captures are committed with timestamps, hashes, and licenses; the normal suite replays them offline and a gated refresh check detects drift. | Implemented: `tests/fixtures/issue-991/capture-manifest.lino` records each capture's timestamp, sha256, byte count, and license. With the transport disabled the suite replays them deterministically; `FORMAL_AI_LIVE_FETCH=1` re-fetches through the same production path and reports drift. |
+| R991-7 | Minimal native, HTTP agent/API, and browser regressions fail before the implementation and pass through the real production paths afterwards. | Implemented: `tests/unit/issue_991_how_to_synthesis.rs` (native), `tests/integration/issue_991_how_to_http.rs` (a real `formal-ai serve` process answering over `/api/openai/v1/chat/completions`), and `tests/web/issue-991-how-to-synthesis.test.mjs` (browser worker). `docs/case-studies/issue-991/raw-data/before-fix-run.txt` shows a binary built at this branch's base commit answering the same request with the discovery plan and no steps, sources, or digests. |

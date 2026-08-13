@@ -4,115 +4,103 @@
 //! Issue #658 (E39 / R380) migrates the remaining solver logic out of
 //! `src/web/worker/*.js` and into the Rust→WASM worker, leaving JavaScript
 //! responsible only for UI/glue (message plumbing, seed fetching, IndexedDB).
-//! This script is the ratchet that keeps the mirror from silently regrowing:
-//! the combined worker line count may only shrink, never exceed the recorded
-//! ceiling, until it reaches the agreed target.
+//! This script is the ratchet that keeps the mirror from silently regrowing.
 //!
-//! When a migration slice lands and the total drops, lower `CEILING_TOTAL_LINES`
-//! to the new count in the same PR so the progress is locked in.
+//! Issue #991 replaced the single `CEILING_TOTAL_LINES` constant with one shard
+//! per module under `data/meta/worker-line-budget/`. The constant was a
+//! repository-wide scalar: every branch that touched any worker module rewrote
+//! the same line and the same growing block of prose above it, so two unrelated
+//! worker changes always conflicted. Per-module shards remove the shared line
+//! entirely — a branch edits the budget of the module it changed — and the
+//! result is a stricter ratchet, because one module can no longer fund its
+//! growth out of another module's savings.
 //!
-//! Usage: rust-script scripts/check-worker-line-budget.rs
+//! Usage:
+//!   rust-script scripts/check-worker-line-budget.rs           # enforce
+//!   rust-script scripts/check-worker-line-budget.rs --write   # re-baseline
 //!
 //! ```cargo
 //! [dependencies]
 //! ```
 
+use std::collections::BTreeMap;
 use std::fs;
 use std::path::{Path, PathBuf};
-#[cfg(not(test))]
-use std::process::exit;
 
-/// The end-state UI-glue budget from the issue's acceptance criteria.
-#[cfg(not(test))]
+/// The end-state UI-glue budget from issue #658's acceptance criteria.
+#[cfg_attr(test, allow(dead_code))]
 const TARGET_TOTAL_LINES: usize = 3_000;
 
-/// Current ratchet ceiling: the combined line count of `src/web/worker/*.js`
-/// must never exceed this. Lower it whenever a migration slice reduces the
-/// total so the mirror cannot silently regrow back toward its old size.
-///
-/// The ratchet stops *this* migration from silently regrowing the mirror; it
-/// does not veto merging upstream `main`. When a merge brings in legitimate
-/// worker changes from other PRs, re-baseline this ceiling to the merged count
-/// Issue #845's Rust→WASM dialogue fact checker then removed a net 2 lines
-/// from the browser mirror, lowering the ratchet from 26_807 to 26_805. Issue
-/// #701's generalized term-information recognizer — prefix openers, verb-final
-/// closers and circumfix frames — must be mirrored in the browser worker for
-/// Rust↔JS parity, adding a net 12 lines on that baseline. Issue #699's
-/// seed-driven `who_is` / `definition_merge` generality and the named
-/// skill-gap failure for underivable `write_program` requests likewise have to
-/// be mirrored in the browser worker, adding a net 94 lines and raising the
-/// ratchet from 26_817 to 26_911. Issue #706's any-language protocol makes the
-/// browser mirror read every per-language field from seed data — the detection
-/// registry hydrated from `language-detection.lino`, the unknown-opener pools
-/// from `unknown-openers.lino`, and the response-language check derived from
-/// the registry instead of a hardcoded slug list — so that registering a
-/// language stays a data-only edit in the worker too, adding a net 41 lines and
-/// raising the ratchet from 26_911 to 26_952.
-/// Issue #708's seeded memory-program compiler and bounded interpreter must
-/// execute against IndexedDB in the browser too. Its complete closed primitive
-/// set adds the reviewed worker mirror rather than leaving the website on the
-/// legacy single-substitution path, raising the ratchet to 27,635. Executable
-/// map projections add eight source/collection-copy lines (27,643). The final
-/// scoped-gap routing guard stays inside that reviewed module and lowers its
-/// net ceiling by one line through equivalent helper consolidation.
-/// Issue #858 then mirrors the returning-user recap route and bounded plain
-/// formatter for Rust↔JS parity, adding a net 64 lines on the merged baseline.
-/// Issue #890 moves the formal-proof parser and renderer into the shared
-/// Rust→WASM core, lowering the ratchet by one line after its routing adapter.
-/// Issue #906's validated implementation-language modifier — the seed-driven
-/// span scan that refuses a closed-class word as a language name, and the four
-/// `write_program` dead-end shapes that keep the `missing` sentinel out of the
-/// reply — must be mirrored in the browser worker for Rust↔JS parity, adding a
-/// net 112 lines and raising the ratchet from 27,705 to 27,817.
-/// Issue #989 adds the associative-memory inspection projection that the web
-/// runtime needs to answer count, inventory, root-link, and correction turns
-/// from its IndexedDB-shaped records. Along with the parity routing changes,
-/// this raises the reviewed merged baseline to 27,996 lines.
-/// Issue #991 requires the browser and the Rust solver to execute the *same*
-/// bounded how-to synthesis contract — registry-driven source selection,
-/// recursive capture inside declared bounds, per-step provenance, the issue
-/// #709 copy/contradiction policy, and a seven-day service-accessibility
-/// memory. That contract cannot be expressed as a call into an existing module,
-/// so `worker/formal_ai_worker_how_to_guide.js` mirrors `src/how_to_guide*.rs`
-/// outright, adding a net 801 lines on the merged #989 baseline and raising the
-/// ratchet from 27,996 to 28,797. The mirror is held to the Rust behaviour
-/// byte-for-byte by the shared parity expectation in
-/// `tests/fixtures/issue-991/expected-guides.json`, so it is a migration
-/// candidate once the guide synthesis moves into the Rust→WASM core.
-#[cfg(not(test))]
-const CEILING_TOTAL_LINES: usize = 28_797;
-
 const WORKER_DIR: &str = "src/web/worker";
+const BUDGET_DIR: &str = "data/meta/worker-line-budget";
 
 #[derive(Debug, PartialEq, Eq)]
 struct WorkerFile {
     path: String,
+    module: String,
     lines: usize,
+    /// The first sentence of the module's own leading comment, used as the
+    /// default rationale so a shard says what the module is for.
+    summary: String,
+}
+
+/// The subject of a module, read from its own leading `//` comment paragraph.
+///
+/// A leading `Worker module N ...` sentence is the mechanical split marker
+/// issue #658 left behind, not a subject, so it is dropped: a module that says
+/// only that has no summary and needs a hand-written rationale in its shard.
+fn leading_summary(source: &str) -> String {
+    let mut paragraph = String::new();
+    for line in source.lines() {
+        let Some(comment) = line.trim_start().strip_prefix("//") else {
+            break;
+        };
+        let comment = comment.trim();
+        if comment.is_empty() {
+            break;
+        }
+        if !paragraph.is_empty() {
+            paragraph.push(' ');
+        }
+        paragraph.push_str(comment);
+    }
+    if paragraph.starts_with("Worker module") {
+        paragraph = match paragraph.split_once(". ") {
+            Some((_, rest)) => rest.to_string(),
+            None => String::new(),
+        };
+    }
+    if let Some(end) = paragraph[paragraph.len().min(280)..].find(". ") {
+        paragraph.truncate(paragraph.len().min(280) + end + 1);
+    }
+    paragraph.replace('"', "'")
+}
+
+/// One module's recorded ceiling, read from its own shard.
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct ModuleBudget {
+    module: String,
+    ceiling: usize,
+    rationale: String,
 }
 
 #[derive(Debug, PartialEq, Eq)]
 enum BudgetStatus {
     /// Total is at or below the end-state target.
     TargetMet,
-    /// Total is within the ratchet ceiling but above the target — migration
-    /// still in progress. Passes CI.
+    /// Every module is within its own ceiling but the total is above the
+    /// target — migration still in progress. Passes CI.
     InProgress,
-    /// Total exceeds the ratchet ceiling — the mirror regrew. Fails CI.
+    /// At least one module grew past its recorded ceiling. Fails CI.
     Regrown,
-}
-
-fn classify_budget(total: usize, ceiling: usize, target: usize) -> BudgetStatus {
-    if total > ceiling {
-        BudgetStatus::Regrown
-    } else if total > target {
-        BudgetStatus::InProgress
-    } else {
-        BudgetStatus::TargetMet
-    }
 }
 
 fn worker_dir(cwd: &Path) -> PathBuf {
     cwd.join(WORKER_DIR)
+}
+
+fn budget_dir(cwd: &Path) -> PathBuf {
+    cwd.join(BUDGET_DIR)
 }
 
 fn relative_path(path: &Path, cwd: &Path) -> String {
@@ -141,11 +129,18 @@ fn collect_worker_files(cwd: &Path) -> Vec<WorkerFile> {
         if !path.is_file() || !is_js {
             continue;
         }
+        let module = path
+            .file_name()
+            .and_then(|name| name.to_str())
+            .unwrap_or_default()
+            .to_string();
 
         match fs::read_to_string(&path) {
             Ok(content) => files.push(WorkerFile {
                 path: relative_path(&path, cwd),
+                module,
                 lines: content.lines().count(),
+                summary: leading_summary(&content),
             }),
             Err(error) => eprintln!("Warning: Could not read {}: {error}", path.display()),
         }
@@ -155,20 +150,159 @@ fn collect_worker_files(cwd: &Path) -> Vec<WorkerFile> {
     files
 }
 
+fn unquote(value: &str) -> String {
+    let trimmed = value.trim();
+    trimmed
+        .strip_prefix('"')
+        .and_then(|rest| rest.strip_suffix('"'))
+        .unwrap_or(trimmed)
+        .to_string()
+}
+
+/// Read one `data/meta/worker-line-budget/*.lino` shard.
+fn parse_budget(source: &str) -> Option<ModuleBudget> {
+    let mut budget = ModuleBudget {
+        module: String::new(),
+        ceiling: 0,
+        rationale: String::new(),
+    };
+    for line in source.lines() {
+        let trimmed = line.trim();
+        let Some((key, value)) = trimmed.split_once(' ') else {
+            continue;
+        };
+        match key {
+            "module" => budget.module = unquote(value),
+            "ceiling" => budget.ceiling = value.trim().parse().ok()?,
+            "rationale" => budget.rationale = unquote(value),
+            _ => {}
+        }
+    }
+    (!budget.module.is_empty()).then_some(budget)
+}
+
+/// Read every shard, keyed by the module it budgets.
+fn collect_budgets(cwd: &Path) -> BTreeMap<String, ModuleBudget> {
+    let mut budgets = BTreeMap::new();
+    let Ok(entries) = fs::read_dir(budget_dir(cwd)) else {
+        return budgets;
+    };
+    for entry in entries.filter_map(std::result::Result::ok) {
+        let path = entry.path();
+        if path.extension().and_then(|value| value.to_str()) != Some("lino") {
+            continue;
+        }
+        let Ok(source) = fs::read_to_string(&path) else {
+            continue;
+        };
+        if let Some(budget) = parse_budget(&source) {
+            budgets.insert(budget.module.clone(), budget);
+        }
+    }
+    budgets
+}
+
+/// The shard file name that budgets a module.
+fn shard_name(module: &str) -> String {
+    format!("{}.lino", module.trim_end_matches(".js"))
+}
+
+/// Render one shard.
+fn render_budget(budget: &ModuleBudget) -> String {
+    format!(
+        "worker_module_budget\n  module \"{}\"\n  ceiling {}\n  rationale \"{}\"\n",
+        budget.module, budget.ceiling, budget.rationale
+    )
+}
+
+/// Every way the recorded budgets and the mirror can disagree.
+fn budget_failures(
+    files: &[WorkerFile],
+    budgets: &BTreeMap<String, ModuleBudget>,
+) -> Vec<String> {
+    let mut failures = Vec::new();
+    for file in files {
+        match budgets.get(&file.module) {
+            None => failures.push(format!(
+                "{} has no budget shard; add {BUDGET_DIR}/{} recording why the module exists \
+                 and how many lines it is allowed",
+                file.path,
+                shard_name(&file.module)
+            )),
+            Some(budget) if file.lines > budget.ceiling => failures.push(format!(
+                "{} grew to {} lines, past its recorded ceiling of {}. Move logic into the \
+                 Rust→WASM worker (src/web/wasm-worker) instead of growing the mirror, or \
+                 re-baseline this one module with `--write` and explain the growth in \
+                 {BUDGET_DIR}/{}",
+                file.path,
+                file.lines,
+                budget.ceiling,
+                shard_name(&file.module)
+            )),
+            Some(_) => {}
+        }
+    }
+    for module in budgets.keys() {
+        if !files.iter().any(|file| &file.module == module) {
+            failures.push(format!(
+                "{BUDGET_DIR}/{} budgets `{module}`, which no longer exists; delete the shard",
+                shard_name(module)
+            ));
+        }
+    }
+    failures
+}
+
 fn total_lines(files: &[WorkerFile]) -> usize {
     files.iter().map(|file| file.lines).sum()
 }
 
+fn classify_budget(failures: usize, total: usize, target: usize) -> BudgetStatus {
+    if failures > 0 {
+        BudgetStatus::Regrown
+    } else if total > target {
+        BudgetStatus::InProgress
+    } else {
+        BudgetStatus::TargetMet
+    }
+}
+
+/// Re-baseline every shard to the current line counts, keeping the rationale.
 #[cfg(not(test))]
-fn print_breakdown(files: &[WorkerFile]) {
-    println!("Worker JavaScript line counts ({WORKER_DIR}/*.js):");
+fn rebaseline(cwd: &Path, files: &[WorkerFile], budgets: &BTreeMap<String, ModuleBudget>) {
+    let directory = budget_dir(cwd);
+    fs::create_dir_all(&directory).expect("Failed to create the budget directory");
     for file in files {
-        println!("  {:>6}  {}", file.lines, file.path);
+        let rationale = budgets
+            .get(&file.module)
+            .map(|budget| budget.rationale.clone())
+            .filter(|rationale| !rationale.is_empty())
+            .unwrap_or_else(|| file.summary.clone());
+        let budget = ModuleBudget {
+            module: file.module.clone(),
+            ceiling: file.lines,
+            rationale,
+        };
+        let path = directory.join(shard_name(&file.module));
+        let rendered = render_budget(&budget);
+        if fs::read_to_string(&path).unwrap_or_default() != rendered {
+            fs::write(&path, rendered).expect("Failed to write a budget shard");
+            println!("  rebaselined  {} -> {} lines", file.module, file.lines);
+        }
+    }
+    for module in budgets.keys() {
+        if !files.iter().any(|file| &file.module == module) {
+            let path = directory.join(shard_name(module));
+            let _ = fs::remove_file(&path);
+            println!("  removed      {module} (no longer in the mirror)");
+        }
     }
 }
 
 #[cfg(not(test))]
 fn main() {
+    use std::process::exit;
+
     println!("\nChecking the UI-glue line budget for the split JavaScript worker...\n");
 
     let cwd = std::env::current_dir().expect("Failed to get current directory");
@@ -178,33 +312,47 @@ fn main() {
         println!("No worker JavaScript files found under {WORKER_DIR}/ — nothing to check.\n");
         exit(0);
     }
+    let budgets = collect_budgets(&cwd);
 
-    print_breakdown(&files);
+    if std::env::args().any(|argument| argument == "--write") {
+        rebaseline(&cwd, &files, &budgets);
+        println!("\nBudget shards re-baselined. Review the diff and explain any growth.\n");
+        exit(0);
+    }
+
+    println!("Worker JavaScript line counts ({WORKER_DIR}/*.js):");
+    for file in &files {
+        let ceiling = budgets
+            .get(&file.module)
+            .map_or_else(|| "  none".to_string(), |budget| budget.ceiling.to_string());
+        println!("  {:>6} / {:>6}  {}", file.lines, ceiling, file.path);
+    }
+
     let total = total_lines(&files);
-    println!(
-        "\n  total: {total} lines (ceiling {CEILING_TOTAL_LINES}, target {TARGET_TOTAL_LINES})\n"
-    );
+    let ceiling: usize = budgets.values().map(|budget| budget.ceiling).sum();
+    println!("\n  total: {total} lines (summed ceilings {ceiling}, target {TARGET_TOTAL_LINES})\n");
 
-    match classify_budget(total, CEILING_TOTAL_LINES, TARGET_TOTAL_LINES) {
+    let failures = budget_failures(&files, &budgets);
+    match classify_budget(failures.len(), total, TARGET_TOTAL_LINES) {
         BudgetStatus::Regrown => {
-            let over = total - CEILING_TOTAL_LINES;
+            for failure in &failures {
+                println!("::error::{failure}");
+            }
             println!(
-                "::error::Worker JavaScript grew by {over} line(s) past the {CEILING_TOTAL_LINES}-line ceiling."
-            );
-            println!(
-                "The mirror cannot silently regrow: move logic into the Rust→WASM worker\n\
-                 (src/web/wasm-worker) instead of adding it to {WORKER_DIR}/*.js.\n"
+                "\n{} module budget violation(s). The mirror cannot silently regrow.\n",
+                failures.len()
             );
             exit(1);
         }
         BudgetStatus::InProgress => {
             let remaining = total - TARGET_TOTAL_LINES;
             println!(
-                "Within the ratchet ceiling. {remaining} line(s) above the {TARGET_TOTAL_LINES}-line UI-glue target."
+                "Every module is within its own ceiling. {remaining} line(s) above the \
+                 {TARGET_TOTAL_LINES}-line UI-glue target."
             );
             println!(
-                "Migrate more solver logic into the Rust→WASM worker, then lower\n\
-                 CEILING_TOTAL_LINES in this script to lock in the reduction.\n"
+                "Migrate more solver logic into the Rust→WASM worker, then run\n\
+                 `rust-script scripts/check-worker-line-budget.rs --write` to lock in the drop.\n"
             );
             exit(0);
         }
@@ -242,25 +390,48 @@ mod tests {
         fs::write(worker.join(name), content).unwrap();
     }
 
-    #[test]
-    fn classifies_regrowth_past_ceiling() {
-        assert_eq!(
-            classify_budget(101, 100, 10),
-            BudgetStatus::Regrown,
-            "over the ceiling must fail"
-        );
-        assert_eq!(
-            classify_budget(100, 100, 10),
-            BudgetStatus::InProgress,
-            "exactly at the ceiling is allowed"
-        );
+    fn write_budget(dir: &Path, module: &str, ceiling: usize) {
+        let budgets = dir.join(BUDGET_DIR);
+        fs::create_dir_all(&budgets).unwrap();
+        let budget = ModuleBudget {
+            module: module.to_string(),
+            ceiling,
+            rationale: "mirror".to_string(),
+        };
+        fs::write(budgets.join(shard_name(module)), render_budget(&budget)).unwrap();
     }
 
     #[test]
-    fn classifies_in_progress_and_target_met() {
-        assert_eq!(classify_budget(50, 100, 10), BudgetStatus::InProgress);
-        assert_eq!(classify_budget(10, 100, 10), BudgetStatus::TargetMet);
-        assert_eq!(classify_budget(9, 100, 10), BudgetStatus::TargetMet);
+    fn a_shard_round_trips_through_render_and_parse() {
+        let budget = ModuleBudget {
+            module: "formal_ai_worker_how_to_guide.js".to_string(),
+            ceiling: 853,
+            rationale: "Bounded how-to synthesis, mirrored from src/how_to_guide*.rs.".to_string(),
+        };
+        assert_eq!(parse_budget(&render_budget(&budget)), Some(budget));
+    }
+
+    #[test]
+    fn the_default_rationale_is_the_modules_own_leading_comment() {
+        assert_eq!(
+            leading_summary("// A wrapped opening\n// sentence about the mirror.\n\nconst X = 1;\n"),
+            "A wrapped opening sentence about the mirror."
+        );
+        assert_eq!(
+            leading_summary("// Worker module 22. Issue #708 browser mirror.\nconst X = 1;\n"),
+            "Issue #708 browser mirror.",
+            "the mechanical split marker is boilerplate, not a subject"
+        );
+        assert_eq!(
+            leading_summary("// Worker module 6 of 21. Loaded by ../formal_ai_worker.js.\n"),
+            "Loaded by ../formal_ai_worker.js."
+        );
+        assert_eq!(
+            leading_summary("// Worker module 24.\nconst X = 1;\n"),
+            "",
+            "a module that says only which number it is has no summary to offer"
+        );
+        assert_eq!(leading_summary("const X = 1;\n"), "");
     }
 
     #[test]
@@ -277,6 +448,76 @@ mod tests {
         assert_eq!(files[0].lines, 12);
         assert_eq!(files[1].lines, 8);
         assert_eq!(total_lines(&files), 20);
+    }
+
+    #[test]
+    fn a_module_within_its_own_ceiling_passes() {
+        let repo = temp_dir("within");
+        write_worker_js(&repo, "formal_ai_worker_00.js", 12);
+        write_budget(&repo, "formal_ai_worker_00.js", 12);
+        let files = collect_worker_files(&repo);
+        assert!(budget_failures(&files, &collect_budgets(&repo)).is_empty());
+    }
+
+    #[test]
+    fn a_module_that_grew_past_its_own_ceiling_fails() {
+        let repo = temp_dir("regrown");
+        write_worker_js(&repo, "formal_ai_worker_00.js", 13);
+        write_budget(&repo, "formal_ai_worker_00.js", 12);
+        let files = collect_worker_files(&repo);
+        let failures = budget_failures(&files, &collect_budgets(&repo));
+        assert!(
+            failures.iter().any(|failure| failure.contains("grew to 13 lines")),
+            "{failures:?}"
+        );
+    }
+
+    #[test]
+    fn one_module_cannot_fund_its_growth_out_of_another_modules_savings() {
+        // The single-constant ratchet this replaced accepted exactly this trade:
+        // 00 shrinks by 5, 01 grows by 5, the total is unchanged and nobody
+        // notices that the mirror grew where it was supposed to shrink.
+        let repo = temp_dir("cross-funding");
+        write_worker_js(&repo, "formal_ai_worker_00.js", 7);
+        write_worker_js(&repo, "formal_ai_worker_01.js", 17);
+        write_budget(&repo, "formal_ai_worker_00.js", 12);
+        write_budget(&repo, "formal_ai_worker_01.js", 12);
+        let files = collect_worker_files(&repo);
+        assert_eq!(total_lines(&files), 24, "the total is unchanged");
+        let failures = budget_failures(&files, &collect_budgets(&repo));
+        assert_eq!(failures.len(), 1, "{failures:?}");
+        assert!(failures[0].contains("formal_ai_worker_01.js"), "{failures:?}");
+    }
+
+    #[test]
+    fn a_module_without_a_shard_fails() {
+        let repo = temp_dir("unbudgeted");
+        write_worker_js(&repo, "formal_ai_worker_00.js", 3);
+        let failures = budget_failures(&collect_worker_files(&repo), &collect_budgets(&repo));
+        assert!(
+            failures.iter().any(|failure| failure.contains("has no budget shard")),
+            "{failures:?}"
+        );
+    }
+
+    #[test]
+    fn a_shard_for_a_deleted_module_fails() {
+        let repo = temp_dir("stale");
+        write_worker_js(&repo, "formal_ai_worker_00.js", 3);
+        write_budget(&repo, "formal_ai_worker_00.js", 3);
+        write_budget(&repo, "formal_ai_worker_99.js", 3);
+        let failures = budget_failures(&collect_worker_files(&repo), &collect_budgets(&repo));
+        assert!(
+            failures.iter().any(|failure| failure.contains("no longer exists")),
+            "{failures:?}"
+        );
+    }
+
+    #[test]
+    fn classifies_regrowth_in_progress_and_target_met() {
+        assert_eq!(classify_budget(1, 50, 100), BudgetStatus::Regrown);
+        assert_eq!(classify_budget(0, 101, 100), BudgetStatus::InProgress);
+        assert_eq!(classify_budget(0, 100, 100), BudgetStatus::TargetMet);
     }
 
     #[test]

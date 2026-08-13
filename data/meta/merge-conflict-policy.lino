@@ -1,0 +1,139 @@
+merge_conflict_policy
+  issue 991
+  purpose "Remove the structural causes of merge conflicts so two branches touching unrelated work never collide."
+  evidence "scripts/analyze-merge-conflicts.py ranks the paths that actually needed manual resolution across every merge commit in this repository."
+  analysis "docs/case-studies/issue-991/merge-conflict-analysis.md"
+  regenerate_all "bash scripts/regenerate-derived-artifacts.sh"
+  verify "rust-script scripts/check-merge-conflict-policy.rs"
+  invariant needs_no_local_git_config
+    description "Every mechanism uses git's built-in union driver or a committed generator, so a fresh clone is already conflict-proof without running any git config command."
+  invariant every_union_file_is_verified
+    description "A union merge never blocks a merge, so each union-merged path must have a checker that fails when the unioned result is not canonical, unless the path declares union_is_terminal because every union of it is already correct."
+  cause append_only_list
+    description "A file whose whole body is one canonically ordered list of entries. Two branches appending adjacent entries conflict even though the entries are unrelated."
+    mechanism union_merge_then_normalize
+    resolution "git's built-in union driver keeps both inserted entries with no conflict; scripts/normalize-ordered-lists.rs restores the canonical order and removes duplicates."
+    needs_git_config false
+  cause mixed_list_and_code
+    description "A list of entries that shares a file with real logic. The file cannot be union merged, because a union of two logic edits can compile and still be wrong."
+    mechanism extract_list_then_union
+    resolution "The list moves into a sibling file that contains nothing else; only that file is union merged."
+    needs_git_config false
+  cause derived_artifact
+    description "A file produced from other committed sources by a generator. Any conflict in it is noise: the merged sources determine the correct content."
+    mechanism union_merge_then_regenerate
+    resolution "The union keeps the merge unblocked, the artifact's own verifier fails while the union result is stale, and scripts/regenerate-derived-artifacts.sh rebuilds it from the merged sources."
+    needs_git_config false
+  cause append_only_document
+    description "A long prose document that every issue appends a new section to, so every branch edits the same end-of-file region."
+    mechanism shard_per_issue
+    resolution "Sections live one file per issue under a shard directory; the assembled document is a derived artifact."
+    needs_git_config false
+  cause sequential_file_name
+    description "A new file claims the next free number in a sequence, so two branches independently create the same path and git reports an add/add conflict that no ordering can prevent."
+    mechanism content_named_file
+    resolution "New files are named after what they contain, so two branches produce two different names."
+    needs_git_config false
+  cause global_scalar_ratchet
+    description "One shared constant records a repository-wide total, so every branch that changes any input rewrites the same line."
+    mechanism shard_per_subject
+    resolution "The budget is recorded per subject in its own file and summed; a branch only edits the shard it changed."
+    needs_git_config false
+  cause automation_placeholder
+    description "Branch-creation automation commits a placeholder whose body names the branch, so every branch carries a different body for the same path."
+    mechanism union_merge_then_normalize
+    resolution "The placeholder is union merged: keeping both provenance lines is the correct result and never conflicts."
+    needs_git_config false
+  artifact rust_declaration_lists
+    cause append_only_list
+    merge union
+    list_kind rust_declarations
+    normalize "rust-script scripts/normalize-ordered-lists.rs --write"
+    verify "rust-script scripts/normalize-ordered-lists.rs"
+    observed_conflicts 411
+    note "Every body line is a mod declaration or a re-export block, so a union of two branches is always a superset of two correct files and the normalizer restores the canonical order."
+    file
+      path "src/lib.rs"
+    file
+      path "tests/unit/mod.rs"
+      declares_directory "tests/unit"
+    file
+      path "tests/unit/specification/mod.rs"
+      declares_directory "tests/unit/specification"
+    file
+      path "tests/integration/mod.rs"
+      declares_directory "tests/integration"
+    file
+      path "tests/source/mod.rs"
+    file
+      path "src/solver_handlers/modules.rs"
+      extracted_from "src/solver_handlers/mod.rs"
+      declares_directory "src/solver_handlers"
+  artifact worker_module_list
+    cause mixed_list_and_code
+    merge union
+    list_kind js_module_list
+    normalize "rust-script scripts/normalize-ordered-lists.rs --write"
+    verify "rust-script scripts/normalize-ordered-lists.rs"
+    observed_conflicts 99
+    file
+      path "src/web/worker-modules.js"
+      extracted_from "src/web/formal_ai_worker.js"
+      declares_directory "src/web/worker"
+      note "The list is exactly the sorted contents of the directory, so the normalizer regenerates it instead of merely reordering it."
+  artifact branch_placeholder
+    cause automation_placeholder
+    merge union
+    union_is_terminal true
+    note "The file exists only to keep a directory tracked; its body is provenance. Any union of two provenance lines is already the correct content, so there is nothing left for a normalizer to do."
+    file
+      path ".gitkeep"
+    observed_conflicts 44
+  artifact seed_total_closure
+    cause derived_artifact
+    merge union
+    path "data/seed/closure-generated-*.lino"
+    regenerate "python3 scripts/close-total.py"
+    verify "python3 scripts/audit-total-closure.py"
+    observed_conflicts 261
+  artifact self_ast_census
+    cause derived_artifact
+    merge union
+    path "data/meta/self-ast/*.lino"
+    path "data/meta/self-ast.lino"
+    regenerate "cargo run --example regenerate_self_ast_census"
+    verify "cargo test --test unit issue_673_self_ast_census"
+    observed_conflicts 145
+  artifact seed_metadata_gaps
+    cause derived_artifact
+    merge union
+    path "data/meta/seed-metadata-gaps-*.lino"
+    regenerate "rust-script scripts/audit-seed-metadata.rs --write"
+    verify "rust-script scripts/audit-seed-metadata.rs"
+    observed_conflicts 75
+  artifact hardcoded_language_allowlist
+    cause derived_artifact
+    merge union
+    path "scripts/hardcoded-language-allowlist.txt"
+    regenerate "rust-script scripts/check-hardcoded-language.rs --write"
+    verify "rust-script scripts/check-hardcoded-language.rs"
+    observed_conflicts 11
+  artifact requirements_document
+    cause append_only_document
+    merge union
+    path "REQUIREMENTS.md"
+    shard_directory "docs/requirements"
+    regenerate "rust-script scripts/assemble-requirements.rs --write"
+    verify "rust-script scripts/assemble-requirements.rs"
+    observed_conflicts 64
+  artifact worker_modules
+    cause sequential_file_name
+    path "src/web/worker/formal_ai_worker_*.js"
+    frozen_prefix_max 24
+    note "formal_ai_worker_00 through formal_ai_worker_24 predate this policy and keep their numbers; every module added after issue 991 is named after its subject."
+    observed_conflicts 11
+  artifact worker_line_budget
+    cause global_scalar_ratchet
+    path "data/meta/worker-line-budget/*.lino"
+    verify "rust-script scripts/check-worker-line-budget.rs"
+    note "One shard per worker module replaces the single CEILING_TOTAL_LINES constant that every worker change used to rewrite."

@@ -54,35 +54,13 @@ try {
   });
 }
 
-const FORMAL_AI_WORKER_MODULES = [
-  "worker/formal_ai_worker_00.js",
-  "worker/formal_ai_worker_01.js",
-  "worker/formal_ai_worker_02.js",
-  "worker/formal_ai_worker_03.js",
-  "worker/formal_ai_worker_04.js",
-  "worker/formal_ai_worker_05.js",
-  "worker/formal_ai_worker_06.js",
-  "worker/formal_ai_worker_07.js",
-  "worker/formal_ai_worker_08.js",
-  "worker/formal_ai_worker_09.js",
-  "worker/formal_ai_worker_10.js",
-  "worker/formal_ai_worker_11.js",
-  "worker/formal_ai_worker_12.js",
-  "worker/formal_ai_worker_13.js",
-  "worker/formal_ai_worker_14.js",
-  "worker/formal_ai_worker_15.js",
-  "worker/formal_ai_worker_16.js",
-  "worker/formal_ai_worker_17.js",
-  "worker/formal_ai_worker_18.js",
-  "worker/formal_ai_worker_19.js",
-  "worker/formal_ai_worker_20.js",
-  "worker/formal_ai_worker_21.js",
-  "worker/formal_ai_worker_22.js",
-  "worker/formal_ai_worker_23.js",
-  "worker/formal_ai_worker_24.js",
-  "worker/formal_ai_worker_how_to_guide.js",
-];
+// The module list lives in its own file so it can be union merged: see
+// `data/meta/merge-conflict-policy.lino`. Two branches that each add a worker
+// module then produce a superset instead of an add/add conflict, and
+// `rust-script scripts/normalize-ordered-lists.rs --write` regenerates the list
+// from the directory itself.
+importScripts(withAssetVersion("worker-modules.js"));
 
-for (const modulePath of FORMAL_AI_WORKER_MODULES) {
+for (const modulePath of self.FORMAL_AI_WORKER_MODULES) {
   importScripts(withAssetVersion(modulePath));
 }
