@@ -83,6 +83,8 @@ fn issue_921_hive_mind_direction_uses_the_real_public_and_executor_boundaries() 
             "solve \"${ISSUE_URL}\" --tool agent --model formal-ai",
             "--attach-logs --verbose",
             "--only-prepare-command",
+            "NPM_CONFIG_PREFIX",
+            "${SCRATCH}/npm-global",
             "run-hive-executor.mjs",
             "formal-ai-to-hive-mind.txt",
             "agent replay",
