@@ -725,6 +725,21 @@ image by default and preserves the inner Docker daemon under the named
 `formal-ai-telegram-docker` volume. Set `FORMAL_AI_DOCKER_IMAGE` to run a locally
 built image or an optional Docker Hub mirror with the same compose file.
 
+If a pull fails with `error from registry: unauthorized`, the GHCR package is
+private rather than the image being missing (issue #1001). Check it without
+credentials — `200` means public, `401` private, `403` no such package:
+
+```bash
+curl -s -o /dev/null -w '%{http_code}\n' \
+  "https://ghcr.io/token?service=ghcr.io&scope=repository:link-assistant/formal-ai:pull"
+```
+
+Until the package is public, either `docker login ghcr.io` with a token that has
+`read:packages`, or build from the public crate:
+`cargo install formal-ai --locked`. Each release now runs
+`scripts/verify-ghcr-visibility.sh`, so a private image fails the release
+instead of surfacing downstream.
+
 The same image and compose file also run the **OpenAI-compatible API server** for
 agentic mode and the idle **Agent CLI environment**, under opt-in Compose
 profiles so `docker compose up` keeps starting only the Telegram bot:
