@@ -127,6 +127,10 @@ pub struct ExternalDispatchArgs {
     /// Give every CLI the same task and select one verified winner.
     #[arg(long, default_value_t = false)]
     pub compare: bool,
+    /// Attempt the whole task first and split only what actually fails,
+    /// escalating an irreducible failure to the next CLI in the list.
+    #[arg(long, default_value_t = false, conflicts_with = "compare")]
+    pub incremental: bool,
     #[arg(long)]
     pub output_dir: Option<PathBuf>,
     #[arg(long, default_value = formal_ai::DEFAULT_MODEL)]
@@ -260,6 +264,8 @@ fn run_dispatch(args: ExternalDispatchArgs) -> Result<(), Box<dyn Error>> {
     let mut config = DispatchConfig::new(args.task, &workspace, args.cli);
     config.mode = if args.compare {
         DispatchMode::Compare
+    } else if args.incremental {
+        DispatchMode::Incremental
     } else {
         DispatchMode::Decompose
     };
@@ -300,6 +306,12 @@ fn run_dispatch(args: ExternalDispatchArgs) -> Result<(), Box<dyn Error>> {
     }
     let passed = match report.mode {
         DispatchMode::Compare => report.ledger.winner.is_some(),
+        // A failure is the input of this mode, not its verdict: only the root
+        // task ending up solved counts, however many attempts that took.
+        DispatchMode::Incremental => report
+            .incremental
+            .as_ref()
+            .is_some_and(|trace| trace.solved),
         DispatchMode::Decompose => report
             .sessions
             .iter()

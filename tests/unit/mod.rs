@@ -189,6 +189,7 @@ mod issue_962_word_operator_parity;
 mod issue_988_stock_rust_install;
 mod issue_989;
 mod issue_991_how_to_synthesis;
+mod issue_991_incremental_decomposition;
 mod issue_996_markdown;
 mod local_surface;
 mod memory_learning;
