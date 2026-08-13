@@ -423,7 +423,7 @@ Requirement-level status by area, updated:
 | Self-improvement that compounds | Partial: #656/#657/#701 closed (gated promotion, release self-hosting metric, generalized adoption for one class); anticipatory learning #705 remains open; making the loop routinely produce merged work is E77 |
 | Symbolic world models (#649) | Done for #686/#702 (was stale "Partial ... behaviors unimplemented"): `src/world_model.rs` implements contexts, STRIPS-style actions, justification-based recalculation, and dialogue behaviors, covered by `tests/unit/issue_649_world_model.rs` |
 | Agentic-CLI server correctness | Reopened as Partial: #671/#681/#682/#687 closed, but the #848 coding ladder (2 of 13 rungs, zero write effects) exposed the new defect cluster [#902](https://github.com/link-assistant/formal-ai/issues/902)-[#909](https://github.com/link-assistant/formal-ai/issues/909); consolidated behind the ladder ratchet as E69 |
-| Formal AI as orchestrator of external agent CLIs, Hive-Mind dispatch | Done for #703; the missing piece is the end-to-end gate in both directions (hive-mind driving Formal AI as the model, per hive-mind#2059), owned by E74 |
+| Formal AI as orchestrator of external agent CLIs, Hive-Mind dispatch | Done for #703 and #921: release CI now crosses the real Hive Mind -> Agent CLI -> Formal AI boundary and the Formal AI -> external Agent CLI boundary, commits both fixture effects, replays the hash-chained session, and fails on nonzero child exits |
 | Parallel candidate portfolios + budget-driven search | Done for #662/#704 (was stale "Not done"): `src/draft_portfolio.rs` and `src/solver_search.rs` with `SolverConfig::compute_budget` |
 | Anticipatory learning | Not done — [#705](https://github.com/link-assistant/formal-ai/issues/705) |
 | "All languages" through the meta language | Partial: #660/#706 closed (any-language protocol, PR #880); #917 closes E70's first natural/formal statement slice for all five registered seed languages and FOL, while broader language and statement coverage remains incremental seed growth |
@@ -448,7 +448,7 @@ over agent-harness fixes (foundation blocker), E70 general natural-formal
 translation (delivered by #917 for the seeded FOL statement slice), E71
 minimal-core boundary and seed-metadata audit (delivered by #918), E72
 research-driven coding knowledge loop, E73 question-necessity protocol, E74
-hive-mind end-to-end integration gate, E75 method learning for the
+hive-mind end-to-end integration gate (delivered by #921), E75 method learning for the
 universal algorithm, E76 formal-reasoning coverage growth, E77
 self-development loop. Issue URLs are recorded in
 `docs/case-studies/issue-914/proposed-issues.md`.

@@ -1742,6 +1742,21 @@ architectural goal into audited data and shrink-only gates. See PR #986 and
 | R918-5 | Represent all other metadata gaps as reviewable data, not an informal document. | Sixteen deterministic `seed-metadata-gaps-*.lino` shards record the exact missing fields for the other 3,447 concepts, and the auditor rejects stale, omitted, or invented rows. |
 | R918-6 | Preserve the existing regression floor and reproducible self-hosting evidence. | Focused Rust/script tests, default CI gates, raw issue/PR evidence, and one of five reviewed leaves produced by the real Formal AI/Agent CLI loop are preserved in the case study. |
 
+## Issue #921 Hive-Mind Full-Circle Integration Gate
+
+Issue [#921](https://github.com/link-assistant/formal-ai/issues/921) closes E74
+after upstream Hive Mind added native Formal AI dispatch. The complete evidence,
+root-cause analysis, and regeneration protocol are in
+`docs/case-studies/issue-921/`.
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R921-1 | Prove the exact Hive Mind Agent/Formal-AI invocation and run its production executor through the real Agent CLI and candidate Formal AI server. | Public `solve` command preparation selects `agent --model formalai/formal-ai --verbose`; the shipped `executeAgentCommand` then creates and commits the byte-exact Hive Mind directional effect. |
+| R921-2 | Dispatch an external Agent CLI from Formal AI on a hive-mind-shaped issue task. | Public `formal-ai agent run` executes the extracted acceptance payload through the installed Agent CLI and live Formal AI server; its exact effect and fixture commit are preserved. |
+| R921-3 | Preserve deterministic, replayable proof rather than log-only success. | Both directions record exact result bytes, patches, and full commit IDs; the reverse direction commits canonical session JSON whose hash-chained events replay and include the workspace effect. |
+| R921-4 | Propagate nonzero Agent failures honestly in both directions. | Exit-23 probes prove Hive Mind returns 23 with no effect commit and Formal AI returns nonzero with a failed session retaining exit code 23. |
+| R921-5 | Run the full circle continuously with traceable diagnostics. | The focused regression pins evidence and workflow wiring; release CI installs Hive Mind, runs the harness, and uploads complete raw traces on failure. |
+
 ## Issue #891 Equation Corpus Ratchet
 
 Issue [#891](https://github.com/link-assistant/formal-ai/issues/891) (child of

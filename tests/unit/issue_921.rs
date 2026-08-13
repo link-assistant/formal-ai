@@ -3,8 +3,8 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 const ISSUE_URL: &str = "https://github.com/link-assistant/formal-ai/issues/921";
-const HIVE_RESULT: &str = "hive mind drove agent cli through formal ai\n";
-const ORCHESTRATOR_RESULT: &str = "formal ai dispatched a hive-mind-shaped issue\n";
+const HIVE_RESULT: &str = "hive mind drove agent cli through formal ai";
+const ORCHESTRATOR_RESULT: &str = "formal ai dispatched a hive-mind-shaped issue";
 
 #[test]
 fn issue_921_both_directions_are_committed_and_traceable() {
@@ -89,9 +89,8 @@ fn issue_921_hive_mind_direction_uses_the_real_public_and_executor_boundaries() 
             "exit 23",
         ],
     );
-    let executor = read(root.join(
-        "experiments/issue_921_hive_mind_full_circle/run-hive-executor.mjs",
-    ));
+    let executor =
+        read(root.join("experiments/issue_921_hive_mind_full_circle/run-hive-executor.mjs"));
     assert_contains_all(
         "Hive Mind production executor driver",
         &executor,
@@ -109,13 +108,17 @@ fn issue_921_hive_mind_direction_uses_the_real_public_and_executor_boundaries() 
 
     let evidence = root.join("docs/case-studies/issue-921/hive-mind-to-formal-ai");
     assert_eq!(read(evidence.join("result.txt")), HIVE_RESULT);
-    assert_eq!(read(evidence.join("invocation.txt")).trim(), format!(
-        "solve {ISSUE_URL} --tool agent --model formal-ai --attach-logs --verbose"
-    ));
+    assert_eq!(
+        read(evidence.join("invocation.txt")).trim(),
+        format!("solve {ISSUE_URL} --tool agent --model formal-ai --attach-logs --verbose")
+    );
     assert_contains_all(
         "Hive Mind prepared command",
         &read(evidence.join("prepared-command.txt")),
-        &["agent --model formalai/formal-ai --verbose", "execution=skipped"],
+        &[
+            "agent --model formalai/formal-ai --verbose",
+            "execution=skipped",
+        ],
     );
     assert_contains_all(
         "Hive Mind workspace commit",
@@ -140,7 +143,11 @@ fn issue_921_formal_ai_direction_has_a_canonical_hash_chained_replay() {
     assert_contains_all(
         "hive-mind-shaped task",
         &read(evidence.join("task.md")),
-        &[ISSUE_URL, "Acceptance criteria", "formal-ai-to-hive-mind.txt"],
+        &[
+            ISSUE_URL,
+            "Acceptance criteria",
+            "formal-ai-to-hive-mind.txt",
+        ],
     );
     assert_contains_all(
         "Formal AI workspace commit",
@@ -155,6 +162,10 @@ fn issue_921_formal_ai_direction_has_a_canonical_hash_chained_replay() {
     assert_eq!(session.status, AgentStatus::Succeeded);
     assert_eq!(session.target, AgentTarget::FormalAi);
     assert_eq!(session.cli, "agent");
+    assert_eq!(
+        session.task,
+        "Create file formal-ai-to-hive-mind.txt containing formal ai dispatched a hive-mind-shaped issue"
+    );
     assert_eq!(session.exit_code, Some(0));
     assert!(session.passed());
     assert!(
@@ -165,13 +176,20 @@ fn issue_921_formal_ai_direction_has_a_canonical_hash_chained_replay() {
         "the hash-chained session must record the requested workspace effect"
     );
     assert!(
-        session.events.iter().any(|event| event.kind == "workspace_effect"),
+        session
+            .events
+            .iter()
+            .any(|event| event.kind == "workspace_effect"),
         "the event chain must include the observed effect"
     );
     assert_contains_all(
         "Formal AI failure probe",
         &read(evidence.join("failure-propagation.txt")),
-        &["agent_exit=23", "orchestrator_exit=1", "session_status=failed"],
+        &[
+            "agent_exit=23",
+            "orchestrator_exit=1",
+            "session_status=failed",
+        ],
     );
 
     assert_contains_all(
