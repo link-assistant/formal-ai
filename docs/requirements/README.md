@@ -40,6 +40,19 @@ An issue may have several shards — issue #398, for example, has one for its
 original requirements and one per review comment. Give each a distinct subject
 slug; they assemble in file-name order.
 
+## Links
+
+Write links relative to the shard, because a shard is read on its own page as
+well as through the assembled document: `../upload-memory.md`, not
+`docs/upload-memory.md`. Assembly rebases them to the repository root, so the
+generated `REQUIREMENTS.md` carries `docs/upload-memory.md` and `--split`
+rebases them back. Absolute URLs, in-page anchors, and root-anchored paths mean
+the same thing from both places and are left untouched.
+
+`rust-script scripts/assemble-requirements.rs` fails when a shard's relative
+link does not resolve from this directory, which is where the repository's link
+checker reads it.
+
 ## Assembly order
 
 The order is read entirely from the file name, so there is no shared index file

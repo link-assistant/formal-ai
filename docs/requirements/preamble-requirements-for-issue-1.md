@@ -4,7 +4,7 @@ This document turns issue [#1](https://github.com/link-assistant/formal-ai/issue
 
 Per konard's 2026-08-04 standing requirement, every row below has a matching
 delivery/test-traceability row in
-[`docs/requirements-traceability.md`](docs/requirements-traceability.md):
+[`docs/requirements-traceability.md`](../requirements-traceability.md):
 when it was delivered, the automated test that pins it, and manual test
 confirmation (with honest "not yet confirmed" / "not delivered" entries
 where no record exists yet).

@@ -7,7 +7,7 @@ file and uploaded it, but nothing read the numbers, so no threshold could fail
 and no decrease could be detected. The gate lives in
 `scripts/check-coverage-ratchet.rs`, the reviewed floors in
 `coverage/baseline.json`, and the design rationale in
-[`docs/design/coverage-ratchet.md`](docs/design/coverage-ratchet.md).
+[`docs/design/coverage-ratchet.md`](../design/coverage-ratchet.md).
 
 | ID | Requirement | Status / Evidence |
 | --- | --- | --- |

@@ -110,6 +110,91 @@ fn shard_name(heading: &str) -> String {
     }
 }
 
+/// Whether a markdown link target is resolved against the file that holds it.
+///
+/// An absolute URL, an in-page anchor, and a root-anchored path all mean the
+/// same thing wherever the text ends up, so only these are left untouched.
+fn is_document_relative(target: &str) -> bool {
+    !(target.is_empty()
+        || target.starts_with('#')
+        || target.starts_with('/')
+        || target.contains("://")
+        || target.starts_with("mailto:"))
+}
+
+/// Resolve `.` and `..` segments textually, without touching the filesystem.
+fn normalize(path: &str) -> String {
+    let mut parts: Vec<&str> = Vec::new();
+    for part in path.split('/') {
+        match part {
+            "" | "." => {}
+            ".." if matches!(parts.last(), Some(&last) if last != "..") => {
+                parts.pop();
+            }
+            other => parts.push(other),
+        }
+    }
+    parts.join("/")
+}
+
+/// A shard's link target as the repository root sees it.
+///
+/// A shard is a document in its own right: it is read in an editor and rendered
+/// on its own page, so its links are written relative to `docs/requirements/`.
+/// `REQUIREMENTS.md` is assembled at the repository root, so the same target
+/// has to be rebased on the way in.
+fn to_root_relative(target: &str) -> String {
+    if !is_document_relative(target) {
+        return target.to_string();
+    }
+    normalize(&format!("{SHARDS}/{target}"))
+}
+
+/// The inverse: a root document's link target as a shard has to write it.
+fn to_shard_relative(target: &str) -> String {
+    if !is_document_relative(target) {
+        return target.to_string();
+    }
+    let target = normalize(target);
+    let base: Vec<&str> = SHARDS.split('/').collect();
+    let parts: Vec<&str> = target.split('/').collect();
+    let shared = base
+        .iter()
+        .zip(&parts)
+        .take_while(|(left, right)| left == right)
+        .count();
+    let mut rebased: Vec<&str> = vec![".."; base.len() - shared];
+    rebased.extend(&parts[shared..]);
+    rebased.join("/")
+}
+
+/// Rewrite every markdown link target in `body` through `rebase`.
+///
+/// Only `](target)` is rewritten; a reference definition or an autolink names no
+/// relative path in this document, and a target holding a `)` is left alone
+/// rather than guessed at.
+fn rewrite_links(body: &str, rebase: &dyn Fn(&str) -> String) -> String {
+    let mut rewritten = String::with_capacity(body.len());
+    let mut rest = body;
+    while let Some(open) = rest.find("](") {
+        let after = &rest[open + 2..];
+        let Some(close) = after.find(')') else {
+            break;
+        };
+        let (target, title) = match after[..close].split_once(char::is_whitespace) {
+            Some((target, title)) => (target, format!(" {title}")),
+            None => (&after[..close], String::new()),
+        };
+        rewritten.push_str(&rest[..open + 2]);
+        rewritten.push_str(&rebase(target));
+        rewritten.push_str(&title);
+        rewritten.push(')');
+        rest = &after[close + 1..];
+    }
+    rewritten.push_str(rest);
+    rewritten
+}
+
 /// Read the shard directory in assembly order.
 fn ordered_shards(directory: &Path) -> Result<Vec<PathBuf>, String> {
     let mut shards: Vec<(Group, String, PathBuf)> = Vec::new();
@@ -140,7 +225,8 @@ fn assemble(shards: &[PathBuf]) -> Result<String, String> {
     for (index, shard) in shards.iter().enumerate() {
         let body = fs::read_to_string(shard)
             .map_err(|error| format!("cannot read {}: {error}", shard.display()))?;
-        let body = body.trim_end_matches('\n');
+        let body = rewrite_links(body.trim_end_matches('\n'), &to_root_relative);
+        let body = body.as_str();
         if index > 0 {
             document.push('\n');
         }
@@ -176,6 +262,61 @@ fn shard_violations(shards: &[PathBuf], read: &dyn Fn(&Path) -> String) -> Vec<S
     failures
 }
 
+/// Every document-relative link target in `body`, anchors stripped.
+fn document_relative_targets(body: &str) -> Vec<String> {
+    let mut targets = Vec::new();
+    let mut rest = body;
+    while let Some(open) = rest.find("](") {
+        let after = &rest[open + 2..];
+        let Some(close) = after.find(')') else {
+            break;
+        };
+        let target = after[..close]
+            .split_whitespace()
+            .next()
+            .unwrap_or_default()
+            .split('#')
+            .next()
+            .unwrap_or_default();
+        if is_document_relative(target) {
+            targets.push(target.to_string());
+        }
+        rest = &after[close + 1..];
+    }
+    targets
+}
+
+/// A shard's relative links have to resolve from the shard's own directory.
+///
+/// A shard is read on its own page as well as through the assembled document,
+/// and the repository's link checker reads it there. Checking it here names the
+/// shard that broke the link instead of reporting a path that exists nowhere.
+fn link_violations(
+    shards: &[PathBuf],
+    read: &dyn Fn(&Path) -> String,
+    exists: &dyn Fn(&Path) -> bool,
+) -> Vec<String> {
+    let mut failures = Vec::new();
+    for shard in shards {
+        let directory = shard.parent().unwrap_or(Path::new("."));
+        let name = shard
+            .file_name()
+            .and_then(|name| name.to_str())
+            .unwrap_or_default();
+        for target in document_relative_targets(&read(shard)) {
+            if !exists(&directory.join(&target)) {
+                failures.push(format!(
+                    "{SHARDS}/{name} links to `{target}`, which does not exist relative to \
+                     {SHARDS}/. Write shard links relative to the shard; assembly rebases \
+                     them to `{}`.",
+                    to_root_relative(&target)
+                ));
+            }
+        }
+    }
+    failures
+}
+
 /// Write the current document out as one file per section.
 #[cfg(not(test))]
 fn split(root: &Path) -> Result<usize, String> {
@@ -189,12 +330,18 @@ fn split(root: &Path) -> Result<usize, String> {
     let mut written = 0;
     let title = preamble.lines().next().unwrap_or("# Requirements");
     let name = format!("preamble-{}.md", slug(title));
-    write_shard(&directory.join(&name), &preamble)?;
+    write_shard(
+        &directory.join(&name),
+        &rewrite_links(&preamble, &to_shard_relative),
+    )?;
     written += 1;
 
     for section in &sections {
         let heading = section.lines().next().unwrap_or_default();
-        write_shard(&directory.join(shard_name(heading)), section)?;
+        write_shard(
+            &directory.join(shard_name(heading)),
+            &rewrite_links(section, &to_shard_relative),
+        )?;
         written += 1;
     }
     Ok(written)
@@ -235,7 +382,8 @@ fn main() {
         std::process::exit(1);
     });
     let read = |path: &Path| fs::read_to_string(path).unwrap_or_default();
-    let failures = shard_violations(&shards, &read);
+    let mut failures = shard_violations(&shards, &read);
+    failures.extend(link_violations(&shards, &read, &|path| path.exists()));
     if !failures.is_empty() {
         for failure in &failures {
             println!("::error::{failure}");
@@ -353,6 +501,72 @@ mod tests {
             format!("{BANNER}\n\n# Title\n\nIntro.\n\n## Issue #2\n\nb\n")
         );
         let _ = fs::remove_dir_all(&directory);
+    }
+
+    #[test]
+    fn a_shard_link_is_rebased_to_the_repository_root_and_back() {
+        for (shard, root) in [
+            ("../upload-memory.md", "docs/upload-memory.md"),
+            ("../design/coverage-ratchet.md", "docs/design/coverage-ratchet.md"),
+            (
+                "../requirements-traceability.md",
+                "docs/requirements-traceability.md",
+            ),
+            ("../../scripts/close-total.py", "scripts/close-total.py"),
+            ("issue-0709-fusion.md", "docs/requirements/issue-0709-fusion.md"),
+        ] {
+            assert_eq!(to_root_relative(shard), root, "{shard} assembles to {root}");
+            assert_eq!(to_shard_relative(root), shard, "{root} shards to {shard}");
+        }
+    }
+
+    #[test]
+    fn a_link_that_means_the_same_thing_everywhere_is_left_alone() {
+        for target in [
+            "https://example.org/a.md",
+            "#an-anchor",
+            "/docs/absolute.md",
+            "mailto:someone@example.org",
+        ] {
+            assert_eq!(to_root_relative(target), target);
+            assert_eq!(to_shard_relative(target), target);
+        }
+    }
+
+    #[test]
+    fn rewriting_touches_the_target_and_nothing_else() {
+        let shard = "See [`docs/upload-memory.md`](../upload-memory.md) and \
+                     [the spec](https://example.org) (a note) — cost: $1 (approx).\n";
+        let root = "See [`docs/upload-memory.md`](docs/upload-memory.md) and \
+                    [the spec](https://example.org) (a note) — cost: $1 (approx).\n";
+        assert_eq!(rewrite_links(shard, &to_root_relative), root);
+        assert_eq!(rewrite_links(root, &to_shard_relative), shard);
+    }
+
+    #[test]
+    fn a_link_title_survives_rewriting() {
+        assert_eq!(
+            rewrite_links("[a](../b.md \"Title\")", &to_root_relative),
+            "[a](docs/b.md \"Title\")"
+        );
+    }
+
+    #[test]
+    fn a_shard_link_that_resolves_only_from_the_repository_root_fails() {
+        let shards = [PathBuf::from("docs/requirements/issue-0018-memory.md")];
+        let read = |_path: &Path| "## Issue #18\n\nSee [it](docs/upload-memory.md).\n".to_string();
+        let exists = |path: &Path| path == Path::new("docs/upload-memory.md");
+        let failures = link_violations(&shards, &read, &exists);
+        assert_eq!(failures.len(), 1, "{failures:?}");
+        assert!(failures[0].contains("docs/upload-memory.md"), "{failures:?}");
+    }
+
+    #[test]
+    fn a_shard_link_that_resolves_from_the_shard_passes() {
+        let shards = [PathBuf::from("docs/requirements/issue-0018-memory.md")];
+        let read = |_path: &Path| "## Issue #18\n\nSee [it](../upload-memory.md#top).\n".to_string();
+        let exists = |path: &Path| path == Path::new("docs/requirements/../upload-memory.md");
+        assert!(link_violations(&shards, &read, &exists).is_empty());
     }
 
     #[test]
