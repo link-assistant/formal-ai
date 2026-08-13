@@ -954,6 +954,7 @@ pub fn finalize_simple(
     body: &str,
     confidence: f32,
 ) -> SymbolicAnswer {
+    let body = crate::question_necessity::enforce_questions(body, log);
     log.append("intent", intent.to_owned());
     if log.first_of("candidate").is_none() {
         log.append("candidate", intent.to_owned());
@@ -970,11 +971,11 @@ pub fn finalize_simple(
     }
     let trace_id = log.append("trace", intent.to_owned());
     let evidence_links = build_evidence_links(prompt, log, response_link);
-    let links_notation = answer_links_notation(prompt, intent, body, log, &trace_id);
-    let thinking_steps = log.thinking_steps_for_answer(body);
+    let links_notation = answer_links_notation(prompt, intent, &body, log, &trace_id);
+    let thinking_steps = log.thinking_steps_for_answer(&body);
     SymbolicAnswer {
         intent: intent.to_owned(),
-        answer: body.to_owned(),
+        answer: body,
         execution_recipe: None,
         confidence,
         evidence_links,

@@ -175,6 +175,7 @@ pub const IDENTITY_LINO: &str = include_str!("../../data/seed/identity.lino");
 pub const HELLO_WORLD_PROGRAMS_LINO: &str =
     include_str!("../../data/seed/hello-world-programs.lino");
 pub const PROGRAM_PLAN_RULES_LINO: &str = include_str!("../../data/seed/program-plan-rules.lino");
+pub const QUESTION_NECESSITY_LINO: &str = include_str!("../../data/seed/question-necessity.lino");
 pub const SELF_IMPROVEMENT_LOOP_LINO: &str =
     include_str!("../../data/seed/self-improvement-loop.lino");
 pub const DEMO_DIALOGS_LINO: &str = include_str!("../../data/seed/demo-dialogs.lino");
@@ -477,6 +478,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             HELLO_WORLD_PROGRAMS_LINO,
         ),
         ("data/seed/program-plan-rules.lino", PROGRAM_PLAN_RULES_LINO),
+        ("data/seed/question-necessity.lino", QUESTION_NECESSITY_LINO),
         (
             "data/seed/self-improvement-loop.lino",
             SELF_IMPROVEMENT_LOOP_LINO,
