@@ -2,41 +2,51 @@ name: Question necessity ratchet
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened]
     paths:
       - '.github/workflows/question-necessity-ratchet.yml'
+      - '**.rs'
+      - '**/Cargo.toml'
       - 'Cargo.lock'
-      - 'Cargo.toml'
       - 'data/benchmarks/question-necessity-suite.lino'
       - 'data/seed/question-necessity.lino'
-      - 'scripts/check-question-necessity-ratchet.rs'
-      - 'src/question_necessity.rs'
-      - 'src/solver.rs'
-      - 'src/solver_handlers/**'
-      - 'src/solver_synthesis.rs'
-      - 'tests/unit/issue_920_question_necessity.rs'
   push:
     branches: [main]
     paths:
+      - '**.rs'
+      - '**/Cargo.toml'
+      - 'Cargo.lock'
       - 'data/benchmarks/question-necessity-suite.lino'
       - 'data/seed/question-necessity.lino'
-      - 'scripts/check-question-necessity-ratchet.rs'
-      - 'src/question_necessity.rs'
-      - 'src/solver.rs'
-      - 'src/solver_handlers/**'
-      - 'src/solver_synthesis.rs'
-      - 'tests/unit/issue_920_question_necessity.rs'
+      - '.github/workflows/question-necessity-ratchet.yml'
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+env:
+  CARGO_NET_RETRY: '10'
+  CARGO_HTTP_MULTIPLEXING: 'false'
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: -Dwarnings
+  CARGO_INCREMENTAL: '0'
+
 jobs:
   question-necessity-ratchet:
+    name: Question necessity ratchet (issue #920)
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - uses: dtolnay/rust-toolchain@stable
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      - uses: ./.github/actions/setup-sccache
       - name: Install rust-script
         run: bash scripts/install-rust-script.sh
       - name: Test the ratchet checker
