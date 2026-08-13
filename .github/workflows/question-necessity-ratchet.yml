@@ -1,0 +1,53 @@
+name: Question necessity ratchet
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/question-necessity-ratchet.yml'
+      - 'Cargo.lock'
+      - 'Cargo.toml'
+      - 'data/benchmarks/question-necessity-suite.lino'
+      - 'data/seed/question-necessity.lino'
+      - 'scripts/check-question-necessity-ratchet.rs'
+      - 'src/question_necessity.rs'
+      - 'src/solver.rs'
+      - 'src/solver_handlers/**'
+      - 'src/solver_synthesis.rs'
+      - 'tests/unit/issue_920_question_necessity.rs'
+  push:
+    branches: [main]
+    paths:
+      - 'data/benchmarks/question-necessity-suite.lino'
+      - 'data/seed/question-necessity.lino'
+      - 'scripts/check-question-necessity-ratchet.rs'
+      - 'src/question_necessity.rs'
+      - 'src/solver.rs'
+      - 'src/solver_handlers/**'
+      - 'src/solver_synthesis.rs'
+      - 'tests/unit/issue_920_question_necessity.rs'
+
+permissions:
+  contents: read
+
+jobs:
+  question-necessity-ratchet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install rust-script
+        run: bash scripts/install-rust-script.sh
+      - name: Test the ratchet checker
+        run: rust-script --test scripts/check-question-necessity-ratchet.rs
+      - name: Enforce the monotonic ceiling
+        shell: bash
+        run: |
+          if [[ -n "${GITHUB_BASE_REF}" ]]; then
+            rust-script scripts/check-question-necessity-ratchet.rs --base "origin/${GITHUB_BASE_REF}"
+          else
+            rust-script scripts/check-question-necessity-ratchet.rs
+          fi
+      - name: Run the deterministic question benchmark
+        run: cargo test --locked --test unit issue_920_question_necessity_benchmark_ratchets_down
