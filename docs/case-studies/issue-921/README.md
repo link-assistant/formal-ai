@@ -81,7 +81,8 @@ Hive Mind checks identity before entering `--working-directory`, the same
 identity is passed as process-local Git config only to the prepare command.
 GitHub Actions checks out pull requests at a detached HEAD, so the disposable
 clone also materializes a local `main` branch at that exact candidate commit
-before Hive Mind asks for the current branch.
+and a matching disposable `origin/main` ref before Hive Mind asks for the
+current branch and creates its temporary solution branch.
 
 **Formal AI -> external Agent CLI.** The gate sends a bounded acceptance payload
 extracted from the committed hive-mind-shaped issue fixture through

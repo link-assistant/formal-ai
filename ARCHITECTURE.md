@@ -1070,7 +1070,9 @@ identity preflight is satisfied with repository-local config in the disposable
 prepare clone plus process-local config on the prepare-only command, never with
 runner-global Git config. The disposable clone materializes its candidate HEAD
 as a local branch as well, making Hive Mind's current-branch preflight
-independent of GitHub Actions' detached checkout shape.
+independent of GitHub Actions' detached checkout shape. A matching local
+`origin/main` ref lets Hive Mind create its temporary solution branch without
+fetching or changing the candidate commit.
 
 The Rust pipeline is the canonical implementation. The browser worker
 (`src/web/formal_ai_worker.js`) cannot reach Wiktionary or Wikidata
