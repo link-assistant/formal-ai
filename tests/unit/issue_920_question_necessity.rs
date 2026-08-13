@@ -83,6 +83,17 @@ fn issue_920_factual_unknown_is_not_asked_after_bounded_research() {
         "question_necessity:research_required"
     ));
     assert!(has_evidence(&answer, "question_necessity:asked"));
+    let refused = answer
+        .evidence_links
+        .iter()
+        .position(|link| link.starts_with("question_necessity:refused:"))
+        .expect("refusal event");
+    let research = answer
+        .evidence_links
+        .iter()
+        .position(|link| link.starts_with("question_necessity:research_required:"))
+        .expect("research handoff event");
+    assert!(refused < research, "{:?}", answer.evidence_links);
 }
 
 #[test]

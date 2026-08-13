@@ -187,6 +187,13 @@ pub fn enforce_questions(body: &str, log: &mut EventLog) -> String {
                 asked += 1;
             }
             QuestionAuthorization::Refused(reason) => {
+                log.append(
+                    "question_necessity:refused",
+                    trace_payload(&[
+                        ("question", question_id.clone()),
+                        ("reason", reason.slug().to_owned()),
+                    ]),
+                );
                 if reason == QuestionRefusal::FactualUnknown {
                     log.append(
                         "question_necessity:research_required",
@@ -196,13 +203,6 @@ pub fn enforce_questions(body: &str, log: &mut EventLog) -> String {
                         ]),
                     );
                 }
-                log.append(
-                    "question_necessity:refused",
-                    trace_payload(&[
-                        ("question", question_id),
-                        ("reason", reason.slug().to_owned()),
-                    ]),
-                );
                 refused_ranges.push((candidate.start, candidate.end));
             }
         }
