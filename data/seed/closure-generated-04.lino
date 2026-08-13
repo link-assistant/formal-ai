@@ -314,6 +314,11 @@ meanings
     lexeme en
       surface
         text "repositories"
+  response_action_correction_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response action correction hi"
   response_agent_procedure_executed_zh
     defined-by response_template
     lexeme en
@@ -514,6 +519,11 @@ meanings
     lexeme en
       surface
         text "response mcp prompt description hi"
+  response_memory_inventory_item_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory inventory item es"
   response_memory_program_complete_zh
     defined-by response_template
     lexeme en
@@ -869,6 +879,11 @@ meanings
     lexeme en
       surface
         text "summarization cli criteria minimum"
+  superada
+    defined-by concept
+    lexeme en
+      surface
+        text "superada"
   tail
     defined-by token
     lexeme en

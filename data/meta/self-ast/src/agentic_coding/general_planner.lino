@@ -2,63 +2,63 @@ self_ast_census
   target src/agentic_coding/general_planner.rs
   language rust
   fidelity full_ast
-  byte_len 41974
-  line_count 973
-  content_id source_module_802a58810675b7d3
+  byte_len 40365
+  line_count 893
+  content_id source_module_73f1fdd3df01a727
   symbol_count 45
   symbols
-    const PLAN_PATH 18 18
-    const TARGET_PLACEHOLDER 19 19
-    enum GeneralPlanMode 23 30
-    function slug 33 39
-    enum PlanTerminalState 49 54
-    function slug 57 62
-    struct GeneralPlanStep 67 72
-    struct GeneralChangePlan 76 88
-    function links_notation 93 113
-    function planned_not_executed_answer 118 126
-    const BODY_PLACEHOLDER 119 119
-    function objective_text 161 167
-    function line_anchored 172 178
-    function compose_general_change_plan 181 270
-    function compose_repository_work_plan 272 311
-    function repository_work_reference 317 338
-    function parse_command_output_request 347 402
-    function mentions_bare_role 404 431
-    function shell_quote 433 435
-    function command_plan_text 437 441
-    function has_file_write_intent 455 457
-    function has_authoritative_literal_write 465 474
-    function parse_write_request 500 585
-    function is_literal_content 592 594
-    function is_non_referential_content 602 608
-    function resolve_census_target 628 635
-    function compose_edit_request 662 739
-    struct Token 742 746
-    function tokens 749 766
-    function bare_surfaces 769 776
-    function clean_path_token 783 786
-    function looks_like_file_path 796 802
-    function clean_cue_token 805 808
-    function first_content_lead_end 813 815
-    function first_prefix_lead_end 817 856
-    function first_action_cue_end 859 864
-    function clean_content 872 888
-    function strip_clause_lead 898 909
-    function strip_leading_qualifier 915 926
-    function safe_relative_path 928 935
-    function capability_slug 937 954
-    function language 956 958
-    function escape 960 965
-    function field 967 969
-    function field_nested 971 973
+    const PLAN_PATH 14 14
+    const TARGET_PLACEHOLDER 15 15
+    enum GeneralPlanMode 18 25
+    function slug 27 33
+    enum PlanTerminalState 42 47
+    function slug 49 54
+    struct GeneralPlanStep 58 63
+    struct GeneralChangePlan 66 78
+    function links_notation 82 102
+    function planned_not_executed_answer 106 120
+    const BODY_PLACEHOLDER 107 107
+    function objective_text 126 132
+    function line_anchored 136 142
+    function compose_general_change_plan 144 233
+    function compose_repository_work_plan 234 272
+    function repository_work_reference 277 298
+    function parse_command_output_request 306 360
+    function mentions_bare_role 361 388
+    function shell_quote 389 391
+    function command_plan_text 392 396
+    function has_file_write_intent 409 411
+    function has_authoritative_literal_write 418 427
+    function parse_write_request 452 532
+    function is_literal_content 538 540
+    function is_non_referential_content 547 553
+    function resolve_census_target 572 579
+    function compose_edit_request 605 677
+    struct Token 679 683
+    function tokens 685 702
+    function bare_surfaces 704 711
+    function clean_path_token 717 720
+    function looks_like_file_path 729 735
+    function clean_cue_token 737 740
+    function first_content_lead_end 744 746
+    function first_prefix_lead_end 747 786
+    function first_action_cue_end 788 793
+    function clean_content 800 816
+    function strip_clause_lead 825 836
+    function strip_leading_qualifier 841 852
+    function safe_relative_path 853 860
+    function capability_slug 861 878
+    function language 879 881
+    function escape 882 887
+    function field 888 890
+    function field_nested 891 893
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 24256
-    named_node_count 4957
+    total_link_count 24027
+    named_node_count 4883
     distinct_node_kinds 89
     node_kinds
       arguments 380
@@ -78,9 +78,9 @@ self_ast_census
       compound_assignment_expr 1
       const_item 3
       continue_expression 5
-      crate 8
+      crate 10
       declaration_list 3
-      doc_comment 204
+      doc_comment 176
       else_clause 10
       enum_item 2
       enum_variant 5
@@ -89,15 +89,15 @@ self_ast_census
       expression_statement 69
       field_declaration 15
       field_declaration_list 3
-      field_expression 317
-      field_identifier 356
+      field_expression 316
+      field_identifier 355
       field_initializer 24
       field_initializer_list 6
       for_expression 3
       function_item 37
       function_modifiers 3
       generic_type 20
-      identifier 1069
+      identifier 1073
       if_expression 31
       impl_item 3
       index_expression 21
@@ -107,7 +107,7 @@ self_ast_census
       let_declaration 116
       lifetime 11
       lifetime_parameter 2
-      line_comment 257
+      line_comment 229
       loop_expression 1
       macro_invocation 20
       match_arm 19
@@ -115,16 +115,16 @@ self_ast_census
       match_expression 3
       match_pattern 19
       mutable_specifier 19
-      outer_doc_comment_marker 198
+      outer_doc_comment_marker 170
       parameter 48
       parameters 37
       parenthesized_expression 13
       primitive_type 73
       range_expression 22
-      reference_expression 57
+      reference_expression 59
       reference_type 54
       return_expression 13
-      scoped_identifier 82
+      scoped_identifier 86
       scoped_use_list 2
       self 19
       self_parameter 4

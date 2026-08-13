@@ -147,6 +147,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-04.lino"
     record "response_agentic_action_list_home_hi"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_d4057b3a9b494d2a
+    source "data/seed/closure-generated-04.lino"
+    record "response_memory_inventory_item_es"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_00a05f83c628a76a
     source "data/seed/closure-generated-04.lino"
     record "response_memory_program_iteration_limit_es"
@@ -154,6 +158,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_c67b976c08da846a
     source "data/seed/closure-generated-04.lino"
     record "response_thinking_step_rule_verification_zh"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_492147f5bdf2e02a
+    source "data/seed/closure-generated-04.lino"
+    record "superada"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_425a953a370d0cfa
     source "data/seed/closure-generated-04.lino"
@@ -370,6 +378,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_fb48643bb86e1fca
     source "data/seed/closure-generated-10.lino"
     record "response_how_to_guide_copies_heading_hi"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_5294afda31498eaa
+    source "data/seed/closure-generated-10.lino"
+    record "response_memory_root_links_en"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_651dafc4216548ba
     source "data/seed/closure-generated-10.lino"
@@ -703,6 +715,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-16.lino"
     record "response_memory_program_interpreter_gap_ru"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_32cb98e3344a084a
+    source "data/seed/closure-generated-16.lino"
+    record "response_memory_root_links_ru"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_84263afe2ae22b7a
     source "data/seed/closure-generated-16.lino"
     record "response_pattern_sequence_count_ru"
@@ -762,6 +778,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_189b7e58d737347a
     source "data/seed/meanings-conversation.lino"
     record "conversation_recall_previous_user_message"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_2de2b62a841c91aa
+    source "data/seed/meanings-conversation.lino"
+    record "memory_link_count_query"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_31506a4938ce93ca
     source "data/seed/meanings-facts.lino"

@@ -82,6 +82,7 @@ impl Workspace {
             std::process::id()
         ));
         fs::create_dir_all(root.join("bin")).expect("workspace");
+        fs::create_dir_all(root.join("gists")).expect("gist directory");
         fs::create_dir_all(root.join("logs")).expect("log directory");
         let workspace = Self { root };
         workspace.install_program("formal-ai", Path::new(env!("CARGO_BIN_EXE_formal-ai")));
@@ -113,6 +114,13 @@ impl Workspace {
     fn install_gh(&self) {
         let stub = "#!/bin/sh\n\
                     printf '%s\\n' \"$@\" >> \"$GH_ARGV\"\n\
+                    if [ \"$1 $2\" = \"gist create\" ]; then\n\
+                    \x20 last=''\n\
+                    \x20 for argument do last=\"$argument\"; done\n\
+                    \x20 cp \"$last\" \"$GH_GIST_DIR/${last##*/}\"\n\
+                    \x20 printf 'https://gist.github.com/example/%s\\n' \"${last##*/}\"\n\
+                    \x20 exit 0\n\
+                    fi\n\
                     while [ $# -gt 0 ]; do\n\
                     \x20 if [ \"$1\" = \"--body-file\" ]; then cp \"$2\" \"$GH_BODY\"; fi\n\
                     \x20 shift\n\
@@ -163,6 +171,7 @@ impl Workspace {
             .env("FORMAL_AI_SILENT", "true")
             .env("GH_ARGV", self.path("gh-argv"))
             .env("GH_BODY", self.path("filed-body.md"))
+            .env("GH_GIST_DIR", self.path("gists"))
             .env("GH_ISSUE_URL", ISSUE_URL)
             .env_remove("FORMAL_AI_DIALOG_ID")
             .output()
@@ -176,6 +185,10 @@ impl Workspace {
 
     fn filed_arguments(&self) -> Option<String> {
         fs::read_to_string(self.path("gh-argv")).ok()
+    }
+
+    fn gist(&self, name: &str) -> Option<String> {
+        fs::read_to_string(self.path(&format!("gists/{name}"))).ok()
     }
 }
 
@@ -350,9 +363,9 @@ fn contains_hashed_identifier(text: &str) -> bool {
     })
 }
 
-/// The exported context reaches the body whole, in conversation order.
+/// The body keeps the readable turns and links all three complete captures.
 #[test]
-fn the_filed_body_round_trips_every_turn_of_a_multi_turn_conversation() {
+fn the_filed_body_links_three_contexts_for_a_multi_turn_conversation() {
     let session = "ses_multi_turn_round_trip";
     let workspace = Workspace::new("round-trip");
     workspace.install_gh();
@@ -373,11 +386,25 @@ fn the_filed_body_round_trips_every_turn_of_a_multi_turn_conversation() {
             .unwrap_or_else(|| panic!("{text:?} is out of order or missing in:\n{body}"));
         position += found + text.len();
     }
-    // The attachment carries the export as Links Notation, not as base64 frames.
-    assert!(body.contains("```lino"), "{body}");
+    // Complete captures are separate links, not one merged inline code fence.
+    assert!(!body.contains("```lino"), "{body}");
+    for heading in [
+        "### Harness context",
+        "### Server context",
+        "### Merged context",
+    ] {
+        assert!(body.contains(heading), "{body}");
+    }
+    let merged = workspace.gist("context.lino").expect("merged gist capture");
     assert!(
-        body.contains(&format!("conversation {session}")),
-        "the attached context must be the conversation record:\n{body}"
+        merged.contains(&format!("conversation {session}")),
+        "the merged context must be the conversation record:\n{merged}"
+    );
+    let arguments = workspace.filed_arguments().expect("gh recorded its argv");
+    assert_eq!(
+        arguments.matches("gist\ncreate\n").count(),
+        3,
+        "{arguments}"
     );
 }
 

@@ -620,15 +620,63 @@ fn extract_trigger_response(description: &str) -> Option<(String, String)> {
         return None;
     }
     let spans = code_spans(description);
-    if spans.len() < 2 {
-        return None;
+    if spans.len() >= 2 {
+        let trigger = spans[0].trim();
+        let response = spans[1].trim();
+        if trigger.is_empty() || response.is_empty() {
+            return None;
+        }
+        return Some((trigger.to_owned(), response.to_owned()));
     }
-    let trigger = spans[0].trim();
-    let response = spans[1].trim();
-    if trigger.is_empty() || response.is_empty() {
-        return None;
+    extract_unquoted_explicit_rule(description)
+}
+
+/// Parse the same explicit teaching grammar when chat clients do not add code
+/// spans, for example `When I say # answer with 42.`. Both separators come
+/// from semantic roles in the seed; only surrounding prose is discarded.
+fn extract_unquoted_explicit_rule(description: &str) -> Option<(String, String)> {
+    let lower = description.to_lowercase();
+    let lexicon = seed::lexicon();
+    for lead in lexicon.role_word_forms(seed::ROLE_SKILL_TEACHING_TRIGGER_LEAD) {
+        let lead_text = lead.text.as_str();
+        let Some(lead_position) = lower.find(lead_text) else {
+            continue;
+        };
+        let trigger_start = lead_position + lead_text.len();
+        let mut response_verbs = lexicon.role_word_forms(seed::ROLE_SKILL_TEACHING_RESPONSE_VERB);
+        response_verbs.sort_by_key(|form| std::cmp::Reverse(form.text.chars().count()));
+        for response_verb in response_verbs {
+            let verb = response_verb.text.as_str();
+            let Some(relative_verb_position) = lower[trigger_start..].find(verb) else {
+                continue;
+            };
+            let verb_position = trigger_start + relative_verb_position;
+            let trigger = clean_unquoted_rule_part(&description[trigger_start..verb_position]);
+            let response_start = verb_position + verb.len();
+            let response = clean_unquoted_rule_response(&description[response_start..]);
+            if !trigger.is_empty() && !response.is_empty() {
+                return Some((trigger, response));
+            }
+        }
     }
-    Some((trigger.to_owned(), response.to_owned()))
+    None
+}
+
+fn clean_unquoted_rule_part(value: &str) -> String {
+    value
+        .trim()
+        .trim_matches(|character: char| matches!(character, '`' | '"' | '\'' | ':' | ','))
+        .trim()
+        .to_owned()
+}
+
+fn clean_unquoted_rule_response(value: &str) -> String {
+    value
+        .trim_matches(|character: char| {
+            character.is_whitespace()
+                || matches!(character, '`' | '"' | '\'' | ':' | ',' | '.' | '!' | '?')
+        })
+        .to_owned()
 }
 
 /// True when `description` reads as a teachable skill — either an explicit
@@ -646,7 +694,7 @@ fn extract_trigger_response(description: &str) -> Option<(String, String)> {
 /// trigger between them, and a backtick-quoted reply after the link — the same
 /// byte test that once ran against a hardcoded keyword-pair table, now covering
 /// every supported language from the data.
-fn looks_like_skill_description(description: &str) -> bool {
+pub(crate) fn looks_like_skill_description(description: &str) -> bool {
     let lower = description.to_lowercase();
     if explicit_teaching_form(&lower) {
         return true;
@@ -681,15 +729,25 @@ fn looks_like_skill_description(description: &str) -> bool {
 /// ([`ROLE_SKILL_TEACHING_RESPONSE_VERB`](seed::ROLE_SKILL_TEACHING_RESPONSE_VERB));
 /// an edit directive
 /// ([`ROLE_BEHAVIOR_RULE_EDIT_DIRECTIVE`](seed::ROLE_BEHAVIOR_RULE_EDIT_DIRECTIVE))
-/// is recognised on its own. Each role is matched as a raw substring through
-/// [`Lexicon::mentions_role_raw`](seed::Lexicon::mentions_role_raw) — the surfaces
-/// are stored lower-cased and the caller has already lower-cased the description,
-/// so an inflectable stem (the Russian "ответ") still folds its endings.
+/// is recognised on its own. Direct role surfaces are matched as raw substrings;
+/// the caller has already lower-cased the description, so an inflectable stem
+/// (the Russian "ответ") still folds its endings without walking `defined-by`
+/// links into unrelated generic vocabulary.
 fn explicit_teaching_form(lower: &str) -> bool {
-    let lexicon = seed::lexicon();
-    (lexicon.mentions_role_raw(seed::ROLE_SKILL_TEACHING_TRIGGER_LEAD, lower)
-        && lexicon.mentions_role_raw(seed::ROLE_SKILL_TEACHING_RESPONSE_VERB, lower))
-        || lexicon.mentions_role_raw(seed::ROLE_BEHAVIOR_RULE_EDIT_DIRECTIVE, lower)
+    (direct_role_surface_present(seed::ROLE_SKILL_TEACHING_TRIGGER_LEAD, lower)
+        && direct_role_surface_present(seed::ROLE_SKILL_TEACHING_RESPONSE_VERB, lower))
+        || direct_role_surface_present(seed::ROLE_BEHAVIOR_RULE_EDIT_DIRECTIVE, lower)
+}
+
+/// Match only the surfaces declared directly by `role`, not the generic words
+/// reached through its `defined-by` concepts. The latter include broad action
+/// and relation vocabulary, which would make ordinary file edits look like
+/// dialog-level behavior-rule declarations.
+fn direct_role_surface_present(role: &str, lower: &str) -> bool {
+    seed::lexicon()
+        .role_word_forms(role)
+        .into_iter()
+        .any(|form| !form.text.is_empty() && lower.contains(&form.text))
 }
 
 fn code_spans(text: &str) -> Vec<String> {

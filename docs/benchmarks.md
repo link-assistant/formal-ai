@@ -209,7 +209,7 @@ upstream payloads vendored). The full list, in fixture order:
 | Natural Questions | open-domain QA | <https://ai.google.com/research/NaturalQuestions> |
 | TriviaQA | reading comprehension | <https://nlp.cs.washington.edu/triviaqa/> |
 | BoolQ | boolean QA | <https://github.com/google-research-datasets/boolean-questions> |
-| CommonsenseQA | commonsense QA | <https://www.tau-nlp.sites.tau.ac.il/commonsenseqa> |
+| CommonsenseQA | commonsense QA | <https://github.com/jonathanherzig/commonsenseqa> |
 | IFEval | instruction following | <https://github.com/google-research/google-research/tree/master/instruction_following_eval> |
 | GPQA | graduate reasoning QA | <https://github.com/idavidrein/gpqa> |
 | MuSR | multi-step reasoning | <https://github.com/Zayne-sprague/MuSR> |

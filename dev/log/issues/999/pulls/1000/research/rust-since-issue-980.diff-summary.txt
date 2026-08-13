@@ -1,0 +1,24 @@
+Only in /tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows: desktop-release.yml
+Only in /tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows: links.yml
+Files dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml and /tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows/release.yml differ
+Only in /tmp/formal-ai-issue999-templates.FZURWz/rust/.github/workflows: security.yml
+Only in /tmp/formal-ai-issue999-templates.FZURWz/rust: .gitkeep
+Only in /tmp/formal-ai-issue999-templates.FZURWz/rust: .lycheeignore
+Files dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/CHANGELOG.md and /tmp/formal-ai-issue999-templates.FZURWz/rust/CHANGELOG.md differ
+Files dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/Cargo.lock and /tmp/formal-ai-issue999-templates.FZURWz/rust/Cargo.lock differ
+Files dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/Cargo.toml and /tmp/formal-ai-issue999-templates.FZURWz/rust/Cargo.toml differ
+Files dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/README.md and /tmp/formal-ai-issue999-templates.FZURWz/rust/README.md differ
+Only in /tmp/formal-ai-issue999-templates.FZURWz/rust/docs/case-studies/issue-19: ci-logs
+Files dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/docs/ci-cd/troubleshooting.md and /tmp/formal-ai-issue999-templates.FZURWz/rust/docs/ci-cd/troubleshooting.md differ
+Only in /tmp/formal-ai-issue999-templates.FZURWz/rust/docs: download
+Only in /tmp/formal-ai-issue999-templates.FZURWz/rust/docs: screenshots
+Only in /tmp/formal-ai-issue999-templates.FZURWz/rust/scripts: check-pipeline-status.sh
+Only in /tmp/formal-ai-issue999-templates.FZURWz/rust/scripts: check-web-archive.mjs
+Only in /tmp/formal-ai-issue999-templates.FZURWz/rust/scripts: desktop-release-resolve.sh
+Only in /tmp/formal-ai-issue999-templates.FZURWz/rust/scripts: package-desktop.sh
+Only in /tmp/formal-ai-issue999-templates.FZURWz/rust/tests/unit/ci-cd: desktop_release_resolve.rs
+Only in /tmp/formal-ai-issue999-templates.FZURWz/rust/tests/unit/ci-cd: issue_119.rs
+Files dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/tests/unit/ci-cd/mod.rs and /tmp/formal-ai-issue999-templates.FZURWz/rust/tests/unit/ci-cd/mod.rs differ
+Only in /tmp/formal-ai-issue999-templates.FZURWz/rust/tests/unit/ci-cd: workflow_desktop_release.rs
+Files dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/tests/unit/ci-cd/workflow_release.rs and /tmp/formal-ai-issue999-templates.FZURWz/rust/tests/unit/ci-cd/workflow_release.rs differ
+Files dev/log/issues/980/pulls/981/templates/rust-ai-driven-development-pipeline-template/tests/unit/ci-cd/workflow_security.rs and /tmp/formal-ai-issue999-templates.FZURWz/rust/tests/unit/ci-cd/workflow_security.rs differ

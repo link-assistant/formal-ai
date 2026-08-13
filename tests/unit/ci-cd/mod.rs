@@ -13,6 +13,7 @@ mod desktop_release_resolve;
 #[allow(dead_code)]
 #[path = "../../../scripts/detect-code-changes.rs"]
 mod detect_code_changes;
+mod issue_1001;
 mod issue_717;
 mod issue_730;
 mod issue_739;
@@ -22,6 +23,7 @@ mod issue_798;
 mod issue_846;
 mod issue_977;
 mod issue_980;
+mod issue_999;
 mod macos_package_retry;
 mod release_publishing;
 #[path = "../../../scripts/rust-paths.rs"]

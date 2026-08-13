@@ -5,7 +5,7 @@
 //! capture their pages recursively inside declared depth/page/time bounds, keep
 //! exact provenance on every accepted step, and resolve copies and
 //! contradictions with the issue #709 source-tier policy. This module owns that
-//! contract for the Rust side; `src/web/worker/formal_ai_worker_24.js` mirrors
+//! contract for the Rust side; `src/web/worker/formal_ai_worker_how_to_guide.js` mirrors
 //! it on the browser side. The two are held to one answer by replaying the same
 //! committed captures through both: `examples/issue_991_how_to_parity.rs` writes
 //! `tests/fixtures/issue-991/expected-guides.json` from this path, and both

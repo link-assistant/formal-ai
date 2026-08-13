@@ -1,0 +1,14 @@
+self_ast_census
+  target src/conversation_control.rs
+  language rust
+  fidelity signature
+  byte_len 2604
+  line_count 78
+  content_id source_module_0a2aec397e1db4f2
+  symbol_count 5
+  symbols
+    function is_conversation_control_prompt 12 16
+    function try_conversation_control 18 53
+    function conversation_preference_term 55 67
+    function is_unauthorized_mutation_correction 69 71
+    function direct_role_surface_present 73 78

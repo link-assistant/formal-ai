@@ -619,6 +619,11 @@ meanings
     lexeme en
       surface
         text "response local search found path en"
+  response_memory_inventory_empty_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory inventory empty ru"
   response_memory_program_compilation_gap_ru
     defined-by response_template
     lexeme en
@@ -629,6 +634,11 @@ meanings
     lexeme en
       surface
         text "response memory program interpreter gap hi"
+  response_memory_root_links_empty_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response memory root links empty hi"
   response_pattern_grid_no_symmetry_es
     defined-by response_template
     lexeme en

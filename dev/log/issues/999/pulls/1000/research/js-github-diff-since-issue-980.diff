@@ -1,0 +1,202 @@
+diff -ruN '--exclude=.git' dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml /tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml
+--- dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/release.yml	2026-08-11 18:00:33.651574101 +0000
++++ /tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/release.yml	2026-08-11 18:08:40.058281858 +0000
+@@ -54,7 +54,7 @@
+     timeout-minutes: 5
+     concurrency:
+       group: check-${{ github.workflow }}-${{ github.ref }}-detect-changes
+-      cancel-in-progress: true
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     if: github.event_name != 'workflow_dispatch'
+     outputs:
+       js-changed: ${{ steps.changes.outputs.js-changed }}
+@@ -80,7 +80,7 @@
+     timeout-minutes: 5
+     concurrency:
+       group: check-${{ github.workflow }}-${{ github.ref }}-test-compilation
+-      cancel-in-progress: true
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     needs: [detect-changes]
+     if: |
+       needs.detect-changes.outputs.js-changed == 'true'
+@@ -98,7 +98,7 @@
+     timeout-minutes: 5
+     concurrency:
+       group: check-${{ github.workflow }}-${{ github.ref }}-check-file-line-limits
+-      cancel-in-progress: true
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     needs: [detect-changes]
+     if: |
+       needs.detect-changes.outputs.docs-changed == 'true' ||
+@@ -129,7 +129,7 @@
+     timeout-minutes: 5
+     concurrency:
+       group: check-${{ github.workflow }}-${{ github.ref }}-version-check
+-      cancel-in-progress: true
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     if: github.event_name == 'pull_request'
+     steps:
+       - uses: actions/checkout@v6
+@@ -151,7 +151,7 @@
+     timeout-minutes: 10
+     concurrency:
+       group: check-${{ github.workflow }}-${{ github.ref }}-changeset-check
+-      cancel-in-progress: true
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     needs: [detect-changes]
+     if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+     steps:
+@@ -199,7 +199,7 @@
+     timeout-minutes: 10
+     concurrency:
+       group: check-${{ github.workflow }}-${{ github.ref }}-lint
+-      cancel-in-progress: true
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     needs: [detect-changes]
+     if: |
+       !cancelled() &&
+@@ -253,7 +253,7 @@
+     timeout-minutes: 10
+     concurrency:
+       group: check-${{ github.workflow }}-${{ github.ref }}-test-${{ matrix.runtime }}-${{ matrix.os }}
+-      cancel-in-progress: true
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     needs:
+       [
+         detect-changes,
+@@ -350,7 +350,7 @@
+     timeout-minutes: 30
+     concurrency:
+       group: check-${{ github.workflow }}-${{ github.ref }}-docker-build
+-      cancel-in-progress: true
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     needs: [detect-changes]
+     if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+     permissions:
+@@ -390,7 +390,7 @@
+     timeout-minutes: 5
+     concurrency:
+       group: check-${{ github.workflow }}-${{ github.ref }}-validate-docs
+-      cancel-in-progress: true
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+     needs: [detect-changes]
+     if: |
+       needs.detect-changes.outputs.docs-changed == 'true'
+@@ -727,3 +727,42 @@
+             2. Merge this PR to main
+             3. The automated release workflow will create a version PR
+             4. Merge the version PR to publish to npm and create a GitHub release
++
++  # GitHub reports jobs killed by timeout-minutes as cancelled rather than
++  # failed. Observe every job so those cancellations become visible failures
++  # on main, where concurrency never supersedes an in-progress run.
++  pipeline-status:
++    name: Pipeline Status
++    runs-on: ubuntu-latest
++    timeout-minutes: 5
++    concurrency:
++      group: check-${{ github.workflow }}-${{ github.ref }}-pipeline-status
++      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
++    if: always()
++    needs:
++      - detect-changes
++      - test-compilation
++      - check-file-line-limits
++      - version-check
++      - changeset-check
++      - lint
++      - test
++      - docker-build
++      - validate-docs
++      - release
++      - instant-release
++      - docker-publish
++      - changeset-pr
++    steps:
++      - uses: actions/checkout@v6
++
++      - name: Setup Node.js
++        uses: actions/setup-node@v6
++        with:
++          node-version: '24.x'
++
++      - name: Fail the run when a required job was cancelled or failed
++        env:
++          NEEDS_JSON: ${{ toJSON(needs) }}
++          IS_MAIN: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
++        run: bash scripts/check-pipeline-status.sh
+diff -ruN '--exclude=.git' dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/security.yml /tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/security.yml
+--- dev/log/issues/980/pulls/981/templates/js-ai-driven-development-pipeline-template/.github/workflows/security.yml	1970-01-01 00:00:00.000000000 +0000
++++ /tmp/formal-ai-issue999-templates.FZURWz/js/.github/workflows/security.yml	2026-08-11 18:08:40.059281848 +0000
+@@ -0,0 +1,71 @@
++name: Security
++
++on:
++  push:
++    branches: [main]
++  pull_request:
++    types: [opened, synchronize, reopened]
++  schedule:
++    - cron: '0 6 * * 1'
++  workflow_dispatch:
++
++# Least-privilege default; jobs escalate individually when needed.
++permissions:
++  contents: read
++
++# Provide Git config to actions/checkout itself; checkout runs git init before
++# any workflow step can configure Git.
++env:
++  GIT_CONFIG_COUNT: '1'
++  GIT_CONFIG_KEY_0: init.defaultBranch
++  GIT_CONFIG_VALUE_0: main
++
++jobs:
++  codeql:
++    name: CodeQL (${{ matrix.language }})
++    runs-on: ubuntu-latest
++    timeout-minutes: 30
++    concurrency:
++      group: check-${{ github.workflow }}-${{ github.ref }}-codeql-${{ matrix.language }}
++      cancel-in-progress: true
++    permissions:
++      actions: read
++      contents: read
++      security-events: write
++    strategy:
++      fail-fast: false
++      matrix:
++        language: [javascript-typescript, actions]
++    steps:
++      - uses: actions/checkout@v6
++
++      - name: Initialize CodeQL
++        uses: github/codeql-action/init@v4
++        with:
++          languages: ${{ matrix.language }}
++
++      - name: Autobuild
++        uses: github/codeql-action/autobuild@v4
++
++      - name: Analyze
++        uses: github/codeql-action/analyze@v4
++
++  dependency-review:
++    name: Dependency Review
++    if: github.event_name == 'pull_request'
++    runs-on: ubuntu-latest
++    timeout-minutes: 10
++    concurrency:
++      group: check-${{ github.workflow }}-${{ github.ref }}-dependency-review
++      cancel-in-progress: true
++    permissions:
++      contents: read
++      pull-requests: write
++    steps:
++      - uses: actions/checkout@v6
++
++      - name: Review dependency changes
++        uses: actions/dependency-review-action@v5
++        with:
++          fail-on-severity: high
++          comment-summary-in-pr: on-failure

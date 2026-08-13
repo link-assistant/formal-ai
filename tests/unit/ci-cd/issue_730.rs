@@ -14,9 +14,14 @@ fn workflow(name: &str) -> String {
 fn every_desktop_job_has_a_bounded_runtime_and_least_privilege() {
     let desktop = workflow("desktop-release.yml");
     assert!(
-        desktop.contains("permissions:\n  contents: read\n\nconcurrency:"),
+        desktop.contains("permissions:\n  contents: read"),
         "workflow default must be read-only"
     );
+    assert!(!desktop
+        .split("\njobs:\n")
+        .next()
+        .unwrap()
+        .contains("\nconcurrency:\n"));
     for (job, next) in [
         ("resolve", "build"),
         ("build", "vscode"),
@@ -57,9 +62,14 @@ fn desktop_build_budget_covers_the_measured_windows_arm64_path() {
 fn main_pipeline_defaults_to_read_only_permissions() {
     let release = workflow("release.yml");
     assert!(
-        release.contains("permissions:\n  contents: read\n\nconcurrency:"),
+        release.contains("permissions:\n  contents: read"),
         "ordinary CI jobs must not inherit repository write permissions"
     );
+    assert!(!release
+        .split("\njobs:\n")
+        .next()
+        .unwrap()
+        .contains("\nconcurrency:\n"));
 }
 
 #[test]

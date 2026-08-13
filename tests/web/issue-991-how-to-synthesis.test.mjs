@@ -2,7 +2,7 @@
 // synthesis contract as the Rust solver.
 //
 // These tests boot the real worker (`src/web/formal_ai_worker.js`, which loads
-// `src/web/worker/formal_ai_worker_24.js`) with the real seed registry and
+// `src/web/worker/formal_ai_worker_how_to_guide.js`) with the real seed registry and
 // replay the *same* committed real-service captures under
 // `tests/fixtures/issue-991/` that `tests/unit/issue_991_how_to_synthesis.rs`
 // replays. Nothing here is a hand-written fixture: every byte the worker parses

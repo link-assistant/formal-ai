@@ -13,7 +13,7 @@ use crate::memory_program::{
     MemoryProgramCompileError, MemoryProgramHalt, MemoryProgramLimits, MemoryProgramOutcome,
 };
 use crate::memory_query_language::{
-    compile_memory_query as compile_exact_memory_query,
+    compile_memory_query as compile_exact_memory_query, detect_exact_memory_query,
     execute_memory_query as execute_exact_memory_query, QueryDialect,
 };
 use crate::seed;
@@ -137,26 +137,6 @@ pub fn execute_memory_query_with_options(
 
 pub fn is_exact_memory_query(prompt: &str) -> bool {
     detect_exact_memory_query(prompt).is_some()
-}
-
-fn detect_exact_memory_query(prompt: &str) -> Option<QueryDialect> {
-    let normalized = prompt.trim().to_ascii_lowercase();
-    let sql = normalized.starts_with("select ")
-        || normalized.starts_with("insert into ")
-        || normalized.starts_with("update ")
-        || normalized.starts_with("delete from ");
-    if sql {
-        return Some(QueryDialect::SqlAnsi);
-    }
-    let graphql = normalized.contains('{')
-        && (normalized.starts_with("query")
-            || normalized.starts_with("mutation")
-            || normalized.starts_with('{'))
-        && (normalized.contains("memory")
-            || normalized.contains("creatememory")
-            || normalized.contains("updatememory")
-            || normalized.contains("deletememory"));
-    graphql.then_some(QueryDialect::GraphQl)
 }
 
 fn execute_exact_query(

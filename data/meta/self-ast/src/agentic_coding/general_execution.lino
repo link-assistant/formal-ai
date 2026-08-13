@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/general_execution.rs
   language rust
   fidelity full_ast
-  byte_len 10770
-  line_count 251
-  content_id source_module_dc6c39b7cfe1f020
+  byte_len 10896
+  line_count 257
+  content_id source_module_445dc42b93fcab34
   symbol_count 12
   symbols
     const EXPECTED_PLACEHOLDER 11 11
@@ -13,19 +13,19 @@ self_ast_census
     const PLAN_PATH_PLACEHOLDER 14 14
     function plan_general_change_step 16 148
     function finish_general_change 150 178
-    function general_plan_completed 184 192
-    function tool_argument_path 194 200
-    function read_arguments 202 209
-    function capability_label 211 228
-    function general_plan_mismatch 230 243
-    function general_plan_unverified 245 251
+    function general_plan_completed 184 198
+    function tool_argument_path 200 206
+    function read_arguments 208 215
+    function capability_label 217 234
+    function general_plan_mismatch 236 249
+    function general_plan_unverified 251 257
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 7482
-    named_node_count 1513
+    total_link_count 7536
+    named_node_count 1523
     distinct_node_kinds 60
     node_kinds
       arguments 119
@@ -38,16 +38,16 @@ self_ast_census
       closure_expression 5
       closure_parameters 5
       const_item 4
-      crate 7
+      crate 9
       doc_comment 5
       else_clause 1
       expression_statement 49
-      field_expression 116
-      field_identifier 116
+      field_expression 115
+      field_identifier 115
       function_item 8
       function_modifiers 1
       generic_type 1
-      identifier 404
+      identifier 408
       if_expression 26
       inner_doc_comment_marker 1
       integer_literal 8
@@ -67,10 +67,10 @@ self_ast_census
       parameters 8
       parenthesized_expression 1
       primitive_type 9
-      reference_expression 25
+      reference_expression 27
       reference_type 17
       return_expression 16
-      scoped_identifier 80
+      scoped_identifier 84
       scoped_type_identifier 1
       scoped_use_list 2
       source_file 1

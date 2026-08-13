@@ -4,20 +4,15 @@
 //! from the formalized request.  The resulting plan is data: it is serialized to
 //! Links Notation and written before execution, so the tool transcript is an
 //! append-only record of the decision that caused the change.
-
-use std::fmt::Write as _;
-
+use super::planner::Capability;
 use crate::engine::stable_id;
 use crate::intent_formalization::formalize_intent;
 use crate::seed::{self, Slot};
 use crate::self_ast_census::{self, CensusResolution};
-
-use super::planner::Capability;
-
+use std::fmt::Write as _;
 /// Workspace-relative event-log artifact written before a general plan executes.
 pub const PLAN_PATH: &str = ".formal-ai/general-change-plan.lino";
 const TARGET_PLACEHOLDER: &str = "{target}";
-
 /// What the bounded general planner can truthfully execute.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum GeneralPlanMode {
@@ -28,7 +23,6 @@ pub enum GeneralPlanMode {
     /// Persist a referenced repository work item without fabricating a patch.
     RepositoryWorkItem,
 }
-
 impl GeneralPlanMode {
     const fn slug(self) -> &'static str {
         match self {
@@ -38,7 +32,6 @@ impl GeneralPlanMode {
         }
     }
 }
-
 /// Where a composed plan can honestly end (issue #904).
 ///
 /// A plan whose steps all operate on the plan record itself changes nothing the
@@ -52,7 +45,6 @@ pub enum PlanTerminalState {
     /// The plan was recorded; no artifact the request named was touched.
     PlannedNotExecuted,
 }
-
 impl PlanTerminalState {
     const fn slug(self) -> &'static str {
         match self {
@@ -61,7 +53,6 @@ impl PlanTerminalState {
         }
     }
 }
-
 /// One ordered, capability-tagged operation in a general change plan.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GeneralPlanStep {
@@ -70,7 +61,6 @@ pub struct GeneralPlanStep {
     pub expected_evidence: String,
     pub command: Option<String>,
 }
-
 /// A deterministic plan composed from a formalized, previously unrecognised request.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GeneralChangePlan {
@@ -86,7 +76,6 @@ pub struct GeneralChangePlan {
     pub verification_command: String,
     pub terminal_state: PlanTerminalState,
 }
-
 impl GeneralChangePlan {
     /// Render the plan shape consumed by the driver and documented by the meta fixture.
     #[must_use]
@@ -111,7 +100,6 @@ impl GeneralChangePlan {
         }
         out
     }
-
     /// Render the terminal answer of a plan that touched nothing the request
     /// named: planned, not executed (issue #904).
     #[must_use]
@@ -122,41 +110,18 @@ impl GeneralChangePlan {
             .unwrap_or_default()
             .replace(TARGET_PLACEHOLDER, &self.target)
             .replace("{plan_path}", PLAN_PATH)
-            .replace(BODY_PLACEHOLDER, self.links_notation().trim_end())
+            .replace(
+                BODY_PLACEHOLDER,
+                &crate::issue_report::fenced_block(
+                    crate::issue_report::LINO_FENCE_LANGUAGE,
+                    &self.links_notation(),
+                ),
+            )
     }
 }
-
-/// Compose a safe, bounded plan from arbitrary wording in any supported
-/// language (issue #680).
+/// Return the request after its first line-anchored multilingual objective marker.
 ///
-/// The universal intent formalizer supplies the stable impulse identity.  The
-/// executable decomposition accepts either a relative target plus literal
-/// content, an explicit command-output capture, or a software-authoring request
-/// attached to a concrete GitHub issue/pull reference. The last shape persists
-/// and verifies a work-item plan, but deliberately does not invent source edits:
-/// arbitrary repository implementation remains outside this deterministic
-/// sandbox's evidence boundary.
-///
-/// The target, the content, and the write *intent* itself are all recognised
-/// from the seed lexicon (the `file_write_*` roles in
-/// `data/seed/meanings-file-write.lino`) rather than from a hardcoded list of
-/// English or Russian phrasings, so a file-creation request in en/ru/hi/zh — in
-/// any phrasing — routes to the write tool (CONTRIBUTING §2).
-/// The objective a caller stated, separated from any harness preamble
-/// (issue #904).
-///
-/// Agent harnesses prepend their own system-prompt preamble to the request — "You
-/// are an AI issue solver using @link-assistant/agent. General guidelines. …" —
-/// and the planner used to formalize that whole blob, so the plan recorded the
-/// preamble as its `goal`. The preamble and the objective cannot be told apart
-/// by wording, so the boundary is made explicit instead: the objective is the
-/// span after the first line-anchored
-/// [`ROLE_REQUEST_OBJECTIVE_LEAD`](seed::ROLE_REQUEST_OBJECTIVE_LEAD) marker
-/// ("Issue to solve:", "Task:", "Request:", plus translations), which is the same
-/// delimiter the completion-recovery ladder already writes.
-///
-/// A request that states no such delimiter *is* its own objective, so the whole
-/// request is returned unchanged and every existing route keeps its input.
+/// This removes an agent-harness preamble. Requests without a marker are unchanged.
 #[must_use]
 pub fn objective_text(request: &str) -> &str {
     let lowered = request.to_lowercase();
@@ -165,7 +130,6 @@ pub fn objective_text(request: &str) -> &str {
         .and_then(|(_, end)| request.get(end..))
         .map_or(request, str::trim)
 }
-
 /// Whether a marker at `start` opens its own line, so a delimiter quoted inside
 /// running prose ("write the words request: hello to notes.txt") does not
 /// silently truncate the request.
@@ -176,7 +140,6 @@ fn line_anchored(text: &str, start: usize) -> bool {
         .take_while(|character| *character != '\n')
         .all(char::is_whitespace)
 }
-
 #[must_use]
 pub fn compose_general_change_plan(full_request: &str) -> Option<GeneralChangePlan> {
     let request = objective_text(full_request);
@@ -268,13 +231,11 @@ pub fn compose_general_change_plan(full_request: &str) -> Option<GeneralChangePl
         terminal_state: PlanTerminalState::Executed,
     })
 }
-
 fn compose_repository_work_plan(request: &str) -> Option<GeneralChangePlan> {
     let target = repository_work_reference(request)?;
     if !mentions_bare_role(request, seed::ROLE_SOFTWARE_AUTHORING_ACTION) {
         return None;
     }
-
     let response_language = language(request);
     let intent = formalize_intent(request, response_language, None);
     Some(GeneralChangePlan {
@@ -309,7 +270,6 @@ fn compose_repository_work_plan(request: &str) -> Option<GeneralChangePlan> {
         terminal_state: PlanTerminalState::PlannedNotExecuted,
     })
 }
-
 /// Extract a concrete GitHub issue or pull-request URL structurally.
 ///
 /// The software action itself comes from the multilingual seed. URL host/path
@@ -336,7 +296,6 @@ fn repository_work_reference(request: &str) -> Option<String> {
         .then(|| url.to_owned())
     })
 }
-
 /// Recover a command-output file request from a structural, seed-backed frame.
 ///
 /// The command must immediately follow a seed-defined run verb and be enclosed
@@ -350,7 +309,6 @@ fn parse_command_output_request(request: &str) -> Option<(String, String)> {
     let actions = bare_surfaces(seed::ROLE_FILE_WRITE_ACTION_CUE);
     let targets = bare_surfaces(seed::ROLE_FILE_WRITE_TARGET_CUE);
     let destinations = bare_surfaces(seed::ROLE_FILE_WRITE_DESTINATION_CUE);
-
     for run in toks
         .iter()
         .filter(|token| run_verbs.contains(&clean_cue_token(token.text)))
@@ -400,7 +358,6 @@ fn parse_command_output_request(request: &str) -> Option<(String, String)> {
     }
     None
 }
-
 fn mentions_bare_role(text: &str, role: &str) -> bool {
     let lower = text.to_lowercase();
     seed::lexicon()
@@ -429,17 +386,14 @@ fn mentions_bare_role(text: &str, role: &str) -> bool {
             before_ok && after_ok
         })
 }
-
 fn shell_quote(value: &str) -> String {
     format!("'{}'", value.replace('\'', "'\\''"))
 }
-
 fn command_plan_text(intent: &str, language: &str, target: &str) -> String {
     seed::localized_response(intent, language)
         .unwrap_or_else(|| intent.to_owned())
         .replace(TARGET_PLACEHOLDER, target)
 }
-
 /// Whether `lower` (an already-lowercased request) is a file **write / create**
 /// intent — a write verb applied to something file-shaped. This is the single
 /// signal the router uses to keep a file-creation request from ever being
@@ -455,7 +409,6 @@ fn command_plan_text(intent: &str, language: &str, target: &str) -> String {
 pub(crate) fn has_file_write_intent(lower: &str) -> bool {
     parse_write_request(lower).is_some()
 }
-
 /// Whether a request explicitly marks its recovered payload as authoritative
 /// literal bytes rather than a description of another workspace operation.
 ///
@@ -472,7 +425,6 @@ pub(super) fn has_authoritative_literal_write(request: &str) -> bool {
         && compose_general_change_plan(request)
             .is_some_and(|plan| plan.mode == GeneralPlanMode::LiteralFile)
 }
-
 /// Recover the `(target, content)` of a write request from its wording.
 ///
 /// The recogniser is entirely seed-driven (issue #680). It locates the target
@@ -503,7 +455,6 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
     let target_cues = bare_surfaces(seed::ROLE_FILE_WRITE_TARGET_CUE);
     let dest_cues = bare_surfaces(seed::ROLE_FILE_WRITE_DESTINATION_CUE);
     let action_cues = bare_surfaces(seed::ROLE_FILE_WRITE_ACTION_CUE);
-
     // The target file: the first safe, file-looking token that directly follows a
     // target cue, a destination cue, or an action cue. Requiring a cue keeps an
     // incidental dotted token (a version, an abbreviation) out of the write path.
@@ -520,11 +471,9 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
             || action_cues.contains(&previous_word))
         .then(|| (index, cleaned.to_owned()))
     })?;
-
     let cue = &toks[file_index - 1];
     let clause_start = cue.start;
     let cue_is_destination = dest_cues.contains(&clean_cue_token(cue.text));
-
     // Marker-led content. The payload sits after the marker, bounded by the file
     // clause when the marker comes first ("write the following: hello to x.txt")
     // and running to the end when the clause comes first ("store file x.txt
@@ -552,7 +501,6 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
             }
         }
     }
-
     let content_span = if cue_is_destination {
         let action_end = first_action_cue_end(&toks)?;
         (action_end <= clause_start).then(|| request.get(action_end..clause_start))?
@@ -570,7 +518,6 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
     } else {
         None
     };
-
     let content = clean_content(content_span?)?;
     // A recovered payload that is *only* a non-referential subject ("save it to
     // FILE", "write this to FILE") names no literal content — the pronoun points
@@ -583,7 +530,6 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
     }
     Some((target, content))
 }
-
 /// Whether a recovered payload says anything at all. A span of nothing but
 /// punctuation is what a mis-parse leaves behind — the `opencode` leg of the
 /// issue-#671 matrix recovered a single `"`, the tail of a quoted prompt after
@@ -592,7 +538,6 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
 fn is_literal_content(content: &str) -> bool {
     content.chars().any(char::is_alphanumeric)
 }
-
 /// Whether a recovered write payload is nothing but a non-referential subject —
 /// a bare pronoun/function word ("it", "this", "that", …) that refers back to
 /// context rather than naming literal content. The surfaces carry the
@@ -606,7 +551,6 @@ fn is_non_referential_content(content: &str) -> bool {
         .iter()
         .any(|form| form.slot() == Slot::Bare && lower == form.text)
 }
-
 /// Resolve an edit target named in a request through the workspace self-AST
 /// census (issue #673).
 ///
@@ -633,7 +577,6 @@ pub fn resolve_census_target(reference: &str) -> Option<CensusResolution> {
     }
     self_ast_census::workspace().resolve(reference)
 }
-
 /// Recover the `(target, old, new)` of a file-edit request from its wording
 /// (issue #680).
 ///
@@ -664,7 +607,6 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
     let action_cues = bare_surfaces(seed::ROLE_FILE_EDIT_ACTION_CUE);
     let new_leads = bare_surfaces(seed::ROLE_FILE_EDIT_NEW_LEAD_CUE);
     let target_cues = bare_surfaces(seed::ROLE_FILE_EDIT_TARGET_CUE);
-
     // The target file: the first safe, file-looking token that sits directly beside
     // a target cue — before it in prepositional languages ("in notes.txt") or after
     // it in postpositional ones ("doc.txt में", "the report.md file"). Requiring the
@@ -699,7 +641,6 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
         clause_start_index -= 1;
     }
     let file_clause_start = toks[clause_start_index].start;
-
     // The edit action opens the replacement clause; the new-lead separates the old
     // text from the new text. The new-lead must follow the action so a "to"/"with"
     // belonging to an earlier clause is never mistaken for the replacement lead.
@@ -717,14 +658,12 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
     let new_lead = toks.iter().find(|token| {
         token.start >= action_end && new_leads.contains(&clean_cue_token(token.text))
     })?;
-
     // A well-formed edit names the file before the action ("in F, change A to B")
     // or after the replacement ("replace A with B in F") — never between the action
     // and the new-lead, which would fold the filename into the replaced text.
     if file_clause_start >= action_end && file_clause_start < new_lead.start {
         return None;
     }
-
     let old_span = request.get(action_end..new_lead.start)?;
     let new_end = if file_clause_start > new_lead.end {
         file_clause_start
@@ -732,19 +671,16 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
         request.len()
     };
     let new_span = request.get(new_lead.end..new_end)?;
-
     let old = clean_content(old_span)?;
     let new = clean_content(new_span)?;
     Some((target, old, new))
 }
-
 /// One whitespace token together with its byte span in the original request.
 struct Token<'a> {
     text: &'a str,
     start: usize,
     end: usize,
 }
-
 /// Split a request into whitespace tokens, recording each token's byte span.
 fn tokens(request: &str) -> Vec<Token<'_>> {
     let mut cursor = 0;
@@ -764,7 +700,6 @@ fn tokens(request: &str) -> Vec<Token<'_>> {
         })
         .collect()
 }
-
 /// The bare (whole-word) surface forms for a role, lowercased for token matching.
 fn bare_surfaces(role: &str) -> Vec<String> {
     seed::lexicon()
@@ -774,7 +709,6 @@ fn bare_surfaces(role: &str) -> Vec<String> {
         .map(|form| form.text.to_lowercase())
         .collect()
 }
-
 /// Trim the quoting/edge punctuation from a token that may be a file path,
 /// preserving the interior dots that make it look like a file. Trailing sentence
 /// punctuation is stripped too, so a plain word that merely *ends a sentence*
@@ -784,7 +718,6 @@ fn clean_path_token(word: &str) -> &str {
     word.trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | ',' | ':' | ';'))
         .trim_end_matches(['.', '!', '?'])
 }
-
 /// Whether a safe-looking token names a file rather than merely using the
 /// conventional `./` prefix for a directory.
 ///
@@ -800,20 +733,17 @@ fn looks_like_file_path(path: &str) -> bool {
             .next()
             .is_some_and(|file_name| file_name.contains('.'))
 }
-
 /// Lowercase a token stripped of edge punctuation, for cue/action comparison.
 fn clean_cue_token(word: &str) -> String {
     word.trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | ',' | ':' | ';' | '.' | '!' | '?'))
         .to_lowercase()
 }
-
 /// The byte span just past the leftmost `file_write_content_lead` marker in the
 /// lowercased request, honouring whole-word boundaries for space-delimited
 /// scripts and substring matches for CJK (which has no inter-word spaces).
 fn first_content_lead_end(lowered: &str) -> Option<(usize, usize)> {
     first_prefix_lead_end(lowered, seed::ROLE_FILE_WRITE_CONTENT_LEAD)
 }
-
 fn first_prefix_lead_end(lowered: &str, role: &str) -> Option<(usize, usize)> {
     let markers: Vec<String> = seed::lexicon()
         .role_word_forms(role)
@@ -854,7 +784,6 @@ fn first_prefix_lead_end(lowered: &str, role: &str) -> Option<(usize, usize)> {
     }
     best
 }
-
 /// The byte offset just past the first `file_write_action_cue` token.
 fn first_action_cue_end(toks: &[Token<'_>]) -> Option<usize> {
     let actions = bare_surfaces(seed::ROLE_FILE_WRITE_ACTION_CUE);
@@ -862,7 +791,6 @@ fn first_action_cue_end(toks: &[Token<'_>]) -> Option<usize> {
         .find(|token| actions.contains(&clean_cue_token(token.text)))
         .map(|token| token.end)
 }
-
 /// Trim a recovered content span down to its literal payload, dropping the
 /// leading clause separator ("… the following: hello") and any surrounding
 /// quoting. A delimiter is removed only when the entire payload has a matching
@@ -886,7 +814,6 @@ fn clean_content(raw: &str) -> Option<String> {
     };
     (!result.is_empty()).then(|| result.to_owned())
 }
-
 /// Strip everything a recovered span carries *before* its literal payload: the
 /// clause separators, and the seed-defined adverbs that qualify the requirement
 /// rather than naming content.
@@ -907,7 +834,6 @@ fn strip_clause_lead(raw: &str) -> &str {
         led = shortened;
     }
 }
-
 /// Drop one leading qualifier, but only when a clause separator follows it. The
 /// separator is what marks the adverb as introducing the payload rather than
 /// opening it, so content that genuinely starts with "exactly what I asked for"
@@ -924,7 +850,6 @@ fn strip_leading_qualifier<'a>(text: &'a str, qualifiers: &[String]) -> &'a str 
         .min_by_key(|rest| rest.len())
         .unwrap_or(text)
 }
-
 fn safe_relative_path(path: &str) -> bool {
     !path.starts_with('/')
         && !path.starts_with('-')
@@ -933,7 +858,6 @@ fn safe_relative_path(path: &str) -> bool {
             .chars()
             .all(|c| c.is_alphanumeric() || matches!(c, '/' | '.' | '_' | '-'))
 }
-
 const fn capability_slug(capability: Capability) -> &'static str {
     match capability {
         Capability::Search => "Search",
@@ -952,22 +876,18 @@ const fn capability_slug(capability: Capability) -> &'static str {
         Capability::AskUser => "AskUser",
     }
 }
-
 fn language(request: &str) -> &'static str {
     crate::language::detect(request).slug()
 }
-
 fn escape(value: &str) -> String {
     value
         .replace('\\', "\\\\")
         .replace('"', "\\\"")
         .replace('\n', "\\n")
 }
-
 fn field(out: &mut String, name: &str, value: &str) {
     let _ = writeln!(out, "  {name} \"{}\"", escape(value));
 }
-
 fn field_nested(out: &mut String, name: &str, value: &str) {
     let _ = writeln!(out, "    {name} \"{}\"", escape(value));
 }

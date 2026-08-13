@@ -1,0 +1,17 @@
+
+✓ main Task Ladder · 31512369858
+Triggered via push about 1 hour ago
+
+JOBS
+✓ Task Ladder (issue in 7m28s (ID 93849096340)
+
+ANNOTATIONS
+- 58% - 499 hits, 368 misses, 0 errors
+Task Ladder (issue: .github#49
+
+
+ARTIFACTS
+task-ladder-results
+
+For more information about the job, try: gh run view --job=93849096340
+View this run on GitHub: https://github.com/link-assistant/formal-ai/actions/runs/31512369858

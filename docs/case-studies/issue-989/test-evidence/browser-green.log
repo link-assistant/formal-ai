@@ -1,0 +1,85 @@
+TAP version 13
+# Subtest: the worker mirror is loaded as a contiguous, numbered set of modules
+ok 1 - the worker mirror is loaded as a contiguous, numbered set of modules
+  ---
+  duration_ms: 306.433347
+  ...
+# Subtest: prompt normalization collapses whitespace and case
+ok 2 - prompt normalization collapses whitespace and case
+  ---
+  duration_ms: 13.275034
+  ...
+# Subtest: language detection recognises each supported script
+ok 3 - language detection recognises each supported script
+  ---
+  duration_ms: 13.887356
+  ...
+# Subtest: arithmetic is answered from the calculation handler
+ok 4 - arithmetic is answered from the calculation handler
+  ---
+  duration_ms: 287.692997
+  ...
+# Subtest: greetings are answered in the language they were written in
+ok 5 - greetings are answered in the language they were written in
+  ---
+  duration_ms: 20.977368
+  ...
+# Subtest: identity questions answer from the seeded agent info
+ok 6 - identity questions answer from the seeded agent info
+  ---
+  duration_ms: 4.482812
+  ...
+# Subtest: an unknown prompt says so instead of inventing an answer
+ok 7 - an unknown prompt says so instead of inventing an answer
+  ---
+  duration_ms: 68.206638
+  ...
+# Subtest: every answer carries a full impulse → formalize → deformalize trace
+ok 8 - every answer carries a full impulse → formalize → deformalize trace
+  ---
+  duration_ms: 45.048356
+  ...
+# Subtest: the formalization records the subject, verb and object it derived
+ok 9 - the formalization records the subject, verb and object it derived
+  ---
+  duration_ms: 11.476845
+  ...
+# Subtest: at temperature 0 the same prompt always projects the same answer
+ok 10 - at temperature 0 the same prompt always projects the same answer
+  ---
+  duration_ms: 40.817663
+  ...
+# Subtest: above temperature 0 a repeated greeting stays a greeting
+ok 11 - above temperature 0 a repeated greeting stays a greeting
+  ---
+  duration_ms: 437.681827
+  ...
+# Subtest: the worker exposes its handlers through a single dispatch step
+ok 12 - the worker exposes its handlers through a single dispatch step
+  ---
+  duration_ms: 11.736941
+  ...
+# Subtest: the seed corpus is hydrated from the shipped .lino files
+ok 13 - the seed corpus is hydrated from the shipped .lino files
+  ---
+  duration_ms: 3.654405
+  ...
+# Subtest: the web-search component falls back when its bundle is unavailable
+ok 14 - the web-search component falls back when its bundle is unavailable
+  ---
+  duration_ms: 32.943858
+  ...
+# Subtest: issue 989 dialog controls and associative-memory inspection preempt generic routes
+ok 15 - issue 989 dialog controls and associative-memory inspection preempt generic routes
+  ---
+  duration_ms: 248.221235
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1871.159566

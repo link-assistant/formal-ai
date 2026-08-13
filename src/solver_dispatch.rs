@@ -5,6 +5,7 @@
 //! registry: the registry chooses method names, then this module supplies the
 //! Rust function for names implemented as regular solver handlers.
 
+use crate::conversation_control::try_conversation_control;
 use crate::definition_merge::merge_definitions;
 use crate::engine::SymbolicAnswer;
 use crate::entity_resolution::resolve_who_is;
@@ -257,6 +258,7 @@ pub fn try_contextual_override(
 /// asserts the two are an exact permutation, so this registry and the seed can
 /// never silently drift.
 const HANDLER_FUNCTIONS: &[(&str, SpecializedHandler)] = &[
+    ("conversation_control", try_conversation_control),
     ("http_fetch", try_http_fetch),
     ("url_navigate", try_url_navigate),
     ("github_repository_traffic", try_github_repository_traffic),

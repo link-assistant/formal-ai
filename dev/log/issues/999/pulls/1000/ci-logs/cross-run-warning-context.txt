@@ -1,0 +1,264 @@
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13144-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:03.1975487Z   CARGO_HTTP_MULTIPLEXING: false
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13145-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:03.1975961Z   CARGO_TERM_COLOR: always
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13146-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:03.1976360Z   RUSTFLAGS: -Dwarnings
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13147-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:03.1976947Z   CARGO_REGISTRY_TOKEN: ***
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13148-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:03.1977498Z   CARGO_TOKEN: ***
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13149-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:03.1977935Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13150-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:03.1978538Z   DOCKERHUB_IMAGE: 
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13151-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:03.1978939Z   CARGO_HOME: /home/runner/.cargo
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13152-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:03.1979381Z   CARGO_INCREMENTAL: 0
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13153-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:03.1980217Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13154-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:03.1980598Z   ACTIONS_CACHE_SERVICE_V2: on
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13155-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:03.1981021Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13156-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:03.2033975Z   ACTIONS_RUNTIME_TOKEN: ***
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13157-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:03.2034239Z   SCCACHE_GHA_ENABLED: true
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13158-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:03.2034470Z   RUSTC_WRAPPER: sccache
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13159-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:03.2034773Z   FILE_SIZE_WARNING_BASE: 42295418a6fd879affa92b49782d4ea9d8021e29
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13160-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:03.2035113Z ##[endgroup]
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13161-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:05.3610547Z 
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13162-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:05.3611472Z Checking configured file line limits for Rust, Links Notation, worker JavaScript, and GitHub Actions workflow files...
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13163-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:05.3612224Z 
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log:13164:Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:05.5096920Z ##[warning]Rust file has 907 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13165-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:05.5104832Z WARNING: src/intent_formalization.rs has 907 lines (approaching Rust limit of 1000, warning threshold: 900)
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log:13166:Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:05.5107023Z ##[warning]Worker JavaScript file has 1426 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13167-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:05.5108457Z WARNING: src/web/worker/formal_ai_worker_20.js has 1426 lines (approaching Worker JavaScript limit of 1500, warning threshold: 1400)
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log:13168:Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:05.5110543Z ##[warning]Links Notation file has 1421 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13169-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:05.5111938Z WARNING: data/seed/multilingual-responses-agentic.lino has 1421 lines (approaching Links Notation limit of 1500, warning threshold: 1400)
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13170-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:05.5112471Z 
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13171-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:05.5112653Z The following files are approaching their configured line limits:
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13172-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:05.5113021Z   src/intent_formalization.rs
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13173-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:05.5113288Z   src/web/worker/formal_ai_worker_20.js
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13174-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:05.5113607Z   data/seed/multilingual-responses-agentic.lino
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13175-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:05.5113831Z 
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13176-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:05.5114042Z Consider extracting code to prevent concurrent PR merge limit violations.
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13177-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:05.5114616Z 
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13178-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:05.5114741Z All checked files are within their line limits
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13179-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:05.5114951Z 
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13180-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:05.5151709Z ##[group]Run rust-script --test scripts/check-cache-budget.rs
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13181-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:05.5152163Z ^[[36;1mrust-script --test scripts/check-cache-budget.rs^[[0m
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13182-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:05.5196495Z shell: /usr/bin/bash -e {0}
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13183-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:05.5196765Z env:
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13184-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:05.5196970Z   GIT_CONFIG_COUNT: 1
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13185-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:05.5197229Z   GIT_CONFIG_KEY_0: init.defaultBranch
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13186-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:05.5197538Z   GIT_CONFIG_VALUE_0: main
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13187-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:05.5197792Z   CARGO_NET_RETRY: 10
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13188-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:05.5198036Z   CARGO_HTTP_MULTIPLEXING: false
+--
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13232-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:07.6390602Z   CARGO_NET_RETRY: 10
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13233-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:07.6390884Z   CARGO_HTTP_MULTIPLEXING: false
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13234-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:07.6391404Z   CARGO_TERM_COLOR: always
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13235-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:07.6391698Z   RUSTFLAGS: -Dwarnings
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13236-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:07.6392124Z   CARGO_REGISTRY_TOKEN: ***
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13237-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:07.6392508Z   CARGO_TOKEN: ***
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13238-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:07.6392815Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13239-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:07.6393193Z   DOCKERHUB_IMAGE: 
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13240-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:07.6393471Z   CARGO_HOME: /home/runner/.cargo
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13241-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:07.6393791Z   CARGO_INCREMENTAL: 0
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13242-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:07.6394197Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13243-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:07.6394649Z   ACTIONS_CACHE_SERVICE_V2: on
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13244-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:07.6395174Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13245-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:07.6451671Z   ACTIONS_RUNTIME_TOKEN: ***
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13246-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:07.6451939Z   SCCACHE_GHA_ENABLED: true
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13247-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:07.6452173Z   RUSTC_WRAPPER: sccache
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13248-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:07.6452390Z ##[endgroup]
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13249-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:08.2087271Z 
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13250-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:08.2087737Z Checking cached-record budget for data/cache/**...
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13251-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:08.2088206Z 
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log:13252:Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:08.3228145Z ##[warning]Closure-driven cache bucket holds 406 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13253-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:08.3232977Z WARNING: data/cache/wikidata/entity holds 406 records, above the 128-record cap (closure-driven exemption)
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log:13254:Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:08.3238181Z ##[warning]Closure-driven cache bucket holds 243 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13255-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:08.3241603Z WARNING: data/cache/wiktionary/en holds 243 records, above the 128-record cap (closure-driven exemption)
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log:13256:Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:08.3246105Z ##[warning]Closure-driven cache bucket holds 332 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13257-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:08.3248637Z WARNING: data/cache/wordnet/en holds 332 records, above the 128-record cap (closure-driven exemption)
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13258-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:08.3249537Z All cache buckets are within their record budget
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13259-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:08.3250194Z 
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13260-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:08.3285664Z ##[group]Run rust-script --test scripts/check-tests-as-docs.rs
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13261-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:08.3286144Z ^[[36;1mrust-script --test scripts/check-tests-as-docs.rs^[[0m
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13262-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:08.3330523Z shell: /usr/bin/bash -e {0}
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13263-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:08.3330785Z env:
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13264-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:08.3330979Z   GIT_CONFIG_COUNT: 1
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13265-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:08.3331230Z   GIT_CONFIG_KEY_0: init.defaultBranch
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13266-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:08.3331522Z   GIT_CONFIG_VALUE_0: main
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13267-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:08.3331759Z   CARGO_NET_RETRY: 10
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13268-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:08.3331997Z   CARGO_HTTP_MULTIPLEXING: false
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13269-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:08.3332258Z   CARGO_TERM_COLOR: always
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13270-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:08.3332498Z   RUSTFLAGS: -Dwarnings
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13271-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:08.3332872Z   CARGO_REGISTRY_TOKEN: ***
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13272-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:08.3333183Z   CARGO_TOKEN: ***
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13273-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:08.3333448Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13274-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:08.3333755Z   DOCKERHUB_IMAGE: 
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13275-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:08.3333983Z   CARGO_HOME: /home/runner/.cargo
+dev/log/issues/999/pulls/1000/ci-logs/run-31512369875.log-13276-Lint and Format Check	UNKNOWN STEP	2026-08-11T16:34:08.3334242Z   CARGO_INCREMENTAL: 0
+--
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4509-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:54.9650657Z   CARGO_HTTP_MULTIPLEXING: false
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4510-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:54.9650912Z   CARGO_TERM_COLOR: always
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4511-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:54.9651153Z   RUSTFLAGS: -Dwarnings
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4512-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:54.9651509Z   CARGO_REGISTRY_TOKEN: ***
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4513-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:54.9651808Z   CARGO_TOKEN: ***
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4514-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:54.9652053Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4515-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:54.9652345Z   DOCKERHUB_IMAGE: 
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4516-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:54.9652573Z   CARGO_HOME: /home/runner/.cargo
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4517-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:54.9653063Z   CARGO_INCREMENTAL: 0
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4518-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:54.9653410Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4519-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:54.9653761Z   ACTIONS_CACHE_SERVICE_V2: on
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4520-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:54.9654167Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4521-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:54.9700805Z   ACTIONS_RUNTIME_TOKEN: ***
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4522-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:54.9701073Z   SCCACHE_GHA_ENABLED: true
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4523-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:54.9701316Z   RUSTC_WRAPPER: sccache
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4524-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:54.9701632Z   FILE_SIZE_WARNING_BASE: 05edd8dabd26141d5b766d2bd60aee7a5421f614
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4525-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:54.9701979Z ##[endgroup]
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4526-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:56.4152607Z 
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4527-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:56.4153805Z Checking configured file line limits for Rust, Links Notation, worker JavaScript, and GitHub Actions workflow files...
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4528-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:56.4154589Z 
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log:4529:Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:56.5491976Z ##[warning]GitHub Actions workflow file has 1996 lines (approaching limit of 2000). Consider extracting content to keep at or below 1500 lines and prevent review and merge conflicts.
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4530-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:56.5499456Z WARNING: .github/workflows/release.yml has 1996 lines (approaching GitHub Actions workflow limit of 2000, warning threshold: 1500)
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4531-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:56.5499980Z 
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4532-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:56.5500176Z The following files are approaching their configured line limits:
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4533-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:56.5500549Z   .github/workflows/release.yml
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4534-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:56.5500712Z 
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4535-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:56.5500931Z Consider extracting code to prevent concurrent PR merge limit violations.
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4536-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:56.5501231Z 
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4537-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:56.5501358Z All checked files are within their line limits
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4538-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:56.5501570Z 
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4539-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:56.5539560Z ##[group]Run rust-script --test scripts/check-cache-budget.rs
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4540-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:56.5540021Z ^[[36;1mrust-script --test scripts/check-cache-budget.rs^[[0m
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4541-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:56.5588883Z shell: /usr/bin/bash -e {0}
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4542-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:56.5589139Z env:
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4543-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:56.5589333Z   GIT_CONFIG_COUNT: 1
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4544-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:56.5589581Z   GIT_CONFIG_KEY_0: init.defaultBranch
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4545-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:56.5589854Z   GIT_CONFIG_VALUE_0: main
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4546-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:56.5590082Z   CARGO_NET_RETRY: 10
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4547-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:56.5590303Z   CARGO_HTTP_MULTIPLEXING: false
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4548-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:56.5590550Z   CARGO_TERM_COLOR: always
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4549-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:56.5590771Z   RUSTFLAGS: -Dwarnings
+--
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4591-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:57.7526520Z   CARGO_NET_RETRY: 10
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4592-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:57.7526754Z   CARGO_HTTP_MULTIPLEXING: false
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4593-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:57.7527005Z   CARGO_TERM_COLOR: always
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4594-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:57.7527231Z   RUSTFLAGS: -Dwarnings
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4595-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:57.7527577Z   CARGO_REGISTRY_TOKEN: ***
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4596-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:57.7527875Z   CARGO_TOKEN: ***
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4597-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:57.7528115Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4598-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:57.7528405Z   DOCKERHUB_IMAGE: 
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4599-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:57.7528626Z   CARGO_HOME: /home/runner/.cargo
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4600-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:57.7528873Z   CARGO_INCREMENTAL: 0
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4601-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:57.7529194Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4602-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:57.7529537Z   ACTIONS_CACHE_SERVICE_V2: on
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4603-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:57.7529933Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4604-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:57.7576878Z   ACTIONS_RUNTIME_TOKEN: ***
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4605-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:57.7577152Z   SCCACHE_GHA_ENABLED: true
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4606-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:57.7577394Z   RUSTC_WRAPPER: sccache
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4607-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:57.7577622Z ##[endgroup]
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4608-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:58.3208040Z 
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4609-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:58.3208675Z Checking cached-record budget for data/cache/**...
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4610-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:58.3209133Z 
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log:4611:Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:58.4449041Z ##[warning]Closure-driven cache bucket holds 406 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4612-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:58.4451175Z WARNING: data/cache/wikidata/entity holds 406 records, above the 128-record cap (closure-driven exemption)
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log:4613:Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:58.4454010Z ##[warning]Closure-driven cache bucket holds 243 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4614-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:58.4455348Z WARNING: data/cache/wiktionary/en holds 243 records, above the 128-record cap (closure-driven exemption)
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log:4615:Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:58.4457225Z ##[warning]Closure-driven cache bucket holds 332 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4616-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:58.4458492Z WARNING: data/cache/wordnet/en holds 332 records, above the 128-record cap (closure-driven exemption)
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4617-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:58.4458980Z All cache buckets are within their record budget
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4618-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:58.4459246Z 
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4619-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:58.4487607Z ##[group]Run rust-script --test scripts/check-tests-as-docs.rs
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4620-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:58.4488064Z ^[[36;1mrust-script --test scripts/check-tests-as-docs.rs^[[0m
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4621-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:58.4538495Z shell: /usr/bin/bash -e {0}
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4622-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:58.4538870Z env:
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4623-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:58.4539149Z   GIT_CONFIG_COUNT: 1
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4624-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:58.4539528Z   GIT_CONFIG_KEY_0: init.defaultBranch
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4625-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:58.4539966Z   GIT_CONFIG_VALUE_0: main
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4626-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:58.4540310Z   CARGO_NET_RETRY: 10
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4627-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:58.4540661Z   CARGO_HTTP_MULTIPLEXING: false
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4628-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:58.4541046Z   CARGO_TERM_COLOR: always
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4629-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:58.4541408Z   RUSTFLAGS: -Dwarnings
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4630-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:58.4541906Z   CARGO_REGISTRY_TOKEN: ***
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4631-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:58.4542353Z   CARGO_TOKEN: ***
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4632-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:58.4542977Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4633-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:58.4543432Z   DOCKERHUB_IMAGE: 
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4634-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:58.4543768Z   CARGO_HOME: /home/runner/.cargo
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-4635-Lint and Format Check	UNKNOWN STEP	2026-08-11T00:22:58.4544170Z   CARGO_INCREMENTAL: 0
+--
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33234-Auto Release	UNKNOWN STEP	2026-08-11T00:54:10.8429517Z   GIT_CONFIG_COUNT: 1
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33235-Auto Release	UNKNOWN STEP	2026-08-11T00:54:10.8429765Z   GIT_CONFIG_KEY_0: init.defaultBranch
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33236-Auto Release	UNKNOWN STEP	2026-08-11T00:54:10.8430040Z   GIT_CONFIG_VALUE_0: main
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33237-Auto Release	UNKNOWN STEP	2026-08-11T00:54:10.8430277Z   CARGO_NET_RETRY: 10
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33238-Auto Release	UNKNOWN STEP	2026-08-11T00:54:10.8430515Z   CARGO_HTTP_MULTIPLEXING: false
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33239-Auto Release	UNKNOWN STEP	2026-08-11T00:54:10.8430769Z   CARGO_TERM_COLOR: always
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33240-Auto Release	UNKNOWN STEP	2026-08-11T00:54:10.8430997Z   RUSTFLAGS: -Dwarnings
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33241-Auto Release	UNKNOWN STEP	2026-08-11T00:54:10.8431346Z   CARGO_REGISTRY_TOKEN: ***
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33242-Auto Release	UNKNOWN STEP	2026-08-11T00:54:10.8431637Z   CARGO_TOKEN: ***
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33243-Auto Release	UNKNOWN STEP	2026-08-11T00:54:10.8431881Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33244-Auto Release	UNKNOWN STEP	2026-08-11T00:54:10.8432180Z   DOCKERHUB_IMAGE: 
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33245-Auto Release	UNKNOWN STEP	2026-08-11T00:54:10.8432399Z   DOCKERHUB_USERNAME: 
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33246-Auto Release	UNKNOWN STEP	2026-08-11T00:54:10.8432730Z   DOCKERHUB_TOKEN: ***
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33247-Auto Release	UNKNOWN STEP	2026-08-11T00:54:10.8432959Z   CARGO_HOME: /home/runner/.cargo
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33248-Auto Release	UNKNOWN STEP	2026-08-11T00:54:10.8433218Z   CARGO_INCREMENTAL: 0
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33249-Auto Release	UNKNOWN STEP	2026-08-11T00:54:10.8433432Z ##[endgroup]
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33250-Auto Release	UNKNOWN STEP	2026-08-11T00:54:15.7655167Z Detected single-language repository (Cargo.toml in root)
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33251-Auto Release	UNKNOWN STEP	2026-08-11T00:54:16.3507674Z Max published version on crates.io: 0.339.0
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33252-Auto Release	UNKNOWN STEP	2026-08-11T00:54:16.3508116Z Initial bump (patch) from 0.339.0: 0.339.1
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33253-Auto Release	UNKNOWN STEP	2026-08-11T00:54:16.4613126Z Final release version: 0.339.1
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log:33254:Auto Release	UNKNOWN STEP	2026-08-11T00:54:16.5489154Z warning: self-hosting ratchet would fall from 9.20% to 0.13% for v0.339.1
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log:33255:Auto Release	UNKNOWN STEP	2026-08-11T00:54:16.5514496Z ##[warning]self-hosting ratchet would fall from 9.20% to 0.13% for v0.339.1
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33256-Auto Release	UNKNOWN STEP	2026-08-11T00:54:16.5523197Z Recorded self-hosting metric for v0.339.1: 0.00% (0/880 changed lines)
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33257-Auto Release	UNKNOWN STEP	2026-08-11T00:54:16.5524095Z Updated ./Cargo.toml to version 0.339.1
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33258-Auto Release	UNKNOWN STEP	2026-08-11T00:54:16.5524561Z Updated ./Cargo.lock to version 0.339.1
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33259-Auto Release	UNKNOWN STEP	2026-08-11T00:54:16.5525544Z Removed changelog fragment ./changelog.d/20260810_000000_command_stream_boundaries.md
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33260-Auto Release	UNKNOWN STEP	2026-08-11T00:54:16.5526094Z Collected 1 changelog fragment(s)
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33261-Auto Release	UNKNOWN STEP	2026-08-11T00:54:21.6496506Z Regenerated changelog and fragment release map
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33262-Auto Release	UNKNOWN STEP	2026-08-11T00:54:22.1887208Z Committed version 0.339.1
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33263-Auto Release	UNKNOWN STEP	2026-08-11T00:54:23.6508587Z Created tag v0.339.1
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33264-Auto Release	UNKNOWN STEP	2026-08-11T00:54:24.7957849Z Pushed changes and tags
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33265-Auto Release	UNKNOWN STEP	2026-08-11T00:54:24.7958292Z Output: version_committed=true
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33266-Auto Release	UNKNOWN STEP	2026-08-11T00:54:24.7958621Z Output: new_version=0.339.1
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33267-Auto Release	UNKNOWN STEP	2026-08-11T00:54:24.8009389Z ##[group]Run rust-script scripts/get-version.rs
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33268-Auto Release	UNKNOWN STEP	2026-08-11T00:54:24.8009755Z ^[[36;1mrust-script scripts/get-version.rs^[[0m
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33269-Auto Release	UNKNOWN STEP	2026-08-11T00:54:24.8056479Z shell: /usr/bin/bash -e {0}
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33270-Auto Release	UNKNOWN STEP	2026-08-11T00:54:24.8056736Z env:
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33271-Auto Release	UNKNOWN STEP	2026-08-11T00:54:24.8056933Z   GIT_CONFIG_COUNT: 1
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33272-Auto Release	UNKNOWN STEP	2026-08-11T00:54:24.8057183Z   GIT_CONFIG_KEY_0: init.defaultBranch
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33273-Auto Release	UNKNOWN STEP	2026-08-11T00:54:24.8057458Z   GIT_CONFIG_VALUE_0: main
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33274-Auto Release	UNKNOWN STEP	2026-08-11T00:54:24.8057689Z   CARGO_NET_RETRY: 10
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-33275-Auto Release	UNKNOWN STEP	2026-08-11T00:54:24.8057919Z   CARGO_HTTP_MULTIPLEXING: false
+--
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44575-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:27:55.2312606Z   reporting_interval: 5000
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44576-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:27:55.2312857Z   artifact_name: github-pages
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44577-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:27:55.2313098Z   preview: false
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44578-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:27:55.2313297Z env:
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44579-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:27:55.2313479Z   GIT_CONFIG_COUNT: 1
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44580-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:27:55.2313706Z   GIT_CONFIG_KEY_0: init.defaultBranch
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44581-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:27:55.2313978Z   GIT_CONFIG_VALUE_0: main
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44582-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:27:55.2314204Z   CARGO_NET_RETRY: 10
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44583-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:27:55.2314425Z   CARGO_HTTP_MULTIPLEXING: false
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44584-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:27:55.2314674Z   CARGO_TERM_COLOR: always
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44585-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:27:55.2314899Z   RUSTFLAGS: -Dwarnings
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44586-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:27:55.2315210Z   CARGO_REGISTRY_TOKEN: ***
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44587-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:27:55.2315522Z   CARGO_TOKEN: ***
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44588-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:27:55.2315756Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44589-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:27:55.2316086Z   DOCKERHUB_IMAGE: 
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44590-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:27:55.2316492Z   GITHUB_PAGES: true
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44591-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:27:55.2316763Z   CARGO_HOME: /home/runner/.cargo
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44592-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:27:55.2317406Z   CARGO_INCREMENTAL: 0
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44593-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:27:55.2317655Z   NODE_OPTIONS: --disable-warning=DEP0040
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44594-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:27:55.2317925Z ##[endgroup]
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log:44595:Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:27:55.4919491Z ##[warning]Warning: timeout value is greater than the allowed maximum - timeout set to the maximum of 600000 milliseconds.
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44596-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:27:55.4931995Z Fetching artifact metadata for "github-pages" in this workflow run
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44597-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:27:55.5625636Z Found 4 artifact(s)
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44598-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:27:55.5639503Z Creating Pages deployment with payload:
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44599-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:27:55.5640071Z {
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44600-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:27:55.5640433Z 	"artifact_id": 9085733323,
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44601-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:27:55.5641062Z 	"pages_build_version": "a84329cd8bab02eedcd35225ab2597ce9182932d",
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44602-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:27:55.5701477Z 	"oidc_token": "***"
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44603-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:27:55.5701900Z }
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44604-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:27:55.8029864Z Created deployment for a84329cd8bab02eedcd35225ab2597ce9182932d, ID: a84329cd8bab02eedcd35225ab2597ce9182932d
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44605-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:28:00.8054605Z Getting Pages deployment status...
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44606-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:28:00.9089301Z Reported success!
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44607-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:28:04.0044952Z Post job cleanup.
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44608-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:28:04.1474557Z [command]/usr/bin/tar --posix -cf cache.tzst --exclude cache.tzst -P -C /home/runner/work/formal-ai/formal-ai --files-from manifest.txt --use-compress-program zstdmt
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44609-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:28:06.9578496Z Sent 37418325 of 171636053 (21.8%), 35.7 MBs/sec
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44610-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:28:07.6249226Z Sent 171636053 of 171636053 (100.0%), 98.2 MBs/sec
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44611-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:28:07.7127068Z Cache saved with key: Linux-cargo-docs-b7f2fbedd9cab4739b09ca3a79130f311d8412be6f09237f37315cd08086a3b1
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44612-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:28:07.7287557Z Post job cleanup.
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44613-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:28:07.9142952Z [command]/usr/bin/tar --posix -cf cache.tzst --exclude cache.tzst -P -C /home/runner/work/formal-ai/formal-ai --files-from manifest.txt --use-compress-program zstdmt
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44614-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:28:09.2088918Z Sent 33843766 of 33843766 (100.0%), 35.3 MBs/sec
+dev/log/issues/999/pulls/1000/ci-logs/run-31444469911.log-44615-Deploy Web App to GitHub Pages	UNKNOWN STEP	2026-08-11T01:28:09.2975958Z Post job cleanup.

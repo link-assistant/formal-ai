@@ -36,6 +36,15 @@ pub(super) fn plan_web_fetch_step(
     let url = crate::solver_handlers::agentic_fetch_url_for(task)?;
     let tool = tool_for(tool_names, Capability::Fetch)?;
     let progress = Progress::scan(messages);
+    if let Some(failure) = progress.latest_failure() {
+        if failure.capability == Capability::Fetch {
+            return Some(AgenticPlan::Final(tool_result::render_failure(
+                "web_fetch",
+                &failure.detail,
+                task,
+            )));
+        }
+    }
     if progress.done(Capability::Fetch) {
         return Some(AgenticPlan::Final(tool_result::render(
             "web_fetch",
@@ -70,6 +79,15 @@ pub(super) fn plan_web_search_step(
         ));
     };
     let progress = Progress::scan(messages);
+    if let Some(failure) = progress.latest_failure() {
+        if failure.capability == Capability::Search {
+            return Some(AgenticPlan::Final(tool_result::render_failure(
+                "web_search",
+                &failure.detail,
+                task,
+            )));
+        }
+    }
     if progress.done(Capability::Search) {
         return Some(AgenticPlan::Final(tool_result::render(
             "web_search",

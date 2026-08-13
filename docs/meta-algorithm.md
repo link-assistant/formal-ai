@@ -241,9 +241,9 @@ make the Formal AI solve a new task in agentic mode:
 | Recipe record | Count | Grounded against |
 | --- | --- | --- |
 | `meta_step` | 8 | ordering 1..8 is contiguous; each `seed_file` exists |
-| `meta_constant` | 3 | `pub const <name>: &str` in `src/agentic_coding/planner.rs` |
+| `meta_constant` | 3 | `pub const <name>: &str` in `src/agentic_coding/formalization_recipe.rs` |
 | `meta_tool` | 4 | `"<tool>"` in `DRIVER_TOOLS`, `Capability::<cap>` in the planner, and the `"<permission>"` / package name in `src/associative_package.rs` |
-| `meta_stage` | 5 | `Step <n>:` markers in the planner; ordering 1..5 contiguous |
+| `meta_stage` | 5 | `Step <n>:` markers in `src/agentic_coding/formalization_recipe.rs`; ordering 1..5 contiguous |
 | `meta_function` | 14 | `fn <name>` in the named source file |
 | `meta_primitive` | 9 | each appears in `PRIMITIVE_KINDS` in `src/agentic_coding/formalize.rs`; ordering 1..9 contiguous |
 | `meta_bound` | 1 | `const MAX_TURNS: usize = 12;` in `src/agentic_coding/driver.rs` |

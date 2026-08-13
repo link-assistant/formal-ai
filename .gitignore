@@ -66,6 +66,13 @@ node_modules/
 logs/
 ci-logs/
 
+# Session-log exports must never pollute a checkout root (#945, R838-1);
+# the report flow writes them outside the CWD, this is defense in depth.
+/formal-ai-harness-*.lino
+/formal-ai-server-*.lino
+!docs/case-studies/**/formal-ai-harness-*.lino
+!docs/case-studies/**/formal-ai-server-*.lino
+
 # Real Agent CLI ↔ formal-ai E2E capture, committed as case-study evidence
 # (see CONTRIBUTING.md rule 8 — "Real logs in the case study, not synthesized").
 !docs/case-studies/**/*.log

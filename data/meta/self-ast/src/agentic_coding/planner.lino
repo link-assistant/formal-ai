@@ -2,124 +2,114 @@ self_ast_census
   target src/agentic_coding/planner.rs
   language rust
   fidelity full_ast
-  byte_len 42186
-  line_count 948
-  content_id source_module_e49134f34deb6231
-  symbol_count 36
+  byte_len 39195
+  line_count 870
+  content_id source_module_32f71486eebc9276
+  symbol_count 30
   symbols
-    const SEARCH_QUERY 47 47
-    const CANONICAL_SOURCE_URL 50 51
-    const KB_PATH 54 54
-    enum AgenticPlan 58 63
-    struct PlannedToolCall 67 72
-    enum Capability 82 97
-    function permission_key 105 122
-    function registry_id 124 141
-    function tool_capability 150 152
-    function plan_chat_step 157 431
-    function plan_shell_step 434 451
-    struct DocumentRecipe 463 472
-    function plan_document_recipe 477 501
-    function plan_formalization_step 504 549
-    function plan_meaning_detail_step 558 607
-    function plan_diagram_step 614 627
-    function plan_self_ast_step 634 647
-    function plan_self_heal_step 654 667
-    function plan_source_links_step 675 688
-    function plan_ledger_step 695 708
-    function plan_explain_step 715 728
-    function plan_change_request_step 736 749
-    function plan_repair_strategy_step 757 770
-    function plan_rebuild_step 779 792
-    function plan_question_catalog_step 800 813
-    function plan_dreaming_audit_step 815 828
-    function plan_google_trends_learning_step 836 849
-    function plan_google_trends_catalog_step 851 864
-    function plan_one 866 871
-    function write_arguments 879 887
-    function fetch_arguments 896 902
-    function classify_tool 904 906
-    function latest_user_text 909 911
-    const FORMALIZATION_KEYWORDS 914 914
-    function is_formalization_task 925 930
-    function final_answer 934 948
+    enum AgenticPlan 49 54
+    struct PlannedToolCall 58 63
+    enum Capability 73 88
+    function permission_key 96 113
+    function registry_id 115 132
+    function tool_capability 141 143
+    function plan_chat_step 148 428
+    function plan_shell_step 431 448
+    struct DocumentRecipe 460 469
+    function plan_document_recipe 474 498
+    function plan_meaning_detail_step 507 556
+    function plan_diagram_step 563 576
+    function plan_self_ast_step 583 596
+    function plan_self_heal_step 603 616
+    function plan_source_links_step 624 637
+    function plan_ledger_step 644 657
+    function plan_explain_step 664 677
+    function plan_change_request_step 685 698
+    function plan_repair_strategy_step 706 719
+    function plan_rebuild_step 728 741
+    function plan_question_catalog_step 749 762
+    function plan_dreaming_audit_step 764 777
+    function plan_google_trends_learning_step 785 798
+    function plan_google_trends_catalog_step 800 813
+    function plan_one 815 820
+    function write_arguments 828 836
+    function fetch_arguments 845 851
+    function classify_tool 853 855
+    function latest_user_text 858 860
+    function trace_route 866 870
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 20588
-    named_node_count 4107
-    distinct_node_kinds 71
+    total_link_count 18885
+    named_node_count 3802
+    distinct_node_kinds 67
     node_kinds
-      arguments 270
-      array_expression 1
-      array_type 38
+      arguments 249
+      array_type 35
       attribute 6
       attribute_item 6
-      binary_expression 1
-      block 108
-      call_expression 270
-      closure_expression 8
-      closure_parameters 8
-      const_item 4
-      crate 3
+      binary_expression 2
+      block 98
+      call_expression 249
+      closure_expression 7
+      closure_parameters 7
+      crate 5
       declaration_list 1
-      doc_comment 134
-      else_clause 2
+      doc_comment 131
+      else_clause 1
       enum_item 2
       enum_variant 16
       enum_variant_list 2
-      escape_sequence 5
-      expression_statement 139
+      expression_statement 132
       field_declaration 6
       field_declaration_list 2
-      field_expression 53
-      field_identifier 85
+      field_expression 37
+      field_identifier 69
       field_initializer 26
       field_initializer_list 13
-      function_item 28
+      function_item 26
       function_modifiers 2
       generic_type 5
-      identifier 1192
-      if_expression 78
+      identifier 1100
+      if_expression 71
       impl_item 1
       inner_doc_comment_marker 2
-      integer_literal 1
-      let_condition 47
-      let_declaration 48
+      let_condition 43
+      let_declaration 37
       lifetime 3
-      line_comment 242
-      macro_invocation 24
+      line_comment 231
+      macro_invocation 21
       match_arm 28
       match_block 2
       match_expression 2
       match_pattern 28
       ordered_field_declaration_list 2
-      outer_doc_comment_marker 132
-      parameter 49
-      parameters 28
-      primitive_type 35
-      reference_expression 78
-      reference_type 72
-      return_expression 60
-      scoped_identifier 212
+      outer_doc_comment_marker 129
+      parameter 47
+      parameters 26
+      primitive_type 30
+      reference_expression 79
+      reference_type 65
+      return_expression 57
+      scoped_identifier 211
       scoped_use_list 5
       self 4
       self_parameter 2
       shorthand_field_initializer 26
       source_file 1
-      string_content 73
-      string_literal 72
+      string_content 58
+      string_literal 59
       struct_expression 13
       struct_item 2
-      super 49
-      token_tree 43
+      super 51
+      token_tree 34
       try_expression 1
-      tuple_struct_pattern 47
+      tuple_struct_pattern 43
       type_arguments 5
-      type_identifier 77
-      unary_expression 11
-      use_declaration 37
+      type_identifier 73
+      unary_expression 7
+      use_declaration 40
       use_list 5
-      visibility_modifier 24
+      visibility_modifier 23

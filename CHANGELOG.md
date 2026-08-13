@@ -7,6 +7,76 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.339.3] - 2026-08-13
+
+### Fixed
+- Release now verifies that the published `ghcr.io/link-assistant/formal-ai` image is anonymously pullable (`scripts/verify-ghcr-visibility.sh`, run in both `auto-release` and `manual-release`), so a private container package fails the release instead of breaking downstream `docker pull` with `unauthorized` (#1001).
+
+### Documentation
+- README explains how to tell a private GHCR package from a missing one and what to do until it is public (#1001).
+
+## [0.339.2] - 2026-08-11
+
+### Fixed
+
+- Harness and server log exports from the agentic `Report` flow are written
+  into a surviving temporary directory and print their final path, instead of
+  dropping `formal-ai-*.lino` session dumps into the caller's working
+  directory — a repository checkout root stays clean (#945).
+- Report-target answers that use machine values now select every target:
+  `formal_ai` was silently dropped because prompt normalization turned the
+  underscore into a space before matching (#996).
+- Final answers that inline machine text — the general-change plan event and
+  the formalized knowledge base — wrap it in a fenced `lino` code block, so
+  the text survives GitHub-comment markdown rendering instead of collapsing
+  into flowing prose (#996, hive-mind #2146).
+- Formalization tasks that quote their own source text («…», “…”, 「…」, 《…》)
+  now formalize that text instead of silently substituting the seeded
+  «Сказка о рыбаке и рыбке» tale; a quoted *title* of the tale still selects
+  the full canonical text, and `FORMAL_AI_TRACE_REQUESTS=1` now also traces
+  how the planner routed the received task (#956).
+- The Russian liveness probes «ты тут?», «вы тут» and «я тут» are routed to
+  the `test_status` intent instead of falling through to a web search (#979).
+- The 22 duplicate requirement IDs in `REQUIREMENTS.md` are renumbered to
+  fresh unique IDs (issue-540 block → R537–R548, issue-657 R480 → R549,
+  issue-674 block → R550–R558) with every cross-reference in
+  `docs/requirements-traceability.md`, the issue-540 case study, and its
+  guard test updated (#964).
+
+### Fixed
+
+- Local location, conversation-preference, correction, associative-memory,
+  British `behaviour`, and unquoted teaching prompts now stay on their seeded
+  symbolic routes instead of falling through to unrelated web/document plans;
+  failed web transports retain their real diagnostic, and asking what Links
+  Notation is no longer starts document generation (#989).
+- Agentic English narration no longer repeats the subjective word `quick` after
+  a user rejects it (#989).
+- GitHub issue reports can attach harness, server, and merged context as three
+  separate links, with safe filenames and valid link-only Markdown (#989).
+
+### Fixed
+
+- Split the repeatedly timing-out Intel macOS test suite into complementary
+  core and specification shards without raising its 35-minute budget, and add
+  elapsed-time warnings before either shard reaches the cap (#999).
+- Serialize repository writers across release, desktop, Pages, changelog, and
+  benchmark workflows without cancelling in-flight writes (#999).
+- Remove actionable CI warning debt: use the supported Pages timeout, classify
+  intentional reports as notices, and bring every observed source/data file
+  below its warning threshold (#999).
+- Repair stale Links Notation, relative-meta-logic, and CommonsenseQA references
+  exposed by the new link gate, with host-aware throttling for probe reliability
+  (#999).
+- Restrict Wayback diagnostics to Lychee's actual error section so successful
+  redirects are not reported as broken, and replace an unavailable normal-
+  algorithm reference with live university course material (#999).
+
+### Security
+
+- Add CodeQL, dependency-review, and broken-link/Wayback validation gates from
+  the current language templates (#999).
+
 ## [0.339.1] - 2026-08-11
 
 ### Fixed

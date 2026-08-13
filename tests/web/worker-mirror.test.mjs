@@ -185,3 +185,48 @@ test("the web-search component falls back when its bundle is unavailable", () =>
   });
   assert.ok(context.FormalAIWebSearchComponent, "a component is always present");
 });
+
+test("issue 989 dialog controls and associative-memory inspection preempt generic routes", async () => {
+  const preference = await solve("`quick` is subjective opinion, please don't use these anymore.");
+  assert.equal(preference.intent, "conversation_preference");
+  assert.match(preference.content, /avoid `quick`/);
+
+  for (const teaching of ["When I say # answer with 42.", "When I say # answer 42."]) {
+    const replay = await solve("#", {
+      history: [
+        { role: "user", content: teaching },
+        { role: "assistant", content: "Behavior rule recorded for this dialog." },
+      ],
+    });
+    assert.equal(replay.intent, "behavior_rule_custom", teaching);
+    assert.equal(replay.content, "42", teaching);
+  }
+
+  const memoryEvents = [{
+    id: "event-1",
+    kind: "message",
+    role: "user",
+    content: "hello",
+    conversationId: "dialog-1",
+  }];
+  const options = { options: { memoryEvents } };
+  const count = await solve("How many links are in your memory?", options);
+  assert.equal(count.intent, "memory_link_count");
+  assert.match(count.content, /records: 1; projected links: 17/);
+
+  const inventory = await solve("What is available in your local memory?", options);
+  assert.equal(inventory.intent, "memory_inventory");
+  assert.match(inventory.content, /kinds: message: 1/);
+  assert.match(inventory.content, /conversations: dialog-1: 1/);
+
+  const roots = await solve("Give me root links you have in your memory", options);
+  assert.equal(roots.intent, "memory_root_links");
+  assert.match(roots.content, /memory_event_[0-9a-f]{8}/);
+  assert.match(roots.content, /event-1/);
+
+  const correction = await solve("No that is not about document generation, it is about associative memory data retrieval.", {
+    ...options,
+    history: [{ role: "user", content: "Give me root links you have in your memory" }],
+  });
+  assert.equal(correction.intent, "memory_root_links");
+});

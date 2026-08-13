@@ -3,7 +3,7 @@
 //! Both production runtimes must read the same bytes the same way, so the
 //! thresholds here (minimum step length, maximum step length, the `<li><b>`
 //! navigation-item skip) are the exact ones the browser worker applies in
-//! `howToExtractSteps`/`howToCompactStepText` (`formal_ai_worker_24.js`); the
+//! `howToExtractSteps`/`howToCompactStepText` (`formal_ai_worker_how_to_guide.js`); the
 //! offline QA replay in `tests/unit/issue_991_*` and
 //! `tests/web/issue-991-how-to-synthesis.test.mjs` compares both against the
 //! same captures.

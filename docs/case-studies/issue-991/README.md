@@ -56,7 +56,7 @@ one inside `GuideBounds { max_depth: 2, max_pages_per_service: 4, max_services:
 4, max_steps: 12, max_capture_age_seconds: 5_184_000 }`, and orders the accepted
 steps by the #709 source tier, then depth, then source, then position. Every
 step keeps its source id, exact URL, license, capture digest, and depth.
-`src/web/worker/formal_ai_worker_24.js` mirrors that contract for the browser.
+`src/web/worker/formal_ai_worker_how_to_guide.js` mirrors that contract for the browser.
 
 **Recursion to the page that holds the procedure.** A Stack Exchange question
 judged relevant at depth 0 is followed to its answers at depth 1; a wiki page

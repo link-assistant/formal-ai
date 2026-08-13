@@ -2,9 +2,9 @@ self_ast_census
   target src/intent_formalization.rs
   language rust
   fidelity signature
-  byte_len 34018
-  line_count 903
-  content_id source_module_a7d7c7cf390dc8c4
+  byte_len 33514
+  line_count 897
+  content_id source_module_b0a864fe24b6764c
   symbol_count 50
   symbols
     module requirements 27 27
@@ -12,48 +12,48 @@ self_ast_census
     enum IntentKind 33 40
     function slug 44 53
     struct IntentFormalization 57 68
-    function to_links_notation 84 123
-    function has_relevant_handler 126 130
-    struct IntentFormalizationCacheEntry 134 137
-    struct IntentFormalizationCache 140 142
-    function new 146 150
-    function len 153 155
-    function is_empty 158 160
-    function get 163 166
-    function formalize_or_insert 168 188
-    function append_to_link_store 190 206
-    function solve_with_intent_cache 211 222
-    function impulse_id_for 226 228
-    function formalize_intent 231 279
-    function record_intent_formalization 281 309
-    function select_rule_for_intent 312 325
-    struct MatchedRoute 328 331
-    function route_for_prompt 333 348
-    function matches_route 350 360
-    function contains_token 362 370
-    function write_program_rule_for_intent 372 381
-    struct WriteProgramRecovery 385 397
-    struct ProgramCoreferenceRewrite 401 404
-    function rewrite_bare_program_coreference_rule 414 443
-    struct ActiveProgramContext 445 448
-    function active_program_context 450 472
-    function recover_write_program_rule 488 560
-    function operation_vocabulary 562 565
-    static VOCABULARY 563 563
-    function detected_program_modifiers 574 581
-    function append_candidate_knowns 583 601
-    function slot_known_link 603 628
-    function append_prompt_relevants 630 747
-    function looks_like_single_concept_lookup 749 756
-    function looks_arithmetic 758 768
-    function looks_like_latest_news_search 770 775
-    function looks_like_records_information_search 781 786
-    function looks_like_program_synthesis 788 801
-    function looks_like_text_manipulation 803 807
-    function has_any_token 809 811
-    function contains_term_for_relevants 815 820
-    function route_from_relevants 822 831
-    function infer_kind 833 876
-    function starts_with_question_word 878 893
-    function contains_question_mark 895 897
-    function push_unique 899 903
+    function to_links_notation 74 113
+    function has_relevant_handler 116 120
+    struct IntentFormalizationCacheEntry 124 127
+    struct IntentFormalizationCache 130 132
+    function new 136 140
+    function len 143 145
+    function is_empty 148 150
+    function get 153 156
+    function formalize_or_insert 158 178
+    function append_to_link_store 180 196
+    function solve_with_intent_cache 201 212
+    function impulse_id_for 216 218
+    function formalize_intent 221 269
+    function record_intent_formalization 271 299
+    function select_rule_for_intent 302 315
+    struct MatchedRoute 318 321
+    function route_for_prompt 323 338
+    function matches_route 340 350
+    function contains_token 352 360
+    function write_program_rule_for_intent 362 371
+    struct WriteProgramRecovery 375 387
+    struct ProgramCoreferenceRewrite 391 394
+    function rewrite_bare_program_coreference_rule 404 433
+    struct ActiveProgramContext 435 438
+    function active_program_context 440 462
+    function recover_write_program_rule 478 550
+    function operation_vocabulary 552 555
+    static VOCABULARY 553 553
+    function detected_program_modifiers 564 571
+    function append_candidate_knowns 573 591
+    function slot_known_link 593 618
+    function append_prompt_relevants 620 741
+    function looks_like_single_concept_lookup 743 750
+    function looks_arithmetic 752 762
+    function looks_like_latest_news_search 764 769
+    function looks_like_records_information_search 775 780
+    function looks_like_program_synthesis 782 795
+    function looks_like_text_manipulation 797 801
+    function has_any_token 803 805
+    function contains_term_for_relevants 809 814
+    function route_from_relevants 816 825
+    function infer_kind 827 870
+    function starts_with_question_word 872 887
+    function contains_question_mark 889 891
+    function push_unique 893 897

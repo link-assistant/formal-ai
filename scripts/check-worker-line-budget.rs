@@ -64,18 +64,23 @@ const TARGET_TOTAL_LINES: usize = 3_000;
 /// `write_program` dead-end shapes that keep the `missing` sentinel out of the
 /// reply — must be mirrored in the browser worker for Rust↔JS parity, adding a
 /// net 112 lines and raising the ratchet from 27,705 to 27,817.
+/// Issue #989 adds the associative-memory inspection projection that the web
+/// runtime needs to answer count, inventory, root-link, and correction turns
+/// from its IndexedDB-shaped records. Along with the parity routing changes,
+/// this raises the reviewed merged baseline to 27,996 lines.
 /// Issue #991 requires the browser and the Rust solver to execute the *same*
 /// bounded how-to synthesis contract — registry-driven source selection,
 /// recursive capture inside declared bounds, per-step provenance, the issue
 /// #709 copy/contradiction policy, and a seven-day service-accessibility
 /// memory. That contract cannot be expressed as a call into an existing module,
-/// so `worker/formal_ai_worker_24.js` mirrors `src/how_to_guide*.rs` outright,
-/// adding a net 862 lines and raising the ratchet from 27,817 to 28,679. The
-/// mirror is held to the Rust behaviour byte-for-byte by the shared parity
-/// expectation in `tests/fixtures/issue-991/expected-guides.json`, so it is a
-/// migration candidate once the guide synthesis moves into the Rust→WASM core.
+/// so `worker/formal_ai_worker_how_to_guide.js` mirrors `src/how_to_guide*.rs`
+/// outright, adding a net 801 lines on the merged #989 baseline and raising the
+/// ratchet from 27,996 to 28,797. The mirror is held to the Rust behaviour
+/// byte-for-byte by the shared parity expectation in
+/// `tests/fixtures/issue-991/expected-guides.json`, so it is a migration
+/// candidate once the guide synthesis moves into the Rust→WASM core.
 #[cfg(not(test))]
-const CEILING_TOTAL_LINES: usize = 28_678;
+const CEILING_TOTAL_LINES: usize = 28_797;
 
 const WORKER_DIR: &str = "src/web/worker";
 

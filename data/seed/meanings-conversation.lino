@@ -1,4 +1,150 @@
 meanings
+  conversation_preference_avoid
+    defined-by inquiry
+    defined-by conversation_reference
+    role conversation_preference_avoid
+    lexeme en
+      surface
+        text "don t use"
+      surface
+        text "do not use"
+      surface
+        text "stop using"
+      surface
+        text "avoid using"
+    lexeme ru
+      surface
+        text "не используй"
+      surface
+        text "не используйте"
+    lexeme hi
+      surface
+        text "उपयोग मत करो"
+      surface
+        text "इस्तेमाल मत करो"
+    lexeme zh
+      surface
+        text 不要使用
+      surface
+        text 别再用
+    lexeme es
+      surface
+        text "no uses"
+      surface
+        text "deja de usar"
+      surface
+        text "evita usar"
+  unauthorized_mutation_correction
+    defined-by inquiry
+    defined-by conversation_reference
+    role unauthorized_mutation_correction
+    lexeme en
+      surface
+        text "i didn t ask to update"
+      surface
+        text "i did not ask to update"
+      surface
+        text "i didn t ask to change"
+      surface
+        text "i did not ask to change"
+    lexeme ru
+      surface
+        text "я не просил обновлять"
+      surface
+        text "я не просила обновлять"
+    lexeme hi
+      surface
+        text "मैंने अपडेट करने को नहीं कहा"
+    lexeme zh
+      surface
+        text 我没让你更新
+    lexeme es
+      surface
+        text "no te pedí actualizar"
+      surface
+        text "no te pedí cambiar"
+  memory_link_count_query
+    defined-by inquiry
+    defined-by knowledge
+    role memory_link_count_query
+    lexeme en
+      surface
+        text "how many links are in your memory"
+    lexeme ru
+      surface
+        text "сколько ссылок в твоей памяти"
+    lexeme hi
+      surface
+        text "तुम्हारी स्मृति में कितने लिंक हैं"
+    lexeme zh
+      surface
+        text 你的记忆中有多少链接
+    lexeme es
+      surface
+        text "cuántos enlaces hay en tu memoria"
+  memory_inventory_query
+    defined-by inquiry
+    defined-by knowledge
+    role memory_inventory_query
+    lexeme en
+      surface
+        text "what is available in your local memory"
+      surface
+        text "what s available in your local memory"
+    lexeme ru
+      surface
+        text "что доступно в твоей локальной памяти"
+    lexeme hi
+      surface
+        text "तुम्हारी स्थानीय स्मृति में क्या उपलब्ध है"
+    lexeme zh
+      surface
+        text 你的本地记忆中有什么
+    lexeme es
+      surface
+        text "qué hay disponible en tu memoria local"
+  memory_root_links_query
+    defined-by inquiry
+    defined-by knowledge
+    role memory_root_links_query
+    lexeme en
+      surface
+        text "give me root links you have in your memory"
+      surface
+        text "show root links in your memory"
+    lexeme ru
+      surface
+        text "покажи корневые ссылки в твоей памяти"
+    lexeme hi
+      surface
+        text "अपनी स्मृति के रूट लिंक दिखाओ"
+    lexeme zh
+      surface
+        text 显示你记忆中的根链接
+    lexeme es
+      surface
+        text "muéstrame los enlaces raíz de tu memoria"
+      surface
+        text "dame los enlaces raíz que tienes en tu memoria"
+  memory_retrieval_correction
+    defined-by inquiry
+    defined-by knowledge
+    role memory_retrieval_correction
+    lexeme en
+      surface
+        text "not about document generation it is about associative memory data retrieval"
+    lexeme ru
+      surface
+        text "речь не о создании документа а об извлечении данных из ассоциативной памяти"
+    lexeme hi
+      surface
+        text "यह दस्तावेज़ बनाने के बारे में नहीं बल्कि एसोसिएटिव मेमोरी डेटा प्राप्त करने के बारे में है"
+    lexeme zh
+      surface
+        text 这不是生成文档而是检索关联记忆数据
+    lexeme es
+      surface
+        text "no se trata de generar documentos sino de recuperar datos de la memoria asociativa"
   conversation_topic_opener
     defined-by inquiry
     defined-by action

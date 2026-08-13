@@ -23,23 +23,25 @@ fn temporary_directory(label: &str) -> PathBuf {
     ))
 }
 
-fn create_opencode_fixture(path: &std::path::Path) {
+fn create_opencode_fixture(path: &std::path::Path, session: &str) {
     let script = r"
 import json, sqlite3, sys
 db = sqlite3.connect(sys.argv[1])
 db.execute('CREATE TABLE session (id TEXT PRIMARY KEY, directory TEXT, model TEXT, version TEXT, time_created INTEGER, time_updated INTEGER)')
 db.execute('CREATE TABLE message (id TEXT PRIMARY KEY, session_id TEXT, time_created INTEGER, time_updated INTEGER, data TEXT)')
 db.execute('CREATE TABLE part (id TEXT PRIMARY KEY, message_id TEXT, session_id TEXT, time_created INTEGER, time_updated INTEGER, data TEXT)')
-db.execute('INSERT INTO session VALUES (?, ?, ?, ?, ?, ?)', ('ses_fixture', '/workspace/a:b', json.dumps({'providerID':'formalai','id':'formal-ai'}), '1.18.4', 1, 9))
-db.execute('INSERT INTO message VALUES (?, ?, ?, ?, ?)', ('msg_b', 'ses_fixture', 2, 4, json.dumps({'role':'assistant','tokens':{'input':31},'cost':0.01})))
-db.execute('INSERT INTO message VALUES (?, ?, ?, ?, ?)', ('msg_a', 'ses_fixture', 1, 1, json.dumps({'role':'user'})))
-db.execute('INSERT INTO part VALUES (?, ?, ?, ?, ?, ?)', ('part_b', 'msg_b', 'ses_fixture', 4, 4, json.dumps({'type':'tool','tool':'websearch','state':{'status':'completed','output':'result','input':{'unsafe:key':'preserved'}}})))
-db.execute('INSERT INTO part VALUES (?, ?, ?, ?, ?, ?)', ('part_a', 'msg_a', 'ses_fixture', 1, 1, json.dumps({'type':'text','text':'true'})))
+session = sys.argv[2]
+db.execute('INSERT INTO session VALUES (?, ?, ?, ?, ?, ?)', (session, '/workspace/a:b', json.dumps({'providerID':'formalai','id':'formal-ai'}), '1.18.4', 1, 9))
+db.execute('INSERT INTO message VALUES (?, ?, ?, ?, ?)', ('msg_b', session, 2, 4, json.dumps({'role':'assistant','tokens':{'input':31},'cost':0.01})))
+db.execute('INSERT INTO message VALUES (?, ?, ?, ?, ?)', ('msg_a', session, 1, 1, json.dumps({'role':'user'})))
+db.execute('INSERT INTO part VALUES (?, ?, ?, ?, ?, ?)', ('part_b', 'msg_b', session, 4, 4, json.dumps({'type':'tool','tool':'websearch','state':{'status':'completed','output':'result','input':{'unsafe:key':'preserved'}}})))
+db.execute('INSERT INTO part VALUES (?, ?, ?, ?, ?, ?)', ('part_a', 'msg_a', session, 1, 1, json.dumps({'type':'text','text':'true'})))
 db.commit()
 ";
     let output = Command::new("python3")
         .args(["-c", script])
         .arg(path)
+        .arg(session)
         .output()
         .expect("create SQLite fixture");
     assert!(
@@ -54,7 +56,7 @@ fn opencode_export_is_complete_native_read_only_and_deterministic() {
     let directory = temporary_directory("opencode");
     fs::create_dir_all(&directory).unwrap();
     let database = directory.join("opencode.db");
-    create_opencode_fixture(&database);
+    create_opencode_fixture(&database, "ses_fixture");
     let before = fs::read(&database).unwrap();
 
     let run = |format: Option<&str>| {
@@ -151,6 +153,52 @@ fn general_json_converter_defaults_to_links_notation() {
     assert!(lino.contains("messages\n  message\n"), "{lino}");
     assert!(lino.contains("content \"a:b\""), "{lino}");
     assert!(!lino.contains("message_0"), "{lino}");
+}
+
+#[test]
+fn report_context_filenames_cannot_escape_the_temp_directory() {
+    let directory = temporary_directory("safe-report-path");
+    let temp = directory.join("tmp");
+    fs::create_dir_all(&temp).unwrap();
+    let database = directory.join("opencode.db");
+    let session = "../../session name";
+    create_opencode_fixture(&database, session);
+    let report = directory.join("report.md");
+
+    let output = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args([
+            "--silent",
+            "report",
+            "body",
+            "--session",
+            session,
+            "--source",
+            "opencode",
+            "--db",
+        ])
+        .arg(&database)
+        .arg("--output")
+        .arg(&report)
+        .env("TMPDIR", &temp)
+        .output()
+        .expect("run report with an unsafe session component");
+
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert!(report.is_file());
+    assert!(
+        temp.join("formal-ai-context-------session-name.lino")
+            .is_file(),
+        "the default context copy must stay inside the temporary directory"
+    );
+    assert!(
+        !directory.join("session name.lino").exists(),
+        "the session must not escape through the generated filename"
+    );
+    fs::remove_dir_all(directory).unwrap();
 }
 
 #[test]
@@ -419,9 +467,7 @@ exit 1
     );
     let args = fs::read_to_string(args_capture).unwrap();
     assert!(
-        args.contains(
-            "gist create --filename formal-ai-context-issue-840-large-atomic-report.lino"
-        ),
+        args.contains("gist create --filename complete-context.lino"),
         "{args}"
     );
     assert!(!args.contains("issue create"), "{args}");
@@ -436,5 +482,117 @@ exit 1
     let complete = fs::read_to_string(context_capture).unwrap();
     assert!(complete.contains("TAIL-EVIDENCE"));
     assert!(complete.len() > body.len());
+    fs::remove_dir_all(directory).unwrap();
+}
+
+#[cfg(unix)]
+#[test]
+fn issue_989_report_body_uploads_harness_server_and_merged_contexts_separately() {
+    let directory = temporary_directory("issue-989-separate-contexts");
+    let bin = directory.join("bin");
+    fs::create_dir_all(&bin).unwrap();
+    let database = directory.join("opencode.db");
+    create_opencode_fixture(&database, "ses_fixture");
+    write_dialog_exchange(
+        &directory,
+        "POST",
+        "/v1/chat/completions",
+        &[("X-Formal-AI-Dialog-ID", "ses_fixture")],
+        &json!({
+            "model": "formal-ai",
+            "messages": [{"role": "user", "content": "server-side evidence"}]
+        })
+        .to_string(),
+        200,
+        "application/json",
+        r#"{"choices":[{"message":{"role":"assistant","content":"server answer"}}]}"#,
+    )
+    .expect("server dialog fixture");
+
+    let gh = bin.join("gh");
+    fs::write(
+        &gh,
+        r#"#!/bin/sh
+printf '%s\n' "$*" >> "$GH_ARGS_CAPTURE"
+if [ "$1 $2" = "gist create" ]; then
+  for argument do
+    last_argument="$argument"
+  done
+  printf 'https://gist.github.com/example/%s\n' "${last_argument##*/}"
+  exit 0
+fi
+exit 1
+"#,
+    )
+    .unwrap();
+    let mut permissions = fs::metadata(&gh).unwrap().permissions();
+    permissions.set_mode(0o755);
+    fs::set_permissions(&gh, permissions).unwrap();
+    let args_capture = directory.join("gh-args.txt");
+    let body_capture = directory.join("report.md");
+    let context_capture = directory.join("merged.lino");
+    let path = format!(
+        "{}:{}",
+        bin.display(),
+        std::env::var("PATH").unwrap_or_default()
+    );
+
+    let output = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args([
+            "--silent",
+            "report",
+            "body",
+            "--session",
+            "ses_fixture",
+            "--source",
+            "both",
+            "--db",
+        ])
+        .arg(&database)
+        .arg("--log-dir")
+        .arg(&directory)
+        .arg("--output")
+        .arg(&body_capture)
+        .arg("--context-output")
+        .arg(&context_capture)
+        .arg("--separate-context-links")
+        .env("PATH", path)
+        .env("GH_ARGS_CAPTURE", &args_capture)
+        .output()
+        .expect("run issue #989 report export");
+
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let arguments = fs::read_to_string(args_capture).unwrap();
+    assert_eq!(arguments.lines().count(), 3, "{arguments}");
+    for expected in [
+        "gist create --filename formal-ai-harness-context-ses_fixture.lino",
+        "gist create --filename formal-ai-server-context-ses_fixture.lino",
+        "gist create --filename merged.lino",
+    ] {
+        assert!(
+            arguments.contains(expected),
+            "missing {expected:?}:\n{arguments}"
+        );
+    }
+
+    let body = fs::read_to_string(body_capture).unwrap();
+    for expected in [
+        "### Harness context",
+        "### Server context",
+        "### Merged context",
+        "https://gist.github.com/example/formal-ai-harness-context-ses_fixture.lino",
+        "https://gist.github.com/example/formal-ai-server-context-ses_fixture.lino",
+        "https://gist.github.com/example/merged.lino",
+    ] {
+        assert!(body.contains(expected), "missing {expected:?}:\n{body}");
+    }
+    assert!(
+        !body.contains("```lino"),
+        "separate report links must not merge context into one code block:\n{body}"
+    );
     fs::remove_dir_all(directory).unwrap();
 }

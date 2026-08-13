@@ -45,6 +45,8 @@ const LINO: &str = "lino";
 /// are machine facts the export produced.
 const TRACE_SEPARATOR: &str = ": ";
 const ERROR_PLACEHOLDER: &str = "{error}";
+const SESSION_PLACEHOLDER: &str = "{session}";
+const SOURCE_PLACEHOLDER: &str = "{source}";
 const URL_PLACEHOLDER: &str = "{url}";
 
 #[derive(Debug, Args)]
@@ -75,6 +77,9 @@ enum ReportAction {
         /// Also keep the exported Links Notation context at this path.
         #[arg(long)]
         context_output: Option<PathBuf>,
+        /// Link harness, server, and merged captures as three distinct files.
+        #[arg(long)]
+        separate_context_links: bool,
         /// Which surface is filing this report.
         #[arg(long, default_value = DEFAULT_SURFACE)]
         surface: String,
@@ -123,6 +128,7 @@ pub fn run_report(args: ReportArgs) -> Result<(), Box<dyn Error>> {
             log_dir,
             output,
             context_output,
+            separate_context_links,
             surface,
             max_inline_bytes,
             max_excerpt_bytes,
@@ -134,19 +140,31 @@ pub fn run_report(args: ReportArgs) -> Result<(), Box<dyn Error>> {
             let lino = conversation_context_to_lino(&session, &context);
             let context_path = context_path(context_output, &session);
             std::fs::write(&context_path, &lino)?;
-            let attachment = attach_context(
-                &lino,
-                &context_path,
-                &session,
-                &AttachmentSettings {
-                    max_inline_bytes,
-                    max_excerpt_bytes,
-                    oversize,
+            let settings = AttachmentSettings {
+                max_inline_bytes,
+                max_excerpt_bytes,
+                oversize,
+                gist_visibility,
+            };
+            let attachments = if separate_context_links && source == ContextSource::Both {
+                separate_context_attachments(
+                    &session,
+                    db.as_deref(),
+                    log_dir.as_deref(),
+                    &context_path,
+                    &lino,
                     gist_visibility,
-                },
-            )?;
+                )?
+            } else {
+                vec![attach_context(&lino, &context_path, &session, &settings)?]
+            };
             let body = bound_report_body(report_body(
-                &session, source, &surface, &context, &lino, attachment,
+                &session,
+                source,
+                &surface,
+                &context,
+                &lino,
+                attachments,
             ));
             write_output(&output, &body.render())?;
         }
@@ -181,7 +199,11 @@ fn context_path(requested: Option<PathBuf>, session: &str) -> PathBuf {
 }
 
 fn context_filename(session: &str) -> String {
-    let session: String = session
+    format!("formal-ai-context-{}.lino", safe_session_component(session))
+}
+
+fn safe_session_component(session: &str) -> String {
+    session
         .chars()
         .map(|character| {
             if character.is_ascii_alphanumeric() || character == '-' || character == '_' {
@@ -190,8 +212,7 @@ fn context_filename(session: &str) -> String {
                 '-'
             }
         })
-        .collect();
-    format!("formal-ai-context-{session}.lino")
+        .collect()
 }
 
 fn report_body(
@@ -200,7 +221,7 @@ fn report_body(
     surface: &str,
     context: &Value,
     lino: &str,
-    attachment: ReportAttachment,
+    attachments: Vec<ReportAttachment>,
 ) -> ReportBody {
     let mut labels = ReportLabels::from_seed();
     labels.trace_heading = config("issue_report_export_heading");
@@ -228,8 +249,56 @@ fn report_body(
         turns,
         earlier_omitted: 0,
         reasoning_trace: export_trace(context),
-        attachments: vec![attachment],
+        attachments,
     }
+}
+
+fn separate_context_attachments(
+    session: &str,
+    db: Option<&Path>,
+    log_dir: Option<&Path>,
+    merged_path: &Path,
+    merged_lino: &str,
+    visibility: GistVisibility,
+) -> Result<Vec<ReportAttachment>, Box<dyn Error>> {
+    let parent = merged_path.parent().unwrap_or_else(|| Path::new("."));
+    let mut attachments = Vec::new();
+    for (source, heading_key) in [
+        (
+            ContextSource::Harness,
+            "issue_report_harness_context_heading",
+        ),
+        (ContextSource::Server, "issue_report_server_context_heading"),
+        (ContextSource::Both, "issue_report_merged_context_heading"),
+    ] {
+        let (path, contents) = if source == ContextSource::Both {
+            (merged_path.to_owned(), merged_lino.to_owned())
+        } else {
+            let path = parent.join(format!(
+                "formal-ai-{}-context-{}.lino",
+                source.name(),
+                safe_session_component(session),
+            ));
+            let contents = match exported_context(session, source, db, log_dir) {
+                Ok((resolved, context)) => conversation_context_to_lino(&resolved, &context),
+                Err(error) => config("issue_report_context_export_failure")
+                    .replace(SESSION_PLACEHOLDER, session)
+                    .replace(SOURCE_PLACEHOLDER, source.name())
+                    .replace(ERROR_PLACEHOLDER, &format!("{:?}", error.to_string())),
+            };
+            std::fs::write(&path, &contents)?;
+            (path, contents)
+        };
+        debug_assert!(!contents.is_empty());
+        let url = upload_gist(&path, session, visibility)?;
+        attachments.push(ReportAttachment {
+            heading: config(heading_key),
+            note: config("issue_report_context_link_intro").replace(URL_PLACEHOLDER, &url),
+            language: String::new(),
+            content: String::new(),
+        });
+    }
+    Ok(attachments)
 }
 
 fn version() -> String {
@@ -389,9 +458,11 @@ fn upload_gist(
     visibility: GistVisibility,
 ) -> Result<String, Box<dyn Error>> {
     let mut command = Command::new("gh");
-    command
-        .args(["gist", "create", "--filename"])
-        .arg(context_filename(session));
+    command.args(["gist", "create", "--filename"]).arg(
+        path.file_name()
+            .and_then(|name| name.to_str())
+            .map_or_else(|| context_filename(session), str::to_owned),
+    );
     if visibility == GistVisibility::Public {
         command.arg("--public");
     }

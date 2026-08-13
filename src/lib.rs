@@ -21,6 +21,7 @@ pub mod computer_use;
 pub(crate) mod concepts;
 pub mod context_capacity;
 pub mod conversation_context;
+pub(crate) mod conversation_control;
 pub mod cue_lexicon;
 pub mod definition_merge;
 pub mod dialog_conversation;

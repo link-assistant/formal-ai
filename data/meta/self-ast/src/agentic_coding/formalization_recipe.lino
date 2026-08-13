@@ -1,0 +1,83 @@
+self_ast_census
+  target src/agentic_coding/formalization_recipe.rs
+  language rust
+  fidelity full_ast
+  byte_len 6578
+  line_count 159
+  content_id source_module_4c5b18e641e4eebf
+  symbol_count 10
+  symbols
+    const SEARCH_QUERY 21 21
+    const CANONICAL_SOURCE_URL 24 25
+    const KB_PATH 28 28
+    const CANONICAL_TALE_KEYWORDS 31 31
+    function is_formalization_task 34 37
+    const INLINE_SOURCE_DELIMITERS 40 40
+    function inline_formalization_source 50 66
+    function is_canonical_tale_reference 69 74
+    function plan_formalization_step 78 138
+    function final_answer 142 159
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 3586
+    named_node_count 683
+    distinct_node_kinds 55
+    node_kinds
+      arguments 45
+      array_expression 2
+      array_type 4
+      binary_expression 3
+      block 20
+      call_expression 45
+      char_literal 8
+      closure_expression 1
+      closure_parameters 1
+      const_item 5
+      continue_expression 3
+      crate 6
+      doc_comment 23
+      else_clause 1
+      escape_sequence 5
+      expression_statement 20
+      field_expression 29
+      field_identifier 29
+      for_expression 1
+      function_item 5
+      generic_type 1
+      identifier 178
+      if_expression 11
+      index_expression 2
+      inner_doc_comment_marker 6
+      integer_literal 2
+      let_condition 4
+      let_declaration 15
+      line_comment 36
+      macro_invocation 4
+      outer_doc_comment_marker 17
+      parameter 7
+      parameters 5
+      primitive_type 13
+      range_expression 2
+      reference_expression 5
+      reference_type 12
+      return_expression 5
+      scoped_identifier 21
+      scoped_use_list 2
+      source_file 1
+      string_content 16
+      string_literal 14
+      super 4
+      token_tree 10
+      tuple_expression 4
+      tuple_pattern 1
+      tuple_struct_pattern 6
+      tuple_type 1
+      type_arguments 1
+      type_identifier 6
+      unary_expression 4
+      use_declaration 4
+      use_list 2
+      visibility_modifier 5

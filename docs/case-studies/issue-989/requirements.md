@@ -1,0 +1,14 @@
+# Issue #989 requirements traceability
+
+| ID | Requirement extracted from issue and comment | Implementation | Verification |
+| --- | --- | --- | --- |
+| R989-1 | Natural questions about the current location stay local. | Seeded `pwd` cues in `shell-intents.lino`. | `natural_location_questions_use_pwd_instead_of_web_search` |
+| R989-2 | Search/fetch transport errors remain errors and never become empty-success claims, while successful research content remains content. | Failure-first planner checks plus leading-diagnostic-only inference for status-less tool results. | `failed_web_transport_is_reported_as_failure_not_empty_success`; `successful_web_page_with_record_404_is_not_a_transport_failure` |
+| R989-3 | Honor dialog preferences and corrections; do not repeat rejected subjective narration. | Seeded conversation-control roles/responses, precedence handler, and neutral narration. | `preference_and_mutation_correction_receive_explicit_acknowledgements`; `agentic_narration_does_not_reintroduce_the_rejected_subjective_wording` |
+| R989-4 | A definition question about Links Notation must not mutate or generate a document. | Document formalization now requires an explicit action verb. | `links_notation_question_falls_through_to_the_symbolic_concept_answer` |
+| R989-5 | Answer associative-memory count, inventory, root-link, and correction turns from local data. | Memory inspection precedes agentic routing in both APIs; equivalent browser projection added. | `associative_memory_introspection_preempts_web_and_document_planning`; browser issue-989 test |
+| R989-6 | Accept British `behaviour` spellings. | Seed aliases plus native/browser detail prefixes. | `british_behaviour_rule_queries_match_the_rule_catalog` |
+| R989-7 | Learn the explicit unquoted rule `When I say # answer with 42.`. | Seed-driven unquoted trigger/response parser in Rust and browser. | `plain_text_trigger_and_answer_compile_and_replay`; browser issue-989 test |
+| R989-8 | Future GitHub reports provide three separate file links and valid Markdown. | `--separate-context-links`; three independent gist uploads; empty fence suppression; safe filenames. | `github_report_requests_three_separate_context_links`; `link_only_report_attachments_do_not_emit_empty_code_fences`; `issue_989_report_body_uploads_harness_server_and_merged_contexts_separately`; CLI filename unit test |
+| R989-9 | Correct every reported family together and preserve Rust/browser parity. | Shared seed roles/responses and matching handler order. | `whole_reported_dialog_stays_local_and_preserves_diagnostics`; complete browser mirror |
+| R989-10 | Preserve raw evidence, document research and requirements, and self-apply Formal AI to at least 20% of the task. | Issue/PR case studies, raw files, test logs, five-leaf decomposition, live Agent CLI harness. | Byte comparison in `experiments/issue_989_self_authoring/run.sh`; `same_task_agent_cli_authorship_is_preserved` |

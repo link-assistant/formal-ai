@@ -1,4 +1,164 @@
 multilingual_responses
+  response response_conversation_preference_en
+    intent conversation_preference
+    language en
+    text "Understood. I'll avoid `{term}` in this dialog."
+  response response_conversation_preference_ru
+    intent conversation_preference
+    language ru
+    text "Понял. В этом диалоге я не буду использовать `{term}`."
+  response response_conversation_preference_hi
+    intent conversation_preference
+    language hi
+    text "समझ गया। इस संवाद में मैं `{term}` का उपयोग नहीं करूँगा।"
+  response response_conversation_preference_zh
+    intent conversation_preference
+    language zh
+    text "明白了。在本次对话中我不会使用 `{term}`。"
+  response response_conversation_preference_es
+    intent conversation_preference
+    language es
+    text "Entendido. Evitaré `{term}` en este diálogo."
+  response response_action_correction_en
+    intent action_correction
+    language en
+    text "I'm sorry. You asked for information, not an update. I won't make further changes unless you explicitly request them."
+  response response_action_correction_ru
+    intent action_correction
+    language ru
+    text "Извините. Вы просили информацию, а не обновление. Я не буду вносить изменения без явного запроса."
+  response response_action_correction_hi
+    intent action_correction
+    language hi
+    text "माफ़ कीजिए। आपने जानकारी माँगी थी, अपडेट नहीं। आपके स्पष्ट अनुरोध के बिना मैं आगे बदलाव नहीं करूँगा।"
+  response response_action_correction_zh
+    intent action_correction
+    language zh
+    text "抱歉。你请求的是信息，而不是更新。除非你明确要求，否则我不会再做更改。"
+  response response_action_correction_es
+    intent action_correction
+    language es
+    text "Lo siento. Pediste información, no una actualización. No haré más cambios salvo que los solicites explícitamente."
+  response response_memory_link_count_en
+    intent memory_link_count
+    language en
+    text "Local associative memory — records: {records}; projected links: {links}."
+  response response_memory_link_count_ru
+    intent memory_link_count
+    language ru
+    text "Локальная ассоциативная память — записей: {records}; спроецированных ссылок: {links}."
+  response response_memory_link_count_hi
+    intent memory_link_count
+    language hi
+    text "स्थानीय एसोसिएटिव मेमोरी — रिकॉर्ड: {records}; प्रक्षेपित लिंक: {links}।"
+  response response_memory_link_count_zh
+    intent memory_link_count
+    language zh
+    text "本地关联记忆——记录：{records}；投影链接：{links}。"
+  response response_memory_link_count_es
+    intent memory_link_count
+    language es
+    text "Memoria asociativa local — registros: {records}; enlaces proyectados: {links}."
+  response response_memory_inventory_en
+    intent memory_inventory
+    language en
+    text "Local associative memory — records: {records}; kinds: {kinds}; conversations: {conversations}."
+  response response_memory_inventory_ru
+    intent memory_inventory
+    language ru
+    text "Локальная ассоциативная память — записей: {records}; типы: {kinds}; беседы: {conversations}."
+  response response_memory_inventory_hi
+    intent memory_inventory
+    language hi
+    text "स्थानीय एसोसिएटिव मेमोरी — रिकॉर्ड: {records}; प्रकार: {kinds}; संवाद: {conversations}।"
+  response response_memory_inventory_zh
+    intent memory_inventory
+    language zh
+    text "本地关联记忆——记录：{records}；类型：{kinds}；对话：{conversations}。"
+  response response_memory_inventory_es
+    intent memory_inventory
+    language es
+    text "Memoria asociativa local — registros: {records}; tipos: {kinds}; conversaciones: {conversations}."
+  response response_memory_inventory_item_en
+    intent memory_inventory_item
+    language en
+    text "{name}: {count}"
+  response response_memory_inventory_item_ru
+    intent memory_inventory_item
+    language ru
+    text "{name}: {count}"
+  response response_memory_inventory_item_hi
+    intent memory_inventory_item
+    language hi
+    text "{name}: {count}"
+  response response_memory_inventory_item_zh
+    intent memory_inventory_item
+    language zh
+    text "{name}: {count}"
+  response response_memory_inventory_item_es
+    intent memory_inventory_item
+    language es
+    text "{name}: {count}"
+  response response_memory_inventory_empty_en
+    intent memory_inventory_empty
+    language en
+    text none
+  response response_memory_inventory_empty_ru
+    intent memory_inventory_empty
+    language ru
+    text нет
+  response response_memory_inventory_empty_hi
+    intent memory_inventory_empty
+    language hi
+    text "कोई नहीं"
+  response response_memory_inventory_empty_zh
+    intent memory_inventory_empty
+    language zh
+    text 无
+  response response_memory_inventory_empty_es
+    intent memory_inventory_empty
+    language es
+    text ninguno
+  response response_memory_root_links_en
+    intent memory_root_links
+    language en
+    text "Associative-memory root links (record root → source event):\n{listing}"
+  response response_memory_root_links_ru
+    intent memory_root_links
+    language ru
+    text "Корневые ссылки ассоциативной памяти (корень записи → исходное событие):\n{listing}"
+  response response_memory_root_links_hi
+    intent memory_root_links
+    language hi
+    text "एसोसिएटिव मेमोरी के रूट लिंक (रिकॉर्ड रूट → स्रोत घटना):\n{listing}"
+  response response_memory_root_links_zh
+    intent memory_root_links
+    language zh
+    text "关联记忆根链接（记录根 → 源事件）：\n{listing}"
+  response response_memory_root_links_es
+    intent memory_root_links
+    language es
+    text "Enlaces raíz de la memoria asociativa (raíz del registro → evento de origen):\n{listing}"
+  response response_memory_root_links_empty_en
+    intent memory_root_links_empty
+    language en
+    text "(none)"
+  response response_memory_root_links_empty_ru
+    intent memory_root_links_empty
+    language ru
+    text "(нет)"
+  response response_memory_root_links_empty_hi
+    intent memory_root_links_empty
+    language hi
+    text "(कोई नहीं)"
+  response response_memory_root_links_empty_zh
+    intent memory_root_links_empty
+    language zh
+    text "(无)"
+  response response_memory_root_links_empty_es
+    intent memory_root_links_empty
+    language es
+    text "(ninguno)"
   response response_http_fetch_curated_project_en
     intent http_fetch_curated_project
     language en
@@ -250,7 +410,7 @@ multilingual_responses
   response response_agentic_action_run_en
     intent agentic_action_run
     language en
-    text "Let me run a quick command to get that for you."
+    text "Let me run the requested command to get that for you."
   response response_agentic_action_run_ru
     intent agentic_action_run
     language ru
@@ -306,7 +466,7 @@ multilingual_responses
   response response_agentic_action_ask_user_en
     intent agentic_action_ask_user
     language en
-    text "Let me ask you a couple of quick questions so I get this right."
+    text "Let me ask you a few questions so I get this right."
   response response_agentic_action_ask_user_ru
     intent agentic_action_ask_user
     language ru
@@ -1179,83 +1339,3 @@ multilingual_responses
     intent coding_source_module_registration
     language rust
     text "pub mod {module};\n"
-  response response_coding_workspace_effect_observed_en
-    intent coding_workspace_effect_observed
-    language en
-    text "Created or updated and observed `{path}` through the workspace tools."
-  response response_coding_workspace_effect_observed_ru
-    intent coding_workspace_effect_observed
-    language ru
-    text "Файл `{path}` создан или обновлён и проверен через инструменты рабочей области."
-  response response_coding_workspace_effect_observed_hi
-    intent coding_workspace_effect_observed
-    language hi
-    text "`{path}` को कार्यक्षेत्र उपकरणों के माध्यम से बनाया या बदला और सत्यापित किया गया।"
-  response response_coding_workspace_effect_observed_zh
-    intent coding_workspace_effect_observed
-    language zh
-    text "已通过工作区工具创建或更新并验证 `{path}`。"
-  response response_coding_workspace_effect_observed_es
-    intent coding_workspace_effect_observed
-    language es
-    text "Se creó o actualizó `{path}` y se comprobó mediante las herramientas del espacio de trabajo."
-  response response_coding_workspace_written_unverified_en
-    intent coding_workspace_written_unverified
-    language en
-    text "Created `{path}` through the workspace file tools without read-back verification."
-  response response_coding_workspace_written_unverified_ru
-    intent coding_workspace_written_unverified
-    language ru
-    text "Файл `{path}` создан через файловые инструменты рабочей области без проверки чтением."
-  response response_coding_workspace_written_unverified_hi
-    intent coding_workspace_written_unverified
-    language hi
-    text "`{path}` को कार्यक्षेत्र फ़ाइल उपकरणों के माध्यम से बिना पुनः पढ़कर सत्यापन के बनाया गया।"
-  response response_coding_workspace_written_unverified_zh
-    intent coding_workspace_written_unverified
-    language zh
-    text "已通过工作区文件工具创建 `{path}`，但未进行回读验证。"
-  response response_coding_workspace_written_unverified_es
-    intent coding_workspace_written_unverified
-    language es
-    text "Se creó `{path}` mediante las herramientas de archivos del espacio de trabajo, sin verificación de lectura."
-  response response_coding_workspace_verification_failed_en
-    intent coding_workspace_verification_failed
-    language en
-    text "Verification failed for `{path}`: the observed bytes differ from the planned workspace effect."
-  response response_coding_workspace_verification_failed_ru
-    intent coding_workspace_verification_failed
-    language ru
-    text "Проверка `{path}` не удалась: считанные байты отличаются от запланированного изменения рабочей области."
-  response response_coding_workspace_verification_failed_hi
-    intent coding_workspace_verification_failed
-    language hi
-    text "`{path}` का सत्यापन विफल रहा: पढ़े गए बाइट नियोजित कार्यक्षेत्र परिवर्तन से अलग हैं।"
-  response response_coding_workspace_verification_failed_zh
-    intent coding_workspace_verification_failed
-    language zh
-    text "`{path}` 验证失败：读取的字节与计划的工作区更改不同。"
-  response response_coding_workspace_verification_failed_es
-    intent coding_workspace_verification_failed
-    language es
-    text "La verificación de `{path}` falló: los bytes observados difieren del cambio planificado en el espacio de trabajo."
-  response response_tool_result_failed_exit_code_en
-    intent tool_result_failed_exit_code
-    language en
-    text "The command failed: `{tool}` exited with code {exit_code}.\n\n```text\n{error}\n```"
-  response response_tool_result_failed_exit_code_ru
-    intent tool_result_failed_exit_code
-    language ru
-    text "Команда завершилась с ошибкой: `{tool}` завершилась с кодом {exit_code}.\n\n```text\n{error}\n```"
-  response response_tool_result_failed_exit_code_hi
-    intent tool_result_failed_exit_code
-    language hi
-    text "कमांड विफल रही: `{tool}` कोड {exit_code} के साथ समाप्त हुई।\n\n```text\n{error}\n```"
-  response response_tool_result_failed_exit_code_zh
-    intent tool_result_failed_exit_code
-    language zh
-    text "命令失败：`{tool}` 以代码 {exit_code} 退出。\n\n```text\n{error}\n```"
-  response response_tool_result_failed_exit_code_es
-    intent tool_result_failed_exit_code
-    language es
-    text "El comando falló: `{tool}` terminó con código {exit_code}.\n\n```text\n{error}\n```"

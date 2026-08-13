@@ -1,0 +1,56 @@
+run-31427622514-job-93585318590.json	notice	.github	36	sccache stats - test	0% - 0 hits, 1 miss, 0 errors
+run-31427622514-job-93585318593.json	notice	.github	51	sccache stats - test-agent-cli-e2e	46% - 1091 hits, 1276 misses, 0 errors
+run-31427622514-job-93585318607.json	notice	.github	53	sccache stats - lint	34% - 543 hits, 1045 misses, 0 errors
+run-31427622514-job-93585318607.json	warning	.github	3		You've hit a rate limit, your rate limit will reset in 11 seconds
+run-31427622514-job-93585318607.json	warning	.github	3		You've hit a rate limit, your rate limit will reset in 11 seconds
+run-31427622514-job-93585318607.json	warning	.github	3		You've hit a rate limit, your rate limit will reset in 17 seconds
+run-31427622514-job-93585318607.json	warning	data/cache/wordnet/en	0		Closure-driven cache bucket holds 332 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+run-31427622514-job-93585318607.json	warning	data/cache/wiktionary/en	0		Closure-driven cache bucket holds 243 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+run-31427622514-job-93585318607.json	warning	data/cache/wikidata/entity	0		Closure-driven cache bucket holds 406 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+run-31427622514-job-93585318655.json	notice	.github	49	sccache stats - test	1% - 5 hits, 961 misses, 0 errors
+run-31427622514-job-93585318655.json	failure	.github	1152		Process completed with exit code 101.
+run-31427622514-job-93592216688.json	failure	.github	93		Process completed with exit code 1.
+run-31427622514-job-93592216688.json	failure	.github	92		Pipeline failed. Failing jobs: test
+run-31444469911-job-93637320009.json	notice	.github	52	sccache stats - lint	41% - 526 hits, 762 misses, 0 errors
+run-31444469911-job-93637320009.json	warning	data/cache/wordnet/en	0		Closure-driven cache bucket holds 332 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+run-31444469911-job-93637320009.json	warning	data/cache/wiktionary/en	0		Closure-driven cache bucket holds 243 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+run-31444469911-job-93637320009.json	warning	data/cache/wikidata/entity	0		Closure-driven cache bucket holds 406 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+run-31444469911-job-93637320009.json	warning	.github/workflows/release.yml	0		GitHub Actions workflow file has 1996 lines (approaching limit of 2000). Consider extracting content to keep at or below 1500 lines and prevent review and merge conflicts.
+run-31444469911-job-93637320032.json	notice	.github	36	sccache stats - test	0% - 0 hits, 1 miss, 0 errors
+run-31444469911-job-93637320037.json	notice	.github	49	sccache stats - test-agent-cli-e2e	63% - 1066 hits, 613 misses, 0 errors
+run-31444469911-job-93637320037.json	warning	.github	3		You've hit a rate limit, your rate limit will reset in 27 seconds
+run-31444469911-job-93637320049.json	notice	.github	49	sccache stats - test	72% - 590 hits, 225 misses, 0 errors
+run-31444469911-job-93643275610.json	notice	.github	49	sccache stats - build	46% - 429 hits, 496 misses, 0 errors
+run-31444469911-job-93644742682.json	warning	.github	27	Self-hosting ratchet fell	self-hosting ratchet would fall from 9.20% to 0.13% for v0.339.1
+run-31444469911-job-93649793558.json	warning	.github	26		Warning: timeout value is greater than the allowed maximum - timeout set to the maximum of 600000 milliseconds.
+run-31467733666-job-93704344658.json	notice	.github	36	sccache stats - test	0% - 0 hits, 1 miss, 0 errors
+run-31467733666-job-93704344661.json	notice	.github	51	sccache stats - lint	19% - 244 hits, 1044 misses, 0 errors
+run-31467733666-job-93704344661.json	warning	data/cache/wordnet/en	0		Closure-driven cache bucket holds 332 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+run-31467733666-job-93704344661.json	warning	data/cache/wiktionary/en	0		Closure-driven cache bucket holds 243 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+run-31467733666-job-93704344661.json	warning	data/cache/wikidata/entity	0		Closure-driven cache bucket holds 406 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+run-31467733666-job-93704344661.json	warning	src/agentic_coding/general_planner.rs	0		Rust file has 979 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+run-31467733666-job-93704344670.json	failure	.github	1		The job has exceeded the maximum execution time of 35m0s
+run-31467733666-job-93704344670.json	notice	.github	34	sccache stats - test	0% - 0 hits, 0 misses, 0 errors
+run-31467733666-job-93704344670.json	failure	.github	3982		The operation was canceled.
+run-31467733666-job-93704344724.json	notice	.github	49	sccache stats - test-agent-cli-e2e	37% - 623 hits, 1056 misses, 0 errors
+run-31467733666-job-93711742200.json	failure	.github	93		Process completed with exit code 1.
+run-31467733666-job-93711742200.json	failure	.github	92		Pipeline has cancelled jobs on main: test. A job killed by 'timeout-minutes' is reported as cancelled, which would otherwise hide the failure. Check each job's annotations for 'has exceeded the maximum execution time'.
+run-31512369853-job-93849506036.json	notice	.github	43	sccache stats - coverage	0% - 0 hits, 67 misses, 0 errors
+run-31512369853-job-93849506036.json	notice	.github	18	Codecov upload not configured	The LCOV report is retained as the rust-lcov workflow artifact; configure CODECOV_TOKEN to enable fail-closed remote upload.
+run-31512369853-job-93849506065.json	notice	.github	40		Coverage for `browser` functions rose to 46.16% (baseline 45.54%). Run `--only browser --update-baseline` to lock the gain in.
+run-31512369858-job-93849096340.json	notice	.github	49	sccache stats - task-ladder	58% - 499 hits, 368 misses, 0 errors
+run-31512369861-job-93849096435.json	notice	.github	50	sccache stats - write-effect-ladder	40% - 349 hits, 518 misses, 0 errors
+run-31512369875-job-93849534034.json	notice	.github	36	sccache stats - test	100% - 1 hit, 0 misses, 0 errors
+run-31512369875-job-93849534188.json	notice	.github	52	sccache stats - lint	63% - 811 hits, 477 misses, 0 errors
+run-31512369875-job-93849534188.json	warning	data/cache/wordnet/en	0		Closure-driven cache bucket holds 332 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+run-31512369875-job-93849534188.json	warning	data/cache/wiktionary/en	0		Closure-driven cache bucket holds 243 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+run-31512369875-job-93849534188.json	warning	data/cache/wikidata/entity	0		Closure-driven cache bucket holds 406 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+run-31512369875-job-93849534188.json	warning	data/seed/multilingual-responses-agentic.lino	0		Links Notation file has 1421 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.
+run-31512369875-job-93849534188.json	warning	src/web/worker/formal_ai_worker_20.js	0		Worker JavaScript file has 1426 lines (approaching limit of 1500). Consider extracting content to keep at or below 1400 lines and prevent review and merge conflicts.
+run-31512369875-job-93849534188.json	warning	src/intent_formalization.rs	0		Rust file has 907 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+run-31512369875-job-93849534289.json	notice	.github	49	sccache stats - test-agent-cli-e2e	74% - 1240 hits, 439 misses, 0 errors
+run-31512369875-job-93849534363.json	failure	.github	1		The job has exceeded the maximum execution time of 35m0s
+run-31512369875-job-93849534363.json	notice	.github	34	sccache stats - test	0% - 0 hits, 0 misses, 0 errors
+run-31512369875-job-93849534363.json	failure	.github	3407		The operation was canceled.
+run-31512369875-job-93859856585.json	failure	.github	93		Process completed with exit code 1.
+run-31512369875-job-93859856585.json	failure	.github	92		Pipeline has cancelled jobs on main: test. A job killed by 'timeout-minutes' is reported as cancelled, which would otherwise hide the failure. Check each job's annotations for 'has exceeded the maximum execution time'.

@@ -274,7 +274,10 @@ shell_intents
         cue "working directory"
         cue "where am i"
         cue "where i am"
+        cue "where we are"
         cue "which directory am i"
+        cue "current location"
+        cue "current directory"
         cue "current path"
         cue "show current directory"
       language ru

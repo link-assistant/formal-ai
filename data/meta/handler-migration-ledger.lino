@@ -2,7 +2,9 @@ handler_migration_ledger
   issue 699
   batch 3
   specialized_handler_files_max 38
-  try_dispatch_entries_max 49
+  try_dispatch_entries_max 50
+  handler conversation_control
+    status pending
   handler http_fetch
     status pending
   handler url_navigate

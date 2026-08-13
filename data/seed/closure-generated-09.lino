@@ -419,6 +419,11 @@ meanings
     lexeme en
       surface
         text "response completion recovery name target artifact zh"
+  response_conversation_preference_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response conversation preference es"
   response_detected_failure_report_invitation_hi
     defined-by response_template
     lexeme en
