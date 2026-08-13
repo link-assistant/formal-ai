@@ -107,6 +107,16 @@ fn issue_921_hive_mind_direction_uses_the_real_public_and_executor_boundaries() 
     );
 
     let evidence = root.join("docs/case-studies/issue-921/hive-mind-to-formal-ai");
+    for relative in [
+        "executor.log.gz",
+        "public-prepare.log.gz",
+        "failure-executor.log",
+    ] {
+        assert!(
+            evidence.join(relative).is_file(),
+            "the real Hive Mind {relative} evidence should be committed"
+        );
+    }
     assert_eq!(read(evidence.join("result.txt")), HIVE_RESULT);
     assert_eq!(
         read(evidence.join("invocation.txt")).trim(),
@@ -132,6 +142,15 @@ fn issue_921_hive_mind_direction_uses_the_real_public_and_executor_boundaries() 
         "Hive Mind failure probe",
         &read(evidence.join("failure-propagation.txt")),
         &["agent_exit=23", "hive_exit=23", "workspace_commit=absent"],
+    );
+    assert_contains_all(
+        "Hive Mind production failure log",
+        &read(evidence.join("failure-executor.log")),
+        &[
+            "hive-executor-result",
+            "\"exitCode\":23",
+            "issue 921 injected agent failure",
+        ],
     );
 }
 
@@ -191,6 +210,13 @@ fn issue_921_formal_ai_direction_has_a_canonical_hash_chained_replay() {
             "session_status=failed",
         ],
     );
+    let failed_bytes = fs::read(evidence.join("failure-session.json"))
+        .expect("the committed failed orchestration session should be readable");
+    let failed_session = replay_session(&failed_bytes)
+        .expect("the committed failed session should retain a valid hash chain");
+    assert_eq!(failed_session.status, AgentStatus::Failed);
+    assert_eq!(failed_session.exit_code, Some(23));
+    assert!(!failed_session.passed());
 
     assert_contains_all(
         "issue 921 release gate",

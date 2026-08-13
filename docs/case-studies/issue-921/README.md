@@ -14,8 +14,10 @@ screenshots or image attachments to download.
 
 The live evidence was captured on 2026-08-13 with the versions in
 `versions.txt`. Review-sized artifacts are committed under the two direction
-folders. Full stdout, stderr, and server traces remain CI artifacts on failure
-because a single run produces roughly 850 KiB of diagnostic output.
+folders. The real Hive Mind executor and public preparation logs are preserved
+there as deterministic gzip files, alongside the canonical Formal AI success
+and failure sessions. The high-volume server trace remains a CI artifact on
+failure because a single run produces roughly 400 KiB of server diagnostics.
 
 ## 2. Requirements
 
@@ -97,11 +99,11 @@ turns either probe green.
   full-circle harness after the E69-dependent invariant gates, and uploads its
   raw logs when any step fails.
 
-The committed success artifacts include exact task/result bytes, full fixture
-commit IDs and patches, the Hive Mind-native Agent session ID, the prepared
-command, the canonical Formal AI orchestration session, replay result, and both
-failure summaries. The fifth clean local capture passed both directions and
-both failure probes.
+The committed artifacts include exact task/result bytes, full fixture commit
+IDs and patches, the Hive Mind-native Agent session ID, compressed executor and
+public preparation logs, the prepared command, the canonical Formal AI success
+and failure sessions, replay result, and both failure summaries. The sixth
+clean local capture passed both directions and both failure probes.
 
 ## Related Work
 
