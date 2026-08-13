@@ -240,8 +240,8 @@ fn issue_920_question_identity_normalizes_case_and_whitespace() {
     let mut first_log = EventLog::new();
     let mut replay_log = EventLog::new();
 
-    enforce_questions("Would you like me to continue?", &mut first_log);
-    enforce_questions("would   YOU like me to continue?", &mut replay_log);
+    let _ = enforce_questions("Would you like me to continue?", &mut first_log);
+    let _ = enforce_questions("would   YOU like me to continue?", &mut replay_log);
 
     assert_eq!(
         traced_question_id(&first_log),
