@@ -113,6 +113,27 @@ fn issue_920_classification_and_budget_are_loaded_from_seed_data() {
 }
 
 #[test]
+fn issue_920_requirement_greetings_are_preserved_with_a_trace() {
+    for question in [
+        "How may I help you?",
+        "Чем могу помочь?",
+        "मैं आपकी क्या मदद कर सकता हूँ?",
+        "请问有什么可以帮您的?",
+        "¿Cómo puedo ayudarte?",
+    ] {
+        assert_eq!(
+            classify_question(question).class,
+            QuestionClass::Requirement,
+            "{question}"
+        );
+    }
+
+    let answer = UniversalSolver::default().solve("Hi");
+    assert_eq!(answer.answer, "Hi, how may I help you?");
+    assert!(has_evidence(&answer, "question_necessity:asked"));
+}
+
+#[test]
 fn issue_920_agent_authored_seed_is_preserved_byte_for_byte() {
     assert_eq!(
         include_str!("../../data/seed/question-necessity.lino"),
