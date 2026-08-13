@@ -631,6 +631,13 @@ jobs:
           labels: ${{ steps.ghcr-meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      - name: Verify the published GHCR image is anonymously pullable
+        if: |
+          steps.check.outputs.should_release == 'true' && (
+            steps.check.outputs.crate_published == 'true' ||
+            steps.publish-crate.outputs.publish_result == 'success'
+          )
+        run: bash scripts/verify-ghcr-visibility.sh
       - name: Configure Docker Hub publishing
         if: |
           steps.check.outputs.should_release == 'true' && (
@@ -804,6 +811,12 @@ jobs:
           labels: ${{ steps.ghcr-meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      - name: Verify the published GHCR image is anonymously pullable
+        if: |
+          (steps.version.outputs.version_committed == 'true' ||
+            steps.version.outputs.already_released == 'true') &&
+          steps.publish-crate.outputs.publish_result == 'success'
+        run: bash scripts/verify-ghcr-visibility.sh
       - name: Configure Docker Hub publishing
         if: |
           (steps.version.outputs.version_committed == 'true' ||
