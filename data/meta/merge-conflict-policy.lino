@@ -39,6 +39,11 @@ merge_conflict_policy
     mechanism shard_per_subject
     resolution "The budget is recorded per subject in its own file and summed; a branch only edits the shard it changed."
     needs_git_config false
+  cause ci_workflow
+    description "A CI workflow whose job body is one appended step per check. The steps are unordered with respect to each other, but YAML has no way to say so, so every branch that adds a check edits the same end-of-job region."
+    mechanism shard_per_gate
+    resolution "Each check becomes one file under a registry directory, named after the check; the workflow runs the registry once per stage and never names an individual check again, so adding a check stops editing the workflow at all."
+    needs_git_config false
   cause automation_placeholder
     description "Branch-creation automation commits a placeholder whose body names the branch, so every branch carries a different body for the same path."
     mechanism union_merge_then_normalize
@@ -64,11 +69,19 @@ merge_conflict_policy
       path "tests/integration/mod.rs"
       declares_directory "tests/integration"
     file
+      path "tests/unit/ci-cd/mod.rs"
+      note "No declares_directory: several entries are `#[path]` declarations that pull a `scripts/*.rs` gate into the test binary, so the canonical list is not the directory listing."
+    file
       path "tests/source/mod.rs"
     file
       path "src/solver_handlers/modules.rs"
       extracted_from "src/solver_handlers/mod.rs"
       declares_directory "src/solver_handlers"
+    file
+      path "src/agentic_coding/modules.rs"
+      extracted_from "src/agentic_coding/mod.rs"
+      declares_directory "src/agentic_coding"
+      note "Both runs moved out, not just the `mod` declarations: the re-export run is the longer of the two and every new capability appends to it, so leaving it behind would have kept the append point alive."
   artifact worker_module_list
     cause mixed_list_and_code
     merge union
@@ -81,6 +94,28 @@ merge_conflict_policy
       extracted_from "src/web/formal_ai_worker.js"
       declares_directory "src/web/worker"
       note "The list is exactly the sorted contents of the directory, so the normalizer regenerates it instead of merely reordering it."
+  artifact seed_inventory
+    cause mixed_list_and_code
+    merge union
+    normalize "rust-script scripts/generate-seed-registry.rs --write"
+    verify "rust-script scripts/generate-seed-registry.rs"
+    observed_conflicts 41
+    note "One inventory serves both production paths. The Rust engine and the browser worker each used to carry their own copy of the seed file list, so adding a seed file meant appending to the same lines in two files -- and the two copies could drift apart about which files exist. The registry names every seed file once, with flags saying which consumer wants it, and both lists are generated from it."
+    file
+      path "data/meta/seed-registry.lino"
+      extracted_from "src/seed/embedded.rs"
+      declares_directory "data/seed"
+      note "The generator ORs the flags of an entry a union left twice rather than taking the first, so a union that repeats a seed under two different flag sets keeps both branches' intent."
+    file
+      extracted_from "src/web/seed_loader.js"
+  artifact seed_inventory_projections
+    cause derived_artifact
+    merge union
+    regenerate "rust-script scripts/generate-seed-registry.rs --write"
+    verify "rust-script scripts/generate-seed-registry.rs"
+    path "src/seed/embedded_registry.rs"
+    path "src/web/seed-files.js"
+    note "`src/seed/embedded.rs` pulls its half in with `include!` rather than `mod`: rustfmt only reaches files a `mod` declaration names, so the generator owns every byte of the projection and a regeneration is byte-identical no matter which rustfmt version ran last."
   artifact branch_placeholder
     cause automation_placeholder
     merge union
@@ -99,8 +134,9 @@ merge_conflict_policy
   artifact self_ast_census
     cause derived_artifact
     merge union
-    path "data/meta/self-ast/*.lino"
+    path "data/meta/self-ast/**"
     path "data/meta/self-ast.lino"
+    note "The pattern is `**`, not `*.lino`: gitattributes globs follow gitignore rules, so a single star stops at a slash and left every nested shard -- data/meta/self-ast/src/lib.lino alone conflicted 29 times -- unprotected."
     regenerate "cargo run --example regenerate_self_ast_census"
     verify "cargo test --test unit issue_673_self_ast_census"
     observed_conflicts 145
@@ -137,3 +173,38 @@ merge_conflict_policy
     path "data/meta/worker-line-budget/*.lino"
     verify "rust-script scripts/check-worker-line-budget.rs"
     note "One shard per worker module replaces the single CEILING_TOTAL_LINES constant that every worker change used to rewrite."
+  artifact ci_gate_registry
+    cause ci_workflow
+    verify "rust-script scripts/run-ci-gates.rs --check"
+    observed_conflicts 35
+    file
+      path "data/meta/ci-gates/*.lino"
+      extracted_from ".github/workflows/release.yml"
+      declares_directory "data/meta/ci-gates"
+      note "The shards are deliberately not union merged: two branches adding a gate write two differently named files, so there is nothing to union. The verify command is what keeps the extraction from unwinding -- it fails when the lint job runs a gate command inline again."
+  deferred shared_logic_edits
+    reason "Two branches changing the same behaviour in the same function is a genuine semantic collision: a human has to decide which change wins, and no file layout can decide it for them. Mechanizing it would be lying. The mitigations are indirect -- keep files small (the file-size gates), keep one subject per file, and move every embedded *list* out into its own union-merged file, which is what the artifacts above do. Each path below is ranked mostly by list churn that has already been extracted, so the residual count overstates the irreducible part."
+    path "src/seed.rs"
+    path "src/solver.rs"
+    path "src/solver_dispatch.rs"
+    path "src/main.rs"
+    path "src/web/app.js"
+    path "src/agentic_coding/planner.rs"
+    path "tests/unit/formal_ai.rs"
+    path "tests/e2e/tests/multilingual.spec.js"
+    path "tests/e2e/playwright.local.config.js"
+  deferred curated_seed_records
+    reason "A seed file is a curated body of knowledge, not an append-only list: entries are grouped by subject and later entries reference earlier ones, so a union merge can produce a bundle that parses and still means something nobody wrote. New knowledge belongs in a new subject-named seed file, which is why `data/seed/` has grown to one file per subject; these two predate that convention and are split subject-by-subject as they are touched."
+    path "data/seed/roles.lino"
+    path "data/seed/multilingual-responses.lino"
+  deferred lockfile_and_manifest
+    reason "Cargo.toml's version line and Cargo.lock's matching entry are owned by release automation, so every branch that outlives one release rewrites them. Union merging a lockfile produces a file cargo rejects. The resolution is mechanical and already scripted -- take main's version, rerun `cargo update -p formal-ai` -- but it is a resolution, not an avoidance."
+    path "Cargo.toml"
+    path "Cargo.lock"
+  deferred recorded_transcript
+    reason "A captured Agent CLI session is evidence: its bytes are what the tool actually emitted. Re-recording it on both sides of a merge produces two different valid transcripts and a human must pick one. New captures go to new content-named files; this one is ranked only because it was re-recorded repeatedly before that rule existed."
+    path "docs/case-studies/issue-538/agent-cli-session-self-ast.json"
+  deferred long_form_documents
+    reason "README.md and ARCHITECTURE.md are read top-to-bottom by humans, so unlike REQUIREMENTS.md their section order carries meaning that a per-issue shard directory would destroy. Sharding them is tracked separately; until a shard order can be expressed without flattening the narrative, the mitigation is that new material goes to a topic page under docs/ and these two only gain a link."
+    path "README.md"
+    path "ARCHITECTURE.md"

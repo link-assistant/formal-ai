@@ -22,11 +22,13 @@ dev/log/issues/999/pulls/1000/research/** whitespace=-blank-at-eol,-blank-at-eof
 
 # Ordered lists — `rust-script scripts/normalize-ordered-lists.rs --write`
 # restores the canonical order and drops the repeats.
+src/agentic_coding/modules.rs merge=union
 src/lib.rs merge=union
 src/solver_handlers/modules.rs merge=union
 src/web/worker-modules.js merge=union
 tests/integration/mod.rs merge=union
 tests/source/mod.rs merge=union
+tests/unit/ci-cd/mod.rs merge=union
 tests/unit/mod.rs merge=union
 tests/unit/specification/mod.rs merge=union
 
@@ -38,6 +40,13 @@ tests/unit/specification/mod.rs merge=union
 REQUIREMENTS.md merge=union
 data/meta/seed-metadata-gaps-*.lino merge=union
 data/meta/self-ast.lino merge=union
-data/meta/self-ast/*.lino merge=union
+data/meta/self-ast/** merge=union
 data/seed/closure-generated-*.lino merge=union
 scripts/hardcoded-language-allowlist.txt merge=union
+
+# The seed inventory and the two files generated from it —
+# `rust-script scripts/generate-seed-registry.rs --write` sorts the registry,
+# merges the flags of any entry a union left twice, and rewrites both projections.
+data/meta/seed-registry.lino merge=union
+src/seed/embedded_registry.rs merge=union
+src/web/seed-files.js merge=union

@@ -14,7 +14,9 @@ use std::path::Path;
 use formal_ai::seed;
 use formal_ai::FormalAiEngine;
 
-const RECORDED_SPECIALIZED_HANDLER_FILES_MAX: usize = 38;
+/// Handler modules only: `mod.rs` and the generated `modules.rs` are excluded
+/// from the count, so the ceiling dropped by one when they stopped counting.
+const RECORDED_SPECIALIZED_HANDLER_FILES_MAX: usize = 37;
 const RECORDED_TRY_DISPATCH_ENTRIES_MAX: usize = 50;
 
 #[test]
@@ -176,10 +178,15 @@ fn handler_migration_ratchet() {
         .expect("solver_handlers directory")
         .filter_map(Result::ok)
         .filter(|entry| {
-            entry
-                .path()
-                .extension()
-                .is_some_and(|extension| extension == "rs")
+            let path = entry.path();
+            // `mod.rs` holds the dispatch logic and `modules.rs` is the generated
+            // `mod` list issue #991 split out of it; neither is a handler, so
+            // neither may move a ratchet that counts specialized handlers.
+            let bookkeeping = matches!(
+                path.file_name().and_then(|name| name.to_str()),
+                Some("mod.rs" | "modules.rs")
+            );
+            path.extension().is_some_and(|extension| extension == "rs") && !bookkeeping
         })
         .count();
     assert!(

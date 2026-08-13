@@ -2,6 +2,8 @@
 
 use std::fs;
 
+use super::workflow_fixtures::ci_surface;
+
 fn release_workflow() -> String {
     fs::read_to_string(format!(
         "{}/.github/workflows/release.yml",
@@ -22,7 +24,11 @@ fn job_block<'a>(workflow: &'a str, job: &str, next_job: &str) -> &'a str {
 
 #[test]
 fn rustdoc_is_a_pre_release_pull_request_gate() {
-    let workflow = release_workflow();
+    // The command moved into `data/meta/ci-gates/check-rust-api-documentation.lino`
+    // when issue #991 emptied the lint job's append-only step list, so the
+    // question "does the pull request build the docs?" is answered by the
+    // workflow and the registry together.
+    let workflow = ci_surface();
     let lint = job_block(&workflow, "lint", "test");
 
     assert!(lint.contains("RUSTDOCFLAGS: -D warnings"));

@@ -29,6 +29,11 @@ function withAssetVersion(url) {
 }
 
 try {
+  // `seed-files.js` first: it is the generated inventory of `seed/*.lino` files
+  // that `seed_loader.js` fetches, kept in its own file so two branches that
+  // each add a seed file never edit the same lines. See issue #991 and
+  // `data/meta/seed-registry.lino`.
+  importScripts(withAssetVersion("seed-files.js"));
   importScripts(withAssetVersion("seed_loader.js"));
 } catch (_error) {
   // Seed loader is optional: tests that mock the worker may exclude it.

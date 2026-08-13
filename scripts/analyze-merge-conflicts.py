@@ -16,6 +16,14 @@ Usage:
     python3 scripts/analyze-merge-conflicts.py            # ranked report
     python3 scripts/analyze-merge-conflicts.py --top 60   # longer ranking
     python3 scripts/analyze-merge-conflicts.py --json     # machine-readable
+    python3 scripts/analyze-merge-conflicts.py --ledger   # rewrite the committed ledger
+
+The ledger is what makes the policy accountable rather than anecdotal. Scanning
+the whole history takes far too long for a CI gate, so this script writes the
+ranking to `data/meta/merge-conflict-ledger.lino` once and CI reads that file:
+`scripts/check-merge-conflict-policy.rs` fails when a ledger path at or above
+the threshold is neither covered by a mechanism nor explicitly deferred with a
+reason. Rerunning `--ledger` is what admits newly observed conflict sites.
 
 The classification below is the structural *cause*, which is what determines
 the fix: a derived artifact is regenerated, an append-only list is split, a
@@ -30,6 +38,7 @@ from __future__ import annotations
 import argparse
 import collections
 import json
+import pathlib
 import re
 import subprocess
 import sys
@@ -93,6 +102,14 @@ def conflicted_paths() -> collections.Counter:
     return counts
 
 
+def tracked_paths() -> set[str]:
+    """Every path git tracks at HEAD."""
+    out = subprocess.run(
+        ["git", "ls-files"], capture_output=True, text=True, check=True
+    ).stdout
+    return {line.strip() for line in out.splitlines() if line.strip()}
+
+
 def merge_count() -> int:
     out = subprocess.run(
         ["git", "rev-list", "--merges", "--count", "HEAD"],
@@ -123,15 +140,88 @@ def report(counts: collections.Counter, top: int) -> dict:
     }
 
 
+LEDGER_PATH = "data/meta/merge-conflict-ledger.lino"
+
+# A path below this many observed resolutions is noise: one unlucky pair of
+# branches, not a structural property of the file. Ranking every one of the 423
+# touched paths would drown the signal the policy is meant to act on.
+LEDGER_THRESHOLD = 10
+
+
+def head_commit() -> str:
+    out = subprocess.run(
+        ["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True
+    ).stdout
+    return out.strip()
+
+
+def ledger(counts: collections.Counter, threshold: int) -> str:
+    """Render the ranking as the Links Notation file the CI gate reads.
+
+    Paths git no longer tracks are ranked out. The ledger exists to direct future
+    conflict avoidance, and a path that HEAD does not contain cannot be conflict
+    resolved again: `src/solver_handlers.rs` became a directory, and the
+    multilingual test module moved out of the directory it used to live in.
+    Their history is real, but demanding a mechanism or a deferral for them
+    would make the policy carry entries no branch can ever hit. The count of
+    what was ranked out is written into the ledger so the drop is visible rather
+    than silent.
+    """
+    at_threshold = [(path, count) for path, count in counts.most_common() if count >= threshold]
+    tracked = tracked_paths()
+    ranked = [(path, count) for path, count in at_threshold if path in tracked]
+    retired = len(at_threshold) - len(ranked)
+    lines = [
+        "merge_conflict_ledger",
+        "  issue 991",
+        '  generator "python3 scripts/analyze-merge-conflicts.py --ledger"',
+        '  verify "rust-script scripts/check-merge-conflict-policy.rs"',
+        '  policy "data/meta/merge-conflict-policy.lino"',
+        '  note "Every path below needed manual conflict resolution at least'
+        " threshold times. The policy must either cover it with a mechanism or"
+        ' defer it with a stated reason; the verifier fails otherwise."',
+        f'  scanned_through "{head_commit()}"',
+        f"  merges_scanned {merge_count()}",
+        f"  conflict_events {sum(counts.values())}",
+        f"  distinct_paths {len(counts)}",
+        f"  threshold {threshold}",
+        f"  ranked_paths {len(ranked)}",
+        f"  retired_paths {retired}",
+    ]
+    for path, count in ranked:
+        lines.append(f'  path "{path}"')
+        lines.append(f"    events {count}")
+        lines.append(f"    cause {cause_of(path).replace('-', '_')}")
+    return "\n".join(lines) + "\n"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--top", type=int, default=40, help="how many paths to rank")
     parser.add_argument("--json", action="store_true", help="emit JSON instead of a table")
+    parser.add_argument(
+        "--ledger", action="store_true", help=f"rewrite {LEDGER_PATH} from this history"
+    )
+    parser.add_argument(
+        "--threshold",
+        type=int,
+        default=LEDGER_THRESHOLD,
+        help="fewest observed resolutions a path needs to enter the ledger",
+    )
     args = parser.parse_args()
 
     counts = conflicted_paths()
     if not counts:
         print("No merge commits with conflict resolutions found.")
+        return 0
+
+    if args.ledger:
+        root = subprocess.run(
+            ["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, check=True
+        ).stdout.strip()
+        destination = pathlib.Path(root) / LEDGER_PATH
+        destination.write_text(ledger(counts, args.threshold), encoding="utf-8")
+        print(f"Wrote {LEDGER_PATH}")
         return 0
 
     data = report(counts, args.top)

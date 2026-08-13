@@ -18,99 +18,20 @@
 (function (global) {
   "use strict";
 
-  var DEFAULT_FILES = [
-    "seed/agent-info.lino",
-    "seed/interface-capabilities.lino",
-    "seed/multilingual-responses.lino",
-    "seed/multilingual-responses-memory-program.lino",
-    "seed/multilingual-responses-language-protocol.lino",
-    "seed/multilingual-responses-entities.lino",
-    "seed/multilingual-responses-synthesis.lino",
-    "seed/multilingual-responses-orchestration.lino",
-    "seed/multilingual-responses-agentic.lino",
-    "seed/multilingual-responses-agentic-tools.lino",
-    "seed/multilingual-responses-decomposition.lino",
-    "seed/multilingual-responses-procedure.lino",
-    "seed/multilingual-responses-pattern.lino",
-    "seed/concepts.lino",
-    "seed/concept-contexts.lino",
-    "seed/facts.lino",
-    "seed/projects.lino",
-    "seed/brainstorm-seeds.lino",
-    "seed/personas.lino",
-    "seed/summary-topics.lino",
-    "seed/coreference.lino",
-    "seed/tools.lino",
-    "seed/languages.lino",
-    "seed/language-detection.lino",
-    "seed/unknown-openers.lino",
-    "seed/prompt-patterns.lino",
-    "seed/sources-registry.lino",
-    "seed/intent-routing.lino",
-    "seed/handler-precedence.lino",
-    "seed/operation-vocabulary.lino",
-    "seed/numeric-list-operations.lino",
-    "seed/coding-idioms.lino",
-    "seed/proof-program-templates.lino",
-    "seed/formal-language-projections.lino",
-    "seed/terminal-commands.lino",
-    "seed/shell-intents.lino",
-    "seed/program-plan-rules.lino",
-    "seed/market-price-references.lino",
-    "seed/entity-names.lino",
-    "seed/meanings.lino",
-    "seed/meanings-behavior-rules.lino",
-    "seed/meanings-calculator.lino",
-    "seed/meanings-calendar.lino",
-    "seed/meanings-coding-catalog.lino",
-    "seed/meanings-coding-tasks.lino",
-    "seed/meanings-conversation.lino",
-    "seed/memory-programs.lino",
-    "seed/meanings-decomposition.lino",
-    "seed/meanings-number-constraints.lino",
-    "seed/meanings-definition-merge.lino",
-    "seed/meanings-docs.lino",
-    "seed/meanings-facts.lino",
-    "seed/meanings-feature-capability.lino",
-    "seed/meanings-file-write.lino",
-    "seed/meanings-file-edit.lino",
-    "seed/meanings-agent-actions.lino",
-    "seed/meanings-finance.lino",
-    "seed/meanings-how.lino",
-    "seed/meanings-intent.lino",
-    "seed/meanings-lexical-meta.lino",
-    "seed/meanings-links-root.lino",
-    "seed/meanings-local-search.lino",
-    "seed/meanings-meta.lino",
-    "seed/meanings-ontology.lino",
-    "seed/meanings-playwright.lino",
-    "seed/meanings-policy.lino",
-    "seed/meanings-program-synthesis.lino",
-    "seed/meanings-proof.lino",
-    "seed/meanings-research-table.lino",
-    "seed/meanings-semantic-meta.lino",
-    "seed/meanings-skill-compiler.lino",
-    "seed/meanings-skill-procedure.lino",
-    "seed/meanings-software-project.lino",
-    "seed/meanings-statement-merge.lino",
-    "seed/meanings-summary.lino",
-    "seed/meanings-tool-access.lino",
-    "seed/meanings-translation.lino",
-    "seed/meanings-units.lino",
-    "seed/meanings-web-followup.lino",
-    "seed/meanings-web-navigation.lino",
-    "seed/meanings-web-research.lino",
-    "seed/meanings-web-search-query.lino",
-    "seed/meanings-web-search.lino",
-    "seed/meanings-wikidata.lino",
-    "seed/learned-request-openers.lino",
-    "seed/greetings.lino",
-    "seed/identity.lino",
-    "seed/hello-world-programs.lino",
-    "seed/self-improvement-loop.lino",
-    "seed/demo-dialogs.lino",
-    "seed/environments.lino",
-  ];
+  // The seed inventory lives in `seed-files.js`, generated from
+  // `data/meta/seed-registry.lino` by
+  // `rust-script scripts/generate-seed-registry.rs --write`. Issue #991: this
+  // list needed manual conflict resolution 14 times here, because every branch
+  // that added a seed file appended to the same lines. It is now the browser
+  // half of the same registry `src/seed/embedded.rs` is generated from, so the
+  // worker and the Rust engine cannot drift apart about which files exist.
+  //
+  // `formal_ai_worker.js` loads `seed-files.js` first. A host that omits it gets
+  // an empty inventory rather than a stale copy, and `loadAll` says so.
+  function defaultFiles() {
+    var files = global.FORMAL_AI_SEED_FILES;
+    return Array.isArray(files) ? files.slice() : [];
+  }
 
   function isWorker() {
     return (
@@ -972,7 +893,7 @@
   }
 
   function loadAll(files) {
-    var target = Array.isArray(files) && files.length ? files : DEFAULT_FILES;
+    var target = Array.isArray(files) && files.length ? files : defaultFiles();
     return Promise.all(
       target.map(function (file) {
         return fetchText(withAssetVersion(file)).then(function (text) {
@@ -1148,7 +1069,11 @@
     extractTools: extractTools,
     extractIntentRouting: extractIntentRouting,
     extractEnvironmentDirectory: extractEnvironmentDirectory,
-    DEFAULT_FILES: DEFAULT_FILES,
+    // Read on access rather than snapshotted, so a host that loads
+    // `seed-files.js` after this file still sees the real inventory.
+    get DEFAULT_FILES() {
+      return defaultFiles();
+    },
     isWorker: isWorker(),
   };
 })(typeof self !== "undefined" ? self : globalThis);

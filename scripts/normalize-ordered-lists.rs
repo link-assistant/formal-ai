@@ -29,7 +29,7 @@
 //! [dependencies]
 //! ```
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::Path;
 
@@ -151,11 +151,28 @@ fn parse_mod_declaration(line: &str) -> Option<(String, String)> {
     Some((visibility.to_string(), name.to_string()))
 }
 
-/// The module a `pub use` block re-exports from, if the block starts here.
-fn parse_reexport_module(line: &str) -> Option<String> {
-    let rest = line.strip_prefix("pub use ")?;
-    let (module, _) = rest.split_once("::")?;
-    let module = module.trim();
+/// The visibility and sort key of a re-export block, if a block starts here.
+///
+/// The key is the path with everything from the opening brace collapsed to a
+/// bare `{`: `learning_report::self_hosting_learning::{` sorts before
+/// `learning_report::{` exactly as rustfmt orders them, because `{` is above
+/// every letter in ASCII. Keying on the first segment alone would have merged
+/// `learning_report::self_hosting_learning::{..}` into `learning_report::{..}`
+/// and silently dropped the middle segment.
+fn parse_reexport_module(line: &str) -> Option<(String, String)> {
+    // `pub(crate) use` is as much a list entry as `pub use`; refusing to parse it
+    // would split the run in two and leave a union merge sorting each half apart.
+    let (visibility, rest) = ["pub", "pub(crate)", "pub(super)"]
+        .into_iter()
+        .find_map(|visibility| {
+            line.strip_prefix(&format!("{visibility} use "))
+                .map(|rest| (visibility, rest))
+        })?;
+    let key = match rest.find('{') {
+        Some(brace) => format!("{}{{", &rest[..brace]),
+        None => rest.trim().trim_end_matches(';').trim().to_string(),
+    };
+    let (module, _) = key.split_once("::")?;
     if module.is_empty()
         || !module
             .chars()
@@ -163,7 +180,7 @@ fn parse_reexport_module(line: &str) -> Option<String> {
     {
         return None;
     }
-    Some(module.to_string())
+    Some((visibility.to_string(), key))
 }
 
 /// Sort key that matches rustfmt's ordering inside a `use` group: values and
@@ -180,20 +197,20 @@ fn rustfmt_item_key(item: &str) -> (u8, String) {
 }
 
 /// Re-emit `pub use module::{items};` the way rustfmt would.
-fn render_reexport(module: &str, items: &[String]) -> Vec<String> {
+fn render_reexport(visibility: &str, module: &str, items: &[String]) -> Vec<String> {
     if items.len() == 1 && !items[0].contains('{') {
-        let single = format!("pub use {module}::{};", items[0]);
+        let single = format!("{visibility} use {module}::{};", items[0]);
         if single.len() <= 100 {
             return vec![single];
         }
     }
     let joined = items.join(", ");
-    let single = format!("pub use {module}::{{{joined}}};");
+    let single = format!("{visibility} use {module}::{{{joined}}};");
     if single.len() <= 100 {
         return vec![single];
     }
 
-    let mut lines = vec![format!("pub use {module}::{{")];
+    let mut lines = vec![format!("{visibility} use {module}::{{")];
     let mut current = String::new();
     for (index, item) in items.iter().enumerate() {
         let last = index + 1 == items.len();
@@ -286,9 +303,9 @@ fn normalize_rust_declarations(source: &str) -> Result<String, String> {
 
         // A maximal run of `pub use module::...;` blocks.
         if parse_reexport_module(&lines[index]).is_some() {
-            let mut blocks: Vec<(String, Vec<String>)> = Vec::new();
+            let mut blocks: Vec<(String, String, Vec<String>)> = Vec::new();
             while index < lines.len() {
-                let Some(module) = parse_reexport_module(&lines[index]) else {
+                let Some((visibility, module)) = parse_reexport_module(&lines[index]) else {
                     break;
                 };
                 let start = index;
@@ -298,7 +315,7 @@ fn normalize_rust_declarations(source: &str) -> Result<String, String> {
                 if index < lines.len() {
                     index += 1;
                 }
-                blocks.push((module, lines[start..index].to_vec()));
+                blocks.push((visibility, module, lines[start..index].to_vec()));
             }
             output.extend(canonical_reexports(blocks)?);
             continue;
@@ -321,20 +338,40 @@ fn normalize_rust_declarations(source: &str) -> Result<String, String> {
 /// the wrapping of a `use` group, and re-deriving it here would fight
 /// `cargo fmt --check` over lines this script has no reason to touch. Only the
 /// repeats a union merge creates are re-rendered.
-fn canonical_reexports(blocks: Vec<(String, Vec<String>)>) -> Result<Vec<String>, String> {
-    let mut by_module: BTreeMap<String, Vec<Vec<String>>> = BTreeMap::new();
-    for (module, block) in blocks {
-        by_module.entry(module).or_default().push(block);
+fn canonical_reexports(blocks: Vec<(String, String, Vec<String>)>) -> Result<Vec<String>, String> {
+    // Grouped by module alone, not by visibility: the module name is what the
+    // list is ordered on, and the same module re-exported at two visibilities is
+    // a real ambiguity a script must not silently pick a side in.
+    let mut by_module: BTreeMap<String, (BTreeSet<String>, Vec<Vec<String>>)> = BTreeMap::new();
+    for (visibility, module, block) in blocks {
+        let entry = by_module.entry(module).or_default();
+        entry.0.insert(visibility);
+        entry.1.push(block);
     }
 
     let mut lines = Vec::new();
-    for (module, mut occurrences) in by_module {
+    for (module, (visibilities, mut occurrences)) in by_module {
         occurrences.sort();
         occurrences.dedup();
         if occurrences.len() == 1 {
             lines.extend(occurrences.into_iter().next().expect("one occurrence"));
             continue;
         }
+        if visibilities.len() > 1 {
+            return Err(format!(
+                "re-exports from `{module}` are declared at more than one visibility \
+                 ({}); resolve that by hand",
+                visibilities.into_iter().collect::<Vec<_>>().join(" and ")
+            ));
+        }
+        let visibility = visibilities.into_iter().next().expect("one visibility");
+        let Some(prefix) = module.strip_suffix("::{") else {
+            return Err(format!(
+                "`{module}` is re-exported {} times without a brace group, so the repeats \
+                 differ in more than their items; resolve that by hand",
+                occurrences.len()
+            ));
+        };
         let mut items = Vec::new();
         for block in &occurrences {
             let Some(block_items) = reexport_items(block) else {
@@ -348,7 +385,7 @@ fn canonical_reexports(blocks: Vec<(String, Vec<String>)>) -> Result<Vec<String>
         }
         items.sort_by(|left, right| rustfmt_item_key(left).cmp(&rustfmt_item_key(right)));
         items.dedup();
-        lines.extend(render_reexport(&module, &items));
+        lines.extend(render_reexport(&visibility, prefix, &items));
     }
     Ok(lines)
 }
@@ -676,6 +713,28 @@ mod tests {
     }
 
     #[test]
+    fn a_restricted_reexport_sorts_with_the_public_ones() {
+        // `src/agentic_coding/modules.rs` interleaves `pub(crate) use` with
+        // `pub use`. If the parser skipped the restricted lines they would end
+        // the run, and a union merge would sort each fragment on its own.
+        let unioned = "pub use zulu::Later;\npub(crate) use alpha::beta;\n";
+        assert_eq!(
+            normalize_rust_declarations(unioned).unwrap(),
+            "pub(crate) use alpha::beta;\npub use zulu::Later;\n"
+        );
+        let folded = "pub(crate) use alpha::{beta};\npub(crate) use alpha::{gamma};\n";
+        assert_eq!(
+            normalize_rust_declarations(folded).unwrap(),
+            "pub(crate) use alpha::{beta, gamma};\n",
+            "a fold keeps the visibility the branches agreed on"
+        );
+        let error =
+            normalize_rust_declarations("pub use alpha::{beta};\npub(crate) use alpha::{gamma};\n")
+                .unwrap_err();
+        assert!(error.contains("more than one visibility"), "{error}");
+    }
+
+    #[test]
     fn repeated_reexports_of_one_module_are_folded_into_a_single_block() {
         let unioned = "pub use zulu::Later;\npub use alpha::{beta};\npub use alpha::{gamma};\n";
         assert_eq!(
@@ -683,6 +742,18 @@ mod tests {
             "pub use alpha::{beta, gamma};\npub use zulu::Later;\n",
             "two branches extending the same re-export merge into one sorted block"
         );
+    }
+
+    #[test]
+    fn a_nested_reexport_path_keeps_its_middle_segment() {
+        // The bug this test exists for: keyed on the first segment alone,
+        // `learning_report::self_hosting_learning::{..}` folded into
+        // `learning_report::{..}` and the middle segment vanished, so the file
+        // stopped compiling. rustfmt sorts the brace group last, and so does the
+        // key, because `{` is above every letter in ASCII.
+        let source = "pub use learning_report::self_hosting_learning::{is_task, PATH};\n\
+                      pub use learning_report::{LearningReport, REPORTS};\n";
+        assert_eq!(normalize_rust_declarations(source).unwrap(), source);
     }
 
     #[test]
@@ -710,7 +781,7 @@ mod tests {
     #[test]
     fn a_long_reexport_wraps_the_way_rustfmt_wraps_it() {
         let items: Vec<String> = (0..12).map(|index| format!("SomeLongTypeName{index:02}")).collect();
-        let lines = render_reexport("module", &items);
+        let lines = render_reexport("pub", "module", &items);
         assert_eq!(lines[0], "pub use module::{");
         assert_eq!(lines[lines.len() - 1], "};");
         assert!(

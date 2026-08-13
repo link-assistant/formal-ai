@@ -34,6 +34,8 @@ run_step() {
 
 run_step "ordered lists (src/lib.rs, tests/*/mod.rs, worker module list)" \
   rust-script scripts/normalize-ordered-lists.rs --write
+run_step "seed inventory (src/seed/embedded_registry.rs, src/web/seed-files.js)" \
+  rust-script scripts/generate-seed-registry.rs --write
 run_step "requirements document (REQUIREMENTS.md)" \
   rust-script scripts/assemble-requirements.rs --write
 run_step "total closure (data/seed/closure-generated-*.lino)" \
