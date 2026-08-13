@@ -31,7 +31,7 @@ fn issue_920_clarification_has_a_replayable_three_stage_necessity_trace() {
         questioning_rigor: 1.0,
         ..SolverConfig::default()
     };
-    let first = UniversalSolver::new(config.clone()).solve("apple is a fruit");
+    let first = UniversalSolver::new(config).solve("apple is a fruit");
     let replay = UniversalSolver::new(config).solve("apple is a fruit");
 
     assert_eq!(first.intent, "clarify_interpretation");

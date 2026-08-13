@@ -494,10 +494,7 @@ fn is_follow_up_item(line: &str) -> bool {
     if line.starts_with("- ") {
         return true;
     }
-    let digits = line
-        .chars()
-        .take_while(|character| character.is_ascii_digit())
-        .count();
+    let digits = line.chars().take_while(char::is_ascii_digit).count();
     digits > 0 && line[digits..].starts_with(". ")
 }
 
@@ -505,10 +502,7 @@ fn strip_follow_up_prefix(line: &str) -> &str {
     if let Some(value) = line.strip_prefix("- ") {
         return value;
     }
-    let digits = line
-        .chars()
-        .take_while(|character| character.is_ascii_digit())
-        .count();
+    let digits = line.chars().take_while(char::is_ascii_digit).count();
     line[digits..].strip_prefix(". ").unwrap_or(line)
 }
 
