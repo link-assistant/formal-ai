@@ -98,11 +98,21 @@ fn issue_920_factual_unknown_is_not_asked_after_bounded_research() {
         .links_notation
         .matches("question_necessity:sources question=")
         .count();
+    let workspace_traces = answer
+        .links_notation
+        .matches("question_necessity:workspace question=")
+        .count();
     let accurately_counted = answer.links_notation.matches("attempts=2 budget=3").count();
+    let independently_counted = answer.links_notation.matches("checked_events=0").count();
     assert_eq!(source_traces, 2, "{}", answer.links_notation);
+    assert_eq!(workspace_traces, 2, "{}", answer.links_notation);
     assert_eq!(
         accurately_counted, source_traces,
         "question traces must count source attempts, not their own audit events"
+    );
+    assert_eq!(
+        independently_counted, workspace_traces,
+        "question traces must count workspace evidence, not their own audit events"
     );
 }
 

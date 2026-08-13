@@ -330,9 +330,10 @@ fn record_search_trace(log: &mut EventLog, question_id: &str) -> NecessityTrace 
         .events()
         .iter()
         .filter(|event| {
-            event.kind.contains("workspace")
-                || event.kind.contains("derivation")
-                || event.kind == "calculation"
+            !event.kind.starts_with("question_necessity:")
+                && (event.kind.contains("workspace")
+                    || event.kind.contains("derivation")
+                    || event.kind == "calculation")
         })
         .count();
     let workspace_event = log.append(
