@@ -188,6 +188,20 @@ fn every_client_behavior_is_a_seeded_verification_contract() {
 }
 
 #[test]
+fn server_launch_waits_for_every_required_output_line() {
+    let leg = read("experiments/agentic_cli_matrix/run_leg.sh");
+    assert!(
+        leg.contains("matrix_await_log launch \"$required\" 120"),
+        "a server can announce readiness before its remaining launch contract; \
+         required output must use the bounded log wait"
+    );
+    assert!(
+        !leg.contains("matrix_log_matches \"$MATRIX_CLIENT_LOG\" \"$required\""),
+        "a one-shot required-output check races asynchronous server startup"
+    );
+}
+
+#[test]
 fn matrix_scripts_do_not_branch_on_client_identity() {
     for script in [
         "experiments/agentic_cli_matrix/lib.sh",
