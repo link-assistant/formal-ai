@@ -88,6 +88,7 @@ fn issue_921_hive_mind_direction_uses_the_real_public_and_executor_boundaries() 
             "git -C \"${SCRATCH}/prepare-repository\" config user.name",
             "git -C \"${SCRATCH}/prepare-repository\" config user.email",
             "git -C \"${SCRATCH}/prepare-repository\" checkout -B main HEAD",
+            "git -C \"${SCRATCH}/prepare-repository\" update-ref refs/remotes/origin/main HEAD",
             "GIT_CONFIG_COUNT=2",
             "GIT_CONFIG_KEY_0=user.name",
             "GIT_CONFIG_KEY_1=user.email",
