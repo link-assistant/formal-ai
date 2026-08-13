@@ -451,7 +451,7 @@ fn punctuation_candidates(body: &str) -> Vec<Candidate> {
                 let start = sentence_start(body, index);
                 let end = index + character.len_utf8();
                 let text = body[start..end].trim();
-                if !text.is_empty() && !looks_like_url(text) {
+                if !text.is_empty() && !looks_like_url(text) && !is_replayed_question(text) {
                     candidates.push(Candidate {
                         start,
                         end,
@@ -491,6 +491,24 @@ fn looks_like_url(text: &str) -> bool {
         .rsplit_once(char::is_whitespace)
         .map_or(text, |(_, token)| token);
     token.starts_with("http://") || token.starts_with("https://")
+}
+
+fn is_replayed_question(text: &str) -> bool {
+    let item = text.trim_start().strip_prefix("- ").unwrap_or(text);
+    let Some((label, _)) = item.split_once(':') else {
+        return false;
+    };
+    let mut words = label.split_whitespace();
+    let first = words.next().unwrap_or_default();
+    if first == "turn" {
+        return words.next().is_some_and(|word| {
+            !word.is_empty() && word.chars().all(|character| character.is_ascii_digit())
+        });
+    }
+    matches!(
+        first,
+        "user" | "assistant" | "system" | "event" | "message" | "reasoning" | "tool"
+    ) && words.next().is_none()
 }
 
 fn requirement_section_ranges(body: &str) -> Vec<(usize, usize)> {

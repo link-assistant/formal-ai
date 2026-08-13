@@ -179,6 +179,20 @@ fn issue_920_question_marks_in_quotes_code_and_urls_are_not_questions() {
 }
 
 #[test]
+fn issue_920_replayed_user_questions_are_not_treated_as_assistant_questions() {
+    let body = "Found 1 mention of Rust.\n- conversation Rust Notes (conv-a)\n  - user: What is Rust?\n- turn 3 user: Why Rust?";
+    let mut log = EventLog::new();
+
+    assert_eq!(enforce_questions(body, &mut log), body);
+    assert!(
+        log.events()
+            .iter()
+            .all(|event| !event.kind.starts_with("question_necessity:")),
+        "replayed questions must remain evidence, not become question candidates"
+    );
+}
+
+#[test]
 fn issue_920_duplicate_question_presentations_share_one_identity() {
     let body = "Still needed from you:\n- First input\n- Second input\n\nClarifying questions:\nPlease clarify:\n1. First input\n2. Second input";
     let mut log = EventLog::new();
