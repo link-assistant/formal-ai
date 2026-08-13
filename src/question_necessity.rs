@@ -154,11 +154,16 @@ pub fn enforce_questions(body: &str, log: &mut EventLog) -> String {
         let classification = classify(&candidate.text, candidate.in_requirement_section);
         log.append(
             "question_necessity:classification",
-            format!(
-                "question={question_id} class={} cue={}",
-                classification.class.slug(),
-                classification.matched_cue.as_deref().unwrap_or("default")
-            ),
+            trace_payload(&[
+                ("question", question_id.clone()),
+                ("class", classification.class.slug().to_owned()),
+                (
+                    "cue",
+                    classification
+                        .matched_cue
+                        .unwrap_or_else(|| String::from("default")),
+                ),
+            ]),
         );
 
         let authorization = authorize_with_policy(classification.class, &trace, asked);
@@ -166,11 +171,18 @@ pub fn enforce_questions(body: &str, log: &mut EventLog) -> String {
             QuestionAuthorization::Authorized => {
                 log.append(
                     "question_necessity:authorized",
-                    format!("question={question_id} class=requirement trace=complete"),
+                    trace_payload(&[
+                        ("question", question_id.clone()),
+                        ("class", String::from("requirement")),
+                        ("trace", String::from("complete")),
+                    ]),
                 );
                 log.append(
                     "question_necessity:asked",
-                    format!("question={question_id} ordinal={}", asked + 1),
+                    trace_payload(&[
+                        ("question", question_id.clone()),
+                        ("ordinal", (asked + 1).to_string()),
+                    ]),
                 );
                 asked += 1;
             }
@@ -178,12 +190,18 @@ pub fn enforce_questions(body: &str, log: &mut EventLog) -> String {
                 if reason == QuestionRefusal::FactualUnknown {
                     log.append(
                         "question_necessity:research_required",
-                        format!("question={question_id} owner=solver"),
+                        trace_payload(&[
+                            ("question", question_id.clone()),
+                            ("owner", String::from("solver")),
+                        ]),
                     );
                 }
                 log.append(
                     "question_necessity:refused",
-                    format!("question={question_id} reason={}", reason.slug()),
+                    trace_payload(&[
+                        ("question", question_id),
+                        ("reason", reason.slug().to_owned()),
+                    ]),
                 );
                 refused_ranges.push((candidate.start, candidate.end));
             }
@@ -318,7 +336,11 @@ fn record_search_trace(log: &mut EventLog, question_id: &str) -> NecessityTrace 
         .count();
     let memory_event = log.append(
         "question_necessity:memory",
-        format!("question={question_id} result=not_answered prior_events={prior_turns}"),
+        trace_payload(&[
+            ("question", question_id.to_owned()),
+            ("result", String::from("not_answered")),
+            ("prior_events", prior_turns.to_string()),
+        ]),
     );
 
     let workspace_events = log
@@ -332,7 +354,11 @@ fn record_search_trace(log: &mut EventLog, question_id: &str) -> NecessityTrace 
         .count();
     let workspace_event = log.append(
         "question_necessity:workspace",
-        format!("question={question_id} result=not_derivable checked_events={workspace_events}"),
+        trace_payload(&[
+            ("question", question_id.to_owned()),
+            ("result", String::from("not_derivable")),
+            ("checked_events", workspace_events.to_string()),
+        ]),
     );
 
     let source_attempts = log
@@ -346,10 +372,12 @@ fn record_search_trace(log: &mut EventLog, question_id: &str) -> NecessityTrace 
         .count();
     let sources_event = log.append(
         "question_necessity:sources",
-        format!(
-            "question={question_id} result=not_answered attempts={source_attempts} budget={}",
-            policy().summary.source_attempt_budget
-        ),
+        trace_payload(&[
+            ("question", question_id.to_owned()),
+            ("result", String::from("not_answered")),
+            ("attempts", source_attempts.to_string()),
+            ("budget", policy().summary.source_attempt_budget.to_string()),
+        ]),
     );
 
     NecessityTrace {
@@ -357,6 +385,14 @@ fn record_search_trace(log: &mut EventLog, question_id: &str) -> NecessityTrace 
         workspace_event: Some(workspace_event),
         sources_event: Some(sources_event),
     }
+}
+
+fn trace_payload(fields: &[(&str, String)]) -> String {
+    fields
+        .iter()
+        .map(|(name, value)| format!("{name}={value}"))
+        .collect::<Vec<_>>()
+        .join(" ")
 }
 
 fn question_candidates(body: &str) -> Vec<Candidate> {
@@ -570,38 +606,4 @@ fn remove_empty_question_sections(body: &str) -> String {
         index += 1;
     }
     kept.join("\n").trim().to_owned()
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn finds_listed_inputs_without_question_marks_after_an_intro() {
-        let body =
-            "Plan.\n\nClarifying questions:\nPlease clarify:\n1. First input\n2. Second input";
-        let candidates = question_candidates(body);
-        assert_eq!(candidates.len(), 2);
-        assert!(candidates
-            .iter()
-            .all(|candidate| candidate.in_requirement_section));
-    }
-
-    #[test]
-    fn ignores_question_marks_in_quotes_code_and_urls() {
-        let body = "`why?` \"who?\" https://example.test/?q=x Should I continue?";
-        let candidates = question_candidates(body);
-        assert_eq!(candidates.len(), 1);
-        assert_eq!(candidates[0].text, "Should I continue?");
-    }
-
-    #[test]
-    fn keeps_one_canonical_copy_of_duplicate_listed_questions() {
-        let body = "Still needed from you:\n- First input\n- Second input\n\nClarifying questions:\nPlease clarify:\n1. First input\n2. Second input";
-        let mut log = EventLog::new();
-        let enforced = enforce_questions(body, &mut log);
-        assert!(!enforced.contains("Still needed from you:"));
-        assert!(enforced.contains("1. First input"));
-        assert!(!enforced.contains("2. Second input"));
-    }
 }

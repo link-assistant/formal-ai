@@ -2,9 +2,10 @@
 
 use std::collections::BTreeMap;
 
+use formal_ai::event_log::EventLog;
 use formal_ai::question_necessity::{
-    authorize_question, classify_question, policy_summary, NecessityTrace, QuestionAuthorization,
-    QuestionClass, QuestionRefusal,
+    authorize_question, classify_question, enforce_questions, policy_summary, NecessityTrace,
+    QuestionAuthorization, QuestionClass, QuestionRefusal,
 };
 use formal_ai::{SolverConfig, SymbolicAnswer, UniversalSolver};
 
@@ -119,6 +120,40 @@ fn issue_920_agent_authored_seed_is_preserved_byte_for_byte() {
             "../../docs/case-studies/issue-920/self-hosting-authorship/question-necessity.lino"
         )
     );
+}
+
+#[test]
+fn issue_920_listed_questions_are_enforced_without_punctuation() {
+    let body = "Plan.\n\nClarifying questions:\nPlease clarify:\n1. First input\n2. Second input";
+    let mut log = EventLog::new();
+    let enforced = enforce_questions(body, &mut log);
+    assert!(enforced.contains("1. First input"));
+    assert!(!enforced.contains("2. Second input"));
+}
+
+#[test]
+fn issue_920_question_marks_in_quotes_code_and_urls_are_not_questions() {
+    let body = "`why?` \"who?\" https://example.test/?q=x Should I continue?";
+    let mut log = EventLog::new();
+    let enforced = enforce_questions(body, &mut log);
+    assert!(!enforced.contains("Should I continue?"));
+    assert_eq!(
+        log.events()
+            .iter()
+            .filter(|event| event.kind == "question_necessity:refused")
+            .count(),
+        1
+    );
+}
+
+#[test]
+fn issue_920_duplicate_question_presentations_share_one_identity() {
+    let body = "Still needed from you:\n- First input\n- Second input\n\nClarifying questions:\nPlease clarify:\n1. First input\n2. Second input";
+    let mut log = EventLog::new();
+    let enforced = enforce_questions(body, &mut log);
+    assert!(!enforced.contains("Still needed from you:"));
+    assert!(enforced.contains("1. First input"));
+    assert!(!enforced.contains("2. Second input"));
 }
 
 #[test]
