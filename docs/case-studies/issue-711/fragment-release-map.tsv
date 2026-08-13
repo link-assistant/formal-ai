@@ -533,3 +533,4 @@ changelog.d/20260810_988_stock_rust_install.md	0.339.0
 changelog.d/20260810_996_report_flow_fixes.md	0.339.2
 changelog.d/20260811_989_reported_dialog_regressions.md	0.339.2
 changelog.d/20260811_999_ci_audit.md	0.339.2
+changelog.d/20260813_1001_ghcr_visibility.md	0.339.3
