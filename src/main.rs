@@ -16,6 +16,7 @@ mod cli_file_legality;
 mod cli_import;
 mod cli_improve;
 mod cli_learn;
+mod cli_local_transport;
 mod cli_memory;
 mod cli_orchestration;
 mod cli_procedure;
@@ -34,6 +35,7 @@ use cli_file_legality::{run_file_legality, FileLegalityArgs};
 use cli_import::{run_import, ImportAction};
 use cli_improve::{run_improve, ImproveArgs};
 use cli_learn::{run_learn_action, LearnAction};
+use cli_local_transport::{run_connect, run_serve, ConnectArgs, ServeArgs};
 use cli_memory::{load_memory_or_empty, run_memory};
 use cli_orchestration::{run_external_action, AgentArgs};
 use cli_procedure::{run_procedure, ProcedureArgs};
@@ -113,18 +115,10 @@ enum Command {
     Context(ContextArgs),
     /// Build the issue-report document every Formal AI surface files (#839).
     Report(ReportArgs),
-    Serve {
-        #[arg(long, env = "FORMAL_AI_HOST", default_value = "127.0.0.1")]
-        host: String,
-
-        #[arg(long, env = "FORMAL_AI_PORT", default_value_t = 8080)]
-        port: u16,
-
-        /// Allow OpenAI-compatible agent clients to receive tool calls. Equivalent
-        /// to `FORMAL_AI_AGENT_MODE=1`.
-        #[arg(long, default_value_t = false)]
-        agent_mode: bool,
-    },
+    /// Serve the API; `--agent-mode` is equivalent to `FORMAL_AI_AGENT_MODE=1`.
+    Serve(ServeArgs),
+    /// Use the same binary as a WebSocket or WebRTC OpenAI-compatible client.
+    Connect(ConnectArgs),
     /// Run a logging reverse proxy in front of a Formal AI HTTP server.
     Proxy {
         #[arg(long, env = "FORMAL_AI_PROXY_LISTEN", default_value = "127.0.0.1:8090")]
@@ -644,16 +638,13 @@ fn main() -> Result<(), Box<dyn Error>> {
                 )?;
             }
         }
-        Command::Serve {
-            host,
-            port,
-            agent_mode,
-        } => {
-            if agent_mode {
+        Command::Serve(args) => {
+            if args.agent_mode() {
                 enable_http_agent_mode_for_current_process();
             }
-            run_telegram_webhook_server(&format!("{host}:{port}"))?;
+            run_serve(&args)?;
         }
+        Command::Connect(args) => run_connect(&args)?,
         Command::Proxy {
             listen,
             upstream,
