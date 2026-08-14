@@ -177,6 +177,9 @@ retrying the release. The metric counts additions plus deletions from non-merge
 commits and ignores binary files. Reproduce it with
 `rust-script scripts/self-hosting-metric.rs --since <previous-tag>`.
 
+Before checking the pull-request ratchet locally, fetch annotated release tags
+with `git fetch origin --tags`; without the latest tag, the check reports a skip.
+
 ## Contribution rights and external material
 
 By intentionally submitting a contribution to this repository, you represent

@@ -57,6 +57,8 @@ fn issue_924_requirements_and_release_contract_are_traceable() {
             "Formal-AI-Pull-Request: https://github.com/<owner>/<repo>/pull/<number>",
             "same commit object",
             "must not decrease",
+            "git fetch origin --tags",
+            "without the latest tag, the check reports a skip",
         ],
     );
 
