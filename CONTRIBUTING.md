@@ -151,20 +151,31 @@ either flag. Recorded history under `docs/case-studies/`, `dev/log/`, and
 ### Recording self-authorship
 
 The release metric counts a commit as Formal AI-authored only when its commit
-message records both trailers below:
+message records the first two trailers below. A contribution intended to
+satisfy the per-release self-development floor must record all three:
 
 ```text
 Formal-AI-Session: <session-id>
 Formal-AI-Evidence: <repo-relative committed evidence path>
+Formal-AI-Pull-Request: https://github.com/<owner>/<repo>/pull/<number>
 ```
 
 The evidence path must exist in that commit. It may name one evidence file or a
 directory bundle; one file at or below the path must contain both `formal-ai`
 and the exact session id. Add one pair per session when multiple sessions
 authored a commit. Do not add these trailers to a human-authored or manually
-corrected commit; an honest 0% release is valid. The metric counts additions
-plus deletions from non-merge commits and ignores binary files. Reproduce it
-with `rust-script scripts/self-hosting-metric.rs --since <previous-tag>`.
+corrected commit. The pull-request reference counts toward the release floor
+only when Git history proves that the same commit object reached the matching
+GitHub merge commit; a direct commit carrying a claimed PR URL does not count.
+
+Every release cycle must contain at least one such merged contribution. It goes
+through the ordinary pull-request review, CI, and promotion policy without an
+AI-specific bypass. The next release's target is the greater of the previous
+target and previous comparable trailing share, so it must not decrease. If the
+floor or target is missing, merge more reviewed Formal AI-authored work before
+retrying the release. The metric counts additions plus deletions from non-merge
+commits and ignores binary files. Reproduce it with
+`rust-script scripts/self-hosting-metric.rs --since <previous-tag>`.
 
 ## Contribution rights and external material
 

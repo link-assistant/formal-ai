@@ -5,6 +5,7 @@
 //!
 //! - `Formal-AI-Session: <session-id>`
 //! - `Formal-AI-Evidence: <repo-relative-path>`
+//! - `Formal-AI-Pull-Request: <canonical GitHub PR URL>` (release-loop proof)
 //!
 //! The evidence must exist in that commit. A file, or a file inside a named
 //! directory bundle, must contain both `formal-ai` and the recorded session id.
@@ -22,8 +23,13 @@ use std::process::Command;
 
 const SESSION_TRAILER: &str = "Formal-AI-Session";
 const EVIDENCE_TRAILER: &str = "Formal-AI-Evidence";
+const PULL_REQUEST_TRAILER: &str = "Formal-AI-Pull-Request";
 const DEFAULT_LEDGER: &str = "data/meta/self-hosting-ledger.lino";
 const DEFAULT_TRAILING_WINDOW: usize = 3;
+
+#[path = "self-development-loop.rs"]
+mod self_development_loop;
+pub use self_development_loop::ensure_self_development_release;
 
 /// Measurement-definition epoch of the rows this build writes.
 ///
@@ -82,6 +88,11 @@ pub struct ReleaseRow {
     pub percentage_basis_points: u64,
     pub trailing_window: usize,
     pub trailing_percentage_basis_points: u64,
+    /// The non-decreasing floor in force for this release. Historical rows
+    /// predate issue #924 and therefore read as `None`.
+    pub target_percentage_basis_points: Option<u64>,
+    /// Reviewed PRs containing valid session-backed commits in this cycle.
+    pub self_authored_pull_requests: Vec<String>,
 }
 
 pub fn format_percentage(basis_points: u64) -> String {
@@ -216,7 +227,14 @@ fn changed_lines_for_commit(repo: &Path, commit: &str) -> Result<u64, String> {
 fn commit_has_formal_ai_evidence(repo: &Path, commit: &str) -> Result<bool, String> {
     let sessions = trailer_values(repo, commit, SESSION_TRAILER)?;
     let evidence_paths = trailer_values(repo, commit, EVIDENCE_TRAILER)?;
+    let pull_request = self_development_loop::validated_commit_pull_request(repo, commit)?;
     if sessions.is_empty() && evidence_paths.is_empty() {
+        if pull_request.is_some() {
+            return Err(format!(
+                "commit {commit} records {PULL_REQUEST_TRAILER} without {SESSION_TRAILER} and \
+                 {EVIDENCE_TRAILER}"
+            ));
+        }
         return Ok(false);
     }
     if sessions.is_empty() || evidence_paths.is_empty() {
@@ -403,7 +421,7 @@ pub fn record_release_with_policy(
     // `METRIC_VERSION`. Mixing epochs would average two different quantities.
     let rows = all_rows
         .iter()
-        .filter(|row| row.metric_version == METRIC_VERSION)
+        .filter(|row| row.metric_version == METRIC_VERSION && row.tag != tag)
         .cloned()
         .collect::<Vec<_>>();
     // Lenient on purpose: see `EvidencePolicy`. The pull-request gate is what
@@ -433,6 +451,13 @@ pub fn record_release_with_policy(
         percentage_basis_points: measurement.percentage_basis_points,
         trailing_window,
         trailing_percentage_basis_points: 0,
+        target_percentage_basis_points: Some(self_development_loop::target_from_rows(&rows)),
+        self_authored_pull_requests: self_development_loop::merged_self_authored_pull_requests(
+            repo,
+            since,
+            until,
+            EvidencePolicy::Lenient,
+        )?,
     };
     window_rows.push(row.clone());
     row.trailing_percentage_basis_points = weighted_percentage(&window_rows);
@@ -511,6 +536,8 @@ pub fn project_trailing_basis_points(
         percentage_basis_points: measurement.percentage_basis_points,
         trailing_window,
         trailing_percentage_basis_points: 0,
+        target_percentage_basis_points: None,
+        self_authored_pull_requests: Vec::new(),
     });
     Ok(weighted_percentage(&window_rows))
 }
@@ -637,6 +664,16 @@ fn parse_release_row(fields: &[String]) -> Result<ReleaseRow, String> {
         trailing_window: usize::try_from(number("trailing_window")?)
             .map_err(|_| "trailing_window does not fit usize".to_owned())?,
         trailing_percentage_basis_points: number("trailing_percentage_basis_points")?,
+        target_percentage_basis_points: optional_number("target_percentage_basis_points")?,
+        self_authored_pull_requests: fields
+            .iter()
+            .filter_map(|field| {
+                field
+                    .strip_prefix("self_authored_pull_request \"")
+                    .and_then(|value| value.strip_suffix('"'))
+                    .map(str::to_owned)
+            })
+            .collect(),
     })
 }
 
@@ -675,6 +712,16 @@ fn append_release_row(ledger: &Path, row: &ReleaseRow) -> Result<(), String> {
         record.push_str(value);
         record.push_str("\"\n");
     }
+    if let Some(target) = row.target_percentage_basis_points {
+        record.push_str(&format!(
+            "    target_percentage_basis_points \"{target}\"\n"
+        ));
+    }
+    for pull_request in &row.self_authored_pull_requests {
+        record.push_str(&format!(
+            "    self_authored_pull_request \"{pull_request}\"\n"
+        ));
+    }
     write!(file, "{record}")
         .map_err(|error| format!("could not append {}: {error}", ledger.display()))
 }
@@ -684,7 +731,7 @@ pub fn release_note_for_tag(ledger: &Path, tag: &str) -> Result<String, String> 
         .into_iter()
         .find(|row| row.tag == tag)
         .ok_or_else(|| format!("self-hosting ledger has no release row for {tag}"))?;
-    Ok(format!(
+    let mut note = format!(
         "## Self-hosting\n\nFormal AI authored **{}** of this release ({} of {} changed lines). The \
          {}-release trailing share is **{}**.",
         format_percentage(row.percentage_basis_points),
@@ -692,7 +739,19 @@ pub fn release_note_for_tag(ledger: &Path, tag: &str) -> Result<String, String> 
         row.changed_lines,
         row.trailing_window,
         format_percentage(row.trailing_percentage_basis_points),
-    ))
+    );
+    if let Some(target) = row.target_percentage_basis_points {
+        note.push_str(&format!(
+            " The non-decreasing release target was **{}**.",
+            format_percentage(target)
+        ));
+    }
+    if !row.self_authored_pull_requests.is_empty() {
+        note.push_str(" Formal AI-authored pull requests: ");
+        note.push_str(&row.self_authored_pull_requests.join(", "));
+        note.push('.');
+    }
+    Ok(note)
 }
 
 fn git(repo: &Path, args: &[&str]) -> Result<String, String> {
@@ -797,6 +856,13 @@ fn run() -> Result<(), String> {
         .since
         .ok_or_else(|| "--since <tag> is required".to_owned())?;
     let measurement = if let Some(tag) = options.record_release {
+        ensure_self_development_release(
+            &options.repo,
+            &options.ledger,
+            &since,
+            &options.until,
+            options.trailing_window,
+        )?;
         let row = record_release_with_policy(
             &options.repo,
             &options.ledger,
