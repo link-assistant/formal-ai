@@ -97,7 +97,7 @@ pub fn run_connect(args: &ConnectArgs) -> Result<(), Box<dyn Error>> {
     };
     if !(200..300).contains(&response.status_code) {
         return Err(format!(
-            "local transport returned status {}: {}",
+            "local_transport_status={}:{}",
             response.status_code, response.body
         )
         .into());

@@ -31,6 +31,7 @@ use webrtc::runtime::{channel, default_runtime, timeout, Runtime, Sender};
 use crate::server::handle_api_request_with_headers;
 
 const DATA_CHANNEL_LABEL: &str = "formal-ai";
+const BEARER_SCHEME: &str = "Bearer";
 const MAX_PAYLOAD_BYTES: usize = 16 * 1024 * 1024;
 const RTC_CHUNK_BYTES: usize = 12 * 1024;
 const SIGNAL_TIMEOUT: Duration = Duration::from_secs(30);
@@ -95,9 +96,10 @@ pub fn openai_chat_request(prompt: &str, bearer_token: Option<&str>) -> Transpor
         String::from("application/json"),
     );
     if let Some(token) = bearer_token {
-        request
-            .headers
-            .insert(String::from("authorization"), format!("Bearer {token}"));
+        request.headers.insert(
+            String::from("authorization"),
+            [BEARER_SCHEME, token].join(" "),
+        );
     }
     request
 }
@@ -463,7 +465,7 @@ async fn wait_for_signal(
 ) -> Result<(), TransportError> {
     timeout(&**runtime, SIGNAL_TIMEOUT, receiver.recv())
         .await
-        .map_err(|_| transport_error(format!("timed out during {phase}")))?;
+        .map_err(|_| transport_error(format!("local_transport_timeout:{phase}")))?;
     Ok(())
 }
 
@@ -567,7 +569,7 @@ fn resolve_endpoint(endpoint: &str) -> Result<SocketAddr, TransportError> {
     endpoint
         .to_socket_addrs()?
         .next()
-        .ok_or_else(|| transport_error(format!("could not resolve {endpoint}")))
+        .ok_or_else(|| transport_error(format!("local_transport_resolve:{endpoint}")))
 }
 
 fn loopback_udp_address(signaling_address: SocketAddr) -> String {
@@ -585,7 +587,7 @@ fn invalid_envelope(detail: &str) -> TransportResponse {
         content_type: String::from("application/json"),
         body: json!({
             "error": {
-                "message": format!("invalid transport envelope: {detail}"),
+                "message": format!("invalid_transport_envelope:{detail}"),
                 "type": "invalid_request_error",
             }
         })
