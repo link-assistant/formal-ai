@@ -7,6 +7,7 @@ conversational_variation_case_greeting_en_01
   prompt "hi"
   expected_intent "greeting"
   expected_evidence "response:greeting"
+  expected_answer "Hi, how may I help you?"
 conversational_variation_case_greeting_en_02
   record_type "conversational_variation_case"
   id "greeting_en_02"
@@ -16,6 +17,7 @@ conversational_variation_case_greeting_en_02
   prompt "hello"
   expected_intent "greeting"
   expected_evidence "response:greeting"
+  expected_answer "Hi, how may I help you?"
 conversational_variation_case_greeting_en_03
   record_type "conversational_variation_case"
   id "greeting_en_03"
@@ -25,6 +27,7 @@ conversational_variation_case_greeting_en_03
   prompt "hey"
   expected_intent "greeting"
   expected_evidence "response:greeting"
+  expected_answer "Hi, how may I help you?"
 conversational_variation_case_greeting_en_04
   record_type "conversational_variation_case"
   id "greeting_en_04"
@@ -34,6 +37,7 @@ conversational_variation_case_greeting_en_04
   prompt "good morning"
   expected_intent "greeting"
   expected_evidence "response:greeting"
+  expected_answer "Hi, how may I help you?"
 conversational_variation_case_greeting_en_05
   record_type "conversational_variation_case"
   id "greeting_en_05"
@@ -43,6 +47,7 @@ conversational_variation_case_greeting_en_05
   prompt "good evening"
   expected_intent "greeting"
   expected_evidence "response:greeting"
+  expected_answer "Hi, how may I help you?"
 conversational_variation_case_greeting_en_06
   record_type "conversational_variation_case"
   id "greeting_en_06"
@@ -52,6 +57,7 @@ conversational_variation_case_greeting_en_06
   prompt "hi there"
   expected_intent "greeting"
   expected_evidence "response:greeting"
+  expected_answer "Hi, how may I help you?"
 conversational_variation_case_greeting_en_07
   record_type "conversational_variation_case"
   id "greeting_en_07"
@@ -61,6 +67,7 @@ conversational_variation_case_greeting_en_07
   prompt "hello there"
   expected_intent "greeting"
   expected_evidence "response:greeting"
+  expected_answer "Hi, how may I help you?"
 conversational_variation_case_greeting_en_08
   record_type "conversational_variation_case"
   id "greeting_en_08"
@@ -70,6 +77,7 @@ conversational_variation_case_greeting_en_08
   prompt "howdy"
   expected_intent "greeting"
   expected_evidence "response:greeting"
+  expected_answer "Hi, how may I help you?"
 conversational_variation_case_greeting_en_09
   record_type "conversational_variation_case"
   id "greeting_en_09"
@@ -79,6 +87,7 @@ conversational_variation_case_greeting_en_09
   prompt "greetings"
   expected_intent "greeting"
   expected_evidence "response:greeting"
+  expected_answer "Hi, how may I help you?"
 conversational_variation_case_wellbeing_en_01
   record_type "conversational_variation_case"
   id "wellbeing_en_01"
@@ -88,6 +97,7 @@ conversational_variation_case_wellbeing_en_01
   prompt "how are you?"
   expected_intent "wellbeing"
   expected_evidence "response:wellbeing"
+  expected_answer "I'm doing great, thanks for asking! I'm ready to help — what would you like to do?"
 conversational_variation_case_wellbeing_en_02
   record_type "conversational_variation_case"
   id "wellbeing_en_02"
@@ -97,6 +107,7 @@ conversational_variation_case_wellbeing_en_02
   prompt "how are you doing?"
   expected_intent "wellbeing"
   expected_evidence "response:wellbeing"
+  expected_answer "I'm doing great, thanks for asking! I'm ready to help — what would you like to do?"
 conversational_variation_case_wellbeing_en_03
   record_type "conversational_variation_case"
   id "wellbeing_en_03"
@@ -106,6 +117,7 @@ conversational_variation_case_wellbeing_en_03
   prompt "how do you do?"
   expected_intent "wellbeing"
   expected_evidence "response:wellbeing"
+  expected_answer "I'm doing great, thanks for asking! I'm ready to help — what would you like to do?"
 conversational_variation_case_wellbeing_en_04
   record_type "conversational_variation_case"
   id "wellbeing_en_04"
@@ -115,6 +127,7 @@ conversational_variation_case_wellbeing_en_04
   prompt "how are things?"
   expected_intent "wellbeing"
   expected_evidence "response:wellbeing"
+  expected_answer "I'm doing great, thanks for asking! I'm ready to help — what would you like to do?"
 conversational_variation_case_wellbeing_en_05
   record_type "conversational_variation_case"
   id "wellbeing_en_05"
@@ -124,6 +137,7 @@ conversational_variation_case_wellbeing_en_05
   prompt "how's it going?"
   expected_intent "wellbeing"
   expected_evidence "response:wellbeing"
+  expected_answer "I'm doing great, thanks for asking! I'm ready to help — what would you like to do?"
 conversational_variation_case_farewell_en_01
   record_type "conversational_variation_case"
   id "farewell_en_01"
@@ -133,6 +147,7 @@ conversational_variation_case_farewell_en_01
   prompt "bye"
   expected_intent "farewell"
   expected_evidence "response:farewell"
+  expected_answer "Goodbye! Feel free to return any time."
 conversational_variation_case_farewell_en_02
   record_type "conversational_variation_case"
   id "farewell_en_02"
@@ -142,6 +157,7 @@ conversational_variation_case_farewell_en_02
   prompt "goodbye"
   expected_intent "farewell"
   expected_evidence "response:farewell"
+  expected_answer "Goodbye! Feel free to return any time."
 conversational_variation_case_farewell_en_03
   record_type "conversational_variation_case"
   id "farewell_en_03"
@@ -151,6 +167,7 @@ conversational_variation_case_farewell_en_03
   prompt "ciao"
   expected_intent "farewell"
   expected_evidence "response:farewell"
+  expected_answer "Goodbye! Feel free to return any time."
 conversational_variation_case_farewell_en_04
   record_type "conversational_variation_case"
   id "farewell_en_04"
@@ -160,6 +177,7 @@ conversational_variation_case_farewell_en_04
   prompt "see you"
   expected_intent "farewell"
   expected_evidence "response:farewell"
+  expected_answer "Goodbye! Feel free to return any time."
 conversational_variation_case_farewell_en_05
   record_type "conversational_variation_case"
   id "farewell_en_05"
@@ -169,6 +187,7 @@ conversational_variation_case_farewell_en_05
   prompt "see you later"
   expected_intent "farewell"
   expected_evidence "response:farewell"
+  expected_answer "Goodbye! Feel free to return any time."
 conversational_variation_case_farewell_en_06
   record_type "conversational_variation_case"
   id "farewell_en_06"
@@ -178,6 +197,7 @@ conversational_variation_case_farewell_en_06
   prompt "take care"
   expected_intent "farewell"
   expected_evidence "response:farewell"
+  expected_answer "Goodbye! Feel free to return any time."
 conversational_variation_case_farewell_en_07
   record_type "conversational_variation_case"
   id "farewell_en_07"
@@ -187,6 +207,7 @@ conversational_variation_case_farewell_en_07
   prompt "so long"
   expected_intent "farewell"
   expected_evidence "response:farewell"
+  expected_answer "Goodbye! Feel free to return any time."
 conversational_variation_case_farewell_en_08
   record_type "conversational_variation_case"
   id "farewell_en_08"
@@ -196,6 +217,7 @@ conversational_variation_case_farewell_en_08
   prompt "farewell"
   expected_intent "farewell"
   expected_evidence "response:farewell"
+  expected_answer "Goodbye! Feel free to return any time."
 conversational_variation_case_courtesy_response_en_01
   record_type "conversational_variation_case"
   id "courtesy_response_en_01"
@@ -205,6 +227,7 @@ conversational_variation_case_courtesy_response_en_01
   prompt "thanks"
   expected_intent "courtesy_response"
   expected_evidence "response:courtesy_response"
+  expected_answer "Glad to hear it. What would you like to do next?"
 conversational_variation_case_courtesy_response_en_02
   record_type "conversational_variation_case"
   id "courtesy_response_en_02"
@@ -214,6 +237,7 @@ conversational_variation_case_courtesy_response_en_02
   prompt "thank you"
   expected_intent "courtesy_response"
   expected_evidence "response:courtesy_response"
+  expected_answer "Glad to hear it. What would you like to do next?"
 conversational_variation_case_courtesy_response_en_03
   record_type "conversational_variation_case"
   id "courtesy_response_en_03"
@@ -223,6 +247,7 @@ conversational_variation_case_courtesy_response_en_03
   prompt "i am fine thank you"
   expected_intent "courtesy_response"
   expected_evidence "response:courtesy_response"
+  expected_answer "Glad to hear it. What would you like to do next?"
 conversational_variation_case_courtesy_response_en_04
   record_type "conversational_variation_case"
   id "courtesy_response_en_04"
@@ -232,6 +257,7 @@ conversational_variation_case_courtesy_response_en_04
   prompt "fine thanks"
   expected_intent "courtesy_response"
   expected_evidence "response:courtesy_response"
+  expected_answer "Glad to hear it. What would you like to do next?"
 conversational_variation_case_courtesy_response_en_05
   record_type "conversational_variation_case"
   id "courtesy_response_en_05"
@@ -241,6 +267,7 @@ conversational_variation_case_courtesy_response_en_05
   prompt "good thanks"
   expected_intent "courtesy_response"
   expected_evidence "response:courtesy_response"
+  expected_answer "Glad to hear it. What would you like to do next?"
 conversational_variation_case_courtesy_response_en_06
   record_type "conversational_variation_case"
   id "courtesy_response_en_06"
@@ -250,6 +277,7 @@ conversational_variation_case_courtesy_response_en_06
   prompt "doing well thanks"
   expected_intent "courtesy_response"
   expected_evidence "response:courtesy_response"
+  expected_answer "Glad to hear it. What would you like to do next?"
 conversational_variation_case_identity_en_01
   record_type "conversational_variation_case"
   id "identity_en_01"
@@ -259,6 +287,7 @@ conversational_variation_case_identity_en_01
   prompt "who are you?"
   expected_intent "identity"
   expected_evidence "response:identity"
+  expected_answer "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo."
 conversational_variation_case_identity_en_02
   record_type "conversational_variation_case"
   id "identity_en_02"
@@ -268,6 +297,7 @@ conversational_variation_case_identity_en_02
   prompt "what are you?"
   expected_intent "identity"
   expected_evidence "response:identity"
+  expected_answer "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo."
 conversational_variation_case_identity_en_03
   record_type "conversational_variation_case"
   id "identity_en_03"
@@ -277,6 +307,7 @@ conversational_variation_case_identity_en_03
   prompt "tell me about yourself"
   expected_intent "identity"
   expected_evidence "response:identity"
+  expected_answer "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo."
 conversational_variation_case_identity_en_04
   record_type "conversational_variation_case"
   id "identity_en_04"
@@ -286,6 +317,7 @@ conversational_variation_case_identity_en_04
   prompt "introduce yourself"
   expected_intent "identity"
   expected_evidence "response:identity"
+  expected_answer "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo."
 conversational_variation_case_identity_en_05
   record_type "conversational_variation_case"
   id "identity_en_05"
@@ -295,6 +327,7 @@ conversational_variation_case_identity_en_05
   prompt "let's get acquainted"
   expected_intent "identity"
   expected_evidence "response:identity"
+  expected_answer "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo."
 conversational_variation_case_identity_en_06
   record_type "conversational_variation_case"
   id "identity_en_06"
@@ -304,6 +337,7 @@ conversational_variation_case_identity_en_06
   prompt "what is formal-ai?"
   expected_intent "identity"
   expected_evidence "response:identity"
+  expected_answer "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo."
 conversational_variation_case_capabilities_en_01
   record_type "conversational_variation_case"
   id "capabilities_en_01"
@@ -313,6 +347,7 @@ conversational_variation_case_capabilities_en_01
   prompt "what can you do?"
   expected_intent "capabilities"
   expected_evidence "response:capabilities"
+  expected_answer_contains "I am formal-ai, a deterministic symbolic AI. Here is what I can do:"
 conversational_variation_case_capabilities_en_02
   record_type "conversational_variation_case"
   id "capabilities_en_02"
@@ -322,6 +357,7 @@ conversational_variation_case_capabilities_en_02
   prompt "what you can do?"
   expected_intent "capabilities"
   expected_evidence "response:capabilities"
+  expected_answer_contains "I am formal-ai, a deterministic symbolic AI. Here is what I can do:"
 conversational_variation_case_capabilities_en_03
   record_type "conversational_variation_case"
   id "capabilities_en_03"
@@ -331,6 +367,7 @@ conversational_variation_case_capabilities_en_03
   prompt "what are your capabilities?"
   expected_intent "capabilities"
   expected_evidence "response:capabilities"
+  expected_answer_contains "I am formal-ai, a deterministic symbolic AI. Here is what I can do:"
 conversational_variation_case_capabilities_en_04
   record_type "conversational_variation_case"
   id "capabilities_en_04"
@@ -340,6 +377,7 @@ conversational_variation_case_capabilities_en_04
   prompt "show me what you can do"
   expected_intent "capabilities"
   expected_evidence "response:capabilities"
+  expected_answer_contains "I am formal-ai, a deterministic symbolic AI. Here is what I can do:"
 conversational_variation_case_capabilities_en_05
   record_type "conversational_variation_case"
   id "capabilities_en_05"
@@ -349,6 +387,7 @@ conversational_variation_case_capabilities_en_05
   prompt "how can you help?"
   expected_intent "capabilities"
   expected_evidence "response:capabilities"
+  expected_answer_contains "I am formal-ai, a deterministic symbolic AI. Here is what I can do:"
 conversational_variation_case_capabilities_en_06
   record_type "conversational_variation_case"
   id "capabilities_en_06"
@@ -358,6 +397,7 @@ conversational_variation_case_capabilities_en_06
   prompt "what features do you have?"
   expected_intent "capabilities"
   expected_evidence "response:capabilities"
+  expected_answer_contains "I am formal-ai, a deterministic symbolic AI. Here is what I can do:"
 conversational_variation_case_test_status_en_01
   record_type "conversational_variation_case"
   id "test_status_en_01"
@@ -367,6 +407,7 @@ conversational_variation_case_test_status_en_01
   prompt "test"
   expected_intent "test_status"
   expected_evidence "response:test_status"
+  expected_answer "Test passed. I'm here."
 conversational_variation_case_test_status_en_02
   record_type "conversational_variation_case"
   id "test_status_en_02"
@@ -376,6 +417,7 @@ conversational_variation_case_test_status_en_02
   prompt "ping"
   expected_intent "test_status"
   expected_evidence "response:test_status"
+  expected_answer "Test passed. I'm here."
 conversational_variation_case_test_status_en_03
   record_type "conversational_variation_case"
   id "test_status_en_03"
@@ -385,6 +427,7 @@ conversational_variation_case_test_status_en_03
   prompt "testing"
   expected_intent "test_status"
   expected_evidence "response:test_status"
+  expected_answer "Test passed. I'm here."
 conversational_variation_case_test_status_en_04
   record_type "conversational_variation_case"
   id "test_status_en_04"
@@ -394,6 +437,7 @@ conversational_variation_case_test_status_en_04
   prompt "test passed"
   expected_intent "test_status"
   expected_evidence "response:test_status"
+  expected_answer "Test passed. I'm here."
 conversational_variation_case_test_status_en_05
   record_type "conversational_variation_case"
   id "test_status_en_05"
@@ -403,6 +447,7 @@ conversational_variation_case_test_status_en_05
   prompt "are you there?"
   expected_intent "test_status"
   expected_evidence "response:test_status"
+  expected_answer "Test passed. I'm here."
 conversational_variation_case_test_status_en_06
   record_type "conversational_variation_case"
   id "test_status_en_06"
@@ -412,6 +457,7 @@ conversational_variation_case_test_status_en_06
   prompt "i am here"
   expected_intent "test_status"
   expected_evidence "response:test_status"
+  expected_answer "Test passed. I'm here."
 conversational_variation_case_test_status_en_07
   record_type "conversational_variation_case"
   id "test_status_en_07"
@@ -421,6 +467,7 @@ conversational_variation_case_test_status_en_07
   prompt "testing 123"
   expected_intent "test_status"
   expected_evidence "response:test_status"
+  expected_answer "Test passed. I'm here."
 conversational_variation_case_assistant_free_time_en_01
   record_type "conversational_variation_case"
   id "assistant_free_time_en_01"
@@ -430,6 +477,7 @@ conversational_variation_case_assistant_free_time_en_01
   prompt "what do you do in your free time?"
   expected_intent "assistant_free_time"
   expected_evidence "response:assistant_free_time"
+  expected_answer "I do not have free time the way a person does. Between prompts I am idle; when the dialog is active, I help with tasks, rules, and explanations."
 conversational_variation_case_assistant_free_time_en_02
   record_type "conversational_variation_case"
   id "assistant_free_time_en_02"
@@ -439,6 +487,7 @@ conversational_variation_case_assistant_free_time_en_02
   prompt "how do you spend your free time?"
   expected_intent "assistant_free_time"
   expected_evidence "response:assistant_free_time"
+  expected_answer "I do not have free time the way a person does. Between prompts I am idle; when the dialog is active, I help with tasks, rules, and explanations."
 conversational_variation_case_assistant_free_time_en_03
   record_type "conversational_variation_case"
   id "assistant_free_time_en_03"
@@ -448,6 +497,7 @@ conversational_variation_case_assistant_free_time_en_03
   prompt "what do you do when you are not working?"
   expected_intent "assistant_free_time"
   expected_evidence "response:assistant_free_time"
+  expected_answer "I do not have free time the way a person does. Between prompts I am idle; when the dialog is active, I help with tasks, rules, and explanations."
 conversational_variation_case_assistant_free_time_en_04
   record_type "conversational_variation_case"
   id "assistant_free_time_en_04"
@@ -457,6 +507,7 @@ conversational_variation_case_assistant_free_time_en_04
   prompt "what do you do in free time?"
   expected_intent "assistant_free_time"
   expected_evidence "response:assistant_free_time"
+  expected_answer "I do not have free time the way a person does. Between prompts I am idle; when the dialog is active, I help with tasks, rules, and explanations."
 conversational_variation_case_assistant_free_time_en_05
   record_type "conversational_variation_case"
   id "assistant_free_time_en_05"
@@ -466,6 +517,7 @@ conversational_variation_case_assistant_free_time_en_05
   prompt "how do you spend your spare time?"
   expected_intent "assistant_free_time"
   expected_evidence "response:assistant_free_time"
+  expected_answer "I do not have free time the way a person does. Between prompts I am idle; when the dialog is active, I help with tasks, rules, and explanations."
 conversational_variation_case_assistant_name_en_01
   record_type "conversational_variation_case"
   id "assistant_name_en_01"
@@ -475,6 +527,7 @@ conversational_variation_case_assistant_name_en_01
   prompt "what is your name?"
   expected_intent "assistant_name"
   expected_evidence "response:assistant_name"
+  expected_answer "I'm formal AI, and currently I don't have a name. But you can name me as you like."
 conversational_variation_case_assistant_name_en_02
   record_type "conversational_variation_case"
   id "assistant_name_en_02"
@@ -484,6 +537,7 @@ conversational_variation_case_assistant_name_en_02
   prompt "do you have a name?"
   expected_intent "assistant_name"
   expected_evidence "response:assistant_name"
+  expected_answer "I'm formal AI, and currently I don't have a name. But you can name me as you like."
 conversational_variation_case_assistant_name_en_03
   record_type "conversational_variation_case"
   id "assistant_name_en_03"
@@ -493,6 +547,7 @@ conversational_variation_case_assistant_name_en_03
   prompt "what should i call you?"
   expected_intent "assistant_name"
   expected_evidence "response:assistant_name"
+  expected_answer "I'm formal AI, and currently I don't have a name. But you can name me as you like."
 conversational_variation_case_assistant_name_en_04
   record_type "conversational_variation_case"
   id "assistant_name_en_04"
@@ -502,6 +557,7 @@ conversational_variation_case_assistant_name_en_04
   prompt "tell me your name"
   expected_intent "assistant_name"
   expected_evidence "response:assistant_name"
+  expected_answer "I'm formal AI, and currently I don't have a name. But you can name me as you like."
 conversational_variation_case_assistant_name_en_05
   record_type "conversational_variation_case"
   id "assistant_name_en_05"
@@ -511,6 +567,7 @@ conversational_variation_case_assistant_name_en_05
   prompt "may i know your name?"
   expected_intent "assistant_name"
   expected_evidence "response:assistant_name"
+  expected_answer "I'm formal AI, and currently I don't have a name. But you can name me as you like."
 conversational_variation_case_calculation_en_01
   record_type "conversational_variation_case"
   id "calculation_en_01"
@@ -520,6 +577,7 @@ conversational_variation_case_calculation_en_01
   prompt "two plus two"
   expected_intent "calculation"
   expected_evidence "response:calculation"
+  expected_answer "two plus two = 4"
   expected_answer_contains "4"
 conversational_variation_case_calculation_en_02
   record_type "conversational_variation_case"
@@ -530,6 +588,7 @@ conversational_variation_case_calculation_en_02
   prompt "three plus five"
   expected_intent "calculation"
   expected_evidence "response:calculation"
+  expected_answer "three plus five = 8"
   expected_answer_contains "8"
 conversational_variation_case_calculation_en_03
   record_type "conversational_variation_case"
@@ -540,6 +599,7 @@ conversational_variation_case_calculation_en_03
   prompt "seven minus four"
   expected_intent "calculation"
   expected_evidence "response:calculation"
+  expected_answer "seven minus four = 3"
   expected_answer_contains "3"
 conversational_variation_case_calculation_en_04
   record_type "conversational_variation_case"
@@ -550,6 +610,7 @@ conversational_variation_case_calculation_en_04
   prompt "six times seven"
   expected_intent "calculation"
   expected_evidence "response:calculation"
+  expected_answer "six times seven = 42"
   expected_answer_contains "42"
 conversational_variation_case_calculation_en_05
   record_type "conversational_variation_case"
@@ -560,6 +621,7 @@ conversational_variation_case_calculation_en_05
   prompt "ten divided by two"
   expected_intent "calculation"
   expected_evidence "response:calculation"
+  expected_answer "ten divided by two = 5"
   expected_answer_contains "5"
 conversational_variation_case_calculation_en_06
   record_type "conversational_variation_case"
@@ -570,4 +632,5 @@ conversational_variation_case_calculation_en_06
   prompt "eight modulo three"
   expected_intent "calculation"
   expected_evidence "response:calculation"
+  expected_answer "eight modulo three = 2"
   expected_answer_contains "2"

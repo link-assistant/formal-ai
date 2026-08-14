@@ -28,6 +28,7 @@ function fixtureRecords(counts) {
         prompt: `wording ${language} ${index}`,
         expected_intent: "greeting",
         expected_evidence: "response:greeting",
+        expected_answer: "Hi, how may I help you?",
       });
     }
   }
@@ -78,6 +79,7 @@ test("re-punctuated copies of one wording do not add up to five", () => {
       prompt,
       expected_intent: "greeting",
       expected_evidence: "response:greeting",
+      expected_answer: "Hi, how may I help you?",
     })),
   ];
 
@@ -106,6 +108,7 @@ test("records naming an unlisted case or language are surfaced, not silently cou
       prompt: "bye",
       expected_intent: "farewell",
       expected_evidence: "response:farewell",
+      expected_answer: "Goodbye!",
     },
     {
       id: "greeting_es_01",
@@ -114,6 +117,7 @@ test("records naming an unlisted case or language are surfaced, not silently cou
       prompt: "hola",
       expected_intent: "greeting",
       expected_evidence: "response:greeting",
+      expected_answer: "Hi, how may I help you?",
     },
   ]);
 
@@ -143,6 +147,7 @@ test("duplicate case ids are reported even when the wordings differ", () => {
       prompt: "hi",
       expected_intent: "greeting",
       expected_evidence: "response:greeting",
+      expected_answer: "Hi, how may I help you?",
     },
     {
       id: "greeting_en_01",
@@ -151,10 +156,35 @@ test("duplicate case ids are reported even when the wordings differ", () => {
       prompt: "hello",
       expected_intent: "greeting",
       expected_evidence: "response:greeting",
+      expected_answer: "Hi, how may I help you?",
     },
   ]);
 
   assert.deepEqual(problems, ["duplicate case id greeting_en_01"]);
+});
+
+test("a record that does not show its answer is reported (R234-2)", () => {
+  const shown = {
+    id: "capabilities_en_01",
+    case: "greeting",
+    language: "en",
+    prompt: "what can you do",
+    expected_intent: "greeting",
+    expected_evidence: "response:greeting",
+    // A multi-line answer is pinned by its opening line, which still counts.
+    expected_answer_contains: "I can answer questions about",
+  };
+  const hidden = { ...shown, id: "capabilities_en_02", prompt: "what can you do now" };
+  delete hidden.expected_answer_contains;
+
+  const { problems } = audit([shown, hidden]);
+
+  assert.deepEqual(
+    problems.filter((problem) => problem.includes("records no answer")),
+    [
+      "record capabilities_en_02 records no answer; add expected_answer (or expected_answer_contains for a multi-line answer)",
+    ],
+  );
 });
 
 test("the LiNo record parser reads an id line plus its two-space fields", () => {

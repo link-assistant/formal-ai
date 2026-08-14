@@ -105,6 +105,15 @@ export function auditVariationFloor({ records, cases, languages, minimum }) {
         problems.push(`record ${id} is missing ${field}`);
       }
     }
+    // Every record also shows the text its prompt produces, so the corpus is
+    // documentation and not only a count (R234-2). The capability answer is a
+    // multi-paragraph listing, so those records pin its opening line with
+    // `expected_answer_contains` instead of inlining the whole page.
+    if (!record.expected_answer && !record.expected_answer_contains) {
+      problems.push(
+        `record ${id} records no answer; add expected_answer (or expected_answer_contains for a multi-line answer)`,
+      );
+    }
     if (seenIds.has(id)) problems.push(`duplicate case id ${id}`);
     seenIds.add(id);
 

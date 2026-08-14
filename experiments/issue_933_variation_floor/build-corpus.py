@@ -75,6 +75,26 @@ def quote(value):
     return f'"{escaped}"'
 
 
+def probed_answers():
+    """prompt -> the answer the engine gave it, from `probe-04.tsv`.
+
+    The probe (`examples/issue_933_variation_probe.rs`) prints multi-line
+    answers with the newlines replaced by " ⏎ ", so an answer carrying that
+    marker is one the corpus records by its opening line rather than verbatim.
+
+    `probe-03.tsv` is the same run against the engine before the
+    question-necessity parity fix; it is kept because it is the evidence that
+    sixteen Hindi and Chinese prompts answered with an empty string.
+    """
+    answers = {}
+    for line in (HERE / "probe-04.tsv").read_text(encoding="utf8").splitlines():
+        if not line.strip():
+            continue
+        prompt, _intent, _links, answer = line.split("\t")
+        answers[prompt] = answer
+    return answers
+
+
 def main():
     rows = []
     for line in (HERE / "candidates.tsv").read_text(encoding="utf8").splitlines():
@@ -83,6 +103,7 @@ def main():
         case, language, prompt = line.split("\t")
         rows.append((case, language, prompt))
 
+    answers = probed_answers()
     by_language = collections.defaultdict(list)
     counters = collections.Counter()
     total = 0
@@ -101,6 +122,18 @@ def main():
             f"  expected_intent {quote(intent)}",
             f"  expected_evidence {quote(evidence)}",
         ]
+        # The recorded answer is what makes the corpus documentation as well as
+        # a floor: a reader sees the exact text each wording produces (R234-2).
+        # The capability answer is a multi-paragraph markdown listing, so those
+        # records pin its opening line instead of inlining the whole page 21
+        # times.
+        answer = answers[prompt]
+        if " ⏎ " in answer:
+            lines.append(
+                f"  expected_answer_contains {quote(answer.split(' ⏎ ')[0])}"
+            )
+        else:
+            lines.append(f"  expected_answer {quote(answer)}")
         if case == "calculation":
             lines.append(
                 f"  expected_answer_contains {quote(CALCULATION_VALUES[prompt])}"

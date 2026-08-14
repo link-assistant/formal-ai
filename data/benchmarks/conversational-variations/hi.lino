@@ -7,6 +7,7 @@ conversational_variation_case_greeting_hi_01
   prompt "नमस्ते"
   expected_intent "greeting"
   expected_evidence "response:greeting"
+  expected_answer "नमस्ते! मैं आपकी क्या मदद कर सकता हूँ?"
 conversational_variation_case_greeting_hi_02
   record_type "conversational_variation_case"
   id "greeting_hi_02"
@@ -16,6 +17,7 @@ conversational_variation_case_greeting_hi_02
   prompt "नमस्कार"
   expected_intent "greeting"
   expected_evidence "response:greeting"
+  expected_answer "नमस्ते! मैं आपकी क्या मदद कर सकता हूँ?"
 conversational_variation_case_greeting_hi_03
   record_type "conversational_variation_case"
   id "greeting_hi_03"
@@ -25,6 +27,7 @@ conversational_variation_case_greeting_hi_03
   prompt "सलाम"
   expected_intent "greeting"
   expected_evidence "response:greeting"
+  expected_answer "नमस्ते! मैं आपकी क्या मदद कर सकता हूँ?"
 conversational_variation_case_greeting_hi_04
   record_type "conversational_variation_case"
   id "greeting_hi_04"
@@ -34,6 +37,7 @@ conversational_variation_case_greeting_hi_04
   prompt "हाय"
   expected_intent "greeting"
   expected_evidence "response:greeting"
+  expected_answer "नमस्ते! मैं आपकी क्या मदद कर सकता हूँ?"
 conversational_variation_case_greeting_hi_05
   record_type "conversational_variation_case"
   id "greeting_hi_05"
@@ -43,6 +47,7 @@ conversational_variation_case_greeting_hi_05
   prompt "राम राम"
   expected_intent "greeting"
   expected_evidence "response:greeting"
+  expected_answer "नमस्ते! मैं आपकी क्या मदद कर सकता हूँ?"
 conversational_variation_case_greeting_hi_06
   record_type "conversational_variation_case"
   id "greeting_hi_06"
@@ -52,6 +57,7 @@ conversational_variation_case_greeting_hi_06
   prompt "शुभ प्रभात"
   expected_intent "greeting"
   expected_evidence "response:greeting"
+  expected_answer "नमस्ते! मैं आपकी क्या मदद कर सकता हूँ?"
 conversational_variation_case_wellbeing_hi_01
   record_type "conversational_variation_case"
   id "wellbeing_hi_01"
@@ -61,6 +67,7 @@ conversational_variation_case_wellbeing_hi_01
   prompt "कैसे हो?"
   expected_intent "wellbeing"
   expected_evidence "response:wellbeing"
+  expected_answer "मैं बढ़िया हूँ, पूछने के लिए धन्यवाद! मैं मदद के लिए तैयार हूँ — आप क्या करना चाहेंगे?"
 conversational_variation_case_wellbeing_hi_02
   record_type "conversational_variation_case"
   id "wellbeing_hi_02"
@@ -70,6 +77,7 @@ conversational_variation_case_wellbeing_hi_02
   prompt "आप कैसे हैं?"
   expected_intent "wellbeing"
   expected_evidence "response:wellbeing"
+  expected_answer "मैं बढ़िया हूँ, पूछने के लिए धन्यवाद! मैं मदद के लिए तैयार हूँ — आप क्या करना चाहेंगे?"
 conversational_variation_case_wellbeing_hi_03
   record_type "conversational_variation_case"
   id "wellbeing_hi_03"
@@ -79,6 +87,7 @@ conversational_variation_case_wellbeing_hi_03
   prompt "तुम कैसे हो?"
   expected_intent "wellbeing"
   expected_evidence "response:wellbeing"
+  expected_answer "मैं बढ़िया हूँ, पूछने के लिए धन्यवाद! मैं मदद के लिए तैयार हूँ — आप क्या करना चाहेंगे?"
 conversational_variation_case_wellbeing_hi_04
   record_type "conversational_variation_case"
   id "wellbeing_hi_04"
@@ -88,6 +97,7 @@ conversational_variation_case_wellbeing_hi_04
   prompt "क्या हाल है?"
   expected_intent "wellbeing"
   expected_evidence "response:wellbeing"
+  expected_answer "मैं बढ़िया हूँ, पूछने के लिए धन्यवाद! मैं मदद के लिए तैयार हूँ — आप क्या करना चाहेंगे?"
 conversational_variation_case_wellbeing_hi_05
   record_type "conversational_variation_case"
   id "wellbeing_hi_05"
@@ -97,6 +107,7 @@ conversational_variation_case_wellbeing_hi_05
   prompt "आपका क्या हाल है?"
   expected_intent "wellbeing"
   expected_evidence "response:wellbeing"
+  expected_answer "मैं बढ़िया हूँ, पूछने के लिए धन्यवाद! मैं मदद के लिए तैयार हूँ — आप क्या करना चाहेंगे?"
 conversational_variation_case_wellbeing_hi_06
   record_type "conversational_variation_case"
   id "wellbeing_hi_06"
@@ -106,6 +117,7 @@ conversational_variation_case_wellbeing_hi_06
   prompt "सब कैसा चल रहा है?"
   expected_intent "wellbeing"
   expected_evidence "response:wellbeing"
+  expected_answer "मैं बढ़िया हूँ, पूछने के लिए धन्यवाद! मैं मदद के लिए तैयार हूँ — आप क्या करना चाहेंगे?"
 conversational_variation_case_farewell_hi_01
   record_type "conversational_variation_case"
   id "farewell_hi_01"
@@ -115,6 +127,7 @@ conversational_variation_case_farewell_hi_01
   prompt "अलविदा"
   expected_intent "farewell"
   expected_evidence "response:farewell"
+  expected_answer "अलविदा! जब भी ज़रूरत हो, वापस आएं।"
 conversational_variation_case_farewell_hi_02
   record_type "conversational_variation_case"
   id "farewell_hi_02"
@@ -124,6 +137,7 @@ conversational_variation_case_farewell_hi_02
   prompt "विदा"
   expected_intent "farewell"
   expected_evidence "response:farewell"
+  expected_answer "अलविदा! जब भी ज़रूरत हो, वापस आएं।"
 conversational_variation_case_farewell_hi_03
   record_type "conversational_variation_case"
   id "farewell_hi_03"
@@ -133,6 +147,7 @@ conversational_variation_case_farewell_hi_03
   prompt "बाय"
   expected_intent "farewell"
   expected_evidence "response:farewell"
+  expected_answer "अलविदा! जब भी ज़रूरत हो, वापस आएं।"
 conversational_variation_case_farewell_hi_04
   record_type "conversational_variation_case"
   id "farewell_hi_04"
@@ -142,6 +157,7 @@ conversational_variation_case_farewell_hi_04
   prompt "टाटा"
   expected_intent "farewell"
   expected_evidence "response:farewell"
+  expected_answer "अलविदा! जब भी ज़रूरत हो, वापस आएं।"
 conversational_variation_case_farewell_hi_05
   record_type "conversational_variation_case"
   id "farewell_hi_05"
@@ -151,6 +167,7 @@ conversational_variation_case_farewell_hi_05
   prompt "फिर मिलेंगे"
   expected_intent "farewell"
   expected_evidence "response:farewell"
+  expected_answer "अलविदा! जब भी ज़रूरत हो, वापस आएं।"
 conversational_variation_case_courtesy_response_hi_01
   record_type "conversational_variation_case"
   id "courtesy_response_hi_01"
@@ -160,6 +177,7 @@ conversational_variation_case_courtesy_response_hi_01
   prompt "धन्यवाद"
   expected_intent "courtesy_response"
   expected_evidence "response:courtesy_response"
+  expected_answer "यह सुनकर अच्छा लगा। अब आप क्या करना चाहेंगे?"
 conversational_variation_case_courtesy_response_hi_02
   record_type "conversational_variation_case"
   id "courtesy_response_hi_02"
@@ -169,6 +187,7 @@ conversational_variation_case_courtesy_response_hi_02
   prompt "शुक्रिया"
   expected_intent "courtesy_response"
   expected_evidence "response:courtesy_response"
+  expected_answer "यह सुनकर अच्छा लगा। अब आप क्या करना चाहेंगे?"
 conversational_variation_case_courtesy_response_hi_03
   record_type "conversational_variation_case"
   id "courtesy_response_hi_03"
@@ -178,6 +197,7 @@ conversational_variation_case_courtesy_response_hi_03
   prompt "मैं ठीक हूँ धन्यवाद"
   expected_intent "courtesy_response"
   expected_evidence "response:courtesy_response"
+  expected_answer "यह सुनकर अच्छा लगा। अब आप क्या करना चाहेंगे?"
 conversational_variation_case_courtesy_response_hi_04
   record_type "conversational_variation_case"
   id "courtesy_response_hi_04"
@@ -187,6 +207,7 @@ conversational_variation_case_courtesy_response_hi_04
   prompt "ठीक हूँ धन्यवाद"
   expected_intent "courtesy_response"
   expected_evidence "response:courtesy_response"
+  expected_answer "यह सुनकर अच्छा लगा। अब आप क्या करना चाहेंगे?"
 conversational_variation_case_courtesy_response_hi_05
   record_type "conversational_variation_case"
   id "courtesy_response_hi_05"
@@ -196,6 +217,7 @@ conversational_variation_case_courtesy_response_hi_05
   prompt "मैं अच्छा हूँ धन्यवाद"
   expected_intent "courtesy_response"
   expected_evidence "response:courtesy_response"
+  expected_answer "यह सुनकर अच्छा लगा। अब आप क्या करना चाहेंगे?"
 conversational_variation_case_identity_hi_01
   record_type "conversational_variation_case"
   id "identity_hi_01"
@@ -205,6 +227,7 @@ conversational_variation_case_identity_hi_01
   prompt "तुम कौन हो?"
   expected_intent "identity"
   expected_evidence "response:identity"
+  expected_answer "मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI प्रणाली, जो स्थानीय Links Notation नियमों और OpenAI-संगत API आकारों से उत्तर देती है। इस डेमो में मैं कोई न्यूरल इन्फेरेन्स नहीं करता।"
 conversational_variation_case_identity_hi_02
   record_type "conversational_variation_case"
   id "identity_hi_02"
@@ -214,6 +237,7 @@ conversational_variation_case_identity_hi_02
   prompt "आप कौन हैं?"
   expected_intent "identity"
   expected_evidence "response:identity"
+  expected_answer "मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI प्रणाली, जो स्थानीय Links Notation नियमों और OpenAI-संगत API आकारों से उत्तर देती है। इस डेमो में मैं कोई न्यूरल इन्फेरेन्स नहीं करता।"
 conversational_variation_case_identity_hi_03
   record_type "conversational_variation_case"
   id "identity_hi_03"
@@ -223,6 +247,7 @@ conversational_variation_case_identity_hi_03
   prompt "अपना परिचय दो"
   expected_intent "identity"
   expected_evidence "response:identity"
+  expected_answer "मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI प्रणाली, जो स्थानीय Links Notation नियमों और OpenAI-संगत API आकारों से उत्तर देती है। इस डेमो में मैं कोई न्यूरल इन्फेरेन्स नहीं करता।"
 conversational_variation_case_identity_hi_04
   record_type "conversational_variation_case"
   id "identity_hi_04"
@@ -232,6 +257,7 @@ conversational_variation_case_identity_hi_04
   prompt "अपने बारे में बताओ"
   expected_intent "identity"
   expected_evidence "response:identity"
+  expected_answer "मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI प्रणाली, जो स्थानीय Links Notation नियमों और OpenAI-संगत API आकारों से उत्तर देती है। इस डेमो में मैं कोई न्यूरल इन्फेरेन्स नहीं करता।"
 conversational_variation_case_identity_hi_05
   record_type "conversational_variation_case"
   id "identity_hi_05"
@@ -241,6 +267,7 @@ conversational_variation_case_identity_hi_05
   prompt "चलो परिचय करते हैं"
   expected_intent "identity"
   expected_evidence "response:identity"
+  expected_answer "मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI प्रणाली, जो स्थानीय Links Notation नियमों और OpenAI-संगत API आकारों से उत्तर देती है। इस डेमो में मैं कोई न्यूरल इन्फेरेन्स नहीं करता।"
 conversational_variation_case_identity_hi_06
   record_type "conversational_variation_case"
   id "identity_hi_06"
@@ -250,6 +277,7 @@ conversational_variation_case_identity_hi_06
   prompt "आइए परिचय करें"
   expected_intent "identity"
   expected_evidence "response:identity"
+  expected_answer "मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI प्रणाली, जो स्थानीय Links Notation नियमों और OpenAI-संगत API आकारों से उत्तर देती है। इस डेमो में मैं कोई न्यूरल इन्फेरेन्स नहीं करता।"
 conversational_variation_case_capabilities_hi_01
   record_type "conversational_variation_case"
   id "capabilities_hi_01"
@@ -259,6 +287,7 @@ conversational_variation_case_capabilities_hi_01
   prompt "आप क्या कर सकते हैं?"
   expected_intent "capabilities"
   expected_evidence "response:capabilities"
+  expected_answer_contains "मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI। मैं यह कर सकता हूँ:"
 conversational_variation_case_capabilities_hi_02
   record_type "conversational_variation_case"
   id "capabilities_hi_02"
@@ -268,6 +297,7 @@ conversational_variation_case_capabilities_hi_02
   prompt "तुम क्या कर सकते हो?"
   expected_intent "capabilities"
   expected_evidence "response:capabilities"
+  expected_answer_contains "मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI। मैं यह कर सकता हूँ:"
 conversational_variation_case_capabilities_hi_03
   record_type "conversational_variation_case"
   id "capabilities_hi_03"
@@ -277,6 +307,7 @@ conversational_variation_case_capabilities_hi_03
   prompt "क्या क्या कर सकते हो?"
   expected_intent "capabilities"
   expected_evidence "response:capabilities"
+  expected_answer_contains "मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI। मैं यह कर सकता हूँ:"
 conversational_variation_case_capabilities_hi_04
   record_type "conversational_variation_case"
   id "capabilities_hi_04"
@@ -286,6 +317,7 @@ conversational_variation_case_capabilities_hi_04
   prompt "आपकी क्षमताएं क्या हैं?"
   expected_intent "capabilities"
   expected_evidence "response:capabilities"
+  expected_answer_contains "मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI। मैं यह कर सकता हूँ:"
 conversational_variation_case_capabilities_hi_05
   record_type "conversational_variation_case"
   id "capabilities_hi_05"
@@ -295,6 +327,7 @@ conversational_variation_case_capabilities_hi_05
   prompt "आप कैसे मदद कर सकते हैं?"
   expected_intent "capabilities"
   expected_evidence "response:capabilities"
+  expected_answer_contains "मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI। मैं यह कर सकता हूँ:"
 conversational_variation_case_test_status_hi_01
   record_type "conversational_variation_case"
   id "test_status_hi_01"
@@ -304,6 +337,7 @@ conversational_variation_case_test_status_hi_01
   prompt "टेस्ट"
   expected_intent "test_status"
   expected_evidence "response:test_status"
+  expected_answer "परीक्षण सफल रहा। मैं यहाँ हूँ।"
 conversational_variation_case_test_status_hi_02
   record_type "conversational_variation_case"
   id "test_status_hi_02"
@@ -313,6 +347,7 @@ conversational_variation_case_test_status_hi_02
   prompt "परीक्षण"
   expected_intent "test_status"
   expected_evidence "response:test_status"
+  expected_answer "परीक्षण सफल रहा। मैं यहाँ हूँ।"
 conversational_variation_case_test_status_hi_03
   record_type "conversational_variation_case"
   id "test_status_hi_03"
@@ -322,6 +357,7 @@ conversational_variation_case_test_status_hi_03
   prompt "परीक्षण सफल रहा"
   expected_intent "test_status"
   expected_evidence "response:test_status"
+  expected_answer "परीक्षण सफल रहा। मैं यहाँ हूँ।"
 conversational_variation_case_test_status_hi_04
   record_type "conversational_variation_case"
   id "test_status_hi_04"
@@ -331,6 +367,7 @@ conversational_variation_case_test_status_hi_04
   prompt "मैं यहाँ हूँ"
   expected_intent "test_status"
   expected_evidence "response:test_status"
+  expected_answer "परीक्षण सफल रहा। मैं यहाँ हूँ।"
 conversational_variation_case_test_status_hi_05
   record_type "conversational_variation_case"
   id "test_status_hi_05"
@@ -340,6 +377,7 @@ conversational_variation_case_test_status_hi_05
   prompt "क्या आप वहाँ हैं?"
   expected_intent "test_status"
   expected_evidence "response:test_status"
+  expected_answer "परीक्षण सफल रहा। मैं यहाँ हूँ।"
 conversational_variation_case_assistant_free_time_hi_01
   record_type "conversational_variation_case"
   id "assistant_free_time_hi_01"
@@ -349,6 +387,7 @@ conversational_variation_case_assistant_free_time_hi_01
   prompt "खाली समय में क्या करते हो?"
   expected_intent "assistant_free_time"
   expected_evidence "response:assistant_free_time"
+  expected_answer "मेरे पास इंसानों जैसा खाली समय नहीं होता। संदेशों के बीच मैं निष्क्रिय रहता हूँ; संवाद सक्रिय हो तो मैं काम, नियम और व्याख्याओं में मदद करता हूँ।"
 conversational_variation_case_assistant_free_time_hi_02
   record_type "conversational_variation_case"
   id "assistant_free_time_hi_02"
@@ -358,6 +397,7 @@ conversational_variation_case_assistant_free_time_hi_02
   prompt "आप खाली समय में क्या करते हैं?"
   expected_intent "assistant_free_time"
   expected_evidence "response:assistant_free_time"
+  expected_answer "मेरे पास इंसानों जैसा खाली समय नहीं होता। संदेशों के बीच मैं निष्क्रिय रहता हूँ; संवाद सक्रिय हो तो मैं काम, नियम और व्याख्याओं में मदद करता हूँ।"
 conversational_variation_case_assistant_free_time_hi_03
   record_type "conversational_variation_case"
   id "assistant_free_time_hi_03"
@@ -367,6 +407,7 @@ conversational_variation_case_assistant_free_time_hi_03
   prompt "फुर्सत में क्या करते हो?"
   expected_intent "assistant_free_time"
   expected_evidence "response:assistant_free_time"
+  expected_answer "मेरे पास इंसानों जैसा खाली समय नहीं होता। संदेशों के बीच मैं निष्क्रिय रहता हूँ; संवाद सक्रिय हो तो मैं काम, नियम और व्याख्याओं में मदद करता हूँ।"
 conversational_variation_case_assistant_free_time_hi_04
   record_type "conversational_variation_case"
   id "assistant_free_time_hi_04"
@@ -376,6 +417,7 @@ conversational_variation_case_assistant_free_time_hi_04
   prompt "खाली वक्त में क्या करते हो?"
   expected_intent "assistant_free_time"
   expected_evidence "response:assistant_free_time"
+  expected_answer "मेरे पास इंसानों जैसा खाली समय नहीं होता। संदेशों के बीच मैं निष्क्रिय रहता हूँ; संवाद सक्रिय हो तो मैं काम, नियम और व्याख्याओं में मदद करता हूँ।"
 conversational_variation_case_assistant_free_time_hi_05
   record_type "conversational_variation_case"
   id "assistant_free_time_hi_05"
@@ -385,6 +427,7 @@ conversational_variation_case_assistant_free_time_hi_05
   prompt "जब आप काम नहीं करते तो क्या करते हैं?"
   expected_intent "assistant_free_time"
   expected_evidence "response:assistant_free_time"
+  expected_answer "मेरे पास इंसानों जैसा खाली समय नहीं होता। संदेशों के बीच मैं निष्क्रिय रहता हूँ; संवाद सक्रिय हो तो मैं काम, नियम और व्याख्याओं में मदद करता हूँ।"
 conversational_variation_case_assistant_name_hi_01
   record_type "conversational_variation_case"
   id "assistant_name_hi_01"
@@ -394,6 +437,7 @@ conversational_variation_case_assistant_name_hi_01
   prompt "आपका नाम क्या है?"
   expected_intent "assistant_name"
   expected_evidence "response:assistant_name"
+  expected_answer "मैं formal AI हूँ, और अभी मेरा कोई नाम नहीं है। लेकिन आप मुझे अपनी पसंद का नाम दे सकते हैं।"
 conversational_variation_case_assistant_name_hi_02
   record_type "conversational_variation_case"
   id "assistant_name_hi_02"
@@ -403,6 +447,7 @@ conversational_variation_case_assistant_name_hi_02
   prompt "तुम्हारा नाम क्या है?"
   expected_intent "assistant_name"
   expected_evidence "response:assistant_name"
+  expected_answer "मैं formal AI हूँ, और अभी मेरा कोई नाम नहीं है। लेकिन आप मुझे अपनी पसंद का नाम दे सकते हैं।"
 conversational_variation_case_assistant_name_hi_03
   record_type "conversational_variation_case"
   id "assistant_name_hi_03"
@@ -412,6 +457,7 @@ conversational_variation_case_assistant_name_hi_03
   prompt "क्या तुम्हारा कोई नाम है?"
   expected_intent "assistant_name"
   expected_evidence "response:assistant_name"
+  expected_answer "मैं formal AI हूँ, और अभी मेरा कोई नाम नहीं है। लेकिन आप मुझे अपनी पसंद का नाम दे सकते हैं।"
 conversational_variation_case_assistant_name_hi_04
   record_type "conversational_variation_case"
   id "assistant_name_hi_04"
@@ -421,6 +467,7 @@ conversational_variation_case_assistant_name_hi_04
   prompt "मैं तुम्हें क्या कहूँ?"
   expected_intent "assistant_name"
   expected_evidence "response:assistant_name"
+  expected_answer "मैं formal AI हूँ, और अभी मेरा कोई नाम नहीं है। लेकिन आप मुझे अपनी पसंद का नाम दे सकते हैं।"
 conversational_variation_case_assistant_name_hi_05
   record_type "conversational_variation_case"
   id "assistant_name_hi_05"
@@ -430,6 +477,7 @@ conversational_variation_case_assistant_name_hi_05
   prompt "अपना नाम बताओ"
   expected_intent "assistant_name"
   expected_evidence "response:assistant_name"
+  expected_answer "मैं formal AI हूँ, और अभी मेरा कोई नाम नहीं है। लेकिन आप मुझे अपनी पसंद का नाम दे सकते हैं।"
 conversational_variation_case_calculation_hi_01
   record_type "conversational_variation_case"
   id "calculation_hi_01"
@@ -439,6 +487,7 @@ conversational_variation_case_calculation_hi_01
   prompt "दो जोड़ दो"
   expected_intent "calculation"
   expected_evidence "response:calculation"
+  expected_answer "दो जोड़ दो = 4"
   expected_answer_contains "4"
 conversational_variation_case_calculation_hi_02
   record_type "conversational_variation_case"
@@ -449,6 +498,7 @@ conversational_variation_case_calculation_hi_02
   prompt "दो जमा दो"
   expected_intent "calculation"
   expected_evidence "response:calculation"
+  expected_answer "दो जमा दो = 4"
   expected_answer_contains "4"
 conversational_variation_case_calculation_hi_03
   record_type "conversational_variation_case"
@@ -459,6 +509,7 @@ conversational_variation_case_calculation_hi_03
   prompt "सात घटा चार"
   expected_intent "calculation"
   expected_evidence "response:calculation"
+  expected_answer "सात घटा चार = 3"
   expected_answer_contains "3"
 conversational_variation_case_calculation_hi_04
   record_type "conversational_variation_case"
@@ -469,6 +520,7 @@ conversational_variation_case_calculation_hi_04
   prompt "छह गुणा सात"
   expected_intent "calculation"
   expected_evidence "response:calculation"
+  expected_answer "छह गुणा सात = 42"
   expected_answer_contains "42"
 conversational_variation_case_calculation_hi_05
   record_type "conversational_variation_case"
@@ -479,4 +531,5 @@ conversational_variation_case_calculation_hi_05
   prompt "दस भाग दो"
   expected_intent "calculation"
   expected_evidence "response:calculation"
+  expected_answer "दस भाग दो = 5"
   expected_answer_contains "5"

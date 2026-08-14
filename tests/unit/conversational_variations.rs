@@ -129,7 +129,25 @@ fn conversational_variation_benchmark_routes_every_case() {
                 "{id}: prompt {prompt:?} should cite {expected_evidence:?}, got {:?}",
                 response.evidence_links
             );
-            for expected_answer in lino_fields(&record, "expected_answer_contains") {
+            // The corpus records the text each wording produces, so a reader
+            // sees the answer without running anything (R234-2). Most records
+            // pin it exactly; the capability answer is a multi-paragraph
+            // listing, so those records pin its opening line instead of
+            // inlining the whole page twenty-one times.
+            let exact = lino_fields(&record, "expected_answer");
+            let contained = lino_fields(&record, "expected_answer_contains");
+            assert!(
+                !exact.is_empty() || !contained.is_empty(),
+                "{id}: prompt {prompt:?} records no answer; it answers {:?}",
+                response.answer
+            );
+            for expected_answer in exact {
+                assert_eq!(
+                    response.answer, expected_answer,
+                    "{id}: prompt {prompt:?} should answer exactly {expected_answer:?}"
+                );
+            }
+            for expected_answer in contained {
                 assert!(
                     response.answer.contains(expected_answer),
                     "{id}: answer {:?} should contain {expected_answer:?}",
@@ -153,8 +171,7 @@ fn conversational_variation_benchmark_routes_every_case() {
         for language in &languages {
             let count = wordings
                 .get(&(case.to_string(), language.to_string()))
-                .map(BTreeSet::len)
-                .unwrap_or(0);
+                .map_or(0, BTreeSet::len);
             assert!(
                 count >= minimum,
                 "case {case} holds {count} {language} wording(s); the floor is {minimum}"
