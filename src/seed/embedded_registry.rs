@@ -41,6 +41,7 @@ pub const INTERFACE_CAPABILITIES_LINO: &str =
     include_str!("../../data/seed/interface-capabilities.lino");
 pub const LANGUAGE_DETECTION_LINO: &str = include_str!("../../data/seed/language-detection.lino");
 pub const LANGUAGES_LINO: &str = include_str!("../../data/seed/languages.lino");
+pub const LEARNED_METHODS_LINO: &str = include_str!("../../data/seed/learned-methods.lino");
 pub const LEARNED_REQUEST_OPENERS_LINO: &str =
     include_str!("../../data/seed/learned-request-openers.lino");
 pub const LEARNING_SOURCES_LINO: &str = include_str!("../../data/seed/learning-sources.lino");
@@ -210,6 +211,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/interface-capabilities.lino", INTERFACE_CAPABILITIES_LINO),
         ("data/seed/language-detection.lino", LANGUAGE_DETECTION_LINO),
         ("data/seed/languages.lino", LANGUAGES_LINO),
+        ("data/seed/learned-methods.lino", LEARNED_METHODS_LINO),
         ("data/seed/learned-request-openers.lino", LEARNED_REQUEST_OPENERS_LINO),
         ("data/seed/learning-sources.lino", LEARNING_SOURCES_LINO),
         ("data/seed/market-price-references.lino", MARKET_PRICE_REFERENCES_LINO),

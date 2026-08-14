@@ -93,6 +93,8 @@ seed_registry
   seed languages
     bundle true
     web true
+  seed learned-methods
+    bundle true
   seed learned-request-openers
     bundle true
     lexicon meaning
