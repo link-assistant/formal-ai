@@ -1904,20 +1904,6 @@ confirmation boundary remains the only adoption path. See PR
 | R922-5 | Preserve recursive recipe/source parity and the existing regression floor after adoption. | Learned records are separate from compiled handlers, so dispatch order is unchanged; focused parity plus the complete contributor check suite guard the floor. |
 | R922-6 | Preserve reproducible research, case-study, release, and real Agent CLI evidence. | Primary-source research, raw GitHub snapshots, reviewed proposal input, promotion outputs, independent exact-byte Agent CLI replay, traceability tests, and the minor changelog fragment live in the issue case study and PR #1005. |
 
-## Issue #924 Formal AI Self-Development Loop
-
-Issue [#924](https://github.com/link-assistant/formal-ai/issues/924) closes E77
-by making one real, reviewable Formal AI contribution a release-cycle
-condition. The contract, replay evidence, and requirement map live in
-[`../case-studies/issue-924/`](docs/case-studies/issue-924).
-
-| ID | Requirement | Status / Evidence |
-| --- | --- | --- |
-| R924-1 | Require at least one merged Formal AI-authored pull request in each release cycle. | `ensure_self_development_release` scans first-parent GitHub merge commits and rejects a release range with no matching session-backed PR. |
-| R924-2 | Preserve replayable evidence and prove the authored commit reached review unchanged. | The required session/evidence trailers are extended by `Formal-AI-Pull-Request`; the gate matches its number to the merge subject and requires the same commit object in the merged second-parent history. |
-| R924-3 | Record each contribution and continue reporting per-release and trailing self-hosting share. | New ledger rows carry repeated `self_authored_pull_request` values plus the existing changed-line measurements; release notes include the reviewed PR URLs and target. |
-| R924-4 | Make the release target a non-decreasing ratchet. | Each row records its target. The next target is the greater of the prior target and comparable trailing share; the pre-version release gate rejects a projection below it while the range can still be repaired. |
-| R924-5 | Keep E69/E74 dependencies and the ordinary review, CI, and promotion gates intact. | E69 supplies the write-effect floor, E74 supplies the two-way Hive Mind gate, and #924 grants no bypass. The real Agent CLI-authored leaf and raw session evidence are committed in the case study. |
 ## Issue #923 Symbolic-Kernel Coverage Growth
 
 Issue [#923](https://github.com/link-assistant/formal-ai/issues/923) implements
@@ -1933,6 +1919,21 @@ Rust examples. See `docs/case-studies/issue-923/`.
 | R923-3 | Keep neural inference out; license-check and feature-gate every new dependency. | The only new dependency is MIT-licensed `egg` 0.11.0, optional with default features disabled and exposed through `equality-saturation`; Datalog is implemented in-tree without another runtime dependency. |
 | R923-4 | Preserve the existing reasoning regression floor and make solver limits honest. | No pre-existing reasoning case is removed or relaxed; focused regressions assert proof, inference, and sound failure behavior. Equality search failure, unsafe Datalog rules, and Datalog resource exhaustion are inconclusive, never false disproofs. |
 | R923-5 | Preserve reproducible issue, PR, upstream, benchmark, and self-hosting evidence. | The issue and PR case studies retain GitHub snapshots, source/license research, exact commands and scores, and real Agent CLI session `ses_001f733ceffe5UboLW4JATfkoZ`. |
+
+## Issue #924 Formal AI Self-Development Loop
+
+Issue [#924](https://github.com/link-assistant/formal-ai/issues/924) closes E77
+by making one real, reviewable Formal AI contribution a release-cycle
+condition. The contract, replay evidence, and requirement map live in
+[`../case-studies/issue-924/`](docs/case-studies/issue-924).
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R924-1 | Require at least one merged Formal AI-authored pull request in each release cycle. | `ensure_self_development_release` scans first-parent GitHub merge commits and rejects a release range with no matching session-backed PR. |
+| R924-2 | Preserve replayable evidence and prove the authored commit reached review unchanged. | The required session/evidence trailers are extended by `Formal-AI-Pull-Request`; the gate matches its number to the merge subject and requires the same commit object in the merged second-parent history. |
+| R924-3 | Record each contribution and continue reporting per-release and trailing self-hosting share. | New ledger rows carry repeated `self_authored_pull_request` values plus the existing changed-line measurements; release notes include the reviewed PR URLs and target. |
+| R924-4 | Make the release target a non-decreasing ratchet. | Each row records its target. The next target is the greater of the prior target and comparable trailing share; the pre-version release gate rejects a projection below it while the range can still be repaired. |
+| R924-5 | Keep E69/E74 dependencies and the ordinary review, CI, and promotion gates intact. | E69 supplies the write-effect floor, E74 supplies the two-way Hive Mind gate, and #924 grants no bypass. The real Agent CLI-authored leaf and raw session evidence are committed in the case study. |
 
 # Issue 931: local WebSocket and WebRTC transports
 
