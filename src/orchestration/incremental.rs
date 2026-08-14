@@ -31,9 +31,11 @@ use super::dispatch::{
     candidate_run_config, safe_name, ComparisonEntry, ComparisonLedger, DispatchConfig,
     DispatchError, DispatchMode, DispatchReport,
 };
+use super::observe_orchestration_session;
 use super::replay::write_session;
 use super::runner::{run_agent, AgentSession};
 use super::workspace::{apply_changes, copy_workspace, WorkspaceChange};
+use crate::client_contract_learning::learn_client_contracts;
 use crate::links_format::push_lino_node;
 use crate::recursive_execution::{
     solve_recursively, RecursiveRun, RecursiveTask, TaskAttempt, TaskExecutor,
@@ -151,6 +153,7 @@ pub(super) fn dispatch_incrementally(
     if let Some(error) = agent.error {
         return Err(error);
     }
+    write_learning(output_dir, &agent.steps, &agent.sessions)?;
 
     let entries = agent
         .steps
@@ -190,6 +193,25 @@ pub(super) fn dispatch_incrementally(
         composed_changes: agent.changes,
         incremental: Some(trace),
     })
+}
+
+/// Feed the exact execution sessions into the existing proposal-only client
+/// contract learner. Incremental execution and auto-learning are one lifecycle:
+/// a run always preserves what it learned, while promotion remains a separate
+/// human decision enforced by the learner itself.
+fn write_learning(
+    output_dir: &Path,
+    steps: &[IncrementalStep],
+    sessions: &[AgentSession],
+) -> Result<(), DispatchError> {
+    let observations = steps
+        .iter()
+        .zip(sessions)
+        .map(|(step, session)| observe_orchestration_session(session, &step.session_file))
+        .collect::<Vec<_>>();
+    let learning = learn_client_contracts(&observations, &crate::seed::client_integrations());
+    std::fs::write(output_dir.join("learning.lino"), learning.links_notation())
+        .map_err(DispatchError::Io)
 }
 
 /// Goals of the irreducible tasks a run could not solve, in execution order.

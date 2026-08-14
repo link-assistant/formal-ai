@@ -526,6 +526,14 @@ const fn closing_quote(character: char) -> Option<char> {
         '„' => Some('“'),
         '‘' => Some('’'),
         '‹' => Some('›'),
+        // Chinese and Japanese quote with corner brackets, and every language
+        // in the seed shows an example question in parentheses. A question the
+        // answer quotes as an example is not a question the answer asks
+        // (issue #933).
+        '「' => Some('」'),
+        '『' => Some('』'),
+        '(' => Some(')'),
+        '（' => Some('）'),
         _ => None,
     }
 }
@@ -551,13 +559,13 @@ const fn is_equation_operator(character: char) -> bool {
 fn sentence_start(body: &str, question_index: usize) -> usize {
     let prefix = &body[..question_index];
     for (index, character) in prefix.char_indices().rev() {
-        if matches!(character, '.' | '!' | '?' | '。' | '！' | '？' | '\n') {
+        if is_sentence_terminator(character) {
             let boundary = index + character.len_utf8();
             if character == '\n'
                 || body[boundary..question_index]
                     .chars()
                     .next()
-                    .is_some_and(char::is_whitespace)
+                    .is_some_and(opens_next_sentence)
             {
                 return body[boundary..question_index]
                     .find(|value: char| !value.is_whitespace())
@@ -566,6 +574,34 @@ fn sentence_start(body: &str, question_index: usize) -> usize {
         }
     }
     0
+}
+
+/// Sentence terminators the seed writes, including the Devanagari danda that
+/// closes a Hindi sentence the way a full stop closes an English one.
+const fn is_sentence_terminator(character: char) -> bool {
+    matches!(
+        character,
+        '.' | '!' | '?' | '。' | '！' | '？' | '।' | '॥' | '\n'
+    )
+}
+
+/// A space after the stop opens the next sentence in scripts that space their
+/// words. Chinese and Japanese run their sentences together, so an ideograph
+/// opens one there as well: without this the statement in front of a question
+/// belongs to the question, and refusing the question deletes the statement
+/// too, which left whole Chinese answers empty (issue #933).
+const fn opens_next_sentence(next: char) -> bool {
+    next.is_whitespace() || is_ideographic(next)
+}
+
+const fn is_ideographic(character: char) -> bool {
+    matches!(character,
+        '\u{3040}'..='\u{30ff}'   // kana
+            | '\u{3400}'..='\u{4dbf}' // CJK unified ideographs extension A
+            | '\u{4e00}'..='\u{9fff}' // CJK unified ideographs
+            | '\u{ac00}'..='\u{d7af}' // hangul syllables
+            | '\u{f900}'..='\u{faff}' // CJK compatibility ideographs
+    )
 }
 
 fn looks_like_url(text: &str) -> bool {
