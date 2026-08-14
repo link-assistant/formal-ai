@@ -109,6 +109,8 @@ it may not or cannot fetch.
 | `math` | [openai/prm800k](https://github.com/openai/prm800k) 500-problem split | MIT | `7ecc794703b2877f63226f2477a49b34f9b25163` | JSONL over HTTPS (Git LFS media endpoint) |
 | `object_counting` | [google/BIG-bench](https://github.com/google/BIG-bench/tree/main/bigbench/benchmark_tasks/object_counting) | Apache-2.0 | `092b196c1f8f14a54bbc62f24759d43bde46dd3b` | BIG-bench `task.json` over HTTPS |
 | `coedit` | [grammarly/coedit](https://huggingface.co/datasets/grammarly/coedit) | Apache-2.0 | HF `e9a255c33ef910bc33a9d2b522653fa87521583e` | pinned validation JSONL |
+| `egg_math` | [egraphs-good/egg `tests/math.rs`](https://github.com/egraphs-good/egg/blob/2f31b28e3f9d78e02273b6c6d4201b5b0720b343/tests/math.rs) | MIT | `2f31b28e3f9d78e02273b6c6d4201b5b0720b343` | pinned Rust source; rewrite declarations mechanically adapted |
+| `ascent_transitive_closure` | [s-arash/ascent transitive graph closure](https://github.com/s-arash/ascent/blob/cf5e9a87525bb95268cf6680a59882264b0fe0de/ascent/examples/transitive_graph_closure.rs) | MIT | `cf5e9a87525bb95268cf6680a59882264b0fe0de` | pinned Rust source; asserted consequences mechanically adapted |
 | `swebench_lite` | [princeton-nlp/SWE-bench_Lite](https://huggingface.co/datasets/princeton-nlp/SWE-bench_Lite) dev split | MIT | HF `6ec7bb89b9342f664a54a6e0a6ea6501d3437cc2`; evaluator `f7bbbb2ccdf479001d6467c9e34af59e44a840f9` | pinned parquet; official container evaluator |
 | `editeval` | [facebookresearch/EditEval](https://github.com/facebookresearch/EditEval) | CC0-1.0 (harness code only) | `013cd20aa73be0016041201454b3fcd7c2250fb4` | **not fetched** — recorded as `benchmark_unavailable` |
 
@@ -120,6 +122,8 @@ License texts:
 - MATH / prm800k MIT: <https://raw.githubusercontent.com/openai/prm800k/7ecc794703b2877f63226f2477a49b34f9b25163/LICENSE>
 - BIG-bench Apache-2.0: <https://raw.githubusercontent.com/google/BIG-bench/092b196c1f8f14a54bbc62f24759d43bde46dd3b/LICENSE>
 - CoEdIT Apache-2.0: <https://huggingface.co/datasets/grammarly/coedit/blob/e9a255c33ef910bc33a9d2b522653fa87521583e/README.md>
+- egg MIT: <https://raw.githubusercontent.com/egraphs-good/egg/2f31b28e3f9d78e02273b6c6d4201b5b0720b343/LICENSE>
+- Ascent MIT: <https://raw.githubusercontent.com/s-arash/ascent/cf5e9a87525bb95268cf6680a59882264b0fe0de/LICENSE>
 - SWE-bench MIT: <https://raw.githubusercontent.com/SWE-bench/SWE-bench/f7bbbb2ccdf479001d6467c9e34af59e44a840f9/LICENSE>
 - EditEval CC0-1.0 (harness code only): <https://raw.githubusercontent.com/facebookresearch/EditEval/013cd20aa73be0016041201454b3fcd7c2250fb4/LICENSE>
 

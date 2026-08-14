@@ -579,6 +579,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-13.lino"
     record "response_coding_source_function_division_rust"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_d8425ec96fd72de7
+    source "data/seed/closure-generated-13.lino"
+    record "response_external_benchmark_proof_expected_event_en"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_61c1b7b35dfd98e7
     source "data/seed/closure-generated-13.lino"
     record "response_fact_check_statement_counterexample_ru"

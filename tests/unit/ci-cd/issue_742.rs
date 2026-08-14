@@ -29,7 +29,8 @@ fn docs_rs_profile_excludes_the_broken_lindera_build_script() {
         meta_language["optional"].as_bool() == Some(true),
         "the transitive lindera build script can only be avoided when meta-language is optional"
     );
-    assert!(manifest.contains("default = [\"doublets-native\", \"meta-language\"]"));
+    assert!(manifest
+        .contains("default = [\"doublets-native\", \"equality-saturation\", \"meta-language\"]"));
     assert!(manifest.contains("[package.metadata.docs.rs]"));
     assert!(manifest.contains("no-default-features = true"));
 }

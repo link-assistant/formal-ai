@@ -1717,7 +1717,7 @@ and opened-issue record live in `docs/case-studies/issue-914/`.
 | R914-4 | After the docs are in sync, create all the issues needed to fully implement the vision. | Implemented: epics E69-E77 drafted in `docs/case-studies/issue-914/proposed-issues.md` and opened on GitHub with URLs recorded there. |
 | R914-5 | The system learns the universal problem-solving algorithm, making it possible to truly solve translation between natural and formal languages. | Tracked: E70 owns general natural-formal translation; E75 owns method learning over the recipe interpreter and method registry. |
 | R914-6 | Keep a minimum core of algorithms plus a data seed whose metadata is rich enough to problem-solve the way people do. | Partial with enforcement from #918: the accepted four-part boundary, recursive handler ledger, metadata schema, complete coding-path floor, per-record gap data, and shrink-only CI ratchets are documented in `docs/case-studies/issue-918/`; 43 specialized handlers remain migration debt. |
-| R914-7 | No neural networks in reasoning; formal reasoning covers all existing test cases and much more. | Standing invariant (NON-GOALS.md) restated as a binding design rule for every epic; coverage growth with external benchmark scoring is E76. |
+| R914-7 | No neural networks in reasoning; formal reasoning covers all existing test cases and much more. | E76 is implemented by #923: bounded equality saturation and function-free Datalog inference add two symbolic capabilities, with 20/20 egg laws and 5/5 Ascent closure assertions recorded by the external harness. |
 | R914-8 | Learn to discover enough knowledge from the internet and other sources to solve all tasks, coding first. | Tracked: E72 owns the research-to-verified-procedure loop over the provenance-tracked source cache, building on #873 and #896. |
 | R914-9 | Coding first: once Formal AI can code, that skill speeds up its own development. | Tracked: E69 ratchets the #848 coding ladder (baseline 2 of 13 rungs, zero write effects) over the #902-#909 harness fixes; E77 routes real repository work through Formal AI per release. |
 | R914-10 | Work with unknowns, asking the user as few questions as possible and only requirement-level ones. | Tracked: E73 adds the question-necessity protocol over the existing clarify-vs-guess, unknown-reasoning, and #527 question-catalog mechanisms. |
@@ -1741,6 +1741,22 @@ architectural goal into audited data and shrink-only gates. See PR #986 and
 | R918-4 | Make concepts on the coding path satisfy the complete schema. | All 37 direct concepts in `meanings-coding-catalog.lino` and `meanings-coding-tasks.lino` carry all five fields; the auditor rejects any new gap. |
 | R918-5 | Represent all other metadata gaps as reviewable data, not an informal document. | Sixteen deterministic `seed-metadata-gaps-*.lino` shards record the exact missing fields for the other 3,447 concepts, and the auditor rejects stale, omitted, or invented rows. |
 | R918-6 | Preserve the existing regression floor and reproducible self-hosting evidence. | Focused Rust/script tests, default CI gates, raw issue/PR evidence, and one of five reviewed leaves produced by the real Formal AI/Agent CLI loop are preserved in the case study. |
+
+## Issue #923 Symbolic-Kernel Coverage Growth
+
+Issue [#923](https://github.com/link-assistant/formal-ai/issues/923) implements
+E76 from the issue #914 planning batch. PR
+[#1006](https://github.com/link-assistant/formal-ai/pull/1006) adds two bounded,
+non-neural reasoning capabilities and measures both against pinned upstream
+Rust examples. See `docs/case-studies/issue-923/`.
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R923-1 | Add at least two general symbolic reasoning capabilities beyond propositional SAT and linear arithmetic. | `decision/equality.rs` performs bounded e-graph saturation over generic symbolic S-expressions; `decision/rules.rs` evaluates bounded, function-free positive Datalog to its least fixed point. |
+| R923-2 | Exercise external reasoning cases and record honest scores under `data/benchmarks/`. | The #698 harness mechanically adapts the first 20 unconditional laws from pinned egg `tests/math.rs` and all five asserted consequences from Ascent's pinned transitive-closure example. The committed scores are 20/20 and 5/5. |
+| R923-3 | Keep neural inference out; license-check and feature-gate every new dependency. | The only new dependency is MIT-licensed `egg` 0.11.0, optional with default features disabled and exposed through `equality-saturation`; Datalog is implemented in-tree without another runtime dependency. |
+| R923-4 | Preserve the existing reasoning regression floor and make solver limits honest. | No pre-existing reasoning case is removed or relaxed; focused regressions assert proof, inference, and sound failure behavior. Equality search failure, unsafe Datalog rules, and Datalog resource exhaustion are inconclusive, never false disproofs. |
+| R923-5 | Preserve reproducible issue, PR, upstream, benchmark, and self-hosting evidence. | The issue and PR case studies retain GitHub snapshots, source/license research, exact commands and scores, and real Agent CLI session `ses_001f733ceffe5UboLW4JATfkoZ`. |
 
 ## Issue #891 Equation Corpus Ratchet
 

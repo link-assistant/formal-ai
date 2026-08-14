@@ -447,6 +447,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-11.lino"
     record "context_neural_network"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_18c54ac0b76e73fb
+    source "data/seed/closure-generated-11.lino"
+    record "external_benchmark_upstream_missing_end"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_2deeae2311b67b6b
     source "data/seed/closure-generated-11.lino"
     record "hardcoded"
@@ -506,6 +510,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_21004222f11fc0db
     source "data/seed/closure-generated-12.lino"
     record "pattern_concept_context_delimiter_zhong_zh"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_d7d19e5a1c98d0cb
+    source "data/seed/closure-generated-12.lino"
+    record "proof_datalog_conclusion"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_7e34aad46fc4abeb
     source "data/seed/closure-generated-12.lino"

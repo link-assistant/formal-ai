@@ -355,6 +355,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-09.lino"
     record "political-adjective"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_3dc137c00f9a4669
+    source "data/seed/closure-generated-09.lino"
+    record "response_external_benchmark_egg_law_prompt_en"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_d3e8132f38a7ce09
     source "data/seed/closure-generated-09.lino"
     record "response_general_plan_verification_mismatch_en"
@@ -615,6 +619,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-14.lino"
     record "response_agentic_action_find_desktop_ru"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_1c14a185ba0a8309
+    source "data/seed/closure-generated-14.lino"
+    record "response_external_benchmark_proof_status_detail_en"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_e17d9154a4722e39
     source "data/seed/closure-generated-14.lino"
     record "response_lexeme_import_surface_missing_ru"
@@ -642,6 +650,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_53b219b8aaefba09
     source "data/seed/closure-generated-15.lino"
     record "even"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_be72e0bb0312a479
+    source "data/seed/closure-generated-15.lino"
+    record "external_benchmark_ascent_prompt_prefix"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_55e9ef4f7c270859
     source "data/seed/closure-generated-15.lino"

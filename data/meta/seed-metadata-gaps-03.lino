@@ -111,6 +111,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-03.lino"
     record "issue_report_trace_heading"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_f9f1e2919f7f6cc3
+    source "data/seed/closure-generated-03.lino"
+    record "response_external_benchmark_proof_query_en"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_6f5faf991f159723
     source "data/seed/closure-generated-03.lino"
     record "response_lexeme_import_reparse_failed_ru"

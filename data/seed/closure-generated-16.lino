@@ -114,6 +114,11 @@ meanings
     lexeme en
       surface
         text "expandable"
+  external_benchmark_egg_law_prompt
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark egg law prompt"
   external_benchmark_learning_event
     defined-by intent
     lexeme en
@@ -124,6 +129,16 @@ meanings
     lexeme en
       surface
         text "external benchmark parquet utf8 error"
+  external_benchmark_proof_expected_event
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark proof expected event"
+  external_benchmark_rust_adapter_missing
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark rust adapter missing"
   external_benchmark_swe_exit_error
     defined-by intent
     lexeme en

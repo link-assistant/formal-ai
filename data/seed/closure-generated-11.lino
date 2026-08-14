@@ -154,6 +154,11 @@ meanings
     lexeme en
       surface
         text "external benchmark swe record error"
+  external_benchmark_upstream_missing_end
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark upstream missing end"
   fastapi
     defined-by word_surface
     lexeme en
@@ -649,6 +654,11 @@ meanings
     lexeme en
       surface
         text "response pattern sequence count en"
+  response_proof_datalog_counterexample_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response proof datalog counterexample en"
   response_search_fusion_read_more_en
     defined-by response_template
     lexeme en

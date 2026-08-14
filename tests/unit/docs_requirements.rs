@@ -660,7 +660,7 @@ fn issue_278_default_native_doublets_store_is_traceable() {
         "Cargo.toml",
         &cargo,
         &[
-            "default = [\"doublets-native\", \"meta-language\"]",
+            "default = [\"doublets-native\", \"equality-saturation\", \"meta-language\"]",
             "dep:doublets",
             "dep:mem",
         ],

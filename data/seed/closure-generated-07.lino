@@ -364,6 +364,11 @@ meanings
     lexeme en
       surface
         text "response draft comparison explanation hi"
+  response_external_benchmark_invalid_rust_string_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark invalid rust string en"
   response_external_benchmark_provenance_write_error_en
     defined-by response_template
     lexeme en

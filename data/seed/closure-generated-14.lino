@@ -399,11 +399,21 @@ meanings
     lexeme en
       surface
         text "response external benchmark not swe case en"
+  response_external_benchmark_proof_status_detail_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark proof status detail en"
   response_external_benchmark_swe_remove_report_error_en
     defined-by response_template
     lexeme en
       surface
         text "response external benchmark swe remove report error en"
+  response_external_benchmark_upstream_missing_end_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark upstream missing end en"
   response_fact_check_arithmetic_counterexample_hi
     defined-by response_template
     lexeme en

@@ -99,6 +99,11 @@ meanings
     lexeme en
       surface
         text "export memory"
+  external_benchmark_proof_query
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark proof query"
   external_benchmark_python_import
     defined-by intent
     lexeme en
@@ -289,6 +294,11 @@ meanings
     lexeme en
       surface
         text "periodic or manual"
+  proof_datalog_counterexample
+    defined-by intent
+    lexeme en
+      surface
+        text "proof datalog counterexample"
   re-run
     defined-by concept
     lexeme en

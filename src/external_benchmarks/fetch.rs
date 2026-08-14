@@ -56,6 +56,15 @@ pub fn fetch_records(
                 .ok_or_else(|| format!("{} task.json has no `examples` array", manifest.id))?;
             Ok(examples.iter().map(ToString::to_string).collect())
         }
+        SuiteSource::RustSource { url, cache_file } => {
+            let path = cache_root.join(cache_file);
+            if !cache_is_valid(&path, manifest, url) {
+                download(url, &path)?;
+                write_provenance(&path, manifest, url)?;
+            }
+            let text = read_cached(&path)?;
+            super::upstream_rust::adapt_records(manifest.id, &text)
+        }
         SuiteSource::ParquetRows { url, cache_file } => {
             let path = cache_root.join(cache_file);
             if !cache_is_valid(&path, manifest, url) {

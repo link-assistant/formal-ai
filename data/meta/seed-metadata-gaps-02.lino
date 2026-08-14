@@ -519,6 +519,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-13.lino"
     record "response_definition_followup_clarify_en"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_99b5e02b28bc3bf2
+    source "data/seed/closure-generated-13.lino"
+    record "response_proof_equality_conclusion_en"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_47fce7756ec34202
     source "data/seed/closure-generated-13.lino"
     record "task"

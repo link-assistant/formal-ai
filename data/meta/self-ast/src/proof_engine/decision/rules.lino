@@ -1,0 +1,35 @@
+self_ast_census
+  target src/proof_engine/decision/rules.rs
+  language rust
+  fidelity signature
+  byte_len 11121
+  line_count 373
+  content_id source_module_0b9952693cd648f6
+  symbol_count 26
+  symbols
+    const MAX_ROUNDS 9 9
+    const MAX_FACTS 10 10
+    const MAX_CLAUSES 11 11
+    const MAX_ARITY 12 12
+    const MAX_SUBSTITUTIONS 13 13
+    struct GroundAtom 16 19
+    function notation 22 24
+    struct Atom 28 31
+    struct Rule 34 37
+    struct Program 40 44
+    struct Evaluation 46 50
+    function has_rule_program 53 57
+    function attempt_rule_inference 59 113
+    function parse_program 115 145
+    function extract_block 147 167
+    function split_top_level 169 192
+    function parse_rule 194 216
+    function parse_atom 218 238
+    function valid_identifier 240 246
+    function valid_term 248 253
+    function atom_to_ground 255 263
+    function is_variable 265 271
+    function evaluate 273 306
+    function satisfying_substitutions 308 333
+    function unify 335 355
+    function instantiate 357 373
