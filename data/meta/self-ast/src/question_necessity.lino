@@ -2,9 +2,9 @@ self_ast_census
   target src/question_necessity.rs
   language rust
   fidelity signature
-  byte_len 22618
+  byte_len 22630
   line_count 713
-  content_id source_module_bd5a135f189b9ed2
+  content_id source_module_8cca3416893262e8
   symbol_count 42
   symbols
     const POLICY_SEED 14 14
