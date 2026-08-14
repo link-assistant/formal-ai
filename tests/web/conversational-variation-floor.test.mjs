@@ -97,6 +97,8 @@ test("normalization folds case, punctuation and spacing but keeps distinct words
   assert.equal(normalizeVariation("你好！"), normalizeVariation("你好"));
   assert.equal(normalizeVariation("до свидания"), normalizeVariation("досвидания"));
   assert.equal(normalizeVariation("Ａ１"), normalizeVariation("a1"));
+  // U+03D2 only becomes lowercaseable after NFKC maps it to Greek upsilon.
+  assert.equal(normalizeVariation("ϒ"), normalizeVariation("υ"));
   assert.notEqual(normalizeVariation("क"), normalizeVariation("का"));
   assert.notEqual(normalizeVariation("hello"), normalizeVariation("hey"));
 });

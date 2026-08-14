@@ -58,8 +58,8 @@ fn lino_field<'a>(record: &[&'a str], wanted: &str) -> &'a str {
 fn normalize_variation(prompt: &str) -> String {
     prompt
         .chars()
-        .flat_map(char::to_lowercase)
         .nfkc()
+        .flat_map(char::to_lowercase)
         .filter(|character| {
             let family = get_general_category(*character).abbreviation().as_bytes()[0];
             !matches!(family, b'P' | b'S' | b'Z') && !character.is_whitespace()
@@ -75,6 +75,9 @@ fn conversational_variation_normalization_matches_the_unicode_ci_convention() {
     // and Devanagari vowel marks.
     assert_eq!(normalize_variation("Ａ"), normalize_variation("A"));
     assert_eq!(normalize_variation("１"), normalize_variation("1"));
+    // U+03D2 has no lowercase mapping until NFKC turns it into Greek upsilon,
+    // so this pair pins the contract's NFKC-before-lowercase order.
+    assert_eq!(normalize_variation("ϒ"), normalize_variation("υ"));
     assert_ne!(normalize_variation("क"), normalize_variation("का"));
 }
 

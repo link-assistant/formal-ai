@@ -41,7 +41,7 @@ each of en, ru, hi and zh**, and a check must fail the build when one does not.
 | R933-11 | Beyond the issue: every recorded variation shows the exact answer it produces (R234-2), so the corpus is documentation and not just a count. | `expected_answer` on 207 of the 228 records, asserted verbatim by `tests/unit/conversational_variations.rs`; the 21 capability records pin the opening line of the multi-paragraph listing with `expected_answer_contains`. The gate rejects a record that shows neither. |
 | R933-12 | Beyond the issue: the recorded answers must be complete in every language — writing them down showed they were not. | The question-necessity parity fix in `src/question_necessity.rs` and `data/seed/question-necessity.lino`, with `tests/unit/issue_933_answer_parity.rs`. Section 5. |
 | R933-13 | Review follow-up: execute part of this work with Formal AI through the real Agent CLI, decomposing only after failure and learning from the same run. | Five captured Agent-CLI sessions show the compound attempt fail, three smaller tasks pass, and the parent pass on retry. The same five sessions feed `learning.lino`; its four contract proposals remain `awaiting_human_review`. Section 10. |
-| R933-14 | The Node and Rust counters must implement the declared normalization identically for compatibility characters and combining marks. | Both now apply NFKC + lowercase and discard Unicode P/S/Z categories and whitespace. Regression examples pin `Ａ == A`, `１ == 1`, and Hindi `क != का`. Section 11. |
+| R933-14 | The Node and Rust counters must implement the declared normalization identically for compatibility characters and combining marks. | Both now apply NFKC, then lowercase, and discard Unicode P/S/Z categories and whitespace. Regression examples pin `Ａ == A`, `１ == 1`, `ϒ == υ`, and Hindi `क != का`; the Greek pair also makes the operation order observable. Section 11. |
 
 ## 3. Root cause: nothing counted anything
 
@@ -374,6 +374,8 @@ onto `क`, while Node preserved the distinction.
 The Rust implementation now uses `unicode-normalization` for NFKC and
 `unicode-general-category` for the same P/S/Z category families as the Node
 regular expression. Letters, numbers and combining marks remain. Both suites
-pin the same three examples: `Ａ == A`, `１ == 1`, and `क != का`. This makes the
+pin the same four examples: `Ａ == A`, `１ == 1`, `ϒ == υ`, and `क != का`.
+The Greek pair only folds when NFKC runs before lowercase, so it pins the
+declared operation order as well as cross-runtime parity. This makes the
 Agent-authored normalization contract executable in both runtimes rather than
 merely descriptive.

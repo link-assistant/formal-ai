@@ -39,8 +39,8 @@ export const CORPUS_DIRECTORY = 'data/benchmarks';
 // a case cannot reach the floor by re-punctuating a single phrase five times.
 export function normalizeVariation(prompt) {
   return prompt
-    .toLowerCase()
     .normalize('NFKC')
+    .toLowerCase()
     .replace(/[\p{P}\p{S}\p{Z}\s]+/gu, '');
 }
 
