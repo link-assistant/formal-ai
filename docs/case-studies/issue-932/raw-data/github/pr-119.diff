@@ -1,0 +1,2743 @@
+diff --git a/Cargo.lock b/Cargo.lock
+index 201df96d8..820298daa 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -324,6 +324,7 @@ dependencies = [
+  "link-calculator",
+  "lino-arguments",
+  "lino-objects-codec",
++ "nom",
+  "regex",
+  "serde",
+  "serde_json",
+diff --git a/Cargo.toml b/Cargo.toml
+index a3ea12bc1..dad3660de 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -32,6 +32,7 @@ clap = { version = "4.4", features = ["derive", "env"] }
+ lino-arguments = "0.3"
+ lino-objects-codec = "0.2.1"
+ link-calculator = "0.16.0"
++nom = "8"
+ serde = { version = "1", features = ["derive"] }
+ serde_json = "1"
+ 
+diff --git a/README.md b/README.md
+index bc99caba0..207f3ce85 100644
+--- a/README.md
++++ b/README.md
+@@ -130,6 +130,7 @@ The engine normalizes a prompt, selects a deterministic symbolic rule, and retur
+ 
+ - greetings: `Hi`, `Hello`, `Hey`
+ - hello world requests for Rust, Python, JavaScript, TypeScript, Go, and C
++- open-ended software artifact requests such as extensions, plugins, bots, apps, and tools, first returning a Links Notation meaning record with a requirement graph, subtasks, delivery mode, approval gates, reasoning, and plan steps, then returning language-aware starter domain code after the user approves the plan
+ - calculator-parsable math, unit, currency, percentage, and datetime prompts through `link-calculator`, with the local arithmetic evaluator retained for unsupported word-operator and binary-modulo syntax
+ - URL requests such as `fetch example.com` and `Сделай запрос к google.com`; the browser demo tries CORS `fetch()` first and falls back to an embedded iframe
+ - explicit web-search prompts such as `Search the web for Nikola Tesla` and `Найди в интернете Никола Тесла`; the browser demo uses the CORS-enabled Wikipedia search endpoint and returns ranked links
+diff --git a/REQUIREMENTS.md b/REQUIREMENTS.md
+index 124406469..d288d8910 100644
+--- a/REQUIREMENTS.md
++++ b/REQUIREMENTS.md
+@@ -310,3 +310,24 @@ answer keeps language/source evidence visible.
+ | R153 | Deduplicate repeated facts deterministically instead of concatenating every source verbatim. | Implemented by sentence-level normalized fact keys in `merged_definition_facts` / `mergedDefinitionFacts`; the output is stable for the same seed data. |
+ | R154 | Cover cross-language definition fusion with 10-20 self-explanatory examples that assert specific behavior rather than matching full answer markdown. | Implemented by `tests/unit/specification/definition_fusion.rs` and the Playwright regression `merged Wikipedia definitions combine localized seed summaries` in `tests/e2e/tests/multilingual.spec.js`. |
+ | R155 | Let users choose whether plain definition prompts like `What is IIR?` automatically use definition fusion. | Implemented by `SolverConfig::definition_fusion_by_default`, `FORMAL_AI_DEFINITION_FUSION`, the CLI `--definition-fusion` option, and the browser settings control persisted through `formal-ai.preferences.v1`. |
++
++## Issue #80 Software Project Request Requirements
++
++Issue [#80](https://github.com/link-assistant/formal-ai/issues/80) reports that
++an Owlbear/D&D extension request for HP, Protection/Resistance mitigation, and
++cooldown tracking returned `intent: unknown`. The maintainer asked for a
++generalization across similar tasks instead of a memoized prompt answer, and
++then clarified that the first step must formalize the message into Links
++Notation meaning before deriving reasoning and plan steps.
++
++| ID | Requirement | Status |
++| --- | --- | --- |
++| R156 | Open-ended requests to build or write a software artifact (extension, plugin, bot, app, service, website, or tool) must route to a typed software-project intent instead of `unknown`. | Implemented by `try_software_project_request` in `src/solver_handlers/software_project.rs`, mirrored by `trySoftwareProjectRequest` in `src/web/formal_ai_worker.js`, and registered in `data/seed/intent-routing.lino`. |
++| R157 | The first response must formalize the user text into a reviewable Links Notation meaning record before producing project steps. | Implemented by the software-project meaning parser and `software_project_request` Links Notation block rendered in Rust and browser responses. |
++| R158 | The meaning record must model the task as a graph of requirements and subtasks, grouped by general categories instead of by one-off memorized prompts. | Implemented by requirement extraction, category assignment, subtask derivation, `Requirement model`, and `Subtasks` sections in Rust and browser responses. |
++| R159 | The response must derive deep reasoning steps and a detailed implementation plan from the meaning record, then wait for user approval before converting the plan into code, scripts, manual instructions, or execution steps. | Implemented by the plan response asking for `approve plan`, by the approval follow-up handler that uses the prior user request and assistant plan, and by explicit delivery-mode/approval-gate fields. |
++| R160 | Game-unit tracker requests must receive a concrete implementation starter for HP, Protection, Resistance, damage mitigation, and cooldown ticking only after the user approves the plan. | Implemented by the game-unit tracker approval branch, which emits a TypeScript `UnitState` core with `mitigateDamage`, `setStacks`, and `tickCooldowns`. |
++| R161 | Tests must show at least 20 full dialogue examples, including popular programming-task requests, so reviewers can inspect the text -> meaning -> reasoning -> plan -> approval flow. | Covered by the `software_project_dialogue_examples_formalize_plan_then_implement_after_approval` regression matrix and the dedicated software-project prompt matrix. |
++| R162 | The browser demo must handle the reported Owlbear prompt and generalized software-project prompts without showing the unknown-intent fallback. | Covered by `software_project_request_returns_reviewable_plan`, `software_project_variations_do_not_return_unknown`, the full dialogue matrix, and the Playwright regression `Owlbear extension request returns a software project plan`. |
++| R163 | Software-task formalization must expose user autonomy preferences: manual instructions, code generation, script generation, immediate execution intent, and approval gates for task formalization, requirements, plan, code, each step, and shell/WebVM commands. | Implemented by `delivery_mode` and `approval_gate` fields in the Links Notation meaning record plus matching reasoning and plan text. |
++| R164 | Approval follow-up must generate language-aware starter code where the prompt names a common programming language, and tests must assert the generated code surface. | Implemented by TypeScript, JavaScript, Python, and Rust starter cores selected from the formalized meaning and checked by unit regressions. |
+diff --git a/changelog.d/20260518_224500_issue_80_software_project_requests.md b/changelog.d/20260518_224500_issue_80_software_project_requests.md
+new file mode 100644
+index 000000000..ad0ec237d
+--- /dev/null
++++ b/changelog.d/20260518_224500_issue_80_software_project_requests.md
+@@ -0,0 +1,6 @@
++---
++bump: minor
++---
++
++### Added
++- Open-ended software artifact requests now route to a `software_project_plan` answer instead of `intent: unknown`, first rendering a Links Notation meaning record with a requirement graph, subtasks, delivery mode, approval gates, reasoning, and plan steps, then returning language-aware starter code after the user approves the plan (issue #80).
+diff --git a/data/seed/intent-routing.lino b/data/seed/intent-routing.lino
+index 5983d961d..cfaa7fcc4 100644
+--- a/data/seed/intent-routing.lino
++++ b/data/seed/intent-routing.lino
+@@ -85,6 +85,20 @@ intent_routing
+   intent "intent_algorithm"
+     slug "algorithm"
+     response_link "response:algorithm"
++  intent "intent_software_project_plan"
++    slug "software_project_plan"
++    response_link "response:software_project_plan"
++    combo "write+extension"
++    combo "build+extension"
++    combo "create+bot"
++    combo "implement+app"
++    combo "develop+tool"
++  intent "intent_software_project_implementation"
++    slug "software_project_implementation"
++    response_link "response:software_project_implementation"
++    phrase "approve plan"
++    phrase "generate code"
++    phrase "convert to code"
+   intent "intent_meta_explanation"
+     slug "meta_explanation"
+     response_link "response:meta_explanation"
+diff --git a/src/solver.rs b/src/solver.rs
+index 0fcf03003..45012942c 100644
+--- a/src/solver.rs
++++ b/src/solver.rs
+@@ -38,8 +38,9 @@ use crate::solver_handlers::{
+     try_definition_merge, try_definition_merge_by_default, try_execution_failure, try_fact_lookup,
+     try_http_fetch, try_ill_formed, try_javascript_execution, try_meta_explanation,
+     try_network_query, try_opinion_question, try_punctuation_only_prompt, try_roleplay_request,
+-    try_shell_refusal, try_source_conflict, try_source_refresh, try_summarization_request,
+-    try_translation, try_web_search, try_who_is_question, try_write_script,
++    try_shell_refusal, try_software_project_request, try_source_conflict, try_source_refresh,
++    try_summarization_request, try_translation, try_web_search, try_who_is_question,
++    try_write_script,
+ };
+ use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
+ use crate::solver_helpers::{
+@@ -333,6 +334,7 @@ const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
+     // hello-world snippet.
+     ("execution_failure", try_execution_failure),
+     ("write_script", try_write_script),
++    ("software_project", try_software_project_request),
+     ("algorithm", try_algorithm),
+     ("source_refresh", try_source_refresh),
+     ("source_conflict", try_source_conflict),
+diff --git a/src/solver_handlers/mod.rs b/src/solver_handlers/mod.rs
+index 2955785ca..b23682ad9 100644
+--- a/src/solver_handlers/mod.rs
++++ b/src/solver_handlers/mod.rs
+@@ -6,6 +6,8 @@
+ 
+ mod benchmark_prompts;
+ mod definition_merge;
++mod software_project;
++mod software_project_code;
+ mod user_intent;
+ mod web_requests;
+ 
+@@ -14,6 +16,7 @@ pub use benchmark_prompts::{
+     try_summarization_request,
+ };
+ pub use definition_merge::{try_definition_merge, try_definition_merge_by_default};
++pub use software_project::try_software_project_request;
+ pub use user_intent::{
+     try_capabilities, try_clarification, try_ill_formed, try_opinion_question,
+     try_punctuation_only_prompt, try_shell_refusal, try_who_is_question,
+diff --git a/src/solver_handlers/software_project.rs b/src/solver_handlers/software_project.rs
+new file mode 100644
+index 000000000..76b5431ef
+--- /dev/null
++++ b/src/solver_handlers/software_project.rs
+@@ -0,0 +1,852 @@
++//! Generic software-project request handler.
++//!
++//! The handler covers open-ended "build/write/create an extension/app/bot/tool"
++//! prompts. It first projects the surface text into a small Links Notation
++//! meaning record, then derives reasoning and plan steps from that meaning.
++//! Code is returned only after the user approves the plan in a later turn.
++
++use std::fmt::Write as _;
++
++use nom::{branch::alt, bytes::complete::tag, combinator::value, IResult, Parser};
++
++use crate::engine::{normalize_prompt, stable_id, SymbolicAnswer};
++use crate::event_log::EventLog;
++use crate::solver_handlers::finalize_simple;
++use crate::solver_helpers::{last_assistant_turn, last_user_turn};
++
++use super::software_project_code::implementation_code;
++
++const FEATURE_MARKERS: &[&str] = &[
++    "add",
++    "admin",
++    "audit",
++    "backup",
++    "calendar",
++    "chart",
++    "check",
++    "conflict",
++    "cooldown",
++    "csv",
++    "customer",
++    "damage",
++    "date",
++    "email",
++    "expense",
++    "export",
++    "file",
++    "filter",
++    "history",
++    "hp",
++    "import",
++    "invoice",
++    "log",
++    "maintenance",
++    "notification",
++    "payment",
++    "progress",
++    "protection",
++    "record",
++    "reminder",
++    "rename",
++    "report",
++    "resistance",
++    "retry",
++    "schedule",
++    "scrape",
++    "stack",
++    "status",
++    "sync",
++    "track",
++    "tracking",
++    "upload",
++    "validate",
++];
++
++#[derive(Debug, Clone, Copy, PartialEq, Eq)]
++struct ArtifactMatch {
++    surface: &'static str,
++    label: &'static str,
++}
++
++const ARTIFACT_MATCHES: &[(&str, &str)] = &[
++    ("browser extension", "browser extension"),
++    ("command line tool", "command-line tool"),
++    ("github action", "action"),
++    ("mobile app", "mobile app"),
++    ("cli tool", "command-line tool"),
++    ("web app", "web app"),
++    ("application", "application"),
++    ("extension", "extension"),
++    ("dashboard", "dashboard"),
++    ("scraper", "scraper"),
++    ("library", "library"),
++    ("website", "website"),
++    ("plugin", "plugin"),
++    ("add on", "extension"),
++    ("addon", "extension"),
++    ("service", "service"),
++    ("bot", "bot"),
++    ("app", "app"),
++    ("api", "API"),
++    ("sdk", "SDK"),
++    ("tool", "tool"),
++    ("mod", "mod"),
++];
++
++#[derive(Debug, Clone, PartialEq, Eq)]
++struct SoftwareProjectMeaning {
++    action: &'static str,
++    artifact_surface: &'static str,
++    artifact: &'static str,
++    target: String,
++    requirements: Vec<String>,
++    subtasks: Vec<SoftwareSubtask>,
++    delivery_mode: DeliveryMode,
++    implementation_language: &'static str,
++    approval_gates: Vec<&'static str>,
++    game_tracker: bool,
++}
++
++#[derive(Debug, Clone, PartialEq, Eq)]
++struct SoftwareSubtask {
++    requirement_id: String,
++    category: &'static str,
++    title: String,
++}
++
++#[derive(Debug, Clone, Copy, PartialEq, Eq)]
++enum DeliveryMode {
++    CodeGeneration,
++    ManualInstructions,
++    ScriptGeneration,
++    ImmediateExecution,
++}
++
++impl DeliveryMode {
++    const fn label(self) -> &'static str {
++        match self {
++            Self::CodeGeneration => "code_generation",
++            Self::ManualInstructions => "manual_instructions",
++            Self::ScriptGeneration => "script_generation",
++            Self::ImmediateExecution => "immediate_execution",
++        }
++    }
++}
++
++#[derive(Debug, Clone, Copy, PartialEq, Eq)]
++enum ApprovalState {
++    Proposed,
++    Approved,
++}
++
++impl ApprovalState {
++    const fn label(self) -> &'static str {
++        match self {
++            Self::Proposed => "proposed",
++            Self::Approved => "approved",
++        }
++    }
++}
++
++impl SoftwareProjectMeaning {
++    fn from_prompt(prompt: &str, normalized: &str) -> Option<Self> {
++        if normalized.contains("hello") && normalized.contains("world") {
++            return None;
++        }
++
++        let action = scan_parse(normalized, parse_action_word)?;
++        let artifact = scan_parse(normalized, parse_artifact_phrase)?;
++        let target = extract_target(prompt, artifact);
++        let requirements = extract_requirements(prompt);
++        let game_tracker = is_game_unit_tracker(normalized);
++        let subtasks = derive_subtasks(&requirements, game_tracker);
++        let delivery_mode = detect_delivery_mode(normalized);
++        let implementation_language = detect_implementation_language(normalized);
++        let approval_gates = approval_gates(normalized, delivery_mode);
++
++        Some(Self {
++            action,
++            artifact_surface: artifact.surface,
++            artifact: artifact.label,
++            target,
++            requirements,
++            subtasks,
++            delivery_mode,
++            implementation_language,
++            approval_gates,
++            game_tracker,
++        })
++    }
++
++    fn canonical_key(&self) -> String {
++        let mut key = format!(
++            "action={};artifact={};target={};game_tracker={}",
++            self.action, self.artifact, self.target, self.game_tracker
++        );
++        let _ = write!(
++            key,
++            ";delivery_mode={};implementation_language={}",
++            self.delivery_mode.label(),
++            self.implementation_language
++        );
++        for requirement in &self.requirements {
++            let _ = write!(key, ";requirement={requirement}");
++        }
++        for subtask in &self.subtasks {
++            let _ = write!(key, ";subtask={}:{}", subtask.category, subtask.title);
++        }
++        key
++    }
++
++    fn meaning_id(&self) -> String {
++        stable_id("software_project_request", &self.canonical_key())
++    }
++
++    const fn domain_label(&self) -> &'static str {
++        if self.game_tracker {
++            "tabletop_game_unit_tracker"
++        } else {
++            "software_project"
++        }
++    }
++
++    fn meaning_lino(&self, approval_state: ApprovalState) -> String {
++        let mut buffer = String::from("software_project_request");
++        let _ = writeln!(buffer, "\n  action {}", lino_string(self.action));
++        let _ = writeln!(buffer, "  artifact {}", lino_string(self.artifact));
++        let _ = writeln!(
++            buffer,
++            "  artifact_surface {}",
++            lino_string(self.artifact_surface)
++        );
++        let _ = writeln!(buffer, "  target {}", lino_string(&self.target));
++        let _ = writeln!(buffer, "  domain {}", lino_string(self.domain_label()));
++        let _ = writeln!(buffer, "  delivery_mode {}", self.delivery_mode.label());
++        let _ = writeln!(
++            buffer,
++            "  implementation_language {}",
++            lino_string(self.implementation_language)
++        );
++        let _ = writeln!(buffer, "  approval_state {}", approval_state.label());
++        let _ = writeln!(buffer, "  approval_required true");
++        for gate in &self.approval_gates {
++            let _ = writeln!(buffer, "  approval_gate {}", lino_string(gate));
++        }
++        for requirement in &self.requirements {
++            let _ = writeln!(buffer, "  requirement {}", lino_string(requirement));
++            let _ = writeln!(
++                buffer,
++                "  requirement_category {}",
++                lino_string(classify_requirement(requirement, self.game_tracker))
++            );
++        }
++        for subtask in &self.subtasks {
++            let _ = writeln!(
++                buffer,
++                "  subtask {}",
++                lino_string(&format!(
++                    "{} [{}] {}",
++                    subtask.requirement_id, subtask.category, subtask.title
++                ))
++            );
++        }
++        if self.game_tracker {
++            buffer.push_str("  state_model \"unit_state\"\n");
++            buffer.push_str("  command \"apply_damage\"\n");
++            buffer.push_str("  command \"set_stacks\"\n");
++            buffer.push_str("  command \"tick_cooldowns\"\n");
++            buffer.push_str("  validation \"damage_mitigation_floor_at_zero\"\n");
++            buffer.push_str("  validation \"cooldowns_decrement_without_negative_rounds\"\n");
++        } else {
++            buffer.push_str("  state_model \"project_records\"\n");
++            buffer.push_str("  command \"create_record\"\n");
++            buffer.push_str("  command \"update_record\"\n");
++            buffer.push_str("  command \"export_state\"\n");
++            buffer.push_str("  validation \"pure_state_transitions_before_host_api\"\n");
++        }
++        buffer
++    }
++}
++
++pub fn try_software_project_request(
++    prompt: &str,
++    normalized: &str,
++    log: &mut EventLog,
++) -> Option<SymbolicAnswer> {
++    let canonical = normalize_prompt(prompt);
++    let normalized = if canonical.is_empty() {
++        normalized
++    } else {
++        canonical.as_str()
++    };
++
++    if is_approval_prompt(normalized) {
++        if let Some(meaning) = prior_software_project_meaning(log) {
++            record_meaning(log, &meaning, ApprovalState::Approved);
++            let body = render_implementation_response(&meaning);
++            return Some(finalize_simple(
++                prompt,
++                log,
++                "software_project_implementation",
++                "response:software_project_implementation",
++                &body,
++                0.82,
++            ));
++        }
++    }
++
++    let meaning = SoftwareProjectMeaning::from_prompt(prompt, normalized)?;
++    record_meaning(log, &meaning, ApprovalState::Proposed);
++    let body = render_plan_response(&meaning);
++    Some(finalize_simple(
++        prompt,
++        log,
++        "software_project_plan",
++        "response:software_project_plan",
++        &body,
++        0.78,
++    ))
++}
++
++fn prior_software_project_meaning(log: &EventLog) -> Option<SoftwareProjectMeaning> {
++    let assistant = last_assistant_turn(log)?;
++    if !assistant.contains("software_project_request") || !assistant.contains("approve plan") {
++        return None;
++    }
++    let prior_prompt = last_user_turn(log)?;
++    let normalized = normalize_prompt(prior_prompt);
++    SoftwareProjectMeaning::from_prompt(prior_prompt, &normalized)
++}
++
++fn record_meaning(
++    log: &mut EventLog,
++    meaning: &SoftwareProjectMeaning,
++    approval_state: ApprovalState,
++) {
++    log.append("formalization", "text_to_links_notation".to_owned());
++    log.append("meaning", meaning.meaning_id());
++    log.append("software_project:action", meaning.action.to_owned());
++    log.append("software_project:artifact", meaning.artifact.to_owned());
++    log.append("software_project:target", meaning.target.clone());
++    log.append("software_project:domain", meaning.domain_label().to_owned());
++    log.append(
++        "software_project:delivery_mode",
++        meaning.delivery_mode.label().to_owned(),
++    );
++    log.append(
++        "software_project:implementation_language",
++        meaning.implementation_language.to_owned(),
++    );
++    log.append("approval_state", approval_state.label().to_owned());
++    for gate in &meaning.approval_gates {
++        log.append("approval_gate", (*gate).to_owned());
++    }
++    log.append(
++        "software_project:strategy",
++        if meaning.game_tracker {
++            "game_unit_tracker"
++        } else {
++            "bounded_project_plan"
++        }
++        .to_owned(),
++    );
++    for requirement in &meaning.requirements {
++        log.append("requirement", requirement.clone());
++        log.append(
++            "requirement_category",
++            classify_requirement(requirement, meaning.game_tracker).to_owned(),
++        );
++    }
++    for subtask in &meaning.subtasks {
++        log.append(
++            "software_project:subtask",
++            format!(
++                "{}:{}:{}",
++                subtask.requirement_id, subtask.category, subtask.title
++            ),
++        );
++    }
++    for step in reasoning_steps(meaning) {
++        log.append("reasoning_step", step);
++    }
++    for step in plan_steps(meaning) {
++        log.append("plan_step", step);
++    }
++}
++
++fn parse_action_word(input: &str) -> IResult<&str, &'static str> {
++    alt((
++        value("write", tag("write")),
++        value("build", tag("build")),
++        value("create", tag("create")),
++        value("implement", tag("implement")),
++        value("make", tag("make")),
++        value("develop", tag("develop")),
++        value("generate", tag("generate")),
++        value("design", tag("design")),
++        value("scaffold", tag("scaffold")),
++    ))
++    .parse(input)
++}
++
++fn parse_artifact_phrase(input: &str) -> IResult<&str, ArtifactMatch> {
++    for &(surface, label) in ARTIFACT_MATCHES {
++        if let Some(remaining) = input.strip_prefix(surface) {
++            return Ok((remaining, ArtifactMatch { surface, label }));
++        }
++    }
++    Err(nom::Err::Error(nom::error::Error::new(
++        input,
++        nom::error::ErrorKind::Tag,
++    )))
++}
++
++fn scan_parse<T: Copy>(normalized: &str, parser: fn(&str) -> IResult<&str, T>) -> Option<T> {
++    for (index, _) in normalized.char_indices() {
++        if !is_start_boundary(normalized, index) {
++            continue;
++        }
++        let input = &normalized[index..];
++        if let Ok((remaining, value)) = parser(input) {
++            let consumed = input.len().saturating_sub(remaining.len());
++            if consumed > 0 && is_end_boundary(normalized, index + consumed) {
++                return Some(value);
++            }
++        }
++    }
++    None
++}
++
++fn is_start_boundary(value: &str, index: usize) -> bool {
++    if index == 0 {
++        return true;
++    }
++    value[..index]
++        .chars()
++        .next_back()
++        .is_some_and(|character| !is_word_character(character))
++}
++
++fn is_end_boundary(value: &str, index: usize) -> bool {
++    if index >= value.len() {
++        return true;
++    }
++    value[index..]
++        .chars()
++        .next()
++        .is_some_and(|character| !is_word_character(character))
++}
++
++const fn is_word_character(character: char) -> bool {
++    character.is_ascii_alphanumeric()
++}
++
++fn extract_target(prompt: &str, artifact: ArtifactMatch) -> String {
++    let markers = [
++        format!("{} for ", artifact.surface),
++        format!("{} to ", artifact.surface),
++        format!("{} for ", artifact.label),
++        format!("{} to ", artifact.label),
++        String::from(" for "),
++        String::from(" to "),
++    ];
++    for marker in markers {
++        if let Some(target) = extract_after_marker(prompt, &marker) {
++            return target;
++        }
++    }
++    String::from("the requested environment")
++}
++
++fn extract_after_marker(prompt: &str, marker: &str) -> Option<String> {
++    let lower_prompt = prompt.to_lowercase();
++    let lower_marker = marker.to_lowercase();
++    let start = lower_prompt.find(&lower_marker)? + lower_marker.len();
++    let tail = &prompt[start..];
++    let stop = tail.find(['?', '.', ',', ';', '\n']).unwrap_or(tail.len());
++    let raw = tail[..stop]
++        .split(" with ")
++        .next()
++        .unwrap_or("")
++        .split(" that ")
++        .next()
++        .unwrap_or("")
++        .split(" and ")
++        .next()
++        .unwrap_or("")
++        .trim();
++    if raw.is_empty() {
++        return None;
++    }
++    Some(capitalize_short_target(raw))
++}
++
++fn capitalize_short_target(raw: &str) -> String {
++    let compact = raw.split_whitespace().take(5).collect::<Vec<_>>().join(" ");
++    if compact.chars().any(char::is_uppercase) {
++        return compact;
++    }
++    let mut chars = compact.chars();
++    let Some(first) = chars.next() else {
++        return compact;
++    };
++    format!("{}{}", first.to_uppercase(), chars.collect::<String>())
++}
++
++fn extract_requirements(prompt: &str) -> Vec<String> {
++    let mut requirements = Vec::new();
++    for segment in prompt.split(['.', ';', '\n']) {
++        for clause in segment.split(',') {
++            let cleaned = clause.trim();
++            if cleaned.is_empty() {
++                continue;
++            }
++            let lower = cleaned.to_lowercase();
++            if contains_any(&lower, FEATURE_MARKERS) {
++                push_unique(&mut requirements, sentence_case(cleaned));
++            }
++        }
++    }
++    if requirements.is_empty() {
++        requirements.push(String::from(
++            "Capture state, user commands, persistence, validation, and tests.",
++        ));
++    }
++    requirements
++}
++
++fn derive_subtasks(requirements: &[String], game_tracker: bool) -> Vec<SoftwareSubtask> {
++    requirements
++        .iter()
++        .enumerate()
++        .map(|(index, requirement)| {
++            let category = classify_requirement(requirement, game_tracker);
++            SoftwareSubtask {
++                requirement_id: format!("R{}", index + 1),
++                category,
++                title: subtask_title(category, requirement),
++            }
++        })
++        .collect()
++}
++
++fn classify_requirement(requirement: &str, game_tracker: bool) -> &'static str {
++    let lower = requirement.to_lowercase();
++    if game_tracker || contains_any(&lower, &["track", "hp", "status", "damage", "cooldown"]) {
++        "state_tracking"
++    } else if contains_any(
++        &lower,
++        &["import", "export", "csv", "backup", "report", "calendar"],
++    ) {
++        "data_exchange"
++    } else if contains_any(&lower, &["reminder", "notification", "schedule", "weekly"]) {
++        "automation"
++    } else if contains_any(&lower, &["validate", "check", "conflict", "audit"]) {
++        "validation"
++    } else if contains_any(&lower, &["api", "discord", "telegram", "github", "browser"]) {
++        "integration"
++    } else if contains_any(&lower, &["dashboard", "chart", "filter", "progress"]) {
++        "user_interface"
++    } else {
++        "project_behavior"
++    }
++}
++
++fn subtask_title(category: &str, requirement: &str) -> String {
++    match category {
++        "state_tracking" => format!("Model state fields and pure transitions for {requirement}"),
++        "data_exchange" => {
++            format!("Define parsers, serializers, and backup flow for {requirement}")
++        }
++        "automation" => {
++            format!("Schedule deterministic jobs and delivery checks for {requirement}")
++        }
++        "validation" => format!("Encode validation rules and failure messages for {requirement}"),
++        "integration" => format!("Isolate host API boundaries and mocks for {requirement}"),
++        "user_interface" => format!("Design focused views and state updates for {requirement}"),
++        _ => format!("Implement and test the smallest behavior for {requirement}"),
++    }
++}
++
++fn detect_delivery_mode(normalized: &str) -> DeliveryMode {
++    if contains_any(
++        normalized,
++        &["manual instruction", "instructions", "no code"],
++    ) {
++        DeliveryMode::ManualInstructions
++    } else if contains_any(normalized, &["execute", "run command", "run it", "webvm"]) {
++        DeliveryMode::ImmediateExecution
++    } else if contains_any(normalized, &["bash", "shell"])
++        || contains_word(normalized, &["script", "scripts", "commands"])
++    {
++        DeliveryMode::ScriptGeneration
++    } else {
++        DeliveryMode::CodeGeneration
++    }
++}
++
++fn detect_implementation_language(normalized: &str) -> &'static str {
++    if contains_any(normalized, &["python", "django", "fastapi"]) {
++        "python"
++    } else if contains_any(normalized, &["rust", "cargo"]) {
++        "rust"
++    } else if contains_any(normalized, &["javascript", "node.js", "node "]) {
++        "javascript"
++    } else {
++        "typescript"
++    }
++}
++
++fn approval_gates(normalized: &str, delivery_mode: DeliveryMode) -> Vec<&'static str> {
++    let mut gates = vec!["task_formalization", "implementation_plan"];
++    if normalized.contains("requirement") {
++        gates.push("requirements");
++    }
++    if contains_any(normalized, &["each step", "step by step"]) {
++        gates.push("each_step");
++    }
++    match delivery_mode {
++        DeliveryMode::CodeGeneration => gates.push("generated_code"),
++        DeliveryMode::ManualInstructions => gates.push("manual_instructions"),
++        DeliveryMode::ScriptGeneration | DeliveryMode::ImmediateExecution => {
++            gates.push("generated_script");
++            gates.push("bash_command");
++        }
++    }
++    if contains_any(normalized, &["shell", "bash", "command", "docker", "webvm"]) {
++        gates.push("bash_command");
++    }
++    gates.sort_unstable();
++    gates.dedup();
++    gates
++}
++
++fn contains_any(haystack: &str, needles: &[&str]) -> bool {
++    needles.iter().any(|needle| haystack.contains(needle))
++}
++
++fn contains_word(haystack: &str, words: &[&str]) -> bool {
++    haystack
++        .split_whitespace()
++        .any(|token| words.contains(&token))
++}
++
++fn push_unique(items: &mut Vec<String>, value: String) {
++    if !items.iter().any(|item| item == &value) {
++        items.push(value);
++    }
++}
++
++fn sentence_case(raw: &str) -> String {
++    let trimmed = raw.trim().trim_matches(['-', '*', ' ']);
++    let mut chars = trimmed.chars();
++    let Some(first) = chars.next() else {
++        return String::new();
++    };
++    format!("{}{}", first.to_uppercase(), chars.collect::<String>())
++}
++
++fn is_game_unit_tracker(normalized: &str) -> bool {
++    let domain = normalized.contains("dnd")
++        || normalized.contains("d&d")
++        || normalized.contains("wargame")
++        || normalized.contains("tabletop")
++        || normalized.contains("unit")
++        || normalized.contains("token")
++        || normalized.contains("owlbear");
++    let mechanics = normalized.contains("hp")
++        || normalized.contains("damage")
++        || normalized.contains("protection")
++        || normalized.contains("resistance")
++        || normalized.contains("cooldown");
++    domain && mechanics
++}
++
++fn is_approval_prompt(normalized: &str) -> bool {
++    let compact = normalized
++        .trim()
++        .trim_matches(|character: char| !character.is_ascii_alphanumeric())
++        .replace(['.', '!', ','], "");
++    matches!(
++        compact.as_str(),
++        "approve"
++            | "approved"
++            | "approve plan"
++            | "yes"
++            | "yes proceed"
++            | "proceed"
++            | "go ahead"
++            | "looks good"
++            | "do it"
++            | "start implementation"
++            | "generate code"
++            | "convert to code"
++    )
++}
++
++fn reasoning_steps(meaning: &SoftwareProjectMeaning) -> Vec<String> {
++    let mut steps = vec![
++        format!(
++            "Classify the impulse as a request to {} a {} instead of a fact lookup.",
++            meaning.action, meaning.artifact
++        ),
++        format!(
++            "Bind the target environment to {} and keep the first response reviewable.",
++            meaning.target
++        ),
++        format!(
++            "Extract {} requirement(s) into the meaning record before planning.",
++            meaning.requirements.len()
++        ),
++        format!(
++            "Decompose the requirement graph into {} implementation subtask(s) with category labels.",
++            meaning.subtasks.len()
++        ),
++        format!(
++            "Select delivery mode {} and approval gates: {}.",
++            meaning.delivery_mode.label(),
++            meaning.approval_gates.join(", ")
++        ),
++    ];
++    if meaning.game_tracker {
++        steps.push(String::from(
++            "Map HP, Protection, Resistance, damage, and cooldown phrases to a unit-state domain model.",
++        ));
++    }
++    steps.push(String::from(
++        "Ask for approval before producing code, scripts, manual instructions, or execution steps.",
++    ));
++    steps
++}
++
++fn plan_steps(meaning: &SoftwareProjectMeaning) -> Vec<String> {
++    let mut steps = Vec::new();
++    steps.push(String::from(
++        "Review the formalized task, requirement graph, approval gates, and delivery mode with the user.",
++    ));
++    if meaning.game_tracker {
++        steps.extend([
++            format!("Confirm the {} storage and selected-token API boundaries.", meaning.target),
++            String::from(
++                "Define `UnitState` with HP, max HP, Protection, Resistance, and cooldowns.",
++            ),
++            String::from(
++                "Write pure transition functions for damage mitigation, stack edits, and round ticks.",
++            ),
++            String::from(
++                "Add tests for zero damage, overkill damage, stack changes, and cooldown expiry.",
++            ),
++            String::from("Wire the tested core into the extension panel and host persistence."),
++        ]);
++        return steps;
++    }
++
++    steps.extend([
++        format!(
++            "Confirm the host API and data boundaries for {}.",
++            meaning.target
++        ),
++        String::from("Define the smallest serializable state records for the requirements."),
++    ]);
++    for subtask in &meaning.subtasks {
++        steps.push(format!(
++            "Implement {}: {}.",
++            subtask.category, subtask.title
++        ));
++    }
++    steps.push(format!(
++        "Generate a {} starter core plus language-appropriate repository initialization and checks.",
++        meaning.implementation_language
++    ));
++    steps.push(String::from(
++        "Keep shell, Docker, or WebVM commands behind the configured approval gates.",
++    ));
++    steps
++}
++
++fn render_plan_response(meaning: &SoftwareProjectMeaning) -> String {
++    let mut body = String::new();
++    let _ = writeln!(
++        body,
++        "Implementation plan pending approval for a {} targeting {}.",
++        meaning.artifact, meaning.target
++    );
++    body.push('\n');
++    body.push_str("Formalized meaning:\n```lino\n");
++    body.push_str(&meaning.meaning_lino(ApprovalState::Proposed));
++    body.push_str("```\n\nReasoning steps:\n");
++    for (index, step) in reasoning_steps(meaning).iter().enumerate() {
++        let _ = writeln!(body, "{}. {step}", index + 1);
++    }
++    body.push_str("\nRequirement model:\n");
++    for (index, requirement) in meaning.requirements.iter().enumerate() {
++        let category = classify_requirement(requirement, meaning.game_tracker);
++        let _ = writeln!(body, "{}. [{category}] {requirement}", index + 1);
++    }
++    body.push_str("\nSubtasks:\n");
++    for (index, subtask) in meaning.subtasks.iter().enumerate() {
++        let _ = writeln!(
++            body,
++            "{}. {} -> {}",
++            index + 1,
++            subtask.requirement_id,
++            subtask.title
++        );
++    }
++    body.push_str("\nApproval gates:\n");
++    for gate in &meaning.approval_gates {
++        let _ = writeln!(body, "- {gate}");
++    }
++    body.push_str("\nProposed plan:\n");
++    for (index, step) in plan_steps(meaning).iter().enumerate() {
++        let _ = writeln!(body, "{}. {step}", index + 1);
++    }
++    body.push_str(
++        "\nReply `approve plan` to generate the starter implementation, or describe what to change.",
++    );
++    body
++}
++
++fn render_implementation_response(meaning: &SoftwareProjectMeaning) -> String {
++    let mut body = String::new();
++    let _ = writeln!(
++        body,
++        "Approved implementation starter for a {} targeting {}.",
++        meaning.artifact, meaning.target
++    );
++    body.push('\n');
++    body.push_str("Formalized meaning:\n```lino\n");
++    body.push_str(&meaning.meaning_lino(ApprovalState::Approved));
++    body.push_str("```\n\nImplementation steps:\n");
++    for (index, step) in plan_steps(meaning).iter().enumerate() {
++        let _ = writeln!(body, "{}. {step}", index + 1);
++    }
++    let code = implementation_code(meaning.game_tracker, meaning.implementation_language);
++    let _ = write!(
++        body,
++        "\nStarter {} core:\n\n```{}\n",
++        code.label, code.fence
++    );
++    body.push_str(code.body);
++    body.push_str("\n```\n");
++    body.push_str("\nGenerated code checks:\n");
++    let _ = writeln!(
++        body,
++        "1. Initialize a {} project in an isolated workspace.",
++        code.label
++    );
++    let _ = writeln!(
++        body,
++        "2. Run the language-native syntax/type check before host integration."
++    );
++    body
++}
++
++fn lino_string(value: &str) -> String {
++    let escaped = value
++        .replace('\\', "\\\\")
++        .replace('"', "\\\"")
++        .replace('\n', "\\n")
++        .replace('\r', "\\r");
++    format!("\"{escaped}\"")
++}
+diff --git a/src/solver_handlers/software_project_code.rs b/src/solver_handlers/software_project_code.rs
+new file mode 100644
+index 000000000..afb80e2a6
+--- /dev/null
++++ b/src/solver_handlers/software_project_code.rs
+@@ -0,0 +1,224 @@
++pub(super) struct CodeArtifact {
++    pub(super) label: &'static str,
++    pub(super) fence: &'static str,
++    pub(super) body: &'static str,
++}
++
++pub(super) fn implementation_code(
++    game_tracker: bool,
++    implementation_language: &str,
++) -> CodeArtifact {
++    if game_tracker {
++        return CodeArtifact {
++            label: "TypeScript",
++            fence: "typescript",
++            body: GAME_TRACKER_TYPESCRIPT,
++        };
++    }
++    match implementation_language {
++        "python" => CodeArtifact {
++            label: "Python",
++            fence: "python",
++            body: GENERIC_PROJECT_PYTHON,
++        },
++        "rust" => CodeArtifact {
++            label: "Rust",
++            fence: "rust",
++            body: GENERIC_PROJECT_RUST,
++        },
++        "javascript" => CodeArtifact {
++            label: "JavaScript",
++            fence: "javascript",
++            body: GENERIC_PROJECT_JAVASCRIPT,
++        },
++        _ => CodeArtifact {
++            label: "TypeScript",
++            fence: "typescript",
++            body: GENERIC_PROJECT_TYPESCRIPT,
++        },
++    }
++}
++
++const GAME_TRACKER_TYPESCRIPT: &str = r"type Cooldown = {
++  name: string;
++  remainingRounds: number;
++};
++
++type UnitState = {
++  id: string;
++  name: string;
++  hp: number;
++  maxHp: number;
++  protection: number;
++  resistance: number;
++  cooldowns: Cooldown[];
++};
++
++type DamageResult = {
++  damageTaken: number;
++  prevented: number;
++  unit: UnitState;
++};
++
++export function mitigateDamage(unit: UnitState, rawDamage: number): DamageResult {
++  const prevented = Math.max(0, unit.protection) + Math.max(0, unit.resistance);
++  const damageTaken = Math.max(0, rawDamage - prevented);
++  return {
++    damageTaken,
++    prevented,
++    unit: { ...unit, hp: Math.max(0, unit.hp - damageTaken) },
++  };
++}
++
++export function setStacks(
++  unit: UnitState,
++  protection: number,
++  resistance: number,
++): UnitState {
++  return {
++    ...unit,
++    protection: Math.max(0, protection),
++    resistance: Math.max(0, resistance),
++  };
++}
++
++export function tickCooldowns(unit: UnitState): UnitState {
++  return {
++    ...unit,
++    cooldowns: unit.cooldowns
++      .map((cooldown) => ({
++        ...cooldown,
++        remainingRounds: Math.max(0, cooldown.remainingRounds - 1),
++      }))
++      .filter((cooldown) => cooldown.remainingRounds > 0),
++  };
++}";
++
++const GENERIC_PROJECT_TYPESCRIPT: &str = r#"type ProjectRecord = {
++  id: string;
++  title: string;
++  status: "open" | "done";
++  notes: string[];
++};
++
++type ProjectCommand =
++  | { type: "add"; id: string; title: string }
++  | { type: "note"; id: string; note: string }
++  | { type: "complete"; id: string };
++
++export function applyCommand(
++  records: ProjectRecord[],
++  command: ProjectCommand,
++): ProjectRecord[] {
++  switch (command.type) {
++    case "add":
++      return [
++        ...records,
++        { id: command.id, title: command.title, status: "open", notes: [] },
++      ];
++    case "note":
++      return records.map((record) =>
++        record.id === command.id
++          ? { ...record, notes: [...record.notes, command.note] }
++          : record,
++      );
++    case "complete":
++      return records.map((record) =>
++        record.id === command.id ? { ...record, status: "done" } : record,
++      );
++  }
++}"#;
++
++const GENERIC_PROJECT_JAVASCRIPT: &str = r#"export function applyCommand(records, command) {
++  switch (command.type) {
++    case "add":
++      return [...records, { id: command.id, title: command.title, status: "open", notes: [] }];
++    case "note":
++      return records.map((record) =>
++        record.id === command.id
++          ? { ...record, notes: [...record.notes, command.note] }
++          : record,
++      );
++    case "complete":
++      return records.map((record) =>
++        record.id === command.id ? { ...record, status: "done" } : record,
++      );
++    default:
++      throw new Error(`Unknown command: ${command.type}`);
++  }
++}"#;
++
++const GENERIC_PROJECT_PYTHON: &str = r#"from dataclasses import dataclass, field
++
++
++@dataclass(frozen=True)
++class ProjectRecord:
++    id: str
++    title: str
++    status: str = "open"
++    notes: tuple[str, ...] = field(default_factory=tuple)
++
++
++def apply_command(records: tuple[ProjectRecord, ...], command: dict) -> tuple[ProjectRecord, ...]:
++    if command["type"] == "add":
++        return (*records, ProjectRecord(id=command["id"], title=command["title"]))
++    if command["type"] == "note":
++        return tuple(
++            ProjectRecord(r.id, r.title, r.status, (*r.notes, command["note"]))
++            if r.id == command["id"] else r
++            for r in records
++        )
++    if command["type"] == "complete":
++        return tuple(
++            ProjectRecord(r.id, r.title, "done", r.notes)
++            if r.id == command["id"] else r
++            for r in records
++        )
++    raise ValueError(f"Unknown command: {command['type']}")
++"#;
++
++const GENERIC_PROJECT_RUST: &str = r"#[derive(Debug, Clone, PartialEq, Eq)]
++pub struct ProjectRecord {
++    pub id: String,
++    pub title: String,
++    pub status: ProjectStatus,
++    pub notes: Vec<String>,
++}
++
++#[derive(Debug, Clone, PartialEq, Eq)]
++pub enum ProjectStatus {
++    Open,
++    Done,
++}
++
++pub enum ProjectCommand {
++    Add { id: String, title: String },
++    Note { id: String, note: String },
++    Complete { id: String },
++}
++
++pub fn apply_command(mut records: Vec<ProjectRecord>, command: ProjectCommand) -> Vec<ProjectRecord> {
++    match command {
++        ProjectCommand::Add { id, title } => records.push(ProjectRecord {
++            id,
++            title,
++            status: ProjectStatus::Open,
++            notes: Vec::new(),
++        }),
++        ProjectCommand::Note { id, note } => {
++            for record in &mut records {
++                if record.id == id {
++                    record.notes.push(note.clone());
++                }
++            }
++        }
++        ProjectCommand::Complete { id } => {
++            for record in &mut records {
++                if record.id == id {
++                    record.status = ProjectStatus::Done;
++                }
++            }
++        }
++    }
++    records
++}";
+diff --git a/src/web/formal_ai_worker.js b/src/web/formal_ai_worker.js
+index 83e69f3a2..3db6cdfde 100644
+--- a/src/web/formal_ai_worker.js
++++ b/src/web/formal_ai_worker.js
+@@ -2177,6 +2177,814 @@ async function tryWikipediaLookup(prompt, language, preferences) {
+   };
+ }
+ 
++const SOFTWARE_ACTION_WORDS = [
++  "write",
++  "build",
++  "create",
++  "implement",
++  "make",
++  "develop",
++  "generate",
++  "design",
++  "scaffold",
++];
++
++const SOFTWARE_ARTIFACTS = [
++  ["browser extension", "browser extension"],
++  ["command line tool", "command-line tool"],
++  ["github action", "action"],
++  ["mobile app", "mobile app"],
++  ["cli tool", "command-line tool"],
++  ["web app", "web app"],
++  ["application", "application"],
++  ["extension", "extension"],
++  ["dashboard", "dashboard"],
++  ["scraper", "scraper"],
++  ["library", "library"],
++  ["website", "website"],
++  ["plugin", "plugin"],
++  ["add on", "extension"],
++  ["addon", "extension"],
++  ["service", "service"],
++  ["bot", "bot"],
++  ["app", "app"],
++  ["api", "API"],
++  ["sdk", "SDK"],
++  ["tool", "tool"],
++  ["mod", "mod"],
++];
++
++const SOFTWARE_FEATURE_MARKERS = [
++  "add",
++  "admin",
++  "audit",
++  "backup",
++  "calendar",
++  "chart",
++  "check",
++  "conflict",
++  "cooldown",
++  "csv",
++  "customer",
++  "damage",
++  "date",
++  "email",
++  "expense",
++  "export",
++  "file",
++  "filter",
++  "history",
++  "hp",
++  "import",
++  "invoice",
++  "log",
++  "maintenance",
++  "notification",
++  "payment",
++  "progress",
++  "protection",
++  "record",
++  "reminder",
++  "rename",
++  "report",
++  "resistance",
++  "retry",
++  "schedule",
++  "scrape",
++  "stack",
++  "status",
++  "sync",
++  "track",
++  "tracking",
++  "upload",
++  "validate",
++];
++
++const GAME_TRACKER_TYPESCRIPT = `type Cooldown = {
++  name: string;
++  remainingRounds: number;
++};
++
++type UnitState = {
++  id: string;
++  name: string;
++  hp: number;
++  maxHp: number;
++  protection: number;
++  resistance: number;
++  cooldowns: Cooldown[];
++};
++
++type DamageResult = {
++  damageTaken: number;
++  prevented: number;
++  unit: UnitState;
++};
++
++export function mitigateDamage(unit: UnitState, rawDamage: number): DamageResult {
++  const prevented = Math.max(0, unit.protection) + Math.max(0, unit.resistance);
++  const damageTaken = Math.max(0, rawDamage - prevented);
++  return {
++    damageTaken,
++    prevented,
++    unit: { ...unit, hp: Math.max(0, unit.hp - damageTaken) },
++  };
++}
++
++export function setStacks(
++  unit: UnitState,
++  protection: number,
++  resistance: number,
++): UnitState {
++  return {
++    ...unit,
++    protection: Math.max(0, protection),
++    resistance: Math.max(0, resistance),
++  };
++}
++
++export function tickCooldowns(unit: UnitState): UnitState {
++  return {
++    ...unit,
++    cooldowns: unit.cooldowns
++      .map((cooldown) => ({
++        ...cooldown,
++        remainingRounds: Math.max(0, cooldown.remainingRounds - 1),
++      }))
++      .filter((cooldown) => cooldown.remainingRounds > 0),
++  };
++}`;
++
++const GENERIC_PROJECT_TYPESCRIPT = `type ProjectRecord = {
++  id: string;
++  title: string;
++  status: "open" | "done";
++  notes: string[];
++};
++
++type ProjectCommand =
++  | { type: "add"; id: string; title: string }
++  | { type: "note"; id: string; note: string }
++  | { type: "complete"; id: string };
++
++export function applyCommand(
++  records: ProjectRecord[],
++  command: ProjectCommand,
++): ProjectRecord[] {
++  switch (command.type) {
++    case "add":
++      return [
++        ...records,
++        { id: command.id, title: command.title, status: "open", notes: [] },
++      ];
++    case "note":
++      return records.map((record) =>
++        record.id === command.id
++          ? { ...record, notes: [...record.notes, command.note] }
++          : record,
++      );
++    case "complete":
++      return records.map((record) =>
++        record.id === command.id ? { ...record, status: "done" } : record,
++      );
++  }
++}`;
++
++const GENERIC_PROJECT_JAVASCRIPT = `export function applyCommand(records, command) {
++  switch (command.type) {
++    case "add":
++      return [...records, { id: command.id, title: command.title, status: "open", notes: [] }];
++    case "note":
++      return records.map((record) =>
++        record.id === command.id
++          ? { ...record, notes: [...record.notes, command.note] }
++          : record,
++      );
++    case "complete":
++      return records.map((record) =>
++        record.id === command.id ? { ...record, status: "done" } : record,
++      );
++    default:
++      throw new Error("Unknown command: " + command.type);
++  }
++}`;
++
++const GENERIC_PROJECT_PYTHON = `from dataclasses import dataclass, field
++
++
++@dataclass(frozen=True)
++class ProjectRecord:
++    id: str
++    title: str
++    status: str = "open"
++    notes: tuple[str, ...] = field(default_factory=tuple)
++
++
++def apply_command(records: tuple[ProjectRecord, ...], command: dict) -> tuple[ProjectRecord, ...]:
++    if command["type"] == "add":
++        return (*records, ProjectRecord(id=command["id"], title=command["title"]))
++    if command["type"] == "note":
++        return tuple(
++            ProjectRecord(r.id, r.title, r.status, (*r.notes, command["note"]))
++            if r.id == command["id"] else r
++            for r in records
++        )
++    if command["type"] == "complete":
++        return tuple(
++            ProjectRecord(r.id, r.title, "done", r.notes)
++            if r.id == command["id"] else r
++            for r in records
++        )
++    raise ValueError(f"Unknown command: {command['type']}")
++`;
++
++const GENERIC_PROJECT_RUST = `#[derive(Debug, Clone, PartialEq, Eq)]
++pub struct ProjectRecord {
++    pub id: String,
++    pub title: String,
++    pub status: ProjectStatus,
++    pub notes: Vec<String>,
++}
++
++#[derive(Debug, Clone, PartialEq, Eq)]
++pub enum ProjectStatus {
++    Open,
++    Done,
++}
++
++pub enum ProjectCommand {
++    Add { id: String, title: String },
++    Note { id: String, note: String },
++    Complete { id: String },
++}
++
++pub fn apply_command(mut records: Vec<ProjectRecord>, command: ProjectCommand) -> Vec<ProjectRecord> {
++    match command {
++        ProjectCommand::Add { id, title } => records.push(ProjectRecord {
++            id,
++            title,
++            status: ProjectStatus::Open,
++            notes: Vec::new(),
++        }),
++        ProjectCommand::Note { id, note } => {
++            for record in &mut records {
++                if record.id == id {
++                    record.notes.push(note.clone());
++                }
++            }
++        }
++        ProjectCommand::Complete { id } => {
++            for record in &mut records {
++                if record.id == id {
++                    record.status = ProjectStatus::Done;
++                }
++            }
++        }
++    }
++    records
++}`;
++
++function containsAny(value, needles) {
++  return needles.some((needle) => value.includes(needle));
++}
++
++function containsToken(normalized, token) {
++  return String(normalized || "").split(/\s+/).includes(token);
++}
++
++function containsAnyToken(normalized, tokens) {
++  return String(normalized || "")
++    .split(/\s+/)
++    .some((token) => tokens.includes(token));
++}
++
++function detectSoftwareAction(normalized) {
++  return SOFTWARE_ACTION_WORDS.find((word) => containsToken(normalized, word)) || null;
++}
++
++function detectSoftwareArtifact(normalized) {
++  const match = SOFTWARE_ARTIFACTS.find(([needle]) => {
++    if (needle.includes(" ")) return normalized.includes(needle);
++    return containsToken(normalized, needle);
++  });
++  return match ? { surface: match[0], label: match[1] } : null;
++}
++
++function extractSoftwareTarget(prompt, artifact) {
++  const markers = [
++    `${artifact.surface} for `,
++    `${artifact.surface} to `,
++    `${artifact.label} for `,
++    `${artifact.label} to `,
++    " for ",
++    " to ",
++  ];
++  for (const marker of markers) {
++    const target = extractAfterMarker(prompt, marker);
++    if (target) return target;
++  }
++  return "the requested environment";
++}
++
++function extractAfterMarker(prompt, marker) {
++  const source = String(prompt || "");
++  const lower = source.toLowerCase();
++  const lowerMarker = marker.toLowerCase();
++  const start = lower.indexOf(lowerMarker);
++  if (start < 0) return null;
++  const tail = source.slice(start + lowerMarker.length);
++  const stopMatch = /[?.,;\n]/.exec(tail);
++  const stop = stopMatch ? stopMatch.index : tail.length;
++  const raw = tail
++    .slice(0, stop)
++    .split(" with ")[0]
++    .split(" that ")[0]
++    .split(" and ")[0]
++    .trim();
++  if (!raw) return null;
++  return capitalizeShortTarget(raw);
++}
++
++function capitalizeShortTarget(raw) {
++  const compact = String(raw || "").trim().split(/\s+/).slice(0, 5).join(" ");
++  if (!compact) return compact;
++  if (/[A-ZА-Я]/.test(compact)) return compact;
++  return compact.charAt(0).toUpperCase() + compact.slice(1);
++}
++
++function sentenceCase(raw) {
++  const trimmed = String(raw || "").trim().replace(/^[-* ]+|[-* ]+$/g, "");
++  if (!trimmed) return "";
++  return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
++}
++
++function extractSoftwareFeatures(prompt) {
++  const features = [];
++  const segments = String(prompt || "").split(/[.;\n]/);
++  for (const segment of segments) {
++    for (const clause of segment.split(",")) {
++      const cleaned = clause.trim();
++      if (!cleaned) continue;
++      const lower = cleaned.toLowerCase();
++      if (!containsAny(lower, SOFTWARE_FEATURE_MARKERS)) continue;
++      const feature = sentenceCase(cleaned);
++      if (feature && !features.includes(feature)) features.push(feature);
++    }
++  }
++  if (features.length === 0) {
++    features.push("Capture state, user commands, persistence, validation, and tests.");
++  }
++  return features;
++}
++
++function isGameUnitTracker(normalized) {
++  const domain =
++    normalized.includes("dnd") ||
++    normalized.includes("d d") ||
++    normalized.includes("wargame") ||
++    normalized.includes("tabletop") ||
++    normalized.includes("unit") ||
++    normalized.includes("token") ||
++    normalized.includes("owlbear");
++  const mechanics =
++    normalized.includes("hp") ||
++    normalized.includes("damage") ||
++    normalized.includes("protection") ||
++    normalized.includes("resistance") ||
++    normalized.includes("cooldown");
++  return domain && mechanics;
++}
++
++function classifySoftwareRequirement(requirement, gameTracker) {
++  const lower = String(requirement || "").toLowerCase();
++  if (gameTracker || containsAny(lower, ["track", "hp", "status", "damage", "cooldown"])) {
++    return "state_tracking";
++  }
++  if (containsAny(lower, ["import", "export", "csv", "backup", "report", "calendar"])) {
++    return "data_exchange";
++  }
++  if (containsAny(lower, ["reminder", "notification", "schedule", "weekly"])) {
++    return "automation";
++  }
++  if (containsAny(lower, ["validate", "check", "conflict", "audit"])) {
++    return "validation";
++  }
++  if (containsAny(lower, ["api", "discord", "telegram", "github", "browser"])) {
++    return "integration";
++  }
++  if (containsAny(lower, ["dashboard", "chart", "filter", "progress"])) {
++    return "user_interface";
++  }
++  return "project_behavior";
++}
++
++function softwareSubtaskTitle(category, requirement) {
++  switch (category) {
++    case "state_tracking":
++      return `Model state fields and pure transitions for ${requirement}`;
++    case "data_exchange":
++      return `Define parsers, serializers, and backup flow for ${requirement}`;
++    case "automation":
++      return `Schedule deterministic jobs and delivery checks for ${requirement}`;
++    case "validation":
++      return `Encode validation rules and failure messages for ${requirement}`;
++    case "integration":
++      return `Isolate host API boundaries and mocks for ${requirement}`;
++    case "user_interface":
++      return `Design focused views and state updates for ${requirement}`;
++    default:
++      return `Implement and test the smallest behavior for ${requirement}`;
++  }
++}
++
++function deriveSoftwareSubtasks(requirements, gameTracker) {
++  return requirements.map((requirement, index) => {
++    const category = classifySoftwareRequirement(requirement, gameTracker);
++    return {
++      requirementId: `R${index + 1}`,
++      category,
++      title: softwareSubtaskTitle(category, requirement),
++    };
++  });
++}
++
++function detectSoftwareDeliveryMode(normalized) {
++  if (containsAny(normalized, ["manual instruction", "instructions", "no code"])) {
++    return "manual_instructions";
++  }
++  if (containsAny(normalized, ["execute", "run command", "run it", "webvm"])) {
++    return "immediate_execution";
++  }
++  if (
++    containsAny(normalized, ["bash", "shell"]) ||
++    containsAnyToken(normalized, ["script", "scripts", "commands"])
++  ) {
++    return "script_generation";
++  }
++  return "code_generation";
++}
++
++function detectSoftwareImplementationLanguage(normalized) {
++  if (containsAny(normalized, ["python", "django", "fastapi"])) return "python";
++  if (containsAny(normalized, ["rust", "cargo"])) return "rust";
++  if (containsAny(normalized, ["javascript", "node.js", "node "])) return "javascript";
++  return "typescript";
++}
++
++function softwareApprovalGates(normalized, deliveryMode) {
++  const gates = ["task_formalization", "implementation_plan"];
++  if (normalized.includes("requirement")) gates.push("requirements");
++  if (containsAny(normalized, ["each step", "step by step"])) gates.push("each_step");
++  if (deliveryMode === "code_generation") {
++    gates.push("generated_code");
++  } else if (deliveryMode === "manual_instructions") {
++    gates.push("manual_instructions");
++  } else {
++    gates.push("generated_script");
++    gates.push("bash_command");
++  }
++  if (containsAny(normalized, ["shell", "bash", "command", "docker", "webvm"])) {
++    gates.push("bash_command");
++  }
++  return [...new Set(gates)].sort();
++}
++
++function softwareImplementationCode(meaning) {
++  if (meaning.gameTracker) {
++    return {
++      label: "TypeScript",
++      fence: "typescript",
++      body: GAME_TRACKER_TYPESCRIPT,
++    };
++  }
++  if (meaning.implementationLanguage === "python") {
++    return { label: "Python", fence: "python", body: GENERIC_PROJECT_PYTHON };
++  }
++  if (meaning.implementationLanguage === "rust") {
++    return { label: "Rust", fence: "rust", body: GENERIC_PROJECT_RUST };
++  }
++  if (meaning.implementationLanguage === "javascript") {
++    return { label: "JavaScript", fence: "javascript", body: GENERIC_PROJECT_JAVASCRIPT };
++  }
++  return { label: "TypeScript", fence: "typescript", body: GENERIC_PROJECT_TYPESCRIPT };
++}
++
++function softwareDomainLabel(meaning) {
++  return meaning.gameTracker ? "tabletop_game_unit_tracker" : "software_project";
++}
++
++function softwareApprovalLabel(approved) {
++  return approved ? "approved" : "proposed";
++}
++
++function linoString(value) {
++  return `"${String(value || "")
++    .replace(/\\/g, "\\\\")
++    .replace(/"/g, '\\"')
++    .replace(/\n/g, "\\n")
++    .replace(/\r/g, "\\r")}"`;
++}
++
++function softwareMeaningLino(meaning, approved) {
++  const lines = ["software_project_request"];
++  lines.push(`  action ${linoString(meaning.action)}`);
++  lines.push(`  artifact ${linoString(meaning.artifact)}`);
++  lines.push(`  artifact_surface ${linoString(meaning.artifactSurface)}`);
++  lines.push(`  target ${linoString(meaning.target)}`);
++  lines.push(`  domain ${linoString(softwareDomainLabel(meaning))}`);
++  lines.push(`  delivery_mode ${meaning.deliveryMode}`);
++  lines.push(`  implementation_language ${linoString(meaning.implementationLanguage)}`);
++  lines.push(`  approval_state ${softwareApprovalLabel(approved)}`);
++  lines.push("  approval_required true");
++  for (const gate of meaning.approvalGates) {
++    lines.push(`  approval_gate ${linoString(gate)}`);
++  }
++  for (const requirement of meaning.requirements) {
++    lines.push(`  requirement ${linoString(requirement)}`);
++    lines.push(
++      `  requirement_category ${linoString(
++        classifySoftwareRequirement(requirement, meaning.gameTracker),
++      )}`,
++    );
++  }
++  for (const subtask of meaning.subtasks) {
++    lines.push(
++      `  subtask ${linoString(
++        `${subtask.requirementId} [${subtask.category}] ${subtask.title}`,
++      )}`,
++    );
++  }
++  if (meaning.gameTracker) {
++    lines.push('  state_model "unit_state"');
++    lines.push('  command "apply_damage"');
++    lines.push('  command "set_stacks"');
++    lines.push('  command "tick_cooldowns"');
++    lines.push('  validation "damage_mitigation_floor_at_zero"');
++    lines.push('  validation "cooldowns_decrement_without_negative_rounds"');
++  } else {
++    lines.push('  state_model "project_records"');
++    lines.push('  command "create_record"');
++    lines.push('  command "update_record"');
++    lines.push('  command "export_state"');
++    lines.push('  validation "pure_state_transitions_before_host_api"');
++  }
++  return lines.join("\n") + "\n";
++}
++
++function softwareMeaningKey(meaning) {
++  return [
++    `action=${meaning.action}`,
++    `artifact=${meaning.artifact}`,
++    `target=${meaning.target}`,
++    `game_tracker=${meaning.gameTracker}`,
++    `delivery_mode=${meaning.deliveryMode}`,
++    `implementation_language=${meaning.implementationLanguage}`,
++    ...meaning.requirements.map((requirement) => `requirement=${requirement}`),
++    ...meaning.subtasks.map((subtask) => `subtask=${subtask.category}:${subtask.title}`),
++  ].join(";");
++}
++
++function stableSoftwareMeaningId(meaning) {
++  let hash = 0xcbf29ce484222325n;
++  const source = softwareMeaningKey(meaning);
++  for (let index = 0; index < source.length; index += 1) {
++    hash ^= BigInt(source.charCodeAt(index));
++    hash = BigInt.asUintN(64, hash * 0x100000001b3n);
++  }
++  return `software_project_request_${hash.toString(16)}`;
++}
++
++function formalizeSoftwareProjectRequest(prompt) {
++  const normalized = normalizePrompt(prompt);
++  if (normalized.includes("hello") && normalized.includes("world")) return null;
++  const action = detectSoftwareAction(normalized);
++  const artifact = detectSoftwareArtifact(normalized);
++  if (!action || !artifact) return null;
++  const requirements = extractSoftwareFeatures(prompt);
++  const gameTracker = isGameUnitTracker(normalized);
++  const deliveryMode = detectSoftwareDeliveryMode(normalized);
++  return {
++    action,
++    artifactSurface: artifact.surface,
++    artifact: artifact.label,
++    target: extractSoftwareTarget(prompt, artifact),
++    requirements,
++    subtasks: deriveSoftwareSubtasks(requirements, gameTracker),
++    deliveryMode,
++    implementationLanguage: detectSoftwareImplementationLanguage(normalized),
++    approvalGates: softwareApprovalGates(normalized, deliveryMode),
++    gameTracker,
++  };
++}
++
++function softwareReasoningSteps(meaning) {
++  const steps = [
++    `Classify the impulse as a request to ${meaning.action} a ${meaning.artifact} instead of a fact lookup.`,
++    `Bind the target environment to ${meaning.target} and keep the first response reviewable.`,
++    `Extract ${meaning.requirements.length} requirement(s) into the meaning record before planning.`,
++    `Decompose the requirement graph into ${meaning.subtasks.length} implementation subtask(s) with category labels.`,
++    `Select delivery mode ${meaning.deliveryMode} and approval gates: ${meaning.approvalGates.join(", ")}.`,
++  ];
++  if (meaning.gameTracker) {
++    steps.push(
++      "Map HP, Protection, Resistance, damage, and cooldown phrases to a unit-state domain model.",
++    );
++  }
++  steps.push("Ask for approval before producing code, scripts, manual instructions, or execution steps.");
++  return steps;
++}
++
++function softwarePlanSteps(meaning) {
++  const steps = [
++    "Review the formalized task, requirement graph, approval gates, and delivery mode with the user.",
++  ];
++  if (meaning.gameTracker) {
++    steps.push(
++      `Confirm the ${meaning.target} storage and selected-token API boundaries.`,
++      "Define `UnitState` with HP, max HP, Protection, Resistance, and cooldowns.",
++      "Write pure transition functions for damage mitigation, stack edits, and round ticks.",
++      "Add tests for zero damage, overkill damage, stack changes, and cooldown expiry.",
++      "Wire the tested core into the extension panel and host persistence.",
++    );
++    return steps;
++  }
++  steps.push(
++    `Confirm the host API and data boundaries for ${meaning.target}.`,
++    "Define the smallest serializable state records for the requirements.",
++  );
++  for (const subtask of meaning.subtasks) {
++    steps.push(`Implement ${subtask.category}: ${subtask.title}.`);
++  }
++  steps.push(
++    `Generate a ${meaning.implementationLanguage} starter core plus language-appropriate repository initialization and checks.`,
++  );
++  steps.push("Keep shell, Docker, or WebVM commands behind the configured approval gates.");
++  return steps;
++}
++
++function softwareEvidence(meaning, approved) {
++  const evidence = [
++    "formalization:text_to_links_notation",
++    `meaning:${stableSoftwareMeaningId(meaning)}`,
++    `software_project:action:${meaning.action}`,
++    `software_project:artifact:${meaning.artifact}`,
++    `software_project:target:${meaning.target}`,
++    `software_project:domain:${softwareDomainLabel(meaning)}`,
++    `software_project:delivery_mode:${meaning.deliveryMode}`,
++    `software_project:implementation_language:${meaning.implementationLanguage}`,
++    `approval_state:${softwareApprovalLabel(approved)}`,
++    `software_project:strategy:${meaning.gameTracker ? "game_unit_tracker" : "bounded_project_plan"}`,
++  ];
++  for (const gate of meaning.approvalGates) {
++    evidence.push(`approval_gate:${gate}`);
++  }
++  for (const requirement of meaning.requirements) {
++    evidence.push(`requirement:${requirement}`);
++    evidence.push(`requirement_category:${classifySoftwareRequirement(requirement, meaning.gameTracker)}`);
++  }
++  for (const subtask of meaning.subtasks) {
++    evidence.push(`software_project:subtask:${subtask.requirementId}:${subtask.category}:${subtask.title}`);
++  }
++  return evidence;
++}
++
++function renderSoftwareProjectPlan(meaning) {
++  const lines = [];
++  lines.push(
++    `Implementation plan pending approval for a ${meaning.artifact} targeting ${meaning.target}.`,
++  );
++  lines.push("");
++  lines.push("Formalized meaning:");
++  lines.push("```lino");
++  lines.push(softwareMeaningLino(meaning, false).trimEnd());
++  lines.push("```");
++  lines.push("");
++  lines.push("Reasoning steps:");
++  softwareReasoningSteps(meaning).forEach((step, index) => {
++    lines.push(`${index + 1}. ${step}`);
++  });
++  lines.push("");
++  lines.push("Requirement model:");
++  meaning.requirements.forEach((requirement, index) => {
++    const category = classifySoftwareRequirement(requirement, meaning.gameTracker);
++    lines.push(`${index + 1}. [${category}] ${requirement}`);
++  });
++  lines.push("");
++  lines.push("Subtasks:");
++  meaning.subtasks.forEach((subtask, index) => {
++    lines.push(`${index + 1}. ${subtask.requirementId} -> ${subtask.title}`);
++  });
++  lines.push("");
++  lines.push("Approval gates:");
++  meaning.approvalGates.forEach((gate) => {
++    lines.push(`- ${gate}`);
++  });
++  lines.push("");
++  lines.push("Proposed plan:");
++  softwarePlanSteps(meaning).forEach((step, index) => {
++    lines.push(`${index + 1}. ${step}`);
++  });
++  lines.push("");
++  lines.push(
++    "Reply `approve plan` to generate the starter implementation, or describe what to change.",
++  );
++  return lines.join("\n");
++}
++
++function renderSoftwareProjectImplementation(meaning) {
++  const lines = [];
++  lines.push(
++    `Approved implementation starter for a ${meaning.artifact} targeting ${meaning.target}.`,
++  );
++  lines.push("");
++  lines.push("Formalized meaning:");
++  lines.push("```lino");
++  lines.push(softwareMeaningLino(meaning, true).trimEnd());
++  lines.push("```");
++  lines.push("");
++  lines.push("Implementation steps:");
++  softwarePlanSteps(meaning).forEach((step, index) => {
++    lines.push(`${index + 1}. ${step}`);
++  });
++  lines.push("");
++  const code = softwareImplementationCode(meaning);
++  lines.push(`Starter ${code.label} core:`);
++  lines.push("");
++  lines.push(`\`\`\`${code.fence}`);
++  lines.push(code.body);
++  lines.push("```");
++  lines.push("");
++  lines.push("Generated code checks:");
++  lines.push(`1. Initialize a ${code.label} project in an isolated workspace.`);
++  lines.push("2. Run the language-native syntax/type check before host integration.");
++  return lines.join("\n");
++}
++
++function isSoftwareApprovalPrompt(normalized) {
++  const compact = String(normalized || "").replace(/[.!?,]/g, "").trim();
++  return [
++    "approve",
++    "approved",
++    "approve plan",
++    "yes",
++    "yes proceed",
++    "proceed",
++    "go ahead",
++    "looks good",
++    "do it",
++    "start implementation",
++    "generate code",
++    "convert to code",
++  ].includes(compact);
++}
++
++function lastHistoryTurn(history, role) {
++  if (!Array.isArray(history)) return null;
++  for (let index = history.length - 1; index >= 0; index -= 1) {
++    const turn = history[index];
++    if (turn && turn.role === role && turn.content) return String(turn.content);
++  }
++  return null;
++}
++
++function priorSoftwareProjectMeaning(history) {
++  const assistant = lastHistoryTurn(history, "assistant");
++  if (
++    !assistant ||
++    !assistant.includes("software_project_request") ||
++    !assistant.includes("approve plan")
++  ) {
++    return null;
++  }
++  const user = lastHistoryTurn(history, "user");
++  return user ? formalizeSoftwareProjectRequest(user) : null;
++}
++
++function trySoftwareProjectRequest(prompt, history = []) {
++  const normalized = normalizePrompt(prompt);
++  if (isSoftwareApprovalPrompt(normalized)) {
++    const prior = priorSoftwareProjectMeaning(history);
++    if (prior) {
++      return {
++        intent: "software_project_implementation",
++        content: renderSoftwareProjectImplementation(prior),
++        confidence: 0.82,
++        evidence: softwareEvidence(prior, true),
++      };
++    }
++  }
++
++  const meaning = formalizeSoftwareProjectRequest(prompt);
++  if (!meaning) return null;
++
++  return {
++    intent: "software_project_plan",
++    content: renderSoftwareProjectPlan(meaning),
++    confidence: 0.78,
++    evidence: softwareEvidence(meaning, false),
++  };
++}
++
+ function tryJavaScriptExecution(prompt) {
+   const program = extractJavaScriptProgram(prompt);
+   if (program === null) return null;
+@@ -2837,6 +3645,7 @@ async function solve(prompt, history, prefs) {
+     },
+     { name: "tryConceptLookup", run: () => tryConceptLookup(prompt) },
+     { name: "tryHelloWorld", run: () => tryHelloWorld(prompt) },
++    { name: "trySoftwareProjectRequest", run: () => trySoftwareProjectRequest(prompt, history) },
+   ];
+   for (const handler of syncHandlers) {
+     const hit = handler.run();
+diff --git a/tests/e2e/tests/demo.spec.js b/tests/e2e/tests/demo.spec.js
+index ccac840dc..b469de873 100644
+--- a/tests/e2e/tests/demo.spec.js
++++ b/tests/e2e/tests/demo.spec.js
+@@ -231,6 +231,38 @@ test.describe('formal-ai demo UI', () => {
+     await expect(lastMsg).not.toContainText(UNKNOWN_ANSWER_MARKER);
+   });
+ 
++  test('Owlbear extension request returns a software project plan', async ({ page }) => {
++    await switchToManualMode(page);
++
++    const prompt = [
++      'Hi, can you write for me extension for owlbear?',
++      'I am currently leading some dnd games and i want to try wargame.',
++      'I need extensions that can track hp for different units,',
++      'track Protection and Resistance stacks, reduce damage count on those stats,',
++      'and track cooldown of some abilities.',
++    ].join(' ');
++
++    const input = page.locator('[data-testid="chat-composer-input"]');
++    await input.fill(prompt);
++
++    const messages = page.locator('[data-testid="chat-message"]');
++    const initialCount = await messages.count();
++
++    await page.locator('[data-testid="chat-composer-submit"]').click();
++    await expect(messages).toHaveCount(initialCount + 2, { timeout: 15_000 });
++
++    const lastMsg = messages.last();
++    await expect(lastMsg).toHaveClass(/assistant/);
++    await expect(lastMsg).toContainText('Implementation plan');
++    await expect(lastMsg).toContainText('Formalized meaning');
++    await expect(lastMsg).toContainText('software_project_request');
++    await expect(lastMsg).toContainText('Owlbear');
++    await expect(lastMsg).toContainText('Protection');
++    await expect(lastMsg).toContainText('approve plan');
++    await expect(lastMsg).not.toContainText('mitigateDamage');
++    await expect(lastMsg).not.toContainText(UNKNOWN_ANSWER_MARKER);
++  });
++
+   test('unknown prompts include a prefilled missing-rule issue link', async ({ page }) => {
+     await switchToManualMode(page);
+ 
+diff --git a/tests/unit/docs_requirements.rs b/tests/unit/docs_requirements.rs
+index 9918bb861..8a2cf2b3e 100644
+--- a/tests/unit/docs_requirements.rs
++++ b/tests/unit/docs_requirements.rs
+@@ -338,6 +338,62 @@ fn issue_63_definition_fusion_requirements_and_examples_are_traceable() {
+     );
+ }
+ 
++#[test]
++fn issue_80_software_project_dialogue_requirements_are_traceable() {
++    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
++
++    let requirements = read(root.join("REQUIREMENTS.md"));
++    assert_contains_all(
++        "REQUIREMENTS.md",
++        &requirements,
++        &[
++            "Issue #80 Software Project Request Requirements",
++            "| R156 ",
++            "| R157 ",
++            "| R158 ",
++            "| R159 ",
++            "| R160 ",
++            "| R161 ",
++            "| R162 ",
++            "| R163 ",
++            "| R164 ",
++            "at least 20 full dialogue examples",
++            "Requirement model",
++            "delivery_mode",
++            "approval_gate",
++            "software_project_dialogue_examples_formalize_plan_then_implement_after_approval",
++        ],
++    );
++
++    let readme = read(root.join("README.md"));
++    assert_contains_all(
++        "README.md",
++        &readme,
++        &[
++            "software artifact requests",
++            "Links Notation meaning record",
++            "requirement graph",
++            "approval gates",
++            "language-aware starter domain code",
++            "after the user approves the plan",
++        ],
++    );
++
++    let changelog =
++        read(root.join("changelog.d/20260518_224500_issue_80_software_project_requests.md"));
++    assert_contains_all(
++        "changelog.d/20260518_224500_issue_80_software_project_requests.md",
++        &changelog,
++        &[
++            "software_project_plan",
++            "Links Notation meaning record",
++            "requirement graph",
++            "approval gates",
++            "language-aware starter code after the user approves",
++        ],
++    );
++}
++
+ #[test]
+ fn repository_text_avoids_deferred_labels_requested_by_issue_103() {
+     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+diff --git a/tests/unit/formal_ai.rs b/tests/unit/formal_ai.rs
+index b349b4115..38fa2252b 100644
+--- a/tests/unit/formal_ai.rs
++++ b/tests/unit/formal_ai.rs
+@@ -2,8 +2,8 @@ use formal_ai::{
+     create_chat_completion, create_response, environment_directory, environment_records,
+     export_memory_bundle, export_memory_links_notation, extract_memory_from_bundle,
+     handle_api_request, knowledge_links_notation, merged_bundle, parse_bundle,
+-    parse_memory_links_notation, seed_files, ChatCompletionRequest, ChatMessage, FormalAiEngine,
+-    MemoryEvent, MemoryStore, MessageContent, ResponsesRequest,
++    parse_memory_links_notation, seed_files, ChatCompletionRequest, ChatMessage, ConversationTurn,
++    FormalAiEngine, MemoryEvent, MemoryStore, MessageContent, ResponsesRequest, UniversalSolver,
+ };
+ use lino_objects_codec::format::parse_indented;
+ 
+@@ -258,6 +258,89 @@ fn write_script_prompt_returns_code_block() {
+     }
+ }
+ 
++#[test]
++fn software_project_request_returns_reviewable_plan() {
++    // Regression test for issue #80: a request to write an Owlbear/D&D
++    // extension was returning intent: unknown. This must be handled as a
++    // generalized software project request, not a memoized prompt.
++    let prompt = concat!(
++        "Hi, can you write for me extension for owlbear? I am currently leading some dnd games ",
++        "and i want to try wargame. So, i need extensions that can track hp for different units, ",
++        "that can track Protection and Resistance stacks on unit an will reduce damage count on ",
++        "those stats. Also this extension should track cooldown of some abilities"
++    );
++
++    let response = FormalAiEngine.answer(prompt);
++
++    assert_eq!(
++        response.intent, "software_project_plan",
++        "answer was: {}",
++        response.answer
++    );
++    assert_ne!(response.intent, "unknown");
++    assert!(response.answer.contains("Formalized meaning"));
++    assert!(response.answer.contains("software_project_request"));
++    assert!(response.answer.contains("Reasoning steps"));
++    assert!(response.answer.contains("Proposed plan"));
++    assert!(response.answer.contains("Owlbear"));
++    assert!(response.answer.contains("HP"));
++    assert!(response.answer.contains("Protection"));
++    assert!(response.answer.contains("Resistance"));
++    assert!(response.answer.contains("cooldown"));
++    assert!(response.answer.contains("approve plan"));
++    assert!(!response.answer.contains("mitigateDamage"));
++}
++
++#[test]
++fn software_project_variations_do_not_return_unknown() {
++    let prompts = [
++        "Build a browser extension that tracks reading progress and exports CSV",
++        "Create a Discord bot for scheduling game sessions with reminders",
++        "Implement a small web app for tracking invoices and overdue payments",
++        "Make a plugin for a tabletop map that tracks unit status effects",
++        "Develop a command line tool for renaming photos by date",
++    ];
++
++    for prompt in prompts {
++        let response = FormalAiEngine.answer(prompt);
++        assert_eq!(
++            response.intent, "software_project_plan",
++            "prompt: {prompt:?} answer: {}",
++            response.answer
++        );
++        assert_ne!(response.intent, "unknown");
++        assert!(response.answer.contains("Formalized meaning"));
++        assert!(response.answer.contains("Proposed plan"));
++        assert!(response.answer.contains("approve plan"));
++    }
++}
++
++#[test]
++fn software_project_approval_returns_implementation_starter() {
++    let solver = UniversalSolver::default();
++    let prompt = concat!(
++        "Write an extension for Owlbear that tracks HP, Protection, Resistance, ",
++        "damage mitigation, and cooldowns for tabletop units"
++    );
++
++    let plan = solver.solve(prompt);
++    let history = [
++        ConversationTurn::user(prompt),
++        ConversationTurn::assistant(plan.answer),
++    ];
++    let implementation = solver.solve_with_history("approve plan", &history);
++
++    assert_eq!(
++        implementation.intent, "software_project_implementation",
++        "answer was: {}",
++        implementation.answer
++    );
++    assert!(implementation.answer.contains("approval_state approved"));
++    assert!(implementation.answer.contains("```typescript"));
++    assert!(implementation.answer.contains("mitigateDamage"));
++    assert!(implementation.answer.contains("tickCooldowns"));
++}
++
+ #[test]
+ fn chat_completion_has_openai_compatible_shape() {
+     let request = ChatCompletionRequest {
+diff --git a/tests/unit/mod.rs b/tests/unit/mod.rs
+index 608445a62..e7066e5ed 100644
+--- a/tests/unit/mod.rs
++++ b/tests/unit/mod.rs
+@@ -2,6 +2,7 @@ mod data_files;
+ mod docs_requirements;
+ mod formal_ai;
+ mod github_logs;
++mod software_project;
+ mod specification;
+ 
+ #[path = "ci-cd/mod.rs"]
+diff --git a/tests/unit/software_project.rs b/tests/unit/software_project.rs
+new file mode 100644
+index 000000000..71f40c995
+--- /dev/null
++++ b/tests/unit/software_project.rs
+@@ -0,0 +1,448 @@
++use formal_ai::{ConversationTurn, FormalAiEngine, UniversalSolver};
++
++#[test]
++fn software_project_plan_exposes_requirement_graph_and_approval_preferences() {
++    let prompt = concat!(
++        "Build a Python CLI tool for importing CSV tasks, validating due dates, ",
++        "and exporting weekly reports. I prefer manual instructions and approval ",
++        "for each step before any shell command."
++    );
++
++    let response = FormalAiEngine.answer(prompt);
++
++    assert_eq!(response.intent, "software_project_plan");
++    assert!(response.answer.contains("software_project_request"));
++    assert!(response.answer.contains("Requirement model"));
++    assert!(response.answer.contains("Subtasks"));
++    assert!(response.answer.contains("requirement_category"));
++    assert!(response
++        .answer
++        .contains("delivery_mode manual_instructions"));
++    assert!(response
++        .answer
++        .contains("implementation_language \"python\""));
++    assert!(response.answer.contains("approval_gate \"each_step\""));
++    assert!(response.answer.contains("approval_gate \"bash_command\""));
++    assert!(response.answer.contains("requirement graph"));
++    assert!(!response.answer.contains("```python"));
++}
++
++#[test]
++fn popular_software_project_prompts_use_the_general_formalization_path() {
++    let examples = [
++        ("Create a React web app for tracking workout progress with charts", "web app"),
++        ("Build a Python REST API for invoices with overdue payment reminders", "API"),
++        ("Write a Rust command line tool for renaming photos by date", "command-line tool"),
++        ("Make a GitHub Action that checks changelog fragments on pull requests", "action"),
++        ("Develop a browser extension that saves highlighted quotes and exports CSV", "browser extension"),
++        ("Create a Discord bot for scheduling game sessions and sending reminders", "bot"),
++        ("Scaffold a Node.js service that imports customer records and validates email addresses", "service"),
++        ("Generate a mobile app for habit tracking with notifications and backups", "mobile app"),
++        ("Design a website for event schedules that exports calendar data", "website"),
++        ("Implement a plugin for a design tool that syncs assets and reports conflicts", "plugin"),
++        ("Build a TypeScript SDK for uploading files with retries and progress events", "SDK"),
++        ("Create a Telegram bot that tracks expenses and sends weekly reports", "bot"),
++        ("Write a Python scraper that imports product prices and stores history", "scraper"),
++        ("Implement a Rust library for validating configuration files", "library"),
++        ("Build an admin dashboard that filters users and exports audit logs", "dashboard"),
++        ("Make an Owlbear extension that tracks HP, protection, resistance, and cooldowns", "extension"),
++        ("Build a FastAPI service that imports support tickets and sends status notifications", "service"),
++        ("Create a Node.js API for uploading files with retries and progress logs", "API"),
++        ("Generate a command line tool with shell commands for backup checks and upload validation", "command-line tool"),
++        ("Develop a web app for incident reports and run commands in WebVM after approval", "web app"),
++    ];
++
++    assert!(
++        examples.len() >= 20,
++        "software-project regression coverage must include at least 20 popular tasks"
++    );
++
++    for (prompt, artifact) in examples {
++        let response = FormalAiEngine.answer(prompt);
++        assert_eq!(
++            response.intent, "software_project_plan",
++            "prompt {prompt:?} returned {}: {}",
++            response.intent, response.answer
++        );
++        assert!(response.answer.contains("software_project_request"));
++        assert!(response.answer.contains("Requirement model"));
++        assert!(response.answer.contains("Subtasks"));
++        assert!(response.answer.contains("Reasoning steps"));
++        assert!(response.answer.contains("Proposed plan"));
++        assert!(
++            response
++                .answer
++                .contains(&format!("artifact \"{artifact}\"")),
++            "prompt {prompt:?} should formalize artifact {artifact:?}: {}",
++            response.answer
++        );
++        assert!(response
++            .answer
++            .contains("approval_gate \"implementation_plan\""));
++        assert!(!response.answer.contains("intent: unknown"));
++    }
++}
++
++#[test]
++fn approval_returns_language_aware_generated_code_surface() {
++    let solver = UniversalSolver::default();
++    let examples = [
++        (
++            "Build a Python CLI tool for importing CSV tasks and exporting weekly reports",
++            "```python",
++            "def apply_command",
++        ),
++        (
++            "Write a Rust command line tool for renaming photos by date",
++            "```rust",
++            "pub enum ProjectCommand",
++        ),
++        (
++            "Create a JavaScript Discord bot for scheduling game sessions with reminders",
++            "```javascript",
++            "export function applyCommand",
++        ),
++        (
++            "Build a TypeScript SDK for uploading files with retries and progress events",
++            "```typescript",
++            "export function applyCommand",
++        ),
++    ];
++
++    for (prompt, code_fence, code_needle) in examples {
++        let plan = solver.solve(prompt);
++        let history = [
++            ConversationTurn::user(prompt),
++            ConversationTurn::assistant(plan.answer),
++        ];
++        let implementation = solver.solve_with_history("approve plan", &history);
++
++        assert_eq!(implementation.intent, "software_project_implementation");
++        assert!(implementation.answer.contains("approval_state approved"));
++        assert!(implementation.answer.contains(code_fence));
++        assert!(implementation.answer.contains(code_needle));
++        assert!(implementation.answer.contains("Generated code checks"));
++    }
++}
++
++#[test]
++fn software_project_dialogue_examples_formalize_plan_then_implement_after_approval() {
++    struct Example {
++        prompt: &'static str,
++        artifact: &'static str,
++        delivery_mode: &'static str,
++        language: &'static str,
++        starter_label: &'static str,
++        code_fence: &'static str,
++        implementation_needle: &'static str,
++        extra_gate: &'static str,
++    }
++
++    let solver = UniversalSolver::default();
++    let examples = [
++        Example {
++            prompt: "Write an extension for Owlbear that tracks HP, Protection, Resistance, damage, and cooldowns",
++            artifact: "extension",
++            delivery_mode: "code_generation",
++            language: "typescript",
++            starter_label: "TypeScript",
++            code_fence: "```typescript",
++            implementation_needle: "mitigateDamage",
++            extra_gate: "generated_code",
++        },
++        Example {
++            prompt: "Build a browser extension for reading progress that tracks pages and exports CSV",
++            artifact: "browser extension",
++            delivery_mode: "code_generation",
++            language: "typescript",
++            starter_label: "TypeScript",
++            code_fence: "```typescript",
++            implementation_needle: "applyCommand",
++            extra_gate: "generated_code",
++        },
++        Example {
++            prompt: "Create a JavaScript Discord bot for scheduling game sessions with reminders",
++            artifact: "bot",
++            delivery_mode: "code_generation",
++            language: "javascript",
++            starter_label: "JavaScript",
++            code_fence: "```javascript",
++            implementation_needle: "export function applyCommand",
++            extra_gate: "generated_code",
++        },
++        Example {
++            prompt: "Implement a React web app for invoices that tracks overdue payments and exports reports",
++            artifact: "web app",
++            delivery_mode: "code_generation",
++            language: "typescript",
++            starter_label: "TypeScript",
++            code_fence: "```typescript",
++            implementation_needle: "export function applyCommand",
++            extra_gate: "generated_code",
++        },
++        Example {
++            prompt: "Make a plugin for a tabletop map that tracks unit status effects",
++            artifact: "plugin",
++            delivery_mode: "code_generation",
++            language: "typescript",
++            starter_label: "TypeScript",
++            code_fence: "```typescript",
++            implementation_needle: "export function applyCommand",
++            extra_gate: "generated_code",
++        },
++        Example {
++            prompt: "Develop a Rust command line tool for renaming photos by date",
++            artifact: "command-line tool",
++            delivery_mode: "code_generation",
++            language: "rust",
++            starter_label: "Rust",
++            code_fence: "```rust",
++            implementation_needle: "pub enum ProjectCommand",
++            extra_gate: "generated_code",
++        },
++        Example {
++            prompt: "Generate a mobile app for habit tracking with notifications and backups",
++            artifact: "mobile app",
++            delivery_mode: "code_generation",
++            language: "typescript",
++            starter_label: "TypeScript",
++            code_fence: "```typescript",
++            implementation_needle: "export function applyCommand",
++            extra_gate: "generated_code",
++        },
++        Example {
++            prompt: "Design a service for importing customer invoices and sending payment reminders",
++            artifact: "service",
++            delivery_mode: "code_generation",
++            language: "typescript",
++            starter_label: "TypeScript",
++            code_fence: "```typescript",
++            implementation_needle: "export function applyCommand",
++            extra_gate: "generated_code",
++        },
++        Example {
++            prompt: "Scaffold a website for event schedules that exports calendar data",
++            artifact: "website",
++            delivery_mode: "code_generation",
++            language: "typescript",
++            starter_label: "TypeScript",
++            code_fence: "```typescript",
++            implementation_needle: "export function applyCommand",
++            extra_gate: "generated_code",
++        },
++        Example {
++            prompt: "Create a Python API for tracking equipment status and maintenance dates",
++            artifact: "API",
++            delivery_mode: "code_generation",
++            language: "python",
++            starter_label: "Python",
++            code_fence: "```python",
++            implementation_needle: "def apply_command",
++            extra_gate: "generated_code",
++        },
++        Example {
++            prompt: "Build a bot for project reports that sends weekly notifications",
++            artifact: "bot",
++            delivery_mode: "code_generation",
++            language: "typescript",
++            starter_label: "TypeScript",
++            code_fence: "```typescript",
++            implementation_needle: "export function applyCommand",
++            extra_gate: "generated_code",
++        },
++        Example {
++            prompt: "Make an add-on for a tabletop token that tracks hp and damage",
++            artifact: "extension",
++            delivery_mode: "code_generation",
++            language: "typescript",
++            starter_label: "TypeScript",
++            code_fence: "```typescript",
++            implementation_needle: "mitigateDamage",
++            extra_gate: "generated_code",
++        },
++        Example {
++            prompt: "Build a Python CLI tool for importing CSV tasks and exporting weekly reports with manual instructions",
++            artifact: "command-line tool",
++            delivery_mode: "manual_instructions",
++            language: "python",
++            starter_label: "Python",
++            code_fence: "```python",
++            implementation_needle: "def apply_command",
++            extra_gate: "manual_instructions",
++        },
++        Example {
++            prompt: "Write a Python scraper that imports product prices and stores history",
++            artifact: "scraper",
++            delivery_mode: "code_generation",
++            language: "python",
++            starter_label: "Python",
++            code_fence: "```python",
++            implementation_needle: "def apply_command",
++            extra_gate: "generated_code",
++        },
++        Example {
++            prompt: "Implement a Rust library for validating configuration files",
++            artifact: "library",
++            delivery_mode: "code_generation",
++            language: "rust",
++            starter_label: "Rust",
++            code_fence: "```rust",
++            implementation_needle: "pub enum ProjectCommand",
++            extra_gate: "generated_code",
++        },
++        Example {
++            prompt: "Build an admin dashboard that filters users and exports audit logs",
++            artifact: "dashboard",
++            delivery_mode: "code_generation",
++            language: "typescript",
++            starter_label: "TypeScript",
++            code_fence: "```typescript",
++            implementation_needle: "export function applyCommand",
++            extra_gate: "generated_code",
++        },
++        Example {
++            prompt: "Make a GitHub Action that checks changelog fragments on pull requests",
++            artifact: "action",
++            delivery_mode: "code_generation",
++            language: "typescript",
++            starter_label: "TypeScript",
++            code_fence: "```typescript",
++            implementation_needle: "export function applyCommand",
++            extra_gate: "generated_code",
++        },
++        Example {
++            prompt: "Implement a plugin for a design tool that syncs assets and reports conflicts",
++            artifact: "plugin",
++            delivery_mode: "code_generation",
++            language: "typescript",
++            starter_label: "TypeScript",
++            code_fence: "```typescript",
++            implementation_needle: "export function applyCommand",
++            extra_gate: "generated_code",
++        },
++        Example {
++            prompt: "Build a TypeScript SDK for uploading files with retries and progress events",
++            artifact: "SDK",
++            delivery_mode: "code_generation",
++            language: "typescript",
++            starter_label: "TypeScript",
++            code_fence: "```typescript",
++            implementation_needle: "export function applyCommand",
++            extra_gate: "generated_code",
++        },
++        Example {
++            prompt: "Create a Telegram bot that tracks expenses and sends weekly reports",
++            artifact: "bot",
++            delivery_mode: "code_generation",
++            language: "typescript",
++            starter_label: "TypeScript",
++            code_fence: "```typescript",
++            implementation_needle: "export function applyCommand",
++            extra_gate: "generated_code",
++        },
++        Example {
++            prompt: "Generate a command line tool with shell commands for backing up project files and validating upload status",
++            artifact: "command-line tool",
++            delivery_mode: "script_generation",
++            language: "typescript",
++            starter_label: "TypeScript",
++            code_fence: "```typescript",
++            implementation_needle: "export function applyCommand",
++            extra_gate: "generated_script",
++        },
++        Example {
++            prompt: "Develop a web app for incident reports, run commands in WebVM, and approve each step",
++            artifact: "web app",
++            delivery_mode: "immediate_execution",
++            language: "typescript",
++            starter_label: "TypeScript",
++            code_fence: "```typescript",
++            implementation_needle: "export function applyCommand",
++            extra_gate: "each_step",
++        },
++    ];
++
++    assert!(
++        examples.len() >= 20,
++        "issue #80 review requested at least 20 full dialogue examples"
++    );
++
++    for example in examples {
++        let plan = solver.solve(example.prompt);
++        assert_eq!(
++            plan.intent, "software_project_plan",
++            "prompt: {:?} answer: {}",
++            example.prompt, plan.answer
++        );
++        assert!(plan.answer.contains("```lino"));
++        assert!(plan.answer.contains("software_project_request"));
++        assert!(plan.answer.contains("approval_state proposed"));
++        assert!(plan
++            .answer
++            .contains(&format!("artifact \"{}\"", example.artifact)));
++        assert!(
++            plan.answer
++                .contains(&format!("delivery_mode {}", example.delivery_mode)),
++            "prompt {:?} should expose delivery mode {} in {}",
++            example.prompt,
++            example.delivery_mode,
++            plan.answer
++        );
++        assert!(plan
++            .answer
++            .contains(&format!("implementation_language \"{}\"", example.language)));
++        assert!(plan.answer.contains("approval_gate \"task_formalization\""));
++        assert!(plan
++            .answer
++            .contains("approval_gate \"implementation_plan\""));
++        assert!(plan
++            .answer
++            .contains(&format!("approval_gate \"{}\"", example.extra_gate)));
++        assert!(plan.answer.contains("requirement_category"));
++        assert!(plan.answer.contains("requirement graph"));
++        assert!(plan.answer.contains("implementation subtask(s)"));
++        assert!(plan.answer.contains("Reasoning steps"));
++        assert!(plan.answer.contains("Classify the impulse as a request"));
++        assert!(plan.answer.contains("Select delivery mode"));
++        assert!(plan.answer.contains("Ask for approval"));
++        assert!(plan.answer.contains("Requirement model"));
++        assert!(plan.answer.contains("Subtasks"));
++        assert!(plan.answer.contains("Approval gates"));
++        assert!(plan.answer.contains("Proposed plan"));
++        assert!(plan.answer.contains("Review the formalized task"));
++        assert!(plan.answer.contains("approve plan"));
++        assert!(
++            !plan.answer.contains(example.code_fence),
++            "first turn must not generate code before approval: {}",
++            plan.answer
++        );
++
++        let history = [
++            ConversationTurn::user(example.prompt),
++            ConversationTurn::assistant(plan.answer),
++        ];
++        let implementation = solver.solve_with_history("approve plan", &history);
++        assert_eq!(
++            implementation.intent, "software_project_implementation",
++            "prompt: {:?} answer: {}",
++            example.prompt, implementation.answer
++        );
++        assert!(implementation.answer.contains("approval_state approved"));
++        assert!(implementation.answer.contains("software_project_request"));
++        assert!(implementation.answer.contains("Implementation steps"));
++        assert!(implementation.answer.contains("Generated code checks"));
++        assert!(implementation
++            .answer
++            .contains(&format!("Starter {} core", example.starter_label)));
++        assert!(implementation.answer.contains(example.code_fence));
++        assert!(
++            implementation
++                .answer
++                .contains(example.implementation_needle),
++            "prompt: {:?} expected {} in {}",
++            example.prompt,
++            example.implementation_needle,
++            implementation.answer
++        );
++    }
++}
