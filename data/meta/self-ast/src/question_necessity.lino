@@ -1,0 +1,51 @@
+self_ast_census
+  target src/question_necessity.rs
+  language rust
+  fidelity signature
+  byte_len 22618
+  line_count 713
+  content_id source_module_bd5a135f189b9ed2
+  symbol_count 42
+  symbols
+    const POLICY_SEED 14 14
+    enum QuestionClass 17 20
+    function slug 23 28
+    struct QuestionClassification 32 35
+    struct NecessityTrace 38 42
+    function is_complete 46 50
+    enum QuestionRefusal 54 58
+    function slug 61 67
+    enum QuestionAuthorization 71 74
+    struct QuestionNecessityPolicySummary 77 85
+    struct ClassificationRule 88 92
+    struct Policy 95 98
+    struct Candidate 101 107
+    function policy_summary 110 112
+    function classify_question 115 117
+    function authorize_question 120 135
+    function enforce_questions 140 213
+    function policy 215 218
+    static POLICY 216 216
+    function parse_policy 220 256
+    function record_of_type 258 262
+    function child_values 264 271
+    function numeric_field 273 278
+    function parse_class 280 286
+    function classify 288 312
+    function record_search_trace 314 368
+    function trace_payload 370 376
+    function normalized_question_text 378 384
+    function question_candidates 386 427
+    function punctuation_candidates 429 454
+    function punctuation_candidates_in_line 456 519
+    function closing_quote 521 531
+    function is_equation_placeholder 533 545
+    function is_equation_operator 547 549
+    function sentence_start 551 569
+    function looks_like_url 571 576
+    function is_replayed_question 578 598
+    function requirement_section_ranges 600 631
+    function is_follow_up_item 633 639
+    function strip_follow_up_prefix 641 647
+    function remove_ranges 649 681
+    function remove_empty_question_sections 683 713
