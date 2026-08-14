@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.344.0] - 2026-08-14
+
+### Added
+- Add bounded equality saturation and function-free Datalog inference to the symbolic proof engine, with honest 20/20 egg and 5/5 Ascent upstream benchmark scores for #923.
+
 ## [0.343.0] - 2026-08-14
 
 ### Added
