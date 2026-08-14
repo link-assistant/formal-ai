@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.340.0] - 2026-08-14
+
+### Added
+- Learn proposal-only reusable methods from real recursive-core event logs, validate them on held-out traces, and adopt them as registry link data only through benchmark-gated human-confirmed promotion (#922).
+
 ## [0.339.3] - 2026-08-13
 
 ### Fixed
