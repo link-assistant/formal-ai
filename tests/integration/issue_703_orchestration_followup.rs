@@ -10,7 +10,8 @@ use std::time::{Duration, Instant};
 
 use super::issue_703_orchestration::{
     fixture_command, fixture_commands, fixture_config, fixture_config_with_output,
-    grant_fixture_agent_command, TestWorkspace, FIXTURE_ENV,
+    grant_fixture_agent_command, TestWorkspace, FIXTURE_ENV, FIXTURE_RELEASE_ENV,
+    FIXTURE_STARTED_ENV,
 };
 
 const AUTHORSHIP_SESSION: &str = "ses_050646852ffetdnQ73vR1yZ8la";
@@ -682,14 +683,29 @@ fn comparison_refuses_to_overwrite_workspace_drift_after_candidates_fork() {
     );
     config.mode = DispatchMode::Compare;
     config.permission = AgentRunPermission::grant_for(workspace.path());
-    config
-        .command_overrides
-        .insert("codex".to_string(), fixture_command("delayed_success"));
+    let candidate_started = workspace.path().join("candidate-started");
+    let release_candidate = workspace.path().join("release-candidate");
+    let candidate_started_env = candidate_started.display().to_string();
+    let release_candidate_env = release_candidate.display().to_string();
+    config.command_overrides.insert(
+        "codex".to_string(),
+        fixture_command("coordinated_success")
+            .env(FIXTURE_STARTED_ENV, candidate_started_env)
+            .env(FIXTURE_RELEASE_ENV, release_candidate_env),
+    );
     grant_fixture_agent_command(&mut config);
     let original = workspace.path().join("README.md");
     let concurrent_update = std::thread::spawn(move || {
-        std::thread::sleep(Duration::from_millis(50));
+        let deadline = Instant::now() + Duration::from_secs(10);
+        while !candidate_started.exists() {
+            assert!(
+                Instant::now() < deadline,
+                "candidate fixture did not signal startup"
+            );
+            std::thread::sleep(Duration::from_millis(10));
+        }
         fs::write(original, "external update\n").unwrap();
+        fs::write(release_candidate, "release\n").unwrap();
     });
 
     let error = dispatch_agents(&config).expect_err("composition must detect workspace drift");
