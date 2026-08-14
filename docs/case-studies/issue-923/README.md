@@ -60,10 +60,14 @@ the source pattern variables at the prompt boundary, and extracts all five
 asserted consequences from Ascent's transitive-closure example. It does not
 vendor or silently replace either upstream source.
 
+The associated multilingual prompts, diagnostics, and proof conclusions live
+in the bounded `multilingual-responses-symbolic.lino` seed shard. The central
+seed registry embeds that shard in both native and web response catalogs.
+
 ## 5. Honest External Scores
 
 The project CLI produced these results on 2026-08-14 with solver version
-0.341.0:
+0.342.0:
 
 | Command | Passed | Total |
 | --- | ---: | ---: |

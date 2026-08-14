@@ -107,6 +107,19 @@ fn datalog_join_work_limit_is_inconclusive() {
 
 #[test]
 fn symbolic_kernel_responses_cover_every_registered_language() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let symbolic_seed = root.join("data/seed/multilingual-responses-symbolic.lino");
+    assert!(
+        symbolic_seed.is_file(),
+        "symbolic responses must stay in their bounded seed shard"
+    );
+    assert!(
+        fs::read_to_string(root.join("data/meta/seed-registry.lino"))
+            .expect("seed registry")
+            .contains("seed multilingual-responses-symbolic\n"),
+        "the symbolic response shard must be declared in the seed registry"
+    );
+
     let claim = concat!(
         "facts { edge(a,b); edge(b,c) } ",
         "rules { reachable(X,Y) :- edge(X,Y); ",

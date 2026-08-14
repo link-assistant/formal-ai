@@ -351,6 +351,10 @@ seed_registry
   seed multilingual-responses-summarization-quality
     bundle true
     lexicon response
+  seed multilingual-responses-symbolic
+    bundle true
+    lexicon response
+    web true
   seed multilingual-responses-synthesis
     bundle true
     lexicon response

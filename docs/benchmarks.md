@@ -263,7 +263,7 @@ byte length, and content id match the adjacent provenance record.
 
 The core corpus rows below were most recently refreshed on `2026-08-10`; issue
 #923 adds symbolic-reasoning rows recorded on `2026-08-14` with solver version
-`0.341.0`. All use the offline deterministic solver (`temperature = 0.0`):
+`0.342.0`. All use the offline deterministic solver (`temperature = 0.0`):
 
 | Suite | License | Grading | Passed | Total |
 | --- | --- | --- | ---: | ---: |
