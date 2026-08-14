@@ -35,30 +35,56 @@ intent_routing
     keyword hi
     keyword hello
     keyword hey
+    keyword "howdy"
+    keyword greetings
+    phrase "hi there"
+    phrase "hello there"
+    phrase "good morning"
+    phrase "good afternoon"
+    phrase "good evening"
     keyword привет
     keyword здравствуйте
+    keyword здравствуй
+    keyword приветствую
     keyword шалом
     phrase "шабат шалом"
+    phrase "доброе утро"
+    phrase "добрый день"
+    phrase "добрый вечер"
     keyword नमस्ते
     keyword नमस्कार
     keyword सलाम
     keyword हाय
     phrase "राम राम"
+    phrase "शुभ प्रभात"
+    phrase "शुभ संध्या"
     keyword 你好
     keyword 您好
     keyword 嗨
     keyword 哈喽
     phrase 早上好
     phrase 早安
+    phrase 大家好
+    phrase 晚上好
     token greet
   intent intent_farewell
     slug farewell
     response_link "response:farewell"
     keyword bye
     keyword goodbye
+    keyword farewell
+    phrase "see you"
+    phrase "see you later"
+    phrase "take care"
+    phrase "so long"
     keyword пока
+    keyword прощай
+    keyword увидимся
     phrase "до свидания"
     phrase досвидания
+    phrase "до встречи"
+    phrase "до скорого"
+    phrase "всего доброго"
     keyword ciao
     keyword tschüss
     keyword 再见
@@ -108,10 +134,13 @@ intent_routing
     phrase "ठीक हूँ धन्यवाद"
     phrase "मैं अच्छा हूँ धन्यवाद"
     keyword 谢谢
+    keyword 多谢
     phrase 我很好谢谢
     phrase "我很好 谢谢"
     phrase 好的谢谢
     phrase "好的 谢谢"
+    phrase 非常感谢
+    phrase 谢谢你
   intent intent_assistant_free_time
     slug assistant_free_time
     response_link "response:assistant_free_time"
@@ -119,17 +148,23 @@ intent_routing
     phrase "what do you do in free time"
     phrase "how do you spend your free time"
     phrase "what do you do when you are not working"
+    phrase "how do you spend your spare time"
     phrase "что делаешь в свободное время"
     phrase "что ты делаешь в свободное время"
     phrase "чем занимаешься в свободное время"
     phrase "чем ты занимаешься в свободное время"
     phrase "что делаешь когда свободен"
+    phrase "как проводишь свободное время"
     phrase "खाली समय में क्या करते हो"
     phrase "आप खाली समय में क्या करते हैं"
     phrase "फुर्सत में क्या करते हो"
+    phrase "खाली वक्त में क्या करते हो"
+    phrase "जब आप काम नहीं करते तो क्या करते हैं"
     phrase 你空闲时间做什么
     phrase 你有空的时候做什么
     phrase 你业余时间做什么
+    phrase 你休息的时候做什么
+    phrase 你不工作的时候做什么
   intent intent_test_status
     slug test_status
     response_link "response:test_status"
@@ -193,16 +228,25 @@ intent_routing
     phrase "what's your name"
     phrase "do you have a name"
     phrase "what should i call you"
+    phrase "tell me your name"
+    phrase "may i know your name"
     phrase "как твое имя"
     phrase "как твоё имя"
     phrase "как тебя зовут"
+    phrase "как вас зовут"
     phrase "у тебя есть имя"
+    phrase "назови своё имя"
+    phrase "назови свое имя"
     phrase "आपका नाम क्या है"
     phrase "तुम्हारा नाम क्या है"
+    phrase "क्या तुम्हारा कोई नाम है"
+    phrase "मैं तुम्हें क्या कहूँ"
+    phrase "अपना नाम बताओ"
     phrase 你叫什么名字
     phrase 您叫什么名字
     phrase 你的名字是什么
     phrase 你有名字吗
+    phrase "告诉我你的名字"
     combo what+your+name
     combo you+have+name
     combo call+you
