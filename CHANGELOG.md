@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.343.0] - 2026-08-14
+
+### Added
+- Add localhost-default WebSocket and host-only WebRTC data-channel server and client modes to the `formal-ai` CLI while sharing the existing API permissions and memory.
+
 ## [0.342.0] - 2026-08-14
 
 ### Added
