@@ -1,0 +1,31 @@
+issue_932_decomposition
+  record_type "task_decomposition"
+  issue "932"
+  leaf_count "5"
+  formal_ai_authored_leaf_count "1"
+  formal_ai_authored_percent "20"
+issue_932_leaf_image_survey
+  record_type "smallest_leaf"
+  owner "formal_ai_agent_cli"
+  artifact "data/meta/box-image-survey.lino"
+  status "complete"
+issue_932_leaf_language_contract
+  record_type "smallest_leaf"
+  owner "primary_implementer"
+  artifact "data/meta/box-language-projects.lino|src/box_language_projects.rs"
+  status "complete"
+issue_932_leaf_container_harness
+  record_type "smallest_leaf"
+  owner "primary_implementer"
+  artifact "scripts/generate-box-language-corpus.sh|scripts/verify-box-language-projects.sh|scripts/run-box-language-project.sh"
+  status "complete"
+issue_932_leaf_ci_matrix
+  record_type "smallest_leaf"
+  owner "primary_implementer"
+  artifact ".github/workflows/release.yml|tests/unit/ci-cd/issue_932.rs"
+  status "complete"
+issue_932_leaf_routing_and_documentation
+  record_type "smallest_leaf"
+  owner "primary_implementer"
+  artifact "src/intent_formalization/prompt_relevants.rs|docs/case-studies/issue-932/README.md"
+  status "complete"

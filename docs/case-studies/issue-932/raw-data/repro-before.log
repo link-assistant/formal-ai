@@ -1,0 +1,83 @@
+# Issue #932 reproduction: the routing defect as it failed.
+# Captured by reverting the handler:installation_conversion promotion gate in
+# src/intent_formalization/prompt_relevants.rs to its pre-fix state and running:
+#   cargo test --test unit -- installation_conversion::go_module_install_guide_converts_to_a_script --nocapture
+
+   Compiling formal-ai v0.342.0 (/tmp/gh-issue-solver-1786703126334)
+    Finished `test` profile [unoptimized] target(s) in 2m 20s
+     Running tests/unit/mod.rs (target/debug/deps/unit-34aeecd073e671e0)
+
+running 1 test
+
+thread 'installation_conversion::go_module_install_guide_converts_to_a_script' (375262) panicked at tests/unit/installation_conversion.rs:609:5:
+assertion `left == right` failed: answer: Implementation plan pending approval for a mod targeting the requested environment.
+
+Formalized meaning:
+```lino
+software_project_request
+  action "create"
+  artifact "mod"
+  artifact_surface "mod"
+  target "the requested environment"
+  domain "software_project"
+  delivery_mode script_generation
+  implementation_language "typescript"
+  approval_state proposed
+  approval_required true
+  approval_gate "bash_command"
+  approval_gate "generated_script"
+  approval_gate "implementation_plan"
+  approval_gate "task_formalization"
+  requirement "Capture state, user commands, persistence, validation, and tests."
+  requirement_category "project_behavior"
+  subtask "R1 [project_behavior] Implement and test the smallest behavior for Capture state, user commands, persistence, validation, and tests."
+  state_model "project_records"
+  command "create_record"
+  command "update_record"
+  command "export_state"
+  validation "pure_state_transitions_before_host_api"
+```
+
+Reasoning steps:
+1. Classify the impulse as a request to create a mod instead of a fact lookup.
+2. Bind the target environment to the requested environment and keep the first response reviewable.
+3. Extract 1 requirement(s) into the meaning record before planning.
+4. Decompose the requirement graph into 1 implementation subtask(s) with category labels.
+5. Select delivery mode script_generation and approval gates: bash_command, generated_script, implementation_plan, task_formalization.
+6. Ask for approval before producing code, scripts, manual instructions, or execution steps.
+
+Requirement model:
+1. [project_behavior] Capture state, user commands, persistence, validation, and tests.
+
+Subtasks:
+1. R1 -> Implement and test the smallest behavior for Capture state, user commands, persistence, validation, and tests.
+
+Approval gates:
+- bash_command
+- generated_script
+- implementation_plan
+- task_formalization
+
+Proposed plan:
+1. Review the formalized task, requirement graph, approval gates, and delivery mode with the user.
+2. Confirm the host API and data boundaries for the requested environment.
+3. Define the smallest serializable state records for the requirements.
+4. Implement project_behavior: Implement and test the smallest behavior for Capture state, user commands, persistence, validation, and tests..
+5. Generate a typescript starter core plus language-appropriate repository initialization and checks.
+6. Keep shell, Docker, or WebVM commands behind the configured approval gates.
+
+Reply `approve plan` to generate the starter implementation, or describe what to change.
+  left: "software_project_plan"
+ right: "installation_conversion"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test installation_conversion::go_module_install_guide_converts_to_a_script ... FAILED
+
+failures:
+
+failures:
+    installation_conversion::go_module_install_guide_converts_to_a_script
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 2747 filtered out; finished in 1.47s
+
+error: test failed, to rerun pass `--test unit`
+exit=101

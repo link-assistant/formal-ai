@@ -8,6 +8,7 @@ pub mod arithmetic;
 pub mod associative_package;
 pub mod associative_persistence;
 pub mod attachment_context;
+pub mod box_language_projects;
 pub(crate) mod calculation;
 pub(crate) mod calculation_time;
 pub(crate) mod calculation_word_problem;

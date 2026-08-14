@@ -183,7 +183,13 @@ impl InstallationConversion {
     }
 }
 
-pub(super) fn is_install_conversion_request(normalized: &str) -> bool {
+/// Whether the prompt asks for an installation or deployment guide to be
+/// converted into another surface.
+///
+/// Exposed so `intent_formalization` can promote the handler ahead of the
+/// write-script and software-project readings of the same guide (issue #932);
+/// the routing relevant and the handler therefore share one recogniser.
+pub fn is_install_conversion_request(normalized: &str) -> bool {
     let asks_conversion = contains_any(
         normalized,
         &[
