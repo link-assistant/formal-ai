@@ -96,6 +96,8 @@ test("normalization folds case, punctuation and spacing but keeps distinct words
   assert.equal(normalizeVariation("How are you?"), normalizeVariation("how are you"));
   assert.equal(normalizeVariation("你好！"), normalizeVariation("你好"));
   assert.equal(normalizeVariation("до свидания"), normalizeVariation("досвидания"));
+  assert.equal(normalizeVariation("Ａ１"), normalizeVariation("a1"));
+  assert.notEqual(normalizeVariation("क"), normalizeVariation("का"));
   assert.notEqual(normalizeVariation("hello"), normalizeVariation("hey"));
 });
 

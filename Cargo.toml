@@ -85,6 +85,8 @@ meta-language = ["dep:meta-language"]
 # artifacts to the notation they claim to be written in.
 lino-objects-codec = "0.2.1"
 regex = "1"
+unicode-general-category = "1.1"
+unicode-normalization = "0.1"
 
 [lints.rust]
 unsafe_code = "forbid"

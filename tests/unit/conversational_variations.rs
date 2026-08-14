@@ -16,6 +16,8 @@ use std::fs;
 use std::path::Path;
 
 use formal_ai::FormalAiEngine;
+use unicode_general_category::get_general_category;
+use unicode_normalization::UnicodeNormalization;
 
 fn lino_records(text: &str) -> Vec<Vec<&str>> {
     let mut records = Vec::new();
@@ -56,9 +58,24 @@ fn lino_field<'a>(record: &[&'a str], wanted: &str) -> &'a str {
 fn normalize_variation(prompt: &str) -> String {
     prompt
         .chars()
-        .filter(|character| character.is_alphanumeric())
         .flat_map(char::to_lowercase)
+        .nfkc()
+        .filter(|character| {
+            let family = get_general_category(*character).abbreviation().as_bytes()[0];
+            !matches!(family, b'P' | b'S' | b'Z') && !character.is_whitespace()
+        })
         .collect()
+}
+
+#[test]
+fn conversational_variation_normalization_matches_the_unicode_ci_convention() {
+    // The JavaScript gate applies NFKC and removes punctuation, symbols and
+    // separators while retaining combining marks. The engine-side check must
+    // make the same decisions, especially for full-width Chinese/Latin input
+    // and Devanagari vowel marks.
+    assert_eq!(normalize_variation("Ａ"), normalize_variation("A"));
+    assert_eq!(normalize_variation("１"), normalize_variation("1"));
+    assert_ne!(normalize_variation("क"), normalize_variation("का"));
 }
 
 #[test]
