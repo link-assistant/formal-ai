@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.341.0] - 2026-08-14
+
+### Added
+- Procedural "how to X" requests now synthesise one ordered guide from the enabled trusted services in `data/seed/sources-registry.lino`, recursively capturing result pages within declared depth, page, and age bounds and keeping the exact source URL, license, and payload digest on every accepted step.
+- Per-service accessibility (success *and* failure) is remembered in the environment's associative memory for seven days, with explicit refresh and invalidation, so a stale body cache is no longer mistaken for an availability record.
+- Committed real-service QA captures with timestamps, digests, and licenses; the normal test suite replays them offline on the native, HTTP, and browser paths, and a `FORMAL_AI_LIVE_FETCH=1` refresh check detects drift against the live services.
+- The reader-facing guide is rendered from seeded prose (`data/seed/multilingual-responses-procedure.lino`), so `HowToGuide::markdown_in` and the browser worker render the same evidence in any seeded language, while trace and evidence lines are `key=value` records built through the new `trace_record` module.
+
+### Added
+- Merge-conflict policy: `data/meta/merge-conflict-policy.lino` declares every structural cause of a merge conflict this repository has actually had, the mechanism that removes it, and the verifier that keeps it removed. `python3 scripts/analyze-merge-conflicts.py --ledger` measures the history (884 merges, 1914 conflict events) into `data/meta/merge-conflict-ledger.lino`, and `rust-script scripts/check-merge-conflict-policy.rs` fails the build when a path that has actually been conflicting is neither mechanized nor deferred with a written reason. No `git config` step is needed: every mechanism uses git's built-in `merge=union` driver or a committed generator.
+- CI gates are one file each under `data/meta/ci-gates/`, run by `rust-script scripts/run-ci-gates.rs --stage <stage>`. Adding a check no longer edits `.github/workflows/release.yml`, which was the repository's third most conflicted path.
+- One seed inventory for both runtimes: `data/meta/seed-registry.lino` names every `data/seed/*.lino` file once, and `rust-script scripts/generate-seed-registry.rs --write` generates `src/seed/embedded_registry.rs` and `src/web/seed-files.js` from it, so the Rust engine and the browser worker cannot disagree about which seed files exist.
+
+### Changed
+- `src/seed/embedded.rs` and `src/web/seed_loader.js` no longer carry their own copies of the seed file list; `src/agentic_coding/mod.rs` and `src/web/formal_ai_worker.js` no longer carry their own declaration lists. Each list now lives in a sibling file that contains nothing else and is union merged, with `rust-script scripts/normalize-ordered-lists.rs --write` restoring the canonical order.
+- CONTRIBUTING.md documents what to add where so a contribution stops creating an append point, and `docs/case-studies/issue-991/merge-conflict-analysis.md` records the measurement behind every decision.
+- `REQUIREMENTS.md` is assembled from one shard per issue under `docs/requirements/`. A shard's links are written relative to the shard, so it reads correctly on its own page; assembly rebases them to the repository root and `--split` rebases them back, and `rust-script scripts/assemble-requirements.rs` fails when a shard link does not resolve from the shard's own directory.
+
+### Added
+- Failure-driven splitting: `TaskExecutor` gained a `split` hook, so a failed task can be shrunk from its own failure instead of from a plan made before any evidence existed. `formal_ai::task_decomposition::SplittingExecutor` answers that hook with the repository's own `decompose_task`, one level per split, and records every split with the failure that justified it. The controller refuses a child that repeats its parent, bounds splitting with `DEFAULT_SPLIT_DEPTH_BOUND`, and `solve_recursively_within` lets a caller pick another bound (zero reproduces the previous plan-driven protocol exactly).
+- `formal-ai agent dispatch --incremental` runs that protocol against external agent CLIs: the whole task is attempted first, only a failure is split, a passing attempt's effects are applied to the workspace before the next attempt starts, and an irreducible failure escalates to the next CLI in `--cli` instead of stopping. The report carries an `incremental` trace of every attempt, split, and blocked task; the exit status reflects the root task only.
+- Every blocked task becomes a review request, mirrored to `proposals.lino` next to the report: the task, every CLI that tried it, the evidence each attempt produced, and the status `human_review_required`. A run cannot approve its own extension, so this is the same gate a learned decomposition strategy passes through.
+
+### Changed
+- `RecursiveRun` now reports `split_applied`, `split_depth_reached()`, and `blocked_leaves()`, and the review-gated learning path reads blocked leaves from the run instead of walking the tree a second time.
+
 ## [0.340.0] - 2026-08-14
 
 ### Added
