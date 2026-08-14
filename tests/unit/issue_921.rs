@@ -77,9 +77,7 @@ fn issue_921_hive_mind_direction_uses_the_real_public_and_executor_boundaries() 
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
     let script = read(root.join("experiments/issue_921_hive_mind_full_circle/run.sh"));
     let github_wrapper = read(
-        root.join(
-            "experiments/issue_921_hive_mind_full_circle/github-readonly-prepare-wrapper.sh",
-        ),
+        root.join("experiments/issue_921_hive_mind_full_circle/github-readonly-prepare-wrapper.sh"),
     );
     assert_contains_all(
         "Hive Mind full-circle runner",
