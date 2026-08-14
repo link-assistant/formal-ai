@@ -1,0 +1,7 @@
+conversational_variation_floor_learning
+  record_type "conversational_variation_floor_learning"
+  issue "933"
+  source "verified_agent_cli_session"
+  observation "incremental_dispatch"
+  promotion "proposal_only"
+  human_review "required"
