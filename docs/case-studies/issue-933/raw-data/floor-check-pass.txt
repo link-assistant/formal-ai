@@ -1,0 +1,18 @@
+
+> formal-ai-e2e@1.0.0 check:variation-floor
+> node scripts/check-conversational-variation-floor.mjs
+
+Conversational wording variations per case (floor: 5 per language)
+  case                  en  ru  hi  zh
+  greeting               9   8   6   7
+  wellbeing              5   6   6   6
+  farewell               8   7   5   5
+  courtesy_response      6   5   5   5
+  identity               6   6   6   6
+  capabilities           6   5   5   5
+  test_status            7   6   5   5
+  assistant_free_time    5   5   5   5
+  assistant_name         5   5   5   5
+  calculation            6   5   5   5
+
+Conversational variation floor OK: 10 cases x 4 languages, 228 verified prompts, every group at or above 5.
