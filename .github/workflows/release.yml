@@ -1201,6 +1201,66 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with: { name: agent-cli-tui-replays, path: /tmp/formal-ai-tui-artifacts, if-no-files-found: ignore, retention-days: 7 }
+  # Issue #932 (follow-up of PR #119): a generated project for a language is
+  # built and run inside the link-foundation/box image that matches that
+  # language, using the language's own init commands. The matrix keeps each
+  # image on its own runner, so one leg only pulls the toolchain it needs.
+  box-language-projects:
+    name: Box Image Projects (${{ matrix.language }})
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-box-language-projects-${{ matrix.language }}
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: [detect-changes]
+    if: |
+      !cancelled() && (
+        github.event_name == 'workflow_dispatch' ||
+        needs.detect-changes.outputs.any-code-changed == 'true' ||
+        needs.detect-changes.outputs.rs-changed == 'true' ||
+        needs.detect-changes.outputs.toml-changed == 'true' ||
+        needs.detect-changes.outputs.workflow-changed == 'true'
+      )
+    strategy:
+      fail-fast: false
+      matrix:
+        # Kept in step with `data/meta/box-language-projects.lino` by
+        # `tests/unit/ci-cd/issue_932.rs`.
+        language: [rust, python, javascript, typescript, go, java, ruby]
+    steps:
+      - uses: actions/checkout@v6
+      # A box variant unpacks to 4-8 GB, more than a stock runner has spare
+      # next to a cargo build.
+      - name: Free up runner disk space
+        run: bash scripts/free-runner-disk.sh
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      - uses: ./.github/actions/setup-sccache
+      - name: Cache cargo registry
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: ${{ runner.os }}-cargo-box-language-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-box-language-
+            ${{ runner.os }}-cargo-
+      - name: Build formal-ai (release)
+        run: cargo build --release --bin formal-ai
+      - name: Generate the ${{ matrix.language }} project from Formal-AI answers
+        run: scripts/generate-box-language-corpus.sh ${{ matrix.language }}
+      - name: Build and run it inside its link-foundation/box image
+        run: STRICT=1 SKIP_GENERATE=1 scripts/verify-box-language-projects.sh ${{ matrix.language }}
+      - name: Upload the generated project
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: box-language-corpus-${{ matrix.language }}
+          path: target/box-language-corpus/${{ matrix.language }}/
+          retention-days: 7
+          # `always()` also covers a leg that failed before generating anything.
+          if-no-files-found: warn
   deploy-pages:
     name: Deploy Web App to GitHub Pages
     concurrency:
@@ -1362,8 +1422,8 @@ jobs:
     if: always()
     needs: [detect-changes, changelog, evidence-check, docker-build, secrets-scan,
             version-check, lint, test, build, auto-release, manual-release,
-            changelog-pr, test-e2e-local, test-agent-cli-e2e, deploy-pages,
-            test-e2e-pages]
+            changelog-pr, test-e2e-local, test-agent-cli-e2e,
+            box-language-projects, deploy-pages, test-e2e-pages]
     steps:
       - uses: actions/checkout@v6
       - name: Fail the run when a required job was cancelled or failed
