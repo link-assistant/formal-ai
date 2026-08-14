@@ -28,7 +28,7 @@ each of en, ru, hi and zh**, and a check must fail the build when one does not.
 
 | ID | Requirement (issue #933) | Delivered as |
 | --- | --- | --- |
-| R933-1 | Define a machine-checkable convention for "wording variation". | A manifest, `data/benchmarks/conversational-variations-suite.lino`, listing the cases, the languages, the floor and the per-language partition files; one record per prompt in `data/benchmarks/conversational-variations/<language>.lino`. Two prompts count as one wording unless they differ in more than case, punctuation, symbols or spacing. |
+| R933-1 | Define a machine-checkable convention for "wording variation". | A manifest, `data/benchmarks/conversational-variations-suite.lino`, listing the cases, the languages, the floor and the per-language partition files; one record per prompt in `data/benchmarks/conversational-variations/<language>.lino`. The byte-preserved, Agent-authored contract is `data/meta/conversational-variation-floor-contract.lino`: NFKC then lowercase, discard punctuation/symbol/separator/whitespace categories, and preserve letters, numbers and combining marks. |
 | R933-2 | A CI script in the style of `check-language-parity` that walks the corpus and fails below five in any of en/ru/hi/zh. | `tests/e2e/scripts/check-conversational-variation-floor.mjs`, run as `npm run --prefix tests/e2e check:variation-floor`. |
 | R933-3 | Backfill variations until the check passes. | 228 prompts across 10 cases × 4 languages, every group at or above five; the router phrasings they needed were added to `data/seed/intent-routing.lino` and `data/seed/meanings-intent.lino`. |
 | R933-4 | Wire the check into `release.yml`. | `data/meta/ci-gates/check-conversational-variation-floor.lino`, stage `web`. Since issue #991 the workflow no longer holds a step list: `.github/workflows/release.yml` runs `rust-script scripts/run-ci-gates.rs --stage web`, which loads this shard. |
@@ -40,6 +40,8 @@ each of en, ru, hi and zh**, and a check must fail the build when one does not.
 | R933-10 | Dedup: confirm no overlap with `check:language-test-coverage` and note it here. | Section 6. |
 | R933-11 | Beyond the issue: every recorded variation shows the exact answer it produces (R234-2), so the corpus is documentation and not just a count. | `expected_answer` on 207 of the 228 records, asserted verbatim by `tests/unit/conversational_variations.rs`; the 21 capability records pin the opening line of the multi-paragraph listing with `expected_answer_contains`. The gate rejects a record that shows neither. |
 | R933-12 | Beyond the issue: the recorded answers must be complete in every language — writing them down showed they were not. | The question-necessity parity fix in `src/question_necessity.rs` and `data/seed/question-necessity.lino`, with `tests/unit/issue_933_answer_parity.rs`. Section 5. |
+| R933-13 | Review follow-up: execute part of this work with Formal AI through the real Agent CLI, decomposing only after failure and learning from the same run. | Five captured Agent-CLI sessions show the compound attempt fail, three smaller tasks pass, and the parent pass on retry. The same five sessions feed `learning.lino`; its four contract proposals remain `awaiting_human_review`. Section 10. |
+| R933-14 | The Node and Rust counters must implement the declared normalization identically for compatibility characters and combining marks. | Both now apply NFKC + lowercase and discard Unicode P/S/Z categories and whitespace. Regression examples pin `Ａ == A`, `１ == 1`, and Hindi `क != का`. Section 11. |
 
 ## 3. Root cause: nothing counted anything
 
@@ -268,6 +270,8 @@ until it is refilled.
 | [`raw-data/answer-parity-after.txt`](raw-data/answer-parity-after.txt) | 5 passed on the fixed engine. |
 | [`raw-data/question-stripping-before.txt`](raw-data/question-stripping-before.txt) | The 40 seed values the question pass rewrote before the fix. |
 | [`raw-data/question-stripping-after.txt`](raw-data/question-stripping-after.txt) | The 15 that remain, none of them a corpus case, all language-symmetric. |
+| [`self-hosting-authorship/dispatch-report.json`](self-hosting-authorship/dispatch-report.json) | Five real Agent-CLI attempts: whole failure, three passing leaves, passing parent retry (R933-13). |
+| [`self-hosting-authorship/learning.lino`](self-hosting-authorship/learning.lino) | The same five sessions observed by proposal-only learning; four proposals await human review (R933-13). |
 
 Reproduce with:
 
@@ -276,9 +280,11 @@ npm run --prefix tests/e2e check:variation-floor
 node --test tests/web/conversational-variation-floor.test.mjs
 cargo test --test unit conversational_variation
 cargo test --test unit issue_933_answer_parity
+cargo test --test unit issue_933_self_authoring
 cargo run --example issue_933_question_stripping_probe   # which answers the pass rewrites
 cargo run --example issue_933_response_probe             # what the seed holds
 python3 experiments/issue_933_variation_floor/legacy-counts.py   # the "before" table
+experiments/issue_933_self_authoring/run.sh               # real Formal AI -> Agent CLI run
 ```
 
 The corpus itself is regenerated, not hand-edited: every prompt is answered by
@@ -310,3 +316,64 @@ The legacy test is kept as-is. It still asserts what it always asserted, and it
 is not the corpus the floor is measured over — measuring the floor over
 hand-written Rust arrays is exactly what left it unenforced for three months.
 The new corpus is additive: it is data, it is counted, and it is executed.
+
+## 10. One execution and learning lifecycle through Formal AI
+
+The review follow-up asked for more than a static corpus: Formal AI had to do
+real work through the Agent CLI, make a whole-task attempt first, split only
+after observed failure, keep splitting until the pieces were solvable, and
+learn from that same execution. The reproducible recipe is
+[`experiments/issue_933_self_authoring/run.sh`](../../../experiments/issue_933_self_authoring/run.sh).
+It launches the optimized `formal-ai` server, invokes the installed `agent`
+executable through `formal-ai agent dispatch --incremental --cli agent`, and
+runs a byte-exact external verifier after every attempt.
+
+The captured trace in
+[`self-hosting-authorship/dispatch-report.json`](self-hosting-authorship/dispatch-report.json)
+is ordered evidence rather than a claimed result:
+
+| Step | Task | Result |
+| --- | --- | --- |
+| 0 | Compound task | Failed exact verification; this failure triggers decomposition. |
+| 1 | Coordination leaf | Passed. |
+| 2 | Author the variation-floor contract | Passed; copied byte-for-byte to `data/meta/conversational-variation-floor-contract.lino`. |
+| 3 | Author the learning-observation record | Passed. |
+| 4 | Retry the compound parent over the composed workspace | Passed. |
+
+Every step has a replayable JSON record under
+[`self-hosting-authorship/sessions/`](self-hosting-authorship/sessions/),
+including its native `ses_...` identifier and resume command. The two authored
+deliverables are independently checkable leaves. The complete work breakdown
+in [`decomposition.lino`](self-hosting-authorship/decomposition.lino) assigns
+two of six smallest deliverable leaves to Formal AI through Agent CLI: 33%,
+above the contributing floor.
+
+Task execution and learning are now the same general lifecycle, not two case-
+study-only commands. `src/orchestration/incremental.rs` converts every recorded
+step/session pair into a client-contract observation and invokes the existing
+learner before returning the dispatch report. This run therefore produces
+[`learning.lino`](self-hosting-authorship/learning.lino) with
+`observation_count "5"`. It detects four possible Agent integration contract
+updates, but each says `decision "awaiting_human_review"`: execution can propose
+what it learned and preserve the evidence, never approve its own extension.
+`tests/integration/issue_991_incremental_dispatch.rs` pins that behavior for
+every future incremental run; `tests/unit/issue_933_self_authoring.rs` pins this
+real run, its split/climb trace, native sessions, byte-identical authored file,
+learning gate and 33% decomposition.
+
+## 11. Cross-runtime normalization defect found by the contract
+
+The original documentation said the Node gate and Rust runner applied the same
+normalization, but a compatibility-character probe disproved it. JavaScript
+lowercased and applied NFKC before discarding Unicode punctuation, symbol and
+separator categories. Rust only lowercased and retained `is_alphanumeric()`.
+Consequently fullwidth `Ａ` and ASCII `A` counted as one wording in Node but two
+in Rust; worse, Rust discarded the combining vowel mark in `का`, collapsing it
+onto `क`, while Node preserved the distinction.
+
+The Rust implementation now uses `unicode-normalization` for NFKC and
+`unicode-general-category` for the same P/S/Z category families as the Node
+regular expression. Letters, numbers and combining marks remain. Both suites
+pin the same three examples: `Ａ == A`, `１ == 1`, and `क != का`. This makes the
+Agent-authored normalization contract executable in both runtimes rather than
+merely descriptive.
