@@ -334,6 +334,21 @@ meanings
     lexeme en
       surface
         text "response document originality check sample missing ru"
+  response_external_benchmark_ascent_missing_rule_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark ascent missing rule hi"
+  response_external_benchmark_ascent_prompt_prefix_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark ascent prompt prefix es"
+  response_external_benchmark_invalid_rust_string_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark invalid rust string zh"
   response_external_benchmark_learning_task_en
     defined-by response_template
     lexeme en
@@ -344,11 +359,26 @@ meanings
     lexeme en
       surface
         text "response external benchmark parquet module unavailable en"
+  response_external_benchmark_proof_query_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark proof query zh"
+  response_external_benchmark_proof_status_detail_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark proof status detail hi"
   response_external_benchmark_swe_docker_error_en
     defined-by response_template
     lexeme en
       surface
         text "response external benchmark swe docker error en"
+  response_external_benchmark_upstream_missing_end_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark upstream missing end es"
   response_general_plan_command_capture_action_ru
     defined-by response_template
     lexeme en
@@ -549,6 +579,11 @@ meanings
     lexeme en
       surface
         text "response pattern sequence report zh"
+  response_proof_datalog_conclusion_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response proof datalog conclusion es"
   response_skill_gap_name_hi
     defined-by response_template
     lexeme en

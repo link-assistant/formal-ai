@@ -395,6 +395,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-10.lino"
     record "pattern_concept_prefix_definition_of"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_9d6d453b7075a404
+    source "data/seed/closure-generated-10.lino"
+    record "response_external_benchmark_ascent_missing_rule_hi"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_50b73bb27cd5bd04
     source "data/seed/closure-generated-10.lino"
     record "response_external_benchmark_parquet_module_unavailable_en"
@@ -586,6 +590,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_a11765923a07c474
     source "data/seed/closure-generated-14.lino"
     record "pattern_concept_context_delimiter_v_ramkakh_ru"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_3846ad8b44223a54
+    source "data/seed/closure-generated-14.lino"
+    record "response_external_benchmark_upstream_missing_end_en"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_d73b73be3b3d7974
     source "data/seed/closure-generated-14.lino"

@@ -142,6 +142,13 @@ fn parse_case(
                 },
             })
         }
+        "egg_math" | "ascent_transitive_closure" => Ok(BenchmarkCase {
+            id: string_field(value, "id", manifest, index)?,
+            prompt: string_field(value, "prompt", manifest, index)?,
+            expectation: Expectation::Value {
+                expected: string_field(value, "expected", manifest, index)?,
+            },
+        }),
         "swebench_lite" => {
             let instance = string_field(value, "instance_id", manifest, index)?;
             let statement = string_field(value, "problem_statement", manifest, index)?;

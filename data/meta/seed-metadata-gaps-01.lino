@@ -179,6 +179,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-04.lino"
     record "response_concept_lookup_in_context_no_alias_hi"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_cdb6a9f341ffe941
+    source "data/seed/closure-generated-04.lino"
+    record "response_external_benchmark_upstream_missing_start_zh"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_9b4216d9e9d7c591
     source "data/seed/closure-generated-04.lino"
     record "response_how_to_guide_heading_hi"
@@ -310,6 +314,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_cb5ed461e17d3661
     source "data/seed/closure-generated-06.lino"
     record "pattern_x_kaise_kaam_karti_suffix_hi"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_cb42e0ae46ca8221
+    source "data/seed/closure-generated-06.lino"
+    record "response_external_benchmark_proof_expected_event_hi"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_0c681ba6b7799591
     source "data/seed/closure-generated-06.lino"
@@ -695,6 +703,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-15.lino"
     record "response_definition_merge_sources_label_en"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_b7aa52da8091f791
+    source "data/seed/closure-generated-15.lino"
+    record "response_external_benchmark_ascent_missing_rule_ru"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_0d98e273b6efce61
     source "data/seed/closure-generated-15.lino"
     record "response_lexeme_import_no_clean_alias_zh"
@@ -710,6 +722,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_4aaeeb43ce8e6231
     source "data/seed/closure-generated-16.lino"
     record "conversation_preference"
+    missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_f217bac772af7181
+    source "data/seed/closure-generated-16.lino"
+    record "external_benchmark_rust_adapter_missing"
     missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_f34ed5a629e5add1
     source "data/seed/closure-generated-16.lino"

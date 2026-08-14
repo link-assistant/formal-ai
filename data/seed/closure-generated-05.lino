@@ -459,6 +459,16 @@ meanings
     lexeme en
       surface
         text "response external benchmark parquet decode error en"
+  response_external_benchmark_rust_adapter_missing_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark rust adapter missing ru"
+  response_external_benchmark_upstream_missing_start_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark upstream missing start hi"
   response_how_to_guide_bounds_es
     defined-by response_template
     lexeme en
@@ -619,6 +629,16 @@ meanings
     lexeme en
       surface
         text "response physical action question hi"
+  response_proof_datalog_conclusion_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response proof datalog conclusion zh"
+  response_proof_equality_conclusion_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response proof equality conclusion zh"
   response_requirement_contradiction_zh
     defined-by response_template
     lexeme en

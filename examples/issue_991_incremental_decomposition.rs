@@ -96,7 +96,7 @@ fn print_run(run: &RecursiveRun, depth: usize) {
     }
 }
 
-fn marker(run: &RecursiveRun) -> &'static str {
+const fn marker(run: &RecursiveRun) -> &'static str {
     if run.is_passed() {
         "PASS"
     } else {

@@ -2,29 +2,32 @@ self_ast_census
   target src/external_benchmarks/grade.rs
   language rust
   fidelity signature
-  byte_len 17479
-  line_count 533
-  content_id source_module_8be20e75252ac555
-  symbol_count 21
+  byte_len 19430
+  line_count 594
+  content_id source_module_dcf6741ea5dc22fb
+  symbol_count 24
   symbols
-    const PYTHON_TIMEOUT_SECONDS 18 18
-    struct CaseOutcome 22 27
-    function grade_case 31 72
-    function grade_value 74 98
-    function grade_swebench 107 257
-    function fnv1a64 259 266
-    function ensure_swebench_runtime 268 297
-    function outcomes_from_swebench_report 299 350
-    function extract_diff 355 360
-    function failure 362 368
-    function python_available 372 377
-    function run_python 379 412
-    function extract_python 417 422
-    function fenced_block 424 432
-    function final_number 437 455
-    function normalize_number 457 474
-    function final_answer 479 490
-    function last_boxed 492 510
-    function normalize 514 523
-    function truncate 525 533
-    const LIMIT 526 526
+    const PYTHON_TIMEOUT_SECONDS 20 20
+    struct CaseOutcome 24 29
+    function grade_case 33 40
+    function grade_case_with_trace 44 92
+    function grade_proof_status 94 110
+    function structured_trace_has_event 112 132
+    function grade_value 134 159
+    function grade_swebench 168 318
+    function fnv1a64 320 327
+    function ensure_swebench_runtime 329 358
+    function outcomes_from_swebench_report 360 411
+    function extract_diff 416 421
+    function failure 423 429
+    function python_available 433 438
+    function run_python 440 473
+    function extract_python 478 483
+    function fenced_block 485 493
+    function final_number 498 516
+    function normalize_number 518 535
+    function final_answer 540 551
+    function last_boxed 553 571
+    function normalize 575 584
+    function truncate 586 594
+    const LIMIT 587 587
