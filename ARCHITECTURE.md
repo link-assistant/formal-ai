@@ -1439,6 +1439,14 @@ the table in Section 2 and link the new module.
   `src/proof_engine/decision/sat.rs`; wide claims are
   [Tseitin-encoded](https://en.wikipedia.org/wiki/Tseytin_transformation) to CNF
   in `src/proof_engine/decision/boolean.rs` before being handed to it.
+- Issue #923 widens the same decision boundary with bounded equality saturation
+  in `src/proof_engine/decision/equality.rs` and a bounded, function-free
+  Datalog least-fixed-point evaluator in `src/proof_engine/decision/rules.rs`.
+  Equality uses the optional MIT-licensed `egg` dependency behind the default
+  `equality-saturation` feature; an exhausted e-graph search remains
+  inconclusive rather than being reported as a disproof. Rule programs carry
+  explicit `facts`, `rules`, and a ground `query`; resource ceilings turn into
+  an inconclusive result instead of an incomplete-model counterexample.
 
 ### Symbolic world models and contexts (issue #649)
 

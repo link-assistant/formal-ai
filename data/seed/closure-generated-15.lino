@@ -124,6 +124,11 @@ meanings
     lexeme en
       surface
         text "even"
+  external_benchmark_ascent_prompt_prefix
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark ascent prompt prefix"
   external_benchmark_learning_lesson
     defined-by intent
     lexeme en
@@ -444,6 +449,21 @@ meanings
     lexeme en
       surface
         text "response definition merge sources label en"
+  response_external_benchmark_ascent_missing_rule_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark ascent missing rule ru"
+  response_external_benchmark_ascent_prompt_prefix_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark ascent prompt prefix zh"
+  response_external_benchmark_rust_adapter_missing_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark rust adapter missing es"
   response_external_benchmark_swe_unavailable_en
     defined-by response_template
     lexeme en

@@ -20,6 +20,12 @@ pub enum SuiteSource {
         url: &'static str,
         cache_file: &'static str,
     },
+    /// A pinned Rust source file whose own rewrite declarations or executable
+    /// assertions are mechanically adapted into formal proof cases.
+    RustSource {
+        url: &'static str,
+        cache_file: &'static str,
+    },
     /// A pinned upstream parquet payload, converted to JSON records at run
     /// time by the Python environment used by the official evaluator.
     ParquetRows {
@@ -54,6 +60,8 @@ pub enum Grading {
     BoxedAnswer,
     /// Compare the produced text with the gold edited text.
     ExactText,
+    /// Match the solver's structured `proof_outcome` trace event.
+    ProofStatus,
     /// Apply the candidate patch and run the upstream SWE-bench tests.
     SweBenchTests,
     /// Nothing to grade: the suite cannot run.
@@ -69,6 +77,7 @@ impl Grading {
             Self::NumericAnswer => "numeric_answer",
             Self::BoxedAnswer => "boxed_answer",
             Self::ExactText => "exact_text",
+            Self::ProofStatus => "proof_status",
             Self::SweBenchTests => "swebench_tests",
             Self::NotApplicable => "not_applicable",
         }
@@ -109,10 +118,10 @@ impl SuiteManifest {
     #[must_use]
     pub fn download_url(&self) -> Option<String> {
         match &self.source {
-            SuiteSource::JsonLines { url, .. } | SuiteSource::BigBenchTask { url, .. } => {
-                Some((*url).to_string())
-            }
-            SuiteSource::ParquetRows { url, .. } => Some((*url).to_string()),
+            SuiteSource::JsonLines { url, .. }
+            | SuiteSource::BigBenchTask { url, .. }
+            | SuiteSource::RustSource { url, .. }
+            | SuiteSource::ParquetRows { url, .. } => Some((*url).to_string()),
             SuiteSource::Unavailable => None,
         }
     }
@@ -122,6 +131,7 @@ impl SuiteManifest {
         match &self.source {
             SuiteSource::JsonLines { cache_file, .. }
             | SuiteSource::BigBenchTask { cache_file, .. }
+            | SuiteSource::RustSource { cache_file, .. }
             | SuiteSource::ParquetRows { cache_file, .. } => Some(cache_file),
             SuiteSource::Unavailable => None,
         }
@@ -238,6 +248,36 @@ pub const SUITES: &[SuiteManifest] = &[
             gzip: false,
         },
         grading: Grading::ExactText,
+        availability: Availability::Runnable,
+    },
+    SuiteManifest {
+        id: "egg_math",
+        title: "egg math rewrite laws",
+        task_family: "equality_saturation",
+        license: "MIT",
+        license_url: "https://raw.githubusercontent.com/egraphs-good/egg/2f31b28e3f9d78e02273b6c6d4201b5b0720b343/LICENSE",
+        source_url: "https://github.com/egraphs-good/egg/blob/2f31b28e3f9d78e02273b6c6d4201b5b0720b343/tests/math.rs",
+        source_ref: "github:2f31b28e3f9d78e02273b6c6d4201b5b0720b343",
+        source: SuiteSource::RustSource {
+            url: "https://raw.githubusercontent.com/egraphs-good/egg/2f31b28e3f9d78e02273b6c6d4201b5b0720b343/tests/math.rs",
+            cache_file: "egg-math.rs",
+        },
+        grading: Grading::ProofStatus,
+        availability: Availability::Runnable,
+    },
+    SuiteManifest {
+        id: "ascent_transitive_closure",
+        title: "Ascent transitive graph closure",
+        task_family: "rule_inference",
+        license: "MIT",
+        license_url: "https://raw.githubusercontent.com/s-arash/ascent/cf5e9a87525bb95268cf6680a59882264b0fe0de/LICENSE",
+        source_url: "https://github.com/s-arash/ascent/blob/cf5e9a87525bb95268cf6680a59882264b0fe0de/ascent/examples/transitive_graph_closure.rs",
+        source_ref: "github:cf5e9a87525bb95268cf6680a59882264b0fe0de",
+        source: SuiteSource::RustSource {
+            url: "https://raw.githubusercontent.com/s-arash/ascent/cf5e9a87525bb95268cf6680a59882264b0fe0de/ascent/examples/transitive_graph_closure.rs",
+            cache_file: "ascent-transitive-graph-closure.rs",
+        },
+        grading: Grading::ProofStatus,
         availability: Availability::Runnable,
     },
     SuiteManifest {
