@@ -1,0 +1,1 @@
+Formal reasoning remains auditable when equality is discharged by bounded e-graph saturation and rule consequences by a bounded Datalog least fixed point.
