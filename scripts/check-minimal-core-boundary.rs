@@ -21,6 +21,14 @@ use walkdir::WalkDir;
 
 const LEDGER_PATH: &str = "data/meta/core-boundary-ledger.lino";
 const HANDLER_ROOT: &str = "src/solver_handlers";
+/// The generated `mod` list issue #991 split out of each `mod.rs`.
+///
+/// It holds one `mod` line per sibling file and nothing else, rewritten by
+/// `rust-script scripts/normalize-ordered-lists.rs --write`, so it is not
+/// handler debt: it has no domain knowledge to migrate into data, and giving it
+/// a reviewed line count would put a number that *every* added handler changes
+/// back into a shared file -- the exact conflict the split exists to remove.
+const GENERATED_MODULE_LIST: &str = "modules.rs";
 
 #[derive(Debug, Default, PartialEq, Eq)]
 struct Ledger {
@@ -117,13 +125,32 @@ fn parse_ledger(text: &str) -> Result<Ledger, String> {
     Ok(ledger)
 }
 
-fn source_files(root: &Path) -> Result<BTreeMap<String, usize>, String> {
+/// Whether a file below the handler root carries handler debt.
+///
+/// Compiled Rust, minus the generated `mod` list: a file that only names its
+/// siblings states no domain knowledge, so it can neither be migrated to data
+/// nor promoted into the minimal core.
+fn is_handler_source(path: &Path) -> bool {
+    path.extension().is_some_and(|value| value == "rs")
+        && path
+            .file_name()
+            .is_some_and(|name| name != GENERATED_MODULE_LIST)
+}
+
+/// Every compiled handler source below `src/solver_handlers`, with its line
+/// count.
+///
+/// Public because the unit suite compiles this script as a module
+/// (`tests/unit/issue_918.rs`) and asks the same question the gate asks -- which
+/// files are handler debt -- through this function, rather than walking the
+/// directory a second time with rules that could drift from the gate's.
+pub fn source_files(root: &Path) -> Result<BTreeMap<String, usize>, String> {
     let mut files = BTreeMap::new();
     let scan_root = root.join(HANDLER_ROOT);
     for entry in WalkDir::new(&scan_root) {
         let entry = entry.map_err(|error| format!("walk {HANDLER_ROOT}: {error}"))?;
         let path = entry.path();
-        if !entry.file_type().is_file() || path.extension().is_none_or(|value| value != "rs") {
+        if !entry.file_type().is_file() || !is_handler_source(path) {
             continue;
         }
         let relative = path
@@ -339,5 +366,24 @@ mod tests {
         let errors = audit(&sample_ledger(), &files).join("\n");
         assert!(errors.contains("domain.rs grew from 3 to 4"));
         assert!(errors.contains("unledgered handler source src/solver_handlers/nested/new.rs"));
+    }
+
+    #[test]
+    fn a_generated_module_list_is_not_handler_debt() {
+        // Issue #991 split each `mod.rs`'s declaration list into `modules.rs` so
+        // two branches adding handlers touch different lines. That file is
+        // generated and holds no domain knowledge, so the burn-down ratchet must
+        // not ask it to migrate -- and must not count it, or adding a handler
+        // would move a ceiling shared by every branch.
+        assert!(is_handler_source(Path::new(
+            "src/solver_handlers/domain.rs"
+        )));
+        assert!(!is_handler_source(Path::new(
+            "src/solver_handlers/modules.rs"
+        )));
+        assert!(is_handler_source(Path::new("src/solver_handlers/mod.rs")));
+        assert!(!is_handler_source(Path::new(
+            "src/solver_handlers/README.md"
+        )));
     }
 }

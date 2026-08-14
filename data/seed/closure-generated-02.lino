@@ -309,6 +309,11 @@ meanings
     lexeme en
       surface
         text "plagiaris"
+  primary
+    defined-by concept
+    lexeme en
+      surface
+        text "primary"
   rather
     defined-by concept
     lexeme en
@@ -409,6 +414,11 @@ meanings
     lexeme en
       surface
         text "response greeting zh"
+  response_how_to_guide_source_outcome_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide source outcome hi"
   response_lexeme_import_cache_unreadable_ru
     defined-by response_template
     lexeme en

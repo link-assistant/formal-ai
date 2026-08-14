@@ -1,0 +1,4 @@
+source-capture-v2
+url=https://api.stackexchange.com/2.3/search/advanced?order=desc&sort=relevance&q=build%20a%20nonexistent%20quantum%20flux%20capacitor&site=stackoverflow&filter=withbody
+fetched_at=1786392355
+sha256=4ac87595f05579ae0817ae44edea7b4773e5abae449dcbef721e88c7d869224f

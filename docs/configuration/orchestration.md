@@ -154,6 +154,55 @@ post-run hashes, preventing workspace or candidate drift from being composed.
 Failed candidates remain isolated. Duplicate CLI ids are rejected before any
 worker starts. `--max-depth` controls the decomposition bound.
 
+## Split only what actually fails
+
+`--decompose` plans before it has evidence: it splits the task whether or not
+the CLI needed the split. `--incremental` inverts that order. The whole task is
+attempted first, and only a failure justifies a split:
+
+```bash
+formal-ai agent dispatch \
+  --cli codex,claude \
+  --incremental \
+  --task "add a README badge and write a release note" \
+  --workspace /tmp/example-repository
+```
+
+The protocol is the repository's own failure-driven controller
+(`solve_recursively`) with the repository's own splitter behind its split hook,
+one level per split, so every deeper split is justified by a failure that
+actually happened. A passing attempt's effects are applied to the workspace
+before the next attempt starts, so the pieces build on each other and the
+parent's retry sees their work. A task that the splitter cannot shrink is
+irreducible; it is escalated to the next CLI in `--cli`, and when that list is
+exhausted it is reported blocked rather than silently retried.
+
+The report gains an `incremental` section listing every attempt, every split
+with the failure evidence that caused it, and every blocked task — the exact
+input a reviewer needs to decide what capability is missing. Exit status
+reflects the root task only: pieces are allowed to fail on the way to solving
+it.
+
+Each blocked task also becomes a proposal, mirrored to `proposals.lino` in the
+output directory:
+
+```lino
+incremental_proposals
+incremental_proposal "incremental_proposal_cdea3001ce44c46f"
+  task "Add dev/log/ to the excluded_folders array."
+  tried_cli "codex"
+  tried_cli "claude"
+  failure_evidence "cli:codex status:Failed exit:7 verification:"
+  failure_evidence "cli:claude status:Failed exit:7 verification:"
+  status "human_review_required"
+```
+
+A run cannot approve its own extension, so the status is always
+`human_review_required` — the same gate a learned decomposition strategy passes
+through before it may be used. A run that solved everything still writes the
+document, empty but for its header, because "nothing to propose" and "the run
+never got that far" are different answers.
+
 ## Resume a disproved result in the exact native session
 
 Registered adapters retain a stable, workspace-scoped client home under

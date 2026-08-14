@@ -84,6 +84,11 @@ meanings
     lexeme en
       surface
         text "gui"
+  how_to_guide_insufficient_evidence
+    defined-by intent
+    lexeme en
+      surface
+        text "how to guide insufficient evidence"
   http_fetch_curated_project
     defined-by intent
     lexeme en
@@ -369,6 +374,21 @@ meanings
     lexeme en
       surface
         text "response general plan completed ru"
+  response_how_to_guide_bounds_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide bounds en"
+  response_how_to_guide_citation_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide citation zh"
+  response_how_to_guide_copies_heading_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide copies heading zh"
   response_lexeme_import_cannot_stage_zh
     defined-by response_template
     lexeme en
@@ -704,6 +724,11 @@ meanings
     lexeme en
       surface
         text "search fusion header"
+  secondary
+    defined-by concept
+    lexeme en
+      surface
+        text "secondary"
   selector
     defined-by word_surface
     lexeme en

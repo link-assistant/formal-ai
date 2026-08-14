@@ -845,6 +845,14 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
   if (!task) return null;
 
   const query = `how to ${task.task}`;
+  // Issue #991: the browser and the Rust solver run the same bounded
+  // multi-source synthesis (worker module 24, mirroring `src/how_to_guide.rs`).
+  // When it captures enough corroborated steps the answer *is* the synthesised
+  // guide, with the provenance of every step. When it does not — no service
+  // reachable, no relevant page, fewer steps than the minimum — the existing
+  // plan below still runs, so this is a strict superset of prior behavior.
+  const synthesized = await trySynthesizedHowToGuide(task, preferences);
+  if (synthesized) return synthesized;
   const searchQuery = proceduralSearchQuery(task);
   const pageTitle = wikiHowPageTitle(task.task);
   const apiUrl = wikiHowParseApiUrl(pageTitle);

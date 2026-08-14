@@ -262,65 +262,18 @@ jobs:
           # GitHub supports queue; actionlint schema lag: https://github.com/rhysd/actionlint/issues/657
           /tmp/actionlint -color \
             -ignore 'unexpected key "queue" for "concurrency" section'
-      - name: Lint shell scripts
-        run: bash scripts/lint-shell-scripts.sh
-      - name: Check formatting
-        run: cargo fmt --all -- --check
-      - name: Verify Cargo.lock is synchronized
-        run: cargo metadata --locked --format-version 1 > /dev/null
-      - name: Run Clippy
-        run: cargo clippy --lib --bins --tests --all-features -- -D warnings && cargo check --examples --all-features
-      - name: Validate Rust API documentation
-        env:
-          RUSTDOCFLAGS: -D warnings
-        run: cargo doc --no-deps --lib
-      - name: Validate docs.rs dependency profile
-        env:
-          DOCS_RS: 1
-          RUSTDOCFLAGS: -D warnings
-        run: cargo doc --no-deps --lib --no-default-features
-      - name: Check semantic grounding
-        run: cargo test --test unit semantic_grounding -- --nocapture
-      - name: Check file size limit
+      - name: Run registered gates (stage rust)
+        # Issue #991: the gate list lives in data/meta/ci-gates/, one file per
+        # gate, so adding a gate no longer edits this file.
         env:
           FILE_SIZE_WARNING_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
-        run: rust-script scripts/check-file-size.rs
-      - name: Test cache bucket budget check
-        run: rust-script --test scripts/check-cache-budget.rs
-      - name: Check cache bucket budget
-        run: rust-script scripts/check-cache-budget.rs
-      - name: Test tests-as-docs check
-        run: rust-script --test scripts/check-tests-as-docs.rs
-      - name: Check tests document exact answers
-        run: rust-script scripts/check-tests-as-docs.rs
-      - name: Test pull-request link check
-        run: rust-script --test scripts/check-pull-request-link.rs
-      - name: Check pull-request links its issue
-        env:
           PR_BODY: ${{ github.event.pull_request.body }}
-        run: rust-script scripts/check-pull-request-link.rs
-      - name: Check associative terminology
-        run: rust-script scripts/check-associative-terminology.rs
-      - name: Check hardcoded natural language
-        run: rust-script scripts/check-hardcoded-language.rs
-      - name: Check minimal-core boundary and seed metadata (issue #918)
-        run: rust-script --test scripts/check-minimal-core-boundary.rs && rust-script scripts/check-minimal-core-boundary.rs && rust-script --test scripts/audit-seed-metadata.rs && rust-script scripts/audit-seed-metadata.rs
-      - name: Check development disk policy
-        run: rust-script scripts/check-disk-usage-policy.rs
-      - name: Check worker JS line budget
-        run: rust-script scripts/check-worker-line-budget.rs
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+        run: rust-script scripts/run-ci-gates.rs --stage rust
       - name: Build Rust→WASM worker
         run: sh src/web/wasm-worker/build.sh
-      - name: Check wasm-worker size budget
-        run: rust-script scripts/check-wasm-worker-size.rs
-      - name: Test release changelog collection
-        run: rust-script --test scripts/version-and-commit.rs
-      - name: Test coverage ratchet
-        run: rust-script --test scripts/check-coverage-ratchet.rs
-      - name: Test fragment release map regeneration
-        run: node --test experiments/issue_738_fragment_release_map.test.mjs
-      - name: Check reconstructed changelog
-        run: node experiments/issue_711_rebuild_changelog.mjs --check
+      - name: Run registered gates (stage wasm)
+        run: rust-script scripts/run-ci-gates.rs --stage wasm
       - name: Install web bundle dependencies
         run: bun install --frozen-lockfile
       - name: Build web vendor bundle
@@ -335,30 +288,10 @@ jobs:
           cache-dependency-path: tests/e2e/package-lock.json
       - name: Install web test dependencies
         run: npm ci --prefix tests/e2e
-      - name: Check i18n catalog coverage
-        run: npm run --prefix tests/e2e check:i18n
-      - name: Check language change parity
+      - name: Run registered gates (stage web)
         env:
           GITHUB_BASE_REF: ${{ github.base_ref }}
-        run: npm run --prefix tests/e2e check:language-parity
-      - name: Check language test coverage
-        env:
-          GITHUB_BASE_REF: ${{ github.base_ref }}
-        run: npm run --prefix tests/e2e check:language-test-coverage
-      - name: Check multilingual intent coverage
-        run: npm run --prefix tests/e2e check:intent-coverage
-      - name: Check web app for hook TDZ ordering bugs
-        run: npm run --prefix tests/e2e check:web-tdz
-      - name: Check web app for hardcoded user-facing strings
-        run: npm run --prefix tests/e2e check:web-hardcoded-ui
-      - name: Check terminal vocabulary worker seed wiring
-        run: node experiments/issue-513-sync-worker-terminal.mjs --check
-      - name: Run VS Code extension node tests
-        run: npm run vscode:test
-      - name: Run desktop packaging regression tests
-        run: node --test desktop/scripts/adhoc-sign-mac.test.cjs desktop/scripts/prepare-resources.test.mjs
-      - name: Run desktop library tests
-        run: bash scripts/run-desktop-lib-tests.sh
+        run: rust-script scripts/run-ci-gates.rs --stage web
   test:
     name: Test (${{ matrix.os }} / ${{ matrix.test-suite }})
     runs-on: ${{ matrix.os }}

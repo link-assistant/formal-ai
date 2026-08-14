@@ -7,8 +7,9 @@ migration honest: it records where every capability lives today, what already
 runs in WASM, and the slices that move the remainder across.
 
 It is intentionally a living document. Each migration slice should update the
-"Owner" column below and lower `CEILING_TOTAL_LINES` in
-`scripts/check-worker-line-budget.rs` so the reduction is locked in.
+"Owner" column below and rerun `rust-script scripts/check-worker-line-budget.rs
+--write` so the reduction is locked into the per-module ceilings under
+`data/meta/worker-line-budget/`.
 
 ## Current state (2026-07)
 
@@ -106,7 +107,8 @@ and the `tests/e2e/` Playwright suites hold behaviour constant at each step.
    `normalize*`/`strip*` helpers into `web_engine_core`.
 
 After each slice: run the parity + e2e suites, rebuild and commit the `.wasm`,
-and lower `CEILING_TOTAL_LINES` to the new worker line total.
+and rerun `rust-script scripts/check-worker-line-budget.rs --write` to lower the
+ceiling of every module the slice shrank.
 
 ## Enforcement (CI)
 

@@ -1,0 +1,48 @@
+self_ast_census
+  target src/solver_handlers/modules.rs
+  language rust
+  fidelity signature
+  byte_len 1342
+  line_count 47
+  content_id source_module_b5fa9c994c6066a7
+  symbol_count 39
+  symbols
+    module agent_workspace 9 9
+    module behavior_rule_followups 10 10
+    module behavior_rule_matching 11 11
+    module behavior_rules 12 12
+    module benchmark_prompts 13 13
+    module calculator_rate 14 14
+    module calendar 15 15
+    module calendar_ics 16 16
+    module compound_interest 17 17
+    module conversation_memory 18 18
+    module curated_project_fetch 19 19
+    module document_originality 20 20
+    module document_request 21 21
+    module fact_checking 22 22
+    module feature_capability 23 23
+    module github_repository_traffic 24 24
+    module installation_conversion 25 25
+    module meta_explanation 26 26
+    module natural_language_tools 27 27
+    module numeric_list 28 28
+    module pattern_inference 29 29
+    module playwright_script 30 30
+    module procedure_rules 31 31
+    module program_blueprint 32 32
+    module program_synthesis 33 33
+    module research_table 34 34
+    module response_language_followup 35 35
+    module self_awareness 36 36
+    module shell_command_transform 37 37
+    module software_project 38 38
+    module software_project_code 39 39
+    module software_project_followup 40 40
+    module task_decomposition 41 41
+    module text_edit_ops 42 42
+    module text_manipulation 43 43
+    module user_intent 44 44
+    module web_requests 45 45
+    module web_search_intent 46 46
+    module world_state 47 47

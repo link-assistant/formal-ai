@@ -1,0 +1,25 @@
+self_ast_census
+  target src/how_to_guide/extract.rs
+  language rust
+  fidelity signature
+  byte_len 12106
+  line_count 367
+  content_id source_module_26073c0eb2aa09ae
+  symbol_count 16
+  symbols
+    const MIN_STEP_CHARS 14 14
+    const MAX_STEP_CHARS 16 16
+    enum Payload 20 52
+    struct ItemEntry 56 66
+    function classify 70 85
+    function classify_value 87 160
+    function string_array 162 173
+    function strip_html 177 192
+    function decode_entities 196 233
+    function compact_step_text 238 250
+    function drop_reference_markers 252 270
+    function collapse_whitespace 272 274
+    function first_sentence 276 292
+    function extract_steps 301 317
+    function list_items 320 340
+    function wiki_link_titles 347 367
