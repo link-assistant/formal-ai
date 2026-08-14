@@ -1,0 +1,34 @@
+self_ast_census
+  target src/box_language_projects.rs
+  language rust
+  fidelity signature
+  byte_len 12790
+  line_count 323
+  content_id source_module_fa31bfe09426ea86
+  symbol_count 25
+  symbols
+    const BOX_LANGUAGE_PROJECTS_LINO 21 21
+    const BOX_IMAGE_SURVEY_LINO 24 24
+    const RECORD_PROJECT 27 27
+    const RECORD_DEFERRED 29 29
+    const RECORD_PROMPT 31 31
+    struct BoxInitStep 35 40
+    struct BoxLanguageProject 44 63
+    function init_commands 67 69
+    function install_guide 74 88
+    struct BoxLanguageDeferral 93 100
+    struct BoxLanguagePrompt 104 109
+    struct BoxLanguageContract 113 136
+    function load 141 143
+    function parse 147 183
+    function project 187 191
+    function image_reference 195 197
+    function prompt_for 201 210
+    struct BoxImageSurvey 216 227
+    function load 232 234
+    function parse 238 262
+    function publishes 266 274
+    function parse_project 277 302
+    function split_tuple 305 311
+    function box_language_contract 315 317
+    function box_image_survey 321 323

@@ -1,0 +1,27 @@
+corpus: python -> /tmp/gh-issue-solver-1786703126334/target/box-language-corpus/python
+== python project generated from the ru prompt, image konard/box-python:2.4.0
+== program (main.py):
+print("Hello, world!")
+== traditional init script:
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Run the mkdir hello-formal-ai step
+mkdir -p hello-formal-ai
+# Run the cp main.py step
+cp main.py hello-formal-ai/main.py
+# Enter the project directory
+cd hello-formal-ai
+# Run the venv .venv step
+python3 -m venv .venv
+# Verify the installation
+.venv/bin/python -m pip --version
+# Run the py_compile main.py step
+.venv/bin/python -m py_compile main.py
+# Run the python main.py step
+.venv/bin/python main.py
+== running the init script
+   | pip 26.1.2 from /tmp/box-language-project/hello-formal-ai/.venv/lib/python3.14/site-packages/pip (python 3.14)
+   | Hello, world!
+ok: python project built and printed Hello, world! inside konard/box-python:2.4.0
+ok: box language projects verified for: python

@@ -638,6 +638,11 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // 31097339962 tipped over into a *cancelled* job that looked like a
         // regression but was only variance.
         ("test-agent-cli-e2e", 32),
+        // Issue #932: per-language matrix leg that pulls one link-foundation/box
+        // image, generates the project from solver answers and runs the
+        // language's traditional init commands inside it. The budget covers a
+        // cold release build plus the image pull.
+        ("box-language-projects", 30),
         // deploy-pages also runs `cargo doc` for the /docs/api reference (issue
         // #479), which compiles the dependency tree on a cold cargo cache.
         // Raised from 20 (PR #965 review): the budget also has to cover the

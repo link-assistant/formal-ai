@@ -56,6 +56,7 @@ mod issue_859_codex;
 mod issue_879_completion;
 mod issue_885_document_audit;
 mod issue_931_local_transports;
+mod issue_932_box_language_projects;
 mod issue_982_memory_upgrade;
 mod issue_982_self_hosting;
 mod issue_991_how_to_http;
