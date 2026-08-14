@@ -1,0 +1,10 @@
+self_ast_census
+  target src/intent_formalization/prompt_relevants.rs
+  language rust
+  fidelity signature
+  byte_len 7561
+  line_count 160
+  content_id source_module_ec713b09300a99c9
+  symbol_count 1
+  symbols
+    function append_prompt_relevants 26 160

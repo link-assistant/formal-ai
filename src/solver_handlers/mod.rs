@@ -20,7 +20,7 @@ pub use document_request::try_document_request;
 pub use fact_checking::try_fact_checking;
 pub use feature_capability::{try_feature_capability, CapabilityRuntime};
 pub use github_repository_traffic::try_github_repository_traffic;
-pub use installation_conversion::try_installation_conversion;
+pub use installation_conversion::{is_install_conversion_request, try_installation_conversion};
 pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
 pub use natural_language_tools::try_natural_language_tool_request;
 pub use numeric_list::{try_numeric_list, try_numeric_list_with_history};

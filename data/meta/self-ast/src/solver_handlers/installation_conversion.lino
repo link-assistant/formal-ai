@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/installation_conversion.rs
   language rust
   fidelity signature
-  byte_len 33491
-  line_count 996
-  content_id source_module_0f4a2a692ff2ee80
+  byte_len 33825
+  line_count 1002
+  content_id source_module_11cdbeacb4ade3de
   symbol_count 51
   symbols
     enum InstallFormat 16 20
@@ -19,42 +19,42 @@ self_ast_census
     function from_prompt 144 164
     function canonical_key 166 179
     function meaning_id 181 183
-    function is_install_conversion_request 186 254
-    function contains_any 256 258
-    function detect_source_format 260 319
-    function detect_target_formats 321 386
-    function push_target 388 392
-    struct FencedBlock 395 398
-    function fenced_blocks 400 429
-    function extract_source_text 431 448
-    function is_shell_fence 450 452
-    function is_powershell_fence 454 456
-    function extract_install_steps 458 483
-    function collect_inline_commands 485 504
-    function collect_bullet_commands 506 526
-    function collect_script_commands 528 537
-    function normalize_script_line 539 545
-    function should_skip_script_line 547 555
-    enum Provenance 562 567
-    function push_command 569 577
-    function looks_like_command 583 628
-    function is_executable_head 633 646
-    function has_shell_operator 649 654
-    function reads_as_prose 659 668
-    const FUNCTION_WORDS 660 663
-    function describe_command 675 680
-    struct ParsedCommand 685 689
-    function parse 692 740
-    function action 743 763
-    function synthesized_description 767 772
-    function classify_verb 779 793
-    function extract_project 795 811
-    function record_conversion 813 841
-    function record_algorithm_construction 843 863
-    function render_conversion 865 891
-    function render_lino 893 934
-    function render_meta_algorithm 936 952
-    function render_markdown_guide 954 963
-    function render_shell_script 965 972
-    function render_powershell_script 974 981
-    function lino_string 983 996
+    function is_install_conversion_request 192 260
+    function contains_any 262 264
+    function detect_source_format 266 325
+    function detect_target_formats 327 392
+    function push_target 394 398
+    struct FencedBlock 401 404
+    function fenced_blocks 406 435
+    function extract_source_text 437 454
+    function is_shell_fence 456 458
+    function is_powershell_fence 460 462
+    function extract_install_steps 464 489
+    function collect_inline_commands 491 510
+    function collect_bullet_commands 512 532
+    function collect_script_commands 534 543
+    function normalize_script_line 545 551
+    function should_skip_script_line 553 561
+    enum Provenance 568 573
+    function push_command 575 583
+    function looks_like_command 589 634
+    function is_executable_head 639 652
+    function has_shell_operator 655 660
+    function reads_as_prose 665 674
+    const FUNCTION_WORDS 666 669
+    function describe_command 681 686
+    struct ParsedCommand 691 695
+    function parse 698 746
+    function action 749 769
+    function synthesized_description 773 778
+    function classify_verb 785 799
+    function extract_project 801 817
+    function record_conversion 819 847
+    function record_algorithm_construction 849 869
+    function render_conversion 871 897
+    function render_lino 899 940
+    function render_meta_algorithm 942 958
+    function render_markdown_guide 960 969
+    function render_shell_script 971 978
+    function render_powershell_script 980 987
+    function lino_string 989 1002
