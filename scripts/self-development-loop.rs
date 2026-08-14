@@ -122,14 +122,12 @@ pub(super) fn merged_self_authored_pull_requests(
 
 pub(super) fn target_from_rows(rows: &[ReleaseRow]) -> u64 {
     rows.iter()
-        .filter(|row| row.metric_version == METRIC_VERSION)
-        .next_back()
-        .map(|row| {
+        .rfind(|row| row.metric_version == METRIC_VERSION)
+        .map_or(0, |row| {
             row.target_percentage_basis_points
                 .unwrap_or(row.trailing_percentage_basis_points)
                 .max(row.trailing_percentage_basis_points)
         })
-        .unwrap_or(0)
 }
 
 pub fn ensure_self_development_release(

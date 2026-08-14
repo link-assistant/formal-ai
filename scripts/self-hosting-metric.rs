@@ -12,6 +12,7 @@
 #![allow(dead_code)]
 
 use std::env;
+use std::fmt::Write as _;
 use std::fs::{self, OpenOptions};
 use std::io::Write;
 use std::path::{Component, Path, PathBuf};
@@ -709,14 +710,10 @@ fn append_release_row(ledger: &Path, row: &ReleaseRow) -> Result<(), String> {
         record.push_str("\"\n");
     }
     if let Some(target) = row.target_percentage_basis_points {
-        record.push_str(&format!(
-            "    target_percentage_basis_points \"{target}\"\n"
-        ));
+        let _ = writeln!(record, "    target_percentage_basis_points \"{target}\"");
     }
     for pull_request in &row.self_authored_pull_requests {
-        record.push_str(&format!(
-            "    self_authored_pull_request \"{pull_request}\"\n"
-        ));
+        let _ = writeln!(record, "    self_authored_pull_request \"{pull_request}\"");
     }
     write!(file, "{record}")
         .map_err(|error| format!("could not append {}: {error}", ledger.display()))
@@ -737,10 +734,11 @@ pub fn release_note_for_tag(ledger: &Path, tag: &str) -> Result<String, String> 
         format_percentage(row.trailing_percentage_basis_points),
     );
     if let Some(target) = row.target_percentage_basis_points {
-        note.push_str(&format!(
+        let _ = write!(
+            note,
             " The non-decreasing release target was **{}**.",
             format_percentage(target)
-        ));
+        );
     }
     if !row.self_authored_pull_requests.is_empty() {
         note.push_str(" Formal AI-authored pull requests: ");
