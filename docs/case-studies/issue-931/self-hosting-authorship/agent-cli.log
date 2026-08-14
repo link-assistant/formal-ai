@@ -1,0 +1,1987 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:11.785Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:11.787Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Finish Formal AI issue #931 by defining the local transport protocol shared by its WebSocket and WebRTC adapters. As one smallest leaf of that same task, create file local-transport-protocol.lino containing exactly\nlocal_transport_protocol\n  record_type \"local_transport_protocol\"\n  default_host \"127.0.0.1\"\n  request_shape \"api_transport_request\"\n  response_shape \"api_transport_response\"\n  router \"handle_api_request_with_headers\"\nlocal_transport_websocket\n  record_type \"local_transport_binding\"\n  transport \"websocket\"\n  server_flag \"--ws\"\n  client_value \"websocket\"\n  framing \"rfc6455_text\"\nlocal_transport_webrtc\n  record_type \"local_transport_binding\"\n  transport \"webrtc\"\n  server_flag \"--webrtc\"\n  client_value \"webrtc\"\n  signaling \"length_prefixed_json\"\n  data_channel \"formal-ai\"\n  ice_policy \"host_only\"\n  central_relay \"false\"\nlocal_transport_storage\n  record_type \"local_transport_invariant\"\n  storage_engine \"shared_memory_store\"\n  new_storage_engine \"false\"\n  permission_router \"shared_api_router\" --disable-stdin --no-summarize-session --compaction-model same --model formal-ai/formal-ai",
+  "workingDirectory": "/tmp/tmp.y6LQ3z6sCm",
+  "scriptPath": "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:11.787Z",
+  "service": "default",
+  "directory": "/tmp/tmp.y6LQ3z6sCm",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:11.788Z",
+  "service": "project",
+  "directory": "/tmp/tmp.y6LQ3z6sCm",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:11.852Z",
+  "service": "storage",
+  "index": 0,
+  "message": "running migration"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:11.856Z",
+  "service": "storage",
+  "index": 1,
+  "message": "running migration"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:11.863Z",
+  "service": "default",
+  "processArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Finish Formal AI issue #931 by defining the local transport protocol shared by its WebSocket and WebRTC adapters. As one smallest leaf of that same task, create file local-transport-protocol.lino containing exactly\nlocal_transport_protocol\n  record_type \"local_transport_protocol\"\n  default_host \"127.0.0.1\"\n  request_shape \"api_transport_request\"\n  response_shape \"api_transport_response\"\n  router \"handle_api_request_with_headers\"\nlocal_transport_websocket\n  record_type \"local_transport_binding\"\n  transport \"websocket\"\n  server_flag \"--ws\"\n  client_value \"websocket\"\n  framing \"rfc6455_text\"\nlocal_transport_webrtc\n  record_type \"local_transport_binding\"\n  transport \"webrtc\"\n  server_flag \"--webrtc\"\n  client_value \"webrtc\"\n  signaling \"length_prefixed_json\"\n  data_channel \"formal-ai\"\n  ice_policy \"host_only\"\n  central_relay \"false\"\nlocal_transport_storage\n  record_type \"local_transport_invariant\"\n  storage_engine \"shared_memory_store\"\n  new_storage_engine \"false\"\n  permission_router \"shared_api_router\"",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-model",
+    "same",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Finish Formal AI issue #931 by defining the local transport protocol shared by its WebSocket and WebRTC adapters. As one smallest leaf of that same task, create file local-transport-protocol.lino containing exactly\nlocal_transport_protocol\n  record_type \"local_transport_protocol\"\n  default_host \"127.0.0.1\"\n  request_shape \"api_transport_request\"\n  response_shape \"api_transport_response\"\n  router \"handle_api_request_with_headers\"\nlocal_transport_websocket\n  record_type \"local_transport_binding\"\n  transport \"websocket\"\n  server_flag \"--ws\"\n  client_value \"websocket\"\n  framing \"rfc6455_text\"\nlocal_transport_webrtc\n  record_type \"local_transport_binding\"\n  transport \"webrtc\"\n  server_flag \"--webrtc\"\n  client_value \"webrtc\"\n  signaling \"length_prefixed_json\"\n  data_channel \"formal-ai\"\n  ice_policy \"host_only\"\n  central_relay \"false\"\nlocal_transport_storage\n  record_type \"local_transport_invariant\"\n  storage_engine \"shared_memory_store\"\n  new_storage_engine \"false\"\n  permission_router \"shared_api_router\"",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-model",
+    "same",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:11.863Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:11.866Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:11.872Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:11.873Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:11.873Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:11.876Z",
+  "service": "config",
+  "path": "/tmp/tmp.y6LQ3z6sCm/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:11.910Z",
+  "service": "models.dev",
+  "path": "/home/box/.cache/link-assistant-agent/models.json",
+  "message": "no cache found, awaiting refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:11.911Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.127Z",
+  "service": "models.dev",
+  "path": "/home/box/.cache/link-assistant-agent/models.json",
+  "message": "cache unavailable, using bundled data"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.238Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.259Z",
+  "service": "claude-oauth",
+  "path": "/home/box/.claude/.credentials.json",
+  "message": "credentials file not found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.260Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.260Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.260Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.260Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.261Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.261Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 395,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.262Z",
+  "service": "provider",
+  "modelID": "big-pickle",
+  "providerID": "opencode",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.263Z",
+  "service": "provider",
+  "modelID": "minimax-m2.5-free",
+  "providerID": "kilo",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.263Z",
+  "service": "default",
+  "models": [
+    "opencode/big-pickle",
+    "kilo/minimax-m2.5-free",
+    "same"
+  ],
+  "source": "default",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-08-14T06:26:12.263Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.302Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.302Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.306Z",
+  "service": "session",
+  "id": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/tmp/tmp.y6LQ3z6sCm",
+  "title": "New session - 2026-08-14T06:26:12.306Z",
+  "time": {
+    "created": 1786688772306,
+    "updated": 1786688772306
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.309Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.309Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.310Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 8,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.312Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.313Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_0010ce72effeGX9asCkWbyLGd9/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.313Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_0010ce72effeGX9asCkWbyLGd9/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.331Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 18,
+  "method": "POST",
+  "path": "/session/ses_0010ce72effeGX9asCkWbyLGd9/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.342Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.351Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.353Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.357Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.368Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.369Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.370Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.371Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.372Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.372Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.372Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 1,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.372Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.372Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.372Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.372Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.372Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.373Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.373Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 1,
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:12.373Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.258Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.271Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.273Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.311Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.329Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.350Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.350Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.351Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.351Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.535Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1786688773535,
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "part": {
+    "id": "prt_ffef31d8a001M5xyZ2zz9Dx03R",
+    "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+    "messageID": "msg_ffef31c930012r7mO5Rc5DMqBZ",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.541Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.546Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1786688773546,
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "part": {
+    "id": "prt_ffef31da50016jX2Kh7th0eeHU",
+    "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+    "messageID": "msg_ffef31c930012r7mO5Rc5DMqBZ",
+    "type": "tool",
+    "callID": "call_a407a1c13a603024",
+    "tool": "write",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.547Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1786688773547,
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "part": {
+    "id": "prt_ffef31d9f001yz0zJLRSyHbB13",
+    "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+    "messageID": "msg_ffef31c930012r7mO5Rc5DMqBZ",
+    "type": "text",
+    "text": "Let me update .formal-ai/general-change-plan.lino for you.",
+    "time": {
+      "start": 1786688773546,
+      "end": 1786688773546
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.549Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1786688773549,
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "part": {
+    "id": "prt_ffef31da50016jX2Kh7th0eeHU",
+    "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+    "messageID": "msg_ffef31c930012r7mO5Rc5DMqBZ",
+    "type": "tool",
+    "callID": "call_a407a1c13a603024",
+    "tool": "write",
+    "state": {
+      "status": "running",
+      "input": {
+        "content": "general_change_plan\n  id \"general_change_plan_4d2f7b74eaac25b0\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"Finish Formal AI issue #931 by defining the local transport protocol shared by its WebSocket and WebRTC adapters. As one smallest leaf of that same task, create file local-transport-protocol.lino containing exactly\\nlocal_transport_protocol\\n  record_type \\\"local_transport_protocol\\\"\\n  default_host \\\"127.0.0.1\\\"\\n  request_shape \\\"api_transport_request\\\"\\n  response_shape \\\"api_transport_response\\\"\\n  router \\\"handle_api_request_with_headers\\\"\\nlocal_transport_websocket\\n  record_type \\\"local_transport_binding\\\"\\n  transport \\\"websocket\\\"\\n  server_flag \\\"--ws\\\"\\n  client_value \\\"websocket\\\"\\n  framing \\\"rfc6455_text\\\"\\nlocal_transport_webrtc\\n  record_type \\\"local_transport_binding\\\"\\n  transport \\\"webrtc\\\"\\n  server_flag \\\"--webrtc\\\"\\n  client_value \\\"webrtc\\\"\\n  signaling \\\"length_prefixed_json\\\"\\n  data_channel \\\"formal-ai\\\"\\n  ice_policy \\\"host_only\\\"\\n  central_relay \\\"false\\\"\\nlocal_transport_storage\\n  record_type \\\"local_transport_invariant\\\"\\n  storage_engine \\\"shared_memory_store\\\"\\n  new_storage_engine \\\"false\\\"\\n  permission_router \\\"shared_api_router\\\"\"\n  target \"local-transport-protocol.lino\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_2281a3eb0ef51ecb\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to local-transport-protocol.lino\"\n    expected_evidence \"workspace file local-transport-protocol.lino\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"local_transport_protocol\\n  record_type \\\"local_transport_protocol\\\"\\n  default_host \\\"127.0.0.1\\\"\\n  request_shape \\\"api_transport_request\\\"\\n  response_shape \\\"api_transport_response\\\"\\n  router \\\"handle_api_request_with_headers\\\"\\nlocal_transport_websocket\\n  record_type \\\"local_transport_binding\\\"\\n  transport \\\"websocket\\\"\\n  server_flag \\\"--ws\\\"\\n  client_value \\\"websocket\\\"\\n  framing \\\"rfc6455_text\\\"\\nlocal_transport_webrtc\\n  record_type \\\"local_transport_binding\\\"\\n  transport \\\"webrtc\\\"\\n  server_flag \\\"--webrtc\\\"\\n  client_value \\\"webrtc\\\"\\n  signaling \\\"length_prefixed_json\\\"\\n  data_channel \\\"formal-ai\\\"\\n  ice_policy \\\"host_only\\\"\\n  central_relay \\\"false\\\"\\nlocal_transport_storage\\n  record_type \\\"local_transport_invariant\\\"\\n  storage_engine \\\"shared_memory_store\\\"\\n  new_storage_engine \\\"false\\\"\\n  permission_router \\\"shared_api_router\\\"\"\n    command \"cat local-transport-protocol.lino\"\n  verification_command \"cat local-transport-protocol.lino\"\n",
+        "filePath": "/tmp/tmp.y6LQ3z6sCm/.formal-ai/general-change-plan.lino"
+      },
+      "time": {
+        "start": 1786688773547
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.573Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1786688773573,
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "part": {
+    "id": "prt_ffef31da50016jX2Kh7th0eeHU",
+    "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+    "messageID": "msg_ffef31c930012r7mO5Rc5DMqBZ",
+    "type": "tool",
+    "callID": "call_a407a1c13a603024",
+    "tool": "write",
+    "state": {
+      "status": "completed",
+      "input": {
+        "content": "general_change_plan\n  id \"general_change_plan_4d2f7b74eaac25b0\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"Finish Formal AI issue #931 by defining the local transport protocol shared by its WebSocket and WebRTC adapters. As one smallest leaf of that same task, create file local-transport-protocol.lino containing exactly\\nlocal_transport_protocol\\n  record_type \\\"local_transport_protocol\\\"\\n  default_host \\\"127.0.0.1\\\"\\n  request_shape \\\"api_transport_request\\\"\\n  response_shape \\\"api_transport_response\\\"\\n  router \\\"handle_api_request_with_headers\\\"\\nlocal_transport_websocket\\n  record_type \\\"local_transport_binding\\\"\\n  transport \\\"websocket\\\"\\n  server_flag \\\"--ws\\\"\\n  client_value \\\"websocket\\\"\\n  framing \\\"rfc6455_text\\\"\\nlocal_transport_webrtc\\n  record_type \\\"local_transport_binding\\\"\\n  transport \\\"webrtc\\\"\\n  server_flag \\\"--webrtc\\\"\\n  client_value \\\"webrtc\\\"\\n  signaling \\\"length_prefixed_json\\\"\\n  data_channel \\\"formal-ai\\\"\\n  ice_policy \\\"host_only\\\"\\n  central_relay \\\"false\\\"\\nlocal_transport_storage\\n  record_type \\\"local_transport_invariant\\\"\\n  storage_engine \\\"shared_memory_store\\\"\\n  new_storage_engine \\\"false\\\"\\n  permission_router \\\"shared_api_router\\\"\"\n  target \"local-transport-protocol.lino\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_2281a3eb0ef51ecb\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to local-transport-protocol.lino\"\n    expected_evidence \"workspace file local-transport-protocol.lino\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"local_transport_protocol\\n  record_type \\\"local_transport_protocol\\\"\\n  default_host \\\"127.0.0.1\\\"\\n  request_shape \\\"api_transport_request\\\"\\n  response_shape \\\"api_transport_response\\\"\\n  router \\\"handle_api_request_with_headers\\\"\\nlocal_transport_websocket\\n  record_type \\\"local_transport_binding\\\"\\n  transport \\\"websocket\\\"\\n  server_flag \\\"--ws\\\"\\n  client_value \\\"websocket\\\"\\n  framing \\\"rfc6455_text\\\"\\nlocal_transport_webrtc\\n  record_type \\\"local_transport_binding\\\"\\n  transport \\\"webrtc\\\"\\n  server_flag \\\"--webrtc\\\"\\n  client_value \\\"webrtc\\\"\\n  signaling \\\"length_prefixed_json\\\"\\n  data_channel \\\"formal-ai\\\"\\n  ice_policy \\\"host_only\\\"\\n  central_relay \\\"false\\\"\\nlocal_transport_storage\\n  record_type \\\"local_transport_invariant\\\"\\n  storage_engine \\\"shared_memory_store\\\"\\n  new_storage_engine \\\"false\\\"\\n  permission_router \\\"shared_api_router\\\"\"\n    command \"cat local-transport-protocol.lino\"\n  verification_command \"cat local-transport-protocol.lino\"\n",
+        "filePath": "/tmp/tmp.y6LQ3z6sCm/.formal-ai/general-change-plan.lino"
+      },
+      "output": "",
+      "title": "tmp/tmp.y6LQ3z6sCm/.formal-ai/general-change-plan.lino",
+      "metadata": {
+        "diagnostics": {},
+        "filepath": "/tmp/tmp.y6LQ3z6sCm/.formal-ai/general-change-plan.lino",
+        "exists": false
+      },
+      "time": {
+        "start": 1786688773547,
+        "end": 1786688773570
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.582Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1786688773582,
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "part": {
+    "id": "prt_ffef31dc9001an1vbIcValu1QO",
+    "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+    "messageID": "msg_ffef31c930012r7mO5Rc5DMqBZ",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 9456,
+      "output": 3122,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 12578,
+      "headroom": 26278,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.582Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.583Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.599Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.599Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.615Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.615Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.616Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.616Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.633Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.633Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.635Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.635Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 12578,
+  "providerTokens": 12578,
+  "estimatedInputTokens": 245,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 9456,
+    "cacheRead": 0,
+    "output": 3122
+  },
+  "overflow": false,
+  "headroom": 39230,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.636Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.636Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.660Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.667Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.748Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1786688773748,
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "part": {
+    "id": "prt_ffef31e70001IV3Z0jEVZadWIK",
+    "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+    "messageID": "msg_ffef31e03001SnV2l9WXQ8mu70",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.749Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.750Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1786688773750,
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "part": {
+    "id": "prt_ffef31e75001c0e57Od75SkyEs",
+    "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+    "messageID": "msg_ffef31e03001SnV2l9WXQ8mu70",
+    "type": "tool",
+    "callID": "call_eac8b27fefea1191",
+    "tool": "write",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.751Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1786688773751,
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "part": {
+    "id": "prt_ffef31e74001H7HsUWWbU8Lnjx",
+    "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+    "messageID": "msg_ffef31e03001SnV2l9WXQ8mu70",
+    "type": "text",
+    "text": "Let me update local-transport-protocol.lino for you.",
+    "time": {
+      "start": 1786688773750,
+      "end": 1786688773750
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.754Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1786688773754,
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "part": {
+    "id": "prt_ffef31e75001c0e57Od75SkyEs",
+    "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+    "messageID": "msg_ffef31e03001SnV2l9WXQ8mu70",
+    "type": "tool",
+    "callID": "call_eac8b27fefea1191",
+    "tool": "write",
+    "state": {
+      "status": "running",
+      "input": {
+        "content": "local_transport_protocol\n  record_type \"local_transport_protocol\"\n  default_host \"127.0.0.1\"\n  request_shape \"api_transport_request\"\n  response_shape \"api_transport_response\"\n  router \"handle_api_request_with_headers\"\nlocal_transport_websocket\n  record_type \"local_transport_binding\"\n  transport \"websocket\"\n  server_flag \"--ws\"\n  client_value \"websocket\"\n  framing \"rfc6455_text\"\nlocal_transport_webrtc\n  record_type \"local_transport_binding\"\n  transport \"webrtc\"\n  server_flag \"--webrtc\"\n  client_value \"webrtc\"\n  signaling \"length_prefixed_json\"\n  data_channel \"formal-ai\"\n  ice_policy \"host_only\"\n  central_relay \"false\"\nlocal_transport_storage\n  record_type \"local_transport_invariant\"\n  storage_engine \"shared_memory_store\"\n  new_storage_engine \"false\"\n  permission_router \"shared_api_router\"",
+        "filePath": "/tmp/tmp.y6LQ3z6sCm/local-transport-protocol.lino"
+      },
+      "time": {
+        "start": 1786688773751
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.761Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1786688773761,
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "part": {
+    "id": "prt_ffef31e75001c0e57Od75SkyEs",
+    "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+    "messageID": "msg_ffef31e03001SnV2l9WXQ8mu70",
+    "type": "tool",
+    "callID": "call_eac8b27fefea1191",
+    "tool": "write",
+    "state": {
+      "status": "completed",
+      "input": {
+        "content": "local_transport_protocol\n  record_type \"local_transport_protocol\"\n  default_host \"127.0.0.1\"\n  request_shape \"api_transport_request\"\n  response_shape \"api_transport_response\"\n  router \"handle_api_request_with_headers\"\nlocal_transport_websocket\n  record_type \"local_transport_binding\"\n  transport \"websocket\"\n  server_flag \"--ws\"\n  client_value \"websocket\"\n  framing \"rfc6455_text\"\nlocal_transport_webrtc\n  record_type \"local_transport_binding\"\n  transport \"webrtc\"\n  server_flag \"--webrtc\"\n  client_value \"webrtc\"\n  signaling \"length_prefixed_json\"\n  data_channel \"formal-ai\"\n  ice_policy \"host_only\"\n  central_relay \"false\"\nlocal_transport_storage\n  record_type \"local_transport_invariant\"\n  storage_engine \"shared_memory_store\"\n  new_storage_engine \"false\"\n  permission_router \"shared_api_router\"",
+        "filePath": "/tmp/tmp.y6LQ3z6sCm/local-transport-protocol.lino"
+      },
+      "output": "",
+      "title": "tmp/tmp.y6LQ3z6sCm/local-transport-protocol.lino",
+      "metadata": {
+        "diagnostics": {},
+        "filepath": "/tmp/tmp.y6LQ3z6sCm/local-transport-protocol.lino",
+        "exists": false
+      },
+      "time": {
+        "start": 1786688773751,
+        "end": 1786688773760
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.763Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1786688773763,
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "part": {
+    "id": "prt_ffef31e82001NMjURr3aFucv2F",
+    "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+    "messageID": "msg_ffef31e03001SnV2l9WXQ8mu70",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 9514,
+      "output": 1001,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 10515,
+      "headroom": 28341,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.763Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.764Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.769Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.769Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.780Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.781Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.781Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.781Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.786Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.786Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.788Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.788Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 10515,
+  "providerTokens": 10515,
+  "estimatedInputTokens": 258,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 9514,
+    "cacheRead": 0,
+    "output": 1001
+  },
+  "overflow": false,
+  "headroom": 41293,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.789Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.789Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.805Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.810Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.909Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1786688773909,
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "part": {
+    "id": "prt_ffef31f05001C0wpmUTMw8WcZN",
+    "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+    "messageID": "msg_ffef31e9c001nWU37BKlErUqsf",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.910Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.911Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1786688773911,
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "part": {
+    "id": "prt_ffef31f17001TV17YcZC6IXuDe",
+    "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+    "messageID": "msg_ffef31e9c001nWU37BKlErUqsf",
+    "type": "tool",
+    "callID": "call_f5543db107d0e15c",
+    "tool": "bash",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.912Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1786688773912,
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "part": {
+    "id": "prt_ffef31f150017rwE3ufPcYeukG",
+    "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+    "messageID": "msg_ffef31e9c001nWU37BKlErUqsf",
+    "type": "text",
+    "text": "Let me run the requested command to get that for you.",
+    "time": {
+      "start": 1786688773911,
+      "end": 1786688773911
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.912Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1786688773912,
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "part": {
+    "id": "prt_ffef31f17001TV17YcZC6IXuDe",
+    "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+    "messageID": "msg_ffef31e9c001nWU37BKlErUqsf",
+    "type": "tool",
+    "callID": "call_f5543db107d0e15c",
+    "tool": "bash",
+    "state": {
+      "status": "running",
+      "input": {
+        "command": "cat local-transport-protocol.lino"
+      },
+      "time": {
+        "start": 1786688773912
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.917Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1786688773917,
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "part": {
+    "id": "prt_ffef31f17001TV17YcZC6IXuDe",
+    "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+    "messageID": "msg_ffef31e9c001nWU37BKlErUqsf",
+    "type": "tool",
+    "callID": "call_f5543db107d0e15c",
+    "tool": "bash",
+    "state": {
+      "status": "completed",
+      "input": {
+        "command": "cat local-transport-protocol.lino"
+      },
+      "output": "local_transport_protocol\n  record_type \"local_transport_protocol\"\n  default_host \"127.0.0.1\"\n  request_shape \"api_transport_request\"\n  response_shape \"api_transport_response\"\n  router \"handle_api_request_with_headers\"\nlocal_transport_websocket\n  record_type \"local_transport_binding\"\n  transport \"websocket\"\n  server_flag \"--ws\"\n  client_value \"websocket\"\n  framing \"rfc6455_text\"\nlocal_transport_webrtc\n  record_type \"local_transport_binding\"\n  transport \"webrtc\"\n  server_flag \"--webrtc\"\n  client_value \"webrtc\"\n  signaling \"length_prefixed_json\"\n  data_channel \"formal-ai\"\n  ice_policy \"host_only\"\n  central_relay \"false\"\nlocal_transport_storage\n  record_type \"local_transport_invariant\"\n  storage_engine \"shared_memory_store\"\n  new_storage_engine \"false\"\n  permission_router \"shared_api_router\"",
+      "title": "cat local-transport-protocol.lino",
+      "metadata": {
+        "output": "local_transport_protocol\n  record_type \"local_transport_protocol\"\n  default_host \"127.0.0.1\"\n  request_shape \"api_transport_request\"\n  response_shape \"api_transport_response\"\n  router \"handle_api_request_with_headers\"\nlocal_transport_websocket\n  record_type \"local_transport_binding\"\n  transport \"websocket\"\n  server_flag \"--ws\"\n  client_value \"websocket\"\n  framing \"rfc6455_text\"\nlocal_transport_webrtc\n  record_type \"local_transport_binding\"\n  transport \"webrtc\"\n  server_flag \"--webrtc\"\n  client_value \"webrtc\"\n  signaling \"length_prefixed_json\"\n  data_channel \"formal-ai\"\n  ice_policy \"host_only\"\n  central_relay \"false\"\nlocal_transport_storage\n  record_type \"local_transport_invariant\"\n  storage_engine \"shared_memory_store\"\n  new_storage_engine \"false\"\n  permission_router \"shared_api_router\"",
+        "exit": 0
+      },
+      "time": {
+        "start": 1786688773912,
+        "end": 1786688773916
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.919Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1786688773919,
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "part": {
+    "id": "prt_ffef31f1e001pOQ8GIoJrbk7IL",
+    "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+    "messageID": "msg_ffef31e9c001nWU37BKlErUqsf",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 9566,
+      "output": 104,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 9670,
+      "headroom": 29186,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.919Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.920Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.923Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.923Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.950Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.950Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.957Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.957Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.958Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.958Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.959Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.959Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 9670,
+  "providerTokens": 9670,
+  "estimatedInputTokens": 457,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 9566,
+    "cacheRead": 0,
+    "output": 104
+  },
+  "overflow": false,
+  "headroom": 42138,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.960Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.960Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.977Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:13.981Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:14.063Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1786688774063,
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "part": {
+    "id": "prt_ffef31fad001fCXeYe0Ia6WgfS",
+    "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+    "messageID": "msg_ffef31f470014RgBXI45qpRJzr",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:14.064Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:14.065Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1786688774065,
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "part": {
+    "id": "prt_ffef31faf001ZluvhTYwSJJhc7",
+    "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+    "messageID": "msg_ffef31f470014RgBXI45qpRJzr",
+    "type": "text",
+    "text": "Completed the general change request for local-transport-protocol.lino and verified it with `cat local-transport-protocol.lino`.\n\nPlan event (.formal-ai/general-change-plan.lino):\n\n```lino\ngeneral_change_plan\n  id \"general_change_plan_4d2f7b74eaac25b0\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"Finish Formal AI issue #931 by defining the local transport protocol shared by its WebSocket and WebRTC adapters. As one smallest leaf of that same task, create file local-transport-protocol.lino containing exactly\\nlocal_transport_protocol\\n  record_type \\\"local_transport_protocol\\\"\\n  default_host \\\"127.0.0.1\\\"\\n  request_shape \\\"api_transport_request\\\"\\n  response_shape \\\"api_transport_response\\\"\\n  router \\\"handle_api_request_with_headers\\\"\\nlocal_transport_websocket\\n  record_type \\\"local_transport_binding\\\"\\n  transport \\\"websocket\\\"\\n  server_flag \\\"--ws\\\"\\n  client_value \\\"websocket\\\"\\n  framing \\\"rfc6455_text\\\"\\nlocal_transport_webrtc\\n  record_type \\\"local_transport_binding\\\"\\n  transport \\\"webrtc\\\"\\n  server_flag \\\"--webrtc\\\"\\n  client_value \\\"webrtc\\\"\\n  signaling \\\"length_prefixed_json\\\"\\n  data_channel \\\"formal-ai\\\"\\n  ice_policy \\\"host_only\\\"\\n  central_relay \\\"false\\\"\\nlocal_transport_storage\\n  record_type \\\"local_transport_invariant\\\"\\n  storage_engine \\\"shared_memory_store\\\"\\n  new_storage_engine \\\"false\\\"\\n  permission_router \\\"shared_api_router\\\"\"\n  target \"local-transport-protocol.lino\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_2281a3eb0ef51ecb\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to local-transport-protocol.lino\"\n    expected_evidence \"workspace file local-transport-protocol.lino\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"local_transport_protocol\\n  record_type \\\"local_transport_protocol\\\"\\n  default_host \\\"127.0.0.1\\\"\\n  request_shape \\\"api_transport_request\\\"\\n  response_shape \\\"api_transport_response\\\"\\n  router \\\"handle_api_request_with_headers\\\"\\nlocal_transport_websocket\\n  record_type \\\"local_transport_binding\\\"\\n  transport \\\"websocket\\\"\\n  server_flag \\\"--ws\\\"\\n  client_value \\\"websocket\\\"\\n  framing \\\"rfc6455_text\\\"\\nlocal_transport_webrtc\\n  record_type \\\"local_transport_binding\\\"\\n  transport \\\"webrtc\\\"\\n  server_flag \\\"--webrtc\\\"\\n  client_value \\\"webrtc\\\"\\n  signaling \\\"length_prefixed_json\\\"\\n  data_channel \\\"formal-ai\\\"\\n  ice_policy \\\"host_only\\\"\\n  central_relay \\\"false\\\"\\nlocal_transport_storage\\n  record_type \\\"local_transport_invariant\\\"\\n  storage_engine \\\"shared_memory_store\\\"\\n  new_storage_engine \\\"false\\\"\\n  permission_router \\\"shared_api_router\\\"\"\n    command \"cat local-transport-protocol.lino\"\n  verification_command \"cat local-transport-protocol.lino\"\n```",
+    "time": {
+      "start": 1786688774064,
+      "end": 1786688774064
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:14.066Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1786688774066,
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "part": {
+    "id": "prt_ffef31fb1001xAt0MeWlmVG3Fu",
+    "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+    "messageID": "msg_ffef31f470014RgBXI45qpRJzr",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 10417,
+      "output": 2889,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 13306,
+      "headroom": 25550,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:14.066Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:14.067Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:14.070Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:14.070Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:14.077Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:14.077Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:14.078Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:14.078Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:14.079Z",
+  "service": "session.prompt",
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:14.079Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:14.085Z",
+  "service": "session.prompt",
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:14.092Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:14.092Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1786688774092,
+  "sessionID": "ses_0010ce72effeGX9asCkWbyLGd9"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:14.094Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:14.094Z",
+  "service": "default",
+  "directory": "/tmp/tmp.y6LQ3z6sCm",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:14.095Z",
+  "service": "state",
+  "key": "/tmp/tmp.y6LQ3z6sCm",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:14.095Z",
+  "service": "state",
+  "key": "/tmp/tmp.y6LQ3z6sCm",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-08-14T06:26:14.095Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 4,
+  "message": "Agent exiting"
+}

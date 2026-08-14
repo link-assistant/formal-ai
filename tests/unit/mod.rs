@@ -186,6 +186,7 @@ mod issue_918;
 mod issue_919;
 mod issue_920_question_necessity;
 mod issue_922_method_learning;
+mod issue_931_local_transport_contract;
 mod issue_945;
 mod issue_956;
 mod issue_962_word_operator_parity;

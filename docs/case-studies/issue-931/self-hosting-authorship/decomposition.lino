@@ -1,0 +1,31 @@
+issue_931_decomposition
+  record_type "task_decomposition"
+  issue "931"
+  leaf_count "5"
+  formal_ai_authored_leaf_count "1"
+  formal_ai_authored_percent "20"
+issue_931_leaf_protocol_contract
+  record_type "smallest_leaf"
+  owner "formal_ai_agent_cli"
+  artifact "data/meta/local-transport-protocol.lino"
+  status "complete"
+issue_931_leaf_websocket_adapter
+  record_type "smallest_leaf"
+  owner "primary_implementer"
+  artifact "src/local_transport.rs"
+  status "in_progress"
+issue_931_leaf_webrtc_adapter
+  record_type "smallest_leaf"
+  owner "primary_implementer"
+  artifact "src/local_transport.rs"
+  status "in_progress"
+issue_931_leaf_cli_surface
+  record_type "smallest_leaf"
+  owner "primary_implementer"
+  artifact "src/cli_local_transport.rs|src/main.rs"
+  status "in_progress"
+issue_931_leaf_verification_documentation
+  record_type "smallest_leaf"
+  owner "primary_implementer"
+  artifact "tests/integration/issue_931_local_transports.rs|docs/case-studies/issue-931/README.md"
+  status "in_progress"
