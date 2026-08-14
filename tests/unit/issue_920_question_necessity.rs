@@ -209,20 +209,82 @@ fn issue_920_question_marks_in_quotes_code_and_urls_are_not_questions() {
             .count(),
         1
     );
+
+    let quoted_example = "Возможность: «Сколько будет 2 + 2?»";
+    let mut quoted_log = EventLog::new();
+    assert_eq!(
+        enforce_questions(quoted_example, &mut quoted_log),
+        quoted_example
+    );
+    assert!(quoted_log
+        .events()
+        .iter()
+        .all(|event| !event.kind.starts_with("question_necessity:")));
+}
+
+#[test]
+fn issue_920_question_mark_placeholders_are_not_assistant_questions() {
+    for body in [
+        "?+2=4 => ? = 2",
+        "x + ? = 4 => ? = 4 - x",
+        "Сколько будет ? + 2 = 4 => ? = 2",
+    ] {
+        let mut log = EventLog::new();
+        assert_eq!(enforce_questions(body, &mut log), body);
+        assert!(
+            log.events()
+                .iter()
+                .all(|event| !event.kind.starts_with("question_necessity:")),
+            "placeholder expressions must not create a question trace: {body}"
+        );
+    }
+}
+
+#[test]
+fn issue_920_fenced_question_examples_are_not_assistant_questions() {
+    let body = "Rule documentation.\n\n```links\nmatches \"`What is your name?`\"\n```";
+    let mut log = EventLog::new();
+
+    assert_eq!(enforce_questions(body, &mut log), body);
+    assert!(log
+        .events()
+        .iter()
+        .all(|event| !event.kind.starts_with("question_necessity:")));
 }
 
 #[test]
 fn issue_920_replayed_user_questions_are_not_treated_as_assistant_questions() {
-    let body = "Found 1 mention of Rust.\n- conversation Rust Notes (conv-a)\n  - user: What is Rust?\n- turn 3 user: Why Rust?";
-    let mut log = EventLog::new();
+    for body in [
+        "Found 1 mention of Rust.\n- conversation Rust Notes (conv-a)\n  - user: What is Rust?\n- turn 3 user: Why Rust?",
+        "Your previous question was: What is 2 + 2?",
+        "Найдено упоминаний \"Википедия\" в истории разговора: 1\n- turn 1 user: Что такое Википедия?\n- turn 2 assistant: Википедия - свободная энциклопедия.",
+    ] {
+        let mut log = EventLog::new();
 
-    assert_eq!(enforce_questions(body, &mut log), body);
-    assert!(
-        log.events()
-            .iter()
-            .all(|event| !event.kind.starts_with("question_necessity:")),
-        "replayed questions must remain evidence, not become question candidates"
-    );
+        assert_eq!(enforce_questions(body, &mut log), body);
+        assert!(
+            log.events()
+                .iter()
+                .all(|event| !event.kind.starts_with("question_necessity:")),
+            "replayed questions must remain evidence, not become question candidates"
+        );
+    }
+}
+
+#[test]
+fn issue_920_existing_did_you_mean_clarifications_are_requirement_questions() {
+    for question in [
+        "Did you mean Elon Musk?",
+        "Возможно, вы имели в виду Альберт Эйнштейн?",
+        "क्या आपका मतलब निकोला टेस्ला था?",
+        "您指的是 Ada Lovelace 吗？",
+    ] {
+        assert_eq!(
+            classify_question(question).class,
+            QuestionClass::Requirement,
+            "{question}"
+        );
+    }
 }
 
 #[test]

@@ -428,30 +428,124 @@ fn question_candidates(body: &str) -> Vec<Candidate> {
 
 fn punctuation_candidates(body: &str) -> Vec<Candidate> {
     let mut candidates = Vec::new();
-    let mut in_backticks = false;
-    let mut in_double_quotes = false;
-    for (index, character) in body.char_indices() {
-        match character {
-            '`' => in_backticks = !in_backticks,
-            '"' if !in_backticks => in_double_quotes = !in_double_quotes,
-            '?' | '？' if !in_backticks && !in_double_quotes => {
-                let start = sentence_start(body, index);
-                let end = index + character.len_utf8();
-                let text = body[start..end].trim();
-                if !text.is_empty() && !looks_like_url(text) && !is_replayed_question(text) {
-                    candidates.push(Candidate {
-                        start,
-                        end,
-                        text: text.to_owned(),
-                        in_requirement_section: false,
-                        duplicate_ranges: Vec::new(),
-                    });
-                }
+    let mut fenced_by = None;
+    let mut offset = 0;
+    for line in body.split_inclusive('\n') {
+        let trimmed = line.trim_start();
+        let fence = trimmed
+            .starts_with("```")
+            .then_some('`')
+            .or_else(|| trimmed.starts_with("~~~").then_some('~'));
+        if let Some(marker) = fence {
+            if fenced_by == Some(marker) {
+                fenced_by = None;
+            } else if fenced_by.is_none() {
+                fenced_by = Some(marker);
             }
-            _ => {}
+            offset += line.len();
+            continue;
         }
+        if fenced_by.is_none() {
+            punctuation_candidates_in_line(body, line, offset, &mut candidates);
+        }
+        offset += line.len();
     }
     candidates
+}
+
+fn punctuation_candidates_in_line(
+    body: &str,
+    line: &str,
+    offset: usize,
+    candidates: &mut Vec<Candidate>,
+) {
+    let mut index = 0;
+    let mut inline_ticks = None;
+    let mut quote_end = None;
+    while index < line.len() {
+        let character = line[index..]
+            .chars()
+            .next()
+            .expect("index is at a character boundary");
+        if character == '`' {
+            let run = line[index..]
+                .bytes()
+                .take_while(|byte| *byte == b'`')
+                .count();
+            inline_ticks = match inline_ticks {
+                Some(opening) if opening == run => None,
+                None => Some(run),
+                value => value,
+            };
+            index += run;
+            continue;
+        }
+        if inline_ticks.is_some() {
+            index += character.len_utf8();
+            continue;
+        }
+        if quote_end == Some(character) {
+            quote_end = None;
+            index += character.len_utf8();
+            continue;
+        }
+        if quote_end.is_none() {
+            quote_end = closing_quote(character);
+            if quote_end.is_some() {
+                index += character.len_utf8();
+                continue;
+            }
+        }
+        if matches!(character, '?' | '？')
+            && quote_end.is_none()
+            && !is_equation_placeholder(line, index, character)
+        {
+            let absolute = offset + index;
+            let start = sentence_start(body, absolute);
+            let end = absolute + character.len_utf8();
+            let text = body[start..end].trim();
+            if !text.is_empty() && !looks_like_url(text) && !is_replayed_question(text) {
+                candidates.push(Candidate {
+                    start,
+                    end,
+                    text: text.to_owned(),
+                    in_requirement_section: false,
+                    duplicate_ranges: Vec::new(),
+                });
+            }
+        }
+        index += character.len_utf8();
+    }
+}
+
+fn closing_quote(character: char) -> Option<char> {
+    match character {
+        '"' => Some('"'),
+        '«' => Some('»'),
+        '“' => Some('”'),
+        '„' => Some('“'),
+        '‘' => Some('’'),
+        '‹' => Some('›'),
+        _ => None,
+    }
+}
+
+fn is_equation_placeholder(line: &str, index: usize, character: char) -> bool {
+    if character != '?' {
+        return false;
+    }
+    let previous = line[..index]
+        .chars()
+        .rev()
+        .find(|value| !value.is_whitespace());
+    let next = line[index + 1..]
+        .chars()
+        .find(|value| !value.is_whitespace());
+    previous.is_some_and(is_equation_operator) || next.is_some_and(is_equation_operator)
+}
+
+fn is_equation_operator(character: char) -> bool {
+    matches!(character, '=' | '+' | '-' | '*' | '/' | '^')
 }
 
 fn sentence_start(body: &str, question_index: usize) -> usize {
@@ -459,10 +553,11 @@ fn sentence_start(body: &str, question_index: usize) -> usize {
     for (index, character) in prefix.char_indices().rev() {
         if matches!(character, '.' | '!' | '?' | '。' | '！' | '？' | '\n') {
             let boundary = index + character.len_utf8();
-            if body[boundary..question_index]
-                .chars()
-                .next()
-                .is_some_and(char::is_whitespace)
+            if character == '\n'
+                || body[boundary..question_index]
+                    .chars()
+                    .next()
+                    .is_some_and(char::is_whitespace)
             {
                 return body[boundary..question_index]
                     .find(|value: char| !value.is_whitespace())
@@ -482,6 +577,10 @@ fn looks_like_url(text: &str) -> bool {
 
 fn is_replayed_question(text: &str) -> bool {
     let item = text.trim_start().strip_prefix("- ").unwrap_or(text);
+    let normalized = item.to_lowercase();
+    if normalized.starts_with("your previous question was:") {
+        return true;
+    }
     let Some((label, _)) = item.split_once(':') else {
         return false;
     };
