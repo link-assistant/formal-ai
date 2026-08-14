@@ -64,6 +64,12 @@ multilingual prompts and deterministic trace checks. The network benchmark
 downloads the external parquet files into `target/formal-ai-benchmarks`, which
 is a build artifact cache rather than checked-in source.
 
+## Issue #920 Question Necessity
+
+`question-necessity-suite.lino` contains five self-authored prompts and
+deterministic question-count expectations. It imports no upstream dataset or
+third-party payload, so no additional upstream license applies.
+
 ## Issue #819 Local-Path Discovery
 
 The local-path discovery suite contains only self-authored multilingual prompts

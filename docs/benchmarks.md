@@ -28,6 +28,7 @@ source provenance for download-on-test integration. Only permissive licenses
 | Multilingual local-path discovery | #819 | [`local-path-discovery-suite.lino`](../data/benchmarks/local-path-discovery-suite.lino) | `local_path_discovery_benchmark_routes_every_case_to_find` | 56 |
 | Workspace-change learning generalization | #848 | [`workspace-change-learning-generalization.lino`](../data/benchmarks/workspace-change-learning-generalization.lino) | `only_a_green_named_review_promotes_and_replays_the_held_out_rewrite` | 1 |
 | Equation-type corpus | #891 (from #406) | [`equation-type-corpus.lino`](../data/benchmarks/equation-type-corpus.lino) | `issue_891_equation_corpus_solves_every_type` | 72 (and ≥50 distinct verified types) |
+| Question necessity | #920 | [`question-necessity-suite.lino`](../data/benchmarks/question-necessity-suite.lino) | `issue_920_question_necessity_benchmark_ratchets_down` | ≤60 questions per 100 tasks |
 
 Related earlier work: issue **#103** introduced the competitor-derived prompt
 matrix in [`tests/unit/specification/prompt_variations.rs`](../tests/unit/specification/prompt_variations.rs)
@@ -150,6 +151,14 @@ to keep failing *loudly*, never with a fabricated answer):
 | Unit-carrying equations | link-calculator | `x kg = 1000 g` | `calculation_error` (units not converted before solving) |
 | Named-unknown declarations | formal-ai | `What is x if x + 7 = 12?` | `calculation_error` (the `x if …` declaration is not stripped) |
 | Command-shaped prompts | formal-ai | `Find x: 5 * x = 45` | `agent_suggestion` (`find` is claimed by the shell router) |
+
+### Question necessity — issue #920
+
+Five self-authored tasks cover required clarification, autonomous factual
+research, proof follow-up reduction, and answerable arithmetic. The ratchet
+counts only questions with a replayable `question_necessity:asked` event and
+caps the frequency at 60 per 100 tasks; future changes may lower but not raise
+that seed-defined maximum. No third-party benchmark payload is imported.
 
 ### Multilingual local-path discovery — issue #819
 

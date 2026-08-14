@@ -172,6 +172,7 @@ pub const PROJECTS_LINO: &str = include_str!("../../data/seed/projects.lino");
 pub const PROMPT_PATTERNS_LINO: &str = include_str!("../../data/seed/prompt-patterns.lino");
 pub const PROOF_PROGRAM_TEMPLATES_LINO: &str =
     include_str!("../../data/seed/proof-program-templates.lino");
+pub const QUESTION_NECESSITY_LINO: &str = include_str!("../../data/seed/question-necessity.lino");
 pub const RELEASE_TIMELINES_LINO: &str = include_str!("../../data/seed/release-timelines.lino");
 pub const SELF_IMPROVEMENT_LOOP_LINO: &str =
     include_str!("../../data/seed/self-improvement-loop.lino");
@@ -317,6 +318,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/projects.lino", PROJECTS_LINO),
         ("data/seed/prompt-patterns.lino", PROMPT_PATTERNS_LINO),
         ("data/seed/proof-program-templates.lino", PROOF_PROGRAM_TEMPLATES_LINO),
+        ("data/seed/question-necessity.lino", QUESTION_NECESSITY_LINO),
         ("data/seed/release-timelines.lino", RELEASE_TIMELINES_LINO),
         ("data/seed/self-improvement-loop.lino", SELF_IMPROVEMENT_LOOP_LINO),
         ("data/seed/shell-intents.lino", SHELL_INTENTS_LINO),

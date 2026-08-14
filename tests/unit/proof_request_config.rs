@@ -9,8 +9,8 @@
 //!   tactic), execute through to a conclusion.
 //! * Low `guess_probability`: stay literal, do not emit the Interpretation
 //!   header.
-//! * High `follow_up_probability`: append a Clarifying Questions section
-//!   listing every input still required before final execution.
+//! * High `follow_up_probability`: append a Clarifying Questions section with
+//!   the smallest user-held input still required before final execution.
 //! * Low `follow_up_probability`: do not emit clarifying questions.
 //!
 //! The two sliders are independent — all four combinations must work.

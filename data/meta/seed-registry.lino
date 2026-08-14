@@ -384,6 +384,8 @@ seed_registry
   seed proof-program-templates
     bundle true
     web true
+  seed question-necessity
+    bundle true
   seed release-timelines
     bundle true
   seed self-improvement-loop
