@@ -155,10 +155,10 @@ to keep failing *loudly*, never with a fabricated answer):
 ### Question necessity — issue #920
 
 Five self-authored tasks cover required clarification, autonomous factual
-research, greeting offers, and answerable arithmetic. The ratchet counts only
-questions with a replayable `question_necessity:asked` event and caps the
-frequency at 60 per 100 tasks; future changes may lower but not raise that
-seed-defined maximum. No third-party benchmark payload is imported.
+research, proof follow-up reduction, and answerable arithmetic. The ratchet
+counts only questions with a replayable `question_necessity:asked` event and
+caps the frequency at 60 per 100 tasks; future changes may lower but not raise
+that seed-defined maximum. No third-party benchmark payload is imported.
 
 ### Multilingual local-path discovery — issue #819
 
