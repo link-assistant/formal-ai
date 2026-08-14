@@ -46,13 +46,14 @@ use cli_summarization::{run_summarization, SummarizationAction};
 use formal_ai::agentic_coding::run_agentic_task;
 use formal_ai::{
     agent_info, collect_github_logs, create_chat_completion_with_solver,
-    create_response_with_solver, delimit_tool_args, export_memory_bundle, import_memory_full,
-    knowledge_links_notation, merged_bundle, naturalize_thinking_step_in, parse_bundle,
-    render_github_log_plan, run_proxy, run_telegram_polling, run_telegram_webhook_server,
-    run_with_formal_ai, seed_files, suggest_memory_migrations, thinking_answer_language,
-    thinking_trace_heading, ChatCompletionRequest, ChatMessage, ExecutionSurface,
-    GithubLogCollectorConfig, MemoryStore, ProxyConfig, ResponsesRequest, SolverConfig,
-    SymbolicAnswer, TelegramPollingConfig, UniversalSolver, WithFormalAiArgs, DEFAULT_MODEL,
+    create_response_with_solver, delimit_tool_args, enable_http_agent_mode_for_current_process,
+    export_memory_bundle, import_memory_full, knowledge_links_notation, merged_bundle,
+    naturalize_thinking_step_in, parse_bundle, render_github_log_plan, run_proxy,
+    run_telegram_polling, run_telegram_webhook_server, run_with_formal_ai, seed_files,
+    suggest_memory_migrations, thinking_answer_language, thinking_trace_heading,
+    ChatCompletionRequest, ChatMessage, ExecutionSurface, GithubLogCollectorConfig, MemoryStore,
+    ProxyConfig, ResponsesRequest, SolverConfig, SymbolicAnswer, TelegramPollingConfig,
+    UniversalSolver, WithFormalAiArgs, DEFAULT_MODEL,
 };
 
 /// The canonical issue-#468 task; its wording carries the planner's routing keywords.
@@ -114,6 +115,7 @@ enum Command {
     Context(ContextArgs),
     /// Build the issue-report document every Formal AI surface files (#839).
     Report(ReportArgs),
+    /// Serve the API; `--agent-mode` is equivalent to `FORMAL_AI_AGENT_MODE=1`.
     Serve(ServeArgs),
     /// Use the same binary as a WebSocket or WebRTC OpenAI-compatible client.
     Connect(ConnectArgs),
@@ -636,7 +638,12 @@ fn main() -> Result<(), Box<dyn Error>> {
                 )?;
             }
         }
-        Command::Serve(args) => run_serve(&args)?,
+        Command::Serve(args) => {
+            if args.agent_mode() {
+                enable_http_agent_mode_for_current_process();
+            }
+            run_serve(&args)?;
+        }
         Command::Connect(args) => run_connect(&args)?,
         Command::Proxy {
             listen,

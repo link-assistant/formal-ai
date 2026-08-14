@@ -1,0 +1,50 @@
+self_ast_census
+  target src/local_transport.rs
+  language rust
+  fidelity signature
+  byte_len 22591
+  line_count 613
+  content_id source_module_7a24c78288fccaca
+  symbol_count 41
+  symbols
+    const DATA_CHANNEL_LABEL 33 33
+    const BEARER_SCHEME 34 34
+    const MAX_PAYLOAD_BYTES 35 35
+    const RTC_CHUNK_BYTES 36 36
+    const SIGNAL_TIMEOUT 37 37
+    const CONNECTION_TIMEOUT 38 38
+    type TransportError 41 41
+    struct TransportRequest 45 52
+    function new 57 68
+    struct TransportResponse 73 79
+    function openai_chat_request 83 105
+    function dispatch_request 109 123
+    function serve_websocket 126 142
+    function websocket_request 145 161
+    function handle_websocket_connection 163 191
+    function serve_webrtc 194 214
+    function webrtc_request 217 301
+    function handle_webrtc_connection 303 353
+    struct ClientPeerHandler 356 359
+    function on_ice_gathering_state_change 363 367
+    function on_connection_state_change 369 376
+    struct ServerPeerHandler 380 385
+    function on_ice_gathering_state_change 389 393
+    function on_connection_state_change 395 405
+    function on_data_channel 407 458
+    function wait_for_signal 461 470
+    function send_data_payload 472 485
+    function append_data_chunk 487 499
+    function write_signal_frame 501 511
+    function read_signal_frame 513 527
+    function rtc_runtime 529 535
+    static RUNTIME 530 530
+    function block_on 537 549
+    function announce_server 551 558
+    function websocket_endpoint 560 566
+    function resolve_endpoint 568 573
+    function loopback_udp_address 575 582
+    function invalid_envelope 584 597
+    function transport_error 599 601
+    function trace_event 603 607
+    function trace_error 609 613

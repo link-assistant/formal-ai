@@ -56,6 +56,12 @@ pub struct ConnectArgs {
     format: ConnectFormat,
 }
 
+impl ServeArgs {
+    pub const fn agent_mode(&self) -> bool {
+        self.agent_mode
+    }
+}
+
 #[derive(Debug, Clone, Copy, ValueEnum)]
 enum ClientTransport {
     #[value(alias = "ws")]
@@ -70,9 +76,6 @@ enum ConnectFormat {
 }
 
 pub fn run_serve(args: &ServeArgs) -> Result<(), Box<dyn Error>> {
-    if args.agent_mode {
-        formal_ai::enable_http_agent_mode_for_current_process();
-    }
     let address = format!("{}:{}", args.host, args.port);
     if args.ws {
         serve_websocket(&address, args.transport_trace).map_err(|error| transport_error(&error))?;
