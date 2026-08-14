@@ -425,7 +425,7 @@ external_benchmark_result_egg_math_2026_08_14_20
   passed "20"
   failed "0"
   total "20"
-  solver_version "0.342.0"
+  solver_version "0.343.0"
   runner "formal-ai benchmark run --suite egg_math --slice 20"
   note "honest upstream score: every case is graded by the upstream criterion"
 external_benchmark_result_ascent_transitive_closure_2026_08_14_5
@@ -436,6 +436,6 @@ external_benchmark_result_ascent_transitive_closure_2026_08_14_5
   passed "5"
   failed "0"
   total "5"
-  solver_version "0.342.0"
+  solver_version "0.343.0"
   runner "formal-ai benchmark run --suite ascent_transitive_closure --slice 5"
   note "honest upstream score: every case is graded by the upstream criterion"

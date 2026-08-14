@@ -67,7 +67,7 @@ seed registry embeds that shard in both native and web response catalogs.
 ## 5. Honest External Scores
 
 The project CLI produced these results on 2026-08-14 with solver version
-0.342.0:
+0.343.0:
 
 | Command | Passed | Total |
 | --- | ---: | ---: |
