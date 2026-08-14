@@ -37,7 +37,7 @@ env:
 
 jobs:
   question-necessity-ratchet:
-    name: Question necessity ratchet (issue #920)
+    name: 'Question necessity ratchet (issue #920)'
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
