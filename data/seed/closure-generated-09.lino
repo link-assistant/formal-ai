@@ -439,11 +439,31 @@ meanings
     lexeme en
       surface
         text "response detected failure report invitation zh"
+  response_external_benchmark_ascent_missing_rule_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark ascent missing rule zh"
+  response_external_benchmark_ascent_prompt_prefix_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark ascent prompt prefix hi"
+  response_external_benchmark_ascent_prompt_prefix_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark ascent prompt prefix ru"
   response_external_benchmark_egg_law_prompt_en
     defined-by response_template
     lexeme en
       surface
         text "response external benchmark egg law prompt en"
+  response_external_benchmark_egg_too_few_laws_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark egg too few laws hi"
   response_external_benchmark_parquet_start_error_en
     defined-by response_template
     lexeme en
@@ -454,6 +474,11 @@ meanings
     lexeme en
       surface
         text "response external benchmark swe start error en"
+  response_external_benchmark_upstream_missing_end_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark upstream missing end hi"
   response_farewell_hi
     defined-by response_template
     lexeme en
@@ -474,6 +499,16 @@ meanings
     lexeme en
       surface
         text "response general plan verification mismatch en"
+  response_how_to_guide_conflict_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide conflict hi"
+  response_how_to_guide_source_outcome_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide source outcome es"
   response_http_fetch_curated_project_ru
     defined-by response_template
     lexeme en

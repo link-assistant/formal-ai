@@ -53,16 +53,34 @@ pub fn reserve_loopback_port() -> u16 {
         .port()
 }
 
+/// Spawn the server with extra environment variables set for the child only.
+///
+/// The server reads its runtime configuration from the environment, so a test
+/// that needs a specific configuration — a capture cache pointed at a committed
+/// fixture tree, a service opt-out — has to set it on the child process rather
+/// than on the test process, which is shared by every test in the binary.
+pub fn spawn_formal_ai_server_with_env(port: u16, env: &[(&str, &str)]) -> FormalAiServer {
+    spawn_formal_ai_server_with_args(port, &[], env)
+}
+
 pub fn spawn_formal_ai_server(port: u16) -> FormalAiServer {
-    spawn_formal_ai_server_with_args(port, &[])
+    spawn_formal_ai_server_with_args(port, &[], &[])
 }
 
 pub fn spawn_formal_ai_server_agent_mode(port: u16) -> FormalAiServer {
-    spawn_formal_ai_server_with_args(port, &["--agent-mode"])
+    spawn_formal_ai_server_with_args(port, &["--agent-mode"], &[])
 }
 
-fn spawn_formal_ai_server_with_args(port: u16, extra_args: &[&str]) -> FormalAiServer {
-    let child = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+fn spawn_formal_ai_server_with_args(
+    port: u16,
+    extra_args: &[&str],
+    env: &[(&str, &str)],
+) -> FormalAiServer {
+    let mut command = Command::new(env!("CARGO_BIN_EXE_formal-ai"));
+    for (name, value) in env {
+        command.env(name, value);
+    }
+    let child = command
         .args(["serve", "--host", "127.0.0.1", "--port", &port.to_string()])
         .args(extra_args)
         .env("FORMAL_AI_API_BEARER_TOKEN", "sk-local-agentic-tools")

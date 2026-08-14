@@ -1,0 +1,19 @@
+self_ast_census
+  target src/method_learning.rs
+  language rust
+  fidelity signature
+  byte_len 7510
+  line_count 195
+  content_id source_module_e2175709c1e8d12f
+  symbol_count 10
+  symbols
+    const LEARNED_METHODS_SEED_FILE 17 17
+    struct MethodProposal 26 41
+    function mode 46 48
+    function validated 52 54
+    function adopted_seed_lino 56 78
+    struct MethodLearningRun 83 89
+    function validated_proposals 94 99
+    function promotion_proposals 107 124
+    function learn_methods_from_event_logs 133 163
+    function method_proposal 165 195

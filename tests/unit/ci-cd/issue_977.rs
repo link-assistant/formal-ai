@@ -12,7 +12,7 @@
 
 use std::fs;
 
-use super::workflow_fixtures::{job_block, release_workflow, workflow_job_names};
+use super::workflow_fixtures::{ci_surface, job_block, release_workflow, workflow_job_names};
 
 fn repository_file(path: &str) -> String {
     fs::read_to_string(format!("{}/{path}", env!("CARGO_MANIFEST_DIR")))
@@ -368,6 +368,10 @@ fn no_workflow_pins_an_action_on_the_deprecated_node_20_runtime() {
 #[test]
 fn shared_release_logic_lives_in_scripts_not_duplicated_inline() {
     let workflow = release_workflow();
+    // Some of these scripts are release-job steps and some became registered
+    // gates in issue #991; both are CI calling the script rather than inlining
+    // it, which is what this case is about.
+    let surface = ci_surface();
 
     for script in [
         "scripts/check-pipeline-status.sh",
@@ -382,8 +386,9 @@ fn shared_release_logic_lives_in_scripts_not_duplicated_inline() {
             "{script} must exist and be non-empty"
         );
         assert!(
-            workflow.contains(script),
-            "release.yml must call {script} rather than inlining it"
+            surface.contains(script),
+            "CI must call {script} -- from a job step or a registered gate -- \
+             rather than inlining it"
         );
     }
 

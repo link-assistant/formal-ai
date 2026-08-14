@@ -56,7 +56,7 @@ pub fn has_rule_program(claim: &str) -> bool {
         .all(|section| claim.contains(&format!("{section} {{")))
 }
 
-pub fn attempt_rule_inference(claim: &str) -> Option<ProofOutcome> {
+pub fn attempt_rule_inference(claim: &str, language: &str) -> Option<ProofOutcome> {
     if !has_rule_program(claim) {
         return None;
     }
@@ -97,7 +97,11 @@ pub fn attempt_rule_inference(claim: &str) -> Option<ProofOutcome> {
                         text: certificate,
                     },
                 ],
-                conclusion: render_proof_text("proof_datalog_conclusion", &[("query", &query)]),
+                conclusion: render_proof_text(
+                    "proof_datalog_conclusion",
+                    language,
+                    &[("query", &query)],
+                ),
                 method: ProofMethod::DecisionProcedure,
             },
         });
@@ -105,6 +109,7 @@ pub fn attempt_rule_inference(claim: &str) -> Option<ProofOutcome> {
     Some(ProofOutcome::Disproven {
         counterexample: render_proof_text(
             "proof_datalog_counterexample",
+            language,
             &[("query", &query), ("certificate", &certificate)],
         ),
         method: ProofMethod::DecisionProcedure,

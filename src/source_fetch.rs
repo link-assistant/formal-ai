@@ -45,6 +45,10 @@ impl SourceTransport for CurlSourceTransport {
                 "--silent",
                 "--show-error",
                 "--location",
+                // Stack Exchange always gzips its API responses; without this
+                // the transport would hand callers compressed bytes that no
+                // extractor can read (issue #991).
+                "--compressed",
                 "--max-time",
                 "30",
                 "--user-agent",

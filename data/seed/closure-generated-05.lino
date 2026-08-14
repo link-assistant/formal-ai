@@ -229,6 +229,11 @@ meanings
     lexeme en
       surface
         text "orders"
+  original_first_party
+    defined-by concept
+    lexeme en
+      surface
+        text "original first party"
   pattern_concept_context_delimiter_men_hi
     defined-by prompt_pattern
     lexeme en
@@ -454,6 +459,41 @@ meanings
     lexeme en
       surface
         text "response external benchmark parquet decode error en"
+  response_external_benchmark_rust_adapter_missing_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark rust adapter missing ru"
+  response_external_benchmark_upstream_missing_start_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark upstream missing start hi"
+  response_how_to_guide_bounds_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide bounds es"
+  response_how_to_guide_conflict_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide conflict zh"
+  response_how_to_guide_conflicts_heading_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide conflicts heading en"
+  response_how_to_guide_insufficient_evidence_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide insufficient evidence hi"
+  response_how_to_guide_step_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide step hi"
   response_learn_from_source_hi
     defined-by response_template
     lexeme en
@@ -589,6 +629,16 @@ meanings
     lexeme en
       surface
         text "response physical action question hi"
+  response_proof_datalog_conclusion_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response proof datalog conclusion zh"
+  response_proof_equality_conclusion_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response proof equality conclusion zh"
   response_requirement_contradiction_zh
     defined-by response_template
     lexeme en

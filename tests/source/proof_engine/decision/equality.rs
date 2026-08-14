@@ -14,7 +14,7 @@ pub fn has_symbolic_equality(claim: &str) -> bool {
     split_equality(claim).is_some() && super::has_prefix_equality(claim)
 }
 
-pub fn attempt_equality_claim(claim: &str) -> Option<ProofOutcome> {
+pub fn attempt_equality_claim(claim: &str, language: &str) -> Option<ProofOutcome> {
     let (left_text, right_text) = split_equality(claim)?;
     let left: RecExpr<SymbolLang> = left_text.parse().ok()?;
     let right: RecExpr<SymbolLang> = right_text.parse().ok()?;
@@ -50,6 +50,7 @@ pub fn attempt_equality_claim(claim: &str) -> Option<ProofOutcome> {
             ],
             conclusion: render_proof_text(
                 "proof_equality_conclusion",
+                language,
                 &[("left", left_text), ("right", right_text)],
             ),
             method: ProofMethod::DecisionProcedure,

@@ -24,8 +24,10 @@ mod linear;
 mod rules;
 mod sat;
 
-fn render_proof_text(intent: &str, values: &[(&str, &str)]) -> String {
-    crate::seed::render_response(intent, "en", values).unwrap_or_else(|| intent.to_owned())
+fn render_proof_text(intent: &str, language: &str, values: &[(&str, &str)]) -> String {
+    crate::seed::render_response(intent, language, values)
+        .or_else(|| crate::seed::render_response(intent, "en", values))
+        .unwrap_or_else(|| intent.to_owned())
 }
 
 /// Try to discharge a claim with an in-process decision procedure.
@@ -33,11 +35,11 @@ fn render_proof_text(intent: &str, values: &[(&str, &str)]) -> String {
 pub fn attempt_decision_procedure(claim: &str, language: &str) -> Option<ProofOutcome> {
     let normalized = normalize_decision_text(claim);
     if rules::has_rule_program(&normalized) {
-        return rules::attempt_rule_inference(&normalized);
+        return rules::attempt_rule_inference(&normalized, language);
     }
     #[cfg(feature = "equality-saturation")]
     if equality::has_symbolic_equality(&normalized) {
-        return equality::attempt_equality_claim(&normalized);
+        return equality::attempt_equality_claim(&normalized, language);
     }
     #[cfg(not(feature = "equality-saturation"))]
     if has_prefix_equality(&normalized) {

@@ -449,11 +449,21 @@ meanings
     lexeme en
       surface
         text "response external benchmark failure observation en"
+  response_external_benchmark_proof_query_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark proof query es"
   response_external_benchmark_swe_slice_write_error_en
     defined-by response_template
     lexeme en
       surface
         text "response external benchmark swe slice write error en"
+  response_external_benchmark_upstream_missing_start_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark upstream missing start ru"
   response_fact_check_arithmetic_counterexample_zh
     defined-by response_template
     lexeme en
@@ -484,6 +494,16 @@ meanings
     lexeme en
       surface
         text "response greeting en"
+  response_how_to_guide_bounds_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide bounds zh"
+  response_how_to_guide_sources_heading_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide sources heading ru"
   response_http_fetch_curated_project_zh
     defined-by response_template
     lexeme en
@@ -629,6 +649,11 @@ meanings
     lexeme en
       surface
         text "response physical action question zh"
+  response_proof_datalog_counterexample_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response proof datalog counterexample zh"
   response_summarization_criterion_size_reported_ru
     defined-by response_template
     lexeme en

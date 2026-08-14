@@ -37,6 +37,7 @@ use crate::seed::{
 
 mod artifact;
 mod learning;
+mod recursive;
 mod strategy;
 
 pub use artifact::TaskDecompositionArtifactError;
@@ -44,6 +45,7 @@ pub use learning::{
     TaskLearningApproval, TaskLearningError, TaskLearningGate, TaskStrategyLedger,
     TaskStrategyProposal,
 };
+pub use recursive::{RecordedSplit, SplittingExecutor};
 pub use strategy::{
     contract as task_decomposition_contract, strategies as task_decomposition_strategies,
     TaskDecompositionContract, TaskDecompositionStrategy, TaskStrategyStage, CONTRACT_LINO,

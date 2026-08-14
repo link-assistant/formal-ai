@@ -63,7 +63,7 @@ vendor or silently replace either upstream source.
 ## 5. Honest External Scores
 
 The project CLI produced these results on 2026-08-14 with solver version
-0.339.3:
+0.341.0:
 
 | Command | Passed | Total |
 | --- | ---: | ---: |

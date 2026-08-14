@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_24.js"
+  ceiling 110
+  rationale "Issue #989: inspect the associative-memory projection before generic routes."

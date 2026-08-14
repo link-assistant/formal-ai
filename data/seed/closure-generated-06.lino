@@ -369,11 +369,31 @@ meanings
     lexeme en
       surface
         text "response external benchmark baseline read error en"
+  response_external_benchmark_egg_too_few_laws_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark egg too few laws es"
+  response_external_benchmark_proof_expected_event_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark proof expected event hi"
+  response_external_benchmark_proof_expected_event_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark proof expected event ru"
   response_external_benchmark_swe_predictions_write_error_en
     defined-by response_template
     lexeme en
       surface
         text "response external benchmark swe predictions write error en"
+  response_external_benchmark_upstream_missing_end_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark upstream missing end zh"
   response_external_benchmark_upstream_missing_start_en
     defined-by response_template
     lexeme en
@@ -399,6 +419,16 @@ meanings
     lexeme en
       surface
         text "response general plan command verification evidence ru"
+  response_how_to_guide_citation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide citation ru"
+  response_how_to_guide_step_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide step es"
   response_http_fetch_curated_project_hi
     defined-by response_template
     lexeme en
@@ -524,6 +554,11 @@ meanings
     lexeme en
       surface
         text "response pattern sequence empty es"
+  response_proof_equality_conclusion_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response proof equality conclusion es"
   response_skill_gap_hi
     defined-by response_template
     lexeme en

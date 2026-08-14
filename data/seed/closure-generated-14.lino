@@ -394,6 +394,16 @@ meanings
     lexeme en
       surface
         text "response detected failure report invitation ru"
+  response_external_benchmark_egg_law_prompt_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark egg law prompt zh"
+  response_external_benchmark_egg_too_few_laws_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark egg too few laws zh"
   response_external_benchmark_not_swe_case_en
     defined-by response_template
     lexeme en
@@ -404,6 +414,11 @@ meanings
     lexeme en
       surface
         text "response external benchmark proof status detail en"
+  response_external_benchmark_rust_adapter_missing_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark rust adapter missing zh"
   response_external_benchmark_swe_remove_report_error_en
     defined-by response_template
     lexeme en
@@ -439,6 +454,31 @@ meanings
     lexeme en
       surface
         text "response fact check statement ru"
+  response_how_to_guide_citation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide citation en"
+  response_how_to_guide_conflict_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide conflict es"
+  response_how_to_guide_conflicts_heading_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide conflicts heading ru"
+  response_how_to_guide_copy_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide copy zh"
+  response_how_to_guide_step_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide step en"
   response_lexeme_import_cannot_install_ru
     defined-by response_template
     lexeme en

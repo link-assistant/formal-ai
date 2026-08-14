@@ -1,3 +1,4 @@
+use super::incremental::{dispatch_incrementally, IncrementalTrace};
 use super::permission::AgentRunPermission;
 use super::replay::{write_session, ReplayError};
 use super::runner::{
@@ -20,6 +21,11 @@ use std::time::Duration;
 pub enum DispatchMode {
     Decompose,
     Compare,
+    /// Attempt the whole task first and split only what actually failed.
+    ///
+    /// The plan is discovered from evidence rather than committed to up front;
+    /// [`IncrementalTrace`] records every attempt, split, and blocked task.
+    Incremental,
 }
 
 #[derive(Debug, Clone)]
@@ -143,6 +149,11 @@ pub struct DispatchReport {
     pub sessions: Vec<AgentSession>,
     pub ledger: ComparisonLedger,
     pub composed_changes: Vec<WorkspaceChange>,
+    /// Present exactly for [`DispatchMode::Incremental`]: what was attempted,
+    /// what was split, and what stayed blocked. Absent from the other modes'
+    /// JSON entirely, so an existing report still parses.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub incremental: Option<IncrementalTrace>,
 }
 
 pub fn dispatch_agents(config: &DispatchConfig) -> Result<DispatchReport, DispatchError> {
@@ -168,8 +179,14 @@ pub fn dispatch_agents(config: &DispatchConfig) -> Result<DispatchReport, Dispat
         .output_dir
         .canonicalize()
         .map_err(DispatchError::Io)?;
+    if config.mode == DispatchMode::Incremental {
+        // The whole task is the plan until a failure says otherwise, so this
+        // mode never builds a job list: it discovers one.
+        return dispatch_incrementally(config, &workspace, &output_dir);
+    }
     let tasks = match config.mode {
         DispatchMode::Compare => vec![config.task.clone(); config.clis.len()],
+        DispatchMode::Incremental => unreachable!("incremental dispatch returned above"),
         DispatchMode::Decompose => {
             let decomposition = decompose_task(&config.task, config.max_depth);
             let leaves = decomposition.leaves();
@@ -181,6 +198,7 @@ pub fn dispatch_agents(config: &DispatchConfig) -> Result<DispatchReport, Dispat
         }
     };
     let jobs = match config.mode {
+        DispatchMode::Incremental => unreachable!("incremental dispatch returned above"),
         DispatchMode::Compare => config
             .clis
             .iter()
@@ -268,6 +286,7 @@ pub fn dispatch_agents(config: &DispatchConfig) -> Result<DispatchReport, Dispat
             .collect(),
         ledger,
         composed_changes,
+        incremental: None,
     })
 }
 
@@ -328,7 +347,7 @@ fn prepare_output_dir(path: &Path) -> Result<(), DispatchError> {
     fs::create_dir_all(path.join("sessions")).map_err(DispatchError::Io)
 }
 
-fn candidate_run_config(
+pub(super) fn candidate_run_config(
     dispatch: &DispatchConfig,
     cli: &str,
     task: String,
@@ -369,6 +388,9 @@ fn compose(
             Ok(Vec::new())
         }
         DispatchMode::Decompose => compose_decomposed(workspace, completed),
+        // Incremental runs compose as they go: a passing attempt's effects are
+        // applied to the workspace before the next attempt copies it.
+        DispatchMode::Incremental => unreachable!("incremental dispatch composes during the run"),
     }
 }
 
@@ -402,7 +424,7 @@ fn compose_decomposed(
     Ok(owners.into_values().map(|(_, change)| change).collect())
 }
 
-fn safe_name(value: &str) -> String {
+pub(super) fn safe_name(value: &str) -> String {
     value
         .chars()
         .map(|character| {

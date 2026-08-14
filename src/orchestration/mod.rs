@@ -6,6 +6,7 @@
 
 mod analysis;
 mod dispatch;
+mod incremental;
 mod permission;
 mod replay;
 mod runner;
@@ -20,6 +21,7 @@ pub use dispatch::{
     dispatch_agents, ComparisonEntry, ComparisonLedger, DispatchConfig, DispatchError,
     DispatchMode, DispatchReport,
 };
+pub use incremental::{IncrementalProposal, IncrementalSplit, IncrementalStep, IncrementalTrace};
 pub use permission::AgentRunPermission;
 pub use replay::{read_session, replay_session, write_session, ReplayError};
 pub use runner::{

@@ -1,0 +1,21 @@
+self_ast_census
+  target src/how_to_capture_manifest.rs
+  language rust
+  fidelity signature
+  byte_len 10594
+  line_count 275
+  content_id source_module_9b75d3841dfeca80
+  symbol_count 12
+  symbols
+    const CAPTURE_MANIFEST_FILE 25 25
+    const ROOT 28 28
+    struct CaptureManifestEntry 32 47
+    function trace_payload 52 61
+    enum CaptureDrift 66 86
+    function trace_payload 91 111
+    function read_captures 122 168
+    function registry_record_for 171 176
+    function manifest_lino 180 194
+    function parse_manifest 198 215
+    function drift 222 250
+    function verify_bodies 261 275

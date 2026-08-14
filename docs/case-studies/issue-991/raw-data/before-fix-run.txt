@@ -1,0 +1,16 @@
+# Pre-fix behaviour, captured from the base commit of this branch
+
+Build: git worktree at 4dbc56c9 ("Initial commit with task details"), cargo build --bin formal-ai
+Run:   formal-ai serve --host 127.0.0.1 --port 8793
+Ask:   POST /api/openai/v1/chat/completions {"messages":[{"role":"user","content":"how to make pancakes?"}]}
+
+--- answer ---
+Procedural discovery plan for `make pancakes` (action `make`, object `pancakes`).
+
+I do not answer this from a memoized recipe. The solver first checks Wikipedia for topic context and Wikidata for entity/action/object hints. It then tries wikiHow's CORS-readable MediaWiki parse API candidate `Make-Pancakes` via `https://www.wikihow.com/api.php?action=parse&page=Make-Pancakes&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*`. If those sources do not expose usable steps, the fallback path runs web search for `how to make pancakes` across duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews and merges the top results with reciprocal rank fusion (k = 60). The final recursive fetch check only accepts pages that actually contain explicit ordered or instructional steps for `make pancakes`.
+--- end ---
+
+No step is asserted, no source is cited, no digest is carried: the answer is a
+description of the work the solver would do. Compare after-fix-run.txt, where
+the same request over the same production path returns twelve steps, each with
+its source URL, license, and sha256.

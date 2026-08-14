@@ -2,14 +2,14 @@ self_ast_census
   target src/proof_engine/decision/equality.rs
   language rust
   fidelity signature
-  byte_len 4340
-  line_count 110
-  content_id source_module_872a47268c95b942
+  byte_len 4382
+  line_count 111
+  content_id source_module_a5d72f3984dcda49
   symbol_count 6
   symbols
     const ITERATION_LIMIT 9 9
     const NODE_LIMIT 10 10
     function has_symbolic_equality 13 15
-    function attempt_equality_claim 17 58
-    function split_equality 60 82
-    function rewrite_system 84 110
+    function attempt_equality_claim 17 59
+    function split_equality 61 83
+    function rewrite_system 85 111

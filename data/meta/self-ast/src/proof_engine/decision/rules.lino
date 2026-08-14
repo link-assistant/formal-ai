@@ -2,9 +2,9 @@ self_ast_census
   target src/proof_engine/decision/rules.rs
   language rust
   fidelity signature
-  byte_len 11121
-  line_count 373
-  content_id source_module_0b9952693cd648f6
+  byte_len 11248
+  line_count 378
+  content_id source_module_f285317575bf2d1f
   symbol_count 26
   symbols
     const MAX_ROUNDS 9 9
@@ -19,17 +19,17 @@ self_ast_census
     struct Program 40 44
     struct Evaluation 46 50
     function has_rule_program 53 57
-    function attempt_rule_inference 59 113
-    function parse_program 115 145
-    function extract_block 147 167
-    function split_top_level 169 192
-    function parse_rule 194 216
-    function parse_atom 218 238
-    function valid_identifier 240 246
-    function valid_term 248 253
-    function atom_to_ground 255 263
-    function is_variable 265 271
-    function evaluate 273 306
-    function satisfying_substitutions 308 333
-    function unify 335 355
-    function instantiate 357 373
+    function attempt_rule_inference 59 118
+    function parse_program 120 150
+    function extract_block 152 172
+    function split_top_level 174 197
+    function parse_rule 199 221
+    function parse_atom 223 243
+    function valid_identifier 245 251
+    function valid_term 253 258
+    function atom_to_ground 260 268
+    function is_variable 270 276
+    function evaluate 278 311
+    function satisfying_substitutions 313 338
+    function unify 340 360
+    function instantiate 362 378

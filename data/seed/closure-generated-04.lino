@@ -129,6 +129,11 @@ meanings
     lexeme en
       surface
         text "github repository traffic"
+  how_to_guide_bounds
+    defined-by intent
+    lexeme en
+      surface
+        text "how to guide bounds"
   intent_assistant_name
     defined-by intent
     lexeme en
@@ -429,11 +434,21 @@ meanings
     lexeme en
       surface
         text "response definition merge header zh"
+  response_external_benchmark_invalid_rust_string_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark invalid rust string ru"
   response_external_benchmark_provenance_en
     defined-by response_template
     lexeme en
       surface
         text "response external benchmark provenance en"
+  response_external_benchmark_upstream_missing_start_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark upstream missing start zh"
   response_fact_check_no_statements_hi
     defined-by response_template
     lexeme en
@@ -459,6 +474,16 @@ meanings
     lexeme en
       surface
         text "response github repository traffic ru"
+  response_how_to_guide_copies_heading_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide copies heading es"
+  response_how_to_guide_heading_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide heading hi"
   response_inappropriate_content_ru
     defined-by response_template
     lexeme en

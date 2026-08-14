@@ -4,6 +4,8 @@ use std::fs;
 
 use toml_edit::DocumentMut;
 
+use super::workflow_fixtures::ci_surface;
+
 fn manifest() -> String {
     fs::read_to_string(format!("{}/Cargo.toml", env!("CARGO_MANIFEST_DIR")))
         .expect("Cargo.toml should be readable")
@@ -37,7 +39,9 @@ fn docs_rs_profile_excludes_the_broken_lindera_build_script() {
 
 #[test]
 fn pull_requests_validate_the_same_dependency_profile_docs_rs_uses() {
-    let workflow = release_workflow();
+    // Registered as `data/meta/ci-gates/check-docs-rs-dependency-profile.lino`
+    // since issue #991; the gate's `env` is what sets `DOCS_RS`.
+    let workflow = ci_surface();
 
     assert!(workflow.contains("DOCS_RS: 1"));
     assert!(workflow.contains("cargo doc --no-deps --lib --no-default-features"));
@@ -57,7 +61,10 @@ fn generated_api_docs_are_published_below_the_site_docs_route() {
 #[test]
 fn whole_docs_task_is_fail_closed_from_validation_through_deployment() {
     let manifest = manifest();
-    let workflow = release_workflow();
+    // The gate is spliced in at the lint step that runs its stage, so the
+    // offsets below still order validation, packaging and deployment the way
+    // the run does.
+    let workflow = ci_surface();
 
     let validate = workflow
         .find("cargo doc --no-deps --lib --no-default-features")

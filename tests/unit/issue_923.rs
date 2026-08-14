@@ -106,6 +106,59 @@ fn datalog_join_work_limit_is_inconclusive() {
 }
 
 #[test]
+fn symbolic_kernel_responses_cover_every_registered_language() {
+    let claim = concat!(
+        "facts { edge(a,b); edge(b,c) } ",
+        "rules { reachable(X,Y) :- edge(X,Y); ",
+        "reachable(X,Z) :- reachable(X,Y), edge(Y,Z) } ",
+        "query { reachable(a,c) }",
+    );
+    let intents = [
+        "external_benchmark_proof_expected_event",
+        "external_benchmark_proof_status_detail",
+        "external_benchmark_rust_adapter_missing",
+        "external_benchmark_egg_law_prompt",
+        "external_benchmark_egg_too_few_laws",
+        "external_benchmark_ascent_missing_rule",
+        "external_benchmark_ascent_prompt_prefix",
+        "external_benchmark_proof_query",
+        "external_benchmark_upstream_missing_start",
+        "external_benchmark_upstream_missing_end",
+        "external_benchmark_invalid_rust_string",
+        "proof_equality_conclusion",
+        "proof_datalog_conclusion",
+        "proof_datalog_counterexample",
+    ];
+
+    for language in formal_ai::language::registered_languages() {
+        for intent in intents {
+            let response = formal_ai::seed::localized_response(intent, language.slug())
+                .unwrap_or_else(|| panic!("{} has no `{intent}` response", language.slug()));
+            assert!(
+                !response.trim().is_empty(),
+                "{} `{intent}` response must not be empty",
+                language.slug()
+            );
+        }
+
+        let outcome = attempt_proof(claim, claim, language.slug(), false, false);
+        let ProofOutcome::Proven { proof } = outcome else {
+            panic!(
+                "expected localized Datalog proof for {}, got {outcome:?}",
+                language.slug()
+            );
+        };
+        let expected = formal_ai::seed::render_response(
+            "proof_datalog_conclusion",
+            language.slug(),
+            &[("query", "reachable(a,c)")],
+        )
+        .unwrap_or_else(|| panic!("{} conclusion did not render", language.slug()));
+        assert_eq!(proof.conclusion, expected, "{} conclusion", language.slug());
+    }
+}
+
+#[test]
 fn new_dependency_is_optional_and_both_external_scores_are_registered() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
     let cargo = fs::read_to_string(root.join("Cargo.toml")).expect("Cargo.toml");

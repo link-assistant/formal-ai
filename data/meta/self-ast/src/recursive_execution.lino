@@ -2,22 +2,30 @@ self_ast_census
   target src/recursive_execution.rs
   language rust
   fidelity signature
-  byte_len 5786
-  line_count 185
-  content_id source_module_3e3c247e37a54ec7
-  symbol_count 14
+  byte_len 11415
+  line_count 322
+  content_id source_module_73026d628c27bd68
+  symbol_count 22
   symbols
-    struct RecursiveTask 10 17
-    function leaf 22 28
-    function branch 32 38
-    struct TaskAttempt 43 48
-    function passed 53 58
-    function failed 62 67
-    trait TaskExecutor 75 81
-    function attempt 77 77
-    function extend_for 80 80
-    enum RecursiveExecution 85 90
-    struct RecursiveRun 94 105
-    function is_passed 110 112
-    function executed_leaf_count 116 122
-    function solve_recursively 132 185
+    struct RecursiveTask 26 33
+    function leaf 38 44
+    function branch 48 54
+    struct TaskAttempt 59 64
+    function passed 69 74
+    function failed 78 83
+    trait TaskExecutor 94 116
+    function attempt 96 96
+    function extend_for 99 99
+    function split 108 115
+    enum RecursiveExecution 120 125
+    struct RecursiveRun 129 143
+    function is_passed 148 150
+    function executed_leaf_count 154 160
+    function split_depth_reached 167 175
+    function blocked_leaves 184 196
+    const DEFAULT_SPLIT_DEPTH_BOUND 204 204
+    function solve_recursively 218 220
+    function solve_recursively_within 227 233
+    function execute 235 300
+    function terminal_state 302 308
+    function usable_split 317 322

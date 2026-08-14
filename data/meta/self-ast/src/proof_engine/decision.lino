@@ -2,9 +2,9 @@ self_ast_census
   target src/proof_engine/decision.rs
   language rust
   fidelity signature
-  byte_len 4178
-  line_count 118
-  content_id source_module_64855bba8d9c3eb3
+  byte_len 4299
+  line_count 120
+  content_id source_module_d5cc74ecf132602f
   symbol_count 12
   symbols
     module boolean 20 20
@@ -12,10 +12,10 @@ self_ast_census
     module linear 23 23
     module rules 24 24
     module sat 25 25
-    function render_proof_text 27 29
-    function attempt_decision_procedure 33 58
-    function has_prefix_equality 60 64
-    function normalize_decision_text 66 100
-    function collapse_whitespace 102 104
-    function has_linear_signal 106 108
-    function has_boolean_signal 110 118
+    function render_proof_text 27 31
+    function attempt_decision_procedure 35 60
+    function has_prefix_equality 62 66
+    function normalize_decision_text 68 102
+    function collapse_whitespace 104 106
+    function has_linear_signal 108 110
+    function has_boolean_signal 112 120
