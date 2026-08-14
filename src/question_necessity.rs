@@ -518,7 +518,7 @@ fn punctuation_candidates_in_line(
     }
 }
 
-fn closing_quote(character: char) -> Option<char> {
+const fn closing_quote(character: char) -> Option<char> {
     match character {
         '"' => Some('"'),
         '«' => Some('»'),
@@ -544,7 +544,7 @@ fn is_equation_placeholder(line: &str, index: usize, character: char) -> bool {
     previous.is_some_and(is_equation_operator) || next.is_some_and(is_equation_operator)
 }
 
-fn is_equation_operator(character: char) -> bool {
+const fn is_equation_operator(character: char) -> bool {
     matches!(character, '=' | '+' | '-' | '*' | '/' | '^')
 }
 
