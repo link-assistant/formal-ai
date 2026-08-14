@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.342.0] - 2026-08-14
+
+### Added
+- Add replayable memory, workspace, and source necessity traces before asking a user question.
+- Add a seed-driven requirement-versus-fact classifier and a monotonic questions-per-task benchmark.
+
+### Changed
+- Research factual unknowns instead of delegating them to the user, and limit answers to one requirement-level question.
+
 ## [0.341.0] - 2026-08-14
 
 ### Added
