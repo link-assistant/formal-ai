@@ -1989,3 +1989,18 @@ research, and raw issue data live in `docs/case-studies/issue-873/`.
 | R873-8 | Express the architecture as one general meta-algorithm that can append/generalize itself. | `ResearchLearningCycle` applies one reducer to facts, procedures, and `MetaAlgorithm` versions. `data/meta/research-learning-recovery.lino` records its ordered phases, and changes to that recipe pass through the same proposal, immutable gate, promotion, and recovery logic. |
 | R873-9 | Preserve all issue data, enumerate every requirement, research primary external sources and related components, and compare solution plans in a deep case study. | Implemented in `docs/case-studies/issue-873/README.md`, `requirements.md`, `online-research.md`, `raw-data/`, and the same-task authorship record. |
 | R873-10 | Complete the plan in one pull request. | Code, data, tests, example, architecture/requirement documentation, changelog, and evidence are delivered together by PR #983. |
+
+## Issue #924 Formal AI Self-Development Loop
+
+Issue [#924](https://github.com/link-assistant/formal-ai/issues/924) closes E77
+by making one real, reviewable Formal AI contribution a release-cycle
+condition. The contract, replay evidence, and requirement map live in
+`docs/case-studies/issue-924/`.
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R924-1 | Require at least one merged Formal AI-authored pull request in each release cycle. | `ensure_self_development_release` scans first-parent GitHub merge commits and rejects a release range with no matching session-backed PR. |
+| R924-2 | Preserve replayable evidence and prove the authored commit reached review unchanged. | The required session/evidence trailers are extended by `Formal-AI-Pull-Request`; the gate matches its number to the merge subject and requires the same commit object in the merged second-parent history. |
+| R924-3 | Record each contribution and continue reporting per-release and trailing self-hosting share. | New ledger rows carry repeated `self_authored_pull_request` values plus the existing changed-line measurements; release notes include the reviewed PR URLs and target. |
+| R924-4 | Make the release target a non-decreasing ratchet. | Each row records its target. The next target is the greater of the prior target and comparable trailing share; the pre-version release gate rejects a projection below it while the range can still be repaired. |
+| R924-5 | Keep E69/E74 dependencies and the ordinary review, CI, and promotion gates intact. | E69 supplies the write-effect floor, E74 supplies the two-way Hive Mind gate, and #924 grants no bypass. The real Agent CLI-authored leaf and raw session evidence are committed in the case study. |

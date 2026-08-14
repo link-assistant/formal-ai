@@ -420,7 +420,7 @@ Requirement-level status by area, updated:
 | Universal 11-step solver runs for every prompt | Done (pillar 2); the recipe is data (`data/meta/recursive-core-recipe.lino`) executed by `src/recipe_interpreter.rs` |
 | Only memory + meta algorithm; no specialized Rust handlers (#559 mandate) | Partial with an enforced boundary: #918 recursively classifies all 46 mixed handler sources as migration debt and ratchets their 19,731 outside-core lines; dedicated generic interpreter modules remain core, while this debt must now shrink |
 | Real upstream benchmarks with honest scores | Done for #698 (was stale "Not done"): `src/external_benchmarks/` and `tests/unit/specification/external_benchmarks.rs` score external corpora with results in `data/benchmarks/external-results.lino` |
-| Self-improvement that compounds | Partial: #656/#657/#701 closed (gated promotion, release self-hosting metric, generalized adoption for one class); anticipatory learning #705 remains open; making the loop routinely produce merged work is E77 |
+| Self-improvement that compounds | Partial: #656/#657/#701/#924 closed (gated promotion, release self-hosting metric, generalized adoption for one class, and a self-development loop requiring one merged, session-backed Formal AI pull request per release cycle); anticipatory learning #705 remains open |
 | Symbolic world models (#649) | Done for #686/#702 (was stale "Partial ... behaviors unimplemented"): `src/world_model.rs` implements contexts, STRIPS-style actions, justification-based recalculation, and dialogue behaviors, covered by `tests/unit/issue_649_world_model.rs` |
 | Agentic-CLI server correctness | Reopened as Partial: #671/#681/#682/#687 closed, but the #848 coding ladder (2 of 13 rungs, zero write effects) exposed the new defect cluster [#902](https://github.com/link-assistant/formal-ai/issues/902)-[#909](https://github.com/link-assistant/formal-ai/issues/909); consolidated behind the ladder ratchet as E69 |
 | Formal AI as orchestrator of external agent CLIs, Hive-Mind dispatch | Done for #703; the missing piece is the end-to-end gate in both directions (hive-mind driving Formal AI as the model, per hive-mind#2059), owned by E74 |
@@ -434,7 +434,7 @@ Requirement-level status by area, updated:
 | Silently-dropped requirements re-verified | Not done — [#710](https://github.com/link-assistant/formal-ai/issues/710) |
 | Data-is-the-interface hygiene | Done for #659/#663/#664; ratchet scripts keep enforcing the burn-down |
 | Delivery breadth | Not done for PWA, npm engine, VS Code Marketplace, debugger, WebVM, cloud sync — [#665](https://github.com/link-assistant/formal-ai/issues/665)-[#670](https://github.com/link-assistant/formal-ai/issues/670); shareable packages (#658) closed |
-| Self-coding chain | Mechanics Done (#673 census, #656 gated promotion, #657 release metric); the measured self-authored share is still near its baseline, owned by E77 |
+| Self-coding chain | Done for the recurring release loop: #673 census, #656 gated promotion, #657 release metric, and the self-development loop (delivered by #924) with a non-decreasing target |
 | Coding via formal reasoning, coding first (#914) | Partial: catalog, oracle, and synthesis layers exist, but the #848 ladder passes 2 of 13 rungs with zero successful write effects; E69 is the blocker epic |
 | Question necessity (ask only requirement-level unknowns) | Partial: clarify-vs-guess, the one-question unknown path, and the #527 catalog exist; no necessity proof per question — E73 |
 | Learning the universal algorithm itself | Partial: `src/research_learning.rs` now versions meta-algorithm candidates through the same immutable promotion and stable recovery gate as facts/procedures; routine proposal generation and adoption remains E75 |
@@ -450,7 +450,7 @@ minimal-core boundary and seed-metadata audit (delivered by #918), E72
 research-driven coding knowledge loop, E73 question-necessity protocol, E74
 hive-mind end-to-end integration gate, E75 method learning for the
 universal algorithm, E76 formal-reasoning coverage growth, E77
-self-development loop. Issue URLs are recorded in
+self-development loop (delivered by #924). Issue URLs are recorded in
 `docs/case-studies/issue-914/proposed-issues.md`.
 
 ## Issue #918 Minimal-Core Boundary And Seed-Metadata Audit (PR #986)
@@ -465,6 +465,16 @@ concepts satisfy them. The audit preserves 3,447 remaining metadata-gap records.
 Future handler migration and metadata enrichment
 can lower these ceilings, but cannot silently add debt. Evidence is in
 `docs/case-studies/issue-918/`.
+
+## Issue #924 Formal AI Self-Development Loop (PR #1007)
+
+Issue #924 closes E77 at the release boundary. Every cycle now requires one
+merged, session-backed Formal AI pull request per release cycle. The ledger
+records every qualifying PR, the per-release and trailing shares, and a target
+that can only rise. Git merge ancestry proves the exact attributed commit
+passed through its claimed PR unchanged; normal review, CI, and promotion gates
+remain authoritative. Reproduction and the real Agent CLI-authored leaf are in
+`docs/case-studies/issue-924/`.
 
 ## Issue #982 Persisted-Memory Upgrade Safety (PR #985)
 
