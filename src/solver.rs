@@ -169,9 +169,9 @@ pub struct SolverConfig {
     /// proof inputs before final execution.
     ///
     /// Independent of `guess_probability`. When this is high the proof engine
-    /// appends a "Clarifying questions" section listing every input the user
-    /// still has to confirm (axiom set, definitions, proof technique) so the
-    /// final research execution is unambiguous.
+    /// appends a "Clarifying questions" section. The question-necessity policy
+    /// then keeps only the smallest requirement-level input the user still has
+    /// to confirm so the final research execution is unambiguous.
     pub follow_up_probability: f32,
     /// `0.0` = ignore surrounding context, `1.0` = use all available context.
     pub context_sensitivity: f32,
@@ -737,6 +737,7 @@ impl UniversalSolver {
             (Some(choice), SelectedRule::Unknown) => choice.answer.clone(),
             _ => language_aware_answer_for(&rule, language, prompt, prior),
         };
+        let base_answer = crate::question_necessity::enforce_questions(&base_answer, &mut log);
 
         let response_link = response_link_for_intent(&rule, &intent);
         log.append("response", response_link.clone());
