@@ -503,6 +503,31 @@ fn issue_893_oversized_structured_files_skip_the_unbounded_meta_language_parse()
 }
 
 #[test]
+fn issue_893_oversized_plain_text_keeps_bounded_head_and_tail_evidence() {
+    let content = format!(
+        "head evidence\n{}tail evidence\n",
+        "a🙂\n".repeat(12 * 1024)
+    );
+    let formalized = formalize_repository_file("evidence.log", &content);
+
+    assert_eq!(formalized.byte_count, content.len());
+    assert_eq!(formalized.line_count, content.lines().count());
+    assert!(
+        formalized.statements.len() <= 256,
+        "oversized plain text produced {} statements",
+        formalized.statements.len()
+    );
+    assert!(formalized
+        .statements
+        .iter()
+        .any(|statement| statement.text == "head evidence"));
+    assert!(formalized
+        .statements
+        .iter()
+        .any(|statement| statement.text == "tail evidence"));
+}
+
+#[test]
 fn issue_893_whole_task_validates_real_repository_files_against_the_ratchet() {
     // The whole task, on the repository's own Git-tracked files rather than a
     // fixture or a hand-picked list: draw seeded random files, validate two per

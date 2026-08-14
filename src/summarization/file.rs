@@ -25,6 +25,15 @@ use super::{
 /// can make a seeded validation draw take hours.
 const MAX_META_LANGUAGE_PARSE_BYTES: usize = 32 * 1024;
 
+/// Bound free-form repository evidence before sentence formalization.
+///
+/// Exact size metadata still describes the complete artifact. Sampling both
+/// ends retains the opening context and terminal outcome common to trace files,
+/// while the statement cap prevents a newline-heavy log from dominating a
+/// seeded validation run.
+const MAX_PLAIN_TEXT_FORMALIZATION_BYTES: usize = 32 * 1024;
+const MAX_PLAIN_TEXT_STATEMENTS: usize = 256;
+
 /// meta-language parse evidence for a repository file or embedded grammar.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct MetaLanguageFormalization {
@@ -207,7 +216,44 @@ fn statements_for_file(path: &str, content: &str, format: &str) -> Vec<Statement
     if is_structured_format(format) {
         return structured_statements(path, content, format);
     }
-    formalize(content)
+    plain_text_statements(content)
+}
+
+fn plain_text_statements(content: &str) -> Vec<Statement> {
+    if content.len() <= MAX_PLAIN_TEXT_FORMALIZATION_BYTES {
+        return formalize(content);
+    }
+
+    let window_bytes = MAX_PLAIN_TEXT_FORMALIZATION_BYTES / 2;
+    let head = prefix_at_char_boundary(content, window_bytes);
+    let tail = suffix_at_char_boundary(content, window_bytes);
+    let statements_per_end = MAX_PLAIN_TEXT_STATEMENTS / 2;
+
+    let mut statements = formalize(head);
+    statements.truncate(statements_per_end);
+
+    let mut tail_statements = formalize(tail);
+    if tail_statements.len() > statements_per_end {
+        tail_statements.drain(..tail_statements.len() - statements_per_end);
+    }
+    statements.extend(tail_statements);
+    statements
+}
+
+fn prefix_at_char_boundary(text: &str, max_bytes: usize) -> &str {
+    let mut end = max_bytes.min(text.len());
+    while !text.is_char_boundary(end) {
+        end -= 1;
+    }
+    &text[..end]
+}
+
+fn suffix_at_char_boundary(text: &str, max_bytes: usize) -> &str {
+    let mut start = text.len().saturating_sub(max_bytes);
+    while !text.is_char_boundary(start) {
+        start += 1;
+    }
+    &text[start..]
 }
 
 fn markdown_file_statements(content: &str) -> Vec<Statement> {

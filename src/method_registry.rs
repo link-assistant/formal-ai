@@ -18,6 +18,7 @@
 
 use crate::event_log::EventLog;
 use crate::links_format::format_lino_record;
+use crate::seed::parser::parse_lino;
 use crate::solver_dispatch::{
     specialized_handlers, CONTEXTUAL_HANDLER_NAMES, PRELUDE_METHOD_NAMES,
 };
@@ -64,6 +65,44 @@ pub struct Method {
     pub surface: MethodSurface,
 }
 
+/// One promoted method abstraction learned from solved-problem event logs.
+///
+/// Learned entries remain separate from `methods`: the latter is the compiled,
+/// executable dispatch catalogue, while these records are adopted knowledge
+/// that can inform later method construction without pretending a Rust handler
+/// exists. Only the benchmark-promotion seed is loaded here; proposal documents
+/// never reach the registry.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct LearnedMethod {
+    /// Stable registry name derived from the algorithm schema.
+    pub name: String,
+    /// Underlying algorithm candidate identity.
+    pub algorithm_id: String,
+    /// Integrity identity for support and held-out observations.
+    pub evidence_id: String,
+    /// Event-log operations in learned order.
+    pub operations: Vec<String>,
+    /// Traces used for schema inference.
+    pub support_trace_ids: Vec<String>,
+    /// Traces withheld for validation.
+    pub held_out_trace_ids: Vec<String>,
+}
+
+impl LearnedMethod {
+    fn to_links_notation(&self) -> String {
+        let mut pairs = vec![
+            ("record_type", "learned_method".to_owned()),
+            ("name", self.name.clone()),
+            ("algorithm_id", self.algorithm_id.clone()),
+            ("evidence_id", self.evidence_id.clone()),
+        ];
+        for operation in &self.operations {
+            pairs.push(("operation", operation.clone()));
+        }
+        format_lino_record(&self.name, &pairs)
+    }
+}
+
 impl Method {
     #[must_use]
     fn to_links_notation(&self) -> String {
@@ -86,6 +125,9 @@ pub struct MethodRegistry {
     /// Every method, prelude first, then the specialized table, then contextual
     /// overrides.
     pub methods: Vec<Method>,
+    /// Promoted learned abstractions, kept out of compiled dispatch until an
+    /// implementation supplies an executable handler.
+    pub learned_methods: Vec<LearnedMethod>,
 }
 
 impl MethodRegistry {
@@ -97,6 +139,20 @@ impl MethodRegistry {
     /// order while staying grounded in the code that actually runs.
     #[must_use]
     pub fn from_dispatch() -> Self {
+        Self::from_dispatch_with_learned_seed(crate::seed::LEARNED_METHODS_LINO)
+            .expect("the embedded learned-method seed must be valid")
+    }
+
+    /// Derive compiled methods and parse an explicit promoted-method seed.
+    ///
+    /// This injected form keeps parsing independently testable; production uses
+    /// only the checked-in seed via [`Self::from_dispatch`].
+    ///
+    /// # Errors
+    ///
+    /// Returns an error when an adopted record is incomplete, duplicated, or
+    /// contains fewer than two ordered operations.
+    pub fn from_dispatch_with_learned_seed(learned_seed: &str) -> Result<Self, String> {
         let specialized = specialized_handlers();
         let mut methods = Vec::with_capacity(
             PRELUDE_METHOD_NAMES.len() + specialized.len() + CONTEXTUAL_HANDLER_NAMES.len(),
@@ -122,7 +178,11 @@ impl MethodRegistry {
                 surface: MethodSurface::Contextual,
             });
         }
-        Self { methods }
+        let learned_methods = parse_learned_methods(learned_seed)?;
+        Ok(Self {
+            methods,
+            learned_methods,
+        })
     }
 
     /// Total number of method records.
@@ -148,6 +208,14 @@ impl MethodRegistry {
         }
         let aliased = crate::route_method_alias::method_for_alias(route)?;
         self.methods.iter().find(|method| method.name == aliased)
+    }
+
+    /// Look up one promoted learned abstraction by its registry name.
+    #[must_use]
+    pub fn learned_method(&self, name: &str) -> Option<&LearnedMethod> {
+        self.learned_methods
+            .iter()
+            .find(|method| method.name == name)
     }
 
     /// Number of methods on a given dispatch surface.
@@ -214,6 +282,7 @@ impl MethodRegistry {
                 "contextual_count",
                 self.count_on(MethodSurface::Contextual).to_string(),
             ),
+            ("learned_count", self.learned_methods.len().to_string()),
         ];
         for method in &self.methods {
             pairs.push(("method", method.name.clone()));
@@ -223,8 +292,61 @@ impl MethodRegistry {
             out.push('\n');
             out.push_str(&method.to_links_notation());
         }
+        for method in &self.learned_methods {
+            out.push('\n');
+            out.push_str(&method.to_links_notation());
+        }
         out
     }
+}
+
+fn parse_learned_methods(seed: &str) -> Result<Vec<LearnedMethod>, String> {
+    let document = parse_lino(seed);
+    let mut methods = Vec::new();
+    for node in document
+        .children
+        .iter()
+        .filter(|node| node.name == "learned_method")
+    {
+        if node.id.trim().is_empty() {
+            return Err(String::from("learned_method_empty_name"));
+        }
+        if methods
+            .iter()
+            .any(|method: &LearnedMethod| method.name == node.id)
+        {
+            return Err(format!("duplicate_learned_method:{}", node.id));
+        }
+        if node.find_child_value("status") != "adopted" {
+            return Err(format!("learned_method_not_adopted:{}", node.id));
+        }
+        let algorithm_id = node.find_child_value("algorithm_id").to_owned();
+        let evidence_id = node.find_child_value("evidence_id").to_owned();
+        if algorithm_id.trim().is_empty() || evidence_id.trim().is_empty() {
+            return Err(format!("learned_method_identity_missing:{}", node.id));
+        }
+        let operations = child_values(node, "operation");
+        if operations.len() < 2 {
+            return Err(format!("learned_method_too_short:{}", node.id));
+        }
+        methods.push(LearnedMethod {
+            name: node.id.clone(),
+            algorithm_id,
+            evidence_id,
+            operations,
+            support_trace_ids: child_values(node, "support_trace"),
+            held_out_trace_ids: child_values(node, "held_out_trace"),
+        });
+    }
+    Ok(methods)
+}
+
+fn child_values(node: &crate::seed::parser::LinoNode, name: &str) -> Vec<String> {
+    node.children
+        .iter()
+        .filter(|child| child.name == name)
+        .map(|child| child.id.clone())
+        .collect()
 }
 
 fn push_unique(values: &mut Vec<String>, value: String) {

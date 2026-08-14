@@ -309,8 +309,7 @@ case_launch() {
     matrix_assert_launched launch
     while IFS= read -r required; do
       required="$(matrix_expand_verification_template "$required" "$port")"
-      matrix_log_matches "$MATRIX_CLIENT_LOG" "$required" \
-        || matrix_fail "launch: required output is missing: $required"
+      matrix_await_log launch "$required" 120
     done < <(matrix_client_values "$CLIENT" verification.launch_required_output)
     http_path="$(matrix_client_field "$CLIENT" verification.launch_http_path)"
     [ -z "$http_path" ] \

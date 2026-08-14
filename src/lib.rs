@@ -73,6 +73,7 @@ pub mod meta_frame;
 pub(crate) mod meta_method_dispatch;
 pub mod meta_reasoning;
 pub mod meta_self_improvement;
+pub mod method_learning;
 pub mod method_registry;
 pub(crate) mod network_endpoint;
 pub mod normal_markov;

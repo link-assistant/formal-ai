@@ -2,21 +2,27 @@ self_ast_census
   target src/method_registry.rs
   language rust
   fidelity signature
-  byte_len 9938
-  line_count 249
-  content_id source_module_0d9b169193384e14
-  symbol_count 13
+  byte_len 14633
+  line_count 371
+  content_id source_module_4e5b43da3332dc7e
+  symbol_count 19
   symbols
-    enum MethodSurface 34 42
-    function slug 47 53
-    struct Method 58 65
-    function to_links_notation 69 77
-    struct MethodRegistry 85 89
-    function from_dispatch 99 126
-    function method_count 130 132
-    function method_for_route 145 151
-    function count_on 155 157
-    function ordered_method_names_for_relevants 169 197
-    function to_links_notation 201 227
-    function push_unique 230 234
-    function record_method_registry 244 249
+    enum MethodSurface 35 43
+    function slug 48 54
+    struct Method 59 66
+    struct LearnedMethod 76 89
+    function to_links_notation 92 103
+    function to_links_notation 108 116
+    struct MethodRegistry 124 131
+    function from_dispatch 141 144
+    function from_dispatch_with_learned_seed 155 186
+    function method_count 190 192
+    function method_for_route 205 211
+    function learned_method 215 219
+    function count_on 223 225
+    function ordered_method_names_for_relevants 237 265
+    function to_links_notation 269 300
+    function parse_learned_methods 303 342
+    function child_values 344 350
+    function push_unique 352 356
+    function record_method_registry 366 371
