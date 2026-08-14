@@ -369,6 +369,16 @@ meanings
     lexeme en
       surface
         text "response document originality check sample missing hi"
+  response_external_benchmark_egg_law_prompt_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark egg law prompt es"
+  response_external_benchmark_proof_query_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark proof query hi"
   response_general_plan_completed_ru
     defined-by response_template
     lexeme en
@@ -479,6 +489,11 @@ meanings
     lexeme en
       surface
         text "response physical action question en"
+  response_proof_datalog_conclusion_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response proof datalog conclusion ru"
   response_search_fusion_header_hi
     defined-by response_template
     lexeme en

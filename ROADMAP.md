@@ -438,7 +438,7 @@ Requirement-level status by area, updated:
 | Coding via formal reasoning, coding first (#914) | Partial: catalog, oracle, and synthesis layers exist, but the #848 ladder passes 2 of 13 rungs with zero successful write effects; E69 is the blocker epic |
 | Question necessity (ask only requirement-level unknowns) | Partial: clarify-vs-guess, the one-question unknown path, and the #527 catalog exist; no necessity proof per question — E73 |
 | Learning the universal algorithm itself | E75 first lifecycle delivered by #922: production recipe event logs now produce held-out-validated, proposal-only method abstractions; one abstraction cleared canonical promotion and is registry-visible link data. Broader method construction and recipe mutation remain incremental work |
-| Formal-reasoning breadth (beyond SAT + linear arithmetic) | Partial; growth with external benchmark scoring is E76 |
+| Formal-reasoning breadth (beyond SAT + linear arithmetic) | Done for E76/#923: bounded e-graph equality saturation plus bounded function-free Datalog, measured at 20/20 egg laws and 5/5 Ascent assertions |
 
 **Open planning batch E69-E77**
 ([#916](https://github.com/link-assistant/formal-ai/issues/916)-[#924](https://github.com/link-assistant/formal-ai/issues/924)).
@@ -453,6 +453,22 @@ universal algorithm (first real-trace proposal-to-registry lifecycle delivered
 by #922), E76 formal-reasoning coverage growth, E77
 self-development loop. Issue URLs are recorded in
 `docs/case-studies/issue-914/proposed-issues.md`.
+
+## Issue #923 Symbolic-Kernel Coverage Growth (PR #1006)
+
+Issue #923 completes E76 with two deterministic proof-engine paths. An optional
+MIT-licensed `egg` 0.11 dependency provides bounded e-graph saturation over
+generic symbolic S-expressions. A native bounded evaluator derives the least
+fixed point of function-free positive Datalog programs. Both paths emit
+structured proof certificates, refuse to turn exhausted search into a false
+disproof, and leave the existing SAT and linear paths intact.
+
+The external benchmark harness now mechanically adapts pinned Rust sources:
+the first 20 unconditional rewrite laws in egg's `tests/math.rs` score 20/20,
+and the five asserted consequences in Ascent's transitive graph closure example
+score 5/5. Provenance, permissive licenses, scores, ratchet floors, and replay
+commands live in `data/benchmarks/external-results.lino` and
+`docs/case-studies/issue-923/`.
 
 ## Issue #918 Minimal-Core Boundary And Seed-Metadata Audit (PR #986)
 

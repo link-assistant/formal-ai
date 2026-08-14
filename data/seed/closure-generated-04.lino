@@ -99,6 +99,11 @@ meanings
     lexeme en
       surface
         text "export memory"
+  external_benchmark_proof_query
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark proof query"
   external_benchmark_python_import
     defined-by intent
     lexeme en
@@ -294,6 +299,11 @@ meanings
     lexeme en
       surface
         text "periodic or manual"
+  proof_datalog_counterexample
+    defined-by intent
+    lexeme en
+      surface
+        text "proof datalog counterexample"
   re-run
     defined-by concept
     lexeme en
@@ -424,11 +434,21 @@ meanings
     lexeme en
       surface
         text "response definition merge header zh"
+  response_external_benchmark_invalid_rust_string_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark invalid rust string ru"
   response_external_benchmark_provenance_en
     defined-by response_template
     lexeme en
       surface
         text "response external benchmark provenance en"
+  response_external_benchmark_upstream_missing_start_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark upstream missing start zh"
   response_fact_check_no_statements_hi
     defined-by response_template
     lexeme en
