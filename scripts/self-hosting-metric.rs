@@ -1,17 +1,13 @@
 //! Deterministically measure release work backed by committed Formal AI sessions.
 //!
-//! Run with `rust-script scripts/self-hosting-metric.rs --since <tag>`. A commit
-//! is attributed only when it records both of these Git trailers:
+//! Run with `rust-script scripts/self-hosting-metric.rs --since <tag>`.
 //!
-//! - `Formal-AI-Session: <session-id>`
-//! - `Formal-AI-Evidence: <repo-relative-path>`
-//! - `Formal-AI-Pull-Request: <canonical GitHub PR URL>` (release-loop proof)
+//! Attribution requires `Formal-AI-Session` and `Formal-AI-Evidence`; release-loop
+//! proof also requires a canonical GitHub URL in `Formal-AI-Pull-Request`.
 //!
-//! The evidence must exist in that commit. A file, or a file inside a named
-//! directory bundle, must contain both `formal-ai` and the recorded session id.
+//! The evidence path must contain both `formal-ai` and the recorded session id.
 //! Changed lines are additions plus deletions reported by `git show --numstat`;
-//! merge commits, binary files and captured artifacts (see
-//! [`is_non_authored_path`]) do not contribute.
+//! merge commits, binary files and captured artifacts do not contribute.
 
 #![allow(dead_code)]
 
