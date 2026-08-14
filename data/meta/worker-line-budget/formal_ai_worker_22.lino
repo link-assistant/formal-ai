@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_22.js"
+  ceiling 674
+  rationale "Issue #708 browser mirror of `src/memory_program.rs` and `src/memory_program/execution.rs`. Natural-language surfaces, primitive permissions, and ordered programs come exclusively from memory-programs.lino."

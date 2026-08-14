@@ -1,0 +1,79 @@
+self_ast_census
+  target src/agentic_coding/modules.rs
+  language rust
+  fidelity full_ast
+  byte_len 5184
+  line_count 132
+  content_id source_module_03755830ee6a9dc1
+  symbol_count 50
+  symbols
+    module algorithm_learning 10 10
+    module associative_learning 11 11
+    module capability_router 12 12
+    module change_request 13 13
+    module code_artifact 14 14
+    module code_rewrite_learning 15 15
+    module code_task 16 16
+    module command_reroute 17 17
+    module comparison 18 18
+    module conversation_recall 19 19
+    module corpus 20 20
+    module diagram 21 21
+    module dreaming_audit 22 22
+    module driver 23 23
+    module execution_learning 24 24
+    module explain 25 25
+    module external_benchmark_learning 26 26
+    module file_read 27 27
+    module formalization_recipe 28 28
+    module formalize 29 29
+    module general_execution 30 30
+    module general_planner 31 31
+    module google_trends_catalog 32 32
+    module google_trends_learning 33 33
+    module intent_router 34 34
+    module learning_report 35 35
+    module ledger 36 36
+    module lexicon 37 37
+    module local_search 38 38
+    module meaning_detail 39 39
+    module narration 40 40
+    module planner 41 41
+    module procedure 42 42
+    module progress 43 43
+    module question_catalog 44 44
+    module rebuild_plan 45 45
+    module repair_strategy 46 46
+    module report_issue 47 47
+    module report_script 48 48
+    module routing_learning 49 49
+    module self_ast 50 50
+    module self_heal 51 51
+    module shell_command 52 52
+    module shell_file_fallback 53 53
+    module source_links 54 54
+    module statement_audit 55 55
+    module structured_edit 56 56
+    module tool_result 57 57
+    module web_research 58 58
+    module workspace_change 59 59
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 2781
+    named_node_count 431
+    distinct_node_kinds 11
+    node_kinds
+      crate 5
+      identifier 196
+      line_comment 8
+      mod_item 50
+      scoped_identifier 10
+      scoped_use_list 30
+      source_file 1
+      use_as_clause 1
+      use_declaration 34
+      use_list 30
+      visibility_modifier 66

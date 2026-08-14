@@ -1,0 +1,16 @@
+## Issue #14 Unified-Surface Requirements
+
+Issue [#14](https://github.com/link-assistant/formal-ai/issues/14) requires every
+interface to use the same universal solver, expands the solver's specialized
+handlers to cover arithmetic, concept lookup, JavaScript execution, and
+conversation memory, and persists the demo's UI state in Links Notation.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R83 | Route every demo answer through the same universal solver as the library, CLI, HTTP server, and Telegram bot — no hardcoded prompt→answer table in `src/web/formal_ai_worker.js`. | Implemented by rewriting `src/web/formal_ai_worker.js` so the worker runs greeting, identity, arithmetic, concept-lookup, recall, JavaScript-execution, hello-world, and unknown-fallback handlers that mirror `src/solver.rs`. |
+| R84 | Persist demo on/off and diagnostics toggles in `localStorage` using Links Notation so the UI state remains portable and human-readable. | Implemented by `src/web/preferences.js` (load/save/format/parse around the `formal-ai.preferences.v1` key with `demo_preferences` root) and wired into `src/web/app.js`. |
+| R85 | Solve arithmetic prompts (symbols, English-word operators, parentheses, decimals, modulo) without hardcoding answers; report division-by-zero rather than panic. | Implemented by `calculation_expression_candidates`/`evaluate_calculation` in `src/calculation.rs`, the local fallback in `src/arithmetic.rs`, and `try_arithmetic` in `src/solver_handlers/mod.rs`; covered by `tests/unit/specification/reasoning_paths.rs::arithmetic_*` and mirrored in `src/web/formal_ai_worker.js`. |
+| R86 | Answer "what is X?" / "tell me about X" / "define X" from a seeded Wikipedia/Wikidata/Wiktionary concept table and always cite the source. | Implemented by `data/seed/concepts.lino`, `CONCEPTS`/`lookup_concept`/`extract_concept_term` in `src/solver_helpers/`, and `try_concept_lookup` in `src/solver.rs`; covered by `tests/unit/specification/reasoning_paths.rs::concept_lookup_*` and mirrored in the demo worker. |
+| R87 | Remember the conversation: recall the user's name, the previous question, and summarize prior turns through the solver, with prior turns recorded as `prior_turn:` events. | Implemented through `ConversationTurn`, `ConversationRole`, and `UniversalSolver::solve_with_history` in `src/solver.rs`; covered by `tests/unit/specification/reasoning_paths.rs::solve_with_history_*`; the demo passes `history` to the worker. |
+| R88 | Declare JavaScript execution capability explicitly: the Rust solver explains it has no JS runtime, the browser demo actually runs the snippet in a Worker sandbox and reports stdout/return value/errors. | Implemented by `extract_javascript_program`/`extract_fenced_block` in `src/solver_helpers/`, `try_javascript_execution` in `src/solver.rs`, and the worker's `tryJavaScriptExecution` handler; covered by `tests/unit/specification/reasoning_paths.rs::javascript_*`. |
+| R89 | Compile case-study evidence (issue body, comments, PR comments, online research, requirement-to-solution mapping) under `docs/case-studies/issue-14/`. | Implemented in `docs/case-studies/issue-14/README.md` with raw data in `docs/case-studies/issue-14/raw-data/`. |

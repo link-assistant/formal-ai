@@ -214,6 +214,9 @@ fn static_demo_runtime_assets_are_cache_busted_by_deployment_version() {
 
     for asset in [
         "styles.css?v=__FORMAL_AI_ASSET_VERSION__",
+        // The generated seed inventory ships and cache-busts like any other
+        // asset; without it seed_loader.js would fetch nothing (issue #991).
+        "seed-files.js?v=__FORMAL_AI_ASSET_VERSION__",
         "seed_loader.js?v=__FORMAL_AI_ASSET_VERSION__",
         "preferences.js?v=__FORMAL_AI_ASSET_VERSION__",
         "i18n.js?v=__FORMAL_AI_ASSET_VERSION__",
@@ -244,6 +247,7 @@ fn static_demo_runtime_assets_are_cache_busted_by_deployment_version() {
     }
     assert!(app_js.contains("withAssetVersion(\"formal_ai_worker.js\")"));
     assert!(seed_loader_js.contains("fetchText(withAssetVersion(file))"));
+    assert!(worker_js.contains("importScripts(withAssetVersion(\"seed-files.js\"))"));
     assert!(worker_js.contains("importScripts(withAssetVersion(\"seed_loader.js\"))"));
     assert!(worker_js.contains("importScripts(withAssetVersion(modulePath))"));
     assert!(worker_js.contains("fetch(withAssetVersion(\"formal_ai_worker.wasm\"))"));
@@ -366,7 +370,10 @@ fn lint_job_guards_the_wasm_worker_migration() {
     // must run in the lint job: the worker JS line-budget ratchet, a rebuild of
     // the shipped `.wasm` from source (which caught a latent no_std break), and
     // its size budget.
-    let workflow = release_workflow();
+    // Two of the three guards are registered gates since issue #991;
+    // `ci_surface()` splices them in where their stage runs, so the ordering
+    // assertions below still describe the order CI executes them.
+    let workflow = ci_surface();
     let lint = job_block(&workflow, "lint");
 
     assert!(

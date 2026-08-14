@@ -1,73 +1,21 @@
-// Node harness that loads the browser worker modules in one shared scope and
-// exercises the response-language follow-up (issue #556) end to end. It reads
-// the seed .lino bundle from disk so meaningsWithRole() is populated exactly
-// as in the browser.
-import fs from "node:fs";
-import path from "node:path";
-import vm from "node:vm";
-import { fileURLToPath } from "node:url";
-import { TextEncoder, TextDecoder } from "node:util";
+// Node harness that boots the browser worker and exercises the
+// response-language follow-up (issue #556) end to end. The seed .lino bundle is
+// served from the canonical `data/seed/` tree so meaningsWithRole() is
+// populated exactly as in the browser.
+//
+// `createWorkerContext` runs `src/web/formal_ai_worker.js` itself, so the entry
+// point decides what to load: `seed-files.js`, `seed_loader.js`,
+// `worker-modules.js`, then every module the last one lists. Issue #991 made
+// those inventories generated, union-merged files so that nothing else has to
+// name them -- a harness that rebuilt the load order by hand silently went
+// stale as soon as a worker module was added, which is what happened here.
+import { createWorkerContext, evaluate } from "../tests/web/support/browser-runtime.mjs";
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const webDir = path.join(root, "src", "web");
-const seedDir = path.join(webDir, "seed");
-
-// Build the raw seed map { "seed/<file>": text } for FormalAiSeed.loadAll.
-function readSeedRaw() {
-  const raw = {};
-  for (const file of fs.readdirSync(seedDir)) {
-    if (file.endsWith(".lino")) {
-      raw[`seed/${file}`] = fs.readFileSync(path.join(seedDir, file), "utf8");
-    }
-  }
-  return raw;
-}
-
-const sandbox = {};
-sandbox.self = sandbox;
-sandbox.globalThis = sandbox;
-sandbox.console = console;
-sandbox.postMessage = () => {};
-// Serve the seed .lino files from disk so FormalAiSeed.loadAll() hydrates the
-// full seed (concepts, projects, tools, meanings) exactly as the browser does.
-sandbox.fetch = async (url) => {
-  const clean = String(url).split("?")[0];
-  const file = path.join(webDir, clean);
-  const text = fs.readFileSync(file, "utf8");
-  return { ok: true, status: 200, async text() { return text; } };
-};
-sandbox.WebAssembly = { instantiate: async () => { throw new Error("no wasm"); } };
-sandbox.location = { search: "" };
-sandbox.setTimeout = setTimeout;
-sandbox.clearTimeout = clearTimeout;
-sandbox.TextEncoder = TextEncoder;
-sandbox.TextDecoder = TextDecoder;
-sandbox.URL = URL;
-sandbox.URLSearchParams = URLSearchParams;
-vm.createContext(sandbox);
-
-function run(file) {
-  const code = fs.readFileSync(file, "utf8");
-  vm.runInContext(code, sandbox, { filename: file });
-}
-
-// Load the seed loader (defines self.FormalAiSeed).
-run(path.join(webDir, "seed_loader.js"));
-
-// Load every worker module into the shared scope, in order.
-for (let i = 0; i <= 20; i++) {
-  const name = `formal_ai_worker_${String(i).padStart(2, "0")}.js`;
-  run(path.join(webDir, "worker", name));
-}
-
-// Hydrate the seed exactly like loadSeed(): stash a preloaded raw bundle and
-// override FormalAiSeed.loadAll to return it.
-void readSeedRaw;
+const sandbox = createWorkerContext();
 
 async function main() {
-  // Hydrate via the real FormalAiSeed.loadAll (served from disk through fetch),
-  // exactly as loadSeed() does in the browser worker.
-  await vm.runInContext("loadSeed()", sandbox);
+  // Hydrate through the real loadSeed(), exactly as the browser worker does.
+  await evaluate(sandbox, "loadSeed()");
 
   const solve = sandbox.solve;
 

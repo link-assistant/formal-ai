@@ -14,7 +14,9 @@ fn coverage_jobs_enforce_and_publish_the_ratchet() {
     // decrease. This pins the three wirings that make the requirement real: the
     // gate's own tests run in `lint`, and each denominator is both enforced and
     // published as a downloadable artifact.
-    let release = release_workflow();
+    // `check-coverage-ratchet` is a registered gate since issue #991, so the
+    // lint job's checks are the workflow and the registry read together.
+    let release = ci_surface();
     let lint = job_block(&release, "lint");
     assert!(
         lint.contains("rust-script --test scripts/check-coverage-ratchet.rs"),

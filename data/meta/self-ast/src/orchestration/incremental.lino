@@ -1,0 +1,26 @@
+self_ast_census
+  target src/orchestration/incremental.rs
+  language rust
+  fidelity signature
+  byte_len 15804
+  line_count 401
+  content_id source_module_811b4500b4b29c9b
+  symbol_count 17
+  symbols
+    struct IncrementalStep 46 57
+    struct IncrementalSplit 61 71
+    struct IncrementalProposal 81 92
+    function links_notation 97 109
+    struct IncrementalTrace 114 129
+    function dispatch_incrementally 132 193
+    function blocked_tasks 196 201
+    function root_id 203 205
+    function proposals 213 243
+    function write_proposals 250 260
+    function evidence_of 267 284
+    struct AgentExecutor 287 300
+    function new 303 314
+    function cli_for 318 321
+    function record 323 327
+    function attempt 331 387
+    function extend_for 389 400

@@ -424,6 +424,31 @@ meanings
     lexeme en
       surface
         text "response github repository traffic hi"
+  response_how_to_guide_copies_heading_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide copies heading ru"
+  response_how_to_guide_heading_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide heading ru"
+  response_how_to_guide_source_outcome_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide source outcome zh"
+  response_how_to_guide_sources_heading_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide sources heading hi"
+  response_how_to_guide_sources_heading_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide sources heading zh"
   response_lexeme_import_cache_miss_offline_zh
     defined-by response_template
     lexeme en

@@ -4,27 +4,27 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::{Path, PathBuf};
 
-fn rust_sources_below(directory: &Path) -> BTreeSet<String> {
-    fn visit(root: &Path, directory: &Path, sources: &mut BTreeSet<String>) {
-        for entry in fs::read_dir(directory).expect("handler directory") {
-            let path = entry.expect("handler entry").path();
-            if path.is_dir() {
-                visit(root, &path, sources);
-            } else if path.extension().is_some_and(|extension| extension == "rs") {
-                sources.insert(
-                    path.strip_prefix(root)
-                        .expect("handler source below repository root")
-                        .to_string_lossy()
-                        .replace('\\', "/"),
-                );
-            }
-        }
-    }
+/// The CI gate itself, compiled into the suite.
+///
+/// The census below and `rust-script scripts/check-minimal-core-boundary.rs`
+/// must agree on which files are handler debt. Walking the directory twice made
+/// that a coincidence; reading it through the gate's own `source_files` makes it
+/// a fact -- issue #991 added an exclusion for generated `mod` lists, and one
+/// edit taught both.
+#[path = "../../scripts/check-minimal-core-boundary.rs"]
+mod check_minimal_core_boundary;
 
-    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
-    let mut sources = BTreeSet::new();
-    visit(root, directory, &mut sources);
-    sources
+/// Every handler source the boundary gate counts, with its line count, relative
+/// to the repository root.
+fn handler_source_lines() -> BTreeMap<String, usize> {
+    check_minimal_core_boundary::source_files(Path::new(env!("CARGO_MANIFEST_DIR")))
+        .expect("the boundary gate should enumerate the handler sources")
+}
+
+/// Every handler source the boundary gate counts, relative to the repository
+/// root.
+fn handler_sources() -> BTreeSet<String> {
+    handler_source_lines().into_keys().collect()
 }
 
 #[derive(Default)]
@@ -198,7 +198,7 @@ fn committed_gaps(root: &Path) -> BTreeMap<(String, String), String> {
 #[test]
 fn minimal_core_ledger_covers_every_recursive_handler_source() {
     let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    let actual = rust_sources_below(&root.join("src/solver_handlers"));
+    let actual = handler_sources();
     let ledger = fs::read_to_string(root.join("data/meta/core-boundary-ledger.lino"))
         .expect("issue #918 must provide the source-file core-boundary ledger");
     let entries = ledger_entries(&ledger);
@@ -243,7 +243,18 @@ fn minimal_core_ledger_covers_every_recursive_handler_source() {
     for disposition in entries.iter().map(|entry| entry.disposition.as_str()) {
         assert!(matches!(disposition, "migrate" | "promote" | "delete"));
     }
-    assert!(ledger.contains("outside_core_lines_max 19711"));
+    // The ledger's ceiling is the measurement itself: the gate fails when it sits
+    // above *or* below the real count, so migration debt can only ratchet down.
+    // Restating the number here would freeze a value that every handler edit moves
+    // into a second shared file -- the conflict shape issue #991 removes -- so the
+    // expected total is summed from the same sources the gate measures.
+    let lines = handler_source_lines();
+    let outside_core_lines: usize = entries
+        .iter()
+        .filter(|entry| entry.disposition == "migrate")
+        .map(|entry| lines[&entry.path])
+        .sum();
+    assert!(ledger.contains(&format!("outside_core_lines_max {outside_core_lines}")));
 }
 
 #[test]
@@ -323,5 +334,5 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     }
     assert_eq!(coding_records, 37, "coding-path regression floor");
     assert_eq!(committed_gaps(root), expected_gaps);
-    assert_eq!(expected_gaps.len(), 3_513);
+    assert_eq!(expected_gaps.len(), 3_583);
 }

@@ -55,6 +55,10 @@ seed_metadata_gaps
     source "data/seed/closure-generated-02.lino"
     record "response_general_plan_command_verification_evidence_hi"
     missing "role,precondition,effect,unit,example"
+  gap seed_metadata_gap_fd3223774e40e345
+    source "data/seed/closure-generated-02.lino"
+    record "response_how_to_guide_source_outcome_hi"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_a5bee7c039886fa5
     source "data/seed/closure-generated-02.lino"
     record "response_lexeme_import_invalid_slug_ru"

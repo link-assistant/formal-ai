@@ -124,6 +124,11 @@ meanings
     lexeme en
       surface
         text "github repository traffic"
+  how_to_guide_bounds
+    defined-by intent
+    lexeme en
+      surface
+        text "how to guide bounds"
   intent_assistant_name
     defined-by intent
     lexeme en
@@ -449,6 +454,16 @@ meanings
     lexeme en
       surface
         text "response github repository traffic ru"
+  response_how_to_guide_copies_heading_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide copies heading es"
+  response_how_to_guide_heading_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide heading hi"
   response_inappropriate_content_ru
     defined-by response_template
     lexeme en

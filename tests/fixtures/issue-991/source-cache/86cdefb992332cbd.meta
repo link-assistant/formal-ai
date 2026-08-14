@@ -1,0 +1,4 @@
+source-capture-v2
+url=https://en.wikibooks.org/w/api.php?action=query&list=search&srsearch=build%20a%20nonexistent%20quantum%20flux%20capacitor&srlimit=5&format=json&origin=*
+fetched_at=1786392355
+sha256=2fcdf9abca6a2ee1ea7f98afb3a85d42c1442319e41eedd569a32c89c9356903

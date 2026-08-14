@@ -1,0 +1,9 @@
+# One CI gate, one file. Issue #991 moved the gate list out of
+# `.github/workflows/release.yml`, the repository's third most conflicted path,
+# because its step list was append-only. A gate lives here instead, so two
+# branches adding gates create two files, never one shared region.
+# `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
+ci_gate check_file_size
+  stage rust
+  description "No source file grows past the per-language ceiling that keeps merges and reviews small."
+  run "rust-script scripts/check-file-size.rs"

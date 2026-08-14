@@ -159,6 +159,21 @@ meanings
     lexeme en
       surface
         text "gets"
+  how_to_guide_conflict
+    defined-by intent
+    lexeme en
+      surface
+        text "how to guide conflict"
+  how_to_guide_heading
+    defined-by intent
+    lexeme en
+      surface
+        text "how to guide heading"
+  how_to_guide_source_outcome
+    defined-by intent
+    lexeme en
+      surface
+        text "how to guide source outcome"
   inappropriate_content
     defined-by intent
     lexeme en
@@ -469,6 +484,11 @@ meanings
     lexeme en
       surface
         text "response general plan verification mismatch es"
+  response_how_to_guide_conflict_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide conflict en"
   response_inappropriate_content_zh
     defined-by response_template
     lexeme en

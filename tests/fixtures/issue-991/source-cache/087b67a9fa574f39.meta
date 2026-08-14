@@ -1,0 +1,4 @@
+source-capture-v2
+url=https://en.wikibooks.org/w/api.php?action=query&list=search&srsearch=reverse%20a%20string%20in%20python&srlimit=5&format=json&origin=*
+fetched_at=1786392353
+sha256=ff76f0cb8b16c95b9f62c6b795f9c30ece957bdf3094f9f7e0c15a3fe44cf6cc
