@@ -1,0 +1,1 @@
+Every Formal AI release cycle includes a reviewed pull request whose session-backed workspace effect passes unchanged review, CI, promotion, and a non-decreasing self-hosting target.
