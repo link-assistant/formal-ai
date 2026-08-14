@@ -29,6 +29,7 @@ source provenance for download-on-test integration. Only permissive licenses
 | Workspace-change learning generalization | #848 | [`workspace-change-learning-generalization.lino`](../data/benchmarks/workspace-change-learning-generalization.lino) | `only_a_green_named_review_promotes_and_replays_the_held_out_rewrite` | 1 |
 | Equation-type corpus | #891 (from #406) | [`equation-type-corpus.lino`](../data/benchmarks/equation-type-corpus.lino) | `issue_891_equation_corpus_solves_every_type` | 72 (and ≥50 distinct verified types) |
 | Question necessity | #920 | [`question-necessity-suite.lino`](../data/benchmarks/question-necessity-suite.lino) | `issue_920_question_necessity_benchmark_ratchets_down` | ≤60 questions per 100 tasks |
+| Conversational wording variations | #933 (from #123) | [`conversational-variations-suite.lino`](../data/benchmarks/conversational-variations-suite.lino) | `conversational_variation_benchmark_routes_every_case` | 228 (and ≥5 wordings per case per language) |
 
 Related earlier work: issue **#103** introduced the competitor-derived prompt
 matrix in [`tests/unit/specification/prompt_variations.rs`](../tests/unit/specification/prompt_variations.rs)
@@ -159,6 +160,19 @@ research, proof follow-up reduction, and answerable arithmetic. The ratchet
 counts only questions with a replayable `question_necessity:asked` event and
 caps the frequency at 60 per 100 tasks; future changes may lower but not raise
 that seed-defined maximum. No third-party benchmark payload is imported.
+
+### Conversational wording variations — issue #933 (requirement from #123)
+
+Records 228 self-authored prompts: at least five distinct wordings for each of
+ten conversational cases in each of English, Russian, Hindi and Chinese, split
+into one partition file per language. Each case records the intent, the evidence
+link and the exact answer that wording produces, and every prompt was verified
+against the engine before it was committed. Two prompts count as one wording
+unless they differ in more than case, punctuation, symbols or spacing, so
+re-punctuating a phrase cannot fill a group. The floor is enforced outside the
+Rust suite as well, by the `check:variation-floor` CI gate. No third-party
+benchmark payload is imported. See
+[`docs/case-studies/issue-933/`](./case-studies/issue-933/README.md).
 
 ### Multilingual local-path discovery — issue #819
 
@@ -367,6 +381,10 @@ cargo test --test unit only_a_green_named_review_promotes_and_replays_the_held_o
 
 # Equation-type corpus (#891)
 cargo test --test unit issue_891_equation_corpus -- --nocapture
+
+# Conversational wording variations (#933)
+cargo test --test unit conversational_variation_benchmark_routes_every_case -- --nocapture
+npm run --prefix tests/e2e check:variation-floor   # the per-language floor
 ```
 
 ## Conventions

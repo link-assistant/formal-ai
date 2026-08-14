@@ -1,3 +1,4 @@
+$ npm run --prefix tests/e2e check:variation-floor
 
 > formal-ai-e2e@1.0.0 check:variation-floor
 > node scripts/check-conversational-variation-floor.mjs

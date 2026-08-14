@@ -1,0 +1,11 @@
+$ cargo test --test unit issue_933_answer_parity
+
+running 5 tests
+test issue_933_answer_parity::issue_933_a_question_quoted_as_an_example_is_not_a_question_the_answer_asks ... ok
+test issue_933_answer_parity::issue_933_seed_follow_up_questions_are_requirements_in_every_language ... ok
+test issue_933_answer_parity::issue_933_a_refused_question_leaves_the_statement_in_front_of_it ... ok
+test issue_933_answer_parity::issue_933_thanks_and_wellbeing_answer_in_full_in_every_language ... ok
+test issue_933_answer_parity::issue_933_conversational_seed_answers_survive_the_question_pass ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 2734 filtered out; finished in 2.69s
+

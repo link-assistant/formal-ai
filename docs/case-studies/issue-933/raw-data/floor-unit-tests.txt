@@ -1,60 +1,66 @@
+$ node --test tests/web/conversational-variation-floor.test.mjs
 TAP version 13
 # Subtest: five distinct wordings per language clear the floor
 ok 1 - five distinct wordings per language clear the floor
   ---
-  duration_ms: 5.804237
+  duration_ms: 8.791553
   ...
 # Subtest: a case one wording short in a single language is reported for that language only
 ok 2 - a case one wording short in a single language is reported for that language only
   ---
-  duration_ms: 1.105313
+  duration_ms: 0.978163
   ...
 # Subtest: a language with no records at all is reported rather than skipped
 ok 3 - a language with no records at all is reported rather than skipped
   ---
-  duration_ms: 0.469065
+  duration_ms: 0.399905
   ...
 # Subtest: re-punctuated copies of one wording do not add up to five
 ok 4 - re-punctuated copies of one wording do not add up to five
   ---
-  duration_ms: 1.000957
+  duration_ms: 0.709432
   ...
 # Subtest: normalization folds case, punctuation and spacing but keeps distinct words apart
 ok 5 - normalization folds case, punctuation and spacing but keeps distinct words apart
   ---
-  duration_ms: 1.050199
+  duration_ms: 0.901471
   ...
 # Subtest: records naming an unlisted case or language are surfaced, not silently counted
 ok 6 - records naming an unlisted case or language are surfaced, not silently counted
   ---
-  duration_ms: 0.351998
+  duration_ms: 0.310018
   ...
 # Subtest: a record missing a required field is reported
 ok 7 - a record missing a required field is reported
   ---
-  duration_ms: 0.392282
+  duration_ms: 0.315698
   ...
 # Subtest: duplicate case ids are reported even when the wordings differ
 ok 8 - duplicate case ids are reported even when the wordings differ
   ---
-  duration_ms: 0.286345
+  duration_ms: 0.424131
+  ...
+# Subtest: a record that does not show its answer is reported (R234-2)
+ok 9 - a record that does not show its answer is reported (R234-2)
+  ---
+  duration_ms: 0.563421
   ...
 # Subtest: the LiNo record parser reads an id line plus its two-space fields
-ok 9 - the LiNo record parser reads an id line plus its two-space fields
+ok 10 - the LiNo record parser reads an id line plus its two-space fields
   ---
-  duration_ms: 1.662531
+  duration_ms: 1.378459
   ...
 # Subtest: the manifest parser collects repeated case and member_file fields
-ok 10 - the manifest parser collects repeated case and member_file fields
+ok 11 - the manifest parser collects repeated case and member_file fields
   ---
-  duration_ms: 0.863541
+  duration_ms: 8.260353
   ...
-1..10
-# tests 10
+1..11
+# tests 11
 # suites 0
-# pass 10
+# pass 11
 # fail 0
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 162.734177
+# duration_ms 234.950492

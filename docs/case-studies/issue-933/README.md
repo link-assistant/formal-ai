@@ -32,12 +32,14 @@ each of en, ru, hi and zh**, and a check must fail the build when one does not.
 | R933-2 | A CI script in the style of `check-language-parity` that walks the corpus and fails below five in any of en/ru/hi/zh. | `tests/e2e/scripts/check-conversational-variation-floor.mjs`, run as `npm run --prefix tests/e2e check:variation-floor`. |
 | R933-3 | Backfill variations until the check passes. | 228 prompts across 10 cases × 4 languages, every group at or above five; the router phrasings they needed were added to `data/seed/intent-routing.lino` and `data/seed/meanings-intent.lino`. |
 | R933-4 | Wire the check into `release.yml`. | `data/meta/ci-gates/check-conversational-variation-floor.lino`, stage `web`. Since issue #991 the workflow no longer holds a step list: `.github/workflows/release.yml` runs `rust-script scripts/run-ci-gates.rs --stage web`, which loads this shard. |
-| R933-5 | Automated: the CI script itself, plus a unit test on its counting logic using fixture data engineered to trip the floor. | `tests/web/conversational-variation-floor.test.mjs` — 10 cases feeding `auditVariationFloor` fixtures at 4/5, at 0, and at five re-punctuated copies of one phrase. |
+| R933-5 | Automated: the CI script itself, plus a unit test on its counting logic using fixture data engineered to trip the floor. | `tests/web/conversational-variation-floor.test.mjs` — 11 cases feeding `auditVariationFloor` fixtures at 4/5, at 0, at five re-punctuated copies of one phrase, and a record that shows no answer. |
 | R933-6 | Manual: reduce one test case to 4 variations in one language and confirm local failure. | [`raw-data/floor-check-manual-failure.txt`](raw-data/floor-check-manual-failure.txt) and [`raw-data/rust-corpus-manual-failure.txt`](raw-data/rust-corpus-manual-failure.txt). |
 | R933-7 | Multilingual: confirm coverage counts print per language. | The count table prints on success as well as failure — [`raw-data/floor-check-pass.txt`](raw-data/floor-check-pass.txt). |
 | R933-8 | Verbose output listing exactly which test cases are under the floor. | One `- case <name> has <n> <language> variation(s); the floor is 5` line per shortfall, plus a remediation line naming the file to edit. |
 | R933-9 | Standing clauses: `docs/case-studies/issue-933/`, single PR. | This document; PR #1010. |
-| R933-10 | Dedup: confirm no overlap with `check:language-test-coverage` and note it here. | Section 5. |
+| R933-10 | Dedup: confirm no overlap with `check:language-test-coverage` and note it here. | Section 6. |
+| R933-11 | Beyond the issue: every recorded variation shows the exact answer it produces (R234-2), so the corpus is documentation and not just a count. | `expected_answer` on 207 of the 228 records, asserted verbatim by `tests/unit/conversational_variations.rs`; the 21 capability records pin the opening line of the multi-paragraph listing with `expected_answer_contains`. The gate rejects a record that shows neither. |
+| R933-12 | Beyond the issue: the recorded answers must be complete in every language — writing them down showed they were not. | The question-necessity parity fix in `src/question_necessity.rs` and `data/seed/question-necessity.lino`, with `tests/unit/issue_933_answer_parity.rs`. Section 5. |
 
 ## 3. Root cause: nothing counted anything
 
@@ -82,7 +84,8 @@ conversational_variation_suite_issue_933
   ...
 ```
 
-Each record is a prompt with the intent and evidence link it must produce:
+Each record is a prompt with the intent, the evidence link and the answer it
+must produce:
 
 ```text
 conversational_variation_case_greeting_hi_01
@@ -94,7 +97,17 @@ conversational_variation_case_greeting_hi_01
   prompt "नमस्ते"
   expected_intent "greeting"
   expected_evidence "response:greeting"
+  expected_answer "नमस्ते, मैं आपकी कैसे मदद कर सकता हूँ?"
 ```
+
+`expected_answer` is what makes the corpus documentation rather than a table of
+counts: a reader sees the exact text each of the 228 wordings produces, which is
+the rule `scripts/check-tests-as-docs.rs` enforces for behavioural tests
+(R234-2). The multi-paragraph capability listing is recorded by its opening line
+with `expected_answer_contains` instead of being inlined 21 times, and the
+arithmetic records add the computed value the same way. A record carrying
+neither field is rejected by the floor gate, so the next case cannot be added
+without showing what it answers.
 
 **The gate has two halves, and both are needed.**
 
@@ -135,7 +148,87 @@ Conversational wording variations per case (floor: 5 per language)
 Conversational variation floor OK: 10 cases x 4 languages, 228 verified prompts, every group at or above 5.
 ```
 
-## 5. Dedup: how this differs from the checks that already existed
+## 5. Recording the answers exposed a language-parity defect
+
+Writing the answers down made a failure visible that counting never could.
+Sixteen records came back with `expected_answer ""` — every Chinese `谢谢`
+wording, every Chinese `你好吗` wording and every Hindi `धन्यवाद` wording — and
+the Russian and Hindi wellbeing answers came back with their closing sentence
+missing. **The English answers were untouched.** That is precisely the failure
+issue #123 was about: *"All features should be supported in all 4 languages"*.
+
+The seed was healthy (`cargo run --example issue_933_response_probe` prints the
+right text for all four languages of all nine conversational intents) and the
+routing was right (the probe recorded the correct intent and evidence link for
+all 228 prompts, before and after). The answer was destroyed after it was
+looked up, by the issue #920 question-necessity pass in
+`src/question_necessity.rs`, which removes the byte range of any question it
+refuses. Two seed-blind defects there combined:
+
+1. **A sentence boundary needed whitespace after the stop, and the Devanagari
+   danda was not a stop at all.** Chinese runs its sentences together
+   (`很高兴听到。接下来您想做什么?`) and Hindi closes them with `।`
+   (`यह सुनकर अच्छा लगा। अब आप क्या करना चाहेंगे?`), so the pass could not find
+   where the question began and treated the *whole answer* as the question.
+2. **The requirement cues were English-only for the seed's own follow-ups.**
+   `data/seed/question-necessity.lino` had cues for `"what would you like"` but
+   not for `"接下来您想做什么"`, `"с чего начнём"` or `"अब आप क्या करना चाहेंगे"`,
+   so those follow-ups fell through to `default_class "factual"`, were refused
+   as factual unknowns, and were cut out. Russian `courtesy_response` survived
+   only by accident — `"хотите"` happened to already be a cue.
+
+Defect 2 selected the answer for removal; defect 1 decided how much of it went.
+Together they deleted everything.
+
+A third, smaller variant of defect 1: a question the answer *quotes as an
+example* was read as a question the answer *asks*. `closing_quote` knew the
+Latin and Cyrillic quotation marks but not the corner brackets Chinese quotes
+with, nor the parentheses every language uses for an inline example, so
+`- **概念查找**：解释术语，例如「什么是维基百科？」` lost its bullet.
+
+**The fix**, in `src/question_necessity.rs` and `data/seed/question-necessity.lino`:
+`।`/`॥` join the sentence terminators; an ideograph after a stop opens the next
+sentence the way a space does in a spaced script; `「」`, `『』`, `()` and `（）`
+shield a quoted example; and nine Russian, Hindi and Chinese cues classify the
+seed's own follow-up questions as requirements, next to the English ones that
+were already there.
+
+**Measured effect.** `cargo run --example issue_933_question_stripping_probe`
+replays the pass over every answer in `data/seed/multilingual-responses.lino`
+and prints each value it rewrites:
+
+| Engine state | Seed values rewritten |
+| --- | --- |
+| Before the fix | 40 |
+| Sentence boundaries + cues fixed | 20 |
+| Quoted examples also fixed | 15 |
+
+All 10 conversational intents of the corpus, plus the `clarification` fallback,
+are now byte-identical in all four languages
+([`raw-data/question-stripping-after.txt`](raw-data/question-stripping-after.txt)
+versus [`raw-data/question-stripping-before.txt`](raw-data/question-stripping-before.txt)).
+
+**What is still rewritten, and why it was left alone.** The remaining 15 are
+language-*symmetric* — the same value is rewritten in every language, so they
+are not parity failures — and none of them belongs to a corpus case:
+`unknown_reasoning_question` (en/ru/hi/zh/unknown) is issue #920's intended
+factual-unknown handoff, and `agentic_report_target_question`,
+`agentic_report_contents_question` and `agent_suggestion` are agentic surfaces
+outside this issue's scope. Changing them is a behavioural change to the
+question protocol that would need its own before/after evidence, so they are
+recorded here rather than quietly altered.
+
+**The regression test** is `tests/unit/issue_933_answer_parity.rs`: seed answers
+survive the pass in all four languages, the seed's own follow-ups classify as
+requirements in all four, a refused question keeps the statement in front of it,
+a quoted example is not a question, and `thanks`/`спасибо`/`धन्यवाद`/`谢谢` plus
+the four wellbeing prompts answer with their whole seed text end to end. All
+five fail on the unfixed engine
+([`raw-data/answer-parity-before.txt`](raw-data/answer-parity-before.txt)) and
+pass on the fixed one
+([`raw-data/answer-parity-after.txt`](raw-data/answer-parity-after.txt)).
+
+## 6. Dedup: how this differs from the checks that already existed
 
 The issue asks for confirmation that this does not overlap
 `check:language-test-coverage`. It does not, and neither do the other two
@@ -152,15 +245,19 @@ The new check is absolute and always-on: it reads the committed corpus, not the
 diff, so a group that drops below five fails the build on every subsequent run
 until it is refilled.
 
-## 6. Verification
+## 7. Verification
 
 | Evidence | What it shows |
 | --- | --- |
 | [`raw-data/floor-check-pass.txt`](raw-data/floor-check-pass.txt) | The gate passing, with per-language counts printed (R933-7). |
 | [`raw-data/floor-check-manual-failure.txt`](raw-data/floor-check-manual-failure.txt) | One Hindi `assistant_name` record removed → `- case assistant_name has 4 hi variation(s); the floor is 5`, exit 1 (R933-6, R933-8). |
 | [`raw-data/rust-corpus-manual-failure.txt`](raw-data/rust-corpus-manual-failure.txt) | The same deletion failing the Rust half: `case assistant_name holds 4 hi wording(s); the floor is 5`. |
-| [`raw-data/floor-unit-tests.txt`](raw-data/floor-unit-tests.txt) | 10/10 counting-logic unit tests, including the fixtures engineered to trip the floor (R933-5). |
+| [`raw-data/floor-unit-tests.txt`](raw-data/floor-unit-tests.txt) | 11/11 counting-logic unit tests, including the fixtures engineered to trip the floor and the record that shows no answer (R933-5, R933-11). |
 | [`raw-data/legacy-counts-before.txt`](raw-data/legacy-counts-before.txt) | The pre-fix corpus with 8 of 24 groups below the floor. |
+| [`raw-data/answer-parity-before.txt`](raw-data/answer-parity-before.txt) | 0 passed, 5 failed on the unfixed engine — `धन्यवाद` answers `""`, `wellbeing/ru` loses its follow-up (R933-12). |
+| [`raw-data/answer-parity-after.txt`](raw-data/answer-parity-after.txt) | 5 passed on the fixed engine. |
+| [`raw-data/question-stripping-before.txt`](raw-data/question-stripping-before.txt) | The 40 seed values the question pass rewrote before the fix. |
+| [`raw-data/question-stripping-after.txt`](raw-data/question-stripping-after.txt) | The 15 that remain, none of them a corpus case, all language-symmetric. |
 
 Reproduce with:
 
@@ -168,10 +265,20 @@ Reproduce with:
 npm run --prefix tests/e2e check:variation-floor
 node --test tests/web/conversational-variation-floor.test.mjs
 cargo test --test unit conversational_variation
+cargo test --test unit issue_933_answer_parity
+cargo run --example issue_933_question_stripping_probe   # which answers the pass rewrites
+cargo run --example issue_933_response_probe             # what the seed holds
 python3 experiments/issue_933_variation_floor/legacy-counts.py   # the "before" table
 ```
 
-## 7. Defect found while backfilling, and not fixed here
+The corpus itself is regenerated, not hand-edited: every prompt is answered by
+the real engine (`cargo run --example issue_933_variation_probe`, output in
+`experiments/issue_933_variation_floor/probe-04.tsv`) and
+`python3 experiments/issue_933_variation_floor/build-corpus.py` writes the
+records from that run. `probe-03.tsv` is the same run against the unfixed
+engine, kept because it is the evidence of the sixteen empty answers.
+
+## 8. Defect found while backfilling, and not fixed here
 
 `"how is it going?"` does not reach the `wellbeing` intent. It is intercepted
 earlier by `try_how_it_works` (`src/solver_handler_how.rs`), which runs before
@@ -187,7 +294,7 @@ the prompt was left out of the corpus rather than the precedence being quietly
 reordered. Recorded here so the next person does not rediscover it as a
 mystery.
 
-## 8. Relationship to `tests/unit/multilingual_variations.rs`
+## 9. Relationship to `tests/unit/multilingual_variations.rs`
 
 The legacy test is kept as-is. It still asserts what it always asserted, and it
 is not the corpus the floor is measured over — measuring the floor over
