@@ -484,4 +484,3 @@
 {"type":"log","level":"info","timestamp":"2026-08-14T07:15:49.942Z","service":"state","key":"/tmp/gh-issue-solver-1786670765158","message":"state disposal completed"}
 
 {"type":"log","level":"info","timestamp":"2026-08-14T07:15:49.943Z","service":"default","hasError":false,"uptimeSeconds":17,"message":"Agent exiting"}
-
