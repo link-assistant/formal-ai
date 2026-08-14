@@ -12,6 +12,7 @@ mod assistant_name;
 mod budget_search;
 mod bulk_lexeme_import;
 mod ci_gates;
+mod conversational_variations;
 mod courtesy_response;
 mod data_files;
 mod dialog_log;
