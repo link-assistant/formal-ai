@@ -133,6 +133,21 @@ curl -s http://127.0.0.1:8080/api/openai/v1/chat/completions \
   -d '{"model":"formal-ai","messages":[{"role":"user","content":"Hi"}]}'
 ```
 
+The same local router is available from the one CLI binary over WebSocket or
+host-only WebRTC data channels:
+
+```bash
+formal-ai serve --ws
+formal-ai connect --transport websocket --prompt 'Hi'
+
+formal-ai serve --webrtc
+formal-ai connect --transport webrtc --prompt 'Hi'
+```
+
+See [Local WebSocket and WebRTC transports](docs/local-transports.md) for the
+wire envelope, authentication, generic `websocat` example, and WebRTC
+offer/answer contract.
+
 The canonical model id is `formal-ai`. The API also accepts
 `@link-assistant/formal-ai`, `link-assistant/formal-ai`, `formal-ai-latest`,
 and `latest` as case-insensitive aliases, and responses return `formal-ai`.

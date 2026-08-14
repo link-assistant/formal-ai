@@ -13,19 +13,19 @@ issue_931_leaf_websocket_adapter
   record_type "smallest_leaf"
   owner "primary_implementer"
   artifact "src/local_transport.rs"
-  status "in_progress"
+  status "complete"
 issue_931_leaf_webrtc_adapter
   record_type "smallest_leaf"
   owner "primary_implementer"
   artifact "src/local_transport.rs"
-  status "in_progress"
+  status "complete"
 issue_931_leaf_cli_surface
   record_type "smallest_leaf"
   owner "primary_implementer"
   artifact "src/cli_local_transport.rs|src/main.rs"
-  status "in_progress"
+  status "complete"
 issue_931_leaf_verification_documentation
   record_type "smallest_leaf"
   owner "primary_implementer"
   artifact "tests/integration/issue_931_local_transports.rs|docs/case-studies/issue-931/README.md"
-  status "in_progress"
+  status "complete"
