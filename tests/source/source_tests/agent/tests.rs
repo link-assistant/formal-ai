@@ -46,6 +46,14 @@ fn windows_python_commands_have_platform_budget_floor() {
 }
 
 #[test]
+fn successful_exit_at_the_deadline_is_not_reported_as_a_timeout() {
+    assert!(!command_timed_out(true, true));
+    assert!(command_timed_out(true, false));
+    assert!(!command_timed_out(false, true));
+    assert!(!command_timed_out(false, false));
+}
+
+#[test]
 fn planned_prompt_mutates_only_workspace_files() {
     let prompt = "[agent] create file report.txt with `alpha`, modify report.txt to `beta`, \
                       create file scratch.tmp with `remove`, delete scratch.tmp, and run command \
