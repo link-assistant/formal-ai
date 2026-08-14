@@ -523,7 +523,7 @@ fn record_self_hosting_release(tag_prefix: &str, new_version: &str) -> Result<Pa
     // cycle without its required reviewed Formal AI contribution is actionable:
     // leave the range open, merge a session-backed PR, then retry the release.
     let eligibility = self_hosting_metric::ensure_self_development_release(
-        &repo, &ledger, &since, "HEAD", 3,
+        &repo, &ledger, &tag, &since, "HEAD", 3,
     )?;
     println!(
         "Self-development release gate passed at {} with {} reviewed Formal AI pull request(s)",

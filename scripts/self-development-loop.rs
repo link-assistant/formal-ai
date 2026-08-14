@@ -1,8 +1,8 @@
 //! Release-cycle gate for Formal AI's reviewed self-development loop.
 
 use super::{
-    commit_has_formal_ai_evidence, git, project_trailing_basis_points, read_release_rows,
-    trailer_values, EvidencePolicy, ReleaseRow, METRIC_VERSION, PULL_REQUEST_TRAILER,
+    commit_has_formal_ai_evidence, git, read_release_rows, trailer_values, EvidencePolicy,
+    ReleaseRow, METRIC_VERSION, PULL_REQUEST_TRAILER,
 };
 use std::collections::BTreeMap;
 use std::path::Path;
@@ -133,6 +133,7 @@ pub(super) fn target_from_rows(rows: &[ReleaseRow]) -> u64 {
 pub fn ensure_self_development_release(
     repo: &Path,
     ledger: &Path,
+    tag: &str,
     since: &str,
     until: &str,
     trailing_window: usize,
@@ -145,9 +146,11 @@ pub fn ensure_self_development_release(
              valid session evidence"
         ));
     }
-    let rows = read_release_rows(ledger)?;
+    let mut rows = read_release_rows(ledger)?;
+    rows.retain(|row| row.tag != tag);
     let target = target_from_rows(&rows);
-    let projected = project_trailing_basis_points(repo, ledger, since, until, trailing_window)?;
+    let projected =
+        super::project_trailing_share(repo, ledger, since, until, trailing_window, Some(tag))?;
     if projected < target {
         return Err(format!(
             "self-hosting target would fall from {} to {} for {since}..{until}; merge additional \

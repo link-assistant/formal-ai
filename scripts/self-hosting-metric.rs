@@ -497,16 +497,16 @@ fn ratchet_regression(previous: Option<&ReleaseRow>, row: &ReleaseRow) -> Option
 }
 
 /// The trailing share a release cut at `until` would record.
-///
 /// Same arithmetic `record_release_with_policy` performs, without writing
 /// anything, so a pull request can be told what its merge would do to the
 /// ratchet while its commits can still be amended.
-pub fn project_trailing_basis_points(
+pub fn project_trailing_share(
     repo: &Path,
     ledger: &Path,
     since: &str,
     until: &str,
     trailing_window: usize,
+    excluded_tag: Option<&str>,
 ) -> Result<u64, String> {
     if trailing_window == 0 {
         return Err("trailing window must be greater than zero".to_owned());
@@ -516,6 +516,7 @@ pub fn project_trailing_basis_points(
     let mut window_rows = rows
         .iter()
         .filter(|row| row.metric_version == METRIC_VERSION)
+        .filter(|row| excluded_tag != Some(row.tag.as_str()))
         .rev()
         .take(trailing_window.saturating_sub(1))
         .cloned()
@@ -579,8 +580,8 @@ pub fn ratchet_check(
         eprintln!("warning: skipping ratchet check: {since} is not present in this checkout");
         return Ok(None);
     }
-    let baseline = project_trailing_basis_points(repo, ledger, &since, base, trailing_window)?;
-    let candidate = project_trailing_basis_points(repo, ledger, &since, head, trailing_window)?;
+    let baseline = project_trailing_share(repo, ledger, &since, base, trailing_window, None)?;
+    let candidate = project_trailing_share(repo, ledger, &since, head, trailing_window, None)?;
     if candidate >= baseline {
         return Ok(None);
     }
@@ -853,6 +854,7 @@ fn run() -> Result<(), String> {
         ensure_self_development_release(
             &options.repo,
             &options.ledger,
+            &tag,
             &since,
             &options.until,
             options.trailing_window,

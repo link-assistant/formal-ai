@@ -118,14 +118,17 @@ fn release_cycle_requires_a_session_backed_merged_pull_request() {
     );
 
     let ledger = repo.join("data/meta/self-hosting-ledger.lino");
-    let error = metric_script::ensure_self_development_release(&repo, &ledger, "v1.0.0", "HEAD", 3)
-        .expect_err("a trailer on a direct commit must not impersonate a merged pull request");
+    let error = metric_script::ensure_self_development_release(
+        &repo, &ledger, "v1.1.0", "v1.0.0", "HEAD", 3,
+    )
+    .expect_err("a trailer on a direct commit must not impersonate a merged pull request");
     assert!(error.contains("merged Formal AI-authored pull request"));
 
     let pull_request = merge_formal_ai_pull_request(&repo, 41);
-    let eligibility =
-        metric_script::ensure_self_development_release(&repo, &ledger, "v1.0.0", "HEAD", 3)
-            .expect("the reviewed, session-backed pull request must make the cycle releasable");
+    let eligibility = metric_script::ensure_self_development_release(
+        &repo, &ledger, "v1.1.0", "v1.0.0", "HEAD", 3,
+    )
+    .expect("the reviewed, session-backed pull request must make the cycle releasable");
     assert_eq!(eligibility.pull_requests, vec![pull_request]);
     assert_eq!(eligibility.target_percentage_basis_points, 0);
 
@@ -138,7 +141,7 @@ fn release_target_ratchets_and_records_each_self_authored_pull_request() {
     let first_pull_request = merge_formal_ai_pull_request(&repo, 51);
     let ledger = repo.join("data/meta/self-hosting-ledger.lino");
 
-    metric_script::ensure_self_development_release(&repo, &ledger, "v1.0.0", "HEAD", 3)
+    metric_script::ensure_self_development_release(&repo, &ledger, "v1.1.0", "v1.0.0", "HEAD", 3)
         .expect("the first self-development cycle must pass");
     let first = metric_script::record_release(&repo, &ledger, "v1.1.0", "v1.0.0", "HEAD", 3)
         .expect("the first release row must be recorded");
@@ -162,13 +165,67 @@ fn release_target_ratchets_and_records_each_self_authored_pull_request() {
     commit(&repo, "large human change");
     merge_formal_ai_pull_request(&repo, 52);
 
-    let error = metric_script::ensure_self_development_release(&repo, &ledger, "v1.1.0", "HEAD", 3)
-        .expect_err("a token self-authored PR must not silently lower the release target");
+    let error = metric_script::ensure_self_development_release(
+        &repo, &ledger, "v1.2.0", "v1.1.0", "HEAD", 3,
+    )
+    .expect_err("a token self-authored PR must not silently lower the release target");
     assert!(
         error.contains("self-hosting target"),
         "unexpected error: {error}"
     );
     assert!(error.contains("would fall"), "unexpected error: {error}");
+
+    fs::remove_dir_all(repo).expect("fixture directory must be removed");
+}
+
+#[test]
+fn release_eligibility_retry_excludes_the_existing_tag() {
+    let repo = fixture_repo();
+    let ledger = repo.join("data/meta/self-hosting-ledger.lino");
+    fs::write(
+        &ledger,
+        "self_hosting_ledger\n  current_metric_version \"2\"\n  release\n    \
+         metric_version \"2\"\n    tag \"v0.7.0\"\n    since \"v0.6.0\"\n    until \
+         \"a\"\n    self_authored_lines \"0\"\n    changed_lines \"100\"\n    \
+         self_authored_commits \"0\"\n    commits \"1\"\n    percentage_basis_points \
+         \"0\"\n    trailing_window \"3\"\n    trailing_percentage_basis_points \
+         \"0\"\n    target_percentage_basis_points \"0\"\n  release\n    metric_version \
+         \"2\"\n    tag \"v0.8.0\"\n    since \"v0.7.0\"\n    until \"b\"\n    \
+         self_authored_lines \"100\"\n    changed_lines \"100\"\n    self_authored_commits \
+         \"1\"\n    commits \"1\"\n    percentage_basis_points \"10000\"\n    trailing_window \
+         \"3\"\n    trailing_percentage_basis_points \"5000\"\n    target_percentage_basis_points \
+         \"0\"\n  release\n    metric_version \"2\"\n    tag \"v0.9.0\"\n    since \"v0.8.0\"\n    \
+         until \"c\"\n    self_authored_lines \"100\"\n    changed_lines \"100\"\n    \
+         self_authored_commits \"1\"\n    commits \"1\"\n    percentage_basis_points \
+         \"10000\"\n    trailing_window \"3\"\n    trailing_percentage_basis_points \
+         \"6667\"\n    target_percentage_basis_points \"5000\"\n",
+    )
+    .expect("historical release rows must be written");
+    commit(&repo, "historical release rows");
+    git(&repo, &["tag", "--force", "v1.0.0"]);
+
+    fs::write(repo.join("human-code.txt"), "human\n".repeat(98))
+        .expect("human change must be written");
+    commit(&repo, "human part of release");
+    merge_formal_ai_pull_request(&repo, 53);
+
+    let first = metric_script::ensure_self_development_release(
+        &repo, &ledger, "v1.1.0", "v1.0.0", "HEAD", 3,
+    )
+    .expect("the new release must clear the historical target");
+    let row = metric_script::record_release(&repo, &ledger, "v1.1.0", "v1.0.0", "HEAD", 3)
+        .expect("the release row must be recorded");
+    assert_eq!(
+        row.trailing_percentage_basis_points,
+        first.projected_percentage_basis_points
+    );
+    assert_eq!(
+        metric_script::ensure_self_development_release(
+            &repo, &ledger, "v1.1.0", "v1.0.0", "HEAD", 3,
+        )
+        .expect("an identical retry must not count its existing row twice"),
+        first
+    );
 
     fs::remove_dir_all(repo).expect("fixture directory must be removed");
 }
