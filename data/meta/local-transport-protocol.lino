@@ -1,0 +1,26 @@
+local_transport_protocol
+  record_type "local_transport_protocol"
+  default_host "127.0.0.1"
+  request_shape "api_transport_request"
+  response_shape "api_transport_response"
+  router "handle_api_request_with_headers"
+local_transport_websocket
+  record_type "local_transport_binding"
+  transport "websocket"
+  server_flag "--ws"
+  client_value "websocket"
+  framing "rfc6455_text"
+local_transport_webrtc
+  record_type "local_transport_binding"
+  transport "webrtc"
+  server_flag "--webrtc"
+  client_value "webrtc"
+  signaling "length_prefixed_json"
+  data_channel "formal-ai"
+  ice_policy "host_only"
+  central_relay "false"
+local_transport_storage
+  record_type "local_transport_invariant"
+  storage_engine "shared_memory_store"
+  new_storage_engine "false"
+  permission_router "shared_api_router"
