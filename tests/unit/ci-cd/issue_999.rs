@@ -143,14 +143,23 @@ fn warning_band_files_are_small_and_split_responses_cover_the_registry() {
         }
     }
 
-    for registry in [
-        "src/seed/embedded.rs",
+    // Issue #991 made `data/meta/seed-registry.lino` the one inventory and
+    // generates the rest from it, so the split file is declared once and
+    // reaches every production surface by construction.
+    assert!(
+        repository_file("data/meta/seed-registry.lino")
+            .contains("seed multilingual-responses-agentic-tools\n"),
+        "the seed registry must declare the split response file"
+    );
+    for generated in [
+        "src/seed/embedded_registry.rs",
         "tests/source/seed/embedded.rs",
-        "src/web/seed_loader.js",
+        "src/web/seed-files.js",
     ] {
         assert!(
-            repository_file(registry).contains("multilingual-responses-agentic-tools.lino"),
-            "{registry} must register the split response file"
+            repository_file(generated).contains("multilingual-responses-agentic-tools.lino"),
+            "{generated} must carry the split response file; regenerate it with \
+             `rust-script scripts/generate-seed-registry.rs --write`"
         );
     }
 }

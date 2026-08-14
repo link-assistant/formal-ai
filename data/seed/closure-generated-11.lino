@@ -514,6 +514,31 @@ meanings
     lexeme en
       surface
         text "response github repository traffic zh"
+  response_how_to_guide_bounds_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide bounds hi"
+  response_how_to_guide_conflicts_heading_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide conflicts heading zh"
+  response_how_to_guide_heading_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide heading zh"
+  response_how_to_guide_insufficient_evidence_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide insufficient evidence en"
+  response_how_to_guide_sources_heading_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide sources heading en"
   response_inappropriate_content_en
     defined-by response_template
     lexeme en

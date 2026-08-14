@@ -118,6 +118,18 @@ pub fn try_how_to_procedure(
     ))
 }
 
+/// The bare task text of a recognised procedural request ("make tea" from
+/// "how to make tea?"), or `None` when the prompt is not one.
+///
+/// Exposed so the executed synthesis path
+/// ([`crate::solver_handler_how_synthesis`]) recognises exactly the same
+/// prompts, in exactly the same normalised form, as the discovery plan it falls
+/// back to — the two can never disagree about what the task is.
+#[must_use]
+pub fn procedural_how_to_task(normalized: &str) -> Option<String> {
+    extract_procedural_how_to_task(normalized).map(|task| task.task)
+}
+
 pub fn looks_like_procedural_how_to(normalized: &str) -> bool {
     extract_procedural_how_to_task(normalized).is_some()
 }

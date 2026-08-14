@@ -44,6 +44,7 @@ mod proof_programs;
 mod release_timelines;
 mod roles;
 mod shell_intents;
+mod sources;
 mod summary_topics;
 mod terminal_commands;
 
@@ -83,8 +84,8 @@ pub use embedded::{
     NUMERIC_LIST_OPERATIONS_LINO, OPERATION_VOCABULARY_LINO, PERSONAS_LINO,
     PROGRAM_CST_GRAMMARS_LINO, PROGRAM_PLAN_RULES_LINO, PROJECTS_LINO, PROMPT_PATTERNS_LINO,
     PROOF_PROGRAM_TEMPLATES_LINO, QUESTION_NECESSITY_LINO, RELEASE_TIMELINES_LINO, RESPONSE_FILES,
-    SELF_IMPROVEMENT_LOOP_LINO, SHELL_INTENTS_LINO, SUMMARY_TOPICS_LINO, TERMINAL_COMMANDS_LINO,
-    TOOLS_LINO,
+    SELF_IMPROVEMENT_LOOP_LINO, SHELL_INTENTS_LINO, SOURCES_REGISTRY_LINO, SUMMARY_TOPICS_LINO,
+    TERMINAL_COMMANDS_LINO, TOOLS_LINO,
 };
 pub use entity_names::{entity_names, EntityName};
 pub use facts::{facts, FactRecord, LocalizedFact};
@@ -119,6 +120,10 @@ pub use roles::*;
 pub use shell_intents::{
     shell_intent_vocabulary, LocalPathSearchKind, LocalPathSearchScope, ShellIntent,
     ShellIntentArgument, ShellIntentVocabulary,
+};
+pub use sources::{
+    external_service_settings_keys, external_trusted_sources, percent_encode, source_record,
+    source_registry, HowToRole, SourceRecord, EXTERNAL_TRUSTED_GROUP,
 };
 pub use summary_topics::{summary_topic_seeds, SummaryTopic, SummaryTopicSeeds};
 pub use terminal_commands::{terminal_command_vocabulary, TerminalCommandVocabulary};

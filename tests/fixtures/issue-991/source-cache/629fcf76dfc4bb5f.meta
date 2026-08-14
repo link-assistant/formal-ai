@@ -1,0 +1,4 @@
+source-capture-v2
+url=https://api.stackexchange.com/2.3/search/advanced?order=desc&sort=relevance&q=make%20pancakes&site=stackoverflow&filter=withbody
+fetched_at=1786392350
+sha256=31086e68fc723db63e831bc0606e4b3625c76461b3f4a89a3aca8cccf8ce15af

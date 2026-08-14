@@ -366,11 +366,13 @@ impl TaskStrategyReview {
     }
 }
 
+/// The first irreducible failure of a run, which is what a proposal is about.
+///
+/// The traversal itself belongs to the run, not to learning: a blocked leaf is
+/// the same thing whoever asks for it, so this reads
+/// [`RecursiveRun::blocked_leaves`] instead of walking the tree a second time.
 fn first_blocked_leaf(run: &RecursiveRun) -> Option<&RecursiveRun> {
-    if run.children.is_empty() {
-        return (run.status == RecursiveExecution::Blocked).then_some(run);
-    }
-    run.children.iter().find_map(first_blocked_leaf)
+    run.blocked_leaves().first().copied()
 }
 
 fn error(reason: &str) -> TaskLearningError {

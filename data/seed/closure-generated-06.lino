@@ -394,6 +394,16 @@ meanings
     lexeme en
       surface
         text "response general plan command verification evidence ru"
+  response_how_to_guide_citation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide citation ru"
+  response_how_to_guide_step_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide step es"
   response_http_fetch_curated_project_hi
     defined-by response_template
     lexeme en

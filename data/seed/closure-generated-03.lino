@@ -119,6 +119,16 @@ meanings
     lexeme en
       surface
         text "general plan command verification evidence"
+  how_to_guide_citation
+    defined-by intent
+    lexeme en
+      surface
+        text "how to guide citation"
+  how_to_guide_copy
+    defined-by intent
+    lexeme en
+      surface
+        text "how to guide copy"
   intent_algorithm
     defined-by intent
     lexeme en
@@ -384,6 +394,31 @@ meanings
     lexeme en
       surface
         text "response general plan command capture action zh"
+  response_how_to_guide_copy_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide copy es"
+  response_how_to_guide_copy_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide copy hi"
+  response_how_to_guide_insufficient_evidence_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide insufficient evidence zh"
+  response_how_to_guide_source_outcome_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide source outcome en"
+  response_how_to_guide_source_outcome_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response how to guide source outcome ru"
   response_lexeme_import_cannot_create_zh
     defined-by response_template
     lexeme en

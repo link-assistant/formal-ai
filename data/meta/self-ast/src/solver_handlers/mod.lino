@@ -2,66 +2,27 @@ self_ast_census
   target src/solver_handlers/mod.rs
   language rust
   fidelity signature
-  byte_len 39069
-  line_count 984
-  content_id source_module_cce35cd8f3fc58c7
-  symbol_count 58
+  byte_len 38190
+  line_count 946
+  content_id source_module_970b7ae3bf12f367
+  symbol_count 19
   symbols
-    module agent_workspace 3 3
-    module behavior_rule_followups 4 4
-    module behavior_rule_matching 5 5
-    module behavior_rules 6 6
-    module benchmark_prompts 7 7
-    module calculator_rate 8 8
-    module calendar 9 9
-    module calendar_ics 10 10
-    module compound_interest 11 11
-    module conversation_memory 12 12
-    module curated_project_fetch 13 13
-    module document_originality 14 14
-    module document_request 15 15
-    module fact_checking 16 16
-    module feature_capability 17 17
-    module github_repository_traffic 18 18
-    module installation_conversion 19 19
-    module meta_explanation 20 20
-    module natural_language_tools 21 21
-    module numeric_list 22 22
-    module pattern_inference 23 23
-    module playwright_script 24 24
-    module procedure_rules 25 25
-    module program_blueprint 26 26
-    module program_synthesis 27 27
-    module research_table 28 28
-    module response_language_followup 29 29
-    module self_awareness 30 30
-    module shell_command_transform 31 31
-    module software_project 32 32
-    module software_project_code 33 33
-    module software_project_followup 34 34
-    module task_decomposition 35 35
-    module text_edit_ops 36 36
-    module text_manipulation 37 37
-    module user_intent 38 38
-    module web_requests 39 39
-    module web_search_intent 40 40
-    module world_state 41 41
-    function try_arithmetic 123 239
-    function render_calculation_reasoning_step 241 247
-    function try_concept_lookup 249 251
-    function try_concept_lookup_with_response_language 260 329
-    function render_concept_plain 334 357
-    function render_source_link 362 369
-    function render_concept_in_context 386 432
-    function try_javascript_execution 434 457
-    function try_network_query 459 515
-    function try_translation 517 718
-    function render_translation_gap 720 732
-    function try_write_script 734 770
-    function try_algorithm 772 796
-    function try_execution_failure 798 827
-    function try_source_refresh 829 854
-    function try_learn_from_source 867 893
-    function learning_source_summary 900 919
-    function try_source_conflict 921 947
-    function finalize_simple 949 984
+    function try_arithmetic 85 201
+    function render_calculation_reasoning_step 203 209
+    function try_concept_lookup 211 213
+    function try_concept_lookup_with_response_language 222 291
+    function render_concept_plain 296 319
+    function render_source_link 324 331
+    function render_concept_in_context 348 394
+    function try_javascript_execution 396 419
+    function try_network_query 421 477
+    function try_translation 479 680
+    function render_translation_gap 682 694
+    function try_write_script 696 732
+    function try_algorithm 734 758
+    function try_execution_failure 760 789
+    function try_source_refresh 791 816
+    function try_learn_from_source 829 855
+    function learning_source_summary 862 881
+    function try_source_conflict 883 909
+    function finalize_simple 911 946

@@ -3,17 +3,39 @@
 
 use std::{fs, process::ExitCode};
 
+/// Every registered CI gate shard, sorted by path so the text is stable.
+fn gate_registry() -> Vec<String> {
+    let mut shards = fs::read_dir("data/meta/ci-gates")
+        .expect("read data/meta/ci-gates")
+        .map(|entry| entry.expect("read a gate shard").path())
+        .filter(|path| path.extension().is_some_and(|extension| extension == "lino"))
+        .collect::<Vec<_>>();
+    shards.sort();
+    shards
+        .into_iter()
+        .map(|path| {
+            fs::read_to_string(&path)
+                .unwrap_or_else(|error| panic!("read {}: {error}", path.display()))
+        })
+        .collect()
+}
+
 fn main() -> ExitCode {
     let manifest = fs::read_to_string("Cargo.toml").expect("read Cargo.toml");
-    let workflows = [
+    let mut sources = [
         ".github/workflows/release.yml",
         ".github/workflows/desktop-release.yml",
         ".github/actions/setup-sccache/action.yml",
     ]
     .into_iter()
     .map(|path| fs::read_to_string(path).unwrap_or_else(|error| panic!("read {path}: {error}")))
-    .collect::<Vec<_>>()
-    .join("\n");
+    .collect::<Vec<_>>();
+    // Issue #991 moved the lint job's commands into one file per gate, so the
+    // text CI executes is the workflow plus that registry. A policy that read
+    // only the workflow would score a gate's command as absent the moment it
+    // stopped being an inline step.
+    sources.extend(gate_registry());
+    let workflows = sources.join("\n");
 
     let required_profiles = [
         "[profile.dev]\ndebug = 0\nincremental = false",

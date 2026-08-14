@@ -472,7 +472,10 @@ fn test_job_reclaims_runner_disk_before_restoring_the_target_cache() {
 /// is set to `warn` -- so clippy printed findings and exited 0.
 #[test]
 fn lint_job_gates_on_workflow_shell_and_clippy_findings() {
-    let workflow = release_workflow();
+    // Clippy and the shell lint are registered gates since issue #991; the
+    // actionlint step is still a workflow step because it installs a pinned
+    // binary of its own.
+    let workflow = ci_surface();
     let lint = job_block(&workflow, "lint");
 
     assert!(

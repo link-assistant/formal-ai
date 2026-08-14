@@ -1,44 +1,6 @@
 //! Specialized free-function handlers extracted from `solver.rs`: each receives
 //! the prompt, normalized prompt, and event log, then returns `Some` on a match.
-mod agent_workspace;
-mod behavior_rule_followups;
-mod behavior_rule_matching;
-mod behavior_rules;
-mod benchmark_prompts;
-mod calculator_rate;
-mod calendar;
-mod calendar_ics;
-mod compound_interest;
-mod conversation_memory;
-mod curated_project_fetch;
-mod document_originality;
-mod document_request;
-mod fact_checking;
-mod feature_capability;
-mod github_repository_traffic;
-mod installation_conversion;
-mod meta_explanation;
-mod natural_language_tools;
-mod numeric_list;
-mod pattern_inference;
-mod playwright_script;
-mod procedure_rules;
-mod program_blueprint;
-mod program_synthesis;
-mod research_table;
-mod response_language_followup;
-mod self_awareness;
-mod shell_command_transform;
-mod software_project;
-mod software_project_code;
-mod software_project_followup;
-mod task_decomposition;
-mod text_edit_ops;
-mod text_manipulation;
-mod user_intent;
-mod web_requests;
-mod web_search_intent;
-mod world_state;
+include!("modules.rs");
 
 pub use agent_workspace::try_agent_workspace_task;
 pub use behavior_rules::try_behavior_rules_with_runtime;

@@ -45,10 +45,13 @@ fn issue_960_conventions_are_documented_and_enforced() {
         ],
     );
 
-    // The checks are only conventions again if CI does not run them.
+    // The checks are only conventions again if CI does not run them. Issue #991
+    // moved the gate commands into `data/meta/ci-gates/`, one shard per gate, so
+    // what CI executes is the workflow plus the registry -- `crate::ci_gates`
+    // splices them into the single text this asks.
     assert_contains_all(
-        "release workflow",
-        &read(root.join(".github/workflows/release.yml")),
+        "the CI surface",
+        &crate::ci_gates::ci_surface(),
         &[
             "rust-script scripts/check-cache-budget.rs",
             "rust-script --test scripts/check-cache-budget.rs",

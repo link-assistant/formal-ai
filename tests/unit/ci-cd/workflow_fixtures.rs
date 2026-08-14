@@ -6,14 +6,14 @@
 
 use std::fs;
 
-pub fn release_workflow() -> String {
-    fs::read_to_string(format!(
-        "{}/.github/workflows/release.yml",
-        env!("CARGO_MANIFEST_DIR")
-    ))
-    .unwrap()
-    .replace("\r\n", "\n")
-}
+/// Everything CI executes for a pull request, workflow and gate registry as one
+/// text.
+///
+/// Issue #991 moved the `lint` job's checks into `data/meta/ci-gates/`, so a
+/// test that asks "does CI run this check?" must read both files.
+/// `crate::ci_gates` answers that for the whole suite; it is re-exported here
+/// because these fixtures are where the workflow tests already look.
+pub use crate::ci_gates::{ci_surface, release_workflow};
 
 /// Issue #895: the two coverage denominators live in their own workflow. They
 /// are a leaf of the release graph -- nothing `needs:` them -- so moving them

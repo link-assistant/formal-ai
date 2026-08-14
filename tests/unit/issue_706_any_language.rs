@@ -217,8 +217,11 @@ fn unknown_openers_are_seed_data_on_every_surface() {
         "the JS worker must not keep a per-language opener literal"
     );
 
-    let loader = read("src/web/seed_loader.js");
-    assert!(loader.contains("seed/unknown-openers.lino"));
+    // The browser's seed inventory moved to `src/web/seed-files.js` in issue
+    // #991, generated from `data/meta/seed-registry.lino` so the Rust engine and
+    // the worker cannot disagree about which files exist.
+    let inventory = read("src/web/seed-files.js");
+    assert!(inventory.contains("seed/unknown-openers.lino"));
 
     // A language with no pool of its own borrows the fallback language's pool
     // rather than resolving to an empty one.

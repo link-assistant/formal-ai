@@ -7,12 +7,15 @@
 // assertions describe the answers the deployed site actually produces.
 
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import { test } from "node:test";
 
 import {
   createWorkerContext,
   loadWorkerMirror,
   plain,
+  REPO_ROOT,
   workerMirrorFiles,
 } from "./support/browser-runtime.mjs";
 
@@ -23,16 +26,48 @@ function solve(prompt, options = {}) {
   return worker.solve(prompt, options.history ?? [], options.preferences ?? {}, options.userContext ?? {}, options.memory ?? [], options.options ?? {});
 }
 
-test("the worker mirror is loaded as a contiguous, numbered set of modules", () => {
+test("the committed module list is exactly the worker mirror directory", () => {
   const files = workerMirrorFiles();
   assert.ok(files.length > 0, "the mirror has modules");
-  files.forEach((file, index) => {
-    assert.equal(
-      file,
-      `src/web/worker/formal_ai_worker_${String(index).padStart(2, "0")}.js`,
-      "the mirror is a gapless sequence, so concatenation order is unambiguous",
-    );
-  });
+
+  // The browser cannot read a directory: `formal_ai_worker.js` imports
+  // `worker-modules.js` and loads whatever that list names. The Node harness
+  // reads the directory instead, so comparing the two is what proves the
+  // deployed site loads every module that exists. Issue #991 made that list a
+  // union-merged file, and a union is a superset: it can hold a module twice,
+  // or hold one a branch deleted, until
+  // `rust-script scripts/normalize-ordered-lists.rs --write` regenerates it.
+  // This assertion is the failure that says so.
+  const listed = readFileSync(path.join(REPO_ROOT, "src/web/worker-modules.js"), "utf8")
+    .split("\n")
+    .map((line) => line.match(/^\s*"(worker\/[^"]+)",$/))
+    .filter(Boolean)
+    .map((match) => `src/web/${match[1]}`);
+
+  assert.deepEqual(
+    listed,
+    files,
+    "src/web/worker-modules.js is stale: run `rust-script scripts/normalize-ordered-lists.rs --write`",
+  );
+});
+
+test("worker modules are named after their subject, and the numbered prefix stays frozen", () => {
+  // Issue #991: `formal_ai_worker_25.js` is the file two branches both create
+  // when they each add a module, and git reports that as an add/add conflict no
+  // ordering can prevent. `data/meta/merge-conflict-policy.lino` freezes the
+  // numbers that predate the policy and requires every later module to be named
+  // after what it contains, so two branches produce two different names.
+  const FROZEN_PREFIX_MAX = 24;
+  const numbered = workerMirrorFiles()
+    .map((file) => file.match(/formal_ai_worker_(\d+)\.js$/))
+    .filter(Boolean)
+    .map((match) => Number(match[1]));
+
+  assert.deepEqual(
+    numbered,
+    Array.from({ length: FROZEN_PREFIX_MAX + 1 }, (_, index) => index),
+    `the frozen numbered modules are 00..${FROZEN_PREFIX_MAX}; name a new module after its subject instead`,
+  );
 });
 
 test("prompt normalization collapses whitespace and case", () => {
