@@ -158,17 +158,17 @@ fn issue_920_classification_and_budget_are_loaded_from_seed_data() {
 
 #[test]
 fn issue_920_requirement_greetings_are_preserved_with_a_trace() {
-    for question in [
-        "How may I help you?",
-        "Чем могу помочь?",
-        "मैं आपकी क्या मदद कर सकता हूँ?",
-        "请问有什么可以帮您的?",
-        "¿Cómo puedo ayudarte?",
+    for (language, question) in [
+        ("English", "How may I help you?"),
+        ("Russian", "Чем могу помочь?"),
+        ("Hindi", "मैं आपकी क्या मदद कर सकता हूँ?"),
+        ("Chinese", "请问有什么可以帮您的?"),
+        ("Spanish", "¿Cómo puedo ayudarte?"),
     ] {
         assert_eq!(
             classify_question(question).class,
             QuestionClass::Requirement,
-            "{question}"
+            "{language}: {question}"
         );
     }
 
