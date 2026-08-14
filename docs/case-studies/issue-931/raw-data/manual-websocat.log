@@ -1,0 +1,16 @@
+$ websocat --version
+websocat 1.14.1
+
+$ FORMAL_AI_DREAMING=0 FORMAL_AI_MEMORY_PATH=/tmp/formal-ai-issue-931-manual-memory.lino target/debug/formal-ai --silent serve --ws --host 127.0.0.1 --port 19031
+formal-ai shared memory: /tmp/formal-ai-issue-931-manual-memory.lino
+formal-ai server listening on websocket://127.0.0.1:19031
+
+$ printf '%s\n' '{"method":"POST","path":"/v1/chat/completions","headers":{"content-type":"application/json"},"body":"{\"model\":\"formal-ai\",\"messages\":[{\"role\":\"user\",\"content\":\"Hi\"}]}"}' | websocat -n1 ws://127.0.0.1:19031
+response.status_code: 200
+response.content_type: application/json
+response.body.choices[0].message.content: Hi, how may I help you?
+response.deprecated: false
+
+$ rg -n 'role "user"|content "Hi"' /tmp/formal-ai-issue-931-manual-memory.lino
+5:    role "user"
+6:    content "Hi"

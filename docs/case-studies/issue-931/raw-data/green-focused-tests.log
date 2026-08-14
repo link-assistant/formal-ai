@@ -1,0 +1,9 @@
+   Compiling formal-ai v0.341.0 (/tmp/gh-issue-solver-1786687367536)
+    Finished `test` profile [unoptimized] target(s) in 57.30s
+     Running tests/integration/mod.rs (target/debug/deps/integration-09a63f5d61498f83)
+
+running 2 tests
+test issue_931_local_transports::issue_931_whole_task_uses_the_same_cli_as_server_and_client ... ok
+test issue_931_local_transports::issue_931_websocket_and_webrtc_answers_match_http_byte_for_byte ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 341 filtered out; finished in 7.12s

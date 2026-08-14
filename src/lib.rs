@@ -64,6 +64,8 @@ pub mod link_store;
 pub(crate) mod links_format;
 pub mod links_query;
 pub mod links_substitution_query;
+#[cfg(not(target_arch = "wasm32"))]
+pub mod local_transport;
 pub(crate) mod mcp;
 pub mod memory;
 pub mod memory_program;
