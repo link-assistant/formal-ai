@@ -1918,6 +1918,7 @@ condition. The contract, replay evidence, and requirement map live in
 | R924-3 | Record each contribution and continue reporting per-release and trailing self-hosting share. | New ledger rows carry repeated `self_authored_pull_request` values plus the existing changed-line measurements; release notes include the reviewed PR URLs and target. |
 | R924-4 | Make the release target a non-decreasing ratchet. | Each row records its target. The next target is the greater of the prior target and comparable trailing share; the pre-version release gate rejects a projection below it while the range can still be repaired. |
 | R924-5 | Keep E69/E74 dependencies and the ordinary review, CI, and promotion gates intact. | E69 supplies the write-effect floor, E74 supplies the two-way Hive Mind gate, and #924 grants no bypass. The real Agent CLI-authored leaf and raw session evidence are committed in the case study. |
+
 # Issue 931: local WebSocket and WebRTC transports
 
 Source: [issue #931](https://github.com/link-assistant/formal-ai/issues/931) and
