@@ -133,6 +133,35 @@ fn issue_933_a_question_quoted_as_an_example_is_not_a_question_the_answer_asks()
 }
 
 #[test]
+fn issue_933_the_spanish_seed_answers_survive_the_question_pass_too() {
+    // Spanish is registered `status partial` in `data/seed/languages.lino`, so
+    // it is outside the four languages issue #123 set the floor over and has no
+    // corpus records. The question pass runs over its answers all the same, and
+    // both Spanish conversational responses end in a question -- the exact
+    // shape that emptied the Chinese ones -- so they are pinned here.
+    for (intent, expected) in [
+        ("greeting", "¡Hola! ¿Cómo puedo ayudarte?"),
+        (
+            "identity",
+            "Soy formal-ai, una implementación de IA simbólica determinista que responde mediante reglas locales en Links Notation.",
+        ),
+        (
+            "language_gap",
+            "Este significado aún no está cubierto en español; no se sustituyó por una respuesta en inglés.",
+        ),
+    ] {
+        let text = seed::localized_response(intent, "es")
+            .unwrap_or_else(|| panic!("Spanish seed response for {intent}"));
+        assert_eq!(text, expected, "the Spanish seed text for {intent}");
+        assert_eq!(
+            enforce_questions(&text, &mut EventLog::new()),
+            expected,
+            "es/{intent}: the question pass rewrote a seed-authored Spanish answer"
+        );
+    }
+}
+
+#[test]
 fn issue_933_thanks_and_wellbeing_answer_in_full_in_every_language() {
     for (prompt, expected) in [
         ("thanks", "Glad to hear it. What would you like to do next?"),

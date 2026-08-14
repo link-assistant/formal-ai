@@ -223,10 +223,20 @@ survive the pass in all four languages, the seed's own follow-ups classify as
 requirements in all four, a refused question keeps the statement in front of it,
 a quoted example is not a question, and `thanks`/`спасибо`/`धन्यवाद`/`谢谢` plus
 the four wellbeing prompts answer with their whole seed text end to end. All
-five fail on the unfixed engine
+five of those fail on the unfixed engine
 ([`raw-data/answer-parity-before.txt`](raw-data/answer-parity-before.txt)) and
 pass on the fixed one
 ([`raw-data/answer-parity-after.txt`](raw-data/answer-parity-after.txt)).
+
+A sixth test covers Spanish, which the floor does not. `es` joined the language
+registry as `status partial` after issue #123 was written, so it has no corpus
+records — but it has two conversational seed responses, and `¡Hola! ¿Cómo puedo
+ayudarte?` ends in a question, which is the shape that emptied the Chinese
+answers. It survives the pass unchanged, and the test pins that so the next
+change to the pass cannot quietly take Spanish down the road Chinese went.
+`cargo run --example issue_933_empty_answer_probe -- hola` is how it was
+checked: Spanish small talk does not reach the `greeting` intent at all, it
+reaches the language-gap fallback, which is what `status partial` means.
 
 ## 6. Dedup: how this differs from the checks that already existed
 
