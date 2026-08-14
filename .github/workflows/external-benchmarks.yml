@@ -135,12 +135,15 @@ jobs:
               --learning-report "target/formal-ai-benchmarks/learning/$1.lino"
           }
           if [[ "${BENCHMARK_SUITE}" == 'all' ]]; then
-            for suite in humaneval mbpp gsm8k math object_counting coedit editeval; do
+            for suite in humaneval mbpp gsm8k math object_counting coedit egg_math editeval; do
               run_suite "${suite}" "${BENCHMARK_SLICE}"
             done
+            run_suite ascent_transitive_closure 5
             run_suite swebench_lite "${SWE_BENCH_SLICE}"
           elif [[ "${BENCHMARK_SUITE}" == 'swebench_lite' ]]; then
             run_suite "${BENCHMARK_SUITE}" "${SWE_BENCH_SLICE}"
+          elif [[ "${BENCHMARK_SUITE}" == 'ascent_transitive_closure' ]]; then
+            run_suite "${BENCHMARK_SUITE}" 5
           else
             run_suite "${BENCHMARK_SUITE}" "${BENCHMARK_SLICE}"
           fi 2>&1 | tee ci-logs/external-benchmarks.log

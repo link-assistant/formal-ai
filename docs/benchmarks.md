@@ -21,7 +21,7 @@ source provenance for download-on-test integration. Only permissive licenses
 | Procedural how-to / instruction-following | #444 | [`procedural-howto-suite.lino`](../data/benchmarks/procedural-howto-suite.lino) | `issue_444_procedural_howto_suite_routes_each_case` | 12 |
 | Nemotron training-data sample ingestion | #482 | [`nemotron-training-samples.lino`](../data/benchmarks/nemotron-training-samples.lino) | `issue_482_nemotron_training_ingestion_ratchet_passes_all_samples` | 10 |
 | Held-out algorithm discovery | #531 | [`issue-531-algorithm-traces.lino`](../data/benchmarks/issue-531-algorithm-traces.lino) | `repeated_event_sequences_become_a_validated_parameterized_algorithm` | 1 |
-| External (upstream) harness | #698 | [`external-results.lino`](../data/benchmarks/external-results.lino) | `external_benchmarks::recorded_upstream_pass_count_may_never_regress` | per suite, see below |
+| External (upstream) harness | #698, #923 | [`external-results.lino`](../data/benchmarks/external-results.lino) | `external_benchmarks::recorded_upstream_pass_count_may_never_regress` | per suite, see below |
 | bAbI-style world-state tracking | #702 | [`world-state-tracking-suite.lino`](../data/benchmarks/world-state-tracking-suite.lino) | `issue_702_world_state_suite_tracks_each_case` | 16 |
 | Held-out computer-use generalization | #707 | [`computer-use-generalization.lino`](../data/benchmarks/computer-use-generalization.lino) | `every_synthesized_plan_executes_with_every_step_verified` | 12 |
 | Search-fusion learning generalization | #709 | [`search-fusion-learning-generalization.lino`](../data/benchmarks/search-fusion-learning-generalization.lino) | `approved_recipe_round_trips_and_executes_a_held_out_task` | 1 |
@@ -261,9 +261,9 @@ byte length, and content id match the adjacent provenance record.
 
 ### Honest current numbers
 
-Recorded `2026-08-03`, solver version `0.323.0`, slice `20` upstream cases per
-core suite and a separately bounded one-case SWE-bench slice, offline
-deterministic solver (`temperature = 0.0`):
+The core corpus rows below were most recently refreshed on `2026-08-10`; issue
+#923 adds symbolic-reasoning rows recorded on `2026-08-14` with solver version
+`0.342.0`. All use the offline deterministic solver (`temperature = 0.0`):
 
 | Suite | License | Grading | Passed | Total |
 | --- | --- | --- | ---: | ---: |
@@ -273,13 +273,17 @@ deterministic solver (`temperature = 0.0`):
 | MATH (`prm800k` 500-problem split) | MIT | final `\boxed{...}` vs. gold | 0 | 20 |
 | BIG-bench `object_counting` | Apache-2.0 | final number vs. target | 0 | 20 |
 | CoEdIT | Apache-2.0 | edited text vs. gold target | 0 | 20 |
+| egg math rewrite laws | MIT | structured `proof_outcome proven` | 20 | 20 |
+| Ascent transitive graph closure | MIT | structured `proof_outcome proven` | 5 | 5 |
 | SWE-bench Lite (dev) | MIT | official upstream instance tests executed | 0 | 1 |
 | EditEval | — | `benchmark_unavailable` | — | — |
 
-`2 / 20` on GSM8K, `0 / 20` on the other scored core suites, and `0 / 1` on
-SWE-bench Lite are the real measurements of the current offline solver against
-unmodified upstream cases. They are recorded exactly as measured; the ratchet
-makes them the floor these numbers may never fall below.
+`20 / 20` on egg and `5 / 5` on Ascent are the real measurements of the new
+symbolic kernel against mechanically adapted declarations and assertions from
+the pinned upstream Rust sources. The existing corpus rows remain recorded
+exactly as measured: `2 / 20` on GSM8K, `0 / 20` on the other scored core
+suites, and `0 / 1` on SWE-bench Lite. The ratchet makes every number a floor
+that may never fall below.
 
 The original SWE-bench row was withdrawn: it compared output with the gold
 patch, which is not the SWE-bench pass criterion. Scheduled runs now use the

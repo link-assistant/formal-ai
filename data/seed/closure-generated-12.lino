@@ -269,6 +269,11 @@ meanings
     lexeme en
       surface
         text "pip"
+  proof_datalog_conclusion
+    defined-by intent
+    lexeme en
+      surface
+        text "proof datalog conclusion"
   pytest
     defined-by concept
     lexeme en
@@ -399,11 +404,26 @@ meanings
     lexeme en
       surface
         text "response document originality check sample present en"
+  response_external_benchmark_proof_query_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark proof query ru"
+  response_external_benchmark_proof_status_detail_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark proof status detail es"
   response_external_benchmark_swe_inspect_error_en
     defined-by response_template
     lexeme en
       surface
         text "response external benchmark swe inspect error en"
+  response_external_benchmark_upstream_missing_start_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response external benchmark upstream missing start es"
   response_fact_check_current_dialogue_ru
     defined-by response_template
     lexeme en
@@ -619,6 +639,16 @@ meanings
     lexeme en
       surface
         text "response pattern sequence no compression ru"
+  response_proof_datalog_conclusion_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response proof datalog conclusion en"
+  response_proof_datalog_counterexample_es
+    defined-by response_template
+    lexeme en
+      surface
+        text "response proof datalog counterexample es"
   response_statement_audit_temperature_range_en
     defined-by response_template
     lexeme en

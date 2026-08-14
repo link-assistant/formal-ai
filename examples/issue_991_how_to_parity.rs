@@ -23,6 +23,7 @@
 //! it is a machine-written expectation that two different language runtimes have
 //! to read, and JSON is the one format both parse without a hand-written reader.
 
+use std::fmt::Write as _;
 use std::fs;
 use std::path::Path;
 
@@ -97,7 +98,7 @@ fn json_string(value: &str) -> String {
             '\r' => encoded.push_str("\\r"),
             '\t' => encoded.push_str("\\t"),
             control if (control as u32) < 0x20 => {
-                encoded.push_str(&format!("\\u{:04x}", control as u32));
+                let _ = write!(encoded, "\\u{:04x}", control as u32);
             }
             other => encoded.push(other),
         }
