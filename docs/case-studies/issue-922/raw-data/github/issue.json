@@ -1,0 +1,11 @@
+{
+  "number": 922,
+  "title": "E75: Method learning for the universal problem-solving algorithm — propose recipe improvements from experience",
+  "state": "OPEN",
+  "url": "https://github.com/link-assistant/formal-ai/issues/922",
+  "author": "konard",
+  "createdAt": "2026-08-03T16:03:05Z",
+  "updatedAt": "2026-08-03T16:03:05Z",
+  "labels": ["enhancement"],
+  "body": "Problem: learn the universal problem-solving algorithm from solved and failed experience. Approach: mine append-only event logs, compress recurring sequences, keep candidates proposal-only, and adopt only through issue #656 benchmark-gated human-confirmed promotion. Acceptance: one real-trace method is proposed, gated, and adopted; proposals stay inert; rejected proposals retain reasons; recipe/source parity and the regression floor hold."
+}

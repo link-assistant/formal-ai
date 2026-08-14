@@ -68,6 +68,7 @@ pub const LANGUAGE_DETECTION_LINO: &str = include_str!("../../data/seed/language
 pub const PROMPT_PATTERNS_LINO: &str = include_str!("../../data/seed/prompt-patterns.lino");
 pub const INTENT_ROUTING_LINO: &str = include_str!("../../data/seed/intent-routing.lino");
 pub const HANDLER_PRECEDENCE_LINO: &str = include_str!("../../data/seed/handler-precedence.lino");
+pub const LEARNED_METHODS_LINO: &str = include_str!("../../data/seed/learned-methods.lino");
 pub const DRAFT_STRATEGIES_LINO: &str = include_str!("../../data/seed/draft-strategies.lino");
 pub const LEARNING_SOURCES_LINO: &str = include_str!("../../data/seed/learning-sources.lino");
 pub const OPERATION_VOCABULARY_LINO: &str =
@@ -288,6 +289,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/prompt-patterns.lino", PROMPT_PATTERNS_LINO),
         ("data/seed/intent-routing.lino", INTENT_ROUTING_LINO),
         ("data/seed/handler-precedence.lino", HANDLER_PRECEDENCE_LINO),
+        ("data/seed/learned-methods.lino", LEARNED_METHODS_LINO),
         ("data/seed/draft-strategies.lino", DRAFT_STRATEGIES_LINO),
         ("data/seed/learning-sources.lino", LEARNING_SOURCES_LINO),
         (

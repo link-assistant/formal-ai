@@ -437,7 +437,7 @@ Requirement-level status by area, updated:
 | Self-coding chain | Mechanics Done (#673 census, #656 gated promotion, #657 release metric); the measured self-authored share is still near its baseline, owned by E77 |
 | Coding via formal reasoning, coding first (#914) | Partial: catalog, oracle, and synthesis layers exist, but the #848 ladder passes 2 of 13 rungs with zero successful write effects; E69 is the blocker epic |
 | Question necessity (ask only requirement-level unknowns) | Partial: clarify-vs-guess, the one-question unknown path, and the #527 catalog exist; no necessity proof per question — E73 |
-| Learning the universal algorithm itself | Partial: `src/research_learning.rs` now versions meta-algorithm candidates through the same immutable promotion and stable recovery gate as facts/procedures; routine proposal generation and adoption remains E75 |
+| Learning the universal algorithm itself | E75 first lifecycle delivered by #922: production recipe event logs now produce held-out-validated, proposal-only method abstractions; one abstraction cleared canonical promotion and is registry-visible link data. Broader method construction and recipe mutation remain incremental work |
 | Formal-reasoning breadth (beyond SAT + linear arithmetic) | Partial; growth with external benchmark scoring is E76 |
 
 **Open planning batch E69-E77**
@@ -449,7 +449,8 @@ translation (delivered by #917 for the seeded FOL statement slice), E71
 minimal-core boundary and seed-metadata audit (delivered by #918), E72
 research-driven coding knowledge loop, E73 question-necessity protocol, E74
 hive-mind end-to-end integration gate, E75 method learning for the
-universal algorithm, E76 formal-reasoning coverage growth, E77
+universal algorithm (first real-trace proposal-to-registry lifecycle delivered
+by #922), E76 formal-reasoning coverage growth, E77
 self-development loop. Issue URLs are recorded in
 `docs/case-studies/issue-914/proposed-issues.md`.
 
@@ -465,6 +466,19 @@ concepts satisfy them. The audit preserves 3,447 remaining metadata-gap records.
 Future handler migration and metadata enrichment
 can lower these ceilings, but cannot silently add debt. Evidence is in
 `docs/case-studies/issue-918/`.
+
+## Issue #922 Method Learning From Experience (PR #1005)
+
+Issue #922 delivers E75's first complete method-learning lifecycle. Three real
+recursive-recipe runs feed the existing symbolic algorithm-discovery engine;
+two support traces infer recurring operation sequences and an unseen third
+trace validates them. Candidates remain proposal-only. The strongest method
+cleared fresh canonical coding (4/4), industry (13/13), and unit (12/12)
+ratchets before explicit `--apply --confirm` materialized it into
+`data/seed/learned-methods.lino`. The live registry now records the adopted
+abstraction without claiming an executable Rust handler, so existing dispatch
+and recipe/source parity remain intact. Evidence is in
+`docs/case-studies/issue-922/`.
 
 ## Issue #982 Persisted-Memory Upgrade Safety (PR #985)
 

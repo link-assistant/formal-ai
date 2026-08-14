@@ -742,6 +742,48 @@ proposal cannot promote itself by fabricating evidence. The seed edit is written
 only when fresh canonical output clears every policy and the Formal AI Agent
 authors the exact requested bytes on a local review branch.
 
+## Learning reusable methods from experience (issue #922)
+
+The recursive recipe was executable data and algorithm discovery could already
+compress abstract traces, but solved-problem experience could not enter the
+method lifecycle. Issue #922 joins those components without weakening the
+promotion boundary:
+
+1. **Execute real recipe traces** — `RecipeProgram::execute` produces the same
+   append-only `EventLog` used by the live meta core for different problem
+   shapes.
+2. **Normalize stable control flow** — `src/method_learning.rs` maps event kinds
+   to discovery operations. Event payloads are excluded because they carry
+   prompt-specific prose and the current registry serialization.
+3. **Infer, then withhold** — issue #531's sequence compressor uses two support
+   occurrences and validates each abstraction on an observation excluded from
+   inference. The complete run retains both accepted candidates and exact
+   mismatch reasons.
+4. **Remain proposal-only** — a validated method can produce a seed-edit
+   proposal, but cannot declare commands, floors, or benchmark observations.
+   Unvalidated methods remain reviewable discovery data and never enter
+   promotion.
+5. **Replay and confirm** — the issue #656 protocol supplies fresh canonical
+   gates and requires explicit `--apply --confirm`, a clean target, exact-byte
+   Formal AI Agent materialization, a local branch, and human review.
+6. **Load adopted link data** — only the checked-in
+   `data/seed/learned-methods.lino` reaches `MethodRegistry`. Learned records are
+   observable in the registry event but are separate from compiled handlers, so
+   adoption cannot silently introduce executable behavior or alter precedence.
+
+The first adopted method is a twelve-operation recursive-core tail learned from
+two production support traces and one held-out trace. Its reviewed proposal,
+canonical gate results, local promotion branch, external Agent CLI exact-byte
+replay, and rejection regression live in
+`docs/case-studies/issue-922/`.
+
+```sh
+cargo run --example issue_922_method_learning
+cargo test --test unit issue_922_method_learning
+cargo test --test unit specification::recursive_core_recipe
+examples/issue-922-method-learning/run.sh
+```
+
 ## The budget-driven search meta-algorithm (issue #662)
 
 Every handler above reaches an answer by *recognising* a request and *reusing* a
