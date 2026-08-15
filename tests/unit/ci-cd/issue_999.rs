@@ -19,7 +19,7 @@ fn macos_tests_are_partitioned_without_raising_the_failed_budget() {
 
     assert!(test.contains("name: Test (${{ matrix.os }} / ${{ matrix.test-suite }})"));
     assert!(test.contains("test-suite: full"));
-    for shard in 1..=3 {
+    for shard in 1..=5 {
         assert!(macos.contains(&format!("- {{ partition: {shard} }}")));
     }
     assert!(test.contains("test-suite: specification"));
@@ -28,7 +28,7 @@ fn macos_tests_are_partitioned_without_raising_the_failed_budget() {
     assert!(macos.contains("timeout-minutes: 25"));
     assert!(macos.contains("cargo nextest archive"));
     assert!(macos.contains("cargo nextest run --archive-file"));
-    assert!(macos.contains("--partition \"slice:${{ matrix.partition }}/3\""));
+    assert!(macos.contains("--partition \"slice:${{ matrix.partition }}/5\""));
     assert!(test.contains("cargo test --test unit --all-features --verbose specification::"));
     assert!(macos.contains("test(specification::)"));
     assert!(test.contains("matrix.test-suite == 'full'"));

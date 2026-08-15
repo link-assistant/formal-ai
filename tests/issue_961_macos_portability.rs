@@ -23,7 +23,7 @@ fn seed_array_guard_precedes_expansion() -> bool {
 fn supported_macos_test_shards_are_complete() -> bool {
     RELEASE_WORKFLOW.matches("os: macos-15-intel").count() == 1
         && RELEASE_WORKFLOW.contains("uses: ./.github/workflows/macos-core-tests.yml")
-        && (1..=3).all(|shard| MACOS_CORE_WORKFLOW.contains(&format!("- {{ partition: {shard} }}")))
+        && (1..=5).all(|shard| MACOS_CORE_WORKFLOW.contains(&format!("- {{ partition: {shard} }}")))
         && RELEASE_WORKFLOW.contains("test-suite: specification")
 }
 
@@ -49,7 +49,7 @@ fn macos_portability_failures() -> Vec<&'static str> {
         failures.push("the empty destination array must be guarded before expansion");
     }
     if !supported_macos_test_shards_are_complete() {
-        failures.push("the test matrix must include both supported macOS shards");
+        failures.push("the test matrix must include every supported macOS core slice");
     }
 
     failures

@@ -625,7 +625,7 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // Issue #1012 partitions the macOS core suite so every slice retains
         // this baseline rather than extending a monolithic timeout.
         ("test", 25),
-        // Issue #1014 compiles one nextest archive and fans it out to three
+        // Issue #1014 compiles one nextest archive and fans it out to five
         // macOS runners. The reusable workflow owns both internal timeouts.
         ("macos-core-tests", 0),
         // Issue #896: raised from 10; the published web-search/web-capture
