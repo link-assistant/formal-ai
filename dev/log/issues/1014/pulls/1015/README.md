@@ -35,6 +35,9 @@ The archive contains more than 570 files at the time of analysis:
   prove twelve unaffected workflows passed while the remaining run exposed a
   package-only `esbuild` test in the source-only VS Code suite, an
   argv/process-tree race, and an under-provisioned archive fan-out.
+- `ci-logs/final-head-1359540e/`: both complete non-passing third-candidate
+  workflow logs, all five macOS consumer logs, all six desktop release-lane
+  logs, and the focused local red/green reproductions they motivated.
 - `raw-data/run-*-jobs.json`, `run-*-artifacts.json`, and annotations: complete
   GitHub execution metadata.
 - `raw-data/pushed-head-c5fae9d4/`: exact-head metadata for all thirteen
@@ -89,6 +92,11 @@ live project; the suffix prevents archived evidence from creating projects.
 | 17:34:53–17:35:38 | Slices 1 and 3 are canceled by the unchanged 10-minute job cap after only 518/897 and 737/896 tests. The live command warning had already identified slow 60–148 second tests; neither job failed archive relocation. | `ci-logs/pushed-head-c5fae9d4/CI-CD-Pipeline-31897604270-macos-job-95044719212.log` and `...95044719220.log` |
 | Third fresh-CI correction | Keep one build and the existing 10-minute consumer cap, but fan the archive to five smaller slices. Upgrade command-stream to 0.16 and use its exact-argv constructor so the allowlisted agent executable, not an added shell, leads the Unix process group. | `local-tests/fresh-ci-regressions/macos-fanout-and-exact-argv-{red,green}.log` |
 | 18:08–19:00 | The corrected source-only/package boundary passes without `vscode/node_modules`; the descendant timeout passes ten consecutive 20 ms stress runs; the complete registered Rust stage passes. The first exhaustive run finds only a stale generated runner census after 2,805 passing unit tests. Regenerating that census makes its focused test and the final all-feature run green: 3,755 tests across all harnesses, including 2,806 in the largest unit harness, with four intentional ignores. | `local-tests/fresh-ci-regressions/{vscode-source-without-node-modules-green,descendant-timeout-command-stream-016-stress,registered-rust-stage-after-command-stream-016-final,full-rust-tests-after-command-stream-016,self-ast-census-green,full-rust-tests-final}.log` |
+| 19:13:09 | Candidate `1359540e` starts thirteen exact-SHA workflows. Eleven succeed; Desktop Release and CI/CD Pipeline preserve the only failures. | `raw-data/final-review/branch-runs-through-1359540e.json` and `run-31903294{075,195}.json` |
+| 19:28–19:52 | All six desktop release lanes fail the same source test: its Cargo-manifest assertion still expects command-stream 0.15 although the reviewed production manifest and lock use 0.16. | `ci-logs/final-head-1359540e/Desktop-Release-31903294075.log` and six focused job logs |
+| 19:31:40 | macOS slice 2 fails a Gemini logging-proxy request after 30.424 seconds with `WouldBlock`. All helper children inherited one real home memory file, so nextest-concurrent servers serialized response recording on the same advisory lock. | `ci-logs/final-head-1359540e/CI-CD-Pipeline-macos-core-slice-2-95058579481.log` and `local-reproduction-shared-memory-lock.log` |
+| 19:35–19:42 | The exact five-way archive layout remains too large: slices 5, 1, and 3 hit the 10-minute outer cap. Slice 3 alone spends 502 seconds in the budgeted command and the successful slice 4 spends 434 seconds, leaving inadequate setup/skew margin. | `ci-logs/final-head-1359540e/CI-CD-Pipeline-macos-core-slice-{1,3,4,5}-*.log` |
+| Fourth fresh-CI correction | Synchronize the desktop assertion; give every helper-owned server private memory/dialog state; add an atomic discriminator to concurrent proxy logs; and fan the one archive to eight consumers. The original 600-second job cap and 480-second command budget remain strict. | `local-tests/fresh-ci-regressions/desktop-command-stream-manifest-green.log`, `private-server-state-green.log`, `logging-proxy-parallel-final.log`, and `macos-eight-way-fanout-{red,green}.log` |
 
 ## 3. Requirement ledger
 
@@ -97,7 +105,7 @@ live project; the suffix prevents archived evidence from creating projects.
 | R1014-1 | Preserve and inspect all twelve named runs plus PR checks, jobs, artifacts, annotations, discussion, and exact SHAs. | Complete; see section 1 and `raw-data/`. |
 | R1014-2 | Find all false positives, false negatives, warnings, and errors; fix every actionable occurrence across the codebase without suppressing true failures. | Complete; see finding ledger below. |
 | R1014-3 | Correct the only failed run at its root while retaining release-integrity enforcement. | Automatic release now defers; manual release remains strict. |
-| R1014-4 | Correct near-timeout macOS warnings structurally and prove the archive is relocatable. | One reusable nextest archive replaces three cold builds; five consumers extract to the original workspace, and a retained experiment reproduces default-extraction failure before passing with that setting. |
+| R1014-4 | Correct near-timeout macOS warnings structurally and prove the archive is relocatable. | One reusable nextest archive replaces three cold builds; eight consumers extract to the original workspace, and a retained experiment reproduces default-extraction failure before passing with that setting. |
 | R1014-5 | Close dependency-audit false negatives for every JS lock, not only the lock that happened to print a warning. | One dynamically discovered fail-closed gate covers both Bun locks plus three npm locks; all advisories are resolved. |
 | R1014-6 | Remove harness and evidence artifacts that make successful CI noisy or misleading. | Gemini environment, Bun lifecycle policy, and archived manifest names corrected everywhere found. |
 | R1014-7 | Compare the full current Rust, JS, and Python template trees and Hive Mind guidance, reuse proven components, and report shared defects upstream. | Complete immutable comparison; seven upstream issues and eight exact report/comment bodies retained. |
@@ -110,7 +118,7 @@ live project; the suffix prevents archived evidence from creating projects.
 | --- | --- | --- |
 | Auto Release error: no eligible Formal AI-authored PR in `v0.345.0..HEAD` | **True policy result, wrong automatic control flow.** PRs #1007, #1011, and #1013 do not put the same canonical PR trailer plus valid session evidence on every introduced non-merge commit. The new issue-#924 check hard-exited before the older report-only release ratchet could run, making immutable main unable to heal itself. | A read-only preflight returns `Deferred` and writes `should_release=false`; automatic publication stops cleanly with a notice. `version-and-commit.rs` still calls the hard gate for manual release. Behavioral and workflow tests pin both halves. |
 | Pipeline Status failure | **True positive.** It correctly propagated Auto Release's failure; changing aggregation would hide a real failed dependency. | No suppression or aggregator weakening. Fix the producer only. |
-| Three `Core test slice took ...` warnings at 999/1,075/1,117 seconds | **True capacity warning.** nextest partitions execution after compilation, so three clean macOS jobs each compile the same all-feature graph. Raising the timeout would preserve waste. The first archive implementation exposed a second root cause: default temporary extraction cannot satisfy compile-time `CARGO_BIN_EXE_*` paths embedded in older tests. The first pushed archive run then measured 2–4 minutes of setup and transfer inside a 10-minute job envelope, while the advertised 480-second command budget started only after that overhead. | A reusable workflow creates one nextest archive, uploads it, and fans out five smaller archive consumers. Consumers extract into `$GITHUB_WORKSPACE`, restoring the original `target` path while nextest remaps runtime metadata. A minimal retained experiment proves default extraction fails and workspace extraction passes. Five-way fan-out preserves the existing 10-minute job bound while leaving the test command its advertised execution room. |
+| `Core test slice took ...` warnings at 999/1,075/1,117 seconds, followed by capped three-way and five-way archive consumers | **True capacity warning.** nextest originally partitioned execution only after three independent compilations. Reusing one archive removed that waste, but default temporary extraction broke compile-time `CARGO_BIN_EXE_*` paths. Workspace extraction fixed relocation. Exact five-way evidence then measured 434 seconds for a successful command and 502 seconds for a canceled one before accounting for setup, transfer, extraction, and skew inside the 600-second outer cap. | One reusable workflow creates and uploads the archive. Eight consumers extract into `$GITHUB_WORKSPACE`, restoring the original `target` path while nextest remaps runtime metadata. The retained experiment proves default extraction fails and workspace extraction passes; the measured five-way red run and eight-way topology regression justify the final fan-out without increasing either timeout. |
 | npm reports two high advisories twice but succeeds | **True vulnerability, false-negative gate.** Install-time npm audit is advisory output, not a required exit status. Separate audits found 2 high advisories in `tests/e2e`, 10 in each desktop lock, 10 in the VS Code lock, and a moderate DOMPurify issue in the root Bun lock; the experiment Bun lock was already clean. | The fail-closed script discovers and audits all five live locks at moderate-or-higher severity. DOMPurify is 3.4.13; npm locks are refreshed; desktop/VS Code use web-capture 1.11.2 plus scoped Puppeteer 25.7 overrides to remove the stale `extract-zip` chain. All five audits return zero. Routine installs use `--no-audit --no-fund` so findings have one authoritative gate. |
 | `Blocked 2 postinstalls` / `Blocked 1 postinstall` | **Expected Bun security policy, ambiguous noise, with one required exception.** Most global CLIs do not need dependency lifecycle scripts. OpenCode does: `opencode-ai@1.18.4` uses its own postinstall to replace a Windows placeholder with the platform binary. Applying `--ignore-scripts` indiscriminately caused the fresh matrix's Linux `Exec format error`. | Routine installs use `--ignore-scripts`; only the exact lockfile-pinned OpenCode package uses `--trust`. An isolated ignored install reproduces the failure and an isolated trusted install runs version 1.18.4. The regression enumerates every global install and permits no other trusted package. |
 | Gemini true-color warnings | **Harness configuration.** Gemini v0.55.1 checks `COLORTERM` for `truecolor`/`24bit`; `TERM=xterm-256color` alone does not satisfy it. | Export `COLORTERM=truecolor` in the E2E harness. Upstream behavior source is preserved in `gemini-...-compatibility.ts`. |
@@ -127,6 +135,9 @@ live project; the suffix prevents archived evidence from creating projects.
 | Packaged browser path ignored | **Upstream dependency-floor defect.** web-capture forwards `executablePath`, but its `browser-commander@^0.8.0` dependency discards it. | Scoped override pins the first forwarding release, 0.10.0. The extracted-VSIX test proves the packaged executable is used. Reported as web-capture #154. |
 | Source terminology lint flags `/v1/knowledge-graph` inside archived PR JSON | **False positive caused by inconsistent historical-data scope.** The lint already excludes docs, experiments, caches, and frozen source corpora but omitted `dev/log`, where immutable third-party responses are required evidence rather than authored API surface. | Exclude `dev/log` consistently; the lint's own directory fixture now proves an in-scope source route still fails while the same text in captured evidence is ignored. |
 | `REQUIREMENTS.md does not match docs/requirements/` | **True derived-artifact failure.** The issue shard was added without running the repository assembler. | Rebuild with the documented `rust-script scripts/assemble-requirements.rs --write` command and retain the gate check. |
+| Desktop release source test expects command-stream 0.15 | **True regression-test drift, not a production dependency mismatch.** The source assertion was not updated with the intentional 0.16 exact-argv upgrade, so every release OS failed identically. | Match the pinned Cargo manifest at 0.16; all four focused command-runner tests pass. |
+| Gemini logging-proxy request times out with `WouldBlock` | **True test-isolation defect.** Concurrent helper-owned server processes inherited one `$HOME/.formal-ai/memory.lino`; every response records memory under its advisory lock, so unrelated nextest cases could consume the entire 30-second HTTP budget waiting for shared state. | Allocate private memory and dialog-log paths per helper server, preserve explicit test overrides, delete scratch state on drop, and verify recording occurs only in that private store. |
+| Concurrent proxy test loses its JSONL file | **True local test-artifact collision.** PID plus wall-clock nanoseconds did not guarantee unique filenames for same-process parallel tests. One test could remove another's log. | Add a process-local atomic sequence to the filename. All four logging-proxy cases pass concurrently. |
 
 Every observed root cause is identified. The existing `FORMAL_AI_CI_VERBOSE`
 backend tracing from #1012 remains disabled by default; no new speculative debug
@@ -199,7 +210,7 @@ workaround, and a suggested source-level correction.
 | Requirement | Rejected alternative | Why | Selected plan |
 | --- | --- | --- | --- |
 | Release deadlock | Treat missing attribution as eligible or ignore Auto Release in Pipeline Status. | Both weaken a true release-integrity property. | Preserve strict manual enforcement; defer only the non-mutating automatic publisher. |
-| macOS duration | Increase timeout, split into more cold jobs, or mechanically rewrite every historical binary invocation. | The first two preserve/multiply compilation; the third is broad unrelated test churn when archive extraction can preserve Cargo's established paths. | Compile one nextest archive, extract it into the original workspace, then fan out five smaller consumers. |
+| macOS duration | Increase timeout, split into more cold jobs, or mechanically rewrite every historical binary invocation. | The first two preserve/multiply compilation; the third is broad unrelated test churn when archive extraction can preserve Cargo's established paths. | Compile one nextest archive, extract it into the original workspace, then fan out eight bounded consumers based on exact five-way timing evidence. |
 | JS advisories | Rely on install summaries, Dependabot, or `npm audit fix --force`. | Summaries do not fail; bots are asynchronous; force can make uncontrolled major upgrades. | Required audit gate plus reviewed direct/scoped updates and affected tests. |
 | Gemini lock warning | Filter warning text. | Conceals a real upstream race and remains fragile. | Stop scanning mutable home; report race upstream. |
 | Evidence dependency graphs | Disable Dependency Graph globally or delete evidence. | Loses a useful service or audit provenance. | Preserve bytes with non-manifest `.snapshot` basenames. |
@@ -237,9 +248,15 @@ The green evidence includes:
   first exhaustive run reproduces the stale runner census only after 2,805
   other unit tests pass; `regenerate-self-ast-census.log` and
   `self-ast-census-green.log` retain the mechanical repair and focused proof.
-- `fresh-ci-regressions/full-rust-tests-final.log`: all 3,755 tests across the
-  all-feature harnesses pass, including 2,806 in the largest unit harness;
-  four tests are intentionally ignored and doctests pass.
+- `fresh-ci-regressions/full-rust-tests-after-exact-ci-corrections-red.log`:
+  the first complete rerun found two older topology contracts still hardcoded
+  to five macOS consumers after 3,754 other tests passed. Updating those
+  codebase-wide contracts to eight makes the focused topology suite pass
+  10/10.
+- `fresh-ci-regressions/full-rust-tests-after-exact-ci-corrections-final.log`:
+  all 3,756 tests across the all-feature harnesses pass, including 2,806 in
+  the largest unit harness; four tests are intentionally ignored and doctests
+  pass.
 - `fresh-ci-regressions/desktop-tests-final.log` and
   `vscode-tests-final.log`: the affected suites pass 140/140 and 52/52 before
   the source/package boundary is separated; the final boundary evidence is in
@@ -254,10 +271,26 @@ The green evidence includes:
 - `fresh-ci-regressions/descendant-timeout-command-stream-016-stress.log`:
   the exact 20 ms descendant-termination regression passes ten consecutive
   runs with command-stream 0.16.
+- `fresh-ci-regressions/macos-eight-way-fanout-{red,green}.log`: the final
+  topology test fails against five consumers and passes against eight, while
+  the workflow's original timeout bounds remain unchanged.
+- `fresh-ci-regressions/desktop-command-stream-manifest-green.log`: all four
+  production command-adapter checks pass with the synchronized 0.16 assertion.
+- `fresh-ci-regressions/private-server-state-green.log` and
+  `logging-proxy-parallel-final.log`: private helper recording passes, and all
+  four proxy protocols pass concurrently after log-path isolation.
 
 The repository-wide Rust checks also pass: strict all-feature Clippy, all
-examples, 3,755 all-feature tests across the registered binaries, and doc
-tests.
+examples, 3,756 all-feature tests across the registered binaries, and doc
+tests. The final-code evidence is
+`registered-clippy-after-exact-ci-corrections.log` and
+`examples-check-after-exact-ci-corrections.log`. For completeness,
+`clippy-after-exact-ci-corrections.log` preserves a broader ad hoc
+`--all-targets` probe: it reports only two `assigning_clones` nursery
+diagnostics in the pre-existing issue-933 example, which is outside the
+repository's registered Clippy scope; the separately registered Clippy and
+all-example compilation commands both pass. The final issue contract passes
+14/14 in `issue-1014-final-after-evidence.log`.
 Fresh GitHub run IDs are added here only after they execute against the final
 #1015 implementation head; stale green checks are never presented as final
 evidence.

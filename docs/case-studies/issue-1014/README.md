@@ -74,11 +74,23 @@ The next exact-SHA macOS run revealed two more hidden boundaries. Artifact
 download and extraction consumed as much as three minutes before the
 480-second test-command budget started, although GitHub's 10-minute job cap
 included both. Two large slices were canceled by that outer cap. The archive
-is therefore fanned to five smaller consumers without increasing the cap.
+was initially fanned to five smaller consumers without increasing the cap.
 One consumer also exposed that command-stream 0.15 reconstructed an exact
 agent argv as a shell string. command-stream 0.16's `from_argv` API removes
 that intermediary, so the allowlisted executable directly leads the Unix
 process group and its timeout reaches descendants reliably.
+
+An exact run of that five-way candidate disproved the capacity estimate: one
+consumer spent 502 seconds in the test command and three consumers reached the
+outer job cap. The same run exposed shared integration-helper state: concurrent
+server children inherited one `$HOME/.formal-ai/memory.lino`, so an otherwise
+healthy proxy request exhausted its 30-second response budget waiting for the
+memory lock. Server helpers now receive private memory and dialog-log paths,
+proxy log filenames include an atomic sequence, and eight archive consumers
+provide setup and skew margin without weakening the 10-minute cap. Desktop's
+six release lanes also found one stale test assertion for the already-upgraded
+command-stream version; the production manifests were correct and the
+regression now matches them.
 
 Complete current Rust, JS, and Python template trees were compared at immutable
 heads. All three had change-time Dependency Review but no ecosystem-native
@@ -91,7 +103,7 @@ The first fresh archive run also confirmed nextest's documented relocation
 boundary: compile-time `CARGO_BIN_EXE_*` paths still name the build workspace,
 while default archive extraction uses a random temporary directory. A minimal
 experiment fails in that default mode and passes when the archive is extracted
-into the checked-out workspace, which is now how all five consumers run.
+into the checked-out workspace, which is now how all eight consumers run.
 
 ## 6. Tests-first reproduction
 
@@ -108,7 +120,9 @@ status API.
 Auto Release runs a read-only eligibility preflight and exits successfully with
 a GitHub notice when publication must wait. A reusable macOS workflow creates
 one nextest archive, extracts it at the original workspace target path, and
-feeds five bounded consumers. A new web-stage gate
+feeds eight bounded consumers. Each integration server gets a private memory
+store and dialog-log directory, and concurrent proxy log paths are unique. A
+new web-stage gate
 discovers and audits all five JavaScript locks; dependencies and bundles are
 updated until every audit is clean, and routine installs no longer duplicate
 audit summaries.
@@ -130,7 +144,7 @@ The retained local evidence includes red and green issue suites, a real
 deferred release preflight, five zero-advisory audits, 140 desktop tests, 51 VS
 Code source tests plus the separate real dependency-graph bundle check, an
 extracted VSIX browser capture, a trusted pinned OpenCode install, the web
-build, actionlint, strict all-feature Clippy, all examples, 3,755 all-feature
+build, actionlint, strict all-feature Clippy, all examples, 3,756 all-feature
 tests across the registered binaries, and doc tests. The 20 ms descendant
 timeout regression also passes ten consecutive stress runs. Fresh GitHub run
 IDs are recorded in the canonical archive only after they run on the final PR

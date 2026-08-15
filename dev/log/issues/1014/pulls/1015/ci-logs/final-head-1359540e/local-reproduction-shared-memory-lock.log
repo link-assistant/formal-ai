@@ -1,0 +1,19 @@
+   Compiling formal-ai v0.345.0 (/tmp/gh-issue-solver-1786801324779)
+    Finished `test` profile [unoptimized] target(s) in 1m 13s
+     Running tests/integration/mod.rs (target/debug/deps/integration-c4d6e4288837cde3)
+
+running 1 test
+
+thread 'http_server::spawned_server_does_not_wait_for_the_callers_shared_memory_lock' (162952) panicked at tests/integration/http_server.rs:345:6:
+helper server should use private memory instead of the caller's locked store: Os { code: 11, kind: WouldBlock, message: "Resource temporarily unavailable" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test http_server::spawned_server_does_not_wait_for_the_callers_shared_memory_lock ... FAILED
+
+failures:
+
+failures:
+    http_server::spawned_server_does_not_wait_for_the_callers_shared_memory_lock
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 345 filtered out; finished in 5.19s
+
+error: test failed, to rerun pass `--test integration`

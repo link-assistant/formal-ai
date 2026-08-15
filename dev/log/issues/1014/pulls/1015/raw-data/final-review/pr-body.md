@@ -1,7 +1,7 @@
 ## Summary
 
 - Preserve strict self-development evidence for manual releases while cleanly deferring an ineligible automatic release.
-- Build the all-feature macOS nextest archive once, extract it at the original workspace path, and fan it out to five bounded consumers.
+- Build the all-feature macOS nextest archive once, extract it at the original workspace path, and fan it out to eight bounded consumers without increasing the existing timeout limits.
 - Discover and fail closed on every tracked Bun/npm lock; resolve all five lock audits and remove duplicate install-time advisory noise.
 - Keep the dependency-free VS Code lint suite separate from the installed package-graph test; ship Playwright in the VSIX and verify browser capture from the extracted artifact.
 - Isolate Gemini mutable state, limit lifecycle trust to pinned OpenCode, use exact argv for Unix process-tree ownership, and prevent archived manifests/diagnostics from becoming live projects.
@@ -20,6 +20,9 @@ Fresh exact-SHA runs exposed integration boundaries that local state had masked:
 - the dependency-backed VS Code bundle test had been appended to a source-only suite that intentionally runs without `vscode/node_modules`.
 - artifact transfer/extraction consumed part of the ten-minute macOS job envelope before the 480-second test budget began.
 - command-stream 0.15 inserted a shell between Formal AI's exact argv and the Unix process group, exposing a descendant-termination race at the 20 ms timeout boundary.
+- five archive consumers still left 434–502 seconds of test execution plus setup inside the ten-minute cap, canceling three slices.
+- helper-owned integration servers inherited one real home memory file, serializing concurrent response recording on its advisory lock.
+- desktop release tests retained a stale command-stream 0.15 assertion after the intentional production upgrade to 0.16.
 
 Minimal red/green experiments cover each boundary. The canonical index contains the twelve named baseline logs, initial and pushed-candidate workflow logs, run/job/artifact metadata, check annotations, all three PR discussion surfaces, the reconstructed timeline, nine requirements, solution alternatives, and complete finding ledger:
 
@@ -28,7 +31,7 @@ Minimal red/green experiments cover each boundary. The canonical index contains 
 ## Verification
 
 - issue #1014 contract suite: 14/14
-- complete all-feature Rust run: 3,755 tests across all harnesses, including 2,806 in the largest unit harness; four intentional ignores; doctests pass
+- complete all-feature Rust run: 3,756 tests across all harnesses, including 2,806 in the largest unit harness; four intentional ignores; doctests pass
 - exact registered Rust, wasm, and web stages: pass, including strict all-feature Clippy, examples, Rustdoc, ShellCheck, generated files, and policy gates
 - exact 20 ms descendant-termination regression: 10/10 stress runs
 - desktop: 140/140; VS Code: 51 source-only tests plus one real package-graph test; web: 75/75 plus production build
