@@ -64,7 +64,7 @@ jobs:
           retention-days: 1
 
   test-archive:
-    name: Run macOS core slice ${{ matrix.partition }}/5
+    name: Run macOS core slice ${{ matrix.partition }}/8
     needs: [build-archive]
     runs-on: macos-15-intel
     timeout-minutes: 10
@@ -77,6 +77,9 @@ jobs:
           - { partition: 3 }
           - { partition: 4 }
           - { partition: 5 }
+          - { partition: 6 }
+          - { partition: 7 }
+          - { partition: 8 }
     steps:
       - uses: actions/checkout@v6
         with:
@@ -109,5 +112,5 @@ jobs:
             cargo nextest run --archive-file "$RUNNER_TEMP/macos-core-tests/tests.tar.zst" \
             --extract-to "$GITHUB_WORKSPACE" \
             --workspace-remap "$GITHUB_WORKSPACE" \
-            --partition "slice:${{ matrix.partition }}/5" \
+            --partition "slice:${{ matrix.partition }}/8" \
             -E 'not (test(data_files::) | test(self_ast_census) | test(specification::))'
