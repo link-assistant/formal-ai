@@ -20,8 +20,8 @@ fn seed_array_guard_precedes_expansion() -> bool {
 }
 
 fn supported_macos_test_shards_are_complete() -> bool {
-    RELEASE_WORKFLOW.matches("os: macos-15-intel").count() == 2
-        && RELEASE_WORKFLOW.contains("test-suite: core")
+    RELEASE_WORKFLOW.matches("os: macos-15-intel").count() == 4
+        && (1..=3).all(|shard| RELEASE_WORKFLOW.contains(&format!("test-suite: core-{shard}")))
         && RELEASE_WORKFLOW.contains("test-suite: specification")
 }
 
@@ -89,10 +89,9 @@ fn seed_sync_guards_an_empty_destination_array() {
 #[test]
 fn full_test_matrix_runs_on_a_supported_macos_image() {
     assert!(supported_macos_test_shards_are_complete());
-    assert!(RELEASE_WORKFLOW
-        .contains("timeout-minutes: ${{ matrix.os == 'macos-15-intel' && 35 || 25 }}"));
-    assert!(RELEASE_WORKFLOW
-        .contains("TEST_BUDGET_SECONDS: ${{ matrix.os == 'macos-15-intel' && 2100 || 1500 }}"));
+    assert!(RELEASE_WORKFLOW.contains("timeout-minutes: 25"));
+    assert!(RELEASE_WORKFLOW.contains("TEST_BUDGET_SECONDS: 1200"));
+    assert!(RELEASE_WORKFLOW.contains("taiki-e/install-action@nextest"));
 }
 
 #[test]

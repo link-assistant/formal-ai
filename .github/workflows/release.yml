@@ -36,6 +36,9 @@ env:
   CARGO_NET_RETRY: '10'
   CARGO_HTTP_MULTIPLEXING: 'false'
   CARGO_TERM_COLOR: always
+  # Set this repository variable to true only while investigating sccache
+  # backend failures. The shared setup action otherwise leaves logging off.
+  FORMAL_AI_CI_VERBOSE: ${{ vars.FORMAL_AI_CI_VERBOSE || 'false' }}
   RUSTFLAGS: -Dwarnings
   CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
   CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}
@@ -295,7 +298,7 @@ jobs:
   test:
     name: Test (${{ matrix.os }} / ${{ matrix.test-suite }})
     runs-on: ${{ matrix.os }}
-    timeout-minutes: ${{ matrix.os == 'macos-15-intel' && 35 || 25 }}
+    timeout-minutes: 25
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-test-${{ matrix.os }}-${{ matrix.test-suite }}
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
@@ -313,7 +316,9 @@ jobs:
       matrix:
         include:
           - { os: ubuntu-latest, test-suite: full }
-          - { os: macos-15-intel, test-suite: core }
+          - { os: macos-15-intel, test-suite: core-1, partition: 1 }
+          - { os: macos-15-intel, test-suite: core-2, partition: 2 }
+          - { os: macos-15-intel, test-suite: core-3, partition: 3 }
           - { os: macos-15-intel, test-suite: specification }
     steps:
       - uses: actions/checkout@v6
@@ -328,6 +333,9 @@ jobs:
         run: bash scripts/free-runner-disk.sh
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
+      - name: Install cargo-nextest
+        if: startsWith(matrix.test-suite, 'core-')
+        uses: taiki-e/install-action@nextest
       - uses: ./.github/actions/setup-sccache
       - name: Restore cargo registry cache
         uses: actions/cache/restore@v5
@@ -339,66 +347,44 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cargo-
       - name: Check LiNo data integrity
-        if: matrix.test-suite != 'specification'
+        if: matrix.test-suite == 'full'
         run: cargo test --test unit data_files -- --nocapture
       - name: Check self-AST census freshness
-        if: matrix.test-suite != 'specification'
+        if: matrix.test-suite == 'full'
         run: cargo test --test unit self_ast_census -- --nocapture
       - name: Run tests
         if: matrix.test-suite == 'full'
         env:
-          TEST_BUDGET_SECONDS: ${{ matrix.os == 'macos-15-intel' && 2100 || 1500 }}
+          TEST_BUDGET_SECONDS: 1200
           TEST_WARN_RATIO_PERCENT: 70
         run: |
-          set -euo pipefail
-          started=$SECONDS
-          cargo test --lib --bins --tests --all-features --verbose -- \
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "Test suite" \
+            cargo test --lib --bins --tests --all-features --verbose -- \
             --skip data_files:: \
             --skip self_ast_census
-          elapsed=$((SECONDS - started))
-          threshold=$((TEST_BUDGET_SECONDS * TEST_WARN_RATIO_PERCENT / 100))
-          printf 'Test suite took %ss of the %ss job budget.\n' \
-            "$elapsed" "$TEST_BUDGET_SECONDS"
-          if [ "$elapsed" -ge "$threshold" ]; then
-            echo "::warning title=Test suite is approaching its timeout::The suite took ${elapsed}s, at or above ${TEST_WARN_RATIO_PERCENT}% of the ${TEST_BUDGET_SECONDS}s budget. Speed up the slowest tests before the job starts reporting timeouts as cancellations."
-          fi
-      - name: Run core tests
-        if: matrix.test-suite == 'core'
+      - name: Run core test slice
+        if: startsWith(matrix.test-suite, 'core-')
         env:
-          TEST_BUDGET_SECONDS: 2100
+          TEST_BUDGET_SECONDS: 1200
           TEST_WARN_RATIO_PERCENT: 70
         run: |
-          set -euo pipefail
-          started=$SECONDS
-          cargo test --lib --bins --tests --all-features --verbose -- \
-            --skip data_files:: \
-            --skip self_ast_census \
-            --skip specification::
-          elapsed=$((SECONDS - started))
-          threshold=$((TEST_BUDGET_SECONDS * TEST_WARN_RATIO_PERCENT / 100))
-          printf 'Core test shard took %ss of the %ss job budget.\n' \
-            "$elapsed" "$TEST_BUDGET_SECONDS"
-          if [ "$elapsed" -ge "$threshold" ]; then
-            echo "::warning title=Core test shard is approaching its timeout::The shard took ${elapsed}s, at or above ${TEST_WARN_RATIO_PERCENT}% of the ${TEST_BUDGET_SECONDS}s budget."
-          fi
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "Core test slice" \
+            cargo nextest run --lib --bins --tests --all-features \
+            --partition "slice:${{ matrix.partition }}/3" \
+            -E 'not (test(data_files::) | test(self_ast_census) | test(specification::))'
       - name: Run specification tests
         if: matrix.test-suite == 'specification'
         env:
-          TEST_BUDGET_SECONDS: 2100
+          TEST_BUDGET_SECONDS: 1200
           TEST_WARN_RATIO_PERCENT: 70
         run: |
-          set -euo pipefail
-          started=$SECONDS
-          cargo test --test unit --all-features --verbose specification::
-          elapsed=$((SECONDS - started))
-          threshold=$((TEST_BUDGET_SECONDS * TEST_WARN_RATIO_PERCENT / 100))
-          printf 'Specification test shard took %ss of the %ss job budget.\n' \
-            "$elapsed" "$TEST_BUDGET_SECONDS"
-          if [ "$elapsed" -ge "$threshold" ]; then
-            echo "::warning title=Specification test shard is approaching its timeout::The shard took ${elapsed}s, at or above ${TEST_WARN_RATIO_PERCENT}% of the ${TEST_BUDGET_SECONDS}s budget."
-          fi
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "Specification test shard" \
+            cargo test --test unit --all-features --verbose specification::
       - name: Run doc tests
-        if: matrix.test-suite != 'specification'
+        if: matrix.test-suite == 'full' || matrix.test-suite == 'core-1'
         run: cargo test --doc --verbose
   build:
     name: Build Package
@@ -1201,17 +1187,17 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with: { name: agent-cli-tui-replays, path: /tmp/formal-ai-tui-artifacts, if-no-files-found: ignore, retention-days: 7 }
-  # Issue #932 (follow-up of PR #119): a generated project for a language is
-  # built and run inside the link-foundation/box image that matches that
-  # language, using the language's own init commands. The matrix keeps each
-  # image on its own runner, so one leg only pulls the toolchain it needs.
-  box-language-projects:
-    name: Box Image Projects (${{ matrix.language }})
+  # Build the host binary once for the seven Box image legs. The audited run
+  # compiled the same Linux binary seven times and reported 1,131 cache write
+  # errors across those legs; the available logs do not include backend error
+  # details, so opt-in diagnostics live in the shared sccache setup action.
+  build-box-language-binary:
+    name: Build Box Language Binary
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-box-language-projects-${{ matrix.language }}
+      group: ${{ github.workflow }}-${{ github.ref }}-build-box-language-binary
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
     needs: [detect-changes]
     if: |
       !cancelled() && (
@@ -1221,16 +1207,8 @@ jobs:
         needs.detect-changes.outputs.toml-changed == 'true' ||
         needs.detect-changes.outputs.workflow-changed == 'true'
       )
-    strategy:
-      fail-fast: false
-      matrix:
-        # Kept in step with `data/meta/box-language-projects.lino` by
-        # `tests/unit/ci-cd/issue_932.rs`.
-        language: [rust, python, javascript, typescript, go, java, ruby]
     steps:
       - uses: actions/checkout@v6
-      # A box variant unpacks to 4-8 GB, more than a stock runner has spare
-      # next to a cargo build.
       - name: Free up runner disk space
         run: bash scripts/free-runner-disk.sh
       - name: Setup Rust
@@ -1248,6 +1226,55 @@ jobs:
             ${{ runner.os }}-cargo-
       - name: Build formal-ai (release)
         run: cargo build --release --bin formal-ai
+      - name: Upload formal-ai binary
+        uses: actions/upload-artifact@v7
+        with:
+          name: formal-ai-box-language-binary
+          path: target/release/formal-ai
+          retention-days: 1
+
+  # Issue #932 (follow-up of PR #119): a generated project for a language is
+  # built and run inside the link-foundation/box image that matches that
+  # language, using the language's own init commands. The matrix keeps each
+  # image on its own runner, so one leg only pulls the toolchain it needs.
+  box-language-projects:
+    name: Box Image Projects (${{ matrix.language }})
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-box-language-projects-${{ matrix.language }}
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: [detect-changes, build-box-language-binary]
+    if: |
+      !cancelled() && (
+        github.event_name == 'workflow_dispatch' ||
+        needs.detect-changes.outputs.any-code-changed == 'true' ||
+        needs.detect-changes.outputs.rs-changed == 'true' ||
+        needs.detect-changes.outputs.toml-changed == 'true' ||
+        needs.detect-changes.outputs.workflow-changed == 'true'
+      )
+    strategy:
+      fail-fast: false
+      matrix:
+        # Kept in step with `data/meta/box-language-projects.lino` by
+        # `tests/unit/ci-cd/issue_932.rs`.
+        language: [rust, python, javascript, typescript, go, java, ruby]
+    steps:
+      - uses: actions/checkout@v6
+      # A box variant unpacks to 4-8 GB, more than a stock runner has spare
+      # even after the shared host binary no longer has to compile here.
+      - name: Free up runner disk space
+        run: bash scripts/free-runner-disk.sh
+      - name: Download formal-ai binary
+        uses: actions/download-artifact@v8
+        env:
+          # https://github.com/actions/download-artifact/issues/484
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          name: formal-ai-box-language-binary
+          path: target/release
+      - name: Make formal-ai executable
+        run: chmod +x target/release/formal-ai
       - name: Generate the ${{ matrix.language }} project from Formal-AI answers
         run: scripts/generate-box-language-corpus.sh ${{ matrix.language }}
       - name: Build and run it inside its link-foundation/box image
@@ -1423,7 +1450,8 @@ jobs:
     needs: [detect-changes, changelog, evidence-check, docker-build, secrets-scan,
             version-check, lint, test, build, auto-release, manual-release,
             changelog-pr, test-e2e-local, test-agent-cli-e2e,
-            box-language-projects, deploy-pages, test-e2e-pages]
+            build-box-language-binary, box-language-projects, deploy-pages,
+            test-e2e-pages]
     steps:
       - uses: actions/checkout@v6
       - name: Fail the run when a required job was cancelled or failed

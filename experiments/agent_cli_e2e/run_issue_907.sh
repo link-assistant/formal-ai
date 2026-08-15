@@ -49,9 +49,10 @@ cd "$WORKDIR"
 # (docs/testing/agentic-cli-tools.md § Gemini CLI).
 export GEMINI_CLI_HOME="$WORKDIR/home"
 mkdir -p "$GEMINI_CLI_HOME/.gemini"
-printf '%s\n' '{"security":{"auth":{"selectedType":"gemini-api-key"}}}' \
+printf '%s\n' '{"security":{"auth":{"selectedType":"gemini-api-key"}},"model":{"name":"formal-ai"},"tools":{"useRipgrep":false}}' \
   > "$GEMINI_CLI_HOME/.gemini/settings.json"
 export HOME="$GEMINI_CLI_HOME"
+export TERM=xterm-256color
 export GEMINI_API_KEY="sk-local-issue-907"
 export GEMINI_DEFAULT_AUTH_TYPE=gemini-api-key
 export GEMINI_CLI_TRUST_WORKSPACE=true

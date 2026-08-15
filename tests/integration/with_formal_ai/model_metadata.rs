@@ -41,6 +41,13 @@ fn codex_ephemeral_uses_seeded_responses_provider_and_model_catalog() {
         captured.contains("model_catalog_json = \""),
         "Codex must receive a model catalog path: {captured}"
     );
+    assert!(
+        captured.contains(&format!(
+            "model_catalog_json = \"{}/.cache/formal-ai/ephemeral/",
+            home.display()
+        )),
+        "Codex's ephemeral HOME must live below the real HOME, outside the OS temp root: {captured}"
+    );
     assert!(captured.contains("base_url = \"http://127.0.0.1:18080/api/openai/v1\""));
     assert!(captured.contains("FORMAL_AI_API_KEY=formal-ai"));
     assert!(captured.contains("---CODEX_MODEL_CATALOG---"));

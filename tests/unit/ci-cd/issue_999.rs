@@ -17,15 +17,18 @@ fn macos_tests_are_partitioned_without_raising_the_failed_budget() {
 
     assert!(test.contains("name: Test (${{ matrix.os }} / ${{ matrix.test-suite }})"));
     assert!(test.contains("test-suite: full"));
-    assert!(test.contains("test-suite: core"));
+    for shard in 1..=3 {
+        assert!(test.contains(&format!("test-suite: core-{shard}")));
+    }
     assert!(test.contains("test-suite: specification"));
-    assert_eq!(test.matches("os: macos-15-intel").count(), 2);
-    assert!(test.contains("timeout-minutes: ${{ matrix.os == 'macos-15-intel' && 35 || 25 }}"));
+    assert_eq!(test.matches("os: macos-15-intel").count(), 4);
+    assert!(test.contains("timeout-minutes: 25"));
+    assert!(test.contains("cargo nextest run"));
+    assert!(test.contains("--partition \"slice:${{ matrix.partition }}/3\""));
     assert!(test.contains("cargo test --test unit --all-features --verbose specification::"));
-    assert!(test.contains("--skip specification::"));
-    assert!(test.contains("matrix.test-suite != 'specification'"));
+    assert!(test.contains("test(specification::)"));
     assert!(test.contains("matrix.test-suite == 'full'"));
-    assert!(test.contains("matrix.test-suite == 'core'"));
+    assert!(test.contains("startsWith(matrix.test-suite, 'core-')"));
     assert!(test.contains("matrix.test-suite == 'specification'"));
 }
 

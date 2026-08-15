@@ -400,16 +400,15 @@ fn test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten(
     let test_job = job_block(&workflow, "test");
 
     assert!(
-        test_job.contains("timeout-minutes: ${{ matrix.os == 'macos-15-intel' && 35 || 25 }}"),
-        "Linux must retain the measured 25min budget while the macOS parity leg gets 35min"
+        test_job.contains("timeout-minutes: 25"),
+        "every slice must retain the measured 25min job budget"
     );
     assert!(
-        test_job
-            .contains("TEST_BUDGET_SECONDS: ${{ matrix.os == 'macos-15-intel' && 2100 || 1500 }}"),
-        "each warning threshold must be derived from its platform's declared budget"
+        test_job.contains("TEST_BUDGET_SECONDS: 1200"),
+        "the execution warning must leave setup and teardown headroom inside the job budget"
     );
     assert!(
-        test_job.contains("::warning title=Test suite is approaching its timeout"),
+        test_job.contains("scripts/run-with-budget-warning.sh"),
         "creeping back toward the cap must be visible in the run summary rather \
          than resurfacing as a mystery cancellation (issue #812)"
     );
@@ -423,7 +422,7 @@ fn full_suite_does_not_repeat_focused_data_integrity_checks() {
     let workflow = release_workflow();
     let test_job = job_block(&workflow, "test");
     let full_suite = workflow_step_block(test_job, "Run tests");
-    let core_suite = workflow_step_block(test_job, "Run core tests");
+    let core_suite = workflow_step_block(test_job, "Run core test slice");
 
     assert!(test_job.contains("cargo test --test unit data_files -- --nocapture"));
     assert!(test_job.contains("cargo test --test unit self_ast_census -- --nocapture"));
@@ -432,9 +431,9 @@ fn full_suite_does_not_repeat_focused_data_integrity_checks() {
         "the full suite must skip integrity groups already exercised by their focused gates"
     );
     assert!(
-        core_suite.contains("--skip data_files::")
-            && core_suite.contains("--skip self_ast_census")
-            && core_suite.contains("--skip specification::"),
+        core_suite.contains("test(data_files::)")
+            && core_suite.contains("test(self_ast_census)")
+            && core_suite.contains("test(specification::)"),
         "the macOS core shard must skip focused gates and the separately executed specification shard"
     );
 }
@@ -618,8 +617,8 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // Issue #812: raised from 15 after run 29767811026 was killed 1.1 s
         // after the suite passed. See
         // `test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten`.
-        // Issue #961 keeps this Linux baseline and selects a 35-minute macOS
-        // budget through the matrix expression checked below.
+        // Issue #1012 partitions the macOS core suite so every slice retains
+        // this baseline rather than extending a monolithic timeout.
         ("test", 25),
         // Issue #896: raised from 10; the published web-search/web-capture
         // graphs moved the job from ~4-5 to 7.2 minutes, and a cold release
@@ -638,6 +637,9 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // 31097339962 tipped over into a *cancelled* job that looked like a
         // regression but was only variance.
         ("test-agent-cli-e2e", 32),
+        // Issue #1012: the shared release binary is built once before the seven
+        // Box image legs, avoiding seven identical cache restores and builds.
+        ("build-box-language-binary", 20),
         // Issue #932: per-language matrix leg that pulls one link-foundation/box
         // image, generates the project from solver answers and runs the
         // language's traditional init commands inside it. The budget covers a
@@ -665,11 +667,7 @@ fn release_workflow_jobs_have_explicit_timeouts() {
 
     for (job_name, timeout_minutes) in expected_timeouts {
         let job = job_block(&workflow, job_name);
-        let expected = if job_name == "test" {
-            "    timeout-minutes: ${{ matrix.os == 'macos-15-intel' && 35 || 25 }}\n".to_string()
-        } else {
-            format!("    timeout-minutes: {timeout_minutes}\n")
-        };
+        let expected = format!("    timeout-minutes: {timeout_minutes}\n");
         assert!(
             job.contains(&expected),
             "{job_name} should declare {expected:?}"

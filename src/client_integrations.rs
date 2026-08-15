@@ -405,7 +405,7 @@ fn run_ephemeral(
         }
     }
     let temporary_home = if orchestration_home.is_none() && !invocation.temp_home_env.is_empty() {
-        Some(TempConfigDir::new(&format!("{}-home", integration.id))?)
+        Some(TempConfigDir::new_home(&integration.id)?)
     } else {
         None
     };

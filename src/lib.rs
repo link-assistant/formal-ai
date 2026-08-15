@@ -133,6 +133,7 @@ pub mod skill_ledger;
 pub mod skill_procedure;
 pub mod solution_evidence;
 pub mod solver;
+pub(crate) mod solver_config;
 pub(crate) mod solver_diagnostics;
 pub(crate) mod solver_dispatch;
 pub(crate) mod solver_formalization;

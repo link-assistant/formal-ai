@@ -1,0 +1,43 @@
+{
+  "name": "universal-example-app",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Universal React example for the JavaScript template package",
+  "type": "module",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "desktop:start": "npm run build && electron-forge start",
+    "desktop:package": "npm run build && electron-forge package",
+    "desktop:make": "npm run build && electron-forge make",
+    "mobile:sync": "npm run build && cap sync",
+    "mobile:android:add": "cap add android",
+    "mobile:android:open": "cap open android",
+    "mobile:android:run": "npm run build && cap sync android && cap run android",
+    "mobile:android:build": "npm run build && cap sync android && cap build android",
+    "mobile:ios:add": "cap add ios",
+    "mobile:ios:open": "cap open ios",
+    "mobile:ios:run": "npm run build && cap sync ios && cap run ios",
+    "mobile:ios:build": "npm run build && cap sync ios && cap build ios"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.4.4",
+    "@capacitor/core": "^7.4.4",
+    "@capacitor/ios": "^7.4.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.4.4",
+    "@electron-forge/cli": "^7.8.3",
+    "@electron-forge/maker-deb": "^7.8.3",
+    "@electron-forge/maker-rpm": "^7.8.3",
+    "@electron-forge/maker-squirrel": "^7.8.3",
+    "@electron-forge/maker-zip": "^7.8.3",
+    "@vitejs/plugin-react": "^4.7.0",
+    "electron": "^33.4.11",
+    "vite": "^6.4.1"
+  }
+}
